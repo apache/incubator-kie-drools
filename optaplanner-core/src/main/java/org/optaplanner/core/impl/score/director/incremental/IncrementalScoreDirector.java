@@ -65,7 +65,7 @@ public class IncrementalScoreDirector<Solution_>
     public void setWorkingSolution(Solution_ workingSolution) {
         super.setWorkingSolution(workingSolution);
         if (incrementalScoreCalculator instanceof ConstraintMatchAwareIncrementalScoreCalculator) {
-            ((ConstraintMatchAwareIncrementalScoreCalculator<Solution_>) incrementalScoreCalculator)
+            ((ConstraintMatchAwareIncrementalScoreCalculator<Solution_, ?>) incrementalScoreCalculator)
                     .resetWorkingSolution(workingSolution, constraintMatchEnabledPreference);
         } else {
             incrementalScoreCalculator.resetWorkingSolution(workingSolution);
@@ -99,16 +99,16 @@ public class IncrementalScoreDirector<Solution_>
     }
 
     @Override
-    public Map<String, ConstraintMatchTotal> getConstraintMatchTotalMap() {
+    public <Score_ extends Score<Score_>> Map<String, ConstraintMatchTotal<Score_>> getConstraintMatchTotalMap() {
         if (!isConstraintMatchEnabled()) {
             throw new IllegalStateException("When constraintMatchEnabled (" + isConstraintMatchEnabled()
                     + ") is disabled in the constructor, this method should not be called.");
         }
         // Notice that we don't trigger the variable listeners
-        return ((ConstraintMatchAwareIncrementalScoreCalculator<Solution_>) incrementalScoreCalculator)
+        return ((ConstraintMatchAwareIncrementalScoreCalculator<Solution_, Score_>) incrementalScoreCalculator)
                 .getConstraintMatchTotals()
                 .stream()
-                .collect(toMap(ConstraintMatchTotal::getConstraintId, identity()));
+                .collect(toMap(ConstraintMatchTotal<Score_>::getConstraintId, identity()));
     }
 
     @Override
@@ -117,20 +117,23 @@ public class IncrementalScoreDirector<Solution_>
             throw new IllegalStateException("When constraintMatchEnabled (" + isConstraintMatchEnabled()
                     + ") is disabled in the constructor, this method should not be called.");
         }
-        Map<Object, Indictment> incrementalIndictmentMap =
-                ((ConstraintMatchAwareIncrementalScoreCalculator<Solution_>) incrementalScoreCalculator).getIndictmentMap();
+        Map<Object, Indictment<Score_>> incrementalIndictmentMap =
+                ((ConstraintMatchAwareIncrementalScoreCalculator<Solution_, Score_>) incrementalScoreCalculator)
+                        .getIndictmentMap();
         if (incrementalIndictmentMap != null) {
-            return (Map) incrementalIndictmentMap;
+            return incrementalIndictmentMap;
         }
         Map<Object, Indictment<Score_>> indictmentMap = new LinkedHashMap<>(); // TODO use entitySize
         Score_ zeroScore = (Score_) getScoreDefinition().getZeroScore();
-        for (ConstraintMatchTotal<Score_> constraintMatchTotal : getConstraintMatchTotalMap().values()) {
+        Map<String, ConstraintMatchTotal<Score_>> constraintMatchTotalMap = getConstraintMatchTotalMap();
+        for (ConstraintMatchTotal<Score_> constraintMatchTotal : constraintMatchTotalMap.values()) {
             for (ConstraintMatch<Score_> constraintMatch : constraintMatchTotal.getConstraintMatchSet()) {
                 constraintMatch.getJustificationList().stream()
                         .distinct() // One match might have the same justification twice
                         .forEach(justification -> {
-                            DefaultIndictment indictment = (DefaultIndictment) indictmentMap.computeIfAbsent(justification,
-                                    k -> new DefaultIndictment<>(justification, zeroScore));
+                            DefaultIndictment<Score_> indictment = (DefaultIndictment<Score_>) indictmentMap
+                                    .computeIfAbsent(justification,
+                                            k -> new DefaultIndictment<>(justification, zeroScore));
                             indictment.addConstraintMatch(constraintMatch);
                         });
             }

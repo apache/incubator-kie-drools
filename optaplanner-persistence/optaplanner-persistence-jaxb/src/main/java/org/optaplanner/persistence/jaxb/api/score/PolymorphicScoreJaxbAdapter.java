@@ -25,6 +25,7 @@ import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
 import org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDecimalScore;
 import org.optaplanner.core.api.score.buildin.bendablelong.BendableLongScore;
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
+import org.optaplanner.core.api.score.buildin.hardmediumsoftbigdecimal.HardMediumSoftBigDecimalScore;
 import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScore;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScore;
@@ -42,6 +43,7 @@ public class PolymorphicScoreJaxbAdapter extends XmlAdapter<PolymorphicScoreJaxb
         }
         String scoreClassName = jaxbAdaptedScore.scoreClassName;
         String scoreString = jaxbAdaptedScore.scoreString;
+        // TODO Can this delegate to ScoreUtils.parseScore()?
         if (scoreClassName.equals(SimpleScore.class.getName())) {
             return SimpleScore.parseScore(scoreString);
         } else if (scoreClassName.equals(SimpleLongScore.class.getName())) {
@@ -58,6 +60,8 @@ public class PolymorphicScoreJaxbAdapter extends XmlAdapter<PolymorphicScoreJaxb
             return HardMediumSoftScore.parseScore(scoreString);
         } else if (scoreClassName.equals(HardMediumSoftLongScore.class.getName())) {
             return HardMediumSoftLongScore.parseScore(scoreString);
+        } else if (scoreClassName.equals(HardMediumSoftBigDecimalScore.class.getName())) {
+            return HardMediumSoftBigDecimalScore.parseScore(scoreString);
         } else if (scoreClassName.equals(BendableScore.class.getName())) {
             return BendableScore.parseScore(scoreString);
         } else if (scoreClassName.equals(BendableLongScore.class.getName())) {

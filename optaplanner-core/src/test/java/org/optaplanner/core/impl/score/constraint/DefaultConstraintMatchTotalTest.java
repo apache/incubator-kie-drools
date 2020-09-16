@@ -32,16 +32,16 @@ public class DefaultConstraintMatchTotalTest {
         TestdataEntity e1 = new TestdataEntity("e1");
         TestdataEntity e2 = new TestdataEntity("e2");
         TestdataEntity e3 = new TestdataEntity("e3");
-        DefaultConstraintMatchTotal constraintMatchTotal =
-                new DefaultConstraintMatchTotal("package1", "constraint1", SimpleScore.ZERO);
+        DefaultConstraintMatchTotal<SimpleScore> constraintMatchTotal =
+                new DefaultConstraintMatchTotal<>("package1", "constraint1", SimpleScore.ZERO);
         assertThat(constraintMatchTotal.getScore()).isEqualTo(SimpleScore.ZERO);
 
-        ConstraintMatch match1 = constraintMatchTotal.addConstraintMatch(asList(e1, e2), SimpleScore.of(-1));
+        ConstraintMatch<SimpleScore> match1 = constraintMatchTotal.addConstraintMatch(asList(e1, e2), SimpleScore.of(-1));
         assertThat(constraintMatchTotal.getScore()).isEqualTo(SimpleScore.of(-1));
-        ConstraintMatch match2 = constraintMatchTotal.addConstraintMatch(asList(e1, e3), SimpleScore.of(-20));
+        ConstraintMatch<SimpleScore> match2 = constraintMatchTotal.addConstraintMatch(asList(e1, e3), SimpleScore.of(-20));
         assertThat(constraintMatchTotal.getScore()).isEqualTo(SimpleScore.of(-21));
         // Almost duplicate, but e2 and e1 are in reverse order, so different justification
-        ConstraintMatch match3 = constraintMatchTotal.addConstraintMatch(asList(e2, e1), SimpleScore.of(-300));
+        ConstraintMatch<SimpleScore> match3 = constraintMatchTotal.addConstraintMatch(asList(e2, e1), SimpleScore.of(-300));
         assertThat(constraintMatchTotal.getScore()).isEqualTo(SimpleScore.of(-321));
 
         constraintMatchTotal.removeConstraintMatch(match2);
@@ -55,26 +55,26 @@ public class DefaultConstraintMatchTotalTest {
     @Test
     public void equalsAndHashCode() {
         PlannerAssert.assertObjectsAreEqual(
-                new DefaultConstraintMatchTotal("a.b", "c", SimpleScore.ZERO),
-                new DefaultConstraintMatchTotal("a.b", "c", SimpleScore.ZERO),
-                new DefaultConstraintMatchTotal("a.b", "c", SimpleScore.of(-7)));
+                new DefaultConstraintMatchTotal<>("a.b", "c", SimpleScore.ZERO),
+                new DefaultConstraintMatchTotal<>("a.b", "c", SimpleScore.ZERO),
+                new DefaultConstraintMatchTotal<>("a.b", "c", SimpleScore.of(-7)));
         PlannerAssert.assertObjectsAreNotEqual(
-                new DefaultConstraintMatchTotal("a.b", "c", SimpleScore.ZERO),
-                new DefaultConstraintMatchTotal("a.b", "d", SimpleScore.ZERO),
-                new DefaultConstraintMatchTotal("a.c", "d", SimpleScore.ZERO));
+                new DefaultConstraintMatchTotal<>("a.b", "c", SimpleScore.ZERO),
+                new DefaultConstraintMatchTotal<>("a.b", "d", SimpleScore.ZERO),
+                new DefaultConstraintMatchTotal<>("a.c", "d", SimpleScore.ZERO));
     }
 
     @Test
     public void compareTo() {
         PlannerAssert.assertCompareToOrder(
-                new DefaultConstraintMatchTotal("a.b", "aa", SimpleScore.ZERO),
-                new DefaultConstraintMatchTotal("a.b", "ab", SimpleScore.ZERO),
-                new DefaultConstraintMatchTotal("a.b", "ca", SimpleScore.ZERO),
-                new DefaultConstraintMatchTotal("a.b", "cb", SimpleScore.ZERO),
-                new DefaultConstraintMatchTotal("a.b", "d", SimpleScore.ZERO),
-                new DefaultConstraintMatchTotal("a.c", "a", SimpleScore.ZERO),
-                new DefaultConstraintMatchTotal("a.c", "b", SimpleScore.ZERO),
-                new DefaultConstraintMatchTotal("a.c", "c", SimpleScore.ZERO));
+                new DefaultConstraintMatchTotal<>("a.b", "aa", SimpleScore.ZERO),
+                new DefaultConstraintMatchTotal<>("a.b", "ab", SimpleScore.ZERO),
+                new DefaultConstraintMatchTotal<>("a.b", "ca", SimpleScore.ZERO),
+                new DefaultConstraintMatchTotal<>("a.b", "cb", SimpleScore.ZERO),
+                new DefaultConstraintMatchTotal<>("a.b", "d", SimpleScore.ZERO),
+                new DefaultConstraintMatchTotal<>("a.c", "a", SimpleScore.ZERO),
+                new DefaultConstraintMatchTotal<>("a.c", "b", SimpleScore.ZERO),
+                new DefaultConstraintMatchTotal<>("a.c", "c", SimpleScore.ZERO));
     }
 
 }

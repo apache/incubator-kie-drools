@@ -58,6 +58,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScore;
 import org.optaplanner.examples.common.persistence.AbstractXlsxSolutionFileIO;
 import org.optaplanner.examples.rocktour.app.RockTourApp;
 import org.optaplanner.examples.rocktour.domain.RockBus;
@@ -79,7 +80,7 @@ public class RockTourXlsxFileIO extends AbstractXlsxSolutionFileIO<RockTourSolut
         }
     }
 
-    private static class RockTourXlsxReader extends AbstractXlsxReader<RockTourSolution> {
+    private static class RockTourXlsxReader extends AbstractXlsxReader<RockTourSolution, HardMediumSoftLongScore> {
 
         public RockTourXlsxReader(XSSFWorkbook workbook) {
             super(workbook, RockTourApp.SOLVER_CONFIG);
@@ -333,7 +334,7 @@ public class RockTourXlsxFileIO extends AbstractXlsxSolutionFileIO<RockTourSolut
         }
     }
 
-    private static class RockTourXlsxWriter extends AbstractXlsxWriter<RockTourSolution> {
+    private static class RockTourXlsxWriter extends AbstractXlsxWriter<RockTourSolution, HardMediumSoftLongScore> {
 
         public RockTourXlsxWriter(RockTourSolution solution) {
             super(solution, RockTourApp.SOLVER_CONFIG);

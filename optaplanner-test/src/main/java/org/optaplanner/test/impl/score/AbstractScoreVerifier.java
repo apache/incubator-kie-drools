@@ -53,13 +53,13 @@ public abstract class AbstractScoreVerifier<Solution_> {
      * @param expectedScoreClass never null, used to fail fast if a {@link SolverFactory} with another {@link Score} type is
      *        used.
      */
-    public AbstractScoreVerifier(SolverFactory<Solution_> solverFactory, Class<? extends Score> expectedScoreClass) {
+    public AbstractScoreVerifier(SolverFactory<Solution_> solverFactory, Class<? extends Score<?>> expectedScoreClass) {
         if (solverFactory == null) {
             throw new IllegalStateException("The solverFactory (" + solverFactory + ") cannot be null.");
         }
         scoreDirectorFactory = ((DefaultSolverFactory<Solution_>) solverFactory).getScoreDirectorFactory();
         SolutionDescriptor<Solution_> solutionDescriptor = scoreDirectorFactory.getSolutionDescriptor();
-        Class<? extends Score> scoreClass = solutionDescriptor.getScoreDefinition().getScoreClass();
+        Class<? extends Score<?>> scoreClass = solutionDescriptor.getScoreDefinition().getScoreClass();
         if (expectedScoreClass != scoreClass) {
             throw new IllegalStateException("The solution's scoreClass (" + scoreClass
                     + ") differs from the test's expectedScoreClass (" + expectedScoreClass + ").");
@@ -78,7 +78,7 @@ public abstract class AbstractScoreVerifier<Solution_> {
      */
     protected void assertWeight(String constraintPackage, String constraintName, int scoreLevel, Number expectedWeight,
             Solution_ solution) {
-        ConstraintMatchTotal matchTotal;
+        ConstraintMatchTotal<?> matchTotal;
         try (InnerScoreDirector<Solution_> scoreDirector = scoreDirectorFactory.buildScoreDirector()) {
             scoreDirector.setWorkingSolution(solution);
             scoreDirector.calculateScore();
@@ -124,14 +124,14 @@ public abstract class AbstractScoreVerifier<Solution_> {
      * @param scoreDirector never null
      * @return null if there is no constraint matched or the constraint doesn't exist
      */
-    private ConstraintMatchTotal findConstraintMatchTotal(String constraintPackage, String constraintName,
+    private ConstraintMatchTotal<?> findConstraintMatchTotal(String constraintPackage, String constraintName,
             InnerScoreDirector<Solution_> scoreDirector) {
         if (constraintPackage != null) {
             String constraintId = ConstraintMatchTotal.composeConstraintId(constraintPackage, constraintName);
             return scoreDirector.getConstraintMatchTotalMap().get(constraintId);
         }
-        ConstraintMatchTotal matchTotal = null;
-        for (ConstraintMatchTotal selectedMatchTotal : scoreDirector.getConstraintMatchTotalMap().values()) {
+        ConstraintMatchTotal<?> matchTotal = null;
+        for (ConstraintMatchTotal<?> selectedMatchTotal : scoreDirector.getConstraintMatchTotalMap().values()) {
             if (selectedMatchTotal.getConstraintName().equals(constraintName)) {
                 if (matchTotal != null) {
                     throw new IllegalArgumentException("The constraintName (" + constraintName

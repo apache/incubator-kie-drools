@@ -93,7 +93,7 @@ public class EasyScoreDirector<Solution_>
      * @return throws {@link IllegalStateException}
      */
     @Override
-    public Map<String, ConstraintMatchTotal> getConstraintMatchTotalMap() {
+    public <Score_ extends Score<Score_>> Map<String, ConstraintMatchTotal<Score_>> getConstraintMatchTotalMap() {
         throw new IllegalStateException(ConstraintMatch.class.getSimpleName()
                 + " is not supported by " + EasyScoreDirector.class.getSimpleName() + ".");
     }
@@ -105,7 +105,7 @@ public class EasyScoreDirector<Solution_>
      * @return throws {@link IllegalStateException}
      */
     @Override
-    public Map<Object, Indictment> getIndictmentMap() {
+    public <Score_ extends Score<Score_>> Map<Object, Indictment<Score_>> getIndictmentMap() {
         throw new IllegalStateException(ConstraintMatch.class.getSimpleName()
                 + " is not supported by " + EasyScoreDirector.class.getSimpleName() + ".");
     }

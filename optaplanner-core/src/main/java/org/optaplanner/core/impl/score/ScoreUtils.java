@@ -21,6 +21,7 @@ import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
 import org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDecimalScore;
 import org.optaplanner.core.api.score.buildin.bendablelong.BendableLongScore;
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
+import org.optaplanner.core.api.score.buildin.hardmediumsoftbigdecimal.HardMediumSoftBigDecimalScore;
 import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScore;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScore;
@@ -39,7 +40,7 @@ public class ScoreUtils {
      * @throws IllegalArgumentException if the scoreClass is a custom {@link Score}
      * @see ScoreDefinition#parseScore(String)
      */
-    public static Score parseScore(Class<? extends Score> scoreClass, String scoreString) {
+    public static Score parseScore(Class<? extends Score<?>> scoreClass, String scoreString) {
         if (SimpleScore.class.equals(scoreClass)) {
             return SimpleScore.parseScore(scoreString);
         } else if (SimpleLongScore.class.equals(scoreClass)) {
@@ -56,6 +57,8 @@ public class ScoreUtils {
             return HardMediumSoftScore.parseScore(scoreString);
         } else if (HardMediumSoftLongScore.class.equals(scoreClass)) {
             return HardMediumSoftLongScore.parseScore(scoreString);
+        } else if (HardMediumSoftBigDecimalScore.class.equals(scoreClass)) {
+            return HardMediumSoftBigDecimalScore.parseScore(scoreString);
         } else if (BendableScore.class.equals(scoreClass)) {
             return BendableScore.parseScore(scoreString);
         } else if (BendableLongScore.class.equals(scoreClass)) {

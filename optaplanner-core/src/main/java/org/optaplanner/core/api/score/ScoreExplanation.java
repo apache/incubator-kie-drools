@@ -31,6 +31,7 @@ import org.optaplanner.core.api.score.stream.Constraint;
  * necessary to explain the quality of a particular {@link Score}.
  *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ * @param <Score_> the actual score type
  */
 public interface ScoreExplanation<Solution_, Score_ extends Score<Score_>> {
 

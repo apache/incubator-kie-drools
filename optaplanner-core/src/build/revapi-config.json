@@ -8891,7 +8891,7 @@
           "classSimpleName": "AbstractBendableScore",
           "methodName": "add",
           "elementKind": "method",
-          "justification": "Several API classes were generified."
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
         },
         {
           "code": "java.method.returnTypeChanged",
@@ -8903,7 +8903,7 @@
           "classSimpleName": "AbstractBendableScore",
           "methodName": "subtract",
           "elementKind": "method",
-          "justification": "Several API classes were generified."
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
         },
         {
           "code": "java.class.noLongerImplementsInterface",
@@ -8913,7 +8913,7 @@
           "package": "org.optaplanner.core.api.score",
           "classSimpleName": "AbstractScore",
           "elementKind": "class",
-          "justification": "Several API classes were generified."
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
         },
         {
           "code": "java.class.noLongerImplementsInterface",
@@ -8923,7 +8923,7 @@
           "package": "org.optaplanner.core.api.score",
           "classSimpleName": "AbstractScore",
           "elementKind": "class",
-          "justification": "Several API classes were generified."
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
         },
         {
           "code": "java.generics.formalTypeParameterChanged",
@@ -8934,7 +8934,7 @@
           "package": "org.optaplanner.core.api.score",
           "classSimpleName": "AbstractScore",
           "elementKind": "class",
-          "justification": "Several API classes were generified."
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
         },
         {
           "code": "java.class.superTypeTypeParametersChanged",
@@ -8945,7 +8945,7 @@
           "package": "org.optaplanner.core.api.score",
           "classSimpleName": "AbstractScore",
           "elementKind": "class",
-          "justification": "Several API classes were generified."
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
         },
         {
           "code": "java.method.returnTypeTypeParametersChanged",
@@ -8957,7 +8957,7 @@
           "classSimpleName": "Score",
           "methodName": "add",
           "elementKind": "method",
-          "justification": "Several API classes were generified."
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
         },
         {
           "code": "java.method.returnTypeTypeParametersChanged",
@@ -8969,7 +8969,7 @@
           "classSimpleName": "Score",
           "methodName": "divide",
           "elementKind": "method",
-          "justification": "Several API classes were generified."
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
         },
         {
           "code": "java.method.noLongerDefault",
@@ -8981,7 +8981,7 @@
           "classSimpleName": "Score",
           "methodName": "isFeasible",
           "elementKind": "method",
-          "justification": "Several API classes were generified."
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
         },
         {
           "code": "java.method.nowAbstract",
@@ -8993,7 +8993,7 @@
           "classSimpleName": "Score",
           "methodName": "isFeasible",
           "elementKind": "method",
-          "justification": "Several API classes were generified."
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
         },
         {
           "code": "java.method.returnTypeTypeParametersChanged",
@@ -9005,7 +9005,7 @@
           "classSimpleName": "Score",
           "methodName": "multiply",
           "elementKind": "method",
-          "justification": "Several API classes were generified."
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
         },
         {
           "code": "java.method.returnTypeTypeParametersChanged",
@@ -9017,7 +9017,7 @@
           "classSimpleName": "Score",
           "methodName": "negate",
           "elementKind": "method",
-          "justification": "Several API classes were generified."
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
         },
         {
           "code": "java.method.returnTypeTypeParametersChanged",
@@ -9029,7 +9029,7 @@
           "classSimpleName": "Score",
           "methodName": "power",
           "elementKind": "method",
-          "justification": "Several API classes were generified."
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
         },
         {
           "code": "java.method.returnTypeTypeParametersChanged",
@@ -9041,7 +9041,7 @@
           "classSimpleName": "Score",
           "methodName": "subtract",
           "elementKind": "method",
-          "justification": "Several API classes were generified."
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
         },
         {
           "code": "java.method.returnTypeTypeParametersChanged",
@@ -9053,7 +9053,7 @@
           "classSimpleName": "Score",
           "methodName": "withInitScore",
           "elementKind": "method",
-          "justification": "Several API classes were generified."
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
         },
         {
           "code": "java.class.noLongerImplementsInterface",
@@ -9063,7 +9063,7 @@
           "package": "org.optaplanner.core.api.score",
           "classSimpleName": "Score",
           "elementKind": "interface",
-          "justification": "Several API classes were generified."
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
         },
         {
           "code": "java.generics.formalTypeParameterChanged",
@@ -9074,7 +9074,7 @@
           "package": "org.optaplanner.core.api.score",
           "classSimpleName": "Score",
           "elementKind": "interface",
-          "justification": "Several API classes were generified."
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
         },
         {
           "code": "java.class.superTypeTypeParametersChanged",
@@ -9085,7 +9085,7 @@
           "package": "org.optaplanner.core.api.score",
           "classSimpleName": "Score",
           "elementKind": "interface",
-          "justification": "Several API classes were generified."
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
         },
         {
           "code": "java.method.returnTypeTypeParametersChanged",
@@ -9097,7 +9097,7 @@
           "classSimpleName": "ScoreManager",
           "methodName": "create",
           "elementKind": "method",
-          "justification": "Several API classes were generified."
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
         },
         {
           "code": "java.generics.formalTypeParameterAdded",
@@ -9107,7 +9107,7 @@
           "classSimpleName": "ScoreManager",
           "methodName": "create",
           "elementKind": "method",
-          "justification": "Several API classes were generified."
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
         },
         {
           "code": "java.method.returnTypeChanged",
@@ -9119,7 +9119,7 @@
           "classSimpleName": "ScoreManager",
           "methodName": "explainScore",
           "elementKind": "method",
-          "justification": "Several API classes were generified."
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
         },
         {
           "code": "java.method.addedToInterface",
@@ -9128,7 +9128,7 @@
           "classSimpleName": "ScoreManager",
           "methodName": "getSummary",
           "elementKind": "method",
-          "justification": "Several API classes were generified."
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
         },
         {
           "code": "java.method.returnTypeTypeParametersChanged",
@@ -9140,7 +9140,7 @@
           "classSimpleName": "ScoreManager",
           "methodName": "updateScore",
           "elementKind": "method",
-          "justification": "Several API classes were generified."
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
         },
         {
           "code": "java.generics.formalTypeParameterAdded",
@@ -9149,7 +9149,7 @@
           "package": "org.optaplanner.core.api.score",
           "classSimpleName": "ScoreManager",
           "elementKind": "interface",
-          "justification": "Several API classes were generified."
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
         },
         {
           "code": "java.method.returnTypeTypeParametersChanged",
@@ -9161,7 +9161,7 @@
           "classSimpleName": "ConstraintMatch",
           "methodName": "getScore",
           "elementKind": "method",
-          "justification": "Several API classes were generified."
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
         },
         {
           "code": "java.class.noLongerImplementsInterface",
@@ -9171,7 +9171,7 @@
           "package": "org.optaplanner.core.api.score.constraint",
           "classSimpleName": "ConstraintMatch",
           "elementKind": "class",
-          "justification": "Several API classes were generified."
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
         },
         {
           "code": "java.class.noLongerImplementsInterface",
@@ -9181,7 +9181,7 @@
           "package": "org.optaplanner.core.api.score.constraint",
           "classSimpleName": "ConstraintMatch",
           "elementKind": "class",
-          "justification": "Several API classes were generified."
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
         },
         {
           "code": "java.generics.elementNowParameterized",
@@ -9190,7 +9190,7 @@
           "package": "org.optaplanner.core.api.score.constraint",
           "classSimpleName": "ConstraintMatch",
           "elementKind": "class",
-          "justification": "Several API classes were generified."
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
         },
         {
           "code": "java.generics.formalTypeParameterAdded",
@@ -9199,7 +9199,7 @@
           "package": "org.optaplanner.core.api.score.constraint",
           "classSimpleName": "ConstraintMatch",
           "elementKind": "class",
-          "justification": "Several API classes were generified."
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
         },
         {
           "code": "java.method.nowAbstract",
@@ -9211,7 +9211,7 @@
           "classSimpleName": "ConstraintMatchTotal",
           "methodName": "getConstraintId",
           "elementKind": "method",
-          "justification": "Several API classes were generified."
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
         },
         {
           "code": "java.method.returnTypeTypeParametersChanged",
@@ -9223,7 +9223,7 @@
           "classSimpleName": "ConstraintMatchTotal",
           "methodName": "getConstraintMatchSet",
           "elementKind": "method",
-          "justification": "Several API classes were generified."
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
         },
         {
           "code": "java.method.nowAbstract",
@@ -9235,7 +9235,7 @@
           "classSimpleName": "ConstraintMatchTotal",
           "methodName": "getConstraintMatchSet",
           "elementKind": "method",
-          "justification": "Several API classes were generified."
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
         },
         {
           "code": "java.method.nowAbstract",
@@ -9247,7 +9247,7 @@
           "classSimpleName": "ConstraintMatchTotal",
           "methodName": "getConstraintName",
           "elementKind": "method",
-          "justification": "Several API classes were generified."
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
         },
         {
           "code": "java.method.nowAbstract",
@@ -9259,7 +9259,7 @@
           "classSimpleName": "ConstraintMatchTotal",
           "methodName": "getConstraintPackage",
           "elementKind": "method",
-          "justification": "Several API classes were generified."
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
         },
         {
           "code": "java.method.returnTypeTypeParametersChanged",
@@ -9271,7 +9271,7 @@
           "classSimpleName": "ConstraintMatchTotal",
           "methodName": "getConstraintWeight",
           "elementKind": "method",
-          "justification": "Several API classes were generified."
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
         },
         {
           "code": "java.method.nowAbstract",
@@ -9283,7 +9283,7 @@
           "classSimpleName": "ConstraintMatchTotal",
           "methodName": "getConstraintWeight",
           "elementKind": "method",
-          "justification": "Several API classes were generified."
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
         },
         {
           "code": "java.method.returnTypeTypeParametersChanged",
@@ -9295,7 +9295,7 @@
           "classSimpleName": "ConstraintMatchTotal",
           "methodName": "getScore",
           "elementKind": "method",
-          "justification": "Several API classes were generified."
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
         },
         {
           "code": "java.method.nowAbstract",
@@ -9307,7 +9307,7 @@
           "classSimpleName": "ConstraintMatchTotal",
           "methodName": "getScore",
           "elementKind": "method",
-          "justification": "Several API classes were generified."
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
         },
         {
           "code": "java.class.kindChanged",
@@ -9318,7 +9318,7 @@
           "package": "org.optaplanner.core.api.score.constraint",
           "classSimpleName": "ConstraintMatchTotal",
           "elementKind": "class",
-          "justification": "Several API classes were generified."
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
         },
         {
           "code": "java.class.noLongerImplementsInterface",
@@ -9328,7 +9328,7 @@
           "package": "org.optaplanner.core.api.score.constraint",
           "classSimpleName": "ConstraintMatchTotal",
           "elementKind": "class",
-          "justification": "Several API classes were generified."
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
         },
         {
           "code": "java.class.noLongerImplementsInterface",
@@ -9338,7 +9338,7 @@
           "package": "org.optaplanner.core.api.score.constraint",
           "classSimpleName": "ConstraintMatchTotal",
           "elementKind": "class",
-          "justification": "Several API classes were generified."
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
         },
         {
           "code": "java.class.nowAbstract",
@@ -9349,7 +9349,7 @@
           "package": "org.optaplanner.core.api.score.constraint",
           "classSimpleName": "ConstraintMatchTotal",
           "elementKind": "class",
-          "justification": "Several API classes were generified."
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
         },
         {
           "code": "java.generics.elementNowParameterized",
@@ -9358,7 +9358,7 @@
           "package": "org.optaplanner.core.api.score.constraint",
           "classSimpleName": "ConstraintMatchTotal",
           "elementKind": "class",
-          "justification": "Several API classes were generified."
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
         },
         {
           "code": "java.generics.formalTypeParameterAdded",
@@ -9367,7 +9367,7 @@
           "package": "org.optaplanner.core.api.score.constraint",
           "classSimpleName": "ConstraintMatchTotal",
           "elementKind": "class",
-          "justification": "Several API classes were generified."
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
         },
         {
           "code": "java.method.returnTypeTypeParametersChanged",
@@ -9379,7 +9379,7 @@
           "classSimpleName": "Indictment",
           "methodName": "getConstraintMatchSet",
           "elementKind": "method",
-          "justification": "Several API classes were generified."
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
         },
         {
           "code": "java.method.nowAbstract",
@@ -9391,7 +9391,7 @@
           "classSimpleName": "Indictment",
           "methodName": "getConstraintMatchSet",
           "elementKind": "method",
-          "justification": "Several API classes were generified."
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
         },
         {
           "code": "java.method.nowAbstract",
@@ -9403,7 +9403,7 @@
           "classSimpleName": "Indictment",
           "methodName": "getJustification",
           "elementKind": "method",
-          "justification": "Several API classes were generified."
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
         },
         {
           "code": "java.method.returnTypeTypeParametersChanged",
@@ -9415,7 +9415,7 @@
           "classSimpleName": "Indictment",
           "methodName": "getScore",
           "elementKind": "method",
-          "justification": "Several API classes were generified."
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
         },
         {
           "code": "java.method.nowAbstract",
@@ -9427,7 +9427,7 @@
           "classSimpleName": "Indictment",
           "methodName": "getScore",
           "elementKind": "method",
-          "justification": "Several API classes were generified."
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
         },
         {
           "code": "java.class.kindChanged",
@@ -9438,7 +9438,7 @@
           "package": "org.optaplanner.core.api.score.constraint",
           "classSimpleName": "Indictment",
           "elementKind": "class",
-          "justification": "Several API classes were generified."
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
         },
         {
           "code": "java.class.noLongerImplementsInterface",
@@ -9448,7 +9448,7 @@
           "package": "org.optaplanner.core.api.score.constraint",
           "classSimpleName": "Indictment",
           "elementKind": "class",
-          "justification": "Several API classes were generified."
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
         },
         {
           "code": "java.class.noLongerImplementsInterface",
@@ -9458,7 +9458,7 @@
           "package": "org.optaplanner.core.api.score.constraint",
           "classSimpleName": "Indictment",
           "elementKind": "class",
-          "justification": "Several API classes were generified."
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
         },
         {
           "code": "java.class.nowAbstract",
@@ -9469,7 +9469,7 @@
           "package": "org.optaplanner.core.api.score.constraint",
           "classSimpleName": "Indictment",
           "elementKind": "class",
-          "justification": "Several API classes were generified."
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
         },
         {
           "code": "java.generics.elementNowParameterized",
@@ -9478,7 +9478,7 @@
           "package": "org.optaplanner.core.api.score.constraint",
           "classSimpleName": "Indictment",
           "elementKind": "class",
-          "justification": "Several API classes were generified."
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
         },
         {
           "code": "java.generics.formalTypeParameterAdded",
@@ -9487,8 +9487,261 @@
           "package": "org.optaplanner.core.api.score.constraint",
           "classSimpleName": "Indictment",
           "elementKind": "class",
-          "justification": "Several API classes were generified."
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
+        },
+        {
+          "code": "java.method.returnTypeChangedCovariantly",
+          "old": "method org.optaplanner.core.api.score.holder.ScoreHolder<S> org.optaplanner.core.impl.score.definition.ScoreDefinition<S extends org.optaplanner.core.api.score.Score<S extends org.optaplanner.core.api.score.Score<S>>>::buildScoreHolder(boolean) @ org.optaplanner.core.api.domain.solution.PlanningScore.NullScoreDefinition",
+          "new": "method org.optaplanner.core.impl.score.holder.AbstractScoreHolder<Score_> org.optaplanner.core.impl.score.definition.ScoreDefinition<Score_ extends org.optaplanner.core.api.score.Score<Score_ extends org.optaplanner.core.api.score.Score<Score_>>>::buildScoreHolder(boolean) @ org.optaplanner.core.api.domain.solution.PlanningScore.NullScoreDefinition",
+          "oldType": "org.optaplanner.core.api.score.holder.ScoreHolder",
+          "newType": "org.optaplanner.core.impl.score.holder.AbstractScoreHolder",
+          "package": "org.optaplanner.core.api.domain.solution",
+          "classSimpleName": "NullScoreDefinition",
+          "methodName": "buildScoreHolder",
+          "elementKind": "method",
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
+        },
+        {
+          "code": "java.method.returnTypeChanged",
+          "old": "method Score_ org.optaplanner.core.api.score.Score<Score_ extends org.optaplanner.core.api.score.Score>::add(Score_) @ org.optaplanner.core.api.score.AbstractBendableScore<S extends org.optaplanner.core.api.score.FeasibilityScore<S extends org.optaplanner.core.api.score.FeasibilityScore<S>>>",
+          "new": "method Score_ org.optaplanner.core.api.score.Score<Score_ extends org.optaplanner.core.api.score.Score<Score_ extends org.optaplanner.core.api.score.Score<Score_>>>::add(Score_) @ org.optaplanner.core.api.score.AbstractBendableScore<Score_ extends org.optaplanner.core.api.score.Score<Score_ extends org.optaplanner.core.api.score.Score<Score_>>>",
+          "oldType": "S extends org.optaplanner.core.api.score.FeasibilityScore<S>",
+          "newType": "Score_ extends org.optaplanner.core.api.score.Score<Score_>",
+          "package": "org.optaplanner.core.api.score",
+          "classSimpleName": "AbstractBendableScore",
+          "methodName": "add",
+          "elementKind": "method",
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
+        },
+        {
+          "code": "java.method.returnTypeChanged",
+          "old": "method Score_ org.optaplanner.core.api.score.Score<Score_ extends org.optaplanner.core.api.score.Score>::subtract(Score_) @ org.optaplanner.core.api.score.AbstractBendableScore<S extends org.optaplanner.core.api.score.FeasibilityScore<S extends org.optaplanner.core.api.score.FeasibilityScore<S>>>",
+          "new": "method Score_ org.optaplanner.core.api.score.Score<Score_ extends org.optaplanner.core.api.score.Score<Score_ extends org.optaplanner.core.api.score.Score<Score_>>>::subtract(Score_) @ org.optaplanner.core.api.score.AbstractBendableScore<Score_ extends org.optaplanner.core.api.score.Score<Score_ extends org.optaplanner.core.api.score.Score<Score_>>>",
+          "oldType": "S extends org.optaplanner.core.api.score.FeasibilityScore<S>",
+          "newType": "Score_ extends org.optaplanner.core.api.score.Score<Score_>",
+          "package": "org.optaplanner.core.api.score",
+          "classSimpleName": "AbstractBendableScore",
+          "methodName": "subtract",
+          "elementKind": "method",
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
+        },
+        {
+          "code": "java.class.noLongerImplementsInterface",
+          "old": "class org.optaplanner.core.api.score.AbstractBendableScore<S extends org.optaplanner.core.api.score.FeasibilityScore<S>>",
+          "new": "class org.optaplanner.core.api.score.AbstractBendableScore<Score_ extends org.optaplanner.core.api.score.Score<Score_>>",
+          "interface": "org.optaplanner.core.api.score.Score<S extends org.optaplanner.core.api.score.FeasibilityScore<S>>",
+          "package": "org.optaplanner.core.api.score",
+          "classSimpleName": "AbstractBendableScore",
+          "elementKind": "class",
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
+        },
+        {
+          "code": "java.class.noLongerImplementsInterface",
+          "old": "class org.optaplanner.core.api.score.AbstractBendableScore<S extends org.optaplanner.core.api.score.FeasibilityScore<S>>",
+          "new": "class org.optaplanner.core.api.score.AbstractBendableScore<Score_ extends org.optaplanner.core.api.score.Score<Score_>>",
+          "interface": "java.lang.Comparable<S extends org.optaplanner.core.api.score.FeasibilityScore<S>>",
+          "package": "org.optaplanner.core.api.score",
+          "classSimpleName": "AbstractBendableScore",
+          "elementKind": "class",
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
+        },
+        {
+          "code": "java.generics.formalTypeParameterChanged",
+          "old": "class org.optaplanner.core.api.score.AbstractBendableScore<S extends org.optaplanner.core.api.score.FeasibilityScore<S>>",
+          "new": "class org.optaplanner.core.api.score.AbstractBendableScore<Score_ extends org.optaplanner.core.api.score.Score<Score_>>",
+          "oldTypeParameter": "S extends org.optaplanner.core.api.score.FeasibilityScore<S extends org.optaplanner.core.api.score.FeasibilityScore<S>>",
+          "newTypeParameter": "Score_ extends org.optaplanner.core.api.score.Score<Score_ extends org.optaplanner.core.api.score.Score<Score_>>",
+          "package": "org.optaplanner.core.api.score",
+          "classSimpleName": "AbstractBendableScore",
+          "elementKind": "class",
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
+        },
+        {
+          "code": "java.class.superTypeTypeParametersChanged",
+          "old": "class org.optaplanner.core.api.score.AbstractBendableScore<S extends org.optaplanner.core.api.score.FeasibilityScore<S>>",
+          "new": "class org.optaplanner.core.api.score.AbstractBendableScore<Score_ extends org.optaplanner.core.api.score.Score<Score_>>",
+          "oldSuperType": "org.optaplanner.core.api.score.AbstractScore<S extends org.optaplanner.core.api.score.FeasibilityScore<S>>",
+          "newSuperType": "org.optaplanner.core.api.score.AbstractScore<Score_ extends org.optaplanner.core.api.score.Score<Score_>>",
+          "package": "org.optaplanner.core.api.score",
+          "classSimpleName": "AbstractBendableScore",
+          "elementKind": "class",
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
+        },
+        {
+          "code": "java.class.noLongerImplementsInterface",
+          "old": "class org.optaplanner.core.api.score.AbstractScore<S extends org.optaplanner.core.api.score.Score>",
+          "new": "class org.optaplanner.core.api.score.AbstractScore<Score_ extends org.optaplanner.core.api.score.Score<Score_>>",
+          "interface": "org.optaplanner.core.api.score.Score<S extends org.optaplanner.core.api.score.Score>",
+          "package": "org.optaplanner.core.api.score",
+          "classSimpleName": "AbstractScore",
+          "elementKind": "class",
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
+        },
+        {
+          "code": "java.class.noLongerImplementsInterface",
+          "old": "class org.optaplanner.core.api.score.AbstractScore<S extends org.optaplanner.core.api.score.Score>",
+          "new": "class org.optaplanner.core.api.score.AbstractScore<Score_ extends org.optaplanner.core.api.score.Score<Score_>>",
+          "interface": "java.lang.Comparable<S extends org.optaplanner.core.api.score.Score>",
+          "package": "org.optaplanner.core.api.score",
+          "classSimpleName": "AbstractScore",
+          "elementKind": "class",
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
+        },
+        {
+          "code": "java.generics.formalTypeParameterChanged",
+          "old": "class org.optaplanner.core.api.score.AbstractScore<S extends org.optaplanner.core.api.score.Score>",
+          "new": "class org.optaplanner.core.api.score.AbstractScore<Score_ extends org.optaplanner.core.api.score.Score<Score_>>",
+          "oldTypeParameter": "S extends org.optaplanner.core.api.score.Score",
+          "newTypeParameter": "Score_ extends org.optaplanner.core.api.score.Score<Score_ extends org.optaplanner.core.api.score.Score<Score_>>",
+          "package": "org.optaplanner.core.api.score",
+          "classSimpleName": "AbstractScore",
+          "elementKind": "class",
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
+        },
+        {
+          "code": "java.class.superTypeTypeParametersChanged",
+          "old": "class org.optaplanner.core.api.score.AbstractScore<S extends org.optaplanner.core.api.score.Score>",
+          "new": "class org.optaplanner.core.api.score.AbstractScore<Score_ extends org.optaplanner.core.api.score.Score<Score_>>",
+          "oldSuperType": "org.optaplanner.core.api.score.Score<S extends org.optaplanner.core.api.score.Score>",
+          "newSuperType": "org.optaplanner.core.api.score.Score<Score_ extends org.optaplanner.core.api.score.Score<Score_>>",
+          "package": "org.optaplanner.core.api.score",
+          "classSimpleName": "AbstractScore",
+          "elementKind": "class",
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
+        },
+        {
+          "code": "java.method.returnTypeChanged",
+          "old": "method Score_ org.optaplanner.core.api.score.Score<Score_ extends org.optaplanner.core.api.score.Score>::add(Score_) @ org.optaplanner.core.api.score.AbstractBendableScore<S extends org.optaplanner.core.api.score.FeasibilityScore<S extends org.optaplanner.core.api.score.FeasibilityScore<S>>>",
+          "new": "method Score_ org.optaplanner.core.api.score.Score<Score_ extends org.optaplanner.core.api.score.Score<Score_ extends org.optaplanner.core.api.score.Score<Score_>>>::add(Score_) @ org.optaplanner.core.api.score.AbstractBendableScore<Score_ extends org.optaplanner.core.api.score.AbstractBendableScore<Score_ extends org.optaplanner.core.api.score.AbstractBendableScore<Score_>>>",
+          "oldType": "S extends org.optaplanner.core.api.score.FeasibilityScore<S>",
+          "newType": "Score_ extends org.optaplanner.core.api.score.AbstractBendableScore<Score_>",
+          "package": "org.optaplanner.core.api.score",
+          "classSimpleName": "AbstractBendableScore",
+          "methodName": "add",
+          "elementKind": "method",
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
+        },
+        {
+          "code": "java.method.returnTypeChanged",
+          "old": "method Score_ org.optaplanner.core.api.score.Score<Score_ extends org.optaplanner.core.api.score.Score>::subtract(Score_) @ org.optaplanner.core.api.score.AbstractBendableScore<S extends org.optaplanner.core.api.score.FeasibilityScore<S extends org.optaplanner.core.api.score.FeasibilityScore<S>>>",
+          "new": "method Score_ org.optaplanner.core.api.score.Score<Score_ extends org.optaplanner.core.api.score.Score<Score_ extends org.optaplanner.core.api.score.Score<Score_>>>::subtract(Score_) @ org.optaplanner.core.api.score.AbstractBendableScore<Score_ extends org.optaplanner.core.api.score.AbstractBendableScore<Score_ extends org.optaplanner.core.api.score.AbstractBendableScore<Score_>>>",
+          "oldType": "S extends org.optaplanner.core.api.score.FeasibilityScore<S>",
+          "newType": "Score_ extends org.optaplanner.core.api.score.AbstractBendableScore<Score_>",
+          "package": "org.optaplanner.core.api.score",
+          "classSimpleName": "AbstractBendableScore",
+          "methodName": "subtract",
+          "elementKind": "method",
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
+        },
+        {
+          "code": "java.class.noLongerImplementsInterface",
+          "old": "class org.optaplanner.core.api.score.AbstractBendableScore<S extends org.optaplanner.core.api.score.FeasibilityScore<S>>",
+          "new": "class org.optaplanner.core.api.score.AbstractBendableScore<Score_ extends org.optaplanner.core.api.score.AbstractBendableScore<Score_>>",
+          "interface": "org.optaplanner.core.api.score.Score<S extends org.optaplanner.core.api.score.FeasibilityScore<S>>",
+          "package": "org.optaplanner.core.api.score",
+          "classSimpleName": "AbstractBendableScore",
+          "elementKind": "class",
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
+        },
+        {
+          "code": "java.class.noLongerImplementsInterface",
+          "old": "class org.optaplanner.core.api.score.AbstractBendableScore<S extends org.optaplanner.core.api.score.FeasibilityScore<S>>",
+          "new": "class org.optaplanner.core.api.score.AbstractBendableScore<Score_ extends org.optaplanner.core.api.score.AbstractBendableScore<Score_>>",
+          "interface": "java.lang.Comparable<S extends org.optaplanner.core.api.score.FeasibilityScore<S>>",
+          "package": "org.optaplanner.core.api.score",
+          "classSimpleName": "AbstractBendableScore",
+          "elementKind": "class",
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
+        },
+        {
+          "code": "java.generics.formalTypeParameterChanged",
+          "old": "class org.optaplanner.core.api.score.AbstractBendableScore<S extends org.optaplanner.core.api.score.FeasibilityScore<S>>",
+          "new": "class org.optaplanner.core.api.score.AbstractBendableScore<Score_ extends org.optaplanner.core.api.score.AbstractBendableScore<Score_>>",
+          "oldTypeParameter": "S extends org.optaplanner.core.api.score.FeasibilityScore<S extends org.optaplanner.core.api.score.FeasibilityScore<S>>",
+          "newTypeParameter": "Score_ extends org.optaplanner.core.api.score.AbstractBendableScore<Score_ extends org.optaplanner.core.api.score.AbstractBendableScore<Score_>>",
+          "package": "org.optaplanner.core.api.score",
+          "classSimpleName": "AbstractBendableScore",
+          "elementKind": "class",
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
+        },
+        {
+          "code": "java.class.superTypeTypeParametersChanged",
+          "old": "class org.optaplanner.core.api.score.AbstractBendableScore<S extends org.optaplanner.core.api.score.FeasibilityScore<S>>",
+          "new": "class org.optaplanner.core.api.score.AbstractBendableScore<Score_ extends org.optaplanner.core.api.score.AbstractBendableScore<Score_>>",
+          "oldSuperType": "org.optaplanner.core.api.score.AbstractScore<S extends org.optaplanner.core.api.score.FeasibilityScore<S>>",
+          "newSuperType": "org.optaplanner.core.api.score.AbstractScore<Score_ extends org.optaplanner.core.api.score.AbstractBendableScore<Score_>>",
+          "package": "org.optaplanner.core.api.score",
+          "classSimpleName": "AbstractBendableScore",
+          "elementKind": "class",
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
+        },
+        {
+          "code": "java.method.returnTypeChangedCovariantly",
+          "old": "method Score_ org.optaplanner.core.api.score.Score<Score_ extends org.optaplanner.core.api.score.Score>::add(Score_) @ org.optaplanner.core.api.score.AbstractScore<S extends org.optaplanner.core.api.score.Score>",
+          "new": "method Score_ org.optaplanner.core.api.score.Score<Score_ extends org.optaplanner.core.api.score.Score<Score_ extends org.optaplanner.core.api.score.Score<Score_>>>::add(Score_) @ org.optaplanner.core.api.score.AbstractScore<Score_ extends org.optaplanner.core.api.score.AbstractScore<Score_ extends org.optaplanner.core.api.score.AbstractScore<Score_>>>",
+          "oldType": "S extends org.optaplanner.core.api.score.Score",
+          "newType": "Score_ extends org.optaplanner.core.api.score.AbstractScore<Score_>",
+          "package": "org.optaplanner.core.api.score",
+          "classSimpleName": "AbstractScore",
+          "methodName": "add",
+          "elementKind": "method",
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
+        },
+        {
+          "code": "java.method.returnTypeChangedCovariantly",
+          "old": "method Score_ org.optaplanner.core.api.score.Score<Score_ extends org.optaplanner.core.api.score.Score>::subtract(Score_) @ org.optaplanner.core.api.score.AbstractScore<S extends org.optaplanner.core.api.score.Score>",
+          "new": "method Score_ org.optaplanner.core.api.score.Score<Score_ extends org.optaplanner.core.api.score.Score<Score_ extends org.optaplanner.core.api.score.Score<Score_>>>::subtract(Score_) @ org.optaplanner.core.api.score.AbstractScore<Score_ extends org.optaplanner.core.api.score.AbstractScore<Score_ extends org.optaplanner.core.api.score.AbstractScore<Score_>>>",
+          "oldType": "S extends org.optaplanner.core.api.score.Score",
+          "newType": "Score_ extends org.optaplanner.core.api.score.AbstractScore<Score_>",
+          "package": "org.optaplanner.core.api.score",
+          "classSimpleName": "AbstractScore",
+          "methodName": "subtract",
+          "elementKind": "method",
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
+        },
+        {
+          "code": "java.class.noLongerImplementsInterface",
+          "old": "class org.optaplanner.core.api.score.AbstractScore<S extends org.optaplanner.core.api.score.Score>",
+          "new": "class org.optaplanner.core.api.score.AbstractScore<Score_ extends org.optaplanner.core.api.score.AbstractScore<Score_>>",
+          "interface": "org.optaplanner.core.api.score.Score<S extends org.optaplanner.core.api.score.Score>",
+          "package": "org.optaplanner.core.api.score",
+          "classSimpleName": "AbstractScore",
+          "elementKind": "class",
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
+        },
+        {
+          "code": "java.class.noLongerImplementsInterface",
+          "old": "class org.optaplanner.core.api.score.AbstractScore<S extends org.optaplanner.core.api.score.Score>",
+          "new": "class org.optaplanner.core.api.score.AbstractScore<Score_ extends org.optaplanner.core.api.score.AbstractScore<Score_>>",
+          "interface": "java.lang.Comparable<S extends org.optaplanner.core.api.score.Score>",
+          "package": "org.optaplanner.core.api.score",
+          "classSimpleName": "AbstractScore",
+          "elementKind": "class",
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
+        },
+        {
+          "code": "java.generics.formalTypeParameterChanged",
+          "old": "class org.optaplanner.core.api.score.AbstractScore<S extends org.optaplanner.core.api.score.Score>",
+          "new": "class org.optaplanner.core.api.score.AbstractScore<Score_ extends org.optaplanner.core.api.score.AbstractScore<Score_>>",
+          "oldTypeParameter": "S extends org.optaplanner.core.api.score.Score",
+          "newTypeParameter": "Score_ extends org.optaplanner.core.api.score.AbstractScore<Score_ extends org.optaplanner.core.api.score.AbstractScore<Score_>>",
+          "package": "org.optaplanner.core.api.score",
+          "classSimpleName": "AbstractScore",
+          "elementKind": "class",
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
+        },
+        {
+          "code": "java.class.superTypeTypeParametersChanged",
+          "old": "class org.optaplanner.core.api.score.AbstractScore<S extends org.optaplanner.core.api.score.Score>",
+          "new": "class org.optaplanner.core.api.score.AbstractScore<Score_ extends org.optaplanner.core.api.score.AbstractScore<Score_>>",
+          "oldSuperType": "org.optaplanner.core.api.score.Score<S extends org.optaplanner.core.api.score.Score>",
+          "newSuperType": "org.optaplanner.core.api.score.Score<Score_ extends org.optaplanner.core.api.score.AbstractScore<Score_>>",
+          "package": "org.optaplanner.core.api.score",
+          "classSimpleName": "AbstractScore",
+          "elementKind": "class",
+          "justification": "Generic type Score added to ScoreManager, ConstraintMatchTotal, Indictment, etc."
         }
+
       ]
     }
   }

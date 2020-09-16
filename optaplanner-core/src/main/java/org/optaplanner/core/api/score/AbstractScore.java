@@ -27,16 +27,16 @@ import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
  * <p>
  * Subclasses must be immutable.
  *
- * @param <S> the actual score type
+ * @param <Score_> the actual score type
  * @see Score
  * @see HardSoftScore
  */
-public abstract class AbstractScore<S extends Score<S>> implements Score<S>,
+public abstract class AbstractScore<Score_ extends AbstractScore<Score_>> implements Score<Score_>,
         Serializable {
 
     protected static final String INIT_LABEL = "init";
 
-    protected static String[] parseScoreTokens(Class<? extends Score> scoreClass,
+    protected static String[] parseScoreTokens(Class<? extends Score<?>> scoreClass,
             String scoreString, String... levelSuffixes) {
         String[] scoreTokens = new String[levelSuffixes.length + 1];
         String[] suffixedScoreTokens = scoreString.split("/");
@@ -78,7 +78,7 @@ public abstract class AbstractScore<S extends Score<S>> implements Score<S>,
         return scoreTokens;
     }
 
-    protected static int parseInitScore(Class<? extends Score> scoreClass,
+    protected static int parseInitScore(Class<? extends Score<?>> scoreClass,
             String scoreString, String initScoreString) {
         try {
             return Integer.parseInt(initScoreString);
@@ -89,7 +89,7 @@ public abstract class AbstractScore<S extends Score<S>> implements Score<S>,
         }
     }
 
-    protected static int parseLevelAsInt(Class<? extends Score> scoreClass,
+    protected static int parseLevelAsInt(Class<? extends Score<?>> scoreClass,
             String scoreString, String levelString) {
         if (levelString.equals("*")) {
             return Integer.MIN_VALUE;
@@ -103,7 +103,7 @@ public abstract class AbstractScore<S extends Score<S>> implements Score<S>,
         }
     }
 
-    protected static long parseLevelAsLong(Class<? extends Score> scoreClass,
+    protected static long parseLevelAsLong(Class<? extends Score<?>> scoreClass,
             String scoreString, String levelString) {
         if (levelString.equals("*")) {
             return Long.MIN_VALUE;
@@ -117,7 +117,7 @@ public abstract class AbstractScore<S extends Score<S>> implements Score<S>,
         }
     }
 
-    protected static BigDecimal parseLevelAsBigDecimal(Class<? extends Score> scoreClass,
+    protected static BigDecimal parseLevelAsBigDecimal(Class<? extends Score<?>> scoreClass,
             String scoreString, String levelString) {
         if (levelString.equals("*")) {
             throw new IllegalArgumentException("The scoreString (" + scoreString

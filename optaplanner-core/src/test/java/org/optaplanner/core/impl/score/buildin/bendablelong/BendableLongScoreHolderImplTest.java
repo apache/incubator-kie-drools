@@ -26,7 +26,7 @@ import org.optaplanner.core.api.score.buildin.bendablelong.BendableLongScore;
 import org.optaplanner.core.api.score.buildin.bendablelong.BendableLongScoreHolder;
 import org.optaplanner.core.impl.score.buildin.AbstractScoreHolderTest;
 
-public class BendableLongScoreHolderImplTest extends AbstractScoreHolderTest {
+public class BendableLongScoreHolderImplTest extends AbstractScoreHolderTest<BendableLongScore> {
 
     @Test
     public void addConstraintMatchWithConstraintMatch() {

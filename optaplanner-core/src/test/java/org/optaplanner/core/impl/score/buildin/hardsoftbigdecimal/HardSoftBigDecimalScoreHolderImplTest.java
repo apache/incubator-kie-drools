@@ -26,7 +26,7 @@ import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScore;
 import org.optaplanner.core.impl.score.buildin.AbstractScoreHolderTest;
 
-public class HardSoftBigDecimalScoreHolderImplTest extends AbstractScoreHolderTest {
+public class HardSoftBigDecimalScoreHolderImplTest extends AbstractScoreHolderTest<HardSoftBigDecimalScore> {
 
     @Test
     public void addConstraintMatchWithConstraintMatch() {

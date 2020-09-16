@@ -112,7 +112,7 @@ public class DroolsScoreDirector<Solution_>
     }
 
     @Override
-    public Map<String, ConstraintMatchTotal> getConstraintMatchTotalMap() {
+    public <Score_ extends Score<Score_>> Map<String, ConstraintMatchTotal<Score_>> getConstraintMatchTotalMap() {
         if (workingSolution == null) {
             throw new IllegalStateException(
                     "The method setWorkingSolution() must be called before the method getConstraintMatchTotalMap().");
@@ -123,7 +123,7 @@ public class DroolsScoreDirector<Solution_>
     }
 
     @Override
-    public Map<Object, Indictment> getIndictmentMap() {
+    public <Score_ extends Score<Score_>> Map<Object, Indictment<Score_>> getIndictmentMap() {
         if (workingSolution == null) {
             throw new IllegalStateException(
                     "The method setWorkingSolution() must be called before the method getIndictmentMap().");

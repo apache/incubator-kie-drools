@@ -96,8 +96,8 @@ public class VariableListenerSupport<Solution_> implements SupplyManager {
     }
 
     @Override
-    public <S extends Supply> S demand(Demand<S> demand) {
-        S supply = (S) supplyMap.get(demand);
+    public <Supply_ extends Supply> Supply_ demand(Demand<Supply_> demand) {
+        Supply_ supply = (Supply_) supplyMap.get(demand);
         if (supply == null) {
             supply = demand.createExternalizedSupply(scoreDirector);
             if (supply instanceof StatefulVariableListener) {

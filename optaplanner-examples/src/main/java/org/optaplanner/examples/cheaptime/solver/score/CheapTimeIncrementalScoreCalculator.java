@@ -41,7 +41,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScoreCalculator<CheapTimeSolution>
-        implements ConstraintMatchAwareIncrementalScoreCalculator<CheapTimeSolution> {
+        implements ConstraintMatchAwareIncrementalScoreCalculator<CheapTimeSolution, HardMediumSoftLongScore> {
 
     protected static final String CONSTRAINT_PACKAGE = "org.optaplanner.examples.cheaptime.solver";
 
@@ -546,18 +546,19 @@ public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScor
     }
 
     @Override
-    public Collection<ConstraintMatchTotal> getConstraintMatchTotals() {
+    public Collection<ConstraintMatchTotal<HardMediumSoftLongScore>> getConstraintMatchTotals() {
         List<Resource> resourceList = cheapTimeSolution.getResourceList();
-        DefaultConstraintMatchTotal resourceCapacityMatchTotal = new DefaultConstraintMatchTotal(
+        DefaultConstraintMatchTotal<HardMediumSoftLongScore> resourceCapacityMatchTotal = new DefaultConstraintMatchTotal<>(
                 CONSTRAINT_PACKAGE, "resourceCapacity", HardMediumSoftLongScore.ZERO);
-        DefaultConstraintMatchTotal spinUpDownMatchTotal = new DefaultConstraintMatchTotal(
+        DefaultConstraintMatchTotal<HardMediumSoftLongScore> spinUpDownMatchTotal = new DefaultConstraintMatchTotal<>(
                 CONSTRAINT_PACKAGE, "spinUpDown", HardMediumSoftLongScore.ZERO);
-        DefaultConstraintMatchTotal machineConsumptionMatchTotal = new DefaultConstraintMatchTotal(
+        DefaultConstraintMatchTotal<HardMediumSoftLongScore> machineConsumptionMatchTotal = new DefaultConstraintMatchTotal<>(
                 CONSTRAINT_PACKAGE, "machineConsumption", HardMediumSoftLongScore.ZERO);
-        DefaultConstraintMatchTotal taskConsumptionMatchTotal = new DefaultConstraintMatchTotal(
+        DefaultConstraintMatchTotal<HardMediumSoftLongScore> taskConsumptionMatchTotal = new DefaultConstraintMatchTotal<>(
                 CONSTRAINT_PACKAGE, "taskConsumption", HardMediumSoftLongScore.ZERO);
-        DefaultConstraintMatchTotal minimizeTaskStartPeriodMatchTotal = new DefaultConstraintMatchTotal(
-                CONSTRAINT_PACKAGE, "minimizeTaskStartPeriod", HardMediumSoftLongScore.ZERO);
+        DefaultConstraintMatchTotal<HardMediumSoftLongScore> minimizeTaskStartPeriodMatchTotal =
+                new DefaultConstraintMatchTotal<>(
+                        CONSTRAINT_PACKAGE, "minimizeTaskStartPeriod", HardMediumSoftLongScore.ZERO);
         long taskConsumptionWeight = mediumScore;
         for (Machine machine : cheapTimeSolution.getMachineList()) {
             for (int period = 0; period < globalPeriodRangeTo; period++) {
@@ -600,7 +601,7 @@ public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScor
 
         }
 
-        List<ConstraintMatchTotal> constraintMatchTotalList = new ArrayList<>(4);
+        List<ConstraintMatchTotal<HardMediumSoftLongScore>> constraintMatchTotalList = new ArrayList<>(4);
         constraintMatchTotalList.add(resourceCapacityMatchTotal);
         constraintMatchTotalList.add(spinUpDownMatchTotal);
         constraintMatchTotalList.add(machineConsumptionMatchTotal);
@@ -610,7 +611,7 @@ public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScor
     }
 
     @Override
-    public Map<Object, Indictment> getIndictmentMap() {
+    public Map<Object, Indictment<HardMediumSoftLongScore>> getIndictmentMap() {
         return null; // Calculate it non-incrementally from getConstraintMatchTotals()
     }
 

@@ -34,6 +34,7 @@ import javax.transaction.RollbackException;
 import javax.transaction.SystemException;
 import javax.transaction.TransactionManager;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.kie.test.util.db.PersistenceUtil;
@@ -57,7 +58,7 @@ public abstract class AbstractScoreJpaTest {
         PersistenceUtil.cleanUp(context);
     }
 
-    protected <S extends Score, E extends AbstractTestJpaEntity<S>> Long persistAndAssert(E jpaEntity) {
+    protected <Score_ extends Score<Score_>, E extends AbstractTestJpaEntity<Score_>> Long persistAndAssert(E jpaEntity) {
         try {
             transactionManager.begin();
             EntityManager em = entityManagerFactory.createEntityManager();
@@ -73,26 +74,26 @@ public abstract class AbstractScoreJpaTest {
     }
 
     @SafeVarargs
-    protected final <S extends Score, E extends AbstractTestJpaEntity<S>> void persistAndMerge(
-            E jpaEntity, S... newScores) {
+    protected final <Score_ extends Score<Score_>, E extends AbstractTestJpaEntity<Score_>> void persistAndMerge(
+            E jpaEntity, Score_... newScores) {
         Long id = persistAndAssert(jpaEntity);
         Class<? extends AbstractTestJpaEntity> jpaEntityClass = jpaEntity.getClass();
-        S oldScore = jpaEntity.getScore();
-        for (S newScore : newScores) {
+        Score_ oldScore = jpaEntity.getScore();
+        for (Score_ newScore : newScores) {
             findAssertAndChangeScore(jpaEntityClass, id, oldScore, newScore);
             findAndAssert(jpaEntityClass, id, newScore);
             oldScore = newScore;
         }
     }
 
-    protected <S extends Score, E extends AbstractTestJpaEntity<S>> void findAssertAndChangeScore(
-            Class<E> jpaEntityClass, Long id, S oldScore, S newScore) {
+    protected <Score_ extends Score<Score_>, E extends AbstractTestJpaEntity<Score_>> void findAssertAndChangeScore(
+            Class<E> jpaEntityClass, Long id, Score_ oldScore, Score_ newScore) {
         try {
             transactionManager.begin();
             EntityManager em = entityManagerFactory.createEntityManager();
             E jpaEntity = em.find(jpaEntityClass, id);
             em.persist(jpaEntity);
-            assertThat(jpaEntity.getScore()).isEqualTo(oldScore);
+            Assertions.assertThat(jpaEntity.getScore()).isEqualTo(oldScore);
             jpaEntity.setScore(newScore);
             jpaEntity = em.merge(jpaEntity);
             transactionManager.commit();
@@ -102,13 +103,13 @@ public abstract class AbstractScoreJpaTest {
         }
     }
 
-    protected <S extends Score, E extends AbstractTestJpaEntity<S>> void findAndAssert(
-            Class<E> jpaEntityClass, Long id, S score) {
+    protected <Score_ extends Score<Score_>, E extends AbstractTestJpaEntity<Score_>> void findAndAssert(
+            Class<E> jpaEntityClass, Long id, Score_ score) {
         try {
             transactionManager.begin();
             EntityManager em = entityManagerFactory.createEntityManager();
             E jpaEntity = em.find(jpaEntityClass, id);
-            assertThat(jpaEntity.getScore()).isEqualTo(score);
+            Assertions.assertThat(jpaEntity.getScore()).isEqualTo(score);
             transactionManager.commit();
         } catch (NotSupportedException | SystemException | RollbackException | HeuristicMixedException
                 | HeuristicRollbackException e) {
@@ -117,7 +118,7 @@ public abstract class AbstractScoreJpaTest {
     }
 
     @MappedSuperclass
-    protected static abstract class AbstractTestJpaEntity<S extends Score> {
+    protected static abstract class AbstractTestJpaEntity<Score_ extends Score<Score_>> {
 
         @Id
         @GeneratedValue(strategy = GenerationType.AUTO)
@@ -131,9 +132,9 @@ public abstract class AbstractScoreJpaTest {
             this.id = id;
         }
 
-        public abstract S getScore();
+        public abstract Score_ getScore();
 
-        public abstract void setScore(S score);
+        public abstract void setScore(Score_ score);
 
     }
 }

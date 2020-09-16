@@ -93,7 +93,7 @@ public class ConferenceSchedulingConstraintsXlsxTest {
     }
 
     private static class TestConferenceSchedulingConstraintsReader
-            extends AbstractXlsxSolutionFileIO.AbstractXlsxReader<ConferenceSolution> {
+            extends AbstractXlsxSolutionFileIO.AbstractXlsxReader<ConferenceSolution, HardMediumSoftScore> {
 
         // TODO Abstract out, mention ConferenceSchedulingApp.SOLVER_CONFIG once and get the solutionDescriptor from there
         private final SolutionDescriptor<ConferenceSolution> solutionDescriptor = SolutionDescriptor

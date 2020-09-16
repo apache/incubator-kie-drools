@@ -24,7 +24,7 @@ import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.score.buildin.AbstractScoreHolderTest;
 
-public class SimpleScoreHolderImplTest extends AbstractScoreHolderTest {
+public class SimpleScoreHolderImplTest extends AbstractScoreHolderTest<SimpleScore> {
 
     @Test
     public void addConstraintMatchWithConstraintMatch() {

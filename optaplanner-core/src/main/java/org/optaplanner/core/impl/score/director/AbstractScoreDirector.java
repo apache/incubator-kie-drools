@@ -320,8 +320,8 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
                 new StringBuilder((constraintMatchTotalCollection.size() + 4 + 2 * indictmentLimit) * 80);
         scoreExplanation.append("Explanation of score (").append(workingScore).append("):\n");
         scoreExplanation.append("    Constraint match totals:\n");
-        Comparator<ConstraintMatchTotal> constraintMatchTotalComparator = comparing(ConstraintMatchTotal::getScore);
-        Comparator<ConstraintMatch> constraintMatchComparator = comparing(ConstraintMatch::getScore);
+        Comparator<ConstraintMatchTotal<Score_>> constraintMatchTotalComparator = comparing(ConstraintMatchTotal::getScore);
+        Comparator<ConstraintMatch<Score_>> constraintMatchComparator = comparing(ConstraintMatch::getScore);
         constraintMatchTotalCollection.stream()
                 .sorted(constraintMatchTotalComparator)
                 .forEach(constraintMatchTotal -> {
@@ -349,8 +349,8 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
         } else {
             scoreExplanation.append("    Indictments:\n");
         }
-        Comparator<Indictment> indictmentComparator = comparing(Indictment::getScore);
-        Comparator<ConstraintMatch> constraintMatchScoreComparator = comparing(ConstraintMatch::getScore);
+        Comparator<Indictment<Score_>> indictmentComparator = comparing(Indictment::getScore);
+        Comparator<ConstraintMatch<Score_>> constraintMatchScoreComparator = comparing(ConstraintMatch::getScore);
         indictmentCollection.stream()
                 .sorted(indictmentComparator)
                 .limit(indictmentLimit)
@@ -378,10 +378,12 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
     }
 
     @Override
-    public String explainScore() {
-        Collection constraintMatchTotalCollection = getConstraintMatchTotalMap().values();
-        Collection indictmentCollection = getIndictmentMap().values();
-        return explainScore(calculateScore(), constraintMatchTotalCollection, indictmentCollection);
+    public <Score_ extends Score<Score_>> String explainScore() {
+        // TODO this causes 3 "fireAllRule" calls.
+        Score_ score = (Score_) calculateScore();
+        Map<String, ConstraintMatchTotal<Score_>> constraintMatchTotalMap = getConstraintMatchTotalMap();
+        Map<Object, Indictment<Score_>> indictmentMap = getIndictmentMap();
+        return explainScore(score, constraintMatchTotalMap.values(), indictmentMap.values());
     }
 
     @Override
@@ -756,6 +758,7 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
      * @param uncorruptedScoreDirector never null
      * @param predicted true if the score was predicted and might have been calculated on another thread
      * @return never null
+     * @param <Score_> the actual score type
      */
     protected <Score_ extends Score<Score_>> String buildScoreCorruptionAnalysis(
             InnerScoreDirector<Solution_> uncorruptedScoreDirector, boolean predicted) {

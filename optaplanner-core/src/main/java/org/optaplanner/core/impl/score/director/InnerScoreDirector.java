@@ -76,6 +76,7 @@ public interface InnerScoreDirector<Solution_> extends ScoreDirector<Solution_>,
      *         (to create one, use {@link ConstraintMatchTotal#composeConstraintId(String, String)}).
      * @throws IllegalStateException if {@link #isConstraintMatchEnabled()} returns false
      * @see #getIndictmentMap()
+     * @param <Score_> the actual score type
      */
     <Score_ extends Score<Score_>> Map<String, ConstraintMatchTotal<Score_>> getConstraintMatchTotalMap();
 
@@ -96,6 +97,7 @@ public interface InnerScoreDirector<Solution_> extends ScoreDirector<Solution_>,
      *         {@link PlanningEntity planning entity}
      * @throws IllegalStateException if {@link #isConstraintMatchEnabled()} returns false
      * @see #getConstraintMatchTotalMap()
+     * @param <Score_> the actual score type
      */
     <Score_ extends Score<Score_>> Map<Object, Indictment<Score_>> getIndictmentMap();
 
@@ -114,8 +116,9 @@ public interface InnerScoreDirector<Solution_> extends ScoreDirector<Solution_>,
      *
      * @return never null
      * @throws IllegalStateException if {@link #isConstraintMatchEnabled()} returns false
+     * @param <Score_> the actual score type
      */
-    String explainScore();
+    <Score_ extends Score<Score_>> String explainScore();
 
     /**
      * @param constraintMatchEnabledPreference false if a {@link ScoreDirector} implementation

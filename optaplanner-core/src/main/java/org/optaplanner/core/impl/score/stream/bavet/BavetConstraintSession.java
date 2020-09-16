@@ -163,7 +163,7 @@ public final class BavetConstraintSession<Solution_> implements ConstraintSessio
         Map<String, ConstraintMatchTotal<Score_>> constraintMatchTotalMap = new LinkedHashMap<>(
                 constraintIdToScoringNodeMap.size());
         constraintIdToScoringNodeMap.forEach((constraintId, scoringNode) -> {
-            ConstraintMatchTotal<Score_> constraintMatchTotal = scoringNode.buildConstraintMatchTotal(zeroScore);
+            ConstraintMatchTotal<Score_> constraintMatchTotal = scoringNode.buildConstraintMatchTotal((Score_) zeroScore);
             constraintMatchTotalMap.put(constraintId, constraintMatchTotal);
         });
         return constraintMatchTotalMap;

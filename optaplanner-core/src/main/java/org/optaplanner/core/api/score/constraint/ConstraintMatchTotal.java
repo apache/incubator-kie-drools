@@ -28,6 +28,8 @@ import org.optaplanner.core.api.score.ScoreExplanation;
 /**
  * Explains the {@link Score} of a {@link PlanningSolution}, from the opposite side than {@link Indictment}.
  * Retrievable from {@link ScoreExplanation#getConstraintMatchTotalMap()}.
+ * 
+ * @param <Score_> the actual score type
  */
 public interface ConstraintMatchTotal<Score_ extends Score<Score_>> {
 

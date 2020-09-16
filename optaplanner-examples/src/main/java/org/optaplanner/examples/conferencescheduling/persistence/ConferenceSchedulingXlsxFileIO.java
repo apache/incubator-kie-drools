@@ -101,7 +101,6 @@ import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.Indictment;
@@ -221,7 +220,7 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
         }
     }
 
-    private class ConferenceSchedulingXlsxReader extends AbstractXlsxReader<ConferenceSolution> {
+    private class ConferenceSchedulingXlsxReader extends AbstractXlsxReader<ConferenceSolution, HardMediumSoftScore> {
 
         private Map<String, TalkType> totalTalkTypeMap;
         private Set<String> totalTimeslotTagSet;
@@ -855,7 +854,7 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
         }
     }
 
-    private class ConferenceSchedulingXlsxWriter extends AbstractXlsxWriter<ConferenceSolution> {
+    private static class ConferenceSchedulingXlsxWriter extends AbstractXlsxWriter<ConferenceSolution, HardMediumSoftScore> {
 
         private Map<String, XSSFCellStyle> themeTrackToStyleMap;
 
@@ -1659,7 +1658,7 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                     // Filter out positive constraints
                     .filter(indictmentScore -> !(indictmentScore.getHardScore() >= 0 && indictmentScore.getMediumScore() >= 0
                             && indictmentScore.getSoftScore() >= 0))
-                    .reduce(Score::add).orElse(HardMediumSoftScore.ZERO);
+                    .reduce(HardMediumSoftScore::add).orElse(HardMediumSoftScore.ZERO);
             XSSFCell cell;
             if (isPrintedView) {
                 cell = nextCellVertically(talkList.isEmpty() || talkList.get(0).getThemeTrackTagSet().isEmpty() ? wrappedStyle

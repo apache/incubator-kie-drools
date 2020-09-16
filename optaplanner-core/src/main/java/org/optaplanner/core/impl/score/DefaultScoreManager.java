@@ -16,10 +16,14 @@
 
 package org.optaplanner.core.impl.score;
 
+import java.util.Map;
+
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.ScoreExplanation;
 import org.optaplanner.core.api.score.ScoreManager;
+import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
+import org.optaplanner.core.api.score.constraint.Indictment;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 
@@ -60,8 +64,12 @@ public class DefaultScoreManager<Solution_, Score_ extends Score<Score_>> implem
                 throw new IllegalStateException("When constraintMatchEnabled (" + constraintMatchEnabled
                         + ") is disabled, this method should not be called.");
             }
-            return new DefaultScoreExplanation(solution, scoreDirector.calculateScore(), scoreDirector.explainScore(),
-                    scoreDirector.getConstraintMatchTotalMap(), scoreDirector.getIndictmentMap());
+            Map<String, ConstraintMatchTotal<Score_>> constraintMatchTotalMap = scoreDirector.getConstraintMatchTotalMap();
+            Map<Object, Indictment<Score_>> indictmentMap = scoreDirector.getIndictmentMap();
+            return new DefaultScoreExplanation<>(solution,
+                    (Score_) scoreDirector.calculateScore(),
+                    scoreDirector.explainScore(),
+                    constraintMatchTotalMap, indictmentMap);
         }
     }
 }

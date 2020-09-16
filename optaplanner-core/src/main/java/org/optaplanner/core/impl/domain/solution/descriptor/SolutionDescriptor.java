@@ -58,6 +58,7 @@ import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
 import org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDecimalScore;
 import org.optaplanner.core.api.score.buildin.bendablelong.BendableLongScore;
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
+import org.optaplanner.core.api.score.buildin.hardmediumsoftbigdecimal.HardMediumSoftBigDecimalScore;
 import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScore;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScore;
@@ -84,6 +85,7 @@ import org.optaplanner.core.impl.score.buildin.bendable.BendableScoreDefinition;
 import org.optaplanner.core.impl.score.buildin.bendablebigdecimal.BendableBigDecimalScoreDefinition;
 import org.optaplanner.core.impl.score.buildin.bendablelong.BendableLongScoreDefinition;
 import org.optaplanner.core.impl.score.buildin.hardmediumsoft.HardMediumSoftScoreDefinition;
+import org.optaplanner.core.impl.score.buildin.hardmediumsoftbigdecimal.HardMediumSoftBigDecimalScoreDefinition;
 import org.optaplanner.core.impl.score.buildin.hardmediumsoftlong.HardMediumSoftLongScoreDefinition;
 import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreDefinition;
 import org.optaplanner.core.impl.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScoreDefinition;
@@ -496,7 +498,7 @@ public class SolutionDescriptor<Solution_> {
             return;
         }
         scoreMemberAccessor = memberAccessor;
-        Class<? extends Score> scoreType = (Class<? extends Score>) scoreMemberAccessor.getType();
+        Class<? extends Score<?>> scoreType = (Class<? extends Score<?>>) scoreMemberAccessor.getType();
         PlanningScore annotation = scoreMemberAccessor.getAnnotation(PlanningScore.class);
         if (annotation == null) {
             // The member was autodiscovered
@@ -563,6 +565,8 @@ public class SolutionDescriptor<Solution_> {
                 return new HardMediumSoftScoreDefinition();
             } else if (scoreType.equals(HardMediumSoftLongScore.class)) {
                 return new HardMediumSoftLongScoreDefinition();
+            } else if (scoreType.equals(HardMediumSoftBigDecimalScore.class)) {
+                return new HardMediumSoftBigDecimalScoreDefinition();
             } else {
                 throw new IllegalArgumentException("The solutionClass (" + solutionClass
                         + ") has a " + PlanningScore.class.getSimpleName()
@@ -679,8 +683,8 @@ public class SolutionDescriptor<Solution_> {
     /**
      * @return the {@link Class} of {@link PlanningScore}
      */
-    public Class<? extends Score> extractScoreClass() {
-        return (Class<? extends Score>) scoreMemberAccessor.getType();
+    public Class<? extends Score<?>> extractScoreClass() {
+        return (Class<? extends Score<?>>) scoreMemberAccessor.getType();
     }
 
     public ScoreDefinition getScoreDefinition() {

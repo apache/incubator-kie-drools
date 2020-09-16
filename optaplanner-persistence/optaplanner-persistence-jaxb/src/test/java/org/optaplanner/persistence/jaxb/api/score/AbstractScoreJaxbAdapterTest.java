@@ -27,6 +27,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
+import org.assertj.core.api.Assertions;
 import org.eclipse.persistence.jaxb.MarshallerProperties;
 import org.eclipse.persistence.jaxb.UnmarshallerProperties;
 import org.optaplanner.core.api.score.Score;
@@ -37,12 +38,14 @@ public abstract class AbstractScoreJaxbAdapterTest {
     // Helper methods
     // ************************************************************************
 
-    protected <S extends Score, W extends TestScoreWrapper<S>> void assertSerializeAndDeserialize(S expectedScore, W input) {
+    protected <Score_ extends Score<Score_>, W extends TestScoreWrapper<Score_>> void
+            assertSerializeAndDeserialize(Score_ expectedScore, W input) {
         assertSerializeAndDeserializeXML(expectedScore, input);
         assertSerializeAndDeserializeJson(expectedScore, input);
     }
 
-    protected <S extends Score, W extends TestScoreWrapper<S>> void assertSerializeAndDeserializeXML(S expectedScore, W input) {
+    protected <Score_ extends Score<Score_>, W extends TestScoreWrapper<Score_>> void
+            assertSerializeAndDeserializeXML(Score_ expectedScore, W input) {
         String xmlString;
         W output;
         try {
@@ -57,7 +60,7 @@ public abstract class AbstractScoreJaxbAdapterTest {
         } catch (JAXBException e) {
             throw new IllegalStateException("Marshalling or unmarshalling for input (" + input + ") failed.", e);
         }
-        assertThat(output.getScore()).isEqualTo(expectedScore);
+        Assertions.assertThat(output.getScore()).isEqualTo(expectedScore);
         String regex;
         if (expectedScore != null) {
             regex = "<\\?[^\\?]*\\?>" // XML header
@@ -76,7 +79,8 @@ public abstract class AbstractScoreJaxbAdapterTest {
         }
     }
 
-    protected <S extends Score, W extends TestScoreWrapper<S>> void assertSerializeAndDeserializeJson(S expectedScore,
+    protected <Score_ extends Score<Score_>, W extends TestScoreWrapper<Score_>> void assertSerializeAndDeserializeJson(
+            Score_ expectedScore,
             W input) {
         System.setProperty("javax.xml.bind.context.factory", "org.eclipse.persistence.jaxb.JAXBContextFactory");
 
@@ -104,7 +108,7 @@ public abstract class AbstractScoreJaxbAdapterTest {
         } catch (JAXBException e) {
             throw new IllegalStateException("Marshalling or unmarshalling for input (" + input + ") failed.", e);
         }
-        assertThat(output.getScore()).isEqualTo(expectedScore);
+        Assertions.assertThat(output.getScore()).isEqualTo(expectedScore);
         String regex;
         if (expectedScore != null) {
             regex = "\\{\\R" // Opening bracket
@@ -125,9 +129,9 @@ public abstract class AbstractScoreJaxbAdapterTest {
         }
     }
 
-    public static abstract class TestScoreWrapper<S extends Score> {
+    public static abstract class TestScoreWrapper<Score_ extends Score<Score_>> {
 
-        public abstract S getScore();
+        public abstract Score_ getScore();
 
     }
 

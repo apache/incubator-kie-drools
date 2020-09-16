@@ -28,7 +28,7 @@ import org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDeci
 import org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDecimalScoreHolder;
 import org.optaplanner.core.impl.score.buildin.AbstractScoreHolderTest;
 
-public class BendableBigDecimalScoreHolderImplTest extends AbstractScoreHolderTest {
+public class BendableBigDecimalScoreHolderImplTest extends AbstractScoreHolderTest<BendableBigDecimalScore> {
 
     @Test
     public void addConstraintMatchWithConstraintMatch() {

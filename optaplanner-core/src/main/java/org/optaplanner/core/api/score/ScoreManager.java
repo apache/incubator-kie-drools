@@ -35,6 +35,7 @@ import org.optaplanner.core.impl.solver.DefaultSolverFactory;
  * These methods are thread-safe unless explicitly stated otherwise.
  *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ * @param <Score_> the actual score type
  */
 public interface ScoreManager<Solution_, Score_ extends Score<Score_>> {
 
@@ -48,6 +49,7 @@ public interface ScoreManager<Solution_, Score_ extends Score<Score_>> {
      * @param solverFactory never null
      * @return never null
      * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+     * @param <Score_> the actual score type
      */
     static <Solution_, Score_ extends Score<Score_>> ScoreManager<Solution_, Score_> create(
             SolverFactory<Solution_> solverFactory) {

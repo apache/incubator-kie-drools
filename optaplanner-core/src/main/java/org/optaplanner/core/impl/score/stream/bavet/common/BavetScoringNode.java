@@ -44,7 +44,8 @@ public interface BavetScoringNode extends BavetNode {
     /**
      * @param zeroScore never null
      * @return never null
+     * @param <Score_> the {@link Score} type
      */
-    ConstraintMatchTotal buildConstraintMatchTotal(Score<?> zeroScore);
+    <Score_ extends Score<Score_>> ConstraintMatchTotal<Score_> buildConstraintMatchTotal(Score_ zeroScore);
 
 }

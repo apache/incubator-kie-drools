@@ -51,6 +51,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.examples.common.persistence.AbstractXlsxSolutionFileIO;
 import org.optaplanner.examples.flightcrewscheduling.app.FlightCrewSchedulingApp;
 import org.optaplanner.examples.flightcrewscheduling.domain.Airport;
@@ -87,7 +88,7 @@ public class FlightCrewSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<F
         }
     }
 
-    private static class FlightCrewSchedulingXlsxReader extends AbstractXlsxReader<FlightCrewSolution> {
+    private static class FlightCrewSchedulingXlsxReader extends AbstractXlsxReader<FlightCrewSolution, HardSoftLongScore> {
 
         private Map<String, Skill> skillMap;
         private Map<String, Employee> nameToEmployeeMap;
@@ -348,7 +349,7 @@ public class FlightCrewSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<F
         }
     }
 
-    private static class FlightCrewSchedulingXlsxWriter extends AbstractXlsxWriter<FlightCrewSolution> {
+    private static class FlightCrewSchedulingXlsxWriter extends AbstractXlsxWriter<FlightCrewSolution, HardSoftLongScore> {
 
         private static final Comparator<FlightAssignment> COMPARATOR = Comparator
                 .<FlightAssignment, LocalDateTime> comparing(a -> a.getFlight().getDepartureUTCDateTime())
@@ -482,7 +483,7 @@ public class FlightCrewSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<F
                 nextCell().setCellValue(employee.getName());
                 nextCell().setCellValue(employee.getHomeAirport().getCode());
                 nextCell()
-                        .setCellValue(String.join(", ", employee.getSkillSet().stream().map(Skill::getName).collect(toList())));
+                        .setCellValue(employee.getSkillSet().stream().map(Skill::getName).collect(joining(", ")));
                 for (LocalDate date = firstDate; date.compareTo(lastDate) <= 0; date = date.plusDays(1)) {
                     nextCell(employee.getUnavailableDaySet().contains(date) ? unavailableStyle : defaultStyle)
                             .setCellValue("");

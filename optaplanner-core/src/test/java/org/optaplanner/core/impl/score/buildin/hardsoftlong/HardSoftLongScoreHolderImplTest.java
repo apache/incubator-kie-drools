@@ -24,7 +24,7 @@ import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.impl.score.buildin.AbstractScoreHolderTest;
 
-public class HardSoftLongScoreHolderImplTest extends AbstractScoreHolderTest {
+public class HardSoftLongScoreHolderImplTest extends AbstractScoreHolderTest<HardSoftLongScore> {
 
     @Test
     public void addConstraintMatchWithConstraintMatch() {

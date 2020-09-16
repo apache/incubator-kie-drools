@@ -695,13 +695,13 @@ Optionally, also implement the `ConstraintMatchAwareIncrementalScoreCalculator` 
 
 [source,java,options="nowrap"]
 ----
-public interface ConstraintMatchAwareIncrementalScoreCalculator<Solution_> {
+public interface ConstraintMatchAwareIncrementalScoreCalculator<Solution_, Score_ extends Score<Score_>> {
 
     void resetWorkingSolution(Solution_ workingSolution, boolean constraintMatchEnabled);
 
-    Collection<ConstraintMatchTotal> getConstraintMatchTotals();
+    Collection<ConstraintMatchTotal<Score_>> getConstraintMatchTotals();
 
-    Map<Object, Indictment> getIndictmentMap();
+    Map<Object, Indictment<Score_>> getIndictmentMap();
 }
 ----
 
@@ -710,7 +710,7 @@ For example in machine reassignment, create one `ConstraintMatchTotal` per const
 [source,java,options="nowrap"]
 ----
 public class MachineReassignmentIncrementalScoreCalculator
-        implements ConstraintMatchAwareIncrementalScoreCalculator<MachineReassignment> {
+        implements ConstraintMatchAwareIncrementalScoreCalculator<MachineReassignment, HardSoftLongScore> {
     ...
 
     @Override
@@ -720,8 +720,8 @@ public class MachineReassignmentIncrementalScoreCalculator
     }
 
     @Override
-    public Collection<ConstraintMatchTotal> getConstraintMatchTotals() {
-        ConstraintMatchTotal maximumCapacityMatchTotal = new DefaultConstraintMatchTotal(CONSTRAINT_PACKAGE,
+    public Collection<ConstraintMatchTotal<HardSoftLongScore>> getConstraintMatchTotals() {
+        ConstraintMatchTotal<HardSoftLongScore> maximumCapacityMatchTotal = new DefaultConstraintMatchTotal<>(CONSTRAINT_PACKAGE,
             "maximumCapacity", HardSoftLongScore.ZERO);
         ...
         for (MrMachineScorePart machineScorePart : machineScorePartMap.values()) {
@@ -734,21 +734,21 @@ public class MachineReassignmentIncrementalScoreCalculator
             }
         }
         ...
-        List<ConstraintMatchTotal> constraintMatchTotalList = new ArrayList<>(4);
+        List<ConstraintMatchTotal<HardSoftLongScore>> constraintMatchTotalList = new ArrayList<>(4);
         constraintMatchTotalList.add(maximumCapacityMatchTotal);
         ...
         return constraintMatchTotalList;
     }
 
     @Override
-    public Map<Object, Indictment> getIndictmentMap() {
+    public Map<Object, Indictment<HardSoftLongScore>> getIndictmentMap() {
         return null; // Calculate it non-incrementally from getConstraintMatchTotals()
     }
 }
 ----
 
 That `getConstraintMatchTotals()` code often duplicates some of the logic of the normal `IncrementalScoreCalculator` methods.
-Drools Score Calculation doesn't have this disadvantage, because it is constraint match aware automatically when needed,
+Constraint Streams and Drools Score Calculation don't have this disadvantage, because they are constraint match aware automatically when needed,
 without any extra domain-specific code.
 
 
@@ -1222,15 +1222,15 @@ If other parts of your application, for example your webUI, need to calculate th
 
 [source,java,options="nowrap"]
 ----
-ScoreManager<CloudBalance> scoreManager = ScoreManager.create(solverFactory);
-ScoreExplanation scoreExplanation = scoreManager.explain(cloudBalance);
+ScoreManager<CloudBalance, HardSoftScore> scoreManager = ScoreManager.create(solverFactory);
+ScoreExplanation<CloudBalance, HardSoftScore> scoreExplanation = scoreManager.explain(cloudBalance);
 ----
 
 Then use it when you need to calculate the `Score` of a solution:
 
 [source,java,options="nowrap"]
 ----
-Score score = scoreExplanation.getScore();
+HardSoftScore score = scoreExplanation.getScore();
 ----
 
 Furthermore, the `ScoreExplanation` can help explain the score through constraint match totals and/or indictments:
@@ -1244,15 +1244,15 @@ To break down the score per constraint, get the ``ConstraintMatchTotal``s from t
 
 [source,java,options="nowrap"]
 ----
-Collection<ConstraintMatchTotal> constraintMatchTotals = scoreExplanation.getConstraintMatchTotalMap().values();
-for (ConstraintMatchTotal constraintMatchTotal : constraintMatchTotals) {
+Collection<ConstraintMatchTotal<HardSoftScore>> constraintMatchTotals = scoreExplanation.getConstraintMatchTotalMap().values();
+for (ConstraintMatchTotal<HardSoftScore> constraintMatchTotal : constraintMatchTotals) {
     String constraintName = constraintMatchTotal.getConstraintName();
     // The score impact of that constraint
-    HardSoftScore totalScore = (HardSoftScore) constraintMatchTotal.getScore();
+    HardSoftScore totalScore = constraintMatchTotal.getScore();
 
-    for (ConstraintMatch constraintMatch : constraintMatchTotal.getConstraintMatchSet()) {
+    for (ConstraintMatch<HardSoftScore> constraintMatch : constraintMatchTotal.getConstraintMatchSet()) {
         List<Object> justificationList = constraintMatch.getJustificationList();
-        HardSoftScore score = (HardSoftScore) constraintMatch.getScore();
+        HardSoftScore score = constraintMatch.getScore();
         ...
     }
 }
@@ -1263,7 +1263,7 @@ The sum of all the `ConstraintMatchTotal.getScore()` equals the overall score.
 
 [NOTE]
 ====
-<<droolsScoreCalculation,Drools score calculation>> supports constraint matches automatically, but <<incrementalJavaScoreCalculation,incremental Java score calculation>> requires
+<<constraintStreams,Constraint streams>> and <<droolsScoreCalculation,Drools score calculation>> supports constraint matches automatically, but <<incrementalJavaScoreCalculation,incremental Java score calculation>> requires
 <<constraintMatchAwareIncrementalScoreCalculator,implementing an extra interface>>.
 ====
 
@@ -1274,18 +1274,18 @@ To show a heat map in the UI that highlights the planning entities and problem f
 
 [source,java,options="nowrap"]
 ----
-Map<Object, Indictment> indictmentMap = scoreExplanation.getIndictmentMap();
+Map<Object, Indictment<HardSoftScore>> indictmentMap = scoreExplanation.getIndictmentMap();
 for (CloudProcess process : cloudBalance.getProcessList()) {
-    Indictment indictment = indictmentMap.get(process);
+    Indictment<HardSoftScore> indictment = indictmentMap.get(process);
     if (indictment == null) {
         continue;
     }
     // The score impact of that planning entity
-    HardSoftScore totalScore = (HardSoftScore) indictment.getScore();
+    HardSoftScore totalScore = indictment.getScore();
 
-    for (ConstraintMatch constraintMatch : indictment.getConstraintMatchSet()) {
+    for (ConstraintMatch<HardSoftScore> constraintMatch : indictment.getConstraintMatchSet()) {
         String constraintName = constraintMatch.getConstraintName();
-        HardSoftScore score = (HardSoftScore) constraintMatch.getScore();
+        HardSoftScore score = constraintMatch.getScore();
         ...
     }
 }
@@ -1296,7 +1296,7 @@ The sum of all the `Indictment.getScoreTotal()` differs from the overall score, 
 
 [NOTE]
 ====
-<<droolsScoreCalculation,Drools score calculation>> supports constraint matches automatically, but <<incrementalJavaScoreCalculation,incremental Java score calculation>> requires
+<<constraintStreams,Constraint streams>> and <<droolsScoreCalculation,Drools score calculation>> supports constraint matches automatically, but <<incrementalJavaScoreCalculation,incremental Java score calculation>> requires
 <<constraintMatchAwareIncrementalScoreCalculator,implementing an extra interface>>.
 ====
 

@@ -954,7 +954,7 @@ public class TimeTableController {
     @Autowired
     private SolverManager<TimeTable, Long> solverManager;
     @Autowired
-    private ScoreManager<TimeTable> scoreManager;
+    private ScoreManager<TimeTable, HardSoftScore> scoreManager;
 
     // To try, GET http://localhost:8080/timeTable
     @GetMapping()

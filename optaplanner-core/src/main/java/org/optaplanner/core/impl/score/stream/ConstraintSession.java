@@ -40,6 +40,7 @@ public interface ConstraintSession<Solution_> extends AutoCloseable {
      * As defined by {@link InnerScoreDirector#getConstraintMatchTotalMap()}.
      *
      * @return never null
+     * @param <Score_> the {@link Score} type
      */
     <Score_ extends Score<Score_>> Map<String, ConstraintMatchTotal<Score_>> getConstraintMatchTotalMap();
 
@@ -47,6 +48,7 @@ public interface ConstraintSession<Solution_> extends AutoCloseable {
      * As defined by {@link InnerScoreDirector#getIndictmentMap()}.
      *
      * @return never null
+     * @param <Score_> the {@link Score} type
      */
     <Score_ extends Score<Score_>> Map<Object, Indictment<Score_>> getIndictmentMap();
 

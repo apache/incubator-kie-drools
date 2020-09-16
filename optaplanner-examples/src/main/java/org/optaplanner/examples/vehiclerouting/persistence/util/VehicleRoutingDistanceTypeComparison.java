@@ -36,7 +36,7 @@ import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionF
 
 public class VehicleRoutingDistanceTypeComparison extends LoggingMain {
 
-    private final ScoreManager<VehicleRoutingSolution, ?> scoreManager;
+    private final ScoreManager<VehicleRoutingSolution, HardSoftLongScore> scoreManager;
 
     public static void main(String[] args) {
         new VehicleRoutingDistanceTypeComparison().compare(

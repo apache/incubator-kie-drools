@@ -126,7 +126,7 @@ public final class DefaultConstraintMatchTotal<Score_ extends Score<Score_>> imp
         if (this == o) {
             return true;
         } else if (o instanceof DefaultConstraintMatchTotal) {
-            DefaultConstraintMatchTotal other = (DefaultConstraintMatchTotal) o;
+            DefaultConstraintMatchTotal<Score_> other = (DefaultConstraintMatchTotal<Score_>) o;
             return constraintPackage.equals(other.constraintPackage)
                     && constraintName.equals(other.constraintName);
         } else {

@@ -23,6 +23,7 @@ import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
 import org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDecimalScore;
 import org.optaplanner.core.api.score.buildin.bendablelong.BendableLongScore;
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
+import org.optaplanner.core.api.score.buildin.hardmediumsoftbigdecimal.HardMediumSoftBigDecimalScore;
 import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScore;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScore;
@@ -72,6 +73,8 @@ public class PolymorphicScoreJacksonDeserializer extends JsonDeserializer<Score>
             return HardMediumSoftScore.parseScore(scoreString);
         } else if (scoreClassSimpleName.equals(HardMediumSoftLongScore.class.getSimpleName())) {
             return HardMediumSoftLongScore.parseScore(scoreString);
+        } else if (scoreClassSimpleName.equals(HardMediumSoftBigDecimalScore.class.getSimpleName())) {
+            return HardMediumSoftBigDecimalScore.parseScore(scoreString);
         } else if (scoreClassSimpleName.equals(BendableScore.class.getSimpleName())) {
             return BendableScore.parseScore(scoreString);
         } else if (scoreClassSimpleName.equals(BendableLongScore.class.getSimpleName())) {

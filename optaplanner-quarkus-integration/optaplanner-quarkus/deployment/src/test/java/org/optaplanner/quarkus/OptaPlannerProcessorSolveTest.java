@@ -61,12 +61,12 @@ public class OptaPlannerProcessorSolveTest {
     @Test
     public void singletonSolverFactory() {
         assertNotNull(solverFactory);
-        assertNotNull(scoreManager);
         // TODO with optaplanner 8.0, once SolverFactory.getScoreDirectorFactory() doesn't create a new instance every time
         // assertSame(solverFactory.getScoreDirectorFactory(), ((DefaultScoreManager<TestdataPlanningSolution>) scoreManager).getScoreDirectorFactory());
         assertNotNull(solverManager);
         // There is only one SolverFactory instance
         assertSame(solverFactory, ((DefaultSolverManager<TestdataQuarkusSolution, Long>) solverManager).getSolverFactory());
+        assertNotNull(scoreManager);
     }
 
     @Test

@@ -60,13 +60,13 @@ public class DroolsConstraintSession<Solution_> implements ConstraintSession<Sol
     }
 
     @Override
-    public Map<String, ConstraintMatchTotal> getConstraintMatchTotalMap() {
+    public <Score_ extends Score<Score_>> Map<String, ConstraintMatchTotal<Score_>> getConstraintMatchTotalMap() {
         kieSession.fireAllRules();
         return scoreHolder.getConstraintMatchTotalMap();
     }
 
     @Override
-    public Map<Object, Indictment> getIndictmentMap() {
+    public <Score_ extends Score<Score_>> Map<Object, Indictment<Score_>> getIndictmentMap() {
         kieSession.fireAllRules();
         return scoreHolder.getIndictmentMap();
     }

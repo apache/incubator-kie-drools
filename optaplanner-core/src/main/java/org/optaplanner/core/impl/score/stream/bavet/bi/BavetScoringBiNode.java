@@ -98,12 +98,12 @@ public final class BavetScoringBiNode<A, B> extends BavetAbstractBiNode<A, B> im
     }
 
     @Override
-    public ConstraintMatchTotal buildConstraintMatchTotal(Score<?> zeroScore) {
-        DefaultConstraintMatchTotal constraintMatchTotal = new DefaultConstraintMatchTotal(constraintPackage,
-                constraintName, constraintWeight, zeroScore);
+    public <Score_ extends Score<Score_>> ConstraintMatchTotal<Score_> buildConstraintMatchTotal(Score_ zeroScore) {
+        DefaultConstraintMatchTotal<Score_> constraintMatchTotal = new DefaultConstraintMatchTotal<>(constraintPackage,
+                constraintName, (Score_) constraintWeight, zeroScore);
         for (BavetScoringBiTuple<A, B> tuple : tupleSet) {
             constraintMatchTotal.addConstraintMatch(
-                    Arrays.asList(tuple.getFactA(), tuple.getFactB()), tuple.getMatchScore());
+                    Arrays.asList(tuple.getFactA(), tuple.getFactB()), (Score_) tuple.getMatchScore());
         }
         return constraintMatchTotal;
     }

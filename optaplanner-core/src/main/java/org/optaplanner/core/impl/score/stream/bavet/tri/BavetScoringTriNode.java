@@ -99,12 +99,12 @@ public final class BavetScoringTriNode<A, B, C> extends BavetAbstractTriNode<A, 
     }
 
     @Override
-    public ConstraintMatchTotal buildConstraintMatchTotal(Score<?> zeroScore) {
-        DefaultConstraintMatchTotal constraintMatchTotal = new DefaultConstraintMatchTotal(constraintPackage,
-                constraintName, constraintWeight, zeroScore);
+    public <Score_ extends Score<Score_>> ConstraintMatchTotal<Score_> buildConstraintMatchTotal(Score_ zeroScore) {
+        DefaultConstraintMatchTotal<Score_> constraintMatchTotal = new DefaultConstraintMatchTotal(constraintPackage,
+                constraintName, (Score_) constraintWeight, zeroScore);
         for (BavetScoringTriTuple<A, B, C> tuple : tupleSet) {
             constraintMatchTotal.addConstraintMatch(
-                    Arrays.asList(tuple.getFactA(), tuple.getFactB(), tuple.getFactC()), tuple.getMatchScore());
+                    Arrays.asList(tuple.getFactA(), tuple.getFactB(), tuple.getFactC()), (Score_) tuple.getMatchScore());
         }
         return constraintMatchTotal;
     }

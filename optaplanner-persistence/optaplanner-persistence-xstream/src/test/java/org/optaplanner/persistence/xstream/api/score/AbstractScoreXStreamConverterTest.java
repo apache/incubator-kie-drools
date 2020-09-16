@@ -19,6 +19,7 @@ package org.optaplanner.persistence.xstream.api.score;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
+import org.assertj.core.api.Assertions;
 import org.optaplanner.core.api.score.Score;
 
 import com.thoughtworks.xstream.XStream;
@@ -29,7 +30,8 @@ public abstract class AbstractScoreXStreamConverterTest {
     // Helper methods
     // ************************************************************************
 
-    protected <S extends Score, W extends TestScoreWrapper<S>> void assertSerializeAndDeserialize(S expectedScore, W input) {
+    protected <Score_ extends Score<Score_>, W extends TestScoreWrapper<Score_>> void
+            assertSerializeAndDeserialize(Score_ expectedScore, W input) {
         XStream xStream = new XStream();
         xStream.setMode(XStream.ID_REFERENCES);
         xStream.processAnnotations(input.getClass());
@@ -39,7 +41,7 @@ public abstract class AbstractScoreXStreamConverterTest {
         String xmlString = xStream.toXML(input);
         W output = (W) xStream.fromXML(xmlString);
 
-        assertThat(output.getScore()).isEqualTo(expectedScore);
+        Assertions.assertThat(output.getScore()).isEqualTo(expectedScore);
         String regex;
         if (expectedScore != null) {
             regex = "<([\\w\\-\\.]+)( id=\"\\d+\")?>" // Start of element
@@ -55,9 +57,9 @@ public abstract class AbstractScoreXStreamConverterTest {
         }
     }
 
-    public static abstract class TestScoreWrapper<S extends Score> {
+    public static abstract class TestScoreWrapper<Score_ extends Score<Score_>> {
 
-        public abstract S getScore();
+        public abstract Score_ getScore();
 
     }
 

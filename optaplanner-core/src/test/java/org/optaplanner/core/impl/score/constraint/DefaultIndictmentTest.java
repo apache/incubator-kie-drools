@@ -32,23 +32,23 @@ public class DefaultIndictmentTest {
         TestdataEntity e1 = new TestdataEntity("e1");
         TestdataEntity e2 = new TestdataEntity("e2");
         TestdataEntity e3 = new TestdataEntity("e3");
-        DefaultIndictment indictment = new DefaultIndictment(e1, SimpleScore.ZERO);
+        DefaultIndictment<SimpleScore> indictment = new DefaultIndictment<>(e1, SimpleScore.ZERO);
         assertThat(indictment.getScore()).isEqualTo(SimpleScore.ZERO);
 
-        ConstraintMatch match1 = new ConstraintMatch("package1", "constraint1", asList(e1), SimpleScore.of(-1));
+        ConstraintMatch<SimpleScore> match1 = new ConstraintMatch<>("package1", "constraint1", asList(e1), SimpleScore.of(-1));
         indictment.addConstraintMatch(match1);
         assertThat(indictment.getScore()).isEqualTo(SimpleScore.of(-1));
         // Different constraintName
-        ConstraintMatch match2 = new ConstraintMatch("package1", "constraint2", asList(e1), SimpleScore.of(-20));
+        ConstraintMatch<SimpleScore> match2 = new ConstraintMatch<>("package1", "constraint2", asList(e1), SimpleScore.of(-20));
         indictment.addConstraintMatch(match2);
         assertThat(indictment.getScore()).isEqualTo(SimpleScore.of(-21));
-        indictment.addConstraintMatch(new ConstraintMatch("package1", "constraint3", asList(e1, e2), SimpleScore.of(-300)));
+        indictment.addConstraintMatch(new ConstraintMatch<>("package1", "constraint3", asList(e1, e2), SimpleScore.of(-300)));
         assertThat(indictment.getScore()).isEqualTo(SimpleScore.of(-321));
         // Different justification
-        indictment.addConstraintMatch(new ConstraintMatch("package1", "constraint3", asList(e1, e3), SimpleScore.of(-4000)));
+        indictment.addConstraintMatch(new ConstraintMatch<>("package1", "constraint3", asList(e1, e3), SimpleScore.of(-4000)));
         assertThat(indictment.getScore()).isEqualTo(SimpleScore.of(-4321));
         // Almost duplicate, but e2 and e1 are in reverse order, so different justification
-        indictment.addConstraintMatch(new ConstraintMatch("package1", "constraint3", asList(e2, e1), SimpleScore.of(-50000)));
+        indictment.addConstraintMatch(new ConstraintMatch<>("package1", "constraint3", asList(e2, e1), SimpleScore.of(-50000)));
         assertThat(indictment.getScore()).isEqualTo(SimpleScore.of(-54321));
 
         indictment.removeConstraintMatch(match2);
@@ -60,14 +60,14 @@ public class DefaultIndictmentTest {
     @Test
     public void equalsAndHashCode() {
         PlannerAssert.assertObjectsAreEqual(
-                new DefaultIndictment("e1", SimpleScore.ZERO),
-                new DefaultIndictment("e1", SimpleScore.ZERO),
-                new DefaultIndictment("e1", SimpleScore.of(-7)));
+                new DefaultIndictment<>("e1", SimpleScore.ZERO),
+                new DefaultIndictment<>("e1", SimpleScore.ZERO),
+                new DefaultIndictment<>("e1", SimpleScore.of(-7)));
         PlannerAssert.assertObjectsAreNotEqual(
-                new DefaultIndictment("a", SimpleScore.ZERO),
-                new DefaultIndictment("aa", SimpleScore.ZERO),
-                new DefaultIndictment("b", SimpleScore.ZERO),
-                new DefaultIndictment("c", SimpleScore.ZERO));
+                new DefaultIndictment<>("a", SimpleScore.ZERO),
+                new DefaultIndictment<>("aa", SimpleScore.ZERO),
+                new DefaultIndictment<>("b", SimpleScore.ZERO),
+                new DefaultIndictment<>("c", SimpleScore.ZERO));
     }
 
 }

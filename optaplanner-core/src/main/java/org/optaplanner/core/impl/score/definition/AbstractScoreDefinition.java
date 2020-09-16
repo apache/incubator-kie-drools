@@ -29,7 +29,7 @@ import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreDefinition;
  * @see ScoreDefinition
  * @see HardSoftScoreDefinition
  */
-public abstract class AbstractScoreDefinition<S extends Score<S>> implements ScoreDefinition<S> {
+public abstract class AbstractScoreDefinition<Score_ extends Score<Score_>> implements ScoreDefinition<Score_> {
 
     private final String[] levelLabels;
 
@@ -84,7 +84,7 @@ public abstract class AbstractScoreDefinition<S extends Score<S>> implements Sco
     }
 
     @Override
-    public String formatScore(S score) {
+    public String formatScore(Score_ score) {
         return score.toString();
     }
 

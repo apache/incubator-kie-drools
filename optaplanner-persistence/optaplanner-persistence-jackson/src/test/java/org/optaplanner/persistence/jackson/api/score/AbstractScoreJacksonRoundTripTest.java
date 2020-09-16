@@ -21,6 +21,7 @@ import static org.assertj.core.api.Assertions.fail;
 
 import java.io.IOException;
 
+import org.assertj.core.api.Assertions;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.persistence.jackson.api.AbstractJacksonRoundTripTest;
 
@@ -33,7 +34,8 @@ public abstract class AbstractScoreJacksonRoundTripTest
     // Helper methods
     // ************************************************************************
 
-    protected <S extends Score, W extends TestScoreWrapper<S>> void assertSerializeAndDeserialize(S expectedScore, W input) {
+    protected <Score_ extends Score<Score_>, W extends TestScoreWrapper<Score_>> void
+            assertSerializeAndDeserialize(Score_ expectedScore, W input) {
         String jsonString;
         W output;
         try {
@@ -43,7 +45,7 @@ public abstract class AbstractScoreJacksonRoundTripTest
         } catch (IOException e) {
             throw new IllegalStateException("Marshalling or unmarshalling for input (" + input + ") failed.", e);
         }
-        assertThat(output.getScore()).isEqualTo(expectedScore);
+        Assertions.assertThat(output.getScore()).isEqualTo(expectedScore);
         String regex;
         if (expectedScore != null) {
             regex = "\\{\\s*" // Start of element
@@ -59,9 +61,9 @@ public abstract class AbstractScoreJacksonRoundTripTest
         }
     }
 
-    public static abstract class TestScoreWrapper<S extends Score> {
+    public static abstract class TestScoreWrapper<Score_ extends Score<Score_>> {
 
-        public abstract S getScore();
+        public abstract Score_ getScore();
 
     }
 

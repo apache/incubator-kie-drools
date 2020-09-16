@@ -26,7 +26,10 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.domain.lookup.ClassAndPlanningIdComparator;
 
 /**
- * Retrievable from {@link ConstraintMatchTotal#getConstraintMatchSet()}.
+ * Retrievable from {@link ConstraintMatchTotal#getConstraintMatchSet()}
+ * and {@link Indictment#getConstraintMatchSet()}.
+ * 
+ * @param <Score_> the actual score type
  */
 public final class ConstraintMatch<Score_ extends Score<Score_>> implements Comparable<ConstraintMatch<Score_>> {
 
@@ -114,7 +117,7 @@ public final class ConstraintMatch<Score_ extends Score<Score_>> implements Comp
         if (this == o) {
             return true;
         } else if (o instanceof ConstraintMatch) {
-            ConstraintMatch other = (ConstraintMatch) o;
+            ConstraintMatch<Score_> other = (ConstraintMatch<Score_>) o;
             return constraintPackage.equals(other.constraintPackage)
                     && constraintName.equals(other.constraintName)
                     && justificationList.equals(other.justificationList);

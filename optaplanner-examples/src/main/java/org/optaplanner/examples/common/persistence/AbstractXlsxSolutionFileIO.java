@@ -83,10 +83,10 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
         return "xlsx";
     }
 
-    public static abstract class AbstractXlsxReader<Solution_> {
+    public static abstract class AbstractXlsxReader<Solution_, Score_ extends Score<Score_>> {
 
         protected final XSSFWorkbook workbook;
-        protected final ScoreDefinition scoreDefinition;
+        protected final ScoreDefinition<Score_> scoreDefinition;
 
         protected Solution_ solution;
 
@@ -167,13 +167,13 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
             readHeaderCell("Description");
         }
 
-        protected <Score_ extends Score<Score_>> Score_ readScoreConstraintLine(
+        protected Score_ readScoreConstraintLine(
                 String constraintName, String constraintDescription) {
             nextRow();
             readHeaderCell(constraintName);
             String scoreString = nextStringCell().getStringCellValue();
             readHeaderCell(constraintDescription);
-            return (Score_) scoreDefinition.parseScore(scoreString);
+            return scoreDefinition.parseScore(scoreString);
         }
 
         protected String currentPosition() {
@@ -338,13 +338,13 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
         }
     }
 
-    public static abstract class AbstractXlsxWriter<Solution_> {
+    public static abstract class AbstractXlsxWriter<Solution_, Score_ extends Score<Score_>> {
 
         protected final Solution_ solution;
-        protected final Score score;
-        protected final ScoreDefinition scoreDefinition;
-        protected final Map<String, ConstraintMatchTotal<?>> constraintMatchTotalsMap;
-        protected final Map<Object, Indictment<?>> indictmentMap;
+        protected final Score_ score;
+        protected final ScoreDefinition<Score_> scoreDefinition;
+        protected final Map<String, ConstraintMatchTotal<Score_>> constraintMatchTotalsMap;
+        protected final Map<Object, Indictment<Score_>> indictmentMap;
 
         protected XSSFWorkbook workbook;
         protected CreationHelper creationHelper;
@@ -377,9 +377,9 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
             scoreDefinition = scoreDirectorFactory.getScoreDefinition();
             try (InnerScoreDirector<Solution_> scoreDirector = scoreDirectorFactory.buildScoreDirector()) {
                 scoreDirector.setWorkingSolution(solution);
-                score = scoreDirector.calculateScore();
-                constraintMatchTotalsMap = (Map) scoreDirector.getConstraintMatchTotalMap();
-                indictmentMap = (Map) scoreDirector.getIndictmentMap();
+                score = (Score_) scoreDirector.calculateScore();
+                constraintMatchTotalsMap = scoreDirector.getConstraintMatchTotalMap();
+                indictmentMap = scoreDirector.getIndictmentMap();
             }
         }
 
@@ -461,7 +461,7 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
             nextHeaderCell("Description");
         }
 
-        protected <Score_ extends Score<Score_>> void writeScoreConstraintLine(
+        protected void writeScoreConstraintLine(
                 String constraintName, Score_ constraintScore, String constraintDescription) {
             nextRow();
             nextHeaderCell(constraintName);
@@ -491,7 +491,7 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
                 nextCell();
                 nextCell().setCellValue(score.getInitScore());
             }
-            Comparator<ConstraintMatchTotal> constraintWeightComparator = Comparator.comparing(
+            Comparator<ConstraintMatchTotal<Score_>> constraintWeightComparator = Comparator.comparing(
                     ConstraintMatchTotal::getConstraintWeight, Comparator.nullsLast(Comparator.reverseOrder()));
             constraintMatchTotalsMap.values().stream()
                     .sorted(constraintWeightComparator
@@ -500,7 +500,7 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
                     .forEach(constraintMatchTotal -> {
                         nextRow();
                         nextHeaderCell(constraintMatchTotal.getConstraintName());
-                        Score constraintWeight = constraintMatchTotal.getConstraintWeight();
+                        Score_ constraintWeight = constraintMatchTotal.getConstraintWeight();
                         nextCell(scoreStyle).setCellValue(constraintWeight == null ? "N/A" : constraintWeight.toShortString());
                         nextCell().setCellValue(constraintMatchTotal.getConstraintMatchSet().size());
                         nextCell(scoreStyle).setCellValue(constraintMatchTotal.getScore().toShortString());
@@ -508,19 +508,19 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
             nextRow();
             nextRow();
 
-            Comparator<ConstraintMatchTotal> constraintMatchTotalComparator = Comparator
+            Comparator<ConstraintMatchTotal<Score_>> constraintMatchTotalComparator = Comparator
                     .comparing(ConstraintMatchTotal::getScore);
             constraintMatchTotalComparator = constraintMatchTotalComparator
                     .thenComparing(ConstraintMatchTotal::getConstraintPackage)
                     .thenComparing(ConstraintMatchTotal::getConstraintName);
-            Comparator<ConstraintMatch> constraintMatchComparator = Comparator
+            Comparator<ConstraintMatch<Score_>> constraintMatchComparator = Comparator
                     .comparing(ConstraintMatch::getScore);
             constraintMatchTotalsMap.values().stream()
                     .sorted(constraintMatchTotalComparator)
                     .forEach(constraintMatchTotal -> {
                         nextRow();
                         nextHeaderCell(constraintMatchTotal.getConstraintName());
-                        Score constraintWeight = constraintMatchTotal.getConstraintWeight();
+                        Score_ constraintWeight = constraintMatchTotal.getConstraintWeight();
                         nextCell(scoreStyle).setCellValue(constraintWeight == null ? "N/A" : constraintWeight.toShortString());
                         nextCell().setCellValue(constraintMatchTotal.getConstraintMatchSet().size());
                         nextCell(scoreStyle).setCellValue(constraintMatchTotal.getScore().toShortString());

@@ -99,12 +99,12 @@ public final class BavetScoringUniNode<A> extends BavetAbstractUniNode<A> implem
     }
 
     @Override
-    public ConstraintMatchTotal buildConstraintMatchTotal(Score<?> zeroScore) {
-        DefaultConstraintMatchTotal constraintMatchTotal = new DefaultConstraintMatchTotal(constraintPackage,
-                constraintName, constraintWeight, zeroScore);
+    public <Score_ extends Score<Score_>> ConstraintMatchTotal<Score_> buildConstraintMatchTotal(Score_ zeroScore) {
+        DefaultConstraintMatchTotal<Score_> constraintMatchTotal = new DefaultConstraintMatchTotal(constraintPackage,
+                constraintName, (Score_) constraintWeight, zeroScore);
         for (BavetScoringUniTuple<A> tuple : tupleSet) {
             constraintMatchTotal.addConstraintMatch(
-                    Collections.singletonList(tuple.getFactA()), tuple.getMatchScore());
+                    Collections.singletonList(tuple.getFactA()), (Score_) tuple.getMatchScore());
         }
         return constraintMatchTotal;
     }

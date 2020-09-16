@@ -32,11 +32,12 @@ import org.drools.core.common.AgendaItemImpl;
 import org.junit.jupiter.api.Test;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.rule.RuleContext;
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 
-public abstract class AbstractScoreHolderTest {
+public abstract class AbstractScoreHolderTest<Score_ extends Score<Score_>> {
 
     protected final static Object DEFAULT_JUSTIFICATION = new Object();
     protected final static Object OTHER_JUSTIFICATION = new Object();
@@ -91,16 +92,17 @@ public abstract class AbstractScoreHolderTest {
         agendaItem.getCallback().run();
     }
 
-    protected ConstraintMatchTotal findConstraintMatchTotal(AbstractScoreHolder<?> scoreHolder, String ruleName) {
-        Collection<ConstraintMatchTotal> constraintMatchTotals = scoreHolder.getConstraintMatchTotalMap().values();
-        Optional<ConstraintMatchTotal> first = constraintMatchTotals.stream()
+    protected ConstraintMatchTotal<Score_> findConstraintMatchTotal(AbstractScoreHolder<Score_> scoreHolder, String ruleName) {
+        Collection<ConstraintMatchTotal<Score_>> constraintMatchTotals = scoreHolder.getConstraintMatchTotalMap().values();
+        Optional<ConstraintMatchTotal<Score_>> first = constraintMatchTotals.stream()
                 .filter(constraintMatchTotal -> constraintMatchTotal.getConstraintName().equals(ruleName)).findFirst();
         return first.orElse(null);
     }
 
+    // TODO These 2 tests and buildScoreHolder for SimpleScore should not be inherited by HardSoftScore etc
     @Test
     public void illegalStateExceptionThrownWhenConstraintMatchNotEnabled() {
-        AbstractScoreHolder scoreHolder = buildScoreHolder(false);
+        AbstractScoreHolder<SimpleScore> scoreHolder = buildScoreHolder(false);
         assertThatIllegalStateException()
                 .isThrownBy(scoreHolder::getConstraintMatchTotalMap)
                 .withMessageContaining("constraintMatchEnabled");
