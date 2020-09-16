@@ -29,8 +29,16 @@ import java.util.Optional;
 
 import org.assertj.core.api.Assertions;
 import org.drools.modelcompiler.FunctionsTest.Pojo;
-import org.drools.modelcompiler.domain.*;
-import org.junit.Ignore;
+import org.drools.modelcompiler.domain.Address;
+import org.drools.modelcompiler.domain.Adult;
+import org.drools.modelcompiler.domain.Child;
+import org.drools.modelcompiler.domain.Man;
+import org.drools.modelcompiler.domain.Person;
+import org.drools.modelcompiler.domain.Pet;
+import org.drools.modelcompiler.domain.PetPerson;
+import org.drools.modelcompiler.domain.Toy;
+import org.drools.modelcompiler.domain.ToysStore;
+import org.drools.modelcompiler.domain.Woman;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
@@ -932,5 +940,29 @@ public class FromTest extends BaseModelTest {
 
         assertEquals( 1, ruleFired );
         assertEquals( "red", hashSet.iterator().next() );
+    }
+
+    @Test
+    public void testFromStringConcatenation() {
+        // DROOLS-5640
+        String str =
+                "global java.util.List list;\n" +
+                "rule R when\n" +
+                "  $a : String()\n" +
+                "  $b : String()\n" +
+                "  $c : String() from $a + $b\n" +
+                "then\n" +
+                "  list.add($c);\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+        final List<String> list = new ArrayList<>();
+        ksession.setGlobal("list", list);
+
+        ksession.insert( "A" );
+        ksession.insert( "B" );
+        ksession.fireAllRules();
+
+        Assertions.assertThat(list).containsExactlyInAnyOrder("AA", "AB", "BA", "BB");
     }
 }

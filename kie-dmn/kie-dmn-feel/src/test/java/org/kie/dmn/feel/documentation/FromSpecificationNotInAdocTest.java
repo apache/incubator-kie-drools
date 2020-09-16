@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.feel.runtime;
+package org.kie.dmn.feel.documentation;
 
 import java.util.Collection;
 
 import org.junit.runners.Parameterized;
+import org.kie.dmn.feel.runtime.BaseFEELTest;
 
 /**
  * Some examples (/tests) from the DMN spec were omitted in the ADOC due to policy about specific keywords
  * Those tests are placed here to make sure all the examples from the DMN spec are integrated and running as expected.
  */
-public class FromSpecificationNotInAdoc extends BaseFEELTest {
+public class FromSpecificationNotInAdocTest extends BaseFEELTest {
 
     @Parameterized.Parameters(name = "{3}: {0} ({1}) = {2}")
     public static Collection<Object[]> data() {
