@@ -381,22 +381,6 @@ public class KiePMMLRegressionTableRegressionFactory {
                     .orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_VARIABLE_IN_BODY,
                                                                                   COEFFICIENT, body)));
             variableDeclarator.setInitializer(String.valueOf(predictorTerm.getCoefficient().doubleValue()));
-//
-//
-//            final List<VariableDeclarator> variableDeclarators = body.findAll(VariableDeclarator.class);
-//
-//            variableDeclarators.forEach(variableDeclarator -> {
-//                if (variableDeclarator.getName().asString().equals("fieldRefs")) {
-//                    final List<Expression> nodeList = predictorTerm.getFieldRefs().stream()
-//                            .map(fieldRef -> new StringLiteralExpr(fieldRef.getField().getValue()))
-//                            .collect(Collectors.toList());
-//                    NodeList<Expression> expressions = NodeList.nodeList(nodeList);
-//                    MethodCallExpr methodCallExpr = new MethodCallExpr(new NameExpr("Arrays"), "asList", expressions);
-//                    variableDeclarator.setInitializer(methodCallExpr);
-//                } else if (variableDeclarator.getName().asString().equals(COEFFICIENT)) {
-//                    variableDeclarator.setInitializer(String.valueOf(predictorTerm.getCoefficient().doubleValue()));
-//                }
-//            });
             return addMethod(methodTemplate, tableTemplate, "evaluatePredictorTerm" + predictorArity);
         } catch (Exception e) {
             throw new KiePMMLInternalException(String.format("Failed to add PredictorTerm %s", predictorTerm), e);
@@ -409,7 +393,7 @@ public class KiePMMLRegressionTableRegressionFactory {
      * @param targetCategory
      * @return
      */
-    protected static void populateGetTargetCategory(final ClassOrInterfaceDeclaration tableTemplate,
+    static void populateGetTargetCategory(final ClassOrInterfaceDeclaration tableTemplate,
                                                     final Object targetCategory) {
         MethodDeclaration methodDeclaration = tableTemplate.getMethodsByName("getTargetCategory").get(0);
         final BlockStmt body =
@@ -431,7 +415,7 @@ public class KiePMMLRegressionTableRegressionFactory {
      * @param normalizationMethod
      * @return
      */
-    protected static void populateUpdateResult(final ClassOrInterfaceDeclaration tableTemplate,
+    static void populateUpdateResult(final ClassOrInterfaceDeclaration tableTemplate,
                                                final RegressionModel.NormalizationMethod normalizationMethod) {
         try {
             templateEvaluate = getFromFileName(KIE_PMML_UPDATE_RESULT_METHOD_TEMPLATE_JAVA);
