@@ -19,6 +19,7 @@ package org.drools.modelcompiler;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -163,8 +164,8 @@ public class CanonicalKieModule implements InternalKieModule {
 
     private static <T> T createInstance(ClassLoader cl, String className) throws ClassNotFoundException {
         try {
-            return (T) cl.loadClass(className).newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
+            return (T) cl.loadClass(className).getConstructor().newInstance();
+        } catch (InstantiationException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             throw new RuntimeException(e);
         }
     }

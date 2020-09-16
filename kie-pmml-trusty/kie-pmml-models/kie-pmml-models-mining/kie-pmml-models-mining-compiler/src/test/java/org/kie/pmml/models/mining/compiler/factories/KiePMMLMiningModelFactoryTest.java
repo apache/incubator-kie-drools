@@ -82,15 +82,15 @@ public class KiePMMLMiningModelFactoryTest extends AbstractKiePMMLFactoryTest {
     public void getKiePMMLMiningModelSourcesMap() {
         final String packageName = "packagename";
         final List<KiePMMLModel> nestedModels = new ArrayList<>();
-        final Map<String, String> retrieved = KiePMMLMiningModelFactory.getKiePMMLMiningModelSourcesMap(
-                                                                                                       DATA_DICTIONARY,
-                                                                                                       TRANSFORMATION_DICTIONARY,
-                                                                                                       MINING_MODEL,
-                                                                                                       packageName,
+        final Map<String, String> retrieved = KiePMMLMiningModelFactory.getKiePMMLMiningModelSourcesMap(DATA_DICTIONARY,
+                                                                                                        TRANSFORMATION_DICTIONARY,
+                                                                                                        MINING_MODEL,
+                                                                                                        packageName,
                                                                                                        KNOWLEDGE_BUILDER,
                                                                                                        nestedModels);
         assertNotNull(retrieved);
-        assertFalse(nestedModels.isEmpty());
+        int expectedNestedModels = MINING_MODEL.getSegmentation().getSegments().size();
+        assertEquals(expectedNestedModels, nestedModels.size());
     }
 
     @Test
@@ -112,12 +112,14 @@ public class KiePMMLMiningModelFactoryTest extends AbstractKiePMMLFactoryTest {
         superInvocationExpressionsMap.put(0, new NameExpr(String.format("\"%s\"", pmmlModel.name())));
         Map<String, Expression> assignExpressionMap = new HashMap<>();
         assignExpressionMap.put("targetField", new StringLiteralExpr(targetField));
-        assignExpressionMap.put("miningFunction", new NameExpr(miningFunction.getClass().getName() + "." + miningFunction.name()));
+        assignExpressionMap.put("miningFunction",
+                                new NameExpr(miningFunction.getClass().getName() + "." + miningFunction.name()));
         assignExpressionMap.put("pmmlMODEL", new NameExpr(pmmlModel.getClass().getName() + "." + pmmlModel.name()));
         ClassOrInterfaceType kiePMMLSegmentationClass = parseClassOrInterfaceType(segmentationClass);
         ObjectCreationExpr objectCreationExpr = new ObjectCreationExpr();
         objectCreationExpr.setType(kiePMMLSegmentationClass);
         assignExpressionMap.put("segmentation", objectCreationExpr);
-        assertTrue(commonEvaluateConstructor(constructorDeclaration, generatedClassName, superInvocationExpressionsMap, assignExpressionMap));
+        assertTrue(commonEvaluateConstructor(constructorDeclaration, generatedClassName,
+                                             superInvocationExpressionsMap, assignExpressionMap));
     }
 }
