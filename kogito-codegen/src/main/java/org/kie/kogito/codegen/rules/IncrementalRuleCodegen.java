@@ -16,6 +16,8 @@
 package org.kie.kogito.codegen.rules;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,6 +27,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.OptionalInt;
+import java.util.Properties;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import com.github.javaparser.ast.CompilationUnit;
@@ -37,6 +42,8 @@ import org.drools.compiler.compiler.DecisionTableFactory;
 import org.drools.compiler.compiler.DroolsError;
 import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
+import org.drools.core.builder.conf.impl.DecisionTableConfigurationImpl;
+import org.drools.core.builder.conf.impl.ResourceConfigurationImpl;
 import org.drools.modelcompiler.builder.GeneratedFile;
 import org.drools.modelcompiler.builder.ModelBuilderImpl;
 import org.kie.api.builder.model.KieBaseModel;
@@ -45,9 +52,15 @@ import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.conf.SessionsPoolOption;
 import org.kie.api.io.Resource;
+import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.internal.builder.CompositeKnowledgeBuilder;
+import org.kie.internal.builder.DecisionTableConfiguration;
+import org.kie.internal.builder.DecisionTableInputType;
+import org.kie.internal.builder.ResourceChangeSet;
+import org.kie.internal.builder.RuleTemplateConfiguration;
+import org.kie.internal.io.ResourceTypeImpl;
 import org.kie.internal.ruleunit.RuleUnitDescription;
 import org.kie.kogito.codegen.AbstractGenerator;
 import org.kie.kogito.codegen.AddonsConfig;
@@ -66,8 +79,9 @@ import org.kie.kogito.rules.RuleUnitConfig;
 import org.kie.kogito.rules.units.AssignableChecker;
 import org.kie.kogito.rules.units.ReflectiveRuleUnitDescription;
 
-import static com.github.javaparser.StaticJavaParser.parse;
 import static java.util.stream.Collectors.toList;
+
+import static com.github.javaparser.StaticJavaParser.parse;
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.setDefaultsforEmptyKieModule;
 import static org.kie.kogito.codegen.ApplicationGenerator.log;
 import static org.kie.kogito.codegen.ApplicationGenerator.logger;
@@ -77,7 +91,7 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
     public static IncrementalRuleCodegen ofCollectedResources(Collection<CollectedResource> resources) {
         List<Resource> dmnResources = resources.stream()
                 .map(CollectedResource::resource)
-                .filter(r -> r.getResourceType() == ResourceType.DRL || r.getResourceType() == ResourceType.DTABLE)
+                .filter(r -> r.getResourceType() == ResourceType.DRL || r.getResourceType() == ResourceType.DTABLE || r.getResourceType() == ResourceType.PROPERTIES)
                 .collect(toList());
         return ofResources(dmnResources);
     }
@@ -163,7 +177,7 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
         ModelBuilderImpl<KogitoPackageSources> modelBuilder = new ModelBuilderImpl<>( KogitoPackageSources::dumpSources, configuration, dummyReleaseId, true, hotReloadMode );
 
         CompositeKnowledgeBuilder batch = modelBuilder.batch();
-        resources.forEach(f -> batch.add(f, f.getResourceType()));
+        resources.forEach(f -> addResource( batch, f ) );
 
         try {
             batch.build();
@@ -208,6 +222,35 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
         }
 
         return generatedFiles;
+    }
+
+    private void addResource( CompositeKnowledgeBuilder batch, Resource resource ) {
+        if (resource.getResourceType() == ResourceType.PROPERTIES) {
+            return;
+        }
+        if (resource.getResourceType() == ResourceType.DTABLE) {
+            Resource resourceProps = findPropertiesResource(resource);
+            if (resourceProps != null) {
+                // TODO delete this method and use the one in AbstractKieModule when it will be available since drools 7.44
+                ResourceConfiguration conf = loadResourceConfiguration( resource.getSourcePath(), x -> true, x -> {
+                    try {
+                        return resourceProps.getInputStream();
+                    } catch (IOException ioe) {
+                        throw new RuntimeException(ioe);
+                    }
+                } );
+                if  (conf instanceof DecisionTableConfiguration ) {
+                    // TODO delete this method and use the one in AbstractKieModule when it will be available since drools 7.44
+                    addDTableToCompiler( batch, resource, (( DecisionTableConfiguration ) conf) );
+                    return;
+                }
+            }
+        }
+        batch.add( resource, resource.getResourceType() );
+    }
+
+    private Resource findPropertiesResource(Resource resource) {
+        return resources.stream().filter( r -> r.getSourcePath().equals( resource.getSourcePath() + ".properties" ) ).findFirst().orElse( null );
     }
 
     private boolean generateModels( ModelBuilderImpl<KogitoPackageSources> modelBuilder, Map<String, String> unitsMap, List<GeneratedFile> modelFiles, Map<String, String> modelsByUnit ) {
@@ -415,5 +458,112 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
     public IncrementalRuleCodegen withRestServices(boolean useRestServices) {
         this.useRestServices = useRestServices;
         return this;
+    }
+
+    // --- TODO all the code below can be deleted when the corresponging methods will be available in AbstractKieModule since drools 7.44
+
+    public static ResourceConfiguration loadResourceConfiguration( String fileName, Predicate<String> fileAvailable, Function<String, InputStream> fileProvider ) {
+        ResourceConfiguration conf;
+        Properties prop = new Properties();
+        if ( fileAvailable.test( fileName + ".properties") ) {
+            try ( InputStream input = fileProvider.apply( fileName + ".properties") ) {
+                prop.load(input);
+            } catch (IOException e) {
+                throw new RuntimeException(String.format("Error loading resource configuration from file: %s.properties", fileName ), e);
+            }
+        }
+        if (ResourceType.DTABLE.matchesExtension( fileName )) {
+            int lastDot = fileName.lastIndexOf( '.' );
+            if (lastDot >= 0 && fileName.length() > lastDot+1) {
+                String extension = fileName.substring( lastDot+1 );
+                Object confClass = prop.get( ResourceTypeImpl.KIE_RESOURCE_CONF_CLASS);
+                if (confClass == null || confClass.toString().equals( ResourceConfigurationImpl.class.getCanonicalName() )) {
+                    prop.setProperty( ResourceTypeImpl.KIE_RESOURCE_CONF_CLASS, DecisionTableConfigurationImpl.class.getName() );
+                }
+                prop.setProperty(DecisionTableConfigurationImpl.DROOLS_DT_TYPE, DecisionTableInputType.valueOf( extension.toUpperCase() ).toString());
+            }
+        }
+        conf = prop.isEmpty() ? null : ResourceTypeImpl.fromProperties(prop);
+        if (conf instanceof DecisionTableConfiguration && (( DecisionTableConfiguration ) conf).getWorksheetName() == null) {
+            (( DecisionTableConfiguration ) conf).setWorksheetName( prop.getProperty( "sheets" ) );
+        }
+        return conf;
+    }
+
+    public static void addDTableToCompiler( CompositeKnowledgeBuilder ckbuilder, Resource resource, DecisionTableConfiguration dtableConf ) {
+        addDTableToCompiler( ckbuilder, resource, dtableConf, null );
+    }
+
+    private static void addDTableToCompiler( CompositeKnowledgeBuilder ckbuilder, Resource resource, DecisionTableConfiguration dtableConf, ResourceChangeSet rcs ) {
+        String sheetNames = dtableConf.getWorksheetName();
+        if (sheetNames == null || sheetNames.indexOf( ',' ) < 0) {
+            ckbuilder.add( resource, ResourceType.DTABLE, dtableConf, rcs );
+        } else {
+            for (String sheetName : sheetNames.split( "\\," ) ) {
+                ckbuilder.add( resource, ResourceType.DTABLE, new DecisionTableConfigurationDelegate( dtableConf, sheetName), rcs );
+            }
+        }
+    }
+
+    static class DecisionTableConfigurationDelegate implements DecisionTableConfiguration {
+
+        private final DecisionTableConfiguration delegate;
+        private final String sheetName;
+
+        DecisionTableConfigurationDelegate( DecisionTableConfiguration delegate, String sheetName ) {
+            this.delegate = delegate;
+            this.sheetName = sheetName;
+        }
+
+        @Override
+        public void setInputType( DecisionTableInputType inputType ) {
+            delegate.setInputType( inputType );
+
+        }
+
+        @Override
+        public DecisionTableInputType getInputType() {
+            return delegate.getInputType();
+        }
+
+        @Override
+        public void setWorksheetName( String name ) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public String getWorksheetName() {
+            return sheetName;
+        }
+
+        @Override
+        public void addRuleTemplateConfiguration( Resource template, int row, int col ) {
+            delegate.addRuleTemplateConfiguration( template, row, col );
+        }
+
+        @Override
+        public List<RuleTemplateConfiguration> getRuleTemplateConfigurations() {
+            return delegate.getRuleTemplateConfigurations();
+        }
+
+        @Override
+        public boolean isTrimCell() {
+            return delegate.isTrimCell();
+        }
+
+        @Override
+        public void setTrimCell( boolean trimCell ) {
+            delegate.setTrimCell( trimCell );
+        }
+
+        @Override
+        public Properties toProperties() {
+            return delegate.toProperties();
+        }
+
+        @Override
+        public ResourceConfiguration fromProperties( Properties prop ) {
+            return delegate.fromProperties( prop );
+        }
     }
 }
