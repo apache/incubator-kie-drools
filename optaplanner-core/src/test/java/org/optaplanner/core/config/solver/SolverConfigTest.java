@@ -24,12 +24,14 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.io.UncheckedIOException;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
-import java.util.function.Function;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
 import org.optaplanner.core.config.localsearch.LocalSearchPhaseConfig;
@@ -38,7 +40,6 @@ import org.optaplanner.core.impl.heuristic.selector.move.factory.MoveIteratorFac
 import org.optaplanner.core.impl.heuristic.selector.move.factory.MoveListFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.ChangeMove;
 import org.optaplanner.core.impl.io.OptaPlannerXmlSerializationException;
-import org.optaplanner.core.impl.io.jaxb.GenericJaxbIO;
 import org.optaplanner.core.impl.io.jaxb.SolverConfigIO;
 import org.optaplanner.core.impl.partitionedsearch.partitioner.SolutionPartitioner;
 import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
@@ -51,28 +52,26 @@ class SolverConfigTest {
 
     private static final String TEST_SOLVER_CONFIG_WITH_NAMESPACE = "testSolverConfigWithNamespace.xml";
     private static final String TEST_SOLVER_CONFIG_WITHOUT_NAMESPACE = "testSolverConfigWithoutNamespace.xml";
-    private static final String SOLVER_XSD = "/solver.xsd";
     private final SolverConfigIO solverConfigIO = new SolverConfigIO();
 
-    @Test
-    void xmlConfigRemainsSameAfterReadWrite() throws IOException {
-        SolverConfig jaxbSolverConfig =
-                readSolverConfig(TEST_SOLVER_CONFIG_WITHOUT_NAMESPACE, (reader) -> solverConfigIO.read(reader));
+    @ParameterizedTest
+    @ValueSource(strings = { TEST_SOLVER_CONFIG_WITHOUT_NAMESPACE, TEST_SOLVER_CONFIG_WITH_NAMESPACE })
+    void xmlConfigRemainsSameAfterReadWrite(String solverConfigResource) throws IOException {
+        SolverConfig jaxbSolverConfig = readSolverConfig(solverConfigResource);
 
         Writer stringWriter = new StringWriter();
         solverConfigIO.write(jaxbSolverConfig, stringWriter);
         String jaxbString = stringWriter.toString();
 
         String originalXml = IOUtils.toString(
-                SolverConfigTest.class.getResourceAsStream(TEST_SOLVER_CONFIG_WITHOUT_NAMESPACE), StandardCharsets.UTF_8);
+                SolverConfigTest.class.getResourceAsStream(solverConfigResource), StandardCharsets.UTF_8);
 
-        assertThat(jaxbString.trim()).isXmlEqualTo(originalXml.trim());
+        assertThat(jaxbString).isXmlEqualTo(originalXml);
     }
 
     @Test
-    void readXmlConfigWithNamespace() throws IOException {
-        SolverConfig solverConfig =
-                readSolverConfig(TEST_SOLVER_CONFIG_WITH_NAMESPACE, (reader) -> solverConfigIO.read(reader));
+    void readXmlConfigWithNamespace() {
+        SolverConfig solverConfig = readSolverConfig(TEST_SOLVER_CONFIG_WITH_NAMESPACE);
 
         assertThat(solverConfig).isNotNull();
         assertThat(solverConfig.getPhaseConfigList())
@@ -84,10 +83,11 @@ class SolverConfigTest {
                 .isAssignableFrom(DummyConstraintProvider.class);
     }
 
-    private SolverConfig readSolverConfig(String solverConfigResource, Function<Reader, SolverConfig> solverConfigReader)
-            throws IOException {
+    private SolverConfig readSolverConfig(String solverConfigResource) {
         try (Reader reader = new InputStreamReader(SolverConfigTest.class.getResourceAsStream(solverConfigResource))) {
-            return solverConfigReader.apply(reader);
+            return solverConfigIO.read(reader);
+        } catch (IOException ioException) {
+            throw new UncheckedIOException(ioException);
         }
     }
 
@@ -115,28 +115,16 @@ class SolverConfigTest {
                 + "  </constructionHeuristic>\n"
                 + "</solver>";
 
-        GenericJaxbIO<SolverConfig> genericJaxbIO = new GenericJaxbIO<>(SolverConfig.class);
         StringReader stringReader = new StringReader(solverConfigXml);
         assertThatExceptionOfType(OptaPlannerXmlSerializationException.class)
-                .isThrownBy(
-                        () -> genericJaxbIO.readAndValidate(stringReader, SOLVER_XSD))
+                .isThrownBy(() -> solverConfigIO.read(stringReader))
                 .withMessageContaining("Invalid content was found")
                 .withMessageContaining("variableName");
     }
 
     @Test
-    void readAndValidateSolverConfig() throws IOException {
-        GenericJaxbIO<SolverConfig> genericJaxbIO = new GenericJaxbIO<>(SolverConfig.class);
-        SolverConfig solverConfig =
-                readSolverConfig(TEST_SOLVER_CONFIG_WITH_NAMESPACE,
-                        (reader -> genericJaxbIO.readAndValidate(reader, SOLVER_XSD)));
-        assertThat(solverConfig).isNotNull();
-    }
-
-    @Test
-    void inherit() throws IOException {
-        SolverConfig originalSolverConfig =
-                readSolverConfig(TEST_SOLVER_CONFIG_WITHOUT_NAMESPACE, (reader) -> solverConfigIO.read(reader));
+    void inherit() {
+        SolverConfig originalSolverConfig = readSolverConfig(TEST_SOLVER_CONFIG_WITHOUT_NAMESPACE);
         SolverConfig inheritedSolverConfig = new SolverConfig().inherit(originalSolverConfig);
         assertThat(inheritedSolverConfig).usingRecursiveComparison().isEqualTo(originalSolverConfig);
     }

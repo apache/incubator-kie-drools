@@ -39,18 +39,18 @@ import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
-public class SolverFactoryTest {
+class SolverFactoryTest {
 
     private static File solverTestDir;
 
     @BeforeAll
-    public static void setup() {
+    static void setup() {
         solverTestDir = new File("target/test/solverTest/");
         solverTestDir.mkdirs();
     }
 
     @Test
-    public void createFromXmlResource() {
+    void createFromXmlResource() {
         SolverFactory<TestdataSolution> solverFactory = SolverFactory.createFromXmlResource(
                 "org/optaplanner/core/api/solver/testdataSolverConfig.xml");
         Solver<TestdataSolution> solver = solverFactory.buildSolver();
@@ -59,7 +59,7 @@ public class SolverFactoryTest {
 
     @Test
     @SuppressWarnings("rawtypes")
-    public void createFromXmlResource_noGenericsForBackwardsCompatibility() {
+    void createFromXmlResource_noGenericsForBackwardsCompatibility() {
         SolverFactory solverFactory = SolverFactory.createFromXmlResource(
                 "org/optaplanner/core/api/solver/testdataSolverConfig.xml");
         Solver solver = solverFactory.buildSolver();
@@ -67,13 +67,21 @@ public class SolverFactoryTest {
     }
 
     @Test
-    public void createFromXmlResource_nonExisting() {
-        assertThatIllegalArgumentException().isThrownBy(() -> SolverFactory.createFromXmlResource(
-                "org/optaplanner/core/api/solver/nonExistingSolverConfig.xml"));
+    void createFromNonExistingXmlResource_failsShowingResource() {
+        final String xmlSolverConfigResource = "org/optaplanner/core/api/solver/nonExistingSolverConfig.xml";
+        assertThatIllegalArgumentException().isThrownBy(() -> SolverFactory.createFromXmlResource(xmlSolverConfigResource))
+                .withMessageContaining(xmlSolverConfigResource);
     }
 
     @Test
-    public void createFromXmlResource_classLoader() {
+    void createFromNonExistingXmlFile_failsShowingPath() {
+        final String xmlSolverConfigPath = "/this/path/does/not/exist/nonExistingSolverConfig.xml";
+        assertThatIllegalArgumentException().isThrownBy(() -> SolverFactory.createFromXmlFile(new File(xmlSolverConfigPath)))
+                .withMessageContaining(xmlSolverConfigPath);
+    }
+
+    @Test
+    void createFromXmlResource_classLoader() {
         // Mocking loadClass doesn't work well enough, because the className still differs from class.getName()
         ClassLoader classLoader = new DivertingClassLoader(getClass().getClassLoader());
         SolverFactory<TestdataSolution> solverFactory = SolverFactory.createFromXmlResource(
@@ -83,7 +91,7 @@ public class SolverFactoryTest {
     }
 
     @Test
-    public void createFromXmlFile() throws IOException {
+    void createFromXmlFile() throws IOException {
         File file = new File(solverTestDir, "testdataSolverConfig.xml");
         try (InputStream in = getClass().getClassLoader().getResourceAsStream(
                 "org/optaplanner/core/api/solver/testdataSolverConfig.xml")) {
@@ -95,7 +103,7 @@ public class SolverFactoryTest {
     }
 
     @Test
-    public void createFromXmlFile_classLoader() throws IOException {
+    void createFromXmlFile_classLoader() throws IOException {
         // Mocking loadClass doesn't work well enough, because the className still differs from class.getName()
         ClassLoader classLoader = new DivertingClassLoader(getClass().getClassLoader());
         File file = new File(solverTestDir, "classloaderTestdataSolverConfig.xml");
@@ -109,7 +117,29 @@ public class SolverFactoryTest {
     }
 
     @Test
-    public void create() {
+    void createFromInvalidXmlResource_failsShowingBothResourceAndReason() {
+        final String invalidXmlSolverConfigResource = "org/optaplanner/core/api/solver/invalidSolverConfig.xml";
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> SolverFactory.createFromXmlResource(invalidXmlSolverConfigResource))
+                .withMessageContaining(invalidXmlSolverConfigResource)
+                .withStackTraceContaining("invalidElementThatShouldNotBeHere");
+    }
+
+    @Test
+    void createFromInvalidXmlFile_failsShowingBothPathAndReason() throws IOException {
+        final String invalidXmlSolverConfigResource = "org/optaplanner/core/api/solver/invalidSolverConfig.xml";
+        File file = new File(solverTestDir, "invalidSolverConfig.xml");
+        try (InputStream in = getClass().getClassLoader().getResourceAsStream(invalidXmlSolverConfigResource)) {
+            Files.copy(in, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        }
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> SolverFactory.createFromXmlFile(file))
+                .withMessageContaining(file.toString())
+                .withStackTraceContaining("invalidElementThatShouldNotBeHere");
+    }
+
+    @Test
+    void create() {
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class);
         SolverFactory<TestdataSolution> solverFactory = SolverFactory.create(solverConfig);
         Solver<TestdataSolution> solver = solverFactory.buildSolver();
@@ -117,7 +147,7 @@ public class SolverFactoryTest {
     }
 
     @Test
-    public void create_classLoader() {
+    void create_classLoader() {
         // Mocking loadClass doesn't work well enough, because the className still differs from class.getName()
         ClassLoader classLoader = new DivertingClassLoader(getClass().getClassLoader());
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class);
@@ -130,7 +160,7 @@ public class SolverFactoryTest {
     }
 
     @Test
-    public void getScoreDirectorFactory() {
+    void getScoreDirectorFactory() {
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class);
         DefaultSolverFactory<TestdataSolution> solverFactory =
                 (DefaultSolverFactory<TestdataSolution>) SolverFactory.<TestdataSolution> create(solverConfig);

@@ -158,8 +158,8 @@ public class PlannerBenchmarkConfig {
             }
             return createFromXmlInputStream(in, classLoader);
         } catch (OptaPlannerXmlSerializationException e) {
-            throw new IllegalArgumentException("Unmarshalling of benchmarkConfigResource (" + benchmarkConfigResource
-                    + ") fails.", e);
+            throw new IllegalArgumentException(
+                    "Unmarshalling of benchmarkConfigResource (" + benchmarkConfigResource + ") fails.", e);
         } catch (IOException e) {
             throw new IllegalArgumentException("Reading the benchmarkConfigResource (" + benchmarkConfigResource + ") fails.",
                     e);
@@ -190,9 +190,10 @@ public class PlannerBenchmarkConfig {
     public static PlannerBenchmarkConfig createFromXmlFile(File benchmarkConfigFile, ClassLoader classLoader) {
         try (InputStream in = new FileInputStream(benchmarkConfigFile)) {
             return createFromXmlInputStream(in, classLoader);
+        } catch (OptaPlannerXmlSerializationException e) {
+            throw new IllegalArgumentException("Unmarshalling the benchmarkConfigFile (" + benchmarkConfigFile + ") fails.", e);
         } catch (FileNotFoundException e) {
-            throw new IllegalArgumentException("The benchmarkConfigFile (" + benchmarkConfigFile
-                    + ") was not found.", e);
+            throw new IllegalArgumentException("The benchmarkConfigFile (" + benchmarkConfigFile + ") was not found.", e);
         } catch (IOException e) {
             throw new IllegalArgumentException("Reading the benchmarkConfigFile (" + benchmarkConfigFile + ") fails.", e);
         }

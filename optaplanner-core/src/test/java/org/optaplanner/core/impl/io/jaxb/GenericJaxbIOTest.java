@@ -75,8 +75,9 @@ class GenericJaxbIOTest {
                 + "  <!ENTITY xxe SYSTEM \"file:///etc/passwd\" >]"
                 + ">"
                 + "<dummyJaxbClass>&xxe;</dummyJaxbClass>";
-        DummyJaxbClass dummyJaxbClass = xmlIO.readOverridingNamespace(new StringReader(maliciousXml));
-        assertThat(dummyJaxbClass.value).isEmpty();
+        assertThatExceptionOfType(OptaPlannerXmlSerializationException.class)
+                .isThrownBy(() -> xmlIO.readOverridingNamespace(new StringReader(maliciousXml)))
+                .withStackTraceContaining("External Entity: Failed to read external document");
     }
 
     @XmlRootElement

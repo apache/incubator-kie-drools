@@ -17,12 +17,14 @@
 package org.optaplanner.benchmark.config;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
@@ -33,8 +35,10 @@ import java.util.TreeSet;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.optaplanner.benchmark.impl.io.PlannerBenchmarkConfigIO;
-import org.optaplanner.core.impl.io.jaxb.GenericJaxbIO;
+import org.optaplanner.core.impl.io.OptaPlannerXmlSerializationException;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
 
@@ -42,7 +46,6 @@ class PlannerBenchmarkConfigTest {
 
     private static final String TEST_PLANNER_BENCHMARK_CONFIG_WITH_NAMESPACE = "testBenchmarkConfigWithNamespace.xml";
     private static final String TEST_PLANNER_BENCHMARK_CONFIG_WITHOUT_NAMESPACE = "testBenchmarkConfigWithoutNamespace.xml";
-    private static final String BENCHMARK_XSD = "/benchmark.xsd";
 
     @Test
     void validNameWithUnderscoreAndSpace() {
@@ -161,37 +164,54 @@ class PlannerBenchmarkConfigTest {
         assertThat(config.calculateWarmUpTimeMillisSpentLimit()).isEqualTo(3_725_753L);
     }
 
-    @Test
-    void xmlConfigFileRemainsSameAfterReadWrite() throws IOException {
+    @ParameterizedTest
+    @ValueSource(strings = { TEST_PLANNER_BENCHMARK_CONFIG_WITHOUT_NAMESPACE, TEST_PLANNER_BENCHMARK_CONFIG_WITH_NAMESPACE })
+    void xmlConfigFileRemainsSameAfterReadWrite(String xmlBenchmarkConfigResource) throws IOException {
         PlannerBenchmarkConfigIO xmlIO = new PlannerBenchmarkConfigIO();
         PlannerBenchmarkConfig jaxbBenchmarkConfig;
 
         try (Reader reader = new InputStreamReader(
-                PlannerBenchmarkConfigTest.class.getResourceAsStream(TEST_PLANNER_BENCHMARK_CONFIG_WITHOUT_NAMESPACE))) {
+                PlannerBenchmarkConfigTest.class.getResourceAsStream(xmlBenchmarkConfigResource))) {
             jaxbBenchmarkConfig = xmlIO.read(reader);
         }
+
+        assertThat(jaxbBenchmarkConfig).isNotNull();
 
         Writer stringWriter = new StringWriter();
         xmlIO.write(jaxbBenchmarkConfig, stringWriter);
         String jaxbString = stringWriter.toString();
 
-        String originalXml = IOUtils.toString(
-                PlannerBenchmarkConfigTest.class.getResourceAsStream(TEST_PLANNER_BENCHMARK_CONFIG_WITHOUT_NAMESPACE),
+        String originalXml = IOUtils.toString(PlannerBenchmarkConfigTest.class.getResourceAsStream(xmlBenchmarkConfigResource),
                 StandardCharsets.UTF_8);
 
-        assertThat(jaxbString.trim()).isXmlEqualTo(originalXml.trim());
+        assertThat(jaxbString).isXmlEqualTo(originalXml);
     }
 
     @Test
-    void readAndValidateBenchmarkConfig() throws IOException {
-        GenericJaxbIO<PlannerBenchmarkConfig> genericJaxbIO = new GenericJaxbIO<>(PlannerBenchmarkConfig.class);
-        PlannerBenchmarkConfig jaxbBenchmarkConfig;
-        try (Reader reader = new InputStreamReader(
-                PlannerBenchmarkConfigTest.class.getResourceAsStream(TEST_PLANNER_BENCHMARK_CONFIG_WITH_NAMESPACE))) {
-            jaxbBenchmarkConfig = genericJaxbIO.readAndValidate(reader, BENCHMARK_XSD);
-        }
+    void readAndValidateInvalidBenchmarkConfig_failsIndicatingTheIssue() {
+        PlannerBenchmarkConfigIO xmlIO = new PlannerBenchmarkConfigIO();
+        String benchmarkConfigXml = "<plannerBenchmark xmlns=\"https://www.optaplanner.org/xsd/benchmark\">\n"
+                + "  <benchmarkDirectory>data</benchmarkDirectory>\n"
+                + "  <parallelBenchmarkCount>AUTO</parallelBenchmarkCount>\n"
+                + "  <solverBenchmark>\n"
+                + "    <name>Entity Tabu Search</name>\n"
+                + "    <solver>\n"
+                // Intentionally wrong to simulate a typo.
+                + "      <solutionKlazz>org.optaplanner.core.impl.testdata.domain.TestdataSolution</solutionKlazz>\n"
+                + "      <entityClass>org.optaplanner.core.impl.testdata.domain.TestdataEntity</entityClass>\n"
+                + "    </solver>\n"
+                + "    <problemBenchmarks>\n"
+                + "      <solutionFileIOClass>org.optaplanner.benchmark.config.PlannerBenchmarkConfigTest$TestdataSolutionFileIO</solutionFileIOClass>\n"
+                + "      <inputSolutionFile>nonExistingDataset1.xml</inputSolutionFile>\n"
+                + "    </problemBenchmarks>\n"
+                + "  </solverBenchmark>\n"
+                + "</plannerBenchmark>\n";
 
-        assertThat(jaxbBenchmarkConfig).isNotNull();
+        StringReader stringReader = new StringReader(benchmarkConfigXml);
+        assertThatExceptionOfType(OptaPlannerXmlSerializationException.class)
+                .isThrownBy(() -> xmlIO.read(stringReader))
+                .withMessageContaining("Invalid content was found")
+                .withMessageContaining("solutionKlazz");
     }
 
     // Used by the testBenchmarkConfig.xml

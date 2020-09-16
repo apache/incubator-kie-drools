@@ -147,6 +147,8 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
     public static SolverConfig createFromXmlFile(File solverConfigFile, ClassLoader classLoader) {
         try (InputStream in = new FileInputStream(solverConfigFile)) {
             return createFromXmlInputStream(in, classLoader);
+        } catch (OptaPlannerXmlSerializationException e) {
+            throw new IllegalArgumentException("Unmarshalling the solverConfigFile (" + solverConfigFile + ") fails.", e);
         } catch (FileNotFoundException e) {
             throw new IllegalArgumentException("The solverConfigFile (" + solverConfigFile + ") was not found.", e);
         } catch (IOException e) {

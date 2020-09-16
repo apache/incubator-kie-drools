@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?xml version="1.0" encoding="utf-8"?>
 <solver xmlns="https://www.optaplanner.org/xsd/solver">
   <environmentMode>FULL_ASSERT</environmentMode>
   <moveThreadCount>AUTO</moveThreadCount>
