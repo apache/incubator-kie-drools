@@ -364,4 +364,18 @@ public class CommonCodegenUtils {
         toReturn.setType(methodTemplate.getType());
         return toReturn;
     }
+
+    /**
+     * Return an <code>Optional&lt;VariableDeclarator&gt;</code> with the <b>first</b> variable <b>variableName</b> from the given <code>BlockStmt</code>
+     * @param body
+     * @param variableName
+     * @return <code>Optional&lt;VariableDeclarator&gt;</code> with the first found <code>VariableDeclarator</code>, or <code>Optional.empty()</code> if no match
+     * has been found
+     */
+    public static Optional<VariableDeclarator> getVariableDeclarator(final BlockStmt body, final String variableName) {
+        return body.findAll(VariableDeclarator.class)
+                .stream()
+                .filter(variableDeclarator -> variableDeclarator.getName().asString().equals(variableName))
+                .findFirst();
+    }
 }
