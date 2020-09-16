@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -101,36 +102,29 @@ public interface InternalKnowledgeBuilder extends KnowledgeBuilder, DroolsAssemb
             this.lazyBuilder = lazyBuilder;
         }
 
-        private synchronized KnowledgeBuilderImpl getKnowledgeBuilder() {
-            if (knowledgeBuilder == null) {
-                knowledgeBuilder = lazyBuilder.get();
-            }
-            return knowledgeBuilder;
-        }
-
         @Override
         public Collection<KiePackage> getKnowledgePackages() {
-            return Collections.emptyList();
+            return withKnowledgeBuilder(InternalKnowledgeBuilder::getKnowledgePackages, Collections.emptyList());
         }
 
         @Override
         public boolean hasErrors() {
-            return false;
+            return withKnowledgeBuilder(InternalKnowledgeBuilder::hasErrors, false);
         }
 
         @Override
         public KnowledgeBuilderErrors getErrors() {
-            return new PackageBuilderErrors();
+            return withKnowledgeBuilder(InternalKnowledgeBuilder::getErrors, new PackageBuilderErrors());
         }
 
         @Override
         public KnowledgeBuilderResults getResults( ResultSeverity... severities ) {
-            return new PackageBuilderResults();
+            return withKnowledgeBuilder(kb -> kb.getResults( severities ), new PackageBuilderResults());
         }
 
         @Override
         public boolean hasResults( ResultSeverity... severities ) {
-            return false;
+            return withKnowledgeBuilder(kb -> kb.hasResults( severities ), false);
         }
 
         @Override
@@ -140,91 +134,111 @@ public interface InternalKnowledgeBuilder extends KnowledgeBuilder, DroolsAssemb
 
         @Override
         public void rewireAllClassObjectTypes() {
+            withKnowledgeBuilder(InternalKnowledgeBuilder::rewireAllClassObjectTypes);
         }
 
         @Override
         public Map<String, Class<?>> getGlobals() {
-            return Collections.emptyMap();
-        }
-
-        @Override
-        public void add( Resource resource, ResourceType type ) {
-            getKnowledgeBuilder().add(resource, type);
-        }
-
-        @Override
-        public void add( Resource resource, ResourceType type, ResourceConfiguration configuration ) {
-            getKnowledgeBuilder().add(resource, type, configuration);
+            return withKnowledgeBuilder(InternalKnowledgeBuilder::getGlobals, Collections.emptyMap());
         }
 
         @Override
         public KieBase newKieBase() {
-            return getKnowledgeBuilder().newKieBase();
+            return withKnowledgeBuilder(InternalKnowledgeBuilder::newKieBase, null);
         }
 
         @Override
         public void undo() {
-            getKnowledgeBuilder().undo();
-        }
-
-        @Override
-        public CompositeKnowledgeBuilder batch() {
-            return getKnowledgeBuilder().batch();
-        }
-
-        @Override
-        public <T extends ResourceTypePackage<?>> T computeIfAbsent( ResourceType resourceType, String namespace, Function<? super ResourceType, T> mappingFunction ) {
-            return getKnowledgeBuilder().computeIfAbsent( resourceType, namespace, mappingFunction );
+            withKnowledgeBuilder(InternalKnowledgeBuilder::undo);
         }
 
         @Override
         public void reportError( KnowledgeBuilderError error ) {
-            getKnowledgeBuilder().reportError( error );
+            withKnowledgeBuilder(kb -> kb.reportError( error ));
         }
 
         @Override
         public ResourceRemovalResult removeObjectsGeneratedFromResource( Resource resource ) {
-            return getKnowledgeBuilder().removeObjectsGeneratedFromResource( resource );
-        }
-
-        @Override
-        public void addPackage( PackageDescr packageDescr ) {
-            getKnowledgeBuilder().addPackage( packageDescr );
+            return getOrCreateKnowledgeBuilder().removeObjectsGeneratedFromResource( resource );
         }
 
         @Override
         public InternalKnowledgePackage getPackage( String name ) {
-            return getKnowledgeBuilder().getPackage( name );
+            return withKnowledgeBuilder(kb -> kb.getPackage( name ), null);
         }
 
         @Override
         public KnowledgeBuilderConfigurationImpl getBuilderConfiguration() {
-            return getKnowledgeBuilder().getBuilderConfiguration();
+            return withKnowledgeBuilder(InternalKnowledgeBuilder::getBuilderConfiguration, null);
         }
 
         @Override
         public TypeDeclaration getAndRegisterTypeDeclaration( Class<?> cls, String name ) {
-            return getKnowledgeBuilder().getAndRegisterTypeDeclaration(cls, name);
+            return withKnowledgeBuilder(kb -> kb.getAndRegisterTypeDeclaration( cls, name ), null);
         }
 
         @Override
         public TypeDeclaration getTypeDeclaration( Class<?> typeClass ) {
-            return getKnowledgeBuilder().getTypeDeclaration(typeClass);
+            return withKnowledgeBuilder(kb -> kb.getTypeDeclaration( typeClass ), null);
         }
 
         @Override
         public List<PackageDescr> getPackageDescrs( String namespace ) {
-            return getKnowledgeBuilder().getPackageDescrs(namespace);
+            return withKnowledgeBuilder(kb -> kb.getPackageDescrs( namespace ), Collections.emptyList());
         }
 
         @Override
         public PackageRegistry getPackageRegistry( String packageName ) {
-            return getKnowledgeBuilder().getPackageRegistry(packageName);
+            return withKnowledgeBuilder(kb -> kb.getPackageRegistry( packageName ), null);
         }
 
         @Override
         public InternalKnowledgeBase getKnowledgeBase() {
-            return getKnowledgeBuilder().getKnowledgeBase();
+            return withKnowledgeBuilder(InternalKnowledgeBuilder::getKnowledgeBase, null);
+        }
+
+        private synchronized void withKnowledgeBuilder(Consumer<InternalKnowledgeBuilder> f) {
+            if (knowledgeBuilder != null) {
+                f.accept( knowledgeBuilder );
+            }
+        }
+
+        private synchronized <T> T withKnowledgeBuilder(Function<InternalKnowledgeBuilder, T> f, T defaultValue) {
+            return knowledgeBuilder != null ? f.apply( knowledgeBuilder ) : defaultValue;
+        }
+
+        @Override
+        public void addPackage( PackageDescr packageDescr ) {
+            getOrCreateKnowledgeBuilder().addPackage( packageDescr );
+        }
+
+        @Override
+        public void add( Resource resource, ResourceType type ) {
+            getOrCreateKnowledgeBuilder().add(resource, type);
+        }
+
+        @Override
+        public void add( Resource resource, ResourceType type, ResourceConfiguration configuration ) {
+            getOrCreateKnowledgeBuilder().add(resource, type, configuration);
+        }
+
+        @Override
+        public <T extends ResourceTypePackage<?>> T computeIfAbsent( ResourceType resourceType, String namespace, Function<? super ResourceType, T> mappingFunction ) {
+            return getOrCreateKnowledgeBuilder().computeIfAbsent( resourceType, namespace, mappingFunction );
+        }
+
+        @Override
+        public CompositeKnowledgeBuilder batch() {
+            return getOrCreateKnowledgeBuilder().batch();
+        }
+
+        // this method forces the creation of a KnowledgeBuilder so it should be internally called only by methods
+        // modifying this empty builder and not by ones only attempting to retrieve infos from it
+        private synchronized KnowledgeBuilderImpl getOrCreateKnowledgeBuilder() {
+            if (knowledgeBuilder == null) {
+                knowledgeBuilder = lazyBuilder.get();
+            }
+            return knowledgeBuilder;
         }
     }
 }
