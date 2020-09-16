@@ -418,11 +418,6 @@ public abstract class AbstractExpressionBuilder {
         if (!opt.isPresent()) {
             return false;
         }
-        String nameStr = opt.get();
-        if (nameStr.equals(THIS_PLACEHOLDER)) {
-            return true;
-        } else {
-            return false;
-        }
+        return opt.get().equals(THIS_PLACEHOLDER);
     }
 }
