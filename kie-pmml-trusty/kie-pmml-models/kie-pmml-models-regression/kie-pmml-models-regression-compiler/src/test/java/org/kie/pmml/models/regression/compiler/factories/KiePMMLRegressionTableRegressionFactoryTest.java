@@ -45,7 +45,7 @@ import org.dmg.pmml.regression.NumericPredictor;
 import org.dmg.pmml.regression.PredictorTerm;
 import org.dmg.pmml.regression.RegressionModel;
 import org.dmg.pmml.regression.RegressionTable;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.exceptions.KiePMMLInternalException;
@@ -81,13 +81,13 @@ public class KiePMMLRegressionTableRegressionFactoryTest extends AbstractKiePMML
             Arrays.asList(
                     RegressionModel.NormalizationMethod.SIMPLEMAX,
                     RegressionModel.NormalizationMethod.LOGLOG);
-    private static CompilationUnit COMPILATION_UNIT;
-    private static ClassOrInterfaceDeclaration MODEL_TEMPLATE;
+    private static CompilationUnit compilationUnit;
+    private static ClassOrInterfaceDeclaration modelTemplate;
 
-    @BeforeClass
-    public static void setup() {
-        COMPILATION_UNIT = getFromFileName(KIE_PMML_REGRESSION_TABLE_REGRESSION_TEMPLATE_JAVA);
-        MODEL_TEMPLATE = COMPILATION_UNIT.getClassByName(KIE_PMML_REGRESSION_TABLE_REGRESSION_TEMPLATE).get();
+    @Before
+    public void setup() {
+        compilationUnit = getFromFileName(KIE_PMML_REGRESSION_TABLE_REGRESSION_TEMPLATE_JAVA);
+        modelTemplate = compilationUnit.getClassByName(KIE_PMML_REGRESSION_TABLE_REGRESSION_TEMPLATE).get();
     }
 
     @Test
@@ -107,7 +107,7 @@ public class KiePMMLRegressionTableRegressionFactoryTest extends AbstractKiePMML
     @Test
     public void setConstructor() {
         regressionTable = getRegressionTable(3.5, "professional");
-        ConstructorDeclaration constructorDeclaration = MODEL_TEMPLATE.getDefaultConstructor().get();
+        ConstructorDeclaration constructorDeclaration = modelTemplate.getDefaultConstructor().get();
         SimpleName tableName = new SimpleName("TableName");
         String targetField = "targetField";
         KiePMMLRegressionTableRegressionFactory.setConstructor(regressionTable,
@@ -163,7 +163,6 @@ public class KiePMMLRegressionTableRegressionFactoryTest extends AbstractKiePMML
         ClassOrInterfaceDeclaration tableTemplate = new ClassOrInterfaceDeclaration();
         MethodDeclaration retrieved = KiePMMLRegressionTableRegressionFactory.addNumericPredictor(numericPredictor,
                                                                                                   tableTemplate, arity);
-        System.out.println(retrieved);
         BlockStmt body = retrieved.getBody().get();
         String expected = String.format("{\n" +
                                                 "    double coefficient = %s;\n" +
@@ -198,7 +197,6 @@ public class KiePMMLRegressionTableRegressionFactoryTest extends AbstractKiePMML
         ClassOrInterfaceDeclaration tableTemplate = new ClassOrInterfaceDeclaration();
         MethodDeclaration retrieved = KiePMMLRegressionTableRegressionFactory.addNumericPredictor(numericPredictor,
                                                                                                   tableTemplate, arity);
-        System.out.println(retrieved);
         BlockStmt body = retrieved.getBody().get();
         String expected = String.format("{\n" +
                                                 "    double coefficient = %s;\n" +
@@ -365,31 +363,31 @@ public class KiePMMLRegressionTableRegressionFactoryTest extends AbstractKiePMML
 
     @Test
     public void populateGetTargetCategoryTargetCategoryNull() {
-        KiePMMLRegressionTableRegressionFactory.populateGetTargetCategory(MODEL_TEMPLATE, null);
+        KiePMMLRegressionTableRegressionFactory.populateGetTargetCategory(modelTemplate, null);
         final Expression expectedExpression = new NameExpr("null");
-        commonEvaluateGetTargetCategory(MODEL_TEMPLATE, expectedExpression);
+        commonEvaluateGetTargetCategory(modelTemplate, expectedExpression);
     }
 
     @Test
     public void populateGetTargetCategoryTargetCategoryString() {
-        KiePMMLRegressionTableRegressionFactory.populateGetTargetCategory(MODEL_TEMPLATE, "CATEGORY");
+        KiePMMLRegressionTableRegressionFactory.populateGetTargetCategory(modelTemplate, "CATEGORY");
         final Expression expectedExpression = new StringLiteralExpr("CATEGORY");
-        commonEvaluateGetTargetCategory(MODEL_TEMPLATE, expectedExpression);
+        commonEvaluateGetTargetCategory(modelTemplate, expectedExpression);
     }
 
     @Test
     public void populateGetTargetCategoryTargetCategoryNoString() {
-        KiePMMLRegressionTableRegressionFactory.populateGetTargetCategory(MODEL_TEMPLATE, 435);
+        KiePMMLRegressionTableRegressionFactory.populateGetTargetCategory(modelTemplate, 435);
         final Expression expectedExpression = new NameExpr("435");
-        commonEvaluateGetTargetCategory(MODEL_TEMPLATE, expectedExpression);
+        commonEvaluateGetTargetCategory(modelTemplate, expectedExpression);
     }
 
     @Test
     public void populateUpdateResultSupported() {
         SUPPORTED_NORMALIZATION_METHODS.forEach(normalizationMethod -> {
-            KiePMMLRegressionTableRegressionFactory.populateUpdateResult(MODEL_TEMPLATE, normalizationMethod);
+            KiePMMLRegressionTableRegressionFactory.populateUpdateResult(modelTemplate, normalizationMethod);
             MethodDeclaration methodDeclaration =
-                    MODEL_TEMPLATE.getMethodsByName("updateResult").get(0);
+                    modelTemplate.getMethodsByName("updateResult").get(0);
             BlockStmt body = methodDeclaration.getBody().get();
             assertNotNull(body.getStatements());
             if (normalizationMethod.equals(RegressionModel.NormalizationMethod.NONE)) {
@@ -404,7 +402,7 @@ public class KiePMMLRegressionTableRegressionFactoryTest extends AbstractKiePMML
     public void populateUpdateResultUnsupported() {
         UNSUPPORTED_NORMALIZATION_METHODS.forEach(normalizationMethod -> {
             try {
-                KiePMMLRegressionTableRegressionFactory.populateUpdateResult(MODEL_TEMPLATE, normalizationMethod);
+                KiePMMLRegressionTableRegressionFactory.populateUpdateResult(modelTemplate, normalizationMethod);
                 fail("Expecting KiePMMLInternalException with normalizationMethod " + normalizationMethod);
             } catch (Exception e) {
                 assertTrue(e instanceof KiePMMLInternalException);
@@ -422,9 +420,9 @@ public class KiePMMLRegressionTableRegressionFactoryTest extends AbstractKiePMML
                 .mapToObj(index -> getOutputField("KOF-PROB-" + index, RESULT_FEATURE.PROBABILITY, "PROB-" + index))
                 .collect(Collectors.toList());
         outputFields.addAll(probabilityOutputFields);
-        KiePMMLRegressionTableRegressionFactory.populateOutputFieldsMap(MODEL_TEMPLATE, outputFields);
+        KiePMMLRegressionTableRegressionFactory.populateOutputFieldsMap(modelTemplate, outputFields);
         MethodDeclaration methodDeclaration =
-                MODEL_TEMPLATE.getMethodsByName("populateOutputFieldsMapWithResult").get(0);
+                modelTemplate.getMethodsByName("populateOutputFieldsMapWithResult").get(0);
         BlockStmt body = methodDeclaration.getBody().get();
         NodeList<Statement> retrieved = body.getStatements();
         assertEquals(1, retrieved.size());
