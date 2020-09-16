@@ -297,6 +297,20 @@ public class CommonCodegenUtilsTest {
         assertTrue(CommonCodegenUtils.getMethodDeclaration(classOrInterfaceDeclaration, methodName).isPresent());
     }
 
+    @Test
+    public void addMethod() {
+        final MethodDeclaration methodTemplate = new MethodDeclaration();
+        methodTemplate.setName("methodTemplate");
+        final BlockStmt body = new BlockStmt();
+        methodTemplate.setBody(body);
+        final String methodName = "METHOD_NAME";
+        final ClassOrInterfaceDeclaration classOrInterfaceDeclaration = new ClassOrInterfaceDeclaration();
+        assertTrue(classOrInterfaceDeclaration.getMethodsByName(methodName).isEmpty());
+        CommonCodegenUtils.addMethod(methodTemplate, classOrInterfaceDeclaration, methodName);
+        assertEquals(1, classOrInterfaceDeclaration.getMethodsByName(methodName).size());
+        assertEquals(body, classOrInterfaceDeclaration.getMethodsByName(methodName).get(0).getBody().get());
+    }
+
     private void commonValidateMethodDeclaration(MethodDeclaration toValidate, String methodName) {
         assertNotNull(toValidate);
         assertEquals(methodName, toValidate.getName().asString());

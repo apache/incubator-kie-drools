@@ -45,9 +45,11 @@ import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
+import org.kie.pmml.commons.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
+import static org.kie.pmml.commons.Constants.MISSING_BODY_TEMPLATE;
 import static org.kie.pmml.commons.Constants.MISSING_PARAMETER_IN_CONSTRUCTOR_INVOCATION;
 import static org.kie.pmml.commons.Constants.MISSING_VARIABLE_IN_BODY;
 
@@ -342,5 +344,24 @@ public class CommonCodegenUtils {
     public static Optional<MethodDeclaration> getMethodDeclaration(final ClassOrInterfaceDeclaration classOrInterfaceDeclaration, final String methodName) {
         final List<MethodDeclaration> assignExprs = classOrInterfaceDeclaration.getMethodsByName(methodName);
         return assignExprs.isEmpty() ? Optional.empty() : Optional.of(assignExprs.get(0));
+    }
+
+    /**
+     * Add a <code>MethodDeclaration</code> to the class
+     * @param methodTemplate
+     * @param tableTemplate
+     * @param methodName
+     * @return
+     */
+    public static MethodDeclaration addMethod(final MethodDeclaration methodTemplate,
+                                                 final ClassOrInterfaceDeclaration tableTemplate,
+                                                 final String methodName) {
+        final BlockStmt body =
+                methodTemplate.getBody().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_BODY_TEMPLATE, methodTemplate.getName())));
+        final MethodDeclaration toReturn = tableTemplate.addMethod(methodName).setBody(body);
+        toReturn.setModifiers(methodTemplate.getModifiers());
+        methodTemplate.getParameters().forEach(toReturn::addParameter);
+        toReturn.setType(methodTemplate.getType());
+        return toReturn;
     }
 }
