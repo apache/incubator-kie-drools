@@ -94,7 +94,7 @@ public class KiePMMLSegmentationFactory {
                                                                    dataDictionary,
                                                                    transformationDictionary,
                                                                    segmentation.getSegments(),
-                                                                   kBuilder,
+                                                                  kBuilder,
                                                                    nestedModels);
         String className = getSanitizedClassName(segmentationName);
         CompilationUnit cloneCU = JavaParserUtils.getKiePMMLModelCompilationUnit(className, packageName,

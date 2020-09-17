@@ -86,8 +86,8 @@ public class KiePMMLMiningModelFactoryTest extends AbstractKiePMMLFactoryTest {
                                                                                                         TRANSFORMATION_DICTIONARY,
                                                                                                         MINING_MODEL,
                                                                                                         packageName,
-                                                                                                        KNOWLEDGE_BUILDER,
-                                                                                                        nestedModels);
+                                                                                                       KNOWLEDGE_BUILDER,
+                                                                                                       nestedModels);
         assertNotNull(retrieved);
         int expectedNestedModels = MINING_MODEL.getSegmentation().getSegments().size();
         assertEquals(expectedNestedModels, nestedModels.size());

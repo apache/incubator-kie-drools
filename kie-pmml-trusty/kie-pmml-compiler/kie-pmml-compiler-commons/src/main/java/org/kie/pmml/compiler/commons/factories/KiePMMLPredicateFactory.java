@@ -103,12 +103,12 @@ public class KiePMMLPredicateFactory {
     }
 
     public static List<KiePMMLPredicate> getPredicates(List<Predicate> predicates, DataDictionary dataDictionary) {
-        logger.info("getPredicates {}", predicates);
+        logger.trace("getPredicates {}", predicates);
         return predicates.stream().map(predicate -> getPredicate(predicate, dataDictionary)).collect(Collectors.toList());
     }
 
     public static KiePMMLPredicate getPredicate(Predicate predicate, DataDictionary dataDictionary) {
-        logger.info("getPredicate {}", predicate);
+        logger.trace("getPredicate {}", predicate);
         if (predicate instanceof SimplePredicate) {
             final DataType dataType = dataDictionary.getDataFields().stream()
                     .filter(dataField -> dataField.getName().getValue().equals(((SimplePredicate) predicate).getField().getValue()))
@@ -166,7 +166,7 @@ public class KiePMMLPredicateFactory {
 
     public static Map<String, String> getPredicateSourcesMap(final KiePMMLPredicate kiePMMLPredicate,
                                                              final String packageName) {
-        logger.info("getPredicateSourcesMap {}", kiePMMLPredicate);
+        logger.trace("getPredicateSourcesMap {}", kiePMMLPredicate);
         if (kiePMMLPredicate instanceof KiePMMLSimplePredicate) {
             return getKiePMMLSimplePredicateSourcesMap((KiePMMLSimplePredicate) kiePMMLPredicate, packageName);
         } else if (kiePMMLPredicate instanceof KiePMMLSimpleSetPredicate) {
