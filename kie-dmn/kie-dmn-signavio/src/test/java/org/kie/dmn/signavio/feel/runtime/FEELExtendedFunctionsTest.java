@@ -193,6 +193,7 @@ public class FEELExtendedFunctionsTest extends ExtendedFunctionsBaseFEELTest {
                 {"areElementsOf([\"item0\", \"item3\"], [\"item1\", \"item2\", \"item3\"])", false, null},
                 {"areElementsOf([], [\"item1\", \"item2\", \"item3\"])", true, null},
                 {"zip([\"id\", \"value\"], [\"23a3e98\", \"c45da1b\"], [40, 120])", Arrays.asList(mapOf(entry("id", "23a3e98"), entry("value", new BigDecimal("40"))), mapOf(entry("id", "c45da1b"), entry("value", new BigDecimal("120")))), null},
+                {"zip([\"id\", \"value\"], [[\"23a3e98\", \"c45da1b\"], [40, 120]])", Arrays.asList(mapOf(entry("id", "23a3e98"), entry("value", new BigDecimal("40"))), mapOf(entry("id", "c45da1b"), entry("value", new BigDecimal("120")))), null},
                 {"remove([\"item1\", \"item2\"], \"item1\")", Arrays.asList("item2"), null},
                 {"removeAll([\"item1\", \"item2\", \"item3\"], [\"item1\", \"item2\"])", Arrays.asList("item3"), null},
                 {"removeAll([\"item1\", \"item2\", \"item3\"], [\"item1\", \"item0\"])", Arrays.asList("item2", "item3"), null},
