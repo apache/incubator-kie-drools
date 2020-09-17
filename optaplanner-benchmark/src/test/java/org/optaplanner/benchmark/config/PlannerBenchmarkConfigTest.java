@@ -184,6 +184,12 @@ class PlannerBenchmarkConfigTest {
         String originalXml = IOUtils.toString(PlannerBenchmarkConfigTest.class.getResourceAsStream(xmlBenchmarkConfigResource),
                 StandardCharsets.UTF_8);
 
+        // During writing the benchmark config, the benchmark element's namespace is removed.
+        String benchmarkElementWithNamespace =
+                PlannerBenchmarkConfig.XML_ELEMENT_NAME + " xmlns=\"" + PlannerBenchmarkConfig.XML_NAMESPACE + "\"";
+        if (originalXml.contains(benchmarkElementWithNamespace)) {
+            originalXml = originalXml.replace(benchmarkElementWithNamespace, PlannerBenchmarkConfig.XML_ELEMENT_NAME);
+        }
         assertThat(jaxbString).isXmlEqualTo(originalXml);
     }
 

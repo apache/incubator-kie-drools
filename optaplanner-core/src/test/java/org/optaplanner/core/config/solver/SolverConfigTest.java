@@ -66,6 +66,11 @@ class SolverConfigTest {
         String originalXml = IOUtils.toString(
                 SolverConfigTest.class.getResourceAsStream(solverConfigResource), StandardCharsets.UTF_8);
 
+        // During writing the solver config, the solver element's namespace is removed.
+        String solverElementWithNamespace = SolverConfig.XML_ELEMENT_NAME + " xmlns=\"" + SolverConfig.XML_NAMESPACE + "\"";
+        if (originalXml.contains(solverElementWithNamespace)) {
+            originalXml = originalXml.replace(solverElementWithNamespace, SolverConfig.XML_ELEMENT_NAME);
+        }
         assertThat(jaxbString).isXmlEqualTo(originalXml);
     }
 
