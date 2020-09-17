@@ -62,6 +62,7 @@ import org.jboss.jandex.Indexer;
 import org.jboss.jandex.MethodInfo;
 import org.jbpm.util.JsonSchemaUtil;
 import org.kie.api.builder.model.KieModuleModel;
+import org.kie.api.pmml.PMML4Result;
 import org.kie.internal.kogito.codegen.Generated;
 import org.kie.internal.kogito.codegen.VariableInfo;
 import org.kie.kogito.Model;
@@ -79,6 +80,9 @@ import org.kie.kogito.codegen.prediction.PredictionCodegen;
 import org.kie.kogito.codegen.process.ProcessCodegen;
 import org.kie.kogito.codegen.process.persistence.PersistenceGenerator;
 import org.kie.kogito.codegen.rules.IncrementalRuleCodegen;
+import org.kie.pmml.evaluator.core.executor.PMMLModelEvaluator;
+import org.kie.pmml.evaluator.core.executor.PMMLModelEvaluatorFinder;
+import org.kie.pmml.evaluator.core.executor.PMMLModelEvaluatorFinderImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -405,6 +409,26 @@ public class KogitoAssetsProcessor {
     @BuildStep
     public RuntimeInitializedClassBuildItem runtimeInitializedClass() {
         return new RuntimeInitializedClassBuildItem(ClassFieldAccessorFactory.class.getName());
+    }
+
+    @BuildStep
+    public List<ReflectiveClassBuildItem> reflectivePredictions() {
+        logger.debug("reflectivePredictions()");
+        PMMLModelEvaluatorFinder pmmlModelEvaluatorFinder = new PMMLModelEvaluatorFinderImpl();
+        final List<PMMLModelEvaluator> pmmlEvaluators = pmmlModelEvaluatorFinder.getImplementations(false);
+        logger.debug("pmmlEvaluators {}", pmmlEvaluators.size());
+        final List<ReflectiveClassBuildItem> toReturn = new ArrayList<>();
+        toReturn.add(new ReflectiveClassBuildItem(true, true, PMML4Result.class));
+        pmmlEvaluators.
+                forEach(pmmlModelEvaluator -> toReturn.add(new ReflectiveClassBuildItem(true, true, pmmlModelEvaluator.getClass())));
+        logger.debug("toReturn {}", toReturn.size());
+        return toReturn;
+    }
+
+    @BuildStep
+    public NativeImageResourceBuildItem predictionSPI() {
+        logger.debug("predictionSPI()");
+        return new NativeImageResourceBuildItem("META-INF/services/org.kie.pmml.evaluator.core.executor.PMMLModelEvaluator");
     }
 
     private void writeJsonSchema(AppPaths appPaths, Index index) throws IOException {
