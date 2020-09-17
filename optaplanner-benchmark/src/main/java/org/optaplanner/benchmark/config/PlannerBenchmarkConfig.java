@@ -158,8 +158,8 @@ public class PlannerBenchmarkConfig {
             }
             return createFromXmlInputStream(in, classLoader);
         } catch (OptaPlannerXmlSerializationException e) {
-            throw new IllegalArgumentException(
-                    "Unmarshalling of benchmarkConfigResource (" + benchmarkConfigResource + ") fails.", e);
+            throw new IllegalArgumentException("Unmarshalling of benchmarkConfigResource (" + benchmarkConfigResource
+                    + ") fails.", e);
         } catch (IOException e) {
             throw new IllegalArgumentException("Reading the benchmarkConfigResource (" + benchmarkConfigResource + ") fails.",
                     e);

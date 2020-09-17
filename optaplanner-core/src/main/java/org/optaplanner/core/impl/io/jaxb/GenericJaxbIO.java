@@ -215,7 +215,6 @@ public final class GenericJaxbIO<T> implements JaxbIO<T> {
     }
 
     public Document parseXml(Reader reader) {
-        Reader nonNullReader = Objects.requireNonNull(reader);
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
         documentBuilderFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
         documentBuilderFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
@@ -229,7 +228,7 @@ public final class GenericJaxbIO<T> implements JaxbIO<T> {
             throw new OptaPlannerXmlSerializationException(errorMessage, e);
         }
 
-        try {
+        try (Reader nonNullReader = Objects.requireNonNull(reader)) {
             return builder.parse(new InputSource(nonNullReader));
         } catch (SAXException saxException) {
             String errorMessage = String.format("Failed to parse an XML for a root class (%s).", rootClass.getName());
