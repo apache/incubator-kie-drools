@@ -62,7 +62,8 @@ A solver configuration XML file looks like this:
 [source,xml,options="nowrap"]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<solver>
+<solver xmlns="https://www.optaplanner.org/xsd/solver" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.optaplanner.org/xsd/solver https://www.optaplanner.org/xsd/solver/solver.xsd">
   <!-- Define the model -->
   <solutionClass>org.optaplanner.examples.nqueens.domain.NQueens</solutionClass>
   <entityClass>org.optaplanner.examples.nqueens.domain.Queen</entityClass>
@@ -347,7 +348,8 @@ The solver configuration needs to declare each planning entity class:
 
 [source,java,options="nowrap"]
 ----
-<solver>
+<solver xmlns="https://www.optaplanner.org/xsd/solver" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.optaplanner.org/xsd/solver https://www.optaplanner.org/xsd/solver/solver.xsd">
   ...
   <entityClass>org.optaplanner.examples.nqueens.domain.Queen</entityClass>
   ...
@@ -532,7 +534,8 @@ One way to deal with this is to filter the entity selector of the placer in the 
 
 [source,xml,options="nowrap"]
 ----
-<solverConfig>
+<solver xmlns="https://www.optaplanner.org/xsd/solver" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.optaplanner.org/xsd/solver https://www.optaplanner.org/xsd/solver/solver.xsd">
   ...
   <constructionHeuristics>
     <queuedEntityPlacer>
@@ -547,7 +550,7 @@ One way to deal with this is to filter the entity selector of the placer in the 
     ...
   </constructionHeuristics>
  ...
-</solverConfig>
+</solver>
 ----
 
 [[whenIsAPlanningVariableInitialized]]
@@ -988,7 +991,8 @@ The solver configuration needs to declare the planning solution class:
 
 [source,java,options="nowrap"]
 ----
-<solver>
+<solver xmlns="https://www.optaplanner.org/xsd/solver" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.optaplanner.org/xsd/solver https://www.optaplanner.org/xsd/solver/solver.xsd">
   ...
   <solutionClass>org.optaplanner.examples.nqueens.domain.NQueens</solutionClass>
   ...
@@ -1475,7 +1479,8 @@ You can set the environment mode in the solver configuration XML file:
 
 [source,xml,options="nowrap"]
 ----
-<solver>
+<solver xmlns="https://www.optaplanner.org/xsd/solver" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.optaplanner.org/xsd/solver https://www.optaplanner.org/xsd/solver/solver.xsd">
   <environmentMode>FAST_ASSERT</environmentMode>
   ...
 </solver>
@@ -1711,7 +1716,8 @@ To change the random seed of that `Random` instance, specify a ``randomSeed``:
 
 [source,xml,options="nowrap"]
 ----
-<solver>
+<solver xmlns="https://www.optaplanner.org/xsd/solver" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.optaplanner.org/xsd/solver https://www.optaplanner.org/xsd/solver/solver.xsd">
   <randomSeed>0</randomSeed>
   ...
 </solver>
@@ -1721,7 +1727,8 @@ To change the pseudorandom number generator implementation, specify a ``randomTy
 
 [source,xml,options="nowrap"]
 ----
-<solver>
+<solver xmlns="https://www.optaplanner.org/xsd/solver" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.optaplanner.org/xsd/solver https://www.optaplanner.org/xsd/solver/solver.xsd">
   <randomType>MERSENNE_TWISTER</randomType>
   ...
 </solver>

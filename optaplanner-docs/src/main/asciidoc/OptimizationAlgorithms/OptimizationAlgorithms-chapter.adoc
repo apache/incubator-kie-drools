@@ -192,7 +192,8 @@ Here is a configuration that runs three phases in sequence:
 
 [source,xml,options="nowrap"]
 ----
-<solver>
+<solver xmlns="https://www.optaplanner.org/xsd/solver" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.optaplanner.org/xsd/solver https://www.optaplanner.org/xsd/solver/solver.xsd">
   ...
   <constructionHeuristic>
     ... <!-- First phase: First Fit Decreasing -->
@@ -222,7 +223,8 @@ Other phases (especially metaheuristics) will only terminate if the `Phase` is c
 
 [source,xml,options="nowrap"]
 ----
-<solver>
+<solver xmlns="https://www.optaplanner.org/xsd/solver" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.optaplanner.org/xsd/solver https://www.optaplanner.org/xsd/solver/solver.xsd">
   ...
   <termination><!-- Solver termination -->
     <secondsSpentLimit>90</secondsSpentLimit>
@@ -762,7 +764,8 @@ Configure the `CustomPhaseCommand` in the solver configuration:
 
 [source,xml,options="nowrap"]
 ----
-<solver>
+<solver xmlns="https://www.optaplanner.org/xsd/solver" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.optaplanner.org/xsd/solver https://www.optaplanner.org/xsd/solver/solver.xsd">
   ...
   <customPhase>
     <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
@@ -811,7 +814,8 @@ To avoid those, configure a `NoChangePhase`:
 
 [source,xml,options="nowrap"]
 ----
-<solver>
+<solver xmlns="https://www.optaplanner.org/xsd/solver" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.optaplanner.org/xsd/solver https://www.optaplanner.org/xsd/solver/solver.xsd">
   ...
   <noChangePhase/>
 </solver>
@@ -899,7 +903,8 @@ and the <<partitionedSearch,Partition Search threads>> with it:
 
 [source,xml,options="nowrap"]
 ----
-<solver>
+<solver xmlns="https://www.optaplanner.org/xsd/solver" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.optaplanner.org/xsd/solver https://www.optaplanner.org/xsd/solver/solver.xsd">
   <threadFactoryClass>...MyAppServerThreadFactory</threadFactoryClass>
   ...
 </solver>
@@ -914,7 +919,8 @@ Then configure a `moveThreadCount`:
 
 [source,xml,options="nowrap"]
 ----
-<solver>
+<solver xmlns="https://www.optaplanner.org/xsd/solver" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.optaplanner.org/xsd/solver https://www.optaplanner.org/xsd/solver/solver.xsd">
   <moveThreadCount>AUTO</moveThreadCount>
   ...
 </solver>
@@ -927,7 +933,8 @@ Advanced configuration:
 
 [source,xml,options="nowrap"]
 ----
-<solver>
+<solver xmlns="https://www.optaplanner.org/xsd/solver" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.optaplanner.org/xsd/solver https://www.optaplanner.org/xsd/solver/solver.xsd">
   <moveThreadCount>4</moveThreadCount>
   <moveThreadBufferSize>10</moveThreadBufferSize>
   <threadFactoryClass>...MyAppServerThreadFactory</threadFactoryClass>

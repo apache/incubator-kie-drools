@@ -115,7 +115,8 @@ Add the following code to your solver configuration:
 
 [source,xml,options="nowrap"]
 ----
-    <solver>
+    <solver xmlns="https://www.optaplanner.org/xsd/solver" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.optaplanner.org/xsd/solver https://www.optaplanner.org/xsd/solver/solver.xsd">
       <scoreDirectorFactory>
         <constraintProviderClass>com.example.MyConstraintProvider</constraintProviderClass>
       </scoreDirectorFactory>
@@ -712,7 +713,8 @@ To try it out, implement the `ConstraintProvider` interface and use the followin
 
 [source,xml,options="nowrap"]
 ----
-    <solver>
+    <solver xmlns="https://www.optaplanner.org/xsd/solver" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.optaplanner.org/xsd/solver https://www.optaplanner.org/xsd/solver/solver.xsd">
       <scoreDirectorFactory>
         <constraintStreamImplType>BAVET</constraintStreamImplType>
         <constraintProviderClass>com.example.MyConstraintProvider</constraintProviderClass>

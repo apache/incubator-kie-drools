@@ -749,7 +749,8 @@ extend the `TerminationConfig` class and configure it in the solver configuratio
 
 [source,xml,options="nowrap"]
 ----
-<solver>
+<solver xmlns="https://www.optaplanner.org/xsd/solver" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.optaplanner.org/xsd/solver https://www.optaplanner.org/xsd/solver/solver.xsd">
   <termination class="...MyTerminationConfig">
     <myProperty>myValue</myProperty>
   </termination>
