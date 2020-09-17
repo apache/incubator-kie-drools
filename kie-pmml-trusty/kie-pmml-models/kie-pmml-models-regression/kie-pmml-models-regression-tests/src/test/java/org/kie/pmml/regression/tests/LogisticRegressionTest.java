@@ -50,13 +50,13 @@ public class LogisticRegressionTest extends AbstractPMMLRegressionTest {
     private double expectedProbCounterfeit;
 
     public LogisticRegressionTest(double variance, double skewness, double curtosis,
-                                  double petalWidth, String expectedResult,
+                                  double entropy, String expectedResult,
                                   double expectedProbAuthentic,
                                   double expectedProbCounterfeit) {
         this.variance = variance;
         this.skewness = skewness;
         this.curtosis = curtosis;
-        this.entropy = petalWidth;
+        this.entropy = entropy;
         this.expectedResult = expectedResult;
         this.expectedProbAuthentic = expectedProbAuthentic;
         this.expectedProbCounterfeit = expectedProbCounterfeit;
@@ -70,16 +70,16 @@ public class LogisticRegressionTest extends AbstractPMMLRegressionTest {
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
-                {2.3, 6.9, 3.1, 5.1, "Authentic", 0.9999999999999969, 3.1271452352700172E-15},
-                {1.2, 5.8, 2.6, 4.0, "Authentic", 0.9999999999977859, 2.214170674606705E-12},
-                {1.2, 5.7, 3.0, 4.2, "Authentic", 0.9999999999990105, 9.89558801361823E-13},
-                {0.2, 5.0, 3.3, 1.4, "Authentic", 0.9999999980426516, 1.9573484459863236E-9},
-                {0.4, 5.4, 3.9, 1.3, "Authentic", 0.9999999997410439, 2.589560996869738E-10}
+                {2.3, 6.9, 3.1, 5.1, "Authentic", 0.999999999768916, 2.310840601778274E-10},
+                {1.2, 5.8, 2.6, 4.0, "Authentic", 0.999999872097169, 1.2790283098140014E-7},
+                {1.2, 5.7, 3.0, 4.2, "Authentic", 0.9999999361111592, 6.388884074105009E-8},
+                {0.2, 5.0, 3.3, 1.4, "Authentic", 0.9999971178698301, 2.882130169854471E-6},
+                {0.4, 5.4, 3.9, 1.3, "Authentic", 0.9999997717811206, 2.2821887933271695E-7}
         });
     }
 
     @Test
-    public void testLogisticRegressionIrisData() {
+    public void testLogisticRegression() {
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("variance", variance);
         inputData.put("skewness", skewness);
@@ -89,11 +89,9 @@ public class LogisticRegressionTest extends AbstractPMMLRegressionTest {
 
         Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
         Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(expectedResult);
-
-        // TODO {gcardosi} TO BE FIXED WITH DROOLS-5453
-//        Assertions.assertThat((double) pmml4Result.getResultVariables().get(PROBABILITY_AUTHENTIC))
-//                .isCloseTo(expectedProbAuthentic, TOLERANCE_PERCENTAGE);
-//        Assertions.assertThat((double) pmml4Result.getResultVariables().get(PROBABILITY_COUNTERFEIT))
-//                .isCloseTo(expectedProbCounterfeit, TOLERANCE_PERCENTAGE);
+        Assertions.assertThat((double) pmml4Result.getResultVariables().get(PROBABILITY_AUTHENTIC))
+                .isCloseTo(expectedProbAuthentic, TOLERANCE_PERCENTAGE);
+        Assertions.assertThat((double) pmml4Result.getResultVariables().get(PROBABILITY_COUNTERFEIT))
+                .isCloseTo(expectedProbCounterfeit, TOLERANCE_PERCENTAGE);
     }
 }

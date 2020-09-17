@@ -86,7 +86,7 @@ public class SimpleScorecardWithTransformationsTest extends AbstractPMMLScorecar
         Assertions.assertThat(pmml4Result.getResultVariables().get(REASON_CODE1_FIELD)).isEqualTo(reasonCode1);
         Assertions.assertThat(pmml4Result.getResultVariables().get(REASON_CODE2_FIELD)).isEqualTo(reasonCode2);
 
-        // TODO {gcardosi} TO BE FIXED WITH DROOLS-5453
+        // TODO {gcardosi} TO BE FIXED WITH DROOLS-5490
 //        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DER_INPUT1)).isEqualTo(input1);
 //        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DER_INPUT2)).isEqualTo(input2);
 //        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DER_CONSTANT)).isEqualTo(CONSTANT);
