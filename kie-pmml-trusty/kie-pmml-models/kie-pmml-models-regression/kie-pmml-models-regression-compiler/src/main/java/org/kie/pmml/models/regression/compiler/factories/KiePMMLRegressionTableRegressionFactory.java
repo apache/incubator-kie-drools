@@ -17,6 +17,7 @@ package org.kie.pmml.models.regression.compiler.factories;
 
 import java.util.AbstractMap;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -87,13 +88,22 @@ public class KiePMMLRegressionTableRegressionFactory {
         // Avoid instantiation
     }
 
-    public static Map<String, KiePMMLTableSourceCategory> getRegressionTables(final List<RegressionTable> regressionTables,
-                                                                              final RegressionModel.NormalizationMethod normalizationMethod,
-                                                                              final List<KiePMMLOutputField> outputFields,
-                                                                              final String targetField,
-                                                                              final String packageName) {
+    /**
+     *
+     * @param regressionTables
+     * @param normalizationMethod
+     * @param outputFields
+     * @param targetField
+     * @param packageName
+     * @return Explicitly returning a <code>LinkedHashMap</code> because insertion order matters
+     */
+    public static LinkedHashMap<String, KiePMMLTableSourceCategory> getRegressionTables(final List<RegressionTable> regressionTables,
+                                                                                        final RegressionModel.NormalizationMethod normalizationMethod,
+                                                                                        final List<KiePMMLOutputField> outputFields,
+                                                                                        final String targetField,
+                                                                                        final String packageName) {
         logger.trace("getRegressionTables {}", regressionTables);
-        Map<String, KiePMMLTableSourceCategory> toReturn = new HashMap<>();
+        LinkedHashMap<String, KiePMMLTableSourceCategory> toReturn = new LinkedHashMap<>();
         for (RegressionTable regressionTable : regressionTables) {
             final Map.Entry<String, String> regressionTableEntry = getRegressionTable(regressionTable,
                                                                                       normalizationMethod,

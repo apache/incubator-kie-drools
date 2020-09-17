@@ -16,6 +16,7 @@
 package org.kie.pmml.models.regression.compiler.factories;
 
 import java.util.AbstractMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -80,7 +81,7 @@ public class KiePMMLRegressionTableClassificationFactory {
 
     public static Map<String, KiePMMLTableSourceCategory> getRegressionTables(final List<RegressionTable> regressionTables, final RegressionModel.NormalizationMethod normalizationMethod, final OpType opType, final List<KiePMMLOutputField> outputFields, final String targetField, final String packageName) {
         logger.trace("getRegressionTables {}", regressionTables);
-        Map<String, KiePMMLTableSourceCategory> toReturn =
+        LinkedHashMap<String, KiePMMLTableSourceCategory> toReturn =
                 KiePMMLRegressionTableRegressionFactory.getRegressionTables(regressionTables,
                                                                             RegressionModel.NormalizationMethod.NONE,
                                                                             outputFields, targetField, packageName);
@@ -91,7 +92,17 @@ public class KiePMMLRegressionTableClassificationFactory {
         return toReturn;
     }
 
-    public static Map.Entry<String, String> getRegressionTable(final Map<String, KiePMMLTableSourceCategory> regressionTablesMap, final RegressionModel.NormalizationMethod normalizationMethod, final OpType opType, final List<KiePMMLOutputField> outputFields, final String targetField, final String packageName) {
+    /**
+     *
+     * @param regressionTablesMap Explicitly using a <code>LinkedHashMap</code> because insertion order matters
+     * @param normalizationMethod
+     * @param opType
+     * @param outputFields
+     * @param targetField
+     * @param packageName
+     * @return
+     */
+    public static Map.Entry<String, String> getRegressionTable(final LinkedHashMap<String, KiePMMLTableSourceCategory> regressionTablesMap, final RegressionModel.NormalizationMethod normalizationMethod, final OpType opType, final List<KiePMMLOutputField> outputFields, final String targetField, final String packageName) {
         logger.trace("getRegressionTable {}", regressionTablesMap);
         String className = "KiePMMLRegressionTableClassification" + classArity.addAndGet(1);
         CompilationUnit cloneCU = JavaParserUtils.getKiePMMLModelCompilationUnit(className, packageName,
@@ -137,10 +148,10 @@ public class KiePMMLRegressionTableClassificationFactory {
     /**
      * Add entries <b>category/KiePMMLRegressionTable</b> inside the constructor
      * @param body
-     * @param regressionTablesMap
+     * @param regressionTablesMap Explicitly using a <code>LinkedHashMap</code> because insertion order matters
      */
     static void addMapPopulation(final BlockStmt body,
-                                 final Map<String, KiePMMLTableSourceCategory> regressionTablesMap) {
+                                 final LinkedHashMap<String, KiePMMLTableSourceCategory> regressionTablesMap) {
         regressionTablesMap.forEach((className, tableSourceCategory) -> {
             ObjectCreationExpr objectCreationExpr = new ObjectCreationExpr();
             objectCreationExpr.setType(className);

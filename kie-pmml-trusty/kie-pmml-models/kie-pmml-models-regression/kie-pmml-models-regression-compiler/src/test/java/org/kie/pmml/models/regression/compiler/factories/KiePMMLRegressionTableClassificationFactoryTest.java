@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -112,7 +113,7 @@ public class KiePMMLRegressionTableClassificationFactoryTest extends AbstractKie
         KiePMMLOutputField outputFieldNum = getOutputField("NUM-1", RESULT_FEATURE.PROBABILITY, "NumPred-0");
         KiePMMLOutputField outputFieldPrev = getOutputField("PREV", RESULT_FEATURE.PREDICTED_VALUE, null);
         List<KiePMMLOutputField> outputFields = Arrays.asList(outputFieldCat, outputFieldNum, outputFieldPrev);
-        Map<String, KiePMMLTableSourceCategory> toReturn = new HashMap<>();
+        LinkedHashMap<String, KiePMMLTableSourceCategory> toReturn = new LinkedHashMap<>();
         Map.Entry<String, String> retrieved = KiePMMLRegressionTableClassificationFactory.getRegressionTable(toReturn,
                                                                                                              RegressionModel.NormalizationMethod.SOFTMAX,
                                                                                                              OpType.CATEGORICAL,
@@ -147,7 +148,7 @@ public class KiePMMLRegressionTableClassificationFactoryTest extends AbstractKie
     @Test
     public void addMapPopulation() {
         final BlockStmt body = new BlockStmt();
-        final Map<String, KiePMMLTableSourceCategory> regressionTablesMap = new HashMap<>();
+        final LinkedHashMap<String, KiePMMLTableSourceCategory> regressionTablesMap = new LinkedHashMap<>();
         IntStream.range(0, 3).forEach(index ->
                                               regressionTablesMap.put("KEY" + index,
                                                                       new KiePMMLTableSourceCategory("SOURCE-" + index, "CATEGORY-" + index)));
@@ -161,16 +162,18 @@ public class KiePMMLRegressionTableClassificationFactoryTest extends AbstractKie
             assertEquals("categoryTableMap", methodCallExpr.getScope().get().asNameExpr().toString());
             assertEquals("put", methodCallExpr.getName().asString());
         });
-        List<MethodCallExpr> methodCallExprs = retrieved.stream()
+        final List<MethodCallExpr> methodCallExprs = retrieved.stream()
                 .map(statement -> (MethodCallExpr) ((ExpressionStmt) statement).getExpression())
                 .collect(Collectors.toList());
-        regressionTablesMap.forEach((key, kiePMMLTableSourceCategory) -> assertTrue(methodCallExprs.stream()
-                                                                                            .anyMatch(methodCallExpr -> {
-                                                                                                StringLiteralExpr stringLiteralExpr = (StringLiteralExpr) methodCallExpr.getArguments().get(0);
-                                                                                                ObjectCreationExpr objectCreationExpr = (ObjectCreationExpr) methodCallExpr.getArguments().get(1);
-                                                                                                return kiePMMLTableSourceCategory.getCategory().equals(stringLiteralExpr.getValue())
-                                                                                                        && key.equals(objectCreationExpr.getTypeAsString());
-                                                                                            })));
+       IntStream.range(0, 3).forEach(index -> {
+           String key = "KEY" + index;
+           KiePMMLTableSourceCategory kiePMMLTableSourceCategory = regressionTablesMap.get(key);
+           MethodCallExpr methodCallExpr = methodCallExprs.get(index);
+           StringLiteralExpr stringLiteralExpr = (StringLiteralExpr) methodCallExpr.getArguments().get(0);
+           assertEquals(kiePMMLTableSourceCategory.getCategory(), stringLiteralExpr.getValue());
+           ObjectCreationExpr objectCreationExpr = (ObjectCreationExpr) methodCallExpr.getArguments().get(1);
+           assertEquals(key, objectCreationExpr.getTypeAsString());
+       });
     }
 
     @Test
