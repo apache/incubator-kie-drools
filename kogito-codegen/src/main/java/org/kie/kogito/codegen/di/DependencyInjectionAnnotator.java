@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.github.javaparser.ast.NodeList;
-import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.ArrayInitializerExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
@@ -86,8 +85,18 @@ public interface DependencyInjectionAnnotator {
      * Annotates given node with injection annotations e.g. Inject, Autowire
      *
      * @param node node to be annotated
+     * @boolean forceLazyInit use lazy initialization (for those container that applies)
      */
-    <T extends NodeWithAnnotations<?>> T withInjection(T node);
+    <T extends NodeWithAnnotations<?>> T withInjection(T node, boolean forceLazyInit);
+
+    /**
+     * Annotates given node with injection annotations e.g. Inject, Autowire
+     *
+     * @param node node to be annotated
+     */
+    default <T extends NodeWithAnnotations<?>> T withInjection(T node) {
+        return withInjection(node,false);
+    }
 
     /**
      * Annotates given node with injection annotations e.g. Inject, Autowire
@@ -165,14 +174,6 @@ public interface DependencyInjectionAnnotator {
         }
         return node;
     }
-
-    /**
-     * Create initialization method with given expression as body
-     *
-     * @param expression body of the init method
-     * @return complete initialization method declaration
-     */
-    MethodDeclaration withInitMethod(Expression... expression);
 
     /**
      * Returns type that allows to inject optional instances of the same type

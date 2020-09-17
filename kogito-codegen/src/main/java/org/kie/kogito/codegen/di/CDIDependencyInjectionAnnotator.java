@@ -17,9 +17,7 @@
 package org.kie.kogito.codegen.di;
 
 import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.Modifier.Keyword;
 import com.github.javaparser.ast.NodeList;
-import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.BooleanLiteralExpr;
 import com.github.javaparser.ast.expr.Expression;
@@ -31,7 +29,6 @@ import com.github.javaparser.ast.expr.NormalAnnotationExpr;
 import com.github.javaparser.ast.expr.SingleMemberAnnotationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithAnnotations;
-import com.github.javaparser.ast.stmt.BlockStmt;
 
 import static com.github.javaparser.StaticJavaParser.parse;
 
@@ -67,7 +64,7 @@ public class CDIDependencyInjectionAnnotator implements DependencyInjectionAnnot
     }
 
     @Override
-    public <T extends NodeWithAnnotations<?>> T withInjection(T node) {
+    public <T extends NodeWithAnnotations<?>> T withInjection(T node, boolean lazy) {
         node.addAnnotation("javax.inject.Inject");
         return node;
     }
@@ -99,24 +96,6 @@ public class CDIDependencyInjectionAnnotator implements DependencyInjectionAnnot
         produceMethod.addArgument(event);
         return produceMethod;
     }
-
-    @Override
-    public MethodDeclaration withInitMethod(Expression... expression) {
-        BlockStmt body = new BlockStmt();
-        for (Expression exp : expression) {
-            body.addStatement(exp);
-        }
-        MethodDeclaration method = new MethodDeclaration()
-                .addModifier(Keyword.PUBLIC)
-                .setName("init")
-                .setType(void.class)
-                .setBody(body);
-
-        method.addAndGetParameter("io.quarkus.runtime.StartupEvent", "event").addAnnotation("javax.enterprise.event.Observes");
-
-        return method;
-    }
-
     @Override
     public String optionalInstanceInjectionType() {
         return "javax.enterprise.inject.Instance";

@@ -8,7 +8,6 @@ import java.util.Optional;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.SingleMemberAnnotationExpr;
@@ -214,7 +213,7 @@ class PMMLRestResourceGeneratorTest {
             }
 
             @Override
-            public <T extends NodeWithAnnotations<?>> T withInjection(T node) {
+            public <T extends NodeWithAnnotations<?>> T withInjection(T node, boolean lazy) {
                 return null;
             }
 
@@ -251,11 +250,6 @@ class PMMLRestResourceGeneratorTest {
 
             @Override
             public MethodCallExpr withMessageProducer(MethodCallExpr produceMethod, String channel, Expression event) {
-                return null;
-            }
-
-            @Override
-            public MethodDeclaration withInitMethod(Expression... expression) {
                 return null;
             }
 

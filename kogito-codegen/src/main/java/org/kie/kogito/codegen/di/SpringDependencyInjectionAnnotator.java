@@ -21,9 +21,7 @@ import java.util.Collections;
 import java.util.Optional;
 
 import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.Modifier.Keyword;
 import com.github.javaparser.ast.NodeList;
-import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.BooleanLiteralExpr;
 import com.github.javaparser.ast.expr.ConditionalExpr;
@@ -38,7 +36,6 @@ import com.github.javaparser.ast.expr.SingleMemberAnnotationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.TypeExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithAnnotations;
-import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 
 import static com.github.javaparser.StaticJavaParser.parse;
@@ -75,8 +72,11 @@ public class SpringDependencyInjectionAnnotator implements DependencyInjectionAn
     }
 
     @Override
-    public <T extends NodeWithAnnotations<?>> T withInjection(T node) {
+    public <T extends NodeWithAnnotations<?>> T withInjection(T node, boolean lazy) {
         node.addAnnotation("org.springframework.beans.factory.annotation.Autowired");
+        if (lazy) {
+            node.addAnnotation("org.springframework.context.annotation.Lazy");
+        }
         return node;
     }
 
@@ -142,21 +142,6 @@ public class SpringDependencyInjectionAnnotator implements DependencyInjectionAn
     public String emitterType(String dataType) {
         return "org.springframework.kafka.core.KafkaTemplate<String, " + dataType + ">";
     }
-
-    @Override
-    public MethodDeclaration withInitMethod(Expression... expression) {
-        BlockStmt body = new BlockStmt();
-        for (Expression exp : expression) {
-            body.addStatement(exp);
-        }
-        return new MethodDeclaration()
-                .addModifier(Keyword.PUBLIC)
-                .setName("init")
-                .setType(void.class)
-                .addAnnotation("javax.annotation.PostConstruct")
-                .setBody(body);
-    }
-
 
     @Override
     public <T extends NodeWithAnnotations<?>> T withConfigInjection(T node, String configKey) {

@@ -32,7 +32,7 @@ public class MessageProducer {
                                                             pi.getProcessId(),
                                                             pi.getRootProcessId(),
                                                             String.valueOf(pi.getState()),
-                                                            (pi.getReferenceId() == null || pi.getReferenceId().trim().isEmpty()) ? null : pi.getReferenceId()),
+                                                            pi.getReferenceId() == null || pi.getReferenceId().trim().isEmpty() ? null : pi.getReferenceId()),
                                    useCloudEvents);
     }
 }
