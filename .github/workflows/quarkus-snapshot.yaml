@@ -45,6 +45,14 @@ jobs:
           ref: master
           path: ecosystem-ci
 
+      # See https://docs.github.com/en/actions/guides/building-and-testing-java-with-maven#caching-dependencies
+      - name: Cache Maven packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
       - name: Setup and Run Tests
         run: ./ecosystem-ci/setup-and-test
         env:
