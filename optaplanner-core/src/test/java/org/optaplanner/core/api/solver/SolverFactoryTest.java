@@ -75,9 +75,9 @@ class SolverFactoryTest {
 
     @Test
     void createFromNonExistingXmlFile_failsShowingPath() {
-        final String xmlSolverConfigPath = "/this/path/does/not/exist/nonExistingSolverConfig.xml";
-        assertThatIllegalArgumentException().isThrownBy(() -> SolverFactory.createFromXmlFile(new File(xmlSolverConfigPath)))
-                .withMessageContaining(xmlSolverConfigPath);
+        final File xmlSolverConfigFile = new File(solverTestDir, "nonExistingSolverConfig.xml");
+        assertThatIllegalArgumentException().isThrownBy(() -> SolverFactory.createFromXmlFile(xmlSolverConfigFile))
+                .withMessageContaining(xmlSolverConfigFile.toString());
     }
 
     @Test
