@@ -37,9 +37,9 @@ public class SolverConfigIO implements JaxbIO<SolverConfig> {
             return genericJaxbIO.readOverridingNamespace(document,
                     ElementNamespaceOverride.of(SolverConfig.XML_ELEMENT_NAME, SolverConfig.XML_NAMESPACE));
         } else { // If there is an unexpected namespace, fail fast.
-            String errMsg = String.format("The <%s/> element belongs to a different namespace (%s) than expected (%s).",
+            String errorMessage = String.format("The <%s/> element belongs to a different namespace (%s) than expected (%s).",
                     SolverConfig.XML_ELEMENT_NAME, rootElementNamespace, SolverConfig.XML_NAMESPACE);
-            throw new IllegalArgumentException(errMsg);
+            throw new IllegalArgumentException(errorMessage);
         }
     }
 
