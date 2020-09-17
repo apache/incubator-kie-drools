@@ -34,7 +34,8 @@ public abstract class AbstractBendableScore<Score_ extends AbstractBendableScore
     protected static final String SOFT_LABEL = "soft";
     protected static final String[] LEVEL_SUFFIXES = new String[] { HARD_LABEL, SOFT_LABEL };
 
-    protected static String[][] parseBendableScoreTokens(Class<? extends Score<?>> scoreClass, String scoreString) {
+    protected static String[][] parseBendableScoreTokens(Class<? extends AbstractBendableScore<?>> scoreClass,
+            String scoreString) {
         String[][] scoreTokens = new String[3][];
         scoreTokens[0] = new String[1];
         int startIndex = 0;

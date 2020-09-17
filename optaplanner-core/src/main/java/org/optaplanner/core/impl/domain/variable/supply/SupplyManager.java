@@ -28,9 +28,9 @@ public interface SupplyManager {
      * externalized), it creates and attaches it.
      *
      * @param demand never null
-     * @param <Supply> Subclass of {@link org.optaplanner.core.impl.domain.variable.supply.Supply}
+     * @param <Supply_> Subclass of {@link org.optaplanner.core.impl.domain.variable.supply.Supply}
      * @return never null
      */
-    <Supply extends org.optaplanner.core.impl.domain.variable.supply.Supply> Supply demand(Demand<Supply> demand);
+    <Supply_ extends Supply> Supply_ demand(Demand<Supply_> demand);
 
 }
