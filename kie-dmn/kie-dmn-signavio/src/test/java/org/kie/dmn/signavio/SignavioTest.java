@@ -36,6 +36,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.iterableWithSize;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -183,5 +184,28 @@ public class SignavioTest {
         checkSurveryMID(runtime, Arrays.asList(-1, 2), false);
         checkSurveryMID(runtime, Arrays.asList(1, -2), false);
         checkSurveryMID(runtime, Arrays.asList(-1, -2), true);
+    }
+    
+    @Test
+    public void testZipFunctions() {
+        DMNRuntime runtime = createRuntime("Test_SignavioZipFunctions.dmn");
+        checkBothFunctionsAreWorking(runtime);
+    }
+    
+    
+    private void checkBothFunctionsAreWorking(DMNRuntime runtime) {
+        List<DMNModel> models = runtime.getModels();
+        
+        DMNContext context = runtime.newContext();
+        context.set("names", Arrays.asList("John Doe", "Jane Doe"));
+        context.set("ages", Arrays.asList(37, 35));
+        
+        DMNModel model0 = models.get(0);
+        LOG.info("EVALUATE ALL:");
+        DMNResult evaluateAll = runtime.evaluateAll(model0, context);
+        LOG.info("{}", evaluateAll);
+        
+        assertThat((List<?>) evaluateAll.getDecisionResultByName("zipvararg").getResult(), iterableWithSize(2));
+        assertThat((List<?>) evaluateAll.getDecisionResultByName("zipsinglelist").getResult(), iterableWithSize(2));
     }
 }
