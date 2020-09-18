@@ -194,7 +194,7 @@ public class MoveThreadRunner<Solution_> implements Runnable {
         long calculationCount = this.calculationCount.get();
         if (calculationCount == -1L) {
             logger.info("{}Score calculation speed will be too low"
-                    + " because move thread ({})'s destroy wasn't processed soon enough.", logIndentation);
+                    + " because move thread ({})'s destroy wasn't processed soon enough.", logIndentation, moveThreadIndex);
             return 0L;
         }
         return calculationCount;

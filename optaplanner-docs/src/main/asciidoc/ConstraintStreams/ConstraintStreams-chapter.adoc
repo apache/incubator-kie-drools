@@ -192,8 +192,19 @@ The following example shows the simplest possible constraint stream:
     }
 ----
 
-This constraint stream iterates over all known and initialized instances of `Shift`.
-To include uninitialized instances, replace the `from()` building block with `fromUnfiltered()`:
+This constraint stream penalizes each known and initialized instance of `Shift`.
+
+[[constraintStreamsFrom]]
+=== From
+
+The `.from(T)` building block selects every `T` instance that
+is in a <<problemFacts, problem fact collection>>
+or a <<planningEntitiesOfASolution, planning entity collection>>
+and has no `null` planning variables.
+
+To include instances with a `null` planning variable,
+especially if you use <<nullablePlanningVariable, nullable>> variables,
+replace the `from()` building block by `fromUnfiltered()`:
 
 [source,java,options="nowrap"]
 ----

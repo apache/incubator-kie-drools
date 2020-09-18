@@ -511,15 +511,18 @@ To allow an initialized planning variable to be ``null``, set `nullable` to ``tr
     }
 ----
 
-[IMPORTANT]
+[NOTE]
 ====
+Constraint Streams filter out planning entities with a `null` planning variable by default.
+Use <<constraintStreamsFrom,fromUnfiltered()>> to avoid such unwanted behaviour.
+====
+
 OptaPlanner will automatically add the value `null` to the value range.
-There is no need to add `null` in a collection used by a ``ValueRangeProvider``.
-====
+There is no need to add `null` in a collection provided by a ``ValueRangeProvider``.
 
 [NOTE]
 ====
-Using a nullable planning variable implies that your score calculation is responsible for punishing (or even rewarding) variables with a null value.
+Using a nullable planning variable implies that your score calculation is responsible for punishing (or even rewarding) variables with a `null` value.
 ====
 
 [WARNING]
