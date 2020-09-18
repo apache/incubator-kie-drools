@@ -103,11 +103,8 @@ public class DMNDeclaredField implements FieldDefinition {
         List<AnnotationDefinition> annotations = new ArrayList<>();
         if (codeGenConfig.isWithJacksonAnnotation()) {
             boolean isCollection = fieldDMNType.isCollection();
-            DMNType verifyIfTemporal = fieldDMNType;
-            if (isCollection) {
-                verifyIfTemporal = DMNTypeUtils.getRootBaseTypeOfCollection(verifyIfTemporal);
-            }
-            Optional<Class<?>> as = index.getJacksonDeserializeAs(verifyIfTemporal);
+            DMNType narrowTypeHint = isCollection ? DMNTypeUtils.getRootBaseTypeOfCollection(fieldDMNType) : fieldDMNType;
+            Optional<Class<?>> as = index.getJacksonDeserializeAs(narrowTypeHint);
             as.ifPresent(asClass -> annotations.add(new SimpleAnnotationDefinition("com.fasterxml.jackson.databind.annotation.JsonDeserialize").addValue(isCollection ? "contentAs" : "as",
                                                                                                                                                          asClass.getCanonicalName() + ".class")));
         }
