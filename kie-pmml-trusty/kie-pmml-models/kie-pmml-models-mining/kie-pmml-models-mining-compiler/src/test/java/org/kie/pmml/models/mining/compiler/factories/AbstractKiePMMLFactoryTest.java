@@ -34,7 +34,7 @@ import org.xml.sax.SAXException;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.kie.pmml.models.mining.compiler.executor.MiningModelImplementationProvider.SEGMENTID_TEMPLATE;
+import static org.kie.pmml.compiler.commons.utils.KiePMMLUtil.SEGMENTID_TEMPLATE;
 
 public abstract class AbstractKiePMMLFactoryTest {
 

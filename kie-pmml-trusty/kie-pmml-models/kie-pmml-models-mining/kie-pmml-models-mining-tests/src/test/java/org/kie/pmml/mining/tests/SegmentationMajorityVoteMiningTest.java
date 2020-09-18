@@ -15,7 +15,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RunWith(Parameterized.class)
-@Ignore("DROOLS-5638")
 public class SegmentationMajorityVoteMiningTest extends AbstractPMMLMiningTest {
     private static final String MODEL_NAME = "SegmentationClassificationMajorityVote";
     private static final String TARGET_FIELD = "result";
