@@ -729,7 +729,7 @@ public interface CustomPhaseCommand<Solution_> {
 }
 ----
 
-For example, extend `AbstractCustomPhaseCommand` and implement the `changeWorkingSolution()` method:
+For example, implement `CustomPhaseCommand` and its `changeWorkingSolution()` method:
 
 [source,java,options="nowrap"]
 ----

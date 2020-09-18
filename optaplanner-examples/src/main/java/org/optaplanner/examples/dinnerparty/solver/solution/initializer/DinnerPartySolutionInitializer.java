@@ -22,7 +22,7 @@ import java.util.List;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.director.ScoreDirector;
-import org.optaplanner.core.impl.phase.custom.AbstractCustomPhaseCommand;
+import org.optaplanner.core.impl.phase.custom.CustomPhaseCommand;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.examples.dinnerparty.domain.DinnerParty;
 import org.optaplanner.examples.dinnerparty.domain.Seat;
@@ -30,7 +30,7 @@ import org.optaplanner.examples.dinnerparty.domain.SeatDesignation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DinnerPartySolutionInitializer extends AbstractCustomPhaseCommand<DinnerParty> {
+public class DinnerPartySolutionInitializer implements CustomPhaseCommand<DinnerParty> {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 

@@ -29,12 +29,9 @@ import org.optaplanner.core.impl.score.director.InnerScoreDirector;
  * Do not abuse to change the problems facts,
  * instead use {@link Solver#addProblemFactChange(ProblemFactChange)} for that.
  * <p>
- * An implementation must extend {@link AbstractCustomPhaseCommand} to ensure backwards compatibility in future versions.
- * <p>
  * To add custom properties, configure custom properties and add public setters for them.
  *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
- * @see AbstractCustomPhaseCommand
  */
 @FunctionalInterface
 public interface CustomPhaseCommand<Solution_> {

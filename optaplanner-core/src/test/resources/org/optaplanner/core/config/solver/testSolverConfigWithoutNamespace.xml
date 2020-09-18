@@ -56,7 +56,7 @@
     </forager>
   </constructionHeuristic>
   <customPhase>
-    <customPhaseCommandClass>org.optaplanner.core.impl.phase.custom.AbstractCustomPhaseCommand</customPhaseCommandClass>
+    <customPhaseCommandClass>org.optaplanner.core.impl.phase.custom.CustomPhaseCommand</customPhaseCommandClass>
   </customPhase>
   <exhaustiveSearch>
     <exhaustiveSearchType>BRANCH_AND_BOUND</exhaustiveSearchType>

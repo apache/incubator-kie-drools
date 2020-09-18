@@ -25,7 +25,7 @@ import java.util.Map;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.director.ScoreDirector;
-import org.optaplanner.core.impl.phase.custom.AbstractCustomPhaseCommand;
+import org.optaplanner.core.impl.phase.custom.CustomPhaseCommand;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.examples.vehiclerouting.domain.Customer;
 import org.optaplanner.examples.vehiclerouting.domain.Standstill;
@@ -35,7 +35,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 // TODO PLANNER-380 Delete this class. Temporary implementation until BUOY_FIT is implemented as a Construction Heuristic
-public class BuoyVehicleRoutingSolutionInitializer extends AbstractCustomPhaseCommand<VehicleRoutingSolution> {
+public class BuoyVehicleRoutingSolutionInitializer implements CustomPhaseCommand<VehicleRoutingSolution> {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
