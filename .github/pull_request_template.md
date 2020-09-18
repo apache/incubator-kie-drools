@@ -10,8 +10,10 @@
 * link 2
 * link 3 etc.
 
-<pre>
-How to retest a PR or trigger a specific build:
+<details>
+<summary>
+How to retest this PR or trigger a specific build:
+</summary>
 
 * <b>a pull request</b> please add comment: <b>Jenkins retest this</b>
  
@@ -22,4 +24,4 @@ How to retest a PR or trigger a specific build:
 * <b>a full production downstream build</b> please add comment: <b>Jenkins execute product fdb</b>
 
 * <b>an upstream build</b> please add comment: <b>Jenkins run upstream</b>
-</pre>
+</details>
