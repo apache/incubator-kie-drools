@@ -18,46 +18,48 @@ package org.drools.compiler.builder.impl;
 import java.util.Properties;
 
 import org.drools.core.builder.conf.impl.DecisionTableConfigurationImpl;
-import org.drools.core.builder.conf.impl.JaxbConfigurationImpl;
 import org.drools.core.builder.conf.impl.ScoreCardConfigurationImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseImpl;
 import org.kie.api.KieBase;
 import org.kie.internal.builder.DecisionTableConfiguration;
-import org.kie.internal.builder.JaxbConfiguration;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.KnowledgeBuilderFactoryService;
-
-import com.sun.tools.xjc.Options;
 import org.kie.internal.builder.ScoreCardConfiguration;
 
 public class KnowledgeBuilderFactoryServiceImpl implements KnowledgeBuilderFactoryService {
-    
+
+    @Override
     public KnowledgeBuilderConfiguration newKnowledgeBuilderConfiguration() {
         return new KnowledgeBuilderConfigurationImpl();
     }
-    
+
+    @Override
     public KnowledgeBuilderConfiguration newKnowledgeBuilderConfiguration(Properties properties, ClassLoader... classLoaders) {
         return new KnowledgeBuilderConfigurationImpl(properties, classLoaders);
     }
-    
+
+    @Override
     public DecisionTableConfiguration newDecisionTableConfiguration() {
         return new DecisionTableConfigurationImpl();
     }
 
+    @Override
     public ScoreCardConfiguration newScoreCardConfiguration() {
         return new ScoreCardConfigurationImpl();
     }
 
+    @Override
     public KnowledgeBuilder newKnowledgeBuilder() {
         return new KnowledgeBuilderImpl( );
     }
 
+    @Override
     public KnowledgeBuilder newKnowledgeBuilder(KnowledgeBuilderConfiguration conf) {
         return new KnowledgeBuilderImpl( (KnowledgeBuilderConfigurationImpl) conf );
     }
 
+    @Override
     public KnowledgeBuilder newKnowledgeBuilder(KieBase kbase) {
         if ( kbase != null ) {
             return new KnowledgeBuilderImpl( (InternalKnowledgeBase)kbase );
@@ -66,6 +68,7 @@ public class KnowledgeBuilderFactoryServiceImpl implements KnowledgeBuilderFacto
         }
     }
 
+    @Override
     public KnowledgeBuilder newKnowledgeBuilder(KieBase kbase,
                                                 KnowledgeBuilderConfiguration conf) {
         if ( kbase != null ) {
@@ -73,10 +76,5 @@ public class KnowledgeBuilderFactoryServiceImpl implements KnowledgeBuilderFacto
         } else {
             return new KnowledgeBuilderImpl((KnowledgeBuilderConfigurationImpl) conf );
         }        
-    }
-
-    public JaxbConfiguration newJaxbConfiguration(Options xjcOpts,
-                                                  String systemId) {
-        return new JaxbConfigurationImpl( xjcOpts, systemId );
     }
 }
