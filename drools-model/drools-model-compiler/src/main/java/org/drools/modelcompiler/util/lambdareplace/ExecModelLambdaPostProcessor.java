@@ -43,6 +43,7 @@ import com.github.javaparser.printer.PrettyPrinter;
 import com.github.javaparser.printer.PrettyPrinterConfiguration;
 import org.drools.model.BitMask;
 import org.drools.modelcompiler.builder.PackageModel;
+import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.ModelGenerator;
 import org.drools.modelcompiler.builder.generator.expression.FlowExpressionBuilder;
 import org.drools.modelcompiler.builder.generator.expression.PatternExpressionBuilder;
@@ -165,6 +166,7 @@ public class ExecModelLambdaPostProcessor {
                  .stream()
                  .filter(MethodCallExpr.class::isInstance)
                  .map(MethodCallExpr.class::cast)
+                 .map(DrlxParseUtil::findLastMethodInChain)
                  .map(MethodCallExpr::getNameAsString)
                  .anyMatch(name -> name.startsWith("D.") && ModelGenerator.temporalOperators.contains(name.substring(2)));
     }
