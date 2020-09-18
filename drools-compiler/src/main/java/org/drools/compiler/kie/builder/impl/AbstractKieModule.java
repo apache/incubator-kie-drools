@@ -27,6 +27,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 import com.google.protobuf.ExtensionRegistry;
 import org.appformer.maven.support.DependencyFilter;
@@ -265,17 +267,15 @@ public abstract class AbstractKieModule
     }
 
     public final boolean addResourceToCompiler(CompositeKnowledgeBuilder ckbuilder, KieBaseModel kieBaseModel, String fileName, ResourceChangeSet rcs) {
-        ResourceConfiguration conf = getResourceConfiguration(fileName);
         Resource resource = getResource(fileName);
         if (resource != null) {
+            ResourceConfiguration conf = getResourceConfiguration(fileName);
             ResourceType resourceType = conf instanceof ResourceConfigurationImpl && ((ResourceConfigurationImpl)conf).getResourceType() != null ?
                                         ((ResourceConfigurationImpl)conf).getResourceType() :
                                         ResourceType.determineResourceType(fileName);
 
             if (resourceType == ResourceType.DTABLE && conf instanceof DecisionTableConfiguration) {
                 addDTableToCompiler( ckbuilder, kieBaseModel, fileName, resource, rcs, ( DecisionTableConfiguration ) conf );
-            } else if (conf == null) {
-                ckbuilder.add(resource, resourceType, rcs);
             } else {
                 ckbuilder.add(resource, resourceType, conf, rcs);
             }
@@ -295,12 +295,20 @@ public abstract class AbstractKieModule
                 }
             }
         }
+        addDTableToCompiler( ckbuilder, resource, dtableConf, rcs );
+    }
+
+    public static void addDTableToCompiler( CompositeKnowledgeBuilder ckbuilder, Resource resource, DecisionTableConfiguration dtableConf ) {
+        addDTableToCompiler( ckbuilder, resource, dtableConf, null );
+    }
+
+    private static void addDTableToCompiler( CompositeKnowledgeBuilder ckbuilder, Resource resource, DecisionTableConfiguration dtableConf, ResourceChangeSet rcs ) {
         String sheetNames = dtableConf.getWorksheetName();
         if (sheetNames == null || sheetNames.indexOf( ',' ) < 0) {
             ckbuilder.add( resource, ResourceType.DTABLE, dtableConf, rcs );
         } else {
             for (String sheetName : sheetNames.split( "\\," ) ) {
-                ckbuilder.add( resource, ResourceType.DTABLE, new DecisionTableConfigurationDelegate(dtableConf, sheetName), rcs );
+                ckbuilder.add( resource, ResourceType.DTABLE, new DecisionTableConfigurationDelegate( dtableConf, sheetName), rcs );
             }
         }
     }
@@ -373,20 +381,24 @@ public abstract class AbstractKieModule
     }
 
     public ResourceConfiguration getResourceConfiguration(String fileName) {
-        ResourceConfiguration conf = resourceConfigurationCache.get(fileName);
-        if (conf != null) {
-            return conf;
-        }
+        return resourceConfigurationCache.computeIfAbsent(fileName, this::loadResourceConfiguration);
+    }
+
+    private ResourceConfiguration loadResourceConfiguration( String fileName ) {
+        return loadResourceConfiguration( fileName, this::isAvailable, file -> new ByteArrayInputStream(getBytes( fileName + ".properties")) );
+    }
+
+    public static ResourceConfiguration loadResourceConfiguration( String fileName, Predicate<String> fileAvailable, Function<String, InputStream> fileProvider ) {
+        ResourceConfiguration conf;
         Properties prop = new Properties();
-        if (isAvailable(fileName + ".properties")) {
-            // configuration file available
-            try {
-                prop.load(new ByteArrayInputStream(getBytes(fileName + ".properties")));
+        if ( fileAvailable.test( fileName + ".properties") ) {
+            try ( InputStream input = fileProvider.apply( fileName + ".properties") ) {
+                prop.load(input);
             } catch (IOException e) {
-                log.error(String.format("Error loading resource configuration from file: %s.properties", fileName));
+                log.error(String.format("Error loading resource configuration from file: %s.properties", fileName ));
             }
         }
-        if (ResourceType.DTABLE.matchesExtension(fileName)) {
+        if (ResourceType.DTABLE.matchesExtension( fileName )) {
             int lastDot = fileName.lastIndexOf( '.' );
             if (lastDot >= 0 && fileName.length() > lastDot+1) {
                 String extension = fileName.substring( lastDot+1 );
@@ -401,8 +413,6 @@ public abstract class AbstractKieModule
         if (conf instanceof DecisionTableConfiguration && (( DecisionTableConfiguration ) conf).getWorksheetName() == null) {
             (( DecisionTableConfiguration ) conf).setWorksheetName( prop.getProperty( "sheets" ) );
         }
-
-        resourceConfigurationCache.put(fileName, conf);
         return conf;
     }
 

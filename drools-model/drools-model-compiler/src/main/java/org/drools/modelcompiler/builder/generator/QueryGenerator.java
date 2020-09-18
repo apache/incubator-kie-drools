@@ -48,7 +48,7 @@ import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getClassF
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.BUILD_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.QUERY_CALL;
-import static org.drools.modelcompiler.builder.generator.visitor.pattern.PatternDSL.GENERATED_PATTERN_PREFIX;
+import static org.drools.model.impl.VariableImpl.GENERATED_VARIABLE_PREFIX;
 import static org.drools.modelcompiler.util.StringUtil.toId;
 
 public class QueryGenerator {
@@ -112,7 +112,7 @@ public class QueryGenerator {
         if (context.getRuleUnitDescr() != null) {
             Map<String, Class<?>> queryBindings = new HashMap<>();
             for (DeclarationSpec declr : context.getAllDeclarations()) {
-                if (!declr.isGlobal() && !declr.getBindingId().startsWith( GENERATED_PATTERN_PREFIX )) {
+                if (!declr.isGlobal() && !declr.getBindingId().startsWith( GENERATED_VARIABLE_PREFIX )) {
                     queryBindings.put(declr.getBindingId(), declr.getDeclarationClass());
                 }
             }

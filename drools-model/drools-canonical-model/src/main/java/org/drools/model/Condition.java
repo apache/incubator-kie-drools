@@ -30,8 +30,14 @@ public interface Condition {
 
     Variable<?>[] getBoundVariables();
 
+    default Condition cloneCondition() {
+        throw new UnsupportedOperationException();
+    }
+
     enum Type {
-        PATTERN( false ), EVAL( false ), QUERY( false ), ACCUMULATE( false ), TEMPORAL( false ), RECEIVER( false ), SENDER( false ),
+        PATTERN( false ), EVAL( false ), QUERY( false ),
+        ACCUMULATE( false ), GROUP_BY( false ), TEMPORAL( false ),
+        RECEIVER( false ), SENDER( false ),
         OR( true ), AND( true ), NOT( false ), EXISTS( false ), FORALL( false ), CONSEQUENCE( false );
 
         private final boolean composite;

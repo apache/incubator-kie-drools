@@ -57,7 +57,7 @@ import static org.kie.pmml.evaluator.core.utils.Converter.getUnwrappedParameters
 /**
  * Default <code>PMMLModelExecutor</code> for <b>Mining</b>
  */
-public class PMMLMiningModelEvaluator implements PMMLModelEvaluator {
+public class PMMLMiningModelEvaluator implements PMMLModelEvaluator<KiePMMLMiningModel> {
 
     private static final Logger logger = LoggerFactory.getLogger(PMMLMiningModelEvaluator.class.getName());
     private static final String EXPECTED_A_KIE_PMMLMINING_MODEL_RECEIVED = "Expected a KiePMMLMiningModel, received %s";
@@ -71,7 +71,7 @@ public class PMMLMiningModelEvaluator implements PMMLModelEvaluator {
 
     @Override
     public PMML4Result evaluate(final KieBase knowledgeBase,
-                                final KiePMMLModel model,
+                                final KiePMMLMiningModel model,
                                 final PMMLContext pmmlContext) {
         validate(model);
         return evaluateMiningModel((KiePMMLMiningModel) model, pmmlContext, knowledgeBase);
@@ -228,7 +228,7 @@ public class PMMLMiningModelEvaluator implements PMMLModelEvaluator {
      */
     private Optional<PMML4Result> evaluateSegment(final KiePMMLSegment toEvaluate, final PMMLContext pmmlContext,
                                                   final KieBase knowledgeBase, final String containerModelName) {
-        logger.info("evaluateSegment {}", toEvaluate.getId());
+        logger.trace("evaluateSegment {}", toEvaluate.getId());
         final KiePMMLPredicate kiePMMLPredicate = toEvaluate.getKiePMMLPredicate();
         Optional<PMML4Result> toReturn = Optional.empty();
         Map<String, Object> values = getUnwrappedParametersMap(pmmlContext.getRequestData().getMappedRequestParams());
@@ -236,7 +236,7 @@ public class PMMLMiningModelEvaluator implements PMMLModelEvaluator {
         if (kiePMMLPredicate != null && kiePMMLPredicate.evaluate(values)) {
             final PMMLRuntime pmmlRuntime = getPMMLRuntime(toEvaluate.getModel().getKModulePackageName(),
                                                            knowledgeBase, containerModelName);
-            logger.info("{}: matching predicate, evaluating... ", toEvaluate.getId());
+            logger.trace("{}: matching predicate, evaluating... ", toEvaluate.getId());
             toReturn = Optional.of(pmmlRuntime.evaluate(modelName, pmmlContext));
         }
         return toReturn;

@@ -75,7 +75,7 @@ public class SampleMineTreeModelWithTransformationsTest extends AbstractPMMLTree
 
         Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
         Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(expectedResult);
-        // // TODO {gcardosi} TO BE FIXED WITH DROOLS-5453
+        // TODO {gcardosi} TO BE FIXED WITH DROOLS-5490
 //        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DER_TEMPERATURE)).isEqualTo(temperature);
 //        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DER_HUMIDITY)).isEqualTo(humidity);
 //        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DER_CONSTANT)).isEqualTo(CONSTANT);

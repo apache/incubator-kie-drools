@@ -22,6 +22,7 @@ import org.drools.model.Variable;
 import static org.drools.model.impl.NamesGenerator.generateName;
 
 public abstract class VariableImpl<T> implements Variable<T>, ModelComponent {
+    public static final String GENERATED_VARIABLE_PREFIX = "GENERATED_";
 
     private final Class<T> type;
     private final String name;

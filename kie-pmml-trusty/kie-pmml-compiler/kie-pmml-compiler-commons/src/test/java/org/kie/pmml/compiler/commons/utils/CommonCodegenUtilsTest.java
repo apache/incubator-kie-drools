@@ -31,6 +31,7 @@ import com.github.javaparser.ast.body.BodyDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.Parameter;
+import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.DoubleLiteralExpr;
 import com.github.javaparser.ast.expr.Expression;
@@ -40,6 +41,7 @@ import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.ThisExpr;
+import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExplicitConstructorInvocationStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
@@ -295,6 +297,33 @@ public class CommonCodegenUtilsTest {
         assertFalse(CommonCodegenUtils.getMethodDeclaration(classOrInterfaceDeclaration, methodName).isPresent());
         classOrInterfaceDeclaration.addMethod(methodName);
         assertTrue(CommonCodegenUtils.getMethodDeclaration(classOrInterfaceDeclaration, methodName).isPresent());
+    }
+
+    @Test
+    public void addMethod() {
+        final MethodDeclaration methodTemplate = new MethodDeclaration();
+        methodTemplate.setName("methodTemplate");
+        final BlockStmt body = new BlockStmt();
+        methodTemplate.setBody(body);
+        final String methodName = "METHOD_NAME";
+        final ClassOrInterfaceDeclaration classOrInterfaceDeclaration = new ClassOrInterfaceDeclaration();
+        assertTrue(classOrInterfaceDeclaration.getMethodsByName(methodName).isEmpty());
+        CommonCodegenUtils.addMethod(methodTemplate, classOrInterfaceDeclaration, methodName);
+        assertEquals(1, classOrInterfaceDeclaration.getMethodsByName(methodName).size());
+        assertEquals(body, classOrInterfaceDeclaration.getMethodsByName(methodName).get(0).getBody().get());
+    }
+
+    @Test
+    public void getVariableDeclarator() {
+        final String variableName = "variableName";
+        final BlockStmt body = new BlockStmt();
+        assertFalse(CommonCodegenUtils.getVariableDeclarator(body, variableName).isPresent());
+        final VariableDeclarationExpr variableDeclarationExpr = new VariableDeclarationExpr(parseClassOrInterfaceType("String"), variableName);
+        body.addStatement(variableDeclarationExpr);
+        Optional<VariableDeclarator> retrieved =  CommonCodegenUtils.getVariableDeclarator(body, variableName);
+        assertTrue(retrieved.isPresent());
+        VariableDeclarator variableDeclarator = retrieved.get();
+        assertEquals(variableName, variableDeclarator.getName().asString());
     }
 
     private void commonValidateMethodDeclaration(MethodDeclaration toValidate, String methodName) {

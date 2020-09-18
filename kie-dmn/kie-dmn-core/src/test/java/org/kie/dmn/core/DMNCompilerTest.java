@@ -32,6 +32,7 @@ import org.kie.dmn.api.core.ast.ItemDefNode;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.compiler.DMNTypeRegistry;
 import org.kie.dmn.core.impl.CompositeTypeImpl;
+import org.kie.dmn.core.impl.DMNContextFPAImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.impl.SimpleTypeImpl;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
@@ -270,7 +271,7 @@ public class DMNCompilerTest extends BaseVariantTest {
         assertThat(evaluateAll.getDecisionResultByName("Greeting").getResult(), is("Hello John!"));
 
         if (isTypeSafe()) {
-            FEELPropertyAccessible outputSet = convertToOutputSet(dmnModel, evaluateAll);
+            FEELPropertyAccessible outputSet = ((DMNContextFPAImpl)evaluateAll.getContext()).getFpa();
             Map<String, Object> allProperties = outputSet.allFEELProperties();
             assertThat(allProperties.get("Greeting"), is("Hello John!"));
         }

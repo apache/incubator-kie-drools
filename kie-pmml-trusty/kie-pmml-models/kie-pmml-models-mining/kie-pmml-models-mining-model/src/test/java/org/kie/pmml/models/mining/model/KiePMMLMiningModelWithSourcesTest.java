@@ -32,7 +32,7 @@ public class KiePMMLMiningModelWithSourcesTest {
 
     @BeforeClass
     public static void setup() {
-        KIE_PMML_MINING_MODEL = new KiePMMLMiningModelWithSources(MINING_MODEL_NAME, PACKAGE_NAME, Collections.EMPTY_MAP);
+        KIE_PMML_MINING_MODEL = new KiePMMLMiningModelWithSources(MINING_MODEL_NAME, PACKAGE_NAME, Collections.EMPTY_MAP, Collections.emptyList());
         assertNotNull(KIE_PMML_MINING_MODEL);
     }
 

@@ -39,6 +39,7 @@ import org.drools.model.patterns.AccumulatePatternImpl;
 import org.drools.model.patterns.CompositePatterns;
 import org.drools.model.patterns.EvalImpl;
 import org.drools.model.patterns.ExistentialPatternImpl;
+import org.drools.model.patterns.GroupByPatternImpl;
 import org.drools.model.patterns.PatternImpl;
 import org.drools.model.patterns.QueryCallPattern;
 import org.drools.model.view.AccumulateExprViewItem;
@@ -46,6 +47,7 @@ import org.drools.model.view.CombinedExprViewItem;
 import org.drools.model.view.ExistentialExprViewItem;
 import org.drools.model.view.ExprViewItem;
 import org.drools.model.view.FixedValueItem;
+import org.drools.model.view.GroupByExprViewItem;
 import org.drools.model.view.QueryCallViewItem;
 import org.drools.model.view.ViewItem;
 
@@ -88,7 +90,7 @@ public class ViewPatternBuilder implements ViewBuilder {
         return new CompositePatterns( Condition.Type.AND, conditions, consequences );
     }
 
-    private static Condition ruleItem2Condition(RuleItem ruleItem) {
+    public static Condition ruleItem2Condition(RuleItem ruleItem) {
         if ( ruleItem instanceof PatternDefImpl ) {
             PatternDefImpl<?> patternDef = ( PatternDefImpl ) ruleItem;
             Variable<?> patternVariable = patternDef.getFirstVariable();
@@ -126,6 +128,13 @@ public class ViewPatternBuilder implements ViewBuilder {
         if ( ruleItem instanceof ExistentialExprViewItem ) {
             ExistentialExprViewItem existential = (ExistentialExprViewItem) ruleItem;
             return new ExistentialPatternImpl( ruleItem2Condition( existential.getExpression() ), existential.getType() );
+        }
+
+        if ( ruleItem instanceof GroupByExprViewItem ) {
+            GroupByExprViewItem groupBy = ( GroupByExprViewItem ) ruleItem;
+            return new GroupByPatternImpl(ruleItem2Condition( groupBy.getExpr() ),
+                    groupBy.getVars(), groupBy.getVarKey(), groupBy.getGroupingFunction(),
+                    groupBy.getAccumulateFunctions());
         }
 
         if ( ruleItem instanceof AccumulateExprViewItem ) {

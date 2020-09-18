@@ -1,0 +1,45 @@
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://kiegroup.org/dmn/_40B3D02F-868C-4925-A1F2-5710DFEEF51E" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_E2FEF485-5E3F-4C5D-8334-6EF63C342166" name="DS1ofEach" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://kiegroup.org/dmn/_40B3D02F-868C-4925-A1F2-5710DFEEF51E">
+  <dmn:extensionElements/>
+  <dmn:inputData id="_AB938312-7622-4B45-919F-D5F779B1810A" name="InputData-1">
+    <dmn:extensionElements/>
+    <dmn:variable id="_6770615B-1977-48A4-8B79-ED1C7A5E3685" name="InputData-1" typeRef="string"/>
+  </dmn:inputData>
+  <dmn:decision id="_C6272ABD-7364-4469-8DB6-324B578F056B" name="Decision-1">
+    <dmn:extensionElements/>
+    <dmn:variable id="_2B832ACD-B20C-4FA8-B2D8-F5D7FB0882EE" name="Decision-1" typeRef="string"/>
+    <dmn:literalExpression id="_9F4B2F75-CAB5-45D4-B6C0-199C0DD8380C">
+      <dmn:text>"d1"</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decisionService id="_32EC8825-36C8-4984-A879-C0C6FD60D562" name="DecisionService-1">
+    <dmn:extensionElements/>
+    <dmn:variable id="_B8E3EA4B-ADC4-4DEA-B799-0E4F8FA5D9FC" name="DecisionService-1" typeRef="Any"/>
+    <dmn:outputDecision href="#_5C1C2614-8A15-4D00-B454-4E74961A6964"/>
+    <dmn:encapsulatedDecision href="#_C6CA655F-356D-4A0D-B678-1F126E476BB5"/>
+    <dmn:inputDecision href="#_C6272ABD-7364-4469-8DB6-324B578F056B"/>
+    <dmn:inputData href="#_AB938312-7622-4B45-919F-D5F779B1810A"/>
+  </dmn:decisionService>
+  <dmn:decision id="_C6CA655F-356D-4A0D-B678-1F126E476BB5" name="Decision-2">
+    <dmn:extensionElements/>
+    <dmn:variable id="_C65E04D2-1610-49DA-9EF6-4EF4E510FF2F" name="Decision-2" typeRef="string"/>
+    <dmn:informationRequirement id="_BF2594B9-60B7-4FEC-921A-6E8724F68CAA">
+      <dmn:requiredInput href="#_AB938312-7622-4B45-919F-D5F779B1810A"/>
+    </dmn:informationRequirement>
+    <dmn:informationRequirement id="_B5E4E755-8420-4C21-BB3B-FBD213871DFD">
+      <dmn:requiredDecision href="#_C6272ABD-7364-4469-8DB6-324B578F056B"/>
+    </dmn:informationRequirement>
+    <dmn:literalExpression id="_C80EB194-E0CA-46B6-9AB4-A3FF21629E8C">
+      <dmn:text>"d2:"+InputData-1+Decision-1</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_5C1C2614-8A15-4D00-B454-4E74961A6964" name="Decision-3">
+    <dmn:extensionElements/>
+    <dmn:variable id="_B2B4753F-CD35-417E-9AAC-8ADEDF1C6BF1" name="Decision-3" typeRef="string"/>
+    <dmn:informationRequirement id="_DDE939CD-53AF-476E-9F64-FCCC2D7547E7">
+      <dmn:requiredDecision href="#_C6CA655F-356D-4A0D-B678-1F126E476BB5"/>
+    </dmn:informationRequirement>
+    <dmn:literalExpression id="_2CA8AC3F-E449-494E-A28C-9588147F7067">
+      <dmn:text>"d3:"+Decision-2</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+</dmn:definitions>

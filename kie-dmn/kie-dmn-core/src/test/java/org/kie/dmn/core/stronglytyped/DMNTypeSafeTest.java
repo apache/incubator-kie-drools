@@ -97,16 +97,17 @@ public class DMNTypeSafeTest extends BaseVariantTest {
         FEELPropertyAccessible street2 = tAddress(compiledClasses, "Street2", 2);
 
         FEELPropertyAccessible tPersonInstance = tPerson(compiledClasses, asList(street1, street2));
-        FEELPropertyAccessible context = inputSet(compiledClasses, tPersonInstance);
+        FEELPropertyAccessible context = outputSet(compiledClasses, tPersonInstance);
 
         DMNResult evaluateAll = evaluateTyped(context, runtime, dmnModel);
+        convertContext(evaluateAll, createInstanceFromCompiledClasses(compiledClasses, packageName, "OutputSet"));
 
         DMNContext result = evaluateAll.getContext();
+
         Map<String, Object> d = (Map<String, Object>) result.get("d");
         assertThat(d.get("Hello"), is("Hello Mr. x"));
 
-        FEELPropertyAccessible outputSet = createInstanceFromCompiledClasses(compiledClasses, packageName, "OutputSet");
-        outputSet.fromMap(result.getAll());
+        FEELPropertyAccessible outputSet = ((DMNContextFPAImpl)result).getFpa();
 
         assertThat(outputSet.getFEELProperty("p").toOptional().get(), equalTo(tPersonInstance));
         Map<String, Object> dContext = (Map<String, Object>)outputSet.getFEELProperty("d").toOptional().get();
@@ -130,8 +131,8 @@ public class DMNTypeSafeTest extends BaseVariantTest {
         return feelPropertyAccessible;
     }
 
-    private FEELPropertyAccessible inputSet(Map<String, Class<?>> compile, FEELPropertyAccessible tPersonInstance) throws Exception {
-        FEELPropertyAccessible feelPropertyAccessible = createInstanceFromCompiledClasses(compile, packageName, "InputSet");
+    private FEELPropertyAccessible outputSet(Map<String, Class<?>> compile, FEELPropertyAccessible tPersonInstance) throws Exception {
+        FEELPropertyAccessible feelPropertyAccessible = createInstanceFromCompiledClasses(compile, packageName, "OutputSet");
         feelPropertyAccessible.setFEELProperty("p", tPersonInstance);
         return feelPropertyAccessible;
     }
@@ -143,7 +144,7 @@ public class DMNTypeSafeTest extends BaseVariantTest {
 
         Map<String, Class<?>> classes = generateSourceCodeAndCreateInput(dmnModel, modelFactory, this.getClass().getClassLoader());
 
-        FEELPropertyAccessible context = createInstanceFromCompiledClasses(classes, packageName, "InputSet");
+        FEELPropertyAccessible context = createInstanceFromCompiledClasses(classes, packageName, "OutputSet");
 
         Map<String, Object> inputSetMap = new HashMap<>();
 
@@ -160,13 +161,14 @@ public class DMNTypeSafeTest extends BaseVariantTest {
         context.fromMap(inputSetMap);
 
         DMNResult evaluateAll = evaluateTyped(context, runtime, dmnModel);
+        convertContext(evaluateAll, createInstanceFromCompiledClasses(classes, packageName, "OutputSet"));
 
         DMNContext result = evaluateAll.getContext();
+
         Map<String, Object> d = (Map<String, Object>) result.get("d");
         assertThat(d.get("Hello"), is("Hello Mr. x"));
 
-        FEELPropertyAccessible outputSet = createInstanceFromCompiledClasses(classes, packageName, "OutputSet");
-        outputSet.fromMap(result.getAll());
+        FEELPropertyAccessible outputSet = ((DMNContextFPAImpl)result).getFpa();
 
         assertThat(outputSet.getFEELProperty("p").toOptional().get(), equalTo(context.getFEELProperty("p").toOptional().get()));
         Map<String, Object> dContext = (Map<String, Object>)outputSet.getFEELProperty("d").toOptional().get();

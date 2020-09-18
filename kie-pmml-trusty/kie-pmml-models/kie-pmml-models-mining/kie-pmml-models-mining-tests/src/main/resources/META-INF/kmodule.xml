@@ -36,4 +36,8 @@
   <kbase name="SegmentationClassificationSelectFirst" packages="segmentationclassificationselectfirst">
     <ksession name="SegmentationClassificationSelectFirstSession" type="stateless"/>
   </kbase>
+
+  <kbase name="SegmentationClassificationMajorityVote" packages="segmentationclassificationmajorityvote">
+    <ksession name="SegmentationClassificationMajorityVoteSession" type="stateless"/>
+  </kbase>
 </kmodule>

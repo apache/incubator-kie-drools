@@ -16,8 +16,11 @@
 
 package org.drools.modelcompiler;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.drools.core.definitions.InternalKnowledgePackage;
@@ -30,6 +33,7 @@ import org.drools.core.spi.GlobalExtractor;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.ObjectType;
 import org.drools.model.Global;
+import org.drools.model.Rule;
 import org.drools.model.Variable;
 
 public class RuleContext {
@@ -38,11 +42,14 @@ public class RuleContext {
     private final KnowledgePackageImpl pkg;
     private final RuleImpl rule;
 
-    private final Map<Variable, Declaration> queryDeclaration = new HashMap<>();
     private final Map<Variable, Declaration> innerDeclaration = new HashMap<>();
-    private final Map<Variable, Accumulate> accumulateSource = new HashMap<>();
+
+    private Map<Variable, Declaration> queryDeclaration;
+    private Map<Variable, Accumulate> accumulateSource;
 
     private final Map<Variable, Pattern> patterns = new HashMap<>();
+
+    private List<Rule> subRules;
 
     private int patternIndex = -1;
     private boolean needStreamMode = false;
@@ -87,7 +94,7 @@ public class RuleContext {
         if ( variable.isFact() ) {
             Declaration declaration = innerDeclaration.get( variable );
             if (declaration == null) {
-                declaration = queryDeclaration.get( variable );
+                declaration = getQueryDeclaration( variable );
             }
             if (declaration == null) {
                 Pattern pattern = patterns.get( variable );
@@ -103,10 +110,13 @@ public class RuleContext {
     }
 
     Declaration getQueryDeclaration( Variable variable ) {
-        return queryDeclaration.get( variable );
+        return queryDeclaration == null ? null : queryDeclaration.get( variable );
     }
 
     void addQueryDeclaration(Variable variable, Declaration declaration) {
+        if (queryDeclaration == null) {
+            queryDeclaration = new HashMap<>();
+        }
         queryDeclaration.put( variable, declaration );
     }
 
@@ -114,12 +124,30 @@ public class RuleContext {
         innerDeclaration.put( variable, declaration );
     }
 
+    Accumulate getAccumulateSource( Variable variable) {
+        return accumulateSource == null ? null : accumulateSource.get( variable );
+    }
+
     void addAccumulateSource(Variable variable, Accumulate accumulate) {
+        if (accumulateSource == null) {
+            accumulateSource = new HashMap<>();
+        }
         accumulateSource.put( variable, accumulate );
     }
 
-    Accumulate getAccumulateSource( Variable variable) {
-        return accumulateSource.get( variable );
+    boolean hasSubRules() {
+        return subRules != null;
+    }
+
+    List<Rule> getSubRules() {
+        return subRules == null ? Collections.emptyList() : subRules;
+    }
+
+    public void addSubRule(Rule rule) {
+        if (subRules == null) {
+            subRules = new ArrayList<>();
+        }
+        subRules.add( rule );
     }
 
     public ClassLoader getClassLoader() {

@@ -15,17 +15,13 @@
  */
 package org.kie.pmml.models.regression.model;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.DoubleUnaryOperator;
 
 import org.kie.pmml.commons.exceptions.KiePMMLException;
-import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.commons.model.enums.OP_TYPE;
 import org.kie.pmml.models.regression.model.enums.REGRESSION_NORMALIZATION_METHOD;
 
@@ -35,9 +31,7 @@ public abstract class KiePMMLRegressionClassificationTable extends KiePMMLRegres
 
     protected REGRESSION_NORMALIZATION_METHOD regressionNormalizationMethod;
     protected OP_TYPE opType;
-    protected List<KiePMMLOutputField> outputFields = new ArrayList<>();
-    protected Map<String, Object> outputFieldsMap = new HashMap<>();
-    protected Map<String, KiePMMLRegressionTable> categoryTableMap = new HashMap<>();
+    protected Map<String, KiePMMLRegressionTable> categoryTableMap = new LinkedHashMap<>(); // Insertion order matters
 
     @Override
     public Object evaluateRegression(Map<String, Object> input) {
@@ -48,8 +42,8 @@ public abstract class KiePMMLRegressionClassificationTable extends KiePMMLRegres
         final LinkedHashMap<String, Double> probabilityMap = getProbabilityMap(resultMap);
         final Map.Entry<String, Double> predictedEntry = Collections.max(probabilityMap.entrySet(), Map.Entry.comparingByValue());
         probabilityMap.put(targetField, predictedEntry.getValue());
-        populateOutputFieldsMap(predictedEntry, probabilityMap);
-        outputFieldsMap.put(targetField, predictedEntry.getKey());
+        populateOutputFieldsMapWithResult(predictedEntry.getKey());
+        populateOutputFieldsMapWithProbability(predictedEntry, probabilityMap);
         return predictedEntry.getKey();
     }
 
@@ -61,15 +55,10 @@ public abstract class KiePMMLRegressionClassificationTable extends KiePMMLRegres
 
     protected abstract LinkedHashMap<String, Double> getProbabilityMap(final LinkedHashMap<String, Double> resultMap);
 
-    protected abstract void populateOutputFieldsMap(final Map.Entry<String, Double> predictedEntry, final LinkedHashMap<String, Double> probabilityMap);
+    protected abstract void populateOutputFieldsMapWithProbability(final Map.Entry<String, Double> predictedEntry, final LinkedHashMap<String, Double> probabilityMap);
 
     protected void updateResult(final AtomicReference<Double> toUpdate) {
         // NOOP
-    }
-
-    @Override
-    public Map<String, Object> getOutputFieldsMap() {
-        return outputFieldsMap;
     }
 
     public REGRESSION_NORMALIZATION_METHOD getRegressionNormalizationMethod() {

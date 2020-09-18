@@ -115,16 +115,25 @@ public class KiePMMLRegressionModelFactory {
                                                                                   final RegressionModel model,
                                                                                   final String targetFieldName,
                                                                                   final List<KiePMMLOutputField> outputFields,
-                                                                                  final String packageName) throws IOException {
+                                                                                  final String packageName) {
         final DataField targetDataField = dataDictionary.getDataFields().stream()
                 .filter(field -> Objects.equals(targetFieldName, field.getName().getValue()))
                 .findFirst().orElse(null);
         final OpType opType = targetDataField != null ? targetDataField.getOpType() : null;
         Map<String, KiePMMLTableSourceCategory> toReturn;
         if (isRegression(model.getMiningFunction(), targetFieldName, opType)) {
-            toReturn = KiePMMLRegressionTableRegressionFactory.getRegressionTables(Collections.singletonList(model.getRegressionTables().get(0)), model.getNormalizationMethod(), targetFieldName, packageName);
+            toReturn = KiePMMLRegressionTableRegressionFactory.getRegressionTables(Collections.singletonList(model.getRegressionTables().get(0)),
+                                                                                   model.getNormalizationMethod(),
+                                                                                   outputFields,
+                                                                                   targetFieldName,
+                                                                                   packageName);
         } else {
-            toReturn = KiePMMLRegressionTableClassificationFactory.getRegressionTables(model.getRegressionTables(), model.getNormalizationMethod(), opType, outputFields, targetFieldName, packageName);
+            toReturn = KiePMMLRegressionTableClassificationFactory.getRegressionTables(model.getRegressionTables(),
+                                                                                       model.getNormalizationMethod(),
+                                                                                       opType,
+                                                                                       outputFields,
+                                                                                       targetFieldName,
+                                                                                       packageName);
         }
         return toReturn;
     }

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions namespace="http://www.signavio.com/dmn/1.1/diagram/3f9473e3ffef482f98fa64e1ff36e196.xml" exporterVersion="14.5.2" name="Test_SignavioZipFunction" id="id-167aae1597ae4f59b3d19f6ee335c973" sigExt:revisionId="2523a28433f249c89d0171c060536b14" sigExt:revisionNumber="3" xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns:sig="http://www.signavio.com/dmn/1.1/diagram/3f9473e3ffef482f98fa64e1ff36e196.xml" xmlns:sigExt="http://www.signavio.com/schema/dmn/1.1/" xmlns:feel="http://www.omg.org/spec/FEEL/20140401">
+    <extensionElements>
+        <sigExt:diagramMetaData name="mytable" value=""/>
+        <sigExt:diagramMetaData name="jirareference" value="[]"/>
+        <sigExt:diagramMetaData name="playbookreference" value=""/>
+        <sigExt:diagramMetaData name="mapowner3" value=""/>
+        <sigExt:diagramMetaData name="foobar" value=""/>
+        <sigExt:diagramMetaData name="dmntestattribute" value=""/>
+    </extensionElements>
+    <itemDefinition isCollection="true" name="zipsinglelist" id="id-312632b38c8bf75b2819a7a6392a313b" label="zip_single_list">
+        <itemComponent isCollection="false" name="name" id="id-312632b38c8bf75b2819a7a6392a313b-relation-name" label="name" sigExt:slotId="name">
+            <typeRef>feel:string</typeRef>
+        </itemComponent>
+        <itemComponent isCollection="false" name="age" id="id-312632b38c8bf75b2819a7a6392a313b-relation-age" label="age" sigExt:slotId="age">
+            <typeRef>feel:number</typeRef>
+        </itemComponent>
+    </itemDefinition>
+    <itemDefinition isCollection="true" name="ages" id="id-c6928bd39971184a4639002649f86b29" label="ages">
+        <typeRef>feel:number</typeRef>
+    </itemDefinition>
+    <itemDefinition isCollection="true" name="names" id="id-905f5ac25f0291b1eb0e745e34db4c32" label="names">
+        <typeRef>feel:string</typeRef>
+    </itemDefinition>
+    <itemDefinition isCollection="true" name="zipvararg" id="id-d929a0c3debcc2dc09ed083a0096fbe6" label="zip_vararg">
+        <itemComponent isCollection="false" name="name" id="id-d929a0c3debcc2dc09ed083a0096fbe6-relation-name" label="name" sigExt:slotId="name">
+            <typeRef>feel:string</typeRef>
+        </itemComponent>
+        <itemComponent isCollection="false" name="age" id="id-d929a0c3debcc2dc09ed083a0096fbe6-relation-age" label="age" sigExt:slotId="age">
+            <typeRef>feel:number</typeRef>
+        </itemComponent>
+    </itemDefinition>
+    <inputData name="names" id="id-4250444a06ac5dd5ba8b27f87f3e1dbc" label="names" sigExt:shapeId="sid-0321E303-1382-4603-8DA0-6447A0A6F0F2" sigExt:diagramId="3f9473e3ffef482f98fa64e1ff36e196">
+        <extensionElements>
+            <sigExt:diagramMetaData name="mytable" value=""/>
+        </extensionElements>
+        <variable typeRef="sig:names" name="names" id="id-4250444a06ac5dd5ba8b27f87f3e1dbc_variable"/>
+    </inputData>
+    <inputData name="ages" id="id-284cd12a16be7d68ba36c11915f09dbf" label="ages" sigExt:shapeId="sid-F031AC0F-FF6B-4C50-8B4B-72A972DD04D2" sigExt:diagramId="3f9473e3ffef482f98fa64e1ff36e196">
+        <extensionElements>
+            <sigExt:diagramMetaData name="mytable" value=""/>
+        </extensionElements>
+        <variable typeRef="sig:ages" name="ages" id="id-284cd12a16be7d68ba36c11915f09dbf_variable"/>
+    </inputData>
+    <decision name="zipsinglelist" id="id-b5470e3a92bb2663c699f8ca3c1861e0" label="zip_single_list" sigExt:shapeId="sid-51AD84DC-921B-42B6-B0B3-CD2F737FF2FB" sigExt:diagramId="3f9473e3ffef482f98fa64e1ff36e196">
+        <extensionElements>
+            <sigExt:diagramMetaData name="jirareference" value="[]"/>
+        </extensionElements>
+        <variable typeRef="sig:zipsinglelist" name="zipsinglelist" id="id-b5470e3a92bb2663c699f8ca3c1861e0_variable"/>
+        <informationRequirement>
+            <requiredInput href="#id-4250444a06ac5dd5ba8b27f87f3e1dbc"/>
+        </informationRequirement>
+        <informationRequirement>
+            <requiredInput href="#id-284cd12a16be7d68ba36c11915f09dbf"/>
+        </informationRequirement>
+        <literalExpression expressionLanguage="http://www.omg.org/spec/FEEL/20140401">
+            <text>zip(["name", "age"], [names, ages])</text>
+        </literalExpression>
+    </decision>
+    <decision name="zipvararg" id="id-3132b1c9c1a68f6af80cd98420f4811b" label="zip_vararg" sigExt:shapeId="sid-8FB40E8B-7BE7-41EE-AF9C-44A492005479" sigExt:diagramId="3f9473e3ffef482f98fa64e1ff36e196">
+        <extensionElements>
+            <sigExt:diagramMetaData name="jirareference" value="[]"/>
+        </extensionElements>
+        <variable typeRef="sig:zipvararg" name="zipvararg" id="id-3132b1c9c1a68f6af80cd98420f4811b_variable"/>
+        <informationRequirement>
+            <requiredInput href="#id-4250444a06ac5dd5ba8b27f87f3e1dbc"/>
+        </informationRequirement>
+        <informationRequirement>
+            <requiredInput href="#id-284cd12a16be7d68ba36c11915f09dbf"/>
+        </informationRequirement>
+        <literalExpression expressionLanguage="http://www.omg.org/spec/FEEL/20140401">
+            <text>zip(["name", "age"], names, ages)</text>
+        </literalExpression>
+    </decision>
+</definitions>

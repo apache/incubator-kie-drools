@@ -48,6 +48,15 @@ public class DMNContextFPAImpl implements DMNContext {
         return fpa.getFEELProperty(name).toOptional().orElse(null);
     }
 
+    /**
+     * Internal utility method
+     * 
+     * @return FEELPropertyAccessible which represents strongly typed context
+     */
+    public FEELPropertyAccessible getFpa() {
+        return fpa;
+    }
+
     private Map<String, Object> getCurrentEntries() {
         if (stack.isEmpty()) {
             return fpa.allFEELProperties();

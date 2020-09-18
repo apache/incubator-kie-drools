@@ -1,0 +1,15 @@
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://kiegroup.org/dmn/_7C3C7416-2F33-4718-AE35-F3843C5250DB" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_D33532B2-1C6C-4A9A-98A0-B198E626F34E" name="HelloDS" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://kiegroup.org/dmn/_7C3C7416-2F33-4718-AE35-F3843C5250DB">
+  <dmn:extensionElements/>
+  <dmn:decision id="_817D083F-3038-4915-8848-85EF16BDF933" name="Decision-1">
+    <dmn:extensionElements/>
+    <dmn:variable id="_55FBB01E-C6BB-4DBB-A119-BA6475F66495" name="Decision-1" typeRef="string"/>
+    <dmn:literalExpression id="_7A039462-8037-4A72-866A-07CE26F82205">
+      <dmn:text>"Hello World"</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decisionService id="_437A2E2B-3B9E-4190-8E01-066372BB9CF9" name="DecisionService-1">
+    <dmn:extensionElements/>
+    <dmn:variable id="_22538772-C157-451C-B588-86AC4FFC1FE4" name="DecisionService-1" typeRef="Any"/>
+    <dmn:outputDecision href="#_817D083F-3038-4915-8848-85EF16BDF933"/>
+  </dmn:decisionService>
+</dmn:definitions>
