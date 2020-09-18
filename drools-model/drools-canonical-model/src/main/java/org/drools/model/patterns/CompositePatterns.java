@@ -17,6 +17,8 @@
 
 package org.drools.model.patterns;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -30,6 +32,8 @@ import org.drools.model.consequences.ConditionalNamedConsequenceImpl;
 import org.drools.model.consequences.NamedConsequenceImpl;
 import org.drools.model.impl.ModelComponent;
 import org.drools.model.impl.RuleImpl;
+
+import static java.util.stream.Collectors.toList;
 
 public class CompositePatterns implements Condition, View, ModelComponent {
 
@@ -68,6 +72,10 @@ public class CompositePatterns implements Condition, View, ModelComponent {
     @Override
     public List<Condition> getSubConditions() {
         return patterns;
+    }
+
+    public void addCondition(Condition condition) {
+        patterns.add(condition);
     }
 
     public void addCondition(int index, Condition condition) {
@@ -126,5 +134,11 @@ public class CompositePatterns implements Condition, View, ModelComponent {
                 "vars: " + usedVars + ", " +
                 "patterns: " + patterns + ", " +
                 "consequences: " + consequences + ")";
+    }
+
+    @Override
+    public CompositePatterns cloneCondition() {
+        return new CompositePatterns( type, patterns.stream().map( Condition::cloneCondition ).collect( toList() ),
+                usedVars == null ? null : new HashSet<>(usedVars), consequences == null ? null : new HashMap<>(consequences) );
     }
 }

@@ -82,4 +82,9 @@ public class ExistentialPatternImpl implements Condition, ModelComponent {
                 "type: " + type + ", " +
                 "condition: " + condition + ")";
     }
+
+    @Override
+    public Condition cloneCondition() {
+        return new ExistentialPatternImpl( condition.cloneCondition(), type );
+    }
 }

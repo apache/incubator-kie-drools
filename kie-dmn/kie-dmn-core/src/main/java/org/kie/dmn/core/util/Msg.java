@@ -29,6 +29,7 @@ public final class Msg {
     public static final Message2 REQ_INPUT_NOT_FOUND_FOR_DS                          = new Message2( DMNMessageType.REQ_NOT_FOUND, "Required input '%s' not found for Decision Service '%s', invoking using null.");
     public static final Message2 REFERENCE_NOT_FOUND_FOR_DS                          = new Message2( DMNMessageType.REQ_NOT_FOUND, "Element reference '%s' not resolved for Decision Service '%s'.");
     public static final Message2 REQ_INPUT_NOT_FOUND_FOR_NODE                        = new Message2( DMNMessageType.REQ_NOT_FOUND, "Required input '%s' not found on node '%s'" );
+    public static final Message3 OUTPUT_NOT_FOUND_FOR_DS                             = new Message3( DMNMessageType.REQ_NOT_FOUND, "Decision service '%s' does not define any outputDecision (outputDecision count: %s, encapsulatedDecision count: %s)" );
     public static final Message2 REQ_DECISION_NOT_FOUND_FOR_NODE                     = new Message2( DMNMessageType.REQ_NOT_FOUND, "Required Decision '%s' not found on node '%s'" );
     public static final Message2 REQ_BKM_NOT_FOUND_FOR_NODE                          = new Message2( DMNMessageType.REQ_NOT_FOUND, "Required Business Knowledge Model '%s' not found on node '%s'" );
     public static final Message1 CYCLIC_DEP_FOR_NODE                                 = new Message1( DMNMessageType.REQ_NOT_FOUND, "Cyclic dependency detected for node '%s'");

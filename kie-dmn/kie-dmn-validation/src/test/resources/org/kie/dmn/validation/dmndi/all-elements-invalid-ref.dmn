@@ -21,7 +21,7 @@
   <dmn:decisionService id="_9CE1617B-12C1-48EB-B1E3-9CC7935E1DCE" name="DecisionService-1">
     <dmn:extensionElements/>
     <dmn:variable id="_5E969F1C-6F02-44A6-B7C3-837597DE3BE3" name="DecisionService-1" typeRef="string"/>
-    <dmn:encapsulatedDecision href="#_63FC447A-DEF6-4DA6-93A2-F366D22116D0"/>
+    <dmn:outputDecision href="#_63FC447A-DEF6-4DA6-93A2-F366D22116D0"/>
     <dmn:inputData href="#_EC4F8F8F-D86E-49FC-8A43-ABFC3AC40D15"/>
   </dmn:decisionService>
   <dmn:businessKnowledgeModel id="_747087F4-E6A0-4BB0-AC97-2F502C3DFDE7" name="BusinessKnowledgeModel-1">

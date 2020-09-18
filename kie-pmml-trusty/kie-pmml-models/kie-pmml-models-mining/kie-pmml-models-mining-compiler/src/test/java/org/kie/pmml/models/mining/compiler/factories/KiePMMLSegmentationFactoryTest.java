@@ -17,16 +17,20 @@
 package org.kie.pmml.models.mining.compiler.factories;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.bind.JAXBException;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.models.mining.model.segmentation.KiePMMLSegmentation;
 import org.xml.sax.SAXException;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
 public class KiePMMLSegmentationFactoryTest extends AbstractKiePMMLFactoryTest {
@@ -52,12 +56,16 @@ public class KiePMMLSegmentationFactoryTest extends AbstractKiePMMLFactoryTest {
     public void getSegmentationSourcesMap() {
         final String segmentationName = "SEGMENTATION_NAME";
         final String packageName = "packagename";
+        final List<KiePMMLModel> nestedModels = new ArrayList<>();
         final Map<String, String> retrieved = KiePMMLSegmentationFactory.getSegmentationSourcesMap(packageName,
                                                                                                    DATA_DICTIONARY,
                                                                                                    TRANSFORMATION_DICTIONARY,
                                                                                                    MINING_MODEL.getSegmentation(),
                                                                                                    segmentationName,
-                                                                                                   KNOWLEDGE_BUILDER);
+                                                                                                   KNOWLEDGE_BUILDER,
+                                                                                                   nestedModels);
         assertNotNull(retrieved);
+        int expectedNestedModels = MINING_MODEL.getSegmentation().getSegments().size();
+        assertEquals(expectedNestedModels, nestedModels.size());
     }
 }

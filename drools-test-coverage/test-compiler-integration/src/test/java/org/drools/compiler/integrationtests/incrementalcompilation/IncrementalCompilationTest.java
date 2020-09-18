@@ -4598,6 +4598,74 @@ public class IncrementalCompilationTest {
     }
 
     @Test
+    public void testIncrementalCompilationFromEmptyProject2() {
+        // DROOLS-5584
+        final String drl1 =
+                "package org.drools.test;\n" +
+                "global java.util.List list;\n" +
+                "rule \"test1\" when then end\n";
+
+        final KieServices ks = KieServices.Factory.get();
+
+        ReleaseId id = ks.newReleaseId("org.test", "foo", "1.0-SNAPSHOT");
+        KieFileSystem kfs = ks.newKieFileSystem();
+        kfs.generateAndWritePomXML(id);
+
+        final KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll(DrlProject.class);
+
+        assertEquals(0, kieBuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR).size());
+
+        kfs.write("src/main/resources/r1.drl", drl1);
+        final IncrementalResults addResults1 = ((InternalKieBuilder) kieBuilder).createFileSet("src/main/resources/r1.drl").build();
+        assertEquals(0, addResults1.getAddedMessages().size());
+
+        KieContainer kieContainer = ks.newKieContainer(id);
+        KieSession kieSession = kieContainer.newKieSession();
+
+        assertEquals( 1, kieSession.getKieBase().getKiePackages().size() );
+        assertNotNull( kieSession.getKieBase().getKiePackage("org.drools.test") );
+
+        kieSession.setGlobal( "list", new ArrayList() );
+        Collection<String> globals = kieSession.getGlobals().getGlobalKeys();
+        assertEquals( 1, globals.size() );
+        assertEquals( "list", globals.iterator().next() );
+    }
+
+    @Test
+    public void testIncrementalCompilationWithErrorFromEmptyProject() {
+        // DROOLS-5584
+        final String drl_KO =
+                "package org.drools.test;\n" +
+                "global java.util.List list;\n" +
+                "rule \"test1\" when Strinf() then end\n";
+
+        final String drl_OK =
+                "package org.drools.test;\n" +
+                "global java.util.List list;\n" +
+                "rule \"test1\" when String() then end\n";
+
+        final KieServices ks = KieServices.Factory.get();
+
+        ReleaseId id = ks.newReleaseId("org.test", "foo", "1.0-SNAPSHOT");
+        KieFileSystem kfs = ks.newKieFileSystem();
+        kfs.generateAndWritePomXML(id);
+
+        final KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll(DrlProject.class);
+
+        assertEquals(0, kieBuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR).size());
+
+        kfs.write("src/main/resources/r1.drl", drl_KO);
+        final IncrementalResults addResults1 = ((InternalKieBuilder) kieBuilder).createFileSet("src/main/resources/r1.drl").build();
+        assertEquals(1, addResults1.getAddedMessages().size());
+        assertEquals(0, addResults1.getRemovedMessages().size());
+
+        kfs.write("src/main/resources/r1.drl", drl_OK);
+        final IncrementalResults addResults2 = ((InternalKieBuilder) kieBuilder).createFileSet("src/main/resources/r1.drl").build();
+        assertEquals(0, addResults2.getAddedMessages().size());
+        assertEquals(1, addResults2.getRemovedMessages().size());
+    }
+
+    @Test
     public void testUnusedDeclaredTypeUpdate() throws Exception {
         // DROOLS-5560
         final String drl1 = "package org.example.rules \n" +
