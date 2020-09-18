@@ -2295,4 +2295,26 @@ public class CompilerTest extends BaseModelTest {
 
         Assertions.assertThat(list).containsExactlyInAnyOrder(40, 38, 41, 38, 41, 43);
     }
+
+    @Test()
+    public void testStringRelationalComparison() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "global java.util.List list;\n" +
+                "rule R when\n" +
+                "  $p : Person(name > \"Bob\" && name < \"Ken\")\n" +
+                "then\n" +
+                "  list.add($p.getName());" +
+                "end";
+
+        KieSession ksession = getKieSession(str);
+        final List<String> list = new ArrayList<>();
+        ksession.setGlobal("list", list);
+
+        ksession.insert(new Person("John"));
+        ksession.insert(new Person("Ann"));
+        ksession.fireAllRules();
+
+        Assertions.assertThat(list).containsExactly("John");
+    }
 }
