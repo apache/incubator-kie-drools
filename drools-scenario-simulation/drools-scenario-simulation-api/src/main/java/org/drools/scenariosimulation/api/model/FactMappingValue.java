@@ -33,6 +33,8 @@ public class FactMappingValue {
     private Object errorValue;
     @XStreamOmitField
     private String exceptionMessage;
+    @XStreamOmitField
+    private String detailsMessage;
 
     public FactMappingValue() {
     }
@@ -84,8 +86,18 @@ public class FactMappingValue {
         return exceptionMessage;
     }
 
+    public String getDetailsMessage() {
+        return detailsMessage;
+    }
+
     public void setExceptionMessage(String exceptionMessage) {
         this.exceptionMessage = exceptionMessage;
+        this.status = FactMappingValueStatus.FAILED_WITH_EXCEPTION;
+    }
+
+    public void setExceptionMessageWithDetails(String exceptionMessage, String detailsMessage) {
+        this.exceptionMessage = exceptionMessage;
+        this.detailsMessage = detailsMessage;
         this.status = FactMappingValueStatus.FAILED_WITH_EXCEPTION;
     }
 
@@ -93,5 +105,6 @@ public class FactMappingValue {
         this.status = FactMappingValueStatus.SUCCESS;
         this.exceptionMessage = null;
         this.errorValue = null;
+        this.detailsMessage = null;
     }
 }

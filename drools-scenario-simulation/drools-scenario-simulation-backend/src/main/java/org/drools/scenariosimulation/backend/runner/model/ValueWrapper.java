@@ -31,28 +31,34 @@ public class ValueWrapper<T> {
     private final T value;
     private final T expected;
     private final String errorMessage;
+    private final String detailedMessage;
 
-    private ValueWrapper(T value, T expected, boolean valid, String errorMessage) {
+    private ValueWrapper(T value, T expected, boolean valid, String errorMessage, String detailedMessage) {
         this.valid = valid;
         this.value = value;
         this.expected = expected;
         this.errorMessage = errorMessage;
+        this.detailedMessage = detailedMessage;
     }
 
     public static <T> ValueWrapper<T> of(T value) {
-        return new ValueWrapper<>(value, null, true, null);
+        return new ValueWrapper<>(value, null, true, null, null);
     }
 
     public static <T> ValueWrapper<T> errorWithValidValue(T value, T expected) {
-        return new ValueWrapper<>(value, expected, false, null);
+        return new ValueWrapper<>(value, expected, false, null, null);
     }
 
     public static <T> ValueWrapper<T> errorWithMessage(String message) {
-        return new ValueWrapper<>(null, null, false, message);
+        return new ValueWrapper<>(null, null, false, message, null);
+    }
+
+    public static <T> ValueWrapper<T> errorWithDetailedMessage(String message, String detailedMessage) {
+        return new ValueWrapper<>(null, null, false, message, detailedMessage);
     }
 
     public static <T> ValueWrapper<T> errorEmptyMessage() {
-        return new ValueWrapper<>(null, null, false, null);
+        return new ValueWrapper<>(null, null, false, null, null);
     }
 
     public boolean isValid() {
@@ -69,6 +75,10 @@ public class ValueWrapper<T> {
 
     public Optional<String> getErrorMessage() {
         return Optional.ofNullable(errorMessage);
+    }
+
+    public Optional<String> getDetailedMessage() {
+        return Optional.ofNullable(detailedMessage);
     }
 
     public T orElse(T defaultValue) {

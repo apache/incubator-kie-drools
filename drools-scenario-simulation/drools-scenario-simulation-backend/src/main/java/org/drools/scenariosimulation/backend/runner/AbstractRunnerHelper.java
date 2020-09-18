@@ -25,6 +25,8 @@ import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.drools.scenariosimulation.api.model.Background;
 import org.drools.scenariosimulation.api.model.BackgroundData;
 import org.drools.scenariosimulation.api.model.ExpressionElement;
@@ -37,6 +39,7 @@ import org.drools.scenariosimulation.api.model.Scenario;
 import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
 import org.drools.scenariosimulation.api.model.ScesimModelDescriptor;
 import org.drools.scenariosimulation.api.model.Settings;
+import org.drools.scenariosimulation.api.utils.ConstantsHolder;
 import org.drools.scenariosimulation.backend.expression.ExpressionEvaluator;
 import org.drools.scenariosimulation.backend.expression.ExpressionEvaluatorFactory;
 import org.drools.scenariosimulation.backend.runner.model.InstanceGiven;
@@ -45,12 +48,15 @@ import org.drools.scenariosimulation.backend.runner.model.ScenarioResult;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioResultMetadata;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioRunnerData;
 import org.drools.scenariosimulation.backend.runner.model.ValueWrapper;
+import org.drools.scenariosimulation.backend.util.JsonUtils;
 import org.kie.api.runtime.KieContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static java.util.stream.Collectors.toList;
 import static org.drools.scenariosimulation.api.utils.ScenarioSimulationSharedUtils.isCollection;
+import static org.drools.scenariosimulation.api.utils.ScenarioSimulationSharedUtils.isList;
+import static org.drools.scenariosimulation.backend.runner.model.ValueWrapper.errorWithDetailedMessage;
 import static org.drools.scenariosimulation.backend.runner.model.ValueWrapper.errorWithValidValue;
 import static org.drools.scenariosimulation.backend.runner.model.ValueWrapper.errorWithMessage;
 import static org.drools.scenariosimulation.backend.runner.model.ValueWrapper.of;
@@ -283,7 +289,12 @@ public abstract class AbstractRunnerHelper {
             expectedResult.resetStatus();
         } else if (resultValue.getErrorMessage().isPresent()) {
             // propagate error message
-            expectedResult.setExceptionMessage(resultValue.getErrorMessage().get());
+            if (resultValue.getDetailedMessage().isPresent()) {
+                expectedResult.setExceptionMessageWithDetails(resultValue.getErrorMessage().get(),
+                                                              resultValue.getDetailedMessage().get());
+            } else {
+                expectedResult.setExceptionMessage(resultValue.getErrorMessage().get());
+            }
         } else {
             try {
                 // set actual as proposed value
@@ -308,8 +319,8 @@ public abstract class AbstractRunnerHelper {
             if (evaluationSucceed) {
                 return of(resultRaw);
             } else if (isCollection(className)) {
-                // no suggestions for collection yet
-                return errorWithMessage("Impossible to find elements in the collection to satisfy the conditions");
+                return errorWithDetailedMessage("Impossible to find elements in the collection to satisfy the conditions",
+                                                generateCollectionInvalidMessage(className, (String) resultRaw));
             } else {
                 return errorWithValidValue(resultRaw, expectedResultRaw);
             }
@@ -317,6 +328,34 @@ public abstract class AbstractRunnerHelper {
             expectedResult.setExceptionMessage(e.getMessage());
             return errorWithMessage(e.getMessage());
         }
+    }
+
+    private static String generateCollectionInvalidMessage(String className, String expectedResultRaw) {
+        StringBuilder resultMessage = new StringBuilder();
+        if (isList(className)) {
+            JsonNode jsonNode = JsonUtils.convertFromStringToJSONNode(expectedResultRaw)
+                    .orElseThrow(() -> new IllegalArgumentException(ConstantsHolder.MALFORMED_RAW_DATA_MESSAGE));
+            if (jsonNode.isArray()) {
+                resultMessage.append("Expected List:\n");
+
+                resultMessage.append("[\n");
+                ArrayNode arrayNode = (ArrayNode) jsonNode;
+                final Iterable<JsonNode> iterable = () -> arrayNode.elements();
+                iterable.forEach(node -> {
+                    final Iterable<Map.Entry<String, JsonNode>> iterable2 = () -> node.fields();
+                    iterable2.forEach(node1 -> {
+                        resultMessage.append(node1.getKey() + " = ");
+                        resultMessage.append(node1.getValue().asText());
+                        resultMessage.append("\n");
+                    });
+                });
+                resultMessage.append("]");
+            } else {
+                throw new IllegalArgumentException(ConstantsHolder.MALFORMED_RAW_DATA_MESSAGE);
+            }
+        }
+
+        return resultMessage.toString();
     }
 
     protected abstract ScenarioResultMetadata extractResultMetadata(Map<String, Object> requestContext,
