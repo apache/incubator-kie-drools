@@ -23,6 +23,29 @@ exports[`EndpointLink component tests snapshot testing for link hidden 1`] = `
 </Fragment>
 `;
 
+exports[`EndpointLink component tests snapshot testing for link hidden with custom link label 1`] = `
+<Fragment>
+  <Button
+    component="a"
+    data-ouia-component-id="endpoint-link-3"
+    data-ouia-component-type="endpoint-link"
+    data-ouia-safe={true}
+    href="http://localhost:4000/"
+    isInline={true}
+    target="_blank"
+    variant="link"
+  >
+    This is a label
+    <ExternalLinkAltIcon
+      className="pf-u-ml-xs"
+      color="currentColor"
+      noVerticalAlign={false}
+      size="sm"
+    />
+  </Button>
+</Fragment>
+`;
+
 exports[`EndpointLink component tests snapshot testing for link shown 1`] = `
 <Fragment>
   <Button

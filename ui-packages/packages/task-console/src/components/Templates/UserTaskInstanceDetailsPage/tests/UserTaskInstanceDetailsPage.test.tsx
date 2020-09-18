@@ -17,6 +17,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { Breadcrumb, Text } from '@patternfly/react-core';
 import PageTitle from '../../../Molecules/PageTitle/PageTitle';
 import TaskForm from '../../../Organisms/TaskForm/TaskForm';
+import TaskDetails from '../../../Organisms/TaskDetails/TaskDetails';
 
 const MockedComponent = (): React.ReactElement => {
   return <></>;
@@ -24,6 +25,7 @@ const MockedComponent = (): React.ReactElement => {
 
 jest.mock('../../../Atoms/TaskState/TaskState');
 jest.mock('../../../Molecules/PageTitle/PageTitle');
+jest.mock('../../../Organisms/TaskDetails/TaskDetails');
 jest.mock('../../../Organisms/TaskForm/TaskForm');
 
 jest.mock('@kogito-apps/common', () => ({
@@ -140,5 +142,12 @@ describe('UserTaskInstanceDetailsPage tests', () => {
     expect(taskForm.props().userTaskInstance).toStrictEqual(userTaskInstance);
     expect(taskForm.props().successCallback).not.toBeNull();
     expect(taskForm.props().errorCallback).not.toBeNull();
+
+    const taskDetails = wrapper.find(TaskDetails);
+
+    expect(taskDetails.exists()).toBeTruthy();
+    expect(taskDetails.props().userTaskInstance).toStrictEqual(
+      userTaskInstance
+    );
   });
 });

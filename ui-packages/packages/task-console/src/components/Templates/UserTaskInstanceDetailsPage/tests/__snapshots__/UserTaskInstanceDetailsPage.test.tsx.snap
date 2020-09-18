@@ -115,10 +115,10 @@ exports[`UserTaskInstanceDetailsPage tests Test active task 1`] = `
           >
             <GridItem
               className="pf-u-h-100"
-              span={12}
+              span={8}
             >
               <div
-                className="pf-l-grid__item pf-m-12-col pf-u-h-100"
+                className="pf-l-grid__item pf-m-8-col pf-u-h-100"
               >
                 <Card
                   className="pf-u-h-100"
@@ -129,6 +129,22 @@ exports[`UserTaskInstanceDetailsPage tests Test active task 1`] = `
                     data-ouia-component-type="PF4/Card"
                     data-ouia-safe={true}
                   >
+                    <CardHeader>
+                      <div
+                        className="pf-c-card__header"
+                      >
+                        <Title
+                          headingLevel="h3"
+                          size="xl"
+                        >
+                          <h3
+                            className="pf-c-title pf-m-xl"
+                          >
+                            Form
+                          </h3>
+                        </Title>
+                      </div>
+                    </CardHeader>
                     <CardBody
                       className="pf-u-h-100"
                     >
@@ -138,6 +154,78 @@ exports[`UserTaskInstanceDetailsPage tests Test active task 1`] = `
                         <MockedTaskForm
                           errorCallback={[Function]}
                           successCallback={[Function]}
+                          userTaskInstance={
+                            Object {
+                              "actualOwner": null,
+                              "adminGroups": Array [],
+                              "adminUsers": Array [],
+                              "completed": null,
+                              "description": null,
+                              "endpoint": "http://localhost:8080/travels/9ae7ce3b-d49c-4f35-b843-8ac3d22fa427/VisaApplication/45a73767-5da3-49bf-9c40-d533c3e77ef3",
+                              "excludedUsers": Array [],
+                              "id": "45a73767-5da3-49bf-9c40-d533c3e77ef3",
+                              "inputs": "{\\"Skippable\\":\\"true\\",\\"trip\\":{\\"city\\":\\"Boston\\",\\"country\\":\\"US\\",\\"begin\\":\\"2020-02-19T23:00:00.000+01:00\\",\\"end\\":\\"2020-02-26T23:00:00.000+01:00\\",\\"visaRequired\\":true},\\"TaskName\\":\\"VisaApplication\\",\\"NodeName\\":\\"Apply for visa\\",\\"traveller\\":{\\"firstName\\":\\"Rachel\\",\\"lastName\\":\\"White\\",\\"email\\":\\"rwhite@gorle.com\\",\\"nationality\\":\\"Polish\\",\\"address\\":{\\"street\\":\\"Cabalone\\",\\"city\\":\\"Zerf\\",\\"zipCode\\":\\"765756\\",\\"country\\":\\"Poland\\"}},\\"Priority\\":\\"1\\"}",
+                              "lastUpdate": "2020-02-19T11:11:56.282Z",
+                              "name": "VisaApplication",
+                              "outputs": "{}",
+                              "potentialGroups": Array [],
+                              "potentialUsers": Array [],
+                              "priority": "1",
+                              "processId": "travels",
+                              "processInstanceId": "9ae7ce3b-d49c-4f35-b843-8ac3d22fa427",
+                              "referenceName": "Apply for visa",
+                              "rootProcessId": null,
+                              "rootProcessInstanceId": null,
+                              "started": "2020-02-19T11:11:56.282Z",
+                              "state": "Ready",
+                            }
+                          }
+                        />
+                      </div>
+                    </CardBody>
+                  </article>
+                </Card>
+              </div>
+            </GridItem>
+            <GridItem
+              className="pf-u-h-100"
+              span={4}
+            >
+              <div
+                className="pf-l-grid__item pf-m-4-col pf-u-h-100"
+              >
+                <Card
+                  className="pf-u-h-100"
+                >
+                  <article
+                    className="pf-c-card pf-u-h-100"
+                    data-ouia-component-id={1}
+                    data-ouia-component-type="PF4/Card"
+                    data-ouia-safe={true}
+                  >
+                    <CardHeader>
+                      <div
+                        className="pf-c-card__header"
+                      >
+                        <Title
+                          headingLevel="h3"
+                          size="xl"
+                        >
+                          <h3
+                            className="pf-c-title pf-m-xl"
+                          >
+                            Details
+                          </h3>
+                        </Title>
+                      </div>
+                    </CardHeader>
+                    <CardBody
+                      className="pf-u-h-100"
+                    >
+                      <div
+                        className="pf-c-card__body pf-u-h-100"
+                      >
+                        <MockedTaskDetails
                           userTaskInstance={
                             Object {
                               "actualOwner": null,

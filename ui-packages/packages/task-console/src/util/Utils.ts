@@ -43,3 +43,26 @@ export const getTaskEndpointSecurityParams = (user: User): string => {
   }
   return `user=${user.id}${groups}`;
 };
+
+export const resolveTaskPriority = (priority?: string): string => {
+  switch (priority) {
+    case '0':
+      return '0 - High';
+    case '5':
+      return '5 - Medium';
+    case '10':
+      return '10 - Low';
+  }
+
+  return priority || '-';
+};
+
+export const trimTaskEndpoint = (userTask: UserTaskInstance): string => {
+  if (userTask.endpoint) {
+    const endpoint = userTask.endpoint;
+    const pid = userTask.processInstanceId;
+    return `${endpoint.substring(0, endpoint.indexOf(pid))}...`;
+  }
+
+  return '-';
+};

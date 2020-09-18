@@ -16,7 +16,11 @@
 
 import _ from 'lodash';
 import { GraphQL, DefaultUser } from '@kogito-apps/common';
-import { getTaskEndpointSecurityParams, getTaskSchemaEndPoint } from '../Utils';
+import {
+  getTaskEndpointSecurityParams,
+  getTaskSchemaEndPoint,
+  resolveTaskPriority
+} from '../Utils';
 import UserTaskInstance = GraphQL.UserTaskInstance;
 
 const userTaskInstance: UserTaskInstance = {
@@ -84,5 +88,14 @@ describe('Utils testing', () => {
     expect(result).toStrictEqual(
       'http://localhost:8080/travels/VisaApplication/schema'
     );
+  });
+
+  it('Test resolve task priority', () => {
+    expect(resolveTaskPriority('0')).toStrictEqual('0 - High');
+    expect(resolveTaskPriority('5')).toStrictEqual('5 - Medium');
+    expect(resolveTaskPriority('10')).toStrictEqual('10 - Low');
+    expect(resolveTaskPriority('1')).toStrictEqual('1');
+    expect(resolveTaskPriority()).toStrictEqual('-');
+    expect(resolveTaskPriority('')).toStrictEqual('-');
   });
 });

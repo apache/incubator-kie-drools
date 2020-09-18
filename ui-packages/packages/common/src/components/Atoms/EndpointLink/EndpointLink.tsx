@@ -6,11 +6,13 @@ import { OUIAProps, componentOuiaProps } from '../../../utils/OuiaUtils';
 interface IOwnProps {
   serviceUrl: string;
   isLinkShown: boolean;
+  linkLabel?: string;
 }
 
 const EndpointLink: React.FC<IOwnProps & OUIAProps> = ({
   serviceUrl,
   isLinkShown,
+  linkLabel,
   ouiaId,
   ouiaSafe
 }) => {
@@ -25,7 +27,7 @@ const EndpointLink: React.FC<IOwnProps & OUIAProps> = ({
           isInline={true}
           {...componentOuiaProps(ouiaId, 'endpoint-link', ouiaSafe)}
         >
-          {isLinkShown ? serviceUrl : 'Endpoint'}
+          {isLinkShown ? serviceUrl : linkLabel || 'Endpoint'}
           {<ExternalLinkAltIcon className="pf-u-ml-xs" />}
         </Button>
       ) : (

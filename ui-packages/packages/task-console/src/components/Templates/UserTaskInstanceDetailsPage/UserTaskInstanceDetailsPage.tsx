@@ -5,9 +5,11 @@ import {
   BreadcrumbItem,
   Card,
   CardBody,
+  CardHeader,
   Grid,
   GridItem,
   PageSection,
+  Title,
   Text,
   TextVariants
 } from '@patternfly/react-core';
@@ -27,6 +29,7 @@ import TaskState from '../../Atoms/TaskState/TaskState';
 import TaskForm from '../../Organisms/TaskForm/TaskForm';
 import { TaskStateType } from '../../../util/Variants';
 import UserTaskInstance = GraphQL.UserTaskInstance;
+import TaskDetails from '../../Organisms/TaskDetails/TaskDetails';
 
 interface MatchProps {
   taskId: string;
@@ -90,14 +93,31 @@ const UserTaskInstanceDetailsPage: React.FC<RouteComponentProps<
         </PageSection>
         <PageSection>
           <Grid hasGutter md={1} className="pf-u-h-100">
-            <GridItem span={12} className="pf-u-h-100">
+            <GridItem span={8} className="pf-u-h-100">
               <Card className="pf-u-h-100">
+                <CardHeader>
+                  <Title headingLevel="h3" size="xl">
+                    Form
+                  </Title>
+                </CardHeader>
                 <CardBody className="pf-u-h-100">
                   <TaskForm
                     userTaskInstance={userTask}
                     successCallback={() => props.history.push('/')}
                     errorCallback={() => props.history.push('/')}
                   />
+                </CardBody>
+              </Card>
+            </GridItem>
+            <GridItem span={4} className="pf-u-h-100">
+              <Card className="pf-u-h-100">
+                <CardHeader>
+                  <Title headingLevel="h3" size="xl">
+                    Details
+                  </Title>
+                </CardHeader>
+                <CardBody className="pf-u-h-100">
+                  <TaskDetails userTaskInstance={userTask} />
                 </CardBody>
               </Card>
             </GridItem>
