@@ -11,7 +11,10 @@
   <packaging>pom</packaging>
 
   <modules>
-    <module>integration-tests-quarkus</module>
+    <module>integration-tests-quarkus-rules</module>
+    <module>integration-tests-quarkus-processes</module>
+    <module>integration-tests-quarkus-decisions</module>
+    <module>integration-tests-quarkus-predictions</module>
     <module>integration-tests-springboot</module>
     <module>integration-tests-kogito-plugin</module>
   </modules>
