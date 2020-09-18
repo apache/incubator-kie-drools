@@ -21,6 +21,7 @@ import org.drools.model.impl.ModelComponent;
 public abstract class AbstractTemporalPredicate<T extends AbstractTemporalPredicate> implements TemporalPredicate, ModelComponent {
 
     protected boolean negated = false;
+    protected boolean thisOnRight = false;
 
     public TemporalPredicate setNegated( boolean negated ) {
         this.negated = negated;
@@ -40,7 +41,7 @@ public abstract class AbstractTemporalPredicate<T extends AbstractTemporalPredic
 
         AbstractTemporalPredicate tempPred = (( AbstractTemporalPredicate ) other);
 
-        if (negated != tempPred.negated || getClass() != tempPred.getClass()) {
+        if (negated != tempPred.negated || thisOnRight != tempPred.thisOnRight || getClass() != tempPred.getClass()) {
             return false;
         }
 
@@ -52,6 +53,17 @@ public abstract class AbstractTemporalPredicate<T extends AbstractTemporalPredic
     @Override
     public TemporalPredicate negate() {
         this.negated = !this.negated;
+        return this;
+    }
+
+    @Override
+    public boolean isThisOnRight() {
+        return thisOnRight;
+    }
+
+    @Override
+    public TemporalPredicate thisOnRight() {
+        this.thisOnRight = true;
         return this;
     }
 }

@@ -122,6 +122,10 @@ public class FlowExpressionBuilder extends AbstractExpressionBuilder {
     }
 
     private MethodCallExpr buildExpression(SingleDrlxParseSuccess drlxParseResult, MethodCallExpr exprDSL ) {
+        if (drlxParseResult.isTemporal()) {
+            return buildTemporalExpression(drlxParseResult, exprDSL);
+        }
+
         final List<String> usedDeclarationsWithUnification = new ArrayList<>();
         if( drlxParseResult.isPatternBindingUnification() ) {
             usedDeclarationsWithUnification.add(drlxParseResult.getPatternBinding());
@@ -129,10 +133,6 @@ public class FlowExpressionBuilder extends AbstractExpressionBuilder {
             if (drlxParseResult.getPatternBinding() != null) {
                 exprDSL.addArgument(context.getVarExpr(drlxParseResult.getPatternBinding()));
             }
-        }
-
-        if (drlxParseResult.isTemporal() && drlxParseResult.getLeft() != null && !(drlxParseResult.getLeft().getExpression() instanceof NameExpr)) {
-            exprDSL.addArgument(generateLambdaForTemporalConstraint(drlxParseResult.getLeft(), drlxParseResult.getPatternType()));
         }
 
         usedDeclarationsWithUnification.addAll(drlxParseResult.getUsedDeclarations());
@@ -143,12 +143,18 @@ public class FlowExpressionBuilder extends AbstractExpressionBuilder {
 
         if (drlxParseResult.getRightLiteral() != null) {
             exprDSL.addArgument( "" + drlxParseResult.getRightLiteral() );
-        } else if (drlxParseResult.isTemporal() && drlxParseResult.getRight() != null && !(drlxParseResult.getRight().getExpression() instanceof NameExpr)) {
-            exprDSL.addArgument(generateLambdaForTemporalConstraint(drlxParseResult.getRight(), drlxParseResult.getPatternType()));
         }
 
         exprDSL.addArgument(buildConstraintExpression( drlxParseResult, drlxParseResult.getExpr() ));
         return exprDSL;
+    }
+
+    @Override
+    protected MethodCallExpr buildTemporalExpression(SingleDrlxParseSuccess drlxParseResult, MethodCallExpr exprDSL) {
+        if (drlxParseResult.getPatternBinding() != null) {
+            exprDSL.addArgument(context.getVarExpr(drlxParseResult.getPatternBinding()));
+        }
+        return super.buildTemporalExpression(drlxParseResult, exprDSL);
     }
 
     @Override

@@ -18,7 +18,9 @@ package org.drools.modelcompiler.builder.generator.expression;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -36,6 +38,7 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
+import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithOptionalScope;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
@@ -344,5 +347,77 @@ public abstract class AbstractExpressionBuilder {
             context.getPackageModel().getLambdaReturnTypes().put((LambdaExpr) generatedExpr, typedExpression.getType());
         }
         return generatedExpr;
+    }
+
+    protected MethodCallExpr buildTemporalExpression(SingleDrlxParseSuccess drlxParseResult, MethodCallExpr exprDSL) {
+        boolean thisOnRight = isThisOnRight(drlxParseResult);
+
+        // function for "this" should be added first
+        if (thisOnRight) {
+            if (drlxParseResult.getRight() != null && !drlxParseResult.getRight().getExpression().isNameExpr()) {
+                exprDSL.addArgument(generateLambdaForTemporalConstraint(drlxParseResult.getRight(), drlxParseResult.getPatternType()));
+            }
+        } else {
+            if (drlxParseResult.getLeft() != null && !drlxParseResult.getLeft().getExpression().isNameExpr()) {
+                exprDSL.addArgument(generateLambdaForTemporalConstraint(drlxParseResult.getLeft(), drlxParseResult.getPatternType()));
+            }
+        }
+
+        final List<String> usedDeclarationsWithUnification = new ArrayList<>();
+        usedDeclarationsWithUnification.addAll(drlxParseResult.getUsedDeclarations());
+
+        usedDeclarationsWithUnification.stream()
+                .filter( s -> !(drlxParseResult.isSkipThisAsParam() && s.equals( drlxParseResult.getPatternBinding() ) ) )
+                .map(context::getVarExpr)
+                .forEach(exprDSL::addArgument);
+
+        if (drlxParseResult.getRightLiteral() != null) {
+            exprDSL.addArgument( "" + drlxParseResult.getRightLiteral() );
+        } else {
+            // function for variable
+            if (thisOnRight) {
+                if (drlxParseResult.getLeft() != null && !drlxParseResult.getLeft().getExpression().isNameExpr()) {
+                    exprDSL.addArgument(generateLambdaForTemporalConstraint(drlxParseResult.getLeft(), drlxParseResult.getPatternType()));
+                }
+            } else {
+                if (drlxParseResult.getRight() != null && !drlxParseResult.getRight().getExpression().isNameExpr()) {
+                    exprDSL.addArgument(generateLambdaForTemporalConstraint(drlxParseResult.getRight(), drlxParseResult.getPatternType()));
+                }
+            }
+        }
+
+        if (thisOnRight) {
+            exprDSL.addArgument(buildConstraintExpression(drlxParseResult, new MethodCallExpr(drlxParseResult.getExpr(), "thisOnRight")));
+        } else {
+            exprDSL.addArgument(buildConstraintExpression(drlxParseResult, drlxParseResult.getExpr()));
+        }
+        return exprDSL;
+    }
+
+    protected boolean isThisOnRight(SingleDrlxParseSuccess drlxParseResult) {
+        if (drlxParseResult.getRight() != null) {
+            if (drlxParseResult.getRight().getExpression().isNameExpr()) {
+                NameExpr name = drlxParseResult.getRight().getExpression().asNameExpr();
+                if (name.equals(new NameExpr(THIS_PLACEHOLDER))) {
+                    return true;
+                }
+            } else {
+                return containsThis(drlxParseResult.getRight());
+            }
+        }
+        return false;
+    }
+
+    protected boolean containsThis(TypedExpression typedExpression) {
+        Expression expr = typedExpression.getExpression();
+        Optional<String> opt = expr.findAll(NameExpr.class)
+                .stream()
+                .map(NameExpr::getName)
+                .map(SimpleName::getIdentifier)
+                .findFirst(); // just first one
+        if (!opt.isPresent()) {
+            return false;
+        }
+        return opt.get().equals(THIS_PLACEHOLDER);
     }
 }
