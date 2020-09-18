@@ -34,7 +34,6 @@ import org.drools.compiler.kie.util.KieJarChangeSet;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.compiler.kproject.models.KieSessionModelImpl;
 import org.drools.compiler.management.KieContainerMonitor;
-import org.drools.compiler.reteoo.compiled.ObjectTypeNodeCompiler;
 import org.drools.core.InitialFact;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.SessionConfigurationImpl;
@@ -426,6 +425,7 @@ public class KieContainerImpl
         return kBase;
     }
 
+    // TODO Luca find a better place to generate the alpha network
     public void generateCompiledAlphaNetwork(KieBaseModelImpl kBaseModel, InternalKieModule kModule, InternalKnowledgeBase kBase) {
         final String configurationProperty = kBaseModel.getKModule().getConfigurationProperty(ALPHA_NETWORK_COMPILER_OPTION);
         final boolean isAlphaNetworkEnabled = Boolean.valueOf(configurationProperty);
@@ -434,7 +434,9 @@ public class KieContainerImpl
             kBase.getRete().getEntryPointNodes().values().stream()
                     .flatMap(ep -> ep.getObjectTypeNodes().values().stream())
                     .filter(f -> !InitialFact.class.isAssignableFrom(f.getObjectType().getClassType()))
-                    .forEach(otn -> otn.setCompiledNetwork(ObjectTypeNodeCompiler.compile((( InternalKnowledgeBuilder ) kbuilder), otn)));
+                    .forEach(otn -> {
+//                        otn.setCompiledNetwork(ObjectTypeNodeCompiler.compile(((InternalKnowledgeBuilder) kbuilder), otn));
+                    });
         }
     }
 

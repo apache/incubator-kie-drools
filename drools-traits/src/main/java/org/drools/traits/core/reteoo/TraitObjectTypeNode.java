@@ -142,29 +142,22 @@ public class TraitObjectTypeNode extends ObjectTypeNode {
 
         checkDirty();
 
-        if ( compiledNetwork != null ) {
-            compiledNetwork.modifyObject( factHandle,
-                    modifyPreviousTuples,
-                    context.adaptModificationMaskForObjectType( objectType, workingMemory ),
-                    workingMemory );
-        } else {
-            if ( factHandle.isTraiting() )  {
-                if ( isModifyAllowed( factHandle )  ) {
-                    this.sink.propagateModifyObject( factHandle,
-                                                     modifyPreviousTuples,
-                                                     context.adaptModificationMaskForObjectType( objectType, workingMemory ),
-                                                     workingMemory );
-                } else {
-                    //System.err.println( ((ClassObjectType) this.getObjectType()).getClassName() + " : MODIFY BLOCK !! " + ( (TraitProxy) factHandle.getObject() ).getTraitName() + " " + ( (TraitProxy) factHandle.getObject() )._getTypeCode() + " >> " + " checks in " + typeMask );
-                }
+        if (factHandle.isTraiting()) {
+            if (isModifyAllowed(factHandle)) {
+                this.sink.propagateModifyObject(factHandle,
+                                                modifyPreviousTuples,
+                                                context.adaptModificationMaskForObjectType(objectType, workingMemory),
+                                                workingMemory);
             } else {
-                this.sink.propagateModifyObject( factHandle,
-                                                 modifyPreviousTuples,
-                                                 !context.getModificationMask().isSet(PropertySpecificUtil.TRAITABLE_BIT) ?
-                                                        context.adaptModificationMaskForObjectType( objectType, workingMemory ) :
-                                                        context,
-                                                 workingMemory );
+                //System.err.println( ((ClassObjectType) this.getObjectType()).getClassName() + " : MODIFY BLOCK !! " + ( (TraitProxy) factHandle.getObject() ).getTraitName() + " " + ( (TraitProxy) factHandle.getObject() )._getTypeCode() + " >> " + " checks in " + typeMask );
             }
+        } else {
+            this.sink.propagateModifyObject(factHandle,
+                                            modifyPreviousTuples,
+                                            !context.getModificationMask().isSet(PropertySpecificUtil.TRAITABLE_BIT) ?
+                                                    context.adaptModificationMaskForObjectType(objectType, workingMemory) :
+                                                    context,
+                                            workingMemory);
         }
     }
 

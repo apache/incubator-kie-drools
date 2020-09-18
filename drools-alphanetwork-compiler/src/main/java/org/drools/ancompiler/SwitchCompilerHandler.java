@@ -1,4 +1,4 @@
-package org.drools.core.reteoo.compiled;
+package org.drools.ancompiler;
 
 import java.util.stream.Stream;
 

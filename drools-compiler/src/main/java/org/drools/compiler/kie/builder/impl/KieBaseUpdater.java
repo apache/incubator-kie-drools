@@ -20,8 +20,6 @@ import java.util.List;
 
 import org.drools.compiler.builder.InternalKnowledgeBuilder;
 import org.drools.compiler.compiler.PackageBuilderErrors;
-import org.drools.compiler.reteoo.compiled.ObjectTypeNodeCompiler;
-import org.drools.core.InitialFact;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.ClassAwareObjectStore;
 import org.drools.core.common.InternalWorkingMemory;
@@ -30,7 +28,6 @@ import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.EntryPointNode;
-import org.drools.core.reteoo.compiled.CompiledNetwork;
 import org.drools.core.rule.DialectRuntimeData;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.io.Resource;
@@ -91,22 +88,11 @@ public class KieBaseUpdater implements Runnable {
             wm.notifyWaitOnRest();
         }
 
-        final String configurationProperty = ctx.newKieBaseModel.getKModule().getConfigurationProperty(KieContainerImpl.ALPHA_NETWORK_COMPILER_OPTION);
-        final boolean isAlphaNetworkEnabled = Boolean.parseBoolean(configurationProperty);
+        afterUpdate(kbuilder);
+    }
 
-        if (isAlphaNetworkEnabled) {
-            ctx.kBase.getRete().getEntryPointNodes().values().stream()
-                    .flatMap(ep -> ep.getObjectTypeNodes().values().stream())
-                    .filter(f -> !InitialFact.class.isAssignableFrom(f.getObjectType().getClassType()))
-                    .forEach(otn -> {
-                        final CompiledNetwork oldCompiledNetwork = otn.getCompiledNetwork();
-                        if (oldCompiledNetwork != null) {
-                            clearInstancesOfModifiedClass(oldCompiledNetwork.getClass());
-                        }
-                        final CompiledNetwork compile = ObjectTypeNodeCompiler.compile(kbuilder, otn);
-                        otn.setCompiledNetwork(compile);
-                    });
-        }
+    public void afterUpdate(InternalKnowledgeBuilder kbuilder) {
+
     }
 
     protected void removeResources(InternalKnowledgeBuilder kBuilder) {

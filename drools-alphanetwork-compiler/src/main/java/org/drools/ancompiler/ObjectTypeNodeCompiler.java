@@ -13,7 +13,7 @@
  * limitations under the License.
 */
 
-package org.drools.compiler.reteoo.compiled;
+package org.drools.ancompiler;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -31,14 +31,6 @@ import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.reteoo.ObjectTypeNode;
-import org.drools.core.reteoo.compiled.AssertHandler;
-import org.drools.core.reteoo.compiled.CompiledNetwork;
-import org.drools.core.reteoo.compiled.DeclarationsHandler;
-import org.drools.core.reteoo.compiled.DelegateMethodsHandler;
-import org.drools.core.reteoo.compiled.HashedAlphasDeclaration;
-import org.drools.core.reteoo.compiled.ModifyHandler;
-import org.drools.core.reteoo.compiled.ObjectTypeNodeParser;
-import org.drools.core.reteoo.compiled.SetNodeReferenceHandler;
 import org.drools.core.rule.IndexableConstraint;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.util.IoUtils;
@@ -249,6 +241,8 @@ public class ObjectTypeNodeCompiler {
         }
 
         SourceGenerated source = compiler.generateSource();
+
+        // TODO Luca avoid in memory compilation
 
         logger.debug("Generated alpha node compiled network source:\n" + source.source);
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.core.reteoo.compiled;
+package org.drools.ancompiler;
 
 import org.drools.core.common.NetworkNode;
 import org.drools.core.common.RuleBasePartitionId;
