@@ -17,6 +17,7 @@ import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.kie.kogito.Application;
 import org.kie.kogito.dmn.rest.DMNEvaluationErrorException;
 import org.kie.kogito.dmn.rest.DMNResult;
+import org.kie.kogito.dmn.util.StronglyTypedUtils;
 
 @Path("/$nameURL$")
 public class DMNRestResourceTemplate {
@@ -31,10 +32,11 @@ public class DMNRestResourceTemplate {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Object dmn($inputType$ variables) {
+    public $outputType$ dmn($inputType$ variables) {
         org.kie.kogito.decision.DecisionModel decision = application.decisionModels().getDecisionModel("$modelNamespace$", "$modelName$");
-        org.kie.kogito.dmn.rest.DMNResult result = new org.kie.kogito.dmn.rest.DMNResult("$modelNamespace$", "$modelName$", decision.evaluateAll(decision.newContext(variables)));
-        return extractContextIfSucceded(result);
+        OutputSet outputSet = (OutputSet)StronglyTypedUtils.convertToOutputSet(variables, OutputSet.class);
+        org.kie.kogito.dmn.rest.DMNResult result = new org.kie.kogito.dmn.rest.DMNResult("$modelNamespace$", "$modelName$", decision.evaluateAll(decision.newContext($inputData$)));
+        return $extractContextMethod$(result);
     }
     
     @GET
@@ -65,7 +67,16 @@ public class DMNRestResourceTemplate {
             throw new DMNEvaluationErrorException(result);
         }
     }
-    
+
+    private OutputSet extractStronglyTypedContextIfSucceded(DMNResult result) {
+        if (!result.hasErrors()) {
+            enrichResponseHeaders(result);
+            return (OutputSet)StronglyTypedUtils.extractOutputSet(result, OutputSet.class);
+        } else {
+            throw new DMNEvaluationErrorException(result);
+        }
+    }
+
     private static final com.fasterxml.jackson.databind.ObjectMapper objectMapper = new com.fasterxml.jackson.databind.ObjectMapper()
             .registerModule(new com.fasterxml.jackson.datatype.jsr310.JavaTimeModule())
             .registerModule(new com.fasterxml.jackson.databind.module.SimpleModule()

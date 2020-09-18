@@ -16,8 +16,10 @@
 package org.kie.kogito.codegen.decision;
 
 import java.net.URLEncoder;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.ImportDeclaration;
@@ -33,6 +35,7 @@ import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.SingleMemberAnnotationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
@@ -90,6 +93,10 @@ public class DecisionRestResourceGenerator {
         template.findAll(MethodDeclaration.class).forEach(this::interpolateMethods);
 
         interpolateInputType(template);
+        interpolateInputData(template);
+        interpolateExtractContextMethod(template);
+        modifyDmnMethodForStronglyTyped(template);
+        chooseMethodForStronglyTyped(template);
 
         if (useInjection()) {
             template.findAll(FieldDeclaration.class,
@@ -116,7 +123,7 @@ public class DecisionRestResourceGenerator {
             ReturnStmt returnStmt = clonedMethod.findFirst(ReturnStmt.class).orElseThrow(TEMPLATE_WAS_MODIFIED);
             if (ds.getOutputDecision().size() == 1) {
                 MethodCallExpr rewrittenReturnExpr = returnStmt.findFirst(MethodCallExpr.class,
-                                                                          mce -> mce.getNameAsString().equals("extractContextIfSucceded"))
+                                                                          mce -> mce.getNameAsString().equals("extractContextIfSucceded") || mce.getNameAsString().equals("extractStronglyTypedContextIfSucceded"))
                                                                .orElseThrow(TEMPLATE_WAS_MODIFIED);
                 rewrittenReturnExpr.setName("extractSingletonDSIfSucceded");
             }
@@ -129,6 +136,8 @@ public class DecisionRestResourceGenerator {
             template.addMember(cloneForDMNResult(clonedMethod, name + "_dmnresult", ds.getName() + "/dmnresult"));
         }
 
+        interpolateOutputType(template);
+
         if (addonsConfig.useMonitoring()) {
             addMonitoringImports(clazz);
             ClassOrInterfaceDeclaration exceptionClazz = clazz.findFirst(ClassOrInterfaceDeclaration.class, x -> "DMNEvaluationErrorExceptionMapper".equals(x.getNameAsString()))
@@ -139,6 +148,24 @@ public class DecisionRestResourceGenerator {
 
         template.getMembers().sort(new BodyDeclarationComparator());
         return clazz.toString();
+    }
+
+    private void chooseMethodForStronglyTyped(ClassOrInterfaceDeclaration template) {
+        if (isStronglyTyped) {
+            MethodDeclaration extractContextIfSucceded = template.findAll(MethodDeclaration.class, x -> x.getName().toString().equals("extractContextIfSucceded")).get(0);
+            extractContextIfSucceded.remove();
+        } else {
+            MethodDeclaration extractContextIfSucceded = template.findAll(MethodDeclaration.class, x -> x.getName().toString().equals("extractStronglyTypedContextIfSucceded")).get(0);
+            extractContextIfSucceded.remove();
+        }
+    }
+
+    private void modifyDmnMethodForStronglyTyped(ClassOrInterfaceDeclaration template) {
+        MethodDeclaration dmnMethod = template.findAll(MethodDeclaration.class, x -> x.getName().toString().equals("dmn")).get(0);
+        if (!isStronglyTyped) {
+            List<ExpressionStmt> convertStatement = dmnMethod.findAll(ExpressionStmt.class, stmt -> stmt.findFirst(MethodCallExpr.class, mce -> mce.getNameAsString().equals("convertToOutputSet")).isPresent());
+            convertStatement.get(0).remove();
+        }
     }
 
     private MethodDeclaration cloneForDMNResult(MethodDeclaration dmnMethod, String name, String pathName) {
@@ -156,6 +183,38 @@ public class DecisionRestResourceGenerator {
         String inputType = isStronglyTyped ? "InputSet" : "java.util.Map<String, Object>";
         template.findAll(ClassOrInterfaceType.class, t -> t.asString().equals("$inputType$"))
                 .forEach(type -> type.setName(inputType));
+    }
+
+    private void interpolateOutputType(ClassOrInterfaceDeclaration template) {
+        String outputType = isStronglyTyped ? "OutputSet" : "Object";
+
+        List<ClassOrInterfaceType> outputTypeOccurrences = template.findAll(ClassOrInterfaceType.class, t -> t.asString().equals("$outputType$"));
+
+        List<ClassOrInterfaceType> objectReturnTypes = outputTypeOccurrences
+                .stream()
+                .filter(t -> t.getParentNode().isPresent() && t.getParentNode().get() instanceof MethodDeclaration)
+                .filter(t -> {
+                    MethodDeclaration parent = (MethodDeclaration)t.getParentNode().get();
+                    return parent.getNameAsString().endsWith("dmnresult") || parent.getNameAsString().startsWith("decisionService_");
+                })
+                .collect(Collectors.toList());
+
+        objectReturnTypes.forEach(type -> type.setName("Object"));
+
+        outputTypeOccurrences.removeAll(objectReturnTypes);
+        outputTypeOccurrences.forEach(type -> type.setName(outputType));
+    }
+
+    private void interpolateInputData(ClassOrInterfaceDeclaration template) {
+        String inputData = "variables"; // use "outputSet" if stronglyTyped when drools 7.44 is available
+        template.findAll(NameExpr.class, expr -> expr.getNameAsString().equals("$inputData$"))
+                .forEach(expr -> expr.setName(inputData));
+    }
+
+    private void interpolateExtractContextMethod(ClassOrInterfaceDeclaration template) {
+        String extractContextMethod = isStronglyTyped ? "extractStronglyTypedContextIfSucceded" : "extractContextIfSucceded";
+        template.findAll(MethodCallExpr.class, expr -> expr.getNameAsString().equals("$extractContextMethod$"))
+                .forEach(expr -> expr.setName(extractContextMethod));
     }
 
     public String getNameURL() {

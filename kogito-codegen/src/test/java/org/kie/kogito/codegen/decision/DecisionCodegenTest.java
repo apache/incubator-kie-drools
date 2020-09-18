@@ -48,6 +48,7 @@ public class DecisionCodegenTest {
         List<GeneratedFile> generatedFiles = codeGenerator.generate();
         assertThat(generatedFiles.size()).isGreaterThanOrEqualTo(6);
         assertThat(fileNames(generatedFiles)).containsAll(Arrays.asList("decision/InputSet.java",
+                                                                        "decision/OutputSet.java",
                                                                         "decision/TEmployee.java",
                                                                         "decision/TAddress.java",
                                                                         "decision/TPayroll.java",
@@ -78,6 +79,7 @@ public class DecisionCodegenTest {
         List<GeneratedFile> generatedFiles = codeGenerator.generate();
         assertThat(generatedFiles.size()).isGreaterThanOrEqualTo(3);
         assertThat(fileNames(generatedFiles)).containsAll(Arrays.asList("http_58_47_47www_46trisotech_46com_47definitions_47__4f5608e9_454d74_454c22_45a47e_45ab657257fc9c/InputSet.java",
+                                                                        "http_58_47_47www_46trisotech_46com_47definitions_47__4f5608e9_454d74_454c22_45a47e_45ab657257fc9c/OutputSet.java",
                                                                         "http_58_47_47www_46trisotech_46com_47definitions_47__4f5608e9_454d74_454c22_45a47e_45ab657257fc9c/OneOfEachTypeResource.java",
                                                                         "org/kie/kogito/app/DecisionModelResourcesProvider.java"));
 
@@ -161,7 +163,7 @@ public class DecisionCodegenTest {
         List<GeneratedFile> generatedFiles = codeGenerator.generate();
         assertThat(generatedFiles).anyMatch(x -> x.relativePath().endsWith("InputSet.java"));
         GeneratedFile inputSetFile = generatedFiles.stream().filter(x -> x.relativePath().endsWith("InputSet.java")).findFirst().get();
-        assertThat(new String(inputSetFile.contents())).contains("@org.eclipse.microprofile.openapi.annotations.media.Schema(enumeration");
+        assertThat(new String(inputSetFile.contents())).containsPattern("@org\\.eclipse\\.microprofile\\.openapi\\.annotations\\.media\\.Schema\\(.*enumeration");
     }
 
     @Test
@@ -173,6 +175,6 @@ public class DecisionCodegenTest {
         List<GeneratedFile> generatedFiles = codeGenerator.generate();
         assertThat(generatedFiles).anyMatch(x -> x.relativePath().endsWith("InputSet.java"));
         GeneratedFile inputSetFile = generatedFiles.stream().filter(x -> x.relativePath().endsWith("InputSet.java")).findFirst().get();
-        assertThat(new String(inputSetFile.contents())).doesNotContain("@org.eclipse.microprofile.openapi.annotations.media.Schema(enumeration");
+        assertThat(new String(inputSetFile.contents())).doesNotContain("@org.eclipse.microprofile.openapi.annotations.media.Schema");
     }
 }
