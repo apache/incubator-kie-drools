@@ -16,11 +16,18 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: ${{ matrix.java-version }}
-      - name: Install takari
+      - name: Install takari (non-windows)
+        if: ${{ matrix.os != 'windows-latest' }}
         run: |
           wget -P $M2_HOME/lib/ext https://repo1.maven.org/maven2/io/takari/aether/takari-local-repository/0.11.3/takari-local-repository-0.11.3.jar
           wget -P $M2_HOME/lib/ext https://repo1.maven.org/maven2/io/takari/takari-filemanager/0.8.3/takari-filemanager-0.8.3.jar
           wget -P $M2_HOME/lib/ext https://repo1.maven.org/maven2/io/takari/maven/takari-smart-builder/0.6.1/takari-smart-builder-0.6.1.jar
+      - name: Install takari (windows)
+        if: ${{ matrix.os == 'windows-latest' }}
+        run: |
+          (New-Object System.Net.WebClient).DownloadFile("https://repo1.maven.org/maven2/io/takari/aether/takari-local-repository/0.11.3/takari-local-repository-0.11.3.jar", "$Env:M2_HOME\lib\ext\takari-local-repository-0.11.3.jar")
+          (New-Object System.Net.WebClient).DownloadFile("https://repo1.maven.org/maven2/io/takari/takari-filemanager/0.8.3/takari-filemanager-0.8.3.jar", "$Env:M2_HOME\lib\ext\takari-filemanager-0.8.3.jar")
+          (New-Object System.Net.WebClient).DownloadFile("https://repo1.maven.org/maven2/io/takari/maven/takari-smart-builder/0.6.1/takari-smart-builder-0.6.1.jar", "$Env:M2_HOME\lib\ext\takari-smart-builder-0.6.1.jar")
       - name: Build Chain ${{ matrix.java-version }}
         id: build-chain
         uses: kiegroup/github-action-build-chain@v1.4
