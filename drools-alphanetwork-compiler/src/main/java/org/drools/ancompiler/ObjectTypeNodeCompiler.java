@@ -49,7 +49,7 @@ public class ObjectTypeNodeCompiler {
 
     private static final Logger logger = LoggerFactory.getLogger(ObjectTypeNodeCompiler.class);
 
-    private ObjectTypeNodeCompiler(ObjectTypeNode objectTypeNode) {
+    public ObjectTypeNodeCompiler(ObjectTypeNode objectTypeNode) {
         this.objectTypeNode = objectTypeNode;
 
         ClassObjectType classObjectType = (ClassObjectType) objectTypeNode.getObjectType();
@@ -62,7 +62,7 @@ public class ObjectTypeNodeCompiler {
                 , randomId);
     }
 
-    private CompiledNetworkSourceCode generateSource() {
+    public CompiledNetworkSourceCode generateSource() {
         createClassDeclaration();
 
         ObjectTypeNodeParser parser = new ObjectTypeNodeParser(objectTypeNode);

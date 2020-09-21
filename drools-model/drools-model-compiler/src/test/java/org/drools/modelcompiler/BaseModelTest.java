@@ -16,15 +16,22 @@
 
 package org.drools.modelcompiler;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.drools.ancompiler.CompiledNetworkSourceCode;
+import org.drools.ancompiler.ObjectTypeNodeCompiler;
+import org.drools.compiler.builder.InternalKnowledgeBuilder;
 import org.drools.compiler.kie.builder.impl.DrlProject;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
+import org.drools.core.InitialFact;
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
+import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -34,6 +41,7 @@ import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.runtime.ClassObjectFilter;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
+import org.kie.memorycompiler.KieMemoryCompiler;
 
 import static java.util.Arrays.asList;
 import static org.drools.modelcompiler.BaseModelTest.RUN_TYPE.FLOW_DSL;
@@ -101,7 +109,37 @@ public abstract class BaseModelTest {
     }
 
     protected KieSession getKieSession(KieModuleModel model, String... stringRules) {
-        return getKieContainer( model, stringRules ).newKieSession();
+        KieSession kieSession = getKieContainer(model, stringRules)
+                .newKieSession();
+
+        // TODO LUCA here we have the rete and we can generate the ANC
+        if (asList(PATTERN_WITH_ALPHA_NETWORK, FLOW_WITH_ALPHA_NETWORK).contains(testRunType)) {
+            replaceReteWithCompiledAlphaNetwork(kieSession);
+        }
+
+        return kieSession;
+    }
+
+    private void replaceReteWithCompiledAlphaNetwork(KieSession kieSession) {
+        // create a collection with otn, hardcoded network and map
+
+        InternalKnowledgeBase kieBase = (InternalKnowledgeBase) kieSession.getKieBase();
+        kieBase.getRete().getEntryPointNodes().values().stream()
+                .flatMap(ep -> ep.getObjectTypeNodes().values().stream())
+                .filter(f -> !InitialFact.class.isAssignableFrom(f.getObjectType().getClassType()))
+                .forEach(otn -> {
+
+                    ObjectTypeNodeCompiler compiler = new ObjectTypeNodeCompiler(otn);
+
+                    CompiledNetworkSourceCode compiledNetworkSourceCode = compiler.generateSource();
+
+                    KieMemoryCompiler.compile(Collections.singletonMap(
+                            compiledNetworkSourceCode.getSourceName(),
+                            compiledNetworkSourceCode.getSourceName()
+                    ), this.getClass().getClassLoader());
+
+
+                });
     }
 
     protected KieContainer getKieContainer( KieModuleModel model, String... stringRules ) {
