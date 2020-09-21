@@ -6,9 +6,10 @@ jobs:
   build-chain:
     strategy:
       matrix:
+        os: [ubuntu-latest, windows-latest]
         java-version: [8, 11]
       fail-fast: false
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     name: Maven Build
     steps:
       - name: Set up JDK
