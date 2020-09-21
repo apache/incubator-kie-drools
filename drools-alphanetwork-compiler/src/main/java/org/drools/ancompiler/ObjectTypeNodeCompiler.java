@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -11,37 +11,22 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
 package org.drools.ancompiler;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.UUID;
 
-import org.drools.compiler.builder.InternalKnowledgeBuilder;
-import org.drools.compiler.commons.jci.compilers.CompilationResult;
-import org.drools.compiler.commons.jci.compilers.JavaCompiler;
-import org.drools.compiler.commons.jci.compilers.JavaCompilerFactory;
-import org.drools.compiler.compiler.JavaConfiguration;
-import org.drools.compiler.compiler.PackageRegistry;
-import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
-import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.reteoo.ObjectTypeNode;
-import org.drools.core.rule.IndexableConstraint;
-import org.drools.core.spi.InternalReadAccessor;
-import org.drools.core.util.IoUtils;
-import org.drools.reflective.classloader.ProjectClassLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * todo: document
- */
 public class ObjectTypeNodeCompiler {
+
     private static final String NEWLINE = "\n";
     private static final String PACKAGE_NAME = "org.drools.core.reteoo.compiled";
     private static final String BINARY_PACKAGE_NAME = PACKAGE_NAME.replace('.', '/');
@@ -64,7 +49,6 @@ public class ObjectTypeNodeCompiler {
 
     private static final Logger logger = LoggerFactory.getLogger(ObjectTypeNodeCompiler.class);
 
-
     private ObjectTypeNodeCompiler(ObjectTypeNode objectTypeNode) {
         this.objectTypeNode = objectTypeNode;
 
@@ -78,19 +62,7 @@ public class ObjectTypeNodeCompiler {
                 , randomId);
     }
 
-    public static class SourceGenerated {
-        public final String source;
-        public final IndexableConstraint indexableConstraint;
-//        public final String binaryName;
-//        public final String name;
-
-        public SourceGenerated(String source, IndexableConstraint indexableConstraint) {
-            this.source = source;
-            this.indexableConstraint = indexableConstraint;
-        }
-    }
-
-    private SourceGenerated generateSource() {
+    private CompiledNetworkSourceCode generateSource() {
         createClassDeclaration();
 
         ObjectTypeNodeParser parser = new ObjectTypeNodeParser(objectTypeNode);
@@ -121,7 +93,12 @@ public class ObjectTypeNodeCompiler {
         // end of class
         builder.append("}").append(NEWLINE);
 
-        return new SourceGenerated(builder.toString(), parser.getIndexableConstraint());
+        return new CompiledNetworkSourceCode(
+                builder.toString(),
+                parser.getIndexableConstraint(),
+                getSourceName(),
+                getBinaryName(),
+                getName());
     }
 
     /**
@@ -145,7 +122,6 @@ public class ObjectTypeNodeCompiler {
      */
     private void createConstructor(Collection<HashedAlphasDeclaration> hashedAlphaDeclarations) {
         builder.append("public ").append(generatedClassSimpleName).append("(org.drools.core.spi.InternalReadAccessor readAccessor) {").append(NEWLINE);
-
 
         builder.append("this.readAccessor = readAccessor;\n");
         // for each hashed alpha, we need to fill in the map member variable with the hashed values to node Ids
@@ -213,56 +189,5 @@ public class ObjectTypeNodeCompiler {
 
     private String getPackageName() {
         return PACKAGE_NAME;
-    }
-
-    private static final JavaCompiler JAVA_COMPILER = JavaCompilerFactory.INSTANCE.loadCompiler( JavaConfiguration.CompilerType.NATIVE, "1.8");
-
-    /**
-     * Creates a {@link CompiledNetwork} for the specified {@link ObjectTypeNode}. The {@link PackageBuilder} is used
-     * to compile the generated source and load the class.
-     *
-     * @param objectTypeNode OTN we are generating a compiled network for
-     * @return CompiledNetwork
-     */
-    public static CompiledNetwork compile( InternalKnowledgeBuilder kBuilder, ObjectTypeNode objectTypeNode) {
-        if (objectTypeNode == null) {
-            throw new IllegalArgumentException("ObjectTypeNode cannot be null!");
-        }
-        if (kBuilder == null) {
-            throw new IllegalArgumentException("PackageBuilder cannot be null!");
-        }
-        ObjectTypeNodeCompiler compiler = new ObjectTypeNodeCompiler(objectTypeNode);
-
-        SourceGenerated source = compiler.generateSource();
-
-
-        // TODO Luca avoid in memory compilation
-
-        logger.debug("Generated alpha node compiled network source:\n" + source.source);
-
-        MemoryFileSystem mfs = new MemoryFileSystem();
-        mfs.write(compiler.getSourceName(), source.source.getBytes(IoUtils.UTF8_CHARSET));
-
-        MemoryFileSystem trg = new MemoryFileSystem();
-        ProjectClassLoader rootClassLoader = (ProjectClassLoader) kBuilder.getRootClassLoader();
-        CompilationResult compiled = JAVA_COMPILER.compile(new String[]{compiler.getSourceName()}, mfs, trg, rootClassLoader);
-
-        if (compiled.getErrors().length > 0) {
-            throw new RuntimeException("This is a bug. Please contact the development team:\n" + Arrays.toString(compiled.getErrors()));
-        }
-
-        rootClassLoader.defineClass(compiler.getName(), trg.getBytes(compiler.getBinaryName()));
-
-        CompiledNetwork network;
-        try {
-            final Class<?> aClass = Class.forName(compiler.getName(), true, rootClassLoader);
-            final IndexableConstraint indexableConstraint = source.indexableConstraint;
-            network = (CompiledNetwork) aClass.getConstructor(InternalReadAccessor.class)
-                    .newInstance(indexableConstraint != null ? indexableConstraint.getFieldExtractor(): null);
-        } catch (Exception e) {
-            throw new RuntimeException("This is a bug. Please contact the development team", e);
-        }
-
-        return network;
     }
 }

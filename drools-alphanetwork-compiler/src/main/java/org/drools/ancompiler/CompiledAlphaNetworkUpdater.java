@@ -32,8 +32,10 @@ public class CompiledAlphaNetworkUpdater extends KieBaseUpdater {
                     if (oldCompiledNetwork != null) {
                         clearInstancesOfModifiedClass(oldCompiledNetwork.getClass());
                     }
-                    final CompiledNetwork compile = ObjectTypeNodeCompiler.compile(kbuilder, otn);
-                    cotn.setCompiledNetwork(compile);
+
+                    // TODO Luca fix this
+//                    final CompiledNetwork compile = ObjectTypeNodeCompiler.compile(kbuilder, otn);
+//                    cotn.setCompiledNetwork(compile);
                 });
     }
 }
