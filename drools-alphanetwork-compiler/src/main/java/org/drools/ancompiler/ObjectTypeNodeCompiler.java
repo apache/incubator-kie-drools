@@ -81,6 +81,8 @@ public class ObjectTypeNodeCompiler {
     public static class SourceGenerated {
         public final String source;
         public final IndexableConstraint indexableConstraint;
+//        public final String binaryName;
+//        public final String name;
 
         public SourceGenerated(String source, IndexableConstraint indexableConstraint) {
             this.source = source;
@@ -219,7 +221,6 @@ public class ObjectTypeNodeCompiler {
      * Creates a {@link CompiledNetwork} for the specified {@link ObjectTypeNode}. The {@link PackageBuilder} is used
      * to compile the generated source and load the class.
      *
-     * @param kBuilder     builder used to compile and load class
      * @param objectTypeNode OTN we are generating a compiled network for
      * @return CompiledNetwork
      */
@@ -232,15 +233,8 @@ public class ObjectTypeNodeCompiler {
         }
         ObjectTypeNodeCompiler compiler = new ObjectTypeNodeCompiler(objectTypeNode);
 
-        String packageName = compiler.getPackageName();
-
-        PackageRegistry pkgReg = kBuilder.getPackageRegistry(packageName);
-        if (pkgReg == null) {
-            kBuilder.addPackage(new PackageDescr(packageName));
-            pkgReg = kBuilder.getPackageRegistry(packageName);
-        }
-
         SourceGenerated source = compiler.generateSource();
+
 
         // TODO Luca avoid in memory compilation
 
@@ -263,7 +257,8 @@ public class ObjectTypeNodeCompiler {
         try {
             final Class<?> aClass = Class.forName(compiler.getName(), true, rootClassLoader);
             final IndexableConstraint indexableConstraint = source.indexableConstraint;
-            network = (CompiledNetwork) aClass.getConstructor(InternalReadAccessor.class).newInstance(indexableConstraint != null ? indexableConstraint.getFieldExtractor(): null);
+            network = (CompiledNetwork) aClass.getConstructor(InternalReadAccessor.class)
+                    .newInstance(indexableConstraint != null ? indexableConstraint.getFieldExtractor(): null);
         } catch (Exception e) {
             throw new RuntimeException("This is a bug. Please contact the development team", e);
         }
