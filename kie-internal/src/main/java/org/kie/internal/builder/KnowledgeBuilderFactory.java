@@ -39,6 +39,10 @@ public class KnowledgeBuilderFactory {
         private static final KnowledgeBuilderFactoryService factoryService = ServiceRegistry.getInstance().get(KnowledgeBuilderFactoryService.class);
     }
 
+    private static class JaxbConfFactoryServiceHolder {
+        private static final JaxbConfigurationFactoryService factoryService = ServiceRegistry.getInstance().get(JaxbConfigurationFactoryService.class);
+    }
+
     /**
      * Create and return a new KnowledgeBuilder, using the default KnowledgeBuilderConfigurations
      * @return
@@ -132,6 +136,6 @@ public class KnowledgeBuilderFactory {
     }
 
     public static JaxbConfiguration newJaxbConfiguration(Options xjcOpts, String systemId) {
-        return FactoryServiceHolder.factoryService.newJaxbConfiguration(xjcOpts, systemId);
+        return JaxbConfFactoryServiceHolder.factoryService.newJaxbConfiguration(xjcOpts, systemId);
     }
 }

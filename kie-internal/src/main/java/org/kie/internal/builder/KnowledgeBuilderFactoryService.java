@@ -18,7 +18,6 @@ package org.kie.internal.builder;
 
 import java.util.Properties;
 
-import com.sun.tools.xjc.Options;
 import org.kie.api.KieBase;
 import org.kie.api.Service;
 
@@ -34,7 +33,7 @@ public interface KnowledgeBuilderFactoryService  extends Service {
      * @return
      *     the KnowledgeBuilderConfiguration
      */
-    public KnowledgeBuilderConfiguration newKnowledgeBuilderConfiguration();
+    KnowledgeBuilderConfiguration newKnowledgeBuilderConfiguration();
 
     /**
      * Instantiate and return a new KnowledgeBuilderConfiguration
@@ -45,8 +44,7 @@ public interface KnowledgeBuilderFactoryService  extends Service {
      *     Provided ClassLoader, can be null and then ClassLoader defaults to Thread.currentThread().getContextClassLoader()
      * @return
      */
-    public KnowledgeBuilderConfiguration newKnowledgeBuilderConfiguration(Properties properties,
-                                                                          ClassLoader... classLoader);
+    KnowledgeBuilderConfiguration newKnowledgeBuilderConfiguration(Properties properties, ClassLoader... classLoader);
 
     /**
      * DecisionTables need to take a configuration of the InputType and XLS based
@@ -55,7 +53,7 @@ public interface KnowledgeBuilderFactoryService  extends Service {
      * @return
      *     The DecisionTableConfiguration
      */
-    public DecisionTableConfiguration newDecisionTableConfiguration();
+    DecisionTableConfiguration newDecisionTableConfiguration();
 
     /**
      * Score Cards need to take a configuration of Worksheet name.
@@ -63,7 +61,7 @@ public interface KnowledgeBuilderFactoryService  extends Service {
      * @return
      *     The ScoreCardConfiguration
      */
-    public ScoreCardConfiguration newScoreCardConfiguration();
+    ScoreCardConfiguration newScoreCardConfiguration();
 
     /**
      * Instantiate and return a new KnowledgeBuilder using the default KnowledgeBuilderConfiguration
@@ -71,7 +69,7 @@ public interface KnowledgeBuilderFactoryService  extends Service {
      * @return
      *     The KnowledgeBuilder
      */
-    public KnowledgeBuilder newKnowledgeBuilder();
+    KnowledgeBuilder newKnowledgeBuilder();
 
     /**
      * Instantiate and return a new KnowledgeBuilder using the given KnowledgeBuilderConfiguration
@@ -81,13 +79,9 @@ public interface KnowledgeBuilderFactoryService  extends Service {
      * @return
      *     The KnowledgeBuilder
      */
-    public KnowledgeBuilder newKnowledgeBuilder(KnowledgeBuilderConfiguration conf);
+    KnowledgeBuilder newKnowledgeBuilder(KnowledgeBuilderConfiguration conf);
 
-    public KnowledgeBuilder newKnowledgeBuilder(KieBase kbase);
+    KnowledgeBuilder newKnowledgeBuilder(KieBase kbase);
 
-    public KnowledgeBuilder newKnowledgeBuilder(KieBase kbase,
-                                                KnowledgeBuilderConfiguration conf);
-
-    public JaxbConfiguration newJaxbConfiguration(Options xjcOpts,
-                                                  String systemId);
+    KnowledgeBuilder newKnowledgeBuilder(KieBase kbase, KnowledgeBuilderConfiguration conf);
 }
