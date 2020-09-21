@@ -102,8 +102,11 @@ public class DMNDeclaredField implements FieldDefinition {
     public List<AnnotationDefinition> getFieldAnnotations() {
         List<AnnotationDefinition> annotations = new ArrayList<>();
         if (codeGenConfig.isWithJacksonAnnotation()) {
-            Optional<Class<?>> as = index.getJacksonDeserializeAs(fieldDMNType);
-            as.ifPresent(asClass -> annotations.add(new SimpleAnnotationDefinition("com.fasterxml.jackson.databind.annotation.JsonDeserialize").addValue("as", asClass.getCanonicalName() + ".class")));
+            boolean isCollection = fieldDMNType.isCollection();
+            DMNType narrowTypeHint = isCollection ? DMNTypeUtils.getRootBaseTypeOfCollection(fieldDMNType) : fieldDMNType;
+            Optional<Class<?>> as = index.getJacksonDeserializeAs(narrowTypeHint);
+            as.ifPresent(asClass -> annotations.add(new SimpleAnnotationDefinition("com.fasterxml.jackson.databind.annotation.JsonDeserialize").addValue(isCollection ? "contentAs" : "as",
+                                                                                                                                                         asClass.getCanonicalName() + ".class")));
         }
         if (codeGenConfig.isWithMPOpenApiAnnotation() || codeGenConfig.isWithIOSwaggerOASv3Annotation()) {
             annotateFieldWithOAS(annotations);

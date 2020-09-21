@@ -24,14 +24,18 @@ import java.time.LocalTime;
 import java.time.Period;
 import java.util.Arrays;
 
+import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
+import org.kie.dmn.api.core.FEELPropertyAccessible;
 import org.kie.dmn.core.BaseVariantTest;
 import org.kie.dmn.core.api.DMNFactory;
+import org.kie.dmn.core.impl.DMNContextFPAImpl;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -126,8 +130,20 @@ public class AnnotationsTest extends BaseVariantTest {
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
 
-        final DMNContext context = DMNFactory.newContext();
-        context.set("few dates", Arrays.asList(LocalDate.of(2019, 12, 31), LocalDate.of(2020, 2, 21)));
+        DMNContext context = DMNFactory.newContext();
+        if (!isTypeSafe()) {
+            context.set("few dates", Arrays.asList(LocalDate.of(2019, 12, 31), LocalDate.of(2020, 2, 21)));
+        } else {
+            JsonMapper mapper = JsonMapper.builder()
+                                          .addModule(new JavaTimeModule())
+                                          .build();
+            final String JSON = "{\n" +
+                                "    \"few dates\": [ \"2019-12-31\", \"2020-02-21\" ]\n" +
+                                "}";
+            Class<?> inputSetClass = getStronglyClassByName(dmnModel, "InputSet");
+            FEELPropertyAccessible inputSet = (FEELPropertyAccessible) mapper.readValue(JSON, inputSetClass);
+            context = new DMNContextFPAImpl(inputSet);
+        }
 
         final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
         LOG.debug("{}", dmnResult);
