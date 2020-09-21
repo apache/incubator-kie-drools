@@ -15,13 +15,13 @@
  */
 package org.kie.kogito.explainability.rest;
 
-import org.kie.kogito.explainability.model.PredictionInput;
-import org.kie.kogito.explainability.model.PredictionOutput;
-import org.kie.kogito.explainability.model.PredictionProvider;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+
+import org.kie.kogito.explainability.model.PredictionInput;
+import org.kie.kogito.explainability.model.PredictionOutput;
+import org.kie.kogito.explainability.model.PredictionProvider;
 
 public class PredictionProviderMock implements PredictionProvider {
 

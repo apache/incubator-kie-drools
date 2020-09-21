@@ -16,6 +16,8 @@
 
 package org.kie.kogito.explainability.api;
 
+import javax.validation.constraints.NotBlank;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -25,14 +27,17 @@ public class ModelIdentifierDto {
     public static final String RESOURCE_ID_SEPARATOR = ":";
 
     @JsonProperty("resourceType")
+    @NotBlank(message = "resourceType must be not blank.")
     private String resourceType;
 
     @JsonProperty("resourceId")
+    @NotBlank(message = "resourceId must be not blank.")
     private String resourceId;
 
-    public ModelIdentifierDto(){}
+    public ModelIdentifierDto() {
+    }
 
-    public ModelIdentifierDto(String resourceType, String resourceId){
+    public ModelIdentifierDto(String resourceType, String resourceId) {
         this.resourceType = resourceType;
         this.resourceId = resourceId;
     }

@@ -18,6 +18,10 @@ package org.kie.kogito.explainability.api;
 
 import java.util.Map;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.kie.kogito.tracing.typedvalue.TypedValue;
@@ -26,12 +30,16 @@ import org.kie.kogito.tracing.typedvalue.TypedValue;
 public class ExplainabilityRequestDto {
 
     @JsonProperty("executionId")
+    @NotNull(message = "executionId must be provided.")
     private String executionId;
 
     @JsonProperty("serviceUrl")
+    @NotBlank(message = "serviceUrl is mandatory.")
     private String serviceUrl;
 
     @JsonProperty("modelIdentifier")
+    @NotNull(message = "modelIdentifier object must be provided.")
+    @Valid
     private ModelIdentifierDto modelIdentifier;
 
     @JsonProperty("inputs")

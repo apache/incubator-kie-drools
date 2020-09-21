@@ -19,6 +19,7 @@ package org.kie.kogito.explainability.rest;
 import java.util.concurrent.CompletionStage;
 
 import javax.inject.Inject;
+import javax.validation.Valid;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -63,7 +64,7 @@ public class ExplainabilityApiV1 {
     @Operation(summary = "Retrieve the explainability for a given decision.", description = "Retrieve the explainability for a given decision.")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Uni<Response> explain(ExplainabilityRequestDto requestDto) {
+    public Uni<Response> explain(@Valid ExplainabilityRequestDto requestDto) {
         ExplainabilityRequest request = ExplainabilityRequest.from(requestDto);
         PredictionProvider provider = predictionProviderFactory.createPredictionProvider(request);
         CompletionStage<Response> result = explanationService.explainAsync(request, provider)

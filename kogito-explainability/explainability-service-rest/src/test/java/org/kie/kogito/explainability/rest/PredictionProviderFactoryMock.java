@@ -15,12 +15,12 @@
  */
 package org.kie.kogito.explainability.rest;
 
+import javax.enterprise.context.ApplicationScoped;
+
 import io.quarkus.test.Mock;
 import org.kie.kogito.explainability.PredictionProviderFactory;
 import org.kie.kogito.explainability.model.PredictionProvider;
 import org.kie.kogito.explainability.models.ExplainabilityRequest;
-
-import javax.enterprise.context.ApplicationScoped;
 
 @Mock
 @ApplicationScoped
