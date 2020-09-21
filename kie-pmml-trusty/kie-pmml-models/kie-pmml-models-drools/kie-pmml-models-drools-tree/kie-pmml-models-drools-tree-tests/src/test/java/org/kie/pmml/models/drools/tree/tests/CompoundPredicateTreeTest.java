@@ -29,11 +29,13 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
+import org.kie.pmml.models.tests.AbstractPMMLTest;
 
 @RunWith(Parameterized.class)
 @Ignore
-public class CompoundPredicateTreeTest extends AbstractPMMLTreeTest {
+public class CompoundPredicateTreeTest extends AbstractPMMLTest {
 
+    private static final String FILE_NAME = "CompoundPredicatesTree.pmml";
     private static final String MODEL_NAME = "CompoundPredicatesTreeModel";
     private static final String TARGET_FIELD = "Predicted_result";
     private static PMMLRuntime pmmlRuntime;
@@ -52,7 +54,7 @@ public class CompoundPredicateTreeTest extends AbstractPMMLTreeTest {
 
     @BeforeClass
     public static void setupClass() {
-        pmmlRuntime = getPMMLRuntime(MODEL_NAME);
+        pmmlRuntime = getPMMLRuntime(MODEL_NAME, FILE_NAME);
     }
 
     @Parameterized.Parameters
