@@ -44,16 +44,14 @@ public class PMMLRuntimeFactory {
     private static final Logger logger = LoggerFactory.getLogger(PMMLRuntimeFactory.class);
 
     private PMMLRuntimeFactory() {
-        // Aboid instantiation
+        // Avoid instantiation
     }
 
     public static PMMLRuntime getPMMLRuntime(String kbaseName, String fileName) {
-//        final InternalKnowledgeBase kieBase = new KnowledgeBaseImpl(kbaseName, null);
-        KnowledgeBuilderImpl kbuilderImpl = (KnowledgeBuilderImpl) KnowledgeBuilderFactory.newKnowledgeBuilder();/*  new KnowledgeBuilderImpl(kieBase);*/
+        KnowledgeBuilderImpl kbuilderImpl = (KnowledgeBuilderImpl) KnowledgeBuilderFactory.newKnowledgeBuilder();
         File file = getFile(fileName);
         FileSystemResource fileSystemResource = new FileSystemResource(file);
         new PMMLAssemblerService().addResource(kbuilderImpl, fileSystemResource, ResourceType.PMML, null);
-        /// WHY IS NEEDED ???????
         InternalKnowledgeBase kieBase = KnowledgeBaseFactory.newKnowledgeBase(kbaseName, new RuleBaseConfiguration());
         kieBase.addPackages( kbuilderImpl.getKnowledgePackages() );
         return getPMMLRuntime(kieBase);
