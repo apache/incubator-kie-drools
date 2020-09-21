@@ -16,17 +16,28 @@
 
 package org.kie.pmml.models.drools.tree.tests;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Map;
 
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseImpl;
+import org.drools.core.io.impl.FileSystemResource;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
+import org.kie.api.io.ResourceType;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieRuntimeFactory;
 import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
+import org.kie.pmml.evaluator.assembler.service.PMMLAssemblerService;
 import org.kie.pmml.evaluator.core.PMMLContextImpl;
 import org.kie.pmml.evaluator.core.utils.PMMLRequestDataBuilder;
+import org.kie.test.util.filesystem.ResourceHelper;
+
+import static org.junit.Assert.assertNotNull;
 
 public abstract class AbstractPMMLTreeTest {
 
@@ -43,6 +54,16 @@ public abstract class AbstractPMMLTreeTest {
         return kieRuntimeFactory.get(PMMLRuntime.class);
     }
 
+    protected static PMMLRuntime getPMMLRuntime(String kbaseName, String fileName) {
+        final InternalKnowledgeBase kieBase = new KnowledgeBaseImpl(kbaseName, null);
+        KnowledgeBuilderImpl kbuilderImpl = new KnowledgeBuilderImpl(kieBase);
+        File file = getFile(fileName);
+        FileSystemResource fileSystemResource = new FileSystemResource(file);
+        new PMMLAssemblerService().addResource(kbuilderImpl, fileSystemResource, ResourceType.PMML, null);
+        final KieRuntimeFactory kieRuntimeFactory = KieRuntimeFactory.of(kieBase);
+        return kieRuntimeFactory.get(PMMLRuntime.class);
+    }
+
     protected static PMMLRequestData getPMMLRequestData(String modelName, Map<String, Object> parameters) {
         String correlationId = "CORRELATION_ID";
         PMMLRequestDataBuilder pmmlRequestDataBuilder = new PMMLRequestDataBuilder(correlationId, modelName);
@@ -52,6 +73,22 @@ public abstract class AbstractPMMLTreeTest {
             pmmlRequestDataBuilder.addParameter(entry.getKey(), pValue, class1);
         }
         return pmmlRequestDataBuilder.build();
+    }
+
+    /**
+     * Retrieve the <code>File</code> of the given <b>file</b>
+     * @param fileName
+     * @return
+     * @throws IOException
+     */
+    protected static File getFile(String fileName) {
+        String extension = fileName.substring(fileName.lastIndexOf('.') + 1);
+        File toReturn = ResourceHelper.getResourcesByExtension(extension)
+                .filter(file -> file.getName().equals(fileName))
+                .findFirst()
+                .orElse(null);
+        assertNotNull(toReturn);
+        return toReturn;
     }
 
     protected PMML4Result evaluate(PMMLRuntime pmmlRuntime, final Map<String, Object> inputData, String modelName) {
