@@ -21,6 +21,11 @@ import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
 
+import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
@@ -39,10 +44,6 @@ import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 import com.thoughtworks.xstream.security.AnyTypePermission;
-import javax.xml.transform.Source;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
 import org.drools.compiler.kproject.models.ChannelModelImpl;
 import org.drools.compiler.kproject.models.FileLoggerModelImpl;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
@@ -117,7 +118,11 @@ public class KogitoKieModuleMarshaller {
             throw new RuntimeException(e);
         }
         KieModuleValidator.validate(bytes);
-        return (KieModuleModel)xStream.fromXML(new ByteArrayInputStream(bytes));
+        try (ByteArrayInputStream input = new ByteArrayInputStream(bytes)) {
+            return (KieModuleModel) xStream.fromXML(input);
+        } catch (IOException ex) {
+            throw new RuntimeException( "Unable to load KieModuleModel", ex );
+        }
     }
 
     public KieModuleModel fromXML(java.io.File kModuleFile) {
@@ -192,13 +197,15 @@ public class KogitoKieModuleMarshaller {
         }
 
         private static void validate(byte[] bytes) {
-            validate(new StreamSource(new ByteArrayInputStream(bytes)),
-                    new StreamSource(new ByteArrayInputStream(bytes)));
+            try (ByteArrayInputStream bais = new ByteArrayInputStream(bytes)) {
+                validate(new StreamSource(bais));
+            } catch (IOException ex) {
+                throw new RuntimeException("Unable to validate byte[]", ex);
+            }
         }
 
         private static void validate(java.io.File kModuleFile) {
-            validate(new StreamSource(kModuleFile),
-                    new StreamSource(kModuleFile));
+            validate(new StreamSource(kModuleFile));
         }
 
         private static void validate(URL kModuleUrl) {
@@ -208,7 +215,7 @@ public class KogitoKieModuleMarshaller {
             } catch (URISyntaxException e) {
                 throw new RuntimeException(e);
             }
-            validate(new StreamSource(urlString), new StreamSource(urlString));
+            validate(new StreamSource(urlString));
         }
 
         private static void validate(String kModuleString) {
@@ -216,7 +223,7 @@ public class KogitoKieModuleMarshaller {
             validate(bytes);
         }
 
-        private static void validate( Source source, Source duplicateSource) {
+        private static void validate( Source source ) {
             try {
                 schema.newValidator().validate(source);
             } catch (Exception schemaException) {

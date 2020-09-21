@@ -73,11 +73,12 @@ public class JsonSchemaUtilTest {
             "            \"output\": true\n" + 
             "        }\n" + 
             "    }}";
-    
+
     @Test
     void testJsonSchema() throws IOException {
         InputStream in = new ByteArrayInputStream(example.getBytes());
         Map<String,Object> schemaMap = JsonSchemaUtil.load(in);
+        in.close();
         assertEquals ("object", schemaMap.get("type"));
         Map<String,Object> properties = (Map<String,Object>)schemaMap.get("properties");
         assertEquals(2,properties.size());
@@ -90,6 +91,7 @@ public class JsonSchemaUtilTest {
         InputStream in = new ByteArrayInputStream(example.getBytes());
         Policy<T>[] policies = new Policy[0];
         Map<String, Object> schemaMap = JsonSchemaUtil.load(in);
+        in.close();
         Process<T> process = mock(Process.class);
         ProcessInstances<T> processInstances = mock(ProcessInstances.class);
         when(process.instances()).thenReturn(processInstances);

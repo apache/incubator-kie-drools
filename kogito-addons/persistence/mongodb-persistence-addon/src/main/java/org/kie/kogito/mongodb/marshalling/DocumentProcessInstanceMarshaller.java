@@ -108,15 +108,13 @@ public class DocumentProcessInstanceMarshaller {
     //This is to get dummy byte arrays to create context using existing marshaling framework
     private byte[] getDummyByteArray() {
         String dummy = "";
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ObjectOutputStream oos;
-        try {
-            oos = new ObjectOutputStream(baos);
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
+             ObjectOutputStream oos = new ObjectOutputStream(baos)) {
             oos.writeUTF(dummy);
             oos.flush();
+            return baos.toByteArray();
         } catch (IOException e) {
             throw new DocumentMarshallingException(e);
         }
-        return baos.toByteArray();
     }
 }

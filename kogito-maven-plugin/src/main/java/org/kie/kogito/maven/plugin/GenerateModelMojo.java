@@ -290,10 +290,8 @@ public class GenerateModelMojo extends AbstractKieMojo {
     private KieModuleModel getKModuleModel() throws IOException {
         if (!project.getResources().isEmpty()) {
             Path moduleXmlPath = Paths.get(project.getResources().get(0).getDirectory()).resolve(KieModuleModelImpl.KMODULE_JAR_PATH);
-            try {
-                return KogitoKieModuleModelImpl.fromXML(
-                        new ByteArrayInputStream(
-                                Files.readAllBytes(moduleXmlPath)));
+            try (ByteArrayInputStream bais = new ByteArrayInputStream(Files.readAllBytes(moduleXmlPath))) {
+                return KogitoKieModuleModelImpl.fromXML(bais);
             } catch (NoSuchFileException e) {
                 getLog().debug("kmodule.xml is missing. Returned the default value.", e);
                 return new KogitoKieModuleModelImpl();

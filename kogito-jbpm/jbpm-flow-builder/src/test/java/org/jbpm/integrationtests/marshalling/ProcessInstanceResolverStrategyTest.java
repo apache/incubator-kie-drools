@@ -116,6 +116,7 @@ public class ProcessInstanceResolverStrategyTest extends AbstractBaseTest {
         ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
         ObjectInputStream ois = new ObjectInputStream(bais);
         String serializedProcessInstanceId = ois.readUTF();
+        ois.close();
         assertTrue(processInstance.getId().equals(serializedProcessInstanceId),
                    "Expected " + processInstance.getId() + ", not " + serializedProcessInstanceId);
 
@@ -124,7 +125,7 @@ public class ProcessInstanceResolverStrategyTest extends AbstractBaseTest {
         assertNotNull(pim);
         assertNotNull(ProcessInstanceResolverStrategy.retrieveKnowledgeRuntime(writerContext));
         assertTrue(processInstance.equals(pim.getProcessInstance(serializedProcessInstanceId)));
-        
+        bais.close();
         // Test strategy.read
         bais = new ByteArrayInputStream(bytes);
         MarshallerReaderContext readerContext = new MarshallerReaderContext(bais,
@@ -135,6 +136,7 @@ public class ProcessInstanceResolverStrategyTest extends AbstractBaseTest {
                                                                             marshallingConfig.isMarshallProcessInstances(),
                                                                             marshallingConfig.isMarshallWorkItems() ,
                                                                             EnvironmentFactory.newEnvironment());
+        bais.close();
         readerContext.wm = ((StatefulKnowledgeSessionImpl) ksession).getInternalWorkingMemory();
         Object procInstObject = strategy.read(readerContext); 
         assertTrue(procInstObject != null && procInstObject instanceof ProcessInstance );

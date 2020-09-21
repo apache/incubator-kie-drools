@@ -16,6 +16,10 @@
 
 package org.jbpm.integrationtests;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
 import org.drools.core.SessionConfiguration;
 import org.drools.core.impl.EnvironmentFactory;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
@@ -27,10 +31,6 @@ import org.kie.internal.marshalling.MarshallerFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 
 /**
  * Marshalling helper class to perform serialize/de-serialize a given object
@@ -100,32 +100,28 @@ public class JbpmSerializationHelper extends SerializationHelper {
         return ksession2;
     }
 
-    public static byte [] serializeKnowledgeSession(Marshaller marshaller, 
-                                                    StatefulKnowledgeSession ksession) 
-                                                    throws Exception { 
-       
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        marshaller.marshall( bos, ksession );
-        byte[] ksessionBytes = bos.toByteArray();
-        bos.close();
-        
-        return ksessionBytes;
+    public static byte[] serializeKnowledgeSession(Marshaller marshaller,
+                                                   StatefulKnowledgeSession ksession) throws Exception {
+
+        try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
+            marshaller.marshall(bos, ksession);
+            return bos.toByteArray();
+        }
     }
-    
-    public static StatefulKnowledgeSession deserializeKnowledgeSession(Marshaller marshaller, 
-                                                                       byte [] serializedKsession) 
-                                                                       throws Exception {
-        
-        ByteArrayInputStream bais = new ByteArrayInputStream( serializedKsession );
-        StatefulKnowledgeSession deserializedKsession = (StatefulKnowledgeSession)
-    		marshaller.unmarshall( bais,
-                                   SessionConfiguration.newInstance(),
-                                   EnvironmentFactory.newEnvironment() );
-        bais.close();
-        
-        return deserializedKsession;
-    } 
-    
+
+    public static StatefulKnowledgeSession deserializeKnowledgeSession(Marshaller marshaller,
+                                                                       byte[] serializedKsession) throws Exception {
+
+        try (ByteArrayInputStream bais = new ByteArrayInputStream(serializedKsession)) {
+
+            StatefulKnowledgeSession deserializedKsession = (StatefulKnowledgeSession)
+                    marshaller.unmarshall(bais,
+                                          SessionConfiguration.newInstance(),
+                                          EnvironmentFactory.newEnvironment());
+            return deserializedKsession;
+        }
+    }
+
     public static boolean areByteArraysEqual(byte[] b1,
                                              byte[] b2) {
         if ( b1.length != b2.length ) {

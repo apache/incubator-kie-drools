@@ -522,9 +522,9 @@ public class KogitoAssetsProcessor {
         for (Path resourcePath : appPaths.getResourcePaths()) {
             Path moduleXmlPath = resourcePath.resolve(KogitoKieModuleModelImpl.KMODULE_JAR_PATH);
             if (Files.exists(moduleXmlPath)) {
-                return KogitoKieModuleModelImpl.fromXML(
-                        new ByteArrayInputStream(
-                                Files.readAllBytes(moduleXmlPath)));
+                try (ByteArrayInputStream bais = new ByteArrayInputStream(Files.readAllBytes(moduleXmlPath))) {
+                    return KogitoKieModuleModelImpl.fromXML(bais);
+                }
             }
         }
 

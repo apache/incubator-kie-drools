@@ -34,50 +34,47 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Process event listener to be used with plugable variable strategies to make sure that upon process instance completion
- * process variables will be persisted in back end store. This is important as by default this was not required 
+ * process variables will be persisted in back end store. This is important as by default this was not required
  * because process instance (that contains all variables) was removed from db any way and thus there was no need to trigger marshaling.
- * In case of external data store (e.g. data base over JPA or CMIS) this must be invoked otherwise data in external 
+ * In case of external data store (e.g. data base over JPA or CMIS) this must be invoked otherwise data in external
  * system might not be up to date with processing outcome from process instance.
- *
  */
 public class MarshalVariablesProcessEventListener extends DefaultProcessEventListener {
 
     private static final Logger logger = LoggerFactory.getLogger(MarshalVariablesProcessEventListener.class);
 
-	public void afterProcessCompleted(ProcessCompletedEvent event) {
-		ObjectMarshallingStrategy[] strategies = (ObjectMarshallingStrategy[]) event.getKieRuntime().getEnvironment().get(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES);
-		
-		VariableScopeInstance variableScope = 
-        (VariableScopeInstance) ((WorkflowProcessInstance)event.getProcessInstance()).getContextInstance(VariableScope.VARIABLE_SCOPE);
+    public void afterProcessCompleted(ProcessCompletedEvent event) {
+        ObjectMarshallingStrategy[] strategies = (ObjectMarshallingStrategy[]) event.getKieRuntime().getEnvironment().get(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES);
 
-		Map<String, Object> variables = variableScope.getVariables();
-		
-		for (Map.Entry<String, Object> variable : variables.entrySet()) {
-		    logger.debug("Searching for applicable strategy to handle variable name '{}' value '{}'", variable.getKey(), variable.getValue());
-			for (ObjectMarshallingStrategy strategy : strategies) {
-				// skip default strategy as it requires context and anyway will not make any effect as variables
-			    // are removed together with process instance
-			    if (strategy instanceof SerializablePlaceholderResolverStrategy) {
-				    continue;
-				}
-			    if (strategy.accept(variable.getValue())) {
-			        logger.debug("Strategy of type {} found to handle variable '{}'", strategy, variable.getKey());
-					try {
-                        KogitoProcessMarshallerWriteContext context = new KogitoProcessMarshallerWriteContext(new ByteArrayOutputStream(), null, null, null, null, event.getKieRuntime().getEnvironment());
-					    context.setProcessInstanceId(event.getProcessInstance().getId());
-			            context.setState(ProcessMarshallerWriteContext.STATE_COMPLETED);
-			            
-						strategy.marshal(null, context, variable.getValue());
-						logger.debug("Variable '{}' successfully persisted by strategy {}", variable.getKey(), strategy);
-						break;
-					} catch (Exception e) {
-						logger.warn("Errer while storing process variable {} due to {}", variable.getKey(), e.getMessage());
-						logger.debug("Variable marshal error:", e);
-					}
-				}
-			}
-		}
-	}
+        VariableScopeInstance variableScope =
+                (VariableScopeInstance) ((WorkflowProcessInstance) event.getProcessInstance()).getContextInstance(VariableScope.VARIABLE_SCOPE);
 
+        Map<String, Object> variables = variableScope.getVariables();
 
+        for (Map.Entry<String, Object> variable : variables.entrySet()) {
+            logger.debug("Searching for applicable strategy to handle variable name '{}' value '{}'", variable.getKey(), variable.getValue());
+            for (ObjectMarshallingStrategy strategy : strategies) {
+                // skip default strategy as it requires context and anyway will not make any effect as variables
+                // are removed together with process instance
+                if (strategy instanceof SerializablePlaceholderResolverStrategy) {
+                    continue;
+                }
+                if (strategy.accept(variable.getValue())) {
+                    logger.debug("Strategy of type {} found to handle variable '{}'", strategy, variable.getKey());
+                    try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+                        KogitoProcessMarshallerWriteContext context = new KogitoProcessMarshallerWriteContext(baos, null, null, null, null, event.getKieRuntime().getEnvironment());
+                        context.setProcessInstanceId(event.getProcessInstance().getId());
+                        context.setState(ProcessMarshallerWriteContext.STATE_COMPLETED);
+
+                        strategy.marshal(null, context, variable.getValue());
+                        logger.debug("Variable '{}' successfully persisted by strategy {}", variable.getKey(), strategy);
+                        break;
+                    } catch (Exception e) {
+                        logger.warn("Errer while storing process variable {} due to {}", variable.getKey(), e.getMessage());
+                        logger.debug("Variable marshal error:", e);
+                    }
+                }
+            }
+        }
+    }
 }

@@ -80,17 +80,14 @@ public class StringKeyObjectValueMapXmlAdapter extends XmlAdapter<StringKeyObjec
             return null;
         }
 
-        byte [] serializedBytes = null;
-        try {
-            ByteArrayOutputStream bais = new ByteArrayOutputStream();
-            ObjectOutputStream out = new ObjectOutputStream(bais);
+        try (ByteArrayOutputStream bais = new ByteArrayOutputStream();
+             ObjectOutputStream out = new ObjectOutputStream(bais)) {
             out.writeObject(obj);
-            serializedBytes = bais.toByteArray();
-        } catch( IOException ioe ) {
-            logger.error("Unable to serialize '" + key + "' " + "because of exception: " + ioe.getMessage(), ioe );
+            return bais.toByteArray();
+        } catch (IOException ioe) {
+            logger.error("Unable to serialize '" + key + "' " + "because of exception: " + ioe.getMessage(), ioe);
             return null;
         }
-        return serializedBytes;
     }
 
     @Override
@@ -118,11 +115,10 @@ public class StringKeyObjectValueMapXmlAdapter extends XmlAdapter<StringKeyObjec
             logger.error("Unable to deserialize '" + key + "' " + "because " + className + " is not on the classpath.", cnfe);
             return null;
         }
-        ByteArrayInputStream bais = new ByteArrayInputStream(objBytes);
-        Object value;
-        try {
-            ObjectInputStream input = new ObjectInputStream(bais);
-            value = input.readObject();
+
+        try (ByteArrayInputStream bais = new ByteArrayInputStream(objBytes);
+             ObjectInputStream input = new ObjectInputStream(bais)) {
+            return input.readObject();
         } catch (IOException ioe) {
             logger.error("Unable to deserialize '" + key + "' because of exception: " + ioe.getMessage(), ioe);
             return null;
@@ -130,7 +126,6 @@ public class StringKeyObjectValueMapXmlAdapter extends XmlAdapter<StringKeyObjec
             logger.error("Unable to deserialize '" + key + "' because " + className + " is not on the classpath.", cnfe);
             return null;
         }
-        return value;
     }
 
 }
