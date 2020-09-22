@@ -19,6 +19,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -201,11 +202,18 @@ public class ObjectTypeNodeCompiler {
         return PACKAGE_NAME;
     }
 
-    public static List<CompiledNetworkSource> objectTypeNodeToBeReplaced(Rete rete) {
+    public static List<CompiledNetworkSource> compiledNetworkSource(Rete rete) {
         return rete.getEntryPointNodes().values().stream()
                 .flatMap(ep -> ep.getObjectTypeNodes().values().stream())
                 .filter(f -> !InitialFact.class.isAssignableFrom(f.getObjectType().getClassType()))
                 .map(otn -> new ObjectTypeNodeCompiler(otn).generateSource())
                 .collect(Collectors.toList());
+    }
+
+    public static Map<String, CompiledNetworkSource> compiledNetworkSourceMap(Rete rete) {
+        List<CompiledNetworkSource> compiledNetworkSources = ObjectTypeNodeCompiler.compiledNetworkSource(rete);
+        return compiledNetworkSources
+                .stream()
+                .collect(Collectors.toMap(CompiledNetworkSource::getName, c -> c));
     }
 }

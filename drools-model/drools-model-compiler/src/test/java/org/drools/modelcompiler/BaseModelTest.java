@@ -41,6 +41,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.memorycompiler.KieMemoryCompiler;
 
 import static java.util.Arrays.asList;
+import static org.drools.core.util.MapUtils.mapValues;
 import static org.drools.modelcompiler.BaseModelTest.RUN_TYPE.FLOW_DSL;
 import static org.drools.modelcompiler.BaseModelTest.RUN_TYPE.FLOW_WITH_ALPHA_NETWORK;
 import static org.drools.modelcompiler.BaseModelTest.RUN_TYPE.PATTERN_DSL;
@@ -111,15 +112,10 @@ public abstract class BaseModelTest {
 
         if (asList(STANDARD_WITH_ALPHA_NETWORK, PATTERN_WITH_ALPHA_NETWORK, FLOW_WITH_ALPHA_NETWORK).contains(testRunType)) {
             InternalKnowledgeBase kieBase = (InternalKnowledgeBase) kieSession.getKieBase();
-            List<CompiledNetworkSource> compiledNetworkSources = ObjectTypeNodeCompiler.objectTypeNodeToBeReplaced(kieBase.getRete());
-            Map<String, String> compiledNetworkSourcesMap =
-                    compiledNetworkSources
-                    .stream()
-                    .collect(Collectors.toMap(CompiledNetworkSource::getName,
-                                              CompiledNetworkSource::getSource));
-
-            Map<String, Class<?>> compiledClasses = KieMemoryCompiler.compile(compiledNetworkSourcesMap, this.getClass().getClassLoader());
-            compiledNetworkSources.forEach(c -> {
+            Map<String, CompiledNetworkSource> compiledNetworkSourcesMap = ObjectTypeNodeCompiler.compiledNetworkSourceMap(kieBase.getRete());
+            Map<String, Class<?>> compiledClasses = KieMemoryCompiler.compile(mapValues(compiledNetworkSourcesMap, CompiledNetworkSource::getSource),
+                                                                              this.getClass().getClassLoader());
+            compiledNetworkSourcesMap.values().forEach(c -> {
                 Class<?> aClass = compiledClasses.get(c.getName());
                 c.setCompiledNetwork(aClass);
             });
