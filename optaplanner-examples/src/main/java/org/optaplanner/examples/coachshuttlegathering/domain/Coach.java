@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,16 @@
 
 package org.optaplanner.examples.coachshuttlegathering.domain;
 
+import org.optaplanner.core.api.domain.entity.PlanningEntity;
+import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
+import org.optaplanner.core.api.domain.variable.PlanningVariableReference;
 import org.optaplanner.examples.coachshuttlegathering.domain.location.RoadLocation;
+import org.optaplanner.examples.coachshuttlegathering.domain.solver.CoachPassengerCountTotalUpdatingVariableListener;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("CsgCoach")
+@PlanningEntity
 public class Coach extends Bus {
 
     protected int stopLimit;
@@ -36,6 +41,13 @@ public class Coach extends Bus {
 
     public void setDestination(BusHub destination) {
         this.destination = destination;
+    }
+
+    @Override
+    @CustomShadowVariable(variableListenerClass = CoachPassengerCountTotalUpdatingVariableListener.class,
+            sources = { @PlanningVariableReference(entityClass = BusStop.class, variableName = "bus") })
+    public Integer getPassengerQuantityTotal() {
+        return super.getPassengerQuantityTotal();
     }
 
     // ************************************************************************

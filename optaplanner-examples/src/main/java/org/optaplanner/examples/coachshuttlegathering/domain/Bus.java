@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,6 +36,7 @@ public abstract class Bus extends AbstractPersistable implements BusOrStop {
 
     // Shadow variables
     protected BusStop nextStop;
+    private int passengerQuantityTotal = 0;
 
     public String getName() {
         return name;
@@ -77,6 +78,14 @@ public abstract class Bus extends AbstractPersistable implements BusOrStop {
     @Override
     public void setNextStop(BusStop nextStop) {
         this.nextStop = nextStop;
+    }
+
+    public Integer getPassengerQuantityTotal() {
+        return passengerQuantityTotal;
+    }
+
+    public void setPassengerQuantityTotal(final Integer passengerQuantityTotal) {
+        this.passengerQuantityTotal = passengerQuantityTotal == null ? 0 : passengerQuantityTotal;
     }
 
     // ************************************************************************
