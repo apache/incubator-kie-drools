@@ -16,11 +16,6 @@
 package org.kie.pmml.evaluator.assembler.factories;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Objects;
-import java.util.regex.Pattern;
-import java.util.stream.Stream;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.core.RuleBaseConfiguration;
@@ -47,10 +42,9 @@ public class PMMLRuntimeFactory {
         // Avoid instantiation
     }
 
-    public static PMMLRuntime getPMMLRuntime(String kbaseName, String fileName) {
+    public static PMMLRuntime getPMMLRuntime(String kbaseName, File pmmlFile) {
         KnowledgeBuilderImpl kbuilderImpl = (KnowledgeBuilderImpl) KnowledgeBuilderFactory.newKnowledgeBuilder();
-        File file = getFile(fileName);
-        FileSystemResource fileSystemResource = new FileSystemResource(file);
+        FileSystemResource fileSystemResource = new FileSystemResource(pmmlFile);
         new PMMLAssemblerService().addResource(kbuilderImpl, fileSystemResource, ResourceType.PMML, null);
         InternalKnowledgeBase kieBase = KnowledgeBaseFactory.newKnowledgeBase(kbaseName, new RuleBaseConfiguration());
         kieBase.addPackages( kbuilderImpl.getKnowledgePackages() );
@@ -62,75 +56,4 @@ public class PMMLRuntimeFactory {
         final KieRuntimeFactory kieRuntimeFactory = KieRuntimeFactory.of(kieBase);
         return kieRuntimeFactory.get(PMMLRuntime.class);
     }
-
-    /**
-     * Retrieve the <code>File</code> with the given <b>fileName</b>
-     * @param fileName
-     * @return
-     * @throws IOException
-     */
-    private static File getFile(String fileName) {
-        String extension = fileName.substring(fileName.lastIndexOf('.') + 1);
-        return getResourcesByExtension(extension)
-                .filter(file -> file.getName().equals(fileName))
-                .findFirst()
-                .orElse(null);
-    }
-
-    /**
-     * Scan into classpath folders to find resources with the required extension
-     * @param extension to find
-     * @return stream of matching resources
-     */
-    private static Stream<File> getResourcesByExtension(String extension) {
-        return Arrays.stream(getClassPathElements())
-                .flatMap(elem -> internalGetResources(elem, Pattern.compile(".*\\." + extension + "$")));
-    }
-
-    /**
-     * Scan folder to find resources that match with pattern
-     * @param directory where to start the search
-     * @param pattern to find
-     * @return stream of matching resources
-     * @throws IOException
-     */
-    private static Stream<File> getResourcesFromDirectory(File directory, Pattern pattern) {
-        if (directory == null || directory.listFiles() == null) {
-            return Stream.empty();
-        }
-        return Arrays.stream(Objects.requireNonNull(directory.listFiles())).flatMap(
-                elem -> {
-                    if (elem.isDirectory()) {
-                        return getResourcesFromDirectory(elem, pattern);
-                    } else {
-                        try {
-                            if (pattern.matcher(elem.getCanonicalPath()).matches()) {
-                                return Stream.of(elem);
-                            }
-                        } catch (final IOException e) {
-                            logger.error("Failed top retrieve resources from directory " + directory.getAbsolutePath() + " with pattern " + pattern.pattern(), e);
-                        }
-                    }
-                    return Stream.empty();
-                });
-    }
-
-    private static String[] getClassPathElements() {
-        return System.getProperty("java.class.path", ".").split(System.getProperty("path.separator"));
-    }
-
-    /**
-     * This method is internal because it works only with folder to explore (classPath folder) and not with exact paths
-     * @param path to folder or jar
-     * @param pattern to find
-     * @return stream of matching resources
-     */
-    private static Stream<File> internalGetResources(String path, Pattern pattern) {
-        final File file = new File(path);
-        if (!file.isDirectory()) {
-            return Stream.empty();
-        }
-        return getResourcesFromDirectory(file, pattern);
-    }
-
 }
