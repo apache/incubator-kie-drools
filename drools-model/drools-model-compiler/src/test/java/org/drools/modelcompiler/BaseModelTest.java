@@ -113,12 +113,14 @@ public abstract class BaseModelTest {
         if (asList(STANDARD_WITH_ALPHA_NETWORK, PATTERN_WITH_ALPHA_NETWORK, FLOW_WITH_ALPHA_NETWORK).contains(testRunType)) {
             InternalKnowledgeBase kieBase = (InternalKnowledgeBase) kieSession.getKieBase();
             Map<String, CompiledNetworkSource> compiledNetworkSourcesMap = ObjectTypeNodeCompiler.compiledNetworkSourceMap(kieBase.getRete());
-            Map<String, Class<?>> compiledClasses = KieMemoryCompiler.compile(mapValues(compiledNetworkSourcesMap, CompiledNetworkSource::getSource),
-                                                                              this.getClass().getClassLoader());
-            compiledNetworkSourcesMap.values().forEach(c -> {
-                Class<?> aClass = compiledClasses.get(c.getName());
-                c.setCompiledNetwork(aClass);
-            });
+            if (!compiledNetworkSourcesMap.isEmpty()) {
+                Map<String, Class<?>> compiledClasses = KieMemoryCompiler.compile(mapValues(compiledNetworkSourcesMap, CompiledNetworkSource::getSource),
+                                                                                  this.getClass().getClassLoader());
+                compiledNetworkSourcesMap.values().forEach(c -> {
+                    Class<?> aClass = compiledClasses.get(c.getName());
+                    c.setCompiledNetwork(aClass);
+                });
+            }
         }
 
         return kieSession;
