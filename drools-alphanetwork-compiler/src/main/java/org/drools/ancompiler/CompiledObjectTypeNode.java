@@ -18,8 +18,11 @@ package org.drools.ancompiler;
 
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ModifyPreviousTuples;
 import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.core.reteoo.builder.BuildContext;
+import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.PropagationContext;
 
 public class CompiledObjectTypeNode extends ObjectTypeNode {
@@ -30,6 +33,13 @@ public class CompiledObjectTypeNode extends ObjectTypeNode {
         return this.compiledNetwork;
     }
 
+    public CompiledObjectTypeNode(final int id,
+                                  final EntryPointNode source,
+                                  final ObjectType objectType,
+                                  final BuildContext context) {
+        super(id, source, objectType, context);
+    }
+
     public void setCompiledNetwork(CompiledNetwork compiledNetwork) {
         this.compiledNetwork = compiledNetwork;
         this.compiledNetwork.setObjectTypeNode(this);
@@ -37,15 +47,9 @@ public class CompiledObjectTypeNode extends ObjectTypeNode {
 
     public void propagateAssert(InternalFactHandle factHandle, PropagationContext context, InternalWorkingMemory workingMemory) {
         checkDirty();
-        if (compiledNetwork != null) {
-            compiledNetwork.assertObject(factHandle,
-                                         context,
-                                         workingMemory);
-        } else {
-            this.sink.propagateAssertObject(factHandle,
-                                            context,
-                                            workingMemory);
-        }
+        compiledNetwork.assertObject(factHandle,
+                                     context,
+                                     workingMemory);
     }
 
     @Override
@@ -55,18 +59,9 @@ public class CompiledObjectTypeNode extends ObjectTypeNode {
                              InternalWorkingMemory workingMemory) {
         checkDirty();
 
-        if (compiledNetwork != null) {
-            compiledNetwork.modifyObject(factHandle,
-                                         modifyPreviousTuples,
-                                         context.adaptModificationMaskForObjectType(objectType, workingMemory),
-                                         workingMemory);
-        } else {
-            this.sink.propagateModifyObject(factHandle,
-                                            modifyPreviousTuples,
-                                            context.adaptModificationMaskForObjectType(objectType, workingMemory),
-                                            workingMemory);
-        }
+        compiledNetwork.modifyObject(factHandle,
+                                     modifyPreviousTuples,
+                                     context.adaptModificationMaskForObjectType(objectType, workingMemory),
+                                     workingMemory);
     }
-
-
 }

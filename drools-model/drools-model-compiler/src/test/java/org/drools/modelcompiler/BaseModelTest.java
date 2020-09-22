@@ -16,22 +16,22 @@
 
 package org.drools.modelcompiler;
 
-import java.util.Collections;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.drools.ancompiler.CompiledNetworkSourceCode;
+import org.drools.ancompiler.CompiledNetwork;
+import org.drools.ancompiler.CompiledNetworkSource;
 import org.drools.ancompiler.ObjectTypeNodeCompiler;
-import org.drools.compiler.builder.InternalKnowledgeBuilder;
 import org.drools.compiler.kie.builder.impl.DrlProject;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
-import org.drools.core.InitialFact;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
-import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -112,34 +112,32 @@ public abstract class BaseModelTest {
         KieSession kieSession = getKieContainer(model, stringRules)
                 .newKieSession();
 
-        // TODO LUCA here we have the rete and we can generate the ANC
-        if (asList(PATTERN_WITH_ALPHA_NETWORK, FLOW_WITH_ALPHA_NETWORK).contains(testRunType)) {
-            replaceReteWithCompiledAlphaNetwork(kieSession);
+        if (asList(STANDARD_WITH_ALPHA_NETWORK, PATTERN_WITH_ALPHA_NETWORK, FLOW_WITH_ALPHA_NETWORK).contains(testRunType)) {
+            InternalKnowledgeBase kieBase = (InternalKnowledgeBase) kieSession.getKieBase();
+            List<CompiledNetworkSource> compiledNetworkSources = ObjectTypeNodeCompiler.objectTypeNodeToBeReplaced(kieBase.getRete());
+            Map<String, String> compiledNetworkSourcesMap =
+                    compiledNetworkSources
+                    .stream()
+                    .collect(Collectors.toMap(CompiledNetworkSource::getName,
+                                              CompiledNetworkSource::getSource));
+
+            Map<String, Class<?>> compiledClasses = KieMemoryCompiler.compile(compiledNetworkSourcesMap, this.getClass().getClassLoader());
+            compiledNetworkSources.forEach(c -> {
+                Class<?> aClass = compiledClasses.get(c.getName());
+                CompiledNetwork o = newCompiledNetworkInstance(aClass);
+                c.setCompiledNetwork(o);
+            });
         }
 
         return kieSession;
     }
 
-    private void replaceReteWithCompiledAlphaNetwork(KieSession kieSession) {
-        // create a collection with otn, hardcoded network and map
-
-        InternalKnowledgeBase kieBase = (InternalKnowledgeBase) kieSession.getKieBase();
-        kieBase.getRete().getEntryPointNodes().values().stream()
-                .flatMap(ep -> ep.getObjectTypeNodes().values().stream())
-                .filter(f -> !InitialFact.class.isAssignableFrom(f.getObjectType().getClassType()))
-                .forEach(otn -> {
-
-                    ObjectTypeNodeCompiler compiler = new ObjectTypeNodeCompiler(otn);
-
-                    CompiledNetworkSourceCode compiledNetworkSourceCode = compiler.generateSource();
-
-                    KieMemoryCompiler.compile(Collections.singletonMap(
-                            compiledNetworkSourceCode.getSourceName(),
-                            compiledNetworkSourceCode.getSourceName()
-                    ), this.getClass().getClassLoader());
-
-
-                });
+    private CompiledNetwork newCompiledNetworkInstance(Class<?> aClass) {
+        try {
+            return (CompiledNetwork) aClass.getDeclaredConstructor().newInstance();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     protected KieContainer getKieContainer( KieModuleModel model, String... stringRules ) {

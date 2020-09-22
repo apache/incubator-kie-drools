@@ -18,10 +18,14 @@ package org.drools.ancompiler;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
+import org.drools.core.InitialFact;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.core.reteoo.Rete;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,7 +66,7 @@ public class ObjectTypeNodeCompiler {
                 , randomId);
     }
 
-    public CompiledNetworkSourceCode generateSource() {
+    public CompiledNetworkSource generateSource() {
         createClassDeclaration();
 
         ObjectTypeNodeParser parser = new ObjectTypeNodeParser(objectTypeNode);
@@ -93,12 +97,18 @@ public class ObjectTypeNodeCompiler {
         // end of class
         builder.append("}").append(NEWLINE);
 
-        return new CompiledNetworkSourceCode(
-                builder.toString(),
+        String sourceCode = builder.toString();
+        if(logger.isDebugEnabled()) {
+            logger.debug("Generated Compiled Alpha Network " + sourceCode);
+        }
+
+        return new CompiledNetworkSource(
+                sourceCode,
                 parser.getIndexableConstraint(),
                 getSourceName(),
                 getBinaryName(),
-                getName());
+                getName(),
+                objectTypeNode);
     }
 
     /**
@@ -109,7 +119,6 @@ public class ObjectTypeNodeCompiler {
         builder.append("public class ").append(generatedClassSimpleName).append(" extends ").
                 append(CompiledNetwork.class.getName()).append("{ ").append(NEWLINE);
 
-        builder.append("org.drools.core.spi.InternalReadAccessor readAccessor;\n");
     }
 
     /**
@@ -121,9 +130,8 @@ public class ObjectTypeNodeCompiler {
      *                                maps for the generate class
      */
     private void createConstructor(Collection<HashedAlphasDeclaration> hashedAlphaDeclarations) {
-        builder.append("public ").append(generatedClassSimpleName).append("(org.drools.core.spi.InternalReadAccessor readAccessor) {").append(NEWLINE);
+        builder.append("public ").append(generatedClassSimpleName).append("() {").append(NEWLINE);
 
-        builder.append("this.readAccessor = readAccessor;\n");
         // for each hashed alpha, we need to fill in the map member variable with the hashed values to node Ids
         for (HashedAlphasDeclaration declaration : hashedAlphaDeclarations) {
             String mapVariableName = declaration.getVariableName();
@@ -189,5 +197,13 @@ public class ObjectTypeNodeCompiler {
 
     private String getPackageName() {
         return PACKAGE_NAME;
+    }
+
+    public static List<CompiledNetworkSource> objectTypeNodeToBeReplaced(Rete rete) {
+        return rete.getEntryPointNodes().values().stream()
+                .flatMap(ep -> ep.getObjectTypeNodes().values().stream())
+                .filter(f -> !InitialFact.class.isAssignableFrom(f.getObjectType().getClassType()))
+                .map(otn -> new ObjectTypeNodeCompiler(otn).generateSource())
+                .collect(Collectors.toList());
     }
 }
