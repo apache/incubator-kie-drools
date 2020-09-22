@@ -16,14 +16,11 @@
 
 package org.drools.modelcompiler;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.drools.ancompiler.CompiledNetwork;
 import org.drools.ancompiler.CompiledNetworkSource;
 import org.drools.ancompiler.ObjectTypeNodeCompiler;
 import org.drools.compiler.kie.builder.impl.DrlProject;
@@ -49,7 +46,7 @@ import static org.drools.modelcompiler.BaseModelTest.RUN_TYPE.FLOW_WITH_ALPHA_NE
 import static org.drools.modelcompiler.BaseModelTest.RUN_TYPE.PATTERN_DSL;
 import static org.drools.modelcompiler.BaseModelTest.RUN_TYPE.PATTERN_WITH_ALPHA_NETWORK;
 import static org.drools.modelcompiler.BaseModelTest.RUN_TYPE.STANDARD_WITH_ALPHA_NETWORK;
-import static org.junit.Assert.*;
+import static org.junit.Assert.fail;
 
 @RunWith(Parameterized.class)
 public abstract class BaseModelTest {
@@ -124,21 +121,14 @@ public abstract class BaseModelTest {
             Map<String, Class<?>> compiledClasses = KieMemoryCompiler.compile(compiledNetworkSourcesMap, this.getClass().getClassLoader());
             compiledNetworkSources.forEach(c -> {
                 Class<?> aClass = compiledClasses.get(c.getName());
-                CompiledNetwork o = newCompiledNetworkInstance(aClass);
-                c.setCompiledNetwork(o);
+                c.setCompiledNetwork(aClass);
             });
         }
 
         return kieSession;
     }
 
-    private CompiledNetwork newCompiledNetworkInstance(Class<?> aClass) {
-        try {
-            return (CompiledNetwork) aClass.getDeclaredConstructor().newInstance();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
+
 
     protected KieContainer getKieContainer( KieModuleModel model, String... stringRules ) {
         return getKieContainer( model, toKieFiles( stringRules ) );

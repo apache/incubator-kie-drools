@@ -25,7 +25,7 @@ abstract public class SwitchCompilerHandler extends AbstractCompilerHandler {
     static final String FACT_HANDLE_PARAM_NAME = "handle";
     static final String PROP_CONTEXT_PARAM_NAME = "context";
     static final String WORKING_MEMORY_PARAM_NAME = "wm";
-    static final String ASSERT_METHOD_SIGNATURE = "public final void assertObject("
+    static final String ASSERT_METHOD_SIGNATURE = "public final void propagateAssertObject("
             + FACT_HANDLE_PARAM_TYPE + " " + FACT_HANDLE_PARAM_NAME + ","
             + PROP_CONTEXT_PARAM_TYPE + " " + PROP_CONTEXT_PARAM_NAME + ","
             + WORKING_MEMORY_PARAM_TYPE + " " + WORKING_MEMORY_PARAM_NAME + "){";

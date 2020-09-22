@@ -30,7 +30,7 @@ public class AssertHandler extends SwitchCompilerHandler {
 
     /**
      * This flag is used to instruct the AssertHandler to tell it to generate a local varible
-     * in the {@link org.kie.reteoo.compiled.CompiledNetwork#assertObject} for holding the value returned
+     * in the {@link org.kie.reteoo.compiled.CompiledNetwork#propagateAssertObject} for holding the value returned
      * from the {@link org.kie.common.InternalFactHandle#getFactHandle()}.
      *
      * This is only needed if there is at least 1 set of hashed alpha nodes in the network

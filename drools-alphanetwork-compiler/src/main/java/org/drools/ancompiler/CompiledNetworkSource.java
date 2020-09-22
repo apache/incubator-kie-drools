@@ -2,6 +2,7 @@ package org.drools.ancompiler;
 
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.rule.IndexableConstraint;
+import org.drools.core.spi.InternalReadAccessor;
 
 public class CompiledNetworkSource {
 
@@ -25,8 +26,8 @@ public class CompiledNetworkSource {
         return source;
     }
 
-    public IndexableConstraint getIndexableConstraint() {
-        return indexableConstraint;
+    private InternalReadAccessor getFieldExtractor() {
+        return indexableConstraint == null ? null : indexableConstraint.getFieldExtractor();
     }
 
     public String getSourceName() {
@@ -41,9 +42,21 @@ public class CompiledNetworkSource {
         return name;
     }
 
-    public void setCompiledNetwork(CompiledNetwork compiledNetwork) {
-        ((CompiledObjectTypeNode) objectTypeNode).setCompiledNetwork(compiledNetwork);
+    public void setCompiledNetwork(Class<?> compiledNetworkClass) {
+        CompiledNetwork compiledNetwork = newCompiledNetworkInstance(compiledNetworkClass);
+
+        NetworkHandlerAdaptor setter = compiledNetwork.createNodeReferenceSetter();
+        ObjectTypeNodeParser parser = new ObjectTypeNodeParser(objectTypeNode);
+        parser.accept(setter);
+        objectTypeNode.setObjectSinkPropagator(compiledNetwork);
     }
 
-
+    public CompiledNetwork newCompiledNetworkInstance(Class<?> aClass) {
+        try {
+            return (CompiledNetwork) aClass.getDeclaredConstructor(org.drools.core.spi.InternalReadAccessor.class)
+                    .newInstance(getFieldExtractor());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

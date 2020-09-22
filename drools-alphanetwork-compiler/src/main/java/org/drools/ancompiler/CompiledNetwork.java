@@ -16,9 +16,13 @@
 
 package org.drools.ancompiler;
 
+import org.drools.core.common.BaseNode;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.NetworkNode;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.reteoo.*;
+import org.drools.core.spi.PropagationContext;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -28,7 +32,7 @@ import java.io.ObjectOutput;
  * This is the base type for all generated classes that that represent a "compiled" portion of the RETE network.
  * By compiled we mean IF statements, switch statements, etc. as opposed to nodes, propagators, etc.
  */
-public abstract class CompiledNetwork implements ObjectSink {
+public abstract class CompiledNetwork implements ObjectSinkPropagator {
 
     protected ObjectTypeNode objectTypeNode;
 
@@ -105,6 +109,10 @@ public abstract class CompiledNetwork implements ObjectSink {
      */
     protected abstract void setNetworkNodeReference(NetworkNode networkNode);
 
+    public NetworkHandlerAdaptor createNodeReferenceSetter() {
+        return new NodeReferenceSetter();
+    }
+
     /**
      * Handler implementation to call {@link CompiledNetwork#setNetworkNodeReference} for each node
      * encountered in the network.
@@ -130,5 +138,55 @@ public abstract class CompiledNetwork implements ObjectSink {
         public void startWindowNode(WindowNode windowNode) {
             setNetworkNodeReference(windowNode);
         }
+    }
+
+    @Override
+    public ObjectSinkPropagator addObjectSink(ObjectSink sink, int alphaNodeHashingThreshold) {
+        return null;
+    }
+
+    @Override
+    public ObjectSinkPropagator removeObjectSink(ObjectSink sink) {
+        return null;
+    }
+
+    @Override
+    public void changeSinkPartition(ObjectSink sink, RuleBasePartitionId oldPartition, RuleBasePartitionId newPartition, int alphaNodeHashingThreshold) {
+
+    }
+
+    @Override
+    public BaseNode getMatchingNode(BaseNode candidate) {
+        return null;
+    }
+
+    @Override
+    public ObjectSink[] getSinks() {
+        return new ObjectSink[0];
+    }
+
+    @Override
+    public int size() {
+        return 0;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return false;
+    }
+
+    @Override
+    public void propagateModifyObject(InternalFactHandle factHandle, ModifyPreviousTuples modifyPreviousTuples, PropagationContext context, InternalWorkingMemory workingMemory) {
+
+    }
+
+    @Override
+    public void doLinkRiaNode(InternalWorkingMemory wm) {
+
+    }
+
+    @Override
+    public void doUnlinkRiaNode(InternalWorkingMemory wm) {
+
     }
 }

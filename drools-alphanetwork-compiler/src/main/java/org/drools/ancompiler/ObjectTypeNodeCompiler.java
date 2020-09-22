@@ -119,6 +119,7 @@ public class ObjectTypeNodeCompiler {
         builder.append("public class ").append(generatedClassSimpleName).append(" extends ").
                 append(CompiledNetwork.class.getName()).append("{ ").append(NEWLINE);
 
+        builder.append("org.drools.core.spi.InternalReadAccessor readAccessor;\n");
     }
 
     /**
@@ -130,8 +131,9 @@ public class ObjectTypeNodeCompiler {
      *                                maps for the generate class
      */
     private void createConstructor(Collection<HashedAlphasDeclaration> hashedAlphaDeclarations) {
-        builder.append("public ").append(generatedClassSimpleName).append("() {").append(NEWLINE);
+        builder.append("public ").append(generatedClassSimpleName).append("(org.drools.core.spi.InternalReadAccessor readAccessor) {").append(NEWLINE);
 
+        builder.append("this.readAccessor = readAccessor;\n");
         // for each hashed alpha, we need to fill in the map member variable with the hashed values to node Ids
         for (HashedAlphasDeclaration declaration : hashedAlphaDeclarations) {
             String mapVariableName = declaration.getVariableName();
