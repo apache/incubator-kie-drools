@@ -6,6 +6,7 @@ import {
   handleAbort,
   handleNodeInstanceRetrigger,
   handleNodeInstanceCancel,
+  handleVariableUpdate,
   performMultipleAction,
   JobsIconCreator
 } from '../Utils';
@@ -362,6 +363,112 @@ describe('uitility function testing', () => {
           '8035b580-6ae4-4aa8-9ec0-e18e19809e0b'
         ]['errorMessage']
       ).toEqual('"404 error"');
+    });
+  });
+  describe('test utilities of process variables', () => {
+    it('test put method that updates process variables', async () => {
+      mockedAxios.put.mockResolvedValue({
+        status: 200,
+        statusText: 'OK',
+        data: {
+          flight: {
+            flightNumber: 'MX555',
+            seat: null,
+            gate: null,
+            departure: '2020-09-23T03:30:00.000+05:30',
+            arrival: '2020-09-28T03:30:00.000+05:30'
+          },
+          hotel: {
+            name: 'Perfect hotel',
+            address: {
+              street: 'street',
+              city: 'Sydney',
+              zipCode: '12345',
+              country: 'Australia'
+            },
+            phone: '09876543',
+            bookingNumber: 'XX-012345',
+            room: null
+          },
+          traveller: {
+            firstName: 'Saravana',
+            lastName: 'Srinivasan',
+            email: 'Saravana@gmai.com',
+            nationality: 'US',
+            address: {
+              street: 'street',
+              city: 'city',
+              zipCode: '123156',
+              country: 'US'
+            }
+          },
+          trip: {
+            city: 'Sydney',
+            country: 'Australia',
+            begin: '2020-09-23T03:30:00.000+05:30',
+            end: '2020-09-28T03:30:00.000+05:30',
+            visaRequired: false
+          }
+        }
+      });
+      const setUpdateJson = jest.fn();
+      const setDisplayLabel = jest.fn();
+      const setDisplaySuccess = jest.fn();
+      const setVariableError = jest.fn();
+      const processInstance = {
+        id: '0e5f1dde-cc5a-4b1f-8e06-dbb27bc489b4',
+        endpoint: 'http://localhost:8080/travels'
+      };
+      const updateJson = {
+        flight: {
+          flightNumber: 'MX5555',
+          seat: null,
+          gate: null,
+          departure: '2020-09-23T03:30:00.000+05:30',
+          arrival: '2020-09-28T03:30:00.000+05:30'
+        },
+        hotel: {
+          name: 'Perfect hotel',
+          address: {
+            street: 'street',
+            city: 'Sydney',
+            zipCode: '12345',
+            country: 'Australia'
+          },
+          phone: '09876543',
+          bookingNumber: 'XX-012345',
+          room: null
+        },
+        traveller: {
+          firstName: 'Saravana',
+          lastName: 'Srinivasan',
+          email: 'Saravana@gmai.com',
+          nationality: 'US',
+          address: {
+            street: 'street',
+            city: 'city',
+            zipCode: '123156',
+            country: 'US'
+          }
+        },
+        trip: {
+          city: 'Sydney',
+          country: 'Australia',
+          begin: '2020-09-23T03:30:00.000+05:30',
+          end: '2020-09-28T03:30:00.000+05:30',
+          visaRequired: false
+        }
+      };
+      await handleVariableUpdate(
+        processInstance,
+        updateJson,
+        setUpdateJson,
+        setDisplaySuccess,
+        setDisplayLabel,
+        setVariableError
+      );
+      expect(setDisplaySuccess).toHaveBeenCalled();
+      expect(setUpdateJson).toHaveBeenCalled();
     });
   });
 });

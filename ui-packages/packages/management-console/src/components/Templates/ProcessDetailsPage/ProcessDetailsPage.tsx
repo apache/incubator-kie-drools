@@ -135,6 +135,7 @@ const ProcessDetailsPage: React.FC<RouteComponentProps<MatchProps, {}, {}> &
       updateJson,
       setDisplayLabel,
       setDisplaySuccess,
+      setUpdateJson,
       setVariableError
     );
   };

@@ -291,12 +291,14 @@ export const handleVariableUpdate = async (
   updateJson: object,
   setDisplayLabel: (displayLabel: boolean) => void,
   setDisplaySuccess: (displaySuccess: boolean) => void,
+  setUpdateJson: (updateJson: object) => void,
   setVariableError: (error: string) => void
 ) => {
   try {
     await axios
-      .post(`${processInstance.endpoint}/${processInstance.id}`, updateJson)
-      .then(() => {
+      .put(`${processInstance.endpoint}/${processInstance.id}`, updateJson)
+      .then(res => {
+        setUpdateJson(res.data);
         setDisplayLabel(false);
         setDisplaySuccess(true);
         setTimeout(() => {
