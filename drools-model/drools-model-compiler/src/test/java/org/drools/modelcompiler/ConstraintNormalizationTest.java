@@ -319,7 +319,7 @@ public class ConstraintNormalizationTest extends BaseModelTest {
         final KieSession ksession = getKieSession(str);
 
         // Check NodeSharing to verify if normalization works expectedly
-        if (testRunType == RUN_TYPE.STANDARD_FROM_DRL) {
+        if (testRunType == RUN_TYPE.STANDARD_FROM_DRL || testRunType == RUN_TYPE.STANDARD_WITH_ALPHA_NETWORK) {
             assertEquals(2, ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count());
         } else {
             // && is not split in case of executable-model
