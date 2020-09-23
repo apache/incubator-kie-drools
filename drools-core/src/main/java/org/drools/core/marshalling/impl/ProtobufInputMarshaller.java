@@ -303,23 +303,26 @@ public class ProtobufInputMarshaller {
     private static void readNodeMemories(MarshallerReaderContext context,
                                          RuleData _session) {
         for ( ProtobufMessages.NodeMemory _node : _session.getNodeMemoryList() ) {
-            Object memory = null;
             switch ( _node.getNodeType() ) {
                 case QUERY_ELEMENT : {
-                    Map<TupleKey, QueryElementContext> map = new HashMap<TupleKey, QueryElementContext>();
+                    Map<TupleKey, QueryElementContext> memory = new HashMap<TupleKey, QueryElementContext>();
                     for ( ProtobufMessages.NodeMemory.QueryElementNodeMemory.QueryContext _ctx : _node.getQueryElement().getContextList() ) {
                         // we have to use a "cloned" query element context as we need to write on it during deserialization process and the 
                         // protobuf one is read-only
-                        map.put( PersisterHelper.createTupleKey( _ctx.getTuple() ), new QueryElementContext( _ctx ) );
+                        memory.put( PersisterHelper.createTupleKey( _ctx.getTuple() ), new QueryElementContext( _ctx ) );
                     }
-                    memory = map;
+                    context.getNodeMemories().put(_node.getNodeId(), memory);
                     break;
                 }
+                case RIA:
+                case FROM:
+                case ACCUMULATE:
+                    //skip legacy written node memory for ensuring backward compatibility
+                    break;
                 default : {
                     throw new IllegalArgumentException( "Unknown node type " + _node.getNodeType() + " while deserializing session." );
                 }
             }
-            context.getNodeMemories().put( _node.getNodeId(), memory );
         }
     }
 
