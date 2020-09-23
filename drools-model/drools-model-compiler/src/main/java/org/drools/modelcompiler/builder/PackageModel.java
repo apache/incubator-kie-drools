@@ -73,23 +73,21 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.rule.AccumulateFunction;
 import org.kie.internal.ruleunit.RuleUnitDescription;
 
-import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toList;
-
 import static com.github.javaparser.StaticJavaParser.parseBodyDeclaration;
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static com.github.javaparser.ast.Modifier.finalModifier;
 import static com.github.javaparser.ast.Modifier.publicModifier;
 import static com.github.javaparser.ast.Modifier.staticModifier;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
 import static org.drools.core.impl.StatefulKnowledgeSessionImpl.DEFAULT_RULE_UNIT;
-import static org.drools.core.util.StringUtils.generateUUID;
+import static org.drools.core.util.StringUtils.getPkgUUID;
 import static org.drools.model.bitmask.BitMaskUtil.getAccessibleProperties;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.GLOBAL_OF_CALL;
 import static org.drools.modelcompiler.builder.generator.QueryGenerator.QUERY_METHOD_PREFIX;
 import static org.drools.modelcompiler.util.ClassUtil.asJavaSourceName;
-import static org.drools.modelcompiler.util.StringUtil.md5Hash;
 
 public class PackageModel {
 
@@ -152,7 +150,7 @@ public class PackageModel {
 
     public PackageModel( ReleaseId releaseId, String name, KnowledgeBuilderConfigurationImpl configuration, boolean isPattern, DialectCompiletimeRegistry dialectCompiletimeRegistry, DRLIdGenerator exprIdGenerator) {
         this.name = name;
-        this.pkgUUID = (releaseId != null && !releaseId.isSnapshot()) ? md5Hash(releaseId.toString()+name) : generateUUID();
+        this.pkgUUID = getPkgUUID(releaseId, name);
         this.isPattern = isPattern;
         this.rulesFileName = RULES_FILE_NAME + pkgUUID;
         this.configuration = configuration;
@@ -162,7 +160,7 @@ public class PackageModel {
 
     public PackageModel(String gav, String name, KnowledgeBuilderConfigurationImpl configuration, boolean isPattern, DialectCompiletimeRegistry dialectCompiletimeRegistry, DRLIdGenerator exprIdGenerator) {
         this.name = name;
-        this.pkgUUID = md5Hash(gav+name);
+        this.pkgUUID = getPkgUUID(gav, name);
         this.isPattern = isPattern;
         this.rulesFileName = RULES_FILE_NAME + pkgUUID;
         this.configuration = configuration;

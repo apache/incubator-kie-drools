@@ -43,7 +43,7 @@ import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.type.UnknownType;
 
 import static com.github.javaparser.StaticJavaParser.parseType;
-import static org.drools.modelcompiler.util.StringUtil.md5Hash;
+import static org.drools.core.util.StringUtils.md5Hash;
 import static org.drools.modelcompiler.util.lambdareplace.ExecModelLambdaPostProcessor.MATERIALIZED_LAMBDA_PRETTY_PRINTER;
 
 abstract class MaterializedLambda {
