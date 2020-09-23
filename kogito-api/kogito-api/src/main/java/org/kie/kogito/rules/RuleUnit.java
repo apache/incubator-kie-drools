@@ -19,6 +19,8 @@ import java.util.UUID;
 
 public interface RuleUnit<T extends RuleUnitData> {
 
+    String id();
+
     default RuleUnitInstance<T> createInstance(T data) {
         return createInstance( data, UUID.randomUUID().toString() );
     }

@@ -10,6 +10,11 @@ public class SessionRuleUnit extends SessionUnit {
     KieRuntimeBuilder runtimeBuilder;
 
     @Override
+    public String id() {
+        return "$SessionName$";
+    }
+
+    @Override
     public SessionRuleUnitInstance createInstance( SessionData memory, String name ) {
         return new SessionRuleUnitInstance(this, memory, runtimeBuilder.newKieSession("$SessionName$"));
     }

@@ -18,9 +18,12 @@ package org.kie.kogito.codegen.rules;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
 import org.kie.kogito.codegen.AbstractApplicationSection;
 import org.kie.kogito.codegen.BodyDeclarationComparator;
+import org.kie.kogito.codegen.InvalidTemplateException;
+import org.kie.kogito.codegen.TemplatedGenerator;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 import org.kie.kogito.rules.KieRuntimeBuilder;
 import org.kie.kogito.rules.RuleUnit;
@@ -48,24 +51,32 @@ import com.github.javaparser.ast.type.WildcardType;
 
 public class RuleUnitContainerGenerator extends AbstractApplicationSection {
 
+    private static final String RESOURCE = "/class-templates/rules/RuleUnitContainerTemplate.java";
+    private static final String RESOURCE_CDI = "/class-templates/rules/CdiRuleUnitContainerTemplate.java";
+    private static final String RESOURCE_SPRING = "/class-templates/rules/SpringRuleUnitContainerTemplate.java";
+    public static final String SECTION_CLASS_NAME = "RuleUnits";
+
     private final List<RuleUnitGenerator> ruleUnits;
-    private String targetTypeName;
+    private final TemplatedGenerator templatedGenerator;
     private DependencyInjectionAnnotator annotator;
     private List<BodyDeclaration<?>> factoryMethods = new ArrayList<>();
 
-    public RuleUnitContainerGenerator() {
-        super("RuleUnits", "ruleUnits", AbstractRuleUnits.class);
-        this.targetTypeName = "Module";
+    public RuleUnitContainerGenerator(String packageName) {
+        super(SECTION_CLASS_NAME, "ruleUnits", AbstractRuleUnits.class);
         this.ruleUnits = new ArrayList<>();
+        this.templatedGenerator = new TemplatedGenerator(
+                packageName,
+                SECTION_CLASS_NAME,
+                RESOURCE_CDI,
+                RESOURCE_SPRING,
+                RESOURCE);
     }
 
     void addRuleUnit(RuleUnitGenerator rusc) {
         ruleUnits.add(rusc);
     }
 
-    private MethodDeclaration genericFactoryById() {
-        ClassOrInterfaceType returnType = new ClassOrInterfaceType(null, RuleUnit.class.getCanonicalName())
-                .setTypeArguments(new WildcardType());
+    private BlockStmt factoryByIdBody() {
 
         SwitchStmt switchStmt = new SwitchStmt();
         switchStmt.setSelector(new NameExpr("fqcn"));
@@ -84,61 +95,33 @@ public class RuleUnitContainerGenerator extends AbstractApplicationSection {
         defaultEntry.getStatements().add(new ThrowStmt(new ObjectCreationExpr().setType(UnsupportedOperationException.class.getCanonicalName())));
         switchStmt.getEntries().add(defaultEntry);
 
-        return new MethodDeclaration()
-                .addModifier(Modifier.Keyword.PROTECTED)
-                .setType(returnType)
-                .setName("create")
-                .addParameter(String.class, "fqcn")
-                .setBody(new BlockStmt().addStatement(switchStmt));
+        return new BlockStmt().addStatement(switchStmt);
     }
 
     @Override
     public ClassOrInterfaceDeclaration classDeclaration() {
+        CompilationUnit compilationUnit = templatedGenerator.compilationUnit()
+                .orElseThrow(() -> new InvalidTemplateException(
+                        SECTION_CLASS_NAME,
+                        templatedGenerator.templatePath(),
+                        "No CompilationUnit"));
 
-        NodeList<BodyDeclaration<?>> declarations = new NodeList<>();
+        if (annotator == null) {
+            // only in a non DI context
+            compilationUnit.findFirst(MethodDeclaration.class, m -> m.getNameAsString().equals("create"))
+                    .ifPresent(m -> m.setBody(factoryByIdBody())); // ignore if missing
+        }
 
-        // declare field `application`
-        FieldDeclaration applicationFieldDeclaration = new FieldDeclaration();
-        applicationFieldDeclaration
-                .addVariable( new VariableDeclarator( new ClassOrInterfaceType(null, "Application"), "application") )
-                .setModifiers( Modifier.Keyword.PRIVATE, Modifier.Keyword.FINAL );
-        declarations.add(applicationFieldDeclaration);
-
-        ConstructorDeclaration constructorDeclaration = new ConstructorDeclaration("RuleUnits")
-                .addModifier(Modifier.Keyword.PUBLIC)
-                .addParameter( "Application", "application" )
-                .setBody( new BlockStmt().addStatement( "this.application = application;" ) );
-        declarations.add(constructorDeclaration);
-
-        // declare field `ruleRuntimeBuilder`
-        FieldDeclaration kieRuntimeFieldDeclaration = new FieldDeclaration();
-        kieRuntimeFieldDeclaration
-                .addVariable(new VariableDeclarator( new ClassOrInterfaceType(null, KieRuntimeBuilder.class.getCanonicalName()), "ruleRuntimeBuilder")
-                .setInitializer(new ObjectCreationExpr().setType(ProjectSourceClass.PROJECT_RUNTIME_CLASS)))
-                .setModifiers( Modifier.Keyword.PRIVATE, Modifier.Keyword.FINAL );
-        declarations.add(kieRuntimeFieldDeclaration);
-
-        // declare method ruleRuntimeBuilder()
-        MethodDeclaration methodDeclaration = new MethodDeclaration()
-                .addModifier(Modifier.Keyword.PUBLIC)
-                .setName("ruleRuntimeBuilder")
-                .setType(KieRuntimeBuilder.class.getCanonicalName())
-                .setBody(new BlockStmt().addStatement(new ReturnStmt(new FieldAccessExpr(new ThisExpr(), "ruleRuntimeBuilder"))));
-        declarations.add(methodDeclaration);
-
-        declarations.addAll(factoryMethods);
-        declarations.add(genericFactoryById());
-
-        ClassOrInterfaceDeclaration cls = super.classDeclaration()
-                .setMembers(declarations);
-
-        cls.getMembers().sort(new BodyDeclarationComparator());
-
-        return cls;
+        return compilationUnit.findFirst(ClassOrInterfaceDeclaration.class)
+                .orElseThrow(() -> new InvalidTemplateException(
+                        SECTION_CLASS_NAME,
+                        templatedGenerator.templatePath(),
+                        "No class declaration"));
     }
 
     public RuleUnitContainerGenerator withDependencyInjection(DependencyInjectionAnnotator annotator) {
         this.annotator = annotator;
+        this.templatedGenerator.withDependencyInjection(annotator);
         return this;
     }
 

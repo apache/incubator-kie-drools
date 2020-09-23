@@ -124,7 +124,7 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
     private boolean hotReloadMode = false;
     private AddonsConfig addonsConfig = AddonsConfig.DEFAULT;
     private boolean useRestServices = true;
-    private String packageName;
+    private String packageName = KnowledgeBuilderConfigurationImpl.DEFAULT_PACKAGE;
     private final boolean decisionTableSupported;
     private final Map<String, RuleUnitConfig> configs;
 
@@ -168,7 +168,7 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
             throw new MissingDecisionTableDependencyError();
         }
 
-        moduleGenerator = new RuleUnitContainerGenerator();
+        moduleGenerator = new RuleUnitContainerGenerator(packageName);
         moduleGenerator.withDependencyInjection(annotator);
 
         KnowledgeBuilderConfigurationImpl configuration =
@@ -269,15 +269,17 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
             if (!ruleUnits.isEmpty()) {
                 hasRuleUnits = true;
                 for (RuleUnitDescription ruleUnit : ruleUnits) {
+                    String canonicalName = ruleUnit.getCanonicalName();
                     RuleUnitGenerator ruSource = new RuleUnitGenerator(ruleUnit, pkgSources.getRulesFileName())
                             .withDependencyInjection(annotator)
-                            .withQueries( pkgSources.getQueriesInRuleUnit( ruleUnit.getCanonicalName() ) )
-                            .withAddons(addonsConfig);
+                            .withQueries(pkgSources.getQueriesInRuleUnit(canonicalName))
+                            .withAddons(addonsConfig)
+                            .mergeConfig(configs.get(canonicalName));
 
                     moduleGenerator.addRuleUnit(ruSource);
-                    unitsMap.put(ruleUnit.getCanonicalName(), ruSource.targetCanonicalName());
+                    unitsMap.put(canonicalName, ruSource.targetCanonicalName());
                     // only Class<?> has config for now
-                    addUnitConfToKieModule( ruleUnit );
+                    addUnitConfToKieModule(ruleUnit);
                 }
             }
         }

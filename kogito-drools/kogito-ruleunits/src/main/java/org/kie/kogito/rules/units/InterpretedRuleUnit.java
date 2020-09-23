@@ -24,11 +24,11 @@ import org.kie.kogito.uow.UnitOfWorkManager;
 public class InterpretedRuleUnit<T extends RuleUnitData> extends AbstractRuleUnit<T> {
 
     public static <T extends RuleUnitData> RuleUnit<T> of(Class<T> type) {
-        return new InterpretedRuleUnit<>();
+        return new InterpretedRuleUnit<>(type.getCanonicalName());
     }
 
-    private InterpretedRuleUnit() {
-        super(DummyApplication.INSTANCE);
+    private InterpretedRuleUnit(String id) {
+        super(id, DummyApplication.INSTANCE);
     }
 
     @Override

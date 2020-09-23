@@ -22,13 +22,20 @@ import org.kie.kogito.rules.RuleUnitInstance;
 
 public abstract class AbstractRuleUnit<T extends RuleUnitData> implements RuleUnit<T> {
 
+    private final String id;
     protected final Application app;
 
-    public AbstractRuleUnit(Application app) {
+    public AbstractRuleUnit(String id, Application app) {
+        this.id = id;
         this.app = app;
     }
 
     protected abstract RuleUnitInstance<T> internalCreateInstance(T data);
+
+    @Override
+    public String id() {
+        return id;
+    }
 
     @Override
     public RuleUnitInstance<T> createInstance(T data, String name) {

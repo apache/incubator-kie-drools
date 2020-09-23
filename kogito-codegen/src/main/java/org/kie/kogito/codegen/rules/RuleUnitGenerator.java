@@ -19,13 +19,17 @@ import java.util.Collection;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.OptionalInt;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
-import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.ClassExpr;
+import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.IntegerLiteralExpr;
+import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.TypeParameter;
@@ -35,16 +39,22 @@ import org.kie.kogito.codegen.AddonsConfig;
 import org.kie.kogito.codegen.ApplicationGenerator;
 import org.kie.kogito.codegen.FileGenerator;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
+import org.kie.kogito.conf.ClockType;
+import org.kie.kogito.conf.EventProcessingType;
 import org.kie.kogito.rules.RuleUnit;
+import org.kie.kogito.rules.RuleUnitConfig;
 import org.kie.kogito.rules.units.GeneratedRuleUnitDescription;
 import org.kie.kogito.rules.units.impl.AbstractRuleUnit;
 
 import static com.github.javaparser.StaticJavaParser.parse;
+import static com.github.javaparser.StaticJavaParser.parseExpression;
 import static com.github.javaparser.ast.NodeList.nodeList;
 import static java.util.stream.Collectors.toList;
 import static org.kie.kogito.codegen.metadata.ImageMetaData.LABEL_PREFIX;
 
 public class RuleUnitGenerator implements FileGenerator {
+
+    public static final String TEMPLATE = "/class-templates/rules/RuleUnitTemplate.java";
 
     private final RuleUnitDescription ruleUnit;
     private final String packageName;
@@ -52,6 +62,7 @@ public class RuleUnitGenerator implements FileGenerator {
     private final String generatedSourceFile;
     private final String generatedFilePath;
     private final String targetCanonicalName;
+    private RuleUnitConfig config;
     private String targetTypeName;
     private DependencyInjectionAnnotator annotator;
     private Collection<QueryModel> queries;
@@ -67,6 +78,15 @@ public class RuleUnitGenerator implements FileGenerator {
         this.targetCanonicalName = packageName + "." + targetTypeName;
         this.generatedFilePath = targetCanonicalName.replace('.', '/') + ".java";
         this.applicationPackageName = ApplicationGenerator.DEFAULT_PACKAGE_NAME;
+        // merge config from the descriptor with configs from application.conf
+        // application.conf overrides any other config
+        this.config = ruleUnit.getConfig();
+    }
+
+    // override config for this rule unit with the given values
+    public RuleUnitGenerator mergeConfig(RuleUnitConfig ruleUnitConfig) {
+        this.config = config.merged(ruleUnitConfig);
+        return this;
     }
 
     public RuleUnitInstanceGenerator instance(RuleUnitHelper ruleUnitHelper, List<String> queryClasses) {
@@ -115,7 +135,7 @@ public class RuleUnitGenerator implements FileGenerator {
     }
 
     public CompilationUnit compilationUnit() {
-        CompilationUnit compilationUnit = parse(getClass().getResourceAsStream("/class-templates/rules/RuleUnitTemplate.java"));
+        CompilationUnit compilationUnit = parse(getClass().getResourceAsStream(TEMPLATE));
         compilationUnit.setPackageDeclaration(packageName);
 
         classDeclaration(
@@ -159,12 +179,37 @@ public class RuleUnitGenerator implements FileGenerator {
                 .flatMap(m -> m.getParameters().stream())
                 .filter(p -> p.getType().asString().equals("$ModelName$"))
                 .forEach(o -> o.setType(typeName));
-        cls.findAll( MethodCallExpr.class).stream()
-                .flatMap( mCall -> mCall.getArguments().stream() )
-                .filter( e -> e.isNameExpr() && e.toNameExpr().get().getNameAsString().equals( "$ModelClass$" ) )
-                .forEach( e -> e.toNameExpr().get().setName( typeName + ".class" ) );
+
+        cls.findAll(ClassExpr.class, e -> e.getType().toString().equals("$ModelName$"))
+                .forEach(ne -> ne.setType(typeName));
+
         cls.findAll(TypeParameter.class)
                 .forEach(tp -> tp.setName(typeName));
+
+        cls.findFirst(NameExpr.class, e -> e.getNameAsString().equals("$SessionPoolSize$"))
+                .ifPresent(e -> e.replace(new IntegerLiteralExpr(config.getDefaultedSessionPool().orElse(-1))));
+
+        cls.findFirst(NameExpr.class, e -> e.getNameAsString().equals("$EventProcessingMode$"))
+                .ifPresent(e -> e.replace(eventProcessingConfigExpression(config.getDefaultedEventProcessingType())));
+
+        cls.findFirst(NameExpr.class, e -> e.getNameAsString().equals("$ClockType$"))
+                .ifPresent(e -> e.replace(clockConfigExpression(config.getDefaultedClockType())));
+    }
+
+    private Expression eventProcessingConfigExpression(EventProcessingType eventProcessingType) {
+        Expression replacement =
+                (eventProcessingType == EventProcessingType.STREAM) ?
+                        parseExpression("org.kie.api.conf.EventProcessingOption.STREAM") :
+                        parseExpression("org.kie.api.conf.EventProcessingOption.CLOUD");
+        return replacement;
+    }
+
+    private Expression clockConfigExpression(ClockType clockType) {
+        Expression replacement =
+                (clockType == ClockType.PSEUDO) ?
+                        parseExpression("org.drools.core.ClockType.PSEUDO_CLOCK") :
+                        parseExpression("org.drools.core.ClockType.REALTIME_CLOCK");
+        return replacement;
     }
 
     private void setClassName(ConstructorDeclaration constructorDeclaration) {

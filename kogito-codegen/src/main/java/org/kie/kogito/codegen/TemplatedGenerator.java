@@ -109,8 +109,8 @@ public class TemplatedGenerator {
                             .setPackageDeclaration(packageName);
 
             return Optional.of(compilationUnit);
-        } catch (ParseProblemException ex) {
-            throw new TemplateInstantiationException(targetTypeName, selectedResource, ex);
+        } catch (ParseProblemException | AssertionError e) {
+            throw new TemplateInstantiationException(targetTypeName, selectedResource, e);
         }
     }
 
