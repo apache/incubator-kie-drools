@@ -23,6 +23,7 @@ import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.io.impl.FileSystemResource;
 import org.kie.api.KieBase;
+import org.kie.api.builder.ReleaseId;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieRuntimeFactory;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
@@ -44,13 +45,22 @@ public class PMMLRuntimeFactory {
 
     public static PMMLRuntime getPMMLRuntime(String kbaseName, File pmmlFile) {
         KnowledgeBuilderImpl kbuilderImpl = (KnowledgeBuilderImpl) KnowledgeBuilderFactory.newKnowledgeBuilder();
+        return getPMMLRuntime(kbaseName, pmmlFile, kbuilderImpl);
+    }
+
+    public static PMMLRuntime getPMMLRuntime(String kbaseName, File pmmlFile, ReleaseId releaseId) {
+        KnowledgeBuilderImpl kbuilderImpl = (KnowledgeBuilderImpl) KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilderImpl.setReleaseId(releaseId);
+        return getPMMLRuntime(kbaseName, pmmlFile, kbuilderImpl);
+    }
+
+    private static PMMLRuntime getPMMLRuntime(String kbaseName, File pmmlFile, KnowledgeBuilderImpl kbuilderImpl) {
         FileSystemResource fileSystemResource = new FileSystemResource(pmmlFile);
         new PMMLAssemblerService().addResource(kbuilderImpl, fileSystemResource, ResourceType.PMML, null);
         InternalKnowledgeBase kieBase = KnowledgeBaseFactory.newKnowledgeBase(kbaseName, new RuleBaseConfiguration());
         kieBase.addPackages( kbuilderImpl.getKnowledgePackages() );
         return getPMMLRuntime(kieBase);
     }
-
 
     private static PMMLRuntime getPMMLRuntime(KieBase kieBase) {
         final KieRuntimeFactory kieRuntimeFactory = KieRuntimeFactory.of(kieBase);
