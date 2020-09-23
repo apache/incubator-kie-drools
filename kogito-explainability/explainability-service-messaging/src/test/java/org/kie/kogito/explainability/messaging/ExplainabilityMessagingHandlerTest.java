@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.explainability;
+package org.kie.kogito.explainability.messaging;
 
 import java.util.Collections;
 import java.util.UUID;
@@ -22,14 +22,17 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.cloudevents.jackson.JsonFormat;
 import org.eclipse.microprofile.reactive.messaging.Message;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.explainability.ExplanationService;
+import org.kie.kogito.explainability.PredictionProviderFactory;
 import org.kie.kogito.explainability.api.ExplainabilityRequestDto;
 import org.kie.kogito.explainability.api.ExplainabilityResultDto;
 import org.kie.kogito.explainability.api.ModelIdentifierDto;
-import org.kie.kogito.explainability.messaging.ExplainabilityMessagingHandler;
 import org.kie.kogito.explainability.model.PredictionProvider;
 import org.kie.kogito.explainability.models.ExplainabilityRequest;
 
@@ -44,6 +47,7 @@ import static org.mockito.Mockito.when;
 
 public class ExplainabilityMessagingHandlerTest {
 
+    private static final ObjectMapper MAPPER = new ObjectMapper().registerModule(JsonFormat.getCloudEventJacksonModule());
     private ExplanationService explanationService;
     private ExplainabilityMessagingHandler handler;
 
@@ -55,6 +59,7 @@ public class ExplainabilityMessagingHandlerTest {
         when(predictionProviderFactory.createPredictionProvider(any(ExplainabilityRequest.class)))
                 .thenReturn(predictionProvider);
         handler = new ExplainabilityMessagingHandler(explanationService, predictionProviderFactory);
+        handler.objectMapper = MAPPER;
     }
 
     @Test

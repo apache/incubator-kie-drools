@@ -25,8 +25,9 @@ import java.util.Map;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import io.cloudevents.json.Json;
-import io.cloudevents.v1.CloudEventImpl;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.cloudevents.CloudEvent;
+import io.cloudevents.jackson.JsonFormat;
 import org.kie.kogito.decision.DecisionModelType;
 import org.kie.kogito.tracing.decision.event.CloudEventUtils;
 import org.kie.kogito.tracing.decision.event.message.Message;
@@ -59,6 +60,8 @@ public class TrustyServiceTestUtils {
     public static final String CLOUDEVENT_WITH_ERRORS_ID = "6f8f5a8b-5477-464c-b5d3-1e3ed399e0da";
     public static final String CLOUDEVENT_WITH_NULL_FIELDS_ID = "03c3db32-5b93-473f-a83d-39e661e2462e";
     public static final String CLOUDEVENT_WITHOUT_DATA_ID = "7dad3bf4-14cc-4c8e-aa3c-8f4598865142";
+
+    public static final ObjectMapper MAPPER = new ObjectMapper().registerModule(JsonFormat.getCloudEventJacksonModule());
 
     private static final long CORRECT_CLOUDEVENT_START_TS = 1594105482568L;
     private static final long CORRECT_CLOUDEVENT_DURATION = 26L;
@@ -141,21 +144,21 @@ public class TrustyServiceTestUtils {
     ));
     private static final TypedVariable vDecisionSuspended = TypedVariable.buildUnit(OUTPUT_SHOULD_THE_DRIVER_BE_SUSPENDED_NODE_NAME, "string", toJsonNode("\"Yes\""));
 
-    public static CloudEventImpl<TraceEvent> buildCloudEvent(TraceEvent traceEvent) {
+    public static CloudEvent buildCloudEvent(TraceEvent traceEvent) {
         return CloudEventUtils.build(
                 traceEvent.getHeader().getExecutionId(),
                 URI.create(CLOUDEVENT_SOURCE),
                 traceEvent,
                 TraceEvent.class
-        );
+        ).get();
     }
 
     public static String buildCloudEventJsonString(TraceEvent traceEvent) {
         return CloudEventUtils.encode(buildCloudEvent(traceEvent));
     }
 
-    public static CloudEventImpl<TraceEvent> buildCloudEventWithoutData() {
-        return CloudEventUtils.build(CLOUDEVENT_WITHOUT_DATA_ID, URI.create(URLEncoder.encode(MODEL_NAME, StandardCharsets.UTF_8)), null, TraceEvent.class);
+    public static CloudEvent buildCloudEventWithoutData() {
+        return CloudEventUtils.build(CLOUDEVENT_WITHOUT_DATA_ID, URI.create(URLEncoder.encode(MODEL_NAME, StandardCharsets.UTF_8)), null, TraceEvent.class).get();
     }
 
     public static String buildCloudEventWithoutDataJsonString() {
@@ -444,7 +447,7 @@ public class TrustyServiceTestUtils {
             return null;
         }
         try {
-            return Json.MAPPER.readTree(serializedJson);
+            return MAPPER.readTree(serializedJson);
         } catch (JsonProcessingException e) {
             return null;
         }
@@ -459,10 +462,10 @@ public class TrustyServiceTestUtils {
         return CloudEventUtils.encode(buildCloudEvent(modelEvent));
     }
 
-    public static CloudEventImpl<ModelEvent> buildCloudEvent(ModelEvent modelEvent) {
+    public static CloudEvent buildCloudEvent(ModelEvent modelEvent) {
         return CloudEventUtils.build("id",
                                      URI.create(URLEncoder.encode(ModelEvent.class.getName(), StandardCharsets.UTF_8)),
                                      modelEvent,
-                                     ModelEvent.class);
+                                     ModelEvent.class).get();
     }
 }

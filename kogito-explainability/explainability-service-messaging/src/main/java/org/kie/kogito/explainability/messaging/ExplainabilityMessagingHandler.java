@@ -16,9 +16,16 @@
 
 package org.kie.kogito.explainability.messaging;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import io.cloudevents.v1.AttributesImpl;
-import io.cloudevents.v1.CloudEventImpl;
+import java.io.IOException;
+import java.net.URI;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.cloudevents.CloudEvent;
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.subjects.PublishSubject;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
@@ -35,25 +42,20 @@ import org.reactivestreams.Publisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import java.net.URI;
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
-
 @ApplicationScoped
 public class ExplainabilityMessagingHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ExplainabilityMessagingHandler.class);
 
     private static final URI URI_PRODUCER = URI.create("explainabilityService/ExplainabilityMessagingHandler");
-    private static final TypeReference<CloudEventImpl<ExplainabilityRequestDto>> CLOUD_EVENT_TYPE = new TypeReference<>() {
-    };
+
     private final PublishSubject<String> eventSubject = PublishSubject.create();
 
     protected ExplanationService explanationService;
     protected PredictionProviderFactory predictionProviderFactory;
+
+    @Inject
+    ObjectMapper objectMapper;
 
     @Inject
     public ExplainabilityMessagingHandler(
@@ -67,12 +69,12 @@ public class ExplainabilityMessagingHandler {
     @Incoming("trusty-explainability-request")
     public CompletionStage<Void> handleMessage(Message<String> message) {
         try {
-            Optional<CloudEventImpl<ExplainabilityRequestDto>> cloudEventOpt = decodeCloudEvent(message.getPayload());
+            Optional<CloudEvent> cloudEventOpt = decodeCloudEvent(message.getPayload());
             if (!cloudEventOpt.isPresent()) {
                 return message.ack();
             }
 
-            CloudEventImpl<ExplainabilityRequestDto> cloudEvent = cloudEventOpt.get();
+            CloudEvent cloudEvent = cloudEventOpt.get();
             return handleCloudEvent(cloudEvent)
                     .thenAccept(x -> message.ack());
         } catch (Exception e) {
@@ -81,27 +83,31 @@ public class ExplainabilityMessagingHandler {
         return message.ack();
     }
 
-    private Optional<CloudEventImpl<ExplainabilityRequestDto>> decodeCloudEvent(String payload) {
+    private Optional<CloudEvent> decodeCloudEvent(String payload) {
         try {
-            return Optional.of(CloudEventUtils.decode(payload, CLOUD_EVENT_TYPE));
+            return Optional.of(CloudEventUtils.decode(payload));
         } catch (IllegalStateException e) {
             LOGGER.error(String.format("Can't decode message to CloudEvent: %s", payload), e);
             return Optional.empty();
         }
     }
 
-    private CompletionStage<Void> handleCloudEvent(CloudEventImpl<ExplainabilityRequestDto> cloudEvent) {
-        AttributesImpl attributes = cloudEvent.getAttributes();
-        Optional<ExplainabilityRequestDto> optData = cloudEvent.getData();
-
-        if (!optData.isPresent()) {
-            LOGGER.error("Received CloudEvent with id {} from {} with empty data", attributes.getId(), attributes.getSource());
+    private CompletionStage<Void> handleCloudEvent(CloudEvent cloudEvent) {
+        ExplainabilityRequestDto requestDto;
+        try {
+            requestDto = objectMapper.readValue(cloudEvent.getData(), ExplainabilityRequestDto.class);
+        } catch (IOException e) {
+             LOGGER.error("Unable to deserialize CloudEvent data as ExplainabilityRequest", e);
+             return CompletableFuture.completedFuture(null);
+        }
+        if (requestDto == null) {
+            LOGGER.error("Received CloudEvent with id {} from {} with empty data", cloudEvent.getId(), cloudEvent.getSource());
             return CompletableFuture.completedFuture(null);
         }
 
-        LOGGER.info("Received CloudEvent with id {} from {}", attributes.getId(), attributes.getSource());
+        LOGGER.info("Received CloudEvent with id {} from {}", cloudEvent.getId(), cloudEvent.getSource());
 
-        ExplainabilityRequest request = ExplainabilityRequest.from(optData.get());
+        ExplainabilityRequest request = ExplainabilityRequest.from(requestDto);
         PredictionProvider provider = predictionProviderFactory.createPredictionProvider(request);
 
         return explanationService
@@ -112,13 +118,16 @@ public class ExplainabilityMessagingHandler {
     // Outgoing
     public Void sendEvent(ExplainabilityResultDto result) {
         LOGGER.info("Explainability service emits explainability for execution with ID {}", result.getExecutionId());
-        String payload = CloudEventUtils.encode(
-                CloudEventUtils.build(result.getExecutionId(),
-                                      URI_PRODUCER,
-                                      result,
-                                      ExplainabilityResultDto.class)
-        );
-        eventSubject.onNext(payload);
+        Optional<CloudEvent> event = CloudEventUtils.build(result.getExecutionId(),
+                URI_PRODUCER,
+                result,
+                ExplainabilityResultDto.class);
+        if(event.isPresent()) {
+            String payload = CloudEventUtils.encode(event.get());
+            eventSubject.onNext(payload);
+        } else {
+            LOGGER.warn("Ignoring empty CloudEvent");
+        }
         return null;
     }
 

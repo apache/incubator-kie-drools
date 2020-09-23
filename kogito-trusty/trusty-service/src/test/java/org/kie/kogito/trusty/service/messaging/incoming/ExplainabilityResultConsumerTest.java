@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import io.cloudevents.v1.CloudEventImpl;
+import io.cloudevents.CloudEvent;
 import org.eclipse.microprofile.reactive.messaging.Message;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,6 +31,7 @@ import org.kie.kogito.explainability.api.FeatureImportanceDto;
 import org.kie.kogito.explainability.api.SaliencyDto;
 import org.kie.kogito.tracing.decision.event.CloudEventUtils;
 import org.kie.kogito.trusty.service.TrustyService;
+import org.kie.kogito.trusty.service.TrustyServiceTestUtils;
 import org.kie.kogito.trusty.storage.api.model.Decision;
 import org.kie.kogito.trusty.storage.api.model.DecisionInput;
 import org.kie.kogito.trusty.storage.api.model.DecisionOutcome;
@@ -86,7 +87,7 @@ class ExplainabilityResultConsumerTest {
     @BeforeEach
     void setup() {
         trustyService = mock(TrustyService.class);
-        consumer = new ExplainabilityResultConsumer(trustyService);
+        consumer = new ExplainabilityResultConsumer(trustyService, TrustyServiceTestUtils.MAPPER);
     }
 
     @Test
@@ -201,13 +202,13 @@ class ExplainabilityResultConsumerTest {
         verify(message, times(1)).ack();
     }
 
-    public static CloudEventImpl<ExplainabilityResultDto> buildExplainabilityCloudEvent(ExplainabilityResultDto resultDto) {
+    public static CloudEvent buildExplainabilityCloudEvent(ExplainabilityResultDto resultDto) {
         return CloudEventUtils.build(
                 resultDto.getExecutionId(),
                 URI.create("explainabilityResult/test"),
                 resultDto,
                 ExplainabilityResultDto.class
-        );
+        ).get();
     }
 
     public static String buildCloudEventJsonString(ExplainabilityResultDto resultDto) {

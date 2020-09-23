@@ -20,9 +20,9 @@ import java.util.List;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import io.cloudevents.json.Json;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.trusty.service.TrustyServiceTestUtils;
 import org.kie.kogito.trusty.storage.api.model.TypedVariable;
 
 class TypedVariableResponseTest {
@@ -199,6 +199,6 @@ class TypedVariableResponseTest {
     }
 
     private static TypedVariable buildTestUnitVariable(String name, String typeRef, String jsonValue) throws JsonProcessingException {
-        return TypedVariable.buildUnit(name, typeRef, Json.MAPPER.readTree(jsonValue));
+        return TypedVariable.buildUnit(name, typeRef, TrustyServiceTestUtils.MAPPER.readTree(jsonValue));
     }
 }

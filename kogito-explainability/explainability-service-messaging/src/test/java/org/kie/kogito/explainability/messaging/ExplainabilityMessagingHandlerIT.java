@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.explainability;
+package org.kie.kogito.explainability.messaging;
 
 import java.util.Collections;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-
 import javax.inject.Inject;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -30,6 +29,7 @@ import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.mockito.InjectMock;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.explainability.ExplanationService;
 import org.kie.kogito.explainability.api.ExplainabilityRequestDto;
 import org.kie.kogito.explainability.api.ExplainabilityResultDto;
 import org.kie.kogito.explainability.api.ModelIdentifierDto;

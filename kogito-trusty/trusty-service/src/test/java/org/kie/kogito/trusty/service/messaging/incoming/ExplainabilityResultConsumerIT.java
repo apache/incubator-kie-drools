@@ -19,7 +19,7 @@ package org.kie.kogito.trusty.service.messaging.incoming;
 import java.net.URI;
 import java.util.Collections;
 
-import io.cloudevents.v1.CloudEventImpl;
+import io.cloudevents.CloudEvent;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.mockito.InjectMock;
@@ -63,13 +63,13 @@ public class ExplainabilityResultConsumerIT {
         verify(trustyService, timeout(3000).times(1)).storeExplainabilityResult(any(String.class), any(ExplainabilityResult.class));
     }
 
-    public static CloudEventImpl<ExplainabilityResultDto> buildExplainabilityCloudEvent(ExplainabilityResultDto resultDto) {
+    public static CloudEvent buildExplainabilityCloudEvent(ExplainabilityResultDto resultDto) {
         return CloudEventUtils.build(
                 resultDto.getExecutionId(),
                 URI.create("explainabilityResult/test"),
                 resultDto,
                 ExplainabilityResultDto.class
-        );
+        ).get();
     }
 
     public static String buildCloudEventJsonString(ExplainabilityResultDto resultDto) {

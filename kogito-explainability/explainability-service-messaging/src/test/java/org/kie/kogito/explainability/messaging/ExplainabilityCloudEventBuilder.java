@@ -14,23 +14,23 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.explainability;
+package org.kie.kogito.explainability.messaging;
 
 import java.net.URI;
 
-import io.cloudevents.v1.CloudEventImpl;
+import io.cloudevents.CloudEvent;
 import org.kie.kogito.explainability.api.ExplainabilityRequestDto;
 import org.kie.kogito.tracing.decision.event.CloudEventUtils;
 
 public class ExplainabilityCloudEventBuilder {
 
-    public static CloudEventImpl<ExplainabilityRequestDto> buildCloudEvent(ExplainabilityRequestDto request) {
+    public static CloudEvent buildCloudEvent(ExplainabilityRequestDto request) {
         return CloudEventUtils.build(
                 request.getExecutionId(),
                 URI.create("trustyService/test"),
                 request,
                 ExplainabilityRequestDto.class
-        );
+        ).get();
     }
 
     public static String buildCloudEventJsonString(ExplainabilityRequestDto request) {

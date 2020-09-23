@@ -19,16 +19,14 @@ package org.kie.kogito.trusty.service.messaging.incoming;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 import java.util.stream.Collectors;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import io.cloudevents.v1.AttributesImpl;
-import io.cloudevents.v1.CloudEventImpl;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.cloudevents.CloudEvent;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
 import org.eclipse.microprofile.reactive.messaging.Message;
 import org.kie.kogito.explainability.api.ExplainabilityResultDto;
@@ -48,9 +46,8 @@ import org.slf4j.LoggerFactory;
 @ApplicationScoped
 public class ExplainabilityResultConsumer extends BaseEventConsumer<ExplainabilityResultDto> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ExplainabilityResultConsumer.class);
-
-    private static final TypeReference<CloudEventImpl<ExplainabilityResultDto>> CLOUD_EVENT_TYPE = new TypeReference<>() {
+    private static final Logger LOG = LoggerFactory.getLogger(ExplainabilityResultConsumer.class);
+    private static final TypeReference<ExplainabilityResultDto> CLOUD_EVENT_TYPE = new TypeReference<>() {
     };
 
     private ExplainabilityResultConsumer() {
@@ -58,8 +55,8 @@ public class ExplainabilityResultConsumer extends BaseEventConsumer<Explainabili
     }
 
     @Inject
-    public ExplainabilityResultConsumer(TrustyService service) {
-        super(service);
+    public ExplainabilityResultConsumer(TrustyService service, ObjectMapper mapper) {
+        super(service, mapper);
     }
 
     @Override
@@ -69,31 +66,18 @@ public class ExplainabilityResultConsumer extends BaseEventConsumer<Explainabili
     }
 
     @Override
-    protected TypeReference<CloudEventImpl<ExplainabilityResultDto>> getCloudEventType() {
-        return CLOUD_EVENT_TYPE;
+    protected void internalHandleCloudEvent(CloudEvent cloudEvent, ExplainabilityResultDto payload) {
+        String executionId = payload.getExecutionId();
+        Decision decision = getDecisionById(executionId);
+        if (decision == null) {
+            LOG.warn("Can't find decision related to explainability result (executionId={})", executionId);
+        }
+        service.storeExplainabilityResult(executionId, explainabilityResultFrom(payload, decision));
     }
 
     @Override
-    protected void handleCloudEvent(CloudEventImpl<ExplainabilityResultDto> cloudEvent) {
-        AttributesImpl attributes = cloudEvent.getAttributes();
-        Optional<ExplainabilityResultDto> optData = cloudEvent.getData();
-
-        if (!optData.isPresent()) {
-            LOGGER.error("Received CloudEvent with id {} from {} with empty data", attributes.getId(), attributes.getSource());
-            return;
-        }
-
-        LOGGER.info("Received CloudEvent with id {} from {}", attributes.getId(), attributes.getSource());
-
-        ExplainabilityResultDto explainabilityResult = optData.get();
-        String executionId = explainabilityResult.getExecutionId();
-
-        Decision decision = getDecisionById(executionId);
-        if (decision == null) {
-            LOGGER.warn("Can't find decision related to explainability result (executionId={})", executionId);
-        }
-
-        service.storeExplainabilityResult(executionId, explainabilityResultFrom(explainabilityResult, decision));
+    protected TypeReference<ExplainabilityResultDto> getEventType() {
+        return CLOUD_EVENT_TYPE;
     }
 
     protected Decision getDecisionById(String executionId) {

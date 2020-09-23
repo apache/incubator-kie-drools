@@ -21,14 +21,17 @@ import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import io.cloudevents.json.Json;
+import io.cloudevents.jackson.JsonFormat;
 import org.kie.kogito.trusty.storage.api.model.DecisionInput;
 import org.kie.kogito.trusty.storage.api.model.TypedVariable;
 
 import static org.kie.kogito.tracing.typedvalue.TypedValue.Kind.STRUCTURE;
 
 public class TypedVariableResponse {
+
+    private static final ObjectMapper MAPPER = new ObjectMapper().registerModule(JsonFormat.getCloudEventJacksonModule());
 
     @JsonProperty("name")
     private String name;
@@ -100,7 +103,7 @@ public class TypedVariableResponse {
                 : value.getComponents().stream()
                         .map(TypedVariableResponse::fromUnit)
                         .map(TypedVariableResponse::getValue)
-                        .collect(Json.MAPPER::createArrayNode, ArrayNode::add, ArrayNode::addAll);
+                        .collect(MAPPER::createArrayNode, ArrayNode::add, ArrayNode::addAll);
 
         // create a list of lists of variables with all the values of the sub-components
         // to be placed in the "components" field of the response
@@ -109,7 +112,7 @@ public class TypedVariableResponse {
                 ? null
                 : value.getComponents().stream()
                         .map(TypedVariableResponse::fromStructure)
-                        .map(r -> r.getComponents().stream().collect(Json.MAPPER::createArrayNode, ArrayNode::add, ArrayNode::addAll))
+                        .map(r -> r.getComponents().stream().collect(MAPPER::createArrayNode, ArrayNode::add, ArrayNode::addAll))
                         .collect(Collectors.toList());
 
         return new TypedVariableResponse(value.getName(), value.getTypeRef(), responseValue, responseComponents);
@@ -118,7 +121,7 @@ public class TypedVariableResponse {
     private static TypedVariableResponse fromStructure(TypedVariable value) {
         List<JsonNode> components = value.getComponents() == null
                 ? null
-                : value.getComponents().stream().map(TypedVariableResponse::from).<JsonNode>map(Json.MAPPER::valueToTree).collect(Collectors.toList());
+                : value.getComponents().stream().map(TypedVariableResponse::from).<JsonNode>map(MAPPER::valueToTree).collect(Collectors.toList());
         return new TypedVariableResponse(value.getName(), value.getTypeRef(), null, components);
     }
 

@@ -16,35 +16,36 @@
 
 package org.kie.kogito.trusty.service.messaging.incoming;
 
-import java.util.Optional;
 import java.util.concurrent.CompletionStage;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import io.cloudevents.v1.AttributesImpl;
-import io.cloudevents.v1.CloudEventImpl;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.cloudevents.CloudEvent;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
 import org.eclipse.microprofile.reactive.messaging.Message;
 import org.kie.kogito.decision.DecisionModelType;
 import org.kie.kogito.tracing.decision.event.model.ModelEvent;
 import org.kie.kogito.trusty.service.TrustyService;
 import org.kie.kogito.trusty.service.messaging.BaseEventConsumer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @ApplicationScoped
 public class ModelEventConsumer extends BaseEventConsumer<ModelEvent> {
 
-    private static final TypeReference<CloudEventImpl<ModelEvent>> CLOUD_EVENT_TYPE_REF = new TypeReference<>() {
+    private static final Logger LOG = LoggerFactory.getLogger(ModelEventConsumer.class);
+    private static final TypeReference<ModelEvent> CLOUD_EVENT_TYPE = new TypeReference<>() {
     };
 
-    private  ModelEventConsumer() {
+    private ModelEventConsumer() {
         //CDI proxy
     }
 
     @Inject
-    public ModelEventConsumer(final TrustyService service) {
-        super(service);
+    public ModelEventConsumer(final TrustyService service, ObjectMapper mapper) {
+        super(service, mapper);
     }
 
     @Override
@@ -54,32 +55,20 @@ public class ModelEventConsumer extends BaseEventConsumer<ModelEvent> {
     }
 
     @Override
-    protected TypeReference<CloudEventImpl<ModelEvent>> getCloudEventType() {
-        return CLOUD_EVENT_TYPE_REF;
+    protected TypeReference<ModelEvent> getEventType() {
+        return CLOUD_EVENT_TYPE;
     }
 
     @Override
-    protected void handleCloudEvent(final CloudEventImpl<ModelEvent> cloudEvent) {
-        final AttributesImpl attributes = cloudEvent.getAttributes();
-        final Optional<ModelEvent> optData = cloudEvent.getData();
-
-        if (!optData.isPresent()) {
-            LOG.error("Received CloudEvent with id {} from {} with empty data", attributes.getId(), attributes.getSource());
-            return;
-        }
-
-        LOG.debug("Received CloudEvent with id {} from {}", attributes.getId(), attributes.getSource());
-
-        final ModelEvent modelEvent = optData.get();
-        final DecisionModelType modelEventType = modelEvent.getType();
-
+    protected void internalHandleCloudEvent(CloudEvent cloudEvent, ModelEvent payload) {
+        final DecisionModelType modelEventType = payload.getType();
         if (modelEventType == DecisionModelType.DMN) {
-            service.storeModel(modelEvent.getGav().getGroupId(),
-                               modelEvent.getGav().getArtifactId(),
-                               modelEvent.getGav().getVersion(),
-                               modelEvent.getName(),
-                               modelEvent.getNamespace(),
-                               ModelEventConverter.toModel(modelEvent));
+            service.storeModel(payload.getGav().getGroupId(),
+                    payload.getGav().getArtifactId(),
+                    payload.getGav().getVersion(),
+                    payload.getName(),
+                    payload.getNamespace(),
+                    ModelEventConverter.toModel(payload));
         } else {
             LOG.error("Unsupported DecisionModelType type {}", modelEventType);
         }
