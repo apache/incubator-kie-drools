@@ -26,6 +26,10 @@
       <artifactId>cloudevents-api</artifactId>
     </dependency>
     <dependency>
+      <groupId>io.cloudevents</groupId>
+      <artifactId>cloudevents-json-jackson</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
     </dependency>

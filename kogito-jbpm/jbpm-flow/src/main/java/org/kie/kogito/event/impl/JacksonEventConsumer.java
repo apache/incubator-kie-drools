@@ -12,20 +12,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.events.knative.ce.http;
+package org.kie.kogito.event.impl;
 
-import javax.ws.rs.core.MediaType;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.kie.kogito.Model;
+import org.kie.kogito.services.event.EventConsumer;
 
-/**
- * Extends {@link MediaType} to CloudEvents support
- */
-// this shouldn't be provided by the CE SDK? Send a PR.
-public final class ExtMediaType {
+public abstract class JacksonEventConsumer<M extends Model> implements EventConsumer<M> {
 
-    public static final String CLOUDEVENTS_JSON = "application/cloudevents+json";
-    public static final MediaType CLOUDEVENTS_JSON_TYPE = new MediaType("application", "cloudevents+json");
+    final ObjectMapper mapper;
 
-    private ExtMediaType() {
-
+    public JacksonEventConsumer(ObjectMapper mapper) {
+        this.mapper = mapper;
     }
 }

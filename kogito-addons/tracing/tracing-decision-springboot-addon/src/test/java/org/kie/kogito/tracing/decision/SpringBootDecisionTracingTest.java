@@ -16,9 +16,13 @@
 
 package org.kie.kogito.tracing.decision;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import io.cloudevents.json.Json;
-import io.cloudevents.v1.CloudEventImpl;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.cloudevents.CloudEvent;
+import io.cloudevents.jackson.JsonFormat;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNRuntime;
@@ -35,11 +39,8 @@ import org.mockito.ArgumentCaptor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.kafka.core.KafkaTemplate;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -47,11 +48,12 @@ import static org.mockito.Mockito.when;
 
 public class SpringBootDecisionTracingTest {
 
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper().registerModule(JsonFormat.getCloudEventJacksonModule());
     private static final String TEST_EXECUTION_ID = "7c50581e-6e5b-407b-91d6-2ffb1d47ebc0";
     private static final String TEST_TOPIC = "test-topic";
 
     @Test
-    public void test_ListenerAndCollector_UseRealEvents_Working() {
+    public void test_ListenerAndCollector_UseRealEvents_Working() throws IOException {
         final String serviceUrl = "localhost:8080";
         final String modelResource = "/Traffic Violation.dmn";
         final String modelNamespace = "https://github.com/kiegroup/drools/kie-dmn/_A4BCA8B8-CF08-433F-93B2-A2598F19ECFF";
@@ -102,9 +104,10 @@ public class SpringBootDecisionTracingTest {
 
         assertEquals(TEST_TOPIC, topicCaptor.getValue());
 
-        CloudEventImpl<TraceEvent> cloudEvent = Json.decodeValue(payloadCaptor.getValue(), CloudEventImpl.class, TraceEvent.class);
-        assertEquals(TEST_EXECUTION_ID, cloudEvent.getAttributes().getId());
-        assertTrue(cloudEvent.getData().isPresent());
-        assertEquals(serviceUrl, cloudEvent.getData().get().getHeader().getResourceId().getServiceUrl());
+        CloudEvent cloudEvent = OBJECT_MAPPER.readValue(payloadCaptor.getValue(), CloudEvent.class);
+        assertEquals(TEST_EXECUTION_ID, cloudEvent.getId());
+        TraceEvent traceEvent = OBJECT_MAPPER.readValue(cloudEvent.getData(), TraceEvent.class);
+        assertNotNull(traceEvent);
+        assertEquals(serviceUrl, traceEvent.getHeader().getResourceId().getServiceUrl());
     }
 }

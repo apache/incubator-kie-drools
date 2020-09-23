@@ -15,9 +15,12 @@
 package org.kie.kogito.event.impl;
 
 import java.util.Optional;
+import java.util.TimeZone;
 import java.util.function.Function;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.util.StdDateFormat;
 import org.kie.kogito.services.event.AbstractProcessDataEvent;
 import org.kie.kogito.services.event.EventMarshaller;
 import org.slf4j.Logger;
@@ -27,6 +30,20 @@ public class DefaultEventMarshaller implements EventMarshaller {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultEventMarshaller.class);
 
+    private final ObjectMapper mapper;
+
+    public DefaultEventMarshaller() {
+        this(null);
+    }
+
+    public DefaultEventMarshaller(ObjectMapper mapper) {
+        if(mapper == null) {
+            this.mapper = new ObjectMapper().setDateFormat(new StdDateFormat().withColonInTimeZone(true).withTimeZone(TimeZone.getDefault()));
+        } else {
+            this.mapper = mapper;
+        }
+    }
+
     @Override
     public <T, P extends AbstractProcessDataEvent<T>> String marshall(T dataEvent,
                                                                       Function<T, P> cloudFunction,
@@ -34,7 +51,7 @@ public class DefaultEventMarshaller implements EventMarshaller {
         Object event = isCloudEvent.orElse(true) ? cloudFunction.apply(dataEvent) : dataEvent;
         logger.debug("Marshalling event {}", event);
         try {
-            return EventUtils.writeEvent(event);
+            return mapper.writeValueAsString(event);
         } catch (JsonProcessingException e) {
             logger.error("Error marshalling event {}", event);
             throw new IllegalStateException(e);

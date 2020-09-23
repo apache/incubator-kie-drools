@@ -24,7 +24,7 @@ class CloudEventsResourceGeneratorTest {
         assertNotNull(clazz);
         Assertions.assertThat(clazz.getChildNodes()).isNotEmpty();
         Assertions.assertThat(clazz.getImports()).contains(
-                new ImportDeclaration("org.kie.kogito.events.knative.ce.http.RestEasyHttpRequestConverter", false, false));
+                new ImportDeclaration("org.kie.kogito.events.knative.ce.Printer", false, false));
     }
 
     @Test
@@ -51,6 +51,6 @@ class CloudEventsResourceGeneratorTest {
                                       .count()).isEqualTo(1L);
         Assertions.assertThat(clazz.getFields().stream()
                                       .filter(f -> f.getAnnotationByName("Inject").isPresent())
-                                      .count()).isEqualTo(1L);
+                                      .count()).isEqualTo(2L);
     }
 }

@@ -12,20 +12,6 @@
     <name>Kogito :: Add-Ons :: Events :: Knative Eventing</name>
     <description>Kogito Events handling for Knative Eventing AddOn</description>
 
-    <properties>
-        <version.cloudevents>2.0.0-milestone1</version.cloudevents>
-    </properties>
-
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>io.cloudevents</groupId>
-                <artifactId>cloudevents-api</artifactId>
-                <version>${version.cloudevents}</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
     <dependencies>
         <dependency>
             <groupId>org.kie.kogito</groupId>
@@ -35,17 +21,14 @@
         <dependency>
             <groupId>io.cloudevents</groupId>
             <artifactId>cloudevents-api</artifactId>
-            <version>${version.cloudevents}</version>
         </dependency>
         <dependency>
             <groupId>io.cloudevents</groupId>
             <artifactId>cloudevents-http-restful-ws</artifactId>
-            <version>${version.cloudevents}</version>
         </dependency>
         <dependency>
             <groupId>io.cloudevents</groupId>
             <artifactId>cloudevents-json-jackson</artifactId>
-            <version>${version.cloudevents}</version>
         </dependency>
         <dependency>
             <groupId>org.jboss.resteasy</groupId>

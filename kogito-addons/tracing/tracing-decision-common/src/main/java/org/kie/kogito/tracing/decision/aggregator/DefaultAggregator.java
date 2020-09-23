@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import io.cloudevents.v1.CloudEventImpl;
+import io.cloudevents.CloudEvent;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.ast.DMNNode;
@@ -67,7 +67,6 @@ import static org.kie.kogito.tracing.decision.event.evaluate.EvaluateEventType.B
 public class DefaultAggregator implements Aggregator {
 
     private static final Logger LOG = LoggerFactory.getLogger(DefaultAggregator.class);
-
     private static final String UNKNOWN_SOURCE_URL = "__UNKNOWN_SOURCE__";
 
     private static final String EXPRESSION_ID_KEY = "expressionId";
@@ -78,13 +77,13 @@ public class DefaultAggregator implements Aggregator {
     private static final String VARIABLE_ID_KEY = "variableId";
 
     @Override
-    public CloudEventImpl<TraceEvent> aggregate(DMNModel model, String executionId, List<EvaluateEvent> events, ConfigBean configBean) {
+    public CloudEvent aggregate(DMNModel model, String executionId, List<EvaluateEvent> events, ConfigBean configBean) {
         return events == null || events.isEmpty()
                 ? buildNotEnoughDataCloudEvent(model, executionId, configBean)
                 : buildDefaultCloudEvent(model, executionId, events, configBean);
     }
 
-    private static CloudEventImpl<TraceEvent> buildNotEnoughDataCloudEvent(DMNModel model, String executionId, ConfigBean configBean) {
+    private static CloudEvent buildNotEnoughDataCloudEvent(DMNModel model, String executionId, ConfigBean configBean) {
         TraceHeader header = new TraceHeader(
                 TraceEventType.DMN,
                 executionId,
@@ -99,11 +98,12 @@ public class DefaultAggregator implements Aggregator {
         );
 
         TraceEvent event = new TraceEvent(header, Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
-
-        return CloudEventUtils.build(executionId, buildSource(configBean.getServiceUrl(), null), event, TraceEvent.class);
+        return CloudEventUtils
+                .build(executionId, buildSource(configBean.getServiceUrl(), null), event, TraceEvent.class)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid TraceEvent created. Unable to encode"));
     }
 
-    private static CloudEventImpl<TraceEvent> buildDefaultCloudEvent(DMNModel model, String executionId, List<EvaluateEvent> events, ConfigBean configBean) {
+    private static CloudEvent buildDefaultCloudEvent(DMNModel model, String executionId, List<EvaluateEvent> events, ConfigBean configBean) {
         EvaluateEvent firstEvent = events.get(0);
         EvaluateEvent lastEvent = events.get(events.size() - 1);
 
@@ -130,8 +130,9 @@ public class DefaultAggregator implements Aggregator {
 
         // complete event
         TraceEvent event = new TraceEvent(header, inputs, outputs, executionStepsPair.getLeft());
-
-        return CloudEventUtils.build(executionId, buildSource(configBean.getServiceUrl(), firstEvent), event, TraceEvent.class);
+        return CloudEventUtils
+                .build(executionId, buildSource(configBean.getServiceUrl(), firstEvent), event, TraceEvent.class)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid TraceEvent created. Unable to encode"));
     }
 
     private static URI buildSource(String serviceUrl, EvaluateEvent event) {

@@ -18,25 +18,26 @@ import java.util.Optional;
 import java.util.function.Function;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kie.kogito.Application;
 import org.kie.kogito.Model;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.impl.Sig;
 import org.kie.kogito.services.event.AbstractProcessDataEvent;
-import org.kie.kogito.services.event.EventConsumer;
 import org.kie.kogito.services.uow.UnitOfWorkExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class CloudEventConsumer<D, M extends Model, T extends AbstractProcessDataEvent<D>> implements EventConsumer<M> {
+public class CloudEventConsumer<D, M extends Model, T extends AbstractProcessDataEvent<D>> extends JacksonEventConsumer<M> {
 
     private static final Logger logger = LoggerFactory.getLogger(CloudEventConsumer.class);
 
     private Function<D, M> function;
     private Class<T> cloudEventClass;
 
-    public CloudEventConsumer(Function<D, M> function, Class<T> cloudEventClass) {
+    public CloudEventConsumer(Function<D, M> function, Class<T> cloudEventClass, ObjectMapper mapper) {
+        super(mapper);
         this.function = function;
         this.cloudEventClass = cloudEventClass;
     }
@@ -44,7 +45,7 @@ public class CloudEventConsumer<D, M extends Model, T extends AbstractProcessDat
     @Override
     public void consume(Application application, Process<M> process, String payload, String trigger) {
         try {
-            T cloudEvent = EventUtils.readEvent(payload, cloudEventClass);
+            T cloudEvent = mapper.readValue(payload, cloudEventClass);
             M model = function.apply(cloudEvent.getData());
             UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(), () -> {
                 if (cloudEvent.getKogitoReferenceId() != null) {

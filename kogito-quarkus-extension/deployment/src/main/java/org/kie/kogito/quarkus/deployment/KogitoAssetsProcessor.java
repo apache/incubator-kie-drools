@@ -108,7 +108,7 @@ public class KogitoAssetsProcessor {
     private static final DotName persistenceFactoryClass = DotName.createSimple("org.kie.kogito.persistence.KogitoProcessInstancesFactory");
     private static final DotName metricsClass = DotName.createSimple("org.kie.kogito.monitoring.rest.MetricsResource");
     private static final DotName tracingClass = DotName.createSimple("org.kie.kogito.tracing.decision.DecisionTracingListener");
-    private static final DotName knativeEventingClass = DotName.createSimple("org.kie.kogito.events.knative.ce.http.HttpRequestConverter");
+    private static final DotName knativeEventingClass = DotName.createSimple("org.kie.kogito.events.knative.ce.extensions.KogitoProcessExtension");
     private static final DotName dmnJpmmlClass = DotName.createSimple( "org.kie.dmn.jpmml.DMNjPMMLInvocationEvaluator");
 
     @Inject

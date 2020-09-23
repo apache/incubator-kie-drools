@@ -2,6 +2,7 @@ package com.myspace.demo;
 
 import java.util.Optional;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kie.kogito.Application;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.services.event.EventConsumerFactory;
@@ -13,11 +14,15 @@ public class $Type$MessageConsumer {
 
     Application application;
 
+    ObjectMapper objectMapper;
+
     Optional<Boolean> useCloudEvents = Optional.of(true);
 
-    EventConsumerFactory eventConsumerFactory = new DefaultEventConsumerFactory();
+    EventConsumerFactory eventConsumerFactory;
 
-    public void configure() {}
+    public void configure() {
+        eventConsumerFactory = new DefaultEventConsumerFactory(objectMapper);
+    }
 
     public void consume(String payload) {
         eventConsumerFactory

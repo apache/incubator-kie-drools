@@ -26,7 +26,7 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import io.cloudevents.json.Json;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNType;
@@ -48,8 +48,10 @@ import org.kie.kogito.tracing.typedvalue.UnitValue;
 
 public class EventUtils {
 
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
     public static JsonNode jsonNodeFrom(Object object) {
-        return Optional.ofNullable(object).<JsonNode>map(Json.MAPPER::valueToTree).orElse(null);
+        return Optional.ofNullable(object).<JsonNode>map(OBJECT_MAPPER::valueToTree).orElse(null);
     }
 
     public static <I, O> List<O> map(List<I> input, Function<I, O> mapper) {

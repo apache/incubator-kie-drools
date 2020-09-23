@@ -19,8 +19,7 @@ package org.kie.kogito.tracing.decision;
 import java.util.Arrays;
 import java.util.List;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import io.cloudevents.v1.CloudEventImpl;
+import io.cloudevents.CloudEvent;
 import io.reactivex.subscribers.TestSubscriber;
 import org.junit.jupiter.api.Test;
 import org.kie.api.management.GAV;
@@ -28,16 +27,12 @@ import org.kie.internal.decision.DecisionModelResource;
 import org.kie.internal.decision.DecisionModelResourcesProvider;
 import org.kie.kogito.decision.DecisionModelType;
 import org.kie.kogito.tracing.decision.event.CloudEventUtils;
-import org.kie.kogito.tracing.decision.event.model.ModelEvent;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class QuarkusModelEventEmitterTest {
-
-    private static final TypeReference<CloudEventImpl<ModelEvent>> CLOUD_EVENT_TYPE_REF = new TypeReference<CloudEventImpl<ModelEvent>>() {
-    };
 
     @Test
     public void testEmitEvent() {
@@ -52,11 +47,11 @@ public class QuarkusModelEventEmitterTest {
         subscriber.assertValueCount(2);
         final String rawCloudEvent1 = subscriber.values().get(0);
         final String rawCloudEvent2 = subscriber.values().get(1);
-        final CloudEventImpl<ModelEvent> cloudEvent1 = CloudEventUtils.decode(rawCloudEvent1, CLOUD_EVENT_TYPE_REF);
-        final CloudEventImpl<ModelEvent> cloudEvent2 = CloudEventUtils.decode(rawCloudEvent2, CLOUD_EVENT_TYPE_REF);
+        final CloudEvent cloudEvent1 = CloudEventUtils.decode(rawCloudEvent1);
+        final CloudEvent cloudEvent2 = CloudEventUtils.decode(rawCloudEvent2);
 
-        assertEquals("id", cloudEvent1.getAttributes().getId());
-        assertEquals("id", cloudEvent2.getAttributes().getId());
+        assertEquals("id", cloudEvent1.getId());
+        assertEquals("id", cloudEvent2.getId());
     }
 
     private DecisionModelResource makeModel() {

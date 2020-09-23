@@ -117,6 +117,10 @@ public class CodegenUtils {
         return fd.getElementType().asClassOrInterfaceType().getNameAsString().equals("Application");
     }
 
+    public static boolean isObjectMapperField(FieldDeclaration fd) {
+        return fd.getElementType().asClassOrInterfaceType().getNameAsString().equals("ObjectMapper");
+    }
+
     public static MethodDeclaration extractOptionalInjection(String type, String fieldName, String defaultMethod, DependencyInjectionAnnotator annotator) {
         BlockStmt body = new BlockStmt();
         MethodDeclaration extractMethod = new MethodDeclaration()

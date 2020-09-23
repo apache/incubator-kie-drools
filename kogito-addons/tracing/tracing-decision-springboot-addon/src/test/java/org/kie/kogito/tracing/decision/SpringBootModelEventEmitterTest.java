@@ -19,15 +19,15 @@ package org.kie.kogito.tracing.decision;
 import java.util.Arrays;
 import java.util.List;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import io.cloudevents.v1.CloudEventImpl;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.cloudevents.CloudEvent;
+import io.cloudevents.jackson.JsonFormat;
 import org.junit.jupiter.api.Test;
 import org.kie.api.management.GAV;
 import org.kie.internal.decision.DecisionModelResource;
 import org.kie.internal.decision.DecisionModelResourcesProvider;
 import org.kie.kogito.decision.DecisionModelType;
-import org.kie.kogito.tracing.decision.event.CloudEventUtils;
-import org.kie.kogito.tracing.decision.event.model.ModelEvent;
 import org.mockito.ArgumentCaptor;
 import org.springframework.kafka.core.KafkaTemplate;
 
@@ -39,13 +39,11 @@ import static org.mockito.Mockito.when;
 
 public class SpringBootModelEventEmitterTest {
 
-    private static final TypeReference<CloudEventImpl<ModelEvent>> CLOUD_EVENT_TYPE_REF = new TypeReference<CloudEventImpl<ModelEvent>>() {
-    };
-
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper().registerModule(JsonFormat.getCloudEventJacksonModule());
     private static final String TEST_TOPIC = "test-topic";
 
     @Test
-    public void testEmitEvent() {
+    public void testEmitEvent() throws JsonProcessingException {
         @SuppressWarnings("unchecked")
         final KafkaTemplate<String, String> mockedKarkaTemplate = mock(KafkaTemplate.class);
         final List<DecisionModelResource> models = Arrays.asList(makeModel(), makeModel());
@@ -62,11 +60,11 @@ public class SpringBootModelEventEmitterTest {
 
         final String rawCloudEvent1 = payloadCaptor.getAllValues().get(0);
         final String rawCloudEvent2 = payloadCaptor.getAllValues().get(1);
-        final CloudEventImpl<ModelEvent> cloudEvent1 = CloudEventUtils.decode(rawCloudEvent1, CLOUD_EVENT_TYPE_REF);
-        final CloudEventImpl<ModelEvent> cloudEvent2 = CloudEventUtils.decode(rawCloudEvent2, CLOUD_EVENT_TYPE_REF);
+        final CloudEvent cloudEvent1 = OBJECT_MAPPER.readValue(rawCloudEvent1, CloudEvent.class);
+        final CloudEvent cloudEvent2 = OBJECT_MAPPER.readValue(rawCloudEvent2, CloudEvent.class);
 
-        assertEquals("id", cloudEvent1.getAttributes().getId());
-        assertEquals("id", cloudEvent2.getAttributes().getId());
+        assertEquals("id", cloudEvent1.getId());
+        assertEquals("id", cloudEvent2.getId());
     }
 
     private DecisionModelResource makeModel() {

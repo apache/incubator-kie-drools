@@ -17,7 +17,6 @@
 package org.kie.kogito.tracing.decision;
 
 import java.io.IOException;
-import java.time.ZonedDateTime;
 import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -28,10 +27,7 @@ import com.fasterxml.jackson.core.util.DefaultIndenter;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
-import io.cloudevents.json.ZonedDateTimeDeserializer;
-import io.cloudevents.json.ZonedDateTimeSerializer;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNContext;
@@ -67,10 +63,7 @@ class EvaluateEventJsonGeneratorTest {
 
     static final ObjectMapper MAPPER = new ObjectMapper()
             .configure(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY, false)
-            .registerModule(new Jdk8Module())
-            .registerModule(new SimpleModule()
-                    .addSerializer(ZonedDateTime.class, new ZonedDateTimeSerializer())
-                    .addDeserializer(ZonedDateTime.class, new ZonedDateTimeDeserializer()))
+            .registerModule(new JavaTimeModule())
             .setDefaultPrettyPrinter(new TestPrettyPrinter());
 
     @Test

@@ -17,6 +17,7 @@ package org.kie.kogito.codegen;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -194,7 +195,7 @@ public class ApplicationGenerator {
             Enumeration<URL> urls = classLoader.getResources("META-INF/kogito.addon");
             while (urls.hasMoreElements()) {
                 URL url = urls.nextElement();
-                try (InputStreamReader isr = new InputStreamReader(url.openStream())) {
+                try (InputStream urlStream = url.openStream(); InputStreamReader isr = new InputStreamReader(urlStream)) {
                     String addon = StringUtils.readFileAsString(isr);
                     addons.add(addon);
                 }

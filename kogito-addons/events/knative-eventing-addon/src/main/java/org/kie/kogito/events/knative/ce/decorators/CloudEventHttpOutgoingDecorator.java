@@ -14,10 +14,10 @@
  */
 package org.kie.kogito.events.knative.ce.decorators;
 
+import io.cloudevents.jackson.JsonFormat;
 import io.smallrye.reactive.messaging.http.HttpResponseMetadata;
 import org.eclipse.microprofile.reactive.messaging.Message;
 import org.eclipse.microprofile.reactive.messaging.Metadata;
-import org.kie.kogito.events.knative.ce.http.ExtMediaType;
 
 import javax.ws.rs.core.HttpHeaders;
 import java.util.Collections;
@@ -33,7 +33,7 @@ public final class CloudEventHttpOutgoingDecorator implements MessageDecorator {
     static final Metadata HTTP_RESPONSE_METADATA =
             Metadata.of(HttpResponseMetadata.builder()
                     .withQueryParameter(Collections.emptyMap())
-                    .withHeader(HttpHeaders.CONTENT_TYPE, ExtMediaType.CLOUDEVENTS_JSON).build());
+                    .withHeader(HttpHeaders.CONTENT_TYPE, JsonFormat.CONTENT_TYPE).build());
 
     CloudEventHttpOutgoingDecorator() {
 

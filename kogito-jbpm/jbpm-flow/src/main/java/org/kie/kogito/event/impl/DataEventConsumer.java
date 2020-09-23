@@ -17,23 +17,24 @@ package org.kie.kogito.event.impl;
 import java.util.function.Function;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kie.kogito.Application;
 import org.kie.kogito.Model;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
-import org.kie.kogito.services.event.EventConsumer;
 import org.kie.kogito.services.uow.UnitOfWorkExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DataEventConsumer<M extends Model, D> implements EventConsumer<M> {
+public class DataEventConsumer<M extends Model, D> extends JacksonEventConsumer<M> {
 
     private static final Logger logger = LoggerFactory.getLogger(DataEventConsumer.class);
 
     private Function<D, M> function;
     private Class<D> dataEventClass;
 
-    public DataEventConsumer(Function<D, M> function, Class<D> dataEventClass) {
+    public DataEventConsumer(Function<D, M> function, Class<D> dataEventClass, ObjectMapper mapper) {
+        super(mapper);
         this.function = function;
         this.dataEventClass = dataEventClass;
     }
@@ -41,7 +42,7 @@ public class DataEventConsumer<M extends Model, D> implements EventConsumer<M> {
     @Override
     public void consume(Application application, Process<M> process, String payload, String trigger) {
         try {
-            D eventData = EventUtils.readEvent(payload, dataEventClass);
+            D eventData = mapper.readValue(payload, dataEventClass);
             M model = function.apply(eventData);
             UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(), () -> {
                 logger.debug(

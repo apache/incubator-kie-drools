@@ -15,6 +15,7 @@
 
 package org.kie.kogito.codegen.process;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
@@ -33,9 +34,12 @@ import static com.github.javaparser.StaticJavaParser.parse;
 import static org.kie.kogito.codegen.CodegenUtils.interpolateArguments;
 import static org.kie.kogito.codegen.CodegenUtils.interpolateTypes;
 import static org.kie.kogito.codegen.CodegenUtils.isApplicationField;
+import static org.kie.kogito.codegen.CodegenUtils.isObjectMapperField;
 import static org.kie.kogito.codegen.CodegenUtils.isProcessField;
 
 public class MessageConsumerGenerator {
+
+    private static final String OBJECT_MAPPER_CANONICAL_NAME = ObjectMapper.class.getCanonicalName();
     private final String relativePath;
 
     private WorkflowProcess process;
@@ -114,6 +118,8 @@ public class MessageConsumerGenerator {
                              fd -> isProcessField(fd)).forEach(fd -> annotator.withNamedInjection(fd, processId));
             template.findAll(FieldDeclaration.class,
                              fd -> isApplicationField(fd)).forEach(fd -> annotator.withInjection(fd));
+            template.findAll(FieldDeclaration.class,
+                             fd -> isObjectMapperField(fd)).forEach(fd -> annotator.withInjection(fd));
 
             template.findAll(FieldDeclaration.class,
                     fd -> fd.getVariable(0).getNameAsString().equals("useCloudEvents")).forEach(fd -> annotator.withConfigInjection(fd, "kogito.messaging.as-cloudevents"));
@@ -121,23 +127,28 @@ public class MessageConsumerGenerator {
             template.findAll(MethodDeclaration.class).stream().filter(md -> md.getNameAsString().equals("consume")).forEach(md -> annotator.withIncomingMessage(md, trigger.getName()));
         } else {
             template.findAll(FieldDeclaration.class,
-                             fd -> isProcessField(fd)).forEach(fd -> initializeProcessField(fd, template));
-            
+                             fd -> isProcessField(fd)).forEach(fd -> initializeProcessField(fd));
             template.findAll(FieldDeclaration.class,
-                             fd -> isApplicationField(fd)).forEach(fd -> initializeApplicationField(fd, template));
+                             fd -> isApplicationField(fd)).forEach(fd -> initializeApplicationField(fd));
+            template.findAll(FieldDeclaration.class,
+                             fd -> isObjectMapperField(fd)).forEach(fd -> initializeObjectMapperField(fd));
         }
         template.getMembers().sort(new BodyDeclarationComparator());
         return clazz.toString();
     }
     
-    private void initializeProcessField(FieldDeclaration fd, ClassOrInterfaceDeclaration template) {
+    private void initializeProcessField(FieldDeclaration fd) {
         fd.getVariable(0).setInitializer(new ObjectCreationExpr().setType(processClazzName));
     }
     
-    private void initializeApplicationField(FieldDeclaration fd, ClassOrInterfaceDeclaration template) {        
+    private void initializeApplicationField(FieldDeclaration fd) {
         fd.getVariable(0).setInitializer(new ObjectCreationExpr().setType(appCanonicalName));
     }
-    
+
+    private void initializeObjectMapperField(FieldDeclaration fd) {
+        fd.getVariable(0).setInitializer(new ObjectCreationExpr().setType(OBJECT_MAPPER_CANONICAL_NAME));
+    }
+
     private void interpolateStrings(MethodCallExpr vv) {
         String s = vv.getNameAsString();        
         String interpolated =

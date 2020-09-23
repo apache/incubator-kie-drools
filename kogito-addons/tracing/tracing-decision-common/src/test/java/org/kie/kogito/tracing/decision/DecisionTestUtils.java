@@ -16,18 +16,21 @@
 
 package org.kie.kogito.tracing.decision;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import io.cloudevents.json.Json;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.kogito.dmn.DMNKogito;
 import org.kie.kogito.tracing.decision.event.evaluate.EvaluateEvent;
 
 public class DecisionTestUtils {
+
+    public static final ObjectMapper MAPPER = new ObjectMapper();
 
     public static final String MODEL_RESOURCE = "/Traffic Violation.dmn";
     public static final String MODEL_NAMESPACE = "https://github.com/kiegroup/drools/kie-dmn/_A4BCA8B8-CF08-433F-93B2-A2598F19ECFF";
@@ -105,9 +108,8 @@ public class DecisionTestUtils {
         }};
     }
 
-    public static List<EvaluateEvent> readEvaluateEventsFromJsonResource(String resourceName) {
-        return Json.fromInputStream(
-                DecisionTestUtils.class.getResourceAsStream(resourceName),
+    public static List<EvaluateEvent> readEvaluateEventsFromJsonResource(String resourceName) throws IOException {
+        return MAPPER.readValue(DecisionTestUtils.class.getResourceAsStream(resourceName),
                 EVALUATE_EVENT_LIST_TYPE
         );
     }

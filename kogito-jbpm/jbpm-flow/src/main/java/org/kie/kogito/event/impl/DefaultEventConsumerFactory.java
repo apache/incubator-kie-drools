@@ -15,8 +15,11 @@
 package org.kie.kogito.event.impl;
 
 import java.util.Optional;
+import java.util.TimeZone;
 import java.util.function.Function;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.util.StdDateFormat;
 import org.kie.kogito.Model;
 import org.kie.kogito.services.event.AbstractProcessDataEvent;
 import org.kie.kogito.services.event.EventConsumer;
@@ -24,11 +27,25 @@ import org.kie.kogito.services.event.EventConsumerFactory;
 
 public class DefaultEventConsumerFactory implements EventConsumerFactory {
 
+    private ObjectMapper mapper;
+
+    public DefaultEventConsumerFactory() {
+        this(null);
+    }
+
+    public DefaultEventConsumerFactory(ObjectMapper mapper) {
+        if(mapper == null) {
+            this.mapper = new ObjectMapper().setDateFormat(new StdDateFormat().withColonInTimeZone(true).withTimeZone(TimeZone.getDefault()));
+        } else {
+            this.mapper = mapper;
+        }
+    }
+
     public <M extends Model, D, T extends AbstractProcessDataEvent<D>> EventConsumer<M> get(Function<D, M> function,
             Class<D> dataEventClass, Class<T> cloudEventClass, Optional<Boolean> cloudEvents) {
         return cloudEvents.orElse(true)
-                ? new CloudEventConsumer<>(function, cloudEventClass)
-                : new DataEventConsumer<>(function, dataEventClass);
+                ? new CloudEventConsumer<>(function, cloudEventClass, mapper)
+                : new DataEventConsumer<>(function, dataEventClass, mapper);
     }
 
 }

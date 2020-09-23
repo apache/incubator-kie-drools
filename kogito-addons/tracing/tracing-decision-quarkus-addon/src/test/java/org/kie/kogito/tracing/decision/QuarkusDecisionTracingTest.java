@@ -16,8 +16,13 @@
 
 package org.kie.kogito.tracing.decision;
 
-import io.cloudevents.json.Json;
-import io.cloudevents.v1.CloudEventImpl;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.cloudevents.CloudEvent;
+import io.cloudevents.jackson.JsonFormat;
 import io.reactivex.subscribers.TestSubscriber;
 import io.vertx.core.eventbus.EventBus;
 import org.junit.jupiter.api.Test;
@@ -34,11 +39,8 @@ import org.kie.kogito.tracing.decision.event.evaluate.EvaluateEvent;
 import org.kie.kogito.tracing.decision.event.trace.TraceEvent;
 import org.mockito.ArgumentCaptor;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -52,11 +54,12 @@ public class QuarkusDecisionTracingTest {
     public final static String MODEL_NAMESPACE = "https://github.com/kiegroup/drools/kie-dmn/_A4BCA8B8-CF08-433F-93B2-A2598F19ECFF";
     public final static String MODEL_NAME = "Traffic Violation";
 
+    private static final ObjectMapper MAPPER = new ObjectMapper().registerModule(JsonFormat.getCloudEventJacksonModule());
     private static final String TEST_EXECUTION_ID = "7c50581e-6e5b-407b-91d6-2ffb1d47ebc0";
-    private final static String TEST_SERVICE_URL = "localhost:8080";
+    private static final String TEST_SERVICE_URL = "localhost:8080";
 
     @Test
-    public void test_ListenerAndCollector_UseRealEvents_Working() {
+    public void test_ListenerAndCollector_UseRealEvents_Working() throws IOException {
         final DMNRuntime runtime = DMNKogito.createGenericDMNRuntime(new java.io.InputStreamReader(
                 QuarkusDecisionTracingTest.class.getResourceAsStream(MODEL_RESOURCE)
         ));
@@ -100,9 +103,11 @@ public class QuarkusDecisionTracingTest {
 
         subscriber.assertValueCount(1);
 
-        CloudEventImpl<TraceEvent> cloudEvent = Json.decodeValue(subscriber.values().get(0), CloudEventImpl.class, TraceEvent.class);
-        assertEquals(TEST_EXECUTION_ID, cloudEvent.getAttributes().getId());
-        assertTrue(cloudEvent.getData().isPresent());
-        assertEquals(TEST_SERVICE_URL, cloudEvent.getData().get().getHeader().getResourceId().getServiceUrl());
+        CloudEvent cloudEvent = MAPPER.readValue(subscriber.values().get(0), CloudEvent.class);
+        assertEquals(TEST_EXECUTION_ID, cloudEvent.getId());
+        assertNotNull(cloudEvent.getData());
+        TraceEvent traceEvent = MAPPER.readValue(cloudEvent.getData(), TraceEvent.class);
+        assertNotNull(traceEvent);
+        assertEquals(TEST_SERVICE_URL, traceEvent.getHeader().getResourceId().getServiceUrl());
     }
 }

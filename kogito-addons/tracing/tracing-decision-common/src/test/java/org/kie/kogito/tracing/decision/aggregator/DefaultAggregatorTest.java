@@ -16,11 +16,12 @@
 
 package org.kie.kogito.tracing.decision.aggregator;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import io.cloudevents.v1.CloudEventImpl;
+import io.cloudevents.CloudEvent;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNModel;
@@ -37,6 +38,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.kie.kogito.tracing.decision.DecisionTestUtils.DECISION_SERVICE_DECISION_ID;
 import static org.kie.kogito.tracing.decision.DecisionTestUtils.EVALUATE_ALL_EXECUTION_ID;
 import static org.kie.kogito.tracing.decision.DecisionTestUtils.EVALUATE_ALL_JSON_RESOURCE;
@@ -60,7 +62,7 @@ class DefaultAggregatorTest {
     @Test
     void test_Aggregate_NullList_NotEnoughData() {
         final DefaultAggregator aggregator = new DefaultAggregator();
-        CloudEventImpl<TraceEvent> cloudEvent = aggregator.aggregate(model, EVALUATE_ALL_EXECUTION_ID, null, configBean);
+        CloudEvent cloudEvent = aggregator.aggregate(model, EVALUATE_ALL_EXECUTION_ID, null, configBean);
         TraceEvent traceEvent = assertValidCloudEventAndGetData(cloudEvent, EVALUATE_ALL_EXECUTION_ID);
         assertTraceEventWithNotEnoughData(traceEvent);
     }
@@ -68,140 +70,145 @@ class DefaultAggregatorTest {
     @Test
     void test_Aggregate_EmptyList_NotEnoughData() {
         final DefaultAggregator aggregator = new DefaultAggregator();
-        CloudEventImpl<TraceEvent> cloudEvent = aggregator.aggregate(model, EVALUATE_ALL_EXECUTION_ID, Collections.emptyList(), configBean);
+        CloudEvent cloudEvent = aggregator.aggregate(model, EVALUATE_ALL_EXECUTION_ID, Collections.emptyList(), configBean);
         TraceEvent traceEvent = assertValidCloudEventAndGetData(cloudEvent, EVALUATE_ALL_EXECUTION_ID);
         assertTraceEventWithNotEnoughData(traceEvent);
     }
 
     @Test
-    void test_Aggregate_EvaluateAll_ValidList_Working() {
+    void test_Aggregate_EvaluateAll_ValidList_Working() throws IOException {
         final DefaultAggregator aggregator = new DefaultAggregator();
         List<EvaluateEvent> events = DecisionTestUtils.readEvaluateEventsFromJsonResource(EVALUATE_ALL_JSON_RESOURCE);
-        CloudEventImpl<TraceEvent> cloudEvent = aggregator.aggregate(model, EVALUATE_ALL_EXECUTION_ID, events, configBean);
+        CloudEvent cloudEvent = aggregator.aggregate(model, EVALUATE_ALL_EXECUTION_ID, events, configBean);
         TraceEvent traceEvent = assertValidCloudEventAndGetData(cloudEvent, EVALUATE_ALL_EXECUTION_ID);
         assertTraceEvent(traceEvent, 2, 2, 2);
     }
 
     @Test
-    void test_Aggregate_EvaluateAll_NullModel_DmnModelNotFound() {
+    void test_Aggregate_EvaluateAll_NullModel_DmnModelNotFound() throws IOException {
         final DefaultAggregator aggregator = new DefaultAggregator();
         List<EvaluateEvent> events = DecisionTestUtils.readEvaluateEventsFromJsonResource(EVALUATE_ALL_JSON_RESOURCE);
-        CloudEventImpl<TraceEvent> cloudEvent = aggregator.aggregate(null, EVALUATE_ALL_EXECUTION_ID, events, configBean);
+        CloudEvent cloudEvent = aggregator.aggregate(null, EVALUATE_ALL_EXECUTION_ID, events, configBean);
         TraceEvent traceEvent = assertValidCloudEventAndGetData(cloudEvent, EVALUATE_ALL_EXECUTION_ID);
         assertTraceEvent(traceEvent, 2, 2, 2);
         assertTraceEventInternalMessage(traceEvent, InternalMessageType.DMN_MODEL_NOT_FOUND);
     }
 
     @Test
-    void test_Aggregate_EvaluateAll_ListWithOnlyFirstEvent_NoExecutionSteps() {
+    void test_Aggregate_EvaluateAll_ListWithOnlyFirstEvent_NoExecutionSteps() throws IOException {
         final DefaultAggregator aggregator = new DefaultAggregator();
         final List<EvaluateEvent> events = DecisionTestUtils.readEvaluateEventsFromJsonResource(EVALUATE_ALL_JSON_RESOURCE).stream()
                 .limit(1).collect(Collectors.toList());
-        CloudEventImpl<TraceEvent> cloudEvent = aggregator.aggregate(model, EVALUATE_ALL_EXECUTION_ID, events, configBean);
+        CloudEvent cloudEvent = aggregator.aggregate(model, EVALUATE_ALL_EXECUTION_ID, events, configBean);
         TraceEvent traceEvent = assertValidCloudEventAndGetData(cloudEvent, EVALUATE_ALL_EXECUTION_ID);
         assertTraceEvent(traceEvent, 2, 2, 0);
     }
 
     @Test
-    void test_Aggregate_EvaluateAll_ListWithMissingFirstBeforeEvaluateDecisionEvent_NoExecutionStepHierarchy() {
+    void test_Aggregate_EvaluateAll_ListWithMissingFirstBeforeEvaluateDecisionEvent_NoExecutionStepHierarchy() throws IOException {
         final DefaultAggregator aggregator = new DefaultAggregator();
         final List<EvaluateEvent> events = DecisionTestUtils.readEvaluateEventsFromJsonResource(EVALUATE_ALL_JSON_RESOURCE).stream()
                 .filter(e -> !(e.getType() == EvaluateEventType.BEFORE_EVALUATE_DECISION && FIRST_DECISION_NODE_ID.equals(e.getNodeId())))
                 .collect(Collectors.toList());
-        CloudEventImpl<TraceEvent> cloudEvent = aggregator.aggregate(model, EVALUATE_ALL_EXECUTION_ID, events, configBean);
+        CloudEvent cloudEvent = aggregator.aggregate(model, EVALUATE_ALL_EXECUTION_ID, events, configBean);
         TraceEvent traceEvent = assertValidCloudEventAndGetData(cloudEvent, EVALUATE_ALL_EXECUTION_ID);
         assertTraceEventWithNoExecutionStepsHierarchy(traceEvent, 2, 2, 6);
     }
 
     @Test
-    void test_Aggregate_EvaluateAll_ListWithMissingFirstAfterEvaluateDecisionEvent_NoExecutionStepHierarchy() {
+    void test_Aggregate_EvaluateAll_ListWithMissingFirstAfterEvaluateDecisionEvent_NoExecutionStepHierarchy() throws IOException {
         final DefaultAggregator aggregator = new DefaultAggregator();
         final List<EvaluateEvent> events = DecisionTestUtils.readEvaluateEventsFromJsonResource(EVALUATE_ALL_JSON_RESOURCE).stream()
                 .filter(e -> !(e.getType() == EvaluateEventType.AFTER_EVALUATE_DECISION && FIRST_DECISION_NODE_ID.equals(e.getNodeId())))
                 .collect(Collectors.toList());
-        CloudEventImpl<TraceEvent> cloudEvent = aggregator.aggregate(model, EVALUATE_ALL_EXECUTION_ID, events, configBean);
+        CloudEvent cloudEvent = aggregator.aggregate(model, EVALUATE_ALL_EXECUTION_ID, events, configBean);
         TraceEvent traceEvent = assertValidCloudEventAndGetData(cloudEvent, EVALUATE_ALL_EXECUTION_ID);
         assertTraceEventWithNoExecutionStepsHierarchy(traceEvent, 2, 2, 5);
     }
 
     @Test
-    void test_Aggregate_EvaluateAll_ListWithMissingLastBeforeEvaluateDecisionEvent_NoExecutionStepHierarchy() {
+    void test_Aggregate_EvaluateAll_ListWithMissingLastBeforeEvaluateDecisionEvent_NoExecutionStepHierarchy() throws IOException {
         final DefaultAggregator aggregator = new DefaultAggregator();
         final List<EvaluateEvent> events = DecisionTestUtils.readEvaluateEventsFromJsonResource(EVALUATE_ALL_JSON_RESOURCE).stream()
                 .filter(e -> !(e.getType() == EvaluateEventType.BEFORE_EVALUATE_DECISION && LAST_DECISION_NODE_ID.equals(e.getNodeId())))
                 .collect(Collectors.toList());
-        CloudEventImpl<TraceEvent> cloudEvent = aggregator.aggregate(model, EVALUATE_ALL_EXECUTION_ID, events, configBean);
+        CloudEvent cloudEvent = aggregator.aggregate(model, EVALUATE_ALL_EXECUTION_ID, events, configBean);
         TraceEvent traceEvent = assertValidCloudEventAndGetData(cloudEvent, EVALUATE_ALL_EXECUTION_ID);
         assertTraceEventWithNoExecutionStepsHierarchy(traceEvent, 2, 2, 6);
     }
 
     @Test
-    void test_Aggregate_EvaluateAll_ListWithMissingLastAfterEvaluateDecisionEvent_NoExecutionStepHierarchy() {
+    void test_Aggregate_EvaluateAll_ListWithMissingLastAfterEvaluateDecisionEvent_NoExecutionStepHierarchy() throws IOException {
         final DefaultAggregator aggregator = new DefaultAggregator();
         final List<EvaluateEvent> events = DecisionTestUtils.readEvaluateEventsFromJsonResource(EVALUATE_ALL_JSON_RESOURCE).stream()
                 .filter(e -> !(e.getType() == EvaluateEventType.AFTER_EVALUATE_DECISION && LAST_DECISION_NODE_ID.equals(e.getNodeId())))
                 .collect(Collectors.toList());
-        CloudEventImpl<TraceEvent> cloudEvent = aggregator.aggregate(model, EVALUATE_ALL_EXECUTION_ID, events, configBean);
+        CloudEvent cloudEvent = aggregator.aggregate(model, EVALUATE_ALL_EXECUTION_ID, events, configBean);
         TraceEvent traceEvent = assertValidCloudEventAndGetData(cloudEvent, EVALUATE_ALL_EXECUTION_ID);
         assertTraceEventWithNoExecutionStepsHierarchy(traceEvent, 2, 2, 5);
     }
 
     @Test
-    void test_Aggregate_EvaluateDecisionService_ValidList_Working() {
+    void test_Aggregate_EvaluateDecisionService_ValidList_Working() throws IOException {
         final DefaultAggregator aggregator = new DefaultAggregator();
         List<EvaluateEvent> events = DecisionTestUtils.readEvaluateEventsFromJsonResource(EVALUATE_DECISION_SERVICE_JSON_RESOURCE);
-        CloudEventImpl<TraceEvent> cloudEvent = aggregator.aggregate(model, EVALUATE_DECISION_SERVICE_EXECUTION_ID, events, configBean);
+        CloudEvent cloudEvent = aggregator.aggregate(model, EVALUATE_DECISION_SERVICE_EXECUTION_ID, events, configBean);
         TraceEvent traceEvent = assertValidCloudEventAndGetData(cloudEvent, EVALUATE_DECISION_SERVICE_EXECUTION_ID);
         assertTraceEvent(traceEvent, 1, 1, 1);
     }
 
     @Test
-    void test_Aggregate_EvaluateDecisionService_NullModel_DmnModelNotFound() {
+    void test_Aggregate_EvaluateDecisionService_NullModel_DmnModelNotFound() throws IOException {
         final DefaultAggregator aggregator = new DefaultAggregator();
         List<EvaluateEvent> events = DecisionTestUtils.readEvaluateEventsFromJsonResource(EVALUATE_DECISION_SERVICE_JSON_RESOURCE);
-        CloudEventImpl<TraceEvent> cloudEvent = aggregator.aggregate(null, EVALUATE_DECISION_SERVICE_EXECUTION_ID, events, configBean);
+        CloudEvent cloudEvent = aggregator.aggregate(null, EVALUATE_DECISION_SERVICE_EXECUTION_ID, events, configBean);
         TraceEvent traceEvent = assertValidCloudEventAndGetData(cloudEvent, EVALUATE_DECISION_SERVICE_EXECUTION_ID);
         assertTraceEvent(traceEvent, 1, 1, 1);
         assertTraceEventInternalMessage(traceEvent, InternalMessageType.DMN_MODEL_NOT_FOUND);
     }
 
     @Test
-    void test_Aggregate_EvaluateDecisionService_ListWithOnlyFirstEvent_NoExecutionSteps() {
+    void test_Aggregate_EvaluateDecisionService_ListWithOnlyFirstEvent_NoExecutionSteps() throws IOException {
         final DefaultAggregator aggregator = new DefaultAggregator();
         final List<EvaluateEvent> events = DecisionTestUtils.readEvaluateEventsFromJsonResource(EVALUATE_DECISION_SERVICE_JSON_RESOURCE).stream()
                 .limit(1).collect(Collectors.toList());
-        CloudEventImpl<TraceEvent> cloudEvent = aggregator.aggregate(model, EVALUATE_DECISION_SERVICE_EXECUTION_ID, events, configBean);
+        CloudEvent cloudEvent = aggregator.aggregate(model, EVALUATE_DECISION_SERVICE_EXECUTION_ID, events, configBean);
         TraceEvent traceEvent = assertValidCloudEventAndGetData(cloudEvent, EVALUATE_DECISION_SERVICE_EXECUTION_ID);
         assertTraceEvent(traceEvent, 1, 0, 0);
     }
 
     @Test
-    void test_Aggregate_EvaluateDecisionService_ListWithMissingBeforeEvaluateDecisionEvent_NoExecutionStepHierarchy() {
+    void test_Aggregate_EvaluateDecisionService_ListWithMissingBeforeEvaluateDecisionEvent_NoExecutionStepHierarchy() throws IOException {
         final DefaultAggregator aggregator = new DefaultAggregator();
         final List<EvaluateEvent> events = DecisionTestUtils.readEvaluateEventsFromJsonResource(EVALUATE_DECISION_SERVICE_JSON_RESOURCE).stream()
                 .filter(e -> !(e.getType() == EvaluateEventType.BEFORE_EVALUATE_DECISION && DECISION_SERVICE_DECISION_ID.equals(e.getNodeId())))
                 .collect(Collectors.toList());
-        CloudEventImpl<TraceEvent> cloudEvent = aggregator.aggregate(model, EVALUATE_DECISION_SERVICE_EXECUTION_ID, events, configBean);
+        CloudEvent cloudEvent = aggregator.aggregate(model, EVALUATE_DECISION_SERVICE_EXECUTION_ID, events, configBean);
         TraceEvent traceEvent = assertValidCloudEventAndGetData(cloudEvent, EVALUATE_DECISION_SERVICE_EXECUTION_ID);
         assertTraceEventWithNoExecutionStepsHierarchy(traceEvent, 1, 1, 3);
     }
 
     @Test
-    void test_Aggregate_EvaluateDecisionService_ListWithMissingAfterEvaluateDecisionEvent_NoExecutionStepHierarchy() {
+    void test_Aggregate_EvaluateDecisionService_ListWithMissingAfterEvaluateDecisionEvent_NoExecutionStepHierarchy() throws IOException {
         final DefaultAggregator aggregator = new DefaultAggregator();
         final List<EvaluateEvent> events = DecisionTestUtils.readEvaluateEventsFromJsonResource(EVALUATE_DECISION_SERVICE_JSON_RESOURCE).stream()
                 .filter(e -> !(e.getType() == EvaluateEventType.AFTER_EVALUATE_DECISION && DECISION_SERVICE_DECISION_ID.equals(e.getNodeId())))
                 .collect(Collectors.toList());
-        CloudEventImpl<TraceEvent> cloudEvent = aggregator.aggregate(model, EVALUATE_DECISION_SERVICE_EXECUTION_ID, events, configBean);
+        CloudEvent cloudEvent = aggregator.aggregate(model, EVALUATE_DECISION_SERVICE_EXECUTION_ID, events, configBean);
         TraceEvent traceEvent = assertValidCloudEventAndGetData(cloudEvent, EVALUATE_DECISION_SERVICE_EXECUTION_ID);
         assertTraceEventWithNoExecutionStepsHierarchy(traceEvent, 1, 1, 2);
     }
 
-    private static TraceEvent assertValidCloudEventAndGetData(CloudEventImpl<TraceEvent> cloudEvent, String executionId) {
-        assertEquals(executionId, cloudEvent.getAttributes().getId());
-        assertEquals(TraceEvent.class.getName(), cloudEvent.getAttributes().getType());
-        assertTrue(cloudEvent.getData().isPresent());
-        return cloudEvent.getData().get();
+    private static TraceEvent assertValidCloudEventAndGetData(CloudEvent cloudEvent, String executionId) {
+        assertEquals(executionId, cloudEvent.getId());
+        assertEquals(TraceEvent.class.getName(), cloudEvent.getType());
+
+        try {
+            return DecisionTestUtils.MAPPER.readValue(cloudEvent.getData(), TraceEvent.class);
+        } catch (IOException e) {
+            fail(e);
+            return null;
+        }
     }
 
     private static void assertTraceEventWithNoExecutionStepsHierarchy(TraceEvent traceEvent, int inputsSize, int outputsSize, int executionStepsSize) {

@@ -53,35 +53,35 @@ public class KogitoProcessExtension implements Extension {
                     PROCESS_INSTANCE_STATE, REF_ID));
 
     private final Map<String, Object> innerValues;
-    private String kogitoProcessinstanceId;
-    private String kogitoRootProcessinstanceId;
+    private String kogitoProcessInstanceId;
+    private String kogitoRootProcessInstanceId;
     private String kogitoProcessId;
     private String kogitoRootProcessId;
     private String kogitoAddons;
     private String kogitoParentProcessinstanceId;
-    private String kogitoProcessinstanceState;
+    private String kogitoProcessInstanceState;
     private String kogitoReferenceId;
 
     public KogitoProcessExtension() {
         this.innerValues = new HashMap<>();
     }
 
-    public String getKogitoProcessinstanceId() {
-        return kogitoProcessinstanceId;
+    public String getKogitoProcessInstanceId() {
+        return kogitoProcessInstanceId;
     }
 
-    public void setKogitoProcessinstanceId(String kogitoProcessinstanceId) {
-        this.kogitoProcessinstanceId = kogitoProcessinstanceId;
-        this.innerValues.put(PROCESS_INSTANCE_ID, this.kogitoProcessinstanceId);
+    public void setKogitoProcessInstanceId(String kogitoProcessInstanceId) {
+        this.kogitoProcessInstanceId = kogitoProcessInstanceId;
+        this.innerValues.put(PROCESS_INSTANCE_ID, this.kogitoProcessInstanceId);
     }
 
-    public String getKogitoRootProcessinstanceId() {
-        return kogitoRootProcessinstanceId;
+    public String getKogitoRootProcessInstanceId() {
+        return kogitoRootProcessInstanceId;
     }
 
-    public void setKogitoRootProcessinstanceId(String kogitoRootProcessinstanceId) {
-        this.kogitoRootProcessinstanceId = kogitoRootProcessinstanceId;
-        this.innerValues.put(ROOT_PROCESS_INSTANCE_ID, this.kogitoRootProcessinstanceId);
+    public void setKogitoRootProcessInstanceId(String kogitoRootProcessInstanceId) {
+        this.kogitoRootProcessInstanceId = kogitoRootProcessInstanceId;
+        this.innerValues.put(ROOT_PROCESS_INSTANCE_ID, this.kogitoRootProcessInstanceId);
     }
 
     public String getKogitoProcessId() {
@@ -120,13 +120,13 @@ public class KogitoProcessExtension implements Extension {
         this.innerValues.put(PARENT_PROCESS_INSTANCE_ID, this.kogitoParentProcessinstanceId);
     }
 
-    public String getKogitoProcessinstanceState() {
-        return kogitoProcessinstanceState;
+    public String getKogitoProcessInstanceState() {
+        return kogitoProcessInstanceState;
     }
 
-    public void setKogitoProcessinstanceState(String kogitoProcessinstanceState) {
-        this.kogitoProcessinstanceState = kogitoProcessinstanceState;
-        this.innerValues.put(PROCESS_INSTANCE_STATE, this.kogitoProcessinstanceState);
+    public void setKogitoProcessInstanceState(String kogitoProcessInstanceState) {
+        this.kogitoProcessInstanceState = kogitoProcessInstanceState;
+        this.innerValues.put(PROCESS_INSTANCE_STATE, this.kogitoProcessInstanceState);
     }
 
     public String getKogitoReferenceId() {
@@ -143,11 +143,11 @@ public class KogitoProcessExtension implements Extension {
         this.setKogitoAddons(getExtension(extensions, ADDONS));
         this.setKogitoParentProcessinstanceId(getExtension(extensions, PARENT_PROCESS_INSTANCE_ID));
         this.setKogitoProcessId(getExtension(extensions, PROCESS_ID));
-        this.setKogitoProcessinstanceId(getExtension(extensions, PROCESS_INSTANCE_ID));
-        this.setKogitoProcessinstanceState(getExtension(extensions, PROCESS_INSTANCE_STATE));
+        this.setKogitoProcessInstanceId(getExtension(extensions, PROCESS_INSTANCE_ID));
+        this.setKogitoProcessInstanceState(getExtension(extensions, PROCESS_INSTANCE_STATE));
         this.setKogitoReferenceId(getExtension(extensions, REF_ID));
         this.setKogitoRootProcessId(getExtension(extensions, ROOT_PROCESS_ID));
-        this.setKogitoRootProcessinstanceId(getExtension(extensions, ROOT_PROCESS_INSTANCE_ID));
+        this.setKogitoRootProcessInstanceId(getExtension(extensions, ROOT_PROCESS_INSTANCE_ID));
     }
 
     private String getExtension(CloudEventExtensions extensions, String key) {
@@ -176,25 +176,25 @@ public class KogitoProcessExtension implements Extension {
             return false;
         }
         KogitoProcessExtension that = (KogitoProcessExtension) o;
-        return Objects.equals(kogitoProcessinstanceId, that.kogitoProcessinstanceId) &&
-                Objects.equals(kogitoRootProcessinstanceId, that.kogitoRootProcessinstanceId) &&
+        return Objects.equals(kogitoProcessInstanceId, that.kogitoProcessInstanceId) &&
+                Objects.equals(kogitoRootProcessInstanceId, that.kogitoRootProcessInstanceId) &&
                 Objects.equals(kogitoProcessId, that.kogitoProcessId) &&
                 Objects.equals(kogitoRootProcessId, that.kogitoRootProcessId) &&
                 Objects.equals(kogitoAddons, that.kogitoAddons) &&
                 Objects.equals(kogitoParentProcessinstanceId, that.kogitoParentProcessinstanceId) &&
-                Objects.equals(kogitoProcessinstanceState, that.kogitoProcessinstanceState) &&
+                Objects.equals(kogitoProcessInstanceState, that.kogitoProcessInstanceState) &&
                 Objects.equals(kogitoReferenceId, that.kogitoReferenceId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(kogitoProcessinstanceId, kogitoRootProcessinstanceId, kogitoProcessId, kogitoRootProcessId, kogitoAddons, kogitoParentProcessinstanceId, kogitoProcessinstanceState, kogitoReferenceId);
+        return Objects.hash(kogitoProcessInstanceId, kogitoRootProcessInstanceId, kogitoProcessId, kogitoRootProcessId, kogitoAddons, kogitoParentProcessinstanceId, kogitoProcessInstanceState, kogitoReferenceId);
     }
 
     @Override
     public String toString() {
         return "KogitoProcessExtension{" +
-                "kogitoProcessinstanceId='" + kogitoProcessinstanceId + '\'' +
+                "kogitoProcessinstanceId='" + kogitoProcessInstanceId + '\'' +
                 ", kogitoProcessId='" + kogitoProcessId + '\'' +
                 ", kogitoReferenceId='" + kogitoReferenceId + '\'' +
                 '}';
