@@ -35,6 +35,7 @@ import java.io.ObjectOutput;
 public abstract class CompiledNetwork implements ObjectSinkPropagator {
 
     protected ObjectTypeNode objectTypeNode;
+    protected ObjectSinkPropagator originalSinkPropagator;
 
     /**
      * Returns the unique id that represents the node in the Rete network
@@ -91,14 +92,19 @@ public abstract class CompiledNetwork implements ObjectSinkPropagator {
     /**
      * Sets the OTN for this network. Calling this method will set all variables in the generated subclasses
      * by walking the {@link org.kie.reteoo.ObjectTypeNode} using a {@link ObjectTypeNodeParser}.
+     *
      * @param objectTypeNode node for whom this network was created
      */
     public final void setObjectTypeNode(final ObjectTypeNode objectTypeNode) {
         this.objectTypeNode = objectTypeNode;
 
-        NodeReferenceSetter setter= new NodeReferenceSetter();
+        NodeReferenceSetter setter = new NodeReferenceSetter();
         ObjectTypeNodeParser parser = new ObjectTypeNodeParser(objectTypeNode);
         parser.accept(setter);
+    }
+
+    public void setOriginalSinkPropagator(ObjectSinkPropagator originalSinkPropagator) {
+        this.originalSinkPropagator = originalSinkPropagator;
     }
 
     /**
@@ -142,51 +148,46 @@ public abstract class CompiledNetwork implements ObjectSinkPropagator {
 
     @Override
     public ObjectSinkPropagator addObjectSink(ObjectSink sink, int alphaNodeHashingThreshold) {
-        return null;
+        return originalSinkPropagator.addObjectSink(sink, alphaNodeHashingThreshold);
     }
 
     @Override
     public ObjectSinkPropagator removeObjectSink(ObjectSink sink) {
-        return null;
+        return originalSinkPropagator.removeObjectSink(sink);
     }
 
     @Override
     public void changeSinkPartition(ObjectSink sink, RuleBasePartitionId oldPartition, RuleBasePartitionId newPartition, int alphaNodeHashingThreshold) {
-
+        originalSinkPropagator.changeSinkPartition(sink, oldPartition, newPartition, alphaNodeHashingThreshold);
     }
 
     @Override
     public BaseNode getMatchingNode(BaseNode candidate) {
-        return null;
+        return originalSinkPropagator.getMatchingNode(candidate);
     }
 
     @Override
     public ObjectSink[] getSinks() {
-        return new ObjectSink[0];
+        return originalSinkPropagator.getSinks();
     }
 
     @Override
     public int size() {
-        return 0;
+        return originalSinkPropagator.size();
     }
 
     @Override
     public boolean isEmpty() {
-        return false;
-    }
-
-    @Override
-    public void propagateModifyObject(InternalFactHandle factHandle, ModifyPreviousTuples modifyPreviousTuples, PropagationContext context, InternalWorkingMemory workingMemory) {
-
+        return originalSinkPropagator.isEmpty();
     }
 
     @Override
     public void doLinkRiaNode(InternalWorkingMemory wm) {
-
+        originalSinkPropagator.doLinkRiaNode(wm);
     }
 
     @Override
     public void doUnlinkRiaNode(InternalWorkingMemory wm) {
-
+        originalSinkPropagator.doUnlinkRiaNode(wm);
     }
 }

@@ -48,6 +48,7 @@ public class CompiledNetworkSource {
         NetworkHandlerAdaptor setter = compiledNetwork.createNodeReferenceSetter();
         ObjectTypeNodeParser parser = new ObjectTypeNodeParser(objectTypeNode);
         parser.accept(setter);
+        compiledNetwork.setOriginalSinkPropagator(objectTypeNode.getObjectSinkPropagator());
         objectTypeNode.setObjectSinkPropagator(compiledNetwork);
     }
 

@@ -23,12 +23,9 @@ import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.WindowNode;
 import org.drools.core.rule.IndexableConstraint;
 
-/**
- * todo: document
- */
 public class ModifyHandler extends SwitchCompilerHandler {
 
-    private static final String ASSERT_METHOD_SIGNATURE = "public final void modifyObject("
+    private static final String ASSERT_METHOD_SIGNATURE = "public final void propagateModifyObject("
             + FACT_HANDLE_PARAM_TYPE + " " + FACT_HANDLE_PARAM_NAME + ","
             + MODIFY_PREVIOUS_TUPLE_NAME + " " + MODIFY_PREVIOUS_TUPLE_PARAM_NAME + ","
             + PROP_CONTEXT_PARAM_TYPE + " " + PROP_CONTEXT_PARAM_NAME + ","
