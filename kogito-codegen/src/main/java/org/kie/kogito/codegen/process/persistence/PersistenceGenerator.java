@@ -318,6 +318,7 @@ public class PersistenceGenerator extends AbstractGenerator {
 
         generatePersistenceProviderClazz(generatedFiles, persistenceProviderClazz, compilationUnit);
     }
+
     private void mongodbBasedPersistence(List<GeneratedFile> generatedFiles) {
         ClassOrInterfaceDeclaration persistenceProviderClazz = new ClassOrInterfaceDeclaration()
                                                                                                 .setName(KOGITO_PROCESS_INSTANCE_FACTORY_IMPL).setModifiers(Modifier.Keyword.PUBLIC)
