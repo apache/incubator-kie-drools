@@ -60,7 +60,9 @@ public class JavaParserUtils {
         logger.trace("getKiePMMLModelCompilationUnit {} {}", className, packageName);
         CompilationUnit templateCU = getFromFileName(javaTemplate);
         CompilationUnit toReturn = templateCU.clone();
-        toReturn.setPackageDeclaration(packageName);
+        if (packageName != null && !packageName.isEmpty()) {
+            toReturn.setPackageDeclaration(packageName);
+        }
         ClassOrInterfaceDeclaration modelTemplate = toReturn.getClassByName(modelClassName)
                 .orElseThrow(() -> new KiePMMLException(MAIN_CLASS_NOT_FOUND + ": " + modelClassName));
         modelTemplate.setName(className);
