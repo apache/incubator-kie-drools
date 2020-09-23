@@ -941,7 +941,6 @@ public class StringUtils {
         return md5Hash(gav+packageName);
     }
 
-    // TODO {gcardosi: cleanup)
     public static String md5Hash(String s) {
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");
