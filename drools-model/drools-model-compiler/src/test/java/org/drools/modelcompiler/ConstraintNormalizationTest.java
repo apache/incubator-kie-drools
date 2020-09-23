@@ -23,9 +23,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.assertj.core.api.Assertions;
+import org.drools.ancompiler.CompiledNetwork;
 import org.drools.core.common.NamedEntryPoint;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.CompositeObjectSinkAdapter;
+import org.drools.core.reteoo.ObjectSinkPropagator;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.modelcompiler.domain.Address;
 import org.drools.modelcompiler.domain.Person;
@@ -122,7 +124,11 @@ public class ConstraintNormalizationTest extends BaseModelTest {
                                                                                   .map(e -> e.getValue())
                                                                                   .findFirst()
                                                                                   .get();
-        CompositeObjectSinkAdapter sinkAdaptor = (CompositeObjectSinkAdapter) otn.getObjectSinkPropagator();
+        ObjectSinkPropagator objectSinkPropagator = otn.getObjectSinkPropagator();
+        if(this.testRunType.isAlphaNetworkCompiler()) {
+            objectSinkPropagator = ((CompiledNetwork)objectSinkPropagator).getOriginalSinkPropagator();
+        }
+        CompositeObjectSinkAdapter sinkAdaptor = (CompositeObjectSinkAdapter) objectSinkPropagator;
 
         assertNotNull(sinkAdaptor.getHashedSinkMap());
         assertEquals(3, sinkAdaptor.getHashedSinkMap().size());

@@ -110,7 +110,7 @@ public abstract class BaseModelTest {
         KieSession kieSession = getKieContainer(model, stringRules)
                 .newKieSession();
 
-        if (asList(STANDARD_WITH_ALPHA_NETWORK, PATTERN_WITH_ALPHA_NETWORK, FLOW_WITH_ALPHA_NETWORK).contains(testRunType)) {
+        if (testRunType.alphaNetworkCompiler) {
             InternalKnowledgeBase kieBase = (InternalKnowledgeBase) kieSession.getKieBase();
             Map<String, CompiledNetworkSource> compiledNetworkSourcesMap = ObjectTypeNodeCompiler.compiledNetworkSourceMap(kieBase.getRete());
             if (!compiledNetworkSourcesMap.isEmpty()) {
@@ -125,8 +125,6 @@ public abstract class BaseModelTest {
 
         return kieSession;
     }
-
-
 
     protected KieContainer getKieContainer( KieModuleModel model, String... stringRules ) {
         return getKieContainer( model, toKieFiles( stringRules ) );

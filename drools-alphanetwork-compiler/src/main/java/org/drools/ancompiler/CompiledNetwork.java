@@ -107,6 +107,13 @@ public abstract class CompiledNetwork implements ObjectSinkPropagator {
         this.originalSinkPropagator = originalSinkPropagator;
     }
 
+    /*
+        Use this only for testing
+     */
+    public ObjectSinkPropagator getOriginalSinkPropagator() {
+        return originalSinkPropagator;
+    }
+
     /**
      * Generated subclasses need to implement this method to set member variables based on the specified
      * NetworkNode.
