@@ -36,6 +36,8 @@ import org.kie.kogito.process.WorkItem;
 import org.kie.kogito.process.impl.AbstractProcess;
 import org.kie.kogito.services.uow.UnitOfWorkExecutor;
 
+import static org.jbpm.ruleflow.core.Metadata.UNIQUE_ID;
+
 public abstract class BaseProcessInstanceManagementResource<T> implements ProcessInstanceManagement<T> {
 
     private static final String PROCESS_REQUIRED = "Process id must be given";
@@ -60,6 +62,7 @@ public abstract class BaseProcessInstanceManagementResource<T> implements Proces
                 Map<String, Object> data = new HashMap<>();
                 data.put("id", n.getId());
                 data.put("uniqueId", ((org.jbpm.workflow.core.Node) n).getUniqueId());
+                data.put("nodeDefinitionId", n.getMetaData().get(UNIQUE_ID));
                 data.put("type", n.getClass().getSimpleName());
                 data.put("name", n.getName());
                 return data;

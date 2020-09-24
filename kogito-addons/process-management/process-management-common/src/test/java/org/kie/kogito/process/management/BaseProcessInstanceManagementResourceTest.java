@@ -39,7 +39,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static java.util.Collections.singletonList;
+import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.jbpm.ruleflow.core.Metadata.UNIQUE_ID;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doAnswer;
@@ -57,6 +59,7 @@ class BaseProcessInstanceManagementResourceTest {
     public static final String NODE_ID_ERROR = "processInstanceIdError";
     public static final String NODE_ID = "nodeId";
     public static final String NODE_INSTANCE_ID = "nodeInstanceId";
+    public static final String NODE_UNIQUE_ID = "nodeUniqueId";
     private BaseProcessInstanceManagementResource tested;
 
     @Mock
@@ -91,6 +94,7 @@ class BaseProcessInstanceManagementResourceTest {
         lenient().when(node.getId()).thenReturn(1l);
         lenient().when(node.getName()).thenReturn("node");
         lenient().when(node.getUniqueId()).thenReturn(NODE_ID);
+        lenient().when(node.getMetaData()).thenReturn(singletonMap(UNIQUE_ID, NODE_UNIQUE_ID));
         lenient().when(wp.getNodesRecursively()).thenReturn(singletonList(node));
         lenient().when(process.process()).thenReturn(wp);
         lenient().when(processes.processById(anyString())).thenReturn(process);
@@ -180,6 +184,7 @@ class BaseProcessInstanceManagementResourceTest {
                 .hasFieldOrPropertyWithValue("id", node.getId())
                 .hasFieldOrPropertyWithValue("name", node.getName())
                 .hasFieldOrPropertyWithValue("uniqueId", node.getUniqueId())
+                .hasFieldOrPropertyWithValue("nodeDefinitionId", NODE_UNIQUE_ID)
                 .hasFieldOrPropertyWithValue("type", node.getClass().getSimpleName());
     }
 

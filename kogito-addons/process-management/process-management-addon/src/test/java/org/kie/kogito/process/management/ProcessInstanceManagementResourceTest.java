@@ -28,12 +28,13 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.kie.api.definition.process.WorkflowProcess;
 import org.kie.kogito.Application;
-import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessError;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.ProcessInstances;
 import org.kie.kogito.process.Processes;
+import org.kie.kogito.process.impl.AbstractProcess;
 import org.kie.kogito.services.uow.CollectingUnitOfWorkFactory;
 import org.kie.kogito.services.uow.DefaultUnitOfWorkManager;
 import org.mockito.Mock;
@@ -42,8 +43,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.stubbing.Answer;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
@@ -89,7 +90,7 @@ public class ProcessInstanceManagementResourceTest {
 
         application = mock(Application.class);
         processes = mock(Processes.class);
-        Process process = mock(Process.class);
+        AbstractProcess process = mock(AbstractProcess.class);
         ProcessInstances instances = mock(ProcessInstances.class);
         processInstance = mock(ProcessInstance.class);
         error = mock(ProcessError.class);
@@ -102,6 +103,7 @@ public class ProcessInstanceManagementResourceTest {
         lenient().when(processInstance.status()).thenReturn(ProcessInstance.STATE_ACTIVE);
         lenient().when(error.failedNodeId()).thenReturn("xxxxx");
         lenient().when(error.errorMessage()).thenReturn("Test error message");
+        lenient().when(process.process()).thenReturn(mock(WorkflowProcess.class));
 
         lenient().when(application.unitOfWorkManager()).thenReturn(new DefaultUnitOfWorkManager(new CollectingUnitOfWorkFactory()));
         resource = spy(new ProcessInstanceManagementResource(processes, application));
@@ -146,6 +148,12 @@ public class ProcessInstanceManagementResourceTest {
         verify(error, times(0)).skip();
 
         verify(resource).doRetriggerInstanceInError(PROCESS_ID, PROCESS_INSTANCE_ID);
+    }
+
+    @Test
+    public void testGetProcessNodes() {
+        resource.getProcessNodes(PROCESS_ID);
+        verify(resource).doGetProcessNodes(PROCESS_ID);
     }
 
     @Test

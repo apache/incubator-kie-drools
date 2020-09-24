@@ -125,4 +125,10 @@ class ProcessInstanceManagementRestControllerTest {
         tested.cancelProcessInstanceId(PROCESS_ID, PROCESS_INSTANCE_ID);
         verify(tested).doCancelProcessInstanceId(PROCESS_ID, PROCESS_INSTANCE_ID);
     }
+
+    @Test
+    void testGetProcessNodes() {
+        tested.getProcessNodes(PROCESS_ID);
+        verify(tested).doGetProcessNodes(PROCESS_ID);
+    }
 }
