@@ -49,6 +49,9 @@ public class CloudEventListenerResource {
                 // convert CloudEvent to JSON and send to internal channels
                 emitters.get(event.getType()).send(objectMapper.writeValueAsString(event));
                 return javax.ws.rs.core.Response.ok().build();
+            } else if (emitters.get(event.getSource().toString()) != null) { // try the source instead
+                emitters.get(event.getSource().toString()).send(objectMapper.writeValueAsString(event));
+                return javax.ws.rs.core.Response.ok().build();
             } else {
                 return Responses.channelNotBound(event.getType(), event);
             }

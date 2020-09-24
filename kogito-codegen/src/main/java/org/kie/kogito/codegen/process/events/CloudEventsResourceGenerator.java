@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -25,7 +26,7 @@ import static com.github.javaparser.StaticJavaParser.parse;
 
 public class CloudEventsResourceGenerator {
 
-    public static final String EMITTER_PREFIX = "emitter_";
+    private static final String EMITTER_PREFIX = "emitter_";
     static final String EMITTER_TYPE = "Emitter<String>";
     private static final String RESOURCE_TEMPLATE = "/class-templates/events/CloudEventsListenerResource.java";
     private static final String CLASS_NAME = "CloudEventListenerResource";
@@ -33,6 +34,7 @@ public class CloudEventsResourceGenerator {
     // even if we only support Quarkus for now, this will come in handy when we add SpringBoot support.
     private final DependencyInjectionAnnotator annotator;
     private final List<TriggerMetaData> triggers;
+    private final Random random = new Random();
 
     public CloudEventsResourceGenerator(final List<ProcessExecutableModelGenerator> generators, final DependencyInjectionAnnotator annotator) {
         this.triggers = this.filterTriggers(generators);
@@ -126,7 +128,7 @@ public class CloudEventsResourceGenerator {
         setup.getAllContainedComments().forEach(Comment::remove);
         // declaring Emitters
         this.triggers.forEach(t -> {
-            final String emitterField = String.join("", EMITTER_PREFIX, t.getName());
+            final String emitterField = this.generateRandomEmitterName();
             // fields to be injected
             annotator.withOutgoingMessage(template.addField(EMITTER_TYPE, new StringLiteralExpr(emitterField).asString()), t.getName());
             // hashmap setup
@@ -138,5 +140,9 @@ public class CloudEventsResourceGenerator {
         annotator.withApplicationComponent(template);
         template.findAll(FieldDeclaration.class, fd -> fd.getVariables().get(0).getNameAsString().contains(EMITTER_PREFIX))
                 .forEach(annotator::withInjection);
+    }
+
+    String generateRandomEmitterName() {
+        return String.join("", EMITTER_PREFIX, Long.toHexString(Double.doubleToLongBits(random.nextLong())));
     }
 }
