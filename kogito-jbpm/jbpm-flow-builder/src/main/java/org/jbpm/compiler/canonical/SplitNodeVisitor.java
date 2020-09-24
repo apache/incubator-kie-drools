@@ -16,6 +16,7 @@
 
 package org.jbpm.compiler.canonical;
 
+import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import com.github.javaparser.ast.expr.LambdaExpr;
@@ -62,10 +63,9 @@ public class SplitNodeVisitor extends AbstractNodeVisitor<Split> {
                     for (Variable v : variableScope.getVariables()) {
                         actionBody.addStatement(makeAssignment(v));
                     }
-                    BlockStmt constraintBody = new BlockStmt();
-                    constraintBody.addStatement(entry.getValue().getConstraint());
 
-                    actionBody.addStatement(constraintBody);
+                    BlockStmt blockStmt = StaticJavaParser.parseBlock("{" + entry.getValue().getConstraint() + "}");
+                    blockStmt.getStatements().forEach(actionBody::addStatement);
 
                     body.addStatement(getFactoryMethod(getNodeId(node), METHOD_CONSTRAINT,
                             new LongLiteralExpr(entry.getKey().getNodeId()),

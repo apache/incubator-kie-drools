@@ -18,10 +18,10 @@ package org.jbpm.compiler.canonical;
 
 import java.util.List;
 
+import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.LongLiteralExpr;
-import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.UnknownType;
 import org.jbpm.process.core.context.variable.Variable;
@@ -62,7 +62,8 @@ public class ActionNodeVisitor extends AbstractNodeVisitor<ActionNode> {
                     .map(ActionNodeVisitor::makeAssignment)
                     .forEach(actionBody::addStatement);
 
-            actionBody.addStatement(new NameExpr(consequence));
+            BlockStmt blockStmt = StaticJavaParser.parseBlock("{" + consequence + "}");
+            blockStmt.getStatements().forEach(actionBody::addStatement);
 
             LambdaExpr lambda = new LambdaExpr(
                     new Parameter(new UnknownType(), KCONTEXT_VAR), // (kcontext) ->
