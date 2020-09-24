@@ -305,6 +305,11 @@ public class ProtobufInputMarshaller {
         for ( ProtobufMessages.NodeMemory _node : _session.getNodeMemoryList() ) {
             Object memory = null;
             switch ( _node.getNodeType() ) {
+                case ACCUMULATE :
+                case RIA :
+                case FROM :
+                    // These node memories are no longer serialized, so they can be safely ignored here for backward compatibility
+                    break;
                 case QUERY_ELEMENT : {
                     Map<TupleKey, QueryElementContext> map = new HashMap<TupleKey, QueryElementContext>();
                     for ( ProtobufMessages.NodeMemory.QueryElementNodeMemory.QueryContext _ctx : _node.getQueryElement().getContextList() ) {
