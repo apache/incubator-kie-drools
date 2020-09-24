@@ -64,6 +64,11 @@ public class KiePMMLDroolsModelWithSources extends KiePMMLDroolsModel implements
         return kmodulePackageName;
     }
 
+    @Override
+    public String getPkgUUID() {
+        return packageDescr.getPreferredPkgUUID().orElseThrow(() -> new KiePMMLException("Missing required PkgUUID in generated PackageDescr"));
+    }
+
     public PackageDescr getPackageDescr() {
         return packageDescr;
     }

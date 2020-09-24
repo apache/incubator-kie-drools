@@ -149,18 +149,16 @@ public class PackageModel {
     private boolean oneClassPerRule;
 
     public PackageModel( ReleaseId releaseId, String name, KnowledgeBuilderConfigurationImpl configuration, boolean isPattern, DialectCompiletimeRegistry dialectCompiletimeRegistry, DRLIdGenerator exprIdGenerator) {
-        this.name = name;
-        this.pkgUUID = getPkgUUID(releaseId, name);
-        this.isPattern = isPattern;
-        this.rulesFileName = RULES_FILE_NAME + pkgUUID;
-        this.configuration = configuration;
-        this.exprIdGenerator = exprIdGenerator;
-        this.dialectCompiletimeRegistry = dialectCompiletimeRegistry;
+        this(name, configuration, isPattern, dialectCompiletimeRegistry, exprIdGenerator, getPkgUUID(releaseId, name));
     }
 
     public PackageModel(String gav, String name, KnowledgeBuilderConfigurationImpl configuration, boolean isPattern, DialectCompiletimeRegistry dialectCompiletimeRegistry, DRLIdGenerator exprIdGenerator) {
+        this(name, configuration, isPattern, dialectCompiletimeRegistry, exprIdGenerator, getPkgUUID(gav, name));
+    }
+
+    public PackageModel(String name, KnowledgeBuilderConfigurationImpl configuration, boolean isPattern, DialectCompiletimeRegistry dialectCompiletimeRegistry, DRLIdGenerator exprIdGenerator, String pkgUUID) {
         this.name = name;
-        this.pkgUUID = getPkgUUID(gav, name);
+        this.pkgUUID = pkgUUID;
         this.isPattern = isPattern;
         this.rulesFileName = RULES_FILE_NAME + pkgUUID;
         this.configuration = configuration;

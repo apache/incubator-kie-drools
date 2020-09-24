@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.modelcompiler.builder.PackageModel;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceWithConfiguration;
@@ -139,7 +140,7 @@ public class PMMLCompilerService {
             throw new KiePMMLException(errorMessage);
         }
         if (kiePMMLModel instanceof HasRule) {
-            String pkgUUID = getPkgUUID(releaseId, kiePMMLModel.getKModulePackageName());
+            String pkgUUID = ((HasRule)kiePMMLModel).getPkgUUID();
             String rulesFileName = kiePMMLModel.getKModulePackageName() + "." + RULES_FILE_NAME + pkgUUID;
             String pmmlRuleMapper = kiePMMLModel.getKModulePackageName() + "." + KIE_PMML_RULE_MAPPER_CLASS_NAME;
             String ruleMapperSource = PMMLRuleMapperFactory.getPMMLRuleMapperSource(rulesFileName);

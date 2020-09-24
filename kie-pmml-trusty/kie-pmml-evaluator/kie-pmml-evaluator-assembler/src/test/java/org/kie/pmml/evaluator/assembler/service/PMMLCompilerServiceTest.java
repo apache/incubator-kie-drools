@@ -34,6 +34,7 @@ import org.kie.pmml.commons.model.HasSourcesMap;
 import org.kie.pmml.commons.model.KiePMMLExtension;
 import org.kie.pmml.commons.model.KiePMMLModel;
 
+import static org.drools.core.util.StringUtils.generateUUID;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -142,8 +143,15 @@ public class PMMLCompilerServiceTest {
 
     private class KiePMMLModelHasRule extends KiePMMLModelHasSourceMap implements HasRule {
 
+        private final String pkgUUID = generateUUID();
+
         public KiePMMLModelHasRule(String name, List<KiePMMLExtension> extensions) {
             super(name, extensions);
+        }
+
+        @Override
+        public String getPkgUUID() {
+            return pkgUUID;
         }
     }
 

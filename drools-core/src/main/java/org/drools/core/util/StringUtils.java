@@ -927,7 +927,7 @@ public class StringUtils {
      * @return
      */
     public static String getPkgUUID(ReleaseId releaseId, String packageName) {
-        return (releaseId != null && !releaseId.isSnapshot()) ? md5Hash(releaseId.toString()+packageName) : md5Hash(packageName);
+        return (releaseId != null && !releaseId.isSnapshot()) ? md5Hash(releaseId.toString()+packageName) :  generateUUID();
     }
 
     /**

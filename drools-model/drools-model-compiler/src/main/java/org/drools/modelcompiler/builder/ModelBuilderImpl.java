@@ -276,7 +276,9 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
         String pkgName = pkg.getName();
         PackageModel model = packageModels.computeIfAbsent(pkgName, s -> {
             final DialectCompiletimeRegistry dialectCompiletimeRegistry = pkgRegistry.getDialectCompiletimeRegistry();
-            return new PackageModel(releaseId, pkgName, this.getBuilderConfiguration(), isPattern, dialectCompiletimeRegistry, exprIdGenerator);
+            return packageDescr.getPreferredPkgUUID()
+                    .map(pkgUUI -> new PackageModel(pkgName, this.getBuilderConfiguration(), isPattern, dialectCompiletimeRegistry, exprIdGenerator, pkgUUI))
+                    .orElse(new PackageModel(releaseId, pkgName, this.getBuilderConfiguration(), isPattern, dialectCompiletimeRegistry, exprIdGenerator));
         });
         generateModel(this, pkg, packageDescr, model, isPattern);
     }

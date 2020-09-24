@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.drools.core.rule.Namespaceable;
@@ -52,6 +53,7 @@ public class PackageDescr extends BaseDescr
     private Set<EntryPointDeclarationDescr> entryPointDeclarations = Collections.emptySet();
     private Set<WindowDeclarationDescr>     windowDeclarations     = Collections.emptySet();
     private List<EnumDeclarationDescr>      enumDeclarations       = Collections.emptyList();
+    private String preferredPkgUUID;
 
     public PackageDescr() {
         this("",
@@ -295,6 +297,24 @@ public class PackageDescr extends BaseDescr
         removeObjectsGeneratedFromResource(resource, entryPointDeclarations);
         removeObjectsGeneratedFromResource(resource, windowDeclarations);
         removeObjectsGeneratedFromResource(resource, enumDeclarations);
+    }
+
+    /**
+     * Get the <b>pkgUUID</b> to be used inside <code>PackageModel</code>
+     * If <code>null</code>, a default generated one will be used
+     * @return
+     */
+    public Optional<String> getPreferredPkgUUID() {
+        return Optional.ofNullable(preferredPkgUUID);
+    }
+
+    /**
+     * Set the <b>pkgUUID</b> to be used inside <code>PackageModel</code>
+     *
+     * @param preferredPkgUUID
+     */
+    public void setPreferredPkgUUID(String preferredPkgUUID) {
+        this.preferredPkgUUID = preferredPkgUUID;
     }
 
     private <T extends BaseDescr> void removeObjectsGeneratedFromResource(Resource resource, Collection<T> descrs) {
