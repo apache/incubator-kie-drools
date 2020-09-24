@@ -17,9 +17,11 @@ package org.kie.pmml.compiler.commons.utils;
 
 import java.io.InputStream;
 
+import com.github.javaparser.ParseProblemException;
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import org.kie.pmml.commons.exceptions.ExternalException;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.exceptions.KiePMMLInternalException;
 import org.slf4j.Logger;
@@ -41,8 +43,10 @@ public class JavaParserUtils {
         try {
             final InputStream resource = Thread.currentThread().getContextClassLoader().getResourceAsStream(fileName);
             return StaticJavaParser.parse(resource);
-        } catch (Exception e) {
+        } catch (ParseProblemException e) {
             throw new KiePMMLInternalException(String.format("Failed to parse %s due to %s", fileName, e.getMessage()), e);
+        } catch (Exception e) {
+            throw new ExternalException(String.format("Failed to read %s due to %s", fileName, e.getMessage()), e);
         }
     }
 

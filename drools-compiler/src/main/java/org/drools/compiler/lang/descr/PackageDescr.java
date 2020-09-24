@@ -53,7 +53,7 @@ public class PackageDescr extends BaseDescr
     private Set<EntryPointDeclarationDescr> entryPointDeclarations = Collections.emptySet();
     private Set<WindowDeclarationDescr>     windowDeclarations     = Collections.emptySet();
     private List<EnumDeclarationDescr>      enumDeclarations       = Collections.emptyList();
-    private String preferredPkgUUID;
+    private String                          preferredPkgUUID;
 
     public PackageDescr() {
         this("",
@@ -87,6 +87,7 @@ public class PackageDescr extends BaseDescr
         entryPointDeclarations = (Set<EntryPointDeclarationDescr>) in.readObject();
         typeDeclarations = (List<TypeDeclarationDescr>) in.readObject();
         enumDeclarations = (List<EnumDeclarationDescr>) in.readObject();
+        preferredPkgUUID = (String) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -103,6 +104,7 @@ public class PackageDescr extends BaseDescr
         out.writeObject(entryPointDeclarations);
         out.writeObject(typeDeclarations);
         out.writeObject(enumDeclarations);
+        out.writeObject(preferredPkgUUID);
     }
 
     @Override
@@ -301,7 +303,7 @@ public class PackageDescr extends BaseDescr
 
     /**
      * Get the <b>pkgUUID</b> to be used inside <code>PackageModel</code>
-     * If <code>null</code>, a default generated one will be used
+     * If <b>empty</b>, a default generated one will be used
      * @return
      */
     public Optional<String> getPreferredPkgUUID() {

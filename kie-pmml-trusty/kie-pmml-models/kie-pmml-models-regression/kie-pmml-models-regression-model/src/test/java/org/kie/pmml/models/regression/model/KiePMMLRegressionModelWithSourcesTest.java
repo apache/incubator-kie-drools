@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.pmml.models.mining.model;
+package org.kie.pmml.models.regression.model;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -25,50 +25,49 @@ import org.junit.Test;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-public class KiePMMLMiningModelWithSourcesTest {
+public class KiePMMLRegressionModelWithSourcesTest {
 
-    private static final String MINING_MODEL_NAME = "MINING_MODEL_NAME";
+    private static final String MODEL_NAME = "MODEL_NAME";
     private static final String PACKAGE_NAME = "PACKAGE_NAME";
     private final static Map<String, String> SOURCES_MAP = new HashMap<>();
 
-    private KiePMMLMiningModelWithSources kiePMMLMiningModelWithSources;
+    private KiePMMLRegressionModelWithSources kiePMMLRegressionModelWithSources;
 
     @Before
     public void setup() {
-        kiePMMLMiningModelWithSources = new KiePMMLMiningModelWithSources(MINING_MODEL_NAME, PACKAGE_NAME, SOURCES_MAP, Collections.emptyList());
+        kiePMMLRegressionModelWithSources = new KiePMMLRegressionModelWithSources(MODEL_NAME, PACKAGE_NAME, SOURCES_MAP);
     }
 
     @Test(expected = KiePMMLException.class)
     public void evaluate() {
-        kiePMMLMiningModelWithSources.evaluate("KB", Collections.EMPTY_MAP);
+        kiePMMLRegressionModelWithSources.evaluate("KB", Collections.EMPTY_MAP);
     }
 
     @Test(expected = KiePMMLException.class)
     public void getOutputFieldsMap() {
-        kiePMMLMiningModelWithSources.getOutputFieldsMap();
+        kiePMMLRegressionModelWithSources.getOutputFieldsMap();
     }
 
 
     @Test
     public void getSourcesMap() {
-        assertEquals(SOURCES_MAP, kiePMMLMiningModelWithSources.getSourcesMap());
+        assertEquals(SOURCES_MAP, kiePMMLRegressionModelWithSources.getSourcesMap());
     }
 
     @Test(expected = UnsupportedOperationException.class)
     public void addToGetSourcesMap() {
-        Map<String, String> retrieved = kiePMMLMiningModelWithSources.getSourcesMap();
+        Map<String, String> retrieved = kiePMMLRegressionModelWithSources.getSourcesMap();
         retrieved.put("KEY", "VALUE");
     }
 
     @Test
     public void addSourceMap() {
-        Map<String, String> retrieved = kiePMMLMiningModelWithSources.getSourcesMap();
+        Map<String, String> retrieved = kiePMMLRegressionModelWithSources.getSourcesMap();
         assertTrue(retrieved.isEmpty());
-        kiePMMLMiningModelWithSources.addSourceMap("KEY", "VALUE");
-        retrieved = kiePMMLMiningModelWithSources.getSourcesMap();
+        kiePMMLRegressionModelWithSources.addSourceMap("KEY", "VALUE");
+        retrieved = kiePMMLRegressionModelWithSources.getSourcesMap();
         assertTrue(retrieved.containsKey("KEY"));
         assertEquals("VALUE", retrieved.get("KEY"));
     }

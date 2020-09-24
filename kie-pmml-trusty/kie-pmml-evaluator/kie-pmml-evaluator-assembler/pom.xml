@@ -46,6 +46,11 @@
       <artifactId>drools-model-compiler</artifactId>
     </dependency>
     <!-- TEST -->
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-test-util</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
 </project>

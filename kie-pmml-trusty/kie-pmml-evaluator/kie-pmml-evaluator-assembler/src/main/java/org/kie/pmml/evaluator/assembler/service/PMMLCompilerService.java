@@ -115,24 +115,27 @@ public class PMMLCompilerService {
         String factoryClassName = classNamePackageName[0];
         String packageName = classNamePackageName[1];
         try {
-            List<KiePMMLModel> toReturn = pmmlCompiler.getModelsFromPlugin(factoryClassName, packageName,
+            final List<KiePMMLModel> toReturn = pmmlCompiler.getModelsFromPlugin(factoryClassName, packageName,
                                                                            resource.getInputStream(),
                                                                            getFileName(resource.getSourcePath()),
                                                                            kbuilderImpl);
-            for (KiePMMLModel kiePMMLModel : toReturn) {
-                final List<String> generatedRuleMappers = new ArrayList<>();
-                addPMMLRuleMapper(kiePMMLModel, generatedRuleMappers, resource.getSourcePath(),
-                                  kbuilderImpl.getReleaseId());
-                addPMMLRuleMappers(kiePMMLModel, generatedRuleMappers, resource.getSourcePath());
-            }
+            populateWithPMMLRuleMappers(toReturn, resource);
             return toReturn;
         } catch (IOException e) {
             throw new ExternalException("ExternalException", e);
         }
     }
 
+    static void populateWithPMMLRuleMappers(final  List<KiePMMLModel> toReturn, final Resource resource) {
+        for (KiePMMLModel kiePMMLModel : toReturn) {
+            final List<String> generatedRuleMappers = new ArrayList<>();
+            addPMMLRuleMapper(kiePMMLModel, generatedRuleMappers, resource.getSourcePath());
+            addPMMLRuleMappers(kiePMMLModel, generatedRuleMappers, resource.getSourcePath());
+        }
+    }
+
     static void addPMMLRuleMapper(final KiePMMLModel kiePMMLModel, final List<String> generatedRuleMappers,
-                                  final String sourcePath, final ReleaseId releaseId) {
+                                  final String sourcePath) {
         if (!(kiePMMLModel instanceof HasSourcesMap)) {
             String errorMessage = String.format("Expecting HasSourcesMap instance, retrieved %s inside %s",
                                                 kiePMMLModel.getClass().getName(),
@@ -149,7 +152,7 @@ public class PMMLCompilerService {
         }
         if (kiePMMLModel instanceof HasNestedModels) {
             for (KiePMMLModel nestedModel : ((HasNestedModels) kiePMMLModel).getNestedModels()) {
-                addPMMLRuleMapper(nestedModel, generatedRuleMappers, sourcePath, releaseId);
+                addPMMLRuleMapper(nestedModel, generatedRuleMappers, sourcePath);
             }
         }
     }

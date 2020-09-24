@@ -47,6 +47,10 @@ public class PMMLLoaderService {
 
     private static final Logger logger = LoggerFactory.getLogger(PMMLLoaderService.class);
 
+    private PMMLLoaderService() {
+        // Avoid instantiation
+    }
+
     /**
      * @param kbuilderImpl
      * @param resourceWithConfigurations
@@ -87,7 +91,11 @@ public class PMMLLoaderService {
     }
     
     static void loadPMMLRuleMappers(final KnowledgeBuilderImpl kbuilderImpl, final  Resource resource) {
-        List<PMMLRuleMapper> pmmlRuleMappers = loadPMMLRuleMappers(kbuilderImpl.getRootClassLoader(), resource);
+        final List<PMMLRuleMapper> pmmlRuleMappers = loadPMMLRuleMappers(kbuilderImpl.getRootClassLoader(), resource);
+        loadPMMLRuleMappers(kbuilderImpl, pmmlRuleMappers);
+    }
+
+    static void loadPMMLRuleMappers(final KnowledgeBuilderImpl kbuilderImpl, final  List<PMMLRuleMapper> pmmlRuleMappers) {
         if (!pmmlRuleMappers.isEmpty()) {
             List<Model> models =
                     pmmlRuleMappers.stream()

@@ -920,8 +920,8 @@ public class StringUtils {
     }
 
     /**
-     * Retrieve a consistently reproducible package unique identifier. It uses both <b>releaseId</b> and <b>packageName</b>
-     * if the former is not null and not a <b>Snapshot</b>; otherwise it uses only the latter
+     * Retrieve a package unique identifier. It uses both <b>releaseId</b> and <b>packageName</b>
+     * if the former is not null and not a <b>Snapshot</b>; otherwise a <b>randomly</b> generated one
      * @param releaseId
      * @param packageName
      * @return

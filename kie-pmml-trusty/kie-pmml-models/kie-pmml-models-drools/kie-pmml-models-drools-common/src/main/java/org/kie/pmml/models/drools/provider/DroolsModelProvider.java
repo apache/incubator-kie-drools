@@ -61,8 +61,6 @@ public abstract class DroolsModelProvider<T extends Model, E extends KiePMMLDroo
         KiePMMLDroolsAST kiePMMLDroolsAST = getKiePMMLDroolsASTCommon(dataDictionary, transformationDictionary, model, fieldTypeMap);
         E toReturn = getKiePMMLDroolsModel(dataDictionary, transformationDictionary, model, fieldTypeMap);
         PackageDescr packageDescr = getPackageDescr(kiePMMLDroolsAST, toReturn.getKModulePackageName());
-        String pkgUUID = getPkgUUID( ((KnowledgeBuilderImpl) kBuilder).getReleaseId(), toReturn.getKModulePackageName());
-        packageDescr.setPreferredPkgUUID(pkgUUID);
         ((KnowledgeBuilderImpl) kBuilder).addPackage(packageDescr);
         return toReturn;
     }
@@ -78,6 +76,8 @@ public abstract class DroolsModelProvider<T extends Model, E extends KiePMMLDroo
             KiePMMLDroolsAST kiePMMLDroolsAST = getKiePMMLDroolsASTCommon(dataDictionary, transformationDictionary, model, fieldTypeMap);
             Map<String, String> sourcesMap = getKiePMMLDroolsModelSourcesMap(dataDictionary, transformationDictionary, model, fieldTypeMap, packageName);
             PackageDescr packageDescr = getPackageDescr(kiePMMLDroolsAST, packageName);
+            String pkgUUID = getPkgUUID( ((KnowledgeBuilderImpl) kBuilder).getReleaseId(), packageName);
+            packageDescr.setPreferredPkgUUID(pkgUUID);
             E toReturn = (E) new KiePMMLDroolsModelWithSources(model.getModelName(), packageName, sourcesMap, packageDescr);
             ((KnowledgeBuilderImpl) kBuilder).addPackage(packageDescr);
             return toReturn;
