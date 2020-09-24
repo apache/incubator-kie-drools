@@ -24,7 +24,7 @@ The following table highlights the main decision-authoring assets supported in {
 |Decision Model and Notation (DMN) models
 a|
 * Are decision models based on a notation standard defined by the Object Management Group (OMG)
-* Use graphical decision requirements diagrams (DRDs) with one or more decision requirements graphs (DRGs) to trace business decision flows
+* Use graphical decision requirements diagrams (DRDs) that represent part or all of the overall decision requirements graph (DRG) to trace business decision flows
 * Use an XML schema that allows the DMN models to be shared between DMN-compliant platforms
 * Support Friendly Enough Expression Language (FEEL) to define decision logic in DMN decision tables and other DMN boxed expressions
 ifdef::PAM,JBPM[]
