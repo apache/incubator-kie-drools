@@ -60,19 +60,20 @@ public final class DefaultConstraintVerifier<ConstraintProvider_ extends Constra
     public DefaultSingleConstraintVerification<Solution_, Score_> verifyThat(
             BiFunction<ConstraintProvider_, ConstraintFactory, Constraint> constraintFunction) {
         requireNonNull(constraintFunction);
-        ConstraintStreamScoreDirectorFactory<Solution_> scoreDirectorFactory = new ConstraintStreamScoreDirectorFactory<>(
-                solutionDescriptor,
-                constraintFactory -> new Constraint[] {
-                        constraintFunction.apply(constraintProvider, constraintFactory)
-                },
-                constraintStreamImplType);
+        ConstraintStreamScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory =
+                new ConstraintStreamScoreDirectorFactory<>(solutionDescriptor,
+                        constraintFactory -> new Constraint[] {
+                                constraintFunction.apply(constraintProvider, constraintFactory)
+                        },
+                        constraintStreamImplType);
         return new DefaultSingleConstraintVerification<>(scoreDirectorFactory);
     }
 
     @Override
     public DefaultMultiConstraintVerification<Solution_, Score_> verifyThat() {
-        ConstraintStreamScoreDirectorFactory<Solution_> scoreDirectorFactory = new ConstraintStreamScoreDirectorFactory<>(
-                solutionDescriptor, constraintProvider, constraintStreamImplType);
+        ConstraintStreamScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory =
+                new ConstraintStreamScoreDirectorFactory<>(solutionDescriptor, constraintProvider,
+                        constraintStreamImplType);
         return new DefaultMultiConstraintVerification<>(scoreDirectorFactory, constraintProvider);
     }
 

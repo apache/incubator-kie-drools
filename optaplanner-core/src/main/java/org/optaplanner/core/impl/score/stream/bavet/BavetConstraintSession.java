@@ -40,11 +40,12 @@ import org.optaplanner.core.impl.score.stream.bavet.common.BavetTupleState;
 import org.optaplanner.core.impl.score.stream.bavet.uni.BavetFromUniNode;
 import org.optaplanner.core.impl.score.stream.bavet.uni.BavetFromUniTuple;
 
-public final class BavetConstraintSession<Solution_> implements ConstraintSession<Solution_> {
+public final class BavetConstraintSession<Solution_, Score_ extends Score<Score_>>
+        implements ConstraintSession<Solution_, Score_> {
 
     private final boolean constraintMatchEnabled;
-    private final Score<?> zeroScore;
-    private final ScoreInliner<?> scoreInliner;
+    private final Score_ zeroScore;
+    private final ScoreInliner<Score_> scoreInliner;
 
     private final Map<Class<?>, BavetFromUniNode<Object>> declaredClassToNodeMap;
     private final int nodeOrderSize;
@@ -55,8 +56,8 @@ public final class BavetConstraintSession<Solution_> implements ConstraintSessio
     private final List<Queue<BavetAbstractTuple>> nodeOrderedQueueList;
     private final Map<Object, List<BavetFromUniTuple<Object>>> fromTupleListMap;
 
-    public BavetConstraintSession(boolean constraintMatchEnabled, ScoreDefinition scoreDefinition,
-            Map<BavetConstraint<Solution_>, Score<?>> constraintToWeightMap) {
+    public BavetConstraintSession(boolean constraintMatchEnabled, ScoreDefinition<Score_> scoreDefinition,
+            Map<BavetConstraint<Solution_>, Score_> constraintToWeightMap) {
         this.constraintMatchEnabled = constraintMatchEnabled;
         this.zeroScore = scoreDefinition.getZeroScore();
         this.scoreInliner = scoreDefinition.buildScoreInliner(constraintMatchEnabled);
@@ -146,7 +147,7 @@ public final class BavetConstraintSession<Solution_> implements ConstraintSessio
     }
 
     @Override
-    public Score<?> calculateScore(int initScore) {
+    public Score_ calculateScore(int initScore) {
         for (int i = 0; i < nodeOrderSize; i++) {
             Queue<BavetAbstractTuple> queue = nodeOrderedQueueList.get(i);
             BavetAbstractTuple tuple = queue.poll();
@@ -159,18 +160,18 @@ public final class BavetConstraintSession<Solution_> implements ConstraintSessio
     }
 
     @Override
-    public <Score_ extends Score<Score_>> Map<String, ConstraintMatchTotal<Score_>> getConstraintMatchTotalMap() {
+    public Map<String, ConstraintMatchTotal<Score_>> getConstraintMatchTotalMap() {
         Map<String, ConstraintMatchTotal<Score_>> constraintMatchTotalMap = new LinkedHashMap<>(
                 constraintIdToScoringNodeMap.size());
         constraintIdToScoringNodeMap.forEach((constraintId, scoringNode) -> {
-            ConstraintMatchTotal<Score_> constraintMatchTotal = scoringNode.buildConstraintMatchTotal((Score_) zeroScore);
+            ConstraintMatchTotal<Score_> constraintMatchTotal = scoringNode.buildConstraintMatchTotal(zeroScore);
             constraintMatchTotalMap.put(constraintId, constraintMatchTotal);
         });
         return constraintMatchTotalMap;
     }
 
     @Override
-    public <Score_ extends Score<Score_>> Map<Object, Indictment<Score_>> getIndictmentMap() {
+    public Map<Object, Indictment<Score_>> getIndictmentMap() {
         // TODO This is temporary, inefficient code, replace it!
         Map<Object, Indictment<Score_>> indictmentMap = new LinkedHashMap<>(); // TODO use entitySize
         Map<String, ConstraintMatchTotal<Score_>> constraintMatchTotalMap = getConstraintMatchTotalMap();
@@ -181,7 +182,7 @@ public final class BavetConstraintSession<Solution_> implements ConstraintSessio
                         .forEach(justification -> {
                             DefaultIndictment<Score_> indictment =
                                     (DefaultIndictment<Score_>) indictmentMap.computeIfAbsent(justification,
-                                            k -> new DefaultIndictment<>(justification, (Score_) zeroScore));
+                                            k -> new DefaultIndictment<>(justification, zeroScore));
                             indictment.addConstraintMatch(constraintMatch);
                         });
             }
@@ -201,7 +202,7 @@ public final class BavetConstraintSession<Solution_> implements ConstraintSessio
         return constraintMatchEnabled;
     }
 
-    public ScoreInliner<?> getScoreInliner() {
+    public ScoreInliner<Score_> getScoreInliner() {
         return scoreInliner;
     }
 

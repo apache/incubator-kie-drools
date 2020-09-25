@@ -24,6 +24,7 @@ import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.mockRebas
 import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
+import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
@@ -71,7 +72,7 @@ public class ChangeMoveTest {
 
         TestdataEntityProvidingEntity a = new TestdataEntityProvidingEntity("a", Arrays.asList(v1, v2, v3), null);
 
-        InnerScoreDirector<TestdataEntityProvidingSolution> scoreDirector = mock(InnerScoreDirector.class);
+        InnerScoreDirector<TestdataEntityProvidingSolution, SimpleScore> scoreDirector = mock(InnerScoreDirector.class);
         EntityDescriptor<TestdataEntityProvidingSolution> entityDescriptor = TestdataEntityProvidingEntity
                 .buildEntityDescriptor();
 

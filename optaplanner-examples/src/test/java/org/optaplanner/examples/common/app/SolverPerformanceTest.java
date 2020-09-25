@@ -119,8 +119,9 @@ public abstract class SolverPerformanceTest<Solution_> extends LoggingTest {
     private <Score_ extends Score<Score_>> void assertScoreAndConstraintMatches(SolverFactory<Solution_> solverFactory,
             Solution_ bestSolution, String bestScoreLimitString) {
         assertThat(bestSolution).isNotNull();
-        InnerScoreDirectorFactory<Solution_> scoreDirectorFactory = ((DefaultSolverFactory<Solution_>) solverFactory)
-                .getScoreDirectorFactory();
+        InnerScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory =
+                (InnerScoreDirectorFactory<Solution_, Score_>) ((DefaultSolverFactory<Solution_>) solverFactory)
+                        .getScoreDirectorFactory();
         Score_ bestScore = (Score_) scoreDirectorFactory.getSolutionDescriptor().getScore(bestSolution);
         ScoreDefinition<Score_> scoreDefinition = scoreDirectorFactory.getScoreDefinition();
         Score_ bestScoreLimit = scoreDefinition.parseScore(bestScoreLimitString);
@@ -128,9 +129,9 @@ public abstract class SolverPerformanceTest<Solution_> extends LoggingTest {
                 .as("The bestScore (" + bestScore + ") must be at least the bestScoreLimit (" + bestScoreLimit + ").")
                 .isGreaterThanOrEqualTo(0);
 
-        try (InnerScoreDirector<Solution_> scoreDirector = scoreDirectorFactory.buildScoreDirector()) {
+        try (InnerScoreDirector<Solution_, Score_> scoreDirector = scoreDirectorFactory.buildScoreDirector()) {
             scoreDirector.setWorkingSolution(bestSolution);
-            Score_ score = (Score_) scoreDirector.calculateScore();
+            Score_ score = scoreDirector.calculateScore();
             assertThat(bestScore).isEqualTo(score);
             if (scoreDirector.isConstraintMatchEnabled()) {
                 Map<String, ConstraintMatchTotal<Score_>> constraintMatchTotals =

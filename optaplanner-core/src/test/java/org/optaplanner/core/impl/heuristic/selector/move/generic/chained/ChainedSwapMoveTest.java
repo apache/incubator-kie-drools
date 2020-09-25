@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
+import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
@@ -48,7 +49,7 @@ public class ChainedSwapMoveTest {
 
     @Test
     public void noTrailing() {
-        InnerScoreDirector<TestdataChainedSolution> scoreDirector = PlannerTestUtils.mockScoreDirector(
+        InnerScoreDirector<TestdataChainedSolution, SimpleScore> scoreDirector = PlannerTestUtils.mockScoreDirector(
                 chainedVariableDescriptor.getEntityDescriptor().getSolutionDescriptor());
 
         TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
@@ -105,7 +106,7 @@ public class ChainedSwapMoveTest {
 
     @Test
     public void oldAndNewTrailing() {
-        InnerScoreDirector<TestdataChainedSolution> scoreDirector = PlannerTestUtils.mockScoreDirector(
+        InnerScoreDirector<TestdataChainedSolution, SimpleScore> scoreDirector = PlannerTestUtils.mockScoreDirector(
                 chainedVariableDescriptor.getEntityDescriptor().getSolutionDescriptor());
 
         TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
@@ -168,7 +169,7 @@ public class ChainedSwapMoveTest {
 
     @Test
     public void sameChain() {
-        InnerScoreDirector<TestdataChainedSolution> scoreDirector = PlannerTestUtils.mockScoreDirector(
+        InnerScoreDirector<TestdataChainedSolution, SimpleScore> scoreDirector = PlannerTestUtils.mockScoreDirector(
                 chainedVariableDescriptor.getEntityDescriptor().getSolutionDescriptor());
 
         TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");

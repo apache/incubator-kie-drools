@@ -72,7 +72,7 @@ public class ChainedSwapMove<Solution_> extends SwapMove<Solution_> {
             Object oldLeftValue = variableDescriptor.getValue(leftEntity);
             Object oldRightValue = variableDescriptor.getValue(rightEntity);
             if (!Objects.equals(oldLeftValue, oldRightValue)) {
-                InnerScoreDirector<Solution_> innerScoreDirector = (InnerScoreDirector<Solution_>) scoreDirector;
+                InnerScoreDirector<Solution_, ?> innerScoreDirector = (InnerScoreDirector<Solution_, ?>) scoreDirector;
                 if (!variableDescriptor.isChained()) {
                     innerScoreDirector.changeVariableFacade(variableDescriptor, leftEntity, oldRightValue);
                     innerScoreDirector.changeVariableFacade(variableDescriptor, rightEntity, oldLeftValue);

@@ -249,15 +249,13 @@ public class EnvironmentModeTest {
                         .isNotEqualTo(random2.nextInt())));
     }
 
-    private void setSolverConfigCalculatorClass(
-            SolverConfig solverConfig,
-            Class<? extends EasyScoreCalculator<TestdataSolution>> easyScoreCalculatorClass) {
+    private void setSolverConfigCalculatorClass(SolverConfig solverConfig,
+            Class<? extends EasyScoreCalculator> easyScoreCalculatorClass) {
         solverConfig.setScoreDirectorFactoryConfig(new ScoreDirectorFactoryConfig()
                 .withEasyScoreCalculatorClass(easyScoreCalculatorClass));
     }
 
-    private void setSolverConfigMoveListFactoryClassToCorrupted(
-            SolverConfig solverConfig,
+    private void setSolverConfigMoveListFactoryClassToCorrupted(SolverConfig solverConfig,
             Class<? extends MoveListFactory<TestdataSolution>> move) {
         MoveListFactoryConfig moveListFactoryConfig = new MoveListFactoryConfig();
         moveListFactoryConfig.setMoveListFactoryClass(move);
@@ -287,7 +285,8 @@ public class EnvironmentModeTest {
             }
 
             scoreDirector.triggerVariableListeners();
-            InnerScoreDirector<TestdataSolution> innerScoreDirector = (InnerScoreDirector<TestdataSolution>) scoreDirector;
+            InnerScoreDirector<TestdataSolution, ?> innerScoreDirector =
+                    (InnerScoreDirector<TestdataSolution, ?>) scoreDirector;
             Score<?> score = innerScoreDirector.calculateScore();
 
             if (!score.isSolutionInitialized()) {

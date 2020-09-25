@@ -36,15 +36,16 @@ public class TestGenCorruptedScoreReproducer implements TestGenOriginalProblemRe
 
     private static final Logger logger = LoggerFactory.getLogger(TestGenCorruptedScoreReproducer.class);
     private final String analysis;
-    private final TestGenDroolsScoreDirector<?> scoreDirector;
+    private final TestGenDroolsScoreDirector<?, ?> scoreDirector;
 
-    public TestGenCorruptedScoreReproducer(String analysis, TestGenDroolsScoreDirector<?> scoreDirector) {
+    public TestGenCorruptedScoreReproducer(String analysis, TestGenDroolsScoreDirector<?, ?> scoreDirector) {
         this.analysis = analysis;
         this.scoreDirector = scoreDirector;
     }
 
     private static Score<?> extractScore(KieSession kieSession) {
-        AbstractScoreHolder sh = (AbstractScoreHolder) kieSession.getGlobal(DroolsScoreDirector.GLOBAL_SCORE_HOLDER_KEY);
+        AbstractScoreHolder<?> sh =
+                (AbstractScoreHolder<?>) kieSession.getGlobal(DroolsScoreDirector.GLOBAL_SCORE_HOLDER_KEY);
         return sh.extractScore(0);
     }
 

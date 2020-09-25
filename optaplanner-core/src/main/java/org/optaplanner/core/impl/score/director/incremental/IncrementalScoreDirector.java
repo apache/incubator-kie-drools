@@ -39,21 +39,22 @@ import org.optaplanner.core.impl.score.director.AbstractScoreDirector;
  * instead of the going through the entire {@link PlanningSolution}. This is incremental calculation, which is fast.
  *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ * @param <Score_> the score type to go with the solution
  * @see ScoreDirector
  */
-public class IncrementalScoreDirector<Solution_>
-        extends AbstractScoreDirector<Solution_, IncrementalScoreDirectorFactory<Solution_>> {
+public class IncrementalScoreDirector<Solution_, Score_ extends Score<Score_>>
+        extends AbstractScoreDirector<Solution_, Score_, IncrementalScoreDirectorFactory<Solution_, Score_>> {
 
-    private final IncrementalScoreCalculator<Solution_> incrementalScoreCalculator;
+    private final IncrementalScoreCalculator<Solution_, Score_> incrementalScoreCalculator;
 
-    public IncrementalScoreDirector(IncrementalScoreDirectorFactory<Solution_> scoreDirectorFactory,
+    public IncrementalScoreDirector(IncrementalScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory,
             boolean lookUpEnabled, boolean constraintMatchEnabledPreference,
-            IncrementalScoreCalculator<Solution_> incrementalScoreCalculator) {
+            IncrementalScoreCalculator<Solution_, Score_> incrementalScoreCalculator) {
         super(scoreDirectorFactory, lookUpEnabled, constraintMatchEnabledPreference);
         this.incrementalScoreCalculator = incrementalScoreCalculator;
     }
 
-    public IncrementalScoreCalculator<Solution_> getIncrementalScoreCalculator() {
+    public IncrementalScoreCalculator<Solution_, Score_> getIncrementalScoreCalculator() {
         return incrementalScoreCalculator;
     }
 
@@ -73,9 +74,9 @@ public class IncrementalScoreDirector<Solution_>
     }
 
     @Override
-    public Score calculateScore() {
+    public Score_ calculateScore() {
         variableListenerSupport.assertNotificationQueuesAreEmpty();
-        Score score = incrementalScoreCalculator.calculateScore();
+        Score_ score = incrementalScoreCalculator.calculateScore();
         if (score == null) {
             throw new IllegalStateException("The incrementalScoreCalculator (" + incrementalScoreCalculator.getClass()
                     + ") must return a non-null score (" + score + ") in the method calculateScore().");
@@ -99,7 +100,7 @@ public class IncrementalScoreDirector<Solution_>
     }
 
     @Override
-    public <Score_ extends Score<Score_>> Map<String, ConstraintMatchTotal<Score_>> getConstraintMatchTotalMap() {
+    public Map<String, ConstraintMatchTotal<Score_>> getConstraintMatchTotalMap() {
         if (!isConstraintMatchEnabled()) {
             throw new IllegalStateException("When constraintMatchEnabled (" + isConstraintMatchEnabled()
                     + ") is disabled in the constructor, this method should not be called.");
@@ -112,7 +113,7 @@ public class IncrementalScoreDirector<Solution_>
     }
 
     @Override
-    public <Score_ extends Score<Score_>> Map<Object, Indictment<Score_>> getIndictmentMap() {
+    public Map<Object, Indictment<Score_>> getIndictmentMap() {
         if (!isConstraintMatchEnabled()) {
             throw new IllegalStateException("When constraintMatchEnabled (" + isConstraintMatchEnabled()
                     + ") is disabled in the constructor, this method should not be called.");
@@ -124,7 +125,7 @@ public class IncrementalScoreDirector<Solution_>
             return incrementalIndictmentMap;
         }
         Map<Object, Indictment<Score_>> indictmentMap = new LinkedHashMap<>(); // TODO use entitySize
-        Score_ zeroScore = (Score_) getScoreDefinition().getZeroScore();
+        Score_ zeroScore = getScoreDefinition().getZeroScore();
         Map<String, ConstraintMatchTotal<Score_>> constraintMatchTotalMap = getConstraintMatchTotalMap();
         for (ConstraintMatchTotal<Score_> constraintMatchTotal : constraintMatchTotalMap.values()) {
             for (ConstraintMatch<Score_> constraintMatch : constraintMatchTotal.getConstraintMatchSet()) {

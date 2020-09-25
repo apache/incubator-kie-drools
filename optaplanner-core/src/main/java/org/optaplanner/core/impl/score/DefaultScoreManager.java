@@ -32,21 +32,21 @@ import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
  */
 public class DefaultScoreManager<Solution_, Score_ extends Score<Score_>> implements ScoreManager<Solution_, Score_> {
 
-    private InnerScoreDirectorFactory<Solution_> scoreDirectorFactory;
+    private InnerScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory;
 
-    public DefaultScoreManager(InnerScoreDirectorFactory<Solution_> scoreDirectorFactory) {
+    public DefaultScoreManager(InnerScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory) {
         this.scoreDirectorFactory = scoreDirectorFactory;
     }
 
-    public InnerScoreDirectorFactory<Solution_> getScoreDirectorFactory() {
+    public InnerScoreDirectorFactory<Solution_, Score_> getScoreDirectorFactory() {
         return scoreDirectorFactory;
     }
 
     @Override
     public Score_ updateScore(Solution_ solution) {
-        try (InnerScoreDirector<Solution_> scoreDirector = scoreDirectorFactory.buildScoreDirector()) {
+        try (InnerScoreDirector<Solution_, Score_> scoreDirector = scoreDirectorFactory.buildScoreDirector()) {
             scoreDirector.setWorkingSolution(solution);
-            return (Score_) scoreDirector.calculateScore();
+            return scoreDirector.calculateScore();
         }
     }
 
@@ -57,7 +57,8 @@ public class DefaultScoreManager<Solution_, Score_ extends Score<Score_>> implem
 
     @Override
     public ScoreExplanation<Solution_, Score_> explainScore(Solution_ solution) {
-        try (InnerScoreDirector<Solution_> scoreDirector = scoreDirectorFactory.buildScoreDirector(true, true)) {
+        try (InnerScoreDirector<Solution_, Score_> scoreDirector =
+                scoreDirectorFactory.buildScoreDirector(true, true)) {
             scoreDirector.setWorkingSolution(solution); // Init the ScoreDirector first, else NPEs may be thrown.
             boolean constraintMatchEnabled = scoreDirector.isConstraintMatchEnabled();
             if (!constraintMatchEnabled) {
@@ -66,9 +67,7 @@ public class DefaultScoreManager<Solution_, Score_ extends Score<Score_>> implem
             }
             Map<String, ConstraintMatchTotal<Score_>> constraintMatchTotalMap = scoreDirector.getConstraintMatchTotalMap();
             Map<Object, Indictment<Score_>> indictmentMap = scoreDirector.getIndictmentMap();
-            return new DefaultScoreExplanation<>(solution,
-                    (Score_) scoreDirector.calculateScore(),
-                    scoreDirector.explainScore(),
+            return new DefaultScoreExplanation<>(solution, scoreDirector.calculateScore(), scoreDirector.explainScore(),
                     constraintMatchTotalMap, indictmentMap);
         }
     }

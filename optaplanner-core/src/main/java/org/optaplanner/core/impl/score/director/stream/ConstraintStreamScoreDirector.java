@@ -37,12 +37,12 @@ import org.optaplanner.core.impl.score.stream.ConstraintSession;
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @see ScoreDirector
  */
-public class ConstraintStreamScoreDirector<Solution_>
-        extends AbstractScoreDirector<Solution_, ConstraintStreamScoreDirectorFactory<Solution_>> {
+public class ConstraintStreamScoreDirector<Solution_, Score_ extends Score<Score_>>
+        extends AbstractScoreDirector<Solution_, Score_, ConstraintStreamScoreDirectorFactory<Solution_, Score_>> {
 
-    protected ConstraintSession<Solution_> session;
+    protected ConstraintSession<Solution_, Score_> session;
 
-    public ConstraintStreamScoreDirector(ConstraintStreamScoreDirectorFactory<Solution_> scoreDirectorFactory,
+    public ConstraintStreamScoreDirector(ConstraintStreamScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory,
             boolean lookUpEnabled, boolean constraintMatchEnabledPreference) {
         super(scoreDirectorFactory, lookUpEnabled, constraintMatchEnabledPreference);
     }
@@ -69,9 +69,9 @@ public class ConstraintStreamScoreDirector<Solution_>
     }
 
     @Override
-    public Score calculateScore() {
+    public Score_ calculateScore() {
         variableListenerSupport.assertNotificationQueuesAreEmpty();
-        Score score = session.calculateScore(workingInitScore);
+        Score_ score = session.calculateScore(workingInitScore);
         setCalculatedScore(score);
         return score;
     }
@@ -82,7 +82,7 @@ public class ConstraintStreamScoreDirector<Solution_>
     }
 
     @Override
-    public <Score_ extends Score<Score_>> Map<String, ConstraintMatchTotal<Score_>> getConstraintMatchTotalMap() {
+    public Map<String, ConstraintMatchTotal<Score_>> getConstraintMatchTotalMap() {
         if (workingSolution == null) {
             throw new IllegalStateException(
                     "The method setWorkingSolution() must be called before the method getConstraintMatchTotalMap().");
@@ -91,7 +91,7 @@ public class ConstraintStreamScoreDirector<Solution_>
     }
 
     @Override
-    public <Score_ extends Score<Score_>> Map<Object, Indictment<Score_>> getIndictmentMap() {
+    public Map<Object, Indictment<Score_>> getIndictmentMap() {
         if (workingSolution == null) {
             throw new IllegalStateException(
                     "The method setWorkingSolution() must be called before the method getIndictmentMap().");

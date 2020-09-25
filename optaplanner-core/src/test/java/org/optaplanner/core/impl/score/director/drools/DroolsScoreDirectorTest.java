@@ -24,6 +24,7 @@ import static org.mockito.Mockito.withSettings;
 import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.event.rule.RuleEventManager;
+import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.buildin.simple.SimpleScoreDefinition;
 
@@ -31,7 +32,7 @@ public class DroolsScoreDirectorTest {
 
     @Test
     public void illegalStateExceptionThrownWhenConstraintMatchNotEnabled() {
-        DroolsScoreDirector<Object> director = new DroolsScoreDirector<>(mockDroolsScoreDirectorFactory(), false, false);
+        DroolsScoreDirector<Object, ?> director = new DroolsScoreDirector<>(mockDroolsScoreDirectorFactory(), false, false);
         director.setWorkingSolution(new Object());
         assertThatIllegalStateException()
                 .isThrownBy(director::getConstraintMatchTotalMap)
@@ -40,7 +41,7 @@ public class DroolsScoreDirectorTest {
 
     @Test
     public void constraintMatchTotalsNeverNull() {
-        DroolsScoreDirector<Object> director = new DroolsScoreDirector<>(mockDroolsScoreDirectorFactory(), false, true);
+        DroolsScoreDirector<Object, ?> director = new DroolsScoreDirector<>(mockDroolsScoreDirectorFactory(), false, true);
         director.setWorkingSolution(new Object());
         assertThat(director.getConstraintMatchTotalMap()).isNotNull();
         assertThat(director.getConstraintMatchTotalMap()).isNotNull();
@@ -48,14 +49,14 @@ public class DroolsScoreDirectorTest {
 
     @Test
     public void indictmentMapNeverNull() {
-        DroolsScoreDirector<Object> director = new DroolsScoreDirector<>(mockDroolsScoreDirectorFactory(), false, true);
+        DroolsScoreDirector<Object, ?> director = new DroolsScoreDirector<>(mockDroolsScoreDirectorFactory(), false, true);
         director.setWorkingSolution(new Object());
         assertThat(director.getIndictmentMap()).isNotNull();
     }
 
     @SuppressWarnings("unchecked")
-    private DroolsScoreDirectorFactory<Object> mockDroolsScoreDirectorFactory() {
-        DroolsScoreDirectorFactory<Object> factory = mock(DroolsScoreDirectorFactory.class);
+    private DroolsScoreDirectorFactory<Object, SimpleScore> mockDroolsScoreDirectorFactory() {
+        DroolsScoreDirectorFactory<Object, SimpleScore> factory = mock(DroolsScoreDirectorFactory.class);
         when(factory.getScoreDefinition()).thenReturn(new SimpleScoreDefinition());
         when(factory.getSolutionDescriptor()).thenReturn(mock(SolutionDescriptor.class));
         when(factory.newKieSession()).thenReturn(

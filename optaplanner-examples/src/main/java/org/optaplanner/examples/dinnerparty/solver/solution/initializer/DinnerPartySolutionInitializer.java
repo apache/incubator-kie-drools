@@ -56,7 +56,7 @@ public class DinnerPartySolutionInitializer implements CustomPhaseCommand<Dinner
                     seatDesignation.setSeat(seat);
                     scoreDirector.afterVariableChanged(seatDesignation, "seat");
                     scoreDirector.triggerVariableListeners();
-                    Score score = ((InnerScoreDirector<DinnerParty>) scoreDirector).calculateScore();
+                    Score score = ((InnerScoreDirector<DinnerParty, ?>) scoreDirector).calculateScore();
                     if (score.withInitScore(0).compareTo(bestScore.withInitScore(0)) > 0) {
                         bestScore = score;
                         bestSeat = seat;

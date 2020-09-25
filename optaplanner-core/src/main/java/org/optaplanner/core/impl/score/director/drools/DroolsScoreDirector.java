@@ -39,17 +39,18 @@ import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
  * of the {@link PlanningSolution working solution}.
  *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ * @param <Score_> the score type to go with the solution
  * @see ScoreDirector
  */
-public class DroolsScoreDirector<Solution_>
-        extends AbstractScoreDirector<Solution_, DroolsScoreDirectorFactory<Solution_>> {
+public class DroolsScoreDirector<Solution_, Score_ extends Score<Score_>>
+        extends AbstractScoreDirector<Solution_, Score_, DroolsScoreDirectorFactory<Solution_, Score_>> {
 
     public static final String GLOBAL_SCORE_HOLDER_KEY = "scoreHolder";
 
     protected KieSession kieSession;
-    protected AbstractScoreHolder scoreHolder;
+    protected AbstractScoreHolder<Score_> scoreHolder;
 
-    public DroolsScoreDirector(DroolsScoreDirectorFactory<Solution_> scoreDirectorFactory,
+    public DroolsScoreDirector(DroolsScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory,
             boolean lookUpEnabled, boolean constraintMatchEnabledPreference) {
         super(scoreDirectorFactory, lookUpEnabled, constraintMatchEnabledPreference);
     }
@@ -85,8 +86,8 @@ public class DroolsScoreDirector<Solution_>
     private void resetScoreHolder() {
         scoreHolder = getScoreDefinition().buildScoreHolder(constraintMatchEnabledPreference);
         scoreDirectorFactory.getRuleToConstraintWeightExtractorMap().forEach(
-                (Rule rule, Function<Solution_, Score<?>> extractor) -> {
-                    Score<?> constraintWeight = extractor.apply(workingSolution);
+                (Rule rule, Function<Solution_, Score_> extractor) -> {
+                    Score_ constraintWeight = extractor.apply(workingSolution);
                     getSolutionDescriptor().validateConstraintWeight(rule.getPackageName(), rule.getName(), constraintWeight);
                     scoreHolder.configureConstraintWeight(rule, constraintWeight);
                 });
@@ -98,10 +99,10 @@ public class DroolsScoreDirector<Solution_>
     }
 
     @Override
-    public Score calculateScore() {
+    public Score_ calculateScore() {
         variableListenerSupport.assertNotificationQueuesAreEmpty();
         kieSession.fireAllRules();
-        Score score = scoreHolder.extractScore(workingInitScore);
+        Score_ score = scoreHolder.extractScore(workingInitScore);
         setCalculatedScore(score);
         return score;
     }
@@ -112,7 +113,7 @@ public class DroolsScoreDirector<Solution_>
     }
 
     @Override
-    public <Score_ extends Score<Score_>> Map<String, ConstraintMatchTotal<Score_>> getConstraintMatchTotalMap() {
+    public Map<String, ConstraintMatchTotal<Score_>> getConstraintMatchTotalMap() {
         if (workingSolution == null) {
             throw new IllegalStateException(
                     "The method setWorkingSolution() must be called before the method getConstraintMatchTotalMap().");
@@ -123,7 +124,7 @@ public class DroolsScoreDirector<Solution_>
     }
 
     @Override
-    public <Score_ extends Score<Score_>> Map<Object, Indictment<Score_>> getIndictmentMap() {
+    public Map<Object, Indictment<Score_>> getIndictmentMap() {
         if (workingSolution == null) {
             throw new IllegalStateException(
                     "The method setWorkingSolution() must be called before the method getIndictmentMap().");

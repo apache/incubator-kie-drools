@@ -38,11 +38,11 @@ public class TestGenCorruptedVariableListenerReproducer implements
 
     private static final Logger logger = LoggerFactory.getLogger(TestGenCorruptedVariableListenerReproducer.class);
     private final String analysis;
-    private final TestGenDroolsScoreDirector<?> scoreDirector;
+    private final TestGenDroolsScoreDirector<?, ?> scoreDirector;
     private Score<?> lastWorkingScore;
     private int lastFireId;
 
-    public TestGenCorruptedVariableListenerReproducer(String analysis, TestGenDroolsScoreDirector<?> scoreDirector) {
+    public TestGenCorruptedVariableListenerReproducer(String analysis, TestGenDroolsScoreDirector<?, ?> scoreDirector) {
         this.analysis = analysis;
         this.scoreDirector = scoreDirector;
     }

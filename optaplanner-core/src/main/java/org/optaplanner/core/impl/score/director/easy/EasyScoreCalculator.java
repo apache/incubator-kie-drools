@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,9 +26,9 @@ import org.optaplanner.core.impl.heuristic.move.Move;
  * An implementation must be stateless.
  *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
- * @see EasyScoreDirector
+ * @param <Score_> the score type to go with the solution
  */
-public interface EasyScoreCalculator<Solution_> {
+public interface EasyScoreCalculator<Solution_, Score_ extends Score<Score_>> {
 
     /**
      * This method is only called if the {@link Score} cannot be predicted.
@@ -37,6 +37,6 @@ public interface EasyScoreCalculator<Solution_> {
      * @param solution never null
      * @return never null
      */
-    Score calculateScore(Solution_ solution);
+    Score_ calculateScore(Solution_ solution);
 
 }

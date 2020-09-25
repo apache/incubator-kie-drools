@@ -20,7 +20,6 @@ import static java.util.stream.Collectors.toList;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
@@ -82,7 +81,7 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> {
     // volatile because the solve method doesn't come from the event thread (like every other method call)
     private volatile Solver<Solution_> solver;
     private String solutionFileName = null;
-    private InnerScoreDirector<Solution_> guiScoreDirector;
+    private InnerScoreDirector<Solution_, Score_> guiScoreDirector;
     private ScoreManager<Solution_, Score_> scoreManager;
 
     private final AtomicReference<Solution_> skipToBestSolutionRef = new AtomicReference<>();
@@ -189,21 +188,22 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> {
     public void setSolver(SolverFactory<Solution_> solverFactory) {
         this.solver = solverFactory.buildSolver();
         this.scoreManager = ScoreManager.create(solverFactory);
-        this.guiScoreDirector =
-                ((DefaultSolverFactory<Solution_>) solverFactory).getScoreDirectorFactory().buildScoreDirector();
+        this.guiScoreDirector = (InnerScoreDirector<Solution_, Score_>) ((DefaultSolverFactory<Solution_>) solverFactory)
+                .getScoreDirectorFactory()
+                .buildScoreDirector();
     }
 
     public List<File> getUnsolvedFileList() {
         List<File> fileList = new ArrayList<>(
                 FileUtils.listFiles(unsolvedDataDir, new String[] { solutionFileIO.getInputFileExtension() }, true));
-        Collections.sort(fileList, FILE_COMPARATOR);
+        fileList.sort(FILE_COMPARATOR);
         return fileList;
     }
 
     public List<File> getSolvedFileList() {
         List<File> fileList = new ArrayList<>(
                 FileUtils.listFiles(solvedDataDir, new String[] { solutionFileIO.getOutputFileExtension() }, true));
-        Collections.sort(fileList, FILE_COMPARATOR);
+        fileList.sort(FILE_COMPARATOR);
         return fileList;
     }
 
@@ -231,7 +231,7 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> {
         return solver.isSolving();
     }
 
-    public void registerForBestSolutionChanges(final SolverAndPersistenceFrame solverAndPersistenceFrame) {
+    public void registerForBestSolutionChanges(final SolverAndPersistenceFrame<Solution_> solverAndPersistenceFrame) {
         solver.addEventListener(event -> {
             // Called on the Solver thread, so not on the Swing Event thread
             /*
@@ -350,12 +350,11 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> {
 
     public ChangeMove<Solution_> createChangeMove(Object entity, String variableName, Object toPlanningValue) {
         // TODO Solver should support building a ChangeMove
-        InnerScoreDirector<Solution_> guiInnerScoreDirector = (InnerScoreDirector<Solution_>) this.guiScoreDirector;
-        SolutionDescriptor<Solution_> solutionDescriptor = guiInnerScoreDirector.getSolutionDescriptor();
+        SolutionDescriptor<Solution_> solutionDescriptor = guiScoreDirector.getSolutionDescriptor();
         GenuineVariableDescriptor<Solution_> variableDescriptor = solutionDescriptor.findGenuineVariableDescriptorOrFail(
                 entity, variableName);
         if (variableDescriptor.isChained()) {
-            SupplyManager supplyManager = guiInnerScoreDirector.getSupplyManager();
+            SupplyManager supplyManager = guiScoreDirector.getSupplyManager();
             SingletonInverseVariableSupply inverseVariableSupply = supplyManager.demand(
                     new SingletonInverseVariableDemand(variableDescriptor));
             return new ChainedChangeMove<>(entity, variableDescriptor, inverseVariableSupply, toPlanningValue);
@@ -371,14 +370,13 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> {
 
     public SwapMove<Solution_> createSwapMove(Object leftEntity, Object rightEntity) {
         // TODO Solver should support building a SwapMove
-        InnerScoreDirector<Solution_> guiInnerScoreDirector = (InnerScoreDirector<Solution_>) this.guiScoreDirector;
-        SolutionDescriptor<Solution_> solutionDescriptor = guiInnerScoreDirector.getSolutionDescriptor();
+        SolutionDescriptor<Solution_> solutionDescriptor = guiScoreDirector.getSolutionDescriptor();
         EntityDescriptor<Solution_> entityDescriptor = solutionDescriptor.findEntityDescriptor(leftEntity.getClass());
         List<GenuineVariableDescriptor<Solution_>> variableDescriptorList = entityDescriptor.getGenuineVariableDescriptorList();
         if (entityDescriptor.hasAnyChainedGenuineVariables()) {
             List<SingletonInverseVariableSupply> inverseVariableSupplyList = new ArrayList<>(variableDescriptorList.size());
-            SupplyManager supplyManager = guiInnerScoreDirector.getSupplyManager();
-            for (GenuineVariableDescriptor variableDescriptor : variableDescriptorList) {
+            SupplyManager supplyManager = guiScoreDirector.getSupplyManager();
+            for (GenuineVariableDescriptor<Solution_> variableDescriptor : variableDescriptorList) {
                 SingletonInverseVariableSupply inverseVariableSupply;
                 if (variableDescriptor.isChained()) {
                     inverseVariableSupply = supplyManager.demand(

@@ -64,22 +64,23 @@ public abstract class AbstractConstraintStreamTest {
     // SimpleScore creation and assertion methods
     // ************************************************************************
 
-    protected InnerScoreDirector<TestdataLavishSolution> buildScoreDirector(Function<ConstraintFactory, Constraint> function) {
+    protected InnerScoreDirector<TestdataLavishSolution, SimpleScore> buildScoreDirector(
+            Function<ConstraintFactory, Constraint> function) {
         return buildScoreDirector(TestdataLavishSolution::buildSolutionDescriptor, function);
     }
 
-    protected <Solution_> InnerScoreDirector<Solution_> buildScoreDirector(
+    protected <Score_ extends Score<Score_>, Solution_> InnerScoreDirector<Solution_, Score_> buildScoreDirector(
             Supplier<SolutionDescriptor<Solution_>> solutionDescriptorSupplier,
             Function<ConstraintFactory, Constraint> function) {
-        ConstraintStreamScoreDirectorFactory<Solution_> scoreDirectorFactory = new ConstraintStreamScoreDirectorFactory<>(
-                solutionDescriptorSupplier.get(),
-                (constraintFactory) -> new Constraint[] { function.apply(constraintFactory) },
-                constraintStreamImplType);
+        ConstraintStreamScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory =
+                new ConstraintStreamScoreDirectorFactory<>(solutionDescriptorSupplier.get(),
+                        (constraintFactory) -> new Constraint[] { function.apply(constraintFactory) },
+                        constraintStreamImplType);
         return scoreDirectorFactory.buildScoreDirector(false, constraintMatchEnabled);
     }
 
-    protected <Score_ extends Score<Score_>> void assertScore(InnerScoreDirector<TestdataLavishSolution> scoreDirector,
-            AssertableMatch... assertableMatches) {
+    protected <Score_ extends Score<Score_>> void assertScore(
+            InnerScoreDirector<TestdataLavishSolution, Score_> scoreDirector, AssertableMatch... assertableMatches) {
         scoreDirector.triggerVariableListeners();
         SimpleScore score = (SimpleScore) scoreDirector.calculateScore();
         int scoreTotal = Arrays.stream(assertableMatches)

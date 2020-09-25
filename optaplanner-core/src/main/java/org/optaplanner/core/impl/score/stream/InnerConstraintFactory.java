@@ -132,7 +132,7 @@ public abstract class InnerConstraintFactory<Solution_> implements ConstraintFac
      * @param constraints never null
      * @return never null
      */
-    public abstract ConstraintSessionFactory<Solution_> buildSessionFactory(Constraint[] constraints);
+    public abstract ConstraintSessionFactory<Solution_, ?> buildSessionFactory(Constraint[] constraints);
 
     // ************************************************************************
     // Getters/setters

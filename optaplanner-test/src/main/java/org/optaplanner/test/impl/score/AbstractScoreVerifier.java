@@ -46,7 +46,7 @@ import org.optaplanner.test.impl.score.buildin.hardsoft.HardSoftScoreVerifier;
  */
 public abstract class AbstractScoreVerifier<Solution_> {
 
-    protected final InnerScoreDirectorFactory<Solution_> scoreDirectorFactory;
+    protected final InnerScoreDirectorFactory<Solution_, ?> scoreDirectorFactory;
 
     /**
      * @param solverFactory never null, the {@link SolverFactory} of which you want to test the constraints.
@@ -79,7 +79,7 @@ public abstract class AbstractScoreVerifier<Solution_> {
     protected void assertWeight(String constraintPackage, String constraintName, int scoreLevel, Number expectedWeight,
             Solution_ solution) {
         ConstraintMatchTotal<?> matchTotal;
-        try (InnerScoreDirector<Solution_> scoreDirector = scoreDirectorFactory.buildScoreDirector()) {
+        try (InnerScoreDirector<Solution_, ?> scoreDirector = scoreDirectorFactory.buildScoreDirector()) {
             scoreDirector.setWorkingSolution(solution);
             scoreDirector.calculateScore();
             matchTotal = findConstraintMatchTotal(constraintPackage, constraintName, scoreDirector);
@@ -125,7 +125,7 @@ public abstract class AbstractScoreVerifier<Solution_> {
      * @return null if there is no constraint matched or the constraint doesn't exist
      */
     private ConstraintMatchTotal<?> findConstraintMatchTotal(String constraintPackage, String constraintName,
-            InnerScoreDirector<Solution_> scoreDirector) {
+            InnerScoreDirector<Solution_, ?> scoreDirector) {
         if (constraintPackage != null) {
             String constraintId = ConstraintMatchTotal.composeConstraintId(constraintPackage, constraintName);
             return scoreDirector.getConstraintMatchTotalMap().get(constraintId);

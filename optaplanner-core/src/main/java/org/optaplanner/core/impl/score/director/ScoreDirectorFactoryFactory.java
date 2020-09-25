@@ -37,6 +37,7 @@ import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.io.KieResources;
 import org.kie.api.runtime.KieContainer;
 import org.kie.internal.builder.conf.PropertySpecificOption;
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
@@ -55,7 +56,7 @@ import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ScoreDirectorFactoryFactory<Solution_> {
+public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>> {
 
     private static final String GENERATE_DROOLS_TEST_ON_ERROR_PROPERTY_NAME = "optaplanner.drools.generateTestOnError";
     private static final Logger logger = LoggerFactory.getLogger(ScoreDirectorFactoryFactory.class);
@@ -66,9 +67,9 @@ public class ScoreDirectorFactoryFactory<Solution_> {
         this.config = config;
     }
 
-    public InnerScoreDirectorFactory<Solution_> buildScoreDirectorFactory(ClassLoader classLoader,
+    public InnerScoreDirectorFactory<Solution_, Score_> buildScoreDirectorFactory(ClassLoader classLoader,
             EnvironmentMode environmentMode, SolutionDescriptor<Solution_> solutionDescriptor) {
-        AbstractScoreDirectorFactory<Solution_> scoreDirectorFactory =
+        AbstractScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory =
                 decideMultipleScoreDirectorFactories(classLoader, solutionDescriptor);
         if (config.getAssertionScoreDirectorFactory() != null) {
             if (config.getAssertionScoreDirectorFactory().getAssertionScoreDirectorFactory() != null) {
@@ -81,7 +82,7 @@ public class ScoreDirectorFactoryFactory<Solution_> {
                         + config.getAssertionScoreDirectorFactory() + ") requires an environmentMode ("
                         + environmentMode + ") of " + EnvironmentMode.FAST_ASSERT + " or lower.");
             }
-            ScoreDirectorFactoryFactory<Solution_> assertionScoreDirectorFactoryFactory =
+            ScoreDirectorFactoryFactory<Solution_, Score_> assertionScoreDirectorFactoryFactory =
                     new ScoreDirectorFactoryFactory<>(config.getAssertionScoreDirectorFactory());
             scoreDirectorFactory.setAssertionScoreDirectorFactory(assertionScoreDirectorFactoryFactory
                     .buildScoreDirectorFactory(classLoader, EnvironmentMode.NON_REPRODUCIBLE, solutionDescriptor));
@@ -96,14 +97,15 @@ public class ScoreDirectorFactoryFactory<Solution_> {
         return scoreDirectorFactory;
     }
 
-    protected AbstractScoreDirectorFactory<Solution_> decideMultipleScoreDirectorFactories(ClassLoader classLoader,
-            SolutionDescriptor<Solution_> solutionDescriptor) {
-        AbstractScoreDirectorFactory<Solution_> easyScoreDirectorFactory = buildEasyScoreDirectorFactory(solutionDescriptor);
-        AbstractScoreDirectorFactory<Solution_> constraintStreamScoreDirectorFactory =
+    protected AbstractScoreDirectorFactory<Solution_, Score_> decideMultipleScoreDirectorFactories(
+            ClassLoader classLoader, SolutionDescriptor<Solution_> solutionDescriptor) {
+        AbstractScoreDirectorFactory<Solution_, Score_> easyScoreDirectorFactory =
+                buildEasyScoreDirectorFactory(solutionDescriptor);
+        AbstractScoreDirectorFactory<Solution_, Score_> constraintStreamScoreDirectorFactory =
                 buildConstraintStreamScoreDirectorFactory(solutionDescriptor);
-        AbstractScoreDirectorFactory<Solution_> incrementalScoreDirectorFactory = buildIncrementalScoreDirectorFactory(
-                solutionDescriptor);
-        AbstractScoreDirectorFactory<Solution_> droolsScoreDirectorFactory = buildDroolsScoreDirectorFactory(
+        AbstractScoreDirectorFactory<Solution_, Score_> incrementalScoreDirectorFactory =
+                buildIncrementalScoreDirectorFactory(solutionDescriptor);
+        AbstractScoreDirectorFactory<Solution_, Score_> droolsScoreDirectorFactory = buildDroolsScoreDirectorFactory(
                 classLoader, solutionDescriptor);
         if (Stream.of(easyScoreDirectorFactory, constraintStreamScoreDirectorFactory,
                 incrementalScoreDirectorFactory, droolsScoreDirectorFactory)
@@ -124,7 +126,7 @@ public class ScoreDirectorFactoryFactory<Solution_> {
             throw new IllegalArgumentException("The scoreDirectorFactory cannot have "
                     + String.join(" and ", scoreDirectorFactoryPropertyList) + " together.");
         }
-        AbstractScoreDirectorFactory<Solution_> scoreDirectorFactory;
+        AbstractScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory;
         if (easyScoreDirectorFactory != null) {
             scoreDirectorFactory = easyScoreDirectorFactory;
         } else if (constraintStreamScoreDirectorFactory != null) {
@@ -141,7 +143,7 @@ public class ScoreDirectorFactoryFactory<Solution_> {
         return scoreDirectorFactory;
     }
 
-    protected EasyScoreDirectorFactory<Solution_> buildEasyScoreDirectorFactory(
+    protected EasyScoreDirectorFactory<Solution_, Score_> buildEasyScoreDirectorFactory(
             SolutionDescriptor<Solution_> solutionDescriptor) {
         if (config.getEasyScoreCalculatorClass() != null) {
             if (!EasyScoreCalculator.class.isAssignableFrom(config.getEasyScoreCalculatorClass())) {
@@ -149,7 +151,7 @@ public class ScoreDirectorFactoryFactory<Solution_> {
                         "The easyScoreCalculatorClass (" + config.getEasyScoreCalculatorClass()
                                 + ") does not implement " + EasyScoreCalculator.class.getSimpleName() + ".");
             }
-            EasyScoreCalculator<Solution_> easyScoreCalculator = ConfigUtils.newInstance(config,
+            EasyScoreCalculator<Solution_, Score_> easyScoreCalculator = ConfigUtils.newInstance(config,
                     "easyScoreCalculatorClass", config.getEasyScoreCalculatorClass());
             ConfigUtils.applyCustomProperties(easyScoreCalculator, "easyScoreCalculatorClass",
                     config.getEasyScoreCalculatorCustomProperties(), "easyScoreCalculatorCustomProperties");
@@ -165,7 +167,7 @@ public class ScoreDirectorFactoryFactory<Solution_> {
         }
     }
 
-    protected ConstraintStreamScoreDirectorFactory<Solution_> buildConstraintStreamScoreDirectorFactory(
+    protected ConstraintStreamScoreDirectorFactory<Solution_, Score_> buildConstraintStreamScoreDirectorFactory(
             SolutionDescriptor<Solution_> solutionDescriptor) {
         if (config.getConstraintProviderClass() != null) {
             if (!ConstraintProvider.class.isAssignableFrom(config.getConstraintProviderClass())) {
@@ -191,7 +193,7 @@ public class ScoreDirectorFactoryFactory<Solution_> {
         }
     }
 
-    protected IncrementalScoreDirectorFactory<Solution_> buildIncrementalScoreDirectorFactory(
+    protected IncrementalScoreDirectorFactory<Solution_, Score_> buildIncrementalScoreDirectorFactory(
             SolutionDescriptor<Solution_> solutionDescriptor) {
         if (config.getIncrementalScoreCalculatorClass() != null) {
             if (!IncrementalScoreCalculator.class.isAssignableFrom(config.getIncrementalScoreCalculatorClass())) {
@@ -212,7 +214,7 @@ public class ScoreDirectorFactoryFactory<Solution_> {
         }
     }
 
-    protected DroolsScoreDirectorFactory<Solution_> buildDroolsScoreDirectorFactory(ClassLoader classLoader,
+    protected DroolsScoreDirectorFactory<Solution_, Score_> buildDroolsScoreDirectorFactory(ClassLoader classLoader,
             SolutionDescriptor<Solution_> solutionDescriptor) {
         boolean generateDroolsTestOnError =
                 Boolean.parseBoolean(System.getProperty(GENERATE_DROOLS_TEST_ON_ERROR_PROPERTY_NAME, "false"));

@@ -76,7 +76,7 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
         return randomFactory;
     }
 
-    public InnerScoreDirectorFactory<Solution_> getScoreDirectorFactory() {
+    public InnerScoreDirectorFactory<Solution_, ?> getScoreDirectorFactory() {
         return solverScope.getScoreDirector().getScoreDirectorFactory();
     }
 
@@ -224,7 +224,7 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
                 problemFactChange = problemFactChangeQueue.poll();
             }
             // All PFCs are processed, fail fast if any of the new facts have null planning IDs.
-            InnerScoreDirector<Solution_> scoreDirector = solverScope.getScoreDirector();
+            InnerScoreDirector<Solution_, ?> scoreDirector = solverScope.getScoreDirector();
             scoreDirector.assertNonNullPlanningIds();
             // Everything is fine, proceed.
             basicPlumbingTermination.endProblemFactChangesProcessing();

@@ -32,6 +32,7 @@ import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
 import org.optaplanner.core.config.localsearch.LocalSearchPhaseConfig;
@@ -139,10 +140,12 @@ class SolverConfigTest {
     private static abstract class DummySolutionPartitioner implements SolutionPartitioner<TestdataSolution> {
     }
 
-    private static abstract class DummyEasyScoreCalculator implements EasyScoreCalculator<TestdataSolution> {
+    private static abstract class DummyEasyScoreCalculator
+            implements EasyScoreCalculator<TestdataSolution, SimpleScore> {
     }
 
-    private static abstract class DummyIncrementalScoreCalculator implements IncrementalScoreCalculator<TestdataSolution> {
+    private static abstract class DummyIncrementalScoreCalculator
+            implements IncrementalScoreCalculator<TestdataSolution, SimpleScore> {
     }
 
     private static abstract class DummyConstraintProvider implements ConstraintProvider {

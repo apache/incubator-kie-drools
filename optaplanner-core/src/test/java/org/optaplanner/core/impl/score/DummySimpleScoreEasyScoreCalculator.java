@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,14 +16,13 @@
 
 package org.optaplanner.core.impl.score;
 
-import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
 
-public class DummySimpleScoreEasyScoreCalculator<Solution_> implements EasyScoreCalculator<Solution_> {
+public class DummySimpleScoreEasyScoreCalculator<Solution_> implements EasyScoreCalculator<Solution_, SimpleScore> {
 
     @Override
-    public Score calculateScore(Solution_ solution_) {
+    public SimpleScore calculateScore(Solution_ solution_) {
         return SimpleScore.of(0);
     }
 

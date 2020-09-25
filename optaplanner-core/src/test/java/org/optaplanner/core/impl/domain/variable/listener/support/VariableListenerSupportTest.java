@@ -23,6 +23,7 @@ import static org.mockito.Mockito.when;
 import java.util.Collections;
 
 import org.junit.jupiter.api.Test;
+import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.inverserelation.ExternalizedSingletonInverseVariableSupply;
@@ -43,7 +44,7 @@ public class VariableListenerSupportTest {
     @Test
     public void demandBasic() {
         SolutionDescriptor<TestdataSolution> solutionDescriptor = TestdataSolution.buildSolutionDescriptor();
-        InnerScoreDirector<TestdataSolution> scoreDirector = mock(InnerScoreDirector.class);
+        InnerScoreDirector<TestdataSolution, SimpleScore> scoreDirector = mock(InnerScoreDirector.class);
         when(scoreDirector.getSolutionDescriptor()).thenReturn(solutionDescriptor);
         TestdataSolution solution = new TestdataSolution();
         solution.setEntityList(Collections.emptyList());
@@ -65,7 +66,7 @@ public class VariableListenerSupportTest {
     @Test
     public void demandChained() {
         SolutionDescriptor<TestdataChainedSolution> solutionDescriptor = TestdataChainedSolution.buildSolutionDescriptor();
-        InnerScoreDirector<TestdataChainedSolution> scoreDirector = mock(InnerScoreDirector.class);
+        InnerScoreDirector<TestdataChainedSolution, SimpleScore> scoreDirector = mock(InnerScoreDirector.class);
         when(scoreDirector.getSolutionDescriptor()).thenReturn(solutionDescriptor);
         TestdataChainedSolution solution = new TestdataChainedSolution();
         solution.setChainedEntityList(Collections.emptyList());
@@ -90,7 +91,7 @@ public class VariableListenerSupportTest {
     public void demandRichChained() {
         SolutionDescriptor<TestdataShadowingChainedSolution> solutionDescriptor = TestdataShadowingChainedSolution
                 .buildSolutionDescriptor();
-        InnerScoreDirector<TestdataShadowingChainedSolution> scoreDirector = mock(InnerScoreDirector.class);
+        InnerScoreDirector<TestdataShadowingChainedSolution, SimpleScore> scoreDirector = mock(InnerScoreDirector.class);
         when(scoreDirector.getSolutionDescriptor()).thenReturn(solutionDescriptor);
         TestdataShadowingChainedSolution solution = new TestdataShadowingChainedSolution();
         solution.setChainedEntityList(Collections.emptyList());

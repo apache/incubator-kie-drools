@@ -67,7 +67,7 @@ public final class DroolsConstraintFactory<Solution_> extends InnerConstraintFac
     // ************************************************************************
 
     @Override
-    public ConstraintSessionFactory<Solution_> buildSessionFactory(Constraint[] constraints) {
+    public ConstraintSessionFactory<Solution_, ?> buildSessionFactory(Constraint[] constraints) {
         ModelImpl model = new ModelImpl();
 
         AbstractScoreHolder<?> scoreHolder = solutionDescriptor.getScoreDefinition()

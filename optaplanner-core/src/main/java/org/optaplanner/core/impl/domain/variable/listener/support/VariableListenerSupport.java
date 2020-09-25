@@ -42,7 +42,7 @@ import org.optaplanner.core.impl.score.director.InnerScoreDirector;
  */
 public class VariableListenerSupport<Solution_> implements SupplyManager {
 
-    protected final InnerScoreDirector<Solution_> scoreDirector;
+    protected final InnerScoreDirector<Solution_, ?> scoreDirector;
 
     protected final List<VariableListenerNotifiable> notifiableList;
     protected final Map<VariableDescriptor, List<VariableListenerNotifiable>> sourceVariableToNotifiableMap;
@@ -52,7 +52,7 @@ public class VariableListenerSupport<Solution_> implements SupplyManager {
 
     protected boolean notificationQueuesAreEmpty;
 
-    public VariableListenerSupport(InnerScoreDirector<Solution_> scoreDirector) {
+    public VariableListenerSupport(InnerScoreDirector<Solution_, ?> scoreDirector) {
         this.scoreDirector = scoreDirector;
         notifiableList = new ArrayList<>();
         sourceVariableToNotifiableMap = new LinkedHashMap<>();

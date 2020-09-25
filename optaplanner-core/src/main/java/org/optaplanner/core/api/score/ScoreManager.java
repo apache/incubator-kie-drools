@@ -23,6 +23,7 @@ import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.Indictment;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.impl.score.DefaultScoreManager;
+import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
 import org.optaplanner.core.impl.solver.DefaultSolverFactory;
 
@@ -53,7 +54,10 @@ public interface ScoreManager<Solution_, Score_ extends Score<Score_>> {
      */
     static <Solution_, Score_ extends Score<Score_>> ScoreManager<Solution_, Score_> create(
             SolverFactory<Solution_> solverFactory) {
-        return new DefaultScoreManager<>(((DefaultSolverFactory<Solution_>) solverFactory).getScoreDirectorFactory());
+        InnerScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory =
+                (InnerScoreDirectorFactory<Solution_, Score_>) ((DefaultSolverFactory<Solution_>) solverFactory)
+                        .getScoreDirectorFactory();
+        return new DefaultScoreManager<>(scoreDirectorFactory);
     }
 
     // ************************************************************************

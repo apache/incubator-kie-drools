@@ -34,21 +34,22 @@ import org.optaplanner.core.impl.score.director.AbstractScoreDirector;
  * {@link ScoreExplanation#getIndictmentMap()}.
  *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ * @param <Score_> the score type to go with the solution
  * @see ScoreDirector
  */
-public class EasyScoreDirector<Solution_>
-        extends AbstractScoreDirector<Solution_, EasyScoreDirectorFactory<Solution_>> {
+public class EasyScoreDirector<Solution_, Score_ extends Score<Score_>>
+        extends AbstractScoreDirector<Solution_, Score_, EasyScoreDirectorFactory<Solution_, Score_>> {
 
-    private final EasyScoreCalculator<Solution_> easyScoreCalculator;
+    private final EasyScoreCalculator<Solution_, Score_> easyScoreCalculator;
 
-    public EasyScoreDirector(EasyScoreDirectorFactory<Solution_> scoreDirectorFactory,
+    public EasyScoreDirector(EasyScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory,
             boolean lookUpEnabled, boolean constraintMatchEnabledPreference,
-            EasyScoreCalculator<Solution_> easyScoreCalculator) {
+            EasyScoreCalculator<Solution_, Score_> easyScoreCalculator) {
         super(scoreDirectorFactory, lookUpEnabled, constraintMatchEnabledPreference);
         this.easyScoreCalculator = easyScoreCalculator;
     }
 
-    public EasyScoreCalculator<Solution_> getEasyScoreCalculator() {
+    public EasyScoreCalculator<Solution_, Score_> getEasyScoreCalculator() {
         return easyScoreCalculator;
     }
 
@@ -57,9 +58,9 @@ public class EasyScoreDirector<Solution_>
     // ************************************************************************
 
     @Override
-    public Score calculateScore() {
+    public Score_ calculateScore() {
         variableListenerSupport.assertNotificationQueuesAreEmpty();
-        Score score = easyScoreCalculator.calculateScore(workingSolution);
+        Score_ score = easyScoreCalculator.calculateScore(workingSolution);
         if (score == null) {
             throw new IllegalStateException("The easyScoreCalculator (" + easyScoreCalculator.getClass()
                     + ") must return a non-null score (" + score + ") in the method calculateScore().");
@@ -93,7 +94,7 @@ public class EasyScoreDirector<Solution_>
      * @return throws {@link IllegalStateException}
      */
     @Override
-    public <Score_ extends Score<Score_>> Map<String, ConstraintMatchTotal<Score_>> getConstraintMatchTotalMap() {
+    public Map<String, ConstraintMatchTotal<Score_>> getConstraintMatchTotalMap() {
         throw new IllegalStateException(ConstraintMatch.class.getSimpleName()
                 + " is not supported by " + EasyScoreDirector.class.getSimpleName() + ".");
     }
@@ -105,7 +106,7 @@ public class EasyScoreDirector<Solution_>
      * @return throws {@link IllegalStateException}
      */
     @Override
-    public <Score_ extends Score<Score_>> Map<Object, Indictment<Score_>> getIndictmentMap() {
+    public Map<Object, Indictment<Score_>> getIndictmentMap() {
         throw new IllegalStateException(ConstraintMatch.class.getSimpleName()
                 + " is not supported by " + EasyScoreDirector.class.getSimpleName() + ".");
     }

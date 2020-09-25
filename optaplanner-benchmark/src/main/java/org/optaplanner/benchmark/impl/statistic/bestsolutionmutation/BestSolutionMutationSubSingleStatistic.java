@@ -47,7 +47,7 @@ public class BestSolutionMutationSubSingleStatistic<Solution_>
     @Override
     public void open(Solver<Solution_> solver) {
         DefaultSolver<Solution_> defaultSolver = (DefaultSolver<Solution_>) solver;
-        InnerScoreDirectorFactory<Solution_> innerScoreDirectorFactory = defaultSolver.getScoreDirectorFactory();
+        InnerScoreDirectorFactory<Solution_, ?> innerScoreDirectorFactory = defaultSolver.getScoreDirectorFactory();
         SolutionDescriptor<Solution_> solutionDescriptor = innerScoreDirectorFactory.getSolutionDescriptor();
         listener.setMutationCounter(new MutationCounter<>(solutionDescriptor));
         solver.addEventListener(listener);

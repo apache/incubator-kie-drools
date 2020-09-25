@@ -16,19 +16,21 @@
 
 package org.optaplanner.core.impl.score.stream.common;
 
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.stream.ConstraintSessionFactory;
 
-public abstract class AbstractConstraintSessionFactory<Solution_> implements ConstraintSessionFactory<Solution_> {
+public abstract class AbstractConstraintSessionFactory<Solution_, Score_ extends Score<Score_>>
+        implements ConstraintSessionFactory<Solution_, Score_> {
 
-    private final ScoreDefinition<?> scoreDefinition;
+    private final ScoreDefinition<Score_> scoreDefinition;
 
     protected AbstractConstraintSessionFactory(SolutionDescriptor<Solution_> solutionDescriptor) {
         this.scoreDefinition = solutionDescriptor.getScoreDefinition();
     }
 
-    protected ScoreDefinition<?> getScoreDefinition() {
+    protected ScoreDefinition<Score_> getScoreDefinition() {
         return scoreDefinition;
     }
 

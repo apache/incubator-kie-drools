@@ -35,7 +35,7 @@ public class BestSolutionRecallerTest {
 
     private static <Solution_> SolverScope<Solution_> createSolverScope() {
         SolverScope<Solution_> solverScope = new SolverScope<>();
-        InnerScoreDirector<Solution_> scoreDirector = mock(InnerScoreDirector.class);
+        InnerScoreDirector<Solution_, ?> scoreDirector = mock(InnerScoreDirector.class);
         SolutionDescriptor<Solution_> solutionDescriptor = mock(SolutionDescriptor.class);
         when(scoreDirector.getSolutionDescriptor()).thenReturn(solutionDescriptor);
         solverScope.setScoreDirector(scoreDirector);

@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.localsearch.decider;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.Acceptor;
@@ -102,7 +103,7 @@ public class LocalSearchDecider<Solution_> {
     }
 
     public void decideNextStep(LocalSearchStepScope<Solution_> stepScope) {
-        InnerScoreDirector<Solution_> scoreDirector = stepScope.getScoreDirector();
+        InnerScoreDirector<Solution_, ?> scoreDirector = stepScope.getScoreDirector();
         scoreDirector.setAllChangesWillBeUndoneBeforeStepEnds(true);
         int moveIndex = 0;
         for (Move<Solution_> move : moveSelector) {
@@ -127,8 +128,8 @@ public class LocalSearchDecider<Solution_> {
         pickMove(stepScope);
     }
 
-    protected void doMove(LocalSearchMoveScope<Solution_> moveScope) {
-        InnerScoreDirector<Solution_> scoreDirector = moveScope.getScoreDirector();
+    protected <Score_ extends Score<Score_>> void doMove(LocalSearchMoveScope<Solution_> moveScope) {
+        InnerScoreDirector<Solution_, Score_> scoreDirector = moveScope.getScoreDirector();
         scoreDirector.doAndProcessMove(moveScope.getMove(), assertMoveScoreFromScratch, score -> {
             moveScope.setScore(score);
             boolean accepted = acceptor.isAccepted(moveScope);
@@ -137,7 +138,7 @@ public class LocalSearchDecider<Solution_> {
         });
         if (assertExpectedUndoMoveScore) {
             scoreDirector.assertExpectedUndoMoveScore(moveScope.getMove(),
-                    moveScope.getStepScope().getPhaseScope().getLastCompletedStepScope().getScore());
+                    (Score_) moveScope.getStepScope().getPhaseScope().getLastCompletedStepScope().getScore());
         }
         logger.trace("{}        Move index ({}), score ({}), accepted ({}), move ({}).",
                 logIndentation,

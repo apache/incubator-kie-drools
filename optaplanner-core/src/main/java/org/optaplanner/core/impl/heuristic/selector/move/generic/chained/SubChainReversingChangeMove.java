@@ -104,7 +104,7 @@ public class SubChainReversingChangeMove<Solution_> extends AbstractMove<Solutio
         Object oldFirstValue = variableDescriptor.getValue(firstEntity);
         boolean unmovedReverse = toPlanningValue == oldFirstValue;
         // Close the old chain
-        InnerScoreDirector<Solution_> innerScoreDirector = (InnerScoreDirector<Solution_>) scoreDirector;
+        InnerScoreDirector<Solution_, ?> innerScoreDirector = (InnerScoreDirector<Solution_, ?>) scoreDirector;
         if (!unmovedReverse) {
             if (oldTrailingLastEntity != null) {
                 innerScoreDirector.changeVariableFacade(variableDescriptor, oldTrailingLastEntity, oldFirstValue);
@@ -127,7 +127,7 @@ public class SubChainReversingChangeMove<Solution_> extends AbstractMove<Solutio
         }
     }
 
-    private void reverseChain(InnerScoreDirector<Solution_> scoreDirector, Object entity, Object previous,
+    private void reverseChain(InnerScoreDirector<Solution_, ?> scoreDirector, Object entity, Object previous,
             Object toEntity) {
         while (entity != toEntity) {
             Object value = variableDescriptor.getValue(previous);

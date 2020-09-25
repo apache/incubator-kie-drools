@@ -96,7 +96,7 @@ public class SubChainChangeMove<Solution_> extends AbstractMove<Solution_> {
         Object lastEntity = subChain.getLastEntity();
         Object oldFirstValue = variableDescriptor.getValue(firstEntity);
         // Close the old chain
-        InnerScoreDirector<Solution_> innerScoreDirector = (InnerScoreDirector<Solution_>) scoreDirector;
+        InnerScoreDirector<Solution_, ?> innerScoreDirector = (InnerScoreDirector<Solution_, ?>) scoreDirector;
         if (oldTrailingLastEntity != null) {
             innerScoreDirector.changeVariableFacade(variableDescriptor, oldTrailingLastEntity, oldFirstValue);
         }

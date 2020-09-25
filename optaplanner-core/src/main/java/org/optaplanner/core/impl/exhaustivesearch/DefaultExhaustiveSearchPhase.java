@@ -147,7 +147,7 @@ public class DefaultExhaustiveSearchPhase<Solution_> extends AbstractPhase<Solut
         }
         List<ExhaustiveSearchLayer> layerList = new ArrayList<>((int) entitySize);
         int depth = 0;
-        InnerScoreDirector<Solution_> scoreDirector = phaseScope.getScoreDirector();
+        InnerScoreDirector<Solution_, ?> scoreDirector = phaseScope.getScoreDirector();
         for (Object entity : entitySelector) {
             ExhaustiveSearchLayer layer = new ExhaustiveSearchLayer(depth, entity);
             // Keep in sync with ExhaustiveSearchPhaseConfig.buildMoveSelectorConfig()
@@ -172,7 +172,7 @@ public class DefaultExhaustiveSearchPhase<Solution_> extends AbstractPhase<Solut
         ExhaustiveSearchNode startNode = new ExhaustiveSearchNode(startLayer, null);
 
         if (decider.isScoreBounderEnabled()) {
-            InnerScoreDirector<Solution_> scoreDirector = phaseScope.getScoreDirector();
+            InnerScoreDirector<Solution_, ?> scoreDirector = phaseScope.getScoreDirector();
             Score score = scoreDirector.calculateScore();
             startNode.setScore(score);
             ScoreBounder scoreBounder = decider.getScoreBounder();
@@ -214,7 +214,7 @@ public class DefaultExhaustiveSearchPhase<Solution_> extends AbstractPhase<Solut
         restoreMoveList.addAll(oldMoveList);
         Collections.reverse(newMoveList);
         restoreMoveList.addAll(newMoveList);
-        InnerScoreDirector<Solution_> scoreDirector = phaseScope.getScoreDirector();
+        InnerScoreDirector<Solution_, ?> scoreDirector = phaseScope.getScoreDirector();
         restoreMoveList.forEach(restoreMove -> restoreMove.doMove(scoreDirector));
         // There is no need to recalculate the score, but we still need to set it
         phaseScope.getSolutionDescriptor().setScore(phaseScope.getWorkingSolution(), stepScope.getStartingStepScore());

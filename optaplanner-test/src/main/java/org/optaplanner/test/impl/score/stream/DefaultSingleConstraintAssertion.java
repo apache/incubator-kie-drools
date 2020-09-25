@@ -39,13 +39,13 @@ import org.optaplanner.test.api.score.stream.SingleConstraintAssertion;
 public final class DefaultSingleConstraintAssertion<Solution_, Score_ extends Score<Score_>>
         implements SingleConstraintAssertion {
 
-    private final ConstraintStreamScoreDirectorFactory<Solution_> scoreDirectorFactory;
+    private final ConstraintStreamScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory;
     private final Score_ score;
     private final Collection<ConstraintMatchTotal<Score_>> constraintMatchTotalCollection;
     private final Collection<Indictment<Score_>> indictmentCollection;
 
     protected DefaultSingleConstraintAssertion(
-            ConstraintStreamScoreDirectorFactory<Solution_> scoreDirectorFactory,
+            ConstraintStreamScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory,
             Score_ score, Map<String, ConstraintMatchTotal<Score_>> constraintMatchTotalMap,
             Map<Object, Indictment<Score_>> indictmentMap) {
         this.scoreDirectorFactory = requireNonNull(scoreDirectorFactory);

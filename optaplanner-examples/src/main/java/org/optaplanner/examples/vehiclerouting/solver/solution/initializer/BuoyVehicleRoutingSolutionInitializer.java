@@ -83,7 +83,7 @@ public class BuoyVehicleRoutingSolutionInitializer implements CustomPhaseCommand
                     customer.setPreviousStandstill(buoy);
                     scoreDirector.afterVariableChanged(customer, "previousStandstill");
                     scoreDirector.triggerVariableListeners();
-                    Score score = ((InnerScoreDirector<VehicleRoutingSolution>) scoreDirector).calculateScore();
+                    Score score = ((InnerScoreDirector<VehicleRoutingSolution, ?>) scoreDirector).calculateScore();
                     scoreDirector.beforeVariableChanged(customer, "previousStandstill");
                     customer.setPreviousStandstill(null);
                     scoreDirector.afterVariableChanged(customer, "previousStandstill");

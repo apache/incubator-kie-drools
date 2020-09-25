@@ -26,12 +26,13 @@ import org.optaplanner.core.api.score.constraint.Indictment;
 import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.ConstraintSession;
 
-public class DroolsConstraintSession<Solution_> implements ConstraintSession<Solution_> {
+public class DroolsConstraintSession<Solution_, Score_ extends Score<Score_>>
+        implements ConstraintSession<Solution_, Score_> {
 
     private final KieSession kieSession;
-    private final AbstractScoreHolder scoreHolder;
+    private final AbstractScoreHolder<Score_> scoreHolder;
 
-    public DroolsConstraintSession(KieSession kieSession, AbstractScoreHolder scoreHolder) {
+    public DroolsConstraintSession(KieSession kieSession, AbstractScoreHolder<Score_> scoreHolder) {
         this.kieSession = kieSession;
         this.scoreHolder = scoreHolder;
     }
@@ -54,19 +55,19 @@ public class DroolsConstraintSession<Solution_> implements ConstraintSession<Sol
     }
 
     @Override
-    public Score<?> calculateScore(int initScore) {
+    public Score_ calculateScore(int initScore) {
         kieSession.fireAllRules();
         return scoreHolder.extractScore(initScore);
     }
 
     @Override
-    public <Score_ extends Score<Score_>> Map<String, ConstraintMatchTotal<Score_>> getConstraintMatchTotalMap() {
+    public Map<String, ConstraintMatchTotal<Score_>> getConstraintMatchTotalMap() {
         kieSession.fireAllRules();
         return scoreHolder.getConstraintMatchTotalMap();
     }
 
     @Override
-    public <Score_ extends Score<Score_>> Map<Object, Indictment<Score_>> getIndictmentMap() {
+    public Map<Object, Indictment<Score_>> getIndictmentMap() {
         kieSession.fireAllRules();
         return scoreHolder.getIndictmentMap();
     }

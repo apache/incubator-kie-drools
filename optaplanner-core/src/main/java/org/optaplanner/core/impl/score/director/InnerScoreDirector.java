@@ -41,8 +41,10 @@ import org.optaplanner.core.impl.solver.thread.ChildThreadType;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ * @param <Score_> the score type to go with the solution
  */
-public interface InnerScoreDirector<Solution_> extends ScoreDirector<Solution_>, AutoCloseable {
+public interface InnerScoreDirector<Solution_, Score_ extends Score<Score_>>
+        extends ScoreDirector<Solution_>, AutoCloseable {
 
     /**
      * The {@link PlanningSolution working solution} must never be the same instance as the
@@ -57,7 +59,7 @@ public interface InnerScoreDirector<Solution_> extends ScoreDirector<Solution_>,
      *
      * @return never null, the {@link Score} of the {@link PlanningSolution working solution}
      */
-    Score calculateScore();
+    Score_ calculateScore();
 
     /**
      * @return true if {@link #getConstraintMatchTotalMap()} and {@link #getIndictmentMap} can be called
@@ -76,9 +78,8 @@ public interface InnerScoreDirector<Solution_> extends ScoreDirector<Solution_>,
      *         (to create one, use {@link ConstraintMatchTotal#composeConstraintId(String, String)}).
      * @throws IllegalStateException if {@link #isConstraintMatchEnabled()} returns false
      * @see #getIndictmentMap()
-     * @param <Score_> the actual score type
      */
-    <Score_ extends Score<Score_>> Map<String, ConstraintMatchTotal<Score_>> getConstraintMatchTotalMap();
+    Map<String, ConstraintMatchTotal<Score_>> getConstraintMatchTotalMap();
 
     /**
      * Explains the impact of each planning entity or problem fact on the {@link Score}.
@@ -97,9 +98,8 @@ public interface InnerScoreDirector<Solution_> extends ScoreDirector<Solution_>,
      *         {@link PlanningEntity planning entity}
      * @throws IllegalStateException if {@link #isConstraintMatchEnabled()} returns false
      * @see #getConstraintMatchTotalMap()
-     * @param <Score_> the actual score type
      */
-    <Score_ extends Score<Score_>> Map<Object, Indictment<Score_>> getIndictmentMap();
+    Map<Object, Indictment<Score_>> getIndictmentMap();
 
     /**
      * Returns a diagnostic text that explains the {@link Score} through the {@link ConstraintMatch} API
@@ -116,9 +116,8 @@ public interface InnerScoreDirector<Solution_> extends ScoreDirector<Solution_>,
      *
      * @return never null
      * @throws IllegalStateException if {@link #isConstraintMatchEnabled()} returns false
-     * @param <Score_> the actual score type
      */
-    <Score_ extends Score<Score_>> String explainScore();
+    String explainScore();
 
     /**
      * @param constraintMatchEnabledPreference false if a {@link ScoreDirector} implementation
@@ -136,14 +135,14 @@ public interface InnerScoreDirector<Solution_> extends ScoreDirector<Solution_>,
      * @param assertMoveScoreFromScratch true will hurt performance
      * @return never null
      */
-    Score doAndProcessMove(Move<Solution_> move, boolean assertMoveScoreFromScratch);
+    Score_ doAndProcessMove(Move<Solution_> move, boolean assertMoveScoreFromScratch);
 
     /**
      * @param move never null
      * @param assertMoveScoreFromScratch true will hurt performance
      * @param moveProcessor never null, use this to store the score as well as call the acceptor and forager
      */
-    void doAndProcessMove(Move<Solution_> move, boolean assertMoveScoreFromScratch, Consumer<Score> moveProcessor);
+    void doAndProcessMove(Move<Solution_> move, boolean assertMoveScoreFromScratch, Consumer<Score_> moveProcessor);
 
     /**
      * @param expectedWorkingEntityListRevision an
@@ -154,7 +153,7 @@ public interface InnerScoreDirector<Solution_> extends ScoreDirector<Solution_>,
     /**
      * @return never null
      */
-    InnerScoreDirectorFactory<Solution_> getScoreDirectorFactory();
+    InnerScoreDirectorFactory<Solution_, Score_> getScoreDirectorFactory();
 
     /**
      * @return never null
@@ -164,7 +163,7 @@ public interface InnerScoreDirector<Solution_> extends ScoreDirector<Solution_>,
     /**
      * @return never null
      */
-    ScoreDefinition getScoreDefinition();
+    ScoreDefinition<Score_> getScoreDefinition();
 
     /**
      * Returns a planning clone of the solution,
@@ -219,9 +218,9 @@ public interface InnerScoreDirector<Solution_> extends ScoreDirector<Solution_>,
      *
      * @return never null
      */
-    ScoreDirector<Solution_> clone();
+    InnerScoreDirector<Solution_, Score_> clone();
 
-    InnerScoreDirector<Solution_> createChildThreadScoreDirector(ChildThreadType childThreadType);
+    InnerScoreDirector<Solution_, Score_> createChildThreadScoreDirector(ChildThreadType childThreadType);
 
     /**
      * Do not waste performance by propagating changes to step (or higher) mechanisms.
@@ -241,7 +240,7 @@ public interface InnerScoreDirector<Solution_> extends ScoreDirector<Solution_>,
      * @param completedAction sometimes null, when assertion fails then the completedAction's {@link Object#toString()}
      *        is included in the exception message
      */
-    void assertExpectedWorkingScore(Score expectedWorkingScore, Object completedAction);
+    void assertExpectedWorkingScore(Score_ expectedWorkingScore, Object completedAction);
 
     /**
      * Asserts that if all {@link VariableListener}s are forcibly triggered,
@@ -256,7 +255,7 @@ public interface InnerScoreDirector<Solution_> extends ScoreDirector<Solution_>,
      * @param completedAction sometimes null, when assertion fails then the completedAction's {@link Object#toString()}
      *        is included in the exception message
      */
-    void assertShadowVariablesAreNotStale(Score expectedWorkingScore, Object completedAction);
+    void assertShadowVariablesAreNotStale(Score_ expectedWorkingScore, Object completedAction);
 
     /**
      * Asserts that if the {@link Score} is calculated for the current {@link PlanningSolution working solution}
@@ -270,7 +269,7 @@ public interface InnerScoreDirector<Solution_> extends ScoreDirector<Solution_>,
      *        is included in the exception message
      * @see InnerScoreDirectorFactory#assertScoreFromScratch
      */
-    void assertWorkingScoreFromScratch(Score workingScore, Object completedAction);
+    void assertWorkingScoreFromScratch(Score_ workingScore, Object completedAction);
 
     /**
      * Asserts that if the {@link Score} is calculated for the current {@link PlanningSolution working solution}
@@ -284,7 +283,7 @@ public interface InnerScoreDirector<Solution_> extends ScoreDirector<Solution_>,
      *        is included in the exception message
      * @see InnerScoreDirectorFactory#assertScoreFromScratch
      */
-    void assertPredictedScoreFromScratch(Score predictedScore, Object completedAction);
+    void assertPredictedScoreFromScratch(Score_ predictedScore, Object completedAction);
 
     /**
      * Asserts that if the {@link Score} is calculated for the current {@link PlanningSolution working solution}
@@ -296,7 +295,7 @@ public interface InnerScoreDirector<Solution_> extends ScoreDirector<Solution_>,
      * @param move never null
      * @param beforeMoveScore never null
      */
-    void assertExpectedUndoMoveScore(Move move, Score beforeMoveScore);
+    void assertExpectedUndoMoveScore(Move move, Score_ beforeMoveScore);
 
     /**
      * Asserts that none of the planning facts from {@link SolutionDescriptor#getAllFacts(Object)} for

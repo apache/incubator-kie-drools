@@ -33,13 +33,14 @@ public class EasyScoreDirectorFactoryTest {
     @Test
     public void buildScoreDirector() {
         SolutionDescriptor<TestdataSolution> solutionDescriptor = TestdataSolution.buildSolutionDescriptor();
-        EasyScoreCalculator<TestdataSolution> scoreCalculator = mock(EasyScoreCalculator.class);
+        EasyScoreCalculator<TestdataSolution, SimpleScore> scoreCalculator = mock(EasyScoreCalculator.class);
         when(scoreCalculator.calculateScore(any(TestdataSolution.class)))
                 .thenAnswer(invocation -> SimpleScore.of(-10));
-        EasyScoreDirectorFactory<TestdataSolution> directorFactory = new EasyScoreDirectorFactory<>(
+        EasyScoreDirectorFactory<TestdataSolution, SimpleScore> directorFactory = new EasyScoreDirectorFactory<>(
                 solutionDescriptor, scoreCalculator);
 
-        EasyScoreDirector<TestdataSolution> director = directorFactory.buildScoreDirector(false, false);
+        EasyScoreDirector<TestdataSolution, SimpleScore> director =
+                directorFactory.buildScoreDirector(false, false);
         TestdataSolution solution = new TestdataSolution();
         solution.setValueList(Collections.emptyList());
         solution.setEntityList(Collections.emptyList());

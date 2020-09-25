@@ -35,7 +35,7 @@ import org.optaplanner.core.api.score.constraint.Indictment;
  * @see IncrementalScoreCalculator
  */
 public interface ConstraintMatchAwareIncrementalScoreCalculator<Solution_, Score_ extends Score<Score_>>
-        extends IncrementalScoreCalculator<Solution_> {
+        extends IncrementalScoreCalculator<Solution_, Score_> {
 
     /**
      * Allows for increased performance because it only tracks if constraintMatchEnabled is true.

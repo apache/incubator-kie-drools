@@ -140,7 +140,7 @@ public class PillarSwapMoveTest {
         TestdataEntityProvidingEntity c = new TestdataEntityProvidingEntity("c", Arrays.asList(v4, v5), null);
         TestdataEntityProvidingEntity z = new TestdataEntityProvidingEntity("z", Arrays.asList(v1, v2, v3, v4, v5), null);
 
-        InnerScoreDirector<TestdataEntityProvidingSolution> scoreDirector = mock(InnerScoreDirector.class);
+        InnerScoreDirector<TestdataEntityProvidingSolution, ?> scoreDirector = mock(InnerScoreDirector.class);
         List<GenuineVariableDescriptor<TestdataEntityProvidingSolution>> variableDescriptorList = TestdataEntityProvidingEntity
                 .buildEntityDescriptor().getGenuineVariableDescriptorList();
 

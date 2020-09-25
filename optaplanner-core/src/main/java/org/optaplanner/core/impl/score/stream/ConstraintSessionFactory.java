@@ -16,9 +16,10 @@
 
 package org.optaplanner.core.impl.score.stream;
 
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 
-public interface ConstraintSessionFactory<Solution_> {
+public interface ConstraintSessionFactory<Solution_, Score_ extends Score<Score_>> {
 
     /**
      * This method is thread-safe.
@@ -27,6 +28,6 @@ public interface ConstraintSessionFactory<Solution_> {
      * @param workingSolution if null, uniform synthetic constraint weights will be applied
      * @return never null
      */
-    ConstraintSession<Solution_> buildSession(boolean constraintMatchEnabled, Solution_ workingSolution);
+    ConstraintSession<Solution_, Score_> buildSession(boolean constraintMatchEnabled, Solution_ workingSolution);
 
 }

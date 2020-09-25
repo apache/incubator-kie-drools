@@ -26,8 +26,10 @@ import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ * @param <Score_> the score type to go with the solution
  */
-public interface InnerScoreDirectorFactory<Solution_> extends ScoreDirectorFactory<Solution_> {
+public interface InnerScoreDirectorFactory<Solution_, Score_ extends Score<Score_>>
+        extends ScoreDirectorFactory<Solution_> {
 
     /**
      * @return never null
@@ -37,10 +39,10 @@ public interface InnerScoreDirectorFactory<Solution_> extends ScoreDirectorFacto
     /**
      * @return never null
      */
-    ScoreDefinition getScoreDefinition();
+    ScoreDefinition<Score_> getScoreDefinition();
 
     @Override
-    InnerScoreDirector<Solution_> buildScoreDirector();
+    InnerScoreDirector<Solution_, Score_> buildScoreDirector();
 
     /**
      * Like {@link #buildScoreDirector()}, but optionally disables {@link ConstraintMatch} tracking and look up
@@ -54,7 +56,8 @@ public interface InnerScoreDirectorFactory<Solution_> extends ScoreDirectorFacto
      * @see InnerScoreDirector#isConstraintMatchEnabled()
      * @see InnerScoreDirector#getConstraintMatchTotalMap()
      */
-    InnerScoreDirector<Solution_> buildScoreDirector(boolean lookUpEnabled, boolean constraintMatchEnabledPreference);
+    InnerScoreDirector<Solution_, Score_> buildScoreDirector(boolean lookUpEnabled,
+            boolean constraintMatchEnabledPreference);
 
     /**
      * @return never null

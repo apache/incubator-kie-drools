@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,9 +20,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
-import org.optaplanner.core.impl.score.director.incremental.AbstractIncrementalScoreCalculator;
+import org.optaplanner.core.impl.score.director.incremental.IncrementalScoreCalculator;
 import org.optaplanner.examples.projectjobscheduling.domain.Allocation;
 import org.optaplanner.examples.projectjobscheduling.domain.ExecutionMode;
 import org.optaplanner.examples.projectjobscheduling.domain.JobType;
@@ -34,7 +33,8 @@ import org.optaplanner.examples.projectjobscheduling.solver.score.capacity.Nonre
 import org.optaplanner.examples.projectjobscheduling.solver.score.capacity.RenewableResourceCapacityTracker;
 import org.optaplanner.examples.projectjobscheduling.solver.score.capacity.ResourceCapacityTracker;
 
-public class ProjectJobSchedulingIncrementalScoreCalculator extends AbstractIncrementalScoreCalculator<Schedule> {
+public class ProjectJobSchedulingIncrementalScoreCalculator
+        implements IncrementalScoreCalculator<Schedule, BendableScore> {
 
     private Map<Resource, ResourceCapacityTracker> resourceCapacityTrackerMap;
     private Map<Project, Integer> projectEndDateMap;
@@ -170,7 +170,7 @@ public class ProjectJobSchedulingIncrementalScoreCalculator extends AbstractIncr
     }
 
     @Override
-    public Score calculateScore() {
+    public BendableScore calculateScore() {
         return BendableScore.of(new int[] { hardScore }, new int[] { soft0Score, soft1Score });
     }
 

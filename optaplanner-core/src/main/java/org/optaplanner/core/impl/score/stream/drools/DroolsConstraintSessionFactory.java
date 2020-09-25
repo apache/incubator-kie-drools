@@ -45,7 +45,8 @@ import org.optaplanner.core.impl.score.stream.common.AbstractConstraintSessionFa
 import org.optaplanner.core.impl.score.stream.drools.common.FactTuple;
 import org.optaplanner.core.impl.score.stream.drools.common.rules.RuleAssembly;
 
-public class DroolsConstraintSessionFactory<Solution_> extends AbstractConstraintSessionFactory<Solution_> {
+public class DroolsConstraintSessionFactory<Solution_, Score_ extends Score<Score_>>
+        extends AbstractConstraintSessionFactory<Solution_, Score_> {
 
     private final Model originalModel;
     private final KieBase originalKieBase;
@@ -150,21 +151,21 @@ public class DroolsConstraintSessionFactory<Solution_> extends AbstractConstrain
     }
 
     @Override
-    public ConstraintSession<Solution_> buildSession(boolean constraintMatchEnabled, Solution_ workingSolution) {
+    public ConstraintSession<Solution_, Score_> buildSession(boolean constraintMatchEnabled, Solution_ workingSolution) {
         // Make sure the constraint justifications match what comes out of Bavet.
-        AbstractScoreHolder scoreHolder = getScoreDefinition().buildScoreHolder(constraintMatchEnabled);
+        AbstractScoreHolder<Score_> scoreHolder = getScoreDefinition().buildScoreHolder(constraintMatchEnabled);
         scoreHolder.setJustificationListConverter(
                 (justificationList, rule) -> {
                     DroolsConstraint<Solution_> constraint = compiledRuleToConstraintMap.get(rule);
                     Class[] expectedTypes = compiledRuleToExpectedTypesMap.get(rule);
-                    return matchJustificationsToOutput((List<Object>) justificationList,
+                    return matchJustificationsToOutput(justificationList,
                             constraint.getConsequence().getTerminalNode().getCardinality(), expectedTypes);
                 });
         // Determine which rules to enable based on the fact that their constraints carry weight.
-        Score<?> zeroScore = getScoreDefinition().getZeroScore();
+        Score_ zeroScore = getScoreDefinition().getZeroScore();
         Set<String> disabledConstraintIdSet = new LinkedHashSet<>(0);
         compiledRuleToConstraintMap.forEach((compiledRule, constraint) -> {
-            Score<?> constraintWeight = constraint.extractConstraintWeight(workingSolution);
+            Score_ constraintWeight = (Score_) constraint.extractConstraintWeight(workingSolution);
             scoreHolder.configureConstraintWeight(compiledRule, constraintWeight);
             if (constraintWeight.equals(zeroScore)) {
                 disabledConstraintIdSet.add(constraint.getConstraintId());

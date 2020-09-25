@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ import org.optaplanner.examples.tsp.domain.Standstill;
 import org.optaplanner.examples.tsp.domain.TspSolution;
 import org.optaplanner.examples.tsp.domain.Visit;
 
-public class TspEasyScoreCalculator implements EasyScoreCalculator<TspSolution> {
+public class TspEasyScoreCalculator implements EasyScoreCalculator<TspSolution, SimpleLongScore> {
 
     @Override
     public SimpleLongScore calculateScore(TspSolution tspSolution) {

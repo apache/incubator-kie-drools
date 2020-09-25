@@ -66,7 +66,7 @@ public class ChainedChangeMove<Solution_> extends ChangeMove<Solution_> {
 
     @Override
     protected void doMoveOnGenuineVariables(ScoreDirector<Solution_> scoreDirector) {
-        InnerScoreDirector<Solution_> innerScoreDirector = (InnerScoreDirector<Solution_>) scoreDirector;
+        InnerScoreDirector<Solution_, ?> innerScoreDirector = (InnerScoreDirector<Solution_, ?>) scoreDirector;
         Object oldValue = variableDescriptor.getValue(entity);
         // Close the old chain
         if (oldTrailingEntity != null) {

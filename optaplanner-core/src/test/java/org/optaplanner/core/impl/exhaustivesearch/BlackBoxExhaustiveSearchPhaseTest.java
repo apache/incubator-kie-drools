@@ -449,7 +449,7 @@ public class BlackBoxExhaustiveSearchPhaseTest {
      * This class calculates the score of a solution by penalizing repeated value occurrences held by entities.
      */
     public static class TestdataComparableDifferentValuesCalculator
-            implements EasyScoreCalculator<TestdataDifficultyComparingSolution> {
+            implements EasyScoreCalculator<TestdataDifficultyComparingSolution, SimpleScore> {
 
         @Override
         public SimpleScore calculateScore(TestdataDifficultyComparingSolution solution) {

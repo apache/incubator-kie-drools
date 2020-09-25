@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,17 +16,18 @@
 
 package org.optaplanner.core.impl.heuristic.thread;
 
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 
-public class SetupOperation<Solution_> extends MoveThreadOperation<Solution_> {
+public class SetupOperation<Solution_, Score_ extends Score<Score_>> extends MoveThreadOperation<Solution_> {
 
-    private final InnerScoreDirector<Solution_> innerScoreDirector;
+    private final InnerScoreDirector<Solution_, Score_> innerScoreDirector;
 
-    public SetupOperation(InnerScoreDirector<Solution_> innerScoreDirector) {
+    public SetupOperation(InnerScoreDirector<Solution_, Score_> innerScoreDirector) {
         this.innerScoreDirector = innerScoreDirector;
     }
 
-    public InnerScoreDirector<Solution_> getScoreDirector() {
+    public InnerScoreDirector<Solution_, Score_> getScoreDirector() {
         return innerScoreDirector;
     }
 

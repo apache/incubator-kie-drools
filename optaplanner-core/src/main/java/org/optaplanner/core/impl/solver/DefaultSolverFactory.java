@@ -69,7 +69,7 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
         this.solverConfig = solverConfig;
     }
 
-    public InnerScoreDirectorFactory<Solution_> getScoreDirectorFactory() {
+    public InnerScoreDirectorFactory<Solution_, ?> getScoreDirectorFactory() {
         return buildScoreDirectorFactory(solverConfig.determineEnvironmentMode());
     }
 
@@ -80,7 +80,7 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
 
         RandomFactory randomFactory = buildRandomFactory(environmentMode_);
         Integer moveThreadCount_ = new MoveThreadCountResolver().resolveMoveThreadCount(solverConfig.getMoveThreadCount());
-        InnerScoreDirectorFactory<Solution_> scoreDirectorFactory = buildScoreDirectorFactory(environmentMode_);
+        InnerScoreDirectorFactory<Solution_, ?> scoreDirectorFactory = buildScoreDirectorFactory(environmentMode_);
         boolean constraintMatchEnabledPreference = environmentMode_.isAsserted();
         SolverScope<Solution_> solverScope = new SolverScope<>();
         solverScope.setScoreDirector(scoreDirectorFactory.buildScoreDirector(true, constraintMatchEnabledPreference));
@@ -104,12 +104,12 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
      * @param environmentMode never null
      * @return never null
      */
-    public InnerScoreDirectorFactory<Solution_> buildScoreDirectorFactory(EnvironmentMode environmentMode) {
+    public InnerScoreDirectorFactory<Solution_, ?> buildScoreDirectorFactory(EnvironmentMode environmentMode) {
         SolutionDescriptor<Solution_> solutionDescriptor = buildSolutionDescriptor();
         ScoreDirectorFactoryConfig scoreDirectorFactoryConfig_ = solverConfig.getScoreDirectorFactoryConfig() == null
                 ? new ScoreDirectorFactoryConfig()
                 : solverConfig.getScoreDirectorFactoryConfig();
-        ScoreDirectorFactoryFactory<Solution_> scoreDirectorFactoryFactory =
+        ScoreDirectorFactoryFactory<Solution_, ?> scoreDirectorFactoryFactory =
                 new ScoreDirectorFactoryFactory<>(scoreDirectorFactoryConfig_);
         return scoreDirectorFactoryFactory.buildScoreDirectorFactory(solverConfig.getClassLoader(), environmentMode,
                 solutionDescriptor);

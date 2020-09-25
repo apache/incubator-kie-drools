@@ -232,7 +232,7 @@ public class TailChainSwapMove<Solution_> extends AbstractMove<Solution_> {
 
     @Override
     protected void doMoveOnGenuineVariables(ScoreDirector<Solution_> scoreDirector) {
-        InnerScoreDirector<Solution_> innerScoreDirector = (InnerScoreDirector<Solution_>) scoreDirector;
+        InnerScoreDirector<Solution_, ?> innerScoreDirector = (InnerScoreDirector<Solution_, ?>) scoreDirector;
         if (!sameAnchor) {
             // Change the left entity
             innerScoreDirector.changeVariableFacade(variableDescriptor, leftEntity, rightValue);

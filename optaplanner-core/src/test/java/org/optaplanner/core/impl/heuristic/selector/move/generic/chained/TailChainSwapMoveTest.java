@@ -23,6 +23,7 @@ import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.mockRebas
 import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
+import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.anchor.AnchorVariableDemand;
@@ -46,7 +47,8 @@ public class TailChainSwapMoveTest {
                 .buildVariableDescriptorForChainedObject();
         SolutionDescriptor<TestdataChainedSolution> solutionDescriptor = variableDescriptor.getEntityDescriptor()
                 .getSolutionDescriptor();
-        InnerScoreDirector<TestdataChainedSolution> scoreDirector = PlannerTestUtils.mockScoreDirector(solutionDescriptor);
+        InnerScoreDirector<TestdataChainedSolution, SimpleScore> scoreDirector =
+                PlannerTestUtils.mockScoreDirector(solutionDescriptor);
 
         TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
         TestdataChainedEntity a1 = new TestdataChainedEntity("a1", a0);
@@ -86,7 +88,8 @@ public class TailChainSwapMoveTest {
                 .buildVariableDescriptorForChainedObject();
         SolutionDescriptor<TestdataChainedSolution> solutionDescriptor = variableDescriptor.getEntityDescriptor()
                 .getSolutionDescriptor();
-        InnerScoreDirector<TestdataChainedSolution> scoreDirector = PlannerTestUtils.mockScoreDirector(solutionDescriptor);
+        InnerScoreDirector<TestdataChainedSolution, SimpleScore> scoreDirector =
+                PlannerTestUtils.mockScoreDirector(solutionDescriptor);
 
         TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
         TestdataChainedEntity a1 = new TestdataChainedEntity("a1", a0);
@@ -138,7 +141,8 @@ public class TailChainSwapMoveTest {
                 .buildVariableDescriptorForChainedObject();
         SolutionDescriptor<TestdataChainedSolution> solutionDescriptor = variableDescriptor.getEntityDescriptor()
                 .getSolutionDescriptor();
-        InnerScoreDirector<TestdataChainedSolution> scoreDirector = PlannerTestUtils.mockScoreDirector(solutionDescriptor);
+        InnerScoreDirector<TestdataChainedSolution, SimpleScore> scoreDirector =
+                PlannerTestUtils.mockScoreDirector(solutionDescriptor);
 
         TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
         TestdataChainedEntity a1 = new TestdataChainedEntity("a1", a0);
@@ -266,7 +270,8 @@ public class TailChainSwapMoveTest {
                 .buildVariableDescriptorForChainedObject();
         SolutionDescriptor<TestdataChainedSolution> solutionDescriptor = variableDescriptor.getEntityDescriptor()
                 .getSolutionDescriptor();
-        InnerScoreDirector<TestdataChainedSolution> scoreDirector = PlannerTestUtils.mockScoreDirector(solutionDescriptor);
+        InnerScoreDirector<TestdataChainedSolution, SimpleScore> scoreDirector =
+                PlannerTestUtils.mockScoreDirector(solutionDescriptor);
 
         TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
         TestdataChainedEntity a1 = new TestdataChainedEntity("a1", a0);
@@ -306,7 +311,8 @@ public class TailChainSwapMoveTest {
                 .buildVariableDescriptorForChainedObject();
         SolutionDescriptor<TestdataChainedSolution> solutionDescriptor = variableDescriptor.getEntityDescriptor()
                 .getSolutionDescriptor();
-        InnerScoreDirector<TestdataChainedSolution> scoreDirector = PlannerTestUtils.mockScoreDirector(solutionDescriptor);
+        InnerScoreDirector<TestdataChainedSolution, SimpleScore> scoreDirector =
+                PlannerTestUtils.mockScoreDirector(solutionDescriptor);
         TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
         TestdataChainedEntity a1 = new TestdataChainedEntity("a1", null);
 

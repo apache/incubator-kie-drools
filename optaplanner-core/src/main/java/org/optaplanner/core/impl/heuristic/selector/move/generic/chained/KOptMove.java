@@ -123,7 +123,7 @@ public class KOptMove<Solution_> extends AbstractMove<Solution_> {
 
     @Override
     protected void doMoveOnGenuineVariables(ScoreDirector<Solution_> scoreDirector) {
-        InnerScoreDirector<Solution_> innerScoreDirector = (InnerScoreDirector<Solution_>) scoreDirector;
+        InnerScoreDirector<Solution_, ?> innerScoreDirector = (InnerScoreDirector<Solution_, ?>) scoreDirector;
         Object firstValue = variableDescriptor.getValue(entity);
         Object formerEntity = entity;
         for (int i = 0; i < values.length; i++) {

@@ -40,7 +40,7 @@ import org.optaplanner.core.impl.score.director.InnerScoreDirector;
  */
 public final class PartitionChangeMove<Solution_> extends AbstractMove<Solution_> {
 
-    public static <Solution_> PartitionChangeMove<Solution_> createMove(InnerScoreDirector<Solution_> scoreDirector,
+    public static <Solution_> PartitionChangeMove<Solution_> createMove(InnerScoreDirector<Solution_, ?> scoreDirector,
             int partIndex) {
         SolutionDescriptor<Solution_> solutionDescriptor = scoreDirector.getSolutionDescriptor();
         Solution_ workingSolution = scoreDirector.getWorkingSolution();
@@ -80,7 +80,7 @@ public final class PartitionChangeMove<Solution_> extends AbstractMove<Solution_
 
     @Override
     protected void doMoveOnGenuineVariables(ScoreDirector<Solution_> scoreDirector) {
-        InnerScoreDirector<Solution_> innerScoreDirector = (InnerScoreDirector<Solution_>) scoreDirector;
+        InnerScoreDirector<Solution_, ?> innerScoreDirector = (InnerScoreDirector<Solution_, ?>) scoreDirector;
         for (Map.Entry<GenuineVariableDescriptor<Solution_>, List<Pair<Object, Object>>> entry : changeMap.entrySet()) {
             GenuineVariableDescriptor<Solution_> variableDescriptor = entry.getKey();
             for (Pair<Object, Object> pair : entry.getValue()) {

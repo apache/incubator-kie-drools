@@ -66,7 +66,7 @@ public class BestSolutionRecaller<Solution_> extends PhaseLifecycleListenerAdapt
     @Override
     public void solvingStarted(SolverScope<Solution_> solverScope) {
         // Starting bestSolution is already set by Solver.solve(Solution)
-        InnerScoreDirector<Solution_> scoreDirector = solverScope.getScoreDirector();
+        InnerScoreDirector scoreDirector = solverScope.getScoreDirector();
         Score score = scoreDirector.calculateScore();
         solverScope.setBestScore(score);
         solverScope.setBestSolutionTimeMillis(System.currentTimeMillis());
@@ -124,8 +124,7 @@ public class BestSolutionRecaller<Solution_> extends PhaseLifecycleListenerAdapt
         updateBestSolution(solverScope, newBestScore, newBestSolution);
     }
 
-    protected void updateBestSolution(SolverScope<Solution_> solverScope, Score bestScore,
-            Solution_ bestSolution) {
+    protected void updateBestSolution(SolverScope<Solution_> solverScope, Score bestScore, Solution_ bestSolution) {
         if (bestScore.isSolutionInitialized()) {
             if (!solverScope.isBestSolutionInitialized()) {
                 solverScope.setStartingInitializedScore(bestScore);

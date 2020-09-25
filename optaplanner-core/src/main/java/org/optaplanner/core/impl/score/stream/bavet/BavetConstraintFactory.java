@@ -61,7 +61,7 @@ public final class BavetConstraintFactory<Solution_> extends InnerConstraintFact
     // ************************************************************************
 
     @Override
-    public ConstraintSessionFactory<Solution_> buildSessionFactory(Constraint[] constraints) {
+    public ConstraintSessionFactory<Solution_, ?> buildSessionFactory(Constraint[] constraints) {
         List<BavetConstraint<Solution_>> bavetConstraintList = new ArrayList<>(constraints.length);
         Set<String> constraintIdSet = new HashSet<>(constraints.length);
         for (Constraint constraint : constraints) {

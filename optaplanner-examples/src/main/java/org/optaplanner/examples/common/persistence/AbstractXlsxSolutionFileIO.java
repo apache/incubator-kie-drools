@@ -371,13 +371,14 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
 
         public AbstractXlsxWriter(Solution_ solution, String solverConfigResource) {
             this.solution = solution;
-            InnerScoreDirectorFactory<Solution_> scoreDirectorFactory =
-                    ((DefaultSolverFactory<Solution_>) SolverFactory.<Solution_> createFromXmlResource(solverConfigResource))
-                            .getScoreDirectorFactory();
+            InnerScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory =
+                    (InnerScoreDirectorFactory<Solution_, Score_>) ((DefaultSolverFactory<Solution_>) SolverFactory
+                            .createFromXmlResource(solverConfigResource))
+                                    .getScoreDirectorFactory();
             scoreDefinition = scoreDirectorFactory.getScoreDefinition();
-            try (InnerScoreDirector<Solution_> scoreDirector = scoreDirectorFactory.buildScoreDirector()) {
+            try (InnerScoreDirector<Solution_, Score_> scoreDirector = scoreDirectorFactory.buildScoreDirector()) {
                 scoreDirector.setWorkingSolution(solution);
-                score = (Score_) scoreDirector.calculateScore();
+                score = scoreDirector.calculateScore();
                 constraintMatchTotalsMap = scoreDirector.getConstraintMatchTotalMap();
                 indictmentMap = scoreDirector.getIndictmentMap();
             }

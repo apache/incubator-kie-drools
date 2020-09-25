@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,9 +20,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
-import org.optaplanner.core.impl.score.director.incremental.AbstractIncrementalScoreCalculator;
+import org.optaplanner.core.impl.score.director.incremental.IncrementalScoreCalculator;
 import org.optaplanner.examples.investment.domain.AssetClassAllocation;
 import org.optaplanner.examples.investment.domain.InvestmentSolution;
 import org.optaplanner.examples.investment.domain.Region;
@@ -30,7 +29,8 @@ import org.optaplanner.examples.investment.domain.Sector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class InvestmentIncrementalScoreCalculator extends AbstractIncrementalScoreCalculator<InvestmentSolution> {
+public class InvestmentIncrementalScoreCalculator
+        implements IncrementalScoreCalculator<InvestmentSolution, HardSoftLongScore> {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -194,7 +194,7 @@ public class InvestmentIncrementalScoreCalculator extends AbstractIncrementalSco
     }
 
     @Override
-    public Score calculateScore() {
+    public HardSoftLongScore calculateScore() {
         return HardSoftLongScore.of(hardScore, softScore);
     }
 

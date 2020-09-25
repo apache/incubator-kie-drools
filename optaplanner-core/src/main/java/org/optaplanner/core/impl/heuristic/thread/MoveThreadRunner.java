@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ import org.optaplanner.core.impl.solver.thread.ChildThreadType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class MoveThreadRunner<Solution_> implements Runnable {
+public class MoveThreadRunner<Solution_, Score_ extends Score<Score_>> implements Runnable {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -46,7 +46,7 @@ public class MoveThreadRunner<Solution_> implements Runnable {
     private final boolean assertExpectedStepScore;
     private final boolean assertShadowVariablesAreNotStaleAfterStep;
 
-    private InnerScoreDirector<Solution_> scoreDirector = null;
+    private InnerScoreDirector<Solution_, Score_> scoreDirector = null;
     private AtomicLong calculationCount = new AtomicLong(-1);
 
     public MoveThreadRunner(String logIndentation, int moveThreadIndex, boolean evaluateDoable,
@@ -73,7 +73,7 @@ public class MoveThreadRunner<Solution_> implements Runnable {
     public void run() {
         try {
             int stepIndex = -1;
-            Score lastStepScore = null;
+            Score_ lastStepScore = null;
             while (true) {
                 MoveThreadOperation<Solution_> operation;
                 try {
@@ -84,7 +84,7 @@ public class MoveThreadRunner<Solution_> implements Runnable {
                 }
 
                 if (operation instanceof SetupOperation) {
-                    SetupOperation<Solution_> setupOperation = (SetupOperation<Solution_>) operation;
+                    SetupOperation<Solution_, Score_> setupOperation = (SetupOperation<Solution_, Score_>) operation;
                     scoreDirector = setupOperation.getScoreDirector()
                             .createChildThreadScoreDirector(ChildThreadType.MOVE_THREAD);
                     stepIndex = 0;
@@ -107,7 +107,8 @@ public class MoveThreadRunner<Solution_> implements Runnable {
                     // TODO Performance gain with specialized 2-phase cyclic barrier:
                     // As soon as the last move thread has taken its ApplyStepOperation,
                     // other move threads can already depart from the moveThreadStepBarrier: no need to wait until the step is done.
-                    ApplyStepOperation<Solution_> applyStepOperation = (ApplyStepOperation<Solution_>) operation;
+                    ApplyStepOperation<Solution_, Score_> applyStepOperation =
+                            (ApplyStepOperation<Solution_, Score_>) operation;
                     if (stepIndex + 1 != applyStepOperation.getStepIndex()) {
                         throw new IllegalStateException("Impossible situation: the moveThread's stepIndex (" + stepIndex
                                 + ") is not followed by the operation's stepIndex ("
@@ -115,7 +116,7 @@ public class MoveThreadRunner<Solution_> implements Runnable {
                     }
                     stepIndex = applyStepOperation.getStepIndex();
                     Move<Solution_> step = applyStepOperation.getStep().rebase(scoreDirector);
-                    Score score = applyStepOperation.getScore();
+                    Score_ score = applyStepOperation.getScore();
                     step.doMove(scoreDirector);
                     predictWorkingStepScore(step, score);
                     lastStepScore = score;
@@ -143,7 +144,7 @@ public class MoveThreadRunner<Solution_> implements Runnable {
                                 logIndentation, moveThreadIndex, stepIndex, moveIndex);
                         resultQueue.addUndoableMove(moveThreadIndex, stepIndex, moveIndex, move);
                     } else {
-                        Score score = scoreDirector.doAndProcessMove(move, assertMoveScoreFromScratch);
+                        Score<?> score = scoreDirector.doAndProcessMove(move, assertMoveScoreFromScratch);
                         if (assertExpectedUndoMoveScore) {
                             scoreDirector.assertExpectedUndoMoveScore(move, lastStepScore);
                         }
@@ -171,7 +172,7 @@ public class MoveThreadRunner<Solution_> implements Runnable {
         }
     }
 
-    protected void predictWorkingStepScore(Move<Solution_> step, Score score) {
+    protected void predictWorkingStepScore(Move<Solution_> step, Score_ score) {
         // There is no need to recalculate the score, but we still need to set it
         scoreDirector.getSolutionDescriptor().setScore(scoreDirector.getWorkingSolution(), score);
         if (assertStepScoreFromScratch) {

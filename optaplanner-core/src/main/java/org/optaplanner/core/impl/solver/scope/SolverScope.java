@@ -41,7 +41,7 @@ public class SolverScope<Solution_> {
 
     protected int startingSolverCount;
     protected Random workingRandom;
-    protected InnerScoreDirector<Solution_> scoreDirector;
+    protected InnerScoreDirector<Solution_, ?> scoreDirector;
     /**
      * Used for capping CPU power usage in multithreaded scenarios.
      */
@@ -77,11 +77,11 @@ public class SolverScope<Solution_> {
         this.workingRandom = workingRandom;
     }
 
-    public InnerScoreDirector<Solution_> getScoreDirector() {
+    public InnerScoreDirector<Solution_, ?> getScoreDirector() {
         return scoreDirector;
     }
 
-    public void setScoreDirector(InnerScoreDirector<Solution_> scoreDirector) {
+    public void setScoreDirector(InnerScoreDirector<Solution_, ?> scoreDirector) {
         this.scoreDirector = scoreDirector;
     }
 

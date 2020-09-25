@@ -58,8 +58,8 @@ public abstract class AbstractPhaseScope<Solution_> {
         return startingSystemTimeMillis;
     }
 
-    public Score getStartingScore() {
-        return startingScore;
+    public <Score_ extends Score<Score_>> Score_ getStartingScore() {
+        return (Score_) startingScore;
     }
 
     public Long getEndingSystemTimeMillis() {
@@ -103,7 +103,7 @@ public abstract class AbstractPhaseScope<Solution_> {
         return solverScope.getSolutionDescriptor();
     }
 
-    public ScoreDefinition getScoreDefinition() {
+    public <Score_ extends Score<Score_>> ScoreDefinition<Score_> getScoreDefinition() {
         return solverScope.getScoreDefinition();
     }
 
@@ -138,8 +138,8 @@ public abstract class AbstractPhaseScope<Solution_> {
         return getPhaseScoreCalculationCount() * 1000L / (timeMillisSpent == 0L ? 1L : timeMillisSpent);
     }
 
-    public InnerScoreDirector<Solution_> getScoreDirector() {
-        return solverScope.getScoreDirector();
+    public <Score_ extends Score<Score_>> InnerScoreDirector<Solution_, Score_> getScoreDirector() {
+        return (InnerScoreDirector<Solution_, Score_>) solverScope.getScoreDirector();
     }
 
     public Solution_ getWorkingSolution() {
@@ -158,24 +158,32 @@ public abstract class AbstractPhaseScope<Solution_> {
         return solverScope.getWorkingValueCount();
     }
 
-    public Score calculateScore() {
-        return solverScope.calculateScore();
+    public <Score_ extends Score<Score_>> Score_ calculateScore() {
+        return (Score_) solverScope.calculateScore();
     }
 
-    public void assertExpectedWorkingScore(Score expectedWorkingScore, Object completedAction) {
-        getScoreDirector().assertExpectedWorkingScore(expectedWorkingScore, completedAction);
+    public <Score_ extends Score<Score_>> void assertExpectedWorkingScore(Score_ expectedWorkingScore,
+            Object completedAction) {
+        InnerScoreDirector<Solution_, Score_> innerScoreDirector = getScoreDirector();
+        innerScoreDirector.assertExpectedWorkingScore(expectedWorkingScore, completedAction);
     }
 
-    public void assertWorkingScoreFromScratch(Score workingScore, Object completedAction) {
-        getScoreDirector().assertWorkingScoreFromScratch(workingScore, completedAction);
+    public <Score_ extends Score<Score_>> void assertWorkingScoreFromScratch(Score_ workingScore,
+            Object completedAction) {
+        InnerScoreDirector<Solution_, Score_> innerScoreDirector = getScoreDirector();
+        innerScoreDirector.assertWorkingScoreFromScratch(workingScore, completedAction);
     }
 
-    public void assertPredictedScoreFromScratch(Score workingScore, Object completedAction) {
-        getScoreDirector().assertPredictedScoreFromScratch(workingScore, completedAction);
+    public <Score_ extends Score<Score_>> void assertPredictedScoreFromScratch(Score_ workingScore,
+            Object completedAction) {
+        InnerScoreDirector<Solution_, Score_> innerScoreDirector = getScoreDirector();
+        innerScoreDirector.assertPredictedScoreFromScratch(workingScore, completedAction);
     }
 
-    public void assertShadowVariablesAreNotStale(Score workingScore, Object completedAction) {
-        getScoreDirector().assertShadowVariablesAreNotStale(workingScore, completedAction);
+    public <Score_ extends Score<Score_>> void assertShadowVariablesAreNotStale(Score_ workingScore,
+            Object completedAction) {
+        InnerScoreDirector<Solution_, Score_> innerScoreDirector = getScoreDirector();
+        innerScoreDirector.assertShadowVariablesAreNotStale(workingScore, completedAction);
     }
 
     public Random getWorkingRandom() {
@@ -186,8 +194,8 @@ public abstract class AbstractPhaseScope<Solution_> {
         return solverScope.isBestSolutionInitialized();
     }
 
-    public Score getBestScore() {
-        return solverScope.getBestScore();
+    public <Score_ extends Score<Score_>> Score_ getBestScore() {
+        return (Score_) solverScope.getBestScore();
     }
 
     public long getPhaseBestSolutionTimeMillis() {

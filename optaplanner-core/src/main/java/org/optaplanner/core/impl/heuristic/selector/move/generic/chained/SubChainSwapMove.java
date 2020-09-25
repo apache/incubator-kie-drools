@@ -107,7 +107,7 @@ public class SubChainSwapMove<Solution_> extends AbstractMove<Solution_> {
         Object rightFirstValue = variableDescriptor.getValue(rightFirstEntity);
         Object rightLastEntity = rightSubChain.getLastEntity();
         // Change the entities
-        InnerScoreDirector<Solution_> innerScoreDirector = (InnerScoreDirector<Solution_>) scoreDirector;
+        InnerScoreDirector<Solution_, ?> innerScoreDirector = (InnerScoreDirector<Solution_, ?>) scoreDirector;
         if (leftLastEntity != rightFirstValue) {
             innerScoreDirector.changeVariableFacade(variableDescriptor, leftFirstEntity, rightFirstValue);
         }

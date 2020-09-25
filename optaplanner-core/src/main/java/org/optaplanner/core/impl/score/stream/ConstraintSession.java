@@ -26,7 +26,7 @@ import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 /**
  * An instance of this class must be used in only one thread.
  */
-public interface ConstraintSession<Solution_> extends AutoCloseable {
+public interface ConstraintSession<Solution_, Score_ extends Score<Score_>> extends AutoCloseable {
 
     void insert(Object fact);
 
@@ -34,23 +34,21 @@ public interface ConstraintSession<Solution_> extends AutoCloseable {
 
     void retract(Object fact);
 
-    Score<?> calculateScore(int initScore);
+    Score_ calculateScore(int initScore);
 
     /**
      * As defined by {@link InnerScoreDirector#getConstraintMatchTotalMap()}.
      *
      * @return never null
-     * @param <Score_> the {@link Score} type
      */
-    <Score_ extends Score<Score_>> Map<String, ConstraintMatchTotal<Score_>> getConstraintMatchTotalMap();
+    Map<String, ConstraintMatchTotal<Score_>> getConstraintMatchTotalMap();
 
     /**
      * As defined by {@link InnerScoreDirector#getIndictmentMap()}.
      *
      * @return never null
-     * @param <Score_> the {@link Score} type
      */
-    <Score_ extends Score<Score_>> Map<Object, Indictment<Score_>> getIndictmentMap();
+    Map<Object, Indictment<Score_>> getIndictmentMap();
 
     @Override
     void close();

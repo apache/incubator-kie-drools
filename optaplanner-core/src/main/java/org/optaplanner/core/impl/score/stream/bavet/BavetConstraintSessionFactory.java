@@ -25,7 +25,8 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.stream.ConstraintSession;
 import org.optaplanner.core.impl.score.stream.common.AbstractConstraintSessionFactory;
 
-public final class BavetConstraintSessionFactory<Solution_> extends AbstractConstraintSessionFactory<Solution_> {
+public final class BavetConstraintSessionFactory<Solution_, Score_ extends Score<Score_>>
+        extends AbstractConstraintSessionFactory<Solution_, Score_> {
 
     private final List<BavetConstraint<Solution_>> constraintList;
 
@@ -40,11 +41,12 @@ public final class BavetConstraintSessionFactory<Solution_> extends AbstractCons
     // ************************************************************************
 
     @Override
-    public ConstraintSession<Solution_> buildSession(boolean constraintMatchEnabled, Solution_ workingSolution) {
-        Score<?> zeroScore = getScoreDefinition().getZeroScore();
-        Map<BavetConstraint<Solution_>, Score<?>> constraintToWeightMap = new LinkedHashMap<>(constraintList.size());
+    public ConstraintSession<Solution_, Score_> buildSession(boolean constraintMatchEnabled,
+            Solution_ workingSolution) {
+        Score_ zeroScore = getScoreDefinition().getZeroScore();
+        Map<BavetConstraint<Solution_>, Score_> constraintToWeightMap = new LinkedHashMap<>(constraintList.size());
         for (BavetConstraint<Solution_> constraint : constraintList) {
-            Score<?> constraintWeight = constraint.extractConstraintWeight(workingSolution);
+            Score_ constraintWeight = (Score_) constraint.extractConstraintWeight(workingSolution);
             if (!constraintWeight.equals(zeroScore)) {
                 constraintToWeightMap.put(constraint, constraintWeight);
             }

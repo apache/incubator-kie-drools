@@ -37,6 +37,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.mockito.AdditionalAnswers;
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
@@ -127,19 +128,19 @@ public class PlannerTestUtils {
     // ScoreDirector methods
     // ************************************************************************
 
-    public static <Solution_> InnerScoreDirector<Solution_> mockScoreDirector(
+    public static <Solution_> InnerScoreDirector<Solution_, SimpleScore> mockScoreDirector(
             SolutionDescriptor<Solution_> solutionDescriptor) {
-        EasyScoreDirectorFactory<Solution_> scoreDirectorFactory = new EasyScoreDirectorFactory<>(solutionDescriptor,
-                (solution_) -> SimpleScore.of(0));
+        EasyScoreDirectorFactory<Solution_, SimpleScore> scoreDirectorFactory =
+                new EasyScoreDirectorFactory<>(solutionDescriptor, (solution_) -> SimpleScore.of(0));
         scoreDirectorFactory.setInitializingScoreTrend(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_DOWN, 1));
         return mock(InnerScoreDirector.class,
                 AdditionalAnswers.delegatesTo(scoreDirectorFactory.buildScoreDirector(false, false)));
     }
 
-    public static <Solution_> InnerScoreDirector<Solution_> mockRebasingScoreDirector(
-            SolutionDescriptor<Solution_> solutionDescriptor, Object[][] lookUpMappings) {
-        InnerScoreDirector scoreDirector = mock(InnerScoreDirector.class);
+    public static <Solution_, Score_ extends Score<Score_>> InnerScoreDirector<Solution_, Score_>
+            mockRebasingScoreDirector(SolutionDescriptor<Solution_> solutionDescriptor, Object[][] lookUpMappings) {
+        InnerScoreDirector<Solution_, Score_> scoreDirector = mock(InnerScoreDirector.class);
         when(scoreDirector.getSolutionDescriptor()).thenReturn(solutionDescriptor);
         when(scoreDirector.lookUpWorkingObject(any())).thenAnswer((invocation) -> {
             Object externalObject = invocation.getArguments()[0];

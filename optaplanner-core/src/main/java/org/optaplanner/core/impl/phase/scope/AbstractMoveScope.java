@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ public abstract class AbstractMoveScope<Solution_> {
     protected final int moveIndex;
     protected final Move<Solution_> move;
 
-    protected Score score = null;
+    protected Score<?> score = null;
 
     public AbstractMoveScope(int moveIndex, Move<Solution_> move) {
         this.moveIndex = moveIndex;
@@ -48,11 +48,11 @@ public abstract class AbstractMoveScope<Solution_> {
         return move;
     }
 
-    public Score getScore() {
-        return score;
+    public <Score_ extends Score<Score_>> Score_ getScore() {
+        return (Score_) score;
     }
 
-    public void setScore(Score score) {
+    public <Score_ extends Score<Score_>> void setScore(Score_ score) {
         this.score = score;
     }
 
@@ -64,7 +64,7 @@ public abstract class AbstractMoveScope<Solution_> {
         return getStepScope().getStepIndex();
     }
 
-    public InnerScoreDirector<Solution_> getScoreDirector() {
+    public <Score_ extends Score<Score_>> InnerScoreDirector<Solution_, Score_> getScoreDirector() {
         return getStepScope().getScoreDirector();
     }
 

@@ -28,7 +28,7 @@ import java.util.Arrays;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
@@ -164,15 +164,17 @@ class SolverFactoryTest {
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class);
         DefaultSolverFactory<TestdataSolution> solverFactory =
                 (DefaultSolverFactory<TestdataSolution>) SolverFactory.<TestdataSolution> create(solverConfig);
-        InnerScoreDirectorFactory<TestdataSolution> scoreDirectorFactory = solverFactory.getScoreDirectorFactory();
+        InnerScoreDirectorFactory<TestdataSolution, SimpleScore> scoreDirectorFactory =
+                (InnerScoreDirectorFactory<TestdataSolution, SimpleScore>) solverFactory.getScoreDirectorFactory();
         assertThat(scoreDirectorFactory).isNotNull();
 
         TestdataSolution solution = new TestdataSolution("s1");
         solution.setEntityList(Arrays.asList(new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3")));
         solution.setValueList(Arrays.asList(new TestdataValue("v1"), new TestdataValue("v2")));
-        try (InnerScoreDirector<TestdataSolution> scoreDirector = scoreDirectorFactory.buildScoreDirector()) {
+        try (InnerScoreDirector<TestdataSolution, SimpleScore> scoreDirector =
+                scoreDirectorFactory.buildScoreDirector()) {
             scoreDirector.setWorkingSolution(solution);
-            Score score = scoreDirector.calculateScore();
+            SimpleScore score = scoreDirector.calculateScore();
             assertThat(score).isNotNull();
         }
     }

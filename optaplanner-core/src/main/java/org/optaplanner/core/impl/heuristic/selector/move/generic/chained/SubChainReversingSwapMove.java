@@ -105,7 +105,7 @@ public class SubChainReversingSwapMove<Solution_> extends AbstractMove<Solution_
         Object leftLastEntityValue = variableDescriptor.getValue(leftLastEntity);
         Object rightLastEntityValue = variableDescriptor.getValue(rightLastEntity);
         // Change the entities
-        InnerScoreDirector<Solution_> innerScoreDirector = (InnerScoreDirector<Solution_>) scoreDirector;
+        InnerScoreDirector<Solution_, ?> innerScoreDirector = (InnerScoreDirector<Solution_, ?>) scoreDirector;
         if (leftLastEntity != rightFirstValue) {
             innerScoreDirector.changeVariableFacade(variableDescriptor, leftLastEntity, rightFirstValue);
         }
@@ -132,7 +132,7 @@ public class SubChainReversingSwapMove<Solution_> extends AbstractMove<Solution_
         }
     }
 
-    private void reverseChain(InnerScoreDirector<Solution_> scoreDirector, Object entity, Object previous,
+    private void reverseChain(InnerScoreDirector<Solution_, ?> scoreDirector, Object entity, Object previous,
             Object toEntity) {
         while (entity != toEntity) {
             Object value = variableDescriptor.getValue(previous);

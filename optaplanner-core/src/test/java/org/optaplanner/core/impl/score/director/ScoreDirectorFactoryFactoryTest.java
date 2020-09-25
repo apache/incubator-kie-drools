@@ -26,6 +26,7 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
@@ -49,8 +50,8 @@ class ScoreDirectorFactoryFactoryTest {
         customProperties.put("intProperty", "7");
         config.setEasyScoreCalculatorCustomProperties(customProperties);
 
-        EasyScoreDirector<TestdataSolution> scoreDirector =
-                (EasyScoreDirector<TestdataSolution>) buildTestdataScoreDirectoryFactory(config).buildScoreDirector();
+        EasyScoreDirector<TestdataSolution, ?> scoreDirector =
+                (EasyScoreDirector<TestdataSolution, ?>) buildTestdataScoreDirectoryFactory(config).buildScoreDirector();
         ScoreDirectorFactoryFactoryTest.TestCustomPropertiesEasyScoreCalculator scoreCalculator =
                 (ScoreDirectorFactoryFactoryTest.TestCustomPropertiesEasyScoreCalculator) scoreDirector
                         .getEasyScoreCalculator();
@@ -69,8 +70,8 @@ class ScoreDirectorFactoryFactoryTest {
         config.setIncrementalScoreCalculatorCustomProperties(customProperties);
 
         ScoreDirectorFactory<TestdataSolution> scoreDirectorFactory = buildTestdataScoreDirectoryFactory(config);
-        IncrementalScoreDirector<TestdataSolution> scoreDirector =
-                (IncrementalScoreDirector<TestdataSolution>) scoreDirectorFactory.buildScoreDirector();
+        IncrementalScoreDirector<TestdataSolution, ?> scoreDirector =
+                (IncrementalScoreDirector<TestdataSolution, ?>) scoreDirectorFactory.buildScoreDirector();
         ScoreDirectorFactoryFactoryTest.TestCustomPropertiesIncrementalScoreCalculator scoreCalculator =
                 (ScoreDirectorFactoryFactoryTest.TestCustomPropertiesIncrementalScoreCalculator) scoreDirector
                         .getIncrementalScoreCalculator();
@@ -86,15 +87,15 @@ class ScoreDirectorFactoryFactoryTest {
                 .withConstraintProviderClass(TestdataConstraintProvider.class)
                 .withAssertionScoreDirectorFactory(assertionScoreDirectorConfig);
 
-        AbstractScoreDirectorFactory<TestdataSolution> scoreDirectorFactory =
-                (AbstractScoreDirectorFactory<TestdataSolution>) buildTestdataScoreDirectoryFactory(config,
+        AbstractScoreDirectorFactory<TestdataSolution, ?> scoreDirectorFactory =
+                (AbstractScoreDirectorFactory<TestdataSolution, ?>) buildTestdataScoreDirectoryFactory(config,
                         EnvironmentMode.FAST_ASSERT);
 
         ScoreDirectorFactory<TestdataSolution> assertionScoreDirectorFactory =
                 scoreDirectorFactory.getAssertionScoreDirectorFactory();
-        IncrementalScoreDirector<TestdataSolution> assertionScoreDirector =
-                (IncrementalScoreDirector<TestdataSolution>) assertionScoreDirectorFactory.buildScoreDirector();
-        IncrementalScoreCalculator<TestdataSolution> assertionScoreCalculator =
+        IncrementalScoreDirector<TestdataSolution, ?> assertionScoreDirector =
+                (IncrementalScoreDirector<TestdataSolution, ?>) assertionScoreDirectorFactory.buildScoreDirector();
+        IncrementalScoreCalculator<TestdataSolution, ?> assertionScoreCalculator =
                 assertionScoreDirector.getIncrementalScoreCalculator();
 
         assertThat(assertionScoreCalculator)
@@ -116,7 +117,8 @@ class ScoreDirectorFactoryFactoryTest {
         kieBaseConfigurationProperties.put(secondPropertyName, secondPropertyValue);
 
         config.setKieBaseConfigurationProperties(kieBaseConfigurationProperties);
-        ScoreDirectorFactoryFactory<TestdataSolution> scoreDirectorFactoryFactory = new ScoreDirectorFactoryFactory<>(config);
+        ScoreDirectorFactoryFactory<TestdataSolution, ?> scoreDirectorFactoryFactory =
+                new ScoreDirectorFactoryFactory<>(config);
         KieBaseConfiguration kieBaseConfiguration =
                 scoreDirectorFactoryFactory.buildKieBaseConfiguration(KieServices.Factory.get());
 
@@ -150,17 +152,19 @@ class ScoreDirectorFactoryFactoryTest {
                 .withMessageContaining("scoreDrlFile");
     }
 
-    private ScoreDirectorFactory<TestdataSolution> buildTestdataScoreDirectoryFactory(ScoreDirectorFactoryConfig config,
-            EnvironmentMode environmentMode) {
-        return new ScoreDirectorFactoryFactory<TestdataSolution>(config).buildScoreDirectorFactory(getClass().getClassLoader(),
-                environmentMode, TestdataSolution.buildSolutionDescriptor());
+    private <Score_ extends Score<Score_>> ScoreDirectorFactory<TestdataSolution> buildTestdataScoreDirectoryFactory(
+            ScoreDirectorFactoryConfig config, EnvironmentMode environmentMode) {
+        return new ScoreDirectorFactoryFactory<TestdataSolution, Score_>(config)
+                .buildScoreDirectorFactory(getClass().getClassLoader(), environmentMode,
+                        TestdataSolution.buildSolutionDescriptor());
     }
 
     private ScoreDirectorFactory<TestdataSolution> buildTestdataScoreDirectoryFactory(ScoreDirectorFactoryConfig config) {
         return buildTestdataScoreDirectoryFactory(config, EnvironmentMode.REPRODUCIBLE);
     }
 
-    public static class TestCustomPropertiesEasyScoreCalculator implements EasyScoreCalculator<TestdataSolution> {
+    public static class TestCustomPropertiesEasyScoreCalculator
+            implements EasyScoreCalculator<TestdataSolution, SimpleScore> {
 
         private String stringProperty;
         private int intProperty;
@@ -189,7 +193,8 @@ class ScoreDirectorFactoryFactoryTest {
         }
     }
 
-    public static class TestCustomPropertiesIncrementalScoreCalculator implements IncrementalScoreCalculator<TestdataSolution> {
+    public static class TestCustomPropertiesIncrementalScoreCalculator
+            implements IncrementalScoreCalculator<TestdataSolution, SimpleScore> {
 
         private String stringProperty;
         private int intProperty;

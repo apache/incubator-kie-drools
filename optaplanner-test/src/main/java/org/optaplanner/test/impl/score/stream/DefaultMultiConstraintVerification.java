@@ -29,11 +29,11 @@ import org.optaplanner.test.api.score.stream.MultiConstraintVerification;
 public final class DefaultMultiConstraintVerification<Solution_, Score_ extends Score<Score_>>
         implements MultiConstraintVerification<Solution_> {
 
-    private final ConstraintStreamScoreDirectorFactory<Solution_> scoreDirectorFactory;
+    private final ConstraintStreamScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory;
     private final ConstraintProvider constraintProvider;
 
     protected DefaultMultiConstraintVerification(
-            ConstraintStreamScoreDirectorFactory<Solution_> scoreDirectorFactory,
+            ConstraintStreamScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory,
             ConstraintProvider constraintProvider) {
         this.scoreDirectorFactory = scoreDirectorFactory;
         this.constraintProvider = constraintProvider;
@@ -41,18 +41,20 @@ public final class DefaultMultiConstraintVerification<Solution_, Score_ extends 
 
     @Override
     public final DefaultMultiConstraintAssertion<Solution_, Score_> given(Object... facts) {
-        try (ConstraintSession<Solution_> constraintSession = scoreDirectorFactory.newConstraintStreamingSession(true, null)) {
+        try (ConstraintSession<Solution_, Score_> constraintSession =
+                scoreDirectorFactory.newConstraintStreamingSession(true, null)) {
             Arrays.stream(facts).forEach(constraintSession::insert);
-            return new DefaultMultiConstraintAssertion<>(constraintProvider, (Score_) constraintSession.calculateScore(0),
+            return new DefaultMultiConstraintAssertion<>(constraintProvider, constraintSession.calculateScore(0),
                     constraintSession.getConstraintMatchTotalMap(), constraintSession.getIndictmentMap());
         }
     }
 
     @Override
     public final DefaultMultiConstraintAssertion<Solution_, Score_> givenSolution(Solution_ solution) {
-        try (InnerScoreDirector<Solution_> scoreDirector = scoreDirectorFactory.buildScoreDirector(true, true)) {
+        try (InnerScoreDirector<Solution_, Score_> scoreDirector =
+                scoreDirectorFactory.buildScoreDirector(true, true)) {
             scoreDirector.setWorkingSolution(Objects.requireNonNull(solution));
-            return new DefaultMultiConstraintAssertion<>(constraintProvider, (Score_) scoreDirector.calculateScore(),
+            return new DefaultMultiConstraintAssertion<>(constraintProvider, scoreDirector.calculateScore(),
                     scoreDirector.getConstraintMatchTotalMap(), scoreDirector.getIndictmentMap());
         }
     }

@@ -19,11 +19,12 @@ import java.io.File;
 import java.util.List;
 
 import org.kie.api.KieBase;
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
 import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirectorFactory;
 
-public class TestGenDroolsScoreDirectorFactory<Solution_> extends DroolsScoreDirectorFactory<Solution_> {
+public class TestGenDroolsScoreDirectorFactory<Solution_, Score_ extends Score<Score_>>
+        extends DroolsScoreDirectorFactory<Solution_, Score_> {
 
     private final List<String> scoreDrlList;
     private final List<File> scoreDrlFileList;
@@ -42,7 +43,7 @@ public class TestGenDroolsScoreDirectorFactory<Solution_> extends DroolsScoreDir
     }
 
     @Override
-    public DroolsScoreDirector<Solution_> buildScoreDirector(
+    public TestGenDroolsScoreDirector<Solution_, Score_> buildScoreDirector(
             boolean lookUpEnabled, boolean constraintMatchEnabledPreference) {
         return new TestGenDroolsScoreDirector<>(this, lookUpEnabled, constraintMatchEnabledPreference, scoreDrlList,
                 scoreDrlFileList);

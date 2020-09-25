@@ -22,7 +22,6 @@ import static java.util.Objects.requireNonNull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
@@ -71,8 +70,8 @@ import org.slf4j.LoggerFactory;
  *
  * @see ScoreDirector
  */
-public abstract class AbstractScoreDirector<Solution_, Factory_ extends AbstractScoreDirectorFactory<Solution_>>
-        implements InnerScoreDirector<Solution_>, Cloneable {
+public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Score_>, Factory_ extends AbstractScoreDirectorFactory<Solution_, Score_>>
+        implements InnerScoreDirector<Solution_, Score_>, Cloneable {
 
     private static final int DEFAULT_SCORE_EXPLANATION_INDICTMENT_LIMIT = 5;
     private static final int DEFAULT_SCORE_EXPLANATION_CONSTRAINT_MATCH_LIMIT = 2;
@@ -117,7 +116,7 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
     }
 
     @Override
-    public ScoreDefinition getScoreDefinition() {
+    public ScoreDefinition<Score_> getScoreDefinition() {
         return scoreDirectorFactory.getScoreDefinition();
     }
 
@@ -214,9 +213,9 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
     }
 
     @Override
-    public Score doAndProcessMove(Move<Solution_> move, boolean assertMoveScoreFromScratch) {
+    public Score_ doAndProcessMove(Move<Solution_> move, boolean assertMoveScoreFromScratch) {
         Move<Solution_> undoMove = move.doMove(this);
-        Score score = calculateScore();
+        Score_ score = calculateScore();
         if (assertMoveScoreFromScratch) {
             assertWorkingScoreFromScratch(score, move);
         }
@@ -225,9 +224,9 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
     }
 
     @Override
-    public void doAndProcessMove(Move<Solution_> move, boolean assertMoveScoreFromScratch, Consumer<Score> moveProcessor) {
+    public void doAndProcessMove(Move<Solution_> move, boolean assertMoveScoreFromScratch, Consumer<Score_> moveProcessor) {
         Move<Solution_> undoMove = move.doMove(this);
-        Score score = calculateScore();
+        Score_ score = calculateScore();
         if (assertMoveScoreFromScratch) {
             assertWorkingScoreFromScratch(score, move);
         }
@@ -252,9 +251,9 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
     @Override
     public Solution_ cloneSolution(Solution_ originalSolution) {
         SolutionDescriptor<Solution_> solutionDescriptor = getSolutionDescriptor();
-        Score originalScore = solutionDescriptor.getScore(originalSolution);
+        Score_ originalScore = (Score_) solutionDescriptor.getScore(originalSolution);
         Solution_ cloneSolution = solutionDescriptor.getSolutionCloner().cloneSolution(originalSolution);
-        Score cloneScore = solutionDescriptor.getScore(cloneSolution);
+        Score_ cloneScore = (Score_) solutionDescriptor.getScore(cloneSolution);
         if (scoreDirectorFactory.isAssertClonedSolution()) {
             if (!Objects.equals(originalScore, cloneScore)) {
                 throw new IllegalStateException("Cloning corruption: "
@@ -301,7 +300,7 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
         variableListenerSupport.triggerVariableListenersInNotificationQueues();
     }
 
-    protected void setCalculatedScore(Score score) {
+    protected void setCalculatedScore(Score_ score) {
         getSolutionDescriptor().setScore(workingSolution, score);
         calculationCount++;
     }
@@ -378,29 +377,30 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
     }
 
     @Override
-    public <Score_ extends Score<Score_>> String explainScore() {
+    public String explainScore() {
         // TODO this causes 3 "fireAllRule" calls.
-        Score_ score = (Score_) calculateScore();
+        Score_ score = calculateScore();
         Map<String, ConstraintMatchTotal<Score_>> constraintMatchTotalMap = getConstraintMatchTotalMap();
         Map<Object, Indictment<Score_>> indictmentMap = getIndictmentMap();
         return explainScore(score, constraintMatchTotalMap.values(), indictmentMap.values());
     }
 
     @Override
-    public AbstractScoreDirector<Solution_, Factory_> clone() {
+    public AbstractScoreDirector<Solution_, Score_, Factory_> clone() {
         // Breaks incremental score calculation.
         // Subclasses should overwrite this method to avoid breaking it if possible.
-        AbstractScoreDirector<Solution_, Factory_> clone = (AbstractScoreDirector<Solution_, Factory_>) scoreDirectorFactory
-                .buildScoreDirector(isLookUpEnabled(), constraintMatchEnabledPreference);
+        AbstractScoreDirector<Solution_, Score_, Factory_> clone =
+                (AbstractScoreDirector<Solution_, Score_, Factory_>) scoreDirectorFactory
+                        .buildScoreDirector(isLookUpEnabled(), constraintMatchEnabledPreference);
         clone.setWorkingSolution(cloneWorkingSolution());
         return clone;
     }
 
     @Override
-    public InnerScoreDirector<Solution_> createChildThreadScoreDirector(ChildThreadType childThreadType) {
+    public InnerScoreDirector<Solution_, Score_> createChildThreadScoreDirector(ChildThreadType childThreadType) {
         if (childThreadType == ChildThreadType.PART_THREAD) {
-            AbstractScoreDirector<Solution_, Factory_> childThreadScoreDirector =
-                    (AbstractScoreDirector<Solution_, Factory_>) scoreDirectorFactory
+            AbstractScoreDirector<Solution_, Score_, Factory_> childThreadScoreDirector =
+                    (AbstractScoreDirector<Solution_, Score_, Factory_>) scoreDirectorFactory
                             .buildScoreDirector(isLookUpEnabled(), constraintMatchEnabledPreference);
             // ScoreCalculationCountTermination takes into account previous phases
             // but the calculationCount of partitions is maxed, not summed.
@@ -409,8 +409,8 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
         } else if (childThreadType == ChildThreadType.MOVE_THREAD) {
             // TODO The move thread must use constraintMatchEnabledPreference in FULL_ASSERT,
             // but it doesn't have to for Indictment Local Search, in which case it is a performance loss
-            AbstractScoreDirector<Solution_, Factory_> childThreadScoreDirector =
-                    (AbstractScoreDirector<Solution_, Factory_>) scoreDirectorFactory
+            AbstractScoreDirector<Solution_, Score_, Factory_> childThreadScoreDirector =
+                    (AbstractScoreDirector<Solution_, Score_, Factory_>) scoreDirectorFactory
                             .buildScoreDirector(true, constraintMatchEnabledPreference);
             childThreadScoreDirector.setWorkingSolution(cloneWorkingSolution());
             return childThreadScoreDirector;
@@ -583,8 +583,8 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
     // ************************************************************************
 
     @Override
-    public void assertExpectedWorkingScore(Score expectedWorkingScore, Object completedAction) {
-        Score workingScore = calculateScore();
+    public void assertExpectedWorkingScore(Score_ expectedWorkingScore, Object completedAction) {
+        Score_ workingScore = calculateScore();
         if (!expectedWorkingScore.equals(workingScore)) {
             throw new IllegalStateException(
                     "Score corruption (" + expectedWorkingScore.subtract(workingScore).toShortString()
@@ -595,7 +595,7 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
     }
 
     @Override
-    public void assertShadowVariablesAreNotStale(Score expectedWorkingScore, Object completedAction) {
+    public void assertShadowVariablesAreNotStale(Score_ expectedWorkingScore, Object completedAction) {
         String violationMessage = createShadowVariablesViolationMessage();
         if (violationMessage != null) {
             throw new IllegalStateException(
@@ -603,7 +603,7 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
                             + completedAction + "):\n"
                             + violationMessage);
         }
-        Score workingScore = calculateScore();
+        Score_ workingScore = calculateScore();
         if (!expectedWorkingScore.equals(workingScore)) {
             assertWorkingScoreFromScratch(workingScore,
                     "assertShadowVariablesAreNotStale(" + expectedWorkingScore + ", " + completedAction + ")");
@@ -696,25 +696,26 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
     }
 
     @Override
-    public void assertWorkingScoreFromScratch(Score workingScore, Object completedAction) {
+    public void assertWorkingScoreFromScratch(Score_ workingScore, Object completedAction) {
         assertScoreFromScratch(workingScore, completedAction, false);
     }
 
     @Override
-    public void assertPredictedScoreFromScratch(Score workingScore, Object completedAction) {
+    public void assertPredictedScoreFromScratch(Score_ workingScore, Object completedAction) {
         assertScoreFromScratch(workingScore, completedAction, true);
     }
 
-    private void assertScoreFromScratch(Score score, Object completedAction, boolean predicted) {
-        InnerScoreDirectorFactory<Solution_> assertionScoreDirectorFactory = scoreDirectorFactory
+    private void assertScoreFromScratch(Score_ score, Object completedAction, boolean predicted) {
+        InnerScoreDirectorFactory<Solution_, Score_> assertionScoreDirectorFactory = scoreDirectorFactory
                 .getAssertionScoreDirectorFactory();
         if (assertionScoreDirectorFactory == null) {
             assertionScoreDirectorFactory = scoreDirectorFactory;
         }
-        try (InnerScoreDirector<Solution_> uncorruptedScoreDirector = assertionScoreDirectorFactory.buildScoreDirector(false,
-                true)) {
+        try (InnerScoreDirector<Solution_, Score_> uncorruptedScoreDirector =
+                assertionScoreDirectorFactory.buildScoreDirector(false,
+                        true)) {
             uncorruptedScoreDirector.setWorkingSolution(workingSolution);
-            Score uncorruptedScore = uncorruptedScoreDirector.calculateScore();
+            Score_ uncorruptedScore = uncorruptedScoreDirector.calculateScore();
             if (!score.equals(uncorruptedScore)) {
                 String scoreCorruptionAnalysis = buildScoreCorruptionAnalysis(uncorruptedScoreDirector, predicted);
                 String shadowVariableAnalysis = buildShadowVariableAnalysis(predicted);
@@ -730,8 +731,8 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
     }
 
     @Override
-    public void assertExpectedUndoMoveScore(Move move, Score beforeMoveScore) {
-        Score undoScore = calculateScore();
+    public void assertExpectedUndoMoveScore(Move move, Score_ beforeMoveScore) {
+        Score_ undoScore = calculateScore();
         if (!undoScore.equals(beforeMoveScore)) {
             logger.trace("        Corruption detected. Diagnosing...");
             // TODO PLANNER-421 Avoid undoMove.toString() because it's stale (because the move is already done)
@@ -758,10 +759,9 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
      * @param uncorruptedScoreDirector never null
      * @param predicted true if the score was predicted and might have been calculated on another thread
      * @return never null
-     * @param <Score_> the actual score type
      */
-    protected <Score_ extends Score<Score_>> String buildScoreCorruptionAnalysis(
-            InnerScoreDirector<Solution_> uncorruptedScoreDirector, boolean predicted) {
+    protected String buildScoreCorruptionAnalysis(InnerScoreDirector<Solution_, Score_> uncorruptedScoreDirector,
+            boolean predicted) {
         if (!isConstraintMatchEnabled() || !uncorruptedScoreDirector.isConstraintMatchEnabled()) {
             return "Score corruption analysis could not be generated because"
                     + " either corrupted constraintMatchEnabled (" + isConstraintMatchEnabled()
@@ -834,7 +834,7 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
         return analysis.toString();
     }
 
-    private <Score_ extends Score<Score_>> Map<List<Object>, ConstraintMatch<Score_>> createConstraintMatchMap(
+    private Map<List<Object>, ConstraintMatch<Score_>> createConstraintMatchMap(
             Collection<ConstraintMatchTotal<Score_>> constraintMatchTotals) {
         Comparator<Object> comparator = new ClassAndPlanningIdComparator(false);
         Map<List<Object>, ConstraintMatch<Score_>> constraintMatchMap = new LinkedHashMap<>(constraintMatchTotals.size() * 16);
@@ -842,7 +842,7 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
             for (ConstraintMatch<Score_> constraintMatch : constraintMatchTotal.getConstraintMatchSet()) {
                 // The order of justificationLists for constraints that include accumulates isn't stable, so we make it.
                 List<Object> justificationList = new ArrayList<>(constraintMatch.getJustificationList());
-                Collections.sort(justificationList, comparator);
+                justificationList.sort(comparator);
                 // And now we store the reference to the constraint match.
                 List<Object> key = Arrays.asList(constraintMatchTotal.getConstraintPackage(),
                         constraintMatchTotal.getConstraintName(), justificationList, constraintMatch.getScore());
