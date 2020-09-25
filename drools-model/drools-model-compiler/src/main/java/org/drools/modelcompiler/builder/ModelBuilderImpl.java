@@ -260,11 +260,7 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
 
     protected void generatePOJOs(PackageDescr packageDescr, PackageRegistry pkgRegistry) {
         InternalKnowledgePackage pkg = pkgRegistry.getPackage();
-        String pkgName = pkg.getName();
-        PackageModel model = packageModels.computeIfAbsent(pkgName, s -> {
-            final DialectCompiletimeRegistry dialectCompiletimeRegistry = pkgRegistry.getDialectCompiletimeRegistry();
-            return new PackageModel(releaseId, pkgName, this.getBuilderConfiguration(), isPattern, dialectCompiletimeRegistry, exprIdGenerator);
-        });
+        PackageModel model = getPackageModel(packageDescr, pkgRegistry, pkg.getName());
         model.addImports(pkg.getTypeResolver().getImports());
         new POJOGenerator(this, pkg, packageDescr, model).findPOJOorGenerate();
     }
@@ -273,14 +269,17 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
     protected void compileKnowledgePackages(PackageDescr packageDescr, PackageRegistry pkgRegistry) {
         validateUniqueRuleNames(packageDescr);
         InternalKnowledgePackage pkg = pkgRegistry.getPackage();
-        String pkgName = pkg.getName();
-        PackageModel model = packageModels.computeIfAbsent(pkgName, s -> {
+        PackageModel model = getPackageModel(packageDescr, pkgRegistry, pkg.getName());
+        generateModel(this, pkg, packageDescr, model, isPattern);
+    }
+
+    protected PackageModel getPackageModel(PackageDescr packageDescr, PackageRegistry pkgRegistry,  String pkgName) {
+        return packageModels.computeIfAbsent(pkgName, s -> {
             final DialectCompiletimeRegistry dialectCompiletimeRegistry = pkgRegistry.getDialectCompiletimeRegistry();
             return packageDescr.getPreferredPkgUUID()
                     .map(pkgUUI -> new PackageModel(pkgName, this.getBuilderConfiguration(), isPattern, dialectCompiletimeRegistry, exprIdGenerator, pkgUUI))
                     .orElse(new PackageModel(releaseId, pkgName, this.getBuilderConfiguration(), isPattern, dialectCompiletimeRegistry, exprIdGenerator));
         });
-        generateModel(this, pkg, packageDescr, model, isPattern);
     }
 
     public Collection<T> getPackageSources() {

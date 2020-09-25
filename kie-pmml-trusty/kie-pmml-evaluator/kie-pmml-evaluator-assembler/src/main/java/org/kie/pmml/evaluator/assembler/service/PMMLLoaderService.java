@@ -15,6 +15,7 @@
  */
 package org.kie.pmml.evaluator.assembler.service;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -72,30 +73,36 @@ public class PMMLLoaderService {
      * @throws KiePMMLException if any <code>KiePMMLInternalException</code> has been thrown during execution
      * @throws ExternalException if any other kind of <code>Exception</code> has been thrown during execution
      */
-    public static List<KiePMMLModel> getKiePMMLModelsLoadedFromResource(final KnowledgeBuilderImpl kbuilderImpl, final  Resource resource) {
+    public static List<KiePMMLModel> getKiePMMLModelsLoadedFromResource(final KnowledgeBuilderImpl kbuilderImpl,
+                                                                        final Resource resource) {
         String[] classNamePackageName = getFactoryClassNamePackageName(resource);
         String factoryClassName = classNamePackageName[0];
         String packageName = classNamePackageName[1];
         String fullFactoryClassName = packageName + "." + factoryClassName;
         try {
-            final Class<? extends KiePMMLModelFactory> aClass = (Class<? extends KiePMMLModelFactory>) kbuilderImpl.getRootClassLoader().loadClass(fullFactoryClassName);
-            final List<KiePMMLModel> toReturn = aClass.newInstance().getKiePMMLModels();
-            loadPMMLRuleMappers(kbuilderImpl, resource);
-            return toReturn;
+            final KiePMMLModelFactory aClass = loadKiePMMLModelFactory(kbuilderImpl.getRootClassLoader(),
+                                                                 fullFactoryClassName);
+            final List<PMMLRuleMapper> pmmlRuleMappers = loadPMMLRuleMappers(kbuilderImpl.getRootClassLoader(), resource);
+            return getKiePMMLModelsLoadedFromResource(kbuilderImpl, aClass, pmmlRuleMappers);
         } catch (ClassNotFoundException e) {
-            logger.info(String.format("%s class not found in rootClassLoader, going to compile model", fullFactoryClassName));
+            logger.info(String.format("%s class not found in rootClassLoader, going to compile model",
+                                      fullFactoryClassName));
         } catch (Exception e) {
             throw new KiePMMLException("Exception while instantiating " + fullFactoryClassName, e);
         }
         return Collections.emptyList();
     }
-    
-    static void loadPMMLRuleMappers(final KnowledgeBuilderImpl kbuilderImpl, final  Resource resource) {
-        final List<PMMLRuleMapper> pmmlRuleMappers = loadPMMLRuleMappers(kbuilderImpl.getRootClassLoader(), resource);
+
+    static List<KiePMMLModel> getKiePMMLModelsLoadedFromResource(final KnowledgeBuilderImpl kbuilderImpl,
+                                                                 final KiePMMLModelFactory kiePMMLModelFactory,
+                                                                 final List<PMMLRuleMapper> pmmlRuleMappers) {
+        final List<KiePMMLModel> toReturn = kiePMMLModelFactory.getKiePMMLModels();
         loadPMMLRuleMappers(kbuilderImpl, pmmlRuleMappers);
+        return toReturn;
     }
 
-    static void loadPMMLRuleMappers(final KnowledgeBuilderImpl kbuilderImpl, final  List<PMMLRuleMapper> pmmlRuleMappers) {
+    static void loadPMMLRuleMappers(final KnowledgeBuilderImpl kbuilderImpl,
+                                    final List<PMMLRuleMapper> pmmlRuleMappers) {
         if (!pmmlRuleMappers.isEmpty()) {
             List<Model> models =
                     pmmlRuleMappers.stream()
@@ -108,6 +115,12 @@ public class PMMLLoaderService {
         }
     }
 
+    private static KiePMMLModelFactory loadKiePMMLModelFactory(ClassLoader classLoader, String fullFactoryClassName) throws Exception {
+        final Class<? extends KiePMMLModelFactory> aClass =
+                (Class<? extends KiePMMLModelFactory>) classLoader.loadClass(fullFactoryClassName);
+        return aClass.getDeclaredConstructor().newInstance();
+    }
+
     private static List<PMMLRuleMapper> loadPMMLRuleMappers(final ClassLoader classLoader,
                                                             final Resource resource) {
         Optional<PMMLRuleMappers> pmmlRuleMappers = loadPMMLRuleMappersClass(classLoader, resource);
@@ -115,21 +128,20 @@ public class PMMLLoaderService {
     }
 
     private static Optional<PMMLRuleMappers> loadPMMLRuleMappersClass(final ClassLoader classLoader,
-                                                                            final Resource resource) {
+                                                                      final Resource resource) {
         String[] classNamePackageName = getFactoryClassNamePackageName(resource);
         String packageName = classNamePackageName[1];
         String fullPMMLRuleMappersClassName = packageName + "." + KIE_PMML_RULE_MAPPERS_CLASS_NAME;
         try {
-            PMMLRuleMappers PMMLRuleMappers =
+            PMMLRuleMappers pmmlRuleMappers =
                     (PMMLRuleMappers) classLoader.loadClass(fullPMMLRuleMappersClassName).getDeclaredConstructor().newInstance();
-            return Optional.of(PMMLRuleMappers);
+            return Optional.of(pmmlRuleMappers);
         } catch (ClassNotFoundException e) {
             logger.debug("{} class not found in rootClassLoader", fullPMMLRuleMappersClassName);
             return Optional.empty();
         } catch (Exception e) {
-            throw new RuntimeException(String.format("%s class not instantiable",
+            throw new KiePMMLException(String.format("%s class not instantiable",
                                                      fullPMMLRuleMappersClassName), e);
         }
-    } 
-
+    }
 }

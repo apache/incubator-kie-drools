@@ -132,6 +132,12 @@ public class CompositePackageDescr extends PackageDescr {
                 descr.setResource(resource);
             }
         }
+        packageDescr.getPreferredPkgUUID().ifPresent(pkgUUID -> {
+            if (getPreferredPkgUUID().isPresent() && !pkgUUID.equals(getPreferredPkgUUID().get())) {
+                throw new RuntimeException(String.format("Trying to overwrite preferredPkgUUID %s with a different value %s", getPreferredPkgUUID().get(), pkgUUID));
+            }
+            setPreferredPkgUUID(pkgUUID);
+        });
     }
     
     public CompositeAssetFilter getFilter() {

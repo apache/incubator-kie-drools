@@ -97,7 +97,7 @@ public class KiePMMLDroolsModelWithSourcesTest {
 
     @Test
     public void getPkgUUIDSuccess() {
-        String pkgUuid =  generateUUID();
+        String pkgUuid = generateUUID();
         packageDescr.setPreferredPkgUUID(pkgUuid);
         assertEquals(pkgUuid, kiePMMLDroolsModelWithSources.getPkgUUID());
     }

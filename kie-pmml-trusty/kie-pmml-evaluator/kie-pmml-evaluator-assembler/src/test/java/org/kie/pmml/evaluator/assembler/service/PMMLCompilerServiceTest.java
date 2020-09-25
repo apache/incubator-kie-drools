@@ -131,9 +131,8 @@ public class PMMLCompilerServiceTest {
         PMMLCompilerService.addPMMLRuleMapper(kiePmmlModel, new ArrayList<>(), "source_path");
     }
 
-
     @Test
-    public void addPMMLRuleMappers() {
+    public void addPMMLRuleMappersHasSourceMap() {
         KiePMMLModelHasSourceMap kiePmmlModel = new KiePMMLModelHasSourceMap("TEST", Collections.emptyList());
         assertTrue(kiePmmlModel.sourcesMap.isEmpty());
         final List<String> generatedRuleMappers = IntStream.range(0, 3)
@@ -144,6 +143,13 @@ public class PMMLCompilerServiceTest {
         assertTrue(kiePmmlModel.sourcesMap.containsKey(expected));
     }
 
+    @Test(expected = KiePMMLException.class)
+    public void addPMMLRuleMappersNotHasSourceMap() {
+        final KiePMMLModel kiePmmlModel = getKiePMMLModel();
+        final List<String> generatedRuleMappers = IntStream.range(0, 3)
+                .mapToObj(i -> "apackage" + i + "." + KIE_PMML_RULE_MAPPER_CLASS_NAME).collect(Collectors.toList());
+        PMMLCompilerService.addPMMLRuleMappers(kiePmmlModel, generatedRuleMappers, "source_path");
+    }
 
     @Test
     public void getFileName() {
@@ -158,6 +164,15 @@ public class PMMLCompilerServiceTest {
                                         fileName);
         retrieved = PMMLCompilerService.getFileName(fullPath);
         assertEquals(fileName, retrieved);
+    }
+
+    private KiePMMLModel getKiePMMLModel() {
+        return new KiePMMLModel("name", Collections.emptyList()) {
+            @Override
+            public Object evaluate(Object knowledgeBase, Map<String, Object> requestData) {
+                return null;
+            }
+        };
     }
 
     private static class KiePMMLModelHasSourceMap extends KiePMMLModel implements HasSourcesMap {

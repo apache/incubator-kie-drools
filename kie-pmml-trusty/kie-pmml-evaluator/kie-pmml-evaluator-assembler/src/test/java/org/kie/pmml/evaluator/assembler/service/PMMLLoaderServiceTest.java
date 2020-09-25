@@ -18,6 +18,7 @@ package org.kie.pmml.evaluator.assembler.service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -31,6 +32,8 @@ import org.drools.model.Rule;
 import org.drools.model.TypeMetaData;
 import org.drools.model.impl.GlobalImpl;
 import org.junit.Test;
+import org.kie.pmml.commons.model.KiePMMLModel;
+import org.kie.pmml.compiler.commons.factories.KiePMMLModelFactory;
 import org.kie.pmml.evaluator.assembler.rulemapping.PMMLRuleMapper;
 
 import static org.junit.Assert.assertEquals;
@@ -43,14 +46,40 @@ public class PMMLLoaderServiceTest {
     private final String PACKAGE_NAME = "apackage";
 
     @Test
-    public void loadPMMLRuleMappers() {
-        final List<PMMLRuleMapper> pmmlRuleMappers = getPMMLRuleMappers();
+    public void getKiePMMLModelsLoadedFromResource() {
         final KnowledgeBuilderImpl kbuilderImpl = new KnowledgeBuilderImpl();
         assertTrue(kbuilderImpl.getPackageNames().isEmpty());
         assertNull(kbuilderImpl.getPackage(PACKAGE_NAME));
+        final List<PMMLRuleMapper> pmmlRuleMappers = getPMMLRuleMappers();
+        final KiePMMLModelFactory kiePMMLModelFactory = getKiePMMLModelFactory();
+        final List<KiePMMLModel> retrieved = PMMLLoaderService.getKiePMMLModelsLoadedFromResource(kbuilderImpl,
+                                                                                                  kiePMMLModelFactory,
+                                                                                                  pmmlRuleMappers);
+        assertEquals(kiePMMLModelFactory.getKiePMMLModels(), retrieved);
+        assertEquals(1, kbuilderImpl.getPackageNames().size());
+        assertNotNull(kbuilderImpl.getPackage(PACKAGE_NAME));
+    }
+
+    @Test
+    public void loadPMMLRuleMappersNotEmpty() {
+        final KnowledgeBuilderImpl kbuilderImpl = new KnowledgeBuilderImpl();
+        assertTrue(kbuilderImpl.getPackageNames().isEmpty());
+        assertNull(kbuilderImpl.getPackage(PACKAGE_NAME));
+        final List<PMMLRuleMapper> pmmlRuleMappers = getPMMLRuleMappers();
         PMMLLoaderService.loadPMMLRuleMappers(kbuilderImpl, pmmlRuleMappers);
         assertEquals(1, kbuilderImpl.getPackageNames().size());
         assertNotNull(kbuilderImpl.getPackage(PACKAGE_NAME));
+    }
+
+    @Test
+    public void loadPMMLRuleMappersEmpty() {
+        final KnowledgeBuilderImpl kbuilderImpl = new KnowledgeBuilderImpl();
+        assertTrue(kbuilderImpl.getPackageNames().isEmpty());
+        assertNull(kbuilderImpl.getPackage(PACKAGE_NAME));
+        final List<PMMLRuleMapper> pmmlRuleMappers = Collections.emptyList();
+        PMMLLoaderService.loadPMMLRuleMappers(kbuilderImpl, pmmlRuleMappers);
+        assertTrue(kbuilderImpl.getPackageNames().isEmpty());
+        assertNull(kbuilderImpl.getPackage(PACKAGE_NAME));
     }
 
     private List<PMMLRuleMapper> getPMMLRuleMappers() {
@@ -68,6 +97,22 @@ public class PMMLLoaderServiceTest {
             @Override
             public Model getModel() {
                 return toReturn;
+            }
+        };
+    }
+
+    private KiePMMLModelFactory getKiePMMLModelFactory() {
+        final List<KiePMMLModel> kiePMMLModels = IntStream.range(0, 3)
+                .mapToObj(i -> getKiePMMLModel("KiePMMLModel" + i))
+                .collect(Collectors.toList());
+        return () -> kiePMMLModels;
+    }
+
+    private KiePMMLModel getKiePMMLModel(final String name) {
+        return new KiePMMLModel(name, Collections.emptyList()) {
+            @Override
+            public Object evaluate(Object knowledgeBase, Map<String, Object> requestData) {
+                return null;
             }
         };
     }
