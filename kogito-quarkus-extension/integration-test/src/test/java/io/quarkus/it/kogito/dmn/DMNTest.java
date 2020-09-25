@@ -28,33 +28,44 @@ public class DMNTest {
 
     static { RestAssured.enableLoggingOfRequestAndResponseIfValidationFails(); }
 
+    static final String ADULT_PAYLOAD = "{\n" +
+                                        "  \"p\": {\n" +
+                                        "    \"addresses\": [\n" +
+                                        "      {\n" +
+                                        "        \"streetName\": \"Street Name\",\n" +
+                                        "        \"streetNumber\": 1\n" +
+                                        "      },\n" +
+                                        "      {\n" +
+                                        "        \"streetName\": \"Another street name\",\n" +
+                                        "        \"streetNumber\": 2\n" +
+                                        "      }\n" +
+                                        "    ],\n" +
+                                        "    \"name\": \"Luca\"\n" +
+                                        "  }\n" +
+                                        "}";
+
     @Test
     public void testAdult() {
-
-        String payload = "{\n" +
-                "  \"p\": {\n" +
-                "    \"addresses\": [\n" +
-                "      {\n" +
-                "        \"streetName\": \"Street Name\",\n" +
-                "        \"streetNumber\": 1\n" +
-                "      },\n" +
-                "      {\n" +
-                "        \"streetName\": \"Another street name\",\n" +
-                "        \"streetNumber\": 2\n" +
-                "      }\n" +
-                "    ],\n" +
-                "    \"name\": \"Luca\"\n" +
-                "  }\n" +
-                "}";
-
         RestAssured.given()
                 .contentType(ContentType.JSON)
                 .accept(ContentType.JSON)
-                .body(payload)
+                .body(ADULT_PAYLOAD)
                 .post("/dmnModel")
                 .then()
                 .statusCode(200)
                 .body("d.Hello", is("Hello Luca"));
+    }
+    
+    @Test
+    public void testAdult_dmnResult() {
+        RestAssured.given()
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .body(ADULT_PAYLOAD)
+                .post("/dmnModel/dmnresult")
+                .then()
+                .statusCode(200)
+                .body("dmnContext.d.Hello", is("Hello Luca"));
     }
 
     @Test

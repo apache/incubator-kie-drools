@@ -189,13 +189,26 @@ public class DecisionRestResourceGenerator {
         String outputType = isStronglyTyped ? "OutputSet" : "Object";
 
         List<ClassOrInterfaceType> outputTypeOccurrences = template.findAll(ClassOrInterfaceType.class, t -> t.asString().equals("$outputType$"));
+        
+        // first, methods which return DMNResult shall just have DMNResult as the return type in signature (useful for GraalVM NI introspection)
+        List<ClassOrInterfaceType> dmnResultOuputTypes = outputTypeOccurrences
+              .stream()
+              .filter(t -> t.getParentNode().isPresent() && t.getParentNode().get() instanceof MethodDeclaration)
+              .filter(t -> {
+                  MethodDeclaration parent = (MethodDeclaration) t.getParentNode().get();
+                  return parent.getNameAsString().endsWith("dmnresult");
+              })
+              .collect(Collectors.toList());
+        dmnResultOuputTypes.forEach(type -> type.setName("org.kie.kogito.dmn.rest.DMNResult"));
+        outputTypeOccurrences.removeAll(dmnResultOuputTypes);
 
+        // then, *remaining* methods which belong to Decision Service(s) shall simply be returning Object, since strongly output typing is not supported for DS use case yet.
         List<ClassOrInterfaceType> objectReturnTypes = outputTypeOccurrences
                 .stream()
                 .filter(t -> t.getParentNode().isPresent() && t.getParentNode().get() instanceof MethodDeclaration)
                 .filter(t -> {
                     MethodDeclaration parent = (MethodDeclaration)t.getParentNode().get();
-                    return parent.getNameAsString().endsWith("dmnresult") || parent.getNameAsString().startsWith("decisionService_");
+                    return parent.getNameAsString().startsWith("decisionService_");
                 })
                 .collect(Collectors.toList());
 
