@@ -27,6 +27,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.WildcardType;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -369,6 +370,25 @@ public class ConfigUtils {
         if (typeArgument instanceof ParameterizedType) {
             // Remove the type parameters so it can be cast to a Class
             typeArgument = ((ParameterizedType) typeArgument).getRawType();
+        }
+        if (typeArgument instanceof WildcardType) {
+            Type[] upperBounds = ((WildcardType) typeArgument).getUpperBounds();
+            if (upperBounds.length > 1) {
+                // Multiple upper bounds is impossible in traditional Java
+                // Other JVM languages or future java versions might enabling triggering this
+                throw new IllegalArgumentException("The " + parentClassConcept + " (" + parentClass + ") has a "
+                        + (annotationClass == null ? "auto discovered" : annotationClass.getSimpleName() + " annotated")
+                        + " member (" + memberName
+                        + ") with a member type (" + type
+                        + ") which is parameterized collection with a wildcard type argument ("
+                        + typeArgument + ") that has multiple upper bounds (" + Arrays.toString(upperBounds) + ").\n"
+                        + "Maybe don't use wildcards with multiple upper bounds for the member (" + memberName + ").");
+            }
+            if (upperBounds.length == 0) {
+                typeArgument = Object.class;
+            } else {
+                typeArgument = upperBounds[0];
+            }
         }
         if (!(typeArgument instanceof Class)) {
             throw new IllegalArgumentException("The " + parentClassConcept + " (" + parentClass + ") has a "

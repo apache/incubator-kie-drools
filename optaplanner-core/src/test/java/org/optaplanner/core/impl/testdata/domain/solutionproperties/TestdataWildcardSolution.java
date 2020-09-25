@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.optaplanner.core.impl.testdata.domain.solutionproperties.invalid;
 
-import java.util.Collection;
+package org.optaplanner.core.impl.testdata.domain.solutionproperties;
+
 import java.util.List;
 
-import org.optaplanner.core.api.domain.autodiscover.AutoDiscoverMemberType;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
@@ -30,43 +29,52 @@ import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
-@PlanningSolution(autoDiscoverMemberType = AutoDiscoverMemberType.GETTER)
-public class TestdataUnsupportedFactTypeSolution extends TestdataObject {
+@PlanningSolution
+public class TestdataWildcardSolution extends TestdataObject {
 
-    public static SolutionDescriptor<TestdataUnsupportedFactTypeSolution> buildSolutionDescriptor() {
-        return SolutionDescriptor.buildSolutionDescriptor(TestdataUnsupportedFactTypeSolution.class,
-                TestdataEntity.class);
+    public static SolutionDescriptor<TestdataWildcardSolution> buildSolutionDescriptor() {
+        return SolutionDescriptor.buildSolutionDescriptor(TestdataWildcardSolution.class, TestdataEntity.class);
     }
 
-    private List<TestdataValue> valueList;
-    private List<TestdataEntity> entityList;
+    private List<? extends TestdataValue> extendsValueList;
+    private List<? super TestdataValue> supersValueList;
+    private List<? extends TestdataEntity> extendsEntityList;
 
     private SimpleScore score;
 
-    public TestdataUnsupportedFactTypeSolution() {
+    public TestdataWildcardSolution() {
     }
 
-    public TestdataUnsupportedFactTypeSolution(String code) {
+    public TestdataWildcardSolution(String code) {
         super(code);
     }
 
     @ValueRangeProvider(id = "valueRange")
     @ProblemFactCollectionProperty
-    public List<TestdataValue> getValueList() {
-        return valueList;
+    public List<? extends TestdataValue> getExtendsValueList() {
+        return extendsValueList;
     }
 
-    public void setValueList(List<TestdataValue> valueList) {
-        this.valueList = valueList;
+    public void setExtendsValueList(List<? extends TestdataValue> extendsValueList) {
+        this.extendsValueList = extendsValueList;
+    }
+
+    @ProblemFactCollectionProperty
+    public List<? super TestdataValue> getSupersValueList() {
+        return supersValueList;
+    }
+
+    public void setSupersValueList(List<? super TestdataValue> supersValueList) {
+        this.supersValueList = supersValueList;
     }
 
     @PlanningEntityCollectionProperty
-    public List<TestdataEntity> getEntityList() {
-        return entityList;
+    public List<? extends TestdataEntity> getExtendsEntityList() {
+        return extendsEntityList;
     }
 
-    public void setEntityList(List<TestdataEntity> entityList) {
-        this.entityList = entityList;
+    public void setExtendsEntityList(List<? extends TestdataEntity> extendsEntityList) {
+        this.extendsEntityList = extendsEntityList;
     }
 
     @PlanningScore
@@ -76,14 +84,6 @@ public class TestdataUnsupportedFactTypeSolution extends TestdataObject {
 
     public void setScore(SimpleScore score) {
         this.score = score;
-    }
-
-    // ************************************************************************
-    // Complex methods
-    // ************************************************************************
-    //
-    public Collection<?> getProblemFacts() { // unspecified element type is unsupported
-        return null;
     }
 
 }

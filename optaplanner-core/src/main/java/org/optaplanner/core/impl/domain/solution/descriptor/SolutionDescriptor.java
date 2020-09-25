@@ -44,6 +44,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.optaplanner.core.api.domain.autodiscover.AutoDiscoverMemberType;
 import org.optaplanner.core.api.domain.constraintweight.ConstraintConfiguration;
 import org.optaplanner.core.api.domain.constraintweight.ConstraintConfigurationProvider;
+import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningEntityProperty;
 import org.optaplanner.core.api.domain.solution.PlanningScore;
@@ -776,12 +777,16 @@ public class SolutionDescriptor<Solution_> {
     public EntityDescriptor<Solution_> findEntityDescriptorOrFail(Class<?> entitySubclass) {
         EntityDescriptor<Solution_> entityDescriptor = findEntityDescriptor(entitySubclass);
         if (entityDescriptor == null) {
-            throw new IllegalArgumentException("A planning entity is an instance of an entitySubclass ("
-                    + entitySubclass + ") that is not configured as a planning entity.\n" +
+            throw new IllegalArgumentException("A planning entity is an instance of a class (" + entitySubclass
+                    + ") that is not configured as a planning entity class (" + getEntityClassSet() + ").\n" +
                     "If that class (" + entitySubclass.getSimpleName()
-                    + ") (or superclass thereof) is not a entityClass (" + getEntityClassSet()
-                    + "), check your Solution implementation's annotated methods.\n" +
-                    "If it is, check your solver configuration.");
+                    + ") (or superclass thereof) is not a @" + PlanningEntity.class.getSimpleName()
+                    + " annotated class, maybe your @" + PlanningSolution.class.getSimpleName()
+                    + " annotated class has an incorrect @" + PlanningEntityCollectionProperty.class.getSimpleName()
+                    + " or @" + PlanningEntityProperty.class.getSimpleName() + " annotated member.\n"
+                    + "Otherwise, if you're not using the Quarkus extension or Spring Boot starter,"
+                    + " maybe that entity class (" + entitySubclass.getSimpleName()
+                    + ") is missing from your solver configuration.");
         }
         return entityDescriptor;
     }

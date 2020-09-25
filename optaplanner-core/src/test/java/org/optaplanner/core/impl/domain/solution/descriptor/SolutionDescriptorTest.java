@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
+import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
@@ -37,6 +38,7 @@ import org.optaplanner.core.impl.testdata.domain.reflect.generic.TestdataGeneric
 import org.optaplanner.core.impl.testdata.domain.solutionproperties.TestdataNoProblemFactPropertySolution;
 import org.optaplanner.core.impl.testdata.domain.solutionproperties.TestdataProblemFactPropertySolution;
 import org.optaplanner.core.impl.testdata.domain.solutionproperties.TestdataReadMethodProblemFactCollectionPropertySolution;
+import org.optaplanner.core.impl.testdata.domain.solutionproperties.TestdataWildcardSolution;
 import org.optaplanner.core.impl.testdata.domain.solutionproperties.autodiscover.TestdataAutoDiscoverFieldOverrideSolution;
 import org.optaplanner.core.impl.testdata.domain.solutionproperties.autodiscover.TestdataAutoDiscoverFieldSolution;
 import org.optaplanner.core.impl.testdata.domain.solutionproperties.autodiscover.TestdataAutoDiscoverGetterOverrideSolution;
@@ -49,7 +51,7 @@ import org.optaplanner.core.impl.testdata.domain.solutionproperties.invalid.Test
 import org.optaplanner.core.impl.testdata.domain.solutionproperties.invalid.TestdataProblemFactCollectionPropertyWithArgumentSolution;
 import org.optaplanner.core.impl.testdata.domain.solutionproperties.invalid.TestdataProblemFactIsPlanningEntityCollectionPropertySolution;
 import org.optaplanner.core.impl.testdata.domain.solutionproperties.invalid.TestdataUnknownFactTypeSolution;
-import org.optaplanner.core.impl.testdata.domain.solutionproperties.invalid.TestdataUnsupportedFactTypeSolution;
+import org.optaplanner.core.impl.testdata.domain.solutionproperties.invalid.TestdataUnsupportedWildcardSolution;
 import org.optaplanner.core.impl.testdata.util.CodeAssertableArrayList;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
@@ -105,6 +107,29 @@ public class SolutionDescriptorTest {
     public void problemFactIsPlanningEntityCollectionProperty() {
         assertThatIllegalStateException().isThrownBy(
                 TestdataProblemFactIsPlanningEntityCollectionPropertySolution::buildSolutionDescriptor);
+    }
+
+    @Test
+    public void wildcardProblemFactAndEntityProperties() {
+        SolutionDescriptor<TestdataWildcardSolution> solutionDescriptor = TestdataWildcardSolution
+                .buildSolutionDescriptor();
+        assertThat(solutionDescriptor.getProblemFactMemberAccessorMap()).containsOnlyKeys();
+        assertThat(solutionDescriptor.getProblemFactCollectionMemberAccessorMap()).containsOnlyKeys("extendsValueList",
+                "supersValueList");
+        assertThat(solutionDescriptor.getEntityMemberAccessorMap()).containsOnlyKeys();
+        assertThat(solutionDescriptor.getEntityCollectionMemberAccessorMap()).containsOnlyKeys("extendsEntityList");
+    }
+
+    @Test
+    public void wildcardSupersEntityListProperty() {
+        SolverFactory<TestdataUnsupportedWildcardSolution> solverFactory = PlannerTestUtils.buildSolverFactory(
+                TestdataUnsupportedWildcardSolution.class, TestdataEntity.class);
+        Solver<TestdataUnsupportedWildcardSolution> solver = solverFactory.buildSolver();
+        TestdataUnsupportedWildcardSolution solution = new TestdataUnsupportedWildcardSolution();
+        solution.setValueList(Arrays.asList(new TestdataValue("v1")));
+        solution.setSupersEntityList(Arrays.asList(new TestdataEntity("e1"), new TestdataValue("v2")));
+        // TODO Ideally, this already fails fast on buildSolverFactory
+        assertThatIllegalArgumentException().isThrownBy(() -> solver.solve(solution));
     }
 
     @Test
@@ -167,11 +192,6 @@ public class SolutionDescriptorTest {
     // ************************************************************************
     // Autodiscovery
     // ************************************************************************
-
-    @Test
-    public void autoDiscoverProblemFactCollectionPropertyElementTypeUnsupported() {
-        assertThatIllegalArgumentException().isThrownBy(TestdataUnsupportedFactTypeSolution::buildSolutionDescriptor);
-    }
 
     @Test
     public void autoDiscoverProblemFactCollectionPropertyElementTypeUnknown() {

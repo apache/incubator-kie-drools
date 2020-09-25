@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.optaplanner.core.impl.testdata.domain.solutionproperties;
+package org.optaplanner.core.impl.testdata.domain.solutionproperties.invalid;
 
 import java.util.List;
 
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.domain.solution.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
@@ -29,25 +29,27 @@ import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
 @PlanningSolution
-public class TestdataNoProblemFactPropertySolution extends TestdataObject {
+public class TestdataUnsupportedWildcardSolution extends TestdataObject {
 
-    public static SolutionDescriptor<TestdataNoProblemFactPropertySolution> buildSolutionDescriptor() {
-        return SolutionDescriptor.buildSolutionDescriptor(TestdataNoProblemFactPropertySolution.class, TestdataEntity.class);
+    public static SolutionDescriptor<TestdataUnsupportedWildcardSolution> buildSolutionDescriptor() {
+        return SolutionDescriptor.buildSolutionDescriptor(TestdataUnsupportedWildcardSolution.class,
+                TestdataEntity.class);
     }
 
     private List<TestdataValue> valueList;
-    private List<TestdataEntity> entityList;
+    private List<? super TestdataEntity> supersEntityList;
 
     private SimpleScore score;
 
-    public TestdataNoProblemFactPropertySolution() {
+    public TestdataUnsupportedWildcardSolution() {
     }
 
-    public TestdataNoProblemFactPropertySolution(String code) {
+    public TestdataUnsupportedWildcardSolution(String code) {
         super(code);
     }
 
     @ValueRangeProvider(id = "valueRange")
+    @ProblemFactCollectionProperty
     public List<TestdataValue> getValueList() {
         return valueList;
     }
@@ -57,12 +59,12 @@ public class TestdataNoProblemFactPropertySolution extends TestdataObject {
     }
 
     @PlanningEntityCollectionProperty
-    public List<TestdataEntity> getEntityList() {
-        return entityList;
+    public List<? super TestdataEntity> getSupersEntityList() {
+        return supersEntityList;
     }
 
-    public void setEntityList(List<TestdataEntity> entityList) {
-        this.entityList = entityList;
+    public void setSupersEntityList(List<? super TestdataEntity> supersEntityList) {
+        this.supersEntityList = supersEntityList;
     }
 
     @PlanningScore

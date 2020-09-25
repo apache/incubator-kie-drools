@@ -25,7 +25,6 @@ import org.drools.core.common.InternalFactHandle;
 
 public abstract class DroolsAbstractGroupBy<InTuple, OutTuple> implements Serializable {
 
-    private static final long serialVersionUID = 510l;
     private final Map<Long, Runnable> undoMap = new HashMap<>(0);
     private GroupByCollectorProcessor<InTuple, OutTuple> acc;
 
