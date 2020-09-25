@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import {
   Breadcrumb,
@@ -6,12 +6,22 @@ import {
   Card,
   CardBody,
   CardHeader,
-  Grid,
-  GridItem,
   PageSection,
   Title,
   Text,
-  TextVariants
+  TextVariants,
+  Button,
+  Flex,
+  FlexItem,
+  Drawer,
+  DrawerContent,
+  DrawerContentBody,
+  DrawerPanelContent,
+  DrawerHead,
+  DrawerActions,
+  DrawerCloseButton,
+  DrawerPanelBody,
+  Bullseye
 } from '@patternfly/react-core';
 import {
   componentOuiaProps,
@@ -19,7 +29,9 @@ import {
   KogitoEmptyState,
   KogitoEmptyStateType,
   ouiaPageTypeAndObjectId,
-  OUIAProps
+  OUIAProps,
+  KogitoSpinner,
+  ServerErrors
 } from '@kogito-apps/common';
 import TaskConsoleContext, {
   IContext
@@ -28,7 +40,6 @@ import PageTitle from '../../Molecules/PageTitle/PageTitle';
 import TaskState from '../../Atoms/TaskState/TaskState';
 import TaskForm from '../../Organisms/TaskForm/TaskForm';
 import { TaskStateType } from '../../../util/Variants';
-import UserTaskInstance = GraphQL.UserTaskInstance;
 import TaskDetails from '../../Organisms/TaskDetails/TaskDetails';
 
 interface MatchProps {
@@ -42,10 +53,24 @@ const UserTaskInstanceDetailsPage: React.FC<RouteComponentProps<
 > &
   OUIAProps> = ({ ouiaId, ouiaSafe, ...props }) => {
   const id = props.match.params.taskId;
+  const [userTask, setUserTask] = useState<GraphQL.UserTaskInstance>(null);
+  const [isDetailsExpanded, setIsDetailsExpanded] = useState<boolean>(false);
 
-  const [userTask, setUserTask] = useState<UserTaskInstance>();
+  const context: IContext<GraphQL.UserTaskInstance> = useContext(
+    TaskConsoleContext
+  );
 
-  const context: IContext<UserTaskInstance> = useContext(TaskConsoleContext);
+  const [
+    getUserTask,
+    { loading, data, error }
+  ] = GraphQL.useGetUserTaskByIdLazyQuery();
+
+  useEffect(() => {
+    !loading &&
+      data &&
+      data.UserTaskInstances &&
+      setUserTask(data.UserTaskInstances[0]);
+  }, [data]);
 
   useEffect(() => {
     window.onpopstate = () => {
@@ -58,10 +83,58 @@ const UserTaskInstanceDetailsPage: React.FC<RouteComponentProps<
   });
 
   useEffect(() => {
-    if (context.getActiveItem()) {
+    if (context.getActiveItem() && context.getActiveItem().id === id) {
       setUserTask(context.getActiveItem());
+    } else {
+      getUserTask({
+        variables: {
+          id
+        }
+      });
     }
   }, []);
+
+  const onViewDetailsClick = () => {
+    setIsDetailsExpanded(!isDetailsExpanded);
+  };
+
+  const onDetailsCloseClick = () => {
+    setIsDetailsExpanded(false);
+  };
+
+  const panelContent = (
+    <DrawerPanelContent>
+      <DrawerHead>
+        <span tabIndex={isDetailsExpanded ? 0 : -1}>
+          <Title headingLevel="h3" size="xl">
+            Details
+          </Title>
+        </span>
+        <DrawerActions>
+          <DrawerCloseButton onClick={onDetailsCloseClick} />
+        </DrawerActions>
+      </DrawerHead>
+      <DrawerPanelBody>
+        <TaskDetails userTaskInstance={userTask} />
+      </DrawerPanelBody>
+    </DrawerPanelContent>
+  );
+
+  if (loading) {
+    return (
+      <PageSection>
+        <Card>
+          <Bullseye>
+            <KogitoSpinner spinnerText="Loading task details..." />
+          </Bullseye>
+        </Card>
+      </PageSection>
+    );
+  }
+
+  if (error) {
+    return <ServerErrors error={error} variant="large" />;
+  }
 
   if (!userTask) {
     return (
@@ -79,49 +152,68 @@ const UserTaskInstanceDetailsPage: React.FC<RouteComponentProps<
         <PageSection variant="light">
           <Breadcrumb>
             <BreadcrumbItem>
-              <Link to={'/'}>Task Inbox</Link>
+              <Link
+                to={'/'}
+                onClick={() => {
+                  context.setActiveItem(null);
+                }}
+              >
+                Task Inbox
+              </Link>
             </BreadcrumbItem>
             <BreadcrumbItem>{userTask.referenceName}</BreadcrumbItem>
           </Breadcrumb>
-
-          <PageTitle
-            title={userTask.referenceName}
-            extra={<TaskState task={userTask} variant={TaskStateType.LABEL} />}
-          />
-
-          <Text component={TextVariants.small}>ID: {userTask.id}</Text>
+          <Flex
+            className="example-border"
+            justifyContent={{ default: 'justifyContentSpaceBetween' }}
+          >
+            <FlexItem>
+              <PageTitle
+                title={userTask.referenceName}
+                extra={
+                  <TaskState task={userTask} variant={TaskStateType.LABEL} />
+                }
+              />
+              <Text component={TextVariants.small}>ID: {userTask.id}</Text>
+            </FlexItem>
+            <FlexItem>
+              <Button
+                variant="secondary"
+                id="view-details"
+                onClick={onViewDetailsClick}
+              >
+                View details
+              </Button>
+            </FlexItem>
+          </Flex>
         </PageSection>
         <PageSection>
-          <Grid hasGutter md={1} className="pf-u-h-100">
-            <GridItem span={8} className="pf-u-h-100">
-              <Card className="pf-u-h-100">
-                <CardHeader>
-                  <Title headingLevel="h3" size="xl">
-                    Form
-                  </Title>
-                </CardHeader>
-                <CardBody className="pf-u-h-100">
-                  <TaskForm
-                    userTaskInstance={userTask}
-                    successCallback={() => props.history.push('/')}
-                    errorCallback={() => props.history.push('/')}
-                  />
-                </CardBody>
-              </Card>
-            </GridItem>
-            <GridItem span={4} className="pf-u-h-100">
-              <Card className="pf-u-h-100">
-                <CardHeader>
-                  <Title headingLevel="h3" size="xl">
-                    Details
-                  </Title>
-                </CardHeader>
-                <CardBody className="pf-u-h-100">
-                  <TaskDetails userTaskInstance={userTask} />
-                </CardBody>
-              </Card>
-            </GridItem>
-          </Grid>
+          <Drawer isExpanded={isDetailsExpanded}>
+            <DrawerContent panelContent={panelContent}>
+              <DrawerContentBody>
+                <Card className="pf-u-h-100">
+                  <CardHeader>
+                    <Title headingLevel="h3" size="xl">
+                      Form
+                    </Title>
+                  </CardHeader>
+                  <CardBody className="pf-u-h-100">
+                    <TaskForm
+                      userTaskInstance={userTask}
+                      successCallback={() => {
+                        context.setActiveItem(null);
+                        props.history.push('/');
+                      }}
+                      errorCallback={() => {
+                        context.setActiveItem(null);
+                        props.history.push('/');
+                      }}
+                    />
+                  </CardBody>
+                </Card>
+              </DrawerContentBody>
+            </DrawerContent>
+          </Drawer>
         </PageSection>
       </div>
     </React.Fragment>

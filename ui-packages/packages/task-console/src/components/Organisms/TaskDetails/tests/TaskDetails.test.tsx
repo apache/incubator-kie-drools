@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import React from 'react';
-import _ from 'lodash';
 import { getWrapper, GraphQL } from '@kogito-apps/common';
 
 import UserTaskInstance = GraphQL.UserTaskInstance;
@@ -85,14 +84,16 @@ describe('TaskDetails testing', () => {
     expect(getFormGroup(wrapper, 'completed').exists()).toBeFalsy();
     expect(getFormGroup(wrapper, 'process').exists()).toBeTruthy();
     expect(getFormGroup(wrapper, 'processInstance').exists()).toBeTruthy();
+    expect(getFormGroup(wrapper, 'lastUpdate').exists()).toBeTruthy();
   });
 
   it('Snapshot testing with description', () => {
-    const task = _.cloneDeep(userTaskInstance);
-    task.description = 'This is a description';
-
     const wrapper = getWrapper(
-      <TaskDetails userTaskInstance={task} />,
+      <TaskDetails
+        userTaskInstance={{
+          ...{ ...userTaskInstance, description: 'This is a description' }
+        }}
+      />,
       'TaskDetails'
     );
 
@@ -100,15 +101,16 @@ describe('TaskDetails testing', () => {
 
     const description = getFormGroup(wrapper, 'description');
     expect(description.exists()).toBeTruthy();
-    expect(description.html()).toContain(task.description);
+    expect(description.html()).toContain('This is a description');
   });
 
   it('Snapshot testing with owner', () => {
-    const task = _.cloneDeep(userTaskInstance);
-    task.actualOwner = 'John Snow';
-
     const wrapper = getWrapper(
-      <TaskDetails userTaskInstance={task} />,
+      <TaskDetails
+        userTaskInstance={{
+          ...{ ...userTaskInstance, actualOwner: 'John Snow' }
+        }}
+      />,
       'TaskDetails'
     );
 
@@ -116,15 +118,20 @@ describe('TaskDetails testing', () => {
 
     const owner = getFormGroup(wrapper, 'owner');
     expect(owner.exists()).toBeTruthy();
-    expect(owner.html()).toContain(task.actualOwner);
+    expect(owner.html()).toContain('John Snow');
   });
 
   it('Snapshot testing with completed task', () => {
-    const task = _.cloneDeep(userTaskInstance);
-    task.completed = '2020-02-19T11:11:56.282Z';
-
     const wrapper = getWrapper(
-      <TaskDetails userTaskInstance={task} />,
+      <TaskDetails
+        userTaskInstance={{
+          ...{
+            ...userTaskInstance,
+            state: 'completed',
+            completed: '2020-02-19T11:11:56.282Z'
+          }
+        }}
+      />,
       'TaskDetails'
     );
 
@@ -132,5 +139,37 @@ describe('TaskDetails testing', () => {
 
     const completed = getFormGroup(wrapper, 'completed');
     expect(completed.exists()).toBeTruthy();
+  });
+
+  it('Snapshot testing with potential groups and potential user', () => {
+    const wrapper = getWrapper(
+      <TaskDetails
+        userTaskInstance={{
+          ...{
+            ...userTaskInstance,
+            potentialGroups: ['group1', 'group2'],
+            potentialUsers: ['john', 'mary']
+          }
+        }}
+      />,
+      'TaskDetails'
+    );
+    expect(wrapper).toMatchSnapshot();
+    const potentialGroups = getFormGroup(wrapper, 'potential_groups');
+    const potentialUsers = getFormGroup(wrapper, 'potential_users');
+    expect(potentialGroups.exists()).toBeTruthy();
+    expect(
+      potentialGroups
+        .find('p')
+        .children()
+        .contains('group1, group2')
+    ).toBeTruthy();
+    expect(potentialUsers.exists()).toBeTruthy();
+    expect(
+      potentialUsers
+        .find('p')
+        .children()
+        .contains('john, mary')
+    ).toBeTruthy();
   });
 });

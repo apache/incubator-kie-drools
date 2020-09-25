@@ -2,11 +2,13 @@
 import gql from 'graphql-tag';
 import * as ApolloReactCommon from '@apollo/react-common';
 import * as ApolloReactHooks from '@apollo/react-hooks';
+
 export namespace GraphQL {
   export type Maybe<T> = T | null;
   export type Exact<T extends { [key: string]: any }> = {
     [K in keyof T]: T[K];
   };
+
   /** All built-in and custom scalars, mapped to their actual values */
   export type Scalars = {
     ID: string;
@@ -1037,6 +1039,7 @@ export namespace GraphQL {
             | 'outputs'
             | 'referenceName'
             | 'endpoint'
+            | 'lastUpdate'
           >
         >
       >
@@ -1728,6 +1731,7 @@ export namespace GraphQL {
         name
         referenceName
         description
+        name
         priority
         processInstanceId
         processId
@@ -1823,6 +1827,7 @@ export namespace GraphQL {
         outputs
         referenceName
         endpoint
+        lastUpdate
       }
     }
   `;

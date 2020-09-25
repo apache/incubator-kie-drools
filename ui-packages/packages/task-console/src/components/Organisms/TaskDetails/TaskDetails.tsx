@@ -20,6 +20,7 @@ import TaskConsoleContext, {
 } from '../../../context/TaskConsoleContext/TaskConsoleContext';
 import TaskState from '../../Atoms/TaskState/TaskState';
 import { resolveTaskPriority, trimTaskEndpoint } from '../../../util/Utils';
+import _ from 'lodash';
 import './TaskDetails.css';
 import UserTaskInstance = GraphQL.UserTaskInstance;
 
@@ -89,6 +90,20 @@ const TaskDetails: React.FC<IOwnProps & OUIAProps> = ({
               {userTask.actualOwner || '-'}
             </Text>
           </FormGroup>
+          {!_.isEmpty(userTask.potentialUsers) && (
+            <FormGroup label="Potential users" fieldId="potential_users">
+              <Text component={TextVariants.p}>
+                {userTask.potentialUsers.join(', ')}
+              </Text>
+            </FormGroup>
+          )}
+          {!_.isEmpty(userTask.potentialGroups) && (
+            <FormGroup label="Potential groups" fieldId="potential_groups">
+              <Text component={TextVariants.p}>
+                {userTask.potentialGroups.join(', ')}
+              </Text>
+            </FormGroup>
+          )}
           <FormGroup label="Started" fieldId="started">
             {userTask.started ? (
               <Text component={TextVariants.p}>
@@ -98,10 +113,16 @@ const TaskDetails: React.FC<IOwnProps & OUIAProps> = ({
               '-'
             )}
           </FormGroup>
-          {userTask.completed && (
+          {userTask.completed ? (
             <FormGroup label="Completed" fieldId="completed">
               <Text component={TextVariants.p}>
                 <Moment fromNow>{new Date(`${userTask.completed}`)}</Moment>
+              </Text>
+            </FormGroup>
+          ) : (
+            <FormGroup label="Last Update" fieldId="lastUpdate">
+              <Text component={TextVariants.p}>
+                <Moment fromNow>{new Date(`${userTask.lastUpdate}`)}</Moment>
               </Text>
             </FormGroup>
           )}

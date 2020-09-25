@@ -139,9 +139,12 @@ module.exports = data = {
         started: "2020-07-30T09:00:04.88Z",
         excludedUsers: [],
         potentialGroups: [
-          "group1"
+          "group1",
+          "group2"
         ],
-        potentialUsers: [],
+        potentialUsers: [
+          "john",
+          "mary"],
         inputs: "{\"trip\":{\"city\":\"New York\",\"country\":\"US\",\"begin\":\"2019-12-09T23:00:00.000+01:00\",\"end\":\"2019-12-14T23:00:00.000+01:00\",\"visaRequired\":true},\"TaskName\":\"VisaApplication\",\"NodeName\":\"Apply for visa\",\"Priority\":\"1\",\"Skippable\":\"true\",\"traveller\":{\"firstName\":\"Jan\",\"lastName\":\"Kowalski\",\"email\":\"jan.kowalski@example.com\",\"nationality\":\"Polish\",\"address\":{\"street\":\"polna\",\"city\":\"Krakow\",\"zipCode\":\"32000\",\"country\":\"Poland\"}},\"GroupId\":\"group1\"}",
         outputs: "{}",
         lastUpdate: "2020-07-30T09:00:04.884Z",

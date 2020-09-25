@@ -68,12 +68,16 @@ const resolvers = {
 
         if (args['where'].state && args['where'].state.in) {
           return args['where'].state.in.includes(datum.state);
-        } else {
+        }
+        else if (args['where'].id && args['where'].id.equal) {
+          // mock to return single id
+          return datum.id === args['where'].id.equal
+        }
+        else {
           // searching for tasks assigned to current user
           return true;
         }
 
-        return false;
       });
       if (args['orderBy']) {
         console.log('sort by:', args['orderBy']);

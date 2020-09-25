@@ -54,213 +54,252 @@ exports[`UserTaskInstanceDetailsPage tests Test active task 1`] = `
         <Breadcrumb>
           <MockedComponent />
         </Breadcrumb>
-        <MockedPageTitle
-          extra={
-            <MockedTaskState
-              task={
-                Object {
-                  "actualOwner": null,
-                  "adminGroups": Array [],
-                  "adminUsers": Array [],
-                  "completed": null,
-                  "description": null,
-                  "endpoint": "http://localhost:8080/travels/9ae7ce3b-d49c-4f35-b843-8ac3d22fa427/VisaApplication/45a73767-5da3-49bf-9c40-d533c3e77ef3",
-                  "excludedUsers": Array [],
-                  "id": "45a73767-5da3-49bf-9c40-d533c3e77ef3",
-                  "inputs": "{\\"Skippable\\":\\"true\\",\\"trip\\":{\\"city\\":\\"Boston\\",\\"country\\":\\"US\\",\\"begin\\":\\"2020-02-19T23:00:00.000+01:00\\",\\"end\\":\\"2020-02-26T23:00:00.000+01:00\\",\\"visaRequired\\":true},\\"TaskName\\":\\"VisaApplication\\",\\"NodeName\\":\\"Apply for visa\\",\\"traveller\\":{\\"firstName\\":\\"Rachel\\",\\"lastName\\":\\"White\\",\\"email\\":\\"rwhite@gorle.com\\",\\"nationality\\":\\"Polish\\",\\"address\\":{\\"street\\":\\"Cabalone\\",\\"city\\":\\"Zerf\\",\\"zipCode\\":\\"765756\\",\\"country\\":\\"Poland\\"}},\\"Priority\\":\\"1\\"}",
-                  "lastUpdate": "2020-02-19T11:11:56.282Z",
-                  "name": "VisaApplication",
-                  "outputs": "{}",
-                  "potentialGroups": Array [],
-                  "potentialUsers": Array [],
-                  "priority": "1",
-                  "processId": "travels",
-                  "processInstanceId": "9ae7ce3b-d49c-4f35-b843-8ac3d22fa427",
-                  "referenceName": "Apply for visa",
-                  "rootProcessId": null,
-                  "rootProcessInstanceId": null,
-                  "started": "2020-02-19T11:11:56.282Z",
-                  "state": "Ready",
-                }
-              }
-              variant="label"
-            />
+        <Flex
+          className="example-border"
+          justifyContent={
+            Object {
+              "default": "justifyContentSpaceBetween",
+            }
           }
-          title="Apply for visa"
-        />
-        <Text
-          component="small"
         >
-          <small
-            className=""
-            data-pf-content={true}
+          <div
+            className="pf-l-flex pf-m-justify-content-space-between example-border"
           >
-            ID: 
-            45a73767-5da3-49bf-9c40-d533c3e77ef3
-          </small>
-        </Text>
+            <FlexItem>
+              <div
+                className=""
+              >
+                <MockedPageTitle
+                  extra={
+                    <MockedTaskState
+                      task={
+                        Object {
+                          "actualOwner": null,
+                          "adminGroups": Array [],
+                          "adminUsers": Array [],
+                          "completed": null,
+                          "description": null,
+                          "endpoint": "http://localhost:8080/travels/9ae7ce3b-d49c-4f35-b843-8ac3d22fa427/VisaApplication/45a73767-5da3-49bf-9c40-d533c3e77ef3",
+                          "excludedUsers": Array [],
+                          "id": "45a73767-5da3-49bf-9c40-d533c3e77ef3",
+                          "inputs": "{\\"Skippable\\":\\"true\\",\\"trip\\":{\\"city\\":\\"Boston\\",\\"country\\":\\"US\\",\\"begin\\":\\"2020-02-19T23:00:00.000+01:00\\",\\"end\\":\\"2020-02-26T23:00:00.000+01:00\\",\\"visaRequired\\":true},\\"TaskName\\":\\"VisaApplication\\",\\"NodeName\\":\\"Apply for visa\\",\\"traveller\\":{\\"firstName\\":\\"Rachel\\",\\"lastName\\":\\"White\\",\\"email\\":\\"rwhite@gorle.com\\",\\"nationality\\":\\"Polish\\",\\"address\\":{\\"street\\":\\"Cabalone\\",\\"city\\":\\"Zerf\\",\\"zipCode\\":\\"765756\\",\\"country\\":\\"Poland\\"}},\\"Priority\\":\\"1\\"}",
+                          "lastUpdate": "2020-02-19T11:11:56.282Z",
+                          "name": "VisaApplication",
+                          "outputs": "{}",
+                          "potentialGroups": Array [],
+                          "potentialUsers": Array [],
+                          "priority": "1",
+                          "processId": "travels",
+                          "processInstanceId": "9ae7ce3b-d49c-4f35-b843-8ac3d22fa427",
+                          "referenceName": "Apply for visa",
+                          "rootProcessId": null,
+                          "rootProcessInstanceId": null,
+                          "started": "2020-02-19T11:11:56.282Z",
+                          "state": "Ready",
+                        }
+                      }
+                      variant="label"
+                    />
+                  }
+                  title="Apply for visa"
+                />
+                <Text
+                  component="small"
+                >
+                  <small
+                    className=""
+                    data-pf-content={true}
+                  >
+                    ID: 
+                    45a73767-5da3-49bf-9c40-d533c3e77ef3
+                  </small>
+                </Text>
+              </div>
+            </FlexItem>
+            <FlexItem>
+              <div
+                className=""
+              >
+                <Button
+                  id="view-details"
+                  onClick={[Function]}
+                  variant="secondary"
+                >
+                  <button
+                    aria-disabled={false}
+                    aria-label={null}
+                    className="pf-c-button pf-m-secondary"
+                    data-ouia-component-id={2}
+                    data-ouia-component-type="PF4/Button"
+                    data-ouia-safe={true}
+                    disabled={false}
+                    id="view-details"
+                    onClick={[Function]}
+                    type="button"
+                  >
+                    View details
+                  </button>
+                </Button>
+              </div>
+            </FlexItem>
+          </div>
+        </Flex>
       </section>
     </PageSection>
     <PageSection>
       <section
         className="pf-c-page__main-section"
       >
-        <Grid
-          className="pf-u-h-100"
-          hasGutter={true}
-          md={1}
+        <Drawer
+          isExpanded={false}
         >
           <div
-            className="pf-l-grid pf-m-all-1-col-on-md pf-m-gutter pf-u-h-100"
+            className="pf-c-drawer"
           >
-            <GridItem
-              className="pf-u-h-100"
-              span={8}
-            >
-              <div
-                className="pf-l-grid__item pf-m-8-col pf-u-h-100"
-              >
-                <Card
-                  className="pf-u-h-100"
-                >
-                  <article
-                    className="pf-c-card pf-u-h-100"
-                    data-ouia-component-id={0}
-                    data-ouia-component-type="PF4/Card"
-                    data-ouia-safe={true}
-                  >
-                    <CardHeader>
-                      <div
-                        className="pf-c-card__header"
-                      >
-                        <Title
-                          headingLevel="h3"
-                          size="xl"
-                        >
-                          <h3
-                            className="pf-c-title pf-m-xl"
-                          >
-                            Form
-                          </h3>
-                        </Title>
-                      </div>
-                    </CardHeader>
-                    <CardBody
-                      className="pf-u-h-100"
+            <DrawerContent
+              panelContent={
+                <DrawerPanelContent>
+                  <DrawerHead>
+                    <span
+                      tabIndex={-1}
                     >
-                      <div
-                        className="pf-c-card__body pf-u-h-100"
+                      <Title
+                        headingLevel="h3"
+                        size="xl"
                       >
-                        <MockedTaskForm
-                          errorCallback={[Function]}
-                          successCallback={[Function]}
-                          userTaskInstance={
-                            Object {
-                              "actualOwner": null,
-                              "adminGroups": Array [],
-                              "adminUsers": Array [],
-                              "completed": null,
-                              "description": null,
-                              "endpoint": "http://localhost:8080/travels/9ae7ce3b-d49c-4f35-b843-8ac3d22fa427/VisaApplication/45a73767-5da3-49bf-9c40-d533c3e77ef3",
-                              "excludedUsers": Array [],
-                              "id": "45a73767-5da3-49bf-9c40-d533c3e77ef3",
-                              "inputs": "{\\"Skippable\\":\\"true\\",\\"trip\\":{\\"city\\":\\"Boston\\",\\"country\\":\\"US\\",\\"begin\\":\\"2020-02-19T23:00:00.000+01:00\\",\\"end\\":\\"2020-02-26T23:00:00.000+01:00\\",\\"visaRequired\\":true},\\"TaskName\\":\\"VisaApplication\\",\\"NodeName\\":\\"Apply for visa\\",\\"traveller\\":{\\"firstName\\":\\"Rachel\\",\\"lastName\\":\\"White\\",\\"email\\":\\"rwhite@gorle.com\\",\\"nationality\\":\\"Polish\\",\\"address\\":{\\"street\\":\\"Cabalone\\",\\"city\\":\\"Zerf\\",\\"zipCode\\":\\"765756\\",\\"country\\":\\"Poland\\"}},\\"Priority\\":\\"1\\"}",
-                              "lastUpdate": "2020-02-19T11:11:56.282Z",
-                              "name": "VisaApplication",
-                              "outputs": "{}",
-                              "potentialGroups": Array [],
-                              "potentialUsers": Array [],
-                              "priority": "1",
-                              "processId": "travels",
-                              "processInstanceId": "9ae7ce3b-d49c-4f35-b843-8ac3d22fa427",
-                              "referenceName": "Apply for visa",
-                              "rootProcessId": null,
-                              "rootProcessInstanceId": null,
-                              "started": "2020-02-19T11:11:56.282Z",
-                              "state": "Ready",
-                            }
-                          }
-                        />
-                      </div>
-                    </CardBody>
-                  </article>
-                </Card>
-              </div>
-            </GridItem>
-            <GridItem
-              className="pf-u-h-100"
-              span={4}
+                        Details
+                      </Title>
+                    </span>
+                    <DrawerActions>
+                      <DrawerCloseButton
+                        onClick={[Function]}
+                      />
+                    </DrawerActions>
+                  </DrawerHead>
+                  <DrawerPanelBody>
+                    <MockedTaskDetails
+                      userTaskInstance={
+                        Object {
+                          "actualOwner": null,
+                          "adminGroups": Array [],
+                          "adminUsers": Array [],
+                          "completed": null,
+                          "description": null,
+                          "endpoint": "http://localhost:8080/travels/9ae7ce3b-d49c-4f35-b843-8ac3d22fa427/VisaApplication/45a73767-5da3-49bf-9c40-d533c3e77ef3",
+                          "excludedUsers": Array [],
+                          "id": "45a73767-5da3-49bf-9c40-d533c3e77ef3",
+                          "inputs": "{\\"Skippable\\":\\"true\\",\\"trip\\":{\\"city\\":\\"Boston\\",\\"country\\":\\"US\\",\\"begin\\":\\"2020-02-19T23:00:00.000+01:00\\",\\"end\\":\\"2020-02-26T23:00:00.000+01:00\\",\\"visaRequired\\":true},\\"TaskName\\":\\"VisaApplication\\",\\"NodeName\\":\\"Apply for visa\\",\\"traveller\\":{\\"firstName\\":\\"Rachel\\",\\"lastName\\":\\"White\\",\\"email\\":\\"rwhite@gorle.com\\",\\"nationality\\":\\"Polish\\",\\"address\\":{\\"street\\":\\"Cabalone\\",\\"city\\":\\"Zerf\\",\\"zipCode\\":\\"765756\\",\\"country\\":\\"Poland\\"}},\\"Priority\\":\\"1\\"}",
+                          "lastUpdate": "2020-02-19T11:11:56.282Z",
+                          "name": "VisaApplication",
+                          "outputs": "{}",
+                          "potentialGroups": Array [],
+                          "potentialUsers": Array [],
+                          "priority": "1",
+                          "processId": "travels",
+                          "processInstanceId": "9ae7ce3b-d49c-4f35-b843-8ac3d22fa427",
+                          "referenceName": "Apply for visa",
+                          "rootProcessId": null,
+                          "rootProcessInstanceId": null,
+                          "started": "2020-02-19T11:11:56.282Z",
+                          "state": "Ready",
+                        }
+                      }
+                    />
+                  </DrawerPanelBody>
+                </DrawerPanelContent>
+              }
             >
-              <div
-                className="pf-l-grid__item pf-m-4-col pf-u-h-100"
-              >
-                <Card
-                  className="pf-u-h-100"
+              <DrawerMain>
+                <div
+                  className="pf-c-drawer__main"
                 >
-                  <article
-                    className="pf-c-card pf-u-h-100"
-                    data-ouia-component-id={1}
-                    data-ouia-component-type="PF4/Card"
-                    data-ouia-safe={true}
+                  <div
+                    className="pf-c-drawer__content"
                   >
-                    <CardHeader>
+                    <DrawerContentBody>
                       <div
-                        className="pf-c-card__header"
+                        className="pf-c-drawer__body"
                       >
-                        <Title
-                          headingLevel="h3"
-                          size="xl"
+                        <Card
+                          className="pf-u-h-100"
                         >
-                          <h3
-                            className="pf-c-title pf-m-xl"
+                          <article
+                            className="pf-c-card pf-u-h-100"
+                            data-ouia-component-id={3}
+                            data-ouia-component-type="PF4/Card"
+                            data-ouia-safe={true}
                           >
-                            Details
-                          </h3>
-                        </Title>
+                            <CardHeader>
+                              <div
+                                className="pf-c-card__header"
+                              >
+                                <Title
+                                  headingLevel="h3"
+                                  size="xl"
+                                >
+                                  <h3
+                                    className="pf-c-title pf-m-xl"
+                                  >
+                                    Form
+                                  </h3>
+                                </Title>
+                              </div>
+                            </CardHeader>
+                            <CardBody
+                              className="pf-u-h-100"
+                            >
+                              <div
+                                className="pf-c-card__body pf-u-h-100"
+                              >
+                                <MockedTaskForm
+                                  errorCallback={[Function]}
+                                  successCallback={[Function]}
+                                  userTaskInstance={
+                                    Object {
+                                      "actualOwner": null,
+                                      "adminGroups": Array [],
+                                      "adminUsers": Array [],
+                                      "completed": null,
+                                      "description": null,
+                                      "endpoint": "http://localhost:8080/travels/9ae7ce3b-d49c-4f35-b843-8ac3d22fa427/VisaApplication/45a73767-5da3-49bf-9c40-d533c3e77ef3",
+                                      "excludedUsers": Array [],
+                                      "id": "45a73767-5da3-49bf-9c40-d533c3e77ef3",
+                                      "inputs": "{\\"Skippable\\":\\"true\\",\\"trip\\":{\\"city\\":\\"Boston\\",\\"country\\":\\"US\\",\\"begin\\":\\"2020-02-19T23:00:00.000+01:00\\",\\"end\\":\\"2020-02-26T23:00:00.000+01:00\\",\\"visaRequired\\":true},\\"TaskName\\":\\"VisaApplication\\",\\"NodeName\\":\\"Apply for visa\\",\\"traveller\\":{\\"firstName\\":\\"Rachel\\",\\"lastName\\":\\"White\\",\\"email\\":\\"rwhite@gorle.com\\",\\"nationality\\":\\"Polish\\",\\"address\\":{\\"street\\":\\"Cabalone\\",\\"city\\":\\"Zerf\\",\\"zipCode\\":\\"765756\\",\\"country\\":\\"Poland\\"}},\\"Priority\\":\\"1\\"}",
+                                      "lastUpdate": "2020-02-19T11:11:56.282Z",
+                                      "name": "VisaApplication",
+                                      "outputs": "{}",
+                                      "potentialGroups": Array [],
+                                      "potentialUsers": Array [],
+                                      "priority": "1",
+                                      "processId": "travels",
+                                      "processInstanceId": "9ae7ce3b-d49c-4f35-b843-8ac3d22fa427",
+                                      "referenceName": "Apply for visa",
+                                      "rootProcessId": null,
+                                      "rootProcessInstanceId": null,
+                                      "started": "2020-02-19T11:11:56.282Z",
+                                      "state": "Ready",
+                                    }
+                                  }
+                                />
+                              </div>
+                            </CardBody>
+                          </article>
+                        </Card>
                       </div>
-                    </CardHeader>
-                    <CardBody
-                      className="pf-u-h-100"
-                    >
-                      <div
-                        className="pf-c-card__body pf-u-h-100"
-                      >
-                        <MockedTaskDetails
-                          userTaskInstance={
-                            Object {
-                              "actualOwner": null,
-                              "adminGroups": Array [],
-                              "adminUsers": Array [],
-                              "completed": null,
-                              "description": null,
-                              "endpoint": "http://localhost:8080/travels/9ae7ce3b-d49c-4f35-b843-8ac3d22fa427/VisaApplication/45a73767-5da3-49bf-9c40-d533c3e77ef3",
-                              "excludedUsers": Array [],
-                              "id": "45a73767-5da3-49bf-9c40-d533c3e77ef3",
-                              "inputs": "{\\"Skippable\\":\\"true\\",\\"trip\\":{\\"city\\":\\"Boston\\",\\"country\\":\\"US\\",\\"begin\\":\\"2020-02-19T23:00:00.000+01:00\\",\\"end\\":\\"2020-02-26T23:00:00.000+01:00\\",\\"visaRequired\\":true},\\"TaskName\\":\\"VisaApplication\\",\\"NodeName\\":\\"Apply for visa\\",\\"traveller\\":{\\"firstName\\":\\"Rachel\\",\\"lastName\\":\\"White\\",\\"email\\":\\"rwhite@gorle.com\\",\\"nationality\\":\\"Polish\\",\\"address\\":{\\"street\\":\\"Cabalone\\",\\"city\\":\\"Zerf\\",\\"zipCode\\":\\"765756\\",\\"country\\":\\"Poland\\"}},\\"Priority\\":\\"1\\"}",
-                              "lastUpdate": "2020-02-19T11:11:56.282Z",
-                              "name": "VisaApplication",
-                              "outputs": "{}",
-                              "potentialGroups": Array [],
-                              "potentialUsers": Array [],
-                              "priority": "1",
-                              "processId": "travels",
-                              "processInstanceId": "9ae7ce3b-d49c-4f35-b843-8ac3d22fa427",
-                              "referenceName": "Apply for visa",
-                              "rootProcessId": null,
-                              "rootProcessInstanceId": null,
-                              "started": "2020-02-19T11:11:56.282Z",
-                              "state": "Ready",
-                            }
-                          }
-                        />
-                      </div>
-                    </CardBody>
-                  </article>
-                </Card>
-              </div>
-            </GridItem>
+                    </DrawerContentBody>
+                  </div>
+                  <DrawerPanelContent>
+                    <div
+                      className="pf-c-drawer__panel"
+                      hidden={true}
+                      onTransitionEnd={[Function]}
+                    />
+                  </DrawerPanelContent>
+                </div>
+              </DrawerMain>
+            </DrawerContent>
           </div>
-        </Grid>
+        </Drawer>
       </section>
     </PageSection>
   </div>
@@ -316,4 +355,144 @@ exports[`UserTaskInstanceDetailsPage tests Test empty state 1`] = `
     <MockedComponent />
   </KogitoEmptyState>
 </UserTaskInstanceDetailsPage>
+`;
+
+exports[`UserTaskInstanceDetailsPage tests Test error state 1`] = `
+<ServerErrors
+  error={[Error: GraphQL error: Error occured in server!]}
+  variant="large"
+>
+  <MockedComponent />
+</ServerErrors>
+`;
+
+exports[`UserTaskInstanceDetailsPage tests test task details drawer 1`] = `
+<DrawerPanelContent>
+  <div
+    className="pf-c-drawer__panel"
+    hidden={false}
+    onTransitionEnd={[Function]}
+  >
+    <DrawerHead>
+      <DrawerPanelBody
+        hasNoPadding={false}
+      >
+        <div
+          className="pf-c-drawer__body"
+        >
+          <div
+            className="pf-c-drawer__head"
+          >
+            <span
+              tabIndex={0}
+            >
+              <Title
+                headingLevel="h3"
+                size="xl"
+              >
+                <h3
+                  className="pf-c-title pf-m-xl"
+                >
+                  Details
+                </h3>
+              </Title>
+            </span>
+            <DrawerActions>
+              <div
+                className="pf-c-drawer__actions"
+              >
+                <DrawerCloseButton
+                  onClick={[Function]}
+                >
+                  <div
+                    className="pf-c-drawer__close"
+                    onClick={[Function]}
+                  >
+                    <Button
+                      aria-label="Close drawer panel"
+                      onClick={[Function]}
+                      variant="plain"
+                    >
+                      <button
+                        aria-disabled={false}
+                        aria-label="Close drawer panel"
+                        className="pf-c-button pf-m-plain"
+                        data-ouia-component-id={9}
+                        data-ouia-component-type="PF4/Button"
+                        data-ouia-safe={true}
+                        disabled={false}
+                        onClick={[Function]}
+                        type="button"
+                      >
+                        <TimesIcon
+                          color="currentColor"
+                          noVerticalAlign={false}
+                          size="sm"
+                        >
+                          <svg
+                            aria-hidden={true}
+                            aria-labelledby={null}
+                            fill="currentColor"
+                            height="1em"
+                            role="img"
+                            style={
+                              Object {
+                                "verticalAlign": "-0.125em",
+                              }
+                            }
+                            viewBox="0 0 352 512"
+                            width="1em"
+                          >
+                            <path
+                              d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
+                              transform=""
+                            />
+                          </svg>
+                        </TimesIcon>
+                      </button>
+                    </Button>
+                  </div>
+                </DrawerCloseButton>
+              </div>
+            </DrawerActions>
+          </div>
+        </div>
+      </DrawerPanelBody>
+    </DrawerHead>
+    <DrawerPanelBody>
+      <div
+        className="pf-c-drawer__body"
+      >
+        <MockedTaskDetails
+          userTaskInstance={
+            Object {
+              "actualOwner": null,
+              "adminGroups": Array [],
+              "adminUsers": Array [],
+              "completed": null,
+              "description": null,
+              "endpoint": "http://localhost:8080/travels/9ae7ce3b-d49c-4f35-b843-8ac3d22fa427/VisaApplication/45a73767-5da3-49bf-9c40-d533c3e77ef3",
+              "excludedUsers": Array [],
+              "id": "45a73767-5da3-49bf-9c40-d533c3e77ef3",
+              "inputs": "{\\"Skippable\\":\\"true\\",\\"trip\\":{\\"city\\":\\"Boston\\",\\"country\\":\\"US\\",\\"begin\\":\\"2020-02-19T23:00:00.000+01:00\\",\\"end\\":\\"2020-02-26T23:00:00.000+01:00\\",\\"visaRequired\\":true},\\"TaskName\\":\\"VisaApplication\\",\\"NodeName\\":\\"Apply for visa\\",\\"traveller\\":{\\"firstName\\":\\"Rachel\\",\\"lastName\\":\\"White\\",\\"email\\":\\"rwhite@gorle.com\\",\\"nationality\\":\\"Polish\\",\\"address\\":{\\"street\\":\\"Cabalone\\",\\"city\\":\\"Zerf\\",\\"zipCode\\":\\"765756\\",\\"country\\":\\"Poland\\"}},\\"Priority\\":\\"1\\"}",
+              "lastUpdate": "2020-02-19T11:11:56.282Z",
+              "name": "VisaApplication",
+              "outputs": "{}",
+              "potentialGroups": Array [],
+              "potentialUsers": Array [],
+              "priority": "1",
+              "processId": "travels",
+              "processInstanceId": "9ae7ce3b-d49c-4f35-b843-8ac3d22fa427",
+              "referenceName": "Apply for visa",
+              "rootProcessId": null,
+              "rootProcessInstanceId": null,
+              "started": "2020-02-19T11:11:56.282Z",
+              "state": "Ready",
+            }
+          }
+        />
+      </div>
+    </DrawerPanelBody>
+  </div>
+</DrawerPanelContent>
 `;

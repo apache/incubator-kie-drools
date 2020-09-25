@@ -2,22 +2,30 @@ import React from 'react';
 import * as H from 'history';
 import {
   DefaultUser,
-  getWrapper,
   GraphQL,
   KogitoEmptyState,
-  User
+  User,
+  getWrapperAsync,
+  ServerErrors
 } from '@kogito-apps/common';
 import UserTaskInstance = GraphQL.UserTaskInstance;
 import TaskConsoleContext, {
   DefaultContext
 } from '../../../../context/TaskConsoleContext/TaskConsoleContext';
-import TaskConsoleContextProvider from '../../../../context/TaskConsoleContext/TaskConsoleContextProvider';
 import UserTaskInstanceDetailsPage from '../UserTaskInstanceDetailsPage';
 import { BrowserRouter } from 'react-router-dom';
-import { Breadcrumb, Text } from '@patternfly/react-core';
+import {
+  Breadcrumb,
+  Text,
+  DrawerPanelContent,
+  DrawerCloseButton
+} from '@patternfly/react-core';
 import PageTitle from '../../../Molecules/PageTitle/PageTitle';
 import TaskForm from '../../../Organisms/TaskForm/TaskForm';
-import TaskDetails from '../../../Organisms/TaskDetails/TaskDetails';
+import { act } from 'react-dom/test-utils';
+import { MockedProvider } from '@apollo/react-testing';
+import wait from 'waait';
+import { GraphQLError } from 'graphql';
 
 const MockedComponent = (): React.ReactElement => {
   return <></>;
@@ -31,6 +39,9 @@ jest.mock('../../../Organisms/TaskForm/TaskForm');
 jest.mock('@kogito-apps/common', () => ({
   ...jest.requireActual('@kogito-apps/common'),
   KogitoEmptyState: () => {
+    return <MockedComponent />;
+  },
+  ServerErrors: () => {
     return <MockedComponent />;
   }
 }));
@@ -87,15 +98,45 @@ const props = {
   history: H.createBrowserHistory()
 };
 
-describe('UserTaskInstanceDetailsPage tests', () => {
-  it('Test empty state', () => {
-    const wrapper = getWrapper(
-      <TaskConsoleContextProvider user={testUser}>
-        <UserTaskInstanceDetailsPage {...props} />
-      </TaskConsoleContextProvider>,
+const getWrapper = async (mocks, context) => {
+  let wrapper = null;
+  await act(async () => {
+    wrapper = await getWrapperAsync(
+      <MockedProvider mocks={mocks} addTypename={false}>
+        <TaskConsoleContext.Provider value={context}>
+          <BrowserRouter>
+            <UserTaskInstanceDetailsPage {...props} />
+          </BrowserRouter>
+        </TaskConsoleContext.Provider>
+      </MockedProvider>,
       'UserTaskInstanceDetailsPage'
     );
+    await wait();
+  });
 
+  return (wrapper = wrapper.update().find('UserTaskInstanceDetailsPage'));
+};
+
+describe('UserTaskInstanceDetailsPage tests', () => {
+  it('Test empty state', async () => {
+    const mocks = [
+      {
+        request: {
+          query: GraphQL.GetUserTaskByIdDocument,
+          variables: {
+            id: props.match.params.taskId
+          }
+        },
+        result: {
+          data: {
+            UserTaskInstances: []
+          }
+        }
+      }
+    ];
+    const context = new DefaultContext<UserTaskInstance>(testUser);
+    context.setActiveItem(null);
+    const wrapper = await getWrapper(mocks, context);
     expect(wrapper).toMatchSnapshot();
 
     const emptyState = wrapper.find(KogitoEmptyState);
@@ -107,22 +148,50 @@ describe('UserTaskInstanceDetailsPage tests', () => {
     expect(emptyState.props().title).toStrictEqual('Cannot find task');
   });
 
-  it('Test active task', () => {
+  it('Test error state', async () => {
+    const mocks = [
+      {
+        request: {
+          query: GraphQL.GetUserTaskByIdDocument,
+          variables: {
+            id: props.match.params.taskId
+          }
+        },
+        result: {
+          errors: [new GraphQLError('Error occured in server!')]
+        }
+      }
+    ];
     const context = new DefaultContext<UserTaskInstance>(testUser);
-
-    context.setActiveItem(userTaskInstance);
-
-    const wrapper = getWrapper(
-      <TaskConsoleContext.Provider value={context}>
-        <BrowserRouter>
-          <UserTaskInstanceDetailsPage {...props} />
-        </BrowserRouter>
-      </TaskConsoleContext.Provider>,
-      'UserTaskInstanceDetailsPage'
+    const wrapper = await getWrapper(mocks, context);
+    const serverErrors = wrapper.find(ServerErrors);
+    expect(serverErrors).toMatchSnapshot();
+    expect(serverErrors.exists()).toBeTruthy();
+    expect(serverErrors.props().error.message).toEqual(
+      'GraphQL error: Error occured in server!'
     );
+  });
 
+  it('Test active task', async () => {
+    const context = new DefaultContext<UserTaskInstance>(testUser);
+    const mocks = [
+      {
+        request: {
+          query: GraphQL.GetUserTaskByIdDocument,
+          variables: {
+            id: props.match.params.taskId
+          }
+        },
+        result: {
+          data: {
+            UserTaskInstances: [userTaskInstance]
+          }
+        }
+      }
+    ];
+    context.setActiveItem(userTaskInstance);
+    const wrapper = await getWrapper(mocks, context);
     expect(wrapper).toMatchSnapshot();
-
     expect(wrapper.find(Breadcrumb).exists()).toBeTruthy();
 
     const title = wrapper.find(PageTitle);
@@ -137,17 +206,57 @@ describe('UserTaskInstanceDetailsPage tests', () => {
     expect(id.html()).toContain(`ID: ${userTaskInstance.id}`);
 
     const taskForm = wrapper.find(TaskForm);
-
     expect(taskForm.exists()).toBeTruthy();
     expect(taskForm.props().userTaskInstance).toStrictEqual(userTaskInstance);
     expect(taskForm.props().successCallback).not.toBeNull();
     expect(taskForm.props().errorCallback).not.toBeNull();
-
-    const taskDetails = wrapper.find(TaskDetails);
-
-    expect(taskDetails.exists()).toBeTruthy();
-    expect(taskDetails.props().userTaskInstance).toStrictEqual(
-      userTaskInstance
-    );
+  });
+  it('test task details drawer', async () => {
+    const context = new DefaultContext<UserTaskInstance>(testUser);
+    const mocks = [
+      {
+        request: {
+          query: GraphQL.GetUserTaskByIdDocument,
+          variables: {
+            id: props.match.params.taskId
+          }
+        },
+        result: {
+          data: {
+            UserTaskInstances: [userTaskInstance]
+          }
+        }
+      }
+    ];
+    context.setActiveItem(null);
+    let wrapper = await getWrapper(mocks, context);
+    // open details drawer
+    await act(async () => {
+      wrapper
+        .find('#view-details')
+        .find('button')
+        .simulate('click');
+    });
+    wrapper = wrapper.update();
+    const detailsPanel = wrapper.find(DrawerPanelContent);
+    expect(detailsPanel).toMatchSnapshot();
+    expect(detailsPanel.exists()).toBeTruthy();
+    expect(
+      detailsPanel.find('MockedTaskDetails').props().userTaskInstance
+    ).toStrictEqual(userTaskInstance);
+    // close details drawer
+    await act(async () => {
+      detailsPanel
+        .find(DrawerCloseButton)
+        .find('button')
+        .simulate('click');
+    });
+    wrapper = wrapper.update();
+    expect(
+      wrapper
+        .find(DrawerPanelContent)
+        .find('MockedTaskDetails')
+        .exists()
+    ).toBeFalsy();
   });
 });

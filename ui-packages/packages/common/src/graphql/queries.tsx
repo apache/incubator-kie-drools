@@ -278,6 +278,7 @@ const GET_USER_TASK = gql`
       outputs
       referenceName
       endpoint
+      lastUpdate
     }
   }
 `;
