@@ -26,29 +26,35 @@ exports[`TaskInbox tests Test load data with LoadMore 1`] = `
       Array [
         Object {
           "bodyCellTransformer": [Function],
+          "isSortable": true,
           "label": "Name",
           "path": "referenceName",
         },
         Object {
+          "isSortable": false,
           "label": "Process",
           "path": "processId",
         },
         Object {
+          "isSortable": true,
           "label": "Priority",
           "path": "priority",
         },
         Object {
           "bodyCellTransformer": [Function],
+          "isSortable": true,
           "label": "State",
           "path": "state",
         },
         Object {
           "bodyCellTransformer": [Function],
+          "isSortable": true,
           "label": "Started",
           "path": "started",
         },
         Object {
           "bodyCellTransformer": [Function],
+          "isSortable": true,
           "label": "Last update",
           "path": "lastUpdate",
         },
@@ -312,6 +318,7 @@ exports[`TaskInbox tests Test load data with LoadMore 1`] = `
     }
     isLoading={false}
     networkStatus={7}
+    onSorting={[Function]}
     refetch={[Function]}
   >
     <MockedComponent />
@@ -763,29 +770,35 @@ exports[`TaskInbox tests Test load data with LoadMore 2`] = `
       Array [
         Object {
           "bodyCellTransformer": [Function],
+          "isSortable": true,
           "label": "Name",
           "path": "referenceName",
         },
         Object {
+          "isSortable": false,
           "label": "Process",
           "path": "processId",
         },
         Object {
+          "isSortable": true,
           "label": "Priority",
           "path": "priority",
         },
         Object {
           "bodyCellTransformer": [Function],
+          "isSortable": true,
           "label": "State",
           "path": "state",
         },
         Object {
           "bodyCellTransformer": [Function],
+          "isSortable": true,
           "label": "Started",
           "path": "started",
         },
         Object {
           "bodyCellTransformer": [Function],
+          "isSortable": true,
           "label": "Last update",
           "path": "lastUpdate",
         },
@@ -1309,6 +1322,7 @@ exports[`TaskInbox tests Test load data with LoadMore 2`] = `
     }
     isLoading={false}
     networkStatus={7}
+    onSorting={[Function]}
     refetch={[Function]}
   >
     <MockedComponent />
@@ -1771,29 +1785,35 @@ exports[`TaskInbox tests Test load data without LoadMore 1`] = `
       Array [
         Object {
           "bodyCellTransformer": [Function],
+          "isSortable": true,
           "label": "Name",
           "path": "referenceName",
         },
         Object {
+          "isSortable": false,
           "label": "Process",
           "path": "processId",
         },
         Object {
+          "isSortable": true,
           "label": "Priority",
           "path": "priority",
         },
         Object {
           "bodyCellTransformer": [Function],
+          "isSortable": true,
           "label": "State",
           "path": "state",
         },
         Object {
           "bodyCellTransformer": [Function],
+          "isSortable": true,
           "label": "Started",
           "path": "started",
         },
         Object {
           "bodyCellTransformer": [Function],
+          "isSortable": true,
           "label": "Last update",
           "path": "lastUpdate",
         },
@@ -1927,6 +1947,7 @@ exports[`TaskInbox tests Test load data without LoadMore 1`] = `
     }
     isLoading={false}
     networkStatus={7}
+    onSorting={[Function]}
     refetch={[Function]}
   >
     <MockedComponent />

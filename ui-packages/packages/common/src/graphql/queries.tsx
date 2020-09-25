@@ -289,6 +289,7 @@ const GET_TASKS_FOR_USER = gql`
     $groups: [String!]
     $offset: Int
     $limit: Int
+    $orderBy: UserTaskInstanceOrderBy
   ) {
     UserTaskInstances(
       where: {
@@ -299,6 +300,7 @@ const GET_TASKS_FOR_USER = gql`
         ]
       }
       pagination: { offset: $offset, limit: $limit }
+      orderBy: $orderBy
     ) {
       id
       name

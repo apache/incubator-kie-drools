@@ -32,7 +32,7 @@ import TaskInbox from '../TaskInbox';
 import TaskConsoleContextProvider from '../../../../context/TaskConsoleContext/TaskConsoleContextProvider';
 import { MemoryRouter as Router } from 'react-router';
 import { act } from 'react-dom/test-utils';
-import { DropdownToggle } from '@patternfly/react-core';
+import { DropdownToggleAction } from '@patternfly/react-core';
 
 const MockedComponent = (): React.ReactElement => {
   return <></>;
@@ -86,7 +86,8 @@ describe('TaskInbox tests', () => {
             user: testUser.id,
             groups: testUser.groups,
             offset: 0,
-            limit: 10
+            limit: 10,
+            orderBy: null
           }
         },
         result: {
@@ -96,11 +97,8 @@ describe('TaskInbox tests', () => {
         }
       }
     ];
-
     const wrapper = await getWrapper(mocks);
-
     expect(wrapper).toMatchSnapshot();
-
     const emptyState = wrapper.find(KogitoEmptyState);
 
     expect(emptyState.exists()).toBeTruthy();
@@ -115,7 +113,8 @@ describe('TaskInbox tests', () => {
             user: testUser.id,
             groups: testUser.groups,
             offset: 0,
-            limit: 10
+            limit: 10,
+            orderBy: null
           }
         },
         result: {
@@ -149,7 +148,8 @@ describe('TaskInbox tests', () => {
             user: testUser.id,
             groups: testUser.groups,
             offset: 0,
-            limit: 10
+            limit: 10,
+            orderBy: null
           }
         },
         result: {
@@ -165,7 +165,8 @@ describe('TaskInbox tests', () => {
             user: testUser.id,
             groups: testUser.groups,
             offset: 10,
-            limit: 10
+            limit: 10,
+            orderBy: null
           }
         },
         result: {
@@ -184,14 +185,13 @@ describe('TaskInbox tests', () => {
 
     expect(dataTable.exists()).toBeTruthy();
     expect(dataTable.props().data).toHaveLength(10);
-
     let loadMore = wrapper.find(LoadMore);
 
     expect(loadMore.exists()).toBeTruthy();
 
     await act(async () => {
       wrapper
-        .find(DropdownToggle)
+        .find(DropdownToggleAction)
         .find('button')
         .at(0)
         .simulate('click');
@@ -218,7 +218,8 @@ describe('TaskInbox tests', () => {
             user: testUser.id,
             groups: testUser.groups,
             offset: 0,
-            limit: 10
+            limit: 10,
+            orderBy: null
           }
         },
         error: {
@@ -239,5 +240,88 @@ describe('TaskInbox tests', () => {
     const serverError = wrapper.find(ServerErrors);
 
     expect(serverError.exists()).toBeTruthy();
+  });
+
+  it('test sorting -> with direction', async () => {
+    const mocks = [
+      {
+        request: {
+          query: GraphQL.GetTasksForUserDocument,
+          variables: {
+            user: testUser.id,
+            groups: testUser.groups,
+            offset: 0,
+            limit: 10,
+            orderBy: null
+          }
+        },
+        result: {
+          data: {
+            UserTaskInstances: userTasks.slice(0, 10)
+          }
+        }
+      },
+      {
+        request: {
+          query: GraphQL.GetTasksForUserDocument,
+          variables: {
+            user: testUser.id,
+            groups: testUser.groups,
+            offset: 0,
+            limit: 10,
+            orderBy: { state: GraphQL.OrderBy.Asc }
+          }
+        },
+        result: {
+          data: {
+            UserTaskInstances: userTasks.slice(0, 10)
+          }
+        }
+      },
+      {
+        request: {
+          query: GraphQL.GetTasksForUserDocument,
+          variables: {
+            user: testUser.id,
+            groups: testUser.groups,
+            offset: 0,
+            limit: 10,
+            orderBy: { state: GraphQL.OrderBy.Asc }
+          }
+        },
+        result: {
+          data: {
+            UserTaskInstances: userTasks.slice(0, 20)
+          }
+        }
+      }
+    ];
+    /* tslint:disable:no-string-literal no-unexpected-multiline*/
+    let wrapper = await getWrapper(mocks);
+    // sortby value check
+    await act(async () => {
+      wrapper
+        .find(DataTable)
+        .props()
+        ['onSorting'](3, 'asc');
+    });
+    await wait(10);
+    wrapper = wrapper.update();
+    expect(wrapper.find('DataTable').props()['sortBy']).toEqual({
+      index: 3,
+      direction: 'asc'
+    });
+    // after loadmore click - sortby value exists
+    await act(async () => {
+      wrapper
+        .find(DropdownToggleAction)
+        .find('button')
+        .simulate('click');
+    });
+    await wait(10);
+    expect(wrapper.find('DataTable').props()['sortBy']).toEqual({
+      index: 3,
+      direction: 'asc'
+    });
   });
 });

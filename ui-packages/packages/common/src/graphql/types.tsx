@@ -1051,6 +1051,7 @@ export namespace GraphQL {
     groups?: Maybe<Array<Scalars['String']>>;
     offset?: Maybe<Scalars['Int']>;
     limit?: Maybe<Scalars['Int']>;
+    orderBy?: Maybe<UserTaskInstanceOrderBy>;
   }>;
 
   export type GetTasksForUserQuery = { __typename?: 'Query' } & {
@@ -1886,6 +1887,7 @@ export namespace GraphQL {
       $groups: [String!]
       $offset: Int
       $limit: Int
+      $orderBy: UserTaskInstanceOrderBy
     ) {
       UserTaskInstances(
         where: {
@@ -1896,6 +1898,7 @@ export namespace GraphQL {
           ]
         }
         pagination: { offset: $offset, limit: $limit }
+        orderBy: $orderBy
       ) {
         id
         name
@@ -1939,6 +1942,7 @@ export namespace GraphQL {
    *      groups: // value for 'groups'
    *      offset: // value for 'offset'
    *      limit: // value for 'limit'
+   *      orderBy: // value for 'orderBy'
    *   },
    * });
    */

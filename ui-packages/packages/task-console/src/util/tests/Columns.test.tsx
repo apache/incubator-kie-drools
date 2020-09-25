@@ -18,7 +18,7 @@ import Columns from '../Columns';
 
 describe('Columns testing', () => {
   it('Test default column', () => {
-    const column = Columns.getDefaultColumn('path', 'Label');
+    const column = Columns.getDefaultColumn('path', 'Label', true);
 
     expect(column).not.toBeNull();
     expect(column.path).toBe('path');
@@ -27,7 +27,7 @@ describe('Columns testing', () => {
   });
 
   it('Test task description column', async () => {
-    const column = Columns.getDateColumn('path', 'Date Column');
+    const column = Columns.getDateColumn('path', 'Date Column', true);
 
     expect(column).not.toBeNull();
     expect(column.path).toBe('path');
@@ -36,7 +36,7 @@ describe('Columns testing', () => {
   });
 
   it('Test task description column', async () => {
-    const column = Columns.getTaskDescriptionColumn();
+    const column = Columns.getTaskDescriptionColumn(true);
 
     expect(column).not.toBeNull();
     expect(column.path).toBe('referenceName');
@@ -45,7 +45,7 @@ describe('Columns testing', () => {
   });
 
   it('Test task state column', async () => {
-    const column = Columns.getTaskStateColumn();
+    const column = Columns.getTaskStateColumn(true);
 
     expect(column).not.toBeNull();
     expect(column.path).toBe('state');

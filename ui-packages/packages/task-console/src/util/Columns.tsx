@@ -23,42 +23,48 @@ import Moment from 'react-moment';
 export default class Columns {
   static getDefaultColumn = (
     columnPath: string,
-    columnLabel: string
+    columnLabel: string,
+    isSortable: boolean
   ): DataTableColumn => {
     return {
       path: columnPath,
-      label: columnLabel
+      label: columnLabel,
+      isSortable
     };
   };
 
   static getDateColumn(
     columnPath: string,
-    columnLabel: string
+    columnLabel: string,
+    isSortable: boolean
   ): DataTableColumn {
     return {
       label: columnLabel,
       path: columnPath,
       bodyCellTransformer: value => (
         <Moment fromNow>{new Date(`${value}`)}</Moment>
-      )
+      ),
+      isSortable
     };
   }
 
-  static getTaskDescriptionColumn(): DataTableColumn {
+  static getTaskDescriptionColumn(isSortable: boolean): DataTableColumn {
     return {
       label: 'Name',
       path: 'referenceName',
       bodyCellTransformer: (cellValue, rowTask) => (
         <TaskDescription task={rowTask} />
-      )
+      ),
+      isSortable
     };
   }
 
-  static getTaskStateColumn(): DataTableColumn {
+  static getTaskStateColumn(isSortable: boolean): DataTableColumn {
     return {
       label: 'State',
       path: 'state',
-      bodyCellTransformer: (cellValue, rowTask) => <TaskState task={rowTask} />
+      bodyCellTransformer: (cellValue, rowTask) => <TaskState task={rowTask} />,
+      isSortable
     };
   }
 }

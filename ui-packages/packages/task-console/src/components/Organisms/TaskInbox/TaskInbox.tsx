@@ -31,6 +31,7 @@ import TaskConsoleContext, {
 } from '../../../context/TaskConsoleContext/TaskConsoleContext';
 import Columns from '../../../util/Columns';
 import UserTaskInstance = GraphQL.UserTaskInstance;
+import _ from 'lodash';
 
 const UserTaskLoadingComponent = (
   <Bullseye>
@@ -39,6 +40,7 @@ const UserTaskLoadingComponent = (
 );
 
 const TaskInbox: React.FC = props => {
+  const context: IContext<UserTaskInstance> = useContext(TaskConsoleContext);
   const [defaultPageSize] = useState<number>(10);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -46,24 +48,29 @@ const TaskInbox: React.FC = props => {
   const [pageSize, setPageSize] = useState<number>(defaultPageSize);
   const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false);
   const [tableData, setTableData] = useState<any[]>([]);
-
-  const context: IContext<UserTaskInstance> = useContext(TaskConsoleContext);
+  const [sorting, setSorting] = useState<boolean>(false);
 
   const [
     getUserTasks,
     { loading, error, data, refetch, networkStatus }
   ] = GraphQL.useGetTasksForUserLazyQuery({
     fetchPolicy: 'network-only',
-    notifyOnNetworkStatusChange: true,
-    variables: {
-      user: context.getUser().id,
-      groups: context.getUser().groups,
-      offset: queryOffset,
-      limit: pageSize
-    }
+    notifyOnNetworkStatusChange: true
   });
 
+  const columns: DataTableColumn[] = [
+    Columns.getTaskDescriptionColumn(true),
+    Columns.getDefaultColumn('processId', 'Process', false),
+    Columns.getDefaultColumn('priority', 'Priority', true),
+    Columns.getTaskStateColumn(true),
+    Columns.getDateColumn('started', 'Started', true),
+    Columns.getDateColumn('lastUpdate', 'Last update', true)
+  ];
+
   const onGetMoreInstances = (_queryOffset, _pageSize, _loadMore) => {
+    let newQueryLimit = _pageSize;
+    let newQueryOffset = _queryOffset;
+
     setIsLoadingMore(_loadMore);
 
     if (_queryOffset !== queryOffset) {
@@ -74,41 +81,93 @@ const TaskInbox: React.FC = props => {
       setPageSize(_pageSize);
     }
 
+    if (!_.isEmpty(context.getActiveQueryInfo().sortBy)) {
+      newQueryOffset = 0;
+      newQueryLimit = tableData.length + newQueryLimit;
+    }
+
+    context.getActiveQueryInfo().offset = newQueryOffset;
+    context.getActiveQueryInfo().maxElements += _pageSize;
+
+    fetchUserTasks(newQueryOffset, newQueryLimit);
+  };
+  const fetchUserTasks = (_queryOffset, _queryLimit) => {
     getUserTasks({
       variables: {
         user: context.getUser().id,
         groups: context.getUser().groups,
         offset: _queryOffset,
-        limit: _pageSize
+        limit: _queryLimit,
+        orderBy: getSortByObject()
       }
     });
   };
-
   useEffect(() => {
-    onGetMoreInstances(queryOffset, pageSize, false);
+    if (!context.getActiveQueryInfo().maxElements) {
+      context.getActiveQueryInfo().maxElements = pageSize;
+    }
+    if (context.getActiveQueryInfo().offset) {
+      setOffset(context.getActiveQueryInfo().offset);
+    }
+    fetchUserTasks(0, context.getActiveQueryInfo().maxElements);
   }, []);
 
   useEffect(() => {
     if (isLoadingMore === undefined || !isLoadingMore) {
       setIsLoading(loading);
     }
+
     if (!loading && data !== undefined) {
-      const newData = tableData.concat(data.UserTaskInstances);
-      setTableData(newData);
+      setSorting(false);
+
+      if (_.isEmpty(context.getActiveQueryInfo().sortBy)) {
+        const newData = tableData.concat(data.UserTaskInstances);
+        setTableData(newData);
+      } else {
+        setTableData(data.UserTaskInstances);
+      }
+
       if (queryOffset > 0 && tableData.length > 0) {
         setIsLoadingMore(false);
       }
+
       if (!isLoaded) {
         setIsLoaded(true);
       }
     }
   }, [data]);
 
+  const onSorting = (index, direction) => {
+    setSorting(true);
+    if (direction) {
+      context.getActiveQueryInfo().sortBy = { index, direction };
+    } else {
+      context.getActiveQueryInfo().sortBy = null;
+    }
+  };
+
+  const getSortByObject = () => {
+    if (!_.isEmpty(context.getActiveQueryInfo().sortBy)) {
+      return _.set(
+        {},
+        columns[context.getActiveQueryInfo().sortBy.index].path,
+        context.getActiveQueryInfo().sortBy.direction.toUpperCase()
+      );
+    }
+    return null;
+  };
+
+  useEffect(() => {
+    if (!_.isEmpty(context.getActiveQueryInfo().sortBy)) {
+      fetchUserTasks(0, context.getActiveQueryInfo().maxElements);
+    }
+  }, [context.getActiveQueryInfo().sortBy]);
+
   if (error) {
     return <ServerErrors error={error} variant={'large'} />;
   }
 
-  if (!isLoaded) {
+  if (!isLoaded || sorting) {
     return UserTaskLoadingComponent;
   }
 
@@ -121,19 +180,9 @@ const TaskInbox: React.FC = props => {
       />
     );
   }
-
-  const columns: DataTableColumn[] = [
-    Columns.getTaskDescriptionColumn(),
-    Columns.getDefaultColumn('processId', 'Process'),
-    Columns.getDefaultColumn('priority', 'Priority'),
-    Columns.getTaskStateColumn(),
-    Columns.getDateColumn('started', 'Started'),
-    Columns.getDateColumn('lastUpdate', 'Last update')
-  ];
-
   const mustShowMore =
-    isLoadingMore || (data && data.UserTaskInstances.length === pageSize);
-
+    isLoadingMore ||
+    context.getActiveQueryInfo().maxElements === tableData.length;
   return (
     <React.Fragment>
       <DataTable
@@ -144,6 +193,8 @@ const TaskInbox: React.FC = props => {
         error={error}
         refetch={refetch}
         LoadingComponent={UserTaskLoadingComponent}
+        onSorting={onSorting}
+        sortBy={context.getActiveQueryInfo().sortBy}
       />
       {mustShowMore && (
         <LoadMore
