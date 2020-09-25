@@ -27,6 +27,8 @@ public class CompiledAlphaNetworkUpdater extends KieBaseUpdater {
                 .flatMap(ep -> ep.getObjectTypeNodes().values().stream())
                 .filter(f -> !InitialFact.class.isAssignableFrom(f.getObjectType().getClassType()))
                 .forEach(otn -> {
+                    System.out.println("Here");
+
 //                    CompiledObjectTypeNode cotn = (CompiledObjectTypeNode)otn;
 //                    final CompiledNetwork oldCompiledNetwork = cotn.getCompiledNetwork();
 //                    if (oldCompiledNetwork != null) {
