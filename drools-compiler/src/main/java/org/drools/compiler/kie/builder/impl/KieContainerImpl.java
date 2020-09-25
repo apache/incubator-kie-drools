@@ -28,7 +28,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.management.ObjectName;
-import org.drools.compiler.builder.InternalKnowledgeBuilder;
+
 import org.drools.compiler.kie.builder.MaterializedLambda;
 import org.drools.compiler.kie.util.KieJarChangeSet;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
@@ -60,6 +60,7 @@ import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.conf.MBeansOption;
 import org.kie.api.event.KieRuntimeEventManager;
+import org.kie.api.internal.utils.ServiceRegistry;
 import org.kie.api.io.ResourceType;
 import org.kie.api.logger.KieLoggers;
 import org.kie.api.runtime.Environment;
@@ -264,6 +265,13 @@ public class KieContainerImpl
                                                                          cs, modifiedClasses, modifyingUsedClass, unchangedResources,
                                                                          results, newKieBaseModel, currentKieBaseModel );
                 kBase.enqueueModification( currentKM.createKieBaseUpdater( context ) );
+
+                UpdaterContainer updaters = ServiceRegistry.getInstance().get(UpdaterContainer.class);
+
+                for(Updater u : updaters.getChildren()) {
+                    System.out.println(u);
+                }
+
             }
         }
 
