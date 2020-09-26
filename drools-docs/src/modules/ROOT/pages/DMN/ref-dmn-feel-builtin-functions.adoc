@@ -1,4 +1,4 @@
-//IMPORTANT: The following file on built-in FEEL functions is synced with https://github.com/kiegroup/drools/blob/master/kie-dmn/ref-dmn-feel-builtin-functions.adoc as the source. So please update the file at that source and ensure not to change the file name, which intentionally follows the standard of module type prefix. (Stetson, 28 Aug 2020)
+// If changing name, location, and structure of this document, align with Docs team; the golden master of this file is the one available at https://github.com/kiegroup/drools/blob/master/kie-dmn/ref-dmn-feel-builtin-functions.adoc
 
 [id='ref-dmn-feel-builtin-functions_{context}']
 = Built-in functions in FEEL
