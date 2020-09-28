@@ -79,6 +79,7 @@ import org.slf4j.LoggerFactory;
 import static org.drools.compiler.kie.util.InjectionHelper.wireSessionComponents;
 import static org.drools.core.util.ClassUtils.convertResourceToClassName;
 import static org.drools.core.util.Drools.isJndiAvailable;
+import static org.drools.core.util.StreamUtils.optionalToStream;
 
 public class KieContainerImpl
         implements
@@ -264,14 +265,16 @@ public class KieContainerImpl
                 KieBaseUpdateContext context = new KieBaseUpdateContext( kProject, kBase, currentKM, newKM,
                                                                          cs, modifiedClasses, modifyingUsedClass, unchangedResources,
                                                                          results, newKieBaseModel, currentKieBaseModel );
-                kBase.enqueueModification( currentKM.createKieBaseUpdater( context ) );
+                KieBaseUpdater kieBaseUpdater = currentKM.createKieBaseUpdater(context);
+                kBase.enqueueModification(kieBaseUpdater);
 
-                KieBaseUpdaters updaters = ServiceRegistry.getInstance().get(KieBaseUpdaters.class);
-
-                for(KieBaseUpdater u : updaters.getChildren()) {
-                    System.out.println(u);
-                }
-
+                kieBaseUpdater.precreatedKnowledgeBuilder().ifPresent(knowledgeBuilder -> {
+                    KieBaseUpdaters updaters = ServiceRegistry.getInstance().get(KieBaseUpdaters.class);
+                    updaters.getChildren()
+                            .stream()
+                            .flatMap(kbu -> optionalToStream(kbu.createWithKnowledgeBuilder(knowledgeBuilder)))
+                            .forEach(kBase::enqueueModification);
+                });
             }
         }
 

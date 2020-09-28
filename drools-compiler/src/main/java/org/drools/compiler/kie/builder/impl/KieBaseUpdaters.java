@@ -4,5 +4,5 @@ import java.util.List;
 
 public interface KieBaseUpdaters {
 
-    List<KieBaseUpdater> getChildren();
+    List<KieBaseUpdaterFactory> getChildren();
 }

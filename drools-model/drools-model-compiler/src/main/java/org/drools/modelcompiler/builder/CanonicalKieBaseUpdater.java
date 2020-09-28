@@ -20,9 +20,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.drools.compiler.builder.InternalKnowledgeBuilder;
 import org.drools.compiler.builder.impl.CompositeKnowledgeBuilderImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.kie.builder.impl.KieBaseUpdateContext;
@@ -211,5 +213,10 @@ public class CanonicalKieBaseUpdater extends KieBaseUpdaterImpl {
 
     private static boolean isPackageInKieBase( KieBaseModel kieBaseModel, String pkgName ) {
         return kieBaseModel.getPackages().isEmpty() || KieBuilderImpl.isPackageInKieBase( kieBaseModel, pkgName );
+    }
+
+    @Override
+    public Optional<InternalKnowledgeBuilder> precreatedKnowledgeBuilder() {
+        return Optional.empty();
     }
 }

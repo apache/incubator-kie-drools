@@ -4,21 +4,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class UpdaterContainerContainerImpl implements Consumer<KieBaseUpdater>,
+public class UpdaterContainerContainerImpl implements Consumer<KieBaseUpdaterFactory>,
                                                       KieBaseUpdaters {
 
-    List<KieBaseUpdater> children = new ArrayList<>();
+    List<KieBaseUpdaterFactory> children = new ArrayList<>();
 
     public UpdaterContainerContainerImpl() {
     }
 
     @Override
-    public List<KieBaseUpdater> getChildren() {
+    public List<KieBaseUpdaterFactory> getChildren() {
         return children;
     }
 
     @Override
-    public void accept(KieBaseUpdater o) {
+    public void accept(KieBaseUpdaterFactory o) {
         children.add(o);
     }
 }
