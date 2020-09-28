@@ -353,7 +353,7 @@ public class ModelGenerator {
             } else {
                 if ( ad.hasValue() ) {
                     if ( ad.getValues().size() == 1 ) {
-                        metaAttributeCall.addArgument(parseExpression(ad.getSingleValueAsString()));
+                        metaAttributeCall.addArgument(annotationSingleValueExpression(ad));
                     } else {
                         metaAttributeCall.addArgument(objectAsJPExpression(ad.getValueMap()));
                     }
@@ -380,16 +380,23 @@ public class ModelGenerator {
         }
     }
 
-    private static Object resolveValue(String value) {
+    private static Expression annotationSingleValueExpression(AnnotationDescr ad) {
         // for backward compatibility, if something is not an expression, we return an string as is
-        Object result = value;
+        if (resolveValueWithMVEL(ad.getSingleValueAsString()).isPresent()) {
+            return parseExpression(ad.getSingleValueAsString()); // then in the produced exec model we leave the original expression statement, not the pre-computed MVEL result.
+        } else {
+            return objectAsJPExpression(ad.getSingleValueAsString()); // backward compatibility case: @ann(Hello World!) or @ann( john_doe ) would result in a String literal for "Hello World!" or "john_doe"
+        }
+    }
+
+    private static Optional<Object> resolveValueWithMVEL(String value) {
         // try to resolve as an expression:
         try {
-            result = MVELSafeHelper.getEvaluator().eval(value);
+            Object result = MVELSafeHelper.getEvaluator().eval(value);
+            return Optional.of(result);
         } catch (Exception e) {
-            // do nothing
+            return Optional.empty();
         }
-        return result;
     }
 
     private static void createUnitData(RuleContext context, RuleUnitDescription ruleUnitDescr, BlockStmt ruleVariablesBlock ) {
