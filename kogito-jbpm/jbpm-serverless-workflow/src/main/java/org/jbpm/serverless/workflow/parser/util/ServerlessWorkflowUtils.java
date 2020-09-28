@@ -14,9 +14,14 @@
  */
 package org.jbpm.serverless.workflow.parser.util;
 
+import java.io.Reader;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.stream.Collectors;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.drools.core.util.StringUtils;
 import org.jbpm.serverless.workflow.api.Workflow;
 import org.jbpm.serverless.workflow.api.branches.Branch;
@@ -33,11 +38,6 @@ import org.jbpm.serverless.workflow.api.switchconditions.DataCondition;
 import org.jbpm.serverless.workflow.parser.core.ServerlessWorkflowFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.Reader;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.stream.Collectors;
 
 public class ServerlessWorkflowUtils {
 
@@ -142,7 +142,7 @@ public class ServerlessWorkflowUtils {
 
     public static String sysOutFunctionScript(String script) {
         String retStr = DEFAULT_JSONPATH_CONFIG;
-        retStr += "java.lang.String toPrint = \"\";";
+        retStr += "java.lang.String toPrint = \"\";com.fasterxml.jackson.databind.JsonNode jsonNode;";
         retStr += getJsonPathScript(script);
         retStr += "System.out.println(toPrint);";
 
@@ -187,9 +187,9 @@ public class ServerlessWorkflowUtils {
 
         if (script.indexOf("$") >= 0) {
 
-            String replacement = "toPrint += com.jayway.jsonpath.JsonPath.using(jsonPathConfig)" +
+            String replacement = "jsonNode = com.jayway.jsonpath.JsonPath.using(jsonPathConfig)" +
                     ".parse(((com.fasterxml.jackson.databind.JsonNode)kcontext.getVariable(\"workflowdata\")))" +
-                    ".read(\"@@.$1\", com.fasterxml.jackson.databind.JsonNode.class).textValue();";
+                    ".read(\"@@.$1\", com.fasterxml.jackson.databind.JsonNode.class); toPrint+= jsonNode.isTextual() ? jsonNode.asText() : jsonNode;";
             script = script.replaceAll("\\$.([A-Za-z]+)", replacement);
             script = script.replaceAll("@@", Matcher.quoteReplacement("$"));
             return script;

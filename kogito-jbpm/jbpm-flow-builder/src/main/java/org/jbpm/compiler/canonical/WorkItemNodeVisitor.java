@@ -18,6 +18,7 @@ package org.jbpm.compiler.canonical;
 
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.function.Supplier;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.expr.BooleanLiteralExpr;
@@ -26,6 +27,7 @@ import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import com.github.javaparser.ast.expr.LongLiteralExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import org.jbpm.process.core.Work;
@@ -85,6 +87,11 @@ public class WorkItemNodeVisitor<T extends WorkItemNode> extends AbstractNodeVis
             CompilationUnit generatedHandler = d.generateHandlerClassForService();
             metadata.getGeneratedHandlers().put(mangledName, generatedHandler);
             workName = mangledName;
+        } else if (workName.equals("Rest Task")) {
+            workName = RestTaskDescriptor.getClassName(metadata);
+            metadata
+                .getGeneratedHandlers()
+                .computeIfAbsent(workName, RestTaskDescriptor::generateHandlerClassForService);
         }
 
         body.addStatement(getAssignedFactoryMethod(factoryField, WorkItemNodeFactory.class, getNodeId(node), getNodeKey(), new LongLiteralExpr(node.getId())))
@@ -110,30 +117,45 @@ public class WorkItemNodeVisitor<T extends WorkItemNode> extends AbstractNodeVis
             if(work.getParameterDefinition(entry.getKey()) != null) {
                 paramType = work.getParameterDefinition(entry.getKey()).getType().getStringType();
             }
-            body.addStatement(getFactoryMethod(variableName, METHOD_WORK_PARAMETER, new StringLiteralExpr(entry.getKey()), getParameterExpr(paramType, entry.getValue().toString())));
+            body.addStatement(getFactoryMethod(variableName, METHOD_WORK_PARAMETER, new StringLiteralExpr(entry.getKey()), getParameterExpr(paramType, entry.getValue())));
         }
     }
+    
+  
 
-    private Expression getParameterExpr(String type, String value) {
+    private Expression getParameterExpr(String type, Object value) {
+        if (value == null) {
+            return new NullLiteralExpr();
+        }
         ParamType pType = ParamType.fromString(type);
         if (pType == null) {
-            return new StringLiteralExpr(value);
+            if (value instanceof Supplier) {
+                return ((Supplier<Expression>) value).get();
+            } else {
+                return new StringLiteralExpr(value.toString());
+            }
+
         }
         switch (pType) {
             case BOOLEAN:
-                return new BooleanLiteralExpr(Boolean.parseBoolean(value));
+                return new BooleanLiteralExpr(asBoolean(value));
             case FLOAT:
                 return new MethodCallExpr()
-                        .setScope(new NameExpr(Float.class.getName()))
-                        .setName("parseFloat")
-                        .addArgument(new StringLiteralExpr(value));
+                    .setScope(new NameExpr(Float.class.getName()))
+                    .setName("parseFloat")
+                    .addArgument(new StringLiteralExpr(value.toString()));
             case INTEGER:
-                return new IntegerLiteralExpr(Integer.parseInt(value));
+                return new IntegerLiteralExpr(asInteger(value));
             default:
-                return new StringLiteralExpr(value);
+                return new StringLiteralExpr(value.toString());
         }
     }
 
+    private Boolean asBoolean(Object value) {
+        return value instanceof Boolean ? (Boolean) value : Boolean.parseBoolean(value.toString());
+    }
 
-
+    private Integer asInteger(Object value) {
+        return value instanceof Number ? ((Number) value).intValue() : Integer.parseInt(value.toString());
+    }
 }

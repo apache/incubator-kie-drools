@@ -28,6 +28,7 @@ import java.util.Map;
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
+import com.github.javaparser.ast.Modifier.Keyword;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
@@ -37,12 +38,14 @@ import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
+import com.github.javaparser.ast.expr.ThisExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.CatchClause;
@@ -74,7 +77,7 @@ public class ServiceTaskDescriptor {
     private final WorkItemNode workItemNode;
     private final String mangledName;
     private Class<?> cls;
-
+    
     ServiceTaskDescriptor(WorkItemNode workItemNode, ClassLoader contextClassLoader) {
         this.workItemNode = workItemNode;
         interfaceName = (String) workItemNode.getWork().getParameter("Interface");
@@ -170,9 +173,27 @@ public class ServiceTaskDescriptor {
                 .addImplementedType(WorkItemHandler.class.getCanonicalName());
         ClassOrInterfaceType serviceType = new ClassOrInterfaceType(null, interfaceName);
 
+        final String serviceName = "service";
         FieldDeclaration serviceField = new FieldDeclaration()
-                .addVariable(new VariableDeclarator(serviceType, "service"));
+                .addVariable(new VariableDeclarator(serviceType, serviceName));
         cls.addMember(serviceField);
+        cls
+            .addConstructor(Keyword.PUBLIC)
+            .setBody(
+                     new BlockStmt()
+                         .addStatement(new MethodCallExpr("this", new ObjectCreationExpr().setType(serviceType))));
+        cls
+            .addConstructor(Keyword.PUBLIC)
+            .addParameter(serviceType, serviceName)
+            .setBody(
+                     new BlockStmt()
+                         .addStatement(
+                                       new AssignExpr(
+                                           new FieldAccessExpr(
+                                               new ThisExpr(),
+                                               serviceName),
+                                           new NameExpr(serviceName),
+                                           AssignExpr.Operator.ASSIGN)));
 
         // executeWorkItem method
         BlockStmt executeWorkItemBody = new BlockStmt();

@@ -75,6 +75,7 @@
     <version.taglist.plugin>2.4</version.taglist.plugin>
     <version.versions.plugin>2.1</version.versions.plugin>
     <version.jayway.jsonpath>2.4.0</version.jayway.jsonpath>
+    <version.vertx.web.client>3.9.2</version.vertx.web.client>
 
     <!-- this version property is used in plugins but also in dependencies too -->
     <version.io.quarkus>1.8.0.Final</version.io.quarkus>
@@ -349,6 +350,12 @@
         <groupId>com.jayway.jsonpath</groupId>
         <artifactId>json-path-assert</artifactId>
         <version>${version.jayway.jsonpath}</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>io.vertx</groupId>
+        <artifactId>vertx-web-client</artifactId>
+        <version>${version.vertx.web.client}</version>
       </dependency>
 
       <!-- http communication -->
@@ -712,7 +719,6 @@
         <artifactId>mongodb-driver-sync</artifactId>
         <version>${version.org.mongo}</version>
       </dependency>
-
     </dependencies>
   </dependencyManagement>
 

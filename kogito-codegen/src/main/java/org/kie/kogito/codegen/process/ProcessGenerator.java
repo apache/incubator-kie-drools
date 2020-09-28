@@ -388,38 +388,19 @@ public class ProcessGenerator {
                 Parameter parameter = new Parameter(clazzNameType, varName);
                 if (useInjection()) {
                     annotator.withApplicationComponent(handlerClazz);
+                    annotator
+                        .withInjection(
+                                       handlerClazz
+                                           .getConstructors()
+                                           .stream()
+                                           .filter(c -> !c.getParameters().isEmpty())
+                                           .findFirst()
+                                           .orElseThrow(
+                                                        () -> new IllegalStateException(
+                                                            "Cannot find a non empty constructor to annotate in handler class " +
+                                                                                        handlerClazz)),true);
                 }
-                // generate constructor with handler parameters
-                for (FieldDeclaration fd : handler.getValue().findAll(FieldDeclaration.class)) {
-                    String fieldName = fd.getVariable(0).getNameAsString();
-                    handlerClazz
-                        .addConstructor(Keyword.PUBLIC)
-                        .setBody(
-                                 new BlockStmt()
-                                     .addStatement(
-                                                   new AssignExpr(
-                                                       new FieldAccessExpr(
-                                                           new ThisExpr(),
-                                                           fd.getVariable(0).getNameAsString()),
-                                                       new ObjectCreationExpr()
-                                                           .setType(fd.getVariable(0).getType().toString()),
-                                                       AssignExpr.Operator.ASSIGN)));
-                    ConstructorDeclaration handlerConstructor = handlerClazz
-                        .addConstructor(Keyword.PUBLIC)
-                        .addParameter(fd.getVariable(0).getType(), fieldName)
-                        .setBody(
-                                 new BlockStmt()
-                                     .addStatement(
-                                                   new AssignExpr(
-                                                       new FieldAccessExpr(
-                                                           new ThisExpr(),
-                                                           fieldName),
-                                                       new NameExpr(fieldName),
-                                                       AssignExpr.Operator.ASSIGN)));
-                    if (useInjection()) {
-                        annotator.withInjection(handlerConstructor, true);
-                    }
-                }
+             
                 initMethodCall
                     .addArgument(
                                  new ObjectCreationExpr(

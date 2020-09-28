@@ -14,6 +14,12 @@
  */
 package org.jbpm.serverless.workflow.parser.core;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialect;
 import org.jbpm.process.core.Work;
@@ -31,6 +37,7 @@ import org.jbpm.serverless.workflow.api.Workflow;
 import org.jbpm.serverless.workflow.api.end.End;
 import org.jbpm.serverless.workflow.api.events.EventDefinition;
 import org.jbpm.serverless.workflow.api.functions.Function;
+import org.jbpm.serverless.workflow.api.functions.FunctionRef;
 import org.jbpm.serverless.workflow.parser.util.ServerlessWorkflowUtils;
 import org.jbpm.serverless.workflow.parser.util.WorkflowAppContext;
 import org.jbpm.workflow.core.DroolsAction;
@@ -39,12 +46,25 @@ import org.jbpm.workflow.core.impl.ConnectionImpl;
 import org.jbpm.workflow.core.impl.ConstraintImpl;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
-import org.jbpm.workflow.core.node.*;
+import org.jbpm.workflow.core.node.ActionNode;
+import org.jbpm.workflow.core.node.CompositeContextNode;
+import org.jbpm.workflow.core.node.EndNode;
+import org.jbpm.workflow.core.node.EventNode;
+import org.jbpm.workflow.core.node.EventTrigger;
+import org.jbpm.workflow.core.node.HumanTaskNode;
+import org.jbpm.workflow.core.node.Join;
+import org.jbpm.workflow.core.node.RuleSetNode;
+import org.jbpm.workflow.core.node.Split;
+import org.jbpm.workflow.core.node.StartNode;
+import org.jbpm.workflow.core.node.SubProcessNode;
+import org.jbpm.workflow.core.node.TimerNode;
+import org.jbpm.workflow.core.node.WorkItemNode;
 import org.kie.api.definition.process.Node;
+import org.kogito.workitem.rest.RestWorkItemHandler;
+import org.kogito.workitem.rest.jsonpath.suppliers.JsonPathExprSupplier;
+import org.kogito.workitem.rest.jsonpath.suppliers.JsonPathResultExprSupplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.*;
 
 public class ServerlessWorkflowFactory {
     private static final Logger LOGGER = LoggerFactory.getLogger(ServerlessWorkflowFactory.class);
@@ -73,7 +93,7 @@ public class ServerlessWorkflowFactory {
     public static final String HT_ACTORID = "actorid";
     public static final String RF_GROUP = "ruleflowgroup";
     public static final String SERVICE_TASK_TYPE = "Service Task";
-
+   
     private WorkflowAppContext workflowAppContext;
 
     public ServerlessWorkflowFactory(WorkflowAppContext workflowAppContext) {
@@ -322,6 +342,39 @@ public class ServerlessWorkflowFactory {
 
         return workItemNode;
     }
+    
+    public Node restServiceNode(long id,
+                                FunctionRef functionRef,
+                                Function function,
+                                NodeContainer nodeContainer) {
+        WorkItemNode workItemNode = new WorkItemNode();
+        workItemNode.setId(id);
+        workItemNode.setName(function.getName());
+        workItemNode.setMetaData("Type", RestWorkItemHandler.REST_TASK_TYPE);
+
+        Work work = new WorkImpl();
+        workItemNode.setWork(work);
+        work.setName(RestWorkItemHandler.REST_TASK_TYPE);
+        work.setParameter(RestWorkItemHandler.ENDPOINT, function.getResource());
+        work.setParameter(RestWorkItemHandler.METHOD, ServerlessWorkflowUtils.resolveFunctionMetadata(function, RestWorkItemHandler.METHOD, workflowAppContext));
+        work.setParameter(RestWorkItemHandler.USER, ServerlessWorkflowUtils.resolveFunctionMetadata(function, RestWorkItemHandler.USER, workflowAppContext));
+        work.setParameter(RestWorkItemHandler.PASSWORD, ServerlessWorkflowUtils.resolveFunctionMetadata(function, RestWorkItemHandler.PASSWORD, workflowAppContext));
+        work.setParameter(RestWorkItemHandler.HOST, ServerlessWorkflowUtils.resolveFunctionMetadata(function, RestWorkItemHandler.HOST, workflowAppContext));
+        work.setParameter(RestWorkItemHandler.PORT, ServerlessWorkflowUtils.resolveFunctionMetadata(function, RestWorkItemHandler.PORT, workflowAppContext));
+        
+        if (functionRef.getParameters() != null) {
+            for (Entry<String, String> param : functionRef.getParameters().entrySet()) {
+                // assuming param value is json string path
+                work.setParameter(param.getKey(), new JsonPathExprSupplier(param.getValue()));
+            }
+        }
+        work.setParameter(RestWorkItemHandler.RESULT_HANDLER, new JsonPathResultExprSupplier());
+        workItemNode.addInMapping(RestWorkItemHandler.PARAMETER, DEFAULT_WORKFLOW_VAR);
+        workItemNode.addOutMapping(RestWorkItemHandler.RESULT, DEFAULT_WORKFLOW_VAR);
+      
+        nodeContainer.addNode(workItemNode);
+        return workItemNode;
+    }
 
     public WorkItemNode serviceNode(long id, String name, Function function, NodeContainer nodeContainer) {
         WorkItemNode workItemNode = new WorkItemNode();
@@ -486,5 +539,4 @@ public class ServerlessWorkflowFactory {
             throw new RuntimeException("Workflow could not be validated !");
         }
     }
-
 }
