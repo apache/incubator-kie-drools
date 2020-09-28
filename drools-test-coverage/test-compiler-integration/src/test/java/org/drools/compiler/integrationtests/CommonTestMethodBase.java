@@ -67,7 +67,7 @@ import static org.junit.Assert.fail;
 
 /**
  * Currently copied from drools-compiler.
- * This can be remvoed
+ * This can be removed
  */
 public class CommonTestMethodBase {
 
