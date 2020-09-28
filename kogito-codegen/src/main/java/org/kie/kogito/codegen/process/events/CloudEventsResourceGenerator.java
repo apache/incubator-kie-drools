@@ -1,3 +1,18 @@
+/*
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.kie.kogito.codegen.process.events;
 
 import java.util.ArrayList;
@@ -26,7 +41,7 @@ import static com.github.javaparser.StaticJavaParser.parse;
 
 public class CloudEventsResourceGenerator {
 
-    private static final String EMITTER_PREFIX = "emitter_";
+    static final String EMITTER_PREFIX = "emitter_";
     static final String EMITTER_TYPE = "Emitter<String>";
     private static final String RESOURCE_TEMPLATE = "/class-templates/events/CloudEventsListenerResource.java";
     private static final String CLASS_NAME = "CloudEventListenerResource";
@@ -128,7 +143,7 @@ public class CloudEventsResourceGenerator {
         setup.getAllContainedComments().forEach(Comment::remove);
         // declaring Emitters
         this.triggers.forEach(t -> {
-            final String emitterField = this.generateRandomEmitterName();
+            final String emitterField = this.sanitizeEmitterName(t.getName());
             // fields to be injected
             annotator.withOutgoingMessage(template.addField(EMITTER_TYPE, new StringLiteralExpr(emitterField).asString()), t.getName());
             // hashmap setup
@@ -142,7 +157,7 @@ public class CloudEventsResourceGenerator {
                 .forEach(annotator::withInjection);
     }
 
-    String generateRandomEmitterName() {
-        return String.join("", EMITTER_PREFIX, Long.toHexString(Double.doubleToLongBits(random.nextLong())));
+    String sanitizeEmitterName(String triggerName) {
+        return String.join("", EMITTER_PREFIX, triggerName.replaceAll("[^a-zA-Z0-9]+", ""));
     }
 }
