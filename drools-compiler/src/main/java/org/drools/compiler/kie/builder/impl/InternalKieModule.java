@@ -137,7 +137,7 @@ public interface InternalKieModule extends KieModule, Serializable {
     }
 
     default Runnable createKieBaseUpdater(KieBaseUpdateContext context) {
-        return new KieBaseUpdater( context );
+        return new KieBaseUpdaterImpl(context );
     }
 
     default ProjectClassLoader createModuleClassLoader( ClassLoader parent ) {

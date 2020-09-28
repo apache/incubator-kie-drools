@@ -26,7 +26,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.drools.compiler.builder.impl.CompositeKnowledgeBuilderImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.kie.builder.impl.KieBaseUpdateContext;
-import org.drools.compiler.kie.builder.impl.KieBaseUpdater;
+import org.drools.compiler.kie.builder.impl.KieBaseUpdaterImpl;
 import org.drools.compiler.kie.builder.impl.KieBuilderImpl;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.core.common.InternalWorkingMemory;
@@ -47,7 +47,7 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.ResourceChange;
 import org.kie.internal.builder.ResourceChangeSet;
 
-public class CanonicalKieBaseUpdater extends KieBaseUpdater {
+public class CanonicalKieBaseUpdater extends KieBaseUpdaterImpl {
 
     public CanonicalKieBaseUpdater( KieBaseUpdateContext ctx ) {
         super(ctx);

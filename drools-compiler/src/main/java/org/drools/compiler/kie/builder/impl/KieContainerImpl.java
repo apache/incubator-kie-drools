@@ -266,9 +266,9 @@ public class KieContainerImpl
                                                                          results, newKieBaseModel, currentKieBaseModel );
                 kBase.enqueueModification( currentKM.createKieBaseUpdater( context ) );
 
-                UpdaterContainer updaters = ServiceRegistry.getInstance().get(UpdaterContainer.class);
+                KieBaseUpdaters updaters = ServiceRegistry.getInstance().get(KieBaseUpdaters.class);
 
-                for(Updater u : updaters.getChildren()) {
+                for(KieBaseUpdater u : updaters.getChildren()) {
                     System.out.println(u);
                 }
 
