@@ -16,10 +16,11 @@ public class KieBaseUpdaterANC implements KieBaseUpdaterFactory {
     }
 
     public void run() {
-        // find already compiled ANC for exec model, otherwise regenerate and in memory compile
 
+        // find the new compiled alpha network in the classpath, if it's not there,
+        // generate compile it and reattach it
 
-        System.out.println("hello world");
+        System.out.println("should update here");
 
     }
 }
