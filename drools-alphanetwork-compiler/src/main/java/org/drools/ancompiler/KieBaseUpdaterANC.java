@@ -7,13 +7,19 @@ import org.drools.compiler.kie.builder.impl.KieBaseUpdaterFactory;
 
 public class KieBaseUpdaterANC implements KieBaseUpdaterFactory {
 
+    InternalKnowledgeBuilder knowledgeBuilder;
+
     @Override
     public Optional<Runnable> createWithKnowledgeBuilder(InternalKnowledgeBuilder internalKnowledgeBuilder) {
-        return Optional.of(new Runnable() {
-            @Override
-            public void run() {
-                System.out.println("Hello world");
-            }
-        });
+        this.knowledgeBuilder = internalKnowledgeBuilder;
+        return Optional.of(this::run);
+    }
+
+    public void run() {
+        // find already compiled ANC for exec model, otherwise regenerate and in memory compile
+
+
+        System.out.println("hello world");
+
     }
 }
