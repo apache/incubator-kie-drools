@@ -83,7 +83,7 @@ public class KieRepositoryImpl
                     return kieScanner;
                 }
                 try {
-                    KieScannerFactoryService scannerFactoryService = ServiceRegistry.getInstance().get(KieScannerFactoryService.class);
+                    KieScannerFactoryService scannerFactoryService = ServiceRegistry.getService(KieScannerFactoryService.class);
                     return (InternalKieScanner) scannerFactoryService.newKieScanner();
                 } catch (Exception e) {
                     log.debug( "Cannot load a KieRepositoryScanner, using the DummyKieScanner" );

@@ -230,7 +230,7 @@ public class KieServicesImpl implements InternalKieServices {
     }
 
     public KieScanner newKieScanner(KieContainer kieContainer) {
-        KieScannerFactoryService scannerFactoryService = ServiceRegistry.getInstance().get(KieScannerFactoryService.class);
+        KieScannerFactoryService scannerFactoryService = ServiceRegistry.getService(KieScannerFactoryService.class);
         if (scannerFactoryService == null) {
             throw new RuntimeException( "Cannot instance a maven based KieScanner, is kie-ci on the classpath?" );
         }
@@ -273,7 +273,7 @@ public class KieServicesImpl implements InternalKieServices {
     }
     
     public KieStoreServices getStoreServices() {
-        return ServiceRegistry.getInstance().get( KieStoreServices.class );
+        return ServiceRegistry.getService( KieStoreServices.class );
     }
 
     public ReleaseId newReleaseId(String groupId, String artifactId, String version) {
