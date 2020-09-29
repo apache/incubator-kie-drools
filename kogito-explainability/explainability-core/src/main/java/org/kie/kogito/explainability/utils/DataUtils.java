@@ -62,21 +62,22 @@ public class DataUtils {
             data[i] = random.nextGaussian() * stdDeviation + mean;
         }
 
-        double m = getMean(data);
-        double d = getStdDev(data, m);
+        double generatedDataMean = getMean(data);
+        double generatedDataStdDev = getStdDev(data, generatedDataMean);
 
         // force desired standard deviation
-        double d1 = stdDeviation / d;
+        double newStdDeviation = generatedDataStdDev != 0 ? stdDeviation / generatedDataStdDev : stdDeviation; // avoid division by zero
         for (int i = 0; i < size; i++) {
-            data[i] *= d1;
+            data[i] *= newStdDeviation;
         }
 
         // get the new mean
-        double m1 = m * stdDeviation / d;
+        double newMean = generatedDataStdDev != 0 ? generatedDataMean * stdDeviation / generatedDataStdDev :
+                generatedDataMean * stdDeviation;
 
         // force desired mean
         for (int i = 0; i < size; i++) {
-            data[i] += mean - m1;
+            data[i] += mean - newMean;
         }
 
         return data;
