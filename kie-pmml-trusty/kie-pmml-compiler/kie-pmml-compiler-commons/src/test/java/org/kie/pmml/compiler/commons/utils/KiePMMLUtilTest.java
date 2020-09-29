@@ -33,7 +33,10 @@ import org.dmg.pmml.mining.Segment;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
+import static org.kie.pmml.compiler.commons.utils.KiePMMLUtil.SEGMENTID_TEMPLATE;
 import static org.kie.test.util.filesystem.FileUtils.getFileInputStream;
 
 public class KiePMMLUtilTest {
@@ -53,6 +56,24 @@ public class KiePMMLUtilTest {
         commonLoadFile(NO_MODELNAME_NO_SEGMENTID_SAMPLE_NAME);
     }
 
+
+    @Test
+    public void getSanitizedId() {
+        final String modelName = "MODEL_NAME";
+        String id = "2";
+        String expected = String.format(SEGMENTID_TEMPLATE, modelName, id);
+        String retrieved = KiePMMLUtil.getSanitizedId(id, modelName);
+        assertEquals(expected,retrieved);
+        id = "34.5";
+        expected = String.format(SEGMENTID_TEMPLATE, modelName, id);
+        retrieved = KiePMMLUtil.getSanitizedId(id, modelName);
+        assertEquals(expected,retrieved);
+        id = "3,45";
+        expected = String.format(SEGMENTID_TEMPLATE, modelName, id);
+        retrieved = KiePMMLUtil.getSanitizedId(id, modelName);
+        assertEquals(expected,retrieved);
+
+    }
 
     private void commonLoadString(String fileName) throws IOException, JAXBException, SAXException {
         InputStream inputStream = getFileInputStream(fileName);

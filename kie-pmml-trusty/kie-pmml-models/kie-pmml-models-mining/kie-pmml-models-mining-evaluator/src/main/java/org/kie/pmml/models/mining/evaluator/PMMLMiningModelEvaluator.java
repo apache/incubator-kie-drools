@@ -74,7 +74,7 @@ public class PMMLMiningModelEvaluator implements PMMLModelEvaluator<KiePMMLMinin
                                 final KiePMMLMiningModel model,
                                 final PMMLContext pmmlContext) {
         validate(model);
-        return evaluateMiningModel((KiePMMLMiningModel) model, pmmlContext, knowledgeBase);
+        return evaluateMiningModel(model, pmmlContext, knowledgeBase);
     }
 
     PMML4Result getPMML4Result(final KiePMMLMiningModel toEvaluate,
