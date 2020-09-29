@@ -63,6 +63,8 @@ import org.kie.kogito.services.uow.ProcessInstanceWorkUnit;
 
 public abstract class AbstractProcessInstance<T extends Model> implements ProcessInstance<T> {
 
+    private static final String KOGITO_PROCESS_INSTANCE = "KogitoProcessInstance";
+
     protected final T variables;
     protected final AbstractProcess<T> process;
     protected ProcessRuntime rt;
@@ -93,6 +95,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
         Map<String, Object> map = bind(variables);
         String processId = process.process().getId();
         syncProcessInstance((WorkflowProcessInstance) ((CorrelationAwareProcessRuntime) rt).createProcessInstance(processId, correlationKey, map));
+        processInstance.setMetaData(KOGITO_PROCESS_INSTANCE, this);
     }
 
     /**
@@ -121,7 +124,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
             processInstance.setKnowledgeRuntime(((InternalProcessRuntime) getProcessRuntime()).getInternalKieRuntime());
         }
         processInstance.reconnect();
-        processInstance.setMetaData("KogitoProcessInstance", this);
+        processInstance.setMetaData(KOGITO_PROCESS_INSTANCE, this);
         addCompletionEventListener();
 
         for (org.kie.api.runtime.process.NodeInstance nodeInstance : processInstance.getNodeInstances()) {
@@ -153,7 +156,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
         }
 
         processInstance.disconnect();
-        processInstance.setMetaData("KogitoProcessInstance", null);
+        processInstance.setMetaData(KOGITO_PROCESS_INSTANCE, null);
     }
 
     private void syncProcessInstance(WorkflowProcessInstance wpi) {
