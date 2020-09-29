@@ -287,7 +287,8 @@ public class LimeExplainer implements LocalExplainer<Map<String, Saliency>> {
         // as per LIME paper, the dataset size should be at least |features|^2
         double perturbedDataSize = Math.max(noOfSamples, Math.pow(2, features.size()));
         for (int i = 0; i < perturbedDataSize; i++) {
-            perturbedInputs.add(DataUtils.perturbFeatures(features, perturbationContext));
+            List<Feature> newFeatures = DataUtils.perturbFeatures(features, perturbationContext);
+            perturbedInputs.add(new PredictionInput(newFeatures));
         }
         return perturbedInputs;
     }

@@ -159,7 +159,7 @@ public enum Type {
 
         @Override
         public Value<?> perturb(Value<?> value, PerturbationContext perturbationContext) {
-            return new Value<>(!Boolean.getBoolean(value.asString()));
+            return new Value<>(!Boolean.parseBoolean(value.asString()));
         }
 
         @Override
@@ -312,16 +312,7 @@ public enum Type {
         @Override
         public Value<?> perturb(Value<?> value, PerturbationContext perturbationContext) {
             List<Feature> composite = getFeatures(value);
-            List<Feature> newList = new ArrayList<>(composite);
-            if (!newList.isEmpty()) {
-                int[] indexesToBePerturbed = perturbationContext.getRandom().ints(0, composite.size())
-                        .distinct().limit(Math.min(perturbationContext.getNoOfPerturbations(), composite.size())).toArray();
-                for (int index : indexesToBePerturbed) {
-                    Feature cf = composite.get(index);
-                    Feature f = FeatureFactory.copyOf(cf, cf.getType().perturb(cf.getValue(), perturbationContext));
-                    newList.set(index, f);
-                }
-            }
+            List<Feature> newList = DataUtils.perturbFeatures(composite, perturbationContext);
             return new Value<>(newList);
         }
 

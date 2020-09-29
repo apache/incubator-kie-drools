@@ -34,6 +34,8 @@ import org.kie.kogito.explainability.model.PredictionInput;
 import org.kie.kogito.explainability.model.Type;
 import org.kie.kogito.explainability.model.Value;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.in;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -136,9 +138,9 @@ class DataUtilsTest {
     void testPerturbFeaturesEmpty() {
         List<Feature> features = new LinkedList<>();
         PerturbationContext perturbationContext = new PerturbationContext(random, 0);
-        PredictionInput predictionInput = DataUtils.perturbFeatures(features, perturbationContext);
-        assertNotNull(predictionInput);
-        assertEquals(features.size(), predictionInput.getFeatures().size());
+        List<Feature> newFeatures = DataUtils.perturbFeatures(features, perturbationContext);
+        assertNotNull(newFeatures);
+        assertEquals(features.size(), newFeatures.size());
     }
 
     @Test
@@ -226,29 +228,31 @@ class DataUtilsTest {
     }
 
     private void assertPerturbDropNumeric(PredictionInput input, int noOfPerturbations) {
-        PredictionInput perturbedInput = DataUtils.perturbFeatures(input.getFeatures(), new PerturbationContext(random, noOfPerturbations));
+        List<Feature> newFeatures = DataUtils.perturbFeatures(input.getFeatures(), new PerturbationContext(random, noOfPerturbations));
         int changedFeatures = 0;
         for (int i = 0; i < input.getFeatures().size(); i++) {
             double v = input.getFeatures().get(i).getValue().asNumber();
-            double pv = perturbedInput.getFeatures().get(i).getValue().asNumber();
+            double pv = newFeatures.get(i).getValue().asNumber();
             if (v != pv) {
                 changedFeatures++;
             }
         }
-        assertEquals(noOfPerturbations, changedFeatures);
+        assertThat(changedFeatures).isBetween((int) Math.min(noOfPerturbations, input.getFeatures().size() * 0.5),
+                                              (int) Math.max(noOfPerturbations, input.getFeatures().size() * 0.5));
     }
 
     private void assertPerturbDropString(PredictionInput input, int noOfPerturbations) {
-        PredictionInput perturbedInput = DataUtils.perturbFeatures(input.getFeatures(), new PerturbationContext(random, noOfPerturbations));
+        List<Feature> newFeatures = DataUtils.perturbFeatures(input.getFeatures(), new PerturbationContext(random, noOfPerturbations));
         int changedFeatures = 0;
         for (int i = 0; i < input.getFeatures().size(); i++) {
             String v = input.getFeatures().get(i).getValue().asString();
-            String pv = perturbedInput.getFeatures().get(i).getValue().asString();
+            String pv = newFeatures.get(i).getValue().asString();
             if (!v.equals(pv)) {
                 changedFeatures++;
             }
         }
-        assertEquals(noOfPerturbations, changedFeatures);
+        assertThat(changedFeatures).isBetween((int) Math.min(noOfPerturbations, input.getFeatures().size() * 0.5),
+                                              (int) Math.max(noOfPerturbations, input.getFeatures().size() * 0.5));
     }
 
     @Test

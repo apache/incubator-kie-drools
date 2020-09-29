@@ -132,15 +132,19 @@ class TypeTest {
 
     @Test
     void testPerturbCompositeFeature() {
-        PerturbationContext perturbationContext = new PerturbationContext(new Random(), 2);
-        List<Feature> features = new LinkedList<>();
-        features.add(new Feature("f1", Type.TEXT, new Value<>("foo bar")));
-        features.add(new Feature("f2", Type.NUMBER, new Value<>(1d)));
-        features.add(new Feature("f3", Type.BOOLEAN, new Value<>(true)));
-        Value<?> value = new Value<>(features);
-        Feature f = new Feature("name", Type.COMPOSITE, value);
-        Value<?> perturbedValue = f.getType().perturb(f.getValue(), perturbationContext);
-        assertNotEquals(value, perturbedValue);
+        Random random = new Random();
+        for (int i = 0; i < 10000; i++) {
+            random.setSeed(i);
+            PerturbationContext perturbationContext = new PerturbationContext(random, 2);
+            List<Feature> features = new LinkedList<>();
+            features.add(new Feature("f1", Type.TEXT, new Value<>("foo bar")));
+            features.add(new Feature("f2", Type.NUMBER, new Value<>(1d)));
+            features.add(new Feature("f3", Type.BOOLEAN, new Value<>(true)));
+            Value<?> value = new Value<>(features);
+            Feature f = new Feature("name", Type.COMPOSITE, value);
+            Value<?> perturbedValue = f.getType().perturb(f.getValue(), perturbationContext);
+            assertNotEquals(value, perturbedValue, "fail with seed " + i);
+        }
     }
 
     @Test

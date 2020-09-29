@@ -147,21 +147,34 @@ public class DataUtils {
      *
      * @param originalFeatures    the input features that need to be perturbed
      * @param perturbationContext the perturbation context
-     * @return a new input with perturbed features
+     * @return a perturbed copy of the input features
      */
-    public static PredictionInput perturbFeatures(List<Feature> originalFeatures, PerturbationContext perturbationContext) {
+    public static List<Feature> perturbFeatures(List<Feature> originalFeatures, PerturbationContext perturbationContext) {
         List<Feature> newFeatures = new ArrayList<>(originalFeatures);
-        PredictionInput perturbedInput = new PredictionInput(newFeatures);
         if (!newFeatures.isEmpty()) {
-            int perturbationSize = Math.min(perturbationContext.getNoOfPerturbations(), originalFeatures.size());
-            int[] indexesToBePerturbed = perturbationContext.getRandom().ints(0, perturbedInput.getFeatures().size()).distinct().limit(perturbationSize).toArray();
-            for (int index : indexesToBePerturbed) {
-                Feature feature = perturbedInput.getFeatures().get(index);
-                Feature perturbedFeature = FeatureFactory.copyOf(feature, feature.getType().perturb(feature.getValue(), perturbationContext));
-                perturbedInput.getFeatures().set(index, perturbedFeature);
+            // perturb at most in the range [|features|/2), noOfPerturbations]
+            int lowerBound = (int) Math.min(perturbationContext.getNoOfPerturbations(), 0.5d * newFeatures.size());
+            int upperBound = (int) Math.max(perturbationContext.getNoOfPerturbations(), 0.5d * newFeatures.size());
+            upperBound = Math.min(upperBound, newFeatures.size() - 1);
+            lowerBound = Math.max(1, lowerBound); // lower bound should always greater than zero (not ok to not perturb)
+            int perturbationSize = 0;
+            if (lowerBound == upperBound) {
+                perturbationSize = lowerBound;
+            }
+            else if (upperBound > lowerBound) {
+                perturbationSize = perturbationContext.getRandom().ints(lowerBound, 1 + upperBound).findFirst().orElse(1);
+            }
+            if (perturbationSize > 0) {
+                int[] indexesToBePerturbed = perturbationContext.getRandom().ints(1, newFeatures.size())
+                        .distinct().limit(perturbationSize).toArray();
+                for (int index : indexesToBePerturbed) {
+                    Feature feature = newFeatures.get(index);
+                    Feature perturbedFeature = FeatureFactory.copyOf(feature, feature.getType().perturb(feature.getValue(), perturbationContext));
+                    newFeatures.set(index, perturbedFeature);
+                }
             }
         }
-        return perturbedInput;
+        return newFeatures;
     }
 
     /**
