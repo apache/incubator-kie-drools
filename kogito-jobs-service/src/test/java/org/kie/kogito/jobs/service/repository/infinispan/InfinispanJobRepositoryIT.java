@@ -16,6 +16,8 @@
 
 package org.kie.kogito.jobs.service.repository.infinispan;
 
+import java.util.concurrent.TimeUnit;
+
 import javax.inject.Inject;
 
 import io.quarkus.test.common.QuarkusTestResource;
@@ -23,27 +25,32 @@ import io.quarkus.test.junit.QuarkusTest;
 import org.infinispan.client.hotrod.RemoteCacheManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestInstance;
+import org.kie.kogito.jobs.service.qualifier.Repository;
 import org.kie.kogito.jobs.service.repository.ReactiveJobRepository;
 import org.kie.kogito.jobs.service.repository.impl.BaseJobRepositoryTest;
 import org.kie.kogito.testcontainers.quarkus.InfinispanQuarkusTestResource;
+
+import static org.awaitility.Awaitility.await;
 
 @QuarkusTest
 @QuarkusTestResource(InfinispanQuarkusTestResource.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class InfinispanJobRepositoryIT extends BaseJobRepositoryTest {
 
-    private InfinispanJobRepository tested;
+    @Inject
+    @Repository("infinispan")
+    InfinispanJobRepository tested;
+
+    @Inject
+    InfinispanConfiguration infinispanConfiguration;
 
     @Inject
     RemoteCacheManager remoteCacheManager;
 
     @BeforeEach
-    public void setUp() {
-        remoteCacheManager
-                .administration()
-                .getOrCreateCache(InfinispanConfiguration.Caches.JOB_DETAILS, (String) null)
-                .clear();
-        tested = new InfinispanJobRepository(mockVertx(), mockJobStreams(), remoteCacheManager);
+    public void setUp() throws Exception {
+        await().atMost(2, TimeUnit.SECONDS).until(() -> infinispanConfiguration.isInitialized());
+        remoteCacheManager.getCache(InfinispanConfiguration.Caches.JOB_DETAILS).clear();
         super.setUp();
     }
 

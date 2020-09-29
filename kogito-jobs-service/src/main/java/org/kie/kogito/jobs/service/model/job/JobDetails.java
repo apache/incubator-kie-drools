@@ -139,14 +139,14 @@ public class JobDetails {
         JobDetails that = (JobDetails) o;
         return Objects.equals(getId(), that.getId()) &&
                 Objects.equals(getCorrelationId(), that.getCorrelationId()) &&
-                getStatus() == that.getStatus() &&
+                Objects.equals(getStatus(), that.getStatus()) &&
                 Objects.equals(getLastUpdate(), that.getLastUpdate()) &&
                 Objects.equals(getRetries(), that.getRetries()) &&
                 Objects.equals(getExecutionCounter(), that.getExecutionCounter()) &&
                 Objects.equals(getScheduledId(), that.getScheduledId()) &&
                 Objects.equals(getRecipient(), that.getRecipient()) &&
                 Objects.equals(getTrigger().hasNextFireTime(), that.getTrigger().hasNextFireTime()) &&
-                getType() == that.getType();
+                Objects.equals(getType(), that.getType());
     }
 
     @Override

@@ -12,6 +12,11 @@
   <name>Jobs Service</name>
   <description>Jobs Service (Timers and Async Jobs)</description>
 
+  <properties>
+    <!-- overriding the default infinispan version to use 11 instead of 10, remove it once 11 is the default -->
+    <version.org.infinispan.image>11.0.3.Final</version.org.infinispan.image>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

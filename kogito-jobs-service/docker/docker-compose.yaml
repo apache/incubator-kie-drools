@@ -1,9 +1,17 @@
-version: '2'
+version: '2.1'
 
 services:
+  infinispan:
+    image: infinispan/server:11.0.3.Final
+    #    network_mode: host
+    ports:
+      - 11222:11222
+    command: "/opt/infinispan/bin/server.sh -c infinispan-demo.xml"
+    volumes:
+      - ./infinispan/infinispan.xml:/opt/infinispan/server/conf/infinispan-demo.xml:z
 
   zookeeper:
-    image: strimzi/kafka:0.11.3-kafka-2.1.0
+    image: strimzi/kafka:0.19.0-kafka-2.5.0
     command: [
       "sh", "-c",
       "bin/zookeeper-server-start.sh config/zookeeper.properties"
@@ -28,12 +36,3 @@ services:
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
       KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-
-  infinispan:
-    image: infinispan/server:10.0.1.Final
-    command: [
-      "sh", "-c",
-      "bin/server.sh -Dinfinispan.bind.address=0.0.0.0"
-    ]
-    ports:
-      - "11222:11222"

@@ -1,16 +1,20 @@
 package job.service;
 
+/* @Indexed */
 message JobDetails {
   optional string id = 1;
   optional string correlationId = 2;
+  /* @Field(store = Store.YES) */
   optional string status = 3;//enum
   optional int64 lastUpdate = 4;
   optional int32 retries = 5;
+  /* @Field(store = Store.YES)  @SortableField */
   optional int32 priority = 6;
   optional int32 executionCounter = 7;
   optional string scheduledId = 8;
   optional string payload = 9; //serialized as json to be generic
   optional Recipient recipient = 10; //serialized as json to be generic
+  /* @Field(store = Store.YES) */
   optional Trigger trigger = 11; //serialized as json to be generic
   optional string type = 12;//enum
 }
@@ -19,12 +23,14 @@ message Recipient {
   optional string endpoint = 1;
 }
 
+/* @Indexed */
 message Trigger {
   optional string classType = 1;//indicates the java class to instantiate
   optional int64 startTime = 2;
   optional int64 endTime = 3;
   optional int32 repeatLimit = 4;
   optional int32 repeatCount = 5;
+  /* @Field(store = Store.YES) */
   optional int64 nextFireTime = 6;
   optional int64 period = 7;
 }

@@ -33,6 +33,8 @@ import org.kie.kogito.jobs.service.model.job.Recipient;
 import org.kie.kogito.jobs.service.repository.ReactiveJobRepository;
 import org.kie.kogito.jobs.service.stream.JobStreams;
 import org.kie.kogito.jobs.service.utils.DateUtil;
+import org.kie.kogito.jobs.service.utils.ErrorHandling;
+import org.kie.kogito.jobs.service.utils.FunctionsUtil;
 import org.kie.kogito.timer.impl.PointInTimeTrigger;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -48,18 +50,8 @@ public abstract class BaseJobRepositoryTest {
     private JobDetails job;
 
     @BeforeEach
-    public void setUp() {
+    public void setUp() throws Exception {
         createAndSaveJob(ID);
-    }
-
-    public Vertx mockVertx() {
-        Vertx vertx = mock(Vertx.class);
-        lenient().doAnswer(a -> {
-                               a.getArgument(0, Handler.class).handle(null);
-                               return null;
-                           }
-        ).when(vertx).executeBlocking(any(), any());
-        return vertx;
     }
 
     public JobStreams mockJobStreams() {
@@ -80,14 +72,14 @@ public abstract class BaseJobRepositoryTest {
         assertThat(notFound).isNull();
     }
 
-    private void createAndSaveJob(String id) {
+    private void createAndSaveJob(String id) throws Exception {
         job = JobDetails.builder()
                 .id(id)
                 .trigger(new PointInTimeTrigger(System.currentTimeMillis(), null, null))//
                 .priority(1)
                 .recipient(new Recipient.HTTPRecipient("url"))
                 .build();
-        tested().save(job);
+        tested().save(job).toCompletableFuture().get();
     }
 
     @Test
@@ -124,7 +116,7 @@ public abstract class BaseJobRepositoryTest {
                         .trigger(new PointInTimeTrigger(DateUtil.now().plusMinutes(id).toInstant().toEpochMilli(), null, null))
                         .priority(id)
                         .build())
-                .peek(tested()::save)
+                .peek(j -> FunctionsUtil.unchecked((t) -> tested().save(j).toCompletableFuture().get()).apply(null))
                 .collect(Collectors.toList());
 
         final List<JobDetails> fetched = tested().findByStatusBetweenDatesOrderByPriority(DateUtil.now(),
@@ -170,10 +162,9 @@ public abstract class BaseJobRepositoryTest {
         final String newCallbackEndpoint = "http://localhost/newcallback";
         final Recipient.HTTPRecipient recipient = new Recipient.HTTPRecipient(newCallbackEndpoint);
         final JobDetails toMerge = JobDetails.builder()
-                             .id(id)
-                             .recipient(recipient)
-                             .build();
-
+                .id(id)
+                .recipient(recipient)
+                .build();
 
         JobDetails merged = tested().merge(id, toMerge).toCompletableFuture().get();
         assertThat(merged.getRecipient()).isEqualTo(recipient);

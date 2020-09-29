@@ -19,9 +19,11 @@ package org.kie.kogito.jobs.service.scheduler;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
+import javax.annotation.Priority;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
-import javax.inject.Singleton;
+import javax.interceptor.Interceptor;
 
 import io.quarkus.runtime.StartupEvent;
 import io.vertx.mutiny.core.Vertx;
@@ -36,7 +38,7 @@ import org.kie.kogito.jobs.service.utils.ErrorHandling;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Singleton
+@ApplicationScoped
 public class JobSchedulerManager {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JobSchedulerManager.class);
@@ -70,7 +72,7 @@ public class JobSchedulerManager {
     @Inject
     Vertx vertx;
 
-    void onStartup(@Observes StartupEvent startupEvent) {
+    void onStartup(@Observes @Priority(Interceptor.Priority.PLATFORM_AFTER) StartupEvent startupEvent) {
         if (loadJobIntervalInMinutes > schedulerChunkInMinutes) {
             LOGGER.warn("The loadJobIntervalInMinutes ({}) cannot be greater than schedulerChunkInMinutes ({}), " +
                                 "setting value {} for both",

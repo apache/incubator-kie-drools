@@ -1,0 +1,9 @@
+<infinispan>
+  <cache-container statistics="true" shutdown-hook="DEFAULT">
+    <local-cache name="JOB_DETAILS">
+      <indexing>
+        <property name="default.directory_provider">local-heap</property>
+      </indexing>
+    </local-cache>
+  </cache-container>
+</infinispan>
