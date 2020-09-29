@@ -1,5 +1,8 @@
 package org.drools.ancompiler;
 
+import java.util.Optional;
+
+import org.drools.core.reteoo.ObjectSinkPropagator;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.rule.IndexableConstraint;
 import org.drools.core.spi.InternalReadAccessor;
@@ -59,5 +62,9 @@ public class CompiledNetworkSource {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public Optional<ObjectSinkPropagator> existingAlphaNetworkCompiler() {
+        return Optional.ofNullable(objectTypeNode.getObjectSinkPropagator());
     }
 }

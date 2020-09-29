@@ -1,26 +1,43 @@
 package org.drools.ancompiler;
 
-import java.util.Optional;
+import java.util.Map;
 
-import org.drools.compiler.builder.InternalKnowledgeBuilder;
-import org.drools.compiler.kie.builder.impl.KieBaseUpdaterFactory;
+import org.drools.compiler.kie.builder.impl.KieBaseUpdateContext;
+import org.drools.compiler.kie.builder.impl.KieBaseUpdater;
+import org.drools.core.util.StreamUtils;
+import org.kie.memorycompiler.KieMemoryCompiler;
 
-public class KieBaseUpdaterANC implements KieBaseUpdaterFactory {
+import static org.drools.core.util.MapUtils.mapValues;
 
-    InternalKnowledgeBuilder knowledgeBuilder;
+public class KieBaseUpdaterANC extends KieBaseUpdater {
 
-    @Override
-    public Optional<Runnable> createWithKnowledgeBuilder(InternalKnowledgeBuilder internalKnowledgeBuilder) {
-        this.knowledgeBuilder = internalKnowledgeBuilder;
-        return Optional.of(this::run);
+    public KieBaseUpdaterANC(KieBaseUpdateContext ctx) {
+        super(ctx);
     }
 
     public void run() {
 
         // find the new compiled alpha network in the classpath, if it's not there,
         // generate compile it and reattach it
+        inMemoryUpdate();
+    }
 
-        System.out.println("should update here");
+    /**
+     * This assumes the kie-memory-compiler module is provided at runtime
+     */
+    private void inMemoryUpdate() {
+        Map<String, CompiledNetworkSource> compiledNetworkSourcesMap = ObjectTypeNodeCompiler.compiledNetworkSourceMap(ctx.kBase.getRete());
+        if (!compiledNetworkSourcesMap.isEmpty()) {
+            compiledNetworkSourcesMap.values().stream()
+                    .flatMap(cns -> StreamUtils.optionalToStream(cns.existingAlphaNetworkCompiler()))
+                    .forEach(previousANC -> clearInstancesOfModifiedClass(previousANC.getClass()));
 
+            Map<String, Class<?>> compiledClasses = KieMemoryCompiler.compile(mapValues(compiledNetworkSourcesMap, CompiledNetworkSource::getSource),
+                                                                              ctx.kBase.getRootClassLoader());
+            compiledNetworkSourcesMap.values().forEach(c -> {
+                Class<?> aClass = compiledClasses.get(c.getName());
+                c.setCompiledNetwork(aClass);
+            });
+        }
     }
 }

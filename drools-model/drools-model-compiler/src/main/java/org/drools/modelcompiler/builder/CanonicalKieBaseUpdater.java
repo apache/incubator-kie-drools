@@ -79,7 +79,7 @@ public class CanonicalKieBaseUpdater extends KieBaseUpdaterImpl {
         if (ctx.modifyingUsedClass) {
             // remove all ObjectTypeNodes for the modified classes
             for (Class<?> cls : ctx.modifiedClasses ) {
-                clearInstancesOfModifiedClass( cls );
+                clearInstancesOfModifiedClass(cls);
             }
 
             for (InternalKnowledgePackage kpkg : ctx.kBase.getPackagesMap().values()) {
@@ -213,10 +213,5 @@ public class CanonicalKieBaseUpdater extends KieBaseUpdaterImpl {
 
     private static boolean isPackageInKieBase( KieBaseModel kieBaseModel, String pkgName ) {
         return kieBaseModel.getPackages().isEmpty() || KieBuilderImpl.isPackageInKieBase( kieBaseModel, pkgName );
-    }
-
-    @Override
-    public Optional<InternalKnowledgeBuilder> precreatedKnowledgeBuilder() {
-        return Optional.empty();
     }
 }
