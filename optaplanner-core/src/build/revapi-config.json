@@ -9790,6 +9790,17 @@
           "parameterIndex": "0",
           "elementKind": "parameter",
           "justification": "Calculators moved between packages."
+        },
+        {
+          "code": "java.annotation.added",
+          "old": "class org.optaplanner.core.config.AbstractConfig<C extends org.optaplanner.core.config.AbstractConfig>",
+          "new": "class org.optaplanner.core.config.AbstractConfig<C extends org.optaplanner.core.config.AbstractConfig>",
+          "annotationType": "javax.xml.bind.annotation.XmlAccessorType",
+          "annotation": "@javax.xml.bind.annotation.XmlAccessorType(.FIELD)",
+          "package": "org.optaplanner.core.config",
+          "classSimpleName": "AbstractConfig",
+          "elementKind": "class",
+          "justification": "SolverConfig is serializable via JAXB."
         }
       ]
     }

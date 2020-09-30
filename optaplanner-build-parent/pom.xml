@@ -646,6 +646,7 @@
             </dependency>
           </dependencies>
           <configuration>
+            <checkDependencies>false</checkDependencies>
             <oldArtifacts>
               <artifact>${project.groupId}:${project.artifactId}:${revapi.oldKieVersion}</artifact>
             </oldArtifacts>
