@@ -75,6 +75,7 @@ public class AtomicExprDescr extends BaseDescr implements ExpressionDescr {
 
     @Override
     public BaseDescr negate() {
+        this.expression = "!(" + expression + ")";
         return this;
     }
 }
