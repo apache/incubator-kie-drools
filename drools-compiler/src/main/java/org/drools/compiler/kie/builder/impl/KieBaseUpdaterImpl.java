@@ -17,7 +17,6 @@
 package org.drools.compiler.kie.builder.impl;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.drools.compiler.builder.InternalKnowledgeBuilder;
 import org.drools.compiler.compiler.PackageBuilderErrors;
@@ -32,7 +31,6 @@ import org.kie.api.io.Resource;
 import org.kie.internal.builder.ChangeType;
 import org.kie.internal.builder.CompositeKnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderError;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.ResourceChange;
 import org.kie.internal.builder.ResourceChangeSet;
 import org.slf4j.Logger;
@@ -41,7 +39,6 @@ import org.slf4j.LoggerFactory;
 public class KieBaseUpdaterImpl extends KieBaseUpdater {
 
     private static final Logger log = LoggerFactory.getLogger( KieBaseUpdaterImpl.class );
-    private InternalKnowledgeBuilder kbuilder;
 
     public KieBaseUpdaterImpl(KieBaseUpdateContext ctx ) {
         super(ctx);
@@ -49,8 +46,8 @@ public class KieBaseUpdaterImpl extends KieBaseUpdater {
 
     @Override
     public void run() {
-        // Store Knowledge Builder as it's computationally expensive to create this. Also shared with additional KieBaseUpdater
-        kbuilder = (InternalKnowledgeBuilder) KnowledgeBuilderFactory.newKnowledgeBuilder(ctx.kBase, ctx.newKM.getBuilderConfiguration(ctx.newKieBaseModel, ctx.kBase.getRootClassLoader() ) );
+        InternalKnowledgeBuilder kbuilder = ctx.kbuilder;
+
         CompositeKnowledgeBuilder ckbuilder = kbuilder.batch();
 
         boolean shouldRebuild = applyResourceChanges(kbuilder, ckbuilder);
@@ -203,11 +200,6 @@ public class KieBaseUpdaterImpl extends KieBaseUpdater {
                 ctx.newKM.addResourceToCompiler(ckbuilder, ctx.newKieBaseModel, resourceName);
             }
         }
-    }
-
-    @Override
-    public Optional<InternalKnowledgeBuilder> getKnowledgeBuilder() {
-        return Optional.ofNullable(this.kbuilder);
     }
 }
 

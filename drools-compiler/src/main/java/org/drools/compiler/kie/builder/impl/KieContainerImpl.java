@@ -29,6 +29,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.management.ObjectName;
 
+import org.drools.compiler.builder.InternalKnowledgeBuilder;
+import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.kie.builder.MaterializedLambda;
 import org.drools.compiler.kie.util.KieJarChangeSet;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
@@ -71,6 +73,7 @@ import org.kie.api.runtime.StatelessKieSession;
 import org.kie.api.time.Calendar;
 import org.kie.internal.builder.ChangeType;
 import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.ResourceChange;
 import org.kie.internal.builder.ResourceChangeSet;
 import org.slf4j.Logger;
@@ -261,9 +264,16 @@ public class KieContainerImpl
                 kbasesToRemove.add( kbaseName );
             } else {
                 final InternalKnowledgeBase kBase = (InternalKnowledgeBase) kBaseEntry.getValue();
+
+                // share Knowledge Builder among updater as it's computationally expensive to create this
+                KnowledgeBuilderConfigurationImpl builderConfiguration =
+                        (KnowledgeBuilderConfigurationImpl) newKM.getBuilderConfiguration(newKieBaseModel, kBase.getRootClassLoader());
+                InternalKnowledgeBuilder kbuilder =
+                        (InternalKnowledgeBuilder) KnowledgeBuilderFactory.newKnowledgeBuilder(kBase, builderConfiguration);
+
                 KieBaseUpdateContext context = new KieBaseUpdateContext( kProject, kBase, currentKM, newKM,
                                                                          cs, modifiedClasses, modifyingUsedClass, unchangedResources,
-                                                                         results, newKieBaseModel, currentKieBaseModel );
+                                                                         results, newKieBaseModel, currentKieBaseModel, kbuilder);
 
                 // Multiple updaters are required to be merged together in a single Runnable
                 // to avoid a deadlock while using .fireUntilHalt()
@@ -274,13 +284,11 @@ public class KieContainerImpl
 
                 compositeUpdater.add(kieBaseUpdater);
 
-                kieBaseUpdater.getKnowledgeBuilder().ifPresent(knowledgeBuilder -> {
-                    KieBaseUpdaters updaters = ServiceRegistry.getInstance().get(KieBaseUpdaters.class);
-                    updaters.getChildren()
-                            .stream()
-                            .map(kbu -> kbu.create(knowledgeBuilder.getBuilderConfiguration(), context))
-                            .forEach(compositeUpdater::add);
-                });
+                KieBaseUpdaters updaters = ServiceRegistry.getInstance().get(KieBaseUpdaters.class);
+                updaters.getChildren()
+                        .stream()
+                        .map(kbu -> kbu.create(builderConfiguration, context))
+                        .forEach(compositeUpdater::add);
 
                 kBase.enqueueModification(compositeUpdater);
 

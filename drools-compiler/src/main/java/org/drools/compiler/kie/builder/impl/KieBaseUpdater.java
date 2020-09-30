@@ -40,8 +40,4 @@ public abstract class KieBaseUpdater implements Runnable {
             }
         }
     }
-
-    public Optional<InternalKnowledgeBuilder> getKnowledgeBuilder() {
-        return Optional.empty();
-    }
 }

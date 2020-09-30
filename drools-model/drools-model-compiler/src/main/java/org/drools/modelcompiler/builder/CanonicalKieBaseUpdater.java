@@ -44,13 +44,10 @@ import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.Rule;
 import org.kie.internal.builder.ChangeType;
 import org.kie.internal.builder.CompositeKnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.ResourceChange;
 import org.kie.internal.builder.ResourceChangeSet;
 
 public class CanonicalKieBaseUpdater extends KieBaseUpdaterImpl {
-    private InternalKnowledgeBuilder pkgbuilder;
 
     public CanonicalKieBaseUpdater( KieBaseUpdateContext ctx ) {
         super(ctx);
@@ -70,9 +67,9 @@ public class CanonicalKieBaseUpdater extends KieBaseUpdaterImpl {
 
         // To keep compatible the classes generated from declared types the new kmodule has to be loaded with the classloader of the old one
         newKM.setIncrementalUpdate( true );
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(ctx.kBase, ctx.newKM.getBuilderConfiguration(ctx.newKieBaseModel, ctx.kBase.getRootClassLoader() ) );
-        pkgbuilder = (KnowledgeBuilderImpl)kbuilder;
-        CompositeKnowledgeBuilder ckbuilder = kbuilder.batch();
+
+        InternalKnowledgeBuilder pkgbuilder = ctx.kbuilder;
+        CompositeKnowledgeBuilder ckbuilder = pkgbuilder.batch();
         newKM.setIncrementalUpdate( false );
 
         removeResources(pkgbuilder);
@@ -214,10 +211,5 @@ public class CanonicalKieBaseUpdater extends KieBaseUpdaterImpl {
 
     private static boolean isPackageInKieBase( KieBaseModel kieBaseModel, String pkgName ) {
         return kieBaseModel.getPackages().isEmpty() || KieBuilderImpl.isPackageInKieBase( kieBaseModel, pkgName );
-    }
-
-    @Override
-    public Optional<InternalKnowledgeBuilder> getKnowledgeBuilder() {
-        return Optional.ofNullable(pkgbuilder);
     }
 }
