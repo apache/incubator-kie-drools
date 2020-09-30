@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.drools.compiler.kie.builder.impl.KieBaseUpdateContext;
 import org.drools.compiler.kie.builder.impl.KieBaseUpdater;
+import org.drools.compiler.kie.builder.impl.KieContainerImpl;
 import org.drools.core.util.StreamUtils;
 import org.kie.memorycompiler.KieMemoryCompiler;
 
@@ -17,9 +18,14 @@ public class KieBaseUpdaterANC extends KieBaseUpdater {
 
     public void run() {
 
+        final String configurationProperty = ctx.newKieBaseModel.getKModule().getConfigurationProperty(KieContainerImpl.ALPHA_NETWORK_COMPILER_OPTION);
+        final boolean isAlphaNetworkEnabled = Boolean.valueOf(configurationProperty);
+
         // find the new compiled alpha network in the classpath, if it's not there,
         // generate compile it and reattach it
-        inMemoryUpdate();
+        if(isAlphaNetworkEnabled) {
+            inMemoryUpdate();
+        }
     }
 
     /**
