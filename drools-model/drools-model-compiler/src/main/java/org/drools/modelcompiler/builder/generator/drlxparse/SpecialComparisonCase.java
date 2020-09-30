@@ -52,9 +52,7 @@ abstract class SpecialComparisonCase {
     abstract ConstraintParser.SpecialComparisonResult createCompareMethod(BinaryExpr.Operator operator);
 
     static SpecialComparisonCase specialComparisonFactory(TypedExpression left, TypedExpression right) {
-        if (left.getType() == String.class && right.getType() == String.class) {
-            return new StringAsNumber(left, right);
-        } else if (isNumber(left) || isNumber(right)) {
+        if (isNumber(left) || isNumber(right)) {
             Optional<Class<?>> leftCast = typeNeedsCast(left.getType());
             Optional<Class<?>> rightCast = typeNeedsCast(right.getType());
             if (leftCast.isPresent() || rightCast.isPresent()) {
@@ -82,22 +80,6 @@ abstract class SpecialComparisonCase {
 
     public TypedExpression getRight() {
         return right;
-    }
-}
-
-class StringAsNumber extends SpecialComparisonCase {
-
-    StringAsNumber(TypedExpression left, TypedExpression right) {
-        super(left, right);
-    }
-
-    @Override
-    public ConstraintParser.SpecialComparisonResult createCompareMethod(BinaryExpr.Operator operator) {
-        String methodName = getMethodName(operator) + "StringsAsNumbers";
-        MethodCallExpr compareMethod = new MethodCallExpr(null, methodName);
-        compareMethod.addArgument(uncastExpr(left.getExpression()));
-        compareMethod.addArgument(uncastExpr(right.getExpression()));
-        return new ConstraintParser.SpecialComparisonResult(compareMethod, left, right);
     }
 }
 

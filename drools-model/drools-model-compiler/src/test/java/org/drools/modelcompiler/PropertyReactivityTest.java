@@ -922,4 +922,94 @@ public class PropertyReactivityTest extends BaseModelTest {
 
         assertEquals("Mario1", p.getName());
     }
+
+    @Test
+    public void test2PropertiesInOneExpression() {
+        // DROOLS-5677
+        final String str =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "\n" +
+                "rule R1a\n" +
+                "agenda-group \"group1\"\n" +
+                "when\n" +
+                "    $p : Person( age == 0 )\n" +
+                "then\n" +
+                "    modify($p) { setAge( 20 ) };\n" +
+                "end\n" +
+                "rule R1b \n" +
+                "agenda-group \"group1\"\n" +
+                "when\n" +
+                "    $p : Person( salary == 0 )\n" +
+                "then\n" +
+                "    modify($p) { setSalary( 20 ) };\n" +
+                "end\n" +
+                "rule R2 \n" +
+                "agenda-group \"group2\"\n" +
+                "when\n" +
+                "    $p : Person( age > salary )\n" +
+                "then\n" +
+                "    modify($p) { setSalary( 100 ) };\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession(str);
+
+        Person p = new Person("John", 0);
+        p.setSalary(0);
+        ksession.insert(p);
+        ksession.getAgenda().getAgendaGroup("group1").setFocus();
+        ksession.fireAllRules();
+        ksession.getAgenda().getAgendaGroup("group2").setFocus();
+        ksession.fireAllRules();
+
+        assertEquals(20, p.getSalary().intValue()); // R2 should be cancelled
+    }
+
+    @Test
+    public void test3PropertiesInOneExpression() {
+        // DROOLS-5677
+        final String str =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "\n" +
+                "rule R1a\n" +
+                "agenda-group \"group1\"\n" +
+                "when\n" +
+                "    $p : Person( age == 0 )\n" +
+                "then\n" +
+                "    modify($p) { setAge( 20 ) };\n" +
+                "end\n" +
+                "rule R1b \n" +
+                "agenda-group \"group1\"\n" +
+                "when\n" +
+                "    $p : Person( salary == 0 )\n" +
+                "then\n" +
+                "    modify($p) { setSalary( 10 ) };\n" +
+                "end\n" +
+                "rule R1c \n" +
+                "agenda-group \"group1\"\n" +
+                "when\n" +
+                "    $p : Person( id == 0 )\n" +
+                "then\n" +
+                "    modify($p) { setId( 10 ) };\n" +
+                "end\n" +
+                "rule R2 \n" +
+                "agenda-group \"group2\"\n" +
+                "when\n" +
+                "    $p : Person( age > salary + id )\n" +
+                "then\n" +
+                "    modify($p) { setSalary( 100 ) };\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession(str);
+
+        Person p = new Person("John", 0);
+        p.setSalary(0);
+        p.setId(0);
+        ksession.insert(p);
+        ksession.getAgenda().getAgendaGroup("group1").setFocus();
+        ksession.fireAllRules();
+        ksession.getAgenda().getAgendaGroup("group2").setFocus();
+        ksession.fireAllRules();
+
+        assertEquals(10, p.getSalary().intValue()); // R2 should be cancelled
+    }
 }

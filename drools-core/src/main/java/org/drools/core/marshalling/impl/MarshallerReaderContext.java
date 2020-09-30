@@ -179,4 +179,8 @@ public class MarshallerReaderContext extends ObjectInputStream {
         } 
         return null;
     }
+
+    public void withSerializedNodeMemories() {
+        filter.withSerializedNodeMemories();
+    }
 }

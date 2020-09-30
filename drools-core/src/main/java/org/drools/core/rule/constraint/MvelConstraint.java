@@ -416,27 +416,36 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         String[] simpleExpressions = expression.split("\\Q&&\\E|\\Q||\\E");
 
         for (String simpleExpression : simpleExpressions) {
-            String propertyName = getPropertyNameFromSimpleExpression(simpleExpression);
-            if (propertyName == null || propertyName.equals("this") || propertyName.length() == 0) {
-                return allSetButTraitBitMask();
+            List<String> properties = getPropertyNamesFromSimpleExpression(simpleExpression);
+            if (properties.isEmpty()) {
+                return allSetBitMask();
             }
-            int pos = settableProperties.indexOf(propertyName);
-            if (pos < 0) {
-                if (Character.isUpperCase(propertyName.charAt(0))) {
-                    propertyName = propertyName.substring( 0, 1 ).toLowerCase() + propertyName.substring( 1 );
-                    pos = settableProperties.indexOf( propertyName );
-                } else {
-                    propertyName = findBoundVariable(propertyName);
-                    if (propertyName != null) {
+            boolean firstProp = true;
+            for (String propertyName : properties) {
+                if ( propertyName == null || propertyName.equals( "this" ) || propertyName.length() == 0 ) {
+                    return allSetButTraitBitMask();
+                }
+                int pos = settableProperties.indexOf( propertyName );
+                if ( pos < 0 ) {
+                    if ( Character.isUpperCase( propertyName.charAt( 0 ) ) ) {
+                        propertyName = propertyName.substring( 0, 1 ).toLowerCase() + propertyName.substring( 1 );
                         pos = settableProperties.indexOf( propertyName );
+                    } else {
+                        propertyName = findBoundVariable( propertyName );
+                        if ( propertyName != null ) {
+                            pos = settableProperties.indexOf( propertyName );
+                        }
                     }
                 }
-            }
-            if (pos >= 0) {
-                mask = mask.set(pos + PropertySpecificUtil.CUSTOM_BITS_OFFSET);
-            } else {
-                // if it is not able to find the property name it could be a function invocation so property reactivity shouldn't filter anything
-                return allSetBitMask();
+                if ( pos >= 0 ) {
+                    mask = mask.set( pos + PropertySpecificUtil.CUSTOM_BITS_OFFSET );
+                } else {
+                    // if it is not able to find the property name it could be a function invocation so property reactivity shouldn't filter anything
+                    if (firstProp) {
+                        return allSetBitMask();
+                    }
+                }
+                firstProp = false;
             }
         }
 
@@ -455,38 +464,73 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         return null;
     }
 
-    private String getPropertyNameFromSimpleExpression(String simpleExpression) {
+    private List<String> getPropertyNamesFromSimpleExpression(String expression) {
+        List<String> names = new ArrayList<>();
+        for (int cursor = 0; cursor < expression.length(); cursor = nextPropertyName(expression, names, cursor));
+        return names;
+    }
+
+    private int nextPropertyName( String expression, List<String> names, int cursor) {
         StringBuilder propertyNameBuilder = new StringBuilder();
-        int cursor = extractFirstIdentifier(simpleExpression, propertyNameBuilder, 0);
+        cursor = extractFirstIdentifier(expression, propertyNameBuilder, cursor);
+        if (propertyNameBuilder.length() == 0) {
+            return cursor;
+        }
 
         String propertyName = propertyNameBuilder.toString();
         if (propertyName.equals("this")) {
-            cursor = skipBlanks(simpleExpression, cursor);
-            if (simpleExpression.charAt(cursor) != '.') {
-                return "this";
+            cursor = skipBlanks(expression, cursor);
+            if (cursor >= expression.length() || expression.charAt(cursor) != '.') {
+                names.add( "this" );
+                return cursor;
             }
             propertyNameBuilder = new StringBuilder();
-            extractFirstIdentifier(simpleExpression, propertyNameBuilder, cursor);
+            extractFirstIdentifier(expression, propertyNameBuilder, cursor);
             propertyName = propertyNameBuilder.toString();
         } else if (propertyName.equals("null") || propertyName.equals("true") || propertyName.equals("false")) {
             propertyNameBuilder = new StringBuilder();
-            extractFirstIdentifier(simpleExpression, propertyNameBuilder, cursor);
+            extractFirstIdentifier(expression, propertyNameBuilder, cursor);
             propertyName = propertyNameBuilder.toString();
         }
 
         if (propertyName.startsWith("is") || propertyName.startsWith("get")) {
-            int exprPos = simpleExpression.indexOf(propertyName);
+            int exprPos = expression.indexOf(propertyName);
             int propNameEnd = exprPos + propertyName.length();
-            if (simpleExpression.length() > propNameEnd + 1 && simpleExpression.charAt(propNameEnd) == '(') {
-                int argsEnd = simpleExpression.indexOf( ')', propNameEnd );
+            if (expression.length() > propNameEnd + 1 && expression.charAt(propNameEnd) == '(') {
+                int argsEnd = expression.indexOf( ')', propNameEnd );
                 // the getter has to be used for property reactivity only if it's a true getter (doesn't have any argument)
-                if (simpleExpression.substring( propNameEnd+1, argsEnd ).trim().isEmpty()) {
+                if (expression.substring( propNameEnd+1, argsEnd ).trim().isEmpty()) {
                     propertyName = getter2property(propertyName);
                 }
             }
         }
 
-        return propertyName;
+        if (propertyName != null && propertyName.length() > 0) {
+            names.add( propertyName );
+        }
+        return skipOperator( expression, cursor );
+    }
+
+    private int skipOperator( String expression, int cursor ) {
+        if (cursor < expression.length() && expression.charAt(cursor) == '.') {
+            while (cursor < expression.length() && Character.isWhitespace(expression.charAt(++cursor)));
+        }
+
+        boolean namedOperator = false;
+        int i = cursor;
+        for (; i < expression.length(); i++) {
+            char ch = expression.charAt(i);
+            if (Character.isJavaIdentifierStart(ch)) {
+                namedOperator = true;
+            } else if (Character.isWhitespace(ch)) {
+                if (namedOperator) {
+                    return i+1;
+                }
+            } else if (!Character.isJavaIdentifierPart(ch)) {
+                return i+1;
+            }
+        }
+        return i;
     }
 
     private BitMask calculateMask(Class modifiedClass, List<String> settableProperties) {

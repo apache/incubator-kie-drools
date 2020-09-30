@@ -305,6 +305,36 @@ public class ProtobufInputMarshaller {
         for ( ProtobufMessages.NodeMemory _node : _session.getNodeMemoryList() ) {
             Object memory = null;
             switch ( _node.getNodeType() ) {
+                // ACCUMULATE, RIA and FROM memories are no longer serialized, so the following 3 cases are useless for
+                // new serialized session, but are still necessary for sessions serialized before the marshalling refactor
+                case ACCUMULATE : {
+                    Map<TupleKey, ProtobufMessages.FactHandle> map = new HashMap<TupleKey, ProtobufMessages.FactHandle>();
+                    for ( ProtobufMessages.NodeMemory.AccumulateNodeMemory.AccumulateContext _ctx : _node.getAccumulate().getContextList() ) {
+                        map.put( PersisterHelper.createTupleKey( _ctx.getTuple() ), _ctx.getResultHandle() );
+                    }
+                    context.withSerializedNodeMemories();
+                    memory = map;
+                    break;
+                }
+                case RIA : {
+                    Map<TupleKey, ProtobufMessages.FactHandle> map = new HashMap<TupleKey, ProtobufMessages.FactHandle>();
+                    for ( ProtobufMessages.NodeMemory.RIANodeMemory.RIAContext _ctx : _node.getRia().getContextList() ) {
+                        map.put( PersisterHelper.createTupleKey( _ctx.getTuple() ), _ctx.getResultHandle() );
+                    }
+                    context.withSerializedNodeMemories();
+                    memory = map;
+                    break;
+                }
+                case FROM : {
+                    Map<TupleKey, List<ProtobufMessages.FactHandle>> map = new HashMap<>();
+                    for ( ProtobufMessages.NodeMemory.FromNodeMemory.FromContext _ctx : _node.getFrom().getContextList() ) {
+                        // have to instantiate a modifiable list
+                        map.put( PersisterHelper.createTupleKey( _ctx.getTuple() ), new LinkedList<>(_ctx.getHandleList()) );
+                    }
+                    context.withSerializedNodeMemories();
+                    memory = map;
+                    break;
+                }
                 case QUERY_ELEMENT : {
                     Map<TupleKey, QueryElementContext> map = new HashMap<TupleKey, QueryElementContext>();
                     for ( ProtobufMessages.NodeMemory.QueryElementNodeMemory.QueryContext _ctx : _node.getQueryElement().getContextList() ) {
@@ -765,22 +795,14 @@ public class ProtobufInputMarshaller {
         return processMarshaller.readWorkItem( context );
     }
 
-    public static class PBActivationsFilter
-            implements
-            ActivationsFilter,
-            AgendaFilter {
-        private Set<ActivationKey> dormantActivations;
-        private Map<ActivationKey, ProtobufMessages.Activation> rneActivations;
-        private Map<ActivationKey, Tuple>                       tuplesCache;
-        private Queue<RuleAgendaItem>                           rneaToFire;
+    public static class PBActivationsFilter implements ActivationsFilter, AgendaFilter {
 
+        private final Set<ActivationKey> dormantActivations = new HashSet<>();
+        private final Map<ActivationKey, ProtobufMessages.Activation> rneActivations = new HashMap<>();
+        private final Map<ActivationKey, Tuple> tuplesCache = new HashMap<>();
+        private final Queue<RuleAgendaItem> rneaToFire = new ConcurrentLinkedQueue<>();
 
-        public PBActivationsFilter() {
-            this.dormantActivations = new HashSet<>();
-            this.rneActivations = new HashMap<>();
-            this.tuplesCache = new HashMap<>();
-            this.rneaToFire = new ConcurrentLinkedQueue<>();
-        }
+        private boolean serializedNodeMemories = false;
 
         public void addDormantActivation(ActivationKey key) {
             this.dormantActivations.add( key );
@@ -798,7 +820,7 @@ public class ProtobufInputMarshaller {
             } else {
 
                 RuleImpl rule = activation.getRule();
-                ActivationKey activationKey = PersisterHelper.hasNodeMemory( rtn ) ?
+                ActivationKey activationKey = PersisterHelper.hasNodeMemory( rtn ) && !serializedNodeMemories ?
                         PersisterHelper.createActivationKey( rule.getPackageName(), rule.getName(), activation.getTuple().toObjects(true)) :
                         PersisterHelper.createActivationKey( rule.getPackageName(), rule.getName(), activation.getTuple() );
 
@@ -835,6 +857,10 @@ public class ProtobufInputMarshaller {
             this.tuplesCache.put( key, tuple );
             // check if there was an active activation for it
             return !this.dormantActivations.contains( key );
+        }
+
+        public void withSerializedNodeMemories() {
+            serializedNodeMemories = true;
         }
     }
 
