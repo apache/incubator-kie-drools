@@ -6,11 +6,9 @@ on:
   push:
     branches:
       - master
-      - 7.x
   pull_request:
     branches:
       - master
-      - 7.x
 
 defaults:
   run:
@@ -22,7 +20,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
-        java: [8, 11]
+        java: [11]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Check out Git repository
