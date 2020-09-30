@@ -29,8 +29,8 @@ import java.util.stream.Collectors;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.Indictment;
+import org.optaplanner.core.impl.score.DefaultScoreExplanation;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
-import org.optaplanner.core.impl.score.director.AbstractScoreDirector;
 import org.optaplanner.core.impl.score.director.stream.ConstraintStreamScoreDirectorFactory;
 import org.optaplanner.core.impl.score.stream.common.AbstractConstraint;
 import org.optaplanner.core.impl.score.stream.common.ScoreImpactType;
@@ -156,7 +156,7 @@ public final class DefaultSingleConstraintAssertion<Solution_, Score_ extends Sc
                 "Constraint", constraintId,
                 expectedImpactLabel, expectedImpact, expectedImpact.getClass(),
                 actualImpactLabel, actualImpact, actualImpact.getClass(),
-                AbstractScoreDirector.explainScore(score, constraintMatchTotalCollection, indictmentCollection));
+                DefaultScoreExplanation.explainScore(score, constraintMatchTotalCollection, indictmentCollection));
     }
 
     private String getImpactTypeLabel(ScoreImpactType scoreImpactType) {

@@ -102,24 +102,6 @@ public interface InnerScoreDirector<Solution_, Score_ extends Score<Score_>>
     Map<Object, Indictment<Score_>> getIndictmentMap();
 
     /**
-     * Returns a diagnostic text that explains the {@link Score} through the {@link ConstraintMatch} API
-     * to identify which constraints or planning entities cause that score quality.
-     * In case of an {@link Score#isFeasible() infeasible} solution,
-     * this can help diagnose the cause of that.
-     * <p>
-     * Do not parse this string.
-     * Instead, to provide this information in a UI or a service,
-     * use {@link #getConstraintMatchTotalMap()} and {@link #getIndictmentMap()}
-     * and convert those into a domain specific API.
-     * <p>
-     * This automatically calls {@link #calculateScore()} first.
-     *
-     * @return never null
-     * @throws IllegalStateException if {@link #isConstraintMatchEnabled()} returns false
-     */
-    String explainScore();
-
-    /**
      * @param constraintMatchEnabledPreference false if a {@link ScoreDirector} implementation
      *        should not do {@link ConstraintMatch} tracking even if it supports it.
      */

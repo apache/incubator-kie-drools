@@ -30,7 +30,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import java.util.TreeMap;
 import java.util.function.Consumer;
 
@@ -39,7 +38,6 @@ import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
-import org.optaplanner.core.api.score.constraint.Indictment;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.util.ConfigUtils;
@@ -72,9 +70,6 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Score_>, Factory_ extends AbstractScoreDirectorFactory<Solution_, Score_>>
         implements InnerScoreDirector<Solution_, Score_>, Cloneable {
-
-    private static final int DEFAULT_SCORE_EXPLANATION_INDICTMENT_LIMIT = 5;
-    private static final int DEFAULT_SCORE_EXPLANATION_CONSTRAINT_MATCH_LIMIT = 2;
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -303,86 +298,6 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
     protected void setCalculatedScore(Score_ score) {
         getSolutionDescriptor().setScore(workingSolution, score);
         calculationCount++;
-    }
-
-    public static <Score_ extends Score<Score_>> String explainScore(Score_ workingScore,
-            Collection<ConstraintMatchTotal<Score_>> constraintMatchTotalCollection,
-            Collection<Indictment<Score_>> indictmentCollection) {
-        return explainScore(workingScore, constraintMatchTotalCollection, indictmentCollection,
-                DEFAULT_SCORE_EXPLANATION_INDICTMENT_LIMIT, DEFAULT_SCORE_EXPLANATION_CONSTRAINT_MATCH_LIMIT);
-    }
-
-    public static <Score_ extends Score<Score_>> String explainScore(Score_ workingScore,
-            Collection<ConstraintMatchTotal<Score_>> constraintMatchTotalCollection,
-            Collection<Indictment<Score_>> indictmentCollection, int indictmentLimit, int constraintMatchLimit) {
-        StringBuilder scoreExplanation =
-                new StringBuilder((constraintMatchTotalCollection.size() + 4 + 2 * indictmentLimit) * 80);
-        scoreExplanation.append("Explanation of score (").append(workingScore).append("):\n");
-        scoreExplanation.append("    Constraint match totals:\n");
-        Comparator<ConstraintMatchTotal<Score_>> constraintMatchTotalComparator = comparing(ConstraintMatchTotal::getScore);
-        Comparator<ConstraintMatch<Score_>> constraintMatchComparator = comparing(ConstraintMatch::getScore);
-        constraintMatchTotalCollection.stream()
-                .sorted(constraintMatchTotalComparator)
-                .forEach(constraintMatchTotal -> {
-                    Set<ConstraintMatch<Score_>> constraintMatchSet = constraintMatchTotal.getConstraintMatchSet();
-                    scoreExplanation
-                            .append("        ").append(constraintMatchTotal.getScore().toShortString())
-                            .append(": constraint (").append(constraintMatchTotal.getConstraintName())
-                            .append(") has ").append(constraintMatchSet.size()).append(" matches:\n");
-                    constraintMatchSet.stream()
-                            .sorted(constraintMatchComparator)
-                            .limit(constraintMatchLimit)
-                            .forEach(constraintMatch -> scoreExplanation
-                                    .append("            ").append(constraintMatch.getScore().toShortString())
-                                    .append(": justifications (").append(constraintMatch.getJustificationList())
-                                    .append(")\n"));
-                    if (constraintMatchSet.size() > constraintMatchLimit) {
-                        scoreExplanation.append("            ...\n");
-                    }
-                });
-
-        int indictmentCount = indictmentCollection.size();
-        if (indictmentLimit < indictmentCount) {
-            scoreExplanation.append("    Indictments (top ").append(indictmentLimit)
-                    .append(" of ").append(indictmentCount).append("):\n");
-        } else {
-            scoreExplanation.append("    Indictments:\n");
-        }
-        Comparator<Indictment<Score_>> indictmentComparator = comparing(Indictment::getScore);
-        Comparator<ConstraintMatch<Score_>> constraintMatchScoreComparator = comparing(ConstraintMatch::getScore);
-        indictmentCollection.stream()
-                .sorted(indictmentComparator)
-                .limit(indictmentLimit)
-                .forEach(indictment -> {
-                    Set<ConstraintMatch<Score_>> constraintMatchSet = indictment.getConstraintMatchSet();
-                    scoreExplanation
-                            .append("        ").append(indictment.getScore().toShortString())
-                            .append(": justification (").append(indictment.getJustification())
-                            .append(") has ").append(constraintMatchSet.size()).append(" matches:\n");
-                    constraintMatchSet.stream()
-                            .sorted(constraintMatchScoreComparator)
-                            .limit(constraintMatchLimit)
-                            .forEach(constraintMatch -> scoreExplanation
-                                    .append("            ").append(constraintMatch.getScore().toShortString())
-                                    .append(": constraint (").append(constraintMatch.getConstraintName())
-                                    .append(")\n"));
-                    if (constraintMatchSet.size() > constraintMatchLimit) {
-                        scoreExplanation.append("            ...\n");
-                    }
-                });
-        if (indictmentCount > indictmentLimit) {
-            scoreExplanation.append("        ...\n");
-        }
-        return scoreExplanation.toString();
-    }
-
-    @Override
-    public String explainScore() {
-        // TODO this causes 3 "fireAllRule" calls.
-        Score_ score = calculateScore();
-        Map<String, ConstraintMatchTotal<Score_>> constraintMatchTotalMap = getConstraintMatchTotalMap();
-        Map<Object, Indictment<Score_>> indictmentMap = getIndictmentMap();
-        return explainScore(score, constraintMatchTotalMap.values(), indictmentMap.values());
     }
 
     @Override

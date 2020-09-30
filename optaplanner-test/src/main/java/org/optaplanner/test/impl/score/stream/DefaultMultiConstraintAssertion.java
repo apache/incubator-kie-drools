@@ -25,7 +25,7 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.Indictment;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
-import org.optaplanner.core.impl.score.director.AbstractScoreDirector;
+import org.optaplanner.core.impl.score.DefaultScoreExplanation;
 import org.optaplanner.test.api.score.stream.MultiConstraintAssertion;
 
 public final class DefaultMultiConstraintAssertion<Solution_, Score_ extends Score<Score_>>
@@ -57,7 +57,8 @@ public final class DefaultMultiConstraintAssertion<Solution_, Score_ extends Sco
                 "       Expected score: " + score + " (" + score.getClass() + ")" + System.lineSeparator() +
                 "         Actual score: " + actualScore + " (" + actualScore.getClass() + ")" +
                 System.lineSeparator() + System.lineSeparator() +
-                "  " + AbstractScoreDirector.explainScore(actualScore, constraintMatchTotalCollection, indictmentCollection));
+                "  " + DefaultScoreExplanation.explainScore(actualScore, constraintMatchTotalCollection,
+                        indictmentCollection));
     }
 
 }

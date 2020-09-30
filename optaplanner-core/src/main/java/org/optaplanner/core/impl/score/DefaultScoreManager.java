@@ -30,9 +30,10 @@ import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
-public class DefaultScoreManager<Solution_, Score_ extends Score<Score_>> implements ScoreManager<Solution_, Score_> {
+public final class DefaultScoreManager<Solution_, Score_ extends Score<Score_>>
+        implements ScoreManager<Solution_, Score_> {
 
-    private InnerScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory;
+    private final InnerScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory;
 
     public DefaultScoreManager(InnerScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory) {
         this.scoreDirectorFactory = scoreDirectorFactory;
@@ -67,8 +68,8 @@ public class DefaultScoreManager<Solution_, Score_ extends Score<Score_>> implem
             }
             Map<String, ConstraintMatchTotal<Score_>> constraintMatchTotalMap = scoreDirector.getConstraintMatchTotalMap();
             Map<Object, Indictment<Score_>> indictmentMap = scoreDirector.getIndictmentMap();
-            return new DefaultScoreExplanation<>(solution, scoreDirector.calculateScore(), scoreDirector.explainScore(),
-                    constraintMatchTotalMap, indictmentMap);
+            return new DefaultScoreExplanation<>(solution, scoreDirector.calculateScore(), constraintMatchTotalMap,
+                    indictmentMap);
         }
     }
 }
