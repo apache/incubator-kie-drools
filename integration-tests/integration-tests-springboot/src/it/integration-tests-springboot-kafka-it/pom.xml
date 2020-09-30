@@ -130,20 +130,8 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-failsafe-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>integration-test</goal>
-                            <goal>verify</goal>
-                        </goals>
-                        <configuration>
-                            <systemProperties>
-                                <container.image.infinispan>@container.image.infinispan@</container.image.infinispan>
-                            </systemProperties>
-                        </configuration>
-                    </execution>
-                </executions>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>@version.surefire.plugin@</version>
             </plugin>
         </plugins>
     </build>
@@ -190,16 +178,13 @@
                 <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-failsafe-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <configuration>
-                                    <systemProperties>
-                                        <enable.resource.infinispan>true</enable.resource.infinispan>
-                                    </systemProperties>
-                                </configuration>
-                            </execution>
-                        </executions>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>@version.surefire.plugin@</version>
+                        <configuration>
+                            <systemProperties>
+                                <enable.resource.infinispan>true</enable.resource.infinispan>
+                            </systemProperties>
+                        </configuration>
                     </plugin>
                 </plugins>
                 <testResources>

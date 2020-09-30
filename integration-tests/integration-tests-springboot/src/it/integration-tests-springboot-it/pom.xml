@@ -14,6 +14,8 @@
 
     <properties>
         <java.version>@maven.compiler.release@</java.version>
+        <version.infinispan.starter>@version.org.infinispan.starter@</version.infinispan.starter>
+        <version.infinispan>@version.org.infinispan@</version.infinispan>
     </properties>
     
     <dependencyManagement>
@@ -51,6 +53,13 @@
             <artifactId>process-management-addon</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.infinispan</groupId>
+            <artifactId>infinispan-spring-boot-starter-remote</artifactId>
+            <version>${version.infinispan.starter}</version>
+            <scope>test</scope>
+        </dependency>
+        
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -115,20 +124,13 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-failsafe-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>integration-test</goal>
-                            <goal>verify</goal>
-                        </goals>
-                        <configuration>
-                            <systemProperties>
-                                <container.image.infinispan>@container.image.infinispan@</container.image.infinispan>
-                            </systemProperties>
-                        </configuration>
-                    </execution>
-                </executions>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>@version.surefire.plugin@</version>
+                <configuration>
+                    <includes>
+                        <include>org/kie/kogito/integrationtests/springboot/*</include>
+                    </includes>
+                </configuration>
             </plugin>
         </plugins>
     </build>
@@ -140,10 +142,6 @@
                     <name>persistence</name>
                 </property>
             </activation>
-            <properties>
-                <version.infinispan.starter>@version.org.infinispan.starter@</version.infinispan.starter>
-                <version.infinispan>@version.org.infinispan@</version.infinispan>
-            </properties>
             <dependencyManagement>
                 <dependencies>
                     <dependency>
@@ -175,16 +173,17 @@
                 <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-failsafe-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <configuration>
-                                    <systemProperties>
-                                        <enable.resource.infinispan>true</enable.resource.infinispan>
-                                    </systemProperties>
-                                </configuration>
-                            </execution>
-                        </executions>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>@version.surefire.plugin@</version>
+                        <configuration>
+                            <includes>
+                                <include>org/kie/kogito/integrationtests/springboot/*</include>
+                                <include>org/kie/kogito/integrationtests/springboot/infinispan/*</include>
+                            </includes>
+                            <systemPropertyVariables>
+                                <enable.resource.infinispan>true</enable.resource.infinispan>
+                            </systemPropertyVariables>
+                        </configuration>
                     </plugin>
                 </plugins>
                 <testResources>

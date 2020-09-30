@@ -71,22 +71,27 @@ public abstract class AbstractProcess<T extends Model> implements Process<T> {
     }
 
     protected AbstractProcess(ProcessRuntimeServiceProvider services) {
-       this (services,Collections.emptyList());
+        this(services, Collections.emptyList(), null);
+    }
+
+    protected AbstractProcess(Application app, Collection<WorkItemHandler> handlers) {
+        this(app, handlers, null);
     }
     
-    protected AbstractProcess (Application app , Collection<WorkItemHandler> handlers) {
-        this (new ConfiguredProcessServices(app.config().process()),handlers);
+    protected AbstractProcess(Application app, Collection<WorkItemHandler> handlers, ProcessInstancesFactory factory) {
+        this(new ConfiguredProcessServices(app.config().process()), handlers, factory);
         this.app = app;
     }
-    protected AbstractProcess(ProcessRuntimeServiceProvider services, Collection<WorkItemHandler> handlers) {
+
+    protected AbstractProcess(ProcessRuntimeServiceProvider services, Collection<WorkItemHandler> handlers, ProcessInstancesFactory factory) {
         this.services = services;
         this.instances = new MapProcessInstances<>();
+        this.processInstancesFactory = factory;
         WorkItemManager workItemManager = services.getWorkItemManager();
         for (WorkItemHandler handler : handlers) {
             workItemManager.registerWorkItemHandler(handler.getName(), handler);
-        } 
+        }
     }
-    
 
     @Override
     public String id() {
@@ -216,9 +221,9 @@ public abstract class AbstractProcess<T extends Model> implements Process<T> {
 
         public CompletionEventListener() {
             //Do nothing
-		}
+        }
 
-		@Override
+        @Override
         public void signalEvent(String type, Object event) {
             if (type.startsWith("processInstanceCompleted:")) {
                 org.kie.api.runtime.process.ProcessInstance pi = (org.kie.api.runtime.process.ProcessInstance) event;

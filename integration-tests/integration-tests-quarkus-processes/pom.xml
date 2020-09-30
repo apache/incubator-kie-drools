@@ -52,7 +52,12 @@
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-smallrye-reactive-messaging-kafka</artifactId>
     </dependency>
-
+    
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-infinispan-client</artifactId>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-junit5</artifactId>
@@ -119,6 +124,9 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
+          <includes>
+            <include>org/kie/kogito/integrationtests/quarkus/*</include>
+          </includes>
           <systemPropertyVariables>
             <container.image.infinispan>${container.image.infinispan}</container.image.infinispan>
           </systemPropertyVariables>
@@ -151,6 +159,10 @@
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-surefire-plugin</artifactId>
             <configuration>
+              <includes>
+                <include>org/kie/kogito/integrationtests/quarkus/*</include>
+                <include>org/kie/kogito/integrationtests/quarkus/infinispan/*</include>
+              </includes>
               <systemPropertyVariables>
                 <enable.resource.infinispan>true</enable.resource.infinispan>
               </systemPropertyVariables>
