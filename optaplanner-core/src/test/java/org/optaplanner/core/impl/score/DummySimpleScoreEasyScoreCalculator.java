@@ -17,7 +17,7 @@
 package org.optaplanner.core.impl.score;
 
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
-import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
+import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
 
 public class DummySimpleScoreEasyScoreCalculator<Solution_> implements EasyScoreCalculator<Solution_, SimpleScore> {
 

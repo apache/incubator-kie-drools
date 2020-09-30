@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.director.incremental;
+package org.optaplanner.core.api.score.calculator;
 
 import java.util.Collection;
 import java.util.Map;
@@ -32,7 +32,6 @@ import org.optaplanner.core.api.score.constraint.Indictment;
  *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @param <Score_> the {@link Score} type
- * @see IncrementalScoreCalculator
  */
 public interface ConstraintMatchAwareIncrementalScoreCalculator<Solution_, Score_ extends Score<Score_>>
         extends IncrementalScoreCalculator<Solution_, Score_> {

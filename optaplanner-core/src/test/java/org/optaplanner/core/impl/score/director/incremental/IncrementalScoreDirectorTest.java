@@ -30,6 +30,8 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.api.score.calculator.ConstraintMatchAwareIncrementalScoreCalculator;
+import org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.buildin.simple.SimpleScoreDefinition;
 import org.optaplanner.core.impl.testdata.domain.chained.shadow.TestdataShadowingChainedAnchor;

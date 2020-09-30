@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScore;
-import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
+import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
 import org.optaplanner.examples.cheaptime.domain.CheapTimeSolution;
 import org.optaplanner.examples.cheaptime.domain.Machine;
 import org.optaplanner.examples.cheaptime.domain.PeriodPowerPrice;

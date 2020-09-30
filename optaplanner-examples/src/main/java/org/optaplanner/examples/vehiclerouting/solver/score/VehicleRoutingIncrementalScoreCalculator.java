@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
-import org.optaplanner.core.impl.score.director.incremental.IncrementalScoreCalculator;
+import org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator;
 import org.optaplanner.examples.vehiclerouting.domain.Customer;
 import org.optaplanner.examples.vehiclerouting.domain.Standstill;
 import org.optaplanner.examples.vehiclerouting.domain.Vehicle;

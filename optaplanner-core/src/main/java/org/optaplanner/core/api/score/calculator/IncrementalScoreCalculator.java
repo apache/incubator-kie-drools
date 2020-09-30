@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.director.incremental;
+package org.optaplanner.core.api.score.calculator;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.heuristic.move.Move;
-import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
 
 /**
  * Used for incremental java {@link Score} calculation.

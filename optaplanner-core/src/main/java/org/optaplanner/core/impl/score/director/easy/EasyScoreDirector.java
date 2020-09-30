@@ -21,6 +21,7 @@ import java.util.Map;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.ScoreExplanation;
+import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.Indictment;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package org.optaplanner.examples.cloudbalancing.app;
 
-import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
+import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
 import org.optaplanner.examples.cloudbalancing.domain.CloudBalance;
 import org.optaplanner.examples.cloudbalancing.optional.score.CloudBalancingMapBasedEasyScoreCalculator;
 import org.optaplanner.examples.common.app.CommonApp;

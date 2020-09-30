@@ -33,12 +33,14 @@ Just implement the `calculateScore(Solution)` method to return a `HardSoftScore`
 ====
 [source,java,options="nowrap"]
 ----
-public class CloudBalancingEasyScoreCalculator implements EasyScoreCalculator<CloudBalance> {
+public class CloudBalancingEasyScoreCalculator
+    implements EasyScoreCalculator<CloudBalance, HardSoftScore> {
 
     /**
      * A very simple implementation. The double loop can easily be removed by using Maps as shown in
      * {@link CloudBalancingMapBasedEasyScoreCalculator#calculateScore(CloudBalance)}.
      */
+    @Override
     public HardSoftScore calculateScore(CloudBalance cloudBalance) {
         int hardScore = 0;
         int softScore = 0;

@@ -415,7 +415,8 @@ To calculate the score, you could implement an `EasyScoreCalculator` class:
 ====
 [source,java]
 ----
-public class TimeTableEasyScoreCalculator implements EasyScoreCalculator<TimeTable> {
+public class TimeTableEasyScoreCalculator
+    implements EasyScoreCalculator<TimeTable, HardSoftScore> {
 
     @Override
     public HardSoftScore calculateScore(TimeTable timeTable) {

@@ -19,7 +19,7 @@ package org.optaplanner.examples.investment.solver.score;
 import java.util.Map;
 
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
-import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
+import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
 import org.optaplanner.examples.investment.domain.InvestmentSolution;
 import org.optaplanner.examples.investment.domain.Region;
 import org.optaplanner.examples.investment.domain.Sector;

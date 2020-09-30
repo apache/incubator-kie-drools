@@ -20,7 +20,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
-import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
+import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;

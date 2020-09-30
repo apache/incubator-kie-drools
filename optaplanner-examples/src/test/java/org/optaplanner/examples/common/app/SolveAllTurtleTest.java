@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,13 +26,13 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
-import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
 import org.optaplanner.examples.common.TestSystemProperties;
 import org.optaplanner.examples.common.TurtleTest;
 

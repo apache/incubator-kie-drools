@@ -17,7 +17,7 @@
 package org.optaplanner.examples.tsp.solver.score;
 
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
-import org.optaplanner.core.impl.score.director.incremental.IncrementalScoreCalculator;
+import org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator;
 import org.optaplanner.examples.tsp.domain.Domicile;
 import org.optaplanner.examples.tsp.domain.Standstill;
 import org.optaplanner.examples.tsp.domain.TspSolution;

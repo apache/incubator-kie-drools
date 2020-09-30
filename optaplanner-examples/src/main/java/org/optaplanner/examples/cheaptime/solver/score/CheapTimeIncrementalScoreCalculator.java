@@ -24,11 +24,11 @@ import java.util.Map;
 import java.util.Objects;
 
 import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScore;
+import org.optaplanner.core.api.score.calculator.ConstraintMatchAwareIncrementalScoreCalculator;
+import org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.Indictment;
 import org.optaplanner.core.impl.score.constraint.DefaultConstraintMatchTotal;
-import org.optaplanner.core.impl.score.director.incremental.ConstraintMatchAwareIncrementalScoreCalculator;
-import org.optaplanner.core.impl.score.director.incremental.IncrementalScoreCalculator;
 import org.optaplanner.examples.cheaptime.domain.CheapTimeSolution;
 import org.optaplanner.examples.cheaptime.domain.Machine;
 import org.optaplanner.examples.cheaptime.domain.PeriodPowerPrice;

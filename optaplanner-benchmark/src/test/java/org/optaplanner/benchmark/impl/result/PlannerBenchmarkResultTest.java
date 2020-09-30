@@ -39,10 +39,10 @@ import org.optaplanner.benchmark.impl.aggregator.BenchmarkAggregator;
 import org.optaplanner.benchmark.impl.loader.FileProblemProvider;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.random.RandomType;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyDistanceMeter;
-import org.optaplanner.core.impl.score.director.incremental.IncrementalScoreCalculator;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedSolution;
 

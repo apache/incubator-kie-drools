@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
-import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
+import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
 import org.optaplanner.examples.tsp.domain.Domicile;
 import org.optaplanner.examples.tsp.domain.Standstill;
 import org.optaplanner.examples.tsp.domain.TspSolution;

@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
-import org.optaplanner.core.impl.score.director.incremental.IncrementalScoreCalculator;
+import org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator;
 import org.optaplanner.examples.projectjobscheduling.domain.Allocation;
 import org.optaplanner.examples.projectjobscheduling.domain.ExecutionMode;
 import org.optaplanner.examples.projectjobscheduling.domain.JobType;

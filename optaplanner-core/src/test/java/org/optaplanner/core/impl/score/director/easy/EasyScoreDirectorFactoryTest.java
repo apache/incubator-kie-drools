@@ -25,6 +25,7 @@ import java.util.Collections;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 

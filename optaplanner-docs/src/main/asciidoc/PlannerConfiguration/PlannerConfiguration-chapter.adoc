@@ -186,7 +186,7 @@ Add a public setter for each custom property, which is called when a `Solver` is
 
 [source,java,options="nowrap"]
 ----
-public class MyEasyScoreCalculator extends EasyScoreCalculator<MySolution> {
+public class MyEasyScoreCalculator extends EasyScoreCalculator<MySolution, SimpleScore> {
 
         private int myCacheSize = 500; // Default value
 

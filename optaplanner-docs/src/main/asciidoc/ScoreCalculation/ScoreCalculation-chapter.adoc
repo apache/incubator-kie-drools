@@ -451,9 +451,9 @@ Implement the one method of the interface ``EasyScoreCalculator``:
 
 [source,java,options="nowrap"]
 ----
-public interface EasyScoreCalculator<Solution_> {
+public interface EasyScoreCalculator<Solution_, Score_ extends Score<Score_>> {
 
-    Score calculateScore(Solution_ solution);
+    Score_ calculateScore(Solution_ solution);
 
 }
 ----
@@ -462,8 +462,10 @@ For example in n queens:
 
 [source,java,options="nowrap"]
 ----
-public class NQueensEasyScoreCalculator implements EasyScoreCalculator<NQueens> {
+public class NQueensEasyScoreCalculator
+    implements EasyScoreCalculator<NQueens, SimpleScore> {
 
+    @Override
     public SimpleScore calculateScore(NQueens nQueens) {
         int n = nQueens.getN();
         List<Queen> queenList = nQueens.getQueenList();
@@ -531,12 +533,11 @@ A way to implement your score calculation incrementally in Java.
 ** Hard to read
 *** Regular score constraint changes can lead to a high maintenance cost
 
-Implement all the methods of the interface `IncrementalScoreCalculator`
-and extend the class ``AbstractIncrementalScoreCalculator``:
+Implement all the methods of the interface `IncrementalScoreCalculator`:
 
 [source,java,options="nowrap"]
 ----
-public interface IncrementalScoreCalculator<Solution_> {
+public interface IncrementalScoreCalculator<Solution_, Score_ extends Score<Score_>> {
 
     void resetWorkingSolution(Solution_ workingSolution);
 
@@ -552,7 +553,7 @@ public interface IncrementalScoreCalculator<Solution_> {
 
     void afterEntityRemoved(Object entity);
 
-    Score calculateScore();
+    Score_ calculateScore();
 
 }
 ----
@@ -563,7 +564,8 @@ For example in n queens:
 
 [source,java,options="nowrap"]
 ----
-public class NQueensAdvancedIncrementalScoreCalculator extends AbstractIncrementalScoreCalculator<NQueens> {
+public class NQueensAdvancedIncrementalScoreCalculator
+    extends IncrementalScoreCalculator<NQueens, SimpleScore> {
 
     private Map<Integer, List<Queen>> rowIndexMap;
     private Map<Integer, List<Queen>> ascendingDiagonalIndexMap;

@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
-import org.optaplanner.core.impl.score.director.incremental.IncrementalScoreCalculator;
+import org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator;
 import org.optaplanner.examples.investment.domain.AssetClassAllocation;
 import org.optaplanner.examples.investment.domain.InvestmentSolution;
 import org.optaplanner.examples.investment.domain.Region;

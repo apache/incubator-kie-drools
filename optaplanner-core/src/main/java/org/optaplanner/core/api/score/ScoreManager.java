@@ -18,13 +18,13 @@ package org.optaplanner.core.api.score;
 
 import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.Indictment;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.impl.score.DefaultScoreManager;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
-import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
 import org.optaplanner.core.impl.solver.DefaultSolverFactory;
 
 /**

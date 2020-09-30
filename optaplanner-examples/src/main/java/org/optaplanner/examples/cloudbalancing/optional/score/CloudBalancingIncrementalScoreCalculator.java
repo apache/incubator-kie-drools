@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
-import org.optaplanner.core.impl.score.director.incremental.IncrementalScoreCalculator;
+import org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator;
 import org.optaplanner.examples.cloudbalancing.domain.CloudBalance;
 import org.optaplanner.examples.cloudbalancing.domain.CloudComputer;
 import org.optaplanner.examples.cloudbalancing.domain.CloudProcess;

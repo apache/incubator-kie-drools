@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
-import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
+import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
 import org.optaplanner.examples.coachshuttlegathering.domain.Bus;
 import org.optaplanner.examples.coachshuttlegathering.domain.BusStop;
 import org.optaplanner.examples.coachshuttlegathering.domain.Coach;
