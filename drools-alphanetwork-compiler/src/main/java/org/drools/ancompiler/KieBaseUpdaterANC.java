@@ -5,7 +5,7 @@ import java.util.Map;
 import org.drools.compiler.kie.builder.impl.KieBaseUpdateContext;
 import org.drools.compiler.kie.builder.impl.KieBaseUpdater;
 import org.drools.compiler.kie.builder.impl.KieContainerImpl;
-import org.drools.core.util.StreamUtils;
+import org.drools.core.reteoo.Rete;
 import org.kie.memorycompiler.KieMemoryCompiler;
 
 import static org.drools.core.util.MapUtils.mapValues;
@@ -33,14 +33,13 @@ public class KieBaseUpdaterANC extends KieBaseUpdater {
      * This assumes the kie-memory-compiler module is provided at runtime
      */
     private void inMemoryUpdate() {
-        Map<String, CompiledNetworkSource> compiledNetworkSourcesMap = ObjectTypeNodeCompiler.compiledNetworkSourceMap(ctx.kBase.getRete());
+        Rete rete = ctx.kBase.getRete();
+        Map<String, CompiledNetworkSource> compiledNetworkSourcesMap = ObjectTypeNodeCompiler.compiledNetworkSourceMap(rete);
         if (!compiledNetworkSourcesMap.isEmpty()) {
-            compiledNetworkSourcesMap.values().stream()
-                    .flatMap(cns -> StreamUtils.optionalToStream(cns.existingAlphaNetworkCompiler()))
-                    .forEach(previousANC -> clearInstancesOfModifiedClass(previousANC.getClass()));
-
             Map<String, Class<?>> compiledClasses = KieMemoryCompiler.compile(mapValues(compiledNetworkSourcesMap, CompiledNetworkSource::getSource),
                                                                               ctx.kBase.getRootClassLoader());
+            // No need to clear previous sinks/ANC compiled instances
+            // as they are removed by ReteOOBuilder.removeTerminalNode after standard KieBaseUpdaterImpl
             compiledNetworkSourcesMap.values().forEach(c -> {
                 Class<?> aClass = compiledClasses.get(c.getName());
                 c.setCompiledNetwork(aClass);

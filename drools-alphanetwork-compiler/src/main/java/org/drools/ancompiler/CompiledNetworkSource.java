@@ -65,6 +65,9 @@ public class CompiledNetworkSource {
     }
 
     public Optional<ObjectSinkPropagator> existingAlphaNetworkCompiler() {
-        return Optional.ofNullable(objectTypeNode.getObjectSinkPropagator());
+        return Optional.ofNullable(objectTypeNode.getObjectSinkPropagator())
+                .filter(otn -> {
+                    return otn instanceof CompiledNetwork;
+                });
     }
 }
