@@ -17,10 +17,25 @@
 package org.drools.core.factmodel;
 
 import org.drools.core.rule.TypeDeclaration;
+import org.kie.api.internal.utils.ServiceRegistry;
+
+import static org.drools.core.base.CoreComponentsBuilder.throwExceptionForMissingMvel;
 
 public interface ClassBuilderFactory {
-    static ClassBuilder getDefaultBeanClassBuilder() {
-        return new DefaultBeanClassBuilder(true);
+
+    boolean DUMP_GENERATED_CLASSES = false;
+
+    class Holder {
+        private static final ClassBuilderFactory factory = getFactory();
+
+        private static ClassBuilderFactory getFactory() {
+            ClassBuilderFactory instance = ServiceRegistry.getInstance().get( ClassBuilderFactory.class );
+            return instance != null ? instance : throwExceptionForMissingMvel();
+        }
+    }
+
+    static ClassBuilderFactory get() {
+        return Holder.factory;
     }
 
     ClassBuilder getBeanClassBuilder();

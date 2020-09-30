@@ -19,8 +19,8 @@ package org.drools.testcoverage.regression;
 import java.util.Collection;
 
 import org.assertj.core.api.Assertions;
-import org.drools.compiler.StockTick;
-import org.drools.compiler.integrationtests.SerializationHelper;
+import org.drools.mvel.compiler.StockTick;
+import org.drools.mvel.integrationtests.SerializationHelper;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil;
@@ -47,7 +47,7 @@ public class DeserializationWithCompositeTriggerTest {
 
     private static final String DRL =
             "package org.drools.test;\n" +
-            "import org.drools.compiler.StockTick;\n" +
+            "import org.drools.mvel.compiler.StockTick;\n" +
             "global java.util.List list;\n" +
             "\n" +
             "declare StockTick\n" +

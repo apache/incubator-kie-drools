@@ -151,6 +151,7 @@ public class DMNValidatorImpl implements DMNValidator {
 
     public static class ValidatorBuilderImpl implements ValidatorBuilder {
 
+        
         private final EnumSet<Validation> flags;
         private final DMNValidatorImpl validator;
         private ValidatorImportReaderResolver importResolver;

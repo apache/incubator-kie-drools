@@ -45,10 +45,6 @@
       <optional>true</optional>
     </dependency>
     <dependency>
-      <groupId>org.mvel</groupId>
-      <artifactId>mvel2</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-api</artifactId>
     </dependency>
@@ -67,11 +63,7 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-core-dynamic</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.kie.soup</groupId>
-      <artifactId>kie-soup-project-datamodel-commons</artifactId>
+      <scope>runtime</scope>
     </dependency>
 
     <dependency>
@@ -276,6 +268,8 @@
                org.drools.dynamic;resolution:=optional,
                org.drools.persistence.api;resolution:=optional,
                org.drools.template.parser;resolution:=optional,
+               org.drools.mvel;resolution:=optional,
+               org.drools.mvel.asm;resolution:=optional,
                org.drools.persistence.jpa;resolution:=optional,
                org.drools.persistence.jpa.processinstance;resolution:=optional,
                org.drools.reflective;resolution:=optional,

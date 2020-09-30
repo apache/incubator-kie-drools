@@ -16,10 +16,17 @@
 
 package org.drools.model.functions;
 
-public abstract class IntrospectableLambda {
+import java.util.function.Supplier;
+
+public abstract class IntrospectableLambda implements Supplier<Object> {
     private String lambdaFingerprint;
 
     public abstract Object getLambda();
+
+    @Override
+    public final Object get() {
+        return getLambda();
+    }
 
     @Override
     public String toString() {

@@ -32,7 +32,6 @@ import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.compiled.CompiledNetwork;
 import org.drools.core.rule.DialectRuntimeData;
-import org.drools.core.rule.MVELDialectRuntimeData;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.rule.EntryPoint;
@@ -71,7 +70,7 @@ public class KieBaseUpdater implements Runnable {
             for (InternalKnowledgePackage pkg : ctx.kBase.getPackagesMap().values()) {
                 DialectRuntimeData mvel = pkg.getDialectRuntimeRegistry().getDialectData("mvel");
                 if(mvel != null) {
-                    ((MVELDialectRuntimeData) mvel).resetParserConfiguration();
+                    mvel.resetParserConfiguration();
                 }
             }
         }
@@ -93,7 +92,7 @@ public class KieBaseUpdater implements Runnable {
         }
 
         final String configurationProperty = ctx.newKieBaseModel.getKModule().getConfigurationProperty(KieContainerImpl.ALPHA_NETWORK_COMPILER_OPTION);
-        final boolean isAlphaNetworkEnabled = Boolean.valueOf(configurationProperty);
+        final boolean isAlphaNetworkEnabled = Boolean.parseBoolean(configurationProperty);
 
         if (isAlphaNetworkEnabled) {
             ctx.kBase.getRete().getEntryPointNodes().values().stream()

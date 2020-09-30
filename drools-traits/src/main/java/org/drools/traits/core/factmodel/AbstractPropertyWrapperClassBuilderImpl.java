@@ -26,6 +26,7 @@ import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.factmodel.FieldDefinition;
 import org.drools.core.factmodel.traits.TraitFieldTMS;
 import org.drools.core.factmodel.traits.TraitableBean;
+import org.drools.mvel.asm.AsmUtil;
 import org.mvel2.asm.Label;
 import org.mvel2.asm.MethodVisitor;
 import org.mvel2.asm.Type;
@@ -56,7 +57,7 @@ public abstract class AbstractPropertyWrapperClassBuilderImpl implements TraitPr
         mv.visitVarInsn(ALOAD, 2);
         if (BuildUtils.isPrimitive(field.getTypeName())) {
             TraitFactoryImpl.primitiveValue(mv, field.getTypeName());
-            mv.visitVarInsn(BuildUtils.storeType(field.getTypeName()), 3);
+            mv.visitVarInsn( AsmUtil.storeType(field.getTypeName()), 3);
             TraitFactoryImpl.invokeInjector(mv, wrapperName, core, field, false, 3);
         } else {
             TraitFactoryImpl.invokeInjector(mv, wrapperName, core, field, false, 2);

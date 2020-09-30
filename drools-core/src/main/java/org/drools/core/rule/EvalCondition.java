@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.core.WorkingMemory;
-import org.drools.core.base.mvel.MVELEvalExpression;
 import org.drools.core.spi.EvalExpression;
 import org.drools.core.spi.Tuple;
 import org.drools.core.spi.Wireable;
@@ -97,9 +96,7 @@ public class EvalCondition extends ConditionalElement
     }
 
     private void wireClone(EvalExpression expression) {
-        setEvalExpression( this.expression instanceof MVELEvalExpression && expression instanceof MVELEvalExpression ?
-                           ( (MVELEvalExpression) expression ).clonePreservingDeclarations( (MVELEvalExpression) this.expression ) :
-                           expression );
+        setEvalExpression( expression.clonePreservingDeclarations( this.expression ) );
         for ( EvalCondition clone : this.cloned ) {
             clone.wireClone( expression );
         }

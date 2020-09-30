@@ -37,10 +37,6 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.mvel</groupId>
-      <artifactId>mvel2</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-api</artifactId>
     </dependency>
@@ -90,6 +86,11 @@
       <scope>test</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-mvel</artifactId>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-ruleunit</artifactId>

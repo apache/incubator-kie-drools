@@ -28,13 +28,13 @@ import org.drools.core.factmodel.traits.Trait;
 import org.mvel2.asm.AnnotationVisitor;
 import org.mvel2.asm.ClassWriter;
 import org.mvel2.asm.MethodVisitor;
+import org.mvel2.asm.Opcodes;
 import org.mvel2.asm.Type;
 
-import static org.drools.core.factmodel.DefaultBeanClassBuilder.addAnnotationAttribute;
-import static org.drools.core.rule.builder.dialect.asm.ClassGenerator.createClassWriter;
+import static org.drools.mvel.asm.ClassGenerator.createClassWriter;
+import static org.drools.mvel.asm.DefaultBeanClassBuilder.addAnnotationAttribute;
 
-public class TraitClassBuilderImpl implements ClassBuilder,
-                                              Serializable {
+public class TraitClassBuilderImpl implements ClassBuilder, Opcodes, Serializable {
 
     public byte[] buildClass(ClassDefinition classDef, ClassLoader classLoader) {
 

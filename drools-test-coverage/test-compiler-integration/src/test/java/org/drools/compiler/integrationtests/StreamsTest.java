@@ -661,7 +661,7 @@ public class StreamsTest {
         }
     }
 
-    @Test(timeout = 10000)
+    @Test
     public void testWindowWithEntryPointCompilationError() {
         final String drl = "import " + Cheese.class.getCanonicalName() + ";\n" +
                 "declare window X\n" +

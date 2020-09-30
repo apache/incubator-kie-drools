@@ -220,7 +220,7 @@ public class MVELDumper extends ReflectiveVisitor implements ExpressionRewriter 
         return expr;
     }
 
-    String[] processImplicitConstraints(String expr, AtomicExprDescr atomicExpr, ConstraintConnectiveDescr parent, int parentIdx, MVELDumperContext context) {
+    public String[] processImplicitConstraints(String expr, AtomicExprDescr atomicExpr, ConstraintConnectiveDescr parent, int parentIdx, MVELDumperContext context) {
         boolean hasQuotes = expr.indexOf('"') >= 0;
         String[] constrAndExpr = new String[] { "", expr };
         int sharpPos = hasQuotes ? indexOfOutOfQuotes(expr, '#') : expr.indexOf('#');

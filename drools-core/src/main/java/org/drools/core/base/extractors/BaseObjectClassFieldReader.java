@@ -16,11 +16,12 @@
 
 package org.drools.core.base.extractors;
 
+import java.lang.reflect.Method;
+import java.util.Date;
+
 import org.drools.core.base.BaseClassFieldReader;
 import org.drools.core.base.ValueType;
 import org.drools.core.common.InternalWorkingMemory;
-
-import java.lang.reflect.Method;
 
 public abstract class BaseObjectClassFieldReader extends BaseClassFieldReader {
 
@@ -128,6 +129,8 @@ public abstract class BaseObjectClassFieldReader extends BaseClassFieldReader {
             return ((Character) value).charValue();
         } else if ( value instanceof Number ) {
             return ((Number) value).longValue();
+        } else if ( value instanceof Date ) {
+            return ((Date) value).getTime();
         }
         
         throw new RuntimeException( "Conversion to long not supported from " +  getExtractToClass().getName() );

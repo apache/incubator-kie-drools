@@ -31,7 +31,7 @@ import org.drools.core.WorkingMemory;
 import org.drools.core.factmodel.traits.TraitFieldTMS;
 import org.drools.core.factmodel.traits.TraitType;
 import org.drools.core.util.ClassUtils;
-import org.drools.core.util.MVELSafeHelper;
+import org.drools.mvel.MVELSafeHelper;
 import org.drools.core.util.bitmask.BitMask;
 
 import static org.drools.core.reteoo.PropertySpecificUtil.onlyTraitBitSetMask;

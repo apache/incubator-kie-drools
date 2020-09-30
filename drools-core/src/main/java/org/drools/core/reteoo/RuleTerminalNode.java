@@ -19,13 +19,10 @@ package org.drools.core.reteoo;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Map;
 
 import org.drools.core.base.SalienceInteger;
-import org.drools.core.base.mvel.MVELEnabledExpression;
-import org.drools.core.base.mvel.MVELSalienceExpression;
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemoryActions;
@@ -111,29 +108,8 @@ public class RuleTerminalNode extends AbstractTerminalNode {
     }
     
     public void setDeclarations(Map<String, Declaration> decls) {
-        if ( rule.getSalience() instanceof MVELSalienceExpression ) {
-            MVELSalienceExpression expr = ( MVELSalienceExpression ) rule.getSalience();
-            Declaration[] declrs = expr.getMVELCompilationUnit().getPreviousDeclarations();
-            
-            this.salienceDeclarations = new Declaration[declrs.length];
-            int i = 0;
-            for ( Declaration declr : declrs ) {
-                this.salienceDeclarations[i++] = decls.get( declr.getIdentifier() );
-            }
-            Arrays.sort( this.salienceDeclarations, SortDeclarations.instance );            
-        }
-        
-        if ( rule.getEnabled() instanceof MVELEnabledExpression ) {
-            MVELEnabledExpression expr = ( MVELEnabledExpression ) rule.getEnabled();
-            Declaration[] declrs = expr.getMVELCompilationUnit().getPreviousDeclarations();
-            
-            this.enabledDeclarations = new Declaration[declrs.length];
-            int i = 0;
-            for ( Declaration declr : declrs ) {
-                this.enabledDeclarations[i++] = decls.get( declr.getIdentifier() );
-            }
-            Arrays.sort( this.enabledDeclarations, SortDeclarations.instance );              
-        }
+        setEnabledDeclarations( rule.findEnabledDeclarations( decls ) );
+        setSalienceDeclarations( rule.findSalienceDeclarations( decls ) );
     }
     
     // ------------------------------------------------------------
@@ -243,6 +219,10 @@ public class RuleTerminalNode extends AbstractTerminalNode {
 
     public Declaration[] getEnabledDeclarations() {
         return enabledDeclarations;
+    }
+
+    public void setEnabledDeclarations( Declaration[] enabledDeclarations ) {
+        this.enabledDeclarations = enabledDeclarations;
     }
 
     public String getConsequenceName() {

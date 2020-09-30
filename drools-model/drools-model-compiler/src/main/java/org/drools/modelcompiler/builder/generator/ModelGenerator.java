@@ -49,11 +49,11 @@ import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.QueryDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.core.addon.TypeResolver;
+import org.drools.core.base.CoreComponentsBuilder;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.factmodel.AnnotationDefinition;
 import org.drools.core.rule.Behavior;
 import org.drools.core.time.TimeUtils;
-import org.drools.core.util.MVELSafeHelper;
 import org.drools.model.Rule;
 import org.drools.model.UnitData;
 import org.drools.model.Variable;
@@ -68,6 +68,7 @@ import org.kie.internal.ruleunit.RuleUnitVariable;
 
 import static com.github.javaparser.StaticJavaParser.parseExpression;
 import static java.util.stream.Collectors.toList;
+
 import static org.drools.core.impl.StatefulKnowledgeSessionImpl.DEFAULT_RULE_UNIT;
 import static org.drools.modelcompiler.builder.PackageModel.DATE_TIME_FORMATTER_FIELD;
 import static org.drools.modelcompiler.builder.PackageModel.DOMAIN_CLASSESS_METADATA_FILE_NAME;
@@ -392,7 +393,7 @@ public class ModelGenerator {
     private static Optional<Object> resolveValueWithMVEL(String value) {
         // try to resolve as an expression:
         try {
-            Object result = MVELSafeHelper.getEvaluator().eval(value);
+            Object result = CoreComponentsBuilder.get().getMVELExecutor().eval(value);
             return Optional.of(result);
         } catch (Exception e) {
             return Optional.empty();

@@ -38,9 +38,6 @@ public class QueryElementBuilder
         
         qe.getResultPattern().setOffset( currentOffset );
         
-        utils.checkUnboundDeclarations( context,
-                                        qe.getRequiredDeclarations() );
-
         context.setTupleSource( utils.attachNode( context,
                                                   context.getComponentFactory().getNodeFactoryService().buildQueryElementNode(
                                                                         context.getNextId(),

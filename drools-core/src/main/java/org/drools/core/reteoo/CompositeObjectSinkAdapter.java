@@ -52,12 +52,12 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
     //                                                                                                      "3" ) );
 
     private static final long serialVersionUID = 510L;
-    ObjectSinkNodeList        otherSinks;
-    ObjectSinkNodeList        hashableSinks;
+    private ObjectSinkNodeList        otherSinks;
+    private ObjectSinkNodeList        hashableSinks;
 
-    LinkedList<FieldIndex>    hashedFieldIndexes;
+    private LinkedList<FieldIndex>    hashedFieldIndexes;
 
-    ObjectHashMap             hashedSinkMap;
+    private ObjectHashMap             hashedSinkMap;
 
     private int               alphaNodeHashingThreshold;
 
@@ -610,6 +610,14 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
 
     public boolean isEmpty() {
         return false;
+    }
+
+    public ObjectSinkNodeList getOtherSinks() {
+        return otherSinks;
+    }
+
+    public LinkedList<FieldIndex> getHashedFieldIndexes() {
+        return hashedFieldIndexes;
     }
 
     public static class HashKey

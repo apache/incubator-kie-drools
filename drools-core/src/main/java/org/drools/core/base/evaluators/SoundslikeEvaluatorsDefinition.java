@@ -21,6 +21,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 import org.drools.core.base.BaseEvaluator;
+import org.drools.core.base.CoreComponentsBuilder;
 import org.drools.core.base.ValueType;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
@@ -29,7 +30,6 @@ import org.drools.core.rule.VariableRestriction.VariableContextEntry;
 import org.drools.core.spi.Evaluator;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
-import org.mvel2.util.Soundex;
 
 /**
  * This class defines the soundslike evaluator
@@ -142,8 +142,8 @@ public class SoundslikeEvaluatorsDefinition implements EvaluatorDefinition {
             return false;
         }
         
-        soundex1 = Soundex.soundex(value1);
-        soundex2 = Soundex.soundex(value2);
+        soundex1 = CoreComponentsBuilder.get().getMVELExecutor().soundex(value1);
+        soundex2 = CoreComponentsBuilder.get().getMVELExecutor().soundex(value2);
 
         if (soundex1 == null) {
             return false;

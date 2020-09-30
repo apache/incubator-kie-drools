@@ -19,6 +19,7 @@ package org.drools.compiler.kie.util;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.compiler.rule.builder.ConstraintBuilder;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.kie.api.builder.model.ChannelModel;
 import org.kie.api.builder.model.KieSessionModel;
@@ -62,11 +63,11 @@ public class InjectionHelper {
     }
 
     public static void wireSessionComponents( KieSessionModel model, KieSession kSession, Map<String, Object> parameters ) {
-        wireSessionComponents( new MVELBeanCreator( parameters), model, kSession );
+        wireSessionComponents( ConstraintBuilder.get().createMVELBeanCreator( parameters ), model, kSession );
     }
 
     public static void wireSessionComponents(KieSessionModel model, StatelessKieSession kSession, Map<String, Object> parameters) {
-        wireSessionComponents(new MVELBeanCreator(parameters), model, kSession);
+        wireSessionComponents( ConstraintBuilder.get().createMVELBeanCreator(parameters), model, kSession);
     }
 
     public static void wireSessionComponents(BeanCreator beanCreator, KieSessionModel model, KieSession kSession) {
