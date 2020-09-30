@@ -2,7 +2,7 @@ package org.drools.ancompiler;
 
 import java.util.Map;
 
-import org.drools.compiler.builder.InternalKnowledgeBuilder;
+import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.kie.builder.impl.KieBaseUpdateContext;
 import org.drools.compiler.kie.builder.impl.KieBaseUpdater;
 import org.drools.core.reteoo.Rete;
@@ -12,15 +12,15 @@ import static org.drools.core.util.MapUtils.mapValues;
 
 public class KieBaseUpdaterANC extends KieBaseUpdater {
 
-    InternalKnowledgeBuilder knowledgeBuilder;
+    KnowledgeBuilderConfigurationImpl knowledgeBuilderConfiguration;
 
-    public KieBaseUpdaterANC(InternalKnowledgeBuilder knowledgeBuilder, KieBaseUpdateContext ctx) {
+    public KieBaseUpdaterANC(KnowledgeBuilderConfigurationImpl knowledgeBuilderConfiguration, KieBaseUpdateContext ctx) {
         super(ctx);
-        this.knowledgeBuilder = knowledgeBuilder;
+        this.knowledgeBuilderConfiguration = knowledgeBuilderConfiguration;
     }
 
     public void run() {
-        final boolean isAlphaNetworkEnabled = knowledgeBuilder.getBuilderConfiguration().isAlphaNetworkCompilerEnabled();
+        final boolean isAlphaNetworkEnabled = knowledgeBuilderConfiguration.isAlphaNetworkCompilerEnabled();
 
         // find the new compiled alpha network in the classpath, if it's not there,
         // generate compile it and reattach it

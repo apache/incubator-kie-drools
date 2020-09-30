@@ -271,7 +271,7 @@ public class KieContainerImpl
                     KieBaseUpdaters updaters = ServiceRegistry.getInstance().get(KieBaseUpdaters.class);
                     updaters.getChildren()
                             .stream()
-                            .map(kbu -> kbu.create(knowledgeBuilder, context))
+                            .map(kbu -> kbu.create(knowledgeBuilder.getBuilderConfiguration(), context))
                             .forEach(kBase::enqueueModification);
                 });
 
