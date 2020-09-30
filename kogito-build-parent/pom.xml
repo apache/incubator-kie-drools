@@ -105,7 +105,7 @@
 
     <version.net.java.dev.glazedlists>1.8.0</version.net.java.dev.glazedlists>
 
-    <version.io.cloudevents>2.0.0-milestone2</version.io.cloudevents>
+    <version.io.cloudevents>2.0.0-milestone3</version.io.cloudevents>
     <version.io.fabric8.kubernetes-client>4.8.0</version.io.fabric8.kubernetes-client>
     <version.io.prometheus>0.5.0</version.io.prometheus>
     <version.io.restassured>4.3.0</version.io.restassured>
