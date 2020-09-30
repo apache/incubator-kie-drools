@@ -264,16 +264,25 @@ public class KieContainerImpl
                 KieBaseUpdateContext context = new KieBaseUpdateContext( kProject, kBase, currentKM, newKM,
                                                                          cs, modifiedClasses, modifyingUsedClass, unchangedResources,
                                                                          results, newKieBaseModel, currentKieBaseModel );
+
+                // Multiple updaters are required to be merged together in a single Runnable
+                // to avoid a deadlock while using .fireUntilHalt()
+                // see IncrementalCompilationTest.testMultipleIncrementalCompilationsWithFireUntilHalt
+                // with multiple updaters (such as Alpha NetworkCompilerUpdater)
+                CompositeRunnable compositeUpdater = new CompositeRunnable();
                 KieBaseUpdater kieBaseUpdater = currentKM.createKieBaseUpdater(context);
-                kBase.enqueueModification(kieBaseUpdater);
+
+                compositeUpdater.add(kieBaseUpdater);
 
                 kieBaseUpdater.getKnowledgeBuilder().ifPresent(knowledgeBuilder -> {
                     KieBaseUpdaters updaters = ServiceRegistry.getInstance().get(KieBaseUpdaters.class);
                     updaters.getChildren()
                             .stream()
                             .map(kbu -> kbu.create(knowledgeBuilder.getBuilderConfiguration(), context))
-                            .forEach(kBase::enqueueModification);
+                            .forEach(compositeUpdater::add);
                 });
+
+                kBase.enqueueModification(compositeUpdater);
 
             }
         }
@@ -287,6 +296,24 @@ public class KieContainerImpl
         this.statelessKSessions.entrySet().removeIf( ksession -> kProject.getKieSessionModel( ksession.getKey() ) == null );
 
         return results;
+    }
+
+    public static class CompositeRunnable implements Runnable {
+
+        private final List<Runnable> runnables = new ArrayList<>();
+
+        void add(Runnable runnable) {
+            runnables.add( runnable );
+        }
+
+        void addAll(List<Runnable> runnableList) {
+            runnables.addAll( runnableList );
+        }
+
+        @Override
+        public void run() {
+            runnables.forEach( Runnable::run );
+        }
     }
 
     private boolean isModifyingUsedFunction(KieJarChangeSet cs) {
@@ -431,7 +458,24 @@ public class KieContainerImpl
         kBase.setKieContainer(this);
         kBase.initMBeans();
 
+        generateCompiledAlphaNetwork(kBaseModel, kModule, kBase);
+
         return kBase;
+    }
+
+    // TODO Luca find a better place to generate the alpha network
+    public void generateCompiledAlphaNetwork(KieBaseModelImpl kBaseModel, InternalKieModule kModule, InternalKnowledgeBase kBase) {
+        final String configurationProperty = kBaseModel.getKModule().getConfigurationProperty(ALPHA_NETWORK_COMPILER_OPTION);
+        final boolean isAlphaNetworkEnabled = Boolean.valueOf(configurationProperty);
+        if (isAlphaNetworkEnabled) {
+            KnowledgeBuilder kbuilder = kModule.getKnowledgeBuilderForKieBase(kBaseModel.getName());
+            kBase.getRete().getEntryPointNodes().values().stream()
+                    .flatMap(ep -> ep.getObjectTypeNodes().values().stream())
+                    .filter(f -> !InitialFact.class.isAssignableFrom(f.getObjectType().getClassType()))
+                    .forEach(otn -> {
+//                        otn.setCompiledNetwork(ObjectTypeNodeCompiler.compile(((InternalKnowledgeBuilder) kbuilder), otn));
+                    });
+        }
     }
 
     private KieBaseModelImpl getKieBaseModelImpl(String kBaseName) {
