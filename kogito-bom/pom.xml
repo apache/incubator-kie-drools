@@ -561,6 +561,19 @@
         <classifier>javadoc</classifier>
       </dependency>
 
+      <!-- Security -->
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>security-commons</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>security-commons</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+
       <!-- Explainability Services -->
       <dependency>
         <groupId>org.kie.kogito</groupId>
