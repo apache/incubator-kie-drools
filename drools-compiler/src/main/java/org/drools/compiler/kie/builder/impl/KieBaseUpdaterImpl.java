@@ -41,6 +41,7 @@ import org.slf4j.LoggerFactory;
 public class KieBaseUpdaterImpl extends KieBaseUpdater {
 
     private static final Logger log = LoggerFactory.getLogger( KieBaseUpdaterImpl.class );
+    private InternalKnowledgeBuilder kbuilder;
 
     public KieBaseUpdaterImpl(KieBaseUpdateContext ctx ) {
         super(ctx);
@@ -48,8 +49,8 @@ public class KieBaseUpdaterImpl extends KieBaseUpdater {
 
     @Override
     public void run() {
-        // Store Knowledge Builder as it's computationally expensive to creat this. Also shared with additional KieBaseUpdater
-        InternalKnowledgeBuilder kbuilder = (InternalKnowledgeBuilder) KnowledgeBuilderFactory.newKnowledgeBuilder(ctx.kBase, ctx.newKM.getBuilderConfiguration(ctx.newKieBaseModel, ctx.kBase.getRootClassLoader() ) );
+        // Store Knowledge Builder as it's computationally expensive to create this. Also shared with additional KieBaseUpdater
+        kbuilder = (InternalKnowledgeBuilder) KnowledgeBuilderFactory.newKnowledgeBuilder(ctx.kBase, ctx.newKM.getBuilderConfiguration(ctx.newKieBaseModel, ctx.kBase.getRootClassLoader() ) );
         CompositeKnowledgeBuilder ckbuilder = kbuilder.batch();
 
         boolean shouldRebuild = applyResourceChanges(kbuilder, ckbuilder);
@@ -202,6 +203,11 @@ public class KieBaseUpdaterImpl extends KieBaseUpdater {
                 ctx.newKM.addResourceToCompiler(ckbuilder, ctx.newKieBaseModel, resourceName);
             }
         }
+    }
+
+    @Override
+    public Optional<InternalKnowledgeBuilder> getKnowledgeBuilder() {
+        return Optional.ofNullable(this.kbuilder);
     }
 }
 

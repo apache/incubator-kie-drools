@@ -54,6 +54,7 @@ import org.kie.api.runtime.rule.AccumulateFunction;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.ResultSeverity;
 import org.kie.internal.builder.conf.AccumulateFunctionOption;
+import org.kie.internal.builder.conf.AlphaNetworkCompilerOption;
 import org.kie.internal.builder.conf.ClassLoaderCacheOption;
 import org.kie.internal.builder.conf.DefaultDialectOption;
 import org.kie.internal.builder.conf.DefaultPackageNameOption;
@@ -137,6 +138,7 @@ public class KnowledgeBuilderConfigurationImpl
     private boolean                           trimCellsInDTable                     = true;
     private boolean                           groupDRLsInKieBasesByFolder           = false;
     private boolean                           externaliseCanonicalModelLambda       = true;
+    private boolean                           alphaNetworkCompilerEnabled           = false;
 
     private static final PropertySpecificOption DEFAULT_PROP_SPEC_OPT = PropertySpecificOption.ALWAYS;
     private PropertySpecificOption            propertySpecificOption  = DEFAULT_PROP_SPEC_OPT;
@@ -328,6 +330,8 @@ public class KnowledgeBuilderConfigurationImpl
         	setParallelRulesBuildThreshold(Integer.valueOf(value));
         }  else if (name.equals(ExternaliseCanonicalModelLambdaOption.PROPERTY_NAME)) {
             setExternaliseCanonicalModelLambda(Boolean.valueOf(value));
+        } else if (name.equals(AlphaNetworkCompilerOption.PROPERTY_NAME)) {
+            setAlphaNetworkCompilerEnabled(Boolean.valueOf(value));
         } else {
             // if the property from the kmodule was not intercepted above, just add it to the chained properties.
             Properties additionalProperty = new Properties();
@@ -728,6 +732,14 @@ public class KnowledgeBuilderConfigurationImpl
         this.externaliseCanonicalModelLambda = externaliseCanonicalModelLambda;
     }
 
+    public boolean isAlphaNetworkCompilerEnabled() {
+        return alphaNetworkCompilerEnabled;
+    }
+
+    public void setAlphaNetworkCompilerEnabled(boolean alphaNetworkCompilerEnabled) {
+        this.alphaNetworkCompilerEnabled = alphaNetworkCompilerEnabled;
+    }
+
     @SuppressWarnings("unchecked")
     public <T extends SingleValueKnowledgeBuilderOption> T getOption(Class<T> option) {
         if (DefaultDialectOption.class.equals(option)) {
@@ -750,6 +762,8 @@ public class KnowledgeBuilderConfigurationImpl
             return (T) languageLevel;
         } else if (ExternaliseCanonicalModelLambdaOption.class.equals(option)) {
             return (T) (externaliseCanonicalModelLambda ? ExternaliseCanonicalModelLambdaOption.ENABLED : ExternaliseCanonicalModelLambdaOption.DISABLED);
+        } else if (AlphaNetworkCompilerOption.class.equals(option)) {
+            return (T) (alphaNetworkCompilerEnabled ? AlphaNetworkCompilerOption.ENABLED : AlphaNetworkCompilerOption.DISABLED);
         }
         return null;
     }
@@ -811,6 +825,8 @@ public class KnowledgeBuilderConfigurationImpl
             this.languageLevel = ((LanguageLevelOption) option);
         } else if (option instanceof ExternaliseCanonicalModelLambdaOption) {
             this.externaliseCanonicalModelLambda = ((ExternaliseCanonicalModelLambdaOption) option).isCanonicalModelLambdaExternalized();
+        } else if (option instanceof AlphaNetworkCompilerOption) {
+            this.alphaNetworkCompilerEnabled = ((AlphaNetworkCompilerOption) option).isAlphaNetworkCompilerEnabled();
         }
     }
 

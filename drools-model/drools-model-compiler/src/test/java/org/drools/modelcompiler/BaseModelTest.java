@@ -111,11 +111,10 @@ public abstract class BaseModelTest {
     }
 
     protected KieSession getKieSession(KieModuleModel model, String... stringRules) {
-        KieSession kieSession = getKieContainer(model, stringRules)
-                .newKieSession();
-
-        testForAlphaNetworkCompiler(kieSession);
-
+        KieContainer kieContainer = getKieContainer(model, stringRules);
+        InternalKnowledgeBase kieBase = (InternalKnowledgeBase) kieContainer.getKieBase();
+        testForAlphaNetworkCompiler(kieBase.getRete());
+        KieSession kieSession = kieContainer.newKieSession();
         return kieSession;
     }
 
@@ -237,10 +236,9 @@ public abstract class BaseModelTest {
         }
     }
 
-    protected void testForAlphaNetworkCompiler(KieSession kieSession) {
+    protected void testForAlphaNetworkCompiler(Rete rete) {
         if (testRunType.alphaNetworkCompiler) {
-            InternalKnowledgeBase kieBase = (InternalKnowledgeBase) kieSession.getKieBase();
-            Map<String, CompiledNetworkSource> compiledNetworkSourcesMap = ObjectTypeNodeCompiler.compiledNetworkSourceMap(kieBase.getRete());
+            Map<String, CompiledNetworkSource> compiledNetworkSourcesMap = ObjectTypeNodeCompiler.compiledNetworkSourceMap(rete);
             if (!compiledNetworkSourcesMap.isEmpty()) {
                 Map<String, Class<?>> compiledClasses = KieMemoryCompiler.compile(mapValues(compiledNetworkSourcesMap, CompiledNetworkSource::getSource),
                                                                                   this.getClass().getClassLoader());

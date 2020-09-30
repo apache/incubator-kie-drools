@@ -1,5 +1,8 @@
 package org.drools.compiler.kie.builder.impl;
 
+import java.util.Optional;
+
+import org.drools.compiler.builder.InternalKnowledgeBuilder;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.ClassAwareObjectStore;
 import org.drools.core.common.InternalWorkingMemory;
@@ -36,5 +39,9 @@ public abstract class KieBaseUpdater implements Runnable {
                 }
             }
         }
+    }
+
+    public Optional<InternalKnowledgeBuilder> getKnowledgeBuilder() {
+        return Optional.empty();
     }
 }
