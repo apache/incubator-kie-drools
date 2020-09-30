@@ -94,6 +94,8 @@ public class ObjectTypeNodeParser {
         } else if (propagator instanceof CompositeObjectSinkAdapter) {
             CompositeObjectSinkAdapter composite = (CompositeObjectSinkAdapter) propagator;
 
+            // TODO: Need to check if rangeIndexableSinks/rangeIndexTreeMap must be handled here
+
             traverseSinkLisk(composite.getHashableSinks(), handler);
             traverseSinkLisk(composite.getOthers(), handler);
             indexableConstraint = traverseHashedAlphaNodes(composite.getHashedSinkMap(), handler);
