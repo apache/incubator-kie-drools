@@ -26,6 +26,7 @@ import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.conf.RemoveIdentitiesOption;
 import org.kie.api.runtime.rule.ConsequenceExceptionHandler;
+import org.kie.internal.conf.AlphaRangeIndexThresholdOption;
 import org.kie.internal.conf.AlphaThresholdOption;
 import org.kie.internal.conf.CompositeKeyDepthOption;
 import org.kie.internal.conf.ConsequenceExceptionHandlerOption;
@@ -69,7 +70,7 @@ public class KnowledgeBaseConfigurationTest {
         // setting the options using the string based setProperty() method
         config.setProperty( SequentialOption.PROPERTY_NAME,
                             "false" );
-        
+
         // checking the type safe getOption() method
         assertEquals( SequentialOption.NO,
                       config.getOption( SequentialOption.class ) );
@@ -292,6 +293,30 @@ public class KnowledgeBaseConfigurationTest {
         // checking the string based getProperty() method
         assertEquals( "7",
                       config.getProperty( AlphaThresholdOption.PROPERTY_NAME ) );
+    }
+
+    @Test
+    public void testAlphaRangeIndexThresholdConfiguration() {
+        // setting the option using the type safe method
+        config.setOption( AlphaRangeIndexThresholdOption.get(5) );
+
+        // checking the type safe getOption() method
+        assertEquals( AlphaRangeIndexThresholdOption.get(5),
+                      config.getOption( AlphaRangeIndexThresholdOption.class ) );
+        // checking the string based getProperty() method
+        assertEquals( "5",
+                      config.getProperty( AlphaRangeIndexThresholdOption.PROPERTY_NAME ) );
+
+        // setting the options using the string based setProperty() method
+        config.setProperty( AlphaRangeIndexThresholdOption.PROPERTY_NAME,
+                            "7" );
+
+        // checking the type safe getOption() method
+        assertEquals( AlphaRangeIndexThresholdOption.get(7),
+                      config.getOption( AlphaRangeIndexThresholdOption.class ) );
+        // checking the string based getProperty() method
+        assertEquals( "7",
+                      config.getProperty( AlphaRangeIndexThresholdOption.PROPERTY_NAME ) );
     }
 
     @Test

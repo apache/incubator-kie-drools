@@ -28,10 +28,10 @@ public interface ObjectSinkPropagator
     extends
     Externalizable {
 
-    ObjectSinkPropagator addObjectSink(ObjectSink sink, int alphaNodeHashingThreshold);
+    ObjectSinkPropagator addObjectSink(ObjectSink sink, int alphaNodeHashingThreshold, int alphaNodeRangeIndexThreshold);
     ObjectSinkPropagator removeObjectSink(ObjectSink sink);
 
-    default void changeSinkPartition( ObjectSink sink, RuleBasePartitionId oldPartition, RuleBasePartitionId newPartition, int alphaNodeHashingThreshold ) { }
+    default void changeSinkPartition( ObjectSink sink, RuleBasePartitionId oldPartition, RuleBasePartitionId newPartition, int alphaNodeHashingThreshold, int alphaNodeRangeIndexThreshold ) { }
 
     void propagateAssertObject(InternalFactHandle factHandle,
                                PropagationContext context,
