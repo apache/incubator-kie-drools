@@ -18,8 +18,9 @@ public class KieBaseUpdaterANC extends KieBaseUpdater {
 
     public void run() {
 
+        // TODO LUCA fix configuration
         final String configurationProperty = ctx.newKieBaseModel.getKModule().getConfigurationProperty(KieContainerImpl.ALPHA_NETWORK_COMPILER_OPTION);
-        final boolean isAlphaNetworkEnabled = Boolean.valueOf(configurationProperty);
+        final boolean isAlphaNetworkEnabled = true;
 
         // find the new compiled alpha network in the classpath, if it's not there,
         // generate compile it and reattach it

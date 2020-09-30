@@ -21,11 +21,14 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.drools.ancompiler.CompiledNetwork;
 import org.drools.ancompiler.CompiledNetworkSource;
 import org.drools.ancompiler.ObjectTypeNodeCompiler;
 import org.drools.compiler.kie.builder.impl.DrlProject;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.core.reteoo.Rete;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
@@ -47,6 +50,7 @@ import static org.drools.modelcompiler.BaseModelTest.RUN_TYPE.FLOW_WITH_ALPHA_NE
 import static org.drools.modelcompiler.BaseModelTest.RUN_TYPE.PATTERN_DSL;
 import static org.drools.modelcompiler.BaseModelTest.RUN_TYPE.PATTERN_WITH_ALPHA_NETWORK;
 import static org.drools.modelcompiler.BaseModelTest.RUN_TYPE.STANDARD_WITH_ALPHA_NETWORK;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 @RunWith(Parameterized.class)
@@ -110,18 +114,7 @@ public abstract class BaseModelTest {
         KieSession kieSession = getKieContainer(model, stringRules)
                 .newKieSession();
 
-        if (testRunType.alphaNetworkCompiler) {
-            InternalKnowledgeBase kieBase = (InternalKnowledgeBase) kieSession.getKieBase();
-            Map<String, CompiledNetworkSource> compiledNetworkSourcesMap = ObjectTypeNodeCompiler.compiledNetworkSourceMap(kieBase.getRete());
-            if (!compiledNetworkSourcesMap.isEmpty()) {
-                Map<String, Class<?>> compiledClasses = KieMemoryCompiler.compile(mapValues(compiledNetworkSourcesMap, CompiledNetworkSource::getSource),
-                                                                                  this.getClass().getClassLoader());
-                compiledNetworkSourcesMap.values().forEach(c -> {
-                    Class<?> aClass = compiledClasses.get(c.getName());
-                    c.setCompiledNetwork(aClass);
-                });
-            }
-        }
+        testForAlphaNetworkCompiler(kieSession);
 
         return kieSession;
     }
@@ -234,5 +227,28 @@ public abstract class BaseModelTest {
         KieModuleModel kproj = KieServices.get().newKieModuleModel();
         kproj.setConfigurationProperty( org.drools.compiler.kie.builder.impl.KieContainerImpl.ALPHA_NETWORK_COMPILER_OPTION, "true" );
         return kproj;
+    }
+
+    protected void assertReteIsAlphaNetworkCompiled(KieSession ksession) {
+        Rete rete = ((InternalKnowledgeBase) ksession.getKieBase()).getRete();
+        List<ObjectTypeNode> objectTypeNodes = ObjectTypeNodeCompiler.objectTypeNodes(rete);
+        for(ObjectTypeNode otn : objectTypeNodes) {
+            assertTrue(otn.getObjectSinkPropagator() instanceof CompiledNetwork);
+        }
+    }
+
+    protected void testForAlphaNetworkCompiler(KieSession kieSession) {
+        if (testRunType.alphaNetworkCompiler) {
+            InternalKnowledgeBase kieBase = (InternalKnowledgeBase) kieSession.getKieBase();
+            Map<String, CompiledNetworkSource> compiledNetworkSourcesMap = ObjectTypeNodeCompiler.compiledNetworkSourceMap(kieBase.getRete());
+            if (!compiledNetworkSourcesMap.isEmpty()) {
+                Map<String, Class<?>> compiledClasses = KieMemoryCompiler.compile(mapValues(compiledNetworkSourcesMap, CompiledNetworkSource::getSource),
+                                                                                  this.getClass().getClassLoader());
+                compiledNetworkSourcesMap.values().forEach(c -> {
+                    Class<?> aClass = compiledClasses.get(c.getName());
+                    c.setCompiledNetwork(aClass);
+                });
+            }
+        }
     }
 }

@@ -203,10 +203,16 @@ public class ObjectTypeNodeCompiler {
     }
 
     public static List<CompiledNetworkSource> compiledNetworkSource(Rete rete) {
+        return objectTypeNodes(rete)
+                .stream()
+                .map(otn -> new ObjectTypeNodeCompiler(otn).generateSource())
+                .collect(Collectors.toList());
+    }
+
+    public static List<ObjectTypeNode> objectTypeNodes(Rete rete) {
         return rete.getEntryPointNodes().values().stream()
                 .flatMap(ep -> ep.getObjectTypeNodes().values().stream())
                 .filter(f -> !InitialFact.class.isAssignableFrom(f.getObjectType().getClassType()))
-                .map(otn -> new ObjectTypeNodeCompiler(otn).generateSource())
                 .collect(Collectors.toList());
     }
 

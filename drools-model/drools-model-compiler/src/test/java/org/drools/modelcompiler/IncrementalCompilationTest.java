@@ -143,6 +143,10 @@ public class IncrementalCompilationTest extends BaseModelTest {
         // Create a session and fire rules
         KieContainer kc = ks.newKieContainer( releaseId1 );
         KieSession ksession = kc.newKieSession();
+        testForAlphaNetworkCompiler(ksession);
+        if(this.testRunType.isAlphaNetworkCompiler()) {
+            this.assertReteIsAlphaNetworkCompiled(ksession);
+        }
         assertEquals( 2, ksession.fireAllRules() );
 
         // Create a new jar for version 1.1.0
@@ -154,6 +158,10 @@ public class IncrementalCompilationTest extends BaseModelTest {
 
         // try with a new session
         KieSession ksession2 = kc.newKieSession();
+        if(this.testRunType.isAlphaNetworkCompiler()) {
+            this.assertReteIsAlphaNetworkCompiled(ksession);
+        }
+
         assertEquals( 3, ksession2.fireAllRules() );
 
         // Create a new jar for version 1.2.0
