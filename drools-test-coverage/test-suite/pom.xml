@@ -105,8 +105,7 @@
       <artifactId>kie-test-util</artifactId>
       <scope>test</scope>
     </dependency>
-
-  <!-- External dependencies -->
+    <!-- External dependencies -->
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
