@@ -87,7 +87,7 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-alphanetwork-compiler</artifactId>
-      <version>7.44.0-SNAPSHOT</version>
+      <version>7.45.0-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
     <dependency>
