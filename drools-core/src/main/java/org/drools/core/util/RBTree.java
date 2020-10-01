@@ -234,7 +234,7 @@ public class RBTree<K extends Comparable< ? super K>, V> implements Serializable
         return nearest;
     }
 
-    private boolean acceptNode(int compResult, Boundary boundary) {
+    protected boolean acceptNode(int compResult, Boundary boundary) {
         return compResult != 0 && ( compResult > 0 ^ boundary == Boundary.LOWER );
     }
 

@@ -77,9 +77,4 @@ public class AlphaNodeRBTree extends RBTree<Comparable<Comparable>, AlphaNode> {
         ConstraintType constraintType = ((IndexableConstraint) value.getConstraint()).getConstraintType();
         return (constraintType == ConstraintType.GREATER_OR_EQUAL || constraintType == ConstraintType.LESS_OR_EQUAL);
     }
-
-    private boolean acceptNode(int compResult, Boundary boundary) {
-        return compResult != 0 && (compResult > 0 ^ boundary == Boundary.LOWER);
-    }
-
 }
