@@ -67,7 +67,8 @@ import org.kie.dmn.feel.util.ClassLoaderUtil;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.DecisionService;
 import org.kie.dmn.model.api.Definitions;
-import org.kie.dmn.validation.dtanalysis.DMNDTAnalyser;
+import org.kie.dmn.validation.dtanalysis.InternalDMNDTAnalyser;
+import org.kie.dmn.validation.dtanalysis.InternalDMNDTAnalyserFactory;
 import org.kie.dmn.validation.dtanalysis.model.DTAnalysis;
 import org.kie.internal.command.CommandFactory;
 import org.kie.internal.utils.ChainedProperties;
@@ -127,7 +128,7 @@ public class DMNValidatorImpl implements DMNValidator {
     private final List<DMNProfile> dmnProfiles = new ArrayList<>();
     private final DMNCompilerConfiguration dmnCompilerConfig;
 
-    private final DMNDTAnalyser dmnDTValidator;
+    private final InternalDMNDTAnalyser dmnDTValidator;
     private InternalKnowledgeBase kb11;
     private InternalKnowledgeBase kb12;
 
@@ -141,7 +142,7 @@ public class DMNValidatorImpl implements DMNValidator {
         this.dmnProfiles.addAll(dmnProfiles);
         final ClassLoader classLoader = cl == null ? ClassLoaderUtil.findDefaultClassLoader() : cl;
         this.dmnCompilerConfig = DMNAssemblerService.compilerConfigWithKModulePrefs(classLoader, localChainedProperties, this.dmnProfiles, (DMNCompilerConfigurationImpl) DMNFactory.newCompilerConfiguration());
-        dmnDTValidator = new DMNDTAnalyser(this.dmnProfiles);
+        dmnDTValidator = InternalDMNDTAnalyserFactory.newDMNDTAnalyser(this.dmnProfiles);
     }
     
     @Override
