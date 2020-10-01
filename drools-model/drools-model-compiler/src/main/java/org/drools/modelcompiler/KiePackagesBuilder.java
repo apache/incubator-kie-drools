@@ -321,9 +321,9 @@ public class KiePackagesBuilder {
         for (Entry<String, Object> kv : rule.getMetaData().entrySet()) {
             ruleImpl.addMetaAttribute(kv.getKey(), kv.getValue());
             if (kv.getKey().equals( Propagation.class.getName() ) || kv.getKey().equals( Propagation.class.getSimpleName() )) {
-                if (Propagation.Type.IMMEDIATE.toString().equals( kv.getValue() )) {
+                if (Propagation.Type.IMMEDIATE.toString().equals(kv.getValue()) || Propagation.Type.IMMEDIATE == kv.getValue()) {
                     ruleImpl.setDataDriven(true);
-                } else if (Propagation.Type.EAGER.toString().equals( kv.getValue() )) {
+                } else if (Propagation.Type.EAGER.toString().equals(kv.getValue()) || Propagation.Type.EAGER == kv.getValue()) {
                     ruleImpl.setEager(true);
                 }
             } else if (kv.getKey().equals( All.class.getName() ) || kv.getKey().equals( All.class.getSimpleName() )) {
