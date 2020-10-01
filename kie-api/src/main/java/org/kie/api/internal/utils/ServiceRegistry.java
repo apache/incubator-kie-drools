@@ -19,6 +19,8 @@ package org.kie.api.internal.utils;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.kie.api.Service;
@@ -92,4 +94,13 @@ public interface ServiceRegistry extends Service {
             Impl.supplier = supplier;
         }
     }
+
+    static boolean isSupported(Class<?> clazz) {
+        return getInstance().get(clazz) != null;
+    }
+
+    static <R,A> Optional<R> ifSupported(Class<A> clazz, Function<A, R> executed) {
+        return isSupported(clazz) ? Optional.of(executed.apply(getInstance().get(clazz))) : Optional.empty();
+    }
+
 }
