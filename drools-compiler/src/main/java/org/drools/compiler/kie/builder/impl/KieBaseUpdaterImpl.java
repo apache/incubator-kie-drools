@@ -25,7 +25,6 @@ import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.rule.DialectRuntimeData;
-import org.drools.core.rule.MVELDialectRuntimeData;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.io.Resource;
 import org.kie.internal.builder.ChangeType;
@@ -61,7 +60,7 @@ public class KieBaseUpdaterImpl extends KieBaseUpdater {
             for (InternalKnowledgePackage pkg : ctx.kBase.getPackagesMap().values()) {
                 DialectRuntimeData mvel = pkg.getDialectRuntimeRegistry().getDialectData("mvel");
                 if(mvel != null) {
-                    ((MVELDialectRuntimeData) mvel).resetParserConfiguration();
+                    mvel.resetParserConfiguration();
                 }
             }
         }
