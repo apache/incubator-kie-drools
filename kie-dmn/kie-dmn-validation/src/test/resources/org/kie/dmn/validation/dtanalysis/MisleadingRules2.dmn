@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"  xmlns:triso="http://www.trisotech.com/2015/triso/modeling"  xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"  xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"  xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"  xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn"  xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"  xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"  xmlns:drools="http://www.drools.org/kie/dmn/1.1"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xmlns:rss="http://purl.org/rss/2.0/"  xmlns:openapi="https://openapis.org/omg/extension/1.0"  xmlns:xsd="http://www.w3.org/2001/XMLSchema"  xmlns="http://www.trisotech.com/definitions/_342d91f8-d991-4542-9b62-1684cca206c0" id="_342d91f8-d991-4542-9b62-1684cca206c0" name="Drawing 1" namespace="http://www.trisotech.com/definitions/_342d91f8-d991-4542-9b62-1684cca206c0" exporter="Decision Modeler" exporterVersion="6.12.3" triso:logoChoice="Default">
+    <semantic:decision id="_ca7652b1-2868-4d5d-b502-4d045013077e" name="Eligibility rules">
+        <semantic:variable name="Eligibility rules" id="_06067f62-3ddc-404a-9a6f-a50c4966b68c" typeRef="Any"/>
+        <semantic:informationRequirement id="_24084429-01d5-40dc-8c8e-188c71afb4eb">
+            <semantic:requiredInput href="#_0b069a5f-8b6c-428e-8ec7-41bc18dda155"/>
+        </semantic:informationRequirement>
+        <semantic:informationRequirement id="_c45cc47d-c4eb-4d1b-9b17-ab240d056f51">
+            <semantic:requiredInput href="#_4bf19046-0b0b-4f4f-8262-2e2d14c18138"/>
+        </semantic:informationRequirement>
+        <semantic:informationRequirement id="_665634a9-8c26-486d-a1a7-eb682e70fda5">
+            <semantic:requiredInput href="#_66d2bd69-116e-44dd-9021-e64e4fad31d0"/>
+        </semantic:informationRequirement>
+        <semantic:decisionTable id="_0cffdf05-071b-423b-94b9-182c2cc2435c" hitPolicy="PRIORITY" outputLabel="Eligibility rules" typeRef="Any" triso:expressionId="_71b8dcba-b289-4ff5-bc20-3b2aac6e5f43">
+            <semantic:input id="_4db0d217-6612-4c25-a592-fdb574d7e61d" label="Pre-bureau Risk Category">
+                <semantic:inputExpression typeRef="string">
+                    <semantic:text>Pre-bureau Risk Category</semantic:text>
+                </semantic:inputExpression>
+                <semantic:inputValues triso:constraintsType="expression">
+                    <semantic:text>"DECLINE", "HIGH", "MEDIUM", "LOW", "VERY LOW"</semantic:text>
+                </semantic:inputValues>
+            </semantic:input>
+            <semantic:input id="_94a91478-5c1c-40f7-a9a6-7bc048017664" label="Pre-bureau Affordability">
+                <semantic:inputExpression typeRef="string">
+                    <semantic:text>Pre-bureau Affordability</semantic:text>
+                </semantic:inputExpression>
+            </semantic:input>
+            <semantic:input id="_d5f8f77d-f2f6-4ba3-88fd-63f0c5a97c11" label="Age">
+                <semantic:inputExpression typeRef="number">
+                    <semantic:text>Age</semantic:text>
+                </semantic:inputExpression>
+            </semantic:input>
+            <semantic:output id="_faee87b3-ed28-4309-b9ed-6d9d3a0ddea8">
+                <semantic:outputValues triso:constraintsType="enumeration">
+                    <semantic:text>"INELIGIBLE","ELIGIBLE"</semantic:text>
+                </semantic:outputValues>
+            </semantic:output>
+            <semantic:annotation name="Description"/>
+            <semantic:rule id="_08b5f3ff-4da3-41dc-b8ed-4ac143941198">
+                <semantic:inputEntry id="_5236318c-7d57-4ad8-ac42-8069f8cfe932">
+                    <semantic:text>"DECLINE"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_d68509ba-e8d2-4b97-aa3e-11dba8a35ad8">
+                    <semantic:text>-</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_c99ad6e6-6f6d-4435-82c3-16ad494aab23">
+                    <semantic:text>-</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_268299e2-6b20-4fd4-9973-b9e4148680d4">
+                    <semantic:text>"INELIGIBLE"</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text/>
+                </semantic:annotationEntry>
+            </semantic:rule>
+            <semantic:rule id="_14aadfc4-e873-45d4-9883-aa3d11812c79">
+                <semantic:inputEntry id="_58896983-e138-44dd-b623-3312c72aefff">
+                    <semantic:text>-</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_f73f101d-66cb-4995-ac01-73feba55b33b">
+                    <semantic:text>false</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_e3678f76-f75b-4d4e-9603-f669991dfdb8">
+                    <semantic:text>-</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_03e0db74-ccc0-4277-89dd-d4464de92fe5">
+                    <semantic:text>"INELIGIBLE"</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text/>
+                </semantic:annotationEntry>
+            </semantic:rule>
+            <semantic:rule id="_cfe4d40a-09af-4134-8995-1b0e862ab647">
+                <semantic:inputEntry id="_1307ec68-a267-4e10-acb4-2d626a008b06">
+                    <semantic:text>-</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_6dfdbf2d-84f9-41ab-af50-84e1dbf80c79">
+                    <semantic:text>-</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_429f473c-c61b-4eab-b522-73b6a250da4b">
+                    <semantic:text>&lt;18</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_8b61d3a7-c106-4528-9214-023e9cc9278c">
+                    <semantic:text>"INELIGIBLE"</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text/>
+                </semantic:annotationEntry>
+            </semantic:rule>
+            <semantic:rule id="_fd642b31-de91-4f61-b747-91a6d599454f">
+                <semantic:inputEntry id="_e95e64c5-5775-44fa-904d-8f35c263c669">
+                    <semantic:text>-</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_1980c535-e284-4c75-9dac-7a2ee1e73636">
+                    <semantic:text>-</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_42accb02-5c9c-4ed0-9784-bbe0461af6ce">
+                    <semantic:text>-</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_9fb16e8a-4cbe-403e-a9cf-b8eaa0cbf994">
+                    <semantic:text>"ELIGIBLE"</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text/>
+                </semantic:annotationEntry>
+            </semantic:rule>
+        </semantic:decisionTable>
+    </semantic:decision>
+    <semantic:inputData id="_0b069a5f-8b6c-428e-8ec7-41bc18dda155" name="Pre-bureau Risk Category">
+        <semantic:variable name="Pre-bureau Risk Category" id="_f058acf3-7217-42db-86e2-f1a7e76be8a1" typeRef="string"/>
+    </semantic:inputData>
+    <semantic:inputData id="_4bf19046-0b0b-4f4f-8262-2e2d14c18138" name="Pre-bureau Affordability">
+        <semantic:variable name="Pre-bureau Affordability" id="_7a220dd2-0ef5-402c-8dd7-defa201915d2" typeRef="string"/>
+    </semantic:inputData>
+    <semantic:inputData id="_66d2bd69-116e-44dd-9021-e64e4fad31d0" name="Age">
+        <semantic:variable name="Age" id="_4f76c950-94fe-41c9-812d-e3e061a80627" typeRef="number"/>
+    </semantic:inputData>
+</semantic:definitions>
