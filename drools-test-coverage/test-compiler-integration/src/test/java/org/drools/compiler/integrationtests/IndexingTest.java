@@ -67,6 +67,7 @@ import static org.drools.core.util.DroolsTestUtil.rulestoMap;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
@@ -887,8 +888,8 @@ public class IndexingTest {
         }
         assertEquals(6, sinks.length);
         assertEquals(6, sinkAdapter.size());
-        assertEquals(0, sinkAdapter.getRangeIndexableAscSinks().size());
-        assertEquals(0, sinkAdapter.getRangeIndexableDescSinks().size());
+        assertNull(sinkAdapter.getRangeIndexableAscSinks());
+        assertNull(sinkAdapter.getRangeIndexableDescSinks());
         assertEquals(3, sinkAdapter.getRangeIndexAscTreeMap().entrySet().iterator().next().getValue().size());
         assertEquals(3, sinkAdapter.getRangeIndexDescTreeMap().entrySet().iterator().next().getValue().size());
 
@@ -949,8 +950,8 @@ public class IndexingTest {
         }
         assertEquals(6, sinks.length);
         assertEquals(6, sinkAdapter.size());
-        assertEquals(0, sinkAdapter.getRangeIndexableAscSinks().size());
-        assertEquals(0, sinkAdapter.getRangeIndexableDescSinks().size());
+        assertNull(sinkAdapter.getRangeIndexableAscSinks());
+        assertNull(sinkAdapter.getRangeIndexableDescSinks());
         assertEquals(3, sinkAdapter.getRangeIndexAscTreeMap().entrySet().iterator().next().getValue().size());
         assertEquals(3, sinkAdapter.getRangeIndexDescTreeMap().entrySet().iterator().next().getValue().size());
 
