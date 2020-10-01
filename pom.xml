@@ -56,6 +56,7 @@
     <module>drools-core</module>
     <module>drools-compiler</module>
     <module>drools-mvel</module>
+    <module>drools-serialization-protobuf</module>
     <module>drools-beliefs</module>
     <module>drools-traits</module>
     <module>drools-ruleunit</module>

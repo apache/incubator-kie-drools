@@ -28,13 +28,6 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
-import org.drools.core.marshalling.impl.MarshallerWriteContext;
-import org.drools.core.marshalling.impl.PersisterEnums;
-import org.drools.core.marshalling.impl.ProtobufMessages;
-import org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Action;
-import org.drools.core.marshalling.impl.ProtobufMessages.Timers.Timer;
-import org.drools.core.marshalling.impl.TimersInputMarshaller;
-import org.drools.core.marshalling.impl.TimersOutputMarshaller;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.WindowNode;
@@ -314,59 +307,6 @@ public class SlidingTimeWindow
         }
     }
 
-    public static class BehaviorJobContextTimerOutputMarshaller implements TimersOutputMarshaller {
-        public void write(JobContext jobCtx,
-                          MarshallerWriteContext outputCtx) throws IOException {
-            outputCtx.writeShort( PersisterEnums.BEHAVIOR_TIMER );
-            // BehaviorJob, no state            
-            BehaviorJobContext bjobCtx = ( BehaviorJobContext ) jobCtx;
-
-            // write out SlidingTimeWindowContext
-            SlidingTimeWindowContext slCtx = ( SlidingTimeWindowContext ) bjobCtx.behaviorContext;
-
-            EventFactHandle handle = slCtx.peek();
-            outputCtx.writeLong( handle.getId() );
-        }
-
-        @Override
-        public Timer serialize(JobContext jobCtx,
-                               MarshallerWriteContext outputCtx) {
-            // BehaviorJob, no state            
-            BehaviorJobContext bjobCtx = ( BehaviorJobContext ) jobCtx;
-            // write out SlidingTimeWindowContext
-            SlidingTimeWindowContext slCtx = ( SlidingTimeWindowContext ) bjobCtx.behaviorContext;
-
-            EventFactHandle handle = slCtx.peek();
-
-            return ProtobufMessages.Timers.Timer.newBuilder()
-                                                .setType( ProtobufMessages.Timers.TimerType.BEHAVIOR )
-                                                .setBehavior( ProtobufMessages.Timers.BehaviorTimer.newBuilder()
-                                                                                                   .setHandleId( handle.getId() )
-                                                                                                   .build() )
-                                                .build();
-        }
-    }
-
-    public static class BehaviorJobContextTimerInputMarshaller implements TimersInputMarshaller {
-        public void read(MarshallerReaderContext inCtx) throws IOException {
-            int sinkId = inCtx.readInt();
-            WindowNode windowNode = (WindowNode) inCtx.sinks.get( sinkId );
-
-            WindowMemory memory = inCtx.wm.getNodeMemory( windowNode );
-
-            Object[] behaviorContext = memory.behaviorContext;
-
-            int i = inCtx.readInt();
-        }
-
-        @Override
-        public void deserialize(MarshallerReaderContext inCtx,
-                                Timer timer) throws ClassNotFoundException {
-            long i = timer.getBehavior().getHandleId();
-        }
-    }
-
-
     public static class BehaviorJobContext
             implements
             JobContext,
@@ -437,9 +377,11 @@ public class SlidingTimeWindow
     public static class BehaviorExpireWMAction
             extends PropagationEntry.AbstractPropagationEntry
             implements WorkingMemoryAction {
-        private final Behavior behavior;
-        private final Behavior.Context context;
-        private final int nodeId;
+        protected Behavior behavior;
+        protected Behavior.Context context;
+        protected int nodeId;
+
+        protected BehaviorExpireWMAction() { }
 
         public BehaviorExpireWMAction(final int nodeId,
                                       Behavior behavior,
@@ -452,28 +394,13 @@ public class SlidingTimeWindow
 
         public BehaviorExpireWMAction(MarshallerReaderContext inCtx) throws IOException {
             nodeId = inCtx.readInt();
-            WindowNode windowNode = (WindowNode) inCtx.sinks.get( nodeId );
+            WindowNode windowNode = (WindowNode) inCtx.getSinks().get( nodeId );
 
-            WindowMemory memory = inCtx.wm.getNodeMemory( windowNode );
+            WindowMemory memory = inCtx.getWorkingMemory().getNodeMemory( windowNode );
 
             Behavior.Context[] behaviorContext = memory.behaviorContext;
 
             int i = inCtx.readInt();
-
-            this.behavior = windowNode.getBehaviors()[i];
-            this.context = behaviorContext[i];
-        }
-
-        public BehaviorExpireWMAction(MarshallerReaderContext context,
-                                      Action action) {
-            nodeId = action.getBehaviorExpire().getNodeId();
-            WindowNode windowNode = (WindowNode) context.sinks.get( nodeId );
-
-            WindowMemory memory = context.wm.getNodeMemory( windowNode );
-
-            Behavior.Context[] behaviorContext = memory.behaviorContext;
-
-            int i = 0; //  <==== this needs fixing
 
             this.behavior = windowNode.getBehaviors()[i];
             this.context = behaviorContext[i];
@@ -484,19 +411,6 @@ public class SlidingTimeWindow
             this.behavior.expireFacts( context,
                                        null,
                                        workingMemory );
-        }
-
-        @Override
-        public ProtobufMessages.ActionQueue.Action serialize(MarshallerWriteContext outputCtx) {
-            ProtobufMessages.ActionQueue.BehaviorExpire behaviorExpire = ProtobufMessages.ActionQueue.BehaviorExpire.newBuilder()
-                                                                                                         .setNodeId( nodeId )
-                                                                                                         .build();
-
-            return ProtobufMessages.ActionQueue.Action.newBuilder()
-                                                      .setType( ProtobufMessages.ActionQueue.ActionType.BEHAVIOR_EXPIRE )
-                                                      .setBehaviorExpire( behaviorExpire )
-                                                      .build();
-
         }
     }
 }

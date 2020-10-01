@@ -33,7 +33,6 @@ import org.drools.core.command.impl.CommandFactoryServiceImpl;
 import org.drools.core.concurrent.ExecutorProviderImpl;
 import org.drools.core.impl.EnvironmentFactory;
 import org.drools.core.io.impl.ResourceFactoryServiceImpl;
-import org.drools.core.marshalling.impl.MarshallerProviderImpl;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -256,7 +255,11 @@ public class KieServicesImpl implements InternalKieServices {
 
     public KieMarshallers getMarshallers() {
         // instantiating directly, but we might want to use the service registry instead
-        return new MarshallerProviderImpl();
+        KieMarshallers kieMarshallers = ServiceRegistry.getInstance().get( KieMarshallers.class );
+        if (kieMarshallers == null) {
+            throw new RuntimeException("Marshaller not available, please add the module org.drools:drools-serialization-protobuf to your classpath.");
+        }
+        return kieMarshallers;
     }
 
     public KieLoggers getLoggers() {
