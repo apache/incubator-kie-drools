@@ -255,6 +255,6 @@ Start the management console at port 8380, (the keycloak client 'kogito-console-
 and enabling auth:
 
 ```
-mvn clean compile quarkus:dev -Dquarkus.http.port=8380 -Dkogito.auth.enabled=true
+mvn clean compile quarkus:dev -Dquarkus.http.port=8380 -Dquarkus.profile=keycloak
 ```
 

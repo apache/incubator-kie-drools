@@ -2,6 +2,8 @@ import React from 'react';
 import KogitoPageLayout from '../KogitoPageLayout';
 import { getWrapper } from '../../../../utils/OuiaUtils';
 import { act } from 'react-dom/test-utils';
+import * as Keycloak from "../../../../utils/KeycloakClient";
+
 
 const props = {
   children: <React.Fragment>children rendered</React.Fragment>,
@@ -12,6 +14,8 @@ const props = {
 };
 
 describe('KogitoPageLayout component tests', () => {
+  const isAuthEnabledMock = jest.spyOn(Keycloak, 'isAuthEnabled');
+  isAuthEnabledMock.mockReturnValue(false);
   it('snapshot tests', () => {
     const wrapper = getWrapper(
       <KogitoPageLayout {...props} />,

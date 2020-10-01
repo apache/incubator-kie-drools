@@ -14,10 +14,6 @@ module.exports = {
       favicon: 'src/favicon.ico'
     }),
     new webpack.EnvironmentPlugin({
-      KOGITO_AUTH_ENABLED: false,
-      KOGITO_KEYCLOAK_REALM: 'kogito',
-      KOGITO_KEYCLOAK_URL: 'http://localhost:8280',
-      KOGITO_KEYCLOAK_CLIENT_ID: 'kogito-console-react',
       KOGITO_DATAINDEX_HTTP_URL: 'http://localhost:4000/graphql',
       KOGITO_APP_VERSION: 'DEV',
       KOGITO_APP_NAME: 'Task Console'

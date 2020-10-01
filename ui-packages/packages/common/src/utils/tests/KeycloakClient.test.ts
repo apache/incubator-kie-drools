@@ -1,62 +1,55 @@
 import * as KeycloakClient from '../KeycloakClient';
-import Keycloak from 'keycloak-js';
 import axios from 'axios';
 
-jest.mock('keycloak-js');
-const mockedKeycloak = Keycloak as jest.Mocked<typeof Keycloak>;
 
-const MockKeycloakInstance = jest.fn(() => ({
-  init: KeycloakPromiseMock,
-  logout: jest.fn(),
-  tokenParsed: {
-    preferred_username: 'jdoe'
-  },
-  token: 'testToken',
-  clearToken: jest.fn(),
-  updateToken: jest.fn()
-}));
-
-const KeycloakPromiseMock = jest.fn(() => ({
-  success: jest.fn()
-}));
 
 describe('Tests for keycloak client functions', () => {
-  const instance = new MockKeycloakInstance();
-  const getKeycloakInstanceMock = jest.spyOn(
-    KeycloakClient,
-    'getKeycloakInstance'
-  );
-  // @ts-ignore
-  getKeycloakInstanceMock.mockReturnValue(instance);
+  const mockUserContext = {
+    userName: 'jdoe',
+    roles: ['role1'],
+    token: 'testToken'
+  };
 
   it('Test isAuthEnabled with processEnv function', () => {
-    process.env.KOGITO_AUTH_ENABLED = 'true';
-    expect(KeycloakClient.isAuthEnabled()).toEqual('true');
-
-    process.env.KOGITO_AUTH_ENABLED = 'false';
-    expect(KeycloakClient.isAuthEnabled()).toEqual('false');
-
     // @ts-ignore
     window.KOGITO_AUTH_ENABLED = 'true';
     expect(KeycloakClient.isAuthEnabled()).toEqual('true');
   });
 
-  it('Test getUserName function', () => {
+  it('Test getLoadedSecurityContext function', () => {
     const isAuthEnabledMock = jest.spyOn(KeycloakClient, 'isAuthEnabled');
-    isAuthEnabledMock.mockReturnValue(true);
-    expect(KeycloakClient.getUserName()).toEqual('jdoe');
 
-    isAuthEnabledMock.mockReturnValue(false);
-    expect(KeycloakClient.getUserName()).toEqual('Anonymous');
+    isAuthEnabledMock.mockReturnValue(true);
+    expect(KeycloakClient.getLoadedSecurityContext().userName).toEqual('Anonymous');
+    KeycloakClient.loadSecurityContext(()=> {
+      expect(KeycloakClient.getLoadedSecurityContext().userName).toEqual('jdoe');
+    })
+  });
+
+
+  it('Test getUserName function', () => {
+    const getLoadedSecurityContextMock = jest.spyOn(KeycloakClient, 'getLoadedSecurityContext');
+    getLoadedSecurityContextMock.mockReturnValue(mockUserContext);
+
+    expect(KeycloakClient.getUserName()).toEqual('jdoe');
   });
 
   it('Test getToken function', () => {
+    const getLoadedSecurityContextMock = jest.spyOn(KeycloakClient, 'getLoadedSecurityContext');
+    getLoadedSecurityContextMock.mockReturnValue(mockUserContext);
+
     expect(KeycloakClient.getToken()).toEqual('testToken');
+  });
+
+  it('Test getRoles function', () => {
+    const getLoadedSecurityContextMock = jest.spyOn(KeycloakClient, 'getLoadedSecurityContext');
+    getLoadedSecurityContextMock.mockReturnValue(mockUserContext);
+
+    expect(KeycloakClient.getRoles()).toEqual(['role1']);
   });
 
   it('Test handleLogout function', () => {
     KeycloakClient.handleLogout();
-    expect(instance.logout.mock.calls.length).toBe(1);
   });
 
   it('Test appRenderWithoutAuthenticationEnabled function', () => {
@@ -67,28 +60,14 @@ describe('Tests for keycloak client functions', () => {
     expect(renderMock).toBeCalled();
   });
 
-  it('Test appRenderWithAuthenticationEnabled function', () => {
+  it('Test appRenderWithQuarkusAuthenticationEnabled function', () => {
     const isAuthEnabledMock = jest.spyOn(KeycloakClient, 'isAuthEnabled');
-    const getTokenMock = jest.spyOn(KeycloakClient, 'getToken');
     const renderMock = jest.fn();
-    const mockInitPromise = new KeycloakPromiseMock();
-    instance.init.mockReturnValue(mockInitPromise);
-    const mockUpdateTokenPromise = new KeycloakPromiseMock();
-    instance.updateToken.mockReturnValue(mockUpdateTokenPromise);
+    const getTokenMock = jest.spyOn(KeycloakClient, 'getToken');
 
-    // @ts-ignore
-    mockedKeycloak.mockReturnValueOnce(instance);
-
-    isAuthEnabledMock.mockReturnValue(true);
     getTokenMock.mockReturnValue('testToken');
+    isAuthEnabledMock.mockReturnValue(true);
     KeycloakClient.appRenderWithAxiosInterceptorConfig(renderMock);
-    expect(mockInitPromise.success.mock.calls.length).toBe(1);
-
-    const successCallback = mockInitPromise.success.mock.calls[0][0];
-    successCallback(false);
-    expect(renderMock).not.toBeCalled();
-    successCallback(true);
-    expect(renderMock).toBeCalled();
 
     expect(
       // @ts-ignore
@@ -114,4 +93,17 @@ describe('Tests for keycloak client functions', () => {
     });
     expect(getTokenMock.mock.calls.length).toBe(1);
   });
+
+  it('Test loadUserContext function', () => {
+    const isAuthEnabledMock = jest.spyOn(KeycloakClient, 'isAuthEnabled');
+    isAuthEnabledMock.mockReturnValue(true);
+
+    const getMock = jest.spyOn(axios, 'get');
+    getMock.mockResolvedValue({data: mockUserContext});
+
+    KeycloakClient.loadSecurityContext(() => {
+    const axiosCallback = getMock.mock.calls[0];
+    expect(axiosCallback[0]).toBe("/api/user/me");
+    });
+   });
 });

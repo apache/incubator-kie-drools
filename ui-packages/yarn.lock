@@ -11881,14 +11881,6 @@ jws@^3.2.2:
     jwa "^1.4.1"
     safe-buffer "^5.0.1"
 
-keycloak-js@^8.0.0:
-  version "8.0.2"
-  resolved "https://registry.yarnpkg.com/keycloak-js/-/keycloak-js-8.0.2.tgz#2af5868aa4313c111601115e990ba317e5f14489"
-  integrity sha512-5Jy5rHx0oURTtj2T6LSMLiqyHzDzPr6ZnaY1fwCBlMsiMx7RVsIBeysYZ5yy29ojH9IMzNJzlZvuLKbEOCmgDQ==
-  dependencies:
-    base64-js "1.3.1"
-    js-sha256 "0.9.0"
-
 keyv@^3.0.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/keyv/-/keyv-3.1.0.tgz#ecc228486f69991e49e9476485a5be1e8fc5c4d9"

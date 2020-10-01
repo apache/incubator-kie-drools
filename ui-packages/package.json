@@ -38,7 +38,6 @@
     "camel-case": "^3.0.0",
     "graphql": "^14.6.0",
     "jsonpath": "^1.0.2",
-    "keycloak-js": "^8.0.0",
     "lodash": "^4.17.15",
     "lower-case": "^1.1.4",
     "no-case": "^2.3.2",
