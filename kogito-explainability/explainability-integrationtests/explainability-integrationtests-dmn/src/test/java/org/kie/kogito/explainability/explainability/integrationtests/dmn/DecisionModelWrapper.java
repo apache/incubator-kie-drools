@@ -27,6 +27,7 @@ import org.kie.kogito.explainability.model.PredictionProvider;
 import org.kie.kogito.explainability.model.Type;
 import org.kie.kogito.explainability.model.Value;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -70,12 +71,21 @@ class DecisionModelWrapper implements PredictionProvider {
         for (Feature f : features) {
             if (Type.COMPOSITE.equals(f.getType())) {
                 List<Feature> compositeFeatures = (List<Feature>) f.getValue().getUnderlyingObject();
-                Map<String, Object> maps = new HashMap<>();
-                for (Feature cf : compositeFeatures) {
-                    Map<String, Object> compositeFeatureMap = toMap(List.of(cf));
-                    maps.putAll(compositeFeatureMap);
+                boolean isList = compositeFeatures.stream().allMatch(feature -> feature.getName().startsWith(f.getName() + "_"));
+                if (isList) {
+                    List<Object> objects = new ArrayList<>(compositeFeatures.size());
+                    for (Feature fs : compositeFeatures) {
+                        objects.add(fs.getValue().getUnderlyingObject());
+                    }
+                    map.put(f.getName(), objects);
+                } else {
+                    Map<String, Object> maps = new HashMap<>();
+                    for (Feature cf : compositeFeatures) {
+                        Map<String, Object> compositeFeatureMap = toMap(List.of(cf));
+                        maps.putAll(compositeFeatureMap);
+                    }
+                    map.put(f.getName(), maps);
                 }
-                map.put(f.getName(), maps);
             } else {
                 if (Type.UNDEFINED.equals(f.getType())) {
                     Feature underlyingFeature = (Feature) f.getValue().getUnderlyingObject();

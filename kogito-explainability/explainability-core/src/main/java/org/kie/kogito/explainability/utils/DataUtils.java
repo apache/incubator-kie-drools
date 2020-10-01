@@ -178,43 +178,65 @@ public class DataUtils {
     }
 
     /**
-     * Drop a given feature by a list of existing feature.
+     * Drop a given feature from a list of existing features.
      *
      * @param features the existing features
      * @param target   the feature to drop
      * @return a new list of features having the target feature dropped
      */
     public static List<Feature> dropFeature(List<Feature> features, Feature target) {
-        String name = target.getName();
-        Value<?> value = target.getValue();
-        Feature droppedFeature = null;
-        for (Feature feature : features) {
-            if (name.equals(feature.getName())) {
-                if (value.equals(feature.getValue())) {
-                    droppedFeature = FeatureFactory.copyOf(feature, feature.getType().drop(value));
+        List<Feature> newList = new ArrayList<>(features.size());
+        for (Feature sourceFeature : features) {
+            String sourceFeatureName = sourceFeature.getName();
+            Type sourceFeatureType = sourceFeature.getType();
+            Value<?> sourceFeatureValue = sourceFeature.getValue();
+            Feature f;
+            if (target.getName().equals(sourceFeatureName)) {
+                if (target.getType().equals(sourceFeatureType) && target.getValue().equals(sourceFeatureValue)) {
+                    Value<?> droppedValue = sourceFeatureType.drop(sourceFeatureValue);
+                    f = FeatureFactory.copyOf(sourceFeature, droppedValue);
                 } else {
-                    List<Feature> linearizedFeatures = DataUtils.getLinearizedFeatures(List.of(feature));
-                    int i = 0;
-                    for (Feature linearizedFeature : linearizedFeatures) {
-                        if (value.equals(linearizedFeature.getValue())) {
-                            Feature e = linearizedFeatures.get(i);
-                            linearizedFeatures.set(i, FeatureFactory.copyOf(e, e.getType().drop(value)));
-                            droppedFeature = FeatureFactory.newCompositeFeature(name, linearizedFeatures);
-                            break;
-                        } else {
-                            i++;
-                        }
-                    }
+                    f = dropOnLinearizedFeatures(target, sourceFeature);
                 }
+            } else if (Type.COMPOSITE.equals(sourceFeatureType)) {
+                List<Feature> nestedFeatures = (List<Feature>) sourceFeatureValue.getUnderlyingObject();
+                f = FeatureFactory.newCompositeFeature(sourceFeatureName, dropFeature(nestedFeatures, target));
+            } else {
+                // not found
+                f = FeatureFactory.copyOf(sourceFeature, sourceFeatureValue);
+            }
+            newList.add(f);
+        }
+
+        return newList;
+    }
+
+    /**
+     * Drop a target feature from a "linearized" version of a source feature.
+     * Any of such linearized features are eventually dropped if they match on associated name, type and value.
+     *
+     * @param target        the target feature
+     * @param sourceFeature the source feature
+     * @return the source feature having one of its underlying "linearized" values eventually dropped
+     */
+    protected static Feature dropOnLinearizedFeatures(Feature target, Feature sourceFeature) {
+        Feature f = null;
+        List<Feature> linearizedFeatures = DataUtils.getLinearizedFeatures(List.of(sourceFeature));
+        int i = 0;
+        for (Feature linearizedFeature : linearizedFeatures) {
+            if (target.getValue().equals(linearizedFeature.getValue())) {
+                linearizedFeatures.set(i, FeatureFactory.copyOf(linearizedFeature, linearizedFeature.getType().drop(target.getValue())));
+                f = FeatureFactory.newCompositeFeature(target.getName(), linearizedFeatures);
                 break;
+            } else {
+                i++;
             }
         }
-        List<Feature> copy = List.copyOf(features);
-        if (droppedFeature != null) {
-            Feature finalDroppedFeature = droppedFeature;
-            copy = copy.stream().map(f -> f.getName().equals(finalDroppedFeature.getName()) ? finalDroppedFeature : f).collect(Collectors.toList());
+        // not found
+        if (f == null) {
+            f = FeatureFactory.copyOf(sourceFeature, sourceFeature.getValue());
         }
-        return copy;
+        return f;
     }
 
     /**
@@ -374,9 +396,13 @@ public class DataUtils {
                 flattenedFeatures.add(f);
             }
         } else if (Type.COMPOSITE.equals(f.getType())) {
-            List<Feature> features = (List<Feature>) f.getValue().getUnderlyingObject();
-            for (Feature feature : features) {
-                linearizeFeature(flattenedFeatures, feature);
+            if (f.getValue().getUnderlyingObject() instanceof List) {
+                List<Feature> features = (List<Feature>) f.getValue().getUnderlyingObject();
+                for (Feature feature : features) {
+                    linearizeFeature(flattenedFeatures, feature);
+                }
+            } else {
+                flattenedFeatures.add(f);
             }
         } else {
             flattenedFeatures.add(f);

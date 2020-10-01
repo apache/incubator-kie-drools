@@ -350,4 +350,19 @@ class DataUtilsTest {
             assertNotEquals(features, newFeatures);
         }
     }
+
+    @Test
+    void testDropLinearizedFeature() {
+        for (Type t : Type.values()) {
+            Feature target = TestUtils.getMockedFeature(t, new Value<>(1d));
+            List<Feature> features = new LinkedList<>();
+            features.add(TestUtils.getMockedNumericFeature());
+            features.add(target);
+            features.add(TestUtils.getMockedTextFeature("foo bar"));
+            features.add(TestUtils.getMockedNumericFeature());
+            Feature source = FeatureFactory.newCompositeFeature("composite", features);
+            Feature newFeature = DataUtils.dropOnLinearizedFeatures(target, source);
+            assertNotEquals(source, newFeature);
+        }
+    }
 }
