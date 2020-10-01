@@ -23,8 +23,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.drools.modelcompiler.builder.PackageModel;
-import org.kie.api.builder.ReleaseId;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceWithConfiguration;
 import org.kie.pmml.commons.HasRule;
@@ -38,7 +36,6 @@ import org.kie.pmml.compiler.executor.PMMLCompilerImpl;
 import org.kie.pmml.evaluator.assembler.factories.PMMLRuleMapperFactory;
 import org.kie.pmml.evaluator.assembler.factories.PMMLRuleMappersFactory;
 
-import static org.drools.core.util.StringUtils.getPkgUUID;
 import static org.kie.pmml.evaluator.assembler.factories.PMMLRuleMapperFactory.KIE_PMML_RULE_MAPPER_CLASS_NAME;
 import static org.kie.pmml.evaluator.assembler.factories.PMMLRuleMappersFactory.KIE_PMML_RULE_MAPPERS_CLASS_NAME;
 import static org.kie.pmml.evaluator.assembler.service.PMMLAssemblerService.PMML_COMPILER_CACHE_KEY;
