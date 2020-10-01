@@ -15,6 +15,9 @@
 
 package org.drools.compiler
 
+import org.drools.mvel.compiler.Person
+import org.drools.mvel.compiler.Cheese
+
 global java.util.List results;
 
 rule "Test sum" salience 80

@@ -17,6 +17,8 @@ package org.drools.compiler
 
 global java.util.List list
 
+import org.drools.mvel.compiler.Primitives;
+
 rule "single index"
     salience 10
     when

@@ -32,17 +32,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
-import org.drools.compiler.Address;
-import org.drools.compiler.Cell;
-import org.drools.compiler.Cheese;
-import org.drools.compiler.CommonTestMethodBase;
-import org.drools.compiler.FactA;
-import org.drools.compiler.FactB;
-import org.drools.compiler.FactC;
-import org.drools.compiler.Message;
-import org.drools.compiler.Person;
-import org.drools.compiler.Primitives;
-import org.drools.compiler.integrationtests.IteratorToList;
 import org.drools.core.ClockType;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.WorkingMemory;
@@ -72,6 +61,17 @@ import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.time.impl.DurationTimer;
 import org.drools.core.time.impl.PseudoClockScheduler;
 import org.drools.core.util.KeyStoreConstants;
+import org.drools.mvel.CommonTestMethodBase;
+import org.drools.mvel.compiler.Address;
+import org.drools.mvel.compiler.Cell;
+import org.drools.mvel.compiler.Cheese;
+import org.drools.mvel.compiler.FactA;
+import org.drools.mvel.compiler.FactB;
+import org.drools.mvel.compiler.FactC;
+import org.drools.mvel.compiler.Message;
+import org.drools.mvel.compiler.Person;
+import org.drools.mvel.compiler.Primitives;
+import org.drools.mvel.integrationtests.IteratorToList;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -1174,7 +1174,7 @@ public class MarshallingTest extends CommonTestMethodBase {
     @Test
     public void testSinglePattern() throws Exception {
         String rule = "package org.drools.compiler.test;\n";
-        rule += "import org.drools.compiler.Person\n";
+        rule += "import " + Person.class.getCanonicalName()+ "\n";
         rule += "global java.util.List list\n";
         rule += "rule \"Rule 1\"\n";
         rule += "when\n";
@@ -1216,8 +1216,8 @@ public class MarshallingTest extends CommonTestMethodBase {
     @Test
     public void testSingleRuleSingleJoinNodePattern() throws Exception {
         String rule = "package org.drools.compiler.test;\n";
-        rule += "import org.drools.compiler.Person\n";
-        rule += "import org.drools.compiler.Cheese\n";
+        rule += "import " + Person.class.getCanonicalName() + "\n";
+        rule += "import " + Cheese.class.getCanonicalName() + "\n";
         rule += "global java.util.List list\n";
         rule += "rule \"Rule 1\"\n";
         rule += "when\n";
@@ -1304,48 +1304,51 @@ public class MarshallingTest extends CommonTestMethodBase {
 
     @Test
     public void testMultiRuleMultiJoinNodePatternsWithHalt() throws Exception {
-        String rule1 = "package org.drools.compiler.test;\n";
-        rule1 += "import org.drools.compiler.Person\n";
-        rule1 += "import org.drools.compiler.Cheese\n";
-        rule1 += "global java.util.List list\n";
-        rule1 += "rule \"Rule 1\"\n";
-        rule1 += "when\n";
-        rule1 += "    $c : Cheese( ) \n";
-        rule1 += "    $p : Person( cheese == $c ) \n";
-        rule1 += "then\n";
-        rule1 += "    list.add( $p );\n";
-        rule1 += "end";
+        String rule1 =
+                "package org.drools.compiler.test;\n" +
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "import " + Cheese.class.getCanonicalName() + "\n" +
+                "global java.util.List list\n" +
+                "rule \"Rule 1\"\n" +
+                "when\n" +
+                "    $c : Cheese( ) \n" +
+                "    $p : Person( cheese == $c ) \n" +
+                "then\n" +
+                "    list.add( $p );\n" +
+                "end";
 
-        String rule2 = "package org.drools.compiler.test;\n";
-        rule2 += "import org.drools.compiler.Person\n";
-        rule2 += "import org.drools.compiler.Cheese\n";
-        rule2 += "import org.drools.compiler.Cell\n";
-        rule2 += "global java.util.List list\n";
-        rule2 += "rule \"Rule 2\"\n";
-        rule2 += "when\n";
-        rule2 += "    $c : Cheese( ) \n";
-        rule2 += "    $p : Person( cheese == $c ) \n";
-        rule2 += "    $x : Cell( value == $p.age ) \n";
-        rule2 += "then\n";
-        rule2 += "    list.add( $x );\n";
-        rule2 += "end";
+        String rule2 =
+                "package org.drools.compiler.test;\n" +
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "import " + Cheese.class.getCanonicalName() + "\n" +
+                "import " + Cell.class.getCanonicalName() + "\n" +
+                "global java.util.List list\n" +
+                "rule \"Rule 2\"\n" +
+                "when\n" +
+                "    $c : Cheese( ) \n" +
+                "    $p : Person( cheese == $c ) \n" +
+                "    $x : Cell( value == $p.age ) \n" +
+                "then\n" +
+                "    list.add( $x );\n" +
+                "end";
 
-        String rule3 = "package org.drools.compiler.test;\n";
-        rule3 += "import org.drools.compiler.FactA\n";
-        rule3 += "import org.drools.compiler.FactB\n";
-        rule3 += "import org.drools.compiler.FactC\n";
-        rule3 += "import org.drools.compiler.Person\n";
-        rule3 += "global java.util.List list\n";
-        rule3 += "rule \"Rule 3\"\n";
-        rule3 += "when\n";
-        rule3 += "    $a : FactA( field2 > 10 ) \n";
-        rule3 += "    $b : FactB( f2 >= $a.field2 ) \n";
-        rule3 += "    $p : Person( name == \"darth vadar\" ) \n";
-        rule3 += "    $c : FactC( f2 >= $b.f2 ) \n";
-        rule3 += "then\n";
-        rule3 += "    list.add( $c );\n";
-        rule3 += "    drools.halt();\n";
-        rule3 += "end";
+        String rule3 =
+                "package org.drools.compiler.test;\n" +
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "import " + FactA.class.getCanonicalName() + "\n" +
+                "import " + FactB.class.getCanonicalName() + "\n" +
+                "import " + FactC.class.getCanonicalName() + "\n" +
+                "global java.util.List list\n" +
+                "rule \"Rule 3\"\n" +
+                "when\n" +
+                "    $a : FactA( field2 > 10 ) \n" +
+                "    $b : FactB( f2 >= $a.field2 ) \n" +
+                "    $p : Person( name == \"darth vadar\" ) \n" +
+                "    $c : FactC( f2 >= $b.f2 ) \n" +
+                "then\n" +
+                "    list.add( $c );\n" +
+                "    drools.halt();\n" +
+                "end";
 
         KieBase kBase = loadKnowledgeBaseFromString( rule1, rule2, rule3 );
 
@@ -1427,20 +1430,22 @@ public class MarshallingTest extends CommonTestMethodBase {
 
     @Test
     public void testNot() throws Exception {
-        String header = "package org.drools.compiler.test;\n";
-        header += "import java.util.List;\n";
-        header += "import org.drools.compiler.Person\n";
-        header += "import org.drools.compiler.Cheese\n";
-        header += "global java.util.List list;\n";
+        String header =
+                "package org.drools.compiler.test;\n" +
+                "import java.util.List;\n" +
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "import " + Cheese.class.getCanonicalName() + "\n" +
+                "global java.util.List list;\n";
 
-        String rule1 = "rule \"not rule test\"\n";
-        rule1 += "salience 10\n";
-        rule1 += "when\n";
-        rule1 += "    Person()\n";
-        rule1 += "    not Cheese( price >= 5 )\n";
-        rule1 += "then\n";
-        rule1 += "    list.add( new Integer( 5 ) );\n";
-        rule1 += "end\n";
+        String rule1 =
+                "rule \"not rule test\"\n" +
+                "salience 10\n" +
+                "when\n" +
+                "    Person()\n" +
+                "    not Cheese( price >= 5 )\n" +
+                "then\n" +
+                "    list.add( new Integer( 5 ) );\n" +
+                "end\n";
 
         KieBase kBase = loadKnowledgeBaseFromString( header + rule1 );
 
@@ -1540,20 +1545,22 @@ public class MarshallingTest extends CommonTestMethodBase {
 
     @Test
     public void testExists() throws Exception {
-        String header = "package org.drools.compiler.test;\n";
-        header += "import java.util.List;\n";
-        header += "import org.drools.compiler.Person\n";
-        header += "import org.drools.compiler.Cheese\n";
-        header += "global java.util.List list;\n";
+        String header =
+                "package org.drools.compiler.test;\n" +
+                "import java.util.List;\n" +
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "import " + Cheese.class.getCanonicalName() + "\n" +
+                "global java.util.List list;\n";
 
-        String rule1 = "rule \"not rule test\"\n";
-        rule1 += "salience 10\n";
-        rule1 += "when\n";
-        rule1 += "    Person()\n";
-        rule1 += "    exists Cheese( price >= 5 )\n";
-        rule1 += "then\n";
-        rule1 += "    list.add( new Integer( 5 ) );\n";
-        rule1 += "end\n";
+        String rule1 =
+                "rule \"not rule test\"\n" +
+                "salience 10\n" +
+                "when\n" +
+                "    Person()\n" +
+                "    exists Cheese( price >= 5 )\n" +
+                "then\n" +
+                "    list.add( new Integer( 5 ) );\n" +
+                "end\n";
 
         KieBase kBase = loadKnowledgeBaseFromString( header + rule1 );
 
@@ -1661,35 +1668,38 @@ public class MarshallingTest extends CommonTestMethodBase {
 
     @Test
     public void testTruthMaintenance() throws Exception {
-        String header = "package org.drools.compiler.test;\n";
-        header += "import java.util.List;\n";
-        header += "import org.drools.compiler.Person\n";
-        header += "import org.drools.compiler.Cheese\n";
-        header += "global Cheese cheese;\n";
-        header += "global Person person;\n";
-        header += "global java.util.List list;\n";
+        String header =
+                "package org.drools.compiler.test;\n" +
+                "import java.util.List;\n" +
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "import " + Cheese.class.getCanonicalName() + "\n" +
+                "global Cheese cheese;\n" +
+                "global Person person;\n" +
+                "global java.util.List list;\n";
 
-        String rule1 = "rule \"not person then cheese\"\n";
-        rule1 += "when \n";
-        rule1 += "    not Person() \n";
-        rule1 += "then \n";
-        rule1 += "    if (list.size() < 3) { \n";
-        rule1 += "        list.add(new Integer(0)); \n";
-        rule1 += "        insertLogical( cheese ); \n" +
-                 "    }\n";
-        rule1 += "    drools.halt();\n" +
-                 "end\n";
+        String rule1 =
+                "rule \"not person then cheese\"\n" +
+                "when \n" +
+                "    not Person() \n" +
+                "then \n" +
+                "    if (list.size() < 3) { \n" +
+                "        list.add(new Integer(0)); \n" +
+                "        insertLogical( cheese ); \n" +
+                         "    }\n" +
+                "    drools.halt();\n" +
+                "end\n";
 
-        String rule2 = "rule \"if cheese then person\"\n";
-        rule2 += "when\n";
-        rule2 += "    Cheese()\n";
-        rule2 += "then\n";
-        rule2 += "    if (list.size() < 3) {\n";
-        rule2 += "        list.add(new Integer(0));\n";
-        rule2 += "        insertLogical( person );\n";
-        rule2 += "    }\n" +
-                 "    drools.halt();\n";
-        rule2 += "end\n";
+        String rule2 =
+                "rule \"if cheese then person\"\n" +
+                "when\n" +
+                "    Cheese()\n" +
+                "then\n" +
+                "    if (list.size() < 3) {\n" +
+                "        list.add(new Integer(0));\n" +
+                "        insertLogical( person );\n" +
+                "    }\n" +
+                "    drools.halt();\n" +
+                "end\n";
 
 
         KieBase kBase = loadKnowledgeBaseFromString( header + rule1 + rule2 );
@@ -1735,7 +1745,7 @@ public class MarshallingTest extends CommonTestMethodBase {
     @Test
     public void testActivationGroups() throws Exception {
         String rule1 = "package org.drools.compiler.test;\n";
-        rule1 += "import org.drools.compiler.Cheese\n";
+        rule1 += "import " + Cheese.class.getCanonicalName() + "\n";
         rule1 += "global java.util.List list\n";
         rule1 += "rule \"Rule 1\"\n";
         rule1 += "    activation-group \"activation-group-1\"\n";
@@ -1747,7 +1757,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         rule1 += "end";
 
         String rule2 = "package org.drools.compiler.test;\n";
-        rule2 += "import org.drools.compiler.Cheese\n";
+        rule2 += "import " + Cheese.class.getCanonicalName() + "\n";
         rule2 += "global java.util.List list\n";
         rule2 += "rule \"Rule 2\"\n";
         rule2 += "    salience 10\n";
@@ -1760,7 +1770,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         rule2 += "end";
 
         String rule3 = "package org.drools.compiler.test;\n";
-        rule3 += "import org.drools.compiler.Cheese\n";
+        rule3 += "import " + Cheese.class.getCanonicalName() + "\n";
         rule3 += "global java.util.List list\n";
         rule3 += "rule \"Rule 3\"\n";
         rule3 += "    activation-group \"activation-group-1\"\n";
@@ -1772,7 +1782,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         rule3 += "end";
 
         String rule4 = "package org.drools.compiler.test;\n";
-        rule4 += "import org.drools.compiler.Cheese\n";
+        rule4 += "import " + Cheese.class.getCanonicalName() + "\n";
         rule4 += "global java.util.List list\n";
         rule4 += "rule \"Rule 4\"\n";
         rule4 += "    activation-group \"activation-group-2\"\n";
@@ -1814,7 +1824,7 @@ public class MarshallingTest extends CommonTestMethodBase {
     @Test
     public void testAgendaGroups() throws Exception {
         String rule1 = "package org.drools.compiler.test;\n";
-        rule1 += "import org.drools.compiler.Cheese\n";
+        rule1 += "import " + Cheese.class.getCanonicalName() + "\n";
         rule1 += "global java.util.List list\n";
         rule1 += "rule \"Rule 1\"\n";
         rule1 += "    agenda-group \"agenda-group-1\"\n";
@@ -1826,7 +1836,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         rule1 += "end";
 
         String rule2 = "package org.drools.compiler.test;\n";
-        rule2 += "import org.drools.compiler.Cheese\n";
+        rule2 += "import " + Cheese.class.getCanonicalName() + "\n";
         rule2 += "global java.util.List list\n";
         rule2 += "rule \"Rule 2\"\n";
         rule2 += "    salience 10\n";
@@ -1839,7 +1849,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         rule2 += "end";
 
         String rule3 = "package org.drools.compiler.test;\n";
-        rule3 += "import org.drools.compiler.Cheese\n";
+        rule3 += "import " + Cheese.class.getCanonicalName() + "\n";
         rule3 += "global java.util.List list\n";
         rule3 += "rule \"Rule 3\"\n";
         rule3 += "    salience 10\n";
@@ -1853,7 +1863,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         rule3 += "end";
 
         String rule4 = "package org.drools.compiler.test;\n";
-        rule4 += "import org.drools.compiler.Cheese\n";
+        rule4 += "import " + Cheese.class.getCanonicalName() + "\n";
         rule4 += "global java.util.List list\n";
         rule4 += "rule \"Rule 4\"\n";
         rule4 += "    agenda-group \"agenda-group-2\"\n";
@@ -1902,7 +1912,7 @@ public class MarshallingTest extends CommonTestMethodBase {
     @Test
     public void testRuleFlowGroups() throws Exception {
         String rule1 = "package org.drools.compiler.test;\n";
-        rule1 += "import org.drools.compiler.Cheese\n";
+        rule1 += "import " + Cheese.class.getCanonicalName() + "\n";
         rule1 += "global java.util.List list\n";
         rule1 += "rule \"Rule 1\"\n";
         rule1 += "    ruleflow-group \"ruleflow-group-1\"\n";
@@ -1914,7 +1924,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         rule1 += "end";
 
         String rule2 = "package org.drools.compiler.test;\n";
-        rule2 += "import org.drools.compiler.Cheese\n";
+        rule2 += "import " + Cheese.class.getCanonicalName() + "\n";
         rule2 += "global java.util.List list\n";
         rule2 += "rule \"Rule 2\"\n";
         rule2 += "    salience 10\n";
@@ -1927,7 +1937,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         rule2 += "end";
 
         String rule3 = "package org.drools.compiler.test;\n";
-        rule3 += "import org.drools.compiler.Cheese\n";
+        rule3 += "import " + Cheese.class.getCanonicalName() + "\n";
         rule3 += "global java.util.List list\n";
         rule3 += "rule \"Rule 3\"\n";
         rule3 += "    salience 10\n";
@@ -1941,7 +1951,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         rule3 += "end";
 
         String rule4 = "package org.drools.compiler.test;\n";
-        rule4 += "import org.drools.compiler.Cheese\n";
+        rule4 += "import " + Cheese.class.getCanonicalName() + "\n";
         rule4 += "global java.util.List list\n";
         rule4 += "rule \"Rule 4\"\n";
         rule4 += "    ruleflow-group \"ruleflow-group-2\"\n";
@@ -1990,7 +2000,7 @@ public class MarshallingTest extends CommonTestMethodBase {
     @Test
     public void testAccumulate() throws Exception {
         String rule = "package org.drools\n" +
-                "import org.drools.compiler.Message\n" +
+                "import " + Message.class.getCanonicalName() + "\n" +
                 "global java.util.List results\n" +
                 "rule MyRule\n" +
                 "  when\n" +
@@ -2035,7 +2045,7 @@ public class MarshallingTest extends CommonTestMethodBase {
     @Test
     public void testAccumulate2() throws Exception {
         String str = "package org.drools\n" + "\n" +
-                     "import org.drools.compiler.Message\n" + "\n" +
+                     "import " + Message.class.getCanonicalName() + "\n" +
                      "rule MyRule\n" + "  when\n" +
                      "    Number( intValue >= 5 ) from accumulate ( m: Message( ), count( m ) )\n" +
                      "  then\n" +
@@ -2141,7 +2151,7 @@ public class MarshallingTest extends CommonTestMethodBase {
 
     @Test
     public void testAccumulateSerialization() throws Exception {
-        KieBase kbase = loadKnowledgeBase( "org/drools/compiler/integrationtests/marshalling/test_SerializableAccumulate.drl"  );
+        KieBase kbase = loadKnowledgeBase( "org/drools/serialization/protobuf/test_SerializableAccumulate.drl"  );
         KieSession ksession = kbase.newKieSession();
 
         ksession.setGlobal( "results",

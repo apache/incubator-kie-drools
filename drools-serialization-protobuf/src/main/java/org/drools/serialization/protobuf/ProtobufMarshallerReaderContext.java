@@ -361,4 +361,8 @@ public class ProtobufMarshallerReaderContext extends ObjectInputStream implement
                         workingMemory ) :
                 null;
     }
+
+    public void withSerializedNodeMemories() {
+        filter.withSerializedNodeMemories();
+    }
 }

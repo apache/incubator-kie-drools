@@ -15,6 +15,9 @@
 
 package org.drools.compiler
 
+import org.drools.mvel.compiler.Sensor;
+import org.drools.mvel.compiler.Alarm;
+
 global java.util.List events;
 
 rule "#1: hot"

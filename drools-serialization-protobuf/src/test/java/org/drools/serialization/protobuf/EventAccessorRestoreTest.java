@@ -21,9 +21,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import org.drools.compiler.CommonTestMethodBase;
 import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.DroolsObjectOutputStream;
+import org.drools.mvel.CommonTestMethodBase;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;

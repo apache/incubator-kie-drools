@@ -14,27 +14,18 @@
 
 package org.drools.serialization.protobuf;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.Serializable;
-import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.Collection;
 
-import org.drools.compiler.Person;
+import org.drools.mvel.compiler.Person;
 import org.junit.Test;
-import org.kie.api.KieServices;
 import org.kie.api.io.ResourceType;
-import org.kie.api.marshalling.KieMarshallers;
-import org.kie.api.marshalling.Marshaller;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.utils.KieHelper;
 
-import static org.drools.compiler.integrationtests.SerializationHelper.serializeObject;
+import static org.drools.serialization.protobuf.SerializationHelper.serializeObject;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 public class FactHandleSerializationTest {
@@ -82,34 +73,6 @@ public class FactHandleSerializationTest {
 
         ksession.fireAllRules();
         assertEquals("Edson is older than Mark", result.getValue());
-    }
-
-    @Test
-    public void deserializeOldSession() throws IOException, ClassNotFoundException, URISyntaxException {
-        String drl =
-                "import " + Result.class.getCanonicalName() + ";" +
-                        "import " + Person.class.getCanonicalName() + ";" +
-                        "rule R when\n" +
-                        "  $r : Result()\n" +
-                        "  $p1 : Person()\n" +
-                        "  $p2 : Person(name != \"Mark\", this != $p1, age > $p1.age)\n" +
-                        "then\n" +
-                        "  $r.setValue($p2.getName() + \" is older than \" + $p1.getName());\n" +
-                        "end";
-
-        KieSession ksession = new KieHelper().addContent(drl, ResourceType.DRL).build().newKieSession();
-        KieMarshallers kieMarshallers = KieServices.Factory.get().getMarshallers();
-        Marshaller marshaller = kieMarshallers.newMarshaller(ksession.getKieBase());
-
-        // This is using an old serialized session
-        final byte[] serializedEdson = Files.readAllBytes(
-                Paths.get(this.getClass().getResource("serializedEdsonSession").toURI()));
-        try (final ByteArrayInputStream bais = new ByteArrayInputStream(serializedEdson)) {
-            final KieSession unmarshalledSession = marshaller.unmarshall(bais);
-            final Collection<FactHandle> factHandles = unmarshalledSession.getFactHandles();
-            assertNotNull(factHandles);
-            assertEquals(1, factHandles.size());
-        }
     }
 
     public static class Result implements Serializable {

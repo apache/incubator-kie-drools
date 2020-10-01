@@ -15,7 +15,7 @@
 
 package org.drools.compiler.test;
 
-import org.drools.compiler.Address;
+import org.drools.mvel.compiler.Address;
 
 global java.util.List results;
 

@@ -15,6 +15,9 @@
 
 package org.drools.compiler
 
+import org.drools.mvel.compiler.Person
+import org.drools.mvel.compiler.Cheese
+
 rule "Supply cheese for for every person when there already exists someone of the same status and they are older"
     when
         p : Person($status : status, $age : age)

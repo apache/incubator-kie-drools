@@ -15,9 +15,9 @@
 
 package org.drools.compiler.test;
 
-import org.drools.compiler.Alarm;
-import org.drools.compiler.EmergencyTeam;
-import org.drools.compiler.Sensor;
+import org.drools.mvel.compiler.Alarm;
+import org.drools.mvel.compiler.EmergencyTeam;
+import org.drools.mvel.compiler.Sensor;
 
 global java.util.List events;
 
