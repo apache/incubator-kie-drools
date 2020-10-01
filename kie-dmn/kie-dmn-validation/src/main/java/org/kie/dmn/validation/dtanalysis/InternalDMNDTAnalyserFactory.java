@@ -31,4 +31,7 @@ public class InternalDMNDTAnalyserFactory {
         return new DMNDTAnalyser(dmnProfiles);
     }
 
+    private InternalDMNDTAnalyserFactory() {
+        // It is forbidden to create new instances of util classes.
+    }
 }
