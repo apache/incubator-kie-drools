@@ -125,7 +125,12 @@ class OptaPlannerProcessor {
 
         if (solverConfig.getSolutionClass() != null) {
             Type jandexType = Type.create(DotName.createSimple(solverConfig.getSolutionClass().getName()), Type.Kind.CLASS);
-            reflectiveHierarchyClass.produce(new ReflectiveHierarchyBuildItem(jandexType));
+            reflectiveHierarchyClass.produce(new ReflectiveHierarchyBuildItem.Builder()
+                    .type(jandexType)
+                    .ignoreTypePredicate(
+                            dotName -> ReflectiveHierarchyBuildItem.DefaultIgnoreTypePredicate.INSTANCE.test(dotName)
+                                    || dotName.toString().startsWith("org.optaplanner"))
+                    .build());
         }
         List<Class<?>> reflectiveClassList = new ArrayList<>(5);
         ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = solverConfig.getScoreDirectorFactoryConfig();
