@@ -187,6 +187,7 @@ public class SingleAccumulate extends Accumulate {
         int result = 1;
         result = prime * result + accumulator.hashCode();
         result = prime * result + Arrays.hashCode( requiredDeclarations );
+        result = prime * result + Arrays.hashCode( innerDeclarationCache );
         result = prime * result + ((source == null) ? 0 : source.hashCode());
         return result;
     }
@@ -198,6 +199,7 @@ public class SingleAccumulate extends Accumulate {
         SingleAccumulate other = (SingleAccumulate) obj;
         if ( !accumulator.equals( other.accumulator ) ) return false;
         if ( !Arrays.equals( requiredDeclarations, other.requiredDeclarations ) ) return false;
+        if ( !Arrays.equals( innerDeclarationCache, other.innerDeclarationCache ) ) return false;
         if ( source == null ) {
             if ( other.source != null ) return false;
         } else if ( !source.equals( other.source ) ) return false;
