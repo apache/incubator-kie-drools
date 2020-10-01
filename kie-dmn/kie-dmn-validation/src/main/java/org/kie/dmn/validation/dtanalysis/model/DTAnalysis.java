@@ -466,17 +466,6 @@ public class DTAnalysis {
                                 }
                             }
                         }
-                        //                        boolean isRuleContainsHypen = inputEntry.stream().flatMap(ie -> ie.getUts().stream()).anyMatch(DashNode.class::isInstance);
-                        //                        if (isRuleContainsHypen) {
-                        //                            List<Integer> otherRules = listWithoutElement(overlap.getRules(), ruleId);
-                        //                            for (Integer otherRuleID : otherRules) {
-                        //                                List<Comparable<?>> otherRuleValues = ddtaTable.getRule().get(otherRuleID - 1).getOutputEntry();
-                        //                                int otherOutputIdx = curOutputClause.getOutputOrder().indexOf(otherRuleValues.get(jOutputIdx));
-                        //                                if (otherOutputIdx > curOutputIdx) {
-                        //                                    misleadingRules.add(new MisleadingRule(ruleId, otherRuleID));
-                        //                                }
-                        //                            }
-                        //                        }
                     }
                 }
             }
