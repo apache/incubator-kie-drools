@@ -254,7 +254,7 @@ public class StringUtilsTest {
 
     @Test
     public void getPkgUUIDFromReleaseIdNotNullNotSnapshot() {
-        ReleaseId releaseId = getReleaseId(false);
+        ReleaseId releaseId = new TestingReleaseId(false);
         String packageName = "apackage";
         String retrieved = getPkgUUID(releaseId, packageName);
         String expected = md5Hash(releaseId.toString()+packageName);
@@ -263,7 +263,7 @@ public class StringUtilsTest {
 
     @Test
     public void getPkgUUIDFromReleaseIdNotNullSnapshot() {
-        ReleaseId releaseId = getReleaseId(true);
+        ReleaseId releaseId = new TestingReleaseId(true);
         String packageName = "apackage";
         String retrieved = getPkgUUID(releaseId, packageName);
         String unexpected = md5Hash(releaseId.toString()+packageName);
@@ -288,34 +288,38 @@ public class StringUtilsTest {
     }
 
 
-    private ReleaseId getReleaseId(boolean isSnapshot) {
-        return new ReleaseId() {
-            final boolean snapshot = isSnapshot;
+    private static class TestingReleaseId implements ReleaseId {
 
-            @Override
-            public String getGroupId() {
-                return "group";
-            }
+        final boolean snapshot;
 
-            @Override
-            public String getArtifactId() {
-                return "artifact";
-            }
+        public TestingReleaseId(boolean snapshot) {
+            this.snapshot = snapshot;
+        }
 
-            @Override
-            public String getVersion() {
-                return "version";
-            }
+        @Override
+        public String getGroupId() {
+            return "group";
+        }
 
-            @Override
-            public String toExternalForm() {
-                return "externalForm";
-            }
+        @Override
+        public String getArtifactId() {
+            return "artifact";
+        }
 
-            @Override
-            public boolean isSnapshot() {
-                return snapshot;
-            }
-        };
+        @Override
+        public String getVersion() {
+            return "version";
+        }
+
+        @Override
+        public String toExternalForm() {
+            return "externalForm";
+        }
+
+        @Override
+        public boolean isSnapshot() {
+            return snapshot;
+        }
+
     }
 }

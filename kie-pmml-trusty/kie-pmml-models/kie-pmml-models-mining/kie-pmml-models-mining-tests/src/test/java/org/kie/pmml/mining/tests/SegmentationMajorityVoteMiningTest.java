@@ -1,8 +1,12 @@
 package org.kie.pmml.mining.tests;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.assertj.core.api.Assertions;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -10,15 +14,10 @@ import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
 import org.kie.pmml.models.tests.AbstractPMMLTest;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
 @RunWith(Parameterized.class)
 public class SegmentationMajorityVoteMiningTest extends AbstractPMMLTest {
 
-    private static final String FILE_NAME = "segmentationClassififcationMajorityVote.pmml";
+    private static final String FILE_NAME = "segmentationClassificationMajorityVote.pmml";
     private static final String MODEL_NAME = "SegmentationClassificationMajorityVote";
     private static final String TARGET_FIELD = "result";
     private static PMMLRuntime pmmlRuntime;

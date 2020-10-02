@@ -13,25 +13,23 @@
   <description>PMML Tree Tests</description>
 
   <dependencies>
+    <!-- TEST -->
     <!-- PMML -->
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-pmml-models-drools-tree-model</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-pmml-models-drools-tree-compiler</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-pmml-models-drools-tree-evaluator</artifactId>
+      <scope>test</scope>
     </dependency>
-    <!-- EXTERNAL -->
-    <dependency>
-      <groupId>org.jpmml</groupId>
-      <artifactId>pmml-model</artifactId>
-    </dependency>
-    <!-- TEST -->
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-pmml-models-tests</artifactId>
@@ -42,6 +40,19 @@
       <artifactId>kie-pmml-evaluator-assembler</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-commons</artifactId>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-compiler-api</artifactId>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
+    <!-- KIE -->
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-test-util</artifactId>
@@ -57,23 +68,16 @@
         </exclusion>
       </exclusions>
     </dependency>
-    <!-- PMML -->
-    <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>kie-pmml-commons</artifactId>
-      <classifier>tests</classifier>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>kie-pmml-compiler-api</artifactId>
-      <classifier>tests</classifier>
-      <scope>test</scope>
-    </dependency>
     <!-- EXTERNAL -->
+    <dependency>
+      <groupId>org.jpmml</groupId>
+      <artifactId>pmml-model</artifactId>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-simple</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
