@@ -20,7 +20,7 @@ import org.kie.api.internal.utils.ServiceRegistry;
 public class TaskModelProvider {
 
     private static class LazyHolder {
-        private static final TaskModelProviderService provider = ServiceRegistry.getInstance().get(TaskModelProviderService.class);
+        private static final TaskModelProviderService provider = ServiceRegistry.getService(TaskModelProviderService.class);
     }
 
     public static TaskModelFactory getFactory() {

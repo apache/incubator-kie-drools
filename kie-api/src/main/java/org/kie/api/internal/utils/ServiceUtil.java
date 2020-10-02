@@ -33,7 +33,7 @@ public class ServiceUtil {
 
     private static Optional<?> instance( String className ) {
         try {
-            return Optional.of( Class.forName(className).newInstance() );
+            return Optional.of( Class.forName(className).getConstructor().newInstance() );
         } catch (Exception e) {
             return Optional.empty();
         }

@@ -133,7 +133,7 @@ public class ResourceFactory {
     }
 
     private static class LazyHolder {
-        private static final KieResources service = ServiceRegistry.getInstance().get(KieResources.class);
+        private static final KieResources service = ServiceRegistry.getService(KieResources.class);
     }
 
 }

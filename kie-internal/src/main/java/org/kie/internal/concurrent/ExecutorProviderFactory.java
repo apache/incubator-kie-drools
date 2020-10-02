@@ -22,7 +22,7 @@ import org.kie.api.internal.utils.ServiceRegistry;
 public class ExecutorProviderFactory {
 
     private static class ExecutorProviderHolder {
-        private static final KieExecutors executorProvider = ServiceRegistry.getInstance().get(KieExecutors.class);
+        private static final KieExecutors executorProvider = ServiceRegistry.getService(KieExecutors.class);
     }
 
     public static KieExecutors getExecutorProvider() {

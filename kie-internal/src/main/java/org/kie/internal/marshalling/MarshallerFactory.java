@@ -126,6 +126,6 @@ public class MarshallerFactory {
     }
 
     private static void loadProvider() {
-        setMarshallerProvider(ServiceRegistry.getInstance().get(KieMarshallers.class));
+        setMarshallerProvider(ServiceRegistry.getService(KieMarshallers.class));
     }
 }

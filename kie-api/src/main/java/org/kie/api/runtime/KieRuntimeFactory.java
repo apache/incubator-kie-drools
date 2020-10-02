@@ -67,8 +67,7 @@ public class KieRuntimeFactory {
      */
     private Object createRuntimeInstance(Class<?> c) {
         KieRuntimeService kieRuntimeService =
-                ServiceRegistry.getInstance()
-                        .get(KieRuntimes.class)
+                ServiceRegistry.getService(KieRuntimes.class)
                         .getRuntimes()
                         .get(c.getName());
         if (kieRuntimeService == null) {

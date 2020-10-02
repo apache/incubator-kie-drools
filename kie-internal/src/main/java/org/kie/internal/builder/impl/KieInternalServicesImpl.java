@@ -24,7 +24,7 @@ public class KieInternalServicesImpl implements KieInternalServices {
 
     @Override
     public CorrelationKeyFactory newCorrelationKeyFactory() {
-        return ServiceRegistry.getInstance().get(CorrelationKeyFactory.class);
+        return ServiceRegistry.getService(CorrelationKeyFactory.class);
     }
 
 

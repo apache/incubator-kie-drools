@@ -36,11 +36,11 @@ import org.kie.api.internal.utils.ServiceRegistry;
 public class KnowledgeBuilderFactory {
 
     private static class FactoryServiceHolder {
-        private static final KnowledgeBuilderFactoryService factoryService = ServiceRegistry.getInstance().get(KnowledgeBuilderFactoryService.class);
+        private static final KnowledgeBuilderFactoryService factoryService = ServiceRegistry.getService(KnowledgeBuilderFactoryService.class);
     }
 
     private static class JaxbConfFactoryServiceHolder {
-        private static final JaxbConfigurationFactoryService factoryService = ServiceRegistry.getInstance().get(JaxbConfigurationFactoryService.class);
+        private static final JaxbConfigurationFactoryService factoryService = ServiceRegistry.getService(JaxbConfigurationFactoryService.class);
     }
 
     /**

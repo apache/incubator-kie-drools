@@ -21,7 +21,7 @@ import org.kie.api.internal.utils.ServiceRegistry;
 
 public interface RuleUnitComponentFactory {
     class FactoryHolder {
-        private static final RuleUnitComponentFactory factory = ServiceRegistry.getInstance().get(RuleUnitComponentFactory.class);
+        private static final RuleUnitComponentFactory factory = ServiceRegistry.getService(RuleUnitComponentFactory.class);
     }
 
     static RuleUnitComponentFactory get() {
