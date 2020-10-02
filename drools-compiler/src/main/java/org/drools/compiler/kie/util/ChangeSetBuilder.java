@@ -128,9 +128,11 @@ public class ChangeSetBuilder {
             result.registerChanges( changedClass, new ResourceChangeSet( changedClass, ChangeType.UPDATED ) );
         }
 
-        for (String kieBaseName : original.getKieModuleModel().getKieBaseModels().keySet()) {
-            if (currentJar.getKnowledgeBuilderForKieBase(kieBaseName) == null) {
-                currentJar.cacheKnowledgeBuilderForKieBase( kieBaseName, original.getKnowledgeBuilderForKieBase( kieBaseName ) );
+        if (original.getKieModuleModel() != null) {
+            for (String kieBaseName : original.getKieModuleModel().getKieBaseModels().keySet()) {
+                if ( currentJar.getKnowledgeBuilderForKieBase( kieBaseName ) == null ) {
+                    currentJar.cacheKnowledgeBuilderForKieBase( kieBaseName, original.getKnowledgeBuilderForKieBase( kieBaseName ) );
+                }
             }
         }
 
