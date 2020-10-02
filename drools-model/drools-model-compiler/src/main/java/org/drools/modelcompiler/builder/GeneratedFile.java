@@ -32,7 +32,8 @@ public class GeneratedFile {
         MODEL,
         CLASS,
         MESSAGE_CONSUMER,
-        MESSAGE_PRODUCER;
+        MESSAGE_PRODUCER,
+        PMML;
     }
 
     private final String path;
