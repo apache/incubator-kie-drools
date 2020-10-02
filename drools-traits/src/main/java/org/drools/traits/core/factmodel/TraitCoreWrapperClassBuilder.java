@@ -17,7 +17,8 @@
 package org.drools.traits.core.factmodel;
 
 import org.drools.core.factmodel.ClassBuilder;
+import org.mvel2.asm.Opcodes;
 
-public interface TraitCoreWrapperClassBuilder extends ClassBuilder {
+public interface TraitCoreWrapperClassBuilder extends ClassBuilder, Opcodes {
 
 }

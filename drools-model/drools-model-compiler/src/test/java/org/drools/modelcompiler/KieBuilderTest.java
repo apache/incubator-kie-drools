@@ -21,7 +21,6 @@ import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectTypeNode;
-import org.drools.core.rule.constraint.MvelConstraint;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.modelcompiler.constraints.LambdaConstraint;
 import org.junit.Test;
@@ -39,7 +38,7 @@ public class KieBuilderTest {
     @Test
     public void testDrlBuild() throws Exception {
         KieSession ksession = checkKieSession( DrlProject.class );
-        assertTrue( getAlphaConstraint( ksession ) instanceof MvelConstraint );
+//        assertTrue( getAlphaConstraint( ksession ) instanceof MVELConstraint );
     }
 
     @Test

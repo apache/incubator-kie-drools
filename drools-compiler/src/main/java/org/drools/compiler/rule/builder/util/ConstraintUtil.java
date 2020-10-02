@@ -5,8 +5,8 @@ import org.drools.compiler.lang.descr.OperatorDescr;
 import org.drools.compiler.lang.descr.RelationalExprDescr;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.rule.Pattern;
+import org.drools.core.util.ClassUtils;
 import org.drools.core.util.index.IndexUtil;
-import org.mvel2.util.PropertyTools;
 
 public class ConstraintUtil {
 
@@ -71,7 +71,7 @@ public class ConstraintUtil {
     }
 
     private static boolean isPropertyOnRight(Class<?> clazz, String leftProp, String rightProp) {
-        return (PropertyTools.getFieldOrAccessor(clazz, leftProp) == null) && ((PropertyTools.getFieldOrAccessor(clazz, rightProp) != null) || (rightProp.equals("this")));
+        return (ClassUtils.getFieldOrAccessor(clazz, leftProp) == null) && ((ClassUtils.getFieldOrAccessor(clazz, rightProp) != null) || (rightProp.equals("this")));
     }
 
     private static boolean canInverse(Pattern pattern, String operator, OperatorDescr operatorDescr, String leftProp, String rightProp) {

@@ -49,11 +49,12 @@ import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.QueryDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.core.addon.TypeResolver;
+import org.drools.core.base.CoreComponentsBuilder;
 import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.factmodel.AnnotationDefinition;
 import org.drools.core.rule.Behavior;
 import org.drools.core.time.TimeUtils;
-import org.drools.core.util.MVELSafeHelper;
 import org.drools.model.Rule;
 import org.drools.model.UnitData;
 import org.drools.model.Variable;
@@ -320,7 +321,9 @@ public class ModelGenerator {
 
     /**
      * Build a list of method calls, representing each needed {@link org.drools.model.impl.RuleBuilder#metadata(String, Object)}
-     * starting from a drools-compiler {@link RuleDescr}.
+     * starting from a drools-compiler {@link RuleDescr}.<br/>
+     * Based on {@link org.drools.modelcompiler.KiePackagesBuilder#setRuleMetaAttributes(Rule, RuleImpl)} the reserved annotation keywords are:
+     * Propagation, All, Direct.
      */
     private static List<MethodCallExpr> ruleMetaAttributes(RuleContext context, RuleDescr ruleDescr) {
         List<MethodCallExpr> ruleMetaAttributes = new ArrayList<>();
@@ -329,7 +332,7 @@ public class ModelGenerator {
             metaAttributeCall.addArgument(new StringLiteralExpr(metaAttr));
             AnnotationDescr ad = ruleDescr.getAnnotation( metaAttr );
             String adFqn = ad.getFullyQualifiedName();
-            if ("Propagation".equals(metaAttr)) { // legacy case.
+            if ("Propagation".equals(metaAttr)) { // legacy case, as explained in the javadoc annotation above, ref. DROOLS-5685
                 metaAttributeCall.addArgument(parseExpression(org.kie.api.definition.rule.Propagation.Type.class.getCanonicalName() + "." + ad.getSingleValueAsString()));
             } else if (adFqn != null) {
                 AnnotationDefinition annotationDefinition;
@@ -392,7 +395,7 @@ public class ModelGenerator {
     private static Optional<Object> resolveValueWithMVEL(String value) {
         // try to resolve as an expression:
         try {
-            Object result = MVELSafeHelper.getEvaluator().eval(value);
+            Object result = CoreComponentsBuilder.get().getMVELExecutor().eval(value);
             return Optional.of(result);
         } catch (Exception e) {
             return Optional.empty();

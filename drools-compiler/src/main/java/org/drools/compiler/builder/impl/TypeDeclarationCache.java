@@ -44,6 +44,7 @@ import org.kie.api.runtime.rule.Match;
 import static org.drools.compiler.builder.impl.ClassDefinitionFactory.createClassDefinition;
 import static org.drools.compiler.builder.impl.TypeDeclarationConfigurator.processMvelBasedAccessors;
 import static org.drools.core.util.BitMaskUtil.isSet;
+import static org.drools.core.util.Drools.hasMvel;
 
 public class TypeDeclarationCache {
 
@@ -52,7 +53,9 @@ public class TypeDeclarationCache {
 
     TypeDeclarationCache( KnowledgeBuilderImpl kbuilder ) {
         this.kbuilder = kbuilder;
-        initBuiltinTypeDeclarations();
+        if ( hasMvel() ) {
+            initBuiltinTypeDeclarations();
+        }
     }
 
     private void initBuiltinTypeDeclarations() {

@@ -16,19 +16,17 @@
 
 package org.drools.core.common;
 
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.marshalling.impl.MarshallerReaderContext;
-import org.drools.core.marshalling.impl.MarshallerWriteContext;
-import org.drools.core.marshalling.impl.ProtobufMessages;
-import org.drools.core.phreak.PropagationEntry;
-import org.drools.core.spi.Activation;
-import org.drools.core.spi.PropagationContext;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.marshalling.impl.MarshallerReaderContext;
+import org.drools.core.phreak.PropagationEntry;
+import org.drools.core.spi.Activation;
+import org.drools.core.spi.PropagationContext;
 
 /**
  * Implementation of a <code>RuleFlowGroup</code> that collects activations
@@ -392,21 +390,7 @@ public class RuleFlowGroupImpl
         }
 
         public DeactivateCallback(MarshallerReaderContext context) throws IOException {
-            this.ruleFlowGroup = (InternalRuleFlowGroup) context.wm.getAgenda().getRuleFlowGroup( context.readUTF() );
-        }
-
-        public DeactivateCallback(MarshallerReaderContext context,
-                                  ProtobufMessages.ActionQueue.Action _action) {
-            this.ruleFlowGroup = (InternalRuleFlowGroup) context.wm.getAgenda().getRuleFlowGroup( _action.getDeactivateCallback().getRuleflowGroup() );
-        }
-
-        public ProtobufMessages.ActionQueue.Action serialize(MarshallerWriteContext context) {
-            return ProtobufMessages.ActionQueue.Action.newBuilder()
-                    .setType( ProtobufMessages.ActionQueue.ActionType.DEACTIVATE_CALLBACK )
-                    .setDeactivateCallback( ProtobufMessages.ActionQueue.DeactivateCallback.newBuilder()
-                                                .setRuleflowGroup( ruleFlowGroup.getName() )
-                                                .build() )
-                    .build();
+            this.ruleFlowGroup = (InternalRuleFlowGroup) context.getWorkingMemory().getAgenda().getRuleFlowGroup( context.readUTF() );
         }
 
         public void execute(InternalWorkingMemory workingMemory) {

@@ -52,7 +52,7 @@ public class FactPopulatorTest {
 
     static {
         try {
-            Class.forName("org.drools.core.base.mvel.MVELCompilationUnit");
+            Class.forName( "org.drools.mvel.expr.MVELCompilationUnit" );
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }

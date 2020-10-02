@@ -16,11 +16,7 @@
 
 package org.drools.core.common;
 
-import org.drools.core.marshalling.impl.MarshallerWriteContext;
-import org.drools.core.marshalling.impl.ProtobufMessages;
 import org.drools.core.phreak.PropagationEntry;
-
-import java.io.IOException;
 
 public interface WorkingMemoryAction extends PropagationEntry {
     short WorkingMemoryReteAssertAction  = 1;
@@ -31,6 +27,4 @@ public interface WorkingMemoryAction extends PropagationEntry {
     short SignalProcessInstanceAction    = 6;
     short SignalAction                   = 7;
     short WorkingMemoryBehahviourRetract = 8;
-
-    ProtobufMessages.ActionQueue.Action serialize(MarshallerWriteContext context) throws IOException;
 }

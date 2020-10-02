@@ -51,6 +51,7 @@ import static java.util.Collections.emptyList;
 
 import static com.github.javaparser.StaticJavaParser.parseImport;
 import static org.drools.compiler.builder.impl.ClassDefinitionFactory.createClassDefinition;
+import static org.drools.core.util.Drools.hasMvel;
 import static org.drools.modelcompiler.builder.generator.ModelGenerator.generateModel;
 import static org.drools.modelcompiler.builder.generator.declaredtype.POJOGenerator.compileType;
 
@@ -130,6 +131,14 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
         DrlxParseUtil.clearAccessorCache();
     }
 
+    protected void processOtherDeclarations(PackageRegistry pkgRegistry, PackageDescr packageDescr) {
+        processAccumulateFunctions(pkgRegistry, packageDescr);
+        if (hasMvel()) {
+            processWindowDeclarations( pkgRegistry, packageDescr );
+        }
+        processFunctions(pkgRegistry, packageDescr);
+        processGlobals(pkgRegistry, packageDescr);    }
+
     private Collection<CompositePackageDescr> findPackages() {
         Collection<CompositePackageDescr> packages;
         if (compositePackages != null && !compositePackages.isEmpty()) {
@@ -181,7 +190,9 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
             TypeDeclaration type = new TypeDeclaration(typeName );
             type.setTypeClass( typeClass );
             type.setResource( typeDescr.getResource() );
-            type.setTypeClassDef( createClassDefinition( typeClass, typeDescr.getResource() ) );
+            if (hasMvel()) {
+                type.setTypeClassDef( createClassDefinition( typeClass, typeDescr.getResource() ) );
+            }
             TypeDeclarationFactory.processAnnotations(typeDescr, type);
             getOrCreatePackageRegistry(new PackageDescr(typePkg)).getPackage().addTypeDeclaration(type );
         } catch (ClassNotFoundException e) {

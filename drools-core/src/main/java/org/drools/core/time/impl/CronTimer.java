@@ -16,14 +16,6 @@
 
 package org.drools.core.time.impl;
 
-import org.drools.core.base.mvel.MVELObjectExpression;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.rule.ConditionalElement;
-import org.drools.core.rule.Declaration;
-import org.drools.core.spi.Tuple;
-import org.drools.core.time.Trigger;
-import org.kie.api.runtime.Calendars;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -31,14 +23,22 @@ import java.io.ObjectOutput;
 import java.text.ParseException;
 import java.util.Map;
 
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.rule.ConditionalElement;
+import org.drools.core.rule.Declaration;
+import org.drools.core.spi.Tuple;
+import org.drools.core.time.TimerExpression;
+import org.drools.core.time.Trigger;
+import org.kie.api.runtime.Calendars;
+
 import static org.drools.core.time.TimeUtils.evalDateExpression;
 
 public class CronTimer extends BaseTimer
     implements
     Timer,
     Externalizable {
-    private MVELObjectExpression startTime;
-    private MVELObjectExpression endTime;
+    private TimerExpression startTime;
+    private TimerExpression endTime;
     private int                  repeatLimit;
     private CronExpression       cronExpression;
     
@@ -46,8 +46,8 @@ public class CronTimer extends BaseTimer
         
     }
 
-    public CronTimer(MVELObjectExpression startTime,
-                     MVELObjectExpression endTime,
+    public CronTimer(TimerExpression startTime,
+                     TimerExpression endTime,
                      int repeatLimit,
                      CronExpression cronExpression) {
         this.startTime = startTime;
@@ -65,8 +65,8 @@ public class CronTimer extends BaseTimer
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
-        this.startTime = (MVELObjectExpression) in.readObject();
-        this.endTime = (MVELObjectExpression) in.readObject();
+        this.startTime = (TimerExpression) in.readObject();
+        this.endTime = (TimerExpression) in.readObject();
         this.repeatLimit = in.readInt();
         String string = (String) in.readObject();
         try {
@@ -77,12 +77,12 @@ public class CronTimer extends BaseTimer
         }
     }
 
-    public Declaration[] getStartDeclarations() {
-        return this.startTime != null ? this.startTime.getMVELCompilationUnit().getPreviousDeclarations() : null;
+    private Declaration[] getStartDeclarations() {
+        return this.startTime != null ? this.startTime.getDeclarations() : null;
     }
 
-    public Declaration[] getEndDeclarations() {
-        return this.endTime != null ? this.endTime.getMVELCompilationUnit().getPreviousDeclarations() : null;
+    private Declaration[] getEndDeclarations() {
+        return this.endTime != null ? this.endTime.getDeclarations() : null;
     }
 
     public Declaration[][] getTimerDeclarations(Map<String, Declaration> outerDeclrs) {

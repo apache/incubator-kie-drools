@@ -29,7 +29,7 @@ import java.util.StringTokenizer;
 
 import org.drools.compiler.commons.jci.readers.ResourceReader;
 import org.drools.compiler.commons.jci.stores.ResourceStore;
-import org.drools.core.rule.builder.dialect.asm.ClassGenerator;
+import org.drools.core.factmodel.ClassBuilderFactory;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.IoUtils;
 import org.eclipse.jdt.core.compiler.IProblem;
@@ -386,7 +386,7 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
         
         final Compiler compiler = new Compiler(nameEnvironment, policy, compilerOptions, compilerRequestor, problemFactory);
 
-        if ( ClassGenerator.DUMP_GENERATED_CLASSES ) {
+        if ( ClassBuilderFactory.DUMP_GENERATED_CLASSES ) {
             dumpUnits( compilationUnits, pReader );
         }
 

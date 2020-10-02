@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
@@ -49,6 +50,11 @@ import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.DroolsObjectOutputStream;
 import org.kie.api.definition.type.Modifies;
 import org.kie.internal.utils.ClassLoaderUtil;
+
+import static java.lang.Character.toUpperCase;
+import static java.lang.System.arraycopy;
+import static java.lang.reflect.Modifier.PUBLIC;
+import static java.lang.reflect.Modifier.STATIC;
 
 import static org.drools.core.util.StringUtils.ucFirst;
 
@@ -486,6 +492,72 @@ public final class ClassUtils {
         } catch (NoSuchMethodException e) {
             return Optional.empty();
         }
+    }
+
+    public static Member getFieldOrAccessor( Class clazz, String property) {
+        for (Field f : clazz.getFields()) {
+            if (property.equals(f.getName())) {
+                if ((f.getModifiers() & PUBLIC) != 0) return f;
+                break;
+            }
+        }
+        return getGetter(clazz, property);
+    }
+
+    private static Method getGetter( Class clazz, String property) {
+        String simple = "get" + property;
+        String simpleIsGet = "is" + property;
+        String isGet = getIsGetter(property);
+        String getter = getGetter(property);
+
+        Method candidate = null;
+
+        if ( Collection.class.isAssignableFrom(clazz) && "isEmpty".equals(isGet)) {
+            try {
+                return Collection.class.getMethod("isEmpty");
+            } catch (NoSuchMethodException ignore) {}
+        }
+
+        for (Method meth : clazz.getMethods()) {
+            if ((meth.getModifiers() & PUBLIC) != 0 && (meth.getModifiers() & STATIC) == 0 && meth.getParameterTypes().length == 0
+                    && (getter.equals(meth.getName()) || property.equals(meth.getName()) || ((isGet.equals(meth.getName()) || simpleIsGet.equals(meth.getName())) && meth.getReturnType() == boolean.class)
+                    || simple.equals(meth.getName()))) {
+                if (candidate == null || candidate.getReturnType().isAssignableFrom(meth.getReturnType())) {
+                    candidate = meth;
+                }
+            }
+        }
+        return candidate;
+    }
+
+    private static String getGetter(String s) {
+        char[] c = s.toCharArray();
+        char[] chars = new char[c.length + 3];
+
+        chars[0] = 'g';
+        chars[1] = 'e';
+        chars[2] = 't';
+
+        chars[3] = toUpperCase(c[0]);
+
+        arraycopy(c, 1, chars, 4, c.length - 1);
+
+        return new String(chars);
+    }
+
+
+    private static String getIsGetter(String s) {
+        char[] c = s.toCharArray();
+        char[] chars = new char[c.length + 2];
+
+        chars[0] = 'i';
+        chars[1] = 's';
+
+        chars[2] = toUpperCase(c[0]);
+
+        arraycopy(c, 1, chars, 3, c.length - 1);
+
+        return new String(chars);
     }
 
     public static Class extractGenericType(Class<?> clazz, final String methodName) {

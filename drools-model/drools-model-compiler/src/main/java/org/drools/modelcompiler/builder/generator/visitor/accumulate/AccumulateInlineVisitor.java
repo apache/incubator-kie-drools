@@ -32,6 +32,7 @@ import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 
+import static org.drools.core.util.Drools.hasMvel;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.addSemicolon;
 import static org.drools.modelcompiler.builder.generator.visitor.accumulate.AccumulateVisitor.collectNamesInBlock;
 
@@ -54,7 +55,11 @@ public class AccumulateInlineVisitor {
                 try {
                     accumulateInline.visitAccInlineCustomCode( accumulateDSL, externalDeclrs, (( PatternDescr ) input).getIdentifier() );
                 } catch (UnsupportedInlineAccumulate e) {
-                    new LegacyAccumulate( context, descr, basePattern, accumulateInline.getUsedExternalDeclarations() ).build();
+                    if (hasMvel()) {
+                        new LegacyAccumulate( context, descr, basePattern, accumulateInline.getUsedExternalDeclarations() ).build();
+                    } else {
+                        throw new RuntimeException("Legacy accumulate can be used only with drools-mvel on classpath");
+                    }
                 } catch (MissingSemicolonInlineAccumulateException e) {
                     context.addCompilationError( new InvalidExpressionErrorResult( e.getMessage() ) );
                 }

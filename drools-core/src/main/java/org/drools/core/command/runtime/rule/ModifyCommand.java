@@ -24,9 +24,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-
+import org.drools.core.base.CoreComponentsBuilder;
 import org.drools.core.common.DisconnectedFactHandle;
-import org.drools.core.util.MVELSafeHelper;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.command.Setter;
 import org.kie.api.runtime.Context;
@@ -126,7 +125,7 @@ public class ModifyCommand implements ExecutableCommand<Object> {
         EntryPoint wmep = ksession.getEntryPoint( factHandle.getEntryPointName() );
 
         Object object = wmep.getObject( this.factHandle );
-        MVELSafeHelper.getEvaluator().eval( getMvelExpr(), object );
+        CoreComponentsBuilder.get().getMVELExecutor().eval( getMvelExpr(), object );
 
         wmep.update( factHandle,
                         object );

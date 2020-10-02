@@ -22,9 +22,9 @@ import java.io.Serializable;
 import java.util.Arrays;
 
 import org.drools.core.WorkingMemory;
-import org.drools.core.base.accumulators.MVELAccumulatorFunctionExecutor;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.spi.Accumulator;
+import org.drools.core.spi.MvelAccumulator;
 import org.drools.core.spi.Tuple;
 import org.drools.core.spi.Wireable;
 import org.kie.internal.security.KiePolicyHelper;
@@ -154,8 +154,8 @@ public class SingleAccumulate extends Accumulate {
     }
 
     protected void replaceAccumulatorDeclaration(Declaration declaration, Declaration resolved) {
-        if (accumulator instanceof MVELAccumulatorFunctionExecutor) {
-            ( (MVELAccumulatorFunctionExecutor) accumulator ).replaceDeclaration( declaration, resolved );
+        if (accumulator instanceof MvelAccumulator ) {
+            ( (MvelAccumulator) accumulator ).replaceDeclaration( declaration, resolved );
         }
     }
 
@@ -187,6 +187,7 @@ public class SingleAccumulate extends Accumulate {
         int result = 1;
         result = prime * result + accumulator.hashCode();
         result = prime * result + Arrays.hashCode( requiredDeclarations );
+        result = prime * result + Arrays.hashCode( innerDeclarationCache );
         result = prime * result + ((source == null) ? 0 : source.hashCode());
         return result;
     }
@@ -198,6 +199,7 @@ public class SingleAccumulate extends Accumulate {
         SingleAccumulate other = (SingleAccumulate) obj;
         if ( !accumulator.equals( other.accumulator ) ) return false;
         if ( !Arrays.equals( requiredDeclarations, other.requiredDeclarations ) ) return false;
+        if ( !Arrays.equals( innerDeclarationCache, other.innerDeclarationCache ) ) return false;
         if ( source == null ) {
             if ( other.source != null ) return false;
         } else if ( !source.equals( other.source ) ) return false;

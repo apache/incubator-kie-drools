@@ -19,22 +19,20 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
+import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.BoundIdentifiers;
+import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.compiler.TypeDeclarationError;
 import org.drools.compiler.lang.descr.AbstractClassTypeDeclarationDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.rule.builder.PackageBuildContext;
-import org.drools.compiler.rule.builder.dialect.mvel.MVELAnalysisResult;
-import org.drools.compiler.rule.builder.dialect.mvel.MVELDialect;
 import org.drools.core.base.ClassFieldAccessor;
 import org.drools.core.base.ClassFieldAccessorStore;
-import org.drools.core.base.mvel.MVELCompileable;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.factmodel.FieldDefinition;
 import org.drools.core.rule.Annotated;
-import org.drools.core.rule.MVELDialectRuntimeData;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.util.ClassUtils;
@@ -145,7 +143,7 @@ public class TypeDeclarationConfigurator {
             type.setTimestampAttribute( timestampField );
             InternalKnowledgePackage pkg = pkgRegistry.getPackage();
 
-            MVELAnalysisResult results = getMvelAnalysisResult( kbuilder, typeDescr, type, pkgRegistry, timestampField, pkg );
+            AnalysisResult results = getMvelAnalysisResult( kbuilder, typeDescr, type, pkgRegistry, timestampField, pkg );
             if (results != null) {
                 type.setTimestampExtractor(getFieldExtractor( type, timestampField, pkg, results ));
             } else {
@@ -170,7 +168,7 @@ public class TypeDeclarationConfigurator {
             type.setDurationAttribute(durationField);
             InternalKnowledgePackage pkg = pkgRegistry.getPackage();
 
-            MVELAnalysisResult results = getMvelAnalysisResult( kbuilder, typeDescr, type, pkgRegistry, durationField, pkg );
+            AnalysisResult results = getMvelAnalysisResult( kbuilder, typeDescr, type, pkgRegistry, durationField, pkg );
             if (results != null) {
                 type.setDurationExtractor(getFieldExtractor( type, durationField, pkg, results ));
             } else {
@@ -181,31 +179,28 @@ public class TypeDeclarationConfigurator {
         }
     }
 
-    private static MVELAnalysisResult getMvelAnalysisResult( KnowledgeBuilderImpl kbuilder, BaseDescr typeDescr, TypeDeclaration type, PackageRegistry pkgRegistry, String durationField, InternalKnowledgePackage pkg ) {
-        MVELDialect dialect = (MVELDialect) pkgRegistry.getDialectCompiletimeRegistry().getDialect("mvel");
+    private static AnalysisResult getMvelAnalysisResult( KnowledgeBuilderImpl kbuilder, BaseDescr typeDescr, TypeDeclaration type, PackageRegistry pkgRegistry, String durationField, InternalKnowledgePackage pkg ) {
+        Dialect dialect = pkgRegistry.getDialectCompiletimeRegistry().getDialect("mvel");
         PackageBuildContext context = new PackageBuildContext();
         context.init(kbuilder, pkg, typeDescr, pkgRegistry.getDialectCompiletimeRegistry(), dialect, null);
         if (!type.isTypesafe()) {
             context.setTypesafe(false);
         }
 
-        return (MVELAnalysisResult)
-                context.getDialect().analyzeExpression( context,
-                                                        typeDescr,
-                                                        durationField,
-                                                        new BoundIdentifiers( type.getTypeClass() ) );
+        return context.getDialect().analyzeExpression( context,
+                                                       typeDescr,
+                                                       durationField,
+                                                       new BoundIdentifiers( type.getTypeClass() ) );
     }
 
-    private static InternalReadAccessor getFieldExtractor( TypeDeclaration type, String timestampField, InternalKnowledgePackage pkg, MVELAnalysisResult results ) {
+    private static InternalReadAccessor getFieldExtractor( TypeDeclaration type, String timestampField, InternalKnowledgePackage pkg, AnalysisResult results ) {
         InternalReadAccessor reader = pkg.getClassFieldAccessorStore().getMVELReader( ClassUtils.getPackage( type.getTypeClass() ),
                                                                                       type.getTypeClass().getName(),
                                                                                       timestampField,
                                                                                       type.isTypesafe(),
                                                                                       results.getReturnType());
 
-        MVELDialectRuntimeData data = (MVELDialectRuntimeData) pkg.getDialectRuntimeRegistry().getDialectData("mvel");
-        data.addCompileable((MVELCompileable) reader);
-        ((MVELCompileable) reader).compile(data);
+        pkg.getDialectRuntimeRegistry().getDialectData("mvel").compile( reader );
         return reader;
     }
 }

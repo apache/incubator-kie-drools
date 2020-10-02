@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import org.drools.core.util.MVELSafeHelper;
+import org.drools.mvel.MVELSafeHelper;
 import org.drools.scenariosimulation.backend.util.JsonUtils;
 import org.kie.soup.project.datamodel.commons.util.MVELEvaluator;
 import org.mvel2.MVEL;

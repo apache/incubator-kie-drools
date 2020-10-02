@@ -17,8 +17,12 @@
 package org.drools.core.spi;
 
 import java.io.Externalizable;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.Declaration;
 import org.drools.core.util.bitmask.BitMask;
 
@@ -75,6 +79,17 @@ public interface Constraint
     default BitMask getListenedPropertyMask( Class modifiedClass, List<String> settableProperties ) {
         return allSetButTraitBitMask();
     }
+
+    default boolean equals(Object object, InternalKnowledgeBase kbase) {
+        return this.equals( object );
+    }
+
+    default void registerEvaluationContext(BuildContext buildContext) { }
+
+    default Collection<String> getPackageNames() {
+        return Collections.emptyList();
+    }
+    default void addPackageNames(Collection<String> otherPkgs) { }
 
     /**
      * An enum for Constraint Types

@@ -42,12 +42,16 @@ public interface EvalExpression
 
     EvalExpression clone();
 
-    public static boolean isCompiledInvoker(final EvalExpression expression) {
+    default EvalExpression clonePreservingDeclarations(EvalExpression original) {
+        return original;
+    }
+
+    static boolean isCompiledInvoker(final EvalExpression expression) {
         return (expression instanceof CompiledInvoker)
                 || (expression instanceof SafeEvalExpression && ((SafeEvalExpression) expression).wrapsCompiledInvoker());
     }
 
-    public class SafeEvalExpression implements EvalExpression, Serializable {
+    class SafeEvalExpression implements EvalExpression, Serializable {
         private static final long serialVersionUID = -5682290553015978731L;
         private EvalExpression delegate;
         public SafeEvalExpression(EvalExpression delegate) {

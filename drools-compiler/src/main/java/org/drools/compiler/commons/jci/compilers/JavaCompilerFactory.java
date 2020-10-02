@@ -20,8 +20,7 @@ package org.drools.compiler.commons.jci.compilers;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
-import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration.CompilerType;
+import org.drools.compiler.compiler.JavaConfiguration;
 import org.drools.core.util.ClassUtils;
 
 /**
@@ -77,11 +76,11 @@ public enum JavaCompilerFactory {
         }
     }
 
-    public JavaCompiler loadCompiler(JavaDialectConfiguration configuration) {
+    public JavaCompiler loadCompiler( JavaConfiguration configuration) {
         return loadCompiler( configuration.getCompiler(), configuration.getJavaLanguageLevel() );
     }
 
-    public JavaCompiler loadCompiler( CompilerType compilerType, String lngLevel ) {
+    public JavaCompiler loadCompiler( JavaConfiguration.CompilerType compilerType, String lngLevel ) {
         JavaCompiler compiler;
         switch ( compilerType ) {
             case JANINO : {

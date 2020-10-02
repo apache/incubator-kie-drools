@@ -30,15 +30,10 @@ import java.util.Properties;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import com.google.protobuf.ExtensionRegistry;
 import org.appformer.maven.support.DependencyFilter;
 import org.appformer.maven.support.PomModel;
 import org.drools.compiler.builder.InternalKnowledgeBuilder;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
-import org.drools.compiler.kie.builder.impl.KieModuleCache.CompDataEntry;
-import org.drools.compiler.kie.builder.impl.KieModuleCache.CompilationData;
-import org.drools.compiler.kie.builder.impl.KieModuleCache.Header;
-import org.drools.compiler.kie.builder.impl.KieModuleCache.KModuleCache;
 import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.core.RuleBaseConfiguration;
@@ -48,7 +43,6 @@ import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
-import org.drools.core.util.Drools;
 import org.drools.core.util.StringUtils;
 import org.drools.reflective.ResourceProvider;
 import org.kie.api.KieBaseConfiguration;
@@ -418,39 +412,7 @@ public abstract class AbstractKieModule
 
     @Override
     public CompilationCache getCompilationCache(String kbaseName) {
-        // Map< DIALECT, Map< RESOURCE, List<BYTECODE> > >
-        CompilationCache cache = compilationCache.get(kbaseName);
-        if (cache == null) {
-            byte[] fileContents = getBytes(KieBuilderImpl.getCompilationCachePath(releaseId, kbaseName));
-            if (fileContents != null) {
-                ExtensionRegistry registry = KieModuleCacheHelper.buildRegistry();
-                try {
-                    Header header = KieModuleCacheHelper.readFromStreamWithHeaderPreloaded(new ByteArrayInputStream(fileContents), registry);
-
-                    if (!Drools.isCompatible(header.getVersion().getVersionMajor(),
-                                             header.getVersion().getVersionMinor(),
-                                             header.getVersion().getVersionRevision())) {
-                        // if cache has been built with an incompatible version avoid to use it
-                        log.warn("The compilation cache has been built with an incompatible version. " +
-                                 "You should recompile your project in order to use it with current release.");
-                        return null;
-                    }
-
-                    KModuleCache kModuleCache = KModuleCache.parseFrom(header.getPayload());
-
-                    cache = new CompilationCache();
-                    for (CompilationData _data : kModuleCache.getCompilationDataList()) {
-                        for (CompDataEntry _entry : _data.getEntryList()) {
-                            cache.addEntry(_data.getDialect(), _entry.getId(),  _entry.getData().toByteArray());
-                        }
-                    }
-                    compilationCache.put(kbaseName, cache);
-                } catch (Exception e) {
-                    log.error("Unable to load compilation cache... ", e);
-                }
-            }
-        }
-        return cache;
+        return CompilationCacheProvider.get().getCompilationCache( this, compilationCache, kbaseName );
     }
 
     public PomModel getPomModel() {

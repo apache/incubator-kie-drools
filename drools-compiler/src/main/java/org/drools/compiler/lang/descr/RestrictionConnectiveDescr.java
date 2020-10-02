@@ -33,15 +33,15 @@ public class RestrictionConnectiveDescr extends RestrictionDescr {
 
     private static final long                     serialVersionUID = 510l;
 
-    public final static RestrictionConnectiveType AND              = RestrictionConnectiveType.AND;
-    public final static RestrictionConnectiveType OR               = RestrictionConnectiveType.OR;
+    public final static ConnectiveDescr.RestrictionConnectiveType AND              = ConnectiveDescr.RestrictionConnectiveType.AND;
+    public final static ConnectiveDescr.RestrictionConnectiveType OR               = ConnectiveDescr.RestrictionConnectiveType.OR;
 
-    private RestrictionConnectiveType             connective;
+    private ConnectiveDescr.RestrictionConnectiveType connective;
     private List<RestrictionDescr>                restrictions;
 
     public RestrictionConnectiveDescr() { }
 
-    public RestrictionConnectiveDescr(final RestrictionConnectiveType connective) {
+    public RestrictionConnectiveDescr(final ConnectiveDescr.RestrictionConnectiveType connective) {
         super();
         this.connective = connective;
         this.restrictions = Collections.emptyList();
@@ -51,7 +51,7 @@ public class RestrictionConnectiveDescr extends RestrictionDescr {
     public void readExternal( ObjectInput in ) throws IOException,
                                                       ClassNotFoundException {
         super.readExternal( in );
-        this.connective = (RestrictionConnectiveType) in.readObject();
+        this.connective = ( ConnectiveDescr.RestrictionConnectiveType ) in.readObject();
         this.restrictions = (List<RestrictionDescr>) in.readObject();
     }
 
@@ -62,7 +62,7 @@ public class RestrictionConnectiveDescr extends RestrictionDescr {
         out.writeObject( restrictions );
     }
 
-    public RestrictionConnectiveType getConnective() {
+    public ConnectiveDescr.RestrictionConnectiveType getConnective() {
         return this.connective;
     }
 
@@ -99,21 +99,5 @@ public class RestrictionConnectiveDescr extends RestrictionDescr {
         }
         buf.append( "  )" );
         return buf.toString();
-    }
-
-    /**
-     * The connective types that can be used for a restriction
-     */
-    public static enum RestrictionConnectiveType {
-        AND {
-            public String toString() {
-                return "&&";
-            }
-        },
-        OR {
-            public String toString() {
-                return "||";
-            }
-        };
     }
 }

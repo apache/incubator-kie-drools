@@ -19,12 +19,12 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.drools.core.base.CoreComponentsBuilder;
 import org.drools.core.base.EvaluatorWrapper;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.Tuple;
-import org.mvel2.util.Soundex;
 
 public class EvaluatorHelper {
 
@@ -82,8 +82,8 @@ public class EvaluatorHelper {
         if (value1 == null || value2 == null) {
             return false;
         }
-        String soundex1 = Soundex.soundex(value1);
-        return soundex1 != null && soundex1.equals(Soundex.soundex(value2));
+        String soundex1 = CoreComponentsBuilder.get().getMVELExecutor().soundex(value1);
+        return soundex1 != null && soundex1.equals(CoreComponentsBuilder.get().getMVELExecutor().soundex(value2));
     }
 
     public static boolean contains(Object list, Object item) {

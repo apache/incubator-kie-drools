@@ -20,27 +20,26 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.reteoo.LeftTuple;
-import org.drools.core.util.MVELSafeHelper;
 import org.kie.api.runtime.rule.Variable;
-import org.mvel2.MVEL;
-import org.mvel2.ParserConfiguration;
-import org.mvel2.ParserContext;
-
-import static org.drools.core.rule.QueryArgument.Declr.evaluateDeclaration;
 
 public interface QueryArgument extends Externalizable {
 
     QueryArgument normalize(ClassLoader classLoader);
 
     Object getValue( InternalWorkingMemory wm, LeftTuple leftTuple);
+
+    static Object evaluateDeclaration( InternalWorkingMemory wm, LeftTuple leftTuple, Declaration declaration ) {
+        Object tupleObject = leftTuple.get( declaration ).getObject();
+        if ( tupleObject instanceof DroolsQuery && declaration.getExtractor().getIndex() >= 0 &&
+                ( (DroolsQuery) tupleObject ).getVariables()[declaration.getExtractor().getIndex()] != null ) {
+            return Variable.v;
+        }
+        return declaration.getValue( wm, tupleObject );
+    }
 
     class Declr implements QueryArgument {
         private Declaration declaration;
@@ -53,16 +52,7 @@ public interface QueryArgument extends Externalizable {
 
         @Override
         public Object getValue( InternalWorkingMemory wm, LeftTuple leftTuple ) {
-            return evaluateDeclaration( wm, leftTuple, declaration );
-        }
-
-        static Object evaluateDeclaration( InternalWorkingMemory wm, LeftTuple leftTuple, Declaration declaration ) {
-            Object tupleObject = leftTuple.get( declaration ).getObject();
-            if ( tupleObject instanceof DroolsQuery && declaration.getExtractor().getIndex() >= 0 &&
-                 ( (DroolsQuery) tupleObject ).getVariables()[declaration.getExtractor().getIndex()] != null ) {
-                return Variable.v;
-            }
-            return declaration.getValue( wm, tupleObject );
+            return QueryArgument.evaluateDeclaration( wm, leftTuple, declaration );
         }
 
         @Override
@@ -86,73 +76,6 @@ public interface QueryArgument extends Externalizable {
 
         public Class<?> getArgumentClass() {
             return declaration.getDeclarationClass();
-        }
-    }
-
-    class Expression implements QueryArgument {
-        private List<Declaration> declarations;
-        private String expression;
-        private ParserContext parserContext;
-
-        private transient Class<?> argumentClass;
-        private transient Serializable mvelExpr;
-
-        public Expression() { }
-
-        public Expression( List<Declaration> declarations, String expression, ParserContext parserContext ) {
-            this.declarations = declarations;
-            this.expression = expression;
-            this.parserContext = parserContext;
-            init();
-        }
-
-        private void init() {
-            Map<String, Class> inputs = new HashMap<String, Class>();
-            for (Declaration d : declarations) {
-                inputs.put(d.getBindingName(), d.getDeclarationClass());
-            }
-            parserContext.setInputs(inputs);
-
-            this.argumentClass = MVEL.analyze( expression, parserContext );
-            this.mvelExpr = MVEL.compileExpression( expression, parserContext );
-        }
-
-        @Override
-        public Object getValue( InternalWorkingMemory wm, LeftTuple leftTuple ) {
-            Map<String, Object> vars = new HashMap<String, Object>();
-            for (Declaration d : declarations) {
-                vars.put(d.getBindingName(), evaluateDeclaration( wm, leftTuple, d ));
-            }
-            return MVELSafeHelper.getEvaluator().executeExpression( this.mvelExpr, vars );
-        }
-
-        @Override
-        public QueryArgument normalize( ClassLoader classLoader ) {
-            parserContext.getParserConfiguration().setClassLoader( classLoader );
-            return new Expression( declarations, expression, parserContext );
-        }
-
-        @Override
-        public void writeExternal( ObjectOutput out ) throws IOException {
-            out.writeObject( declarations );
-            out.writeObject( expression );
-            out.writeObject( parserContext );
-        }
-
-        @Override
-        public void readExternal( ObjectInput in ) throws IOException, ClassNotFoundException {
-            declarations = (List<Declaration>) in.readObject();
-            expression = (String) in.readObject();
-            parserContext = (ParserContext) in.readObject();
-
-            ParserConfiguration newConf = new ParserConfiguration();
-            newConf.setImports( parserContext.getParserConfiguration().getImports() );
-            newConf.setPackageImports( parserContext.getParserConfiguration().getPackageImports() );
-            parserContext = new ParserContext( newConf );
-            parserContext.setInputs( parserContext.getInputs() );
-            parserContext.setVariables( parserContext.getVariables() );
-
-            init();
         }
     }
 

@@ -28,7 +28,6 @@ import org.drools.compiler.commons.jci.compilers.JavaCompiler;
 import org.drools.compiler.commons.jci.compilers.JavaCompilerFactory;
 import org.drools.compiler.commons.jci.readers.MemoryResourceReader;
 import org.drools.compiler.commons.jci.stores.ResourceStore;
-import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.drools.reflective.classloader.ProjectClassLoader;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.jci.CompilationProblem;
@@ -40,10 +39,10 @@ public class ProjectJavaCompiler {
     private final JavaCompiler compiler;
 
     public ProjectJavaCompiler(KnowledgeBuilderConfigurationImpl pkgConf) {
-        this((JavaDialectConfiguration) pkgConf.getDialectConfiguration("java"));
+        this((JavaConfiguration) pkgConf.getDialectConfiguration("java"));
     }
 
-    public ProjectJavaCompiler(JavaDialectConfiguration configuration) {
+    public ProjectJavaCompiler(JavaConfiguration configuration) {
         compiler = JavaCompilerFactory.INSTANCE.loadCompiler(configuration);
     }
 

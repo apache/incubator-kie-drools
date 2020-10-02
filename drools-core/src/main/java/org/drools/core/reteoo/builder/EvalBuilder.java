@@ -32,8 +32,7 @@ public class EvalBuilder
 
         final EvalCondition eval = (EvalCondition) rce;
         context.pushRuleComponent( rce );
-        utils.checkUnboundDeclarations( context,
-                                        eval.getRequiredDeclarations() );
+
         context.setTupleSource( utils.attachNode( context,
                                                   context.getComponentFactory()
                                                          .getNodeFactoryService()

@@ -182,7 +182,7 @@ import java.util.TimeZone;
  * </ul>
  * </p>
  */
-public class CronExpression extends org.kie.soup.commons.cron.CronExpression implements Cloneable {
+public class CronExpression extends KieCronExpression implements Cloneable {
 
     private TimeZone timeZone = null;
 

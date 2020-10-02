@@ -23,10 +23,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import org.drools.core.base.CoreComponentsBuilder;
 import org.drools.core.process.instance.WorkItemManagerFactory;
 import org.drools.core.time.TimerService;
 import org.drools.core.util.ConfFileUtils;
-import org.drools.core.util.MVELSafeHelper;
 import org.drools.reflective.classloader.ProjectClassLoader;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.Environment;
@@ -309,8 +309,7 @@ public class SessionConfigurationImpl extends SessionConfiguration {
         String content = ConfFileUtils.URLContentsToString( ConfFileUtils.getURL( location,
                                                                                   null,
                                                                                   RuleBaseConfiguration.class ) );
-        Map<String, WorkItemHandler> workItemHandlers = (Map<String, WorkItemHandler>) MVELSafeHelper.getEvaluator().eval( content,
-                                                                                                  params );
+        Map<String, WorkItemHandler> workItemHandlers = (Map<String, WorkItemHandler>) CoreComponentsBuilder.get().getMVELExecutor().eval( content, params );
         this.workItemHandlers.putAll( workItemHandlers );
     }
 
@@ -416,7 +415,7 @@ public class SessionConfigurationImpl extends SessionConfiguration {
             }
         } else {
             try {
-                return (TimerService) MVELSafeHelper.getEvaluator().eval(className);
+                return (TimerService) CoreComponentsBuilder.get().getMVELExecutor().eval(className);
             } catch (Exception e) {
                 throw new IllegalArgumentException( "Timer service '" + className
                         + "' not found", e );

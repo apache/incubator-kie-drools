@@ -15,19 +15,18 @@
 
 package org.drools.core.common;
 
-import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.rule.IndexableConstraint;
-import org.drools.core.rule.constraint.MvelConstraint;
-import org.drools.core.util.index.IndexUtil;
-import org.drools.core.reteoo.BetaMemory;
-import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.rule.ContextEntry;
-import org.drools.core.spi.BetaNodeFieldConstraint;
-import org.kie.internal.conf.IndexPrecedenceOption;
-
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+
+import org.drools.core.RuleBaseConfiguration;
+import org.drools.core.reteoo.BetaMemory;
+import org.drools.core.reteoo.builder.BuildContext;
+import org.drools.core.rule.ContextEntry;
+import org.drools.core.rule.IndexableConstraint;
+import org.drools.core.spi.BetaNodeFieldConstraint;
+import org.drools.core.util.index.IndexUtil;
+import org.kie.internal.conf.IndexPrecedenceOption;
 
 import static org.drools.core.util.index.IndexUtil.compositeAllowed;
 import static org.drools.core.util.index.IndexUtil.isIndexableForNode;
@@ -141,9 +140,7 @@ public abstract class MultipleBetaConstraint implements BetaConstraints {
 
     public void registerEvaluationContext(BuildContext buildContext) {
         for (int i = 0; i < constraints.length; i++) {
-            if (constraints[i] instanceof MvelConstraint) {
-                ((MvelConstraint) constraints[i]).registerEvaluationContext(buildContext);
-            }
+            constraints[i].registerEvaluationContext(buildContext);
         }
     }
 }

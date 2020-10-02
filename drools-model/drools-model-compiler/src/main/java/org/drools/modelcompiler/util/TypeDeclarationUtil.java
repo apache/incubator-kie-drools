@@ -28,7 +28,8 @@ import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.util.ClassUtils;
 import org.drools.model.AnnotationValue;
 import org.drools.model.TypeMetaData;
-import org.drools.modelcompiler.constraints.MvelReadAccessor;
+import org.drools.modelcompiler.constraints.LambdaFieldReader;
+import org.drools.modelcompiler.constraints.LambdaReadAccessor;
 import org.kie.api.definition.type.Duration;
 import org.kie.api.definition.type.Expires;
 import org.kie.api.definition.type.Role;
@@ -135,12 +136,12 @@ public class TypeDeclarationUtil {
     }
 
     private static InternalReadAccessor getFieldExtractor( TypeDeclaration type, String field, Class<?> returnType ) {
-        return new MvelReadAccessor( type.getTypeClass(), returnType, field );
+        return new LambdaReadAccessor( returnType, new LambdaFieldReader( type.getTypeClass(), field ) );
     }
 
     public static class ClassDefinitionForModel extends ClassDefinition {
 
-        private transient Map<String, FieldDefinitionForModel> fields = new HashMap<>();
+        private transient final Map<String, FieldDefinitionForModel> fields = new HashMap<>();
 
         public ClassDefinitionForModel() { }
 

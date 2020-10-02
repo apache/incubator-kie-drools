@@ -26,12 +26,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.drools.core.base.CoreComponentsBuilder;
 import org.drools.core.common.AgendaGroupFactory;
 import org.drools.core.reteoo.KieComponentFactory;
 import org.drools.core.runtime.rule.impl.DefaultConsequenceExceptionHandler;
 import org.drools.core.spi.ConflictResolver;
 import org.drools.core.util.ConfFileUtils;
-import org.drools.core.util.MVELSafeHelper;
 import org.drools.core.util.StringUtils;
 import org.drools.reflective.classloader.ProjectClassLoader;
 import org.kie.api.KieBaseConfiguration;
@@ -795,7 +795,7 @@ public class RuleBaseConfiguration
                                                                                   RuleBaseConfiguration.class ) );
         try {
             this.workDefinitions.addAll(
-                (List<Map<String, Object>>) MVELSafeHelper.getEvaluator().eval( content, new HashMap() ) );
+                (List<Map<String, Object>>) CoreComponentsBuilder.get().getMVELExecutor().eval( content, new HashMap() ) );
         } catch ( Throwable t ) {
             logger.error("Error occurred while loading work definitions " + location
                     + "\nContinuing without reading these work definitions", t);
