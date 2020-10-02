@@ -482,7 +482,7 @@ public class RuleBaseConfiguration
                                                                                           "false" ) ) );
 
         setAlphaNetworkCompilerMode(AlphaNetworkCompilerOption.determineAlphaNetworkCompilerMode(this.chainedProperties.getProperty(
-                AlphaNetworkCompilerOption.PROPERTY_NAME, AlphaNetworkCompilerOption.DISABLED.getPropertyName()
+                AlphaNetworkCompilerOption.PROPERTY_NAME, AlphaNetworkCompilerOption.DISABLED.toString()
         )));
     }
 
