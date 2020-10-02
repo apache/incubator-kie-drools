@@ -30,6 +30,7 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
+import org.kie.internal.builder.conf.AlphaNetworkCompilerOption;
 
 import static org.junit.Assert.assertEquals;
 
@@ -141,12 +142,11 @@ public class IncrementalCompilationTest extends BaseModelTest {
 
         KieModuleModel kieModuleModel = ks.newKieModuleModel();
         if(this.testRunType.isAlphaNetworkCompiler()) {
-            kieModuleModel.setConfigurationProperty("drools.alphaNetworkCompiler", Boolean.TRUE.toString());
+            kieModuleModel.setConfigurationProperty("drools.alphaNetworkCompiler", AlphaNetworkCompilerOption.INMEMORY.toString());
         }
         createAndDeployJar( ks, kieModuleModel, releaseId1, drl1, drl2_1 );
 
         KieContainer kc = ks.newKieContainer( releaseId1 );
-        testForAlphaNetworkCompiler(((InternalKnowledgeBase)kc.getKieBase()).getRete());
 
         // Create a session and fire rules
         KieSession ksession = kc.newKieSession();

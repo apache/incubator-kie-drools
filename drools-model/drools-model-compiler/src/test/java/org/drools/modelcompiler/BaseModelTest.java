@@ -17,12 +17,10 @@
 package org.drools.modelcompiler;
 
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.drools.ancompiler.CompiledNetwork;
-import org.drools.ancompiler.CompiledNetworkSource;
 import org.drools.ancompiler.ObjectTypeNodeCompiler;
 import org.drools.compiler.kie.builder.impl.DrlProject;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
@@ -41,10 +39,9 @@ import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.runtime.ClassObjectFilter;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
-import org.kie.memorycompiler.KieMemoryCompiler;
+import org.kie.internal.builder.conf.AlphaNetworkCompilerOption;
 
 import static java.util.Arrays.asList;
-import static org.drools.core.util.MapUtils.mapValues;
 import static org.drools.modelcompiler.BaseModelTest.RUN_TYPE.FLOW_DSL;
 import static org.drools.modelcompiler.BaseModelTest.RUN_TYPE.FLOW_WITH_ALPHA_NETWORK;
 import static org.drools.modelcompiler.BaseModelTest.RUN_TYPE.PATTERN_DSL;
@@ -111,11 +108,7 @@ public abstract class BaseModelTest {
     }
 
     protected KieSession getKieSession(KieModuleModel model, String... stringRules) {
-        KieContainer kieContainer = getKieContainer(model, stringRules);
-        InternalKnowledgeBase kieBase = (InternalKnowledgeBase) kieContainer.getKieBase();
-        testForAlphaNetworkCompiler(kieBase.getRete());
-        KieSession kieSession = kieContainer.newKieSession();
-        return kieSession;
+        return getKieContainer( model, stringRules ).newKieSession();
     }
 
     protected KieContainer getKieContainer( KieModuleModel model, String... stringRules ) {
@@ -224,7 +217,7 @@ public abstract class BaseModelTest {
 
     private KieModuleModel getKieModuleModelWithAlphaNetworkCompiler() {
         KieModuleModel kproj = KieServices.get().newKieModuleModel();
-        kproj.setConfigurationProperty( org.drools.compiler.kie.builder.impl.KieContainerImpl.ALPHA_NETWORK_COMPILER_OPTION, "true" );
+        kproj.setConfigurationProperty(org.drools.compiler.kie.builder.impl.KieContainerImpl.ALPHA_NETWORK_COMPILER_OPTION, AlphaNetworkCompilerOption.INMEMORY.toString());
         return kproj;
     }
 
@@ -233,20 +226,6 @@ public abstract class BaseModelTest {
         List<ObjectTypeNode> objectTypeNodes = ObjectTypeNodeCompiler.objectTypeNodes(rete);
         for(ObjectTypeNode otn : objectTypeNodes) {
             assertTrue(otn.getObjectSinkPropagator() instanceof CompiledNetwork);
-        }
-    }
-
-    protected void testForAlphaNetworkCompiler(Rete rete) {
-        if (testRunType.alphaNetworkCompiler) {
-            Map<String, CompiledNetworkSource> compiledNetworkSourcesMap = ObjectTypeNodeCompiler.compiledNetworkSourceMap(rete);
-            if (!compiledNetworkSourcesMap.isEmpty()) {
-                Map<String, Class<?>> compiledClasses = KieMemoryCompiler.compile(mapValues(compiledNetworkSourcesMap, CompiledNetworkSource::getSource),
-                                                                                  this.getClass().getClassLoader());
-                compiledNetworkSourcesMap.values().forEach(c -> {
-                    Class<?> aClass = compiledClasses.get(c.getName());
-                    c.setCompiledNetwork(aClass);
-                });
-            }
         }
     }
 }

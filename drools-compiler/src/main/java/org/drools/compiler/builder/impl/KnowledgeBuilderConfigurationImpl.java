@@ -138,7 +138,7 @@ public class KnowledgeBuilderConfigurationImpl
     private boolean                           trimCellsInDTable                     = true;
     private boolean                           groupDRLsInKieBasesByFolder           = false;
     private boolean                           externaliseCanonicalModelLambda       = true;
-    private boolean                           alphaNetworkCompilerEnabled           = false;
+    private AlphaNetworkCompilerOption        alphaNetworkCompilerOption            = AlphaNetworkCompilerOption.DISABLED;
 
     private static final PropertySpecificOption DEFAULT_PROP_SPEC_OPT = PropertySpecificOption.ALWAYS;
     private PropertySpecificOption            propertySpecificOption  = DEFAULT_PROP_SPEC_OPT;
@@ -331,7 +331,11 @@ public class KnowledgeBuilderConfigurationImpl
         }  else if (name.equals(ExternaliseCanonicalModelLambdaOption.PROPERTY_NAME)) {
             setExternaliseCanonicalModelLambda(Boolean.valueOf(value));
         } else if (name.equals(AlphaNetworkCompilerOption.PROPERTY_NAME)) {
-            setAlphaNetworkCompilerEnabled(Boolean.valueOf(value));
+            try {
+                setAlphaNetworkCompilerOption(AlphaNetworkCompilerOption.determineAlphaNetworkCompilerMode(value.toUpperCase()));
+            } catch (IllegalArgumentException e) {
+                log.warn("Invalid value " + value + " for option " + LanguageLevelOption.PROPERTY_NAME);
+            }
         } else {
             // if the property from the kmodule was not intercepted above, just add it to the chained properties.
             Properties additionalProperty = new Properties();
@@ -732,12 +736,12 @@ public class KnowledgeBuilderConfigurationImpl
         this.externaliseCanonicalModelLambda = externaliseCanonicalModelLambda;
     }
 
-    public boolean isAlphaNetworkCompilerEnabled() {
-        return alphaNetworkCompilerEnabled;
+    public AlphaNetworkCompilerOption getAlphaNetworkCompilerOption() {
+        return alphaNetworkCompilerOption;
     }
 
-    public void setAlphaNetworkCompilerEnabled(boolean alphaNetworkCompilerEnabled) {
-        this.alphaNetworkCompilerEnabled = alphaNetworkCompilerEnabled;
+    public void setAlphaNetworkCompilerOption(AlphaNetworkCompilerOption alphaNetworkCompilerOption) {
+        this.alphaNetworkCompilerOption = alphaNetworkCompilerOption;
     }
 
     @SuppressWarnings("unchecked")
@@ -763,7 +767,7 @@ public class KnowledgeBuilderConfigurationImpl
         } else if (ExternaliseCanonicalModelLambdaOption.class.equals(option)) {
             return (T) (externaliseCanonicalModelLambda ? ExternaliseCanonicalModelLambdaOption.ENABLED : ExternaliseCanonicalModelLambdaOption.DISABLED);
         } else if (AlphaNetworkCompilerOption.class.equals(option)) {
-            return (T) (alphaNetworkCompilerEnabled ? AlphaNetworkCompilerOption.ENABLED : AlphaNetworkCompilerOption.DISABLED);
+            return (T) alphaNetworkCompilerOption;
         }
         return null;
     }
@@ -826,7 +830,7 @@ public class KnowledgeBuilderConfigurationImpl
         } else if (option instanceof ExternaliseCanonicalModelLambdaOption) {
             this.externaliseCanonicalModelLambda = ((ExternaliseCanonicalModelLambdaOption) option).isCanonicalModelLambdaExternalized();
         } else if (option instanceof AlphaNetworkCompilerOption) {
-            this.alphaNetworkCompilerEnabled = ((AlphaNetworkCompilerOption) option).isAlphaNetworkCompilerEnabled();
+            this.alphaNetworkCompilerOption = ((AlphaNetworkCompilerOption) option);
         }
     }
 

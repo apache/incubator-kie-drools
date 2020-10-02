@@ -5,6 +5,7 @@ import java.util.Map;
 import org.drools.compiler.kie.builder.impl.KieBaseUpdater;
 import org.drools.compiler.kie.builder.impl.KieBaseUpdatersContext;
 import org.drools.core.reteoo.Rete;
+import org.kie.internal.builder.conf.AlphaNetworkCompilerOption;
 import org.kie.memorycompiler.KieMemoryCompiler;
 
 import static org.drools.core.util.MapUtils.mapValues;
@@ -18,11 +19,11 @@ public class KieBaseUpdaterANC implements KieBaseUpdater {
     }
 
     public void run() {
-        final boolean isAlphaNetworkEnabled = ctx.getKnowledgeBuilderConfiguration().isAlphaNetworkCompilerEnabled();
+        AlphaNetworkCompilerOption ancMode = ctx.getKnowledgeBuilderConfiguration().getAlphaNetworkCompilerOption();
 
         // find the new compiled alpha network in the classpath, if it's not there,
         // generate compile it and reattach it
-        if(isAlphaNetworkEnabled) {
+        if(AlphaNetworkCompilerOption.INMEMORY.equals(ancMode)) {
             inMemoryUpdate(ctx.getClassLoader(), ctx.getRete());
         }
     }
