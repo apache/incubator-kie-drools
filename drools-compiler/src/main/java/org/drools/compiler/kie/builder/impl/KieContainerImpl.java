@@ -271,9 +271,9 @@ public class KieContainerImpl
                 InternalKnowledgeBuilder kbuilder =
                         (InternalKnowledgeBuilder) KnowledgeBuilderFactory.newKnowledgeBuilder(kBase, builderConfiguration);
 
-                KieBaseUpdateContext context = new KieBaseUpdateContext( kProject, kBase, currentKM, newKM,
-                                                                         cs, modifiedClasses, modifyingUsedClass, unchangedResources,
-                                                                         results, newKieBaseModel, currentKieBaseModel, kbuilder);
+                KieBaseUpdaterImplContext context = new KieBaseUpdaterImplContext(kProject, kBase, currentKM, newKM,
+                                                                                  cs, modifiedClasses, modifyingUsedClass, unchangedResources,
+                                                                                  results, newKieBaseModel, currentKieBaseModel, kbuilder);
 
                 // Multiple updaters are required to be merged together in a single Runnable
                 // to avoid a deadlock while using .fireUntilHalt()
@@ -287,7 +287,10 @@ public class KieContainerImpl
                 KieBaseUpdaters updaters = ServiceRegistry.getInstance().get(KieBaseUpdaters.class);
                 updaters.getChildren()
                         .stream()
-                        .map(kbu -> kbu.create(builderConfiguration, context))
+                        .map(kbu -> kbu.create(new KieBaseUpdatersContext(builderConfiguration,
+                                                                          context.kBase.getRete(),
+                                                                          context.kBase.getRootClassLoader()
+                                                                          )))
                         .forEach(compositeUpdater::add);
 
                 kBase.enqueueModification(compositeUpdater);
@@ -465,6 +468,17 @@ public class KieContainerImpl
         kBase.setContainerId(containerId);
         kBase.setKieContainer(this);
         kBase.initMBeans();
+
+
+//        CompositeRunnable compositeUpdater = new CompositeRunnable();
+//
+//        KieBaseUpdaters updaters = ServiceRegistry.getInstance().get(KieBaseUpdaters.class);
+//        updaters.getChildren()
+//                .stream()
+//                .map(kbu -> kbu.create(builderConfiguration, context))
+//                .forEach(compositeUpdater::add);
+//
+//        kBase.enqueueModification(compositeUpdater);
 
         generateCompiledAlphaNetwork(kBaseModel, kModule, kBase);
 

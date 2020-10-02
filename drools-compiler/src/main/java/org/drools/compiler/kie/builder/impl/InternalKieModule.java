@@ -136,7 +136,7 @@ public interface InternalKieModule extends KieModule, Serializable {
         return filterFileInKBase(this, kieBase, fileName, () -> getResource( fileName ), false);
     }
 
-    default KieBaseUpdater createKieBaseUpdater(KieBaseUpdateContext context) {
+    default KieBaseUpdater createKieBaseUpdater(KieBaseUpdaterImplContext context) {
         return new KieBaseUpdaterImpl(context );
     }
 

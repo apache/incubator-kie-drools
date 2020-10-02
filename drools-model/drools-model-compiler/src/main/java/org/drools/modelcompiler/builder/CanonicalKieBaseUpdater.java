@@ -20,14 +20,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.drools.compiler.builder.InternalKnowledgeBuilder;
 import org.drools.compiler.builder.impl.CompositeKnowledgeBuilderImpl;
-import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.drools.compiler.kie.builder.impl.KieBaseUpdateContext;
+import org.drools.compiler.kie.builder.impl.KieBaseUpdaterImplContext;
 import org.drools.compiler.kie.builder.impl.KieBaseUpdaterImpl;
 import org.drools.compiler.kie.builder.impl.KieBuilderImpl;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
@@ -49,7 +47,7 @@ import org.kie.internal.builder.ResourceChangeSet;
 
 public class CanonicalKieBaseUpdater extends KieBaseUpdaterImpl {
 
-    public CanonicalKieBaseUpdater( KieBaseUpdateContext ctx ) {
+    public CanonicalKieBaseUpdater( KieBaseUpdaterImplContext ctx ) {
         super(ctx);
     }
 

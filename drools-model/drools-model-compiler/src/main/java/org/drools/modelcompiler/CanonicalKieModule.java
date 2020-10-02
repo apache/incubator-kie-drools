@@ -39,7 +39,7 @@ import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kie.builder.impl.FileKieModule;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
-import org.drools.compiler.kie.builder.impl.KieBaseUpdateContext;
+import org.drools.compiler.kie.builder.impl.KieBaseUpdaterImplContext;
 import org.drools.compiler.kie.builder.impl.KieBaseUpdater;
 import org.drools.compiler.kie.builder.impl.KieProject;
 import org.drools.compiler.kie.builder.impl.MemoryKieModule;
@@ -625,7 +625,7 @@ public class CanonicalKieModule implements InternalKieModule {
     }
 
     @Override
-    public KieBaseUpdater createKieBaseUpdater(KieBaseUpdateContext context) {
+    public KieBaseUpdater createKieBaseUpdater(KieBaseUpdaterImplContext context) {
         return new CanonicalKieBaseUpdater(context);
     }
 

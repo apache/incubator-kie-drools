@@ -20,13 +20,18 @@ import java.util.List;
 
 import org.drools.compiler.builder.InternalKnowledgeBuilder;
 import org.drools.compiler.compiler.PackageBuilderErrors;
+import org.drools.core.base.ClassObjectType;
+import org.drools.core.common.ClassAwareObjectStore;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.rule.DialectRuntimeData;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.io.Resource;
+import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.internal.builder.ChangeType;
 import org.kie.internal.builder.CompositeKnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderError;
@@ -35,12 +40,14 @@ import org.kie.internal.builder.ResourceChangeSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class KieBaseUpdaterImpl extends KieBaseUpdater {
+public class KieBaseUpdaterImpl implements KieBaseUpdater {
 
     private static final Logger log = LoggerFactory.getLogger( KieBaseUpdaterImpl.class );
 
-    public KieBaseUpdaterImpl(KieBaseUpdateContext ctx ) {
-        super(ctx);
+    protected final KieBaseUpdaterImplContext ctx;
+
+    public KieBaseUpdaterImpl(KieBaseUpdaterImplContext ctx ) {
+        this.ctx = ctx;
     }
 
     @Override
@@ -197,6 +204,25 @@ public class KieBaseUpdaterImpl extends KieBaseUpdater {
         for (String resourceName : ctx.newKM.getFileNames()) {
             if ( !resourceName.endsWith( ".properties" ) && isFileInKBase(ctx.newKM, ctx.newKieBaseModel, resourceName) ) {
                 ctx.newKM.addResourceToCompiler(ckbuilder, ctx.newKieBaseModel, resourceName);
+            }
+        }
+    }
+
+    protected void clearInstancesOfModifiedClass( Class<?> cls ) {
+        // remove all ObjectTypeNodes for the modified classes
+        ClassObjectType objectType = new ClassObjectType(cls );
+        for ( EntryPointNode epn : ctx.kBase.getRete().getEntryPointNodes().values() ) {
+            epn.removeObjectType( objectType );
+        }
+
+        // remove all instance of the old class from the object stores
+        for (InternalWorkingMemory wm : ctx.kBase.getWorkingMemories()) {
+            for (EntryPoint ep : wm.getEntryPoints()) {
+                InternalWorkingMemoryEntryPoint wmEp = (InternalWorkingMemoryEntryPoint) wm.getWorkingMemoryEntryPoint(ep.getEntryPointId() );
+                ClassAwareObjectStore store = ( (ClassAwareObjectStore) wmEp.getObjectStore() );
+                if ( store.clearClassStore( cls ) ) {
+                    log.warn( "Class " + cls.getName() + " has been modified and therfore its old instances will no longer match" );
+                }
             }
         }
     }
