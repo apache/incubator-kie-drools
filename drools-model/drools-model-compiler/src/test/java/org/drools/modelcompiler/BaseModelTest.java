@@ -92,6 +92,7 @@ public abstract class BaseModelTest {
     @Parameters(name = "{0}")
     public static Object[] params() {
         if(Boolean.valueOf(System.getProperty("alphanetworkCompilerEnabled"))) {
+            System.setProperty("drools.alphaNetworkCompiler", AlphaNetworkCompilerOption.INMEMORY.toString());
             return WITH_ALPHA_NETWORK;
         } else {
             return PLAIN;
@@ -101,9 +102,6 @@ public abstract class BaseModelTest {
     protected final CompilerTest.RUN_TYPE testRunType;
 
     public BaseModelTest( CompilerTest.RUN_TYPE testRunType ) {
-        if(testRunType.isAlphaNetworkCompiler()) {
-            System.setProperty("drools.alphaNetworkCompiler", AlphaNetworkCompilerOption.INMEMORY.toString());
-        }
         this.testRunType = testRunType;
     }
 
