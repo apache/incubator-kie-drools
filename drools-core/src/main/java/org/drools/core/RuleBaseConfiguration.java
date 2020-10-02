@@ -46,6 +46,7 @@ import org.kie.api.conf.SequentialOption;
 import org.kie.api.conf.SessionsPoolOption;
 import org.kie.api.conf.SingleValueKieBaseOption;
 import org.kie.api.runtime.rule.ConsequenceExceptionHandler;
+import org.kie.internal.builder.conf.AlphaNetworkCompilerOption;
 import org.kie.internal.builder.conf.ClassLoaderCacheOption;
 import org.kie.internal.conf.AlphaThresholdOption;
 import org.kie.internal.conf.CompositeKeyDepthOption;
@@ -173,6 +174,8 @@ public class RuleBaseConfiguration
     private KieComponentFactory componentFactory;
 
     private int sessionPoolSize;
+
+    private AlphaNetworkCompilerOption alphaNetworkCompilerEnabled;
 
     private static class DefaultRuleBaseConfigurationHolder {
         private static final RuleBaseConfiguration defaultConf = new RuleBaseConfiguration();
@@ -477,6 +480,10 @@ public class RuleBaseConfiguration
         
         setDeclarativeAgendaEnabled( Boolean.valueOf( this.chainedProperties.getProperty( DeclarativeAgendaOption.PROPERTY_NAME,
                                                                                           "false" ) ) );
+
+        setAlphaNetworkCompilerMode(AlphaNetworkCompilerOption.determineAlphaNetworkCompilerMode(this.chainedProperties.getProperty(
+                AlphaNetworkCompilerOption.PROPERTY_NAME, AlphaNetworkCompilerOption.DISABLED.getPropertyName()
+        )));
     }
 
     /**
@@ -755,7 +762,19 @@ public class RuleBaseConfiguration
     public void setDeclarativeAgendaEnabled(boolean enabled) {
         checkCanChange(); // throws an exception if a change isn't possible;
         this.declarativeAgenda = enabled;
-    }    
+    }
+
+    public AlphaNetworkCompilerOption getAlphaNetworkCompilerEnabled() {
+        return alphaNetworkCompilerEnabled;
+    }
+
+    /**
+     * Enable alpha network compiler
+     */
+    public void setAlphaNetworkCompilerMode(AlphaNetworkCompilerOption option) {
+        checkCanChange(); // throws an exception if a change isn't possible;
+        this.alphaNetworkCompilerEnabled = option;
+    }
 
     public List<Map<String, Object>> getWorkDefinitions() {
         if ( this.workDefinitions == null ) {
@@ -1129,6 +1148,8 @@ public class RuleBaseConfiguration
             return (T) (this.isClassLoaderCacheEnabled() ? ClassLoaderCacheOption.ENABLED : ClassLoaderCacheOption.DISABLED);
         } else if (DeclarativeAgendaOption.class.equals(option)) {
             return (T) (this.isDeclarativeAgenda() ? DeclarativeAgendaOption.ENABLED : DeclarativeAgendaOption.DISABLED);
+        } else if (AlphaNetworkCompilerOption.class.equals(option)) {
+            return (T) (this.alphaNetworkCompilerEnabled);
         }
         return null;
 
@@ -1177,6 +1198,8 @@ public class RuleBaseConfiguration
             setClassLoaderCacheEnabled( ( (ClassLoaderCacheOption) option ).isClassLoaderCacheEnabled());
         } else if (option instanceof DeclarativeAgendaOption) {
             setDeclarativeAgendaEnabled(((DeclarativeAgendaOption) option).isDeclarativeAgendaEnabled());
+        } else if (option instanceof AlphaNetworkCompilerOption) {
+            setAlphaNetworkCompilerMode(((AlphaNetworkCompilerOption) option));
         }
 
     }

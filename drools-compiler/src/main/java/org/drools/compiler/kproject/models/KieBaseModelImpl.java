@@ -42,6 +42,7 @@ import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.conf.SequentialOption;
 import org.kie.api.conf.SessionsPoolOption;
 import org.kie.api.io.ResourceType;
+import org.kie.internal.builder.conf.AlphaNetworkCompilerOption;
 
 import static org.drools.core.util.IoUtils.recursiveListFile;
 import static org.kie.api.conf.SequentialOption.YES;
@@ -65,6 +66,8 @@ public class KieBaseModelImpl
     private SequentialOption             sequential = SequentialOption.NO;
 
     private SessionsPoolOption sessionsPool = SessionsPoolOption.NO;
+
+    private AlphaNetworkCompilerOption   alphaNetworkCompilerOption = AlphaNetworkCompilerOption.DISABLED;
 
     private Map<String, KieSessionModel> kSessions = new HashMap<String, KieSessionModel>();
 
@@ -258,6 +261,14 @@ public class KieBaseModelImpl
         return this;
     }
 
+    public AlphaNetworkCompilerOption getAlphaNetworkCompilerOption() {
+        return alphaNetworkCompilerOption;
+    }
+
+    public void setAlphaNetworkCompilerOption(AlphaNetworkCompilerOption alphaNetworkCompilerOption) {
+        this.alphaNetworkCompilerOption = alphaNetworkCompilerOption;
+    }
+
     public DeclarativeAgendaOption getDeclarativeAgenda() {
         return declarativeAgenda;
     }
@@ -407,6 +418,11 @@ public class KieBaseModelImpl
             if ( eventMode != null ) {
                 kBase.setEventProcessingMode( EventProcessingOption.determineEventProcessingMode( eventMode ) );
             }
+
+            String alphaNetworkCompiler = reader.getAttribute( "alphaNetworkCompiler" );
+            if ( alphaNetworkCompiler != null ) {
+                kBase.setAlphaNetworkCompilerOption( AlphaNetworkCompilerOption.determineAlphaNetworkCompilerMode( alphaNetworkCompiler ) );
+            }
             
             String equalsBehavior = reader.getAttribute( "equalsBehavior" );
             if ( equalsBehavior != null ) {
@@ -475,7 +491,7 @@ public class KieBaseModelImpl
 
     @Override
     public String toString() {
-        return "KieBaseModelImpl [name=" + name + ", includes=" + includes + ", packages=" + getPackages() + ", equalsBehavior=" + equalsBehavior + ", eventProcessingMode=" + eventProcessingMode + ", kSessions=" + kSessions + "]";
+        return "KieBaseModelImpl [name=" + name + ", includes=" + includes + ", packages=" + getPackages() + ", equalsBehavior=" + equalsBehavior + ", eventProcessingMode=" + eventProcessingMode + ", kSessions=" + kSessions + ", alphaNetworkCompiler=" + alphaNetworkCompilerOption + "]";
     }
 
     @Override
