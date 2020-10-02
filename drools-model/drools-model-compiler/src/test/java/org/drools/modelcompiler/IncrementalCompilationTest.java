@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.assertj.core.api.Assertions;
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.modelcompiler.domain.Address;
 import org.drools.modelcompiler.domain.Person;
 import org.junit.Test;
@@ -139,9 +140,13 @@ public class IncrementalCompilationTest extends BaseModelTest {
         ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-upgrade", "1.0.0" );
 
         KieModuleModel kieModuleModel = ks.newKieModuleModel();
+        if(this.testRunType.isAlphaNetworkCompiler()) {
+            kieModuleModel.setConfigurationProperty("drools.alphaNetworkCompiler", Boolean.TRUE.toString());
+        }
         createAndDeployJar( ks, kieModuleModel, releaseId1, drl1, drl2_1 );
 
         KieContainer kc = ks.newKieContainer( releaseId1 );
+        testForAlphaNetworkCompiler(((InternalKnowledgeBase)kc.getKieBase()).getRete());
 
         // Create a session and fire rules
         KieSession ksession = kc.newKieSession();

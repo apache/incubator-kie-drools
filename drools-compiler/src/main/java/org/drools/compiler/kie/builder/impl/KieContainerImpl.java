@@ -287,7 +287,7 @@ public class KieContainerImpl
                 KieBaseUpdaters updaters = ServiceRegistry.getInstance().get(KieBaseUpdaters.class);
                 updaters.getChildren()
                         .stream()
-                        .map(kbu -> kbu.create(new KieBaseUpdatersContext(kBase.getConfiguration(),
+                        .map(kbu -> kbu.create(new KieBaseUpdatersContext(builderConfiguration,
                                                                           context.kBase.getRete(),
                                                                           context.kBase.getRootClassLoader()
                                                                           )))
@@ -315,6 +315,10 @@ public class KieContainerImpl
 
         void add(Runnable runnable) {
             runnables.add( runnable );
+        }
+
+        void addAll(List<Runnable> runnableList) {
+            runnables.addAll( runnableList );
         }
 
         @Override
@@ -466,19 +470,34 @@ public class KieContainerImpl
         kBase.initMBeans();
 
 
-        CompositeRunnable compositeUpdater = new CompositeRunnable();
+//        CompositeRunnable compositeUpdater = new CompositeRunnable();
+//
+//        KieBaseUpdaters updaters = ServiceRegistry.getInstance().get(KieBaseUpdaters.class);
+//        updaters.getChildren()
+//                .stream()
+//                .map(kbu -> kbu.create(builderConfiguration, context))
+//                .forEach(compositeUpdater::add);
+//
+//        kBase.enqueueModification(compositeUpdater);
 
-        KieBaseUpdaters updaters = ServiceRegistry.getInstance().get(KieBaseUpdaters.class);
-        updaters.getChildren()
-                .stream()
-                .map(kbu -> kbu.create(new KieBaseUpdatersContext(kBase.getConfiguration(),
-                                                                  kBase.getRete(),
-                                                                  kBase.getRootClassLoader())))
-                .forEach(compositeUpdater::add);
-
-        kBase.enqueueModification(compositeUpdater);
+        generateCompiledAlphaNetwork(kBaseModel, kModule, kBase);
 
         return kBase;
+    }
+
+    // TODO Luca find a better place to generate the alpha network
+    public void generateCompiledAlphaNetwork(KieBaseModelImpl kBaseModel, InternalKieModule kModule, InternalKnowledgeBase kBase) {
+        final String configurationProperty = kBaseModel.getKModule().getConfigurationProperty(ALPHA_NETWORK_COMPILER_OPTION);
+        final boolean isAlphaNetworkEnabled = Boolean.valueOf(configurationProperty);
+        if (isAlphaNetworkEnabled) {
+            KnowledgeBuilder kbuilder = kModule.getKnowledgeBuilderForKieBase(kBaseModel.getName());
+            kBase.getRete().getEntryPointNodes().values().stream()
+                    .flatMap(ep -> ep.getObjectTypeNodes().values().stream())
+                    .filter(f -> !InitialFact.class.isAssignableFrom(f.getObjectType().getClassType()))
+                    .forEach(otn -> {
+//                        otn.setCompiledNetwork(ObjectTypeNodeCompiler.compile(((InternalKnowledgeBuilder) kbuilder), otn));
+                    });
+        }
     }
 
     private KieBaseModelImpl getKieBaseModelImpl(String kBaseName) {
