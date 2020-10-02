@@ -470,21 +470,25 @@ public class KieContainerImpl
         kBase.setKieContainer(this);
         kBase.initMBeans();
 
-        KnowledgeBuilderImpl knowledgeBuilderForKieBase = (KnowledgeBuilderImpl) kModule.getKnowledgeBuilderForKieBase(kBaseModel.getName());
-        KnowledgeBuilderConfigurationImpl builderConfiguration = knowledgeBuilderForKieBase.getBuilderConfiguration();
+        KnowledgeBuilder knowledgeBuilderForKieBase = kModule.getKnowledgeBuilderForKieBase(kBaseModel.getName());
 
-        CompositeRunnable compositeUpdater = new CompositeRunnable();
+        if(knowledgeBuilderForKieBase instanceof KnowledgeBuilderImpl) {
+            KnowledgeBuilderImpl knowledgeBuilderForImpl = (KnowledgeBuilderImpl)knowledgeBuilderForKieBase;
+            KnowledgeBuilderConfigurationImpl builderConfiguration = knowledgeBuilderForImpl.getBuilderConfiguration();
 
-        KieBaseUpdaters updaters = ServiceRegistry.getInstance().get(KieBaseUpdaters.class);
-        updaters.getChildren()
-                .stream()
-                .map(kbu -> kbu.create(new KieBaseUpdatersContext(builderConfiguration,
-                                                                  kBase.getRete(),
-                                                                  kBase.getRootClassLoader()
-                )))
-                .forEach(compositeUpdater::add);
+            CompositeRunnable compositeUpdater = new CompositeRunnable();
 
-        kBase.enqueueModification(compositeUpdater);
+            KieBaseUpdaters updaters = ServiceRegistry.getInstance().get(KieBaseUpdaters.class);
+            updaters.getChildren()
+                    .stream()
+                    .map(kbu -> kbu.create(new KieBaseUpdatersContext(builderConfiguration,
+                                                                      kBase.getRete(),
+                                                                      kBase.getRootClassLoader()
+                    )))
+                    .forEach(compositeUpdater::add);
+
+            kBase.enqueueModification(compositeUpdater);
+        }
 
         return kBase;
     }
