@@ -255,7 +255,7 @@ public class KieServicesImpl implements InternalKieServices {
 
     public KieMarshallers getMarshallers() {
         // instantiating directly, but we might want to use the service registry instead
-        KieMarshallers kieMarshallers = ServiceRegistry.getInstance().get( KieMarshallers.class );
+        KieMarshallers kieMarshallers = ServiceRegistry.getService( KieMarshallers.class );
         if (kieMarshallers == null) {
             throw new RuntimeException("Marshaller not available, please add the module org.drools:drools-serialization-protobuf to your classpath.");
         }

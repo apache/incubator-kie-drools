@@ -29,7 +29,7 @@ public interface ClassBuilderFactory {
         private static final ClassBuilderFactory factory = getFactory();
 
         private static ClassBuilderFactory getFactory() {
-            ClassBuilderFactory instance = ServiceRegistry.getInstance().get( ClassBuilderFactory.class );
+            ClassBuilderFactory instance = ServiceRegistry.getService( ClassBuilderFactory.class );
             return instance != null ? instance : throwExceptionForMissingMvel();
         }
     }

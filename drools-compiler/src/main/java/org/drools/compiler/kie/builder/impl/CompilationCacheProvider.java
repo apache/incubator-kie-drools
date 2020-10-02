@@ -25,7 +25,7 @@ public interface CompilationCacheProvider {
         private static final CompilationCacheProvider INSTANCE = getCompilationCacheProvider();
 
         private static CompilationCacheProvider getCompilationCacheProvider() {
-            CompilationCacheProvider provider = ServiceRegistry.getInstance().get( CompilationCacheProvider.class );
+            CompilationCacheProvider provider = ServiceRegistry.getService( CompilationCacheProvider.class );
             return provider != null ? provider : DefaultCompilationCacheProvider.INSTANCE;
         }
     }

@@ -23,7 +23,7 @@ public interface FieldAccessorFactory {
         private static final FieldAccessorFactory fieldFactory = getFactory();
 
         private static FieldAccessorFactory getFactory() {
-            FieldAccessorFactory instance = ServiceRegistry.getInstance().get( FieldAccessorFactory.class );
+            FieldAccessorFactory instance = ServiceRegistry.getService( FieldAccessorFactory.class );
             return instance != null ? instance : throwExceptionForMissingMvel();
         }
     }
