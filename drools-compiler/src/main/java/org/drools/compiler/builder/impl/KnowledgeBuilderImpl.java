@@ -313,7 +313,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
 
     private TypeDeclarationBuilder createTypeDeclarationBuilder() {
         TypeDeclarationBuilderFactory typeDeclarationBuilderFactory =
-                Optional.ofNullable(ServiceRegistry.getInstance().get(TypeDeclarationBuilderFactory.class))
+                Optional.ofNullable(ServiceRegistry.getService(TypeDeclarationBuilderFactory.class))
                         .orElse(new DefaultTypeDeclarationBuilderFactory());
 
         return typeDeclarationBuilderFactory.createTypeDeclarationBuilder(this);
@@ -773,7 +773,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
     void addPackageForExternalType(Resource resource,
                                    ResourceType type,
                                    ResourceConfiguration configuration) throws Exception {
-        KieAssemblers assemblers = ServiceRegistry.getInstance().get(KieAssemblers.class);
+        KieAssemblers assemblers = ServiceRegistry.getService(KieAssemblers.class);
 
         assemblers.addResource(this,
                               resource,
@@ -783,7 +783,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
 
     @Deprecated
     void addPackageForExternalType(ResourceType type, List<ResourceWithConfiguration> resources) throws Exception {
-        KieAssemblers assemblers = ServiceRegistry.getInstance().get(KieAssemblers.class);
+        KieAssemblers assemblers = ServiceRegistry.getService(KieAssemblers.class);
 
         assemblers.addResources(this, resources, type);
     }

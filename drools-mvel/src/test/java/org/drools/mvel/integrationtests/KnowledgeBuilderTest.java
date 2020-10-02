@@ -35,7 +35,6 @@ import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.internal.utils.ServiceRegistry;
-import org.kie.api.internal.utils.ServiceRegistryImpl;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
@@ -454,56 +453,9 @@ public class KnowledgeBuilderTest {
     @Ignore
     @Test
     public void testResourceMapping() throws Exception {
-        ServiceRegistryImpl serviceRegistry = (ServiceRegistryImpl) ServiceRegistry.getInstance();
+        ServiceRegistry.Impl serviceRegistry = (ServiceRegistry.Impl) ServiceRegistry.getInstance();
         serviceRegistry.reset();
-/*
-        ServiceDiscoveryImpl.getInstance().addService(PMMLCompiler.class.getCanonicalName(),
-                                                      new PMMLCompiler() {
-                                                          public String compile(InputStream stream, ClassLoader cl) {
-                                                              return "rule R2 when then end";
-                                                          }
 
-                                                          @Override
-                                                          public List<KnowledgeBuilderResult> getResults() {
-                                                              return Collections.emptyList();
-                                                          }
-
-                                                          @Override
-                                                          public void clearResults() {
-                                                              //To change body of implemented methods use File | Settings | File Templates.
-                                                          }
-
-                                                          public Resource[] transform( Resource input, ClassLoader classLoader ) {
-                                                              return new Resource[ 0 ];
-                                                          }
-                                                          
-                                                          public String getCompilerVersion() {
-                                                        	  return "KnowledgeBuilderTest";
-                                                          }
-
-														@Override
-														public List<PMMLResource> precompile(InputStream stream,
-																ClassLoader classLoader, KieBaseModel rootModel) {
-															return Collections.emptyList();
-														}
-
-														@Override
-														public List<PMMLResource> precompile(String fileName,
-																ClassLoader classLoader, KieBaseModel rootModel) {
-															return Collections.emptyList();
-														}
-
-														@Override
-														public Map<String, String> getJavaClasses(InputStream stream) {
-															return Collections.emptyMap();
-														}
-
-														@Override
-														public Map<String, String> getJavaClasses(String fileName) {
-															return Collections.emptyMap();
-														}
-                                                      } );
-*/
         serviceRegistry.reload();
 
         String rule = "package org.drools.mvel.compiler.test\n" +

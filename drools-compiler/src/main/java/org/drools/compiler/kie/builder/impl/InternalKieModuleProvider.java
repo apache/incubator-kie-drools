@@ -65,7 +65,7 @@ public interface InternalKieModuleProvider {
         }
 
         private static InternalKieModuleProvider createZipKieModuleProvider() {
-            InternalKieModuleProvider provider = ServiceRegistry.getInstance().get(InternalKieModuleProvider.class);
+            InternalKieModuleProvider provider = ServiceRegistry.getService(InternalKieModuleProvider.class);
             return provider != null ? provider : new DrlBasedKieModuleProvider();
         }
 

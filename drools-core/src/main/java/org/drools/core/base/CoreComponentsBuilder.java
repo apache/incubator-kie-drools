@@ -30,7 +30,7 @@ public interface CoreComponentsBuilder {
     }
 
     class Holder {
-        private static final CoreComponentsBuilder cBuilder = ServiceRegistry.getInstance().get( CoreComponentsBuilder.class );
+        private static final CoreComponentsBuilder cBuilder = ServiceRegistry.getService( CoreComponentsBuilder.class );
     }
 
     static CoreComponentsBuilder get() {

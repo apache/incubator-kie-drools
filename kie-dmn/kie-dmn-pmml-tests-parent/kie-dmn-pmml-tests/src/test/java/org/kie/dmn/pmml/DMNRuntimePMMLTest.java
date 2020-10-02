@@ -16,6 +16,11 @@
 
 package org.kie.dmn.pmml;
 
+import java.io.InputStreamReader;
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.Map;
+
 import org.drools.compiler.kie.builder.impl.DrlProject;
 import org.junit.Test;
 import org.kie.api.KieServices;
@@ -26,7 +31,11 @@ import org.kie.api.internal.assembler.KieAssemblers;
 import org.kie.api.internal.utils.ServiceRegistry;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieRuntimeFactory;
-import org.kie.dmn.api.core.*;
+import org.kie.dmn.api.core.DMNContext;
+import org.kie.dmn.api.core.DMNModel;
+import org.kie.dmn.api.core.DMNResult;
+import org.kie.dmn.api.core.DMNRuntime;
+import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.assembler.DMNAssemblerService;
 import org.kie.dmn.core.impl.CompositeTypeImpl;
@@ -44,14 +53,12 @@ import org.kie.internal.services.KieAssemblersImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.InputStreamReader;
-import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.Map;
-
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.anything;
+import static org.hamcrest.Matchers.hasEntry;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
@@ -128,7 +135,7 @@ public abstract class DMNRuntimePMMLTest {
      */
     @Test
     public void testSteppedCompilation() {
-        final KieAssemblersImpl assemblers = (KieAssemblersImpl) ServiceRegistry.getInstance().get(KieAssemblers.class);
+        final KieAssemblersImpl assemblers = (KieAssemblersImpl) ServiceRegistry.getService(KieAssemblers.class);
         assemblers.accept(new DMNAssemblerService());
 
         KieServices ks = KieServices.Factory.get();

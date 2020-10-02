@@ -55,7 +55,7 @@ public interface PhreakNetworkNodeFactory {
             private static final PhreakNetworkNodeFactory INSTANCE = createInstance();
 
             private static PhreakNetworkNodeFactory createInstance() {
-                PhreakNetworkNodeFactory factory = ServiceRegistry.getInstance().get(PhreakNetworkNodeFactory.class);
+                PhreakNetworkNodeFactory factory = ServiceRegistry.getService(PhreakNetworkNodeFactory.class);
                 return factory != null ? factory : new PhreakNetworkNodeFactoryImpl();
             }
         }

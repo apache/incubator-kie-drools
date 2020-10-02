@@ -230,7 +230,7 @@ public class KieServicesImpl implements InternalKieServices {
     }
 
     public KieScanner newKieScanner(KieContainer kieContainer) {
-        KieScannerFactoryService scannerFactoryService = ServiceRegistry.getInstance().get(KieScannerFactoryService.class);
+        KieScannerFactoryService scannerFactoryService = ServiceRegistry.getService(KieScannerFactoryService.class);
         if (scannerFactoryService == null) {
             throw new RuntimeException( "Cannot instance a maven based KieScanner, is kie-ci on the classpath?" );
         }
@@ -255,7 +255,7 @@ public class KieServicesImpl implements InternalKieServices {
 
     public KieMarshallers getMarshallers() {
         // instantiating directly, but we might want to use the service registry instead
-        KieMarshallers kieMarshallers = ServiceRegistry.getInstance().get( KieMarshallers.class );
+        KieMarshallers kieMarshallers = ServiceRegistry.getService( KieMarshallers.class );
         if (kieMarshallers == null) {
             throw new RuntimeException("Marshaller not available, please add the module org.drools:drools-serialization-protobuf to your classpath.");
         }
@@ -273,7 +273,7 @@ public class KieServicesImpl implements InternalKieServices {
     }
     
     public KieStoreServices getStoreServices() {
-        return ServiceRegistry.getInstance().get( KieStoreServices.class );
+        return ServiceRegistry.getService( KieStoreServices.class );
     }
 
     public ReleaseId newReleaseId(String groupId, String artifactId, String version) {
