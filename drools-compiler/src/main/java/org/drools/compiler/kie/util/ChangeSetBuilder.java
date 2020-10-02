@@ -37,6 +37,7 @@ import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.compiler.lang.descr.TypeDeclarationDescr;
 import org.drools.compiler.lang.descr.TypeFieldDescr;
 import org.drools.core.addon.TypeResolver;
+import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.io.impl.ByteArrayResource;
 import org.drools.core.util.StringUtils;
 import org.kie.api.io.ResourceType;
@@ -103,7 +104,12 @@ public class ChangeSetBuilder {
                 continue;
             }
 
-            TypeResolver resolver = original.getPackage( typeDeclaration.getNamespace() ).getTypeResolver();
+            InternalKnowledgePackage pkg = original.getPackage( typeDeclaration.getNamespace() );
+            if (pkg == null) {
+                continue;
+            }
+
+            TypeResolver resolver = pkg.getTypeResolver();
             for (TypeFieldDescr field : typeDeclaration.getFields().values()) {
                 String fieldType;
                 try {
@@ -121,7 +127,15 @@ public class ChangeSetBuilder {
         for (String changedClass : changedClasses.values()) {
             result.registerChanges( changedClass, new ResourceChangeSet( changedClass, ChangeType.UPDATED ) );
         }
-        
+
+        if (original.getKieModuleModel() != null) {
+            for (String kieBaseName : original.getKieModuleModel().getKieBaseModels().keySet()) {
+                if ( currentJar.getKnowledgeBuilderForKieBase( kieBaseName ) == null ) {
+                    currentJar.cacheKnowledgeBuilderForKieBase( kieBaseName, original.getKnowledgeBuilderForKieBase( kieBaseName ) );
+                }
+            }
+        }
+
         return result;
     }
 
