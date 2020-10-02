@@ -38,7 +38,7 @@ import org.slf4j.LoggerFactory;
  */
 public class InMemoryCompiler {
 
-    private static final Logger logger = LoggerFactory.getLogger(KogitoAssetsProcessor.class);
+    private static final Logger logger = LoggerFactory.getLogger(InMemoryCompiler.class);
 
 
     private final JavaCompiler javaCompiler;
