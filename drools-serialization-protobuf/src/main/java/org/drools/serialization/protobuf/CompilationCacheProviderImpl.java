@@ -18,19 +18,19 @@ import java.io.ByteArrayInputStream;
 import java.util.Map;
 
 import com.google.protobuf.ExtensionRegistry;
-import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
+import org.drools.compiler.commons.jci.stores.ResourceStore;
 import org.drools.compiler.kie.builder.impl.AbstractKieModule;
 import org.drools.compiler.kie.builder.impl.CompilationCacheProvider;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.InternalKieModule.CompilationCache;
 import org.drools.compiler.kie.builder.impl.KieBuilderImpl;
 import org.drools.core.util.Drools;
-import org.drools.serialization.protobuf.kie.MarshallingKieMetaInfoBuilder;
 import org.drools.serialization.protobuf.kie.KieModuleCache.CompDataEntry;
 import org.drools.serialization.protobuf.kie.KieModuleCache.CompilationData;
 import org.drools.serialization.protobuf.kie.KieModuleCache.Header;
 import org.drools.serialization.protobuf.kie.KieModuleCache.KModuleCache;
 import org.drools.serialization.protobuf.kie.KieModuleCacheHelper;
+import org.drools.serialization.protobuf.kie.MarshallingKieMetaInfoBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,7 +76,7 @@ public class CompilationCacheProviderImpl implements CompilationCacheProvider {
     }
 
     @Override
-    public void writeKieModuleMetaInfo( InternalKieModule kModule, MemoryFileSystem trgMfs ) {
+    public void writeKieModuleMetaInfo(InternalKieModule kModule, ResourceStore trgMfs) {
         new MarshallingKieMetaInfoBuilder( kModule ).writeKieModuleMetaInfo( trgMfs );
     }
 }
