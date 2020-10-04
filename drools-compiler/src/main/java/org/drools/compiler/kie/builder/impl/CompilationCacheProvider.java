@@ -16,7 +16,7 @@ package org.drools.compiler.kie.builder.impl;
 
 import java.util.Map;
 
-import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
+import org.drools.compiler.commons.jci.stores.ResourceStore;
 import org.kie.api.internal.utils.ServiceRegistry;
 
 public interface CompilationCacheProvider {
@@ -36,7 +36,7 @@ public interface CompilationCacheProvider {
 
     InternalKieModule.CompilationCache getCompilationCache( AbstractKieModule kieModule, Map<String, InternalKieModule.CompilationCache> compilationCache, String kbaseName);
 
-    void writeKieModuleMetaInfo( InternalKieModule kModule, MemoryFileSystem trgMfs );
+    void writeKieModuleMetaInfo(InternalKieModule kModule, ResourceStore trgMfs);
 
     enum DefaultCompilationCacheProvider implements CompilationCacheProvider {
         INSTANCE;
@@ -47,7 +47,7 @@ public interface CompilationCacheProvider {
         }
 
         @Override
-        public void writeKieModuleMetaInfo( InternalKieModule kModule, MemoryFileSystem trgMfs ) {
+        public void writeKieModuleMetaInfo(InternalKieModule kModule, ResourceStore trgMfs) {
             new KieMetaInfoBuilder( kModule ).writeKieModuleMetaInfo( trgMfs );
         }
     }
