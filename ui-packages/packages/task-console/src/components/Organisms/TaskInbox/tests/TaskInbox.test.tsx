@@ -305,9 +305,9 @@ describe('TaskInbox tests', () => {
         .props()
         ['onSorting'](3, 'asc');
     });
-    await wait(10);
+    await wait(20);
     wrapper = wrapper.update();
-    expect(wrapper.find('DataTable').props()['sortBy']).toEqual({
+    expect(wrapper.find(DataTable).props()['sortBy']).toEqual({
       index: 3,
       direction: 'asc'
     });
@@ -319,7 +319,7 @@ describe('TaskInbox tests', () => {
         .simulate('click');
     });
     await wait(10);
-    expect(wrapper.find('DataTable').props()['sortBy']).toEqual({
+    expect(wrapper.find(DataTable).props()['sortBy']).toEqual({
       index: 3,
       direction: 'asc'
     });

@@ -64,6 +64,7 @@ const getFormGroup = (wrapper: ReactWrapper, fieldId: string): ReactWrapper => {
   return wrapper.findWhere(element => element.prop('fieldId') === fieldId);
 };
 
+Date.now = jest.fn(() => 1601881200000); // UTC 2020-10-05 07:00:00
 describe('TaskDetails testing', () => {
   it('Snapshot testing', () => {
     const wrapper = getWrapper(
