@@ -100,13 +100,17 @@ public class DecisionCodegen extends AbstractGenerator {
         this.decisionContainerGenerator = new DecisionContainerGenerator(applicationCanonicalName, this.cResources);
     }
 
-    private void init() {
+    private void loadModelsAndValidate() {
         Map<Resource, CollectedResource> r2cr = cResources.stream().collect(Collectors.toMap(CollectedResource::resource, Function.identity()));
+        // First, we perform static validation on directly the XML
         DecisionValidation.dmnValidateResources(context(), r2cr.keySet());
+        // DMN model processing; any semantic error during compilation will also be thrown accordingly
         DMNRuntime dmnRuntime = DMNRuntimeBuilder.fromDefaults()
-                .buildConfiguration()
-                .fromResources(r2cr.keySet())
-                .getOrElseThrow(e -> new RuntimeException("Error compiling DMN model(s)", e));
+                                                 .buildConfiguration()
+                                                 .fromResources(r2cr.keySet())
+                                                 .getOrElseThrow(e -> new RuntimeException("Error compiling DMN model(s)", e));
+        // Any post-compilation of the DMN model validations: DT (static) analysis
+        DecisionValidation.dmnValidateDecisionTablesInModels(context(), dmnRuntime.getModels());
         List<DMNResource> dmnResources = dmnRuntime.getModels().stream().map(model -> new DMNResource(model, r2cr.get(model.getResource()))).collect(toList());
         resources.addAll(dmnResources);
     }
@@ -127,7 +131,7 @@ public class DecisionCodegen extends AbstractGenerator {
         if (cResources.isEmpty()) {
             return Collections.emptyList();
         }
-        init();
+        loadModelsAndValidate();
         generateAndStoreRestResources();
         generateAndStoreDecisionModelResourcesProvider();
 

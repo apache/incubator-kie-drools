@@ -1,0 +1,45 @@
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://kiegroup.org/dmn/_A212B6C9-59F6-4340-A328-AA4C020A654E" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_84121285-86DD-4BA0-9BEC-FFDCDF07D29F" name="basic" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://kiegroup.org/dmn/_A212B6C9-59F6-4340-A328-AA4C020A654E">
+  <dmn:extensionElements/>
+  <dmn:inputData id="_4885B416-5A64-447E-BD94-9F860D0A3DAB" name="a number">
+    <dmn:extensionElements/>
+    <dmn:variable id="_939B2253-ABDF-4A42-AF96-B1170A5D99EC" name="a number" typeRef="number"/>
+  </dmn:inputData>
+  <dmn:decision id="_C1FFABBA-1220-440C-BFD6-6ED1A7D882C5" name="is it positive or negative?">
+    <dmn:extensionElements/>
+    <dmn:variable id="_C7E3220A-B4B1-421E-8F02-782062E8E670" name="is it positive or negative?"/>
+    <dmn:informationRequirement id="_D52C76C8-1984-4482-9A11-AC8253893B50">
+      <dmn:requiredInput href="#_4885B416-5A64-447E-BD94-9F860D0A3DAB"/>
+    </dmn:informationRequirement>
+    <dmn:decisionTable id="_F3D5D777-F4E7-42A1-8C91-1E18CA2D1ECF" hitPolicy="UNIQUE" preferredOrientation="Rule-as-Row">
+      <dmn:input id="_0BA60B5D-D464-4EB6-8096-3ACA7A43F664">
+        <dmn:inputExpression id="_F0C4128B-1FB2-4A84-8790-7DE79E314DD4" typeRef="number">
+          <dmn:text>a number</dmn:text>
+        </dmn:inputExpression>
+      </dmn:input>
+      <dmn:output id="_D7716AFC-DE6C-4C93-804E-44BA1A6AE80D" typeRef="UNDEFINED"/>
+      <dmn:annotation name="annotation-1"/>
+      <dmn:rule id="_3ADCB78D-8628-431F-8F90-8FFFA2A365D7">
+        <dmn:inputEntry id="_9288742F-FE61-4144-A207-5EEDF99E3CE6">
+          <dmn:text>&lt;=0</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_626EE9A2-283A-4AD8-91F9-4FCCC5E5BC64">
+          <dmn:text>"negative"</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text/>
+        </dmn:annotationEntry>
+      </dmn:rule>
+      <dmn:rule id="_B45FD66A-0227-4252-8844-010DFC94470C">
+        <dmn:inputEntry id="_E1501ADD-7816-4406-BEAA-92B7F4C79D25">
+          <dmn:text>&gt;=0</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_E4991060-CECB-4678-99F7-B6C883CD4A14">
+          <dmn:text>"positive"</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text>deliberately overlapping =0 to trigger an Error</dmn:text>
+        </dmn:annotationEntry>
+      </dmn:rule>
+    </dmn:decisionTable>
+  </dmn:decision>
+</dmn:definitions>

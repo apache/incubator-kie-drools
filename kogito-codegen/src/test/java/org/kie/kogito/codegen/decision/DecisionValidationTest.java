@@ -18,6 +18,7 @@ package org.kie.kogito.codegen.decision;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Properties;
+import java.util.function.Consumer;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -28,11 +29,19 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class DecisionValidationTest {
 
+    private DecisionCodegen codeGenerator(String path, Consumer<Properties> codeGenContextProperties) throws Exception {
+        DecisionCodegen codeGenerator = DecisionCodegen.ofPath(Paths.get(path).toAbsolutePath());
+        Properties props = new Properties();
+        codeGenContextProperties.accept(props);
+        codeGenerator.setContext(GeneratorContext.ofProperties(props));
+        return codeGenerator;
+    }
+
     @Test
     public void testDefault() throws Exception {
-        DecisionCodegen codeGenerator = DecisionCodegen.ofPath(Paths.get("src/test/resources/decision-validation-duplicateName").toAbsolutePath());
-        codeGenerator.setContext(GeneratorContext.ofProperties(new Properties()));
-
+        DecisionCodegen codeGenerator = codeGenerator("src/test/resources/decision-validation-duplicateName",
+                                                      p -> {
+                                                      });
         assertThrows(RuntimeException.class,
                      () -> {
                          codeGenerator.generate();
@@ -42,22 +51,44 @@ public class DecisionValidationTest {
 
     @Test
     public void testIgnore() throws Exception {
-        DecisionCodegen codeGenerator = DecisionCodegen.ofPath(Paths.get("src/test/resources/decision-validation-duplicateName").toAbsolutePath());
-        Properties props = new Properties();
-        props.setProperty(DecisionCodegen.VALIDATION_CONFIGURATION_KEY, "IGNORE");
-        codeGenerator.setContext(GeneratorContext.ofProperties(props));
-
+        DecisionCodegen codeGenerator = codeGenerator("src/test/resources/decision-validation-duplicateName",
+                                                      p -> p.setProperty(DecisionCodegen.VALIDATION_CONFIGURATION_KEY, "IGNORE"));
         List<GeneratedFile> files = codeGenerator.generate();
         Assertions.assertThat(files).hasSizeGreaterThanOrEqualTo(1);
     }
 
     @Test
     public void testDisabled() throws Exception {
-        DecisionCodegen codeGenerator = DecisionCodegen.ofPath(Paths.get("src/test/resources/decision-validation-duplicateName").toAbsolutePath());
-        Properties props = new Properties();
-        props.setProperty(DecisionCodegen.VALIDATION_CONFIGURATION_KEY, "DISABLED");
-        codeGenerator.setContext(GeneratorContext.ofProperties(props));
+        DecisionCodegen codeGenerator = codeGenerator("src/test/resources/decision-validation-duplicateName",
+                                                      p -> p.setProperty(DecisionCodegen.VALIDATION_CONFIGURATION_KEY, "DISABLED"));
+        List<GeneratedFile> files = codeGenerator.generate();
+        Assertions.assertThat(files).hasSizeGreaterThanOrEqualTo(1);
+    }
 
+    @Test
+    public void testDTAnalysisDefault() throws Exception {
+        DecisionCodegen codeGenerator = codeGenerator("src/test/resources/decision-validation-DTsemanticError",
+                                                      p -> {
+                                                      });
+        assertThrows(RuntimeException.class,
+                     () -> {
+                         codeGenerator.generate();
+                     },
+                     "Expected Validation would have failed for defaults.");
+    }
+
+    @Test
+    public void testDTAnalysisIgnore() throws Exception {
+        DecisionCodegen codeGenerator = codeGenerator("src/test/resources/decision-validation-DTsemanticError",
+                                                      p -> p.setProperty(DecisionCodegen.VALIDATION_CONFIGURATION_KEY, "IGNORE"));
+        List<GeneratedFile> files = codeGenerator.generate();
+        Assertions.assertThat(files).hasSizeGreaterThanOrEqualTo(1);
+    }
+
+    @Test
+    public void testDTAnalysisDisabled() throws Exception {
+        DecisionCodegen codeGenerator = codeGenerator("src/test/resources/decision-validation-DTsemanticError",
+                                                      p -> p.setProperty(DecisionCodegen.VALIDATION_CONFIGURATION_KEY, "DISABLED"));
         List<GeneratedFile> files = codeGenerator.generate();
         Assertions.assertThat(files).hasSizeGreaterThanOrEqualTo(1);
     }
