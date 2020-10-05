@@ -16,7 +16,6 @@
 
 package org.drools.compiler.integrationtests;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 import org.drools.core.reteoo.AlphaNode;
@@ -24,7 +23,6 @@ import org.drools.core.reteoo.CompositeObjectSinkAdapter;
 import org.drools.core.reteoo.ObjectSink;
 import org.drools.core.reteoo.ObjectSinkPropagator;
 import org.drools.core.reteoo.ObjectTypeNode;
-import org.drools.core.reteoo.ReteDumper;
 import org.drools.core.reteoo.SingleObjectSinkAdapter;
 import org.drools.testcoverage.common.model.Person;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
@@ -55,28 +53,6 @@ public class AlphaNodeRangeIndexingTest {
         public static Collection<Object[]> getParameters() {
             return TestParametersUtil.getKieBaseCloudConfigurations(true);
         }
-
-    //    @Parameterized.Parameters(name = "KieBase type={0}")
-    //    public static Collection<Object[]> getParameters() {
-    //        System.setProperty("alphanetworkCompilerEnabled", "true");
-    //        final Collection<Object[]> parameters = new ArrayList<>();
-    //        parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY_ALPHA_NETWORK});
-    //        return parameters;
-    //    }
-
-    //  @Parameterized.Parameters(name = "KieBase type={0}")
-    //  public static Collection<Object[]> getParameters() {
-    //      final Collection<Object[]> parameters = new ArrayList<>();
-    //      parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY_MODEL_PATTERN});
-    //      return parameters;
-    //  }
-
-//    @Parameterized.Parameters(name = "KieBase type={0}")
-//    public static Collection<Object[]> getParameters() {
-//        final Collection<Object[]> parameters = new ArrayList<>();
-//        parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY});
-//        return parameters;
-//    }
 
     @Test
     public void testInteger() {
@@ -111,10 +87,8 @@ public class AlphaNodeRangeIndexingTest {
         ObjectSink[] sinks = sinkAdapter.getSinks();
         assertEquals(6, sinks.length);
         assertEquals(6, sinkAdapter.size());
-        assertNull(sinkAdapter.getRangeIndexableAscSinks());
-        assertNull(sinkAdapter.getRangeIndexableDescSinks());
-        assertEquals(3, sinkAdapter.getRangeIndexAscTreeMap().entrySet().iterator().next().getValue().size());
-        assertEquals(3, sinkAdapter.getRangeIndexDescTreeMap().entrySet().iterator().next().getValue().size());
+        assertNull(sinkAdapter.getRangeIndexableSinks());
+        assertEquals(6, sinkAdapter.getRangeIndexMap().entrySet().iterator().next().getValue().size());
 
         ksession.insert(new Person("John", 18));
         int fired = ksession.fireAllRules();
@@ -158,10 +132,8 @@ public class AlphaNodeRangeIndexingTest {
         ObjectSink[] sinks = sinkAdapter.getSinks();
         assertEquals(6, sinks.length);
         assertEquals(6, sinkAdapter.size());
-        assertNull(sinkAdapter.getRangeIndexableAscSinks());
-        assertNull(sinkAdapter.getRangeIndexableDescSinks());
-        assertEquals(3, sinkAdapter.getRangeIndexAscTreeMap().entrySet().iterator().next().getValue().size());
-        assertEquals(3, sinkAdapter.getRangeIndexDescTreeMap().entrySet().iterator().next().getValue().size());
+        assertNull(sinkAdapter.getRangeIndexableSinks());
+        assertEquals(6, sinkAdapter.getRangeIndexMap().entrySet().iterator().next().getValue().size());
 
         ksession.insert(new Person("John"));
         int fired = ksession.fireAllRules();
@@ -182,12 +154,6 @@ public class AlphaNodeRangeIndexingTest {
                            "then\n end\n" +
                            "rule test2\n when\n" +
                            "   Person( age < 25 )\n" +
-                           "then\n end\n" +
-                           "rule test3\n when\n" +
-                           "   Person( age > 8 )\n" +
-                           "then\n end\n" +
-                           "rule test4\n when\n" +
-                           "   Person( age < 60 )\n" +
                            "then\n end\n";
 
         final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("indexing-test", kieBaseTestConfiguration, drl);
@@ -197,20 +163,18 @@ public class AlphaNodeRangeIndexingTest {
         assertNotNull(otn);
         final CompositeObjectSinkAdapter sinkAdapter = (CompositeObjectSinkAdapter) otn.getObjectSinkPropagator();
         ObjectSink[] sinks = sinkAdapter.getSinks();
-        assertEquals(4, sinks.length);
-        assertEquals(4, sinkAdapter.size());
-        assertEquals(2, sinkAdapter.getRangeIndexableAscSinks().size()); // under threshold so not yet indexed
-        assertEquals(2, sinkAdapter.getRangeIndexableDescSinks().size()); // under threshold so not yet indexed
-        assertNull(sinkAdapter.getRangeIndexAscTreeMap());
-        assertNull(sinkAdapter.getRangeIndexDescTreeMap());
+        assertEquals(2, sinks.length);
+        assertEquals(2, sinkAdapter.size());
+        assertEquals(2, sinkAdapter.getRangeIndexableSinks().size()); // under threshold so not yet indexed
+        assertNull(sinkAdapter.getRangeIndexMap());
 
         ksession.insert(new Person("John", 18));
         int fired = ksession.fireAllRules();
-        assertEquals(4, fired);
+        assertEquals(2, fired);
 
         ksession.insert(new Person("Paul", 60));
         fired = ksession.fireAllRules();
-        assertEquals(2, fired);
+        assertEquals(1, fired);
     }
 
     @Test
@@ -237,10 +201,8 @@ public class AlphaNodeRangeIndexingTest {
         ObjectSink[] sinks = sinkAdapter.getSinks();
         assertEquals(3, sinks.length);
         assertEquals(3, sinkAdapter.size());
-        assertNull(sinkAdapter.getRangeIndexableAscSinks());
-        assertNull(sinkAdapter.getRangeIndexableDescSinks());
-        assertEquals(3, sinkAdapter.getRangeIndexAscTreeMap().entrySet().iterator().next().getValue().size()); // only ascending constraints are indexed
-        assertNull(sinkAdapter.getRangeIndexDescTreeMap());
+        assertNull(sinkAdapter.getRangeIndexableSinks());
+        assertEquals(3, sinkAdapter.getRangeIndexMap().entrySet().iterator().next().getValue().size());
 
         AlphaNode alphaNode1 = (AlphaNode) sinks[0];
         ObjectSinkPropagator objectSinkPropagator = alphaNode1.getObjectSinkPropagator();
@@ -294,8 +256,9 @@ public class AlphaNodeRangeIndexingTest {
         assertEquals(3, fired1);
         ksession1.dispose();
 
+        // remove 2 rules
+        kbase.removeRule("org.drools.compiler.test", "test2");
         kbase.removeRule("org.drools.compiler.test", "test3");
-        kbase.removeRule("org.drools.compiler.test", "test4");
 
         final ObjectTypeNode otn = KieUtil.getObjectTypeNode(kbase, Person.class);
         assertNotNull(otn);
@@ -303,10 +266,8 @@ public class AlphaNodeRangeIndexingTest {
         ObjectSink[] sinks = sinkAdapter.getSinks();
         assertEquals(4, sinks.length);
         assertEquals(4, sinkAdapter.size());
-        assertEquals(2, sinkAdapter.getRangeIndexableAscSinks().size()); // under threshold so put back from tree
-        assertEquals(2, sinkAdapter.getRangeIndexableDescSinks().size()); // under threshold so put back from tree
-        assertNull(sinkAdapter.getRangeIndexAscTreeMap());
-        assertNull(sinkAdapter.getRangeIndexDescTreeMap());
+        assertNull(sinkAdapter.getRangeIndexableSinks());
+        assertEquals(4, sinkAdapter.getRangeIndexMap().entrySet().iterator().next().getValue().size()); // still above threshold
 
         final KieSession ksession2 = kbase.newKieSession();
 
@@ -318,6 +279,30 @@ public class AlphaNodeRangeIndexingTest {
         fired2 = ksession2.fireAllRules();
         assertEquals(2, fired2);
         ksession2.dispose();
+
+        // remove 2 more rules
+        kbase.removeRule("org.drools.compiler.test", "test4");
+        kbase.removeRule("org.drools.compiler.test", "test5");
+
+        final ObjectTypeNode otn2 = KieUtil.getObjectTypeNode(kbase, Person.class);
+        assertNotNull(otn2);
+        final CompositeObjectSinkAdapter sinkAdapter2 = (CompositeObjectSinkAdapter) otn2.getObjectSinkPropagator();
+        ObjectSink[] sinks2 = sinkAdapter2.getSinks();
+        assertEquals(2, sinks2.length);
+        assertEquals(2, sinkAdapter2.size());
+        assertEquals(2, sinkAdapter2.getRangeIndexableSinks().size()); // under threshold so put back from rangeIndex
+        assertNull(sinkAdapter2.getRangeIndexMap());
+
+        final KieSession ksession3 = kbase.newKieSession();
+
+        ksession3.insert(new Person("John", 18));
+        int fired3 = ksession3.fireAllRules();
+        assertEquals(1, fired3);
+
+        ksession3.insert(new Person("Paul", 60));
+        fired3 = ksession3.fireAllRules();
+        assertEquals(1, fired3);
+        ksession3.dispose();
     }
 
     @Test
