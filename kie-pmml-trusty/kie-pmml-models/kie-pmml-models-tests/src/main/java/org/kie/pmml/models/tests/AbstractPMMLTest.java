@@ -13,34 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.kie.pmml.models.tests;
 
-package org.kie.pmml.models.drools.tree.tests;
-
+import java.io.File;
 import java.util.Map;
 
-import org.kie.api.KieBase;
-import org.kie.api.KieServices;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
-import org.kie.api.runtime.KieContainer;
-import org.kie.api.runtime.KieRuntimeFactory;
 import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
+import org.kie.pmml.evaluator.assembler.factories.PMMLRuntimeFactory;
 import org.kie.pmml.evaluator.core.PMMLContextImpl;
 import org.kie.pmml.evaluator.core.utils.PMMLRequestDataBuilder;
 
-public abstract class AbstractPMMLTreeTest {
+import static org.kie.test.util.filesystem.FileUtils.getFile;
 
-    private static KieContainer kieContainer;
+public class AbstractPMMLTest {
 
-    static {
-        final KieServices kieServices = KieServices.get();
-        kieContainer = kieServices.newKieClasspathContainer();
-    }
-
-    protected static PMMLRuntime getPMMLRuntime(String kbaseName) {
-        KieBase kieBase = kieContainer.getKieBase(kbaseName);
-        final KieRuntimeFactory kieRuntimeFactory = KieRuntimeFactory.of(kieBase);
-        return kieRuntimeFactory.get(PMMLRuntime.class);
+    protected static PMMLRuntime getPMMLRuntime(String kbaseName, String fileName) {
+        File pmmlFile = getFile(fileName);
+        return PMMLRuntimeFactory.getPMMLRuntime(kbaseName, pmmlFile);
     }
 
     protected static PMMLRequestData getPMMLRequestData(String modelName, Map<String, Object> parameters) {

@@ -319,7 +319,11 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
         return typeDeclarationBuilderFactory.createTypeDeclarationBuilder(this);
     }
 
-    public void setReleaseId( ReleaseId releaseId ) {
+    public ReleaseId getReleaseId() {
+        return releaseId;
+    }
+
+    public void setReleaseId(ReleaseId releaseId ) {
         this.releaseId = releaseId;
     }
 

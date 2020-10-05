@@ -41,6 +41,7 @@ import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.drools.core.util.StringUtils.getPkgUUID;
 import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrFactory.getBaseDescr;
 
 /**
@@ -75,6 +76,8 @@ public abstract class DroolsModelProvider<T extends Model, E extends KiePMMLDroo
             KiePMMLDroolsAST kiePMMLDroolsAST = getKiePMMLDroolsASTCommon(dataDictionary, transformationDictionary, model, fieldTypeMap);
             Map<String, String> sourcesMap = getKiePMMLDroolsModelSourcesMap(dataDictionary, transformationDictionary, model, fieldTypeMap, packageName);
             PackageDescr packageDescr = getPackageDescr(kiePMMLDroolsAST, packageName);
+            String pkgUUID = getPkgUUID( ((KnowledgeBuilderImpl) kBuilder).getReleaseId(), packageName);
+            packageDescr.setPreferredPkgUUID(pkgUUID);
             E toReturn = (E) new KiePMMLDroolsModelWithSources(model.getModelName(), packageName, sourcesMap, packageDescr);
             ((KnowledgeBuilderImpl) kBuilder).addPackage(packageDescr);
             return toReturn;

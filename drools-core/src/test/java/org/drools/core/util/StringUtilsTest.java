@@ -15,12 +15,16 @@
 
 package org.drools.core.util;
 
-
 import org.junit.Assert;
 import org.junit.Test;
+import org.kie.api.builder.ReleaseId;
 
+import static org.drools.core.util.StringUtils.getPkgUUID;
 import static org.drools.core.util.StringUtils.indexOfOutOfQuotes;
+import static org.drools.core.util.StringUtils.md5Hash;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class StringUtilsTest {
 
@@ -246,5 +250,76 @@ public class StringUtilsTest {
         assertEquals(0, indexOfOutOfQuotes("bla\"bla\"bla", "bla", 0));
         assertEquals(8, indexOfOutOfQuotes("bla\"bla\"bla", "bla", 1));
         assertEquals(-1, indexOfOutOfQuotes("bla\"bla\"bla", "bla", 9));
+    }
+
+    @Test
+    public void getPkgUUIDFromReleaseIdNotNullNotSnapshot() {
+        ReleaseId releaseId = new TestingReleaseId(false);
+        String packageName = "apackage";
+        String retrieved = getPkgUUID(releaseId, packageName);
+        String expected = md5Hash(releaseId.toString()+packageName);
+        assertEquals(expected, retrieved);
+    }
+
+    @Test
+    public void getPkgUUIDFromReleaseIdNotNullSnapshot() {
+        ReleaseId releaseId = new TestingReleaseId(true);
+        String packageName = "apackage";
+        String retrieved = getPkgUUID(releaseId, packageName);
+        String unexpected = md5Hash(releaseId.toString()+packageName);
+        assertNotEquals(unexpected, retrieved);
+    }
+
+    @Test
+    public void getPkgUUIDFromReleaseIdNull() {
+        ReleaseId releaseId = null;
+        String packageName = "apackage";
+        String retrieved = getPkgUUID(releaseId, packageName);
+        assertNotNull(retrieved);
+    }
+
+    @Test
+    public void getPkgUUIDFromGAV() {
+        String gav = "group:artifact:version";
+        String packageName = "apackage";
+        String retrieved = getPkgUUID(gav, packageName);
+        String expected = md5Hash(gav+packageName);
+        assertEquals(expected, retrieved);
+    }
+
+
+    private static class TestingReleaseId implements ReleaseId {
+
+        final boolean snapshot;
+
+        public TestingReleaseId(boolean snapshot) {
+            this.snapshot = snapshot;
+        }
+
+        @Override
+        public String getGroupId() {
+            return "group";
+        }
+
+        @Override
+        public String getArtifactId() {
+            return "artifact";
+        }
+
+        @Override
+        public String getVersion() {
+            return "version";
+        }
+
+        @Override
+        public String toExternalForm() {
+            return "externalForm";
+        }
+
+        @Override
+        public boolean isSnapshot() {
+            return snapshot;
+        }
+
     }
 }

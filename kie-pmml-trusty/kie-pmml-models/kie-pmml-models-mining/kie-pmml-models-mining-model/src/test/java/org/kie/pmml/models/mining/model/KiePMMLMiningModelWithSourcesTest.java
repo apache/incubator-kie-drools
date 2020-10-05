@@ -17,33 +17,60 @@
 package org.kie.pmml.models.mining.model;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class KiePMMLMiningModelWithSourcesTest {
 
     private static final String MINING_MODEL_NAME = "MINING_MODEL_NAME";
     private static final String PACKAGE_NAME = "PACKAGE_NAME";
-    private static KiePMMLMiningModelWithSources KIE_PMML_MINING_MODEL;
+    private final static Map<String, String> SOURCES_MAP = new HashMap<>();
 
-    @BeforeClass
-    public static void setup() {
-        KIE_PMML_MINING_MODEL = new KiePMMLMiningModelWithSources(MINING_MODEL_NAME, PACKAGE_NAME, Collections.EMPTY_MAP, Collections.emptyList());
-        assertNotNull(KIE_PMML_MINING_MODEL);
+    private KiePMMLMiningModelWithSources kiePMMLMiningModelWithSources;
+
+    @Before
+    public void setup() {
+        kiePMMLMiningModelWithSources = new KiePMMLMiningModelWithSources(MINING_MODEL_NAME, PACKAGE_NAME, SOURCES_MAP, Collections.emptyList());
     }
 
     @Test(expected = KiePMMLException.class)
     public void evaluate() {
-        KIE_PMML_MINING_MODEL.evaluate("KB", Collections.EMPTY_MAP);
+        kiePMMLMiningModelWithSources.evaluate("KB", Collections.EMPTY_MAP);
     }
 
     @Test(expected = KiePMMLException.class)
     public void getOutputFieldsMap() {
-        KIE_PMML_MINING_MODEL.getOutputFieldsMap();
+        kiePMMLMiningModelWithSources.getOutputFieldsMap();
+    }
+
+
+    @Test
+    public void getSourcesMap() {
+        assertEquals(SOURCES_MAP, kiePMMLMiningModelWithSources.getSourcesMap());
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void addToGetSourcesMap() {
+        Map<String, String> retrieved = kiePMMLMiningModelWithSources.getSourcesMap();
+        retrieved.put("KEY", "VALUE");
+    }
+
+    @Test
+    public void addSourceMap() {
+        Map<String, String> retrieved = kiePMMLMiningModelWithSources.getSourcesMap();
+        assertTrue(retrieved.isEmpty());
+        kiePMMLMiningModelWithSources.addSourceMap("KEY", "VALUE");
+        retrieved = kiePMMLMiningModelWithSources.getSourcesMap();
+        assertTrue(retrieved.containsKey("KEY"));
+        assertEquals("VALUE", retrieved.get("KEY"));
     }
 
 }

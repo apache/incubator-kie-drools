@@ -30,7 +30,6 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.VoidType;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
-import static org.drools.modelcompiler.util.StringUtil.md5Hash;
 
 public class MaterializedLambdaConsequence extends MaterializedLambda {
 

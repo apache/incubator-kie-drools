@@ -14,7 +14,6 @@
 */
 
 package org.drools.mvel.compiler.lang.descr;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -34,6 +33,7 @@ import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.mvel.compiler.Person;
 import org.junit.Test;
 
+import static org.drools.core.util.StringUtils.generateUUID;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -69,8 +69,8 @@ public class PackageDescrTest {
     }
 
     @Test
-    public void testSerialization() {
-        PackageDescrBuilder builder = DescrFactory.newPackage().name( "foo" );
+    public void testSerializationImportDescr() {
+        PackageDescrBuilder builder = DescrFactory.newPackage().name("foo");
         String className = Person.class.getName();
         builder.newImport().target(className).end();
         PackageDescr descr = builder.getDescr();
@@ -92,12 +92,43 @@ public class PackageDescrTest {
             assertFalse(newDescr.getImports().contains(badImportDescr));
             assertTrue(newDescr.getImports().contains(importDescr));
 
-        } catch ( IOException ioe ) {
-            fail( ioe.getMessage() );
-        } catch ( ClassNotFoundException cnfe ) {
-            fail( cnfe.getMessage() );
+            assertFalse(newDescr.getPreferredPkgUUID().isPresent());
+        } catch (IOException | ClassNotFoundException e) {
+            fail(e.getMessage());
         }
-
     }
 
+    @Test
+    public void testSerializationPkgUUID() {
+        PackageDescrBuilder builder = DescrFactory.newPackage().name("foo");
+        String className = Person.class.getName();
+        builder.newImport().target(className).end();
+        PackageDescr descr = builder.getDescr();
+        String pkgUUID = generateUUID();
+        descr.setPreferredPkgUUID(pkgUUID);
+        try {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ObjectOutput out = new ObjectOutputStream(baos);
+            descr.writeExternal(out);
+
+            ObjectInput in = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
+            PackageDescr newDescr = new PackageDescr();
+            newDescr.readExternal(in);
+
+            assertTrue(newDescr.getPreferredPkgUUID().isPresent());
+            assertEquals(pkgUUID, newDescr.getPreferredPkgUUID().get());
+        } catch (IOException | ClassNotFoundException e) {
+            fail(e.getMessage());
+        }
+    }
+
+    @Test
+    public void testGetPreferredPkgUUID() {
+        PackageDescr descr = new PackageDescr();
+        assertFalse(descr.getPreferredPkgUUID().isPresent());
+        String pkgUUID = generateUUID();
+        descr.setPreferredPkgUUID(pkgUUID);
+        assertTrue(descr.getPreferredPkgUUID().isPresent());
+        assertEquals(pkgUUID, descr.getPreferredPkgUUID().get());
+    }
 }

@@ -28,10 +28,12 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
+import org.kie.pmml.models.tests.AbstractPMMLTest;
 
 @RunWith(Parameterized.class)
-public class PredictorTermRegressionTest extends AbstractPMMLRegressionTest {
+public class PredictorTermRegressionTest extends AbstractPMMLTest {
 
+    private static final String FILE_NAME = "PredictorTermRegression.pmml";
     private static final String MODEL_NAME = "PredictorTermRegression";
     private static final String TARGET_FIELD = "result";
     private static PMMLRuntime pmmlRuntime;
@@ -48,7 +50,7 @@ public class PredictorTermRegressionTest extends AbstractPMMLRegressionTest {
 
     @BeforeClass
     public static void setupClass() {
-        pmmlRuntime = getPMMLRuntime(MODEL_NAME);
+        pmmlRuntime = getPMMLRuntime(MODEL_NAME, FILE_NAME);
     }
 
     @Parameterized.Parameters

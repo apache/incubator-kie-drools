@@ -28,9 +28,12 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
+import org.kie.pmml.models.tests.AbstractPMMLTest;
 
 @RunWith(Parameterized.class)
-public class SegmentationMedian2MiningTest extends AbstractPMMLMiningTest {
+public class SegmentationMedian2MiningTest extends AbstractPMMLTest {
+
+    private static final String FILE_NAME = "segmentationMedian2Mining.pmml";
     private static final String MODEL_NAME = "SegmentationMedian2Mining";
     private static final String TARGET_FIELD = "result";
     private static PMMLRuntime pmmlRuntime;
@@ -47,7 +50,7 @@ public class SegmentationMedian2MiningTest extends AbstractPMMLMiningTest {
 
     @BeforeClass
     public static void setupClass() {
-        pmmlRuntime = getPMMLRuntime(MODEL_NAME);
+        pmmlRuntime = getPMMLRuntime(MODEL_NAME, FILE_NAME);
     }
 
     @Parameterized.Parameters

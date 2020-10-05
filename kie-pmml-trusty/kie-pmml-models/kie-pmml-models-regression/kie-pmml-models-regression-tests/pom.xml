@@ -14,31 +14,40 @@
   <description>PMML Regression Tests</description>
 
   <dependencies>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-mvel</artifactId>
-    </dependency>
+    <!-- TEST -->
+    <!-- PMML -->
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-pmml-models-regression-model</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-pmml-models-regression-compiler</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-pmml-models-regression-evaluator</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>commons-io</groupId>
-      <artifactId>commons-io</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-models-tests</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-pmml-evaluator-assembler</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-compiler-api</artifactId>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
+    <!-- KIE -->
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-test-util</artifactId>
@@ -54,15 +63,20 @@
         </exclusion>
       </exclusions>
     </dependency>
+    <!-- EXTERNAL -->
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
+      <groupId>org.jpmml</groupId>
+      <artifactId>pmml-model</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>kie-pmml-compiler-api</artifactId>
-      <classifier>tests</classifier>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>

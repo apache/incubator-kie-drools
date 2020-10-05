@@ -29,10 +29,12 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
+import org.kie.pmml.models.tests.AbstractPMMLTest;
 
 @RunWith(Parameterized.class)
-public class LogisticRegressionNoneNormalizationTest extends AbstractPMMLRegressionTest {
+public class LogisticRegressionNoneNormalizationTest extends AbstractPMMLTest {
 
+    private static final String FILE_NAME = "LogisticRegressionNoneNormalization.pmml";
     private static final String MODEL_NAME = "LogisticRegressionNoneNormalization";
     private static final String TARGET_FIELD = "Species";
     private static final String PROBABILITY_SETOSA_FIELD = "Probability_setosa";
@@ -67,7 +69,7 @@ public class LogisticRegressionNoneNormalizationTest extends AbstractPMMLRegress
 
     @BeforeClass
     public static void setupClass() {
-        pmmlRuntime = getPMMLRuntime(MODEL_NAME);
+        pmmlRuntime = getPMMLRuntime(MODEL_NAME, FILE_NAME);
     }
 
     @Parameterized.Parameters
