@@ -19,7 +19,6 @@ package org.optaplanner.persistence.xstream.api.score;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
-import org.assertj.core.api.Assertions;
 import org.optaplanner.core.api.score.Score;
 
 import com.thoughtworks.xstream.XStream;
@@ -41,7 +40,7 @@ public abstract class AbstractScoreXStreamConverterTest {
         String xmlString = xStream.toXML(input);
         W output = (W) xStream.fromXML(xmlString);
 
-        Assertions.assertThat(output.getScore()).isEqualTo(expectedScore);
+        assertThat(output.getScore()).isEqualTo(expectedScore);
         String regex;
         if (expectedScore != null) {
             regex = "<([\\w\\-\\.]+)( id=\"\\d+\")?>" // Start of element

@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.exhaustivesearch;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,7 +29,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
@@ -428,7 +428,7 @@ public class BlackBoxExhaustiveSearchPhaseTest {
         SolverFactory<TestdataDifficultyComparingSolution> solverFactory = SolverFactory.create(solverConfig);
 
         if (exhaustiveSearchType == ExhaustiveSearchType.BRUTE_FORCE && nodeExplorationType != null) {
-            Assertions.assertThatIllegalArgumentException()
+            assertThatIllegalArgumentException()
                     .isThrownBy(solverFactory::buildSolver)
                     .withMessage("The phaseConfig (ExhaustiveSearchPhaseConfig) has an "
                             + "nodeExplorationType (" + nodeExplorationType.name()

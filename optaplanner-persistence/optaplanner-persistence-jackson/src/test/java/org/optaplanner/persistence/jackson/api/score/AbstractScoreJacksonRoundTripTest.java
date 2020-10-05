@@ -21,7 +21,6 @@ import static org.assertj.core.api.Assertions.fail;
 
 import java.io.IOException;
 
-import org.assertj.core.api.Assertions;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.persistence.jackson.api.AbstractJacksonRoundTripTest;
 
@@ -45,7 +44,7 @@ public abstract class AbstractScoreJacksonRoundTripTest
         } catch (IOException e) {
             throw new IllegalStateException("Marshalling or unmarshalling for input (" + input + ") failed.", e);
         }
-        Assertions.assertThat(output.getScore()).isEqualTo(expectedScore);
+        assertThat(output.getScore()).isEqualTo(expectedScore);
         String regex;
         if (expectedScore != null) {
             regex = "\\{\\s*" // Start of element

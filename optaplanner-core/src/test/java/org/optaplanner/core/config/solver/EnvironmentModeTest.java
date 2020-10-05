@@ -17,6 +17,7 @@
 package org.optaplanner.core.config.solver;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,7 +27,6 @@ import java.util.Random;
 import java.util.stream.IntStream;
 
 import org.assertj.core.api.Assertions;
-import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
@@ -195,7 +195,7 @@ public class EnvironmentModeTest {
         ((DefaultSolver<TestdataSolution>) solver1).addPhaseLifecycleListener(listener);
         ((DefaultSolver<TestdataSolution>) solver2).addPhaseLifecycleListener(listener2);
 
-        SoftAssertions.assertSoftly(softly -> IntStream.range(0, NUMBER_OF_TIMES_RUN)
+        assertSoftly(softly -> IntStream.range(0, NUMBER_OF_TIMES_RUN)
                 .forEach(i -> {
                     solver1.solve(inputProblem);
                     solver2.solve(inputProblem);
@@ -213,7 +213,7 @@ public class EnvironmentModeTest {
         ((DefaultSolver<TestdataSolution>) solver1).addPhaseLifecycleListener(listener);
         ((DefaultSolver<TestdataSolution>) solver2).addPhaseLifecycleListener(listener2);
 
-        SoftAssertions.assertSoftly(softly -> IntStream.range(0, NUMBER_OF_TIMES_RUN)
+        assertSoftly(softly -> IntStream.range(0, NUMBER_OF_TIMES_RUN)
                 .forEach(i -> {
                     solver1.solve(inputProblem);
                     solver2.solve(inputProblem);
@@ -230,7 +230,7 @@ public class EnvironmentModeTest {
         Random random = factory1.createRandom();
         Random random2 = factory2.createRandom();
 
-        SoftAssertions.assertSoftly(softly -> IntStream.range(0, NUMBER_OF_RANDOM_NUMBERS_GENERATED)
+        assertSoftly(softly -> IntStream.range(0, NUMBER_OF_RANDOM_NUMBERS_GENERATED)
                 .forEach(i -> softly.assertThat(random.nextInt())
                         .as("Random factories should generate the same results "
                                 + "in a reproducible environment mode.")
@@ -241,7 +241,7 @@ public class EnvironmentModeTest {
         Random random = factory1.createRandom();
         Random random2 = factory2.createRandom();
 
-        SoftAssertions.assertSoftly(softly -> IntStream.range(0, NUMBER_OF_RANDOM_NUMBERS_GENERATED)
+        assertSoftly(softly -> IntStream.range(0, NUMBER_OF_RANDOM_NUMBERS_GENERATED)
                 .forEach(i -> softly.assertThat(random.nextInt())
                         .as("Random factories should not generate exactly the same results "
                                 + "in the non-reproducible environment mode. "

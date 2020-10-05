@@ -27,7 +27,6 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
-import org.assertj.core.api.Assertions;
 import org.eclipse.persistence.jaxb.MarshallerProperties;
 import org.eclipse.persistence.jaxb.UnmarshallerProperties;
 import org.optaplanner.core.api.score.Score;
@@ -60,7 +59,7 @@ public abstract class AbstractScoreJaxbAdapterTest {
         } catch (JAXBException e) {
             throw new IllegalStateException("Marshalling or unmarshalling for input (" + input + ") failed.", e);
         }
-        Assertions.assertThat(output.getScore()).isEqualTo(expectedScore);
+        assertThat(output.getScore()).isEqualTo(expectedScore);
         String regex;
         if (expectedScore != null) {
             regex = "<\\?[^\\?]*\\?>" // XML header
@@ -108,7 +107,7 @@ public abstract class AbstractScoreJaxbAdapterTest {
         } catch (JAXBException e) {
             throw new IllegalStateException("Marshalling or unmarshalling for input (" + input + ") failed.", e);
         }
-        Assertions.assertThat(output.getScore()).isEqualTo(expectedScore);
+        assertThat(output.getScore()).isEqualTo(expectedScore);
         String regex;
         if (expectedScore != null) {
             regex = "\\{\\R" // Opening bracket

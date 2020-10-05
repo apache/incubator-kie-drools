@@ -34,7 +34,6 @@ import javax.transaction.RollbackException;
 import javax.transaction.SystemException;
 import javax.transaction.TransactionManager;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.kie.test.util.db.PersistenceUtil;
@@ -93,7 +92,7 @@ public abstract class AbstractScoreJpaTest {
             EntityManager em = entityManagerFactory.createEntityManager();
             E jpaEntity = em.find(jpaEntityClass, id);
             em.persist(jpaEntity);
-            Assertions.assertThat(jpaEntity.getScore()).isEqualTo(oldScore);
+            assertThat(jpaEntity.getScore()).isEqualTo(oldScore);
             jpaEntity.setScore(newScore);
             jpaEntity = em.merge(jpaEntity);
             transactionManager.commit();
@@ -109,7 +108,7 @@ public abstract class AbstractScoreJpaTest {
             transactionManager.begin();
             EntityManager em = entityManagerFactory.createEntityManager();
             E jpaEntity = em.find(jpaEntityClass, id);
-            Assertions.assertThat(jpaEntity.getScore()).isEqualTo(score);
+            assertThat(jpaEntity.getScore()).isEqualTo(score);
             transactionManager.commit();
         } catch (NotSupportedException | SystemException | RollbackException | HeuristicMixedException
                 | HeuristicRollbackException e) {

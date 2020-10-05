@@ -20,7 +20,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.extractSingleton;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
@@ -226,7 +225,7 @@ public class StrategicOscillationByLevelFinalistPodiumTest {
         finalistPodium.addMove(moveScope1);
 
         // The better is picked
-        Assertions.assertThat(finalistPodium.getFinalistList()).containsOnly(moveScope1);
+        assertThat(finalistPodium.getFinalistList()).containsOnly(moveScope1);
     }
 
     protected <Solution_> LocalSearchMoveScope<Solution_> buildMoveScope(

@@ -7,7 +7,6 @@ import static org.optaplanner.core.config.heuristic.selector.common.SelectionCac
 import static org.optaplanner.core.config.heuristic.selector.common.SelectionOrder.ORIGINAL;
 import static org.optaplanner.core.config.heuristic.selector.common.SelectionOrder.SORTED;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig;
@@ -95,7 +94,7 @@ public class NearbySelectionConfigTest {
     public void buildNearbyRandomWithNoRandomSelection() {
         NearbySelectionConfig nearbySelectionConfig = buildNearbySelectionConfig();
 
-        Assertions.assertThat(NearbyRandomFactory.create(nearbySelectionConfig).buildNearbyRandom(false)).isNull();
+        assertThat(NearbyRandomFactory.create(nearbySelectionConfig).buildNearbyRandom(false)).isNull();
     }
 
     @Test

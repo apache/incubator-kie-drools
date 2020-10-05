@@ -16,7 +16,8 @@
 
 package org.optaplanner.examples.nqueens.app;
 
-import org.assertj.core.api.Assertions;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
@@ -29,7 +30,7 @@ public class NQueensAppTest {
         NQueensApp nQueensApp = new NQueensApp();
         SolverFactory<NQueens> solverFactory = nQueensApp.createSolverFactoryByApi();
         Solver<NQueens> solver = solverFactory.buildSolver();
-        Assertions.assertThat(solver).isNotNull();
+        assertThat(solver).isNotNull();
     }
 
 }
