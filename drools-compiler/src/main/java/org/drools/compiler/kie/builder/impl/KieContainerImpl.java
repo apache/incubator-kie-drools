@@ -90,8 +90,6 @@ public class KieContainerImpl
 
     private static final Logger log = LoggerFactory.getLogger( KieContainerImpl.class );
 
-    public static final String ALPHA_NETWORK_COMPILER_OPTION = "drools.alphaNetworkCompiler";
-
     private KieProject kProject;
 
     private final Map<String, KieBase> kBases = new ConcurrentHashMap<String, KieBase>();
