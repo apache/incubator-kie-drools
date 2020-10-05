@@ -37,7 +37,6 @@ import org.drools.core.reteoo.CompositeObjectSinkAdapter;
 import org.drools.core.reteoo.JoinNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.NotNode;
-import org.drools.core.reteoo.ObjectSink;
 import org.drools.core.reteoo.ObjectSinkNodeList;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.ReteDumper;
@@ -67,7 +66,6 @@ import static org.drools.core.util.DroolsTestUtil.rulestoMap;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
@@ -838,129 +836,5 @@ public class IndexingTest {
             }
             return row;
         }
-    }
-
-    @Test
-    public void testAlphaNodeRangeIndex() {
-        final String drl =
-                "package org.drools.compiler.test\n" +
-                           "import " + Person.class.getCanonicalName() + "\n" +
-                           "rule test1\n" +
-                           "when\n" +
-                           "   Person( age >= 18 )\n" +
-                           "then\n" +
-                           "end\n" +
-                           "rule test2\n" +
-                           "when\n" +
-                           "   Person( age < 25 )\n" +
-                           "then\n" +
-                           "end\n" +
-                           "rule test3\n" +
-                           "when\n" +
-                           "   Person( age > 8 )\n" +
-                           "then\n" +
-                           "end\n" +
-                           "rule test4\n" +
-                           "when\n" +
-                           "   Person( age < 60 )\n" +
-                           "then\n" +
-                           "end\n" +
-                           "rule test5\n" +
-                           "when\n" +
-                           "   Person( age > 12 )\n" +
-                           "then\n" +
-                           "end\n" +
-                           "rule test6\n" +
-                           "when\n" +
-                           "   Person( age <= 4 )\n" +
-                           "then\n" +
-                           "end\n";
-
-        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("indexing-test", kieBaseTestConfiguration, drl);
-        final KieSession ksession = kbase.newKieSession();
-
-        final ObjectTypeNode otn = KieUtil.getObjectTypeNode(kbase, Person.class);
-        assertNotNull(otn);
-        final CompositeObjectSinkAdapter sinkAdapter = (CompositeObjectSinkAdapter) otn.getObjectSinkPropagator();
-        ObjectSink[] sinks = sinkAdapter.getSinks();
-        for (ObjectSink objectSink : sinks) {
-            System.out.println("sink : " + objectSink);
-        }
-        assertEquals(6, sinks.length);
-        assertEquals(6, sinkAdapter.size());
-        assertNull(sinkAdapter.getRangeIndexableAscSinks());
-        assertNull(sinkAdapter.getRangeIndexableDescSinks());
-        assertEquals(3, sinkAdapter.getRangeIndexAscTreeMap().entrySet().iterator().next().getValue().size());
-        assertEquals(3, sinkAdapter.getRangeIndexDescTreeMap().entrySet().iterator().next().getValue().size());
-
-        ksession.insert(new Person("John", 18));
-        int fired = ksession.fireAllRules();
-        assertEquals(5, fired);
-
-        ksession.insert(new Person("Paul", 60));
-        fired = ksession.fireAllRules();
-        assertEquals(3, fired);
-    }
-
-    @Test
-    public void testAlphaNodeRangeIndexString() {
-        final String drl =
-                "package org.drools.compiler.test\n" +
-                           "import " + Person.class.getCanonicalName() + "\n" +
-                           "rule test1\n" +
-                           "when\n" +
-                           "   Person( name >= \"Ann\" )\n" +
-                           "then\n" +
-                           "end\n" +
-                           "rule test2\n" +
-                           "when\n" +
-                           "   Person( name < \"Bob\" )\n" +
-                           "then\n" +
-                           "end\n" +
-                           "rule test3\n" +
-                           "when\n" +
-                           "   Person( name > \"Kent\" )\n" +
-                           "then\n" +
-                           "end\n" +
-                           "rule test4\n" +
-                           "when\n" +
-                           "   Person( name < \"Steve\" )\n" +
-                           "then\n" +
-                           "end\n" +
-                           "rule test5\n" +
-                           "when\n" +
-                           "   Person( name > \"John\" )\n" +
-                           "then\n" +
-                           "end\n" +
-                           "rule test6\n" +
-                           "when\n" +
-                           "   Person( name <= \"Paul\" )\n" +
-                           "then\n" +
-                           "end\n";
-
-        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("indexing-test", kieBaseTestConfiguration, drl);
-        final KieSession ksession = kbase.newKieSession();
-
-        final ObjectTypeNode otn = KieUtil.getObjectTypeNode(kbase, Person.class);
-        assertNotNull(otn);
-        final CompositeObjectSinkAdapter sinkAdapter = (CompositeObjectSinkAdapter) otn.getObjectSinkPropagator();
-        ObjectSink[] sinks = sinkAdapter.getSinks();
-        for (ObjectSink objectSink : sinks) {
-            System.out.println("sink : " + objectSink);
-        }
-        assertEquals(6, sinks.length);
-        assertEquals(6, sinkAdapter.size());
-        assertNull(sinkAdapter.getRangeIndexableAscSinks());
-        assertNull(sinkAdapter.getRangeIndexableDescSinks());
-        assertEquals(3, sinkAdapter.getRangeIndexAscTreeMap().entrySet().iterator().next().getValue().size());
-        assertEquals(3, sinkAdapter.getRangeIndexDescTreeMap().entrySet().iterator().next().getValue().size());
-
-        ksession.insert(new Person("John"));
-        int fired = ksession.fireAllRules();
-        assertEquals(3, fired);
-
-        ksession.insert(new Person("Paul"));
-        fired = ksession.fireAllRules();
-        assertEquals(5, fired);
     }
 }

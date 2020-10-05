@@ -571,7 +571,7 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
         rangeIndexTree.clear();
         rangeIndexTreeMap.remove(fieldIndex);
 
-        fieldIndex.setHashed(false);
+        fieldIndex.setRangeIndexed(false);
     }
 
     private boolean isRangeIndexable(AlphaNode alphaNode) {
