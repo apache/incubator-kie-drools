@@ -14,7 +14,6 @@
  */
 package org.kie.internal.decision;
 
-import java.io.InputStream;
 import java.util.function.Supplier;
 
 import org.kie.api.management.GAV;
@@ -24,13 +23,9 @@ public interface DecisionModelResource extends Supplier<String> {
 
     GAV getGav();
 
-    String getPath();
-
     String getNamespace();
 
     String getModelName();
 
     DecisionModelType getModelType();
-
-    InputStream getInputStream();
 }

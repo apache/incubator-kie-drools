@@ -16,6 +16,8 @@
 
 package org.kie.kogito.tracing.decision;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStreamReader;
 import java.util.Collections;
 import java.util.List;
 
@@ -24,25 +26,25 @@ import org.kie.api.management.GAV;
 import org.kie.internal.decision.DecisionModelResource;
 import org.kie.internal.decision.DecisionModelResourcesProvider;
 import org.kie.kogito.decision.DecisionModelType;
-import org.kie.kogito.dmn.DecisionModelRelativeResource;
+import org.kie.kogito.dmn.DefaultDecisionModelResource;
 
 import static org.kie.kogito.tracing.decision.QuarkusDecisionTracingTest.MODEL_NAME;
 import static org.kie.kogito.tracing.decision.QuarkusDecisionTracingTest.MODEL_NAMESPACE;
-import static org.kie.kogito.tracing.decision.QuarkusDecisionTracingTest.MODEL_RESOURCE;
 
 @Mock
 public class DecisionModelResourcesProviderMock implements DecisionModelResourcesProvider {
 
+    private static final String CONTENT = "content";
+
     @Override
     public List<DecisionModelResource> get() {
-        DecisionModelRelativeResource resource = new DecisionModelRelativeResource(
+        DecisionModelResource resource = new DefaultDecisionModelResource(
                 new GAV("test", "test", "test"),
-                MODEL_RESOURCE,
                 MODEL_NAMESPACE,
                 MODEL_NAME,
                 DecisionModelType.DMN,
-                this.getClass()
-                );
+                new InputStreamReader(new ByteArrayInputStream(CONTENT.getBytes())));
+
         return Collections.singletonList(resource);
     }
 }

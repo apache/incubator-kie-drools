@@ -47,13 +47,12 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-
 public class QuarkusDecisionTracingTest {
 
-    public final static String MODEL_RESOURCE = "/Traffic Violation.dmn";
-    public final static String MODEL_NAMESPACE = "https://github.com/kiegroup/drools/kie-dmn/_A4BCA8B8-CF08-433F-93B2-A2598F19ECFF";
-    public final static String MODEL_NAME = "Traffic Violation";
+    static final String MODEL_NAMESPACE = "https://github.com/kiegroup/drools/kie-dmn/_A4BCA8B8-CF08-433F-93B2-A2598F19ECFF";
+    static final String MODEL_NAME = "Traffic Violation";
 
+    private static final String MODEL_RESOURCE = "/Traffic Violation.dmn";
     private static final ObjectMapper MAPPER = new ObjectMapper().registerModule(JsonFormat.getCloudEventJacksonModule());
     private static final String TEST_EXECUTION_ID = "7c50581e-6e5b-407b-91d6-2ffb1d47ebc0";
     private static final String TEST_SERVICE_URL = "localhost:8080";

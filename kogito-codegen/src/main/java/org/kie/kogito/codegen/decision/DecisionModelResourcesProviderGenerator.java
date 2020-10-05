@@ -15,9 +15,6 @@
 
 package org.kie.kogito.codegen.decision;
 
-import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -38,11 +35,11 @@ import org.kie.api.management.GAV;
 import org.kie.kogito.codegen.AddonsConfig;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 import org.kie.kogito.decision.DecisionModelType;
-import org.kie.kogito.dmn.DecisionModelJarResource;
-import org.kie.kogito.dmn.DecisionModelRelativeResource;
+import org.kie.kogito.dmn.DefaultDecisionModelResource;
 
 import static com.github.javaparser.StaticJavaParser.parse;
 import static org.kie.kogito.codegen.CodegenUtils.newObject;
+import static org.kie.kogito.codegen.decision.ReadResourceUtil.getReadResourceMethod;
 
 public class DecisionModelResourcesProviderGenerator {
 
@@ -98,31 +95,25 @@ public class DecisionModelResourcesProviderGenerator {
 
     private void setupResourcesVariable(final ClassOrInterfaceDeclaration typeDeclaration) {
         final List<MethodDeclaration> getResourcesMethods = typeDeclaration.getMethodsBySignature("getResources");
+        final ClassOrInterfaceType applicationClass = StaticJavaParser.parseClassOrInterfaceType(applicationCanonicalName);
+
         if (getResourcesMethods.size() != 1) {
             throw (new RuntimeException("A \"getResources()\" method was not found in " + TEMPLATE_JAVA));
         }
         final MethodDeclaration getResourcesMethod = getResourcesMethods.get(0);
         final BlockStmt body = getResourcesMethod.getBody().orElseThrow(() -> new RuntimeException("Can't find the body of the \"get()\" method."));
-        final VariableDeclarator variable = getResourcesMethod.findFirst(VariableDeclarator.class).orElseThrow(() -> new RuntimeException("Can't find a variable declaration in the \"get()\" method."));
+        final VariableDeclarator resourcePathsVariable = getResourcesMethod.findFirst(VariableDeclarator.class).orElseThrow(() -> new RuntimeException("Can't find a variable declaration in the \"get()\" method."));
+        final MethodCallExpr add = new MethodCallExpr(resourcePathsVariable.getNameAsExpression(), "add");
+
         for (DMNResource resource : resources) {
-            final MethodCallExpr add = new MethodCallExpr(variable.getNameAsExpression(), "add");
-            if (resource.getPath().toString().endsWith(".jar")) {
-                add.addArgument(newObject(DecisionModelJarResource.class,
-                                          mockGAV(),
-                                          new StringLiteralExpr(getDecisionModelJarResourcePath(resource)),
-                                          new StringLiteralExpr(resource.getDmnModel().getNamespace()),
-                                          new StringLiteralExpr(resource.getDmnModel().getName()),
-                                          makeDMNType()));
-            } else {
-                final ClassOrInterfaceType applicationClass = StaticJavaParser.parseClassOrInterfaceType(applicationCanonicalName);
-                add.addArgument(newObject(DecisionModelRelativeResource.class,
-                                          mockGAV(),
-                                          new StringLiteralExpr(getDecisionModelRelativeResourcePath(resource)),
-                                          new StringLiteralExpr(resource.getDmnModel().getNamespace()),
-                                          new StringLiteralExpr(resource.getDmnModel().getName()),
-                                          makeDMNType(),
-                                          new FieldAccessExpr(applicationClass.getNameAsExpression(), "class")));
-            }
+            final MethodCallExpr getResAsStream = getReadResourceMethod(applicationClass, resource.getCollectedResource());
+            final MethodCallExpr isr = new MethodCallExpr("readResource").addArgument(getResAsStream);
+            add.addArgument(newObject(DefaultDecisionModelResource.class,
+                                      mockGAV(),
+                                      new StringLiteralExpr(resource.getDmnModel().getNamespace()),
+                                      new StringLiteralExpr(resource.getDmnModel().getName()),
+                                      makeDMNType(),
+                                      isr));
             body.addStatement(body.getStatements().size() - 1, add);
         }
     }
@@ -138,15 +129,5 @@ public class DecisionModelResourcesProviderGenerator {
     private FieldAccessExpr makeDMNType() {
         NameExpr clazz = new NameExpr(DecisionModelType.class.getName());
         return new FieldAccessExpr(clazz, "DMN");
-    }
-
-    private String getDecisionModelJarResourcePath(final DMNResource resource) {
-        return resource.getDmnModel().getResource().getSourcePath();
-    }
-
-    private String getDecisionModelRelativeResourcePath(final DMNResource resource) {
-        String source = getDecisionModelJarResourcePath(resource);
-        Path relativizedPath = resource.getPath().relativize(Paths.get(source));
-        return "/" + relativizedPath.toString().replace(File.separatorChar, '/');
     }
 }

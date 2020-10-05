@@ -104,9 +104,9 @@ public class DecisionCodegen extends AbstractGenerator {
         Map<Resource, CollectedResource> r2cr = cResources.stream().collect(Collectors.toMap(CollectedResource::resource, Function.identity()));
         DecisionValidation.dmnValidateResources(context(), r2cr.keySet());
         DMNRuntime dmnRuntime = DMNRuntimeBuilder.fromDefaults()
-                                                 .buildConfiguration()
-                                                 .fromResources(r2cr.keySet())
-                                                 .getOrElseThrow(e -> new RuntimeException("Error compiling DMN model(s)", e));
+                .buildConfiguration()
+                .fromResources(r2cr.keySet())
+                .getOrElseThrow(e -> new RuntimeException("Error compiling DMN model(s)", e));
         List<DMNResource> dmnResources = dmnRuntime.getModels().stream().map(model -> new DMNResource(model, r2cr.get(model.getResource()))).collect(toList());
         resources.addAll(dmnResources);
     }
@@ -185,9 +185,11 @@ public class DecisionCodegen extends AbstractGenerator {
     }
 
     private void generateAndStoreDecisionModelResourcesProvider() {
-        final DecisionModelResourcesProviderGenerator generator = new DecisionModelResourcesProviderGenerator(packageName, applicationCanonicalName, resources)
-                                                                                                                                                               .withDependencyInjection(annotator)
-                                                                                                                                                               .withAddons(addonsConfig);
+        final DecisionModelResourcesProviderGenerator generator = new DecisionModelResourcesProviderGenerator(packageName,
+                                                                                                              applicationCanonicalName,
+                                                                                                              resources)
+                .withDependencyInjection(annotator)
+                .withAddons(addonsConfig);
         storeFile(GeneratedFile.Type.CLASS, generator.generatedFilePath(), generator.generate());
     }
 
