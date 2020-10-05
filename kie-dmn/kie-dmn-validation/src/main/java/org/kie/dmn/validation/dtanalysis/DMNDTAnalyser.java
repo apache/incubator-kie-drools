@@ -78,7 +78,7 @@ import org.kie.dmn.validation.dtanalysis.model.Overlap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DMNDTAnalyser {
+public class DMNDTAnalyser implements InternalDMNDTAnalyser {
 
     private static final Logger LOG = LoggerFactory.getLogger(DMNDTAnalyser.class);
     private final org.kie.dmn.feel.FEEL FEEL;
@@ -91,6 +91,7 @@ public class DMNDTAnalyser {
         outputClauseVisitor = new DMNDTAnalyserOutputClauseVisitor((List) dmnProfiles);
     }
 
+    @Override
     public List<DTAnalysis> analyse(DMNModel model, Set<DMNValidator.Validation> flags) {
         if (!flags.contains(Validation.ANALYZE_DECISION_TABLE)) {
             throw new IllegalArgumentException();

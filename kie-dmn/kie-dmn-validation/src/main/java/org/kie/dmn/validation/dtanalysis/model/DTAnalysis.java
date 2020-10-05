@@ -732,7 +732,7 @@ public class DTAnalysis {
         return hp == HitPolicy.UNIQUE || hp == HitPolicy.ANY || hp == HitPolicy.PRIORITY || hp == HitPolicy.FIRST;
     }
 
-    private String nameOrIDOfTable() {
+    public String nameOrIDOfTable() {
         if (sourceDT.getOutputLabel() != null && !sourceDT.getOutputLabel().isEmpty()) {
             return sourceDT.getOutputLabel();
         } else if (sourceDT.getParent() instanceof NamedElement) { // DT is decision logic of Decision, and similar cases.
