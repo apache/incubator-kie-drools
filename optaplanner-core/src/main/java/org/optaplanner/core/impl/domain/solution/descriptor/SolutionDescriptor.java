@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.impl.domain.solution.descriptor;
 
+import static java.util.stream.Collectors.toSet;
+import static java.util.stream.Stream.concat;
 import static org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory.MemberAccessorType.FIELD_OR_GETTER_METHOD;
 import static org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory.MemberAccessorType.FIELD_OR_GETTER_METHOD_WITH_SETTER;
 import static org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory.MemberAccessorType.FIELD_OR_READ_METHOD;
@@ -25,6 +27,7 @@ import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -157,6 +160,7 @@ public class SolutionDescriptor<Solution_> {
     private final Map<String, MemberAccessor> problemFactCollectionMemberAccessorMap;
     private final Map<String, MemberAccessor> entityMemberAccessorMap;
     private final Map<String, MemberAccessor> entityCollectionMemberAccessorMap;
+    private Set<Class<?>> problemFactOrEntityClassSet;
     private MemberAccessor scoreMemberAccessor;
     private ScoreDefinition scoreDefinition;
 
@@ -332,6 +336,15 @@ public class SolutionDescriptor<Solution_> {
                     if (Collection.class.isAssignableFrom(type)) {
                         Type genericType = (member instanceof Field) ? ((Field) member).getGenericType()
                                 : ((Method) member).getGenericReturnType();
+                        String memberName = member.getName();
+                        if (!(genericType instanceof ParameterizedType)) {
+                            throw new IllegalArgumentException("The solutionClass (" + solutionClass + ") has a "
+                                    + "auto discovered member (" + memberName + ") with a member type (" + type
+                                    + ") that returns a " + Collection.class.getSimpleName()
+                                    + " which has no generic parameters.\n"
+                                    + "Maybe the member (" + memberName + ") should return a typed "
+                                    + Collection.class.getSimpleName() + ".");
+                        }
                         elementType = ConfigUtils.extractCollectionGenericTypeParameter(
                                 "solutionClass", solutionClass,
                                 type, genericType,
@@ -608,7 +621,7 @@ public class SolutionDescriptor<Solution_> {
         }
     }
 
-    public void afterAnnotationsProcessed(DescriptorPolicy descriptorPolicy) {
+    private void afterAnnotationsProcessed(DescriptorPolicy descriptorPolicy) {
         for (EntityDescriptor<Solution_> entityDescriptor : entityDescriptorMap.values()) {
             entityDescriptor.linkEntityDescriptors(descriptorPolicy);
         }
@@ -616,6 +629,28 @@ public class SolutionDescriptor<Solution_> {
             entityDescriptor.linkVariableDescriptors(descriptorPolicy);
         }
         determineGlobalShadowOrder();
+        // Figure out all problem fact or entity types that are used within this solution,
+        // using the knowledge we've already gained by processing all the annotations.
+        Stream<Class<?>> entityClassStream = entityDescriptorMap.keySet()
+                .stream();
+        Stream<Class<?>> factClassStream = problemFactMemberAccessorMap
+                .values()
+                .stream()
+                .map(MemberAccessor::getType);
+        Stream<Class<?>> problemFactOrEntityClassStream = concat(entityClassStream, factClassStream);
+        Stream<Class<?>> factCollectionClassStream = problemFactCollectionMemberAccessorMap.values()
+                .stream()
+                .map(accessor -> ConfigUtils.extractCollectionGenericTypeParameter("solutionClass", getSolutionClass(),
+                        accessor.getType(), accessor.getGenericType(), ProblemFactCollectionProperty.class,
+                        accessor.getName()));
+        problemFactOrEntityClassStream = concat(problemFactOrEntityClassStream, factCollectionClassStream);
+        // Add constraint configuration, if configured.
+        if (constraintConfigurationDescriptor != null) {
+            problemFactOrEntityClassStream = concat(problemFactOrEntityClassStream,
+                    Stream.of(constraintConfigurationDescriptor.getConstraintConfigurationClass()));
+        }
+        problemFactOrEntityClassSet = problemFactOrEntityClassStream.collect(toSet());
+        // And finally log the successful completion of processing.
         if (logger.isTraceEnabled()) {
             logger.trace("    Model annotations parsed for solution {}:", solutionClass.getSimpleName());
             for (Map.Entry<Class<?>, EntityDescriptor<Solution_>> entry : entityDescriptorMap.entrySet()) {
@@ -726,6 +761,10 @@ public class SolutionDescriptor<Solution_> {
         memberNames.addAll(entityMemberAccessorMap.keySet());
         memberNames.addAll(entityCollectionMemberAccessorMap.keySet());
         return memberNames;
+    }
+
+    public Set<Class<?>> getProblemFactOrEntityClassSet() {
+        return problemFactOrEntityClassSet;
     }
 
     // ************************************************************************
