@@ -474,6 +474,7 @@ public class KieContainerImpl
             KnowledgeBuilderImpl knowledgeBuilderForImpl = (KnowledgeBuilderImpl)knowledgeBuilderForKieBase;
             KnowledgeBuilderConfigurationImpl builderConfiguration = knowledgeBuilderForImpl.getBuilderConfiguration();
 
+            // TODO LUCA ask Mario if we need to enqueue this or we can just run it
             CompositeRunnable compositeUpdater = new CompositeRunnable();
 
             KieBaseUpdaters updaters = ServiceRegistry.getInstance().get(KieBaseUpdaters.class);
