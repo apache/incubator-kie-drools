@@ -50,7 +50,7 @@ public class DTAnalysis {
     private final List<Hyperrectangle> gaps = new ArrayList<>();
     private final List<Overlap> overlaps = new ArrayList<>();
     private final List<MaskedRule> maskedRules = new ArrayList<>();
-    private final List<MisleadingRule> misleadingRules = new ArrayList<>();
+    private final Set<MisleadingRule> misleadingRules = new HashSet<>();
     private final List<Subsumption> subsumptions = new ArrayList<>();
     private final List<Contraction> contractions = new ArrayList<>();
     private final Map<Integer, Collection<Integer>> cacheNonContractingRules = new HashMap<>();
@@ -451,14 +451,18 @@ public class DTAnalysis {
                     boolean isOutputLowestPriority = curOutputIdx == curOutputClause.getOutputOrder().size() - 1;
                     if (!isOutputLowestPriority) {
                         List<DDTAInputEntry> inputEntry = ddtaTable.getRule().get(ruleId - 1).getInputEntry();
-                        boolean isRuleContainsHypen = inputEntry.stream().flatMap(ie -> ie.getUts().stream()).anyMatch(DashNode.class::isInstance);
-                        if (isRuleContainsHypen) {
-                            List<Integer> otherRules = listWithoutElement(overlap.getRules(), ruleId);
-                            for (Integer otherRuleID : otherRules) {
-                                List<Comparable<?>> otherRuleValues = ddtaTable.getRule().get(otherRuleID - 1).getOutputEntry();
-                                int otherOutputIdx = curOutputClause.getOutputOrder().indexOf(otherRuleValues.get(jOutputIdx));
-                                if (otherOutputIdx > curOutputIdx) {
-                                    misleadingRules.add(new MisleadingRule(ruleId, otherRuleID));
+                        for (int col = 0; col < inputEntry.size(); col++) {
+                            boolean thisColIsHypen = inputEntry.get(col).getUts().stream().anyMatch(DashNode.class::isInstance);
+                            if (thisColIsHypen) {
+                                List<Integer> otherRules = listWithoutElement(overlap.getRules(), ruleId);
+                                for (Integer otherRuleID : otherRules) {
+                                    List<Comparable<?>> otherRuleValues = ddtaTable.getRule().get(otherRuleID - 1).getOutputEntry();
+                                    int otherOutputIdx = curOutputClause.getOutputOrder().indexOf(otherRuleValues.get(jOutputIdx));
+                                    List<DDTAInputEntry> otherRuleInputEntry = ddtaTable.getRule().get(otherRuleID - 1).getInputEntry();
+                                    boolean thatColIsHypen = otherRuleInputEntry.get(col).getUts().stream().anyMatch(DashNode.class::isInstance);
+                                    if (otherOutputIdx > curOutputIdx && !thatColIsHypen) {
+                                        misleadingRules.add(new MisleadingRule(ruleId, otherRuleID));
+                                    }
                                 }
                             }
                         }
@@ -474,8 +478,8 @@ public class DTAnalysis {
         return others;
     }
 
-    public List<MisleadingRule> getMisleadingRules() {
-        return Collections.unmodifiableList(misleadingRules);
+    public Collection<MisleadingRule> getMisleadingRules() {
+        return Collections.unmodifiableSet(misleadingRules);
     }
 
     public void computeSubsumptions() {
