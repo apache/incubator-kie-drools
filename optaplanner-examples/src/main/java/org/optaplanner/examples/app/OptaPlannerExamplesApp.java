@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,7 +56,6 @@ import org.optaplanner.examples.nurserostering.app.NurseRosteringApp;
 import org.optaplanner.examples.pas.app.PatientAdmissionScheduleApp;
 import org.optaplanner.examples.projectjobscheduling.app.ProjectJobSchedulingApp;
 import org.optaplanner.examples.rocktour.app.RockTourApp;
-import org.optaplanner.examples.scrabble.app.ScrabbleApp;
 import org.optaplanner.examples.taskassigning.app.TaskAssigningApp;
 import org.optaplanner.examples.tennis.app.TennisApp;
 import org.optaplanner.examples.travelingtournament.app.TravelingTournamentApp;
@@ -135,7 +134,6 @@ public class OptaPlannerExamplesApp extends JFrame {
         panel.add(createExampleButton(new ExaminationApp()));
         panel.add(createExampleButton(new CoachShuttleGatheringApp()));
         panel.add(createExampleButton(new CheapTimeApp()));
-        panel.add(createExampleButton(new ScrabbleApp()));
 
         panel.add(createExampleButton(new MeetingSchedulingApp()));
         panel.add(createExampleButton(new TravelingTournamentApp()));
