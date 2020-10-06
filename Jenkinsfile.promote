@@ -1,0 +1,300 @@
+import org.jenkinsci.plugins.workflow.libs.Library
+@Library('jenkins-pipeline-shared-libraries')_
+
+deployProperties = [:]
+pipelineProperties = [:]
+
+pipeline {
+    agent {
+        label 'kie-rhel7'
+    }
+
+    tools {
+        maven 'kie-maven-3.6.2'
+        jdk 'kie-jdk11'
+    }
+    
+    options {
+        buildDiscarder logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '10')
+    }
+
+    parameters {
+        string(name: 'DISPLAY_NAME', defaultValue: '', description: 'Setup a specific build display name')
+        
+        // Deploy job url to retrieve deployment.properties
+        string(name: 'DEPLOY_BUILD_URL', defaultValue: '', description: 'URL to jenkins deploy build to retrieve the `deployment.properties` file. If base parameters are defined, they will override the `deployment.properties` information')
+        
+        // Git information which can override `deployment.properties`
+        string(name: 'BUILD_BRANCH_NAME', defaultValue: '', description: 'Override `deployment.properties`. Which branch to build? Set if you are not on a multibranch pipeline.')
+        string(name: 'GIT_AUTHOR', defaultValue: '', description: 'Override `deployment.properties`. Which Git author repository ?')
+        
+        // Release information which can override `deployment.properties`
+        booleanParam(name: 'RELEASE', defaultValue: false, description: 'Override `deployment.properties`. Is this build for a release?')
+
+        string(name: 'PROJECT_VERSION', defaultValue: '', description: 'Override `deployment.properties`. Optional if not RELEASE. If RELEASE, cannot be empty.')
+        string(name: 'KOGITO_VERSION', defaultValue: '', description: 'Optional if not RELEASE. If RELEASE, cannot be empty.')
+
+        string(name: 'STAGING_REPO_URL', defaultValue: '', description: 'Override `deployment.properties`.')
+        string(name: 'GIT_TAG', defaultValue: '', description: 'Git tag to set, if different from PROJECT_VERSION')
+        booleanParam(name: 'UPDATE_STABLE_BRANCH', defaultValue: false, description: 'Set to true if you want to update the `stable` branch to new created Git tag.')
+    }
+
+    environment {
+        PROPERTIES_FILE_NAME = 'deployment.properties'
+        
+        AUTHOR_CREDS_ID = 'kie-ci'
+        GITHUB_TOKEN_CREDS_ID = 'kie-ci2-token'
+        BOT_CREDENTIALS_ID = 'bsig-gh-bot'
+
+        BOT_BRANCH_HASH = "${util.generateHash(10)}"
+        
+        GITHUB_CLI_VERSION = '0.11.1'
+    }
+
+    stages {
+        stage('Initialization') {
+            steps {
+                script {
+                    cleanWs()
+                    
+                    if (params.DISPLAY_NAME != '') {
+                        currentBuild.displayName = params.DISPLAY_NAME
+                    }
+
+                    readDeployProperties()
+
+                    if (isRelease()) {
+                        assert getProjectVersion() != ''
+                    }
+
+                    installGithubCLI()
+                }
+            }
+        }
+
+        // TODO: remove when the manual step has moved to the top-level release pipeline
+        stage('Is staging repository promoted?') {
+            when {
+                expression { return isRelease() && getStagingRepoUrl() != '' }
+            }
+            steps {
+                script {
+                    withCredentials([string(credentialsId: 'KOGITO_CI_EMAIL_TO', variable: 'ZULIP_EMAIL')]) {
+                        emailext body: "${getProjectVersion()} artifacts are ready for promotion.\n" +
+                                 "The staging repository can be found at: ${getStagingRepoUrl()}\n" +
+                                 "Please promote the repository and then confirm the promotion here: ${env.BUILD_URL}input",
+                                 subject: "[${getBuildBranch()}] Release Pipeline",
+                                 to: ZULIP_EMAIL
+                    }
+                    input message: 'Has the staging repository been promoted?', ok: 'Yes'
+                }
+            }
+        }
+        stage('Merge OptaPlanner deploy PR and tag') {
+            when {
+                expression { return isRelease() }
+            }
+            steps{
+                script {
+                    dir('optaplanner') {
+                        checkoutRepo('optaplanner')
+                        mergeAndPush('optaplanner', getDeployPrLink('optaplanner'))
+                        tagLatest()
+                    }
+                }
+            }
+        }
+
+        stage('Set OptaPlanner next snapshot version'){
+            when {
+                expression { return isRelease() }
+            }
+            steps {
+                script {
+                    dir('optaplanner-bot') {
+                        prepareForPR('optaplanner')
+
+                        // To make sure that the project will resolve during version upgrade.
+                        sh 'mvn -B -U clean install -DskipTests'
+                        maven.mvnVersionsSet(getNextSnapshotVersion(getProjectVersion()), true)
+                        updateKogitoVersion(getNextSnapshotVersion(getKogitoVersion()))
+
+                        /*
+                            Install optaplanner artifacts to a local maven repository to make them accessible
+                            for optaplanner-quickstarts and optaweb apps.
+                        */
+                        sh 'mvn -B clean install -DskipTests'
+
+                        commitAndCreatePR('optaplanner')
+                    }
+                    dir('optaplanner') {
+                        sh "git checkout ${getBuildBranch()}"
+                        mergeAndPush('optaplanner', getPipelinePrLink('optaplanner'))
+                    }
+                }
+            }
+        }
+    }
+    post {
+        always {
+            cleanWs()
+        }
+    }
+}
+
+//////////////////////////////////////////////////////////////////////////////
+// Deployment properties
+//////////////////////////////////////////////////////////////////////////////
+
+void readDeployProperties(){
+    String deployUrl = params.DEPLOY_BUILD_URL
+    if (deployUrl != ''){
+        if(!deployUrl.endsWith('/')){
+            deployUrl += '/'
+        }
+        sh "wget ${deployUrl}artifact/${PROPERTIES_FILE_NAME} -O ${PROPERTIES_FILE_NAME}"
+        deployProperties = readProperties file: PROPERTIES_FILE_NAME
+        // echo all properties
+        echo deployProperties.collect{ entry -> "${entry.key}=${entry.value}" }.join('\n')
+    }
+}
+
+boolean hasDeployProperty(String key){
+    return deployProperties[key] != null
+}
+
+String getDeployProperty(String key){
+    if(hasDeployProperty(key)){
+        return deployProperties[key]
+    }
+    return ''
+}
+
+String getParamOrDeployProperty(String paramKey, String deployPropertyKey){
+    if (params[paramKey] != ''){
+        return params[paramKey]
+    }
+    return getDeployProperty(deployPropertyKey)
+}
+
+//////////////////////////////////////////////////////////////////////////////
+// Getter / Setter
+//////////////////////////////////////////////////////////////////////////////
+
+boolean isRelease() {
+    return params.RELEASE || (getDeployProperty('release') == 'true')
+}
+
+String getProjectVersion() {
+    return getParamOrDeployProperty('PROJECT_VERSION', 'project.version')
+}
+
+String getKogitoVersion() {
+    return getParamOrDeployProperty('KOGITO_VERSION', 'kogito.version')
+}
+
+String getNextSnapshotVersion(String currentVersion) {
+    return util.getNextVersion(currentVersion, 'micro')
+}
+
+String getGitTag() {
+    return params.GIT_TAG != '' ? params.GIT_TAG : getProjectVersion()
+}
+
+String getBuildBranch() {
+    return getParamOrDeployProperty('BUILD_BRANCH_NAME', 'git.branch')
+}
+
+String getGitAuthor() {
+    return getParamOrDeployProperty('GIT_AUTHOR', 'git.author')
+}
+
+String getStagingRepoUrl(){
+    return getParamOrDeployProperty('STAGING_REPO_URL', 'staging-repo.url')
+}
+
+String getDeployPrLink(String repo){
+    return getDeployProperty("${repo}.pr.link")
+}
+
+String getPipelinePrLink(String repo){
+    return pipelineProperties["${repo}.pr.link"]
+}
+
+void setPipelinePrLink(String repo, String value){
+    pipelineProperties["${repo}.pr.link"] = value
+}
+
+String getSnapshotBranch(){
+    return "${getNextSnapshotVersion(getProjectVersion()).toLowerCase()}-${env.BOT_BRANCH_HASH}"
+}
+
+//////////////////////////////////////////////////////////////////////////////
+// Git
+//////////////////////////////////////////////////////////////////////////////
+
+void checkoutRepo(String repo) {
+    deleteDir()
+    checkout(githubscm.resolveRepository(repo, getGitAuthor(), getBuildBranch(), false))
+    // need to manually checkout branch since on a detached branch after checkout command
+    sh "git checkout ${getBuildBranch()}"
+}
+
+void mergeAndPush(String repo, String prLink) {
+    if (prLink != '') {
+        githubscm.mergePR(prLink, env.AUTHOR_CREDS_ID)
+        githubscm.pushObject('origin', getBuildBranch(), env.AUTHOR_CREDS_ID)
+    }
+}
+
+void tagLatest() {
+    if (getGitTag() != '') {
+        githubscm.tagRepository(getGitTag(), env.BUILD_TAG)
+        githubscm.pushObject('origin', "--tags ${getGitTag()}", env.AUTHOR_CREDS_ID)
+    }
+}
+
+void prepareForPR(String repo) {
+    checkoutRepo(repo)
+    githubscm.forkRepo(env.BOT_CREDENTIALS_ID)
+    githubscm.createBranch(getSnapshotBranch())
+}
+
+void addNotIgnoredPoms() {
+    // based on https://stackoverflow.com/a/59888964/8811872
+    sh '''
+    find . -type f -name 'pom.xml' > found_poms.txt
+    poms_to_add=""
+    while IFS= read -r pom; do
+        if ! git check-ignore -q "\$pom"; then
+            poms_to_add="\$poms_to_add \$pom"
+        fi
+    done < found_poms.txt
+    rm found_poms.txt
+    git add \$poms_to_add
+    '''
+}
+
+void commitAndCreatePR(String repo) {
+    def commitMsg = "Update snapshot version to ${getSnapshotBranch()}"
+    def prBody = "Generated by build ${BUILD_TAG}: ${BUILD_URL}"
+    // Not using githubscm.commitChanges() because globbing won't work.
+    // See: https://github.com/kiegroup/kogito-runtimes/pull/570#discussion_r449268738
+    addNotIgnoredPoms()
+    sh "git commit -m '${commitMsg}'"
+    githubscm.pushObject('origin', getSnapshotBranch(), env.BOT_CREDENTIALS_ID)
+    setPipelinePrLink(repo, githubscm.createPR(commitMsg, prBody, getBuildBranch(), env.BOT_CREDENTIALS_ID))
+}
+
+void installGithubCLI() {
+    sh """
+    wget https://github.com/cli/cli/releases/download/v${env.GITHUB_CLI_VERSION}/gh_${env.GITHUB_CLI_VERSION}_linux_amd64.tar.gz
+    tar xzf gh_${env.GITHUB_CLI_VERSION}_linux_amd64.tar.gz
+    mv gh_${env.GITHUB_CLI_VERSION}_linux_amd64/bin/gh .
+    rm -r gh_${env.GITHUB_CLI_VERSION}_linux_amd64*
+    """
+}
+
+void updateKogitoVersion(String newVersion) {
+    sh "mvn versions:update-property -Dproperty=version.org.kie.kogito -DnewVersion=[$newVersion] -DallowSnapshots=true -DgenerateBackupPoms=false"
+}

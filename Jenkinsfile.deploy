@@ -17,20 +17,33 @@ pipeline {
     }
 
     parameters {
+
         string(name: 'DISPLAY_NAME', defaultValue: '', description: 'Setup a specific build display name')
 
         // Git information
         string(name: 'BUILD_BRANCH_NAME', defaultValue: 'master', description: 'Which branch to build? Set if you are not on a multibranch pipeline.')
         string(name: 'GIT_AUTHOR', defaultValue: 'kiegroup', description: 'Which Git author repository ?')
 
+        // Build&test information
+        string(name: 'MAVEN_DEPENDENCIES_REPOSITORY', defaultValue: '', description: 'Maven repository where to find dependencies if those are not in the default JBoss repository.')
         booleanParam(name: 'SKIP_TESTS', defaultValue: false, description: 'Skip tests')
 
         // Deploy information
         string(name: 'MAVEN_DEPLOY_REPOSITORY', defaultValue: '', description: 'Specify a Maven repository to deploy the artifacts.')
+
+        // Release information
+        booleanParam(name: 'RELEASE', defaultValue: false, description: 'Is this build for a release?')
+        string(name: 'PROJECT_VERSION', defaultValue: '', description: 'Optional if not RELEASE. If RELEASE, cannot be empty.')
+        string(name: 'KOGITO_VERSION', defaultValue: '', description: 'Optional if not RELEASE. If RELEASE, cannot be empty.')
     }
 
     environment {
         MAVEN_OPTS = '-Xms1024m -Xmx4g'
+
+        BOT_CREDENTIALS_ID = 'bsig-gh-bot'
+        GIT_AUTHOR_BOT = 'bsig-gh-bot'
+
+        BOT_BRANCH_HASH = "${util.generateHash(10)}"
     }
 
     stages {
@@ -42,6 +55,10 @@ pipeline {
                     if (params.DISPLAY_NAME != '') {
                         currentBuild.displayName = params.DISPLAY_NAME
                     }
+
+                    if (isRelease()) {
+                        assert getProjectVersion() != ''
+                    }
                 }
             }
             post {
@@ -49,15 +66,65 @@ pipeline {
                     script {
                         setDeployPropertyIfNeeded('git.branch', getBuildBranch())
                         setDeployPropertyIfNeeded('git.author', getGitAuthor())
+                        setDeployPropertyIfNeeded('project.version', getProjectVersion())
+                        setDeployPropertyIfNeeded('release', isRelease())
                     }
                 }
             }
         }
+
         stage('Clone repositories') {
             steps {
                 checkoutRepo('optaplanner')
             }
         }
+
+        stage('Prepare for PR'){
+            when {
+                expression { return isRelease() }
+            }
+            steps {
+                prepareForPR('optaplanner')
+            }
+        }
+
+        stage('Setup Maven release config'){
+            when {
+                expression { return isRelease() }
+            }
+            steps {
+                echo 'Setup Maven release config'
+                configFileProvider([configFile(fileId: '771ff52a-a8b4-40e6-9b22-d54c7314aa1e', targetLocation: 'maven-settings.xml', variable: 'MAVEN_SETTINGS_FILE')]){
+                    sh "echo '-B -s ${MAVEN_SETTINGS_FILE}' | tee {optaplanner}/.mvn/maven.config"
+                    assert params.MAVEN_DEPENDENCIES_REPOSITORY != '' // OptaPlanner depends on Kogito Runtimes
+                    sh "sed -i 's|<repository>|<repository><id>staging</id><name>Staging Repository</name><url>${params.MAVEN_DEPENDENCIES_REPOSITORY}</url><layout>default</layout><snapshots><enabled>true</enabled></snapshots><releases><enabled>true</enabled></releases></repository>\\n        <repository>|g' ${MAVEN_SETTINGS_FILE}"
+                    sh "sed -i 's|<pluginRepository>|<pluginRepository><id>staging</id><name>Staging Repository</name><url>${params.MAVEN_DEPENDENCIES_REPOSITORY}</url><layout>default</layout><snapshots><enabled>true</enabled></snapshots><releases><enabled>true</enabled></releases></pluginRepository>\\n        <pluginRepository>|g' ${MAVEN_SETTINGS_FILE}"
+                }
+            }
+        }
+
+        stage('Update project version'){
+            when {
+                expression { return getProjectVersion() != '' }
+            }
+            steps {
+                script {
+                    // To make sure that the project will resolve during version upgrade.
+                    mavenCleanInstall('optaplanner', true, [], '-U')
+                    dir('optaplanner') {
+                        maven.mvnVersionsSet(getProjectVersion())
+                        updateKogitoVersion(getKogitoVersion())
+                    }
+                    /*
+                        Install optaplanner artifacts to a local maven repository to make them accessible
+                        for optaplanner-quickstarts and optaweb apps.
+                     */
+                    mavenCleanInstall('optaplanner', true, [], '-U')
+
+                }
+            }
+        }
+
         stage('Build optaplanner') {
             steps {
                 mavenCleanInstall('optaplanner', params.SKIP_TESTS)
@@ -68,11 +135,32 @@ pipeline {
                 }
             }
         }
+
         stage('Deploy artifacts') {
             steps {
                 mavenDeploy('optaplanner')
             }
         }
+
+        stage('Create PR'){
+            when {
+                expression { return isRelease() }
+            }
+            steps {
+                commitAndCreatePR('optaplanner')
+            }
+            post {
+                success {
+                    script {
+                        setDeployPropertyIfNeeded('optaplanner.pr.source.uri', "https://github.com/${getBotAuthor()}/optaplanner")
+                        setDeployPropertyIfNeeded('optaplanner.pr.source.ref', getBotBranch())
+                        setDeployPropertyIfNeeded('optaplanner.pr.target.uri', "https://github.com/${getGitAuthor()}/optaplanner")
+                        setDeployPropertyIfNeeded('optaplanner.pr.target.ref', getBuildBranch())
+                    }
+                }
+            }
+        }
+
     }
     post {
         always {
@@ -97,18 +185,41 @@ void checkoutRepo(String repo, String dirName=repo) {
     }
 }
 
-String getGitAuthor(){
-    return params.GIT_AUTHOR
-}
-
-String getBuildBranch(){
-    return params.BUILD_BRANCH_NAME
-}
-
-void setDeployPropertyIfNeeded(String key, def value){
-    if (value != null && value != ''){
-        deployProperties[key] = value
+void prepareForPR(String repo) {
+    dir(repo) {
+        githubscm.forkRepo(env.BOT_CREDENTIALS_ID)
+        githubscm.createBranch(getBotBranch())
     }
+}
+
+void commitAndCreatePR(String repo) {
+    def commitMsg = "Update project version to ${getProjectVersion()} for release"
+    def prBody = "Generated by build ${BUILD_TAG}: ${BUILD_URL}.\nPlease do not merge, it will be merged automatically after testing."
+    // Not using githubscm.commitChanges() because globbing won't work.
+    // See: https://github.com/kiegroup/kogito-runtimes/pull/570#discussion_r449268738
+    dir(repo) {
+        addNotIgnoredPoms()
+        sh "git commit -m '${commitMsg}'"
+        githubscm.pushObject('origin', getBotBranch(), env.BOT_CREDENTIALS_ID)
+        deployProperties["${repo}.pr.link"] = githubscm.createPR(commitMsg, prBody, getBuildBranch(), env.BOT_CREDENTIALS_ID)
+    }
+}
+
+// TODO: move to a shared library
+void addNotIgnoredPoms() {
+    // based on https://stackoverflow.com/a/59888964/8811872
+    sh '''
+    find . -type f -name 'pom.xml' > found_poms.txt
+    poms_to_add=""
+    while IFS= read -r pom; do
+        if ! git check-ignore -q "\$pom"; then
+            poms_to_add="\$poms_to_add \$pom"
+        fi
+    done < found_poms.txt
+    rm found_poms.txt
+    git add \$poms_to_add
+    git status
+    '''
 }
 
 void mavenCleanInstall(String directory, boolean skipTests = false, List profiles = [], String extraArgs = '') {
@@ -130,5 +241,45 @@ void runMaven(String goals, String directory, boolean skipTests = false, List pr
     }
     dir(directory) {
         maven.runMavenWithSubmarineSettings(mvnCmd, skipTests)
+    }
+}
+
+void updateKogitoVersion(String newVersion) {
+    sh "mvn versions:update-property -Dproperty=version.org.kie.kogito -DnewVersion=[$newVersion] -DallowSnapshots=true -DgenerateBackupPoms=false"
+}
+
+// Getters and Setters of params/properties
+
+boolean isRelease() {
+    return params.RELEASE
+}
+
+String getGitAuthor() {
+    return params.GIT_AUTHOR
+}
+
+String getBuildBranch() {
+    return params.BUILD_BRANCH_NAME
+}
+
+String getKogitoVersion() {
+    return params.KOGITO_VERSION
+}
+
+String getProjectVersion(){
+    return params.PROJECT_VERSION
+}
+
+String getBotBranch(){
+    return "${getProjectVersion()}-${env.BOT_BRANCH_HASH}"
+}
+
+String getBotAuthor(){
+    return env.GIT_AUTHOR_BOT
+}
+
+void setDeployPropertyIfNeeded(String key, def value) {
+    if (value != null && value != ''){
+        deployProperties[key] = value
     }
 }
