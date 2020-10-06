@@ -109,6 +109,25 @@ class ScheduledJobAdapterTest {
         assertThat(trigger.nextFireTime()).isEqualTo(DateUtil.toDate(TIME));
     }
 
+    @Test
+    void testToJobDetailsWithEmptyPayload() {
+        ScheduledJob scheduledJob = ScheduledJob.builder()
+                .job(JobBuilder.builder().id(UUID.randomUUID().toString()).build())
+                .build();
+        JobDetails jobDetails = ScheduledJobAdapter.to(scheduledJob);
+        assertThat(jobDetails.getPayload()).isNull();
+    }
+
+    @Test
+    void testToScheduledJobWithEmptyPayload() {
+        JobDetails jobDetails = JobDetails.builder().id(UUID.randomUUID().toString()).build();
+        ScheduledJob scheduledJob = ScheduledJobAdapter.of(jobDetails);
+        assertThat(scheduledJob.getProcessId()).isNull();
+        assertThat(scheduledJob.getProcessInstanceId()).isNull();
+        assertThat(scheduledJob.getRootProcessId()).isNull();
+        assertThat(scheduledJob.getRootProcessInstanceId()).isNull();
+    }
+
     private ScheduledJob.ScheduledJobBuilder getScheduledJobCommonBuilder(JobBuilder jobBuilder) {
         return ScheduledJob.builder()
                 .job(jobBuilder

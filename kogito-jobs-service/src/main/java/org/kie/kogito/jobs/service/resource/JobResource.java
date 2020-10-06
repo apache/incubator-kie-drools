@@ -16,6 +16,7 @@
 
 package org.kie.kogito.jobs.service.resource;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
@@ -32,11 +33,13 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
 import org.kie.kogito.jobs.api.Job;
 import org.kie.kogito.jobs.service.model.ScheduledJob;
 import org.kie.kogito.jobs.service.model.ScheduledJob.ScheduledJobBuilder;
+import org.kie.kogito.jobs.service.model.job.JobDetails;
 import org.kie.kogito.jobs.service.model.job.ScheduledJobAdapter;
 import org.kie.kogito.jobs.service.repository.ReactiveJobRepository;
 import org.kie.kogito.jobs.service.scheduler.impl.TimerDelegateJobScheduler;
@@ -75,11 +78,26 @@ public class JobResource {
     @Consumes(MediaType.APPLICATION_JSON)
     public CompletionStage<ScheduledJob> patch(@PathParam("id") String id, @RequestBody Job job) {
         LOGGER.debug("REST patch update {}", job);
-        return jobRepository.merge(id, ScheduledJobAdapter.to(ScheduledJobBuilder.from(job)))
-                .thenApply(result -> Optional
-                        .ofNullable(result)
-                        .map(ScheduledJobAdapter::of)
-                        .orElseThrow(() -> new NotFoundException("Job not found " + job)));
+        JobDetails jobToBeMerged = ScheduledJobAdapter.to(ScheduledJobBuilder.from(job));
+        //validating allowed patch attributes
+        if (Objects.nonNull(jobToBeMerged.getPayload())
+                || StringUtils.isNotEmpty(jobToBeMerged.getId())
+                || StringUtils.isNotEmpty(jobToBeMerged.getScheduledId())
+                || StringUtils.isNotEmpty(jobToBeMerged.getCorrelationId())
+                || (Objects.nonNull(jobToBeMerged.getExecutionCounter()) && jobToBeMerged.getExecutionCounter() > 0)
+                || Objects.nonNull(jobToBeMerged.getPriority())
+                || (Objects.nonNull(jobToBeMerged.getRetries()) && jobToBeMerged.getRetries() > 0)
+                || Objects.nonNull(jobToBeMerged.getRecipient())
+                || Objects.nonNull(jobToBeMerged.getStatus())
+        ) {
+            throw new IllegalArgumentException("Patch an only be applied to the Job scheduling trigger attributes");
+        }
+
+        return scheduler.reschedule(id, jobToBeMerged.getTrigger())
+                .map(ScheduledJobAdapter::of)
+                .findFirst()
+                .run()
+                .thenApply(j -> j.orElseThrow(() -> new NotFoundException("Failed to reschedule job " + job)));
     }
 
     @DELETE

@@ -8,7 +8,9 @@ services:
       - 11222:11222
     command: "/opt/infinispan/bin/server.sh -c infinispan-demo.xml"
     volumes:
-      - ./infinispan/infinispan.xml:/opt/infinispan/server/conf/infinispan-demo.xml:z
+      - ./infinispan/infinispan.xml:/opt/infinispan/server/conf/infinispan-demo.xml
+      - ./infinispan/users.properties:/opt/infinispan/server/conf/users.properties
+      - ./infinispan/groups.properties:/opt/infinispan/server/conf/groups.properties
 
   zookeeper:
     image: strimzi/kafka:0.19.0-kafka-2.5.0

@@ -39,7 +39,6 @@ import org.kie.kogito.jobs.service.model.job.ScheduledJobAdapter;
 import org.kie.kogito.jobs.service.repository.ReactiveJobRepository;
 import org.kie.kogito.jobs.service.utils.DateUtil;
 import org.kie.kogito.timer.Trigger;
-import org.kie.kogito.timer.impl.IntervalTrigger;
 import org.kie.kogito.timer.impl.PointInTimeTrigger;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -364,5 +363,20 @@ public abstract class BaseTimerJobSchedulerTest {
         tested().forceExecuteExpiredJobs = Optional.of(Boolean.TRUE);
         subscribeOn(tested().schedule(scheduledJob));
         verify(tested(), times(1)).doSchedule(eq(scheduledJob), delayCaptor.capture());
+    }
+
+    @Test
+    void testRescheduleAndMerge() {
+        ZonedDateTime newTime = DateUtil.now().plusMinutes(1);
+        PointInTimeTrigger newTrigger = new PointInTimeTrigger(newTime.toInstant().toEpochMilli(), null, null);
+        JobDetails jobToMerge =
+                JobDetails.builder()
+                        .trigger(newTrigger)
+                        .build();
+        JobDetails merged = JobDetails.builder().of(scheduledJob).merge(jobToMerge).build();
+        when(jobRepository.merge(JOB_ID, jobToMerge)).thenReturn(CompletableFuture.completedFuture(merged));
+        subscribeOn(tested().reschedule(JOB_ID, newTrigger).buildRs());
+        verify(tested()).doCancel(merged);
+        verify(tested()).schedule(merged);
     }
 }

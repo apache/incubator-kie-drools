@@ -104,6 +104,14 @@ public abstract class BaseTimerJobScheduler implements ReactiveJobScheduler {
                 .buildRs();
     }
 
+    @Override
+    public PublisherBuilder<JobDetails> reschedule(String id, Trigger trigger) {
+        return ReactiveStreams.fromCompletionStageNullable(jobRepository.merge(id, JobDetails.builder().trigger(trigger).build()))
+                .peek(this::doCancel)
+                .map(this::schedule)
+                .flatMapRsPublisher(j -> j);
+    }
+
     private JobDetails jobWithStatus(JobDetails job, JobStatus status) {
         return JobDetails.builder().of(job).status(status).build();
     }
