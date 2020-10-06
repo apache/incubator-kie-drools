@@ -226,7 +226,7 @@ Cheese stilton = bresults.getValue( "stilton" );
 ====
 
 
-All the above examples execute single commands.
+All the previous examples execute single commands.
 The `BatchExecution` represents a composite command, created from a list of commands.
 It will iterate over the list and execute each command in turn.
 This means you can insert some objects, start a process, call fireAllRules and execute a query, all in a single `execute(...)` call, which is quite powerful.
@@ -257,7 +257,7 @@ QueryResults qresults = ( QueryResults ) bresults.getValue( "cheeses" );
 ====
 
 
-In the above example multiple commands are executed, two of which populate the ``ExecutionResults``.
+In the previous example multiple commands are executed, two of which populate the ``ExecutionResults``.
 The query command defaults to use the same identifier as the query name, but it can also be mapped to a different identifier.
 
 All commands support XML and JSON marshalling using XStream, as well as JAXB marshalling.
@@ -407,7 +407,7 @@ For added flexibility, the `ObjectMarshallingStrategyAcceptor` interface can be 
 This Marshaller has a chain of strategies, and while reading or writing a user object it iterates the strategies asking if they accept responsibility for marshalling the user object.
 One of the provided implementations is ``ClassFilterAcceptor``.
 This allows strings and wild cards to be used to match class names.
-The default is "*.*", so in the above example the Identity Marshalling Strategy is used which has a default "*.*" acceptor.
+The default is "*.*", so in the previous example the Identity Marshalling Strategy is used which has a default "*.*" acceptor.
 
 Assuming that we want to serialize all classes except for one given package, where we will use identity lookup, we could do the following:
 
