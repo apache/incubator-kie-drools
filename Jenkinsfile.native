@@ -95,7 +95,7 @@ void checkoutRepo(String repoName, String dirName=repoName) {
 }
 
 void mavenCleanInstallNative(String dirName) {
-    mavenCleanInstall(dirName, "-Pnative -Dquarkus.native.container-build=true -Dquarkus.native.container-runtime=podman")
+    mavenCleanInstall(dirName, "-Pnative -Dquarkus.native.container-build=true -Dquarkus.native.container-runtime=docker")
 }
 
 void mavenCleanInstall(String dirName, String extraArgs = ""){
