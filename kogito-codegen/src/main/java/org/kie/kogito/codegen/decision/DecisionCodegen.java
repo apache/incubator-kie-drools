@@ -203,22 +203,19 @@ public class DecisionCodegen extends AbstractGenerator {
             DMNAllTypesIndex index = new DMNAllTypesIndex(factory, model);
 
             DMNTypeSafeTypeGenerator generator = new DMNTypeSafeTypeGenerator(model, index, factory).withJacksonAnnotation();
-            boolean useMPAnnotations = false;
-            if (projectClassLoader != null) {
-                try {
-                    Class<?> loadedOpenAPI = projectClassLoader.loadClass("org.eclipse.microprofile.openapi.models.OpenAPI");
-                    if (loadedOpenAPI != null) {
-                        useMPAnnotations = true;
-                    }
-                } catch (Exception e) {
-                    // do nothing.
-                }
-            }
+            boolean useMPAnnotations = trueIFFClassIsPresent("org.eclipse.microprofile.openapi.models.OpenAPI");
             if (useMPAnnotations) {
                 logger.debug("useMPAnnotations");
                 generator.withMPAnnotation();
             } else {
                 logger.debug("NO useMPAnnotations");
+            }
+            boolean useIOSwaggerOASv3Annotations = trueIFFClassIsPresent("io.swagger.v3.oas.annotations.media.Schema");
+            if (useIOSwaggerOASv3Annotations) {
+                logger.debug("useIOSwaggerOASv3Annotations");
+                generator.withIOSwaggerOASv3();
+            } else {
+                logger.debug("NO useIOSwaggerOASv3Annotations");
             }
             Map<String, String> allTypesSourceCode = generator
                     .processTypes()
@@ -229,6 +226,20 @@ public class DecisionCodegen extends AbstractGenerator {
             logger.error("Unable to generate Strongly Typed Input for: {} {}", model.getNamespace(), model.getName());
             throw e;
         }
+    }
+
+    private boolean trueIFFClassIsPresent(String fqn) {
+        if (projectClassLoader != null) {
+            try {
+                Class<?> c = projectClassLoader.loadClass(fqn);
+                if (c != null) {
+                    return true;
+                }
+            } catch (Exception e) {
+                // do nothing.
+            }
+        }
+        return false;
     }
 
     private void generateAndStoreGrafanaDashboards(DecisionRestResourceGenerator resourceGenerator) {
