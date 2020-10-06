@@ -29,6 +29,7 @@ import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 public class TypeCoercionTest extends BaseModelTest {
 
@@ -293,4 +294,58 @@ public class TypeCoercionTest extends BaseModelTest {
         ksession.insert( 3 );
         assertEquals(1, ksession.fireAllRules());
     }
+
+    @Test
+    public void testDoubleNaN() {
+        // DROOLS-5692
+        String str =
+                "import " + DoubleNaNPojo.class.getCanonicalName() + ";\n" +
+                "rule \"test_rule\"\n" +
+                "	dialect \"java\"\n" +
+                "	when\n" +
+                "		$nanTest : DoubleNaNPojo( testDouble1 + 10 > testDouble2, !testBoolean) \n" +
+                "then\n" +
+                "	System.out.println(\"rule_a fired \");\n" +
+                "	$nanTest.setTestBoolean(true);\n" +
+                "	update($nanTest);\n" +
+                "end";
+
+        KieSession ksession = getKieSession(str);
+
+        DoubleNaNPojo nan = new DoubleNaNPojo();
+        nan.setTestBoolean(false);
+        nan.setTestDouble1(Double.NaN);
+        nan.setTestDouble2(100.0);
+        ksession.insert(nan);
+
+        assertEquals( 0, ksession.fireAllRules() );
+        assertFalse( nan.getTestBoolean() );
+    }
+
+    public static class DoubleNaNPojo {
+
+        private Boolean testBoolean;
+        public Boolean getTestBoolean() {
+            return testBoolean;
+        }
+        public void setTestBoolean(Boolean testBoolean) {
+            this.testBoolean = testBoolean;
+        }
+
+        private Double testDouble1;
+        private Double testDouble2;
+        public Double getTestDouble1() {
+            return testDouble1;
+        }
+        public void setTestDouble1(Double testDouble1) {
+            this.testDouble1 = testDouble1;
+        }
+        public Double getTestDouble2() {
+            return testDouble2;
+        }
+        public void setTestDouble2(Double testDouble2) {
+            this.testDouble2 = testDouble2;
+        }
+    }
+
 }
