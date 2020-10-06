@@ -240,6 +240,49 @@ Regardless, XML is still a very verbose format.
 Reading or writing large datasets in this format can cause an `OutOfMemoryError`, `StackOverflowError`
 or large performance degradation.
 
+[[JacksonSolutionFileIO]]
+==== `JacksonSolutionFileIO`: serialize to and from an JSON format
+
+To read and write solutions in JSON format via Jackson, extend the `JacksonSolutionFileIO`:
+
+[source,java,options="nowrap"]
+----
+public class NQueensJsonSolutionFileIO extends JacksonSolutionFileIO<NQueens> {
+    public NQueensJsonSolutionFileIO() {
+        // NQueens is the @PlanningSolution class.
+        super(NQueens.class);
+    }
+}
+----
+
+If the JSON file requires specific Jackson modules and features to be enabled/disabled.
+You could create your desired object mapper as a dependency to the JacksonSolutionFileIO as follows:
+
+[source,java,options="nowrap"]
+----
+public class NQueensJsonSolutionFileIO extends JacksonSolutionFileIO<NQueens> {
+    public NQueensJsonSolutionFileIO() {
+        // NQueens is the @PlanningSolution class.
+        super(NQueens.class,
+                new ObjectMapper()
+                        .registerModule(new JavaTimeModule())
+                        .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+        );
+    }
+
+}
+----
+
+Then use it in the benchmark configuration like so:
+
+[source,xml,options="nowrap"]
+----
+    <problemBenchmarks>
+      <solutionFileIOClass>org.optaplanner.examples.nqueens.persistence.NQueensJsonSolutionFileIO</solutionFileIOClass>
+      <inputSolutionFile>data/nqueens/unsolved/32queens.json</inputSolutionFile>
+      ...
+    </problemBenchmarks>
+----
 
 [[customSolutionFileIO]]
 ==== Custom `SolutionFileIO`: serialize to and from a custom format
