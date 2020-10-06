@@ -12,10 +12,6 @@ on:
       - master
       - 7.x
 
-env:
-  # To prevent build failures due to "Connection reset" during artifact download.
-  MVN_CONNECTION_PROPS: -Dmaven.wagon.httpconnectionManager.ttlSeconds=60 -Dmaven.wagon.http.retryHandler.count=5
-
 defaults:
   run:
     shell: bash
@@ -57,4 +53,4 @@ jobs:
 
       # Builds the JPA module and runs tests in a PostgreSQL container
       - name: Build with Maven
-        run: mvn -B clean install -pl :optaplanner-persistence-jpa -am -Ppostgresql ${{ env.MVN_CONNECTION_PROPS }}
+        run: mvn -B clean install -pl :optaplanner-persistence-jpa -am -Ppostgresql
