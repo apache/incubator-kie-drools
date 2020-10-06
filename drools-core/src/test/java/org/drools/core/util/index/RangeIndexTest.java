@@ -15,8 +15,17 @@
 
 package org.drools.core.util.index;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.function.IntPredicate;
+
 import org.assertj.core.api.Assertions;
+import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.test.model.Person;
+import org.drools.core.util.Entry;
+import org.drools.core.util.FastIterator;
+import org.drools.core.util.RBTree.Node;
 import org.junit.Test;
 
 public class RangeIndexTest {
@@ -59,19 +68,39 @@ public class RangeIndexTest {
         index.addIndex(RangeIndex.IndexType.GT, 12, "E");
         index.addIndex(RangeIndex.IndexType.LE, 4, "F");
 
-        Assertions.assertThat(index.getValues(18)).containsExactlyInAnyOrder("A", "B", "C", "D", "E");
-        Assertions.assertThat(index.getValues(60)).containsExactlyInAnyOrder("A", "C", "E");
-        Assertions.assertThat(index.getValues(59)).containsExactlyInAnyOrder("A", "C", "D", "E");
-        Assertions.assertThat(index.getValues(4)).containsExactlyInAnyOrder("B", "D", "F");
-        Assertions.assertThat(index.getAllValues()).containsExactlyInAnyOrder("A", "B", "C", "D", "E", "F");
+        Assertions.assertThat(getValues(index, 18)).containsExactlyInAnyOrder("A", "B", "C", "D", "E");
+        Assertions.assertThat(getValues(index, 60)).containsExactlyInAnyOrder("A", "C", "E");
+        Assertions.assertThat(getValues(index, 59)).containsExactlyInAnyOrder("A", "C", "D", "E");
+        Assertions.assertThat(getValues(index, 4)).containsExactlyInAnyOrder("B", "D", "F");
+        Assertions.assertThat(getAllValues(index)).containsExactlyInAnyOrder("A", "B", "C", "D", "E", "F");
 
         index.removeIndex(RangeIndex.IndexType.GT, 8); // "C"
         index.removeIndex(RangeIndex.IndexType.LT, 60); // "D"
 
-        Assertions.assertThat(index.getValues(18)).containsExactlyInAnyOrder("A", "B", "E");
-        Assertions.assertThat(index.getValues(60)).containsExactlyInAnyOrder("A", "E");
-        Assertions.assertThat(index.getValues(59)).containsExactlyInAnyOrder("A", "E");
-        Assertions.assertThat(index.getValues(4)).containsExactlyInAnyOrder("B", "F");
-        Assertions.assertThat(index.getAllValues()).containsExactlyInAnyOrder("A", "B", "E", "F");
+        Assertions.assertThat(getValues(index, 18)).containsExactlyInAnyOrder("A", "B", "E");
+        Assertions.assertThat(getValues(index, 60)).containsExactlyInAnyOrder("A", "E");
+        Assertions.assertThat(getValues(index, 59)).containsExactlyInAnyOrder("A", "E");
+        Assertions.assertThat(getValues(index, 4)).containsExactlyInAnyOrder("B", "F");
+        Assertions.assertThat(getAllValues(index)).containsExactlyInAnyOrder("A", "B", "E", "F");
+    }
+
+    private Collection<String> getValues(RangeIndex<Integer, String> index, Integer key) {
+        FastIterator it = index.getValuesIterator(key);
+        List<String> result = new ArrayList<>();
+        for (Entry entry = it.next(null); entry != null; entry = it.next(entry)) {
+            Node<Integer, String> node = (Node<Integer, String>) entry;
+            result.add(node.value);
+        }
+        return result;
+    }
+
+    private Collection<String> getAllValues(RangeIndex<Integer, String> index) {
+        FastIterator it = index.getAllValuesIterator();
+        List<String> result = new ArrayList<>();
+        for (Entry entry = it.next(null); entry != null; entry = it.next(entry)) {
+            Node<Integer, String> node = (Node<Integer, String>) entry;
+            result.add(node.value);
+        }
+        return result;
     }
 }

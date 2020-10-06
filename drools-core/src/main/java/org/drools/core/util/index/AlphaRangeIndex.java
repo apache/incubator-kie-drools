@@ -28,6 +28,7 @@ import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.CompositeObjectSinkAdapter;
 import org.drools.core.rule.IndexableConstraint;
 import org.drools.core.spi.FieldValue;
+import org.drools.core.util.FastIterator;
 import org.drools.core.util.index.IndexUtil.ConstraintType;
 import org.drools.core.util.index.RangeIndex.IndexType;
 
@@ -144,13 +145,13 @@ public class AlphaRangeIndex implements Externalizable {
         return size;
     }
 
-    public Collection<AlphaNode> getMatchingAlphaNodes(Object object) {
+    public FastIterator getMatchingAlphaNodesIterator(Object object) {
         Object value = fieldIndex.getFieldExtactor().getValue(object);
-        return rangeIndex.getValues((Comparable) value);
+        return rangeIndex.getValuesIterator((Comparable) value);
     }
 
-    public Collection<AlphaNode> getAllValues() {
-        return rangeIndex.getAllValues();
+    public FastIterator getAllValuesIterator() {
+        return rangeIndex.getAllValuesIterator();
     }
 
     public void clear() {

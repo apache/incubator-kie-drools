@@ -37,11 +37,14 @@ import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.ReadAccessor;
+import org.drools.core.util.Entry;
+import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListNode;
 import org.drools.core.util.ObjectHashMap;
 import org.drools.core.util.ObjectHashMap.ObjectEntry;
+import org.drools.core.util.RBTree.Node;
 import org.drools.core.util.index.AlphaRangeIndex;
 import org.drools.core.util.index.IndexUtil.ConstraintType;
 
@@ -475,7 +478,12 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
         if (rangeIndexableSinks == null) {
             rangeIndexableSinks = new ObjectSinkNodeList();
         }
-        alphaRangeIndex.getAllValues().forEach(alphaNode -> rangeIndexableSinks.add(alphaNode));
+        FastIterator it = alphaRangeIndex.getAllValuesIterator();
+        for (Entry entry = it.next(null); entry != null; entry = it.next(entry)) {
+            Node<Comparable<Comparable>, AlphaNode> node = (Node<Comparable<Comparable>, AlphaNode>) entry;
+            AlphaNode alphaNode = node.value;
+            rangeIndexableSinks.add(alphaNode);
+        }
 
         alphaRangeIndex.clear();
         rangeIndexMap.remove(fieldIndex);
@@ -588,12 +596,15 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
                     continue;
                 }
                 AlphaRangeIndex alphaRangeIndex = this.rangeIndexMap.get(fieldIndex);
-                Collection<AlphaNode> alphaNodes = alphaRangeIndex.getMatchingAlphaNodes(object);
-                for (AlphaNode sink : alphaNodes) {
+                FastIterator it = alphaRangeIndex.getMatchingAlphaNodesIterator(object);
+                for (Entry entry = it.next(null); entry != null; entry = it.next(entry)) {
+                    Node<Comparable<Comparable>, AlphaNode> node = (Node<Comparable<Comparable>, AlphaNode>) entry;
+                    AlphaNode sink = node.value;
                     // go straight to the AlphaNode's propagator, as we know it's true and no need to retest
                     //System.out.println("### hit : " + sink);
                     sink.getObjectSinkPropagator().propagateAssertObject(factHandle, context, workingMemory);
                 }
+
             }
         }
 
@@ -660,8 +671,10 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
                     continue;
                 }
                 AlphaRangeIndex alphaRangeIndex = this.rangeIndexMap.get(fieldIndex);
-                Collection<AlphaNode> alphaNodes = alphaRangeIndex.getMatchingAlphaNodes(object);
-                for (AlphaNode sink : alphaNodes) {
+                FastIterator it = alphaRangeIndex.getMatchingAlphaNodesIterator(object);
+                for (Entry entry = it.next(null); entry != null; entry = it.next(entry)) {
+                    Node<Comparable<Comparable>, AlphaNode> node = (Node<Comparable<Comparable>, AlphaNode>) entry;
+                    AlphaNode sink = node.value;
                     // go straight to the AlphaNode's propagator, as we know it's true and no need to retest
                     //System.out.println("### hit : " + sink);
                     sink.getObjectSinkPropagator().propagateModifyObject(factHandle, modifyPreviousTuples, context, workingMemory);
@@ -733,8 +746,10 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
                     continue;
                 }
                 AlphaRangeIndex alphaRangeIndex = this.rangeIndexMap.get(fieldIndex);
-                Collection<AlphaNode> alphaNodes = alphaRangeIndex.getMatchingAlphaNodes(object);
-                for (AlphaNode sink : alphaNodes) {
+                FastIterator it = alphaRangeIndex.getMatchingAlphaNodesIterator(object);
+                for (Entry entry = it.next(null); entry != null; entry = it.next(entry)) {
+                    Node<Comparable<Comparable>, AlphaNode> node = (Node<Comparable<Comparable>, AlphaNode>) entry;
+                    AlphaNode sink = node.value;
                     //System.out.println("### hit : " + sink);
                     sink.getObjectSinkPropagator().byPassModifyToBetaNode(factHandle, modifyPreviousTuples, context, workingMemory);
                 }
@@ -827,8 +842,13 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
         if ( this.rangeIndexMap != null ) {
             Collection<AlphaRangeIndex> alphaRangeIndexes = rangeIndexMap.values();
             for (AlphaRangeIndex alphaRangeIndex : alphaRangeIndexes) {
-                Collection<AlphaNode> alphaNodes = alphaRangeIndex.getAllValues();
-                alphaNodes.forEach(sink -> sinksMap.put( sink, sink ));
+                FastIterator it = alphaRangeIndex.getAllValuesIterator();
+                for (Entry entry = it.next(null); entry != null; entry = it.next(entry)) {
+                    Node<Comparable<Comparable>, AlphaNode> node = (Node<Comparable<Comparable>, AlphaNode>) entry;
+                    AlphaNode sink = node.value;
+                    sinksMap.put( sink, sink );
+                }
+
             }
         }
     }
@@ -864,10 +884,12 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
                 if ( !fieldIndex.isRangeIndexed() ) {
                     continue;
                 }
-                Collection<AlphaNode> alphaNodes = this.rangeIndexMap.get(fieldIndex).getAllValues();
-                for (AlphaNode sink : alphaNodes) {
-                    newSinks[at++] = sink;
+                FastIterator it = this.rangeIndexMap.get(fieldIndex).getAllValuesIterator();
+                for (Entry entry = it.next(null); entry != null; entry = it.next(entry)) {
+                    Node<Comparable<Comparable>, AlphaNode> node = (Node<Comparable<Comparable>, AlphaNode>) entry;
+                    newSinks[at++] = node.value;
                 }
+
             }
         }
 
