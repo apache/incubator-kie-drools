@@ -36,6 +36,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.ObjectFilter;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.runtime.rule.AgendaFilter;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.LiveQuery;
@@ -347,6 +348,16 @@ public class ExternalSheetListenerTest {
 
                 @Override
                 public ProcessInstance startProcess(String processId, Map<String, Object> parameters) {
+                    return null;
+                }
+
+                @Override
+                public ProcessInstance startProcess( String processId, AgendaFilter agendaFilter ) {
+                    return null;
+                }
+
+                @Override
+                public ProcessInstance startProcess(String processId, Map<String, Object> parameters, AgendaFilter agendaFilter) {
                     return null;
                 }
 
