@@ -28,7 +28,7 @@ image::dmn/select_logic_type.png[]
 . For the *Violation.Date*, *Violation.Code*, and *Violation.Speed Limit* parameter fields, right-click and select *Delete* for each field.
 . Click the *Violation.Actual Speed* column header and enter the expression `Violation.Actual Speed - Violation.Speed Limit` in the *Name* field.
 . Right-click the *Fine* parameter field and select either `Insert left` or `Insert right`.
-. Click the *output-2* column sub-header, enter `Amount` in the *Name* field, and select `number` from the *Data Type* pull-down menu.
+. Click the *output-2* column sub-header, enter `Amount` in the *Name* field, and select `number` from the *Data Type* drop-down menu.
 . Similarly, click the *output-1* column sub-header, enter `Points` in the *Name* field, and select `number` from the *Data Type* field.
 . Next, enter the following values in the first row of the decision table:
 * *Violation.Type*: `"speed"`
@@ -59,7 +59,7 @@ Right-click the third row and select `Insert below` to add another row.
 . Click *Save*.
 . To define the driver suspension rule, return to the DMN designer canvas, select the *Should the driver be suspended?* decision node, and click the *Edit* icon to open the DMN boxed expression designer.
 . Click *Select expression* -> *Context*.
-. Click *ContextEntry-1*, enter `Total Points` as the *Name*, and select `number` from the *Data Type* pull-down menu.
+. Click *ContextEntry-1*, enter `Total Points` as the *Name*, and select `number` from the *Data Type* drop-down menu.
 . Click the cell next to *Total Points*, select `Literal expression` from the context menu, and enter `Driver.Points + Fine.Points` as the expression.
 . In the cell below *Driver.Points + Fine.Points*, select `Literal Expression` from the context menu, and enter `if Total Points >= 20 then "Yes" else "No"`.
 . Click *Save*.
