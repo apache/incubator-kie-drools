@@ -15,7 +15,7 @@ image::dmn/dmn-traffic-violations-drd.png[]
 .. In the *Create new DMN* window, enter `Traffic Violation` in the *DMN* name field.
 .. From the *Package* list, select `com.myspace.traffic_violation`.
 .. Click *Ok*. The DMN asset in the DMN designer is opened.
-. In the DMN designer canvas, drag two *DMN Input Data* input nodes on to the canvas.
+. In the DMN designer canvas, drag two *DMN Input Data* input nodes onto the canvas.
 +
 
 .DMN Input Data nodes
@@ -23,7 +23,7 @@ image::dmn/library_objects.png[]
 
 . In the upper-right corner, click the *Properties* image:getting-started/diagram_properties.png[] icon.
 . Double-click each input node, and in the *Name* field, rename one to `Driver` and the other to `Violation`.
-. Drag a *DMN Decision* decision node on to the canvas.
+. Drag a *DMN Decision* decision node onto the canvas.
 . Double-click the decision node and rename it to `Fine`.
 . Click the *Violation* input node, select the *Create DMN Information Requirement* icon and click the `Fine` decision node to link the two nodes.
 +
@@ -31,7 +31,7 @@ image::dmn/library_objects.png[]
 .Create DMN Information Requirement icon
 image::dmn/info-requirement.png[]
 
-. Drag a *DMN Decision* decision node on to the canvas.
+. Drag a *DMN Decision* decision node onto the canvas.
 . Double-click the decision node and rename it to `Should the driver be suspended?`.
 . Click the *Driver* input node, select the *Create DMN Information Requirement* icon and click the *Should the driver be suspended?* decision node to link the two nodes.
 . Click the *Fine* decision node, select the *Create DMN Information Requirement* icon, and select the *Should the driver be suspended?* decision node.

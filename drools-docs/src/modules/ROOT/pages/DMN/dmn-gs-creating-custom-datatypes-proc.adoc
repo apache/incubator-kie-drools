@@ -6,7 +6,7 @@ DMN data types determine the structure of the data that you use within a table, 
 .The custom data types tab
 image::dmn/dmn-custom-datatypes-tab.png[]
 
-//Alternately, you can also access the *Data Types* tab from the *Diagram properties* tab on the right. From the *Diagram properties* tab, click *Manage* from *Data type* under *Information item*.
+//Alternately, you can also access the *Data Types* tab from the *Properties* tab on the right. From the *Properties* tab, click *Manage* from *Data type* under *Information item*.
 
 //.Diagram properties tab
 //image::dmn/dmn-diagram-properties-tab.png[]
@@ -79,7 +79,7 @@ image::dmn/dmn-tViolation-custom-datatype.png[]
 * `Speed Limit` (number)
 * `Actual Speed` (number)
 
-. To add the following constraints to the `Type` nested data type, click the edit icon, click *Add Constraints*, and select *Enumeration* from the *Select constraint type* pull-down menu.
+. To add the following constraints to the `Type` nested data type, click the edit icon, click *Add Constraints*, and select *Enumeration* from the *Select constraint type* drop-down menu.
 +
 * `speed`
 * `parking`

@@ -9,9 +9,9 @@ After you create the DMN custom data types, assign them to the appropriate *DMN 
 
 .Procedure
 . Click the *Model* tab on the DMN designer and click the *Properties* image:getting-started/diagram_properties.png[] icon in the upper-right corner of the DMN designer to expose the DRD properties.
-. In the DRD, select the *Driver* input data node and in the *Properties* panel, select `tDriver` from the *Data type* pull-down menu.
-. Select the *Violation* input data node and select `tViolation` from the *Data type* pull-down menu.
-. Select the *Fine* input data node and select `tFine` from the *Data type* pull-down menu.
+. In the DRD, select the *Driver* input data node and in the *Properties* panel, select `tDriver` from the *Data type* drop-down menu.
+. Select the *Violation* input data node and select `tViolation` from the *Data type* drop-down menu.
+. Select the *Fine* input data node and select `tFine` from the *Data type* drop-down menu.
 . Select the *Should the driver be suspended?* decision node and set the following properties:
 +
 * *Data type*: `string`
