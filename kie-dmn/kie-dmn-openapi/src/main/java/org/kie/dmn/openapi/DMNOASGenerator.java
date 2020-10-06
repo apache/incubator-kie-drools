@@ -18,15 +18,28 @@ package org.kie.dmn.openapi;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import io.smallrye.openapi.runtime.io.JsonUtil;
+import io.smallrye.openapi.runtime.io.schema.SchemaWriter;
+import org.eclipse.microprofile.openapi.OASFactory;
+import org.eclipse.microprofile.openapi.models.OpenAPI;
+import org.eclipse.microprofile.openapi.models.media.Schema;
+import org.eclipse.microprofile.openapi.models.media.Schema.SchemaType;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.core.impl.CompositeTypeImpl;
+import org.kie.dmn.core.impl.SimpleTypeImpl;
 import org.kie.dmn.openapi.model.DMNModelIOSets;
 import org.kie.dmn.typesafe.DMNTypeUtils;
+import org.openapitools.empoa.jackson.OpenAPISerializer;
 
 public class DMNOASGenerator {
 
@@ -34,6 +47,7 @@ public class DMNOASGenerator {
     private final List<DMNModelIOSets> ioSets = new ArrayList<>();
     private final Set<DMNType> typesIndex = new HashSet<>();
     private TempNamingPolicy namingPolicy;
+    private final Map<DMNType, Schema> schemas = new HashMap<>();
 
     public DMNOASGenerator(Collection<DMNModel> models) {
         this.dmnModels = new HashSet<>(models);
@@ -48,7 +62,64 @@ public class DMNOASGenerator {
         }
         assignNamesToIOSets();
         determineNamingPolicy();
+        generateSchemas();
         System.out.println("finished");
+    }
+
+    private void generateSchemas() {
+        for (DMNType t : typesIndex) {
+            Schema schema = schemaFromType(t);
+            // serialization
+            ObjectNode tree = JsonUtil.objectNode();
+            SchemaWriter.writeSchema(tree, schema, t.getName());
+            ObjectMapper mapper = new ObjectMapper();
+            try {
+                System.out.println(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(tree));
+                if (3 < Double.valueOf(2)) { // TODO omit for now:
+                    System.out.println(OpenAPISerializer.serialize(schema, OpenAPISerializer.Format.JSON));
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private Schema refOrBuiltinSchema(DMNType t) {
+        if (DMNTypeUtils.isFEELBuiltInType(t)) {
+            if (t.getName().equals("string")) {
+                Schema schema = OASFactory.createObject(Schema.class).description("FEEL:string");
+                schema.setType(SchemaType.STRING);
+                return schema;
+            }
+            if (t.getName().equals("number")) {
+                Schema schema = OASFactory.createObject(Schema.class).description("FEEL:number");
+                schema.setType(SchemaType.NUMBER);
+                return schema;
+            }
+            throw new UnsupportedOperationException();
+        }
+        if (typesIndex.contains(t)) {
+            Schema schema = OASFactory.createObject(Schema.class).ref(namingPolicy.getRef(t));
+            return schema;
+        }
+        throw new UnsupportedOperationException();
+    }
+
+    private Schema schemaFromType(DMNType t) {
+        if (t instanceof CompositeTypeImpl) {
+            CompositeTypeImpl ct = (CompositeTypeImpl) t;
+            OASFactory.createObject(OpenAPI.class);
+            Schema schema = OASFactory.createObject(Schema.class).description(t.toString());
+            for (Entry<String, DMNType> fkv : ct.getFields().entrySet()) {
+                schema.addProperty(fkv.getKey(), refOrBuiltinSchema(fkv.getValue()));
+            }
+            return schema;
+        }
+        if (t instanceof SimpleTypeImpl) {
+            Schema schema = OASFactory.createObject(Schema.class).description("TODO: " + t.toString()).type(SchemaType.OBJECT);
+            return schema;
+        }
+        throw new UnsupportedOperationException();
     }
 
     private void determineNamingPolicy() {

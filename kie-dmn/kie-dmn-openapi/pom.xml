@@ -21,10 +21,30 @@
         <classifier>tests</classifier>
         <version>${project.version}</version>
       </dependency>
+      <!-- TEMP -->
+<dependency>
+    <groupId>io.smallrye</groupId>
+    <artifactId>smallrye-open-api-core</artifactId>
+    <version>2.0.10</version>
+</dependency>
     </dependencies>
   </dependencyManagement>
 
   <dependencies>
+    <dependency>
+        <groupId>io.smallrye</groupId>
+        <artifactId>smallrye-open-api-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.microprofile.openapi</groupId>
+      <artifactId>microprofile-openapi-api</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+  <groupId>org.openapitools.empoa</groupId>
+  <artifactId>empoa-jackson-serializer</artifactId>
+  <version>1.0.1</version>
+</dependency>
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-dmn-api</artifactId>
