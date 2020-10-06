@@ -28,6 +28,10 @@
 
   <name>Drools :: Engine</name>
 
+  <description>
+    Wrapper module for rules evaluation based on executable model.
+  </description>
+
   <properties>
     <java.module.name>org.drools.engine</java.module.name>
   </properties>

@@ -28,6 +28,10 @@
 
   <name>Drools :: Engine :: Classic</name>
 
+  <description>
+    Wrapper module for drl-based rules evaluation.
+  </description>
+
   <properties>
     <java.module.name>org.drools.engine.classic</java.module.name>
   </properties>
