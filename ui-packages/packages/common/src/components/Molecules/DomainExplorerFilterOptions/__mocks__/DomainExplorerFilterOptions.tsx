@@ -1,6 +1,6 @@
 import React from 'react';
 
-const MockedDomainExplorerFilterOptions = () => {
+const MockedDomainExplorerFilterOptions: React.FC = () => {
   return <></>;
 };
 

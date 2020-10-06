@@ -1,6 +1,6 @@
 import React from 'react';
 
-const MockedItemDescriptor = () => {
+const MockedItemDescriptor: React.FC = () => {
   return <></>;
 };
 

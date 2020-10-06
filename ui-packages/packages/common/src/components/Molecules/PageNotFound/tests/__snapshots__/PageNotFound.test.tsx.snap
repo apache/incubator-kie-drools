@@ -19,10 +19,10 @@ exports[`PageNotFound component tests snapshot testing with location object 1`] 
           headingLevel="h1"
           size="4xl"
         >
-          404 Error: page not found
+          404 Error: page not found
         </Title>
         <EmptyStateBody>
-          This page could not be found.
+          This page could not be found.
         </EmptyStateBody>
         <Button
           onClick={[Function]}
@@ -53,10 +53,10 @@ exports[`PageNotFound component tests snapshot testing without location object 1
           headingLevel="h1"
           size="4xl"
         >
-          404 Error: page not found
+          404 Error: page not found
         </Title>
         <EmptyStateBody>
-          This page could not be found.
+          This page could not be found.
         </EmptyStateBody>
         <Button
           onClick={[Function]}

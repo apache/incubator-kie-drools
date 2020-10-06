@@ -41,7 +41,6 @@ import {
 } from '../../../utils/Utils';
 import ProcessInstance = GraphQL.ProcessInstance;
 import { ProcessInstanceBulkList } from '../ProcessListToolbar/ProcessListToolbar';
-/* tslint:disable:no-empty */
 
 type filterType = {
   status: GraphQL.ProcessInstanceState[];
@@ -52,7 +51,7 @@ interface IOwnProps {
   id: number;
   processInstanceData: ProcessInstance;
   initData: any;
-  setInitData: any;
+  setInitData: (any) => void;
   loadingInitData: boolean;
   selectedInstances: ProcessInstanceBulkList;
   setSelectedInstances: (selectedInstances: ProcessInstanceBulkList) => void;
@@ -100,7 +99,7 @@ const ProcessListTableItems: React.FC<IOwnProps & OUIAProps> = ({
     setIsModalOpen(!isModalOpen);
   };
 
-  const onSelect = event => {
+  const onSelect = () => {
     setisOpen(isOpen ? false : true);
   };
   const onToggle = _isOpen => {
@@ -281,9 +280,11 @@ const ProcessListTableItems: React.FC<IOwnProps & OUIAProps> = ({
   };
   useEffect(() => {
     if (!loading && !loadingInitData && data !== undefined) {
-      data.ProcessInstances.forEach((instance: any) => {
-        instance.isChecked = false;
-      });
+      data.ProcessInstances.forEach(
+        (instance: ProcessInstance & { isChecked: boolean }) => {
+          instance.isChecked = false;
+        }
+      );
       const copyOfInitData = { ...initData };
       copyOfInitData.ProcessInstances.map(instanceData => {
         if (instanceData.id === processInstanceData.id) {

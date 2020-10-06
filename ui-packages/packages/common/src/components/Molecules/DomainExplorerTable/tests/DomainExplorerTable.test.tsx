@@ -9,8 +9,6 @@ global.Math.random = () => 0.7218415351930461;
 
 jest.mock('../../ItemDescriptor/ItemDescriptor');
 
-// tslint:disable: no-string-literal
-// tslint:disable: no-unexpected-multiline
 describe('Domain Explorer Table Component', () => {
   let useEffect;
   const mockUseEffect = () => {
@@ -237,7 +235,6 @@ describe('Domain Explorer Table Component', () => {
       'DomainExplorerTable'
     );
     wrapper.update();
-    // tslint:disable-next-line: no-string-literal
     expect(
       wrapper.find('.kogito-management-console--domain-explorer__table')
     ).toBeTruthy();

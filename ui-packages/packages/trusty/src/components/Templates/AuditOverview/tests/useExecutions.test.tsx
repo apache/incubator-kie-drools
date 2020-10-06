@@ -67,7 +67,6 @@ describe('useExecutions', () => {
       Promise.resolve(executionsResponse)
     );
     const { result } = renderHook(() => {
-      // tslint:disable-next-line:react-hooks-nesting
       return useExecutions({
         searchString: '',
         from: '',
@@ -106,7 +105,6 @@ describe('useExecutions', () => {
   it('returns a loading error when APIs call fails', async () => {
     apiMock.mockImplementation(() => () => Promise.reject('error'));
     const { result } = renderHook(() => {
-      // tslint:disable-next-line:react-hooks-nesting
       return useExecutions({
         searchString: '',
         from: '',

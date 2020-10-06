@@ -1,10 +1,7 @@
 import React from 'react';
+import { ISortBy } from '@patternfly/react-table';
 import { User } from '@kogito-apps/common';
 
-export interface SortBy {
-  index: number;
-  direction: string;
-}
 export interface IContext<T> {
   getUser(): User;
   setActiveItem(item: T);
@@ -13,7 +10,7 @@ export interface IContext<T> {
 }
 
 export interface IQueryInfo {
-  sortBy?: SortBy;
+  sortBy?: ISortBy;
   offset?: number;
   maxElements?: number;
 }

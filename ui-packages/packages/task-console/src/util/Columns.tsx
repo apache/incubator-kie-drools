@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { DataTableColumn } from '@kogito-apps/common';
+import { DataTableColumn, GraphQL } from '@kogito-apps/common';
 import TaskDescription from '../components/Atoms/TaskDescription/TaskDescription';
 import React from 'react';
 import TaskState from '../components/Atoms/TaskState/TaskState';
@@ -52,7 +52,7 @@ export default class Columns {
     return {
       label: 'Name',
       path: 'referenceName',
-      bodyCellTransformer: (cellValue, rowTask) => (
+      bodyCellTransformer: (cellValue, rowTask: GraphQL.UserTaskInstance) => (
         <TaskDescription task={rowTask} />
       ),
       isSortable
@@ -63,7 +63,9 @@ export default class Columns {
     return {
       label: 'State',
       path: 'state',
-      bodyCellTransformer: (cellValue, rowTask) => <TaskState task={rowTask} />,
+      bodyCellTransformer: (cellValue, rowTask: GraphQL.UserTaskInstance) => (
+        <TaskState task={rowTask} />
+      ),
       isSortable
     };
   }

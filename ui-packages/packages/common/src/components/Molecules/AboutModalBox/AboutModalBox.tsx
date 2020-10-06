@@ -48,13 +48,18 @@ const AboutModalBox: React.FC<IOwnProps & OUIAProps> = ({
             <a
               href="https://github.com/kiegroup/kogito-runtimes/blob/master/LICENSE"
               target="_blank"
+              rel="noreferrer"
             >
               https://github.com/kiegroup/kogito-runtimes/blob/master/LICENSE
             </a>
           </TextListItem>
           <TextListItem component="dt">Report a bug: </TextListItem>
           <TextListItem component="dd">
-            <a href="https://issues.redhat.com/projects/KOGITO" target="_blank">
+            <a
+              href="https://issues.redhat.com/projects/KOGITO"
+              target="_blank"
+              rel="noreferrer"
+            >
               https://issues.redhat.com/projects/KOGITO
             </a>
           </TextListItem>
@@ -63,13 +68,14 @@ const AboutModalBox: React.FC<IOwnProps & OUIAProps> = ({
             <a
               href="https://docs.jboss.org/kogito/release/latest/html_single/"
               target="_blank"
+              rel="noreferrer"
             >
               https://docs.jboss.org/kogito/release/latest/html_single/
             </a>
           </TextListItem>
           <TextListItem component="dt">Kogito URL: </TextListItem>
           <TextListItem component="dd">
-            <a href="http://kogito.kie.org" target="_blank">
+            <a href="http://kogito.kie.org" target="_blank" rel="noreferrer">
               http://kogito.kie.org
             </a>
           </TextListItem>

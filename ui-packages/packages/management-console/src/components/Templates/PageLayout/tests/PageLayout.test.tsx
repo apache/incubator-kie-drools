@@ -3,16 +3,43 @@ import PageLayout from '../PageLayout';
 import { MockedProvider } from '@apollo/react-testing';
 import { getWrapper, GraphQL } from '@kogito-apps/common';
 import { MemoryRouter as Router } from 'react-router-dom';
-import useGetQueryFieldsQuery = GraphQL.useGetQueryFieldsQuery;
+import * as H from 'history';
 
-const props: any = {
+const props = {
   location: {
-    pathname: '/ProcessInstances'
+    pathname: '/ProcessInstances',
+    search: '',
+    state: '',
+    hash: ''
   },
-  history: []
+  history: H.createMemoryHistory({ keyLength: 0 })
 };
 
-const mocks = [];
+const mocks = [
+  {
+    request: {
+      query: GraphQL.GetQueryFieldsDocument
+    },
+    result: {
+      loading: false,
+      data: {
+        __type: {
+          fields: [
+            {
+              name: 'Travels'
+            },
+            {
+              name: 'visaApplication'
+            },
+            {
+              name: 'Jobs'
+            }
+          ]
+        }
+      }
+    }
+  }
+];
 
 jest.mock('../../ProcessListPage/ProcessListPage.tsx');
 
@@ -24,36 +51,14 @@ jest.mock('@kogito-apps/common', () => ({
   ...jest.requireActual('@kogito-apps/common'),
   KogitoPageLayout: () => {
     return <MockedComponent />;
-  },
-  GraphQL: {
-    useGetQueryFieldsQuery: jest.fn()
   }
 }));
 describe('PageLayout tests', () => {
-  // @ts-ignore
-  useGetQueryFieldsQuery.mockReturnValue({
-    loading: false,
-    data: {
-      __type: {
-        fields: [
-          {
-            name: 'Travels'
-          },
-          {
-            name: 'visaApplication'
-          },
-          {
-            name: 'Jobs'
-          }
-        ]
-      }
-    }
-  });
   it('snapshot testing', () => {
     const wrapper = getWrapper(
       // keyLength set to zero to have stable snapshots
       <Router keyLength={0}>
-        <MockedProvider mocks={mocks}>
+        <MockedProvider mocks={mocks} addTypename={false}>
           <PageLayout {...props} />
         </MockedProvider>
       </Router>,
@@ -62,10 +67,7 @@ describe('PageLayout tests', () => {
     wrapper
       .find('KogitoPageLayout')
       .props()
-      [
-        // tslint:disable-next-line
-        'BrandClick'
-      ]();
+      ['BrandClick']();
     expect(wrapper).toMatchSnapshot();
   });
 });

@@ -288,12 +288,12 @@ export const getProcessInstanceDescription = (
 // function containing Api call to update process variables
 export const handleVariableUpdate = async (
   processInstance: Pick<ProcessInstance, 'id' | 'endpoint'>,
-  updateJson: object,
+  updateJson: Record<string, unknown>,
   setDisplayLabel: (displayLabel: boolean) => void,
   setDisplaySuccess: (displaySuccess: boolean) => void,
-  setUpdateJson: (updateJson: object) => void,
+  setUpdateJson: (updateJson: Record<string, unknown>) => void,
   setVariableError: (error: string) => void
-) => {
+): Promise<void> => {
   try {
     await axios
       .put(`${processInstance.endpoint}/${processInstance.id}`, updateJson)

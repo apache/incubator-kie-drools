@@ -78,7 +78,7 @@ export class TaskFormSubmitHandler implements IFormSubmitHandler {
     this.selectedPhase = phase;
   }
 
-  getActions = () => {
+  getActions = (): IFormAction[] => {
     return this.actions;
   };
 
@@ -143,13 +143,13 @@ function readSchemaAssignments(formSchema: FormSchema): FormAssignments {
 
   for (const key of Object.keys(formSchema.properties)) {
     const property = formSchema.properties[key];
-    if (property.hasOwnProperty('input')) {
+    if (Object.prototype.hasOwnProperty.call(property, 'input')) {
       if (property.input) {
         formInputs.push(key);
       }
       delete property.input;
     }
-    if (property.hasOwnProperty('output')) {
+    if (Object.prototype.hasOwnProperty.call(property, 'output')) {
       if (property.output) {
         formOutputs.push(key);
       }

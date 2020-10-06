@@ -22,7 +22,7 @@ interface IOwnProps {
   history: History;
 }
 
-const PageLayout: React.FC<IOwnProps & OUIAProps> = ({ ouiaId, ...props }) => {
+const PageLayout: React.FC<IOwnProps & OUIAProps> = ({ ...props }) => {
   const { pathname } = props.location;
 
   const PageNav = (

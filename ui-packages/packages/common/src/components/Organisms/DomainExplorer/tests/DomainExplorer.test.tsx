@@ -23,8 +23,7 @@ jest.mock(
 jest.mock('../../../Molecules/DomainExplorerTable/DomainExplorerTable');
 jest.mock('../../../Atoms/LoadMore/LoadMore');
 jest.mock('../../../Atoms/KogitoSpinner/KogitoSpinner');
-// tslint:disable: no-string-literal
-// tslint:disable: no-unexpected-multiline
+
 const props = {
   domains: ['Travels', 'VisaApplications'],
   loadingState: false,
@@ -177,7 +176,6 @@ describe('Domain Explorer component', () => {
   let useApolloClient;
   const mockUseApolloClient = () => {
     act(() => {
-      // tslint:disable-next-line: react-hooks-nesting
       client = useApolloClient();
     });
   };

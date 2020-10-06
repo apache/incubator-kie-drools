@@ -1,9 +1,10 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter, match } from 'react-router-dom';
 import { MockedProvider } from '@apollo/react-testing';
 import DomainExplorerPage from '../DomainExplorerPage';
 import { getWrapper } from '@kogito-apps/common';
+import * as H from 'history';
 
 const MockedDomainExplorer = (): React.ReactElement => {
   return <></>;
@@ -26,44 +27,45 @@ const props = {
   domains: ['Travels', 'VisaApplications'],
   loadingState: false
 };
+const path = '/DomainExplorer/:domainName';
+const match: match<{ domainName: string }> = {
+  isExact: false,
+  path,
+  url: path.replace(':domainName', 'Travels'),
+  params: { domainName: 'Travels' }
+};
 
 const routeComponentPropsMock = {
-  history: {} as any,
+  history: H.createMemoryHistory({ keyLength: 0 }),
   location: {
     pathname: '/DomainExplorer/Travels',
     state: {
       parameters: [{ flight: ['arrival'] }, { flight: ['departure'] }]
-    }
-  } as any,
-  match: {
-    params: {
-      domainName: 'Travels'
-    }
-  } as any
+    },
+    search: '',
+    hash: ''
+  },
+  match
 };
 const routeComponentPropsMock2 = {
-  history: {} as any,
+  history: H.createMemoryHistory(),
   location: {
     pathname: '/DomainExplorer/Travels',
-    state: {}
-  } as any,
-  match: {
-    params: {
-      domainName: 'Travels'
-    }
-  } as any
+    search: '',
+    state: {},
+    hash: ''
+  },
+  match
 };
 const props2 = {
   domains: ['Travels', 'VisaApplications'],
   location: {
     pathname: '/DomainExplorer/Travels',
-    state: {}
+    search: '',
+    state: {},
+    hash: ''
   },
-  match: {
-    params: {
-      domainName: 'Travels'
-    }
-  },
+  match,
   loadingState: false
 };
 

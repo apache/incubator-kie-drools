@@ -10,20 +10,23 @@ import {
   Title
 } from '@patternfly/react-core';
 import { ExclamationCircleIcon } from '@patternfly/react-icons';
-import { Redirect } from 'react-router';
+import { Redirect, StaticContext, RouteComponentProps } from 'react-router';
 import { OUIAProps, componentOuiaProps } from '../../../utils/OuiaUtils';
+import * as H from 'history';
 
 interface IOwnProps {
   defaultPath: string;
   defaultButton: string;
-  location: any;
 }
 
-const PageNotFound: React.FC<IOwnProps & OUIAProps> = ({
-  ouiaId,
-  ouiaSafe,
-  ...props
-}) => {
+interface LocationProps extends H.LocationState {
+  prev?: string;
+}
+
+const PageNotFound: React.FC<IOwnProps &
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  RouteComponentProps<{}, StaticContext, LocationProps> &
+  OUIAProps> = ({ ouiaId, ouiaSafe, ...props }) => {
   let prevPath;
   if (props.location.state !== undefined) {
     prevPath = props.location.state.prev;
@@ -56,11 +59,11 @@ const PageNotFound: React.FC<IOwnProps & OUIAProps> = ({
               color="var(--pf-global--danger-color--100)"
             />
             <Title headingLevel="h1" size="4xl">
-              404 Error: page not found
+              404 Error: page not found
             </Title>
-            <EmptyStateBody>This page could not be found.</EmptyStateBody>
+            <EmptyStateBody>This page could not be found.</EmptyStateBody>
             <Button variant="primary" onClick={redirectHandler}>
-              {props.defaultButton}               
+              {props.defaultButton}
             </Button>
           </EmptyState>
         </Bullseye>

@@ -26,7 +26,7 @@ export interface ExecutionRouteParams {
 export interface ItemObject {
   name: string;
   typeRef: string;
-  value: string | number | boolean | object | null;
+  value: string | number | boolean | Record<string, unknown> | null;
   components: (ItemObject | ItemObject[])[];
   impact?: boolean | number;
   score?: number;
@@ -42,7 +42,7 @@ export function isItemObjectMultiArray(object: any): object is ItemObject[][] {
 
 export interface InputRow {
   inputLabel: string;
-  inputValue?: string | number | boolean | object | null;
+  inputValue?: string | number | boolean | Record<string, unknown> | null;
   hasEffect?: boolean | number;
   score?: number;
   key: string;

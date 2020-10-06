@@ -26,6 +26,7 @@ import {
   ProcessInstanceIconCreator
 } from '../../../utils/Utils';
 import ProcessInstance = GraphQL.ProcessInstance;
+import * as H from 'history';
 
 interface IOwnProps {
   data: {
@@ -43,7 +44,7 @@ interface IOwnProps {
       | 'lastUpdate'
     >[];
   };
-  from: any;
+  from: H.LocationState;
 }
 const ProcessDetails: React.FC<IOwnProps & OUIAProps> = ({
   data,
@@ -166,25 +167,19 @@ const ProcessDetails: React.FC<IOwnProps & OUIAProps> = ({
 
           {data.ProcessInstances[0].childProcessInstances.length !== 0 && (
             <FormGroup label="Sub Processes" fieldId="child">
-              {data.ProcessInstances[0].childProcessInstances.map(
-                (child, index) => (
-                  <div key={child.id}>
-                    <Link
-                      to={{ pathname: '/Process/' + child.id, state: from }}
-                    >
-                      <Tooltip content={child.id}>
-                        <Button variant="link" icon={<LevelDownAltIcon />}>
-                          <ItemDescriptor
-                            itemDescription={getProcessInstanceDescription(
-                              child
-                            )}
-                          />
-                        </Button>
-                      </Tooltip>
-                    </Link>
-                  </div>
-                )
-              )}
+              {data.ProcessInstances[0].childProcessInstances.map(child => (
+                <div key={child.id}>
+                  <Link to={{ pathname: '/Process/' + child.id, state: from }}>
+                    <Tooltip content={child.id}>
+                      <Button variant="link" icon={<LevelDownAltIcon />}>
+                        <ItemDescriptor
+                          itemDescription={getProcessInstanceDescription(child)}
+                        />
+                      </Button>
+                    </Tooltip>
+                  </Link>
+                </div>
+              ))}
             </FormGroup>
           )}
         </Form>

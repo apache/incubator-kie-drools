@@ -10,7 +10,8 @@ import {
 import {
   ItemDescriptor,
   OUIAProps,
-  componentOuiaProps
+  componentOuiaProps,
+  GraphQL
 } from '@kogito-apps/common';
 import { IOperation } from '../../Molecules/ProcessListToolbar/ProcessListToolbar';
 import { getProcessInstanceDescription } from '../../../utils/Utils';
@@ -35,7 +36,7 @@ const ProcessListBulkInstances: React.FC<IOwnProps & OUIAProps> = ({
             </Text>
             <TextList>
               {Object.entries(operationResult.results.successInstances).map(
-                (process: any) => {
+                (process: [string, GraphQL.ProcessInstance]) => {
                   return (
                     <TextListItem key={process[0]}>
                       <strong>
@@ -79,7 +80,7 @@ const ProcessListBulkInstances: React.FC<IOwnProps & OUIAProps> = ({
             </Text>
             <TextList>
               {Object.entries(operationResult.results.ignoredInstances).map(
-                (process: any) => {
+                (process: [string, GraphQL.ProcessInstance]) => {
                   return (
                     <TextListItem key={process[0]}>
                       <strong>
@@ -104,7 +105,12 @@ const ProcessListBulkInstances: React.FC<IOwnProps & OUIAProps> = ({
             <Text component={TextVariants.h2}>Errors:</Text>
             <TextList>
               {Object.entries(operationResult.results.failedInstances).map(
-                (process: any) => {
+                (
+                  process: [
+                    string,
+                    GraphQL.ProcessInstance & { errorMessage?: string }
+                  ]
+                ) => {
                   return (
                     <TextListItem key={process[0]}>
                       <strong>

@@ -24,12 +24,11 @@
     "update-snapshot": "jest --updateSnapshot",
     "test:coverage": "yarn test --coverage",
     "storybook": "start-storybook -p 9001 -c .storybook",
-    "lint": "tslint -c ./tslint.json './src/**/*.ts{,x}'",
+    "lint": "eslint './src/**/*.ts{,x}'",
     "format": "prettier --config ../../.prettierrc --check --write './src/**/*.{tsx,ts,js}'",
     "clean": "rimraf dist",
     "codegen": "graphql-codegen"
   },
-  "dependencies": {},
   "devDependencies": {
     "@storybook/addon-a11y": "5.3.19",
     "@storybook/addon-actions": "5.3.18",

@@ -33,13 +33,13 @@ import useGetInputFieldsFromQueryQuery = GraphQL.useGetInputFieldsFromQueryQuery
 import { OUIAProps, componentOuiaProps } from '../../../utils/OuiaUtils';
 interface IOwnProps {
   domainName: string;
-  rememberedParams: object[];
+  rememberedParams: Record<string, unknown>[];
   rememberedSelections: string[];
-  metaData: object;
-  rememberedFilters: object;
+  metaData: Record<string, unknown>;
+  rememberedFilters: Record<string, unknown>;
   rememberedChips: string[];
   defaultChip: string[];
-  defaultFilter: object;
+  defaultFilter: Record<string, unknown>;
 }
 
 const DomainExplorer: React.FC<IOwnProps & OUIAProps> = ({

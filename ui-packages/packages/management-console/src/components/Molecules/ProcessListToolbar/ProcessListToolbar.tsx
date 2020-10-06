@@ -30,7 +30,7 @@ import { GraphQL, OUIAProps, componentOuiaProps } from '@kogito-apps/common';
 import ProcessListModal from '../../Atoms/ProcessListModal/ProcessListModal';
 import { performMultipleAction, setTitle } from '../../../utils/Utils';
 import ProcessInstanceState = GraphQL.ProcessInstanceState;
-/* tslint:disable:no-string-literal */
+
 interface IOwnProps {
   filterClick: (statusArray: ProcessInstanceState[] | string[]) => void;
   filters: filterType;
@@ -61,7 +61,10 @@ export enum OperationType {
 }
 
 export interface ProcessInstanceBulkList {
-  [key: string]: GraphQL.ProcessInstance;
+  [key: string]: Pick<
+    GraphQL.ProcessInstance,
+    'id' | 'processId' | 'serviceUrl' | 'state'
+  >;
 }
 
 interface IOperationResult {
@@ -297,7 +300,7 @@ const ProcessListToolbar: React.FC<IOwnProps & OUIAProps> = ({
     }
   };
 
-  const onDelete = (type: string = '', id: string = ''): void => {
+  const onDelete = (type = '', id = ''): void => {
     setShouldRefresh(true);
     if (type === 'Status') {
       const copyOfStatusArray = statusArray.slice();

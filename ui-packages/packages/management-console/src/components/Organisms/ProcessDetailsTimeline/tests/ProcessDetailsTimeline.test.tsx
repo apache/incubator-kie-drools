@@ -190,7 +190,6 @@ const props3 = {
     childProcessInstances: []
   }
 };
-/* tslint:disable */
 
 describe('ProcessDetailsTimeline component tests', () => {
   it('Snapshot testing for service url available', () => {

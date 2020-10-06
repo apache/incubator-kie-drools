@@ -33,15 +33,17 @@ export interface IOwnProps {
   columnPickerType: string;
   getQueryTypes: ResponseType;
   setParameters: (
-    parameters: ((parameter: object[]) => object[]) | object[]
+    parameters:
+      | ((parameter: Record<string, unknown>[]) => Record<string, unknown>[])
+      | Record<string, unknown>[]
   ) => void;
   selected: string[];
   setSelected: (selected: ((selected: string[]) => string[]) | []) => void;
-  data: object[];
+  data: Record<string, unknown>[];
   getPicker: ResponseType;
   setOffsetVal: (offsetVal: number) => void;
   setPageSize: (pageSize: number) => void;
-  metaData: object;
+  metaData: Record<string, unknown>;
   setIsModalOpen: (isModalOpen: boolean) => void;
   isModalOpen: boolean;
   setRunQuery: (runQuery: boolean) => void;
@@ -143,32 +145,30 @@ const DomainExplorerManageColumns: React.FC<IOwnProps & OUIAProps> = ({
         const label = title + '/' + attr.join();
         const childEle = (
           <DataListItem
-            aria-labelledby={'kie-datalist-item-' + label.replace(/\,/g, '')}
-            isExpanded={expanded.includes(label.replace(/\,/g, ''))}
-            key={'kie-datalist-item-' + label.replace(/\,/g, '')}
+            aria-labelledby={'kie-datalist-item-' + label.replace(/,/g, '')}
+            isExpanded={expanded.includes(label.replace(/,/g, ''))}
+            key={'kie-datalist-item-' + label.replace(/,/g, '')}
           >
             <DataListItemRow>
               <DataListToggle
-                onClick={() => toggle(label.replace(/\,/g, ''))}
-                isExpanded={expanded.includes(label.replace(/\,/g, ''))}
-                id={'kie-datalist-toggle-' + label.replace(/\,/g, '')}
-                aria-controls={
-                  'kie-datalist-toggle-' + label.replace(/\,/g, '')
-                }
+                onClick={() => toggle(label.replace(/,/g, ''))}
+                isExpanded={expanded.includes(label.replace(/,/g, ''))}
+                id={'kie-datalist-toggle-' + label.replace(/,/g, '')}
+                aria-controls={'kie-datalist-toggle-' + label.replace(/,/g, '')}
               />
               <DataListItemCells
                 dataListCells={[
                   <DataListCell
-                    id={'kie-datalist-item-' + label.replace(/\,/g, '')}
+                    id={'kie-datalist-item-' + label.replace(/,/g, '')}
                     key={index}
                   >
-                    {(title + ' / ' + attr.join()).replace(/\,/g, '')}
+                    {(title + ' / ' + attr.join()).replace(/,/g, '')}
                   </DataListCell>
                 ]}
               />
             </DataListItemRow>
             {group.fields
-              .filter((item, _index) => {
+              .filter(item => {
                 if (!nullTypes.includes(item.type.name)) {
                   const tempData = [];
                   const n = fetchSchema(item);
@@ -186,7 +186,7 @@ const DomainExplorerManageColumns: React.FC<IOwnProps & OUIAProps> = ({
                   <DataListContent
                     aria-label={itemName}
                     id={'kie-datalist-content-' + itemName}
-                    isHidden={!expanded.includes(label.replace(/\,/g, ''))}
+                    isHidden={!expanded.includes(label.replace(/,/g, ''))}
                     className="kogito-common--manage-columns__data-list-content"
                     key={itemName + _index}
                   >
@@ -282,7 +282,7 @@ const DomainExplorerManageColumns: React.FC<IOwnProps & OUIAProps> = ({
               </DataListItemRow>
               {group.type.fields &&
                 group.type.fields
-                  .filter((item, _index) => {
+                  .filter(item => {
                     if (!nullTypes.includes(item.type.name)) {
                       const tempData = [];
                       const _v = fetchSchema(item);
@@ -348,7 +348,7 @@ const DomainExplorerManageColumns: React.FC<IOwnProps & OUIAProps> = ({
       setIsDropDownOpen(isOpen);
     };
 
-    const onDropDownSelect = event => {
+    const onDropDownSelect = () => {
       setIsDropDownOpen(!isDropDownOpen);
     };
 

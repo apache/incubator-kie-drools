@@ -36,7 +36,7 @@ const props1 = {
             message: 'Something went wrong'
           },
           start: '2019-10-22T03:40:44.089Z',
-          lastUpdated: '2019-10-22T03:40:44.089Z',
+          lastUpdate: '2019-10-22T03:40:44.089Z',
           end: null,
           variables:
             '{"flight":{"arrival":"2019-10-30T22:00:00Z[UTC]","departure":"2019-10-22T22:00:00Z[UTC]","flightNumber":"MX555"},"hotel":{"address":{"city":"Berlin","country":"Germany","street":"street","zipCode":"12345"},"bookingNumber":"XX-012345","name":"Perfect hotel","phone":"09876543"},"trip":{"begin":"2019-10-22T22:00:00Z[UTC]","city":"Berlin","country":"Germany","end":"2019-10-30T22:00:00Z[UTC]","visaRequired":false},"traveller":{"address":{"city":"Karkow","country":"Poland","street":"palna","zipCode":"200300"},"email":"rob@redhat.com","firstName":"Rob","lastName":"Rob","nationality":"Polish"}}',
@@ -53,8 +53,8 @@ const props1 = {
           ],
           childProcessInstances: []
         }
-      } as any,
-      failedInstances: {} as any,
+      },
+      failedInstances: {},
       ignoredInstances: {
         'e735128t-6tt7-4aa8-9ec0-e18e19809e0b': {
           id: 'e735128t-6tt7-4aa8-9ec0-e18e19809e0b',
@@ -64,7 +64,7 @@ const props1 = {
           processName: 'travels',
           roles: [],
           businessKey: null,
-          state: 'COMPLETED',
+          state: ProcessInstanceState.Completed,
           rootProcessInstanceId: null,
           serviceUrl: null,
           endpoint: 'http://localhost:4000',
@@ -74,6 +74,7 @@ const props1 = {
             message: 'Something went wrong'
           },
           start: '2019-12-22T03:40:44.089Z',
+          lastUpdate: '2019-10-22T03:40:44.089Z',
           end: null,
           variables:
             '{"flight":{"arrival":"2019-10-30T22:00:00Z[UTC]","departure":"2019-10-22T22:00:00Z[UTC]","flightNumber":"MX555"},"hotel":{"address":{"city":"Berlin","country":"Germany","street":"street","zipCode":"12345"},"bookingNumber":"XX-012345","name":"Perfect hotel","phone":"09876543"},"trip":{"begin":"2019-10-22T22:00:00Z[UTC]","city":"Berlin","country":"Germany","end":"2019-10-30T22:00:00Z[UTC]","visaRequired":false},"traveller":{"address":{"city":"Karkow","country":"Poland","street":"palna","zipCode":"200300"},"email":"rob@redhat.com","firstName":"Rob","lastName":"Rob","nationality":"Polish"}}',
@@ -90,7 +91,7 @@ const props1 = {
           ],
           childProcessInstances: []
         }
-      } as any
+      }
     },
     functions: {
       perform: jest.fn(),
@@ -108,11 +109,8 @@ const props2 = {
       noProcessMessage: 'No processes were aborted'
     },
     results: {
-      successMessage: 'Aborted',
-      ignoredMessage:
-        'These processes were ignored because they were completed or aborted',
-      successInstances: {} as any,
-      failedInstances: {} as any,
+      successInstances: {},
+      failedInstances: {},
       ignoredInstances: {
         'e735128t-6tt7-4aa8-9ec0-e18e19809e0b': {
           id: 'e735128t-6tt7-4aa8-9ec0-e18e19809e0b',
@@ -122,7 +120,7 @@ const props2 = {
           processName: 'travels',
           roles: [],
           businessKey: null,
-          state: 'COMPLETED',
+          state: ProcessInstanceState.Completed,
           rootProcessInstanceId: null,
           serviceUrl: null,
           endpoint: 'http://localhost:4000',
@@ -132,6 +130,7 @@ const props2 = {
             message: 'Something went wrong'
           },
           start: '2019-12-22T03:40:44.089Z',
+          lastUpdate: '2019-10-22T03:40:44.089Z',
           end: null,
           variables:
             '{"flight":{"arrival":"2019-10-30T22:00:00Z[UTC]","departure":"2019-10-22T22:00:00Z[UTC]","flightNumber":"MX555"},"hotel":{"address":{"city":"Berlin","country":"Germany","street":"street","zipCode":"12345"},"bookingNumber":"XX-012345","name":"Perfect hotel","phone":"09876543"},"trip":{"begin":"2019-10-22T22:00:00Z[UTC]","city":"Berlin","country":"Germany","end":"2019-10-30T22:00:00Z[UTC]","visaRequired":false},"traveller":{"address":{"city":"Karkow","country":"Poland","street":"palna","zipCode":"200300"},"email":"rob@redhat.com","firstName":"Rob","lastName":"Rob","nationality":"Polish"}}',
@@ -148,7 +147,7 @@ const props2 = {
           ],
           childProcessInstances: []
         }
-      } as any
+      }
     },
     functions: {
       perform: jest.fn(),
@@ -166,9 +165,6 @@ const props3 = {
       noProcessMessage: 'No processes were aborted'
     },
     results: {
-      successMessage: 'Aborted',
-      ignoredMessage:
-        'These processes were ignored because they were completed or aborted',
       successInstances: {
         '8035b580-6ae4-4aa8-9ec0-e18e19809e0b': {
           id: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b',
@@ -192,7 +188,7 @@ const props3 = {
             message: 'Something went wrong'
           },
           start: '2019-10-22T03:40:44.089Z',
-          lastUpdated: '2019-10-22T03:40:44.089Z',
+          lastUpdate: '2019-10-22T03:40:44.089Z',
           end: null,
           variables:
             '{"flight":{"arrival":"2019-10-30T22:00:00Z[UTC]","departure":"2019-10-22T22:00:00Z[UTC]","flightNumber":"MX555"},"hotel":{"address":{"city":"Berlin","country":"Germany","street":"street","zipCode":"12345"},"bookingNumber":"XX-012345","name":"Perfect hotel","phone":"09876543"},"trip":{"begin":"2019-10-22T22:00:00Z[UTC]","city":"Berlin","country":"Germany","end":"2019-10-30T22:00:00Z[UTC]","visaRequired":false},"traveller":{"address":{"city":"Karkow","country":"Poland","street":"palna","zipCode":"200300"},"email":"rob@redhat.com","firstName":"Rob","lastName":"Rob","nationality":"Polish"}}',
@@ -208,7 +204,7 @@ const props3 = {
             }
           ],
           childProcessInstances: []
-        } as any
+        }
       },
       failedInstances: {},
       ignoredInstances: {}
@@ -254,7 +250,7 @@ const props4 = {
             message: 'Something went wrong'
           },
           start: '2019-10-22T03:40:44.089Z',
-          lastUpdated: '2019-10-22T03:40:44.089Z',
+          lastUpdate: '2019-10-22T03:40:44.089Z',
           end: null,
           variables:
             '{"flight":{"arrival":"2019-10-30T22:00:00Z[UTC]","departure":"2019-10-22T22:00:00Z[UTC]","flightNumber":"MX555"},"hotel":{"address":{"city":"Berlin","country":"Germany","street":"street","zipCode":"12345"},"bookingNumber":"XX-012345","name":"Perfect hotel","phone":"09876543"},"trip":{"begin":"2019-10-22T22:00:00Z[UTC]","city":"Berlin","country":"Germany","end":"2019-10-30T22:00:00Z[UTC]","visaRequired":false},"traveller":{"address":{"city":"Karkow","country":"Poland","street":"palna","zipCode":"200300"},"email":"rob@redhat.com","firstName":"Rob","lastName":"Rob","nationality":"Polish"}}',
@@ -270,7 +266,7 @@ const props4 = {
             }
           ],
           childProcessInstances: []
-        } as any,
+        },
         'ceb1234-6ae4-deb444-9ec0-neb9809e0b': {
           id: '8ceb1234-6ae4-deb444-9ec0-neb9809e0b',
           processId: 'travels1',
@@ -293,7 +289,7 @@ const props4 = {
             message: 'Something went wrong'
           },
           start: '2019-10-22T03:40:44.089Z',
-          lastUpdated: '2019-10-22T03:40:44.089Z',
+          lastUpdate: '2019-10-22T03:40:44.089Z',
           end: null,
           variables:
             '{"flight":{"arrival":"2019-10-30T22:00:00Z[UTC]","departure":"2019-10-22T22:00:00Z[UTC]","flightNumber":"MX555"},"hotel":{"address":{"city":"Berlin","country":"Germany","street":"street","zipCode":"12345"},"bookingNumber":"XX-012345","name":"Perfect hotel","phone":"09876543"},"trip":{"begin":"2019-10-22T22:00:00Z[UTC]","city":"Berlin","country":"Germany","end":"2019-10-30T22:00:00Z[UTC]","visaRequired":false},"traveller":{"address":{"city":"Karkow","country":"Poland","street":"palna","zipCode":"200300"},"email":"rob@redhat.com","firstName":"Rob","lastName":"Rob","nationality":"Polish"}}',
@@ -309,7 +305,7 @@ const props4 = {
             }
           ],
           childProcessInstances: []
-        } as any
+        }
       },
       failedInstances: {
         'ceb1234-6ae4-deb444-9ec0-neb9809e0b': {
@@ -334,7 +330,7 @@ const props4 = {
             message: 'Something went wrong'
           },
           start: '2019-10-22T03:40:44.089Z',
-          lastUpdated: '2019-10-22T03:40:44.089Z',
+          lastUpdate: '2019-10-22T03:40:44.089Z',
           end: null,
           variables:
             '{"flight":{"arrival":"2019-10-30T22:00:00Z[UTC]","departure":"2019-10-22T22:00:00Z[UTC]","flightNumber":"MX555"},"hotel":{"address":{"city":"Berlin","country":"Germany","street":"street","zipCode":"12345"},"bookingNumber":"XX-012345","name":"Perfect hotel","phone":"09876543"},"trip":{"begin":"2019-10-22T22:00:00Z[UTC]","city":"Berlin","country":"Germany","end":"2019-10-30T22:00:00Z[UTC]","visaRequired":false},"traveller":{"address":{"city":"Karkow","country":"Poland","street":"palna","zipCode":"200300"},"email":"rob@redhat.com","firstName":"Rob","lastName":"Rob","nationality":"Polish"}}',
@@ -350,7 +346,7 @@ const props4 = {
             }
           ],
           childProcessInstances: []
-        } as any
+        }
       },
       ignoredInstances: {}
     },

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, ReactElement } from 'react';
 import {
   Select,
   SelectVariant,
@@ -27,14 +27,16 @@ interface ResponseType {
 }
 interface IOwnProps {
   filterChips: string[];
-  finalFilters: object;
+  finalFilters: Record<string, Record<string, unknown>>;
   generateFilterQuery: () => void;
   getQueryTypes: ResponseType;
   getSchema: ResponseType;
   reset: boolean;
   runQuery: boolean;
   setFilterChips: (filterChips: (chips: string[]) => string[]) => void;
-  setFinalFilters: (finalFilters: (filters: object) => void) => void;
+  setFinalFilters: (
+    finalFilters: (filters: Record<string, unknown>) => void
+  ) => void;
   setOffset: (offset: number) => void;
   setReset: (reset: boolean) => void;
   setRunQuery: (runQuery: boolean) => void;
@@ -55,8 +57,6 @@ const DomainExplorerFilterOptions: React.FC<IOwnProps & OUIAProps> = ({
   ouiaId,
   ouiaSafe
 }) => {
-  // tslint:disable: forin
-  // tslint:disable: no-floating-promises
   const [initData2, setInitData2] = useState<any>({
     __schema: { queryType: [] }
   });
@@ -206,14 +206,14 @@ const DomainExplorerFilterOptions: React.FC<IOwnProps & OUIAProps> = ({
         const label = title + ' / ' + attr.join();
         const childEle = (
           <SelectGroup
-            label={label.replace(/\,/g, '')}
-            key={'kie-filter-item-' + label.replace(/\,/g, '')}
+            label={label.replace(/,/g, '')}
+            key={'kie-filter-item-' + label.replace(/,/g, '')}
             id={group.name}
-            value={label.replace(/\,/g, '')}
+            value={label.replace(/,/g, '')}
           >
             {group.inputFields !== null &&
               group.inputFields
-                .filter((item, _index) => {
+                .filter(item => {
                   if (!scalarArgs.includes(item.type.name)) {
                     const tempData = [];
                     const schemaObj = fetchSchema(item);
@@ -248,7 +248,7 @@ const DomainExplorerFilterOptions: React.FC<IOwnProps & OUIAProps> = ({
     !getSchema.loading &&
       getSchema.data.__type &&
       getSchema.data.__type.inputFields
-        .filter((group, index) => {
+        .filter(group => {
           if (group.type.kind !== 'LIST') {
             return group;
           }
@@ -282,7 +282,7 @@ const DomainExplorerFilterOptions: React.FC<IOwnProps & OUIAProps> = ({
               >
                 {groupItem.type.inputFields &&
                   groupItem.type.inputFields
-                    .filter((item, _index) => {
+                    .filter(item => {
                       if (!scalarArgs.includes(item.type.name)) {
                         const tempData = [];
                         const schemaObj = fetchSchema(item);
@@ -313,7 +313,7 @@ const DomainExplorerFilterOptions: React.FC<IOwnProps & OUIAProps> = ({
         });
   };
 
-  const rootElement: any = (
+  const rootElement: ReactElement = (
     <SelectGroup label=" " key={'kie-filter-item-' + ' '} id="" value=" ">
       {rootElementsArray}
     </SelectGroup>
@@ -367,7 +367,7 @@ const DomainExplorerFilterOptions: React.FC<IOwnProps & OUIAProps> = ({
     setSelectTypes('');
     setIsExpanded(false);
   };
-  const onChange = (event, selection, isPlaceholder) => {
+  const onChange = event => {
     const innerText = event.target.innerText;
     setSelected(innerText);
     const parent = event.nativeEvent.target.parentElement.parentElement.getAttribute(
@@ -400,12 +400,10 @@ const DomainExplorerFilterOptions: React.FC<IOwnProps & OUIAProps> = ({
 
   const onLoad = () => {
     const innerText = 'id';
-    let tempParents;
-    tempParents = [innerText];
+    const tempParents = [innerText];
     const lastEle = tempParents.slice(-1)[0];
-    let arg;
     const str = lastEle.charAt(0).toUpperCase() + lastEle.slice(1);
-    arg = str + 'Argument';
+    const arg = str + 'Argument';
     const argType = getQueryTypes.data.__schema.queryType.find(type => {
       if (type.name === arg) {
         return type;
@@ -553,7 +551,7 @@ const DomainExplorerFilterOptions: React.FC<IOwnProps & OUIAProps> = ({
       set(obj, objKeys, value);
     }
     setFinalFilters(() => {
-      if (finalFilters.hasOwnProperty(typeParent)) {
+      if (Object.prototype.hasOwnProperty.call(finalFilters, typeParent)) {
         const te: any = Object.values(obj)[0];
         finalFilters[typeParent] = { ...finalFilters[typeParent], ...te };
         return finalFilters;

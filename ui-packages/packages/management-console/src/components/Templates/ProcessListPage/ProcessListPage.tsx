@@ -22,6 +22,7 @@ import PageTitle from '../../Molecules/PageTitle/PageTitle';
 import ProcessListToolbar from '../../Molecules/ProcessListToolbar/ProcessListToolbar';
 import './ProcessListPage.css';
 import ProcessListTable from '../../Organisms/ProcessListTable/ProcessListTable';
+import { StaticContext } from 'react-router';
 
 type filterType = {
   status: GraphQL.ProcessInstanceState[];
@@ -36,13 +37,15 @@ interface LocationProps {
 }
 
 const ProcessListPage: React.FC<OUIAProps &
-  RouteComponentProps<MatchProps, {}, LocationProps>> = ({
+  RouteComponentProps<MatchProps, StaticContext, LocationProps>> = ({
   ouiaId,
   ouiaSafe,
   ...props
 }) => {
   const [defaultPageSize] = useState<number>(10);
-  const [initData, setInitData] = useState<any>({});
+  const [initData, setInitData] = useState<GraphQL.GetProcessInstancesQuery>(
+    {}
+  );
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isError, setIsError] = useState<boolean>(false);
   const [limit, setLimit] = useState<number>(defaultPageSize);
@@ -163,10 +166,17 @@ const ProcessListPage: React.FC<OUIAProps &
     }
     setSearchWord('');
     if (!loading && data !== undefined) {
-      data.ProcessInstances.forEach((instance: any) => {
-        instance.isChecked = false;
-        instance.isOpen = false;
-      });
+      data.ProcessInstances.forEach(
+        (
+          instance: GraphQL.ProcessInstance & {
+            isChecked: boolean;
+            isOpen: boolean;
+          }
+        ) => {
+          instance.isChecked = false;
+          instance.isOpen = false;
+        }
+      );
       setLimit(data.ProcessInstances.length);
       if (offset > 0 && initData.ProcessInstances.length > 0) {
         setIsLoadingMore(false);

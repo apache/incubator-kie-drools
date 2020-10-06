@@ -1,6 +1,6 @@
 import React from 'react';
 
-const MockDataTable = (): React.ReactElement => {
+const MockDataTable: React.FC = () => {
   return <></>;
 };
 

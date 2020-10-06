@@ -15,7 +15,7 @@ import '@patternfly/patternfly/patternfly-addons.css';
 import './ProcessListTable.css';
 import ProcessInstanceState = GraphQL.ProcessInstanceState;
 import { ProcessInstanceBulkList } from '../../Molecules/ProcessListToolbar/ProcessListToolbar';
-/* tslint:disable:no-string-literal */
+
 type filterType = {
   status: GraphQL.ProcessInstanceState[];
   businessKey: string[];
@@ -84,10 +84,17 @@ const ProcessListTable: React.FC<IOwnProps & OUIAProps> = ({
     setIsError(false);
     setSelectedInstances({});
     if (!loading && data !== undefined) {
-      data.ProcessInstances.forEach((instance: any) => {
-        instance.isChecked = false;
-        instance.isOpen = false;
-      });
+      data.ProcessInstances.forEach(
+        (
+          instance: GraphQL.ProcessInstance & {
+            isChecked: boolean;
+            isOpen: boolean;
+          }
+        ) => {
+          instance.isChecked = false;
+          instance.isOpen = false;
+        }
+      );
       setLimit(data.ProcessInstances.length);
     }
     setInitData(data);

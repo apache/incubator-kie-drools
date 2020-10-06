@@ -1,6 +1,6 @@
 import React from 'react';
 
-const MockedDomainExplorerManageColumns = () => {
+const MockedDomainExplorerManageColumns: React.FC = () => {
   return <></>;
 };
 

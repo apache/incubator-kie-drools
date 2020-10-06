@@ -319,7 +319,6 @@ const mocks3 = [
     }
   }
 ];
-/* tslint:disable */
 describe('Process Details Page component tests', () => {
   let originalLocalStorage;
   beforeEach(() => {

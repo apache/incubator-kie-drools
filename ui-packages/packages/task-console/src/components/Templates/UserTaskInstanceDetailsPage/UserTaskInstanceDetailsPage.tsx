@@ -41,6 +41,8 @@ import TaskState from '../../Atoms/TaskState/TaskState';
 import TaskForm from '../../Organisms/TaskForm/TaskForm';
 import { TaskStateType } from '../../../util/Variants';
 import TaskDetails from '../../Organisms/TaskDetails/TaskDetails';
+import { StaticContext } from 'react-router';
+import * as H from 'history';
 
 interface MatchProps {
   taskId: string;
@@ -48,8 +50,8 @@ interface MatchProps {
 
 const UserTaskInstanceDetailsPage: React.FC<RouteComponentProps<
   MatchProps,
-  {},
-  {}
+  StaticContext,
+  H.LocationState
 > &
   OUIAProps> = ({ ouiaId, ouiaSafe, ...props }) => {
   const id = props.match.params.taskId;

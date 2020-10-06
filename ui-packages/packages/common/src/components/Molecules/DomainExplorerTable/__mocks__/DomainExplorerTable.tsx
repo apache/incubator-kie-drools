@@ -1,6 +1,6 @@
 import React from 'react';
 
-const MockedDomainExplorerTable = () => {
+const MockedDomainExplorerTable: React.FC = () => {
   return <></>;
 };
 

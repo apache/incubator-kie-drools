@@ -42,7 +42,7 @@ import { set } from '../../../utils/Utils';
 import { OUIAProps, componentOuiaProps } from '../../../utils/OuiaUtils';
 
 interface RowContent {
-  cells: string[] | object[];
+  cells: string[] | Record<string, unknown>[];
   parent?: number;
   isOpen?: boolean;
   rowKey: string;
@@ -52,20 +52,20 @@ interface IOwnProps {
   displayTable: boolean;
   displayEmptyState: boolean;
   filterError: string;
-  finalFilters: object;
+  finalFilters: Record<string, unknown>;
   filterChips: string[];
   handleRetry: () => void;
   isLoadingMore: boolean;
   offset: number;
   onDeleteChip: (type: string) => void;
-  parameters: object[];
+  parameters: Record<string, unknown>[];
   rows: RowContent[];
   selected: string[];
-  setOrderByObj: (orderObj: object) => void;
-  setRows: (rows: ((row: object[]) => object[]) | object[]) => void;
+  setOrderByObj: (orderObj: Record<string, unknown>) => void;
+  setRows: (rows: ((row: RowContent[]) => RowContent[]) | RowContent[]) => void;
   setRunQuery: (runQuery: boolean) => void;
-  setSortBy: (sortBy: object) => void;
-  sortBy: object;
+  setSortBy: (sortBy: Record<string, unknown>) => void;
+  sortBy: Record<string, unknown>;
   tableLoading: boolean;
 }
 const DomainExplorerTable: React.FC<IOwnProps & OUIAProps> = ({
@@ -284,7 +284,12 @@ const DomainExplorerTable: React.FC<IOwnProps & OUIAProps> = ({
         let metaArray = [];
         const metaKeys = [];
         const metaValues = [];
-        if (item.metadata.hasOwnProperty('processInstances')) {
+        if (
+          Object.prototype.hasOwnProperty.call(
+            item.metadata,
+            'processInstances'
+          )
+        ) {
           metaArray = item.metadata.processInstances;
         }
         const tempParents = getKeys(item);

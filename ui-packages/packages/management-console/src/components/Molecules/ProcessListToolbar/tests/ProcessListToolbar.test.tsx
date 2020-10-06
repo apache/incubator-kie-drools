@@ -211,7 +211,6 @@ const props = {
   handleAbortModalToggle: jest.fn()
 };
 
-/* tslint:disable */
 afterEach(() => {
   props.setStatusArray.mockClear();
   props.setSearchWord.mockClear();
@@ -677,7 +676,7 @@ describe('ProcessListToolbar component tests', () => {
   });
 
   it('reset click tests', () => {
-    let wrapper = getWrapper(
+    const wrapper = getWrapper(
       <ProcessListToolbar {...props} />,
       'ProcessListToolbar'
     );

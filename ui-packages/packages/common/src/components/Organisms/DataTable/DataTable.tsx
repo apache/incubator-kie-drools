@@ -7,7 +7,8 @@ import {
   IRow,
   ITransform,
   ICell,
-  sortable
+  sortable,
+  ISortBy
 } from '@patternfly/react-table';
 import KogitoSpinner from '../../Atoms/KogitoSpinner/KogitoSpinner';
 import {
@@ -23,7 +24,10 @@ import { OUIAProps, componentOuiaProps } from '../../../utils/OuiaUtils';
 export interface DataTableColumn {
   path: string;
   label: string;
-  bodyCellTransformer?: (value: any, rowDataObj?: any) => any;
+  bodyCellTransformer?: (
+    value: any,
+    rowDataObj: Record<string, unknown>
+  ) => any;
   isSortable?: boolean;
 }
 interface IOwnProps {
@@ -35,11 +39,11 @@ interface IOwnProps {
   refetch: () => void;
   LoadingComponent?: React.ReactNode;
   ErrorComponent?: React.ReactNode;
-  sortBy?: object;
+  sortBy?: ISortBy;
   onSorting?: (index: number, direction: string) => void;
 }
 
-const getCellData = (dataObj: object, path: string) => {
+const getCellData = (dataObj: Record<string, unknown>, path: string) => {
   if (dataObj && path) {
     return !_.isEmpty(jp.value(dataObj, path))
       ? jp.value(dataObj, path)

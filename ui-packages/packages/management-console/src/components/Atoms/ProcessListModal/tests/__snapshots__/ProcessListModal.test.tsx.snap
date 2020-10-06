@@ -70,6 +70,7 @@ exports[`ProcessBulkModal component tests snapshot testing 1`] = `
                 "nodeDefinitionId": "a1e139d5-4e77-48c9-84ae-3459188e90433n",
               },
               "id": "e735128t-6tt7-4aa8-9ec0-e18e19809e0b",
+              "lastUpdate": "2019-12-22T03:40:44.089Z",
               "nodes": Array [
                 Object {
                   "definitionId": "CallActivity_2",
@@ -109,7 +110,7 @@ exports[`ProcessBulkModal component tests snapshot testing 1`] = `
                 "nodeDefinitionId": "a1e139d5-4e77-48c9-84ae-3459188e90433n",
               },
               "id": "8035b580-6ae4-4aa8-9ec0-e18e19809e0b",
-              "lastUpdated": "2019-10-22T03:40:44.089Z",
+              "lastUpdate": "2019-10-22T03:40:44.089Z",
               "nodes": Array [
                 Object {
                   "definitionId": "CallActivity_2",

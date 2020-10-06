@@ -5,6 +5,8 @@ import { MockedProvider } from '@apollo/react-testing';
 import { BrowserRouter } from 'react-router-dom';
 import { Button, EmptyStateBody, EmptyState } from '@patternfly/react-core';
 import { act } from 'react-dom/test-utils';
+import * as H from 'history';
+import { match } from 'react-router';
 jest.mock('../../../Organisms/ProcessListTable/ProcessListTable');
 jest.mock('../../../Atoms/ProcessListBulkInstances/ProcessListBulkInstances');
 jest.mock('../../../Atoms/ProcessListModal/ProcessListModal');
@@ -27,8 +29,15 @@ jest.mock('@patternfly/react-icons', () => ({
   }
 }));
 
+const match: match<{ domainName: string }> = {
+  isExact: false,
+  path: '/ProcessInstances',
+  url: '/ProcessInstances',
+  params: { domainName: 'domain-name' }
+};
+
 const routeComponentPropsMock1 = {
-  history: {} as any,
+  history: H.createMemoryHistory(),
   location: {
     pathname: '/ProcessInstances',
     state: {
@@ -36,15 +45,15 @@ const routeComponentPropsMock1 = {
         status: [GraphQL.ProcessInstanceState.Active],
         businessKey: []
       }
-    }
-  } as any,
-  match: {
-    params: {}
-  } as any
+    },
+    hash: '',
+    search: ''
+  },
+  match
 };
 
 const routeComponentPropsMock2 = {
-  history: {} as any,
+  history: H.createMemoryHistory(),
   location: {
     pathname: '/ProcessInstances',
     state: {
@@ -52,15 +61,15 @@ const routeComponentPropsMock2 = {
         status: [GraphQL.ProcessInstanceState.Active],
         businessKey: ['MQQ640']
       }
-    }
-  } as any,
-  match: {
-    params: {}
-  } as any
+    },
+    hash: '',
+    search: ''
+  },
+  match
 };
 
 const routeComponentPropsMock3 = {
-  history: {} as any,
+  history: H.createMemoryHistory(),
   location: {
     pathname: '/ProcessInstances',
     state: {
@@ -68,11 +77,11 @@ const routeComponentPropsMock3 = {
         status: [],
         businessKey: []
       }
-    }
-  } as any,
-  match: {
-    params: {}
-  } as any
+    },
+    hash: '',
+    search: ''
+  },
+  match
 };
 
 const mocks1 = [
@@ -270,7 +279,6 @@ const mocks4 = [
   }
 ];
 describe('ProcessListPage component tests', () => {
-  /* tslint:disable */
   it('on FilterClick tests- without businesskey', async () => {
     let wrapper = await getWrapperAsync(
       <BrowserRouter>
@@ -389,7 +397,7 @@ describe('ProcessListPage component tests', () => {
   });
 
   it('reset click in no status found test', async () => {
-    let wrapper = await getWrapperAsync(
+    const wrapper = await getWrapperAsync(
       <BrowserRouter>
         <MockedProvider mocks={mocks5} addTypename={false}>
           <ProcessListPage {...routeComponentPropsMock3} />

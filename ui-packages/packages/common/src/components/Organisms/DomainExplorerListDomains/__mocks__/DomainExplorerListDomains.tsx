@@ -1,6 +1,6 @@
 import React from 'react';
 
-const MockedDomainExplorerListDomains = () => {
+const MockedDomainExplorerListDomains: React.FC = () => {
   return <> </>;
 };
 

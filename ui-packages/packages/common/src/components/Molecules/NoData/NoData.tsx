@@ -64,7 +64,6 @@ const NoData: React.FC<IOwnProps & OUIAProps> = ({
               {props.location.state
                 ? props.location.state.buttonText
                 : props.defaultButton}
-                            
             </Button>
           </EmptyState>
         </Bullseye>

@@ -20,10 +20,10 @@ const PaginationContainer = (props: PaginationContainerProps) => {
     onSetPageSize
   } = props;
 
-  const updatePage = (event: any, pageNumber: number) => {
+  const updatePage = (event: never, pageNumber: number) => {
     onSetPage(pageNumber);
   };
-  const updatePageSize = (event: any, pageNumber: number) => {
+  const updatePageSize = (event: never, pageNumber: number) => {
     onSetPageSize(pageNumber);
   };
   return (

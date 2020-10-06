@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { Tooltip } from '@patternfly/react-core';
 import { GraphQL, OUIAProps, componentOuiaProps } from '@kogito-apps/common';
 import ProcessInstance = GraphQL.ProcessInstance;
 
 interface IOwnProps {
   processInstanceData: ProcessInstance;
-  component: any;
+  component: ReactElement;
 }
 
 const DisablePopup: React.FC<IOwnProps & OUIAProps> = ({

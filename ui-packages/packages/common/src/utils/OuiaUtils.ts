@@ -125,7 +125,7 @@ export const ouiaAttribute = (name: string, value: any) => {
 export const componentOuiaProps = (
   ouiaId: OuiaId | null,
   ouiaType: string,
-  isSafe: boolean = true
+  isSafe = true
 ) => {
   return {
     ...(ouiaId && { 'data-ouia-component-id': ouiaId }),

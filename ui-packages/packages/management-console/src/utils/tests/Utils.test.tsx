@@ -19,7 +19,7 @@ import { OperationType } from '../../components/Molecules/ProcessListToolbar/Pro
 jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 const children = 'children';
-/* tslint:disable:no-string-literal */
+
 describe('uitility function testing', () => {
   it('state icon creator tests', () => {
     const activeTestResult = ProcessInstanceIconCreator(

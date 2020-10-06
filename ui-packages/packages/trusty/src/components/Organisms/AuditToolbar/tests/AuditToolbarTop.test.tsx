@@ -38,8 +38,7 @@ describe('Audit top toolbar', () => {
     expect(setSearchString).toBeCalledTimes(1);
     expect(setSearchString).toBeCalledWith(searchString);
 
-    // @ts-ignore
-    searchInput.props().onKeyDown({ key: 'Enter', keyCode: 13, which: 13 });
+    searchInput.simulate('keydown', { key: 'Enter' });
 
     expect(setSearchString).toBeCalledTimes(2);
     expect(setSearchString).toBeCalledWith(searchString);

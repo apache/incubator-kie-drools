@@ -3,13 +3,47 @@
 exports[`PageLayout tests snapshot testing 1`] = `
 <PageLayout
   history={
-    Array [
-      "/ProcessInstances",
-    ]
+    Object {
+      "action": "PUSH",
+      "block": [Function],
+      "canGo": [Function],
+      "createHref": [Function],
+      "entries": Array [
+        Object {
+          "hash": "",
+          "pathname": "/",
+          "search": "",
+          "state": undefined,
+        },
+        Object {
+          "hash": "",
+          "pathname": "/ProcessInstances",
+          "search": "",
+          "state": undefined,
+        },
+      ],
+      "go": [Function],
+      "goBack": [Function],
+      "goForward": [Function],
+      "index": 1,
+      "length": 2,
+      "listen": [Function],
+      "location": Object {
+        "hash": "",
+        "pathname": "/ProcessInstances",
+        "search": "",
+        "state": undefined,
+      },
+      "push": [Function],
+      "replace": [Function],
+    }
   }
   location={
     Object {
+      "hash": "",
       "pathname": "/ProcessInstances",
+      "search": "",
+      "state": "",
     }
   }
 >

@@ -20,7 +20,7 @@
     "dev:server": "nodemon ./server/app.js",
     "dev": "concurrently 'yarn  start' 'yarn run dev:server'",
     "dev-remote-dataindex": "yarn start --define process.env.KOGITO_DATAINDEX_HTTP_URL='\"http://localhost:8180/graphql\"'",
-    "lint": "tslint -c ./tslint.json --project . './src/**/*.ts{,x}'",
+    "lint": "eslint './src/**/*.ts{,x}'",
     "format": "prettier --config ../../.prettierrc --check --write './src/**/*.{tsx,ts,js}'",
     "build:bundle-profile": "webpack --config webpack.prod.js --profile --json > stats.json",
     "bundle-profile:analyze": "yarn build:bundle-profile && webpack-bundle-analyzer ./stats.json",

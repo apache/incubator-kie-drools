@@ -48,7 +48,6 @@ jest.mock('@patternfly/react-icons', () => ({
   }
 }));
 
-/* tslint:disable */
 const initData1 = {
   ProcessInstances: [
     {
@@ -407,7 +406,7 @@ const props1 = {
   initData: initData1,
   setInitData: jest.fn(),
   setSelectedInstances: jest.fn(),
-  selectedInstances: {} as any,
+  selectedInstances: {},
   loadingInitData: false,
   setIsAllChecked: jest.fn(),
   selectedNumber: 0,
@@ -457,9 +456,11 @@ const props2 = {
   setSelectedInstances: jest.fn(),
   selectedInstances: {
     '8035b580-6ae4-4aa8-9ec0-e18e19809e0b': {
-      id: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b'
-    } as any
-  } as any,
+      id: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b',
+      state: ProcessInstanceState.Active,
+      processId: 'travels'
+    }
+  },
   loadingInitData: false,
   setIsAllChecked: jest.fn(),
   selectedNumber: 0,
@@ -509,9 +510,11 @@ const props3 = {
   setSelectedInstances: jest.fn(),
   selectedInstances: {
     '8035b580-6ae4-4aa8-9ec0-e18e19809e0b1': {
-      id: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b1'
-    } as any
-  } as any,
+      id: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b1',
+      state: ProcessInstanceState.Active,
+      processId: 'travels'
+    }
+  },
   loadingInitData: false,
   setIsAllChecked: jest.fn(),
   selectedNumber: 1,
@@ -561,9 +564,11 @@ const props4 = {
   setSelectedInstances: jest.fn(),
   selectedInstances: {
     '8035b580-6ae4-4aa8-9ec0-e18e19809e0b1': {
-      id: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b1'
+      id: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b1',
+      state: ProcessInstanceState.Active,
+      processId: 'travels'
     }
-  } as any,
+  },
   loadingInitData: false,
   setIsAllChecked: jest.fn(),
   selectedNumber: 1,
@@ -612,9 +617,11 @@ const props5 = {
   setSelectedInstances: jest.fn(),
   selectedInstances: {
     'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e': {
-      id: 'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e'
-    } as any
-  } as any,
+      id: 'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e',
+      state: ProcessInstanceState.Active,
+      processId: 'travels'
+    }
+  },
   loadingInitData: false,
   setIsAllChecked: jest.fn(),
   selectedNumber: 1,
@@ -664,9 +671,11 @@ const props6 = {
   setSelectedInstances: jest.fn(),
   selectedInstances: {
     'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e': {
-      id: 'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e'
+      id: 'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e',
+      state: ProcessInstanceState.Active,
+      processId: 'travels'
     }
-  } as any,
+  },
   loadingInitData: false,
   setIsAllChecked: jest.fn(),
   selectedNumber: 1,
@@ -716,9 +725,11 @@ const props7 = {
   setSelectedInstances: jest.fn(),
   selectedInstances: {
     'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e': {
-      id: 'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e'
+      id: 'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e',
+      state: ProcessInstanceState.Active,
+      processId: 'travels'
     }
-  } as any,
+  },
   loadingInitData: false,
   setIsAllChecked: jest.fn(),
   selectedNumber: 1,
@@ -1035,9 +1046,8 @@ describe('ProcessListTableItems component tests', () => {
     });
   });
 
-  /* tslint:disable */
   it('on checbox click test - isChecked=true', async () => {
-    let wrapper = getWrapper(
+    const wrapper = getWrapper(
       <BrowserRouter>
         <ProcessListTableItems {...props3} />
       </BrowserRouter>,
@@ -1057,7 +1067,7 @@ describe('ProcessListTableItems component tests', () => {
   });
 
   it('on checbox click test - isChecked=false', async () => {
-    let wrapper = getWrapper(
+    const wrapper = getWrapper(
       <BrowserRouter>
         <ProcessListTableItems {...props5} />
       </BrowserRouter>,

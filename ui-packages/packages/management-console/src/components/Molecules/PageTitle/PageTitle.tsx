@@ -3,7 +3,7 @@ import { Title } from '@patternfly/react-core';
 import { OUIAProps, componentOuiaProps } from '@kogito-apps/common';
 
 export interface IOwnProps {
-  title: any;
+  title: string;
 }
 
 const PageTitle: React.FC<IOwnProps & OUIAProps> = ({

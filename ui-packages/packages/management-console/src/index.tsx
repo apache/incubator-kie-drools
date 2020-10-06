@@ -36,6 +36,7 @@ const PageNav = (
 
 const fallbackUI = onError(({ networkError }: any) => {
   if (networkError && networkError.stack === 'TypeError: Failed to fetch') {
+    // eslint-disable-next-line react/no-render-return-value
     return ReactDOM.render(
       <ApolloProvider client={client}>
         <ServerUnavailable

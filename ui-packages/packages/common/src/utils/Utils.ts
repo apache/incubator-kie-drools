@@ -8,7 +8,7 @@ const nestedCheck = (ele, valueObj) => {
       for (const nestedProp in temp[0]) {
         const nestedObj = {};
         const result = nestedCheck(temp[0], valueObj);
-        if (valueObj.hasOwnProperty(nestedProp)) {
+        if (Object.prototype.hasOwnProperty.call(valueObj, nestedProp)) {
           valueObj[nestedProp] = result;
         } else {
           nestedObj[nestedProp] = result;
@@ -33,7 +33,7 @@ const checkFunc = (ele, valueObj) => {
     if (typeof temp[0] === 'object') {
       for (const nestedProp in temp[0]) {
         const nestedObj = {};
-        if (valueObj.hasOwnProperty(nestedProp)) {
+        if (Object.prototype.hasOwnProperty.call(valueObj, nestedProp)) {
           const result = nestedCheck(temp[0], valueObj);
           valueObj[nestedProp] = result;
         } else {
@@ -60,7 +60,7 @@ export const validateResponse = (obj, paramFields) => {
     if (obj[prop] === null) {
       const parentObj = {};
       paramFields.map(params => {
-        if (params.hasOwnProperty(prop)) {
+        if (Object.prototype.hasOwnProperty.call(params, prop)) {
           arr.push(params);
         }
       });

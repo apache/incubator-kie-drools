@@ -16,8 +16,10 @@ interface IOwnProps {
   displayLabel: boolean;
   displaySuccess: boolean;
   setDisplayLabel: (displayLabel: boolean) => void;
-  setUpdateJson: (updateJson: (variableJson: object) => void) => void;
-  updateJson: object;
+  setUpdateJson: (
+    updateJson: (variableJson: Record<string, unknown>) => void
+  ) => void;
+  updateJson: Record<string, unknown>;
 }
 
 const ProcessDetailsProcessVariables: React.FC<IOwnProps & OUIAProps> = ({

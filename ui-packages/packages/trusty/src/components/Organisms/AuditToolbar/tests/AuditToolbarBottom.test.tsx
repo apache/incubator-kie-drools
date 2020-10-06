@@ -30,7 +30,7 @@ describe('Audit bottom toolbar', () => {
 
 const renderAuditToolbarBottom = (
   method: 'shallow' | 'mount',
-  props?: object
+  props?: Record<string, unknown>
 ) => {
   const defaultProps = {
     total: 20,

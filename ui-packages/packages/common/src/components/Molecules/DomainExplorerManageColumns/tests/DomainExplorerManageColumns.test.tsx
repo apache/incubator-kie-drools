@@ -13,8 +13,6 @@ jest.mock('react-apollo', () => {
   return { useApolloClient: jest.fn(() => ApolloClient) };
 });
 global.Math.random = () => 0.7336705311965102;
-// tslint:disable: no-string-literal
-// tslint:disable: no-unexpected-multiline
 describe('Domain Explorer Manage columns component', () => {
   afterEach(() => {
     jest.clearAllMocks();
@@ -23,7 +21,7 @@ describe('Domain Explorer Manage columns component', () => {
   let useApolloClient;
 
   const mockUseEffect = () => {
-    // tslint:disable-next-line: react-hooks-nesting
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     client = useApolloClient();
   };
 

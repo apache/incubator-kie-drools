@@ -11,9 +11,10 @@ import {
   OUIAProps
 } from '@kogito-apps/common';
 import { Link } from 'react-router-dom';
-import { Redirect, RouteComponentProps } from 'react-router';
+import { Redirect, RouteComponentProps, StaticContext } from 'react-router';
 import './DomainExplorerPage.css';
 import PageTitle from '../../Molecules/PageTitle/PageTitle';
+import * as H from 'history';
 
 interface IOwnProps {
   domains: string[];
@@ -24,22 +25,22 @@ interface MatchProps {
   domainName: string;
 }
 
-interface LocationProps {
-  parameters?: object[];
+interface LocationProps extends H.LocationState {
+  parameters?: Record<string, unknown>[];
   selected?: string[];
-  finalFilters?: object;
+  finalFilters?: Record<string, unknown>;
   filterChips?: string[];
 }
 
 const DomainExplorerPage: React.FC<IOwnProps &
-  RouteComponentProps<MatchProps, {}, LocationProps> &
+  RouteComponentProps<MatchProps, StaticContext, LocationProps> &
   OUIAProps> = ({ ouiaId, ouiaSafe, ...props }) => {
   const rememberedParams =
     (props.location.state && props.location.state.parameters) || [];
   const rememberedSelections =
     (props.location.state && props.location.state.selected) || [];
-  const rememberedFilters =
-    (props.location.state && props.location.state.finalFilters) || [];
+  const rememberedFilters: Record<string, unknown> =
+    (props.location.state && props.location.state.finalFilters) || {};
   const rememberedChips =
     (props.location.state && props.location.state.filterChips) || [];
   const domainName = props.match.params.domainName;

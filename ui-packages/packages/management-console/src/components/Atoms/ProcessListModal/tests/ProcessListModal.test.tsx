@@ -4,7 +4,6 @@ import ProcessListModal from '../ProcessListModal';
 import { InfoCircleIcon } from '@patternfly/react-icons';
 import { GraphQL } from '@kogito-apps/common';
 import ProcessInstanceState = GraphQL.ProcessInstanceState;
-/* tslint:disable:no-string-literal */
 const props = {
   modalTitle: (
     <>
@@ -50,7 +49,7 @@ const props = {
             message: 'Something went wrong'
           },
           start: '2019-10-22T03:40:44.089Z',
-          lastUpdated: '2019-10-22T03:40:44.089Z',
+          lastUpdate: '2019-10-22T03:40:44.089Z',
           end: null,
           variables:
             '{"flight":{"arrival":"2019-10-30T22:00:00Z[UTC]","departure":"2019-10-22T22:00:00Z[UTC]","flightNumber":"MX555"},"hotel":{"address":{"city":"Berlin","country":"Germany","street":"street","zipCode":"12345"},"bookingNumber":"XX-012345","name":"Perfect hotel","phone":"09876543"},"trip":{"begin":"2019-10-22T22:00:00Z[UTC]","city":"Berlin","country":"Germany","end":"2019-10-30T22:00:00Z[UTC]","visaRequired":false},"traveller":{"address":{"city":"Karkow","country":"Poland","street":"palna","zipCode":"200300"},"email":"rob@redhat.com","firstName":"Rob","lastName":"Rob","nationality":"Polish"}}',
@@ -66,7 +65,7 @@ const props = {
             }
           ],
           childProcessInstances: []
-        } as any
+        }
       },
       failedInstances: {},
       ignoredInstances: {
@@ -78,7 +77,7 @@ const props = {
           processName: 'travels',
           roles: [],
           businessKey: null,
-          state: 'COMPLETED',
+          state: ProcessInstanceState.Completed,
           rootProcessInstanceId: null,
           serviceUrl: null,
           endpoint: 'http://localhost:4000',
@@ -88,6 +87,7 @@ const props = {
             message: 'Something went wrong'
           },
           start: '2019-12-22T03:40:44.089Z',
+          lastUpdate: '2019-12-22T03:40:44.089Z',
           end: null,
           variables:
             '{"flight":{"arrival":"2019-10-30T22:00:00Z[UTC]","departure":"2019-10-22T22:00:00Z[UTC]","flightNumber":"MX555"},"hotel":{"address":{"city":"Berlin","country":"Germany","street":"street","zipCode":"12345"},"bookingNumber":"XX-012345","name":"Perfect hotel","phone":"09876543"},"trip":{"begin":"2019-10-22T22:00:00Z[UTC]","city":"Berlin","country":"Germany","end":"2019-10-30T22:00:00Z[UTC]","visaRequired":false},"traveller":{"address":{"city":"Karkow","country":"Poland","street":"palna","zipCode":"200300"},"email":"rob@redhat.com","firstName":"Rob","lastName":"Rob","nationality":"Polish"}}',
@@ -103,7 +103,7 @@ const props = {
             }
           ],
           childProcessInstances: []
-        } as any
+        }
       }
     },
     functions: {

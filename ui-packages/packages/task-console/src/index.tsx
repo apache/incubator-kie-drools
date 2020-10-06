@@ -22,6 +22,7 @@ import TaskConsoleContextProvider from './context/TaskConsoleContext/TaskConsole
 import taskConsoleLogo from './static/taskConsoleLogo.svg';
 
 const httpLink = new HttpLink({
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   uri: window.DATA_INDEX_ENDPOINT || process.env.KOGITO_DATAINDEX_HTTP_URL
 });
@@ -37,6 +38,7 @@ const PageNav = (
 
 const fallbackUI = onError(({ networkError }: any) => {
   if (networkError && networkError.stack === 'TypeError: Failed to fetch') {
+    // eslint-disable-next-line react/no-render-return-value
     return ReactDOM.render(
       <ApolloProvider client={client}>
         <ServerUnavailable
