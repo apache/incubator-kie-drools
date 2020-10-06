@@ -29,7 +29,7 @@
   <name>Drools :: Engine</name>
 
   <description>
-    Wrapper module for rules evaluation based on executable model.
+    Bundle module for drools engine with rules evaluation based on executable model.
   </description>
 
   <properties>
@@ -58,17 +58,5 @@
       <artifactId>drools-model-compiler</artifactId>
     </dependency>
   </dependencies>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-enforcer-plugin</artifactId>
-        <configuration>
-            <skip>true</skip>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
 
 </project>

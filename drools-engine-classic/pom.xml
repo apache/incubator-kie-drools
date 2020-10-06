@@ -29,7 +29,7 @@
   <name>Drools :: Engine :: Classic</name>
 
   <description>
-    Wrapper module for drl-based rules evaluation.
+    Bundle module to obtain drools classic engine (aka before executable model).
   </description>
 
   <properties>
@@ -58,17 +58,5 @@
       <artifactId>drools-mvel</artifactId>
     </dependency>
    </dependencies>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-enforcer-plugin</artifactId>
-        <configuration>
-           <skip>true</skip>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
 
 </project>
