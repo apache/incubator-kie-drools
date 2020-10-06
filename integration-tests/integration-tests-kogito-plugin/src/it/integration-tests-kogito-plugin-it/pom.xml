@@ -65,6 +65,10 @@
                     <artifactId>quarkus-maven-plugin</artifactId>
                     <version>${quarkus.version}</version>
                 </plugin>
+                <plugin>
+                    <artifactId>maven-clean-plugin</artifactId>
+                    <version>@version.clean.plugin@</version>
+                </plugin>
             </plugins>
         </pluginManagement>
 

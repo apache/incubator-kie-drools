@@ -19,22 +19,50 @@
       <artifactId>kogito-springboot-starter</artifactId>
       <version>${project.version}</version>
     </dependency>
+    
+    <!-- Force resolving dependencies in local Maven repo, needed for it tests -->
+    <dependency>
+      <groupId>org.infinispan</groupId>
+      <artifactId>infinispan-spring-boot-starter-remote</artifactId>
+      <version>${version.org.infinispan.starter}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-handler</artifactId>
+      <version>${version.spring.netty}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-transport-native-epoll</artifactId>
+      <version>${version.spring.netty}</version>
+      <classifier>linux-x86_64</classifier>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <artifactId>maven-invoker-plugin</artifactId>
+          <configuration>
+            <streamLogs>true</streamLogs>
+            <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
+            <settingsFile>src/it/settings.xml</settingsFile>
+            <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
+            <postBuildHookScript>verify</postBuildHookScript> <!-- no extension required -->
+            <properties>
+              <container.image.infinispan>${container.image.infinispan}</container.image.infinispan>
+            </properties>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
     <plugins>
       <plugin>
         <artifactId>maven-invoker-plugin</artifactId>
-        <configuration>
-          <streamLogs>true</streamLogs>
-          <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
-          <settingsFile>src/it/settings.xml</settingsFile>
-          <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
-          <postBuildHookScript>verify</postBuildHookScript> <!-- no extension required -->
-          <properties>
-            <container.image.infinispan>${container.image.infinispan}</container.image.infinispan>
-          </properties>
-        </configuration>
         <executions>
           <execution>
             <id>integration-test</id>

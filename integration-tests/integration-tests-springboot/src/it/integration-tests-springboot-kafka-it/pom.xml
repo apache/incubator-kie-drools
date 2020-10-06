@@ -30,6 +30,9 @@
 
     <properties>
         <java.version>@maven.compiler.release@</java.version>
+        <version.infinispan.starter>@version.org.infinispan.starter@</version.infinispan.starter>
+        <infinispan.version>@version.org.infinispan@</infinispan.version>
+        <rest-assured.version>@version.io.restassured@</rest-assured.version>
     </properties>
     
     <dependencyManagement>
@@ -143,16 +146,12 @@
                     <name>persistence</name>
                 </property>
             </activation>
-            <properties>
-                <version.infinispan.starter>@version.org.infinispan.starter@</version.infinispan.starter>
-                <version.infinispan>@version.org.infinispan@</version.infinispan>
-            </properties>
             <dependencyManagement>
                 <dependencies>
                     <dependency>
                         <groupId>org.infinispan</groupId>
                         <artifactId>infinispan-bom</artifactId>
-                        <version>${version.infinispan}</version>
+                        <version>${infinispan.version}</version>
                         <type>pom</type>
                         <scope>import</scope>
                     </dependency>
