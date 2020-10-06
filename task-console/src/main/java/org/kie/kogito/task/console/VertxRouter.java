@@ -42,6 +42,10 @@ public class VertxRouter {
     String dataIndexHttpURL;
 
     @Inject
+    @ConfigProperty(name = "quarkus.oidc.tenant-enabled", defaultValue = "false")
+    String authEnabled;
+
+    @Inject
     Vertx vertx;
 
     private String resource;
@@ -51,14 +55,14 @@ public class VertxRouter {
         resource = vertx.fileSystem()
                 .readFileBlocking("META-INF/resources/index.html")
                 .toString(UTF_8)
-                .replace("__DATA_INDEX_ENDPOINT__", "\"" + dataIndexHttpURL + "/graphql\"");
+                .replace("__DATA_INDEX_ENDPOINT__", "\"" + dataIndexHttpURL + "/graphql\"")
+                .replace("__KOGITO_AUTH_ENABLED__", authEnabled);
     }
 
     void setupRouter(@Observes Router router) {
-        router.route("/").handler(ctx -> ctx.response().putHeader("location", "/UserTasks/").setStatusCode(302).end());
-        router.route("/TaskInbox*").handler(this::handle);
-        router.route("/UserTasks*").handler(this::handle);
-        router.route("/Task*").handler(this::handle);
+        router.route("/").handler(ctx -> ctx.response().putHeader("location", "/TaskInbox/").setStatusCode(302).end());
+        router.route("/TaskInbox").handler(this::handle);
+        router.route("/TaskDetails*").handler(this::handle);
         router.route().handler(StaticHandler.create());
     }
 

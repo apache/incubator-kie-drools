@@ -64,20 +64,29 @@ const resolvers = {
   Query: {
     UserTaskInstances: async (parent, args) => {
       let result = data.UserTaskInstances.filter(datum => {
-        console.log('args', args)
 
         if (args['where'].state && args['where'].state.in) {
           return args['where'].state.in.includes(datum.state);
-        }
-        else if (args['where'].id && args['where'].id.equal) {
+        } else if (args['where'].id && args['where'].id.equal) {
           // mock to return single id
           return datum.id === args['where'].id.equal
-        }
-        else {
-          // searching for tasks assigned to current user
-          return true;
-        }
+        } else {
+          // querying tasks assigned to current user
+          const actualOwnerClause = args['where'].or[0];
+          if(actualOwnerClause.actualOwner.equal === datum.actualOwner) {
+            return true;
+          }
 
+          const potentialUsersClause = args['where'].or[1];
+
+          if(datum.potentialUsers.includes(potentialUsersClause.potentialUsers.contains)) {
+            return true;
+          }
+
+          const potentialGroupsClause = args['where'].or[2];
+          return potentialGroupsClause.potentialGroups.containsAny
+            .some(clauseGroup => datum.potentialGroups.includes(clauseGroup));
+        }
       });
       if (args['orderBy']) {
         console.log('sort by:', args['orderBy']);
@@ -95,21 +104,17 @@ const resolvers = {
 
         result = result.slice(offset, offset + limit);
       }
-
-      console.log('result length: ' + result.length);
       return result;
     },
     ProcessInstances: async (parent, args) => {
       const result = data.ProcessInstances.filter(datum => {
-        console.log('args', args['where']);
         if (args['where'].id && args['where'].id.equal) {
-          return datum.id == args['where'].id.equal;
+          return datum.id === args['where'].id.equal;
         } else {
           return false;
         }
       });
       await timeout(2000);
-      console.log('result length: ' + result.length);
       return result;
     }
   },

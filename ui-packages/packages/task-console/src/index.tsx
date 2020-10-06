@@ -4,21 +4,22 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import ApolloClient from 'apollo-client';
 import { ApolloProvider } from 'react-apollo';
 import '@patternfly/patternfly/patternfly.css';
-import { Nav, NavList, NavItem } from '@patternfly/react-core';
+import { Nav, NavItem, NavList } from '@patternfly/react-core';
 import { HttpLink } from 'apollo-link-http';
+import { setContext } from 'apollo-link-context';
 import { onError } from 'apollo-link-error';
 import { InMemoryCache, NormalizedCacheObject } from 'apollo-cache-inmemory';
 import {
   appRenderWithAxiosInterceptorConfig,
   getToken,
   isAuthEnabled,
+  KogitoAppContextProvider,
   ServerUnavailable,
-  DefaultUser
+  UserContext
 } from '@kogito-apps/common';
 import PageLayout from './components/Templates/PageLayout/PageLayout';
 import TaskConsoleContextProvider from './context/TaskConsoleContext/TaskConsoleContextProvider';
 import taskConsoleLogo from './static/taskConsoleLogo.svg';
-import { setContext } from 'apollo-link-context';
 
 const httpLink = new HttpLink({
   // @ts-ignore
@@ -67,21 +68,21 @@ const client: ApolloClient<NormalizedCacheObject> = new ApolloClient({
   link: setGQLContext.concat(fallbackUI.concat(httpLink))
 });
 
-const appRender = () => {
+const appRender = (ctx: UserContext) => {
   ReactDOM.render(
     <ApolloProvider client={client}>
-      <TaskConsoleContextProvider
-        user={new DefaultUser('test', ['group1', 'group2'])}
-      >
-        <BrowserRouter>
-          <Switch>
-            <Route path="/" component={PageLayout} />
-          </Switch>
-        </BrowserRouter>
-      </TaskConsoleContextProvider>
+      <KogitoAppContextProvider userContext={ctx}>
+        <TaskConsoleContextProvider>
+          <BrowserRouter>
+            <Switch>
+              <Route path="/" component={PageLayout} />
+            </Switch>
+          </BrowserRouter>
+        </TaskConsoleContextProvider>
+      </KogitoAppContextProvider>
     </ApolloProvider>,
     document.getElementById('root')
   );
 };
 
-appRenderWithAxiosInterceptorConfig(() => appRender());
+appRenderWithAxiosInterceptorConfig((ctx: UserContext) => appRender(ctx));

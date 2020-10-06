@@ -13,17 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export interface User {
-  id: string;
-  groups: string[];
-}
 
-export class DefaultUser implements User {
-  public readonly id: string;
-  public readonly groups: string[];
+import React from 'react';
 
-  constructor(id: string, groups: string[]) {
-    this.id = id;
-    this.groups = groups;
-  }
-}
+const MockedPageToolbarUsersDropdownGroup = () => {
+  return <></>;
+};
+
+export default MockedPageToolbarUsersDropdownGroup;

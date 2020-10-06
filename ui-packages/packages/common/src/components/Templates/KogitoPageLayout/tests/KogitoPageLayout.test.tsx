@@ -2,8 +2,7 @@ import React from 'react';
 import KogitoPageLayout from '../KogitoPageLayout';
 import { getWrapper } from '../../../../utils/OuiaUtils';
 import { act } from 'react-dom/test-utils';
-import * as Keycloak from "../../../../utils/KeycloakClient";
-
+import * as Keycloak from '../../../../utils/KeycloakClient';
 
 const props = {
   children: <React.Fragment>children rendered</React.Fragment>,
@@ -12,6 +11,8 @@ const props = {
   BrandAltText: 'Kogito logo',
   BrandClick: jest.fn()
 };
+
+jest.mock('../../../Molecules/PageToolbar/PageToolbar');
 
 describe('KogitoPageLayout component tests', () => {
   const isAuthEnabledMock = jest.spyOn(Keycloak, 'isAuthEnabled');

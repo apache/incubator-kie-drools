@@ -22,8 +22,6 @@ jest.mock('@kogito-apps/common', () => ({
   }
 }));
 
-jest.mock('../../DataListContainerExpandable/DataListContainerExpandable.tsx');
-
 function testRoute(route: string) {
   props.location.pathname = route;
 
@@ -55,19 +53,7 @@ describe('PageLayout tests', () => {
     testRoute('/TaskInbox');
   });
 
-  it('test UserTasks route', () => {
-    testRoute('/UserTasks');
-  });
-
-  it('test UserTasksFilters route', () => {
-    testRoute('/UserTasksFilters');
-  });
-
   it('test TaskDetails route', () => {
-    testRoute('/Task/taskID');
-  });
-
-  it('test UserTasksTable route', () => {
-    testRoute('/UserTasksTable');
+    testRoute('/TaskDetails/taskId');
   });
 });

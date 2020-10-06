@@ -30,7 +30,10 @@ const TaskDescription: React.FC<IOwnProps> = ({ task }) => {
   const context: IContext<UserTaskInstance> = useContext(TaskConsoleContext);
 
   return (
-    <Link to={'/Task/' + task.id} onClick={() => context.setActiveItem(task)}>
+    <Link
+      to={'/TaskDetails/' + task.id}
+      onClick={() => context.setActiveItem(task)}
+    >
       <div>
         <strong>
           <ItemDescriptor

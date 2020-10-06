@@ -2,7 +2,6 @@ import {
   Page,
   PageSidebar,
   PageHeader,
-  Avatar,
   Brand,
   PageHeaderTools,
   OUIAProps
@@ -12,7 +11,6 @@ import PageToolbar from '../../Molecules/PageToolbar/PageToolbar';
 import { aboutLogoContext } from '../../contexts';
 import '../../styles.css';
 
-import userImage from '../../../static/avatar.svg';
 import { ouiaAttribute } from '../../../utils/OuiaUtils';
 
 interface IOwnProps {
@@ -53,7 +51,6 @@ const KogitoPageLayout: React.FC<IOwnProps & OUIAProps> = ({
           <aboutLogoContext.Provider value={props.BrandSrc}>
             <PageToolbar />
           </aboutLogoContext.Provider>
-          <Avatar src={userImage} alt="Kogito Logo" />
         </PageHeaderTools>
       }
       showNavToggle

@@ -1,77 +1,64 @@
 import axios from 'axios';
-
-export interface UserContext {
-  userName: string;
-  roles: string[];
-  token: string;
-}
+import { UserContext } from '../..';
+import { TestUserContextImpl } from '../environment/auth/TestUserContext';
+import { KeycloakUserContext } from '../environment/auth/KeycloakUserContext';
 
 export const isAuthEnabled = (): boolean => {
   // @ts-ignore
   return window.KOGITO_AUTH_ENABLED;
 };
 
-
-let currentSecurityContext;
+let currentSecurityContext: UserContext;
 export const getLoadedSecurityContext = (): UserContext => {
   if (!currentSecurityContext) {
-    return {
-      userName: 'Anonymous',
-      roles: [],
-      token: ''
-    };
+    if (isAuthEnabled()) {
+      throw Error(
+        'Cannot load security context! Please reload screen and log in again.'
+      );
+    }
+    currentSecurityContext = new TestUserContextImpl();
   }
   return currentSecurityContext;
-}
+};
 
-export const loadSecurityContext = async (
-  onloadSuccess: () => void
-) => {
+export const loadSecurityContext = async (onloadSuccess: () => void) => {
   if (isAuthEnabled()) {
-      try {
-        const response = await axios.get(`/api/user/me`, {
-          headers: {'Access-Control-Allow-Origin': '*'}
-        });
-        currentSecurityContext = response.data;
-        onloadSuccess();
-      } catch (error) {
-        currentSecurityContext = {
-          userName: error.message,
-          roles: [],
-          token: ''
-        };
-      }
+    try {
+      const response = await axios.get(`/api/user/me`, {
+        headers: { 'Access-Control-Allow-Origin': '*' }
+      });
+      currentSecurityContext = new KeycloakUserContext(response.data);
+      onloadSuccess();
+    } catch (error) {
+      currentSecurityContext = new KeycloakUserContext({
+        userName: error.message,
+        roles: [],
+        token: ''
+      });
+    }
   } else {
-    currentSecurityContext = {
-      userName: 'Anonymous',
-      roles: [],
-      token: ''
-    };
+    currentSecurityContext = new TestUserContextImpl();
     onloadSuccess();
   }
 };
 
-export const getUserName = (): string => {
-  return getLoadedSecurityContext().userName;
-};
-
 export const getToken = (): string => {
-  return getLoadedSecurityContext().token;
-};
-
-export const getRoles = (): string[] => {
-  return getLoadedSecurityContext().roles;
+  if (isAuthEnabled()) {
+    const ctx = getLoadedSecurityContext() as KeycloakUserContext;
+    return ctx.getToken();
+  }
 };
 
 export const appRenderWithAxiosInterceptorConfig = (
-  appRender: () => void
+  appRender: (ctx: UserContext) => void
 ): void => {
   loadSecurityContext(() => {
-        appRender();
-      });
+    appRender(getLoadedSecurityContext());
+  });
   if (isAuthEnabled()) {
-    axios.interceptors.response.use(response => response,
-      (error) => {
+    axios.interceptors.response.use(
+      response => response,
+      error => {
         if (error.response.status === 401) {
           loadSecurityContext(() => {
             /* tslint:disable:no-string-literal */
@@ -82,7 +69,8 @@ export const appRenderWithAxiosInterceptorConfig = (
           });
         }
         return Promise.reject(error);
-      });
+      }
+    );
     axios.interceptors.request.use(
       config => {
         if (currentSecurityContext) {
@@ -100,9 +88,9 @@ export const appRenderWithAxiosInterceptorConfig = (
       }
     );
   }
-}
+};
 
 export const handleLogout = (): void => {
-   currentSecurityContext = undefined;
-   window.location.replace(`/logout`);
+  currentSecurityContext = undefined;
+  window.location.replace(`/logout`);
 };

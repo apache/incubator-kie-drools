@@ -5,7 +5,7 @@ exports[`PageLayout tests test TaskDetails route 1`] = `
   history={Array []}
   location={
     Object {
-      "pathname": "/Task/taskID",
+      "pathname": "/TaskDetails/taskId",
     }
   }
 >
@@ -33,16 +33,6 @@ exports[`PageLayout tests test TaskDetails route 1`] = `
               to="/TaskInbox"
             >
               Task Inbox
-            </Link>
-          </NavItem>
-          <NavItem
-            isActive={false}
-          >
-            <Link
-              data-ouia-navigation-name="user-tasks"
-              to="/UserTasks"
-            >
-              User Tasks
             </Link>
           </NavItem>
         </NavList>
@@ -89,178 +79,6 @@ exports[`PageLayout tests test TaskInbox route 1`] = `
               Task Inbox
             </Link>
           </NavItem>
-          <NavItem
-            isActive={false}
-          >
-            <Link
-              data-ouia-navigation-name="user-tasks"
-              to="/UserTasks"
-            >
-              User Tasks
-            </Link>
-          </NavItem>
-        </NavList>
-      </Nav>
-    }
-  >
-    <MockedComponent />
-  </KogitoPageLayout>
-</PageLayout>
-`;
-
-exports[`PageLayout tests test UserTasks route 1`] = `
-<PageLayout
-  history={Array []}
-  location={
-    Object {
-      "pathname": "/UserTasks",
-    }
-  }
->
-  <KogitoPageLayout
-    BrandAltText="Task Console Logo"
-    BrandClick={[Function]}
-    BrandSrc="taskConsoleLogo.svg"
-    PageNav={
-      <Nav
-        aria-label="Nav"
-        onSelect={[Function]}
-        onToggle={[Function]}
-        ouiaSafe={true}
-        theme="dark"
-      >
-        <NavList
-          ariaLeftScroll="Scroll left"
-          ariaRightScroll="Scroll right"
-        >
-          <NavItem
-            isActive={false}
-          >
-            <Link
-              data-ouia-navigation-name="task-inbox"
-              to="/TaskInbox"
-            >
-              Task Inbox
-            </Link>
-          </NavItem>
-          <NavItem
-            isActive={true}
-          >
-            <Link
-              data-ouia-navigation-name="user-tasks"
-              to="/UserTasks"
-            >
-              User Tasks
-            </Link>
-          </NavItem>
-        </NavList>
-      </Nav>
-    }
-  >
-    <MockedComponent />
-  </KogitoPageLayout>
-</PageLayout>
-`;
-
-exports[`PageLayout tests test UserTasksFilters route 1`] = `
-<PageLayout
-  history={Array []}
-  location={
-    Object {
-      "pathname": "/UserTasksFilters",
-    }
-  }
->
-  <KogitoPageLayout
-    BrandAltText="Task Console Logo"
-    BrandClick={[Function]}
-    BrandSrc="taskConsoleLogo.svg"
-    PageNav={
-      <Nav
-        aria-label="Nav"
-        onSelect={[Function]}
-        onToggle={[Function]}
-        ouiaSafe={true}
-        theme="dark"
-      >
-        <NavList
-          ariaLeftScroll="Scroll left"
-          ariaRightScroll="Scroll right"
-        >
-          <NavItem
-            isActive={false}
-          >
-            <Link
-              data-ouia-navigation-name="task-inbox"
-              to="/TaskInbox"
-            >
-              Task Inbox
-            </Link>
-          </NavItem>
-          <NavItem
-            isActive={false}
-          >
-            <Link
-              data-ouia-navigation-name="user-tasks"
-              to="/UserTasks"
-            >
-              User Tasks
-            </Link>
-          </NavItem>
-        </NavList>
-      </Nav>
-    }
-  >
-    <MockedComponent />
-  </KogitoPageLayout>
-</PageLayout>
-`;
-
-exports[`PageLayout tests test UserTasksTable route 1`] = `
-<PageLayout
-  history={Array []}
-  location={
-    Object {
-      "pathname": "/UserTasksTable",
-    }
-  }
->
-  <KogitoPageLayout
-    BrandAltText="Task Console Logo"
-    BrandClick={[Function]}
-    BrandSrc="taskConsoleLogo.svg"
-    PageNav={
-      <Nav
-        aria-label="Nav"
-        onSelect={[Function]}
-        onToggle={[Function]}
-        ouiaSafe={true}
-        theme="dark"
-      >
-        <NavList
-          ariaLeftScroll="Scroll left"
-          ariaRightScroll="Scroll right"
-        >
-          <NavItem
-            isActive={false}
-          >
-            <Link
-              data-ouia-navigation-name="task-inbox"
-              to="/TaskInbox"
-            >
-              Task Inbox
-            </Link>
-          </NavItem>
-          <NavItem
-            isActive={false}
-          >
-            <Link
-              data-ouia-navigation-name="user-tasks"
-              to="/UserTasks"
-            >
-              User Tasks
-            </Link>
-          </NavItem>
         </NavList>
       </Nav>
     }
@@ -303,16 +121,6 @@ exports[`PageLayout tests test default route 1`] = `
               to="/TaskInbox"
             >
               Task Inbox
-            </Link>
-          </NavItem>
-          <NavItem
-            isActive={false}
-          >
-            <Link
-              data-ouia-navigation-name="user-tasks"
-              to="/UserTasks"
-            >
-              User Tasks
             </Link>
           </NavItem>
         </NavList>

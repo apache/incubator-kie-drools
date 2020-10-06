@@ -42,7 +42,7 @@ public class VertxRouter {
     String dataIndexHttpURL;
 
     @Inject
-    @ConfigProperty(name = "quarkus.oidc.enabled", defaultValue = "false")
+    @ConfigProperty(name = "quarkus.oidc.tenant-enabled", defaultValue = "false")
     String authEnabled;
 
     @Inject

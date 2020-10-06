@@ -22,7 +22,7 @@
       ${path.to.packages}/task-console/src,
       ${path.to.packages}/trusty/src
     </sonar.sources>
-    <sonar.exclusions>**/__mocks__/**,**/mocks/**,**/*.stories.tsx</sonar.exclusions>
+    <sonar.exclusions>**/__mocks__/**,**/mocks/**,**/tests/utils/**,**/*.stories.tsx</sonar.exclusions>
     <sonar.test.inclusions>**/*test.ts,**/*test.tsx</sonar.test.inclusions>
     <sonar.javascript.lcov.reportPaths>
       ${path.to.packages}/common/coverage/lcov.info,

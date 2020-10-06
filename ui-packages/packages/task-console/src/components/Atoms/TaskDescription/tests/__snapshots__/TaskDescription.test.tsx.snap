@@ -31,15 +31,15 @@ exports[`TaskDescription test Render task description with task des 1`] = `
 >
   <Link
     onClick={[Function]}
-    to="/Task/45a73767-5da3-49bf-9c40-d533c3e77ef3"
+    to="/TaskDetails/45a73767-5da3-49bf-9c40-d533c3e77ef3"
   >
     <LinkAnchor
-      href="/Task/45a73767-5da3-49bf-9c40-d533c3e77ef3"
+      href="/TaskDetails/45a73767-5da3-49bf-9c40-d533c3e77ef3"
       navigate={[Function]}
       onClick={[Function]}
     >
       <a
-        href="/Task/45a73767-5da3-49bf-9c40-d533c3e77ef3"
+        href="/TaskDetails/45a73767-5da3-49bf-9c40-d533c3e77ef3"
         onClick={[Function]}
       >
         <div>

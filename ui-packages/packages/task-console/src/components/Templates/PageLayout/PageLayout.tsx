@@ -5,7 +5,6 @@ import { Redirect, Route, Link, Switch } from 'react-router-dom';
 import taskConsoleLogo from '../../../static/taskConsoleLogo.svg';
 
 import UserTaskInstanceDetailsPage from '../UserTaskInstanceDetailsPage/UserTaskInstanceDetailsPage';
-import DataListContainerExpandable from '../DataListContainerExpandable/DataListContainerExpandable';
 import UserTaskDataTableContainer from '../UserTaskDataTableContainer/UserTaskDataTableContainer';
 import { Location, History } from 'history';
 import TaskInboxContainer from '../TaskInboxContainer/TaskInboxContainer';
@@ -28,14 +27,6 @@ const PageLayout: React.FC<IOwnProps & OUIAProps> = ({ ouiaId, ...props }) => {
             Task Inbox
           </Link>
         </NavItem>
-        <NavItem isActive={pathname === '/UserTasks'}>
-          <Link
-            to="/UserTasks"
-            {...ouiaAttribute('data-ouia-navigation-name', 'user-tasks')}
-          >
-            User Tasks
-          </Link>
-        </NavItem>
       </NavList>
     </Nav>
   );
@@ -56,12 +47,7 @@ const PageLayout: React.FC<IOwnProps & OUIAProps> = ({ ouiaId, ...props }) => {
         <Route exact path="/TaskInbox" component={TaskInboxContainer} />
         <Route
           exact
-          path="/UserTasks"
-          component={DataListContainerExpandable}
-        />
-        <Route
-          exact
-          path="/Task/:taskId"
+          path="/TaskDetails/:taskId"
           render={routeProps => <UserTaskInstanceDetailsPage {...routeProps} />}
         />
         <Route
