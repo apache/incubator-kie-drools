@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.modelcompiler;
+package org.drools.ancompiler;
 
 import java.util.List;
 import java.util.UUID;
@@ -25,6 +25,8 @@ import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.Rete;
+import org.drools.modelcompiler.ExecutableModelFlowProject;
+import org.drools.modelcompiler.ExecutableModelProject;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
@@ -40,11 +42,6 @@ import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.conf.AlphaNetworkCompilerOption;
 
 import static java.util.Arrays.asList;
-import static org.drools.modelcompiler.BaseModelTest.RUN_TYPE.FLOW_DSL;
-import static org.drools.modelcompiler.BaseModelTest.RUN_TYPE.FLOW_WITH_ALPHA_NETWORK;
-import static org.drools.modelcompiler.BaseModelTest.RUN_TYPE.PATTERN_DSL;
-import static org.drools.modelcompiler.BaseModelTest.RUN_TYPE.PATTERN_WITH_ALPHA_NETWORK;
-import static org.drools.modelcompiler.BaseModelTest.RUN_TYPE.STANDARD_WITH_ALPHA_NETWORK;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -69,34 +66,24 @@ public abstract class BaseModelTest {
         }
     }
 
-    final static Object[] PLAIN = {
-            RUN_TYPE.STANDARD_FROM_DRL,
-            FLOW_DSL,
-            PATTERN_DSL,
-    };
 
     final static Object[] WITH_ALPHA_NETWORK = {
             RUN_TYPE.STANDARD_FROM_DRL,
-            FLOW_DSL,
-            PATTERN_DSL,
-            STANDARD_WITH_ALPHA_NETWORK,
-            PATTERN_WITH_ALPHA_NETWORK,
-            FLOW_WITH_ALPHA_NETWORK,
+            RUN_TYPE.FLOW_DSL,
+            RUN_TYPE.PATTERN_DSL,
+            RUN_TYPE.STANDARD_WITH_ALPHA_NETWORK,
+            RUN_TYPE.PATTERN_WITH_ALPHA_NETWORK,
+            RUN_TYPE.FLOW_WITH_ALPHA_NETWORK,
     };
-
 
     @Parameters(name = "{0}")
     public static Object[] params() {
-        if(Boolean.valueOf(System.getProperty("alphanetworkCompilerEnabled"))) {
-            return WITH_ALPHA_NETWORK;
-        } else {
-            return PLAIN;
-        }
+        return WITH_ALPHA_NETWORK;
     }
 
-    protected final CompilerTest.RUN_TYPE testRunType;
+    protected final RUN_TYPE testRunType;
 
-    public BaseModelTest( CompilerTest.RUN_TYPE testRunType ) {
+    public BaseModelTest(RUN_TYPE testRunType ) {
         this.testRunType = testRunType;
     }
 
@@ -144,9 +131,9 @@ public abstract class BaseModelTest {
         }
 
         KieBuilder kieBuilder;
-        if (asList(FLOW_DSL, FLOW_WITH_ALPHA_NETWORK).contains(testRunType)) {
+        if (asList(RUN_TYPE.FLOW_DSL, RUN_TYPE.FLOW_WITH_ALPHA_NETWORK).contains(testRunType)) {
             kieBuilder = ks.newKieBuilder(kfs).buildAll(ExecutableModelFlowProject.class);
-        } else if (asList(PATTERN_DSL, PATTERN_WITH_ALPHA_NETWORK).contains(testRunType)) {
+        } else if (asList(RUN_TYPE.PATTERN_DSL, RUN_TYPE.PATTERN_WITH_ALPHA_NETWORK).contains(testRunType)) {
             kieBuilder = ks.newKieBuilder(kfs).buildAll(ExecutableModelProject.class);
         } else {
             kieBuilder = ks.newKieBuilder(kfs).buildAll(DrlProject.class);
@@ -217,5 +204,13 @@ public abstract class BaseModelTest {
         KieModuleModel kproj = KieServices.get().newKieModuleModel();
         kproj.setConfigurationProperty(AlphaNetworkCompilerOption.PROPERTY_NAME, AlphaNetworkCompilerOption.INMEMORY.toString());
         return kproj;
+    }
+
+    protected void assertReteIsAlphaNetworkCompiled(KieSession ksession) {
+        Rete rete = ((InternalKnowledgeBase) ksession.getKieBase()).getRete();
+        List<ObjectTypeNode> objectTypeNodes = ObjectTypeNodeCompiler.objectTypeNodes(rete);
+        for(ObjectTypeNode otn : objectTypeNodes) {
+            assertTrue(otn.getObjectSinkPropagator() instanceof CompiledNetwork);
+        }
     }
 }
