@@ -31,6 +31,8 @@ public class PackageSources {
     protected List<GeneratedFile> accumulateSources = new ArrayList<>();
     protected List<GeneratedFile> ruleSources = new ArrayList<>();
     protected List<GeneratedFile> lambdaClasses = new ArrayList<>();
+    protected List<GeneratedFile> additionalFiles = new ArrayList<>();
+
 
     protected GeneratedFile mainSource;
     protected GeneratedFile domainClassSource;
@@ -94,5 +96,10 @@ public class PackageSources {
         generatedFiles.addAll( ruleSources );
         generatedFiles.add( domainClassSource );
         generatedFiles.addAll(lambdaClasses );
+        generatedFiles.addAll(additionalFiles );
+    }
+
+    public void addAllAdditionalFiles(List<GeneratedFile> additionalFiles) {
+        additionalFiles.addAll(additionalFiles);
     }
 }

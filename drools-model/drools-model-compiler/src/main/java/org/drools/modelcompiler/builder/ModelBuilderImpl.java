@@ -45,6 +45,8 @@ import org.drools.modelcompiler.builder.generator.DRLIdGenerator;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.declaredtype.POJOGenerator;
 import org.kie.api.builder.ReleaseId;
+import org.kie.api.internal.utils.ServiceRegistry;
+import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.ResultSeverity;
 
 import static java.util.Collections.emptyList;
@@ -64,7 +66,7 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
     private final ReleaseId releaseId;
     private final boolean isPattern;
     private final boolean oneClassPerRule;
-    private final Collection<T> packageSources = new ArrayList<>();
+    private final Collection<PackageSources> packageSources = new ArrayList<>();
 
     private Collection<CompositePackageDescr> compositePackages;
     private Map<String, CompositePackageDescr> compositePackagesMap;
@@ -223,9 +225,13 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
             PackageModel pkgModel = packageModels.remove( pkgRegistry.getPackage().getName() );
             pkgModel.setOneClassPerRule( oneClassPerRule );
             if (getResults( ResultSeverity.ERROR ).isEmpty()) {
-                packageSources.add( sourcesGenerator.apply( pkgModel ) );
+                PackageSources p = sourcesGenerator.apply(pkgModel);
+                p.addAllAdditionalFiles(generateAdditionalFiles());
+                packageSources.add(p);
             }
         }
+
+
     }
 
     private void buildDeclaredTypes( Collection<CompositePackageDescr> packages ) {
@@ -293,7 +299,25 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
         });
     }
 
-    public Collection<T> getPackageSources() {
+    public Collection<PackageSources> getPackageSources() {
         return packageSources;
+    }
+
+    // Currently used to generate the Compiled Alpha Network sources while using the executable model
+    // Could be used when additional unknown file types are needed
+    List<GeneratedFile> generateAdditionalFiles() {
+        KnowledgeBuilder knowledgeBuilderForKieBase = this;
+
+        KnowledgeBuilderImpl knowledgeBuilderForImpl = (KnowledgeBuilderImpl) knowledgeBuilderForKieBase;
+        KnowledgeBuilderConfigurationImpl builderConfiguration = knowledgeBuilderForImpl.getBuilderConfiguration();
+
+        AdditionalFileGenerators updaters = ServiceRegistry.getInstance().get(AdditionalFileGenerators.class);
+
+        return updaters.getChildren()
+                .stream()
+                .flatMap(additional -> additional.additionalFiles(builderConfiguration,
+                                                                  getKnowledgeBase().getRete())
+                        .stream())
+                .collect(Collectors.toList());
     }
 }

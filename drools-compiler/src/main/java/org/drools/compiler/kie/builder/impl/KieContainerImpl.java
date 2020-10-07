@@ -477,7 +477,7 @@ public class KieContainerImpl
             // TODO LUCA ask Mario if we need to enqueue this or we can just run it
             CompositeRunnable compositeUpdater = new CompositeRunnable();
 
-            KieBaseUpdaters updaters = ServiceRegistry.getInstance().get(KieBaseUpdaters.class);
+            KieBaseUpdaters updaters = ServiceRegistry.getService(KieBaseUpdaters.class);
             updaters.getChildren()
                     .stream()
                     .map(kbu -> kbu.create(new KieBaseUpdatersContext(builderConfiguration,

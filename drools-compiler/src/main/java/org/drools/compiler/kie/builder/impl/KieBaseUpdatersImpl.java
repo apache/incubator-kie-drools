@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class UpdaterContainerContainerImpl implements Consumer<KieBaseUpdaterFactory>,
-                                                      KieBaseUpdaters {
+public class KieBaseUpdatersImpl implements Consumer<KieBaseUpdaterFactory>,
+                                            KieBaseUpdaters {
 
     List<KieBaseUpdaterFactory> children = new ArrayList<>();
 
-    public UpdaterContainerContainerImpl() {
+    public KieBaseUpdatersImpl() {
     }
 
     @Override
