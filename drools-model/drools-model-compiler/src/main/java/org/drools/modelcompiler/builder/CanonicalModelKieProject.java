@@ -67,8 +67,7 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
                                                                                builderConfiguration,
                                                                                kModule.getReleaseId(),
                                                                                isPattern,
-                                                                               false,
-                                                                               kBaseModel.getName());
+                                                                               false);
         modelBuilders.add(modelBuilder);
         return modelBuilder;
     }

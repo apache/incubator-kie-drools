@@ -64,7 +64,4 @@ public interface KieProject {
     KnowledgeBuilder buildKnowledgePackages( KieBaseModelImpl kBaseModel, ResultsImpl messages, Predicate<String> buildFilter );
 
     default void writeProjectOutput(MemoryFileSystem trgMfs, ResultsImpl messages) {}
-
-    default void afterProjectOutput(MemoryFileSystem trgMfs, ResultsImpl messages) {}
-
 }
