@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.drools.compiler.kie.builder.impl.KieBaseUpdater;
 import org.drools.compiler.kie.builder.impl.KieBaseUpdatersContext;
+import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.Rete;
 import org.kie.internal.builder.conf.AlphaNetworkCompilerOption;
 import org.kie.memorycompiler.KieMemoryCompiler;
@@ -23,13 +24,17 @@ public class KieBaseUpdaterANC implements KieBaseUpdater {
 
         // find the new compiled alpha network in the classpath, if it's not there,
         // generate compile it and reattach it
-        if(AlphaNetworkCompilerOption.INMEMORY.equals(ancMode)) {
+        if (AlphaNetworkCompilerOption.INMEMORY.equals(ancMode)) {
             inMemoryUpdate(ctx.getClassLoader(), ctx.getRete());
+        } // load it from the kjar
+        else if (AlphaNetworkCompilerOption.COMPILED.equals(ancMode)) {
+            loadFromKJar(ctx.getClassLoader(), ctx.getRete());
         }
     }
 
     /**
      * This assumes the kie-memory-compiler module is provided at runtime
+     *
      * @param rootClassLoader
      * @param rete
      */
@@ -44,6 +49,29 @@ public class KieBaseUpdaterANC implements KieBaseUpdater {
                 Class<?> aClass = compiledClasses.get(c.getName());
                 c.setCompiledNetwork(aClass);
             });
+        }
+    }
+
+    /**
+     * This assumes the kie-memory-compiler module is provided at runtime
+     *
+     * @param rootClassLoader
+     * @param rete
+     */
+    private void loadFromKJar(ClassLoader rootClassLoader, Rete rete) {
+        Map<ObjectTypeNode, String> compiledNetworkSourcesMap = ObjectTypeNodeCompiler.otnWithBinaryName(rete);
+        for(Map.Entry<ObjectTypeNode, String> kv : compiledNetworkSourcesMap.entrySet()) {
+            String compiledNetworkClassName = kv.getValue();
+            Class<?> aClass = null;
+            try {
+                aClass = rootClassLoader.loadClass(compiledNetworkClassName);
+
+            } catch (ClassNotFoundException e) {
+                // BaseUpdater gets called by the plugin when creating the kiebase, but we don't need to update the rete there
+                return;
+            }
+            CompiledNetwork newInstance = ClazzUtils.newCompiledNetworkInstance(aClass);
+            newInstance.setNetwork(kv.getKey());
         }
     }
 }

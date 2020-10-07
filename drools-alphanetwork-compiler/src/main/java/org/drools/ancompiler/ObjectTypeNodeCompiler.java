@@ -109,7 +109,8 @@ public class ObjectTypeNodeCompiler {
                 getSourceName(),
                 getBinaryName(),
                 getName(),
-                objectTypeNode);
+                objectTypeNode,
+                this);
     }
 
     /**
@@ -202,10 +203,17 @@ public class ObjectTypeNodeCompiler {
         return PACKAGE_NAME;
     }
 
-    public static List<CompiledNetworkSource> compiledNetworkSource(Rete rete) {
+    public static List<CompiledNetworkSource> compiledNetworkSources(Rete rete) {
+        return objectTypeNodeCompiler(rete)
+                .stream()
+                .map(ObjectTypeNodeCompiler::generateSource)
+                .collect(Collectors.toList());
+    }
+
+    public static List<ObjectTypeNodeCompiler> objectTypeNodeCompiler(Rete rete) {
         return objectTypeNodes(rete)
                 .stream()
-                .map(otn -> new ObjectTypeNodeCompiler(otn).generateSource())
+                .map(ObjectTypeNodeCompiler::new)
                 .collect(Collectors.toList());
     }
 
@@ -217,9 +225,16 @@ public class ObjectTypeNodeCompiler {
     }
 
     public static Map<String, CompiledNetworkSource> compiledNetworkSourceMap(Rete rete) {
-        List<CompiledNetworkSource> compiledNetworkSources = ObjectTypeNodeCompiler.compiledNetworkSource(rete);
+        List<CompiledNetworkSource> compiledNetworkSources = ObjectTypeNodeCompiler.compiledNetworkSources(rete);
         return compiledNetworkSources
                 .stream()
                 .collect(Collectors.toMap(CompiledNetworkSource::getName, c -> c));
+    }
+
+    public static Map<ObjectTypeNode, String> otnWithBinaryName(Rete rete) {
+        List<ObjectTypeNodeCompiler> compiledNetworkSources = ObjectTypeNodeCompiler.objectTypeNodeCompiler(rete);
+        return compiledNetworkSources
+                .stream()
+                .collect(Collectors.toMap(k -> k.objectTypeNode, ObjectTypeNodeCompiler::getBinaryName));
     }
 }

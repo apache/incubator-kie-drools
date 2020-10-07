@@ -1,8 +1,5 @@
 package org.drools.ancompiler;
 
-import java.util.Optional;
-
-import org.drools.core.reteoo.ObjectSinkPropagator;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.rule.IndexableConstraint;
 import org.drools.core.spi.InternalReadAccessor;
@@ -16,7 +13,7 @@ public class CompiledNetworkSource {
     private final String name;
     private final ObjectTypeNode objectTypeNode;
 
-    public CompiledNetworkSource(String source, IndexableConstraint indexableConstraint, String sourceName, String binaryName, String name, ObjectTypeNode objectTypeNode) {
+    public CompiledNetworkSource(String source, IndexableConstraint indexableConstraint, String sourceName, String binaryName, String name, ObjectTypeNode objectTypeNode, ObjectTypeNodeCompiler objectTypeNodeCompiler) {
         this.source = source;
         this.indexableConstraint = indexableConstraint;
         this.sourceName = sourceName;
@@ -29,16 +26,8 @@ public class CompiledNetworkSource {
         return source;
     }
 
-    private InternalReadAccessor getFieldExtractor() {
-        return indexableConstraint == null ? null : indexableConstraint.getFieldExtractor();
-    }
-
     public String getSourceName() {
         return sourceName;
-    }
-
-    public String getBinaryName() {
-        return binaryName;
     }
 
     public String getName() {
@@ -47,27 +36,19 @@ public class CompiledNetworkSource {
 
     public void setCompiledNetwork(Class<?> compiledNetworkClass) {
         CompiledNetwork compiledNetwork = newCompiledNetworkInstance(compiledNetworkClass);
-
-        NetworkHandlerAdaptor setter = compiledNetwork.createNodeReferenceSetter();
-        ObjectTypeNodeParser parser = new ObjectTypeNodeParser(objectTypeNode);
-        parser.accept(setter);
-        compiledNetwork.setOriginalSinkPropagator(objectTypeNode.getObjectSinkPropagator());
-        objectTypeNode.setObjectSinkPropagator(compiledNetwork);
+        compiledNetwork.setNetwork(objectTypeNode);
     }
 
     public CompiledNetwork newCompiledNetworkInstance(Class<?> aClass) {
         try {
             return (CompiledNetwork) aClass.getDeclaredConstructor(org.drools.core.spi.InternalReadAccessor.class)
                     .newInstance(getFieldExtractor());
-        } catch (Exception e) {
+        } catch (Exception e) { // TODO LUCA
             throw new RuntimeException(e);
         }
     }
 
-    public Optional<ObjectSinkPropagator> existingAlphaNetworkCompiler() {
-        return Optional.ofNullable(objectTypeNode.getObjectSinkPropagator())
-                .filter(otn -> {
-                    return otn instanceof CompiledNetwork;
-                });
+    private InternalReadAccessor getFieldExtractor() {
+        return indexableConstraint == null ? null : indexableConstraint.getFieldExtractor();
     }
 }

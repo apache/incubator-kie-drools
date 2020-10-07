@@ -103,6 +103,13 @@ public abstract class CompiledNetwork implements ObjectSinkPropagator {
         parser.accept(setter);
     }
 
+
+    public void setNetwork(ObjectTypeNode objectTypeNode) {
+        setObjectTypeNode(objectTypeNode);
+        setOriginalSinkPropagator(objectTypeNode.getObjectSinkPropagator());
+        objectTypeNode.setObjectSinkPropagator(this);
+    }
+
     public void setOriginalSinkPropagator(ObjectSinkPropagator originalSinkPropagator) {
         this.originalSinkPropagator = originalSinkPropagator;
     }
