@@ -80,6 +80,8 @@
     <module>drools-scenario-simulation</module>
     <module>kie-memory-compiler</module>
     <module>drools-metric</module>
+    <module>drools-engine</module>
+    <module>drools-engine-classic</module>
   </modules>
 
   <dependencyManagement>
