@@ -174,7 +174,8 @@
         <artifactId>exec-maven-plugin</artifactId>
         <executions>
           <execution>
-            <phase>compile</phase>
+            <!-- Make sure the XSD will be merged after the codebase has been successfully compiled. -->
+            <phase>process-classes</phase>
             <goals>
               <goal>java</goal>
             </goals>
