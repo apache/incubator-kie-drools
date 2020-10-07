@@ -18,6 +18,7 @@ package org.drools.modelcompiler.builder;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,6 +39,8 @@ import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.TypeDeclarationDescr;
 import org.drools.core.addon.TypeResolver;
 import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.reteoo.Rete;
 import org.drools.core.rule.ImportDeclaration;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.util.StringUtils;
@@ -66,17 +69,19 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
     private final ReleaseId releaseId;
     private final boolean isPattern;
     private final boolean oneClassPerRule;
+    protected String kieBaseName;
     private final Collection<PackageSources> packageSources = new ArrayList<>();
 
     private Collection<CompositePackageDescr> compositePackages;
     private Map<String, CompositePackageDescr> compositePackagesMap;
 
-    public ModelBuilderImpl(Function<PackageModel, T> sourcesGenerator, KnowledgeBuilderConfigurationImpl configuration, ReleaseId releaseId, boolean isPattern, boolean oneClassPerRule) {
+    public ModelBuilderImpl(Function<PackageModel, T> sourcesGenerator, KnowledgeBuilderConfigurationImpl configuration, ReleaseId releaseId, boolean isPattern, boolean oneClassPerRule, String kieBaseName) {
         super(configuration);
         this.sourcesGenerator = sourcesGenerator;
         this.releaseId = releaseId;
         this.isPattern = isPattern;
         this.oneClassPerRule = oneClassPerRule;
+        this.kieBaseName = kieBaseName;
     }
 
     @Override
@@ -312,12 +317,23 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
         KnowledgeBuilderConfigurationImpl builderConfiguration = knowledgeBuilderForImpl.getBuilderConfiguration();
 
         AdditionalFileGenerators updaters = ServiceRegistry.getInstance().get(AdditionalFileGenerators.class);
+        InternalKnowledgeBase knowledgeBase = getKnowledgeBase();
+        if(knowledgeBase != null) {
+            Rete rete = knowledgeBase.getRete();
+            return updaters.getChildren()
+                    .stream()
+                    .flatMap(additional -> {
+                        return additional.additionalFiles(builderConfiguration,
+                                                          rete)
+                                .stream();
+                    })
+                    .collect(Collectors.toList());
+        } else {
+            return Collections.emptyList();
+        }
+    }
 
-        return updaters.getChildren()
-                .stream()
-                .flatMap(additional -> additional.additionalFiles(builderConfiguration,
-                                                                  getKnowledgeBase().getRete())
-                        .stream())
-                .collect(Collectors.toList());
+    public String getKieBaseName() {
+        return kieBaseName;
     }
 }

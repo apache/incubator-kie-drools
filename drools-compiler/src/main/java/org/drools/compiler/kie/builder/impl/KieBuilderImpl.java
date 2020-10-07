@@ -289,7 +289,14 @@ public class KieBuilderImpl
             for ( InternalKieModule kDep : kModule.getKieDependencies().values() ) {
                 kieRepository.addKieModule( kDep );
             }
+
+            if ( trgMfs != null ) {
+                kProject.afterProjectOutput(trgMfs, messages);
+            }
+
         }
+
+        // new callback here
     }
 
     private void addKBasesFilesToTrg() {
