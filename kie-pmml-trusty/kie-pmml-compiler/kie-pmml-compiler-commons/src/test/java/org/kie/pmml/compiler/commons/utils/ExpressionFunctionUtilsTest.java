@@ -44,7 +44,7 @@ import org.dmg.pmml.NormDiscrete;
 import org.dmg.pmml.ParameterField;
 import org.dmg.pmml.TextIndex;
 import org.junit.Test;
-import org.kie.pmml.commons.exceptions.KiePMMLException;
+import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;

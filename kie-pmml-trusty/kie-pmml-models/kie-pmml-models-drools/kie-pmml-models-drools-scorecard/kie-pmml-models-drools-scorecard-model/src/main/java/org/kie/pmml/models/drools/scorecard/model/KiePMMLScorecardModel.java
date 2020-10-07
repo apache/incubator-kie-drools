@@ -26,8 +26,8 @@ import java.util.stream.Collectors;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.commons.model.KiePMMLExtension;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
-import org.kie.pmml.commons.model.enums.MINING_FUNCTION;
-import org.kie.pmml.commons.model.enums.PMML_MODEL;
+import org.kie.pmml.api.enums.MINING_FUNCTION;
+import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.models.drools.commons.model.KiePMMLDroolsModel;
 
 public class KiePMMLScorecardModel extends KiePMMLDroolsModel {

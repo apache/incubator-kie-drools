@@ -15,7 +15,7 @@
  */
 package org.kie.pmml.models.drools.commons.utils;
 
-import org.kie.pmml.commons.model.enums.DATA_TYPE;
+import org.kie.pmml.api.enums.DATA_TYPE;
 
 /**
  * Static utility methods for <code>KiePMMLDroolsModel</code>s

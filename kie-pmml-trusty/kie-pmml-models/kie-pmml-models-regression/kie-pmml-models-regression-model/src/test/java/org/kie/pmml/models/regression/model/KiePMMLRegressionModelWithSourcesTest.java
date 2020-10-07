@@ -22,7 +22,7 @@ import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.pmml.commons.exceptions.KiePMMLException;
+import org.kie.pmml.api.exceptions.KiePMMLException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;

@@ -20,7 +20,7 @@ import java.util.Collections;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.regression.RegressionModel;
-import org.kie.pmml.commons.model.enums.PMML_MODEL;
+import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.compiler.api.provider.ModelImplementationProvider;
 
 import static org.kie.pmml.compiler.commons.mocks.KiePMMLTestingModel.PMML_MODEL_TYPE;

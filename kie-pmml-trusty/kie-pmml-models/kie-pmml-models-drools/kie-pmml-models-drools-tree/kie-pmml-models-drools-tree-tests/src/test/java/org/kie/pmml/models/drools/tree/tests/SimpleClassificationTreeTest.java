@@ -23,12 +23,11 @@ import java.util.Map;
 
 import org.assertj.core.api.Assertions;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.pmml.PMML4Result;
-import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
+import org.kie.pmml.evaluator.api.executor.PMMLRuntimeInternal;
 import org.kie.pmml.models.tests.AbstractPMMLTest;
 
 @RunWith(Parameterized.class)
@@ -37,7 +36,7 @@ public class SimpleClassificationTreeTest extends AbstractPMMLTest {
     private static final String FILE_NAME = "SimpleClassificationTree.pmml";
     private static final String MODEL_NAME = "SimpleClassificationTreeModel";
     private static final String TARGET_FIELD = "Predicted_result";
-    private static PMMLRuntime pmmlRuntime;
+    private static PMMLRuntimeInternal pmmlRuntime;
 
     private double input1;
     private double input2;

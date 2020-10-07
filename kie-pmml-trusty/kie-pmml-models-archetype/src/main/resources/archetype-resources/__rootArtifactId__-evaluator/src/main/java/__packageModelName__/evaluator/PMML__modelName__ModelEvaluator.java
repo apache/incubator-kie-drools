@@ -20,7 +20,7 @@ package  ${package}.${packageModelName}.evaluator;
 
 import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.commons.model.KiePMMLModel;
-import org.kie.pmml.commons.model.enums.PMML_MODEL;
+import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.evaluator.api.exceptions.KiePMMLModelException;
 import org.kie.pmml.evaluator.api.executor.PMMLContext;
 import org.kie.pmml.evaluator.core.executor.PMMLModelExecutor;

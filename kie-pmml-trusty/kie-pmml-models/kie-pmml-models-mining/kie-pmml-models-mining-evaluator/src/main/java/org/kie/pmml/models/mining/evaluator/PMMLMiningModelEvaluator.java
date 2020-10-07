@@ -32,17 +32,17 @@ import org.kie.api.definition.KiePackage;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.runtime.KieRuntimeFactory;
 import org.kie.pmml.commons.enums.ResultCode;
-import org.kie.pmml.commons.exceptions.KieEnumException;
-import org.kie.pmml.commons.exceptions.KiePMMLException;
-import org.kie.pmml.commons.exceptions.KiePMMLInternalException;
+import org.kie.pmml.api.exceptions.KieEnumException;
+import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.model.KiePMMLModel;
-import org.kie.pmml.commons.model.enums.PMML_MODEL;
+import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.commons.model.predicates.KiePMMLPredicate;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 import org.kie.pmml.commons.model.tuples.KiePMMLValueWeight;
 import org.kie.pmml.evaluator.api.exceptions.KiePMMLModelException;
-import org.kie.pmml.evaluator.api.executor.PMMLContext;
-import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
+import org.kie.pmml.api.runtime.PMMLContext;
+import org.kie.pmml.evaluator.api.executor.PMMLRuntimeInternal;
 import org.kie.pmml.evaluator.core.executor.PMMLModelEvaluator;
 import org.kie.pmml.models.mining.model.KiePMMLMiningModel;
 import org.kie.pmml.models.mining.model.enums.MULTIPLE_MODEL_METHOD;
@@ -105,7 +105,7 @@ public class PMMLMiningModelEvaluator implements PMMLModelEvaluator<KiePMMLMinin
      * @param containerModelName
      * @return
      */
-    PMMLRuntime getPMMLRuntime(final String kModulePackageName, final KieBase knowledgeBase,
+    PMMLRuntimeInternal getPMMLRuntime(final String kModulePackageName, final KieBase knowledgeBase,
                                        final String containerModelName) {
         final String key = containerModelName + "_" + kModulePackageName;
         InternalKnowledgeBase kieBase = MAPPED_KIEBASES.computeIfAbsent(key, s -> {
@@ -118,7 +118,7 @@ public class PMMLMiningModelEvaluator implements PMMLModelEvaluator<KiePMMLMinin
             return toReturn;
         });
         KieRuntimeFactory kieRuntimeFactory = KieRuntimeFactory.of(kieBase);
-        return kieRuntimeFactory.get(PMMLRuntime.class);
+        return kieRuntimeFactory.get(PMMLRuntimeInternal.class);
     }
 
     /**
@@ -234,8 +234,8 @@ public class PMMLMiningModelEvaluator implements PMMLModelEvaluator<KiePMMLMinin
         Map<String, Object> values = getUnwrappedParametersMap(pmmlContext.getRequestData().getMappedRequestParams());
         String modelName = toEvaluate.getModel().getName();
         if (kiePMMLPredicate != null && kiePMMLPredicate.evaluate(values)) {
-            final PMMLRuntime pmmlRuntime = getPMMLRuntime(toEvaluate.getModel().getKModulePackageName(),
-                                                           knowledgeBase, containerModelName);
+            final PMMLRuntimeInternal pmmlRuntime = getPMMLRuntime(toEvaluate.getModel().getKModulePackageName(),
+                                                                   knowledgeBase, containerModelName);
             logger.trace("{}: matching predicate, evaluating... ", toEvaluate.getId());
             toReturn = Optional.of(pmmlRuntime.evaluate(modelName, pmmlContext));
         }

@@ -29,7 +29,7 @@ import org.drools.core.io.impl.FileSystemResource;
 import org.junit.Test;
 import org.kie.api.io.Resource;
 import org.kie.pmml.commons.HasRule;
-import org.kie.pmml.commons.exceptions.KiePMMLException;
+import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.HasNestedModels;
 import org.kie.pmml.commons.model.HasSourcesMap;
 import org.kie.pmml.commons.model.KiePMMLExtension;

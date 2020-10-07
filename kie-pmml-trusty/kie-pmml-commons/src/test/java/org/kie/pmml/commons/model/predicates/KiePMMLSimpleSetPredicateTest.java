@@ -26,8 +26,8 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.junit.Test;
-import org.kie.pmml.commons.model.enums.ARRAY_TYPE;
-import org.kie.pmml.commons.model.enums.IN_NOTIN;
+import org.kie.pmml.api.enums.ARRAY_TYPE;
+import org.kie.pmml.api.enums.IN_NOTIN;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;

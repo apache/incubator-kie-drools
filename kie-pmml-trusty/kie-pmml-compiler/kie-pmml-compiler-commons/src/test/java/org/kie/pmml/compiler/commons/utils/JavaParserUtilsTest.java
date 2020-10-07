@@ -22,7 +22,7 @@ import com.github.javaparser.ast.PackageDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.expr.Name;
 import org.junit.Test;
-import org.kie.pmml.commons.exceptions.KiePMMLInternalException;
+import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

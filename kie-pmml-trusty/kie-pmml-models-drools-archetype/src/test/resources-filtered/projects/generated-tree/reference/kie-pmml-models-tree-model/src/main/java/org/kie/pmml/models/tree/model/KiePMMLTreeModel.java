@@ -16,8 +16,8 @@
 package  org.kie.pmml.models.tree.model;
 
 import org.kie.pmml.commons.model.KiePMMLModel;
-import org.kie.pmml.commons.model.enums.MINING_FUNCTION;
-import org.kie.pmml.commons.model.enums.PMML_MODEL;
+import org.kie.pmml.api.enums.MINING_FUNCTION;
+import org.kie.pmml.api.enums.PMML_MODEL;
 
 public class KiePMMLTreeModel extends KiePMMLModel {
 

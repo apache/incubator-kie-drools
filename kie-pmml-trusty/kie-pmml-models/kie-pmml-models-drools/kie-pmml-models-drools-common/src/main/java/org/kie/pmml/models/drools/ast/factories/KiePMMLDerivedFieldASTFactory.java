@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.dmg.pmml.DerivedField;
-import org.kie.pmml.commons.model.enums.DATA_TYPE;
+import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsType;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 

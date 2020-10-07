@@ -16,8 +16,12 @@
     <!-- PMML -->
     <dependency>
       <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-api</artifactId>
+</dependency>
+<dependency>
+      <groupId>org.kie</groupId>
       <artifactId>kie-pmml-commons</artifactId>
-    </dependency>
+</dependency>
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-pmml-models-drools-common</artifactId>

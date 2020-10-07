@@ -21,10 +21,10 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.StringJoiner;
 
-import org.kie.pmml.commons.exceptions.KiePMMLException;
+import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.KiePMMLExtension;
-import org.kie.pmml.commons.model.enums.ARRAY_TYPE;
-import org.kie.pmml.commons.model.enums.IN_NOTIN;
+import org.kie.pmml.api.enums.ARRAY_TYPE;
+import org.kie.pmml.api.enums.IN_NOTIN;
 import org.kie.pmml.commons.utils.ConverterTypeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

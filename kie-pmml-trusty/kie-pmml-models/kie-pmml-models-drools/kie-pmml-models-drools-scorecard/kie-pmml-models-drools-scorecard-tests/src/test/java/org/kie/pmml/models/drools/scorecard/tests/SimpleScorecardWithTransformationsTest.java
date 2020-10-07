@@ -27,7 +27,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.pmml.PMML4Result;
-import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
+import org.kie.pmml.evaluator.api.executor.PMMLRuntimeInternal;
 import org.kie.pmml.models.tests.AbstractPMMLTest;
 
 @RunWith(Parameterized.class)
@@ -44,7 +44,7 @@ public class SimpleScorecardWithTransformationsTest extends AbstractPMMLTest {
     private static final String OUT_DER_CONSTANT = "out_der_constant";
     private static final String CONSTANT = "constant";
 
-    private static PMMLRuntime pmmlRuntime;
+    private static PMMLRuntimeInternal pmmlRuntime;
 
     private double input1;
     private double input2;

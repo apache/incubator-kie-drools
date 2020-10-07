@@ -52,7 +52,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
-import org.kie.pmml.commons.model.enums.RESULT_FEATURE;
+import org.kie.pmml.api.enums.RESULT_FEATURE;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

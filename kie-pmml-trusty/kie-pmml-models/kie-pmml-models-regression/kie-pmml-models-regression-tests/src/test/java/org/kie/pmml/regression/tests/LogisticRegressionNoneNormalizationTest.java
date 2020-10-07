@@ -28,7 +28,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.pmml.PMML4Result;
-import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
+import org.kie.pmml.evaluator.api.executor.PMMLRuntimeInternal;
 import org.kie.pmml.models.tests.AbstractPMMLTest;
 
 @RunWith(Parameterized.class)
@@ -42,7 +42,7 @@ public class LogisticRegressionNoneNormalizationTest extends AbstractPMMLTest {
     private static final String PROBABILITY_VIRGINICA_FIELD = "Probability_virginica";
 
     private static final Percentage TOLERANCE_PERCENTAGE = Percentage.withPercentage(0.001);
-    private static PMMLRuntime pmmlRuntime;
+    private static PMMLRuntimeInternal pmmlRuntime;
 
     private double sepalLength;
     private double sepalWidth;

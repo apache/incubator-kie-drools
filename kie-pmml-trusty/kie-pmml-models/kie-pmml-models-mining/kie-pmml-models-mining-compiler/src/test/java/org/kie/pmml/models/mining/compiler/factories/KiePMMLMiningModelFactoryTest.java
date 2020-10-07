@@ -37,8 +37,8 @@ import org.dmg.pmml.mining.MiningModel;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.kie.pmml.commons.model.KiePMMLModel;
-import org.kie.pmml.commons.model.enums.MINING_FUNCTION;
-import org.kie.pmml.commons.model.enums.PMML_MODEL;
+import org.kie.pmml.api.enums.MINING_FUNCTION;
+import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.models.mining.model.KiePMMLMiningModel;
 import org.xml.sax.SAXException;
 

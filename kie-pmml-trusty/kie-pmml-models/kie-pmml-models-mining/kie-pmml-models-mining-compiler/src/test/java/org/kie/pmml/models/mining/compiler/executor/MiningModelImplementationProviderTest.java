@@ -27,7 +27,7 @@ import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.junit.Test;
 import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.pmml.commons.model.HasSourcesMap;
-import org.kie.pmml.commons.model.enums.PMML_MODEL;
+import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.compiler.commons.utils.KiePMMLUtil;
 import org.kie.pmml.models.mining.model.KiePMMLMiningModel;
 import org.kie.pmml.models.mining.model.KiePMMLMiningModelWithSources;

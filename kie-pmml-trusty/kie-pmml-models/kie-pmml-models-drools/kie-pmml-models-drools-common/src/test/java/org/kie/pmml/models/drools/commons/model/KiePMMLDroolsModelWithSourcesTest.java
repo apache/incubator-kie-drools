@@ -25,7 +25,7 @@ import org.drools.core.impl.KnowledgeBaseImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.KieBase;
-import org.kie.pmml.commons.exceptions.KiePMMLException;
+import org.kie.pmml.api.exceptions.KiePMMLException;
 
 import static org.drools.core.util.StringUtils.generateUUID;
 import static org.junit.Assert.assertEquals;

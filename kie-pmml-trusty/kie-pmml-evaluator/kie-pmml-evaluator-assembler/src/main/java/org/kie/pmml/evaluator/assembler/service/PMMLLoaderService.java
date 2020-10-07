@@ -15,7 +15,6 @@
  */
 package org.kie.pmml.evaluator.assembler.service;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -29,8 +28,8 @@ import org.drools.modelcompiler.builder.KieBaseBuilder;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceWithConfiguration;
-import org.kie.pmml.commons.exceptions.ExternalException;
-import org.kie.pmml.commons.exceptions.KiePMMLException;
+import org.kie.pmml.api.exceptions.ExternalException;
+import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.compiler.commons.factories.KiePMMLModelFactory;
 import org.kie.pmml.evaluator.assembler.rulemapping.PMMLRuleMapper;

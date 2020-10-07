@@ -34,8 +34,8 @@ import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.dmn.model.api.DMNElement;
-import org.kie.pmml.evaluator.api.executor.PMMLContext;
-import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
+import org.kie.pmml.api.runtime.PMMLContext;
+import org.kie.pmml.evaluator.api.executor.PMMLRuntimeInternal;
 import org.kie.pmml.evaluator.core.PMMLContextImpl;
 import org.kie.pmml.evaluator.core.utils.PMMLRequestDataBuilder;
 import org.slf4j.Logger;
@@ -53,7 +53,7 @@ public class DMNKiePMMLTrustyInvocationEvaluator extends AbstractDMNKiePMMLInvoc
     @Override
     protected PMML4Result getPMML4Result(DMNRuntimeEventManager eventManager, DMNResult dmnr) {
         PMMLContext pmmlContext = getPMMLPMMLContext(UUID.randomUUID().toString(), model, dmnr);
-        PMMLRuntime pmmlRuntime = getPMMLRuntime(eventManager);
+        PMMLRuntimeInternal pmmlRuntime = getPMMLRuntime(eventManager);
         return pmmlRuntime.evaluate(model, pmmlContext);
     }
 
@@ -107,9 +107,9 @@ public class DMNKiePMMLTrustyInvocationEvaluator extends AbstractDMNKiePMMLInvoc
      * @param eventManager
      * @return
      */
-    private PMMLRuntime getPMMLRuntime(DMNRuntimeEventManager eventManager) {
+    private PMMLRuntimeInternal getPMMLRuntime(DMNRuntimeEventManager eventManager) {
         KieRuntimeFactory kieFactory = ((DMNRuntimeImpl) eventManager.getRuntime()).getKieRuntimeFactory(model);
-        return kieFactory.get(PMMLRuntime.class);
+        return kieFactory.get(PMMLRuntimeInternal.class);
     }
 
     private PMMLContext getPMMLPMMLContext(String correlationId, String modelName, DMNResult dmnr) {

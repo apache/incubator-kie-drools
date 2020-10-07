@@ -18,7 +18,7 @@ package org.kie.pmml.commons.model;
 import java.util.Collections;
 import java.util.Map;
 
-import org.kie.pmml.commons.exceptions.KiePMMLException;
+import org.kie.pmml.api.exceptions.KiePMMLException;
 
 /**
  * This is the model used to store sources for <code>KiePMMLModelFactory</code> classes;

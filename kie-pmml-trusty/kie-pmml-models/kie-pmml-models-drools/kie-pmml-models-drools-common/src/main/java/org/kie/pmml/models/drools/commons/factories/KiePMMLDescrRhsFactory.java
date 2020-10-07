@@ -26,7 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.kie.pmml.commons.Constants.DONE;
-import static org.kie.pmml.commons.model.enums.RESULT_FEATURE.PREDICTED_VALUE;
+import static org.kie.pmml.api.enums.RESULT_FEATURE.PREDICTED_VALUE;
 
 /**
  * Class used to generate the <b>rhs</b> of a rule (descr) out of a <b>KiePMMLDroolsRule</b>

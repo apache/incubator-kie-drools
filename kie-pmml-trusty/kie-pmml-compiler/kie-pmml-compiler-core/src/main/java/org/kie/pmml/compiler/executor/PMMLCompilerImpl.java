@@ -24,9 +24,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.dmg.pmml.PMML;
-import org.kie.pmml.commons.exceptions.ExternalException;
-import org.kie.pmml.commons.exceptions.KiePMMLException;
-import org.kie.pmml.commons.exceptions.KiePMMLInternalException;
+import org.kie.pmml.api.exceptions.ExternalException;
+import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.model.HasSourcesMap;
 import org.kie.pmml.commons.model.KiePMMLFactoryModel;
 import org.kie.pmml.commons.model.KiePMMLModel;
@@ -47,7 +47,7 @@ public class PMMLCompilerImpl implements PMMLCompiler {
     private static final Logger logger = LoggerFactory.getLogger(PMMLCompilerImpl.class.getName());
 
     @Override
-    public List<KiePMMLModel> getModels(final InputStream inputStream, final String fileName, final Object kbuilder) {
+    public List<KiePMMLModel> getKiePMMLModels(final InputStream inputStream, final String fileName, final Object kbuilder) {
         logger.trace("getModels {} {}", inputStream, kbuilder);
         try {
             PMML commonPMMLModel = KiePMMLUtil.load(inputStream, fileName);
@@ -62,11 +62,11 @@ public class PMMLCompilerImpl implements PMMLCompiler {
     }
 
     @Override
-    public List<KiePMMLModel> getModelsFromPlugin(final String factoryClassName,
-                                                  final String packageName,
-                                                  final InputStream inputStream,
-                                                  final String fileName,
-                                                  final Object kbuilder) {
+    public List<KiePMMLModel> getKiePMMLModelsWithSources(final String factoryClassName,
+                                                          final String packageName,
+                                                          final InputStream inputStream,
+                                                          final String fileName,
+                                                          final Object kbuilder) {
         logger.trace("getModels {} {}", inputStream, kbuilder);
         try {
             PMML commonPMMLModel = KiePMMLUtil.load(inputStream, fileName);

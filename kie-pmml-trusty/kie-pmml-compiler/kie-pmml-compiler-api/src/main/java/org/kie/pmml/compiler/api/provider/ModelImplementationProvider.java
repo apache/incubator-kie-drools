@@ -18,9 +18,9 @@ package org.kie.pmml.compiler.api.provider;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.Model;
 import org.dmg.pmml.TransformationDictionary;
-import org.kie.pmml.commons.exceptions.KiePMMLInternalException;
+import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.model.KiePMMLModel;
-import org.kie.pmml.commons.model.enums.PMML_MODEL;
+import org.kie.pmml.api.enums.PMML_MODEL;
 
 /**
  * API for actual PMML model implementations

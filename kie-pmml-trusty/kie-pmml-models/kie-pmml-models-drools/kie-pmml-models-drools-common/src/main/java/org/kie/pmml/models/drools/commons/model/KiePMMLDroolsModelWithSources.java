@@ -20,8 +20,7 @@ import java.util.Map;
 
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.kie.pmml.commons.HasRule;
-import org.kie.pmml.commons.exceptions.KiePMMLException;
-import org.kie.pmml.commons.model.HasSourcesMap;
+import org.kie.pmml.api.exceptions.KiePMMLException;
 
 /**
  * KIE representation of PMML model that use <b>Drools</b> for implementation

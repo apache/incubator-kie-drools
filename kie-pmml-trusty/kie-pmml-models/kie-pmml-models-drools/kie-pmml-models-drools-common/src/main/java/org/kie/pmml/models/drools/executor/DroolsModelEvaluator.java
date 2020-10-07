@@ -4,7 +4,7 @@ import java.util.Map;
 
 import org.kie.api.KieBase;
 import org.kie.api.pmml.PMML4Result;
-import org.kie.pmml.evaluator.api.executor.PMMLContext;
+import org.kie.pmml.api.runtime.PMMLContext;
 import org.kie.pmml.evaluator.core.executor.PMMLModelEvaluator;
 import org.kie.pmml.models.drools.commons.model.KiePMMLDroolsModel;
 

@@ -22,8 +22,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.kie.pmml.commons.model.KiePMMLExtension;
-import org.kie.pmml.commons.model.enums.MINING_FUNCTION;
-import org.kie.pmml.commons.model.enums.PMML_MODEL;
+import org.kie.pmml.api.enums.MINING_FUNCTION;
+import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.models.drools.commons.model.KiePMMLDroolsModel;
 
 public class KiePMML${modelName}Model extends KiePMMLDroolsModel {

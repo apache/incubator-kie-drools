@@ -28,12 +28,12 @@ import org.dmg.pmml.MiningField;
 import org.dmg.pmml.Model;
 import org.dmg.pmml.ParameterField;
 import org.dmg.pmml.Target;
-import org.kie.pmml.commons.exceptions.KiePMMLInternalException;
-import org.kie.pmml.commons.model.enums.DATA_TYPE;
-import org.kie.pmml.commons.model.enums.OP_TYPE;
+import org.kie.pmml.api.exceptions.KiePMMLInternalException;
+import org.kie.pmml.api.enums.DATA_TYPE;
+import org.kie.pmml.api.enums.OP_TYPE;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameOpType;
 
-import static org.kie.pmml.commons.utils.PrimitiveBoxedUtils.getKiePMMLPrimitiveBoxed;
+import static org.kie.pmml.api.utils.PrimitiveBoxedUtils.getKiePMMLPrimitiveBoxed;
 
 /**
  * Class to provide common methods to interact with <code>Model</code>
