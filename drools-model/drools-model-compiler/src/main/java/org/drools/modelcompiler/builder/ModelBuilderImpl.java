@@ -18,6 +18,7 @@ package org.drools.modelcompiler.builder;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -313,11 +314,14 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
 
         AdditionalFileGenerators updaters = ServiceRegistry.getInstance().get(AdditionalFileGenerators.class);
 
-        return updaters.getChildren()
-                .stream()
-                .flatMap(additional -> additional.additionalFiles(builderConfiguration,
-                                                                  getKnowledgeBase().getRete())
-                        .stream())
-                .collect(Collectors.toList());
+        // TODO LUCA this is probably useless remove this
+//        return updaters.getChildren()
+//                .stream()
+//                .flatMap(additional -> additional.additionalFiles(builderConfiguration,
+//                                                                  getKnowledgeBase().getRete())
+//                        .stream())
+//                .collect(Collectors.toList());
+
+        return Collections.emptyList();
     }
 }
