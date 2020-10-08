@@ -16,18 +16,17 @@
 
 package org.kie.dmn.openapi;
 
-import org.junit.Test;
 import org.kie.dmn.api.core.DMNRuntime;
-import org.kie.dmn.core.stronglytyped.DMNRuntimeTypesTest;
+import org.kie.dmn.core.BaseVariantTest;
 
-public class DMNOASTest extends BaseDMNOASTest {
+public abstract class BaseDMNOASTest {
 
-    @Test
-    public void test() {
-        final DMNRuntime runtime = createRuntimeWithAdditionalResources("NSEW.dmn",
-                                                                        DMNRuntimeTypesTest.class,
-                                                                        "Traffic Violation.dmn");
-        DMNOASGeneratorFactory.generator(runtime.getModels()).build();
-        System.err.println("end.");
+    DMNRuntime createRuntime(String string, Class<?> class1) {
+        return BaseVariantTest.VariantTestConf.KIE_API_TYPECHECK.createRuntime(string, class1);
     }
+
+    DMNRuntime createRuntimeWithAdditionalResources(String string, Class<?> class1, String... string2) {
+        return BaseVariantTest.VariantTestConf.KIE_API_TYPECHECK.createRuntimeWithAdditionalResources(string, class1, string2);
+    }
+
 }
