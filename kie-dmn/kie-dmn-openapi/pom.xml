@@ -41,11 +41,6 @@
       <scope>compile</scope>
     </dependency>
     <dependency>
-  <groupId>org.openapitools.empoa</groupId>
-  <artifactId>empoa-jackson-serializer</artifactId>
-  <version>1.0.1</version>
-</dependency>
-    <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-dmn-api</artifactId>
     </dependency>

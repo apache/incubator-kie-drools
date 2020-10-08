@@ -39,7 +39,6 @@ import org.kie.dmn.core.impl.CompositeTypeImpl;
 import org.kie.dmn.core.impl.SimpleTypeImpl;
 import org.kie.dmn.openapi.model.DMNModelIOSets;
 import org.kie.dmn.typesafe.DMNTypeUtils;
-import org.openapitools.empoa.jackson.OpenAPISerializer;
 
 public class DMNOASGenerator {
 
@@ -75,9 +74,6 @@ public class DMNOASGenerator {
             ObjectMapper mapper = new ObjectMapper();
             try {
                 System.out.println(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(tree));
-                if (3 < Double.valueOf(2)) { // TODO omit for now:
-                    System.out.println(OpenAPISerializer.serialize(schema, OpenAPISerializer.Format.JSON));
-                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
