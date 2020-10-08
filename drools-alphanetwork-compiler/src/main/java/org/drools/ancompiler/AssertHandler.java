@@ -53,6 +53,10 @@ public class AssertHandler extends SwitchCompilerHandler {
     public void startObjectTypeNode(ObjectTypeNode objectTypeNode) {
         builder.append(ASSERT_METHOD_SIGNATURE).append(NEWLINE);
 
+        builder.append("if(logger.isDebugEnabled()) {\n" +
+                       "            logger.debug(\"Propagate assert on compiled alpha network {} {} {}\", handle, context, wm);\n" +
+                       "        }\n").append(NEWLINE);
+
         // we only need to create a reference to the object, not handle, if there is a hashed alpha in the network
         if (alphaNetContainsHashedField) {
             // example of what this will look like

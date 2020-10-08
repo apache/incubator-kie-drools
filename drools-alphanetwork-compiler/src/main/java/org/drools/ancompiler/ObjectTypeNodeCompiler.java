@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
 public class ObjectTypeNodeCompiler {
 
     private static final String NEWLINE = "\n";
-    private static final String PACKAGE_NAME = "org.drools.core.reteoo.compiled";
+    private static final String PACKAGE_NAME = "org.drools.ancompiler";
     private static final String BINARY_PACKAGE_NAME = PACKAGE_NAME.replace('.', '/');
     /**
      * This field hold the fully qualified class name that the {@link ObjectTypeNode} is representing.
@@ -121,6 +121,7 @@ public class ObjectTypeNodeCompiler {
         builder.append("public class ").append(generatedClassSimpleName).append(" extends ").
                 append(CompiledNetwork.class.getName()).append("{ ").append(NEWLINE);
 
+        builder.append(String.format("private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(%s.class);%n", generatedClassSimpleName));
         builder.append("org.drools.core.spi.InternalReadAccessor readAccessor;\n");
     }
 
