@@ -66,8 +66,8 @@ public abstract class DroolsModelProvider<T extends Model, E extends KiePMMLDroo
     }
 
     @Override
-    public E getKiePMMLModelFromPlugin(final String packageName, final DataDictionary dataDictionary, final TransformationDictionary transformationDictionary, final T model, final Object kBuilder) {
-        logger.trace("getKiePMMLModelFromPlugin {} {} {}", dataDictionary, model, kBuilder);
+    public E getKiePMMLModelWithSources(final String packageName, final DataDictionary dataDictionary, final TransformationDictionary transformationDictionary, final T model, final Object kBuilder) {
+        logger.trace("getKiePMMLModelWithSources {} {} {}", dataDictionary, model, kBuilder);
         if (!(kBuilder instanceof KnowledgeBuilder)) {
             throw new KiePMMLException(String.format("Expecting KnowledgeBuilder, received %s", kBuilder.getClass().getName()));
         }

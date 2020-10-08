@@ -66,8 +66,8 @@ public class RegressionModelImplementationProvider implements ModelImplementatio
     }
 
     @Override
-    public KiePMMLRegressionModel getKiePMMLModelFromPlugin(final String packageName, final DataDictionary dataDictionary, final TransformationDictionary transformationDictionary, final RegressionModel model, final Object kBuilder) {
-        logger.trace("getKiePMMLModelFromPlugin {} {} {}", dataDictionary, model, kBuilder);
+    public KiePMMLRegressionModel getKiePMMLModelWithSources(final String packageName, final DataDictionary dataDictionary, final TransformationDictionary transformationDictionary, final RegressionModel model, final Object kBuilder) {
+        logger.trace("getKiePMMLModelWithSources {} {} {}", dataDictionary, model, kBuilder);
         try {
             final Map<String, String> sourcesMap = KiePMMLRegressionModelFactory.getKiePMMLRegressionModelSourcesMap(dataDictionary, transformationDictionary, model, packageName);
             return new KiePMMLRegressionModelWithSources(model.getModelName(), packageName, sourcesMap);

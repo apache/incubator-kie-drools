@@ -59,10 +59,10 @@ public class PMMLCompilerService {
      * @throws KiePMMLException if any <code>KiePMMLInternalException</code> has been thrown during execution
      * @throws ExternalException if any other kind of <code>Exception</code> has been thrown during execution
      */
-    public static List<KiePMMLModel> getKiePMMLModelsFromResourcesWithConfigurationsFromPlugin(KnowledgeBuilderImpl kbuilderImpl, Collection<ResourceWithConfiguration> resourceWithConfigurations) {
+    public static List<KiePMMLModel> getKiePMMLModelsFromResourcesWithConfigurationsWithSources(KnowledgeBuilderImpl kbuilderImpl, Collection<ResourceWithConfiguration> resourceWithConfigurations) {
         return resourceWithConfigurations.stream()
                 .map(ResourceWithConfiguration::getResource)
-                .flatMap(resource -> getKiePMMLModelsFromResourceFromPlugin(kbuilderImpl, resource).stream())
+                .flatMap(resource -> getKiePMMLModelsFromResourceWithSources(kbuilderImpl, resource).stream())
                 .collect(Collectors.toList());
     }
 
@@ -104,8 +104,8 @@ public class PMMLCompilerService {
      * @param resource
      * @return
      */
-    public static List<KiePMMLModel> getKiePMMLModelsFromResourceFromPlugin(KnowledgeBuilderImpl kbuilderImpl,
-                                                                            Resource resource) {
+    public static List<KiePMMLModel> getKiePMMLModelsFromResourceWithSources(KnowledgeBuilderImpl kbuilderImpl,
+                                                                             Resource resource) {
         PMMLCompiler pmmlCompiler = kbuilderImpl.getCachedOrCreate(PMML_COMPILER_CACHE_KEY,
                                                                    () -> getCompiler(kbuilderImpl));
         String[] classNamePackageName = getFactoryClassNamePackageName(resource);

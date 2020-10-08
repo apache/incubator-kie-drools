@@ -79,13 +79,13 @@ public class RegressionModelImplementationProviderTest {
     }
 
     @Test
-    public void getKiePMMLModelFromPlugin() throws Exception {
+    public void getKiePMMLModelWithSources() throws Exception {
         final PMML pmml = TestUtils.loadFromFile(SOURCE_1);
         assertNotNull(pmml);
         assertEquals(1, pmml.getModels().size());
         assertTrue(pmml.getModels().get(0) instanceof RegressionModel);
         final String packageName = "packagename";
-        final KiePMMLRegressionModel retrieved = PROVIDER.getKiePMMLModelFromPlugin(
+        final KiePMMLRegressionModel retrieved = PROVIDER.getKiePMMLModelWithSources(
                 packageName,
                 pmml.getDataDictionary(),
                 pmml.getTransformationDictionary(),

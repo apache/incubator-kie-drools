@@ -26,7 +26,7 @@ import org.kie.pmml.compiler.commons.utils.KiePMMLUtil;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.kie.pmml.compiler.commons.implementations.KiePMMLModelRetriever.getFromCommonDataAndTransformationDictionaryAndModel;
-import static org.kie.pmml.compiler.commons.implementations.KiePMMLModelRetriever.getFromCommonDataAndTransformationDictionaryAndModelFromPlugin;
+import static org.kie.pmml.compiler.commons.implementations.KiePMMLModelRetriever.getFromCommonDataAndTransformationDictionaryAndModelWithSources;
 import static org.kie.test.util.filesystem.FileUtils.getFileInputStream;
 
 public class KiePMMLModelRetrieverTest {
@@ -52,16 +52,16 @@ public class KiePMMLModelRetrieverTest {
     }
 
     @Test
-    public void getFromCommonDataAndTransformationDictionaryAndModelFromPluginWithProvider() throws Exception {
+    public void getFromCommonDataAndTransformationDictionaryAndModelWithSourcesWithProvider() throws Exception {
         pmmlModel = KiePMMLUtil.load(getFileInputStream(MULTIPLE_TARGETS_SOURCE), MULTIPLE_TARGETS_SOURCE);
-        final Optional<KiePMMLModel> retrieved = getFromCommonDataAndTransformationDictionaryAndModelFromPlugin(PACKAGE_NAME, pmmlModel.getDataDictionary(), pmmlModel.getTransformationDictionary(), pmmlModel.getModels().get(0), null);
+        final Optional<KiePMMLModel> retrieved = getFromCommonDataAndTransformationDictionaryAndModelWithSources(PACKAGE_NAME, pmmlModel.getDataDictionary(), pmmlModel.getTransformationDictionary(), pmmlModel.getModels().get(0), null);
         assertNotNull(retrieved);
     }
 
     @Test
-    public void getFromDataDictionaryAndModelWithoutProvider() throws Exception {
+    public void getFromDataDictionaryAndModelWithSourcesWithoutProvider() throws Exception {
         pmmlModel = KiePMMLUtil.load(getFileInputStream(ONE_MINING_TARGET_SOURCE), ONE_MINING_TARGET_SOURCE);
-        final Optional<KiePMMLModel> retrieved = getFromCommonDataAndTransformationDictionaryAndModelFromPlugin(PACKAGE_NAME, pmmlModel.getDataDictionary(), pmmlModel.getTransformationDictionary(), pmmlModel.getModels().get(0), null);
+        final Optional<KiePMMLModel> retrieved = getFromCommonDataAndTransformationDictionaryAndModelWithSources(PACKAGE_NAME, pmmlModel.getDataDictionary(), pmmlModel.getTransformationDictionary(), pmmlModel.getModels().get(0), null);
         assertNotNull(retrieved);
         assertFalse(retrieved.isPresent());
     }

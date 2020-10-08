@@ -54,14 +54,14 @@ public class ScorecardModelImplementationProviderTest {
     }
 
     @Test
-    public void getKiePMMLModelFromPlugin() throws Exception {
+    public void getKiePMMLModelWithSources() throws Exception {
         final PMML pmml = getPMML(SOURCE_1);
         KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
-        final KiePMMLDroolsModel retrieved = PROVIDER.getKiePMMLModelFromPlugin("PACKAGE_NAME",
-                                                                                pmml.getDataDictionary(),
-                                                                                pmml.getTransformationDictionary(),
-                                                                                (Scorecard) pmml.getModels().get(0),
-                                                                                knowledgeBuilder);
+        final KiePMMLDroolsModel retrieved = PROVIDER.getKiePMMLModelWithSources("PACKAGE_NAME",
+                                                                                 pmml.getDataDictionary(),
+                                                                                 pmml.getTransformationDictionary(),
+                                                                                 (Scorecard) pmml.getModels().get(0),
+                                                                                 knowledgeBuilder);
         assertNotNull(retrieved);
     }
 

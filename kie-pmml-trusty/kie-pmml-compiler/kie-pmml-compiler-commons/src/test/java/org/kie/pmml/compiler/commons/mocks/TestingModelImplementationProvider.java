@@ -41,7 +41,7 @@ public class TestingModelImplementationProvider implements ModelImplementationPr
     }
 
     @Override
-    public KiePMMLTestingModel getKiePMMLModelFromPlugin(String packageName, final DataDictionary dataDictionary, final TransformationDictionary transformationDictionary, final RegressionModel model, Object kBuilder) {
+    public KiePMMLTestingModel getKiePMMLModelWithSources(String packageName, final DataDictionary dataDictionary, final TransformationDictionary transformationDictionary, final RegressionModel model, Object kBuilder) {
         return getKiePMMLModel(dataDictionary, transformationDictionary, model, kBuilder);
     }
 }

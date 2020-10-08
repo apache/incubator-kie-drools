@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.compiler.commons.factories.KiePMMLFactoryFactory.getFactorySourceCode;
 import static org.kie.pmml.compiler.commons.implementations.KiePMMLModelRetriever.getFromCommonDataAndTransformationDictionaryAndModel;
-import static org.kie.pmml.compiler.commons.implementations.KiePMMLModelRetriever.getFromCommonDataAndTransformationDictionaryAndModelFromPlugin;
+import static org.kie.pmml.compiler.commons.implementations.KiePMMLModelRetriever.getFromCommonDataAndTransformationDictionaryAndModelWithSources;
 
 /**
  * <code>PMMLCompiler</code> default implementation
@@ -74,7 +74,7 @@ public class PMMLCompilerImpl implements PMMLCompiler {
                     .stream()
                     .map(model -> packageName + "." + getSanitizedClassName(model.getModelName()))
                     .collect(Collectors.toSet());
-            List<KiePMMLModel> toReturn = getModelsFromPlugin(packageName, commonPMMLModel, kbuilder);
+            List<KiePMMLModel> toReturn = getModelsWithSources(packageName, commonPMMLModel, kbuilder);
             Set<String> generatedClasses = new HashSet<>();
             toReturn.forEach(kiePMMLModel -> {
                 if (kiePMMLModel instanceof HasSourcesMap) {
@@ -126,12 +126,12 @@ public class PMMLCompilerImpl implements PMMLCompiler {
      * @return
      * @throws KiePMMLException if any <code>KiePMMLInternalException</code> has been thrown during execution
      */
-    private List<KiePMMLModel> getModelsFromPlugin(final String packageName, final PMML pmml, final Object kbuilder) {
+    private List<KiePMMLModel> getModelsWithSources(final String packageName, final PMML pmml, final Object kbuilder) {
         logger.trace("getModels {}", pmml);
         return pmml
                 .getModels()
                 .stream()
-                .map(model -> getFromCommonDataAndTransformationDictionaryAndModelFromPlugin(packageName, pmml.getDataDictionary(), pmml.getTransformationDictionary(), model, kbuilder))
+                .map(model -> getFromCommonDataAndTransformationDictionaryAndModelWithSources(packageName, pmml.getDataDictionary(), pmml.getTransformationDictionary(), model, kbuilder))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .collect(Collectors.toList());

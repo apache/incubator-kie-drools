@@ -51,5 +51,5 @@ public interface ModelImplementationProvider<T extends Model, E extends KiePMMLM
      * @return
      * @throws KiePMMLInternalException
      */
-    E getKiePMMLModelFromPlugin(final String packageName, final DataDictionary dataDictionary, final TransformationDictionary transformationDictionary, final T model, final Object kBuilder);
+    E getKiePMMLModelWithSources(final String packageName, final DataDictionary dataDictionary, final TransformationDictionary transformationDictionary, final T model, final Object kBuilder);
 }
