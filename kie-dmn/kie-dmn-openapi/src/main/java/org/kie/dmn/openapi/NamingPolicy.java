@@ -18,14 +18,11 @@ package org.kie.dmn.openapi;
 
 import org.kie.dmn.api.core.DMNType;
 
-public class TempNamingPolicy {
+public interface NamingPolicy {
 
-    public String getName(DMNType type) {
-        // TODO what if an anonymous inner type?
-        return type.getName();
-    }
+    String getName(DMNType type);
 
-    public String getRef(DMNType type) {
+    default String getRef(DMNType type) {
         return "#/definitions/" + getName(type); // TODO escape name as uri
     }
 }

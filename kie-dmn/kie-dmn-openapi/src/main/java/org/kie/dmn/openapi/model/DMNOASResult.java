@@ -24,16 +24,16 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.eclipse.microprofile.openapi.models.media.Schema;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNType;
-import org.kie.dmn.openapi.TempNamingPolicy;
+import org.kie.dmn.openapi.NamingPolicy;
 
 public class DMNOASResult {
 
     public final ObjectNode jsonSchemaNode;
     public final List<DMNModelIOSets> ioSets;
     public final Map<DMNType, Schema> schemas;
-    public final TempNamingPolicy namingPolicy;
+    public final NamingPolicy namingPolicy;
 
-    public DMNOASResult(ObjectNode jsonSchemaNode, List<DMNModelIOSets> ioSets, Map<DMNType, Schema> schemas, TempNamingPolicy namingPolicy) {
+    public DMNOASResult(ObjectNode jsonSchemaNode, List<DMNModelIOSets> ioSets, Map<DMNType, Schema> schemas, NamingPolicy namingPolicy) {
         this.jsonSchemaNode = jsonSchemaNode.deepCopy();
         this.ioSets = Collections.unmodifiableList(ioSets);
         this.schemas = Collections.unmodifiableMap(schemas);

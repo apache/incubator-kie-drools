@@ -19,6 +19,7 @@ package org.kie.dmn.openapi;
 import java.util.Collection;
 
 import org.kie.dmn.api.core.DMNModel;
+import org.kie.dmn.openapi.impl.DMNOASGeneratorImpl;
 
 public class DMNOASGeneratorFactory {
 
@@ -27,6 +28,6 @@ public class DMNOASGeneratorFactory {
     }
 
     public static DMNOASGenerator generator(Collection<DMNModel> models) {
-        return new DMNOASGenerator(models);
+        return new DMNOASGeneratorImpl(models);
     }
 }

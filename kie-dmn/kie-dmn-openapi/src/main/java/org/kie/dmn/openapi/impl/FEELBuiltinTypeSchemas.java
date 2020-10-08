@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.openapi;
+package org.kie.dmn.openapi.impl;
 
 import org.eclipse.microprofile.openapi.OASFactory;
 import org.eclipse.microprofile.openapi.models.media.Schema;
