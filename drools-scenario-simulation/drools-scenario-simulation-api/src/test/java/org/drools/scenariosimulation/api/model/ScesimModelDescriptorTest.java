@@ -107,7 +107,7 @@ public class ScesimModelDescriptorTest {
         scesimModelDescriptor.addFactMapping(1, factIdentifier, expressionIdentifier);
     }
 
-    @Test()
+    @Test
     public void removeFactMappingByIndex() {
         int testingIndex = 0;
         scesimModelDescriptor.addFactMapping(factIdentifier, expressionIdentifier);
