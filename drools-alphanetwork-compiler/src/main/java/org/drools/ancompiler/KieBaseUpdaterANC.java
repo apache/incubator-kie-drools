@@ -1,11 +1,13 @@
 package org.drools.ancompiler;
 
 import java.util.Map;
+import java.util.Optional;
 
 import org.drools.compiler.kie.builder.impl.KieBaseUpdater;
 import org.drools.compiler.kie.builder.impl.KieBaseUpdatersContext;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.Rete;
+import org.kie.api.conf.Option;
 import org.kie.internal.builder.conf.AlphaNetworkCompilerOption;
 import org.kie.memorycompiler.KieMemoryCompiler;
 
@@ -20,14 +22,14 @@ public class KieBaseUpdaterANC implements KieBaseUpdater {
     }
 
     public void run() {
-        AlphaNetworkCompilerOption ancMode = ctx.getKnowledgeBuilderConfiguration().getAlphaNetworkCompilerOption();
+        Optional<Option> ancMode = ctx.getOption(AlphaNetworkCompilerOption.class);
 
         // find the new compiled alpha network in the classpath, if it's not there,
         // generate compile it and reattach it
-        if (AlphaNetworkCompilerOption.INMEMORY.equals(ancMode)) {
+        if (ancMode.filter(AlphaNetworkCompilerOption.INMEMORY::equals).isPresent()) {
             inMemoryUpdate(ctx.getClassLoader(), ctx.getRete());
         } // load it from the kjar
-        else if (AlphaNetworkCompilerOption.COMPILED.equals(ancMode)) {
+        else if (ancMode.filter(AlphaNetworkCompilerOption.COMPILED::equals).isPresent()) {
             loadFromKJar(ctx.getClassLoader(), ctx.getRete());
         }
     }
@@ -60,12 +62,11 @@ public class KieBaseUpdaterANC implements KieBaseUpdater {
      */
     private void loadFromKJar(ClassLoader rootClassLoader, Rete rete) {
         Map<ObjectTypeNode, String> compiledNetworkSourcesMap = ObjectTypeNodeCompiler.otnWithBinaryName(rete);
-        for(Map.Entry<ObjectTypeNode, String> kv : compiledNetworkSourcesMap.entrySet()) {
+        for (Map.Entry<ObjectTypeNode, String> kv : compiledNetworkSourcesMap.entrySet()) {
             String compiledNetworkClassName = kv.getValue();
             Class<?> aClass = null;
             try {
                 aClass = rootClassLoader.loadClass(compiledNetworkClassName);
-
             } catch (ClassNotFoundException e) {
                 // BaseUpdater gets called by the plugin when creating the kiebase, but we don't need to update the rete there
                 return;

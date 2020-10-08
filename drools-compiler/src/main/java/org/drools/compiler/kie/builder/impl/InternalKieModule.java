@@ -120,6 +120,8 @@ public interface InternalKieModule extends KieModule, Serializable {
 
     InternalKnowledgeBase createKieBase( KieBaseModelImpl kBaseModel, KieProject kieProject, ResultsImpl messages, KieBaseConfiguration conf );
 
+    default void afterKieBaseCreationUpdate(String name, InternalKnowledgeBase kBase) { }
+
     ClassLoader getModuleClassLoader();
 
     default ResultsImpl build() {

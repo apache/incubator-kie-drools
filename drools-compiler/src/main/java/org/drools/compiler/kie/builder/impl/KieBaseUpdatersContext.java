@@ -1,22 +1,26 @@
 package org.drools.compiler.kie.builder.impl;
 
-import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
+import java.util.Optional;
+
 import org.drools.core.reteoo.Rete;
+import org.kie.api.conf.Option;
 
 public class KieBaseUpdatersContext {
 
-    private final KnowledgeBuilderConfigurationImpl knowledgeBuilderConfiguration;
+    private final KieBaseUpdaterOptions options;
     private final Rete rete;
     private final ClassLoader classLoader;
 
-    public KieBaseUpdatersContext(KnowledgeBuilderConfigurationImpl knowledgeBuilderConfiguration, Rete rete, ClassLoader classLoader) {
-        this.knowledgeBuilderConfiguration = knowledgeBuilderConfiguration;
+    public KieBaseUpdatersContext(KieBaseUpdaterOptions options,
+                                  Rete rete,
+                                  ClassLoader classLoader) {
+        this.options = options;
         this.rete = rete;
         this.classLoader = classLoader;
     }
 
-    public KnowledgeBuilderConfigurationImpl getKnowledgeBuilderConfiguration() {
-        return knowledgeBuilderConfiguration;
+    public Optional<Option> getOption(Class<? extends Option> optionClazz) {
+        return options.getOption(optionClazz);
     }
 
     public Rete getRete() {

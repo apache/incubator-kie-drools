@@ -31,13 +31,11 @@ import javax.management.ObjectName;
 
 import org.drools.compiler.builder.InternalKnowledgeBuilder;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
-import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.kie.builder.MaterializedLambda;
 import org.drools.compiler.kie.util.KieJarChangeSet;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.compiler.kproject.models.KieSessionModelImpl;
 import org.drools.compiler.management.KieContainerMonitor;
-import org.drools.core.InitialFact;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.SessionConfigurationImpl;
 import org.drools.core.impl.InternalKieContainer;
@@ -73,10 +71,10 @@ import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.StatelessKieSession;
 import org.kie.api.time.Calendar;
 import org.kie.internal.builder.ChangeType;
-import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.ResourceChange;
 import org.kie.internal.builder.ResourceChangeSet;
+import org.kie.internal.builder.conf.AlphaNetworkCompilerOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -283,10 +281,13 @@ public class KieContainerImpl
 
                 compositeUpdater.add(kieBaseUpdater);
 
+                KieBaseUpdaterOptions kieBaseUpdaterOptions = new KieBaseUpdaterOptions(new KieBaseUpdaterOptions.OptionEntry(
+                        AlphaNetworkCompilerOption.class, builderConfiguration.getAlphaNetworkCompilerOption()));
+
                 KieBaseUpdaters updaters = ServiceRegistry.getInstance().get(KieBaseUpdaters.class);
                 updaters.getChildren()
                         .stream()
-                        .map(kbu -> kbu.create(new KieBaseUpdatersContext(builderConfiguration,
+                        .map(kbu -> kbu.create(new KieBaseUpdatersContext(kieBaseUpdaterOptions,
                                                                           context.kBase.getRete(),
                                                                           context.kBase.getRootClassLoader()
                                                                           )))
@@ -312,7 +313,7 @@ public class KieContainerImpl
 
         private final List<Runnable> runnables = new ArrayList<>();
 
-        void add(Runnable runnable) {
+        public void add(Runnable runnable) {
             runnables.add( runnable );
         }
 
@@ -460,6 +461,8 @@ public class KieContainerImpl
     private KieBase createKieBase(KieBaseModelImpl kBaseModel, KieProject kieProject, ResultsImpl messages, KieBaseConfiguration conf) {
         InternalKieModule kModule = kieProject.getKieModuleForKBase( kBaseModel.getName() );
         InternalKnowledgeBase kBase = kModule.createKieBase(kBaseModel, kieProject, messages, conf);
+        kModule.afterKieBaseCreationUpdate(kBaseModel.getName(), kBase);
+
         if ( kBase == null ) {
             return null;
         }
@@ -467,27 +470,6 @@ public class KieContainerImpl
         kBase.setContainerId(containerId);
         kBase.setKieContainer(this);
         kBase.initMBeans();
-
-        KnowledgeBuilder knowledgeBuilderForKieBase = kModule.getKnowledgeBuilderForKieBase(kBaseModel.getName());
-
-        if(knowledgeBuilderForKieBase instanceof KnowledgeBuilderImpl) {
-            KnowledgeBuilderImpl knowledgeBuilderForImpl = (KnowledgeBuilderImpl)knowledgeBuilderForKieBase;
-            KnowledgeBuilderConfigurationImpl builderConfiguration = knowledgeBuilderForImpl.getBuilderConfiguration();
-
-            // TODO LUCA ask Mario if we need to enqueue this or we can just run it
-            CompositeRunnable compositeUpdater = new CompositeRunnable();
-
-            KieBaseUpdaters updaters = ServiceRegistry.getService(KieBaseUpdaters.class);
-            updaters.getChildren()
-                    .stream()
-                    .map(kbu -> kbu.create(new KieBaseUpdatersContext(builderConfiguration,
-                                                                      kBase.getRete(),
-                                                                      kBase.getRootClassLoader()
-                    )))
-                    .forEach(compositeUpdater::add);
-
-            kBase.enqueueModification(compositeUpdater);
-        }
 
         return kBase;
     }
