@@ -61,17 +61,18 @@ public class KieBaseUpdaterANC implements KieBaseUpdater {
      * @param rete
      */
     private void loadFromKJar(ClassLoader rootClassLoader, Rete rete) {
-        Map<ObjectTypeNode, String> compiledNetworkSourcesMap = ObjectTypeNodeCompiler.otnWithClassName(rete);
-        for (Map.Entry<ObjectTypeNode, String> kv : compiledNetworkSourcesMap.entrySet()) {
-            String compiledNetworkClassName = kv.getValue();
+        // There's not actual need to regenerate the source here but the indexableConstraint is parsed throughout the generation
+        // It should be possible to get the indexable constraint without generating the full source
+        Map<String, CompiledNetworkSource> compiledNetworkSourcesMap = ObjectTypeNodeCompiler.compiledNetworkSourceMap(rete);
+        for (Map.Entry<String, CompiledNetworkSource> kv : compiledNetworkSourcesMap.entrySet()) {
+            String compiledNetworkClassName = kv.getValue().getName();
             Class<?> aClass;
             try {
                 aClass = rootClassLoader.loadClass(compiledNetworkClassName);
             } catch (ClassNotFoundException e) {
                 throw new RuntimeException(e);
             }
-            CompiledNetwork newInstance = ClazzUtils.newCompiledNetworkInstance(aClass);
-            newInstance.setNetwork(kv.getKey());
+            kv.getValue().setCompiledNetwork(aClass);
         }
     }
 }
