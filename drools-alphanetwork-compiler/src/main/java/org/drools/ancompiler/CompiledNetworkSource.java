@@ -3,8 +3,12 @@ package org.drools.ancompiler;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.rule.IndexableConstraint;
 import org.drools.core.spi.InternalReadAccessor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CompiledNetworkSource {
+
+    private final Logger logger = LoggerFactory.getLogger(KieBaseUpdaterANC.class);
 
     private final String source;
     private final IndexableConstraint indexableConstraint;
@@ -37,6 +41,9 @@ public class CompiledNetworkSource {
     public void setCompiledNetwork(Class<?> compiledNetworkClass) {
         CompiledNetwork compiledNetwork = newCompiledNetworkInstance(compiledNetworkClass);
         compiledNetwork.setNetwork(objectTypeNode);
+        logger.debug("Updating {} with instance of class: {}",
+                     objectTypeNode,
+                     compiledNetworkClass.getName());
     }
 
     public CompiledNetwork newCompiledNetworkInstance(Class<?> aClass) {

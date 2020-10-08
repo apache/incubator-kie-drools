@@ -5,15 +5,18 @@ import java.util.Optional;
 
 import org.drools.compiler.kie.builder.impl.KieBaseUpdater;
 import org.drools.compiler.kie.builder.impl.KieBaseUpdatersContext;
-import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.Rete;
 import org.kie.api.conf.Option;
 import org.kie.internal.builder.conf.AlphaNetworkCompilerOption;
 import org.kie.memorycompiler.KieMemoryCompiler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.drools.core.util.MapUtils.mapValues;
 
 public class KieBaseUpdaterANC implements KieBaseUpdater {
+
+    private final Logger logger = LoggerFactory.getLogger(KieBaseUpdaterANC.class);
 
     private final KieBaseUpdatersContext ctx;
 
@@ -30,6 +33,7 @@ public class KieBaseUpdaterANC implements KieBaseUpdater {
             inMemoryUpdate(ctx.getClassLoader(), ctx.getRete());
         } // load it from the kjar
         else if (ancMode.filter(AlphaNetworkCompilerOption.LOAD::equals).isPresent()) {
+            logger.debug("Loading compiled alpha network from KJar");
             loadFromKJar(ctx.getClassLoader(), ctx.getRete());
         }
     }
