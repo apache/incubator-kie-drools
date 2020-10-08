@@ -26,7 +26,7 @@ public class JacksonUtils {
 
     public static void printoutJSON(Object tree) {
         if (LOG.isDebugEnabled()) {
-        ObjectMapper mapper = new ObjectMapper();
+            ObjectMapper mapper = new ObjectMapper();
             try {
                 LOG.debug(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(tree));
             } catch (Exception e) {
