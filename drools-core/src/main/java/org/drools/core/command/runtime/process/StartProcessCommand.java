@@ -22,12 +22,12 @@ import java.util.Map;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
 import org.drools.core.command.IdentifiableResult;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.drools.core.xml.jaxb.util.JaxbMapAdapter;
@@ -35,6 +35,7 @@ import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.runtime.rule.AgendaFilter;
 import org.kie.internal.command.RegistryContext;
 
 @XmlRootElement
@@ -52,6 +53,9 @@ public class StartProcessCommand implements ExecutableCommand<ProcessInstance>, 
     private List<Object> data = null;
     @XmlAttribute(name="out-identifier")
     private String outIdentifier;
+
+    @XmlAnyElement(lax = true)
+    private AgendaFilter agendaFilter = null;
 
     public StartProcessCommand() {
     }
@@ -111,6 +115,14 @@ public class StartProcessCommand implements ExecutableCommand<ProcessInstance>, 
         return outIdentifier;
     }
 
+    public AgendaFilter getAgendaFilter() {
+        return agendaFilter;
+    }
+
+    public void setAgendaFilter(AgendaFilter agendaFilter) {
+        this.agendaFilter = agendaFilter;
+    }
+
     public ProcessInstance execute(Context context) {
         KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
 
@@ -119,7 +131,7 @@ public class StartProcessCommand implements ExecutableCommand<ProcessInstance>, 
                 ksession.insert(o);
             }
         }
-        ProcessInstance processInstance = (ProcessInstance) ksession.startProcess(processId, parameters);
+        ProcessInstance processInstance = (ProcessInstance) ksession.startProcess(processId, parameters, agendaFilter);
         if ( this.outIdentifier != null ) {
             ((RegistryContext) context).lookup( ExecutionResultImpl.class ).setResult(this.outIdentifier, processInstance.getId());
         }
@@ -142,7 +154,11 @@ public class StartProcessCommand implements ExecutableCommand<ProcessInstance>, 
                 result.append(entry.getValue());
             }
         }
-        result.append("]);");
+        result.append("]");
+        if (agendaFilter != null) {
+            result.append(", " + agendaFilter);
+        }
+        result.append(");");
         return result.toString();
     }
 }

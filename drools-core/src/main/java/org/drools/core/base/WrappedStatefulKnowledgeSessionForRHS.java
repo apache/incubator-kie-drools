@@ -747,6 +747,14 @@ public class WrappedStatefulKnowledgeSessionForRHS
         return delegate.startProcess(processId, parameters);
     }
 
+    public ProcessInstance startProcess(String processId, AgendaFilter agendaFilter) {
+        return delegate.startProcess(processId, agendaFilter);
+    }
+
+    public ProcessInstance startProcess(String processId, Map<String, Object> parameters, AgendaFilter agendaFilter) {
+        return delegate.startProcess(processId, parameters, agendaFilter);
+    }
+
     public Collection<ProcessInstance> getProcessInstances() {
         return delegate.getProcessInstances();
     }
