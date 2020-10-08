@@ -60,11 +60,11 @@ public class ObjectTypeNodeCompiler {
         ClassObjectType classObjectType = (ClassObjectType) objectTypeNode.getObjectType();
         this.className = classObjectType.getClassName().replace("$", ".");
         final String classObjectTypeName = classObjectType.getClassName().replace('.', '_');
-        final String randomId = UUID.randomUUID().toString().replace("-", "");
+        final String otnHash = String.valueOf(Math.abs(objectTypeNode.hashCode()));
         generatedClassSimpleName = String.format("Compiled%sNetwork%d%s"
                 , classObjectTypeName
                 , objectTypeNode.getId()
-                , randomId);
+                , otnHash);
     }
 
     public CompiledNetworkSource generateSource() {
