@@ -107,15 +107,19 @@ class InfinispanQueryTest {
                 ),
                 Arguments.of(
                         asList(and(asList(lessThanEqual("priority", 1), greaterThan("priority", 1)))),
-                        "from org.kie.kogito.index.model.ProcessInstance o where o.priority <= 1 and o.priority > 1"
+                        "from org.kie.kogito.index.model.ProcessInstance o where (o.priority <= 1 and o.priority > 1)"
                 ),
                 Arguments.of(
                         asList(or(asList(lessThanEqual("priority", 1), greaterThan("priority", 1)))),
-                        "from org.kie.kogito.index.model.ProcessInstance o where o.priority <= 1 or o.priority > 1"
+                        "from org.kie.kogito.index.model.ProcessInstance o where (o.priority <= 1 or o.priority > 1)"
                 ),
                 Arguments.of(
                         asList(and(asList(notNull("name"), contains("name", "test"))), or(asList(lessThanEqual("priority", 1), greaterThan("priority", 1)))),
-                        "from org.kie.kogito.index.model.ProcessInstance o where o.name is not null and o.name = 'test' and o.priority <= 1 or o.priority > 1"
+                        "from org.kie.kogito.index.model.ProcessInstance o where (o.name is not null and o.name = 'test') and (o.priority <= 1 or o.priority > 1)"
+                ),
+                Arguments.of(
+                        asList(or(asList(isNull("name"), contains("name", "test"))), and(asList(between("start", "2019-01-01", "2020-01-01"), or(asList(lessThanEqual("priority", 1), greaterThan("priority", 1)))))),
+                        "from org.kie.kogito.index.model.ProcessInstance o where (o.name is null or o.name = 'test') and (o.start between '2019-01-01' and '2020-01-01' and (o.priority <= 1 or o.priority > 1))"
                 )
         );
     }

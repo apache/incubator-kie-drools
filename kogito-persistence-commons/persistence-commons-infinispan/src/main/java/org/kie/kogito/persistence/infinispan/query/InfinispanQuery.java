@@ -145,6 +145,9 @@ public class InfinispanQuery<T> implements Query<T> {
     }
 
     private String getRecursiveString(AttributeFilter<?> filter, String joining) {
-        return ((List<AttributeFilter<?>>) filter.getValue()).stream().map(filterStringFunction()).collect(joining(joining));
+        return ((List<AttributeFilter<?>>) filter.getValue())
+                .stream()
+                .map(filterStringFunction())
+                .collect(joining(joining,  "(", ")"));
     }
 }
