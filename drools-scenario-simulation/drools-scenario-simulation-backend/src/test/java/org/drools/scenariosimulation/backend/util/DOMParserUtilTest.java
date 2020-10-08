@@ -164,7 +164,7 @@ public class DOMParserUtilTest {
         Map<Node, String> retrieved = DOMParserUtil.getAttributeValues(document, MAIN_NODE, MAIN_ATTRIBUTE_NAME);
         assertNotNull(retrieved);
         assertEquals(1, retrieved.size());
-        assertEquals(retrieved.values().toArray()[0], ATTRIBUTE_VALUE);
+        assertEquals(ATTRIBUTE_VALUE, retrieved.values().toArray()[0]);
         retrieved = DOMParserUtil.getAttributeValues(document, MAIN_NODE, NOT_EXISTING);
         assertNotNull(retrieved);
         assertTrue(retrieved.isEmpty());

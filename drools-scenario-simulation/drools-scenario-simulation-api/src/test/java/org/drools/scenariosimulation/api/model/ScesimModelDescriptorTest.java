@@ -21,7 +21,9 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -31,15 +33,22 @@ import static org.junit.Assert.fail;
 
 public class ScesimModelDescriptorTest {
 
+    @Rule
+    public ExpectedException expectedException = ExpectedException.none();
+
     private ScesimModelDescriptor scesimModelDescriptor;
     private FactIdentifier factIdentifier;
     private ExpressionIdentifier expressionIdentifier;
+    private FactIdentifier factIdentifier2;
+    private ExpressionIdentifier expressionIdentifier2;
 
     @Before
     public void init() {
         scesimModelDescriptor = new ScesimModelDescriptor();
         factIdentifier = FactIdentifier.create("test fact", String.class.getCanonicalName());
         expressionIdentifier = ExpressionIdentifier.create("test expression", FactMappingType.EXPECT);
+        factIdentifier2 = FactIdentifier.create("test fact 2", Integer.class.getCanonicalName());
+        expressionIdentifier2 = ExpressionIdentifier.create("test expression 2", FactMappingType.GIVEN);
     }
 
     @Test
@@ -64,6 +73,13 @@ public class ScesimModelDescriptorTest {
     @Test
     public void addFactMappingByFactIdentifierAndExpressionIdentifier() {
         scesimModelDescriptor.addFactMapping(factIdentifier, expressionIdentifier);
+        scesimModelDescriptor.addFactMapping(factIdentifier2, expressionIdentifier2);
+        assertEquals(factIdentifier.getName(), scesimModelDescriptor.getFactMappingByIndex(0).getFactAlias());
+        assertEquals(factIdentifier, scesimModelDescriptor.getFactMappingByIndex(0).getFactIdentifier());
+        assertEquals(expressionIdentifier, scesimModelDescriptor.getFactMappingByIndex(0).getExpressionIdentifier());
+        assertEquals(factIdentifier2.getName(), scesimModelDescriptor.getFactMappingByIndex(1).getFactAlias());
+        assertEquals(factIdentifier2, scesimModelDescriptor.getFactMappingByIndex(1).getFactIdentifier());
+        assertEquals(expressionIdentifier2, scesimModelDescriptor.getFactMappingByIndex(1).getExpressionIdentifier());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -76,6 +92,13 @@ public class ScesimModelDescriptorTest {
     @Test
     public void addFactMappingByIndexAndFactIdentifierAndExpressionIdentifier() {
         scesimModelDescriptor.addFactMapping(0, factIdentifier, expressionIdentifier);
+        scesimModelDescriptor.addFactMapping(0, factIdentifier2, expressionIdentifier2);
+        assertEquals(factIdentifier.getName(), scesimModelDescriptor.getFactMappingByIndex(1).getFactAlias());
+        assertEquals(factIdentifier, scesimModelDescriptor.getFactMappingByIndex(1).getFactIdentifier());
+        assertEquals(expressionIdentifier, scesimModelDescriptor.getFactMappingByIndex(1).getExpressionIdentifier());
+        assertEquals(factIdentifier2.getName(), scesimModelDescriptor.getFactMappingByIndex(0).getFactAlias());
+        assertEquals(factIdentifier2, scesimModelDescriptor.getFactMappingByIndex(0).getFactIdentifier());
+        assertEquals(expressionIdentifier2, scesimModelDescriptor.getFactMappingByIndex(0).getExpressionIdentifier());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -84,12 +107,13 @@ public class ScesimModelDescriptorTest {
         scesimModelDescriptor.addFactMapping(1, factIdentifier, expressionIdentifier);
     }
 
-    @Test(expected = IndexOutOfBoundsException.class)
+    @Test()
     public void removeFactMappingByIndex() {
         int testingIndex = 0;
         scesimModelDescriptor.addFactMapping(factIdentifier, expressionIdentifier);
         assertNotNull(scesimModelDescriptor.getFactMappingByIndex(testingIndex));
         scesimModelDescriptor.removeFactMappingByIndex(testingIndex);
+        expectedException.expect(IndexOutOfBoundsException.class);
         scesimModelDescriptor.getFactMappingByIndex(testingIndex);
     }
 

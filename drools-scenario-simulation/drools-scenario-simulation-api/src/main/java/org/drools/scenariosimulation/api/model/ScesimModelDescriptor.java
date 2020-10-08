@@ -89,9 +89,9 @@ public class ScesimModelDescriptor {
     }
 
     public Optional<FactMapping> getFactMapping(FactIdentifier factIdentifier, ExpressionIdentifier ei) {
-        List<FactMapping> factMappings = internalFilter(e -> Objects.equals(e.getExpressionIdentifier(), ei) &&
+        List<FactMapping> filteredFactMappings = internalFilter(e -> Objects.equals(e.getExpressionIdentifier(), ei) &&
                 Objects.equals(e.getFactIdentifier(), factIdentifier));
-        return factMappings.stream().findFirst();
+        return filteredFactMappings.stream().findFirst();
     }
 
     /**

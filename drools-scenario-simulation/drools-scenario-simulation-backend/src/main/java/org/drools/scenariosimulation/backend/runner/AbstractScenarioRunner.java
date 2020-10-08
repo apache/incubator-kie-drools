@@ -107,7 +107,7 @@ public abstract class AbstractScenarioRunner extends Runner {
             IndexedScenarioException indexedScenarioException = new IndexedScenarioException(index, e);
             indexedScenarioException.setFileName(scenarioRunnerDTO.getFileName());
             runNotifier.fireTestFailure(new Failure(descriptionForScenario, indexedScenarioException));
-        } catch (Throwable e) {
+        } catch (Exception e) {
             IndexedScenarioException indexedScenarioException = new IndexedScenarioException(index, "Unexpected test error in scenario '" +
                     scenarioWithIndex.getScesimData().getDescription() + "'", e);
             indexedScenarioException.setFileName(scenarioRunnerDTO.getFileName());
