@@ -107,7 +107,7 @@ public class DMNTypeSchemas {
             }
             Schema schema = refOrBuiltinSchema(baseType);
             if (t.getAllowedValues() != null && !t.getAllowedValues().isEmpty()) {
-                FEELAllowedValuesAsSchemaEnumeration.parseAllowedValuesIntoSchema(schema, t.getAllowedValues());
+                FEELSchemaEnum.parseAllowedValuesIntoSchema(schema, t.getAllowedValues());
             }
             schema = nestAsItemIfCollection(schema, t);
             schema.description(getDMNTypeSchemaDescription(t));

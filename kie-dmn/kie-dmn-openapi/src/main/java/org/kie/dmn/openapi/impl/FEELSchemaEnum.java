@@ -24,7 +24,7 @@ import org.kie.dmn.api.core.DMNUnaryTest;
 import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.runtime.UnaryTestImpl;
 
-public class FEELAllowedValuesAsSchemaEnumeration {
+public class FEELSchemaEnum {
 
     public static void parseAllowedValuesIntoSchema(Schema schema, List<DMNUnaryTest> list) {
         try {
@@ -44,7 +44,7 @@ public class FEELAllowedValuesAsSchemaEnumeration {
         }
     }
 
-    private FEELAllowedValuesAsSchemaEnumeration() {
+    private FEELSchemaEnum() {
         // deliberate intention not to allow instantiation of this class.
     }
 }
