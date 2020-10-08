@@ -900,7 +900,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
     }
 
     /**
-     * Ads a package from a Descr/AST also triggering its compilation
+     * Adds a package from a Descr/AST also triggering its compilation
      * and the generation of the corresponding rete/phreak network
      */
     @Override
@@ -911,7 +911,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
     }
 
     /**
-     * Ads a package from a Descr/AST also triggering its compilation
+     * Adds a package from a Descr/AST also triggering its compilation
      * but without generating the corresponding rete/phreak network
      */
     public boolean addPackageWithoutRete( PackageDescr packageDescr ) {
