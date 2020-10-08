@@ -56,6 +56,10 @@ public class DMNModelIOSets {
         this.inputSet = is;
     }
 
+    public DMNModel getModel() {
+        return model;
+    }
+
     public DMNType getInputSet() {
         return inputSet;
     }

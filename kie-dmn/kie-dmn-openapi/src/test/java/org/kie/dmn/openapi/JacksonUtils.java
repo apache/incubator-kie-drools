@@ -16,18 +16,20 @@
 
 package org.kie.dmn.openapi;
 
-import org.junit.Test;
-import org.kie.dmn.api.core.DMNRuntime;
-import org.kie.dmn.core.stronglytyped.DMNRuntimeTypesTest;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class DMNOASTest extends BaseDMNOASTest {
+public class JacksonUtils {
 
-    @Test
-    public void test() {
-        final DMNRuntime runtime = createRuntimeWithAdditionalResources("NSEW.dmn",
-                                                                        DMNRuntimeTypesTest.class,
-                                                                        "Traffic Violation.dmn");
-        DMNOASGeneratorFactory.generator(runtime.getModels()).build();
-        System.err.println("end.");
+    public static void printoutJSON(Object tree) {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            System.out.println(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(tree));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private JacksonUtils() {
+        // no constructor for utility classes.
     }
 }

@@ -26,7 +26,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.smallrye.openapi.runtime.io.JsonUtil;
 import io.smallrye.openapi.runtime.io.schema.SchemaWriter;
@@ -39,6 +38,7 @@ import org.kie.dmn.core.impl.SimpleTypeImpl;
 import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.runtime.UnaryTestImpl;
 import org.kie.dmn.openapi.model.DMNModelIOSets;
+import org.kie.dmn.openapi.model.DMNOASResult;
 import org.kie.dmn.typesafe.DMNTypeUtils;
 
 public class DMNOASGenerator {
@@ -48,12 +48,13 @@ public class DMNOASGenerator {
     private final Set<DMNType> typesIndex = new HashSet<>();
     private TempNamingPolicy namingPolicy;
     private final Map<DMNType, Schema> schemas = new HashMap<>();
+    private ObjectNode jsonSchema;
 
     public DMNOASGenerator(Collection<DMNModel> models) {
         this.dmnModels = new HashSet<>(models);
     }
 
-    public void build() {
+    public DMNOASResult build() {
         for (DMNModel model : dmnModels) {
             DMNModelIOSets s = new DMNModelIOSets(model);
             ioSets.add(s);
@@ -63,21 +64,24 @@ public class DMNOASGenerator {
         assignNamesToIOSets();
         determineNamingPolicy();
         generateSchemas();
-        System.out.println("finished");
+        prepareSerializaton();
+        return new DMNOASResult(jsonSchema, ioSets, schemas, namingPolicy);
+    }
+
+    private void prepareSerializaton() {
+        ObjectNode tree = JsonUtil.objectNode();
+        ObjectNode definitions = JsonUtil.objectNode();
+        tree.set("definitions", definitions);
+        for (Entry<DMNType, Schema> kv : schemas.entrySet()) {
+            SchemaWriter.writeSchema(definitions, kv.getValue(), kv.getKey().getName());
+        }
+        jsonSchema = tree;
     }
 
     private void generateSchemas() {
         for (DMNType t : typesIndex) {
             Schema schema = schemaFromType(t);
-            // serialization
-            ObjectNode tree = JsonUtil.objectNode();
-            SchemaWriter.writeSchema(tree, schema, t.getName());
-            ObjectMapper mapper = new ObjectMapper();
-            try {
-                System.out.println(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(tree));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            schemas.put(t, schema);
         }
     }
 
@@ -92,12 +96,19 @@ public class DMNOASGenerator {
         throw new UnsupportedOperationException();
     }
 
+    private boolean isIOSet(DMNType t) {
+        return t.getName().contains("InputSet"); // TODO review to be more robust (check in IOSets)
+    }
+
     private Schema schemaFromType(DMNType t) {
         if (t instanceof CompositeTypeImpl) {
             CompositeTypeImpl ct = (CompositeTypeImpl) t;
             Schema schema = OASFactory.createObject(Schema.class).description(t.toString());
             for (Entry<String, DMNType> fkv : ct.getFields().entrySet()) {
                 schema.addProperty(fkv.getKey(), refOrBuiltinSchema(fkv.getValue()));
+            }
+            if (isIOSet(ct)) {
+                schema.required(new ArrayList<>(ct.getFields().keySet()));
             }
             return schema;
         }
