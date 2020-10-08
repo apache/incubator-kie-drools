@@ -303,7 +303,7 @@ public class TypeCoercionTest extends BaseModelTest {
                 "rule \"test_rule\"\n" +
                 "	dialect \"java\"\n" +
                 "	when\n" +
-                "		$nanTest : DoubleNaNPojo( testDouble1 + 10 > testDouble2, !testBoolean) \n" +
+                "		$nanTest : DoubleNaNPojo( testDouble1 + 10 > testDouble2, testBoolean == false) \n" +
                 "then\n" +
                 "	System.out.println(\"rule_a fired \");\n" +
                 "	$nanTest.setTestBoolean(true);\n" +

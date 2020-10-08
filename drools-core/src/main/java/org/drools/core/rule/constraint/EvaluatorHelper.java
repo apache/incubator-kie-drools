@@ -254,6 +254,10 @@ public class EvaluatorHelper {
             double d1 = toDouble( obj1 );
             double d2 = toDouble( obj2 );
 
+            if (Double.isNaN( d1 ) || Double.isNaN( d2 )) {
+                return false;
+            }
+
             switch (op) {
                 case "<": return d1 < d2;
                 case "<=": return d1 <= d2;
