@@ -36,11 +36,11 @@ import org.kie.dmn.openapi.model.DMNOASResult;
 
 public abstract class BaseDMNOASTest {
 
-    DMNRuntime createRuntime(String string, Class<?> class1) {
+    protected DMNRuntime createRuntime(String string, Class<?> class1) {
         return BaseVariantTest.VariantTestConf.KIE_API_TYPECHECK.createRuntime(string, class1);
     }
 
-    DMNRuntime createRuntimeWithAdditionalResources(String string, Class<?> class1, String... string2) {
+    protected DMNRuntime createRuntimeWithAdditionalResources(String string, Class<?> class1, String... string2) {
         return BaseVariantTest.VariantTestConf.KIE_API_TYPECHECK.createRuntimeWithAdditionalResources(string, class1, string2);
     }
     
