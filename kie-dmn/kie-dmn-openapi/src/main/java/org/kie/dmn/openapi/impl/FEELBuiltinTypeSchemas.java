@@ -70,5 +70,7 @@ public class FEELBuiltinTypeSchemas {
         }
     }
 
-
+    private FEELBuiltinTypeSchemas() {
+        // deliberate intention not to allow instantiation of this class.
+    }
 }

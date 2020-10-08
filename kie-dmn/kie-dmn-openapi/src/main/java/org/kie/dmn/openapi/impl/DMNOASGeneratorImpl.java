@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.smallrye.openapi.runtime.io.JsonUtil;
@@ -37,8 +36,6 @@ import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.core.impl.BaseDMNTypeImpl;
 import org.kie.dmn.core.impl.CompositeTypeImpl;
 import org.kie.dmn.core.impl.SimpleTypeImpl;
-import org.kie.dmn.feel.FEEL;
-import org.kie.dmn.feel.runtime.UnaryTestImpl;
 import org.kie.dmn.openapi.DMNOASGenerator;
 import org.kie.dmn.openapi.NamingPolicy;
 import org.kie.dmn.openapi.model.DMNModelIOSets;
@@ -108,13 +105,22 @@ public class DMNOASGeneratorImpl implements DMNOASGenerator {
     private Schema schemaFromType(DMNType t) {
         if (t instanceof CompositeTypeImpl) {
             CompositeTypeImpl ct = (CompositeTypeImpl) t;
-            Schema schema = OASFactory.createObject(Schema.class).type(SchemaType.OBJECT).description(getDMNTypeSchemaDescription(t));
-            for (Entry<String, DMNType> fkv : ct.getFields().entrySet()) {
-                schema.addProperty(fkv.getKey(), refOrBuiltinSchema(fkv.getValue()));
+            Schema schema = OASFactory.createObject(Schema.class).type(SchemaType.OBJECT);
+            if (ct.getBaseType() != null) {
+                if (ct.getBelongingType() == null) {
+                    throw new IllegalStateException();
+                }
+                schema = refOrBuiltinSchema(ct.getBaseType()); // an anonymous inner type for a base
+            } else {
+                for (Entry<String, DMNType> fkv : ct.getFields().entrySet()) {
+                    schema.addProperty(fkv.getKey(), refOrBuiltinSchema(fkv.getValue()));
+                }
+                if (isIOSet(ct)) {
+                    schema.required(new ArrayList<>(ct.getFields().keySet()));
+                }
             }
-            if (isIOSet(ct)) {
-                schema.required(new ArrayList<>(ct.getFields().keySet()));
-            }
+            schema = nestAsItemIfCollection(schema, t);
+            schema.description(getDMNTypeSchemaDescription(t));
             return schema;
         }
         if (t instanceof SimpleTypeImpl) {
@@ -122,28 +128,23 @@ public class DMNOASGeneratorImpl implements DMNOASGenerator {
             if (baseType == null) {
                 throw new IllegalStateException();
             }
-            Schema schema = refOrBuiltinSchema(baseType).description(getDMNTypeSchemaDescription(t));
+            Schema schema = refOrBuiltinSchema(baseType);
             if (t.getAllowedValues() != null && !t.getAllowedValues().isEmpty()) {
-                try {
-                    FEEL SimpleFEEL = FEEL.newInstance();
-                    List<Object> expectLiterals = t.getAllowedValues().stream()
-                                                   .map(UnaryTestImpl.class::cast)
-                                                   .map(UnaryTestImpl::toString)
-                                                   .map(SimpleFEEL::evaluate)
-                                                   .collect(Collectors.toList());
-                    expectLiterals.forEach(o -> {
-                        if (!(o instanceof String || o instanceof Number || o instanceof Boolean)) {
-                            throw new UnsupportedOperationException("OAS enumeration only checked for specifc types.");
-                        }
-                    });
-                    schema.enumeration(expectLiterals);
-                } catch (Exception e) {
-                    schema.description(schema.getDescription() + "\n" + t.getAllowedValues());
-                }
+                FEELAllowedValuesAsSchemaEnumeration.parseAllowedValuesIntoSchema(schema, t.getAllowedValues());
             }
+            schema = nestAsItemIfCollection(schema, t);
+            schema.description(getDMNTypeSchemaDescription(t));
             return schema;
         }
         throw new UnsupportedOperationException();
+    }
+
+    private Schema nestAsItemIfCollection(Schema original, DMNType t) {
+        if (t.isCollection()) {
+            return OASFactory.createObject(Schema.class).type(SchemaType.ARRAY).items(original);
+        } else {
+            return original;
+        }
     }
 
     private String getDMNTypeSchemaDescription(DMNType t) {
@@ -186,6 +187,9 @@ public class DMNOASGeneratorImpl implements DMNOASGenerator {
             return; // not indexing FEEL built-in types.
         }
         typesIndex.add(idnType);
+        if (idnType.getBaseType() != null) {
+            visitForIndexing(idnType.getBaseType());
+        }
         if (idnType instanceof CompositeTypeImpl) {
             CompositeTypeImpl compType = (CompositeTypeImpl) idnType;
             for (DMNType v : compType.getFields().values()) {
