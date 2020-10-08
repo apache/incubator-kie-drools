@@ -11,13 +11,14 @@ import org.drools.modelcompiler.builder.AdditionalFileGenerator;
 import org.drools.modelcompiler.builder.GeneratedFile;
 import org.kie.internal.builder.conf.AlphaNetworkCompilerOption;
 
+// TODO LUCA this is probably useless now
 public class ANCSourceGeneration implements AdditionalFileGenerator {
 
     @Override
     public List<GeneratedFile> additionalFiles(KnowledgeBuilderConfigurationImpl builderConfiguration, Rete rete) {
         AlphaNetworkCompilerOption ancMode = builderConfiguration.getAlphaNetworkCompilerOption();
 
-        if (AlphaNetworkCompilerOption.COMPILED.equals(ancMode)) {
+        if (AlphaNetworkCompilerOption.COMPILE.equals(ancMode)) {
             return generateSources(rete);
         }
 

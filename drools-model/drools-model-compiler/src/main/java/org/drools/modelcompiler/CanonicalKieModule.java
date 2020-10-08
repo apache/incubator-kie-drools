@@ -233,8 +233,7 @@ public class CanonicalKieModule implements InternalKieModule {
 
     @Override
     public void afterKieBaseCreationUpdate(String name, InternalKnowledgeBase kBase) {
-        // TODO LUCA ask Mario if we need to enqueue this or we can just run it
-
+        // TODO LUCA ask Mario if we need to enqueue this or we can just run it\
         KnowledgeBuilder knowledgeBuilderForKieBase = getKnowledgeBuilderForKieBase(name);
 
 
@@ -244,7 +243,7 @@ public class CanonicalKieModule implements InternalKieModule {
             KnowledgeBuilderConfigurationImpl builderConfiguration = knowledgeBuilderForImpl.getBuilderConfiguration();
             options = new KieBaseUpdaterOptions.OptionEntry(AlphaNetworkCompilerOption.class, builderConfiguration.getAlphaNetworkCompilerOption());
         } else if(resourceFileExists(getANCFile(internalKieModule.getReleaseId()))) {
-            options = new KieBaseUpdaterOptions.OptionEntry(AlphaNetworkCompilerOption.class, AlphaNetworkCompilerOption.COMPILED);
+            options = new KieBaseUpdaterOptions.OptionEntry(AlphaNetworkCompilerOption.class, AlphaNetworkCompilerOption.LOAD);
         } else {
             options = null;
         }

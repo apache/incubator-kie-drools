@@ -29,7 +29,7 @@ public class KieBaseUpdaterANC implements KieBaseUpdater {
         if (ancMode.filter(AlphaNetworkCompilerOption.INMEMORY::equals).isPresent()) {
             inMemoryUpdate(ctx.getClassLoader(), ctx.getRete());
         } // load it from the kjar
-        else if (ancMode.filter(AlphaNetworkCompilerOption.COMPILED::equals).isPresent()) {
+        else if (ancMode.filter(AlphaNetworkCompilerOption.LOAD::equals).isPresent()) {
             loadFromKJar(ctx.getClassLoader(), ctx.getRete());
         }
     }
@@ -61,15 +61,14 @@ public class KieBaseUpdaterANC implements KieBaseUpdater {
      * @param rete
      */
     private void loadFromKJar(ClassLoader rootClassLoader, Rete rete) {
-        Map<ObjectTypeNode, String> compiledNetworkSourcesMap = ObjectTypeNodeCompiler.otnWithBinaryName(rete);
+        Map<ObjectTypeNode, String> compiledNetworkSourcesMap = ObjectTypeNodeCompiler.otnWithClassName(rete);
         for (Map.Entry<ObjectTypeNode, String> kv : compiledNetworkSourcesMap.entrySet()) {
             String compiledNetworkClassName = kv.getValue();
-            Class<?> aClass = null;
+            Class<?> aClass;
             try {
                 aClass = rootClassLoader.loadClass(compiledNetworkClassName);
             } catch (ClassNotFoundException e) {
-                // BaseUpdater gets called by the plugin when creating the kiebase, but we don't need to update the rete there
-                return;
+                throw new RuntimeException(e);
             }
             CompiledNetwork newInstance = ClazzUtils.newCompiledNetworkInstance(aClass);
             newInstance.setNetwork(kv.getKey());

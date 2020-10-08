@@ -231,10 +231,10 @@ public class ObjectTypeNodeCompiler {
                 .collect(Collectors.toMap(CompiledNetworkSource::getName, c -> c));
     }
 
-    public static Map<ObjectTypeNode, String> otnWithBinaryName(Rete rete) {
+    public static Map<ObjectTypeNode, String> otnWithClassName(Rete rete) {
         List<ObjectTypeNodeCompiler> compiledNetworkSources = ObjectTypeNodeCompiler.objectTypeNodeCompiler(rete);
         return compiledNetworkSources
                 .stream()
-                .collect(Collectors.toMap(k -> k.objectTypeNode, ObjectTypeNodeCompiler::getBinaryName));
+                .collect(Collectors.toMap(k -> k.objectTypeNode, ObjectTypeNodeCompiler::getName));
     }
 }
