@@ -31,8 +31,10 @@ import io.smallrye.openapi.runtime.io.JsonUtil;
 import io.smallrye.openapi.runtime.io.schema.SchemaWriter;
 import org.eclipse.microprofile.openapi.OASFactory;
 import org.eclipse.microprofile.openapi.models.media.Schema;
+import org.eclipse.microprofile.openapi.models.media.Schema.SchemaType;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNType;
+import org.kie.dmn.core.impl.BaseDMNTypeImpl;
 import org.kie.dmn.core.impl.CompositeTypeImpl;
 import org.kie.dmn.core.impl.SimpleTypeImpl;
 import org.kie.dmn.feel.FEEL;
@@ -106,7 +108,7 @@ public class DMNOASGeneratorImpl implements DMNOASGenerator {
     private Schema schemaFromType(DMNType t) {
         if (t instanceof CompositeTypeImpl) {
             CompositeTypeImpl ct = (CompositeTypeImpl) t;
-            Schema schema = OASFactory.createObject(Schema.class).description(t.toString());
+            Schema schema = OASFactory.createObject(Schema.class).type(SchemaType.OBJECT).description(getDMNTypeSchemaDescription(t));
             for (Entry<String, DMNType> fkv : ct.getFields().entrySet()) {
                 schema.addProperty(fkv.getKey(), refOrBuiltinSchema(fkv.getValue()));
             }
@@ -120,7 +122,7 @@ public class DMNOASGeneratorImpl implements DMNOASGenerator {
             if (baseType == null) {
                 throw new IllegalStateException();
             }
-            Schema schema = refOrBuiltinSchema(baseType).description(t.toString());
+            Schema schema = refOrBuiltinSchema(baseType).description(getDMNTypeSchemaDescription(t));
             if (t.getAllowedValues() != null && !t.getAllowedValues().isEmpty()) {
                 try {
                     FEEL SimpleFEEL = FEEL.newInstance();
@@ -144,8 +146,16 @@ public class DMNOASGeneratorImpl implements DMNOASGenerator {
         throw new UnsupportedOperationException();
     }
 
+    private String getDMNTypeSchemaDescription(DMNType t) {
+        if (((BaseDMNTypeImpl) t).getBelongingType() == null) { // internals for anonymous inner types.
+            return t.toString();
+        } else {
+            return null;
+        }
+    }
+
     private void determineNamingPolicy() {
-        this.namingPolicy = new DefaultNamingPolicy();
+        this.namingPolicy = new DefaultNamingPolicy(); // TODO what if same type name for 2 diff types in 2 separate models?
     }
 
     private void assignNamesToIOSets() {

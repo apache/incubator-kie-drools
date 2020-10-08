@@ -22,7 +22,5 @@ public interface NamingPolicy {
 
     String getName(DMNType type);
 
-    default String getRef(DMNType type) {
-        return "#/definitions/" + getName(type); // TODO escape name as uri
-    }
+    String getRef(DMNType type);
 }

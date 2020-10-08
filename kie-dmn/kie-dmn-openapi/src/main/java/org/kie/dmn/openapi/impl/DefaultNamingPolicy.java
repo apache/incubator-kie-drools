@@ -16,6 +16,8 @@
 
 package org.kie.dmn.openapi.impl;
 
+import java.net.URI;
+
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.core.impl.BaseDMNTypeImpl;
 import org.kie.dmn.openapi.NamingPolicy;
@@ -31,5 +33,17 @@ public class DefaultNamingPolicy implements NamingPolicy {
             belongingType = ((BaseDMNTypeImpl) belongingType).getBelongingType();
         }
         return name;
+    }
+
+    @Override
+    public String getRef(DMNType type) {
+        String namePart = type.getName();
+        try {
+            URI uri = new URI(null, null, getName(type), null);
+            namePart = uri.toString();
+        } catch (Exception e) {
+            namePart = type.getName();
+        }
+        return "#/definitions/" + namePart;
     }
 }
