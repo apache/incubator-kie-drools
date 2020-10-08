@@ -61,7 +61,7 @@ public class DMNOASGeneratorImpl implements DMNOASGenerator {
         }
         assignNamesToIOSets();
         determineNamingPolicy();
-        schemas.putAll(new DMNTypeSchemas(dmnModels, ioSets, typesIndex, namingPolicy).generateSchemas());
+        schemas.putAll(new DMNTypeSchemas(ioSets, typesIndex, namingPolicy).generateSchemas());
         prepareSerializaton();
         return new DMNOASResult(jsonSchema, ioSets, schemas, namingPolicy);
     }

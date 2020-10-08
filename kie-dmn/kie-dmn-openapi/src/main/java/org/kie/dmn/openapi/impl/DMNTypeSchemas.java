@@ -27,7 +27,6 @@ import java.util.Set;
 import org.eclipse.microprofile.openapi.OASFactory;
 import org.eclipse.microprofile.openapi.models.media.Schema;
 import org.eclipse.microprofile.openapi.models.media.Schema.SchemaType;
-import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.core.impl.BaseDMNTypeImpl;
 import org.kie.dmn.core.impl.CompositeTypeImpl;
@@ -38,13 +37,11 @@ import org.kie.dmn.typesafe.DMNTypeUtils;
 
 public class DMNTypeSchemas {
 
-    private final Set<DMNModel> dmnModels;
     private final List<DMNModelIOSets> ioSets;
     private final Set<DMNType> typesIndex;
     private final NamingPolicy namingPolicy;
 
-    public DMNTypeSchemas(Set<DMNModel> dmnModels, List<DMNModelIOSets> ioSets, Set<DMNType> typesIndex, NamingPolicy namingPolicy) {
-        this.dmnModels = Collections.unmodifiableSet(dmnModels);
+    public DMNTypeSchemas(List<DMNModelIOSets> ioSets, Set<DMNType> typesIndex, NamingPolicy namingPolicy) {
         this.ioSets = Collections.unmodifiableList(ioSets);
         this.typesIndex = Collections.unmodifiableSet(typesIndex);
         this.namingPolicy = namingPolicy;
@@ -81,39 +78,46 @@ public class DMNTypeSchemas {
 
     private Schema schemaFromType(DMNType t) {
         if (t instanceof CompositeTypeImpl) {
-            CompositeTypeImpl ct = (CompositeTypeImpl) t;
-            Schema schema = OASFactory.createObject(Schema.class).type(SchemaType.OBJECT);
-            if (ct.getBaseType() != null) {
-                if (ct.getBelongingType() == null) {
-                    throw new IllegalStateException();
-                }
-                schema = refOrBuiltinSchema(ct.getBaseType()); // an anonymous inner type for a base
-            } else {
-                for (Entry<String, DMNType> fkv : ct.getFields().entrySet()) {
-                    schema.addProperty(fkv.getKey(), refOrBuiltinSchema(fkv.getValue()));
-                }
-                if (isIOSet(ct)) {
-                    schema.required(new ArrayList<>(ct.getFields().keySet()));
-                }
-            }
-            schema = nestAsItemIfCollection(schema, t);
-            schema.description(getDMNTypeSchemaDescription(t));
-            return schema;
+            return schemaFromCompositeType((CompositeTypeImpl) t);
         }
         if (t instanceof SimpleTypeImpl) {
-            DMNType baseType = t.getBaseType();
-            if (baseType == null) {
-                throw new IllegalStateException();
-            }
-            Schema schema = refOrBuiltinSchema(baseType);
-            if (t.getAllowedValues() != null && !t.getAllowedValues().isEmpty()) {
-                FEELSchemaEnum.parseAllowedValuesIntoSchema(schema, t.getAllowedValues());
-            }
-            schema = nestAsItemIfCollection(schema, t);
-            schema.description(getDMNTypeSchemaDescription(t));
-            return schema;
+            return schemaFromSimpleType((SimpleTypeImpl) t);
         }
         throw new UnsupportedOperationException();
+    }
+
+    private Schema schemaFromSimpleType(SimpleTypeImpl t) {
+        DMNType baseType = t.getBaseType();
+        if (baseType == null) {
+            throw new IllegalStateException();
+        }
+        Schema schema = refOrBuiltinSchema(baseType);
+        if (t.getAllowedValues() != null && !t.getAllowedValues().isEmpty()) {
+            FEELSchemaEnum.parseAllowedValuesIntoSchema(schema, t.getAllowedValues());
+        }
+        schema = nestAsItemIfCollection(schema, t);
+        schema.description(getDMNTypeSchemaDescription(t));
+        return schema;
+    }
+
+    private Schema schemaFromCompositeType(CompositeTypeImpl ct) {
+        Schema schema = OASFactory.createObject(Schema.class).type(SchemaType.OBJECT);
+        if (ct.getBaseType() == null) { // main case
+            for (Entry<String, DMNType> fkv : ct.getFields().entrySet()) {
+                schema.addProperty(fkv.getKey(), refOrBuiltinSchema(fkv.getValue()));
+            }
+            if (isIOSet(ct)) {
+                schema.required(new ArrayList<>(ct.getFields().keySet()));
+            }
+        } else {
+            if (ct.getBelongingType() == null) {
+                throw new IllegalStateException();
+            }
+            schema = refOrBuiltinSchema(ct.getBaseType()); // an anonymous inner type for a base
+        }
+        schema = nestAsItemIfCollection(schema, ct);
+        schema.description(getDMNTypeSchemaDescription(ct));
+        return schema;
     }
 
     private Schema nestAsItemIfCollection(Schema original, DMNType t) {
