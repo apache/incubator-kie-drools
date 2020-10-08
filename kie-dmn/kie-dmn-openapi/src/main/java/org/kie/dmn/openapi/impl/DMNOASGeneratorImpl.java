@@ -28,14 +28,10 @@ import java.util.Set;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.smallrye.openapi.runtime.io.JsonUtil;
 import io.smallrye.openapi.runtime.io.schema.SchemaWriter;
-import org.eclipse.microprofile.openapi.OASFactory;
 import org.eclipse.microprofile.openapi.models.media.Schema;
-import org.eclipse.microprofile.openapi.models.media.Schema.SchemaType;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNType;
-import org.kie.dmn.core.impl.BaseDMNTypeImpl;
 import org.kie.dmn.core.impl.CompositeTypeImpl;
-import org.kie.dmn.core.impl.SimpleTypeImpl;
 import org.kie.dmn.openapi.DMNOASGenerator;
 import org.kie.dmn.openapi.NamingPolicy;
 import org.kie.dmn.openapi.model.DMNModelIOSets;
@@ -65,7 +61,7 @@ public class DMNOASGeneratorImpl implements DMNOASGenerator {
         }
         assignNamesToIOSets();
         determineNamingPolicy();
-        generateSchemas();
+        schemas.putAll(new DMNTypeSchemas(dmnModels, ioSets, typesIndex, namingPolicy).generateSchemas());
         prepareSerializaton();
         return new DMNOASResult(jsonSchema, ioSets, schemas, namingPolicy);
     }
@@ -78,81 +74,6 @@ public class DMNOASGeneratorImpl implements DMNOASGenerator {
             SchemaWriter.writeSchema(definitions, kv.getValue(), namingPolicy.getName(kv.getKey()));
         }
         jsonSchema = tree;
-    }
-
-    private void generateSchemas() {
-        for (DMNType t : typesIndex) {
-            Schema schema = schemaFromType(t);
-            schemas.put(t, schema);
-        }
-    }
-
-    private Schema refOrBuiltinSchema(DMNType t) {
-        if (DMNTypeUtils.isFEELBuiltInType(t)) {
-            return FEELBuiltinTypeSchemas.from(t);
-        }
-        if (typesIndex.contains(t)) {
-            Schema schema = OASFactory.createObject(Schema.class).ref(namingPolicy.getRef(t));
-            return schema;
-        }
-        throw new UnsupportedOperationException();
-    }
-
-    private boolean isIOSet(DMNType t) {
-        return t.getName().contains("InputSet"); // TODO review to be more robust (check in IOSets)
-    }
-
-    private Schema schemaFromType(DMNType t) {
-        if (t instanceof CompositeTypeImpl) {
-            CompositeTypeImpl ct = (CompositeTypeImpl) t;
-            Schema schema = OASFactory.createObject(Schema.class).type(SchemaType.OBJECT);
-            if (ct.getBaseType() != null) {
-                if (ct.getBelongingType() == null) {
-                    throw new IllegalStateException();
-                }
-                schema = refOrBuiltinSchema(ct.getBaseType()); // an anonymous inner type for a base
-            } else {
-                for (Entry<String, DMNType> fkv : ct.getFields().entrySet()) {
-                    schema.addProperty(fkv.getKey(), refOrBuiltinSchema(fkv.getValue()));
-                }
-                if (isIOSet(ct)) {
-                    schema.required(new ArrayList<>(ct.getFields().keySet()));
-                }
-            }
-            schema = nestAsItemIfCollection(schema, t);
-            schema.description(getDMNTypeSchemaDescription(t));
-            return schema;
-        }
-        if (t instanceof SimpleTypeImpl) {
-            DMNType baseType = t.getBaseType();
-            if (baseType == null) {
-                throw new IllegalStateException();
-            }
-            Schema schema = refOrBuiltinSchema(baseType);
-            if (t.getAllowedValues() != null && !t.getAllowedValues().isEmpty()) {
-                FEELAllowedValuesAsSchemaEnumeration.parseAllowedValuesIntoSchema(schema, t.getAllowedValues());
-            }
-            schema = nestAsItemIfCollection(schema, t);
-            schema.description(getDMNTypeSchemaDescription(t));
-            return schema;
-        }
-        throw new UnsupportedOperationException();
-    }
-
-    private Schema nestAsItemIfCollection(Schema original, DMNType t) {
-        if (t.isCollection()) {
-            return OASFactory.createObject(Schema.class).type(SchemaType.ARRAY).items(original);
-        } else {
-            return original;
-        }
-    }
-
-    private String getDMNTypeSchemaDescription(DMNType t) {
-        if (((BaseDMNTypeImpl) t).getBelongingType() == null) { // internals for anonymous inner types.
-            return t.toString();
-        } else {
-            return null;
-        }
     }
 
     private void determineNamingPolicy() {
