@@ -118,8 +118,6 @@ class OptaPlannerProcessor {
         } else {
             solverConfig = new SolverConfig();
         }
-        // The deployment classLoader must not escape to runtime
-        solverConfig.setClassLoader(null);
 
         applySolverProperties(recorderContext, indexView, solverConfig);
 
