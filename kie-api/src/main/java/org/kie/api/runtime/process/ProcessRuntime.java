@@ -19,6 +19,8 @@ package org.kie.api.runtime.process;
 import java.util.Collection;
 import java.util.Map;
 
+import org.kie.api.runtime.rule.AgendaFilter;
+
 /**
  * The {@link ProcessRuntime} is a super-interface for all {@link org.kie.api.runtime.KieSession}s.
  *
@@ -47,6 +49,32 @@ public interface ProcessRuntime {
      */
     ProcessInstance startProcess(String processId,
                                  Map<String, Object> parameters);
+
+    /**
+     * Start a new process instance.  The process (definition) that should
+     * be used is referenced by the given process id.
+     *
+     * @param processId  The id of the process that should be started
+     * @param agendaFilter filters the Matches that may fire
+     * @return the <code>ProcessInstance</code> that represents the instance of the process that was started
+     */
+    ProcessInstance startProcess( String processId,
+                                  AgendaFilter agendaFilter );
+
+    /**
+     * Start a new process instance.  The process (definition) that should
+     * be used is referenced by the given process id.  Parameters can be passed
+     * to the process instance (as name-value pairs), and these will be set
+     * as variables of the process instance.
+     *
+     * @param processId  the id of the process that should be started
+     * @param parameters  the process variables that should be set when starting the process instance
+     * @param agendaFilter filters the Matches that may fire
+     * @return the <code>ProcessInstance</code> that represents the instance of the process that was started
+     */
+    ProcessInstance startProcess(String processId,
+                                 Map<String, Object> parameters,
+                                 AgendaFilter agendaFilter);
 
     /**
      * Starts a new process instances starting from the nodes given

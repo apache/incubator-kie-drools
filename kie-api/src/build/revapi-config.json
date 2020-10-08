@@ -88,7 +88,25 @@
                   "methodName": "getAll",
                   "elementKind": "method",
                   "justification": "service discovery refactor"
-                }
+                },
+                {
+                  "code": "java.method.addedToInterface",
+                  "new": "method org.kie.api.runtime.process.ProcessInstance org.kie.api.runtime.process.ProcessRuntime::startProcess(java.lang.String, java.util.Map<java.lang.String, java.lang.Object>, org.kie.api.runtime.rule.AgendaFilter)",
+                  "package": "org.kie.api.runtime.process",
+                  "classSimpleName": "ProcessRuntime",
+                  "methodName": "startProcess",
+                  "elementKind": "method",
+                  "justification": "allow to uase an agenda filter when starting a process"
+                },
+                {
+                  "code": "java.method.addedToInterface",
+                  "new": "method org.kie.api.runtime.process.ProcessInstance org.kie.api.runtime.process.ProcessRuntime::startProcess(java.lang.String, org.kie.api.runtime.rule.AgendaFilter)",
+                  "package": "org.kie.api.runtime.process",
+                  "classSimpleName": "ProcessRuntime",
+                  "methodName": "startProcess",
+                  "elementKind": "method",
+                  "justification": "allow to uase an agenda filter when starting a process"
+               }
             ]
         }
     }
