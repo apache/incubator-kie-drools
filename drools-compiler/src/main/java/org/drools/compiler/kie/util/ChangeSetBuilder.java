@@ -42,6 +42,7 @@ import org.drools.core.io.impl.ByteArrayResource;
 import org.drools.core.util.StringUtils;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.ChangeType;
+import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.ResourceChange;
 import org.kie.internal.builder.ResourceChangeSet;
 import org.slf4j.Logger;
@@ -130,8 +131,9 @@ public class ChangeSetBuilder {
 
         if (original.getKieModuleModel() != null) {
             for (String kieBaseName : original.getKieModuleModel().getKieBaseModels().keySet()) {
-                if ( currentJar.getKnowledgeBuilderForKieBase( kieBaseName ) == null ) {
-                    currentJar.cacheKnowledgeBuilderForKieBase( kieBaseName, original.getKnowledgeBuilderForKieBase( kieBaseName ) );
+                KnowledgeBuilder originalKbuilder = original.getKnowledgeBuilderForKieBase( kieBaseName );
+                if ( originalKbuilder != null && currentJar.getKnowledgeBuilderForKieBase( kieBaseName ) == null ) {
+                    currentJar.cacheKnowledgeBuilderForKieBase( kieBaseName, originalKbuilder );
                 }
             }
         }
