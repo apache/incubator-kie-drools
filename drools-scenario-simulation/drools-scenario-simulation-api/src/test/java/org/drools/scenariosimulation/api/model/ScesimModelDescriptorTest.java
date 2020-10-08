@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -157,9 +158,9 @@ public class ScesimModelDescriptorTest {
                 .addFactMapping(FactIdentifier.create("Test", String.class.getCanonicalName()), ExpressionIdentifier.create("test expression 3", FactMappingType.EXPECT));
         scesimModelDescriptor
                 .addFactMapping(FactIdentifier.create("tEsT", String.class.getCanonicalName()), ExpressionIdentifier.create("test expression 4", FactMappingType.EXPECT));
-        final List<FactMapping> retrieved = scesimModelDescriptor.getFactMappingsByFactName("test");
+        final Stream<FactMapping> retrieved = scesimModelDescriptor.getFactMappingsByFactName("test");
         assertNotNull(retrieved);
-        assertEquals(5, retrieved.size());
+        assertEquals(5, retrieved.count());
     }
 
     @Test
