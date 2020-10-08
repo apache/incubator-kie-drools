@@ -17,13 +17,17 @@
 package org.kie.dmn.openapi;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class JacksonUtils {
+
+    private static final Logger LOG = LoggerFactory.getLogger(JacksonUtils.class);
 
     public static void printoutJSON(Object tree) {
         ObjectMapper mapper = new ObjectMapper();
         try {
-            System.out.println(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(tree));
+            LOG.debug(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(tree));
         } catch (Exception e) {
             e.printStackTrace();
         }
