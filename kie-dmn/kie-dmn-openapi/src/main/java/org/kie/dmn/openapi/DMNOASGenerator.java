@@ -86,17 +86,7 @@ public class DMNOASGenerator {
 
     private Schema refOrBuiltinSchema(DMNType t) {
         if (DMNTypeUtils.isFEELBuiltInType(t)) {
-            if (t.getName().equals("string")) {
-                Schema schema = OASFactory.createObject(Schema.class).description("FEEL:string");
-                schema.setType(SchemaType.STRING);
-                return schema;
-            }
-            if (t.getName().equals("number")) {
-                Schema schema = OASFactory.createObject(Schema.class).description("FEEL:number");
-                schema.setType(SchemaType.NUMBER);
-                return schema;
-            }
-            throw new UnsupportedOperationException();
+            return FEELBuiltinTypeSchemas.from(t);
         }
         if (typesIndex.contains(t)) {
             Schema schema = OASFactory.createObject(Schema.class).ref(namingPolicy.getRef(t));

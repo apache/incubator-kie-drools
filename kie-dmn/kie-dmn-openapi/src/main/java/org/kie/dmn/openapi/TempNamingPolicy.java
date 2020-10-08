@@ -21,6 +21,7 @@ import org.kie.dmn.api.core.DMNType;
 public class TempNamingPolicy {
 
     public String getName(DMNType type) {
+        // TODO what if an anonymous inner type?
         return type.getName();
     }
 
