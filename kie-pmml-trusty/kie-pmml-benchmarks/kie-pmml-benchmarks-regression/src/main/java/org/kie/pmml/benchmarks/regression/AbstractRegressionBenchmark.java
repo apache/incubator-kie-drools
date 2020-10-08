@@ -61,7 +61,7 @@ public abstract class AbstractRegressionBenchmark {
         KieBase kbase = ks.newKieContainer(relId).getKieBase();
         KieSession session = kbase.newKieSession();
         pmmlRuntime = session.getKieRuntime(PMMLRuntimeInternal.class);
-        model = pmmlRuntime.getModel(modelName).orElseThrow(() -> new KiePMMLException("Failed to retrieve the model"));
+        model = pmmlRuntime.getKiePMMLModel(modelName).orElseThrow(() -> new KiePMMLException("Failed to retrieve the model"));
     }
 
     protected PMML4Result evaluate() {

@@ -31,7 +31,7 @@ import org.kie.api.KieBase;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.runtime.KieRuntimeFactory;
-import org.kie.pmml.commons.enums.ResultCode;
+import org.kie.pmml.api.enums.ResultCode;
 import org.kie.pmml.api.exceptions.KieEnumException;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
@@ -50,8 +50,8 @@ import org.kie.pmml.models.mining.model.segmentation.KiePMMLSegment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.pmml.commons.enums.ResultCode.FAIL;
-import static org.kie.pmml.commons.enums.ResultCode.OK;
+import static org.kie.pmml.api.enums.ResultCode.FAIL;
+import static org.kie.pmml.api.enums.ResultCode.OK;
 import static org.kie.pmml.evaluator.core.utils.Converter.getUnwrappedParametersMap;
 
 /**

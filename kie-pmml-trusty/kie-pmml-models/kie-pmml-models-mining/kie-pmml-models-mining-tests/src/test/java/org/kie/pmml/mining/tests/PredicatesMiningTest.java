@@ -30,8 +30,8 @@ import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.evaluator.api.executor.PMMLRuntimeInternal;
 import org.kie.pmml.models.tests.AbstractPMMLTest;
 
-import static org.kie.pmml.commons.enums.ResultCode.FAIL;
-import static org.kie.pmml.commons.enums.ResultCode.OK;
+import static org.kie.pmml.api.enums.ResultCode.FAIL;
+import static org.kie.pmml.api.enums.ResultCode.OK;
 
 @RunWith(Parameterized.class)
 public class PredicatesMiningTest extends AbstractPMMLTest {
