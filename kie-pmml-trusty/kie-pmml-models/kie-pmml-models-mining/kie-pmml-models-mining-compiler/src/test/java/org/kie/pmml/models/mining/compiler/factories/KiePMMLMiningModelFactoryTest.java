@@ -109,7 +109,7 @@ public class KiePMMLMiningModelFactoryTest extends AbstractKiePMMLFactoryTest {
                                                  targetField,
                                                  segmentationClass);
         Map<Integer, Expression> superInvocationExpressionsMap = new HashMap<>();
-        superInvocationExpressionsMap.put(0, new NameExpr(String.format("\"%s\"", pmmlModel.name())));
+        superInvocationExpressionsMap.put(0, new NameExpr(String.format("\"%s\"", model.getModelName())));
         Map<String, Expression> assignExpressionMap = new HashMap<>();
         assignExpressionMap.put("targetField", new StringLiteralExpr(targetField));
         assignExpressionMap.put("miningFunction",
