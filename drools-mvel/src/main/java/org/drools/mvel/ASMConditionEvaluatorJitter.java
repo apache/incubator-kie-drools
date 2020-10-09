@@ -468,7 +468,7 @@ public class ASMConditionEvaluatorJitter {
                             invokeVirtual(type, "equals", boolean.class, Object.class);
                         }
                     } else {
-                        if (type == CoercingComparisonType.class) {
+                        if (type == CoercingComparisonType.class || type == Double.class) {
                             mv.visitLdcInsn(operation.toString());
                             invokeStatic(EvaluatorHelper.class, "coercingComparison", boolean.class, Object.class, Object.class, String.class);
                         } else {
