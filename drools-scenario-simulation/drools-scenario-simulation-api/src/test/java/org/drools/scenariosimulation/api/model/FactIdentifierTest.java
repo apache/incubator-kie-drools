@@ -24,22 +24,22 @@ public class FactIdentifierTest {
 
     @Test
     public void getClassNameWithoutPackage() {
-        commonGetClassNameWithoutPackage("test", "com.Test");
+        commonGetClassNameWithoutPackage("test", "com.Test", "Test");
     }
 
     @Test
     public void getClassNameWithoutPackage_LongPackage() {
-        commonGetClassNameWithoutPackage("test", "com.project.Test");
+        commonGetClassNameWithoutPackage("test", "com.project.Test", "Test");
     }
 
     @Test
     public void getClassNameWithoutPackage_NoPackage() {
-        commonGetClassNameWithoutPackage("test", "Test");
+        commonGetClassNameWithoutPackage("test", "Test", "Test");
     }
 
-    private void commonGetClassNameWithoutPackage(String name, String className) {
+    private void commonGetClassNameWithoutPackage(String name, String className, String expectedClassName) {
         FactIdentifier factIdentifier = new FactIdentifier(name, className);
-        assertEquals(name, factIdentifier.getClassNameWithoutPackage());
+        assertEquals(expectedClassName, factIdentifier.getClassNameWithoutPackage());
     }
 
     @Test
