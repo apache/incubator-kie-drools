@@ -54,7 +54,7 @@ public class KiePMMLScorecardModel extends KiePMMLDroolsModel {
     }
 
     protected void populateWithOutputFields(PMML4Result toPopulate) {
-        if (outputFields != null) {
+        if (kiePMMLOutputFields != null) {
             final Map<String, Double> sortedByValue
                     = outputFieldsMap.entrySet()
                     .stream()
@@ -63,7 +63,7 @@ public class KiePMMLScorecardModel extends KiePMMLDroolsModel {
                     .sorted(Map.Entry.<String, Double>comparingByValue().reversed())
                     .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
             final List<String> orderedReasonCodes = new ArrayList<>(sortedByValue.keySet());
-            for (KiePMMLOutputField outputField : outputFields) {
+            for (KiePMMLOutputField outputField : kiePMMLOutputFields) {
                 switch (outputField.getResultFeature()) {
                     case REASON_CODE:
                         if (outputField.getRank() != null) {

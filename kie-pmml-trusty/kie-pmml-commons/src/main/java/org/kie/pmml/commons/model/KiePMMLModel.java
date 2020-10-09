@@ -43,8 +43,8 @@ public abstract class KiePMMLModel extends AbstractKiePMMLComponent implements P
     protected Map<String, Object> missingValueReplacementMap = new HashMap<>();
     protected Map<String, Function<List<KiePMMLNameValue>, Object>> commonTransformationsMap = new HashMap<>();
     protected Map<String, Function<List<KiePMMLNameValue>, Object>> localTransformationsMap = new HashMap<>();
-    private List<MiningField> miningFields = new ArrayList<>();
-    private List<OutputField> outputFields = new ArrayList<>();
+    protected List<MiningField> miningFields = new ArrayList<>();
+    protected List<OutputField> outputFields = new ArrayList<>();
 
     protected KiePMMLModel(String name, List<KiePMMLExtension> extensions) {
         super(name, extensions);

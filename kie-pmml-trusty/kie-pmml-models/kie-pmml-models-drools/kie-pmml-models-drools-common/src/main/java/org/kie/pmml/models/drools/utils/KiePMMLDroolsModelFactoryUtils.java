@@ -48,7 +48,7 @@ import static org.kie.pmml.commons.Constants.MISSING_DEFAULT_CONSTRUCTOR;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.compiler.commons.factories.KiePMMLOutputFieldFactory.getOutputFields;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
-import static org.kie.pmml.compiler.commons.utils.KiePMMLModelFactoryUtils.addOutputFieldsPopulation;
+import static org.kie.pmml.compiler.commons.utils.KiePMMLModelFactoryUtils.addKiePMMLOutputFieldsPopulation;
 import static org.kie.pmml.compiler.commons.utils.ModelUtils.getTargetFieldName;
 
 /**
@@ -88,7 +88,7 @@ public class KiePMMLDroolsModelFactoryUtils {
         String targetField = getTargetFieldName(dataDictionary, model).orElse(null);
         List<KiePMMLOutputField> outputFields = getOutputFields(model);
         setConstructor(model, constructorDeclaration, modelTemplate.getName(), targetField, miningFunction);
-        addOutputFieldsPopulation(constructorDeclaration.getBody(), outputFields);
+        addKiePMMLOutputFieldsPopulation(constructorDeclaration.getBody(), outputFields);
         addFieldTypeMapPopulation(constructorDeclaration.getBody(), fieldTypeMap);
         final MethodDeclaration getKModulePackageNameMethod = modelTemplate.getMethodsByName(GETKMODULEPACKAGENAME_METHOD).get(0);
         populateGetKModulePackageName(getKModulePackageNameMethod, packageName);

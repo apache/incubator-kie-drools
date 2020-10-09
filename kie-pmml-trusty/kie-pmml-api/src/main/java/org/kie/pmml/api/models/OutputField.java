@@ -25,32 +25,29 @@ import org.kie.pmml.api.enums.RESULT_FEATURE;
 public class OutputField {
 
     private final String name;
-    private final String fieldRef;
-    private final OP_TYPE optype;
+    private final OP_TYPE opType;
     private final DATA_TYPE dataType;
     private final String targetField;
-    private final RESULT_FEATURE feature;
+    private final RESULT_FEATURE resultFeature;
 
-    public OutputField(String name, String fieldRef, OP_TYPE optype, DATA_TYPE dataType, String targetField,
-                       RESULT_FEATURE feature) {
+    public OutputField(final String name,
+                       final OP_TYPE opType,
+                       final DATA_TYPE dataType,
+                       final String targetField,
+                       final RESULT_FEATURE resultFeature) {
         this.name = name;
-        this.fieldRef = fieldRef;
-        this.optype = optype;
+        this.opType = opType;
         this.dataType = dataType;
         this.targetField = targetField;
-        this.feature = feature;
+        this.resultFeature = resultFeature;
     }
 
     public String getName() {
         return name;
     }
 
-    public String getFieldRef() {
-        return fieldRef;
-    }
-
-    public OP_TYPE getOptype() {
-        return optype;
+    public OP_TYPE getOpType() {
+        return opType;
     }
 
     public DATA_TYPE getDataType() {
@@ -61,7 +58,7 @@ public class OutputField {
         return targetField;
     }
 
-    public RESULT_FEATURE getFeature() {
-        return feature;
+    public RESULT_FEATURE getResultFeature() {
+        return resultFeature;
     }
 }

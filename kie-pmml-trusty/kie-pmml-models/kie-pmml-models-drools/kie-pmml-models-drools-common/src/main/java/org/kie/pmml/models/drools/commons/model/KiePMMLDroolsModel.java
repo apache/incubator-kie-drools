@@ -49,7 +49,7 @@ public abstract class KiePMMLDroolsModel extends KiePMMLModel {
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLDroolsModel.class);
 
     private static final AgendaEventListener agendaEventListener = getAgendaEventListener(logger);
-    protected List<KiePMMLOutputField> outputFields = new ArrayList<>();
+    protected List<KiePMMLOutputField> kiePMMLOutputFields = new ArrayList<>();
     /**
      * Map between the original field name and the generated type.
      */
@@ -94,7 +94,7 @@ public abstract class KiePMMLDroolsModel extends KiePMMLModel {
     @Override
     public String toString() {
         return new StringJoiner(", ", KiePMMLDroolsModel.class.getSimpleName() + "[", "]")
-                .add("outputFields=" + outputFields)
+                .add("kiePMMLOutputFields=" + kiePMMLOutputFields)
                 .add("fieldTypeMap=" + fieldTypeMap)
                 .add("pmmlMODEL=" + pmmlMODEL)
                 .add("miningFunction=" + miningFunction)
@@ -117,13 +117,13 @@ public abstract class KiePMMLDroolsModel extends KiePMMLModel {
             return false;
         }
         KiePMMLDroolsModel that = (KiePMMLDroolsModel) o;
-        return Objects.equals(outputFields, that.outputFields) &&
+        return Objects.equals(kiePMMLOutputFields, that.kiePMMLOutputFields) &&
                 Objects.equals(fieldTypeMap, that.fieldTypeMap);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(outputFields, fieldTypeMap);
+        return Objects.hash(kiePMMLOutputFields, fieldTypeMap);
     }
 
     private PMML4Result getPMML4Result(final String targetField) {
@@ -145,7 +145,7 @@ public abstract class KiePMMLDroolsModel extends KiePMMLModel {
         }
 
         public Builder<T> withOutputFields(List<KiePMMLOutputField> outputFields) {
-            toBuild.outputFields = outputFields;
+            toBuild.kiePMMLOutputFields = outputFields;
             return this;
         }
     }

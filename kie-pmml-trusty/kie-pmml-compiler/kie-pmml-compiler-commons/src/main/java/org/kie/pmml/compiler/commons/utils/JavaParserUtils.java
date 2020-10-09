@@ -50,6 +50,16 @@ public class JavaParserUtils {
         }
     }
 
+    public static CompilationUnit getFromSource(String source) {
+        try {
+            return StaticJavaParser.parse(source);
+        } catch (ParseProblemException e) {
+            throw new KiePMMLInternalException(String.format("Failed to parse\r\n%s\r\ndue to %s", source, e.getMessage()), e);
+        } catch (Exception e) {
+            throw new ExternalException(String.format("Failed to parse\r\n%s\r\ndue to %s", source, e.getMessage()), e);
+        }
+    }
+
     /**
      * @param className
      * @param packageName

@@ -15,21 +15,27 @@
  */
 package org.kie.pmml.compiler.commons.mocks;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
+import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.commons.model.KiePMMLExtension;
 import org.kie.pmml.commons.model.KiePMMLModel;
-import org.kie.pmml.api.enums.PMML_MODEL;
 
 /**
  * <b>Fake</b> model used for testing. It is mapped to <code>PMML_MODEL.TEST_MODEL</code>
  */
-public class KiePMMLTestingModel extends KiePMMLModel {
+public class KiePMMLTestModel extends KiePMMLModel {
 
     public static final PMML_MODEL PMML_MODEL_TYPE = PMML_MODEL.TEST_MODEL;
 
-    protected KiePMMLTestingModel(String name, List<KiePMMLExtension> extensions) {
+    public KiePMMLTestModel() {
+        super(UUID.randomUUID().toString(), Collections.emptyList());
+    }
+
+    protected KiePMMLTestModel(String name, List<KiePMMLExtension> extensions) {
         super(name, extensions);
     }
 
