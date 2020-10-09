@@ -24,6 +24,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 /**
  * <code>ScesimModelDescriptor</code> describes the template of a concrete <code>AbstractScesimModel</code>
@@ -84,14 +85,13 @@ public class ScesimModelDescriptor {
                         .append("' and expressionIdentifier '").append(expressionIdentifier.getName()).append("'").toString()));
     }
 
-    public List<FactMapping> getFactMappingsByFactName(String factName) {
+    public Stream<FactMapping> getFactMappingsByFactName(String factName) {
         return internalFilter(e -> e.getFactIdentifier().getName().equalsIgnoreCase(factName));
     }
 
     public Optional<FactMapping> getFactMapping(FactIdentifier factIdentifier, ExpressionIdentifier ei) {
-        List<FactMapping> factMappings = internalFilter(e -> Objects.equals(e.getExpressionIdentifier(), ei) &&
-                Objects.equals(e.getFactIdentifier(), factIdentifier));
-        return factMappings.stream().findFirst();
+        return internalFilter(e -> Objects.equals(e.getExpressionIdentifier(), ei) &&
+                Objects.equals(e.getFactIdentifier(), factIdentifier)).findFirst();
     }
 
     /**
@@ -138,7 +138,7 @@ public class ScesimModelDescriptor {
         factMappings.clear();
     }
 
-    private List<FactMapping> internalFilter(Predicate<FactMapping> predicate) {
-        return factMappings.stream().filter(predicate).collect(Collectors.toList());
+    private Stream<FactMapping> internalFilter(Predicate<FactMapping> predicate) {
+        return factMappings.stream().filter(predicate);
     }
 }

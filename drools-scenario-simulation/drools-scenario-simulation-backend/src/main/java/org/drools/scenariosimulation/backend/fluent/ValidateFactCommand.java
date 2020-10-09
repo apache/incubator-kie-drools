@@ -36,7 +36,7 @@ public class ValidateFactCommand implements ExecutableCommand<Void> {
     public Void execute(Context context) {
         KieSession ksession = ((RegistryContext) context).lookup(KieSession.class);
         Collection<?> objects = ksession.getObjects(new ConditionFilter(factToCheck));
-        if (objects.size() > 0) {
+        if (!objects.isEmpty()) {
             factToCheck.forEach(fact -> fact.getScenarioResult().setResult(true));
         } else {
             factToCheck.forEach(fact -> fact.getScenarioResult().getFactMappingValue().setExceptionMessage("There is no instance which satisfies the expected conditions"));

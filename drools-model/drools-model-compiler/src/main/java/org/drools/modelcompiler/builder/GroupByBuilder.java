@@ -212,34 +212,35 @@ public class GroupByBuilder {
 
     private Consequence buildGroupCreationConsequence( Variable<Object> var_$key ) {
         org.drools.model.Pattern<Object>[] groupingPatterns = groupByPattern.getGroupingPatterns();
-        if (groupingPatterns.length == 1) {
-            return D.on( var_$key ).execute( ( org.drools.model.Drools drools, Object $key ) ->
-                    drools.insert( new GroupKey( groupByPattern.getTopic(), $key ) )
-            ).get();
+        switch (groupingPatterns.length) {
+            case 1:
+                return D.on( var_$key ).execute( ( org.drools.model.Drools drools, Object $key ) ->
+                        drools.insert( new GroupKey( groupByPattern.getTopic(), $key ) )
+                ).get();
+            case 2:
+                return D.on( groupingPatterns[0].getPatternVariable(), groupingPatterns[1].getPatternVariable() )
+                        .execute( ( org.drools.model.Drools drools, Object obj1, Object obj2 ) ->
+                                drools.insert( new GroupKey( groupByPattern.getTopic(),
+                                        groupByPattern.getKey( obj1, obj2 ) ) )
+                        ).get();
+            case 3:
+                return D.on( groupingPatterns[0].getPatternVariable(), groupingPatterns[1].getPatternVariable(),
+                        groupingPatterns[2].getPatternVariable() )
+                        .execute( ( org.drools.model.Drools drools, Object obj1, Object obj2, Object obj3 ) ->
+                                drools.insert( new GroupKey( groupByPattern.getTopic(),
+                                        groupByPattern.getKey( obj1, obj2, obj3 ) ) )
+                        ).get();
+            case 4:
+                return D.on( groupingPatterns[0].getPatternVariable(), groupingPatterns[1].getPatternVariable(),
+                        groupingPatterns[2].getPatternVariable(), groupingPatterns[3].getPatternVariable() )
+                        .execute( ( org.drools.model.Drools drools, Object obj1, Object obj2, Object obj3, Object obj4 ) ->
+                                drools.insert( new GroupKey( groupByPattern.getTopic(),
+                                        groupByPattern.getKey( obj1, obj2, obj3, obj4 ) ) )
+                        ).get();
+            default:
+                throw new UnsupportedOperationException("GroupBy is implemented with up to 4 patterns, but " +
+                        groupingPatterns.length + " asked for.");
         }
-
-        if (groupingPatterns.length == 2) {
-            return D.on( groupingPatterns[0].getPatternVariable(), groupingPatterns[1].getPatternVariable() )
-                    .execute( ( org.drools.model.Drools drools, Object obj1, Object obj2 ) ->
-                            drools.insert( new GroupKey( groupByPattern.getTopic(), groupByPattern.getKey( obj1, obj2 ) ) )
-                    ).get();
-        }
-
-        if (groupingPatterns.length == 3) {
-            return D.on( groupingPatterns[0].getPatternVariable(), groupingPatterns[1].getPatternVariable(), groupingPatterns[2].getPatternVariable() )
-                    .execute( ( org.drools.model.Drools drools, Object obj1, Object obj2, Object obj3 ) ->
-                            drools.insert( new GroupKey( groupByPattern.getTopic(), groupByPattern.getKey( obj1, obj2, obj3 ) ) )
-                    ).get();
-        }
-
-        if (groupingPatterns.length == 3) {
-            return D.on( groupingPatterns[0].getPatternVariable(), groupingPatterns[1].getPatternVariable(), groupingPatterns[2].getPatternVariable(), groupingPatterns[3].getPatternVariable() )
-                    .execute( ( org.drools.model.Drools drools, Object obj1, Object obj2, Object obj3, Object obj4 ) ->
-                            drools.insert( new GroupKey( groupByPattern.getTopic(), groupByPattern.getKey( obj1, obj2, obj3, obj4 ) ) )
-                    ).get();
-        }
-
-        throw new UnsupportedOperationException("GroupBy is implemented with up to 4 patterns");
     }
 
     private Rule deletingGroupRule() {

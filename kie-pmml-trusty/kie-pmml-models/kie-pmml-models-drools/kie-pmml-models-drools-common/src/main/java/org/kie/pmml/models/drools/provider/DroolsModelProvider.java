@@ -61,7 +61,7 @@ public abstract class DroolsModelProvider<T extends Model, E extends KiePMMLDroo
         KiePMMLDroolsAST kiePMMLDroolsAST = getKiePMMLDroolsASTCommon(dataDictionary, transformationDictionary, model, fieldTypeMap);
         E toReturn = getKiePMMLDroolsModel(dataDictionary, transformationDictionary, model, fieldTypeMap);
         PackageDescr packageDescr = getPackageDescr(kiePMMLDroolsAST, toReturn.getKModulePackageName());
-        ((KnowledgeBuilderImpl) kBuilder).addPackage(packageDescr);
+        ((KnowledgeBuilderImpl) kBuilder).addPackageWithoutRete(packageDescr);
         return toReturn;
     }
 
@@ -79,7 +79,7 @@ public abstract class DroolsModelProvider<T extends Model, E extends KiePMMLDroo
             String pkgUUID = getPkgUUID( ((KnowledgeBuilderImpl) kBuilder).getReleaseId(), packageName);
             packageDescr.setPreferredPkgUUID(pkgUUID);
             E toReturn = (E) new KiePMMLDroolsModelWithSources(model.getModelName(), packageName, sourcesMap, packageDescr);
-            ((KnowledgeBuilderImpl) kBuilder).addPackage(packageDescr);
+            ((KnowledgeBuilderImpl) kBuilder).registerPackage(packageDescr);
             return toReturn;
         } catch (Exception e) {
             throw new KiePMMLException(e);

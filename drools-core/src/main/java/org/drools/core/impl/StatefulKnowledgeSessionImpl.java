@@ -1816,14 +1816,21 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         }
     }
 
-    public ProcessInstance startProcess(final String processId) {
+    public ProcessInstance startProcess(String processId) {
         return getProcessRuntime().startProcess( processId );
     }
 
     public ProcessInstance startProcess(String processId,
                                         Map<String, Object> parameters) {
-        return getProcessRuntime().startProcess( processId,
-                                                 parameters );
+        return getProcessRuntime().startProcess( processId, parameters );
+    }
+
+    public ProcessInstance startProcess(String processId, AgendaFilter agendaFilter) {
+        return getProcessRuntime().startProcess( processId, agendaFilter );
+    }
+
+    public ProcessInstance startProcess(String processId, Map<String, Object> parameters, AgendaFilter agendaFilter) {
+        return getProcessRuntime().startProcess( processId, parameters, agendaFilter );
     }
 
     public ProcessInstance createProcessInstance(String processId,
@@ -2131,6 +2138,16 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
         @Override
         public ProcessInstance startProcess( String processId, Map<String, Object> parameters ) {
+            throw new UnsupportedOperationException( );
+        }
+
+        @Override
+        public ProcessInstance startProcess( String processId, AgendaFilter agendaFilter ) {
+            throw new UnsupportedOperationException( );
+        }
+
+        @Override
+        public ProcessInstance startProcess( String processId, Map<String, Object> parameters, AgendaFilter agendaFilter ) {
             throw new UnsupportedOperationException( );
         }
 
