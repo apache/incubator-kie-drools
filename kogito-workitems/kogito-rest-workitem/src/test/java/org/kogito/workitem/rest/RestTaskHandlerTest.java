@@ -154,4 +154,39 @@ public class RestTaskHandlerTest {
         assertTrue(result instanceof ObjectNode);
         assertEquals(1, ((ObjectNode) result).get("num").asInt());
     }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testGetRestTaskHandlerFail() {
+        WebClient webClient = mock(WebClient.class);
+        ObjectMapper mapper = new ObjectMapper();
+        HttpRequest<Buffer> request = mock(HttpRequest.class);
+        AsyncResult<HttpResponse<Buffer>> event = mock(AsyncResult.class);
+        when(event.failed()).thenReturn(true);
+        when(event.cause()).thenReturn(new IllegalStateException("example"));
+        when(webClient.request(HttpMethod.GET, 8080, "localhost", "/results/26/names/pepe"))
+                .thenReturn(request);
+        doAnswer((Answer<Void>) invocation -> {
+            Handler<AsyncResult<HttpResponse<Buffer>>> handler =
+                    (Handler<AsyncResult<HttpResponse<Buffer>>>) invocation.getArgument(0);
+            handler.handle(event);
+            return null;
+        }).when(request).send(any(Handler.class));
+        Map<String, Object> parameters =
+                new HashMap<>();
+        parameters.put("id", new JsonPathResolver("$.id"));
+        parameters.put("name", new JsonPathResolver("$.name"));
+        parameters.put(RestWorkItemHandler.ENDPOINT, "http://localhost:8080/results/{id}/names/{name}");
+        parameters.put(RestWorkItemHandler.METHOD, "GET");
+        parameters.put(RestWorkItemHandler.RESULT_HANDLER, new JSonPathResultHandler());
+        parameters.put(RestWorkItemHandler.PARAMETER, mapper.createObjectNode().put("id", 26).put("name", "pepe"));
+        WorkItem workItem = mock(WorkItem.class);
+        when(workItem.getId()).thenReturn("2");
+        when(workItem.getParameters()).thenReturn(parameters);
+        WorkItemManager manager = mock(WorkItemManager.class);
+        RestWorkItemHandler handler = new RestWorkItemHandler(
+                webClient);
+        handler.executeWorkItem(workItem, manager);
+        verify(manager).abortWorkItem(anyString());
+    }
 }

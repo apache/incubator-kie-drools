@@ -34,6 +34,8 @@ import io.vertx.ext.web.client.WebClient;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class RestWorkItemHandler implements WorkItemHandler {
 
@@ -47,6 +49,8 @@ public class RestWorkItemHandler implements WorkItemHandler {
     public static final String PASSWORD = "password";
     public static final String HOST = "host";
     public static final String PORT = "port";
+
+    private static final Logger logger = LoggerFactory.getLogger(RestWorkItemHandler.class);
 
     // package scoped to allow unit test
     static class RestUnaryOperator implements UnaryOperator<Object> {
@@ -87,28 +91,29 @@ public class RestWorkItemHandler implements WorkItemHandler {
         endPoint = resolvePathParams(endPoint, parameters, resolver);
         URI uri = URI.create(endPoint);
         String host = uri.getHost() != null ? uri.getHost() : hostProp;
-        int port = uri.getPort() > 0? uri.getPort() : Integer.parseInt(portProp);
+        int port = uri.getPort() > 0 ? uri.getPort() : Integer.parseInt(portProp);
         HttpRequest<Buffer> request = client.request(method, port, host, uri.getPath());
         if (user != null && !user.trim().isEmpty() && password != null && !password.trim().isEmpty()) {
             request.basicAuthentication(user, password);
         }
         // execute request
-         Handler<AsyncResult<HttpResponse<Buffer>>> handler = event -> 
-                manager
-                .completeWorkItem(
-                                  workItem.getId(),
-                                  Collections
-                                      .singletonMap(RESULT, resultHandler.apply(inputModel, event.result().bodyAsJsonObject())));
+        Handler<AsyncResult<HttpResponse<Buffer>>> handler = event -> {
+            if (event.failed()) {
+                logger.error("Rest invocation failed", event.cause());
+                manager.abortWorkItem(workItem.getId());
+            } else if (event.result().statusCode() >= 300) {
+                logger.error("Rest invocation returns invalid code {}", event.result().statusCode());
+                manager.abortWorkItem(workItem.getId());
+            } else {
+                manager.completeWorkItem(workItem.getId(), Collections.singletonMap(RESULT, resultHandler.apply(
+                        inputModel, event.result().bodyAsJsonObject())));
+            }
+        };
         if (method == HttpMethod.POST || method == HttpMethod.PUT) {
             // if parameters is empty at this stage, assume post content is the whole input model
             // if not, build a map from parameters remaining
-            Object body = parameters.isEmpty() ? inputModel : parameters
-                .entrySet()
-                .stream()
-                .collect(
-                         Collectors
-                             .toMap(Entry::getKey, e -> resolver.apply(e.getValue())));
-           
+            Object body = parameters.isEmpty() ? inputModel : parameters.entrySet().stream().collect(Collectors.toMap(
+                    Entry::getKey, e -> resolver.apply(e.getValue())));
             request.sendJson(body, handler);
         } else {
             request.send(handler);
@@ -152,8 +157,8 @@ public class RestWorkItemHandler implements WorkItemHandler {
             throw new IllegalArgumentException("Missing required parameter " + paramName);
         }
         if (!type.isAssignableFrom(value.getClass())) {
-            throw new IllegalArgumentException(
-                "Parameter paramName should be of type " + type + " but it is of type " + value.getClass());
+            throw new IllegalArgumentException("Parameter paramName should be of type " + type + " but it is of type " +
+                    value.getClass());
         }
         return type.cast(value);
     }
