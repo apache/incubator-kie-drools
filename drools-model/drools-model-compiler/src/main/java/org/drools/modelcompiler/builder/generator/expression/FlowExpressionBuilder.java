@@ -223,7 +223,8 @@ public class FlowExpressionBuilder extends AbstractExpressionBuilder {
         TypedExpression left = drlxParseResult.getLeft();
         TypedExpression right = drlxParseResult.getRight();
 
-        if (!drlxParseResult.isBetaNode() && !(right.getExpression() instanceof LiteralExpr)) {
+        Expression rightExpression = right.getExpression();
+        if (!drlxParseResult.isBetaNode() && !(rightExpression instanceof LiteralExpr || isStringToDateExpression(rightExpression))) {
             return exprDSL;
         }
 
