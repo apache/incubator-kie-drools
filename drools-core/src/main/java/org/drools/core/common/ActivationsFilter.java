@@ -15,8 +15,12 @@
 
 package org.drools.core.common;
 
+import java.util.Map;
+
+import org.drools.core.marshalling.impl.ActivationKey;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.spi.Activation;
+import org.drools.core.spi.Tuple;
 
 /**
  * A filter interface for agenda activations
@@ -31,4 +35,7 @@ public interface ActivationsFilter {
                    InternalWorkingMemory workingMemory,
                    TerminalNode rtn );
 
+    Map<ActivationKey, Tuple> getTuplesCache();
+
+    void fireRNEAs(InternalWorkingMemory wm);
 }

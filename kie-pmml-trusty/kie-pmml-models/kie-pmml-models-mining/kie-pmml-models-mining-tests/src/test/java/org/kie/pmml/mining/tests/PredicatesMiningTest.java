@@ -28,13 +28,15 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
+import org.kie.pmml.models.tests.AbstractPMMLTest;
 
 import static org.kie.pmml.commons.enums.ResultCode.FAIL;
 import static org.kie.pmml.commons.enums.ResultCode.OK;
 
 @RunWith(Parameterized.class)
-public class PredicatesMiningTest extends AbstractPMMLMiningTest {
+public class PredicatesMiningTest extends AbstractPMMLTest {
 
+    private static final String FILE_NAME = "MiningModel_Predicates.pmml";
     private static final String MODEL_NAME = "PredicatesMining";
     private static final String TARGET_FIELD = "categoricalResult";
     private static PMMLRuntime pmmlRuntime;
@@ -68,7 +70,7 @@ public class PredicatesMiningTest extends AbstractPMMLMiningTest {
 
     @BeforeClass
     public static void setupClass() {
-        pmmlRuntime = getPMMLRuntime(MODEL_NAME);
+        pmmlRuntime = getPMMLRuntime(MODEL_NAME, FILE_NAME);
     }
 
     @Parameterized.Parameters

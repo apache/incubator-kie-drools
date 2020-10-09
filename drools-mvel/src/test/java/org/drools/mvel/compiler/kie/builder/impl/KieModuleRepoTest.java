@@ -294,7 +294,7 @@ public class KieModuleRepoTest {
 
         @Override
         public KieModuleModel getKieModuleModel() {
-            throw new UnsupportedOperationException();
+            return null;
         }
 
         @Override

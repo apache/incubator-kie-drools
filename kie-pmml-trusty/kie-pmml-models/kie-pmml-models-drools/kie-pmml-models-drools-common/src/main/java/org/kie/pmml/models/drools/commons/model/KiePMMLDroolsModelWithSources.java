@@ -19,13 +19,14 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.drools.compiler.lang.descr.PackageDescr;
+import org.kie.pmml.commons.HasRule;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.HasSourcesMap;
 
 /**
  * KIE representation of PMML model that use <b>Drools</b> for implementation
  */
-public class KiePMMLDroolsModelWithSources extends KiePMMLDroolsModel implements HasSourcesMap {
+public class KiePMMLDroolsModelWithSources extends KiePMMLDroolsModel implements HasRule {
 
     protected Map<String, String> sourcesMap;
     private final String kmodulePackageName;
@@ -33,7 +34,7 @@ public class KiePMMLDroolsModelWithSources extends KiePMMLDroolsModel implements
 
     public KiePMMLDroolsModelWithSources(String name, String kmodulePackageName, Map<String, String> sourcesMap, PackageDescr packageDescr) {
         super(name, Collections.emptyList());
-        this.sourcesMap = Collections.unmodifiableMap(sourcesMap);
+        this.sourcesMap = sourcesMap;
         this.kmodulePackageName = kmodulePackageName;
         this.packageDescr = packageDescr;
     }
@@ -50,12 +51,22 @@ public class KiePMMLDroolsModelWithSources extends KiePMMLDroolsModel implements
 
     @Override
     public Map<String, String> getSourcesMap() {
-        return sourcesMap;
+        return Collections.unmodifiableMap(sourcesMap);
+    }
+
+    @Override
+    public void addSourceMap(String key, String value) {
+        sourcesMap.put(key, value);
     }
 
     @Override
     public String getKModulePackageName() {
         return kmodulePackageName;
+    }
+
+    @Override
+    public String getPkgUUID() {
+        return packageDescr.getPreferredPkgUUID().orElseThrow(() -> new KiePMMLException("Missing required PkgUUID in generated PackageDescr"));
     }
 
     public PackageDescr getPackageDescr() {

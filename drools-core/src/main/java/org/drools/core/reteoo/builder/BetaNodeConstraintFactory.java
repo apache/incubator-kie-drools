@@ -54,7 +54,7 @@ public interface BetaNodeConstraintFactory {
             private static final BetaNodeConstraintFactory INSTANCE = createInstance();
 
             private static BetaNodeConstraintFactory createInstance() {
-                BetaNodeConstraintFactory factory = ServiceRegistry.getInstance().get(BetaNodeConstraintFactory.class);
+                BetaNodeConstraintFactory factory = ServiceRegistry.getService(BetaNodeConstraintFactory.class);
                 return factory != null ? factory : new BetaNodeConstraintFactoryImpl();
             }
         }

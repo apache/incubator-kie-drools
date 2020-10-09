@@ -22,7 +22,7 @@ import org.kie.internal.builder.KnowledgeBuilder;
 public class CMMNCaseFactory {
 
     private static class LazyHolder {
-        private static CMMNCaseProvider provider = ServiceRegistry.getInstance().get( CMMNCaseProvider.class );
+        private static CMMNCaseProvider provider = ServiceRegistry.getService( CMMNCaseProvider.class );
     }
 
     public static void configurePackageBuilder(KnowledgeBuilder kBuilder) {

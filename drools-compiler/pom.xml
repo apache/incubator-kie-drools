@@ -92,10 +92,6 @@
       <!-- mdp temporary change, for kmodule.xml, undo once new format is chosen
           scope>test</scope-->
     </dependency>
-    <dependency>
-      <groupId>com.google.protobuf</groupId>
-      <artifactId>protobuf-java</artifactId>
-    </dependency>
 
     <dependency>
       <groupId>com.sun.xml.bind</groupId>

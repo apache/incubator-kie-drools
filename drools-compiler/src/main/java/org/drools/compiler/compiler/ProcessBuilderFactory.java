@@ -39,6 +39,6 @@ public class ProcessBuilderFactory {
     }
 
     private static ProcessBuilderFactoryService initializeProvider() {
-        return ServiceRegistry.getInstance().get( ProcessBuilderFactoryService.class );
+        return ServiceRegistry.getService( ProcessBuilderFactoryService.class );
     }
 }

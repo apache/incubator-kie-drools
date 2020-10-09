@@ -31,7 +31,7 @@ public class KiePMMLRegressionModelWithSources extends KiePMMLRegressionModel im
 
     public KiePMMLRegressionModelWithSources(String modelName, String kmodulePackageName, Map<String, String> sourcesMap) {
         super(modelName);
-        this.sourcesMap = Collections.unmodifiableMap(sourcesMap);
+        this.sourcesMap = sourcesMap;
         this.kmodulePackageName = kmodulePackageName;
     }
 
@@ -47,7 +47,12 @@ public class KiePMMLRegressionModelWithSources extends KiePMMLRegressionModel im
 
     @Override
     public Map<String, String> getSourcesMap() {
-        return sourcesMap;
+        return Collections.unmodifiableMap(sourcesMap);
+    }
+
+    @Override
+    public void addSourceMap(String key, String value) {
+        sourcesMap.put(key, value);
     }
 
     @Override

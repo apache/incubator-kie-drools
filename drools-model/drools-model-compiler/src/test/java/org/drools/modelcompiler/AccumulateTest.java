@@ -2389,4 +2389,41 @@ public class AccumulateTest extends BaseModelTest {
         assertEquals(1, results.size());
         assertEquals(5, results.get(0).intValue());
     }
+
+    @Test
+    public void testFalseNodeSharing() {
+        // DROOLS-5686
+        String str =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "rule R1 when\n" +
+                "  accumulate (\n" +
+                "       Person($var : age), $sum : sum( $var ) " +
+                "         )" +
+                "then\n" +
+                "  insert($sum);\n" +
+                "end\n" +
+                "rule R2 when\n" +
+                "  accumulate (\n" +
+                "       Person($var : name.length), $sum : sum( $var ) " +
+                "         )" +
+                "then\n" +
+                "  insert(\"\" + $sum);\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert( new Person( "Mario", 46 ) );
+        ksession.insert( new Person( "Mark", 44 ) );
+        ksession.insert( new Person( "Luca", 36 ) );
+
+        ksession.fireAllRules();
+
+        List<Number> resultsInt = getObjectsIntoList(ksession, Number.class);
+        assertEquals(1, resultsInt.size());
+        assertEquals(126, resultsInt.get(0).intValue());
+
+        List<String> resultsString = getObjectsIntoList(ksession, String.class);
+        assertEquals(1, resultsString.size());
+        assertEquals("13", resultsString.get(0));
+    }
 }

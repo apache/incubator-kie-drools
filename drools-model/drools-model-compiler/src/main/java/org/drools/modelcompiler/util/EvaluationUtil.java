@@ -62,11 +62,19 @@ public class EvaluationUtil {
     }
 
     public static boolean greaterThanNumbers(Number n1, Number n2) {
-        return n1 != null && n2 != null && Double.compare( n1.doubleValue(), n2.doubleValue() ) > 0;
+        if (n1 == null || n2 == null) {
+            return false;
+        }
+        double d1 = n1.doubleValue();
+        double d2 = n2.doubleValue();
+        if (Double.isNaN(d1) || Double.isNaN(d2)) {
+            return false;
+        }
+        return Double.compare( d1, d2 ) > 0;
     }
 
     public static boolean greaterThanNumbers(Number n1, Object n2) {
-        if(n2 instanceof Number){
+        if (n2 instanceof Number) {
             return greaterThanNumbers(n1, (Number)n2);
         } else {
             throw new UnsupportedOperationException();
@@ -78,11 +86,19 @@ public class EvaluationUtil {
     }
 
     public static boolean lessThanNumbers(Number n1, Number n2) {
-        return n1 != null && n2 != null && Double.compare( n1.doubleValue(), n2.doubleValue() ) < 0;
+        if (n1 == null || n2 == null) {
+            return false;
+        }
+        double d1 = n1.doubleValue();
+        double d2 = n2.doubleValue();
+        if (Double.isNaN(d1) || Double.isNaN(d2)) {
+            return false;
+        }
+        return Double.compare( d1, d2 ) < 0;
     }
 
     public static boolean lessThanNumbers(Number n1, Object n2) {
-        if(n2 instanceof Number){
+        if (n2 instanceof Number) {
             return lessThanNumbers(n1, (Number)n2);
         } else {
             throw new UnsupportedOperationException();

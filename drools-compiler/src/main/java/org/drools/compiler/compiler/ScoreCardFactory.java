@@ -24,7 +24,7 @@ import org.kie.internal.builder.ScoreCardConfiguration;
 public class ScoreCardFactory {
 
     private static class LazyHolder {
-        private static final ScoreCardProvider provider = ServiceRegistry.getInstance().get( ScoreCardProvider.class );
+        private static final ScoreCardProvider provider = ServiceRegistry.getService( ScoreCardProvider.class );
     }
 
     public static String loadFromInputStream(InputStream is, ScoreCardConfiguration configuration) {

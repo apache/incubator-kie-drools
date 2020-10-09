@@ -934,7 +934,7 @@ public class KnowledgeBaseImpl
             }
 
             if ( ! newPkg.getResourceTypePackages().isEmpty() ) {
-                KieWeavers weavers = ServiceRegistry.getInstance().get( KieWeavers.class );
+                KieWeavers weavers = ServiceRegistry.getService( KieWeavers.class );
                 for ( ResourceTypePackage rtkKpg : newPkg.getResourceTypePackages().values() ) {
                     weavers.weave( this, newPkg, rtkKpg );
                 }
@@ -1313,7 +1313,7 @@ public class KnowledgeBaseImpl
         }
 
         if ( ! newPkg.getResourceTypePackages().isEmpty() ) {
-            KieWeavers weavers = ServiceRegistry.getInstance().get(KieWeavers.class);
+            KieWeavers weavers = ServiceRegistry.getService(KieWeavers.class);
             for ( ResourceTypePackage rtkKpg : newPkg.getResourceTypePackages().values() ) {
                 weavers.merge( this, pkg, rtkKpg );
             }

@@ -23,14 +23,19 @@ import org.kie.api.internal.utils.ServiceRegistry;
 
 public interface CoreComponentsBuilder {
 
+    boolean IS_NATIVE_IMAGE = System.getProperty("org.graalvm.nativeimage.imagecode") != null;
+
     String NO_MVEL = "You're trying to compile a Drools asset without mvel. Please add the module org.drools:drools-mvel to your classpath.";
 
     static <T> T throwExceptionForMissingMvel() {
+        if (IS_NATIVE_IMAGE) {
+            return null;
+        }
         throw new RuntimeException(NO_MVEL);
     }
 
     class Holder {
-        private static final CoreComponentsBuilder cBuilder = ServiceRegistry.getInstance().get( CoreComponentsBuilder.class );
+        private static final CoreComponentsBuilder cBuilder = ServiceRegistry.getService( CoreComponentsBuilder.class );
     }
 
     static CoreComponentsBuilder get() {

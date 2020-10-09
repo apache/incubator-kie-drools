@@ -142,7 +142,7 @@ public interface InternalKieModule extends KieModule, Serializable {
 
     default ProjectClassLoader createModuleClassLoader( ClassLoader parent ) {
         if( parent == null ) {
-            ClassLoaderResolver resolver = ServiceRegistry.getInstance().get(ClassLoaderResolver.class);
+            ClassLoaderResolver resolver = ServiceRegistry.getService(ClassLoaderResolver.class);
             if (resolver==null)  {
                 resolver = new NoDepsClassLoaderResolver();
             }

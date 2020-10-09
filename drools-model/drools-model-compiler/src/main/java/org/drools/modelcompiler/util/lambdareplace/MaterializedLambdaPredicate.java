@@ -28,7 +28,6 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.PrimitiveType;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
-import static org.drools.modelcompiler.util.StringUtil.md5Hash;
 
 public class MaterializedLambdaPredicate extends MaterializedLambda {
 
