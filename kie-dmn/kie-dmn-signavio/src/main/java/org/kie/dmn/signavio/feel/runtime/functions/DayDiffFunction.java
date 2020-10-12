@@ -29,9 +29,14 @@ import org.kie.dmn.feel.util.EvalHelper;
 import java.math.BigDecimal;
 import java.time.DateTimeException;
 import java.time.Duration;
-import java.time.temporal.Temporal;
+import java.time.Instant;
+import java.time.LocalDate;
 import java.time.temporal.TemporalAccessor;
 import java.util.function.Function;
+
+import static java.time.ZoneOffset.UTC;
+import static java.time.temporal.ChronoField.INSTANT_SECONDS;
+import static java.time.temporal.ChronoField.NANO_OF_SECOND;
 
 public class DayDiffFunction
         extends BaseFEELFunction {
@@ -47,12 +52,28 @@ public class DayDiffFunction
         if ( datetime2 == null ) {
             return FEELFnResult.ofError( new InvalidParametersEvent( Severity.ERROR, "datetime2", "cannot be null" ) );
         }
-
+    
         try {
-            return FEELFnResult.ofResult( EvalHelper.getBigDecimalOrNull( Duration.between( (Temporal) datetime1, (Temporal) datetime2 ).toDays() ) );
-        } catch ( DateTimeException e ) {
-            return FEELFnResult.ofError( new InvalidParametersEvent( Severity.ERROR, "datetime", "invalid 'date' or 'date and time' parameter", e ) );
+            return FEELFnResult.ofResult(EvalHelper.getBigDecimalOrNull(
+                    Duration.between(
+                            convertToInstant(datetime1),
+                            convertToInstant(datetime2)
+                    ).toDays()));
+        } catch (DateTimeException e) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "datetime",
+                    "invalid 'date' or 'date and time' parameter", e));
         }
+    }
+    
+    private Instant convertToInstant(TemporalAccessor temporal) {
+        return supportsSeconds(temporal) ?
+                Instant.from(temporal) :
+                LocalDate.from(temporal)
+                        .atStartOfDay()
+                        .toInstant(UTC);
+    }
+    private boolean supportsSeconds(TemporalAccessor temporal) {
+        return temporal.isSupported(INSTANT_SECONDS) && temporal.isSupported(NANO_OF_SECOND);
     }
 
     public FEELFnResult<BigDecimal> invoke(@ParameterName("datetime1") String datetime1, @ParameterName("datetime2") String datetime2) {
