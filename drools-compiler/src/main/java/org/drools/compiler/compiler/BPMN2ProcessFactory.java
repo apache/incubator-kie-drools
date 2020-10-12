@@ -22,7 +22,7 @@ import org.kie.internal.builder.KnowledgeBuilder;
 public class BPMN2ProcessFactory {
 
     private static class LazyHolder {
-        private static BPMN2ProcessProvider provider = ServiceRegistry.getInstance().get( BPMN2ProcessProvider.class );
+        private static BPMN2ProcessProvider provider = ServiceRegistry.getService( BPMN2ProcessProvider.class );
     }
 
     public static void configurePackageBuilder(KnowledgeBuilder kBuilder) {

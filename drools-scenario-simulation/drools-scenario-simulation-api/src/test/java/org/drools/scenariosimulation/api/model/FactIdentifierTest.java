@@ -24,37 +24,42 @@ public class FactIdentifierTest {
 
     @Test
     public void getClassNameWithoutPackage() {
-        FactIdentifier factIdentifier = new FactIdentifier("test", "com.Test");
-        assertEquals(factIdentifier.getClassNameWithoutPackage(), "Test");
+        commonGetClassNameWithoutPackage("test", "com.Test", "Test");
     }
 
     @Test
     public void getClassNameWithoutPackage_LongPackage() {
-        FactIdentifier factIdentifier = new FactIdentifier("test", "com.project.Test");
-        assertEquals(factIdentifier.getClassNameWithoutPackage(), "Test");
+        commonGetClassNameWithoutPackage("test", "com.project.Test", "Test");
     }
 
     @Test
     public void getClassNameWithoutPackage_NoPackage() {
-        FactIdentifier factIdentifier = new FactIdentifier("test", "Test");
-        assertEquals(factIdentifier.getClassNameWithoutPackage(), "Test");
+        commonGetClassNameWithoutPackage("test", "Test", "Test");
+    }
+
+    private void commonGetClassNameWithoutPackage(String name, String className, String expectedClassName) {
+        FactIdentifier factIdentifier = new FactIdentifier(name, className);
+        assertEquals(expectedClassName, factIdentifier.getClassNameWithoutPackage());
     }
 
     @Test
     public void getPackageWithoutClassName() {
-        FactIdentifier factIdentifier = new FactIdentifier("test", "com.Test");
-        assertEquals(factIdentifier.getPackageWithoutClassName(), "com");
+        commonGetPackageWithoutClassName("test", "com.Test", "com");
     }
 
     @Test
     public void getPackageWithoutClassName_LongPackage() {
-        FactIdentifier factIdentifier = new FactIdentifier("test", "com.project.Test");
-        assertEquals(factIdentifier.getPackageWithoutClassName(), "com.project");
+        commonGetPackageWithoutClassName("test", "com.project.Test", "com.project");
     }
 
     @Test
     public void getPackageWithoutClassName_NoPackage() {
-        FactIdentifier factIdentifier = new FactIdentifier("test", "Test");
-        assertEquals(factIdentifier.getPackageWithoutClassName(), "");
+        commonGetPackageWithoutClassName("test", "Test", "");
     }
+
+    private void commonGetPackageWithoutClassName(String name, String className, String expectedPackage) {
+        FactIdentifier factIdentifier = new FactIdentifier(name, className);
+        assertEquals(expectedPackage, factIdentifier.getPackageWithoutClassName());
+    }
+    
 }

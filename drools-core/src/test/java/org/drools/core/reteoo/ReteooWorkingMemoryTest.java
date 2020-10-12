@@ -16,6 +16,10 @@
 
 package org.drools.core.reteoo;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.drools.core.base.MapGlobalResolver;
 import org.drools.core.common.EqualityKey;
 import org.drools.core.common.InternalWorkingMemory;
@@ -24,9 +28,8 @@ import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.common.TruthMaintenanceSystem;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
-import org.drools.core.marshalling.impl.MarshallerWriteContext;
-import org.drools.core.marshalling.impl.ProtobufMessages;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.reteoo.builder.NodeFactory;
 import org.drools.core.rule.EntryPointId;
@@ -39,14 +42,12 @@ import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
-import org.drools.core.impl.KnowledgeBaseFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.fail;
 
 public class ReteooWorkingMemoryTest {
     /*
@@ -215,7 +216,6 @@ public class ReteooWorkingMemoryTest {
             implements WorkingMemoryAction {
         // I am using AtomicInteger just as an int wrapper... nothing to do with concurrency here
         public AtomicInteger counter = new AtomicInteger(0);
-        public ProtobufMessages.ActionQueue.Action serialize(MarshallerWriteContext context) { throw new IllegalStateException("this method should never be called"); }
         public void execute(InternalWorkingMemory workingMemory) {
             // the reentrant action must be executed completely
             // before any of the final actions is executed

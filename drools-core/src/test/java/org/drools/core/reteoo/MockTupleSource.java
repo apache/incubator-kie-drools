@@ -16,9 +16,6 @@
 
 package org.drools.core.reteoo;
 
-import java.util.Collection;
-
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.reteoo.builder.BuildContext;
 

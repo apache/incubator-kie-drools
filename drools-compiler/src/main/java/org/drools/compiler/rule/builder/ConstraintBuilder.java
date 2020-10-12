@@ -49,7 +49,7 @@ public interface ConstraintBuilder {
         private static final ConstraintBuilder cBuilder = getConstraintBuilder();
 
         private static ConstraintBuilder getConstraintBuilder() {
-            ConstraintBuilder builder = ServiceRegistry.getInstance().get(ConstraintBuilder.class);
+            ConstraintBuilder builder = ServiceRegistry.getService(ConstraintBuilder.class);
             return builder != null ? builder : DummyConstraintBuilder.INSTANCE;
         }
     }

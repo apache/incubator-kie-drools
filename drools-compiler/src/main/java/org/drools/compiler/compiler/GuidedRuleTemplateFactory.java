@@ -21,7 +21,7 @@ import org.kie.api.internal.utils.ServiceRegistry;
 public class GuidedRuleTemplateFactory {
 
     private static class LazyHolder {
-        private static final GuidedRuleTemplateProvider provider = ServiceRegistry.getInstance().get( GuidedRuleTemplateProvider.class );
+        private static final GuidedRuleTemplateProvider provider = ServiceRegistry.getService( GuidedRuleTemplateProvider.class );
     }
 
     public static GuidedRuleTemplateProvider getGuidedRuleTemplateProvider() {

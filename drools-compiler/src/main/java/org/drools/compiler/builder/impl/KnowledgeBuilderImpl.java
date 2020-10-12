@@ -313,13 +313,17 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
 
     private TypeDeclarationBuilder createTypeDeclarationBuilder() {
         TypeDeclarationBuilderFactory typeDeclarationBuilderFactory =
-                Optional.ofNullable(ServiceRegistry.getInstance().get(TypeDeclarationBuilderFactory.class))
+                Optional.ofNullable(ServiceRegistry.getService(TypeDeclarationBuilderFactory.class))
                         .orElse(new DefaultTypeDeclarationBuilderFactory());
 
         return typeDeclarationBuilderFactory.createTypeDeclarationBuilder(this);
     }
 
-    public void setReleaseId( ReleaseId releaseId ) {
+    public ReleaseId getReleaseId() {
+        return releaseId;
+    }
+
+    public void setReleaseId(ReleaseId releaseId ) {
         this.releaseId = releaseId;
     }
 
@@ -773,7 +777,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
     void addPackageForExternalType(Resource resource,
                                    ResourceType type,
                                    ResourceConfiguration configuration) throws Exception {
-        KieAssemblers assemblers = ServiceRegistry.getInstance().get(KieAssemblers.class);
+        KieAssemblers assemblers = ServiceRegistry.getService(KieAssemblers.class);
 
         assemblers.addResource(this,
                               resource,
@@ -783,7 +787,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
 
     @Deprecated
     void addPackageForExternalType(ResourceType type, List<ResourceWithConfiguration> resources) throws Exception {
-        KieAssemblers assemblers = ServiceRegistry.getInstance().get(KieAssemblers.class);
+        KieAssemblers assemblers = ServiceRegistry.getService(KieAssemblers.class);
 
         assemblers.addResources(this, resources, type);
     }
@@ -896,22 +900,32 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
     }
 
     /**
-     * This adds a package from a Descr/AST This will also trigger a compile, if
-     * there are any generated classes to compile of course.
+     * Adds a package from a Descr/AST also triggering its compilation
+     * and the generation of the corresponding rete/phreak network
      */
     @Override
     public void addPackage(final PackageDescr packageDescr) {
-        PackageRegistry pkgRegistry = getOrCreatePackageRegistry(packageDescr);
+        if ( addPackageWithoutRete( packageDescr ) ) {
+            compileRete(packageDescr);
+        }
+    }
+
+    /**
+     * Adds a package from a Descr/AST also triggering its compilation
+     * but without generating the corresponding rete/phreak network
+     */
+    public boolean addPackageWithoutRete( PackageDescr packageDescr ) {
+        PackageRegistry pkgRegistry = getOrCreatePackageRegistry( packageDescr );
         if (pkgRegistry == null) {
-            return;
+            return false;
         }
 
         // merge into existing package
-        mergePackage(pkgRegistry, packageDescr);
+        mergePackage(pkgRegistry, packageDescr );
 
-        compileKnowledgePackages(packageDescr, pkgRegistry);
+        compileKnowledgePackages( packageDescr, pkgRegistry);
         wireAllRules();
-        compileRete(packageDescr);
+        return true;
     }
 
     protected void compileKnowledgePackages(PackageDescr packageDescr, PackageRegistry pkgRegistry) {
@@ -1015,6 +1029,13 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
         }
 
         return pkgRegistry;
+    }
+
+    public void registerPackage(PackageDescr packageDescr) {
+        if (isEmpty(packageDescr.getNamespace())) {
+            packageDescr.setNamespace(this.configuration.getDefaultPackageName());
+        }
+        initPackage(packageDescr);
     }
 
     private void initPackage(PackageDescr packageDescr) {

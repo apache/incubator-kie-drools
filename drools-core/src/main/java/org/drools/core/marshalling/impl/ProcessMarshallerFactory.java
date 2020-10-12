@@ -20,7 +20,7 @@ import org.kie.api.internal.utils.ServiceRegistry;
 public class ProcessMarshallerFactory {
 
     private static class LazyLoader {
-        private static ProcessMarshallerFactoryService service = ServiceRegistry.getInstance().get( ProcessMarshallerFactoryService.class );
+        private static ProcessMarshallerFactoryService service = ServiceRegistry.getService( ProcessMarshallerFactoryService.class );
     }
 
     public static ProcessMarshaller newProcessMarshaller() {

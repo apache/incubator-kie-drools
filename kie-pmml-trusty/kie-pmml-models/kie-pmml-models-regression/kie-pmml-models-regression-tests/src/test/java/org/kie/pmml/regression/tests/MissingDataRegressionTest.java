@@ -29,11 +29,13 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
+import org.kie.pmml.models.tests.AbstractPMMLTest;
 
 @RunWith(Parameterized.class)
 @Ignore("DROOLS-5209")
-public class MissingDataRegressionTest extends AbstractPMMLRegressionTest {
+public class MissingDataRegressionTest extends AbstractPMMLTest {
 
+    private static final String FILE_NAME = "MissingDataRegression.pmml";
     private static final String MODEL_NAME = "MissingDataRegression";
     private static final String TARGET_FIELD = "result";
     private static PMMLRuntime pmmlRuntime;
@@ -50,7 +52,7 @@ public class MissingDataRegressionTest extends AbstractPMMLRegressionTest {
 
     @BeforeClass
     public static void setupClass() {
-        pmmlRuntime = getPMMLRuntime(MODEL_NAME);
+        pmmlRuntime = getPMMLRuntime(MODEL_NAME, FILE_NAME);
     }
 
     @Parameterized.Parameters

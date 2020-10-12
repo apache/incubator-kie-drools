@@ -16,6 +16,10 @@
 
 package org.drools.core.marshalling.impl;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.util.Date;
+
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.EventFactHandle;
@@ -35,40 +39,36 @@ import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.RuleRuntime;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.util.Date;
-
 public class InputMarshaller {
 
     public static InternalFactHandle readFactHandle( MarshallerReaderContext context ) throws IOException,
             ClassNotFoundException {
-        int type = context.stream.readInt();
-        long id = context.stream.readLong();
-        long recency = context.stream.readLong();
+        int type = context.readInt();
+        long id = context.readLong();
+        long recency = context.readLong();
 
         long startTimeStamp = 0;
         long duration = 0;
         boolean expired = false;
         long activationsCount = 0;
         if (type == 2) {
-            startTimeStamp = context.stream.readLong();
-            duration = context.stream.readLong();
-            expired = context.stream.readBoolean();
-            activationsCount = context.stream.readLong();
+            startTimeStamp = context.readLong();
+            duration = context.readLong();
+            expired = context.readBoolean();
+            activationsCount = context.readLong();
         }
 
-        int strategyIndex = context.stream.readInt();
+        int strategyIndex = context.readInt();
         ObjectMarshallingStrategy strategy = null;
         // This is the old way of de/serializing strategy objects
         if (strategyIndex >= 0) {
-            strategy = context.resolverStrategyFactory.getStrategy( strategyIndex );
+            strategy = context.getResolverStrategyFactory().getStrategy( strategyIndex );
         }
         // This is the new way
         else if (strategyIndex == -2) {
-            String strategyClassName = context.stream.readUTF();
+            String strategyClassName = context.readUTF();
             if (!StringUtils.isEmpty( strategyClassName )) {
-                strategy = context.resolverStrategyFactory.getStrategyObject( strategyClassName );
+                strategy = context.getResolverStrategyFactory().getStrategyObject( strategyClassName );
                 if (strategy == null) {
                     throw new IllegalStateException( "No strategy of type " + strategyClassName + " available." );
                 }
@@ -78,14 +78,14 @@ public class InputMarshaller {
         // If either way retrieves a strategy, use it
         Object object = null;
         if (strategy != null) {
-            object = strategy.read( context.stream );
+            object = strategy.read( (ObjectInputStream) context );
         }
 
         EntryPoint entryPoint = null;
         if (context.readBoolean()) {
             String entryPointId = context.readUTF();
             if (entryPointId != null && !entryPointId.equals( "" )) {
-                entryPoint = ((RuleRuntime)context.wm).getEntryPoint( entryPointId );
+                entryPoint = ((RuleRuntime)context.getWorkingMemory()).getEntryPoint( entryPointId );
             }
         }
 
@@ -93,9 +93,9 @@ public class InputMarshaller {
         if ( entryPoint != null ) {
             confEP = ((NamedEntryPoint) entryPoint).getEntryPoint();
         } else {
-            confEP = context.wm.getEntryPoint();
+            confEP = context.getWorkingMemory().getEntryPoint();
         }
-        ObjectTypeConf typeConf = context.wm.getObjectTypeConfigurationRegistry().getObjectTypeConf( confEP, object );
+        ObjectTypeConf typeConf = context.getWorkingMemory().getObjectTypeConfigurationRegistry().getObjectTypeConf( confEP, object );
 
 
         InternalFactHandle handle = null;
@@ -133,7 +133,7 @@ public class InputMarshaller {
     }
 
     public static WorkItem readWorkItem( MarshallerReaderContext context ) throws IOException {
-        ObjectInputStream stream = context.stream;
+        ObjectInputStream stream = (ObjectInputStream) context;
 
         WorkItemImpl workItem = new WorkItemImpl();
         workItem.setId( stream.readLong() );
@@ -152,7 +152,7 @@ public class InputMarshaller {
                     ObjectMarshallingStrategy strategy = null;
                     // Old way of retrieving strategy objects
                     if (index >= 0) {
-                        strategy = context.resolverStrategyFactory.getStrategy( index );
+                        strategy = context.getResolverStrategyFactory().getStrategy( index );
                         if (strategy == null) {
                             throw new IllegalStateException( "No strategy of with index " + index + " available." );
                         }
@@ -164,7 +164,7 @@ public class InputMarshaller {
                         if ("org.drools.marshalling.impl.SerializablePlaceholderResolverStrategy".equals(strategyClassName)) {
                             strategyClassName = "org.drools.core.marshalling.impl.SerializablePlaceholderResolverStrategy";
                         }
-                        strategy = context.resolverStrategyFactory.getStrategyObject( strategyClassName );
+                        strategy = context.getResolverStrategyFactory().getStrategyObject( strategyClassName );
                         if (strategy == null) {
                             throw new IllegalStateException( "No strategy of type " + strategyClassName + " available." );
                         }

@@ -815,6 +815,16 @@ public class RuleUnitSessionImpl extends AbstractRuntime
     }
 
     @Override
+    public ProcessInstance startProcess( String processId, AgendaFilter agendaFilter ) {
+        return session.startProcess( processId, agendaFilter );
+    }
+
+    @Override
+    public ProcessInstance startProcess( String processId, Map<String, Object> parameters, AgendaFilter agendaFilter ) {
+        return session.startProcess( processId, parameters, agendaFilter );
+    }
+
+    @Override
     public ProcessInstance createProcessInstance( String processId, Map<String, Object> parameters ) {
         return session.createProcessInstance( processId, parameters );
     }

@@ -40,6 +40,10 @@
       <groupId>org.drools</groupId>
       <artifactId>drools-mvel</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-serialization-protobuf</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>org.kie</groupId>

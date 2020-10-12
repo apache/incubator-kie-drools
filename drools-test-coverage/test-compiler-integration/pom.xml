@@ -54,6 +54,11 @@
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
+      <artifactId>drools-serialization-protobuf</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
       <artifactId>drools-decisiontables</artifactId>
       <scope>test</scope>
     </dependency>

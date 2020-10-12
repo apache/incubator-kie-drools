@@ -23,9 +23,6 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.NamedEntryPoint;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
-import org.drools.core.marshalling.impl.MarshallerWriteContext;
-import org.drools.core.marshalling.impl.PersisterHelper;
-import org.drools.core.marshalling.impl.ProtobufMessages;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.spi.Activation;
@@ -33,16 +30,14 @@ import org.drools.core.spi.PropagationContext;
 
 import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
 
-public class BeliefSystemLogicalCallback
-        extends PropagationEntry.AbstractPropagationEntry
-        implements WorkingMemoryAction {
+public class BeliefSystemLogicalCallback extends PropagationEntry.AbstractPropagationEntry implements WorkingMemoryAction {
 
-        private InternalFactHandle handle;
-        private PropagationContext context;
-        private Activation activation;
+    protected InternalFactHandle handle;
+    protected PropagationContext context;
+    protected Activation activation;
 
-        private boolean                update;
-        private boolean                fullyRetract;
+    protected boolean update;
+    protected boolean fullyRetract;
 
     public BeliefSystemLogicalCallback() {
 
@@ -61,38 +56,9 @@ public class BeliefSystemLogicalCallback
     }
 
     public BeliefSystemLogicalCallback(MarshallerReaderContext context) throws IOException {
-        this.handle = context.handles.get( context.readLong() );
-        this.context = context.propagationContexts.get( context.readLong() );
-        this.activation = (Activation) context.terminalTupleMap.get( context.readInt() ).getContextObject();
-    }
-
-    public BeliefSystemLogicalCallback(MarshallerReaderContext context,
-                                       ProtobufMessages.ActionQueue.Action _action) {
-        ProtobufMessages.ActionQueue.LogicalRetract _retract = _action.getLogicalRetract();
-
-        this.handle = context.handles.get( _retract.getHandleId() );
-        this.activation = (Activation) context.filter
-                                              .getTuplesCache().get( PersisterHelper.createActivationKey(_retract.getActivation().getPackageName(),
-                                                                                                         _retract.getActivation().getRuleName(),
-                                                                                                         _retract.getActivation().getTuple()) ).getContextObject();
-        this.context = this.activation.getPropagationContext();
-        this.fullyRetract = _retract.getFullyRetract();
-        this.update = _retract.getUpdate();
-    }
-
-    public ProtobufMessages.ActionQueue.Action serialize(MarshallerWriteContext context) {
-        ProtobufMessages.ActionQueue.LogicalRetract _retract = ProtobufMessages.ActionQueue.LogicalRetract.newBuilder()
-                                                                                           .setHandleId( this.handle.getId() )
-                                                                                           .setActivation( PersisterHelper.createActivation( this.activation.getRule().getPackageName(),
-                                                                                                                                             this.activation.getRule().getName(),
-                                                                                                                                             this.activation.getTuple() ) )
-                                                                                           .setFullyRetract( fullyRetract )
-                                                                                           .setUpdate( update )
-                                                                                           .build();
-        return ProtobufMessages.ActionQueue.Action.newBuilder()
-                                           .setType( ProtobufMessages.ActionQueue.ActionType.LOGICAL_RETRACT )
-                                           .setLogicalRetract( _retract )
-                                           .build();
+        this.handle = context.getHandles().get( context.readLong() );
+        this.context = context.getPropagationContexts().get( context.readLong() );
+        this.activation = (Activation) context.getTerminalTupleMap().get( context.readInt() ).getContextObject();
     }
 
     public boolean isUpdate() {

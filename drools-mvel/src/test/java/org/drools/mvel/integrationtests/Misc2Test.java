@@ -2745,112 +2745,6 @@ public class Misc2Test extends CommonTestMethodBase {
     }
 
     @Test
-    public void testKsessionSerializationWithInsertLogical() {
-        List<String> firedRules = new ArrayList<>();
-        String str =
-                "import java.util.Date;\n" +
-                "import org.drools.mvel.integrationtests.Misc2Test.Promotion;\n" +
-                "\n" +
-                "declare Person\n" +
-                "	name : String\n" +
-                "	dateOfBirth : Date\n" +
-                "end\n" +
-                "\n" +
-                "declare Employee extends Person\n" +
-                "	job : String\n" +
-                "end\n" +
-                "\n" +
-                "rule \"Insert Alice\"\n" +
-                "	when\n" +
-                "	then\n" +
-                "		Employee alice = new Employee(\"Alice\", new Date(1973, 7, 2), \"Vet\");\n" +
-                "		insert(alice);\n" +
-                "		System.out.println(\"Insert Alice\");\n" +
-                "end\n" +
-                "\n" +
-                "rule \"Insert Bob\"\n" +
-                "	when\n" +
-                "		Person(name == \"Alice\")\n" +
-                "	then\n" +
-                "		Person bob = new Person(\"Bob\", new Date(1973, 7, 2));\n" +
-                "		insertLogical(bob);\n" +
-                "		System.out.println(\"InsertLogical Bob\");\n" +
-                "end\n" +
-                "\n" +
-                "rule \"Insert Claire\"\n" +
-                "	when\n" +
-                "		Person(name == \"Bob\")\n" +
-                "	then\n" +
-                "		Employee claire = new Employee(\"Claire\", new Date(1973, 7, 2), \"Student\");\n" +
-                "		insert(claire);\n" +
-                "		System.out.println(\"Insert Claire\");\n" +
-                "end\n" +
-                "\n" +
-                "rule \"Promote\"\n" +
-                "	when\n" +
-                "		p : Promotion(n : name, j : job)\n" +
-                "		e : Employee(name == n)\n" +
-                "	then\n" +
-                "		modify(e) {\n" +
-                "			setJob(j)\n" +
-                "		}\n" +
-                "		delete(p);\n" +
-                "		System.out.printf(\"Promoted %s to %s%n\", n, j);\n" +
-                "end\n";
-
-        KieBase kbase = loadKnowledgeBaseFromString( str );
-        KieSession ksession = kbase.newKieSession();
-
-        ksession.fireAllRules(); // insertLogical Person(Bob)
-
-        // Serialize and Deserialize
-        try {
-            Marshaller marshaller = MarshallerFactory.newMarshaller( kbase );
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            marshaller.marshall( baos, ksession );
-            marshaller = MarshallerFactory.newMarshaller( kbase );
-            ByteArrayInputStream bais = new ByteArrayInputStream( baos.toByteArray() );
-            baos.close();
-            ksession = (StatefulKnowledgeSession) marshaller.unmarshall( bais );
-            bais.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail( "unexpected exception :" + e.getMessage() );
-        }
-
-        ksession.insert( new Promotion( "Claire", "Scientist" ) );
-        int result = ksession.fireAllRules();
-
-        assertEquals( 1, result );
-    }
-
-    public static class Promotion {
-        private String name;
-        private String job;
-
-        public Promotion( String name, String job ) {
-            this.setName( name );
-            this.setJob( job );
-        }
-
-        public String getName() {
-            return this.name;
-        }
-
-        public void setName( String name ) {
-            this.name = name;
-        }
-
-        public String getJob() {
-            return this.job;
-        }
-
-        public void setJob( String job ) {
-            this.job = job;
-        }
-    }
-
-    @Test
     public void testImportExceptional() throws java.lang.Exception {
         // DROOLS-253 imported Exception would have qualified as the default Exception thrown by the RHS
         String str =
@@ -8824,7 +8718,6 @@ public class Misc2Test extends CommonTestMethodBase {
     /**
      * This test deliberately creates a deadlock, failing the test with a timeout.
      * Helpful to test thread dump when a timeout occur on the JUnit listener.
-     * See {@link org.kie.test.util.TestStatusListener#testFailure(org.junit.runner.notification.Failure)}
      * @throws Exception
      */
     @Ignore("This test deliberately creates a deadlock, failing the test with a timeout.\n" + 

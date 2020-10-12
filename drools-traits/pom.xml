@@ -85,6 +85,13 @@
       <artifactId>kie-soup-project-datamodel-commons</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-serialization-protobuf</artifactId>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+
     <!-- Logging -->
     <dependency>
       <groupId>org.slf4j</groupId>
