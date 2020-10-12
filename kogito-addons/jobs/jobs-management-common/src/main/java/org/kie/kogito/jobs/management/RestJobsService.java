@@ -21,6 +21,8 @@ import java.util.Objects;
 
 import org.kie.kogito.jobs.JobsService;
 import org.kie.kogito.jobs.ProcessInstanceJobDescription;
+import org.kie.kogito.jobs.api.Job;
+import org.kie.kogito.jobs.api.JobBuilder;
 import org.kie.kogito.jobs.api.URIBuilder;
 
 public abstract class RestJobsService implements JobsService {
@@ -53,5 +55,21 @@ public abstract class RestJobsService implements JobsService {
 
     public URI getJobsServiceUri() {
         return jobsServiceUri;
+    }
+
+    public Job buildJob(ProcessInstanceJobDescription description, String callback) {
+        return JobBuilder.builder()
+                .id(description.id())
+                .expirationTime(description.expirationTime().get())
+                .repeatInterval(description.expirationTime().repeatInterval())
+                .repeatLimit(description.expirationTime().repeatLimit())
+                .priority(0)
+                .callbackEndpoint(callback)
+                .processId(description.processId())
+                .processInstanceId(description.processInstanceId())
+                .rootProcessId(description.rootProcessId())
+                .rootProcessInstanceId(description.rootProcessInstanceId())
+                .nodeInstanceId(description.nodeInstanceId())
+                .build();
     }
 }

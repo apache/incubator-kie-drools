@@ -25,27 +25,24 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import io.vertx.core.Vertx;
+import io.vertx.core.json.jackson.DatabindCodec;
+import io.vertx.ext.web.client.WebClient;
+import io.vertx.ext.web.client.WebClientOptions;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.kie.kogito.jobs.ProcessInstanceJobDescription;
 import org.kie.kogito.jobs.ProcessJobDescription;
 import org.kie.kogito.jobs.api.Job;
-import org.kie.kogito.jobs.api.JobBuilder;
 import org.kie.kogito.jobs.api.JobNotFoundException;
 import org.kie.kogito.jobs.management.RestJobsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-
-import io.vertx.core.Vertx;
-import io.vertx.core.json.jackson.DatabindCodec;
-import io.vertx.ext.web.client.WebClient;
-import io.vertx.ext.web.client.WebClientOptions;
-
 @ApplicationScoped
 public class VertxJobsService extends RestJobsService {
-    
+
     private static final Logger LOGGER = LoggerFactory.getLogger(VertxJobsService.class);
 
     private Vertx vertx;
@@ -53,7 +50,6 @@ public class VertxJobsService extends RestJobsService {
     private Instance<WebClient> providedWebClient;
 
     private WebClient client;
-
 
     @Inject
     public VertxJobsService(@ConfigProperty(name = "kogito.jobs-service.url") String jobServiceUrl,
@@ -72,10 +68,10 @@ public class VertxJobsService extends RestJobsService {
     @PostConstruct
     void initialize() {
         DatabindCodec.mapper().disable(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE);
-        DatabindCodec.mapper().disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);             
+        DatabindCodec.mapper().disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
         DatabindCodec.mapper().registerModule(new JavaTimeModule());
         DatabindCodec.mapper().findAndRegisterModules();
-        
+
         DatabindCodec.prettyMapper().registerModule(new JavaTimeModule());
         DatabindCodec.prettyMapper().findAndRegisterModules();
         DatabindCodec.prettyMapper().disable(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE);
@@ -96,7 +92,7 @@ public class VertxJobsService extends RestJobsService {
 
     @Override
     public String scheduleProcessJob(ProcessJobDescription description) {
-       
+
         throw new UnsupportedOperationException("Scheduling for process jobs is not yet implemented");
     }
 
@@ -104,28 +100,14 @@ public class VertxJobsService extends RestJobsService {
     public String scheduleProcessInstanceJob(ProcessInstanceJobDescription description) {
         String callback = getCallbackEndpoint(description);
         LOGGER.debug("Job to be scheduled {} with callback URL {}", description, callback);
-        final Job job = JobBuilder.builder()
-                .id(description.id())
-                .expirationTime(description.expirationTime().get())
-                .repeatInterval(description.expirationTime().repeatInterval())
-                .repeatLimit(description.expirationTime().repeatLimit())
-                .priority(0)
-                .callbackEndpoint(callback)
-                .processId(description.processId())
-                .processInstanceId(description.processInstanceId())
-                .rootProcessId(description.rootProcessId())
-                .rootProcessInstanceId(description.rootProcessInstanceId())
-                .build();
-
+        final Job job = buildJob(description, callback);
         client.post(JOBS_PATH).sendJson(job, res -> {
-            
             if (res.succeeded() && res.result().statusCode() == 200) {
                 LOGGER.debug("Creating of the job {} done with status code {} ", job, res.result().statusCode());
             } else {
                 LOGGER.error("Scheduling of job {} failed with response code {}", job, res.result().statusCode(), res.cause());
             }
         });
-        
         return job.getId();
     }
 
@@ -138,7 +120,7 @@ public class VertxJobsService extends RestJobsService {
                 LOGGER.error("Canceling of job {} failed with response code {}", id, res.result().statusCode(), res.cause());
             }
         });
-        
+
         return true;
     }
 
@@ -162,9 +144,8 @@ public class VertxJobsService extends RestJobsService {
             if (e.getCause() != null) {
                 throw new RuntimeException(e.getCause());
             }
-            
+
             throw new RuntimeException(e);
         }
-
     }
 }

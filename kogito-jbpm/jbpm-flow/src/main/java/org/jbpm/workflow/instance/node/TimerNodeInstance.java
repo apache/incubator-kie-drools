@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import org.jbpm.process.instance.InternalProcessRuntime;
@@ -41,69 +42,75 @@ public class TimerNodeInstance extends StateBasedNodeInstance implements EventLi
     private static final long serialVersionUID = 510l;
     private static final Logger logger = LoggerFactory.getLogger(TimerNodeInstance.class);
     private static final String TIMER_TRIGGERED_EVENT = "timerTriggered";
-    
+
     private String timerId;
-    
+
     public TimerNode getTimerNode() {
         return (TimerNode) getNode();
     }
-    
+
     public String getTimerId() {
-    	return timerId;
+        return timerId;
     }
-    
+
     public void internalSetTimerId(String timerId) {
-    	this.timerId = timerId;
+        this.timerId = timerId;
     }
 
     @Override
     public void internalTrigger(NodeInstance from, String type) {
         if (!org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
             throw new IllegalArgumentException(
-                "A TimerNode only accepts default incoming connections!");
+                    "A TimerNode only accepts default incoming connections!");
         }
-        triggerTime = new Date();        
+        triggerTime = new Date();
         ExpirationTime expirationTime = createTimerInstance(getTimerNode().getTimer());
         if (getTimerInstances() == null) {
-        	addTimerListener();
+            addTimerListener();
         }
-        JobsService jobService = ((InternalProcessRuntime)
-                getProcessInstance().getKnowledgeRuntime().getProcessRuntime()).getJobsService();
-        timerId = jobService.scheduleProcessInstanceJob(ProcessInstanceJobDescription.of(getTimerNode().getTimer().getId(), expirationTime, getProcessInstance().getId(), getProcessInstance().getRootProcessInstanceId(), getProcessInstance().getProcessId(), getProcessInstance().getRootProcessId()));
+        ProcessInstanceJobDescription jobDescription =
+                ProcessInstanceJobDescription.of(getTimerNode().getTimer().getId(),
+                                                 expirationTime,
+                                                 getProcessInstance().getId(),
+                                                 getProcessInstance().getRootProcessInstanceId(),
+                                                 getProcessInstance().getProcessId(),
+                                                 getProcessInstance().getRootProcessId(),
+                                                 Optional.ofNullable(from).map(NodeInstance::getId).orElse(null));
+        JobsService jobService = getProcessInstance().getKnowledgeRuntime().getProcessRuntime().getJobsService();
+        timerId = jobService.scheduleProcessInstanceJob(jobDescription);
     }
 
-    
     public void signalEvent(String type, Object event) {
-    	if (TIMER_TRIGGERED_EVENT.equals(type)) {
-    		TimerInstance timer = (TimerInstance) event;
+        if (TIMER_TRIGGERED_EVENT.equals(type)) {
+            TimerInstance timer = (TimerInstance) event;
             if (timer.getId().equals(timerId)) {
                 triggerCompleted(timer.getRepeatLimit() <= 0);
             }
-    	}
+        }
     }
-    
+
     public String[] getEventTypes() {
-    	return new String[] { TIMER_TRIGGERED_EVENT };
+        return new String[]{TIMER_TRIGGERED_EVENT};
     }
-    
+
     public void triggerCompleted(boolean remove) {
         triggerCompleted(org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE, remove);
     }
-    
+
     @Override
     public void cancel() {
         ((InternalProcessRuntime)
                 getProcessInstance().getKnowledgeRuntime().getProcessRuntime()).getJobsService().cancelJob(timerId);
         super.cancel();
     }
-    
+
     public void addEventListeners() {
         super.addEventListeners();
         if (getTimerInstances() == null) {
-        	addTimerListener();
+            addTimerListener();
         }
     }
-    
+
     public void removeEventListeners() {
         super.removeEventListeners();
         ((WorkflowProcessInstance) getProcessInstance()).removeEventListener(TIMER_TRIGGERED_EVENT, this, false);
@@ -117,7 +124,5 @@ public class TimerNodeInstance extends StateBasedNodeInstance implements EventLi
         properties.put("Period", getTimerNode().getTimer().getPeriod());
         properties.put("Date", getTimerNode().getTimer().getDate());
         return Collections.singleton(new BaseEventDescription(TIMER_TRIGGERED_EVENT, getNodeDefinitionId(), getNodeName(), "timer", getId(), getProcessInstance().getId(), null, properties));
-
     }
-
 }

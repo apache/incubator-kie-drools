@@ -30,6 +30,7 @@ public class JobBuilder {
     private String rootProcessId;
     private Long repeatInterval;
     private Integer repeatLimit;
+    private String nodeInstanceId;
 
     public JobBuilder id(String id) {
         this.id = id;
@@ -81,10 +82,14 @@ public class JobBuilder {
         return this;
     }
 
+    public JobBuilder nodeInstanceId(String nodeInstanceId) {
+        this.nodeInstanceId = nodeInstanceId;
+        return this;
+    }
 
     public Job build() {
         return new Job(id, expirationTime, priority, callbackEndpoint, processInstanceId, rootProcessInstanceId,
-                       processId, rootProcessId, repeatInterval, repeatLimit);
+                       processId, rootProcessId, repeatInterval, repeatLimit, nodeInstanceId);
     }
 
     public static JobBuilder builder(){

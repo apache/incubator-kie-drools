@@ -23,7 +23,6 @@ import javax.annotation.PostConstruct;
 import org.kie.kogito.jobs.ProcessInstanceJobDescription;
 import org.kie.kogito.jobs.ProcessJobDescription;
 import org.kie.kogito.jobs.api.Job;
-import org.kie.kogito.jobs.api.JobBuilder;
 import org.kie.kogito.jobs.api.JobNotFoundException;
 import org.kie.kogito.jobs.management.RestJobsService;
 import org.slf4j.Logger;
@@ -47,7 +46,7 @@ public class SpringRestJobsService extends RestJobsService {
     public SpringRestJobsService(
             @Value("${kogito.jobs-service.url}") String jobServiceUrl,
             @Value("${kogito.service.url}") String callbackEndpoint,
-            @Autowired(required=false) RestTemplate restTemplate) {
+            @Autowired(required = false) RestTemplate restTemplate) {
         super(jobServiceUrl, callbackEndpoint);
         this.restTemplate = restTemplate;
     }
@@ -66,7 +65,7 @@ public class SpringRestJobsService extends RestJobsService {
 
     @Override
     public String scheduleProcessJob(ProcessJobDescription description) {
-       
+
         throw new UnsupportedOperationException("Scheduling for process jobs is not yet implemented");
     }
 
@@ -74,19 +73,7 @@ public class SpringRestJobsService extends RestJobsService {
     public String scheduleProcessInstanceJob(ProcessInstanceJobDescription description) {
         String callback = getCallbackEndpoint(description);
         LOGGER.debug("Job to be scheduled {} with callback URL {}", description, callback);
-        Job job = JobBuilder.builder()
-                .id(description.id())
-                .expirationTime(description.expirationTime().get())
-                .repeatInterval(description.expirationTime().repeatInterval())
-                .repeatLimit(description.expirationTime().repeatLimit())
-                .priority(0)
-                .callbackEndpoint(callback)
-                .processId(description.processId())
-                .processInstanceId(description.processInstanceId())
-                .rootProcessId(description.rootProcessId())
-                .rootProcessInstanceId(description.rootProcessInstanceId())
-                .build();
-
+        final Job job = buildJob(description, callback);
         ResponseEntity<String> result = restTemplate.postForEntity(getJobsServiceUri(),
                                                                    job,
                                                                    String.class);
@@ -101,7 +88,7 @@ public class SpringRestJobsService extends RestJobsService {
 
         try {
             restTemplate.delete(getJobsServiceUri() + "/{id}", id);
-            
+
             return true;
         } catch (RestClientException e) {
             LOGGER.debug("Exception thrown during canceling of job {}", id, e);

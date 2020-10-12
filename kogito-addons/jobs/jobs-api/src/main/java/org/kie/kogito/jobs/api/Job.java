@@ -39,18 +39,14 @@ import java.util.StringJoiner;
 public class Job {
 
     private String id;
-
     private ZonedDateTime expirationTime;
-
     private Integer priority;
-
     private String callbackEndpoint;
-
     private String processInstanceId;
     private String rootProcessInstanceId;
     private String processId;
     private String rootProcessId;
-
+    private String nodeInstanceId;
     private Long repeatInterval;
     private Integer repeatLimit;
 
@@ -60,7 +56,7 @@ public class Job {
     @SuppressWarnings("squid:S00107")
     public Job(String id, ZonedDateTime expirationTime, Integer priority, String callbackEndpoint,
                String processInstanceId, String rootProcessInstanceId, String processId, String rootProcessId,
-               Long repeatInterval, Integer repeatLimit) {
+               Long repeatInterval, Integer repeatLimit, String nodeInstanceId) {
         this.id = id;
         this.expirationTime = expirationTime;
         this.priority = priority;
@@ -71,6 +67,7 @@ public class Job {
         this.rootProcessId = rootProcessId;
         this.repeatInterval = repeatInterval;
         this.repeatLimit = repeatLimit;
+        this.nodeInstanceId = nodeInstanceId;
     }
 
     public String getId() {
@@ -153,6 +150,10 @@ public class Job {
         this.repeatLimit = repeatLimit;
     }
 
+    public String getNodeInstanceId() {
+        return nodeInstanceId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -171,14 +172,15 @@ public class Job {
                 Objects.equals(getProcessId(), job.getProcessId()) &&
                 Objects.equals(getRootProcessId(), job.getRootProcessId()) &&
                 Objects.equals(getRepeatLimit(), job.getRepeatLimit()) &&
-                Objects.equals(getRepeatInterval(), job.getRepeatInterval());
+                Objects.equals(getRepeatInterval(), job.getRepeatInterval()) &&
+                Objects.equals(getNodeInstanceId(), job.getNodeInstanceId());
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(getId(), getExpirationTime(), getPriority(), getCallbackEndpoint(), getProcessInstanceId(),
                             getRootProcessInstanceId(), getProcessId(), getRootProcessId(), getRepeatLimit(),
-                            getRepeatInterval());
+                            getRepeatInterval(), getNodeInstanceId());
     }
 
     @Override
@@ -194,6 +196,7 @@ public class Job {
                 .add("rootProcessId='" + rootProcessId + "'")
                 .add("repeatInterval=" + repeatInterval)
                 .add("repeatLimit=" + repeatLimit)
+                .add("nodeInstanceId=" + nodeInstanceId)
                 .toString();
     }
 }

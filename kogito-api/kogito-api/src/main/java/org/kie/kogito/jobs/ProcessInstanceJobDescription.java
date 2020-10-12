@@ -34,6 +34,7 @@ public class ProcessInstanceJobDescription implements JobDescription {
     private final String rootProcessInstanceId;
     private final String processId;
     private final String rootProcessId;
+    private final String nodeInstanceId;
 
     private ProcessInstanceJobDescription(long timerId,
                                           ExpirationTime expirationTime,
@@ -41,7 +42,8 @@ public class ProcessInstanceJobDescription implements JobDescription {
                                           String processInstanceId,
                                           String rootProcessInstanceId,
                                           String processId,
-                                          String rootProcessId) {
+                                          String rootProcessId,
+                                          String nodeInstanceId) {
         this.id = UUID.randomUUID().toString() + "_" + timerId;
         this.expirationTime = requireNonNull(expirationTime);
         this.priority = requireNonNull(priority);
@@ -49,13 +51,14 @@ public class ProcessInstanceJobDescription implements JobDescription {
         this.rootProcessInstanceId = rootProcessInstanceId;
         this.processId = processId;
         this.rootProcessId = rootProcessId;
+        this.nodeInstanceId = nodeInstanceId;
     }
 
     public static ProcessInstanceJobDescription of(long timerId,
                                                    ExpirationTime expirationTime,
                                                    String processInstanceId,
                                                    String processId) {
-        return of(timerId, expirationTime, processInstanceId, null, processId, null);
+        return of(timerId, expirationTime, processInstanceId, null, processId, null, null);
     }
 
     public static ProcessInstanceJobDescription of(long timerId,
@@ -63,8 +66,10 @@ public class ProcessInstanceJobDescription implements JobDescription {
                                                    String processInstanceId,
                                                    String rootProcessInstanceId,
                                                    String processId,
-                                                   String rootProcessId) {
-        return of(timerId, expirationTime, DEFAULT_PRIORITY, processInstanceId, rootProcessInstanceId, processId, rootProcessId);
+                                                   String rootProcessId,
+                                                   String nodeInstanceId) {
+        return of(timerId, expirationTime, DEFAULT_PRIORITY, processInstanceId, rootProcessInstanceId, processId,
+                  rootProcessId, nodeInstanceId);
     }
 
     public static ProcessInstanceJobDescription of(long timerId,
@@ -73,9 +78,11 @@ public class ProcessInstanceJobDescription implements JobDescription {
                                                    String processInstanceId,
                                                    String rootProcessInstanceId,
                                                    String processId,
-                                                   String rootProcessId) {
+                                                   String rootProcessId,
+                                                   String nodeInstanceId) {
 
-        return new ProcessInstanceJobDescription(timerId, expirationTime, priority, processInstanceId, rootProcessInstanceId, processId, rootProcessId);
+        return new ProcessInstanceJobDescription(timerId, expirationTime, priority, processInstanceId,
+                                                 rootProcessInstanceId, processId, rootProcessId, nodeInstanceId);
     }
 
     @Override
@@ -109,6 +116,10 @@ public class ProcessInstanceJobDescription implements JobDescription {
         return rootProcessId;
     }
 
+    public String nodeInstanceId() {
+        return nodeInstanceId;
+    }
+
     @Override
     public String toString() {
         return "ProcessInstanceJobDescription{" +
@@ -119,6 +130,7 @@ public class ProcessInstanceJobDescription implements JobDescription {
                 ", rootProcessInstanceId='" + rootProcessInstanceId + '\'' +
                 ", processId='" + processId + '\'' +
                 ", rootProcessId='" + rootProcessId + '\'' +
+                ", nodeInstanceId='" + nodeInstanceId + '\'' +
                 '}';
     }
 }
