@@ -110,6 +110,8 @@ public class MultiInstanceDecisionLogic {
         @Override
         public void compileEvaluator(DMNNode node, DMNCompilerImpl compiler, DMNCompilerContext ctx, DMNModelImpl model) {
             DecisionNodeImpl di = (DecisionNodeImpl) node;
+            compiler.linkRequirements(model, di);
+            
             MultiInstanceDecisionLogic midl =
                     getMIDL(node).orElseThrow(() -> new IllegalStateException("Node doesn't contain multi instance decision logic!" + node.toString()));
             
