@@ -447,11 +447,11 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     }
 
     public Collection<RuleRuntimeEventListener> getRuleRuntimeEventListeners() {
-        return Collections.unmodifiableCollection(ruleRuntimeEventSupport.getEventListeners());
+        return ruleRuntimeEventSupport.getEventListeners();
     }
 
     public Collection<AgendaEventListener> getAgendaEventListeners() {
-        return Collections.unmodifiableCollection(this.agendaEventSupport.getEventListeners());
+        return this.agendaEventSupport.getEventListeners();
     }
 
     private InternalProcessRuntime createProcessRuntime() {

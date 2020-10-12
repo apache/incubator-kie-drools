@@ -16,15 +16,13 @@
 
 package org.drools.core.event;
 
-import java.util.Iterator;
-
-import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.event.rule.impl.ObjectDeletedEventImpl;
 import org.drools.core.event.rule.impl.ObjectInsertedEventImpl;
 import org.drools.core.event.rule.impl.ObjectUpdatedEventImpl;
 import org.drools.core.spi.PropagationContext;
 import org.kie.api.event.rule.RuleRuntimeEventListener;
+import org.kie.api.runtime.rule.FactHandle;
 
 public class RuleRuntimeEventSupport extends AbstractEventSupport<RuleRuntimeEventListener> {
 
@@ -32,17 +30,9 @@ public class RuleRuntimeEventSupport extends AbstractEventSupport<RuleRuntimeEve
                                    final FactHandle handle,
                                    final Object object,
                                    final InternalWorkingMemory workingMemory) {
-        final Iterator<RuleRuntimeEventListener> iter = getEventListenersIterator();
-
-        if (iter.hasNext()) {
-            ObjectInsertedEventImpl event = new ObjectInsertedEventImpl(workingMemory,
-                                                                        propagationContext,
-                                                                        handle,
-                                                                        object);
-
-            do {
-                iter.next().objectInserted(event);
-            } while (iter.hasNext());
+        if ( hasListeners() ) {
+            ObjectInsertedEventImpl event = new ObjectInsertedEventImpl( workingMemory, propagationContext, handle, object );
+            notifyAllListeners( event, ( l, e ) -> l.objectInserted( e ) );
         }
     }
 
@@ -51,18 +41,9 @@ public class RuleRuntimeEventSupport extends AbstractEventSupport<RuleRuntimeEve
                                   final Object oldObject,
                                   final Object object,
                                   final InternalWorkingMemory workingMemory) {
-        final Iterator<RuleRuntimeEventListener> iter = getEventListenersIterator();
-
-        if (iter.hasNext()) {
-            ObjectUpdatedEventImpl event = new ObjectUpdatedEventImpl(workingMemory,
-                                                                      propagationContext,
-                                                                      handle,
-                                                                      oldObject,
-                                                                      object);
-
-            do {
-                iter.next().objectUpdated(event);
-            } while (iter.hasNext());
+        if ( hasListeners() ) {
+            ObjectUpdatedEventImpl event = new ObjectUpdatedEventImpl( workingMemory, propagationContext, handle, oldObject, object );
+            notifyAllListeners( event, ( l, e ) -> l.objectUpdated( e ) );
         }
     }
 
@@ -70,17 +51,9 @@ public class RuleRuntimeEventSupport extends AbstractEventSupport<RuleRuntimeEve
                                     final FactHandle handle,
                                     final Object oldObject,
                                     final InternalWorkingMemory workingMemory) {
-        final Iterator<RuleRuntimeEventListener> iter = getEventListenersIterator();
-
-        if (iter.hasNext()) {
-            ObjectDeletedEventImpl event = new ObjectDeletedEventImpl(workingMemory,
-                                                                      propagationContext,
-                                                                      handle,
-                                                                      oldObject);
-
-            do {
-                iter.next().objectDeleted(event);
-            } while (iter.hasNext());
+        if ( hasListeners() ) {
+            ObjectDeletedEventImpl event = new ObjectDeletedEventImpl( workingMemory, propagationContext, handle, oldObject );
+            notifyAllListeners( event, ( l, e ) -> l.objectDeleted( e ) );
         }
     }
 }

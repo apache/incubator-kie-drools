@@ -16,11 +16,9 @@
 
 package org.drools.compiler.kie.builder.impl.event;
 
-import java.util.Iterator;
-
 import org.drools.core.event.AbstractEventSupport;
-import org.kie.api.builder.Results;
 import org.kie.api.builder.KieScanner.Status;
+import org.kie.api.builder.Results;
 import org.kie.api.event.kiescanner.KieScannerEventListener;
 import org.kie.api.event.kiescanner.KieScannerStatusChangeEvent;
 import org.kie.api.event.kiescanner.KieScannerUpdateResultsEvent;
@@ -28,28 +26,16 @@ import org.kie.api.event.kiescanner.KieScannerUpdateResultsEvent;
 public class KieScannerEventSupport extends AbstractEventSupport<KieScannerEventListener> {
     
     public void fireKieScannerStatusChangeEventImpl(final Status status) {
-        final Iterator<KieScannerEventListener> iter = getEventListenersIterator();
-
-        if (iter.hasNext()) {
+        if ( hasListeners() ) {
             KieScannerStatusChangeEvent event = new KieScannerStatusChangeEventImpl(status);
-
-            do {
-                iter.next().onKieScannerStatusChangeEvent(event);
-            } while (iter.hasNext());
+            notifyAllListeners( event, ( l, e ) -> l.onKieScannerStatusChangeEvent( e ) );
         }
     }
 
     public void fireKieScannerUpdateResultsEventImpl(final Results results) {
-        final Iterator<KieScannerEventListener> iter = getEventListenersIterator();
-
-        if (iter.hasNext()) {
+        if ( hasListeners() ) {
             KieScannerUpdateResultsEvent event = new KieScannerUpdateResultsEventImpl(results);
-
-            do {
-                iter.next().onKieScannerUpdateResultsEvent(event);
-            } while (iter.hasNext());
+            notifyAllListeners( event, ( l, e ) -> l.onKieScannerUpdateResultsEvent( e ) );
         }
     }
-    
-    
 }
