@@ -1,19 +1,27 @@
 package org.kie.kogito.explainability.model;
 
+import java.net.URI;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.time.Duration;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
+import java.util.Currency;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class TypeTest {
 
@@ -110,6 +118,24 @@ class TypeTest {
     }
 
     @Test
+    void testPerturbNonLocalhostURI() {
+        PerturbationContext perturbationContext = new PerturbationContext(new Random(), 1);
+        Value<?> value = new Value<>("http://128.0.0.1:8081");
+        Feature f = new Feature("name", Type.URI, value);
+        Value<?> perturbedValue = f.getType().perturb(f.getValue(), perturbationContext);
+        assertNotEquals(value, perturbedValue);
+    }
+
+    @Test
+    void testPerturbFragmentURI() {
+        PerturbationContext perturbationContext = new PerturbationContext(new Random(), 1);
+        Value<?> value = new Value<>("http://localhost:8080/path#paragraph1");
+        Feature f = new Feature("name", Type.URI, value);
+        Value<?> perturbedValue = f.getType().perturb(f.getValue(), perturbationContext);
+        assertNotEquals(value, perturbedValue);
+    }
+
+    @Test
     void testPerturbVector() {
         PerturbationContext perturbationContext = new PerturbationContext(new Random(), 1);
         double[] doubles = new double[3];
@@ -128,6 +154,72 @@ class TypeTest {
         Feature f = new Feature("name", Type.UNDEFINED, value);
         Value<?> perturbedValue = f.getType().perturb(f.getValue(), perturbationContext);
         assertNotEquals(value, perturbedValue);
+    }
+
+    @Test
+    void testPerturbByteBufferFeature() {
+        PerturbationContext perturbationContext = new PerturbationContext(new Random(), 1);
+        byte[] bytes = new byte[1024];
+        perturbationContext.getRandom().nextBytes(bytes);
+        ByteBuffer byteBuffer = ByteBuffer.allocate(1024);
+        byteBuffer.put(bytes);
+        Feature feature = new Feature("name", Type.BINARY, new Value<>(byteBuffer));
+        Value<?> perturbedValue = feature.getType().perturb(feature.getValue(), perturbationContext);
+        assertNotEquals(feature.getValue(), perturbedValue);
+    }
+
+    @Test
+    void testPerturbURIFeature() {
+        PerturbationContext perturbationContext = new PerturbationContext(new Random(), 1);
+        URI uri = URI.create("https://www.redhat.com/en/technologies/jboss-middleware/process-automation-manager");
+        Feature feature = new Feature("name", Type.URI, new Value<>(uri));
+        Value<?> perturbedValue = feature.getType().perturb(feature.getValue(), perturbationContext);
+        assertNotEquals(feature.getValue(), perturbedValue);
+    }
+
+    @Test
+    void testPerturbTimeFeature() {
+        PerturbationContext perturbationContext = new PerturbationContext(new Random(), 1);
+        LocalTime time = LocalTime.now();
+        Feature feature = new Feature("name", Type.TIME, new Value<>(time));
+        Value<?> perturbedValue = feature.getType().perturb(feature.getValue(), perturbationContext);
+        assertNotEquals(feature.getValue(), perturbedValue);
+    }
+
+    @Test
+    void testPerturbDurationFeature() {
+        PerturbationContext perturbationContext = new PerturbationContext(new Random(), 1);
+        Duration time = Duration.of(2, ChronoUnit.DAYS);
+        Feature feature = new Feature("name", Type.DURATION, new Value<>(time));
+        Value<?> perturbedValue = feature.getType().perturb(feature.getValue(), perturbationContext);
+        assertNotEquals(feature.getValue(), perturbedValue);
+    }
+
+    @Test
+    void testZeroCategory() {
+        PerturbationContext perturbationContext = new PerturbationContext(new Random(), 1);
+        String category = "0";
+        Feature feature = new Feature("name", Type.CATEGORICAL, new Value<>(category));
+        Value<?> perturbedValue = feature.getType().perturb(feature.getValue(), perturbationContext);
+        assertNotEquals(feature.getValue(), perturbedValue);
+    }
+
+    @Test
+    void testNonZeroCategory() {
+        PerturbationContext perturbationContext = new PerturbationContext(new Random(), 1);
+        String category = "1";
+        Feature feature = new Feature("name", Type.CATEGORICAL, new Value<>(category));
+        Value<?> perturbedValue = feature.getType().perturb(feature.getValue(), perturbationContext);
+        assertNotEquals(feature.getValue(), perturbedValue);
+    }
+
+    @Test
+    void testPerturbCurrencyFeature() {
+        PerturbationContext perturbationContext = new PerturbationContext(new Random(), 1);
+        Currency currency = Currency.getInstance(Locale.getDefault());
+        Feature feature = new Feature("name", Type.CURRENCY, new Value<>(currency));
+        Value<?> perturbedValue = feature.getType().perturb(feature.getValue(), perturbationContext);
+        assertNotEquals(feature.getValue(), perturbedValue);
     }
 
     @Test
@@ -177,6 +269,42 @@ class TypeTest {
             PerturbationContext perturbationContext = new PerturbationContext(random, 1);
             Value<?> perturbed = type.perturb(v, perturbationContext);
             assertNotEquals(v, perturbed, type.name());
+        }
+    }
+
+    @ParameterizedTest
+    @EnumSource
+    void testEncode(Type type) {
+        for (int seed = 0; seed < 5; seed++) {
+            Random random = new Random();
+            random.setSeed(seed);
+            PerturbationContext perturbationContext = new PerturbationContext(random, random.nextInt());
+            Value<?> target = type.randomValue(perturbationContext);
+            Value<?>[] values = new Value<?>[random.nextInt(10)];
+            for (int i = 0; i < values.length; i++) {
+                values[i] = type.randomValue(perturbationContext);
+            }
+            List<double[]> vectors = type.encode(target, values);
+            assertNotNull(vectors);
+            assertEquals(values.length, vectors.size());
+            for (double[] vector : vectors) {
+                assertThat(Arrays.stream(vector).min().orElse(-2)).isGreaterThanOrEqualTo(-1);
+                assertThat(Arrays.stream(vector).max().orElse(2)).isLessThanOrEqualTo(1);
+            }
+        }
+    }
+
+    @ParameterizedTest
+    @EnumSource
+    void testRandomValue(Type type) {
+        for (int seed = 0; seed < 5; seed++) {
+            Random random = new Random();
+            random.setSeed(seed);
+            PerturbationContext perturbationContext = new PerturbationContext(random, random.nextInt());
+            Value<?> value = type.randomValue(perturbationContext);
+            assertNotNull(value);
+            assertDoesNotThrow(() -> type.drop(value));
+            assertDoesNotThrow(() -> type.perturb(value, perturbationContext));
         }
     }
 }
