@@ -99,18 +99,15 @@ public class ObjectTypeNodeCompiler {
         builder.append("}").append(NEWLINE);
 
         String sourceCode = builder.toString();
-        if(logger.isDebugEnabled()) {
+        if (logger.isDebugEnabled()) {
             logger.debug("Generated Compiled Alpha Network " + sourceCode);
         }
 
         return new CompiledNetworkSource(
                 sourceCode,
                 parser.getIndexableConstraint(),
-                getSourceName(),
-                getBinaryName(),
                 getName(),
-                objectTypeNode,
-                this);
+                objectTypeNode);
     }
 
     /**

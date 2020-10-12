@@ -12,26 +12,21 @@ public class CompiledNetworkSource {
 
     private final String source;
     private final IndexableConstraint indexableConstraint;
-    private final String sourceName;
-    private final String binaryName;
     private final String name;
     private final ObjectTypeNode objectTypeNode;
 
-    public CompiledNetworkSource(String source, IndexableConstraint indexableConstraint, String sourceName, String binaryName, String name, ObjectTypeNode objectTypeNode, ObjectTypeNodeCompiler objectTypeNodeCompiler) {
+    public CompiledNetworkSource(String source,
+                                 IndexableConstraint indexableConstraint,
+                                 String name,
+                                 ObjectTypeNode objectTypeNode) {
         this.source = source;
         this.indexableConstraint = indexableConstraint;
-        this.sourceName = sourceName;
-        this.binaryName = binaryName;
         this.name = name;
         this.objectTypeNode = objectTypeNode;
     }
 
     public String getSource() {
         return source;
-    }
-
-    public String getSourceName() {
-        return sourceName;
     }
 
     public String getName() {

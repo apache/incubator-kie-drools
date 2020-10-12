@@ -101,7 +101,6 @@
         <artifactId>maven-bundle-plugin</artifactId>
         <configuration>
           <instructions>
-            <!-- TODO LUCA verify this -->
             <Export-Package>
               org.drools.ancompiler.*
             </Export-Package>
