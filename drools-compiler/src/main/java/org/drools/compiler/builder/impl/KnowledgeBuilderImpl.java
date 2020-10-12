@@ -905,19 +905,9 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
      */
     @Override
     public void addPackage(final PackageDescr packageDescr) {
-        if ( addPackageWithoutRete( packageDescr ) ) {
-            compileRete(packageDescr);
-        }
-    }
-
-    /**
-     * Adds a package from a Descr/AST also triggering its compilation
-     * but without generating the corresponding rete/phreak network
-     */
-    public boolean addPackageWithoutRete( PackageDescr packageDescr ) {
         PackageRegistry pkgRegistry = getOrCreatePackageRegistry( packageDescr );
         if (pkgRegistry == null) {
-            return false;
+            return;
         }
 
         // merge into existing package
@@ -925,7 +915,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
 
         compileKnowledgePackages( packageDescr, pkgRegistry);
         wireAllRules();
-        return true;
+        compileRete(packageDescr);
     }
 
     protected void compileKnowledgePackages(PackageDescr packageDescr, PackageRegistry pkgRegistry) {
