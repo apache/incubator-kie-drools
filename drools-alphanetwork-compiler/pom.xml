@@ -103,7 +103,7 @@
           <instructions>
             <!-- TODO LUCA verify this -->
             <Export-Package>
-              org.drools.compiler.reteoo.compiled.*
+              org.drools.ancompiler.*
             </Export-Package>
             <Import-Package>
               com.sun.tools.xjc.*;resolution:=optional,
