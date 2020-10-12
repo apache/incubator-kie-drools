@@ -40,9 +40,6 @@ public class KieBaseUpdaterANC implements KieBaseUpdater {
 
     /**
      * This assumes the kie-memory-compiler module is provided at runtime
-     *
-     * @param rootClassLoader
-     * @param rete
      */
     private void inMemoryUpdate(ClassLoader rootClassLoader, Rete rete) {
         Map<String, CompiledNetworkSource> compiledNetworkSourcesMap = ObjectTypeNodeCompiler.compiledNetworkSourceMap(rete);
@@ -58,12 +55,6 @@ public class KieBaseUpdaterANC implements KieBaseUpdater {
         }
     }
 
-    /**
-     * This assumes the kie-memory-compiler module is provided at runtime
-     *
-     * @param rootClassLoader
-     * @param rete
-     */
     private void loadFromKJar(ClassLoader rootClassLoader, Rete rete) {
         // There's not actual need to regenerate the source here but the indexableConstraint is parsed throughout the generation
         // It should be possible to get the indexable constraint without generating the full source
