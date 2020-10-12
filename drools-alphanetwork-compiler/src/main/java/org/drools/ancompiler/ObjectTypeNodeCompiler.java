@@ -60,7 +60,7 @@ public class ObjectTypeNodeCompiler {
         ClassObjectType classObjectType = (ClassObjectType) objectTypeNode.getObjectType();
         this.className = classObjectType.getClassName().replace("$", ".");
         final String classObjectTypeName = classObjectType.getClassName().replace('.', '_');
-        final String otnHash = String.valueOf(Math.abs(objectTypeNode.hashCode()));
+        final String otnHash = String.valueOf(objectTypeNode.hashCode()).replace("-", "");
         generatedClassSimpleName = String.format("Compiled%sNetwork%d%s"
                 , classObjectTypeName
                 , objectTypeNode.getId()
