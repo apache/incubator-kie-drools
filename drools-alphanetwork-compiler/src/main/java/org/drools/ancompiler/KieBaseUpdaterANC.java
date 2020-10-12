@@ -67,6 +67,7 @@ public class KieBaseUpdaterANC implements KieBaseUpdater {
     private void loadFromKJar(ClassLoader rootClassLoader, Rete rete) {
         // There's not actual need to regenerate the source here but the indexableConstraint is parsed throughout the generation
         // It should be possible to get the indexable constraint without generating the full source
+        // see https://issues.redhat.com/browse/DROOLS-5718
         Map<String, CompiledNetworkSource> compiledNetworkSourcesMap = ObjectTypeNodeCompiler.compiledNetworkSourceMap(rete);
         for (Map.Entry<String, CompiledNetworkSource> kv : compiledNetworkSourcesMap.entrySet()) {
             String compiledNetworkClassName = kv.getValue().getName();
@@ -74,7 +75,7 @@ public class KieBaseUpdaterANC implements KieBaseUpdater {
             try {
                 aClass = rootClassLoader.loadClass(compiledNetworkClassName);
             } catch (ClassNotFoundException e) {
-                throw new RuntimeException(e);
+                throw new CouldNotCreateAlphaNetworkCompilerException(e);
             }
             kv.getValue().setCompiledNetwork(aClass);
         }
