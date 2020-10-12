@@ -50,8 +50,8 @@ public class CompiledNetworkSource {
         try {
             return (CompiledNetwork) aClass.getDeclaredConstructor(org.drools.core.spi.InternalReadAccessor.class)
                     .newInstance(getFieldExtractor());
-        } catch (Exception e) { // TODO LUCA
-            throw new RuntimeException(e);
+        } catch (Exception e) {
+            throw new CouldNotCreateAlphaNetworkCompilerException(e);
         }
     }
 
