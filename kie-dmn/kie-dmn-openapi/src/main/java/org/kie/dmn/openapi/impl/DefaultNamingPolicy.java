@@ -37,7 +37,7 @@ public class DefaultNamingPolicy implements NamingPolicy {
 
     @Override
     public String getRef(DMNType type) {
-        String namePart = type.getName();
+        String namePart;
         try {
             URI uri = new URI(null, null, getName(type), null);
             namePart = uri.toString();

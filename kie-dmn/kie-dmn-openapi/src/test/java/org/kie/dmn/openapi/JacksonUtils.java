@@ -30,7 +30,7 @@ public class JacksonUtils {
             try {
                 LOG.debug(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(tree));
             } catch (Exception e) {
-                e.printStackTrace();
+                LOG.error("error with Jackson serialization", e);
             }
         }
     }
