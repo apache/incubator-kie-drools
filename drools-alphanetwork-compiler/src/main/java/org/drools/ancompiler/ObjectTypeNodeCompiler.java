@@ -107,6 +107,7 @@ public class ObjectTypeNodeCompiler {
                 sourceCode,
                 parser.getIndexableConstraint(),
                 getName(),
+                getSourceName(),
                 objectTypeNode);
     }
 

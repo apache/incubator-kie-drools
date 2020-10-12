@@ -13,15 +13,18 @@ public class CompiledNetworkSource {
     private final String source;
     private final IndexableConstraint indexableConstraint;
     private final String name;
+    private final String sourceName;
     private final ObjectTypeNode objectTypeNode;
 
     public CompiledNetworkSource(String source,
                                  IndexableConstraint indexableConstraint,
                                  String name,
+                                 String sourceName,
                                  ObjectTypeNode objectTypeNode) {
         this.source = source;
         this.indexableConstraint = indexableConstraint;
         this.name = name;
+        this.sourceName = sourceName;
         this.objectTypeNode = objectTypeNode;
     }
 
@@ -31,6 +34,10 @@ public class CompiledNetworkSource {
 
     public String getName() {
         return name;
+    }
+
+    public String getSourceName() {
+        return sourceName;
     }
 
     public void setCompiledNetwork(Class<?> compiledNetworkClass) {
