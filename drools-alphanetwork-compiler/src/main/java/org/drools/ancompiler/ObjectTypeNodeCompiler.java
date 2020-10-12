@@ -20,7 +20,6 @@ import java.math.BigInteger;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.drools.core.InitialFact;
@@ -86,10 +85,10 @@ public class ObjectTypeNodeCompiler {
         parser.accept(setNode);
 
         // create assert method
-        AssertHandler assertHandler = new AssertHandler(builder, className, hashedAlphaDeclarations.size() > 0);
+        AssertHandler assertHandler = new AssertHandler(builder, className, !hashedAlphaDeclarations.isEmpty());
         parser.accept(assertHandler);
 
-        ModifyHandler modifyHandler = new ModifyHandler(builder, className, hashedAlphaDeclarations.size() > 0);
+        ModifyHandler modifyHandler = new ModifyHandler(builder, className, !hashedAlphaDeclarations.isEmpty());
         parser.accept(modifyHandler);
 
         DelegateMethodsHandler delegateMethodsHandler = new DelegateMethodsHandler(builder);
@@ -100,7 +99,7 @@ public class ObjectTypeNodeCompiler {
 
         String sourceCode = builder.toString();
         if (logger.isDebugEnabled()) {
-            logger.debug("Generated Compiled Alpha Network " + sourceCode);
+            logger.debug(String.format("Generated Compiled Alpha Network %s", sourceCode));
         }
 
         return new CompiledNetworkSource(

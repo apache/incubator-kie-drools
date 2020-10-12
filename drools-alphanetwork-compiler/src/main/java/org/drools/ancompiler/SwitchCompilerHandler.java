@@ -10,12 +10,12 @@ import org.drools.core.rule.IndexableConstraint;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.PropagationContext;
 
-abstract public class SwitchCompilerHandler extends AbstractCompilerHandler {
+public abstract class SwitchCompilerHandler extends AbstractCompilerHandler {
 
     protected static final String MODIFY_PREVIOUS_TUPLE_NAME = ModifyPreviousTuples.class.getName();
     protected static final String MODIFY_PREVIOUS_TUPLE_PARAM_NAME = "modifyPreviousTuples";
     protected final StringBuilder builder;
-    private Class fieldType;
+    private Class<?> fieldType;
 
     static final String LOCAL_FACT_VAR_NAME = "fact";
     protected static final String FACT_HANDLE_PARAM_TYPE = InternalFactHandle.class.getName();

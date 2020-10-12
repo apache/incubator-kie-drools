@@ -37,7 +37,7 @@ public class HashedAlphasDeclaration {
      * This map contains keys which are different values of the same field and the node id that of the
      * {@link org.kie.common.NetworkNode} the value is from.
      */
-    private final Map<Object, String> hashedValuesToNodeIds = new HashMap<Object, String>();
+    private final Map<Object, String> hashedValuesToNodeIds = new HashMap<>();
 
     HashedAlphasDeclaration(String variableName,ValueType valueType) {
         this.variableName = variableName;

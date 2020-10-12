@@ -73,7 +73,7 @@ abstract class AbstractCompilerHandler extends NetworkHandlerAdaptor {
      * @return variable name
      * @see Class#getSimpleName()
      */
-    private String getVariableName(Class clazz, int nodeId) {
+    private String getVariableName(Class<?> clazz, int nodeId) {
         String type = clazz.getSimpleName();
         return Character.toLowerCase(type.charAt(0)) + type.substring(1) + nodeId;
     }

@@ -25,7 +25,7 @@ public class DelegateMethodsHandler extends AbstractCompilerHandler {
 
     private final StringBuilder builder;
 
-    private final static String FIXED_PART = "" +
+    private static final String FIXED_PART = "" +
             "\n" +
             "    public int getAssociationsSize() {\n" +
             "        return objectTypeNode.getAssociationsSize();\n" +

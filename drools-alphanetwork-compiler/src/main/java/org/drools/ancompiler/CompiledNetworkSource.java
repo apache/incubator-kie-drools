@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 
 public class CompiledNetworkSource {
 
-    private final Logger logger = LoggerFactory.getLogger(KieBaseUpdaterANC.class);
+    private final Logger logger = LoggerFactory.getLogger(CompiledNetworkSource.class);
 
     private final String source;
     private final IndexableConstraint indexableConstraint;

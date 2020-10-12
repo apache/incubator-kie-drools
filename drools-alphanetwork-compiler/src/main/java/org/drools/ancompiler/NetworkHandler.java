@@ -16,7 +16,6 @@
 
 package org.drools.ancompiler;
 
-import org.drools.core.base.ClassFieldReader;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
@@ -26,7 +25,6 @@ import org.drools.core.rule.IndexableConstraint;
 
 /**
  * Receive notification of the logical parts of the RETE-OO network.
- * todo: finish documenting 
  */
 public interface NetworkHandler {
 

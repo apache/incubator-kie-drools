@@ -16,17 +16,21 @@
 
 package org.drools.ancompiler;
 
-import org.drools.core.common.BaseNode;
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.NetworkNode;
-import org.drools.core.common.RuleBasePartitionId;
-import org.drools.core.reteoo.*;
-import org.drools.core.spi.PropagationContext;
-
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+
+import org.drools.core.common.BaseNode;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.NetworkNode;
+import org.drools.core.common.RuleBasePartitionId;
+import org.drools.core.reteoo.AlphaNode;
+import org.drools.core.reteoo.BetaNode;
+import org.drools.core.reteoo.LeftInputAdapterNode;
+import org.drools.core.reteoo.ObjectSink;
+import org.drools.core.reteoo.ObjectSinkPropagator;
+import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.core.reteoo.WindowNode;
 
 /**
  * This is the base type for all generated classes that that represent a "compiled" portion of the RETE network.
@@ -70,7 +74,6 @@ public abstract class CompiledNetwork implements ObjectSinkPropagator {
      * method of this Externalizable class.
      */
     public void writeExternal(ObjectOutput out) throws IOException {
-        // todo is this needed??
     }
 
     /**
@@ -86,7 +89,6 @@ public abstract class CompiledNetwork implements ObjectSinkPropagator {
      *                                restored cannot be found.
      */
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        // todo is this needed??
     }
 
     /**
@@ -102,7 +104,6 @@ public abstract class CompiledNetwork implements ObjectSinkPropagator {
         ObjectTypeNodeParser parser = new ObjectTypeNodeParser(objectTypeNode);
         parser.accept(setter);
     }
-
 
     public void setNetwork(ObjectTypeNode objectTypeNode) {
         setObjectTypeNode(objectTypeNode);
@@ -139,22 +140,27 @@ public abstract class CompiledNetwork implements ObjectSinkPropagator {
      */
     private class NodeReferenceSetter extends NetworkHandlerAdaptor {
 
+        @Override
         public void startNonHashedAlphaNode(AlphaNode alphaNode) {
             setNetworkNodeReference(alphaNode);
         }
 
+        @Override
         public void startBetaNode(BetaNode betaNode) {
             setNetworkNodeReference(betaNode);
         }
 
+        @Override
         public void startLeftInputAdapterNode(LeftInputAdapterNode leftInputAdapterNode) {
             setNetworkNodeReference(leftInputAdapterNode);
         }
 
+        @Override
         public void startHashedAlphaNode(AlphaNode hashedAlpha, Object hashedValue) {
             setNetworkNodeReference(hashedAlpha);
         }
 
+        @Override
         public void startWindowNode(WindowNode windowNode) {
             setNetworkNodeReference(windowNode);
         }

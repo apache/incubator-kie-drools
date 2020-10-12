@@ -23,9 +23,6 @@ import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.WindowNode;
 import org.drools.core.rule.IndexableConstraint;
 
-/**
- * todo: document
- */
 public class AssertHandler extends SwitchCompilerHandler {
 
     /**
@@ -38,6 +35,7 @@ public class AssertHandler extends SwitchCompilerHandler {
     private final boolean alphaNetContainsHashedField;
 
     private final String factClassName;
+    private static final String ASSERT_OBJECT_CALL = ".assertObject(";
 
     AssertHandler(StringBuilder builder, String factClassName) {
         this(builder, factClassName, false);
@@ -70,7 +68,7 @@ public class AssertHandler extends SwitchCompilerHandler {
 
     @Override
     public void startBetaNode(BetaNode betaNode) {
-        builder.append(getVariableName(betaNode)).append(".assertObject(").
+        builder.append(getVariableName(betaNode)).append(ASSERT_OBJECT_CALL).
                 append(FACT_HANDLE_PARAM_NAME).append(",").
                 append(PROP_CONTEXT_PARAM_NAME).append(",").
                 append(WORKING_MEMORY_PARAM_NAME).append(");").append(NEWLINE);
@@ -79,7 +77,7 @@ public class AssertHandler extends SwitchCompilerHandler {
 
     @Override
     public void startWindowNode(WindowNode windowNode) {
-        builder.append(getVariableName(windowNode)).append(".assertObject(").
+        builder.append(getVariableName(windowNode)).append(ASSERT_OBJECT_CALL).
                 append(FACT_HANDLE_PARAM_NAME).append(",").
                 append(PROP_CONTEXT_PARAM_NAME).append(",").
                 append(WORKING_MEMORY_PARAM_NAME).append(");").append(NEWLINE);
@@ -87,7 +85,7 @@ public class AssertHandler extends SwitchCompilerHandler {
 
     @Override
     public void startLeftInputAdapterNode(LeftInputAdapterNode leftInputAdapterNode) {
-        builder.append(getVariableName(leftInputAdapterNode)).append(".assertObject(").
+        builder.append(getVariableName(leftInputAdapterNode)).append(ASSERT_OBJECT_CALL).
                 append(FACT_HANDLE_PARAM_NAME).append(",").
                 append(PROP_CONTEXT_PARAM_NAME).append(",").
                 append(WORKING_MEMORY_PARAM_NAME).append(");").append(NEWLINE);
@@ -135,10 +133,5 @@ public class AssertHandler extends SwitchCompilerHandler {
     public void endObjectTypeNode(ObjectTypeNode objectTypeNode) {
         // close the assertObject method
         builder.append("}").append(NEWLINE);
-    }
-
-    @Override
-    public void nullCaseAlphaNodeStart(AlphaNode hashedAlpha) {
-        super.nullCaseAlphaNodeStart(hashedAlpha);
     }
 }
