@@ -51,6 +51,13 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class JobResourceIT {
 
+    public static final String CALLBACK_ENDPOINT = "http://localhost:8081/callback";
+    public static final String PROCESS_ID = "processId";
+    public static final String PROCESS_INSTANCE_ID = "processInstanceId";
+    public static final String ROOT_PROCESS_ID = "rootProcessId";
+    public static final String ROOT_PROCESS_INSTANCE_ID = "rootProcessInstanceId";
+    public static final String NODE_INSTANCE_ID = "nodeInstanceId";
+    public static final int PRIORITY = 1;
     @Inject
     ObjectMapper objectMapper;
 
@@ -87,14 +94,25 @@ class JobResourceIT {
         return getJob(id, DateUtil.now().plusSeconds(10));
     }
 
-    private Job getJob(String id, ZonedDateTime expirationTime) {
+    private Job getJob(String id, ZonedDateTime expirationTime, Integer repeatLimit, Long repeatInterval) {
         return JobBuilder
                 .builder()
                 .id(id)
                 .expirationTime(expirationTime)
-                .callbackEndpoint("http://localhost:8081/callback")
-                .priority(1)
+                .repeatInterval(repeatInterval)
+                .repeatLimit(repeatLimit)
+                .callbackEndpoint(CALLBACK_ENDPOINT)
+                .processId(PROCESS_ID)
+                .processInstanceId(PROCESS_INSTANCE_ID)
+                .rootProcessId(ROOT_PROCESS_ID)
+                .rootProcessInstanceId(ROOT_PROCESS_INSTANCE_ID)
+                .nodeInstanceId(NODE_INSTANCE_ID)
+                .priority(PRIORITY)
                 .build();
+    }
+
+    private Job getJob(String id, ZonedDateTime expirationTime) {
+        return getJob(id, expirationTime, null, null);
     }
 
     @Test
@@ -136,13 +154,7 @@ class JobResourceIT {
     @Test
     void cancelRunningNonPeriodicJobTest() throws Exception {
         final String id = UUID.randomUUID().toString();
-        final Job job = JobBuilder
-                .builder()
-                .id(id)
-                .expirationTime(DateUtil.now().plus(10, ChronoUnit.SECONDS))
-                .callbackEndpoint("http://localhost:8081/callback")
-                .priority(1)
-                .build();
+        final Job job = getJob(id, DateUtil.now().plus(10, ChronoUnit.SECONDS));
         create(jobToJson(job));
 
         assertGetScheduledJob(id);
@@ -166,15 +178,7 @@ class JobResourceIT {
     void cancelRunningPeriodicJobTest() throws Exception {
         final String id = UUID.randomUUID().toString();
         int timeMillis = 1000;
-        final Job job = JobBuilder
-                .builder()
-                .id(id)
-                .expirationTime(DateUtil.now().plus(timeMillis, ChronoUnit.MILLIS))
-                .repeatLimit(10)
-                .repeatInterval(500l)
-                .callbackEndpoint("http://localhost:8081/callback")
-                .priority(1)
-                .build();
+        final Job job = getJob(id, DateUtil.now().plus(timeMillis, ChronoUnit.MILLIS), 10, 500l);
         create(jobToJson(job));
 
         //check the job was created
@@ -252,6 +256,13 @@ class JobResourceIT {
                 .as(ScheduledJob.class);
 
         assertThat(scheduledJob.getId()).isEqualTo(id);
+        assertThat(scheduledJob.getPriority()).isEqualTo(PRIORITY);
+        assertThat(scheduledJob.getProcessId()).isEqualTo(PROCESS_ID);
+        assertThat(scheduledJob.getProcessInstanceId()).isEqualTo(PROCESS_INSTANCE_ID);
+        assertThat(scheduledJob.getRootProcessId()).isEqualTo(ROOT_PROCESS_ID);
+        assertThat(scheduledJob.getRootProcessInstanceId()).isEqualTo(ROOT_PROCESS_INSTANCE_ID);
+        assertThat(scheduledJob.getNodeInstanceId()).isEqualTo(NODE_INSTANCE_ID);
+        assertThat(scheduledJob.getCallbackEndpoint()).isEqualTo(CALLBACK_ENDPOINT);
         assertThat(scheduledJob.getStatus()).isEqualTo(JobStatus.SCHEDULED);
         if (wasScheduled) {
             assertThat(scheduledJob.getScheduledId()).isNotBlank();

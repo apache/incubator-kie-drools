@@ -48,7 +48,8 @@ public class ScheduledJob extends Job {
               job.map(Job::getProcessId).orElse(null),
               job.map(Job::getRootProcessId).orElse(null),
               job.map(Job::getRepeatInterval).orElse(null),
-              job.map(Job::getRepeatLimit).orElse(null));
+              job.map(Job::getRepeatLimit).orElse(null),
+              job.map(Job::getNodeInstanceId).orElse(null));
     }
 
     public String getScheduledId() {
@@ -151,6 +152,7 @@ public class ScheduledJob extends Job {
                                .rootProcessInstanceId(j.map(Job::getRootProcessInstanceId).orElse(job.getRootProcessInstanceId()))
                                .processInstanceId(j.map(Job::getProcessInstanceId).orElse(job.getProcessInstanceId()))
                                .expirationTime(j.map(Job::getExpirationTime).orElse(job.getExpirationTime()))
+                               .nodeInstanceId(j.map(Job::getNodeInstanceId).orElse(job.getNodeInstanceId()))
                                .build());
         }
 

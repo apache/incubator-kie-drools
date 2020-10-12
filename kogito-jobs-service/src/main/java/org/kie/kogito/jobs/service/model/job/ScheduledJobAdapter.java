@@ -75,6 +75,7 @@ public class ScheduledJobAdapter {
                              .rootProcessInstanceId(payload.getRootProcessInstanceId())
                              .processId(payload.getProcessId())
                              .processInstanceId(payload.getProcessInstanceId())
+                             .nodeInstanceId(payload.getNodeInstanceId())
                              .build())
                 .scheduledId(jobDetails.getScheduledId())
                 .status(jobDetails.getStatus())
@@ -135,7 +136,8 @@ public class ScheduledJobAdapter {
             return OBJECT_MAPPER.writeValueAsString(new ProcessPayload(scheduledJob.getProcessInstanceId(),
                                                                        scheduledJob.getRootProcessInstanceId(),
                                                                        scheduledJob.getProcessId(),
-                                                                       scheduledJob.getRootProcessId()));
+                                                                       scheduledJob.getRootProcessId(),
+                                                                       scheduledJob.getNodeInstanceId()));
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -160,16 +162,19 @@ public class ScheduledJobAdapter {
         private String rootProcessInstanceId;
         private String processId;
         private String rootProcessId;
+        private String nodeInstanceId;
 
         private ProcessPayload() {
             //needed by jackson
         }
 
-        public ProcessPayload(String processInstanceId, String rootProcessInstanceId, String processId, String rootProcessId) {
+        public ProcessPayload(String processInstanceId, String rootProcessInstanceId, String processId,
+                              String rootProcessId, String nodeInstanceId) {
             this.processInstanceId = processInstanceId;
             this.rootProcessInstanceId = rootProcessInstanceId;
             this.processId = processId;
             this.rootProcessId = rootProcessId;
+            this.nodeInstanceId = nodeInstanceId;
         }
 
         public String getProcessInstanceId() {
@@ -186,6 +191,10 @@ public class ScheduledJobAdapter {
 
         public String getRootProcessId() {
             return rootProcessId;
+        }
+
+        public String getNodeInstanceId() {
+            return nodeInstanceId;
         }
     }
 }
