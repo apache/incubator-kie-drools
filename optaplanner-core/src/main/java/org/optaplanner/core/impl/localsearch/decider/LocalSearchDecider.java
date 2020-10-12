@@ -39,16 +39,16 @@ public class LocalSearchDecider<Solution_> {
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     protected final String logIndentation;
-    protected final Termination termination;
-    protected final MoveSelector moveSelector;
-    protected final Acceptor acceptor;
-    protected final LocalSearchForager forager;
+    protected final Termination<Solution_> termination;
+    protected final MoveSelector<Solution_> moveSelector;
+    protected final Acceptor<Solution_> acceptor;
+    protected final LocalSearchForager<Solution_> forager;
 
     protected boolean assertMoveScoreFromScratch = false;
     protected boolean assertExpectedUndoMoveScore = false;
 
-    public LocalSearchDecider(String logIndentation,
-            Termination termination, MoveSelector moveSelector, Acceptor acceptor, LocalSearchForager forager) {
+    public LocalSearchDecider(String logIndentation, Termination<Solution_> termination,
+            MoveSelector<Solution_> moveSelector, Acceptor<Solution_> acceptor, LocalSearchForager<Solution_> forager) {
         this.logIndentation = logIndentation;
         this.termination = termination;
         this.moveSelector = moveSelector;
@@ -56,19 +56,19 @@ public class LocalSearchDecider<Solution_> {
         this.forager = forager;
     }
 
-    public Termination getTermination() {
+    public Termination<Solution_> getTermination() {
         return termination;
     }
 
-    public MoveSelector getMoveSelector() {
+    public MoveSelector<Solution_> getMoveSelector() {
         return moveSelector;
     }
 
-    public Acceptor getAcceptor() {
+    public Acceptor<Solution_> getAcceptor() {
         return acceptor;
     }
 
-    public LocalSearchForager getForager() {
+    public LocalSearchForager<Solution_> getForager() {
         return forager;
     }
 

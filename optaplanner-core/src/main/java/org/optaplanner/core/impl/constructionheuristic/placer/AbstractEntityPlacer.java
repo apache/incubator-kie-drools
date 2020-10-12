@@ -28,33 +28,33 @@ import org.slf4j.LoggerFactory;
  *
  * @see EntityPlacer
  */
-public abstract class AbstractEntityPlacer {
+public abstract class AbstractEntityPlacer<Solution_> implements EntityPlacer<Solution_> {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
-    protected PhaseLifecycleSupport phaseLifecycleSupport = new PhaseLifecycleSupport();
+    protected PhaseLifecycleSupport<Solution_> phaseLifecycleSupport = new PhaseLifecycleSupport<>();
 
-    public void solvingStarted(SolverScope solverScope) {
+    public void solvingStarted(SolverScope<Solution_> solverScope) {
         phaseLifecycleSupport.fireSolvingStarted(solverScope);
     }
 
-    public void phaseStarted(AbstractPhaseScope phaseScope) {
+    public void phaseStarted(AbstractPhaseScope<Solution_> phaseScope) {
         phaseLifecycleSupport.firePhaseStarted(phaseScope);
     }
 
-    public void stepStarted(AbstractStepScope stepScope) {
+    public void stepStarted(AbstractStepScope<Solution_> stepScope) {
         phaseLifecycleSupport.fireStepStarted(stepScope);
     }
 
-    public void stepEnded(AbstractStepScope stepScope) {
+    public void stepEnded(AbstractStepScope<Solution_> stepScope) {
         phaseLifecycleSupport.fireStepEnded(stepScope);
     }
 
-    public void phaseEnded(AbstractPhaseScope phaseScope) {
+    public void phaseEnded(AbstractPhaseScope<Solution_> phaseScope) {
         phaseLifecycleSupport.firePhaseEnded(phaseScope);
     }
 
-    public void solvingEnded(SolverScope solverScope) {
+    public void solvingEnded(SolverScope<Solution_> solverScope) {
         phaseLifecycleSupport.fireSolvingEnded(solverScope);
     }
 

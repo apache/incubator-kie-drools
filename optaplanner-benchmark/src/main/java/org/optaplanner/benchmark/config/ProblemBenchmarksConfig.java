@@ -53,7 +53,7 @@ import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 })
 public class ProblemBenchmarksConfig extends AbstractConfig<ProblemBenchmarksConfig> {
 
-    private Class<SolutionFileIO> solutionFileIOClass = null;
+    private Class<SolutionFileIO<?>> solutionFileIOClass = null;
 
     private Boolean writeOutputSolutionEnabled = null;
 
@@ -72,11 +72,11 @@ public class ProblemBenchmarksConfig extends AbstractConfig<ProblemBenchmarksCon
     // Constructors and simple getters/setters
     // ************************************************************************
 
-    public Class<SolutionFileIO> getSolutionFileIOClass() {
+    public Class<SolutionFileIO<?>> getSolutionFileIOClass() {
         return solutionFileIOClass;
     }
 
-    public void setSolutionFileIOClass(Class<SolutionFileIO> solutionFileIOClass) {
+    public void setSolutionFileIOClass(Class<SolutionFileIO<?>> solutionFileIOClass) {
         this.solutionFileIOClass = solutionFileIOClass;
     }
 
@@ -134,7 +134,7 @@ public class ProblemBenchmarksConfig extends AbstractConfig<ProblemBenchmarksCon
             // 2 SolverBenchmarks containing equal ProblemBenchmarks should contain the same instance
             ProblemBenchmarkResult<Solution_> newProblemBenchmarkResult = buildProblemBenchmark(
                     plannerBenchmarkResult, problemProvider);
-            ProblemBenchmarkResult problemBenchmarkResult;
+            ProblemBenchmarkResult<Solution_> problemBenchmarkResult;
             int index = unifiedProblemBenchmarkResultList.indexOf(newProblemBenchmarkResult);
             if (index < 0) {
                 problemBenchmarkResult = newProblemBenchmarkResult;
@@ -191,7 +191,7 @@ public class ProblemBenchmarksConfig extends AbstractConfig<ProblemBenchmarksCon
         if (solutionFileIOClass == null) {
             throw new IllegalArgumentException("The solutionFileIOClass (" + solutionFileIOClass + ") cannot be null.");
         }
-        return ConfigUtils.newInstance(this, "solutionFileIOClass", solutionFileIOClass);
+        return (SolutionFileIO<Solution_>) ConfigUtils.newInstance(this, "solutionFileIOClass", solutionFileIOClass);
     }
 
     private <Solution_> ProblemBenchmarkResult<Solution_> buildProblemBenchmark(

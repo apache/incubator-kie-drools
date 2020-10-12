@@ -25,7 +25,8 @@ import org.slf4j.LoggerFactory;
 /**
  * Abstract superclass for {@link Termination}.
  */
-public abstract class AbstractTermination extends PhaseLifecycleListenerAdapter implements Termination {
+public abstract class AbstractTermination<Solution_> extends PhaseLifecycleListenerAdapter<Solution_>
+        implements Termination<Solution_> {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -34,7 +35,8 @@ public abstract class AbstractTermination extends PhaseLifecycleListenerAdapter 
     // ************************************************************************
 
     @Override
-    public Termination createChildThreadTermination(SolverScope solverScope, ChildThreadType childThreadType) {
+    public Termination<Solution_> createChildThreadTermination(SolverScope<Solution_> solverScope,
+            ChildThreadType childThreadType) {
         throw new UnsupportedOperationException("This terminationClass (" + getClass()
                 + ") does not yet support being used in child threads of type (" + childThreadType + ").");
     }

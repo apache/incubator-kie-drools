@@ -23,40 +23,41 @@ import java.util.Queue;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
 import org.optaplanner.examples.projectjobscheduling.domain.Allocation;
+import org.optaplanner.examples.projectjobscheduling.domain.Schedule;
 
-public class PredecessorsDoneDateUpdatingVariableListener implements VariableListener<Allocation> {
+public class PredecessorsDoneDateUpdatingVariableListener implements VariableListener<Schedule, Allocation> {
 
     @Override
-    public void beforeEntityAdded(ScoreDirector scoreDirector, Allocation allocation) {
+    public void beforeEntityAdded(ScoreDirector<Schedule> scoreDirector, Allocation allocation) {
         // Do nothing
     }
 
     @Override
-    public void afterEntityAdded(ScoreDirector scoreDirector, Allocation allocation) {
+    public void afterEntityAdded(ScoreDirector<Schedule> scoreDirector, Allocation allocation) {
         updateAllocation(scoreDirector, allocation);
     }
 
     @Override
-    public void beforeVariableChanged(ScoreDirector scoreDirector, Allocation allocation) {
+    public void beforeVariableChanged(ScoreDirector<Schedule> scoreDirector, Allocation allocation) {
         // Do nothing
     }
 
     @Override
-    public void afterVariableChanged(ScoreDirector scoreDirector, Allocation allocation) {
+    public void afterVariableChanged(ScoreDirector<Schedule> scoreDirector, Allocation allocation) {
         updateAllocation(scoreDirector, allocation);
     }
 
     @Override
-    public void beforeEntityRemoved(ScoreDirector scoreDirector, Allocation allocation) {
+    public void beforeEntityRemoved(ScoreDirector<Schedule> scoreDirector, Allocation allocation) {
         // Do nothing
     }
 
     @Override
-    public void afterEntityRemoved(ScoreDirector scoreDirector, Allocation allocation) {
+    public void afterEntityRemoved(ScoreDirector<Schedule> scoreDirector, Allocation allocation) {
         // Do nothing
     }
 
-    protected void updateAllocation(ScoreDirector scoreDirector, Allocation originalAllocation) {
+    protected void updateAllocation(ScoreDirector<Schedule> scoreDirector, Allocation originalAllocation) {
         Queue<Allocation> uncheckedSuccessorQueue = new ArrayDeque<>();
         uncheckedSuccessorQueue.addAll(originalAllocation.getSuccessorAllocationList());
         while (!uncheckedSuccessorQueue.isEmpty()) {
@@ -73,7 +74,7 @@ public class PredecessorsDoneDateUpdatingVariableListener implements VariableLis
      * @param allocation never null
      * @return true if the startDate changed
      */
-    protected boolean updatePredecessorsDoneDate(ScoreDirector scoreDirector, Allocation allocation) {
+    protected boolean updatePredecessorsDoneDate(ScoreDirector<Schedule> scoreDirector, Allocation allocation) {
         // For the source the doneDate must be 0.
         Integer doneDate = 0;
         for (Allocation predecessorAllocation : allocation.getPredecessorAllocationList()) {

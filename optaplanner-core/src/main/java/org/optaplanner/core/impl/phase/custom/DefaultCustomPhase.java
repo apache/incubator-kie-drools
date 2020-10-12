@@ -37,7 +37,7 @@ public class DefaultCustomPhase<Solution_> extends AbstractPhase<Solution_> impl
     protected List<CustomPhaseCommand<Solution_>> customPhaseCommandList;
 
     public DefaultCustomPhase(int phaseIndex, String logIndentation,
-            BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination termination) {
+            BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination<Solution_> termination) {
         super(phaseIndex, logIndentation, bestSolutionRecaller, termination);
     }
 

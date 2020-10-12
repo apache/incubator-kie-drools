@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,14 +22,16 @@ import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 
-public abstract class AbstractRandomChangeIterator<S extends Move> extends UpcomingSelectionIterator<S> {
+public abstract class AbstractRandomChangeIterator<Solution_, Move_ extends Move<Solution_>>
+        extends UpcomingSelectionIterator<Move_> {
 
-    private final EntitySelector entitySelector;
-    private final ValueSelector valueSelector;
+    private final EntitySelector<Solution_> entitySelector;
+    private final ValueSelector<Solution_> valueSelector;
 
     private Iterator<Object> entityIterator;
 
-    public AbstractRandomChangeIterator(EntitySelector entitySelector, ValueSelector valueSelector) {
+    public AbstractRandomChangeIterator(EntitySelector<Solution_> entitySelector,
+            ValueSelector<Solution_> valueSelector) {
         this.entitySelector = entitySelector;
         this.valueSelector = valueSelector;
         entityIterator = entitySelector.iterator();
@@ -37,7 +39,7 @@ public abstract class AbstractRandomChangeIterator<S extends Move> extends Upcom
     }
 
     @Override
-    protected S createUpcomingSelection() {
+    protected Move_ createUpcomingSelection() {
         // Ideally, this code should have read:
         //     Object entity = entityIterator.next();
         //     Iterator<Object> valueIterator = valueSelector.iterator(entity);
@@ -71,6 +73,6 @@ public abstract class AbstractRandomChangeIterator<S extends Move> extends Upcom
         return newChangeSelection(entity, toValue);
     }
 
-    protected abstract S newChangeSelection(Object entity, Object toValue);
+    protected abstract Move_ newChangeSelection(Object entity, Object toValue);
 
 }

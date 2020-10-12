@@ -20,7 +20,7 @@ import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.solver.thread.ChildThreadType;
 
-public class StepCountTermination extends AbstractTermination {
+public class StepCountTermination<Solution_> extends AbstractTermination<Solution_> {
 
     private final int stepCountLimit;
 
@@ -41,13 +41,13 @@ public class StepCountTermination extends AbstractTermination {
     // ************************************************************************
 
     @Override
-    public boolean isSolverTerminated(SolverScope solverScope) {
+    public boolean isSolverTerminated(SolverScope<Solution_> solverScope) {
         throw new UnsupportedOperationException(
                 getClass().getSimpleName() + " can only be used for phase termination.");
     }
 
     @Override
-    public boolean isPhaseTerminated(AbstractPhaseScope phaseScope) {
+    public boolean isPhaseTerminated(AbstractPhaseScope<Solution_> phaseScope) {
         int nextStepIndex = phaseScope.getNextStepIndex();
         return nextStepIndex >= stepCountLimit;
     }
@@ -57,13 +57,13 @@ public class StepCountTermination extends AbstractTermination {
     // ************************************************************************
 
     @Override
-    public double calculateSolverTimeGradient(SolverScope solverScope) {
+    public double calculateSolverTimeGradient(SolverScope<Solution_> solverScope) {
         throw new UnsupportedOperationException(
                 getClass().getSimpleName() + " can only be used for phase termination.");
     }
 
     @Override
-    public double calculatePhaseTimeGradient(AbstractPhaseScope phaseScope) {
+    public double calculatePhaseTimeGradient(AbstractPhaseScope<Solution_> phaseScope) {
         int nextStepIndex = phaseScope.getNextStepIndex();
         double timeGradient = ((double) nextStepIndex) / ((double) stepCountLimit);
         return Math.min(timeGradient, 1.0);
@@ -74,9 +74,9 @@ public class StepCountTermination extends AbstractTermination {
     // ************************************************************************
 
     @Override
-    public StepCountTermination createChildThreadTermination(
-            SolverScope solverScope, ChildThreadType childThreadType) {
-        return new StepCountTermination(stepCountLimit);
+    public StepCountTermination<Solution_> createChildThreadTermination(SolverScope<Solution_> solverScope,
+            ChildThreadType childThreadType) {
+        return new StepCountTermination<>(stepCountLimit);
     }
 
     @Override

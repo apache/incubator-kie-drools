@@ -34,32 +34,32 @@ import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 import org.optaplanner.core.impl.solver.thread.ChildThreadType;
 import org.optaplanner.core.impl.solver.thread.DefaultSolverThreadFactory;
 
-public class HeuristicConfigPolicy {
+public class HeuristicConfigPolicy<Solution_> {
 
     private final EnvironmentMode environmentMode;
     private final String logIndentation;
     private final Integer moveThreadCount;
     private final Integer moveThreadBufferSize;
     private final Class<? extends ThreadFactory> threadFactoryClass;
-    private final InnerScoreDirectorFactory scoreDirectorFactory;
+    private final InnerScoreDirectorFactory<Solution_, ?> scoreDirectorFactory;
 
     private EntitySorterManner entitySorterManner = EntitySorterManner.NONE;
     private ValueSorterManner valueSorterManner = ValueSorterManner.NONE;
     private boolean reinitializeVariableFilterEnabled = false;
     private boolean initializedChainedValueFilterEnabled = false;
 
-    private Map<String, EntityMimicRecorder> entityMimicRecorderMap = new HashMap<>();
-    private Map<String, ValueMimicRecorder> valueMimicRecorderMap = new HashMap<>();
+    private Map<String, EntityMimicRecorder<Solution_>> entityMimicRecorderMap = new HashMap<>();
+    private Map<String, ValueMimicRecorder<Solution_>> valueMimicRecorderMap = new HashMap<>();
 
-    public HeuristicConfigPolicy(EnvironmentMode environmentMode,
-            Integer moveThreadCount, Integer moveThreadBufferSize, Class<? extends ThreadFactory> threadFactoryClass,
-            InnerScoreDirectorFactory scoreDirectorFactory) {
+    public HeuristicConfigPolicy(EnvironmentMode environmentMode, Integer moveThreadCount, Integer moveThreadBufferSize,
+            Class<? extends ThreadFactory> threadFactoryClass,
+            InnerScoreDirectorFactory<Solution_, ?> scoreDirectorFactory) {
         this(environmentMode, "", moveThreadCount, moveThreadBufferSize, threadFactoryClass, scoreDirectorFactory);
     }
 
-    public HeuristicConfigPolicy(EnvironmentMode environmentMode, String logIndentation,
-            Integer moveThreadCount, Integer moveThreadBufferSize,
-            Class<? extends ThreadFactory> threadFactoryClass, InnerScoreDirectorFactory scoreDirectorFactory) {
+    public HeuristicConfigPolicy(EnvironmentMode environmentMode, String logIndentation, Integer moveThreadCount,
+            Integer moveThreadBufferSize, Class<? extends ThreadFactory> threadFactoryClass,
+            InnerScoreDirectorFactory<Solution_, ?> scoreDirectorFactory) {
         this.environmentMode = environmentMode;
         this.logIndentation = logIndentation;
         this.moveThreadCount = moveThreadCount;
@@ -88,7 +88,7 @@ public class HeuristicConfigPolicy {
         return moveThreadBufferSize;
     }
 
-    public SolutionDescriptor getSolutionDescriptor() {
+    public SolutionDescriptor<Solution_> getSolutionDescriptor() {
         return scoreDirectorFactory.getSolutionDescriptor();
     }
 
@@ -96,7 +96,7 @@ public class HeuristicConfigPolicy {
         return scoreDirectorFactory.getScoreDefinition();
     }
 
-    public InnerScoreDirectorFactory getScoreDirectorFactory() {
+    public InnerScoreDirectorFactory<Solution_, ?> getScoreDirectorFactory() {
         return scoreDirectorFactory;
     }
 
@@ -120,19 +120,19 @@ public class HeuristicConfigPolicy {
         return reinitializeVariableFilterEnabled;
     }
 
-    public Map<String, EntityMimicRecorder> getEntityMimicRecorderMap() {
+    public Map<String, EntityMimicRecorder<Solution_>> getEntityMimicRecorderMap() {
         return entityMimicRecorderMap;
     }
 
-    public void setEntityMimicRecorderMap(Map<String, EntityMimicRecorder> entityMimicRecorderMap) {
+    public void setEntityMimicRecorderMap(Map<String, EntityMimicRecorder<Solution_>> entityMimicRecorderMap) {
         this.entityMimicRecorderMap = entityMimicRecorderMap;
     }
 
-    public Map<String, ValueMimicRecorder> getValueMimicRecorderMap() {
+    public Map<String, ValueMimicRecorder<Solution_>> getValueMimicRecorderMap() {
         return valueMimicRecorderMap;
     }
 
-    public void setValueMimicRecorderMap(Map<String, ValueMimicRecorder> valueMimicRecorderMap) {
+    public void setValueMimicRecorderMap(Map<String, ValueMimicRecorder<Solution_>> valueMimicRecorderMap) {
         this.valueMimicRecorderMap = valueMimicRecorderMap;
     }
 
@@ -144,21 +144,21 @@ public class HeuristicConfigPolicy {
     // Builder methods
     // ************************************************************************
 
-    public HeuristicConfigPolicy createPhaseConfigPolicy() {
-        return new HeuristicConfigPolicy(environmentMode, logIndentation,
+    public HeuristicConfigPolicy<Solution_> createPhaseConfigPolicy() {
+        return new HeuristicConfigPolicy<>(environmentMode, logIndentation,
                 moveThreadCount, moveThreadBufferSize, threadFactoryClass,
                 scoreDirectorFactory);
     }
 
-    public HeuristicConfigPolicy createFilteredPhaseConfigPolicy() {
-        HeuristicConfigPolicy heuristicConfigPolicy = createPhaseConfigPolicy();
+    public HeuristicConfigPolicy<Solution_> createFilteredPhaseConfigPolicy() {
+        HeuristicConfigPolicy<Solution_> heuristicConfigPolicy = createPhaseConfigPolicy();
         heuristicConfigPolicy.reinitializeVariableFilterEnabled = true;
         heuristicConfigPolicy.initializedChainedValueFilterEnabled = true;
         return heuristicConfigPolicy;
     }
 
-    public HeuristicConfigPolicy createChildThreadConfigPolicy(ChildThreadType childThreadType) {
-        return new HeuristicConfigPolicy(environmentMode, logIndentation + "        ",
+    public HeuristicConfigPolicy<Solution_> createChildThreadConfigPolicy(ChildThreadType childThreadType) {
+        return new HeuristicConfigPolicy<>(environmentMode, logIndentation + "        ",
                 moveThreadCount, moveThreadBufferSize, threadFactoryClass,
                 scoreDirectorFactory);
     }
@@ -167,27 +167,27 @@ public class HeuristicConfigPolicy {
     // Worker methods
     // ************************************************************************
 
-    public void addEntityMimicRecorder(String id, EntityMimicRecorder mimicRecordingEntitySelector) {
-        EntityMimicRecorder put = entityMimicRecorderMap.put(id, mimicRecordingEntitySelector);
+    public void addEntityMimicRecorder(String id, EntityMimicRecorder<Solution_> mimicRecordingEntitySelector) {
+        EntityMimicRecorder<Solution_> put = entityMimicRecorderMap.put(id, mimicRecordingEntitySelector);
         if (put != null) {
             throw new IllegalStateException("Multiple " + EntityMimicRecorder.class.getSimpleName() + "s (usually "
                     + EntitySelector.class.getSimpleName() + "s) have the same id (" + id + ").");
         }
     }
 
-    public EntityMimicRecorder getEntityMimicRecorder(String id) {
+    public EntityMimicRecorder<Solution_> getEntityMimicRecorder(String id) {
         return entityMimicRecorderMap.get(id);
     }
 
-    public void addValueMimicRecorder(String id, ValueMimicRecorder mimicRecordingValueSelector) {
-        ValueMimicRecorder put = valueMimicRecorderMap.put(id, mimicRecordingValueSelector);
+    public void addValueMimicRecorder(String id, ValueMimicRecorder<Solution_> mimicRecordingValueSelector) {
+        ValueMimicRecorder<Solution_> put = valueMimicRecorderMap.put(id, mimicRecordingValueSelector);
         if (put != null) {
             throw new IllegalStateException("Multiple " + ValueMimicRecorder.class.getSimpleName() + "s (usually "
                     + ValueSelector.class.getSimpleName() + "s) have the same id (" + id + ").");
         }
     }
 
-    public ValueMimicRecorder getValueMimicRecorder(String id) {
+    public ValueMimicRecorder<Solution_> getValueMimicRecorder(String id) {
         return valueMimicRecorderMap.get(id);
     }
 

@@ -23,48 +23,49 @@ import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 
-public class CollectionInverseVariableListener implements VariableListener<Object>, CollectionInverseVariableSupply {
+public class CollectionInverseVariableListener<Solution_>
+        implements VariableListener<Solution_, Object>, CollectionInverseVariableSupply {
 
-    protected final InverseRelationShadowVariableDescriptor shadowVariableDescriptor;
-    protected final VariableDescriptor sourceVariableDescriptor;
+    protected final InverseRelationShadowVariableDescriptor<Solution_> shadowVariableDescriptor;
+    protected final VariableDescriptor<Solution_> sourceVariableDescriptor;
 
-    public CollectionInverseVariableListener(InverseRelationShadowVariableDescriptor shadowVariableDescriptor,
-            VariableDescriptor sourceVariableDescriptor) {
+    public CollectionInverseVariableListener(InverseRelationShadowVariableDescriptor<Solution_> shadowVariableDescriptor,
+            VariableDescriptor<Solution_> sourceVariableDescriptor) {
         this.shadowVariableDescriptor = shadowVariableDescriptor;
         this.sourceVariableDescriptor = sourceVariableDescriptor;
     }
 
     @Override
-    public void beforeEntityAdded(ScoreDirector scoreDirector, Object entity) {
+    public void beforeEntityAdded(ScoreDirector<Solution_> scoreDirector, Object entity) {
         // Do nothing
     }
 
     @Override
-    public void afterEntityAdded(ScoreDirector scoreDirector, Object entity) {
-        insert((InnerScoreDirector) scoreDirector, entity);
+    public void afterEntityAdded(ScoreDirector<Solution_> scoreDirector, Object entity) {
+        insert((InnerScoreDirector<Solution_, ?>) scoreDirector, entity);
     }
 
     @Override
-    public void beforeVariableChanged(ScoreDirector scoreDirector, Object entity) {
-        retract((InnerScoreDirector) scoreDirector, entity);
+    public void beforeVariableChanged(ScoreDirector<Solution_> scoreDirector, Object entity) {
+        retract((InnerScoreDirector<Solution_, ?>) scoreDirector, entity);
     }
 
     @Override
-    public void afterVariableChanged(ScoreDirector scoreDirector, Object entity) {
-        insert((InnerScoreDirector) scoreDirector, entity);
+    public void afterVariableChanged(ScoreDirector<Solution_> scoreDirector, Object entity) {
+        insert((InnerScoreDirector<Solution_, ?>) scoreDirector, entity);
     }
 
     @Override
-    public void beforeEntityRemoved(ScoreDirector scoreDirector, Object entity) {
-        retract((InnerScoreDirector) scoreDirector, entity);
+    public void beforeEntityRemoved(ScoreDirector<Solution_> scoreDirector, Object entity) {
+        retract((InnerScoreDirector<Solution_, ?>) scoreDirector, entity);
     }
 
     @Override
-    public void afterEntityRemoved(ScoreDirector scoreDirector, Object entity) {
+    public void afterEntityRemoved(ScoreDirector<Solution_> scoreDirector, Object entity) {
         // Do nothing
     }
 
-    protected void insert(InnerScoreDirector scoreDirector, Object entity) {
+    protected void insert(InnerScoreDirector<Solution_, ?> scoreDirector, Object entity) {
         Object shadowEntity = sourceVariableDescriptor.getValue(entity);
         if (shadowEntity != null) {
             Collection shadowCollection = (Collection) shadowVariableDescriptor.getValue(shadowEntity);
@@ -93,7 +94,7 @@ public class CollectionInverseVariableListener implements VariableListener<Objec
         }
     }
 
-    protected void retract(InnerScoreDirector scoreDirector, Object entity) {
+    protected void retract(InnerScoreDirector<Solution_, ?> scoreDirector, Object entity) {
         Object shadowEntity = sourceVariableDescriptor.getValue(entity);
         if (shadowEntity != null) {
             Collection shadowCollection = (Collection) shadowVariableDescriptor.getValue(shadowEntity);

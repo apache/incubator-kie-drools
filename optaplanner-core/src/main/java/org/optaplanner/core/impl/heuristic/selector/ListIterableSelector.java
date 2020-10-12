@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,6 @@ package org.optaplanner.core.impl.heuristic.selector;
 
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.ListIterable;
 
-public interface ListIterableSelector<T> extends IterableSelector<T>, ListIterable<T> {
+public interface ListIterableSelector<Solution_, T> extends IterableSelector<Solution_, T>, ListIterable<T> {
 
 }

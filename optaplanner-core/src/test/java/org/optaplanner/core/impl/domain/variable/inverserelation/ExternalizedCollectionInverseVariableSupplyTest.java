@@ -34,10 +34,10 @@ public class ExternalizedCollectionInverseVariableSupplyTest {
 
     @Test
     public void normal() {
-        GenuineVariableDescriptor variableDescriptor = TestdataEntity.buildVariableDescriptorForValue();
-        ScoreDirector scoreDirector = mock(ScoreDirector.class);
-        ExternalizedCollectionInverseVariableSupply supply = new ExternalizedCollectionInverseVariableSupply(
-                variableDescriptor);
+        GenuineVariableDescriptor<TestdataSolution> variableDescriptor = TestdataEntity.buildVariableDescriptorForValue();
+        ScoreDirector<TestdataSolution> scoreDirector = mock(ScoreDirector.class);
+        ExternalizedCollectionInverseVariableSupply<TestdataSolution> supply =
+                new ExternalizedCollectionInverseVariableSupply<>(variableDescriptor);
 
         TestdataValue val1 = new TestdataValue("1");
         TestdataValue val2 = new TestdataValue("2");

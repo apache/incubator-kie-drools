@@ -73,8 +73,8 @@ public class PlannerTestUtils {
         return SolverFactory.create(solverConfig);
     }
 
-    public static <Solution_> SolverConfig buildSolverConfig(
-            Class<Solution_> solutionClass, Class<?>... entityClasses) {
+    public static <Solution_> SolverConfig buildSolverConfig(Class<Solution_> solutionClass,
+            Class<?>... entityClasses) {
         SolverConfig solverConfig = new SolverConfig();
         solverConfig.setSolutionClass(solutionClass);
         solverConfig.setEntityClassList(Arrays.asList(entityClasses));
@@ -84,7 +84,8 @@ public class PlannerTestUtils {
         List<PhaseConfig> phaseConfigList = new ArrayList<>(2);
         phaseConfigList.add(new ConstructionHeuristicPhaseConfig());
         LocalSearchPhaseConfig localSearchPhaseConfig = new LocalSearchPhaseConfig();
-        localSearchPhaseConfig.setTerminationConfig(new TerminationConfig().withStepCountLimit(TERMINATION_STEP_COUNT_LIMIT));
+        localSearchPhaseConfig
+                .setTerminationConfig(new TerminationConfig().withStepCountLimit(TERMINATION_STEP_COUNT_LIMIT));
         phaseConfigList.add(localSearchPhaseConfig);
         solverConfig.setPhaseConfigList(phaseConfigList);
         return solverConfig;
@@ -93,7 +94,8 @@ public class PlannerTestUtils {
     public static <Solution_> SolverFactory<Solution_> buildSolverFactoryWithDroolsScoreDirector(
             Class<Solution_> solutionClass, Class<?>... entityClasses) {
         SolverConfig solverConfig = buildSolverConfig(solutionClass, entityClasses);
-        ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = solverConfig.getScoreDirectorFactoryConfig();
+        ScoreDirectorFactoryConfig scoreDirectorFactoryConfig =
+                solverConfig.getScoreDirectorFactoryConfig();
         scoreDirectorFactoryConfig.setEasyScoreCalculatorClass(null);
         scoreDirectorFactoryConfig.setScoreDrlList(Collections.singletonList(
                 "org/optaplanner/core/impl/score/dummySimpleScoreDroolsConstraints.drl"));

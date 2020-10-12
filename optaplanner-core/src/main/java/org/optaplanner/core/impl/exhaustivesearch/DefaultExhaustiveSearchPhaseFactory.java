@@ -57,9 +57,10 @@ public class DefaultExhaustiveSearchPhaseFactory<Solution_>
     }
 
     @Override
-    public ExhaustiveSearchPhase<Solution_> buildPhase(int phaseIndex, HeuristicConfigPolicy solverConfigPolicy,
-            BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination solverTermination) {
-        HeuristicConfigPolicy phaseConfigPolicy = solverConfigPolicy.createFilteredPhaseConfigPolicy();
+    public ExhaustiveSearchPhase<Solution_> buildPhase(int phaseIndex,
+            HeuristicConfigPolicy<Solution_> solverConfigPolicy, BestSolutionRecaller<Solution_> bestSolutionRecaller,
+            Termination<Solution_> solverTermination) {
+        HeuristicConfigPolicy<Solution_> phaseConfigPolicy = solverConfigPolicy.createFilteredPhaseConfigPolicy();
         ExhaustiveSearchType exhaustiveSearchType_ = phaseConfig.getExhaustiveSearchType() == null
                 ? ExhaustiveSearchType.BRANCH_AND_BOUND
                 : phaseConfig.getExhaustiveSearchType();
@@ -86,7 +87,7 @@ public class DefaultExhaustiveSearchPhaseFactory<Solution_>
         }
         phase.setNodeComparator(nodeExplorationType_.buildNodeComparator(scoreBounderEnabled));
         EntitySelectorConfig entitySelectorConfig_ = buildEntitySelectorConfig(phaseConfigPolicy);
-        EntitySelector entitySelector = EntitySelectorFactory.create(entitySelectorConfig_)
+        EntitySelector<Solution_> entitySelector = EntitySelectorFactory.<Solution_> create(entitySelectorConfig_)
                 .buildEntitySelector(phaseConfigPolicy, SelectionCacheType.PHASE, SelectionOrder.ORIGINAL);
         phase.setEntitySelector(entitySelector);
         phase.setDecider(buildDecider(phaseConfigPolicy, entitySelector, bestSolutionRecaller, phase.getTermination(),
@@ -104,7 +105,7 @@ public class DefaultExhaustiveSearchPhaseFactory<Solution_>
         return phase;
     }
 
-    private EntitySelectorConfig buildEntitySelectorConfig(HeuristicConfigPolicy configPolicy) {
+    private EntitySelectorConfig buildEntitySelectorConfig(HeuristicConfigPolicy<Solution_> configPolicy) {
         EntitySelectorConfig entitySelectorConfig_;
         if (phaseConfig.getEntitySelectorConfig() == null) {
             entitySelectorConfig_ = new EntitySelectorConfig();
@@ -139,15 +140,16 @@ public class DefaultExhaustiveSearchPhaseFactory<Solution_>
         return entityDescriptors.iterator().next();
     }
 
-    private ExhaustiveSearchDecider<Solution_> buildDecider(HeuristicConfigPolicy configPolicy,
-            EntitySelector sourceEntitySelector, BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination termination,
-            boolean scoreBounderEnabled) {
-        ManualEntityMimicRecorder manualEntityMimicRecorder = new ManualEntityMimicRecorder(sourceEntitySelector);
+    private ExhaustiveSearchDecider<Solution_> buildDecider(HeuristicConfigPolicy<Solution_> configPolicy,
+            EntitySelector<Solution_> sourceEntitySelector, BestSolutionRecaller<Solution_> bestSolutionRecaller,
+            Termination<Solution_> termination, boolean scoreBounderEnabled) {
+        ManualEntityMimicRecorder<Solution_> manualEntityMimicRecorder =
+                new ManualEntityMimicRecorder<>(sourceEntitySelector);
         String mimicSelectorId = sourceEntitySelector.getEntityDescriptor().getEntityClass().getName(); // TODO mimicSelectorId must be a field
         configPolicy.addEntityMimicRecorder(mimicSelectorId, manualEntityMimicRecorder);
-        MoveSelectorConfig moveSelectorConfig_ = buildMoveSelectorConfig(configPolicy,
+        MoveSelectorConfig<?> moveSelectorConfig_ = buildMoveSelectorConfig(configPolicy,
                 sourceEntitySelector, mimicSelectorId);
-        MoveSelector moveSelector = MoveSelectorFactory.create(moveSelectorConfig_)
+        MoveSelector<Solution_> moveSelector = MoveSelectorFactory.<Solution_> create(moveSelectorConfig_)
                 .buildMoveSelector(configPolicy, SelectionCacheType.JUST_IN_TIME, SelectionOrder.ORIGINAL);
         ScoreBounder scoreBounder = scoreBounderEnabled
                 ? new TrendBasedScoreBounder(configPolicy.getScoreDirectorFactory())
@@ -165,17 +167,16 @@ public class DefaultExhaustiveSearchPhaseFactory<Solution_>
         return decider;
     }
 
-    private MoveSelectorConfig buildMoveSelectorConfig(HeuristicConfigPolicy configPolicy,
-            EntitySelector entitySelector, String mimicSelectorId) {
-        MoveSelectorConfig moveSelectorConfig_;
+    private MoveSelectorConfig<?> buildMoveSelectorConfig(HeuristicConfigPolicy<Solution_> configPolicy,
+            EntitySelector<Solution_> entitySelector, String mimicSelectorId) {
+        MoveSelectorConfig<?> moveSelectorConfig_;
         if (phaseConfig.getMoveSelectorConfig() == null) {
             EntityDescriptor<Solution_> entityDescriptor = entitySelector.getEntityDescriptor();
             // Keep in sync with DefaultExhaustiveSearchPhase.fillLayerList()
             // which includes all genuineVariableDescriptors
             Collection<GenuineVariableDescriptor<Solution_>> variableDescriptors =
                     entityDescriptor.getGenuineVariableDescriptors();
-            List<MoveSelectorConfig> subMoveSelectorConfigList = new ArrayList<>(
-                    variableDescriptors.size());
+            List<MoveSelectorConfig> subMoveSelectorConfigList = new ArrayList<>(variableDescriptors.size());
             for (GenuineVariableDescriptor<Solution_> variableDescriptor : variableDescriptors) {
                 ChangeMoveSelectorConfig changeMoveSelectorConfig = new ChangeMoveSelectorConfig();
                 changeMoveSelectorConfig.setEntitySelectorConfig(

@@ -508,8 +508,8 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
         daemon = ConfigUtils.inheritOverwritableProperty(daemon, inheritedConfig.getDaemon());
         randomType = ConfigUtils.inheritOverwritableProperty(randomType, inheritedConfig.getRandomType());
         randomSeed = ConfigUtils.inheritOverwritableProperty(randomSeed, inheritedConfig.getRandomSeed());
-        randomFactoryClass = ConfigUtils.inheritOverwritableProperty(
-                randomFactoryClass, inheritedConfig.getRandomFactoryClass());
+        randomFactoryClass = ConfigUtils.inheritOverwritableProperty(randomFactoryClass,
+                inheritedConfig.getRandomFactoryClass());
         moveThreadCount = ConfigUtils.inheritOverwritableProperty(moveThreadCount,
                 inheritedConfig.getMoveThreadCount());
         moveThreadBufferSize = ConfigUtils.inheritOverwritableProperty(moveThreadBufferSize,
@@ -517,13 +517,12 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
         threadFactoryClass = ConfigUtils.inheritOverwritableProperty(threadFactoryClass,
                 inheritedConfig.getThreadFactoryClass());
         solutionClass = ConfigUtils.inheritOverwritableProperty(solutionClass, inheritedConfig.getSolutionClass());
-        entityClassList = ConfigUtils.inheritMergeableListProperty(
-                entityClassList, inheritedConfig.getEntityClassList());
+        entityClassList = ConfigUtils.inheritMergeableListProperty(entityClassList,
+                inheritedConfig.getEntityClassList());
         scoreDirectorFactoryConfig = ConfigUtils.inheritConfig(scoreDirectorFactoryConfig,
                 inheritedConfig.getScoreDirectorFactoryConfig());
         terminationConfig = ConfigUtils.inheritConfig(terminationConfig, inheritedConfig.getTerminationConfig());
-        phaseConfigList = ConfigUtils.inheritMergeableListConfig(
-                phaseConfigList, inheritedConfig.getPhaseConfigList());
+        phaseConfigList = ConfigUtils.inheritMergeableListConfig(phaseConfigList, inheritedConfig.getPhaseConfigList());
         return this;
     }
 

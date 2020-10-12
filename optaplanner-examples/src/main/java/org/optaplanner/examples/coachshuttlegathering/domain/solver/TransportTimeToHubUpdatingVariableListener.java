@@ -24,18 +24,19 @@ import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
 import org.optaplanner.examples.coachshuttlegathering.domain.Bus;
 import org.optaplanner.examples.coachshuttlegathering.domain.BusOrStop;
 import org.optaplanner.examples.coachshuttlegathering.domain.BusStop;
+import org.optaplanner.examples.coachshuttlegathering.domain.CoachShuttleGatheringSolution;
 import org.optaplanner.examples.coachshuttlegathering.domain.Shuttle;
 import org.optaplanner.examples.coachshuttlegathering.domain.StopOrHub;
 
-public class TransportTimeToHubUpdatingVariableListener implements VariableListener<BusOrStop> {
+public class TransportTimeToHubUpdatingVariableListener implements VariableListener<CoachShuttleGatheringSolution, BusOrStop> {
 
     @Override
-    public void beforeEntityAdded(ScoreDirector scoreDirector, BusOrStop busOrStop) {
+    public void beforeEntityAdded(ScoreDirector<CoachShuttleGatheringSolution> scoreDirector, BusOrStop busOrStop) {
         // Do nothing
     }
 
     @Override
-    public void afterEntityAdded(ScoreDirector scoreDirector, BusOrStop busOrStop) {
+    public void afterEntityAdded(ScoreDirector<CoachShuttleGatheringSolution> scoreDirector, BusOrStop busOrStop) {
         if (busOrStop instanceof BusStop) {
             updateTransportTimeToHub(scoreDirector, (BusStop) busOrStop);
         } else if (busOrStop instanceof Shuttle) {
@@ -44,12 +45,12 @@ public class TransportTimeToHubUpdatingVariableListener implements VariableListe
     }
 
     @Override
-    public void beforeVariableChanged(ScoreDirector scoreDirector, BusOrStop busOrStop) {
+    public void beforeVariableChanged(ScoreDirector<CoachShuttleGatheringSolution> scoreDirector, BusOrStop busOrStop) {
         // Do nothing
     }
 
     @Override
-    public void afterVariableChanged(ScoreDirector scoreDirector, BusOrStop busOrStop) {
+    public void afterVariableChanged(ScoreDirector<CoachShuttleGatheringSolution> scoreDirector, BusOrStop busOrStop) {
         if (busOrStop instanceof BusStop) {
             updateTransportTimeToHub(scoreDirector, (BusStop) busOrStop);
         } else if (busOrStop instanceof Shuttle) {
@@ -58,16 +59,16 @@ public class TransportTimeToHubUpdatingVariableListener implements VariableListe
     }
 
     @Override
-    public void beforeEntityRemoved(ScoreDirector scoreDirector, BusOrStop busOrStop) {
+    public void beforeEntityRemoved(ScoreDirector<CoachShuttleGatheringSolution> scoreDirector, BusOrStop busOrStop) {
         // Do nothing
     }
 
     @Override
-    public void afterEntityRemoved(ScoreDirector scoreDirector, BusOrStop busOrStop) {
+    public void afterEntityRemoved(ScoreDirector<CoachShuttleGatheringSolution> scoreDirector, BusOrStop busOrStop) {
         // Do nothing
     }
 
-    protected void updateTransportTimeToHub(ScoreDirector scoreDirector, BusStop sourceStop) {
+    protected void updateTransportTimeToHub(ScoreDirector<CoachShuttleGatheringSolution> scoreDirector, BusStop sourceStop) {
         Bus bus = sourceStop.getBus();
         Integer transportTimeToHub;
         if (bus == null) {
@@ -94,7 +95,8 @@ public class TransportTimeToHubUpdatingVariableListener implements VariableListe
         updateTransportTime(scoreDirector, sourceStop, bus, transportTimeToHub);
     }
 
-    private void updateTransportTime(ScoreDirector scoreDirector, BusStop sourceStop, Bus bus, Integer transportTimeToHub) {
+    private void updateTransportTime(ScoreDirector<CoachShuttleGatheringSolution> scoreDirector, BusStop sourceStop,
+            Bus bus, Integer transportTimeToHub) {
         if (sourceStop == null) {
             throw new IllegalArgumentException("The sourceStop (" + sourceStop + ") cannot be null.");
         }
@@ -118,8 +120,8 @@ public class TransportTimeToHubUpdatingVariableListener implements VariableListe
         }
     }
 
-    private void updateTransportTimeForTransferShuttleList(ScoreDirector scoreDirector, BusStop parentStop,
-            Bus parentBus) {
+    private void updateTransportTimeForTransferShuttleList(ScoreDirector<CoachShuttleGatheringSolution> scoreDirector,
+            BusStop parentStop, Bus parentBus) {
         List<Shuttle> transferShuttleList = parentStop.getTransferShuttleList();
         if (transferShuttleList.isEmpty()) {
             return;
@@ -134,7 +136,8 @@ public class TransportTimeToHubUpdatingVariableListener implements VariableListe
         }
     }
 
-    private void updateTransportTimeToHubOfShuttle(ScoreDirector scoreDirector, Shuttle shuttle) {
+    private void updateTransportTimeToHubOfShuttle(ScoreDirector<CoachShuttleGatheringSolution> scoreDirector,
+            Shuttle shuttle) {
         StopOrHub destination = shuttle.getDestination();
         Integer destinationTransportTimeToHub;
         if (destination != null) {
@@ -151,8 +154,8 @@ public class TransportTimeToHubUpdatingVariableListener implements VariableListe
         updateTransportTimeToHubOfShuttle(scoreDirector, destination, destinationTransportTimeToHub, shuttle);
     }
 
-    private void updateTransportTimeToHubOfShuttle(ScoreDirector scoreDirector, StopOrHub parentStop,
-            Integer parentTransportTimeToHub, Shuttle shuttle) {
+    private void updateTransportTimeToHubOfShuttle(ScoreDirector<CoachShuttleGatheringSolution> scoreDirector,
+            StopOrHub parentStop, Integer parentTransportTimeToHub, Shuttle shuttle) {
         if (shuttle.getNextStop() == null) {
             return;
         }

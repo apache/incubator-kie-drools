@@ -24,12 +24,12 @@ import org.optaplanner.core.impl.domain.variable.supply.Supply;
  * A stateful {@link VariableListener},
  * often used to externalize data for a {@link Supply} from the domain model itself.
  */
-public interface StatefulVariableListener<Entity_> extends VariableListener<Entity_> {
+public interface StatefulVariableListener<Solution_, Entity_> extends VariableListener<Solution_, Entity_> {
 
-    VariableDescriptor getSourceVariableDescriptor();
+    VariableDescriptor<Solution_> getSourceVariableDescriptor();
 
-    void resetWorkingSolution(ScoreDirector scoreDirector);
+    void resetWorkingSolution(ScoreDirector<Solution_> scoreDirector);
 
-    void clearWorkingSolution(ScoreDirector scoreDirector);
+    void clearWorkingSolution(ScoreDirector<Solution_> scoreDirector);
 
 }

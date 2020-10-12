@@ -22,20 +22,20 @@ import org.optaplanner.core.config.constructionheuristic.placer.QueuedEntityPlac
 import org.optaplanner.core.config.constructionheuristic.placer.QueuedValuePlacerConfig;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 
-public interface EntityPlacerFactory {
+public interface EntityPlacerFactory<Solution_> {
 
-    static EntityPlacerFactory create(EntityPlacerConfig entityPlacerConfig) {
+    static <Solution_> EntityPlacerFactory<Solution_> create(EntityPlacerConfig<?> entityPlacerConfig) {
         if (PooledEntityPlacerConfig.class.isAssignableFrom(entityPlacerConfig.getClass())) {
-            return new PooledEntityPlacerFactory((PooledEntityPlacerConfig) entityPlacerConfig);
+            return new PooledEntityPlacerFactory<>((PooledEntityPlacerConfig) entityPlacerConfig);
         } else if (QueuedEntityPlacerConfig.class.isAssignableFrom(entityPlacerConfig.getClass())) {
-            return new QueuedEntityPlacerFactory((QueuedEntityPlacerConfig) entityPlacerConfig);
+            return new QueuedEntityPlacerFactory<>((QueuedEntityPlacerConfig) entityPlacerConfig);
         } else if (QueuedValuePlacerConfig.class.isAssignableFrom(entityPlacerConfig.getClass())) {
-            return new QueuedValuePlacerFactory((QueuedValuePlacerConfig) entityPlacerConfig);
+            return new QueuedValuePlacerFactory<>((QueuedValuePlacerConfig) entityPlacerConfig);
         } else {
             throw new IllegalArgumentException(
                     String.format("Unknown EntityPlacerConfig type: (%s).", entityPlacerConfig.getClass().getName()));
         }
     }
 
-    EntityPlacer buildEntityPlacer(HeuristicConfigPolicy configPolicy);
+    EntityPlacer<Solution_> buildEntityPlacer(HeuristicConfigPolicy<Solution_> configPolicy);
 }

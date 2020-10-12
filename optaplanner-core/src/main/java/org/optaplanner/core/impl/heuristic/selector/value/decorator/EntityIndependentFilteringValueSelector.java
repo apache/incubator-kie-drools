@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,22 +22,22 @@ import java.util.List;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 
-public class EntityIndependentFilteringValueSelector extends FilteringValueSelector
-        implements EntityIndependentValueSelector {
+public class EntityIndependentFilteringValueSelector<Solution_> extends FilteringValueSelector<Solution_>
+        implements EntityIndependentValueSelector<Solution_> {
 
-    public EntityIndependentFilteringValueSelector(EntityIndependentValueSelector childValueSelector,
-            List<SelectionFilter> filterList) {
+    public EntityIndependentFilteringValueSelector(EntityIndependentValueSelector<Solution_> childValueSelector,
+            List<SelectionFilter<Solution_, Object>> filterList) {
         super(childValueSelector, filterList);
     }
 
     @Override
     public long getSize() {
-        return ((EntityIndependentValueSelector) childValueSelector).getSize();
+        return ((EntityIndependentValueSelector<Solution_>) childValueSelector).getSize();
     }
 
     @Override
     public Iterator<Object> iterator() {
-        return new JustInTimeFilteringValueIterator(((EntityIndependentValueSelector) childValueSelector).iterator(),
+        return new JustInTimeFilteringValueIterator(((EntityIndependentValueSelector<Solution_>) childValueSelector).iterator(),
                 determineBailOutSize());
     }
 
@@ -45,7 +45,7 @@ public class EntityIndependentFilteringValueSelector extends FilteringValueSelec
         if (!bailOutEnabled) {
             return -1L;
         }
-        return ((EntityIndependentValueSelector) childValueSelector).getSize() * 10L;
+        return ((EntityIndependentValueSelector<Solution_>) childValueSelector).getSize() * 10L;
     }
 
 }

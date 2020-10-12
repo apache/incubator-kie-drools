@@ -23,47 +23,49 @@ import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
 import org.optaplanner.examples.vehiclerouting.domain.Customer;
 import org.optaplanner.examples.vehiclerouting.domain.Standstill;
 import org.optaplanner.examples.vehiclerouting.domain.Vehicle;
+import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
 import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedCustomer;
 import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedDepot;
 
 // TODO When this class is added only for TimeWindowedCustomer, use TimeWindowedCustomer instead of Customer
-public class ArrivalTimeUpdatingVariableListener implements VariableListener<Customer> {
+public class ArrivalTimeUpdatingVariableListener implements VariableListener<VehicleRoutingSolution, Customer> {
 
     @Override
-    public void beforeEntityAdded(ScoreDirector scoreDirector, Customer customer) {
+    public void beforeEntityAdded(ScoreDirector<VehicleRoutingSolution> scoreDirector, Customer customer) {
         // Do nothing
     }
 
     @Override
-    public void afterEntityAdded(ScoreDirector scoreDirector, Customer customer) {
+    public void afterEntityAdded(ScoreDirector<VehicleRoutingSolution> scoreDirector, Customer customer) {
         if (customer instanceof TimeWindowedCustomer) {
             updateArrivalTime(scoreDirector, (TimeWindowedCustomer) customer);
         }
     }
 
     @Override
-    public void beforeVariableChanged(ScoreDirector scoreDirector, Customer customer) {
+    public void beforeVariableChanged(ScoreDirector<VehicleRoutingSolution> scoreDirector, Customer customer) {
         // Do nothing
     }
 
     @Override
-    public void afterVariableChanged(ScoreDirector scoreDirector, Customer customer) {
+    public void afterVariableChanged(ScoreDirector<VehicleRoutingSolution> scoreDirector, Customer customer) {
         if (customer instanceof TimeWindowedCustomer) {
             updateArrivalTime(scoreDirector, (TimeWindowedCustomer) customer);
         }
     }
 
     @Override
-    public void beforeEntityRemoved(ScoreDirector scoreDirector, Customer customer) {
+    public void beforeEntityRemoved(ScoreDirector<VehicleRoutingSolution> scoreDirector, Customer customer) {
         // Do nothing
     }
 
     @Override
-    public void afterEntityRemoved(ScoreDirector scoreDirector, Customer customer) {
+    public void afterEntityRemoved(ScoreDirector<VehicleRoutingSolution> scoreDirector, Customer customer) {
         // Do nothing
     }
 
-    protected void updateArrivalTime(ScoreDirector scoreDirector, TimeWindowedCustomer sourceCustomer) {
+    protected void updateArrivalTime(ScoreDirector<VehicleRoutingSolution> scoreDirector,
+            TimeWindowedCustomer sourceCustomer) {
         Standstill previousStandstill = sourceCustomer.getPreviousStandstill();
         Long departureTime = previousStandstill == null ? null
                 : (previousStandstill instanceof TimeWindowedCustomer)

@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,12 +28,12 @@ import org.optaplanner.core.impl.heuristic.selector.ListIterableSelector;
  * @see AbstractEntitySelector
  * @see FromSolutionEntitySelector
  */
-public interface EntitySelector extends ListIterableSelector<Object> {
+public interface EntitySelector<Solution_> extends ListIterableSelector<Solution_, Object> {
 
     /**
      * @return never null
      */
-    EntityDescriptor getEntityDescriptor();
+    EntityDescriptor<Solution_> getEntityDescriptor();
 
     /**
      * If {@link #isNeverEnding()} is true, then {@link #iterator()} will never end.

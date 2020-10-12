@@ -360,14 +360,14 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
 
     @Override
     public final void beforeVariableChanged(Object entity, String variableName) {
-        VariableDescriptor variableDescriptor = getSolutionDescriptor()
+        VariableDescriptor<Solution_> variableDescriptor = getSolutionDescriptor()
                 .findVariableDescriptorOrFail(entity, variableName);
         beforeVariableChanged(variableDescriptor, entity);
     }
 
     @Override
     public final void afterVariableChanged(Object entity, String variableName) {
-        VariableDescriptor variableDescriptor = getSolutionDescriptor()
+        VariableDescriptor<Solution_> variableDescriptor = getSolutionDescriptor()
                 .findVariableDescriptorOrFail(entity, variableName);
         afterVariableChanged(variableDescriptor, entity);
     }
@@ -398,7 +398,7 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
     }
 
     @Override
-    public void beforeVariableChanged(VariableDescriptor variableDescriptor, Object entity) {
+    public void beforeVariableChanged(VariableDescriptor<Solution_> variableDescriptor, Object entity) {
         if (variableDescriptor.isGenuineAndUninitialized(entity)) {
             workingInitScore++;
         }
@@ -406,7 +406,7 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
     }
 
     @Override
-    public void afterVariableChanged(VariableDescriptor variableDescriptor, Object entity) {
+    public void afterVariableChanged(VariableDescriptor<Solution_> variableDescriptor, Object entity) {
         if (variableDescriptor.isGenuineAndUninitialized(entity)) {
             workingInitScore--;
         }
@@ -414,7 +414,7 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
     }
 
     @Override
-    public void changeVariableFacade(VariableDescriptor variableDescriptor, Object entity, Object newValue) {
+    public void changeVariableFacade(VariableDescriptor<Solution_> variableDescriptor, Object entity, Object newValue) {
         beforeVariableChanged(variableDescriptor, entity);
         variableDescriptor.setValue(entity, newValue);
         afterVariableChanged(variableDescriptor, entity);
@@ -554,17 +554,18 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
      * @return null if there are no violations
      */
     protected String createShadowVariablesViolationMessage() {
-        Map<ShadowVariableDescriptor, List<String>> violationListMap = new TreeMap<>(
+        Map<ShadowVariableDescriptor<Solution_>, List<String>> violationListMap = new TreeMap<>(
                 comparing(ShadowVariableDescriptor::getGlobalShadowOrder));
         SolutionDescriptor<Solution_> solutionDescriptor = getSolutionDescriptor();
-        Map<Object, Map<ShadowVariableDescriptor, Object>> entityToShadowVariableValuesMap = new IdentityHashMap<>();
+        Map<Object, Map<ShadowVariableDescriptor<Solution_>, Object>> entityToShadowVariableValuesMap = new IdentityHashMap<>();
         for (Iterator<Object> it = solutionDescriptor.extractAllEntitiesIterator(workingSolution); it.hasNext();) {
             Object entity = it.next();
             EntityDescriptor<Solution_> entityDescriptor = solutionDescriptor.findEntityDescriptorOrFail(entity.getClass());
             Collection<ShadowVariableDescriptor<Solution_>> shadowVariableDescriptors = entityDescriptor
                     .getShadowVariableDescriptors();
-            Map<ShadowVariableDescriptor, Object> shadowVariableValuesMap = new HashMap<>(shadowVariableDescriptors.size());
-            for (ShadowVariableDescriptor shadowVariableDescriptor : shadowVariableDescriptors) {
+            Map<ShadowVariableDescriptor<Solution_>, Object> shadowVariableValuesMap =
+                    new HashMap<>(shadowVariableDescriptors.size());
+            for (ShadowVariableDescriptor<Solution_> shadowVariableDescriptor : shadowVariableDescriptors) {
                 Object value = shadowVariableDescriptor.getValue(entity);
                 shadowVariableValuesMap.put(shadowVariableDescriptor, value);
             }
@@ -576,8 +577,9 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
             EntityDescriptor<Solution_> entityDescriptor = solutionDescriptor.findEntityDescriptorOrFail(entity.getClass());
             Collection<ShadowVariableDescriptor<Solution_>> shadowVariableDescriptors = entityDescriptor
                     .getShadowVariableDescriptors();
-            Map<ShadowVariableDescriptor, Object> shadowVariableValuesMap = entityToShadowVariableValuesMap.get(entity);
-            for (ShadowVariableDescriptor shadowVariableDescriptor : shadowVariableDescriptors) {
+            Map<ShadowVariableDescriptor<Solution_>, Object> shadowVariableValuesMap =
+                    entityToShadowVariableValuesMap.get(entity);
+            for (ShadowVariableDescriptor<Solution_> shadowVariableDescriptor : shadowVariableDescriptors) {
                 Object newValue = shadowVariableDescriptor.getValue(entity);
                 Object originalValue = shadowVariableValuesMap.get(shadowVariableDescriptor);
                 if (!Objects.equals(originalValue, newValue)) {
@@ -646,7 +648,7 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
     }
 
     @Override
-    public void assertExpectedUndoMoveScore(Move move, Score_ beforeMoveScore) {
+    public void assertExpectedUndoMoveScore(Move<Solution_> move, Score_ beforeMoveScore) {
         Score_ undoScore = calculateScore();
         if (!undoScore.equals(beforeMoveScore)) {
             logger.trace("        Corruption detected. Diagnosing...");

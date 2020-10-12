@@ -39,12 +39,12 @@ import org.optaplanner.core.impl.solver.scope.SolverScope;
 /**
  * This is the common {@link SubChainSelector} implementation.
  */
-public class DefaultSubChainSelector extends AbstractSelector
-        implements SubChainSelector, SelectionCacheLifecycleListener {
+public class DefaultSubChainSelector<Solution_> extends AbstractSelector<Solution_>
+        implements SubChainSelector<Solution_>, SelectionCacheLifecycleListener<Solution_> {
 
     protected static final SelectionCacheType CACHE_TYPE = SelectionCacheType.STEP;
 
-    protected final EntityIndependentValueSelector valueSelector;
+    protected final EntityIndependentValueSelector<Solution_> valueSelector;
     protected final boolean randomSelection;
 
     protected SingletonInverseVariableSupply inverseVariableSupply;
@@ -55,7 +55,7 @@ public class DefaultSubChainSelector extends AbstractSelector
 
     protected List<SubChain> anchorTrailingChainList = null;
 
-    public DefaultSubChainSelector(EntityIndependentValueSelector valueSelector, boolean randomSelection,
+    public DefaultSubChainSelector(EntityIndependentValueSelector<Solution_> valueSelector, boolean randomSelection,
             int minimumSubChainSize, int maximumSubChainSize) {
         this.valueSelector = valueSelector;
         this.randomSelection = randomSelection;
@@ -71,7 +71,7 @@ public class DefaultSubChainSelector extends AbstractSelector
                     + ") with neverEnding (" + valueSelector.isNeverEnding() + ").");
         }
         phaseLifecycleSupport.addEventListener(valueSelector);
-        phaseLifecycleSupport.addEventListener(new SelectionCacheLifecycleBridge(CACHE_TYPE, this));
+        phaseLifecycleSupport.addEventListener(new SelectionCacheLifecycleBridge<>(CACHE_TYPE, this));
         this.minimumSubChainSize = minimumSubChainSize;
         this.maximumSubChainSize = maximumSubChainSize;
         if (minimumSubChainSize < 1) {
@@ -86,7 +86,7 @@ public class DefaultSubChainSelector extends AbstractSelector
     }
 
     @Override
-    public GenuineVariableDescriptor getVariableDescriptor() {
+    public GenuineVariableDescriptor<Solution_> getVariableDescriptor() {
         return valueSelector.getVariableDescriptor();
     }
 
@@ -96,15 +96,15 @@ public class DefaultSubChainSelector extends AbstractSelector
     }
 
     @Override
-    public void solvingStarted(SolverScope solverScope) {
+    public void solvingStarted(SolverScope<Solution_> solverScope) {
         super.solvingStarted(solverScope);
-        SupplyManager supplyManager = solverScope.getScoreDirector().getSupplyManager();
-        GenuineVariableDescriptor variableDescriptor = valueSelector.getVariableDescriptor();
-        inverseVariableSupply = supplyManager.demand(new SingletonInverseVariableDemand(variableDescriptor));
+        SupplyManager<Solution_> supplyManager = solverScope.getScoreDirector().getSupplyManager();
+        GenuineVariableDescriptor<Solution_> variableDescriptor = valueSelector.getVariableDescriptor();
+        inverseVariableSupply = supplyManager.demand(new SingletonInverseVariableDemand<>(variableDescriptor));
     }
 
     @Override
-    public void solvingEnded(SolverScope solverScope) {
+    public void solvingEnded(SolverScope<Solution_> solverScope) {
         super.solvingEnded(solverScope);
         inverseVariableSupply = null;
     }
@@ -114,9 +114,9 @@ public class DefaultSubChainSelector extends AbstractSelector
     // ************************************************************************
 
     @Override
-    public void constructCache(SolverScope solverScope) {
-        InnerScoreDirector scoreDirector = solverScope.getScoreDirector();
-        GenuineVariableDescriptor variableDescriptor = valueSelector.getVariableDescriptor();
+    public void constructCache(SolverScope<Solution_> solverScope) {
+        InnerScoreDirector<Solution_, ?> scoreDirector = solverScope.getScoreDirector();
+        GenuineVariableDescriptor<Solution_> variableDescriptor = valueSelector.getVariableDescriptor();
         long valueSize = valueSelector.getSize();
         // Fail-fast when anchorTrailingChainList.size() could ever be too big
         if (valueSize > (long) Integer.MAX_VALUE) {
@@ -148,7 +148,7 @@ public class DefaultSubChainSelector extends AbstractSelector
     }
 
     @Override
-    public void disposeCache(SolverScope solverScope) {
+    public void disposeCache(SolverScope<Solution_> solverScope) {
         anchorTrailingChainList = null;
     }
 

@@ -31,6 +31,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.api.solver.Solver;
@@ -79,7 +80,8 @@ public class EnvironmentModeTest {
 
         LocalSearchPhaseConfig localSearchPhaseConfig = new LocalSearchPhaseConfig();
         localSearchPhaseConfig
-                .setTerminationConfig(new TerminationConfig().withStepCountLimit(NUMBER_OF_TERMINATION_STEP_COUNT_LIMIT));
+                .setTerminationConfig(
+                        new TerminationConfig().withStepCountLimit(NUMBER_OF_TERMINATION_STEP_COUNT_LIMIT));
 
         return new SolverConfig()
                 .withSolutionClass(TestdataSolution.class)
@@ -94,8 +96,8 @@ public class EnvironmentModeTest {
         SolverConfig solverConfig = buildSolverConfig(environmentMode);
         setSolverConfigCalculatorClass(solverConfig, TestdataDifferentValuesCalculator.class);
 
-        Solver solver1 = SolverFactory.create(solverConfig).buildSolver();
-        Solver solver2 = SolverFactory.create(solverConfig).buildSolver();
+        Solver<TestdataSolution> solver1 = SolverFactory.<TestdataSolution> create(solverConfig).buildSolver();
+        Solver<TestdataSolution> solver2 = SolverFactory.<TestdataSolution> create(solverConfig).buildSolver();
 
         switch (environmentMode) {
             case NON_REPRODUCIBLE:
@@ -266,7 +268,8 @@ public class EnvironmentModeTest {
         LocalSearchPhaseConfig localSearchPhaseConfig = new LocalSearchPhaseConfig();
         localSearchPhaseConfig.setMoveSelectorConfig(moveListFactoryConfig);
         localSearchPhaseConfig
-                .setTerminationConfig(new TerminationConfig().withStepCountLimit(NUMBER_OF_TERMINATION_STEP_COUNT_LIMIT));
+                .setTerminationConfig(
+                        new TerminationConfig().withStepCountLimit(NUMBER_OF_TERMINATION_STEP_COUNT_LIMIT));
 
         solverConfig.withPhases(initializerPhaseConfig, localSearchPhaseConfig);
     }
@@ -299,7 +302,7 @@ public class EnvironmentModeTest {
 
     public static class TestdataStepScoreListener extends PhaseLifecycleListenerAdapter<TestdataSolution> {
 
-        private List<Score> scores = new ArrayList<>();
+        private List<SimpleScore> scores = new ArrayList<>();
 
         @Override
         public void stepEnded(AbstractStepScope<TestdataSolution> stepScope) {
@@ -310,7 +313,7 @@ public class EnvironmentModeTest {
             }
         }
 
-        public List<Score> getScores() {
+        public List<SimpleScore> getScores() {
             return scores;
         }
     }

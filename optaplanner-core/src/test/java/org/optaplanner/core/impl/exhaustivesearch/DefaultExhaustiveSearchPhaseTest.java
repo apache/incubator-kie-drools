@@ -120,10 +120,9 @@ public class DefaultExhaustiveSearchPhaseTest {
 
     @Test
     public void solveWithInitializedEntities() {
-        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
-                TestdataSolution.class, TestdataEntity.class);
-        solverConfig.setPhaseConfigList(Collections.singletonList(
-                new ExhaustiveSearchPhaseConfig()));
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class,
+                TestdataEntity.class);
+        solverConfig.setPhaseConfigList(Collections.singletonList(new ExhaustiveSearchPhaseConfig()));
 
         TestdataSolution solution = new TestdataSolution("s1");
         TestdataValue v1 = new TestdataValue("v1");
@@ -151,10 +150,9 @@ public class DefaultExhaustiveSearchPhaseTest {
 
     @Test
     public void solveWithPinnedEntities() {
-        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
-                TestdataPinnedSolution.class, TestdataPinnedEntity.class);
-        solverConfig.setPhaseConfigList(Collections.singletonList(
-                new ExhaustiveSearchPhaseConfig()));
+        SolverConfig solverConfig =
+                PlannerTestUtils.buildSolverConfig(TestdataPinnedSolution.class, TestdataPinnedEntity.class);
+        solverConfig.setPhaseConfigList(Collections.singletonList(new ExhaustiveSearchPhaseConfig()));
 
         TestdataPinnedSolution solution = new TestdataPinnedSolution("s1");
         TestdataValue v1 = new TestdataValue("v1");
@@ -182,10 +180,9 @@ public class DefaultExhaustiveSearchPhaseTest {
 
     @Test
     public void solveWithEmptyEntityList() {
-        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
-                TestdataSolution.class, TestdataEntity.class);
-        solverConfig.setPhaseConfigList(Collections.singletonList(
-                new ExhaustiveSearchPhaseConfig()));
+        SolverConfig solverConfig =
+                PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class);
+        solverConfig.setPhaseConfigList(Collections.singletonList(new ExhaustiveSearchPhaseConfig()));
 
         TestdataSolution solution = new TestdataSolution("s1");
         TestdataValue v1 = new TestdataValue("v1");

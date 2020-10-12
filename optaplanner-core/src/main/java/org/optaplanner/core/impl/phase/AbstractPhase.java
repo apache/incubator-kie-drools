@@ -47,7 +47,7 @@ public abstract class AbstractPhase<Solution_> implements Phase<Solution_> {
     protected final int phaseIndex;
     protected final String logIndentation;
     protected final BestSolutionRecaller<Solution_> bestSolutionRecaller;
-    protected final Termination termination;
+    protected final Termination<Solution_> termination;
 
     /** Used for {@link DefaultSolver#addPhaseLifecycleListener(PhaseLifecycleListener)}. */
     protected PhaseLifecycleSupport<Solution_> solverPhaseLifecycleSupport;
@@ -58,8 +58,8 @@ public abstract class AbstractPhase<Solution_> implements Phase<Solution_> {
     protected boolean assertExpectedStepScore = false;
     protected boolean assertShadowVariablesAreNotStaleAfterStep = false;
 
-    public AbstractPhase(int phaseIndex, String logIndentation,
-            BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination termination) {
+    public AbstractPhase(int phaseIndex, String logIndentation, BestSolutionRecaller<Solution_> bestSolutionRecaller,
+            Termination<Solution_> termination) {
         this.phaseIndex = phaseIndex;
         this.logIndentation = logIndentation;
         this.bestSolutionRecaller = bestSolutionRecaller;
@@ -70,7 +70,7 @@ public abstract class AbstractPhase<Solution_> implements Phase<Solution_> {
         return phaseIndex;
     }
 
-    public Termination getTermination() {
+    public Termination<Solution_> getTermination() {
         return termination;
     }
 

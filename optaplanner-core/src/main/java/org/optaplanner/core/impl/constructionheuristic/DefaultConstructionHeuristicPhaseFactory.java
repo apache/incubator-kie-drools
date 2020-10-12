@@ -55,10 +55,11 @@ public class DefaultConstructionHeuristicPhaseFactory<Solution_>
     }
 
     @Override
-    public ConstructionHeuristicPhase<Solution_> buildPhase(int phaseIndex, HeuristicConfigPolicy solverConfigPolicy,
-            BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination solverTermination) {
+    public ConstructionHeuristicPhase<Solution_> buildPhase(int phaseIndex,
+            HeuristicConfigPolicy<Solution_> solverConfigPolicy, BestSolutionRecaller<Solution_> bestSolutionRecaller,
+            Termination<Solution_> solverTermination) {
 
-        HeuristicConfigPolicy phaseConfigPolicy = solverConfigPolicy.createFilteredPhaseConfigPolicy();
+        HeuristicConfigPolicy<Solution_> phaseConfigPolicy = solverConfigPolicy.createFilteredPhaseConfigPolicy();
         DefaultConstructionHeuristicPhase<Solution_> phase =
                 new DefaultConstructionHeuristicPhase<>(phaseIndex, solverConfigPolicy.getLogIndentation(),
                         bestSolutionRecaller, buildPhaseTermination(phaseConfigPolicy, solverTermination));
@@ -87,7 +88,8 @@ public class DefaultConstructionHeuristicPhaseFactory<Solution_>
                         + ") is explicitly configured.");
             }
         }
-        EntityPlacer entityPlacer = EntityPlacerFactory.create(entityPlacerConfig_).buildEntityPlacer(phaseConfigPolicy);
+        EntityPlacer<Solution_> entityPlacer = EntityPlacerFactory.<Solution_> create(entityPlacerConfig_)
+                .buildEntityPlacer(phaseConfigPolicy);
         phase.setEntityPlacer(entityPlacer);
         EnvironmentMode environmentMode = phaseConfigPolicy.getEnvironmentMode();
         if (environmentMode.isNonIntrusiveFullAsserted()) {
@@ -100,12 +102,14 @@ public class DefaultConstructionHeuristicPhaseFactory<Solution_>
         return phase;
     }
 
-    private ConstructionHeuristicDecider<Solution_> buildDecider(HeuristicConfigPolicy configPolicy, Termination termination) {
+    private ConstructionHeuristicDecider<Solution_> buildDecider(HeuristicConfigPolicy<Solution_> configPolicy,
+            Termination<Solution_> termination) {
         ConstructionHeuristicForagerConfig foragerConfig_ = phaseConfig.getForagerConfig() == null
                 ? new ConstructionHeuristicForagerConfig()
                 : phaseConfig.getForagerConfig();
-        ConstructionHeuristicForager forager =
-                ConstructionHeuristicForagerFactory.create(foragerConfig_).buildForager(configPolicy);
+        ConstructionHeuristicForager<Solution_> forager =
+                ConstructionHeuristicForagerFactory.<Solution_> create(foragerConfig_)
+                        .buildForager(configPolicy);
         EnvironmentMode environmentMode = configPolicy.getEnvironmentMode();
         ConstructionHeuristicDecider<Solution_> decider;
         Integer moveThreadCount = configPolicy.getMoveThreadCount();
@@ -142,8 +146,8 @@ public class DefaultConstructionHeuristicPhaseFactory<Solution_>
         return decider;
     }
 
-    private EntityPlacerConfig buildUnfoldedEntityPlacerConfig(
-            HeuristicConfigPolicy phaseConfigPolicy, ConstructionHeuristicType constructionHeuristicType) {
+    private EntityPlacerConfig buildUnfoldedEntityPlacerConfig(HeuristicConfigPolicy<Solution_> phaseConfigPolicy,
+            ConstructionHeuristicType constructionHeuristicType) {
         switch (constructionHeuristicType) {
             case FIRST_FIT:
             case FIRST_FIT_DECREASING:

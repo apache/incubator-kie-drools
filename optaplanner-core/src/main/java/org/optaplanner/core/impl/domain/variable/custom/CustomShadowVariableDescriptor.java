@@ -143,7 +143,7 @@ public class CustomShadowVariableDescriptor<Solution_> extends ShadowVariableDes
                         + ") with refVariable (" + uncastRefVariableDescriptor.getSimpleEntityAndVariableName()
                         + ") that lacks a " + CustomShadowVariable.class.getSimpleName() + " annotation.");
             }
-            refVariableDescriptor = (CustomShadowVariableDescriptor) uncastRefVariableDescriptor;
+            refVariableDescriptor = (CustomShadowVariableDescriptor<Solution_>) uncastRefVariableDescriptor;
             if (refVariableDescriptor.isRef()) {
                 throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
                         + ") has a " + CustomShadowVariable.class.getSimpleName()
@@ -209,17 +209,17 @@ public class CustomShadowVariableDescriptor<Solution_> extends ShadowVariableDes
     // ************************************************************************
 
     @Override
-    public Demand getProvidedDemand() {
-        return new CustomShadowVariableDemand(this);
+    public Demand<Solution_, ?> getProvidedDemand() {
+        return new CustomShadowVariableDemand<>(this);
     }
 
     @Override
-    public boolean hasVariableListener(InnerScoreDirector scoreDirector) {
+    public boolean hasVariableListener(InnerScoreDirector<Solution_, ?> scoreDirector) {
         return refVariableDescriptor == null;
     }
 
     @Override
-    public VariableListener<Solution_> buildVariableListener(InnerScoreDirector<Solution_, ?> scoreDirector) {
+    public VariableListener<Solution_, ?> buildVariableListener(InnerScoreDirector<Solution_, ?> scoreDirector) {
         if (refVariableDescriptor != null) {
             throw new IllegalStateException("The shadowVariableDescriptor (" + this
                     + ") references another shadowVariableDescriptor (" + refVariableDescriptor

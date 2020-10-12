@@ -30,10 +30,10 @@ import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 
-public class TerminationFactory {
+public class TerminationFactory<Solution_> {
 
-    public static TerminationFactory create(TerminationConfig terminationConfig) {
-        return new TerminationFactory(terminationConfig);
+    public static <Solution_> TerminationFactory<Solution_> create(TerminationConfig terminationConfig) {
+        return new TerminationFactory<>(terminationConfig);
     }
 
     private final TerminationConfig terminationConfig;
@@ -42,22 +42,24 @@ public class TerminationFactory {
         this.terminationConfig = terminationConfig;
     }
 
-    public Termination buildTermination(HeuristicConfigPolicy configPolicy, Termination chainedTermination) {
-        Termination termination = buildTermination(configPolicy);
+    public Termination<Solution_> buildTermination(HeuristicConfigPolicy<Solution_> configPolicy,
+            Termination<Solution_> chainedTermination) {
+        Termination<Solution_> termination = buildTermination(configPolicy);
         if (termination == null) {
             return chainedTermination;
         }
-        return new OrCompositeTermination(chainedTermination, termination);
+        return new OrCompositeTermination<>(chainedTermination, termination);
     }
 
     /**
      * @param configPolicy never null
      * @return sometimes null
      */
-    public Termination buildTermination(HeuristicConfigPolicy configPolicy) {
-        List<Termination> terminationList = new ArrayList<>();
+    public <Score_ extends Score<Score_>> Termination<Solution_> buildTermination(
+            HeuristicConfigPolicy<Solution_> configPolicy) {
+        List<Termination<Solution_>> terminationList = new ArrayList<>();
         if (terminationConfig.getTerminationClass() != null) {
-            Termination termination =
+            Termination<Solution_> termination =
                     ConfigUtils.newInstance(terminationConfig, "terminationClass", terminationConfig.getTerminationClass());
             terminationList.add(termination);
         }
@@ -65,56 +67,57 @@ public class TerminationFactory {
         terminationList.addAll(buildTimeBasedTermination(configPolicy));
 
         if (terminationConfig.getBestScoreLimit() != null) {
-            ScoreDefinition scoreDefinition = configPolicy.getScoreDefinition();
-            Score bestScoreLimit_ = scoreDefinition.parseScore(terminationConfig.getBestScoreLimit());
+            ScoreDefinition<Score_> scoreDefinition = configPolicy.getScoreDefinition();
+            Score_ bestScoreLimit_ = scoreDefinition.parseScore(terminationConfig.getBestScoreLimit());
             double[] timeGradientWeightNumbers = new double[scoreDefinition.getLevelsSize() - 1];
             Arrays.fill(timeGradientWeightNumbers, 0.50); // Number pulled out of thin air
-            terminationList.add(new BestScoreTermination(scoreDefinition, bestScoreLimit_, timeGradientWeightNumbers));
+            terminationList.add(new BestScoreTermination<>(scoreDefinition, bestScoreLimit_, timeGradientWeightNumbers));
         }
         if (terminationConfig.getBestScoreFeasible() != null) {
-            ScoreDefinition scoreDefinition = configPolicy.getScoreDefinition();
+            ScoreDefinition<Score_> scoreDefinition = configPolicy.getScoreDefinition();
             if (!terminationConfig.getBestScoreFeasible()) {
                 throw new IllegalArgumentException("The termination bestScoreFeasible ("
                         + terminationConfig.getBestScoreFeasible() + ") cannot be false.");
             }
             double[] timeGradientWeightFeasibleNumbers = new double[scoreDefinition.getFeasibleLevelsSize() - 1];
             Arrays.fill(timeGradientWeightFeasibleNumbers, 0.50); // Number pulled out of thin air
-            terminationList.add(new BestScoreFeasibleTermination(scoreDefinition, timeGradientWeightFeasibleNumbers));
+            terminationList.add(new BestScoreFeasibleTermination<>(scoreDefinition, timeGradientWeightFeasibleNumbers));
         }
         if (terminationConfig.getStepCountLimit() != null) {
-            terminationList.add(new StepCountTermination(terminationConfig.getStepCountLimit()));
+            terminationList.add(new StepCountTermination<>(terminationConfig.getStepCountLimit()));
         }
         if (terminationConfig.getScoreCalculationCountLimit() != null) {
-            terminationList.add(new ScoreCalculationCountTermination(terminationConfig.getScoreCalculationCountLimit()));
+            terminationList.add(new ScoreCalculationCountTermination<>(terminationConfig.getScoreCalculationCountLimit()));
         }
         if (terminationConfig.getUnimprovedStepCountLimit() != null) {
-            terminationList.add(new UnimprovedStepCountTermination(terminationConfig.getUnimprovedStepCountLimit()));
+            terminationList.add(new UnimprovedStepCountTermination<>(terminationConfig.getUnimprovedStepCountLimit()));
         }
 
         terminationList.addAll(buildInnerTermination(configPolicy));
         return buildTerminationFromList(terminationList);
     }
 
-    protected List<Termination> buildTimeBasedTermination(HeuristicConfigPolicy configPolicy) {
-        List<Termination> terminationList = new ArrayList<>();
+    protected <Score_ extends Score<Score_>> List<Termination<Solution_>>
+            buildTimeBasedTermination(HeuristicConfigPolicy<Solution_> configPolicy) {
+        List<Termination<Solution_>> terminationList = new ArrayList<>();
         Long timeMillisSpentLimit = terminationConfig.calculateTimeMillisSpentLimit();
         if (timeMillisSpentLimit != null) {
-            terminationList.add(new TimeMillisSpentTermination(timeMillisSpentLimit));
+            terminationList.add(new TimeMillisSpentTermination<>(timeMillisSpentLimit));
         }
         Long unimprovedTimeMillisSpentLimit = terminationConfig.calculateUnimprovedTimeMillisSpentLimit();
         if (unimprovedTimeMillisSpentLimit != null) {
             if (terminationConfig.getUnimprovedScoreDifferenceThreshold() == null) {
-                terminationList.add(new UnimprovedTimeMillisSpentTermination(unimprovedTimeMillisSpentLimit));
+                terminationList.add(new UnimprovedTimeMillisSpentTermination<>(unimprovedTimeMillisSpentLimit));
             } else {
-                ScoreDefinition scoreDefinition = configPolicy.getScoreDefinition();
-                Score unimprovedScoreDifferenceThreshold_ =
+                ScoreDefinition<Score_> scoreDefinition = configPolicy.getScoreDefinition();
+                Score_ unimprovedScoreDifferenceThreshold_ =
                         scoreDefinition.parseScore(terminationConfig.getUnimprovedScoreDifferenceThreshold());
                 if (unimprovedScoreDifferenceThreshold_.compareTo(scoreDefinition.getZeroScore()) <= 0) {
                     throw new IllegalStateException("The unimprovedScoreDifferenceThreshold ("
                             + terminationConfig.getUnimprovedScoreDifferenceThreshold() + ") must be positive.");
 
                 }
-                terminationList.add(new UnimprovedTimeMillisSpentScoreDifferenceThresholdTermination(
+                terminationList.add(new UnimprovedTimeMillisSpentScoreDifferenceThresholdTermination<>(
                         unimprovedTimeMillisSpentLimit, unimprovedScoreDifferenceThreshold_));
             }
         } else if (terminationConfig.getUnimprovedScoreDifferenceThreshold() != null) {
@@ -127,29 +130,30 @@ public class TerminationFactory {
         return terminationList;
     }
 
-    protected List<Termination> buildInnerTermination(HeuristicConfigPolicy configPolicy) {
+    protected List<Termination<Solution_>> buildInnerTermination(HeuristicConfigPolicy<Solution_> configPolicy) {
         if (ConfigUtils.isEmptyCollection(terminationConfig.getTerminationConfigList())) {
             return Collections.emptyList();
         }
 
         return terminationConfig.getTerminationConfigList().stream()
-                .map(config -> TerminationFactory.create(config).buildTermination(configPolicy))
+                .map(config -> TerminationFactory.<Solution_> create(config)
+                        .buildTermination(configPolicy))
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }
 
-    protected Termination buildTerminationFromList(List<Termination> terminationList) {
+    protected Termination<Solution_> buildTerminationFromList(List<Termination<Solution_>> terminationList) {
         if (terminationList.isEmpty()) {
             return null;
         } else if (terminationList.size() == 1) {
             return terminationList.get(0);
         } else {
-            AbstractCompositeTermination compositeTermination;
+            AbstractCompositeTermination<Solution_> compositeTermination;
             if (terminationConfig.getTerminationCompositionStyle() == null
                     || terminationConfig.getTerminationCompositionStyle() == TerminationCompositionStyle.OR) {
-                compositeTermination = new OrCompositeTermination(terminationList);
+                compositeTermination = new OrCompositeTermination<>(terminationList);
             } else if (terminationConfig.getTerminationCompositionStyle() == TerminationCompositionStyle.AND) {
-                compositeTermination = new AndCompositeTermination(terminationList);
+                compositeTermination = new AndCompositeTermination<>(terminationList);
             } else {
                 throw new IllegalStateException("The terminationCompositionStyle ("
                         + terminationConfig.getTerminationCompositionStyle() + ") is not implemented.");

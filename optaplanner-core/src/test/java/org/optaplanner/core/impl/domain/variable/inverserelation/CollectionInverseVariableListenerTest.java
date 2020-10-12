@@ -22,6 +22,7 @@ import static org.mockito.Mockito.mock;
 import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
+import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
@@ -34,15 +35,19 @@ public class CollectionInverseVariableListenerTest {
 
     @Test
     public void normal() {
-        InnerScoreDirector scoreDirector = mock(InnerScoreDirector.class);
-        SolutionDescriptor solutionDescriptor = TestdataInverseRelationSolution.buildSolutionDescriptor();
-        EntityDescriptor entityDescriptor = solutionDescriptor.findEntityDescriptorOrFail(TestdataInverseRelationEntity.class);
-        EntityDescriptor shadowEntityDescriptor = solutionDescriptor
-                .findEntityDescriptorOrFail(TestdataInverseRelationValue.class);
-        ShadowVariableDescriptor entitiesVariableDescriptor = shadowEntityDescriptor.getShadowVariableDescriptor("entities");
-        CollectionInverseVariableListener variableListener = new CollectionInverseVariableListener(
-                (InverseRelationShadowVariableDescriptor) entitiesVariableDescriptor,
-                entityDescriptor.getGenuineVariableDescriptor("value"));
+        InnerScoreDirector<TestdataInverseRelationSolution, SimpleScore> scoreDirector = mock(InnerScoreDirector.class);
+        SolutionDescriptor<TestdataInverseRelationSolution> solutionDescriptor =
+                TestdataInverseRelationSolution.buildSolutionDescriptor();
+        EntityDescriptor<TestdataInverseRelationSolution> entityDescriptor =
+                solutionDescriptor.findEntityDescriptorOrFail(TestdataInverseRelationEntity.class);
+        EntityDescriptor<TestdataInverseRelationSolution> shadowEntityDescriptor =
+                solutionDescriptor.findEntityDescriptorOrFail(TestdataInverseRelationValue.class);
+        ShadowVariableDescriptor<TestdataInverseRelationSolution> entitiesVariableDescriptor =
+                shadowEntityDescriptor.getShadowVariableDescriptor("entities");
+        CollectionInverseVariableListener<TestdataInverseRelationSolution> variableListener =
+                new CollectionInverseVariableListener<>(
+                        (InverseRelationShadowVariableDescriptor<TestdataInverseRelationSolution>) entitiesVariableDescriptor,
+                        entityDescriptor.getGenuineVariableDescriptor("value"));
 
         TestdataInverseRelationValue val1 = new TestdataInverseRelationValue("1");
         TestdataInverseRelationValue val2 = new TestdataInverseRelationValue("2");

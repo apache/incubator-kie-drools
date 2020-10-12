@@ -28,8 +28,9 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 @PlanningEntity
 public class TestdataExtendedShadowedChildEntity extends TestdataExtendedShadowedParentEntity {
 
-    public static EntityDescriptor buildEntityDescriptor() {
-        SolutionDescriptor solutionDescriptor = TestdataExtendedShadowedSolution.buildSolutionDescriptor();
+    public static EntityDescriptor<TestdataExtendedShadowedSolution> buildEntityDescriptor() {
+        SolutionDescriptor<TestdataExtendedShadowedSolution> solutionDescriptor =
+                TestdataExtendedShadowedSolution.buildSolutionDescriptor();
         return solutionDescriptor.findEntityDescriptorOrFail(TestdataExtendedShadowedChildEntity.class);
     }
 
@@ -65,19 +66,22 @@ public class TestdataExtendedShadowedChildEntity extends TestdataExtendedShadowe
     // ************************************************************************
 
     public static class SecondShadowUpdatingVariableListener
-            extends VariableListenerAdapter<TestdataExtendedShadowedParentEntity> {
+            extends VariableListenerAdapter<TestdataExtendedShadowedSolution, TestdataExtendedShadowedParentEntity> {
 
         @Override
-        public void afterEntityAdded(ScoreDirector scoreDirector, TestdataExtendedShadowedParentEntity entity) {
+        public void afterEntityAdded(ScoreDirector<TestdataExtendedShadowedSolution> scoreDirector,
+                TestdataExtendedShadowedParentEntity entity) {
             updateShadow(scoreDirector, entity);
         }
 
         @Override
-        public void afterVariableChanged(ScoreDirector scoreDirector, TestdataExtendedShadowedParentEntity entity) {
+        public void afterVariableChanged(ScoreDirector<TestdataExtendedShadowedSolution> scoreDirector,
+                TestdataExtendedShadowedParentEntity entity) {
             updateShadow(scoreDirector, entity);
         }
 
-        private void updateShadow(ScoreDirector scoreDirector, TestdataExtendedShadowedParentEntity entity) {
+        private void updateShadow(ScoreDirector<TestdataExtendedShadowedSolution> scoreDirector,
+                TestdataExtendedShadowedParentEntity entity) {
             String firstShadow = entity.getFirstShadow();
             if (entity instanceof TestdataExtendedShadowedChildEntity) {
                 TestdataExtendedShadowedChildEntity childEntity = (TestdataExtendedShadowedChildEntity) entity;

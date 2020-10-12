@@ -30,12 +30,12 @@ import org.optaplanner.core.impl.solver.thread.ChildThreadType;
  * Concurrency notes:
  * Condition predicate on ({@link #problemFactChangeQueue} is not empty or {@link #terminatedEarly} is true).
  */
-public class BasicPlumbingTermination extends AbstractTermination {
+public class BasicPlumbingTermination<Solution_> extends AbstractTermination<Solution_> {
 
     protected final boolean daemon;
 
     protected boolean terminatedEarly = false;
-    protected BlockingQueue<ProblemFactChange> problemFactChangeQueue = new LinkedBlockingQueue<>();
+    protected BlockingQueue<ProblemFactChange<Solution_>> problemFactChangeQueue = new LinkedBlockingQueue<>();
 
     protected boolean problemFactChangesBeingProcessed = false;
 
@@ -104,7 +104,7 @@ public class BasicPlumbingTermination extends AbstractTermination {
      * @param problemFactChange never null
      * @return as specified by {@link Collection#add}
      */
-    public synchronized <Solution_> boolean addProblemFactChange(ProblemFactChange<Solution_> problemFactChange) {
+    public synchronized boolean addProblemFactChange(ProblemFactChange<Solution_> problemFactChange) {
         boolean added = problemFactChangeQueue.add(problemFactChange);
         notifyAll();
         return added;
@@ -116,13 +116,13 @@ public class BasicPlumbingTermination extends AbstractTermination {
      * @param problemFactChangeList never null
      * @return as specified by {@link Collection#add}
      */
-    public synchronized <Solution_> boolean addProblemFactChanges(List<ProblemFactChange<Solution_>> problemFactChangeList) {
+    public synchronized boolean addProblemFactChanges(List<ProblemFactChange<Solution_>> problemFactChangeList) {
         boolean added = problemFactChangeQueue.addAll(problemFactChangeList);
         notifyAll();
         return added;
     }
 
-    public synchronized BlockingQueue<ProblemFactChange> startProblemFactChangesProcessing() {
+    public synchronized BlockingQueue<ProblemFactChange<Solution_>> startProblemFactChangesProcessing() {
         problemFactChangesBeingProcessed = true;
         return problemFactChangeQueue;
     }
@@ -140,7 +140,7 @@ public class BasicPlumbingTermination extends AbstractTermination {
     // ************************************************************************
 
     @Override
-    public synchronized boolean isSolverTerminated(SolverScope solverScope) {
+    public synchronized boolean isSolverTerminated(SolverScope<Solution_> solverScope) {
         // Destroying a thread pool with solver threads will only cause it to interrupt those solver threads,
         // it won't call Solver.terminateEarly()
         if (Thread.currentThread().isInterrupted() // Does not clear the interrupted flag
@@ -155,19 +155,19 @@ public class BasicPlumbingTermination extends AbstractTermination {
     }
 
     @Override
-    public boolean isPhaseTerminated(AbstractPhaseScope phaseScope) {
+    public boolean isPhaseTerminated(AbstractPhaseScope<Solution_> phaseScope) {
         throw new IllegalStateException(BasicPlumbingTermination.class.getSimpleName()
                 + " configured only as solver termination."
                 + " It is always bridged to phase termination.");
     }
 
     @Override
-    public double calculateSolverTimeGradient(SolverScope solverScope) {
+    public double calculateSolverTimeGradient(SolverScope<Solution_> solverScope) {
         return -1.0; // Not supported
     }
 
     @Override
-    public double calculatePhaseTimeGradient(AbstractPhaseScope phaseScope) {
+    public double calculatePhaseTimeGradient(AbstractPhaseScope<Solution_> phaseScope) {
         throw new IllegalStateException(BasicPlumbingTermination.class.getSimpleName()
                 + " configured only as solver termination."
                 + " It is always bridged to phase termination.");
@@ -178,7 +178,8 @@ public class BasicPlumbingTermination extends AbstractTermination {
     // ************************************************************************
 
     @Override
-    public Termination createChildThreadTermination(SolverScope solverScope, ChildThreadType childThreadType) {
+    public Termination<Solution_> createChildThreadTermination(SolverScope<Solution_> solverScope,
+            ChildThreadType childThreadType) {
         return this;
     }
 

@@ -45,26 +45,27 @@ import org.optaplanner.core.impl.solver.scope.SolverScope;
 /**
  * @see PillarSelector
  */
-public class DefaultPillarSelector extends AbstractSelector implements PillarSelector,
-        SelectionCacheLifecycleListener {
+public class DefaultPillarSelector<Solution_> extends AbstractSelector<Solution_>
+        implements PillarSelector<Solution_>, SelectionCacheLifecycleListener<Solution_> {
 
     protected static final SelectionCacheType CACHE_TYPE = SelectionCacheType.STEP;
 
-    protected final EntitySelector entitySelector;
-    protected final List<GenuineVariableDescriptor> variableDescriptors;
+    protected final EntitySelector<Solution_> entitySelector;
+    protected final List<GenuineVariableDescriptor<Solution_>> variableDescriptors;
     protected final boolean randomSelection;
     protected final SubPillarConfigPolicy subpillarConfigPolicy;
 
     protected List<List<Object>> cachedBasePillarList = null;
 
-    public DefaultPillarSelector(EntitySelector entitySelector, List<GenuineVariableDescriptor> variableDescriptors,
-            boolean randomSelection, SubPillarConfigPolicy subpillarConfigPolicy) {
+    public DefaultPillarSelector(EntitySelector<Solution_> entitySelector,
+            List<GenuineVariableDescriptor<Solution_>> variableDescriptors, boolean randomSelection,
+            SubPillarConfigPolicy subpillarConfigPolicy) {
         this.entitySelector = entitySelector;
         this.variableDescriptors = variableDescriptors;
         this.randomSelection = randomSelection;
         this.subpillarConfigPolicy = subpillarConfigPolicy;
         Class<?> entityClass = entitySelector.getEntityDescriptor().getEntityClass();
-        for (GenuineVariableDescriptor variableDescriptor : variableDescriptors) {
+        for (GenuineVariableDescriptor<Solution_> variableDescriptor : variableDescriptors) {
             if (!entityClass.equals(
                     variableDescriptor.getEntityDescriptor().getEntityClass())) {
                 throw new IllegalStateException("The selector (" + this
@@ -78,7 +79,7 @@ public class DefaultPillarSelector extends AbstractSelector implements PillarSel
                         + ") which is chained (" + variableDescriptor.isChained() + ").");
             }
         }
-        for (GenuineVariableDescriptor variableDescriptor : variableDescriptors) {
+        for (GenuineVariableDescriptor<Solution_> variableDescriptor : variableDescriptors) {
             if (variableDescriptor.isChained()) {
                 throw new IllegalStateException("The selector (" + this
                         + ") cannot have a variableDescriptor (" + variableDescriptor
@@ -91,7 +92,7 @@ public class DefaultPillarSelector extends AbstractSelector implements PillarSel
                     + ") with neverEnding (" + entitySelector.isNeverEnding() + ").");
         }
         phaseLifecycleSupport.addEventListener(entitySelector);
-        phaseLifecycleSupport.addEventListener(new SelectionCacheLifecycleBridge(CACHE_TYPE, this));
+        phaseLifecycleSupport.addEventListener(new SelectionCacheLifecycleBridge<>(CACHE_TYPE, this));
         boolean subPillarEnabled = subpillarConfigPolicy.isSubPillarEnabled();
         if (!randomSelection && subPillarEnabled) {
             throw new IllegalStateException("The selector (" + this
@@ -101,14 +102,14 @@ public class DefaultPillarSelector extends AbstractSelector implements PillarSel
         }
     }
 
-    private static List<Object> getSingleVariableValueState(Object entity,
-            List<GenuineVariableDescriptor> variableDescriptors) {
+    private static <Solution_> List<Object> getSingleVariableValueState(Object entity,
+            List<GenuineVariableDescriptor<Solution_>> variableDescriptors) {
         Object value = variableDescriptors.get(0).getValue(entity);
         return Collections.singletonList(value);
     }
 
-    private static List<Object> getMultiVariableValueState(Object entity,
-            List<GenuineVariableDescriptor> variableDescriptors, int variableCount) {
+    private static <Solution_> List<Object> getMultiVariableValueState(Object entity,
+            List<GenuineVariableDescriptor<Solution_>> variableDescriptors, int variableCount) {
         List<Object> valueState = new ArrayList<>(variableCount);
         for (int i = 0; i < variableCount; i++) {
             Object value = variableDescriptors.get(i).getValue(entity);
@@ -122,7 +123,7 @@ public class DefaultPillarSelector extends AbstractSelector implements PillarSel
     // ************************************************************************
 
     @Override
-    public EntityDescriptor getEntityDescriptor() {
+    public EntityDescriptor<Solution_> getEntityDescriptor() {
         return entitySelector.getEntityDescriptor();
     }
 
@@ -132,7 +133,7 @@ public class DefaultPillarSelector extends AbstractSelector implements PillarSel
     }
 
     @Override
-    public void constructCache(SolverScope solverScope) {
+    public void constructCache(SolverScope<Solution_> solverScope) {
         long entitySize = entitySelector.getSize();
         if (entitySize > (long) Integer.MAX_VALUE) {
             throw new IllegalStateException("The selector (" + this + ") has an entitySelector ("
@@ -146,7 +147,7 @@ public class DefaultPillarSelector extends AbstractSelector implements PillarSel
              * The entity selection will be sorted. This will result in all the pillars being sorted without having to
              * sort them individually later.
              */
-            entities = entities.sorted((Comparator) comparator);
+            entities = entities.sorted((Comparator<? super Object>) comparator);
         }
         // Create all the pillars from a stream of entities; if sorted, the pillars will be sequential.
         Map<List<Object>, List<Object>> valueStateToPillarMap = new LinkedHashMap<>((int) entitySize);
@@ -170,7 +171,7 @@ public class DefaultPillarSelector extends AbstractSelector implements PillarSel
     }
 
     @Override
-    public void disposeCache(SolverScope solverScope) {
+    public void disposeCache(SolverScope<Solution_> solverScope) {
         cachedBasePillarList = null;
     }
 

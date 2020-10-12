@@ -22,41 +22,42 @@ import org.optaplanner.examples.coachshuttlegathering.domain.Bus;
 import org.optaplanner.examples.coachshuttlegathering.domain.BusStop;
 import org.optaplanner.examples.coachshuttlegathering.domain.CoachShuttleGatheringSolution;
 
-public abstract class BusPassengerCountTotalUpdatingVariableListener implements VariableListener<Object> {
+public abstract class BusPassengerCountTotalUpdatingVariableListener
+        implements VariableListener<CoachShuttleGatheringSolution, Object> {
 
     @Override
-    public void beforeEntityAdded(ScoreDirector scoreDirector, Object busStop) {
+    public void beforeEntityAdded(ScoreDirector<CoachShuttleGatheringSolution> scoreDirector, Object busStop) {
         // Do nothing
     }
 
     @Override
-    public void afterEntityAdded(ScoreDirector scoreDirector, Object entity) {
+    public void afterEntityAdded(ScoreDirector<CoachShuttleGatheringSolution> scoreDirector, Object entity) {
         if (entity instanceof BusStop) {
             updateBusPassengerCount(scoreDirector, (BusStop) entity, true);
         }
     }
 
     @Override
-    public void beforeVariableChanged(ScoreDirector scoreDirector, Object entity) {
+    public void beforeVariableChanged(ScoreDirector<CoachShuttleGatheringSolution> scoreDirector, Object entity) {
         if (entity instanceof BusStop) {
             updateBusPassengerCount(scoreDirector, (BusStop) entity, false);
         }
     }
 
     @Override
-    public void afterVariableChanged(ScoreDirector scoreDirector, Object entity) {
+    public void afterVariableChanged(ScoreDirector<CoachShuttleGatheringSolution> scoreDirector, Object entity) {
         if (entity instanceof BusStop) {
             updateBusPassengerCount(scoreDirector, (BusStop) entity, true);
         }
     }
 
     @Override
-    public void beforeEntityRemoved(ScoreDirector scoreDirector, Object entity) {
+    public void beforeEntityRemoved(ScoreDirector<CoachShuttleGatheringSolution> scoreDirector, Object entity) {
         // Do nothing
     }
 
     @Override
-    public void afterEntityRemoved(ScoreDirector scoreDirector, Object entity) {
+    public void afterEntityRemoved(ScoreDirector<CoachShuttleGatheringSolution> scoreDirector, Object entity) {
         if (entity instanceof BusStop) {
             updateBusPassengerCount(scoreDirector, (BusStop) entity, false);
         }

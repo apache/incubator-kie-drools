@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,12 +18,12 @@ package org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.size;
 
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 
-public interface TabuSizeStrategy {
+public interface TabuSizeStrategy<Solution_> {
 
     /**
      * @param stepScope never null
      * @return {@code >= 0}
      */
-    int determineTabuSize(LocalSearchStepScope stepScope);
+    int determineTabuSize(LocalSearchStepScope<Solution_> stepScope);
 
 }

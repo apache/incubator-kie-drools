@@ -32,12 +32,14 @@ public abstract class AbstractPhaseFactory<Solution_, PhaseConfig_ extends Phase
         this.phaseConfig = phaseConfig;
     }
 
-    protected Termination buildPhaseTermination(HeuristicConfigPolicy configPolicy, Termination solverTermination) {
+    protected Termination<Solution_> buildPhaseTermination(HeuristicConfigPolicy<Solution_> configPolicy,
+            Termination<Solution_> solverTermination) {
         TerminationConfig terminationConfig_ = phaseConfig.getTerminationConfig() == null ? new TerminationConfig()
                 : phaseConfig.getTerminationConfig();
         // In case of childThread PART_THREAD, the solverTermination is actually the parent phase's phaseTermination
         // with the bridge removed, so it's ok to add it again
-        Termination phaseTermination = new PhaseToSolverTerminationBridge(solverTermination);
-        return TerminationFactory.create(terminationConfig_).buildTermination(configPolicy, phaseTermination);
+        Termination<Solution_> phaseTermination = new PhaseToSolverTerminationBridge<>(solverTermination);
+        return TerminationFactory.<Solution_> create(terminationConfig_)
+                .buildTermination(configPolicy, phaseTermination);
     }
 }

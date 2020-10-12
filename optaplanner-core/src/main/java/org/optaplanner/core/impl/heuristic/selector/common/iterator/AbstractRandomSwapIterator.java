@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,16 +18,19 @@ package org.optaplanner.core.impl.heuristic.selector.common.iterator;
 
 import java.util.Iterator;
 
-public abstract class AbstractRandomSwapIterator<S, SubS> extends UpcomingSelectionIterator<S> {
+import org.optaplanner.core.impl.heuristic.move.Move;
 
-    protected final Iterable<SubS> leftSubSelector;
-    protected final Iterable<SubS> rightSubSelector;
+public abstract class AbstractRandomSwapIterator<Solution_, Move_ extends Move<Solution_>, SubSelection_>
+        extends UpcomingSelectionIterator<Move_> {
 
-    protected Iterator<SubS> leftSubSelectionIterator;
-    protected Iterator<SubS> rightSubSelectionIterator;
+    protected final Iterable<SubSelection_> leftSubSelector;
+    protected final Iterable<SubSelection_> rightSubSelector;
 
-    public AbstractRandomSwapIterator(Iterable<SubS> leftSubSelector,
-            Iterable<SubS> rightSubSelector) {
+    protected Iterator<SubSelection_> leftSubSelectionIterator;
+    protected Iterator<SubSelection_> rightSubSelectionIterator;
+
+    public AbstractRandomSwapIterator(Iterable<SubSelection_> leftSubSelector,
+            Iterable<SubSelection_> rightSubSelector) {
         this.leftSubSelector = leftSubSelector;
         this.rightSubSelector = rightSubSelector;
         leftSubSelectionIterator = this.leftSubSelector.iterator();
@@ -36,7 +39,7 @@ public abstract class AbstractRandomSwapIterator<S, SubS> extends UpcomingSelect
     }
 
     @Override
-    protected S createUpcomingSelection() {
+    protected Move_ createUpcomingSelection() {
         // Ideally, this code should have read:
         //     SubS leftSubSelection = leftSubSelectionIterator.next();
         //     SubS rightSubSelection = rightSubSelectionIterator.next();
@@ -47,17 +50,17 @@ public abstract class AbstractRandomSwapIterator<S, SubS> extends UpcomingSelect
                 return noUpcomingSelection();
             }
         }
-        SubS leftSubSelection = leftSubSelectionIterator.next();
+        SubSelection_ leftSubSelection = leftSubSelectionIterator.next();
         if (!rightSubSelectionIterator.hasNext()) {
             rightSubSelectionIterator = rightSubSelector.iterator();
             if (!rightSubSelectionIterator.hasNext()) {
                 return noUpcomingSelection();
             }
         }
-        SubS rightSubSelection = rightSubSelectionIterator.next();
+        SubSelection_ rightSubSelection = rightSubSelectionIterator.next();
         return newSwapSelection(leftSubSelection, rightSubSelection);
     }
 
-    protected abstract S newSwapSelection(SubS leftSubSelection, SubS rightSubSelection);
+    protected abstract Move_ newSwapSelection(SubSelection_ leftSubSelection, SubSelection_ rightSubSelection);
 
 }

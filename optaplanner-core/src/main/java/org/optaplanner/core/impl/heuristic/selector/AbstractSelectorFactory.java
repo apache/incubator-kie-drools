@@ -21,8 +21,8 @@ import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.impl.AbstractFromConfigFactory;
 
-public abstract class AbstractSelectorFactory<SelectorConfig_ extends SelectorConfig<SelectorConfig_>> extends
-        AbstractFromConfigFactory<SelectorConfig_> {
+public abstract class AbstractSelectorFactory<Solution_, SelectorConfig_ extends SelectorConfig<SelectorConfig_>>
+        extends AbstractFromConfigFactory<Solution_, SelectorConfig_> {
 
     protected AbstractSelectorFactory(SelectorConfig_ selectorConfig) {
         super(selectorConfig);

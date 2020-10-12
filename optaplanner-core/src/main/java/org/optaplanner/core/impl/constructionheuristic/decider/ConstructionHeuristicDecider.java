@@ -38,20 +38,20 @@ public class ConstructionHeuristicDecider<Solution_> {
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     protected final String logIndentation;
-    protected final Termination termination;
-    protected final ConstructionHeuristicForager forager;
+    protected final Termination<Solution_> termination;
+    protected final ConstructionHeuristicForager<Solution_> forager;
 
     protected boolean assertMoveScoreFromScratch = false;
     protected boolean assertExpectedUndoMoveScore = false;
 
-    public ConstructionHeuristicDecider(String logIndentation,
-            Termination termination, ConstructionHeuristicForager forager) {
+    public ConstructionHeuristicDecider(String logIndentation, Termination<Solution_> termination,
+            ConstructionHeuristicForager<Solution_> forager) {
         this.logIndentation = logIndentation;
         this.termination = termination;
         this.forager = forager;
     }
 
-    public ConstructionHeuristicForager getForager() {
+    public ConstructionHeuristicForager<Solution_> getForager() {
         return forager;
     }
 

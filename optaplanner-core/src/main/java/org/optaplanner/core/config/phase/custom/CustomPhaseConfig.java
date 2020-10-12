@@ -48,7 +48,7 @@ public class CustomPhaseConfig extends PhaseConfig<CustomPhaseConfig> {
     protected Map<String, String> customProperties = null;
 
     @XmlTransient
-    protected List<CustomPhaseCommand<?>> customPhaseCommandList = null;
+    protected List<CustomPhaseCommand> customPhaseCommandList = null;
 
     // ************************************************************************
     // Constructors and simple getters/setters
@@ -70,11 +70,11 @@ public class CustomPhaseConfig extends PhaseConfig<CustomPhaseConfig> {
         this.customProperties = customProperties;
     }
 
-    public List<CustomPhaseCommand<?>> getCustomPhaseCommandList() {
+    public List<CustomPhaseCommand> getCustomPhaseCommandList() {
         return customPhaseCommandList;
     }
 
-    public void setCustomPhaseCommandList(List<CustomPhaseCommand<?>> customPhaseCommandList) {
+    public void setCustomPhaseCommandList(List<CustomPhaseCommand> customPhaseCommandList) {
         this.customPhaseCommandList = customPhaseCommandList;
     }
 
@@ -92,12 +92,12 @@ public class CustomPhaseConfig extends PhaseConfig<CustomPhaseConfig> {
         this.customProperties = customProperties;
     }
 
-    public CustomPhaseConfig withCustomPhaseCommandList(List<CustomPhaseCommand<?>> customPhaseCommandList) {
+    public CustomPhaseConfig withCustomPhaseCommandList(List<CustomPhaseCommand> customPhaseCommandList) {
         this.customPhaseCommandList = customPhaseCommandList;
         return this;
     }
 
-    public CustomPhaseConfig withCustomPhaseCommands(CustomPhaseCommand<?>... customPhaseCommands) {
+    public <Solution_> CustomPhaseConfig withCustomPhaseCommands(CustomPhaseCommand<Solution_>... customPhaseCommands) {
         this.customPhaseCommandList = Arrays.asList(customPhaseCommands);
         return this;
     }

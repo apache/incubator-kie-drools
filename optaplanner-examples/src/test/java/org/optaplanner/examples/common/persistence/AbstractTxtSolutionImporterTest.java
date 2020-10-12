@@ -30,12 +30,13 @@ public class AbstractTxtSolutionImporterTest<Solution_> {
 
     @Test
     public void splitBySpace() {
-        AbstractTxtSolutionImporter.TxtInputBuilder inputBuilder = new AbstractTxtSolutionImporter.TxtInputBuilder() {
-            @Override
-            public Solution_ readSolution() throws IOException {
-                return null;
-            }
-        };
+        AbstractTxtSolutionImporter.TxtInputBuilder<Solution_> inputBuilder =
+                new AbstractTxtSolutionImporter.TxtInputBuilder<Solution_>() {
+                    @Override
+                    public Solution_ readSolution() throws IOException {
+                        return null;
+                    }
+                };
         assertThat(inputBuilder.splitBySpace("one two three")).isEqualTo(new String[] { "one", "two", "three" });
         assertThat(inputBuilder.splitBySpace("one two \"three\"", null, null, false, true))
                 .isEqualTo(new String[] { "one", "two", "three" });

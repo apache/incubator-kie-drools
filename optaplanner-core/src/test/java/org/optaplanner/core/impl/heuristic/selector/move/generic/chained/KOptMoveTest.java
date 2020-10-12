@@ -70,9 +70,9 @@ public class KOptMoveTest {
 
         scoreDirector.setWorkingSolution(solution);
         SingletonInverseVariableSupply inverseVariableSupply = scoreDirector.getSupplyManager()
-                .demand(new SingletonInverseVariableDemand(variableDescriptor));
+                .demand(new SingletonInverseVariableDemand<>(variableDescriptor));
         AnchorVariableSupply anchorVariableSupply = scoreDirector.getSupplyManager()
-                .demand(new AnchorVariableDemand(variableDescriptor));
+                .demand(new AnchorVariableDemand<>(variableDescriptor));
 
         SelectorTestUtils.assertChain(a0, a1, a2, a3);
         SelectorTestUtils.assertChain(b0, b1, b2);
@@ -135,9 +135,9 @@ public class KOptMoveTest {
 
         scoreDirector.setWorkingSolution(solution);
         SingletonInverseVariableSupply inverseVariableSupply = scoreDirector.getSupplyManager()
-                .demand(new SingletonInverseVariableDemand(variableDescriptor));
+                .demand(new SingletonInverseVariableDemand<>(variableDescriptor));
         AnchorVariableSupply anchorVariableSupply = scoreDirector.getSupplyManager()
-                .demand(new AnchorVariableDemand(variableDescriptor));
+                .demand(new AnchorVariableDemand<>(variableDescriptor));
 
         SelectorTestUtils.assertChain(a0, a1, a2, a3, a4);
         SelectorTestUtils.assertChain(b0, b1, b2, b3);
@@ -214,9 +214,9 @@ public class KOptMoveTest {
 
         scoreDirector.setWorkingSolution(solution);
         SingletonInverseVariableSupply inverseVariableSupply = scoreDirector.getSupplyManager()
-                .demand(new SingletonInverseVariableDemand(variableDescriptor));
+                .demand(new SingletonInverseVariableDemand<>(variableDescriptor));
         AnchorVariableSupply anchorVariableSupply = scoreDirector.getSupplyManager()
-                .demand(new AnchorVariableDemand(variableDescriptor));
+                .demand(new AnchorVariableDemand<>(variableDescriptor));
 
         SelectorTestUtils.assertChain(a0, a1, a2, a3, a4, a5, a6);
 
@@ -300,7 +300,7 @@ public class KOptMoveTest {
                         .rebase(destinationScoreDirector));
     }
 
-    public void assertSameProperties(Object leftentity, Object[] values, KOptMove move) {
+    public void assertSameProperties(Object leftentity, Object[] values, KOptMove<TestdataChainedSolution> move) {
         assertThat(move.getEntity()).isSameAs(leftentity);
         assertArrayElementsSameExactly(values, move.getValues());
     }
@@ -333,9 +333,9 @@ public class KOptMoveTest {
 
         scoreDirector.setWorkingSolution(solution);
         SingletonInverseVariableSupply inverseVariableSupply = scoreDirector.getSupplyManager()
-                .demand(new SingletonInverseVariableDemand(variableDescriptor));
+                .demand(new SingletonInverseVariableDemand<>(variableDescriptor));
         AnchorVariableSupply anchorVariableSupply = scoreDirector.getSupplyManager()
-                .demand(new AnchorVariableDemand(variableDescriptor));
+                .demand(new AnchorVariableDemand<>(variableDescriptor));
 
         assertThat(new KOptMove<>(variableDescriptor,
                 inverseVariableSupply, anchorVariableSupply, a2, new Object[] { b0, c1 }).toString())

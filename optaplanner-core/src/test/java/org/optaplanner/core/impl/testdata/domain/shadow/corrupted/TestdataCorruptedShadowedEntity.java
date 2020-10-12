@@ -30,8 +30,9 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 @PlanningEntity
 public class TestdataCorruptedShadowedEntity extends TestdataObject {
 
-    public static EntityDescriptor buildEntityDescriptor() {
-        SolutionDescriptor solutionDescriptor = TestdataCorruptedShadowedSolution.buildSolutionDescriptor();
+    public static EntityDescriptor<TestdataCorruptedShadowedSolution> buildEntityDescriptor() {
+        SolutionDescriptor<TestdataCorruptedShadowedSolution> solutionDescriptor =
+                TestdataCorruptedShadowedSolution.buildSolutionDescriptor();
         return solutionDescriptor.findEntityDescriptorOrFail(TestdataCorruptedShadowedEntity.class);
     }
 
@@ -77,19 +78,23 @@ public class TestdataCorruptedShadowedEntity extends TestdataObject {
     // Static inner classes
     // ************************************************************************
 
-    public static class CountUpdatingVariableListener extends VariableListenerAdapter<TestdataCorruptedShadowedEntity> {
+    public static class CountUpdatingVariableListener
+            extends VariableListenerAdapter<TestdataCorruptedShadowedSolution, TestdataCorruptedShadowedEntity> {
 
         @Override
-        public void afterEntityAdded(ScoreDirector scoreDirector, TestdataCorruptedShadowedEntity entity) {
+        public void afterEntityAdded(ScoreDirector<TestdataCorruptedShadowedSolution> scoreDirector,
+                TestdataCorruptedShadowedEntity entity) {
             updateShadow(entity, scoreDirector);
         }
 
         @Override
-        public void afterVariableChanged(ScoreDirector scoreDirector, TestdataCorruptedShadowedEntity entity) {
+        public void afterVariableChanged(ScoreDirector<TestdataCorruptedShadowedSolution> scoreDirector,
+                TestdataCorruptedShadowedEntity entity) {
             updateShadow(entity, scoreDirector);
         }
 
-        private void updateShadow(TestdataCorruptedShadowedEntity entity, ScoreDirector scoreDirector) {
+        private void updateShadow(TestdataCorruptedShadowedEntity entity,
+                ScoreDirector<TestdataCorruptedShadowedSolution> scoreDirector) {
             TestdataValue primaryValue = entity.getValue();
             Integer count;
             if (primaryValue == null) {

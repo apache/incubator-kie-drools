@@ -74,7 +74,7 @@ public abstract class AbstractBendableScoreDefinition<Score_ extends Score<Score
     @Override
     public boolean isCompatibleArithmeticArgument(Score score) {
         if (super.isCompatibleArithmeticArgument(score)) {
-            AbstractBendableScore bendableScore = (AbstractBendableScore) score;
+            AbstractBendableScore<?> bendableScore = (AbstractBendableScore<?>) score;
             return getLevelsSize() == bendableScore.getLevelsSize()
                     && getHardLevelsSize() == bendableScore.getHardLevelsSize()
                     && getSoftLevelsSize() == bendableScore.getSoftLevelsSize();

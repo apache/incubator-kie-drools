@@ -48,20 +48,19 @@ public class DefaultPartitionedSearchPhaseFactory<Solution_>
     }
 
     @Override
-    public PartitionedSearchPhase<Solution_> buildPhase(int phaseIndex, HeuristicConfigPolicy solverConfigPolicy,
-            BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination solverTermination) {
-        HeuristicConfigPolicy phaseConfigPolicy = solverConfigPolicy.createPhaseConfigPolicy();
+    public PartitionedSearchPhase<Solution_> buildPhase(int phaseIndex,
+            HeuristicConfigPolicy<Solution_> solverConfigPolicy, BestSolutionRecaller<Solution_> bestSolutionRecaller,
+            Termination<Solution_> solverTermination) {
+        HeuristicConfigPolicy<Solution_> phaseConfigPolicy = solverConfigPolicy.createPhaseConfigPolicy();
         ThreadFactory threadFactory = solverConfigPolicy.buildThreadFactory(ChildThreadType.PART_THREAD);
-        Termination phaseTermination = buildPhaseTermination(phaseConfigPolicy, solverTermination);
+        Termination<Solution_> phaseTermination = buildPhaseTermination(phaseConfigPolicy, solverTermination);
         Integer resolvedActiveThreadCount = resolveActiveThreadCount(phaseConfig.getRunnablePartThreadLimit());
         DefaultPartitionedSearchPhase<Solution_> phase =
                 new DefaultPartitionedSearchPhase<>(phaseIndex, solverConfigPolicy.getLogIndentation(), bestSolutionRecaller,
                         phaseTermination, buildSolutionPartitioner(), threadFactory, resolvedActiveThreadCount);
         List<PhaseConfig> phaseConfigList_ = phaseConfig.getPhaseConfigList();
         if (ConfigUtils.isEmptyCollection(phaseConfigList_)) {
-            phaseConfigList_ = Arrays.asList(
-                    new ConstructionHeuristicPhaseConfig(),
-                    new LocalSearchPhaseConfig());
+            phaseConfigList_ = Arrays.asList(new ConstructionHeuristicPhaseConfig(), new LocalSearchPhaseConfig());
         }
         phase.setPhaseConfigList(phaseConfigList_);
         phase.setConfigPolicy(phaseConfigPolicy.createChildThreadConfigPolicy(ChildThreadType.PART_THREAD));

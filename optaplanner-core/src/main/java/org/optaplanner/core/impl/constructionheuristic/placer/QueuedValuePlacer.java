@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,12 +24,13 @@ import org.optaplanner.core.impl.heuristic.selector.common.iterator.UpcomingSele
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 
-public class QueuedValuePlacer extends AbstractEntityPlacer implements EntityPlacer {
+public class QueuedValuePlacer<Solution_> extends AbstractEntityPlacer<Solution_> implements EntityPlacer<Solution_> {
 
-    protected final EntityIndependentValueSelector valueSelector;
-    protected final MoveSelector moveSelector;
+    protected final EntityIndependentValueSelector<Solution_> valueSelector;
+    protected final MoveSelector<Solution_> moveSelector;
 
-    public QueuedValuePlacer(EntityIndependentValueSelector valueSelector, MoveSelector moveSelector) {
+    public QueuedValuePlacer(EntityIndependentValueSelector<Solution_> valueSelector,
+            MoveSelector<Solution_> moveSelector) {
         this.valueSelector = valueSelector;
         this.moveSelector = moveSelector;
         phaseLifecycleSupport.addEventListener(valueSelector);
@@ -37,11 +38,11 @@ public class QueuedValuePlacer extends AbstractEntityPlacer implements EntityPla
     }
 
     @Override
-    public Iterator<Placement> iterator() {
+    public Iterator<Placement<Solution_>> iterator() {
         return new QueuedValuePlacingIterator();
     }
 
-    private class QueuedValuePlacingIterator extends UpcomingSelectionIterator<Placement> {
+    private class QueuedValuePlacingIterator extends UpcomingSelectionIterator<Placement<Solution_>> {
 
         private Iterator<Object> valueIterator;
 
@@ -50,7 +51,7 @@ public class QueuedValuePlacer extends AbstractEntityPlacer implements EntityPla
         }
 
         @Override
-        protected Placement createUpcomingSelection() {
+        protected Placement<Solution_> createUpcomingSelection() {
             // If all values are used, there can still be entities uninitialized
             if (!valueIterator.hasNext()) {
                 valueIterator = valueSelector.iterator();
@@ -59,12 +60,12 @@ public class QueuedValuePlacer extends AbstractEntityPlacer implements EntityPla
                 }
             }
             valueIterator.next();
-            Iterator<Move> moveIterator = moveSelector.iterator();
+            Iterator<Move<Solution_>> moveIterator = moveSelector.iterator();
             // Because the valueSelector is entity independent, there is always a move if there's still an entity
             if (!moveIterator.hasNext()) {
                 return noUpcomingSelection();
             }
-            return new Placement(moveIterator);
+            return new Placement<>(moveIterator);
         }
 
     }

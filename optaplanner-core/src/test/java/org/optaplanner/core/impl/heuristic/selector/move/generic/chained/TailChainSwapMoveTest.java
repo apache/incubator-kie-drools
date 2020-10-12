@@ -64,9 +64,9 @@ public class TailChainSwapMoveTest {
 
         scoreDirector.setWorkingSolution(solution);
         SingletonInverseVariableSupply inverseVariableSupply = scoreDirector.getSupplyManager()
-                .demand(new SingletonInverseVariableDemand(variableDescriptor));
+                .demand(new SingletonInverseVariableDemand<>(variableDescriptor));
         AnchorVariableSupply anchorVariableSupply = scoreDirector.getSupplyManager()
-                .demand(new AnchorVariableDemand(variableDescriptor));
+                .demand(new AnchorVariableDemand<>(variableDescriptor));
 
         assertThat(new TailChainSwapMove<>(variableDescriptor, inverseVariableSupply, anchorVariableSupply, a2, b0)
                 .isMoveDoable(scoreDirector)).isTrue();
@@ -105,9 +105,9 @@ public class TailChainSwapMoveTest {
 
         scoreDirector.setWorkingSolution(solution);
         SingletonInverseVariableSupply inverseVariableSupply = scoreDirector.getSupplyManager()
-                .demand(new SingletonInverseVariableDemand(variableDescriptor));
+                .demand(new SingletonInverseVariableDemand<>(variableDescriptor));
         AnchorVariableSupply anchorVariableSupply = scoreDirector.getSupplyManager()
-                .demand(new AnchorVariableDemand(variableDescriptor));
+                .demand(new AnchorVariableDemand<>(variableDescriptor));
 
         SelectorTestUtils.assertChain(a0, a1, a2, a3);
         SelectorTestUtils.assertChain(b0, b1);
@@ -159,9 +159,9 @@ public class TailChainSwapMoveTest {
 
         scoreDirector.setWorkingSolution(solution);
         SingletonInverseVariableSupply inverseVariableSupply = scoreDirector.getSupplyManager()
-                .demand(new SingletonInverseVariableDemand(variableDescriptor));
+                .demand(new SingletonInverseVariableDemand<>(variableDescriptor));
         AnchorVariableSupply anchorVariableSupply = scoreDirector.getSupplyManager()
-                .demand(new AnchorVariableDemand(variableDescriptor));
+                .demand(new AnchorVariableDemand<>(variableDescriptor));
         SelectorTestUtils.assertChain(a0, a1, a2, a3, a4, a5, a6, a7);
 
         TailChainSwapMove<TestdataChainedSolution> move = new TailChainSwapMove<>(variableDescriptor, inverseVariableSupply,
@@ -259,7 +259,7 @@ public class TailChainSwapMoveTest {
                         .rebase(destinationScoreDirector));
     }
 
-    public void assertSameProperties(Object leftEntity, Object rightValue, TailChainSwapMove move) {
+    public void assertSameProperties(Object leftEntity, Object rightValue, TailChainSwapMove<TestdataChainedSolution> move) {
         assertThat(move.getLeftEntity()).isSameAs(leftEntity);
         assertThat(move.getRightValue()).isSameAs(rightValue);
     }
@@ -287,9 +287,9 @@ public class TailChainSwapMoveTest {
 
         scoreDirector.setWorkingSolution(solution);
         SingletonInverseVariableSupply inverseVariableSupply = scoreDirector.getSupplyManager()
-                .demand(new SingletonInverseVariableDemand(variableDescriptor));
+                .demand(new SingletonInverseVariableDemand<>(variableDescriptor));
         AnchorVariableSupply anchorVariableSupply = scoreDirector.getSupplyManager()
-                .demand(new AnchorVariableDemand(variableDescriptor));
+                .demand(new AnchorVariableDemand<>(variableDescriptor));
 
         assertThat(new TailChainSwapMove<>(variableDescriptor,
                 inverseVariableSupply, anchorVariableSupply, a1, b0).toString()).isEqualTo("a1 {a0} <-tailChainSwap-> b1 {b0}");
@@ -325,18 +325,18 @@ public class TailChainSwapMoveTest {
 
         scoreDirector.setWorkingSolution(solution);
         SingletonInverseVariableSupply inverseVariableSupply = scoreDirector.getSupplyManager()
-                .demand(new SingletonInverseVariableDemand(variableDescriptor));
+                .demand(new SingletonInverseVariableDemand<>(variableDescriptor));
         AnchorVariableSupply anchorVariableSupply = scoreDirector.getSupplyManager()
-                .demand(new AnchorVariableDemand(variableDescriptor));
+                .demand(new AnchorVariableDemand<>(variableDescriptor));
 
-        TailChainSwapMove move = new TailChainSwapMove<>(variableDescriptor, inverseVariableSupply, anchorVariableSupply, a1,
-                b0);
-        assertThat(move.getPlanningEntities()).doesNotContain((TestdataChainedEntity) null);
+        TailChainSwapMove<TestdataChainedSolution> move = new TailChainSwapMove<>(variableDescriptor,
+                inverseVariableSupply, anchorVariableSupply, a1, b0);
+        assertThat(move.getPlanningEntities()).doesNotContainNull();
 
         move.doMoveOnGenuineVariables(scoreDirector);
-        assertThat(move.getPlanningEntities()).doesNotContain((TestdataChainedEntity) null);
+        assertThat(move.getPlanningEntities()).doesNotContainNull();
 
-        Move undoMove = move.createUndoMove(scoreDirector);
-        assertThat(undoMove.getPlanningEntities()).doesNotContain((TestdataChainedEntity) null);
+        Move<TestdataChainedSolution> undoMove = move.createUndoMove(scoreDirector);
+        assertThat(undoMove.getPlanningEntities()).doesNotContainNull();
     }
 }

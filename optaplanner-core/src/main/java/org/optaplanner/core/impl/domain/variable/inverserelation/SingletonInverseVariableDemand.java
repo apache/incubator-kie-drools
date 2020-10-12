@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,15 +22,15 @@ import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.supply.Demand;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 
-public class SingletonInverseVariableDemand implements Demand<SingletonInverseVariableSupply> {
+public class SingletonInverseVariableDemand<Solution_> implements Demand<Solution_, SingletonInverseVariableSupply> {
 
-    protected final VariableDescriptor sourceVariableDescriptor;
+    protected final VariableDescriptor<Solution_> sourceVariableDescriptor;
 
-    public SingletonInverseVariableDemand(VariableDescriptor sourceVariableDescriptor) {
+    public SingletonInverseVariableDemand(VariableDescriptor<Solution_> sourceVariableDescriptor) {
         this.sourceVariableDescriptor = sourceVariableDescriptor;
     }
 
-    public VariableDescriptor getSourceVariableDescriptor() {
+    public VariableDescriptor<Solution_> getSourceVariableDescriptor() {
         return sourceVariableDescriptor;
     }
 
@@ -39,8 +39,8 @@ public class SingletonInverseVariableDemand implements Demand<SingletonInverseVa
     // ************************************************************************
 
     @Override
-    public SingletonInverseVariableSupply createExternalizedSupply(InnerScoreDirector scoreDirector) {
-        return new ExternalizedSingletonInverseVariableSupply(sourceVariableDescriptor);
+    public SingletonInverseVariableSupply createExternalizedSupply(InnerScoreDirector<Solution_, ?> scoreDirector) {
+        return new ExternalizedSingletonInverseVariableSupply<>(sourceVariableDescriptor);
     }
 
     // ************************************************************************
@@ -55,7 +55,7 @@ public class SingletonInverseVariableDemand implements Demand<SingletonInverseVa
         if (!(o instanceof SingletonInverseVariableDemand)) {
             return false;
         }
-        SingletonInverseVariableDemand other = (SingletonInverseVariableDemand) o;
+        SingletonInverseVariableDemand<Solution_> other = (SingletonInverseVariableDemand<Solution_>) o;
         if (!sourceVariableDescriptor.equals(other.sourceVariableDescriptor)) {
             return false;
         }

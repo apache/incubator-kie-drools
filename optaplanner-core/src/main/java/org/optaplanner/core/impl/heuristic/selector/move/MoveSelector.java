@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import org.optaplanner.core.impl.heuristic.selector.IterableSelector;
  *
  * @see AbstractMoveSelector
  */
-public interface MoveSelector extends IterableSelector<Move> {
+public interface MoveSelector<Solution_> extends IterableSelector<Solution_, Move<Solution_>> {
 
     default boolean supportsPhaseAndSolverCaching() {
         return false;

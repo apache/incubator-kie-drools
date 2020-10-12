@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,8 +25,8 @@ import org.slf4j.LoggerFactory;
  *
  * @see LocalSearchForager
  */
-public abstract class AbstractLocalSearchForager extends LocalSearchPhaseLifecycleListenerAdapter
-        implements LocalSearchForager {
+public abstract class AbstractLocalSearchForager<Solution_> extends LocalSearchPhaseLifecycleListenerAdapter<Solution_>
+        implements LocalSearchForager<Solution_> {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 

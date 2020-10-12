@@ -189,7 +189,7 @@ public interface InnerScoreDirector<Solution_, Score_ extends Score<Score_>>
     /**
      * @return never null
      */
-    SupplyManager getSupplyManager();
+    SupplyManager<Solution_> getSupplyManager();
 
     /**
      * Clones this {@link ScoreDirector} and its {@link PlanningSolution working solution}.
@@ -277,7 +277,7 @@ public interface InnerScoreDirector<Solution_, Score_ extends Score<Score_>>
      * @param move never null
      * @param beforeMoveScore never null
      */
-    void assertExpectedUndoMoveScore(Move move, Score_ beforeMoveScore);
+    void assertExpectedUndoMoveScore(Move<Solution_> move, Score_ beforeMoveScore);
 
     /**
      * Asserts that none of the planning facts from {@link SolutionDescriptor#getAllFacts(Object)} for

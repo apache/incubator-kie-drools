@@ -81,19 +81,19 @@ public class EntityDescriptor<Solution_> {
     private final Class<?> entityClass;
     private final Predicate<Object> isInitializedPredicate;
     // Only declared movable filter, excludes inherited and descending movable filters
-    private SelectionFilter declaredMovableEntitySelectionFilter;
-    private SelectionSorter decreasingDifficultySorter;
+    private SelectionFilter<Solution_, Object> declaredMovableEntitySelectionFilter;
+    private SelectionSorter<Solution_, Object> decreasingDifficultySorter;
 
     // Only declared variable descriptors, excludes inherited variable descriptors
     private Map<String, GenuineVariableDescriptor<Solution_>> declaredGenuineVariableDescriptorMap;
     private Map<String, ShadowVariableDescriptor<Solution_>> declaredShadowVariableDescriptorMap;
 
-    private List<SelectionFilter> declaredPinEntityFilterList;
+    private List<SelectionFilter<Solution_, Object>> declaredPinEntityFilterList;
 
     private List<EntityDescriptor<Solution_>> inheritedEntityDescriptorList;
 
     // Caches the inherited, declared and descending movable filters (including @PlanningPin filters) as a composite filter
-    private SelectionFilter effectiveMovableEntitySelectionFilter;
+    private SelectionFilter<Solution_, Object> effectiveMovableEntitySelectionFilter;
 
     // Caches the inherited and declared variable descriptors
     private Map<String, GenuineVariableDescriptor<Solution_>> effectiveGenuineVariableDescriptorMap;
@@ -162,13 +162,13 @@ public class EntityDescriptor<Solution_> {
         Class<? extends PinningFilter> pinningFilterClass = entityAnnotation.pinningFilter();
         boolean hasPinningFilter = pinningFilterClass != PlanningEntity.NullPinningFilter.class;
         if (hasPinningFilter) {
-            declaredMovableEntitySelectionFilter = new SelectionFilter() {
+            declaredMovableEntitySelectionFilter = new SelectionFilter<Solution_, Object>() {
 
-                private final PinningFilter pinningFilter =
+                private final PinningFilter<Solution_, Object> pinningFilter =
                         ConfigUtils.newInstance(this, "pinningFilterClass", pinningFilterClass);
 
                 @Override
-                public boolean accept(ScoreDirector scoreDirector, Object selection) {
+                public boolean accept(ScoreDirector<Solution_> scoreDirector, Object selection) {
                     return !pinningFilter.accept(scoreDirector.getWorkingSolution(), selection);
                 }
             };
@@ -278,7 +278,7 @@ public class EntityDescriptor<Solution_> {
                         + " annotated member (" + memberAccessor
                         + ") that is not a boolean or Boolean.");
             }
-            declaredPinEntityFilterList.add(new PinEntityFilter(memberAccessor));
+            declaredPinEntityFilterList.add(new PinEntityFilter<>(memberAccessor));
         }
     }
 
@@ -340,7 +340,7 @@ public class EntityDescriptor<Solution_> {
                     + ") has a movableEntitySelectionFilterClass (" + declaredMovableEntitySelectionFilter.getClass()
                     + "), but it has no declared genuine variables, only shadow variables.");
         }
-        List<SelectionFilter> selectionFilterList = new ArrayList<>();
+        List<SelectionFilter<Solution_, Object>> selectionFilterList = new ArrayList<>();
         // TODO Also add in child entity selectors
         for (EntityDescriptor<Solution_> inheritedEntityDescriptor : inheritedEntityDescriptorList) {
             if (inheritedEntityDescriptor.hasEffectiveMovableEntitySelectionFilter()) {
@@ -357,7 +357,7 @@ public class EntityDescriptor<Solution_> {
         } else if (selectionFilterList.size() == 1) {
             effectiveMovableEntitySelectionFilter = selectionFilterList.get(0);
         } else {
-            effectiveMovableEntitySelectionFilter = new CompositeSelectionFilter(selectionFilterList);
+            effectiveMovableEntitySelectionFilter = new CompositeSelectionFilter<>(selectionFilterList);
         }
     }
 
@@ -390,11 +390,11 @@ public class EntityDescriptor<Solution_> {
         return effectiveMovableEntitySelectionFilter != null;
     }
 
-    public SelectionFilter getEffectiveMovableEntitySelectionFilter() {
+    public SelectionFilter<Solution_, Object> getEffectiveMovableEntitySelectionFilter() {
         return effectiveMovableEntitySelectionFilter;
     }
 
-    public SelectionSorter getDecreasingDifficultySorter() {
+    public SelectionSorter<Solution_, Object> getDecreasingDifficultySorter() {
         return decreasingDifficultySorter;
     }
 

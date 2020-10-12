@@ -33,18 +33,18 @@ import org.optaplanner.core.impl.solver.scope.SolverScope;
  * @see LocalSearchForager
  * @see Acceptor
  */
-public class AcceptedLocalSearchForager extends AbstractLocalSearchForager {
+public class AcceptedLocalSearchForager<Solution_> extends AbstractLocalSearchForager<Solution_> {
 
-    protected final FinalistPodium finalistPodium;
+    protected final FinalistPodium<Solution_> finalistPodium;
     protected final LocalSearchPickEarlyType pickEarlyType;
     protected final int acceptedCountLimit;
     protected final boolean breakTieRandomly;
 
     protected long selectedMoveCount;
     protected long acceptedMoveCount;
-    protected LocalSearchMoveScope earlyPickedMoveScope;
+    protected LocalSearchMoveScope<Solution_> earlyPickedMoveScope;
 
-    public AcceptedLocalSearchForager(FinalistPodium finalistPodium,
+    public AcceptedLocalSearchForager(FinalistPodium<Solution_> finalistPodium,
             LocalSearchPickEarlyType pickEarlyType, int acceptedCountLimit, boolean breakTieRandomly) {
         this.finalistPodium = finalistPodium;
         this.pickEarlyType = pickEarlyType;
@@ -61,19 +61,19 @@ public class AcceptedLocalSearchForager extends AbstractLocalSearchForager {
     // ************************************************************************
 
     @Override
-    public void solvingStarted(SolverScope solverScope) {
+    public void solvingStarted(SolverScope<Solution_> solverScope) {
         super.solvingStarted(solverScope);
         finalistPodium.solvingStarted(solverScope);
     }
 
     @Override
-    public void phaseStarted(LocalSearchPhaseScope phaseScope) {
+    public void phaseStarted(LocalSearchPhaseScope<Solution_> phaseScope) {
         super.phaseStarted(phaseScope);
         finalistPodium.phaseStarted(phaseScope);
     }
 
     @Override
-    public void stepStarted(LocalSearchStepScope stepScope) {
+    public void stepStarted(LocalSearchStepScope<Solution_> stepScope) {
         super.stepStarted(stepScope);
         finalistPodium.stepStarted(stepScope);
         selectedMoveCount = 0L;
@@ -88,7 +88,7 @@ public class AcceptedLocalSearchForager extends AbstractLocalSearchForager {
     }
 
     @Override
-    public void addMove(LocalSearchMoveScope moveScope) {
+    public void addMove(LocalSearchMoveScope<Solution_> moveScope) {
         selectedMoveCount++;
         if (moveScope.getAccepted()) {
             acceptedMoveCount++;
@@ -97,20 +97,20 @@ public class AcceptedLocalSearchForager extends AbstractLocalSearchForager {
         finalistPodium.addMove(moveScope);
     }
 
-    protected void checkPickEarly(LocalSearchMoveScope moveScope) {
+    protected void checkPickEarly(LocalSearchMoveScope<Solution_> moveScope) {
         switch (pickEarlyType) {
             case NEVER:
                 break;
             case FIRST_BEST_SCORE_IMPROVING:
                 Score bestScore = moveScope.getStepScope().getPhaseScope().getBestScore();
-                if (moveScope.getScore().compareTo(bestScore) > 0) {
+                if (((Score) moveScope.getScore()).compareTo(bestScore) > 0) {
                     earlyPickedMoveScope = moveScope;
                 }
                 break;
             case FIRST_LAST_STEP_SCORE_IMPROVING:
                 Score lastStepScore = moveScope.getStepScope().getPhaseScope()
                         .getLastCompletedStepScope().getScore();
-                if (moveScope.getScore().compareTo(lastStepScore) > 0) {
+                if (((Score) moveScope.getScore()).compareTo(lastStepScore) > 0) {
                     earlyPickedMoveScope = moveScope;
                 }
                 break;
@@ -125,13 +125,13 @@ public class AcceptedLocalSearchForager extends AbstractLocalSearchForager {
     }
 
     @Override
-    public LocalSearchMoveScope pickMove(LocalSearchStepScope stepScope) {
+    public LocalSearchMoveScope<Solution_> pickMove(LocalSearchStepScope<Solution_> stepScope) {
         stepScope.setSelectedMoveCount(selectedMoveCount);
         stepScope.setAcceptedMoveCount(acceptedMoveCount);
         if (earlyPickedMoveScope != null) {
             return earlyPickedMoveScope;
         }
-        List<LocalSearchMoveScope> finalistList = finalistPodium.getFinalistList();
+        List<LocalSearchMoveScope<Solution_>> finalistList = finalistPodium.getFinalistList();
         if (finalistList.isEmpty()) {
             return null;
         }
@@ -143,13 +143,13 @@ public class AcceptedLocalSearchForager extends AbstractLocalSearchForager {
     }
 
     @Override
-    public void stepEnded(LocalSearchStepScope stepScope) {
+    public void stepEnded(LocalSearchStepScope<Solution_> stepScope) {
         super.stepEnded(stepScope);
         finalistPodium.stepEnded(stepScope);
     }
 
     @Override
-    public void phaseEnded(LocalSearchPhaseScope phaseScope) {
+    public void phaseEnded(LocalSearchPhaseScope<Solution_> phaseScope) {
         super.phaseEnded(phaseScope);
         finalistPodium.phaseEnded(phaseScope);
         selectedMoveCount = 0L;
@@ -158,7 +158,7 @@ public class AcceptedLocalSearchForager extends AbstractLocalSearchForager {
     }
 
     @Override
-    public void solvingEnded(SolverScope solverScope) {
+    public void solvingEnded(SolverScope<Solution_> solverScope) {
         super.solvingEnded(solverScope);
         finalistPodium.solvingEnded(solverScope);
     }

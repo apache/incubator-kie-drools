@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,20 +23,20 @@ import java.util.List;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 
-public class ManualEntityMimicRecorder implements EntityMimicRecorder {
+public class ManualEntityMimicRecorder<Solution_> implements EntityMimicRecorder<Solution_> {
 
-    protected final EntitySelector sourceEntitySelector;
-    protected final List<MimicReplayingEntitySelector> replayingEntitySelectorList;
+    protected final EntitySelector<Solution_> sourceEntitySelector;
+    protected final List<MimicReplayingEntitySelector<Solution_>> replayingEntitySelectorList;
 
     protected Object recordedEntity;
 
-    public ManualEntityMimicRecorder(EntitySelector sourceEntitySelector) {
+    public ManualEntityMimicRecorder(EntitySelector<Solution_> sourceEntitySelector) {
         this.sourceEntitySelector = sourceEntitySelector;
         replayingEntitySelectorList = new ArrayList<>();
     }
 
     @Override
-    public void addMimicReplayingEntitySelector(MimicReplayingEntitySelector replayingEntitySelector) {
+    public void addMimicReplayingEntitySelector(MimicReplayingEntitySelector<Solution_> replayingEntitySelector) {
         replayingEntitySelectorList.add(replayingEntitySelector);
     }
 
@@ -46,13 +46,13 @@ public class ManualEntityMimicRecorder implements EntityMimicRecorder {
 
     public void setRecordedEntity(Object recordedEntity) {
         this.recordedEntity = recordedEntity;
-        for (MimicReplayingEntitySelector replayingEntitySelector : replayingEntitySelectorList) {
+        for (MimicReplayingEntitySelector<Solution_> replayingEntitySelector : replayingEntitySelectorList) {
             replayingEntitySelector.recordedNext(recordedEntity);
         }
     }
 
     @Override
-    public EntityDescriptor getEntityDescriptor() {
+    public EntityDescriptor<Solution_> getEntityDescriptor() {
         return sourceEntitySelector.getEntityDescriptor();
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,18 +21,18 @@ import java.util.Iterator;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 
-public interface EntityMimicRecorder {
+public interface EntityMimicRecorder<Solution_> {
 
     /**
      * @param replayingEntitySelector never null
      */
-    void addMimicReplayingEntitySelector(MimicReplayingEntitySelector replayingEntitySelector);
+    void addMimicReplayingEntitySelector(MimicReplayingEntitySelector<Solution_> replayingEntitySelector);
 
     /**
      * @return As defined by {@link EntitySelector#getEntityDescriptor()}
      * @see EntitySelector#getEntityDescriptor()
      */
-    EntityDescriptor getEntityDescriptor();
+    EntityDescriptor<Solution_> getEntityDescriptor();
 
     /**
      * @return As defined by {@link EntitySelector#isCountable()}

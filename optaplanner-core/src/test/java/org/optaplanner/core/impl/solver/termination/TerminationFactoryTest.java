@@ -31,6 +31,7 @@ import org.optaplanner.core.config.solver.termination.TerminationCompositionStyl
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreDefinition;
+import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
 class TerminationFactoryTest {
 
@@ -42,11 +43,11 @@ class TerminationFactoryTest {
                 .plusMinutes(3L)
                 .plusHours(2L)
                 .plusDays(1L));
-        Termination termination =
-                TerminationFactory.create(terminationConfig).buildTermination(mock(HeuristicConfigPolicy.class));
+        Termination<?> termination = TerminationFactory.create(terminationConfig)
+                .buildTermination(mock(HeuristicConfigPolicy.class));
         assertThat(termination)
                 .isInstanceOf(TimeMillisSpentTermination.class);
-        assertThat(((TimeMillisSpentTermination) termination).getTimeMillisSpentLimit()).isEqualTo(93784005L);
+        assertThat(((TimeMillisSpentTermination<?>) termination).getTimeMillisSpentLimit()).isEqualTo(93784005L);
     }
 
     @Test
@@ -57,11 +58,11 @@ class TerminationFactoryTest {
         terminationConfig.setMinutesSpentLimit(3L);
         terminationConfig.setHoursSpentLimit(2L);
         terminationConfig.setDaysSpentLimit(1L);
-        Termination termination =
-                TerminationFactory.create(terminationConfig).buildTermination(mock(HeuristicConfigPolicy.class));
+        Termination<?> termination = TerminationFactory.create(terminationConfig)
+                .buildTermination(mock(HeuristicConfigPolicy.class));
         assertThat(termination)
                 .isInstanceOf(TimeMillisSpentTermination.class);
-        assertThat(((TimeMillisSpentTermination) termination).getTimeMillisSpentLimit()).isEqualTo(93784005L);
+        assertThat(((TimeMillisSpentTermination<?>) termination).getTimeMillisSpentLimit()).isEqualTo(93784005L);
     }
 
     @Test
@@ -72,11 +73,11 @@ class TerminationFactoryTest {
                 .plusMinutes(3L)
                 .plusHours(2L)
                 .plusDays(1L));
-        Termination termination =
-                TerminationFactory.create(terminationConfig).buildTermination(mock(HeuristicConfigPolicy.class));
+        Termination<?> termination = TerminationFactory.create(terminationConfig)
+                .buildTermination(mock(HeuristicConfigPolicy.class));
         assertThat(termination)
                 .isInstanceOf(UnimprovedTimeMillisSpentTermination.class);
-        assertThat(((UnimprovedTimeMillisSpentTermination) termination).getUnimprovedTimeMillisSpentLimit())
+        assertThat(((UnimprovedTimeMillisSpentTermination<?>) termination).getUnimprovedTimeMillisSpentLimit())
                 .isEqualTo(93784005L);
     }
 
@@ -88,49 +89,53 @@ class TerminationFactoryTest {
         terminationConfig.setUnimprovedMinutesSpentLimit(3L);
         terminationConfig.setUnimprovedHoursSpentLimit(2L);
         terminationConfig.setUnimprovedDaysSpentLimit(1L);
-        Termination termination =
-                TerminationFactory.create(terminationConfig).buildTermination(mock(HeuristicConfigPolicy.class));
+        Termination<?> termination = TerminationFactory.create(terminationConfig)
+                .buildTermination(mock(HeuristicConfigPolicy.class));
         assertThat(termination)
                 .isInstanceOf(UnimprovedTimeMillisSpentTermination.class);
-        assertThat(((UnimprovedTimeMillisSpentTermination) termination).getUnimprovedTimeMillisSpentLimit())
+        assertThat(((UnimprovedTimeMillisSpentTermination<?>) termination).getUnimprovedTimeMillisSpentLimit())
                 .isEqualTo(93784005L);
     }
 
     @Test
     void buildTerminationFromList_single() {
-        Termination termination = new TimeMillisSpentTermination(1000L);
-        assertThat(TerminationFactory.create(new TerminationConfig())
+        Termination<TestdataSolution> termination = new TimeMillisSpentTermination<>(1000L);
+        assertThat(TerminationFactory.<TestdataSolution> create(new TerminationConfig())
                 .buildTerminationFromList(Collections.singletonList(termination))).isSameAs(termination);
     }
 
     @Test
     void buildTerminationFromList_withAndComposition() {
-        Termination timeBasedTermination = new TimeMillisSpentTermination(1000L);
-        Termination stepCountTermination = new StepCountTermination(5);
-        List<Termination> terminationList = new ArrayList<>();
+        Termination<TestdataSolution> timeBasedTermination = new TimeMillisSpentTermination<>(1000L);
+        Termination<TestdataSolution> stepCountTermination = new StepCountTermination<>(5);
+        List<Termination<TestdataSolution>> terminationList = new ArrayList<>();
         terminationList.add(timeBasedTermination);
         terminationList.add(stepCountTermination);
 
-        Termination resultingTermination = TerminationFactory.create(new TerminationConfig().withTerminationCompositionStyle(
-                TerminationCompositionStyle.AND))
-                .buildTerminationFromList(terminationList);
+        Termination<TestdataSolution> resultingTermination =
+                TerminationFactory.<TestdataSolution> create(new TerminationConfig()
+                        .withTerminationCompositionStyle(TerminationCompositionStyle.AND))
+                        .buildTerminationFromList(terminationList);
         assertThat(resultingTermination).isExactlyInstanceOf(AndCompositeTermination.class);
-        AndCompositeTermination andCompositeTermination = (AndCompositeTermination) resultingTermination;
+        AndCompositeTermination<TestdataSolution> andCompositeTermination =
+                (AndCompositeTermination<TestdataSolution>) resultingTermination;
         assertThat(andCompositeTermination.terminationList).containsExactly(timeBasedTermination, stepCountTermination);
     }
 
     @Test
     void buildTerminationFromList_withDefaultComposition() {
-        Termination timeBasedTermination = new TimeMillisSpentTermination(1000L);
-        Termination stepCountTermination = new StepCountTermination(5);
-        List<Termination> terminationList = new ArrayList<>();
+        Termination<TestdataSolution> timeBasedTermination = new TimeMillisSpentTermination<>(1000L);
+        Termination<TestdataSolution> stepCountTermination = new StepCountTermination<>(5);
+        List<Termination<TestdataSolution>> terminationList = new ArrayList<>();
         terminationList.add(timeBasedTermination);
         terminationList.add(stepCountTermination);
 
-        Termination resultingTermination = TerminationFactory.create(new TerminationConfig())
-                .buildTerminationFromList(terminationList);
+        Termination<TestdataSolution> resultingTermination =
+                TerminationFactory.<TestdataSolution> create(new TerminationConfig())
+                        .buildTerminationFromList(terminationList);
         assertThat(resultingTermination).isExactlyInstanceOf(OrCompositeTermination.class);
-        OrCompositeTermination andCompositeTermination = (OrCompositeTermination) resultingTermination;
+        OrCompositeTermination<TestdataSolution> andCompositeTermination =
+                (OrCompositeTermination<TestdataSolution>) resultingTermination;
         assertThat(andCompositeTermination.terminationList).containsExactly(timeBasedTermination, stepCountTermination);
     }
 
@@ -139,26 +144,27 @@ class TerminationFactoryTest {
         TerminationConfig innerTerminationConfig = new TerminationConfig().withSecondsSpentLimit(1L);
         TerminationConfig outerTerminationConfig = new TerminationConfig()
                 .withTerminationConfigList(Collections.singletonList(innerTerminationConfig));
-        List<Termination> terminationList =
+        List<Termination<?>> terminationList =
                 TerminationFactory.create(outerTerminationConfig).buildInnerTermination(mock(HeuristicConfigPolicy.class));
         assertThat(terminationList)
                 .hasSize(1)
                 .hasOnlyElementsOfType(TimeMillisSpentTermination.class);
-        TimeMillisSpentTermination timeMillisSpentTermination = (TimeMillisSpentTermination) terminationList.get(0);
+        TimeMillisSpentTermination<?> timeMillisSpentTermination = (TimeMillisSpentTermination<?>) terminationList.get(0);
         assertThat(timeMillisSpentTermination.getTimeMillisSpentLimit()).isEqualTo(1000L);
     }
 
     @Test
     void buildTimeBasedTermination_withScoreDifferenceThreshold() {
-        HeuristicConfigPolicy heuristicConfigPolicy = mock(HeuristicConfigPolicy.class);
+        HeuristicConfigPolicy<TestdataSolution> heuristicConfigPolicy = mock(HeuristicConfigPolicy.class);
         when(heuristicConfigPolicy.getScoreDefinition()).thenReturn(new HardSoftScoreDefinition());
 
         TerminationConfig terminationConfig = new TerminationConfig()
                 .withMillisecondsSpentLimit(1000L)
                 .withUnimprovedMillisecondsSpentLimit(1000L)
                 .withUnimprovedScoreDifferenceThreshold("1hard/0soft");
-        List<Termination> terminationList =
-                TerminationFactory.create(terminationConfig).buildTimeBasedTermination(heuristicConfigPolicy);
+        List<Termination<TestdataSolution>> terminationList =
+                TerminationFactory.<TestdataSolution> create(terminationConfig)
+                        .buildTimeBasedTermination(heuristicConfigPolicy);
         assertThat(terminationList).hasOnlyElementsOfTypes(TimeMillisSpentTermination.class,
                 UnimprovedTimeMillisSpentScoreDifferenceThresholdTermination.class);
     }
@@ -168,20 +174,21 @@ class TerminationFactoryTest {
         TerminationConfig terminationConfig = new TerminationConfig()
                 .withMillisecondsSpentLimit(1000L)
                 .withUnimprovedMillisecondsSpentLimit(1000L);
-        List<Termination> terminationList =
-                TerminationFactory.create(terminationConfig).buildTimeBasedTermination(mock(HeuristicConfigPolicy.class));
+        List<Termination<TestdataSolution>> terminationList =
+                TerminationFactory.<TestdataSolution> create(terminationConfig)
+                        .buildTimeBasedTermination(mock(HeuristicConfigPolicy.class));
         assertThat(terminationList).hasOnlyElementsOfTypes(TimeMillisSpentTermination.class,
                 UnimprovedTimeMillisSpentTermination.class);
     }
 
     @Test
     void scoreDifferenceThreshold_mustBeUsedWithUnimprovedTimeSpent() {
-        HeuristicConfigPolicy heuristicConfigPolicy = mock(HeuristicConfigPolicy.class);
+        HeuristicConfigPolicy<TestdataSolution> heuristicConfigPolicy = mock(HeuristicConfigPolicy.class);
 
         TerminationConfig terminationConfig = new TerminationConfig();
         terminationConfig.withUnimprovedScoreDifferenceThreshold("1hard/0soft");
 
-        TerminationFactory terminationFactory = TerminationFactory.create(terminationConfig);
+        TerminationFactory<TestdataSolution> terminationFactory = TerminationFactory.create(terminationConfig);
         assertThatIllegalStateException()
                 .isThrownBy(() -> terminationFactory.buildTimeBasedTermination(heuristicConfigPolicy))
                 .withMessageContaining("can only be used if an unimproved*SpentLimit");

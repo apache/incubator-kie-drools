@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchMoveScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 
-public class MoveTabuAcceptor extends AbstractTabuAcceptor {
+public class MoveTabuAcceptor<Solution_> extends AbstractTabuAcceptor<Solution_> {
 
     protected boolean useUndoMoveAsTabuMove = true;
 
@@ -40,12 +40,12 @@ public class MoveTabuAcceptor extends AbstractTabuAcceptor {
     // ************************************************************************
 
     @Override
-    protected Collection<? extends Object> findTabu(LocalSearchMoveScope moveScope) {
+    protected Collection<? extends Object> findTabu(LocalSearchMoveScope<Solution_> moveScope) {
         return Collections.singletonList(moveScope.getMove());
     }
 
     @Override
-    protected Collection<? extends Object> findNewTabu(LocalSearchStepScope stepScope) {
+    protected Collection<? extends Object> findNewTabu(LocalSearchStepScope<Solution_> stepScope) {
         Move<?> tabuMove;
         if (useUndoMoveAsTabuMove) {
             tabuMove = stepScope.getUndoStep();

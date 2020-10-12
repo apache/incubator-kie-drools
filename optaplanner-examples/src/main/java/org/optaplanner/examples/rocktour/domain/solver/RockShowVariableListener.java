@@ -28,40 +28,40 @@ import org.optaplanner.examples.rocktour.domain.RockStandstill;
 import org.optaplanner.examples.rocktour.domain.RockTimeOfDay;
 import org.optaplanner.examples.rocktour.domain.RockTourSolution;
 
-public class RockShowVariableListener implements VariableListener<RockShow> {
+public class RockShowVariableListener implements VariableListener<RockTourSolution, RockShow> {
 
     @Override
-    public void beforeEntityAdded(ScoreDirector scoreDirector, RockShow show) {
+    public void beforeEntityAdded(ScoreDirector<RockTourSolution> scoreDirector, RockShow show) {
         // Do nothing
     }
 
     @Override
-    public void afterEntityAdded(ScoreDirector scoreDirector, RockShow show) {
+    public void afterEntityAdded(ScoreDirector<RockTourSolution> scoreDirector, RockShow show) {
         updateDate(scoreDirector, show);
     }
 
     @Override
-    public void beforeVariableChanged(ScoreDirector scoreDirector, RockShow show) {
+    public void beforeVariableChanged(ScoreDirector<RockTourSolution> scoreDirector, RockShow show) {
         // Do nothing
     }
 
     @Override
-    public void afterVariableChanged(ScoreDirector scoreDirector, RockShow show) {
+    public void afterVariableChanged(ScoreDirector<RockTourSolution> scoreDirector, RockShow show) {
         updateDate(scoreDirector, show);
     }
 
     @Override
-    public void beforeEntityRemoved(ScoreDirector scoreDirector, RockShow show) {
+    public void beforeEntityRemoved(ScoreDirector<RockTourSolution> scoreDirector, RockShow show) {
         // Do nothing
     }
 
     @Override
-    public void afterEntityRemoved(ScoreDirector scoreDirector, RockShow show) {
+    public void afterEntityRemoved(ScoreDirector<RockTourSolution> scoreDirector, RockShow show) {
         // Do nothing
     }
 
-    protected void updateDate(ScoreDirector scoreDirector, RockShow sourceShow) {
-        RockTourSolution solution = (RockTourSolution) scoreDirector.getWorkingSolution();
+    protected void updateDate(ScoreDirector<RockTourSolution> scoreDirector, RockShow sourceShow) {
+        RockTourSolution solution = scoreDirector.getWorkingSolution();
 
         RockStandstill previousStandstill = sourceShow.getPreviousStandstill();
         Arrival arrival = calculateArrival(solution, sourceShow, previousStandstill);

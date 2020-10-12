@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,9 +25,9 @@ import org.optaplanner.core.impl.heuristic.selector.common.iterator.SelectionIte
 import org.optaplanner.core.impl.heuristic.selector.entity.AbstractEntitySelector;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 
-public class MimicReplayingEntitySelector extends AbstractEntitySelector {
+public class MimicReplayingEntitySelector<Solution_> extends AbstractEntitySelector<Solution_> {
 
-    protected final EntityMimicRecorder entityMimicRecorder;
+    protected final EntityMimicRecorder<Solution_> entityMimicRecorder;
 
     protected boolean hasRecordingCreated;
     protected boolean hasRecording;
@@ -35,7 +35,7 @@ public class MimicReplayingEntitySelector extends AbstractEntitySelector {
     protected Object recording;
     protected boolean recordingAlreadyReturned;
 
-    public MimicReplayingEntitySelector(EntityMimicRecorder entityMimicRecorder) {
+    public MimicReplayingEntitySelector(EntityMimicRecorder<Solution_> entityMimicRecorder) {
         this.entityMimicRecorder = entityMimicRecorder;
         // No PhaseLifecycleSupport because the MimicRecordingEntitySelector is hooked up elsewhere too
         entityMimicRecorder.addMimicReplayingEntitySelector(this);
@@ -46,7 +46,7 @@ public class MimicReplayingEntitySelector extends AbstractEntitySelector {
     // ************************************************************************
 
     @Override
-    public void phaseStarted(AbstractPhaseScope phaseScope) {
+    public void phaseStarted(AbstractPhaseScope<Solution_> phaseScope) {
         super.phaseStarted(phaseScope);
         // Doing this in phaseStarted instead of stepStarted due to QueuedEntityPlacer compatibility
         hasRecordingCreated = false;
@@ -54,7 +54,7 @@ public class MimicReplayingEntitySelector extends AbstractEntitySelector {
     }
 
     @Override
-    public void phaseEnded(AbstractPhaseScope phaseScope) {
+    public void phaseEnded(AbstractPhaseScope<Solution_> phaseScope) {
         super.phaseEnded(phaseScope);
         // Doing this in phaseEnded instead of stepEnded due to QueuedEntityPlacer compatibility
         hasRecordingCreated = false;
@@ -64,7 +64,7 @@ public class MimicReplayingEntitySelector extends AbstractEntitySelector {
     }
 
     @Override
-    public EntityDescriptor getEntityDescriptor() {
+    public EntityDescriptor<Solution_> getEntityDescriptor() {
         return entityMimicRecorder.getEntityDescriptor();
     }
 

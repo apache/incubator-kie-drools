@@ -33,7 +33,8 @@ import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValue
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelectorFactory;
 
-public class QueuedValuePlacerFactory extends AbstractEntityPlacerFactory<QueuedValuePlacerConfig> {
+public class QueuedValuePlacerFactory<Solution_>
+        extends AbstractEntityPlacerFactory<Solution_, QueuedValuePlacerConfig> {
 
     public static QueuedValuePlacerConfig unfoldNew(MoveSelectorConfig templateMoveSelectorConfig) {
         throw new UnsupportedOperationException("The <constructionHeuristic> contains a moveSelector ("
@@ -45,20 +46,21 @@ public class QueuedValuePlacerFactory extends AbstractEntityPlacerFactory<Queued
     }
 
     @Override
-    public QueuedValuePlacer buildEntityPlacer(HeuristicConfigPolicy configPolicy) {
-        EntityDescriptor entityDescriptor =
+    public QueuedValuePlacer<Solution_> buildEntityPlacer(HeuristicConfigPolicy<Solution_> configPolicy) {
+        EntityDescriptor<Solution_> entityDescriptor =
                 config.getEntityClass() == null ? deduceEntityDescriptor(configPolicy.getSolutionDescriptor())
                         : deduceEntityDescriptor(configPolicy.getSolutionDescriptor(), config.getEntityClass());
         ValueSelectorConfig valueSelectorConfig_ = buildValueSelectorConfig(configPolicy, entityDescriptor);
-        ValueSelector valueSelector = ValueSelectorFactory.create(valueSelectorConfig_).buildValueSelector(configPolicy,
-                entityDescriptor, SelectionCacheType.PHASE, SelectionOrder.ORIGINAL, false);
+        ValueSelector<Solution_> valueSelector = ValueSelectorFactory.<Solution_> create(valueSelectorConfig_)
+                .buildValueSelector(configPolicy, entityDescriptor, SelectionCacheType.PHASE, SelectionOrder.ORIGINAL,
+                        false);
 
         MoveSelectorConfig moveSelectorConfig_ = config.getMoveSelectorConfig() == null
                 ? buildChangeMoveSelectorConfig(configPolicy, valueSelectorConfig_.getId(),
                         valueSelector.getVariableDescriptor())
                 : config.getMoveSelectorConfig();
 
-        MoveSelector moveSelector = MoveSelectorFactory.create(moveSelectorConfig_)
+        MoveSelector<Solution_> moveSelector = MoveSelectorFactory.<Solution_> create(moveSelectorConfig_)
                 .buildMoveSelector(configPolicy, SelectionCacheType.JUST_IN_TIME, SelectionOrder.ORIGINAL);
         if (!(valueSelector instanceof EntityIndependentValueSelector)) {
             throw new IllegalArgumentException("The queuedValuePlacer (" + this
@@ -66,16 +68,16 @@ public class QueuedValuePlacerFactory extends AbstractEntityPlacerFactory<Queued
                     + " Check your @" + ValueRangeProvider.class.getSimpleName() + " annotations.");
 
         }
-        return new QueuedValuePlacer((EntityIndependentValueSelector) valueSelector, moveSelector);
+        return new QueuedValuePlacer<>((EntityIndependentValueSelector<Solution_>) valueSelector, moveSelector);
     }
 
-    private ValueSelectorConfig buildValueSelectorConfig(HeuristicConfigPolicy configPolicy,
-            EntityDescriptor entityDescriptor) {
+    private ValueSelectorConfig buildValueSelectorConfig(HeuristicConfigPolicy<Solution_> configPolicy,
+            EntityDescriptor<Solution_> entityDescriptor) {
         ValueSelectorConfig valueSelectorConfig_;
         if (config.getValueSelectorConfig() == null) {
             valueSelectorConfig_ = new ValueSelectorConfig();
             Class<?> entityClass = entityDescriptor.getEntityClass();
-            GenuineVariableDescriptor variableDescriptor = deduceVariableDescriptor(entityDescriptor);
+            GenuineVariableDescriptor<Solution_> variableDescriptor = deduceVariableDescriptor(entityDescriptor);
             valueSelectorConfig_.setId(entityClass.getName() + "." + variableDescriptor.getVariableName());
             valueSelectorConfig_.setVariableName(variableDescriptor.getVariableName());
             if (ValueSelectorConfig.hasSorter(configPolicy.getValueSorterManner(), variableDescriptor)) {
@@ -97,11 +99,12 @@ public class QueuedValuePlacerFactory extends AbstractEntityPlacerFactory<Queued
     }
 
     @Override
-    protected ChangeMoveSelectorConfig buildChangeMoveSelectorConfig(HeuristicConfigPolicy configPolicy,
-            String valueSelectorConfigId, GenuineVariableDescriptor variableDescriptor) {
+    protected ChangeMoveSelectorConfig buildChangeMoveSelectorConfig(
+            HeuristicConfigPolicy<Solution_> configPolicy, String valueSelectorConfigId,
+            GenuineVariableDescriptor<Solution_> variableDescriptor) {
         ChangeMoveSelectorConfig changeMoveSelectorConfig = new ChangeMoveSelectorConfig();
         EntitySelectorConfig changeEntitySelectorConfig = new EntitySelectorConfig();
-        EntityDescriptor entityDescriptor = variableDescriptor.getEntityDescriptor();
+        EntityDescriptor<Solution_> entityDescriptor = variableDescriptor.getEntityDescriptor();
         changeEntitySelectorConfig.setEntityClass(entityDescriptor.getEntityClass());
         if (EntitySelectorConfig.hasSorter(configPolicy.getEntitySorterManner(), entityDescriptor)) {
             changeEntitySelectorConfig.setCacheType(SelectionCacheType.PHASE);

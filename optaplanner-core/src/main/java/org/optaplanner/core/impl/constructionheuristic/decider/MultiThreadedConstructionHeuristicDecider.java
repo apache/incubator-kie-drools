@@ -65,9 +65,9 @@ public class MultiThreadedConstructionHeuristicDecider<Solution_> extends Constr
     protected ExecutorService executor;
     protected List<MoveThreadRunner<Solution_, ?>> moveThreadRunnerList;
 
-    public MultiThreadedConstructionHeuristicDecider(String logIndentation, Termination termination,
-            ConstructionHeuristicForager forager,
-            ThreadFactory threadFactory, int moveThreadCount, int selectedMoveBufferSize) {
+    public MultiThreadedConstructionHeuristicDecider(String logIndentation, Termination<Solution_> termination,
+            ConstructionHeuristicForager<Solution_> forager, ThreadFactory threadFactory, int moveThreadCount,
+            int selectedMoveBufferSize) {
         super(logIndentation, termination, forager);
         this.threadFactory = threadFactory;
         this.moveThreadCount = moveThreadCount;

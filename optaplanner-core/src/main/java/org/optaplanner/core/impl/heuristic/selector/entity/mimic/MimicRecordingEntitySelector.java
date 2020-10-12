@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,20 +27,21 @@ import org.optaplanner.core.impl.heuristic.selector.common.iterator.SelectionLis
 import org.optaplanner.core.impl.heuristic.selector.entity.AbstractEntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 
-public class MimicRecordingEntitySelector extends AbstractEntitySelector implements EntityMimicRecorder {
+public class MimicRecordingEntitySelector<Solution_> extends AbstractEntitySelector<Solution_>
+        implements EntityMimicRecorder<Solution_> {
 
-    protected final EntitySelector childEntitySelector;
+    protected final EntitySelector<Solution_> childEntitySelector;
 
-    protected final List<MimicReplayingEntitySelector> replayingEntitySelectorList;
+    protected final List<MimicReplayingEntitySelector<Solution_>> replayingEntitySelectorList;
 
-    public MimicRecordingEntitySelector(EntitySelector childEntitySelector) {
+    public MimicRecordingEntitySelector(EntitySelector<Solution_> childEntitySelector) {
         this.childEntitySelector = childEntitySelector;
         phaseLifecycleSupport.addEventListener(childEntitySelector);
         replayingEntitySelectorList = new ArrayList<>();
     }
 
     @Override
-    public void addMimicReplayingEntitySelector(MimicReplayingEntitySelector replayingEntitySelector) {
+    public void addMimicReplayingEntitySelector(MimicReplayingEntitySelector<Solution_> replayingEntitySelector) {
         replayingEntitySelectorList.add(replayingEntitySelector);
     }
 
@@ -49,7 +50,7 @@ public class MimicRecordingEntitySelector extends AbstractEntitySelector impleme
     // ************************************************************************
 
     @Override
-    public EntityDescriptor getEntityDescriptor() {
+    public EntityDescriptor<Solution_> getEntityDescriptor() {
         return childEntitySelector.getEntityDescriptor();
     }
 
@@ -84,7 +85,7 @@ public class MimicRecordingEntitySelector extends AbstractEntitySelector impleme
         @Override
         public boolean hasNext() {
             boolean hasNext = childEntityIterator.hasNext();
-            for (MimicReplayingEntitySelector replayingEntitySelector : replayingEntitySelectorList) {
+            for (MimicReplayingEntitySelector<Solution_> replayingEntitySelector : replayingEntitySelectorList) {
                 replayingEntitySelector.recordedHasNext(hasNext);
             }
             return hasNext;
@@ -93,7 +94,7 @@ public class MimicRecordingEntitySelector extends AbstractEntitySelector impleme
         @Override
         public Object next() {
             Object next = childEntityIterator.next();
-            for (MimicReplayingEntitySelector replayingEntitySelector : replayingEntitySelectorList) {
+            for (MimicReplayingEntitySelector<Solution_> replayingEntitySelector : replayingEntitySelectorList) {
                 replayingEntitySelector.recordedNext(next);
             }
             return next;
@@ -128,7 +129,7 @@ public class MimicRecordingEntitySelector extends AbstractEntitySelector impleme
         @Override
         public boolean hasNext() {
             boolean hasNext = childEntityIterator.hasNext();
-            for (MimicReplayingEntitySelector replayingEntitySelector : replayingEntitySelectorList) {
+            for (MimicReplayingEntitySelector<Solution_> replayingEntitySelector : replayingEntitySelectorList) {
                 replayingEntitySelector.recordedHasNext(hasNext);
             }
             return hasNext;
@@ -137,7 +138,7 @@ public class MimicRecordingEntitySelector extends AbstractEntitySelector impleme
         @Override
         public Object next() {
             Object next = childEntityIterator.next();
-            for (MimicReplayingEntitySelector replayingEntitySelector : replayingEntitySelectorList) {
+            for (MimicReplayingEntitySelector<Solution_> replayingEntitySelector : replayingEntitySelectorList) {
                 replayingEntitySelector.recordedNext(next);
             }
             return next;
@@ -146,7 +147,7 @@ public class MimicRecordingEntitySelector extends AbstractEntitySelector impleme
         @Override
         public boolean hasPrevious() {
             boolean hasPrevious = childEntityIterator.hasPrevious();
-            for (MimicReplayingEntitySelector replayingEntitySelector : replayingEntitySelectorList) {
+            for (MimicReplayingEntitySelector<Solution_> replayingEntitySelector : replayingEntitySelectorList) {
                 // The replay only cares that the recording changed, not in which direction
                 replayingEntitySelector.recordedHasNext(hasPrevious);
             }
@@ -156,7 +157,7 @@ public class MimicRecordingEntitySelector extends AbstractEntitySelector impleme
         @Override
         public Object previous() {
             Object previous = childEntityIterator.previous();
-            for (MimicReplayingEntitySelector replayingEntitySelector : replayingEntitySelectorList) {
+            for (MimicReplayingEntitySelector<Solution_> replayingEntitySelector : replayingEntitySelectorList) {
                 // The replay only cares that the recording changed, not in which direction
                 replayingEntitySelector.recordedNext(previous);
             }

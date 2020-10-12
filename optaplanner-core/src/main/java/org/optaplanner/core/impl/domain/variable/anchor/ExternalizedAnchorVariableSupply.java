@@ -29,27 +29,28 @@ import org.optaplanner.core.impl.domain.variable.listener.StatefulVariableListen
 /**
  * Alternative to {@link AnchorVariableListener}.
  */
-public class ExternalizedAnchorVariableSupply implements StatefulVariableListener<Object>, AnchorVariableSupply {
+public class ExternalizedAnchorVariableSupply<Solution_> implements StatefulVariableListener<Solution_, Object>,
+        AnchorVariableSupply {
 
-    protected final VariableDescriptor previousVariableDescriptor;
+    protected final VariableDescriptor<Solution_> previousVariableDescriptor;
     protected final SingletonInverseVariableSupply nextVariableSupply;
 
     protected Map<Object, Object> anchorMap = null;
 
-    public ExternalizedAnchorVariableSupply(VariableDescriptor previousVariableDescriptor,
+    public ExternalizedAnchorVariableSupply(VariableDescriptor<Solution_> previousVariableDescriptor,
             SingletonInverseVariableSupply nextVariableSupply) {
         this.previousVariableDescriptor = previousVariableDescriptor;
         this.nextVariableSupply = nextVariableSupply;
     }
 
     @Override
-    public VariableDescriptor getSourceVariableDescriptor() {
+    public VariableDescriptor<Solution_> getSourceVariableDescriptor() {
         return previousVariableDescriptor;
     }
 
     @Override
-    public void resetWorkingSolution(ScoreDirector scoreDirector) {
-        EntityDescriptor entityDescriptor = previousVariableDescriptor.getEntityDescriptor();
+    public void resetWorkingSolution(ScoreDirector<Solution_> scoreDirector) {
+        EntityDescriptor<Solution_> entityDescriptor = previousVariableDescriptor.getEntityDescriptor();
         List<Object> entityList = entityDescriptor.extractEntities(scoreDirector.getWorkingSolution());
         anchorMap = new IdentityHashMap<>(entityList.size());
         for (Object entity : entityList) {
@@ -58,32 +59,32 @@ public class ExternalizedAnchorVariableSupply implements StatefulVariableListene
     }
 
     @Override
-    public void clearWorkingSolution(ScoreDirector scoreDirector) {
+    public void clearWorkingSolution(ScoreDirector<Solution_> scoreDirector) {
         anchorMap = null;
     }
 
     @Override
-    public void beforeEntityAdded(ScoreDirector scoreDirector, Object entity) {
+    public void beforeEntityAdded(ScoreDirector<Solution_> scoreDirector, Object entity) {
         // Do nothing
     }
 
     @Override
-    public void afterEntityAdded(ScoreDirector scoreDirector, Object entity) {
+    public void afterEntityAdded(ScoreDirector<Solution_> scoreDirector, Object entity) {
         insert(scoreDirector, entity);
     }
 
     @Override
-    public void beforeVariableChanged(ScoreDirector scoreDirector, Object entity) {
+    public void beforeVariableChanged(ScoreDirector<Solution_> scoreDirector, Object entity) {
         // No need to retract() because the insert (which is guaranteed to be called later) affects the same trailing entities.
     }
 
     @Override
-    public void afterVariableChanged(ScoreDirector scoreDirector, Object entity) {
+    public void afterVariableChanged(ScoreDirector<Solution_> scoreDirector, Object entity) {
         insert(scoreDirector, entity);
     }
 
     @Override
-    public void beforeEntityRemoved(ScoreDirector scoreDirector, Object entity) {
+    public void beforeEntityRemoved(ScoreDirector<Solution_> scoreDirector, Object entity) {
         boolean removeSucceeded = anchorMap.remove(entity) != null;
         if (!removeSucceeded) {
             throw new IllegalStateException("The supply (" + this + ") is corrupted,"
@@ -95,11 +96,11 @@ public class ExternalizedAnchorVariableSupply implements StatefulVariableListene
     }
 
     @Override
-    public void afterEntityRemoved(ScoreDirector scoreDirector, Object entity) {
+    public void afterEntityRemoved(ScoreDirector<Solution_> scoreDirector, Object entity) {
         // Do nothing
     }
 
-    protected void insert(ScoreDirector scoreDirector, Object entity) {
+    protected void insert(ScoreDirector<Solution_> scoreDirector, Object entity) {
         Object previousEntity = previousVariableDescriptor.getValue(entity);
         Object anchor;
         if (previousEntity == null) {

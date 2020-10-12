@@ -72,9 +72,9 @@ public abstract class ShadowVariableDescriptor<Solution_> extends VariableDescri
     /**
      * @return never null
      */
-    public abstract Demand getProvidedDemand();
+    public abstract Demand<Solution_, ?> getProvidedDemand();
 
-    public boolean hasVariableListener(InnerScoreDirector scoreDirector) {
+    public boolean hasVariableListener(InnerScoreDirector<Solution_, ?> scoreDirector) {
         return true;
     }
 
@@ -82,7 +82,7 @@ public abstract class ShadowVariableDescriptor<Solution_> extends VariableDescri
      * @param scoreDirector never null
      * @return never null
      */
-    public abstract VariableListener<Solution_> buildVariableListener(InnerScoreDirector<Solution_, ?> scoreDirector);
+    public abstract VariableListener<Solution_, ?> buildVariableListener(InnerScoreDirector<Solution_, ?> scoreDirector);
 
     // ************************************************************************
     // Extraction methods

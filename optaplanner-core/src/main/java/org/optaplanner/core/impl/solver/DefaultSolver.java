@@ -46,7 +46,7 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
     protected EnvironmentMode environmentMode;
     protected RandomFactory randomFactory;
 
-    protected BasicPlumbingTermination basicPlumbingTermination;
+    protected BasicPlumbingTermination<Solution_> basicPlumbingTermination;
 
     protected final AtomicBoolean solving = new AtomicBoolean(false);
 
@@ -57,10 +57,9 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
     // ************************************************************************
 
     public DefaultSolver(EnvironmentMode environmentMode, RandomFactory randomFactory,
-            BestSolutionRecaller<Solution_> bestSolutionRecaller, BasicPlumbingTermination basicPlumbingTermination,
-            Termination termination,
-            List<Phase<Solution_>> phaseList,
-            SolverScope<Solution_> solverScope) {
+            BestSolutionRecaller<Solution_> bestSolutionRecaller,
+            BasicPlumbingTermination<Solution_> basicPlumbingTermination, Termination<Solution_> termination,
+            List<Phase<Solution_>> phaseList, SolverScope<Solution_> solverScope) {
         super(bestSolutionRecaller, termination, phaseList);
         this.environmentMode = environmentMode;
         this.randomFactory = randomFactory;
@@ -212,7 +211,7 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
         if (!restartSolver) {
             return false;
         } else {
-            BlockingQueue<ProblemFactChange> problemFactChangeQueue = basicPlumbingTermination
+            BlockingQueue<ProblemFactChange<Solution_>> problemFactChangeQueue = basicPlumbingTermination
                     .startProblemFactChangesProcessing();
             solverScope.setWorkingSolutionFromBestSolution();
             Score score = null;

@@ -32,24 +32,24 @@ import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.chained.ChainedSwapMove;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 
-public class SwapMoveSelector extends GenericMoveSelector {
+public class SwapMoveSelector<Solution_> extends GenericMoveSelector<Solution_> {
 
-    protected final EntitySelector leftEntitySelector;
-    protected final EntitySelector rightEntitySelector;
-    protected final List<GenuineVariableDescriptor> variableDescriptorList;
+    protected final EntitySelector<Solution_> leftEntitySelector;
+    protected final EntitySelector<Solution_> rightEntitySelector;
+    protected final List<GenuineVariableDescriptor<Solution_>> variableDescriptorList;
     protected final boolean randomSelection;
 
     protected final boolean anyChained;
     protected List<SingletonInverseVariableSupply> inverseVariableSupplyList = null;
 
-    public SwapMoveSelector(EntitySelector leftEntitySelector, EntitySelector rightEntitySelector,
-            List<GenuineVariableDescriptor> variableDescriptorList, boolean randomSelection) {
+    public SwapMoveSelector(EntitySelector<Solution_> leftEntitySelector, EntitySelector<Solution_> rightEntitySelector,
+            List<GenuineVariableDescriptor<Solution_>> variableDescriptorList, boolean randomSelection) {
         this.leftEntitySelector = leftEntitySelector;
         this.rightEntitySelector = rightEntitySelector;
         this.variableDescriptorList = variableDescriptorList;
         this.randomSelection = randomSelection;
-        EntityDescriptor leftEntityDescriptor = leftEntitySelector.getEntityDescriptor();
-        EntityDescriptor rightEntityDescriptor = rightEntitySelector.getEntityDescriptor();
+        EntityDescriptor<Solution_> leftEntityDescriptor = leftEntitySelector.getEntityDescriptor();
+        EntityDescriptor<Solution_> rightEntityDescriptor = rightEntitySelector.getEntityDescriptor();
         if (!leftEntityDescriptor.getEntityClass().equals(rightEntityDescriptor.getEntityClass())) {
             throw new IllegalStateException("The selector (" + this
                     + ") has a leftEntitySelector's entityClass (" + leftEntityDescriptor.getEntityClass()
@@ -61,7 +61,7 @@ public class SwapMoveSelector extends GenericMoveSelector {
             throw new IllegalStateException("The selector (" + this
                     + ")'s variableDescriptors (" + variableDescriptorList + ") is empty.");
         }
-        for (GenuineVariableDescriptor variableDescriptor : variableDescriptorList) {
+        for (GenuineVariableDescriptor<Solution_> variableDescriptor : variableDescriptorList) {
             if (!variableDescriptor.getEntityDescriptor().getEntityClass().isAssignableFrom(
                     leftEntityDescriptor.getEntityClass())) {
                 throw new IllegalStateException("The selector (" + this
@@ -87,16 +87,15 @@ public class SwapMoveSelector extends GenericMoveSelector {
     }
 
     @Override
-    public void solvingStarted(SolverScope solverScope) {
+    public void solvingStarted(SolverScope<Solution_> solverScope) {
         super.solvingStarted(solverScope);
         if (anyChained) {
             inverseVariableSupplyList = new ArrayList<>(variableDescriptorList.size());
-            SupplyManager supplyManager = solverScope.getScoreDirector().getSupplyManager();
-            for (GenuineVariableDescriptor variableDescriptor : variableDescriptorList) {
+            SupplyManager<Solution_> supplyManager = solverScope.getScoreDirector().getSupplyManager();
+            for (GenuineVariableDescriptor<Solution_> variableDescriptor : variableDescriptorList) {
                 SingletonInverseVariableSupply inverseVariableSupply;
                 if (variableDescriptor.isChained()) {
-                    inverseVariableSupply = supplyManager.demand(
-                            new SingletonInverseVariableDemand(variableDescriptor));
+                    inverseVariableSupply = supplyManager.demand(new SingletonInverseVariableDemand<>(variableDescriptor));
                 } else {
                     inverseVariableSupply = null;
                 }
@@ -106,7 +105,7 @@ public class SwapMoveSelector extends GenericMoveSelector {
     }
 
     @Override
-    public void solvingEnded(SolverScope solverScope) {
+    public void solvingEnded(SolverScope<Solution_> solverScope) {
         super.solvingEnded(solverScope);
         if (anyChained) {
             inverseVariableSupplyList = null;
@@ -133,25 +132,27 @@ public class SwapMoveSelector extends GenericMoveSelector {
     }
 
     @Override
-    public Iterator<Move> iterator() {
+    public Iterator<Move<Solution_>> iterator() {
         if (!randomSelection) {
-            return new AbstractOriginalSwapIterator<Move, Object>(leftEntitySelector, rightEntitySelector) {
+            return new AbstractOriginalSwapIterator<Solution_, Move<Solution_>, Object>(leftEntitySelector,
+                    rightEntitySelector) {
                 @Override
-                protected Move newSwapSelection(Object leftSubSelection, Object rightSubSelection) {
+                protected Move<Solution_> newSwapSelection(Object leftSubSelection, Object rightSubSelection) {
                     return anyChained
-                            ? new ChainedSwapMove(variableDescriptorList, inverseVariableSupplyList, leftSubSelection,
+                            ? new ChainedSwapMove<>(variableDescriptorList, inverseVariableSupplyList, leftSubSelection,
                                     rightSubSelection)
-                            : new SwapMove(variableDescriptorList, leftSubSelection, rightSubSelection);
+                            : new SwapMove<>(variableDescriptorList, leftSubSelection, rightSubSelection);
                 }
             };
         } else {
-            return new AbstractRandomSwapIterator<Move, Object>(leftEntitySelector, rightEntitySelector) {
+            return new AbstractRandomSwapIterator<Solution_, Move<Solution_>, Object>(leftEntitySelector,
+                    rightEntitySelector) {
                 @Override
-                protected Move newSwapSelection(Object leftSubSelection, Object rightSubSelection) {
+                protected Move<Solution_> newSwapSelection(Object leftSubSelection, Object rightSubSelection) {
                     return anyChained
-                            ? new ChainedSwapMove(variableDescriptorList, inverseVariableSupplyList, leftSubSelection,
+                            ? new ChainedSwapMove<>(variableDescriptorList, inverseVariableSupplyList, leftSubSelection,
                                     rightSubSelection)
-                            : new SwapMove(variableDescriptorList, leftSubSelection, rightSubSelection);
+                            : new SwapMove<>(variableDescriptorList, leftSubSelection, rightSubSelection);
                 }
             };
         }

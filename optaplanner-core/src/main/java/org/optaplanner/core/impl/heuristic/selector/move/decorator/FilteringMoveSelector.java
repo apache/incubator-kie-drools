@@ -26,15 +26,16 @@ import org.optaplanner.core.impl.heuristic.selector.move.AbstractMoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 
-public class FilteringMoveSelector extends AbstractMoveSelector {
+public class FilteringMoveSelector<Solution_> extends AbstractMoveSelector<Solution_> {
 
-    protected final MoveSelector childMoveSelector;
-    protected final SelectionFilter filter;
+    protected final MoveSelector<Solution_> childMoveSelector;
+    protected final SelectionFilter<Solution_, Move<Solution_>> filter;
     protected final boolean bailOutEnabled;
 
-    protected ScoreDirector scoreDirector = null;
+    protected ScoreDirector<Solution_> scoreDirector = null;
 
-    public FilteringMoveSelector(MoveSelector childMoveSelector, SelectionFilter filter) {
+    public FilteringMoveSelector(MoveSelector<Solution_> childMoveSelector,
+            SelectionFilter<Solution_, Move<Solution_>> filter) {
         this.childMoveSelector = childMoveSelector;
         this.filter = filter;
         bailOutEnabled = childMoveSelector.isNeverEnding();
@@ -46,13 +47,13 @@ public class FilteringMoveSelector extends AbstractMoveSelector {
     // ************************************************************************
 
     @Override
-    public void phaseStarted(AbstractPhaseScope phaseScope) {
+    public void phaseStarted(AbstractPhaseScope<Solution_> phaseScope) {
         super.phaseStarted(phaseScope);
         scoreDirector = phaseScope.getScoreDirector();
     }
 
     @Override
-    public void phaseEnded(AbstractPhaseScope phaseScope) {
+    public void phaseEnded(AbstractPhaseScope<Solution_> phaseScope) {
         super.phaseEnded(phaseScope);
         scoreDirector = null;
     }
@@ -73,23 +74,23 @@ public class FilteringMoveSelector extends AbstractMoveSelector {
     }
 
     @Override
-    public Iterator<Move> iterator() {
+    public Iterator<Move<Solution_>> iterator() {
         return new JustInTimeFilteringMoveIterator(childMoveSelector.iterator(), determineBailOutSize());
     }
 
-    private class JustInTimeFilteringMoveIterator extends UpcomingSelectionIterator<Move> {
+    private class JustInTimeFilteringMoveIterator extends UpcomingSelectionIterator<Move<Solution_>> {
 
-        private final Iterator<Move> childMoveIterator;
+        private final Iterator<Move<Solution_>> childMoveIterator;
         private final long bailOutSize;
 
-        public JustInTimeFilteringMoveIterator(Iterator<Move> childMoveIterator, long bailOutSize) {
+        public JustInTimeFilteringMoveIterator(Iterator<Move<Solution_>> childMoveIterator, long bailOutSize) {
             this.childMoveIterator = childMoveIterator;
             this.bailOutSize = bailOutSize;
         }
 
         @Override
-        protected Move createUpcomingSelection() {
-            Move next;
+        protected Move<Solution_> createUpcomingSelection() {
+            Move<Solution_> next;
             long attemptsBeforeBailOut = bailOutSize;
             do {
                 if (!childMoveIterator.hasNext()) {
@@ -118,7 +119,7 @@ public class FilteringMoveSelector extends AbstractMoveSelector {
         return childMoveSelector.getSize() * 10L;
     }
 
-    protected boolean accept(ScoreDirector scoreDirector, Move move) {
+    protected boolean accept(ScoreDirector<Solution_> scoreDirector, Move<Solution_> move) {
         if (filter != null) {
             if (!filter.accept(scoreDirector, move)) {
                 return false;

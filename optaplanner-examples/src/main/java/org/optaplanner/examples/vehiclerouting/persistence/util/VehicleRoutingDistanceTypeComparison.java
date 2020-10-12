@@ -68,13 +68,13 @@ public class VehicleRoutingDistanceTypeComparison extends LoggingMain {
         for (File varFile : files) {
             logger.info("  Results for {}:", varFile.getName());
             // Intentionally create a new instance instead of reusing the older one.
-            VehicleRoutingSolution variablesSolution = (VehicleRoutingSolution) solutionFileIO.read(varFile);
+            VehicleRoutingSolution variablesSolution = solutionFileIO.read(varFile);
             for (File inputFile : files) {
                 HardSoftLongScore score;
                 if (inputFile == varFile) {
                     score = variablesSolution.getScore();
                 } else {
-                    VehicleRoutingSolution inputSolution = (VehicleRoutingSolution) solutionFileIO.read(inputFile);
+                    VehicleRoutingSolution inputSolution = solutionFileIO.read(inputFile);
                     applyVariables(inputSolution, variablesSolution);
                     score = inputSolution.getScore();
                 }

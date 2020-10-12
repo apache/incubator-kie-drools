@@ -32,20 +32,22 @@ import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.solver.random.RandomUtils;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 
-public class ProbabilityMoveSelector extends AbstractMoveSelector implements SelectionCacheLifecycleListener {
+public class ProbabilityMoveSelector<Solution_> extends AbstractMoveSelector<Solution_>
+        implements SelectionCacheLifecycleListener<Solution_> {
 
-    protected final MoveSelector childMoveSelector;
+    protected final MoveSelector<Solution_> childMoveSelector;
     protected final SelectionCacheType cacheType;
-    protected final SelectionProbabilityWeightFactory probabilityWeightFactory;
+    protected final SelectionProbabilityWeightFactory<Solution_, Move<Solution_>> probabilityWeightFactory;
 
-    protected NavigableMap<Double, Move> cachedMoveMap = null;
+    protected NavigableMap<Double, Move<Solution_>> cachedMoveMap = null;
     protected double probabilityWeightTotal = -1.0;
 
-    public ProbabilityMoveSelector(MoveSelector childMoveSelector, SelectionCacheType cacheType,
-            SelectionProbabilityWeightFactory probabilityWeightFactory) {
+    public ProbabilityMoveSelector(MoveSelector<Solution_> childMoveSelector, SelectionCacheType cacheType,
+            SelectionProbabilityWeightFactory<Solution_, ? extends Move<Solution_>> probabilityWeightFactory) {
         this.childMoveSelector = childMoveSelector;
         this.cacheType = cacheType;
-        this.probabilityWeightFactory = probabilityWeightFactory;
+        this.probabilityWeightFactory =
+                (SelectionProbabilityWeightFactory<Solution_, Move<Solution_>>) probabilityWeightFactory;
         if (childMoveSelector.isNeverEnding()) {
             throw new IllegalStateException("The selector (" + this
                     + ") has a childMoveSelector (" + childMoveSelector
@@ -69,13 +71,12 @@ public class ProbabilityMoveSelector extends AbstractMoveSelector implements Sel
     // ************************************************************************
 
     @Override
-    public void constructCache(SolverScope solverScope) {
+    public void constructCache(SolverScope<Solution_> solverScope) {
         cachedMoveMap = new TreeMap<>();
-        ScoreDirector scoreDirector = solverScope.getScoreDirector();
+        ScoreDirector<Solution_> scoreDirector = solverScope.getScoreDirector();
         double probabilityWeightOffset = 0L;
-        for (Move entity : childMoveSelector) {
-            double probabilityWeight = probabilityWeightFactory.createProbabilityWeight(
-                    scoreDirector, entity);
+        for (Move<Solution_> entity : childMoveSelector) {
+            double probabilityWeight = probabilityWeightFactory.createProbabilityWeight(scoreDirector, entity);
             cachedMoveMap.put(probabilityWeightOffset, entity);
             probabilityWeightOffset += probabilityWeight;
         }
@@ -83,7 +84,7 @@ public class ProbabilityMoveSelector extends AbstractMoveSelector implements Sel
     }
 
     @Override
-    public void disposeCache(SolverScope solverScope) {
+    public void disposeCache(SolverScope<Solution_> solverScope) {
         probabilityWeightTotal = -1.0;
     }
 
@@ -103,17 +104,17 @@ public class ProbabilityMoveSelector extends AbstractMoveSelector implements Sel
     }
 
     @Override
-    public Iterator<Move> iterator() {
-        return new Iterator<Move>() {
+    public Iterator<Move<Solution_>> iterator() {
+        return new Iterator<Move<Solution_>>() {
             @Override
             public boolean hasNext() {
                 return true;
             }
 
             @Override
-            public Move next() {
+            public Move<Solution_> next() {
                 double randomOffset = RandomUtils.nextDouble(workingRandom, probabilityWeightTotal);
-                Map.Entry<Double, Move> entry = cachedMoveMap.floorEntry(randomOffset);
+                Map.Entry<Double, Move<Solution_>> entry = cachedMoveMap.floorEntry(randomOffset);
                 // entry is never null because randomOffset < probabilityWeightTotal
                 return entry.getValue();
             }

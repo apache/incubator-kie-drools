@@ -24,6 +24,7 @@ import org.optaplanner.core.config.heuristic.selector.common.decorator.Selection
 import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
+import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.AbstractSelectorFactory;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.ComparatorSelectionSorter;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
@@ -38,8 +39,8 @@ import org.optaplanner.core.impl.heuristic.selector.move.decorator.SelectedCount
 import org.optaplanner.core.impl.heuristic.selector.move.decorator.ShufflingMoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.decorator.SortingMoveSelector;
 
-public abstract class AbstractMoveSelectorFactory<MoveSelectorConfig_ extends MoveSelectorConfig<MoveSelectorConfig_>> extends
-        AbstractSelectorFactory<MoveSelectorConfig_> implements MoveSelectorFactory {
+public abstract class AbstractMoveSelectorFactory<Solution_, MoveSelectorConfig_ extends MoveSelectorConfig<MoveSelectorConfig_>>
+        extends AbstractSelectorFactory<Solution_, MoveSelectorConfig_> implements MoveSelectorFactory<Solution_> {
 
     public AbstractMoveSelectorFactory(MoveSelectorConfig_ moveSelectorConfig) {
         super(moveSelectorConfig);
@@ -56,19 +57,19 @@ public abstract class AbstractMoveSelectorFactory<MoveSelectorConfig_ extends Mo
      *        false is equivalent to {@link SelectionOrder#ORIGINAL}
      * @return never null
      */
-    protected abstract MoveSelector buildBaseMoveSelector(HeuristicConfigPolicy configPolicy,
+    protected abstract MoveSelector<Solution_> buildBaseMoveSelector(HeuristicConfigPolicy<Solution_> configPolicy,
             SelectionCacheType minimumCacheType, boolean randomSelection);
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public MoveSelector buildMoveSelector(HeuristicConfigPolicy configPolicy, SelectionCacheType minimumCacheType,
-            SelectionOrder inheritedSelectionOrder) {
-        MoveSelectorConfig unfoldedMoveSelectorConfig = buildUnfoldedMoveSelectorConfig(configPolicy);
+    public MoveSelector<Solution_> buildMoveSelector(HeuristicConfigPolicy<Solution_> configPolicy,
+            SelectionCacheType minimumCacheType, SelectionOrder inheritedSelectionOrder) {
+        MoveSelectorConfig<?> unfoldedMoveSelectorConfig = buildUnfoldedMoveSelectorConfig(configPolicy);
         if (unfoldedMoveSelectorConfig != null) {
-            return MoveSelectorFactory.create(unfoldedMoveSelectorConfig).buildMoveSelector(configPolicy,
-                    minimumCacheType, inheritedSelectionOrder);
+            return MoveSelectorFactory.<Solution_> create(unfoldedMoveSelectorConfig)
+                    .buildMoveSelector(configPolicy, minimumCacheType, inheritedSelectionOrder);
         }
 
         SelectionCacheType resolvedCacheType = SelectionCacheType.resolve(config.getCacheType(), minimumCacheType);
@@ -82,7 +83,7 @@ public abstract class AbstractMoveSelectorFactory<MoveSelectorConfig_ extends Mo
 
         boolean randomMoveSelection = determineBaseRandomSelection(resolvedCacheType, resolvedSelectionOrder);
         SelectionCacheType selectionCacheType = SelectionCacheType.max(minimumCacheType, resolvedCacheType);
-        MoveSelector moveSelector = buildBaseMoveSelector(configPolicy, selectionCacheType, randomMoveSelection);
+        MoveSelector<Solution_> moveSelector = buildBaseMoveSelector(configPolicy, selectionCacheType, randomMoveSelection);
         validateResolvedCacheType(resolvedCacheType, moveSelector);
 
         moveSelector = applyFiltering(moveSelector);
@@ -100,11 +101,12 @@ public abstract class AbstractMoveSelectorFactory<MoveSelectorConfig_ extends Mo
      * @param configPolicy never null
      * @return null if no unfolding is needed
      */
-    protected MoveSelectorConfig buildUnfoldedMoveSelectorConfig(HeuristicConfigPolicy configPolicy) {
+    protected MoveSelectorConfig<?> buildUnfoldedMoveSelectorConfig(
+            HeuristicConfigPolicy<Solution_> configPolicy) {
         return null;
     }
 
-    private void validateResolvedCacheType(SelectionCacheType resolvedCacheType, MoveSelector moveSelector) {
+    private void validateResolvedCacheType(SelectionCacheType resolvedCacheType, MoveSelector<Solution_> moveSelector) {
         if (!moveSelector.supportsPhaseAndSolverCaching() && resolvedCacheType.compareTo(SelectionCacheType.PHASE) >= 0) {
             throw new IllegalArgumentException("The moveSelectorConfig (" + config
                     + ") has a resolvedCacheType (" + resolvedCacheType + ") that is not supported.\n"
@@ -139,10 +141,11 @@ public abstract class AbstractMoveSelectorFactory<MoveSelectorConfig_ extends Mo
         return config.getFilterClass() != null;
     }
 
-    private MoveSelector applyFiltering(MoveSelector moveSelector) {
+    private MoveSelector<Solution_> applyFiltering(MoveSelector<Solution_> moveSelector) {
         if (hasFiltering()) {
-            SelectionFilter selectionFilter = ConfigUtils.newInstance(config, "filterClass", config.getFilterClass());
-            moveSelector = new FilteringMoveSelector(moveSelector, selectionFilter);
+            SelectionFilter<Solution_, Move<Solution_>> selectionFilter =
+                    ConfigUtils.newInstance(config, "filterClass", config.getFilterClass());
+            moveSelector = new FilteringMoveSelector<>(moveSelector, selectionFilter);
         }
         return moveSelector;
     }
@@ -181,18 +184,20 @@ public abstract class AbstractMoveSelectorFactory<MoveSelectorConfig_ extends Mo
         }
     }
 
-    protected MoveSelector applySorting(SelectionCacheType resolvedCacheType, SelectionOrder resolvedSelectionOrder,
-            MoveSelector moveSelector) {
+    protected MoveSelector<Solution_> applySorting(SelectionCacheType resolvedCacheType,
+            SelectionOrder resolvedSelectionOrder, MoveSelector<Solution_> moveSelector) {
         if (resolvedSelectionOrder == SelectionOrder.SORTED) {
-            SelectionSorter sorter;
+            SelectionSorter<Solution_, Move<Solution_>> sorter;
             if (config.getSorterComparatorClass() != null) {
-                Comparator<Object> sorterComparator = ConfigUtils.newInstance(config,
+                Comparator<Move<Solution_>> sorterComparator = ConfigUtils.newInstance(config,
                         "sorterComparatorClass", config.getSorterComparatorClass());
-                sorter = new ComparatorSelectionSorter(sorterComparator, SelectionSorterOrder.resolve(config.getSorterOrder()));
+                sorter = new ComparatorSelectionSorter<>(sorterComparator,
+                        SelectionSorterOrder.resolve(config.getSorterOrder()));
             } else if (config.getSorterWeightFactoryClass() != null) {
-                SelectionSorterWeightFactory sorterWeightFactory = ConfigUtils.newInstance(config,
-                        "sorterWeightFactoryClass", config.getSorterWeightFactoryClass());
-                sorter = new WeightFactorySelectionSorter(sorterWeightFactory,
+                SelectionSorterWeightFactory<Solution_, Move<Solution_>> sorterWeightFactory =
+                        ConfigUtils.newInstance(config, "sorterWeightFactoryClass",
+                                config.getSorterWeightFactoryClass());
+                sorter = new WeightFactorySelectionSorter<>(sorterWeightFactory,
                         SelectionSorterOrder.resolve(config.getSorterOrder()));
             } else if (config.getSorterClass() != null) {
                 sorter = ConfigUtils.newInstance(config, "sorterClass", config.getSorterClass());
@@ -203,7 +208,7 @@ public abstract class AbstractMoveSelectorFactory<MoveSelectorConfig_ extends Mo
                         + ") or a sorterWeightFactoryClass (" + config.getSorterWeightFactoryClass()
                         + ") or a sorterClass (" + config.getSorterClass() + ").");
             }
-            moveSelector = new SortingMoveSelector(moveSelector, resolvedCacheType, sorter);
+            moveSelector = new SortingMoveSelector<>(moveSelector, resolvedCacheType, sorter);
         }
         return moveSelector;
     }
@@ -217,8 +222,8 @@ public abstract class AbstractMoveSelectorFactory<MoveSelectorConfig_ extends Mo
         }
     }
 
-    private MoveSelector applyProbability(SelectionCacheType resolvedCacheType, SelectionOrder resolvedSelectionOrder,
-            MoveSelector moveSelector) {
+    private MoveSelector<Solution_> applyProbability(SelectionCacheType resolvedCacheType,
+            SelectionOrder resolvedSelectionOrder, MoveSelector<Solution_> moveSelector) {
         if (resolvedSelectionOrder == SelectionOrder.PROBABILISTIC) {
             if (config.getProbabilityWeightFactoryClass() == null) {
                 throw new IllegalArgumentException("The moveSelectorConfig (" + config
@@ -226,26 +231,28 @@ public abstract class AbstractMoveSelectorFactory<MoveSelectorConfig_ extends Mo
                         + ") needs a probabilityWeightFactoryClass ("
                         + config.getProbabilityWeightFactoryClass() + ").");
             }
-            SelectionProbabilityWeightFactory probabilityWeightFactory = ConfigUtils.newInstance(config,
-                    "probabilityWeightFactoryClass", config.getProbabilityWeightFactoryClass());
-            moveSelector = new ProbabilityMoveSelector(moveSelector, resolvedCacheType, probabilityWeightFactory);
+            SelectionProbabilityWeightFactory<Solution_, Move<Solution_>> probabilityWeightFactory =
+                    ConfigUtils.newInstance(config, "probabilityWeightFactoryClass",
+                            config.getProbabilityWeightFactoryClass());
+            moveSelector = new ProbabilityMoveSelector<>(moveSelector, resolvedCacheType, probabilityWeightFactory);
         }
         return moveSelector;
     }
 
-    private MoveSelector applyShuffling(SelectionCacheType resolvedCacheType, SelectionOrder resolvedSelectionOrder,
-            MoveSelector moveSelector) {
+    private MoveSelector<Solution_> applyShuffling(SelectionCacheType resolvedCacheType,
+            SelectionOrder resolvedSelectionOrder, MoveSelector<Solution_> moveSelector) {
         if (resolvedSelectionOrder == SelectionOrder.SHUFFLED) {
-            moveSelector = new ShufflingMoveSelector(moveSelector, resolvedCacheType);
+            moveSelector = new ShufflingMoveSelector<>(moveSelector, resolvedCacheType);
         }
         return moveSelector;
     }
 
-    private MoveSelector applyCaching(SelectionCacheType resolvedCacheType, SelectionOrder resolvedSelectionOrder,
-            MoveSelector moveSelector) {
+    private MoveSelector<Solution_> applyCaching(SelectionCacheType resolvedCacheType,
+            SelectionOrder resolvedSelectionOrder, MoveSelector<Solution_> moveSelector) {
         if (resolvedCacheType.isCached() && resolvedCacheType.compareTo(moveSelector.getCacheType()) > 0) {
             moveSelector =
-                    new CachingMoveSelector(moveSelector, resolvedCacheType, resolvedSelectionOrder.toRandomSelectionBoolean());
+                    new CachingMoveSelector<>(moveSelector, resolvedCacheType,
+                            resolvedSelectionOrder.toRandomSelectionBoolean());
         }
         return moveSelector;
     }
@@ -260,9 +267,9 @@ public abstract class AbstractMoveSelectorFactory<MoveSelectorConfig_ extends Mo
         }
     }
 
-    private MoveSelector applySelectedLimit(MoveSelector moveSelector) {
+    private MoveSelector<Solution_> applySelectedLimit(MoveSelector<Solution_> moveSelector) {
         if (config.getSelectedCountLimit() != null) {
-            moveSelector = new SelectedCountLimitMoveSelector(moveSelector, config.getSelectedCountLimit());
+            moveSelector = new SelectedCountLimitMoveSelector<>(moveSelector, config.getSelectedCountLimit());
         }
         return moveSelector;
     }

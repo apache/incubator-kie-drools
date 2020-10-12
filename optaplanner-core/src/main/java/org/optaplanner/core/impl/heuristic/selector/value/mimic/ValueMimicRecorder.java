@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,18 +22,18 @@ import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescr
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 
-public interface ValueMimicRecorder {
+public interface ValueMimicRecorder<Solution_> {
 
     /**
      * @param replayingValueSelector never null
      */
-    void addMimicReplayingValueSelector(MimicReplayingValueSelector replayingValueSelector);
+    void addMimicReplayingValueSelector(MimicReplayingValueSelector<Solution_> replayingValueSelector);
 
     /**
      * @return As defined by {@link ValueSelector#getVariableDescriptor()}
      * @see ValueSelector#getVariableDescriptor()
      */
-    GenuineVariableDescriptor getVariableDescriptor();
+    GenuineVariableDescriptor<Solution_> getVariableDescriptor();
 
     /**
      * @return As defined by {@link ValueSelector#isCountable()}

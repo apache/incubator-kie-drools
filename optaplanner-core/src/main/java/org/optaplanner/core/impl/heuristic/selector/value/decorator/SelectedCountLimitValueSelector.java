@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,9 +26,10 @@ import org.optaplanner.core.impl.heuristic.selector.value.AbstractValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 
-public class SelectedCountLimitValueSelector extends AbstractValueSelector implements EntityIndependentValueSelector {
+public class SelectedCountLimitValueSelector<Solution_> extends AbstractValueSelector<Solution_>
+        implements EntityIndependentValueSelector<Solution_> {
 
-    protected final ValueSelector childValueSelector;
+    protected final ValueSelector<Solution_> childValueSelector;
     protected final long selectedCountLimit;
 
     /**
@@ -39,7 +40,7 @@ public class SelectedCountLimitValueSelector extends AbstractValueSelector imple
      *        are going to be used, this parameter must also implement that interface
      * @param selectedCountLimit at least 0
      */
-    public SelectedCountLimitValueSelector(ValueSelector childValueSelector, long selectedCountLimit) {
+    public SelectedCountLimitValueSelector(ValueSelector<Solution_> childValueSelector, long selectedCountLimit) {
         this.childValueSelector = childValueSelector;
         this.selectedCountLimit = selectedCountLimit;
         if (selectedCountLimit < 0L) {
@@ -54,7 +55,7 @@ public class SelectedCountLimitValueSelector extends AbstractValueSelector imple
     // ************************************************************************
 
     @Override
-    public GenuineVariableDescriptor getVariableDescriptor() {
+    public GenuineVariableDescriptor<Solution_> getVariableDescriptor() {
         return childValueSelector.getVariableDescriptor();
     }
 
@@ -81,7 +82,7 @@ public class SelectedCountLimitValueSelector extends AbstractValueSelector imple
                     + ") needs to be based on an EntityIndependentValueSelector (" + childValueSelector + ")."
                     + " Check your @" + ValueRangeProvider.class.getSimpleName() + " annotations.");
         }
-        long childSize = ((EntityIndependentValueSelector) childValueSelector).getSize();
+        long childSize = ((EntityIndependentValueSelector<Solution_>) childValueSelector).getSize();
         return Math.min(selectedCountLimit, childSize);
     }
 
@@ -92,7 +93,7 @@ public class SelectedCountLimitValueSelector extends AbstractValueSelector imple
 
     @Override
     public Iterator<Object> iterator() {
-        return new SelectedCountLimitValueIterator(((EntityIndependentValueSelector) childValueSelector).iterator());
+        return new SelectedCountLimitValueIterator(((EntityIndependentValueSelector<Solution_>) childValueSelector).iterator());
     }
 
     @Override

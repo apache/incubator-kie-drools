@@ -29,19 +29,20 @@ import org.optaplanner.core.impl.heuristic.selector.common.decorator.FixedSelect
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionProbabilityWeightFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 
-public class UnionMoveSelectorFactory extends AbstractCompositeMoveSelectorFactory<UnionMoveSelectorConfig> {
+public class UnionMoveSelectorFactory<Solution_>
+        extends AbstractCompositeMoveSelectorFactory<Solution_, UnionMoveSelectorConfig> {
 
     public UnionMoveSelectorFactory(UnionMoveSelectorConfig moveSelectorConfig) {
         super(moveSelectorConfig);
     }
 
     @Override
-    public MoveSelector buildBaseMoveSelector(HeuristicConfigPolicy configPolicy,
+    public MoveSelector<Solution_> buildBaseMoveSelector(HeuristicConfigPolicy<Solution_> configPolicy,
             SelectionCacheType minimumCacheType, boolean randomSelection) {
-        List<MoveSelector> moveSelectorList = buildInnerMoveSelectors(config.getMoveSelectorConfigList(),
+        List<MoveSelector<Solution_>> moveSelectorList = buildInnerMoveSelectors(config.getMoveSelectorConfigList(),
                 configPolicy, minimumCacheType, randomSelection);
 
-        SelectionProbabilityWeightFactory selectorProbabilityWeightFactory;
+        SelectionProbabilityWeightFactory<Solution_, MoveSelector<Solution_>> selectorProbabilityWeightFactory;
         if (config.getSelectorProbabilityWeightFactoryClass() != null) {
             if (!randomSelection) {
                 throw new IllegalArgumentException("The moveSelectorConfig (" + config
@@ -52,10 +53,11 @@ public class UnionMoveSelectorFactory extends AbstractCompositeMoveSelectorFacto
             selectorProbabilityWeightFactory = ConfigUtils.newInstance(config,
                     "selectorProbabilityWeightFactoryClass", config.getSelectorProbabilityWeightFactoryClass());
         } else if (randomSelection) {
-            Map<MoveSelector, Double> fixedProbabilityWeightMap = new HashMap<>(config.getMoveSelectorConfigList().size());
+            Map<MoveSelector<Solution_>, Double> fixedProbabilityWeightMap =
+                    new HashMap<>(config.getMoveSelectorConfigList().size());
             for (int i = 0; i < config.getMoveSelectorConfigList().size(); i++) {
-                MoveSelectorConfig innerMoveSelectorConfig = config.getMoveSelectorConfigList().get(i);
-                MoveSelector moveSelector = moveSelectorList.get(i);
+                MoveSelectorConfig<?> innerMoveSelectorConfig = config.getMoveSelectorConfigList().get(i);
+                MoveSelector<Solution_> moveSelector = moveSelectorList.get(i);
                 Double fixedProbabilityWeight = innerMoveSelectorConfig.getFixedProbabilityWeight();
                 if (fixedProbabilityWeight == null) {
                     // Default to equal probability for each move type => unequal probability for each move instance
@@ -63,11 +65,10 @@ public class UnionMoveSelectorFactory extends AbstractCompositeMoveSelectorFacto
                 }
                 fixedProbabilityWeightMap.put(moveSelector, fixedProbabilityWeight);
             }
-            selectorProbabilityWeightFactory = new FixedSelectorProbabilityWeightFactory(fixedProbabilityWeightMap);
+            selectorProbabilityWeightFactory = new FixedSelectorProbabilityWeightFactory<>(fixedProbabilityWeightMap);
         } else {
             selectorProbabilityWeightFactory = null;
         }
-        return new UnionMoveSelector(moveSelectorList, randomSelection,
-                selectorProbabilityWeightFactory);
+        return new UnionMoveSelector<>(moveSelectorList, randomSelection, selectorProbabilityWeightFactory);
     }
 }

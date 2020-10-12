@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,11 +19,11 @@ package org.optaplanner.core.impl.heuristic.selector.value.chained;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.ListIterableSelector;
 
-public interface SubChainSelector extends ListIterableSelector<SubChain> {
+public interface SubChainSelector<Solution_> extends ListIterableSelector<Solution_, SubChain> {
 
     /**
      * @return never null
      */
-    GenuineVariableDescriptor getVariableDescriptor();
+    GenuineVariableDescriptor<Solution_> getVariableDescriptor();
 
 }

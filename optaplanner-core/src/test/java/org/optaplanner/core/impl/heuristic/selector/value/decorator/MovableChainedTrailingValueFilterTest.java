@@ -36,9 +36,12 @@ public class MovableChainedTrailingValueFilterTest {
 
     @Test
     public void pinnedChained() {
-        GenuineVariableDescriptor variableDescriptor = TestdataPinnedChainedEntity.buildVariableDescriptorForChainedObject();
-        SolutionDescriptor solutionDescriptor = variableDescriptor.getEntityDescriptor().getSolutionDescriptor();
-        InnerScoreDirector scoreDirector = PlannerTestUtils.mockScoreDirector(solutionDescriptor);
+        GenuineVariableDescriptor<TestdataPinnedChainedSolution> variableDescriptor =
+                TestdataPinnedChainedEntity.buildVariableDescriptorForChainedObject();
+        SolutionDescriptor<TestdataPinnedChainedSolution> solutionDescriptor =
+                variableDescriptor.getEntityDescriptor().getSolutionDescriptor();
+        InnerScoreDirector<TestdataPinnedChainedSolution, ?> scoreDirector =
+                PlannerTestUtils.mockScoreDirector(solutionDescriptor);
 
         TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
         TestdataPinnedChainedEntity a1 = new TestdataPinnedChainedEntity("a1", a0, true);
@@ -59,9 +62,10 @@ public class MovableChainedTrailingValueFilterTest {
 
         scoreDirector.setWorkingSolution(solution);
         SingletonInverseVariableSupply inverseVariableSupply = scoreDirector.getSupplyManager()
-                .demand(new SingletonInverseVariableDemand(variableDescriptor));
+                .demand(new SingletonInverseVariableDemand<>(variableDescriptor));
 
-        MovableChainedTrailingValueFilter filter = new MovableChainedTrailingValueFilter(variableDescriptor);
+        MovableChainedTrailingValueFilter<TestdataPinnedChainedSolution> filter =
+                new MovableChainedTrailingValueFilter<>(variableDescriptor);
 
         assertThat(filter.accept(scoreDirector, a0)).isFalse();
         assertThat(filter.accept(scoreDirector, a1)).isTrue();
@@ -79,9 +83,11 @@ public class MovableChainedTrailingValueFilterTest {
 
     @Test
     public void getMovableChainedTrailingValueFilter() {
-        VariableDescriptor variableDescriptor = TestdataPinnedChainedEntity.buildEntityDescriptor()
-                .getVariableDescriptor("chainedObject");
-        assertThat(((GenuineVariableDescriptor) variableDescriptor).getMovableChainedTrailingValueFilter()).isNotNull();
+        VariableDescriptor<TestdataPinnedChainedSolution> variableDescriptor =
+                TestdataPinnedChainedEntity.buildEntityDescriptor()
+                        .getVariableDescriptor("chainedObject");
+        assertThat(((GenuineVariableDescriptor<TestdataPinnedChainedSolution>) variableDescriptor)
+                .getMovableChainedTrailingValueFilter()).isNotNull();
     }
 
 }

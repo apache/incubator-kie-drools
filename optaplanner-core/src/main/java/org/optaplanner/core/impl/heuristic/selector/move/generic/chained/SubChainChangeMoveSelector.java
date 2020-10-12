@@ -30,17 +30,18 @@ import org.optaplanner.core.impl.heuristic.selector.value.chained.SubChain;
 import org.optaplanner.core.impl.heuristic.selector.value.chained.SubChainSelector;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 
-public class SubChainChangeMoveSelector extends GenericMoveSelector {
+public class SubChainChangeMoveSelector<Solution_> extends GenericMoveSelector<Solution_> {
 
-    protected final SubChainSelector subChainSelector;
-    protected final EntityIndependentValueSelector valueSelector;
+    protected final SubChainSelector<Solution_> subChainSelector;
+    protected final EntityIndependentValueSelector<Solution_> valueSelector;
     protected final boolean randomSelection;
     protected final boolean selectReversingMoveToo;
 
     protected SingletonInverseVariableSupply inverseVariableSupply = null;
 
-    public SubChainChangeMoveSelector(SubChainSelector subChainSelector, EntityIndependentValueSelector valueSelector,
-            boolean randomSelection, boolean selectReversingMoveToo) {
+    public SubChainChangeMoveSelector(SubChainSelector<Solution_> subChainSelector,
+            EntityIndependentValueSelector<Solution_> valueSelector, boolean randomSelection,
+            boolean selectReversingMoveToo) {
         this.subChainSelector = subChainSelector;
         this.valueSelector = valueSelector;
         this.randomSelection = randomSelection;
@@ -69,14 +70,15 @@ public class SubChainChangeMoveSelector extends GenericMoveSelector {
     }
 
     @Override
-    public void solvingStarted(SolverScope solverScope) {
+    public void solvingStarted(SolverScope<Solution_> solverScope) {
         super.solvingStarted(solverScope);
-        SupplyManager supplyManager = solverScope.getScoreDirector().getSupplyManager();
-        inverseVariableSupply = supplyManager.demand(new SingletonInverseVariableDemand(valueSelector.getVariableDescriptor()));
+        SupplyManager<Solution_> supplyManager = solverScope.getScoreDirector().getSupplyManager();
+        inverseVariableSupply =
+                supplyManager.demand(new SingletonInverseVariableDemand<>(valueSelector.getVariableDescriptor()));
     }
 
     @Override
-    public void solvingEnded(SolverScope solverScope) {
+    public void solvingEnded(SolverScope<Solution_> solverScope) {
         super.solvingEnded(solverScope);
         inverseVariableSupply = null;
     }
@@ -101,7 +103,7 @@ public class SubChainChangeMoveSelector extends GenericMoveSelector {
     }
 
     @Override
-    public Iterator<Move> iterator() {
+    public Iterator<Move<Solution_>> iterator() {
         if (!randomSelection) {
             return new OriginalSubChainChangeMoveIterator();
         } else {
@@ -109,14 +111,14 @@ public class SubChainChangeMoveSelector extends GenericMoveSelector {
         }
     }
 
-    private class OriginalSubChainChangeMoveIterator extends UpcomingSelectionIterator<Move> {
+    private class OriginalSubChainChangeMoveIterator extends UpcomingSelectionIterator<Move<Solution_>> {
 
-        private Iterator<SubChain> subChainIterator;
+        private final Iterator<SubChain> subChainIterator;
         private Iterator<Object> valueIterator = null;
 
         private SubChain upcomingSubChain;
 
-        private Move nextReversingSelection = null;
+        private Move<Solution_> nextReversingSelection = null;
 
         private OriginalSubChainChangeMoveIterator() {
             subChainIterator = subChainSelector.iterator();
@@ -125,9 +127,9 @@ public class SubChainChangeMoveSelector extends GenericMoveSelector {
         }
 
         @Override
-        protected Move createUpcomingSelection() {
+        protected Move<Solution_> createUpcomingSelection() {
             if (selectReversingMoveToo && nextReversingSelection != null) {
-                Move upcomingSelection = nextReversingSelection;
+                Move<Solution_> upcomingSelection = nextReversingSelection;
                 nextReversingSelection = null;
                 return upcomingSelection;
             }
@@ -145,18 +147,18 @@ public class SubChainChangeMoveSelector extends GenericMoveSelector {
             }
             Object toValue = valueIterator.next();
 
-            Move upcomingSelection = new SubChainChangeMove(
-                    upcomingSubChain, valueSelector.getVariableDescriptor(), inverseVariableSupply, toValue);
+            Move<Solution_> upcomingSelection = new SubChainChangeMove<>(upcomingSubChain,
+                    valueSelector.getVariableDescriptor(), inverseVariableSupply, toValue);
             if (selectReversingMoveToo) {
-                nextReversingSelection = new SubChainReversingChangeMove(
-                        upcomingSubChain, valueSelector.getVariableDescriptor(), inverseVariableSupply, toValue);
+                nextReversingSelection = new SubChainReversingChangeMove<>(upcomingSubChain,
+                        valueSelector.getVariableDescriptor(), inverseVariableSupply, toValue);
             }
             return upcomingSelection;
         }
 
     }
 
-    private class RandomSubChainChangeMoveIterator extends UpcomingSelectionIterator<Move> {
+    private class RandomSubChainChangeMoveIterator extends UpcomingSelectionIterator<Move<Solution_>> {
 
         private Iterator<SubChain> subChainIterator;
         private Iterator<Object> valueIterator;
@@ -169,7 +171,7 @@ public class SubChainChangeMoveSelector extends GenericMoveSelector {
         }
 
         @Override
-        protected Move createUpcomingSelection() {
+        protected Move<Solution_> createUpcomingSelection() {
             // Ideally, this code should have read:
             //     SubChain subChain = subChainIterator.next();
             //     Object toValue = valueIterator.next();
@@ -194,9 +196,10 @@ public class SubChainChangeMoveSelector extends GenericMoveSelector {
 
             boolean reversing = selectReversingMoveToo && workingRandom.nextBoolean();
             return reversing
-                    ? new SubChainReversingChangeMove(subChain, valueSelector.getVariableDescriptor(), inverseVariableSupply,
-                            toValue)
-                    : new SubChainChangeMove(subChain, valueSelector.getVariableDescriptor(), inverseVariableSupply, toValue);
+                    ? new SubChainReversingChangeMove<>(subChain, valueSelector.getVariableDescriptor(),
+                            inverseVariableSupply, toValue)
+                    : new SubChainChangeMove<>(subChain, valueSelector.getVariableDescriptor(), inverseVariableSupply,
+                            toValue);
         }
 
     }

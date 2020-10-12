@@ -38,6 +38,7 @@ import org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
 import org.optaplanner.core.config.localsearch.LocalSearchPhaseConfig;
+import org.optaplanner.core.impl.heuristic.move.DummyMove;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
 import org.optaplanner.core.impl.heuristic.selector.move.factory.MoveIteratorFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.factory.MoveListFactory;
@@ -131,7 +132,8 @@ class SolverConfigTest {
     @Test
     void inherit() {
         SolverConfig originalSolverConfig = readSolverConfig(TEST_SOLVER_CONFIG_WITHOUT_NAMESPACE);
-        SolverConfig inheritedSolverConfig = new SolverConfig().inherit(originalSolverConfig);
+        SolverConfig inheritedSolverConfig =
+                new SolverConfig().inherit(originalSolverConfig);
         assertThat(inheritedSolverConfig).usingRecursiveComparison().isEqualTo(originalSolverConfig);
     }
 
@@ -157,10 +159,11 @@ class SolverConfigTest {
     private abstract class DummyEntityFilter implements SelectionFilter<TestdataSolution, TestdataEntity> {
     }
 
-    private abstract class DummyChangeMoveFilter implements SelectionFilter<TestdataSolution, ChangeMove> {
+    private abstract class DummyChangeMoveFilter
+            implements SelectionFilter<TestdataSolution, ChangeMove<TestdataSolution>> {
     }
 
-    private abstract class DummyMoveIteratorFactory implements MoveIteratorFactory<TestdataSolution> {
+    private abstract class DummyMoveIteratorFactory implements MoveIteratorFactory<TestdataSolution, DummyMove> {
     }
 
     private abstract class DummyMoveListFactory implements MoveListFactory<TestdataSolution> {

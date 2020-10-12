@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.size;
 
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 
-public class ValueRatioTabuSizeStrategy extends AbstractTabuSizeStrategy {
+public class ValueRatioTabuSizeStrategy<Solution_> extends AbstractTabuSizeStrategy<Solution_> {
 
     protected final double tabuRatio;
 
@@ -31,7 +31,7 @@ public class ValueRatioTabuSizeStrategy extends AbstractTabuSizeStrategy {
     }
 
     @Override
-    public int determineTabuSize(LocalSearchStepScope stepScope) {
+    public int determineTabuSize(LocalSearchStepScope<Solution_> stepScope) {
         // TODO we might want to cache the valueCount if and only if moves don't add/remove entities
         int valueCount = stepScope.getPhaseScope().getWorkingValueCount();
         int tabuSize = (int) Math.round(valueCount * tabuRatio);

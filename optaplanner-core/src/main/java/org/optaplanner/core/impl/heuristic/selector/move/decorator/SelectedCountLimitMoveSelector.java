@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,12 +24,12 @@ import org.optaplanner.core.impl.heuristic.selector.common.iterator.SelectionIte
 import org.optaplanner.core.impl.heuristic.selector.move.AbstractMoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 
-public class SelectedCountLimitMoveSelector extends AbstractMoveSelector {
+public class SelectedCountLimitMoveSelector<Solution_> extends AbstractMoveSelector<Solution_> {
 
-    protected final MoveSelector childMoveSelector;
+    protected final MoveSelector<Solution_> childMoveSelector;
     protected final long selectedCountLimit;
 
-    public SelectedCountLimitMoveSelector(MoveSelector childMoveSelector, long selectedCountLimit) {
+    public SelectedCountLimitMoveSelector(MoveSelector<Solution_> childMoveSelector, long selectedCountLimit) {
         this.childMoveSelector = childMoveSelector;
         this.selectedCountLimit = selectedCountLimit;
         if (selectedCountLimit < 0L) {
@@ -60,16 +60,16 @@ public class SelectedCountLimitMoveSelector extends AbstractMoveSelector {
     }
 
     @Override
-    public Iterator<Move> iterator() {
+    public Iterator<Move<Solution_>> iterator() {
         return new SelectedCountLimitMoveIterator(childMoveSelector.iterator());
     }
 
-    private class SelectedCountLimitMoveIterator extends SelectionIterator<Move> {
+    private class SelectedCountLimitMoveIterator extends SelectionIterator<Move<Solution_>> {
 
-        private final Iterator<Move> childMoveIterator;
+        private final Iterator<Move<Solution_>> childMoveIterator;
         private long selectedSize;
 
-        public SelectedCountLimitMoveIterator(Iterator<Move> childMoveIterator) {
+        public SelectedCountLimitMoveIterator(Iterator<Move<Solution_>> childMoveIterator) {
             this.childMoveIterator = childMoveIterator;
             selectedSize = 0L;
         }
@@ -80,7 +80,7 @@ public class SelectedCountLimitMoveSelector extends AbstractMoveSelector {
         }
 
         @Override
-        public Move next() {
+        public Move<Solution_> next() {
             if (selectedSize >= selectedCountLimit) {
                 throw new NoSuchElementException();
             }

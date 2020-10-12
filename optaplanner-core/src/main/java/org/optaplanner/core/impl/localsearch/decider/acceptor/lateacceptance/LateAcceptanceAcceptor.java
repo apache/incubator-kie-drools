@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import org.optaplanner.core.impl.localsearch.scope.LocalSearchMoveScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchPhaseScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 
-public class LateAcceptanceAcceptor extends AbstractAcceptor {
+public class LateAcceptanceAcceptor<Solution_> extends AbstractAcceptor<Solution_> {
 
     protected int lateAcceptanceSize = -1;
     protected boolean hillClimbingEnabled = true;
@@ -43,7 +43,7 @@ public class LateAcceptanceAcceptor extends AbstractAcceptor {
     // ************************************************************************
 
     @Override
-    public void phaseStarted(LocalSearchPhaseScope phaseScope) {
+    public void phaseStarted(LocalSearchPhaseScope<Solution_> phaseScope) {
         super.phaseStarted(phaseScope);
         validate();
         previousScores = new Score[lateAcceptanceSize];
@@ -62,7 +62,7 @@ public class LateAcceptanceAcceptor extends AbstractAcceptor {
     }
 
     @Override
-    public boolean isAccepted(LocalSearchMoveScope moveScope) {
+    public boolean isAccepted(LocalSearchMoveScope<Solution_> moveScope) {
         Score moveScore = moveScope.getScore();
         Score lateScore = previousScores[lateScoreIndex];
         if (moveScore.compareTo(lateScore) >= 0) {
@@ -78,14 +78,14 @@ public class LateAcceptanceAcceptor extends AbstractAcceptor {
     }
 
     @Override
-    public void stepEnded(LocalSearchStepScope stepScope) {
+    public void stepEnded(LocalSearchStepScope<Solution_> stepScope) {
         super.stepEnded(stepScope);
         previousScores[lateScoreIndex] = stepScope.getScore();
         lateScoreIndex = (lateScoreIndex + 1) % lateAcceptanceSize;
     }
 
     @Override
-    public void phaseEnded(LocalSearchPhaseScope phaseScope) {
+    public void phaseEnded(LocalSearchPhaseScope<Solution_> phaseScope) {
         super.phaseEnded(phaseScope);
         previousScores = null;
         lateScoreIndex = -1;

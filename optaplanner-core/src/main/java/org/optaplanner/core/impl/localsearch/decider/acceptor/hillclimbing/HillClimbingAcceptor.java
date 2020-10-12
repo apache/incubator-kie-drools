@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,14 +20,14 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.AbstractAcceptor;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchMoveScope;
 
-public class HillClimbingAcceptor extends AbstractAcceptor {
+public class HillClimbingAcceptor<Solution_> extends AbstractAcceptor<Solution_> {
 
     // ************************************************************************
     // Worker methods
     // ************************************************************************
 
     @Override
-    public boolean isAccepted(LocalSearchMoveScope moveScope) {
+    public boolean isAccepted(LocalSearchMoveScope<Solution_> moveScope) {
         Score moveScore = moveScope.getScore();
         Score lastStepScore = moveScope.getStepScope().getPhaseScope().getLastCompletedStepScope().getScore();
         return moveScore.compareTo(lastStepScore) >= 0;

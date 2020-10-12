@@ -250,72 +250,6 @@
           "justification": "CALCULATE_COUNT_PER_SECOND removed."
         },
         {
-          "code": "java.annotation.added",
-          "old": "class org.optaplanner.benchmark.config.PlannerBenchmarkConfig",
-          "new": "class org.optaplanner.benchmark.config.PlannerBenchmarkConfig",
-          "annotationType": "javax.xml.bind.annotation.XmlAccessorType",
-          "annotation": "@javax.xml.bind.annotation.XmlAccessorType(javax.xml.bind.annotation.XmlAccessType.FIELD)",
-          "package": "org.optaplanner.benchmark.config",
-          "classSimpleName": "PlannerBenchmarkConfig",
-          "elementKind": "class",
-          "justification": "PlannerBenchmarkConfig is serializable via JAXB."
-        },
-        {
-          "code": "java.annotation.added",
-          "old": "class org.optaplanner.benchmark.config.PlannerBenchmarkConfig",
-          "new": "class org.optaplanner.benchmark.config.PlannerBenchmarkConfig",
-          "annotationType": "javax.xml.bind.annotation.XmlRootElement",
-          "annotation": "@javax.xml.bind.annotation.XmlRootElement(name = \"plannerBenchmark\")",
-          "package": "org.optaplanner.benchmark.config",
-          "classSimpleName": "PlannerBenchmarkConfig",
-          "elementKind": "class",
-          "justification": "PlannerBenchmarkConfig is serializable via JAXB."
-        },
-        {
-          "code": "java.annotation.added",
-          "old": "enum org.optaplanner.benchmark.config.blueprint.SolverBenchmarkBluePrintType",
-          "new": "enum org.optaplanner.benchmark.config.blueprint.SolverBenchmarkBluePrintType",
-          "annotationType": "javax.xml.bind.annotation.XmlEnum",
-          "annotation": "@javax.xml.bind.annotation.XmlEnum",
-          "package": "org.optaplanner.benchmark.config.blueprint",
-          "classSimpleName": "SolverBenchmarkBluePrintType",
-          "elementKind": "enum",
-          "justification": "PlannerBenchmarkConfig is serializable via JAXB."
-        },
-        {
-          "code": "java.annotation.added",
-          "old": "enum org.optaplanner.benchmark.config.ranking.SolverRankingType",
-          "new": "enum org.optaplanner.benchmark.config.ranking.SolverRankingType",
-          "annotationType": "javax.xml.bind.annotation.XmlEnum",
-          "annotation": "@javax.xml.bind.annotation.XmlEnum",
-          "package": "org.optaplanner.benchmark.config.ranking",
-          "classSimpleName": "SolverRankingType",
-          "elementKind": "enum",
-          "justification": "PlannerBenchmarkConfig is serializable via JAXB."
-        },
-        {
-          "code": "java.annotation.added",
-          "old": "enum org.optaplanner.benchmark.config.statistic.ProblemStatisticType",
-          "new": "enum org.optaplanner.benchmark.config.statistic.ProblemStatisticType",
-          "annotationType": "javax.xml.bind.annotation.XmlEnum",
-          "annotation": "@javax.xml.bind.annotation.XmlEnum",
-          "package": "org.optaplanner.benchmark.config.statistic",
-          "classSimpleName": "ProblemStatisticType",
-          "elementKind": "enum",
-          "justification": "PlannerBenchmarkConfig is serializable via JAXB."
-        },
-        {
-          "code": "java.annotation.added",
-          "old": "enum org.optaplanner.benchmark.config.statistic.SingleStatisticType",
-          "new": "enum org.optaplanner.benchmark.config.statistic.SingleStatisticType",
-          "annotationType": "javax.xml.bind.annotation.XmlEnum",
-          "annotation": "@javax.xml.bind.annotation.XmlEnum",
-          "package": "org.optaplanner.benchmark.config.statistic",
-          "classSimpleName": "SingleStatisticType",
-          "elementKind": "enum",
-          "justification": "PlannerBenchmarkConfig is serializable via JAXB."
-        },
-        {
           "code": "java.method.removed",
           "old": "method java.util.List<java.lang.Class> org.optaplanner.benchmark.config.ProblemBenchmarksConfig::getXStreamAnnotatedClassList()",
           "package": "org.optaplanner.benchmark.config",
@@ -342,106 +276,7 @@
           "package": "org.optaplanner.benchmark.config",
           "classSimpleName": "PlannerBenchmarkConfig",
           "elementKind": "class",
-          "justification": "XStream was replaced by JAXB in the benchmark configuration"
-        },
-        {
-          "code": "java.annotation.removed",
-          "old": "class org.optaplanner.benchmark.config.ProblemBenchmarksConfig",
-          "new": "class org.optaplanner.benchmark.config.ProblemBenchmarksConfig",
-          "annotationType": "com.thoughtworks.xstream.annotations.XStreamAlias",
-          "annotation": "@com.thoughtworks.xstream.annotations.XStreamAlias(\"problemBenchmarks\")",
-          "package": "org.optaplanner.benchmark.config",
-          "classSimpleName": "ProblemBenchmarksConfig",
-          "elementKind": "class",
-          "justification": "XStream was replaced by JAXB in the benchmark configuration"
-        },
-        {
-          "code": "java.annotation.removed",
-          "old": "class org.optaplanner.benchmark.config.SolverBenchmarkConfig<Solution_ extends java.lang.Object>",
-          "new": "class org.optaplanner.benchmark.config.SolverBenchmarkConfig<Solution_ extends java.lang.Object>",
-          "annotationType": "com.thoughtworks.xstream.annotations.XStreamAlias",
-          "annotation": "@com.thoughtworks.xstream.annotations.XStreamAlias(\"solverBenchmark\")",
-          "package": "org.optaplanner.benchmark.config",
-          "classSimpleName": "SolverBenchmarkConfig",
-          "elementKind": "class",
-          "justification": "XStream was replaced by JAXB in the benchmark configuration"
-        },
-        {
-          "code": "java.annotation.removed",
-          "old": "class org.optaplanner.benchmark.config.blueprint.SolverBenchmarkBluePrintConfig",
-          "new": "class org.optaplanner.benchmark.config.blueprint.SolverBenchmarkBluePrintConfig",
-          "annotationType": "com.thoughtworks.xstream.annotations.XStreamAlias",
-          "annotation": "@com.thoughtworks.xstream.annotations.XStreamAlias(\"solverBenchmarkBluePrint\")",
-          "package": "org.optaplanner.benchmark.config.blueprint",
-          "classSimpleName": "SolverBenchmarkBluePrintConfig",
-          "elementKind": "class",
-          "justification": "XStream was replaced by JAXB in the benchmark configuration"
-        },
-        {
-          "code": "java.annotation.removed",
-          "old": "class org.optaplanner.benchmark.config.report.BenchmarkReportConfig",
-          "new": "class org.optaplanner.benchmark.config.report.BenchmarkReportConfig",
-          "annotationType": "com.thoughtworks.xstream.annotations.XStreamAlias",
-          "annotation": "@com.thoughtworks.xstream.annotations.XStreamAlias(\"benchmarkReport\")",
-          "package": "org.optaplanner.benchmark.config.report",
-          "classSimpleName": "BenchmarkReportConfig",
-          "elementKind": "class",
-          "justification": "XStream was replaced by JAXB in the benchmark configuration"
-        },
-        {
-          "code": "java.annotation.added",
-          "old": "class org.optaplanner.benchmark.config.PlannerBenchmarkConfig",
-          "new": "class org.optaplanner.benchmark.config.PlannerBenchmarkConfig",
-          "annotationType": "javax.xml.bind.annotation.XmlType",
-          "annotation": "@javax.xml.bind.annotation.XmlType(propOrder = {\"name\", \"benchmarkDirectory\", \"threadFactoryClass\", \"parallelBenchmarkCount\", \"warmUpMillisecondsSpentLimit\", \"warmUpSecondsSpentLimit\", \"warmUpMinutesSpentLimit\", \"warmUpHoursSpentLimit\", \"warmUpDaysSpentLimit\", \"benchmarkReportConfig\", \"inheritedSolverBenchmarkConfig\", \"solverBenchmarkBluePrintConfigList\", \"solverBenchmarkConfigList\"})",
-          "package": "org.optaplanner.benchmark.config",
-          "classSimpleName": "PlannerBenchmarkConfig",
-          "elementKind": "class",
-          "justification": "Define explicit order of elements in the XML."
-        },
-        {
-          "code": "java.annotation.added",
-          "old": "class org.optaplanner.benchmark.config.ProblemBenchmarksConfig",
-          "new": "class org.optaplanner.benchmark.config.ProblemBenchmarksConfig",
-          "annotationType": "javax.xml.bind.annotation.XmlType",
-          "annotation": "@javax.xml.bind.annotation.XmlType(propOrder = {\"solutionFileIOClass\", \"writeOutputSolutionEnabled\", \"inputSolutionFileList\", \"problemStatisticEnabled\", \"problemStatisticTypeList\", \"singleStatisticTypeList\"})",
-          "package": "org.optaplanner.benchmark.config",
-          "classSimpleName": "ProblemBenchmarksConfig",
-          "elementKind": "class",
-          "justification": "Define explicit order of elements in the XML."
-        },
-        {
-          "code": "java.annotation.added",
-          "old": "class org.optaplanner.benchmark.config.SolverBenchmarkConfig<Solution_ extends java.lang.Object>",
-          "new": "class org.optaplanner.benchmark.config.SolverBenchmarkConfig<Solution_ extends java.lang.Object>",
-          "annotationType": "javax.xml.bind.annotation.XmlType",
-          "annotation": "@javax.xml.bind.annotation.XmlType(propOrder = {\"name\", \"solverConfig\", \"problemBenchmarksConfig\", \"subSingleCount\"})",
-          "package": "org.optaplanner.benchmark.config",
-          "classSimpleName": "SolverBenchmarkConfig",
-          "elementKind": "class",
-          "justification": "Define explicit order of elements in the XML."
-        },
-        {
-          "code": "java.annotation.added",
-          "old": "class org.optaplanner.benchmark.config.blueprint.SolverBenchmarkBluePrintConfig",
-          "new": "class org.optaplanner.benchmark.config.blueprint.SolverBenchmarkBluePrintConfig",
-          "annotationType": "javax.xml.bind.annotation.XmlType",
-          "annotation": "@javax.xml.bind.annotation.XmlType(propOrder = {\"solverBenchmarkBluePrintType\"})",
-          "package": "org.optaplanner.benchmark.config.blueprint",
-          "classSimpleName": "SolverBenchmarkBluePrintConfig",
-          "elementKind": "class",
-          "justification": "Define explicit order of elements in the XML."
-        },
-        {
-          "code": "java.annotation.added",
-          "old": "class org.optaplanner.benchmark.config.report.BenchmarkReportConfig",
-          "new": "class org.optaplanner.benchmark.config.report.BenchmarkReportConfig",
-          "annotationType": "javax.xml.bind.annotation.XmlType",
-          "annotation": "@javax.xml.bind.annotation.XmlType(propOrder = {\"locale\", \"solverRankingType\", \"solverRankingComparatorClass\", \"solverRankingWeightFactoryClass\"})",
-          "package": "org.optaplanner.benchmark.config.report",
-          "classSimpleName": "BenchmarkReportConfig",
-          "elementKind": "class",
-          "justification": "Define explicit order of elements in the XML."
+          "justification": "Using JAXB instead of XStream now."
         },
         {
           "code": "java.annotation.added",
@@ -452,7 +287,195 @@
           "package": "org.optaplanner.benchmark.config",
           "classSimpleName": "PlannerBenchmarkConfig",
           "elementKind": "class",
-          "justification": "SolverConfig is serializable via JAXB."
+          "justification": "Using JAXB instead of XStream now."
+        },
+        {
+          "code": "java.annotation.added",
+          "old": "class org.optaplanner.benchmark.config.PlannerBenchmarkConfig",
+          "new": "class org.optaplanner.benchmark.config.PlannerBenchmarkConfig",
+          "annotationType": "javax.xml.bind.annotation.XmlRootElement",
+          "annotation": "@javax.xml.bind.annotation.XmlRootElement(name = \"plannerBenchmark\")",
+          "package": "org.optaplanner.benchmark.config",
+          "classSimpleName": "PlannerBenchmarkConfig",
+          "elementKind": "class",
+          "justification": "Using JAXB instead of XStream now."
+        },
+        {
+          "code": "java.annotation.added",
+          "old": "class org.optaplanner.benchmark.config.PlannerBenchmarkConfig",
+          "new": "class org.optaplanner.benchmark.config.PlannerBenchmarkConfig",
+          "annotationType": "javax.xml.bind.annotation.XmlType",
+          "annotation": "@javax.xml.bind.annotation.XmlType(propOrder = {\"name\", \"benchmarkDirectory\", \"threadFactoryClass\", \"parallelBenchmarkCount\", \"warmUpMillisecondsSpentLimit\", \"warmUpSecondsSpentLimit\", \"warmUpMinutesSpentLimit\", \"warmUpHoursSpentLimit\", \"warmUpDaysSpentLimit\", \"benchmarkReportConfig\", \"inheritedSolverBenchmarkConfig\", \"solverBenchmarkBluePrintConfigList\", \"solverBenchmarkConfigList\"})",
+          "package": "org.optaplanner.benchmark.config",
+          "classSimpleName": "PlannerBenchmarkConfig",
+          "elementKind": "class",
+          "justification": "Using JAXB instead of XStream now."
+        },
+        {
+          "code": "java.method.returnTypeTypeParametersChanged",
+          "old": "method java.lang.Class<org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO> org.optaplanner.benchmark.config.ProblemBenchmarksConfig::getSolutionFileIOClass()",
+          "new": "method java.lang.Class<org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO<?>> org.optaplanner.benchmark.config.ProblemBenchmarksConfig::getSolutionFileIOClass()",
+          "oldType": "java.lang.Class<org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO>",
+          "newType": "java.lang.Class<org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO<?>>",
+          "package": "org.optaplanner.benchmark.config",
+          "classSimpleName": "ProblemBenchmarksConfig",
+          "methodName": "getSolutionFileIOClass",
+          "elementKind": "method",
+          "justification": "Using JAXB instead of XStream now."
+        },
+        {
+          "code": "java.method.parameterTypeParameterChanged",
+          "old": "parameter void org.optaplanner.benchmark.config.ProblemBenchmarksConfig::setSolutionFileIOClass(===java.lang.Class<org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO>===)",
+          "new": "parameter void org.optaplanner.benchmark.config.ProblemBenchmarksConfig::setSolutionFileIOClass(===java.lang.Class<org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO<?>>===)",
+          "oldType": "java.lang.Class<org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO>",
+          "newType": "java.lang.Class<org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO<?>>",
+          "package": "org.optaplanner.benchmark.config",
+          "classSimpleName": "ProblemBenchmarksConfig",
+          "methodName": "setSolutionFileIOClass",
+          "parameterIndex": "0",
+          "elementKind": "parameter",
+          "justification": "Using JAXB instead of XStream now."
+        },
+        {
+          "code": "java.annotation.removed",
+          "old": "class org.optaplanner.benchmark.config.ProblemBenchmarksConfig",
+          "new": "class org.optaplanner.benchmark.config.ProblemBenchmarksConfig",
+          "annotationType": "com.thoughtworks.xstream.annotations.XStreamAlias",
+          "annotation": "@com.thoughtworks.xstream.annotations.XStreamAlias(\"problemBenchmarks\")",
+          "package": "org.optaplanner.benchmark.config",
+          "classSimpleName": "ProblemBenchmarksConfig",
+          "elementKind": "class",
+          "justification": "Using JAXB instead of XStream now."
+        },
+        {
+          "code": "java.annotation.added",
+          "old": "class org.optaplanner.benchmark.config.ProblemBenchmarksConfig",
+          "new": "class org.optaplanner.benchmark.config.ProblemBenchmarksConfig",
+          "annotationType": "javax.xml.bind.annotation.XmlType",
+          "annotation": "@javax.xml.bind.annotation.XmlType(propOrder = {\"solutionFileIOClass\", \"writeOutputSolutionEnabled\", \"inputSolutionFileList\", \"problemStatisticEnabled\", \"problemStatisticTypeList\", \"singleStatisticTypeList\"})",
+          "package": "org.optaplanner.benchmark.config",
+          "classSimpleName": "ProblemBenchmarksConfig",
+          "elementKind": "class",
+          "justification": "Using JAXB instead of XStream now."
+        },
+        {
+          "code": "java.generics.formalTypeParameterRemoved",
+          "old": "class org.optaplanner.benchmark.config.SolverBenchmarkConfig<Solution_ extends java.lang.Object>",
+          "new": "class org.optaplanner.benchmark.config.SolverBenchmarkConfig",
+          "package": "org.optaplanner.benchmark.config",
+          "classSimpleName": "SolverBenchmarkConfig",
+          "elementKind": "class",
+          "justification": "Using JAXB instead of XStream now."
+        },
+        {
+          "code": "java.annotation.removed",
+          "old": "class org.optaplanner.benchmark.config.SolverBenchmarkConfig<Solution_ extends java.lang.Object>",
+          "new": "class org.optaplanner.benchmark.config.SolverBenchmarkConfig",
+          "annotationType": "com.thoughtworks.xstream.annotations.XStreamAlias",
+          "annotation": "@com.thoughtworks.xstream.annotations.XStreamAlias(\"solverBenchmark\")",
+          "package": "org.optaplanner.benchmark.config",
+          "classSimpleName": "SolverBenchmarkConfig",
+          "elementKind": "class",
+          "justification": "Using JAXB instead of XStream now."
+        },
+        {
+          "code": "java.annotation.added",
+          "old": "class org.optaplanner.benchmark.config.SolverBenchmarkConfig<Solution_ extends java.lang.Object>",
+          "new": "class org.optaplanner.benchmark.config.SolverBenchmarkConfig",
+          "annotationType": "javax.xml.bind.annotation.XmlType",
+          "annotation": "@javax.xml.bind.annotation.XmlType(propOrder = {\"name\", \"solverConfig\", \"problemBenchmarksConfig\", \"subSingleCount\"})",
+          "package": "org.optaplanner.benchmark.config",
+          "classSimpleName": "SolverBenchmarkConfig",
+          "elementKind": "class",
+          "justification": "Using JAXB instead of XStream now."
+        },
+        {
+          "code": "java.annotation.removed",
+          "old": "class org.optaplanner.benchmark.config.blueprint.SolverBenchmarkBluePrintConfig",
+          "new": "class org.optaplanner.benchmark.config.blueprint.SolverBenchmarkBluePrintConfig",
+          "annotationType": "com.thoughtworks.xstream.annotations.XStreamAlias",
+          "annotation": "@com.thoughtworks.xstream.annotations.XStreamAlias(\"solverBenchmarkBluePrint\")",
+          "package": "org.optaplanner.benchmark.config.blueprint",
+          "classSimpleName": "SolverBenchmarkBluePrintConfig",
+          "elementKind": "class",
+          "justification": "Using JAXB instead of XStream now."
+        },
+        {
+          "code": "java.annotation.added",
+          "old": "class org.optaplanner.benchmark.config.blueprint.SolverBenchmarkBluePrintConfig",
+          "new": "class org.optaplanner.benchmark.config.blueprint.SolverBenchmarkBluePrintConfig",
+          "annotationType": "javax.xml.bind.annotation.XmlType",
+          "annotation": "@javax.xml.bind.annotation.XmlType(propOrder = {\"solverBenchmarkBluePrintType\"})",
+          "package": "org.optaplanner.benchmark.config.blueprint",
+          "classSimpleName": "SolverBenchmarkBluePrintConfig",
+          "elementKind": "class",
+          "justification": "Using JAXB instead of XStream now."
+        },
+        {
+          "code": "java.annotation.added",
+          "old": "enum org.optaplanner.benchmark.config.blueprint.SolverBenchmarkBluePrintType",
+          "new": "enum org.optaplanner.benchmark.config.blueprint.SolverBenchmarkBluePrintType",
+          "annotationType": "javax.xml.bind.annotation.XmlEnum",
+          "annotation": "@javax.xml.bind.annotation.XmlEnum",
+          "package": "org.optaplanner.benchmark.config.blueprint",
+          "classSimpleName": "SolverBenchmarkBluePrintType",
+          "elementKind": "enum",
+          "justification": "Using JAXB instead of XStream now."
+        },
+        {
+          "code": "java.annotation.added",
+          "old": "enum org.optaplanner.benchmark.config.ranking.SolverRankingType",
+          "new": "enum org.optaplanner.benchmark.config.ranking.SolverRankingType",
+          "annotationType": "javax.xml.bind.annotation.XmlEnum",
+          "annotation": "@javax.xml.bind.annotation.XmlEnum",
+          "package": "org.optaplanner.benchmark.config.ranking",
+          "classSimpleName": "SolverRankingType",
+          "elementKind": "enum",
+          "justification": "Using JAXB instead of XStream now."
+        },
+        {
+          "code": "java.annotation.removed",
+          "old": "class org.optaplanner.benchmark.config.report.BenchmarkReportConfig",
+          "new": "class org.optaplanner.benchmark.config.report.BenchmarkReportConfig",
+          "annotationType": "com.thoughtworks.xstream.annotations.XStreamAlias",
+          "annotation": "@com.thoughtworks.xstream.annotations.XStreamAlias(\"benchmarkReport\")",
+          "package": "org.optaplanner.benchmark.config.report",
+          "classSimpleName": "BenchmarkReportConfig",
+          "elementKind": "class",
+          "justification": "Using JAXB instead of XStream now."
+        },
+        {
+          "code": "java.annotation.added",
+          "old": "class org.optaplanner.benchmark.config.report.BenchmarkReportConfig",
+          "new": "class org.optaplanner.benchmark.config.report.BenchmarkReportConfig",
+          "annotationType": "javax.xml.bind.annotation.XmlType",
+          "annotation": "@javax.xml.bind.annotation.XmlType(propOrder = {\"locale\", \"solverRankingType\", \"solverRankingComparatorClass\", \"solverRankingWeightFactoryClass\"})",
+          "package": "org.optaplanner.benchmark.config.report",
+          "classSimpleName": "BenchmarkReportConfig",
+          "elementKind": "class",
+          "justification": "Using JAXB instead of XStream now."
+        },
+        {
+          "code": "java.annotation.added",
+          "old": "enum org.optaplanner.benchmark.config.statistic.ProblemStatisticType",
+          "new": "enum org.optaplanner.benchmark.config.statistic.ProblemStatisticType",
+          "annotationType": "javax.xml.bind.annotation.XmlEnum",
+          "annotation": "@javax.xml.bind.annotation.XmlEnum",
+          "package": "org.optaplanner.benchmark.config.statistic",
+          "classSimpleName": "ProblemStatisticType",
+          "elementKind": "enum",
+          "justification": "Using JAXB instead of XStream now."
+        },
+        {
+          "code": "java.annotation.added",
+          "old": "enum org.optaplanner.benchmark.config.statistic.SingleStatisticType",
+          "new": "enum org.optaplanner.benchmark.config.statistic.SingleStatisticType",
+          "annotationType": "javax.xml.bind.annotation.XmlEnum",
+          "annotation": "@javax.xml.bind.annotation.XmlEnum",
+          "package": "org.optaplanner.benchmark.config.statistic",
+          "classSimpleName": "SingleStatisticType",
+          "elementKind": "enum",
+          "justification": "Using JAXB instead of XStream now."
         }
       ]
     }

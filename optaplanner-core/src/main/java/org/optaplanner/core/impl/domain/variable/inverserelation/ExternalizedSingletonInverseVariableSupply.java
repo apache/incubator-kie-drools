@@ -28,25 +28,25 @@ import org.optaplanner.core.impl.domain.variable.listener.StatefulVariableListen
 /**
  * Alternative to {@link SingletonInverseVariableListener}.
  */
-public class ExternalizedSingletonInverseVariableSupply
-        implements StatefulVariableListener<Object>, SingletonInverseVariableSupply {
+public class ExternalizedSingletonInverseVariableSupply<Solution_>
+        implements StatefulVariableListener<Solution_, Object>, SingletonInverseVariableSupply {
 
-    protected final VariableDescriptor sourceVariableDescriptor;
+    protected final VariableDescriptor<Solution_> sourceVariableDescriptor;
 
     protected Map<Object, Object> inverseEntityMap = null;
 
-    public ExternalizedSingletonInverseVariableSupply(VariableDescriptor sourceVariableDescriptor) {
+    public ExternalizedSingletonInverseVariableSupply(VariableDescriptor<Solution_> sourceVariableDescriptor) {
         this.sourceVariableDescriptor = sourceVariableDescriptor;
     }
 
     @Override
-    public VariableDescriptor getSourceVariableDescriptor() {
+    public VariableDescriptor<Solution_> getSourceVariableDescriptor() {
         return sourceVariableDescriptor;
     }
 
     @Override
-    public void resetWorkingSolution(ScoreDirector scoreDirector) {
-        EntityDescriptor entityDescriptor = sourceVariableDescriptor.getEntityDescriptor();
+    public void resetWorkingSolution(ScoreDirector<Solution_> scoreDirector) {
+        EntityDescriptor<Solution_> entityDescriptor = sourceVariableDescriptor.getEntityDescriptor();
         List<Object> entityList = entityDescriptor.extractEntities(scoreDirector.getWorkingSolution());
         inverseEntityMap = new IdentityHashMap<>(entityList.size());
         for (Object entity : entityList) {
@@ -55,41 +55,41 @@ public class ExternalizedSingletonInverseVariableSupply
     }
 
     @Override
-    public void clearWorkingSolution(ScoreDirector scoreDirector) {
+    public void clearWorkingSolution(ScoreDirector<Solution_> scoreDirector) {
         inverseEntityMap = null;
     }
 
     @Override
-    public void beforeEntityAdded(ScoreDirector scoreDirector, Object entity) {
+    public void beforeEntityAdded(ScoreDirector<Solution_> scoreDirector, Object entity) {
         // Do nothing
     }
 
     @Override
-    public void afterEntityAdded(ScoreDirector scoreDirector, Object entity) {
+    public void afterEntityAdded(ScoreDirector<Solution_> scoreDirector, Object entity) {
         insert(scoreDirector, entity);
     }
 
     @Override
-    public void beforeVariableChanged(ScoreDirector scoreDirector, Object entity) {
+    public void beforeVariableChanged(ScoreDirector<Solution_> scoreDirector, Object entity) {
         retract(scoreDirector, entity);
     }
 
     @Override
-    public void afterVariableChanged(ScoreDirector scoreDirector, Object entity) {
+    public void afterVariableChanged(ScoreDirector<Solution_> scoreDirector, Object entity) {
         insert(scoreDirector, entity);
     }
 
     @Override
-    public void beforeEntityRemoved(ScoreDirector scoreDirector, Object entity) {
+    public void beforeEntityRemoved(ScoreDirector<Solution_> scoreDirector, Object entity) {
         retract(scoreDirector, entity);
     }
 
     @Override
-    public void afterEntityRemoved(ScoreDirector scoreDirector, Object entity) {
+    public void afterEntityRemoved(ScoreDirector<Solution_> scoreDirector, Object entity) {
         // Do nothing
     }
 
-    protected void insert(ScoreDirector scoreDirector, Object entity) {
+    protected void insert(ScoreDirector<Solution_> scoreDirector, Object entity) {
         Object value = sourceVariableDescriptor.getValue(entity);
         if (value == null) {
             return;
@@ -104,7 +104,7 @@ public class ExternalizedSingletonInverseVariableSupply
         }
     }
 
-    protected void retract(ScoreDirector scoreDirector, Object entity) {
+    protected void retract(ScoreDirector<Solution_> scoreDirector, Object entity) {
         Object value = sourceVariableDescriptor.getValue(entity);
         if (value == null) {
             return;

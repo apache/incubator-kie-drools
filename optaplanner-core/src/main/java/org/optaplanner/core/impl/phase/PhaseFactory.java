@@ -53,6 +53,6 @@ public interface PhaseFactory<Solution_> {
         }
     }
 
-    Phase<Solution_> buildPhase(int phaseIndex, HeuristicConfigPolicy solverConfigPolicy,
-            BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination solverTermination);
+    Phase<Solution_> buildPhase(int phaseIndex, HeuristicConfigPolicy<Solution_> solverConfigPolicy,
+            BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination<Solution_> solverTermination);
 }

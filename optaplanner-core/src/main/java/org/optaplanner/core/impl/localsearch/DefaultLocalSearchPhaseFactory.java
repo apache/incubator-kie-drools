@@ -49,16 +49,17 @@ import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.termination.Termination;
 import org.optaplanner.core.impl.solver.thread.ChildThreadType;
 
-public class DefaultLocalSearchPhaseFactory<Solution_> extends AbstractPhaseFactory<Solution_, LocalSearchPhaseConfig> {
+public class DefaultLocalSearchPhaseFactory<Solution_>
+        extends AbstractPhaseFactory<Solution_, LocalSearchPhaseConfig> {
 
     public DefaultLocalSearchPhaseFactory(LocalSearchPhaseConfig phaseConfig) {
         super(phaseConfig);
     }
 
     @Override
-    public LocalSearchPhase<Solution_> buildPhase(int phaseIndex, HeuristicConfigPolicy solverConfigPolicy,
-            BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination solverTermination) {
-        HeuristicConfigPolicy phaseConfigPolicy = solverConfigPolicy.createPhaseConfigPolicy();
+    public LocalSearchPhase<Solution_> buildPhase(int phaseIndex, HeuristicConfigPolicy<Solution_> solverConfigPolicy,
+            BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination<Solution_> solverTermination) {
+        HeuristicConfigPolicy<Solution_> phaseConfigPolicy = solverConfigPolicy.createPhaseConfigPolicy();
         DefaultLocalSearchPhase<Solution_> phase =
                 new DefaultLocalSearchPhase<>(phaseIndex, solverConfigPolicy.getLogIndentation(), bestSolutionRecaller,
                         buildPhaseTermination(phaseConfigPolicy, solverTermination));
@@ -75,10 +76,11 @@ public class DefaultLocalSearchPhaseFactory<Solution_> extends AbstractPhaseFact
         return phase;
     }
 
-    private LocalSearchDecider<Solution_> buildDecider(HeuristicConfigPolicy configPolicy, Termination termination) {
-        MoveSelector moveSelector = buildMoveSelector(configPolicy);
-        Acceptor acceptor = buildAcceptor(configPolicy);
-        LocalSearchForager forager = buildForager(configPolicy);
+    private LocalSearchDecider<Solution_> buildDecider(HeuristicConfigPolicy<Solution_> configPolicy,
+            Termination<Solution_> termination) {
+        MoveSelector<Solution_> moveSelector = buildMoveSelector(configPolicy);
+        Acceptor<Solution_> acceptor = buildAcceptor(configPolicy);
+        LocalSearchForager<Solution_> forager = buildForager(configPolicy);
         if (moveSelector.isNeverEnding() && !forager.supportsNeverEndingMoveSelector()) {
             throw new IllegalStateException("The moveSelector (" + moveSelector
                     + ") has neverEnding (" + moveSelector.isNeverEnding()
@@ -122,7 +124,7 @@ public class DefaultLocalSearchPhaseFactory<Solution_> extends AbstractPhaseFact
         return decider;
     }
 
-    protected Acceptor buildAcceptor(HeuristicConfigPolicy configPolicy) {
+    protected Acceptor<Solution_> buildAcceptor(HeuristicConfigPolicy<Solution_> configPolicy) {
         LocalSearchAcceptorConfig acceptorConfig_;
         if (phaseConfig.getAcceptorConfig() != null) {
             if (phaseConfig.getLocalSearchType() != null) {
@@ -157,10 +159,11 @@ public class DefaultLocalSearchPhaseFactory<Solution_> extends AbstractPhaseFact
                             + ") is not implemented.");
             }
         }
-        return AcceptorFactory.create(acceptorConfig_).buildAcceptor(configPolicy);
+        return AcceptorFactory.<Solution_> create(acceptorConfig_)
+                .buildAcceptor(configPolicy);
     }
 
-    protected LocalSearchForager buildForager(HeuristicConfigPolicy configPolicy) {
+    protected LocalSearchForager<Solution_> buildForager(HeuristicConfigPolicy<Solution_> configPolicy) {
         LocalSearchForagerConfig foragerConfig_;
         if (phaseConfig.getForagerConfig() != null) {
             if (phaseConfig.getLocalSearchType() != null) {
@@ -195,11 +198,11 @@ public class DefaultLocalSearchPhaseFactory<Solution_> extends AbstractPhaseFact
                             + ") is not implemented.");
             }
         }
-        return LocalSearchForagerFactory.create(foragerConfig_).buildForager();
+        return LocalSearchForagerFactory.<Solution_> create(foragerConfig_).buildForager();
     }
 
-    protected MoveSelector buildMoveSelector(HeuristicConfigPolicy configPolicy) {
-        MoveSelector moveSelector;
+    protected MoveSelector<Solution_> buildMoveSelector(HeuristicConfigPolicy<Solution_> configPolicy) {
+        MoveSelector<Solution_> moveSelector;
         SelectionCacheType defaultCacheType = SelectionCacheType.JUST_IN_TIME;
         SelectionOrder defaultSelectionOrder;
         if (phaseConfig.getLocalSearchType() == LocalSearchType.VARIABLE_NEIGHBORHOOD_DESCENT) {
@@ -210,12 +213,12 @@ public class DefaultLocalSearchPhaseFactory<Solution_> extends AbstractPhaseFact
         if (phaseConfig.getMoveSelectorConfig() == null) {
             // Default to changeMoveSelector and swapMoveSelector
             UnionMoveSelectorConfig unionMoveSelectorConfig = new UnionMoveSelectorConfig();
-            unionMoveSelectorConfig.setMoveSelectorConfigList(Arrays.asList(
-                    new ChangeMoveSelectorConfig(), new SwapMoveSelectorConfig()));
-            moveSelector = new UnionMoveSelectorFactory(unionMoveSelectorConfig).buildMoveSelector(configPolicy,
-                    defaultCacheType, defaultSelectionOrder);
+            unionMoveSelectorConfig.setMoveSelectorConfigList(Arrays.asList(new ChangeMoveSelectorConfig(),
+                    new SwapMoveSelectorConfig()));
+            moveSelector = new UnionMoveSelectorFactory<Solution_>(unionMoveSelectorConfig)
+                    .buildMoveSelector(configPolicy, defaultCacheType, defaultSelectionOrder);
         } else {
-            moveSelector = MoveSelectorFactory.create(phaseConfig.getMoveSelectorConfig())
+            moveSelector = MoveSelectorFactory.<Solution_> create(phaseConfig.getMoveSelectorConfig())
                     .buildMoveSelector(configPolicy, defaultCacheType, defaultSelectionOrder);
         }
         return moveSelector;

@@ -31,7 +31,7 @@ import org.optaplanner.core.impl.solver.thread.ChildThreadType;
  *
  * @see AbstractTermination
  */
-public interface Termination extends PhaseLifecycleListener {
+public interface Termination<Solution_> extends PhaseLifecycleListener<Solution_> {
 
     /**
      * Called by the {@link Solver} after every phase to determine if the search should stop.
@@ -39,7 +39,7 @@ public interface Termination extends PhaseLifecycleListener {
      * @param solverScope never null
      * @return true if the search should terminate.
      */
-    boolean isSolverTerminated(SolverScope solverScope);
+    boolean isSolverTerminated(SolverScope<Solution_> solverScope);
 
     /**
      * Called by the {@link Phase} after every step and every move to determine if the search should stop.
@@ -47,7 +47,7 @@ public interface Termination extends PhaseLifecycleListener {
      * @param phaseScope never null
      * @return true if the search should terminate.
      */
-    boolean isPhaseTerminated(AbstractPhaseScope phaseScope);
+    boolean isPhaseTerminated(AbstractPhaseScope<Solution_> phaseScope);
 
     /**
      * A timeGradient is a relative estimate of how long the search will continue.
@@ -65,7 +65,7 @@ public interface Termination extends PhaseLifecycleListener {
      * @return timeGradient t for which {@code 0.0 <= t <= 1.0 or -1.0} when it is not supported.
      *         At the start of a solver t is 0.0 and at the end t would be 1.0.
      */
-    double calculateSolverTimeGradient(SolverScope solverScope);
+    double calculateSolverTimeGradient(SolverScope<Solution_> solverScope);
 
     /**
      * See {@link #calculateSolverTimeGradient(SolverScope)}.
@@ -74,7 +74,7 @@ public interface Termination extends PhaseLifecycleListener {
      * @return timeGradient t for which {@code 0.0 <= t <= 1.0 or -1.0} when it is not supported.
      *         At the start of a phase t is 0.0 and at the end t would be 1.0.
      */
-    double calculatePhaseTimeGradient(AbstractPhaseScope phaseScope);
+    double calculatePhaseTimeGradient(AbstractPhaseScope<Solution_> phaseScope);
 
     /**
      * Create a {@link Termination} for a child {@link Thread} of the {@link Solver}.
@@ -84,6 +84,6 @@ public interface Termination extends PhaseLifecycleListener {
      * @return not null
      * @throws UnsupportedOperationException if not supported by this termination
      */
-    Termination createChildThreadTermination(SolverScope solverScope, ChildThreadType childThreadType);
+    Termination<Solution_> createChildThreadTermination(SolverScope<Solution_> solverScope, ChildThreadType childThreadType);
 
 }

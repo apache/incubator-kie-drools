@@ -33,26 +33,27 @@ import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
+import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
 public class PooledEntityPlacerTest extends AbstractEntityPlacerTest {
 
     @Test
     public void oneMoveSelector() {
-        MoveSelector moveSelector = SelectorTestUtils.mockMoveSelector(DummyMove.class,
+        MoveSelector<TestdataSolution> moveSelector = SelectorTestUtils.mockMoveSelector(DummyMove.class,
                 new DummyMove("a1"), new DummyMove("a2"), new DummyMove("b1"));
 
-        PooledEntityPlacer placer = new PooledEntityPlacer(moveSelector);
+        PooledEntityPlacer<TestdataSolution> placer = new PooledEntityPlacer<>(moveSelector);
 
-        SolverScope solverScope = mock(SolverScope.class);
+        SolverScope<TestdataSolution> solverScope = mock(SolverScope.class);
         placer.solvingStarted(solverScope);
 
-        AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
+        AbstractPhaseScope<TestdataSolution> phaseScopeA = mock(AbstractPhaseScope.class);
         when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
         placer.phaseStarted(phaseScopeA);
-        Iterator<Placement> placementIterator = placer.iterator();
+        Iterator<Placement<TestdataSolution>> placementIterator = placer.iterator();
 
         assertThat(placementIterator.hasNext()).isTrue();
-        AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
+        AbstractStepScope<TestdataSolution> stepScopeA1 = mock(AbstractStepScope.class);
         when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
         placer.stepStarted(stepScopeA1);
         assertAllCodesOfIterator(placementIterator.next().iterator(),
@@ -60,7 +61,7 @@ public class PooledEntityPlacerTest extends AbstractEntityPlacerTest {
         placer.stepEnded(stepScopeA1);
 
         assertThat(placementIterator.hasNext()).isTrue();
-        AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
+        AbstractStepScope<TestdataSolution> stepScopeA2 = mock(AbstractStepScope.class);
         when(stepScopeA2.getPhaseScope()).thenReturn(phaseScopeA);
         placer.stepStarted(stepScopeA2);
         assertAllCodesOfIterator(placementIterator.next().iterator(),
@@ -68,7 +69,7 @@ public class PooledEntityPlacerTest extends AbstractEntityPlacerTest {
         placer.stepEnded(stepScopeA2);
 
         assertThat(placementIterator.hasNext()).isTrue();
-        AbstractStepScope stepScopeA3 = mock(AbstractStepScope.class);
+        AbstractStepScope<TestdataSolution> stepScopeA3 = mock(AbstractStepScope.class);
         when(stepScopeA3.getPhaseScope()).thenReturn(phaseScopeA);
         placer.stepStarted(stepScopeA3);
         assertAllCodesOfIterator(placementIterator.next().iterator(),
@@ -77,13 +78,13 @@ public class PooledEntityPlacerTest extends AbstractEntityPlacerTest {
 
         placer.phaseEnded(phaseScopeA);
 
-        AbstractPhaseScope phaseScopeB = mock(AbstractPhaseScope.class);
+        AbstractPhaseScope<TestdataSolution> phaseScopeB = mock(AbstractPhaseScope.class);
         when(phaseScopeB.getSolverScope()).thenReturn(solverScope);
         placer.phaseStarted(phaseScopeB);
         placementIterator = placer.iterator();
 
         assertThat(placementIterator.hasNext()).isTrue();
-        AbstractStepScope stepScopeB1 = mock(AbstractStepScope.class);
+        AbstractStepScope<TestdataSolution> stepScopeB1 = mock(AbstractStepScope.class);
         when(stepScopeB1.getPhaseScope()).thenReturn(phaseScopeB);
         placer.stepStarted(stepScopeB1);
         assertAllCodesOfIterator(placementIterator.next().iterator(),

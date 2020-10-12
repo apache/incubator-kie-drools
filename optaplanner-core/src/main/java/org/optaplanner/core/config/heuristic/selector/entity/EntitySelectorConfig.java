@@ -249,7 +249,8 @@ public class EntitySelectorConfig extends SelectorConfig<EntitySelectorConfig> {
         return getClass().getSimpleName() + "(" + entityClass + ")";
     }
 
-    public static boolean hasSorter(EntitySorterManner entitySorterManner, EntityDescriptor entityDescriptor) {
+    public static <Solution_> boolean hasSorter(EntitySorterManner entitySorterManner,
+            EntityDescriptor<Solution_> entityDescriptor) {
         switch (entitySorterManner) {
             case NONE:
                 return false;
@@ -263,14 +264,15 @@ public class EntitySelectorConfig extends SelectorConfig<EntitySelectorConfig> {
         }
     }
 
-    public static SelectionSorter determineSorter(EntitySorterManner entitySorterManner, EntityDescriptor entityDescriptor) {
-        SelectionSorter sorter;
+    public static <Solution_, T> SelectionSorter<Solution_, T> determineSorter(EntitySorterManner entitySorterManner,
+            EntityDescriptor<Solution_> entityDescriptor) {
+        SelectionSorter<Solution_, T> sorter;
         switch (entitySorterManner) {
             case NONE:
                 throw new IllegalStateException("Impossible state: hasSorter() should have returned null.");
             case DECREASING_DIFFICULTY:
             case DECREASING_DIFFICULTY_IF_AVAILABLE:
-                sorter = entityDescriptor.getDecreasingDifficultySorter();
+                sorter = (SelectionSorter<Solution_, T>) entityDescriptor.getDecreasingDifficultySorter();
                 if (sorter == null) {
                     throw new IllegalArgumentException("The sorterManner (" + entitySorterManner
                             + ") on entity class (" + entityDescriptor.getEntityClass()

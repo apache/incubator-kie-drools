@@ -32,7 +32,7 @@ import org.optaplanner.core.impl.heuristic.move.Move;
  *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
-public interface MoveIteratorFactory<Solution_> {
+public interface MoveIteratorFactory<Solution_, Move_ extends Move<Solution_>> {
 
     /**
      * @param scoreDirector never null, the {@link ScoreDirector}
@@ -51,7 +51,7 @@ public interface MoveIteratorFactory<Solution_> {
      * @throws UnsupportedOperationException if only {@link #createRandomMoveIterator(ScoreDirector, Random)} is
      *         supported
      */
-    Iterator<? extends Move<Solution_>> createOriginalMoveIterator(ScoreDirector<Solution_> scoreDirector);
+    Iterator<Move_> createOriginalMoveIterator(ScoreDirector<Solution_> scoreDirector);
 
     /**
      * When it is called depends on the configured {@link SelectionCacheType}.
@@ -63,7 +63,6 @@ public interface MoveIteratorFactory<Solution_> {
      * @return never null, an {@link Iterator} that is allowed (or even presumed) to be never ending
      * @throws UnsupportedOperationException if only {@link #createOriginalMoveIterator(ScoreDirector)} is supported
      */
-    Iterator<? extends Move<Solution_>> createRandomMoveIterator(
-            ScoreDirector<Solution_> scoreDirector, Random workingRandom);
+    Iterator<Move_> createRandomMoveIterator(ScoreDirector<Solution_> scoreDirector, Random workingRandom);
 
 }

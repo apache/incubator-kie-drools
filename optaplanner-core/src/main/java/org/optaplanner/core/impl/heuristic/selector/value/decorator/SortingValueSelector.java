@@ -23,12 +23,13 @@ import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSo
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 
-public class SortingValueSelector extends AbstractCachingValueSelector implements EntityIndependentValueSelector {
+public class SortingValueSelector<Solution_> extends AbstractCachingValueSelector<Solution_>
+        implements EntityIndependentValueSelector<Solution_> {
 
-    protected final SelectionSorter sorter;
+    protected final SelectionSorter<Solution_, Object> sorter;
 
-    public SortingValueSelector(EntityIndependentValueSelector childValueSelector, SelectionCacheType cacheType,
-            SelectionSorter sorter) {
+    public SortingValueSelector(EntityIndependentValueSelector<Solution_> childValueSelector, SelectionCacheType cacheType,
+            SelectionSorter<Solution_, Object> sorter) {
         super(childValueSelector, cacheType);
         this.sorter = sorter;
     }
@@ -38,7 +39,7 @@ public class SortingValueSelector extends AbstractCachingValueSelector implement
     // ************************************************************************
 
     @Override
-    public void constructCache(SolverScope solverScope) {
+    public void constructCache(SolverScope<Solution_> solverScope) {
         super.constructCache(solverScope);
         sorter.sort(solverScope.getScoreDirector(), cachedValueList);
         logger.trace("    Sorted cachedValueList: size ({}), valueSelector ({}).",

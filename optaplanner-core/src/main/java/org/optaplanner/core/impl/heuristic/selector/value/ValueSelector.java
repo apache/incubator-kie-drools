@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,12 +29,12 @@ import org.optaplanner.core.impl.heuristic.selector.Selector;
  *
  * @see AbstractValueSelector
  */
-public interface ValueSelector extends Selector {
+public interface ValueSelector<Solution_> extends Selector<Solution_> {
 
     /**
      * @return never null
      */
-    GenuineVariableDescriptor getVariableDescriptor();
+    GenuineVariableDescriptor<Solution_> getVariableDescriptor();
 
     /**
      * Similar to {@link IterableSelector#getSize()}, but requires an entity.

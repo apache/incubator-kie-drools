@@ -31,16 +31,16 @@ import org.optaplanner.core.impl.solver.scope.SolverScope;
 /**
  * Bridges a {@link MoveListFactory} to a {@link MoveSelector}.
  */
-public class MoveListFactoryToMoveSelectorBridge extends AbstractMoveSelector
-        implements SelectionCacheLifecycleListener {
+public class MoveListFactoryToMoveSelectorBridge<Solution_> extends AbstractMoveSelector<Solution_>
+        implements SelectionCacheLifecycleListener<Solution_> {
 
-    protected final MoveListFactory moveListFactory;
+    protected final MoveListFactory<Solution_> moveListFactory;
     protected final SelectionCacheType cacheType;
     protected final boolean randomSelection;
 
-    protected List<Move> cachedMoveList = null;
+    protected List<Move<Solution_>> cachedMoveList = null;
 
-    public MoveListFactoryToMoveSelectorBridge(MoveListFactory moveListFactory,
+    public MoveListFactoryToMoveSelectorBridge(MoveListFactory<Solution_> moveListFactory,
             SelectionCacheType cacheType, boolean randomSelection) {
         this.moveListFactory = moveListFactory;
         this.cacheType = cacheType;
@@ -49,7 +49,7 @@ public class MoveListFactoryToMoveSelectorBridge extends AbstractMoveSelector
             throw new IllegalArgumentException("The selector (" + this
                     + ") does not support the cacheType (" + cacheType + ").");
         }
-        phaseLifecycleSupport.addEventListener(new SelectionCacheLifecycleBridge(cacheType, this));
+        phaseLifecycleSupport.addEventListener(new SelectionCacheLifecycleBridge<>(cacheType, this));
     }
 
     @Override
@@ -67,14 +67,15 @@ public class MoveListFactoryToMoveSelectorBridge extends AbstractMoveSelector
     // ************************************************************************
 
     @Override
-    public void constructCache(SolverScope solverScope) {
-        cachedMoveList = moveListFactory.createMoveList(solverScope.getScoreDirector().getWorkingSolution());
+    public void constructCache(SolverScope<Solution_> solverScope) {
+        cachedMoveList =
+                (List<Move<Solution_>>) moveListFactory.createMoveList(solverScope.getScoreDirector().getWorkingSolution());
         logger.trace("    Created cachedMoveList: size ({}), moveSelector ({}).",
                 cachedMoveList.size(), this);
     }
 
     @Override
-    public void disposeCache(SolverScope solverScope) {
+    public void disposeCache(SolverScope<Solution_> solverScope) {
         cachedMoveList = null;
     }
 
@@ -91,11 +92,11 @@ public class MoveListFactoryToMoveSelectorBridge extends AbstractMoveSelector
 
     @Override
     public long getSize() {
-        return (long) cachedMoveList.size();
+        return cachedMoveList.size();
     }
 
     @Override
-    public Iterator<Move> iterator() {
+    public Iterator<Move<Solution_>> iterator() {
         if (!randomSelection) {
             return cachedMoveList.iterator();
         } else {

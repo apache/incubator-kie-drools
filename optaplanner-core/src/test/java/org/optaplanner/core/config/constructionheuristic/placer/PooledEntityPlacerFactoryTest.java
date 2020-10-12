@@ -21,6 +21,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.Test;
+import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
 import org.optaplanner.core.config.solver.EnvironmentMode;
@@ -40,23 +41,26 @@ public class PooledEntityPlacerFactoryTest {
         ChangeMoveSelectorConfig moveSelectorConfig = new ChangeMoveSelectorConfig();
         moveSelectorConfig.setValueSelectorConfig(new ValueSelectorConfig("value"));
 
-        HeuristicConfigPolicy configPolicy = buildHeuristicConfigPolicy(solutionDescriptor);
-        PooledEntityPlacerConfig placerConfig = PooledEntityPlacerFactory.unfoldNew(configPolicy, moveSelectorConfig);
+        HeuristicConfigPolicy<TestdataSolution> configPolicy = buildHeuristicConfigPolicy(solutionDescriptor);
+        PooledEntityPlacerConfig placerConfig =
+                PooledEntityPlacerFactory.unfoldNew(configPolicy, moveSelectorConfig);
 
         assertThat(placerConfig.getMoveSelectorConfig())
                 .isNotNull()
                 .isExactlyInstanceOf(ChangeMoveSelectorConfig.class);
 
-        ChangeMoveSelectorConfig changeMoveSelectorConfig = (ChangeMoveSelectorConfig) placerConfig.getMoveSelectorConfig();
+        ChangeMoveSelectorConfig changeMoveSelectorConfig =
+                (ChangeMoveSelectorConfig) placerConfig.getMoveSelectorConfig();
         assertThat(changeMoveSelectorConfig.getEntitySelectorConfig().getEntityClass()).isNull();
         assertThat(changeMoveSelectorConfig.getEntitySelectorConfig().getMimicSelectorRef())
                 .isEqualTo(TestdataEntity.class.getName());
         assertThat(changeMoveSelectorConfig.getValueSelectorConfig().getVariableName()).isEqualTo("value");
     }
 
-    public HeuristicConfigPolicy buildHeuristicConfigPolicy(SolutionDescriptor solutionDescriptor) {
-        InnerScoreDirectorFactory scoreDirectorFactory = mock(InnerScoreDirectorFactory.class);
+    public HeuristicConfigPolicy<TestdataSolution>
+            buildHeuristicConfigPolicy(SolutionDescriptor<TestdataSolution> solutionDescriptor) {
+        InnerScoreDirectorFactory<TestdataSolution, SimpleScore> scoreDirectorFactory = mock(InnerScoreDirectorFactory.class);
         when(scoreDirectorFactory.getSolutionDescriptor()).thenReturn(solutionDescriptor);
-        return new HeuristicConfigPolicy(EnvironmentMode.REPRODUCIBLE, null, null, null, scoreDirectorFactory);
+        return new HeuristicConfigPolicy<>(EnvironmentMode.REPRODUCIBLE, null, null, null, scoreDirectorFactory);
     }
 }

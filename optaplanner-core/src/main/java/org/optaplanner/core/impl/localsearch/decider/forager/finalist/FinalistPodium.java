@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,19 +28,19 @@ import org.optaplanner.core.impl.localsearch.scope.LocalSearchMoveScope;
  * @see AbstractFinalistPodium
  * @see HighestScoreFinalistPodium
  */
-public interface FinalistPodium extends LocalSearchPhaseLifecycleListener {
+public interface FinalistPodium<Solution_> extends LocalSearchPhaseLifecycleListener<Solution_> {
 
     /**
      * See {@link LocalSearchForager#addMove(LocalSearchMoveScope)}.
      *
      * @param moveScope never null
      */
-    void addMove(LocalSearchMoveScope moveScope);
+    void addMove(LocalSearchMoveScope<Solution_> moveScope);
 
     /**
      *
      * @return never null, sometimes empty
      */
-    List<LocalSearchMoveScope> getFinalistList();
+    List<LocalSearchMoveScope<Solution_>> getFinalistList();
 
 }

@@ -22,10 +22,10 @@ import org.optaplanner.core.config.localsearch.decider.forager.FinalistPodiumTyp
 import org.optaplanner.core.config.localsearch.decider.forager.LocalSearchForagerConfig;
 import org.optaplanner.core.config.localsearch.decider.forager.LocalSearchPickEarlyType;
 
-public class LocalSearchForagerFactory {
+public class LocalSearchForagerFactory<Solution_> {
 
-    public static LocalSearchForagerFactory create(LocalSearchForagerConfig foragerConfig) {
-        return new LocalSearchForagerFactory(foragerConfig);
+    public static <Solution_> LocalSearchForagerFactory<Solution_> create(LocalSearchForagerConfig foragerConfig) {
+        return new LocalSearchForagerFactory<>(foragerConfig);
     }
 
     private final LocalSearchForagerConfig foragerConfig;
@@ -34,7 +34,7 @@ public class LocalSearchForagerFactory {
         this.foragerConfig = foragerConfig;
     }
 
-    public LocalSearchForager buildForager() {
+    public LocalSearchForager<Solution_> buildForager() {
         LocalSearchPickEarlyType pickEarlyType_ =
                 defaultIfNull(foragerConfig.getPickEarlyType(), LocalSearchPickEarlyType.NEVER);
         int acceptedCountLimit_ = defaultIfNull(foragerConfig.getAcceptedCountLimit(), Integer.MAX_VALUE);
@@ -42,7 +42,7 @@ public class LocalSearchForagerFactory {
                 defaultIfNull(foragerConfig.getFinalistPodiumType(), FinalistPodiumType.HIGHEST_SCORE);
         // Breaking ties randomly leads statistically to much better results
         boolean breakTieRandomly_ = defaultIfNull(foragerConfig.getBreakTieRandomly(), true);
-        return new AcceptedLocalSearchForager(finalistPodiumType_.buildFinalistPodium(), pickEarlyType_,
+        return new AcceptedLocalSearchForager<>(finalistPodiumType_.buildFinalistPodium(), pickEarlyType_,
                 acceptedCountLimit_, breakTieRandomly_);
     }
 }

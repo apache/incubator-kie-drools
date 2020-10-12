@@ -48,14 +48,14 @@ public class DefaultExhaustiveSearchPhase<Solution_> extends AbstractPhase<Solut
         implements ExhaustiveSearchPhase<Solution_> {
 
     protected Comparator<ExhaustiveSearchNode> nodeComparator;
-    protected EntitySelector entitySelector;
+    protected EntitySelector<Solution_> entitySelector;
     protected ExhaustiveSearchDecider<Solution_> decider;
 
     protected boolean assertWorkingSolutionScoreFromScratch = false;
     protected boolean assertExpectedWorkingSolutionScore = false;
 
     public DefaultExhaustiveSearchPhase(int phaseIndex, String logIndentation,
-            BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination termination) {
+            BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination<Solution_> termination) {
         super(phaseIndex, logIndentation, bestSolutionRecaller, termination);
     }
 
@@ -67,11 +67,11 @@ public class DefaultExhaustiveSearchPhase<Solution_> extends AbstractPhase<Solut
         this.nodeComparator = nodeComparator;
     }
 
-    public EntitySelector getEntitySelector() {
+    public EntitySelector<Solution_> getEntitySelector() {
         return entitySelector;
     }
 
-    public void setEntitySelector(EntitySelector entitySelector) {
+    public void setEntitySelector(EntitySelector<Solution_> entitySelector) {
         this.entitySelector = entitySelector;
     }
 

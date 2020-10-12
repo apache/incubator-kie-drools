@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ import org.optaplanner.core.impl.score.ScoreUtils;
 /**
  * The time gradient implementation of simulated annealing.
  */
-public class SimulatedAnnealingAcceptor extends AbstractAcceptor {
+public class SimulatedAnnealingAcceptor<Solution_> extends AbstractAcceptor<Solution_> {
 
     protected Score startingTemperature;
 
@@ -46,7 +46,7 @@ public class SimulatedAnnealingAcceptor extends AbstractAcceptor {
     // ************************************************************************
 
     @Override
-    public void phaseStarted(LocalSearchPhaseScope phaseScope) {
+    public void phaseStarted(LocalSearchPhaseScope<Solution_> phaseScope) {
         super.phaseStarted(phaseScope);
         for (double startingTemperatureLevel : ScoreUtils.extractLevelDoubles(startingTemperature)) {
             if (startingTemperatureLevel < 0.0) {
@@ -60,7 +60,7 @@ public class SimulatedAnnealingAcceptor extends AbstractAcceptor {
     }
 
     @Override
-    public void phaseEnded(LocalSearchPhaseScope phaseScope) {
+    public void phaseEnded(LocalSearchPhaseScope<Solution_> phaseScope) {
         super.phaseEnded(phaseScope);
         startingTemperatureLevels = null;
         temperatureLevels = null;
@@ -68,8 +68,8 @@ public class SimulatedAnnealingAcceptor extends AbstractAcceptor {
     }
 
     @Override
-    public boolean isAccepted(LocalSearchMoveScope moveScope) {
-        LocalSearchPhaseScope phaseScope = moveScope.getStepScope().getPhaseScope();
+    public boolean isAccepted(LocalSearchMoveScope<Solution_> moveScope) {
+        LocalSearchPhaseScope<Solution_> phaseScope = moveScope.getStepScope().getPhaseScope();
         Score lastStepScore = phaseScope.getLastCompletedStepScope().getScore();
         Score moveScore = moveScope.getScore();
         if (moveScore.compareTo(lastStepScore) >= 0) {
@@ -98,7 +98,7 @@ public class SimulatedAnnealingAcceptor extends AbstractAcceptor {
     }
 
     @Override
-    public void stepStarted(LocalSearchStepScope stepScope) {
+    public void stepStarted(LocalSearchStepScope<Solution_> stepScope) {
         super.stepStarted(stepScope);
         // TimeGradient only refreshes at the beginning of a step, so this code is in stepStarted instead of stepEnded
         double timeGradient = stepScope.getTimeGradient();

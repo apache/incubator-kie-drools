@@ -30,8 +30,9 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 @PlanningEntity
 public class TestdataManyToManyShadowedEntity extends TestdataObject {
 
-    public static EntityDescriptor buildEntityDescriptor() {
-        SolutionDescriptor solutionDescriptor = TestdataManyToManyShadowedSolution.buildSolutionDescriptor();
+    public static EntityDescriptor<TestdataManyToManyShadowedSolution> buildEntityDescriptor() {
+        SolutionDescriptor<TestdataManyToManyShadowedSolution> solutionDescriptor =
+                TestdataManyToManyShadowedSolution.buildSolutionDescriptor();
         return solutionDescriptor.findEntityDescriptorOrFail(TestdataManyToManyShadowedEntity.class);
     }
 
@@ -100,19 +101,22 @@ public class TestdataManyToManyShadowedEntity extends TestdataObject {
     // ************************************************************************
 
     public static class ComposedValuesUpdatingVariableListener
-            extends VariableListenerAdapter<TestdataManyToManyShadowedEntity> {
+            extends VariableListenerAdapter<TestdataManyToManyShadowedSolution, TestdataManyToManyShadowedEntity> {
 
         @Override
-        public void afterEntityAdded(ScoreDirector scoreDirector, TestdataManyToManyShadowedEntity entity) {
+        public void afterEntityAdded(ScoreDirector<TestdataManyToManyShadowedSolution> scoreDirector,
+                TestdataManyToManyShadowedEntity entity) {
             updateShadow(entity, scoreDirector);
         }
 
         @Override
-        public void afterVariableChanged(ScoreDirector scoreDirector, TestdataManyToManyShadowedEntity entity) {
+        public void afterVariableChanged(ScoreDirector<TestdataManyToManyShadowedSolution> scoreDirector,
+                TestdataManyToManyShadowedEntity entity) {
             updateShadow(entity, scoreDirector);
         }
 
-        private void updateShadow(TestdataManyToManyShadowedEntity entity, ScoreDirector scoreDirector) {
+        private void updateShadow(TestdataManyToManyShadowedEntity entity,
+                ScoreDirector<TestdataManyToManyShadowedSolution> scoreDirector) {
             TestdataValue primaryValue = entity.getPrimaryValue();
             TestdataValue secondaryValue = entity.getSecondaryValue();
             String composedValue;

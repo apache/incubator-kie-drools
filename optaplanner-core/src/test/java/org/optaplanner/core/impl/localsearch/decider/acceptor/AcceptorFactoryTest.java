@@ -44,7 +44,7 @@ import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 class AcceptorFactoryTest {
 
     @Test
-    void buildCompositeAcceptor() {
+    <Solution_> void buildCompositeAcceptor() {
         LocalSearchAcceptorConfig localSearchAcceptorConfig = new LocalSearchAcceptorConfig()
                 .withAcceptorTypeList(Arrays.asList(AcceptorType.values()))
                 .withEntityTabuSize(1)
@@ -59,15 +59,15 @@ class AcceptorFactoryTest {
                 .withStepCountingHillClimbingSize(1)
                 .withStepCountingHillClimbingType(StepCountingHillClimbingType.IMPROVING_STEP);
 
-        HeuristicConfigPolicy heuristicConfigPolicy = mock(HeuristicConfigPolicy.class);
+        HeuristicConfigPolicy<Solution_> heuristicConfigPolicy = mock(HeuristicConfigPolicy.class);
         ScoreDefinition<HardSoftScore> scoreDefinition = new HardSoftScoreDefinition();
         when(heuristicConfigPolicy.getEnvironmentMode()).thenReturn(EnvironmentMode.NON_INTRUSIVE_FULL_ASSERT);
         when(heuristicConfigPolicy.getScoreDefinition()).thenReturn(scoreDefinition);
 
-        AcceptorFactory acceptorFactory = AcceptorFactory.create(localSearchAcceptorConfig);
-        Acceptor acceptor = acceptorFactory.buildAcceptor(heuristicConfigPolicy);
+        AcceptorFactory<Solution_> acceptorFactory = AcceptorFactory.create(localSearchAcceptorConfig);
+        Acceptor<Solution_> acceptor = acceptorFactory.buildAcceptor(heuristicConfigPolicy);
         assertThat(acceptor).isExactlyInstanceOf(CompositeAcceptor.class);
-        CompositeAcceptor compositeAcceptor = (CompositeAcceptor) acceptor;
+        CompositeAcceptor<Solution_> compositeAcceptor = (CompositeAcceptor<Solution_>) acceptor;
         assertThat(compositeAcceptor.acceptorList).hasSize(AcceptorType.values().length);
         assertAcceptorTypeAtPosition(compositeAcceptor, 0, HillClimbingAcceptor.class);
         assertAcceptorTypeAtPosition(compositeAcceptor, 1, StepCountingHillClimbingAcceptor.class);
@@ -80,14 +80,14 @@ class AcceptorFactoryTest {
         assertAcceptorTypeAtPosition(compositeAcceptor, 8, GreatDelugeAcceptor.class);
     }
 
-    private void assertAcceptorTypeAtPosition(CompositeAcceptor compositeAcceptor, int position,
-            Class<? extends Acceptor> expectedAcceptorType) {
+    private <Solution_, Acceptor_ extends Acceptor<Solution_>> void assertAcceptorTypeAtPosition(
+            CompositeAcceptor<Solution_> compositeAcceptor, int position, Class<Acceptor_> expectedAcceptorType) {
         assertThat(compositeAcceptor.acceptorList.get(position)).isExactlyInstanceOf(expectedAcceptorType);
     }
 
     @Test
-    void noAcceptorConfigured_throwsException() {
-        AcceptorFactory acceptorFactory = AcceptorFactory.create(new LocalSearchAcceptorConfig());
+    <Solution_> void noAcceptorConfigured_throwsException() {
+        AcceptorFactory<Solution_> acceptorFactory = AcceptorFactory.create(new LocalSearchAcceptorConfig());
         assertThatIllegalArgumentException().isThrownBy(() -> acceptorFactory.buildAcceptor(mock(HeuristicConfigPolicy.class)))
                 .withMessageContaining("The acceptor does not specify any acceptorType");
     }

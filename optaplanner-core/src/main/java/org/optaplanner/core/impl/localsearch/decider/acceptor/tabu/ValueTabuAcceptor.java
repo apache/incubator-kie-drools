@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ import java.util.Collection;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchMoveScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 
-public class ValueTabuAcceptor extends AbstractTabuAcceptor {
+public class ValueTabuAcceptor<Solution_> extends AbstractTabuAcceptor<Solution_> {
 
     public ValueTabuAcceptor(String logIndentation) {
         super(logIndentation);
@@ -32,12 +32,12 @@ public class ValueTabuAcceptor extends AbstractTabuAcceptor {
     // ************************************************************************
 
     @Override
-    protected Collection<? extends Object> findTabu(LocalSearchMoveScope moveScope) {
+    protected Collection<? extends Object> findTabu(LocalSearchMoveScope<Solution_> moveScope) {
         return moveScope.getMove().getPlanningValues();
     }
 
     @Override
-    protected Collection<? extends Object> findNewTabu(LocalSearchStepScope stepScope) {
+    protected Collection<? extends Object> findNewTabu(LocalSearchStepScope<Solution_> stepScope) {
         return stepScope.getStep().getPlanningValues();
     }
 

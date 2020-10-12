@@ -32,18 +32,19 @@ import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValue
 import org.optaplanner.core.impl.solver.random.RandomUtils;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 
-public class ProbabilityValueSelector extends AbstractValueSelector
-        implements EntityIndependentValueSelector, SelectionCacheLifecycleListener {
+public class ProbabilityValueSelector<Solution_> extends AbstractValueSelector<Solution_>
+        implements EntityIndependentValueSelector<Solution_>, SelectionCacheLifecycleListener<Solution_> {
 
-    protected final EntityIndependentValueSelector childValueSelector;
+    protected final EntityIndependentValueSelector<Solution_> childValueSelector;
     protected final SelectionCacheType cacheType;
-    protected final SelectionProbabilityWeightFactory probabilityWeightFactory;
+    protected final SelectionProbabilityWeightFactory<Solution_, Object> probabilityWeightFactory;
 
     protected NavigableMap<Double, Object> cachedEntityMap = null;
     protected double probabilityWeightTotal = -1.0;
 
-    public ProbabilityValueSelector(EntityIndependentValueSelector childValueSelector, SelectionCacheType cacheType,
-            SelectionProbabilityWeightFactory probabilityWeightFactory) {
+    public ProbabilityValueSelector(EntityIndependentValueSelector<Solution_> childValueSelector,
+            SelectionCacheType cacheType,
+            SelectionProbabilityWeightFactory<Solution_, Object> probabilityWeightFactory) {
         this.childValueSelector = childValueSelector;
         this.cacheType = cacheType;
         this.probabilityWeightFactory = probabilityWeightFactory;
@@ -57,7 +58,7 @@ public class ProbabilityValueSelector extends AbstractValueSelector
             throw new IllegalArgumentException("The selector (" + this
                     + ") does not support the cacheType (" + cacheType + ").");
         }
-        phaseLifecycleSupport.addEventListener(new SelectionCacheLifecycleBridge(cacheType, this));
+        phaseLifecycleSupport.addEventListener(new SelectionCacheLifecycleBridge<>(cacheType, this));
     }
 
     @Override
@@ -70,14 +71,13 @@ public class ProbabilityValueSelector extends AbstractValueSelector
     // ************************************************************************
 
     @Override
-    public void constructCache(SolverScope solverScope) {
+    public void constructCache(SolverScope<Solution_> solverScope) {
         cachedEntityMap = new TreeMap<>();
-        ScoreDirector scoreDirector = solverScope.getScoreDirector();
+        ScoreDirector<Solution_> scoreDirector = solverScope.getScoreDirector();
         double probabilityWeightOffset = 0L;
         // TODO Fail-faster if a non FromSolutionPropertyValueSelector is used
         for (Object value : childValueSelector) {
-            double probabilityWeight = probabilityWeightFactory.createProbabilityWeight(
-                    scoreDirector, value);
+            double probabilityWeight = probabilityWeightFactory.createProbabilityWeight(scoreDirector, value);
             cachedEntityMap.put(probabilityWeightOffset, value);
             probabilityWeightOffset += probabilityWeight;
         }
@@ -85,12 +85,12 @@ public class ProbabilityValueSelector extends AbstractValueSelector
     }
 
     @Override
-    public void disposeCache(SolverScope solverScope) {
+    public void disposeCache(SolverScope<Solution_> solverScope) {
         probabilityWeightTotal = -1.0;
     }
 
     @Override
-    public GenuineVariableDescriptor getVariableDescriptor() {
+    public GenuineVariableDescriptor<Solution_> getVariableDescriptor() {
         return childValueSelector.getVariableDescriptor();
     }
 

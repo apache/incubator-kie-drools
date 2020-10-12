@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,11 +26,11 @@ import org.optaplanner.core.impl.score.director.InnerScoreDirector;
  * Unlike other {@link Demand}s, a custom demand isn't equalized based on its sources, but based on its target.
  * Therefore a custom shadow variable cannot be reused by built-in systems.
  */
-public class CustomShadowVariableDemand implements Demand<SingletonInverseVariableSupply> {
+public class CustomShadowVariableDemand<Solution_> implements Demand<Solution_, SingletonInverseVariableSupply> {
 
-    private final CustomShadowVariableDescriptor targetShadowVariableDescriptor;
+    private final CustomShadowVariableDescriptor<Solution_> targetShadowVariableDescriptor;
 
-    public CustomShadowVariableDemand(CustomShadowVariableDescriptor targetShadowVariableDescriptor) {
+    public CustomShadowVariableDemand(CustomShadowVariableDescriptor<Solution_> targetShadowVariableDescriptor) {
         this.targetShadowVariableDescriptor = targetShadowVariableDescriptor;
     }
 
@@ -39,7 +39,7 @@ public class CustomShadowVariableDemand implements Demand<SingletonInverseVariab
     // ************************************************************************
 
     @Override
-    public SingletonInverseVariableSupply createExternalizedSupply(InnerScoreDirector scoreDirector) {
+    public SingletonInverseVariableSupply createExternalizedSupply(InnerScoreDirector<Solution_, ?> scoreDirector) {
         throw new IllegalArgumentException("A custom shadow variable cannot be externalized.");
     }
 
@@ -55,7 +55,7 @@ public class CustomShadowVariableDemand implements Demand<SingletonInverseVariab
         if (!(o instanceof CustomShadowVariableDemand)) {
             return false;
         }
-        CustomShadowVariableDemand other = (CustomShadowVariableDemand) o;
+        CustomShadowVariableDemand<Solution_> other = (CustomShadowVariableDemand<Solution_>) o;
         return targetShadowVariableDescriptor == other.targetShadowVariableDescriptor;
     }
 

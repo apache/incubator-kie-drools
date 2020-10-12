@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,21 +30,22 @@ import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
  *
  * @see MoveSelector
  */
-public abstract class CompositeMoveSelector extends AbstractMoveSelector {
+public abstract class CompositeMoveSelector<Solution_> extends AbstractMoveSelector<Solution_> {
 
-    protected final List<MoveSelector> childMoveSelectorList;
+    protected final List<MoveSelector<Solution_>> childMoveSelectorList;
     protected final boolean randomSelection;
 
-    protected CompositeMoveSelector(List<MoveSelector> childMoveSelectorList, boolean randomSelection) {
+    protected CompositeMoveSelector(List<MoveSelector<Solution_>> childMoveSelectorList, boolean randomSelection) {
         this.childMoveSelectorList = childMoveSelectorList;
         this.randomSelection = randomSelection;
-        for (MoveSelector childMoveSelector : childMoveSelectorList) {
+        for (MoveSelector<Solution_> childMoveSelector : childMoveSelectorList) {
             phaseLifecycleSupport.addEventListener(childMoveSelector);
         }
         if (!randomSelection) {
             // Only the last childMoveSelector can be neverEnding
             if (!childMoveSelectorList.isEmpty()) {
-                for (MoveSelector childMoveSelector : childMoveSelectorList.subList(0, childMoveSelectorList.size() - 1)) {
+                for (MoveSelector<Solution_> childMoveSelector : childMoveSelectorList.subList(0,
+                        childMoveSelectorList.size() - 1)) {
                     if (childMoveSelector.isNeverEnding()) {
                         throw new IllegalStateException("The selector (" + this
                                 + ")'s non-last childMoveSelector (" + childMoveSelector
@@ -63,7 +64,7 @@ public abstract class CompositeMoveSelector extends AbstractMoveSelector {
         }
     }
 
-    public List<MoveSelector> getChildMoveSelectorList() {
+    public List<MoveSelector<Solution_>> getChildMoveSelectorList() {
         return childMoveSelectorList;
     }
 
@@ -78,7 +79,7 @@ public abstract class CompositeMoveSelector extends AbstractMoveSelector {
 
     @Override
     public boolean isCountable() {
-        for (MoveSelector moveSelector : childMoveSelectorList) {
+        for (MoveSelector<Solution_> moveSelector : childMoveSelectorList) {
             if (!moveSelector.isCountable()) {
                 return false;
             }

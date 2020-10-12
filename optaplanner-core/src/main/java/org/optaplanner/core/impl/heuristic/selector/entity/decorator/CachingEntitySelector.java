@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,11 +30,11 @@ import org.optaplanner.core.impl.heuristic.selector.value.decorator.CachingValue
  * <p>
  * Keep this code in sync with {@link CachingValueSelector} and {@link CachingMoveSelector}.
  */
-public class CachingEntitySelector extends AbstractCachingEntitySelector {
+public class CachingEntitySelector<Solution_> extends AbstractCachingEntitySelector<Solution_> {
 
     protected final boolean randomSelection;
 
-    public CachingEntitySelector(EntitySelector childEntitySelector, SelectionCacheType cacheType,
+    public CachingEntitySelector(EntitySelector<Solution_> childEntitySelector, SelectionCacheType cacheType,
             boolean randomSelection) {
         super(childEntitySelector, cacheType);
         this.randomSelection = randomSelection;

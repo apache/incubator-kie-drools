@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,8 +43,7 @@ public abstract class AbstractConstructionHeuristicTest<Solution_>
     }
 
     @Override
-    protected SolverFactory<Solution_> buildSolverFactory(
-            CommonApp<Solution_> commonApp,
+    protected SolverFactory<Solution_> buildSolverFactory(CommonApp<Solution_> commonApp,
             ConstructionHeuristicType constructionHeuristicType) {
         String solverConfigResource = commonApp.getSolverConfigResource();
         SolverConfig solverConfig = SolverConfig.createFromXmlResource(solverConfigResource);

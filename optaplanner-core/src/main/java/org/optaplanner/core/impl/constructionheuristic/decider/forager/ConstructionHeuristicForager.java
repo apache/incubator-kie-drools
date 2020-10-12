@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,12 +23,13 @@ import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeurist
 /**
  * @see AbstractConstructionHeuristicForager
  */
-public interface ConstructionHeuristicForager extends ConstructionHeuristicPhaseLifecycleListener {
+public interface ConstructionHeuristicForager<Solution_>
+        extends ConstructionHeuristicPhaseLifecycleListener<Solution_> {
 
-    void addMove(ConstructionHeuristicMoveScope moveScope);
+    void addMove(ConstructionHeuristicMoveScope<Solution_> moveScope);
 
     boolean isQuitEarly();
 
-    ConstructionHeuristicMoveScope pickMove(ConstructionHeuristicStepScope stepScope);
+    ConstructionHeuristicMoveScope<Solution_> pickMove(ConstructionHeuristicStepScope<Solution_> stepScope);
 
 }

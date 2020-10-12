@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 
 import org.junit.jupiter.api.Test;
+import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.config.constructionheuristic.placer.QueuedValuePlacerConfig;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.impl.constructionheuristic.placer.Placement;
@@ -48,34 +49,35 @@ class QueuedValuePlacerFactoryTest extends AbstractEntityPlacerTest {
         QueuedValuePlacerConfig config = new QueuedValuePlacerConfig();
         config.setEntityClass(TestdataEntity.class);
 
-        QueuedValuePlacer placer = new QueuedValuePlacerFactory(config).buildEntityPlacer(buildHeuristicConfigPolicy());
+        QueuedValuePlacer<TestdataSolution> placer =
+                new QueuedValuePlacerFactory<TestdataSolution>(config).buildEntityPlacer(buildHeuristicConfigPolicy());
 
-        SolverScope solverScope = mock(SolverScope.class);
+        SolverScope<TestdataSolution> solverScope = mock(SolverScope.class);
         placer.solvingStarted(solverScope);
-        AbstractPhaseScope phaseScope = mock(AbstractPhaseScope.class);
+        AbstractPhaseScope<TestdataSolution> phaseScope = mock(AbstractPhaseScope.class);
         when(phaseScope.getSolverScope()).thenReturn(solverScope);
-        InnerScoreDirector scoreDirector = mock(InnerScoreDirector.class);
-        when(phaseScope.getScoreDirector()).thenReturn(scoreDirector);
+        InnerScoreDirector<TestdataSolution, SimpleScore> scoreDirector = mock(InnerScoreDirector.class);
+        when(phaseScope.getScoreDirector()).thenReturn((InnerScoreDirector) scoreDirector);
         when(scoreDirector.getWorkingSolution()).thenReturn(generateSolution());
         placer.phaseStarted(phaseScope);
-        Iterator<Placement> placementIterator = placer.iterator();
+        Iterator<Placement<TestdataSolution>> placementIterator = placer.iterator();
         assertThat(placementIterator.hasNext()).isTrue();
 
-        AbstractStepScope stepScope = mock(AbstractStepScope.class);
+        AbstractStepScope<TestdataSolution> stepScope = mock(AbstractStepScope.class);
         when(stepScope.getPhaseScope()).thenReturn(phaseScope);
-        when(stepScope.getScoreDirector()).thenReturn(scoreDirector);
+        when(stepScope.getScoreDirector()).thenReturn((InnerScoreDirector) scoreDirector);
         placer.stepStarted(stepScope);
-        Placement placement = placementIterator.next();
+        Placement<TestdataSolution> placement = placementIterator.next();
 
         assertValuePlacement(placement, "v1", "e1", "e2");
     }
 
-    public HeuristicConfigPolicy buildHeuristicConfigPolicy() {
+    public HeuristicConfigPolicy<TestdataSolution> buildHeuristicConfigPolicy() {
         SolutionDescriptor<TestdataSolution> solutionDescriptor = TestdataSolution.buildSolutionDescriptor();
-        InnerScoreDirectorFactory scoreDirectorFactory = mock(InnerScoreDirectorFactory.class);
+        InnerScoreDirectorFactory<TestdataSolution, SimpleScore> scoreDirectorFactory = mock(InnerScoreDirectorFactory.class);
         when(scoreDirectorFactory.getSolutionDescriptor()).thenReturn(solutionDescriptor);
         when(scoreDirectorFactory.getScoreDefinition()).thenReturn(new SimpleScoreDefinition());
-        return new HeuristicConfigPolicy(EnvironmentMode.REPRODUCIBLE, null, null, null, scoreDirectorFactory);
+        return new HeuristicConfigPolicy<>(EnvironmentMode.REPRODUCIBLE, null, null, null, scoreDirectorFactory);
     }
 
     private TestdataSolution generateSolution() {

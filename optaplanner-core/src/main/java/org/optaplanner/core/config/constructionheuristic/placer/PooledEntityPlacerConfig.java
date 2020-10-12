@@ -69,8 +69,8 @@ public class PooledEntityPlacerConfig extends EntityPlacerConfig<PooledEntityPla
 
     @Override
     public PooledEntityPlacerConfig inherit(PooledEntityPlacerConfig inheritedConfig) {
-        setMoveSelectorConfig(ConfigUtils.inheritOverwritableProperty(
-                getMoveSelectorConfig(), inheritedConfig.getMoveSelectorConfig()));
+        setMoveSelectorConfig(ConfigUtils.inheritOverwritableProperty(getMoveSelectorConfig(),
+                inheritedConfig.getMoveSelectorConfig()));
         return this;
     }
 

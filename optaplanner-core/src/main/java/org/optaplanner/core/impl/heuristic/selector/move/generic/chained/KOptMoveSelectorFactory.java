@@ -29,7 +29,8 @@ import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelectorFactory;
 
-public class KOptMoveSelectorFactory extends AbstractMoveSelectorFactory<KOptMoveSelectorConfig> {
+public class KOptMoveSelectorFactory<Solution_>
+        extends AbstractMoveSelectorFactory<Solution_, KOptMoveSelectorConfig> {
 
     private static final int K = 3;
 
@@ -38,21 +39,23 @@ public class KOptMoveSelectorFactory extends AbstractMoveSelectorFactory<KOptMov
     }
 
     @Override
-    protected MoveSelector buildBaseMoveSelector(HeuristicConfigPolicy configPolicy,
+    protected MoveSelector<Solution_> buildBaseMoveSelector(HeuristicConfigPolicy<Solution_> configPolicy,
             SelectionCacheType minimumCacheType, boolean randomSelection) {
         EntitySelectorConfig entitySelectorConfig_ =
                 config.getEntitySelectorConfig() == null ? new EntitySelectorConfig() : config.getEntitySelectorConfig();
-        EntitySelector entitySelector = EntitySelectorFactory.create(entitySelectorConfig_).buildEntitySelector(configPolicy,
-                minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
+        EntitySelector<Solution_> entitySelector =
+                EntitySelectorFactory.<Solution_> create(entitySelectorConfig_)
+                        .buildEntitySelector(configPolicy, minimumCacheType,
+                                SelectionOrder.fromRandomSelectionBoolean(randomSelection));
         ValueSelectorConfig valueSelectorConfig_ =
                 config.getValueSelectorConfig() == null ? new ValueSelectorConfig() : config.getValueSelectorConfig();
-        ValueSelector[] valueSelectors = new ValueSelector[K - 1];
+        ValueSelector<Solution_>[] valueSelectors = new ValueSelector[K - 1];
         for (int i = 0; i < valueSelectors.length; i++) {
-            valueSelectors[i] = ValueSelectorFactory.create(valueSelectorConfig_).buildValueSelector(configPolicy,
-                    entitySelector.getEntityDescriptor(), minimumCacheType,
-                    SelectionOrder.fromRandomSelectionBoolean(randomSelection));
+            valueSelectors[i] = ValueSelectorFactory.<Solution_> create(valueSelectorConfig_)
+                    .buildValueSelector(configPolicy, entitySelector.getEntityDescriptor(), minimumCacheType,
+                            SelectionOrder.fromRandomSelectionBoolean(randomSelection));
 
         }
-        return new KOptMoveSelector(entitySelector, valueSelectors, randomSelection);
+        return new KOptMoveSelector<>(entitySelector, valueSelectors, randomSelection);
     }
 }

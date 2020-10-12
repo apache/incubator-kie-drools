@@ -27,14 +27,15 @@ import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 /**
  * Bridges a {@link MoveIteratorFactory} to a {@link MoveSelector}.
  */
-public class MoveIteratorFactoryToMoveSelectorBridge extends AbstractMoveSelector {
+public class MoveIteratorFactoryToMoveSelectorBridge<Solution_> extends AbstractMoveSelector<Solution_> {
 
-    protected final MoveIteratorFactory moveIteratorFactory;
+    protected final MoveIteratorFactory<Solution_, ?> moveIteratorFactory;
     protected final boolean randomSelection;
 
-    protected ScoreDirector scoreDirector = null;
+    protected ScoreDirector<Solution_> scoreDirector = null;
 
-    public MoveIteratorFactoryToMoveSelectorBridge(MoveIteratorFactory moveIteratorFactory, boolean randomSelection) {
+    public MoveIteratorFactoryToMoveSelectorBridge(MoveIteratorFactory<Solution_, ?> moveIteratorFactory,
+            boolean randomSelection) {
         this.moveIteratorFactory = moveIteratorFactory;
         this.randomSelection = randomSelection;
     }
@@ -49,13 +50,13 @@ public class MoveIteratorFactoryToMoveSelectorBridge extends AbstractMoveSelecto
     // ************************************************************************
 
     @Override
-    public void phaseStarted(AbstractPhaseScope phaseScope) {
+    public void phaseStarted(AbstractPhaseScope<Solution_> phaseScope) {
         super.phaseStarted(phaseScope);
         scoreDirector = phaseScope.getScoreDirector();
     }
 
     @Override
-    public void phaseEnded(AbstractPhaseScope phaseScope) {
+    public void phaseEnded(AbstractPhaseScope<Solution_> phaseScope) {
         super.phaseEnded(phaseScope);
         scoreDirector = null;
     }
@@ -82,11 +83,12 @@ public class MoveIteratorFactoryToMoveSelectorBridge extends AbstractMoveSelecto
     }
 
     @Override
-    public Iterator<Move> iterator() {
+    public Iterator<Move<Solution_>> iterator() {
         if (!randomSelection) {
-            return moveIteratorFactory.createOriginalMoveIterator(scoreDirector);
+            return (Iterator<Move<Solution_>>) moveIteratorFactory.createOriginalMoveIterator(scoreDirector);
         } else {
-            return moveIteratorFactory.createRandomMoveIterator(scoreDirector, workingRandom);
+            return (Iterator<Move<Solution_>>) moveIteratorFactory.createRandomMoveIterator(scoreDirector,
+                    workingRandom);
         }
     }
 

@@ -26,7 +26,7 @@ import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
-public class AnchorVariableListener<Solution_> implements VariableListener<Object>, AnchorVariableSupply {
+public class AnchorVariableListener<Solution_> implements VariableListener<Solution_, Object>, AnchorVariableSupply {
 
     protected final AnchorShadowVariableDescriptor<Solution_> anchorShadowVariableDescriptor;
     protected final VariableDescriptor<Solution_> previousVariableDescriptor;
@@ -41,36 +41,36 @@ public class AnchorVariableListener<Solution_> implements VariableListener<Objec
     }
 
     @Override
-    public void beforeEntityAdded(ScoreDirector scoreDirector, Object entity) {
+    public void beforeEntityAdded(ScoreDirector<Solution_> scoreDirector, Object entity) {
         // Do nothing
     }
 
     @Override
-    public void afterEntityAdded(ScoreDirector scoreDirector, Object entity) {
-        insert((InnerScoreDirector) scoreDirector, entity);
+    public void afterEntityAdded(ScoreDirector<Solution_> scoreDirector, Object entity) {
+        insert((InnerScoreDirector<Solution_, ?>) scoreDirector, entity);
     }
 
     @Override
-    public void beforeVariableChanged(ScoreDirector scoreDirector, Object entity) {
+    public void beforeVariableChanged(ScoreDirector<Solution_> scoreDirector, Object entity) {
         // No need to retract() because the insert (which is guaranteed to be called later) affects the same trailing entities.
     }
 
     @Override
-    public void afterVariableChanged(ScoreDirector scoreDirector, Object entity) {
-        insert((InnerScoreDirector) scoreDirector, entity);
+    public void afterVariableChanged(ScoreDirector<Solution_> scoreDirector, Object entity) {
+        insert((InnerScoreDirector<Solution_, ?>) scoreDirector, entity);
     }
 
     @Override
-    public void beforeEntityRemoved(ScoreDirector scoreDirector, Object entity) {
+    public void beforeEntityRemoved(ScoreDirector<Solution_> scoreDirector, Object entity) {
         // No need to retract() because the trailing entities will be removed too or change their previousVariable
     }
 
     @Override
-    public void afterEntityRemoved(ScoreDirector scoreDirector, Object entity) {
+    public void afterEntityRemoved(ScoreDirector<Solution_> scoreDirector, Object entity) {
         // Do nothing
     }
 
-    protected void insert(InnerScoreDirector scoreDirector, Object entity) {
+    protected void insert(InnerScoreDirector<Solution_, ?> scoreDirector, Object entity) {
         Object previousEntity = previousVariableDescriptor.getValue(entity);
         Object anchor;
         if (previousEntity == null) {

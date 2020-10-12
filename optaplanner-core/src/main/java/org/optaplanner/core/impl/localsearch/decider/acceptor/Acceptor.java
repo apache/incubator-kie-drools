@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,12 +27,12 @@ import org.optaplanner.core.impl.localsearch.scope.LocalSearchMoveScope;
  *
  * @see AbstractAcceptor
  */
-public interface Acceptor extends LocalSearchPhaseLifecycleListener {
+public interface Acceptor<Solution_> extends LocalSearchPhaseLifecycleListener<Solution_> {
 
     /**
      * @param moveScope not null
      * @return true if accepted
      */
-    boolean isAccepted(LocalSearchMoveScope moveScope);
+    boolean isAccepted(LocalSearchMoveScope<Solution_> moveScope);
 
 }

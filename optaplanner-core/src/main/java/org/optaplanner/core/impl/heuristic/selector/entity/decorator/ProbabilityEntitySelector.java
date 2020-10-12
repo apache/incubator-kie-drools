@@ -33,17 +33,18 @@ import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.solver.random.RandomUtils;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 
-public class ProbabilityEntitySelector extends AbstractEntitySelector implements SelectionCacheLifecycleListener {
+public class ProbabilityEntitySelector<Solution_> extends AbstractEntitySelector<Solution_>
+        implements SelectionCacheLifecycleListener<Solution_> {
 
-    protected final EntitySelector childEntitySelector;
+    protected final EntitySelector<Solution_> childEntitySelector;
     protected final SelectionCacheType cacheType;
-    protected final SelectionProbabilityWeightFactory probabilityWeightFactory;
+    protected final SelectionProbabilityWeightFactory<Solution_, Object> probabilityWeightFactory;
 
     protected NavigableMap<Double, Object> cachedEntityMap = null;
     protected double probabilityWeightTotal = -1.0;
 
-    public ProbabilityEntitySelector(EntitySelector childEntitySelector, SelectionCacheType cacheType,
-            SelectionProbabilityWeightFactory probabilityWeightFactory) {
+    public ProbabilityEntitySelector(EntitySelector<Solution_> childEntitySelector, SelectionCacheType cacheType,
+            SelectionProbabilityWeightFactory<Solution_, Object> probabilityWeightFactory) {
         this.childEntitySelector = childEntitySelector;
         this.cacheType = cacheType;
         this.probabilityWeightFactory = probabilityWeightFactory;
@@ -57,7 +58,7 @@ public class ProbabilityEntitySelector extends AbstractEntitySelector implements
             throw new IllegalArgumentException("The selector (" + this
                     + ") does not support the cacheType (" + cacheType + ").");
         }
-        phaseLifecycleSupport.addEventListener(new SelectionCacheLifecycleBridge(cacheType, this));
+        phaseLifecycleSupport.addEventListener(new SelectionCacheLifecycleBridge<>(cacheType, this));
     }
 
     @Override
@@ -70,9 +71,9 @@ public class ProbabilityEntitySelector extends AbstractEntitySelector implements
     // ************************************************************************
 
     @Override
-    public void constructCache(SolverScope solverScope) {
+    public void constructCache(SolverScope<Solution_> solverScope) {
         cachedEntityMap = new TreeMap<>();
-        ScoreDirector scoreDirector = solverScope.getScoreDirector();
+        ScoreDirector<Solution_> scoreDirector = solverScope.getScoreDirector();
         double probabilityWeightOffset = 0L;
         for (Object entity : childEntitySelector) {
             double probabilityWeight = probabilityWeightFactory.createProbabilityWeight(
@@ -84,12 +85,12 @@ public class ProbabilityEntitySelector extends AbstractEntitySelector implements
     }
 
     @Override
-    public void disposeCache(SolverScope solverScope) {
+    public void disposeCache(SolverScope<Solution_> solverScope) {
         probabilityWeightTotal = -1.0;
     }
 
     @Override
-    public EntityDescriptor getEntityDescriptor() {
+    public EntityDescriptor<Solution_> getEntityDescriptor() {
         return childEntitySelector.getEntityDescriptor();
     }
 

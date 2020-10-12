@@ -24,6 +24,7 @@ import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
+import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
@@ -39,19 +40,24 @@ public class AnchorVariableListenerTest {
 
     @Test
     public void chained() {
-        SolutionDescriptor solutionDescriptor = TestdataShadowingChainedSolution.buildSolutionDescriptor();
-        EntityDescriptor entityDescriptor = solutionDescriptor.findEntityDescriptorOrFail(TestdataShadowingChainedEntity.class);
-        GenuineVariableDescriptor chainedObjectVariableDescriptor = entityDescriptor
+        SolutionDescriptor<TestdataShadowingChainedSolution> solutionDescriptor =
+                TestdataShadowingChainedSolution.buildSolutionDescriptor();
+        EntityDescriptor<TestdataShadowingChainedSolution> entityDescriptor =
+                solutionDescriptor.findEntityDescriptorOrFail(TestdataShadowingChainedEntity.class);
+        GenuineVariableDescriptor<TestdataShadowingChainedSolution> chainedObjectVariableDescriptor = entityDescriptor
                 .getGenuineVariableDescriptor("chainedObject");
-        ShadowVariableDescriptor nextEntityVariableDescriptor = entityDescriptor.getShadowVariableDescriptor("nextEntity");
-        SingletonInverseVariableListener inverseVariableListener = new SingletonInverseVariableListener(
-                (InverseRelationShadowVariableDescriptor) nextEntityVariableDescriptor,
-                entityDescriptor.getGenuineVariableDescriptor("chainedObject"));
-        ShadowVariableDescriptor anchorVariableDescriptor = entityDescriptor.getShadowVariableDescriptor("anchor");
-        AnchorVariableListener variableListener = new AnchorVariableListener(
-                (AnchorShadowVariableDescriptor) anchorVariableDescriptor,
+        ShadowVariableDescriptor<TestdataShadowingChainedSolution> nextEntityVariableDescriptor =
+                entityDescriptor.getShadowVariableDescriptor("nextEntity");
+        SingletonInverseVariableListener<TestdataShadowingChainedSolution> inverseVariableListener =
+                new SingletonInverseVariableListener<>(
+                        (InverseRelationShadowVariableDescriptor<TestdataShadowingChainedSolution>) nextEntityVariableDescriptor,
+                        entityDescriptor.getGenuineVariableDescriptor("chainedObject"));
+        ShadowVariableDescriptor<TestdataShadowingChainedSolution> anchorVariableDescriptor =
+                entityDescriptor.getShadowVariableDescriptor("anchor");
+        AnchorVariableListener<TestdataShadowingChainedSolution> variableListener = new AnchorVariableListener<>(
+                (AnchorShadowVariableDescriptor<TestdataShadowingChainedSolution>) anchorVariableDescriptor,
                 chainedObjectVariableDescriptor, inverseVariableListener);
-        InnerScoreDirector scoreDirector = mock(InnerScoreDirector.class);
+        InnerScoreDirector<TestdataShadowingChainedSolution, SimpleScore> scoreDirector = mock(InnerScoreDirector.class);
 
         TestdataShadowingChainedAnchor a0 = new TestdataShadowingChainedAnchor("a0");
         TestdataShadowingChainedEntity a1 = new TestdataShadowingChainedEntity("a1", a0);

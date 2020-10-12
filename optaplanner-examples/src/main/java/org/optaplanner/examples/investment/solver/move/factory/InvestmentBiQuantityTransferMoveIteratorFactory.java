@@ -31,7 +31,8 @@ import org.optaplanner.examples.investment.domain.InvestmentSolution;
 import org.optaplanner.examples.investment.domain.util.InvestmentNumericUtil;
 import org.optaplanner.examples.investment.solver.move.InvestmentQuantityTransferMove;
 
-public class InvestmentBiQuantityTransferMoveIteratorFactory implements MoveIteratorFactory<InvestmentSolution> {
+public class InvestmentBiQuantityTransferMoveIteratorFactory
+        implements MoveIteratorFactory<InvestmentSolution, Move<InvestmentSolution>> {
 
     @Override
     public long getSize(ScoreDirector<InvestmentSolution> scoreDirector) {

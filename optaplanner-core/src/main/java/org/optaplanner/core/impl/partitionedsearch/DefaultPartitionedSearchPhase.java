@@ -61,10 +61,10 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
     protected final Integer runnablePartThreadLimit;
 
     protected List<PhaseConfig> phaseConfigList;
-    protected HeuristicConfigPolicy configPolicy;
+    protected HeuristicConfigPolicy<Solution_> configPolicy;
 
     public DefaultPartitionedSearchPhase(int phaseIndex, String logIndentation,
-            BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination termination,
+            BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination<Solution_> termination,
             SolutionPartitioner<Solution_> solutionPartitioner, ThreadFactory threadFactory,
             Integer runnablePartThreadLimit) {
         super(phaseIndex, logIndentation, bestSolutionRecaller, termination);
@@ -77,7 +77,7 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
         this.phaseConfigList = phaseConfigList;
     }
 
-    public void setConfigPolicy(HeuristicConfigPolicy configPolicy) {
+    public void setConfigPolicy(HeuristicConfigPolicy<Solution_> configPolicy) {
         this.configPolicy = configPolicy;
     }
 
@@ -99,7 +99,8 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
         phaseScope.setPartCount(partCount);
         phaseStarted(phaseScope);
         ExecutorService executor = createThreadPoolExecutor(partCount);
-        ChildThreadPlumbingTermination childThreadPlumbingTermination = new ChildThreadPlumbingTermination();
+        ChildThreadPlumbingTermination<Solution_> childThreadPlumbingTermination =
+                new ChildThreadPlumbingTermination<>();
         PartitionQueue<Solution_> partitionQueue = new PartitionQueue<>(partCount);
         Semaphore runnablePartThreadSemaphore = runnablePartThreadLimit == null ? null
                 : new Semaphore(runnablePartThreadLimit, true);
@@ -167,11 +168,12 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
     }
 
     public PartitionSolver<Solution_> buildPartitionSolver(
-            ChildThreadPlumbingTermination childThreadPlumbingTermination, Semaphore runnablePartThreadSemaphore,
+            ChildThreadPlumbingTermination<Solution_> childThreadPlumbingTermination,
+            Semaphore runnablePartThreadSemaphore,
             SolverScope<Solution_> solverScope) {
         BestSolutionRecaller<Solution_> bestSolutionRecaller =
                 BestSolutionRecallerFactory.create().buildBestSolutionRecaller(configPolicy.getEnvironmentMode());
-        Termination partTermination = new OrCompositeTermination(childThreadPlumbingTermination,
+        Termination<Solution_> partTermination = new OrCompositeTermination<>(childThreadPlumbingTermination,
                 termination.createChildThreadTermination(solverScope, ChildThreadType.PART_THREAD));
         List<Phase<Solution_>> phaseList = new ArrayList<>(phaseConfigList.size());
         int partPhaseIndex = 0;

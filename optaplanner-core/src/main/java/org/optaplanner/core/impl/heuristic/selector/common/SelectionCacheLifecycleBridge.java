@@ -22,13 +22,13 @@ import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 
-public class SelectionCacheLifecycleBridge implements PhaseLifecycleListener {
+public class SelectionCacheLifecycleBridge<Solution_> implements PhaseLifecycleListener<Solution_> {
 
     protected final SelectionCacheType cacheType;
-    protected final SelectionCacheLifecycleListener selectionCacheLifecycleListener;
+    protected final SelectionCacheLifecycleListener<Solution_> selectionCacheLifecycleListener;
 
     public SelectionCacheLifecycleBridge(SelectionCacheType cacheType,
-            SelectionCacheLifecycleListener selectionCacheLifecycleListener) {
+            SelectionCacheLifecycleListener<Solution_> selectionCacheLifecycleListener) {
         this.cacheType = cacheType;
         this.selectionCacheLifecycleListener = selectionCacheLifecycleListener;
         if (cacheType == null) {
@@ -39,42 +39,42 @@ public class SelectionCacheLifecycleBridge implements PhaseLifecycleListener {
     }
 
     @Override
-    public void solvingStarted(SolverScope solverScope) {
+    public void solvingStarted(SolverScope<Solution_> solverScope) {
         if (cacheType == SelectionCacheType.SOLVER) {
             selectionCacheLifecycleListener.constructCache(solverScope);
         }
     }
 
     @Override
-    public void phaseStarted(AbstractPhaseScope phaseScope) {
+    public void phaseStarted(AbstractPhaseScope<Solution_> phaseScope) {
         if (cacheType == SelectionCacheType.PHASE) {
             selectionCacheLifecycleListener.constructCache(phaseScope.getSolverScope());
         }
     }
 
     @Override
-    public void stepStarted(AbstractStepScope stepScope) {
+    public void stepStarted(AbstractStepScope<Solution_> stepScope) {
         if (cacheType == SelectionCacheType.STEP) {
             selectionCacheLifecycleListener.constructCache(stepScope.getPhaseScope().getSolverScope());
         }
     }
 
     @Override
-    public void stepEnded(AbstractStepScope stepScope) {
+    public void stepEnded(AbstractStepScope<Solution_> stepScope) {
         if (cacheType == SelectionCacheType.STEP) {
             selectionCacheLifecycleListener.disposeCache(stepScope.getPhaseScope().getSolverScope());
         }
     }
 
     @Override
-    public void phaseEnded(AbstractPhaseScope phaseScope) {
+    public void phaseEnded(AbstractPhaseScope<Solution_> phaseScope) {
         if (cacheType == SelectionCacheType.PHASE) {
             selectionCacheLifecycleListener.disposeCache(phaseScope.getSolverScope());
         }
     }
 
     @Override
-    public void solvingEnded(SolverScope solverScope) {
+    public void solvingEnded(SolverScope<Solution_> solverScope) {
         if (cacheType == SelectionCacheType.SOLVER) {
             selectionCacheLifecycleListener.disposeCache(solverScope);
         }

@@ -47,8 +47,8 @@ public class SolverConfigMultiThreadedTest {
     }
 
     private void runSolvingAndVerifySolution(final int entityCount, final int valueCount, final String moveThreadCount) {
-        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
-                TestdataSolution.class, TestdataEntity.class);
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class,
+                TestdataEntity.class);
         solverConfig.setMoveThreadCount(moveThreadCount);
 
         TestdataSolution solution = createTestSolution(entityCount, valueCount);
@@ -76,8 +76,8 @@ public class SolverConfigMultiThreadedTest {
     @Test
     @Timeout(5)
     public void customThreadFactoryClassIsUsed() {
-        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
-                TestdataSolution.class, TestdataEntity.class);
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class,
+                TestdataEntity.class);
         solverConfig.setThreadFactoryClass(MockThreadFactory.class);
         solverConfig.setMoveThreadCount("2");
 

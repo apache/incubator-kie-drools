@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,29 +25,29 @@ import org.optaplanner.core.impl.heuristic.selector.common.iterator.UpcomingSele
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 
-public class QueuedEntityPlacer extends AbstractEntityPlacer implements EntityPlacer {
+public class QueuedEntityPlacer<Solution_> extends AbstractEntityPlacer<Solution_> implements EntityPlacer<Solution_> {
 
-    protected final EntitySelector entitySelector;
-    protected final List<MoveSelector> moveSelectorList;
+    protected final EntitySelector<Solution_> entitySelector;
+    protected final List<MoveSelector<Solution_>> moveSelectorList;
 
-    public QueuedEntityPlacer(EntitySelector entitySelector, List<MoveSelector> moveSelectorList) {
+    public QueuedEntityPlacer(EntitySelector<Solution_> entitySelector, List<MoveSelector<Solution_>> moveSelectorList) {
         this.entitySelector = entitySelector;
         this.moveSelectorList = moveSelectorList;
         phaseLifecycleSupport.addEventListener(entitySelector);
-        for (MoveSelector moveSelector : moveSelectorList) {
+        for (MoveSelector<Solution_> moveSelector : moveSelectorList) {
             phaseLifecycleSupport.addEventListener(moveSelector);
         }
     }
 
     @Override
-    public Iterator<Placement> iterator() {
+    public Iterator<Placement<Solution_>> iterator() {
         return new QueuedEntityPlacingIterator(entitySelector.iterator());
     }
 
-    private class QueuedEntityPlacingIterator extends UpcomingSelectionIterator<Placement> {
+    private class QueuedEntityPlacingIterator extends UpcomingSelectionIterator<Placement<Solution_>> {
 
         private final Iterator<Object> entityIterator;
-        private Iterator<MoveSelector> moveSelectorIterator;
+        private Iterator<MoveSelector<Solution_>> moveSelectorIterator;
 
         private QueuedEntityPlacingIterator(Iterator<Object> entityIterator) {
             this.entityIterator = entityIterator;
@@ -55,8 +55,8 @@ public class QueuedEntityPlacer extends AbstractEntityPlacer implements EntityPl
         }
 
         @Override
-        protected Placement createUpcomingSelection() {
-            Iterator<Move> moveIterator = null;
+        protected Placement<Solution_> createUpcomingSelection() {
+            Iterator<Move<Solution_>> moveIterator = null;
             // Skip empty placements to avoid no-operation steps
             while (moveIterator == null || !moveIterator.hasNext()) {
                 // If a moveSelector's iterator is empty, it might not be empty the next time
@@ -68,10 +68,10 @@ public class QueuedEntityPlacer extends AbstractEntityPlacer implements EntityPl
                     entityIterator.next();
                     moveSelectorIterator = moveSelectorList.iterator();
                 }
-                MoveSelector moveSelector = moveSelectorIterator.next();
+                MoveSelector<Solution_> moveSelector = moveSelectorIterator.next();
                 moveIterator = moveSelector.iterator();
             }
-            return new Placement(moveIterator);
+            return new Placement<>(moveIterator);
         }
 
     }

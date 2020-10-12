@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,28 +31,29 @@ import org.slf4j.LoggerFactory;
  *
  * @see FinalistPodium
  */
-public abstract class AbstractFinalistPodium extends LocalSearchPhaseLifecycleListenerAdapter implements FinalistPodium {
+public abstract class AbstractFinalistPodium<Solution_> extends LocalSearchPhaseLifecycleListenerAdapter<Solution_>
+        implements FinalistPodium<Solution_> {
 
     protected static final int FINALIST_LIST_MAX_SIZE = 1_024_000;
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     protected boolean finalistIsAccepted;
-    protected List<LocalSearchMoveScope> finalistList;
+    protected List<LocalSearchMoveScope<Solution_>> finalistList;
 
     @Override
-    public void stepStarted(LocalSearchStepScope stepScope) {
+    public void stepStarted(LocalSearchStepScope<Solution_> stepScope) {
         super.stepStarted(stepScope);
         finalistIsAccepted = false;
         finalistList = new ArrayList<>(1024);
     }
 
-    protected void clearAndAddFinalist(LocalSearchMoveScope moveScope) {
+    protected void clearAndAddFinalist(LocalSearchMoveScope<Solution_> moveScope) {
         finalistList.clear();
         finalistList.add(moveScope);
     }
 
-    protected void addFinalist(LocalSearchMoveScope moveScope) {
+    protected void addFinalist(LocalSearchMoveScope<Solution_> moveScope) {
         if (finalistList.size() >= FINALIST_LIST_MAX_SIZE) {
             // Avoid unbounded growth and OutOfMemoryException
             return;
@@ -61,12 +62,12 @@ public abstract class AbstractFinalistPodium extends LocalSearchPhaseLifecycleLi
     }
 
     @Override
-    public List<LocalSearchMoveScope> getFinalistList() {
+    public List<LocalSearchMoveScope<Solution_>> getFinalistList() {
         return finalistList;
     }
 
     @Override
-    public void phaseEnded(LocalSearchPhaseScope phaseScope) {
+    public void phaseEnded(LocalSearchPhaseScope<Solution_> phaseScope) {
         super.phaseEnded(phaseScope);
         finalistIsAccepted = false;
         finalistList = null;

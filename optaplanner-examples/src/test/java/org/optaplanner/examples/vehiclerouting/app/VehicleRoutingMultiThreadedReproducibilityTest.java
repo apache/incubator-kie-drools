@@ -62,7 +62,8 @@ public class VehicleRoutingMultiThreadedReproducibilityTest {
             vehicleRoutingSolutions[i] = solution;
         }
 
-        SolverConfig solverConfig = SolverConfig.createFromXmlResource(vehicleRoutingApp.getSolverConfigResource());
+        SolverConfig solverConfig =
+                SolverConfig.createFromXmlResource(vehicleRoutingApp.getSolverConfigResource());
         solverConfig.withEnvironmentMode(EnvironmentMode.REPRODUCIBLE)
                 .withMoveThreadCount(MOVE_THREAD_COUNT);
         solverConfig.getPhaseConfigList().forEach(phaseConfig -> {

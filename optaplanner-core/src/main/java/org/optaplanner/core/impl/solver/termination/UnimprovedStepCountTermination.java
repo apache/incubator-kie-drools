@@ -20,7 +20,7 @@ import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.solver.thread.ChildThreadType;
 
-public class UnimprovedStepCountTermination extends AbstractTermination {
+public class UnimprovedStepCountTermination<Solution_> extends AbstractTermination<Solution_> {
 
     private final int unimprovedStepCountLimit;
 
@@ -41,18 +41,18 @@ public class UnimprovedStepCountTermination extends AbstractTermination {
     // ************************************************************************
 
     @Override
-    public boolean isSolverTerminated(SolverScope solverScope) {
+    public boolean isSolverTerminated(SolverScope<Solution_> solverScope) {
         throw new UnsupportedOperationException(
                 getClass().getSimpleName() + " can only be used for phase termination.");
     }
 
     @Override
-    public boolean isPhaseTerminated(AbstractPhaseScope phaseScope) {
+    public boolean isPhaseTerminated(AbstractPhaseScope<Solution_> phaseScope) {
         int unimprovedStepCount = calculateUnimprovedStepCount(phaseScope);
         return unimprovedStepCount >= unimprovedStepCountLimit;
     }
 
-    protected int calculateUnimprovedStepCount(AbstractPhaseScope phaseScope) {
+    protected int calculateUnimprovedStepCount(AbstractPhaseScope<Solution_> phaseScope) {
         int bestStepIndex = phaseScope.getBestSolutionStepIndex();
         int lastStepIndex = phaseScope.getLastCompletedStepScope().getStepIndex();
         return lastStepIndex - bestStepIndex;
@@ -63,13 +63,13 @@ public class UnimprovedStepCountTermination extends AbstractTermination {
     // ************************************************************************
 
     @Override
-    public double calculateSolverTimeGradient(SolverScope solverScope) {
+    public double calculateSolverTimeGradient(SolverScope<Solution_> solverScope) {
         throw new UnsupportedOperationException(
                 getClass().getSimpleName() + " can only be used for phase termination.");
     }
 
     @Override
-    public double calculatePhaseTimeGradient(AbstractPhaseScope phaseScope) {
+    public double calculatePhaseTimeGradient(AbstractPhaseScope<Solution_> phaseScope) {
         int unimprovedStepCount = calculateUnimprovedStepCount(phaseScope);
         double timeGradient = ((double) unimprovedStepCount) / ((double) unimprovedStepCountLimit);
         return Math.min(timeGradient, 1.0);
@@ -80,9 +80,9 @@ public class UnimprovedStepCountTermination extends AbstractTermination {
     // ************************************************************************
 
     @Override
-    public UnimprovedStepCountTermination createChildThreadTermination(
-            SolverScope solverScope, ChildThreadType childThreadType) {
-        return new UnimprovedStepCountTermination(unimprovedStepCountLimit);
+    public UnimprovedStepCountTermination<Solution_> createChildThreadTermination(SolverScope<Solution_> solverScope,
+            ChildThreadType childThreadType) {
+        return new UnimprovedStepCountTermination<>(unimprovedStepCountLimit);
     }
 
     @Override

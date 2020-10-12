@@ -23,15 +23,15 @@ import org.optaplanner.core.config.constructionheuristic.decider.forager.Constru
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicMoveScope;
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicStepScope;
 
-public class DefaultConstructionHeuristicForager extends AbstractConstructionHeuristicForager {
+public class DefaultConstructionHeuristicForager<Solution_> extends AbstractConstructionHeuristicForager<Solution_> {
 
     protected final ConstructionHeuristicPickEarlyType pickEarlyType;
 
     protected final Comparator<Score> scoreComparator = Comparable::compareTo;
 
     protected long selectedMoveCount;
-    protected ConstructionHeuristicMoveScope earlyPickedMoveScope;
-    protected ConstructionHeuristicMoveScope maxScoreMoveScope;
+    protected ConstructionHeuristicMoveScope<Solution_> earlyPickedMoveScope;
+    protected ConstructionHeuristicMoveScope<Solution_> maxScoreMoveScope;
 
     public DefaultConstructionHeuristicForager(ConstructionHeuristicPickEarlyType pickEarlyType) {
         this.pickEarlyType = pickEarlyType;
@@ -42,7 +42,7 @@ public class DefaultConstructionHeuristicForager extends AbstractConstructionHeu
     // ************************************************************************
 
     @Override
-    public void stepStarted(ConstructionHeuristicStepScope stepScope) {
+    public void stepStarted(ConstructionHeuristicStepScope<Solution_> stepScope) {
         super.stepStarted(stepScope);
         selectedMoveCount = 0L;
         earlyPickedMoveScope = null;
@@ -50,30 +50,30 @@ public class DefaultConstructionHeuristicForager extends AbstractConstructionHeu
     }
 
     @Override
-    public void stepEnded(ConstructionHeuristicStepScope stepScope) {
+    public void stepEnded(ConstructionHeuristicStepScope<Solution_> stepScope) {
         super.stepEnded(stepScope);
         earlyPickedMoveScope = null;
         maxScoreMoveScope = null;
     }
 
     @Override
-    public void addMove(ConstructionHeuristicMoveScope moveScope) {
+    public void addMove(ConstructionHeuristicMoveScope<Solution_> moveScope) {
         selectedMoveCount++;
         checkPickEarly(moveScope);
         if (maxScoreMoveScope == null
-                || scoreComparator.compare(moveScope.getScore(), maxScoreMoveScope.getScore()) > 0) {
+                || scoreComparator.compare((Score) moveScope.getScore(), (Score) maxScoreMoveScope.getScore()) > 0) {
             maxScoreMoveScope = moveScope;
         }
     }
 
-    protected void checkPickEarly(ConstructionHeuristicMoveScope moveScope) {
+    protected void checkPickEarly(ConstructionHeuristicMoveScope<Solution_> moveScope) {
         switch (pickEarlyType) {
             case NEVER:
                 break;
             case FIRST_NON_DETERIORATING_SCORE:
                 Score lastStepScore = moveScope.getStepScope().getPhaseScope()
                         .getLastCompletedStepScope().getScore();
-                if (moveScope.getScore().withInitScore(0).compareTo(lastStepScore.withInitScore(0)) >= 0) {
+                if (((Score) moveScope.getScore()).withInitScore(0).compareTo(lastStepScore.withInitScore(0)) >= 0) {
                     earlyPickedMoveScope = moveScope;
                 }
                 break;
@@ -85,7 +85,7 @@ public class DefaultConstructionHeuristicForager extends AbstractConstructionHeu
             case FIRST_FEASIBLE_SCORE_OR_NON_DETERIORATING_HARD:
                 Score lastStepScore2 = moveScope.getStepScope().getPhaseScope()
                         .getLastCompletedStepScope().getScore();
-                Score lastStepScoreDifference = moveScope.getScore().withInitScore(0)
+                Score lastStepScoreDifference = ((Score) moveScope.getScore()).withInitScore(0)
                         .subtract(lastStepScore2.withInitScore(0));
                 if (lastStepScoreDifference.isFeasible()) {
                     earlyPickedMoveScope = moveScope;
@@ -102,7 +102,7 @@ public class DefaultConstructionHeuristicForager extends AbstractConstructionHeu
     }
 
     @Override
-    public ConstructionHeuristicMoveScope pickMove(ConstructionHeuristicStepScope stepScope) {
+    public ConstructionHeuristicMoveScope<Solution_> pickMove(ConstructionHeuristicStepScope<Solution_> stepScope) {
         stepScope.setSelectedMoveCount(selectedMoveCount);
         if (earlyPickedMoveScope != null) {
             return earlyPickedMoveScope;

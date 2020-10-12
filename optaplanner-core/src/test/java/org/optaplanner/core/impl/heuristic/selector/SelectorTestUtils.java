@@ -43,38 +43,39 @@ import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedObject;
 
 public class SelectorTestUtils {
 
-    public static SolutionDescriptor mockSolutionDescriptor() {
-        SolutionDescriptor solutionDescriptor = mock(SolutionDescriptor.class);
+    public static <Solution_> SolutionDescriptor<Solution_> mockSolutionDescriptor() {
+        SolutionDescriptor<Solution_> solutionDescriptor = mock(SolutionDescriptor.class);
         return solutionDescriptor;
     }
 
-    public static EntityDescriptor mockEntityDescriptor(Class<?> entityClass) {
-        EntityDescriptor entityDescriptor = mock(EntityDescriptor.class);
-        when(entityDescriptor.getEntityClass()).thenReturn(entityClass);
+    public static <Solution_> EntityDescriptor<Solution_> mockEntityDescriptor(Class<?> entityClass) {
+        EntityDescriptor<Solution_> entityDescriptor = mock(EntityDescriptor.class);
+        when(entityDescriptor.getEntityClass()).thenReturn((Class) entityClass);
         return entityDescriptor;
     }
 
-    public static GenuineVariableDescriptor mockVariableDescriptor(Class<?> entityClass, String variableName) {
-        EntityDescriptor entityDescriptor = mockEntityDescriptor(entityClass);
+    public static <Solution_> GenuineVariableDescriptor<Solution_> mockVariableDescriptor(Class<?> entityClass,
+            String variableName) {
+        EntityDescriptor<Solution_> entityDescriptor = mockEntityDescriptor(entityClass);
         return mockVariableDescriptor(entityDescriptor, variableName);
     }
 
-    public static GenuineVariableDescriptor mockVariableDescriptor(EntityDescriptor entityDescriptor,
-            String variableName) {
-        GenuineVariableDescriptor variableDescriptor = mock(GenuineVariableDescriptor.class);
+    public static <Solution_> GenuineVariableDescriptor<Solution_> mockVariableDescriptor(
+            EntityDescriptor<Solution_> entityDescriptor, String variableName) {
+        GenuineVariableDescriptor<Solution_> variableDescriptor = mock(GenuineVariableDescriptor.class);
         when(variableDescriptor.getEntityDescriptor()).thenReturn(entityDescriptor);
         when(variableDescriptor.getVariableName()).thenReturn(variableName);
         return variableDescriptor;
     }
 
-    public static EntitySelector mockEntitySelector(Class<?> entityClass, Object... entities) {
-        EntityDescriptor entityDescriptor = mockEntityDescriptor(entityClass);
+    public static <Solution_> EntitySelector<Solution_> mockEntitySelector(Class<?> entityClass, Object... entities) {
+        EntityDescriptor<Solution_> entityDescriptor = mockEntityDescriptor(entityClass);
         return mockEntitySelector(entityDescriptor, entities);
     }
 
-    public static EntitySelector mockEntitySelector(EntityDescriptor entityDescriptor,
+    public static <Solution_> EntitySelector<Solution_> mockEntitySelector(EntityDescriptor<Solution_> entityDescriptor,
             Object... entities) {
-        EntitySelector entitySelector = mock(EntitySelector.class);
+        EntitySelector<Solution_> entitySelector = mock(EntitySelector.class);
         when(entitySelector.getEntityDescriptor()).thenReturn(entityDescriptor);
         final List<Object> entityList = Arrays.asList(entities);
         when(entitySelector.iterator()).thenAnswer(invocation -> entityList.iterator());
@@ -91,19 +92,21 @@ public class SelectorTestUtils {
         return entitySelector;
     }
 
-    public static ValueSelector mockValueSelector(Class<?> entityClass, String variableName, Object... values) {
-        GenuineVariableDescriptor variableDescriptor = mockVariableDescriptor(entityClass, variableName);
-        return mockValueSelector(variableDescriptor, values);
-    }
-
-    public static ValueSelector mockValueSelector(EntityDescriptor entityDescriptor, String variableName,
+    public static <Solution_> ValueSelector<Solution_> mockValueSelector(Class<?> entityClass, String variableName,
             Object... values) {
-        GenuineVariableDescriptor variableDescriptor = mockVariableDescriptor(entityDescriptor, variableName);
+        GenuineVariableDescriptor<Solution_> variableDescriptor = mockVariableDescriptor(entityClass, variableName);
         return mockValueSelector(variableDescriptor, values);
     }
 
-    public static ValueSelector mockValueSelector(GenuineVariableDescriptor variableDescriptor, Object... values) {
-        ValueSelector valueSelector = mock(ValueSelector.class);
+    public static <Solution_> ValueSelector<Solution_> mockValueSelector(EntityDescriptor<Solution_> entityDescriptor,
+            String variableName, Object... values) {
+        GenuineVariableDescriptor<Solution_> variableDescriptor = mockVariableDescriptor(entityDescriptor, variableName);
+        return mockValueSelector(variableDescriptor, values);
+    }
+
+    public static <Solution_> ValueSelector<Solution_> mockValueSelector(
+            GenuineVariableDescriptor<Solution_> variableDescriptor, Object... values) {
+        ValueSelector<Solution_> valueSelector = mock(ValueSelector.class);
         when(valueSelector.getVariableDescriptor()).thenReturn(variableDescriptor);
         final List<Object> valueList = Arrays.asList(values);
         when(valueSelector.iterator(any())).thenAnswer(invocation -> valueList.iterator());
@@ -113,21 +116,21 @@ public class SelectorTestUtils {
         return valueSelector;
     }
 
-    public static ValueSelector mockValueSelectorForEntity(Class<?> entityClass, Object entity, String variableName,
-            Object... values) {
+    public static <Solution_> ValueSelector<Solution_> mockValueSelectorForEntity(Class<?> entityClass, Object entity,
+            String variableName, Object... values) {
         return mockValueSelectorForEntity(entityClass, variableName,
                 Collections.singletonMap(entity, Arrays.asList(values)));
     }
 
-    private static ValueSelector mockValueSelectorForEntity(Class<?> entityClass, String variableName,
-            Map<Object, List<Object>> entityToValues) {
-        GenuineVariableDescriptor variableDescriptor = mockVariableDescriptor(entityClass, variableName);
+    private static <Solution_> ValueSelector<Solution_> mockValueSelectorForEntity(Class<?> entityClass,
+            String variableName, Map<Object, List<Object>> entityToValues) {
+        GenuineVariableDescriptor<Solution_> variableDescriptor = mockVariableDescriptor(entityClass, variableName);
         return mockValueSelectorForEntity(variableDescriptor, entityToValues);
     }
 
-    private static ValueSelector mockValueSelectorForEntity(GenuineVariableDescriptor variableDescriptor,
-            Map<Object, List<Object>> entityToValues) {
-        ValueSelector valueSelector = mock(ValueSelector.class);
+    private static <Solution_> ValueSelector<Solution_> mockValueSelectorForEntity(
+            GenuineVariableDescriptor<Solution_> variableDescriptor, Map<Object, List<Object>> entityToValues) {
+        ValueSelector<Solution_> valueSelector = mock(ValueSelector.class);
         when(valueSelector.getVariableDescriptor()).thenReturn(variableDescriptor);
         for (Map.Entry<Object, List<Object>> entry : entityToValues.entrySet()) {
             Object entity = entry.getKey();
@@ -141,16 +144,16 @@ public class SelectorTestUtils {
         return valueSelector;
     }
 
-    public static EntityIndependentValueSelector mockEntityIndependentValueSelector(Class<?> entityClass,
-            String variableName, Object... values) {
-        GenuineVariableDescriptor variableDescriptor = mockVariableDescriptor(entityClass, variableName);
+    public static <Solution_> EntityIndependentValueSelector<Solution_> mockEntityIndependentValueSelector(
+            Class<?> entityClass, String variableName, Object... values) {
+        GenuineVariableDescriptor<Solution_> variableDescriptor = mockVariableDescriptor(entityClass, variableName);
         when(variableDescriptor.isValueRangeEntityIndependent()).thenReturn(true);
         return mockEntityIndependentValueSelector(variableDescriptor, values);
     }
 
-    public static EntityIndependentValueSelector mockEntityIndependentValueSelector(
-            GenuineVariableDescriptor variableDescriptor, Object... values) {
-        EntityIndependentValueSelector valueSelector = mock(EntityIndependentValueSelector.class);
+    public static <Solution_> EntityIndependentValueSelector<Solution_> mockEntityIndependentValueSelector(
+            GenuineVariableDescriptor<Solution_> variableDescriptor, Object... values) {
+        EntityIndependentValueSelector<Solution_> valueSelector = mock(EntityIndependentValueSelector.class);
         when(valueSelector.getVariableDescriptor()).thenReturn(variableDescriptor);
         final List<Object> valueList = Arrays.asList(values);
         when(valueSelector.iterator(any())).thenAnswer(invocation -> valueList.iterator());
@@ -163,10 +166,9 @@ public class SelectorTestUtils {
         return valueSelector;
     }
 
-    public static MoveSelector mockMoveSelector(Class<?> moveClass,
-            Move... moves) {
-        MoveSelector moveSelector = mock(MoveSelector.class);
-        final List<Move> moveList = Arrays.asList(moves);
+    public static <Solution_> MoveSelector<Solution_> mockMoveSelector(Class<?> moveClass, Move<Solution_>... moves) {
+        MoveSelector<Solution_> moveSelector = mock(MoveSelector.class);
+        final List<Move<Solution_>> moveList = Arrays.asList(moves);
         when(moveSelector.iterator()).thenAnswer(invocation -> moveList.iterator());
         when(moveSelector.spliterator()).thenAnswer(invocation -> moveList.spliterator());
         when(moveSelector.isCountable()).thenReturn(true);

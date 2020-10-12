@@ -66,11 +66,11 @@ import org.optaplanner.core.impl.testdata.domain.reflect.field.TestdataFieldAnno
 public abstract class AbstractSolutionClonerTest {
 
     protected abstract <Solution_> SolutionCloner<Solution_> createSolutionCloner(
-            SolutionDescriptor solutionDescriptor);
+            SolutionDescriptor<Solution_> solutionDescriptor);
 
     @Test
     public void cloneSolution() {
-        SolutionDescriptor solutionDescriptor = TestdataSolution.buildSolutionDescriptor();
+        SolutionDescriptor<TestdataSolution> solutionDescriptor = TestdataSolution.buildSolutionDescriptor();
         SolutionCloner<TestdataSolution> cloner = createSolutionCloner(solutionDescriptor);
 
         TestdataValue val1 = new TestdataValue("1");
@@ -115,7 +115,8 @@ public abstract class AbstractSolutionClonerTest {
 
     @Test
     public void cloneFieldAnnotatedSolution() {
-        SolutionDescriptor solutionDescriptor = TestdataFieldAnnotatedSolution.buildSolutionDescriptor();
+        SolutionDescriptor<TestdataFieldAnnotatedSolution> solutionDescriptor =
+                TestdataFieldAnnotatedSolution.buildSolutionDescriptor();
         SolutionCloner<TestdataFieldAnnotatedSolution> cloner = createSolutionCloner(solutionDescriptor);
 
         TestdataValue val1 = new TestdataValue("1");
@@ -158,7 +159,8 @@ public abstract class AbstractSolutionClonerTest {
         Object staticObject = new Object();
         TestdataAccessModifierSolution.setStaticField(staticObject);
 
-        SolutionDescriptor solutionDescriptor = TestdataAccessModifierSolution.buildSolutionDescriptor();
+        SolutionDescriptor<TestdataAccessModifierSolution> solutionDescriptor =
+                TestdataAccessModifierSolution.buildSolutionDescriptor();
         SolutionCloner<TestdataAccessModifierSolution> cloner = createSolutionCloner(solutionDescriptor);
 
         TestdataValue val1 = new TestdataValue("1");
@@ -261,7 +263,8 @@ public abstract class AbstractSolutionClonerTest {
 
     @Test
     public void cloneExtendedThirdPartySolution() {
-        SolutionDescriptor solutionDescriptor = TestdataExtendedThirdPartySolution.buildSolutionDescriptor();
+        SolutionDescriptor<TestdataExtendedThirdPartySolution> solutionDescriptor =
+                TestdataExtendedThirdPartySolution.buildSolutionDescriptor();
         SolutionCloner<TestdataExtendedThirdPartySolution> cloner = createSolutionCloner(solutionDescriptor);
 
         TestdataValue val1 = new TestdataValue("1");
@@ -337,7 +340,8 @@ public abstract class AbstractSolutionClonerTest {
 
     @Test
     public void cloneChainedSolution() {
-        SolutionDescriptor solutionDescriptor = TestdataChainedSolution.buildSolutionDescriptor();
+        SolutionDescriptor<TestdataChainedSolution> solutionDescriptor =
+                TestdataChainedSolution.buildSolutionDescriptor();
         SolutionCloner<TestdataChainedSolution> cloner = createSolutionCloner(solutionDescriptor);
 
         TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
@@ -388,7 +392,8 @@ public abstract class AbstractSolutionClonerTest {
 
     @Test
     public void cloneSetBasedSolution() {
-        SolutionDescriptor solutionDescriptor = TestdataSetBasedSolution.buildSolutionDescriptor();
+        SolutionDescriptor<TestdataSetBasedSolution> solutionDescriptor =
+                TestdataSetBasedSolution.buildSolutionDescriptor();
         SolutionCloner<TestdataSetBasedSolution> cloner = createSolutionCloner(solutionDescriptor);
 
         TestdataValue val1 = new TestdataValue("1");
@@ -451,7 +456,8 @@ public abstract class AbstractSolutionClonerTest {
 
     @Test
     public void cloneEntityCollectionPropertySolution() {
-        SolutionDescriptor solutionDescriptor = TestdataEntityCollectionPropertySolution.buildSolutionDescriptor();
+        SolutionDescriptor<TestdataEntityCollectionPropertySolution> solutionDescriptor =
+                TestdataEntityCollectionPropertySolution.buildSolutionDescriptor();
         SolutionCloner<TestdataEntityCollectionPropertySolution> cloner = createSolutionCloner(solutionDescriptor);
 
         TestdataValue val1 = new TestdataValue("1");
@@ -557,7 +563,8 @@ public abstract class AbstractSolutionClonerTest {
 
     @Test
     public void cloneEntityArrayPropertySolution() {
-        SolutionDescriptor solutionDescriptor = TestdataArrayBasedSolution.buildSolutionDescriptor();
+        SolutionDescriptor<TestdataArrayBasedSolution> solutionDescriptor =
+                TestdataArrayBasedSolution.buildSolutionDescriptor();
         SolutionCloner<TestdataArrayBasedSolution> cloner = createSolutionCloner(solutionDescriptor);
 
         TestdataValue val1 = new TestdataValue("1");
@@ -617,7 +624,8 @@ public abstract class AbstractSolutionClonerTest {
 
     @Test
     public void deepPlanningClone() {
-        SolutionDescriptor solutionDescriptor = TestdataDeepCloningSolution.buildSolutionDescriptor();
+        SolutionDescriptor<TestdataDeepCloningSolution> solutionDescriptor =
+                TestdataDeepCloningSolution.buildSolutionDescriptor();
         SolutionCloner<TestdataDeepCloningSolution> cloner = createSolutionCloner(solutionDescriptor);
 
         TestdataValue val1 = new TestdataValue("1");
@@ -714,7 +722,8 @@ public abstract class AbstractSolutionClonerTest {
 
     @Test
     public void fieldAnnotatedDeepPlanningClone() {
-        SolutionDescriptor solutionDescriptor = TestdataFieldAnnotatedDeepCloningSolution.buildSolutionDescriptor();
+        SolutionDescriptor<TestdataFieldAnnotatedDeepCloningSolution> solutionDescriptor =
+                TestdataFieldAnnotatedDeepCloningSolution.buildSolutionDescriptor();
         SolutionCloner<TestdataFieldAnnotatedDeepCloningSolution> cloner = createSolutionCloner(solutionDescriptor);
 
         TestdataValue val1 = new TestdataValue("1");

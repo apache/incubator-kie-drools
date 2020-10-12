@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
  *
  * @see FinalistPodium
  */
-public class StrategicOscillationByLevelFinalistPodium extends AbstractFinalistPodium {
+public class StrategicOscillationByLevelFinalistPodium<Solution_> extends AbstractFinalistPodium<Solution_> {
 
     protected final boolean referenceBestScoreInsteadOfLastStepScore;
 
@@ -42,7 +42,7 @@ public class StrategicOscillationByLevelFinalistPodium extends AbstractFinalistP
     }
 
     @Override
-    public void stepStarted(LocalSearchStepScope stepScope) {
+    public void stepStarted(LocalSearchStepScope<Solution_> stepScope) {
         super.stepStarted(stepScope);
         referenceScore = referenceBestScoreInsteadOfLastStepScore
                 ? stepScope.getPhaseScope().getBestScore()
@@ -56,7 +56,7 @@ public class StrategicOscillationByLevelFinalistPodium extends AbstractFinalistP
     }
 
     @Override
-    public void addMove(LocalSearchMoveScope moveScope) {
+    public void addMove(LocalSearchMoveScope<Solution_> moveScope) {
         boolean accepted = moveScope.getAccepted();
         if (finalistIsAccepted && !accepted) {
             return;
@@ -110,7 +110,7 @@ public class StrategicOscillationByLevelFinalistPodium extends AbstractFinalistP
     }
 
     @Override
-    public void phaseEnded(LocalSearchPhaseScope phaseScope) {
+    public void phaseEnded(LocalSearchPhaseScope<Solution_> phaseScope) {
         super.phaseEnded(phaseScope);
         referenceScore = null;
         referenceLevelNumbers = null;

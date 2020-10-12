@@ -22,6 +22,7 @@ import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
+import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
@@ -51,14 +52,16 @@ public class CustomVariableListenerTest {
 
     @Test()
     public void nonCyclicWithSevenDisorderedShadows() {
-        SolutionDescriptor solutionDescriptor = TestdataSevenNonCyclicShadowedSolution.buildSolutionDescriptor();
+        SolutionDescriptor<TestdataSevenNonCyclicShadowedSolution> solutionDescriptor =
+                TestdataSevenNonCyclicShadowedSolution.buildSolutionDescriptor();
     }
 
     @Test
     public void extendedZigZag() {
-        GenuineVariableDescriptor variableDescriptor = TestdataExtendedShadowedParentEntity.buildVariableDescriptorForValue();
-        InnerScoreDirector scoreDirector = PlannerTestUtils.mockScoreDirector(
-                variableDescriptor.getEntityDescriptor().getSolutionDescriptor());
+        GenuineVariableDescriptor<TestdataExtendedShadowedSolution> variableDescriptor =
+                TestdataExtendedShadowedParentEntity.buildVariableDescriptorForValue();
+        InnerScoreDirector<TestdataExtendedShadowedSolution, SimpleScore> scoreDirector =
+                PlannerTestUtils.mockScoreDirector(variableDescriptor.getEntityDescriptor().getSolutionDescriptor());
 
         TestdataValue val1 = new TestdataValue("1");
         TestdataValue val2 = new TestdataValue("2");
@@ -105,13 +108,14 @@ public class CustomVariableListenerTest {
 
     @Test
     public void manyToMany() {
-        EntityDescriptor entityDescriptor = TestdataManyToManyShadowedEntity.buildEntityDescriptor();
-        GenuineVariableDescriptor primaryVariableDescriptor = entityDescriptor
-                .getGenuineVariableDescriptor("primaryValue");
-        GenuineVariableDescriptor secondaryVariableDescriptor = entityDescriptor
-                .getGenuineVariableDescriptor("secondaryValue");
-        InnerScoreDirector scoreDirector = PlannerTestUtils.mockScoreDirector(
-                primaryVariableDescriptor.getEntityDescriptor().getSolutionDescriptor());
+        EntityDescriptor<TestdataManyToManyShadowedSolution> entityDescriptor =
+                TestdataManyToManyShadowedEntity.buildEntityDescriptor();
+        GenuineVariableDescriptor<TestdataManyToManyShadowedSolution> primaryVariableDescriptor =
+                entityDescriptor.getGenuineVariableDescriptor("primaryValue");
+        GenuineVariableDescriptor<TestdataManyToManyShadowedSolution> secondaryVariableDescriptor =
+                entityDescriptor.getGenuineVariableDescriptor("secondaryValue");
+        InnerScoreDirector<TestdataManyToManyShadowedSolution, SimpleScore> scoreDirector =
+                PlannerTestUtils.mockScoreDirector(primaryVariableDescriptor.getEntityDescriptor().getSolutionDescriptor());
 
         TestdataValue val1 = new TestdataValue("1");
         TestdataValue val2 = new TestdataValue("2");

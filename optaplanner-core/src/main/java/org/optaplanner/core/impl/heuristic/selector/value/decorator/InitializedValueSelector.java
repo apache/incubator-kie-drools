@@ -33,21 +33,21 @@ import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
  * <p>
  * Mainly used for chained planning variables, but supports other planning variables too.
  */
-public class InitializedValueSelector extends AbstractValueSelector {
+public class InitializedValueSelector<Solution_> extends AbstractValueSelector<Solution_> {
 
-    public static ValueSelector create(ValueSelector valueSelector) {
+    public static <Solution_> ValueSelector<Solution_> create(ValueSelector<Solution_> valueSelector) {
         if (valueSelector instanceof EntityIndependentValueSelector) {
-            return new EntityIndependentInitializedValueSelector((EntityIndependentValueSelector) valueSelector);
+            return new EntityIndependentInitializedValueSelector<>((EntityIndependentValueSelector<Solution_>) valueSelector);
         } else {
-            return new InitializedValueSelector(valueSelector);
+            return new InitializedValueSelector<>(valueSelector);
         }
     }
 
-    protected final GenuineVariableDescriptor variableDescriptor;
-    protected final ValueSelector childValueSelector;
+    protected final GenuineVariableDescriptor<Solution_> variableDescriptor;
+    protected final ValueSelector<Solution_> childValueSelector;
     protected final boolean bailOutEnabled;
 
-    protected InitializedValueSelector(ValueSelector childValueSelector) {
+    protected InitializedValueSelector(ValueSelector<Solution_> childValueSelector) {
         this.variableDescriptor = childValueSelector.getVariableDescriptor();
         this.childValueSelector = childValueSelector;
         bailOutEnabled = childValueSelector.isNeverEnding();
@@ -59,7 +59,7 @@ public class InitializedValueSelector extends AbstractValueSelector {
     // ************************************************************************
 
     @Override
-    public GenuineVariableDescriptor getVariableDescriptor() {
+    public GenuineVariableDescriptor<Solution_> getVariableDescriptor() {
         return childValueSelector.getVariableDescriptor();
     }
 

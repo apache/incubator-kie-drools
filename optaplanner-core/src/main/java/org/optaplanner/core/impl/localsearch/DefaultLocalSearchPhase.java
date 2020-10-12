@@ -38,7 +38,7 @@ public class DefaultLocalSearchPhase<Solution_> extends AbstractPhase<Solution_>
     protected LocalSearchDecider<Solution_> decider;
 
     public DefaultLocalSearchPhase(int phaseIndex, String logIndentation,
-            BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination termination) {
+            BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination<Solution_> termination) {
         super(phaseIndex, logIndentation, bestSolutionRecaller, termination);
     }
 
@@ -129,7 +129,7 @@ public class DefaultLocalSearchPhase<Solution_> extends AbstractPhase<Solution_>
     public void stepEnded(LocalSearchStepScope<Solution_> stepScope) {
         super.stepEnded(stepScope);
         decider.stepEnded(stepScope);
-        LocalSearchPhaseScope phaseScope = stepScope.getPhaseScope();
+        LocalSearchPhaseScope<Solution_> phaseScope = stepScope.getPhaseScope();
         if (logger.isDebugEnabled()) {
             logger.debug("{}    LS step ({}), time spent ({}), score ({}), {} best score ({})," +
                     " accepted/selected move count ({}/{}), picked move ({}).",

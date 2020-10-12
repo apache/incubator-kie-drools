@@ -69,7 +69,7 @@ public class AnchorShadowVariableDescriptor<Solution_> extends ShadowVariableDes
                     + entityDescriptor.buildInvalidVariableNameExceptionMessage(sourceVariableName));
         }
         if (!(sourceVariableDescriptor instanceof GenuineVariableDescriptor) ||
-                !((GenuineVariableDescriptor) sourceVariableDescriptor).isChained()) {
+                !((GenuineVariableDescriptor<Solution_>) sourceVariableDescriptor).isChained()) {
             throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
                     + ") has a " + AnchorShadowVariable.class.getSimpleName()
                     + " annotated property (" + variableMemberAccessor.getName()
@@ -94,15 +94,15 @@ public class AnchorShadowVariableDescriptor<Solution_> extends ShadowVariableDes
     // ************************************************************************
 
     @Override
-    public Demand getProvidedDemand() {
-        return new AnchorVariableDemand(sourceVariableDescriptor);
+    public Demand<Solution_, ?> getProvidedDemand() {
+        return new AnchorVariableDemand<>(sourceVariableDescriptor);
     }
 
     @Override
-    public VariableListener buildVariableListener(InnerScoreDirector<Solution_, ?> scoreDirector) {
+    public VariableListener<Solution_, ?> buildVariableListener(InnerScoreDirector<Solution_, ?> scoreDirector) {
         SingletonInverseVariableSupply inverseVariableSupply = scoreDirector.getSupplyManager()
-                .demand(new SingletonInverseVariableDemand(sourceVariableDescriptor));
-        return new AnchorVariableListener(this, sourceVariableDescriptor, inverseVariableSupply);
+                .demand(new SingletonInverseVariableDemand<>(sourceVariableDescriptor));
+        return new AnchorVariableListener<Solution_>(this, sourceVariableDescriptor, inverseVariableSupply);
     }
 
 }

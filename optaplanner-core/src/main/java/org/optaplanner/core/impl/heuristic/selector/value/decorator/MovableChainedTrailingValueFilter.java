@@ -54,8 +54,8 @@ public class MovableChainedTrailingValueFilter<Solution_> implements SelectionFi
     protected SingletonInverseVariableSupply retrieveSingletonInverseVariableSupply(ScoreDirector<Solution_> scoreDirector) {
         // TODO Performance loss because the supply is retrieved for every accept
         // A SelectionFilter should be optionally made aware of lifecycle events, so it can cache the supply
-        SupplyManager supplyManager = ((InnerScoreDirector<Solution_, ?>) scoreDirector).getSupplyManager();
-        return supplyManager.demand(new SingletonInverseVariableDemand(variableDescriptor));
+        SupplyManager<Solution_> supplyManager = ((InnerScoreDirector<Solution_, ?>) scoreDirector).getSupplyManager();
+        return supplyManager.demand(new SingletonInverseVariableDemand<>(variableDescriptor));
     }
 
 }

@@ -21,7 +21,7 @@ import java.util.Spliterators;
 
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionProbabilityWeightFactory;
 
-public interface IterableSelector<T> extends Selector, Iterable<T> {
+public interface IterableSelector<Solution_, T> extends Selector<Solution_>, Iterable<T> {
 
     /**
      * A random JIT {@link Selector} with {@link #isNeverEnding()} true should return a size

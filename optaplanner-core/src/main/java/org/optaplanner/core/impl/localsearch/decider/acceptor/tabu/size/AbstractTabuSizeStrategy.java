@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.size;
 
-public abstract class AbstractTabuSizeStrategy implements TabuSizeStrategy {
+public abstract class AbstractTabuSizeStrategy<Solution_> implements TabuSizeStrategy<Solution_> {
 
     protected int protectTabuSizeCornerCases(int totalSize, int tabuSize) {
         if (tabuSize < 1) {

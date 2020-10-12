@@ -364,10 +364,8 @@ public class BlackBoxExhaustiveSearchPhaseTest {
     }
 
     private static SolverConfig buildSolverConfig(
-            EntitySorterManner entitySorterManner,
-            ValueSorterManner valueSorterManner,
-            ExhaustiveSearchType exhaustiveSearchType,
-            NodeExplorationType nodeExplorationType) {
+            EntitySorterManner entitySorterManner, ValueSorterManner valueSorterManner,
+            ExhaustiveSearchType exhaustiveSearchType, NodeExplorationType nodeExplorationType) {
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
                 TestdataDifficultyComparingSolution.class, TestdataDifficultyComparingEntity.class);
 
@@ -389,7 +387,8 @@ public class BlackBoxExhaustiveSearchPhaseTest {
         exhaustiveSearchPhaseConfig.setExhaustiveSearchType(exhaustiveSearchType);
         exhaustiveSearchPhaseConfig.setNodeExplorationType(nodeExplorationType);
         exhaustiveSearchPhaseConfig.setMoveSelectorConfig(moveSelectorConfig);
-        exhaustiveSearchPhaseConfig.setTerminationConfig(new TerminationConfig().withStepCountLimit(10));
+        exhaustiveSearchPhaseConfig
+                .setTerminationConfig(new TerminationConfig().withStepCountLimit(10));
 
         solverConfig.setPhaseConfigList(Collections.singletonList(exhaustiveSearchPhaseConfig));
         solverConfig.setScoreDirectorFactoryConfig(new ScoreDirectorFactoryConfig()

@@ -33,9 +33,10 @@ import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelectorFactory;
 
-public class PooledEntityPlacerFactory extends AbstractEntityPlacerFactory<PooledEntityPlacerConfig> {
+public class PooledEntityPlacerFactory<Solution_>
+        extends AbstractEntityPlacerFactory<Solution_, PooledEntityPlacerConfig> {
 
-    public static PooledEntityPlacerConfig unfoldNew(HeuristicConfigPolicy configPolicy,
+    public static <Solution_> PooledEntityPlacerConfig unfoldNew(HeuristicConfigPolicy<Solution_> configPolicy,
             MoveSelectorConfig templateMoveSelectorConfig) {
         PooledEntityPlacerConfig config = new PooledEntityPlacerConfig();
         List<MoveSelectorConfig> leafMoveSelectorConfigList = new ArrayList<>();
@@ -52,7 +53,8 @@ public class PooledEntityPlacerFactory extends AbstractEntityPlacerFactory<Poole
                         + "Maybe you're using a moveSelector in <constructionHeuristic>"
                         + " that's only supported for <localSearch>.");
             }
-            ChangeMoveSelectorConfig changeMoveSelectorConfig = (ChangeMoveSelectorConfig) leafMoveSelectorConfig;
+            ChangeMoveSelectorConfig changeMoveSelectorConfig =
+                    (ChangeMoveSelectorConfig) leafMoveSelectorConfig;
             if (changeMoveSelectorConfig.getEntitySelectorConfig() != null) {
                 throw new IllegalStateException("The <constructionHeuristic> contains a changeMoveSelector ("
                         + changeMoveSelectorConfig + ") that contains an entitySelector ("
@@ -60,8 +62,8 @@ public class PooledEntityPlacerFactory extends AbstractEntityPlacerFactory<Poole
                         + ") without explicitly configuring the <pooledEntityPlacer>.");
             }
             if (entitySelectorConfig == null) {
-                EntityDescriptor entityDescriptor =
-                        new PooledEntityPlacerFactory(config).deduceEntityDescriptor(configPolicy.getSolutionDescriptor());
+                EntityDescriptor<Solution_> entityDescriptor = new PooledEntityPlacerFactory<Solution_>(config)
+                        .deduceEntityDescriptor(configPolicy.getSolutionDescriptor());
                 entitySelectorConfig = buildEntitySelectorConfig(configPolicy, entityDescriptor);
                 changeMoveSelectorConfig.setEntitySelectorConfig(entitySelectorConfig);
             }
@@ -71,8 +73,8 @@ public class PooledEntityPlacerFactory extends AbstractEntityPlacerFactory<Poole
         return config;
     }
 
-    private static EntitySelectorConfig buildEntitySelectorConfig(HeuristicConfigPolicy configPolicy,
-            EntityDescriptor entityDescriptor) {
+    private static <Solution_> EntitySelectorConfig buildEntitySelectorConfig(
+            HeuristicConfigPolicy<Solution_> configPolicy, EntityDescriptor<Solution_> entityDescriptor) {
         EntitySelectorConfig entitySelectorConfig = new EntitySelectorConfig();
         Class<?> entityClass = entityDescriptor.getEntityClass();
         entitySelectorConfig.setId(entityClass.getName());
@@ -90,23 +92,22 @@ public class PooledEntityPlacerFactory extends AbstractEntityPlacerFactory<Poole
     }
 
     @Override
-    public PooledEntityPlacer buildEntityPlacer(HeuristicConfigPolicy configPolicy) {
+    public PooledEntityPlacer<Solution_> buildEntityPlacer(HeuristicConfigPolicy<Solution_> configPolicy) {
         MoveSelectorConfig moveSelectorConfig_ =
-                config.getMoveSelectorConfig() == null ? buildMoveSelectorConfig(configPolicy)
-                        : config.getMoveSelectorConfig();
+                config.getMoveSelectorConfig() == null ? buildMoveSelectorConfig(configPolicy) : config.getMoveSelectorConfig();
 
-        MoveSelector moveSelector = MoveSelectorFactory.create(moveSelectorConfig_).buildMoveSelector(
-                configPolicy, SelectionCacheType.JUST_IN_TIME, SelectionOrder.ORIGINAL);
-        return new PooledEntityPlacer(moveSelector);
+        MoveSelector<Solution_> moveSelector = MoveSelectorFactory.<Solution_> create(moveSelectorConfig_)
+                .buildMoveSelector(configPolicy, SelectionCacheType.JUST_IN_TIME, SelectionOrder.ORIGINAL);
+        return new PooledEntityPlacer<>(moveSelector);
     }
 
-    private MoveSelectorConfig buildMoveSelectorConfig(HeuristicConfigPolicy configPolicy) {
-        EntityDescriptor entityDescriptor = deduceEntityDescriptor(configPolicy.getSolutionDescriptor());
+    private MoveSelectorConfig buildMoveSelectorConfig(HeuristicConfigPolicy<Solution_> configPolicy) {
+        EntityDescriptor<Solution_> entityDescriptor = deduceEntityDescriptor(configPolicy.getSolutionDescriptor());
         EntitySelectorConfig entitySelectorConfig = buildEntitySelectorConfig(configPolicy, entityDescriptor);
 
-        Collection<GenuineVariableDescriptor> variableDescriptors = entityDescriptor.getGenuineVariableDescriptors();
+        Collection<GenuineVariableDescriptor<Solution_>> variableDescriptors = entityDescriptor.getGenuineVariableDescriptors();
         List<MoveSelectorConfig> subMoveSelectorConfigList = new ArrayList<>(variableDescriptors.size());
-        for (GenuineVariableDescriptor variableDescriptor : variableDescriptors) {
+        for (GenuineVariableDescriptor<Solution_> variableDescriptor : variableDescriptors) {
             subMoveSelectorConfigList
                     .add(buildChangeMoveSelectorConfig(configPolicy, entitySelectorConfig.getId(), variableDescriptor));
         }

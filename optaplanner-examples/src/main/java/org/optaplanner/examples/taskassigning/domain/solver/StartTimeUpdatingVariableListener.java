@@ -21,41 +21,42 @@ import java.util.Objects;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
 import org.optaplanner.examples.taskassigning.domain.Task;
+import org.optaplanner.examples.taskassigning.domain.TaskAssigningSolution;
 import org.optaplanner.examples.taskassigning.domain.TaskOrEmployee;
 
-public class StartTimeUpdatingVariableListener implements VariableListener<Task> {
+public class StartTimeUpdatingVariableListener implements VariableListener<TaskAssigningSolution, Task> {
 
     @Override
-    public void beforeEntityAdded(ScoreDirector scoreDirector, Task task) {
+    public void beforeEntityAdded(ScoreDirector<TaskAssigningSolution> scoreDirector, Task task) {
         // Do nothing
     }
 
     @Override
-    public void afterEntityAdded(ScoreDirector scoreDirector, Task task) {
+    public void afterEntityAdded(ScoreDirector<TaskAssigningSolution> scoreDirector, Task task) {
         updateStartTime(scoreDirector, task);
     }
 
     @Override
-    public void beforeVariableChanged(ScoreDirector scoreDirector, Task task) {
+    public void beforeVariableChanged(ScoreDirector<TaskAssigningSolution> scoreDirector, Task task) {
         // Do nothing
     }
 
     @Override
-    public void afterVariableChanged(ScoreDirector scoreDirector, Task task) {
+    public void afterVariableChanged(ScoreDirector<TaskAssigningSolution> scoreDirector, Task task) {
         updateStartTime(scoreDirector, task);
     }
 
     @Override
-    public void beforeEntityRemoved(ScoreDirector scoreDirector, Task task) {
+    public void beforeEntityRemoved(ScoreDirector<TaskAssigningSolution> scoreDirector, Task task) {
         // Do nothing
     }
 
     @Override
-    public void afterEntityRemoved(ScoreDirector scoreDirector, Task task) {
+    public void afterEntityRemoved(ScoreDirector<TaskAssigningSolution> scoreDirector, Task task) {
         // Do nothing
     }
 
-    protected void updateStartTime(ScoreDirector scoreDirector, Task sourceTask) {
+    protected void updateStartTime(ScoreDirector<TaskAssigningSolution> scoreDirector, Task sourceTask) {
         TaskOrEmployee previous = sourceTask.getPreviousTaskOrEmployee();
         Task shadowTask = sourceTask;
         Integer previousEndTime = (previous == null ? null : previous.getEndTime());

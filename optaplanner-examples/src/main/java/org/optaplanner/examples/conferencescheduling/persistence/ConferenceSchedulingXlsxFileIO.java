@@ -1654,7 +1654,7 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                             || filteredConstraintNameList.contains(constraintMatch.getConstraintName()))
                     .filter(constraintMatch -> isValidJustificationList == null
                             || isValidJustificationList.test(constraintMatch.getJustificationList()))
-                    .map(constraintMatch -> (HardMediumSoftScore) constraintMatch.getScore())
+                    .map(constraintMatch -> constraintMatch.getScore())
                     // Filter out positive constraints
                     .filter(indictmentScore -> !(indictmentScore.getHardScore() >= 0 && indictmentScore.getMediumScore() >= 0
                             && indictmentScore.getSoftScore() >= 0))

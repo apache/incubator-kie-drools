@@ -20,7 +20,7 @@ import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.solver.thread.ChildThreadType;
 
-public class ChildThreadPlumbingTermination extends AbstractTermination {
+public class ChildThreadPlumbingTermination<Solution_> extends AbstractTermination<Solution_> {
 
     protected boolean terminateChildren = false;
 
@@ -44,7 +44,7 @@ public class ChildThreadPlumbingTermination extends AbstractTermination {
     // ************************************************************************
 
     @Override
-    public synchronized boolean isSolverTerminated(SolverScope solverScope) {
+    public synchronized boolean isSolverTerminated(SolverScope<Solution_> solverScope) {
         // Destroying a thread pool with solver threads will only cause it to interrupt those child solver threads
         if (Thread.currentThread().isInterrupted()) { // Does not clear the interrupted flag
             logger.info("A child solver thread got interrupted, so these child solvers are terminating early.");
@@ -54,19 +54,19 @@ public class ChildThreadPlumbingTermination extends AbstractTermination {
     }
 
     @Override
-    public boolean isPhaseTerminated(AbstractPhaseScope phaseScope) {
+    public boolean isPhaseTerminated(AbstractPhaseScope<Solution_> phaseScope) {
         throw new IllegalStateException(ChildThreadPlumbingTermination.class.getSimpleName()
                 + " configured only as solver termination."
                 + " It is always bridged to phase termination.");
     }
 
     @Override
-    public double calculateSolverTimeGradient(SolverScope solverScope) {
+    public double calculateSolverTimeGradient(SolverScope<Solution_> solverScope) {
         return -1.0; // Not supported
     }
 
     @Override
-    public double calculatePhaseTimeGradient(AbstractPhaseScope phaseScope) {
+    public double calculatePhaseTimeGradient(AbstractPhaseScope<Solution_> phaseScope) {
         throw new IllegalStateException(ChildThreadPlumbingTermination.class.getSimpleName()
                 + " configured only as solver termination."
                 + " It is always bridged to phase termination.");
@@ -77,7 +77,8 @@ public class ChildThreadPlumbingTermination extends AbstractTermination {
     // ************************************************************************
 
     @Override
-    public Termination createChildThreadTermination(SolverScope solverScope, ChildThreadType childThreadType) {
+    public Termination<Solution_> createChildThreadTermination(SolverScope<Solution_> solverScope,
+            ChildThreadType childThreadType) {
         return this;
     }
 

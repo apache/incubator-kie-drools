@@ -94,7 +94,7 @@ public class InverseRelationShadowVariableDescriptor<Solution_> extends ShadowVa
                     + entityDescriptor.buildInvalidVariableNameExceptionMessage(sourceVariableName));
         }
         boolean chained = (sourceVariableDescriptor instanceof GenuineVariableDescriptor) &&
-                ((GenuineVariableDescriptor) sourceVariableDescriptor).isChained();
+                ((GenuineVariableDescriptor<Solution_>) sourceVariableDescriptor).isChained();
         if (singleton) {
             if (!chained) {
                 throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
@@ -136,20 +136,20 @@ public class InverseRelationShadowVariableDescriptor<Solution_> extends ShadowVa
     // ************************************************************************
 
     @Override
-    public Demand getProvidedDemand() {
+    public Demand<Solution_, ?> getProvidedDemand() {
         if (singleton) {
-            return new SingletonInverseVariableDemand(sourceVariableDescriptor);
+            return new SingletonInverseVariableDemand<>(sourceVariableDescriptor);
         } else {
-            return new CollectionInverseVariableDemand(sourceVariableDescriptor);
+            return new CollectionInverseVariableDemand<>(sourceVariableDescriptor);
         }
     }
 
     @Override
-    public VariableListener buildVariableListener(InnerScoreDirector<Solution_, ?> scoreDirector) {
+    public VariableListener<Solution_, ?> buildVariableListener(InnerScoreDirector<Solution_, ?> scoreDirector) {
         if (singleton) {
-            return new SingletonInverseVariableListener(this, sourceVariableDescriptor);
+            return new SingletonInverseVariableListener<>(this, sourceVariableDescriptor);
         } else {
-            return new CollectionInverseVariableListener(this, sourceVariableDescriptor);
+            return new CollectionInverseVariableListener<>(this, sourceVariableDescriptor);
         }
     }
 

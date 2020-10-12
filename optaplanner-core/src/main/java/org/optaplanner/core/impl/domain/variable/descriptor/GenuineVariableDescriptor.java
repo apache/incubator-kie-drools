@@ -55,10 +55,10 @@ public class GenuineVariableDescriptor<Solution_> extends VariableDescriptor<Sol
 
     private ValueRangeDescriptor<Solution_> valueRangeDescriptor;
     private boolean nullable;
-    private SelectionFilter movableChainedTrailingValueFilter;
-    private SelectionFilter reinitializeVariableEntityFilter;
-    private SelectionSorter increasingStrengthSorter;
-    private SelectionSorter decreasingStrengthSorter;
+    private SelectionFilter<Solution_, Object> movableChainedTrailingValueFilter;
+    private SelectionFilter<Solution_, Object> reinitializeVariableEntityFilter;
+    private SelectionSorter<Solution_, Object> increasingStrengthSorter;
+    private SelectionSorter<Solution_, Object> decreasingStrengthSorter;
 
     // ************************************************************************
     // Constructors and simple getters/setters
@@ -93,7 +93,7 @@ public class GenuineVariableDescriptor<Solution_> extends VariableDescriptor<Sol
                     + ") with nullable (" + nullable + "), which is not compatible with the primitive propertyType ("
                     + variableMemberAccessor.getType() + ").");
         }
-        reinitializeVariableEntityFilter = new NullValueReinitializeVariableEntityFilter(this);
+        reinitializeVariableEntityFilter = new NullValueReinitializeVariableEntityFilter<>(this);
     }
 
     private void processChained(DescriptorPolicy descriptorPolicy, PlanningVariable planningVariableAnnotation) {
@@ -183,25 +183,25 @@ public class GenuineVariableDescriptor<Solution_> extends VariableDescriptor<Sol
         if (strengthComparatorClass != null) {
             Comparator<Object> strengthComparator = ConfigUtils.newInstance(this,
                     "strengthComparatorClass", strengthComparatorClass);
-            increasingStrengthSorter = new ComparatorSelectionSorter(
-                    strengthComparator, SelectionSorterOrder.ASCENDING);
-            decreasingStrengthSorter = new ComparatorSelectionSorter(
-                    strengthComparator, SelectionSorterOrder.DESCENDING);
+            increasingStrengthSorter = new ComparatorSelectionSorter<>(strengthComparator,
+                    SelectionSorterOrder.ASCENDING);
+            decreasingStrengthSorter = new ComparatorSelectionSorter<>(strengthComparator,
+                    SelectionSorterOrder.DESCENDING);
         }
         if (strengthWeightFactoryClass != null) {
-            SelectionSorterWeightFactory strengthWeightFactory = ConfigUtils.newInstance(this,
+            SelectionSorterWeightFactory<Solution_, Object> strengthWeightFactory = ConfigUtils.newInstance(this,
                     "strengthWeightFactoryClass", strengthWeightFactoryClass);
-            increasingStrengthSorter = new WeightFactorySelectionSorter(
-                    strengthWeightFactory, SelectionSorterOrder.ASCENDING);
-            decreasingStrengthSorter = new WeightFactorySelectionSorter(
-                    strengthWeightFactory, SelectionSorterOrder.DESCENDING);
+            increasingStrengthSorter = new WeightFactorySelectionSorter<>(strengthWeightFactory,
+                    SelectionSorterOrder.ASCENDING);
+            decreasingStrengthSorter = new WeightFactorySelectionSorter<>(strengthWeightFactory,
+                    SelectionSorterOrder.DESCENDING);
         }
     }
 
     @Override
     public void linkVariableDescriptors(DescriptorPolicy descriptorPolicy) {
         if (chained && entityDescriptor.hasEffectiveMovableEntitySelectionFilter()) {
-            movableChainedTrailingValueFilter = new MovableChainedTrailingValueFilter(this);
+            movableChainedTrailingValueFilter = new MovableChainedTrailingValueFilter<>(this);
         } else {
             movableChainedTrailingValueFilter = null;
         }
@@ -223,11 +223,11 @@ public class GenuineVariableDescriptor<Solution_> extends VariableDescriptor<Sol
         return movableChainedTrailingValueFilter != null;
     }
 
-    public SelectionFilter getMovableChainedTrailingValueFilter() {
+    public SelectionFilter<Solution_, Object> getMovableChainedTrailingValueFilter() {
         return movableChainedTrailingValueFilter;
     }
 
-    public SelectionFilter getReinitializeVariableEntityFilter() {
+    public SelectionFilter<Solution_, Object> getReinitializeVariableEntityFilter() {
         return reinitializeVariableEntityFilter;
     }
 
@@ -266,11 +266,11 @@ public class GenuineVariableDescriptor<Solution_> extends VariableDescriptor<Sol
         return reinitializeVariableEntityFilter.accept(scoreDirector, entity);
     }
 
-    public SelectionSorter getIncreasingStrengthSorter() {
+    public SelectionSorter<Solution_, Object> getIncreasingStrengthSorter() {
         return increasingStrengthSorter;
     }
 
-    public SelectionSorter getDecreasingStrengthSorter() {
+    public SelectionSorter<Solution_, Object> getDecreasingStrengthSorter() {
         return decreasingStrengthSorter;
     }
 

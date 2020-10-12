@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ import org.optaplanner.core.impl.localsearch.scope.LocalSearchMoveScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchPhaseScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 
-public class StepCountingHillClimbingAcceptor extends AbstractAcceptor {
+public class StepCountingHillClimbingAcceptor<Solution_> extends AbstractAcceptor<Solution_> {
 
     protected int stepCountingHillClimbingSize = -1;
     protected StepCountingHillClimbingType stepCountingHillClimbingType;
@@ -50,14 +50,14 @@ public class StepCountingHillClimbingAcceptor extends AbstractAcceptor {
     // ************************************************************************
 
     @Override
-    public void phaseStarted(LocalSearchPhaseScope phaseScope) {
+    public void phaseStarted(LocalSearchPhaseScope<Solution_> phaseScope) {
         super.phaseStarted(phaseScope);
         thresholdScore = phaseScope.getBestScore();
         count = 0;
     }
 
     @Override
-    public boolean isAccepted(LocalSearchMoveScope moveScope) {
+    public boolean isAccepted(LocalSearchMoveScope<Solution_> moveScope) {
         Score lastStepScore = moveScope.getStepScope().getPhaseScope().getLastCompletedStepScope().getScore();
         Score moveScore = moveScope.getScore();
         if (moveScore.compareTo(lastStepScore) >= 0) {
@@ -67,7 +67,7 @@ public class StepCountingHillClimbingAcceptor extends AbstractAcceptor {
     }
 
     @Override
-    public void stepEnded(LocalSearchStepScope stepScope) {
+    public void stepEnded(LocalSearchStepScope<Solution_> stepScope) {
         super.stepEnded(stepScope);
         count += determineCountIncrement(stepScope);
         if (count >= stepCountingHillClimbingSize) {
@@ -76,7 +76,7 @@ public class StepCountingHillClimbingAcceptor extends AbstractAcceptor {
         }
     }
 
-    private int determineCountIncrement(LocalSearchStepScope stepScope) {
+    private int determineCountIncrement(LocalSearchStepScope<Solution_> stepScope) {
         switch (stepCountingHillClimbingType) {
             case SELECTED_MOVE:
                 long selectedMoveCount = stepScope.getSelectedMoveCount();
@@ -87,10 +87,10 @@ public class StepCountingHillClimbingAcceptor extends AbstractAcceptor {
             case STEP:
                 return 1;
             case EQUAL_OR_IMPROVING_STEP:
-                return stepScope.getScore().compareTo(
+                return ((Score) stepScope.getScore()).compareTo(
                         stepScope.getPhaseScope().getLastCompletedStepScope().getScore()) >= 0 ? 1 : 0;
             case IMPROVING_STEP:
-                return stepScope.getScore().compareTo(
+                return ((Score) stepScope.getScore()).compareTo(
                         stepScope.getPhaseScope().getLastCompletedStepScope().getScore()) > 0 ? 1 : 0;
             default:
                 throw new IllegalStateException("The stepCountingHillClimbingType (" + stepCountingHillClimbingType
@@ -99,7 +99,7 @@ public class StepCountingHillClimbingAcceptor extends AbstractAcceptor {
     }
 
     @Override
-    public void phaseEnded(LocalSearchPhaseScope phaseScope) {
+    public void phaseEnded(LocalSearchPhaseScope<Solution_> phaseScope) {
         super.phaseEnded(phaseScope);
         thresholdScore = null;
         count = -1;

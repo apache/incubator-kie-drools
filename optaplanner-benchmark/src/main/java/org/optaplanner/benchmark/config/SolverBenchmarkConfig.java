@@ -35,7 +35,7 @@ import org.optaplanner.core.impl.solver.DefaultSolverFactory;
         "problemBenchmarksConfig",
         "subSingleCount"
 })
-public class SolverBenchmarkConfig<Solution_> extends AbstractConfig<SolverBenchmarkConfig> {
+public class SolverBenchmarkConfig extends AbstractConfig<SolverBenchmarkConfig> {
 
     private String name = null;
 
@@ -87,7 +87,7 @@ public class SolverBenchmarkConfig<Solution_> extends AbstractConfig<SolverBench
     // Builder methods
     // ************************************************************************
 
-    public void buildSolverBenchmark(ClassLoader classLoader, PlannerBenchmarkResult plannerBenchmark,
+    public <Solution_> void buildSolverBenchmark(ClassLoader classLoader, PlannerBenchmarkResult plannerBenchmark,
             Solution_[] extraProblems) {
         validate();
         SolverBenchmarkResult solverBenchmarkResult = new SolverBenchmarkResult(plannerBenchmark);

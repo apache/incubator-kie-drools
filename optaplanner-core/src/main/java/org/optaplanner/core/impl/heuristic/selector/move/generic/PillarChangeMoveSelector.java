@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,18 +28,18 @@ import org.optaplanner.core.impl.heuristic.selector.entity.pillar.PillarSelector
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 
-public class PillarChangeMoveSelector extends GenericMoveSelector {
+public class PillarChangeMoveSelector<Solution_> extends GenericMoveSelector<Solution_> {
 
-    protected final PillarSelector pillarSelector;
-    protected final ValueSelector valueSelector;
+    protected final PillarSelector<Solution_> pillarSelector;
+    protected final ValueSelector<Solution_> valueSelector;
     protected final boolean randomSelection;
 
-    public PillarChangeMoveSelector(PillarSelector pillarSelector, ValueSelector valueSelector,
+    public PillarChangeMoveSelector(PillarSelector<Solution_> pillarSelector, ValueSelector<Solution_> valueSelector,
             boolean randomSelection) {
         this.pillarSelector = pillarSelector;
         this.valueSelector = valueSelector;
         this.randomSelection = randomSelection;
-        GenuineVariableDescriptor variableDescriptor = valueSelector.getVariableDescriptor();
+        GenuineVariableDescriptor<Solution_> variableDescriptor = valueSelector.getVariableDescriptor();
         if (variableDescriptor.isChained()) {
             throw new IllegalStateException("The selector (" + this
                     + ") has a variableDescriptor (" + variableDescriptor
@@ -74,7 +74,7 @@ public class PillarChangeMoveSelector extends GenericMoveSelector {
     }
 
     @Override
-    public Iterator<Move> iterator() {
+    public Iterator<Move<Solution_>> iterator() {
         if (!randomSelection) {
             return new OriginalPillarChangeMoveIterator();
         } else {
@@ -82,7 +82,7 @@ public class PillarChangeMoveSelector extends GenericMoveSelector {
         }
     }
 
-    private class OriginalPillarChangeMoveIterator extends UpcomingSelectionIterator<Move> {
+    private class OriginalPillarChangeMoveIterator extends UpcomingSelectionIterator<Move<Solution_>> {
 
         private Iterator<List<Object>> pillarIterator;
         private Iterator<Object> valueIterator;
@@ -96,7 +96,7 @@ public class PillarChangeMoveSelector extends GenericMoveSelector {
         }
 
         @Override
-        protected Move createUpcomingSelection() {
+        protected Move<Solution_> createUpcomingSelection() {
             if (!valueIterator.hasNext()) {
                 if (!pillarIterator.hasNext()) {
                     return noUpcomingSelection();
@@ -110,12 +110,12 @@ public class PillarChangeMoveSelector extends GenericMoveSelector {
             }
             Object toValue = valueIterator.next();
 
-            return new PillarChangeMove(upcomingPillar, valueSelector.getVariableDescriptor(), toValue);
+            return new PillarChangeMove<>(upcomingPillar, valueSelector.getVariableDescriptor(), toValue);
         }
 
     }
 
-    private class RandomPillarChangeMoveIterator extends UpcomingSelectionIterator<Move> {
+    private class RandomPillarChangeMoveIterator extends UpcomingSelectionIterator<Move<Solution_>> {
 
         private Iterator<List<Object>> pillarIterator;
         private Iterator<Object> valueIterator;
@@ -127,7 +127,7 @@ public class PillarChangeMoveSelector extends GenericMoveSelector {
         }
 
         @Override
-        protected Move createUpcomingSelection() {
+        protected Move<Solution_> createUpcomingSelection() {
             // Ideally, this code should have read:
             //     Object pillar = pillarIterator.next();
             //     Object toValue = valueIterator.next();
@@ -150,7 +150,7 @@ public class PillarChangeMoveSelector extends GenericMoveSelector {
             }
             Object toValue = valueIterator.next();
 
-            return new PillarChangeMove(pillar, valueSelector.getVariableDescriptor(), toValue);
+            return new PillarChangeMove<>(pillar, valueSelector.getVariableDescriptor(), toValue);
         }
 
     }

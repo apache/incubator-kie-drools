@@ -928,7 +928,7 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                     // Filter out filtered constraints
                     .filter(constraintMatch -> filteredConstraintNames == null
                             || filteredConstraintNames.contains(constraintMatch.getConstraintName()))
-                    .map(constraintMatch -> (HardMediumSoftScore) constraintMatch.getScore())
+                    .map(constraintMatch -> constraintMatch.getScore())
                     // Filter out positive constraints
                     .filter(indictmentScore -> !(indictmentScore.getHardScore() >= 0 && indictmentScore.getSoftScore() >= 0))
                     .reduce(HardMediumSoftScore::add).orElse(HardMediumSoftScore.ZERO);
@@ -973,7 +973,7 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                                 .filter(constraintMatch -> constraintMatch.getConstraintName().equals(constraintName))
                                 .collect(toList());
                         HardMediumSoftScore sum = filteredConstraintMatchList.stream()
-                                .map(constraintMatch -> (HardMediumSoftScore) constraintMatch.getScore())
+                                .map(constraintMatch -> constraintMatch.getScore())
                                 .reduce(HardMediumSoftScore::add)
                                 .orElse(HardMediumSoftScore.ZERO);
                         String justificationTalkCodes = filteredConstraintMatchList.stream()

@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,9 +30,9 @@ import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 /**
  * This is the common {@link EntitySelector} implementation.
  */
-public class FromSolutionEntitySelector extends AbstractEntitySelector {
+public class FromSolutionEntitySelector<Solution_> extends AbstractEntitySelector<Solution_> {
 
-    protected final EntityDescriptor entityDescriptor;
+    protected final EntityDescriptor<Solution_> entityDescriptor;
     protected final SelectionCacheType minimumCacheType;
     protected final boolean randomSelection;
 
@@ -40,7 +40,7 @@ public class FromSolutionEntitySelector extends AbstractEntitySelector {
     protected Long cachedEntityListRevision = null;
     protected boolean cachedEntityListIsDirty = false;
 
-    public FromSolutionEntitySelector(EntityDescriptor entityDescriptor,
+    public FromSolutionEntitySelector(EntityDescriptor<Solution_> entityDescriptor,
             SelectionCacheType minimumCacheType, boolean randomSelection) {
         this.entityDescriptor = entityDescriptor;
         this.minimumCacheType = minimumCacheType;
@@ -48,7 +48,7 @@ public class FromSolutionEntitySelector extends AbstractEntitySelector {
     }
 
     @Override
-    public EntityDescriptor getEntityDescriptor() {
+    public EntityDescriptor<Solution_> getEntityDescriptor() {
         return entityDescriptor;
     }
 
@@ -68,18 +68,18 @@ public class FromSolutionEntitySelector extends AbstractEntitySelector {
     // ************************************************************************
 
     @Override
-    public void phaseStarted(AbstractPhaseScope phaseScope) {
+    public void phaseStarted(AbstractPhaseScope<Solution_> phaseScope) {
         super.phaseStarted(phaseScope);
-        InnerScoreDirector scoreDirector = phaseScope.getScoreDirector();
+        InnerScoreDirector<Solution_, ?> scoreDirector = phaseScope.getScoreDirector();
         cachedEntityList = entityDescriptor.extractEntities(scoreDirector.getWorkingSolution());
         cachedEntityListRevision = scoreDirector.getWorkingEntityListRevision();
         cachedEntityListIsDirty = false;
     }
 
     @Override
-    public void stepStarted(AbstractStepScope stepScope) {
+    public void stepStarted(AbstractStepScope<Solution_> stepScope) {
         super.stepStarted(stepScope);
-        InnerScoreDirector scoreDirector = stepScope.getScoreDirector();
+        InnerScoreDirector<Solution_, ?> scoreDirector = stepScope.getScoreDirector();
         if (scoreDirector.isWorkingEntityListDirty(cachedEntityListRevision)) {
             if (minimumCacheType.compareTo(SelectionCacheType.STEP) > 0) {
                 cachedEntityListIsDirty = true;
@@ -91,7 +91,7 @@ public class FromSolutionEntitySelector extends AbstractEntitySelector {
     }
 
     @Override
-    public void phaseEnded(AbstractPhaseScope phaseScope) {
+    public void phaseEnded(AbstractPhaseScope<Solution_> phaseScope) {
         super.phaseEnded(phaseScope);
         cachedEntityList = null;
         cachedEntityListRevision = null;

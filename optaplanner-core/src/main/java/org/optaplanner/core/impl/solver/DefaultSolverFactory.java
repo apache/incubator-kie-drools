@@ -87,14 +87,15 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
 
         BestSolutionRecaller<Solution_> bestSolutionRecaller =
                 BestSolutionRecallerFactory.create().buildBestSolutionRecaller(environmentMode_);
-        HeuristicConfigPolicy configPolicy = new HeuristicConfigPolicy(environmentMode_,
+        HeuristicConfigPolicy<Solution_> configPolicy = new HeuristicConfigPolicy<>(environmentMode_,
                 moveThreadCount_, solverConfig.getMoveThreadBufferSize(), solverConfig.getThreadFactoryClass(),
                 scoreDirectorFactory);
-        TerminationConfig terminationConfig_ = solverConfig.getTerminationConfig() == null ? new TerminationConfig()
+        TerminationConfig terminationConfig_ = solverConfig.getTerminationConfig() == null
+                ? new TerminationConfig()
                 : solverConfig.getTerminationConfig();
-        BasicPlumbingTermination basicPlumbingTermination = new BasicPlumbingTermination(daemon_);
-        Termination termination =
-                TerminationFactory.create(terminationConfig_).buildTermination(configPolicy, basicPlumbingTermination);
+        BasicPlumbingTermination<Solution_> basicPlumbingTermination = new BasicPlumbingTermination<>(daemon_);
+        Termination<Solution_> termination = TerminationFactory.<Solution_> create(terminationConfig_)
+                .buildTermination(configPolicy, basicPlumbingTermination);
         List<Phase<Solution_>> phaseList = buildPhaseList(configPolicy, bestSolutionRecaller, termination);
         return new DefaultSolver<>(environmentMode_, randomFactory,
                 bestSolutionRecaller, basicPlumbingTermination, termination, phaseList, solverScope);
@@ -155,17 +156,15 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
         return randomFactory;
     }
 
-    protected List<Phase<Solution_>> buildPhaseList(HeuristicConfigPolicy configPolicy,
-            BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination termination) {
+    protected List<Phase<Solution_>> buildPhaseList(HeuristicConfigPolicy<Solution_> configPolicy,
+            BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination<Solution_> termination) {
         List<PhaseConfig> phaseConfigList_ = solverConfig.getPhaseConfigList();
         if (ConfigUtils.isEmptyCollection(phaseConfigList_)) {
-            phaseConfigList_ = Arrays.asList(
-                    new ConstructionHeuristicPhaseConfig(),
-                    new LocalSearchPhaseConfig());
+            phaseConfigList_ = Arrays.asList(new ConstructionHeuristicPhaseConfig(), new LocalSearchPhaseConfig());
         }
         List<Phase<Solution_>> phaseList = new ArrayList<>(phaseConfigList_.size());
         int phaseIndex = 0;
-        for (PhaseConfig<?> phaseConfig : phaseConfigList_) {
+        for (PhaseConfig phaseConfig : phaseConfigList_) {
             PhaseFactory<Solution_> phaseFactory = PhaseFactory.create(phaseConfig);
             Phase<Solution_> phase = phaseFactory.buildPhase(phaseIndex, configPolicy, bestSolutionRecaller, termination);
             phaseList.add(phase);

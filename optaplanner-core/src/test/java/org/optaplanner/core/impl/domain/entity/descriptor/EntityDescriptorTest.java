@@ -25,6 +25,7 @@ import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
 import org.optaplanner.core.impl.testdata.domain.pinned.TestdataPinnedEntity;
+import org.optaplanner.core.impl.testdata.domain.pinned.TestdataPinnedSolution;
 import org.optaplanner.core.impl.testdata.domain.pinned.extended.TestdataExtendedPinnedEntity;
 import org.optaplanner.core.impl.testdata.domain.pinned.extended.TestdataExtendedPinnedSolution;
 
@@ -32,10 +33,11 @@ public class EntityDescriptorTest {
 
     @Test
     public void movableEntitySelectionFilter() {
-        ScoreDirector scoreDirector = mock(ScoreDirector.class);
-        EntityDescriptor entityDescriptor = TestdataPinnedEntity.buildEntityDescriptor();
+        ScoreDirector<TestdataPinnedSolution> scoreDirector = mock(ScoreDirector.class);
+        EntityDescriptor<TestdataPinnedSolution> entityDescriptor = TestdataPinnedEntity.buildEntityDescriptor();
         assertThat(entityDescriptor.hasEffectiveMovableEntitySelectionFilter()).isTrue();
-        SelectionFilter movableEntitySelectionFilter = entityDescriptor.getEffectiveMovableEntitySelectionFilter();
+        SelectionFilter<TestdataPinnedSolution, Object> movableEntitySelectionFilter =
+                entityDescriptor.getEffectiveMovableEntitySelectionFilter();
         assertThat(movableEntitySelectionFilter).isNotNull();
 
         assertThat(movableEntitySelectionFilter.accept(scoreDirector,
@@ -47,12 +49,15 @@ public class EntityDescriptorTest {
     @Test
     @Disabled // TODO FIXME PLANNER-849
     public void extendedMovableEntitySelectionFilterUsedByParentSelector() {
-        ScoreDirector scoreDirector = mock(ScoreDirector.class);
-        SolutionDescriptor solutionDescriptor = TestdataExtendedPinnedSolution.buildSolutionDescriptor();
+        ScoreDirector<TestdataExtendedPinnedSolution> scoreDirector = mock(ScoreDirector.class);
+        SolutionDescriptor<TestdataExtendedPinnedSolution> solutionDescriptor =
+                TestdataExtendedPinnedSolution.buildSolutionDescriptor();
 
-        EntityDescriptor parentEntityDescriptor = solutionDescriptor.findEntityDescriptor(TestdataPinnedEntity.class);
+        EntityDescriptor<TestdataExtendedPinnedSolution> parentEntityDescriptor =
+                solutionDescriptor.findEntityDescriptor(TestdataPinnedEntity.class);
         assertThat(parentEntityDescriptor.hasEffectiveMovableEntitySelectionFilter()).isTrue();
-        SelectionFilter parentMovableEntitySelectionFilter = parentEntityDescriptor.getEffectiveMovableEntitySelectionFilter();
+        SelectionFilter<TestdataExtendedPinnedSolution, Object> parentMovableEntitySelectionFilter =
+                parentEntityDescriptor.getEffectiveMovableEntitySelectionFilter();
         assertThat(parentMovableEntitySelectionFilter).isNotNull();
 
         assertThat(parentMovableEntitySelectionFilter.accept(scoreDirector,
@@ -75,12 +80,15 @@ public class EntityDescriptorTest {
 
     @Test
     public void extendedMovableEntitySelectionFilterUsedByChildSelector() {
-        ScoreDirector scoreDirector = mock(ScoreDirector.class);
-        SolutionDescriptor solutionDescriptor = TestdataExtendedPinnedSolution.buildSolutionDescriptor();
+        ScoreDirector<TestdataExtendedPinnedSolution> scoreDirector = mock(ScoreDirector.class);
+        SolutionDescriptor<TestdataExtendedPinnedSolution> solutionDescriptor =
+                TestdataExtendedPinnedSolution.buildSolutionDescriptor();
 
-        EntityDescriptor childEntityDescriptor = solutionDescriptor.findEntityDescriptor(TestdataExtendedPinnedEntity.class);
+        EntityDescriptor<TestdataExtendedPinnedSolution> childEntityDescriptor =
+                solutionDescriptor.findEntityDescriptor(TestdataExtendedPinnedEntity.class);
         assertThat(childEntityDescriptor.hasEffectiveMovableEntitySelectionFilter()).isTrue();
-        SelectionFilter childMovableEntitySelectionFilter = childEntityDescriptor.getEffectiveMovableEntitySelectionFilter();
+        SelectionFilter<TestdataExtendedPinnedSolution, Object> childMovableEntitySelectionFilter =
+                childEntityDescriptor.getEffectiveMovableEntitySelectionFilter();
         assertThat(childMovableEntitySelectionFilter).isNotNull();
 
         // No new TestdataPinnedEntity() because a child selector would never select a pure parent instance

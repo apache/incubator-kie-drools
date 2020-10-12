@@ -21,7 +21,7 @@ import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.solver.thread.ChildThreadType;
 
-public class ScoreCalculationCountTermination extends AbstractTermination {
+public class ScoreCalculationCountTermination<Solution_> extends AbstractTermination<Solution_> {
 
     private final long scoreCalculationCountLimit;
 
@@ -38,16 +38,16 @@ public class ScoreCalculationCountTermination extends AbstractTermination {
     // ************************************************************************
 
     @Override
-    public boolean isSolverTerminated(SolverScope solverScope) {
+    public boolean isSolverTerminated(SolverScope<Solution_> solverScope) {
         return isTerminated(solverScope.getScoreDirector());
     }
 
     @Override
-    public boolean isPhaseTerminated(AbstractPhaseScope phaseScope) {
+    public boolean isPhaseTerminated(AbstractPhaseScope<Solution_> phaseScope) {
         return isTerminated(phaseScope.getScoreDirector());
     }
 
-    protected boolean isTerminated(InnerScoreDirector scoreDirector) {
+    protected boolean isTerminated(InnerScoreDirector<Solution_, ?> scoreDirector) {
         long scoreCalculationCount = scoreDirector.getCalculationCount();
         return scoreCalculationCount >= scoreCalculationCountLimit;
     }
@@ -57,16 +57,16 @@ public class ScoreCalculationCountTermination extends AbstractTermination {
     // ************************************************************************
 
     @Override
-    public double calculateSolverTimeGradient(SolverScope solverScope) {
+    public double calculateSolverTimeGradient(SolverScope<Solution_> solverScope) {
         return calculateTimeGradient(solverScope.getScoreDirector());
     }
 
     @Override
-    public double calculatePhaseTimeGradient(AbstractPhaseScope phaseScope) {
+    public double calculatePhaseTimeGradient(AbstractPhaseScope<Solution_> phaseScope) {
         return calculateTimeGradient(phaseScope.getScoreDirector());
     }
 
-    protected double calculateTimeGradient(InnerScoreDirector scoreDirector) {
+    protected double calculateTimeGradient(InnerScoreDirector<Solution_, ?> scoreDirector) {
         long scoreCalculationCount = scoreDirector.getCalculationCount();
         double timeGradient = ((double) scoreCalculationCount) / ((double) scoreCalculationCountLimit);
         return Math.min(timeGradient, 1.0);
@@ -77,11 +77,11 @@ public class ScoreCalculationCountTermination extends AbstractTermination {
     // ************************************************************************
 
     @Override
-    public ScoreCalculationCountTermination createChildThreadTermination(
-            SolverScope solverScope, ChildThreadType childThreadType) {
+    public ScoreCalculationCountTermination<Solution_> createChildThreadTermination(SolverScope<Solution_> solverScope,
+            ChildThreadType childThreadType) {
         if (childThreadType == ChildThreadType.PART_THREAD) {
             // The ScoreDirector.calculationCount of partitions is maxed, not summed.
-            return new ScoreCalculationCountTermination(scoreCalculationCountLimit);
+            return new ScoreCalculationCountTermination<>(scoreCalculationCountLimit);
         } else {
             throw new IllegalStateException("The childThreadType (" + childThreadType + ") is not implemented.");
         }

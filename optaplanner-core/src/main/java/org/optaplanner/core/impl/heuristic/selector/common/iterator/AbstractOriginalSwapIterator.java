@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,11 +19,14 @@ package org.optaplanner.core.impl.heuristic.selector.common.iterator;
 import java.util.Collections;
 import java.util.ListIterator;
 
+import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.ListIterableSelector;
 
-public abstract class AbstractOriginalSwapIterator<S, SubS> extends UpcomingSelectionIterator<S> {
+public abstract class AbstractOriginalSwapIterator<Solution_, Move_ extends Move<Solution_>, SubSelection_>
+        extends UpcomingSelectionIterator<Move_> {
 
-    public static <SubS> long getSize(ListIterableSelector leftSubSelector, ListIterableSelector rightSubSelector) {
+    public static <Solution_, SubSelection_> long getSize(ListIterableSelector<Solution_, SubSelection_> leftSubSelector,
+            ListIterableSelector<Solution_, SubSelection_> rightSubSelector) {
         if (leftSubSelector != rightSubSelector) {
             return leftSubSelector.getSize() * rightSubSelector.getSize();
         } else {
@@ -32,27 +35,27 @@ public abstract class AbstractOriginalSwapIterator<S, SubS> extends UpcomingSele
         }
     }
 
-    protected final ListIterable<SubS> leftSubSelector;
-    protected final ListIterable<SubS> rightSubSelector;
+    protected final ListIterable<SubSelection_> leftSubSelector;
+    protected final ListIterable<SubSelection_> rightSubSelector;
     protected final boolean leftEqualsRight;
 
-    private ListIterator<SubS> leftSubSelectionIterator;
-    private ListIterator<SubS> rightSubSelectionIterator;
+    private final ListIterator<SubSelection_> leftSubSelectionIterator;
+    private ListIterator<SubSelection_> rightSubSelectionIterator;
 
-    private SubS leftSubSelection;
+    private SubSelection_ leftSubSelection;
 
-    public AbstractOriginalSwapIterator(ListIterable<SubS> leftSubSelector,
-            ListIterable<SubS> rightSubSelector) {
+    public AbstractOriginalSwapIterator(ListIterable<SubSelection_> leftSubSelector,
+            ListIterable<SubSelection_> rightSubSelector) {
         this.leftSubSelector = leftSubSelector;
         this.rightSubSelector = rightSubSelector;
         leftEqualsRight = (leftSubSelector == rightSubSelector);
         leftSubSelectionIterator = leftSubSelector.listIterator();
-        rightSubSelectionIterator = Collections.<SubS> emptyList().listIterator();
+        rightSubSelectionIterator = Collections.<SubSelection_> emptyList().listIterator();
         // Don't do hasNext() in constructor (to avoid upcoming selections breaking mimic recording)
     }
 
     @Override
-    protected S createUpcomingSelection() {
+    protected Move_ createUpcomingSelection() {
         if (!rightSubSelectionIterator.hasNext()) {
             if (!leftSubSelectionIterator.hasNext()) {
                 return noUpcomingSelection();
@@ -73,10 +76,10 @@ public abstract class AbstractOriginalSwapIterator<S, SubS> extends UpcomingSele
                 // rightEntityIterator's first hasNext() always returns true because of the nextIndex()
             }
         }
-        SubS rightSubSelection = rightSubSelectionIterator.next();
+        SubSelection_ rightSubSelection = rightSubSelectionIterator.next();
         return newSwapSelection(leftSubSelection, rightSubSelection);
     }
 
-    protected abstract S newSwapSelection(SubS leftSubSelection, SubS rightSubSelection);
+    protected abstract Move_ newSwapSelection(SubSelection_ leftSubSelection, SubSelection_ rightSubSelection);
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,6 @@ import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
 /**
  * General superclass for {@link MoveSelectorConfig}, {@link EntitySelectorConfig} and {@link ValueSelectorConfig}.
  */
-public abstract class SelectorConfig<C extends SelectorConfig> extends AbstractConfig<C> {
+public abstract class SelectorConfig<Config_ extends SelectorConfig<Config_>> extends AbstractConfig<Config_> {
 
 }

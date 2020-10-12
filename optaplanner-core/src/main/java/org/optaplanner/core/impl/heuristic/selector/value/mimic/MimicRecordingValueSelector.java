@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,21 +25,21 @@ import org.optaplanner.core.impl.heuristic.selector.common.iterator.SelectionIte
 import org.optaplanner.core.impl.heuristic.selector.value.AbstractValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 
-public class MimicRecordingValueSelector extends AbstractValueSelector
-        implements ValueMimicRecorder, EntityIndependentValueSelector {
+public class MimicRecordingValueSelector<Solution_> extends AbstractValueSelector<Solution_>
+        implements ValueMimicRecorder<Solution_>, EntityIndependentValueSelector<Solution_> {
 
-    protected final EntityIndependentValueSelector childValueSelector;
+    protected final EntityIndependentValueSelector<Solution_> childValueSelector;
 
-    protected final List<MimicReplayingValueSelector> replayingValueSelectorList;
+    protected final List<MimicReplayingValueSelector<Solution_>> replayingValueSelectorList;
 
-    public MimicRecordingValueSelector(EntityIndependentValueSelector childValueSelector) {
+    public MimicRecordingValueSelector(EntityIndependentValueSelector<Solution_> childValueSelector) {
         this.childValueSelector = childValueSelector;
         phaseLifecycleSupport.addEventListener(childValueSelector);
         replayingValueSelectorList = new ArrayList<>();
     }
 
     @Override
-    public void addMimicReplayingValueSelector(MimicReplayingValueSelector replayingEntitySelector) {
+    public void addMimicReplayingValueSelector(MimicReplayingValueSelector<Solution_> replayingEntitySelector) {
         replayingValueSelectorList.add(replayingEntitySelector);
     }
 
@@ -48,7 +48,7 @@ public class MimicRecordingValueSelector extends AbstractValueSelector
     // ************************************************************************
 
     @Override
-    public GenuineVariableDescriptor getVariableDescriptor() {
+    public GenuineVariableDescriptor<Solution_> getVariableDescriptor() {
         return childValueSelector.getVariableDescriptor();
     }
 
@@ -93,7 +93,7 @@ public class MimicRecordingValueSelector extends AbstractValueSelector
         @Override
         public boolean hasNext() {
             boolean hasNext = childValueIterator.hasNext();
-            for (MimicReplayingValueSelector replayingValueSelector : replayingValueSelectorList) {
+            for (MimicReplayingValueSelector<Solution_> replayingValueSelector : replayingValueSelectorList) {
                 replayingValueSelector.recordedHasNext(hasNext);
             }
             return hasNext;
@@ -102,7 +102,7 @@ public class MimicRecordingValueSelector extends AbstractValueSelector
         @Override
         public Object next() {
             Object next = childValueIterator.next();
-            for (MimicReplayingValueSelector replayingValueSelector : replayingValueSelectorList) {
+            for (MimicReplayingValueSelector<Solution_> replayingValueSelector : replayingValueSelectorList) {
                 replayingValueSelector.recordedNext(next);
             }
             return next;

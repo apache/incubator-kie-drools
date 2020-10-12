@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,13 +25,13 @@ import org.optaplanner.core.impl.heuristic.selector.common.iterator.SelectionIte
 import org.optaplanner.core.impl.heuristic.selector.entity.AbstractEntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 
-public class SelectedCountLimitEntitySelector extends AbstractEntitySelector {
+public class SelectedCountLimitEntitySelector<Solution_> extends AbstractEntitySelector<Solution_> {
 
-    protected final EntitySelector childEntitySelector;
+    protected final EntitySelector<Solution_> childEntitySelector;
     protected final boolean randomSelection;
     protected final long selectedCountLimit;
 
-    public SelectedCountLimitEntitySelector(EntitySelector childEntitySelector, boolean randomSelection,
+    public SelectedCountLimitEntitySelector(EntitySelector<Solution_> childEntitySelector, boolean randomSelection,
             long selectedCountLimit) {
         this.childEntitySelector = childEntitySelector;
         this.randomSelection = randomSelection;
@@ -48,7 +48,7 @@ public class SelectedCountLimitEntitySelector extends AbstractEntitySelector {
     // ************************************************************************
 
     @Override
-    public EntityDescriptor getEntityDescriptor() {
+    public EntityDescriptor<Solution_> getEntityDescriptor() {
         return childEntitySelector.getEntityDescriptor();
     }
 

@@ -22,13 +22,13 @@ import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.solver.thread.ChildThreadType;
 
-public class OrCompositeTermination extends AbstractCompositeTermination {
+public class OrCompositeTermination<Solution_> extends AbstractCompositeTermination<Solution_> {
 
-    public OrCompositeTermination(List<Termination> terminationList) {
+    public OrCompositeTermination(List<Termination<Solution_>> terminationList) {
         super(terminationList);
     }
 
-    public OrCompositeTermination(Termination... terminations) {
+    public OrCompositeTermination(Termination<Solution_>... terminations) {
         super(terminations);
     }
 
@@ -41,8 +41,8 @@ public class OrCompositeTermination extends AbstractCompositeTermination {
      * @return true if any of the Termination is terminated.
      */
     @Override
-    public boolean isSolverTerminated(SolverScope solverScope) {
-        for (Termination termination : terminationList) {
+    public boolean isSolverTerminated(SolverScope<Solution_> solverScope) {
+        for (Termination<Solution_> termination : terminationList) {
             if (termination.isSolverTerminated(solverScope)) {
                 return true;
             }
@@ -55,8 +55,8 @@ public class OrCompositeTermination extends AbstractCompositeTermination {
      * @return true if any of the Termination is terminated.
      */
     @Override
-    public boolean isPhaseTerminated(AbstractPhaseScope phaseScope) {
-        for (Termination termination : terminationList) {
+    public boolean isPhaseTerminated(AbstractPhaseScope<Solution_> phaseScope) {
+        for (Termination<Solution_> termination : terminationList) {
             if (termination.isPhaseTerminated(phaseScope)) {
                 return true;
             }
@@ -76,9 +76,9 @@ public class OrCompositeTermination extends AbstractCompositeTermination {
      * @return the maximum timeGradient of the Terminations.
      */
     @Override
-    public double calculateSolverTimeGradient(SolverScope solverScope) {
+    public double calculateSolverTimeGradient(SolverScope<Solution_> solverScope) {
         double timeGradient = 0.0;
-        for (Termination termination : terminationList) {
+        for (Termination<Solution_> termination : terminationList) {
             double nextTimeGradient = termination.calculateSolverTimeGradient(solverScope);
             if (nextTimeGradient >= 0.0) {
                 timeGradient = Math.max(timeGradient, nextTimeGradient);
@@ -95,9 +95,9 @@ public class OrCompositeTermination extends AbstractCompositeTermination {
      * @return the maximum timeGradient of the Terminations.
      */
     @Override
-    public double calculatePhaseTimeGradient(AbstractPhaseScope phaseScope) {
+    public double calculatePhaseTimeGradient(AbstractPhaseScope<Solution_> phaseScope) {
         double timeGradient = 0.0;
-        for (Termination termination : terminationList) {
+        for (Termination<Solution_> termination : terminationList) {
             double nextTimeGradient = termination.calculatePhaseTimeGradient(phaseScope);
             if (nextTimeGradient >= 0.0) {
                 timeGradient = Math.max(timeGradient, nextTimeGradient);
@@ -111,9 +111,9 @@ public class OrCompositeTermination extends AbstractCompositeTermination {
     // ************************************************************************
 
     @Override
-    public OrCompositeTermination createChildThreadTermination(
-            SolverScope solverScope, ChildThreadType childThreadType) {
-        return new OrCompositeTermination(createChildThreadTerminationList(solverScope, childThreadType));
+    public OrCompositeTermination<Solution_> createChildThreadTermination(SolverScope<Solution_> solverScope,
+            ChildThreadType childThreadType) {
+        return new OrCompositeTermination<>(createChildThreadTerminationList(solverScope, childThreadType));
     }
 
     @Override

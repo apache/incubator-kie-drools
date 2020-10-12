@@ -20,10 +20,11 @@ import org.optaplanner.core.config.constructionheuristic.decider.forager.Constru
 import org.optaplanner.core.config.constructionheuristic.decider.forager.ConstructionHeuristicPickEarlyType;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 
-public class ConstructionHeuristicForagerFactory {
+public class ConstructionHeuristicForagerFactory<Solution_> {
 
-    public static ConstructionHeuristicForagerFactory create(ConstructionHeuristicForagerConfig foragerConfig) {
-        return new ConstructionHeuristicForagerFactory(foragerConfig);
+    public static <Solution_> ConstructionHeuristicForagerFactory<Solution_> create(
+            ConstructionHeuristicForagerConfig foragerConfig) {
+        return new ConstructionHeuristicForagerFactory<>(foragerConfig);
     }
 
     private final ConstructionHeuristicForagerConfig foragerConfig;
@@ -32,7 +33,7 @@ public class ConstructionHeuristicForagerFactory {
         this.foragerConfig = foragerConfig;
     }
 
-    public ConstructionHeuristicForager buildForager(HeuristicConfigPolicy configPolicy) {
+    public ConstructionHeuristicForager<Solution_> buildForager(HeuristicConfigPolicy<Solution_> configPolicy) {
         ConstructionHeuristicPickEarlyType pickEarlyType_;
         if (foragerConfig.getPickEarlyType() == null) {
             pickEarlyType_ = configPolicy.getScoreDirectorFactory().getInitializingScoreTrend().isOnlyDown()
@@ -41,6 +42,6 @@ public class ConstructionHeuristicForagerFactory {
         } else {
             pickEarlyType_ = foragerConfig.getPickEarlyType();
         }
-        return new DefaultConstructionHeuristicForager(pickEarlyType_);
+        return new DefaultConstructionHeuristicForager<>(pickEarlyType_);
     }
 }

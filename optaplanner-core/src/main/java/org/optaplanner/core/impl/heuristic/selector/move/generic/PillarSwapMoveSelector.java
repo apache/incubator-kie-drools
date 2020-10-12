@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,15 +25,16 @@ import org.optaplanner.core.impl.heuristic.selector.common.iterator.AbstractOrig
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.AbstractRandomSwapIterator;
 import org.optaplanner.core.impl.heuristic.selector.entity.pillar.PillarSelector;
 
-public class PillarSwapMoveSelector extends GenericMoveSelector {
+public class PillarSwapMoveSelector<Solution_> extends GenericMoveSelector<Solution_> {
 
-    protected final PillarSelector leftPillarSelector;
-    protected final PillarSelector rightPillarSelector;
-    protected final List<GenuineVariableDescriptor> variableDescriptorList;
+    protected final PillarSelector<Solution_> leftPillarSelector;
+    protected final PillarSelector<Solution_> rightPillarSelector;
+    protected final List<GenuineVariableDescriptor<Solution_>> variableDescriptorList;
     protected final boolean randomSelection;
 
-    public PillarSwapMoveSelector(PillarSelector leftPillarSelector, PillarSelector rightPillarSelector,
-            List<GenuineVariableDescriptor> variableDescriptorList, boolean randomSelection) {
+    public PillarSwapMoveSelector(PillarSelector<Solution_> leftPillarSelector,
+            PillarSelector<Solution_> rightPillarSelector,
+            List<GenuineVariableDescriptor<Solution_>> variableDescriptorList, boolean randomSelection) {
         this.leftPillarSelector = leftPillarSelector;
         this.rightPillarSelector = rightPillarSelector;
         this.variableDescriptorList = variableDescriptorList;
@@ -49,7 +50,7 @@ public class PillarSwapMoveSelector extends GenericMoveSelector {
             throw new IllegalStateException("The selector (" + this
                     + ")'s variableDescriptors (" + variableDescriptorList + ") is empty.");
         }
-        for (GenuineVariableDescriptor variableDescriptor : variableDescriptorList) {
+        for (GenuineVariableDescriptor<Solution_> variableDescriptor : variableDescriptorList) {
             if (!leftEntityClass.equals(
                     variableDescriptor.getEntityDescriptor().getEntityClass())) {
                 throw new IllegalStateException("The selector (" + this
@@ -89,19 +90,21 @@ public class PillarSwapMoveSelector extends GenericMoveSelector {
     }
 
     @Override
-    public Iterator<Move> iterator() {
+    public Iterator<Move<Solution_>> iterator() {
         if (!randomSelection) {
-            return new AbstractOriginalSwapIterator<Move, List<Object>>(leftPillarSelector, rightPillarSelector) {
+            return new AbstractOriginalSwapIterator<Solution_, Move<Solution_>, List<Object>>(leftPillarSelector,
+                    rightPillarSelector) {
                 @Override
-                protected Move newSwapSelection(List<Object> leftSubSelection, List<Object> rightSubSelection) {
-                    return new PillarSwapMove(variableDescriptorList, leftSubSelection, rightSubSelection);
+                protected Move<Solution_> newSwapSelection(List<Object> leftSubSelection, List<Object> rightSubSelection) {
+                    return new PillarSwapMove<>(variableDescriptorList, leftSubSelection, rightSubSelection);
                 }
             };
         } else {
-            return new AbstractRandomSwapIterator<Move, List<Object>>(leftPillarSelector, rightPillarSelector) {
+            return new AbstractRandomSwapIterator<Solution_, Move<Solution_>, List<Object>>(leftPillarSelector,
+                    rightPillarSelector) {
                 @Override
-                protected Move newSwapSelection(List<Object> leftSubSelection, List<Object> rightSubSelection) {
-                    return new PillarSwapMove(variableDescriptorList, leftSubSelection, rightSubSelection);
+                protected Move<Solution_> newSwapSelection(List<Object> leftSubSelection, List<Object> rightSubSelection) {
+                    return new PillarSwapMove<>(variableDescriptorList, leftSubSelection, rightSubSelection);
                 }
             };
         }

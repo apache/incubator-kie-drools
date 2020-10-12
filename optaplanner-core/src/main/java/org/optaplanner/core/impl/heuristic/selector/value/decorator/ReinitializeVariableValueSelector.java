@@ -35,14 +35,14 @@ import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
  * Does not implement {@link EntityIndependentValueSelector} because if used like that,
  * it shouldn't be added during configuration in the first place.
  */
-public class ReinitializeVariableValueSelector extends AbstractValueSelector {
+public class ReinitializeVariableValueSelector<Solution_> extends AbstractValueSelector<Solution_> {
 
-    protected final ValueSelector childValueSelector;
-    protected final SelectionFilter reinitializeVariableEntityFilter;
+    protected final ValueSelector<Solution_> childValueSelector;
+    protected final SelectionFilter<Solution_, Object> reinitializeVariableEntityFilter;
 
-    protected ScoreDirector scoreDirector = null;
+    protected ScoreDirector<Solution_> scoreDirector = null;
 
-    public ReinitializeVariableValueSelector(ValueSelector childValueSelector) {
+    public ReinitializeVariableValueSelector(ValueSelector<Solution_> childValueSelector) {
         this.childValueSelector = childValueSelector;
         this.reinitializeVariableEntityFilter = childValueSelector.getVariableDescriptor()
                 .getReinitializeVariableEntityFilter();
@@ -54,19 +54,19 @@ public class ReinitializeVariableValueSelector extends AbstractValueSelector {
     // ************************************************************************
 
     @Override
-    public void phaseStarted(AbstractPhaseScope phaseScope) {
+    public void phaseStarted(AbstractPhaseScope<Solution_> phaseScope) {
         super.phaseStarted(phaseScope);
         scoreDirector = phaseScope.getScoreDirector();
     }
 
     @Override
-    public void phaseEnded(AbstractPhaseScope phaseScope) {
+    public void phaseEnded(AbstractPhaseScope<Solution_> phaseScope) {
         super.phaseEnded(phaseScope);
         scoreDirector = null;
     }
 
     @Override
-    public GenuineVariableDescriptor getVariableDescriptor() {
+    public GenuineVariableDescriptor<Solution_> getVariableDescriptor() {
         return childValueSelector.getVariableDescriptor();
     }
 

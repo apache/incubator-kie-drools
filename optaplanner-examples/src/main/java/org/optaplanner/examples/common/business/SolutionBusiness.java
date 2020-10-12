@@ -354,9 +354,9 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> {
         GenuineVariableDescriptor<Solution_> variableDescriptor = solutionDescriptor.findGenuineVariableDescriptorOrFail(
                 entity, variableName);
         if (variableDescriptor.isChained()) {
-            SupplyManager supplyManager = guiScoreDirector.getSupplyManager();
+            SupplyManager<Solution_> supplyManager = guiScoreDirector.getSupplyManager();
             SingletonInverseVariableSupply inverseVariableSupply = supplyManager.demand(
-                    new SingletonInverseVariableDemand(variableDescriptor));
+                    new SingletonInverseVariableDemand<>(variableDescriptor));
             return new ChainedChangeMove<>(entity, variableDescriptor, inverseVariableSupply, toPlanningValue);
         } else {
             return new ChangeMove<>(entity, variableDescriptor, toPlanningValue);
@@ -375,12 +375,11 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> {
         List<GenuineVariableDescriptor<Solution_>> variableDescriptorList = entityDescriptor.getGenuineVariableDescriptorList();
         if (entityDescriptor.hasAnyChainedGenuineVariables()) {
             List<SingletonInverseVariableSupply> inverseVariableSupplyList = new ArrayList<>(variableDescriptorList.size());
-            SupplyManager supplyManager = guiScoreDirector.getSupplyManager();
+            SupplyManager<Solution_> supplyManager = guiScoreDirector.getSupplyManager();
             for (GenuineVariableDescriptor<Solution_> variableDescriptor : variableDescriptorList) {
                 SingletonInverseVariableSupply inverseVariableSupply;
                 if (variableDescriptor.isChained()) {
-                    inverseVariableSupply = supplyManager.demand(
-                            new SingletonInverseVariableDemand(variableDescriptor));
+                    inverseVariableSupply = supplyManager.demand(new SingletonInverseVariableDemand<>(variableDescriptor));
                 } else {
                     inverseVariableSupply = null;
                 }

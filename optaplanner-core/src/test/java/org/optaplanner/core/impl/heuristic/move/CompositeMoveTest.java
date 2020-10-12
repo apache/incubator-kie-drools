@@ -161,17 +161,17 @@ public class CompositeMoveTest {
         Move<TestdataSolution> move = CompositeMove.buildMove(Arrays.asList(first, second));
         assertThat(move)
                 .isInstanceOf(CompositeMove.class);
-        assertThat(((CompositeMove) move).getMoves()[0])
+        assertThat(((CompositeMove<TestdataSolution>) move).getMoves()[0])
                 .isInstanceOf(DummyMove.class);
-        assertThat(((CompositeMove) move).getMoves()[1])
+        assertThat(((CompositeMove<TestdataSolution>) move).getMoves()[1])
                 .isInstanceOf(NoChangeMove.class);
 
         move = CompositeMove.buildMove(first, second);
         assertThat(move)
                 .isInstanceOf(CompositeMove.class);
-        assertThat(((CompositeMove) move).getMoves()[0])
+        assertThat(((CompositeMove<TestdataSolution>) move).getMoves()[0])
                 .isInstanceOf(DummyMove.class);
-        assertThat(((CompositeMove) move).getMoves()[1])
+        assertThat(((CompositeMove<TestdataSolution>) move).getMoves()[1])
                 .isInstanceOf(NoChangeMove.class);
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,8 +30,8 @@ import org.optaplanner.core.config.util.ConfigUtils;
         "subPillarSequenceComparatorClass",
         "pillarSelectorConfig"
 })
-public abstract class AbstractPillarMoveSelectorConfig<C extends AbstractPillarMoveSelectorConfig<C>>
-        extends MoveSelectorConfig<C> {
+public abstract class AbstractPillarMoveSelectorConfig<Config_ extends AbstractPillarMoveSelectorConfig<Config_>>
+        extends MoveSelectorConfig<Config_> {
 
     protected SubPillarType subPillarType = null;
     protected Class<? extends Comparator> subPillarSequenceComparatorClass = null;
@@ -63,13 +63,13 @@ public abstract class AbstractPillarMoveSelectorConfig<C extends AbstractPillarM
     }
 
     @Override
-    public C inherit(C inheritedConfig) {
+    public Config_ inherit(Config_ inheritedConfig) {
         super.inherit(inheritedConfig);
         subPillarType = ConfigUtils.inheritOverwritableProperty(subPillarType, inheritedConfig.getSubPillarType());
         subPillarSequenceComparatorClass = ConfigUtils.inheritOverwritableProperty(subPillarSequenceComparatorClass,
                 inheritedConfig.getSubPillarSequenceComparatorClass());
         pillarSelectorConfig = ConfigUtils.inheritConfig(pillarSelectorConfig, inheritedConfig.getPillarSelectorConfig());
-        return (C) this;
+        return (Config_) this;
     }
 
 }

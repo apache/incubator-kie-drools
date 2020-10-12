@@ -31,14 +31,16 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 @PlanningEntity
 public class TestdataCyclicReferencedShadowedEntity extends TestdataObject {
 
-    public static EntityDescriptor buildEntityDescriptor() {
-        SolutionDescriptor solutionDescriptor = TestdataCyclicReferencedShadowedSolution.buildSolutionDescriptor();
+    public static EntityDescriptor<TestdataCyclicReferencedShadowedSolution> buildEntityDescriptor() {
+        SolutionDescriptor<TestdataCyclicReferencedShadowedSolution> solutionDescriptor =
+                TestdataCyclicReferencedShadowedSolution.buildSolutionDescriptor();
         return solutionDescriptor.findEntityDescriptorOrFail(TestdataCyclicReferencedShadowedEntity.class);
     }
 
-    public static GenuineVariableDescriptor buildVariableDescriptorForValue() {
-        SolutionDescriptor solutionDescriptor = TestdataCyclicReferencedShadowedSolution.buildSolutionDescriptor();
-        EntityDescriptor entityDescriptor = solutionDescriptor
+    public static GenuineVariableDescriptor<TestdataCyclicReferencedShadowedSolution> buildVariableDescriptorForValue() {
+        SolutionDescriptor<TestdataCyclicReferencedShadowedSolution> solutionDescriptor =
+                TestdataCyclicReferencedShadowedSolution.buildSolutionDescriptor();
+        EntityDescriptor<TestdataCyclicReferencedShadowedSolution> entityDescriptor = solutionDescriptor
                 .findEntityDescriptorOrFail(TestdataCyclicReferencedShadowedEntity.class);
         return entityDescriptor.getGenuineVariableDescriptor("value");
     }
@@ -97,19 +99,22 @@ public class TestdataCyclicReferencedShadowedEntity extends TestdataObject {
     // ************************************************************************
 
     public static class BarberAndCutsOwnHairUpdatingVariableListener
-            extends VariableListenerAdapter<TestdataCyclicReferencedShadowedEntity> {
+            extends VariableListenerAdapter<TestdataCyclicReferencedShadowedSolution, TestdataCyclicReferencedShadowedEntity> {
 
         @Override
-        public void afterEntityAdded(ScoreDirector scoreDirector, TestdataCyclicReferencedShadowedEntity entity) {
+        public void afterEntityAdded(ScoreDirector<TestdataCyclicReferencedShadowedSolution> scoreDirector,
+                TestdataCyclicReferencedShadowedEntity entity) {
             updateShadow(entity, scoreDirector);
         }
 
         @Override
-        public void afterVariableChanged(ScoreDirector scoreDirector, TestdataCyclicReferencedShadowedEntity entity) {
+        public void afterVariableChanged(ScoreDirector<TestdataCyclicReferencedShadowedSolution> scoreDirector,
+                TestdataCyclicReferencedShadowedEntity entity) {
             updateShadow(entity, scoreDirector);
         }
 
-        private void updateShadow(TestdataCyclicReferencedShadowedEntity entity, ScoreDirector scoreDirector) {
+        private void updateShadow(TestdataCyclicReferencedShadowedEntity entity,
+                ScoreDirector<TestdataCyclicReferencedShadowedSolution> scoreDirector) {
             // The barber cuts the hair of everyone in the village who does not cut his/her own hair
             // Does the barber cut his own hair?
             TestdataValue value = entity.getValue();

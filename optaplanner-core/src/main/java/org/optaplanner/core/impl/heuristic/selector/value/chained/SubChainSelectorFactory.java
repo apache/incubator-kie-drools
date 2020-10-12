@@ -30,7 +30,7 @@ import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValue
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelectorFactory;
 
-public class SubChainSelectorFactory {
+public class SubChainSelectorFactory<Solution_> {
 
     /**
      * Defaults to 1, even if it partially duplicates {@link ChangeMoveSelectorConfig},
@@ -40,8 +40,9 @@ public class SubChainSelectorFactory {
     private static final int DEFAULT_MINIMUM_SUB_CHAIN_SIZE = 1;
     private static final int DEFAULT_MAXIMUM_SUB_CHAIN_SIZE = Integer.MAX_VALUE;
 
-    public static SubChainSelectorFactory create(SubChainSelectorConfig subChainSelectorConfig) {
-        return new SubChainSelectorFactory(subChainSelectorConfig);
+    public static <Solution_> SubChainSelectorFactory<Solution_>
+            create(SubChainSelectorConfig subChainSelectorConfig) {
+        return new SubChainSelectorFactory<>(subChainSelectorConfig);
     }
 
     private final SubChainSelectorConfig config;
@@ -60,8 +61,9 @@ public class SubChainSelectorFactory {
      * @param inheritedSelectionOrder never null
      * @return never null
      */
-    public SubChainSelector buildSubChainSelector(HeuristicConfigPolicy configPolicy, EntityDescriptor entityDescriptor,
-            SelectionCacheType minimumCacheType, SelectionOrder inheritedSelectionOrder) {
+    public SubChainSelector<Solution_> buildSubChainSelector(HeuristicConfigPolicy<Solution_> configPolicy,
+            EntityDescriptor<Solution_> entityDescriptor, SelectionCacheType minimumCacheType,
+            SelectionOrder inheritedSelectionOrder) {
         if (minimumCacheType.compareTo(SelectionCacheType.STEP) > 0) {
             throw new IllegalArgumentException("The subChainSelectorConfig (" + this
                     + ")'s minimumCacheType (" + minimumCacheType
@@ -71,14 +73,15 @@ public class SubChainSelectorFactory {
         ValueSelectorConfig valueSelectorConfig_ = config.getValueSelectorConfig() == null ? new ValueSelectorConfig()
                 : config.getValueSelectorConfig();
         // ValueSelector uses SelectionOrder.ORIGINAL because a SubChainSelector STEP caches the values
-        ValueSelector valueSelector = ValueSelectorFactory.create(valueSelectorConfig_).buildValueSelector(configPolicy,
-                entityDescriptor, minimumCacheType, SelectionOrder.ORIGINAL);
+        ValueSelector<Solution_> valueSelector =
+                ValueSelectorFactory.<Solution_> create(valueSelectorConfig_)
+                        .buildValueSelector(configPolicy, entityDescriptor, minimumCacheType, SelectionOrder.ORIGINAL);
         if (!(valueSelector instanceof EntityIndependentValueSelector)) {
             throw new IllegalArgumentException("The minimumCacheType (" + this
                     + ") needs to be based on an EntityIndependentValueSelector (" + valueSelector + ")."
                     + " Check your @" + ValueRangeProvider.class.getSimpleName() + " annotations.");
         }
-        return new DefaultSubChainSelector((EntityIndependentValueSelector) valueSelector,
+        return new DefaultSubChainSelector<>((EntityIndependentValueSelector<Solution_>) valueSelector,
                 inheritedSelectionOrder.toRandomSelectionBoolean(),
                 defaultIfNull(config.getMinimumSubChainSize(), DEFAULT_MINIMUM_SUB_CHAIN_SIZE),
                 defaultIfNull(config.getMaximumSubChainSize(), DEFAULT_MAXIMUM_SUB_CHAIN_SIZE));

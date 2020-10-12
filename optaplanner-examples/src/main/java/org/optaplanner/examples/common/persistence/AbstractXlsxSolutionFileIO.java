@@ -101,7 +101,7 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
             SolverFactory<Solution_> solverFactory = SolverFactory.createFromXmlResource(solverConfigResource);
             ScoreDirectorFactory<Solution_> scoreDirectorFactory =
                     ((DefaultSolverFactory<Solution_>) solverFactory).getScoreDirectorFactory();
-            scoreDefinition = ((InnerScoreDirectorFactory) scoreDirectorFactory).getScoreDefinition();
+            scoreDefinition = ((InnerScoreDirectorFactory<Solution_, Score_>) scoreDirectorFactory).getScoreDefinition();
         }
 
         public abstract Solution_ read();

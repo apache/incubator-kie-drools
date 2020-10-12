@@ -28,16 +28,16 @@ import org.optaplanner.core.impl.heuristic.selector.value.AbstractValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 
-public class EntityDependentSortingValueSelector extends AbstractValueSelector {
+public class EntityDependentSortingValueSelector<Solution_> extends AbstractValueSelector<Solution_> {
 
-    protected final ValueSelector childValueSelector;
+    protected final ValueSelector<Solution_> childValueSelector;
     protected final SelectionCacheType cacheType;
-    protected final SelectionSorter sorter;
+    protected final SelectionSorter<Solution_, Object> sorter;
 
-    protected ScoreDirector scoreDirector = null;
+    protected ScoreDirector<Solution_> scoreDirector = null;
 
-    public EntityDependentSortingValueSelector(ValueSelector childValueSelector, SelectionCacheType cacheType,
-            SelectionSorter sorter) {
+    public EntityDependentSortingValueSelector(ValueSelector<Solution_> childValueSelector,
+            SelectionCacheType cacheType, SelectionSorter<Solution_, Object> sorter) {
         this.childValueSelector = childValueSelector;
         this.cacheType = cacheType;
         this.sorter = sorter;
@@ -53,7 +53,7 @@ public class EntityDependentSortingValueSelector extends AbstractValueSelector {
         phaseLifecycleSupport.addEventListener(childValueSelector);
     }
 
-    public ValueSelector getChildValueSelector() {
+    public ValueSelector<Solution_> getChildValueSelector() {
         return childValueSelector;
     }
 
@@ -67,19 +67,19 @@ public class EntityDependentSortingValueSelector extends AbstractValueSelector {
     // ************************************************************************
 
     @Override
-    public void phaseStarted(AbstractPhaseScope phaseScope) {
+    public void phaseStarted(AbstractPhaseScope<Solution_> phaseScope) {
         super.phaseStarted(phaseScope);
         scoreDirector = phaseScope.getScoreDirector();
     }
 
     @Override
-    public void phaseEnded(AbstractPhaseScope phaseScope) {
+    public void phaseEnded(AbstractPhaseScope<Solution_> phaseScope) {
         super.phaseEnded(phaseScope);
         scoreDirector = null;
     }
 
     @Override
-    public GenuineVariableDescriptor getVariableDescriptor() {
+    public GenuineVariableDescriptor<Solution_> getVariableDescriptor() {
         return childValueSelector.getVariableDescriptor();
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,10 +25,10 @@ import org.optaplanner.core.impl.heuristic.selector.value.AbstractValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 
-public class MimicReplayingValueSelector extends AbstractValueSelector
-        implements EntityIndependentValueSelector {
+public class MimicReplayingValueSelector<Solution_> extends AbstractValueSelector<Solution_>
+        implements EntityIndependentValueSelector<Solution_> {
 
-    protected final ValueMimicRecorder valueMimicRecorder;
+    protected final ValueMimicRecorder<Solution_> valueMimicRecorder;
 
     protected boolean hasRecordingCreated;
     protected boolean hasRecording;
@@ -36,7 +36,7 @@ public class MimicReplayingValueSelector extends AbstractValueSelector
     protected Object recording;
     protected boolean recordingAlreadyReturned;
 
-    public MimicReplayingValueSelector(ValueMimicRecorder valueMimicRecorder) {
+    public MimicReplayingValueSelector(ValueMimicRecorder<Solution_> valueMimicRecorder) {
         this.valueMimicRecorder = valueMimicRecorder;
         // No PhaseLifecycleSupport because the MimicRecordingValueSelector is hooked up elsewhere too
         valueMimicRecorder.addMimicReplayingValueSelector(this);
@@ -53,7 +53,7 @@ public class MimicReplayingValueSelector extends AbstractValueSelector
     // ************************************************************************
 
     @Override
-    public void phaseStarted(AbstractPhaseScope phaseScope) {
+    public void phaseStarted(AbstractPhaseScope<Solution_> phaseScope) {
         super.phaseStarted(phaseScope);
         // Doing this in phaseStarted instead of stepStarted due to QueuedValuePlacer compatibility
         hasRecordingCreated = false;
@@ -61,7 +61,7 @@ public class MimicReplayingValueSelector extends AbstractValueSelector
     }
 
     @Override
-    public void phaseEnded(AbstractPhaseScope phaseScope) {
+    public void phaseEnded(AbstractPhaseScope<Solution_> phaseScope) {
         super.phaseEnded(phaseScope);
         // Doing this in phaseEnded instead of stepEnded due to QueuedValuePlacer compatibility
         hasRecordingCreated = false;
@@ -71,7 +71,7 @@ public class MimicReplayingValueSelector extends AbstractValueSelector
     }
 
     @Override
-    public GenuineVariableDescriptor getVariableDescriptor() {
+    public GenuineVariableDescriptor<Solution_> getVariableDescriptor() {
         return valueMimicRecorder.getVariableDescriptor();
     }
 

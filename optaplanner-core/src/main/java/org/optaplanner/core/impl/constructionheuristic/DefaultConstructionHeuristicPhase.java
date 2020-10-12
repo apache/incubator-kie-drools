@@ -36,18 +36,18 @@ import org.optaplanner.core.impl.solver.termination.Termination;
 public class DefaultConstructionHeuristicPhase<Solution_> extends AbstractPhase<Solution_>
         implements ConstructionHeuristicPhase<Solution_> {
 
-    protected EntityPlacer entityPlacer;
+    protected EntityPlacer<Solution_> entityPlacer;
     protected ConstructionHeuristicDecider<Solution_> decider;
 
     // TODO make this configurable or make it constant
     protected final boolean skipBestSolutionCloningInSteps = true;
 
     public DefaultConstructionHeuristicPhase(int phaseIndex, String logIndentation,
-            BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination termination) {
+            BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination<Solution_> termination) {
         super(phaseIndex, logIndentation, bestSolutionRecaller, termination);
     }
 
-    public void setEntityPlacer(EntityPlacer entityPlacer) {
+    public void setEntityPlacer(EntityPlacer<Solution_> entityPlacer) {
         this.entityPlacer = entityPlacer;
     }
 
@@ -69,7 +69,7 @@ public class DefaultConstructionHeuristicPhase<Solution_> extends AbstractPhase<
         ConstructionHeuristicPhaseScope<Solution_> phaseScope = new ConstructionHeuristicPhaseScope<>(solverScope);
         phaseStarted(phaseScope);
 
-        for (Placement placement : entityPlacer) {
+        for (Placement<Solution_> placement : entityPlacer) {
             ConstructionHeuristicStepScope<Solution_> stepScope = new ConstructionHeuristicStepScope<>(phaseScope);
             stepStarted(stepScope);
             decider.decideNextStep(stepScope, placement);

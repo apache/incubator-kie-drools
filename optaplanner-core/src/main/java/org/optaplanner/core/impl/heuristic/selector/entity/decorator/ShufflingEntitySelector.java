@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,9 +23,9 @@ import java.util.ListIterator;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 
-public class ShufflingEntitySelector extends AbstractCachingEntitySelector {
+public class ShufflingEntitySelector<Solution_> extends AbstractCachingEntitySelector<Solution_> {
 
-    public ShufflingEntitySelector(EntitySelector childEntitySelector, SelectionCacheType cacheType) {
+    public ShufflingEntitySelector(EntitySelector<Solution_> childEntitySelector, SelectionCacheType cacheType) {
         super(childEntitySelector, cacheType);
     }
 

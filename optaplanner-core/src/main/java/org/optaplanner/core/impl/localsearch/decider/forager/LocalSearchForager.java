@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
  *
  * @see AbstractLocalSearchForager
  */
-public interface LocalSearchForager extends LocalSearchPhaseLifecycleListener {
+public interface LocalSearchForager<Solution_> extends LocalSearchPhaseLifecycleListener<Solution_> {
 
     /**
      * @return true if it can be combined with a {@link MoveSelector#isNeverEnding()} that returns true.
@@ -37,7 +37,7 @@ public interface LocalSearchForager extends LocalSearchPhaseLifecycleListener {
     /**
      * @param moveScope never null
      */
-    void addMove(LocalSearchMoveScope moveScope);
+    void addMove(LocalSearchMoveScope<Solution_> moveScope);
 
     /**
      * @return true if no further moves should be selected (and evaluated) for this step.
@@ -48,6 +48,6 @@ public interface LocalSearchForager extends LocalSearchPhaseLifecycleListener {
      * @param stepScope never null
      * @return sometimes null, for example if no move is selected
      */
-    LocalSearchMoveScope pickMove(LocalSearchStepScope stepScope);
+    LocalSearchMoveScope<Solution_> pickMove(LocalSearchStepScope<Solution_> stepScope);
 
 }

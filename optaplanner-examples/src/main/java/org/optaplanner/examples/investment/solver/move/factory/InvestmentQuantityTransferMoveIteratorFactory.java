@@ -24,7 +24,6 @@ import java.util.Random;
 import java.util.TreeMap;
 
 import org.optaplanner.core.api.score.director.ScoreDirector;
-import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.move.factory.MoveIteratorFactory;
 import org.optaplanner.core.impl.solver.random.RandomUtils;
 import org.optaplanner.examples.investment.domain.AssetClassAllocation;
@@ -32,7 +31,8 @@ import org.optaplanner.examples.investment.domain.InvestmentSolution;
 import org.optaplanner.examples.investment.domain.util.InvestmentNumericUtil;
 import org.optaplanner.examples.investment.solver.move.InvestmentQuantityTransferMove;
 
-public class InvestmentQuantityTransferMoveIteratorFactory implements MoveIteratorFactory<InvestmentSolution> {
+public class InvestmentQuantityTransferMoveIteratorFactory
+        implements MoveIteratorFactory<InvestmentSolution, InvestmentQuantityTransferMove> {
 
     @Override
     public long getSize(ScoreDirector<InvestmentSolution> scoreDirector) {
@@ -43,7 +43,7 @@ public class InvestmentQuantityTransferMoveIteratorFactory implements MoveIterat
     }
 
     @Override
-    public Iterator<Move<InvestmentSolution>> createOriginalMoveIterator(
+    public Iterator<InvestmentQuantityTransferMove> createOriginalMoveIterator(
             ScoreDirector<InvestmentSolution> scoreDirector) {
         throw new UnsupportedOperationException();
     }

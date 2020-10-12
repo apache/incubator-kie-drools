@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,18 +23,18 @@ import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescr
 import org.optaplanner.core.impl.heuristic.selector.value.AbstractValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 
-public class DowncastingValueSelector extends AbstractValueSelector {
+public class DowncastingValueSelector<Solution_> extends AbstractValueSelector<Solution_> {
 
-    protected final ValueSelector childValueSelector;
+    protected final ValueSelector<Solution_> childValueSelector;
     protected final Class<?> downcastEntityClass;
 
-    public DowncastingValueSelector(ValueSelector childValueSelector, Class<?> downcastEntityClass) {
+    public DowncastingValueSelector(ValueSelector<Solution_> childValueSelector, Class<?> downcastEntityClass) {
         this.childValueSelector = childValueSelector;
         this.downcastEntityClass = downcastEntityClass;
         phaseLifecycleSupport.addEventListener(childValueSelector);
     }
 
-    public ValueSelector getChildValueSelector() {
+    public ValueSelector<Solution_> getChildValueSelector() {
         return childValueSelector;
     }
 
@@ -43,7 +43,7 @@ public class DowncastingValueSelector extends AbstractValueSelector {
     // ************************************************************************
 
     @Override
-    public GenuineVariableDescriptor getVariableDescriptor() {
+    public GenuineVariableDescriptor<Solution_> getVariableDescriptor() {
         return childValueSelector.getVariableDescriptor();
     }
 

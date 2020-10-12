@@ -253,7 +253,8 @@ public class ValueSelectorConfig extends SelectorConfig<ValueSelectorConfig> {
         return getClass().getSimpleName() + "(" + variableName + ")";
     }
 
-    public static boolean hasSorter(ValueSorterManner valueSorterManner, GenuineVariableDescriptor variableDescriptor) {
+    public static <Solution_> boolean hasSorter(ValueSorterManner valueSorterManner,
+            GenuineVariableDescriptor<Solution_> variableDescriptor) {
         switch (valueSorterManner) {
             case NONE:
                 return false;
@@ -270,9 +271,9 @@ public class ValueSelectorConfig extends SelectorConfig<ValueSelectorConfig> {
         }
     }
 
-    public static SelectionSorter determineSorter(ValueSorterManner valueSorterManner,
-            GenuineVariableDescriptor variableDescriptor) {
-        SelectionSorter sorter;
+    public static <Solution_> SelectionSorter<Solution_, Object> determineSorter(ValueSorterManner valueSorterManner,
+            GenuineVariableDescriptor<Solution_> variableDescriptor) {
+        SelectionSorter<Solution_, Object> sorter;
         switch (valueSorterManner) {
             case NONE:
                 throw new IllegalStateException("Impossible state: hasSorter() should have returned null.");

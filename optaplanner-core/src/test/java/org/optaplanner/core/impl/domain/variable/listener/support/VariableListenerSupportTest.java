@@ -53,13 +53,14 @@ public class VariableListenerSupportTest {
         VariableListenerSupport<TestdataSolution> variableListenerSupport = new VariableListenerSupport<>(scoreDirector);
         variableListenerSupport.linkVariableListeners();
 
-        VariableDescriptor variableDescriptor = solutionDescriptor.getEntityDescriptorStrict(TestdataEntity.class)
-                .getVariableDescriptor("value");
+        VariableDescriptor<TestdataSolution> variableDescriptor =
+                solutionDescriptor.getEntityDescriptorStrict(TestdataEntity.class)
+                        .getVariableDescriptor("value");
 
         SingletonInverseVariableSupply supply1 = variableListenerSupport
-                .demand(new SingletonInverseVariableDemand(variableDescriptor));
+                .demand(new SingletonInverseVariableDemand<>(variableDescriptor));
         SingletonInverseVariableSupply supply2 = variableListenerSupport
-                .demand(new SingletonInverseVariableDemand(variableDescriptor));
+                .demand(new SingletonInverseVariableDemand<>(variableDescriptor));
         assertThat(supply2).isSameAs(supply1);
     }
 
@@ -75,15 +76,16 @@ public class VariableListenerSupportTest {
         VariableListenerSupport<TestdataChainedSolution> variableListenerSupport = new VariableListenerSupport<>(scoreDirector);
         variableListenerSupport.linkVariableListeners();
 
-        VariableDescriptor variableDescriptor = solutionDescriptor.getEntityDescriptorStrict(TestdataChainedEntity.class)
-                .getVariableDescriptor("chainedObject");
+        VariableDescriptor<TestdataChainedSolution> variableDescriptor =
+                solutionDescriptor.getEntityDescriptorStrict(TestdataChainedEntity.class)
+                        .getVariableDescriptor("chainedObject");
 
         SingletonInverseVariableSupply supply1 = variableListenerSupport
-                .demand(new SingletonInverseVariableDemand(variableDescriptor));
+                .demand(new SingletonInverseVariableDemand<>(variableDescriptor));
         assertThat(supply1)
                 .isInstanceOf(ExternalizedSingletonInverseVariableSupply.class);
         SingletonInverseVariableSupply supply2 = variableListenerSupport
-                .demand(new SingletonInverseVariableDemand(variableDescriptor));
+                .demand(new SingletonInverseVariableDemand<>(variableDescriptor));
         assertThat(supply2).isSameAs(supply1);
     }
 
@@ -101,16 +103,16 @@ public class VariableListenerSupportTest {
                 scoreDirector);
         variableListenerSupport.linkVariableListeners();
 
-        VariableDescriptor variableDescriptor = solutionDescriptor
+        VariableDescriptor<TestdataShadowingChainedSolution> variableDescriptor = solutionDescriptor
                 .getEntityDescriptorStrict(TestdataShadowingChainedEntity.class)
                 .getVariableDescriptor("chainedObject");
 
         SingletonInverseVariableSupply supply1 = variableListenerSupport
-                .demand(new SingletonInverseVariableDemand(variableDescriptor));
+                .demand(new SingletonInverseVariableDemand<>(variableDescriptor));
         assertThat(supply1)
                 .isInstanceOf(SingletonInverseVariableListener.class);
         SingletonInverseVariableSupply supply2 = variableListenerSupport
-                .demand(new SingletonInverseVariableDemand(variableDescriptor));
+                .demand(new SingletonInverseVariableDemand<>(variableDescriptor));
         assertThat(supply2).isSameAs(supply1);
     }
 

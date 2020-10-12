@@ -24,7 +24,7 @@ import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.solver.thread.ChildThreadType;
 
-public class BestScoreFeasibleTermination extends AbstractTermination {
+public class BestScoreFeasibleTermination<Solution_> extends AbstractTermination<Solution_> {
 
     private final int feasibleLevelsSize;
     private final double[] timeGradientWeightFeasibleNumbers;
@@ -42,13 +42,13 @@ public class BestScoreFeasibleTermination extends AbstractTermination {
     }
 
     @Override
-    public boolean isSolverTerminated(SolverScope solverScope) {
+    public boolean isSolverTerminated(SolverScope<Solution_> solverScope) {
         return isTerminated(solverScope.getBestScore());
     }
 
     @Override
-    public boolean isPhaseTerminated(AbstractPhaseScope phaseScope) {
-        return isTerminated(phaseScope.getBestScore());
+    public boolean isPhaseTerminated(AbstractPhaseScope<Solution_> phaseScope) {
+        return isTerminated((Score) phaseScope.getBestScore());
     }
 
     protected boolean isTerminated(Score bestScore) {
@@ -56,15 +56,14 @@ public class BestScoreFeasibleTermination extends AbstractTermination {
     }
 
     @Override
-    public double calculateSolverTimeGradient(SolverScope solverScope) {
+    public double calculateSolverTimeGradient(SolverScope<Solution_> solverScope) {
         return calculateFeasibilityTimeGradient(
                 solverScope.getStartingInitializedScore(), solverScope.getBestScore());
     }
 
     @Override
-    public double calculatePhaseTimeGradient(AbstractPhaseScope phaseScope) {
-        return calculateFeasibilityTimeGradient(
-                phaseScope.getStartingScore(), phaseScope.getBestScore());
+    public double calculatePhaseTimeGradient(AbstractPhaseScope<Solution_> phaseScope) {
+        return calculateFeasibilityTimeGradient((Score) phaseScope.getStartingScore(), (Score) phaseScope.getBestScore());
     }
 
     protected double calculateFeasibilityTimeGradient(Score startScore, Score score) {
@@ -88,7 +87,8 @@ public class BestScoreFeasibleTermination extends AbstractTermination {
     // ************************************************************************
 
     @Override
-    public Termination createChildThreadTermination(SolverScope solverScope, ChildThreadType childThreadType) {
+    public Termination<Solution_> createChildThreadTermination(SolverScope<Solution_> solverScope,
+            ChildThreadType childThreadType) {
         // TODO FIXME through some sort of solverlistener and async behaviour...
         throw new UnsupportedOperationException("This terminationClass (" + getClass()
                 + ") does not yet support being used in child threads of type (" + childThreadType + ").");

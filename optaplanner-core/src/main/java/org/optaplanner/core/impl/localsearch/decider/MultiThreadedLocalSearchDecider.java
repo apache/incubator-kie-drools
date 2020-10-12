@@ -66,8 +66,8 @@ public class MultiThreadedLocalSearchDecider<Solution_> extends LocalSearchDecid
     protected ExecutorService executor;
     protected List<MoveThreadRunner<Solution_, ?>> moveThreadRunnerList;
 
-    public MultiThreadedLocalSearchDecider(String logIndentation, Termination termination,
-            MoveSelector moveSelector, Acceptor acceptor, LocalSearchForager forager,
+    public MultiThreadedLocalSearchDecider(String logIndentation, Termination<Solution_> termination,
+            MoveSelector<Solution_> moveSelector, Acceptor<Solution_> acceptor, LocalSearchForager<Solution_> forager,
             ThreadFactory threadFactory, int moveThreadCount, int selectedMoveBufferSize) {
         super(logIndentation, termination, moveSelector, acceptor, forager);
         this.threadFactory = threadFactory;
@@ -150,7 +150,7 @@ public class MultiThreadedLocalSearchDecider<Solution_> extends LocalSearchDecid
 
         int selectingMoveIndex = 0;
         int foragingMoveIndex = 0;
-        Iterator<Move> moveIterator = moveSelector.iterator();
+        Iterator<Move<Solution_>> moveIterator = moveSelector.iterator();
         do {
             boolean moveIteratorEmpty = !moveIterator.hasNext();
             // First fill the buffer so move evaluation can run freely in parallel

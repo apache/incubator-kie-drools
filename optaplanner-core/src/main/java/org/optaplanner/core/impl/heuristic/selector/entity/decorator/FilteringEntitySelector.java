@@ -28,15 +28,16 @@ import org.optaplanner.core.impl.heuristic.selector.entity.AbstractEntitySelecto
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 
-public class FilteringEntitySelector extends AbstractEntitySelector {
+public class FilteringEntitySelector<Solution_> extends AbstractEntitySelector<Solution_> {
 
-    protected final EntitySelector childEntitySelector;
-    protected final List<SelectionFilter> filterList;
+    protected final EntitySelector<Solution_> childEntitySelector;
+    protected final List<SelectionFilter<Solution_, Object>> filterList;
     protected final boolean bailOutEnabled;
 
-    protected ScoreDirector scoreDirector = null;
+    protected ScoreDirector<Solution_> scoreDirector = null;
 
-    public FilteringEntitySelector(EntitySelector childEntitySelector, List<SelectionFilter> filterList) {
+    public FilteringEntitySelector(EntitySelector<Solution_> childEntitySelector,
+            List<SelectionFilter<Solution_, Object>> filterList) {
         this.childEntitySelector = childEntitySelector;
         this.filterList = filterList;
         bailOutEnabled = childEntitySelector.isNeverEnding();
@@ -48,19 +49,19 @@ public class FilteringEntitySelector extends AbstractEntitySelector {
     // ************************************************************************
 
     @Override
-    public void phaseStarted(AbstractPhaseScope phaseScope) {
+    public void phaseStarted(AbstractPhaseScope<Solution_> phaseScope) {
         super.phaseStarted(phaseScope);
         scoreDirector = phaseScope.getScoreDirector();
     }
 
     @Override
-    public void phaseEnded(AbstractPhaseScope phaseScope) {
+    public void phaseEnded(AbstractPhaseScope<Solution_> phaseScope) {
         super.phaseEnded(phaseScope);
         scoreDirector = null;
     }
 
     @Override
-    public EntityDescriptor getEntityDescriptor() {
+    public EntityDescriptor<Solution_> getEntityDescriptor() {
         return childEntitySelector.getEntityDescriptor();
     }
 
@@ -142,8 +143,8 @@ public class FilteringEntitySelector extends AbstractEntitySelector {
         return childEntitySelector.getSize() * 10L;
     }
 
-    protected boolean accept(ScoreDirector scoreDirector, Object entity) {
-        for (SelectionFilter filter : filterList) {
+    protected boolean accept(ScoreDirector<Solution_> scoreDirector, Object entity) {
+        for (SelectionFilter<Solution_, Object> filter : filterList) {
             if (!filter.accept(scoreDirector, entity)) {
                 return false;
             }

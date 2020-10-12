@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,6 @@ package org.optaplanner.core.impl.constructionheuristic.placer;
 
 import org.optaplanner.core.impl.phase.event.PhaseLifecycleListener;
 
-public interface EntityPlacer extends Iterable<Placement>, PhaseLifecycleListener {
+public interface EntityPlacer<Solution_> extends Iterable<Placement<Solution_>>, PhaseLifecycleListener<Solution_> {
 
 }

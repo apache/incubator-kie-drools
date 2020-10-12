@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 
 import org.junit.jupiter.api.Test;
+import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.config.constructionheuristic.placer.QueuedEntityPlacerConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
@@ -54,7 +55,7 @@ public class QueuedEntityPlacerFactoryTest extends AbstractEntityPlacerTest {
         ChangeMoveSelectorConfig secondaryMoveSelectorConfig = new ChangeMoveSelectorConfig();
         secondaryMoveSelectorConfig.setValueSelectorConfig(new ValueSelectorConfig("secondaryValue"));
 
-        HeuristicConfigPolicy configPolicy = buildHeuristicConfigPolicy(solutionDescriptor);
+        HeuristicConfigPolicy<TestdataMultiVarSolution> configPolicy = buildHeuristicConfigPolicy(solutionDescriptor);
         QueuedEntityPlacerConfig placerConfig = QueuedEntityPlacerFactory.unfoldNew(configPolicy,
                 Arrays.asList(primaryMoveSelectorConfig, secondaryMoveSelectorConfig));
 
@@ -63,33 +64,36 @@ public class QueuedEntityPlacerFactoryTest extends AbstractEntityPlacerTest {
                 .hasSize(2)
                 .hasOnlyElementsOfType(ChangeMoveSelectorConfig.class);
 
-        QueuedEntityPlacer entityPlacer = new QueuedEntityPlacerFactory(placerConfig).buildEntityPlacer(configPolicy);
+        QueuedEntityPlacer<TestdataMultiVarSolution> entityPlacer =
+                new QueuedEntityPlacerFactory<TestdataMultiVarSolution>(placerConfig).buildEntityPlacer(configPolicy);
 
-        SolverScope solverScope = mock(SolverScope.class);
+        SolverScope<TestdataMultiVarSolution> solverScope = mock(SolverScope.class);
         entityPlacer.solvingStarted(solverScope);
-        AbstractPhaseScope phaseScope = mock(AbstractPhaseScope.class);
+        AbstractPhaseScope<TestdataMultiVarSolution> phaseScope = mock(AbstractPhaseScope.class);
         when(phaseScope.getSolverScope()).thenReturn(solverScope);
-        InnerScoreDirector scoreDirector = mock(InnerScoreDirector.class);
-        when(phaseScope.getScoreDirector()).thenReturn(scoreDirector);
+        InnerScoreDirector<TestdataMultiVarSolution, SimpleScore> scoreDirector = mock(InnerScoreDirector.class);
+        when(phaseScope.getScoreDirector()).thenReturn((InnerScoreDirector) scoreDirector);
         when(scoreDirector.getWorkingSolution()).thenReturn(generateTestdataSolution());
         entityPlacer.phaseStarted(phaseScope);
-        Iterator<Placement> placementIterator = entityPlacer.iterator();
+        Iterator<Placement<TestdataMultiVarSolution>> placementIterator = entityPlacer.iterator();
         assertThat(placementIterator.hasNext()).isTrue();
 
-        AbstractStepScope stepScope = mock(AbstractStepScope.class);
+        AbstractStepScope<TestdataMultiVarSolution> stepScope = mock(AbstractStepScope.class);
         when(stepScope.getPhaseScope()).thenReturn(phaseScope);
-        when(stepScope.getScoreDirector()).thenReturn(scoreDirector);
+        when(stepScope.getScoreDirector()).thenReturn((InnerScoreDirector) scoreDirector);
         entityPlacer.stepStarted(stepScope);
-        Placement placement = placementIterator.next();
+        Placement<TestdataMultiVarSolution> placement = placementIterator.next();
 
         assertEntityPlacement(placement, "e1", "e1v1", "e1v2", "e2v1", "e2v2");
     }
 
-    public HeuristicConfigPolicy buildHeuristicConfigPolicy(SolutionDescriptor solutionDescriptor) {
-        InnerScoreDirectorFactory scoreDirectorFactory = mock(InnerScoreDirectorFactory.class);
+    public HeuristicConfigPolicy<TestdataMultiVarSolution>
+            buildHeuristicConfigPolicy(SolutionDescriptor<TestdataMultiVarSolution> solutionDescriptor) {
+        InnerScoreDirectorFactory<TestdataMultiVarSolution, SimpleScore> scoreDirectorFactory =
+                mock(InnerScoreDirectorFactory.class);
         when(scoreDirectorFactory.getSolutionDescriptor()).thenReturn(solutionDescriptor);
         when(scoreDirectorFactory.getScoreDefinition()).thenReturn(new SimpleScoreDefinition());
-        return new HeuristicConfigPolicy(EnvironmentMode.REPRODUCIBLE, null, null, null, scoreDirectorFactory);
+        return new HeuristicConfigPolicy<>(EnvironmentMode.REPRODUCIBLE, null, null, null, scoreDirectorFactory);
     }
 
     private TestdataMultiVarSolution generateTestdataSolution() {

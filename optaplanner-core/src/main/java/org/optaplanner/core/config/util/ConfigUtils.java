@@ -129,7 +129,7 @@ public class ConfigUtils {
         });
     }
 
-    public static <C extends AbstractConfig<C>> C inheritConfig(C original, C inherited) {
+    public static <Config_ extends AbstractConfig<Config_>> Config_ inheritConfig(Config_ original, Config_ inherited) {
         if (inherited != null) {
             if (original == null) {
                 original = inherited.copyConfig();
@@ -140,14 +140,14 @@ public class ConfigUtils {
         return original;
     }
 
-    public static <C extends AbstractConfig<C>> List<C> inheritMergeableListConfig(List<C> originalList,
-            List<C> inheritedList) {
+    public static <Config_ extends AbstractConfig<Config_>> List<Config_> inheritMergeableListConfig(
+            List<Config_> originalList, List<Config_> inheritedList) {
         if (inheritedList != null) {
-            List<C> mergedList = new ArrayList<>(inheritedList.size()
+            List<Config_> mergedList = new ArrayList<>(inheritedList.size()
                     + (originalList == null ? 0 : originalList.size()));
             // The inheritedList should be before the originalList
-            for (C inherited : inheritedList) {
-                C copy = inherited.copyConfig();
+            for (Config_ inherited : inheritedList) {
+                Config_ copy = inherited.copyConfig();
                 mergedList.add(copy);
             }
             if (originalList != null) {

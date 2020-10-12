@@ -32,17 +32,17 @@ import org.optaplanner.core.impl.heuristic.selector.move.generic.GenericMoveSele
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 
-public class KOptMoveSelector extends GenericMoveSelector {
+public class KOptMoveSelector<Solution_> extends GenericMoveSelector<Solution_> {
 
-    protected final EntitySelector entitySelector;
-    protected final ValueSelector[] valueSelectors;
+    protected final EntitySelector<Solution_> entitySelector;
+    protected final ValueSelector<Solution_>[] valueSelectors;
     protected final boolean randomSelection;
-    protected final GenuineVariableDescriptor variableDescriptor;
+    protected final GenuineVariableDescriptor<Solution_> variableDescriptor;
 
     protected SingletonInverseVariableSupply inverseVariableSupply;
     protected AnchorVariableSupply anchorVariableSupply;
 
-    public KOptMoveSelector(EntitySelector entitySelector, ValueSelector[] valueSelectors,
+    public KOptMoveSelector(EntitySelector<Solution_> entitySelector, ValueSelector<Solution_>[] valueSelectors,
             boolean randomSelection) {
         this.entitySelector = entitySelector;
         this.valueSelectors = valueSelectors;
@@ -67,7 +67,7 @@ public class KOptMoveSelector extends GenericMoveSelector {
                     + entitySelector.getEntityDescriptor().getEntityClass() + ").");
         }
         phaseLifecycleSupport.addEventListener(entitySelector);
-        for (ValueSelector valueSelector : valueSelectors) {
+        for (ValueSelector<Solution_> valueSelector : valueSelectors) {
             if (valueSelector.getVariableDescriptor() != variableDescriptor) {
                 throw new IllegalStateException("The selector (" + this
                         + ") has a valueSelector with a variableDescriptor (" + valueSelector.getVariableDescriptor()
@@ -78,15 +78,15 @@ public class KOptMoveSelector extends GenericMoveSelector {
     }
 
     @Override
-    public void solvingStarted(SolverScope solverScope) {
+    public void solvingStarted(SolverScope<Solution_> solverScope) {
         super.solvingStarted(solverScope);
-        SupplyManager supplyManager = solverScope.getScoreDirector().getSupplyManager();
-        inverseVariableSupply = supplyManager.demand(new SingletonInverseVariableDemand(variableDescriptor));
-        anchorVariableSupply = supplyManager.demand(new AnchorVariableDemand(variableDescriptor));
+        SupplyManager<Solution_> supplyManager = solverScope.getScoreDirector().getSupplyManager();
+        inverseVariableSupply = supplyManager.demand(new SingletonInverseVariableDemand<>(variableDescriptor));
+        anchorVariableSupply = supplyManager.demand(new AnchorVariableDemand<>(variableDescriptor));
     }
 
     @Override
-    public void solvingEnded(SolverScope solverScope) {
+    public void solvingEnded(SolverScope<Solution_> solverScope) {
         super.solvingEnded(solverScope);
         inverseVariableSupply = null;
         anchorVariableSupply = null;
@@ -101,7 +101,7 @@ public class KOptMoveSelector extends GenericMoveSelector {
         if (!entitySelector.isCountable()) {
             return false;
         }
-        for (ValueSelector valueSelector : valueSelectors) {
+        for (ValueSelector<Solution_> valueSelector : valueSelectors) {
             if (!valueSelector.isCountable()) {
                 return false;
             }
@@ -114,7 +114,7 @@ public class KOptMoveSelector extends GenericMoveSelector {
         if (randomSelection || entitySelector.isNeverEnding()) {
             return true;
         }
-        for (ValueSelector valueSelector : valueSelectors) {
+        for (ValueSelector<Solution_> valueSelector : valueSelectors) {
             if (valueSelector.isNeverEnding()) {
                 return true;
             }
@@ -132,16 +132,16 @@ public class KOptMoveSelector extends GenericMoveSelector {
     }
 
     @Override
-    public Iterator<Move> iterator() {
+    public Iterator<Move<Solution_>> iterator() {
         if (!randomSelection) {
             throw new UnsupportedOperationException(
                     "Non randomSelection (such as original selection) is not yet supported on "
                             + KOptMoveSelector.class.getSimpleName() + "."); // TODO
         } else {
             final Iterator<Object> entityIterator = entitySelector.iterator();
-            return new UpcomingSelectionIterator<Move>() {
+            return new UpcomingSelectionIterator<Move<Solution_>>() {
                 @Override
-                protected Move createUpcomingSelection() {
+                protected Move<Solution_> createUpcomingSelection() {
                     // TODO currently presumes that entitySelector and all valueSelectors are never ending, despite the hasNext() checks
                     if (!entityIterator.hasNext()) {
                         return noUpcomingSelection();
@@ -155,8 +155,8 @@ public class KOptMoveSelector extends GenericMoveSelector {
                         }
                         values[i] = valueIterator.next();
                     }
-                    return new KOptMove(variableDescriptor, inverseVariableSupply, anchorVariableSupply,
-                            entity, values);
+                    return new KOptMove<>(variableDescriptor, inverseVariableSupply, anchorVariableSupply, entity,
+                            values);
                 }
             };
         }

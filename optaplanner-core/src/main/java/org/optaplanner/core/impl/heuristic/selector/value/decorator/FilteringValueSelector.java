@@ -28,24 +28,27 @@ import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValue
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 
-public class FilteringValueSelector extends AbstractValueSelector {
+public class FilteringValueSelector<Solution_> extends AbstractValueSelector<Solution_> {
 
-    public static ValueSelector create(ValueSelector valueSelector, List<SelectionFilter> filterList) {
+    public static <Solution_> ValueSelector<Solution_> create(ValueSelector<Solution_> valueSelector,
+            List<SelectionFilter<Solution_, Object>> filterList) {
         if (valueSelector instanceof EntityIndependentValueSelector) {
-            return new EntityIndependentFilteringValueSelector((EntityIndependentValueSelector) valueSelector,
+            return new EntityIndependentFilteringValueSelector<>(
+                    (EntityIndependentValueSelector<Solution_>) valueSelector,
                     filterList);
         } else {
-            return new FilteringValueSelector(valueSelector, filterList);
+            return new FilteringValueSelector<>(valueSelector, filterList);
         }
     }
 
-    protected final ValueSelector childValueSelector;
-    protected final List<SelectionFilter> filterList;
+    protected final ValueSelector<Solution_> childValueSelector;
+    protected final List<SelectionFilter<Solution_, Object>> filterList;
     protected final boolean bailOutEnabled;
 
-    protected ScoreDirector scoreDirector = null;
+    protected ScoreDirector<Solution_> scoreDirector = null;
 
-    protected FilteringValueSelector(ValueSelector childValueSelector, List<SelectionFilter> filterList) {
+    protected FilteringValueSelector(ValueSelector<Solution_> childValueSelector,
+            List<SelectionFilter<Solution_, Object>> filterList) {
         this.childValueSelector = childValueSelector;
         this.filterList = filterList;
         bailOutEnabled = childValueSelector.isNeverEnding();
@@ -57,19 +60,19 @@ public class FilteringValueSelector extends AbstractValueSelector {
     // ************************************************************************
 
     @Override
-    public void phaseStarted(AbstractPhaseScope phaseScope) {
+    public void phaseStarted(AbstractPhaseScope<Solution_> phaseScope) {
         super.phaseStarted(phaseScope);
         scoreDirector = phaseScope.getScoreDirector();
     }
 
     @Override
-    public void phaseEnded(AbstractPhaseScope phaseScope) {
+    public void phaseEnded(AbstractPhaseScope<Solution_> phaseScope) {
         super.phaseEnded(phaseScope);
         scoreDirector = null;
     }
 
     @Override
-    public GenuineVariableDescriptor getVariableDescriptor() {
+    public GenuineVariableDescriptor<Solution_> getVariableDescriptor() {
         return childValueSelector.getVariableDescriptor();
     }
 
@@ -141,8 +144,8 @@ public class FilteringValueSelector extends AbstractValueSelector {
         return childValueSelector.getSize(entity) * 10L;
     }
 
-    protected boolean accept(ScoreDirector scoreDirector, Object entity) {
-        for (SelectionFilter filter : filterList) {
+    protected boolean accept(ScoreDirector<Solution_> scoreDirector, Object entity) {
+        for (SelectionFilter<Solution_, Object> filter : filterList) {
             if (!filter.accept(scoreDirector, entity)) {
                 return false;
             }

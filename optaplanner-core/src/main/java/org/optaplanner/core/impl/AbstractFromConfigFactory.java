@@ -27,7 +27,7 @@ import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 
-public abstract class AbstractFromConfigFactory<Config_ extends AbstractConfig<Config_>> {
+public abstract class AbstractFromConfigFactory<Solution_, Config_ extends AbstractConfig<Config_>> {
 
     protected final Config_ config;
 
@@ -35,8 +35,10 @@ public abstract class AbstractFromConfigFactory<Config_ extends AbstractConfig<C
         this.config = config;
     }
 
-    protected EntityDescriptor deduceEntityDescriptor(SolutionDescriptor solutionDescriptor, Class<?> entityClass) {
-        EntityDescriptor entityDescriptor = solutionDescriptor.getEntityDescriptorStrict(Objects.requireNonNull(entityClass));
+    protected EntityDescriptor<Solution_> deduceEntityDescriptor(SolutionDescriptor<Solution_> solutionDescriptor,
+            Class<?> entityClass) {
+        EntityDescriptor<Solution_> entityDescriptor =
+                solutionDescriptor.getEntityDescriptorStrict(Objects.requireNonNull(entityClass));
         if (entityDescriptor == null) {
             throw new IllegalArgumentException("The config (" + config
                     + ") has an entityClass (" + entityClass + ") that is not a known planning entity.\n"
@@ -48,8 +50,8 @@ public abstract class AbstractFromConfigFactory<Config_ extends AbstractConfig<C
         return entityDescriptor;
     }
 
-    protected EntityDescriptor deduceEntityDescriptor(SolutionDescriptor solutionDescriptor) {
-        Collection<EntityDescriptor> entityDescriptors = solutionDescriptor.getGenuineEntityDescriptors();
+    protected EntityDescriptor<Solution_> deduceEntityDescriptor(SolutionDescriptor<Solution_> solutionDescriptor) {
+        Collection<EntityDescriptor<Solution_>> entityDescriptors = solutionDescriptor.getGenuineEntityDescriptors();
         if (entityDescriptors.size() != 1) {
             throw new IllegalArgumentException("The config (" + config
                     + ") has no entityClass configured and because there are multiple in the entityClassSet ("
@@ -59,8 +61,9 @@ public abstract class AbstractFromConfigFactory<Config_ extends AbstractConfig<C
         return entityDescriptors.iterator().next();
     }
 
-    protected GenuineVariableDescriptor deduceVariableDescriptor(EntityDescriptor entityDescriptor, String variableName) {
-        GenuineVariableDescriptor variableDescriptor =
+    protected GenuineVariableDescriptor<Solution_> deduceVariableDescriptor(
+            EntityDescriptor<Solution_> entityDescriptor, String variableName) {
+        GenuineVariableDescriptor<Solution_> variableDescriptor =
                 entityDescriptor.getGenuineVariableDescriptor(Objects.requireNonNull(variableName));
         if (variableDescriptor == null) {
             throw new IllegalArgumentException("The config (" + config
@@ -72,8 +75,10 @@ public abstract class AbstractFromConfigFactory<Config_ extends AbstractConfig<C
         return variableDescriptor;
     }
 
-    protected GenuineVariableDescriptor deduceVariableDescriptor(EntityDescriptor entityDescriptor) {
-        Collection<GenuineVariableDescriptor> variableDescriptors = entityDescriptor.getGenuineVariableDescriptors();
+    protected GenuineVariableDescriptor<Solution_> deduceVariableDescriptor(
+            EntityDescriptor<Solution_> entityDescriptor) {
+        Collection<GenuineVariableDescriptor<Solution_>> variableDescriptors =
+                entityDescriptor.getGenuineVariableDescriptors();
         if (variableDescriptors.size() != 1) {
             throw new IllegalArgumentException("The config (" + config
                     + ") has no configured variableName for entityClass (" + entityDescriptor.getEntityClass()
@@ -84,10 +89,11 @@ public abstract class AbstractFromConfigFactory<Config_ extends AbstractConfig<C
         return variableDescriptors.iterator().next();
     }
 
-    protected List<GenuineVariableDescriptor> deduceVariableDescriptorList(EntityDescriptor entityDescriptor,
-            List<String> variableNameIncludeList) {
+    protected List<GenuineVariableDescriptor<Solution_>> deduceVariableDescriptorList(
+            EntityDescriptor<Solution_> entityDescriptor, List<String> variableNameIncludeList) {
         Objects.requireNonNull(entityDescriptor);
-        List<GenuineVariableDescriptor> variableDescriptorList = entityDescriptor.getGenuineVariableDescriptorList();
+        List<GenuineVariableDescriptor<Solution_>> variableDescriptorList =
+                entityDescriptor.getGenuineVariableDescriptorList();
         if (variableNameIncludeList == null) {
             return variableDescriptorList;
         }

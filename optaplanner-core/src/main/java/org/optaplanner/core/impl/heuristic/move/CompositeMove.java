@@ -171,7 +171,7 @@ public class CompositeMove<Solution_> implements Move<Solution_> {
         if (this == o) {
             return true;
         } else if (o instanceof CompositeMove) {
-            CompositeMove<?> other = (CompositeMove) o;
+            CompositeMove<Solution_> other = (CompositeMove<Solution_>) o;
             return Arrays.equals(moves, other.moves);
         } else {
             return false;

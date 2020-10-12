@@ -37,7 +37,7 @@ public class PartitionSolver<Solution_> extends AbstractSolver<Solution_> {
     // Constructors and simple getters/setters
     // ************************************************************************
 
-    public PartitionSolver(BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination termination,
+    public PartitionSolver(BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination<Solution_> termination,
             List<Phase<Solution_>> phaseList, SolverScope<Solution_> solverScope) {
         super(bestSolutionRecaller, termination, phaseList);
         this.solverScope = solverScope;

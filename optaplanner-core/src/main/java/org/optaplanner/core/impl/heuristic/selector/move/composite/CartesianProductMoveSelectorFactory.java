@@ -25,19 +25,19 @@ import org.optaplanner.core.config.heuristic.selector.move.composite.CartesianPr
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 
-public class CartesianProductMoveSelectorFactory
-        extends AbstractCompositeMoveSelectorFactory<CartesianProductMoveSelectorConfig> {
+public class CartesianProductMoveSelectorFactory<Solution_>
+        extends AbstractCompositeMoveSelectorFactory<Solution_, CartesianProductMoveSelectorConfig> {
 
     public CartesianProductMoveSelectorFactory(CartesianProductMoveSelectorConfig moveSelectorConfig) {
         super(moveSelectorConfig);
     }
 
     @Override
-    public MoveSelector buildBaseMoveSelector(HeuristicConfigPolicy configPolicy,
+    public MoveSelector<Solution_> buildBaseMoveSelector(HeuristicConfigPolicy<Solution_> configPolicy,
             SelectionCacheType minimumCacheType, boolean randomSelection) {
-        List<MoveSelector> moveSelectorList = buildInnerMoveSelectors(config.getMoveSelectorConfigList(),
+        List<MoveSelector<Solution_>> moveSelectorList = buildInnerMoveSelectors(config.getMoveSelectorConfigList(),
                 configPolicy, minimumCacheType, randomSelection);
         boolean ignoreEmptyChildIterators_ = defaultIfNull(config.getIgnoreEmptyChildIterators(), true);
-        return new CartesianProductMoveSelector(moveSelectorList, ignoreEmptyChildIterators_, randomSelection);
+        return new CartesianProductMoveSelector<>(moveSelectorList, ignoreEmptyChildIterators_, randomSelection);
     }
 }

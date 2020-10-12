@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ import org.optaplanner.core.impl.score.director.InnerScoreDirector;
  * @see Supply
  * @see SupplyManager
  */
-public interface Demand<Supply_ extends Supply> {
+public interface Demand<Solution_, Supply_ extends Supply> {
 
     /**
      * Only called if the domain model doesn't already support the demand (through a shadow variable usually).
@@ -35,6 +35,6 @@ public interface Demand<Supply_ extends Supply> {
      * @param scoreDirector never null
      * @return never null
      */
-    Supply_ createExternalizedSupply(InnerScoreDirector scoreDirector);
+    Supply_ createExternalizedSupply(InnerScoreDirector<Solution_, ?> scoreDirector);
 
 }

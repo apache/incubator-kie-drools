@@ -29,19 +29,20 @@ import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.mimic.MimicReplayingEntitySelector;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 
-public final class NearEntityNearbyEntitySelector extends AbstractEntitySelector {
+public final class NearEntityNearbyEntitySelector<Solution_> extends AbstractEntitySelector<Solution_> {
 
-    protected final EntitySelector childEntitySelector;
-    protected final EntitySelector replayingOriginEntitySelector;
-    protected final NearbyDistanceMeter nearbyDistanceMeter;
+    protected final EntitySelector<Solution_> childEntitySelector;
+    protected final EntitySelector<Solution_> replayingOriginEntitySelector;
+    protected final NearbyDistanceMeter<?, ?> nearbyDistanceMeter;
     protected final NearbyRandom nearbyRandom;
     protected final boolean randomSelection;
     protected final boolean discardNearbyIndexZero = true; // TODO deactivate me when appropriate
 
     protected NearbyDistanceMatrix nearbyDistanceMatrix = null;
 
-    public NearEntityNearbyEntitySelector(EntitySelector childEntitySelector, EntitySelector originEntitySelector,
-            NearbyDistanceMeter nearbyDistanceMeter, NearbyRandom nearbyRandom, boolean randomSelection) {
+    public NearEntityNearbyEntitySelector(EntitySelector<Solution_> childEntitySelector,
+            EntitySelector<Solution_> originEntitySelector, NearbyDistanceMeter<?, ?> nearbyDistanceMeter,
+            NearbyRandom nearbyRandom, boolean randomSelection) {
         this.childEntitySelector = childEntitySelector;
         if (!(originEntitySelector instanceof MimicReplayingEntitySelector)) {
             // In order to select a nearby entity, we must first have something to be near by.
@@ -70,7 +71,7 @@ public final class NearEntityNearbyEntitySelector extends AbstractEntitySelector
     }
 
     @Override
-    public void phaseStarted(AbstractPhaseScope phaseScope) {
+    public void phaseStarted(AbstractPhaseScope<Solution_> phaseScope) {
         // Cannot be done during solverStarted because
         super.phaseStarted(phaseScope);
         long originSize = replayingOriginEntitySelector.getSize();
@@ -99,20 +100,20 @@ public final class NearEntityNearbyEntitySelector extends AbstractEntitySelector
             }
         }
         nearbyDistanceMatrix = new NearbyDistanceMatrix(nearbyDistanceMeter, (int) originSize);
-        for (Iterator originIt = replayingOriginEntitySelector.endingIterator(); originIt.hasNext();) {
+        for (Iterator<Object> originIt = replayingOriginEntitySelector.endingIterator(); originIt.hasNext();) {
             final Object origin = originIt.next();
             nearbyDistanceMatrix.addAllDestinations(origin, childEntitySelector.endingIterator(), destinationSize);
         }
     }
 
     @Override
-    public void phaseEnded(AbstractPhaseScope phaseScope) {
+    public void phaseEnded(AbstractPhaseScope<Solution_> phaseScope) {
         super.phaseEnded(phaseScope);
         nearbyDistanceMatrix = null;
     }
 
     @Override
-    public EntityDescriptor getEntityDescriptor() {
+    public EntityDescriptor<Solution_> getEntityDescriptor() {
         return childEntitySelector.getEntityDescriptor();
     }
 

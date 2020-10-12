@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,14 +16,14 @@
 
 package org.optaplanner.core.impl.domain.solution.cloner;
 
+import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 
 public class FieldAccessingSolutionClonerTest extends AbstractSolutionClonerTest {
 
     @Override
-    protected <Solution_> FieldAccessingSolutionCloner<Solution_> createSolutionCloner(
-            SolutionDescriptor solutionDescriptor) {
+    protected <Solution_> SolutionCloner<Solution_> createSolutionCloner(
+            SolutionDescriptor<Solution_> solutionDescriptor) {
         return new FieldAccessingSolutionCloner<>(solutionDescriptor);
     }
-
 }

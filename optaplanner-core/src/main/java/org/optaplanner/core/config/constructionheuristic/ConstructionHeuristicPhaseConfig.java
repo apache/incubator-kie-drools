@@ -150,7 +150,8 @@ public class ConstructionHeuristicPhaseConfig extends PhaseConfig<ConstructionHe
     // With methods
     // ************************************************************************
 
-    public ConstructionHeuristicPhaseConfig withConstructionHeuristicType(ConstructionHeuristicType constructionHeuristicType) {
+    public ConstructionHeuristicPhaseConfig withConstructionHeuristicType(
+            ConstructionHeuristicType constructionHeuristicType) {
         this.constructionHeuristicType = constructionHeuristicType;
         return this;
     }
@@ -165,7 +166,7 @@ public class ConstructionHeuristicPhaseConfig extends PhaseConfig<ConstructionHe
         return this;
     }
 
-    public ConstructionHeuristicPhaseConfig withEntityPlacerConfig(EntityPlacerConfig entityPlacerConfig) {
+    public ConstructionHeuristicPhaseConfig withEntityPlacerConfig(EntityPlacerConfig<?> entityPlacerConfig) {
         this.entityPlacerConfig = entityPlacerConfig;
         return this;
     }

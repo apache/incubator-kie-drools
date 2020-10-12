@@ -28,8 +28,9 @@ import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 
 public abstract class AbstractSolverRankingComparatorTest {
 
-    protected ProblemBenchmarkResult addProblemBenchmark(List<SingleBenchmarkResult> singleBenchmarkResultList) {
-        ProblemBenchmarkResult problemBenchmarkResult = new ProblemBenchmarkResult(null);
+    protected <Solution_> ProblemBenchmarkResult<Solution_>
+            addProblemBenchmark(List<SingleBenchmarkResult> singleBenchmarkResultList) {
+        ProblemBenchmarkResult<Solution_> problemBenchmarkResult = new ProblemBenchmarkResult<>(null);
         problemBenchmarkResult.setSingleBenchmarkResultList(singleBenchmarkResultList);
         for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
             singleBenchmarkResult.setProblemBenchmarkResult(problemBenchmarkResult);
