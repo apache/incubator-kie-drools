@@ -13,7 +13,6 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.SingleMemberAnnotationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
-import com.github.javaparser.ast.nodeTypes.NodeWithAnnotations;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import org.drools.core.util.StringUtils;
@@ -32,6 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.kie.kogito.codegen.prediction.PMMLRestResourceGenerator.TEMPLATE_JAVA;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
+import static org.mockito.Mockito.mock;
 
 class PMMLRestResourceGeneratorTest {
 
@@ -74,7 +74,7 @@ class PMMLRestResourceGeneratorTest {
 
     @Test
     void generateWithDependencyInjection() {
-        String retrieved = pmmlRestResourceGenerator.withDependencyInjection(getDependencyInjectionAnnotator()).generate();
+        String retrieved = pmmlRestResourceGenerator.withDependencyInjection(mock(DependencyInjectionAnnotator.class)).generate();
         commonEvaluateGenerate(retrieved);
         String expected = "Application application;";
         assertTrue(retrieved.contains(expected));
@@ -103,7 +103,7 @@ class PMMLRestResourceGeneratorTest {
     @Test
     void withDependencyInjection() {
         assertNull(pmmlRestResourceGenerator.annotator);
-        DependencyInjectionAnnotator dependencyInjectionAnnotator = getDependencyInjectionAnnotator();
+        DependencyInjectionAnnotator dependencyInjectionAnnotator = mock(DependencyInjectionAnnotator.class);
         PMMLRestResourceGenerator retrieved =
                 pmmlRestResourceGenerator.withDependencyInjection(dependencyInjectionAnnotator);
         assertEquals(pmmlRestResourceGenerator, retrieved);
@@ -130,7 +130,7 @@ class PMMLRestResourceGeneratorTest {
     void useInjection() {
         pmmlRestResourceGenerator.withDependencyInjection(null);
         assertFalse(pmmlRestResourceGenerator.useInjection());
-        pmmlRestResourceGenerator.withDependencyInjection(getDependencyInjectionAnnotator());
+        pmmlRestResourceGenerator.withDependencyInjection(mock(DependencyInjectionAnnotator.class));
         assertTrue(pmmlRestResourceGenerator.useInjection());
     }
 
@@ -185,108 +185,4 @@ class PMMLRestResourceGeneratorTest {
         assertTrue(retrieved.contains(expected));
     }
 
-    private DependencyInjectionAnnotator getDependencyInjectionAnnotator() {
-        return new DependencyInjectionAnnotator() {
-            @Override
-            public <T extends NodeWithAnnotations<?>> T withNamed(T node, String name) {
-                return null;
-            }
-
-            @Override
-            public <T extends NodeWithAnnotations<?>> T withApplicationComponent(T node) {
-                return null;
-            }
-
-            @Override
-            public <T extends NodeWithAnnotations<?>> T withNamedApplicationComponent(T node, String name) {
-                return null;
-            }
-
-            @Override
-            public <T extends NodeWithAnnotations<?>> T withSingletonComponent(T node) {
-                return null;
-            }
-
-            @Override
-            public <T extends NodeWithAnnotations<?>> T withNamedSingletonComponent(T node, String name) {
-                return null;
-            }
-
-            @Override
-            public <T extends NodeWithAnnotations<?>> T withInjection(T node, boolean lazy) {
-                return null;
-            }
-
-            @Override
-            public <T extends NodeWithAnnotations<?>> T withNamedInjection(T node, String name) {
-                return null;
-            }
-
-            @Override
-            public <T extends NodeWithAnnotations<?>> T withOptionalInjection(T node) {
-                return null;
-            }
-
-            @Override
-            public <T extends NodeWithAnnotations<?>> T withIncomingMessage(T node, String channel) {
-                return null;
-            }
-
-            @Override
-            public <T extends NodeWithAnnotations<?>> T withOutgoingMessage(T node, String channel) {
-                return null;
-            }
-
-            @Override
-            public <T extends NodeWithAnnotations<?>> T withConfigInjection(T node, String configKey) {
-                return null;
-            }
-
-            @Override
-            public <T extends NodeWithAnnotations<?>> T withConfigInjection(T node, String configKey,
-                                                                            String defaultValue) {
-                return null;
-            }
-
-            @Override
-            public MethodCallExpr withMessageProducer(MethodCallExpr produceMethod, String channel, Expression event) {
-                return null;
-            }
-
-            @Override
-            public String optionalInstanceInjectionType() {
-                return null;
-            }
-
-            @Override
-            public Expression optionalInstanceExists(String fieldName) {
-                return null;
-            }
-
-            @Override
-            public String multiInstanceInjectionType() {
-                return null;
-            }
-
-            @Override
-            public Expression getMultiInstance(String fieldName) {
-                return null;
-            }
-
-            @Override
-            public String applicationComponentType() {
-                return null;
-            }
-
-            @Override
-            public String emitterType(String dataType) {
-                return null;
-            }
-
-            @Override
-            public String objectMapperInjectorSource(String packageName) {
-                return null;
-            }
-        };
-    }
 }

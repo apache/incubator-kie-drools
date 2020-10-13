@@ -357,6 +357,7 @@ public class ProcessGenerator {
         
         if (useInjection()) {
             annotator.withNamedApplicationComponent(cls, process.getId());
+            annotator.withEagerStartup(cls);
             annotator.withInjection(constructor);
         }
 

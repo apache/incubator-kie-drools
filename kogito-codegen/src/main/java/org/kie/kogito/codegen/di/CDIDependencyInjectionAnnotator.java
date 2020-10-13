@@ -166,4 +166,10 @@ public class CDIDependencyInjectionAnnotator implements DependencyInjectionAnnot
         clazz.setPackageDeclaration( packageName );
         return clazz.toString();
     }
+
+    @Override
+    public <T extends NodeWithAnnotations<?>> T withEagerStartup(T node) {
+        node.addAnnotation("io.quarkus.runtime.Startup");
+        return node;
+    }
 }

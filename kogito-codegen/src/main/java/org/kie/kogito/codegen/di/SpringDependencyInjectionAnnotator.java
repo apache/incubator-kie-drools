@@ -162,4 +162,14 @@ public class SpringDependencyInjectionAnnotator implements DependencyInjectionAn
         clazz.setPackageDeclaration( packageName );
         return clazz.toString();
     }
+
+    /**
+     * no-op, Spring beans are not lazy by default. 
+     * @param node node to be annotated
+     * @return
+     */
+    @Override
+    public <T extends NodeWithAnnotations<?>> T withEagerStartup(T node) {
+        return node;
+    }
 }
