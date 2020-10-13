@@ -176,7 +176,9 @@ String getKogitoVersion() {
 }
 
 String getNextSnapshotVersion(String currentVersion) {
-    return util.getNextVersion(currentVersion, 'micro')
+    Integer [] versionParts = majorMinorMicroOf(currentVersion)
+    String majorMinorMicroVersion = "${versionParts[0]}.${versionParts[1]}.${versionParts[2]}"
+    return util.getNextVersion(majorMinorMicroVersion, 'micro')
 }
 
 String getGitTag() {
@@ -287,4 +289,11 @@ void installGithubCLI() {
 
 void updateKogitoVersion(String newVersion) {
     sh "mvn versions:update-property -Dproperty=version.org.kie.kogito -DnewVersion=[$newVersion] -DallowSnapshots=true -DgenerateBackupPoms=false"
+}
+
+// TODO: move to shared libraries
+Integer[] majorMinorMicroOf(String version) {
+    String[] versionParts = version.split("\\.")
+    return versionParts.length == 4 ? util.parseVersion("${versionParts[0]}.${versionParts[1]}.${versionParts[2]}")
+            : util.parseVersion(version)
 }
