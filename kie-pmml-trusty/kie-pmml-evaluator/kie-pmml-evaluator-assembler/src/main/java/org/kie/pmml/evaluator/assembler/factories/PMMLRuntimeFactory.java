@@ -73,7 +73,7 @@ public class PMMLRuntimeFactory {
         KieHelper kieHelper = new KieHelper();
         kbuilderImpl.getPackageNames().stream().flatMap( name -> kbuilderImpl.getPackageDescrs( name ).stream() )
                 .forEach( pDescr -> kieHelper.addResource( createDescrResource(pDescr) ) );
-        KieBase kieBase = kieHelper.build(ExecutableModelProject.class);
+        KieBase kieBase = kieHelper.build( ExecutableModelProject.class );
         (( InternalKnowledgeBase ) kieBase).addPackages( kbuilderImpl.getKnowledgePackages() );
         return kieBase;
     }
