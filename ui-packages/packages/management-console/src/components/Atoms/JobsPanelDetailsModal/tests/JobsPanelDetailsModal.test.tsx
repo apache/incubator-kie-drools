@@ -2,8 +2,11 @@ import React from 'react';
 import JobsPanelDetailsModal from '../JobsPanelDetailsModal';
 import { GraphQL, getWrapper } from '@kogito-apps/common';
 import { InfoCircleIcon } from '@patternfly/react-icons';
+import { Button } from '@patternfly/react-core';
 
+jest.mock('react-datetime-picker');
 const props = {
+  actionType: 'Job Details',
   job: {
     id: '6e74a570-31c8-4020-bd70-19be2cb625f3_0',
     processId: 'travels',
@@ -30,8 +33,14 @@ const props = {
     </>
   ),
   isModalOpen: true,
-  handleModalToggle: jest.fn()
+  handleModalToggle: jest.fn(),
+  modalAction: [
+    <Button key="confirm-selection" variant="primary">
+      OK
+    </Button>
+  ]
 };
+
 Date.now = jest.fn(() => 1592000000000); // UTC Fri Jun 12 2020 22:13:20
 describe('Job details modal tests', () => {
   it('Snapshot testing', () => {

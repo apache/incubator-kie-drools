@@ -4,7 +4,6 @@ import {
   Modal,
   Title,
   TitleSizes,
-  Button,
   TextContent,
   Flex,
   FlexItem,
@@ -14,46 +13,29 @@ import {
   TextVariants
 } from '@patternfly/react-core';
 import Moment from 'react-moment';
-interface JobsPanelDetailsModalProps {
+import './JobsPanelDetailsModal.css';
+
+interface IOwnProps {
+  actionType: string;
   modalTitle: JSX.Element;
   isModalOpen: boolean;
   handleModalToggle: () => void;
+  modalAction: JSX.Element[];
   job: GraphQL.Job;
 }
-const JobsPanelDetailsModal: React.FC<JobsPanelDetailsModalProps &
-  OUIAProps> = ({
+const JobsPanelDetailsModal: React.FC<IOwnProps & OUIAProps> = ({
+  actionType,
   modalTitle,
   isModalOpen,
+  modalAction,
   handleModalToggle,
   job,
   ouiaId,
   ouiaSafe
 }) => {
-  return (
-    <Modal
-      variant="large"
-      aria-labelledby="Job details modal"
-      aria-label="Job details modal"
-      title=""
-      header={
-        <Title headingLevel="h1" size={TitleSizes['2xl']}>
-          {modalTitle}
-        </Title>
-      }
-      isOpen={isModalOpen}
-      onClose={handleModalToggle}
-      actions={[
-        <Button
-          key="confirm-selection"
-          variant="primary"
-          onClick={handleModalToggle}
-        >
-          OK
-        </Button>
-      ]}
-      {...componentOuiaProps(ouiaId, 'job-details-modal', ouiaSafe)}
-    >
-      <div style={{ padding: '30px' }}>
+  const modalContent = () => {
+    return (
+      <div className="kogito-management-console--jobsModal__detailsModal">
         <TextContent>
           <Flex direction={{ default: 'column' }}>
             <FlexItem>
@@ -142,7 +124,7 @@ const JobsPanelDetailsModal: React.FC<JobsPanelDetailsModalProps &
                 <SplitItem>
                   <Text
                     component={TextVariants.h6}
-                    style={{ whiteSpace: 'nowrap' }}
+                    className="kogito-management-console--jobsModal__text"
                   >
                     Callback Endpoint:{' '}
                   </Text>
@@ -153,6 +135,25 @@ const JobsPanelDetailsModal: React.FC<JobsPanelDetailsModalProps &
           </Flex>
         </TextContent>
       </div>
+    );
+  };
+  return (
+    <Modal
+      variant={'large'}
+      aria-labelledby={actionType + 'modal'}
+      aria-label={actionType + 'modal'}
+      title=""
+      header={
+        <Title headingLevel="h1" size={TitleSizes['2xl']}>
+          {modalTitle}
+        </Title>
+      }
+      isOpen={isModalOpen}
+      onClose={handleModalToggle}
+      actions={modalAction}
+      {...componentOuiaProps(ouiaId, 'job-details-modal', ouiaSafe)}
+    >
+      {modalContent()}
     </Modal>
   );
 };

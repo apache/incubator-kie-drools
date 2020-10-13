@@ -345,6 +345,7 @@ const GET_JOBS_BY_PROC_INST_ID = gql`
       retries
       lastUpdate
       expirationTime
+      endpoint
     }
   }
 `;

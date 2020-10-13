@@ -1111,6 +1111,7 @@ export namespace GraphQL {
             | 'scheduledId'
             | 'retries'
             | 'lastUpdate'
+            | 'endpoint'
           >
         >
       >
@@ -1995,6 +1996,7 @@ export namespace GraphQL {
         retries
         lastUpdate
         expirationTime
+        endpoint
       }
     }
   `;

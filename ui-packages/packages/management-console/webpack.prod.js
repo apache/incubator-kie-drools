@@ -39,6 +39,15 @@ module.exports = merge(common, {
           ),
           path.resolve(
             '../../node_modules/@kogito-apps/common/dist/src/components/styles.css'
+          ),
+          path.resolve(
+            '../../node_modules/react-calendar/dist/Calendar.css'
+          ),
+          path.resolve(
+            '../../node_modules/react-clock/dist/Clock.css'
+          ),
+          path.resolve(
+            '../../node_modules/react-datetime-picker/dist/DateTimePicker.css'
           )
         ],
         loaders: ['style-loader', 'css-loader']

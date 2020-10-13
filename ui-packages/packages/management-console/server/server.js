@@ -3,6 +3,7 @@ const express = require('express');
 var cors = require('cors');
 const app = express();
 const { ApolloServer, gql } = require('apollo-server-express');
+var bodyParser = require('body-parser')
 // GraphQL - Apollo
 const { GraphQLScalarType } = require('graphql');
 const uuidv1 = require('uuid/v1');
@@ -27,7 +28,11 @@ function listen() {
     );
   });
 }
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }))
 
+// parse application/json
+app.use(bodyParser.json())
 app.use(
   cors({
     origin: config.corsDomain, // Be sure to switch to your production domain
@@ -59,6 +64,8 @@ app.post('/management/processes/:processId/instances/:processInstanceId/nodeInst
 app.delete('/management/processes/:processId/instances/:processInstanceId/nodeInstances/:nodeInstanceId',
   controller.callNodeCancel
 );
+
+app.patch('/jobs/:id', controller.handleJobReschedule)
 
 function timeout(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));

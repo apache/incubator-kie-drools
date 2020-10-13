@@ -18,6 +18,7 @@ import Moment from 'react-moment';
 import JobActionsKebab from '../../Atoms/JobActionsKebab/JobActionsKebab';
 import { OUIAProps, componentOuiaProps, GraphQL } from '@kogito-apps/common';
 import { JobsIconCreator } from '../../../utils/Utils';
+import { refetchContext } from '../../contexts';
 interface JobsPanelProps {
   processInstanceId: string;
 }
@@ -44,11 +45,13 @@ const ProcessDetailsJobsPanel: React.FC<JobsPanelProps & OUIAProps> = ({
     }
   ];
 
-  const { data, loading } = GraphQL.useGetJobsByProcessInstanceIdQuery({
-    variables: {
-      processInstanceId
+  const { data, loading, refetch } = GraphQL.useGetJobsByProcessInstanceIdQuery(
+    {
+      variables: {
+        processInstanceId
+      }
     }
-  });
+  );
 
   const createRows = (jobsArray: GraphQL.Job[]): IRow[] => {
     const jobRows = [];
@@ -83,7 +86,11 @@ const ProcessDetailsJobsPanel: React.FC<JobsPanelProps & OUIAProps> = ({
             )
           },
           {
-            title: <JobActionsKebab job={job} />
+            title: (
+              <refetchContext.Provider value={refetch}>
+                <JobActionsKebab job={job} />
+              </refetchContext.Provider>
+            )
           }
         ]
       });
@@ -108,7 +115,7 @@ const ProcessDetailsJobsPanel: React.FC<JobsPanelProps & OUIAProps> = ({
       >
         <CardHeader>
           <Title headingLevel="h3" size="xl">
-            Jobs Panel
+            Jobs
           </Title>
         </CardHeader>
         <CardBody>

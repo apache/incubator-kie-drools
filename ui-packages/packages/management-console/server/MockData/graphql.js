@@ -3145,7 +3145,8 @@ JobsData:[
     scheduledId: "0",
     retries: 0,
     lastUpdate: "2020-08-27T03:35:50.147Z",
-    expirationTime: null
+    expirationTime: null,
+    endpoint: 'http://localhost:4000/jobs',
   },
   {
     id: "dad3aa88-5c1e-4858-a919-6123c675a0fa_0",
@@ -3160,7 +3161,8 @@ JobsData:[
     scheduledId: null,
     retries: 0,
     lastUpdate: "2020-08-27T03:35:54.635Z",
-    expirationTime: "2020-08-27T04:35:54.631Z"
+    expirationTime: "2020-08-27T04:35:54.631Z",
+    endpoint: 'http://localhost:4000/jobs',
   },
   {
     id: "2234dde-npce1-2908-b3131-6123c675a0fa_0",
@@ -3175,7 +3177,8 @@ JobsData:[
     scheduledId: null,
     retries: 0,
     lastUpdate: "2020-08-27T03:35:54.635Z",
-    expirationTime: "2020-08-27T04:35:54.631Z"
+    expirationTime: "2020-08-27T04:35:54.631Z",
+    endpoint: 'http://localhost:4000/jobs',
   },
   {
     id: "T3113e-vbg43-2234-lo89-cpmw3214ra0fa_0",
@@ -3185,12 +3188,13 @@ JobsData:[
     status: "ERROR",
     priority: 0,
     callbackEndpoint: "http://localhost:8080/management/jobs/travels/instances/5c56eeff-4cbf-3313-a325-4c895e0afced/timers/dad3aa88-5c1e-4858-a919-6123c675a0fa_0",
-    repeatInterval: null,
-    repeatLimit: null,
+    repeatInterval: 30300,
+    repeatLimit: 3,
     scheduledId: null,
     retries: 0,
     lastUpdate: "2020-08-27T03:35:54.635Z",
-    expirationTime: "2020-08-27T04:35:54.631Z"
+    expirationTime: "2020-08-27T04:35:54.631Z",
+    endpoint: 'http://localhost:4000/jobs',
   },
   {
     id: "bff4ee-11qw23-6675-po987-qwedfrt45a0fa_0",
@@ -3205,7 +3209,24 @@ JobsData:[
     scheduledId: null,
     retries: 0,
     lastUpdate: "2020-08-27T03:35:54.635Z",
-    expirationTime: "2020-08-27T04:35:54.631Z"
+    expirationTime: "2020-08-27T04:35:54.631Z",
+    endpoint: 'http://localhost:4000/jobs',
+  },
+  {
+    id: "eff4ee-11qw23-6675-pokau97-qwedjut45a0fa_0",
+    processId: "travels",
+    processInstanceId: "8035b580-6ae4-4aa8-9ec0-e18e19809e0b",
+    rootProcessId: "",
+    status: "SCHEDULED",
+    priority: 0,
+    callbackEndpoint: "http://localhost:8080/management/jobs/travels/instances/5c56eeff-4cbf-3313-a325-4c895e0afced/timers/dad3aa88-5c1e-4858-a919-6123c675a0fa_0",
+    repeatInterval: null,
+    repeatLimit: null,
+    scheduledId: null,
+    retries: 0,
+    lastUpdate: "2020-08-29T03:35:54.635Z",
+    expirationTime: "2020-08-29T04:35:54.631Z",
+    endpoint: 'http://localhost:4000/jobs',
   }
 ]
 }

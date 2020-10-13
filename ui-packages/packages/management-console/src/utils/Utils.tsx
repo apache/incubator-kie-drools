@@ -309,3 +309,36 @@ export const handleVariableUpdate = async (
     setVariableError(error.message);
   }
 };
+
+export const handleJobReschedule = async (
+  job,
+  repeatInterval,
+  repeatLimit,
+  rescheduleClicked,
+  setErrorMessage,
+  setRescheduleClicked,
+  scheduleDate,
+  refetch
+): Promise<any> => {
+  let parameter = {};
+  if (repeatInterval === null && repeatLimit === null) {
+    parameter = {
+      expirationTime: new Date(scheduleDate)
+    };
+  } else {
+    parameter = {
+      expirationTime: new Date(scheduleDate),
+      repeatInterval,
+      repeatLimit
+    };
+  }
+  try {
+    await axios.patch(`${job.endpoint}/${job.id}`, parameter).then(res => {
+      setRescheduleClicked(!rescheduleClicked);
+    });
+  } catch (error) {
+    setRescheduleClicked(!rescheduleClicked);
+    setErrorMessage(error.message);
+  }
+  refetch();
+};
