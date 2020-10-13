@@ -93,7 +93,7 @@
     <module>optaplanner-persistence</module>
     <module>optaplanner-benchmark</module>
     <module>optaplanner-test</module>
-    <module>optaplanner-integration</module><!-- TODO rename to optaplanner-spring-integration-->
+    <module>optaplanner-spring-integration</module>
     <module>optaplanner-quarkus-integration</module>
     <module>optaplanner-examples</module>
   </modules>
