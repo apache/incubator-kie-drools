@@ -22,7 +22,6 @@ import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.pmml.api.PMMLRuntimeFactory;
 import org.kie.pmml.api.runtime.PMMLRuntime;
-import org.kie.pmml.evaluator.api.executor.PMMLRuntimeInternal;
 import org.kie.pmml.evaluator.assembler.factories.PMMLRuntimeFactoryImpl;
 import org.kie.pmml.evaluator.core.PMMLContextImpl;
 import org.kie.pmml.evaluator.core.utils.PMMLRequestDataBuilder;
@@ -49,7 +48,7 @@ public class AbstractPMMLTest {
         return pmmlRequestDataBuilder.build();
     }
 
-    protected PMML4Result evaluate(PMMLRuntimeInternal pmmlRuntime, final Map<String, Object> inputData, String modelName) {
+    protected PMML4Result evaluate(PMMLRuntime pmmlRuntime, final Map<String, Object> inputData, String modelName) {
         final PMMLRequestData pmmlRequestData = getPMMLRequestData(modelName, inputData);
         return pmmlRuntime.evaluate(modelName, new PMMLContextImpl(pmmlRequestData));
     }

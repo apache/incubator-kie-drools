@@ -27,7 +27,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.pmml.PMML4Result;
-import org.kie.pmml.evaluator.api.executor.PMMLRuntimeInternal;
+import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.models.tests.AbstractPMMLTest;
 
 import static org.kie.pmml.api.enums.ResultCode.FAIL;
@@ -39,7 +39,7 @@ public class PredicatesMiningTest extends AbstractPMMLTest {
     private static final String FILE_NAME = "MiningModel_Predicates.pmml";
     private static final String MODEL_NAME = "PredicatesMining";
     private static final String TARGET_FIELD = "categoricalResult";
-    private static PMMLRuntimeInternal pmmlRuntime;
+    private static PMMLRuntime pmmlRuntime;
 
     private String categoricalX;
     private String categoricalY;

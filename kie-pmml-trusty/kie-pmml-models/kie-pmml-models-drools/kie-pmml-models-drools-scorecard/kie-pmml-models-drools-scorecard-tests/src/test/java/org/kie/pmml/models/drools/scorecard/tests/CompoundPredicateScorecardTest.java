@@ -27,7 +27,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.pmml.PMML4Result;
-import org.kie.pmml.evaluator.api.executor.PMMLRuntimeInternal;
+import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.models.tests.AbstractPMMLTest;
 
 @RunWith(Parameterized.class)
@@ -39,7 +39,7 @@ public class CompoundPredicateScorecardTest extends AbstractPMMLTest {
     private static final String REASON_CODE1_FIELD = "Reason Code 1";
     private static final String REASON_CODE2_FIELD = "Reason Code 2";
     private static final String REASON_CODE3_FIELD = "Reason Code 3";
-    private static PMMLRuntimeInternal pmmlRuntime;
+    private static PMMLRuntime pmmlRuntime;
 
     private double input1;
     private double input2;

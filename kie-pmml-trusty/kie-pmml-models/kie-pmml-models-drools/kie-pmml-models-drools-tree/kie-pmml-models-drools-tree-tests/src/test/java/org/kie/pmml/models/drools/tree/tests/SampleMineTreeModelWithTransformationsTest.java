@@ -27,7 +27,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.pmml.PMML4Result;
-import org.kie.pmml.evaluator.api.executor.PMMLRuntimeInternal;
+import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.models.tests.AbstractPMMLTest;
 
 @RunWith(Parameterized.class)
@@ -43,7 +43,7 @@ public class SampleMineTreeModelWithTransformationsTest extends AbstractPMMLTest
     private static final String CONSTANT = "constant";
 
 
-    private static PMMLRuntimeInternal pmmlRuntime;
+    private static PMMLRuntime pmmlRuntime;
 
     private double temperature;
     private double humidity;

@@ -28,7 +28,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.pmml.PMML4Result;
-import org.kie.pmml.evaluator.api.executor.PMMLRuntimeInternal;
+import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.models.tests.AbstractPMMLTest;
 
 @RunWith(Parameterized.class)
@@ -38,7 +38,7 @@ public class MissingDataRegressionTest extends AbstractPMMLTest {
     private static final String FILE_NAME = "MissingDataRegression.pmml";
     private static final String MODEL_NAME = "MissingDataRegression";
     private static final String TARGET_FIELD = "result";
-    private static PMMLRuntimeInternal pmmlRuntime;
+    private static PMMLRuntime pmmlRuntime;
 
     private Double x;
     private String y;
