@@ -1,4 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.kie.kogito</groupId>
@@ -10,10 +10,13 @@
   <name>Kogito :: Add-Ons :: Persistence</name>
 
   <description>Kogito Persistence Implementations</description>
+  
   <modules>
+    <module>protobuf-persistence-common</module>
     <module>infinispan-persistence-addon</module>
     <module>infinispan-quarkus-health-addon</module>
     <module>filesystem-persistence-addon</module>
     <module>mongodb-persistence-addon</module>
   </modules>
+
 </project>

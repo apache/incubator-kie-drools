@@ -28,11 +28,6 @@
   <artifactId>kogito-codegen</artifactId>
   <name>Kogito :: Codegen</name>
 
-  
-  <properties>
-    <version.org.infinispan.protostream>4.3.0.Alpha8</version.org.infinispan.protostream>
-  </properties>
-
   <dependencyManagement>
     <dependencies>
       <dependency>

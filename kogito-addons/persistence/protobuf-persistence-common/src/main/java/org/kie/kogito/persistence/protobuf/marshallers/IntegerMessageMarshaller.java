@@ -3,8 +3,9 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,32 +14,32 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.infinispan.marshallers;
+package org.kie.kogito.persistence.protobuf.marshallers;
 
 import java.io.IOException;
 
 import org.infinispan.protostream.MessageMarshaller;
 
-public class DoubleMessageMarshaller implements MessageMarshaller<Double> {
+public class IntegerMessageMarshaller implements MessageMarshaller<Integer> {
 
     @Override
-    public Class<? extends Double> getJavaClass() {
-        return Double.class;
+    public Class<? extends Integer> getJavaClass() {
+        return Integer.class;
     }
 
     @Override
     public String getTypeName() {
-        return "kogito.Double";
+        return "kogito.Integer";
     }
 
     @Override
-    public Double readFrom(ProtoStreamReader reader) throws IOException {
-        return reader.readDouble("data");
+    public Integer readFrom(ProtoStreamReader reader) throws IOException {
+        return reader.readInt("data");
     }
 
     @Override
-    public void writeTo(ProtoStreamWriter writer, Double t) throws IOException {
-        writer.writeDouble("data", t);
+    public void writeTo(ProtoStreamWriter writer, Integer t) throws IOException {
+        writer.writeInt("data", t);
         
     }
 

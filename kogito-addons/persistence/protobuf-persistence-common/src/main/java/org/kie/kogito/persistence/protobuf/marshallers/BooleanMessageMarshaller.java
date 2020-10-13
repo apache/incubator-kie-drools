@@ -3,8 +3,9 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,32 +14,32 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.infinispan.marshallers;
+package org.kie.kogito.persistence.protobuf.marshallers;
 
 import java.io.IOException;
 
 import org.infinispan.protostream.MessageMarshaller;
 
-public class FloatMessageMarshaller implements MessageMarshaller<Float> {
+public class BooleanMessageMarshaller implements MessageMarshaller<Boolean> {
 
     @Override
-    public Class<? extends Float> getJavaClass() {
-        return Float.class;
+    public Class<? extends Boolean> getJavaClass() {
+        return Boolean.class;
     }
 
     @Override
     public String getTypeName() {
-        return "kogito.Float";
+        return "kogito.Boolean";
     }
 
     @Override
-    public Float readFrom(ProtoStreamReader reader) throws IOException {
-        return reader.readFloat("data");
+    public Boolean readFrom(ProtoStreamReader reader) throws IOException {
+        return reader.readBoolean("data");
     }
 
     @Override
-    public void writeTo(ProtoStreamWriter writer, Float t) throws IOException {
-        writer.writeFloat("data", t);
+    public void writeTo(ProtoStreamWriter writer, Boolean t) throws IOException {
+        writer.writeBoolean("data", t);
         
     }
 

@@ -14,7 +14,7 @@
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-api</artifactId>
+      <artifactId>protobuf-persistence-common</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
@@ -25,13 +25,6 @@
       <groupId>org.infinispan</groupId>
       <artifactId>infinispan-client-hotrod</artifactId>
     </dependency>
-
-    <!-- marshallers -->
-    <dependency>
-      <groupId>org.infinispan.protostream</groupId>
-      <artifactId>protostream</artifactId>
-    </dependency>
-
 
     <!-- test dependencies -->
     <dependency>

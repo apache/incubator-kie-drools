@@ -1,4 +1,20 @@
-package org.kie.kogito.infinispan;
+/*
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.kie.kogito.persistence.protobuf;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -14,14 +30,13 @@ import org.infinispan.protostream.SerializationContext;
 import org.infinispan.protostream.config.Configuration;
 import org.infinispan.protostream.impl.SerializationContextImpl;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
-import org.kie.kogito.infinispan.marshallers.BooleanMessageMarshaller;
-import org.kie.kogito.infinispan.marshallers.DateMessageMarshaller;
-import org.kie.kogito.infinispan.marshallers.DoubleMessageMarshaller;
-import org.kie.kogito.infinispan.marshallers.FloatMessageMarshaller;
-import org.kie.kogito.infinispan.marshallers.IntegerMessageMarshaller;
-import org.kie.kogito.infinispan.marshallers.LongMessageMarshaller;
-import org.kie.kogito.infinispan.marshallers.StringMessageMarshaller;
-
+import org.kie.kogito.persistence.protobuf.marshallers.BooleanMessageMarshaller;
+import org.kie.kogito.persistence.protobuf.marshallers.DateMessageMarshaller;
+import org.kie.kogito.persistence.protobuf.marshallers.DoubleMessageMarshaller;
+import org.kie.kogito.persistence.protobuf.marshallers.FloatMessageMarshaller;
+import org.kie.kogito.persistence.protobuf.marshallers.IntegerMessageMarshaller;
+import org.kie.kogito.persistence.protobuf.marshallers.LongMessageMarshaller;
+import org.kie.kogito.persistence.protobuf.marshallers.StringMessageMarshaller;
 
 public class ProtoStreamObjectMarshallingStrategy implements ObjectMarshallingStrategy {
     
