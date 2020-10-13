@@ -20,6 +20,8 @@ import java.util.Map;
 
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
+import org.kie.pmml.api.PMMLRuntimeFactory;
+import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.evaluator.api.executor.PMMLRuntimeInternal;
 import org.kie.pmml.evaluator.assembler.factories.PMMLRuntimeFactoryImpl;
 import org.kie.pmml.evaluator.core.PMMLContextImpl;
@@ -29,9 +31,11 @@ import static org.kie.test.util.filesystem.FileUtils.getFile;
 
 public class AbstractPMMLTest {
 
-    protected static PMMLRuntimeInternal getPMMLRuntime(String kbaseName, String fileName) {
+    private static final PMMLRuntimeFactory PMML_RUNTIME_FACTORY = new PMMLRuntimeFactoryImpl();
+
+    protected static PMMLRuntime getPMMLRuntime(String kbaseName, String fileName) {
         File pmmlFile = getFile(fileName);
-        return PMMLRuntimeFactoryImpl.getPMMLRuntime(kbaseName, pmmlFile);
+        return PMML_RUNTIME_FACTORY.getPMMLRuntimeFromFile(kbaseName, pmmlFile);
     }
 
     protected static PMMLRequestData getPMMLRequestData(String modelName, Map<String, Object> parameters) {

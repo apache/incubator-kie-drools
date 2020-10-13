@@ -45,6 +45,11 @@
       <groupId>org.drools</groupId>
       <artifactId>drools-model-compiler</artifactId>
     </dependency>
+    <!-- EXTERNAL -->
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+    </dependency>
     <!-- TEST -->
     <dependency>
       <groupId>org.kie</groupId>

@@ -27,4 +27,8 @@ public class ExternalException extends RuntimeException {
     public ExternalException(String message) {
         super(message);
     }
+
+    public ExternalException(Throwable cause) {
+        super(cause);
+    }
 }

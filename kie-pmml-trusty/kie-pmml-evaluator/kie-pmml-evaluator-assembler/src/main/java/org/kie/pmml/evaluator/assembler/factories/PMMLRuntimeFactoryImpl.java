@@ -16,54 +16,108 @@
 package org.kie.pmml.evaluator.assembler.factories;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 
-import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
-import org.drools.core.io.impl.FileSystemResource;
-import org.kie.api.KieBase;
+import org.drools.compiler.kie.builder.impl.InternalKieModule;
+import org.drools.compiler.kie.builder.impl.KieContainerImpl;
+import org.drools.compiler.kproject.ReleaseIdImpl;
+import org.drools.core.io.internal.InternalResource;
+import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
-import org.kie.api.io.ResourceType;
-import org.kie.api.runtime.KieRuntimeFactory;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.pmml.evaluator.api.executor.PMMLRuntimeInternal;
-import org.kie.pmml.evaluator.assembler.service.PMMLAssemblerService;
+import org.kie.pmml.api.PMMLRuntimeFactory;
+import org.kie.pmml.api.exceptions.ExternalException;
+import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * <b>Factory</b> class to hide implementation details to end user
- */
-public class PMMLRuntimeFactoryImpl {
+import static org.apache.commons.io.FileUtils.getFile;
+
+public class PMMLRuntimeFactoryImpl implements PMMLRuntimeFactory {
 
     private static final Logger logger = LoggerFactory.getLogger(PMMLRuntimeFactoryImpl.class);
+    private static  final KieServices KIE_SERVICES = KieServices.get();
 
-    private PMMLRuntimeFactoryImpl() {
-        // Avoid instantiation
+    @Override
+    public PMMLRuntime getPMMLRuntimeFromFile(String modelName, File pmmlFile) {
+        return PMMLRuntimeFactoryInternal.getPMMLRuntime(modelName, pmmlFile);
     }
 
-    public static PMMLRuntimeInternal getPMMLRuntime(String modelName, File pmmlFile) {
-        KnowledgeBuilderImpl kbuilderImpl = (KnowledgeBuilderImpl) KnowledgeBuilderFactory.newKnowledgeBuilder();
-        return getPMMLRuntime(modelName, pmmlFile, kbuilderImpl);
+    @Override
+    public PMMLRuntime getPMMLRuntimeFromClasspath(String modelName, String pmmlFileName) {
+        File pmmlFile = getPMMLFileFromClasspath(pmmlFileName);
+        return PMMLRuntimeFactoryInternal.getPMMLRuntime(modelName, pmmlFile);
     }
 
-    public static PMMLRuntimeInternal getPMMLRuntime(String modelName, File pmmlFile, ReleaseId releaseId) {
-        KnowledgeBuilderImpl kbuilderImpl = (KnowledgeBuilderImpl) KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilderImpl.setReleaseId(releaseId);
-        return getPMMLRuntime(modelName, pmmlFile, kbuilderImpl);
+    @Override
+    public PMMLRuntime getPMMLRuntimeFromKieContainer(String modelName, String kieBase, String pmmlFileName, String gav) {
+        ReleaseId releaseId = new ReleaseIdImpl(gav);
+        File pmmlFile = getPMMLFileFromContainer(pmmlFileName, kieBase, releaseId);
+        return PMMLRuntimeFactoryInternal.getPMMLRuntime(modelName, pmmlFile, releaseId);
     }
 
-    private static PMMLRuntimeInternal getPMMLRuntime(String modelName, File pmmlFile, KnowledgeBuilderImpl kbuilderImpl) {
-        FileSystemResource fileSystemResource = new FileSystemResource(pmmlFile);
-        new PMMLAssemblerService().addResource(kbuilderImpl, fileSystemResource, ResourceType.PMML, null);
-        InternalKnowledgeBase kieBase = KnowledgeBaseFactory.newKnowledgeBase(modelName, new RuleBaseConfiguration());
-        kieBase.addPackages( kbuilderImpl.getKnowledgePackages() );
-        return getPMMLRuntime(kieBase);
+    /**
+     * Load a <code>File</code> with the given <b>pmmlFileName</b> from the
+     * current <code>Classloader</code>
+     *
+     * @param pmmlFileName
+     * @return
+     */
+    private File getPMMLFileFromClasspath(final String pmmlFileName) {
+        return getFile(pmmlFileName);
     }
 
-    private static PMMLRuntimeInternal getPMMLRuntime(KieBase kieBase) {
-        final KieRuntimeFactory kieRuntimeFactory = KieRuntimeFactory.of(kieBase);
-        return kieRuntimeFactory.get(PMMLRuntimeInternal.class);
+    /**
+     * Load a <code>File</code> with the given <b>pmmlFileName</b> from the <code>kjar</code> contained in the
+     * <code>KieContainer</code> with the given <code>ReleaseId</code>
+     *
+     * @param pmmlFileName
+     * @param kieBase the name of the Kiebase configured inside the <b>kmodule.xml</b> of the loaded <b>kjar</b>
+     * @param releaseId
+     * @return
+     */
+    private File getPMMLFileFromContainer(final String pmmlFileName, final String kieBase, final ReleaseId releaseId) {
+        KieContainerImpl kieContainer = (KieContainerImpl) KIE_SERVICES.newKieContainer(releaseId);
+        InternalResource internalResource = ((InternalKieModule) (kieContainer)
+                .getKieModuleForKBase(kieBase))
+                .getResource(pmmlFileName);
+        try(InputStream inputStream = internalResource.getInputStream()) {
+            return getPMMLFile(pmmlFileName, inputStream);
+        } catch(Exception e) {
+            throw new ExternalException(e);
+        }
+    }
+
+    /**
+     * Load a <code>File</code> with the given <b>fullFileName</b> from the given
+     * <code>InputStream</code>
+     *
+     * @param fileName <b>full path</b> of file to load
+     * @param inputStream
+     * @return
+     */
+    private File getPMMLFile(String fileName, InputStream inputStream) {
+        FileOutputStream outputStream = null;
+        try  {
+            File toReturn = File.createTempFile(fileName, null);
+            outputStream = new FileOutputStream(toReturn);
+            byte[] byteArray = new byte[1024];
+            int i;
+            while ((i = inputStream.read(byteArray)) > 0) {
+                outputStream.write(byteArray, 0, i);
+            }
+            return toReturn;
+        } catch(Exception e) {
+            throw new ExternalException(e);
+        } finally {
+            try {
+                if (outputStream != null) {
+                    outputStream.close();
+                }
+            } catch (Exception e) {
+                logger.warn("Failed to close outputStream", e);
+            }
+        }
+
     }
 }

@@ -147,7 +147,7 @@ public class PMMLAssemblerService implements KieAssemblerService {
             PMMLPackage pmmlPkg = rpkg.computeIfAbsent(ResourceType.PMML, rtp -> new PMMLPackageImpl());
             pmmlPkg.addAll(Collections.singletonList(kiePMMLModel));
             if (kiePMMLModel instanceof HasNestedModels) {
-                addModels(kbuilderImpl, ((HasNestedModels)kiePMMLModel).getNestedModels());
+                addModels(kbuilderImpl, ((HasNestedModels) kiePMMLModel).getNestedModels());
             }
         }
     }
