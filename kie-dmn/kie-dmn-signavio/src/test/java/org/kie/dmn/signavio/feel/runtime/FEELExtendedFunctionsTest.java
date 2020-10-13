@@ -244,6 +244,7 @@ public class FEELExtendedFunctionsTest extends ExtendedFunctionsBaseFEELTest {
                 {"concat([\"a\", \"b\", \"c\"])", "abc", null},
                 {"concat(\"a\", \"b\", \"c\")", "abc", null},
                 {"concat(\"abc\")", "abc", null},
+                {"concat([])", "", null},
                 {"concat([\"a\", null, \"b\"])", null, ERROR},
                 {"concat([1, 2, 3])", null, ERROR},
                 {"concat(null)", null, ERROR},
