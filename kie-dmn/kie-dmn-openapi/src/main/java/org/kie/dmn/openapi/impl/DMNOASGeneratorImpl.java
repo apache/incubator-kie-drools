@@ -40,7 +40,7 @@ import org.kie.dmn.typesafe.DMNTypeUtils;
 
 public class DMNOASGeneratorImpl implements DMNOASGenerator {
 
-    private final Set<DMNModel> dmnModels;
+    private final List<DMNModel> dmnModels;
     private final List<DMNModelIOSets> ioSets = new ArrayList<>();
     private final Set<DMNType> typesIndex = new HashSet<>();
     private NamingPolicy namingPolicy;
@@ -48,7 +48,7 @@ public class DMNOASGeneratorImpl implements DMNOASGenerator {
     private ObjectNode jsonSchema;
 
     public DMNOASGeneratorImpl(Collection<DMNModel> models) {
-        this.dmnModels = new HashSet<>(models);
+        this.dmnModels = new ArrayList<>(models);
     }
 
     @Override
@@ -77,7 +77,19 @@ public class DMNOASGeneratorImpl implements DMNOASGenerator {
     }
 
     private void determineNamingPolicy() {
-        this.namingPolicy = new DefaultNamingPolicy(); // TODO what if same type name for 2 diff types in 2 separate models?
+        this.namingPolicy = new DefaultNamingPolicy();
+        if (namingIntegrityCheck()) {
+            return;
+        }
+        this.namingPolicy = new NamespaceAwareNamingPolicy(dmnModels);
+        if (namingIntegrityCheck()) {
+            return;
+        }
+        throw new IllegalStateException("Couldn't determine unique naming policy");
+    }
+
+    private boolean namingIntegrityCheck() {
+        return typesIndex.size() == typesIndex.stream().map(namingPolicy::getName).distinct().count();
     }
 
     private void assignNamesToIOSets() {

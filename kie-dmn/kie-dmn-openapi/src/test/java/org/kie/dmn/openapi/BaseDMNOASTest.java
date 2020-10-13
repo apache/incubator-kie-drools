@@ -63,8 +63,8 @@ public abstract class BaseDMNOASTest {
 
     protected ObjectNode synthesizeSchema(DMNOASResult result, DMNModel modelUnderTest) {
         DMNType InputSetTypeUT = result.lookupIOSetsByModel(modelUnderTest).getInputSet();
-        String dollarRef = result.namingPolicy.getRef(InputSetTypeUT);
-        ObjectNode syntheticJSONSchema = result.jsonSchemaNode.deepCopy();
+        String dollarRef = result.getNamingPolicy().getRef(InputSetTypeUT);
+        ObjectNode syntheticJSONSchema = result.getJsonSchemaNode().deepCopy();
         JsonUtil.stringProperty(syntheticJSONSchema, "$ref", dollarRef);
         JacksonUtils.printoutJSON(syntheticJSONSchema);
         return syntheticJSONSchema;

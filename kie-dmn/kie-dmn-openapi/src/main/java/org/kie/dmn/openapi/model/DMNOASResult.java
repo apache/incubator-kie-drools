@@ -16,8 +16,9 @@
 
 package org.kie.dmn.openapi.model;
 
+import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -28,20 +29,38 @@ import org.kie.dmn.openapi.NamingPolicy;
 
 public class DMNOASResult {
 
-    public final ObjectNode jsonSchemaNode;
-    public final List<DMNModelIOSets> ioSets;
-    public final Map<DMNType, Schema> schemas;
-    public final NamingPolicy namingPolicy;
+    private final ObjectNode jsonSchemaNode;
+    private final Map<DMNModel, DMNModelIOSets> ioSets = new LinkedHashMap<>();
+    private final Map<DMNType, Schema> schemas;
+    private final NamingPolicy namingPolicy;
 
-    public DMNOASResult(ObjectNode jsonSchemaNode, List<DMNModelIOSets> ioSets, Map<DMNType, Schema> schemas, NamingPolicy namingPolicy) {
+    public DMNOASResult(ObjectNode jsonSchemaNode, Collection<DMNModelIOSets> ioSets, Map<DMNType, Schema> schemas, NamingPolicy namingPolicy) {
         this.jsonSchemaNode = jsonSchemaNode.deepCopy();
-        this.ioSets = Collections.unmodifiableList(ioSets);
+        for (DMNModelIOSets ioSet : ioSets) {
+            this.ioSets.put(ioSet.getModel(), ioSet);
+        }
         this.schemas = Collections.unmodifiableMap(schemas);
         this.namingPolicy = namingPolicy;
     }
 
     public DMNModelIOSets lookupIOSetsByModel(DMNModel model) {
-        return ioSets.stream().filter(ioset -> ioset.getModel().equals(model)).findFirst().orElseThrow(IllegalArgumentException::new);
+        return ioSets.get(model);
+    }
+
+    public ObjectNode getJsonSchemaNode() {
+        return jsonSchemaNode;
+    }
+
+    public Collection<DMNModelIOSets> getIoSets() {
+        return ioSets.values();
+    }
+
+    public Map<DMNType, Schema> getSchemas() {
+        return schemas;
+    }
+
+    public NamingPolicy getNamingPolicy() {
+        return namingPolicy;
     }
 
 }
