@@ -36,18 +36,18 @@ pipeline {
 
         string(name: 'STAGING_REPO_URL', defaultValue: '', description: 'Override `deployment.properties`.')
         string(name: 'GIT_TAG', defaultValue: '', description: 'Git tag to set, if different from PROJECT_VERSION')
-        booleanParam(name: 'UPDATE_STABLE_BRANCH', defaultValue: false, description: 'Set to true if you want to update the `stable` branch to new created Git tag.')
+
+        // Bot author information. Set as params for easy testing.
+        string(name: 'BOT_CREDENTIALS_ID', defaultValue: 'bsig-gh-bot', description: 'Credentials for PR creation')
+
+        // Main author creds
+        string(name: 'AUTHOR_CREDS_ID', defaultValue: 'kie-ci', description: 'Credentials for PR merge')
+        string(name: 'GITHUB_TOKEN_CREDS_ID', defaultValue: 'kie-ci2-token', description: 'GH token to be used with GH CLI')
     }
 
     environment {
         PROPERTIES_FILE_NAME = 'deployment.properties'
-        
-        AUTHOR_CREDS_ID = 'kie-ci'
-        GITHUB_TOKEN_CREDS_ID = 'kie-ci2-token'
-        BOT_CREDENTIALS_ID = 'bsig-gh-bot'
-
         BOT_BRANCH_HASH = "${util.generateHash(10)}"
-        
         GITHUB_CLI_VERSION = '0.11.1'
     }
 
@@ -71,25 +71,7 @@ pipeline {
                 }
             }
         }
-
-        // TODO: remove when the manual step has moved to the top-level release pipeline
-        stage('Is staging repository promoted?') {
-            when {
-                expression { return isRelease() && getStagingRepoUrl() != '' }
-            }
-            steps {
-                script {
-                    withCredentials([string(credentialsId: 'KOGITO_CI_EMAIL_TO', variable: 'ZULIP_EMAIL')]) {
-                        emailext body: "${getProjectVersion()} artifacts are ready for promotion.\n" +
-                                 "The staging repository can be found at: ${getStagingRepoUrl()}\n" +
-                                 "Please promote the repository and then confirm the promotion here: ${env.BUILD_URL}input",
-                                 subject: "[${getBuildBranch()}] Release Pipeline",
-                                 to: ZULIP_EMAIL
-                    }
-                    input message: 'Has the staging repository been promoted?', ok: 'Yes'
-                }
-            }
-        }
+        //TODO: check branches!!!
         stage('Merge OptaPlanner deploy PR and tag') {
             when {
                 expression { return isRelease() }
@@ -209,6 +191,14 @@ String getGitAuthor() {
     return getParamOrDeployProperty('GIT_AUTHOR', 'git.author')
 }
 
+String getGitAuthorCredsID(){
+    return params.AUTHOR_CREDS_ID
+}
+
+String getBotAuthorCredsID(){
+    return params.BOT_CREDENTIALS_ID
+}
+
 String getStagingRepoUrl(){
     return getParamOrDeployProperty('STAGING_REPO_URL', 'staging-repo.url')
 }
@@ -242,21 +232,21 @@ void checkoutRepo(String repo) {
 
 void mergeAndPush(String repo, String prLink) {
     if (prLink != '') {
-        githubscm.mergePR(prLink, env.AUTHOR_CREDS_ID)
-        githubscm.pushObject('origin', getBuildBranch(), env.AUTHOR_CREDS_ID)
+        githubscm.mergePR(prLink, getGitAuthorCredsID())
+        githubscm.pushObject('origin', getBuildBranch(), getGitAuthorCredsID())
     }
 }
 
 void tagLatest() {
     if (getGitTag() != '') {
         githubscm.tagRepository(getGitTag(), env.BUILD_TAG)
-        githubscm.pushObject('origin', "--tags ${getGitTag()}", env.AUTHOR_CREDS_ID)
+        githubscm.pushObject('origin', "--tags ${getGitTag()}", getGitAuthorCredsID())
     }
 }
 
 void prepareForPR(String repo) {
     checkoutRepo(repo)
-    githubscm.forkRepo(env.BOT_CREDENTIALS_ID)
+    githubscm.forkRepo(getBotAuthorCredsID())
     githubscm.createBranch(getSnapshotBranch())
 }
 
@@ -282,8 +272,8 @@ void commitAndCreatePR(String repo) {
     // See: https://github.com/kiegroup/kogito-runtimes/pull/570#discussion_r449268738
     addNotIgnoredPoms()
     sh "git commit -m '${commitMsg}'"
-    githubscm.pushObject('origin', getSnapshotBranch(), env.BOT_CREDENTIALS_ID)
-    setPipelinePrLink(repo, githubscm.createPR(commitMsg, prBody, getBuildBranch(), env.BOT_CREDENTIALS_ID))
+    githubscm.pushObject('origin', getSnapshotBranch(), getBotAuthorCredsID())
+    setPipelinePrLink(repo, githubscm.createPR(commitMsg, prBody, getBuildBranch(), getBotAuthorCredsID()))
 }
 
 void installGithubCLI() {
