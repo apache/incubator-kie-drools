@@ -285,20 +285,13 @@ const GET_USER_TASK = gql`
 
 const GET_TASKS_FOR_USER = gql`
   query getTasksForUser(
-    $user: String
-    $groups: [String!]
+    $whereArgument: UserTaskInstanceArgument
     $offset: Int
     $limit: Int
     $orderBy: UserTaskInstanceOrderBy
   ) {
     UserTaskInstances(
-      where: {
-        or: [
-          { actualOwner: { equal: $user } }
-          { potentialUsers: { contains: $user } }
-          { potentialGroups: { containsAny: $groups } }
-        ]
-      }
+      where: $whereArgument
       pagination: { offset: $offset, limit: $limit }
       orderBy: $orderBy
     ) {

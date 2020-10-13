@@ -66,3 +66,25 @@ export const trimTaskEndpoint = (userTask: UserTaskInstance): string => {
 
   return '-';
 };
+
+export const getAllTaskStates = (): string[] => {
+  // @ts-ignore
+  if (window.KOGITO_TASKS_STATES_LIST) {
+    // @ts-ignore
+    return window.KOGITO_TASKS_STATES_LIST.split(',').map(state =>
+      state.trim()
+    );
+  }
+  return ['Ready', 'Reserved', 'Completed', 'Aborted', 'Skipped'];
+};
+
+export const getActiveTaskStates = (): string[] => {
+  // @ts-ignore
+  if (window.KOGITO_TASKS_ACTIVE_STATES_LIST) {
+    // @ts-ignore
+    return window.KOGITO_TASKS_ACTIVE_STATES_LIST.split(',').map(state =>
+      state.trim()
+    );
+  }
+  return ['Ready', 'Reserved'];
+};

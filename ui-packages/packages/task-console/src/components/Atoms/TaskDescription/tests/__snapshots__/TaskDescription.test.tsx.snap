@@ -47,7 +47,6 @@ exports[`TaskDescription test Render task description with task des 1`] = `
             <ItemDescriptor
               itemDescription={
                 Object {
-                  "description": "travels",
                   "id": "45a73767-5da3-49bf-9c40-d533c3e77ef3",
                   "name": "Apply for visa",
                 }
@@ -120,9 +119,16 @@ exports[`TaskDescription test Render task description with task des 1`] = `
                     >
                       Apply for visa
                        
-                      <Badge>
-                        travels
-                      </Badge>
+                      <TextContent
+                        className="pf-u-display-inline"
+                      >
+                        <Text
+                          className="pf-u-display-inline"
+                          component="small"
+                        >
+                          45a73
+                        </Text>
+                      </TextContent>
                     </span>
                   }
                   zIndex={9999}
@@ -135,13 +141,25 @@ exports[`TaskDescription test Render task description with task des 1`] = `
                     >
                       Apply for visa
                        
-                      <Badge>
-                        <span
-                          className="pf-c-badge pf-m-unread"
+                      <TextContent
+                        className="pf-u-display-inline"
+                      >
+                        <div
+                          className="pf-c-content pf-u-display-inline"
                         >
-                          travels
-                        </span>
-                      </Badge>
+                          <Text
+                            className="pf-u-display-inline"
+                            component="small"
+                          >
+                            <small
+                              className="pf-u-display-inline"
+                              data-pf-content={true}
+                            >
+                              45a73
+                            </small>
+                          </Text>
+                        </div>
+                      </TextContent>
                     </span>
                   </FindRefWrapper>
                 </Popper>

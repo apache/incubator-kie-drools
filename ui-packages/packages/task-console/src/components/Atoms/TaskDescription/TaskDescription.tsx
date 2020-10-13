@@ -39,8 +39,7 @@ const TaskDescription: React.FC<IOwnProps> = ({ task }) => {
           <ItemDescriptor
             itemDescription={{
               id: task.id,
-              name: task.referenceName,
-              description: task.processId
+              name: task.referenceName
             }}
           />
         </strong>

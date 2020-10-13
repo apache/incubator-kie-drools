@@ -19,7 +19,9 @@ import { GraphQL, DefaultUser } from '@kogito-apps/common';
 import {
   getTaskEndpointSecurityParams,
   getTaskSchemaEndPoint,
-  resolveTaskPriority
+  resolveTaskPriority,
+  getAllTaskStates,
+  getActiveTaskStates
 } from '../Utils';
 import UserTaskInstance = GraphQL.UserTaskInstance;
 
@@ -97,5 +99,35 @@ describe('Utils testing', () => {
     expect(resolveTaskPriority('1')).toStrictEqual('1');
     expect(resolveTaskPriority()).toStrictEqual('-');
     expect(resolveTaskPriority('')).toStrictEqual('-');
+  });
+
+  it('test get all task states', () => {
+    /* tslint:disable:no-string-literal */
+    window['KOGITO_TASKS_STATES_LIST'] = 'Ready,Reserved,Completed,Skipped';
+    let allTaskStates = getAllTaskStates();
+    expect(allTaskStates).toEqual([
+      'Ready',
+      'Reserved',
+      'Completed',
+      'Skipped'
+    ]);
+    delete window['KOGITO_TASKS_STATES_LIST'];
+    allTaskStates = getAllTaskStates();
+    expect(allTaskStates).toEqual([
+      'Ready',
+      'Reserved',
+      'Completed',
+      'Aborted',
+      'Skipped'
+    ]);
+  });
+
+  it('test get active task states', () => {
+    window['KOGITO_TASKS_ACTIVE_STATES_LIST'] = 'Ready,Reserved,Completed';
+    let activeTaskStates = getActiveTaskStates();
+    expect(activeTaskStates).toEqual(['Ready', 'Reserved', 'Completed']);
+    delete window['KOGITO_TASKS_ACTIVE_STATES_LIST'];
+    activeTaskStates = getActiveTaskStates();
+    expect(activeTaskStates).toEqual(['Ready', 'Reserved']);
   });
 });
