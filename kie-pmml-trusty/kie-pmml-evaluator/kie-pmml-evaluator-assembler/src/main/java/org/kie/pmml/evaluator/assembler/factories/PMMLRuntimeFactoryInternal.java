@@ -31,7 +31,6 @@ import org.kie.api.runtime.KieRuntimeFactory;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.utils.KieHelper;
 import org.kie.pmml.api.runtime.PMMLRuntime;
-import org.kie.pmml.evaluator.api.executor.PMMLRuntimeInternal;
 import org.kie.pmml.evaluator.assembler.service.PMMLAssemblerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,7 +66,7 @@ public class PMMLRuntimeFactoryInternal {
 
     private static PMMLRuntime getPMMLRuntime(KieBase kieBase) {
         final KieRuntimeFactory kieRuntimeFactory = KieRuntimeFactory.of(kieBase);
-        return kieRuntimeFactory.get(PMMLRuntimeInternal.class);
+        return kieRuntimeFactory.get(PMMLRuntime.class);
     }
 
     private static KieBase createKieBase( KnowledgeBuilderImpl kbuilderImpl ) {

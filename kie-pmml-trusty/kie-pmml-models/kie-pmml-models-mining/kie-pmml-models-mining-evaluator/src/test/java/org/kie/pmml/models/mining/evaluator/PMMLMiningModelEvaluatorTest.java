@@ -31,6 +31,7 @@ import org.kie.api.pmml.PMML4Result;
 import org.kie.api.runtime.KieContainer;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
+import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.api.enums.PMML_MODEL;
@@ -159,15 +160,21 @@ public class PMMLMiningModelEvaluatorTest {
         final KieBase kieBase = kieContainer.getKieBase();
         String kModulePackageName = "kModulePackageNameA";
         String containerModelName = "containerModelNameA";
-        PMMLRuntimeInternal retrieved = evaluator.getPMMLRuntime(kModulePackageName, kieBase, containerModelName);
-        assertNotNull(retrieved);
-        PMMLRuntimeInternal secondRetrieved = evaluator.getPMMLRuntime(kModulePackageName, kieBase, containerModelName);
-        assertEquals(retrieved.getKnowledgeBase(), secondRetrieved.getKnowledgeBase());
+        PMMLRuntime firstRetrieved = evaluator.getPMMLRuntime(kModulePackageName, kieBase, containerModelName);
+        assertNotNull(firstRetrieved);
+        assertTrue(firstRetrieved instanceof PMMLRuntimeInternal);
+        PMMLRuntimeInternal firstPMMLRuntimeInternal = (PMMLRuntimeInternal) firstRetrieved;
+        PMMLRuntime secondRetrieved = evaluator.getPMMLRuntime(kModulePackageName, kieBase, containerModelName);
+        assertTrue(secondRetrieved instanceof PMMLRuntimeInternal);
+        PMMLRuntimeInternal secondPMMLRuntimeInternal = (PMMLRuntimeInternal) secondRetrieved;
+        assertEquals(firstPMMLRuntimeInternal.getKnowledgeBase(), secondPMMLRuntimeInternal.getKnowledgeBase());
         kModulePackageName = "kModulePackageNameB";
         containerModelName = "containerModelNameB";
-        PMMLRuntimeInternal thirdRetrieved = evaluator.getPMMLRuntime(kModulePackageName, kieBase, containerModelName);
+        PMMLRuntime thirdRetrieved = evaluator.getPMMLRuntime(kModulePackageName, kieBase, containerModelName);
         assertNotNull(thirdRetrieved);
-        assertNotEquals(retrieved.getKnowledgeBase(), thirdRetrieved.getKnowledgeBase());
+        assertTrue(thirdRetrieved instanceof PMMLRuntimeInternal);
+        PMMLRuntimeInternal thirdPMMLRuntimeInternal = (PMMLRuntimeInternal) thirdRetrieved;
+        assertNotEquals(firstPMMLRuntimeInternal.getKnowledgeBase(), thirdPMMLRuntimeInternal.getKnowledgeBase());
     }
 
     @Test

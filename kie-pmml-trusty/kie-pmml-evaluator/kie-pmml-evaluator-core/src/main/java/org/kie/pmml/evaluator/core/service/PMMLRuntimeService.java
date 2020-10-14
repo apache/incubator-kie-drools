@@ -18,7 +18,6 @@ package org.kie.pmml.evaluator.core.service;
 import org.kie.api.KieBase;
 import org.kie.api.internal.runtime.KieRuntimeService;
 import org.kie.pmml.api.runtime.PMMLRuntime;
-import org.kie.pmml.evaluator.api.executor.PMMLRuntimeInternal;
 import org.kie.pmml.evaluator.core.executor.PMMLModelEvaluatorFinderImpl;
 
 public class PMMLRuntimeService implements KieRuntimeService<PMMLRuntime> {
@@ -30,6 +29,6 @@ public class PMMLRuntimeService implements KieRuntimeService<PMMLRuntime> {
 
     @Override
     public Class getServiceInterface() {
-        return PMMLRuntimeInternal.class;
+        return PMMLRuntime.class;
     }
 }
