@@ -51,7 +51,7 @@ public class FEELBuiltinTypeSchemas {
     private static Schema convertBuiltInToJavaClass(BuiltInType builtin) {
         switch (builtin) {
             case UNKNOWN:
-                return OASFactory.createObject(Schema.class).type(SchemaType.OBJECT).description("FEEL:Any");
+                return OASFactory.createObject(Schema.class).description("FEEL:Any"); // intentional, do NOT add .type(SchemaType.OBJECT), the JSONSchema to represent FEEL:Any is {}
             case DATE:
                 return OASFactory.createObject(Schema.class).type(SchemaType.STRING).format("date").description("FEEL:date");
             case TIME:

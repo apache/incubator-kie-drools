@@ -58,14 +58,12 @@ public class ByteArrayResource extends BaseResource
     public void readExternal(ObjectInput in) throws IOException,
             ClassNotFoundException {
         super.readExternal( in );
-        bytes = (byte[]) in.readObject();
         encoding = (String) in.readObject();
     }
 
     @Override
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal( out );
-        out.writeObject( bytes );
         out.writeObject(this.encoding);
     }
 
