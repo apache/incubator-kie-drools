@@ -33,6 +33,7 @@ import org.kie.dmn.core.impl.CompositeTypeImpl;
 import org.kie.dmn.core.impl.SimpleTypeImpl;
 import org.kie.dmn.openapi.NamingPolicy;
 import org.kie.dmn.openapi.model.DMNModelIOSets;
+import org.kie.dmn.openapi.model.DMNModelIOSets.DSIOSets;
 import org.kie.dmn.typesafe.DMNTypeUtils;
 
 public class DMNTypeSchemas {
@@ -71,6 +72,11 @@ public class DMNTypeSchemas {
         for (DMNModelIOSets ios : ioSets) {
             if (ios.getInputSet().equals(t)) {
                 return true;
+            }
+            for (DSIOSets ds : ios.getDSIOSets()) {
+                if (ds.getDSInputSet().equals(t)) {
+                    return true;
+                }
             }
         }
         return false;
