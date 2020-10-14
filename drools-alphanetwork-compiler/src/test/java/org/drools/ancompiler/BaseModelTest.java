@@ -89,8 +89,8 @@ public abstract class BaseModelTest {
     }
 
     protected KieSession getKieSession(String... rules) {
-        KieModuleModel kproj = testRunType.isAlphaNetworkCompiler() ? getKieModuleModelWithAlphaNetworkCompiler() : null;
-        return getKieSession(kproj, rules);
+        KieModuleModel model = testRunType.isAlphaNetworkCompiler() ? getKieModuleModelWithAlphaNetworkCompiler() : null;
+        return getKieSession(model, rules);
     }
 
     protected KieSession getKieSession(KieModuleModel model, String... stringRules) {
@@ -202,9 +202,9 @@ public abstract class BaseModelTest {
     }
 
     private KieModuleModel getKieModuleModelWithAlphaNetworkCompiler() {
-        KieModuleModel kieModuleModel = KieServices.get().newKieModuleModel();
-        kieModuleModel.setConfigurationProperty(AlphaNetworkCompilerOption.PROPERTY_NAME, AlphaNetworkCompilerOption.INMEMORY.toString());
-        return kieModuleModel;
+        KieModuleModel model = KieServices.get().newKieModuleModel();
+        model.setConfigurationProperty(AlphaNetworkCompilerOption.PROPERTY_NAME, AlphaNetworkCompilerOption.INMEMORY.toString());
+        return model;
     }
 
     protected void assertReteIsAlphaNetworkCompiled(KieSession ksession) {

@@ -101,8 +101,8 @@ public abstract class BaseModelTest {
     }
 
     protected KieSession getKieSession(String... rules) {
-        KieModuleModel kproj = testRunType.isAlphaNetworkCompiler() ? getKieModuleModelWithAlphaNetworkCompiler() : null;
-        return getKieSession(kproj, rules);
+        KieModuleModel model = testRunType.isAlphaNetworkCompiler() ? getKieModuleModelWithAlphaNetworkCompiler() : null;
+        return getKieSession(model, rules);
     }
 
     protected KieSession getKieSession(KieModuleModel model, String... stringRules) {
@@ -163,9 +163,9 @@ public abstract class BaseModelTest {
     }
 
     protected KieModuleModel getDefaultKieModuleModel( KieServices ks ) {
-        KieModuleModel kproj = ks.newKieModuleModel();
-        kproj.newKieBaseModel( "kbase" ).setDefault( true ).newKieSessionModel( "ksession" ).setDefault( true );
-        return kproj;
+        KieModuleModel model = ks.newKieModuleModel();
+        model.newKieBaseModel( "kbase" ).setDefault( true ).newKieSessionModel( "ksession" ).setDefault( true );
+        return model;
     }
 
     public static <T> List<T> getObjectsIntoList(KieSession ksession, Class<T> clazz) {
@@ -214,8 +214,8 @@ public abstract class BaseModelTest {
     }
 
     private KieModuleModel getKieModuleModelWithAlphaNetworkCompiler() {
-        KieModuleModel kieModuleModel = KieServices.get().newKieModuleModel();
-        kieModuleModel.setConfigurationProperty(AlphaNetworkCompilerOption.PROPERTY_NAME, AlphaNetworkCompilerOption.INMEMORY.toString());
-        return kieModuleModel;
+        KieModuleModel model = KieServices.get().newKieModuleModel();
+        model.setConfigurationProperty(AlphaNetworkCompilerOption.PROPERTY_NAME, AlphaNetworkCompilerOption.INMEMORY.toString());
+        return model;
     }
 }
