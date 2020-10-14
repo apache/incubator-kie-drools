@@ -43,6 +43,8 @@ public interface TaskInstanceService extends CommandExecutor {
 
     default void fireEvent(Operation operation, long taskId) {}
 
+    default void fireEvent(Operation operation, Task task) {}
+
     long addTask(Task task, Map<String, Object> params);
 
     long addTask(Task task, ContentData data);
@@ -124,5 +126,7 @@ public interface TaskInstanceService extends CommandExecutor {
     Content getContentByIdForUser( long contentId, String userId );
 
     Map<String, Object> getContentMapForUser( Long taskId, String userId );
+
+
 
 }
