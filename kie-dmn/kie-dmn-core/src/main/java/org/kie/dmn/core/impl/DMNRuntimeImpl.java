@@ -793,4 +793,8 @@ public class DMNRuntimeImpl
     public InternalKnowledgeBase getInternalKnowledgeBase() {
         return runtimeKB.getInternalKnowledgeBase();
     }
+
+    public DMNRuntimeKB getRuntimeKB() {
+        return runtimeKB;
+    }
 }
