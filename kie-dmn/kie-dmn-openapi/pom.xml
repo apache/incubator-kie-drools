@@ -8,6 +8,7 @@
   <artifactId>kie-dmn-openapi</artifactId>
   
   <name>KIE :: Decision Model Notation :: OpenAPI (OAS) utilities</name>
+  <description>Internal utility to generate OpenAPI (OAS) schema and related metadata information</description>
 
   <properties>
     <java.module.name>org.kie.dmn.openapi</java.module.name>
