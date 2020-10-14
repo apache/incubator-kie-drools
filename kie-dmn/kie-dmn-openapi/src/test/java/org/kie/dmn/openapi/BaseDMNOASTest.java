@@ -63,11 +63,20 @@ public abstract class BaseDMNOASTest {
 
     protected ObjectNode synthesizeSchema(DMNOASResult result, DMNModel modelUnderTest) {
         DMNType InputSetTypeUT = result.lookupIOSetsByModel(modelUnderTest).getInputSet();
-        String dollarRef = result.namingPolicy.getRef(InputSetTypeUT);
-        ObjectNode syntheticJSONSchema = result.jsonSchemaNode.deepCopy();
+        return synthesizeSchema(result, InputSetTypeUT);
+    }
+
+    private ObjectNode synthesizeSchema(DMNOASResult result, DMNType InputSetTypeUT) {
+        String dollarRef = result.getNamingPolicy().getRef(InputSetTypeUT);
+        ObjectNode syntheticJSONSchema = result.getJsonSchemaNode().deepCopy();
         JsonUtil.stringProperty(syntheticJSONSchema, "$ref", dollarRef);
         JacksonUtils.printoutJSON(syntheticJSONSchema);
         return syntheticJSONSchema;
+    }
+
+    protected ObjectNode synthesizeSchemaForDS(DMNOASResult result, DMNModel modelUnderTest, String dsName) {
+        DMNType InputSetTypeUT = result.lookupIOSetsByModel(modelUnderTest).lookupDSIOSetsByName(dsName).getDSInputSet();
+        return synthesizeSchema(result, InputSetTypeUT);
     }
 
 }
