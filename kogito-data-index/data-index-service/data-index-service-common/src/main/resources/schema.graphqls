@@ -363,6 +363,7 @@ type Job {
     id: String!
     processId: String
     processInstanceId: String
+    nodeInstanceId: String
     rootProcessInstanceId: String
     rootProcessId: String
     status: JobStatus!
@@ -397,6 +398,7 @@ input JobArgument {
     id: IdArgument
     processId: StringArgument
     processInstanceId: IdArgument
+    nodeInstanceId: IdArgument
     rootProcessInstanceId: IdArgument
     rootProcessId: StringArgument
     status: JobStatusArgument

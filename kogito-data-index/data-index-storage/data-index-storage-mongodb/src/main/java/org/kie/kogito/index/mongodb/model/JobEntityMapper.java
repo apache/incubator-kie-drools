@@ -52,6 +52,7 @@ public class JobEntityMapper implements MongoEntityMapper<Job, JobEntity> {
         entity.setLastUpdate(zonedDateTimeToInstant(job.getLastUpdate()));
         entity.setExecutionCounter(job.getExecutionCounter());
         entity.setEndpoint(job.getEndpoint());
+        entity.setNodeInstanceId(job.getNodeInstanceId());
         return entity;
     }
 
@@ -78,6 +79,7 @@ public class JobEntityMapper implements MongoEntityMapper<Job, JobEntity> {
         job.setLastUpdate(instantToZonedDateTime(entity.getLastUpdate()));
         job.setExecutionCounter(entity.getExecutionCounter());
         job.setEndpoint(entity.getEndpoint());
+        job.setNodeInstanceId(entity.getNodeInstanceId());
         return job;
     }
 }

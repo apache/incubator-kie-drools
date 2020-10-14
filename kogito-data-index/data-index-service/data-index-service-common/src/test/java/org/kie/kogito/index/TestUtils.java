@@ -178,6 +178,7 @@ public final class TestUtils {
         job.setId(jobId);
         job.setProcessId(processId);
         job.setProcessInstanceId(processInstanceId);
+        job.setNodeInstanceId(UUID.randomUUID().toString());
         job.setRootProcessId(rootProcessId);
         job.setRootProcessInstanceId(rootProcessInstanceId);
         job.setStatus(status);

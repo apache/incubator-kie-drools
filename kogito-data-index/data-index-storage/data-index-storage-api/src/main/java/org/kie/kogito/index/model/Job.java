@@ -21,12 +21,13 @@ import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-@JsonIgnoreProperties("executionResponse")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Job {
 
     private String id;
     private String processId;
     private String processInstanceId;
+    private String nodeInstanceId;
     private String rootProcessId;
     private String rootProcessInstanceId;
 
@@ -172,12 +173,21 @@ public class Job {
         this.endpoint = endpoint;
     }
 
+    public String getNodeInstanceId() {
+        return nodeInstanceId;
+    }
+
+    public void setNodeInstanceId(String nodeInstanceId) {
+        this.nodeInstanceId = nodeInstanceId;
+    }
+
     @Override
     public String toString() {
         return "Job{" +
                 "id='" + id + '\'' +
                 ", processId='" + processId + '\'' +
                 ", processInstanceId='" + processInstanceId + '\'' +
+                ", nodeInstanceId='" + nodeInstanceId + '\'' +
                 ", rootProcessId='" + rootProcessId + '\'' +
                 ", rootProcessInstanceId='" + rootProcessInstanceId + '\'' +
                 ", expirationTime=" + expirationTime +

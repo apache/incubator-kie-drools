@@ -29,6 +29,8 @@ public class JobEntity {
 
     String processInstanceId;
 
+    String nodeInstanceId;
+
     String rootProcessId;
 
     String rootProcessInstanceId;
@@ -183,6 +185,14 @@ public class JobEntity {
         this.endpoint = endpoint;
     }
 
+    public String getNodeInstanceId() {
+        return nodeInstanceId;
+    }
+
+    public void setNodeInstanceId(String nodeInstanceId) {
+        this.nodeInstanceId = nodeInstanceId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -198,5 +208,28 @@ public class JobEntity {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "JobEntity{" +
+                "id='" + id + '\'' +
+                ", processId='" + processId + '\'' +
+                ", processInstanceId='" + processInstanceId + '\'' +
+                ", nodeInstanceId='" + nodeInstanceId + '\'' +
+                ", rootProcessId='" + rootProcessId + '\'' +
+                ", rootProcessInstanceId='" + rootProcessInstanceId + '\'' +
+                ", expirationTime=" + expirationTime +
+                ", priority=" + priority +
+                ", callbackEndpoint='" + callbackEndpoint + '\'' +
+                ", repeatInterval=" + repeatInterval +
+                ", repeatLimit=" + repeatLimit +
+                ", scheduledId='" + scheduledId + '\'' +
+                ", retries=" + retries +
+                ", status='" + status + '\'' +
+                ", lastUpdate=" + lastUpdate +
+                ", executionCounter=" + executionCounter +
+                ", endpoint='" + endpoint + '\'' +
+                '}';
     }
 }

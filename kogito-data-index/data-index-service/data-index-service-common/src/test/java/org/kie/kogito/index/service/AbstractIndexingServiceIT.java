@@ -817,6 +817,7 @@ abstract class AbstractIndexingServiceIT {
                 .body("data.Jobs[0].id", is(event.getData().getId()))
                 .body("data.Jobs[0].processId", is(event.getData().getProcessId()))
                 .body("data.Jobs[0].processInstanceId", is(event.getData().getProcessInstanceId()))
+                .body("data.Jobs[0].nodeInstanceId", is(event.getData().getNodeInstanceId()))
                 .body("data.Jobs[0].rootProcessId", is(event.getData().getRootProcessId()))
                 .body("data.Jobs[0].rootProcessInstanceId", is(event.getData().getRootProcessInstanceId()))
                 .body("data.Jobs[0].status", is(event.getData().getStatus()))

@@ -51,6 +51,7 @@ export namespace GraphQL {
     id: Scalars['String'];
     processId?: Maybe<Scalars['String']>;
     processInstanceId?: Maybe<Scalars['String']>;
+    nodeInstanceId?: Maybe<Scalars['String']>;
     rootProcessInstanceId?: Maybe<Scalars['String']>;
     rootProcessId?: Maybe<Scalars['String']>;
     status: JobStatus;
@@ -72,6 +73,7 @@ export namespace GraphQL {
     id?: Maybe<IdArgument>;
     processId?: Maybe<StringArgument>;
     processInstanceId?: Maybe<IdArgument>;
+    nodeInstanceId?: Maybe<IdArgument>;
     rootProcessInstanceId?: Maybe<IdArgument>;
     rootProcessId?: Maybe<StringArgument>;
     status?: Maybe<JobStatusArgument>;

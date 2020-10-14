@@ -2465,6 +2465,16 @@
             "defaultValue": null
           },
           {
+            "name": "nodeInstanceId",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "IdArgument",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
             "name": "rootProcessInstanceId",
             "description": null,
             "type": {
@@ -2879,6 +2889,18 @@
           },
           {
             "name": "processInstanceId",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "nodeInstanceId",
             "description": null,
             "args": [],
             "type": {

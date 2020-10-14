@@ -215,4 +215,6 @@ message Job {
     optional int64 lastUpdate = 14;
     optional int32 executionCounter = 15;
     optional string endpoint = 16;
+    /* @Field(store = Store.YES) */
+    optional string nodeInstanceId = 17;
 }
