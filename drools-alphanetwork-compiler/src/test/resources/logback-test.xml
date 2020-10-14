@@ -9,7 +9,7 @@
 
   <logger name="org.kie" level="info"/>
   <logger name="org.drools.compiler.kie.builder.impl" level="ERROR" />
-  <logger name="org.drools.ancompiler" level="debug"/>
+  <logger name="org.drools.ancompiler" level="info"/>
 
   <logger name="org.drools" level="info"/>
 

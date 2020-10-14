@@ -20,6 +20,7 @@ import java.math.BigInteger;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.drools.core.InitialFact;
@@ -226,7 +227,7 @@ public class ObjectTypeNodeCompiler {
         List<CompiledNetworkSource> compiledNetworkSources = ObjectTypeNodeCompiler.compiledNetworkSources(rete);
         return compiledNetworkSources
                 .stream()
-                .collect(Collectors.toMap(CompiledNetworkSource::getName, c -> c));
+                .collect(Collectors.toMap(CompiledNetworkSource::getName, Function.identity()));
     }
 
     public static Map<ObjectTypeNode, String> otnWithClassName(Rete rete) {

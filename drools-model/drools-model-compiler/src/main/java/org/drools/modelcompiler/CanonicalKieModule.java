@@ -19,6 +19,7 @@ package org.drools.modelcompiler;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UncheckedIOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -479,7 +480,7 @@ public class CanonicalKieModule implements InternalKieModule {
             Resource modelFile = internalKieModule.getResource(fileName);
             modelFiles = new String(IoUtils.readBytesFromInputStream(modelFile.getInputStream()));
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new UncheckedIOException(e);
         }
         return modelFiles;
     }
