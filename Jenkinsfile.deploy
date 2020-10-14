@@ -73,9 +73,6 @@ pipeline {
             steps {
                 checkoutRepo('kogito-runtimes')
                 checkoutRepo('kogito-apps')
-                checkoutRepo('kogito-examples')
-                checkoutRepo('kogito-examples', 'kogito-examples-persistence')
-                checkoutRepo('kogito-examples', 'kogito-examples-events')
             }
         }
         stage('Prepare for PR'){
@@ -85,7 +82,6 @@ pipeline {
             steps {
                 prepareForPR('kogito-runtimes')
                 prepareForPR('kogito-apps')
-                prepareForPR('kogito-examples')
             }
         }
         stage('Setup Maven release config'){
@@ -95,7 +91,7 @@ pipeline {
             steps {
                 echo 'Setup Maven release config'
                 configFileProvider([configFile(fileId: '771ff52a-a8b4-40e6-9b22-d54c7314aa1e', targetLocation: 'maven-settings.xml', variable: 'MAVEN_SETTINGS_FILE')]){
-                    sh "echo '-B -s ${MAVEN_SETTINGS_FILE}' | tee kogito-{runtimes,apps,examples,examples-persistence,examples-events}/.mvn/maven.config"
+                    sh "echo '-B -s ${MAVEN_SETTINGS_FILE}' | tee kogito-{runtimes,apps}/.mvn/maven.config"
                 }
             }
         }
@@ -122,13 +118,6 @@ pipeline {
                         maven.mvnVersionsUpdateParentAndChildModules(getProjectVersion())
                     }
                 }
-
-                // kogito-examples
-                dir('kogito-examples') {
-                    script {
-                        maven.mvnVersionsSet(getProjectVersion())
-                    }
-                }
             }
         }
         stage('Build kogito-runtimes') {
@@ -151,61 +140,10 @@ pipeline {
                 }
             }
         }
-        stage('Build kogito-examples') {
-            steps {
-                mavenCleanInstall('kogito-examples', params.SKIP_TESTS)
-            }
-            post {
-                always {
-                    saveReports(params.SKIP_TESTS)
-                }
-            }
-        }
-        stage('Check kogito-examples with persistence') {
-            steps {
-                mavenCleanInstall('kogito-examples-persistence', params.SKIP_TESTS, ['persistence'])
-            }
-            post {
-                always {
-                    saveReports(params.SKIP_TESTS)
-                }
-            }
-        }
-        stage('Check kogito-examples with events') {
-            steps {
-                mavenCleanInstall('kogito-examples-events', params.SKIP_TESTS, ['events'])
-            }
-            post {
-                always {
-                    saveReports(params.SKIP_TESTS)
-                }
-            }
-        }
         stage('Deploy artifacts') {
             steps {
                 mavenDeploy('kogito-runtimes')
                 mavenDeploy('kogito-apps')
-                mavenDeploy('kogito-examples')
-            }
-        }
-        stage('Get staging repository URL') {
-            when {
-                expression { return isRelease() }
-            }
-            steps {
-                script {
-                    withCredentials([string(credentialsId: 'KOGITO_CI_EMAIL_TO', variable: 'ZULIP_EMAIL')]) {
-                        emailext body: "Kogito Runtimes deploy pipeline #${env.BUILD_NUMBER} => Artifacts with version ${getProjectVersion()} have been pushed to staging repository. Please retrieve the staging repository URL and provide it here: ${env.BUILD_URL}input",
-                                 subject: "[${getBuildBranch()}] Release Pipeline",
-                                 to: ZULIP_EMAIL
-                    }
-                    // Add `/` at the end of the given url if missing
-                    String stagingRepoUrl = input(message: 'Enter staging repository URL:', parameters: [string(name: 'STAGING_REPO_URL')])
-                    if(!stagingRepoUrl.endsWith('/')){
-                        stagingRepoUrl += '/'
-                    }
-                    deployProperties['staging-repo.url'] = stagingRepoUrl
-                }
             }
         }
         stage('Create PR'){
@@ -215,7 +153,6 @@ pipeline {
             steps {
                 commitAndCreatePR('kogito-runtimes')
                 commitAndCreatePR('kogito-apps')
-                commitAndCreatePR('kogito-examples')
             }
             post {
                 success {
@@ -231,12 +168,6 @@ pipeline {
                         setDeployPropertyIfNeeded('kogito-apps.pr.source.ref', getBotBranch())
                         setDeployPropertyIfNeeded('kogito-apps.pr.target.uri', "https://github.com/${getGitAuthor()}/kogito-apps")
                         setDeployPropertyIfNeeded('kogito-apps.pr.target.ref', getBuildBranch())
-
-                        // Examples
-                        setDeployPropertyIfNeeded('kogito-examples.pr.source.uri', "https://github.com/${getBotAuthor()}/kogito-examples")
-                        setDeployPropertyIfNeeded('kogito-examples.pr.source.ref', getBotBranch())
-                        setDeployPropertyIfNeeded('kogito-examples.pr.target.uri', "https://github.com/${getGitAuthor()}/kogito-examples")
-                        setDeployPropertyIfNeeded('kogito-examples.pr.target.ref', getBuildBranch())
                     }
                 }
             }
