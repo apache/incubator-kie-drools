@@ -124,7 +124,6 @@ public class MemoryKieModule extends AbstractKieModule
             KnowledgeBuilderImpl knowledgeBuilderForImpl = (KnowledgeBuilderImpl)knowledgeBuilderForKieBase;
             KnowledgeBuilderConfigurationImpl builderConfiguration = knowledgeBuilderForImpl.getBuilderConfiguration();
 
-            // TODO LUCA ask Mario if we need to enqueue this or we can just run it
             KieContainerImpl.CompositeRunnable compositeUpdater = new KieContainerImpl.CompositeRunnable();
 
             KieBaseUpdaterOptions kieBaseUpdaterOptions = new KieBaseUpdaterOptions(new KieBaseUpdaterOptions.OptionEntry(

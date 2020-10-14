@@ -233,7 +233,6 @@ public class CanonicalKieModule implements InternalKieModule {
 
     @Override
     public void afterKieBaseCreationUpdate(String name, InternalKnowledgeBase kBase) {
-        // TODO LUCA ask Mario if we need to enqueue this or we can just run it\
         KnowledgeBuilder knowledgeBuilderForKieBase = getKnowledgeBuilderForKieBase(name);
 
 
@@ -252,15 +251,13 @@ public class CanonicalKieModule implements InternalKieModule {
         KieBaseUpdaters updaters = ServiceRegistry.getService(KieBaseUpdaters.class);
         updaters.getChildren()
                 .stream()
-                .map(kbu -> {
-                    return kbu.create(new KieBaseUpdatersContext(new KieBaseUpdaterOptions(options),
-                                                                 kBase.getRete(),
-                                                                 kBase.getRootClassLoader()
-                    ));
-                })
+                .map(kbu -> kbu.create(new KieBaseUpdatersContext(new KieBaseUpdaterOptions(options),
+                                                              kBase.getRete(),
+                                                              kBase.getRootClassLoader()
+                )))
                 .forEach(compositeUpdater::add);
 
-        kBase.enqueueModification(compositeUpdater);
+        compositeUpdater.run();
     }
 
     private void buildNonNativeResources( KieBaseModelImpl kBaseModel, KieProject kieProject, ResultsImpl messages, InternalKnowledgeBase kieBase ) {
