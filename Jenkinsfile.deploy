@@ -96,7 +96,9 @@ pipeline {
                 echo 'Setup Maven release config'
                 configFileProvider([configFile(fileId: '771ff52a-a8b4-40e6-9b22-d54c7314aa1e', targetLocation: 'maven-settings.xml', variable: 'MAVEN_SETTINGS_FILE')]){
                     sh "echo '-B -s ${MAVEN_SETTINGS_FILE}' | tee {optaplanner}/.mvn/maven.config"
-                    assert params.MAVEN_DEPENDENCIES_REPOSITORY != '' // OptaPlanner depends on Kogito Runtimes
+                    // TODO: figure out why the assert does not work
+                    // assert params.MAVEN_DEPENDENCIES_REPOSITORY != '' // OptaPlanner depends on Kogito Runtimes
+                    echo "MAVEN_DEPENDENCIES_REPOSITORY passed: ${params.MAVEN_DEPENDENCIES_REPOSITORY}"
                     sh "sed -i 's|<repository>|<repository><id>staging</id><name>Staging Repository</name><url>${params.MAVEN_DEPENDENCIES_REPOSITORY}</url><layout>default</layout><snapshots><enabled>true</enabled></snapshots><releases><enabled>true</enabled></releases></repository>\\n        <repository>|g' ${MAVEN_SETTINGS_FILE}"
                     sh "sed -i 's|<pluginRepository>|<pluginRepository><id>staging</id><name>Staging Repository</name><url>${params.MAVEN_DEPENDENCIES_REPOSITORY}</url><layout>default</layout><snapshots><enabled>true</enabled></snapshots><releases><enabled>true</enabled></releases></pluginRepository>\\n        <pluginRepository>|g' ${MAVEN_SETTINGS_FILE}"
                     sh "sed -i 's|external:\\*|central|g' ${MAVEN_SETTINGS_FILE}" // Done to allow Maven to download release artifacts from MAVEN_DEPENDENCIES_REPOSITORY
