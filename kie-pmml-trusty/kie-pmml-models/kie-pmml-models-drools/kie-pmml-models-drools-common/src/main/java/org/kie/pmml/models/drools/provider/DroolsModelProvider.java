@@ -61,7 +61,7 @@ public abstract class DroolsModelProvider<T extends Model, E extends KiePMMLDroo
         KiePMMLDroolsAST kiePMMLDroolsAST = getKiePMMLDroolsASTCommon(dataDictionary, transformationDictionary, model, fieldTypeMap);
         E toReturn = getKiePMMLDroolsModel(dataDictionary, transformationDictionary, model, fieldTypeMap);
         PackageDescr packageDescr = getPackageDescr(kiePMMLDroolsAST, toReturn.getKModulePackageName());
-        ((KnowledgeBuilderImpl) kBuilder).addPackageWithoutRete(packageDescr);
+        ((KnowledgeBuilderImpl) kBuilder).registerPackage(packageDescr);
         return toReturn;
     }
 
