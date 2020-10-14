@@ -73,6 +73,7 @@ public class ServiceDiscoveryImpl {
     public synchronized void reset() {
         cachedServices = null;
         sealed = false;
+        services.reset();
     }
 
     public synchronized Map<String, List<Object>> getServices() {
@@ -90,7 +91,7 @@ public class ServiceDiscoveryImpl {
     }
 
     public void registerConfs( ClassLoader classLoader, URL url ) {
-        log.debug("Loading kie.conf from  " + url + " in classloader " + classLoader);
+        log.debug("Loading kie.conf from {} in classloader {}", url, classLoader);
 
         try ( BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream())) ) {
             for (String line = br.readLine(); line != null; line = br.readLine()) {
@@ -113,7 +114,7 @@ public class ServiceDiscoveryImpl {
                 if ( value.startsWith( "+" ) ) {
                     childServices.computeIfAbsent( serviceName, k -> new ArrayList<>() )
                             .add( newInstance( classLoader, value.substring( 1 ) ) );
-                    log.debug( "Added child Service " + value );
+                    log.debug("Added child Service {}", value );
                 } else {
                     String[] splitValues = value.split( ";" );
                     if (splitValues.length > 2) {
@@ -121,13 +122,13 @@ public class ServiceDiscoveryImpl {
                     }
                     int priority = splitValues.length == 2 ? Integer.parseInt( splitValues[1].trim() ) : 0;
                     services.put( priority, serviceName, newInstance( classLoader, splitValues[0].trim() ) );
-                    log.debug( "Added Service " + value + " with priority " + priority );
+                    log.debug( "Added Service {} with priority {}", value, priority );
                 }
             } catch (RuntimeException e) {
                 if (optional) {
-                    log.info("Cannot load service: " + serviceName);
+                    log.info("Cannot load service: {}",serviceName);
                 } else {
-                    log.error("Loading failed because " + e.getMessage());
+                    log.error("Loading failed because {}", e.getMessage());
                     throw e;
                 }
             }
@@ -145,7 +146,7 @@ public class ServiceDiscoveryImpl {
     private Map<String, List<Object>> buildMap() {
         Map<String, List<Object>> servicesMap = new HashMap<>();
         for (Map.Entry<String, List<Object>> serviceEntry : services.entrySet()) {
-            log.debug( "Service " + serviceEntry.getKey() + " is implemented by " + serviceEntry.getValue().get(0) );
+            log.debug( "Service {} is implemented by {}",  serviceEntry.getKey(), serviceEntry.getValue().get(0) );
             servicesMap.put(serviceEntry.getKey(), serviceEntry.getValue());
             List<?> children = childServices.remove( serviceEntry.getKey() );
             if (children != null) {
@@ -164,9 +165,9 @@ public class ServiceDiscoveryImpl {
         if (log.isTraceEnabled()) {
             for (Map.Entry<String, List<Object>> serviceEntry : servicesMap.entrySet()) {
                 if (serviceEntry.getValue().size() == 1) {
-                    log.trace( "Service " + serviceEntry.getKey() + " is implemented by " + serviceEntry.getValue().get(0) );
+                    log.trace( "Service {} is implemented by {}",  serviceEntry.getKey(), serviceEntry.getValue().get(0) );
                 } else {
-                    log.trace( "Service " + serviceEntry.getKey() + " is implemented (in order of priority) by " + serviceEntry.getValue() );
+                    log.trace( "Service {} is implemented (in order of priority) by {}", serviceEntry.getKey(), serviceEntry.getValue() );
                 }
             }
         }
@@ -205,6 +206,11 @@ public class ServiceDiscoveryImpl {
 
     private static class PriorityMap<K,V> {
         private final Map<K, TreeMap<Integer, V>> priorityMap = new HashMap<>();
+
+
+        public void reset() {
+            priorityMap.clear();
+        }
 
         public void put(int priority, K key, V value) {
             TreeMap<Integer, V> treeMap = priorityMap.get(key);
