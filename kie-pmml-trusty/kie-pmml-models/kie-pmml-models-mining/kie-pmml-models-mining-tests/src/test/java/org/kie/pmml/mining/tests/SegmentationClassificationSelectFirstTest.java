@@ -50,9 +50,9 @@ public class SegmentationClassificationSelectFirstTest extends AbstractPMMLTest 
         this.result = result;
     }
 
-    @BeforeClass
+  @BeforeClass
     public static void setupClass() {
-        pmmlRuntime = getPMMLRuntime(MODEL_NAME, FILE_NAME);
+        pmmlRuntime = getPMMLRuntime(FILE_NAME);
     }
 
     @Parameterized.Parameters

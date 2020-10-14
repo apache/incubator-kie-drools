@@ -30,7 +30,8 @@ import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieRuntimeFactory;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.utils.KieHelper;
-import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
+import org.kie.pmml.api.runtime.PMMLRuntime;
+import org.kie.pmml.evaluator.api.executor.PMMLRuntimeInternal;
 import org.kie.pmml.evaluator.assembler.service.PMMLAssemblerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,18 +47,18 @@ public class PMMLRuntimeFactoryInternal {
         // Avoid instantiation
     }
 
-    public static PMMLRuntimeInternal getPMMLRuntime(String modelName, File pmmlFile) {
+    public static PMMLRuntime getPMMLRuntime(final File pmmlFile) {
         KnowledgeBuilderImpl kbuilderImpl = (KnowledgeBuilderImpl) KnowledgeBuilderFactory.newKnowledgeBuilder();
-        return getPMMLRuntime(modelName, pmmlFile, kbuilderImpl);
+        return getPMMLRuntime(pmmlFile, kbuilderImpl);
     }
 
-    public static PMMLRuntimeInternal getPMMLRuntime(String modelName, File pmmlFile, ReleaseId releaseId) {
+    public static PMMLRuntime getPMMLRuntime(File pmmlFile, ReleaseId releaseId) {
         KnowledgeBuilderImpl kbuilderImpl = (KnowledgeBuilderImpl) KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilderImpl.setReleaseId(releaseId);
-        return getPMMLRuntime(modelName, pmmlFile, kbuilderImpl);
+        return getPMMLRuntime(pmmlFile, kbuilderImpl);
     }
 
-    private static PMMLRuntimeInternal getPMMLRuntime(String modelName, File pmmlFile, KnowledgeBuilderImpl kbuilderImpl) {
+    private static PMMLRuntime getPMMLRuntime(File pmmlFile, KnowledgeBuilderImpl kbuilderImpl) {
         FileSystemResource fileSystemResource = new FileSystemResource(pmmlFile);
         new PMMLAssemblerService().addResource(kbuilderImpl, fileSystemResource, ResourceType.PMML, null);
         KieBase kieBase = createKieBase( kbuilderImpl );
@@ -66,7 +67,7 @@ public class PMMLRuntimeFactoryInternal {
 
     private static PMMLRuntime getPMMLRuntime(KieBase kieBase) {
         final KieRuntimeFactory kieRuntimeFactory = KieRuntimeFactory.of(kieBase);
-        return kieRuntimeFactory.get(PMMLRuntime.class);
+        return kieRuntimeFactory.get(PMMLRuntimeInternal.class);
     }
 
     private static KieBase createKieBase( KnowledgeBuilderImpl kbuilderImpl ) {

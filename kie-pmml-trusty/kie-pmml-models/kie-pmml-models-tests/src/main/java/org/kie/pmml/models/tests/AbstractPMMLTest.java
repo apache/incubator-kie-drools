@@ -32,9 +32,9 @@ public class AbstractPMMLTest {
 
     private static final PMMLRuntimeFactory PMML_RUNTIME_FACTORY = new PMMLRuntimeFactoryImpl();
 
-    protected static PMMLRuntime getPMMLRuntime(String kbaseName, String fileName) {
+    protected static PMMLRuntime getPMMLRuntime(String fileName) {
         File pmmlFile = getFile(fileName);
-        return PMML_RUNTIME_FACTORY.getPMMLRuntimeFromFile(kbaseName, pmmlFile);
+        return PMML_RUNTIME_FACTORY.getPMMLRuntimeFromFile(pmmlFile);
     }
 
     protected static PMMLRequestData getPMMLRequestData(String modelName, Map<String, Object> parameters) {

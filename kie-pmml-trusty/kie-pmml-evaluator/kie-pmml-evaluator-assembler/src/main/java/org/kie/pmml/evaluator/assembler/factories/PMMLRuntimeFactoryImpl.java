@@ -39,28 +39,28 @@ public class PMMLRuntimeFactoryImpl implements PMMLRuntimeFactory {
     private static  final KieServices KIE_SERVICES = KieServices.get();
 
     @Override
-    public PMMLRuntime getPMMLRuntimeFromFile(String modelName, File pmmlFile) {
-        return PMMLRuntimeFactoryInternal.getPMMLRuntime(modelName, pmmlFile);
+    public PMMLRuntime getPMMLRuntimeFromFile(File pmmlFile) {
+        return PMMLRuntimeFactoryInternal.getPMMLRuntime(pmmlFile);
     }
 
     @Override
-    public PMMLRuntime getPMMLRuntimeFromClasspath(String modelName, String pmmlFileName) {
+    public PMMLRuntime getPMMLRuntimeFromClasspath(String pmmlFileName) {
         File pmmlFile = getPMMLFileFromClasspath(pmmlFileName);
-        return PMMLRuntimeFactoryInternal.getPMMLRuntime(modelName, pmmlFile);
+        return PMMLRuntimeFactoryInternal.getPMMLRuntime(pmmlFile);
     }
 
     @Override
-    public PMMLRuntime getPMMLRuntimeFromKieContainerByKieBase(String modelName, String kieBase, String pmmlFileName, String gav) {
+    public PMMLRuntime getPMMLRuntimeFromKieContainerByKieBase( String kieBase, String pmmlFileName, String gav) {
         ReleaseId releaseId = new ReleaseIdImpl(gav);
         File pmmlFile = getPMMLFileFromKieContainerByKieBase(pmmlFileName, kieBase, releaseId);
-        return PMMLRuntimeFactoryInternal.getPMMLRuntime(modelName, pmmlFile, releaseId);
+        return PMMLRuntimeFactoryInternal.getPMMLRuntime(pmmlFile, releaseId);
     }
 
     @Override
-    public PMMLRuntime getPMMLRuntimeFromKieContainerByDefaultKieBase(String modelName, String pmmlFileName, String gav) {
+    public PMMLRuntime getPMMLRuntimeFromKieContainerByDefaultKieBase(String pmmlFileName, String gav) {
         ReleaseId releaseId = new ReleaseIdImpl(gav);
         File pmmlFile = getPMMLFileFromKieContainerByDefaultKieBase(pmmlFileName, releaseId);
-        return PMMLRuntimeFactoryInternal.getPMMLRuntime(modelName, pmmlFile, releaseId);
+        return PMMLRuntimeFactoryInternal.getPMMLRuntime(pmmlFile, releaseId);
     }
 
     /**
@@ -84,7 +84,6 @@ public class PMMLRuntimeFactoryImpl implements PMMLRuntimeFactory {
      * @return
      */
     private File getPMMLFileFromKieContainerByKieBase(final String pmmlFileName, final String kieBase, final ReleaseId releaseId) {
-        //kieContainer.getKieProject().getDefaultKieBaseModel().getName()
         KieContainerImpl kieContainer = (KieContainerImpl) KIE_SERVICES.newKieContainer(releaseId);
         InternalResource internalResource = ((InternalKieModule) (kieContainer)
                 .getKieModuleForKBase(kieBase))

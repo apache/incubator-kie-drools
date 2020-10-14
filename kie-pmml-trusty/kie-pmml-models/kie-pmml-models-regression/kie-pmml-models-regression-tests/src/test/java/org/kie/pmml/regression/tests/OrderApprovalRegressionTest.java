@@ -65,9 +65,9 @@ public class OrderApprovalRegressionTest extends AbstractPMMLTest {
         this.expectedProbFalse = expectedProbFalse;
     }
 
-    @BeforeClass
+  @BeforeClass
     public static void setupClass() {
-        pmmlRuntime = getPMMLRuntime(MODEL_NAME, FILE_NAME);
+        pmmlRuntime = getPMMLRuntime(FILE_NAME);
     }
 
     @Parameterized.Parameters
