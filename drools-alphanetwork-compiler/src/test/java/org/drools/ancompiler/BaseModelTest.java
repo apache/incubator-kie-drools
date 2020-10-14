@@ -45,6 +45,7 @@ import static java.util.Arrays.asList;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+// Copied from org.drools.modelcompiler.BaseModelTest. To be removed after https://issues.redhat.com/browse/DROOLS-5485
 @RunWith(Parameterized.class)
 public abstract class BaseModelTest {
     public enum RUN_TYPE {
@@ -201,9 +202,9 @@ public abstract class BaseModelTest {
     }
 
     private KieModuleModel getKieModuleModelWithAlphaNetworkCompiler() {
-        KieModuleModel kproj = KieServices.get().newKieModuleModel();
-        kproj.setConfigurationProperty(AlphaNetworkCompilerOption.PROPERTY_NAME, AlphaNetworkCompilerOption.INMEMORY.toString());
-        return kproj;
+        KieModuleModel kieModuleModel = KieServices.get().newKieModuleModel();
+        kieModuleModel.setConfigurationProperty(AlphaNetworkCompilerOption.PROPERTY_NAME, AlphaNetworkCompilerOption.INMEMORY.toString());
+        return kieModuleModel;
     }
 
     protected void assertReteIsAlphaNetworkCompiled(KieSession ksession) {

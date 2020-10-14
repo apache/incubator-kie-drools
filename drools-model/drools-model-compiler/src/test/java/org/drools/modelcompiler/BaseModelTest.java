@@ -214,8 +214,8 @@ public abstract class BaseModelTest {
     }
 
     private KieModuleModel getKieModuleModelWithAlphaNetworkCompiler() {
-        KieModuleModel kproj = KieServices.get().newKieModuleModel();
-        kproj.setConfigurationProperty(AlphaNetworkCompilerOption.PROPERTY_NAME, AlphaNetworkCompilerOption.INMEMORY.toString());
-        return kproj;
+        KieModuleModel kieModuleModel = KieServices.get().newKieModuleModel();
+        kieModuleModel.setConfigurationProperty(AlphaNetworkCompilerOption.PROPERTY_NAME, AlphaNetworkCompilerOption.INMEMORY.toString());
+        return kieModuleModel;
     }
 }
