@@ -17,13 +17,14 @@ package org.kie.pmml.evaluator.core.service;
 
 import org.kie.api.KieBase;
 import org.kie.api.internal.runtime.KieRuntimeService;
+import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.evaluator.api.executor.PMMLRuntimeInternal;
 import org.kie.pmml.evaluator.core.executor.PMMLModelEvaluatorFinderImpl;
 
-public class PMMLRuntimeService implements KieRuntimeService<PMMLRuntimeInternal> {
+public class PMMLRuntimeService implements KieRuntimeService<PMMLRuntime> {
 
     @Override
-    public PMMLRuntimeInternal newKieRuntime(KieBase kieBase) {
+    public PMMLRuntime newKieRuntime(KieBase kieBase) {
         return new PMMLRuntimeInternalImpl(kieBase, new PMMLModelEvaluatorFinderImpl());
     }
 

@@ -75,27 +75,27 @@ public class KiePMMLModelRetrieverTest {
     }
 
     @Test
-    public void populateWithPMMLModelFields() {
+    public void getPopulatedWithPMMLModelFields() {
         KiePMMLTestModel toPopulate = new KiePMMLTestModel();
         assertTrue(toPopulate.getMiningFields().isEmpty());
         assertTrue(toPopulate.getOutputFields().isEmpty());
         final MiningSchema miningSchema = getRandomMiningSchema();
         final Output output = getRandomOutput();
-        KiePMMLModelRetriever.populateWithPMMLModelFields(toPopulate, miningSchema, output);
-        assertEquals(miningSchema.getMiningFields().size(), toPopulate.getMiningFields().size());
-        assertEquals(output.getOutputFields().size(), toPopulate.getOutputFields().size());
+        KiePMMLTestModel populated = (KiePMMLTestModel) KiePMMLModelRetriever.getPopulatedWithPMMLModelFields(toPopulate, miningSchema, output);
+        assertEquals(miningSchema.getMiningFields().size(), populated.getMiningFields().size());
+        assertEquals(output.getOutputFields().size(), populated.getOutputFields().size());
         toPopulate = new KiePMMLTestModel();
-        KiePMMLModelRetriever.populateWithPMMLModelFields(toPopulate, miningSchema, null);
-        assertEquals(miningSchema.getMiningFields().size(), toPopulate.getMiningFields().size());
-        assertTrue(toPopulate.getOutputFields().isEmpty());
+        populated = (KiePMMLTestModel) KiePMMLModelRetriever.getPopulatedWithPMMLModelFields(toPopulate, miningSchema, null);
+        assertEquals(miningSchema.getMiningFields().size(), populated.getMiningFields().size());
+        assertTrue(populated.getOutputFields().isEmpty());
         toPopulate = new KiePMMLTestModel();
-        KiePMMLModelRetriever.populateWithPMMLModelFields(toPopulate, null, output);
-        assertTrue(toPopulate.getMiningFields().isEmpty());
-        assertEquals(output.getOutputFields().size(), toPopulate.getOutputFields().size());
+        populated = (KiePMMLTestModel) KiePMMLModelRetriever.getPopulatedWithPMMLModelFields(toPopulate, null, output);
+        assertTrue(populated.getMiningFields().isEmpty());
+        assertEquals(output.getOutputFields().size(), populated.getOutputFields().size());
         toPopulate = new KiePMMLTestModel();
-        KiePMMLModelRetriever.populateWithPMMLModelFields(toPopulate, null, null);
-        assertTrue(toPopulate.getMiningFields().isEmpty());
-        assertTrue(toPopulate.getOutputFields().isEmpty());
+        populated = (KiePMMLTestModel) KiePMMLModelRetriever.getPopulatedWithPMMLModelFields(toPopulate, null, null);
+        assertTrue(populated.getMiningFields().isEmpty());
+        assertTrue(populated.getOutputFields().isEmpty());
     }
 
 }

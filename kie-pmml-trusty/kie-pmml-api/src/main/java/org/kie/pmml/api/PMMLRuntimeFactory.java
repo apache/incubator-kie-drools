@@ -55,6 +55,21 @@ public interface PMMLRuntimeFactory {
      * @param gav
      * @return
      */
-    PMMLRuntime getPMMLRuntimeFromKieContainer(String modelName, String kieBase, String pmmlFileName, String gav);
+    PMMLRuntime getPMMLRuntimeFromKieContainerByKieBase(String modelName, String kieBase, String pmmlFileName, String gav);
+
+    /**
+     * Retrieve a <code>PMMLRuntime</code> bound to the <code>org.dmg.pmml.Model</code>
+     * with the given <b>modelName</b> that should be present in the <code><File</code>
+     * with the given <b>pmmlFileName</b>. Such file will be looked for in the <code>kjar</code>
+     * loaded inside the <code>KieContainer</code>
+     * with the given <b>gav</b>.
+     * It will use the <b>default</b> Kiebase defined inside the <b>kmodule.xml</b> of the loaded <b>kjar</b>
+     *
+     * @param modelName
+     * @param pmmlFileName
+     * @param gav
+     * @return
+     */
+    PMMLRuntime getPMMLRuntimeFromKieContainerByDefaultKieBase(String modelName, String pmmlFileName, String gav);
 
 }

@@ -164,7 +164,6 @@ public class KiePMMLModelFactoryUtils {
                 toPopulate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_DEFAULT_CONSTRUCTOR, toPopulate.getName())));
         populateTransformationsInConstructor(constructorDeclaration, commonDerivedFieldsMethodMap,
                                              localDerivedFieldsMethodMap);
-        //
     }
 
     /**

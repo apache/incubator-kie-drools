@@ -62,15 +62,11 @@ public class KiePMMLModelRetriever {
         logger.trace("getFromCommonDataAndTransformationDictionaryAndModel {}", model);
         final PMML_MODEL pmmlMODEL = PMML_MODEL.byName(model.getClass().getSimpleName());
         logger.debug("pmmlModelType {}", pmmlMODEL);
-        Optional<KiePMMLModel> toReturn = getModelImplementationProviderStream(model)
+        return getModelImplementationProviderStream(model)
                 .map(implementation -> implementation.getKiePMMLModel(dataDictionary, transformationDictionary, model
                         , kBuilder))
+                .map(kiePMMLModel -> getPopulatedWithPMMLModelFields(kiePMMLModel, model.getMiningSchema(), model.getOutput()))
                 .findFirst();
-        toReturn.ifPresent(kiePMMLModel ->
-                                   populateWithPMMLModelFields(kiePMMLModel,
-                                                               model.getMiningSchema(),
-                                                               model.getOutput()));
-        return toReturn;
     }
 
     /**
@@ -98,8 +94,8 @@ public class KiePMMLModelRetriever {
                                                                                  kBuilder)).findFirst();
     }
 
-    static void populateWithPMMLModelFields(final KiePMMLModel toPopulate, final MiningSchema miningSchema,
-                                            final Output output) {
+    static KiePMMLModel getPopulatedWithPMMLModelFields(final KiePMMLModel toPopulate, final MiningSchema miningSchema,
+                                                        final Output output) {
         if (miningSchema != null) {
             final List<MiningField> miningFields = miningSchema.getMiningFields()
                     .stream()
@@ -114,6 +110,7 @@ public class KiePMMLModelRetriever {
                     .collect(Collectors.toList());
             toPopulate.setOutputFields(outputFields);
         }
+        return toPopulate;
     }
 
     /**

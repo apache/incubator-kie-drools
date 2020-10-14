@@ -65,10 +65,9 @@ import static org.kie.pmml.models.mining.compiler.factories.KiePMMLSegmentationF
 public class KiePMMLMiningModelFactory {
 
     static final String SEGMENTATIONNAME_TEMPLATE = "%s_Segmentation";
-    private static final Logger logger = LoggerFactory.getLogger(KiePMMLMiningModelFactory.class.getName());
     static final String KIE_PMML_MINING_MODEL_TEMPLATE_JAVA = "KiePMMLMiningModelTemplate.tmpl";
     static final String KIE_PMML_MINING_MODEL_TEMPLATE = "KiePMMLMiningModelTemplate";
-
+    private static final Logger logger = LoggerFactory.getLogger(KiePMMLMiningModelFactory.class.getName());
 
     private KiePMMLMiningModelFactory() {
         // Avoid instantiation
@@ -109,23 +108,28 @@ public class KiePMMLMiningModelFactory {
                                                                        segmentationName,
                                                                        kBuilder,
                                                                        nestedModels);
-        String segmentationClass = getSanitizedPackageName(parentPackageName + "." + segmentationName) + "." + getSanitizedClassName(segmentationName);
+        String segmentationClass =
+                getSanitizedPackageName(parentPackageName + "." + segmentationName) + "." + getSanitizedClassName(segmentationName);
         if (!toReturn.containsKey(segmentationClass)) {
             throw new KiePMMLException("Expected generated class " + segmentationClass + " not found");
         }
         String className = getSanitizedClassName(model.getModelName());
-        CompilationUnit cloneCU = JavaParserUtils.getKiePMMLModelCompilationUnit(className, parentPackageName, KIE_PMML_MINING_MODEL_TEMPLATE_JAVA, KIE_PMML_MINING_MODEL_TEMPLATE);
+        CompilationUnit cloneCU = JavaParserUtils.getKiePMMLModelCompilationUnit(className, parentPackageName,
+                                                                                 KIE_PMML_MINING_MODEL_TEMPLATE_JAVA,
+                                                                                 KIE_PMML_MINING_MODEL_TEMPLATE);
         ClassOrInterfaceDeclaration modelTemplate = cloneCU.getClassByName(className)
                 .orElseThrow(() -> new KiePMMLException(MAIN_CLASS_NOT_FOUND + ": " + className));
         String targetFieldName = getTargetFieldName(dataDictionary, model).orElse(null);
         List<KiePMMLOutputField> outputFields = getOutputFields(model);
-        final ConstructorDeclaration constructorDeclaration = modelTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_DEFAULT_CONSTRUCTOR, modelTemplate.getName())));
+        final ConstructorDeclaration constructorDeclaration =
+                modelTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_DEFAULT_CONSTRUCTOR, modelTemplate.getName())));
         setConstructor(model,
-                        constructorDeclaration,
+                       constructorDeclaration,
                        targetFieldName,
                        segmentationClass);
         addKiePMMLOutputFieldsPopulation(constructorDeclaration.getBody(), outputFields);
-        addTransformationsInClassOrInterfaceDeclaration(modelTemplate, transformationDictionary, model.getLocalTransformations());
+        addTransformationsInClassOrInterfaceDeclaration(modelTemplate, transformationDictionary,
+                                                        model.getLocalTransformations());
         toReturn.put(getFullClassName(cloneCU), cloneCU.toString());
         return toReturn;
     }
@@ -134,9 +138,12 @@ public class KiePMMLMiningModelFactory {
                                final ConstructorDeclaration constructorDeclaration,
                                final String targetField,
                                final String segmentationClass) {
-        final List<org.kie.pmml.api.models.MiningField> miningFields = ModelUtils.convertToKieMiningFieldList(miningModel.getMiningSchema());
-        final List<org.kie.pmml.api.models.OutputField> outputFields = ModelUtils.convertToKieOutputFieldList(miningModel.getOutput());
-        setKiePMMLModelConstructor(getSanitizedClassName(miningModel.getModelName()), constructorDeclaration, miningModel.getModelName(), miningFields, outputFields);
+        final List<org.kie.pmml.api.models.MiningField> miningFields =
+                ModelUtils.convertToKieMiningFieldList(miningModel.getMiningSchema());
+        final List<org.kie.pmml.api.models.OutputField> outputFields =
+                ModelUtils.convertToKieOutputFieldList(miningModel.getOutput());
+        setKiePMMLModelConstructor(getSanitizedClassName(miningModel.getModelName()), constructorDeclaration,
+                                   miningModel.getModelName(), miningFields, outputFields);
         Expression miningFunctionExpression;
         if (miningModel.getMiningFunction() != null) {
             MINING_FUNCTION miningFunction = MINING_FUNCTION.byName(miningModel.getMiningFunction().value());
@@ -147,33 +154,11 @@ public class KiePMMLMiningModelFactory {
         final BlockStmt body = constructorDeclaration.getBody();
         CommonCodegenUtils.setAssignExpressionValue(body, "targetField", new StringLiteralExpr(targetField));
         CommonCodegenUtils.setAssignExpressionValue(body, "miningFunction", miningFunctionExpression);
-        CommonCodegenUtils.setAssignExpressionValue(body, "pmmlMODEL", new NameExpr(PMML_MODEL.MINING_MODEL.getClass().getName() + "." + PMML_MODEL.MINING_MODEL.name()));
+        CommonCodegenUtils.setAssignExpressionValue(body, "pmmlMODEL",
+                                                    new NameExpr(PMML_MODEL.MINING_MODEL.getClass().getName() + "." + PMML_MODEL.MINING_MODEL.name()));
         ClassOrInterfaceType kiePMMLSegmentationClass = parseClassOrInterfaceType(segmentationClass);
         ObjectCreationExpr objectCreationExpr = new ObjectCreationExpr();
         objectCreationExpr.setType(kiePMMLSegmentationClass);
         CommonCodegenUtils.setAssignExpressionValue(body, "segmentation", objectCreationExpr);
     }
-
-//
-//    static void setConstructor(final String generatedClassName,
-//                               final ConstructorDeclaration constructorDeclaration,
-//                               final String targetField,
-//                               final MINING_FUNCTION miningFunction,
-//                               final String modelName,
-//                               final String segmentationClass) {
-//        final List<org.kie.pmml.api.models.MiningField> miningFields = ModelUtils.convertToKieMiningFieldList(treeModel.getMiningSchema());
-//        final List<org.kie.pmml.api.models.OutputField> outputFields = ModelUtils.convertToKieOutputFieldList(treeModel.getOutput());
-//        setKiePMMLModelConstructor(generatedClassName, constructorDeclaration, modelName, miningFields, outputFields);
-//
-////        setKiePMMLModelConstructor(generatedClassName, constructorDeclaration, modelName);
-//        final BlockStmt body = constructorDeclaration.getBody();
-//        CommonCodegenUtils.setAssignExpressionValue(body, "targetField", new StringLiteralExpr(targetField));
-//        CommonCodegenUtils.setAssignExpressionValue(body, "miningFunction", new NameExpr(miningFunction.getClass().getName() + "." + miningFunction.name()));
-//        CommonCodegenUtils.setAssignExpressionValue(body, "pmmlMODEL", new NameExpr(PMML_MODEL.MINING_MODEL.getClass().getName() + "." + PMML_MODEL.MINING_MODEL.name()));
-//        ClassOrInterfaceType kiePMMLSegmentationClass = parseClassOrInterfaceType(segmentationClass);
-//        ObjectCreationExpr objectCreationExpr = new ObjectCreationExpr();
-//        objectCreationExpr.setType(kiePMMLSegmentationClass);
-//        CommonCodegenUtils.setAssignExpressionValue(body, "segmentation", objectCreationExpr);
-//    }
-
 }

@@ -12,7 +12,7 @@
   <artifactId>kie-pmml-api</artifactId>
 
   <name>KIE :: PMML :: API</name>
-  <description>Public APIs fro Trusty PMML</description>
+  <description>Public APIs from Trusty PMML</description>
 
   <dependencies>
     <!-- KIE -->

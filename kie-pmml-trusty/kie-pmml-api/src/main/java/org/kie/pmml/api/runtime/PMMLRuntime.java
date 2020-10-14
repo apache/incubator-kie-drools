@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.kie.api.pmml.PMML4Result;
+import org.kie.pmml.api.models.PMMLModel;
 import org.kie.pmml.api.models.PMMLModelImpl;
 
 public interface PMMLRuntime {
@@ -36,7 +37,7 @@ public interface PMMLRuntime {
      * @return the list of available models. An empty list in
      * case no model is available.
      */
-    List<PMMLModelImpl> getPMMLModels();
+    List<PMMLModel> getPMMLModels();
 
     /**
      * Returns the model registered with the given model name.
@@ -45,6 +46,6 @@ public interface PMMLRuntime {
      * the <code>PMMLModel</code> retrieved, or an <b>empty</b> one if none
      * is registered with the given name.
      */
-    Optional<PMMLModelImpl> getPMMLModel(final String modelName);
+    Optional<PMMLModel> getPMMLModel(final String modelName);
 
 }

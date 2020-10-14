@@ -19,11 +19,11 @@
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-pmml-api</artifactId>
-</dependency>
-<dependency>
+    </dependency>
+    <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-pmml-commons</artifactId>
-</dependency>
+    </dependency>
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-pmml-compiler-commons</artifactId>

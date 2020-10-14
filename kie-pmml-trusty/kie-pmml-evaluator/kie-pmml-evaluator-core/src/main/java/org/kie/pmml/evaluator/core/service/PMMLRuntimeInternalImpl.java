@@ -15,6 +15,7 @@
  */
 package org.kie.pmml.evaluator.core.service;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -28,16 +29,14 @@ import org.kie.api.pmml.PMMLRequestData;
 import org.kie.api.pmml.ParameterInfo;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.KiePMMLException;
-import org.kie.pmml.api.models.PMMLModelImpl;
+import org.kie.pmml.api.models.PMMLModel;
 import org.kie.pmml.api.runtime.PMMLContext;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 import org.kie.pmml.evaluator.api.executor.PMMLRuntimeInternal;
-import org.kie.pmml.evaluator.core.converters.PMMLModelConverter;
 import org.kie.pmml.evaluator.core.executor.PMMLModelEvaluator;
 import org.kie.pmml.evaluator.core.executor.PMMLModelEvaluatorFinderImpl;
 import org.kie.pmml.evaluator.core.utils.KnowledgeBaseUtils;
-import org.kie.pmml.evaluator.core.utils.PMMLRequestDataBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,9 +63,9 @@ public class PMMLRuntimeInternalImpl implements PMMLRuntimeInternal {
     }
 
     @Override
-    public List<PMMLModelImpl> getPMMLModels() {
+    public List<PMMLModel> getPMMLModels() {
         List<KiePMMLModel> kiePMMLModels = getKiePMMLModels();
-        return kiePMMLModels.stream().map(PMMLModelConverter::getPMMLModel).collect(Collectors.toList());
+        return new ArrayList<>(kiePMMLModels);
     }
 
     @Override
@@ -75,8 +74,8 @@ public class PMMLRuntimeInternalImpl implements PMMLRuntimeInternal {
     }
 
     @Override
-    public Optional<PMMLModelImpl> getPMMLModel(String modelName) {
-        return getKiePMMLModel(modelName).map(PMMLModelConverter::getPMMLModel);
+    public Optional<PMMLModel> getPMMLModel(String modelName) {
+        return getKiePMMLModel(modelName).map(KiePMMLModel.class::cast);
     }
 
     @Override
@@ -158,17 +157,6 @@ public class PMMLRuntimeInternalImpl implements PMMLRuntimeInternal {
             requestData.addRequestParam(fieldName, localTransformation);
             context.addLocalTranformation(fieldName, localTransformation);
         });
-    }
-
-    PMMLRequestData getPMMLRequestData(String modelName, Map<String, Object> parameters) {
-        String correlationId = "CORRELATION_ID";
-        PMMLRequestDataBuilder pmmlRequestDataBuilder = new PMMLRequestDataBuilder(correlationId, modelName);
-        for (Map.Entry<String, Object> entry : parameters.entrySet()) {
-            Object pValue = entry.getValue();
-            Class class1 = pValue.getClass();
-            pmmlRequestDataBuilder.addParameter(entry.getKey(), pValue, class1);
-        }
-        return pmmlRequestDataBuilder.build();
     }
 
     /**

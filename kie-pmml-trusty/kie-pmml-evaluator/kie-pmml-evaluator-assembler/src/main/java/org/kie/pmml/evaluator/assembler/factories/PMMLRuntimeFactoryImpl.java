@@ -50,9 +50,16 @@ public class PMMLRuntimeFactoryImpl implements PMMLRuntimeFactory {
     }
 
     @Override
-    public PMMLRuntime getPMMLRuntimeFromKieContainer(String modelName, String kieBase, String pmmlFileName, String gav) {
+    public PMMLRuntime getPMMLRuntimeFromKieContainerByKieBase(String modelName, String kieBase, String pmmlFileName, String gav) {
         ReleaseId releaseId = new ReleaseIdImpl(gav);
-        File pmmlFile = getPMMLFileFromContainer(pmmlFileName, kieBase, releaseId);
+        File pmmlFile = getPMMLFileFromKieContainerByKieBase(pmmlFileName, kieBase, releaseId);
+        return PMMLRuntimeFactoryInternal.getPMMLRuntime(modelName, pmmlFile, releaseId);
+    }
+
+    @Override
+    public PMMLRuntime getPMMLRuntimeFromKieContainerByDefaultKieBase(String modelName, String pmmlFileName, String gav) {
+        ReleaseId releaseId = new ReleaseIdImpl(gav);
+        File pmmlFile = getPMMLFileFromKieContainerByDefaultKieBase(pmmlFileName, releaseId);
         return PMMLRuntimeFactoryInternal.getPMMLRuntime(modelName, pmmlFile, releaseId);
     }
 
@@ -76,7 +83,8 @@ public class PMMLRuntimeFactoryImpl implements PMMLRuntimeFactory {
      * @param releaseId
      * @return
      */
-    private File getPMMLFileFromContainer(final String pmmlFileName, final String kieBase, final ReleaseId releaseId) {
+    private File getPMMLFileFromKieContainerByKieBase(final String pmmlFileName, final String kieBase, final ReleaseId releaseId) {
+        //kieContainer.getKieProject().getDefaultKieBaseModel().getName()
         KieContainerImpl kieContainer = (KieContainerImpl) KIE_SERVICES.newKieContainer(releaseId);
         InternalResource internalResource = ((InternalKieModule) (kieContainer)
                 .getKieModuleForKBase(kieBase))
@@ -86,6 +94,21 @@ public class PMMLRuntimeFactoryImpl implements PMMLRuntimeFactory {
         } catch(Exception e) {
             throw new ExternalException(e);
         }
+    }
+
+    /**
+     * Load a <code>File</code> with the given <b>pmmlFileName</b> from the <code>kjar</code> contained in the
+     * <code>KieContainer</code> with the given <code>ReleaseId</code>
+     * It will use the <b>default</b> Kiebase defined inside the <b>kmodule.xml</b> of the loaded <b>kjar</b>
+     *
+     * @param pmmlFileName
+     * @param releaseId
+     * @return
+     */
+    private File getPMMLFileFromKieContainerByDefaultKieBase(final String pmmlFileName, final ReleaseId releaseId) {
+        KieContainerImpl kieContainer = (KieContainerImpl) KIE_SERVICES.newKieContainer(releaseId);
+        String defaultKieBase = kieContainer.getKieProject().getDefaultKieBaseModel().getName();
+        return getPMMLFileFromKieContainerByKieBase(pmmlFileName, defaultKieBase, releaseId);
     }
 
     /**

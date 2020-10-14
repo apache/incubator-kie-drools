@@ -152,11 +152,7 @@ public class KiePMMLRegressionModelFactoryTest {
     public void getKiePMMLRegressionModelSourcesMap() throws IOException {
         Map<String, String> retrieved = KiePMMLRegressionModelFactory.getKiePMMLRegressionModelSourcesMap(dataDictionary, transformationDictionary, regressionModel, PACKAGE_NAME);
         assertNotNull(retrieved);
-//        int miningFields = regressionModel.getMiningSchema() != null ? regressionModel.getMiningSchema().getMiningFields().size() : 0;
-//        int outputFields = regressionModel.getOutput() != null ? regressionModel.getOutput().getOutputFields().size() : 0;
         int expectedSize = regressionTables.size()
-//                + miningFields  // for each MiningField an "add" statement is created
-//                + outputFields  // for each OutputField an "add" statement is created
                 + 2; // One for classification and one for the whole model
         assertEquals(expectedSize, retrieved.size());
     }
