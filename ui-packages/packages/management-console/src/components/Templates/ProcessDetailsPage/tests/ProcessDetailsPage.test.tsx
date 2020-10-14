@@ -27,7 +27,9 @@ jest.mock(
   '../../../Organisms/ProcessDetailsProcessVariables/ProcessDetailsProcessVariables'
 );
 jest.mock('../../../Organisms/ProcessDetailsTimeline/ProcessDetailsTimeline');
-
+jest.mock(
+  '../../../Organisms/ProcessDetailsNodeTrigger/ProcessDetailsNodeTrigger'
+);
 const MockedComponent = (): React.ReactElement => {
   return <></>;
 };

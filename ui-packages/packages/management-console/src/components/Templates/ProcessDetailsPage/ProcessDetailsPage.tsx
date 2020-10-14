@@ -47,6 +47,7 @@ import { SyncIcon, InfoCircleIcon } from '@patternfly/react-icons';
 import ProcessDetailsJobsPanel from '../../Organisms/ProcessDetailsJobsPanel/ProcessDetailsJobsPanel';
 import { StaticContext } from 'react-router';
 import * as H from 'history';
+import ProcessDetailsNodeTrigger from '../../Organisms/ProcessDetailsNodeTrigger/ProcessDetailsNodeTrigger';
 
 interface MatchProps {
   instanceID: string;
@@ -508,6 +509,15 @@ const ProcessDetailsPage: React.FC<RouteComponentProps<
                     <FlexItem>
                       <ProcessDetailsJobsPanel processInstanceId={id} />
                     </FlexItem>
+                    {data.ProcessInstances[0].addons.includes(
+                      'process-management'
+                    ) && (
+                      <FlexItem>
+                        <ProcessDetailsNodeTrigger
+                          processInstanceData={data.ProcessInstances[0]}
+                        />
+                      </FlexItem>
+                    )}
                   </Flex>
                   {errorModal()}
                   {RenderConfirmationModal()}

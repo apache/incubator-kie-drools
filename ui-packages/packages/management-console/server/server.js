@@ -64,8 +64,11 @@ app.post('/management/processes/:processId/instances/:processInstanceId/nodeInst
 app.delete('/management/processes/:processId/instances/:processInstanceId/nodeInstances/:nodeInstanceId',
   controller.callNodeCancel
 );
-
-app.patch('/jobs/:id', controller.handleJobReschedule)
+app.patch('/jobs/:id', controller.handleJobReschedule);
+app.post('/management/processes/:processId/instances/:processInstanceId/nodes/:nodeId',
+  controller.callNodeTrigger
+);
+app.get('/management/processes/:processId/nodes', controller.getTriggerableNodes)
 
 function timeout(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));

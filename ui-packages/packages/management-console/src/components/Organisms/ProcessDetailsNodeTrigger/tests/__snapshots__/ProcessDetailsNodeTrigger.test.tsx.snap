@@ -1,0 +1,2196 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Process details node trigger component tests Node trigger failure tests 1`] = `
+<ProcessListModal
+  handleModalToggle={[Function]}
+  isModalOpen={true}
+  modalContent="The node Book trigger failed. ErrorMessage : \\"403 error\\""
+  modalTitle={
+    <React.Fragment>
+      <InfoCircleIcon
+        className="pf-u-mr-sm"
+        color="var(--pf-global--danger-color--100)"
+        noVerticalAlign={false}
+        size="sm"
+      />
+       
+      Node trigger process
+       
+    </React.Fragment>
+  }
+  processName="Book"
+>
+  <Modal
+    actions={
+      Array [
+        <Button
+          onClick={[Function]}
+          variant="primary"
+        >
+          OK
+        </Button>,
+      ]
+    }
+    appendTo={
+      <body
+        class="pf-c-backdrop__open"
+      >
+        <div
+          aria-hidden="true"
+        />
+        <div
+          aria-hidden="true"
+        />
+        <div
+          aria-hidden="true"
+        >
+          <div
+            class="pf-c-backdrop"
+          >
+            <div
+              class="pf-l-bullseye"
+            >
+              <div
+                aria-describedby="pf-modal-part-4"
+                aria-label="process list modal"
+                aria-labelledby="pf-modal-part-2 process list modal"
+                aria-modal="true"
+                class="pf-c-modal-box pf-m-sm"
+                data-ouia-component-id="40"
+                data-ouia-component-type="PF4/ModalContent"
+                data-ouia-safe="true"
+                id="pf-modal-part-2"
+                role="dialog"
+              >
+                <button
+                  aria-disabled="false"
+                  aria-label="Close"
+                  class="pf-c-button pf-m-plain"
+                  data-ouia-component-id="41"
+                  data-ouia-component-type="PF4/Button"
+                  data-ouia-safe="true"
+                  type="button"
+                >
+                  <svg
+                    aria-hidden="true"
+                    fill="currentColor"
+                    height="1em"
+                    role="img"
+                    style="vertical-align: -0.125em;"
+                    viewBox="0 0 352 512"
+                    width="1em"
+                  >
+                    <path
+                      d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
+                      transform=""
+                    />
+                  </svg>
+                </button>
+                <header
+                  class="pf-c-modal-box__header"
+                >
+                  <h1
+                    class="pf-c-title pf-m-2xl"
+                  >
+                    <svg
+                      aria-hidden="true"
+                      class="pf-u-mr-sm"
+                      fill="var(--pf-global--info-color--100)"
+                      height="1em"
+                      role="img"
+                      style="vertical-align: -0.125em;"
+                      viewBox="0 0 512 512"
+                      width="1em"
+                    >
+                      <path
+                        d="M256 8C119.043 8 8 119.083 8 256c0 136.997 111.043 248 248 248s248-111.003 248-248C504 119.083 392.957 8 256 8zm0 110c23.196 0 42 18.804 42 42s-18.804 42-42 42-42-18.804-42-42 18.804-42 42-42zm56 254c0 6.627-5.373 12-12 12h-88c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h12v-64h-12c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h64c6.627 0 12 5.373 12 12v100h12c6.627 0 12 5.373 12 12v24z"
+                        transform=""
+                      />
+                    </svg>
+                     
+                    Node trigger process
+                     
+                  </h1>
+                </header>
+                <div
+                  class="pf-c-modal-box__body"
+                  data-ouia-component-type="process-list-modal"
+                  data-ouia-safe="true"
+                  id="pf-modal-part-4"
+                >
+                  <div
+                    class="pf-c-content"
+                  >
+                    <p
+                      class=""
+                      data-pf-content="true"
+                    >
+                      <span>
+                        The node 
+                        <b>
+                          Book
+                        </b>
+                         was triggered successfully
+                      </span>
+                    </p>
+                  </div>
+                </div>
+                <footer
+                  class="pf-c-modal-box__footer"
+                >
+                  <button
+                    aria-disabled="false"
+                    class="pf-c-button pf-m-primary"
+                    data-ouia-component-id="42"
+                    data-ouia-component-type="PF4/Button"
+                    data-ouia-safe="true"
+                    type="button"
+                  >
+                    OK
+                  </button>
+                </footer>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div
+            class="pf-c-backdrop"
+          >
+            <div
+              class="pf-l-bullseye"
+            >
+              <div
+                aria-describedby="pf-modal-part-5"
+                aria-label="process list modal"
+                aria-labelledby="pf-modal-part-3 process list modal"
+                aria-modal="true"
+                class="pf-c-modal-box pf-m-sm"
+                data-ouia-component-id="67"
+                data-ouia-component-type="PF4/ModalContent"
+                data-ouia-safe="true"
+                id="pf-modal-part-3"
+                role="dialog"
+              >
+                <button
+                  aria-disabled="false"
+                  aria-label="Close"
+                  class="pf-c-button pf-m-plain"
+                  data-ouia-component-id="68"
+                  data-ouia-component-type="PF4/Button"
+                  data-ouia-safe="true"
+                  type="button"
+                >
+                  <svg
+                    aria-hidden="true"
+                    fill="currentColor"
+                    height="1em"
+                    role="img"
+                    style="vertical-align: -0.125em;"
+                    viewBox="0 0 352 512"
+                    width="1em"
+                  >
+                    <path
+                      d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
+                      transform=""
+                    />
+                  </svg>
+                </button>
+                <header
+                  class="pf-c-modal-box__header"
+                >
+                  <h1
+                    class="pf-c-title pf-m-2xl"
+                  >
+                    <svg
+                      aria-hidden="true"
+                      class="pf-u-mr-sm"
+                      fill="var(--pf-global--danger-color--100)"
+                      height="1em"
+                      role="img"
+                      style="vertical-align: -0.125em;"
+                      viewBox="0 0 512 512"
+                      width="1em"
+                    >
+                      <path
+                        d="M256 8C119.043 8 8 119.083 8 256c0 136.997 111.043 248 248 248s248-111.003 248-248C504 119.083 392.957 8 256 8zm0 110c23.196 0 42 18.804 42 42s-18.804 42-42 42-42-18.804-42-42 18.804-42 42-42zm56 254c0 6.627-5.373 12-12 12h-88c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h12v-64h-12c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h64c6.627 0 12 5.373 12 12v100h12c6.627 0 12 5.373 12 12v24z"
+                        transform=""
+                      />
+                    </svg>
+                     
+                    Node trigger process
+                     
+                  </h1>
+                </header>
+                <div
+                  class="pf-c-modal-box__body"
+                  data-ouia-component-type="process-list-modal"
+                  data-ouia-safe="true"
+                  id="pf-modal-part-5"
+                >
+                  <div
+                    class="pf-c-content"
+                  >
+                    <p
+                      class=""
+                      data-pf-content="true"
+                    >
+                      <span>
+                        The node 
+                        <b>
+                          Book
+                        </b>
+                         trigger failed. ErrorMessage : "403 error"
+                      </span>
+                    </p>
+                  </div>
+                </div>
+                <footer
+                  class="pf-c-modal-box__footer"
+                >
+                  <button
+                    aria-disabled="false"
+                    class="pf-c-button pf-m-primary"
+                    data-ouia-component-id="69"
+                    data-ouia-component-type="PF4/Button"
+                    data-ouia-safe="true"
+                    type="button"
+                  >
+                    OK
+                  </button>
+                </footer>
+              </div>
+            </div>
+          </div>
+        </div>
+      </body>
+    }
+    aria-describedby=""
+    aria-label="process list modal"
+    aria-labelledby="process list modal"
+    className=""
+    data-ouia-component-type="process-list-modal"
+    data-ouia-safe={true}
+    hasNoBodyWrapper={false}
+    header={
+      <Title
+        headingLevel="h1"
+        size="2xl"
+      >
+        <React.Fragment>
+          <InfoCircleIcon
+            className="pf-u-mr-sm"
+            color="var(--pf-global--danger-color--100)"
+            noVerticalAlign={false}
+            size="sm"
+          />
+           
+          Node trigger process
+           
+        </React.Fragment>
+      </Title>
+    }
+    isOpen={true}
+    onClose={[Function]}
+    ouiaSafe={true}
+    showClose={true}
+    title=""
+    variant="small"
+  >
+    <Portal
+      containerInfo={
+        <div>
+          <div
+            class="pf-c-backdrop"
+          >
+            <div
+              class="pf-l-bullseye"
+            >
+              <div
+                aria-describedby="pf-modal-part-5"
+                aria-label="process list modal"
+                aria-labelledby="pf-modal-part-3 process list modal"
+                aria-modal="true"
+                class="pf-c-modal-box pf-m-sm"
+                data-ouia-component-id="67"
+                data-ouia-component-type="PF4/ModalContent"
+                data-ouia-safe="true"
+                id="pf-modal-part-3"
+                role="dialog"
+              >
+                <button
+                  aria-disabled="false"
+                  aria-label="Close"
+                  class="pf-c-button pf-m-plain"
+                  data-ouia-component-id="68"
+                  data-ouia-component-type="PF4/Button"
+                  data-ouia-safe="true"
+                  type="button"
+                >
+                  <svg
+                    aria-hidden="true"
+                    fill="currentColor"
+                    height="1em"
+                    role="img"
+                    style="vertical-align: -0.125em;"
+                    viewBox="0 0 352 512"
+                    width="1em"
+                  >
+                    <path
+                      d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
+                      transform=""
+                    />
+                  </svg>
+                </button>
+                <header
+                  class="pf-c-modal-box__header"
+                >
+                  <h1
+                    class="pf-c-title pf-m-2xl"
+                  >
+                    <svg
+                      aria-hidden="true"
+                      class="pf-u-mr-sm"
+                      fill="var(--pf-global--danger-color--100)"
+                      height="1em"
+                      role="img"
+                      style="vertical-align: -0.125em;"
+                      viewBox="0 0 512 512"
+                      width="1em"
+                    >
+                      <path
+                        d="M256 8C119.043 8 8 119.083 8 256c0 136.997 111.043 248 248 248s248-111.003 248-248C504 119.083 392.957 8 256 8zm0 110c23.196 0 42 18.804 42 42s-18.804 42-42 42-42-18.804-42-42 18.804-42 42-42zm56 254c0 6.627-5.373 12-12 12h-88c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h12v-64h-12c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h64c6.627 0 12 5.373 12 12v100h12c6.627 0 12 5.373 12 12v24z"
+                        transform=""
+                      />
+                    </svg>
+                     
+                    Node trigger process
+                     
+                  </h1>
+                </header>
+                <div
+                  class="pf-c-modal-box__body"
+                  data-ouia-component-type="process-list-modal"
+                  data-ouia-safe="true"
+                  id="pf-modal-part-5"
+                >
+                  <div
+                    class="pf-c-content"
+                  >
+                    <p
+                      class=""
+                      data-pf-content="true"
+                    >
+                      <span>
+                        The node 
+                        <b>
+                          Book
+                        </b>
+                         trigger failed. ErrorMessage : "403 error"
+                      </span>
+                    </p>
+                  </div>
+                </div>
+                <footer
+                  class="pf-c-modal-box__footer"
+                >
+                  <button
+                    aria-disabled="false"
+                    class="pf-c-button pf-m-primary"
+                    data-ouia-component-id="69"
+                    data-ouia-component-type="PF4/Button"
+                    data-ouia-safe="true"
+                    type="button"
+                  >
+                    OK
+                  </button>
+                </footer>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+    >
+      <ModalContent
+        actions={
+          Array [
+            <Button
+              onClick={[Function]}
+              variant="primary"
+            >
+              OK
+            </Button>,
+          ]
+        }
+        aria-describedby=""
+        aria-label="process list modal"
+        aria-labelledby="process list modal"
+        boxId="pf-modal-part-3"
+        className=""
+        data-ouia-component-type="process-list-modal"
+        data-ouia-safe={true}
+        descriptorId="pf-modal-part-5"
+        hasNoBodyWrapper={false}
+        header={
+          <Title
+            headingLevel="h1"
+            size="2xl"
+          >
+            <React.Fragment>
+              <InfoCircleIcon
+                className="pf-u-mr-sm"
+                color="var(--pf-global--danger-color--100)"
+                noVerticalAlign={false}
+                size="sm"
+              />
+               
+              Node trigger process
+               
+            </React.Fragment>
+          </Title>
+        }
+        isOpen={true}
+        labelId="pf-modal-part-4"
+        onClose={[Function]}
+        ouiaSafe={true}
+        showClose={true}
+        title=""
+        variant="small"
+      >
+        <Backdrop>
+          <div
+            className="pf-c-backdrop"
+          >
+            <FocusTrap
+              active={true}
+              className="pf-l-bullseye"
+              focusTrapOptions={
+                Object {
+                  "clickOutsideDeactivates": true,
+                }
+              }
+              paused={false}
+            >
+              <div
+                className="pf-l-bullseye"
+              >
+                <ModalBox
+                  aria-describedby="pf-modal-part-5"
+                  aria-label="process list modal"
+                  aria-labelledby="pf-modal-part-3 process list modal"
+                  className=""
+                  data-ouia-component-id={67}
+                  data-ouia-component-type="PF4/ModalContent"
+                  data-ouia-safe={true}
+                  id="pf-modal-part-3"
+                  style={Object {}}
+                  variant="small"
+                >
+                  <div
+                    aria-describedby="pf-modal-part-5"
+                    aria-label="process list modal"
+                    aria-labelledby="pf-modal-part-3 process list modal"
+                    aria-modal="true"
+                    className="pf-c-modal-box pf-m-sm"
+                    data-ouia-component-id={67}
+                    data-ouia-component-type="PF4/ModalContent"
+                    data-ouia-safe={true}
+                    id="pf-modal-part-3"
+                    role="dialog"
+                    style={Object {}}
+                  >
+                    <ModalBoxCloseButton
+                      onClose={[Function]}
+                    >
+                      <Button
+                        aria-label="Close"
+                        className=""
+                        onClick={[Function]}
+                        variant="plain"
+                      >
+                        <button
+                          aria-disabled={false}
+                          aria-label="Close"
+                          className="pf-c-button pf-m-plain"
+                          data-ouia-component-id={68}
+                          data-ouia-component-type="PF4/Button"
+                          data-ouia-safe={true}
+                          disabled={false}
+                          onClick={[Function]}
+                          type="button"
+                        >
+                          <TimesIcon
+                            color="currentColor"
+                            noVerticalAlign={false}
+                            size="sm"
+                          >
+                            <svg
+                              aria-hidden={true}
+                              aria-labelledby={null}
+                              fill="currentColor"
+                              height="1em"
+                              role="img"
+                              style={
+                                Object {
+                                  "verticalAlign": "-0.125em",
+                                }
+                              }
+                              viewBox="0 0 352 512"
+                              width="1em"
+                            >
+                              <path
+                                d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
+                                transform=""
+                              />
+                            </svg>
+                          </TimesIcon>
+                        </button>
+                      </Button>
+                    </ModalBoxCloseButton>
+                    <ModalBoxHeader>
+                      <header
+                        className="pf-c-modal-box__header"
+                      >
+                        <Title
+                          headingLevel="h1"
+                          size="2xl"
+                        >
+                          <h1
+                            className="pf-c-title pf-m-2xl"
+                          >
+                            <InfoCircleIcon
+                              className="pf-u-mr-sm"
+                              color="var(--pf-global--danger-color--100)"
+                              noVerticalAlign={false}
+                              size="sm"
+                            >
+                              <svg
+                                aria-hidden={true}
+                                aria-labelledby={null}
+                                className="pf-u-mr-sm"
+                                fill="var(--pf-global--danger-color--100)"
+                                height="1em"
+                                role="img"
+                                style={
+                                  Object {
+                                    "verticalAlign": "-0.125em",
+                                  }
+                                }
+                                viewBox="0 0 512 512"
+                                width="1em"
+                              >
+                                <path
+                                  d="M256 8C119.043 8 8 119.083 8 256c0 136.997 111.043 248 248 248s248-111.003 248-248C504 119.083 392.957 8 256 8zm0 110c23.196 0 42 18.804 42 42s-18.804 42-42 42-42-18.804-42-42 18.804-42 42-42zm56 254c0 6.627-5.373 12-12 12h-88c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h12v-64h-12c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h64c6.627 0 12 5.373 12 12v100h12c6.627 0 12 5.373 12 12v24z"
+                                  transform=""
+                                />
+                              </svg>
+                            </InfoCircleIcon>
+                             
+                            Node trigger process
+                             
+                          </h1>
+                        </Title>
+                      </header>
+                    </ModalBoxHeader>
+                    <ModalBoxBody
+                      data-ouia-component-type="process-list-modal"
+                      data-ouia-safe={true}
+                      id="pf-modal-part-5"
+                    >
+                      <div
+                        className="pf-c-modal-box__body"
+                        data-ouia-component-type="process-list-modal"
+                        data-ouia-safe={true}
+                        id="pf-modal-part-5"
+                      >
+                        <TextContent>
+                          <div
+                            className="pf-c-content"
+                          >
+                            <Text>
+                              <p
+                                className=""
+                                data-pf-content={true}
+                              >
+                                <span>
+                                  The node 
+                                  <b>
+                                    Book
+                                  </b>
+                                   trigger failed. ErrorMessage : "403 error"
+                                </span>
+                              </p>
+                            </Text>
+                          </div>
+                        </TextContent>
+                      </div>
+                    </ModalBoxBody>
+                    <ModalBoxFooter>
+                      <footer
+                        className="pf-c-modal-box__footer"
+                      >
+                        <Button
+                          key="confirm-selection"
+                          onClick={[Function]}
+                          variant="primary"
+                        >
+                          <button
+                            aria-disabled={false}
+                            aria-label={null}
+                            className="pf-c-button pf-m-primary"
+                            data-ouia-component-id={69}
+                            data-ouia-component-type="PF4/Button"
+                            data-ouia-safe={true}
+                            disabled={false}
+                            onClick={[Function]}
+                            type="button"
+                          >
+                            OK
+                          </button>
+                        </Button>
+                      </footer>
+                    </ModalBoxFooter>
+                  </div>
+                </ModalBox>
+              </div>
+            </FocusTrap>
+          </div>
+        </Backdrop>
+      </ModalContent>
+    </Portal>
+  </Modal>
+</ProcessListModal>
+`;
+
+exports[`Process details node trigger component tests Node trigger success tests 1`] = `
+<ProcessListModal
+  handleModalToggle={[Function]}
+  isModalOpen={true}
+  modalContent="The node Book was triggered successfully"
+  modalTitle={
+    <React.Fragment>
+      <InfoCircleIcon
+        className="pf-u-mr-sm"
+        color="var(--pf-global--info-color--100)"
+        noVerticalAlign={false}
+        size="sm"
+      />
+       
+      Node trigger process
+       
+    </React.Fragment>
+  }
+  processName="Book"
+>
+  <Modal
+    actions={
+      Array [
+        <Button
+          onClick={[Function]}
+          variant="primary"
+        >
+          OK
+        </Button>,
+      ]
+    }
+    appendTo={
+      <body
+        class="pf-c-backdrop__open"
+      >
+        <div
+          aria-hidden="true"
+        />
+        <div
+          aria-hidden="true"
+        />
+        <div>
+          <div
+            class="pf-c-backdrop"
+          >
+            <div
+              class="pf-l-bullseye"
+            >
+              <div
+                aria-describedby="pf-modal-part-4"
+                aria-label="process list modal"
+                aria-labelledby="pf-modal-part-2 process list modal"
+                aria-modal="true"
+                class="pf-c-modal-box pf-m-sm"
+                data-ouia-component-id="40"
+                data-ouia-component-type="PF4/ModalContent"
+                data-ouia-safe="true"
+                id="pf-modal-part-2"
+                role="dialog"
+              >
+                <button
+                  aria-disabled="false"
+                  aria-label="Close"
+                  class="pf-c-button pf-m-plain"
+                  data-ouia-component-id="41"
+                  data-ouia-component-type="PF4/Button"
+                  data-ouia-safe="true"
+                  type="button"
+                >
+                  <svg
+                    aria-hidden="true"
+                    fill="currentColor"
+                    height="1em"
+                    role="img"
+                    style="vertical-align: -0.125em;"
+                    viewBox="0 0 352 512"
+                    width="1em"
+                  >
+                    <path
+                      d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
+                      transform=""
+                    />
+                  </svg>
+                </button>
+                <header
+                  class="pf-c-modal-box__header"
+                >
+                  <h1
+                    class="pf-c-title pf-m-2xl"
+                  >
+                    <svg
+                      aria-hidden="true"
+                      class="pf-u-mr-sm"
+                      fill="var(--pf-global--info-color--100)"
+                      height="1em"
+                      role="img"
+                      style="vertical-align: -0.125em;"
+                      viewBox="0 0 512 512"
+                      width="1em"
+                    >
+                      <path
+                        d="M256 8C119.043 8 8 119.083 8 256c0 136.997 111.043 248 248 248s248-111.003 248-248C504 119.083 392.957 8 256 8zm0 110c23.196 0 42 18.804 42 42s-18.804 42-42 42-42-18.804-42-42 18.804-42 42-42zm56 254c0 6.627-5.373 12-12 12h-88c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h12v-64h-12c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h64c6.627 0 12 5.373 12 12v100h12c6.627 0 12 5.373 12 12v24z"
+                        transform=""
+                      />
+                    </svg>
+                     
+                    Node trigger process
+                     
+                  </h1>
+                </header>
+                <div
+                  class="pf-c-modal-box__body"
+                  data-ouia-component-type="process-list-modal"
+                  data-ouia-safe="true"
+                  id="pf-modal-part-4"
+                >
+                  <div
+                    class="pf-c-content"
+                  >
+                    <p
+                      class=""
+                      data-pf-content="true"
+                    >
+                      <span>
+                        The node 
+                        <b>
+                          Book
+                        </b>
+                         was triggered successfully
+                      </span>
+                    </p>
+                  </div>
+                </div>
+                <footer
+                  class="pf-c-modal-box__footer"
+                >
+                  <button
+                    aria-disabled="false"
+                    class="pf-c-button pf-m-primary"
+                    data-ouia-component-id="42"
+                    data-ouia-component-type="PF4/Button"
+                    data-ouia-safe="true"
+                    type="button"
+                  >
+                    OK
+                  </button>
+                </footer>
+              </div>
+            </div>
+          </div>
+        </div>
+      </body>
+    }
+    aria-describedby=""
+    aria-label="process list modal"
+    aria-labelledby="process list modal"
+    className=""
+    data-ouia-component-type="process-list-modal"
+    data-ouia-safe={true}
+    hasNoBodyWrapper={false}
+    header={
+      <Title
+        headingLevel="h1"
+        size="2xl"
+      >
+        <React.Fragment>
+          <InfoCircleIcon
+            className="pf-u-mr-sm"
+            color="var(--pf-global--info-color--100)"
+            noVerticalAlign={false}
+            size="sm"
+          />
+           
+          Node trigger process
+           
+        </React.Fragment>
+      </Title>
+    }
+    isOpen={true}
+    onClose={[Function]}
+    ouiaSafe={true}
+    showClose={true}
+    title=""
+    variant="small"
+  >
+    <Portal
+      containerInfo={
+        <div>
+          <div
+            class="pf-c-backdrop"
+          >
+            <div
+              class="pf-l-bullseye"
+            >
+              <div
+                aria-describedby="pf-modal-part-4"
+                aria-label="process list modal"
+                aria-labelledby="pf-modal-part-2 process list modal"
+                aria-modal="true"
+                class="pf-c-modal-box pf-m-sm"
+                data-ouia-component-id="40"
+                data-ouia-component-type="PF4/ModalContent"
+                data-ouia-safe="true"
+                id="pf-modal-part-2"
+                role="dialog"
+              >
+                <button
+                  aria-disabled="false"
+                  aria-label="Close"
+                  class="pf-c-button pf-m-plain"
+                  data-ouia-component-id="41"
+                  data-ouia-component-type="PF4/Button"
+                  data-ouia-safe="true"
+                  type="button"
+                >
+                  <svg
+                    aria-hidden="true"
+                    fill="currentColor"
+                    height="1em"
+                    role="img"
+                    style="vertical-align: -0.125em;"
+                    viewBox="0 0 352 512"
+                    width="1em"
+                  >
+                    <path
+                      d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
+                      transform=""
+                    />
+                  </svg>
+                </button>
+                <header
+                  class="pf-c-modal-box__header"
+                >
+                  <h1
+                    class="pf-c-title pf-m-2xl"
+                  >
+                    <svg
+                      aria-hidden="true"
+                      class="pf-u-mr-sm"
+                      fill="var(--pf-global--info-color--100)"
+                      height="1em"
+                      role="img"
+                      style="vertical-align: -0.125em;"
+                      viewBox="0 0 512 512"
+                      width="1em"
+                    >
+                      <path
+                        d="M256 8C119.043 8 8 119.083 8 256c0 136.997 111.043 248 248 248s248-111.003 248-248C504 119.083 392.957 8 256 8zm0 110c23.196 0 42 18.804 42 42s-18.804 42-42 42-42-18.804-42-42 18.804-42 42-42zm56 254c0 6.627-5.373 12-12 12h-88c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h12v-64h-12c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h64c6.627 0 12 5.373 12 12v100h12c6.627 0 12 5.373 12 12v24z"
+                        transform=""
+                      />
+                    </svg>
+                     
+                    Node trigger process
+                     
+                  </h1>
+                </header>
+                <div
+                  class="pf-c-modal-box__body"
+                  data-ouia-component-type="process-list-modal"
+                  data-ouia-safe="true"
+                  id="pf-modal-part-4"
+                >
+                  <div
+                    class="pf-c-content"
+                  >
+                    <p
+                      class=""
+                      data-pf-content="true"
+                    >
+                      <span>
+                        The node 
+                        <b>
+                          Book
+                        </b>
+                         was triggered successfully
+                      </span>
+                    </p>
+                  </div>
+                </div>
+                <footer
+                  class="pf-c-modal-box__footer"
+                >
+                  <button
+                    aria-disabled="false"
+                    class="pf-c-button pf-m-primary"
+                    data-ouia-component-id="42"
+                    data-ouia-component-type="PF4/Button"
+                    data-ouia-safe="true"
+                    type="button"
+                  >
+                    OK
+                  </button>
+                </footer>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+    >
+      <ModalContent
+        actions={
+          Array [
+            <Button
+              onClick={[Function]}
+              variant="primary"
+            >
+              OK
+            </Button>,
+          ]
+        }
+        aria-describedby=""
+        aria-label="process list modal"
+        aria-labelledby="process list modal"
+        boxId="pf-modal-part-2"
+        className=""
+        data-ouia-component-type="process-list-modal"
+        data-ouia-safe={true}
+        descriptorId="pf-modal-part-4"
+        hasNoBodyWrapper={false}
+        header={
+          <Title
+            headingLevel="h1"
+            size="2xl"
+          >
+            <React.Fragment>
+              <InfoCircleIcon
+                className="pf-u-mr-sm"
+                color="var(--pf-global--info-color--100)"
+                noVerticalAlign={false}
+                size="sm"
+              />
+               
+              Node trigger process
+               
+            </React.Fragment>
+          </Title>
+        }
+        isOpen={true}
+        labelId="pf-modal-part-3"
+        onClose={[Function]}
+        ouiaSafe={true}
+        showClose={true}
+        title=""
+        variant="small"
+      >
+        <Backdrop>
+          <div
+            className="pf-c-backdrop"
+          >
+            <FocusTrap
+              active={true}
+              className="pf-l-bullseye"
+              focusTrapOptions={
+                Object {
+                  "clickOutsideDeactivates": true,
+                }
+              }
+              paused={false}
+            >
+              <div
+                className="pf-l-bullseye"
+              >
+                <ModalBox
+                  aria-describedby="pf-modal-part-4"
+                  aria-label="process list modal"
+                  aria-labelledby="pf-modal-part-2 process list modal"
+                  className=""
+                  data-ouia-component-id={40}
+                  data-ouia-component-type="PF4/ModalContent"
+                  data-ouia-safe={true}
+                  id="pf-modal-part-2"
+                  style={Object {}}
+                  variant="small"
+                >
+                  <div
+                    aria-describedby="pf-modal-part-4"
+                    aria-label="process list modal"
+                    aria-labelledby="pf-modal-part-2 process list modal"
+                    aria-modal="true"
+                    className="pf-c-modal-box pf-m-sm"
+                    data-ouia-component-id={40}
+                    data-ouia-component-type="PF4/ModalContent"
+                    data-ouia-safe={true}
+                    id="pf-modal-part-2"
+                    role="dialog"
+                    style={Object {}}
+                  >
+                    <ModalBoxCloseButton
+                      onClose={[Function]}
+                    >
+                      <Button
+                        aria-label="Close"
+                        className=""
+                        onClick={[Function]}
+                        variant="plain"
+                      >
+                        <button
+                          aria-disabled={false}
+                          aria-label="Close"
+                          className="pf-c-button pf-m-plain"
+                          data-ouia-component-id={41}
+                          data-ouia-component-type="PF4/Button"
+                          data-ouia-safe={true}
+                          disabled={false}
+                          onClick={[Function]}
+                          type="button"
+                        >
+                          <TimesIcon
+                            color="currentColor"
+                            noVerticalAlign={false}
+                            size="sm"
+                          >
+                            <svg
+                              aria-hidden={true}
+                              aria-labelledby={null}
+                              fill="currentColor"
+                              height="1em"
+                              role="img"
+                              style={
+                                Object {
+                                  "verticalAlign": "-0.125em",
+                                }
+                              }
+                              viewBox="0 0 352 512"
+                              width="1em"
+                            >
+                              <path
+                                d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
+                                transform=""
+                              />
+                            </svg>
+                          </TimesIcon>
+                        </button>
+                      </Button>
+                    </ModalBoxCloseButton>
+                    <ModalBoxHeader>
+                      <header
+                        className="pf-c-modal-box__header"
+                      >
+                        <Title
+                          headingLevel="h1"
+                          size="2xl"
+                        >
+                          <h1
+                            className="pf-c-title pf-m-2xl"
+                          >
+                            <InfoCircleIcon
+                              className="pf-u-mr-sm"
+                              color="var(--pf-global--info-color--100)"
+                              noVerticalAlign={false}
+                              size="sm"
+                            >
+                              <svg
+                                aria-hidden={true}
+                                aria-labelledby={null}
+                                className="pf-u-mr-sm"
+                                fill="var(--pf-global--info-color--100)"
+                                height="1em"
+                                role="img"
+                                style={
+                                  Object {
+                                    "verticalAlign": "-0.125em",
+                                  }
+                                }
+                                viewBox="0 0 512 512"
+                                width="1em"
+                              >
+                                <path
+                                  d="M256 8C119.043 8 8 119.083 8 256c0 136.997 111.043 248 248 248s248-111.003 248-248C504 119.083 392.957 8 256 8zm0 110c23.196 0 42 18.804 42 42s-18.804 42-42 42-42-18.804-42-42 18.804-42 42-42zm56 254c0 6.627-5.373 12-12 12h-88c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h12v-64h-12c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h64c6.627 0 12 5.373 12 12v100h12c6.627 0 12 5.373 12 12v24z"
+                                  transform=""
+                                />
+                              </svg>
+                            </InfoCircleIcon>
+                             
+                            Node trigger process
+                             
+                          </h1>
+                        </Title>
+                      </header>
+                    </ModalBoxHeader>
+                    <ModalBoxBody
+                      data-ouia-component-type="process-list-modal"
+                      data-ouia-safe={true}
+                      id="pf-modal-part-4"
+                    >
+                      <div
+                        className="pf-c-modal-box__body"
+                        data-ouia-component-type="process-list-modal"
+                        data-ouia-safe={true}
+                        id="pf-modal-part-4"
+                      >
+                        <TextContent>
+                          <div
+                            className="pf-c-content"
+                          >
+                            <Text>
+                              <p
+                                className=""
+                                data-pf-content={true}
+                              >
+                                <span>
+                                  The node 
+                                  <b>
+                                    Book
+                                  </b>
+                                   was triggered successfully
+                                </span>
+                              </p>
+                            </Text>
+                          </div>
+                        </TextContent>
+                      </div>
+                    </ModalBoxBody>
+                    <ModalBoxFooter>
+                      <footer
+                        className="pf-c-modal-box__footer"
+                      >
+                        <Button
+                          key="confirm-selection"
+                          onClick={[Function]}
+                          variant="primary"
+                        >
+                          <button
+                            aria-disabled={false}
+                            aria-label={null}
+                            className="pf-c-button pf-m-primary"
+                            data-ouia-component-id={42}
+                            data-ouia-component-type="PF4/Button"
+                            data-ouia-safe={true}
+                            disabled={false}
+                            onClick={[Function]}
+                            type="button"
+                          >
+                            OK
+                          </button>
+                        </Button>
+                      </footer>
+                    </ModalBoxFooter>
+                  </div>
+                </ModalBox>
+              </div>
+            </FocusTrap>
+          </div>
+        </Backdrop>
+      </ModalContent>
+    </Portal>
+  </Modal>
+</ProcessListModal>
+`;
+
+exports[`Process details node trigger component tests select a node test  1`] = `
+<ProcessDetailsNodeTrigger
+  processInstanceData={
+    Object {
+      "id": "a1e139d5-4e77-48c9-84ae-34578e904e5a",
+      "processId": "travels",
+      "serviceUrl": "http://localhost:4000",
+    }
+  }
+>
+  <Card
+    data-ouia-component-type="node-trigger"
+    data-ouia-safe={true}
+  >
+    <article
+      className="pf-c-card"
+      data-ouia-component-id={15}
+      data-ouia-component-type="PF4/Card"
+      data-ouia-safe={true}
+    >
+      <ProcessListModal
+        handleModalToggle={[Function]}
+        isModalOpen={false}
+        modalContent=""
+        processName="Book"
+      >
+        <Modal
+          actions={
+            Array [
+              <Button
+                onClick={[Function]}
+                variant="primary"
+              >
+                OK
+              </Button>,
+            ]
+          }
+          appendTo={
+            <body>
+              <div />
+              <div />
+            </body>
+          }
+          aria-describedby=""
+          aria-label="process list modal"
+          aria-labelledby="process list modal"
+          className=""
+          data-ouia-component-type="process-list-modal"
+          data-ouia-safe={true}
+          hasNoBodyWrapper={false}
+          header={
+            <Title
+              headingLevel="h1"
+              size="2xl"
+            />
+          }
+          isOpen={false}
+          onClose={[Function]}
+          ouiaSafe={true}
+          showClose={true}
+          title=""
+          variant="small"
+        >
+          <Portal
+            containerInfo={<div />}
+          >
+            <ModalContent
+              actions={
+                Array [
+                  <Button
+                    onClick={[Function]}
+                    variant="primary"
+                  >
+                    OK
+                  </Button>,
+                ]
+              }
+              aria-describedby=""
+              aria-label="process list modal"
+              aria-labelledby="process list modal"
+              boxId="pf-modal-part-1"
+              className=""
+              data-ouia-component-type="process-list-modal"
+              data-ouia-safe={true}
+              descriptorId="pf-modal-part-3"
+              hasNoBodyWrapper={false}
+              header={
+                <Title
+                  headingLevel="h1"
+                  size="2xl"
+                />
+              }
+              isOpen={false}
+              labelId="pf-modal-part-2"
+              onClose={[Function]}
+              ouiaSafe={true}
+              showClose={true}
+              title=""
+              variant="small"
+            />
+          </Portal>
+        </Modal>
+      </ProcessListModal>
+      <CardHeader>
+        <div
+          className="pf-c-card__header"
+        >
+          <Title
+            headingLevel="h3"
+            size="xl"
+          >
+            <h3
+              className="pf-c-title pf-m-xl"
+            >
+              Node Trigger
+            </h3>
+          </Title>
+        </div>
+      </CardHeader>
+      <CardHeader>
+        <div
+          className="pf-c-card__header"
+        >
+          <div>
+            Select a node from the process nodes list and click Trigger to launch it manually.
+          </div>
+        </div>
+      </CardHeader>
+      <CardBody>
+        <div
+          className="pf-c-card__body"
+        >
+          <div>
+            <Dropdown
+              direction="up"
+              dropdownItems={
+                Array [
+                  <DropdownItem
+                    id="Send visa application"
+                  >
+                    Send visa application
+                  </DropdownItem>,
+                  <DropdownItem
+                    id="Book"
+                  >
+                    Book
+                  </DropdownItem>,
+                  <DropdownItem
+                    id="visasrejected"
+                  >
+                    visasrejected
+                  </DropdownItem>,
+                ]
+              }
+              isOpen={false}
+              onSelect={[Function]}
+              toggle={
+                <DropdownToggle
+                  id="toggle-id"
+                  onToggle={[Function]}
+                  toggleIndicator={[Function]}
+                >
+                  Book
+                </DropdownToggle>
+              }
+            >
+              <DropdownWithContext
+                autoFocus={true}
+                className=""
+                direction="up"
+                dropdownItems={
+                  Array [
+                    <DropdownItem
+                      id="Send visa application"
+                    >
+                      Send visa application
+                    </DropdownItem>,
+                    <DropdownItem
+                      id="Book"
+                    >
+                      Book
+                    </DropdownItem>,
+                    <DropdownItem
+                      id="visasrejected"
+                    >
+                      visasrejected
+                    </DropdownItem>,
+                  ]
+                }
+                isGrouped={false}
+                isOpen={false}
+                isPlain={false}
+                menuAppendTo="inline"
+                onSelect={[Function]}
+                position="left"
+                toggle={
+                  <DropdownToggle
+                    id="toggle-id"
+                    onToggle={[Function]}
+                    toggleIndicator={[Function]}
+                  >
+                    Book
+                  </DropdownToggle>
+                }
+              >
+                <div
+                  className="pf-c-dropdown pf-m-top"
+                  data-ouia-component-id={16}
+                  data-ouia-component-type="PF4/Dropdown"
+                  data-ouia-safe={true}
+                >
+                  <DropdownToggle
+                    aria-haspopup={true}
+                    getMenuRef={[Function]}
+                    id="toggle-id"
+                    isOpen={false}
+                    isPlain={false}
+                    key=".0"
+                    onEnter={[Function]}
+                    onToggle={[Function]}
+                    parentRef={
+                      Object {
+                        "current": <div
+                          class="pf-c-dropdown pf-m-top"
+                          data-ouia-component-id="16"
+                          data-ouia-component-type="PF4/Dropdown"
+                          data-ouia-safe="true"
+                        >
+                          <button
+                            aria-expanded="false"
+                            aria-haspopup="true"
+                            class="pf-c-dropdown__toggle"
+                            id="toggle-id"
+                            type="button"
+                          >
+                            <span
+                              class="pf-c-dropdown__toggle-text"
+                            >
+                              Book
+                            </span>
+                            <span
+                              class="pf-c-dropdown__toggle-icon"
+                            >
+                              <svg
+                                aria-hidden="true"
+                                fill="currentColor"
+                                height="1em"
+                                role="img"
+                                style="vertical-align: -0.125em;"
+                                viewBox="0 0 320 512"
+                                width="1em"
+                              >
+                                <path
+                                  d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
+                                  transform=""
+                                />
+                              </svg>
+                            </span>
+                          </button>
+                        </div>,
+                      }
+                    }
+                    toggleIndicator={[Function]}
+                  >
+                    <Toggle
+                      aria-haspopup={true}
+                      bubbleEvent={false}
+                      className=""
+                      getMenuRef={[Function]}
+                      id="toggle-id"
+                      isActive={false}
+                      isDisabled={false}
+                      isOpen={false}
+                      isPlain={false}
+                      isPrimary={false}
+                      isSplitButton={false}
+                      onEnter={[Function]}
+                      onToggle={[Function]}
+                      parentRef={
+                        Object {
+                          "current": <div
+                            class="pf-c-dropdown pf-m-top"
+                            data-ouia-component-id="16"
+                            data-ouia-component-type="PF4/Dropdown"
+                            data-ouia-safe="true"
+                          >
+                            <button
+                              aria-expanded="false"
+                              aria-haspopup="true"
+                              class="pf-c-dropdown__toggle"
+                              id="toggle-id"
+                              type="button"
+                            >
+                              <span
+                                class="pf-c-dropdown__toggle-text"
+                              >
+                                Book
+                              </span>
+                              <span
+                                class="pf-c-dropdown__toggle-icon"
+                              >
+                                <svg
+                                  aria-hidden="true"
+                                  fill="currentColor"
+                                  height="1em"
+                                  role="img"
+                                  style="vertical-align: -0.125em;"
+                                  viewBox="0 0 320 512"
+                                  width="1em"
+                                >
+                                  <path
+                                    d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
+                                    transform=""
+                                  />
+                                </svg>
+                              </span>
+                            </button>
+                          </div>,
+                        }
+                      }
+                    >
+                      <button
+                        aria-expanded={false}
+                        aria-haspopup={true}
+                        className="pf-c-dropdown__toggle"
+                        disabled={false}
+                        id="toggle-id"
+                        onClick={[Function]}
+                        onKeyDown={[Function]}
+                        type="button"
+                      >
+                        <span
+                          className="pf-c-dropdown__toggle-text"
+                        >
+                          Book
+                        </span>
+                        <span
+                          className="pf-c-dropdown__toggle-icon"
+                        >
+                          <CaretDownIcon
+                            color="currentColor"
+                            noVerticalAlign={false}
+                            size="sm"
+                          >
+                            <svg
+                              aria-hidden={true}
+                              aria-labelledby={null}
+                              fill="currentColor"
+                              height="1em"
+                              role="img"
+                              style={
+                                Object {
+                                  "verticalAlign": "-0.125em",
+                                }
+                              }
+                              viewBox="0 0 320 512"
+                              width="1em"
+                            >
+                              <path
+                                d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
+                                transform=""
+                              />
+                            </svg>
+                          </CaretDownIcon>
+                        </span>
+                      </button>
+                    </Toggle>
+                  </DropdownToggle>
+                </div>
+              </DropdownWithContext>
+            </Dropdown>
+          </div>
+          <div
+            className="pf-u-mt-md"
+          >
+            <Flex
+              direction={
+                Object {
+                  "default": "column",
+                }
+              }
+            >
+              <div
+                className="pf-l-flex pf-m-column"
+              >
+                <FlexItem>
+                  <div
+                    className=""
+                  >
+                    <TextContent>
+                      <div
+                        className="pf-c-content"
+                      >
+                         
+                        <Split
+                          hasGutter={true}
+                        >
+                          <div
+                            className="pf-l-split pf-m-gutter"
+                          >
+                            <SplitItem>
+                              <div
+                                className="pf-l-split__item"
+                              >
+                                <Text
+                                  component="h6"
+                                >
+                                  <h6
+                                    className=""
+                                    data-pf-content={true}
+                                  >
+                                    Node name : 
+                                  </h6>
+                                </Text>
+                              </div>
+                            </SplitItem>
+                            <SplitItem>
+                              <div
+                                className="pf-l-split__item"
+                              >
+                                <Text
+                                  component="p"
+                                >
+                                  <p
+                                    className=""
+                                    data-pf-content={true}
+                                  >
+                                    Book
+                                  </p>
+                                </Text>
+                              </div>
+                            </SplitItem>
+                          </div>
+                        </Split>
+                      </div>
+                    </TextContent>
+                  </div>
+                </FlexItem>
+                <FlexItem>
+                  <div
+                    className=""
+                  >
+                    <TextContent>
+                      <div
+                        className="pf-c-content"
+                      >
+                         
+                        <Split
+                          hasGutter={true}
+                        >
+                          <div
+                            className="pf-l-split pf-m-gutter"
+                          >
+                            <SplitItem>
+                              <div
+                                className="pf-l-split__item"
+                              >
+                                <Text
+                                  component="h6"
+                                >
+                                  <h6
+                                    className=""
+                                    data-pf-content={true}
+                                  >
+                                    Node type : 
+                                  </h6>
+                                </Text>
+                              </div>
+                            </SplitItem>
+                            <SplitItem>
+                              <div
+                                className="pf-l-split__item"
+                              >
+                                <Text
+                                  component="p"
+                                >
+                                  <p
+                                    className=""
+                                    data-pf-content={true}
+                                  >
+                                    Split
+                                  </p>
+                                </Text>
+                              </div>
+                            </SplitItem>
+                          </div>
+                        </Split>
+                      </div>
+                    </TextContent>
+                  </div>
+                </FlexItem>
+                <FlexItem>
+                  <div
+                    className=""
+                  >
+                    <TextContent>
+                      <div
+                        className="pf-c-content"
+                      >
+                         
+                        <Split
+                          hasGutter={true}
+                        >
+                          <div
+                            className="pf-l-split pf-m-gutter"
+                          >
+                            <SplitItem>
+                              <div
+                                className="pf-l-split__item"
+                              >
+                                <Text
+                                  component="h6"
+                                >
+                                  <h6
+                                    className=""
+                                    data-pf-content={true}
+                                  >
+                                    Node id : 
+                                  </h6>
+                                </Text>
+                              </div>
+                            </SplitItem>
+                            <SplitItem>
+                              <div
+                                className="pf-l-split__item"
+                              >
+                                <Text
+                                  component="p"
+                                >
+                                  <p
+                                    className=""
+                                    data-pf-content={true}
+                                  >
+                                    2
+                                  </p>
+                                </Text>
+                              </div>
+                            </SplitItem>
+                          </div>
+                        </Split>
+                      </div>
+                    </TextContent>
+                  </div>
+                </FlexItem>
+              </div>
+            </Flex>
+          </div>
+          <div
+            className="pf-u-mt-md"
+          >
+            <Button
+              id="trigger"
+              isDisabled={false}
+              onClick={[Function]}
+              variant="secondary"
+            >
+              <button
+                aria-disabled={false}
+                aria-label={null}
+                className="pf-c-button pf-m-secondary"
+                data-ouia-component-id={17}
+                data-ouia-component-type="PF4/Button"
+                data-ouia-safe={true}
+                disabled={false}
+                id="trigger"
+                onClick={[Function]}
+                type="button"
+              >
+                Trigger
+              </button>
+            </Button>
+          </div>
+        </div>
+      </CardBody>
+    </article>
+  </Card>
+</ProcessDetailsNodeTrigger>
+`;
+
+exports[`Process details node trigger component tests snapshot testing with none selected 1`] = `
+<ProcessDetailsNodeTrigger
+  processInstanceData={
+    Object {
+      "id": "a1e139d5-4e77-48c9-84ae-34578e904e5a",
+      "processId": "travels",
+      "serviceUrl": "http://localhost:4000",
+    }
+  }
+>
+  <Card
+    data-ouia-component-type="node-trigger"
+    data-ouia-safe={true}
+  >
+    <article
+      className="pf-c-card"
+      data-ouia-component-id={3}
+      data-ouia-component-type="PF4/Card"
+      data-ouia-safe={true}
+    >
+      <ProcessListModal
+        handleModalToggle={[Function]}
+        isModalOpen={false}
+        modalContent=""
+        processName={null}
+      >
+        <Modal
+          actions={
+            Array [
+              <Button
+                onClick={[Function]}
+                variant="primary"
+              >
+                OK
+              </Button>,
+            ]
+          }
+          appendTo={
+            <body>
+              <div />
+            </body>
+          }
+          aria-describedby=""
+          aria-label="process list modal"
+          aria-labelledby="process list modal"
+          className=""
+          data-ouia-component-type="process-list-modal"
+          data-ouia-safe={true}
+          hasNoBodyWrapper={false}
+          header={
+            <Title
+              headingLevel="h1"
+              size="2xl"
+            />
+          }
+          isOpen={false}
+          onClose={[Function]}
+          ouiaSafe={true}
+          showClose={true}
+          title=""
+          variant="small"
+        >
+          <Portal
+            containerInfo={<div />}
+          >
+            <ModalContent
+              actions={
+                Array [
+                  <Button
+                    onClick={[Function]}
+                    variant="primary"
+                  >
+                    OK
+                  </Button>,
+                ]
+              }
+              aria-describedby=""
+              aria-label="process list modal"
+              aria-labelledby="process list modal"
+              boxId="pf-modal-part-0"
+              className=""
+              data-ouia-component-type="process-list-modal"
+              data-ouia-safe={true}
+              descriptorId="pf-modal-part-2"
+              hasNoBodyWrapper={false}
+              header={
+                <Title
+                  headingLevel="h1"
+                  size="2xl"
+                />
+              }
+              isOpen={false}
+              labelId="pf-modal-part-1"
+              onClose={[Function]}
+              ouiaSafe={true}
+              showClose={true}
+              title=""
+              variant="small"
+            />
+          </Portal>
+        </Modal>
+      </ProcessListModal>
+      <CardHeader>
+        <div
+          className="pf-c-card__header"
+        >
+          <Title
+            headingLevel="h3"
+            size="xl"
+          >
+            <h3
+              className="pf-c-title pf-m-xl"
+            >
+              Node Trigger
+            </h3>
+          </Title>
+        </div>
+      </CardHeader>
+      <CardHeader>
+        <div
+          className="pf-c-card__header"
+        >
+          <div>
+            Select a node from the process nodes list and click Trigger to launch it manually.
+          </div>
+        </div>
+      </CardHeader>
+      <CardBody>
+        <div
+          className="pf-c-card__body"
+        >
+          <div>
+            <Dropdown
+              direction="up"
+              dropdownItems={
+                Array [
+                  <DropdownItem
+                    id="Send visa application"
+                  >
+                    Send visa application
+                  </DropdownItem>,
+                  <DropdownItem
+                    id="Book"
+                  >
+                    Book
+                  </DropdownItem>,
+                  <DropdownItem
+                    id="visasrejected"
+                  >
+                    visasrejected
+                  </DropdownItem>,
+                ]
+              }
+              isOpen={false}
+              onSelect={[Function]}
+              toggle={
+                <DropdownToggle
+                  id="toggle-id"
+                  onToggle={[Function]}
+                  toggleIndicator={[Function]}
+                >
+                  select a node
+                </DropdownToggle>
+              }
+            >
+              <DropdownWithContext
+                autoFocus={true}
+                className=""
+                direction="up"
+                dropdownItems={
+                  Array [
+                    <DropdownItem
+                      id="Send visa application"
+                    >
+                      Send visa application
+                    </DropdownItem>,
+                    <DropdownItem
+                      id="Book"
+                    >
+                      Book
+                    </DropdownItem>,
+                    <DropdownItem
+                      id="visasrejected"
+                    >
+                      visasrejected
+                    </DropdownItem>,
+                  ]
+                }
+                isGrouped={false}
+                isOpen={false}
+                isPlain={false}
+                menuAppendTo="inline"
+                onSelect={[Function]}
+                position="left"
+                toggle={
+                  <DropdownToggle
+                    id="toggle-id"
+                    onToggle={[Function]}
+                    toggleIndicator={[Function]}
+                  >
+                    select a node
+                  </DropdownToggle>
+                }
+              >
+                <div
+                  className="pf-c-dropdown pf-m-top"
+                  data-ouia-component-id={4}
+                  data-ouia-component-type="PF4/Dropdown"
+                  data-ouia-safe={true}
+                >
+                  <DropdownToggle
+                    aria-haspopup={true}
+                    getMenuRef={[Function]}
+                    id="toggle-id"
+                    isOpen={false}
+                    isPlain={false}
+                    key=".0"
+                    onEnter={[Function]}
+                    onToggle={[Function]}
+                    parentRef={
+                      Object {
+                        "current": <div
+                          class="pf-c-dropdown pf-m-top"
+                          data-ouia-component-id="4"
+                          data-ouia-component-type="PF4/Dropdown"
+                          data-ouia-safe="true"
+                        >
+                          <button
+                            aria-expanded="false"
+                            aria-haspopup="true"
+                            class="pf-c-dropdown__toggle"
+                            id="toggle-id"
+                            type="button"
+                          >
+                            <span
+                              class="pf-c-dropdown__toggle-text"
+                            >
+                              select a node
+                            </span>
+                            <span
+                              class="pf-c-dropdown__toggle-icon"
+                            >
+                              <svg
+                                aria-hidden="true"
+                                fill="currentColor"
+                                height="1em"
+                                role="img"
+                                style="vertical-align: -0.125em;"
+                                viewBox="0 0 320 512"
+                                width="1em"
+                              >
+                                <path
+                                  d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
+                                  transform=""
+                                />
+                              </svg>
+                            </span>
+                          </button>
+                        </div>,
+                      }
+                    }
+                    toggleIndicator={[Function]}
+                  >
+                    <Toggle
+                      aria-haspopup={true}
+                      bubbleEvent={false}
+                      className=""
+                      getMenuRef={[Function]}
+                      id="toggle-id"
+                      isActive={false}
+                      isDisabled={false}
+                      isOpen={false}
+                      isPlain={false}
+                      isPrimary={false}
+                      isSplitButton={false}
+                      onEnter={[Function]}
+                      onToggle={[Function]}
+                      parentRef={
+                        Object {
+                          "current": <div
+                            class="pf-c-dropdown pf-m-top"
+                            data-ouia-component-id="4"
+                            data-ouia-component-type="PF4/Dropdown"
+                            data-ouia-safe="true"
+                          >
+                            <button
+                              aria-expanded="false"
+                              aria-haspopup="true"
+                              class="pf-c-dropdown__toggle"
+                              id="toggle-id"
+                              type="button"
+                            >
+                              <span
+                                class="pf-c-dropdown__toggle-text"
+                              >
+                                select a node
+                              </span>
+                              <span
+                                class="pf-c-dropdown__toggle-icon"
+                              >
+                                <svg
+                                  aria-hidden="true"
+                                  fill="currentColor"
+                                  height="1em"
+                                  role="img"
+                                  style="vertical-align: -0.125em;"
+                                  viewBox="0 0 320 512"
+                                  width="1em"
+                                >
+                                  <path
+                                    d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
+                                    transform=""
+                                  />
+                                </svg>
+                              </span>
+                            </button>
+                          </div>,
+                        }
+                      }
+                    >
+                      <button
+                        aria-expanded={false}
+                        aria-haspopup={true}
+                        className="pf-c-dropdown__toggle"
+                        disabled={false}
+                        id="toggle-id"
+                        onClick={[Function]}
+                        onKeyDown={[Function]}
+                        type="button"
+                      >
+                        <span
+                          className="pf-c-dropdown__toggle-text"
+                        >
+                          select a node
+                        </span>
+                        <span
+                          className="pf-c-dropdown__toggle-icon"
+                        >
+                          <CaretDownIcon
+                            color="currentColor"
+                            noVerticalAlign={false}
+                            size="sm"
+                          >
+                            <svg
+                              aria-hidden={true}
+                              aria-labelledby={null}
+                              fill="currentColor"
+                              height="1em"
+                              role="img"
+                              style={
+                                Object {
+                                  "verticalAlign": "-0.125em",
+                                }
+                              }
+                              viewBox="0 0 320 512"
+                              width="1em"
+                            >
+                              <path
+                                d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
+                                transform=""
+                              />
+                            </svg>
+                          </CaretDownIcon>
+                        </span>
+                      </button>
+                    </Toggle>
+                  </DropdownToggle>
+                </div>
+              </DropdownWithContext>
+            </Dropdown>
+          </div>
+          <div
+            className="pf-u-mt-md"
+          >
+            <Button
+              id="trigger"
+              isDisabled={true}
+              onClick={[Function]}
+              variant="secondary"
+            >
+              <button
+                aria-disabled={true}
+                aria-label={null}
+                className="pf-c-button pf-m-secondary pf-m-disabled"
+                data-ouia-component-id={5}
+                data-ouia-component-type="PF4/Button"
+                data-ouia-safe={true}
+                disabled={true}
+                id="trigger"
+                onClick={[Function]}
+                tabIndex={null}
+                type="button"
+              >
+                Trigger
+              </button>
+            </Button>
+          </div>
+        </div>
+      </CardBody>
+    </article>
+  </Card>
+</ProcessDetailsNodeTrigger>
+`;

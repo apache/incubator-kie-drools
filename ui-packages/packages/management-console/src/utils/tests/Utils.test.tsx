@@ -9,7 +9,9 @@ import {
   handleVariableUpdate,
   performMultipleAction,
   JobsIconCreator,
-  handleJobReschedule
+  handleJobReschedule,
+  handleNodeTrigger,
+  getTriggerableNodes
 } from '../Utils';
 import { GraphQL } from '@kogito-apps/common';
 import ProcessInstanceState = GraphQL.ProcessInstanceState;
@@ -472,6 +474,7 @@ describe('uitility function testing', () => {
       expect(setUpdateJson).toHaveBeenCalled();
     });
   });
+
   describe('test utilities of jobs', () => {
     it('test reschedule function', async () => {
       mockedAxios.patch.mockResolvedValue({
@@ -568,6 +571,89 @@ describe('uitility function testing', () => {
         refetch
       );
       expect(setRescheduleClicked).toHaveBeenCalled();
+    });
+  });
+
+  describe('handle node trigger click tests', () => {
+    const ProcessInstanceData = {
+      id: 'a1e139d5-4e77-48c9-84ae-34578e904e5a',
+      processId: 'hotelBooking',
+      serviceUrl: 'http://localhost:4000'
+    };
+    const node = {
+      nodeDefinitionId: '_4165a571-2c79-4fd0-921e-c6d5e7851b67'
+    };
+    it('executes node trigger successfully', async () => {
+      const onTriggerSuccess = jest.fn();
+      const onTriggerFailure = jest.fn();
+      mockedAxios.post.mockResolvedValue({});
+      await handleNodeTrigger(
+        ProcessInstanceData,
+        node,
+        onTriggerSuccess,
+        onTriggerFailure
+      );
+      await wait(0);
+      expect(onTriggerSuccess).toHaveBeenCalled();
+    });
+    it('fails to execute node trigger', async () => {
+      const onTriggerSuccess = jest.fn();
+      const onTriggerFailure = jest.fn();
+      mockedAxios.post.mockRejectedValue({ message: '404 error' });
+      await handleNodeTrigger(
+        ProcessInstanceData,
+        node,
+        onTriggerSuccess,
+        onTriggerFailure
+      );
+      await wait(0);
+      expect(onTriggerFailure).toHaveBeenCalled();
+      expect(onTriggerFailure.mock.calls[0][0]).toEqual('"404 error"');
+    });
+  });
+
+  describe('retrieve list of triggerable nodes test', () => {
+    const mockTriggerableNodes = [
+      {
+        nodeDefinitionId: '_BDA56801-1155-4AF2-94D4-7DAADED2E3C0',
+        name: 'Send visa application',
+        id: 1,
+        type: 'ActionNode',
+        uniqueId: '1'
+      },
+      {
+        nodeDefinitionId: '_175DC79D-C2F1-4B28-BE2D-B583DFABF70D',
+        name: 'Book',
+        id: 2,
+        type: 'Split',
+        uniqueId: '2'
+      },
+      {
+        nodeDefinitionId: '_E611283E-30B0-46B9-8305-768A002C7518',
+        name: 'visasrejected',
+        id: 3,
+        type: 'EventNode',
+        uniqueId: '3'
+      }
+    ];
+
+    const processInstance = {
+      processId: 'travels',
+      serviceUrl: 'http://localhost:4000'
+    };
+    it('successfully retrieves the list of nodes', async () => {
+      mockedAxios.get.mockResolvedValue({
+        data: mockTriggerableNodes
+      });
+      const result = await getTriggerableNodes(processInstance);
+      expect(result).toStrictEqual(mockTriggerableNodes);
+    });
+    it('fails to retrieve the list of nodes', async () => {
+      mockedAxios.get.mockResolvedValue({
+        data: []
+      });
+      const result = await getTriggerableNodes(processInstance);
+      expect(result).toStrictEqual([]);
     });
   });
 });
