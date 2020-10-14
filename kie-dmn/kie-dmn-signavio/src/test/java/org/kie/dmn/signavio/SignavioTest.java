@@ -36,7 +36,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.everyItem;
 import static org.hamcrest.Matchers.iterableWithSize;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -190,6 +192,28 @@ public class SignavioTest {
     public void testZipFunctions() {
         DMNRuntime runtime = createRuntime("Test_SignavioZipFunctions.dmn");
         checkBothFunctionsAreWorking(runtime);
+    }
+    
+    
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testMidTakesCareOfRequirements() {
+        DMNRuntime runtime = createRuntime("Test_SignavioMID.dmn");
+    
+        List<DMNModel> models = runtime.getModels();
+    
+        DMNContext context = runtime.newContext();
+        context.set("numbers1", Arrays.asList(1,2));
+        context.set("numbers2", Arrays.asList(2,3));
+    
+        DMNModel model0 = models.get(0);
+        LOG.info("EVALUATE ALL:");
+        DMNResult evaluateAll = runtime.evaluateAll(model0, context);
+        LOG.info("{}", evaluateAll);
+    
+        List<Object> result = (List<Object>) evaluateAll.getDecisionResultByName("calculate").getResult();
+        assertThat(result, iterableWithSize(6));
+        assertThat(result, everyItem(notNullValue()));
     }
     
     
