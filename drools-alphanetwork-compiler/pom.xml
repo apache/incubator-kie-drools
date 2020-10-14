@@ -11,8 +11,6 @@
 
   <artifactId>drools-alphanetwork-compiler</artifactId>
 
-  <packaging>bundle</packaging><!-- bundle = jar + OSGi metadata -->
-
   <name>Drools :: Alpha Network Compiler</name>
 
   <properties>
@@ -83,35 +81,7 @@
       </resource>
     </resources>
 
-    <testResources>
-      <testResource>
-        <directory>src/test/resources</directory>
-        <filtering>false</filtering>
-      </testResource>
-      <testResource>
-        <directory>src/test/filtered-resources</directory>
-        <filtering>true</filtering>
-      </testResource>
-    </testResources>
-
-
     <plugins>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <configuration>
-          <instructions>
-            <Export-Package>
-              org.drools.ancompiler.*
-            </Export-Package>
-            <Import-Package>
-              *
-            </Import-Package>
-            <Bundle-Activator>org.drools.core.osgi.Activator</Bundle-Activator>
-            <_removeheaders>Private-Package</_removeheaders>
-          </instructions>
-        </configuration>
-      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
