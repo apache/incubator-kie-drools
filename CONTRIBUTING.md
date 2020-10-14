@@ -98,6 +98,12 @@ This build skipped all the tests:
 By removing the flags, you will run the corresponding tests. 
 It will take much longer to build but will give you more guarantees on your code. 
 
+### Known Issues
+
+- [TestContainers integration tests fail with "Can not connect to Ryuk at localhost"](https://github.com/testcontainers/testcontainers-java/issues/3166)
+
+  This may happen with some versions of Docker for Mac, or when privileged containers are not allowed. In this case you may try [exporting the environment variable TESTCONTAINERS_RYUK_DISABLED=true](https://www.testcontainers.org/features/configuration/#disabling-ryuk). Some users of Docker for Mac also report success disabling [FUSE gRPC file sharing](https://github.com/testcontainers/testcontainers-java/issues/3166).
+
 ## Usage
 
 After the build is successful, the artifacts are available in your local Maven repository.
