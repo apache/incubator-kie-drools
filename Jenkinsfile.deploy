@@ -95,7 +95,7 @@ pipeline {
             steps {
                 echo 'Setup Maven release config'
                 configFileProvider([configFile(fileId: '771ff52a-a8b4-40e6-9b22-d54c7314aa1e', targetLocation: 'maven-settings.xml', variable: 'MAVEN_SETTINGS_FILE')]){
-                    sh "echo '-B -s ${MAVEN_SETTINGS_FILE}' | tee {optaplanner}/.mvn/maven.config"
+                    sh "echo '-B -s ${MAVEN_SETTINGS_FILE}' | tee optaplanner/.mvn/maven.config"
                     // TODO: figure out why the assert does not work
                     // assert params.MAVEN_DEPENDENCIES_REPOSITORY != '' // OptaPlanner depends on Kogito Runtimes
                     echo "MAVEN_DEPENDENCIES_REPOSITORY passed: ${params.MAVEN_DEPENDENCIES_REPOSITORY}"
