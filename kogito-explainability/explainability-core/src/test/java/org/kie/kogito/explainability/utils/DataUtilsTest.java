@@ -227,6 +227,50 @@ class DataUtilsTest {
         assertPerturbDropString(input, 3);
     }
 
+    @Test
+    void testPerturbDropCompositeStringZero() {
+        List<Feature> features = new LinkedList<>();
+        features.add(FeatureFactory.newTextFeature("f0", "foo"));
+        features.add(FeatureFactory.newTextFeature("f1", "foo bar"));
+        features.add(FeatureFactory.newTextFeature("f2", " "));
+        features.add(FeatureFactory.newTextFeature("f3", "foo bar "));
+        PredictionInput input = new PredictionInput(List.of(FeatureFactory.newCompositeFeature("composite", features)));
+        assertPerturbDropString(input, 0);
+    }
+
+    @Test
+    void testPerturbDropCompositeStringOne() {
+        List<Feature> features = new LinkedList<>();
+        features.add(FeatureFactory.newTextFeature("f0", "foo"));
+        features.add(FeatureFactory.newTextFeature("f1", "foo bar"));
+        features.add(FeatureFactory.newTextFeature("f2", " "));
+        features.add(FeatureFactory.newTextFeature("f3", "foo bar "));
+        PredictionInput input = new PredictionInput(List.of(FeatureFactory.newCompositeFeature("composite", features)));
+        assertPerturbDropString(input, 1);
+    }
+
+    @Test
+    void testPerturbDropCompositeStringTwo() {
+        List<Feature> features = new LinkedList<>();
+        features.add(FeatureFactory.newTextFeature("f0", "foo"));
+        features.add(FeatureFactory.newTextFeature("f1", "foo bar"));
+        features.add(FeatureFactory.newTextFeature("f2", " "));
+        features.add(FeatureFactory.newTextFeature("f3", "foo bar "));
+        PredictionInput input = new PredictionInput(List.of(FeatureFactory.newCompositeFeature("composite", features)));
+        assertPerturbDropString(input, 2);
+    }
+
+    @Test
+    void testPerturbDropCompositeStringThree() {
+        List<Feature> features = new LinkedList<>();
+        features.add(FeatureFactory.newTextFeature("f0", "foo"));
+        features.add(FeatureFactory.newTextFeature("f1", "foo bar"));
+        features.add(FeatureFactory.newTextFeature("f2", " "));
+        features.add(FeatureFactory.newTextFeature("f3", "foo bar "));
+        PredictionInput input = new PredictionInput(List.of(FeatureFactory.newCompositeFeature("composite", features)));
+        assertPerturbDropString(input, 3);
+    }
+
     private void assertPerturbDropNumeric(PredictionInput input, int noOfPerturbations) {
         List<Feature> newFeatures = DataUtils.perturbFeatures(input.getFeatures(), new PerturbationContext(random, noOfPerturbations));
         int changedFeatures = 0;

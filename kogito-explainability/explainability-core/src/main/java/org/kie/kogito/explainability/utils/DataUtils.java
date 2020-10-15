@@ -155,17 +155,17 @@ public class DataUtils {
             // perturb at most in the range [|features|/2), noOfPerturbations]
             int lowerBound = (int) Math.min(perturbationContext.getNoOfPerturbations(), 0.5d * newFeatures.size());
             int upperBound = (int) Math.max(perturbationContext.getNoOfPerturbations(), 0.5d * newFeatures.size());
-            upperBound = Math.min(upperBound, newFeatures.size() - 1);
-            lowerBound = Math.max(1, lowerBound); // lower bound should always greater than zero (not ok to not perturb)
+            upperBound = Math.min(upperBound, newFeatures.size());
+            lowerBound = Math.max(1, lowerBound); // lower bound should always be greater than zero (not ok to not perturb)
             int perturbationSize = 0;
             if (lowerBound == upperBound) {
                 perturbationSize = lowerBound;
             }
             else if (upperBound > lowerBound) {
-                perturbationSize = perturbationContext.getRandom().ints(lowerBound, 1 + upperBound).findFirst().orElse(1);
+                perturbationSize = perturbationContext.getRandom().ints(1, lowerBound, upperBound).findFirst().orElse(1);
             }
             if (perturbationSize > 0) {
-                int[] indexesToBePerturbed = perturbationContext.getRandom().ints(1, newFeatures.size())
+                int[] indexesToBePerturbed = perturbationContext.getRandom().ints(0, newFeatures.size())
                         .distinct().limit(perturbationSize).toArray();
                 for (int index : indexesToBePerturbed) {
                     Feature feature = newFeatures.get(index);
