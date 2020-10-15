@@ -940,33 +940,7 @@
           </execution>
         </executions>
       </plugin>
-      <plugin>
-        <artifactId>maven-enforcer-plugin</artifactId>
-        <!--        <executions>-->
-        <!--          <execution>-->
-        <!--            <id>ban-duplicated-classes</id>-->
-        <!--            <goals>-->
-        <!--              <goal>enforce</goal>-->
-        <!--            </goals>-->
-        <!--            <configuration>-->
-        <!--              <rules>-->
-        <!--                <banDuplicateClasses>-->
-        <!--                  <dependencies combine.children="append">-->
-        <!--                    &lt;!&ndash; sundr-codegen is required to compile test classes. &ndash;&gt;-->
-        <!--                    <dependency>-->
-        <!--                      <groupId>io.sundr</groupId>-->
-        <!--                      <artifactId>sundr-codegen</artifactId>-->
-        <!--                      <ignoreClasses>-->
-        <!--                        <ignoreClass>*</ignoreClass>-->
-        <!--                      </ignoreClasses>-->
-        <!--                    </dependency>-->
-        <!--                  </dependencies>-->
-        <!--                </banDuplicateClasses>-->
-        <!--              </rules>-->
-        <!--            </configuration>-->
-        <!--          </execution>-->
-        <!--        </executions>-->
-      </plugin>
+
       <plugin>
         <!-- Entry needed to provide parsed version properties -->
         <!-- also adds generated sources to -source artifact -->
