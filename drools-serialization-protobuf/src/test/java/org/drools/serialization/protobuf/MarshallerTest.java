@@ -14,6 +14,12 @@
 
 package org.drools.serialization.protobuf;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
+
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.impl.EnvironmentFactory;
 import org.drools.core.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
@@ -413,6 +419,100 @@ public class MarshallerTest {
 
             // serialization/deserialization of derived FHs shouldn't consume more FH ids
             assertEquals( fh1.getId() + 4, (( InternalFactHandle ) ksession.insert( 2 )).getId() );
+        } finally {
+            if (ksession != null) {
+                ksession.dispose();
+            }
+        }
+    }
+
+    public static class LongFact implements Serializable {
+        private long value;
+
+        public LongFact() { }
+
+        public LongFact(long value) {
+            this.value = value;
+        }
+
+        public long getValue() {
+            return value;
+        }
+
+        public void setValue(long value) {
+            this.value = value;
+        }
+
+        @Override
+        public boolean equals( Object o ) {
+            if ( this == o ) return true;
+            if ( o == null || getClass() != o.getClass() ) return false;
+            LongFact longFact = ( LongFact ) o;
+            return value == longFact.value;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash( value );
+        }
+    }
+
+    public static class LongFacts implements Serializable {
+        private List<LongFact> facts;
+
+        public LongFacts() {
+            this.facts = new ArrayList<>();
+        }
+
+        public List<LongFact> getFacts() {
+            return facts;
+        }
+
+        public void setFacts(List<LongFact> facts) {
+            this.facts = facts;
+        }
+
+        @Override
+        public boolean equals( Object o ) {
+            if ( this == o ) return true;
+            if ( o == null || getClass() != o.getClass() ) return false;
+            LongFacts longFacts = ( LongFacts ) o;
+            return Objects.equals( facts, longFacts.facts );
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash( facts );
+        }
+    }
+
+    @Test
+    public void testFromWithInsertLogical() throws Exception {
+        // DROOLS-5713
+        String str =
+                "import " + LongFact.class.getCanonicalName() + "\n" +
+                "import " + LongFacts.class.getCanonicalName() + "\n" +
+                "rule R1 when\n" +
+                "    LongFacts($lfs: facts)\n" +
+                "    $lf: LongFact() from $lfs\n" +
+                "then\n" +
+                "    insertLogical($lf);" +
+                "end\n";
+
+        KieBase kbase = new KieHelper().addContent(str, ResourceType.DRL).build();
+        KieSession ksession = null;
+        try {
+            ksession = kbase.newKieSession(null, env);
+
+            String id = UUID.randomUUID().toString();
+            LongFacts longFacts = new LongFacts();
+            longFacts.getFacts().add(new LongFact(123456));
+            ksession.insert( longFacts );
+
+            assertEquals(1, ksession.fireAllRules());
+            ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
+            assertEquals(0, ksession.fireAllRules());
+
         } finally {
             if (ksession != null) {
                 ksession.dispose();
