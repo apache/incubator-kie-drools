@@ -59,6 +59,7 @@ import org.kie.kogito.codegen.io.CollectedResource;
 import org.kie.kogito.codegen.process.config.ProcessConfigGenerator;
 import org.kie.kogito.codegen.process.events.CloudEventsMessageProducerGenerator;
 import org.kie.kogito.codegen.process.events.CloudEventsResourceGenerator;
+import org.kie.kogito.codegen.process.events.TopicsInformationResourceGenerator;
 import org.kie.kogito.rules.units.UndefinedGeneratedRuleUnitVariable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -448,6 +449,9 @@ public class ProcessCodegen extends AbstractGenerator {
                     new CloudEventsResourceGenerator(processExecutableModelGenerators, annotator);
             storeFile(Type.REST, ceGenerator.generatedFilePath(), ceGenerator.generate());
         }
+
+        final TopicsInformationResourceGenerator topicsGenerator = new TopicsInformationResourceGenerator(processExecutableModelGenerators);
+        storeFile(Type.REST, topicsGenerator.generatedFilePath(), topicsGenerator.generate());
 
         for (ProcessInstanceGenerator pi : pis) {
             storeFile(Type.PROCESS_INSTANCE, pi.generatedFilePath(), pi.generate());
