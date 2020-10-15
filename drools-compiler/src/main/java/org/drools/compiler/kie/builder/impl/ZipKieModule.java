@@ -31,7 +31,6 @@ import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.io.internal.InternalResource;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieModuleModel;
