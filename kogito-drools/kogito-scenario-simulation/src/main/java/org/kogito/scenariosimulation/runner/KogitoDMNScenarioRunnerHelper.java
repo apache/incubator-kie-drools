@@ -99,7 +99,7 @@ public class KogitoDMNScenarioRunnerHelper extends DMNScenarioRunnerHelper {
             Map<KieBase, KieRuntimeFactory> kieRuntimeFactories =
                     PMMLKogito.createKieRuntimeFactoriesWithInMemoryCompilation(
                             fileStream
-                                    .filter(path -> Files.isRegularFile(path) && path.toString().endsWith(".pmml"))
+                                    .filter(path -> filterResource(path, ".pmml"))
                                     .map(Path::toString)
                                     .toArray(String[]::new));
 
@@ -118,7 +118,7 @@ public class KogitoDMNScenarioRunnerHelper extends DMNScenarioRunnerHelper {
         Function<String, KieRuntimeFactory> kieRuntimeFactoryFunction = initPmmlKieRuntimeFactory();
 
         try (Stream<Path> fileStream = Files.walk(Paths.get("."))) {
-            List<Resource> resources = fileStream.filter(path -> Files.isRegularFile(path) && path.toString().endsWith(".dmn"))
+            List<Resource> resources = fileStream.filter(path -> filterResource(path, ".dmn"))
                     .map(Path::toFile)
                     .map(FileSystemResource::new)
                     .collect(toList());
@@ -131,6 +131,10 @@ public class KogitoDMNScenarioRunnerHelper extends DMNScenarioRunnerHelper {
         } catch (IOException e) {
             throw new IllegalStateException("Error initializing KogitoDMNScenarioRunnerHelper", e);
         }
+    }
+
+    private boolean filterResource(Path path, String extension) {
+        return path.toString().endsWith(extension) && !path.toString().contains("/target/") && Files.isRegularFile(path);
     }
 
 }
