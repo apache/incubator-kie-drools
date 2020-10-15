@@ -16,11 +16,14 @@
 
 package org.kie.kogito.explainability.explainability.integrationtests.pmml;
 
+import java.io.File;
+
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieRuntimeFactory;
 import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
+import org.kie.pmml.evaluator.assembler.factories.PMMLRuntimeFactory;
 
 public abstract class AbstractPMMLTest {
 
@@ -37,9 +40,7 @@ public abstract class AbstractPMMLTest {
         this.pmmlRuntime = pmmlRuntime;
     }
 
-    public static PMMLRuntime getPMMLRuntime(String kbaseName) {
-        KieBase kieBase = kieContainer.getKieBase(kbaseName);
-        final KieRuntimeFactory kieRuntimeFactory = KieRuntimeFactory.of(kieBase);
-        return kieRuntimeFactory.get(PMMLRuntime.class);
+    public static PMMLRuntime getPMMLRuntime(String modelName, File pmmlFile) {
+        return PMMLRuntimeFactory.getPMMLRuntime(modelName, pmmlFile);
     }
 }

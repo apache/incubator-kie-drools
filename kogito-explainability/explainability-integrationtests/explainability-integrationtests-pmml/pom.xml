@@ -76,6 +76,12 @@
       <version>${version.org.kie7}</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-test-util</artifactId>
+      <version>${version.org.kie7}</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
 </project>

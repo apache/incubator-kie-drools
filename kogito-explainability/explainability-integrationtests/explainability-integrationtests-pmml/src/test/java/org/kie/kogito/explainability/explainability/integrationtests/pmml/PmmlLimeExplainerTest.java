@@ -42,6 +42,7 @@ import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.kie.kogito.explainability.explainability.integrationtests.pmml.AbstractPMMLTest.getPMMLRuntime;
+import static org.kie.test.util.filesystem.FileUtils.getFile;
 
 class PmmlLimeExplainerTest {
 
@@ -52,10 +53,10 @@ class PmmlLimeExplainerTest {
 
     @BeforeAll
     static void setUpBefore() {
-        logisticRegressionIris = getPMMLRuntime("LogisticRegressionIrisData");
-        categoricalVariableRegression = getPMMLRuntime("categoricalVariables_Model");
-        scorecardCategorical = getPMMLRuntime("SimpleScorecardCategorical");
-        compoundScoreCard = getPMMLRuntime("CompoundNestedPredicateScorecard");
+        logisticRegressionIris = getPMMLRuntime("LogisticRegressionIrisData", getFile("logisticRegressionIrisData.pmml"));
+        categoricalVariableRegression = getPMMLRuntime("categoricalVariables_Model", getFile("categoricalVariablesRegression.pmml"));
+        scorecardCategorical = getPMMLRuntime("SimpleScorecardCategorical", getFile("SimpleScorecardCategorical.pmml"));
+        compoundScoreCard = getPMMLRuntime("CompoundNestedPredicateScorecard", getFile("CompoundNestedPredicateScorecard.pmml"));
     }
 
     @Test
