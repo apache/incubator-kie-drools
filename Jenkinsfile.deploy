@@ -121,11 +121,11 @@ pipeline {
                         maven.mvnVersionsSet(getProjectVersion())
                         updateKogitoVersion(getKogitoVersion())
                     }
-                    /*
+                    /* TODO:
                         Install optaplanner artifacts to a local maven repository to make them accessible
                         for optaplanner-quickstarts and optaweb apps.
                      */
-                    mavenCleanInstall('optaplanner', true, [], '-U')
+                    //mavenCleanInstall('optaplanner', true, [], '-U')
 
                 }
             }
