@@ -641,9 +641,7 @@ public class ProtobufInputMarshaller {
             if( _beliefSet.getLogicalDependencyCount() > 0 ) {
                 for ( ProtobufMessages.LogicalDependency _logicalDependency : _beliefSet.getLogicalDependencyList() ) {
                     ProtobufMessages.Activation _activation = _logicalDependency.getActivation();
-                    ActivationKey activationKey = PersisterHelper.createActivationKey(_activation.getPackageName(),
-                                                                                      _activation.getRuleName(),
-                                                                                      _activation.getTuple());
+                    ActivationKey activationKey = getActivationKey( context, _activation );
                     Activation activation = (Activation) context.getFilter().getTuplesCache().get(activationKey).getContextObject();
 
                     Object object = null;
@@ -688,28 +686,7 @@ public class ProtobufInputMarshaller {
         for ( ProtobufMessages.Activation _activation : _dormant ) {
             ProtobufMessages.Tuple _tuple = _activation.getTuple();
             // this is a dormant activation
-            ActivationKey activationKey;
-            if (!_tuple.getObjectList().isEmpty()) {
-                Object[] objects = new Object[_tuple.getObjectList().size()];
-                int i = 0;
-                for (ProtobufMessages.SerializedObject _object : _tuple.getObjectList()) {
-                    ObjectMarshallingStrategy strategy = context.getUsedStrategies().get( _object.getStrategyIndex() );
-
-                    try {
-                        objects[i++] = strategy.unmarshal( context.getStrategyContexts().get( strategy ),
-                                                           context,
-                                                           _object.getObject().toByteArray(),
-                                                           (context.getKnowledgeBase() == null) ? null : context.getKnowledgeBase().getRootClassLoader() );
-                    } catch (IOException | ClassNotFoundException e) {
-                        throw new RuntimeException( e );
-                    }
-                }
-                activationKey = PersisterHelper.createActivationKey( _activation.getPackageName(), _activation.getRuleName(), objects );
-
-            } else {
-                activationKey = PersisterHelper.createActivationKey(_activation.getPackageName(), _activation.getRuleName(), _tuple);
-            }
-            context.getFilter().addDormantActivation(activationKey);
+            context.getFilter().addDormantActivation(getActivationKey( context, _activation ));
         }
 
         for ( ProtobufMessages.Activation _activation : _rneas ) {
@@ -719,6 +696,28 @@ public class ProtobufInputMarshaller {
                                                                                          _activation.getTuple() ),
                                                     _activation );
         }
+    }
+
+    private static ActivationKey getActivationKey( MarshallerReaderContext context, ProtobufMessages.Activation _activation ) {
+        ProtobufMessages.Tuple _tuple = _activation.getTuple();
+        if (!_tuple.getObjectList().isEmpty()) {
+            Object[] objects = new Object[_tuple.getObjectList().size()];
+            int i = 0;
+            for (ProtobufMessages.SerializedObject _object : _tuple.getObjectList()) {
+                ObjectMarshallingStrategy strategy = context.getUsedStrategies().get( _object.getStrategyIndex() );
+
+                try {
+                    objects[i++] = strategy.unmarshal( context.getStrategyContexts().get( strategy ),
+                                                       (ObjectInputStream) context,
+                                                       _object.getObject().toByteArray(),
+                                                       (context.getKnowledgeBase() == null) ? null : context.getKnowledgeBase().getRootClassLoader() );
+                } catch (IOException | ClassNotFoundException e) {
+                    throw new RuntimeException( e );
+                }
+            }
+            return PersisterHelper.createActivationKey( _activation.getPackageName(), _activation.getRuleName(), objects );
+        }
+        return PersisterHelper.createActivationKey( _activation.getPackageName(), _activation.getRuleName(), _tuple );
     }
 
     public static void readTimer( MarshallerReaderContext inCtx,
