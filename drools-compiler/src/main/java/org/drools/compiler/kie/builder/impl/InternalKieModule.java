@@ -120,6 +120,8 @@ public interface InternalKieModule extends KieModule, Serializable {
 
     InternalKnowledgeBase createKieBase( KieBaseModelImpl kBaseModel, KieProject kieProject, ResultsImpl messages, KieBaseConfiguration conf );
 
+    default void afterKieBaseCreationUpdate(String name, InternalKnowledgeBase kBase) { }
+
     ClassLoader getModuleClassLoader();
 
     default ResultsImpl build() {
@@ -136,8 +138,8 @@ public interface InternalKieModule extends KieModule, Serializable {
         return filterFileInKBase(this, kieBase, fileName, () -> getResource( fileName ), false);
     }
 
-    default Runnable createKieBaseUpdater(KieBaseUpdateContext context) {
-        return new KieBaseUpdater( context );
+    default KieBaseUpdater createKieBaseUpdater(KieBaseUpdaterImplContext context) {
+        return new KieBaseUpdaterImpl(context );
     }
 
     default ProjectClassLoader createModuleClassLoader( ClassLoader parent ) {

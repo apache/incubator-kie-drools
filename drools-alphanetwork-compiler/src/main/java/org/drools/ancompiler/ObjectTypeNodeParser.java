@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.core.reteoo.compiled;
+package org.drools.ancompiler;
 
 import org.drools.core.base.ClassFieldReader;
 import org.drools.core.reteoo.AlphaNode;
@@ -85,7 +85,7 @@ public class ObjectTypeNodeParser {
     }
 
     private IndexableConstraint traversePropagator(ObjectSinkPropagator propagator, NetworkHandler handler) {
-        IndexableConstraint indexableConstraint = null;
+        IndexableConstraint foundIndexableConstraint = null;
         if (propagator instanceof SingleObjectSinkAdapter) {
             // we know there is only a single child sink for this propagator
             ObjectSink sink = propagator.getSinks()[0];
@@ -96,12 +96,12 @@ public class ObjectTypeNodeParser {
 
             traverseSinkLisk(composite.getHashableSinks(), handler);
             traverseSinkLisk(composite.getOthers(), handler);
-            indexableConstraint = traverseHashedAlphaNodes(composite.getHashedSinkMap(), handler);
+            foundIndexableConstraint = traverseHashedAlphaNodes(composite.getHashedSinkMap(), handler);
         } else if (propagator instanceof CompositePartitionAwareObjectSinkAdapter) {
             CompositePartitionAwareObjectSinkAdapter composite = (CompositePartitionAwareObjectSinkAdapter) propagator;
             traverseSinkLisk(composite.getSinks(), handler);
         }
-        return indexableConstraint;
+        return foundIndexableConstraint;
     }
     private void traverseSinkLisk(ObjectSinkNodeList sinks, NetworkHandler handler) {
         if (sinks != null) {
@@ -128,9 +128,9 @@ public class ObjectTypeNodeParser {
             // start the hashed alphas
             handler.startHashedAlphaNodes(hashedFieldReader);
 
-            Iterator iter = hashedAlphaNodes.iterator();
+            Iterator<ObjectHashMap.ObjectEntry> iter = hashedAlphaNodes.iterator();
             AlphaNode optionalNullAlphaNodeCase = null;
-            for (ObjectHashMap.ObjectEntry entry = (ObjectHashMap.ObjectEntry) iter.next(); entry != null; entry = (ObjectHashMap.ObjectEntry) iter.next()) {
+            for (ObjectHashMap.ObjectEntry entry = iter.next(); entry != null; entry = iter.next()) {
                 CompositeObjectSinkAdapter.HashKey hashKey = (CompositeObjectSinkAdapter.HashKey) entry.getKey();
                 AlphaNode alphaNode = (AlphaNode) entry.getValue();
 
@@ -170,19 +170,16 @@ public class ObjectTypeNodeParser {
             BetaNode betaNode = (BetaNode) sink;
 
             handler.startBetaNode(betaNode);
-            // todo traverse beta
             handler.endBetaNode(betaNode);
         } else if (sink.getType() == NodeTypeEnums.LeftInputAdapterNode) {
             LeftInputAdapterNode leftInputAdapterNode = (LeftInputAdapterNode) sink;
 
             handler.startLeftInputAdapterNode(leftInputAdapterNode);
-            // todo traverse lia
             handler.endWindowNode(leftInputAdapterNode);
         } else if (sink.getType() == NodeTypeEnums.WindowNode) {
             WindowNode windowNode = (WindowNode) sink;
 
             handler.startWindowNode(windowNode);
-            // todo traverse lia
             handler.endWindowNode(windowNode);
         }
     }
@@ -216,7 +213,7 @@ public class ObjectTypeNodeParser {
      * @param alphaNode hashed alpha to get reader for
      * @return ClassFieldReader
      */
-    private IndexableConstraint getClassFieldReaderForHashedAlpha(final AlphaNode alphaNode) throws IllegalArgumentException {
+    private IndexableConstraint getClassFieldReaderForHashedAlpha(final AlphaNode alphaNode) {
         final AlphaNodeFieldConstraint fieldConstraint = alphaNode.getConstraint();
 
         if (!(fieldConstraint instanceof IndexableConstraint)) {

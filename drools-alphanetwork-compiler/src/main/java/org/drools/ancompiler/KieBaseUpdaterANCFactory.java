@@ -14,9 +14,16 @@
  * limitations under the License.
  */
 
-package org.drools.compiler.kie.builder.impl;
+package org.drools.ancompiler;
 
-public interface KieBaseUpdater extends Runnable {
+import org.drools.compiler.kie.builder.impl.KieBaseUpdater;
+import org.drools.compiler.kie.builder.impl.KieBaseUpdaterFactory;
+import org.drools.compiler.kie.builder.impl.KieBaseUpdatersContext;
 
+public class KieBaseUpdaterANCFactory implements KieBaseUpdaterFactory {
 
+    @Override
+    public KieBaseUpdater create(KieBaseUpdatersContext ctx) {
+        return new KieBaseUpdaterANC(ctx);
+    }
 }

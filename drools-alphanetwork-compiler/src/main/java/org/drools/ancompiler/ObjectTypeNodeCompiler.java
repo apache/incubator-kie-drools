@@ -1,9 +1,10 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ * You may obtain a copy of the License at
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -11,47 +12,29 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
-package org.drools.compiler.reteoo.compiled;
+package org.drools.ancompiler;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.UUID;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
-import org.drools.compiler.builder.InternalKnowledgeBuilder;
-import org.drools.compiler.commons.jci.compilers.CompilationResult;
-import org.drools.compiler.commons.jci.compilers.JavaCompiler;
-import org.drools.compiler.commons.jci.compilers.JavaCompilerFactory;
-import org.drools.compiler.compiler.JavaConfiguration;
-import org.drools.compiler.compiler.PackageRegistry;
-import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
-import org.drools.compiler.lang.descr.PackageDescr;
+import org.drools.core.InitialFact;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.reteoo.ObjectTypeNode;
-import org.drools.core.reteoo.compiled.AssertHandler;
-import org.drools.core.reteoo.compiled.CompiledNetwork;
-import org.drools.core.reteoo.compiled.DeclarationsHandler;
-import org.drools.core.reteoo.compiled.DelegateMethodsHandler;
-import org.drools.core.reteoo.compiled.HashedAlphasDeclaration;
-import org.drools.core.reteoo.compiled.ModifyHandler;
-import org.drools.core.reteoo.compiled.ObjectTypeNodeParser;
-import org.drools.core.reteoo.compiled.SetNodeReferenceHandler;
-import org.drools.core.rule.IndexableConstraint;
-import org.drools.core.spi.InternalReadAccessor;
-import org.drools.core.util.IoUtils;
-import org.drools.reflective.classloader.ProjectClassLoader;
+import org.drools.core.reteoo.Rete;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * todo: document
- */
 public class ObjectTypeNodeCompiler {
+
     private static final String NEWLINE = "\n";
-    private static final String PACKAGE_NAME = "org.drools.core.reteoo.compiled";
+    private static final String PACKAGE_NAME = "org.drools.ancompiler";
     private static final String BINARY_PACKAGE_NAME = PACKAGE_NAME.replace('.', '/');
     /**
      * This field hold the fully qualified class name that the {@link ObjectTypeNode} is representing.
@@ -72,31 +55,20 @@ public class ObjectTypeNodeCompiler {
 
     private static final Logger logger = LoggerFactory.getLogger(ObjectTypeNodeCompiler.class);
 
-
-    private ObjectTypeNodeCompiler(ObjectTypeNode objectTypeNode) {
+    public ObjectTypeNodeCompiler(ObjectTypeNode objectTypeNode) {
         this.objectTypeNode = objectTypeNode;
 
         ClassObjectType classObjectType = (ClassObjectType) objectTypeNode.getObjectType();
         this.className = classObjectType.getClassName().replace("$", ".");
         final String classObjectTypeName = classObjectType.getClassName().replace('.', '_');
-        final String randomId = UUID.randomUUID().toString().replace("-", "");
+        final String otnHash = String.valueOf(objectTypeNode.hashCode()).replace("-", "");
         generatedClassSimpleName = String.format("Compiled%sNetwork%d%s"
                 , classObjectTypeName
                 , objectTypeNode.getId()
-                , randomId);
+                , otnHash);
     }
 
-    public static class SourceGenerated {
-        public final String source;
-        public final IndexableConstraint indexableConstraint;
-
-        public SourceGenerated(String source, IndexableConstraint indexableConstraint) {
-            this.source = source;
-            this.indexableConstraint = indexableConstraint;
-        }
-    }
-
-    private SourceGenerated generateSource() {
+    public CompiledNetworkSource generateSource() {
         createClassDeclaration();
 
         ObjectTypeNodeParser parser = new ObjectTypeNodeParser(objectTypeNode);
@@ -115,10 +87,10 @@ public class ObjectTypeNodeCompiler {
         parser.accept(setNode);
 
         // create assert method
-        AssertHandler assertHandler = new AssertHandler(builder, className, hashedAlphaDeclarations.size() > 0);
+        AssertHandler assertHandler = new AssertHandler(builder, className, !hashedAlphaDeclarations.isEmpty());
         parser.accept(assertHandler);
 
-        ModifyHandler modifyHandler = new ModifyHandler(builder, className, hashedAlphaDeclarations.size() > 0);
+        ModifyHandler modifyHandler = new ModifyHandler(builder, className, !hashedAlphaDeclarations.isEmpty());
         parser.accept(modifyHandler);
 
         DelegateMethodsHandler delegateMethodsHandler = new DelegateMethodsHandler(builder);
@@ -127,7 +99,17 @@ public class ObjectTypeNodeCompiler {
         // end of class
         builder.append("}").append(NEWLINE);
 
-        return new SourceGenerated(builder.toString(), parser.getIndexableConstraint());
+        String sourceCode = builder.toString();
+        if (logger.isDebugEnabled()) {
+            logger.debug(String.format("Generated Compiled Alpha Network %s", sourceCode));
+        }
+
+        return new CompiledNetworkSource(
+                sourceCode,
+                parser.getIndexableConstraint(),
+                getName(),
+                getSourceName(),
+                objectTypeNode);
     }
 
     /**
@@ -138,6 +120,7 @@ public class ObjectTypeNodeCompiler {
         builder.append("public class ").append(generatedClassSimpleName).append(" extends ").
                 append(CompiledNetwork.class.getName()).append("{ ").append(NEWLINE);
 
+        builder.append(String.format("private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(%s.class);%n", generatedClassSimpleName));
         builder.append("org.drools.core.spi.InternalReadAccessor readAccessor;\n");
     }
 
@@ -151,7 +134,6 @@ public class ObjectTypeNodeCompiler {
      */
     private void createConstructor(Collection<HashedAlphasDeclaration> hashedAlphaDeclarations) {
         builder.append("public ").append(generatedClassSimpleName).append("(org.drools.core.spi.InternalReadAccessor readAccessor) {").append(NEWLINE);
-
 
         builder.append("this.readAccessor = readAccessor;\n");
         // for each hashed alpha, we need to fill in the map member variable with the hashed values to node Ids
@@ -221,59 +203,38 @@ public class ObjectTypeNodeCompiler {
         return PACKAGE_NAME;
     }
 
-    private static final JavaCompiler JAVA_COMPILER = JavaCompilerFactory.INSTANCE.loadCompiler( JavaConfiguration.CompilerType.NATIVE, "1.8");
+    public static List<CompiledNetworkSource> compiledNetworkSources(Rete rete) {
+        return objectTypeNodeCompiler(rete)
+                .stream()
+                .map(ObjectTypeNodeCompiler::generateSource)
+                .collect(Collectors.toList());
+    }
 
-    /**
-     * Creates a {@link CompiledNetwork} for the specified {@link ObjectTypeNode}. The {@link PackageBuilder} is used
-     * to compile the generated source and load the class.
-     *
-     * @param kBuilder     builder used to compile and load class
-     * @param objectTypeNode OTN we are generating a compiled network for
-     * @return CompiledNetwork
-     */
-    public static CompiledNetwork compile( InternalKnowledgeBuilder kBuilder, ObjectTypeNode objectTypeNode) {
-        if (objectTypeNode == null) {
-            throw new IllegalArgumentException("ObjectTypeNode cannot be null!");
-        }
-        if (kBuilder == null) {
-            throw new IllegalArgumentException("PackageBuilder cannot be null!");
-        }
-        ObjectTypeNodeCompiler compiler = new ObjectTypeNodeCompiler(objectTypeNode);
+    public static List<ObjectTypeNodeCompiler> objectTypeNodeCompiler(Rete rete) {
+        return objectTypeNodes(rete)
+                .stream()
+                .map(ObjectTypeNodeCompiler::new)
+                .collect(Collectors.toList());
+    }
 
-        String packageName = compiler.getPackageName();
+    public static List<ObjectTypeNode> objectTypeNodes(Rete rete) {
+        return rete.getEntryPointNodes().values().stream()
+                .flatMap(ep -> ep.getObjectTypeNodes().values().stream())
+                .filter(f -> !InitialFact.class.isAssignableFrom(f.getObjectType().getClassType()))
+                .collect(Collectors.toList());
+    }
 
-        PackageRegistry pkgReg = kBuilder.getPackageRegistry(packageName);
-        if (pkgReg == null) {
-            kBuilder.addPackage(new PackageDescr(packageName));
-            pkgReg = kBuilder.getPackageRegistry(packageName);
-        }
+    public static Map<String, CompiledNetworkSource> compiledNetworkSourceMap(Rete rete) {
+        List<CompiledNetworkSource> compiledNetworkSources = ObjectTypeNodeCompiler.compiledNetworkSources(rete);
+        return compiledNetworkSources
+                .stream()
+                .collect(Collectors.toMap(CompiledNetworkSource::getName, Function.identity()));
+    }
 
-        SourceGenerated source = compiler.generateSource();
-
-        logger.debug("Generated alpha node compiled network source:\n" + source.source);
-
-        MemoryFileSystem mfs = new MemoryFileSystem();
-        mfs.write(compiler.getSourceName(), source.source.getBytes(IoUtils.UTF8_CHARSET));
-
-        MemoryFileSystem trg = new MemoryFileSystem();
-        ProjectClassLoader rootClassLoader = (ProjectClassLoader) kBuilder.getRootClassLoader();
-        CompilationResult compiled = JAVA_COMPILER.compile(new String[]{compiler.getSourceName()}, mfs, trg, rootClassLoader);
-
-        if (compiled.getErrors().length > 0) {
-            throw new RuntimeException("This is a bug. Please contact the development team:\n" + Arrays.toString(compiled.getErrors()));
-        }
-
-        rootClassLoader.defineClass(compiler.getName(), trg.getBytes(compiler.getBinaryName()));
-
-        CompiledNetwork network;
-        try {
-            final Class<?> aClass = Class.forName(compiler.getName(), true, rootClassLoader);
-            final IndexableConstraint indexableConstraint = source.indexableConstraint;
-            network = (CompiledNetwork) aClass.getConstructor(InternalReadAccessor.class).newInstance(indexableConstraint != null ? indexableConstraint.getFieldExtractor(): null);
-        } catch (Exception e) {
-            throw new RuntimeException("This is a bug. Please contact the development team", e);
-        }
-
-        return network;
+    public static Map<ObjectTypeNode, String> otnWithClassName(Rete rete) {
+        List<ObjectTypeNodeCompiler> compiledNetworkSources = ObjectTypeNodeCompiler.objectTypeNodeCompiler(rete);
+        return compiledNetworkSources
+                .stream()
+                .collect(Collectors.toMap(k -> k.objectTypeNode, ObjectTypeNodeCompiler::getName));
     }
 }

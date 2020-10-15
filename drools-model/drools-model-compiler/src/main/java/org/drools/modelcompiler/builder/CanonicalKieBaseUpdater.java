@@ -23,10 +23,10 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.drools.compiler.builder.InternalKnowledgeBuilder;
 import org.drools.compiler.builder.impl.CompositeKnowledgeBuilderImpl;
-import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.drools.compiler.kie.builder.impl.KieBaseUpdateContext;
-import org.drools.compiler.kie.builder.impl.KieBaseUpdater;
+import org.drools.compiler.kie.builder.impl.KieBaseUpdaterImplContext;
+import org.drools.compiler.kie.builder.impl.KieBaseUpdaterImpl;
 import org.drools.compiler.kie.builder.impl.KieBuilderImpl;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.core.common.InternalWorkingMemory;
@@ -42,14 +42,12 @@ import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.Rule;
 import org.kie.internal.builder.ChangeType;
 import org.kie.internal.builder.CompositeKnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.ResourceChange;
 import org.kie.internal.builder.ResourceChangeSet;
 
-public class CanonicalKieBaseUpdater extends KieBaseUpdater {
+public class CanonicalKieBaseUpdater extends KieBaseUpdaterImpl {
 
-    public CanonicalKieBaseUpdater( KieBaseUpdateContext ctx ) {
+    public CanonicalKieBaseUpdater( KieBaseUpdaterImplContext ctx ) {
         super(ctx);
     }
 
@@ -67,9 +65,9 @@ public class CanonicalKieBaseUpdater extends KieBaseUpdater {
 
         // To keep compatible the classes generated from declared types the new kmodule has to be loaded with the classloader of the old one
         newKM.setIncrementalUpdate( true );
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(ctx.kBase, ctx.newKM.getBuilderConfiguration(ctx.newKieBaseModel, ctx.kBase.getRootClassLoader() ) );
-        KnowledgeBuilderImpl pkgbuilder = (KnowledgeBuilderImpl)kbuilder;
-        CompositeKnowledgeBuilder ckbuilder = kbuilder.batch();
+
+        InternalKnowledgeBuilder pkgbuilder = ctx.kbuilder;
+        CompositeKnowledgeBuilder ckbuilder = pkgbuilder.batch();
         newKM.setIncrementalUpdate( false );
 
         removeResources(pkgbuilder);
@@ -77,7 +75,7 @@ public class CanonicalKieBaseUpdater extends KieBaseUpdater {
         if (ctx.modifyingUsedClass) {
             // remove all ObjectTypeNodes for the modified classes
             for (Class<?> cls : ctx.modifiedClasses ) {
-                clearInstancesOfModifiedClass( cls );
+                clearInstancesOfModifiedClass(cls);
             }
 
             for (InternalKnowledgePackage kpkg : ctx.kBase.getPackagesMap().values()) {

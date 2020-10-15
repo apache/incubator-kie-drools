@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.core.reteoo.compiled;
+package org.drools.ancompiler;
 
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.BetaNode;
@@ -23,14 +23,11 @@ import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.WindowNode;
 import org.drools.core.rule.IndexableConstraint;
 
-/**
- * todo: document
- */
 public class AssertHandler extends SwitchCompilerHandler {
 
     /**
      * This flag is used to instruct the AssertHandler to tell it to generate a local varible
-     * in the {@link org.kie.reteoo.compiled.CompiledNetwork#assertObject} for holding the value returned
+     * in the {@link org.kie.reteoo.compiled.CompiledNetwork#propagateAssertObject} for holding the value returned
      * from the {@link org.kie.common.InternalFactHandle#getFactHandle()}.
      *
      * This is only needed if there is at least 1 set of hashed alpha nodes in the network
@@ -38,6 +35,7 @@ public class AssertHandler extends SwitchCompilerHandler {
     private final boolean alphaNetContainsHashedField;
 
     private final String factClassName;
+    private static final String ASSERT_OBJECT_CALL = ".assertObject(";
 
     AssertHandler(StringBuilder builder, String factClassName) {
         this(builder, factClassName, false);
@@ -53,6 +51,10 @@ public class AssertHandler extends SwitchCompilerHandler {
     public void startObjectTypeNode(ObjectTypeNode objectTypeNode) {
         builder.append(ASSERT_METHOD_SIGNATURE).append(NEWLINE);
 
+        builder.append("if(logger.isDebugEnabled()) {\n" +
+                       "            logger.debug(\"Propagate assert on compiled alpha network {} {} {}\", handle, context, wm);\n" +
+                       "        }\n").append(NEWLINE);
+
         // we only need to create a reference to the object, not handle, if there is a hashed alpha in the network
         if (alphaNetContainsHashedField) {
             // example of what this will look like
@@ -66,7 +68,7 @@ public class AssertHandler extends SwitchCompilerHandler {
 
     @Override
     public void startBetaNode(BetaNode betaNode) {
-        builder.append(getVariableName(betaNode)).append(".assertObject(").
+        builder.append(getVariableName(betaNode)).append(ASSERT_OBJECT_CALL).
                 append(FACT_HANDLE_PARAM_NAME).append(",").
                 append(PROP_CONTEXT_PARAM_NAME).append(",").
                 append(WORKING_MEMORY_PARAM_NAME).append(");").append(NEWLINE);
@@ -75,7 +77,7 @@ public class AssertHandler extends SwitchCompilerHandler {
 
     @Override
     public void startWindowNode(WindowNode windowNode) {
-        builder.append(getVariableName(windowNode)).append(".assertObject(").
+        builder.append(getVariableName(windowNode)).append(ASSERT_OBJECT_CALL).
                 append(FACT_HANDLE_PARAM_NAME).append(",").
                 append(PROP_CONTEXT_PARAM_NAME).append(",").
                 append(WORKING_MEMORY_PARAM_NAME).append(");").append(NEWLINE);
@@ -83,7 +85,7 @@ public class AssertHandler extends SwitchCompilerHandler {
 
     @Override
     public void startLeftInputAdapterNode(LeftInputAdapterNode leftInputAdapterNode) {
-        builder.append(getVariableName(leftInputAdapterNode)).append(".assertObject(").
+        builder.append(getVariableName(leftInputAdapterNode)).append(ASSERT_OBJECT_CALL).
                 append(FACT_HANDLE_PARAM_NAME).append(",").
                 append(PROP_CONTEXT_PARAM_NAME).append(",").
                 append(WORKING_MEMORY_PARAM_NAME).append(");").append(NEWLINE);
@@ -131,10 +133,5 @@ public class AssertHandler extends SwitchCompilerHandler {
     public void endObjectTypeNode(ObjectTypeNode objectTypeNode) {
         // close the assertObject method
         builder.append("}").append(NEWLINE);
-    }
-
-    @Override
-    public void nullCaseAlphaNodeStart(AlphaNode hashedAlpha) {
-        super.nullCaseAlphaNodeStart(hashedAlpha);
     }
 }

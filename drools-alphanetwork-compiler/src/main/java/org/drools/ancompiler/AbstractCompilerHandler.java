@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.core.reteoo.compiled;
+package org.drools.ancompiler;
 
 import org.drools.core.base.ClassFieldReader;
 import org.drools.core.reteoo.AlphaNode;
@@ -73,7 +73,7 @@ abstract class AbstractCompilerHandler extends NetworkHandlerAdaptor {
      * @return variable name
      * @see Class#getSimpleName()
      */
-    private String getVariableName(Class clazz, int nodeId) {
+    private String getVariableName(Class<?> clazz, int nodeId) {
         String type = clazz.getSimpleName();
         return Character.toLowerCase(type.charAt(0)) + type.substring(1) + nodeId;
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.core.reteoo.compiled;
+package org.drools.ancompiler;
 
 import org.drools.core.common.NetworkNode;
 import org.drools.core.reteoo.*;
@@ -36,6 +36,8 @@ public class SetNodeReferenceHandler extends AbstractCompilerHandler {
             + PARAM_TYPE + " " + PARAM_NAME + "){";
 
     private final StringBuilder builder;
+    private static final String CASE = "case ";
+    private static final String BREAK = "break;";
 
     public SetNodeReferenceHandler(StringBuilder builder) {
         this.builder = builder;
@@ -85,9 +87,9 @@ public class SetNodeReferenceHandler extends AbstractCompilerHandler {
         //      variableConstraint24 = (VariableConstraint) ((AlphaNode) node).getConstraint();
         //      break;
 
-        builder.append("case ").append(alphaNode.getId()).append(": ").append(NEWLINE);
+        builder.append(CASE).append(alphaNode.getId()).append(": ").append(NEWLINE);
         builder.append(getVariableAssignmentStatement(alphaNode, PARAM_NAME)).append(NEWLINE);
-        builder.append("break;").append(NEWLINE);
+        builder.append(BREAK).append(NEWLINE);
     }
 
     @Override
@@ -97,9 +99,9 @@ public class SetNodeReferenceHandler extends AbstractCompilerHandler {
         //      notNode65 = (NodeNode) node;
         //      break;
 
-        builder.append("case ").append(betaNode.getId()).append(": ").append(NEWLINE);
+        builder.append(CASE).append(betaNode.getId()).append(": ").append(NEWLINE);
         builder.append(getVariableAssignmentStatement(betaNode, PARAM_NAME)).append(NEWLINE);
-        builder.append("break;").append(NEWLINE);
+        builder.append(BREAK).append(NEWLINE);
     }
 
     @Override
@@ -109,9 +111,9 @@ public class SetNodeReferenceHandler extends AbstractCompilerHandler {
         //      notNode65 = (NodeNode) node;
         //      break;
 
-        builder.append("case ").append(windowNode.getId()).append(": ").append(NEWLINE);
+        builder.append(CASE).append(windowNode.getId()).append(": ").append(NEWLINE);
         builder.append(getVariableAssignmentStatement(windowNode, PARAM_NAME)).append(NEWLINE);
-        builder.append("break;").append(NEWLINE);
+        builder.append(BREAK).append(NEWLINE);
     }
 
     @Override
@@ -120,8 +122,8 @@ public class SetNodeReferenceHandler extends AbstractCompilerHandler {
         // case 5:
         //      leftInputAdapterNode5 = (LeftInputAdapterNode) node;
         //      break;
-        builder.append("case ").append(leftInputAdapterNode.getId()).append(": ").append(NEWLINE);
+        builder.append(CASE).append(leftInputAdapterNode.getId()).append(": ").append(NEWLINE);
         builder.append(getVariableAssignmentStatement(leftInputAdapterNode, PARAM_NAME)).append(NEWLINE);
-        builder.append("break;").append(NEWLINE);
+        builder.append(BREAK).append(NEWLINE);
     }
 }

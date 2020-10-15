@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.core.reteoo.compiled;
+package org.drools.ancompiler;
 
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.BetaNode;
@@ -23,12 +23,9 @@ import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.WindowNode;
 import org.drools.core.rule.IndexableConstraint;
 
-/**
- * todo: document
- */
 public class ModifyHandler extends SwitchCompilerHandler {
 
-    private static final String ASSERT_METHOD_SIGNATURE = "public final void modifyObject("
+    private static final String ASSERT_METHOD_SIGNATURE = "public final void propagateModifyObject("
             + FACT_HANDLE_PARAM_TYPE + " " + FACT_HANDLE_PARAM_NAME + ","
             + MODIFY_PREVIOUS_TUPLE_NAME + " " + MODIFY_PREVIOUS_TUPLE_PARAM_NAME + ","
             + PROP_CONTEXT_PARAM_TYPE + " " + PROP_CONTEXT_PARAM_NAME + ","
@@ -36,7 +33,7 @@ public class ModifyHandler extends SwitchCompilerHandler {
 
     /**
      * This flag is used to instruct the AssertHandler to tell it to generate a local varible
-     * in the {@link org.kie.reteoo.compiled.CompiledNetwork#assertObject} for holding the value returned
+     * in the {@link org.kie.reteoo.compiled.CompiledNetwork#propagateAssertObject} for holding the value returned
      * from the {@link org.kie.common.InternalFactHandle#getFactHandle()}.
      *
      * This is only needed if there is at least 1 set of hashed alpha nodes in the network
@@ -144,10 +141,5 @@ public class ModifyHandler extends SwitchCompilerHandler {
     public void endObjectTypeNode(ObjectTypeNode objectTypeNode) {
         // close the assertObject method
         builder.append("}").append(NEWLINE);
-    }
-
-    @Override
-    public void nullCaseAlphaNodeStart(AlphaNode hashedAlpha) {
-        super.nullCaseAlphaNodeStart(hashedAlpha);
     }
 }

@@ -1,4 +1,20 @@
-package org.drools.core.reteoo.compiled;
+/*
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.drools.ancompiler;
 
 import java.util.stream.Stream;
 
@@ -10,12 +26,12 @@ import org.drools.core.rule.IndexableConstraint;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.PropagationContext;
 
-abstract public class SwitchCompilerHandler extends AbstractCompilerHandler {
+public abstract class SwitchCompilerHandler extends AbstractCompilerHandler {
 
     protected static final String MODIFY_PREVIOUS_TUPLE_NAME = ModifyPreviousTuples.class.getName();
     protected static final String MODIFY_PREVIOUS_TUPLE_PARAM_NAME = "modifyPreviousTuples";
     protected final StringBuilder builder;
-    private Class fieldType;
+    private Class<?> fieldType;
 
     static final String LOCAL_FACT_VAR_NAME = "fact";
     protected static final String FACT_HANDLE_PARAM_TYPE = InternalFactHandle.class.getName();
@@ -25,7 +41,7 @@ abstract public class SwitchCompilerHandler extends AbstractCompilerHandler {
     static final String FACT_HANDLE_PARAM_NAME = "handle";
     static final String PROP_CONTEXT_PARAM_NAME = "context";
     static final String WORKING_MEMORY_PARAM_NAME = "wm";
-    static final String ASSERT_METHOD_SIGNATURE = "public final void assertObject("
+    static final String ASSERT_METHOD_SIGNATURE = "public final void propagateAssertObject("
             + FACT_HANDLE_PARAM_TYPE + " " + FACT_HANDLE_PARAM_NAME + ","
             + PROP_CONTEXT_PARAM_TYPE + " " + PROP_CONTEXT_PARAM_NAME + ","
             + WORKING_MEMORY_PARAM_TYPE + " " + WORKING_MEMORY_PARAM_NAME + "){";

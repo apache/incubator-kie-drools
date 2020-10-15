@@ -16,7 +16,22 @@
 
 package org.drools.compiler.kie.builder.impl;
 
-public interface KieBaseUpdater extends Runnable {
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
 
+public class KieBaseUpdatersImpl implements Consumer<KieBaseUpdaterFactory>,
+                                            KieBaseUpdaters {
 
+    List<KieBaseUpdaterFactory> children = new ArrayList<>();
+
+    @Override
+    public List<KieBaseUpdaterFactory> getChildren() {
+        return children;
+    }
+
+    @Override
+    public void accept(KieBaseUpdaterFactory o) {
+        children.add(o);
+    }
 }

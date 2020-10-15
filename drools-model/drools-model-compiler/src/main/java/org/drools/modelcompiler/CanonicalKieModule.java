@@ -19,6 +19,7 @@ package org.drools.modelcompiler;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UncheckedIOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,11 +36,17 @@ import java.util.stream.Stream;
 
 import org.appformer.maven.support.DependencyFilter;
 import org.appformer.maven.support.PomModel;
+import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kie.builder.impl.FileKieModule;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
-import org.drools.compiler.kie.builder.impl.KieBaseUpdateContext;
+import org.drools.compiler.kie.builder.impl.KieBaseUpdaterImplContext;
+import org.drools.compiler.kie.builder.impl.KieBaseUpdater;
+import org.drools.compiler.kie.builder.impl.KieBaseUpdaterOptions;
+import org.drools.compiler.kie.builder.impl.KieBaseUpdaters;
+import org.drools.compiler.kie.builder.impl.KieBaseUpdatersContext;
+import org.drools.compiler.kie.builder.impl.KieContainerImpl;
 import org.drools.compiler.kie.builder.impl.KieProject;
 import org.drools.compiler.kie.builder.impl.MemoryKieModule;
 import org.drools.compiler.kie.builder.impl.ResultsImpl;
@@ -71,6 +78,7 @@ import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.process.Process;
+import org.kie.api.internal.utils.ServiceRegistry;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
@@ -81,7 +89,10 @@ import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.ResourceChange;
 import org.kie.internal.builder.ResourceChangeSet;
+import org.kie.internal.builder.conf.AlphaNetworkCompilerOption;
 
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 
 import static org.drools.compiler.kie.builder.impl.AbstractKieModule.checkStreamMode;
@@ -94,6 +105,7 @@ public class CanonicalKieModule implements InternalKieModule {
     public static final String PROJECT_MODEL_CLASS = "org.drools.project.model.ProjectModel";
     public static final String MODEL_FILE_DIRECTORY = "META-INF/kie/";
     public static final String MODEL_FILE_NAME = "drools-model";
+    public static final String ANC_FILE_NAME = "alpha-network-compiler";
     public static final String MODEL_VERSION = "Drools-Model-Version:";
 
     private static final String PROJECT_MODEL_RESOURCE_CLASS = PROJECT_MODEL_CLASS.replace('.', '/') + ".class";
@@ -194,6 +206,10 @@ public class CanonicalKieModule implements InternalKieModule {
         return MODEL_FILE_DIRECTORY + releaseId.getGroupId() + "/" + releaseId.getArtifactId() + "/" + MODEL_FILE_NAME;
     }
 
+    public static String getANCFile(ReleaseId releaseId) {
+        return MODEL_FILE_DIRECTORY + releaseId.getGroupId() + "/" + releaseId.getArtifactId() + "/" + ANC_FILE_NAME;
+    }
+
     @Override
     public Map<String, byte[]> getClassesMap() {
         return internalKieModule.getClassesMap();
@@ -216,6 +232,41 @@ public class CanonicalKieModule implements InternalKieModule {
 
         buildNonNativeResources( kBaseModel, kieProject, messages, kieBase );
         return kieBase;
+    }
+
+    @Override
+    public void afterKieBaseCreationUpdate(String name, InternalKnowledgeBase kBase) {
+        KnowledgeBuilder knowledgeBuilderForKieBase = getKnowledgeBuilderForKieBase(name);
+
+
+        final List<KieBaseUpdaterOptions.OptionEntry> options;
+        if(knowledgeBuilderForKieBase instanceof KnowledgeBuilderImpl) {// When using executable module in tests
+            KnowledgeBuilderImpl knowledgeBuilderForImpl = (KnowledgeBuilderImpl) knowledgeBuilderForKieBase;
+            KnowledgeBuilderConfigurationImpl builderConfiguration = knowledgeBuilderForImpl.getBuilderConfiguration();
+            options = singletonList(
+                    new KieBaseUpdaterOptions.OptionEntry(
+                            AlphaNetworkCompilerOption.class,
+                            builderConfiguration.getAlphaNetworkCompilerOption()));
+        } else if(resourceFileExists(getANCFile(internalKieModule.getReleaseId()))) { // executable model with ANC
+            options = singletonList(
+                    new KieBaseUpdaterOptions.OptionEntry(
+                            AlphaNetworkCompilerOption.class,
+                            AlphaNetworkCompilerOption.LOAD));
+        } else { // Default case when loaded from executable model kjar
+            options = emptyList();
+        }
+
+        KieContainerImpl.CompositeRunnable compositeUpdater = new KieContainerImpl.CompositeRunnable();
+        KieBaseUpdaters updaters = ServiceRegistry.getService(KieBaseUpdaters.class);
+        updaters.getChildren()
+                .stream()
+                .map(kbu -> kbu.create(new KieBaseUpdatersContext(new KieBaseUpdaterOptions(options),
+                                                              kBase.getRete(),
+                                                              kBase.getRootClassLoader()
+                )))
+                .forEach(compositeUpdater::add);
+
+        compositeUpdater.run();
     }
 
     private void buildNonNativeResources( KieBaseModelImpl kBaseModel, KieProject kieProject, ResultsImpl messages, InternalKnowledgeBase kieBase ) {
@@ -416,13 +467,7 @@ public class CanonicalKieModule implements InternalKieModule {
     private Collection<String> findRuleClassesNames() {
         String modelFiles;
         ReleaseId releaseId = internalKieModule.getReleaseId();
-        String modelFileName = getModelFileWithGAV(releaseId);
-        try {
-            Resource modelFile = internalKieModule.getResource(modelFileName);
-            modelFiles = new String(IoUtils.readBytesFromInputStream(modelFile.getInputStream()));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        modelFiles = readExistingResourceWithName(getModelFileWithGAV(releaseId));
 
         String[] lines = modelFiles.split("\n");
         String header = lines[0];
@@ -435,6 +480,22 @@ public class CanonicalKieModule implements InternalKieModule {
         }
 
         return Stream.of(lines).skip(1).collect(toList());
+    }
+
+    private String readExistingResourceWithName(String fileName) {
+        String modelFiles;
+        try {
+            Resource modelFile = internalKieModule.getResource(fileName);
+            modelFiles = new String(IoUtils.readBytesFromInputStream(modelFile.getInputStream()));
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+        return modelFiles;
+    }
+
+    private boolean resourceFileExists(String fileName) {
+        Resource modelFile = internalKieModule.getResource(fileName);
+        return modelFile != null;
     }
 
     @Override
@@ -624,7 +685,7 @@ public class CanonicalKieModule implements InternalKieModule {
     }
 
     @Override
-    public Runnable createKieBaseUpdater(KieBaseUpdateContext context) {
+    public KieBaseUpdater createKieBaseUpdater(KieBaseUpdaterImplContext context) {
         return new CanonicalKieBaseUpdater(context);
     }
 

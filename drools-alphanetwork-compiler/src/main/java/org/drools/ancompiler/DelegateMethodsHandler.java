@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.core.reteoo.compiled;
+package org.drools.ancompiler;
 
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.BetaNode;
@@ -25,7 +25,7 @@ public class DelegateMethodsHandler extends AbstractCompilerHandler {
 
     private final StringBuilder builder;
 
-    private final static String FIXED_PART = "" +
+    private static final String FIXED_PART = "" +
             "\n" +
             "    public int getAssociationsSize() {\n" +
             "        return objectTypeNode.getAssociationsSize();\n" +

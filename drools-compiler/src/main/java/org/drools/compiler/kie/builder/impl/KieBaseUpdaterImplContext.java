@@ -18,12 +18,13 @@ package org.drools.compiler.kie.builder.impl;
 
 import java.util.Collection;
 
+import org.drools.compiler.builder.InternalKnowledgeBuilder;
 import org.drools.compiler.kie.util.KieJarChangeSet;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.kie.api.builder.ReleaseId;
 
-public class KieBaseUpdateContext {
+public class KieBaseUpdaterImplContext {
 
     public final KieProject kProject;
     public final InternalKnowledgeBase kBase;
@@ -37,11 +38,13 @@ public class KieBaseUpdateContext {
     public final ResultsImpl results;
     public final KieBaseModelImpl newKieBaseModel;
     public final KieBaseModelImpl currentKieBaseModel;
+    public final  InternalKnowledgeBuilder kbuilder;
 
-    public KieBaseUpdateContext( KieProject kProject, InternalKnowledgeBase kBase, InternalKieModule currentKM,
-                                 InternalKieModule newKM, KieJarChangeSet cs, Collection<Class<?>> modifiedClasses,
-                                 boolean modifyingUsedClass, Collection<String> unchangedResources, ResultsImpl results,
-                                 KieBaseModelImpl newKieBaseModel, KieBaseModelImpl currentKieBaseModel ) {
+    public KieBaseUpdaterImplContext(KieProject kProject, InternalKnowledgeBase kBase, InternalKieModule currentKM,
+                                     InternalKieModule newKM, KieJarChangeSet cs, Collection<Class<?>> modifiedClasses,
+                                     boolean modifyingUsedClass, Collection<String> unchangedResources, ResultsImpl results,
+                                     KieBaseModelImpl newKieBaseModel, KieBaseModelImpl currentKieBaseModel,
+                                     InternalKnowledgeBuilder kbuilder) {
         this.kProject = kProject;
         this.kBase = kBase;
         this.currentKM = currentKM;
@@ -54,5 +57,6 @@ public class KieBaseUpdateContext {
         this.results = results;
         this.newKieBaseModel = newKieBaseModel;
         this.currentKieBaseModel = currentKieBaseModel;
+        this.kbuilder = kbuilder;
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.core.reteoo.compiled;
+package org.drools.ancompiler;
 
 import org.drools.core.base.ValueType;
 import org.drools.core.reteoo.AlphaNode;
@@ -58,14 +58,14 @@ public class DeclarationsHandler extends AbstractCompilerHandler {
 
     public DeclarationsHandler(StringBuilder builder) {
         this.builder = builder;
-        this.hashedAlphaDeclarations = new LinkedList<HashedAlphasDeclaration>();
+        this.hashedAlphaDeclarations = new LinkedList<>();
     }
 
     private String getVariableDeclaration(AlphaNode alphaNode) {
         Class<?> variableType = getVariableType(alphaNode);
         String variableName = getVariableName(alphaNode);
         // comment for variable declaration is just the toString of the node
-        String comment = alphaNode.toString().replaceAll("\\n", "");
+        String comment = alphaNode.toString().replace("\\n", "");
 
         return PRIVATE_MODIFIER + " " + variableType.getName() + " " + variableName + "; // " + comment;
     }
@@ -90,7 +90,6 @@ public class DeclarationsHandler extends AbstractCompilerHandler {
         Class<?> declarationType = Map.class;
         Class<?> createType = HashMap.class;
 
-        // todo JANINO doesn't support generics
         // return "private java.util.Map<Object,Integer> " + variableName + " = new java.util.HashMap<Object,Integer>();";
         return PRIVATE_MODIFIER + " " + declarationType.getName() + " " + varName
                 + " = new " + createType.getName() + "();";

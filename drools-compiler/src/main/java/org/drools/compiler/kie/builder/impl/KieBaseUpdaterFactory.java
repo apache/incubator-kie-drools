@@ -16,7 +16,7 @@
 
 package org.drools.compiler.kie.builder.impl;
 
-public interface KieBaseUpdater extends Runnable {
+public interface KieBaseUpdaterFactory {
 
-
+    KieBaseUpdater create(KieBaseUpdatersContext ctx);
 }

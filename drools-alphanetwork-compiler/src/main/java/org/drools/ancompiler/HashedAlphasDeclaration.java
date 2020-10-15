@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.core.reteoo.compiled;
+package org.drools.ancompiler;
 
 import org.drools.core.base.ValueType;
 
@@ -37,7 +37,7 @@ public class HashedAlphasDeclaration {
      * This map contains keys which are different values of the same field and the node id that of the
      * {@link org.kie.common.NetworkNode} the value is from.
      */
-    private final Map<Object, String> hashedValuesToNodeIds = new HashMap<Object, String>();
+    private final Map<Object, String> hashedValuesToNodeIds = new HashMap<>();
 
     HashedAlphasDeclaration(String variableName,ValueType valueType) {
         this.variableName = variableName;

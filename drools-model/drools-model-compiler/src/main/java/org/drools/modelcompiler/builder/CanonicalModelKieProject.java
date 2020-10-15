@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.function.BiFunction;
 import java.util.stream.Stream;
 
+import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.commons.jci.compilers.CompilationResult;
 import org.drools.compiler.compiler.io.File;
 import org.drools.compiler.compiler.io.memory.MemoryFile;
@@ -61,7 +62,12 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
             // if the KieBase belongs to a different kmodule it is not necessary to build it
             return null;
         }
-        ModelBuilderImpl<PackageSources> modelBuilder = new ModelBuilderImpl<>(PackageSources::dumpSources, getBuilderConfiguration( kBaseModel, kModule ), kModule.getReleaseId(), isPattern, false);
+        KnowledgeBuilderConfigurationImpl builderConfiguration = getBuilderConfiguration(kBaseModel, kModule);
+        ModelBuilderImpl<PackageSources> modelBuilder = new ModelBuilderImpl<>(PackageSources::dumpSources,
+                                                                               builderConfiguration,
+                                                                               kModule.getReleaseId(),
+                                                                               isPattern,
+                                                                               false);
         modelBuilders.add(modelBuilder);
         return modelBuilder;
     }

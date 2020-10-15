@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.modelcompiler;
+package org.drools.ancompiler;
 
 import org.kie.api.builder.ReleaseId;
 
