@@ -137,7 +137,7 @@ pipeline {
             }
             post {
                 always {
-                    saveReports()
+                    saveReports(params.SKIP_TESTS)
                 }
             }
         }
