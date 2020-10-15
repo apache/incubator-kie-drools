@@ -1,0 +1,12 @@
+package org.jbpm.bpmn2
+
+import org.jbpm.bpmn2.objects.Order;
+
+rule "Validate Order" ruleflow-group "validate-order"
+	when
+		$o: Order(id != null, id != "")
+	then
+		modify ($o) {
+			setValid(true);
+		}
+end

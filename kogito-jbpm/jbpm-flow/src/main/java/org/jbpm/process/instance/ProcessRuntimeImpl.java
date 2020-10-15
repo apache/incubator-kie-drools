@@ -31,12 +31,12 @@ import org.drools.core.event.ProcessEventSupport;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.marshalling.impl.MarshallerWriteContext;
-import org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Action;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.time.TimeUtils;
 import org.drools.core.time.TimerService;
 import org.drools.core.time.impl.CommandServiceTimerJobFactoryManager;
 import org.drools.core.time.impl.ThreadSafeTrackableTimeJobFactoryManager;
+import org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Action;
 import org.jbpm.process.core.event.EventFilter;
 import org.jbpm.process.core.event.EventTransformer;
 import org.jbpm.process.core.event.EventTypeFilter;
@@ -62,6 +62,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.EventListener;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItemManager;
+import org.kie.api.runtime.rule.AgendaFilter;
 import org.kie.internal.command.RegistryContext;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
@@ -160,38 +161,61 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
         return result;
     }
 
-    public ProcessInstance startProcess(final String processId) {
-        return startProcess(processId, null);
+    @Override
+    public ProcessInstance startProcess(String processId) {
+        return startProcess(processId, null, null, null);
     }
 
-    public ProcessInstance startProcess(String processId,
-                                        Map<String, Object> parameters) {
-        return startProcess(processId, parameters, null);
+    @Override
+    public ProcessInstance startProcess(String processId, Map<String, Object> parameters) {
+        return startProcess(processId, parameters, null, null);
     }
 
-    public ProcessInstance startProcess(String processId,
-                                        Map<String, Object> parameters, String trigger) {
+    public ProcessInstance startProcess(String processId, Map<String, Object> parameters, String trigger) {
+        return startProcess(processId, parameters, trigger, null);
+    }
+
+    @Override
+    public ProcessInstance startProcess(String processId, AgendaFilter agendaFilter) {
+        return startProcess(processId, null, null, agendaFilter);
+    }
+
+    @Override
+    public ProcessInstance startProcess(String processId, Map<String, Object> parameters, AgendaFilter agendaFilter) {
+        return startProcess(processId, parameters, null, agendaFilter);
+    }
+
+    private ProcessInstance startProcess(String processId, Map<String, Object> parameters, String trigger, AgendaFilter agendaFilter) {
         ProcessInstance processInstance = createProcessInstance(processId, parameters);
-        if (processInstance != null) {
+        if ( processInstance != null ) {
             // start process instance
-            return startProcessInstance(processInstance.getId(), trigger);
+            return startProcessInstance(processInstance.getId(), trigger, agendaFilter);
         }
         return null;
     }
 
+    @Override
     public ProcessInstance createProcessInstance(String processId,
                                                  Map<String, Object> parameters) {
         return createProcessInstance(processId, null, parameters);
     }
 
+    @Override
     public ProcessInstance startProcessInstance(String processInstanceId, String trigger) {
+        return startProcessInstance( processInstanceId, trigger, null );
+    }
+
+    private ProcessInstance startProcessInstance(String processInstanceId, String trigger, AgendaFilter agendaFilter) {
         try {
             kruntime.startOperation();
 
             ProcessInstance processInstance = getProcessInstance(processInstanceId);
-            ((org.jbpm.process.instance.ProcessInstance) processInstance).configureSLA();
+            org.jbpm.process.instance.ProcessInstance jbpmProcessInstance = (org.jbpm.process.instance.ProcessInstance) processInstance;
+
+            jbpmProcessInstance.configureSLA();
             getProcessEventSupport().fireBeforeProcessStarted(processInstance, kruntime);
-            ((org.jbpm.process.instance.ProcessInstance) processInstance).start(trigger);
+            jbpmProcessInstance.setAgendaFilter( agendaFilter );
+            jbpmProcessInstance.start(trigger);
             getProcessEventSupport().fireAfterProcessStarted(processInstance, kruntime);
             return processInstance;
         } finally {

@@ -791,7 +791,7 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
     public void testNoneIntermediateThrow() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-IntermediateThrowEventNone.bpmn2");
         KieSession ksession = createKnowledgeSession(kbase);
-        ProcessInstance processInstance = ksession.startProcess("NoneIntermediateEvent", null);
+        ProcessInstance processInstance = ksession.startProcess("NoneIntermediateEvent");
         assertThat(processInstance.getState()).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
     

@@ -24,8 +24,8 @@ import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.rule.builder.PackageBuildContext;
-import org.drools.compiler.rule.builder.dialect.mvel.MVELAnalysisResult;
-import org.drools.compiler.rule.builder.dialect.mvel.MVELDialect;
+import org.drools.mvel.builder.MVELAnalysisResult;
+import org.drools.mvel.builder.MVELDialect;
 import org.jbpm.process.builder.ProcessBuildContext;
 
 public class AbstractMVELBuilder {
@@ -84,11 +84,11 @@ public class AbstractMVELBuilder {
     }
    
 
-    protected MVELAnalysisResult getAnalysis(final PackageBuildContext context,
-                                         final BaseDescr descr, 
-                                         MVELDialect dialect,
-                                         final String text,
-                                         Map<String,Class<?>> variables) { 
+    protected MVELAnalysisResult getAnalysis( final PackageBuildContext context,
+                                              final BaseDescr descr,
+                                              MVELDialect dialect,
+                                              final String text,
+                                              Map<String,Class<?>> variables) {
        
         boolean typeSafe = context.isTypesafe();
         

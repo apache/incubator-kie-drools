@@ -1646,7 +1646,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         KieBase kbase = createKnowledgeBase("BPMN2-IntermediateThrowEventNone.bpmn2");
         ksession = createKnowledgeSession(kbase);
         ProcessInstance processInstance = ksession.startProcess(
-                "NoneIntermediateEvent", null);
+                "NoneIntermediateEvent");
         assertProcessInstanceCompleted(processInstance);
 
     }

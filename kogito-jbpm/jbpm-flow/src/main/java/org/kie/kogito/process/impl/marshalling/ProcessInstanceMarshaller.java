@@ -17,18 +17,17 @@ package org.kie.kogito.process.impl.marshalling;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.ObjectInputStream;
 import java.util.Collections;
 
 import org.drools.core.impl.EnvironmentImpl;
 import org.drools.core.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
-import org.drools.core.marshalling.impl.KogitoMarshallerReaderContext;
-import org.drools.core.marshalling.impl.KogitoProcessMarshallerWriteContext;
-import org.drools.core.marshalling.impl.KogitoSerializablePlaceholderResolverStrategy;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
-import org.drools.core.marshalling.impl.PersisterHelper;
 import org.drools.core.marshalling.impl.SerializablePlaceholderResolverStrategy;
+import org.drools.serialization.protobuf.PersisterHelper;
 import org.jbpm.marshalling.impl.JBPMMessages;
+import org.jbpm.marshalling.impl.KogitoMarshallerReaderContext;
+import org.jbpm.marshalling.impl.KogitoProcessMarshallerWriteContext;
+import org.drools.core.marshalling.impl.KogitoSerializablePlaceholderResolverStrategy;
 import org.jbpm.marshalling.impl.ProcessMarshallerRegistry;
 import org.jbpm.marshalling.impl.ProtobufRuleFlowProcessInstanceMarshaller;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
@@ -77,7 +76,7 @@ public class ProcessInstanceMarshaller {
             context.setState(pi.getState());
 
             String processType = pi.getProcess().getType();
-            context.stream.writeUTF(processType);
+            context.writeUTF(processType);
 
             org.jbpm.marshalling.impl.ProcessInstanceMarshaller marshaller = ProcessMarshallerRegistry.INSTANCE.getMarshaller(processType);
 
@@ -99,8 +98,7 @@ public class ProcessInstanceMarshaller {
             MarshallerReaderContext context = new KogitoMarshallerReaderContext(bais,
                                                                                 Collections.singletonMap(process.id(), ((AbstractProcess<?>) process).process()),
                                                                                 null, null, null, this.env );
-            ObjectInputStream stream = context.stream;
-            String processInstanceType = stream.readUTF();
+            String processInstanceType = context.readUTF();
 
             org.jbpm.marshalling.impl.ProcessInstanceMarshaller marshaller = ProcessMarshallerRegistry.INSTANCE.getMarshaller(processInstanceType);
 

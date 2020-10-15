@@ -28,13 +28,14 @@ import java.util.Map;
 
 import com.google.protobuf.ExtensionRegistry;
 import org.drools.core.common.DefaultFactHandle;
-import org.drools.core.marshalling.impl.KogitoMarshallerReaderContext;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.marshalling.impl.MarshallerWriteContext;
-import org.drools.core.marshalling.impl.PersisterHelper;
-import org.drools.core.marshalling.impl.ProtobufMessages.Header;
+import org.drools.serialization.protobuf.ProtobufMessages.Header;
 import org.drools.core.process.instance.KogitoWorkItem;
 import org.drools.core.process.instance.impl.KogitoWorkItemImpl;
+import org.drools.serialization.protobuf.PersisterHelper;
 import org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent;
 import org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry;
 import org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceType;
@@ -705,12 +706,14 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
     
     
     // Input methods
-    public ProcessInstance readProcessInstance(MarshallerReaderContext c) throws IOException {
-        KogitoMarshallerReaderContext context = (KogitoMarshallerReaderContext)c;
-        JBPMMessages.ProcessInstance _instance = (org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance) context.parameterObject;
+    public ProcessInstance readProcessInstance(MarshallerReaderContext context) throws IOException {
+        InternalKnowledgeBase ruleBase = context.getKnowledgeBase();
+        InternalWorkingMemory wm = context.getWorkingMemory();
+
+        JBPMMessages.ProcessInstance _instance = (org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance) context.getParameterObject();
         if( _instance == null ) {
             // try to parse from the stream
-            ExtensionRegistry registry = PersisterHelper.buildRegistry( context, null ); 
+            ExtensionRegistry registry = PersisterHelper.buildRegistry( context, null );
             Header _header;
             try {
 
@@ -730,11 +733,14 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
         processInstance.setProcessId( processId );
         String processXml = _instance.getProcessXml();
         Process process = null;
-        if (processXml != null && processXml.trim().length() > 0) {
+        if (context instanceof KogitoMarshallerReaderContext) {
+            process = (( KogitoMarshallerReaderContext ) context).getProcess( processId );
+            processInstance.setProcess( process );
+        } else if (processXml != null && processXml.trim().length() > 0) {
         	processInstance.setProcessXml( processXml );
         	process = processInstance.getProcess();
         } else {
-            process = context.processes.get( processId );
+            process = ruleBase.getProcess( processId );
             if (process == null) {
             	throw new RuntimeException("Could not find process " + processId + " when restoring process instance " + processInstance.getId());
             }
@@ -755,7 +761,7 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
         }
         processInstance.internalSetSlaTimerId(_instance.getSlaTimerId());
         
-        processInstance.setKnowledgeRuntime( context.wm != null ? context.wm.getKnowledgeRuntime() : null);
+        processInstance.setKnowledgeRuntime( context.getWorkingMemory() != null ? context.getWorkingMemory().getKnowledgeRuntime() : null);
         
         processInstance.internalSetErrorNodeId(_instance.getErrorNodeId());
         processInstance.internalSetErrorMessage(_instance.getErrorMessage());
@@ -775,7 +781,7 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
         }
 
         for ( JBPMMessages.ProcessInstance.NodeInstance _node : _instance.getNodeInstanceList() ) {
-            context.parameterObject = _node;
+            context.setParameterObject( _node );
             readNodeInstance( context, 
                               processInstance, 
                               processInstance );
@@ -823,7 +829,7 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
     public NodeInstance readNodeInstance(MarshallerReaderContext context,
                                          NodeInstanceContainer nodeInstanceContainer,
                                          WorkflowProcessInstance processInstance) throws IOException {
-        JBPMMessages.ProcessInstance.NodeInstance _node = (JBPMMessages.ProcessInstance.NodeInstance) context.parameterObject;
+        JBPMMessages.ProcessInstance.NodeInstance _node = (JBPMMessages.ProcessInstance.NodeInstance) context.getParameterObject();
         
         NodeInstanceImpl nodeInstance = readNodeInstanceContent( _node,
                                                                  context, 
@@ -865,7 +871,7 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
                     }
                 }
                 for ( JBPMMessages.ProcessInstance.NodeInstance _instance : _node.getContent().getComposite().getNodeInstanceList() ) {
-                    context.parameterObject = _instance;
+                    context.setParameterObject( _instance );
                     readNodeInstance( context,
                                       (CompositeContextNodeInstance) nodeInstance,
                                       processInstance );
@@ -885,7 +891,7 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
                 break;
             case FOR_EACH_NODE :
                 for ( JBPMMessages.ProcessInstance.NodeInstance _instance : _node.getContent().getForEach().getNodeInstanceList() ) {
-                    context.parameterObject = _instance;
+                    context.setParameterObject( _instance );
                     readNodeInstance( context,
                                       (ForEachNodeInstance) nodeInstance,
                                       processInstance );
@@ -908,7 +914,7 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
                 break;
             case EVENT_SUBPROCESS_NODE :
                 for ( JBPMMessages.ProcessInstance.NodeInstance _instance : _node.getContent().getComposite().getNodeInstanceList() ) {
-                    context.parameterObject = _instance;
+                    context.setParameterObject( _instance );
                     readNodeInstance( context,
                                       (EventSubProcessNodeInstance) nodeInstance,
                                       processInstance );

@@ -63,7 +63,7 @@ public class KogitoSerializablePlaceholderResolverStrategy implements ObjectMars
         SerializablePlaceholderStrategyContext ctx = (SerializablePlaceholderStrategyContext)context;
         int index = ctx.data.size();
         ctx.data.add( object );
-        return PersisterHelper.intToByteArray( index );
+        return MarshallingHelper.intToByteArray( index );
     }
 
     public Object unmarshal(String dataType,
@@ -72,7 +72,7 @@ public class KogitoSerializablePlaceholderResolverStrategy implements ObjectMars
                             byte[] object,
                             ClassLoader classloader) throws IOException, ClassNotFoundException {
         SerializablePlaceholderStrategyContext ctx = (SerializablePlaceholderStrategyContext)context;
-        return ctx.data.get( PersisterHelper.byteArrayToInt( object ) );
+        return ctx.data.get( MarshallingHelper.byteArrayToInt( object ) );
     }
 
     public Context createContext() {

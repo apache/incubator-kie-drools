@@ -155,9 +155,7 @@ public class PredictionCodegen extends AbstractGenerator {
             CompositeKnowledgeBuilder batch = modelBuilder.batch();
             List<KiePMMLModel> kiepmmlModels = resource.getKiePmmlModels();
             addModels(kiepmmlModels, resource, batch);
-            List<String> generatedRuleMappers = new ArrayList<>();
-            generatedFiles.addAll(generateRules(modelBuilder, batch, generatedRuleMappers));
-            addPredictionRulesMapper(kiepmmlModels.get(0).getKModulePackageName(), generatedRuleMappers);
+            generatedFiles.addAll(generateRules(modelBuilder, batch));
         }
         return generatedFiles;
     }
@@ -196,20 +194,10 @@ public class PredictionCodegen extends AbstractGenerator {
         }
     }
 
-    private void addPredictionRulesMapper(final String packageName, final List<String> generatedRuleMappers) {
-        String source = PredictionRuleMappersGenerator.getPredictionRuleMappersSource(packageName,
-                                                                                      generatedRuleMappers);
-        final String predictionRulesMapperPath = packageName + File.separator +
-                "PredictionRuleMappersImpl" +
-                ".java";
-        final String predictionRulesMapperClass = predictionRulesMapperPath.replace(File.separator, ".").replace(".java", "");
-        moduleGenerator.addPredictionRulesMapperClass(predictionRulesMapperClass);
-        storeFile(GeneratedFile.Type.CLASS, predictionRulesMapperPath, source);
-    }
+
 
     private List<GeneratedFile> generateRules(ModelBuilderImpl<KogitoPackageSources> modelBuilder,
-                                              CompositeKnowledgeBuilder batch,
-                                              List<String> generatedRuleMappers) {
+                                              CompositeKnowledgeBuilder batch) {
         try {
             batch.build();
         } catch (RuntimeException e) {
@@ -227,18 +215,15 @@ public class PredictionCodegen extends AbstractGenerator {
             throw new RuleCodegenError(modelBuilder.getErrors().getErrors());
         }
 
-        return generateModels(modelBuilder, generatedRuleMappers).stream().map(f -> new org.kie.kogito.codegen.GeneratedFile(
+        return generateModels(modelBuilder).stream().map(f -> new org.kie.kogito.codegen.GeneratedFile(
                 org.kie.kogito.codegen.GeneratedFile.Type.RULE,
                 f.getPath(), f.getData())).collect(toList());
     }
 
-    private List<org.drools.modelcompiler.builder.GeneratedFile> generateModels(ModelBuilderImpl<KogitoPackageSources> modelBuilder, List<String> generatedRuleMappers) {
+    private List<org.drools.modelcompiler.builder.GeneratedFile> generateModels(ModelBuilderImpl<KogitoPackageSources> modelBuilder) {
         List<org.drools.modelcompiler.builder.GeneratedFile> toReturn = new ArrayList<>();
         for (KogitoPackageSources pkgSources : modelBuilder.getPackageSources()) {
             pkgSources.collectGeneratedFiles(toReturn);
-            org.drools.modelcompiler.builder.GeneratedFile ruleMapperClassFile = getRuleMapperClass(pkgSources);
-            toReturn.add(ruleMapperClassFile);
-            generatedRuleMappers.add(ruleMapperClassFile.getPath().replace(File.separator, ".").replace(".java", ""));
             org.drools.modelcompiler.builder.GeneratedFile reflectConfigSource = pkgSources.getReflectConfigSource();
             if (reflectConfigSource != null) {
                 toReturn.add(new org.drools.modelcompiler.builder.GeneratedFile(org.drools.modelcompiler.builder.GeneratedFile.Type.RULE, "../../classes/" + reflectConfigSource.getPath(), new String(reflectConfigSource.getData(), StandardCharsets.UTF_8)));
@@ -247,20 +232,6 @@ public class PredictionCodegen extends AbstractGenerator {
         return toReturn;
     }
 
-    private org.drools.modelcompiler.builder.GeneratedFile getRuleMapperClass(KogitoPackageSources pkgSources) {
-        final String rulesFileName = pkgSources.getRulesFileName();
-        final String fullRuleName =
-                pkgSources.getModelsByUnit().values().stream().filter(i -> i.endsWith("." + rulesFileName))
-                        .findFirst().orElseThrow(() -> new RuntimeException("Failed to find mapped Rule file " + rulesFileName));
-        final String predictionRuleMapperDirectoryPath =
-                fullRuleName.substring(0, fullRuleName.lastIndexOf('.')).replace(".", File.separator);
-        final String predictionRuleMapperPath = predictionRuleMapperDirectoryPath + File.separator +
-                "PredictionRuleMapperImpl" +
-                ".java";
-        final String predictionRuleMapperSource =
-                PredictionRuleMapperGenerator.getPredictionRuleMapperSource(fullRuleName);
-        return new org.drools.modelcompiler.builder.GeneratedFile(org.drools.modelcompiler.builder.GeneratedFile.Type.CLASS, predictionRuleMapperPath, predictionRuleMapperSource);
-    }
 
     private void storeFile(GeneratedFile.Type type, String path, String source) {
         generatedFiles.add(new GeneratedFile(type, path, log(source).getBytes(StandardCharsets.UTF_8)));

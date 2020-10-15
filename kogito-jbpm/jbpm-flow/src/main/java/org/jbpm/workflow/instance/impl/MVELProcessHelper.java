@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import org.drools.core.util.MVELSafeHelper;
+import org.drools.mvel.MVELSafeHelper;
 import org.kie.soup.project.datamodel.commons.util.MVELEvaluator;
 import org.mvel2.ErrorDetail;
 import org.mvel2.MVEL;

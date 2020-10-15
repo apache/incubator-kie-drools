@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package org.drools.core.marshalling.impl;
+package org.jbpm.marshalling.impl;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,12 +22,16 @@ import java.util.Map;
 
 import org.drools.core.common.BaseNode;
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
+import org.drools.core.marshalling.impl.KogitoSerializablePlaceholderResolverStrategy;
+import org.drools.serialization.protobuf.ProtobufMarshallerReaderContext;
+import org.drools.serialization.protobuf.TimersInputMarshaller;
 import org.kie.api.definition.process.Process;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.marshalling.ObjectMarshallingStrategyStore;
 import org.kie.api.runtime.Environment;
 
-public class KogitoMarshallerReaderContext extends MarshallerReaderContext  {
+public class KogitoMarshallerReaderContext extends ProtobufMarshallerReaderContext {
 
     public Map<String, Process> processes = new HashMap<>();
 
@@ -75,13 +79,17 @@ public class KogitoMarshallerReaderContext extends MarshallerReaderContext  {
         super(stream, kBase, sinks, resolverStrategyFactory, timerReaders,
                 marshalProcessInstances, marshalWorkItems, env);
 
-        if (this.kBase != null) {
-            this.kBase.getProcesses().forEach( p -> this.processes.put(p.getId(), p));
+        if (this.getKnowledgeBase() != null) {
+            this.getKnowledgeBase().getProcesses().forEach( p -> this.processes.put(p.getId(), p));
         }
     }
 
     @Override
     protected ObjectMarshallingStrategy[] getMarshallingStrategy() {
         return new ObjectMarshallingStrategy[]{new KogitoSerializablePlaceholderResolverStrategy( ClassObjectMarshallingStrategyAcceptor.DEFAULT  )};
+    }
+
+    public Process getProcess(String processId) {
+        return processes.get( processId );
     }
 }

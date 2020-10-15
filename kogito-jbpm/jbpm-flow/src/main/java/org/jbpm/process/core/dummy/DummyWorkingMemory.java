@@ -492,6 +492,16 @@ public class DummyWorkingMemory implements InternalWorkingMemory,
     }
 
     @Override
+    public ProcessInstance startProcess(String processId, AgendaFilter agendaFilter) {
+        return getProcessRuntime().startProcess(processId, agendaFilter);
+    }
+
+    @Override
+    public ProcessInstance startProcess(String processId, Map<String, Object> parameters, AgendaFilter agendaFilter) {
+        return getProcessRuntime().startProcess(processId, parameters, agendaFilter);
+    }
+
+    @Override
     public ProcessInstance createProcessInstance(String processId, Map<String, Object> parameters) {
         return getProcessRuntime().createProcessInstance(processId, parameters);
     }

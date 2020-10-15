@@ -21,9 +21,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import org.drools.core.SessionConfiguration;
-import org.drools.core.impl.EnvironmentFactory;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.util.DroolsStreamUtils;
+import org.drools.core.impl.EnvironmentFactory;
 import org.kie.api.marshalling.Marshaller;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.runtime.KieSession;

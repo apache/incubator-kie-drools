@@ -18,6 +18,7 @@ package org.drools.statics;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,10 +54,9 @@ public class StaticServiceRegistry implements ServiceRegistry {
 
     private void wireServices() {
         serviceMap.put(org.kie.api.io.KieResources.class, SimpleInstanceCreator.instance("org.drools.core.io.impl.ResourceFactoryServiceImpl"));
-        serviceMap.put(org.kie.api.marshalling.KieMarshallers.class, SimpleInstanceCreator.instance("org.drools.core.marshalling.impl.MarshallerProviderImpl"));
         serviceMap.put(org.kie.api.concurrent.KieExecutors.class, SimpleInstanceCreator.instance("org.drools.core.concurrent.ExecutorProviderImpl"));
         serviceMap.put(org.kie.api.KieServices.class, SimpleInstanceCreator.instance("org.drools.compiler.kie.builder.impl.KieServicesImpl"));
-        serviceMap.put(org.kie.internal.builder.KnowledgeBuilderFactoryService.class, SimpleInstanceCreator.instance("org.drools.compiler.builder.impl.KogitoKnowledgeBuilderFactoryServiceImpl"));
+        serviceMap.put(org.kie.internal.builder.KnowledgeBuilderFactoryService.class, SimpleInstanceCreator.instance("org.drools.compiler.builder.impl.KnowledgeBuilderFactoryServiceImpl"));
         serviceMap.put(org.kie.kogito.rules.DataSource.Factory.class, SimpleInstanceCreator.instance("org.kie.kogito.rules.units.impl.DataSourceFactoryImpl"));
         serviceMap.put(org.kie.internal.ruleunit.RuleUnitComponentFactory.class, SimpleInstanceCreator.instance("org.kie.kogito.rules.units.impl.RuleUnitComponentFactoryImpl"));
         serviceMap.put(KieAssemblers.class, new StaticKieAssemblers());
@@ -72,9 +72,13 @@ public class StaticServiceRegistry implements ServiceRegistry {
 
         constructorMap.put("TimerService", SimpleInstanceCreator.constructor("org.drools.core.time.impl.JDKTimerService"));
 
+        // pmml
         registerKieRuntimeService("org.kie.pmml.evaluator.api.executor.PMMLRuntime", "org.kie.pmml.evaluator.core.service.PMMLRuntimeService", false);
         registerKieWeaverService("org.kie.pmml.evaluator.assembler.PMMLWeaverService", false);
 
+        // marshalling
+        registerService(org.kie.api.marshalling.KieMarshallers.class.getCanonicalName(), "org.drools.serialization.protobuf.MarshallerProviderImpl", false);
+        registerService("org.drools.compiler.kie.builder.impl.CompilationCacheProvider", "org.drools.serialization.protobuf.CompilationCacheProviderImpl", false);
     }
 
     private void registerService(String service, String implementation, boolean mandatory) {
@@ -115,6 +119,11 @@ public class StaticServiceRegistry implements ServiceRegistry {
     @Override
     public <T> T get(Class<T> cls) {
         return (T) serviceMap.get(cls);
+    }
+
+    @Override
+    public <T> List<T> getAll( Class<T> cls ) {
+        return Collections.singletonList( get(cls) );
     }
 
     public <T> T newInstance(String name) {

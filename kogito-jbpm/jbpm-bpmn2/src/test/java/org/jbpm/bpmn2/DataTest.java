@@ -20,17 +20,16 @@ import java.io.ByteArrayInputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-
 import org.jbpm.bpmn2.core.Association;
 import org.jbpm.bpmn2.core.DataStore;
 import org.jbpm.bpmn2.core.Definitions;
 import org.jbpm.bpmn2.xml.ProcessHandler;
 import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
@@ -38,7 +37,6 @@ import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -284,7 +282,7 @@ public class DataTest extends JbpmBpmn2TestCase {
 
                 });
         ProcessInstance processInstance = ksession
-                .startProcess("process", null);
+                .startProcess("process");
         
     }
 
@@ -308,7 +306,7 @@ public class DataTest extends JbpmBpmn2TestCase {
 
                 });
         ProcessInstance processInstance = ksession
-                .startProcess("process", null);
+                .startProcess("process");
         
     }
 
@@ -335,7 +333,7 @@ public class DataTest extends JbpmBpmn2TestCase {
 
                 });
         ProcessInstance processInstance = ksession
-                .startProcess("process", null);
+                .startProcess("process");
         
     }
 
@@ -459,7 +457,7 @@ public class DataTest extends JbpmBpmn2TestCase {
 
                 });
         ProcessInstance processInstance = ksession
-                .startProcess("process", null);
+                .startProcess("process");
         
     }
 
@@ -495,7 +493,7 @@ public class DataTest extends JbpmBpmn2TestCase {
 
                 });
         ProcessInstance processInstance = ksession
-                .startProcess("process", null);
+                .startProcess("process");
         
     }
 

@@ -24,7 +24,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.protobuf.util.JsonFormat;
 import org.bson.Document;
-import org.drools.core.marshalling.impl.KogitoProcessMarshallerWriteContext;
+import org.jbpm.marshalling.impl.KogitoProcessMarshallerWriteContext;
 import org.jbpm.marshalling.impl.JBPMMessages;
 import org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance;
 import org.kie.kogito.mongodb.marshalling.DocumentMarshallingException;
@@ -46,7 +46,7 @@ public class ProcessInstanceDocumentMapper implements BiFunction<KogitoProcessMa
             applyVariables(instanceNode, VARIABLE);
             doc.setProcessInstance(Optional.ofNullable(instanceNode).map(json -> Document.parse(json.toString())).orElse(null));
             if (context != null) {
-                doc.setStrategies(context.usedStrategies.entrySet().stream().collect(Collectors.toMap(e -> e.getKey().getName(), Map.Entry::getValue)));
+                doc.setStrategies(context.getUsedStrategies().entrySet().stream().collect(Collectors.toMap(e -> e.getKey().getName(), Map.Entry::getValue)));
             }
         } catch (Exception e) {
             throw new DocumentMarshallingException(e);

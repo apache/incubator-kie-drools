@@ -49,6 +49,7 @@ import org.jbpm.workflow.core.node.DataAssociation;
 import org.jbpm.workflow.core.node.RuleSetNode;
 import org.jbpm.workflow.core.node.RuleUnitFactory;
 import org.jbpm.workflow.core.node.Transformation;
+import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.jbpm.workflow.instance.WorkflowRuntimeException;
 import org.jbpm.workflow.instance.impl.MVELProcessHelper;
 import org.jbpm.workflow.instance.impl.NodeInstanceResolverFactory;
@@ -158,14 +159,15 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
                             .activateRuleFlowGroup(getRuleFlowGroup(), getProcessInstance().getId(), getUniqueId());
                 } else {
                     int fireLimit = DEFAULT_FIRE_RULE_LIMIT;
+                    WorkflowProcessInstance processInstance = getProcessInstance();
 
                     if (inputs.containsKey(FIRE_RULE_LIMIT_PARAMETER)) {
                         fireLimit = Integer.parseInt(inputs.get(FIRE_RULE_LIMIT_PARAMETER).toString());
                     }
                     ((KogitoInternalAgenda) kruntime.getAgenda())
-                            .activateRuleFlowGroup(getRuleFlowGroup(), getProcessInstance().getId(), getUniqueId());
+                            .activateRuleFlowGroup(getRuleFlowGroup(), processInstance.getId(), getUniqueId());
 
-                    int fired = ((KieSession) kruntime).fireAllRules(fireLimit);
+                    int fired = ((KieSession) kruntime).fireAllRules(processInstance.getAgendaFilter(), fireLimit);
                     if (fired == fireLimit) {
                         throw new RuntimeException("Fire rule limit reached " + fireLimit + ", limit can be set via system property " + FIRE_RULE_LIMIT_PROPERTY
                                                            + " or via data input of business rule task named " + FIRE_RULE_LIMIT_PARAMETER);

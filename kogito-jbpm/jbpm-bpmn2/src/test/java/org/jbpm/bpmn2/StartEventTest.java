@@ -16,9 +16,6 @@
 
 package org.jbpm.bpmn2;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-
 import java.io.StringReader;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
@@ -46,6 +43,9 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.internal.io.ResourceFactory;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 public class StartEventTest extends JbpmBpmn2TestCase {
 
@@ -358,7 +358,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
             }
         });
 
-        ksession.startProcess("muliplestartevents", null);
+        ksession.startProcess("muliplestartevents");
 
         assertThat(list.size()).isEqualTo(1);
         WorkItem workItem = workItemHandler.getWorkItem();

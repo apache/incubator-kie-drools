@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package org.drools.core.marshalling.impl;
+package org.jbpm.marshalling.impl;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,6 +25,11 @@ import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
+import org.drools.core.marshalling.impl.RuleBaseNodes;
+import org.drools.serialization.protobuf.ProtobufInputMarshaller;
+import org.drools.serialization.protobuf.ProtobufMarshaller;
+import org.drools.serialization.protobuf.ProtobufOutputMarshaller;
+import org.drools.serialization.protobuf.ReadSessionResult;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.marshalling.MarshallingConfiguration;
@@ -59,7 +64,7 @@ public class KogitoProtobufMarshaller extends ProtobufMarshaller {
 
     public void unmarshall(final InputStream stream,
                            final KieSession ksession) throws IOException, ClassNotFoundException {
-        MarshallerReaderContext context = getMarshallerReaderContext(stream, ksession.getEnvironment());
+        KogitoMarshallerReaderContext context = getMarshallerReaderContext(stream, ksession.getEnvironment());
         ProtobufInputMarshaller.readSession(( StatefulKnowledgeSessionImpl ) ksession, context);
         context.close();
     }
@@ -73,7 +78,7 @@ public class KogitoProtobufMarshaller extends ProtobufMarshaller {
                          final KieSession ksession,
                          final long clockTime) throws IOException {
         (( InternalWorkingMemory ) ksession).flushPropagations();
-        MarshallerWriteContext context = new KogitoMarshallerWriteContext( stream,
+        KogitoMarshallerWriteContext context = new KogitoMarshallerWriteContext( stream,
                                                                      ( InternalKnowledgeBase ) kbase,
                                                                      ( InternalWorkingMemory ) ksession,
                                                                      RuleBaseNodes.getNodeMap( ( InternalKnowledgeBase ) kbase ),
@@ -81,7 +86,7 @@ public class KogitoProtobufMarshaller extends ProtobufMarshaller {
                                                                      this.marshallingConfig.isMarshallProcessInstances(),
                                                                      this.marshallingConfig.isMarshallWorkItems(),
                                                                      ksession.getEnvironment() );
-        context.clockTime = clockTime;
+        context.setClockTime( clockTime );
         ProtobufOutputMarshaller.writeSession( context );
         context.close();
     }
@@ -101,7 +106,7 @@ public class KogitoProtobufMarshaller extends ProtobufMarshaller {
             environment = KieServices.get().newEnvironment();
         }
 
-        MarshallerReaderContext context = getMarshallerReaderContext(stream, environment);
+        KogitoMarshallerReaderContext context = getMarshallerReaderContext(stream, environment);
         int id = (( KnowledgeBaseImpl ) this.kbase).nextWorkingMemoryCounter();
         ReadSessionResult readSessionResult = ProtobufInputMarshaller.readSession(context,
                                                                                   id,
@@ -115,7 +120,7 @@ public class KogitoProtobufMarshaller extends ProtobufMarshaller {
         return readSessionResult;
     }
 
-    private MarshallerReaderContext getMarshallerReaderContext( final InputStream inputStream, final Environment environment) throws IOException {
+    private KogitoMarshallerReaderContext getMarshallerReaderContext( final InputStream inputStream, final Environment environment) throws IOException {
         return new KogitoMarshallerReaderContext(inputStream,
                                            ( KnowledgeBaseImpl ) kbase,
                                            RuleBaseNodes.getNodeMap(( KnowledgeBaseImpl ) kbase),

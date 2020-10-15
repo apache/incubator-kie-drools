@@ -25,14 +25,9 @@ import java.util.Map;
 import org.jbpm.integrationtests.handler.TestWorkItemHandler;
 import org.jbpm.integrationtests.test.Person;
 import org.jbpm.process.core.context.variable.VariableScope;
-import org.jbpm.process.core.datatype.impl.type.StringDataType;
 import org.jbpm.process.instance.ProcessInstance;
-import org.jbpm.process.instance.ProcessInstanceFactory;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
-import org.jbpm.ruleflow.core.RuleFlowProcess;
-import org.jbpm.ruleflow.core.RuleFlowProcessFactory;
 import org.jbpm.test.util.AbstractBaseTest;
-import org.jbpm.workflow.core.node.Split;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kie.api.definition.KiePackage;
@@ -45,7 +40,6 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.kogito.Application;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -324,7 +318,7 @@ public class ProcessMarshallingTest extends AbstractBaseTest {
 
         final KieSession session = createKieSession(builder.getPackages());
         
-        session.startProcess("com.sample.ruleflow", null);
+        session.startProcess("com.sample.ruleflow");
         assertEquals(1, session.getProcessInstances().size());
         session.halt();
         

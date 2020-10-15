@@ -16,19 +16,6 @@
 
 package org.jbpm.process.instance.event;
 
-import org.drools.core.KogitoWorkingMemory;
-import org.drools.core.common.InternalKnowledgeRuntime;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.WorkingMemoryAction;
-import org.drools.core.marshalling.impl.MarshallerReaderContext;
-import org.drools.core.marshalling.impl.MarshallerWriteContext;
-import org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Action;
-import org.drools.core.phreak.PropagationEntry;
-import org.jbpm.process.instance.InternalProcessRuntime;
-import org.kie.api.runtime.process.EventListener;
-import org.kie.api.runtime.process.ProcessInstance;
-import org.kie.kogito.signal.SignalManager;
-
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -36,6 +23,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import org.drools.core.KogitoWorkingMemory;
+import org.drools.core.common.InternalKnowledgeRuntime;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.WorkingMemoryAction;
+import org.drools.core.marshalling.impl.MarshallerReaderContext;
+import org.drools.core.marshalling.impl.MarshallerWriteContext;
+import org.drools.core.phreak.PropagationEntry;
+import org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Action;
+import org.jbpm.process.instance.InternalProcessRuntime;
+import org.kie.api.runtime.process.EventListener;
+import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.kogito.signal.SignalManager;
 
 public class DefaultSignalManager implements SignalManager {
 	

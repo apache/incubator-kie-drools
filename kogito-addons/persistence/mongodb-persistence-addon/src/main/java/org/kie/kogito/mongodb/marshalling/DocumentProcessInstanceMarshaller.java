@@ -23,8 +23,8 @@ import java.util.Collections;
 
 import org.drools.core.impl.EnvironmentImpl;
 import org.drools.core.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
-import org.drools.core.marshalling.impl.KogitoMarshallerReaderContext;
-import org.drools.core.marshalling.impl.KogitoProcessMarshallerWriteContext;
+import org.jbpm.marshalling.impl.KogitoMarshallerReaderContext;
+import org.jbpm.marshalling.impl.KogitoProcessMarshallerWriteContext;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.marshalling.impl.SerializablePlaceholderResolverStrategy;
 import org.jbpm.marshalling.impl.JBPMMessages;
@@ -87,7 +87,7 @@ public class DocumentProcessInstanceMarshaller {
                                                                                 Collections.singletonMap(process.id(), ((AbstractProcess<?>) process).process()),
                                                                                 null, null, null, env);
             JBPMMessages.ProcessInstance instance = new ProcessInstanceMessageMapper().apply(context, doc);
-            context.parameterObject = instance;
+            context.setParameterObject( instance );
             org.jbpm.marshalling.impl.ProcessInstanceMarshaller marshaller = ProcessMarshallerRegistry.INSTANCE.getMarshaller(instance.getProcessType());
             return (WorkflowProcessInstance) marshaller.readProcessInstance(context);
         } catch (Exception e) {

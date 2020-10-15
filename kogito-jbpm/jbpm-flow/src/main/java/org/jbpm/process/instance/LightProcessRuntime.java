@@ -30,9 +30,9 @@ import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.event.ProcessEventSupport;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.marshalling.impl.MarshallerWriteContext;
-import org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Action;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.time.TimeUtils;
+import org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Action;
 import org.jbpm.process.core.event.EventFilter;
 import org.jbpm.process.core.event.EventTransformer;
 import org.jbpm.process.core.event.EventTypeFilter;
@@ -52,6 +52,7 @@ import org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent;
 import org.kie.api.runtime.process.EventListener;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItemManager;
+import org.kie.api.runtime.rule.AgendaFilter;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.kogito.jobs.DurationExpirationTime;
@@ -119,19 +120,35 @@ public class LightProcessRuntime implements InternalProcessRuntime {
         }
     }
 
+    @Override
     public ProcessInstance startProcess(String processId) {
-        return startProcess(processId, null);
+        return startProcess(processId, null, null, null);
     }
 
+    @Override
     public ProcessInstance startProcess(String processId, Map<String, Object> parameters) {
-        return startProcess(processId, parameters, null);
+        return startProcess(processId, parameters, null, null);
     }
 
     public ProcessInstance startProcess(String processId, Map<String, Object> parameters, String trigger) {
+        return startProcess(processId, parameters, trigger, null);
+    }
+
+    @Override
+    public ProcessInstance startProcess(String processId, AgendaFilter agendaFilter) {
+        return startProcess(processId, null, null, agendaFilter);
+    }
+
+    @Override
+    public ProcessInstance startProcess(String processId, Map<String, Object> parameters, AgendaFilter agendaFilter) {
+        return startProcess(processId, parameters, null, agendaFilter);
+    }
+
+    private ProcessInstance startProcess(String processId, Map<String, Object> parameters, String trigger, AgendaFilter agendaFilter) {
         ProcessInstance processInstance = createProcessInstance(processId, parameters);
         if (processInstance != null) {
             processInstanceManager.addProcessInstance(processInstance);
-            return startProcessInstance(processInstance.getId(), trigger);
+            return startProcessInstance(processInstance.getId(), trigger, agendaFilter);
         }
         return null;
     }
@@ -141,17 +158,24 @@ public class LightProcessRuntime implements InternalProcessRuntime {
     }
 
     public ProcessInstance startProcessInstance(String processInstanceId, String trigger) {
+        return startProcessInstance( processInstanceId, trigger, null );
+    }
+
+    private ProcessInstance startProcessInstance(String processInstanceId, String trigger, AgendaFilter agendaFilter) {
         try {
-            runtimeContext.startOperation();
+            knowledgeRuntime.startOperation();
 
             ProcessInstance processInstance = getProcessInstance(processInstanceId);
-            ((org.jbpm.process.instance.ProcessInstance) processInstance).configureSLA();
+            org.jbpm.process.instance.ProcessInstance jbpmProcessInstance = (org.jbpm.process.instance.ProcessInstance) processInstance;
+
+            jbpmProcessInstance.configureSLA();
             getProcessEventSupport().fireBeforeProcessStarted(processInstance, knowledgeRuntime);
-            ((org.jbpm.process.instance.ProcessInstance) processInstance).start(trigger);
+            jbpmProcessInstance.setAgendaFilter( agendaFilter );
+            jbpmProcessInstance.start(trigger);
             getProcessEventSupport().fireAfterProcessStarted(processInstance, knowledgeRuntime);
             return processInstance;
         } finally {
-            runtimeContext.endOperation();
+            knowledgeRuntime.endOperation();
         }
     }
 

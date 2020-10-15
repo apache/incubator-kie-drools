@@ -17,13 +17,11 @@
 package org.jbpm.bpmn2.xml;
 
 import org.drools.compiler.compiler.xml.XmlDumper;
-import org.drools.compiler.rule.builder.dialect.java.JavaDialect;
-
+import org.drools.mvel.java.JavaDialect;
 import org.jbpm.process.core.context.exception.CompensationScope;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 import org.jbpm.workflow.core.node.ActionNode;
-
 import org.xml.sax.Attributes;
 
 public class ActionNodeHandler extends AbstractNodeHandler {
@@ -185,7 +183,7 @@ public class ActionNodeHandler extends AbstractNodeHandler {
                           actionNode,
                           xmlDump,
                           metaDataType);
-                if (JavaDialect.ID.equals(action.getDialect())) {
+                if ( JavaDialect.ID.equals(action.getDialect())) {
                     xmlDump.append("scriptFormat=\"" + XmlBPMNProcessDumper.JAVA_LANGUAGE + "\" ");
                 } else if ("JavaScript".equals(action.getDialect())) {
                     xmlDump.append("scriptFormat=\"" + XmlBPMNProcessDumper.JAVASCRIPT_LANGUAGE + "\" ");

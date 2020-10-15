@@ -23,8 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.drools.compiler.rule.builder.dialect.java.JavaDialect;
 import org.drools.core.xml.ExtensibleXmlParser;
+import org.drools.mvel.java.JavaDialect;
 import org.jbpm.process.core.impl.DataTransformerRegistry;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;

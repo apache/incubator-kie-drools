@@ -22,13 +22,13 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
 
-import org.drools.core.base.mvel.MVELCompilationUnit;
-import org.drools.core.base.mvel.MVELCompileable;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.rule.MVELDialectRuntimeData;
 import org.drools.core.spi.GlobalResolver;
+import org.drools.mvel.MVELDialectRuntimeData;
+import org.drools.mvel.expr.MVELCompilationUnit;
+import org.drools.mvel.expr.MVELCompileable;
 import org.jbpm.workflow.instance.impl.MVELProcessHelper;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.runtime.process.ProcessContext;

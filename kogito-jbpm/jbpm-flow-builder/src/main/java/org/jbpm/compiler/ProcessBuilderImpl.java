@@ -22,8 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.xml.parsers.FactoryConfigurationError;
 
+import javax.xml.parsers.FactoryConfigurationError;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.BaseKnowledgeBuilderResultImpl;
@@ -37,10 +37,10 @@ import org.drools.compiler.compiler.ProcessLoadError;
 import org.drools.compiler.lang.descr.ActionDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.ProcessDescr;
-import org.drools.compiler.rule.builder.dialect.java.JavaDialect;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.ProcessPackage;
 import org.drools.core.definitions.ResourceTypePackageRegistry;
+import org.drools.mvel.java.JavaDialect;
 import org.jbpm.compiler.xml.ProcessSemanticModule;
 import org.jbpm.compiler.xml.XmlProcessReader;
 import org.jbpm.compiler.xml.processes.RuleFlowMigrator;
@@ -233,7 +233,7 @@ public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessB
         if (!context.getErrors().isEmpty()) {
             this.errors.addAll(context.getErrors());
         }
-        ProcessDialectRegistry.getDialect(JavaDialect.ID).addProcess(context);
+        ProcessDialectRegistry.getDialect( JavaDialect.ID).addProcess(context);
     }
 
     private void processNodes(

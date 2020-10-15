@@ -26,10 +26,10 @@ import java.util.Map;
 import java.util.Set;
 
 import org.drools.compiler.compiler.xml.XmlDumper;
-import org.drools.compiler.rule.builder.dialect.java.JavaDialect;
 import org.drools.core.xml.Handler;
 import org.drools.core.xml.SemanticModule;
 import org.drools.core.xml.SemanticModules;
+import org.drools.mvel.java.JavaDialect;
 import org.jbpm.bpmn2.core.Association;
 import org.jbpm.bpmn2.core.DataStore;
 import org.jbpm.bpmn2.core.Definitions;
@@ -771,7 +771,7 @@ public class XmlBPMNProcessDumper implements XmlProcessDumper {
             		xmlDump.append(">" + EOL +
     				"      <conditionExpression xsi:type=\"tFormalExpression\" ");
                     if ("code".equals(constraint.getType())) {
-                        if (JavaDialect.ID.equals(constraint.getDialect())) {
+                        if ( JavaDialect.ID.equals(constraint.getDialect())) {
                             xmlDump.append("language=\"" + JAVA_LANGUAGE + "\" ");
                         } else if ("XPath".equals(constraint.getDialect())) {
                             xmlDump.append("language=\"" + XPATH_LANGUAGE + "\" ");

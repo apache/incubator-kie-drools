@@ -15,11 +15,9 @@
 
 package org.drools.core.event;
 
-import java.util.Iterator;
 import java.util.List;
 
 import org.kie.api.event.process.ProcessCompletedEvent;
-import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.process.ProcessNodeLeftEvent;
 import org.kie.api.event.process.ProcessNodeTriggeredEvent;
 import org.kie.api.event.process.ProcessStartedEvent;
@@ -49,110 +47,73 @@ public class KogitoProcessEventSupport extends ProcessEventSupport {
     }
 
     public void fireBeforeProcessStarted(final ProcessInstance instance, KieRuntime kruntime ) {
-        final Iterator<ProcessEventListener> iter = getEventListenersIterator();
-
         final ProcessStartedEvent event = new ProcessStartedEventImpl(instance, kruntime);
         unitOfWorkManager.currentUnitOfWork().intercept(WorkUnit.create(event, e -> {
-            if (iter.hasNext()) {
-                do{
-                    iter.next().beforeProcessStarted(e);
-                } while (iter.hasNext());
+            if ( hasListeners() ) {
+                notifyAllListeners( event, ( l, e1 ) -> l.beforeProcessStarted( e1 ) );
             }
         }));
     }
 
     public void fireAfterProcessStarted(final ProcessInstance instance, KieRuntime kruntime) {
-        final Iterator<ProcessEventListener> iter = getEventListenersIterator();
-
         final ProcessStartedEvent event = new ProcessStartedEventImpl(instance, kruntime);
         unitOfWorkManager.currentUnitOfWork().intercept(WorkUnit.create(event, e -> {
-            if (iter.hasNext()) {
-                do {
-                    iter.next().afterProcessStarted(e);
-                } while (iter.hasNext());
+            if ( hasListeners() ) {
+                notifyAllListeners( event, ( l, e1 ) -> l.afterProcessStarted( e1 ) );
             }
         }));
     }
 
     public void fireBeforeProcessCompleted(final ProcessInstance instance, KieRuntime kruntime) {
-        final Iterator<ProcessEventListener> iter = getEventListenersIterator();
-
         final ProcessCompletedEvent event = new ProcessCompletedEventImpl(instance, kruntime);
         unitOfWorkManager.currentUnitOfWork().intercept(WorkUnit.create(event, e -> {
-            if (iter.hasNext()) {
-                do {
-                    iter.next().beforeProcessCompleted(e);
-                } while (iter.hasNext());
+            if ( hasListeners() ) {
+                notifyAllListeners( event, ( l, e1 ) -> l.beforeProcessCompleted( e1 ) );
             }
         }));
     }
 
     public void fireAfterProcessCompleted(final ProcessInstance instance, KieRuntime kruntime) {
-        final Iterator<ProcessEventListener> iter = getEventListenersIterator();
-
         final ProcessCompletedEvent event = new ProcessCompletedEventImpl(instance, kruntime);
         unitOfWorkManager.currentUnitOfWork().intercept(WorkUnit.create(event, e -> {
-            if (iter.hasNext()) {
-
-                do {
-                    iter.next().afterProcessCompleted(e);
-                } while (iter.hasNext());
+            if ( hasListeners() ) {
+                notifyAllListeners( event, ( l, e1 ) -> l.afterProcessCompleted( e1 ) );
             }
         }));
     }
 
     public void fireBeforeNodeTriggered(final NodeInstance nodeInstance, KieRuntime kruntime) {
-        final Iterator<ProcessEventListener> iter = getEventListenersIterator();
-
         final ProcessNodeTriggeredEvent event = new KogitoProcessNodeTriggeredEventImpl(nodeInstance, kruntime);
         unitOfWorkManager.currentUnitOfWork().intercept(WorkUnit.create(event, e -> {
-            if (iter.hasNext()) {
-
-                do {
-                    iter.next().beforeNodeTriggered(e);
-                } while (iter.hasNext());
+            if ( hasListeners() ) {
+                notifyAllListeners( event, ( l, e1 ) -> l.beforeNodeTriggered( e1 ) );
             }
         }));
     }
 
     public void fireAfterNodeTriggered(final NodeInstance nodeInstance, KieRuntime kruntime) {
-        final Iterator<ProcessEventListener> iter = getEventListenersIterator();
-
         final ProcessNodeTriggeredEvent event = new KogitoProcessNodeTriggeredEventImpl(nodeInstance, kruntime);
         unitOfWorkManager.currentUnitOfWork().intercept(WorkUnit.create(event, e -> {
-            if (iter.hasNext()) {
-
-                do{
-                    iter.next().afterNodeTriggered(e);
-                } while (iter.hasNext());
+            if ( hasListeners() ) {
+                notifyAllListeners( event, ( l, e1 ) -> l.afterNodeTriggered( e1 ) );
             }
         }));
     }
 
     public void fireBeforeNodeLeft(final NodeInstance nodeInstance, KieRuntime kruntime) {
-        final Iterator<ProcessEventListener> iter = getEventListenersIterator();
-
         final ProcessNodeLeftEvent event = new KogitoProcessNodeLeftEventImpl(nodeInstance, kruntime);
         unitOfWorkManager.currentUnitOfWork().intercept(WorkUnit.create(event, e -> {
-            if (iter.hasNext()) {
-
-                do{
-                    iter.next().beforeNodeLeft(e);
-                } while (iter.hasNext());
+            if ( hasListeners() ) {
+                notifyAllListeners( event, ( l, e1 ) -> l.beforeNodeLeft( e1 ) );
             }
         }));
     }
 
     public void fireAfterNodeLeft(final NodeInstance nodeInstance, KieRuntime kruntime) {
-        final Iterator<ProcessEventListener> iter = getEventListenersIterator();
-
         final ProcessNodeLeftEvent event = new KogitoProcessNodeLeftEventImpl(nodeInstance, kruntime);
         unitOfWorkManager.currentUnitOfWork().intercept(WorkUnit.create(event, e -> {
-            if (iter.hasNext()) {
-
-                do{
-                    iter.next().afterNodeLeft(e);
-                } while (iter.hasNext());
+            if ( hasListeners() ) {
+                notifyAllListeners( event, ( l, e1 ) -> l.afterNodeLeft( e1 ) );
             }
         }));
     }
@@ -161,16 +122,11 @@ public class KogitoProcessEventSupport extends ProcessEventSupport {
                                           final Object oldValue, final Object newValue,
                                           final List<String> tags,
                                           final ProcessInstance processInstance, NodeInstance nodeInstance, KieRuntime kruntime) {
-        final Iterator<ProcessEventListener> iter = getEventListenersIterator();
-
         final ProcessVariableChangedEvent event = new KogitoProcessVariableChangedEventImpl(
                 id, instanceId, oldValue, newValue, tags, processInstance, nodeInstance, kruntime);
         unitOfWorkManager.currentUnitOfWork().intercept(WorkUnit.create(event, e -> {
-            if (iter.hasNext()) {
-
-                do {
-                    iter.next().beforeVariableChanged(e);
-                } while (iter.hasNext());
+            if ( hasListeners() ) {
+                notifyAllListeners( event, ( l, e1 ) -> l.beforeVariableChanged( e1 ) );
             }
         }));
     }
@@ -179,97 +135,67 @@ public class KogitoProcessEventSupport extends ProcessEventSupport {
                                          final Object oldValue, final Object newValue,
                                          final List<String> tags,
                                          final ProcessInstance processInstance, NodeInstance nodeInstance, KieRuntime kruntime) {
-        final Iterator<ProcessEventListener> iter = getEventListenersIterator();
         final ProcessVariableChangedEvent event = new KogitoProcessVariableChangedEventImpl(
                 name, id, oldValue, newValue, tags, processInstance, nodeInstance, kruntime);
         unitOfWorkManager.currentUnitOfWork().intercept(WorkUnit.create(event, e -> {
-            if (iter.hasNext()) {
-
-                do {
-                    iter.next().afterVariableChanged(e);
-                } while (iter.hasNext());
+            if ( hasListeners() ) {
+                notifyAllListeners( event, ( l, e1 ) -> l.afterVariableChanged( e1 ) );
             }
         }));
     }
 
     public void fireBeforeSLAViolated(final ProcessInstance instance, KieRuntime kruntime ) {
-        final Iterator<ProcessEventListener> iter = getEventListenersIterator();
-
         final SLAViolatedEvent event = new SLAViolatedEventImpl(instance, kruntime);
         unitOfWorkManager.currentUnitOfWork().intercept(WorkUnit.create(event, e -> {
-            if (iter.hasNext()) {
-
-                do{
-                    iter.next().beforeSLAViolated(e);
-                } while (iter.hasNext());
+            if ( hasListeners() ) {
+                notifyAllListeners( event, ( l, e1 ) -> l.beforeSLAViolated( e1 ) );
             }
         }));
     }
 
     public void fireAfterSLAViolated(final ProcessInstance instance, KieRuntime kruntime) {
-        final Iterator<ProcessEventListener> iter = getEventListenersIterator();
-
         final SLAViolatedEvent event = new SLAViolatedEventImpl(instance, kruntime);
         unitOfWorkManager.currentUnitOfWork().intercept(WorkUnit.create(event, e -> {
-            if (iter.hasNext()) {
-
-                do {
-                    iter.next().afterSLAViolated(e);
-                } while (iter.hasNext());
+            if ( hasListeners() ) {
+                notifyAllListeners( event, ( l, e1 ) -> l.afterSLAViolated( e1 ) );
             }
         }));
     }
 
     public void fireBeforeSLAViolated(final ProcessInstance instance, NodeInstance nodeInstance, KieRuntime kruntime ) {
-        final Iterator<ProcessEventListener> iter = getEventListenersIterator();
-
         final SLAViolatedEvent event = new SLAViolatedEventImpl(instance, nodeInstance, kruntime);
         unitOfWorkManager.currentUnitOfWork().intercept(WorkUnit.create(event, e -> {
-            if (iter.hasNext()) {
-                do{
-                    iter.next().beforeSLAViolated(e);
-                } while (iter.hasNext());
+            if ( hasListeners() ) {
+                notifyAllListeners( event, ( l, e1 ) -> l.beforeSLAViolated( e1 ) );
             }
         }));
     }
 
     public void fireAfterSLAViolated(final ProcessInstance instance, NodeInstance nodeInstance, KieRuntime kruntime) {
-        final Iterator<ProcessEventListener> iter = getEventListenersIterator();
         final SLAViolatedEvent event = new SLAViolatedEventImpl(instance, nodeInstance, kruntime);
         unitOfWorkManager.currentUnitOfWork().intercept(WorkUnit.create(event, e -> {
-            if (iter.hasNext()) {
-
-                do {
-                    iter.next().afterSLAViolated(e);
-                } while (iter.hasNext());
+            if ( hasListeners() ) {
+                notifyAllListeners( event, ( l, e1 ) -> l.afterSLAViolated( e1 ) );
             }
         }));
     }
 
     public void fireBeforeWorkItemTransition(final ProcessInstance instance, WorkItem workitem, Transition<?> transition, KieRuntime kruntime ) {
-        final Iterator<ProcessEventListener> iter = getEventListenersIterator();
-
         final ProcessWorkItemTransitionEvent event = new KogitoProcessWorkItemTransitionEventImpl(instance, workitem, transition, kruntime, false);
-        unitOfWorkManager.currentUnitOfWork().intercept(WorkUnit.create(event, (e) -> {
-            if (iter.hasNext()) {
-                do{
-                    iter.next().beforeWorkItemTransition(e);
-                } while (iter.hasNext());
+        unitOfWorkManager.currentUnitOfWork().intercept(WorkUnit.create(event, e -> {
+            if ( hasListeners() ) {
+                notifyAllListeners( event, ( l, e1 ) -> l.beforeWorkItemTransition( e1 ) );
             }
         }));
     }
 
     public void fireAfterWorkItemTransition(final ProcessInstance instance, WorkItem workitem, Transition<?> transition, KieRuntime kruntime) {
-        final Iterator<ProcessEventListener> iter = getEventListenersIterator();
-
-        final ProcessWorkItemTransitionEvent event = new KogitoProcessWorkItemTransitionEventImpl(instance, workitem, transition, kruntime, true);
-        unitOfWorkManager.currentUnitOfWork().intercept(WorkUnit.create(event, (e) -> {
-            if (iter.hasNext()) {
-                do {
-                    iter.next().afterWorkItemTransition(e);
-                } while (iter.hasNext());
-            }
-        }));
+            final ProcessWorkItemTransitionEvent event = new KogitoProcessWorkItemTransitionEventImpl(instance, workitem, transition, kruntime, true);
+            unitOfWorkManager.currentUnitOfWork().intercept(WorkUnit.create(event, e -> {
+                if ( hasListeners() ) {
+                    notifyAllListeners( event, ( l, e1 ) -> l.afterWorkItemTransition( e1 ) );
+                }
+            }));
     }
 
     public void reset() {

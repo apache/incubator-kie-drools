@@ -26,10 +26,10 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.drools.compiler.compiler.xml.XmlDumper;
-import org.drools.compiler.rule.builder.dialect.java.JavaDialect;
 import org.drools.core.xml.BaseAbstractHandler;
 import org.drools.core.xml.ExtensibleXmlParser;
 import org.drools.core.xml.Handler;
+import org.drools.mvel.java.JavaDialect;
 import org.jbpm.bpmn2.core.Association;
 import org.jbpm.bpmn2.core.Definitions;
 import org.jbpm.bpmn2.core.Error;
@@ -327,7 +327,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
                 xmlDump.append(" name=\"" + name + "\"");
             }
             String dialect = consequenceAction.getDialect();
-            if (JavaDialect.ID.equals(dialect)) {
+            if ( JavaDialect.ID.equals(dialect)) {
                 xmlDump.append(" scriptFormat=\"" + XmlBPMNProcessDumper.JAVA_LANGUAGE + "\"");
             } else if ("JavaScript".equals(dialect)) {
                 xmlDump.append(" scriptFormat=\"" + XmlBPMNProcessDumper.JAVASCRIPT_LANGUAGE + "\"");

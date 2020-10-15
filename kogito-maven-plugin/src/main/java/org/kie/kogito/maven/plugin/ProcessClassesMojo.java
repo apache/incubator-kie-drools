@@ -41,8 +41,8 @@ import org.drools.compiler.commons.jci.compilers.CompilationResult;
 import org.drools.compiler.commons.jci.compilers.JavaCompiler;
 import org.drools.compiler.commons.jci.compilers.JavaCompilerFactory;
 import org.drools.compiler.commons.jci.compilers.JavaCompilerSettings;
+import org.drools.compiler.compiler.JavaConfiguration;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
-import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.jbpm.util.JsonSchemaUtil;
 import org.kie.kogito.Model;
 import org.kie.kogito.UserTask;
@@ -63,7 +63,7 @@ import org.reflections.util.ConfigurationBuilder;
       threadSafe = true)
 public class ProcessClassesMojo extends AbstractKieMojo {
         
-    private static final JavaCompiler JAVA_COMPILER = JavaCompilerFactory.INSTANCE.loadCompiler(JavaDialectConfiguration.CompilerType.NATIVE, "1.8");
+    private static final JavaCompiler JAVA_COMPILER = JavaCompilerFactory.INSTANCE.loadCompiler( JavaConfiguration.CompilerType.NATIVE, "1.8");
 
 
     @Parameter(defaultValue = "${project}", readonly = true, required = true)

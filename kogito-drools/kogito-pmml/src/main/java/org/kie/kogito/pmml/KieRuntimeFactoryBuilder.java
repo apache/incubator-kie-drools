@@ -35,18 +35,19 @@ import org.kie.api.KieBase;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieRuntimeFactory;
-import org.kie.kogito.prediction.PredictionRuleMapper;
-import org.kie.kogito.prediction.PredictionRuleMappers;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.HasNestedModels;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.evaluator.api.container.PMMLPackage;
 import org.kie.pmml.evaluator.assembler.container.PMMLPackageImpl;
+import org.kie.pmml.evaluator.assembler.rulemapping.PMMLRuleMapper;
+import org.kie.pmml.evaluator.assembler.rulemapping.PMMLRuleMappers;
 import org.kie.pmml.evaluator.assembler.service.PMMLCompilerService;
 import org.kie.pmml.evaluator.assembler.service.PMMLLoaderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.kie.pmml.evaluator.assembler.factories.PMMLRuleMappersFactory.KIE_PMML_RULE_MAPPERS_CLASS_NAME;
 import static org.kie.pmml.evaluator.assembler.service.PMMLAssemblerService.getFactoryClassNamePackageName;
 
 /**
@@ -104,31 +105,31 @@ public class KieRuntimeFactoryBuilder {
     private static KnowledgeBuilderImpl createKnowledgeBuilderImpl(final Resource resource) {
         KnowledgeBaseImpl defaultKnowledgeBase = new KnowledgeBaseImpl("PMML", null);
         KnowledgeBuilderImpl toReturn = new KnowledgeBuilderImpl(defaultKnowledgeBase);
-        List<PredictionRuleMapper> pmmlRuleMappers = loadPMMLRuleMappers(toReturn.getRootClassLoader(), resource);
+        List<PMMLRuleMapper> pmmlRuleMappers = loadPMMLRuleMappers(toReturn.getRootClassLoader(), resource);
         if (!pmmlRuleMappers.isEmpty()) {
             List<Model> models =
                     pmmlRuleMappers.stream()
-                            .map(PredictionRuleMapper::getModel)
+                            .map(PMMLRuleMapper::getModel)
                             .collect(Collectors.toList());
             toReturn = new KnowledgeBuilderImpl(KieBaseBuilder.createKieBaseFromModel(models));
         }
         return toReturn;
     }
 
-    private static List<PredictionRuleMapper> loadPMMLRuleMappers(final ClassLoader classLoader,
-                                                                  final Resource resource) {
-        Optional<PredictionRuleMappers> predictionRuleMappers = loadPMMLRuleMappersClass(classLoader, resource);
-        return predictionRuleMappers.map(PredictionRuleMappers::getPredictionRuleMappers).orElse(Collections.emptyList());
+    private static List<PMMLRuleMapper> loadPMMLRuleMappers(final ClassLoader classLoader,
+                                                            final Resource resource) {
+        Optional<PMMLRuleMappers> predictionRuleMappers = loadPMMLRuleMappersClass(classLoader, resource);
+        return predictionRuleMappers.map(PMMLRuleMappers::getPMMLRuleMappers).orElse(Collections.emptyList());
     }
 
-    private static Optional<PredictionRuleMappers> loadPMMLRuleMappersClass(final ClassLoader classLoader,
+    private static Optional<PMMLRuleMappers> loadPMMLRuleMappersClass(final ClassLoader classLoader,
                                                                             final Resource resource) {
         String[] classNamePackageName = getFactoryClassNamePackageName(resource);
         String packageName = classNamePackageName[1];
-        String fullPMMLRuleMappersClassName = packageName + ".PredictionRuleMappersImpl";
+        String fullPMMLRuleMappersClassName = packageName + "." + KIE_PMML_RULE_MAPPERS_CLASS_NAME;
         try {
-            PredictionRuleMappers predictionRuleMappers =
-                    (PredictionRuleMappers) classLoader.loadClass(fullPMMLRuleMappersClassName).getDeclaredConstructor().newInstance();
+            PMMLRuleMappers predictionRuleMappers =
+                    (PMMLRuleMappers) classLoader.loadClass(fullPMMLRuleMappersClassName).getDeclaredConstructor().newInstance();
             return Optional.of(predictionRuleMappers);
         } catch (ClassNotFoundException e) {
             logger.debug("{} class not found in rootClassLoader", fullPMMLRuleMappersClassName);

@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package org.drools.core.marshalling.impl;
+package org.jbpm.marshalling.impl;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -22,7 +22,7 @@ import java.util.Map;
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.kie.api.marshalling.ObjectMarshallingStrategy;
+import org.drools.serialization.protobuf.ProtobufMarshallerWriteContext;
 import org.kie.api.marshalling.ObjectMarshallingStrategyStore;
 import org.kie.api.runtime.Environment;
 
@@ -30,9 +30,18 @@ import org.kie.api.runtime.Environment;
  * Extension to default <code>MarshallerWriteContext</code> that allows to pass additional
  * information to marshaller strategies, such as process instance id, task it, state
  */
-public class KogitoMarshallerWriteContext extends MarshallerWriteContext {
+public class KogitoProcessMarshallerWriteContext extends ProtobufMarshallerWriteContext {
+    
+    public static final int STATE_ACTIVE = 1;
+    public static final int STATE_COMPLETED = 2;
 
-    public KogitoMarshallerWriteContext( OutputStream stream,
+    private String processInstanceId;
+    private String taskId;
+    private String workItemId;
+    private int state;
+    
+
+    public KogitoProcessMarshallerWriteContext(OutputStream stream,
                                          InternalKnowledgeBase kBase,
                                          InternalWorkingMemory wm,
                                          Map<Integer, BaseNode> sinks,
@@ -40,20 +49,37 @@ public class KogitoMarshallerWriteContext extends MarshallerWriteContext {
                                          Environment env) throws IOException {
         super(stream, kBase, wm, sinks, resolverStrategyFactory, env);
     }
-
-    public KogitoMarshallerWriteContext(OutputStream stream,
-                                  InternalKnowledgeBase kBase,
-                                  InternalWorkingMemory wm,
-                                  Map<Integer, BaseNode> sinks,
-                                  ObjectMarshallingStrategyStore resolverStrategyFactory,
-                                  boolean marshalProcessInstances,
-                                  boolean marshalWorkItems,
-                                  Environment env) throws IOException {
-        super(stream, kBase, wm, sinks, resolverStrategyFactory, marshalProcessInstances, marshalWorkItems, env);
+    
+    public String getProcessInstanceId() {
+        return processInstanceId;
+    }
+    
+    public void setProcessInstanceId(String processInstanceId) {
+        this.processInstanceId = processInstanceId;
+    }
+    
+    public String getTaskId() {
+        return taskId;
+    }
+    
+    public void setTaskId(String taskId) {
+        this.taskId = taskId;
+    }
+    
+    public String getWorkItemId() {
+        return workItemId;
+    }
+    
+    public void setWorkItemId(String workItemId) {
+        this.workItemId = workItemId;
+    }
+    
+    public int getState() {
+        return state;
+    }
+    
+    public void setState(int state) {
+        this.state = state;
     }
 
-    @Override
-    protected ObjectMarshallingStrategy[] getMarshallingStrategy() {
-        return new ObjectMarshallingStrategy[]{new KogitoSerializablePlaceholderResolverStrategy( ClassObjectMarshallingStrategyAcceptor.DEFAULT  )};
-    }
 }

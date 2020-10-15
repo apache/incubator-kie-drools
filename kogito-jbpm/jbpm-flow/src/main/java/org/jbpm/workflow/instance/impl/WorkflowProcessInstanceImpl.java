@@ -77,6 +77,7 @@ import org.kie.api.definition.process.WorkflowProcess;
 import org.kie.api.runtime.process.EventListener;
 import org.kie.api.runtime.process.NodeInstanceContainer;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.runtime.rule.AgendaFilter;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.kogito.jobs.DurationExpirationTime;
 import org.kie.kogito.jobs.ProcessInstanceJobDescription;
@@ -142,6 +143,8 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
     private String slaTimerId;
     
     private String referenceId;
+
+	private AgendaFilter agendaFilter;
 
     @Override
     public NodeContainer getNodeContainer() {
@@ -1119,5 +1122,15 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
             rootException = rootException.getCause();
         }
         return rootException;
+    }
+
+    @Override
+    public AgendaFilter getAgendaFilter() {
+        return agendaFilter;
+    }
+
+    @Override
+    public void setAgendaFilter( AgendaFilter agendaFilter ) {
+        this.agendaFilter = agendaFilter;
     }
 }

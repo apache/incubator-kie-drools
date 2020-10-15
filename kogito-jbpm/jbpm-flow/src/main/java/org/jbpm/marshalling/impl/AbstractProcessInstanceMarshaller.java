@@ -62,7 +62,7 @@ public abstract class AbstractProcessInstanceMarshaller implements
     public Object writeProcessInstance(MarshallerWriteContext context,
             ProcessInstance processInstance) throws IOException {        
         WorkflowProcessInstanceImpl workFlow = (WorkflowProcessInstanceImpl) processInstance;
-        ObjectOutputStream stream = context.stream;
+        ObjectOutputStream stream = (ObjectOutputStream) context;
         stream.writeUTF(workFlow.getId());
         stream.writeUTF(workFlow.getProcessId());
         stream.writeInt(workFlow.getState());        
@@ -146,7 +146,7 @@ public abstract class AbstractProcessInstanceMarshaller implements
                 int useNewMarshallingStrategyAlgorithm = -2;
                 stream.writeInt(useNewMarshallingStrategyAlgorithm);
                 // Choose first strategy that accepts the object (what was always done)
-                ObjectMarshallingStrategy strategy = context.objectMarshallingStrategyStore.getStrategyObject(object);
+                ObjectMarshallingStrategy strategy = context.getObjectMarshallingStrategyStore().getStrategyObject(object);
                 stream.writeUTF(strategy.getClass().getName());
                 strategy.write(stream, object);
             }
@@ -158,7 +158,7 @@ public abstract class AbstractProcessInstanceMarshaller implements
 
     public Object writeNodeInstance(MarshallerWriteContext context,
             NodeInstance nodeInstance) throws IOException {
-        ObjectOutputStream stream = context.stream;
+        ObjectOutputStream stream = (ObjectOutputStream) context;
         stream.writeUTF(nodeInstance.getId());
         stream.writeLong(nodeInstance.getNodeId());
         writeNodeInstanceContent(stream, nodeInstance, context);
@@ -357,9 +357,9 @@ public abstract class AbstractProcessInstanceMarshaller implements
 
     // Input methods
     public ProcessInstance readProcessInstance(MarshallerReaderContext context) throws IOException {
-        ObjectInputStream stream = context.stream;
-        InternalKnowledgeBase kBase = context.kBase;
-        InternalWorkingMemory wm = context.wm;
+        ObjectInputStream stream = (ObjectInputStream) context;
+        InternalKnowledgeBase kBase = context.getKnowledgeBase();
+        InternalWorkingMemory wm = context.getWorkingMemory();
 
         WorkflowProcessInstanceImpl processInstance = createProcessInstance();
         processInstance.setId(stream.readUTF());
@@ -422,13 +422,13 @@ public abstract class AbstractProcessInstanceMarshaller implements
 					int index = stream.readInt();
 			        // This is the old way of de/serializing strategy objects
 			        if ( index >= 0 ) {
-			            strategy = context.resolverStrategyFactory.getStrategy( index );
+			            strategy = context.getResolverStrategyFactory().getStrategy( index );
 			        }
 			        // This is the new way 
 			        else if( index == -2 ) { 
-			            String strategyClassName = context.stream.readUTF();
+			            String strategyClassName = context.readUTF();
 			            if ( ! StringUtils.isEmpty(strategyClassName) ) { 
-			                strategy = context.resolverStrategyFactory.getStrategyObject(strategyClassName);
+			                strategy = context.getResolverStrategyFactory().getStrategyObject(strategyClassName);
 			                if( strategy == null ) { 
 			                    throw new IllegalStateException( "No strategy of type " + strategyClassName + " available." );
 			                }
@@ -457,7 +457,7 @@ public abstract class AbstractProcessInstanceMarshaller implements
     public NodeInstance readNodeInstance(MarshallerReaderContext context,
             NodeInstanceContainer nodeInstanceContainer,
             WorkflowProcessInstance processInstance) throws IOException {
-        ObjectInputStream stream = context.stream;
+        ObjectInputStream stream = (ObjectInputStream) context;
         String id = stream.readUTF();
         long nodeId = stream.readLong();
         int nodeType = stream.readShort();

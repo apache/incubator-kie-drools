@@ -16,13 +16,17 @@
 
 package org.jbpm.process.builder.dialect.mvel;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
 import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.compiler.lang.descr.ActionDescr;
 import org.drools.compiler.rule.builder.PackageBuildContext;
-import org.drools.compiler.rule.builder.dialect.mvel.MVELAnalysisResult;
-import org.drools.compiler.rule.builder.dialect.mvel.MVELDialect;
-import org.drools.core.base.mvel.MVELCompilationUnit;
-import org.drools.core.rule.MVELDialectRuntimeData;
+import org.drools.mvel.MVELDialectRuntimeData;
+import org.drools.mvel.builder.MVELAnalysisResult;
+import org.drools.mvel.builder.MVELDialect;
+import org.drools.mvel.expr.MVELCompilationUnit;
 import org.jbpm.process.builder.ActionBuilder;
 import org.jbpm.process.builder.ProcessBuildContext;
 import org.jbpm.process.core.ContextResolver;
@@ -31,10 +35,6 @@ import org.jbpm.process.instance.impl.MVELAction;
 import org.jbpm.workflow.core.DroolsAction;
 import org.mvel2.Macro;
 import org.mvel2.MacroProcessor;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 
 public class MVELActionBuilder extends AbstractMVELBuilder implements ActionBuilder {
 

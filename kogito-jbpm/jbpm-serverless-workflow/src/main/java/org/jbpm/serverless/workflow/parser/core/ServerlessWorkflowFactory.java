@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import org.drools.compiler.rule.builder.dialect.java.JavaDialect;
+import org.drools.mvel.java.JavaDialect;
 import org.jbpm.process.core.Work;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
@@ -307,7 +307,7 @@ public class ServerlessWorkflowFactory {
 
         scriptNode.setAction(new DroolsConsequenceAction());
         ((DroolsConsequenceAction) scriptNode.getAction()).setConsequence(script);
-        ((DroolsConsequenceAction) scriptNode.getAction()).setDialect(JavaDialect.ID);
+        ((DroolsConsequenceAction) scriptNode.getAction()).setDialect( JavaDialect.ID);
 
         nodeContainer.addNode(scriptNode);
 

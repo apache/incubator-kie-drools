@@ -44,9 +44,9 @@ public class ProcessInstanceMessageMapper implements BiFunction<MarshallerReader
             String json = getObjectMapper().writeValueAsString(rootNode);
             parser.merge(json, builder);
             for (Map.Entry<String, Integer> entry : doc.getStrategies().entrySet()) {
-                ObjectMarshallingStrategy strategyObject = context.resolverStrategyFactory.getStrategyObject(entry.getKey());
+                ObjectMarshallingStrategy strategyObject = context.getResolverStrategyFactory().getStrategyObject(entry.getKey());
                 if (strategyObject != null) {
-                    context.usedStrategies.put(entry.getValue(), strategyObject);
+                    context.getUsedStrategies().put(entry.getValue(), strategyObject);
                 }
             }
 

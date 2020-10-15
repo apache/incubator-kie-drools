@@ -24,7 +24,7 @@ import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.ReturnValueDescr;
 import org.drools.compiler.rule.builder.PackageBuildContext;
-import org.drools.compiler.rule.builder.dialect.java.JavaDialect;
+import org.drools.mvel.java.JavaDialect;
 import org.jbpm.process.builder.ProcessBuildContext;
 import org.jbpm.process.builder.ReturnValueEvaluatorBuilder;
 import org.jbpm.process.core.ContextResolver;

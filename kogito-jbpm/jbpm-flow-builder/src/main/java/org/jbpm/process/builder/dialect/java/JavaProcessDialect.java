@@ -20,9 +20,9 @@ import java.util.Iterator;
 
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.ProcessDescr;
-import org.drools.compiler.rule.builder.dialect.java.JavaDialect;
 import org.drools.core.rule.JavaDialectRuntimeData;
 import org.drools.core.spi.Wireable;
+import org.drools.mvel.java.JavaDialect;
 import org.jbpm.process.builder.ActionBuilder;
 import org.jbpm.process.builder.AssignmentBuilder;
 import org.jbpm.process.builder.ProcessBuildContext;
