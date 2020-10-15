@@ -67,7 +67,8 @@ import static org.kie.kogito.tracing.decision.event.evaluate.EvaluateEventType.B
 public class DefaultAggregator implements Aggregator {
 
     private static final Logger LOG = LoggerFactory.getLogger(DefaultAggregator.class);
-    private static final String UNKNOWN_SOURCE_URL = "__UNKNOWN_SOURCE__";
+    private static final String UNKNOWN_SOURCE_URI_STRING = CloudEventUtils.urlEncodedStringFrom("__UNKNOWN_SOURCE__")
+            .orElseThrow(IllegalStateException::new);
 
     private static final String EXPRESSION_ID_KEY = "expressionId";
     private static final String MATCHES_KEY = "matches";
@@ -77,13 +78,13 @@ public class DefaultAggregator implements Aggregator {
     private static final String VARIABLE_ID_KEY = "variableId";
 
     @Override
-    public CloudEvent aggregate(DMNModel model, String executionId, List<EvaluateEvent> events, ConfigBean configBean) {
+    public Optional<CloudEvent> aggregate(DMNModel model, String executionId, List<EvaluateEvent> events, ConfigBean configBean) {
         return events == null || events.isEmpty()
                 ? buildNotEnoughDataCloudEvent(model, executionId, configBean)
                 : buildDefaultCloudEvent(model, executionId, events, configBean);
     }
 
-    private static CloudEvent buildNotEnoughDataCloudEvent(DMNModel model, String executionId, ConfigBean configBean) {
+    private static Optional<CloudEvent> buildNotEnoughDataCloudEvent(DMNModel model, String executionId, ConfigBean configBean) {
         TraceHeader header = new TraceHeader(
                 TraceEventType.DMN,
                 executionId,
@@ -99,11 +100,10 @@ public class DefaultAggregator implements Aggregator {
 
         TraceEvent event = new TraceEvent(header, Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
         return CloudEventUtils
-                .build(executionId, buildSource(configBean.getServiceUrl(), null), event, TraceEvent.class)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid TraceEvent created. Unable to encode"));
+                .build(executionId, buildSource(configBean.getServiceUrl(), null), event, TraceEvent.class);
     }
 
-    private static CloudEvent buildDefaultCloudEvent(DMNModel model, String executionId, List<EvaluateEvent> events, ConfigBean configBean) {
+    private static Optional<CloudEvent> buildDefaultCloudEvent(DMNModel model, String executionId, List<EvaluateEvent> events, ConfigBean configBean) {
         EvaluateEvent firstEvent = events.get(0);
         EvaluateEvent lastEvent = events.get(events.size() - 1);
 
@@ -131,23 +131,28 @@ public class DefaultAggregator implements Aggregator {
         // complete event
         TraceEvent event = new TraceEvent(header, inputs, outputs, executionStepsPair.getLeft());
         return CloudEventUtils
-                .build(executionId, buildSource(configBean.getServiceUrl(), firstEvent), event, TraceEvent.class)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid TraceEvent created. Unable to encode"));
+                .build(executionId, buildSource(configBean.getServiceUrl(), firstEvent), event, TraceEvent.class);
     }
 
     private static URI buildSource(String serviceUrl, EvaluateEvent event) {
-        String modelChunk = event != null
-                ? CloudEventUtils.urlEncode(event.getModelName())
-                : null;
-        String decisionChunk = event != null && (event.getType() == BEFORE_EVALUATE_DECISION_SERVICE || event.getType() == AFTER_EVALUATE_DECISION_SERVICE)
-                ? CloudEventUtils.urlEncode(event.getNodeName())
-                : null;
+        String modelChunk = Optional.ofNullable(event)
+                .map(EvaluateEvent::getModelName)
+                .flatMap(CloudEventUtils::urlEncodedStringFrom)
+                .orElse(null);
+
+        String decisionChunk = Optional.ofNullable(event)
+                .filter(e -> e.getType() == BEFORE_EVALUATE_DECISION_SERVICE || e.getType() == AFTER_EVALUATE_DECISION_SERVICE)
+                .map(EvaluateEvent::getNodeName)
+                .flatMap(CloudEventUtils::urlEncodedStringFrom)
+                .orElse(null);
+
         String fullUrl = Stream.of(serviceUrl, modelChunk, decisionChunk)
                 .filter(s -> s != null && !s.isEmpty())
                 .collect(Collectors.joining("/"));
+
         return URI.create(Optional.of(fullUrl)
                 .filter(s -> !s.isEmpty())
-                .orElseGet(() -> CloudEventUtils.urlEncode(UNKNOWN_SOURCE_URL))
+                .orElse(UNKNOWN_SOURCE_URI_STRING)
         );
     }
 

@@ -17,6 +17,7 @@
 package org.kie.kogito.tracing.decision.aggregator;
 
 import java.util.List;
+import java.util.Optional;
 
 import io.cloudevents.CloudEvent;
 import org.kie.dmn.api.core.DMNModel;
@@ -26,5 +27,5 @@ import org.kie.kogito.tracing.decision.event.evaluate.EvaluateEvent;
 @FunctionalInterface
 public interface Aggregator {
 
-    CloudEvent aggregate(DMNModel model, String executionId, List<EvaluateEvent> events, ConfigBean configBean);
+    Optional<CloudEvent> aggregate(DMNModel model, String executionId, List<EvaluateEvent> events, ConfigBean configBean);
 }

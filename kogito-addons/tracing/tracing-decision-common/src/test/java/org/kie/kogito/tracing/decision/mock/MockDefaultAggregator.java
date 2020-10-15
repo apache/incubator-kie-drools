@@ -19,6 +19,7 @@ package org.kie.kogito.tracing.decision.mock;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import io.cloudevents.CloudEvent;
 import org.kie.dmn.api.core.DMNModel;
@@ -36,10 +37,10 @@ public class MockDefaultAggregator extends DefaultAggregator {
     }
 
     @Override
-    public CloudEvent aggregate(DMNModel model, String executionId, List<EvaluateEvent> events, ConfigBean configBean) {
-        CloudEvent result = super.aggregate(model, executionId, events, configBean);
+    public Optional<CloudEvent> aggregate(DMNModel model, String executionId, List<EvaluateEvent> events, ConfigBean configBean) {
+        CloudEvent result = super.aggregate(model, executionId, events, configBean).orElseThrow(IllegalStateException::new);
         calls.put(executionId, new Pair<>(events, result));
-        return result;
+        return Optional.of(result);
     }
 
 }

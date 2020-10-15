@@ -30,16 +30,20 @@ public abstract class BaseModelEventEmitter implements EventEmitter {
     protected void publishDecisionModels() {
         decisionModelResourcesProvider.get().forEach(resource -> {
             //Fire a new ModelEvent containing the model, name and namespace
-            CloudEventUtils
-                    .build("id",
-                            CloudEventUtils.uriFromString(ModelEvent.class.getName()),
-                            new ModelEvent(ModelEvent.GAV.from(resource.getGav()),
+            CloudEventUtils.urlEncodedURIFrom(ModelEvent.class.getName())
+                    .flatMap(uri -> CloudEventUtils.build("id",
+                            uri,
+                            new ModelEvent(
+                                    ModelEvent.GAV.from(resource.getGav()),
                                     resource.getModelName(),
                                     resource.getNamespace(),
                                     resource.getModelType(),
-                                    resource.get()),
-                            ModelEvent.class)
-                    .ifPresent(e -> emit(CloudEventUtils.encode(e)));
+                                    resource.get()
+                            ),
+                            ModelEvent.class
+                    ))
+                    .flatMap(CloudEventUtils::encode)
+                    .ifPresent(this::emit);
         });
     }
 }

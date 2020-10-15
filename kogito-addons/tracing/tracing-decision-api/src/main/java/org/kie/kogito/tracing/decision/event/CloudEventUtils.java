@@ -33,14 +33,13 @@ import org.slf4j.LoggerFactory;
 public class CloudEventUtils {
 
     private static final Logger LOG = LoggerFactory.getLogger(CloudEventUtils.class);
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper().registerModule(JsonFormat.getCloudEventJacksonModule());
 
     public static <E> Optional<CloudEvent> build(String id,
                                                  URI source,
                                                  E data,
                                                  Class<E> dataType) {
         try {
-            byte[] bytes = OBJECT_MAPPER.writeValueAsBytes(data);
+            byte[] bytes = Mapper.mapper().writeValueAsBytes(data);
             return Optional.of(CloudEventBuilder.v1()
                     .withType(dataType.getName())
                     .withId(id)
@@ -53,33 +52,55 @@ public class CloudEventUtils {
         }
     }
 
-    public static String encode(CloudEvent event) {
+    public static Optional<String> encode(CloudEvent event) {
         try {
-            return OBJECT_MAPPER.writeValueAsString(event);
+            return Optional.of(Mapper.mapper().writeValueAsString(event));
         } catch (JsonProcessingException e) {
             LOG.error("Unable to encode CloudEvent", e);
-            return null;
+            return Optional.empty();
         }
     }
 
-    public static CloudEvent decode(String json) {
+    public static Optional<CloudEvent> decode(String json) {
         try {
-            return OBJECT_MAPPER.readValue(json, CloudEvent.class);
+            return Optional.of(Mapper.mapper().readValue(json, CloudEvent.class));
         } catch (JsonProcessingException e) {
             LOG.error("Unable to decode CloudEvent", e);
-            return null;
+            return Optional.empty();
         }
     }
 
-    public static URI uriFromString(String input) {
-        return URI.create(urlEncode(input));
+    public static Optional<String> urlEncodedStringFrom(String input) {
+        return Optional.ofNullable(input)
+                .map(i -> {
+                    try {
+                        return URLEncoder.encode(i, StandardCharsets.UTF_8.toString());
+                    } catch (UnsupportedEncodingException e) {
+                        LOG.error("Unable to URL-encode string \"" + i + "\"", e);
+                        return null;
+                    }
+                });
     }
 
-    public static String urlEncode(String input) {
-        try {
-            return URLEncoder.encode(input, StandardCharsets.UTF_8.toString());
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
+    public static Optional<URI> urlEncodedURIFrom(String input) {
+        return urlEncodedStringFrom(input)
+                .map(encodedInput -> {
+                    try {
+                        return URI.create(encodedInput);
+                    } catch (IllegalArgumentException e) {
+                        LOG.error("Unable to create URI from string \"" + encodedInput + "\"", e);
+                        return null;
+                    }
+                });
+    }
+
+    // This trick allows to inject a mocked ObjectMapper in the unit tests via Mockito#mockStatic
+    static class Mapper {
+
+        private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper().registerModule(JsonFormat.getCloudEventJacksonModule());
+
+        public static ObjectMapper mapper() {
+            return OBJECT_MAPPER;
         }
     }
 

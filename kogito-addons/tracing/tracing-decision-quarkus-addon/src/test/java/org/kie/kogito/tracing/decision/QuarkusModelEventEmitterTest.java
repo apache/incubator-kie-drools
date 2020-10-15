@@ -47,8 +47,8 @@ public class QuarkusModelEventEmitterTest {
         subscriber.assertValueCount(2);
         final String rawCloudEvent1 = subscriber.values().get(0);
         final String rawCloudEvent2 = subscriber.values().get(1);
-        final CloudEvent cloudEvent1 = CloudEventUtils.decode(rawCloudEvent1);
-        final CloudEvent cloudEvent2 = CloudEventUtils.decode(rawCloudEvent2);
+        final CloudEvent cloudEvent1 = CloudEventUtils.decode(rawCloudEvent1).orElseThrow(IllegalStateException::new);
+        final CloudEvent cloudEvent2 = CloudEventUtils.decode(rawCloudEvent2).orElseThrow(IllegalStateException::new);
 
         assertEquals("id", cloudEvent1.getId());
         assertEquals("id", cloudEvent2.getId());

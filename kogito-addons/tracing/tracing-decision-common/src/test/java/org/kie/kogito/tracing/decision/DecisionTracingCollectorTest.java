@@ -19,6 +19,7 @@ package org.kie.kogito.tracing.decision;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -108,8 +109,18 @@ class DecisionTracingCollectorTest {
         int evaluateDecisionServiceIndex = evaluateAllIndex == 1 ? 0 : 1;
 
         List<String> payloads = payloadCaptor.getAllValues();
-        assertEquals(CloudEventUtils.encode(aggregatorCalls.get(EVALUATE_ALL_EXECUTION_ID).getRight()), payloads.get(evaluateAllIndex));
-        assertEquals(CloudEventUtils.encode(aggregatorCalls.get(EVALUATE_DECISION_SERVICE_EXECUTION_ID).getRight()), payloads.get(evaluateDecisionServiceIndex));
+
+        String expectedEvaluateAll = encodeFromCall(aggregatorCalls, EVALUATE_ALL_EXECUTION_ID);
+        assertEquals(expectedEvaluateAll, payloads.get(evaluateAllIndex));
+
+        String expectedEvaluateDecisionService = encodeFromCall(aggregatorCalls, EVALUATE_DECISION_SERVICE_EXECUTION_ID);
+        assertEquals(expectedEvaluateDecisionService, payloads.get(evaluateDecisionServiceIndex));
     }
 
+    private static String encodeFromCall(Map<String, Pair<List<EvaluateEvent>, CloudEvent>> aggregatorCalls, String key) {
+        return Optional.ofNullable(aggregatorCalls.get(key))
+                .map(Pair::getRight)
+                .flatMap(CloudEventUtils::encode)
+                .orElseThrow(IllegalStateException::new);
+    }
 }

@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -82,16 +83,23 @@ public class DecisionTracingCollector {
 
         if (terminationDetectorMap.get(executionId).isTerminated()) {
             DMNModel dmnModel = modelSupplier.apply(event.getModelNamespace(), event.getModelName());
-            String payload = aggregate(dmnModel, executionId, cacheMap.get(executionId));
-            payloadConsumer.accept(payload);
-            LOG.debug("Generated aggregated event for evaluation {} (length {})", executionId, payload.length());
+            Optional<String> optPayload = aggregate(dmnModel, executionId, cacheMap.get(executionId));
+
+            if (optPayload.isPresent()) {
+                String payload = optPayload.get();
+                payloadConsumer.accept(payload);
+                LOG.debug("Generated aggregated event for evaluation {} (length {})", executionId, payload.length());
+            } else {
+                LOG.error("Failed aggregating data for evaluation {}", executionId);
+            }
+
             cacheMap.remove(executionId);
             terminationDetectorMap.remove(executionId);
             LOG.trace("Removed evaluation {} from cache (current size: {})", executionId, cacheMap.size());
         }
     }
 
-    private String aggregate(DMNModel model, String executionId, List<EvaluateEvent> events) {
-        return CloudEventUtils.encode(aggregator.aggregate(model, executionId, events, configBean));
+    private Optional<String> aggregate(DMNModel model, String executionId, List<EvaluateEvent> events) {
+        return aggregator.aggregate(model, executionId, events, configBean).flatMap(CloudEventUtils::encode);
     }
 }
