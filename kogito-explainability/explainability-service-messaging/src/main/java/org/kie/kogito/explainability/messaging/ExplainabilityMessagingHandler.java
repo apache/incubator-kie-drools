@@ -21,6 +21,7 @@ import java.net.URI;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -69,7 +70,7 @@ public class ExplainabilityMessagingHandler {
     @Incoming("trusty-explainability-request")
     public CompletionStage<Void> handleMessage(Message<String> message) {
         try {
-            Optional<CloudEvent> cloudEventOpt = decodeCloudEvent(message.getPayload());
+            Optional<CloudEvent> cloudEventOpt = CloudEventUtils.decode(message.getPayload());
             if (!cloudEventOpt.isPresent()) {
                 return message.ack();
             }
@@ -81,15 +82,6 @@ public class ExplainabilityMessagingHandler {
             LOGGER.error("Something unexpected happened during the processing of an Event. The event is discarded.", e);
         }
         return message.ack();
-    }
-
-    private Optional<CloudEvent> decodeCloudEvent(String payload) {
-        try {
-            return Optional.of(CloudEventUtils.decode(payload));
-        } catch (IllegalStateException e) {
-            LOGGER.error(String.format("Can't decode message to CloudEvent: %s", payload), e);
-            return Optional.empty();
-        }
     }
 
     private CompletionStage<Void> handleCloudEvent(CloudEvent cloudEvent) {
@@ -118,13 +110,11 @@ public class ExplainabilityMessagingHandler {
     // Outgoing
     public Void sendEvent(ExplainabilityResultDto result) {
         LOGGER.info("Explainability service emits explainability for execution with ID {}", result.getExecutionId());
-        Optional<CloudEvent> event = CloudEventUtils.build(result.getExecutionId(),
-                URI_PRODUCER,
-                result,
-                ExplainabilityResultDto.class);
-        if(event.isPresent()) {
-            String payload = CloudEventUtils.encode(event.get());
-            eventSubject.onNext(payload);
+        Optional<String> optPayload = CloudEventUtils
+                .build(result.getExecutionId(), URI_PRODUCER, result, ExplainabilityResultDto.class)
+                .flatMap(CloudEventUtils::encode);
+        if (optPayload.isPresent()) {
+            eventSubject.onNext(optPayload.get());
         } else {
             LOGGER.warn("Ignoring empty CloudEvent");
         }

@@ -69,10 +69,10 @@ public class ExplainabilityResultConsumerIT {
                 URI.create("explainabilityResult/test"),
                 resultDto,
                 ExplainabilityResultDto.class
-        ).get();
+        ).orElseThrow(IllegalStateException::new);
     }
 
     public static String buildCloudEventJsonString(ExplainabilityResultDto resultDto) {
-        return CloudEventUtils.encode(buildExplainabilityCloudEvent(resultDto));
+        return CloudEventUtils.encode(buildExplainabilityCloudEvent(resultDto)).orElseThrow(IllegalStateException::new);
     }
 }

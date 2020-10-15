@@ -18,9 +18,9 @@ package org.kie.kogito.trusty.service.messaging.outgoing;
 
 import java.net.URI;
 import java.util.Optional;
+
 import javax.enterprise.context.ApplicationScoped;
 
-import io.cloudevents.CloudEvent;
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.subjects.PublishSubject;
 import org.eclipse.microprofile.reactive.messaging.Outgoing;
@@ -41,14 +41,11 @@ public class ExplainabilityRequestProducer {
 
     public void sendEvent(ExplainabilityRequestDto request) {
         LOGGER.info("Sending explainability request with id {}", request.getExecutionId());
-        Optional<CloudEvent> event =
-                CloudEventUtils.build(request.getExecutionId(),
-                                      URI_PRODUCER,
-                                      request,
-                                      ExplainabilityRequestDto.class);
-        if(event.isPresent()) {
-            String payload = CloudEventUtils.encode(event.get());
-            eventSubject.onNext(payload);
+        Optional<String> optPayload = CloudEventUtils
+                .build(request.getExecutionId(), URI_PRODUCER, request, ExplainabilityRequestDto.class)
+                .flatMap(CloudEventUtils::encode);
+        if (optPayload.isPresent()) {
+            eventSubject.onNext(optPayload.get());
         } else {
             LOGGER.warn("Ignoring empty CloudEvent");
         }

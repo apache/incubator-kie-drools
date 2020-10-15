@@ -212,7 +212,7 @@ class ExplainabilityResultConsumerTest {
     }
 
     public static String buildCloudEventJsonString(ExplainabilityResultDto resultDto) {
-        return CloudEventUtils.encode(buildExplainabilityCloudEvent(resultDto));
+        return CloudEventUtils.encode(buildExplainabilityCloudEvent(resultDto)).orElseThrow(IllegalStateException::new);
     }
 
     private static int compareFeatureImportance(FeatureImportance expected, FeatureImportance actual) {

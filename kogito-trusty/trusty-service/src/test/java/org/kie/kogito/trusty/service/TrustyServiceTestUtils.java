@@ -154,15 +154,15 @@ public class TrustyServiceTestUtils {
     }
 
     public static String buildCloudEventJsonString(TraceEvent traceEvent) {
-        return CloudEventUtils.encode(buildCloudEvent(traceEvent));
+        return CloudEventUtils.encode(buildCloudEvent(traceEvent)).orElseThrow(IllegalStateException::new);
     }
 
     public static CloudEvent buildCloudEventWithoutData() {
-        return CloudEventUtils.build(CLOUDEVENT_WITHOUT_DATA_ID, URI.create(URLEncoder.encode(MODEL_NAME, StandardCharsets.UTF_8)), null, TraceEvent.class).get();
+        return CloudEventUtils.build(CLOUDEVENT_WITHOUT_DATA_ID, URI.create(URLEncoder.encode(MODEL_NAME, StandardCharsets.UTF_8)), null, TraceEvent.class).orElseThrow(IllegalStateException::new);
     }
 
     public static String buildCloudEventWithoutDataJsonString() {
-        return CloudEventUtils.encode(buildCloudEventWithoutData());
+        return CloudEventUtils.encode(buildCloudEventWithoutData()).orElseThrow(IllegalStateException::new);
     }
 
     public static TraceEvent buildCorrectTraceEvent(String cloudEventId) {
@@ -459,7 +459,7 @@ public class TrustyServiceTestUtils {
     }
 
     public static String buildCloudEventJsonString(ModelEvent modelEvent) {
-        return CloudEventUtils.encode(buildCloudEvent(modelEvent));
+        return CloudEventUtils.encode(buildCloudEvent(modelEvent)).orElseThrow(IllegalStateException::new);
     }
 
     public static CloudEvent buildCloudEvent(ModelEvent modelEvent) {

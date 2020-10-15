@@ -17,18 +17,14 @@
 package org.kie.kogito.trusty.service.messaging;
 
 import java.io.IOException;
-import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.cloudevents.CloudEvent;
 import org.eclipse.microprofile.reactive.messaging.Message;
-import org.kie.kogito.decision.DecisionModelType;
 import org.kie.kogito.tracing.decision.event.CloudEventUtils;
-import org.kie.kogito.tracing.decision.event.model.ModelEvent;
 import org.kie.kogito.trusty.service.TrustyService;
-import org.kie.kogito.trusty.service.messaging.incoming.ModelEventConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,20 +46,11 @@ public abstract class BaseEventConsumer<E> {
 
     protected CompletionStage<Void> handleMessage(final Message<String> message) {
         try {
-            decodeCloudEvent(message.getPayload()).ifPresent(this::handleCloudEvent);
+            CloudEventUtils.decode(message.getPayload()).ifPresent(this::handleCloudEvent);
         } catch (Exception e) {
             LOG.error("Something unexpected happened during the processing of an Event. The event is discarded.", e);
         }
         return message.ack();
-    }
-
-    protected Optional<CloudEvent> decodeCloudEvent(final String payload) {
-        try {
-            return Optional.of(CloudEventUtils.decode(payload));
-        } catch (IllegalStateException e) {
-            LOG.error(String.format("Can't decode message to CloudEvent: %s", payload), e);
-            return Optional.empty();
-        }
     }
 
     protected void handleCloudEvent(final CloudEvent cloudEvent) {

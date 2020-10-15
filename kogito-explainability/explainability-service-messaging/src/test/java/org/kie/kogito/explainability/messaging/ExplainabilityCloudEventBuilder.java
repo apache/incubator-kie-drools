@@ -34,6 +34,6 @@ public class ExplainabilityCloudEventBuilder {
     }
 
     public static String buildCloudEventJsonString(ExplainabilityRequestDto request) {
-        return CloudEventUtils.encode(buildCloudEvent(request));
+        return CloudEventUtils.encode(buildCloudEvent(request)).orElseThrow(IllegalStateException::new);
     }
 }
