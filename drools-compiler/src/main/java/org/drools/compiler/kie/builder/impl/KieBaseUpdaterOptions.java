@@ -17,6 +17,7 @@
 package org.drools.compiler.kie.builder.impl;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -29,10 +30,12 @@ public class KieBaseUpdaterOptions {
 
     public KieBaseUpdaterOptions(OptionEntry... options) {
         for (OptionEntry o : options) {
-            if(o != null) {
-                optionMap.put(o.key, o.value);
-            }
+            optionMap.put(o.key, o.value);
         }
+    }
+
+    public KieBaseUpdaterOptions(List<OptionEntry> options) {
+        this(options.toArray(new OptionEntry[0]));
     }
 
     public Optional<Option> getOption(Class<? extends Option> optionClazz) {
@@ -47,7 +50,5 @@ public class KieBaseUpdaterOptions {
             this.key = key;
             this.value = value;
         }
-
-
     }
 }

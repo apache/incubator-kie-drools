@@ -91,6 +91,8 @@ import org.kie.internal.builder.ResourceChange;
 import org.kie.internal.builder.ResourceChangeSet;
 import org.kie.internal.builder.conf.AlphaNetworkCompilerOption;
 
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 
 import static org.drools.compiler.kie.builder.impl.AbstractKieModule.checkStreamMode;
@@ -237,15 +239,21 @@ public class CanonicalKieModule implements InternalKieModule {
         KnowledgeBuilder knowledgeBuilderForKieBase = getKnowledgeBuilderForKieBase(name);
 
 
-        final KieBaseUpdaterOptions.OptionEntry options;
+        final List<KieBaseUpdaterOptions.OptionEntry> options;
         if(knowledgeBuilderForKieBase instanceof KnowledgeBuilderImpl) {// When using executable module in tests
             KnowledgeBuilderImpl knowledgeBuilderForImpl = (KnowledgeBuilderImpl) knowledgeBuilderForKieBase;
             KnowledgeBuilderConfigurationImpl builderConfiguration = knowledgeBuilderForImpl.getBuilderConfiguration();
-            options = new KieBaseUpdaterOptions.OptionEntry(AlphaNetworkCompilerOption.class, builderConfiguration.getAlphaNetworkCompilerOption());
+            options = singletonList(
+                    new KieBaseUpdaterOptions.OptionEntry(
+                            AlphaNetworkCompilerOption.class,
+                            builderConfiguration.getAlphaNetworkCompilerOption()));
         } else if(resourceFileExists(getANCFile(internalKieModule.getReleaseId()))) { // executable model with ANC
-            options = new KieBaseUpdaterOptions.OptionEntry(AlphaNetworkCompilerOption.class, AlphaNetworkCompilerOption.LOAD);
+            options = singletonList(
+                    new KieBaseUpdaterOptions.OptionEntry(
+                            AlphaNetworkCompilerOption.class,
+                            AlphaNetworkCompilerOption.LOAD));
         } else { // Default case when loaded from executable model kjar
-            options = null;
+            options = emptyList();
         }
 
         KieContainerImpl.CompositeRunnable compositeUpdater = new KieContainerImpl.CompositeRunnable();
