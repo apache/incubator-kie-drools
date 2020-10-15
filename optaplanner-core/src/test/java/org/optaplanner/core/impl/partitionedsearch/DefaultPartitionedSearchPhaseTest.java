@@ -161,7 +161,7 @@ public class DefaultPartitionedSearchPhaseTest {
         assertThat(solver.isTerminateEarly()).isTrue();
 
         executor.shutdown();
-        assertThat(executor.awaitTermination(100, TimeUnit.MILLISECONDS)).isTrue();
+        assertThat(executor.awaitTermination(1, TimeUnit.SECONDS)).isTrue();
         assertThat(solutionFuture.get()).isNotNull();
     }
 
