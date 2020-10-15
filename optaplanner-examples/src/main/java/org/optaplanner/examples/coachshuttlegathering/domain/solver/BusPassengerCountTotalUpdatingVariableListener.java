@@ -16,8 +16,8 @@
 
 package org.optaplanner.examples.coachshuttlegathering.domain.solver;
 
+import org.optaplanner.core.api.domain.variable.VariableListener;
 import org.optaplanner.core.api.score.director.ScoreDirector;
-import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
 import org.optaplanner.examples.coachshuttlegathering.domain.Bus;
 import org.optaplanner.examples.coachshuttlegathering.domain.BusStop;
 import org.optaplanner.examples.coachshuttlegathering.domain.CoachShuttleGatheringSolution;

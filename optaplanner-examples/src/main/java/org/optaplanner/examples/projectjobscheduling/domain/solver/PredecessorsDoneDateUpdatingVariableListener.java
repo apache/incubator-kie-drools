@@ -20,8 +20,8 @@ import java.util.ArrayDeque;
 import java.util.Objects;
 import java.util.Queue;
 
+import org.optaplanner.core.api.domain.variable.VariableListener;
 import org.optaplanner.core.api.score.director.ScoreDirector;
-import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
 import org.optaplanner.examples.projectjobscheduling.domain.Allocation;
 import org.optaplanner.examples.projectjobscheduling.domain.Schedule;
 

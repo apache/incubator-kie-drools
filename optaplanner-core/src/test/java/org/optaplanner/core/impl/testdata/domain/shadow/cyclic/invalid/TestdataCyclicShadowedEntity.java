@@ -24,7 +24,7 @@ import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
-import org.optaplanner.core.impl.domain.variable.listener.VariableListenerAdapter;
+import org.optaplanner.core.impl.testdata.domain.DummyVariableListener;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
@@ -110,7 +110,7 @@ public class TestdataCyclicShadowedEntity extends TestdataObject {
     // ************************************************************************
 
     public static class RockShadowUpdatingVariableListener
-            extends VariableListenerAdapter<TestdataCyclicShadowedSolution, TestdataCyclicShadowedEntity> {
+            extends DummyVariableListener<TestdataCyclicShadowedSolution, TestdataCyclicShadowedEntity> {
 
         @Override
         public void afterEntityAdded(ScoreDirector<TestdataCyclicShadowedSolution> scoreDirector,
@@ -135,7 +135,7 @@ public class TestdataCyclicShadowedEntity extends TestdataObject {
     }
 
     public static class PaperShadowUpdatingVariableListener
-            extends VariableListenerAdapter<TestdataCyclicShadowedSolution, TestdataCyclicShadowedEntity> {
+            extends DummyVariableListener<TestdataCyclicShadowedSolution, TestdataCyclicShadowedEntity> {
 
         @Override
         public void afterEntityAdded(ScoreDirector<TestdataCyclicShadowedSolution> scoreDirector,
@@ -160,7 +160,7 @@ public class TestdataCyclicShadowedEntity extends TestdataObject {
     }
 
     public static class ScissorsShadowUpdatingVariableListener
-            extends VariableListenerAdapter<TestdataCyclicShadowedSolution, TestdataCyclicShadowedEntity> {
+            extends DummyVariableListener<TestdataCyclicShadowedSolution, TestdataCyclicShadowedEntity> {
 
         @Override
         public void afterEntityAdded(ScoreDirector<TestdataCyclicShadowedSolution> scoreDirector,

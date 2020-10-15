@@ -74,8 +74,8 @@ public class ExternalizedAnchorVariableSupplyTest {
         assertThat(supply.getAnchor(a3)).isSameAs(b0);
         assertThat(supply.getAnchor(b1)).isSameAs(b0);
 
-        nextVariableSupply.clearWorkingSolution(scoreDirector);
-        supply.clearWorkingSolution(scoreDirector);
+        nextVariableSupply.close();
+        supply.close();
     }
 
 }

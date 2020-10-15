@@ -16,8 +16,8 @@
 
 package org.optaplanner.examples.examination.domain.solver;
 
+import org.optaplanner.core.api.domain.variable.VariableListener;
 import org.optaplanner.core.api.score.director.ScoreDirector;
-import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
 import org.optaplanner.examples.examination.domain.Examination;
 import org.optaplanner.examples.examination.domain.FollowingExam;
 import org.optaplanner.examples.examination.domain.LeadingExam;

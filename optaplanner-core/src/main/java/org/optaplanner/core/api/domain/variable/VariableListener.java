@@ -14,10 +14,13 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.domain.variable.listener;
+package org.optaplanner.core.api.domain.variable;
 
+import java.io.Closeable;
+
+import org.optaplanner.core.api.domain.entity.PlanningEntity;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.director.ScoreDirector;
-import org.optaplanner.core.impl.domain.variable.supply.Supply;
 
 /**
  * Changes shadow variables when a genuine planning variable changes.
@@ -27,10 +30,14 @@ import org.optaplanner.core.impl.domain.variable.supply.Supply;
  * It can change its shadow variable(s) on multiple entity instances
  * (for example: an arrivalTime change affects all trailing entities too).
  * <p>
- * Each {@link ScoreDirector} has a different {@link VariableListener} instance, so it can be stateful.
- * If it is stateful, it must implement {@link StatefulVariableListener}.
+ * It is recommended that implementations be kept stateless.
+ * If state must be implemented, implementations may need to override the default methods
+ * ({@link #resetWorkingSolution(ScoreDirector)}, {@link #close()}).
+ *
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ * @param <Entity_> @{@link PlanningEntity} on which the variable is declared
  */
-public interface VariableListener<Solution_, Entity_> extends Supply {
+public interface VariableListener<Solution_, Entity_> extends Closeable {
 
     /**
      * When set to {@code true}, this has a slight performance loss in Planner.
@@ -79,4 +86,22 @@ public interface VariableListener<Solution_, Entity_> extends Supply {
      */
     void afterEntityRemoved(ScoreDirector<Solution_> scoreDirector, Entity_ entity);
 
+    /**
+     * Called when the entire working solution changes. In this event, the other before..()/after...() methods will not
+     * be called.
+     * At this point, implementations should clear state, if any.
+     *
+     * @param scoreDirector never null
+     */
+    default void resetWorkingSolution(ScoreDirector<Solution_> scoreDirector) {
+        // No need to do anything for stateless implementations.
+    }
+
+    /**
+     * Called before this {@link VariableListener} is thrown away and not used anymore.
+     */
+    @Override
+    default void close() {
+        // No need to do anything for stateless implementations.
+    }
 }

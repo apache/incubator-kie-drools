@@ -68,7 +68,7 @@ public class ExternalizedSingletonInverseVariableSupplyTest {
         assertThat(supply.getInverseSingleton(a2)).isSameAs(null);
         assertThat(supply.getInverseSingleton(b1)).isSameAs(a3);
 
-        supply.clearWorkingSolution(scoreDirector);
+        supply.close();
     }
 
 }

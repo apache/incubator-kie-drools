@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ import org.optaplanner.core.api.domain.variable.PlanningVariableReference;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
-import org.optaplanner.core.impl.domain.variable.listener.VariableListenerAdapter;
+import org.optaplanner.core.impl.testdata.domain.DummyVariableListener;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
@@ -73,7 +73,7 @@ public class TestdataSevenNonCyclicShadowedEntity extends TestdataObject {
         this.value = value;
     }
 
-    @CustomShadowVariable(variableListenerClass = VariableListenerAdapter.class, sources = {
+    @CustomShadowVariable(variableListenerClass = DummyVariableListener.class, sources = {
             @PlanningVariableReference(variableName = "secondShadow") })
     public String getThirdShadow() {
         return thirdShadow;
@@ -83,7 +83,7 @@ public class TestdataSevenNonCyclicShadowedEntity extends TestdataObject {
         this.thirdShadow = thirdShadow;
     }
 
-    @CustomShadowVariable(variableListenerClass = VariableListenerAdapter.class, sources = {
+    @CustomShadowVariable(variableListenerClass = DummyVariableListener.class, sources = {
             @PlanningVariableReference(variableName = "fourthShadow") })
     public String getFifthShadow() {
         return fifthShadow;
@@ -93,7 +93,7 @@ public class TestdataSevenNonCyclicShadowedEntity extends TestdataObject {
         this.fifthShadow = fifthShadow;
     }
 
-    @CustomShadowVariable(variableListenerClass = VariableListenerAdapter.class, sources = {
+    @CustomShadowVariable(variableListenerClass = DummyVariableListener.class, sources = {
             @PlanningVariableReference(variableName = "value") })
     public String getFirstShadow() {
         return firstShadow;
@@ -103,7 +103,7 @@ public class TestdataSevenNonCyclicShadowedEntity extends TestdataObject {
         this.firstShadow = firstShadow;
     }
 
-    @CustomShadowVariable(variableListenerClass = VariableListenerAdapter.class, sources = {
+    @CustomShadowVariable(variableListenerClass = DummyVariableListener.class, sources = {
             @PlanningVariableReference(variableName = "thirdShadow") })
     public String getFourthShadow() {
         return fourthShadow;
@@ -113,7 +113,7 @@ public class TestdataSevenNonCyclicShadowedEntity extends TestdataObject {
         this.fourthShadow = fourthShadow;
     }
 
-    @CustomShadowVariable(variableListenerClass = VariableListenerAdapter.class, sources = {
+    @CustomShadowVariable(variableListenerClass = DummyVariableListener.class, sources = {
             @PlanningVariableReference(variableName = "firstShadow") })
     public String getSecondShadow() {
         return secondShadow;
@@ -123,7 +123,7 @@ public class TestdataSevenNonCyclicShadowedEntity extends TestdataObject {
         this.secondShadow = secondShadow;
     }
 
-    @CustomShadowVariable(variableListenerClass = VariableListenerAdapter.class, sources = {
+    @CustomShadowVariable(variableListenerClass = DummyVariableListener.class, sources = {
             @PlanningVariableReference(variableName = "sixthShadow") })
     public String getSeventhShadow() {
         return seventhShadow;
@@ -133,7 +133,7 @@ public class TestdataSevenNonCyclicShadowedEntity extends TestdataObject {
         this.seventhShadow = seventhShadow;
     }
 
-    @CustomShadowVariable(variableListenerClass = VariableListenerAdapter.class, sources = {
+    @CustomShadowVariable(variableListenerClass = DummyVariableListener.class, sources = {
             @PlanningVariableReference(variableName = "fifthShadow") })
     public String getSixthShadow() {
         return sixthShadow;
@@ -142,9 +142,5 @@ public class TestdataSevenNonCyclicShadowedEntity extends TestdataObject {
     public void setSixthShadow(String sixthShadow) {
         this.sixthShadow = sixthShadow;
     }
-
-    // ************************************************************************
-    // Complex methods
-    // ************************************************************************
 
 }

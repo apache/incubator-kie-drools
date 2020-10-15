@@ -91,16 +91,17 @@ public class VariableListenerSupportTest {
 
     @Test
     public void demandRichChained() {
-        SolutionDescriptor<TestdataShadowingChainedSolution> solutionDescriptor = TestdataShadowingChainedSolution
-                .buildSolutionDescriptor();
-        InnerScoreDirector<TestdataShadowingChainedSolution, SimpleScore> scoreDirector = mock(InnerScoreDirector.class);
+        SolutionDescriptor<TestdataShadowingChainedSolution> solutionDescriptor =
+                TestdataShadowingChainedSolution.buildSolutionDescriptor();
+        InnerScoreDirector<TestdataShadowingChainedSolution, SimpleScore> scoreDirector =
+                mock(InnerScoreDirector.class);
         when(scoreDirector.getSolutionDescriptor()).thenReturn(solutionDescriptor);
         TestdataShadowingChainedSolution solution = new TestdataShadowingChainedSolution();
         solution.setChainedEntityList(Collections.emptyList());
         when(scoreDirector.getWorkingSolution()).thenReturn(solution);
         when(scoreDirector.getSupplyManager()).thenReturn(mock(SupplyManager.class));
-        VariableListenerSupport<TestdataShadowingChainedSolution> variableListenerSupport = new VariableListenerSupport<>(
-                scoreDirector);
+        VariableListenerSupport<TestdataShadowingChainedSolution> variableListenerSupport =
+                new VariableListenerSupport<>(scoreDirector);
         variableListenerSupport.linkVariableListeners();
 
         VariableDescriptor<TestdataShadowingChainedSolution> variableDescriptor = solutionDescriptor

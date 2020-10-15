@@ -24,7 +24,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
-import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
 
 /**
  * Specifies that a bean property (or a field) is a custom shadow of 1 or more {@link PlanningVariable}'s.

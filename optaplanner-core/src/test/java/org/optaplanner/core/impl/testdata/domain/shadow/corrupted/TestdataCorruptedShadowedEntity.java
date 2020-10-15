@@ -23,7 +23,7 @@ import org.optaplanner.core.api.domain.variable.PlanningVariableReference;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.optaplanner.core.impl.domain.variable.listener.VariableListenerAdapter;
+import org.optaplanner.core.impl.testdata.domain.DummyVariableListener;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
@@ -79,7 +79,7 @@ public class TestdataCorruptedShadowedEntity extends TestdataObject {
     // ************************************************************************
 
     public static class CountUpdatingVariableListener
-            extends VariableListenerAdapter<TestdataCorruptedShadowedSolution, TestdataCorruptedShadowedEntity> {
+            extends DummyVariableListener<TestdataCorruptedShadowedSolution, TestdataCorruptedShadowedEntity> {
 
         @Override
         public void afterEntityAdded(ScoreDirector<TestdataCorruptedShadowedSolution> scoreDirector,

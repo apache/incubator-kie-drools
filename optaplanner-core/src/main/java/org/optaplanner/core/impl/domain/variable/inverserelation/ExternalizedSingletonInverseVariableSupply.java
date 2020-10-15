@@ -23,13 +23,13 @@ import java.util.Map;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
-import org.optaplanner.core.impl.domain.variable.listener.StatefulVariableListener;
+import org.optaplanner.core.impl.domain.variable.listener.SourcedVariableListener;
 
 /**
  * Alternative to {@link SingletonInverseVariableListener}.
  */
 public class ExternalizedSingletonInverseVariableSupply<Solution_>
-        implements StatefulVariableListener<Solution_, Object>, SingletonInverseVariableSupply {
+        implements SourcedVariableListener<Solution_, Object>, SingletonInverseVariableSupply {
 
     protected final VariableDescriptor<Solution_> sourceVariableDescriptor;
 
@@ -55,7 +55,7 @@ public class ExternalizedSingletonInverseVariableSupply<Solution_>
     }
 
     @Override
-    public void clearWorkingSolution(ScoreDirector<Solution_> scoreDirector) {
+    public void close() {
         inverseEntityMap = null;
     }
 

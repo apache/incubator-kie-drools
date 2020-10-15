@@ -24,14 +24,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.domain.variable.VariableListener;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
-import org.optaplanner.core.impl.domain.variable.listener.StatefulVariableListener;
-import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
+import org.optaplanner.core.impl.domain.variable.listener.SourcedVariableListener;
 import org.optaplanner.core.impl.domain.variable.supply.Demand;
 import org.optaplanner.core.impl.domain.variable.supply.Supply;
 import org.optaplanner.core.impl.domain.variable.supply.SupplyManager;
@@ -74,7 +74,10 @@ public class VariableListenerSupport<Solution_> implements SupplyManager<Solutio
                 if (shadowVariableDescriptor.hasVariableListener(scoreDirector)) {
                     VariableListener<Solution_, ?> variableListener =
                             shadowVariableDescriptor.buildVariableListener(scoreDirector);
-                    supplyMap.put(shadowVariableDescriptor.getProvidedDemand(), variableListener);
+                    if (variableListener instanceof Supply) {
+                        // Non-sourced variable listeners (ie. ones provided by the user) can never be a supply.
+                        supplyMap.put(shadowVariableDescriptor.getProvidedDemand(), (Supply) variableListener);
+                    }
                     int globalOrder = shadowVariableDescriptor.getGlobalShadowOrder();
                     if (nextGlobalOrder <= globalOrder) {
                         nextGlobalOrder = globalOrder + 1;
@@ -101,9 +104,9 @@ public class VariableListenerSupport<Solution_> implements SupplyManager<Solutio
         Supply_ supply = (Supply_) supplyMap.get(demand);
         if (supply == null) {
             supply = demand.createExternalizedSupply(scoreDirector);
-            if (supply instanceof StatefulVariableListener) {
-                StatefulVariableListener<Solution_, ?> variableListener =
-                        (StatefulVariableListener<Solution_, ?>) supply;
+            if (supply instanceof SourcedVariableListener) {
+                SourcedVariableListener<Solution_, ?> variableListener =
+                        (SourcedVariableListener<Solution_, ?>) supply;
                 // An external ScoreDirector can be created before the working solution is set
                 if (scoreDirector.getWorkingSolution() != null) {
                     variableListener.resetWorkingSolution(scoreDirector);
@@ -133,18 +136,14 @@ public class VariableListenerSupport<Solution_> implements SupplyManager<Solutio
     public void resetWorkingSolution() {
         for (VariableListenerNotifiable notifiable : notifiableList) {
             VariableListener<Solution_, ?> variableListener = notifiable.getVariableListener();
-            if (variableListener instanceof StatefulVariableListener) {
-                ((StatefulVariableListener<Solution_, ?>) variableListener).resetWorkingSolution(scoreDirector);
-            }
+            variableListener.resetWorkingSolution(scoreDirector);
         }
     }
 
     public void clearWorkingSolution() {
         for (VariableListenerNotifiable notifiable : notifiableList) {
             VariableListener<Solution_, ?> variableListener = notifiable.getVariableListener();
-            if (variableListener instanceof StatefulVariableListener) {
-                ((StatefulVariableListener<Solution_, ?>) variableListener).clearWorkingSolution(scoreDirector);
-            }
+            variableListener.close();
         }
     }
 

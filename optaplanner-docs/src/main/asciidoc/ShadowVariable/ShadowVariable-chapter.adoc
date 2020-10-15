@@ -189,19 +189,19 @@ For example, the `VehicleUpdatingVariableListener` assures that every `Customer`
 
 [source,java,options="nowrap"]
 ----
-public class VehicleUpdatingVariableListener implements VariableListener<Customer> {
+public class VehicleUpdatingVariableListener implements VariableListener<VehicleRoutingSolution, Customer> {
 
-    public void afterEntityAdded(ScoreDirector scoreDirector, Customer customer) {
+    public void afterEntityAdded(ScoreDirector<VehicleRoutingSolution> scoreDirector, Customer customer) {
         updateVehicle(scoreDirector, customer);
     }
 
-    public void afterVariableChanged(ScoreDirector scoreDirector, Customer customer) {
+    public void afterVariableChanged(ScoreDirector<VehicleRoutingSolution> scoreDirector, Customer customer) {
         updateVehicle(scoreDirector, customer);
     }
 
     ...
 
-    protected void updateVehicle(ScoreDirector scoreDirector, Customer sourceCustomer) {
+    protected void updateVehicle(ScoreDirector<VehicleRoutingSolution> scoreDirector, Customer sourceCustomer) {
         Standstill previousStandstill = sourceCustomer.getPreviousStandstill();
         Vehicle vehicle = previousStandstill == null ? null : previousStandstill.getVehicle();
         Customer shadowCustomer = sourceCustomer;
@@ -291,7 +291,7 @@ To avoid dealing with that complexity, overwrite the method `requiresUniqueEntit
 
 [source,java,options="nowrap"]
 ----
-public class StartTimeUpdatingVariableListener implements VariableListener<Task> {
+public class StartTimeUpdatingVariableListener implements VariableListener<TaskAssigningSolution, Task> {
 
     @Override
     public boolean requiresUniqueEntityEvents() {

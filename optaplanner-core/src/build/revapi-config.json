@@ -9972,6 +9972,38 @@
           "classSimpleName": "KeyAsElementMapConverter",
           "elementKind": "class",
           "justification": "Using JAXB instead of XStream now."
+        },
+        {
+          "code": "java.class.noLongerImplementsInterface",
+          "old": "interface org.optaplanner.core.api.domain.variable.CustomShadowVariable.NullVariableListener",
+          "new": "interface org.optaplanner.core.api.domain.variable.CustomShadowVariable.NullVariableListener",
+          "interface": "org.optaplanner.core.impl.domain.variable.listener.VariableListener",
+          "package": "org.optaplanner.core.api.domain.variable",
+          "classSimpleName": "NullVariableListener",
+          "elementKind": "interface",
+          "justification": "VariableListener becomes public API."
+        },
+        {
+          "code": "java.class.noLongerImplementsInterface",
+          "old": "interface org.optaplanner.core.api.domain.variable.CustomShadowVariable.NullVariableListener",
+          "new": "interface org.optaplanner.core.api.domain.variable.CustomShadowVariable.NullVariableListener",
+          "interface": "org.optaplanner.core.impl.domain.variable.supply.Supply",
+          "package": "org.optaplanner.core.api.domain.variable",
+          "classSimpleName": "NullVariableListener",
+          "elementKind": "interface",
+          "justification": "VariableListener becomes public API."
+        },
+        {
+          "code": "java.method.returnTypeTypeParametersChanged",
+          "old": "method java.lang.Class<? extends org.optaplanner.core.impl.domain.variable.listener.VariableListener> org.optaplanner.core.api.domain.variable.CustomShadowVariable::variableListenerClass()",
+          "new": "method java.lang.Class<? extends org.optaplanner.core.api.domain.variable.VariableListener> org.optaplanner.core.api.domain.variable.CustomShadowVariable::variableListenerClass()",
+          "oldType": "java.lang.Class<? extends org.optaplanner.core.impl.domain.variable.listener.VariableListener>",
+          "newType": "java.lang.Class<? extends org.optaplanner.core.api.domain.variable.VariableListener>",
+          "package": "org.optaplanner.core.api.domain.variable",
+          "classSimpleName": "CustomShadowVariable",
+          "methodName": "variableListenerClass",
+          "elementKind": "method",
+          "justification": "VariableListener becomes public API."
         }
       ]
     }

@@ -24,11 +24,10 @@ import org.optaplanner.core.api.domain.solution.cloner.DeepPlanningClone;
 import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariableReference;
-import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
-import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
+import org.optaplanner.core.impl.testdata.domain.DummyVariableListener;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
@@ -94,51 +93,6 @@ public class TestdataDeepCloningEntity extends TestdataObject {
 
     public void setShadowVariableMap(Map<String, String> shadowVariableMap) {
         this.shadowVariableMap = shadowVariableMap;
-    }
-
-    // ************************************************************************
-    // Complex methods
-    // ************************************************************************
-
-    public static class DummyVariableListener
-            implements VariableListener<TestdataDeepCloningSolution, TestdataDeepCloningEntity> {
-
-        @Override
-        public void beforeEntityAdded(ScoreDirector<TestdataDeepCloningSolution> scoreDirector,
-                TestdataDeepCloningEntity testdataDeepCloningEntity) {
-            // Do nothing
-        }
-
-        @Override
-        public void afterEntityAdded(ScoreDirector<TestdataDeepCloningSolution> scoreDirector,
-                TestdataDeepCloningEntity testdataDeepCloningEntity) {
-            // Do nothing
-        }
-
-        @Override
-        public void beforeVariableChanged(ScoreDirector<TestdataDeepCloningSolution> scoreDirector,
-                TestdataDeepCloningEntity testdataDeepCloningEntity) {
-            // Do nothing
-        }
-
-        @Override
-        public void afterVariableChanged(ScoreDirector<TestdataDeepCloningSolution> scoreDirector,
-                TestdataDeepCloningEntity testdataDeepCloningEntity) {
-            // Do nothing
-        }
-
-        @Override
-        public void beforeEntityRemoved(ScoreDirector<TestdataDeepCloningSolution> scoreDirector,
-                TestdataDeepCloningEntity testdataDeepCloningEntity) {
-            // Do nothing
-        }
-
-        @Override
-        public void afterEntityRemoved(ScoreDirector<TestdataDeepCloningSolution> scoreDirector,
-                TestdataDeepCloningEntity testdataDeepCloningEntity) {
-            // Do nothing
-        }
-
     }
 
 }
