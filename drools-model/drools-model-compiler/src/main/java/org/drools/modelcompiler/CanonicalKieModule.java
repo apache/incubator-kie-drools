@@ -238,13 +238,13 @@ public class CanonicalKieModule implements InternalKieModule {
 
 
         final KieBaseUpdaterOptions.OptionEntry options;
-        if(knowledgeBuilderForKieBase instanceof KnowledgeBuilderImpl) {
+        if(knowledgeBuilderForKieBase instanceof KnowledgeBuilderImpl) {// When using executable module in tests
             KnowledgeBuilderImpl knowledgeBuilderForImpl = (KnowledgeBuilderImpl) knowledgeBuilderForKieBase;
             KnowledgeBuilderConfigurationImpl builderConfiguration = knowledgeBuilderForImpl.getBuilderConfiguration();
             options = new KieBaseUpdaterOptions.OptionEntry(AlphaNetworkCompilerOption.class, builderConfiguration.getAlphaNetworkCompilerOption());
-        } else if(resourceFileExists(getANCFile(internalKieModule.getReleaseId()))) {
+        } else if(resourceFileExists(getANCFile(internalKieModule.getReleaseId()))) { // executable model with ANC
             options = new KieBaseUpdaterOptions.OptionEntry(AlphaNetworkCompilerOption.class, AlphaNetworkCompilerOption.LOAD);
-        } else {
+        } else { // Default case when loaded from executable model kjar
             options = null;
         }
 
