@@ -102,6 +102,9 @@ pipeline {
                     sh "sed -i 's|<repository>|<repository><id>staging</id><name>Staging Repository</name><url>${params.MAVEN_DEPENDENCIES_REPOSITORY}</url><layout>default</layout><snapshots><enabled>true</enabled></snapshots><releases><enabled>true</enabled></releases></repository>\\n        <repository>|g' ${MAVEN_SETTINGS_FILE}"
                     sh "sed -i 's|<pluginRepository>|<pluginRepository><id>staging</id><name>Staging Repository</name><url>${params.MAVEN_DEPENDENCIES_REPOSITORY}</url><layout>default</layout><snapshots><enabled>true</enabled></snapshots><releases><enabled>true</enabled></releases></pluginRepository>\\n        <pluginRepository>|g' ${MAVEN_SETTINGS_FILE}"
                     sh "sed -i 's|external:\\*|central|g' ${MAVEN_SETTINGS_FILE}" // Done to allow Maven to download release artifacts from MAVEN_DEPENDENCIES_REPOSITORY
+
+                    echo 'Resulting maven settings.xml:'
+                    sh "cat ${MAVEN_SETTINGS_FILE}"
                 }
             }
         }
