@@ -15,7 +15,6 @@
  */
 package org.drools.scenariosimulation.api.model;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
