@@ -31,18 +31,18 @@ import org.kie.api.KieBase;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.runtime.KieRuntimeFactory;
-import org.kie.pmml.commons.enums.ResultCode;
-import org.kie.pmml.commons.exceptions.KieEnumException;
-import org.kie.pmml.commons.exceptions.KiePMMLException;
-import org.kie.pmml.commons.exceptions.KiePMMLInternalException;
+import org.kie.pmml.api.enums.PMML_MODEL;
+import org.kie.pmml.api.enums.ResultCode;
+import org.kie.pmml.api.exceptions.KieEnumException;
+import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.api.exceptions.KiePMMLInternalException;
+import org.kie.pmml.api.runtime.PMMLContext;
+import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.commons.model.KiePMMLModel;
-import org.kie.pmml.commons.model.enums.PMML_MODEL;
 import org.kie.pmml.commons.model.predicates.KiePMMLPredicate;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 import org.kie.pmml.commons.model.tuples.KiePMMLValueWeight;
 import org.kie.pmml.evaluator.api.exceptions.KiePMMLModelException;
-import org.kie.pmml.evaluator.api.executor.PMMLContext;
-import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
 import org.kie.pmml.evaluator.core.executor.PMMLModelEvaluator;
 import org.kie.pmml.models.mining.model.KiePMMLMiningModel;
 import org.kie.pmml.models.mining.model.enums.MULTIPLE_MODEL_METHOD;
@@ -50,8 +50,8 @@ import org.kie.pmml.models.mining.model.segmentation.KiePMMLSegment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.pmml.commons.enums.ResultCode.FAIL;
-import static org.kie.pmml.commons.enums.ResultCode.OK;
+import static org.kie.pmml.api.enums.ResultCode.FAIL;
+import static org.kie.pmml.api.enums.ResultCode.OK;
 import static org.kie.pmml.evaluator.core.utils.Converter.getUnwrappedParametersMap;
 
 /**
@@ -235,7 +235,7 @@ public class PMMLMiningModelEvaluator implements PMMLModelEvaluator<KiePMMLMinin
         String modelName = toEvaluate.getModel().getName();
         if (kiePMMLPredicate != null && kiePMMLPredicate.evaluate(values)) {
             final PMMLRuntime pmmlRuntime = getPMMLRuntime(toEvaluate.getModel().getKModulePackageName(),
-                                                           knowledgeBase, containerModelName);
+                                                                   knowledgeBase, containerModelName);
             logger.trace("{}: matching predicate, evaluating... ", toEvaluate.getId());
             toReturn = Optional.of(pmmlRuntime.evaluate(modelName, pmmlContext));
         }

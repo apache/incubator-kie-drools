@@ -52,7 +52,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
-import org.kie.pmml.commons.model.enums.RESULT_FEATURE;
+import org.kie.pmml.api.enums.RESULT_FEATURE;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -92,7 +92,7 @@ public class KiePMMLModelFactoryUtilsTest {
     }
 
     @Test
-    public void addOutputFieldsPopulation() {
+    public void addKiePMMLOutputFieldsPopulation() {
         BlockStmt blockStmt = new BlockStmt();
         List<KiePMMLOutputField> outputFields = IntStream.range(0, 3)
                 .mapToObj(index -> KiePMMLOutputField.builder("OUTPUTFIELD-" + index, Collections.emptyList())
@@ -101,8 +101,8 @@ public class KiePMMLModelFactoryUtilsTest {
                         .withTargetField("TARGETFIELD-" + index)
                         .build())
                 .collect(Collectors.toList());
-        KiePMMLModelFactoryUtils.addOutputFieldsPopulation(blockStmt, outputFields);
-        List<MethodCallExpr> retrieved = getMethodCallExprList(blockStmt, outputFields.size(), "outputFields", "add");
+        KiePMMLModelFactoryUtils.addKiePMMLOutputFieldsPopulation(blockStmt, outputFields);
+        List<MethodCallExpr> retrieved = getMethodCallExprList(blockStmt, outputFields.size(), "kiePMMLOutputFields", "add");
         for (KiePMMLOutputField outputField : outputFields) {
             assertTrue(retrieved.stream()
                                .filter(methodCallExpr -> methodCallExpr.getArguments().size() == 1)

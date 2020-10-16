@@ -20,8 +20,8 @@ import java.util.Collections;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.kie.pmml.commons.exceptions.KiePMMLException;
-import org.kie.pmml.commons.model.enums.MINING_FUNCTION;
+import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.models.mining.model.segmentation.KiePMMLSegmentation;
 
 import static org.junit.Assert.assertEquals;

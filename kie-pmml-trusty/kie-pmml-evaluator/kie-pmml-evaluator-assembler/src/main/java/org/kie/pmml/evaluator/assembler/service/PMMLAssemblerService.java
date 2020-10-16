@@ -43,8 +43,8 @@ import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
 import static org.kie.pmml.evaluator.assembler.service.PMMLCompilerService.getKiePMMLModelsCompiledFromResource;
 import static org.kie.pmml.evaluator.assembler.service.PMMLCompilerService.getKiePMMLModelsCompiledFromResourcesWithConfigurations;
-import static org.kie.pmml.evaluator.assembler.service.PMMLCompilerService.getKiePMMLModelsFromResourceFromPlugin;
-import static org.kie.pmml.evaluator.assembler.service.PMMLCompilerService.getKiePMMLModelsFromResourcesWithConfigurationsFromPlugin;
+import static org.kie.pmml.evaluator.assembler.service.PMMLCompilerService.getKiePMMLModelsFromResourceWithSources;
+import static org.kie.pmml.evaluator.assembler.service.PMMLCompilerService.getKiePMMLModelsFromResourcesWithConfigurationsWithSources;
 import static org.kie.pmml.evaluator.assembler.service.PMMLLoaderService.getKiePMMLModelsLoadedFromResource;
 import static org.kie.pmml.evaluator.assembler.service.PMMLLoaderService.getKiePMMLModelsLoadedFromResourcesWithConfigurations;
 
@@ -113,7 +113,7 @@ public class PMMLAssemblerService implements KieAssemblerService {
     public void addResources(Object kbuilder, Collection<ResourceWithConfiguration> resources, ResourceType type) {
         KnowledgeBuilderImpl kbuilderImpl = (KnowledgeBuilderImpl) kbuilder;
         if (isBuildFromMaven()) {
-            addModels(kbuilderImpl, getKiePMMLModelsFromResourcesWithConfigurationsFromPlugin(kbuilderImpl, resources));
+            addModels(kbuilderImpl, getKiePMMLModelsFromResourcesWithConfigurationsWithSources(kbuilderImpl, resources));
         } else {
             List<KiePMMLModel> toAdd = getKiePMMLModelsLoadedFromResourcesWithConfigurations(kbuilderImpl, resources);
             if (toAdd.isEmpty()) {
@@ -128,7 +128,7 @@ public class PMMLAssemblerService implements KieAssemblerService {
         logger.warn("invoked legacy addResource (no control on the order of the assembler compilation): {}", resource.getSourcePath());
         KnowledgeBuilderImpl kbuilderImpl = (KnowledgeBuilderImpl) kbuilder;
         if (isBuildFromMaven()) {
-            addModels(kbuilderImpl, getKiePMMLModelsFromResourceFromPlugin(kbuilderImpl, resource));
+            addModels(kbuilderImpl, getKiePMMLModelsFromResourceWithSources(kbuilderImpl, resource));
         } else {
             List<KiePMMLModel> toAdd = getKiePMMLModelsLoadedFromResource(kbuilderImpl, resource);
             if (toAdd.isEmpty()) {
@@ -147,7 +147,7 @@ public class PMMLAssemblerService implements KieAssemblerService {
             PMMLPackage pmmlPkg = rpkg.computeIfAbsent(ResourceType.PMML, rtp -> new PMMLPackageImpl());
             pmmlPkg.addAll(Collections.singletonList(kiePMMLModel));
             if (kiePMMLModel instanceof HasNestedModels) {
-                addModels(kbuilderImpl, ((HasNestedModels)kiePMMLModel).getNestedModels());
+                addModels(kbuilderImpl, ((HasNestedModels) kiePMMLModel).getNestedModels());
             }
         }
     }

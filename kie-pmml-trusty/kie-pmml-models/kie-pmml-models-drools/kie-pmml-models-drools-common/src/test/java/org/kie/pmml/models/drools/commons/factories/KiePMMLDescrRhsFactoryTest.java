@@ -25,7 +25,7 @@ import org.drools.compiler.lang.api.PackageDescrBuilder;
 import org.drools.compiler.lang.api.RuleDescrBuilder;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.pmml.commons.enums.ResultCode;
+import org.kie.pmml.api.enums.ResultCode;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
 
@@ -33,7 +33,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.commons.Constants.DONE;
-import static org.kie.pmml.commons.model.enums.RESULT_FEATURE.PREDICTED_VALUE;
+import static org.kie.pmml.api.enums.RESULT_FEATURE.PREDICTED_VALUE;
 import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrRhsFactory.ADD_PMML4_OUTPUT_FIELD;
 import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrRhsFactory.ADD_PMML4_RESULT_VARIABLE;
 import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrRhsFactory.FOCUS_AGENDA_GROUP;

@@ -19,10 +19,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
-import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.dmg.pmml.Array;
 import org.dmg.pmml.CompoundPredicate;
 import org.dmg.pmml.DataDictionary;
@@ -34,7 +34,11 @@ import org.dmg.pmml.MiningField;
 import org.dmg.pmml.MiningFunction;
 import org.dmg.pmml.MiningSchema;
 import org.dmg.pmml.OpType;
+import org.dmg.pmml.Output;
+import org.dmg.pmml.OutputField;
+import org.dmg.pmml.PMML;
 import org.dmg.pmml.ParameterField;
+import org.dmg.pmml.ResultFeature;
 import org.dmg.pmml.SimplePredicate;
 import org.dmg.pmml.SimpleSetPredicate;
 import org.dmg.pmml.TransformationDictionary;
@@ -43,7 +47,9 @@ import org.dmg.pmml.regression.NumericPredictor;
 import org.dmg.pmml.regression.PredictorTerm;
 import org.dmg.pmml.regression.RegressionModel;
 import org.dmg.pmml.regression.RegressionTable;
-import org.kie.pmml.commons.model.enums.DATA_TYPE;
+import org.kie.pmml.api.enums.DATA_TYPE;
+import org.kie.pmml.api.enums.RESULT_FEATURE;
+import org.kie.pmml.compiler.commons.mocks.TestModel;
 
 /**
  * Helper methods related to <b>PMML</b> original model
@@ -52,6 +58,13 @@ public class PMMLModelTestUtils {
 
     private PMMLModelTestUtils() {
         // Avoid instantiation
+    }
+
+    public static PMML getPMMLWithRandomTestModel() {
+        PMML toReturn = new PMML();
+        toReturn.setDataDictionary(getRandomDataDictionary());
+        toReturn.addModels(getRandomTestModel());
+        return toReturn;
     }
 
     public static DataDictionary getDataDictionary(List<DataField> dataFields) {
@@ -68,6 +81,36 @@ public class PMMLModelTestUtils {
     public static MiningSchema getMiningSchema(List<MiningField> miningFields) {
         MiningSchema toReturn = new MiningSchema();
         toReturn.addMiningFields(miningFields.toArray(new MiningField[0]));
+        return toReturn;
+    }
+
+    public static DataDictionary getRandomDataDictionary() {
+        DataDictionary toReturn = new DataDictionary();
+        IntStream.range(0, new Random().nextInt(3) + 2)
+                .forEach(i -> toReturn.addDataFields(getRandomDataField()));
+        return toReturn;
+    }
+
+    public static MiningSchema getRandomMiningSchema() {
+        MiningSchema toReturn = new MiningSchema();
+        IntStream.range(0, new Random().nextInt(3)+ 2)
+                .forEach(i -> toReturn.addMiningFields(getRandomMiningField()));
+        return toReturn;
+    }
+
+    public static Output getRandomOutput() {
+        Output toReturn = new Output();
+        IntStream.range(0, new Random().nextInt(3)+ 2)
+                .forEach(i -> toReturn.addOutputFields(getRandomOutputField()));
+        return toReturn;
+    }
+
+    public static TestModel getRandomTestModel() {
+        TestModel toReturn = new TestModel();
+
+        toReturn.setModelName(RandomStringUtils.random(6, true, false));
+        toReturn.setMiningSchema(getRandomMiningSchema());
+        toReturn.setOutput(getRandomOutput());
         return toReturn;
     }
 
@@ -133,6 +176,36 @@ public class PMMLModelTestUtils {
         return toReturn;
     }
 
+    public static DataField getRandomDataField() {
+        Random random = new Random();
+        DataField toReturn = new DataField();
+        toReturn.setName(getFieldName(RandomStringUtils.random(6, true, false)));
+        List<DataType> dataTypes = getDataTypes();
+        toReturn.setDataType(dataTypes.get(random.nextInt(dataTypes.size())));
+        return toReturn;
+    }
+
+    public static MiningField getRandomMiningField() {
+        Random random = new Random();
+        MiningField toReturn = new MiningField();
+        toReturn.setName(getFieldName(RandomStringUtils.random(6, true, false)));
+        toReturn.setUsageType(MiningField.UsageType.values()[random.nextInt(MiningField.UsageType.values().length)]);
+        return toReturn;
+    }
+
+    public static OutputField getRandomOutputField() {
+        Random random = new Random();
+        OutputField toReturn = new OutputField();
+        toReturn.setName(getFieldName(RandomStringUtils.random(6, true, false)));
+        toReturn.setOpType(OpType.values()[random.nextInt(OpType.values().length)]);
+        List<DataType> dataTypes = getDataTypes();
+        toReturn.setDataType(dataTypes.get(random.nextInt(dataTypes.size())));
+        toReturn.setTargetField(getFieldName(RandomStringUtils.random(6, true, false)));
+        List<ResultFeature> resultFeatures = getResultFeature();
+        toReturn.setResultFeature(resultFeatures.get(random.nextInt(resultFeatures.size())));
+        return toReturn;
+    }
+
     public static ParameterField getParameterField(String fieldName, DataType dataType) {
         ParameterField toReturn = new ParameterField();
         toReturn.setDataType(dataType);
@@ -156,6 +229,15 @@ public class PMMLModelTestUtils {
         List<DataType> toReturn = new ArrayList<>();
         for (int i = 0; i < dataTypes.length; i++) {
             toReturn.add(DataType.fromValue(dataTypes[i].getName()));
+        }
+        return toReturn;
+    }
+
+    public static List<ResultFeature> getResultFeature() {
+        RESULT_FEATURE[] resultFeatures = RESULT_FEATURE.values();
+        List<ResultFeature> toReturn = new ArrayList<>();
+        for (int i = 0; i < resultFeatures.length; i++) {
+            toReturn.add(ResultFeature.fromValue(resultFeatures[i].getName()));
         }
         return toReturn;
     }
@@ -215,7 +297,7 @@ public class PMMLModelTestUtils {
             case BOOLEAN:
                 return new Random().nextBoolean();
             case STRING:
-                return UUID.randomUUID().toString();
+                return RandomStringUtils.random(6, true, false);
             default:
                 return null;
         }
@@ -241,7 +323,7 @@ public class PMMLModelTestUtils {
                 case REAL:
                     return String.valueOf(new Random().nextDouble());
                 case STRING:
-                    return UUID.randomUUID().toString();
+                    return RandomStringUtils.random(6, true, false);
                 default:
                     return null;
             }
@@ -261,5 +343,4 @@ public class PMMLModelTestUtils {
     private static CompoundPredicate.BooleanOperator getRandomCompoundPredicateAndOrOperator(int counter) {
         return counter % 2 == 0 ? CompoundPredicate.BooleanOperator.AND : CompoundPredicate.BooleanOperator.OR;
     }
-
 }

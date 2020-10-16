@@ -20,8 +20,8 @@ import java.util.List;
 
 import org.dmg.pmml.SimplePredicate;
 import org.drools.core.util.StringUtils;
-import org.kie.pmml.commons.model.enums.BOOLEAN_OPERATOR;
-import org.kie.pmml.commons.model.enums.OPERATOR;
+import org.kie.pmml.api.enums.BOOLEAN_OPERATOR;
+import org.kie.pmml.api.enums.OPERATOR;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
 import org.kie.pmml.models.drools.ast.KiePMMLFieldOperatorValue;
 import org.kie.pmml.models.drools.tuples.KiePMMLOperatorValue;

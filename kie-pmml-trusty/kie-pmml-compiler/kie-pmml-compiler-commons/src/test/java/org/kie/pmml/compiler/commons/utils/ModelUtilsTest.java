@@ -22,12 +22,23 @@ import java.util.List;
 import java.util.Map;
 
 import org.dmg.pmml.DataType;
+import org.dmg.pmml.MiningField;
+import org.dmg.pmml.OpType;
+import org.dmg.pmml.OutputField;
 import org.dmg.pmml.ParameterField;
 import org.junit.Test;
+import org.kie.pmml.api.enums.DATA_TYPE;
+import org.kie.pmml.api.enums.FIELD_USAGE_TYPE;
+import org.kie.pmml.api.enums.OP_TYPE;
+import org.kie.pmml.api.enums.RESULT_FEATURE;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getDataTypes;
+import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getMiningField;
 import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getParameterFields;
+import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getRandomOutputField;
 
 public class ModelUtilsTest {
 
@@ -53,6 +64,42 @@ public class ModelUtilsTest {
         expectedBoxedClassName.put("dateTimeSecondsSince[1970]", Long.class.getName());
         expectedBoxedClassName.put("dateTimeSecondsSince[1980]", Long.class.getName());
     }
+
+    @Test
+    public void convertToKieMiningField() {
+        final String fieldName =  "fieldName";
+        final MiningField.UsageType usageType = MiningField.UsageType.ACTIVE;
+        final MiningField toConvert = getMiningField(fieldName, usageType);
+        org.kie.pmml.api.models.MiningField retrieved = ModelUtils.convertToKieMiningField(toConvert);
+        assertNotNull(retrieved);
+        assertEquals(fieldName, retrieved.getName());
+        assertEquals(FIELD_USAGE_TYPE.ACTIVE, retrieved.getUsageType());
+        assertNull(retrieved.getOpType());
+        toConvert.setOpType(OpType.CATEGORICAL);
+        retrieved = ModelUtils.convertToKieMiningField(toConvert);
+        assertEquals(OP_TYPE.CATEGORICAL, retrieved.getOpType());
+    }
+
+    @Test
+    public void convertToKieOutputField() {
+        final OutputField toConvert = getRandomOutputField();
+        org.kie.pmml.api.models.OutputField retrieved = ModelUtils.convertToKieOutputField(toConvert);
+        assertNotNull(retrieved);
+        assertEquals(toConvert.getName().getValue() , retrieved.getName());
+        OP_TYPE expectedOpType = OP_TYPE.byName(toConvert.getOpType().value());
+        assertEquals(expectedOpType, retrieved.getOpType());
+        DATA_TYPE expectedDataType = DATA_TYPE.byName(toConvert.getDataType().value());
+        assertEquals(expectedDataType, retrieved.getDataType());
+        assertEquals(toConvert.getTargetField().getValue(), retrieved.getTargetField());
+        RESULT_FEATURE expectedResultFeature = RESULT_FEATURE.byName(toConvert.getResultFeature().value());
+        assertEquals(expectedResultFeature, retrieved.getResultFeature());
+        toConvert.setOpType(null);
+        toConvert.setTargetField(null);
+        retrieved = ModelUtils.convertToKieOutputField(toConvert);
+        assertNull(retrieved.getOpType());
+        assertNull(retrieved.getTargetField());
+    }
+
 
     @Test
     public void getBoxedClassNameByParameterFields() {

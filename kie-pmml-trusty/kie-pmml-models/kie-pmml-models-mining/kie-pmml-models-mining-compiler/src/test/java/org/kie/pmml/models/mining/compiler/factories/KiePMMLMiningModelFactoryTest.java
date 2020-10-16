@@ -32,21 +32,22 @@ import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
-import org.dmg.pmml.Model;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.dmg.pmml.MiningFunction;
 import org.dmg.pmml.mining.MiningModel;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.kie.pmml.api.enums.MINING_FUNCTION;
+import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.commons.model.KiePMMLModel;
-import org.kie.pmml.commons.model.enums.MINING_FUNCTION;
-import org.kie.pmml.commons.model.enums.PMML_MODEL;
 import org.kie.pmml.models.mining.model.KiePMMLMiningModel;
 import org.xml.sax.SAXException;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonEvaluateConstructor;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFromFileName;
 
@@ -95,21 +96,20 @@ public class KiePMMLMiningModelFactoryTest extends AbstractKiePMMLFactoryTest {
 
     @Test
     public void setConstructor() {
-        Model model = new MiningModel();
+        MiningModel model = new MiningModel();
+        model.setModelName(RandomStringUtils.random(6, true, false));
+        model.setMiningFunction(MiningFunction.CLASSIFICATION);
         PMML_MODEL pmmlModel = PMML_MODEL.byName(model.getClass().getSimpleName());
         ConstructorDeclaration constructorDeclaration = MODEL_TEMPLATE.getDefaultConstructor().get();
         String targetField = "TARGET_FIELD";
-        MINING_FUNCTION miningFunction = MINING_FUNCTION.CLASSIFICATION;
-        String generatedClassName = "GENERATEDCLASSNAME";
+        MINING_FUNCTION miningFunction = MINING_FUNCTION.byName(model.getMiningFunction().value());
         String segmentationClass = "SEGMENTATIONCLASS";
-        KiePMMLMiningModelFactory.setConstructor(generatedClassName,
+        KiePMMLMiningModelFactory.setConstructor(model,
                                                  constructorDeclaration,
                                                  targetField,
-                                                 miningFunction,
-                                                 pmmlModel.name(),
                                                  segmentationClass);
         Map<Integer, Expression> superInvocationExpressionsMap = new HashMap<>();
-        superInvocationExpressionsMap.put(0, new NameExpr(String.format("\"%s\"", pmmlModel.name())));
+        superInvocationExpressionsMap.put(0, new NameExpr(String.format("\"%s\"", model.getModelName())));
         Map<String, Expression> assignExpressionMap = new HashMap<>();
         assignExpressionMap.put("targetField", new StringLiteralExpr(targetField));
         assignExpressionMap.put("miningFunction",
@@ -119,7 +119,7 @@ public class KiePMMLMiningModelFactoryTest extends AbstractKiePMMLFactoryTest {
         ObjectCreationExpr objectCreationExpr = new ObjectCreationExpr();
         objectCreationExpr.setType(kiePMMLSegmentationClass);
         assignExpressionMap.put("segmentation", objectCreationExpr);
-        assertTrue(commonEvaluateConstructor(constructorDeclaration, generatedClassName,
+        assertTrue(commonEvaluateConstructor(constructorDeclaration, getSanitizedClassName(model.getModelName()),
                                              superInvocationExpressionsMap, assignExpressionMap));
     }
 }

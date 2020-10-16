@@ -17,6 +17,7 @@
 package org.kie.pmml.commons.utils;
 
 import org.junit.Test;
+import org.kie.pmml.api.utils.PrimitiveBoxedUtils;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;

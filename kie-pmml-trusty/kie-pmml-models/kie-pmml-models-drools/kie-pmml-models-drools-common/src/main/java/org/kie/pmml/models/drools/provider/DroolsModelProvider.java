@@ -28,8 +28,8 @@ import org.dmg.pmml.TransformationDictionary;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.pmml.commons.exceptions.KiePMMLException;
-import org.kie.pmml.commons.model.enums.DATA_TYPE;
+import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.compiler.api.provider.ModelImplementationProvider;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsAST;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsType;
@@ -66,8 +66,8 @@ public abstract class DroolsModelProvider<T extends Model, E extends KiePMMLDroo
     }
 
     @Override
-    public E getKiePMMLModelFromPlugin(final String packageName, final DataDictionary dataDictionary, final TransformationDictionary transformationDictionary, final T model, final Object kBuilder) {
-        logger.trace("getKiePMMLModelFromPlugin {} {} {}", dataDictionary, model, kBuilder);
+    public E getKiePMMLModelWithSources(final String packageName, final DataDictionary dataDictionary, final TransformationDictionary transformationDictionary, final T model, final Object kBuilder) {
+        logger.trace("getKiePMMLModelWithSources {} {} {}", dataDictionary, model, kBuilder);
         if (!(kBuilder instanceof KnowledgeBuilder)) {
             throw new KiePMMLException(String.format("Expecting KnowledgeBuilder, received %s", kBuilder.getClass().getName()));
         }

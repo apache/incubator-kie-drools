@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringJoiner;
 
-import org.kie.pmml.commons.enums.ResultCode;
+import org.kie.pmml.api.enums.ResultCode;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.models.drools.tuples.KiePMMLReasonCodeAndValue;
 
