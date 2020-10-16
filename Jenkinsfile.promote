@@ -96,16 +96,8 @@ pipeline {
                     dir('optaplanner-bot') {
                         prepareForPR('optaplanner')
 
-                        // To make sure that the project will resolve during version upgrade.
-                        sh 'mvn -B -U clean install -DskipTests'
                         maven.mvnVersionsSet(getNextSnapshotVersion(getProjectVersion()), true)
                         updateKogitoVersion(getNextSnapshotVersion(getKogitoVersion()))
-
-                        /*
-                            Install optaplanner artifacts to a local maven repository to make them accessible
-                            for optaplanner-quickstarts and optaweb apps.
-                        */
-                        sh 'mvn -B clean install -DskipTests'
 
                         commitAndCreatePR('optaplanner')
                     }
