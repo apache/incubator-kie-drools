@@ -280,7 +280,7 @@ void installGithubCLI() {
 }
 
 void updateKogitoVersion(String newVersion) {
-    sh "mvn versions:update-property -Dproperty=version.org.kie.kogito -DnewVersion=[$newVersion] -DallowSnapshots=true -DgenerateBackupPoms=false"
+    sh "mvn versions:set-property -Dproperty=version.org.kie.kogito -DnewVersion=$newVersion -DallowSnapshots=true -DgenerateBackupPoms=false"
 }
 
 // TODO: move to shared libraries

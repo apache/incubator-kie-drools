@@ -256,7 +256,7 @@ void runMaven(String goals, String directory, boolean skipTests = false, List pr
 }
 
 void updateKogitoVersion(String newVersion) {
-    sh "mvn versions:update-property -Dproperty=version.org.kie.kogito -DnewVersion=[$newVersion] -DallowSnapshots=true -DgenerateBackupPoms=false"
+    sh "mvn versions:set-property -Dproperty=version.org.kie.kogito -DnewVersion=$newVersion -DallowSnapshots=true -DgenerateBackupPoms=false"
 }
 
 // Getters and Setters of params/properties
