@@ -51,7 +51,16 @@
             <artifactId>rest-assured</artifactId>
             <scope>test</scope>
         </dependency>
-    </dependencies>
+
+         <!-- this is used implicitly by quarkus tests so let's make Maven aware of it -->
+         <dependency>
+             <groupId>org.kie.kogito</groupId>
+             <artifactId>kogito-quarkus-deployment</artifactId>
+             <version>${project.version}</version>
+             <scope>provided</scope>
+         </dependency>
+
+     </dependencies>
 
     <build>
         <pluginManagement>

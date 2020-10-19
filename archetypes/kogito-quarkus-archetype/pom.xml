@@ -15,6 +15,16 @@
   <name>Kogito :: Maven Archetypes :: Quarkus</name>
   <description>Kogito based on Quarkus runtime Archetype</description>
 
+  <dependencies>
+    <!-- this is used implicitly required by quarkus extension so let's make Maven aware of it -->
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-quarkus-deployment</artifactId>
+      <version>${project.version}</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+
   <build>
     <!-- default directory (test-classes) confuses @QuarkusTest -->
     <!-- see https://github.com/quarkusio/quarkus/issues/9162   -->
