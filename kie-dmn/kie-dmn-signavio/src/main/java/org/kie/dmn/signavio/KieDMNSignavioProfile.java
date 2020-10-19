@@ -28,6 +28,7 @@ import org.kie.dmn.signavio.feel.runtime.functions.AbsFunction;
 import org.kie.dmn.signavio.feel.runtime.functions.AppendAllFunction;
 import org.kie.dmn.signavio.feel.runtime.functions.AreElementsOfFunction;
 import org.kie.dmn.signavio.feel.runtime.functions.AvgFunction;
+import org.kie.dmn.signavio.feel.runtime.functions.ConcatFunction;
 import org.kie.dmn.signavio.feel.runtime.functions.ContainsOnlyFunction;
 import org.kie.dmn.signavio.feel.runtime.functions.DateTimeFunction;
 import org.kie.dmn.signavio.feel.runtime.functions.DayAddFunction;
@@ -158,6 +159,7 @@ public class KieDMNSignavioProfile implements DMNProfile {
                                                                                new IsSpacesFunction(),
                                                                                new IsNumericFunction(),
                                                                                new IsAlphanumericFunction(),
-                                                                               new IsAlphaFunction()
+                                                                               new IsAlphaFunction(),
+                                                                               new ConcatFunction()
     };
 }

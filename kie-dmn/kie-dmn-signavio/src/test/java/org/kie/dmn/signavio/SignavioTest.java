@@ -217,6 +217,24 @@ public class SignavioTest {
     }
     
     
+    @Test
+    public void testSignavioConcatFunction() {
+        DMNRuntime runtime = createRuntime("Signavio_Concat.dmn");
+        
+        List<DMNModel> models = runtime.getModels();
+        
+        DMNContext context = runtime.newContext();
+        context.set("listOfNames", Arrays.asList("John", "Jane", "Doe"));
+        
+        DMNModel model0 = models.get(0);
+        LOG.info("EVALUATE ALL:");
+        DMNResult evaluateAll = runtime.evaluateAll(model0, context);
+        LOG.info("{}", evaluateAll);
+    
+        assertEquals("JohnJaneDoe", evaluateAll.getDecisionResultByName("concatNames").getResult());
+    }
+    
+    
     private void checkBothFunctionsAreWorking(DMNRuntime runtime) {
         List<DMNModel> models = runtime.getModels();
         

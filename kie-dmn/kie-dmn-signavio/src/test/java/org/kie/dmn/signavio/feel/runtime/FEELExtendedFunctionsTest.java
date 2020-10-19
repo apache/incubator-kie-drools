@@ -16,6 +16,7 @@
 
 package org.kie.dmn.signavio.feel.runtime;
 
+import static org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity.ERROR;
 import static org.kie.dmn.signavio.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.signavio.util.DynamicTypeUtils.mapOf;
 
@@ -240,6 +241,14 @@ public class FEELExtendedFunctionsTest extends ExtendedFunctionsBaseFEELTest {
                 {"isNumeric(\"2.3\")", true, null},
                 {"isAlphanumeric(\"abcdefg5\")", true, null},
                 {"isAlpha(\"abcdefg5\")", false, null},
+                {"concat([\"a\", \"b\", \"c\"])", "abc", null},
+                {"concat(\"a\", \"b\", \"c\")", "abc", null},
+                {"concat(\"abc\")", "abc", null},
+                {"concat([])", "", null},
+                {"concat([\"a\", null, \"b\"])", null, ERROR},
+                {"concat([1, 2, 3])", null, ERROR},
+                {"concat(null)", null, ERROR},
+                {"concat()", null, ERROR},
         };
         return Arrays.asList( cases );
     }

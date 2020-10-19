@@ -19,6 +19,6 @@ rule rule_one
   when
       Foo()
   then
-       if (speed > speedLimit)
+       if (speed > speedLimit ? true : false;)
      pullEmOver();
 end

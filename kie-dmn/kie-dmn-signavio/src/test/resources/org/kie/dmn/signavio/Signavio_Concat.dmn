@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions namespace="http://www.signavio.com/dmn/1.1/diagram/10183b734a0e4e138e2339fd43ec9f9b.xml" exporterVersion="14.7.0" name="[DMN XML] Concat Example" id="id-dfa80ed271da4549ab4ddab050ddd722" sigExt:revisionId="24106048c4e14ea48be865ee2c4634ee" sigExt:revisionNumber="1" xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns:sig="http://www.signavio.com/dmn/1.1/diagram/10183b734a0e4e138e2339fd43ec9f9b.xml" xmlns:sigExt="http://www.signavio.com/schema/dmn/1.1/" xmlns:feel="http://www.omg.org/spec/FEEL/20140401">
+    <extensionElements>
+        <sigExt:diagramMetaData name="foobar" value=""/>
+    </extensionElements>
+    <itemDefinition isCollection="false" name="concatNames" id="id-37b8ae9de98c380b3d795f4f31736681" label="Concat Names">
+        <typeRef>feel:string</typeRef>
+    </itemDefinition>
+    <itemDefinition isCollection="true" name="listOfNames" id="id-e87530b3f0ca7958b036c10e12243e65" label="List of Names">
+        <typeRef>feel:string</typeRef>
+    </itemDefinition>
+    <inputData name="listOfNames" id="id-ffde95be1aab0886f77d636e39fb4e69" label="List of Names" sigExt:shapeId="sid-ABED0613-9154-4DA8-9DC8-35FBB851A304" sigExt:diagramId="10183b734a0e4e138e2339fd43ec9f9b">
+        <extensionElements/>
+        <variable typeRef="sig:listOfNames" name="listOfNames" id="id-ffde95be1aab0886f77d636e39fb4e69_variable"/>
+    </inputData>
+    <decision name="concatNames" id="id-56b0a2af912a2217f848a713a33a82b8" label="Concat Names" sigExt:shapeId="sid-37B36FDF-877F-4534-8D02-D7340F8C4C40" sigExt:diagramId="10183b734a0e4e138e2339fd43ec9f9b">
+        <extensionElements/>
+        <variable typeRef="sig:concatNames" name="concatNames" id="id-56b0a2af912a2217f848a713a33a82b8_variable"/>
+        <informationRequirement>
+            <requiredInput href="#id-ffde95be1aab0886f77d636e39fb4e69"/>
+        </informationRequirement>
+        <literalExpression expressionLanguage="http://www.omg.org/spec/FEEL/20140401">
+            <text>concat(listOfNames)</text>
+        </literalExpression>
+    </decision>
+</definitions>
