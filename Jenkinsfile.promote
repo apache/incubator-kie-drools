@@ -71,7 +71,7 @@ pipeline {
                 }
             }
         }
-        //TODO: check branches!!!
+
         stage('Merge OptaPlanner deploy PR and tag') {
             when {
                 expression { return isRelease() }
