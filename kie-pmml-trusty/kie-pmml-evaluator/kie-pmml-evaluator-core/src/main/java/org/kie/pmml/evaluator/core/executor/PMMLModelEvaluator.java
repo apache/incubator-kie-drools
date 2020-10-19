@@ -17,10 +17,10 @@ package org.kie.pmml.evaluator.core.executor;
 
 import org.kie.api.KieBase;
 import org.kie.api.pmml.PMML4Result;
-import org.kie.pmml.commons.exceptions.KiePMMLInternalException;
+import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.model.KiePMMLModel;
-import org.kie.pmml.commons.model.enums.PMML_MODEL;
-import org.kie.pmml.evaluator.api.executor.PMMLContext;
+import org.kie.pmml.api.enums.PMML_MODEL;
+import org.kie.pmml.api.runtime.PMMLContext;
 
 public interface PMMLModelEvaluator<E extends KiePMMLModel> {
 

@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import org.kie.pmml.commons.model.enums.BOOLEAN_OPERATOR;
+import org.kie.pmml.api.enums.BOOLEAN_OPERATOR;
 import org.kie.pmml.models.drools.tuples.KiePMMLOperatorValue;
 
 /**

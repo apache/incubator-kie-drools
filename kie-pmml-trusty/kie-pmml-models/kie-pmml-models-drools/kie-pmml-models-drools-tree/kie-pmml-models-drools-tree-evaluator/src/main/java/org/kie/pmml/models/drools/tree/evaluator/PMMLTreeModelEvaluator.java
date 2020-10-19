@@ -15,7 +15,7 @@
  */
 package org.kie.pmml.models.drools.tree.evaluator;
 
-import org.kie.pmml.commons.model.enums.PMML_MODEL;
+import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.models.drools.executor.DroolsModelEvaluator;
 
 /**

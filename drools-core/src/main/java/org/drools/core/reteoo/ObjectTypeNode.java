@@ -39,7 +39,6 @@ import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl.WorkingMemoryReteExpireAction;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.reteoo.compiled.CompiledNetwork;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.PropagationContext;
@@ -86,8 +85,6 @@ public class ObjectTypeNode extends ObjectSource
     private long                            expirationOffset = -1;
 
     private boolean queryNode;
-
-    protected CompiledNetwork compiledNetwork;
 
     /* always dirty after serialisation */
     private transient volatile boolean dirty;
@@ -255,16 +252,6 @@ public class ObjectTypeNode extends ObjectSource
         return this.objectType.isAssignableFrom(objectType);
     }
 
-    public CompiledNetwork getCompiledNetwork() {
-        return this.compiledNetwork;
-    }
-
-    public void setCompiledNetwork(CompiledNetwork compiledNetwork) {
-        this.compiledNetwork = compiledNetwork;
-
-        this.compiledNetwork.setObjectTypeNode(this);
-    }
-
     public void assertInitialFact(final InternalFactHandle factHandle,
                                   final PropagationContext context,
                                   final InternalWorkingMemory workingMemory) {
@@ -306,15 +293,9 @@ public class ObjectTypeNode extends ObjectSource
 
     public void propagateAssert(InternalFactHandle factHandle, PropagationContext context, InternalWorkingMemory workingMemory) {
         checkDirty();
-        if (compiledNetwork != null) {
-            compiledNetwork.assertObject(factHandle,
-                                         context,
-                                         workingMemory);
-        } else {
-            this.sink.propagateAssertObject(factHandle,
-                                            context,
-                                            workingMemory);
-        }
+        this.sink.propagateAssertObject(factHandle,
+                                        context,
+                                        workingMemory);
     }
 
     /**
@@ -411,17 +392,10 @@ public class ObjectTypeNode extends ObjectSource
                              InternalWorkingMemory workingMemory) {
         checkDirty();
 
-        if (compiledNetwork != null) {
-            compiledNetwork.modifyObject(factHandle,
-                                         modifyPreviousTuples,
-                                         context.adaptModificationMaskForObjectType(objectType, workingMemory),
-                                         workingMemory);
-        } else {
-            this.sink.propagateModifyObject(factHandle,
-                                            modifyPreviousTuples,
-                                            context.adaptModificationMaskForObjectType(objectType, workingMemory),
-                                            workingMemory);
-        }
+        this.sink.propagateModifyObject(factHandle,
+                                        modifyPreviousTuples,
+                                        context.adaptModificationMaskForObjectType(objectType, workingMemory),
+                                        workingMemory);
     }
 
     @Override

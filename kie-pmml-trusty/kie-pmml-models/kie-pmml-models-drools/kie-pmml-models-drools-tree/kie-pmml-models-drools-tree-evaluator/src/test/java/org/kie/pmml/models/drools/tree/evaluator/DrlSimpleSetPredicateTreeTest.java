@@ -41,7 +41,7 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.pmml.commons.enums.ResultCode;
+import org.kie.pmml.api.enums.ResultCode;
 import org.kie.pmml.evaluator.api.exceptions.KiePMMLModelException;
 import org.kie.pmml.models.drools.executor.KiePMMLStatusHolder;
 import org.kie.test.util.filesystem.FileUtils;

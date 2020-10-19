@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 import org.dmg.pmml.CompoundPredicate;
 import org.dmg.pmml.Predicate;
 import org.dmg.pmml.SimplePredicate;
-import org.kie.pmml.commons.enums.ResultCode;
+import org.kie.pmml.api.enums.ResultCode;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

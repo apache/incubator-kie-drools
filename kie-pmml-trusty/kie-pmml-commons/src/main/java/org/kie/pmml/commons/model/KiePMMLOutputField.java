@@ -21,7 +21,7 @@ import java.util.Optional;
 import java.util.StringJoiner;
 
 import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLComponent;
-import org.kie.pmml.commons.model.enums.RESULT_FEATURE;
+import org.kie.pmml.api.enums.RESULT_FEATURE;
 
 /**
  * @see <a href=http://dmg.org/pmml/v4-4/Output.html#xsdElement_OutputField>OutputField</a>

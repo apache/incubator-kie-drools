@@ -27,7 +27,7 @@ import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.junit.Test;
 import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.pmml.commons.model.HasSourcesMap;
-import org.kie.pmml.commons.model.enums.PMML_MODEL;
+import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.compiler.commons.utils.KiePMMLUtil;
 import org.kie.pmml.models.mining.model.KiePMMLMiningModel;
 import org.kie.pmml.models.mining.model.KiePMMLMiningModelWithSources;
@@ -75,23 +75,23 @@ public class MiningModelImplementationProviderTest {
     }
 
     @Test
-    public void getKiePMMLModelFromPluginRegression() throws Exception {
-        commonGetKiePMMLModelFromPlugin(SOURCE_REGRESSION);
+    public void getKiePMMLModelWithSourcesRegression() throws Exception {
+        commonGetKiePMMLModelWithSources(SOURCE_REGRESSION);
     }
 
     @Test
-    public void getKiePMMLModelFromPluginTree() throws Exception {
-        commonGetKiePMMLModelFromPlugin(SOURCE_TREE);
+    public void getKiePMMLModelWithSourcesTree() throws Exception {
+        commonGetKiePMMLModelWithSources(SOURCE_TREE);
     }
 
     @Test
-    public void getKiePMMLModelFromPluginScorecard() throws Exception {
-        commonGetKiePMMLModelFromPlugin(SOURCE_SCORECARD);
+    public void getKiePMMLModelWithSourcesScorecard() throws Exception {
+        commonGetKiePMMLModelWithSources(SOURCE_SCORECARD);
     }
 
     @Test
-    public void getKiePMMLModelFromPluginMixed() throws Exception {
-        commonGetKiePMMLModelFromPlugin(SOURCE_MIXED);
+    public void getKiePMMLModelWithSourcesMixed() throws Exception {
+        commonGetKiePMMLModelWithSources(SOURCE_MIXED);
     }
 
     @Test
@@ -125,14 +125,14 @@ public class MiningModelImplementationProviderTest {
         assertNotNull(retrieved);
     }
 
-    private void commonGetKiePMMLModelFromPlugin(String source) throws Exception {
+    private void commonGetKiePMMLModelWithSources(String source) throws Exception {
         final PMML pmml = getPMML(source);
         KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
-        final KiePMMLMiningModel retrieved = PROVIDER.getKiePMMLModelFromPlugin("PACKAGE_NAME",
-                                                                          pmml.getDataDictionary(),
-                                                                          pmml.getTransformationDictionary(),
-                                                                          (MiningModel) pmml.getModels().get(0),
-                                                                          knowledgeBuilder);
+        final KiePMMLMiningModel retrieved = PROVIDER.getKiePMMLModelWithSources("PACKAGE_NAME",
+                                                                                 pmml.getDataDictionary(),
+                                                                                 pmml.getTransformationDictionary(),
+                                                                                 (MiningModel) pmml.getModels().get(0),
+                                                                                 knowledgeBuilder);
         assertNotNull(retrieved);
         assertNotNull(retrieved.getNestedModels());
         assertFalse(retrieved.getNestedModels().isEmpty());

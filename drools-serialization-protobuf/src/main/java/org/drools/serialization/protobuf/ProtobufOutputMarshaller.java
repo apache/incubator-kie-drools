@@ -536,7 +536,7 @@ public class ProtobufOutputMarshaller {
             ProtobufMessages.Activation _activation = ProtobufMessages.Activation.newBuilder()
                     .setPackageName( activation.getRule().getPackage() )
                     .setRuleName( activation.getRule().getName() )
-                    .setTuple( PersisterHelper.createTuple( activation.getTuple() ) )
+                    .setTuple( writeTuple( context, activation, true ) )
                     .build();
             _logicalDependency.setActivation( _activation );
 
@@ -733,11 +733,11 @@ public class ProtobufOutputMarshaller {
         return _activation.build();
     }
 
-    public static Tuple writeTuple( MarshallerWriteContext context, AgendaItem<?> agendaItem, boolean isDormient) {
-        org.drools.core.spi.Tuple tuple = agendaItem.getTuple();
+    public static Tuple writeTuple( MarshallerWriteContext context, Activation<?> activation, boolean isDormient ) {
+        org.drools.core.spi.Tuple tuple = activation.getTuple();
         ProtobufMessages.Tuple.Builder _tb = ProtobufMessages.Tuple.newBuilder();
 
-        boolean serializeObjects = isDormient && hasNodeMemory((BaseTuple) agendaItem);
+        boolean serializeObjects = isDormient && hasNodeMemory((BaseTuple) activation);
 
         for ( org.drools.core.spi.Tuple entry = tuple; entry != null; entry = entry.getParent() ) {
             InternalFactHandle handle = entry.getFactHandle();

@@ -52,9 +52,9 @@ import org.dmg.pmml.regression.RegressionModel;
 import org.dmg.pmml.regression.RegressionTable;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.kie.pmml.commons.model.enums.MINING_FUNCTION;
-import org.kie.pmml.commons.model.enums.OP_TYPE;
-import org.kie.pmml.commons.model.enums.PMML_MODEL;
+import org.kie.pmml.api.enums.MINING_FUNCTION;
+import org.kie.pmml.api.enums.OP_TYPE;
+import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.models.regression.model.KiePMMLRegressionClassificationTable;
 import org.kie.pmml.models.regression.model.KiePMMLRegressionModel;
 import org.kie.pmml.models.regression.model.KiePMMLRegressionTable;
@@ -65,6 +65,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonEvaluateConstructor;
 import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getCategoricalPredictor;
 import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getDataDictionary;
@@ -151,7 +152,8 @@ public class KiePMMLRegressionModelFactoryTest {
     public void getKiePMMLRegressionModelSourcesMap() throws IOException {
         Map<String, String> retrieved = KiePMMLRegressionModelFactory.getKiePMMLRegressionModelSourcesMap(dataDictionary, transformationDictionary, regressionModel, PACKAGE_NAME);
         assertNotNull(retrieved);
-        int expectedSize = regressionTables.size() + 2; // One for classification and one for the whole model
+        int expectedSize = regressionTables.size()
+                + 2; // One for classification and one for the whole model
         assertEquals(expectedSize, retrieved.size());
     }
 
@@ -175,19 +177,15 @@ public class KiePMMLRegressionModelFactoryTest {
     @Test
     public void setConstructor() {
         ConstructorDeclaration constructorDeclaration = MODEL_TEMPLATE.getDefaultConstructor().get();
-        String generatedClassName = "GeneratedClassName";
         String nestedTable = "NestedTable";
         String targetField = "targetField";
-        MINING_FUNCTION miningFunction = MINING_FUNCTION.CLASSIFICATION;
-        String modelName = "modelName";
-        KiePMMLRegressionModelFactory.setConstructor(generatedClassName,
+        MINING_FUNCTION miningFunction = MINING_FUNCTION.byName(regressionModel.getMiningFunction().value());
+        KiePMMLRegressionModelFactory.setConstructor(regressionModel,
                                                      nestedTable,
                                                      constructorDeclaration,
-                                                     targetField,
-                                                     miningFunction,
-                                                     modelName);
+                                                     targetField);
         Map<Integer, Expression> superInvocationExpressionsMap = new HashMap<>();
-        superInvocationExpressionsMap.put(0, new NameExpr(String.format("\"%s\"", modelName)));
+        superInvocationExpressionsMap.put(0, new NameExpr(String.format("\"%s\"", regressionModel.getModelName())));
         Map<String, Expression> assignExpressionMap = new HashMap<>();
         assignExpressionMap.put("targetField", new StringLiteralExpr(targetField));
         assignExpressionMap.put("miningFunction", new NameExpr(miningFunction.getClass().getName() + "." + miningFunction.name()));
@@ -195,7 +193,7 @@ public class KiePMMLRegressionModelFactoryTest {
         ObjectCreationExpr objectCreationExpr = new ObjectCreationExpr();
         objectCreationExpr.setType(nestedTable);
         assignExpressionMap.put("regressionTable", objectCreationExpr);
-        assertTrue(commonEvaluateConstructor(constructorDeclaration, generatedClassName, superInvocationExpressionsMap, assignExpressionMap));
+        assertTrue(commonEvaluateConstructor(constructorDeclaration, getSanitizedClassName(regressionModel.getModelName()), superInvocationExpressionsMap, assignExpressionMap));
     }
 
     @Test

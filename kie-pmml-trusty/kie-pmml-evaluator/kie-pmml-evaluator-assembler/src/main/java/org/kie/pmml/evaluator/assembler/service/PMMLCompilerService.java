@@ -26,8 +26,8 @@ import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceWithConfiguration;
 import org.kie.pmml.commons.HasRule;
-import org.kie.pmml.commons.exceptions.ExternalException;
-import org.kie.pmml.commons.exceptions.KiePMMLException;
+import org.kie.pmml.api.exceptions.ExternalException;
+import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.HasNestedModels;
 import org.kie.pmml.commons.model.HasSourcesMap;
 import org.kie.pmml.commons.model.KiePMMLModel;
@@ -59,10 +59,10 @@ public class PMMLCompilerService {
      * @throws KiePMMLException if any <code>KiePMMLInternalException</code> has been thrown during execution
      * @throws ExternalException if any other kind of <code>Exception</code> has been thrown during execution
      */
-    public static List<KiePMMLModel> getKiePMMLModelsFromResourcesWithConfigurationsFromPlugin(KnowledgeBuilderImpl kbuilderImpl, Collection<ResourceWithConfiguration> resourceWithConfigurations) {
+    public static List<KiePMMLModel> getKiePMMLModelsFromResourcesWithConfigurationsWithSources(KnowledgeBuilderImpl kbuilderImpl, Collection<ResourceWithConfiguration> resourceWithConfigurations) {
         return resourceWithConfigurations.stream()
                 .map(ResourceWithConfiguration::getResource)
-                .flatMap(resource -> getKiePMMLModelsFromResourceFromPlugin(kbuilderImpl, resource).stream())
+                .flatMap(resource -> getKiePMMLModelsFromResourceWithSources(kbuilderImpl, resource).stream())
                 .collect(Collectors.toList());
     }
 
@@ -92,8 +92,8 @@ public class PMMLCompilerService {
         PMMLCompiler pmmlCompiler = kbuilderImpl.getCachedOrCreate(PMML_COMPILER_CACHE_KEY,
                                                                    () -> getCompiler(kbuilderImpl));
         try {
-            return pmmlCompiler.getModels(resource.getInputStream(), getFileName(resource.getSourcePath()),
-                                          kbuilderImpl);
+            return pmmlCompiler.getKiePMMLModels(resource.getInputStream(), getFileName(resource.getSourcePath()),
+                                                 kbuilderImpl);
         } catch (IOException e) {
             throw new ExternalException("ExternalException", e);
         }
@@ -104,18 +104,18 @@ public class PMMLCompilerService {
      * @param resource
      * @return
      */
-    public static List<KiePMMLModel> getKiePMMLModelsFromResourceFromPlugin(KnowledgeBuilderImpl kbuilderImpl,
-                                                                            Resource resource) {
+    public static List<KiePMMLModel> getKiePMMLModelsFromResourceWithSources(KnowledgeBuilderImpl kbuilderImpl,
+                                                                             Resource resource) {
         PMMLCompiler pmmlCompiler = kbuilderImpl.getCachedOrCreate(PMML_COMPILER_CACHE_KEY,
                                                                    () -> getCompiler(kbuilderImpl));
         String[] classNamePackageName = getFactoryClassNamePackageName(resource);
         String factoryClassName = classNamePackageName[0];
         String packageName = classNamePackageName[1];
         try {
-            final List<KiePMMLModel> toReturn = pmmlCompiler.getModelsFromPlugin(factoryClassName, packageName,
-                                                                           resource.getInputStream(),
-                                                                           getFileName(resource.getSourcePath()),
-                                                                           kbuilderImpl);
+            final List<KiePMMLModel> toReturn = pmmlCompiler.getKiePMMLModelsWithSources(factoryClassName, packageName,
+                                                                                         resource.getInputStream(),
+                                                                                         getFileName(resource.getSourcePath()),
+                                                                                         kbuilderImpl);
             populateWithPMMLRuleMappers(toReturn, resource);
             return toReturn;
         } catch (IOException e) {

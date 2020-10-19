@@ -17,7 +17,7 @@ package org.kie.pmml.models.tree.compiler.executor;
 
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.tree.TreeModel;
-import org.kie.pmml.commons.model.enums.PMML_MODEL;
+import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.compiler.api.provider.ModelImplementationProvider;
 import org.kie.pmml.models.tree.compiler.factories.KiePMMLTreeModelFactory;
 import org.kie.pmml.models.tree.model.KiePMMLTreeModel;

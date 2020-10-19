@@ -22,7 +22,7 @@ import org.dmg.pmml.scorecard.Scorecard;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.junit.Test;
 import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.pmml.commons.model.enums.PMML_MODEL;
+import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.compiler.commons.utils.KiePMMLUtil;
 import org.kie.pmml.models.drools.commons.model.KiePMMLDroolsModel;
 import org.kie.pmml.models.drools.scorecard.model.KiePMMLScorecardModel;
@@ -54,14 +54,14 @@ public class ScorecardModelImplementationProviderTest {
     }
 
     @Test
-    public void getKiePMMLModelFromPlugin() throws Exception {
+    public void getKiePMMLModelWithSources() throws Exception {
         final PMML pmml = getPMML(SOURCE_1);
         KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
-        final KiePMMLDroolsModel retrieved = PROVIDER.getKiePMMLModelFromPlugin("PACKAGE_NAME",
-                                                                                pmml.getDataDictionary(),
-                                                                                pmml.getTransformationDictionary(),
-                                                                                (Scorecard) pmml.getModels().get(0),
-                                                                                knowledgeBuilder);
+        final KiePMMLDroolsModel retrieved = PROVIDER.getKiePMMLModelWithSources("PACKAGE_NAME",
+                                                                                 pmml.getDataDictionary(),
+                                                                                 pmml.getTransformationDictionary(),
+                                                                                 (Scorecard) pmml.getModels().get(0),
+                                                                                 knowledgeBuilder);
         assertNotNull(retrieved);
     }
 

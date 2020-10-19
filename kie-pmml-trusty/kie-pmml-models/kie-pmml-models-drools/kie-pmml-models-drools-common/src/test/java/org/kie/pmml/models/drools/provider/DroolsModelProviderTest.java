@@ -32,9 +32,9 @@ import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.kie.pmml.commons.exceptions.KiePMMLException;
-import org.kie.pmml.commons.model.enums.DATA_TYPE;
-import org.kie.pmml.commons.model.enums.PMML_MODEL;
+import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.api.enums.DATA_TYPE;
+import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.compiler.testutils.TestUtils;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsAST;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsType;
@@ -130,13 +130,13 @@ public class DroolsModelProviderTest {
     }
 
     @Test
-    public void getKiePMMLModelFromPluginWithKnowledgeBuilder() {
+    public void getKiePMMLModelWithSourcesWithKnowledgeBuilder() {
         KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
-        KiePMMLDroolsModel retrieved = droolsModelProvider.getKiePMMLModelFromPlugin(PACKAGE_NAME,
-                                                                                     pmml.getDataDictionary(),
-                                                                                     pmml.getTransformationDictionary(),
-                                                                                     scorecard,
-                                                                                     knowledgeBuilder);
+        KiePMMLDroolsModel retrieved = droolsModelProvider.getKiePMMLModelWithSources(PACKAGE_NAME,
+                                                                                      pmml.getDataDictionary(),
+                                                                                      pmml.getTransformationDictionary(),
+                                                                                      scorecard,
+                                                                                      knowledgeBuilder);
         assertNotNull(retrieved);
         assertTrue(retrieved instanceof KiePMMLDroolsModelWithSources);
         KiePMMLDroolsModelWithSources retrievedSources = (KiePMMLDroolsModelWithSources) retrieved;
@@ -148,22 +148,22 @@ public class DroolsModelProviderTest {
     }
 
     @Test(expected = KiePMMLException.class)
-    public void getKiePMMLModelFromPluginWithException() {
+    public void getKiePMMLModelWithSourcesWithException() {
         KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
-        droolsModelProvider.getKiePMMLModelFromPlugin(PACKAGE_NAME,
-                                                                                     null,
-                                                                                     null,
-                                                                                     null,
-                                                                                     knowledgeBuilder);
+        droolsModelProvider.getKiePMMLModelWithSources(PACKAGE_NAME,
+                                                       null,
+                                                       null,
+                                                       null,
+                                                       knowledgeBuilder);
     }
 
     @Test(expected = KiePMMLException.class)
-    public void getKiePMMLModelFromPluginNoKnowledgeBuilder() {
-        droolsModelProvider.getKiePMMLModelFromPlugin(PACKAGE_NAME,
-                                                                                     pmml.getDataDictionary(),
-                                                                                     pmml.getTransformationDictionary(),
-                                                                                     scorecard,
-                                                                                     "knowledgeBuilder");
+    public void getKiePMMLModelWithSourcesNoKnowledgeBuilder() {
+        droolsModelProvider.getKiePMMLModelWithSources(PACKAGE_NAME,
+                                                       pmml.getDataDictionary(),
+                                                       pmml.getTransformationDictionary(),
+                                                       scorecard,
+                                                       "knowledgeBuilder");
     }
 
     @Test

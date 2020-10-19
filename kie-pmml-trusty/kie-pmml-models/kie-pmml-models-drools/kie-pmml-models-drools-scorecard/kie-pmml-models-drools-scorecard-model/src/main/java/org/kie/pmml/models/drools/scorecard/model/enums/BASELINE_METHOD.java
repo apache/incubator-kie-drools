@@ -17,7 +17,7 @@ package org.kie.pmml.models.drools.scorecard.model.enums;
 
 import java.util.Arrays;
 
-import org.kie.pmml.commons.exceptions.KieEnumException;
+import org.kie.pmml.api.exceptions.KieEnumException;
 
 /**
  * @see <a href=http://dmg.org/pmml/v4-4/Scorecard.html#baselinemethod>baselinemethod</a>

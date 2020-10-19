@@ -41,6 +41,7 @@
     <module>kie-pmml-models</module>
     <module>kie-pmml-benchmarks</module>
     <module>kie-pmml-dependencies</module>
+    <module>kie-pmml-api</module>
   </modules>
 
   <dependencyManagement>

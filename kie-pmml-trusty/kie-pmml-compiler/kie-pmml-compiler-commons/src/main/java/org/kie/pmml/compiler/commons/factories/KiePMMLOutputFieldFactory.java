@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 import org.dmg.pmml.Model;
 import org.dmg.pmml.OutputField;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
-import org.kie.pmml.commons.model.enums.RESULT_FEATURE;
+import org.kie.pmml.api.enums.RESULT_FEATURE;
 
 import static org.kie.pmml.compiler.commons.factories.KiePMMLExtensionFactory.getKiePMMLExtensions;
 

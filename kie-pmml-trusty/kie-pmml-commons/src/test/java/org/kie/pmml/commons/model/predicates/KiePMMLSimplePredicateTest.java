@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Test;
-import org.kie.pmml.commons.model.enums.OPERATOR;
+import org.kie.pmml.api.enums.OPERATOR;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;

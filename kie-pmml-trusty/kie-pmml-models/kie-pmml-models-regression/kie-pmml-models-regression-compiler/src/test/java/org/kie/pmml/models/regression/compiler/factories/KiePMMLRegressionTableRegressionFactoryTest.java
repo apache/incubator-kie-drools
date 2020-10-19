@@ -47,10 +47,10 @@ import org.dmg.pmml.regression.RegressionModel;
 import org.dmg.pmml.regression.RegressionTable;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.pmml.commons.exceptions.KiePMMLException;
-import org.kie.pmml.commons.exceptions.KiePMMLInternalException;
+import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
-import org.kie.pmml.commons.model.enums.RESULT_FEATURE;
+import org.kie.pmml.api.enums.RESULT_FEATURE;
 import org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils;
 import org.kie.pmml.models.regression.model.tuples.KiePMMLTableSourceCategory;
 

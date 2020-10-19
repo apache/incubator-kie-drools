@@ -28,14 +28,14 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.management.ObjectName;
+
 import org.drools.compiler.builder.InternalKnowledgeBuilder;
+import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.kie.builder.MaterializedLambda;
 import org.drools.compiler.kie.util.KieJarChangeSet;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.compiler.kproject.models.KieSessionModelImpl;
 import org.drools.compiler.management.KieContainerMonitor;
-import org.drools.compiler.reteoo.compiled.ObjectTypeNodeCompiler;
-import org.drools.core.InitialFact;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.SessionConfigurationImpl;
 import org.drools.core.impl.InternalKieContainer;
@@ -61,6 +61,7 @@ import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.conf.MBeansOption;
 import org.kie.api.event.KieRuntimeEventManager;
+import org.kie.api.internal.utils.ServiceRegistry;
 import org.kie.api.io.ResourceType;
 import org.kie.api.logger.KieLoggers;
 import org.kie.api.runtime.Environment;
@@ -70,9 +71,10 @@ import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.StatelessKieSession;
 import org.kie.api.time.Calendar;
 import org.kie.internal.builder.ChangeType;
-import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.ResourceChange;
 import org.kie.internal.builder.ResourceChangeSet;
+import org.kie.internal.builder.conf.AlphaNetworkCompilerOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -85,8 +87,6 @@ public class KieContainerImpl
         InternalKieContainer {
 
     private static final Logger log = LoggerFactory.getLogger( KieContainerImpl.class );
-
-    public static final String ALPHA_NETWORK_COMPILER_OPTION = "drools.alphaNetworkCompiler";
 
     private KieProject kProject;
 
@@ -261,10 +261,40 @@ public class KieContainerImpl
                 kbasesToRemove.add( kbaseName );
             } else {
                 final InternalKnowledgeBase kBase = (InternalKnowledgeBase) kBaseEntry.getValue();
-                KieBaseUpdateContext context = new KieBaseUpdateContext( kProject, kBase, currentKM, newKM,
-                                                                         cs, modifiedClasses, modifyingUsedClass, unchangedResources,
-                                                                         results, newKieBaseModel, currentKieBaseModel );
-                kBase.enqueueModification( currentKM.createKieBaseUpdater( context ) );
+
+                // share Knowledge Builder among updater as it's computationally expensive to create this
+                KnowledgeBuilderConfigurationImpl builderConfiguration =
+                        (KnowledgeBuilderConfigurationImpl) newKM.getBuilderConfiguration(newKieBaseModel, kBase.getRootClassLoader());
+                InternalKnowledgeBuilder kbuilder =
+                        (InternalKnowledgeBuilder) KnowledgeBuilderFactory.newKnowledgeBuilder(kBase, builderConfiguration);
+
+                KieBaseUpdaterImplContext context = new KieBaseUpdaterImplContext(kProject, kBase, currentKM, newKM,
+                                                                                  cs, modifiedClasses, modifyingUsedClass, unchangedResources,
+                                                                                  results, newKieBaseModel, currentKieBaseModel, kbuilder);
+
+                // Multiple updaters are required to be merged together in a single Runnable
+                // to avoid a deadlock while using .fireUntilHalt()
+                // see IncrementalCompilationTest.testMultipleIncrementalCompilationsWithFireUntilHalt
+                // with multiple updaters (such as Alpha NetworkCompilerUpdater)
+                CompositeRunnable compositeUpdater = new CompositeRunnable();
+                KieBaseUpdater kieBaseUpdater = currentKM.createKieBaseUpdater(context);
+
+                compositeUpdater.add(kieBaseUpdater);
+
+                KieBaseUpdaterOptions kieBaseUpdaterOptions = new KieBaseUpdaterOptions(new KieBaseUpdaterOptions.OptionEntry(
+                        AlphaNetworkCompilerOption.class, builderConfiguration.getAlphaNetworkCompilerOption()));
+
+                KieBaseUpdaters updaters = ServiceRegistry.getInstance().get(KieBaseUpdaters.class);
+                updaters.getChildren()
+                        .stream()
+                        .map(kbu -> kbu.create(new KieBaseUpdatersContext(kieBaseUpdaterOptions,
+                                                                          context.kBase.getRete(),
+                                                                          context.kBase.getRootClassLoader()
+                                                                          )))
+                        .forEach(compositeUpdater::add);
+
+                kBase.enqueueModification(compositeUpdater);
+
             }
         }
 
@@ -277,6 +307,24 @@ public class KieContainerImpl
         this.statelessKSessions.entrySet().removeIf( ksession -> kProject.getKieSessionModel( ksession.getKey() ) == null );
 
         return results;
+    }
+
+    public static class CompositeRunnable implements Runnable {
+
+        private final List<Runnable> runnables = new ArrayList<>();
+
+        public void add(Runnable runnable) {
+            runnables.add( runnable );
+        }
+
+        void addAll(List<Runnable> runnableList) {
+            runnables.addAll( runnableList );
+        }
+
+        @Override
+        public void run() {
+            runnables.forEach( Runnable::run );
+        }
     }
 
     private boolean isModifyingUsedFunction(KieJarChangeSet cs) {
@@ -413,6 +461,8 @@ public class KieContainerImpl
     private KieBase createKieBase(KieBaseModelImpl kBaseModel, KieProject kieProject, ResultsImpl messages, KieBaseConfiguration conf) {
         InternalKieModule kModule = kieProject.getKieModuleForKBase( kBaseModel.getName() );
         InternalKnowledgeBase kBase = kModule.createKieBase(kBaseModel, kieProject, messages, conf);
+        kModule.afterKieBaseCreationUpdate(kBaseModel.getName(), kBase);
+
         if ( kBase == null ) {
             return null;
         }
@@ -421,21 +471,7 @@ public class KieContainerImpl
         kBase.setKieContainer(this);
         kBase.initMBeans();
 
-        generateCompiledAlphaNetwork(kBaseModel, kModule, kBase);
-
         return kBase;
-    }
-
-    public void generateCompiledAlphaNetwork(KieBaseModelImpl kBaseModel, InternalKieModule kModule, InternalKnowledgeBase kBase) {
-        final String configurationProperty = kBaseModel.getKModule().getConfigurationProperty(ALPHA_NETWORK_COMPILER_OPTION);
-        final boolean isAlphaNetworkEnabled = Boolean.valueOf(configurationProperty);
-        if (isAlphaNetworkEnabled) {
-            KnowledgeBuilder kbuilder = kModule.getKnowledgeBuilderForKieBase(kBaseModel.getName());
-            kBase.getRete().getEntryPointNodes().values().stream()
-                    .flatMap(ep -> ep.getObjectTypeNodes().values().stream())
-                    .filter(f -> !InitialFact.class.isAssignableFrom(f.getObjectType().getClassType()))
-                    .forEach(otn -> otn.setCompiledNetwork(ObjectTypeNodeCompiler.compile((( InternalKnowledgeBuilder ) kbuilder), otn)));
-        }
     }
 
     private KieBaseModelImpl getKieBaseModelImpl(String kBaseName) {

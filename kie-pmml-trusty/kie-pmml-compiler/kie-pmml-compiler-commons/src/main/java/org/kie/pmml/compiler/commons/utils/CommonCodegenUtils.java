@@ -35,6 +35,7 @@ import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.MethodReferenceExpr;
 import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.ThisExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
@@ -44,8 +45,8 @@ import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
-import org.kie.pmml.commons.exceptions.KiePMMLException;
-import org.kie.pmml.commons.exceptions.KiePMMLInternalException;
+import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
@@ -171,6 +172,39 @@ public class CommonCodegenUtils {
             methodReferenceExpr.setIdentifier(methodDeclaration.getNameAsString());
             NodeList<Expression> expressions = NodeList.nodeList(new StringLiteralExpr(s), methodReferenceExpr);
             body.addStatement(new MethodCallExpr(new NameExpr(mapName), "put", expressions));
+        });
+    }
+
+    /**
+     * For every entry in the given list, add
+     * <pre>
+     *     (<i>listName</i>).add(new <i>ObjectCreationExpr</i>>);
+     * </pre>
+     * e.g.
+     * <pre>
+     *     LIST_NAME.add(new OBJA());
+     *     LIST_NAME.add(new OBJB());
+     *     LIST_NAME.add(new OBJC());
+     *     LIST_NAME.add(new OBJD());
+     * </pre>
+     * inside the given <code>BlockStmt</code>
+     *
+     * @param toAdd
+     * @param body
+     * @param listName
+     */
+    public static void addListPopulation(final List<ObjectCreationExpr> toAdd,
+                                        final BlockStmt body,
+                                        final String listName) {
+        toAdd.forEach(objectCreationExpr -> {
+            NodeList<Expression> arguments = NodeList.nodeList(objectCreationExpr);
+            MethodCallExpr methodCallExpr = new MethodCallExpr();
+            methodCallExpr.setScope(new NameExpr(listName));
+            methodCallExpr.setName("add");
+            methodCallExpr.setArguments(arguments);
+            ExpressionStmt expressionStmt = new ExpressionStmt();
+            expressionStmt.setExpression(methodCallExpr);
+            body.addStatement(expressionStmt);
         });
     }
 

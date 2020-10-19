@@ -39,9 +39,10 @@ import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.dmn.model.api.DMNElement;
-import org.kie.pmml.evaluator.api.executor.PMMLContext;
-import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
-import org.kie.pmml.evaluator.assembler.factories.PMMLRuntimeFactory;
+import org.kie.pmml.api.PMMLRuntimeFactory;
+import org.kie.pmml.api.runtime.PMMLContext;
+import org.kie.pmml.api.runtime.PMMLRuntime;
+import org.kie.pmml.evaluator.assembler.factories.PMMLRuntimeFactoryImpl;
 import org.kie.pmml.evaluator.core.PMMLContextImpl;
 import org.kie.pmml.evaluator.core.utils.PMMLRequestDataBuilder;
 import org.slf4j.Logger;
@@ -50,6 +51,8 @@ import org.slf4j.LoggerFactory;
 public class DMNKiePMMLTrustyInvocationEvaluator extends AbstractDMNKiePMMLInvocationEvaluator {
 
     private static final Logger LOG = LoggerFactory.getLogger(DMNKiePMMLTrustyInvocationEvaluator.class);
+
+    private static final PMMLRuntimeFactory PMML_RUNTIME_FACTORY = new PMMLRuntimeFactoryImpl();
 
     public DMNKiePMMLTrustyInvocationEvaluator(String dmnNS, DMNElement node, Resource pmmlResource, String model,
                                                PMMLInfo<?> pmmlInfo) {
@@ -118,13 +121,13 @@ public class DMNKiePMMLTrustyInvocationEvaluator extends AbstractDMNKiePMMLInvoc
         final DMNRuntimeKB runtimeKB = dmnRuntime.getRuntimeKB();
         if (runtimeKB instanceof DMNRuntimeKBWrappingIKB ) { // We are in drools
             final File pmmlFile = getPMMLFile();
-            return PMMLRuntimeFactory.getPMMLRuntime(model, pmmlFile);
+            return PMML_RUNTIME_FACTORY.getPMMLRuntimeFromFile(pmmlFile);
         } else { // we are in kogito
             KieRuntimeFactory kieFactory = dmnRuntime.getKieRuntimeFactory(model);
             return kieFactory.get(PMMLRuntime.class);
         }
     }
-    
+
     private PMMLContext getPMMLPMMLContext(String correlationId, String modelName, DMNResult dmnr) {
         PMMLRequestDataBuilder pmmlRequestDataBuilder = new PMMLRequestDataBuilder(correlationId, modelName);
         for (FormalParameter p : parameters) {

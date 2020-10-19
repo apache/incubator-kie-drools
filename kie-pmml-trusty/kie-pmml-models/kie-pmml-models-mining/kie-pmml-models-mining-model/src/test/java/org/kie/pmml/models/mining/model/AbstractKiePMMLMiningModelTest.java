@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.kie.pmml.commons.model.KiePMMLModel;
-import org.kie.pmml.commons.model.enums.OPERATOR;
+import org.kie.pmml.api.enums.OPERATOR;
 import org.kie.pmml.commons.model.predicates.KiePMMLSimplePredicate;
 import org.kie.pmml.models.mining.model.enums.MULTIPLE_MODEL_METHOD;
 import org.kie.pmml.models.mining.model.segmentation.KiePMMLSegment;

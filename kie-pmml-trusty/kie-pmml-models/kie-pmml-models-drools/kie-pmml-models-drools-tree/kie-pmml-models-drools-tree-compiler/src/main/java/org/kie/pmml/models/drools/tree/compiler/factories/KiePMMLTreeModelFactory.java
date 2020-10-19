@@ -29,9 +29,10 @@ import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.tree.TreeModel;
 import org.kie.memorycompiler.KieMemoryCompiler;
-import org.kie.pmml.commons.exceptions.KiePMMLException;
-import org.kie.pmml.commons.exceptions.KiePMMLInternalException;
+import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 import org.kie.pmml.compiler.commons.utils.CommonCodegenUtils;
+import org.kie.pmml.compiler.commons.utils.ModelUtils;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsAST;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsType;
 import org.kie.pmml.models.drools.tree.model.KiePMMLTreeModel;
@@ -46,6 +47,7 @@ import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageNa
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
 import static org.kie.pmml.compiler.commons.utils.KiePMMLModelFactoryUtils.addTransformationsInClassOrInterfaceDeclaration;
 import static org.kie.pmml.compiler.commons.utils.KiePMMLModelFactoryUtils.setConstructorSuperNameInvocation;
+import static org.kie.pmml.compiler.commons.utils.KiePMMLModelFactoryUtils.setKiePMMLModelConstructor;
 import static org.kie.pmml.models.drools.utils.KiePMMLDroolsModelFactoryUtils.getKiePMMLModelCompilationUnit;
 
 /**
@@ -110,7 +112,9 @@ public class KiePMMLTreeModelFactory {
     }
 
     static void setConstructor(final TreeModel treeModel, final ConstructorDeclaration constructorDeclaration, final SimpleName modelName) {
-        setConstructorSuperNameInvocation(modelName.asString(), constructorDeclaration, treeModel.getModelName());
+        final List<org.kie.pmml.api.models.MiningField> miningFields = ModelUtils.convertToKieMiningFieldList(treeModel.getMiningSchema());
+        final List<org.kie.pmml.api.models.OutputField> outputFields = ModelUtils.convertToKieOutputFieldList(treeModel.getOutput());
+        setKiePMMLModelConstructor(modelName.asString(), constructorDeclaration, treeModel.getModelName(), miningFields, outputFields);
         final BlockStmt body = constructorDeclaration.getBody();
         final ExplicitConstructorInvocationStmt superStatement = CommonCodegenUtils.getExplicitConstructorInvocationStmt(body)
                 .orElseThrow(() -> new KiePMMLException(String.format(MISSING_CONSTRUCTOR_IN_BODY, body)));

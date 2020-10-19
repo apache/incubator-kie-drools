@@ -38,6 +38,7 @@ import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.MethodReferenceExpr;
 import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.ThisExpr;
@@ -49,7 +50,7 @@ import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.junit.Test;
-import org.kie.pmml.commons.exceptions.KiePMMLException;
+import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
@@ -155,6 +156,49 @@ public class CommonCodegenUtilsTest {
                 }
                 MethodReferenceExpr methodReferenceExpr = (MethodReferenceExpr) arguments.get(1);
                 return entry.getValue().getName().asString().equals(methodReferenceExpr.getIdentifier());
+            }).count();
+            assertEquals(1, matchingDeclarations);
+        }
+    }
+
+    @Test
+    public void addListPopulation() {
+        final List<ObjectCreationExpr> toAdd = IntStream.range(0, 5)
+                .mapToObj(i -> {
+                    ObjectCreationExpr toReturn = new ObjectCreationExpr();
+                    toReturn.setType(String.class);
+                    Expression value = new StringLiteralExpr("String"+i);
+                    toReturn.setArguments(NodeList.nodeList(value));
+                    return toReturn;
+                })
+                .collect(Collectors.toList());
+        BlockStmt body = new BlockStmt();
+        String listName = "LIST_NAME";
+        CommonCodegenUtils.addListPopulation(toAdd, body, listName);
+        NodeList<Statement> statements = body.getStatements();
+        assertEquals(toAdd.size(), statements.size());
+        for (Statement statement : statements) {
+            assertTrue(statement instanceof ExpressionStmt);
+            ExpressionStmt expressionStmt = (ExpressionStmt) statement;
+            assertTrue(expressionStmt.getExpression() instanceof MethodCallExpr);
+            MethodCallExpr methodCallExpr = (MethodCallExpr) expressionStmt.getExpression();
+            assertEquals(listName, methodCallExpr.getScope().get().asNameExpr().getNameAsString());
+            NodeList<com.github.javaparser.ast.expr.Expression> arguments = methodCallExpr.getArguments();
+            assertEquals(1, arguments.size());
+            assertTrue(arguments.get(0) instanceof ObjectCreationExpr);
+            ObjectCreationExpr objectCreationExpr = (ObjectCreationExpr) arguments.get(0);
+            assertEquals(objectCreationExpr.getType().asString(), String.class.getSimpleName());
+            arguments = objectCreationExpr.getArguments();
+            assertEquals(1, arguments.size());
+            assertTrue(arguments.get(0) instanceof StringLiteralExpr);
+        }
+        for (ObjectCreationExpr entry : toAdd) {
+            int matchingDeclarations = (int) statements.stream().filter(statement -> {
+                ExpressionStmt expressionStmt = (ExpressionStmt) statement;
+                com.github.javaparser.ast.expr.Expression expression = expressionStmt.getExpression();
+                MethodCallExpr methodCallExpr = (MethodCallExpr) expression;
+                final NodeList<com.github.javaparser.ast.expr.Expression> arguments = methodCallExpr.getArguments();
+                return entry.equals(arguments.get(0).asObjectCreationExpr());
             }).count();
             assertEquals(1, matchingDeclarations);
         }

@@ -17,7 +17,7 @@ package org.kie.pmml.models.drools.tuples;
 
 import java.util.Objects;
 
-import org.kie.pmml.commons.model.enums.OPERATOR;
+import org.kie.pmml.api.enums.OPERATOR;
 
 /**
  * Tupla representing the operator and the value to be applied to a given field

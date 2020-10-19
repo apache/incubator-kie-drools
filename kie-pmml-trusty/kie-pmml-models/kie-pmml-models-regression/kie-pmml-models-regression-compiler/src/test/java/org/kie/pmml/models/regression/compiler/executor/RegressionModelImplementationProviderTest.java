@@ -24,8 +24,8 @@ import org.dmg.pmml.PMML;
 import org.dmg.pmml.regression.RegressionModel;
 import org.junit.Test;
 import org.kie.memorycompiler.KieMemoryCompiler;
-import org.kie.pmml.commons.exceptions.KiePMMLException;
-import org.kie.pmml.commons.model.enums.PMML_MODEL;
+import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.compiler.testutils.TestUtils;
 import org.kie.pmml.models.regression.model.KiePMMLRegressionModel;
 import org.kie.pmml.models.regression.model.KiePMMLRegressionModelWithSources;
@@ -79,13 +79,13 @@ public class RegressionModelImplementationProviderTest {
     }
 
     @Test
-    public void getKiePMMLModelFromPlugin() throws Exception {
+    public void getKiePMMLModelWithSources() throws Exception {
         final PMML pmml = TestUtils.loadFromFile(SOURCE_1);
         assertNotNull(pmml);
         assertEquals(1, pmml.getModels().size());
         assertTrue(pmml.getModels().get(0) instanceof RegressionModel);
         final String packageName = "packagename";
-        final KiePMMLRegressionModel retrieved = PROVIDER.getKiePMMLModelFromPlugin(
+        final KiePMMLRegressionModel retrieved = PROVIDER.getKiePMMLModelWithSources(
                 packageName,
                 pmml.getDataDictionary(),
                 pmml.getTransformationDictionary(),

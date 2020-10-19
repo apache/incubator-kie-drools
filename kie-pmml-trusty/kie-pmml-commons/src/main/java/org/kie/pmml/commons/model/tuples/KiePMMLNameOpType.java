@@ -2,7 +2,7 @@ package org.kie.pmml.commons.model.tuples;
 
 import java.util.Objects;
 
-import org.kie.pmml.commons.model.enums.OP_TYPE;
+import org.kie.pmml.api.enums.OP_TYPE;
 
 /**
  * Class to represent a <b>name/operation type</b> tupla
