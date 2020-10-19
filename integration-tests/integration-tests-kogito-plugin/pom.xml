@@ -26,6 +26,9 @@
           <settingsFile>src/it/settings.xml</settingsFile>
           <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
           <postBuildHookScript>verify</postBuildHookScript> <!-- no extension required -->
+          <properties>
+            <version.io.quarkus>${version.io.quarkus}</version.io.quarkus>
+          </properties>
         </configuration>
         <executions>
           <execution>
