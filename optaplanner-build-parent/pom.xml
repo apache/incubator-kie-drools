@@ -29,7 +29,7 @@
     <version.com.fasterxml.jackson.core>2.10.4</version.com.fasterxml.jackson.core>
     <version.com.h2database>1.3.173</version.com.h2database>
     <version.com.thoughtworks.xstream>1.4.13</version.com.thoughtworks.xstream>
-    <version.io.quarkus>1.8.2.Final</version.io.quarkus>
+    <version.io.quarkus>1.9.0.Final</version.io.quarkus>
     <version.jakarta.json.bind>1.0.2</version.jakarta.json.bind>
     <version.jakarta.xml.bind>2.3.3</version.jakarta.xml.bind>
     <version.org.apache.commons.lang3>3.9</version.org.apache.commons.lang3>
