@@ -44,22 +44,23 @@ public class PrimitiveTypeConsequenceRewrite {
         Expression innerExpr = ce.getExpression();
         Optional<Class<?>> castType = context.resolveType(ce.getType().asString());
 
-        TypedExpressionResult typedExpressionResult = new ExpressionTyper(context, Object.class, innerExpr.toString(), false)
+        TypedExpressionResult typedExpressionResult =
+                new ExpressionTyper(context)
                 .toTypedExpression(innerExpr);
 
         Optional<TypedExpression> optTypeExpression = typedExpressionResult.getTypedExpression();
 
-        if(optTypeExpression.isPresent()) {
-            TypedExpression typedExpression = optTypeExpression.get();
-            if (    castType.isPresent() &&
-                    !(typedExpression.isNumberLiteral()) &&
+        optTypeExpression.ifPresent(typedExpression -> {
+            if (castType.isPresent() &&
                     castType.get().equals(short.class) &&
-                    optTypeExpression.get().getRawClass().equals(int.class)
+                    !typedExpression.isNumberLiteral() &&
+                    typedExpression.getRawClass().equals(int.class)
             ) {
-                Expression scope = StaticJavaParser.parseExpression(unEncloseExpr(typedExpression.getExpression()).toString());
+                Expression unenclosedExpression = unEncloseExpr(typedExpression.getExpression());
+                Expression scope = StaticJavaParser.parseExpression(unenclosedExpression.toString());
                 MethodCallExpr shortValue = new MethodCallExpr(scope, "shortValue");
                 ce.replace(shortValue);
             }
-        }
+        });
     }
 }

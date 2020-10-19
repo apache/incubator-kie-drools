@@ -127,6 +127,11 @@ public class ExpressionTyper {
         this(ruleContext, patternType, bindingId, isPositional, new ExpressionTyperContext());
     }
 
+    // When using the ExpressionTyper outside of a pattern
+    public ExpressionTyper(RuleContext ruleContext) {
+        this(ruleContext, Object.class, null, false, new ExpressionTyperContext());
+    }
+
     public ExpressionTyper(RuleContext ruleContext, Class<?> patternType, String bindingId, boolean isPositional, ExpressionTyperContext context) {
         this.ruleContext = ruleContext;
         packageModel = ruleContext.getPackageModel();
