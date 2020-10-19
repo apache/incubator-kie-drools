@@ -8,9 +8,12 @@ import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
-import com.github.javaparser.ast.stmt.Statement;
+import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyper;
+import org.drools.modelcompiler.builder.generator.expressiontyper.TypedExpressionResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.unEncloseExpr;
 
 public class PrimitiveTypeConsequenceRewrite {
 
@@ -31,9 +34,12 @@ public class PrimitiveTypeConsequenceRewrite {
             logger.warn(String.format("Cannot post process consequence: %s", consequence));
             return consequence;
         }
-        for (Statement t : blockStmt.getStatements()) {
-            t.findAll(CastExpr.class, ce -> ce.getExpression().isNameExpr()).forEach(this::convertStatement);
-        }
+
+        blockStmt.findAll(CastExpr.class, ce -> {
+            Expression expression = unEncloseExpr(ce.getExpression());
+            return expression.isNameExpr() || expression.isMethodCallExpr();
+        })
+                .forEach(this::convertStatement);
 
         return blockStmt.toString();
     }
@@ -42,13 +48,19 @@ public class PrimitiveTypeConsequenceRewrite {
         Expression innerExpr = ce.getExpression();
         Optional<Class<?>> castType = context.resolveType(ce.getType().asString());
 
-        String nameExprDeclaration = innerExpr.asNameExpr().toString();
-        Optional<DeclarationSpec> declarationById = context.getDeclarationById(nameExprDeclaration);
+        String innerNameExpr = unEncloseExpr(innerExpr).toString();
 
-        if (castType.isPresent() && declarationById.isPresent()) {
-            if (castType.get().equals(short.class) && declarationById.get().getDeclarationClass().equals(int.class)) {
-                ce.replace(new MethodCallExpr(innerExpr.asNameExpr(), "shortValue"));
-            }
+        TypedExpressionResult typedExpression = new ExpressionTyper(context, Object.class, innerNameExpr, false)
+                .toTypedExpression(innerExpr);
+
+        Optional<TypedExpression> optTypeExpression = typedExpression.getTypedExpression();
+
+        if (optTypeExpression.isPresent() &&
+                castType.isPresent() &&
+                castType.get().equals(short.class) &&
+                optTypeExpression.get().getRawClass().equals(int.class)
+        ) {
+            ce.replace(new MethodCallExpr(StaticJavaParser.parseExpression(innerNameExpr), "shortValue"));
         }
     }
 }
