@@ -60,12 +60,6 @@ public class PrimitiveTypeConsequenceRewriteTest {
         String rewritten = new PrimitiveTypeConsequenceRewrite(context)
                 .rewrite("{ $address.setShortNumber((short)($interimVar.unboxed())); }");
 
-        WithIntegerField wif = new WithIntegerField(2);
-
-        // new Address().setShortNumber((short)(wif.getIntegerField()));
-        new Address().setShortNumber((short)(wif.unboxed()));
-        new Address().setShortNumber(wif.boxed().shortValue());
-
         assertThat(rewritten,
                    equalToIgnoringWhiteSpace("{ $address.setShortNumber($interimVar.unboxed().shortValue()); }"));
     }
