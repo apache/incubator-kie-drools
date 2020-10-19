@@ -35,13 +35,14 @@ pipeline {
         booleanParam(name: 'RELEASE', defaultValue: false, description: 'Is this build for a release?')
         string(name: 'PROJECT_VERSION', defaultValue: '', description: 'Optional if not RELEASE. If RELEASE, cannot be empty.')
         string(name: 'KOGITO_VERSION', defaultValue: '', description: 'Optional if not RELEASE. If RELEASE, cannot be empty.')
+
+        // Bot author information. Set as params for easy testing.
+        string(name: 'GIT_AUTHOR_BOT', defaultValue: 'bsig-gh-bot', description: 'From which author should the PR be created ?')
+        string(name: 'BOT_CREDENTIALS_ID', defaultValue: 'bsig-gh-bot', description: 'Credentials for PR creation')
     }
 
     environment {
         MAVEN_OPTS = '-Xms1024m -Xmx4g'
-
-        BOT_CREDENTIALS_ID = 'bsig-gh-bot'
-        GIT_AUTHOR_BOT = 'bsig-gh-bot'
 
         BOT_BRANCH_HASH = "${util.generateHash(10)}"
     }
@@ -193,7 +194,7 @@ void checkoutRepo(String repo, String dirName=repo) {
 
 void prepareForPR(String repo) {
     dir(repo) {
-        githubscm.forkRepo(env.BOT_CREDENTIALS_ID)
+        githubscm.forkRepo(getBotAuthorCredsID())
         githubscm.createBranch(getBotBranch())
     }
 }
@@ -206,8 +207,8 @@ void commitAndCreatePR(String repo) {
     dir(repo) {
         addNotIgnoredPoms()
         sh "git commit -m '${commitMsg}'"
-        githubscm.pushObject('origin', getBotBranch(), env.BOT_CREDENTIALS_ID)
-        deployProperties["${repo}.pr.link"] = githubscm.createPR(commitMsg, prBody, getBuildBranch(), env.BOT_CREDENTIALS_ID)
+        githubscm.pushObject('origin', getBotBranch(), getBotAuthorCredsID())
+        deployProperties["${repo}.pr.link"] = githubscm.createPR(commitMsg, prBody, getBuildBranch(), getBotAuthorCredsID())
     }
 }
 
@@ -286,7 +287,11 @@ String getBotBranch(){
 }
 
 String getBotAuthor(){
-    return env.GIT_AUTHOR_BOT
+    return params.GIT_AUTHOR_BOT
+}
+
+String getBotAuthorCredsID(){
+    return params.BOT_CREDENTIALS_ID
 }
 
 void setDeployPropertyIfNeeded(String key, def value) {
