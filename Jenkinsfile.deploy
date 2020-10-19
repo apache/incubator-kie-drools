@@ -69,6 +69,7 @@ pipeline {
                         setDeployPropertyIfNeeded('git.author', getGitAuthor())
                         setDeployPropertyIfNeeded('project.version', getProjectVersion())
                         setDeployPropertyIfNeeded('release', isRelease())
+                        setDeployPropertyIfNeeded('kogito.version', getKogitoVersion())
                     }
                 }
             }
@@ -97,15 +98,12 @@ pipeline {
                 echo 'Setup Maven release config'
                 configFileProvider([configFile(fileId: maven.getSubmarineSettingsXmlId(), targetLocation: 'maven-settings.xml', variable: 'MAVEN_SETTINGS_FILE')]){
                     sh "echo '-B -s ${MAVEN_SETTINGS_FILE}' | tee optaplanner/.mvn/maven.config"
-                    // TODO: figure out why the assert does not work
-                    // assert params.MAVEN_DEPENDENCIES_REPOSITORY != '' // OptaPlanner depends on Kogito Runtimes
-                    echo "MAVEN_DEPENDENCIES_REPOSITORY passed: ${params.MAVEN_DEPENDENCIES_REPOSITORY}"
-                    sh "sed -i 's|<repositories>|<repositories><repository><id>staging</id><name>Staging Repository</name><url>${params.MAVEN_DEPENDENCIES_REPOSITORY}</url><layout>default</layout><snapshots><enabled>true</enabled></snapshots><releases><enabled>true</enabled></releases></repository>|g' ${MAVEN_SETTINGS_FILE}"
-                    sh "sed -i 's|<pluginRepositories>|<pluginRepositories><pluginRepository><id>staging</id><name>Staging Repository</name><url>${params.MAVEN_DEPENDENCIES_REPOSITORY}</url><layout>default</layout><snapshots><enabled>true</enabled></snapshots><releases><enabled>true</enabled></releases></pluginRepository>|g' ${MAVEN_SETTINGS_FILE}"
-                    sh "sed -i 's|external:\\*|external:*,!staging|g' ${MAVEN_SETTINGS_FILE}" // Done to allow Maven to download release artifacts from MAVEN_DEPENDENCIES_REPOSITORY
 
-                    echo 'Resulting maven settings.xml:'
-                    sh "cat ${MAVEN_SETTINGS_FILE}"
+                    if (params.MAVEN_DEPENDENCIES_REPOSITORY != '') {
+                        sh "sed -i 's|<repositories>|<repositories><repository><id>staging</id><name>Staging Repository</name><url>${params.MAVEN_DEPENDENCIES_REPOSITORY}</url><layout>default</layout><snapshots><enabled>true</enabled></snapshots><releases><enabled>true</enabled></releases></repository>|g' ${MAVEN_SETTINGS_FILE}"
+                        sh "sed -i 's|<pluginRepositories>|<pluginRepositories><pluginRepository><id>staging</id><name>Staging Repository</name><url>${params.MAVEN_DEPENDENCIES_REPOSITORY}</url><layout>default</layout><snapshots><enabled>true</enabled></snapshots><releases><enabled>true</enabled></releases></pluginRepository>|g' ${MAVEN_SETTINGS_FILE}"
+                        sh "sed -i 's|external:\\*|external:*,!staging|g' ${MAVEN_SETTINGS_FILE}" // Done to allow Maven to download release artifacts from MAVEN_DEPENDENCIES_REPOSITORY
+                    }
                 }
             }
         }
