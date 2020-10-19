@@ -1,6 +1,7 @@
 package org.optaplanner.testgen;
 
 import java.io.File;
+import org.drools.modelcompiler.ExecutableModelProject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.kie.api.KieServices;
@@ -24,7 +25,7 @@ public class TestGenWriterOutput {
                 .newClassPathResource("x"));
         kfs.write(kieServices.getResources()
                 .newClassPathResource("y"));
-        kieServices.newKieBuilder(kfs).buildAll();
+        kieServices.newKieBuilder(kfs).buildAll(ExecutableModelProject.class);
         KieContainer kieContainer = kieServices.newKieContainer(kieServices.getRepository().getDefaultReleaseId());
         KieSession kieSession = kieContainer.newKieSession();
 

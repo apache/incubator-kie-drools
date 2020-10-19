@@ -8,6 +8,8 @@
     </encoder>
   </appender>
 
+  <!-- To override the info log level from the command line, use the VM option "-Dlogback.level.org.drools=debug" -->
+  <logger name="org.drools" level="${logback.level.org.drools:-info}"/>
   <!-- To override the info log level from the command line, use the VM option "-Dlogback.level.org.optaplanner=trace" -->
   <logger name="org.optaplanner" level="${logback.level.org.optaplanner:-info}"/>
   <!-- TODO This logback-test.xml accidentally overwrites optaplanner-examples' logback-test.xml file

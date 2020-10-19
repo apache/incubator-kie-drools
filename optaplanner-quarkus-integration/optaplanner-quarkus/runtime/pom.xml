@@ -25,17 +25,21 @@
     <dependency>
       <groupId>org.optaplanner</groupId>
       <artifactId>optaplanner-core</artifactId>
+      <!-- TODO Re-add this exclusion once Drools fixes exec model codegen to fix native build.
       <exclusions>
         <exclusion>
           <groupId>org.kie.kogito</groupId>
           <artifactId>drools-core-dynamic</artifactId>
         </exclusion>
       </exclusions>
+      -->
     </dependency>
+    <!-- TODO Re-add this once Drools fixes exec model codegen to fix native build.
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>drools-core-static</artifactId>
+    <groupId>org.kie.kogito</groupId>
+    <artifactId>drools-core-static</artifactId>
     </dependency>
+    -->
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-ruleunits</artifactId>

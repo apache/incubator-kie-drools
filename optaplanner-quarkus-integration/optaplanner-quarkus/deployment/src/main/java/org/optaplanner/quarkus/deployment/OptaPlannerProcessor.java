@@ -26,7 +26,6 @@ import java.util.stream.Collectors;
 
 import javax.inject.Singleton;
 
-import org.drools.core.base.ClassFieldAccessorFactory;
 import org.jboss.jandex.AnnotationInstance;
 import org.jboss.jandex.AnnotationTarget;
 import org.jboss.jandex.ClassInfo;
@@ -56,7 +55,6 @@ import io.quarkus.deployment.builditem.FeatureBuildItem;
 import io.quarkus.deployment.builditem.HotDeploymentWatchedFileBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.ReflectiveClassBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.ReflectiveHierarchyBuildItem;
-import io.quarkus.deployment.builditem.nativeimage.RuntimeInitializedClassBuildItem;
 import io.quarkus.deployment.recording.RecorderContext;
 import io.quarkus.runtime.configuration.ConfigurationException;
 
@@ -284,11 +282,6 @@ class OptaPlannerProcessor {
             throw new IllegalStateException("The class (" + className
                     + ") cannot be created during deployment.", e);
         }
-    }
-
-    @BuildStep
-    public RuntimeInitializedClassBuildItem nativeImageDroolsTricks() {
-        return new RuntimeInitializedClassBuildItem(ClassFieldAccessorFactory.class.getName());
     }
 
 }

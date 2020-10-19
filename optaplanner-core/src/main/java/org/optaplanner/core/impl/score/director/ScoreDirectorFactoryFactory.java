@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
 
+import org.drools.modelcompiler.ExecutableModelProject;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
@@ -250,7 +251,7 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
         kieFileSystem.writeKModuleXML(kmodel.toXML());
 
         KieBuilder kieBuilder = kieServices.newKieBuilder(kieFileSystem);
-        kieBuilder.buildAll();
+        kieBuilder.buildAll(ExecutableModelProject.class);
         Results results = kieBuilder.getResults();
         if (results.hasMessages(Message.Level.ERROR)) {
             throw new IllegalStateException("There are errors in a score DRL:\n" + results);

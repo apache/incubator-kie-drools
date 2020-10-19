@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ package org.optaplanner.examples.nqueens.app;
 import java.io.File;
 import java.util.Arrays;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.optaplanner.benchmark.api.PlannerBenchmark;
@@ -42,8 +43,8 @@ public class NQueensBenchmarkTest extends PlannerBenchmarkTest {
     // Tests
     // ************************************************************************
 
-    @Test
     @Timeout(600)
+    @Disabled("DROOLS-5740")
     public void benchmark64queens() {
         NQueens problem = new XStreamSolutionFileIO<NQueens>(NQueens.class)
                 .read(new File("data/nqueens/unsolved/64queens.xml"));

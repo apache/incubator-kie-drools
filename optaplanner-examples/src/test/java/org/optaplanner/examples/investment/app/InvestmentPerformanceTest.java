@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,10 +18,12 @@ package org.optaplanner.examples.investment.app;
 
 import java.util.stream.Stream;
 
+import org.junit.jupiter.api.Disabled;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.investment.domain.InvestmentSolution;
 
+@Disabled("DROOLS-5738")
 public class InvestmentPerformanceTest extends SolverPerformanceTest<InvestmentSolution> {
 
     private static final String UNSOLVED_DATA_FILE = "data/investment/unsolved/irrinki_1.xml";

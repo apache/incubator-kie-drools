@@ -72,6 +72,7 @@ class TestGenTestWriter {
         sb.append("package org.optaplanner.testgen;\n\n");
         List<String> imports = new ArrayList<>();
         imports.add("org.junit.jupiter.api.Test");
+        imports.add("org.drools.modelcompiler.ExecutableModelProject");
         imports.add("org.kie.api.KieServices");
         imports.add("org.kie.api.builder.KieFileSystem");
         imports.add("org.kie.api.runtime.KieContainer");
@@ -125,7 +126,7 @@ class TestGenTestWriter {
                     .append("                .newClassPathResource(\"").append(drl).append("\"));\n");
         });
         sb
-                .append("        kieServices.newKieBuilder(kfs).buildAll();\n")
+                .append("        kieServices.newKieBuilder(kfs).buildAll(ExecutableModelProject.class);\n")
                 .append("        KieContainer kieContainer = kieServices.newKieContainer("
                         + "kieServices.getRepository().getDefaultReleaseId());\n")
                 .append("        KieSession kieSession = kieContainer.newKieSession();\n\n");
