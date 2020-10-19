@@ -802,6 +802,14 @@ public class DrlxParseUtil {
         }
     }
 
+    public static Expression unEncloseExpr(Expression expression) {
+        if(expression.isEnclosedExpr()) {
+            return unEncloseExpr(expression.asEnclosedExpr().getInner());
+        } else {
+            return expression;
+        }
+    }
+
     private DrlxParseUtil() {
         // It is not allowed to create instances of util classes.
     }

@@ -35,11 +35,7 @@ public class PrimitiveTypeConsequenceRewrite {
             return consequence;
         }
 
-        blockStmt.findAll(CastExpr.class, ce -> {
-            Expression expression = unEncloseExpr(ce.getExpression());
-            return expression.isNameExpr() || expression.isMethodCallExpr();
-        })
-                .forEach(this::convertStatement);
+        blockStmt.findAll(CastExpr.class).forEach(this::convertStatement);
 
         return blockStmt.toString();
     }
@@ -48,19 +44,22 @@ public class PrimitiveTypeConsequenceRewrite {
         Expression innerExpr = ce.getExpression();
         Optional<Class<?>> castType = context.resolveType(ce.getType().asString());
 
-        String innerNameExpr = unEncloseExpr(innerExpr).toString();
-
-        TypedExpressionResult typedExpression = new ExpressionTyper(context, Object.class, innerNameExpr, false)
+        TypedExpressionResult typedExpressionResult = new ExpressionTyper(context, Object.class, innerExpr.toString(), false)
                 .toTypedExpression(innerExpr);
 
-        Optional<TypedExpression> optTypeExpression = typedExpression.getTypedExpression();
+        Optional<TypedExpression> optTypeExpression = typedExpressionResult.getTypedExpression();
 
-        if (optTypeExpression.isPresent() &&
-                castType.isPresent() &&
-                castType.get().equals(short.class) &&
-                optTypeExpression.get().getRawClass().equals(int.class)
-        ) {
-            ce.replace(new MethodCallExpr(StaticJavaParser.parseExpression(innerNameExpr), "shortValue"));
+        if(optTypeExpression.isPresent()) {
+            TypedExpression typedExpression = optTypeExpression.get();
+            if (    castType.isPresent() &&
+                    !(typedExpression.isNumberLiteral()) &&
+                    castType.get().equals(short.class) &&
+                    optTypeExpression.get().getRawClass().equals(int.class)
+            ) {
+                Expression scope = StaticJavaParser.parseExpression(unEncloseExpr(typedExpression.getExpression()).toString());
+                MethodCallExpr shortValue = new MethodCallExpr(scope, "shortValue");
+                ce.replace(shortValue);
+            }
         }
     }
 }
