@@ -585,7 +585,7 @@ public class RuleParserTest extends TestCase {
         assertEquals( 1,
                       pkg.getRules().size() );
 
-        assertEqualsIgnoreWhitespace( "if (speed > speedLimit ? true : false;) pullEmOver();",
+        assertEqualsIgnoreWhitespace( "if (speed > speedLimit) pullEmOver();",
                                           (String) rule.getConsequence() );
     }
 
