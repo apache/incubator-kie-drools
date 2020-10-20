@@ -59,6 +59,7 @@ pipeline {
 
                     if (isRelease()) {
                         assert getProjectVersion() != ''
+                        assert getKogitoVersion() != ''
                     }
                 }
             }
@@ -258,7 +259,7 @@ void runMaven(String goals, String directory, boolean skipTests = false, List pr
 }
 
 void updateKogitoVersion(String newVersion) {
-    sh "mvn versions:set-property -Dproperty=version.org.kie.kogito -DnewVersion=$newVersion -DallowSnapshots=true -DgenerateBackupPoms=false"
+    maven.mvnSetVersionProperty('version.org.kie.kogito', newVersion)
 }
 
 // Getters and Setters of params/properties

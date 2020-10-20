@@ -65,6 +65,7 @@ pipeline {
 
                     if (isRelease()) {
                         assert getProjectVersion() != ''
+                        assert getKogitoVersion() != ''
                     }
 
                     installGithubCLI()
@@ -278,5 +279,5 @@ void installGithubCLI() {
 }
 
 void updateKogitoVersion(String newVersion) {
-    sh "mvn versions:set-property -Dproperty=version.org.kie.kogito -DnewVersion=$newVersion -DallowSnapshots=true -DgenerateBackupPoms=false"
+    maven.mvnSetVersionProperty('version.org.kie.kogito', newVersion)
 }
