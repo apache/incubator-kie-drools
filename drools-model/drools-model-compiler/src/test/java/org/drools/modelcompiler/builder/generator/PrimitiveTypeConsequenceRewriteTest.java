@@ -64,6 +64,21 @@ public class PrimitiveTypeConsequenceRewriteTest {
                    equalToIgnoringWhiteSpace("{ $address.setShortNumber($interimVar.unboxed().shortValue()); }"));
     }
 
+
+    @Test
+    public void doNotPreProcessDowncastToNonPrimitiveTypes() {
+        RuleContext context = createContext();
+        context.addDeclaration("$interimVar", WithIntegerField.class);
+
+        String rewritten = new PrimitiveTypeConsequenceRewrite(context)
+                .rewrite("{\n" +
+                                 "  org.kie.dmn.model.api.List row = (org.kie.dmn.model.api.List) $e.getParent();\n" +
+                                 "}");
+
+        assertThat(rewritten,
+                   equalToIgnoringWhiteSpace("{ org.kie.dmn.model.api.List row = (org.kie.dmn.model.api.List) $e.getParent(); }"));
+    }
+
     private RuleContext createContext() {
         TypeResolver typeResolver = new ClassTypeResolver(Collections.emptySet(), this.getClass().getClassLoader());
         PackageModel packageModel = new PackageModel("", "", null, true, null, null);

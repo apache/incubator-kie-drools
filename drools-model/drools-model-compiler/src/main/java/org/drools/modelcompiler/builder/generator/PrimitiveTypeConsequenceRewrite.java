@@ -26,7 +26,6 @@ public class PrimitiveTypeConsequenceRewrite {
     }
 
     public String rewrite(String consequence) {
-
         BlockStmt blockStmt;
         try {
             blockStmt = StaticJavaParser.parseBlock(consequence);
