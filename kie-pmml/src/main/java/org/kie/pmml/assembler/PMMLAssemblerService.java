@@ -79,9 +79,6 @@ public class PMMLAssemblerService implements KieAssemblerService {
     }
 
     private static boolean isToEnable() {
-        if (isjPMMLAvailableToClassLoader()) {
-            return false;
-        }
         if (!isOtherImplementationPresent()) {
             return true;
         } else {
@@ -90,9 +87,9 @@ public class PMMLAssemblerService implements KieAssemblerService {
         }
     }
 
-    private static boolean isjPMMLAvailableToClassLoader() {
+    private static boolean isjPMMLAvailableToClassLoader(ClassLoader classLoader) {
         try {
-            Thread.currentThread().getContextClassLoader().loadClass("org.kie.dmn.jpmml.DMNjPMMLInvocationEvaluator");
+            classLoader.loadClass("org.kie.dmn.jpmml.DMNjPMMLInvocationEvaluator");
             log.info("jpmml libraries available on classpath, skipping kie-pmml parsing and compilation");
             return true;
         } catch (ClassNotFoundException e) {
@@ -107,11 +104,13 @@ public class PMMLAssemblerService implements KieAssemblerService {
 
     @Override
     public synchronized void addResource(Object kbuilder, Resource resource, ResourceType type,
-            ResourceConfiguration configuration) throws Exception {
+                                         ResourceConfiguration configuration) throws Exception {
         this.kbuilder = (KnowledgeBuilderImpl) kbuilder;
         this.configuration = this.kbuilder.getBuilderConfiguration();
         this.rootClassLoader = this.kbuilder.getRootClassLoader();
-        addPackage(resource);
+        if (!isjPMMLAvailableToClassLoader(rootClassLoader)) {
+            addPackage(resource);
+        }
     }
 
     @Override
