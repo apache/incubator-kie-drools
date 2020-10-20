@@ -43,7 +43,6 @@ import org.kie.kogito.explainability.utils.ExplainabilityMetrics;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class FraudScoringDmnLimeExplainerTest {
 
@@ -78,12 +77,12 @@ class FraudScoringDmnLimeExplainerTest {
         List<PredictionOutput> predictionOutputs = model.predictAsync(List.of(predictionInput))
                 .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
         Prediction prediction = new Prediction(predictionInput, predictionOutputs.get(0));
-        LimeExplainer limeExplainer = new LimeExplainer(10, 3);
+        LimeExplainer limeExplainer = new LimeExplainer(100, 5);
         Map<String, Saliency> saliencyMap = limeExplainer.explainAsync(prediction, model)
                 .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
         for (Saliency saliency : saliencyMap.values()) {
             assertNotNull(saliency);
-            List<FeatureImportance> topFeatures = saliency.getTopFeatures(3);
+            List<FeatureImportance> topFeatures = saliency.getTopFeatures(4);
             double topScore = Math.abs(topFeatures.stream().map(FeatureImportance::getScore).findFirst().orElse(0d));
             if (!topFeatures.isEmpty() && topScore > 0) {
                 double v = ExplainabilityMetrics.impactScore(model, prediction, topFeatures);
