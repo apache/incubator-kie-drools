@@ -16,21 +16,9 @@ ifdef::DM,PAM[]
 |Deployment to an OpenShift environment
 |{OPENSHIFT} combines Docker and Kubernetes and enables you to create and manage containers. You can install both {CENTRAL} and {KIE_SERVER} on OpenShift. {PRODUCT} provides templates that you can use to deploy a {PRODUCT} authoring environment, managed server environment, immutable server environment, or trial environment on OpenShift. With OpenShift, components of {PRODUCT} are deployed as separate OpenShift pods. You can scale each of the pods up and down individually, providing as few or as many containers as necessary for a particular component. You can use standard OpenShift methods to manage the pods and balance the load.
 a|
-{URL_DEPLOYING_ON_OPENSHIFT}#assembly-openshift-immutable[_{DEPLOYING_IMMUTABLE_ON_OPENSHIFT}_]
-
-ifdef::DM[]
-{URL_DEPLOYING_ON_OPENSHIFT}#assembly-openshift-authoring-managed[_{DEPLOYING_AUTHORING_MANAGED_ON_OPENSHIFT}_]
-endif::[]
-
-ifdef::PAM[]
-{URL_DEPLOYING_ON_OPENSHIFT}#assembly-openshift-authoring[_{DEPLOYING_AUTHORING_ON_OPENSHIFT}_]
-
-{URL_DEPLOYING_ON_OPENSHIFT}#assembly-openshift-freeform[_{DEPLOYING_MANAGED_FREEFORM_ON_OPENSHIFT}_]
-endif::[]
-
 {URL_DEPLOYING_ON_OPENSHIFT}#assembly-openshift-operator[_{DEPLOYING_OPENSHIFT_OPERATOR}_]
 
-{URL_DEPLOYING_ON_OPENSHIFT}#assembly-openshift-trial[_{DEPLOYING_TRIAL_ON_OPENSHIFT}_]
+{URL_DEPLOYING_ON_OPENSHIFT}#assembly-openshift-templates[_{DEPLOYING_OPENSHIFT_TEMPLATES}_]
 endif::[]
 
 |Deployment to {KIE_SERVER}
