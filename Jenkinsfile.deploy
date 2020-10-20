@@ -95,14 +95,17 @@ pipeline {
                 expression { return isRelease() }
             }
             steps {
-                echo 'Setup Maven release config'
-                configFileProvider([configFile(fileId: maven.getSubmarineSettingsXmlId(), targetLocation: 'maven-settings.xml', variable: 'MAVEN_SETTINGS_FILE')]){
-                    sh "echo '-B -s ${MAVEN_SETTINGS_FILE}' | tee optaplanner/.mvn/maven.config"
+                script {
+                    echo 'Setup Maven release config'
+                    configFileProvider([configFile(fileId: maven.getSubmarineSettingsXmlId(), targetLocation: 'maven-settings.xml', variable: 'MAVEN_SETTINGS_FILE')]) {
+                        sh "echo '-B -s ${MAVEN_SETTINGS_FILE}' | tee optaplanner/.mvn/maven.config"
 
-                    if (params.MAVEN_DEPENDENCIES_REPOSITORY != '') {
-                        sh "sed -i 's|<repositories>|<repositories><repository><id>staging</id><name>Staging Repository</name><url>${params.MAVEN_DEPENDENCIES_REPOSITORY}</url><layout>default</layout><snapshots><enabled>true</enabled></snapshots><releases><enabled>true</enabled></releases></repository>|g' ${MAVEN_SETTINGS_FILE}"
-                        sh "sed -i 's|<pluginRepositories>|<pluginRepositories><pluginRepository><id>staging</id><name>Staging Repository</name><url>${params.MAVEN_DEPENDENCIES_REPOSITORY}</url><layout>default</layout><snapshots><enabled>true</enabled></snapshots><releases><enabled>true</enabled></releases></pluginRepository>|g' ${MAVEN_SETTINGS_FILE}"
-                        sh "sed -i 's|external:\\*|external:*,!staging|g' ${MAVEN_SETTINGS_FILE}" // Done to allow Maven to download release artifacts from MAVEN_DEPENDENCIES_REPOSITORY
+                        if (params.MAVEN_DEPENDENCIES_REPOSITORY != '') {
+                            sh "sed -i 's|<repositories>|<repositories><repository><id>staging</id><name>Staging Repository</name><url>${params.MAVEN_DEPENDENCIES_REPOSITORY}</url><layout>default</layout><snapshots><enabled>true</enabled></snapshots><releases><enabled>true</enabled></releases></repository>|g' ${MAVEN_SETTINGS_FILE}"
+                            sh "sed -i 's|<pluginRepositories>|<pluginRepositories><pluginRepository><id>staging</id><name>Staging Repository</name><url>${params.MAVEN_DEPENDENCIES_REPOSITORY}</url><layout>default</layout><snapshots><enabled>true</enabled></snapshots><releases><enabled>true</enabled></releases></pluginRepository>|g' ${MAVEN_SETTINGS_FILE}"
+                            sh "sed -i 's|external:\\*|external:*,!staging|g' ${MAVEN_SETTINGS_FILE}"
+                            // Done to allow Maven to download release artifacts from MAVEN_DEPENDENCIES_REPOSITORY
+                        }
                     }
                 }
             }
