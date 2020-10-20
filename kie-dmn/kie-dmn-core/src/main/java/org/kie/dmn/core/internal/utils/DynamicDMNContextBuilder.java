@@ -20,7 +20,6 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -162,9 +161,7 @@ public class DynamicDMNContextBuilder {
         if (value instanceof Iterable<?>) {
             List<Object> results = new ArrayList<>();
             Iterable<?> iterable = (Iterable<?>) value;
-            Iterator<?> it = iterable.iterator();
-            while (it.hasNext()) {
-                Object next = it.next();
+            for (Object next : iterable) {
                 Object recursed = recurseType(next, resultType.getBaseType());
                 results.add(recursed);
             }
