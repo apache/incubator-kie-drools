@@ -20,7 +20,6 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -61,17 +60,11 @@ public class DynamicDMNContextBuilder {
         for (Entry<String, Object> kv : json.entrySet()) {
             InputDataNode idn = model.getInputByName(kv.getKey());
             if (idn != null) {
-                nameStack.push(new NameAndDMNType(kv.getKey(), idn.getType()));
-                Object recursed = recurseAsType(kv.getValue(), idn.getType());
-                context.set(kv.getKey(), recursed);
-                nameStack.pop();
+                processInputDataNode(kv, idn);
             } else {
                 DecisionNode dn = model.getDecisionByName(kv.getKey());
                 if (dn != null) {
-                    nameStack.push(new NameAndDMNType(kv.getKey(), dn.getResultType()));
-                    Object recursed = recurseAsType(kv.getValue(), dn.getResultType());
-                    context.set(kv.getKey(), recursed);
-                    nameStack.pop();
+                    processDecisionNode(kv, dn);
                 } else {
                     LOG.debug("The key {} was not a InputData nor a Decision to override, setting it as-is.", kv.getKey());
                     context.set(kv.getKey(), kv.getValue());
@@ -80,24 +73,16 @@ public class DynamicDMNContextBuilder {
         }
         return context;
     }
-    
+
     public DMNContext populateContextForDecisionServiceWith(String decisionServiceName, Map<String, Object> json) {
         DecisionServiceNode dsNode = model.getDecisionServices().stream().filter(ds -> ds.getName().equals(decisionServiceName)).findFirst().orElseThrow(IllegalArgumentException::new);
         for (Entry<String, Object> kv : json.entrySet()) {
             DecisionServiceNodeImpl dsNodeImpl = (DecisionServiceNodeImpl) dsNode;
             DMNNode node = dsNodeImpl.getInputParameters().get(kv.getKey());
             if (node instanceof InputDataNode) {
-                InputDataNode decisionNode = (InputDataNode) node;
-                nameStack.push(new NameAndDMNType(kv.getKey(), decisionNode.getType()));
-                Object recursed = recurseAsType(kv.getValue(), decisionNode.getType());
-                context.set(kv.getKey(), recursed);
-                nameStack.pop();
+                processInputDataNode(kv, (InputDataNode) node);
             } else if (node instanceof DecisionNode) {
-                DecisionNode decisionNode = (DecisionNode) node;
-                nameStack.push(new NameAndDMNType(kv.getKey(), decisionNode.getResultType()));
-                Object recursed = recurseAsType(kv.getValue(), decisionNode.getResultType());
-                context.set(kv.getKey(), recursed);
-                nameStack.pop();
+                processDecisionNode(kv, (DecisionNode) node);
             } else {
                 LOG.debug("The key {} was not a RequiredInput nor a RequiredDecision for the DecisionService, setting it as-is.", kv.getKey());
                 context.set(kv.getKey(), kv.getValue());
@@ -106,71 +91,86 @@ public class DynamicDMNContextBuilder {
         return context;
     }
 
-    private Object recurseAsType(Object value, DMNType resultType) {
+    private void processInputDataNode(Entry<String, Object> kv, InputDataNode idn) {
+        nameStack.push(new NameAndDMNType(kv.getKey(), idn.getType()));
+        Object recursed = recurseType(kv.getValue(), idn.getType());
+        context.set(kv.getKey(), recursed);
+        nameStack.pop();
+    }
+
+    private void processDecisionNode(Entry<String, Object> kv, DecisionNode dn) {
+        nameStack.push(new NameAndDMNType(kv.getKey(), dn.getResultType()));
+        Object recursed = recurseType(kv.getValue(), dn.getResultType());
+        context.set(kv.getKey(), recursed);
+        nameStack.pop();
+    }
+
+    private Object recurseType(Object value, DMNType resultType) {
         if (resultType == null) {
             debugStack();
             LOG.debug("unknown type, and passing as-is");
             return value;
         } else if (DMNTypeUtils.isFEELBuiltInType(resultType)) {
             return getAsFEELBuiltinType(value, resultType);
-        } else {
-            if (resultType.isCollection()) {
-                if (value instanceof Iterable<?>) {
-                    List<Object> results = new ArrayList<>();
-                    Iterable<?> iterable = (Iterable<?>) value;
-                    Iterator<?> it = iterable.iterator();
-                    while (it.hasNext()) {
-                        Object next = it.next();
-                        Object recursed = recurseAsType(next, resultType.getBaseType());
-                        results.add(recursed);
-                    }
-                    return results;
-                } else {
-                    debugStack();
-                    LOG.debug("The type {} has DMN-isCollection set, but the current value is not Iterable, passing as-is", resultType);
-                    return value;
-                }
-            } else {
-                if (resultType instanceof CompositeTypeImpl) {
-                    CompositeTypeImpl compositeType = (CompositeTypeImpl) resultType;
-                    if (value instanceof Map) {
-                        Map<String, Object> results = new HashMap<>();
-                        @SuppressWarnings("unchecked")
-                        Map<String, Object> valueMap = (Map<String, Object>) value;
-                        for (Entry<String, Object> kv : valueMap.entrySet()) {
-                            if (compositeType.getFields().containsKey(kv.getKey())) {
-                                DMNType keyType = compositeType.getFields().get(kv.getKey());
-                                nameStack.push(new NameAndDMNType(kv.getKey(), keyType));
-                                Object recursed = recurseAsType(kv.getValue(), keyType);
-                                results.put(kv.getKey(), recursed);
-                                nameStack.pop();
-                            } else {
-                                nameStack.push(new NameAndDMNType(kv.getKey(), null));
-                                debugStack();
-                                LOG.debug("undefined type for key {} in {}, passing as-is", kv.getKey(), compositeType);
-                                results.put(kv.getKey(), kv.getValue());
-                                nameStack.pop();
-                            }
-                        }
-                        for (String k : compositeType.getFields().keySet()) {
-                            if (!results.containsKey(k)) {
-                                results.put(k, null);
-                            }
-                        }
-                        return results;
-                    } else {
-                        debugStack();
-                        LOG.debug("The type {} is a composite type, but the current value is not a Map, passing as-is", resultType);
-                        return value;
-                    }
-                } else if (resultType instanceof SimpleTypeImpl) {
-                    return recurseAsType(value, resultType.getBaseType());
-                }
-            }
+        } else if (resultType.isCollection()) {
+            return recurseCollection(value, resultType);
+        } else if (resultType instanceof CompositeTypeImpl) {
+            return recurseComposite(value, (CompositeTypeImpl) resultType);
+        } else if (resultType instanceof SimpleTypeImpl) {
+            return recurseType(value, resultType.getBaseType());
         }
         debugStack();
         LOG.debug("unknown case for type {} and passing as-is", resultType);
         return value;
+    }
+
+    private Object recurseComposite(Object value, CompositeTypeImpl compositeType) {
+        if (value instanceof Map) {
+            Map<String, Object> results = new HashMap<>();
+            @SuppressWarnings("unchecked")
+            Map<String, Object> valueMap = (Map<String, Object>) value;
+            for (Entry<String, Object> kv : valueMap.entrySet()) {
+                if (compositeType.getFields().containsKey(kv.getKey())) {
+                    DMNType keyType = compositeType.getFields().get(kv.getKey());
+                    nameStack.push(new NameAndDMNType(kv.getKey(), keyType));
+                    Object recursed = recurseType(kv.getValue(), keyType);
+                    results.put(kv.getKey(), recursed);
+                    nameStack.pop();
+                } else {
+                    nameStack.push(new NameAndDMNType(kv.getKey(), null));
+                    debugStack();
+                    LOG.debug("undefined type for key {} in {}, passing as-is", kv.getKey(), compositeType);
+                    results.put(kv.getKey(), kv.getValue());
+                    nameStack.pop();
+                }
+            }
+            for (String k : compositeType.getFields().keySet()) {
+                if (!results.containsKey(k)) {
+                    results.put(k, null);
+                }
+            }
+            return results;
+        } else {
+            debugStack();
+            LOG.debug("The type {} is a composite type, but the current value is not a Map, passing as-is", compositeType);
+            return value;
+        }
+    }
+
+    private Object recurseCollection(Object value, DMNType resultType) {
+        if (value instanceof Iterable<?>) {
+            List<Object> results = new ArrayList<>();
+            Iterable<?> iterable = (Iterable<?>) value;
+            for (Object next : iterable) {
+                Object recursed = recurseType(next, resultType.getBaseType());
+                results.add(recursed);
+            }
+            return results;
+        } else {
+            debugStack();
+            LOG.debug("The type {} has DMN-isCollection set, but the current value is not Iterable, passing as-is", resultType);
+            return value;
+        }
     }
 
     private Object getAsFEELBuiltinType(Object value, DMNType resultType) {
@@ -222,6 +222,4 @@ public class DynamicDMNContextBuilder {
             return "NameAndDMNType [name=" + name + ", type=" + type + "]";
         }
     }
-
-
 }

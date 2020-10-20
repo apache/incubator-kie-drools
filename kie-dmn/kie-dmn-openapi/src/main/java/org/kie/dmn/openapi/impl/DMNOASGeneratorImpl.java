@@ -54,21 +54,20 @@ public class DMNOASGeneratorImpl implements DMNOASGenerator {
 
     @Override
     public DMNOASResult build() {
-        for (DMNModel model : dmnModels) {
-            DMNModelIOSets s = new DMNModelIOSets(model);
-            ioSets.add(s);
-            visitForIndexing(s.getOutputSet());
-            visitForIndexing(s.getInputSet());
-            for (DSIOSets ds : s.getDSIOSets()) {
-                visitForIndexing(ds.getDSOutputSet());
-                visitForIndexing(ds.getDSInputSet());
-            }
-        }
+        indexModels();
         assignNamesToIOSets();
         determineNamingPolicy();
         schemas.putAll(new DMNTypeSchemas(ioSets, typesIndex, namingPolicy).generateSchemas());
         prepareSerializaton();
         return new DMNOASResult(jsonSchema, ioSets, schemas, namingPolicy);
+    }
+
+    private void indexModels() {
+        for (DMNModel model : dmnModels) {
+            DMNModelIOSets s = new DMNModelIOSets(model);
+            ioSets.add(s);
+            visitForIndexing(s);
+        }
     }
 
     private void prepareSerializaton() {
@@ -121,6 +120,15 @@ public class DMNOASGeneratorImpl implements DMNOASGenerator {
 
     private boolean indexContainsName(String candidate) {
         return typesIndex.stream().map(DMNType::getName).anyMatch(candidate::equals);
+    }
+
+    private void visitForIndexing(DMNModelIOSets s) {
+        visitForIndexing(s.getOutputSet());
+        visitForIndexing(s.getInputSet());
+        for (DSIOSets ds : s.getDSIOSets()) {
+            visitForIndexing(ds.getDSOutputSet());
+            visitForIndexing(ds.getDSInputSet());
+        }
     }
 
     private void visitForIndexing(DMNType idnType) {
