@@ -56,6 +56,7 @@
     <!-- The first version that supports analysis of classes compiled by Java 11. -->
     <version.dependency.plugin>3.1.2</version.dependency.plugin>
     <version.surefire.plugin>2.22.2</version.surefire.plugin>
+    <version.versions.plugin>2.8.1</version.versions.plugin>
     <!-- This property needs to be defined in all modules that use the packaging 'jar'.
          It is used by different plugins to make sure the module/bundle names are consistent. -->
     <java.module.name/>
@@ -899,6 +900,11 @@
               </transformSchema>
             </transformSchemas>
           </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>versions-maven-plugin</artifactId>
+          <version>${version.versions.plugin}</version>
         </plugin>
       </plugins>
     </pluginManagement>
