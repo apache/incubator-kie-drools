@@ -24,6 +24,6 @@ jobs:
         id: build-chain
         uses: ginxo/github-action-build-chain@BXMSPROD-1025
         with:
-          definition-file: https://raw.githubusercontent.com/${GROUP}/${PROJECT_NAME}/${BRANCH}/.ci/pull-request-config.yaml
+          definition-file: https://raw.githubusercontent.com/${GROUP}/droolsjbpm-build-bootstrap/${BRANCH}/.ci/pull-request-config.yaml
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
