@@ -600,7 +600,7 @@ public class RuleBaseConfiguration
     }
 
     public void setAlphaNodeRangeIndexThreshold(final int alphaNodeRangeIndexThreshold) {
-        checkCanChange(); // throws an exception if a change isn't possible;
+        checkCanChange();
         this.alphaNodeRangeIndexThreshold = alphaNodeRangeIndexThreshold;
     }
 

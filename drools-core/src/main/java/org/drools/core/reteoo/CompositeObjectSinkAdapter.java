@@ -263,7 +263,6 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
                 if (isRangeIndexable(alphaNode)) {
                     final InternalReadAccessor fieldAccessor = indexableConstraint.getFieldExtractor();
                     final int index = fieldAccessor.getIndex();
-                    ConstraintType constraintType = indexableConstraint.getConstraintType();
                     final FieldIndex fieldIndex = unregisterFieldIndexForRange(index);
 
                     if (fieldIndex.isRangeIndexed()) {
