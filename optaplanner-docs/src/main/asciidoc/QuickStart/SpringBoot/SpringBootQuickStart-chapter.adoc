@@ -658,12 +658,12 @@ Therefore, the Spring Boot starter injects a `SolverManager` instance,
 which runs solvers in a separate thread pool
 and can solve multiple datasets in parallel.
 
-Create the `src/main/java/com/example/solver/TimeTableController.java` class:
+Create the `src/main/java/com/example/rest/TimeTableController.java` class:
 
 ====
 [source,java]
 ----
-package com.example.solver;
+package com.example.rest;
 
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
@@ -793,12 +793,12 @@ On the server side, the `info` log show what OptaPlanner did in those five secon
 A good application includes test coverage.
 In a JUnit test, generate a test dataset and send it to the `TimeTableController` to solve.
 
-Create the `src/test/java/com/example/solver/TimeTableControllerTest.java` class:
+Create the `src/test/java/com/example/rest/TimeTableControllerTest.java` class:
 
 ====
 [source,java]
 ----
-package com.example.solver;
+package com.example.rest;
 
 import java.time.DayOfWeek;
 import java.time.LocalTime;
@@ -933,7 +933,7 @@ Now try adding database and UI integration:
 ====
 [source,java]
 ----
-package com.example.solver;
+package com.example.rest;
 
 import com.example.domain.TimeTable;
 import com.example.persistence.TimeTableRepository;
@@ -1007,7 +1007,7 @@ Poll for the latest solution until the solver finishes solving:
 ====
 [source,java]
 ----
-package com.example.solver;
+package com.example.rest;
 
 import com.example.domain.Lesson;
 import com.example.domain.TimeTable;
