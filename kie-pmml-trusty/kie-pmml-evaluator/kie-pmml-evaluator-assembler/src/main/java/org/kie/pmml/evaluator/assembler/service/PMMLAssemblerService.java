@@ -68,9 +68,6 @@ public class PMMLAssemblerService implements KieAssemblerService {
     }
 
     private static boolean isToEnable() {
-        if (isjPMMLAvailableToClassLoader()) {
-            return false;
-        }
         if (!isOtherImplementationPresent()) {
             return true;
         } else {
@@ -79,9 +76,9 @@ public class PMMLAssemblerService implements KieAssemblerService {
         }
     }
 
-    private static boolean isjPMMLAvailableToClassLoader() {
+    private static boolean isjPMMLAvailableToClassLoader(ClassLoader classLoader) {
         try {
-            Thread.currentThread().getContextClassLoader().loadClass("org.kie.dmn.jpmml.DMNjPMMLInvocationEvaluator");
+            classLoader.loadClass("org.kie.dmn.jpmml.DMNjPMMLInvocationEvaluator");
             logger.info("jpmml libraries available on classpath, skipping kie-pmml parsing and compilation");
             return true;
         } catch (ClassNotFoundException e) {
@@ -112,6 +109,9 @@ public class PMMLAssemblerService implements KieAssemblerService {
     @Override
     public void addResources(Object kbuilder, Collection<ResourceWithConfiguration> resources, ResourceType type) {
         KnowledgeBuilderImpl kbuilderImpl = (KnowledgeBuilderImpl) kbuilder;
+        if (isjPMMLAvailableToClassLoader(kbuilderImpl.getRootClassLoader())) {
+            return;
+        }
         if (isBuildFromMaven()) {
             addModels(kbuilderImpl, getKiePMMLModelsFromResourcesWithConfigurationsWithSources(kbuilderImpl, resources));
         } else {
@@ -127,6 +127,9 @@ public class PMMLAssemblerService implements KieAssemblerService {
     public void addResource(Object kbuilder, Resource resource, ResourceType type, ResourceConfiguration configuration) {
         logger.warn("invoked legacy addResource (no control on the order of the assembler compilation): {}", resource.getSourcePath());
         KnowledgeBuilderImpl kbuilderImpl = (KnowledgeBuilderImpl) kbuilder;
+        if (isjPMMLAvailableToClassLoader(kbuilderImpl.getRootClassLoader())) {
+            return;
+        }
         if (isBuildFromMaven()) {
             addModels(kbuilderImpl, getKiePMMLModelsFromResourceWithSources(kbuilderImpl, resource));
         } else {

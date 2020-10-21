@@ -31,6 +31,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -41,8 +43,8 @@ import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kie.builder.impl.FileKieModule;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
-import org.drools.compiler.kie.builder.impl.KieBaseUpdaterImplContext;
 import org.drools.compiler.kie.builder.impl.KieBaseUpdater;
+import org.drools.compiler.kie.builder.impl.KieBaseUpdaterImplContext;
 import org.drools.compiler.kie.builder.impl.KieBaseUpdaterOptions;
 import org.drools.compiler.kie.builder.impl.KieBaseUpdaters;
 import org.drools.compiler.kie.builder.impl.KieBaseUpdatersContext;
@@ -94,7 +96,6 @@ import org.kie.internal.builder.conf.AlphaNetworkCompilerOption;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
-
 import static org.drools.compiler.kie.builder.impl.AbstractKieModule.checkStreamMode;
 import static org.drools.model.impl.ModelComponent.areEqualInModel;
 import static org.drools.modelcompiler.util.StringUtil.fileNameToClass;
@@ -116,7 +117,7 @@ public class CanonicalKieModule implements InternalKieModule {
     };
 
     private final InternalKieModule internalKieModule;
-    private final Map<String, CanonicalKiePackages> pkgsInKbase = new HashMap<>();
+    private final ConcurrentMap<String, CanonicalKiePackages> pkgsInKbase = new ConcurrentHashMap<>();
     private final Map<String, Model> models = new HashMap<>();
     private Collection<String> ruleClassesNames;
     private boolean incrementalUpdate = false;
