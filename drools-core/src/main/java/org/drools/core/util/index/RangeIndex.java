@@ -55,7 +55,7 @@ public class RangeIndex<K extends Comparable, V> implements Serializable {
         }
     }
 
-    private static class IndexKey<K extends Comparable> implements Comparable<IndexKey<K>> {
+    private static class IndexKey<K extends Comparable> implements Comparable<IndexKey<K>>, Serializable {
 
         private final IndexType indexType;
         private final K key;

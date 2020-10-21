@@ -203,7 +203,7 @@ public class RBTree<K extends Comparable< ? super K>, V> implements Serializable
         }
 
         if ( lowerNearest.key.compareTo( upperNearest.key  ) > 0 ) {
-            upperNearest = lowerNearest;
+            return FastIterator.EMPTY;
         }
 
         return new RBTreeFastIterator( lowerNearest, upperNearest );
@@ -495,7 +495,7 @@ public class RBTree<K extends Comparable< ? super K>, V> implements Serializable
         RED, BLACK
     }
 
-    public static class Node<K extends Comparable< ? super K>, V> implements Entry, Comparable<Node<K, V>> {
+    public static class Node<K extends Comparable< ? super K>, V> implements Entry, Comparable<Node<K, V>>, Serializable {
         public K          key;
         public V          value;
         public Node<K, V> left;

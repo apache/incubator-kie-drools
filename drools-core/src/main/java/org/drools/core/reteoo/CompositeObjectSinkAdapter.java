@@ -450,26 +450,28 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
 
         final int index = fieldIndex.getIndex();
 
-        ObjectSinkNode currentSink = rangeIndexableSinks.getFirst();
+        if (rangeIndexableSinks != null) {
+            ObjectSinkNode currentSink = rangeIndexableSinks.getFirst();
 
-        while (currentSink != null) {
-            final AlphaNode alphaNode = (AlphaNode) currentSink;
-            final AlphaNodeFieldConstraint fieldConstraint = alphaNode.getConstraint();
-            final IndexableConstraint indexableConstraint = (IndexableConstraint) fieldConstraint;
+            while (currentSink != null) {
+                final AlphaNode alphaNode = (AlphaNode) currentSink;
+                final AlphaNodeFieldConstraint fieldConstraint = alphaNode.getConstraint();
+                final IndexableConstraint indexableConstraint = (IndexableConstraint) fieldConstraint;
 
-            // position to the next sink now because alphaNode may be removed if the index is equal. If we were to do this
-            // afterwards, currentSink.nextNode would be null
-            currentSink = currentSink.getNextObjectSinkNode();
+                // position to the next sink now because alphaNode may be removed if the index is equal. If we were to do this
+                // afterwards, currentSink.nextNode would be null
+                currentSink = currentSink.getNextObjectSinkNode();
 
-            if (index == indexableConstraint.getFieldExtractor().getIndex()) {
-                alphaRangeIndex.add(alphaNode);
+                if (index == indexableConstraint.getFieldExtractor().getIndex()) {
+                    alphaRangeIndex.add(alphaNode);
 
-                // remove the alpha from the possible candidates of range indexable sinks since it is now range indexed
-                rangeIndexableSinks.remove(alphaNode);
+                    // remove the alpha from the possible candidates of range indexable sinks since it is now range indexed
+                    rangeIndexableSinks.remove(alphaNode);
+                }
             }
-        }
-        if (rangeIndexableSinks.isEmpty()) {
-            rangeIndexableSinks = null;
+            if (rangeIndexableSinks.isEmpty()) {
+                rangeIndexableSinks = null;
+            }
         }
 
         fieldIndex.setRangeIndexed(true);

@@ -90,6 +90,14 @@ public class RBTreeTest {
         node = (Node<Integer, String>)fastIterator.next(null);
         assertNull(node);
 
+        fastIterator = tree.range(25, false, 35, true);
+        node = (Node<Integer, String>)fastIterator.next(null);
+        assertNull(node);
+
+        fastIterator = tree.range(6, false, 9, false);
+        node = (Node<Integer, String>)fastIterator.next(null);
+        assertNull(node);
+
         fastIterator = tree.range(5, false, 35, false);
         node = (Node<Integer, String>)fastIterator.next(null);
         assertEquals(10, (int)node.key);

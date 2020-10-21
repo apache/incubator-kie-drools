@@ -84,6 +84,20 @@ public class RangeIndexTest {
         Assertions.assertThat(getAllValues(index)).containsExactlyInAnyOrder("A", "B", "E", "F");
     }
 
+    @Test
+    public void testBoundary() {
+        RangeIndex<Integer, String> index = new RangeIndex<>();
+        index.addIndex(RangeIndex.IndexType.LT, 20, "A");
+        index.addIndex(RangeIndex.IndexType.LE, 25, "B");
+        index.addIndex(RangeIndex.IndexType.GE, 40, "C");
+        index.addIndex(RangeIndex.IndexType.GT, 60, "D");
+
+        Assertions.assertThat(getValues(index, 25)).containsExactlyInAnyOrder("B");
+        Assertions.assertThat(getValues(index, 26)).isEmpty();
+        Assertions.assertThat(getValues(index, 39)).isEmpty();
+        Assertions.assertThat(getValues(index, 40)).containsExactlyInAnyOrder("C");
+    }
+
     private Collection<String> getValues(RangeIndex<Integer, String> index, Integer key) {
         FastIterator it = index.getValuesIterator(key);
         List<String> result = new ArrayList<>();

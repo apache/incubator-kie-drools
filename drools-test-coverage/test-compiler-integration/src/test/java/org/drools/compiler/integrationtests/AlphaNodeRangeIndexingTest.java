@@ -116,6 +116,51 @@ public class AlphaNodeRangeIndexingTest {
     }
 
     @Test
+    public void testNoMatch() {
+        final String drl =
+                "package org.drools.compiler.test\n" +
+                        "import " + Person.class.getCanonicalName() + "\n" +
+                        "rule test1\n when\n" +
+                        "   Person( age < 20 )\n" +
+                        "then\n end\n" +
+                        "rule test2\n when\n" +
+                        "   Person( age <= 25 )\n" +
+                        "then\n end\n" +
+                        "rule test3\n when\n" +
+                        "   Person( age < 30 )\n" +
+                        "then\n end\n" +
+                        "rule test4\n when\n" +
+                        "   Person( age >= 40 )\n" +
+                        "then\n end\n" +
+                        "rule test5\n when\n" +
+                        "   Person( age > 45 )\n" +
+                        "then\n end\n" +
+                        "rule test6\n when\n" +
+                        "   Person( age >= 50 )\n" +
+                        "then\n end\n";
+
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("indexing-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession();
+
+        final ObjectTypeNode otn = KieUtil.getObjectTypeNode(kbase, Person.class);
+        assertNotNull(otn);
+        final CompositeObjectSinkAdapter sinkAdapter = (CompositeObjectSinkAdapter) otn.getObjectSinkPropagator();
+        ObjectSink[] sinks = sinkAdapter.getSinks();
+        assertEquals(6, sinks.length);
+        assertEquals(6, sinkAdapter.size());
+        assertNull(sinkAdapter.getRangeIndexableSinks());
+        assertEquals(6, sinkAdapter.getRangeIndexMap().entrySet().iterator().next().getValue().size());
+
+        ksession.insert(new Person("John", 30));
+        int fired = ksession.fireAllRules();
+        assertEquals(0, fired);
+
+        ksession.insert(new Person("Paul", 40));
+        fired = ksession.fireAllRules();
+        assertEquals(1, fired);
+    }
+
+    @Test
     public void testDouble() {
         final String drl =
                 "package org.drools.compiler.test\n" +
