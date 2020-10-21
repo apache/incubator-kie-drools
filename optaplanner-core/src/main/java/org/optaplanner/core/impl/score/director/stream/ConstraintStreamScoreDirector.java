@@ -128,7 +128,7 @@ public class ConstraintStreamScoreDirector<Solution_, Score_ extends Score<Score
     // public void beforeVariableChanged(VariableDescriptor variableDescriptor, Object entity) // Do nothing
 
     @Override
-    public void afterVariableChanged(VariableDescriptor variableDescriptor, Object entity) {
+    public void afterVariableChanged(VariableDescriptor<Solution_> variableDescriptor, Object entity) {
         session.update(entity);
         super.afterVariableChanged(variableDescriptor, entity);
     }

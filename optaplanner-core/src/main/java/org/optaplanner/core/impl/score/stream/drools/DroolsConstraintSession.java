@@ -20,19 +20,24 @@ import java.util.Map;
 
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.Indictment;
+import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.ConstraintSession;
 
 public class DroolsConstraintSession<Solution_, Score_ extends Score<Score_>>
         implements ConstraintSession<Solution_, Score_> {
 
+    private final SolutionDescriptor<Solution_> solutionDescriptor;
     private final KieSession kieSession;
     private final AbstractScoreHolder<Score_> scoreHolder;
 
-    public DroolsConstraintSession(KieSession kieSession, AbstractScoreHolder<Score_> scoreHolder) {
+    public DroolsConstraintSession(SolutionDescriptor<Solution_> solutionDescriptor, KieSession kieSession,
+            AbstractScoreHolder<Score_> scoreHolder) {
+        this.solutionDescriptor = solutionDescriptor;
         this.kieSession = kieSession;
         this.scoreHolder = scoreHolder;
     }
@@ -45,6 +50,14 @@ public class DroolsConstraintSession<Solution_, Score_ extends Score<Score_>>
     @Override
     public void update(Object fact) {
         FactHandle factHandle = kieSession.getFactHandle(fact);
+        if (factHandle == null) {
+            throw new IllegalArgumentException("The fact (" + fact
+                    + ") was never added to this ScoreDirector.\n"
+                    + "Maybe that specific instance is not in the return values of the "
+                    + PlanningSolution.class.getSimpleName() + "'s entity members ("
+                    + solutionDescriptor.getEntityMemberAndEntityCollectionMemberNames() + ") or fact members ("
+                    + solutionDescriptor.getProblemFactMemberAndProblemFactCollectionMemberNames() + ").");
+        }
         kieSession.update(factHandle, fact);
     }
 

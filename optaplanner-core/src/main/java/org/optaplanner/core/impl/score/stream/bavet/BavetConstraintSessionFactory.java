@@ -22,17 +22,19 @@ import java.util.Map;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
+import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.stream.ConstraintSession;
-import org.optaplanner.core.impl.score.stream.common.AbstractConstraintSessionFactory;
+import org.optaplanner.core.impl.score.stream.ConstraintSessionFactory;
 
 public final class BavetConstraintSessionFactory<Solution_, Score_ extends Score<Score_>>
-        extends AbstractConstraintSessionFactory<Solution_, Score_> {
+        implements ConstraintSessionFactory<Solution_, Score_> {
 
+    private final SolutionDescriptor<Solution_> solutionDescriptor;
     private final List<BavetConstraint<Solution_>> constraintList;
 
     public BavetConstraintSessionFactory(SolutionDescriptor<Solution_> solutionDescriptor,
             List<BavetConstraint<Solution_>> constraintList) {
-        super(solutionDescriptor);
+        this.solutionDescriptor = solutionDescriptor;
         this.constraintList = constraintList;
     }
 
@@ -43,7 +45,8 @@ public final class BavetConstraintSessionFactory<Solution_, Score_ extends Score
     @Override
     public ConstraintSession<Solution_, Score_> buildSession(boolean constraintMatchEnabled,
             Solution_ workingSolution) {
-        Score_ zeroScore = getScoreDefinition().getZeroScore();
+        ScoreDefinition<Score_> scoreDefinition = solutionDescriptor.getScoreDefinition();
+        Score_ zeroScore = scoreDefinition.getZeroScore();
         Map<BavetConstraint<Solution_>, Score_> constraintToWeightMap = new LinkedHashMap<>(constraintList.size());
         for (BavetConstraint<Solution_> constraint : constraintList) {
             Score_ constraintWeight = (Score_) constraint.extractConstraintWeight(workingSolution);
@@ -51,7 +54,7 @@ public final class BavetConstraintSessionFactory<Solution_, Score_ extends Score
                 constraintToWeightMap.put(constraint, constraintWeight);
             }
         }
-        return new BavetConstraintSession<>(constraintMatchEnabled, getScoreDefinition(), constraintToWeightMap);
+        return new BavetConstraintSession<>(constraintMatchEnabled, scoreDefinition, constraintToWeightMap);
     }
 
 }
