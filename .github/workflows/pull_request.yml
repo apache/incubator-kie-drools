@@ -21,9 +21,9 @@ jobs:
           wget -P $M2_HOME/lib/ext https://repo1.maven.org/maven2/io/takari/takari-filemanager/0.8.3/takari-filemanager-0.8.3.jar
           wget -P $M2_HOME/lib/ext https://repo1.maven.org/maven2/io/takari/maven/takari-smart-builder/0.6.1/takari-smart-builder-0.6.1.jar
       - name: Build Chain ${{ matrix.java-version }}
-          id: build-chain
-          uses: ginxo/github-action-build-chain@BXMSPROD-1025
-          with:
-            definition-file: https://raw.githubusercontent.com/${GROUP}/${PROJECT_NAME}/${BRANCH}/.ci/pull-request-config.yaml
-          env:
-            GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+        id: build-chain
+        uses: ginxo/github-action-build-chain@BXMSPROD-1025
+        with:
+          definition-file: https://raw.githubusercontent.com/${GROUP}/${PROJECT_NAME}/${BRANCH}/.ci/pull-request-config.yaml
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
