@@ -72,6 +72,7 @@ import com.github.javaparser.ast.nodeTypes.NodeWithOptionalScope;
 import com.github.javaparser.ast.nodeTypes.NodeWithTraversableScope;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
+import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.PrimitiveType;
 import com.github.javaparser.ast.type.Type;
@@ -330,7 +331,9 @@ public class DrlxParseUtil {
 
     public static Optional<Node> findRootNodeViaParent(Node expr) {
         final Optional<Node> parentNode = expr.getParentNode();
-        if (parentNode.isPresent()) {
+        if(expr instanceof Statement) { // we never use this method to navigate up to the statement
+            return Optional.empty();
+        } else if (parentNode.isPresent()) {
             return findRootNodeViaParent(parentNode.get());
         } else {
             return Optional.of(expr);
@@ -799,6 +802,14 @@ public class DrlxParseUtil {
             return Optional.of(typeResolver.resolveType(typeName));
         } catch (ClassNotFoundException e) {
             return Optional.empty();
+        }
+    }
+
+    public static Expression unEncloseExpr(Expression expression) {
+        if(expression.isEnclosedExpr()) {
+            return unEncloseExpr(expression.asEnclosedExpr().getInner());
+        } else {
+            return expression;
         }
     }
 

@@ -41,6 +41,7 @@ import org.drools.modelcompiler.domain.Result;
 import org.drools.modelcompiler.domain.StockTick;
 import org.drools.modelcompiler.domain.Toy;
 import org.drools.modelcompiler.domain.Woman;
+import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.definition.type.FactType;
@@ -2061,7 +2062,44 @@ public class CompilerTest extends BaseModelTest {
         assertEquals( 5, pet.getAge() );
     }
 
-    @Test
+    public static class IntegerToShort {
+
+        private Boolean testBoolean;
+        private int testInt;
+        private Short testShort;
+
+        public IntegerToShort(Boolean testBoolean, int testInt, Short testShort) {
+            this.testBoolean = testBoolean;
+            this.testInt = testInt;
+            this.testShort = testShort;
+        }
+
+        public void setTestBoolean(Boolean testBoolean) {
+            this.testBoolean = testBoolean;
+        }
+
+        public void setTestInt(int testInt) {
+            this.testInt = testInt;
+        }
+
+        public void setTestShort(Short testShort) {
+            this.testShort = testShort;
+        }
+
+        public Boolean getTestBoolean() {
+            return testBoolean;
+        }
+
+        public int getTestInt() {
+            return testInt;
+        }
+
+        public Short getTestShort() {
+            return testShort;
+        }
+    }
+
+    @Test // DROOLS-5007
     public void testIntToShortCast() {
         String str = "import " + Address.class.getCanonicalName() + ";\n" +
                 "rule \"rule1\"\n" +
@@ -2079,6 +2117,39 @@ public class CompilerTest extends BaseModelTest {
         address.setNumber(1);
         ksession.insert( address );
         assertEquals( 1, ksession.fireAllRules() );
+    }
+
+
+    @Test // DROOLS-5709
+    public void testCastingIntegerToShort() {
+        String str =
+                "import " + IntegerToShort.class.getCanonicalName() + ";\n " +
+                        "global java.util.List list;\n" +
+                        "rule \"test_rule\"\n" +
+                        "dialect \"java\"\n" +
+                        "when\n" +
+                        "$integerToShort : IntegerToShort( " +
+                        "$testInt : testInt, " +
+                        "testBoolean != null, " +
+                        "testBoolean == false" +
+                        ") \n" +
+                        "then\n" +
+                        "$integerToShort.setTestShort((short)($testInt)); \n" +
+                        "$integerToShort.setTestBoolean(true);\n" +
+                        "update($integerToShort);\n" +
+                        "end";
+
+        KieSession ksession = getKieSession(str);
+        final List<String> list = new ArrayList<>();
+
+        ksession.setGlobal("list", list);
+
+        IntegerToShort integerToShort = new IntegerToShort(false, Integer.MAX_VALUE, Short.MAX_VALUE);
+
+        ksession.insert(integerToShort);
+        int rulesFired = ksession.fireAllRules();
+
+        Assert.assertEquals(1, rulesFired);
     }
 
     @Test
