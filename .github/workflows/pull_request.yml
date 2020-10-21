@@ -22,7 +22,7 @@ jobs:
           wget -P $M2_HOME/lib/ext https://repo1.maven.org/maven2/io/takari/maven/takari-smart-builder/0.6.1/takari-smart-builder-0.6.1.jar
       - name: Build Chain ${{ matrix.java-version }}
         id: build-chain
-        uses: ginxo/github-action-build-chain@BXMSPROD-1025
+        uses: kiegroup/github-action-build-chain@v2.0
         with:
           definition-file: https://raw.githubusercontent.com/${GROUP}/droolsjbpm-build-bootstrap/${BRANCH}/.ci/pull-request-config.yaml
         env:
