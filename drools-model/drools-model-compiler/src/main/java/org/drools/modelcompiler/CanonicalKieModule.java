@@ -109,8 +109,6 @@ public class CanonicalKieModule implements InternalKieModule {
     public static final String ANC_FILE_NAME = "alpha-network-compiler";
     public static final String MODEL_VERSION = "Drools-Model-Version:";
 
-    private static final String PROJECT_MODEL_RESOURCE_CLASS = PROJECT_MODEL_CLASS.replace('.', '/') + ".class";
-
     private static final Predicate<String> NON_MODEL_RESOURCES = res -> {
             ResourceType type = determineResourceType(res);
             return type != null && !type.isFullyCoveredByExecModel();
@@ -146,11 +144,15 @@ public class CanonicalKieModule implements InternalKieModule {
     }
 
     private CanonicalKieModuleModel getModuleModel() throws ClassNotFoundException {
-        try {
-            return createInstance( getModuleClassLoader(), PROJECT_MODEL_CLASS );
-        } catch (Exception e) {
-            return createInstance( getModuleClassLoader(), getProjectModelClassNameNameWithReleaseId(internalKieModule.getReleaseId()) );
-        }
+        return createInstance( getModuleClassLoader(), getProjectModelClassName() );
+    }
+
+    private String getProjectModelClassName() {
+        return getModuleClassLoader().isDynamic() ? getProjectModelClassNameNameWithReleaseId(internalKieModule.getReleaseId()) : PROJECT_MODEL_CLASS;
+    }
+
+    private String getProjectModelResourceName() {
+        return getProjectModelClassName().replace('.', '/') + ".class";
     }
 
     private static <T> T createInstance(ClassLoader cl, String className) throws ClassNotFoundException {
@@ -501,7 +503,7 @@ public class CanonicalKieModule implements InternalKieModule {
         }
 
         KieJarChangeSet internalChanges = internalKieModule.getChanges(((CanonicalKieModule) newKieModule).internalKieModule);
-        internalChanges.removeFile(PROJECT_MODEL_RESOURCE_CLASS);
+        internalChanges.removeFile(getProjectModelResourceName());
         return result.merge(internalChanges);
     }
 
@@ -554,7 +556,7 @@ public class CanonicalKieModule implements InternalKieModule {
 
     private boolean isChange(String fileName, CanonicalKieModule module) {
         return fileName.endsWith(".class") &&
-                !fileName.equals(PROJECT_MODEL_RESOURCE_CLASS) &&
+                !fileName.equals(getProjectModelResourceName()) &&
                 module.getRuleClassNames().stream().noneMatch(fileNameToClass(fileName)::startsWith);
     }
 
