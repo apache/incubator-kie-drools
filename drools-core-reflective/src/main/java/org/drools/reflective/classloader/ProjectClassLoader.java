@@ -109,6 +109,8 @@ public abstract class ProjectClassLoader extends ClassLoader implements KieTypeR
         return projectClassLoader;
     }
 
+    public abstract boolean isDynamic();
+
     @Override
     protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
         Class<?> cls = loadedClasses.get(name);

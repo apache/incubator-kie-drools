@@ -64,7 +64,11 @@ public class ModelWriter {
         return basePath + "/" + folderName + "/" + nameAsString + ".java";
     }
 
-    public void writeModelFile(Collection<String> modelSources, MemoryFileSystem trgMfs, ReleaseId releaseId) {
+    public String getBasePath() {
+        return basePath;
+    }
+
+    public void writeModelFile( Collection<String> modelSources, MemoryFileSystem trgMfs, ReleaseId releaseId) {
         String pkgNames = MODEL_VERSION + Drools.getFullVersion() + "\n";
         if (!modelSources.isEmpty()) {
             pkgNames += modelSources.stream().collect(Collectors.joining("\n"));
@@ -80,10 +84,6 @@ public class ModelWriter {
         public Result(List<String> sourceFiles, List<String> modelFiles) {
             this.sourceFiles = sourceFiles;
             this.modelFiles = modelFiles;
-        }
-
-        public String[] getSources() {
-            return sourceFiles.toArray(new String[sourceFiles.size()]);
         }
 
         public List<String> getSourceFiles() {
