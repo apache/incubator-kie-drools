@@ -16,6 +16,7 @@ import org.kie.dmn.core.impl.DMNContextImpl;
 import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.kie.kogito.Application;
 import org.kie.kogito.dmn.rest.DMNEvaluationErrorException;
+import org.kie.kogito.dmn.rest.DMNJSONUtils;
 import org.kie.kogito.dmn.rest.DMNResult;
 import org.kie.kogito.dmn.util.StronglyTypedUtils;
 
@@ -32,10 +33,14 @@ public class DMNRestResourceTemplate {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @org.eclipse.microprofile.openapi.annotations.parameters.RequestBody(content = @org.eclipse.microprofile.openapi.annotations.media.Content(mediaType = "application/json",schema = @org.eclipse.microprofile.openapi.annotations.media.Schema(ref = "/dmnDefinitions.json#/definitions/InputSet1")))
+    @org.eclipse.microprofile.openapi.annotations.responses.APIResponse(content = @org.eclipse.microprofile.openapi.annotations.media.Content(mediaType = "application/json", schema = @org.eclipse.microprofile.openapi.annotations.media.Schema(ref = "/dmnDefinitions.json#/definitions/OutputSet1")))
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @io.swagger.v3.oas.annotations.media.Content(mediaType = "application/json",schema = @io.swagger.v3.oas.annotations.media.Schema(ref = "/dmnDefinitions.json#/definitions/InputSet1")))
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(content = @io.swagger.v3.oas.annotations.media.Content(mediaType = "application/json",schema = @io.swagger.v3.oas.annotations.media.Schema(ref = "/dmnDefinitions.json#/definitions/OutputSet1")))
     public $outputType$ dmn($inputType$ variables) {
         org.kie.kogito.decision.DecisionModel decision = application.decisionModels().getDecisionModel("$modelNamespace$", "$modelName$");
         OutputSet outputSet = (OutputSet)StronglyTypedUtils.convertToOutputSet(variables, OutputSet.class);
-        org.kie.kogito.dmn.rest.DMNResult result = new org.kie.kogito.dmn.rest.DMNResult("$modelNamespace$", "$modelName$", decision.evaluateAll(decision.newContext($inputData$)));
+        org.kie.kogito.dmn.rest.DMNResult result = new org.kie.kogito.dmn.rest.DMNResult("$modelNamespace$", "$modelName$", decision.evaluateAll(DMNJSONUtils.ctx(decision, $inputData$)));
         return $extractContextMethod$(result);
     }
     

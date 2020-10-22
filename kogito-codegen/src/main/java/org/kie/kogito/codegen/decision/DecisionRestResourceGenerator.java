@@ -30,6 +30,7 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.Name;
 import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.NormalAnnotationExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.SingleMemberAnnotationExpr;
@@ -41,8 +42,11 @@ import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.core.util.StringUtils;
 import org.kie.dmn.api.core.DMNModel;
+import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.feel.codegen.feel11.CodegenStringUtil;
 import org.kie.dmn.model.api.DecisionService;
+import org.kie.dmn.openapi.model.DMNModelIOSets;
+import org.kie.dmn.openapi.model.DMNOASResult;
 import org.kie.kogito.codegen.AddonsConfig;
 import org.kie.kogito.codegen.BodyDeclarationComparator;
 import org.kie.kogito.codegen.CodegenUtils;
@@ -64,6 +68,9 @@ public class DecisionRestResourceGenerator {
     private DependencyInjectionAnnotator annotator;
     private AddonsConfig addonsConfig = AddonsConfig.DEFAULT;
     private boolean isStronglyTyped = false;
+    private DMNOASResult withOASResult;
+    private boolean mpAnnPresent;
+    private boolean swaggerAnnPresent;
 
     private static final Supplier<RuntimeException> TEMPLATE_WAS_MODIFIED = () -> new RuntimeException("Template was modified!");
 
@@ -107,6 +114,7 @@ public class DecisionRestResourceGenerator {
         }
 
         MethodDeclaration dmnMethod = template.findAll(MethodDeclaration.class, x -> x.getName().toString().equals("dmn")).get(0);
+        processOASAnn(dmnMethod, null);
         template.addMember(cloneForDMNResult(dmnMethod, "dmn_dmnresult", "dmnresult"));
         for (DecisionService ds : dmnModel.getDefinitions().getDecisionService()) {
             if (ds.getAdditionalAttributes().keySet().stream().anyMatch(qn -> qn.getLocalPart().equals("dynamicDecisionService"))) {
@@ -114,11 +122,14 @@ public class DecisionRestResourceGenerator {
             }
 
             MethodDeclaration clonedMethod = dmnMethod.clone();
+            processOASAnn(clonedMethod, ds);
             String name = CodegenStringUtil.escapeIdentifier("decisionService_" + ds.getName());
             clonedMethod.setName(name);
             MethodCallExpr evaluateCall = clonedMethod.findFirst(MethodCallExpr.class, x -> x.getNameAsString().equals("evaluateAll")).orElseThrow(TEMPLATE_WAS_MODIFIED);
             evaluateCall.setName(new SimpleName("evaluateDecisionService"));
             evaluateCall.addArgument(new StringLiteralExpr(ds.getName()));
+            MethodCallExpr ctxCall = clonedMethod.findFirst(MethodCallExpr.class, x -> x.getNameAsString().equals("ctx")).orElseThrow(TEMPLATE_WAS_MODIFIED);
+            ctxCall.addArgument(new StringLiteralExpr(ds.getName()));
             clonedMethod.addAnnotation(new SingleMemberAnnotationExpr(new Name("javax.ws.rs.Path"), new StringLiteralExpr(ds.getName())));
             ReturnStmt returnStmt = clonedMethod.findFirst(ReturnStmt.class).orElseThrow(TEMPLATE_WAS_MODIFIED);
             if (ds.getOutputDecision().size() == 1) {
@@ -150,6 +161,66 @@ public class DecisionRestResourceGenerator {
         return clazz.toString();
     }
 
+    private void processOASAnn(MethodDeclaration dmnMethod, DecisionService ds) {
+        String inputRef = null;
+        String outputRef = null;
+        if (withOASResult!= null) {
+            DMNModelIOSets ioSets = withOASResult.lookupIOSetsByModel(dmnModel);
+            DMNType identifyInputSet = ds != null ? ioSets.lookupDSIOSetsByName(ds.getName()).getDSInputSet() : ioSets.getInputSet();
+            DMNType identifyOutputSet = ds != null ? ioSets.lookupDSIOSetsByName(ds.getName()).getDSOutputSet() : ioSets.getOutputSet();
+            inputRef = withOASResult.getNamingPolicy().getRef(identifyInputSet);
+            outputRef = withOASResult.getNamingPolicy().getRef(identifyOutputSet);
+        }
+        // MP / Quarkus
+        processAnnForRef(dmnMethod,
+                         "org.eclipse.microprofile.openapi.annotations.parameters.RequestBody",
+                         "org.eclipse.microprofile.openapi.annotations.media.Schema",
+                         "/dmnDefinitions.json" + inputRef,
+                         !mpAnnPresent);
+        processAnnForRef(dmnMethod,
+                         "org.eclipse.microprofile.openapi.annotations.responses.APIResponse",
+                         "org.eclipse.microprofile.openapi.annotations.media.Schema",
+                         "/dmnDefinitions.json" + outputRef,
+                         !mpAnnPresent);
+        // io.swagger / SB
+        processAnnForRef(dmnMethod,
+                         "io.swagger.v3.oas.annotations.parameters.RequestBody",
+                         "io.swagger.v3.oas.annotations.media.Schema",
+                         "/docs/dmnDefinitions.json" + inputRef,
+                         !swaggerAnnPresent);
+        processAnnForRef(dmnMethod,
+                         "io.swagger.v3.oas.annotations.responses.ApiResponse",
+                         "io.swagger.v3.oas.annotations.media.Schema",
+                         "/docs/dmnDefinitions.json" + outputRef,
+                         !swaggerAnnPresent);
+    }
+
+    private void processAnnForRef(MethodDeclaration dmnMethod, String parentName, String innerName, String ref, boolean removeIt) {
+        List<NormalAnnotationExpr> findAll = dmnMethod.findAll(NormalAnnotationExpr.class, x -> x.getName().toString().equals(parentName));
+        if (findAll.isEmpty()) {
+            if (removeIt) {
+                return; // nothing to do
+            } else {
+                throw new IllegalStateException("Impossible to find annotation " + parentName + " on method " + dmnMethod.toString());
+            }
+        }
+        NormalAnnotationExpr parentExpr = findAll.get(0);
+        if (removeIt || ref == null) {
+            parentExpr.remove();
+        } else {
+            NormalAnnotationExpr schemaAnn = parentExpr.findAll(NormalAnnotationExpr.class, x -> x.getName().toString().equals(innerName))
+                                                    .get(0);
+            schemaAnn.getPairs().removeIf(x -> true);
+            schemaAnn.addPair("ref", new StringLiteralExpr(ref));
+        }
+    }
+
+    private void removeAnnFromMethod(MethodDeclaration dmnMethod, String fqn) {
+        for (NormalAnnotationExpr ann : dmnMethod.findAll(NormalAnnotationExpr.class, x -> x.getName().toString().equals(fqn))) {
+            dmnMethod.remove(ann);
+        }
+    }
+
     private void chooseMethodForStronglyTyped(ClassOrInterfaceDeclaration template) {
         if (isStronglyTyped) {
             MethodDeclaration extractContextIfSucceded = template.findAll(MethodDeclaration.class, x -> x.getName().toString().equals("extractContextIfSucceded")).get(0);
@@ -170,6 +241,9 @@ public class DecisionRestResourceGenerator {
 
     private MethodDeclaration cloneForDMNResult(MethodDeclaration dmnMethod, String name, String pathName) {
         MethodDeclaration clonedDmnMethod = dmnMethod.clone();
+        // a DMNResult-returning method doesn't need the OAS annotations for the $ref of return type.
+        removeAnnFromMethod(clonedDmnMethod, "org.eclipse.microprofile.openapi.annotations.responses.APIResponse");
+        removeAnnFromMethod(clonedDmnMethod, "io.swagger.v3.oas.annotations.responses.ApiResponse");
         clonedDmnMethod.setName(name);
         final Name jaxrsPathAnnName = new Name("javax.ws.rs.Path");
         clonedDmnMethod.getAnnotations().removeIf(ae -> ae.getName().equals(jaxrsPathAnnName));
@@ -311,6 +385,13 @@ public class DecisionRestResourceGenerator {
 
     public DecisionRestResourceGenerator withStronglyTyped(boolean stronglyTyped) {
         this.isStronglyTyped = stronglyTyped;
+        return this;
+    }
+
+    public DecisionRestResourceGenerator withOASResult(DMNOASResult oasResult, boolean mpAnnPresent, boolean swaggerAnnPresent) {
+        this.withOASResult = oasResult;
+        this.mpAnnPresent = mpAnnPresent;
+        this.swaggerAnnPresent = swaggerAnnPresent;
         return this;
     }
 }
