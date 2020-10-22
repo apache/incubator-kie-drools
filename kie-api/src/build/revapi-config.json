@@ -69,7 +69,7 @@
                   "classSimpleName": "ProcessRuntime",
                   "methodName": "startProcess",
                   "elementKind": "method",
-                  "justification": "allow to uase an agenda filter when starting a process"
+                  "justification": "allow to use an agenda filter when starting a process"
                 },
                 {
                   "code": "java.method.addedToInterface",
@@ -78,8 +78,17 @@
                   "classSimpleName": "ProcessRuntime",
                   "methodName": "startProcess",
                   "elementKind": "method",
-                  "justification": "allow to uase an agenda filter when starting a process"
-               }
+                  "justification": "allow to use an agenda filter when starting a process"
+               },
+               {
+                 "code": "java.method.addedToInterface",
+                 "new": "method java.util.Set<java.lang.String> org.kie.api.builder.model.KieBaseModel::getIncludes()",
+                 "package": "org.kie.api.builder.model",
+                 "classSimpleName": "KieBaseModel",
+                 "methodName": "getIncludes",
+                 "elementKind": "method",
+                 "justification": "generate ProjectModel for executable model"
+              }
             ]
         }
     }

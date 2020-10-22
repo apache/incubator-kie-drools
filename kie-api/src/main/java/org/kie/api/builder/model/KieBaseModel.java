@@ -18,6 +18,7 @@ package org.kie.api.builder.model;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.kie.api.conf.DeclarativeAgendaOption;
 import org.kie.api.conf.EqualityBehaviorOption;
@@ -76,6 +77,11 @@ public interface KieBaseModel {
      * which will export all org.foo packages except org.foo.impl.
      */
     List<String> getPackages();
+
+    /**
+     * Returns all KieBases included by this one
+     */
+    Set<String> getIncludes();
 
     /**
      * Adds a package (pattern) to the list of the packages defining the set of resources
