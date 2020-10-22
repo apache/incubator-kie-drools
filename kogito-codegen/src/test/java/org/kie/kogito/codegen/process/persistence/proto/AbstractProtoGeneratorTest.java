@@ -16,28 +16,30 @@
 package org.kie.kogito.codegen.process.persistence.proto;
 
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.kie.kogito.codegen.GeneratedFile;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class AbstractProtoGeneratorTest {
-
     @Test
     void checkGeneratedProtoBufAndListing(@TempDir Path tmpTargetDir) throws IOException {
         final ReflectionProtoGenerator generator = new ReflectionProtoGenerator();
+        List<GeneratedFile> generatedFiles = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
             final Proto proto = new Proto("org.acme.test");
-            generator.writeFilesToFS("protofile." + i, tmpTargetDir.toString(), proto);
+            generatedFiles.add(generator.generateProtoFiles("protofile." + i, tmpTargetDir.toString(), proto));
         }
-        generator.generateProtoListing(tmpTargetDir.toString());
-        byte[] list = Files.readAllBytes(Paths.get(tmpTargetDir.toString(), AbstractProtoGenerator.GENERATED_PROTO_RES_PATH, AbstractProtoGenerator.LISTING_FILE));
+        generator.generateProtoListingFile(generatedFiles).ifPresent(generatedFiles::add);
+
+        GeneratedFile listFile = generatedFiles.stream().filter(x -> x.relativePath().endsWith("list.json")).findFirst().get();
+        byte[] list = listFile.contents();
         final ObjectMapper mapper = new ObjectMapper();
         List<String> files = mapper.readValue(list, List.class);
         assertThat(files).isNotEmpty();

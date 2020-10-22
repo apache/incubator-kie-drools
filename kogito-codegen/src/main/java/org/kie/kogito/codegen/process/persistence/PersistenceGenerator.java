@@ -59,6 +59,7 @@ import org.kie.kogito.codegen.metadata.MetaDataWriter;
 import org.kie.kogito.codegen.metadata.PersistenceLabeler;
 import org.kie.kogito.codegen.metadata.PersistenceProtoFilesLabeler;
 import org.kie.kogito.codegen.process.persistence.proto.Proto;
+import org.kie.kogito.codegen.process.persistence.proto.ProtoDataClassesResult;
 import org.kie.kogito.codegen.process.persistence.proto.ProtoGenerator;
 
 
@@ -163,7 +164,9 @@ public class PersistenceGenerator extends AbstractGenerator {
 
     @SuppressWarnings({"rawtypes", "unchecked"})
     protected void infinispanBasedPersistence(List<GeneratedFile> generatedFiles) {
-        Collection dataModelClasses = protoGenerator.extractDataClasses((Collection) modelClasses, targetDirectory.toString());
+        ProtoDataClassesResult protoDataClassesResult = protoGenerator.extractDataClasses((Collection) modelClasses, targetDirectory.toString());
+        generatedFiles.addAll(protoDataClassesResult.getGeneratedFiles());
+
         Path protoFilePath = Paths.get(targetDirectory.getParent(), "src/main/resources", "/persistence", KOGITO_APPLICATION_PROTO);
         File persistencePath = Paths.get(targetDirectory.getAbsolutePath(), "/classes/persistence").toFile();
 
@@ -177,7 +180,7 @@ public class PersistenceGenerator extends AbstractGenerator {
         if (!protoFilePath.toFile().exists()) {
             try {
                 // generate proto file based on known data model
-                Proto proto = protoGenerator.generate(packageName, dataModelClasses, "import \"kogito-types.proto\";");
+                Proto proto = protoGenerator.generate(packageName, protoDataClassesResult.getDataModelClasses(), "import \"kogito-types.proto\";");
                 protoFilePath = Paths.get(targetDirectory.toString(), "classes", "/persistence", KOGITO_APPLICATION_PROTO);
 
                 Files.createDirectories(protoFilePath.getParent());
@@ -345,7 +348,7 @@ public class PersistenceGenerator extends AbstractGenerator {
             } else if (annotator instanceof SpringDependencyInjectionAnnotator) {
                 annotator.withConfigInjection(dbNameField, SPRINGBOOT_PERSISTENCE_MONGODB_NAME_PROP);
             }
-           
+
             BlockStmt dbNameMethodBody = new BlockStmt();
             dbNameMethodBody.addStatement(new ReturnStmt(new MethodCallExpr(new NameExpr(MONGODB_DB_NAME), OR_ELSE).addArgument(new StringLiteralExpr("kogito"))));
             MethodDeclaration dbNameMethod = new MethodDeclaration()

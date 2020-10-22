@@ -23,15 +23,19 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
 import org.infinispan.protostream.annotations.ProtoEnumValue;
 import org.kie.internal.kogito.codegen.Generated;
 import org.kie.internal.kogito.codegen.VariableInfo;
+import org.kie.kogito.codegen.GeneratedFile;
 
 public class ReflectionProtoGenerator extends AbstractProtoGenerator<Class<?>> {
 
@@ -66,9 +70,9 @@ public class ReflectionProtoGenerator extends AbstractProtoGenerator<Class<?>> {
         }
     }
 
-    public Collection<Class<?>> extractDataClasses(Collection<Class<?>> input, String targetDirectory) {
-
+    public ProtoDataClassesResult<Class<?>> extractDataClasses(Collection<Class<?>> input, String targetDirectory) {
         Set<Class<?>> dataModelClasses = new HashSet<>();
+        List<GeneratedFile> generatedFiles = new ArrayList<>();
         try {
             for (Class<?> modelClazz : input) {
 
@@ -83,14 +87,14 @@ public class ReflectionProtoGenerator extends AbstractProtoGenerator<Class<?>> {
                     dataModelClasses.add(propertyType);
                 }
 
-                generateModelClassProto(modelClazz, targetDirectory);
+                generateModelClassProto(modelClazz, targetDirectory).ifPresent(generatedFiles::add);
             }
-            this.generateProtoListing(targetDirectory);
+            this.generateProtoListingFile(generatedFiles).ifPresent(generatedFiles::add);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
-        return dataModelClasses;
+        return new ProtoDataClassesResult<>(dataModelClasses, generatedFiles);
     }
 
     protected ProtoMessage messageFromClass(Proto proto, Class<?> clazz, String packageName, String messageComment, String fieldComment) throws Exception {
@@ -195,7 +199,7 @@ public class ReflectionProtoGenerator extends AbstractProtoGenerator<Class<?>> {
         pEnum.addField(field.getName(), ordinal);
     }
 
-    protected void generateModelClassProto(Class<?> modelClazz, String targetDirectory) throws Exception {
+    protected Optional<GeneratedFile> generateModelClassProto(Class<?> modelClazz, String targetDirectory) throws Exception {
 
         Generated generatedData = modelClazz.getAnnotation(Generated.class);
         if (generatedData != null) {
@@ -209,12 +213,13 @@ public class ReflectionProtoGenerator extends AbstractProtoGenerator<Class<?>> {
                                         "option kogito_id = \"" + processId + "\";");
             if (modelProto.getMessages().isEmpty()) {
                 // no messages, nothing to do
-                return;
+                return Optional.empty();
             }
             ProtoMessage modelMessage = modelProto.getMessages().stream().filter(msg -> msg.getName().equals(generatedData.name())).findFirst().orElseThrow(() -> new IllegalStateException("Unable to find model message"));
             modelMessage.addField("optional", "org.kie.kogito.index.model.KogitoMetadata", "metadata").setComment(INDEX_COMMENT);
 
-            this.writeFilesToFS(processId, targetDirectory, modelProto);
+            return Optional.of(generateProtoFiles(processId, targetDirectory, modelProto));
         }
+        return Optional.empty();
     }
 }

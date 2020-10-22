@@ -17,10 +17,12 @@
 package org.kie.kogito.quarkus.deployment;
 
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.infinispan.protostream.annotations.ProtoEnumValue;
@@ -32,8 +34,10 @@ import org.jboss.jandex.FieldInfo;
 import org.jboss.jandex.IndexView;
 import org.jboss.jandex.Type;
 import org.jboss.jandex.Type.Kind;
+import org.kie.kogito.codegen.GeneratedFile;
 import org.kie.kogito.codegen.process.persistence.proto.AbstractProtoGenerator;
 import org.kie.kogito.codegen.process.persistence.proto.Proto;
+import org.kie.kogito.codegen.process.persistence.proto.ProtoDataClassesResult;
 import org.kie.kogito.codegen.process.persistence.proto.ProtoEnum;
 import org.kie.kogito.codegen.process.persistence.proto.ProtoMessage;
 
@@ -190,7 +194,8 @@ public class JandexProtoGenerator extends AbstractProtoGenerator<ClassInfo> {
     }
 
     @Override
-    public Collection<ClassInfo> extractDataClasses(Collection<ClassInfo> input, String targetDirectory) {
+    public ProtoDataClassesResult<ClassInfo> extractDataClasses(Collection<ClassInfo> input, String targetDirectory) {
+        List<GeneratedFile> generatedFiles = new ArrayList<>();
         Set<ClassInfo> dataModelClasses = new HashSet<>();
         try {
             for (ClassInfo modelClazz : input) {
@@ -205,18 +210,18 @@ public class JandexProtoGenerator extends AbstractProtoGenerator<ClassInfo> {
                     dataModelClasses.add(index.getClassByName(pd.type().name()));
                 }
 
-                generateModelClassProto(modelClazz, targetDirectory);
+                generateModelClassProto(modelClazz, targetDirectory).ifPresent(generatedFiles::add);
             }
 
-            this.generateProtoListing(targetDirectory);
+            this.generateProtoListingFile(generatedFiles).ifPresent(generatedFiles::add);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
-        return dataModelClasses;
+        return new ProtoDataClassesResult<>(dataModelClasses, generatedFiles);
     }
 
-    protected void generateModelClassProto(ClassInfo modelClazz, String targetDirectory) throws Exception {
+    protected Optional<GeneratedFile> generateModelClassProto(ClassInfo modelClazz, String targetDirectory) throws Exception {
 
         String processId = getReferenceOfModel(modelClazz, "reference");
         String name = getReferenceOfModel(modelClazz, "name");
@@ -233,7 +238,7 @@ public class JandexProtoGenerator extends AbstractProtoGenerator<ClassInfo> {
 
             if (modelProto.getMessages().isEmpty()) {
                 // no messages, nothing to do
-                return;
+                return Optional.empty();
             }
 
             ProtoMessage modelMessage = modelProto.getMessages().stream().filter(msg -> msg.getName().equals(name)).findFirst()
@@ -241,8 +246,10 @@ public class JandexProtoGenerator extends AbstractProtoGenerator<ClassInfo> {
             modelMessage.addField("optional", "org.kie.kogito.index.model.KogitoMetadata", "metadata")
                     .setComment(INDEX_COMMENT);
 
-            this.writeFilesToFS(processId, targetDirectory, modelProto);
+            return Optional.of(generateProtoFiles(processId, targetDirectory, modelProto));
         }
+
+        return Optional.empty();
     }
 
     protected String getReferenceOfModel(ClassInfo modelClazz, String name) {
