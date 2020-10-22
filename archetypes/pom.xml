@@ -15,18 +15,6 @@
     <maven.compiler.release>11</maven.compiler.release> 
   </properties>
 
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-bom</artifactId>
-        <version>${project.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
   <modules>
     <module>kogito-springboot-archetype</module>
     <module>kogito-quarkus-archetype</module>    

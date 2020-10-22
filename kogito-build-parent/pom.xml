@@ -152,6 +152,13 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-bom</artifactId>
+        <version>${project.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-dmn-api</artifactId>
         <version>${version.org.kie7}</version>
@@ -1230,6 +1237,7 @@
                     <echo message="Generating JaCoCo Reports"/>
                     <taskdef name="report" classname="org.jacoco.ant.ReportTask"/>
                     <mkdir dir="${project.reporting.outputDirectory}/jacoco"/>
+                    <mkdir dir="${project.root.dir}/target"/>
                     <report>
                       <executiondata>
                         <fileset dir="${project.root.dir}/target">

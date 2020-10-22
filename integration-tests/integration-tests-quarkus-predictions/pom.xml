@@ -12,13 +12,7 @@
   
   <dependencyManagement>
     <dependencies>
-      <dependency> <!-- MUST keep these two together IN THIS FILE until Quarkus BOM defines Kogito dependencies -->
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-bom</artifactId>
-        <version>${project.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
+      <!-- MUST keep this here IN THIS FILE until Quarkus BOM defines Kogito dependencies -->
       <dependency>
         <groupId>io.quarkus</groupId>
         <artifactId>quarkus-bom</artifactId>

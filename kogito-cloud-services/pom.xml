@@ -14,18 +14,6 @@
   <name>Kogito :: Cloud</name>
   <description>Kogito Cloud Services</description>
 
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-bom</artifactId>
-        <version>${project.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
   <modules>
     <module>kogito-cloud-kubernetes-client</module>
     <module>kogito-cloud-workitems</module>

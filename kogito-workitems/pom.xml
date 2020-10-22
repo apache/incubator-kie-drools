@@ -10,18 +10,6 @@
   <packaging>pom</packaging>
   <name>Kogito :: Workitems</name>
 
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-bom</artifactId>
-        <version>${project.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
   <description>Kogito work items handlers</description>
   <modules>
     <module>kogito-rest-workitem</module>
