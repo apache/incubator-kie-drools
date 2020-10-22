@@ -99,8 +99,8 @@ pipeline {
                 script {
                     echo 'Setup Maven release config'
                     configFileProvider([configFile(fileId: maven.getSubmarineSettingsXmlId(), targetLocation: 'maven-settings.xml', variable: 'MAVEN_SETTINGS_FILE')]) {
+                        sh "echo '\n-Denforcer.skip=true' | tee -a optaplanner/.mvn/maven.config"
                         sh "echo '\n-B -s ${MAVEN_SETTINGS_FILE}' | tee -a optaplanner/.mvn/maven.config"
-
                         if (params.MAVEN_DEPENDENCIES_REPOSITORY != '') {
                             sh "sed -i 's|<repositories>|<repositories><repository><id>staging</id><name>Staging Repository</name><url>${params.MAVEN_DEPENDENCIES_REPOSITORY}</url><layout>default</layout><snapshots><enabled>true</enabled></snapshots><releases><enabled>true</enabled></releases></repository>|g' ${MAVEN_SETTINGS_FILE}"
                             sh "sed -i 's|<pluginRepositories>|<pluginRepositories><pluginRepository><id>staging</id><name>Staging Repository</name><url>${params.MAVEN_DEPENDENCIES_REPOSITORY}</url><layout>default</layout><snapshots><enabled>true</enabled></snapshots><releases><enabled>true</enabled></releases></pluginRepository>|g' ${MAVEN_SETTINGS_FILE}"
