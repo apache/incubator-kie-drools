@@ -91,7 +91,7 @@ pipeline {
             steps {
                 echo 'Setup Maven release config'
                 configFileProvider([configFile(fileId: maven.getSubmarineSettingsXmlId(), targetLocation: 'maven-settings.xml', variable: 'MAVEN_SETTINGS_FILE')]){
-                    sh "echo '-B -s ${MAVEN_SETTINGS_FILE}' | tee kogito-{runtimes,apps}/.mvn/maven.config"
+                    sh "echo '\n-B -s ${MAVEN_SETTINGS_FILE}' | tee -a kogito-{runtimes,apps}/.mvn/maven.config"
                 }
             }
         }
@@ -271,7 +271,7 @@ void mavenCleanInstall(String directory, boolean skipTests = false, List profile
 }
 
 void mavenDeploy(String directory) {
-    extraArgs = params.MAVEN_DEPLOY_REPOSITORY != '' ? "-DaltDeploymentRepository=runtimes-artifacts::default::${params.MAVEN_DEPLOY_REPOSITORY}" : ''
+    extraArgs = params.MAVEN_DEPLOY_REPOSITORY != '' ? "-DaltDeploymentRepository=runtimes-artifacts::default::${params.MAVEN_DEPLOY_REPOSITORY} -Denforcer.skip=true" : ''
     runMaven('clean deploy', directory, true, [], extraArgs)
 }
 
