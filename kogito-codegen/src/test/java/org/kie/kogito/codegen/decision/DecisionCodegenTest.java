@@ -145,6 +145,10 @@ public class DecisionCodegenTest {
 
         assertEquals(2, dashboards.size());
 
+        List<GeneratedFile> staticDashboards = generatedFiles.stream().filter(x -> x.getType() == GeneratedFile.Type.GENERATED_CP_RESOURCE && x.relativePath().contains("dashboard")).collect(Collectors.toList());
+
+        assertEquals(2, staticDashboards.size());
+
         return dashboards;
     }
 

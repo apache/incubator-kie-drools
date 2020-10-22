@@ -17,7 +17,6 @@ package org.kie.kogito.codegen.rules;
 
 import java.io.File;
 import java.nio.file.Paths;
-import java.util.Collections;
 import java.util.List;
 
 import org.drools.compiler.compiler.DecisionTableFactory;
@@ -25,12 +24,10 @@ import org.drools.compiler.compiler.DecisionTableProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.api.internal.utils.ServiceRegistry;
-import org.kie.api.io.ResourceType;
 import org.kie.kogito.codegen.AddonsConfig;
 import org.kie.kogito.codegen.GeneratedFile;
 import org.kie.kogito.codegen.io.CollectedResource;
 
-import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -175,6 +172,7 @@ public class IncrementalRuleCodegenTest {
         List<GeneratedFile> generatedFiles = incrementalRuleCodegen.withHotReloadMode().generate();
 
         assertEquals(2, generatedFiles.stream().filter(x -> x.getType() == GeneratedFile.Type.RESOURCE).count());
+        assertEquals(2, generatedFiles.stream().filter(x -> x.getType() == GeneratedFile.Type.GENERATED_CP_RESOURCE && x.relativePath().contains("dashboard")).count());
     }
 
     private static void assertRules(int expectedRules, int expectedPackages, int expectedUnits, int actualGeneratedFiles) {
