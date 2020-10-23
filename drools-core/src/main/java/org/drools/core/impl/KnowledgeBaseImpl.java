@@ -1009,7 +1009,7 @@ public class KnowledgeBaseImpl
                 ObjectSinkPropagator sink = otn.getObjectSinkPropagator();
                 if (sink instanceof CompositePartitionAwareObjectSinkAdapter) {
                     otn.setObjectSinkPropagator( ( (CompositePartitionAwareObjectSinkAdapter) sink )
-                                                         .asNonPartitionedSinkPropagator( config.getAlphaNodeHashingThreshold() ) );
+                                                         .asNonPartitionedSinkPropagator( config.getAlphaNodeHashingThreshold(), config.getAlphaNodeRangeIndexThreshold() ) );
                 }
             }
         }

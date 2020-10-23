@@ -167,8 +167,8 @@ public abstract class CompiledNetwork implements ObjectSinkPropagator {
     }
 
     @Override
-    public ObjectSinkPropagator addObjectSink(ObjectSink sink, int alphaNodeHashingThreshold) {
-        return originalSinkPropagator.addObjectSink(sink, alphaNodeHashingThreshold);
+    public ObjectSinkPropagator addObjectSink(ObjectSink sink, int alphaNodeHashingThreshold, int alphaNodeRangeIndexThreshold) {
+        return originalSinkPropagator.addObjectSink(sink, alphaNodeHashingThreshold, alphaNodeRangeIndexThreshold);
     }
 
     @Override
@@ -177,8 +177,8 @@ public abstract class CompiledNetwork implements ObjectSinkPropagator {
     }
 
     @Override
-    public void changeSinkPartition(ObjectSink sink, RuleBasePartitionId oldPartition, RuleBasePartitionId newPartition, int alphaNodeHashingThreshold) {
-        originalSinkPropagator.changeSinkPartition(sink, oldPartition, newPartition, alphaNodeHashingThreshold);
+    public void changeSinkPartition(ObjectSink sink, RuleBasePartitionId oldPartition, RuleBasePartitionId newPartition, int alphaNodeHashingThreshold, int alphaNodeRangeIndexThreshold) {
+        originalSinkPropagator.changeSinkPartition(sink, oldPartition, newPartition, alphaNodeHashingThreshold, alphaNodeRangeIndexThreshold);
     }
 
     @Override
