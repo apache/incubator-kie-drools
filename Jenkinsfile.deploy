@@ -245,12 +245,7 @@ void runMaven(String goals, String directory, boolean skipTests = false, List pr
         mvnCmd += " ${extraArgs}"
     }
     dir(directory) {
-        if(isRelease()){
-            // In case of release, we already have the settings.xml
-            maven.runMaven(mvnCmd, skipTests, ['-fae'])
-        } else {
-            maven.runMavenWithSubmarineSettings(mvnCmd, skipTests)
-        }
+        maven.runMaven(mvnCmd, skipTests, ['-fae'])
     }
 }
 
