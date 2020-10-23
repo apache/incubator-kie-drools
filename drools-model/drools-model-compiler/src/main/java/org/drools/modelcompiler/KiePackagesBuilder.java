@@ -722,28 +722,16 @@ public class KiePackagesBuilder {
             pattern.addDeclaration(declaration);
             ctx.addInnerDeclaration( boundVar, declaration );
 
-            Declaration[] requiredDeclarations = getRequiredDeclarationsForAccumulate( ctx, binding, accFunction );
-            if (requiredDeclarations.length == 0 && source instanceof Pattern && bindingEvaluator != null && bindingEvaluator.getDeclarations() != null) {
-                List<Declaration> previousDecl = new ArrayList<>();
-                Pattern patternSource = ( Pattern ) source;
-                patternSource.resetDeclarations();
-                for (Declaration d : bindingEvaluator.getDeclarations()) {
-                    if (d.getIdentifier().equals( patternSource.getDeclaration().getIdentifier() )) {
-                        patternSource.addDeclaration( d );
-                    } else {
-                        previousDecl.add( d );
-                    }
-                }
-                requiredDeclarations = previousDecl.toArray( new Declaration[previousDecl.size()] );
-            }
-
+            Declaration[] requiredDeclarations = getRequiredDeclarationsForAccumulate( ctx, source, accFunction, binding, bindingEvaluator );
             accumulate = new SingleAccumulate(source, requiredDeclarations, accumulator);
 
         } else {
-            final BindingEvaluator bindingEvaluator = createBindingEvaluator(ctx, bindings.isEmpty() ? null : bindings.iterator().next());
             InternalReadAccessor reader = new SelfReferenceClassFieldReader( Object[].class );
             Accumulator[] accumulators = new Accumulator[accFunctions.length];
+            List<Declaration> requiredDeclarationList = new ArrayList<>();
             for (int i = 0; i < accFunctions.length; i++) {
+                Binding binding = findBindingForAccumulate( bindings, accFunctions[i] );
+                final BindingEvaluator bindingEvaluator = createBindingEvaluator(ctx, binding);
                 final Accumulator accumulator = createAccumulator(usedVariableName, bindingEvaluator, accFunctions[i]);
 
                 Variable boundVar = accPattern.getBoundVariables()[i];
@@ -754,8 +742,16 @@ public class KiePackagesBuilder {
                 pattern.addDeclaration( declaration );
                 ctx.addInnerDeclaration( boundVar, declaration );
                 accumulators[i] = accumulator;
+
+                Declaration[] requiredDeclarations = getRequiredDeclarationsForAccumulate( ctx, source, accFunctions[i], binding, bindingEvaluator );
+                for (int j = 0; j < requiredDeclarations.length; j++) {
+                    requiredDeclarationList.add( requiredDeclarations[j] );
+                }
             }
 
+            if (source instanceof Pattern) {
+                requiredDeclarationList.forEach( d -> (( Pattern ) source).addDeclaration( d ) );
+            }
             accumulate = new MultiAccumulate( source, new Declaration[0], accumulators );
         }
 
@@ -769,6 +765,24 @@ public class KiePackagesBuilder {
     private Binding findBindingForAccumulate( Collection<Binding> bindings, AccumulateFunction accFunction ) {
         return bindings.stream().filter( b -> b.getBoundVariable() == accFunction.getSource() ).findFirst()
                 .orElse( bindings.isEmpty() ? null : bindings.iterator().next() );
+    }
+
+    private Declaration[] getRequiredDeclarationsForAccumulate( RuleContext ctx, RuleConditionElement source, AccumulateFunction accFunction, Binding binding, BindingEvaluator bindingEvaluator ) {
+        Declaration[] requiredDeclarations = getRequiredDeclarationsForAccumulate( ctx, binding, accFunction );
+        if (requiredDeclarations.length == 0 && source instanceof Pattern && bindingEvaluator != null && bindingEvaluator.getDeclarations() != null) {
+            List<Declaration> previousDecl = new ArrayList<>();
+            Pattern patternSource = ( Pattern ) source;
+            patternSource.resetDeclarations();
+            for (Declaration d : bindingEvaluator.getDeclarations()) {
+                if (d.getIdentifier().equals( patternSource.getDeclaration().getIdentifier() )) {
+                    patternSource.addDeclaration( d );
+                } else {
+                    previousDecl.add( d );
+                }
+            }
+            requiredDeclarations = previousDecl.toArray( new Declaration[previousDecl.size()] );
+        }
+        return requiredDeclarations;
     }
 
     private Declaration[] getRequiredDeclarationsForAccumulate( RuleContext ctx, Binding binding, AccumulateFunction accFunction ) {
