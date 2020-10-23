@@ -228,21 +228,29 @@ public class ScenarioBeanUtilTest {
     @Test
     public void revertValueTest() {
         assertEquals("Test", revertValue("Test"));
-        assertEquals("false", revertValue(false));
         assertEquals("10000.83", revertValue(BigDecimal.valueOf(10000.83)));
         assertEquals("10000", revertValue(BigDecimal.valueOf(10000)));
         assertEquals("10000", revertValue(BigInteger.valueOf(10000)));
+        assertEquals("false", revertValue(Boolean.FALSE));
         assertEquals("true", revertValue(Boolean.TRUE));
+        assertEquals("false", revertValue(false));
+        assertEquals("true", revertValue(true));
         assertEquals("1", revertValue(1));
+        assertEquals("1", revertValue(new Integer(1)));
         assertEquals("1", revertValue(1L));
-        assertEquals("1.0d", revertValue(1.0d));
+        assertEquals("1", revertValue(new Long(1)));
+        assertEquals("1.1d", revertValue(1.1d));
+        assertEquals("1.1d", revertValue(new Double(1.1)));
         assertEquals("NaN", revertValue(Double.NaN));
         assertEquals("Infinity", revertValue(Double.POSITIVE_INFINITY));
         assertEquals("-Infinity", revertValue(Double.NEGATIVE_INFINITY));
-        assertEquals("1.0f", revertValue(1.0f));
+        assertEquals("1.1f", revertValue(1.1f));
+        assertEquals("1.1f", revertValue(new Float(1.1)));
         assertEquals("a", revertValue('a'));
+        assertEquals("a", revertValue(new Character('a')));
         assertEquals("1", revertValue((short) 1));
         assertEquals(String.valueOf("0".getBytes()[0]), revertValue("0".getBytes()[0]));
+        assertEquals(String.valueOf("0".getBytes()[0]), revertValue(new Byte("0".getBytes()[0])));
         assertEquals("null", revertValue(null));
         assertEquals("2018-10-20", revertValue(LocalDate.of(2018, 10, 20)));
         assertEquals("2018-10-20T02:13:00", revertValue(LocalDateTime.of(2018, 10, 20, 2,13)));
