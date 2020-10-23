@@ -452,6 +452,11 @@ public class KogitoAssetsProcessor {
         return new NativeImageResourceBuildItem("META-INF/services/org.kie.pmml.evaluator.core.executor.PMMLModelEvaluator");
     }
 
+    @BuildStep
+    public ReflectiveClassBuildItem reflectionJobsManagement() {
+        return new ReflectiveClassBuildItem(true, true, "org.kie.kogito.jobs.api.Job");
+    }
+
     private void writeJsonSchema(AppPaths appPaths, Index index) throws IOException {
         Path relativePath = JsonSchemaUtil.getJsonDir();
         Path targetClasses = appPaths.getFirstProjectPath().resolve(targetClassesDir);
