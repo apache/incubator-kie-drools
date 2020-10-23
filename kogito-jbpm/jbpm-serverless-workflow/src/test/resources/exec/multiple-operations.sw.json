@@ -42,8 +42,8 @@
       "type":"operation",
       "actionMode":"sequential",
       "stateDataFilter": {
-        "dataInputPath": "$.trace",
-        "dataOutputPath": "$.trace"
+        "dataInputPath": "{{ $.trace }}",
+        "dataOutputPath": "{{ $.trace }}"
       },
       "actions":[
         {

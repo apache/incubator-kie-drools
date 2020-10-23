@@ -1,0 +1,93 @@
+---
+id: jobmonitoring
+version: '1.0'
+name: Job Monitoring
+description: Monitor finished execution of a submitted job
+functions:
+  - name: submitJob
+    resource: submitJobResource
+  - name: checkJobStatus
+    resource: checkJobStatusResource
+  - name: reportJobSuceeded
+    resource: reportJobSuceededResource
+  - name: reportJobFailed
+    resource: reportJobFailedResource
+states:
+  - name: SubmitJob
+    type: operation
+    start:
+      kind: default
+    actionMode: sequential
+    actions:
+      - functionRef:
+          refName: submitJob
+          parameters:
+            name: "{{ $.job.name }}"
+        actionDataFilter:
+          dataResultsPath: "{{ $.jobuid }}"
+    onError:
+      - expression: "{{ $.exceptions[0] }}"
+        errorDataFilter:
+          dataOutputPath: "{{ $.exception }}"
+        transition:
+          nextState: SubmitError
+    stateDataFilter:
+      dataOutputPath: "{{ $.jobuid }}"
+    transition:
+      nextState: WaitForCompletion
+  - name: SubmitError
+    type: subflow
+    workflowId: handleJobSubmissionErrorWorkflow
+    end:
+      kind: default
+  - name: WaitForCompletion
+    type: delay
+    timeDelay: PT5S
+    transition:
+      nextState: GetJobStatus
+  - name: GetJobStatus
+    type: operation
+    actionMode: sequential
+    actions:
+      - functionRef:
+          refName: checkJobStatus
+          parameters:
+            name: "{{ $.jobuid }}"
+        actionDataFilter:
+          dataResultsPath: "{{ $.jobstatus }}"
+    stateDataFilter:
+      dataOutputPath: "{{ $.jobstatus }}"
+    transition:
+      nextState: DetermineCompletion
+  - name: DetermineCompletion
+    type: switch
+    dataConditions:
+      - condition: "{{ $[?(@.jobstatus == 'SUCCEEDED')] }}"
+        transition:
+          nextState: JobSucceeded
+      - condition: "{{ $[?(@.jobstatus == 'FAILED')] }}"
+        transition:
+          nextState: JobFailed
+    default:
+      transition:
+        nextState: WaitForCompletion
+  - name: JobSucceeded
+    type: operation
+    actionMode: sequential
+    actions:
+      - functionRef:
+          refName: reportJobSuceeded
+          parameters:
+            name: "{{ $.jobuid }}"
+    end:
+      kind: default
+  - name: JobFailed
+    type: operation
+    actionMode: sequential
+    actions:
+      - functionRef:
+          refName: reportJobFailed
+          parameters:
+            name: "{{ $.jobuid }}"
+    end:
+      kind: default

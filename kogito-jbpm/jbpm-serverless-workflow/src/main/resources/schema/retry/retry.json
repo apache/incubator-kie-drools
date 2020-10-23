@@ -1,0 +1,27 @@
+{
+  "type": "object",
+  "javaType": "org.jbpm.serverless.workflow.api.retry.Retry",
+  "description": "Retry Definition",
+  "properties": {
+    "expression": {
+      "type": "string",
+      "description": "Common Expression Language (CEL) expression. Should be evaluated against state data. Must evaluate to true for retry to execute"
+    },
+    "interval": {
+      "type": "string",
+      "description": "Specifies the amount of time between retries (ISO 8601 format)"
+    },
+    "multiplier": {
+      "type": "string",
+      "description": "Multiplier value by which interval increases during each attempt (ISO 8601 time format)"
+    },
+    "maxAttempts": {
+      "type": "string",
+      "default": "0",
+      "description": "Maximum number of retry attempts (1 by default). Value of 0 means no retries are performed"
+    }
+  },
+  "required": [
+    "expression"
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "id": "function",
+  "name": "test-wf",
+  "version": "1.0",
+  "events": [
+    {
+      "name": "TestKafkaEvent",
+      "source": "testtopic",
+      "type": "kafka"
+    },
+    {
+      "name": "TestKafkaEvent2",
+      "source": "testtopic2",
+      "type": "kafka"
+    }
+  ],
+  "functions": [
+    {
+      "name": "greetFunction",
+      "type": "script"
+    }
+  ],
+  "states": [
+    {
+      "name": "WaitForGreeting",
+      "type": "event",
+      "start": {
+        "kind": "default"
+      },
+      "onEvents": [
+        {
+          "eventRefs": [
+            "TestKafkaEvent", "TestKafkaEvent2"
+          ],
+          "eventDataFilter": {
+            "dataOutputPath": "{{ $.data.greet }}"
+          },
+          "actions": [
+            {
+              "functionRef": {
+                "refName": "greetFunction",
+                "parameters": {
+                  "script": "System.out.println(\"Hello:\" + ((com.fasterxml.jackson.databind.JsonNode)kcontext.getVariable(\"testtopicVar\")).get(\"firstName\"));"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "end": {
+        "kind": "terminate"
+      }
+    }
+  ]
+}

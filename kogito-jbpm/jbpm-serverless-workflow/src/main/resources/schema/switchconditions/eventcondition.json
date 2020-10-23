@@ -1,0 +1,38 @@
+{
+  "type": "object",
+  "javaType": "org.jbpm.serverless.workflow.api.switchconditions.EventCondition",
+  "javaInterfaces": ["org.jbpm.serverless.workflow.api.interfaces.SwitchCondition"],
+  "description": "Switch state data event condition",
+  "properties": {
+    "eventRef": {
+      "type" : "string",
+      "description": "References an unique event name in the defined workflow events"
+    },
+    "eventDataFilter": {
+      "description": "Callback event data filter definition",
+      "$ref": "../filters/eventdatafilter.json"
+    },
+    "transition": {
+      "$ref": "../transitions/transition.json",
+      "description": "Next transition of the workflow if there is valid matches"
+    },
+    "end": {
+      "$ref": "../end/end.json",
+      "description": "Explicit transition to end"
+    }
+  },
+  "oneOf": [
+    {
+      "required": [
+        "eventRef",
+        "transition"
+      ]
+    },
+    {
+      "required": [
+        "eventRef",
+        "end"
+      ]
+    }
+  ]
+}

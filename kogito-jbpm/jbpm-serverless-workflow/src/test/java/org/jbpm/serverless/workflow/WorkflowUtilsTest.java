@@ -19,14 +19,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jbpm.serverless.workflow.api.Workflow;
 import org.jbpm.serverless.workflow.api.events.EventDefinition;
-import org.jbpm.serverless.workflow.api.functions.Function;
+import org.jbpm.serverless.workflow.api.functions.FunctionDefinition;
 import org.jbpm.serverless.workflow.api.interfaces.State;
 import org.jbpm.serverless.workflow.api.mapper.BaseObjectMapper;
 import org.jbpm.serverless.workflow.api.mapper.JsonObjectMapper;
 import org.jbpm.serverless.workflow.api.mapper.YamlObjectMapper;
 import org.jbpm.serverless.workflow.api.states.DefaultState;
 import org.jbpm.serverless.workflow.api.states.InjectState;
-import org.jbpm.serverless.workflow.api.switchconditions.DataCondition;
 import org.jbpm.serverless.workflow.parser.util.ServerlessWorkflowUtils;
 import org.jbpm.serverless.workflow.parser.util.WorkflowAppContext;
 import org.junit.jupiter.api.Test;
@@ -34,8 +33,9 @@ import org.junit.jupiter.api.Test;
 import java.util.HashMap;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class WorkflowUtilsTest extends BaseServerlessTest {
 
@@ -138,22 +138,16 @@ public class WorkflowUtilsTest extends BaseServerlessTest {
     }
 
     @Test
-    public void testDataConditionScriptDefaultVar() {
-        assertThat(ServerlessWorkflowUtils.conditionScript("$.name", DataCondition.Operator.EQUALS, "john")).isNotNull();
-        assertThat(ServerlessWorkflowUtils.conditionScript("$.name", DataCondition.Operator.EQUALS, "john"))
-                .isEqualTo("return workflowdata.get(\"name\").textValue().equals(\"john\");");
-    }
+    public void testDataConditionScript() {
+        assertThat(ServerlessWorkflowUtils.conditionScript("$.customers[?(@.age  > 18)]")).isNotNull();
+        assertThat(ServerlessWorkflowUtils.conditionScript("$.customers[?(@.age  > 18)]"))
+                .isEqualTo("return !((java.util.List<java.lang.String>) com.jayway.jsonpath.JsonPath.parse(((com.fasterxml.jackson.databind.JsonNode)kcontext.getVariable(\"workflowdata\")).toString()).read(\"$.customers[?(@.age  > 18)]\")).isEmpty();");
 
-    @Test
-    public void testConditionScriptCustomVar() {
-        assertThat(ServerlessWorkflowUtils.conditionScript("person.name", DataCondition.Operator.EQUALS, "john")).isNotNull();
-        assertThat(ServerlessWorkflowUtils.conditionScript("person.name", DataCondition.Operator.EQUALS, "john"))
-                .isEqualTo("return person.get(\"name\").textValue().equals(\"john\");");
     }
 
     @Test
     public void testResolveFunctionMetadata() throws Exception {
-        Function function = new Function().withName("testfunction1").withMetadata(
+        FunctionDefinition function = new FunctionDefinition().withName("testfunction1").withMetadata(
                 new HashMap() {{
                     put("testprop1", "customtestprop1val");
                 }}

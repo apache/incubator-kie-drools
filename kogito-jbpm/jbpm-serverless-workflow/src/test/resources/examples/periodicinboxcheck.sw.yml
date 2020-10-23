@@ -1,0 +1,34 @@
+id: checkInbox
+name: Check Inbox Workflow
+description: Periodically Check Inbox
+version: '1.0'
+functions:
+  - name: checkInboxFunction
+    resource: inboxFunctionResource
+    type: getNewMessages
+  - name: sendTextFunction
+    resource: sendTextFunctionResource
+states:
+  - name: CheckInbox
+    type: operation
+    start:
+      kind: scheduled
+      schedule:
+        cron: 0 0/15 * * * ?
+    actionMode: sequential
+    actions:
+      - functionRef:
+          refName: checkInboxFunction
+    transition:
+      nextState: SendTextForHighPrioriry
+  - name: SendTextForHighPrioriry
+    type: foreach
+    inputCollection: "{{ $.messages }}"
+    iterationParam: singlemessage
+    actions:
+      - functionRef:
+          refName: sendTextFunction
+          parameters:
+            message: "{{ $.singlemessage }}"
+    end:
+      kind: default

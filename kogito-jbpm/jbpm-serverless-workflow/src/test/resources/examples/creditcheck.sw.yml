@@ -1,0 +1,58 @@
+---
+id: customercreditcheck
+version: '1.0'
+name: Customer Credit Check Workflow
+description: Perform Customer Credit Check
+functions:
+  - name: callCreditCheckMicroservice
+    resource: creditCheckResource
+    type: microservice
+  - name: sendRejectionEmailFunction
+    resource: rejectEmailResource
+events:
+  - name: CreditCheckCompletedEvent
+    type: creditCheckCompleteType
+    source: creditCheckSource
+    correlation:
+      - contextAttributeName: customerId
+states:
+  - name: CheckCredit
+    type: callback
+    start:
+      kind: default
+    action:
+      functionRef:
+        refName: callCreditCheckMicroservice
+        parameters:
+          customer: "{{ $.customer }}"
+    eventRef: CreditCheckCompletedEvent
+    timeout: PT15M
+    transition:
+      nextState: EvaluateDecision
+  - name: EvaluateDecision
+    type: switch
+    dataConditions:
+      - condition: "{{ $.creditCheck[?(@.decision == 'Approved')] }}"
+        transition:
+          nextState: StartApplication
+      - condition: "{{ $.creditCheck[?(@.decision == 'Denied')] }}"
+        transition:
+          nextState: RejectApplication
+    default:
+      transition:
+        nextState: RejectApplication
+  - name: StartApplication
+    type: subflow
+    workflowId: startApplicationWorkflowId
+    end:
+      kind: default
+  - name: RejectApplication
+    type: operation
+    actionMode: sequential
+    actions:
+      - functionRef:
+          refName: sendRejectionEmailFunction
+          parameters:
+            applicant: "{{ $.customer }}"
+    end:
+      kind: default

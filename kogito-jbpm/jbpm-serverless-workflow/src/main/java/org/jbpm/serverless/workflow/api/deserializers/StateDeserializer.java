@@ -1,36 +1,32 @@
 /*
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
- *   Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
  *
- *   Licensed under the Apache License, Version 2.0 (the "License");
- *   you may not use this file except in compliance with the License.
- *   You may obtain a copy of the License at
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
- *
- *   Unless required by applicable law or agreed to in writing, software
- *   distributed under the License is distributed on an "AS IS" BASIS,
- *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *   See the License for the specific language governing permissions and
- *   limitations under the License.
- *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package org.jbpm.serverless.workflow.api.deserializers;
-
-import java.io.IOException;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
-
-import org.jbpm.serverless.workflow.api.WorkflowPropertySource;
 import org.jbpm.serverless.workflow.api.interfaces.State;
+import org.jbpm.serverless.workflow.api.interfaces.WorkflowPropertySource;
 import org.jbpm.serverless.workflow.api.states.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
 
 public class StateDeserializer extends StdDeserializer<State> {
 
@@ -77,23 +73,23 @@ public class StateDeserializer extends StdDeserializer<State> {
         switch (type) {
             case EVENT:
                 return mapper.treeToValue(node,
-                                          EventState.class);
+                        EventState.class);
             case OPERATION:
                 return mapper.treeToValue(node,
-                                          OperationState.class);
+                        OperationState.class);
             case SWITCH:
                 return mapper.treeToValue(node,
-                                          SwitchState.class);
+                        SwitchState.class);
             case DELAY:
                 return mapper.treeToValue(node,
-                                          DelayState.class);
+                        DelayState.class);
             case PARALLEL:
                 return mapper.treeToValue(node,
-                                          ParallelState.class);
+                        ParallelState.class);
 
             case SUBFLOW:
                 return mapper.treeToValue(node,
-                                          SubflowState.class);
+                        SubflowState.class);
 
             case INJECT:
                 return mapper.treeToValue(node,
@@ -108,7 +104,7 @@ public class StateDeserializer extends StdDeserializer<State> {
                         CallbackState.class);
             default:
                 return mapper.treeToValue(node,
-                                          DefaultState.class);
+                        DefaultState.class);
         }
     }
 }

@@ -38,9 +38,11 @@
       ],
       "transition": {
         "nextState": "HelloWorld2",
-        "produceEvent": {
-          "eventRef": "TestKafkaEvent"
-        }
+        "produceEvents": [
+          {
+            "eventRef": "TestKafkaEvent"
+          }
+        ]
       }
     },
     {

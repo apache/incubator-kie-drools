@@ -1,0 +1,44 @@
+{
+  "id": "switchworkflow",
+  "name": "switch-wf",
+  "version": "1.0",
+  "states": [
+    {
+      "name": "AddInfo",
+      "type": "inject",
+      "start": {
+        "kind": "default"
+      },
+      "data": {
+        "name": "john",
+        "age": "20"
+      },
+      "transition": {
+        "nextState": "ChooseOnAge"
+      }
+    },
+    {
+      "name": "ChooseOnAge",
+      "type": "switch",
+      "dataConditions": [
+        {
+          "condition": "{{ $.[?(@.age  >= 18)] }}",
+          "end": {
+            "kind": "default"
+          }
+        },
+        {
+          "condition": "{{ $.[?(@.age  < 18)] }}",
+          "end": {
+            "kind": "default"
+          }
+        }
+      ],
+      "default": {
+        "end": {
+          "kind": "default"
+        }
+      }
+    }
+  ]
+}

@@ -32,9 +32,11 @@
       },
       "transition": {
         "nextState": "ChooseOnEvent",
-        "produceEvent": {
-          "eventRef": "sendVisaApplicationEvent"
-        }
+        "produceEvents": [
+          {
+            "eventRef": "sendVisaApplicationEvent"
+          }
+        ]
       }
     },
     {

@@ -14,11 +14,11 @@ states:
     type: event
     start:
       kind: default
-    eventsActions:
+    onEvents:
       - eventRefs:
           - TestKafkaEvent
         eventDataFilter:
-          dataOutputPath: "$.data.greet"
+          dataOutputPath: "{{ $.data.greet }}"
         actions:
           - functionRef:
               refName: greetFunction

@@ -1,0 +1,66 @@
+{
+  "id": "applicantrequest",
+  "version": "1.0",
+  "name": "Applicant Request Decision Workflow",
+  "description": "Determine if applicant request is valid",
+  "functions": [
+    {
+      "name": "sendRejectionEmailFunction",
+      "resource": "functionResourse"
+    }
+  ],
+  "states":[
+    {
+      "name":"CheckApplication",
+      "type":"switch",
+      "start": {
+        "kind": "default"
+      },
+      "dataConditions": [
+        {
+          "condition": "{{ $.applicants[?(@.age >= 18)] }}",
+          "transition": {
+            "nextState": "StartApplication"
+          }
+        },
+        {
+          "condition": "{{ $.applicants[?(@.age < 18)] }}",
+          "transition": {
+            "nextState": "RejectApplication"
+          }
+        }
+      ],
+      "default": {
+        "transition": {
+          "nextState": "RejectApplication"
+        }
+      }
+    },
+    {
+      "name": "StartApplication",
+      "type": "subflow",
+      "workflowId": "startApplicationWorkflowId",
+      "end": {
+        "kind": "default"
+      }
+    },
+    {
+      "name":"RejectApplication",
+      "type":"operation",
+      "actionMode":"sequential",
+      "actions":[
+        {
+          "functionRef": {
+            "refName": "sendRejectionEmailFunction",
+            "parameters": {
+              "applicant": "{{ $.applicant }}"
+            }
+          }
+        }
+      ],
+      "end": {
+        "kind": "default"
+      }
+    }
+  ]
+}

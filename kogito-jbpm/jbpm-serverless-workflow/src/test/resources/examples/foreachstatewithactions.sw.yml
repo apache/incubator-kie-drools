@@ -1,0 +1,21 @@
+---
+id: foreachstatewithactions
+name: ForEach State With Actions
+description: ForEach State With Actions
+version: '1.0'
+functions:
+  - name: sendConfirmationFunction
+    resource: functionResourse
+states:
+  - name: SendConfirmationForEachCompletedhOrder
+    type: foreach
+    inputCollection: "{{ $.orders[?(@.completed == true)] }}"
+    iterationParam: "{{ $.completedorder }}"
+    actions:
+      - functionRef:
+          refName: sendConfirmationFunction
+          parameters:
+            orderNumber: "{{ $.completedorder.orderNumber }}"
+            email: "{{ $.completedorder.email }}"
+    end:
+      kind: default

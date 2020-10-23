@@ -1,0 +1,20 @@
+{
+  "type": "object",
+  "javaType": "org.jbpm.serverless.workflow.api.correlation.CorrelationDef",
+  "description": "CloudEvent correlation definition",
+  "properties": {
+    "contextAttributeName": {
+      "type": "string",
+      "description": "CloudEvent Extension Context Attribute name",
+      "minLength": 1
+    },
+    "contextAttributeValue": {
+      "type": "string",
+      "description": "CloudEvent Extension Context Attribute value",
+      "minLength": 1
+    }
+  },
+  "required": [
+    "contextAttributeName"
+  ]
+}

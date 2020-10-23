@@ -17,22 +17,23 @@
     "start": {
       "kind": "default"
     },
-    "eventsActions": [{
-      "eventRefs": ["TestKafkaEvent"],
-      "eventDataFilter": {
-        "dataOutputPath": "$.data.greet"
-      },
-      "actions":[
-        {
-          "functionRef": {
-            "refName": "greetFunction",
-            "parameters": {
-              "script": "System.out.println(\"Hello:\" + ((com.fasterxml.jackson.databind.JsonNode)kcontext.getVariable(\"testtopicVar\")).get(\"firstName\"));"
+    "onEvents": [
+      {
+        "eventRefs": ["TestKafkaEvent"],
+        "eventDataFilter": {
+          "dataOutputPath": "{{ $.data.greet }}"
+        },
+        "actions":[
+          {
+            "functionRef": {
+              "refName": "greetFunction",
+              "parameters": {
+                "script": "System.out.println(\"Hello:\" + ((com.fasterxml.jackson.databind.JsonNode)kcontext.getVariable(\"testtopicVar\")).get(\"firstName\"));"
+              }
             }
           }
-        }
-      ]
-    }],
+        ]
+      }],
     "end": {
       "kind": "terminate"
     }

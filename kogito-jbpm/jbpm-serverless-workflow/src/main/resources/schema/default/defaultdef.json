@@ -1,0 +1,27 @@
+{
+  "type": "object",
+  "javaType": "org.jbpm.serverless.workflow.api.defaultdef.DefaultDefinition",
+  "description": "Switch state default definition",
+  "properties": {
+    "transition": {
+      "$ref": "../transitions/transition.json",
+      "description": "Next transition of the workflow if there is valid matches"
+    },
+    "end": {
+      "$ref": "../end/end.json",
+      "description": "Explicit transition to end"
+    }
+  },
+  "oneOf": [
+    {
+      "required": [
+        "transition"
+      ]
+    },
+    {
+      "required": [
+        "end"
+      ]
+    }
+  ]
+}

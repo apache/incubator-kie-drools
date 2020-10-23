@@ -1,0 +1,61 @@
+---
+id: switchworkflow
+name: switch-wf
+version: '1.0'
+events:
+  - name: TestKafkaEvent
+    source: testtopic
+    type: kafka
+  - name: TestKafkaEvent2
+    source: testtopic
+    type: kafka
+  - name: TestKafkaEvent3
+    source: testtopic
+    type: kafka
+  - name: TestKafkaEvent4
+    source: testtopic
+    type: kafka
+states:
+  - name: AddInfo
+    type: inject
+    start:
+      kind: default
+    data:
+      name: john
+      age: '20'
+    transition:
+      nextState: ChooseOnAge
+  - name: ChooseOnAge
+    type: switch
+    dataConditions:
+      - condition: "{{ $.[?(@.age  >= 18)] }}"
+        transition:
+          nextState: Approve
+          produceEvents:
+            - eventRef: TestKafkaEvent
+            - eventRef: TestKafkaEvent2
+            - eventRef: TestKafkaEvent3
+            - eventRef: TestKafkaEvent4
+      - condition: "{{ $.[?(@.age  < 18)] }}"
+        transition:
+          nextState: Deny
+          produceEvents:
+            - eventRef: TestKafkaEvent
+            - eventRef: TestKafkaEvent2
+            - eventRef: TestKafkaEvent3
+            - eventRef: TestKafkaEvent4
+    default:
+      transition:
+        nextState: Approve
+  - name: Approve
+    type: inject
+    data:
+      decision: Approve
+    end:
+      kind: default
+  - name: Deny
+    type: inject
+    data:
+      decision: Denied
+    end:
+      kind: default

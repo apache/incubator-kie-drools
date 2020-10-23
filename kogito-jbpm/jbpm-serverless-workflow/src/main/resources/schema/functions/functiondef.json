@@ -1,0 +1,27 @@
+{
+  "type": "object",
+  "javaType": "org.jbpm.serverless.workflow.api.functions.FunctionDefinition",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Function unique name",
+      "minLength": 1
+    },
+    "resource": {
+      "type": "string",
+      "description": "Function resource (URI)"
+    },
+    "type": {
+      "type": "string",
+      "description": "Type of function to implement. Can be defined by implementations",
+      "minLength": 1
+    },
+    "metadata": {
+      "$ref": "../metadata/metadata.json"
+    }
+  },
+  "required": [
+    "name",
+    "resource"
+  ]
+}

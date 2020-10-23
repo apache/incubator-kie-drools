@@ -116,6 +116,8 @@ public class ProcessGenerationTest extends AbstractCodegenTest {
     @ParameterizedTest
     @MethodSource("processesProvider")
     public void testProcessGeneration(String processFile) throws Exception {
+        // for some tests this needs to be set to true
+        System.setProperty("jbpm.enable.multi.con", "true");
         List<org.kie.api.definition.process.Process> processes = ProcessCodegen.parseProcesses(Stream.of(processFile)
                 .map(resource -> new File(BASE_PATH.toString(), resource))
                 .collect(Collectors.toList()));
@@ -143,6 +145,7 @@ public class ProcessGenerationTest extends AbstractCodegenTest {
         assertMetadata(expected.getMetaData(), current.getMetaData(), IGNORED_PROCESS_META);
 
         assertNodes(expected.getNodes(), current.getNodes());
+        System.clearProperty("jbpm.enable.multi.con");
     }
 
     @Test

@@ -1,36 +1,31 @@
 /*
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
- *   Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
  *
- *   Licensed under the Apache License, Version 2.0 (the "License");
- *   you may not use this file except in compliance with the License.
- *   You may obtain a copy of the License at
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
- *
- *   Unless required by applicable law or agreed to in writing, software
- *   distributed under the License is distributed on an "AS IS" BASIS,
- *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *   See the License for the specific language governing permissions and
- *   limitations under the License.
- *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 package org.jbpm.serverless.workflow.api.serializers;
-
-import java.io.IOException;
-import java.security.MessageDigest;
-import java.util.UUID;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
-
-import org.jbpm.serverless.workflow.api.functions.Function;
-import org.jbpm.serverless.workflow.api.interfaces.Extension;
-import org.jbpm.serverless.workflow.api.interfaces.State;
 import org.jbpm.serverless.workflow.api.Workflow;
 import org.jbpm.serverless.workflow.api.events.EventDefinition;
+import org.jbpm.serverless.workflow.api.functions.FunctionDefinition;
+import org.jbpm.serverless.workflow.api.interfaces.Extension;
+import org.jbpm.serverless.workflow.api.interfaces.State;
+
+import java.io.IOException;
+import java.security.MessageDigest;
+import java.util.UUID;
 
 public class WorkflowSerializer extends StdSerializer<Workflow> {
 
@@ -51,53 +46,48 @@ public class WorkflowSerializer extends StdSerializer<Workflow> {
 
         gen.writeStartObject();
 
-        if(workflow.getId() !=null && !workflow.getId().isEmpty()) {
+        if (workflow.getId() != null && !workflow.getId().isEmpty()) {
             gen.writeStringField("id",
-                                 workflow.getId());
+                    workflow.getId());
         } else {
             gen.writeStringField("id",
-                                 generateUniqueId());
+                    generateUniqueId());
         }
 
         gen.writeStringField("name",
                 workflow.getName());
 
-        if(workflow.getDescription() != null && !workflow.getDescription().isEmpty()) {
+        if (workflow.getDescription() != null && !workflow.getDescription().isEmpty()) {
             gen.writeStringField("description",
-                                 workflow.getDescription());
+                    workflow.getDescription());
         }
 
-        if(workflow.getVersion() != null && !workflow.getVersion().isEmpty()) {
+        if (workflow.getVersion() != null && !workflow.getVersion().isEmpty()) {
             gen.writeStringField("version",
-                                 workflow.getVersion());
+                    workflow.getVersion());
         }
 
-        if(workflow.getSchemaVersion() != null && !workflow.getSchemaVersion().isEmpty()) {
+        if (workflow.getSchemaVersion() != null && !workflow.getSchemaVersion().isEmpty()) {
             gen.writeStringField("schemaVersion",
-                                 workflow.getSchemaVersion());
+                    workflow.getSchemaVersion());
         }
 
-        if(workflow.getDataInputSchema() != null && !workflow.getDataInputSchema().isEmpty() ) {
+        if (workflow.getDataInputSchema() != null && !workflow.getDataInputSchema().isEmpty()) {
             gen.writeObjectField("dataInputSchema",
                     workflow.getDataInputSchema());
         }
 
-        if(workflow.getDataOutputSchema() != null && !workflow.getDataOutputSchema().isEmpty() ) {
+        if (workflow.getDataOutputSchema() != null && !workflow.getDataOutputSchema().isEmpty()) {
             gen.writeObjectField("dataOutputSchema",
                     workflow.getDataOutputSchema());
         }
 
-        if(workflow.getMetadata() != null && !workflow.getMetadata().isEmpty()) {
+        if (workflow.getMetadata() != null && !workflow.getMetadata().isEmpty()) {
             gen.writeObjectField("metadata",
-                                 workflow.getMetadata());
+                    workflow.getMetadata());
         }
 
-        if(workflow.getExpressionLanguage() != null && !workflow.getExpressionLanguage().isEmpty()) {
-            gen.writeObjectField("expressionLanguage",
-                                 workflow.getExpressionLanguage());
-        }
-
-        if(workflow.getEvents() != null && !workflow.getEvents().isEmpty()) {
+        if (workflow.getEvents() != null && !workflow.getEvents().isEmpty()) {
             gen.writeArrayFieldStart("events");
             for (EventDefinition eventDefinition : workflow.getEvents()) {
                 gen.writeObject(eventDefinition);
@@ -108,9 +98,9 @@ public class WorkflowSerializer extends StdSerializer<Workflow> {
             gen.writeEndArray();
         }
 
-        if(workflow.getFunctions() != null && !workflow.getFunctions().isEmpty()) {
+        if (workflow.getFunctions() != null && !workflow.getFunctions().isEmpty()) {
             gen.writeArrayFieldStart("functions");
-            for (Function function : workflow.getFunctions()) {
+            for (FunctionDefinition function : workflow.getFunctions()) {
                 gen.writeObject(function);
             }
             gen.writeEndArray();
@@ -130,7 +120,7 @@ public class WorkflowSerializer extends StdSerializer<Workflow> {
             gen.writeEndArray();
         }
 
-        if(workflow.getExtensions() != null && !workflow.getExtensions().isEmpty()) {
+        if (workflow.getExtensions() != null && !workflow.getExtensions().isEmpty()) {
             gen.writeArrayFieldStart("extensions");
             for (Extension extension : workflow.getExtensions()) {
                 gen.writeObject(extension);
@@ -146,8 +136,8 @@ public class WorkflowSerializer extends StdSerializer<Workflow> {
             MessageDigest salt = MessageDigest.getInstance("SHA-256");
 
             salt.update(UUID.randomUUID()
-                                .toString()
-                                .getBytes("UTF-8"));
+                    .toString()
+                    .getBytes("UTF-8"));
             return bytesToHex(salt.digest());
         } catch (Exception e) {
             return UUID.randomUUID().toString();

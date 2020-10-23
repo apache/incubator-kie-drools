@@ -1,0 +1,154 @@
+{
+  "id": "prchecker",
+  "name": "Github PR Checker Workflow",
+  "version": "1.0",
+  "functions": [
+    {
+      "name": "AddLabels",
+      "type": "service",
+      "metadata": {
+        "interface": "org.kogito.examples.sw.github.workflow.GithubService",
+        "operation": "addLabels"
+      }
+    },
+    {
+      "name": "AddReviewers",
+      "type": "service",
+      "metadata": {
+        "interface": "org.kogito.examples.sw.github.workflow.GithubService",
+        "operation": "addReviewers"
+      }
+    },
+    {
+      "name": "FetchPRFiles",
+      "type": "service",
+      "metadata": {
+        "interface": "org.kogito.examples.sw.github.workflow.GithubService",
+        "operation": "fetchPRFiles"
+      }
+    }
+  ],
+  "events": [
+    {
+      "name": "PROpened",
+      "source": "github",
+      "type": "cloudevent",
+      "kind": "consumed"
+    },
+    {
+      "name": "ChangedPR",
+      "source": "github",
+      "type": "cloudevent",
+      "kind": "consumed"
+    },
+    {
+      "name": "BackendNewChange",
+      "source": "/checker/workflow",
+      "type": "cloudevent",
+      "kind": "produced"
+    },
+    {
+      "name": "FrontendNewChange",
+      "source": "/checker/workflow",
+      "type": "cloudevent",
+      "kind": "produced"
+    },
+    {
+      "name": "PRChecked",
+      "source": "/checker/workflow",
+      "type": "cloudevent",
+      "kind": "produced"
+    }
+  ],
+  "states": [
+    {
+      "name": "HandleOpenPR",
+      "type": "event",
+      "start": {
+        "kind": "default"
+      },
+      "onEvents": [
+        {
+          "eventRefs": [
+            "PROpened",
+            "ChangedPR"
+          ],
+          "actions": [
+            {
+              "functionRef": {
+                "refName": "AddLabels"
+              }
+            },
+            {
+              "functionRef": {
+                "refName": "AddReviewers"
+              }
+            },
+            {
+              "functionRef": {
+                "refName": "FetchPRFiles"
+              }
+            }
+          ]
+        }
+      ],
+      "transition": {
+        "nextState": "CheckBackend"
+      }
+    },
+    {
+      "name": "CheckBackend",
+      "type": "switch",
+      "dataConditions": [
+        {
+          "condition": "{{ $.[?(@.file  == 'backend')] }}",
+          "transition": {
+            "produceEvents": [
+              {
+                "eventRef": "BackendNewChange"
+              }
+            ],
+            "nextState": "CheckFrontend"
+          }
+        },
+        {
+          "condition": "{{ $.[?(@.file  != 'backend')] }}",
+          "transition": {
+            "nextState": "CheckFrontend"
+          }
+        }
+      ]
+    },
+    {
+      "name": "CheckFrontend",
+      "type": "switch",
+      "dataConditions": [
+        {
+          "condition": "{{ $.[?(@.file  == 'frontend')] }}",
+          "end": {
+            "kind": "event",
+            "produceEvents": [
+              {
+                "eventRef": "FrontendNewChange"
+              },
+              {
+                "eventRef": "PRChecked"
+              }
+            ]
+          }
+        },
+        {
+          "condition": "{{ $.[?(@.file  != 'frontend')] }}",
+          "end": {
+            "kind": "event",
+            "produceEvents": [
+              {
+                "eventRef": "PRChecked"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

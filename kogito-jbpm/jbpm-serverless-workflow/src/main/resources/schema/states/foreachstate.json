@@ -1,0 +1,129 @@
+{
+  "type": "object",
+  "javaType": "org.jbpm.serverless.workflow.api.states.ForEachState",
+  "javaInterfaces": [
+    "org.jbpm.serverless.workflow.api.interfaces.State"
+  ],
+  "description": "Execute a set of defined actions or workflows for each element of a data array",
+  "extends": {
+    "$ref": "defaultstate.json"
+  },
+  "properties": {
+    "inputCollection": {
+      "type": "string",
+      "description": "JsonPath expression selecting an array element of the states data"
+    },
+    "outputCollection": {
+      "type": "string",
+      "description": "JsonPath expression specifying an array element of the states data to add the results of each iteration"
+    },
+    "iterationParam": {
+      "type": "string",
+      "description": "Name of the iteration parameter that can be referenced in actions/workflow. For each parallel iteration, this param should contain an unique element of the inputCollection array"
+    },
+    "max": {
+      "type": "integer",
+      "default": "0",
+      "minimum": 0,
+      "description": "Specifies how upper bound on how many iterations may run in parallel"
+    },
+    "actions": {
+      "type": "array",
+      "description": "Actions to be executed for each of the elements of inputCollection",
+      "items": {
+        "type": "object",
+        "$ref": "../actions/action.json"
+      }
+    },
+    "workflowId": {
+      "type": "string",
+      "description": "Unique Id of a workflow to be executed for each of the elements of inputCollection"
+    }
+  },
+  "oneOf": [
+    {
+      "required": [
+        "name",
+        "type",
+        "inputCollection",
+        "inputParameter",
+        "workflowId",
+        "end"
+      ]
+    },
+    {
+      "required": [
+        "name",
+        "type",
+        "inputCollection",
+        "inputParameter",
+        "workflowId",
+        "transition"
+      ]
+    },
+    {
+      "required": [
+        "start",
+        "name",
+        "type",
+        "inputCollection",
+        "inputParameter",
+        "workflowId",
+        "end"
+      ]
+    },
+    {
+      "required": [
+        "start",
+        "name",
+        "type",
+        "inputCollection",
+        "inputParameter",
+        "workflowId",
+        "transition"
+      ]
+    },
+    {
+      "required": [
+        "name",
+        "type",
+        "inputCollection",
+        "inputParameter",
+        "actions",
+        "end"
+      ]
+    },
+    {
+      "required": [
+        "name",
+        "type",
+        "inputCollection",
+        "inputParameter",
+        "actions",
+        "transition"
+      ]
+    },
+    {
+      "required": [
+        "start",
+        "name",
+        "type",
+        "inputCollection",
+        "inputParameter",
+        "actions",
+        "end"
+      ]
+    },
+    {
+      "required": [
+        "start",
+        "name",
+        "type",
+        "inputCollection",
+        "inputParameter",
+        "actions",
+        "transition"
+      ]
+    }
+  ]
+}

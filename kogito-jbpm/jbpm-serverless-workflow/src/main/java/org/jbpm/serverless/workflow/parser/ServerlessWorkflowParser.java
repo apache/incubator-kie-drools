@@ -14,12 +14,6 @@
  */
 package org.jbpm.serverless.workflow.parser;
 
-import java.io.Reader;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicLong;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
@@ -28,9 +22,10 @@ import org.jbpm.serverless.workflow.api.actions.Action;
 import org.jbpm.serverless.workflow.api.branches.Branch;
 import org.jbpm.serverless.workflow.api.end.End;
 import org.jbpm.serverless.workflow.api.events.EventDefinition;
-import org.jbpm.serverless.workflow.api.functions.Function;
+import org.jbpm.serverless.workflow.api.functions.FunctionDefinition;
 import org.jbpm.serverless.workflow.api.interfaces.State;
 import org.jbpm.serverless.workflow.api.mapper.BaseObjectMapper;
+import org.jbpm.serverless.workflow.api.produce.ProduceEvent;
 import org.jbpm.serverless.workflow.api.states.DefaultState.Type;
 import org.jbpm.serverless.workflow.api.states.DelayState;
 import org.jbpm.serverless.workflow.api.states.EventState;
@@ -61,6 +56,10 @@ import org.kie.api.definition.process.Process;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Reader;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicLong;
+
 public class ServerlessWorkflowParser {
     private static final Logger LOGGER = LoggerFactory.getLogger(ServerlessWorkflowParser.class);
 
@@ -77,6 +76,7 @@ public class ServerlessWorkflowParser {
     private static final String NODE_END_NAME = "End";
     private static final String NODETOID_START = "start";
     private static final String NODETOID_END = "end";
+    private static final String XORSPLITDEFAULT = "Default";
 
     private AtomicLong idCounter = new AtomicLong(1);
     private ServerlessWorkflowFactory factory;
@@ -110,17 +110,15 @@ public class ServerlessWorkflowParser {
         }
 
         List<State> workflowStates = workflow.getStates();
-        List<Function> workflowFunctions = workflow.getFunctions();
+        List<FunctionDefinition> workflowFunctions = workflow.getFunctions();
 
-        StartNode workflowStartNode;
+        StartNode workflowStartNode = null;
         Map<String, EndNode> workflowEndNodes = new HashMap<>();
 
         State workflowStartState = ServerlessWorkflowUtils.getWorkflowStartState(workflow);
 
-        if (workflowStartState.getType().equals(Type.EVENT)) {
-            EventState startEventState = (EventState) workflowStartState;
-            workflowStartNode = factory.messageStartNode(idCounter.getAndIncrement(), ServerlessWorkflowUtils.getWorkflowEventFor(workflow, startEventState.getEventsActions().get(0).getEventRefs().get(0)), process);
-        } else {
+        // starting event states can have multiple starts. this is handled below
+        if (!workflowStartState.getType().equals(Type.EVENT)) {
             workflowStartNode = factory.startNode(idCounter.getAndIncrement(), NODE_START_NAME, process);
         }
 
@@ -142,9 +140,21 @@ public class ServerlessWorkflowParser {
                 }
 
                 CompositeContextNode embeddedSubProcess = factory.subProcessNode(idCounter.getAndIncrement(), state.getName(), process);
-                handleActions(workflowFunctions, eventState.getEventsActions().get(0).getActions(), process, embeddedSubProcess);
+                handleActions(workflowFunctions, eventState.getOnEvents().get(0).getActions(), process, embeddedSubProcess);
 
-                factory.connect(workflowStartNode.getId(), embeddedSubProcess.getId(), workflowStartNode.getId() + "_" + embeddedSubProcess.getId(), process);
+                List<String> onEventRefs = eventState.getOnEvents().get(0).getEventRefs();
+                if (onEventRefs.size() == 1) {
+                    StartNode singleMessageStartNode = factory.messageStartNode(idCounter.getAndIncrement(), ServerlessWorkflowUtils.getWorkflowEventFor(workflow, eventState.getOnEvents().get(0).getEventRefs().get(0)), process);
+                    factory.connect(singleMessageStartNode.getId(), embeddedSubProcess.getId(), singleMessageStartNode.getId() + "_" + embeddedSubProcess.getId(), process);
+                } else {
+                    Join messageStartJoin = factory.joinNode(idCounter.getAndIncrement(), eventState.getName() + "Split", Join.TYPE_XOR, process);
+
+                    for (String onEventRef : onEventRefs) {
+                        StartNode messageStartNode = factory.messageStartNode(idCounter.getAndIncrement(), ServerlessWorkflowUtils.getWorkflowEventFor(workflow, onEventRef), process);
+                        factory.connect(messageStartNode.getId(), messageStartJoin.getId(), messageStartNode.getId() + "_" + messageStartJoin.getId(), process);
+                    }
+                    factory.connect(messageStartJoin.getId(), embeddedSubProcess.getId(), messageStartJoin.getId() + "_" + embeddedSubProcess.getId(), process);
+                }
 
                 if (state.getEnd() != null) {
                     factory.connect(embeddedSubProcess.getId(), workflowEndNodes.get(state.getName()).getId(), embeddedSubProcess.getId() + "_" + workflowEndNodes.get(state.getName()).getId(), process);
@@ -283,8 +293,8 @@ public class ServerlessWorkflowParser {
                 Join parallelJoin = factory.joinNode(idCounter.getAndIncrement(), parallelState.getName() + NODE_END_NAME, Join.TYPE_AND, process);
 
                 for (Branch branch : parallelState.getBranches()) {
-                    SubflowState subflowState = (SubflowState) branch.getStates().get(0);
-                    SubProcessNode callActivityNode = factory.callActivity(idCounter.getAndIncrement(), subflowState.getName(), subflowState.getWorkflowId(), subflowState.isWaitForCompletion(), process);
+                    String subflowStateId = branch.getWorkflowId();
+                    SubProcessNode callActivityNode = factory.callActivity(idCounter.getAndIncrement(), branch.getName(), subflowStateId, true, process);
 
                     factory.connect(parallelSplit.getId(), callActivityNode.getId(), parallelSplit.getId() + "_" + callActivityNode.getId(), process);
                     factory.connect(callActivityNode.getId(), parallelJoin.getId(), callActivityNode.getId() + "_" + parallelJoin.getId(), process);
@@ -313,11 +323,30 @@ public class ServerlessWorkflowParser {
                 Long sourceId = nameToNodeId.get(state.getName()).get(NODETOID_END);
                 Long targetId = nameToNodeId.get(state.getTransition().getNextState()).get(NODETOID_START);
 
-                if (transition.getProduceEvent() != null && transition.getProduceEvent().getEventRef() != null) {
-                    ActionNode sendEventNode = factory.sendEventNode(idCounter.getAndIncrement(),
-                            ServerlessWorkflowUtils.getWorkflowEventFor(workflow, transition.getProduceEvent().getEventRef()), process);
-                    factory.connect(sourceId, sendEventNode.getId(), sourceId + "_" + sendEventNode.getId(), process);
-                    factory.connect(sendEventNode.getId(), targetId, sendEventNode + "_" + targetId, process);
+                if (!transition.getProduceEvents().isEmpty()) {
+                    if(transition.getProduceEvents().size() == 1) {
+                        ActionNode sendEventNode = factory.sendEventNode(idCounter.getAndIncrement(),
+                                ServerlessWorkflowUtils.getWorkflowEventFor(workflow, transition.getProduceEvents().get(0).getEventRef()), process);
+                        factory.connect(sourceId, sendEventNode.getId(), sourceId + "_" + sendEventNode.getId(), process);
+                        factory.connect(sendEventNode.getId(), targetId, sendEventNode + "_" + targetId, process);
+                    } else {
+                        ActionNode firstActionNode = factory.sendEventNode(idCounter.getAndIncrement(),
+                                ServerlessWorkflowUtils.getWorkflowEventFor(workflow, transition.getProduceEvents().get(0).getEventRef()), process);
+                        ActionNode lastActionNode = null;
+                        for(ProduceEvent p : transition.getProduceEvents().subList(1, transition.getProduceEvents().size())) {
+                            ActionNode newActionNode = factory.sendEventNode(idCounter.getAndIncrement(),
+                                    ServerlessWorkflowUtils.getWorkflowEventFor(workflow, p.getEventRef()), process);
+                            if(lastActionNode == null) {
+                                lastActionNode = newActionNode;
+                                factory.connect(firstActionNode.getId(), lastActionNode.getId(), firstActionNode.getId() + "_" + lastActionNode.getId(), process);
+                            } else {
+                                factory.connect(lastActionNode.getId(), newActionNode.getId(), lastActionNode.getId() + "_" + newActionNode.getId(), process);
+                                lastActionNode = newActionNode;
+                            }
+                        }
+                        factory.connect(sourceId, firstActionNode.getId(), sourceId + "_" + firstActionNode.getId(), process);
+                        factory.connect(lastActionNode.getId(), targetId, lastActionNode + "_" + targetId, process);
+                    }
                 } else {
                     factory.connect(sourceId, targetId, sourceId + "_" + targetId, process);
                 }
@@ -331,7 +360,7 @@ public class ServerlessWorkflowParser {
                 SwitchState switchState = (SwitchState) state;
 
                 if (switchState.getDataConditions() != null && !switchState.getDataConditions().isEmpty()) {
-                    finalizeDataBasedSwitchState(switchState, nameToNodeId, process);
+                    finalizeDataBasedSwitchState(switchState, nameToNodeId, process, workflow);
                 } else {
                     finalizeEventBasedSwitchState(switchState, nameToNodeId, process, workflow);
                 }
@@ -370,33 +399,100 @@ public class ServerlessWorkflowParser {
         }
     }
 
-    protected void finalizeDataBasedSwitchState(SwitchState switchState, Map<String, Map<String, Long>> nameToNodeId, RuleFlowProcess process) {
+    protected void finalizeDataBasedSwitchState(SwitchState switchState, Map<String, Map<String, Long>> nameToNodeId, RuleFlowProcess process, Workflow workflow) {
         long splitNodeId = nameToNodeId.get(switchState.getName()).get(NODETOID_START);
         Split xorSplit = (Split) process.getNode(splitNodeId);
 
         if (xorSplit != null) {
             // set default connection
-            if (switchState.getDefault() != null && switchState.getDefault().getNextState() != null) {
-                long targetId = nameToNodeId.get(switchState.getDefault().getNextState()).get(NODETOID_START);
-                xorSplit.getMetaData().put("Default", xorSplit.getId() + "_" + targetId);
+            // 1. if its a transition
+            if (switchState.getDefault() != null && switchState.getDefault().getTransition() != null && switchState.getDefault().getTransition().getNextState() != null) {
+                long targetId = nameToNodeId.get(switchState.getDefault().getTransition().getNextState()).get(NODETOID_START);
+                xorSplit.getMetaData().put(XORSPLITDEFAULT, xorSplit.getId() + "_" + targetId);
+            }
+            // 2. if its an end
+            if (switchState.getDefault() != null && switchState.getDefault().getEnd() != null) {
+                if (switchState.getDefault().getEnd().getKind() == End.Kind.EVENT) {
+                    EndNode defaultEndNode = factory.messageEndNode(idCounter.getAndIncrement(), NODE_END_NAME, workflow, switchState.getDefault().getEnd(), process);
+                    factory.connect(xorSplit.getId(), defaultEndNode.getId(), xorSplit.getId() + "_" + defaultEndNode.getId(), process);
+                    xorSplit.getMetaData().put(XORSPLITDEFAULT, xorSplit.getId() + "_" + defaultEndNode.getId());
+                } else {
+                    EndNode defaultEndNode = factory.endNode(idCounter.getAndIncrement(), NODE_END_NAME, true, process);
+                    factory.connect(xorSplit.getId(), defaultEndNode.getId(), xorSplit.getId() + "_" + defaultEndNode.getId(), process);
+                    xorSplit.getMetaData().put(XORSPLITDEFAULT, xorSplit.getId() + "_" + defaultEndNode.getId());
+                }
             }
 
             List<DataCondition> conditions = switchState.getDataConditions();
 
             if (conditions != null && !conditions.isEmpty()) {
                 for (DataCondition condition : conditions) {
-                    // connect
-                    long targetId = nameToNodeId.get(condition.getTransition().getNextState()).get(NODETOID_START);
-                    factory.connect(xorSplit.getId(), targetId, xorSplit.getId() + "_" + targetId, process);
+                    long targetId = 0;
+                    if (condition.getTransition() != null) {
+                        // check if we need to produce an event in-between
+                        if(!condition.getTransition().getProduceEvents().isEmpty()) {
+
+                            if(condition.getTransition().getProduceEvents().size() == 1) {
+                                ActionNode sendEventNode = factory.sendEventNode(idCounter.getAndIncrement(),
+                                        ServerlessWorkflowUtils.getWorkflowEventFor(workflow, condition.getTransition().getProduceEvents().get(0).getEventRef()), process);
+
+                                long nextStateId = nameToNodeId.get(condition.getTransition().getNextState()).get(NODETOID_START);
+                                factory.connect(xorSplit.getId(), sendEventNode.getId(), xorSplit.getId() + "_" + sendEventNode.getId(), process);
+                                factory.connect(sendEventNode.getId(), nextStateId, sendEventNode.getId() + "_" + nextStateId, process);
+
+                                targetId = sendEventNode.getId();
+                            } else {
+                                ActionNode firstActionNode = factory.sendEventNode(idCounter.getAndIncrement(),
+                                        ServerlessWorkflowUtils.getWorkflowEventFor(workflow, condition.getTransition().getProduceEvents().get(0).getEventRef()), process);
+                                ActionNode lastActionNode = null;
+                                for(ProduceEvent p : condition.getTransition().getProduceEvents().subList(1, condition.getTransition().getProduceEvents().size())) {
+                                    ActionNode newActionNode = factory.sendEventNode(idCounter.getAndIncrement(),
+                                            ServerlessWorkflowUtils.getWorkflowEventFor(workflow, p.getEventRef()), process);
+                                    if(lastActionNode == null) {
+                                        lastActionNode = newActionNode;
+                                        factory.connect(firstActionNode.getId(), lastActionNode.getId(), firstActionNode.getId() + "_" + lastActionNode.getId(), process);
+                                    } else {
+                                        factory.connect(lastActionNode.getId(), newActionNode.getId(), lastActionNode.getId() + "_" + newActionNode.getId(), process);
+                                        lastActionNode = newActionNode;
+                                    }
+                                }
+
+                                long nextStateId = nameToNodeId.get(condition.getTransition().getNextState()).get(NODETOID_START);
+                                factory.connect(xorSplit.getId(), firstActionNode.getId(), xorSplit.getId() + "_" + firstActionNode.getId(), process);
+                                factory.connect(lastActionNode.getId(), nextStateId, lastActionNode.getId() + "_" + nextStateId, process);
+
+                                targetId = firstActionNode.getId();
+                            }
+                        } else {
+                            targetId = nameToNodeId.get(condition.getTransition().getNextState()).get(NODETOID_START);
+                            factory.connect(xorSplit.getId(), targetId, xorSplit.getId() + "_" + targetId, process);
+                        }
+                    } else if (condition.getEnd() != null) {
+                        if (condition.getEnd().getKind() == End.Kind.EVENT) {
+                            EndNode conditionEndNode = factory.messageEndNode(idCounter.getAndIncrement(), NODE_END_NAME, workflow, condition.getEnd(), process);
+                            factory.connect(xorSplit.getId(), conditionEndNode.getId(), xorSplit.getId() + "_" + conditionEndNode.getId(), process);
+                            targetId = conditionEndNode.getId();
+                        } else {
+                            EndNode conditionEndNode = factory.endNode(idCounter.getAndIncrement(), NODE_END_NAME, true, process);
+                            factory.connect(xorSplit.getId(), conditionEndNode.getId(), xorSplit.getId() + "_" + conditionEndNode.getId(), process);
+                            targetId = conditionEndNode.getId();
+                        }
+                    }
 
                     // set constraint
                     boolean isDefaultConstraint = false;
-                    if (switchState.getDefault().getNextState() != null && condition.getTransition().getNextState().equals(switchState.getDefault().getNextState())) {
+
+                    if (switchState.getDefault() != null && switchState.getDefault().getTransition() != null && condition.getTransition() != null &&
+                            condition.getTransition().getNextState().equals(switchState.getDefault().getTransition().getNextState())) {
+                        isDefaultConstraint = true;
+                    }
+
+                    if (switchState.getDefault() != null && switchState.getDefault().getEnd() != null && condition.getEnd() != null) {
                         isDefaultConstraint = true;
                     }
 
                     ConstraintImpl constraintImpl = factory.splitConstraint(xorSplit.getId() + "_" + targetId,
-                            "DROOLS_DEFAULT", "java", ServerlessWorkflowUtils.conditionScript(condition.getPath(), condition.getOperator(), condition.getValue()), 0, isDefaultConstraint);
+                            "DROOLS_DEFAULT", "java", ServerlessWorkflowUtils.conditionScript(condition.getCondition()), 0, isDefaultConstraint);
                     xorSplit.addConstraint(new ConnectionRef(xorSplit.getId() + "_" + targetId, targetId, org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE), constraintImpl);
 
                 }
@@ -408,7 +504,7 @@ public class ServerlessWorkflowParser {
         }
     }
 
-    protected void handleActions(List<Function> workflowFunctions,
+    protected void handleActions(List<FunctionDefinition> workflowFunctions,
                                  List<Action> actions,
                                  RuleFlowProcess process,
                                  CompositeContextNode embeddedSubProcess) {
@@ -419,7 +515,7 @@ public class ServerlessWorkflowParser {
             Node current = null;
 
             for (Action action : actions) {
-                Function actionFunction = workflowFunctions
+                FunctionDefinition actionFunction = workflowFunctions
                     .stream()
                     .filter(wf -> wf.getName().equals(action.getFunctionRef().getRefName()))
                     .findFirst()

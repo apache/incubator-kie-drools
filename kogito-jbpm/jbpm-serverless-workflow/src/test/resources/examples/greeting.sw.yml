@@ -1,0 +1,21 @@
+id: greeting
+version: '1.0'
+name: Greeting Workflow
+description: Greet Someone
+functions:
+  - name: greetingFunction
+    resource: functionResourse
+states:
+  - name: Greet
+    type: operation
+    start:
+      kind: default
+    actions:
+      - functionRef:
+          refName: greetingFunction
+          parameters:
+            name: "{{ $.person.name }}"
+        actionDataFilter:
+          dataResultsPath: "{{ $.greeting }}"
+    end:
+      kind: default

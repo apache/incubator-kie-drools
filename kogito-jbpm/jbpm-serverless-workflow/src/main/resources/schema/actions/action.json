@@ -1,0 +1,38 @@
+{
+  "type": "object",
+  "javaType": "org.jbpm.serverless.workflow.api.actions.Action",
+  "description": "Action Definition",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Unique action definition name"
+    },
+    "functionRef": {
+      "description": "References a reusable function definition to be invoked",
+      "$ref": "../functions/functionref.json"
+    },
+    "eventRef": {
+      "description": "References a 'trigger' and 'result' reusable event definitions",
+      "$ref": "../events/eventref.json"
+    },
+    "timeout": {
+      "type": "string",
+      "description": "Time period to wait for function execution to complete"
+    },
+    "actionDataFilter": {
+      "$ref": "../filters/actiondatafilter.json"
+    }
+  },
+  "oneOf": [
+    {
+      "required": [
+        "functionRef"
+      ]
+    },
+    {
+      "required": [
+        "eventRef"
+      ]
+    }
+  ]
+}

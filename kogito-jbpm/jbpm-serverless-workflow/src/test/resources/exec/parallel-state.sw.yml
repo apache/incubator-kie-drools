@@ -9,14 +9,8 @@ states:
       kind: default
     branches:
       - name: branch1
-        states:
-          - name: Branch1SubFlow
-            type: subflow
-            workflowId: branch1abc
+        workflowId: branch1abc
       - name: branch2
-        states:
-          - name: Branch2SubFlow
-            type: subflow
-            workflowId: branch2abc
+        workflowId: branch2abc
     end:
       kind: default

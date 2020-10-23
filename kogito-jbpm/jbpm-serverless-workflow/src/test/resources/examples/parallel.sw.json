@@ -1,0 +1,29 @@
+{
+  "id": "parallelexec",
+  "version": "1.0",
+  "name": "Parallel Execution Workflow",
+  "description": "Executes two branches in parallel",
+  "states":[
+    {
+      "name": "ParallelExec",
+      "type": "parallel",
+      "start": {
+        "kind": "default"
+      },
+      "completionType": "and",
+      "branches": [
+        {
+          "name": "ShortDelayBranch",
+          "workflowId": "shortdelayworkflowid"
+        },
+        {
+          "name": "LongDelayBranch",
+          "workflowId": "longdelayworkflowid"
+        }
+      ],
+      "end": {
+        "kind": "default"
+      }
+    }
+  ]
+}

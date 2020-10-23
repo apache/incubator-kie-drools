@@ -21,13 +21,14 @@ import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.serverless.workflow.api.end.End;
 import org.jbpm.serverless.workflow.api.events.EventDefinition;
-import org.jbpm.serverless.workflow.api.functions.Function;
+import org.jbpm.serverless.workflow.api.functions.FunctionDefinition;
 import org.jbpm.serverless.workflow.api.produce.ProduceEvent;
 import org.jbpm.workflow.core.impl.ConstraintImpl;
 import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
 import org.jbpm.workflow.core.node.*;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -89,8 +90,10 @@ public class WorkflowFactoryTest extends BaseServerlessTest {
     public void testMessageEndNode() {
         TestNodeContainer nodeContainer = new TestNodeContainer();
 
-        End endDef = new End().withKind(End.Kind.EVENT).withProduceEvent(
-                new ProduceEvent().withEventRef("sampleEvent").withData("sampleData"));
+        End endDef = new End().withKind(End.Kind.EVENT).withProduceEvents(
+                Arrays.asList(
+                        new ProduceEvent().withEventRef("sampleEvent").withData("sampleData"))
+        );
 
         EndNode endNode = testFactory.messageEndNode(1L, "End", eventDefOnlyWorkflow, endDef, nodeContainer);
 
@@ -167,7 +170,7 @@ public class WorkflowFactoryTest extends BaseServerlessTest {
     @Test
     public void testServiceNode() {
         TestNodeContainer nodeContainer = new TestNodeContainer();
-        Function function = new Function().withName("testFunction").withType("testType")
+        FunctionDefinition function = new FunctionDefinition().withName("testFunction").withType("testType")
                 .withResource("testResource").withMetadata(
                         new HashMap<String, String>() {{
                             put("interface", "testInterface");
@@ -274,7 +277,7 @@ public class WorkflowFactoryTest extends BaseServerlessTest {
         metaMap.put("skippable", "false");
         metaMap.put("groupid", "testGroupId");
         metaMap.put("actorid", "testActorId");
-        Function function = new Function().withName("testfunction1").withMetadata(metaMap);
+        FunctionDefinition function = new FunctionDefinition().withName("testfunction1").withMetadata(metaMap);
 
         HumanTaskNode humanTaskNode = testFactory.humanTaskNode(1L, "test name", function, process, nodeContainer);
 
@@ -300,7 +303,7 @@ public class WorkflowFactoryTest extends BaseServerlessTest {
         TestNodeContainer nodeContainer = new TestNodeContainer();
         RuleFlowProcess process = new RuleFlowProcess();
 
-        Function function = new Function().withName("testfunction1");
+        FunctionDefinition function = new FunctionDefinition().withName("testfunction1");
 
         HumanTaskNode humanTaskNode = testFactory.humanTaskNode(1L, "test name", function, process, nodeContainer);
 
@@ -326,7 +329,7 @@ public class WorkflowFactoryTest extends BaseServerlessTest {
 
         Map<String, String> metaMap = new HashMap<>();
         metaMap.put("ruleflowgroup", "testruleflowgroup");
-        Function function = new Function().withName("testfunction3").withMetadata(metaMap);
+        FunctionDefinition function = new FunctionDefinition().withName("testfunction3").withMetadata(metaMap);
 
         RuleSetNode ruleSetNode = testFactory.ruleSetNode(1L, "test name", function, nodeContainer);
         assertThat(ruleSetNode).isNotNull();
@@ -346,7 +349,7 @@ public class WorkflowFactoryTest extends BaseServerlessTest {
     public void testRuleSetNodeDefaultValues() {
         TestNodeContainer nodeContainer = new TestNodeContainer();
 
-        Function function = new Function().withName("testfunction3");
+        FunctionDefinition function = new FunctionDefinition().withName("testfunction3");
 
         RuleSetNode ruleSetNode = testFactory.ruleSetNode(1L, "test name", function, nodeContainer);
         assertThat(ruleSetNode).isNotNull();
@@ -400,7 +403,7 @@ public class WorkflowFactoryTest extends BaseServerlessTest {
     @Test
     public void testCamelRouteServiceNode() {
         TestNodeContainer nodeContainer = new TestNodeContainer();
-        Function function = new Function().withName("testFunction").withType("testType")
+        FunctionDefinition function = new FunctionDefinition().withName("testFunction").withType("testType")
                 .withResource("testResource").withMetadata(
                         new HashMap<String, String>() {{
                             put("endpoint", "direct:testendpoint");

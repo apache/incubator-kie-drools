@@ -15,10 +15,6 @@
 
 package org.jbpm.serverless.workflow;
 
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.util.Properties;
-
 import org.jbpm.serverless.workflow.api.Workflow;
 import org.jbpm.serverless.workflow.api.end.End;
 import org.jbpm.serverless.workflow.api.events.EventDefinition;
@@ -28,6 +24,10 @@ import org.jbpm.serverless.workflow.api.states.InjectState;
 import org.jbpm.serverless.workflow.parser.ServerlessWorkflowParser;
 import org.jbpm.serverless.workflow.parser.core.ServerlessWorkflowFactory;
 import org.jbpm.serverless.workflow.parser.util.WorkflowAppContext;
+
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.util.Properties;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;

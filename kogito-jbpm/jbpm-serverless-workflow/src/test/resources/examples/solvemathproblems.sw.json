@@ -1,0 +1,40 @@
+{
+  "id": "solvemathproblems",
+  "version": "1.0",
+  "name": "Solve Math Problems Workflow",
+  "description": "Solve math problems",
+  "functions": [
+    {
+      "name": "solveMathExpressionFunction",
+      "resource": "functionResourse"
+    }
+  ],
+  "states":[
+    {
+      "name":"Solve",
+      "start": {
+        "kind": "default"
+      },
+      "type":"foreach",
+      "inputCollection": "{{ $.expressions }}",
+      "iterationParam": "singleexpression",
+      "outputCollection": "{{ $.results }}",
+      "actions":[
+        {
+          "functionRef": {
+            "refName": "solveMathExpressionFunction",
+            "parameters": {
+              "expression": "{{ $.singleexpression }}"
+            }
+          }
+        }
+      ],
+      "stateDataFilter": {
+        "dataOutputPath": "{{ $.results }}"
+      },
+      "end": {
+        "kind": "default"
+      }
+    }
+  ]
+}

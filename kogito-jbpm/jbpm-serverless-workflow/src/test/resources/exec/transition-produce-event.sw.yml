@@ -20,11 +20,11 @@ states:
       - functionRef:
           refName: helloOne
           parameters:
-            script: $.hello1
+            script: ''
     transition:
       nextState: HelloWorld2
-      produceEvent:
-        eventRef: TestKafkaEvent
+      produceEvents:
+        - eventRef: TestKafkaEvent
   - name: HelloWorld2
     type: operation
     actionMode: sequential
@@ -32,6 +32,6 @@ states:
       - functionRef:
           refName: helloTwo
           parameters:
-            script: $.hello2
+            script: ''
     end:
       kind: terminate

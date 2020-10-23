@@ -22,8 +22,8 @@ states:
       age: '20'
     transition:
       nextState: ChooseOnEvent
-      produceEvent:
-        eventRef: sendVisaApplicationEvent
+      produceEvents:
+        - eventRef: sendVisaApplicationEvent
   - name: ChooseOnEvent
     type: switch
     eventConditions:

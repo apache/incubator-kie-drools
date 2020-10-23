@@ -1,0 +1,90 @@
+{
+  "id": "provisionorders",
+  "version": "1.0",
+  "name": "Provision Orders",
+  "description": "Provision Orders and handle errors thrown",
+  "functions": [
+    {
+      "name": "provisionOrderFunction",
+      "resource": "functionResourse"
+    }
+  ],
+  "states":[
+    {
+      "name":"ProvisionOrder",
+      "type":"operation",
+      "start": {
+        "kind": "default"
+      },
+      "actionMode":"sequential",
+      "actions":[
+        {
+          "functionRef": {
+            "refName": "provisionOrderFunction",
+            "parameters": {
+              "order": "{{ $.order }}"
+            }
+          }
+        }
+      ],
+      "onError": [
+        {
+          "expression": "{{ $.exceptions[?(@.name == 'MissingOrderIdException')] }}",
+          "transition": {
+            "nextState": "MissingId"
+          }
+        },
+        {
+          "expression": "{{ $.exceptions[?(@.name == 'MissingOrderItemException')] }}",
+          "transition": {
+            "nextState": "MissingItem"
+          }
+        },
+        {
+          "expression": "{{ $.exceptions[?(@.name == 'MissingOrderQuantityException')] }}",
+          "transition": {
+            "nextState": "MissingQuantity"
+          }
+        }
+      ],
+      "stateDataFilter": {
+        "dataOutputPath": "{{ $.exceptions }}"
+      },
+      "transition": {
+        "nextState":"ApplyOrder"
+      }
+    },
+    {
+      "name": "MissingId",
+      "type": "subflow",
+      "workflowId": "handleMissingIdExceptionWorkflow",
+      "end": {
+        "kind": "default"
+      }
+    },
+    {
+      "name": "MissingItem",
+      "type": "subflow",
+      "workflowId": "handleMissingItemExceptionWorkflow",
+      "end": {
+        "kind": "default"
+      }
+    },
+    {
+      "name": "MissingQuantity",
+      "type": "subflow",
+      "workflowId": "handleMissingQuantityExceptionWorkflow",
+      "end": {
+        "kind": "default"
+      }
+    },
+    {
+      "name": "ApplyOrder",
+      "type": "subflow",
+      "workflowId": "applyOrderWorkflowId",
+      "end": {
+        "kind": "default"
+      }
+    }
+  ]
+}

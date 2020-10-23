@@ -2,10 +2,10 @@
   "id": "switchworkflow",
   "name": "switch-wf",
   "version": "1.0",
-  "states":[
+  "states": [
     {
-      "name":"AddInfo",
-      "type":"inject",
+      "name": "AddInfo",
+      "type": "inject",
       "start": {
         "kind": "default"
       },
@@ -22,29 +22,27 @@
       "type": "switch",
       "dataConditions": [
         {
-          "path": "$.age",
-          "value": "18",
-          "operator": "greaterthanorequals",
+          "condition": "{{ $.[?(@.age  >= 18)] }}",
           "transition": {
             "nextState": "Approve"
           }
         },
         {
-          "path": "$.age",
-          "value": "18",
-          "operator": "lessthan",
+          "condition": "{{ $.[?(@.age  < 18)] }}",
           "transition": {
             "nextState": "Deny"
           }
         }
       ],
       "default": {
-        "nextState": "Approve"
+        "transition": {
+          "nextState": "Approve"
+        }
       }
     },
     {
-      "name":"Approve",
-      "type":"inject",
+      "name": "Approve",
+      "type": "inject",
       "data": {
         "decision": "Approve"
       },
@@ -53,8 +51,8 @@
       }
     },
     {
-      "name":"Deny",
-      "type":"inject",
+      "name": "Deny",
+      "type": "inject",
       "data": {
         "decision": "Denied"
       },

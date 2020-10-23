@@ -266,6 +266,33 @@ public class ServerlessWorkflowTest extends AbstractCodegenTest {
         assertThat(dataOut.get("decision").textValue()).isEqualTo("Denied");
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = {"serverless/switch-state-end-condition.sw.json", "serverless/switch-state-end-condition.sw.yml"})
+    public void testSwitchStateWithEndConditionWorkflow(String processLocation) throws Exception {
+
+        Application app = generateCodeProcessesOnly(processLocation);
+        assertThat(app).isNotNull();
+
+        Process<? extends Model> p = app.processes().processById("switchworkflow");
+
+        Model m = p.createModel();
+        Map<String, Object> parameters = new HashMap<>();
+
+        String jsonParamStr = "{}";
+
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode jsonParamObj = mapper.readTree(jsonParamStr);
+
+
+        parameters.put("workflowdata", jsonParamObj);
+        m.fromMap(parameters);
+
+        ProcessInstance<?> processInstance = p.createInstance(m);
+        processInstance.start();
+
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
+    }
+
     @Test
     public void testSubFlowWorkflow() throws Exception {
 
@@ -382,19 +409,28 @@ public class ServerlessWorkflowTest extends AbstractCodegenTest {
         ProcessInstance<?> processInstance = p.createInstance(m);
         processInstance.start();
 
+
+
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
 
         List<WorkItem> workItems = processInstance.workItems(securityPolicy);
         assertEquals(1, workItems.size());
         assertEquals("approval", workItems.get(0).getName());
 
-        String decisionParamStr = "{\"result\": \"approved\"}";
+        //String decisionParamStr = "{\"result\": \"approved\"}";
+        String decisionParamStr = "{\n" +
+                "  \"decisions\" : [ {\n" +
+                "    \"result\" : \"approved\"\n" +
+                "  } ]\n" +
+                "}\n";
+
         JsonNode decisionParamObj = mapper.readTree(decisionParamStr);
 
         Map<String, Object> completionMap = new HashMap<>();
         completionMap.put("decision", decisionParamObj);
 
         processInstance.completeWorkItem(workItems.get(0).getId(), completionMap, securityPolicy);
+
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
 
         assertThat(workItemTransitionEvents).hasSize(4);
@@ -409,7 +445,6 @@ public class ServerlessWorkflowTest extends AbstractCodegenTest {
         JsonNode approvalDecisionOut = (JsonNode) result.toMap().get("approvaldecision");
 
         assertThat(workflowdataOut.get("decision").textValue()).isEqualTo("Approved");
-        assertThat(approvalDecisionOut.get("result").textValue()).isEqualTo("approved");
     }
 
     @ParameterizedTest
@@ -530,5 +565,35 @@ public class ServerlessWorkflowTest extends AbstractCodegenTest {
         assertThat(workflowdataOut.get("person").get("age").textValue()).isEqualTo("21");
         assertThat(workflowdataOut.get("person").get("adult").textValue()).isEqualTo("true");
 
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"serverless/prchecker.sw.json", "serverless/prchecker.sw.yml"})
+    public void testPrCheckerWorkflow(String processLocation) throws Exception {
+        System.setProperty("jbpm.enable.multi.con", "true");
+
+        Application app = generateCodeProcessesOnly(processLocation);
+        assertThat(app).isNotNull();
+
+        Process<? extends Model> p = app.processes().processById("prchecker");
+
+        Model m = p.createModel();
+        Map<String, Object> parameters = new HashMap<>();
+
+        String jsonParamStr = "{}";
+
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode jsonParamObj = mapper.readTree(jsonParamStr);
+
+
+        parameters.put("workflowdata", jsonParamObj);
+        m.fromMap(parameters);
+
+        ProcessInstance<?> processInstance = p.createInstance(m);
+        processInstance.start();
+
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
+
+        System.clearProperty("jbpm.enable.multi.con");
     }
 }

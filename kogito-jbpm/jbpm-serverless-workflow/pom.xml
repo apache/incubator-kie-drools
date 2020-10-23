@@ -75,6 +75,11 @@
       <artifactId>validation-api</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.json</groupId>
+      <artifactId>json</artifactId>
+    </dependency>
+
     <!-- test -->
     <dependency>
       <groupId>org.kie.kogito</groupId>

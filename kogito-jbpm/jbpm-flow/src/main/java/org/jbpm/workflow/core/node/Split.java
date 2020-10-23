@@ -153,7 +153,8 @@ public class Split extends NodeImpl implements Constrainable {
                     "This type of node [" + connection.getTo().getMetaData().get("UniqueId") + ", " + connection.getTo().getName() 
                     + "] only accepts default incoming connection type!");
         }
-        if (!getIncomingConnections(org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE).isEmpty()) {
+
+        if (!getIncomingConnections(org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE).isEmpty() && !"true".equals(System.getProperty("jbpm.enable.multi.con"))) {
         	throw new IllegalArgumentException(
                     "This type of node [" + connection.getTo().getMetaData().get("UniqueId") + ", " + connection.getTo().getName() 
                     + "] cannot have more than one incoming connection!");

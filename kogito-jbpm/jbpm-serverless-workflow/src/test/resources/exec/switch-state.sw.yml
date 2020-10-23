@@ -15,18 +15,15 @@ states:
   - name: ChooseOnAge
     type: switch
     dataConditions:
-      - path: "age"
-        value: '18'
-        operator: greaterthanorequals
+      - condition: "{{ $.[?(@.age  >= 18)] }}"
         transition:
           nextState: Approve
-      - path: "age"
-        value: '18'
-        operator: lessthan
+      - condition: "{{ $.[?(@.age  < 18)] }}"
         transition:
           nextState: Deny
     default:
-      nextState: Approve
+      transition:
+        nextState: Approve
   - name: Approve
     type: inject
     data:

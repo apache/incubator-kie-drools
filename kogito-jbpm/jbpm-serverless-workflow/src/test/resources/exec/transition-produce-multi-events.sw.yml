@@ -1,0 +1,49 @@
+---
+id: produceeventontransition
+name: Produce Event On Transition
+events:
+  - name: TestKafkaEvent
+    source: testtopic
+    type: kafka
+  - name: TestKafkaEvent2
+    source: testtopic
+    type: kafka
+  - name: TestKafkaEvent3
+    source: testtopic
+    type: kafka
+  - name: TestKafkaEvent4
+    source: testtopic
+    type: kafka
+functions:
+  - name: helloOne
+    type: script
+  - name: helloTwo
+    type: script
+states:
+  - name: HelloWorld
+    type: operation
+    start:
+      kind: default
+    actionMode: sequential
+    actions:
+      - functionRef:
+          refName: helloOne
+          parameters:
+            script: ''
+    transition:
+      nextState: HelloWorld2
+      produceEvents:
+        - eventRef: TestKafkaEvent
+        - eventRef: TestKafkaEvent2
+        - eventRef: TestKafkaEvent3
+        - eventRef: TestKafkaEvent4
+  - name: HelloWorld2
+    type: operation
+    actionMode: sequential
+    actions:
+      - functionRef:
+          refName: helloTwo
+          parameters:
+            script: ''
+    end:
+      kind: terminate

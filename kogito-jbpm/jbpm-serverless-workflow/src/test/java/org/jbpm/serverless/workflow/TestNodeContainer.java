@@ -25,7 +25,8 @@ public class TestNodeContainer implements NodeContainer {
     }
 
     @Override
-    public void removeNode(Node node) {}
+    public void removeNode(Node node) {
+    }
 
     @Override
     public Context resolveContext(String contextId, Object param) {

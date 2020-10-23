@@ -22,18 +22,15 @@ states:
   - name: EvalDecision
     type: switch
     dataConditions:
-      - path: approvaldecision.result
-        value: approved
-        operator: equals
+      - condition: "{{ $approvaldecision.decisions[?(@.result == 'approved')] }}"
         transition:
           nextState: Approve
-      - path: approvaldecision.result
-        value: denied
-        operator: equals
+      - condition: "{{ $approvaldecision.decisions[?(@.result == 'denied')] }}"
         transition:
           nextState: Deny
     default:
-      nextState: Approve
+      transition:
+        nextState: Approve
   - name: Approve
     type: inject
     data:

@@ -26,16 +26,13 @@ import org.drools.core.util.StringUtils;
 import org.jbpm.serverless.workflow.api.Workflow;
 import org.jbpm.serverless.workflow.api.branches.Branch;
 import org.jbpm.serverless.workflow.api.events.EventDefinition;
-import org.jbpm.serverless.workflow.api.functions.Function;
+import org.jbpm.serverless.workflow.api.functions.FunctionDefinition;
 import org.jbpm.serverless.workflow.api.interfaces.State;
 import org.jbpm.serverless.workflow.api.mapper.BaseObjectMapper;
 import org.jbpm.serverless.workflow.api.mapper.JsonObjectMapper;
 import org.jbpm.serverless.workflow.api.mapper.YamlObjectMapper;
 import org.jbpm.serverless.workflow.api.states.DefaultState;
 import org.jbpm.serverless.workflow.api.states.ParallelState;
-import org.jbpm.serverless.workflow.api.states.SubflowState;
-import org.jbpm.serverless.workflow.api.switchconditions.DataCondition;
-import org.jbpm.serverless.workflow.parser.core.ServerlessWorkflowFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -118,12 +115,10 @@ public class ServerlessWorkflowUtils {
     }
 
     public static boolean supportedParallelState(ParallelState parallelState) {
-        // currently branches must exist and states included can
-        // be single subflow states only
-        // this will be improved in future
+        // currently support for only workflowId inside branches
         if (parallelState.getBranches() != null && parallelState.getBranches().size() > 0) {
             for (Branch branch : parallelState.getBranches()) {
-                if (branch.getStates() == null || branch.getStates().size() != 1 || !(branch.getStates().get(0) instanceof SubflowState)) {
+                if(branch.getWorkflowId() == null || branch.getWorkflowId().length() < 1) {
                     return false;
                 }
             }
@@ -155,32 +150,27 @@ public class ServerlessWorkflowUtils {
         return retStr;
     }
 
-    public static String conditionScript(String path, DataCondition.Operator operator, String value) {
-        String workflowVar = ServerlessWorkflowFactory.DEFAULT_WORKFLOW_VAR;
-
-        if (path.startsWith("$.")) {
-            path = path.substring(2);
-        } else if (path.indexOf(".") >= 0) {
-            workflowVar = path.split("\\.")[0];
-            path = path.substring(workflowVar.length() + 1);
+    public static String conditionScript(String conditionStr) {
+        if (conditionStr.startsWith("{{")) {
+            conditionStr = conditionStr.substring(2);
+        }
+        if (conditionStr.endsWith("}}")) {
+            conditionStr = conditionStr.substring(0, conditionStr.length() - 2);
         }
 
-        String workflowDataToInteger = "return java.lang.Integer.parseInt(" + workflowVar + ".get(\"";
+        conditionStr = conditionStr.trim();
 
-        String retStr = "";
-        if (operator == DataCondition.Operator.EQUALS) {
-            retStr += "return " + workflowVar + ".get(\"" + path + "\").textValue().equals(\"" + value + "\");";
-        } else if (operator == DataCondition.Operator.GREATERTHAN) {
-            retStr += workflowDataToInteger + path + "\").textValue()) > " + value + ";";
-        } else if (operator == DataCondition.Operator.GREATERTHANOREQUALS) {
-            retStr += workflowDataToInteger + path + "\").textValue()) >= " + value + ";";
-        } else if (operator == DataCondition.Operator.LESSTHAN) {
-            retStr += workflowDataToInteger + path + "\").textValue()) < " + value + ";";
-        } else if (operator == DataCondition.Operator.LESSTHANOREQUALS) {
-            retStr += workflowDataToInteger + path + "\").textValue()) <= " + value + ";";
+        // check if we are calling a different workflow var
+        String processVar = "workflowdata";
+        String otherVar = conditionStr.substring(conditionStr.indexOf("$") + 1, conditionStr.indexOf("."));
+
+        if(otherVar.trim().length() > 0) {
+            processVar = otherVar;
+            conditionStr = conditionStr.replaceAll(otherVar, "");
+
         }
 
-        return retStr;
+        return "return !((java.util.List<java.lang.String>) com.jayway.jsonpath.JsonPath.parse(((com.fasterxml.jackson.databind.JsonNode)kcontext.getVariable(\"" + processVar + "\")).toString()).read(\"" + conditionStr + "\")).isEmpty();";
     }
 
     public static String getJsonPathScript(String script) {
@@ -225,7 +215,7 @@ public class ServerlessWorkflowUtils {
         }
     }
 
-    public static String resolveFunctionMetadata(Function function, String metadataKey, WorkflowAppContext workflowAppContext) {
+    public static String resolveFunctionMetadata(FunctionDefinition function, String metadataKey, WorkflowAppContext workflowAppContext) {
         if (function != null && function.getMetadata() != null && function.getMetadata().containsKey(metadataKey)) {
             return function.getMetadata().get(metadataKey);
         }
