@@ -20,9 +20,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -379,13 +382,16 @@ public abstract class ProjectClassLoader extends ClassLoader implements KieTypeR
         Class<?> loadType( String name, boolean resolve ) throws ClassNotFoundException;
     }
 
-    public synchronized void reinitTypes() {
+    public synchronized List<String> reinitTypes() {
         typesClassLoader = null;
         nonExistingClasses.clear();
         loadedClasses.clear();
         if (definedTypes != null) {
+            List<String> removedTypes = new ArrayList<>(definedTypes.keySet());
             definedTypes.clear();
+            return removedTypes;
         }
+        return Collections.emptyList();
     }
 
     private static class ClassBytecode {
