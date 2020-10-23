@@ -20,6 +20,8 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.Collection;
+import java.util.Collections;
 
 import org.drools.core.base.SimpleValueType;
 import org.drools.core.base.ValueType;
@@ -27,7 +29,6 @@ import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.CompositeObjectSinkAdapter;
 import org.drools.core.rule.IndexableConstraint;
 import org.drools.core.spi.FieldValue;
-import org.drools.core.util.FastIterator;
 import org.drools.core.util.index.IndexUtil.ConstraintType;
 import org.drools.core.util.index.RangeIndex.IndexType;
 
@@ -144,16 +145,16 @@ public class AlphaRangeIndex implements Externalizable {
         return size;
     }
 
-    public FastIterator getMatchingAlphaNodesIterator(Object object) {
+    public Collection<AlphaNode> getMatchingAlphaNodes(Object object) {
         Object value = fieldIndex.getFieldExtactor().getValue(object);
         if (value == null) {
-            return FastIterator.EMPTY;
+            return Collections.emptyList();
         }
-        return rangeIndex.getValuesIterator((Comparable) value);
+        return rangeIndex.getValues((Comparable) value);
     }
 
-    public FastIterator getAllValuesIterator() {
-        return rangeIndex.getAllValuesIterator();
+    public Collection<AlphaNode> getAllValues() {
+        return rangeIndex.getAllValues();
     }
 
     public void clear() {

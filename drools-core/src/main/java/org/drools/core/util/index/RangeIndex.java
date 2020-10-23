@@ -17,28 +17,27 @@
 package org.drools.core.util.index;
 
 import java.io.Serializable;
-
-import org.drools.core.util.FastIterator;
-import org.drools.core.util.RBTree;
+import java.util.Collection;
+import java.util.TreeMap;
 
 public class RangeIndex<K extends Comparable, V> implements Serializable {
 
-    private final RBTree<IndexKey<K>, V> tree = new RBTree<>();
+    private final TreeMap<IndexKey<K>, V> map = new TreeMap<>();
 
     public void addIndex(IndexType indexType, K key, V value) {
-        tree.insert(new IndexKey<>(indexType, key), value);
+        map.put(new IndexKey<>(indexType, key), value);
     }
 
     public void removeIndex(IndexType indexType, K key) {
-        tree.delete(new IndexKey<>(indexType, key));
+        map.remove(new IndexKey<>(indexType, key));
     }
 
-    public FastIterator getValuesIterator(K key) {
-        return tree.range(new IndexKey<>(IndexType.LT, key), false, new IndexKey<>(IndexType.GT, key), false);
+    public Collection<V> getValues(K key) {
+        return map.subMap(new IndexKey<>(IndexType.LT, key), false, new IndexKey<>(IndexType.GT, key), false).values();
     }
 
-    public FastIterator getAllValuesIterator() {
-        return tree.fastIterator();
+    public Collection<V> getAllValues() {
+        return map.values();
     }
 
     public enum IndexType {

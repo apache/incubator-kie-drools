@@ -37,14 +37,11 @@ import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.ReadAccessor;
-import org.drools.core.util.Entry;
-import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListNode;
 import org.drools.core.util.ObjectHashMap;
 import org.drools.core.util.ObjectHashMap.ObjectEntry;
-import org.drools.core.util.RBTree.Node;
 import org.drools.core.util.index.AlphaRangeIndex;
 import org.drools.core.util.index.IndexUtil.ConstraintType;
 
@@ -56,8 +53,6 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
     //    /** The threshold for when hashing kicks in */
     //    public static final int    THRESHOLD_TO_HASH              = Integer.parseInt( System.getProperty( HASH_THRESHOLD_SYSTEM_PROPERTY,
     //                                                                                                      "3" ) );
-
-    public static final boolean RANGE_INDEX_ENABLED = Boolean.parseBoolean( System.getProperty( "drools.alphaNodeRangeIndex.enabled", "true"));
 
     private static final long serialVersionUID = 510L;
 
@@ -481,12 +476,7 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
         if (rangeIndexableSinks == null) {
             rangeIndexableSinks = new ObjectSinkNodeList();
         }
-        FastIterator it = alphaRangeIndex.getAllValuesIterator();
-        for (Entry entry = it.next(null); entry != null; entry = it.next(entry)) {
-            Node<Comparable<Comparable>, AlphaNode> node = (Node<Comparable<Comparable>, AlphaNode>) entry;
-            AlphaNode alphaNode = node.value;
-            rangeIndexableSinks.add(alphaNode);
-        }
+        alphaRangeIndex.getAllValues().forEach(alphaNode -> rangeIndexableSinks.add(alphaNode));
 
         alphaRangeIndex.clear();
         rangeIndexMap.remove(fieldIndex);
@@ -498,9 +488,6 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
     }
 
     private boolean isRangeIndexable(AlphaNode alphaNode) {
-        if (!RANGE_INDEX_ENABLED) {
-            return false;
-        }
         AlphaNodeFieldConstraint fieldConstraint = alphaNode.getConstraint();
         if (fieldConstraint instanceof IndexableConstraint) {
             IndexableConstraint indexableConstraint = (IndexableConstraint) fieldConstraint;
@@ -599,14 +586,11 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
                     continue;
                 }
                 AlphaRangeIndex alphaRangeIndex = this.rangeIndexMap.get(fieldIndex);
-                FastIterator it = alphaRangeIndex.getMatchingAlphaNodesIterator(object);
-                for (Entry entry = it.next(null); entry != null; entry = it.next(entry)) {
-                    Node<Comparable<Comparable>, AlphaNode> node = (Node<Comparable<Comparable>, AlphaNode>) entry;
-                    AlphaNode sink = node.value;
+                Collection<AlphaNode> alphaNodes = alphaRangeIndex.getMatchingAlphaNodes(object);
+                for (AlphaNode sink : alphaNodes) {
                     // go straight to the AlphaNode's propagator, as we know it's true and no need to retest
                     sink.getObjectSinkPropagator().propagateAssertObject(factHandle, context, workingMemory);
                 }
-
             }
         }
 
@@ -673,10 +657,8 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
                     continue;
                 }
                 AlphaRangeIndex alphaRangeIndex = this.rangeIndexMap.get(fieldIndex);
-                FastIterator it = alphaRangeIndex.getMatchingAlphaNodesIterator(object);
-                for (Entry entry = it.next(null); entry != null; entry = it.next(entry)) {
-                    Node<Comparable<Comparable>, AlphaNode> node = (Node<Comparable<Comparable>, AlphaNode>) entry;
-                    AlphaNode sink = node.value;
+                Collection<AlphaNode> alphaNodes = alphaRangeIndex.getMatchingAlphaNodes(object);
+                for (AlphaNode sink : alphaNodes) {
                     // go straight to the AlphaNode's propagator, as we know it's true and no need to retest
                     sink.getObjectSinkPropagator().propagateModifyObject(factHandle, modifyPreviousTuples, context, workingMemory);
                 }
@@ -747,10 +729,8 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
                     continue;
                 }
                 AlphaRangeIndex alphaRangeIndex = this.rangeIndexMap.get(fieldIndex);
-                FastIterator it = alphaRangeIndex.getMatchingAlphaNodesIterator(object);
-                for (Entry entry = it.next(null); entry != null; entry = it.next(entry)) {
-                    Node<Comparable<Comparable>, AlphaNode> node = (Node<Comparable<Comparable>, AlphaNode>) entry;
-                    AlphaNode sink = node.value;
+                Collection<AlphaNode> alphaNodes = alphaRangeIndex.getMatchingAlphaNodes(object);
+                for (AlphaNode sink : alphaNodes) {
                     sink.getObjectSinkPropagator().byPassModifyToBetaNode(factHandle, modifyPreviousTuples, context, workingMemory);
                 }
             }
@@ -842,13 +822,8 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
         if ( this.rangeIndexMap != null ) {
             Collection<AlphaRangeIndex> alphaRangeIndexes = rangeIndexMap.values();
             for (AlphaRangeIndex alphaRangeIndex : alphaRangeIndexes) {
-                FastIterator it = alphaRangeIndex.getAllValuesIterator();
-                for (Entry entry = it.next(null); entry != null; entry = it.next(entry)) {
-                    Node<Comparable<Comparable>, AlphaNode> node = (Node<Comparable<Comparable>, AlphaNode>) entry;
-                    AlphaNode sink = node.value;
-                    sinksMap.put( sink, sink );
-                }
-
+                Collection<AlphaNode> alphaNodes = alphaRangeIndex.getAllValues();
+                alphaNodes.forEach(sink -> sinksMap.put( sink, sink ));
             }
         }
     }
@@ -884,12 +859,10 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
                 if ( !fieldIndex.isRangeIndexed() ) {
                     continue;
                 }
-                FastIterator it = this.rangeIndexMap.get(fieldIndex).getAllValuesIterator();
-                for (Entry entry = it.next(null); entry != null; entry = it.next(entry)) {
-                    Node<Comparable<Comparable>, AlphaNode> node = (Node<Comparable<Comparable>, AlphaNode>) entry;
-                    newSinks[at++] = node.value;
+                Collection<AlphaNode> alphaNodes = this.rangeIndexMap.get(fieldIndex).getAllValues();
+                for (AlphaNode sink : alphaNodes) {
+                    newSinks[at++] = sink;
                 }
-
             }
         }
 

@@ -35,11 +35,8 @@ import org.drools.core.reteoo.SingleObjectSinkAdapter;
 import org.drools.core.reteoo.WindowNode;
 import org.drools.core.rule.IndexableConstraint;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
-import org.drools.core.util.Entry;
-import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.ObjectHashMap;
-import org.drools.core.util.RBTree.Node;
 import org.drools.core.util.index.AlphaRangeIndex;
 
 /**
@@ -172,10 +169,8 @@ public class ObjectTypeNodeParser {
         }
         Collection<AlphaRangeIndex> rangeIndexes = rangeIndexMap.values();
         for (AlphaRangeIndex alphaRangeIndex : rangeIndexes) {
-            FastIterator it = alphaRangeIndex.getAllValuesIterator();
-            for (Entry entry = it.next(null); entry != null; entry = it.next(entry)) {
-                Node<Comparable<Comparable>, AlphaNode> node = (Node<Comparable<Comparable>, AlphaNode>) entry;
-                AlphaNode alphaNode = node.value;
+            Collection<AlphaNode> alphaNodes = alphaRangeIndex.getAllValues();
+            for (AlphaNode alphaNode : alphaNodes) {
                 traverseSink(alphaNode, handler);
             }
         }

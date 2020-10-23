@@ -334,7 +334,7 @@ public class KnowledgeBuilderConfigurationImpl
             try {
                 setAlphaNetworkCompilerOption(AlphaNetworkCompilerOption.determineAlphaNetworkCompilerMode(value.toUpperCase()));
             } catch (IllegalArgumentException e) {
-                log.warn("Invalid value " + value + " for option " + LanguageLevelOption.PROPERTY_NAME);
+                log.warn("Invalid value " + value + " for option " + AlphaNetworkCompilerOption.PROPERTY_NAME);
             }
         } else {
             // if the property from the kmodule was not intercepted above, just add it to the chained properties.
