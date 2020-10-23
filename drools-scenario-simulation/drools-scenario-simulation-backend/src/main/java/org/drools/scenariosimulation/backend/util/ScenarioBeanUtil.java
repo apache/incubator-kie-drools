@@ -207,7 +207,6 @@ public class ScenarioBeanUtil {
                                                                    " to use it.").toString());
     }
 
-
     public static String revertValue(Object cleanValue) {
         if (cleanValue == null) {
             return "null";
