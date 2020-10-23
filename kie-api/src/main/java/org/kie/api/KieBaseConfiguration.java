@@ -54,6 +54,7 @@ import org.kie.api.conf.KieBaseOptionsConfiguration;
  * <li>drools.shareAlphaNodes  = &lt;true|false&gt;</li>
  * <li>drools.shareBetaNodes = &lt;true|false&gt;</li>
  * <li>drools.alphaNodeHashingThreshold = &lt;1...n&gt;</li>
+ * <li>drools.alphaNodeRangeIndexThreshold = &lt;1...n&gt;</li>
  * <li>drools.compositeKeyDepth  = &lt;1..3&gt;</li>
  * <li>drools.indexLeftBetaMemory = &lt;true/false&gt;</li>
  * <li>drools.indexRightBetaMemory = &lt;true/false&gt;</li>
