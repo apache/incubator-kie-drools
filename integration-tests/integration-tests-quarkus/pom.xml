@@ -1,5 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
@@ -63,18 +63,23 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-remote-resources-plugin</artifactId>
+        <artifactId>maven-resources-plugin</artifactId>
         <executions>
           <execution>
+            <phase>process-resources</phase>
             <goals>
-              <goal>process</goal>
+              <goal>copy-resources</goal>
             </goals>
             <configuration>
-              <outputDirectory>${project.basedir}/src/main/resources/kogito/</outputDirectory>
-              <resourceBundles>
-                <resourceBundle>org.kie.kogito:integration-tests-common:${project.version}</resourceBundle>
-              </resourceBundles>
+              <outputDirectory>src/main/resources/kogito/</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${project.parent.basedir}/integration-tests-common/src/main/resources</directory>
+                  <includes>
+                    <include>**/*.bpmn</include>
+                  </includes>
+                </resource>
+              </resources>
             </configuration>
           </execution>
         </executions>

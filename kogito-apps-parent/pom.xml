@@ -23,7 +23,6 @@
     <maven.compiler.release>11</maven.compiler.release>
     <maven.compiler.source>11</maven.compiler.source>
     <maven.compiler.target>11</maven.compiler.target>
-    <version.maven-remote-resources-plugin>1.7.0</version.maven-remote-resources-plugin>
 
     <version.org.infinispan.image>10.1.5.Final</version.org.infinispan.image>
 
@@ -57,11 +56,6 @@
           <groupId>com.github.eirslett</groupId>
           <artifactId>frontend-maven-plugin</artifactId>
           <version>${version.frontend.plugin}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-remote-resources-plugin</artifactId>
-          <version>${version.maven-remote-resources-plugin}</version>
         </plugin>
       </plugins>
     </pluginManagement>

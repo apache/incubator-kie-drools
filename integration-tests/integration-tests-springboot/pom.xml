@@ -58,22 +58,27 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-remote-resources-plugin</artifactId>
+        <artifactId>maven-resources-plugin</artifactId>
         <executions>
           <execution>
+            <phase>process-resources</phase>
             <goals>
-              <goal>process</goal>
+              <goal>copy-resources</goal>
             </goals>
             <configuration>
-              <resourceBundles>
-                <resourceBundle>org.kie.kogito:integration-tests-common:${project.version}</resourceBundle>
-              </resourceBundles>
+              <outputDirectory>${project.build.outputDirectory}</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${project.parent.basedir}/integration-tests-common/src/main/resources</directory>
+                  <includes>
+                    <include>**/*.bpmn</include>
+                  </includes>
+                </resource>
+              </resources>
             </configuration>
           </execution>
         </executions>
       </plugin>
-
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
