@@ -854,4 +854,18 @@ public class SpreadsheetCompilerUnitTest {
         final String drl = converter.compile(stream, InputType.XLS);
         assertTrue( drl.contains( "$p: Person(age < 18) @watch(name)" ) );
     }
+
+    @Test
+    public void testZipBomb() {
+        // RHDM-1468
+        System.setProperty( "drools.excelParser.minInflateRatio", "0.001" );
+        try {
+            final SpreadsheetCompiler converter = new SpreadsheetCompiler();
+            final InputStream stream = this.getClass().getResourceAsStream( "/data/Sample2.xlsx" );
+            final String drl = converter.compile( stream, InputType.XLS );
+            assertTrue( drl.contains( "m:Message(status == Message.HELLO)" ) );
+        } finally {
+            System.clearProperty( "drools.excelParser.minInflateRatio" );
+        }
+    }
 }
