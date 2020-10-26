@@ -12,6 +12,7 @@ import org.junit.Test;
 
 import static com.github.javaparser.StaticJavaParser.parseResource;
 import static org.hamcrest.Matchers.equalToIgnoringWhiteSpace;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 public class ExecModelLambdaPostProcessorTest {
