@@ -143,7 +143,7 @@ public class GenerateModel {
             MemoryFileSystem srcMfs = new MemoryFileSystem();
             List<String> modelFiles = new ArrayList<>();
             ModelWriter modelWriter = new ModelWriter();
-            for (ModelBuilderImpl modelBuilder : modelBuilders) {
+            for (ModelBuilderImpl modelBuilder : modelBuilders.values()) {
                 ModelWriter.Result result = modelWriter.writeModel(srcMfs, modelBuilder.getPackageSources());
                 modelFiles.addAll(result.getModelFiles());
                 final Folder sourceFolder = srcMfs.getFolder("src/main/java");

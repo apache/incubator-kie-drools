@@ -47,6 +47,7 @@ import org.kie.api.conf.SessionsPoolOption;
 import org.kie.api.conf.SingleValueKieBaseOption;
 import org.kie.api.runtime.rule.ConsequenceExceptionHandler;
 import org.kie.internal.builder.conf.ClassLoaderCacheOption;
+import org.kie.internal.conf.AlphaRangeIndexThresholdOption;
 import org.kie.internal.conf.AlphaThresholdOption;
 import org.kie.internal.conf.CompositeKeyDepthOption;
 import org.kie.internal.conf.ConsequenceExceptionHandlerOption;
@@ -93,6 +94,7 @@ import static org.drools.core.util.MemoryUtil.hasPermGen;
  * drools.shareAlphaNodes  = &lt;true|false&gt;
  * drools.shareBetaNodes = &lt;true|false&gt;
  * drools.alphaNodeHashingThreshold = &lt;1...n&gt;
+ * drools.alphaNodeRangeIndexThreshold = &lt;1...n&gt;
  * drools.sessionPool = &lt;1...n&gt;
  * drools.compositeKeyDepth = &lt;1..3&gt;
  * drools.indexLeftBetaMemory = &lt;true/false&gt;
@@ -137,6 +139,7 @@ public class RuleBaseConfiguration
     private int             permGenThreshold;
     private int             jittingThreshold;
     private int             alphaNodeHashingThreshold;
+    private int             alphaNodeRangeIndexThreshold;
     private int             compositeKeyDepth;
     private boolean         indexLeftBetaMemory;
     private boolean         indexRightBetaMemory;
@@ -194,6 +197,7 @@ public class RuleBaseConfiguration
         out.writeInt(permGenThreshold);
         out.writeInt(jittingThreshold);
         out.writeInt(alphaNodeHashingThreshold);
+        out.writeInt(alphaNodeRangeIndexThreshold);
         out.writeInt(compositeKeyDepth);
         out.writeBoolean(indexLeftBetaMemory);
         out.writeBoolean(indexRightBetaMemory);
@@ -226,6 +230,7 @@ public class RuleBaseConfiguration
         permGenThreshold = in.readInt();
         jittingThreshold = in.readInt();
         alphaNodeHashingThreshold = in.readInt();
+        alphaNodeRangeIndexThreshold = in.readInt();
         compositeKeyDepth = in.readInt();
         indexLeftBetaMemory = in.readBoolean();
         indexRightBetaMemory = in.readBoolean();
@@ -306,6 +311,8 @@ public class RuleBaseConfiguration
             setJittingThreshold( StringUtils.isEmpty( value ) ? ConstraintJittingThresholdOption.DEFAULT_VALUE : Integer.parseInt( value ) );
         } else if ( name.equals( AlphaThresholdOption.PROPERTY_NAME ) ) {
             setAlphaNodeHashingThreshold( StringUtils.isEmpty( value ) ? 3 : Integer.parseInt(value));
+        } else if ( name.equals( AlphaRangeIndexThresholdOption.PROPERTY_NAME ) ) {
+            setAlphaNodeRangeIndexThreshold( StringUtils.isEmpty( value ) ? 3 : Integer.parseInt(value));
         } else if ( name.equals( SessionsPoolOption.PROPERTY_NAME ) ) {
             setSessionPoolSize( StringUtils.isEmpty( value ) ? -1 : Integer.parseInt(value));
         } else if ( name.equals( CompositeKeyDepthOption.PROPERTY_NAME ) ) {
@@ -359,6 +366,8 @@ public class RuleBaseConfiguration
             return Integer.toString( getJittingThreshold() );
         } else if ( name.equals( AlphaThresholdOption.PROPERTY_NAME ) ) {
             return Integer.toString( getAlphaNodeHashingThreshold() );
+        } else if ( name.equals( AlphaRangeIndexThresholdOption.PROPERTY_NAME ) ) {
+            return Integer.toString( getAlphaNodeRangeIndexThreshold() );
         } else if ( name.equals( SessionsPoolOption.PROPERTY_NAME ) ) {
             return Integer.toString( getSessionPoolSize() );
         } else if ( name.equals( CompositeKeyDepthOption.PROPERTY_NAME ) ) {
@@ -436,6 +445,8 @@ public class RuleBaseConfiguration
         setJittingThreshold( Integer.parseInt( this.chainedProperties.getProperty( ConstraintJittingThresholdOption.PROPERTY_NAME, "" + ConstraintJittingThresholdOption.DEFAULT_VALUE)));
 
         setAlphaNodeHashingThreshold(Integer.parseInt(this.chainedProperties.getProperty(AlphaThresholdOption.PROPERTY_NAME, "3")));
+
+        setAlphaNodeRangeIndexThreshold(Integer.parseInt(this.chainedProperties.getProperty(AlphaRangeIndexThresholdOption.PROPERTY_NAME, "3")));
 
         setSessionPoolSize(Integer.parseInt(this.chainedProperties.getProperty( SessionsPoolOption.PROPERTY_NAME, "-1")));
 
@@ -582,6 +593,15 @@ public class RuleBaseConfiguration
     public void setAlphaNodeHashingThreshold(final int alphaNodeHashingThreshold) {
         checkCanChange(); // throws an exception if a change isn't possible;
         this.alphaNodeHashingThreshold = alphaNodeHashingThreshold;
+    }
+
+    public int getAlphaNodeRangeIndexThreshold() {
+        return this.alphaNodeRangeIndexThreshold;
+    }
+
+    public void setAlphaNodeRangeIndexThreshold(final int alphaNodeRangeIndexThreshold) {
+        checkCanChange();
+        this.alphaNodeRangeIndexThreshold = alphaNodeRangeIndexThreshold;
     }
 
     public int getSessionPoolSize() {
@@ -1104,6 +1124,8 @@ public class RuleBaseConfiguration
             return (T) ConstraintJittingThresholdOption.get(jittingThreshold);
         } else if (AlphaThresholdOption.class.equals(option)) {
             return (T) AlphaThresholdOption.get(alphaNodeHashingThreshold);
+        } else if (AlphaRangeIndexThresholdOption.class.equals(option)) {
+            return (T) AlphaRangeIndexThresholdOption.get(alphaNodeRangeIndexThreshold);
         } else if ( SessionsPoolOption.class.equals(option)) {
             return (T) SessionsPoolOption.get(sessionPoolSize);
         } else if (CompositeKeyDepthOption.class.equals(option)) {
@@ -1159,6 +1181,8 @@ public class RuleBaseConfiguration
             setJittingThreshold( ( (ConstraintJittingThresholdOption) option ).getThreshold());
         } else if (option instanceof AlphaThresholdOption) {
             setAlphaNodeHashingThreshold( ( (AlphaThresholdOption) option ).getThreshold());
+        } else if (option instanceof AlphaRangeIndexThresholdOption) {
+            setAlphaNodeRangeIndexThreshold( ( (AlphaRangeIndexThresholdOption) option ).getThreshold());
         } else if (option instanceof SessionsPoolOption ) {
             setSessionPoolSize( ( ( SessionsPoolOption ) option ).getSize());
         } else if (option instanceof CompositeKeyDepthOption) {

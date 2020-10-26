@@ -115,7 +115,8 @@ public class ObjectTypeNode extends ObjectSource
               RuleBasePartitionId.MAIN_PARTITION,
               context.getKnowledgeBase().getConfiguration().isMultithreadEvaluation(),
               source,
-              context.getKnowledgeBase().getConfiguration().getAlphaNodeHashingThreshold());
+              context.getKnowledgeBase().getConfiguration().getAlphaNodeHashingThreshold(),
+              context.getKnowledgeBase().getConfiguration().getAlphaNodeRangeIndexThreshold());
         this.objectType = objectType;
         idGenerator = new IdGenerator(id);
 

@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -36,6 +35,8 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -72,6 +73,7 @@ import com.github.javaparser.ast.nodeTypes.NodeWithOptionalScope;
 import com.github.javaparser.ast.nodeTypes.NodeWithTraversableScope;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
+import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.PrimitiveType;
 import com.github.javaparser.ast.type.Type;
@@ -106,7 +108,7 @@ public class DrlxParseUtil {
 
     public static final String THIS_PLACEHOLDER = "_this";
 
-    private static final Map<String, Method> accessorsCache = new HashMap<>();
+    private static final ConcurrentMap<String, Method> ACCESSOR_CACHE = new ConcurrentHashMap<>();
 
     public static boolean isThisExpression( Node expr ) {
         return expr instanceof ThisExpr || (expr instanceof NameExpr && ((NameExpr)expr).getName().getIdentifier().equals(THIS_PLACEHOLDER));
@@ -330,7 +332,9 @@ public class DrlxParseUtil {
 
     public static Optional<Node> findRootNodeViaParent(Node expr) {
         final Optional<Node> parentNode = expr.getParentNode();
-        if (parentNode.isPresent()) {
+        if(expr instanceof Statement) { // we never use this method to navigate up to the statement
+            return Optional.empty();
+        } else if (parentNode.isPresent()) {
             return findRootNodeViaParent(parentNode.get());
         } else {
             return Optional.of(expr);
@@ -745,11 +749,11 @@ public class DrlxParseUtil {
     }
 
     public static Method getAccessor( Class<?> clazz, String name ) {
-        return accessorsCache.computeIfAbsent( clazz.getCanonicalName() + "." + name, k -> ClassUtils.getAccessor(clazz, name) );
+        return ACCESSOR_CACHE.computeIfAbsent( clazz.getCanonicalName() + "." + name, k -> ClassUtils.getAccessor(clazz, name) );
     }
 
     public static void clearAccessorCache() {
-        accessorsCache.clear();
+        ACCESSOR_CACHE.clear();
     }
 
     public static Field getField( Class<?> clazz, String name ) {
@@ -799,6 +803,14 @@ public class DrlxParseUtil {
             return Optional.of(typeResolver.resolveType(typeName));
         } catch (ClassNotFoundException e) {
             return Optional.empty();
+        }
+    }
+
+    public static Expression unEncloseExpr(Expression expression) {
+        if(expression.isEnclosedExpr()) {
+            return unEncloseExpr(expression.asEnclosedExpr().getInner());
+        } else {
+            return expression;
         }
     }
 

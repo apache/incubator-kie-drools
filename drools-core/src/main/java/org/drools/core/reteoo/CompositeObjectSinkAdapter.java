@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,6 +42,8 @@ import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListNode;
 import org.drools.core.util.ObjectHashMap;
 import org.drools.core.util.ObjectHashMap.ObjectEntry;
+import org.drools.core.util.index.AlphaRangeIndex;
+import org.drools.core.util.index.IndexUtil.ConstraintType;
 
 public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
 
@@ -52,42 +55,56 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
     //                                                                                                      "3" ) );
 
     private static final long serialVersionUID = 510L;
+
     private ObjectSinkNodeList        otherSinks;
     private ObjectSinkNodeList        hashableSinks;
+    private ObjectSinkNodeList        rangeIndexableSinks;
 
     private LinkedList<FieldIndex>    hashedFieldIndexes;
+    private LinkedList<FieldIndex>    rangeIndexedFieldIndexes;
 
     private ObjectHashMap             hashedSinkMap;
+    private Map<FieldIndex, AlphaRangeIndex>          rangeIndexMap;
 
     private int               alphaNodeHashingThreshold;
+    private int               alphaNodeRangeIndexThreshold;
 
     private ObjectSink[]      sinks;
 
     private Map<NetworkNode, NetworkNode> sinksMap;
 
     public CompositeObjectSinkAdapter() {
-        this( 3 );
+        this( 3, 3 );
     }
 
-    public CompositeObjectSinkAdapter(final int alphaNodeHashingThreshold) {
+    public CompositeObjectSinkAdapter(final int alphaNodeHashingThreshold, final int alphaNodeRangeIndexThreshold) {
         this.alphaNodeHashingThreshold = alphaNodeHashingThreshold;
+        this.alphaNodeRangeIndexThreshold = alphaNodeRangeIndexThreshold;
     }
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         otherSinks = (ObjectSinkNodeList) in.readObject();
         hashableSinks = (ObjectSinkNodeList) in.readObject();
+        rangeIndexableSinks = (ObjectSinkNodeList) in.readObject();
         hashedFieldIndexes = (LinkedList) in.readObject();
+        rangeIndexedFieldIndexes = (LinkedList) in.readObject();
         hashedSinkMap = (ObjectHashMap) in.readObject();
+        rangeIndexMap = (Map<FieldIndex, AlphaRangeIndex>) in.readObject();
         alphaNodeHashingThreshold = in.readInt();
+        alphaNodeRangeIndexThreshold = in.readInt();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject( otherSinks );
         out.writeObject( hashableSinks );
+        out.writeObject( rangeIndexableSinks );
         out.writeObject( hashedFieldIndexes );
+        out.writeObject( rangeIndexedFieldIndexes );
         out.writeObject( hashedSinkMap );
+        out.writeObject( rangeIndexMap );
         out.writeInt( alphaNodeHashingThreshold );
+        out.writeInt( alphaNodeRangeIndexThreshold );
     }
 
     public ObjectSinkNodeList getOthers() {
@@ -102,11 +119,19 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
         return this.hashedSinkMap;
     }
 
-    public ObjectSinkPropagator addObjectSink(ObjectSink sink) {
-        return addObjectSink(sink, 0);
+    public ObjectSinkNodeList getRangeIndexableSinks() {
+        return rangeIndexableSinks;
     }
 
-    public ObjectSinkPropagator addObjectSink(ObjectSink sink, int alphaNodeHashingThreshold) {
+    public Map<FieldIndex, AlphaRangeIndex> getRangeIndexMap() {
+        return rangeIndexMap;
+    }
+
+    public ObjectSinkPropagator addObjectSink(ObjectSink sink) {
+        return addObjectSink(sink, 0, 0);
+    }
+
+    public ObjectSinkPropagator addObjectSink(ObjectSink sink, int alphaNodeHashingThreshold, int alphaNodeRangeIndexThreshold) {
         this.sinks = null; // dirty it, so it'll rebuild on next get
         if (this.sinksMap != null) {
             this.sinksMap.put( sink, sink );
@@ -115,6 +140,7 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
             final AlphaNode alphaNode = (AlphaNode) sink;
             final InternalReadAccessor readAccessor = getHashableAccessor(alphaNode);
 
+            // hash indexing
             if ( readAccessor != null ) {
                 final int index = readAccessor.getIndex();
                 final FieldIndex fieldIndex = registerFieldIndex( index, readAccessor );
@@ -140,6 +166,27 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
                 }
                 return this;
             }
+
+            // range indexing
+            if (isRangeIndexable(alphaNode)) {
+                IndexableConstraint indexableConstraint = (IndexableConstraint) alphaNode.getConstraint();
+                InternalReadAccessor internalReadAccessor = indexableConstraint.getFieldExtractor();
+                final int index = internalReadAccessor.getIndex();
+                final FieldIndex fieldIndex = registerFieldIndexForRange(index, internalReadAccessor);
+                final FieldValue value = indexableConstraint.getField();
+                if (fieldIndex.getCount() >= this.alphaNodeRangeIndexThreshold && this.alphaNodeRangeIndexThreshold != 0 && !value.isNull()) {
+                    if (!fieldIndex.isRangeIndexed()) {
+                        rangeIndexSinks(fieldIndex);
+                    }
+                    this.rangeIndexMap.get(fieldIndex).add(alphaNode);
+                } else {
+                    if (rangeIndexableSinks == null) {
+                        rangeIndexableSinks = new ObjectSinkNodeList();
+                    }
+                    rangeIndexableSinks.add(alphaNode);
+                }
+                return this;
+            }
         }
 
         if ( this.otherSinks == null ) {
@@ -162,7 +209,7 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
     }
 
     private static boolean isHashable( IndexableConstraint indexableConstraint ) {
-        return indexableConstraint.isIndexable( NodeTypeEnums.AlphaNode) && indexableConstraint.getField() != null &&
+        return indexableConstraint.getConstraintType() == ConstraintType.EQUAL && indexableConstraint.getField() != null &&
                 indexableConstraint.getFieldExtractor().getValueType() != ValueType.OBJECT_TYPE &&
                 // our current implementation does not support hashing of deeply nested properties
                 indexableConstraint.getFieldExtractor().getIndex() >= 0;
@@ -181,6 +228,7 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
                 final IndexableConstraint indexableConstraint = (IndexableConstraint) fieldConstraint;
                 final FieldValue value = indexableConstraint.getField();
 
+                // hash index
                 if ( isHashable( indexableConstraint ) ) {
                     final InternalReadAccessor fieldAccessor = indexableConstraint.getFieldExtractor();
                     final int index = fieldAccessor.getIndex();
@@ -204,6 +252,31 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
                     }
 
                     return size() == 1 ? new SingleObjectSinkAdapter( getSinks()[0] ) : this;
+                }
+
+                // range index
+                if (isRangeIndexable(alphaNode)) {
+                    final InternalReadAccessor fieldAccessor = indexableConstraint.getFieldExtractor();
+                    final int index = fieldAccessor.getIndex();
+                    final FieldIndex fieldIndex = unregisterFieldIndexForRange(index);
+
+                    if (fieldIndex.isRangeIndexed()) {
+                        AlphaRangeIndex alphaRangeIndex = this.rangeIndexMap.get(fieldIndex);
+                        alphaRangeIndex.remove(alphaNode);
+                        if (fieldIndex.getCount() <= this.alphaNodeRangeIndexThreshold - 1) {
+                            // we have less than THRESHOLD so unindex
+                            unRangeIndexSinks(fieldIndex, alphaRangeIndex);
+                        }
+                    } else {
+                        this.rangeIndexableSinks.remove(alphaNode);
+                    }
+
+                    if (this.rangeIndexableSinks != null && this.rangeIndexableSinks.isEmpty()) {
+                        this.rangeIndexableSinks = null;
+                    }
+
+                    return size() == 1 ? new SingleObjectSinkAdapter(getSinks()[0]) : this;
+
                 }
             }
         }
@@ -358,7 +431,127 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
                 return node;
             }
         }
+        return null;
+    }
 
+    /**
+     * Pick sinks from rangeIndexableSinks (which were stored until index threshold is exceeded) and put them into rangeIndex.
+     */
+    void rangeIndexSinks(final FieldIndex fieldIndex) {
+        if (rangeIndexMap == null) {
+            rangeIndexMap = new HashMap<>();
+        }
+        AlphaRangeIndex alphaRangeIndex = rangeIndexMap.computeIfAbsent(fieldIndex, AlphaRangeIndex::new);
+
+        final int index = fieldIndex.getIndex();
+
+        if (rangeIndexableSinks != null) {
+            ObjectSinkNode currentSink = rangeIndexableSinks.getFirst();
+
+            while (currentSink != null) {
+                final AlphaNode alphaNode = (AlphaNode) currentSink;
+                final AlphaNodeFieldConstraint fieldConstraint = alphaNode.getConstraint();
+                final IndexableConstraint indexableConstraint = (IndexableConstraint) fieldConstraint;
+
+                // position to the next sink now because alphaNode may be removed if the index is equal. If we were to do this
+                // afterwards, currentSink.nextNode would be null
+                currentSink = currentSink.getNextObjectSinkNode();
+
+                if (index == indexableConstraint.getFieldExtractor().getIndex()) {
+                    alphaRangeIndex.add(alphaNode);
+
+                    // remove the alpha from the possible candidates of range indexable sinks since it is now range indexed
+                    rangeIndexableSinks.remove(alphaNode);
+                }
+            }
+            if (rangeIndexableSinks.isEmpty()) {
+                rangeIndexableSinks = null;
+            }
+        }
+
+        fieldIndex.setRangeIndexed(true);
+    }
+
+    void unRangeIndexSinks(final FieldIndex fieldIndex, AlphaRangeIndex alphaRangeIndex) {
+        if (rangeIndexableSinks == null) {
+            rangeIndexableSinks = new ObjectSinkNodeList();
+        }
+        alphaRangeIndex.getAllValues().forEach(alphaNode -> rangeIndexableSinks.add(alphaNode));
+
+        alphaRangeIndex.clear();
+        rangeIndexMap.remove(fieldIndex);
+        if (rangeIndexMap.isEmpty()) {
+            rangeIndexMap = null;
+        }
+
+        fieldIndex.setRangeIndexed(false);
+    }
+
+    private boolean isRangeIndexable(AlphaNode alphaNode) {
+        AlphaNodeFieldConstraint fieldConstraint = alphaNode.getConstraint();
+        if (fieldConstraint instanceof IndexableConstraint) {
+            IndexableConstraint indexableConstraint = (IndexableConstraint) fieldConstraint;
+            ConstraintType constraintType = indexableConstraint.getConstraintType();
+            if ((constraintType.isAscending() || constraintType.isDescending()) &&
+                indexableConstraint.getField() != null && !indexableConstraint.getField().isNull() &&
+                indexableConstraint.getFieldExtractor().getValueType() != ValueType.OBJECT_TYPE &&
+                // our current implementation does not support range indexing of deeply nested properties
+                indexableConstraint.getFieldExtractor().getIndex() >= 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Returns a FieldIndex which Keeps a count on how many times a particular field is used with a range check
+     * in the sinks. Stores the FieldIndex for asc and desc separately
+     */
+    private FieldIndex registerFieldIndexForRange(final int index,
+                                                  final InternalReadAccessor fieldExtractor) {
+        if (rangeIndexedFieldIndexes == null) {
+            rangeIndexedFieldIndexes = new LinkedList<>();
+        }
+        FieldIndex fieldIndex = findFieldIndexForRange(index);
+
+        // doesn't exist so create it
+        if (fieldIndex == null) {
+            fieldIndex = new FieldIndex(index,
+                                        fieldExtractor);
+            rangeIndexedFieldIndexes.add(fieldIndex);
+        }
+
+        fieldIndex.increaseCounter();
+
+        return fieldIndex;
+    }
+
+    private FieldIndex unregisterFieldIndexForRange(final int index) {
+        final FieldIndex fieldIndex = findFieldIndexForRange( index );
+        if (fieldIndex == null) {
+            throw new IllegalStateException("Cannot find field index for index " + index + "!");
+        }
+        fieldIndex.decreaseCounter();
+
+        // if the fieldcount is 0 then remove it from the linkedlist
+        if ( fieldIndex.getCount() == 0 ) {
+            rangeIndexedFieldIndexes.remove( fieldIndex );
+        }
+        if (rangeIndexedFieldIndexes.isEmpty()) {
+            rangeIndexedFieldIndexes = null;
+        }
+        return fieldIndex;
+    }
+
+    private FieldIndex findFieldIndexForRange(final int index) {
+        if (rangeIndexedFieldIndexes == null) {
+            return null;
+        }
+        for (FieldIndex node = rangeIndexedFieldIndexes.getFirst(); node != null; node = node.getNext()) {
+            if (node.getIndex() == index) {
+                return node;
+            }
+        }
         return null;
     }
 
@@ -385,9 +578,35 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
             }
         }
 
+        // Range indexing
+        if (this.rangeIndexedFieldIndexes != null) {
+            // Iterate the FieldIndexes to see if any are range indexed
+            for (FieldIndex fieldIndex = this.rangeIndexedFieldIndexes.getFirst(); fieldIndex != null; fieldIndex = fieldIndex.getNext()) {
+                if (!fieldIndex.isRangeIndexed()) {
+                    continue;
+                }
+                AlphaRangeIndex alphaRangeIndex = this.rangeIndexMap.get(fieldIndex);
+                Collection<AlphaNode> alphaNodes = alphaRangeIndex.getMatchingAlphaNodes(object);
+                for (AlphaNode sink : alphaNodes) {
+                    // go straight to the AlphaNode's propagator, as we know it's true and no need to retest
+                    sink.getObjectSinkPropagator().propagateAssertObject(factHandle, context, workingMemory);
+                }
+            }
+        }
+
         // propagate unhashed
         if ( this.hashableSinks != null ) {
             for ( ObjectSinkNode sink = this.hashableSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
+                doPropagateAssertObject( factHandle,
+                                         context,
+                                         workingMemory,
+                                         sink );
+            }
+        }
+
+        // propagate un-rangeindexed
+        if ( this.rangeIndexableSinks != null ) {
+            for ( ObjectSinkNode sink = this.rangeIndexableSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
                 doPropagateAssertObject( factHandle,
                                          context,
                                          workingMemory,
@@ -430,9 +649,36 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
             }
         }
 
+        // Range indexing
+        if (this.rangeIndexedFieldIndexes != null) {
+            // Iterate the FieldIndexes to see if any are range indexed
+            for (FieldIndex fieldIndex = this.rangeIndexedFieldIndexes.getFirst(); fieldIndex != null; fieldIndex = fieldIndex.getNext()) {
+                if (!fieldIndex.isRangeIndexed()) {
+                    continue;
+                }
+                AlphaRangeIndex alphaRangeIndex = this.rangeIndexMap.get(fieldIndex);
+                Collection<AlphaNode> alphaNodes = alphaRangeIndex.getMatchingAlphaNodes(object);
+                for (AlphaNode sink : alphaNodes) {
+                    // go straight to the AlphaNode's propagator, as we know it's true and no need to retest
+                    sink.getObjectSinkPropagator().propagateModifyObject(factHandle, modifyPreviousTuples, context, workingMemory);
+                }
+            }
+        }
+
         // propagate unhashed
         if ( this.hashableSinks != null ) {
             for ( ObjectSinkNode sink = this.hashableSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
+                doPropagateModifyObject( factHandle,
+                                         modifyPreviousTuples,
+                                         context,
+                                         workingMemory,
+                                         sink );
+            }
+        }
+
+        // propagate un-rangeindexed
+        if ( this.rangeIndexableSinks != null ) {
+            for ( ObjectSinkNode sink = this.rangeIndexableSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
                 doPropagateModifyObject( factHandle,
                                          modifyPreviousTuples,
                                          context,
@@ -475,10 +721,32 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
             }
         }
 
+        // Range indexing
+        if (this.rangeIndexedFieldIndexes != null) {
+            // Iterate the FieldIndexes to see if any are range indexed
+            for (FieldIndex fieldIndex = this.rangeIndexedFieldIndexes.getFirst(); fieldIndex != null; fieldIndex = fieldIndex.getNext()) {
+                if (!fieldIndex.isRangeIndexed()) {
+                    continue;
+                }
+                AlphaRangeIndex alphaRangeIndex = this.rangeIndexMap.get(fieldIndex);
+                Collection<AlphaNode> alphaNodes = alphaRangeIndex.getMatchingAlphaNodes(object);
+                for (AlphaNode sink : alphaNodes) {
+                    sink.getObjectSinkPropagator().byPassModifyToBetaNode(factHandle, modifyPreviousTuples, context, workingMemory);
+                }
+            }
+        }
+
         // propagate unhashed
         if ( this.hashableSinks != null ) {
             for ( ObjectSinkNode sink = this.hashableSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
                 // only alpha nodes are hashable
+                ((AlphaNode)sink).getObjectSinkPropagator().byPassModifyToBetaNode( factHandle, modifyPreviousTuples, context, workingMemory );
+            }
+        }
+
+        // propagate un-rangeindexed
+        if ( this.rangeIndexableSinks != null ) {
+            for ( ObjectSinkNode sink = this.rangeIndexableSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
                 ((AlphaNode)sink).getObjectSinkPropagator().byPassModifyToBetaNode( factHandle, modifyPreviousTuples, context, workingMemory );
             }
         }
@@ -489,7 +757,7 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
                 // compound alpha, lianode or betanode
                 sink.byPassModifyToBetaNode( factHandle, modifyPreviousTuples, context, workingMemory );
             }
-        }        
+        }
     }
 
     /**
@@ -537,11 +805,25 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
             }
         }
 
+        if ( this.rangeIndexableSinks != null ) {
+            for ( ObjectSinkNode sink = this.rangeIndexableSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
+                sinksMap.put( sink, sink );
+            }
+        }
+
         if ( this.hashedSinkMap != null ) {
             final Iterator it = this.hashedSinkMap.newIterator();
             for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
                 final ObjectSink sink = (ObjectSink) entry.getValue();
                 sinksMap.put( sink, sink );
+            }
+        }
+
+        if ( this.rangeIndexMap != null ) {
+            Collection<AlphaRangeIndex> alphaRangeIndexes = rangeIndexMap.values();
+            for (AlphaRangeIndex alphaRangeIndex : alphaRangeIndexes) {
+                Collection<AlphaNode> alphaNodes = alphaRangeIndex.getAllValues();
+                alphaNodes.forEach(sink -> sinksMap.put( sink, sink ));
             }
         }
     }
@@ -571,8 +853,27 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
             }
         }
 
+        if ( this.rangeIndexedFieldIndexes != null ) {
+            // Iterate the FieldIndexes to see if any are range indexed
+            for ( FieldIndex fieldIndex = this.rangeIndexedFieldIndexes.getFirst(); fieldIndex != null; fieldIndex = fieldIndex.getNext() ) {
+                if ( !fieldIndex.isRangeIndexed() ) {
+                    continue;
+                }
+                Collection<AlphaNode> alphaNodes = this.rangeIndexMap.get(fieldIndex).getAllValues();
+                for (AlphaNode sink : alphaNodes) {
+                    newSinks[at++] = sink;
+                }
+            }
+        }
+
         if ( this.hashableSinks != null ) {
             for ( ObjectSinkNode sink = this.hashableSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
+                newSinks[at++] = sink;
+            }
+        }
+
+        if ( this.rangeIndexableSinks != null ) {
+            for ( ObjectSinkNode sink = this.rangeIndexableSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
                 newSinks[at++] = sink;
             }
         }
@@ -605,7 +906,9 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
     }     
 
     public int size() {
-        return (this.otherSinks != null ? this.otherSinks.size() : 0) + (this.hashableSinks != null ? this.hashableSinks.size() : 0) + (this.hashedSinkMap != null ? this.hashedSinkMap.size() : 0);
+        return (this.otherSinks != null ? this.otherSinks.size() : 0) + (this.hashableSinks != null ? this.hashableSinks.size() : 0) + (this.hashedSinkMap != null ? this.hashedSinkMap.size() : 0)
+                + (this.rangeIndexableSinks != null ? this.rangeIndexableSinks.size() : 0)
+                + (this.rangeIndexMap != null ? rangeIndexMap.values().stream().map(AlphaRangeIndex::size).reduce(0, Integer::sum) : 0);
     }
 
     public boolean isEmpty() {
@@ -909,6 +1212,7 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
         private int                  count;
 
         private boolean              hashed;
+        private boolean              rangeIndexed;
 
         private FieldIndex           previous;
         private FieldIndex           next;
@@ -928,6 +1232,7 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
             fieldExtactor = (InternalReadAccessor) in.readObject();
             count = in.readInt();
             hashed = in.readBoolean();
+            rangeIndexed = in.readBoolean();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
@@ -935,6 +1240,7 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
             out.writeObject( fieldExtactor );
             out.writeInt( count );
             out.writeBoolean( hashed );
+            out.writeBoolean( rangeIndexed );
         }
 
         public InternalReadAccessor getFieldExtractor() {
@@ -959,6 +1265,14 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
 
         public void setHashed(final boolean hashed) {
             this.hashed = hashed;
+        }
+
+        public boolean isRangeIndexed() {
+            return rangeIndexed;
+        }
+
+        public void setRangeIndexed(boolean rangeIndexed) {
+            this.rangeIndexed = rangeIndexed;
         }
 
         public void increaseCounter() {

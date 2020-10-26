@@ -16,6 +16,9 @@
 
 package org.drools.ancompiler;
 
+import java.util.Collection;
+import java.util.Map;
+
 import org.drools.core.base.ClassFieldReader;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.BetaNode;
@@ -34,6 +37,7 @@ import org.drools.core.rule.IndexableConstraint;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.ObjectHashMap;
+import org.drools.core.util.index.AlphaRangeIndex;
 
 /**
  * This class is used for reading an {@link ObjectTypeNode} using callbacks.
@@ -94,8 +98,10 @@ public class ObjectTypeNodeParser {
         } else if (propagator instanceof CompositeObjectSinkAdapter) {
             CompositeObjectSinkAdapter composite = (CompositeObjectSinkAdapter) propagator;
 
+            traverseSinkLisk(composite.getRangeIndexableSinks(), handler);
             traverseSinkLisk(composite.getHashableSinks(), handler);
             traverseSinkLisk(composite.getOthers(), handler);
+            traverseRangeIndexedAlphaNodes(composite.getRangeIndexMap(), handler);
             foundIndexableConstraint = traverseHashedAlphaNodes(composite.getHashedSinkMap(), handler);
         } else if (propagator instanceof CompositePartitionAwareObjectSinkAdapter) {
             CompositePartitionAwareObjectSinkAdapter composite = (CompositePartitionAwareObjectSinkAdapter) propagator;
@@ -155,6 +161,19 @@ public class ObjectTypeNodeParser {
             }
         }
         return hashedFieldReader;
+    }
+
+    private void traverseRangeIndexedAlphaNodes(Map<CompositeObjectSinkAdapter.FieldIndex, AlphaRangeIndex> rangeIndexMap, NetworkHandler handler) {
+        if (rangeIndexMap == null) {
+            return;
+        }
+        Collection<AlphaRangeIndex> rangeIndexes = rangeIndexMap.values();
+        for (AlphaRangeIndex alphaRangeIndex : rangeIndexes) {
+            Collection<AlphaNode> alphaNodes = alphaRangeIndex.getAllValues();
+            for (AlphaNode alphaNode : alphaNodes) {
+                traverseSink(alphaNode, handler);
+            }
+        }
     }
 
     private void traverseSink(ObjectSink sink, NetworkHandler handler) {
