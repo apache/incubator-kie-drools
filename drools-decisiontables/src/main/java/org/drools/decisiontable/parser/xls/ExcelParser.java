@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.apache.poi.openxml4j.util.ZipSecureFile;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.CellValue;
@@ -52,6 +53,17 @@ public class ExcelParser
         DecisionTableParser {
 
     private static final Logger log = LoggerFactory.getLogger( ExcelParser.class );
+
+    static {
+        String minInflateRatio = System.getProperty( "drools.excelParser.minInflateRatio" );
+        if (minInflateRatio != null) {
+            try {
+                ZipSecureFile.setMinInflateRatio( Double.parseDouble( minInflateRatio ) );
+            } catch (NumberFormatException nfe) {
+                log.error( "Invalid value '" + minInflateRatio + "' for property drools.excelParser.minInflateRatio. It has to be a double" );
+            }
+        }
+    }
 
     public static final String DEFAULT_RULESHEET_NAME = "Decision Tables";
     private Map<String, List<DataListener>> _listeners = new HashMap<String, List<DataListener>>();
