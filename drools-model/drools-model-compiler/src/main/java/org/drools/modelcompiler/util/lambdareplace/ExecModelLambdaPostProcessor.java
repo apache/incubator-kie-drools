@@ -37,11 +37,13 @@ import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.printer.PrettyPrinter;
 import com.github.javaparser.printer.PrettyPrinterConfiguration;
 import org.drools.model.BitMask;
+import org.drools.model.functions.PredicateInformation;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.ModelGenerator;
@@ -115,7 +117,8 @@ public class ExecModelLambdaPostProcessor {
                  if (containsTemporalPredicate(methodCallExpr1)) {
                      this.convertTemporalExpr(methodCallExpr1);
                  } else {
-                     extractLambdaFromMethodCall(methodCallExpr1, () -> new MaterializedLambdaPredicate(packageName, ruleClassName));
+                     extractLambdaFromMethodCall(methodCallExpr1,
+                                                 () -> new MaterializedLambdaPredicate(packageName, ruleClassName, PredicateInformation.EMPTY_PREDICATE_INFORMATION));
                  }
              });
 
@@ -145,6 +148,10 @@ public class ExecModelLambdaPostProcessor {
              });
     }
 
+    private PredicateInformation getPredicateInformation() {
+        return PredicateInformation.EMPTY_PREDICATE_INFORMATION;
+    }
+
     private void convertTemporalExpr(MethodCallExpr methodCallExpr) {
         // TemporalExpr methodCallExpr may have 2 lambdas
         methodCallExpr.getArguments().forEach(a -> {
@@ -155,7 +162,7 @@ public class ExecModelLambdaPostProcessor {
                     logger.debug("Unable to create MaterializedLambdaExtractor for {}", lambdaExpr);
                 } else {
                     MaterializedLambdaExtractor extractor = extractorOpt.get();
-                    replaceLambda(lambdaExpr, () -> extractor);
+                    replaceLambda(lambdaExpr, () -> extractor, Optional.empty());
                 }
             }
         });
@@ -349,14 +356,17 @@ public class ExecModelLambdaPostProcessor {
     }
 
     private void extractLambdaFromMethodCall(MethodCallExpr methodCallExpr, Supplier<MaterializedLambda> lambdaExtractor) {
+        // Assume first argument is the exprId
+        Optional<String> exprId = methodCallExpr.findFirst(StringLiteralExpr.class).map(a -> a.getValue());
+
         methodCallExpr.getArguments().forEach(a -> {
             if (a.isLambdaExpr()) {
-                replaceLambda(a.asLambdaExpr(), lambdaExtractor);
+                replaceLambda(a.asLambdaExpr(), lambdaExtractor, exprId);
             }
         });
     }
 
-    private void replaceLambda(LambdaExpr lambdaExpr, Supplier<MaterializedLambda> lambdaExtractor) {
+    private void replaceLambda(LambdaExpr lambdaExpr, Supplier<MaterializedLambda> lambdaExtractor, Optional<String> exprId) {
         try {
             CreatedClass aClass = lambdaExtractor.get().create(lambdaExpr.toString(), imports, staticImports);
             lambdaClasses.put(aClass.getClassNameWithPackage(), aClass);

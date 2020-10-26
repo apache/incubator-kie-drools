@@ -27,6 +27,8 @@ public interface Predicate4<A, B, C, D> extends Serializable {
         return (a, b, c, d) -> !test( a, b, c, d );
     }
 
+    default PredicateInformation predicateInformation() { return PredicateInformation.EMPTY_PREDICATE_INFORMATION; }
+
     class Impl<A, B, C, D> extends IntrospectableLambda implements Predicate4<A, B, C, D> {
 
         private final Predicate4<A, B, C, D> predicate;

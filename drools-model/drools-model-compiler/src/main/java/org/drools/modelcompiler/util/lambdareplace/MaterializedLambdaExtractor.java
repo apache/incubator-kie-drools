@@ -43,7 +43,7 @@ public class MaterializedLambdaExtractor extends MaterializedLambda {
     }
 
     @Override
-    void createMethodDeclaration(EnumDeclaration classDeclaration) {
+    void createMethodsDeclaration(EnumDeclaration classDeclaration) {
         MethodDeclaration methodDeclaration = classDeclaration.addMethod("apply", Modifier.Keyword.PUBLIC);
         methodDeclaration.addAnnotation("Override");
         methodDeclaration.setType(returnTypeJP());

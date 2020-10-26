@@ -46,7 +46,7 @@ class PatternTestHarness {
         Rule rule = rule("beta")
                 .build(
                         pattern(markV)
-                                .expr("exprA", mypackage.PB4.LambdaPredicateB4BD3C13169578B6FA8E952113BF43FE.INSTANCE,
+                                .expr("exprA", mypackage.P67.LambdaPredicate6747C0A7EC77FAA24F45371866DD66D8.INSTANCE,
                                       alphaIndexedBy(String.class, Index.ConstraintType.EQUAL, 1, mypackage.PF1.LambdaExtractorF1957A9B73DCC850FB61E5A94549014A.INSTANCE, "Mark"),
                                       reactOn("name", "age")),
                         pattern(olderV)

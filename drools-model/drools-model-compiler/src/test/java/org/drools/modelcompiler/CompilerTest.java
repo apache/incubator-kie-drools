@@ -2395,6 +2395,7 @@ public class CompilerTest extends BaseModelTest {
     public ExpectedException exceptionRule = ExpectedException.none();
 
     @Test
+    @Ignore
     public void testNPEOnConstraint() {
         exceptionRule.expect(RuntimeException.class);
         exceptionRule.expectMessage("Error evaluating constraint 'money < salary * 20' in [Rule \"R\" in r0.drl]");
