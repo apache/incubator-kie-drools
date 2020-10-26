@@ -28,6 +28,12 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>org.infinispan</groupId>
+      <artifactId>infinispan-spring5-remote</artifactId>
+      <version>${version.org.infinispan}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-handler</artifactId>
       <version>${version.spring.netty}</version>
