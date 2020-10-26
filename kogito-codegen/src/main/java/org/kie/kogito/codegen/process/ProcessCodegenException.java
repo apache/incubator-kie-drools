@@ -19,6 +19,10 @@ import java.text.MessageFormat;
 
 public class ProcessCodegenException extends RuntimeException {
 
+    public ProcessCodegenException(String message) {
+        super(message);
+    }
+    
     public ProcessCodegenException(String path, Throwable cause) {
         super(MessageFormat.format("Error while elaborating file \"{0}\": {1}", path, cause.getMessage()), cause);
     }

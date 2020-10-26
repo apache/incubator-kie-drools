@@ -15,18 +15,25 @@
 
 package org.kie.kogito.codegen.tests;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.codegen.AbstractCodegenTest;
+import org.kie.kogito.codegen.process.ProcessCodegenException;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class InvalidProcessTest extends AbstractCodegenTest {
-    
+
     @Test
-    public void testBasicUserTaskProcess() throws Exception {
-        assertThrows(IllegalArgumentException.class, () ->         
-            generateCodeProcessesOnly("invalid/invalid-process-id.bpmn2"), "Process id '_7063C749-BCA8-4B6D-BC31-ACEE6FDF5512' is not valid");        
-        
+    public void testBasicUserTaskProcess() {
+        assertThrows(IllegalArgumentException.class,
+                     () -> generateCodeProcessesOnly("invalid/invalid-process-id.bpmn2"),
+                     "Process id '_7063C749-BCA8-4B6D-BC31-ACEE6FDF5512' is not valid");
     }
-    
+
+    @Test
+    public void testDuplicatedProcessId() {
+        assertThrows(ProcessCodegenException.class,
+                     () -> generateCodeProcessesOnly("invalid/duplicated-process-id-1.bpmn2", "invalid/duplicated-process-id-2.bpmn2"),
+                     "Duplicated process with id duplicated found in the project, please review .bpmn files");
+    }
 }

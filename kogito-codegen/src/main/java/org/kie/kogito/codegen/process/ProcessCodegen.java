@@ -17,6 +17,7 @@ package org.kie.kogito.codegen.process;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -65,6 +66,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
+import static java.lang.String.format;
 import static java.util.stream.Collectors.toList;
 import static org.kie.kogito.codegen.ApplicationGenerator.log;
 
@@ -143,9 +145,9 @@ public class ProcessCodegen extends AbstractGenerator {
     }
 
     private static Process parseWorkflowFile(Resource r, String parser) {
-        try {
+        try (Reader reader = r.getReader()) {
             ServerlessWorkflowParser workflowParser = new ServerlessWorkflowParser(parser);
-            return workflowParser.parseWorkFlow(r.getReader());
+            return workflowParser.parseWorkFlow(reader);
         } catch (IOException e) {
             throw new ProcessParsingException("Could not parse file " + r.getSourcePath(), e);
         } catch (RuntimeException e) {
@@ -153,12 +155,12 @@ public class ProcessCodegen extends AbstractGenerator {
         }
     }
 
-    private static Collection<? extends Process> parseProcessFile(Resource r) {
-        try {
+    private static Collection<Process> parseProcessFile(Resource r) {
+        try (Reader reader = r.getReader()) {
             XmlProcessReader xmlReader = new XmlProcessReader(
                     BPMN_SEMANTIC_MODULES,
                     Thread.currentThread().getContextClassLoader());
-            return xmlReader.read(r.getReader());
+            return xmlReader.read(reader);
         } catch (SAXException | IOException e) {
             throw new ProcessParsingException("Could not parse file " + r.getSourcePath(), e);
         } catch (RuntimeException e) {
@@ -179,6 +181,9 @@ public class ProcessCodegen extends AbstractGenerator {
     public ProcessCodegen(Collection<? extends Process> processes) {
         this.processes = new HashMap<>();
         for (Process process : processes) {
+            if (this.processes.containsKey(process.getId())) {
+                throw new ProcessCodegenException(format("Duplicated process with id %s found in the project, please review .bpmn files", process.getId()));
+            }
             this.processes.put(process.getId(), (WorkflowProcess) process);
         }
 
@@ -470,8 +475,7 @@ public class ProcessCodegen extends AbstractGenerator {
     @Override
     public void updateConfig(ConfigGenerator cfg) {
         if (!processes.isEmpty()) {
-            cfg.withProcessConfig(
-                    new ProcessConfigGenerator(packageName));
+            cfg.withProcessConfig(new ProcessConfigGenerator(packageName));
         }
     }
 
