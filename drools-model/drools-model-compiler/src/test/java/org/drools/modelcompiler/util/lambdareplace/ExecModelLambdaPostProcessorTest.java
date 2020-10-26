@@ -34,6 +34,7 @@ public class ExecModelLambdaPostProcessorTest {
         MethodDeclaration expectedResult = getMethodChangingName(inputCU, PATTERN_HARNESS, "expectedOutput");
         MethodDeclaration actual = getMethodChangingName(clone, PATTERN_HARNESS, "inputMethod");
 
+//        assertEquals(expectedResult, actual); // better diff - fails on String equals
         assertThat(actual.toString(), equalToIgnoringWhiteSpace(expectedResult.toString()));
     }
 

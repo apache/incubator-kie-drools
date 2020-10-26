@@ -46,14 +46,14 @@ class PatternTestHarness {
         Rule rule = rule("beta")
                 .build(
                         pattern(markV)
-                                .expr("exprA", mypackage.P67.LambdaPredicate6747C0A7EC77FAA24F45371866DD66D8.INSTANCE,
+                                .expr("exprA", mypackage.PB4.LambdaPredicateB4BD3C13169578B6FA8E952113BF43FE.INSTANCE,
                                       alphaIndexedBy(String.class, Index.ConstraintType.EQUAL, 1, mypackage.PF1.LambdaExtractorF1957A9B73DCC850FB61E5A94549014A.INSTANCE, "Mark"),
                                       reactOn("name", "age")),
                         pattern(olderV)
-                                .expr("exprB", mypackage.PA0.LambdaPredicateA0BDDB1AA0D6B30378010D68BB6F15C5.INSTANCE,
+                                .expr("exprB", mypackage.PAA.LambdaPredicateAA0174191F4A6806B804030B95638BF9.INSTANCE,
                                       alphaIndexedBy(String.class, Index.ConstraintType.NOT_EQUAL, 1, mypackage.PF1.LambdaExtractorF1957A9B73DCC850FB61E5A94549014A.INSTANCE, "Mark"),
                                       reactOn("name"))
-                                .expr("exprC", markV,  mypackage.P30.LambdaPredicate3090CBA8A26410ED75B8E749F8C07F68.INSTANCE,
+                                .expr("exprC", markV,  mypackage.PC0.LambdaPredicateC06E24C125614C09F9319B8C2B0D7A08.INSTANCE,
                                       betaIndexedBy(int.class, Index.ConstraintType.GREATER_THAN, 0, mypackage.P6F.LambdaExtractor6F66D90C869211C6AEC2E67F99D874D8.INSTANCE, mypackage.P6F.LambdaExtractor6F66D90C869211C6AEC2E67F99D874D8.INSTANCE),
                                       reactOn("age")),
                         on(olderV, markV).execute(mypackage.P73.LambdaConsequence73B957CDB8CD5D5A17BDA94A7D62ED86.INSTANCE)
