@@ -69,7 +69,7 @@
       <bpmn2:dataInputAssociation id="_Y5fXoR81EDiXeq2AO6t0ng">
         <bpmn2:targetRef>_3EDB5055-D95B-43D0-A87A-A827EE7229A7_modelInputX</bpmn2:targetRef>
         <bpmn2:assignment id="_Y5fXoh81EDiXeq2AO6t0ng">
-          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_Y5fXox81EDiXeq2AO6t0ng">VacationDays</bpmn2:from>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_Y5fXox81EDiXeq2AO6t0ng">VacationDaysAlt</bpmn2:from>
           <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_Y5fXpB81EDiXeq2AO6t0ng">_3EDB5055-D95B-43D0-A87A-A827EE7229A7_modelInputX</bpmn2:to>
         </bpmn2:assignment>
       </bpmn2:dataInputAssociation>

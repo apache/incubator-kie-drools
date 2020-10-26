@@ -103,9 +103,9 @@ public class DecisionModelResourcesProviderGenerator {
         final MethodDeclaration getResourcesMethod = getResourcesMethods.get(0);
         final BlockStmt body = getResourcesMethod.getBody().orElseThrow(() -> new RuntimeException("Can't find the body of the \"get()\" method."));
         final VariableDeclarator resourcePathsVariable = getResourcesMethod.findFirst(VariableDeclarator.class).orElseThrow(() -> new RuntimeException("Can't find a variable declaration in the \"get()\" method."));
-        final MethodCallExpr add = new MethodCallExpr(resourcePathsVariable.getNameAsExpression(), "add");
 
         for (DMNResource resource : resources) {
+            final MethodCallExpr add = new MethodCallExpr(resourcePathsVariable.getNameAsExpression(), "add");
             final MethodCallExpr getResAsStream = getReadResourceMethod(applicationClass, resource.getCollectedResource());
             final MethodCallExpr isr = new MethodCallExpr("readResource").addArgument(getResAsStream);
             add.addArgument(newObject(DefaultDecisionModelResource.class,

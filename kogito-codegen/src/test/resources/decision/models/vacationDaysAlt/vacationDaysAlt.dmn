@@ -7,7 +7,7 @@
                       xmlns:kie="https://www.drools.org/kie-dmn"
                       xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"
                       id="_0020_vacation_days"
-                      name="VacationDays"
+                      name="VacationDaysAlt"
                       namespace="decision">
    <semantic:inputData id="i_Age" name="Age">
       <semantic:variable name="Age" typeRef="number"/>
