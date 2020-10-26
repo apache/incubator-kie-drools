@@ -63,6 +63,7 @@ public class MaterializedLambdaPredicateTest {
                 "        }\n" +
                 "    }\n";
 
+//        assertEquals(StaticJavaParser.parse(expectedResult), aClass.getCompilationUnit()); // Better diff
         assertThat(aClass.getCompilationUnitAsString(), equalToIgnoringWhiteSpace(expectedResult));
 
     }

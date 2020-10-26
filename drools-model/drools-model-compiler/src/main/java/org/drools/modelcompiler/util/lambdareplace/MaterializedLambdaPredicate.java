@@ -36,8 +36,8 @@ import static com.github.javaparser.StaticJavaParser.parseType;
 
 public class MaterializedLambdaPredicate extends MaterializedLambda {
 
-    private final static String CLASS_NAME_PREFIX = "LambdaPredicate";
-    private PredicateInformation predicateInformation;
+    private static final String CLASS_NAME_PREFIX = "LambdaPredicate";
+    private final PredicateInformation predicateInformation;
 
     MaterializedLambdaPredicate(String packageName, String ruleClassName, PredicateInformation predicateInformation) {
         super(packageName, ruleClassName);
@@ -52,7 +52,9 @@ public class MaterializedLambdaPredicate extends MaterializedLambda {
     @Override
     void createMethodsDeclaration(EnumDeclaration classDeclaration) {
         testMethod(classDeclaration);
-        predicateInformationMethod(classDeclaration);
+        if(!predicateInformation.isEmpty()) {
+            predicateInformationMethod(classDeclaration);
+        }
     }
 
     private void testMethod(EnumDeclaration classDeclaration) {

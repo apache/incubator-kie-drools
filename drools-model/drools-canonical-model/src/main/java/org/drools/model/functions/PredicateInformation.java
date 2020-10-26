@@ -16,6 +16,8 @@
 
 package org.drools.model.functions;
 
+import java.util.Objects;
+
 /**
  * Used to generate better error message
  */
@@ -59,5 +61,28 @@ public class PredicateInformation {
 
     public String getRuleFileName() {
         return ruleFileName;
+    }
+
+    public boolean isEmpty() {
+        return EMPTY_PREDICATE_INFORMATION.equals(this);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        PredicateInformation that = (PredicateInformation) o;
+        return Objects.equals(stringConstraint, that.stringConstraint) &&
+                Objects.equals(ruleName, that.ruleName) &&
+                Objects.equals(ruleFileName, that.ruleFileName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(stringConstraint, ruleName, ruleFileName);
     }
 }
