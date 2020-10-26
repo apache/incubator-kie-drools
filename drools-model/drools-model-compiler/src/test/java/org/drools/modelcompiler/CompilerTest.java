@@ -43,7 +43,9 @@ import org.drools.modelcompiler.domain.Toy;
 import org.drools.modelcompiler.domain.Woman;
 import org.junit.Assert;
 import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessContext;
@@ -2387,5 +2389,28 @@ public class CompilerTest extends BaseModelTest {
         ksession.fireAllRules();
 
         Assertions.assertThat(list).containsExactly("John");
+    }
+
+    @Rule
+    public ExpectedException exceptionRule = ExpectedException.none();
+
+    @Test
+    public void testNPEOnConstraint() {
+        exceptionRule.expect(RuntimeException.class);
+        exceptionRule.expectMessage("Error evaluating constraint 'money < salary * 20' in [Rule \"R\" in r0.drl]");
+
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                        "rule R when\n" +
+                        "  $p : Person(money < salary * 20 )\n" +
+                        "then\n" +
+                        "end";
+
+        KieSession ksession = getKieSession( str );
+
+        Person me = new Person( "Luca");
+        me.setMoney(null);
+        ksession.insert( me );
+        ksession.fireAllRules();
     }
 }
