@@ -67,10 +67,10 @@ public class RoadSegmentLocation extends Location {
     }
 
     public Double getDistanceDouble(RoadSegmentLocation location) {
-        Double distance = nearbyTravelDistanceMap.get((RoadSegmentLocation) location);
+        Double distance = nearbyTravelDistanceMap.get(location);
         if (distance == null) {
             // location isn't nearby
-            distance = getShortestDistanceDoubleThroughHubs((RoadSegmentLocation) location);
+            distance = getShortestDistanceDoubleThroughHubs(location);
         }
         return distance;
     }
