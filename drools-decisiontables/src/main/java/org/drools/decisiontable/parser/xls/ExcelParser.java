@@ -54,7 +54,7 @@ public class ExcelParser
 
     private static final Logger log = LoggerFactory.getLogger( ExcelParser.class );
 
-    static {
+    private static void initMinInflateRatio() {
         String minInflateRatio = System.getProperty( "drools.excelParser.minInflateRatio" );
         if (minInflateRatio != null) {
             try {
@@ -62,6 +62,8 @@ public class ExcelParser
             } catch (NumberFormatException nfe) {
                 log.error( "Invalid value '" + minInflateRatio + "' for property drools.excelParser.minInflateRatio. It has to be a double" );
             }
+        } else {
+            ZipSecureFile.setMinInflateRatio( 0.01 ); // default value
         }
     }
 
@@ -75,12 +77,14 @@ public class ExcelParser
      */
     public ExcelParser( final Map<String, List<DataListener>> sheetListeners ) {
         this._listeners = sheetListeners;
+        initMinInflateRatio();
     }
 
     public ExcelParser( final List<DataListener> sheetListeners ) {
         this._listeners.put( ExcelParser.DEFAULT_RULESHEET_NAME,
                              sheetListeners );
         this._useFirstSheet = true;
+        initMinInflateRatio();
     }
 
     public ExcelParser( final DataListener listener ) {
@@ -89,6 +93,7 @@ public class ExcelParser
         this._listeners.put( ExcelParser.DEFAULT_RULESHEET_NAME,
                              listeners );
         this._useFirstSheet = true;
+        initMinInflateRatio();
     }
 
     public void parseFile( InputStream inStream ) {

@@ -857,6 +857,7 @@ public class SpreadsheetCompilerUnitTest {
 
     @Test
     public void testZipBomb() {
+        // RHDM-1468
         System.setProperty( "drools.excelParser.minInflateRatio", "0.001" );
         try {
             final SpreadsheetCompiler converter = new SpreadsheetCompiler();
