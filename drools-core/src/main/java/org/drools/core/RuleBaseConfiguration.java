@@ -312,7 +312,7 @@ public class RuleBaseConfiguration
         } else if ( name.equals( AlphaThresholdOption.PROPERTY_NAME ) ) {
             setAlphaNodeHashingThreshold( StringUtils.isEmpty( value ) ? 3 : Integer.parseInt(value));
         } else if ( name.equals( AlphaRangeIndexThresholdOption.PROPERTY_NAME ) ) {
-            setAlphaNodeRangeIndexThreshold( StringUtils.isEmpty( value ) ? 3 : Integer.parseInt(value));
+            setAlphaNodeRangeIndexThreshold( StringUtils.isEmpty( value ) ? AlphaRangeIndexThresholdOption.DEFAULT_VALUE : Integer.parseInt(value));
         } else if ( name.equals( SessionsPoolOption.PROPERTY_NAME ) ) {
             setSessionPoolSize( StringUtils.isEmpty( value ) ? -1 : Integer.parseInt(value));
         } else if ( name.equals( CompositeKeyDepthOption.PROPERTY_NAME ) ) {
@@ -446,7 +446,7 @@ public class RuleBaseConfiguration
 
         setAlphaNodeHashingThreshold(Integer.parseInt(this.chainedProperties.getProperty(AlphaThresholdOption.PROPERTY_NAME, "3")));
 
-        setAlphaNodeRangeIndexThreshold(Integer.parseInt(this.chainedProperties.getProperty(AlphaRangeIndexThresholdOption.PROPERTY_NAME, "3")));
+        setAlphaNodeRangeIndexThreshold(Integer.parseInt(this.chainedProperties.getProperty(AlphaRangeIndexThresholdOption.PROPERTY_NAME, "" + AlphaRangeIndexThresholdOption.DEFAULT_VALUE)));
 
         setSessionPoolSize(Integer.parseInt(this.chainedProperties.getProperty( SessionsPoolOption.PROPERTY_NAME, "-1")));
 
