@@ -23,6 +23,8 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -33,6 +35,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.IntStream;
 
 import org.assertj.core.api.Assertions;
@@ -2450,5 +2453,99 @@ public class AccumulateTest extends BaseModelTest {
         List<Number> results = getObjectsIntoList(ksession, Number.class);
         assertEquals( 1, results.size() );
         assertEquals( 90, results.get(0) );
+    }
+
+    @Test
+    public void testAccumulateWithTwoFunctions1() {
+        // DROOLS-5752
+        String str = "import java.time.Duration;\n" +
+                "import " + Shift.class.getCanonicalName() + ";\n" +
+                "rule \"R1\"\n" +
+                "    when\n" +
+                "        accumulate(\n" +
+                "            $other : Shift(\n" +
+                "                $shiftStart : startDateTime\n" +
+                "            ),\n" +
+                "            $shiftCount : count($other),\n" +
+                "            $totalMinutes : sum(Duration.between($shiftStart, $shiftStart).toMinutes())\n" +
+                "        )\n" +
+                "    then\n" +
+                "        System.out.println($shiftCount + \" \" + $totalMinutes);\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert( new Shift( OffsetDateTime.now()) );
+
+        Assertions.assertThat(ksession.fireAllRules()).isEqualTo(1);
+    }
+
+    @Test
+    public void testAccumulateWithTwoFunctions2() {
+        // DROOLS-5752
+        String str = "import java.time.Duration;\n" +
+                "import " + Shift.class.getCanonicalName() + ";\n" +
+                "rule \"R1\"\n" +
+                "    when\n" +
+                "        accumulate(\n" +
+                "            $other : Shift(\n" +
+                "                $shiftStart : startDateTime\n" +
+                "            ),\n" +
+                "            $totalMinutes : sum(Duration.between($shiftStart, $shiftStart).toMinutes()),\n" +
+                "            $shiftCount : count($other)\n" +
+                "        )\n" +
+                "    then\n" +
+                "        System.out.println($shiftCount + \" \" + $totalMinutes);\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert( new Shift( OffsetDateTime.now()) );
+
+        Assertions.assertThat(ksession.fireAllRules()).isEqualTo(1);
+    }
+
+    public class Shift {
+
+        private final AtomicLong lengthInMinutes = new AtomicLong(-1);
+        private OffsetDateTime startDateTime;
+
+        private String employee = null;
+
+        public Shift(OffsetDateTime startDateTime) {
+            this.startDateTime = startDateTime;
+        }
+
+        @Override
+        public String toString() {
+            return startDateTime.toString();
+        }
+
+        public long getLengthInMinutes() { // Thread-safe cache.
+            long currentLengthInMinutes = lengthInMinutes.get();
+            if (currentLengthInMinutes >= 0) {
+                return currentLengthInMinutes;
+            }
+            long newLengthInMinutes = startDateTime.until(startDateTime, ChronoUnit.MINUTES);
+            lengthInMinutes.set(newLengthInMinutes);
+            return newLengthInMinutes;
+        }
+
+        public OffsetDateTime getStartDateTime() {
+            return startDateTime;
+        }
+
+        public void setStartDateTime(OffsetDateTime startDateTime) {
+            this.startDateTime = startDateTime;
+            this.lengthInMinutes.set(-1);
+        }
+
+        public String getEmployee() {
+            return employee;
+        }
+
+        public void setEmployee(String employee) {
+            this.employee = employee;
+        }
     }
 }

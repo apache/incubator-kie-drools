@@ -28,7 +28,6 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.management.ObjectName;
-
 import org.drools.compiler.builder.InternalKnowledgeBuilder;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.kie.builder.MaterializedLambda;
@@ -46,6 +45,7 @@ import org.drools.core.impl.StatefulSessionPool;
 import org.drools.core.impl.StatelessKnowledgeSessionImpl;
 import org.drools.core.management.DroolsManagementAgent;
 import org.drools.core.management.DroolsManagementAgent.CBSKey;
+import org.drools.core.util.ClassUtils;
 import org.drools.reflective.classloader.ProjectClassLoader;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
@@ -77,6 +77,8 @@ import org.kie.internal.builder.ResourceChangeSet;
 import org.kie.internal.builder.conf.AlphaNetworkCompilerOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static java.util.stream.Collectors.toList;
 
 import static org.drools.compiler.kie.util.InjectionHelper.wireSessionComponents;
 import static org.drools.core.util.ClassUtils.convertResourceToClassName;
@@ -368,16 +370,21 @@ public class KieContainerImpl
             return Collections.emptyList();
         }
 
-        List<Class<?>> classes = new ArrayList<Class<?>>();
+        Set<String> reloadedClasses = new HashSet<>(modifiedClasses);
+
         ProjectClassLoader projectClassLoader = (ProjectClassLoader) classLoader;
         if (modifyingUsedClass) {
-            projectClassLoader.reinitTypes();
+            reloadedClasses.addAll( projectClassLoader.reinitTypes().stream().map( ClassUtils::convertClassToResourcePath ).collect( toList() ) );
         }
-        for (String resourceName : modifiedClasses) {
+
+        List<Class<?>> classes = new ArrayList<Class<?>>();
+        for (String resourceName : reloadedClasses) {
             String className = convertResourceToClassName( resourceName );
             byte[] bytes = newKM.getBytes(resourceName);
-            Class<?> clazz = projectClassLoader.defineClass(className, resourceName, bytes);
-            classes.add(clazz);
+            if (bytes != null) {
+                Class<?> clazz = projectClassLoader.defineClass( className, resourceName, bytes );
+                classes.add( clazz );
+            }
         }
         return classes;
     }

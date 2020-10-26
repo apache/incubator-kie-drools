@@ -74,7 +74,8 @@ public class AlphaNode extends ObjectSource
                 context.getPartitionId(),
                 context.getKnowledgeBase().getConfiguration().isMultithreadEvaluation(),
                 objectSource,
-                context.getKnowledgeBase().getConfiguration().getAlphaNodeHashingThreshold());
+                context.getKnowledgeBase().getConfiguration().getAlphaNodeHashingThreshold(),
+                context.getKnowledgeBase().getConfiguration().getAlphaNodeRangeIndexThreshold());
 
         this.constraint = constraint.cloneIfInUse();
         this.constraint.registerEvaluationContext(context);
@@ -121,7 +122,7 @@ public class AlphaNode extends ObjectSource
             if (source instanceof AlphaNode) {
                 source.setPartitionId( context, partitionId );
             }
-            source.sink.changeSinkPartition( this, this.partitionId, partitionId, source.alphaNodeHashingThreshold );
+            source.sink.changeSinkPartition( this, this.partitionId, partitionId, source.alphaNodeHashingThreshold, source.alphaNodeRangeIndexThreshold );
         }
         this.partitionId = partitionId;
     }
