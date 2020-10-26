@@ -12,6 +12,7 @@ import axios from 'axios';
 jest.mock('axios');
 import * as Utils from '../../../../utils/Utils';
 import { act } from 'react-dom/test-utils';
+import _ from 'lodash';
 // tslint:disable: no-string-literal
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 jest.mock('../../../Atoms/ProcessListModal/ProcessListModal');
@@ -495,5 +496,55 @@ describe('Process Details Page component tests', () => {
     });
     window.location = location;
     expect(handleVariableUpdateSpy).toHaveBeenCalled();
+  });
+  it('test node trigger presence', async () => {
+    // with active state- node trigger panel present
+    const wrapperWithNodeTrigger = await getWrapperAsync(
+      <MockedProvider mocks={mocks1} addTypename={false}>
+        <BrowserRouter>
+          <ProcessDetailsPage {...props} />
+        </BrowserRouter>
+      </MockedProvider>,
+      'ProcessDetailsPage'
+    );
+    expect(
+      wrapperWithNodeTrigger.find('MockedProcessDetailsNodeTrigger').exists()
+    ).toBeTruthy();
+
+    const mockWithCompletedState = _.cloneDeep(mocks1);
+    mockWithCompletedState[0].result.data.ProcessInstances[0].state =
+      GraphQL.ProcessInstanceState.Completed;
+    // with completed state - node trigger panel absent
+    const wrapperWithoutNodeTrigger1 = await getWrapperAsync(
+      <MockedProvider mocks={mockWithCompletedState} addTypename={false}>
+        <BrowserRouter>
+          <ProcessDetailsPage {...props} />
+        </BrowserRouter>
+      </MockedProvider>,
+      'ProcessDetailsPage'
+    );
+    expect(
+      wrapperWithoutNodeTrigger1
+        .find('MockedProcessDetailsNodeTrigger')
+        .exists()
+    ).toBeFalsy();
+
+    const mockWithAbortedState = _.cloneDeep(mocks1);
+    mockWithAbortedState[0].result.data.ProcessInstances[0].state =
+      GraphQL.ProcessInstanceState.Aborted;
+    // with Aborted state - node trigger panel absent
+    const wrapperWithoutNodeTrigger2 = await getWrapperAsync(
+      <MockedProvider mocks={mockWithAbortedState} addTypename={false}>
+        <BrowserRouter>
+          <ProcessDetailsPage {...props} />
+        </BrowserRouter>
+      </MockedProvider>,
+      'ProcessDetailsPage'
+    );
+    expect(
+      wrapperWithoutNodeTrigger2
+        .find('MockedProcessDetailsNodeTrigger')
+        .exists()
+    ).toBeFalsy();
   });
 });

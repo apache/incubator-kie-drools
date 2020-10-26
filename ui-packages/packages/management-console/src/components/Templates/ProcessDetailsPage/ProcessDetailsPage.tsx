@@ -511,13 +511,17 @@ const ProcessDetailsPage: React.FC<RouteComponentProps<
                     </FlexItem>
                     {data.ProcessInstances[0].addons.includes(
                       'process-management'
-                    ) && (
-                      <FlexItem>
-                        <ProcessDetailsNodeTrigger
-                          processInstanceData={data.ProcessInstances[0]}
-                        />
-                      </FlexItem>
-                    )}
+                    ) &&
+                      data.ProcessInstances[0].state !==
+                        GraphQL.ProcessInstanceState.Completed &&
+                      data.ProcessInstances[0].state !==
+                        GraphQL.ProcessInstanceState.Aborted && (
+                        <FlexItem>
+                          <ProcessDetailsNodeTrigger
+                            processInstanceData={data.ProcessInstances[0]}
+                          />
+                        </FlexItem>
+                      )}
                   </Flex>
                   {errorModal()}
                   {RenderConfirmationModal()}
