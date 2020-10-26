@@ -45,6 +45,7 @@ import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.type.PrimitiveType;
 import com.github.javaparser.ast.type.Type;
 import org.drools.model.Index;
+import org.drools.model.functions.PredicateInformation;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.builder.generator.DeclarationSpec;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
@@ -419,5 +420,16 @@ public abstract class AbstractExpressionBuilder {
             return false;
         }
         return opt.get().equals(THIS_PLACEHOLDER);
+    }
+
+    protected String getExprId(SingleDrlxParseSuccess drlxParseResult) {
+        String exprId = drlxParseResult.getExprId(context.getPackageModel().getExprIdGenerator());
+
+        context.getPackageModel().addExprDebugInformation(exprId, new PredicateInformation(
+                drlxParseResult.getOriginalDrlConstraint(),
+                context.getRuleName(),
+                context.getRuleName()
+        ));
+        return exprId;
     }
 }

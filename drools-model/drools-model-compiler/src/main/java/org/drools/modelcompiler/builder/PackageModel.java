@@ -26,6 +26,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import com.github.javaparser.StaticJavaParser;
@@ -64,6 +65,7 @@ import org.drools.model.Query;
 import org.drools.model.Rule;
 import org.drools.model.RulesSupplier;
 import org.drools.model.WindowReference;
+import org.drools.model.functions.PredicateInformation;
 import org.drools.modelcompiler.builder.generator.DRLIdGenerator;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.QueryGenerator;
@@ -145,6 +147,8 @@ public class PackageModel {
     private Set<RuleUnitDescription> ruleUnits = new HashSet<>();
 
     private Map<LambdaExpr, java.lang.reflect.Type> lambdaReturnTypes = new HashMap<>();
+
+    private Map<String, PredicateInformation> exprDebugInformationMap = new HashMap<>();
 
     private boolean oneClassPerRule;
 
@@ -857,5 +861,17 @@ public class PackageModel {
 
     public Map<LambdaExpr, java.lang.reflect.Type> getLambdaReturnTypes() {
         return lambdaReturnTypes;
+    }
+
+    public void addExprDebugInformation(String exprId, PredicateInformation predicateInformation) {
+        exprDebugInformationMap.put(exprId, predicateInformation);
+    }
+
+    public Optional<PredicateInformation> getExprDebugInformation(String exprId) {
+        return Optional.ofNullable(exprDebugInformationMap.get(exprId));
+    }
+
+    public Map<String, PredicateInformation> getExprDebugInformationMap() {
+        return exprDebugInformationMap;
     }
 }

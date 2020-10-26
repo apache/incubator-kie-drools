@@ -73,6 +73,7 @@ public class ExecModelLambdaPostProcessor {
     private final Collection<String> imports;
     private final Collection<String> staticImports;
     private final Map<LambdaExpr, java.lang.reflect.Type> lambdaReturnTypes;
+    private final Map<String, PredicateInformation> debugPredicateInformation;
     private final CompilationUnit clone;
 
     private static final PrettyPrinterConfiguration configuration = new PrettyPrinterConfiguration();
@@ -91,6 +92,7 @@ public class ExecModelLambdaPostProcessor {
         this.imports = pkgModel.getImports();
         this.staticImports = pkgModel.getStaticImports();
         this.lambdaReturnTypes = pkgModel.getLambdaReturnTypes();
+        this.debugPredicateInformation = pkgModel.getExprDebugInformationMap();
         this.clone = clone;
     }
 
@@ -100,6 +102,7 @@ public class ExecModelLambdaPostProcessor {
                                         Collection<String> imports,
                                         Collection<String> staticImports,
                                         Map<LambdaExpr, java.lang.reflect.Type> lambdaReturnTypes,
+                                        Map<String, PredicateInformation> debugPredicateInformation,
                                         CompilationUnit clone) {
         this.lambdaClasses = lambdaClasses;
         this.packageName = packageName;
@@ -107,6 +110,7 @@ public class ExecModelLambdaPostProcessor {
         this.imports = imports;
         this.staticImports = staticImports;
         this.lambdaReturnTypes = lambdaReturnTypes;
+        this.debugPredicateInformation = debugPredicateInformation;
         this.clone = clone;
     }
 
@@ -150,8 +154,8 @@ public class ExecModelLambdaPostProcessor {
     }
 
     private PredicateInformation getPredicateInformation(Optional<String> exprId) {
-
-        return PredicateInformation.EMPTY_PREDICATE_INFORMATION;
+        return exprId.flatMap(e -> Optional.ofNullable(debugPredicateInformation.get(e)))
+                .orElse(PredicateInformation.EMPTY_PREDICATE_INFORMATION);
     }
 
     private void convertTemporalExpr(MethodCallExpr methodCallExpr) {
