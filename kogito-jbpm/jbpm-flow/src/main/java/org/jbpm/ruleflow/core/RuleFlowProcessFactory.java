@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.jbpm.process.core.context.exception.ActionExceptionHandler;
+import org.jbpm.process.core.context.exception.CompensationScope;
 import org.jbpm.process.core.context.exception.ExceptionHandler;
 import org.jbpm.process.core.context.swimlane.Swimlane;
 import org.jbpm.process.core.context.variable.Variable;
@@ -69,6 +70,7 @@ public class RuleFlowProcessFactory extends RuleFlowNodeContainerFactory {
     public static final String METHOD_IMPORTS = "imports";
     public static final String METHOD_GLOBAL = "global";
     public static final String METHOD_VARIABLE = "variable";
+    public static final String METHOD_ADD_COMPENSATION_CONTEXT = "addCompensationContext";
 
     private static final Logger logger = LoggerFactory.getLogger(RuleFlowProcessFactory.class);
 
@@ -169,6 +171,14 @@ public class RuleFlowProcessFactory extends RuleFlowNodeContainerFactory {
         Swimlane swimlane = new Swimlane();
         swimlane.setName(name);
         getRuleFlowProcess().getSwimlaneContext().addSwimlane(swimlane);
+        return this;
+    }
+
+    public RuleFlowProcessFactory addCompensationContext(String contextId) {
+        CompensationScope compensationScope = new CompensationScope();
+        compensationScope.setContextContainerId(contextId);
+        getRuleFlowProcess().addContext(compensationScope);
+        getRuleFlowProcess().setDefaultContext(compensationScope);
         return this;
     }
 

@@ -53,6 +53,7 @@ import org.jbpm.process.instance.impl.Action;
 import org.jbpm.process.instance.impl.actions.CancelNodeInstanceAction;
 import org.jbpm.process.instance.impl.actions.ProcessInstanceCompensationAction;
 import org.jbpm.process.instance.impl.actions.SignalProcessInstanceAction;
+import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.ruleflow.core.validation.RuleFlowProcessValidator;
 import org.jbpm.workflow.core.Connection;
@@ -822,25 +823,27 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
                                             }
                                         } else if( type.equals("Compensation") ) { 
                                             // 1. Find the parent sub-process to this event sub-process
-                                            NodeContainer parentSubProcess;  
+                                            NodeContainer parentSubProcess = null;
                                             NodeContainer subProcess = eventSubProcessNode.getParentContainer();
                                             Object isForCompensationObj = eventSubProcessNode.getMetaData("isForCompensation");
                                             if( isForCompensationObj == null ) { 
                                                 eventSubProcessNode.setMetaData("isForCompensation", true );
-                                                logger.warn( "Overriding empty or false value of \"isForCompensation\" attribute on Event Sub-Process [" 
-                                                        + eventSubProcessNode.getMetaData("UniqueId") + "] and setting it to true.");
-                                            } 
-                                            if( subProcess instanceof RuleFlowProcess ) { 
-                                                // If jBPM deletes the process (instance) as soon as the process completes.. 
+                                                logger.warn( "Overriding empty value of \"isForCompensation\" attribute on Event Sub-Process [{}] and setting it to true.",
+                                                        eventSubProcessNode.getMetaData("UniqueId"));
+                                            }
+                                            String compensationHandlerId = "";
+                                            if( subProcess instanceof RuleFlowProcess) {
+                                                // If jBPM deletes the process (instance) as soon as the process completes..
                                                 // ..how do you expect to signal compensation on the completed process (instance)?!?
                                                 throw new IllegalArgumentException("Compensation Event Sub-Processes at the process level are not supported.");
                                             }
-                                            parentSubProcess = ((Node) subProcess).getParentContainer();
-
+                                            if(subProcess instanceof  Node) {
+                                                parentSubProcess = ((Node) subProcess).getParentContainer();
+                                                compensationHandlerId = (String) ((CompositeNode) subProcess).getMetaData(Metadata.UNIQUE_ID);
+                                            }
                                             // 2. The event filter (never fires, purely for dumping purposes) has already been added
 
                                             // 3. Add compensation scope
-                                            String compensationHandlerId = (String) ((CompositeNode) subProcess).getMetaData("UniqueId");
                                             addCompensationScope(process, eventSubProcessNode, parentSubProcess, compensationHandlerId);
                                         }
                                     }
@@ -973,14 +976,14 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
         if( throwEventNode.getMetaData("compensation-activityRef") != null ) { 
             String activityRef = (String) throwEventNode.getMetaData().remove("compensation-activityRef");
 
-            NodeContainer nodeParent = (NodeContainer) throwEventNode.getParentContainer();
+            NodeContainer nodeParent = throwEventNode.getParentContainer();
             if( nodeParent instanceof EventSubProcessNode ) { 
                 boolean compensationEventSubProcess = false;
                 List<Trigger> startTriggers = ((EventSubProcessNode) nodeParent).findStartNode().getTriggers();
                 CESP_CHECK: for( Trigger trigger : startTriggers ) { 
                     if( trigger instanceof EventTrigger ) { 
                         for( EventFilter filter : ((EventTrigger) trigger).getEventFilters() ) { 
-                            if( ((EventTypeFilter) filter).getType().equals("Compensation") ) { 
+                            if( ((EventTypeFilter) filter).getType().equals(Metadata.EVENT_TYPE_COMPENSATION) ) {
                                 compensationEventSubProcess = true;
                                 break CESP_CHECK;
                             }
@@ -989,7 +992,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
                 }
                 if( compensationEventSubProcess ) { 
                     // BPMN2 spec, p. 252, p. 248: intermediate and end compensation event visibility scope
-                    nodeParent = (NodeContainer) ((NodeImpl) nodeParent).getParentContainer();
+                    nodeParent = ((NodeImpl) nodeParent).getParentContainer();
                 }
             }
             String parentId;
@@ -1000,7 +1003,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
             }
 
             String compensationEvent; 
-            if( activityRef.length() == 0 ) { 
+            if(activityRef.isEmpty()) {
                 // general/implicit compensation
                 compensationEvent = CompensationScope.IMPLICIT_COMPENSATION_PREFIX + parentId;
             } else { 
@@ -1014,7 +1017,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
             if( throwEventNode instanceof ActionNode ) { 
                 ((ActionNode) throwEventNode).setAction(compensationAction);
             } else if( throwEventNode instanceof EndNode ) { 
-                List<DroolsAction> actions = new ArrayList<DroolsAction>();
+                List<DroolsAction> actions = new ArrayList<>();
                 actions.add(compensationAction);
                 ((EndNode) throwEventNode).setActions(EndNode.EVENT_NODE_ENTER, actions);
             } 

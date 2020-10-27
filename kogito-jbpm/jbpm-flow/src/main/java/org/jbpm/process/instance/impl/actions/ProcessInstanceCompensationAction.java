@@ -34,4 +34,7 @@ public class ProcessInstanceCompensationAction implements Action, Serializable {
         context.getProcessInstance().signalEvent("Compensation", activityRef);
     }
 
+    public String getActivityRef() {
+        return activityRef;
+    }
 }

@@ -58,10 +58,14 @@ public class CompensationScope extends ExceptionScope {
         if( contextContainer instanceof NodeImpl ) { 
             containerId = (String) ((NodeImpl) contextContainer).getMetaData("UniqueId");
         } else if( contextContainer instanceof RuleFlowProcess ) { 
-            containerId = (String) ((Process) contextContainer).getId();
+            containerId = ((Process) contextContainer).getId();
         }
     }
-    
+
+    public void setContextContainerId(String containerId) {
+        this.containerId = containerId;
+    }
+
     public String getContextContainerId() { 
         return containerId;
     }

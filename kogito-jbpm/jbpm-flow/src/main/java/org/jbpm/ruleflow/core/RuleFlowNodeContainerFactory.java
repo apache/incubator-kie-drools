@@ -41,9 +41,14 @@ import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.impl.ConnectionImpl;
 import org.kie.api.definition.process.Node;
 
+import static org.jbpm.ruleflow.core.Metadata.ASSOCIATION;
+import static org.jbpm.ruleflow.core.Metadata.HIDDEN;
+import static org.jbpm.ruleflow.core.Metadata.UNIQUE_ID;
+
 public abstract class RuleFlowNodeContainerFactory {
 
     public static final String METHOD_CONNECTION = "connection";
+    public static final String METHOD_ASSOCIATION = "association";
 
     private NodeContainer nodeContainer;
 
@@ -149,7 +154,19 @@ public abstract class RuleFlowNodeContainerFactory {
         ConnectionImpl connection = new ConnectionImpl(
                 from, org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE,
                 to, org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
-        connection.setMetaData("UniqueId", uniqueId);
+        connection.setMetaData(UNIQUE_ID, uniqueId);
+        return this;
+    }
+
+    public RuleFlowNodeContainerFactory association(long fromId, long toId, String uniqueId) {
+        Node from = nodeContainer.getNode(fromId);
+        Node to = nodeContainer.getNode(toId);
+        ConnectionImpl connection = new ConnectionImpl(
+                from, org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE,
+                to, org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
+        connection.setMetaData(ASSOCIATION, Boolean.TRUE);
+        connection.setMetaData(UNIQUE_ID, uniqueId);
+        connection.setMetaData(HIDDEN, Boolean.TRUE);
         return this;
     }
 

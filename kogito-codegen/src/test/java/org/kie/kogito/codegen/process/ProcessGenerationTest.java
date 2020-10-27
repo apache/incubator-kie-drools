@@ -26,6 +26,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiConsumer;
@@ -33,6 +34,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.jbpm.process.core.timer.Timer;
+import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.Constraint;
 import org.jbpm.workflow.core.DroolsAction;
@@ -99,7 +101,7 @@ import static org.junit.jupiter.api.Assertions.fail;
  */
 public class ProcessGenerationTest extends AbstractCodegenTest {
 
-    private static final Collection<String> IGNORED_PROCESS_META = Arrays.asList("Definitions", "BPMN.Connections", "ItemDefinitions");
+    private static final Collection<String> IGNORED_PROCESS_META = Arrays.asList("Definitions", "BPMN.Connections", "BPMN.Associations", "ItemDefinitions");
     private static final Path BASE_PATH = Paths.get("src/test/resources");
 
     static Stream<String> processesProvider() throws IOException {
@@ -390,7 +392,7 @@ public class ProcessGenerationTest extends AbstractCodegenTest {
             expectedByType.forEach(expected -> {
                 Optional<Connection> current = currentByType
                         .stream()
-                        .filter(c -> expected.getMetaData().isEmpty() || expected.getMetaData().get("UniqueId").equals(c.getMetaData().get("UniqueId")))
+                        .filter(c -> equalConnectionId(expected, c))
                         .findFirst();
                 assertTrue(current.isPresent(), "Connection is present for " + expected.getMetaData().get("UniqueId"));
                 assertEquals(expected.getFromType(), current.get().getFromType(), "FromType");
@@ -399,6 +401,17 @@ public class ProcessGenerationTest extends AbstractCodegenTest {
                 assertEquals(expected.getTo().getId(), current.get().getTo().getId(), "To.Id");
             });
         });
+    }
+
+    private static boolean equalConnectionId(Connection expected, Connection current) {
+        if(expected.getMetaData().isEmpty()) {
+            return current.getMetaData().isEmpty();
+        }
+        String expectedId = (String) expected.getMetaData().get(Metadata.UNIQUE_ID);
+        if(expectedId == null) {
+            expectedId = "";
+        }
+        return Objects.equals(expectedId, current.getMetaData().get(Metadata.UNIQUE_ID));
     }
 
     private static void assertTriggers(List<Trigger> expected, List<Trigger> current) {

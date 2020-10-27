@@ -24,8 +24,11 @@ import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.LongLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.UnknownType;
+import org.jbpm.process.core.context.exception.CompensationScope;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
+import org.jbpm.process.instance.impl.actions.ProcessInstanceCompensationAction;
+import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.ruleflow.core.factory.ActionNodeFactory;
 import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
@@ -35,6 +38,8 @@ import static org.jbpm.ruleflow.core.Metadata.TRIGGER_REF;
 import static org.jbpm.ruleflow.core.factory.ActionNodeFactory.METHOD_ACTION;
 
 public class ActionNodeVisitor extends AbstractNodeVisitor<ActionNode> {
+
+    private static final String INTERMEDIATE_COMPENSATION_TYPE = "IntermediateThrowEvent-None";
 
     @Override
     protected String getNodeKey() {
@@ -46,8 +51,15 @@ public class ActionNodeVisitor extends AbstractNodeVisitor<ActionNode> {
         body.addStatement(getAssignedFactoryMethod(factoryField, ActionNodeFactory.class, getNodeId(node), getNodeKey(), new LongLiteralExpr(node.getId())))
                 .addStatement(getNameMethod(node, "Script"));
 
-        // if there is trigger defined on end event create TriggerMetaData for it
-        if (node.getMetaData(TRIGGER_REF) != null) {
+        if (isIntermediateCompensation(node)) {
+            ProcessInstanceCompensationAction action = (ProcessInstanceCompensationAction) node.getAction().getMetaData(Metadata.ACTION);
+            String compensateNode = CompensationScope.IMPLICIT_COMPENSATION_PREFIX + metadata.getProcessId();
+            if (action != null) {
+                compensateNode = action.getActivityRef();
+            }
+            LambdaExpr lambda = TriggerMetaData.buildCompensationLambdaExpr(compensateNode);
+            body.addStatement(getFactoryMethod(getNodeId(node), METHOD_ACTION, lambda));
+        } else if (node.getMetaData(TRIGGER_REF) != null) { // if there is trigger defined on end event create TriggerMetaData for it
             LambdaExpr lambda = TriggerMetaData.buildLambdaExpr(node, metadata);
             body.addStatement(getFactoryMethod(getNodeId(node), METHOD_ACTION, lambda));
         } else {
@@ -73,6 +85,10 @@ public class ActionNodeVisitor extends AbstractNodeVisitor<ActionNode> {
         }
         visitMetaData(node.getMetaData(), body, getNodeId(node));
         body.addStatement(getDoneMethod(getNodeId(node)));
+    }
+
+    private boolean isIntermediateCompensation(ActionNode node) {
+        return INTERMEDIATE_COMPENSATION_TYPE.equals(node.getMetaData(Metadata.NODE_TYPE));
     }
 
     private String getActionConsequence(DroolsAction action) {

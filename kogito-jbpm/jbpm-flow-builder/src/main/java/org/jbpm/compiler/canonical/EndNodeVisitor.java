@@ -16,6 +16,10 @@
 
 package org.jbpm.compiler.canonical;
 
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.BooleanLiteralExpr;
 import com.github.javaparser.ast.expr.LambdaExpr;
@@ -25,8 +29,15 @@ import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.UnknownType;
+import org.jbpm.process.core.context.exception.CompensationScope;
 import org.jbpm.process.core.context.variable.VariableScope;
+import org.jbpm.process.instance.impl.actions.ProcessInstanceCompensationAction;
+import org.jbpm.ruleflow.core.Metadata;
+import org.jbpm.ruleflow.core.factory.ActionNodeFactory;
 import org.jbpm.ruleflow.core.factory.EndNodeFactory;
+import org.jbpm.workflow.core.DroolsAction;
+import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
+import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
 import org.jbpm.workflow.core.node.EndNode;
 
 import static org.jbpm.ruleflow.core.Metadata.EVENT_TYPE;
@@ -50,7 +61,15 @@ public class EndNodeVisitor extends AbstractNodeVisitor<EndNode> {
                 .addStatement(getFactoryMethod(getNodeId(node), METHOD_TERMINATE, new BooleanLiteralExpr(node.isTerminate())));
 
         // if there is trigger defined on end event create TriggerMetaData for it
-        if (node.getMetaData(TRIGGER_REF) != null) {
+        Optional<ProcessInstanceCompensationAction> compensationAction = getCompensationAction(node);
+        if (compensationAction.isPresent()) {
+            String compensateNode = CompensationScope.IMPLICIT_COMPENSATION_PREFIX + metadata.getProcessId();
+            if (compensationAction.get().getActivityRef() != null) {
+                compensateNode = compensationAction.get().getActivityRef();
+            }
+            LambdaExpr lambda = TriggerMetaData.buildCompensationLambdaExpr(compensateNode);
+            body.addStatement(getFactoryMethod(getNodeId(node), ActionNodeFactory.METHOD_ACTION, lambda));
+        } else if (node.getMetaData(TRIGGER_REF) != null) {
             LambdaExpr lambda = TriggerMetaData.buildLambdaExpr(node, metadata);
             body.addStatement(getFactoryMethod(getNodeId(node), METHOD_ACTION, lambda));
         } else if (node.getMetaData(REF) != null && EVENT_TYPE_SIGNAL.equals(node.getMetaData(EVENT_TYPE))) {
@@ -66,5 +85,19 @@ public class EndNodeVisitor extends AbstractNodeVisitor<EndNode> {
 
         visitMetaData(node.getMetaData(), body, getNodeId(node));
         body.addStatement(getDoneMethod(getNodeId(node)));
+    }
+
+    private Optional<ProcessInstanceCompensationAction> getCompensationAction(EndNode node) {
+        List<DroolsAction> actions = node.getActions(ExtendedNodeImpl.EVENT_NODE_ENTER);
+        if (actions == null || actions.isEmpty()) {
+            return Optional.empty();
+        }
+        return actions.stream()
+                .filter(a -> a instanceof DroolsConsequenceAction)
+                .map(d -> d.getMetaData(Metadata.ACTION))
+                .filter(Objects::nonNull)
+                .filter(a -> a instanceof ProcessInstanceCompensationAction)
+                .map(a -> (ProcessInstanceCompensationAction) a)
+                .findFirst();
     }
 }

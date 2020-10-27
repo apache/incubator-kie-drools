@@ -64,7 +64,4 @@ public abstract class ExtendedNodeInstanceImpl extends NodeInstanceImpl {
 			}
 		}
 	}
-
-
-	
 }

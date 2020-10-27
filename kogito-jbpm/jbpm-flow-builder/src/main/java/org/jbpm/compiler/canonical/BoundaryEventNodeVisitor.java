@@ -16,6 +16,8 @@
 
 package org.jbpm.compiler.canonical;
 
+import java.util.Map;
+
 import com.github.javaparser.ast.expr.LongLiteralExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
@@ -24,14 +26,14 @@ import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.ruleflow.core.factory.BoundaryEventNodeFactory;
 import org.jbpm.workflow.core.node.BoundaryEventNode;
 
-import java.util.Map;
-
 import static org.jbpm.ruleflow.core.Metadata.EVENT_TYPE;
+import static org.jbpm.ruleflow.core.Metadata.EVENT_TYPE_COMPENSATION;
 import static org.jbpm.ruleflow.core.Metadata.EVENT_TYPE_MESSAGE;
 import static org.jbpm.ruleflow.core.Metadata.EVENT_TYPE_SIGNAL;
 import static org.jbpm.ruleflow.core.Metadata.MESSAGE_TYPE;
 import static org.jbpm.ruleflow.core.Metadata.TRIGGER_REF;
 import static org.jbpm.ruleflow.core.Metadata.TRIGGER_TYPE;
+import static org.jbpm.ruleflow.core.factory.BoundaryEventNodeFactory.METHOD_ADD_COMPENSATION_HANDLER;
 import static org.jbpm.ruleflow.core.factory.BoundaryEventNodeFactory.METHOD_ATTACHED_TO;
 import static org.jbpm.ruleflow.core.factory.EventNodeFactory.METHOD_EVENT_TYPE;
 import static org.jbpm.ruleflow.core.factory.EventNodeFactory.METHOD_SCOPE;
@@ -67,6 +69,8 @@ public class BoundaryEventNodeVisitor extends AbstractNodeVisitor<BoundaryEventN
                     (String) nodeMetaData.get(MESSAGE_TYPE),
                     node.getVariableName(),
                     String.valueOf(node.getId())).validate());
+        } else if (EVENT_TYPE_COMPENSATION.equalsIgnoreCase((String) node.getMetaData(EVENT_TYPE)) && node.getAttachedToNodeId() != null) {
+            body.addStatement(getFactoryMethod(getNodeId(node), METHOD_ADD_COMPENSATION_HANDLER, new StringLiteralExpr(node.getAttachedToNodeId())));
         }
 
         visitMetaData(node.getMetaData(), body, getNodeId(node));

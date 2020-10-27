@@ -15,6 +15,8 @@
 
 package org.jbpm.compiler.canonical;
 
+import java.util.Map;
+
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.LambdaExpr;
@@ -25,9 +27,8 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.UnknownType;
 import org.drools.core.util.StringUtils;
+import org.jbpm.ruleflow.core.Metadata;
 import org.kie.api.definition.process.Node;
-
-import java.util.Map;
 
 import static org.jbpm.compiler.canonical.AbstractVisitor.KCONTEXT_VAR;
 import static org.jbpm.ruleflow.core.Metadata.MAPPING_VARIABLE;
@@ -146,5 +147,17 @@ public class TriggerMetaData {
                 actionBody
         );
     }
-    
+
+    public static LambdaExpr buildCompensationLambdaExpr(String compensationRef) {
+        BlockStmt actionBody = new BlockStmt();
+        MethodCallExpr getProcessInstance = new MethodCallExpr(new NameExpr(KCONTEXT_VAR), "getProcessInstance");
+        MethodCallExpr signalEvent = new MethodCallExpr(getProcessInstance, "signalEvent")
+                .addArgument(new StringLiteralExpr(Metadata.EVENT_TYPE_COMPENSATION))
+                .addArgument(new StringLiteralExpr(compensationRef));
+        actionBody.addStatement(signalEvent);
+        return new LambdaExpr(
+                new Parameter(new UnknownType(), KCONTEXT_VAR), // (kcontext) ->
+                actionBody
+        );
+    }
 }

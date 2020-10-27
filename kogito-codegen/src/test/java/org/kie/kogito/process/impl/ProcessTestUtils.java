@@ -19,9 +19,9 @@ import org.kie.kogito.process.ProcessInstance;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class ProcessTestUtils {
+public class ProcessTestUtils {
 
-    static void assertState(ProcessInstance<?> processInstance, int state) {
+    public static void assertState(ProcessInstance<?> processInstance, int state) {
         assertThat(processInstance).isInstanceOf(AbstractProcessInstance.class);
         AbstractProcessInstance<?> abstractProcessInstance = (AbstractProcessInstance<?>) processInstance;
         assertThat(abstractProcessInstance.status)

@@ -16,6 +16,9 @@
 
 package org.jbpm.compiler.canonical;
 
+import java.util.Map;
+import java.util.Map.Entry;
+
 import com.github.javaparser.ast.expr.BooleanLiteralExpr;
 import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import com.github.javaparser.ast.expr.LongLiteralExpr;
@@ -26,9 +29,6 @@ import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.core.timer.Timer;
 import org.jbpm.ruleflow.core.factory.StartNodeFactory;
 import org.jbpm.workflow.core.node.StartNode;
-
-import java.util.Map;
-import java.util.Map.Entry;
 
 import static org.jbpm.ruleflow.core.Metadata.EVENT_TYPE_SIGNAL;
 import static org.jbpm.ruleflow.core.Metadata.MESSAGE_TYPE;
@@ -62,19 +62,21 @@ public class StartNodeVisitor extends AbstractNodeVisitor<StartNode> {
                     new IntegerLiteralExpr(node.getTimer().getTimeType())));
 
         } else if (node.getTriggers() != null && !node.getTriggers().isEmpty()) {
-            Map<String, Object> nodeMetaData = node.getMetaData();
-            metadata.addTrigger(new TriggerMetaData((String) nodeMetaData.get(TRIGGER_REF),
-                    (String) nodeMetaData.get(TRIGGER_TYPE),
-                    (String) nodeMetaData.get(MESSAGE_TYPE),
-                    (String) nodeMetaData.get(TRIGGER_MAPPING),
-                    String.valueOf(node.getId())).validate());
-
-            handleSignal(node, nodeMetaData, body, variableScope, metadata);
+            TriggerMetaData triggerMetaData = buildTriggerMetadata(node);
+            metadata.addTrigger(triggerMetaData);
+            handleSignal(node, node.getMetaData(), body, variableScope, metadata);
         } else {
             // since there is start node without trigger then make sure it is startable
             metadata.setStartable(true);
         }
+    }
 
+    private TriggerMetaData buildTriggerMetadata(StartNode node) {
+        return new TriggerMetaData((String) node.getMetaData(TRIGGER_REF),
+                (String) node.getMetaData(TRIGGER_TYPE),
+                (String) node.getMetaData(MESSAGE_TYPE),
+                (String) node.getMetaData(TRIGGER_MAPPING),
+                String.valueOf(node.getId())).validate();
     }
 
     protected void handleSignal(StartNode startNode, Map<String, Object> nodeMetaData, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
@@ -109,4 +111,5 @@ public class StartNodeVisitor extends AbstractNodeVisitor<StartNode> {
                     new StringLiteralExpr(getOrDefault(startNode.getOutMapping(triggerMapping), ""))));
         }
     }
+
 }

@@ -37,11 +37,14 @@ import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
+import org.jbpm.process.core.Context;
 import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.Work;
+import org.jbpm.process.core.context.exception.CompensationScope;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
+import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.ruleflow.core.RuleFlowProcessFactory;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
@@ -68,11 +71,14 @@ import org.jbpm.workflow.core.node.ThrowLinkNode;
 import org.jbpm.workflow.core.node.TimerNode;
 import org.jbpm.workflow.core.node.WorkItemNode;
 import org.kie.api.definition.process.Connection;
+import org.kie.api.definition.process.Process;
 import org.kie.api.definition.process.WorkflowProcess;
 
-import static org.jbpm.ruleflow.core.Metadata.HIDDEN;
+import static org.jbpm.ruleflow.core.Metadata.ASSOCIATION;
 import static org.jbpm.ruleflow.core.Metadata.UNIQUE_ID;
+import static org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory.METHOD_ASSOCIATION;
 import static org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory.METHOD_CONNECTION;
+import static org.jbpm.ruleflow.core.RuleFlowProcessFactory.METHOD_ADD_COMPENSATION_CONTEXT;
 import static org.jbpm.ruleflow.core.RuleFlowProcessFactory.METHOD_DYNAMIC;
 import static org.jbpm.ruleflow.core.RuleFlowProcessFactory.METHOD_GLOBAL;
 import static org.jbpm.ruleflow.core.RuleFlowProcessFactory.METHOD_IMPORTS;
@@ -141,8 +147,8 @@ public class ProcessVisitor extends AbstractVisitor {
                 .addStatement(getFactoryMethod(FACTORY_FIELD_NAME, METHOD_VERSION, new StringLiteralExpr(getOrDefault(process.getVersion(), DEFAULT_VERSION))))
                 .addStatement(getFactoryMethod(FACTORY_FIELD_NAME, METHOD_VISIBILITY, new StringLiteralExpr(getOrDefault(process.getVisibility(), WorkflowProcess.PUBLIC_VISIBILITY))));
 
+        visitCompensationScope(process, body);
         visitMetaData(process.getMetaData(), body, FACTORY_FIELD_NAME);
-
         visitHeader(process, body);
 
         List<Node> processNodes = new ArrayList<>();
@@ -255,14 +261,25 @@ public class ProcessVisitor extends AbstractVisitor {
     }
 
     private void visitConnection(Connection connection, BlockStmt body) {
-        // if the connection is a hidden one (compensations), don't dump
-        Object hidden = ((ConnectionImpl) connection).getMetaData(HIDDEN);
-        if (hidden != null && ((Boolean) hidden)) {
-            return;
+        String method = METHOD_CONNECTION;
+        Object association = ((ConnectionImpl) connection).getMetaData(ASSOCIATION);
+        if (association != null && ((Boolean) association)) {
+            method = METHOD_ASSOCIATION;
         }
-
-        body.addStatement(getFactoryMethod(FACTORY_FIELD_NAME, METHOD_CONNECTION, new LongLiteralExpr(connection.getFrom().getId()),
+        body.addStatement(getFactoryMethod(FACTORY_FIELD_NAME, method,
+                new LongLiteralExpr(connection.getFrom().getId()),
                 new LongLiteralExpr(connection.getTo().getId()),
                 new StringLiteralExpr(getOrDefault((String) connection.getMetaData().get(UNIQUE_ID), ""))));
+    }
+
+    private void visitCompensationScope(Process process, BlockStmt body) {
+        Boolean isCompensation = (Boolean) process.getMetaData().get(Metadata.COMPENSATION);
+        if(Boolean.TRUE.equals(isCompensation)) {
+            Context context = ((org.jbpm.workflow.core.WorkflowProcess) process).getDefaultContext(CompensationScope.COMPENSATION_SCOPE);
+            if(context instanceof CompensationScope) {
+                String contextId = ((CompensationScope) context).getContextContainerId();
+                body.addStatement(getFactoryMethod(FACTORY_FIELD_NAME, METHOD_ADD_COMPENSATION_CONTEXT, new StringLiteralExpr(contextId)));
+            }
+        }
     }
 }

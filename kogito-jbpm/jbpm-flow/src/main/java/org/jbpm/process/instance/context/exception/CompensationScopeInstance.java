@@ -26,6 +26,7 @@ import org.jbpm.process.core.context.exception.CompensationHandler;
 import org.jbpm.process.core.context.exception.CompensationScope;
 import org.jbpm.process.core.context.exception.ExceptionHandler;
 import org.jbpm.process.instance.ProcessInstance;
+import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.core.node.BoundaryEventNode;
 import org.jbpm.workflow.core.node.EventSubProcessNode;
@@ -103,7 +104,7 @@ public class CompensationScopeInstance extends ExceptionScopeInstance  {
                     // The BoundaryEventNodeInstance.signalEvent() contains the necessary logic 
                     // to check whether or not compensation may proceed (? : (not-active + completed))
                     EventNodeInstance eventNodeInstance = (EventNodeInstance) compensationHandlerNodeInstance;
-                    eventNodeInstance.signalEvent("Compensation", compensationActivityRef);
+                    eventNodeInstance.signalEvent(Metadata.EVENT_TYPE_COMPENSATION, compensationActivityRef);
                 } else if (handlerNode instanceof EventSubProcessNode ) {
                     // Check that subprocess parent has completed. 
                     List<String> completedIds = processInstance.getCompletedNodeIds();
