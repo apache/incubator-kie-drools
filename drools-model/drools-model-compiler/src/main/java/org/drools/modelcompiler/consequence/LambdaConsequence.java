@@ -38,6 +38,7 @@ public class LambdaConsequence implements Consequence {
     private final Declaration[] declarations;
 
     private FactSupplier[] factSuppliers;
+    private Object[] facts;
 
     public LambdaConsequence( org.drools.model.Consequence consequence, Declaration[] declarations ) {
         this.consequence = consequence;
@@ -106,7 +107,6 @@ public class LambdaConsequence implements Consequence {
         if (factSuppliers == null) {
             return initConsequence(knowledgeHelper, workingMemory, tuple);
         }
-        Object[] facts = new Object[factSuppliers.length];
         for (int i = 0; i < facts.length; i++) {
             tuple = factSuppliers[i].get( facts, knowledgeHelper, workingMemory, tuple );
         }
@@ -114,7 +114,6 @@ public class LambdaConsequence implements Consequence {
     }
 
     private Object[] initConsequence( KnowledgeHelper knowledgeHelper, InternalWorkingMemory workingMemory, Tuple tuple ) {
-        Object[] facts;
         Variable[] vars = consequence.getVariables();
         List<FactSupplier> factSuppliers = new ArrayList<>();
 
