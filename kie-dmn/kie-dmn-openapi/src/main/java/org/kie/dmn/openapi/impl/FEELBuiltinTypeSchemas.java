@@ -57,7 +57,7 @@ public class FEELBuiltinTypeSchemas {
             case TIME:
                 return OASFactory.createObject(Schema.class).type(SchemaType.STRING).format("time").addExtension(DMNOASConstants.X_DMN_TYPE, "FEEL:time");
             case DATE_TIME:
-                return OASFactory.createObject(Schema.class).type(SchemaType.OBJECT).format("date-time").addExtension(DMNOASConstants.X_DMN_TYPE, "FEEL:date and time");
+                return OASFactory.createObject(Schema.class).type(SchemaType.STRING).format("date-time").addExtension(DMNOASConstants.X_DMN_TYPE, "FEEL:date and time");
             case BOOLEAN:
                 return OASFactory.createObject(Schema.class).type(SchemaType.BOOLEAN).addExtension(DMNOASConstants.X_DMN_TYPE, "FEEL:boolean");
             case NUMBER:
