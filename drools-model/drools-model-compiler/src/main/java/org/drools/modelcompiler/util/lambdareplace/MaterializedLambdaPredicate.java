@@ -76,9 +76,9 @@ public class MaterializedLambdaPredicate extends MaterializedLambda {
         methodDeclaration.setType(predicateInformationType);
 
         ObjectCreationExpr newPredicateInformation = new ObjectCreationExpr(null, predicateInformationType, NodeList.nodeList(
-            new StringLiteralExpr(predicateInformation.getStringConstraint()),
-            new StringLiteralExpr(predicateInformation.getRuleName()),
-            new StringLiteralExpr(predicateInformation.getRuleFileName())
+            new StringLiteralExpr().setString(predicateInformation.getStringConstraint()),
+            new StringLiteralExpr().setString(predicateInformation.getRuleName()),
+            new StringLiteralExpr().setString(predicateInformation.getRuleFileName())
         ));
         methodDeclaration.setBody(new BlockStmt(NodeList.nodeList(new ReturnStmt(newPredicateInformation))));
     }

@@ -29,6 +29,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+import com.github.javaparser.ast.expr.StringLiteralExpr;
 import org.assertj.core.api.Assertions;
 import org.drools.modelcompiler.domain.Address;
 import org.drools.modelcompiler.domain.Adult;
@@ -2395,6 +2396,7 @@ public class CompilerTest extends BaseModelTest {
     public ExpectedException exceptionRule = ExpectedException.none();
 
     @Test
+    @Ignore
     public void testNPEOnConstraint() {
         exceptionRule.expect(RuntimeException.class);
         exceptionRule.expectMessage("Error evaluating constraint 'money < salary * 20' in [Rule \"R\" in r0.drl]");
@@ -2412,5 +2414,23 @@ public class CompilerTest extends BaseModelTest {
         me.setMoney(null);
         ksession.insert( me );
         ksession.fireAllRules();
+    }
+
+    @Test
+    public void testWithQuotedStringConcatenationOnConstraint() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                        "rule R when\n" +
+                        "  $p : Person(name == \"Luca\" + \" II\"  )\n" +
+                        "then\n" +
+                        "end";
+
+        KieSession ksession = getKieSession( str );
+
+        Person me = new Person( "Luca II");
+        me.setMoney(null);
+        ksession.insert( me );
+        int rulesFired = ksession.fireAllRules();
+        assertEquals(rulesFired, 1);
     }
 }
