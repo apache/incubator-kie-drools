@@ -33,7 +33,7 @@ export interface DataTableColumn {
 interface IOwnProps {
   data: any[];
   isLoading: boolean;
-  columns?: DataTableColumn[];
+  columns: DataTableColumn[];
   networkStatus: any;
   error: any;
   refetch: () => void;
@@ -125,15 +125,13 @@ const DataTable: React.FC<IOwnProps & OUIAProps> = ({
 
   useEffect(() => {
     if (!_.isEmpty(data)) {
-      setColumnList(getColumns(data, columns));
+      const cols = getColumns(data, columns);
+      if (!_.isEmpty(cols)) {
+        setColumnList(cols);
+        setRows(getRows(data, cols));
+      }
     }
   }, [data]);
-
-  useEffect(() => {
-    if (!_.isEmpty(data) && !_.isEmpty(columnList)) {
-      setRows(getRows(data, columnList));
-    }
-  }, [columnList]);
 
   const onSort = (event, index, direction) => {
     if (_.isFunction(onSorting)) {
@@ -198,7 +196,7 @@ const DataTable: React.FC<IOwnProps & OUIAProps> = ({
             <TableBody rowKey="rowKey" />
           </Table>
         )}
-      {data !== undefined && !isLoading && rows.length === 0 && (
+      {data !== undefined && !isLoading && data.length === 0 && (
         <KogitoEmptyState
           type={KogitoEmptyStateType.Search}
           title="No results found"

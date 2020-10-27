@@ -259,25 +259,17 @@ const TaskInbox: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
           onClick={resetFilters}
         />
       ) : isTableDataLoaded ? (
-        tableData.length === 0 ? (
-          <KogitoEmptyState
-            type={KogitoEmptyStateType.Search}
-            title="No results found"
-            body="Try using different filters"
-          />
-        ) : (
-          <DataTable
-            data={tableData}
-            isLoading={false}
-            columns={columns}
-            networkStatus={networkStatus}
-            error={error}
-            refetch={refetch}
-            LoadingComponent={UserTaskLoadingComponent}
-            onSorting={onSorting}
-            sortBy={context.getActiveQueryInfo().sortBy}
-          />
-        )
+        <DataTable
+          data={tableData}
+          isLoading={false}
+          columns={columns}
+          networkStatus={networkStatus}
+          error={error}
+          refetch={refetch}
+          LoadingComponent={UserTaskLoadingComponent}
+          onSorting={onSorting}
+          sortBy={context.getActiveQueryInfo().sortBy}
+        />
       ) : (
         UserTaskLoadingComponent
       )}

@@ -260,32 +260,12 @@ describe('DataTable component tests', () => {
     expect(wrapper.find(DataTable)).toMatchSnapshot();
   });
 
-  it('Should render DataTable correctly even no columns configuration provided', async () => {
-    const props = {
-      data,
-      isLoading: false,
-      networkStatus: 1,
-      error: undefined,
-      refetch: jest.fn(),
-      LoadingComponent: undefined,
-      ErrorComponent: undefined
-    };
-
-    const wrapper = await getWrapperAsync(
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <DataTable {...props} />
-      </MockedProvider>,
-      'DataTable'
-    );
-
-    expect(wrapper.find(DataTable)).toMatchSnapshot();
-  });
-
   it('check sorting functionality', async () => {
     const props = {
       data,
       isLoading: false,
       networkStatus: 1,
+      columns,
       error: undefined,
       refetch: jest.fn(),
       LoadingComponent: undefined,

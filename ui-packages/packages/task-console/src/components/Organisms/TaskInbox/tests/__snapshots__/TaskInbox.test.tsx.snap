@@ -1,26 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`TaskInbox tests Test empty state 1`] = `
-<TaskInbox>
-  <div
-    data-ouia-component-type="task-inbox"
-    data-ouia-safe={true}
-  >
-    <MockedTaskInboxToolbar
-      applyFilter={[Function]}
-      resetFilter={[Function]}
-    />
-    <KogitoEmptyState
-      body="Try using different filters"
-      title="No results found"
-      type={0}
-    >
-      <MockedComponent />
-    </KogitoEmptyState>
-  </div>
-</TaskInbox>
-`;
-
 exports[`TaskInbox tests Test load data with LoadMore 1`] = `
 <TaskInbox>
   <div

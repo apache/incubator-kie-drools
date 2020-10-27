@@ -21,7 +21,6 @@ import {
   DefaultUser,
   getWrapperAsync,
   GraphQL,
-  KogitoEmptyState,
   LoadMore,
   ServerErrors,
   User
@@ -81,56 +80,6 @@ const getWrapper = async (mocks, context) => {
 };
 
 describe('TaskInbox tests', () => {
-  it('Test empty state', async () => {
-    const mocks = [
-      {
-        request: {
-          query: GraphQL.GetTasksForUserDocument,
-          variables: {
-            whereArgument: {
-              and: [
-                {
-                  or: [
-                    { actualOwner: { equal: 'test' } },
-                    { potentialUsers: { contains: 'test' } },
-                    {
-                      potentialGroups: {
-                        containsAny: ['group1', 'group2']
-                      }
-                    }
-                  ]
-                },
-                {
-                  and: [
-                    {
-                      state: { in: ['Ready', 'Reserved'] }
-                    }
-                  ]
-                }
-              ]
-            },
-            offset: 0,
-            limit: 10,
-            orderBy: {
-              lastUpdate: 'DESC'
-            }
-          }
-        },
-        result: {
-          data: {
-            UserTaskInstances: []
-          }
-        }
-      }
-    ];
-    const context = new DefaultContext<GraphQL.UserTaskInstance>(testUser);
-    const wrapper = await getWrapper(mocks, context);
-    expect(wrapper).toMatchSnapshot();
-    const emptyState = wrapper.find(KogitoEmptyState);
-
-    expect(emptyState.exists()).toBeTruthy();
-  });
-
   it('Test load data without LoadMore', async () => {
     const mocks = [
       {
