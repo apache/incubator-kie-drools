@@ -25,7 +25,10 @@ import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.kie.kogito.Application;
+import org.kie.kogito.conf.ConfigBean;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
@@ -53,6 +56,20 @@ public class SpringBootDecisionTracingConfiguration {
         this.kafkaTopicName = kafkaTopicName;
         this.kafkaTopicPartitions = kafkaTopicPartitions;
         this.kafkaTopicReplicationFactor = kafkaTopicReplicationFactor;
+    }
+
+    @Bean
+    public SpringBootDecisionTracingCollector collector(
+            final SpringBootTraceEventEmitter eventEmitter,
+            final ConfigBean configBean,
+            final Application application,
+            @Value(value = "${kogito.addon.tracing.decision.asyncEnabled:true}") final boolean asyncEnabled
+    ) {
+        if (asyncEnabled) {
+            return new SpringBootDecisionTracingCollectorAsync(eventEmitter, configBean, application);
+        } else {
+            return new SpringBootDecisionTracingCollector(eventEmitter, configBean, application);
+        }
     }
 
     /**
@@ -94,6 +111,7 @@ public class SpringBootDecisionTracingConfiguration {
     }
 
     @Bean(name = "kogitoTracingDecisionAddonTaskExecutor")
+    @ConditionalOnProperty(value = "kogito.addon.tracing.decision.asyncEnabled", havingValue = "true", matchIfMissing = true)
     public Executor threadPoolTaskExecutor() {
         return Executors.newSingleThreadExecutor(r -> new Thread(r, "kogito-tracing"));
     }

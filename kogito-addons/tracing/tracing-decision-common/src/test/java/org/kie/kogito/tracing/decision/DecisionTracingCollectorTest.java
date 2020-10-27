@@ -62,12 +62,12 @@ class DecisionTracingCollectorTest {
     }
 
     @Test
-    void test_Collector_InterleavedEvaluations_BoundariesDetector_Working() throws IOException {
+    void testCollectorWithInterleavedEvaluationsAndBoundariesDetectorIsWorking() throws IOException {
         testInterleavedEvaluations(BoundariesTerminationDetector::new);
     }
 
     @Test
-    void test_Collector_InterleavedEvaluations_CounterDetector_Working() throws IOException {
+    void testCollectorWithInterleavedEvaluationsAndCounterDetectorIsWorking() throws IOException {
         testInterleavedEvaluations(CounterTerminationDetector::new);
     }
 

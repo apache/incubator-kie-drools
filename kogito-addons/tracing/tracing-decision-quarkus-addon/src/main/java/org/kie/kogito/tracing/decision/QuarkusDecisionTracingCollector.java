@@ -33,16 +33,16 @@ public class QuarkusDecisionTracingCollector {
     private final DecisionTracingCollector collector;
 
     public QuarkusDecisionTracingCollector(final QuarkusTraceEventEmitter eventEmitter,
-                                           final BiFunction<String, String, org.kie.dmn.api.core.DMNModel> modelSupplier,
-                                           final ConfigBean configBean) {
+                                           final ConfigBean configBean,
+                                           final BiFunction<String, String, org.kie.dmn.api.core.DMNModel> modelSupplier) {
         this.collector = new DecisionTracingCollector(eventEmitter::emit, modelSupplier, configBean);
     }
 
     @Inject
-    public QuarkusDecisionTracingCollector(final Application application,
-                                           final QuarkusTraceEventEmitter eventEmitter,
-                                           final ConfigBean configBean) {
-        this(eventEmitter, new ApplicationModelSupplier(application), configBean);
+    public QuarkusDecisionTracingCollector(final QuarkusTraceEventEmitter eventEmitter,
+                                           final ConfigBean configBean,
+                                           final Application application) {
+        this(eventEmitter, configBean, new ApplicationModelSupplier(application));
     }
 
     @ConsumeEvent("kogito-tracing-decision_EvaluateEvent")

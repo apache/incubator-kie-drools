@@ -17,6 +17,7 @@
 package org.kie.kogito.tracing.decision;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
@@ -28,8 +29,16 @@ import org.springframework.stereotype.Component;
 public final class SpringBootDecisionTracingListener extends DecisionTracingListener {
 
     @Autowired
-    public SpringBootDecisionTracingListener(ApplicationEventPublisher eventPublisher) {
-        setEventConsumer(eventPublisher::publishEvent);
+    public SpringBootDecisionTracingListener(
+            ApplicationEventPublisher eventPublisher,
+            SpringBootDecisionTracingCollector collector,
+            @Value(value = "${kogito.addon.tracing.decision.asyncEnabled:true}") boolean asyncEnabled
+    ) {
+        if (asyncEnabled) {
+            setEventConsumer(eventPublisher::publishEvent);
+        } else {
+            setEventConsumer(collector::onApplicationEvent);
+        }
     }
 
 }

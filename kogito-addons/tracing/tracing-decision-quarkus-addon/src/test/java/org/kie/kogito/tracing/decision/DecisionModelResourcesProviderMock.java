@@ -28,8 +28,8 @@ import org.kie.internal.decision.DecisionModelResourcesProvider;
 import org.kie.kogito.decision.DecisionModelType;
 import org.kie.kogito.dmn.DefaultDecisionModelResource;
 
-import static org.kie.kogito.tracing.decision.QuarkusDecisionTracingTest.MODEL_NAME;
-import static org.kie.kogito.tracing.decision.QuarkusDecisionTracingTest.MODEL_NAMESPACE;
+import static org.kie.kogito.tracing.decision.QuarkusDecisionTracingTest.TEST_MODEL_NAME;
+import static org.kie.kogito.tracing.decision.QuarkusDecisionTracingTest.TEST_MODEL_NAMESPACE;
 
 @Mock
 public class DecisionModelResourcesProviderMock implements DecisionModelResourcesProvider {
@@ -40,8 +40,8 @@ public class DecisionModelResourcesProviderMock implements DecisionModelResource
     public List<DecisionModelResource> get() {
         DecisionModelResource resource = new DefaultDecisionModelResource(
                 new GAV("test", "test", "test"),
-                MODEL_NAMESPACE,
-                MODEL_NAME,
+                TEST_MODEL_NAMESPACE,
+                TEST_MODEL_NAME,
                 DecisionModelType.DMN,
                 new InputStreamReader(new ByteArrayInputStream(CONTENT.getBytes())));
 

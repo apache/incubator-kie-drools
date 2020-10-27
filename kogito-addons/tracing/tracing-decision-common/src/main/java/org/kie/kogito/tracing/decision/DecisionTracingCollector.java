@@ -16,11 +16,11 @@
 
 package org.kie.kogito.tracing.decision;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -59,8 +59,8 @@ public class DecisionTracingCollector {
             Supplier<TerminationDetector> terminationDetectorSupplier,
             ConfigBean configBean
     ) {
-        this.cacheMap = new HashMap<>();
-        this.terminationDetectorMap = new HashMap<>();
+        this.cacheMap = new ConcurrentHashMap<>();
+        this.terminationDetectorMap = new ConcurrentHashMap<>();
         this.aggregator = aggregator;
         this.payloadConsumer = payloadConsumer;
         this.modelSupplier = modelSupplier;

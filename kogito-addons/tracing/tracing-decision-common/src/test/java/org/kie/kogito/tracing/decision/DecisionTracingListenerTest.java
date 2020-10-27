@@ -65,7 +65,7 @@ class DecisionTracingListenerTest {
     static final String TEST_EXECUTION_ID_2 = "77408667-f218-40b0-a355-1bab047a3e9e";
 
     @Test
-    void test_Listener_MockedEvents_Working() {
+    void testListenerWithMockedEventsIsWorking() {
         DMNContextImpl context = new DMNContextImpl();
         DecisionExecutionIdUtils.inject(context, () -> TEST_EXECUTION_ID_1);
 
@@ -87,32 +87,32 @@ class DecisionTracingListenerTest {
     }
 
     @Test
-    void test_Listener_RealEvaluateAll_Working() {
+    void testListenerWithRealEvaluateAllIsWorking() {
         testWithRealEvaluateAll(getEvaluateAllContext(), 14);
     }
 
     @Test
-    void test_Listener_RealEvaluateAllWithWarnMessage_Working() {
+    void testListenerWithRealEvaluateAllWithWarnMessageIsWorking() {
         testWithRealEvaluateAll(getEvaluateAllContextForWarning(), 14);
     }
 
     @Test
-    void test_Listener_RealEvaluateAllWithErrorMessage_Working() {
+    void testListenerWithRealEvaluateAllWithErrorMessageIsWorking() {
         testWithRealEvaluateAll(getEvaluateAllContextForError(), 10);
     }
 
     @Test
-    void test_Listener_RealEvaluateDecisionService_Working() {
+    void testListenerWithRealEvaluateDecisionServiceIsWorking() {
         testWithRealEvaluateDecisionService(getEvaluateDecisionServiceContext(), 6);
     }
 
     @Test
-    void test_Listener_RealEvaluateDecisionServiceWithWarnMessage_Working() {
+    void testListenerWithRealEvaluateDecisionServiceWithWarnMessageIsWorking() {
         testWithRealEvaluateDecisionService(getEvaluateDecisionServiceContextForWarning(), 6);
     }
 
     @Test
-    void test_Listener_RealEvaluateDecisionServiceWithEmptyContext_Working() {
+    void testListenerWithRealEvaluateDecisionServiceWithEmptyContextIsWorking() {
         final Map<String, Object> contextVariables = new HashMap<>();
         testWithRealEvaluateDecisionService(contextVariables, 6);
     }

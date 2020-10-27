@@ -22,25 +22,23 @@ import org.kie.dmn.api.core.DMNModel;
 import org.kie.kogito.Application;
 import org.kie.kogito.conf.ConfigBean;
 import org.kie.kogito.tracing.decision.event.evaluate.EvaluateEvent;
-import org.kie.kogito.tracing.decision.modelsupplier.ApplicationModelSupplier;
+import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.Async;
 
-public class SpringBootDecisionTracingCollector {
+public class SpringBootDecisionTracingCollectorAsync extends SpringBootDecisionTracingCollector {
 
-    private final DecisionTracingCollector collector;
-
-    public SpringBootDecisionTracingCollector(final SpringBootTraceEventEmitter eventEmitter,
-                                              final ConfigBean configBean,
-                                              final BiFunction<String, String, DMNModel> modelSupplier) {
-        this.collector = new DecisionTracingCollector(eventEmitter::emit, modelSupplier, configBean);
+    public SpringBootDecisionTracingCollectorAsync(SpringBootTraceEventEmitter eventEmitter, ConfigBean configBean, BiFunction<String, String, DMNModel> modelSupplier) {
+        super(eventEmitter, configBean, modelSupplier);
     }
 
-    public SpringBootDecisionTracingCollector(final SpringBootTraceEventEmitter eventEmitter,
-                                              final ConfigBean configBean,
-                                              final Application application) {
-        this(eventEmitter, configBean, new ApplicationModelSupplier(application));
+    public SpringBootDecisionTracingCollectorAsync(SpringBootTraceEventEmitter eventEmitter, ConfigBean configBean, Application application) {
+        super(eventEmitter, configBean, application);
     }
 
+    @Override
+    @Async("kogitoTracingDecisionAddonTaskExecutor")
+    @EventListener
     public void onApplicationEvent(final EvaluateEvent event) {
-        collector.addEvent(event);
+        super.onApplicationEvent(event);
     }
 }
