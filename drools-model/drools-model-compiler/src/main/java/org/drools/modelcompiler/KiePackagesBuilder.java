@@ -238,7 +238,7 @@ public class KiePackagesBuilder {
         }
         RuleContext ctx = new RuleContext( this, pkg, ruleImpl );
         populateLHS( ctx, pkg, rule.getView() );
-        processConsequences( ctx, rule );
+        processConsequences( ctx, rule.getConsequences() );
         if (ctx.needsStreamMode()) {
             pkg.setNeedStreamMode();
         }
@@ -375,30 +375,50 @@ public class KiePackagesBuilder {
         queryImpl.setParameters( declarations );
     }
 
-    private void processConsequences( RuleContext ctx, Rule rule ) {
-        for (Map.Entry<String, Consequence> entry : rule.getConsequences().entrySet()) {
+    private void processConsequences( RuleContext ctx, Map<String, Consequence> consequences ) {
+        for (Map.Entry<String, Consequence> entry : consequences.entrySet()) {
             processConsequence( ctx, entry.getValue(), entry.getKey() );
         }
     }
 
     private void processConsequence( RuleContext ctx, Consequence consequence, String name ) {
+        boolean ruleHasFirstLevelOr = ruleHasFirstLevelOr(ctx.getRule());
+        Variable[] consequenceVars = consequence.getDeclarations();
+        String[] requiredDeclarationNames = new String[consequenceVars.length];
+        Declaration[] requiredDeclarations = ruleHasFirstLevelOr ? null : new Declaration[consequenceVars.length];
+        for (int i = 0; i < consequenceVars.length; i++) {
+            requiredDeclarationNames[i] = consequenceVars[i].getName();
+            if (!ruleHasFirstLevelOr) {
+                requiredDeclarations[i] = ctx.getRule().getDeclaration( requiredDeclarationNames[i] );
+            }
+        }
+
+        ctx.getRule().setRequiredDeclarationsForConsequence( name, requiredDeclarationNames );
+
         if ( name.equals( RuleImpl.DEFAULT_CONSEQUENCE_NAME ) ) {
             if ("java".equals(consequence.getLanguage())) {
-                ctx.getRule().setConsequence( new LambdaConsequence( consequence ) );
+                ctx.getRule().setConsequence( new LambdaConsequence( consequence, requiredDeclarations ) );
             } else {
                 throw new UnsupportedOperationException("Unknown script language for consequence: " + consequence.getLanguage());
             }
         } else {
-            ctx.getRule().addNamedConsequence( name, new LambdaConsequence( consequence ) );
+            ctx.getRule().addNamedConsequence( name, new LambdaConsequence( consequence, requiredDeclarations ) );
         }
+    }
 
-        Variable[] consequenceVars = consequence.getDeclarations();
-        String[] requiredDeclarations = new String[consequenceVars.length];
-        for (int i = 0; i < consequenceVars.length; i++) {
-            requiredDeclarations[i] = consequenceVars[i].getName();
+    private boolean ruleHasFirstLevelOr(RuleImpl rule) {
+        GroupElement lhs = rule.getLhs();
+        if (lhs.getType() == GroupElement.Type.OR) {
+            return true;
         }
-
-        ctx.getRule().setRequiredDeclarationsForConsequence( name, requiredDeclarations );
+        if (lhs.getType() == GroupElement.Type.AND) {
+            for (RuleConditionElement child : lhs.getChildren()) {
+                if ( child instanceof GroupElement && (( GroupElement ) child).getType() == GroupElement.Type.OR ) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private void populateLHS( RuleContext ctx, KnowledgePackageImpl pkg, View view ) {
