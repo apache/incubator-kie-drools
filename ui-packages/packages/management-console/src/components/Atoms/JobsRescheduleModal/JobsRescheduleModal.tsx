@@ -1,8 +1,6 @@
 import React from 'react';
 import {
   Modal,
-  Title,
-  TitleSizes,
   ModalVariant,
   Button,
   ModalBoxBody,
@@ -193,11 +191,7 @@ const JobsRescheduleModal: React.FC<IOwnProps & OUIAProps> = ({
         aria-labelledby={actionType + ' modal'}
         aria-label={actionType + ' modal'}
         title=""
-        header={
-          <Title headingLevel="h1" size={TitleSizes['2xl']}>
-            {modalTitle}
-          </Title>
-        }
+        header={modalTitle}
         isOpen={isModalOpen}
         onClose={handleModalToggle}
         actions={[...applyAction, ...modalAction]}
@@ -210,11 +204,7 @@ const JobsRescheduleModal: React.FC<IOwnProps & OUIAProps> = ({
         aria-labelledby={'Reschedule error modal'}
         aria-label={'Reschedule error modal'}
         title=""
-        header={
-          <Title headingLevel="h1" size={TitleSizes['2xl']}>
-            {setTitle('failure', 'Job Reschedule')}
-          </Title>
-        }
+        header={setTitle('failure', 'Job Reschedule')}
         isOpen={errorModalOpen}
         onClose={handleErrorModal}
         actions={errorModalAction}

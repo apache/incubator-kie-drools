@@ -4,6 +4,9 @@ import { GraphQL } from '@kogito-apps/common';
 import { mount } from 'enzyme';
 import { Dropdown, KebabToggle, DropdownItem } from '@patternfly/react-core';
 import { act } from 'react-dom/test-utils';
+import axios from 'axios';
+jest.mock('axios');
+const mockedAxios = axios as jest.Mocked<typeof axios>;
 // tslint:disable: no-string-literal
 // tslint:disable: no-unexpected-multiline
 
@@ -37,7 +40,7 @@ const props = {
     processId: 'travels',
     processInstanceId: '5c56eeff-4cbf-3313-a325-4c895e0afced',
     rootProcessId: '5c56eeff-4cbf-3313-a325-4c895e0afced',
-    status: GraphQL.JobStatus.Executed,
+    status: GraphQL.JobStatus.Canceled,
     priority: 0,
     callbackEndpoint:
       'http://localhost:8080/management/jobs/travels/instances/5c56eeff-4cbf-3313-a325-4c895e0afced/timers/6e74a570-31c8-4020-bd70-19be2cb625f3_0',
@@ -68,7 +71,7 @@ const prop2 = {
   }
 };
 describe('job actions kebab tests', () => {
-  it('dropdown open/close tests', async () => {
+  it('dropdown open/close tests and details click', async () => {
     let wrapper = mount(<JobActionsKebab {...props} />);
     await act(async () => {
       wrapper
@@ -159,5 +162,77 @@ describe('job actions kebab tests', () => {
     expect(wrapper.find('JobsRescheduleModal').props()['isModalOpen']).toEqual(
       true
     );
+  });
+
+  describe('trigger/test job cancel action', () => {
+    it('cancel success', async () => {
+      mockedAxios.delete.mockResolvedValue({});
+      let wrapper = mount(<JobActionsKebab {...prop2} />);
+      await act(async () => {
+        wrapper
+          .find(Dropdown)
+          .find(KebabToggle)
+          .find('button')
+          .simulate('click');
+      });
+      wrapper = wrapper.update();
+      expect(
+        wrapper
+          .find(DropdownItem)
+          .at(2)
+          .find('button')
+          .children()
+          .contains('Cancel')
+      ).toBeTruthy();
+      await act(async () => {
+        wrapper
+          .find(DropdownItem)
+          .at(2)
+          .find('button')
+          .simulate('click');
+      });
+      wrapper = wrapper.update();
+      expect(wrapper.find('JobsCancelModal').props()['isModalOpen']).toEqual(
+        true
+      );
+      expect(wrapper.find('JobsCancelModal').props()['modalContent']).toEqual(
+        'The job: 6e74a570-31c8-4020-bd70-19be2cb625f3_0 is cancelled successfully'
+      );
+    });
+
+    it('cancel failure', async () => {
+      mockedAxios.delete.mockRejectedValue({ message: '404 error' });
+      let wrapper = mount(<JobActionsKebab {...prop2} />);
+      await act(async () => {
+        wrapper
+          .find(Dropdown)
+          .find(KebabToggle)
+          .find('button')
+          .simulate('click');
+      });
+      wrapper = wrapper.update();
+      expect(
+        wrapper
+          .find(DropdownItem)
+          .at(2)
+          .find('button')
+          .children()
+          .contains('Cancel')
+      ).toBeTruthy();
+      await act(async () => {
+        wrapper
+          .find(DropdownItem)
+          .at(2)
+          .find('button')
+          .simulate('click');
+      });
+      wrapper = wrapper.update();
+      expect(wrapper.find('JobsCancelModal').props()['isModalOpen']).toEqual(
+        true
+      );
+      expect(wrapper.find('JobsCancelModal').props()['modalContent']).toEqual(
+        'The job: 6e74a570-31c8-4020-bd70-19be2cb625f3_0 failed to cancel. Error message: "404 error"'
+      );
+    });
   });
 });

@@ -21,20 +21,15 @@ exports[`ProcessBulkModal component tests snapshot testing 1`] = `
   data-ouia-safe={true}
   hasNoBodyWrapper={false}
   header={
-    <Title
-      headingLevel="h1"
-      size="2xl"
-    >
-      <React.Fragment>
-        <InfoCircleIcon
-          className="pf-u-mr-sm"
-          color="var(--pf-global--info-color--100)"
-          noVerticalAlign={false}
-          size="sm"
-        />
-        Abort operation
-      </React.Fragment>
-    </Title>
+    <React.Fragment>
+      <InfoCircleIcon
+        className="pf-u-mr-sm"
+        color="var(--pf-global--info-color--100)"
+        noVerticalAlign={false}
+        size="sm"
+      />
+      Abort operation
+    </React.Fragment>
   }
   isOpen={true}
   onClose={[Function]}

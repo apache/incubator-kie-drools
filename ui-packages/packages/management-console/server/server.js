@@ -69,6 +69,7 @@ app.post('/management/processes/:processId/instances/:processInstanceId/nodes/:n
   controller.callNodeTrigger
 );
 app.get('/management/processes/:processId/nodes', controller.getTriggerableNodes)
+app.delete('/jobs/:jobId',controller.callJobCancel);
 
 function timeout(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));

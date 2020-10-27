@@ -110,26 +110,22 @@ exports[`Job reschedule modal tests test job reschedule modal 1`] = `
                 <header
                   class="pf-c-modal-box__header"
                 >
-                  <h1
-                    class="pf-c-title pf-m-2xl"
+                  <svg
+                    aria-hidden="true"
+                    class="pf-u-mr-sm"
+                    fill="var(--pf-global--info-color--100)"
+                    height="1em"
+                    role="img"
+                    style="vertical-align: -0.125em;"
+                    viewBox="0 0 512 512"
+                    width="1em"
                   >
-                    <svg
-                      aria-hidden="true"
-                      class="pf-u-mr-sm"
-                      fill="var(--pf-global--info-color--100)"
-                      height="1em"
-                      role="img"
-                      style="vertical-align: -0.125em;"
-                      viewBox="0 0 512 512"
-                      width="1em"
-                    >
-                      <path
-                        d="M256 8C119.043 8 8 119.083 8 256c0 136.997 111.043 248 248 248s248-111.003 248-248C504 119.083 392.957 8 256 8zm0 110c23.196 0 42 18.804 42 42s-18.804 42-42 42-42-18.804-42-42 18.804-42 42-42zm56 254c0 6.627-5.373 12-12 12h-88c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h12v-64h-12c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h64c6.627 0 12 5.373 12 12v100h12c6.627 0 12 5.373 12 12v24z"
-                        transform=""
-                      />
-                    </svg>
-                    Jobs Reschedule
-                  </h1>
+                    <path
+                      d="M256 8C119.043 8 8 119.083 8 256c0 136.997 111.043 248 248 248s248-111.003 248-248C504 119.083 392.957 8 256 8zm0 110c23.196 0 42 18.804 42 42s-18.804 42-42 42-42-18.804-42-42 18.804-42 42-42zm56 254c0 6.627-5.373 12-12 12h-88c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h12v-64h-12c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h64c6.627 0 12 5.373 12 12v100h12c6.627 0 12 5.373 12 12v24z"
+                      transform=""
+                    />
+                  </svg>
+                  Jobs Reschedule
                 </header>
                 <div
                   class="pf-c-modal-box__body"
@@ -304,20 +300,15 @@ exports[`Job reschedule modal tests test job reschedule modal 1`] = `
     data-ouia-safe={true}
     hasNoBodyWrapper={false}
     header={
-      <Title
-        headingLevel="h1"
-        size="2xl"
-      >
-        <React.Fragment>
-          <InfoCircleIcon
-            className="pf-u-mr-sm"
-            color="var(--pf-global--info-color--100)"
-            noVerticalAlign={false}
-            size="sm"
-          />
-          Jobs Reschedule
-        </React.Fragment>
-      </Title>
+      <React.Fragment>
+        <InfoCircleIcon
+          className="pf-u-mr-sm"
+          color="var(--pf-global--info-color--100)"
+          noVerticalAlign={false}
+          size="sm"
+        />
+        Jobs Reschedule
+      </React.Fragment>
     }
     isOpen={true}
     onClose={[MockFunction]}
@@ -374,26 +365,22 @@ exports[`Job reschedule modal tests test job reschedule modal 1`] = `
                 <header
                   class="pf-c-modal-box__header"
                 >
-                  <h1
-                    class="pf-c-title pf-m-2xl"
+                  <svg
+                    aria-hidden="true"
+                    class="pf-u-mr-sm"
+                    fill="var(--pf-global--info-color--100)"
+                    height="1em"
+                    role="img"
+                    style="vertical-align: -0.125em;"
+                    viewBox="0 0 512 512"
+                    width="1em"
                   >
-                    <svg
-                      aria-hidden="true"
-                      class="pf-u-mr-sm"
-                      fill="var(--pf-global--info-color--100)"
-                      height="1em"
-                      role="img"
-                      style="vertical-align: -0.125em;"
-                      viewBox="0 0 512 512"
-                      width="1em"
-                    >
-                      <path
-                        d="M256 8C119.043 8 8 119.083 8 256c0 136.997 111.043 248 248 248s248-111.003 248-248C504 119.083 392.957 8 256 8zm0 110c23.196 0 42 18.804 42 42s-18.804 42-42 42-42-18.804-42-42 18.804-42 42-42zm56 254c0 6.627-5.373 12-12 12h-88c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h12v-64h-12c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h64c6.627 0 12 5.373 12 12v100h12c6.627 0 12 5.373 12 12v24z"
-                        transform=""
-                      />
-                    </svg>
-                    Jobs Reschedule
-                  </h1>
+                    <path
+                      d="M256 8C119.043 8 8 119.083 8 256c0 136.997 111.043 248 248 248s248-111.003 248-248C504 119.083 392.957 8 256 8zm0 110c23.196 0 42 18.804 42 42s-18.804 42-42 42-42-18.804-42-42 18.804-42 42-42zm56 254c0 6.627-5.373 12-12 12h-88c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h12v-64h-12c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h64c6.627 0 12 5.373 12 12v100h12c6.627 0 12 5.373 12 12v24z"
+                      transform=""
+                    />
+                  </svg>
+                  Jobs Reschedule
                 </header>
                 <div
                   class="pf-c-modal-box__body"
@@ -584,20 +571,15 @@ exports[`Job reschedule modal tests test job reschedule modal 1`] = `
         descriptorId="pf-modal-part-2"
         hasNoBodyWrapper={false}
         header={
-          <Title
-            headingLevel="h1"
-            size="2xl"
-          >
-            <React.Fragment>
-              <InfoCircleIcon
-                className="pf-u-mr-sm"
-                color="var(--pf-global--info-color--100)"
-                noVerticalAlign={false}
-                size="sm"
-              />
-              Jobs Reschedule
-            </React.Fragment>
-          </Title>
+          <React.Fragment>
+            <InfoCircleIcon
+              className="pf-u-mr-sm"
+              color="var(--pf-global--info-color--100)"
+              noVerticalAlign={false}
+              size="sm"
+            />
+            Jobs Reschedule
+          </React.Fragment>
         }
         isOpen={true}
         labelId="pf-modal-part-1"
@@ -701,43 +683,34 @@ exports[`Job reschedule modal tests test job reschedule modal 1`] = `
                       <header
                         className="pf-c-modal-box__header"
                       >
-                        <Title
-                          headingLevel="h1"
-                          size="2xl"
+                        <InfoCircleIcon
+                          className="pf-u-mr-sm"
+                          color="var(--pf-global--info-color--100)"
+                          noVerticalAlign={false}
+                          size="sm"
                         >
-                          <h1
-                            className="pf-c-title pf-m-2xl"
+                          <svg
+                            aria-hidden={true}
+                            aria-labelledby={null}
+                            className="pf-u-mr-sm"
+                            fill="var(--pf-global--info-color--100)"
+                            height="1em"
+                            role="img"
+                            style={
+                              Object {
+                                "verticalAlign": "-0.125em",
+                              }
+                            }
+                            viewBox="0 0 512 512"
+                            width="1em"
                           >
-                            <InfoCircleIcon
-                              className="pf-u-mr-sm"
-                              color="var(--pf-global--info-color--100)"
-                              noVerticalAlign={false}
-                              size="sm"
-                            >
-                              <svg
-                                aria-hidden={true}
-                                aria-labelledby={null}
-                                className="pf-u-mr-sm"
-                                fill="var(--pf-global--info-color--100)"
-                                height="1em"
-                                role="img"
-                                style={
-                                  Object {
-                                    "verticalAlign": "-0.125em",
-                                  }
-                                }
-                                viewBox="0 0 512 512"
-                                width="1em"
-                              >
-                                <path
-                                  d="M256 8C119.043 8 8 119.083 8 256c0 136.997 111.043 248 248 248s248-111.003 248-248C504 119.083 392.957 8 256 8zm0 110c23.196 0 42 18.804 42 42s-18.804 42-42 42-42-18.804-42-42 18.804-42 42-42zm56 254c0 6.627-5.373 12-12 12h-88c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h12v-64h-12c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h64c6.627 0 12 5.373 12 12v100h12c6.627 0 12 5.373 12 12v24z"
-                                  transform=""
-                                />
-                              </svg>
-                            </InfoCircleIcon>
-                            Jobs Reschedule
-                          </h1>
-                        </Title>
+                            <path
+                              d="M256 8C119.043 8 8 119.083 8 256c0 136.997 111.043 248 248 248s248-111.003 248-248C504 119.083 392.957 8 256 8zm0 110c23.196 0 42 18.804 42 42s-18.804 42-42 42-42-18.804-42-42 18.804-42 42-42zm56 254c0 6.627-5.373 12-12 12h-88c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h12v-64h-12c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h64c6.627 0 12 5.373 12 12v100h12c6.627 0 12 5.373 12 12v24z"
+                              transform=""
+                            />
+                          </svg>
+                        </InfoCircleIcon>
+                        Jobs Reschedule
                       </header>
                     </ModalBoxHeader>
                     <ModalBoxBody
@@ -1126,26 +1099,22 @@ exports[`Job reschedule modal tests test job reschedule modal 1`] = `
                 <header
                   class="pf-c-modal-box__header"
                 >
-                  <h1
-                    class="pf-c-title pf-m-2xl"
+                  <svg
+                    aria-hidden="true"
+                    class="pf-u-mr-sm"
+                    fill="var(--pf-global--info-color--100)"
+                    height="1em"
+                    role="img"
+                    style="vertical-align: -0.125em;"
+                    viewBox="0 0 512 512"
+                    width="1em"
                   >
-                    <svg
-                      aria-hidden="true"
-                      class="pf-u-mr-sm"
-                      fill="var(--pf-global--info-color--100)"
-                      height="1em"
-                      role="img"
-                      style="vertical-align: -0.125em;"
-                      viewBox="0 0 512 512"
-                      width="1em"
-                    >
-                      <path
-                        d="M256 8C119.043 8 8 119.083 8 256c0 136.997 111.043 248 248 248s248-111.003 248-248C504 119.083 392.957 8 256 8zm0 110c23.196 0 42 18.804 42 42s-18.804 42-42 42-42-18.804-42-42 18.804-42 42-42zm56 254c0 6.627-5.373 12-12 12h-88c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h12v-64h-12c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h64c6.627 0 12 5.373 12 12v100h12c6.627 0 12 5.373 12 12v24z"
-                        transform=""
-                      />
-                    </svg>
-                    Jobs Reschedule
-                  </h1>
+                    <path
+                      d="M256 8C119.043 8 8 119.083 8 256c0 136.997 111.043 248 248 248s248-111.003 248-248C504 119.083 392.957 8 256 8zm0 110c23.196 0 42 18.804 42 42s-18.804 42-42 42-42-18.804-42-42 18.804-42 42-42zm56 254c0 6.627-5.373 12-12 12h-88c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h12v-64h-12c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h64c6.627 0 12 5.373 12 12v100h12c6.627 0 12 5.373 12 12v24z"
+                      transform=""
+                    />
+                  </svg>
+                  Jobs Reschedule
                 </header>
                 <div
                   class="pf-c-modal-box__body"
@@ -1324,17 +1293,15 @@ exports[`Job reschedule modal tests test job reschedule modal 1`] = `
         headingLevel="h1"
         size="2xl"
       >
-        <React.Fragment>
-          <InfoCircleIcon
-            className="pf-u-mr-sm"
-            color="var(--pf-global--danger-color--100)"
-            noVerticalAlign={false}
-            size="sm"
-          />
-           
+        <InfoCircleIcon
+          className="pf-u-mr-sm"
+          color="var(--pf-global--danger-color--100)"
+          noVerticalAlign={false}
+          size="sm"
+        />
+        <span>
           Job Reschedule
-           
-        </React.Fragment>
+        </span>
       </Title>
     }
     isOpen={false}
@@ -1376,17 +1343,15 @@ exports[`Job reschedule modal tests test job reschedule modal 1`] = `
             headingLevel="h1"
             size="2xl"
           >
-            <React.Fragment>
-              <InfoCircleIcon
-                className="pf-u-mr-sm"
-                color="var(--pf-global--danger-color--100)"
-                noVerticalAlign={false}
-                size="sm"
-              />
-               
+            <InfoCircleIcon
+              className="pf-u-mr-sm"
+              color="var(--pf-global--danger-color--100)"
+              noVerticalAlign={false}
+              size="sm"
+            />
+            <span>
               Job Reschedule
-               
-            </React.Fragment>
+            </span>
           </Title>
         }
         isOpen={false}
@@ -1512,26 +1477,22 @@ exports[`Job reschedule modal tests test reschedule with null interval/limit 1`]
                 <header
                   class="pf-c-modal-box__header"
                 >
-                  <h1
-                    class="pf-c-title pf-m-2xl"
+                  <svg
+                    aria-hidden="true"
+                    class="pf-u-mr-sm"
+                    fill="var(--pf-global--info-color--100)"
+                    height="1em"
+                    role="img"
+                    style="vertical-align: -0.125em;"
+                    viewBox="0 0 512 512"
+                    width="1em"
                   >
-                    <svg
-                      aria-hidden="true"
-                      class="pf-u-mr-sm"
-                      fill="var(--pf-global--info-color--100)"
-                      height="1em"
-                      role="img"
-                      style="vertical-align: -0.125em;"
-                      viewBox="0 0 512 512"
-                      width="1em"
-                    >
-                      <path
-                        d="M256 8C119.043 8 8 119.083 8 256c0 136.997 111.043 248 248 248s248-111.003 248-248C504 119.083 392.957 8 256 8zm0 110c23.196 0 42 18.804 42 42s-18.804 42-42 42-42-18.804-42-42 18.804-42 42-42zm56 254c0 6.627-5.373 12-12 12h-88c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h12v-64h-12c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h64c6.627 0 12 5.373 12 12v100h12c6.627 0 12 5.373 12 12v24z"
-                        transform=""
-                      />
-                    </svg>
-                    Jobs Reschedule
-                  </h1>
+                    <path
+                      d="M256 8C119.043 8 8 119.083 8 256c0 136.997 111.043 248 248 248s248-111.003 248-248C504 119.083 392.957 8 256 8zm0 110c23.196 0 42 18.804 42 42s-18.804 42-42 42-42-18.804-42-42 18.804-42 42-42zm56 254c0 6.627-5.373 12-12 12h-88c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h12v-64h-12c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h64c6.627 0 12 5.373 12 12v100h12c6.627 0 12 5.373 12 12v24z"
+                      transform=""
+                    />
+                  </svg>
+                  Jobs Reschedule
                 </header>
                 <div
                   class="pf-c-modal-box__body"
@@ -1740,26 +1701,22 @@ exports[`Job reschedule modal tests test reschedule with null interval/limit 1`]
                 <header
                   class="pf-c-modal-box__header"
                 >
-                  <h1
-                    class="pf-c-title pf-m-2xl"
+                  <svg
+                    aria-hidden="true"
+                    class="pf-u-mr-sm"
+                    fill="var(--pf-global--info-color--100)"
+                    height="1em"
+                    role="img"
+                    style="vertical-align: -0.125em;"
+                    viewBox="0 0 512 512"
+                    width="1em"
                   >
-                    <svg
-                      aria-hidden="true"
-                      class="pf-u-mr-sm"
-                      fill="var(--pf-global--info-color--100)"
-                      height="1em"
-                      role="img"
-                      style="vertical-align: -0.125em;"
-                      viewBox="0 0 512 512"
-                      width="1em"
-                    >
-                      <path
-                        d="M256 8C119.043 8 8 119.083 8 256c0 136.997 111.043 248 248 248s248-111.003 248-248C504 119.083 392.957 8 256 8zm0 110c23.196 0 42 18.804 42 42s-18.804 42-42 42-42-18.804-42-42 18.804-42 42-42zm56 254c0 6.627-5.373 12-12 12h-88c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h12v-64h-12c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h64c6.627 0 12 5.373 12 12v100h12c6.627 0 12 5.373 12 12v24z"
-                        transform=""
-                      />
-                    </svg>
-                    Jobs Reschedule
-                  </h1>
+                    <path
+                      d="M256 8C119.043 8 8 119.083 8 256c0 136.997 111.043 248 248 248s248-111.003 248-248C504 119.083 392.957 8 256 8zm0 110c23.196 0 42 18.804 42 42s-18.804 42-42 42-42-18.804-42-42 18.804-42 42-42zm56 254c0 6.627-5.373 12-12 12h-88c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h12v-64h-12c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h64c6.627 0 12 5.373 12 12v100h12c6.627 0 12 5.373 12 12v24z"
+                      transform=""
+                    />
+                  </svg>
+                  Jobs Reschedule
                 </header>
                 <div
                   class="pf-c-modal-box__body"
@@ -1948,20 +1905,15 @@ exports[`Job reschedule modal tests test reschedule with null interval/limit 1`]
     data-ouia-safe={true}
     hasNoBodyWrapper={false}
     header={
-      <Title
-        headingLevel="h1"
-        size="2xl"
-      >
-        <React.Fragment>
-          <InfoCircleIcon
-            className="pf-u-mr-sm"
-            color="var(--pf-global--info-color--100)"
-            noVerticalAlign={false}
-            size="sm"
-          />
-          Jobs Reschedule
-        </React.Fragment>
-      </Title>
+      <React.Fragment>
+        <InfoCircleIcon
+          className="pf-u-mr-sm"
+          color="var(--pf-global--info-color--100)"
+          noVerticalAlign={false}
+          size="sm"
+        />
+        Jobs Reschedule
+      </React.Fragment>
     }
     isOpen={true}
     onClose={[MockFunction]}
@@ -2018,26 +1970,22 @@ exports[`Job reschedule modal tests test reschedule with null interval/limit 1`]
                 <header
                   class="pf-c-modal-box__header"
                 >
-                  <h1
-                    class="pf-c-title pf-m-2xl"
+                  <svg
+                    aria-hidden="true"
+                    class="pf-u-mr-sm"
+                    fill="var(--pf-global--info-color--100)"
+                    height="1em"
+                    role="img"
+                    style="vertical-align: -0.125em;"
+                    viewBox="0 0 512 512"
+                    width="1em"
                   >
-                    <svg
-                      aria-hidden="true"
-                      class="pf-u-mr-sm"
-                      fill="var(--pf-global--info-color--100)"
-                      height="1em"
-                      role="img"
-                      style="vertical-align: -0.125em;"
-                      viewBox="0 0 512 512"
-                      width="1em"
-                    >
-                      <path
-                        d="M256 8C119.043 8 8 119.083 8 256c0 136.997 111.043 248 248 248s248-111.003 248-248C504 119.083 392.957 8 256 8zm0 110c23.196 0 42 18.804 42 42s-18.804 42-42 42-42-18.804-42-42 18.804-42 42-42zm56 254c0 6.627-5.373 12-12 12h-88c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h12v-64h-12c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h64c6.627 0 12 5.373 12 12v100h12c6.627 0 12 5.373 12 12v24z"
-                        transform=""
-                      />
-                    </svg>
-                    Jobs Reschedule
-                  </h1>
+                    <path
+                      d="M256 8C119.043 8 8 119.083 8 256c0 136.997 111.043 248 248 248s248-111.003 248-248C504 119.083 392.957 8 256 8zm0 110c23.196 0 42 18.804 42 42s-18.804 42-42 42-42-18.804-42-42 18.804-42 42-42zm56 254c0 6.627-5.373 12-12 12h-88c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h12v-64h-12c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h64c6.627 0 12 5.373 12 12v100h12c6.627 0 12 5.373 12 12v24z"
+                      transform=""
+                    />
+                  </svg>
+                  Jobs Reschedule
                 </header>
                 <div
                   class="pf-c-modal-box__body"
@@ -2242,20 +2190,15 @@ exports[`Job reschedule modal tests test reschedule with null interval/limit 1`]
         descriptorId="pf-modal-part-4"
         hasNoBodyWrapper={false}
         header={
-          <Title
-            headingLevel="h1"
-            size="2xl"
-          >
-            <React.Fragment>
-              <InfoCircleIcon
-                className="pf-u-mr-sm"
-                color="var(--pf-global--info-color--100)"
-                noVerticalAlign={false}
-                size="sm"
-              />
-              Jobs Reschedule
-            </React.Fragment>
-          </Title>
+          <React.Fragment>
+            <InfoCircleIcon
+              className="pf-u-mr-sm"
+              color="var(--pf-global--info-color--100)"
+              noVerticalAlign={false}
+              size="sm"
+            />
+            Jobs Reschedule
+          </React.Fragment>
         }
         isOpen={true}
         labelId="pf-modal-part-3"
@@ -2359,43 +2302,34 @@ exports[`Job reschedule modal tests test reschedule with null interval/limit 1`]
                       <header
                         className="pf-c-modal-box__header"
                       >
-                        <Title
-                          headingLevel="h1"
-                          size="2xl"
+                        <InfoCircleIcon
+                          className="pf-u-mr-sm"
+                          color="var(--pf-global--info-color--100)"
+                          noVerticalAlign={false}
+                          size="sm"
                         >
-                          <h1
-                            className="pf-c-title pf-m-2xl"
+                          <svg
+                            aria-hidden={true}
+                            aria-labelledby={null}
+                            className="pf-u-mr-sm"
+                            fill="var(--pf-global--info-color--100)"
+                            height="1em"
+                            role="img"
+                            style={
+                              Object {
+                                "verticalAlign": "-0.125em",
+                              }
+                            }
+                            viewBox="0 0 512 512"
+                            width="1em"
                           >
-                            <InfoCircleIcon
-                              className="pf-u-mr-sm"
-                              color="var(--pf-global--info-color--100)"
-                              noVerticalAlign={false}
-                              size="sm"
-                            >
-                              <svg
-                                aria-hidden={true}
-                                aria-labelledby={null}
-                                className="pf-u-mr-sm"
-                                fill="var(--pf-global--info-color--100)"
-                                height="1em"
-                                role="img"
-                                style={
-                                  Object {
-                                    "verticalAlign": "-0.125em",
-                                  }
-                                }
-                                viewBox="0 0 512 512"
-                                width="1em"
-                              >
-                                <path
-                                  d="M256 8C119.043 8 8 119.083 8 256c0 136.997 111.043 248 248 248s248-111.003 248-248C504 119.083 392.957 8 256 8zm0 110c23.196 0 42 18.804 42 42s-18.804 42-42 42-42-18.804-42-42 18.804-42 42-42zm56 254c0 6.627-5.373 12-12 12h-88c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h12v-64h-12c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h64c6.627 0 12 5.373 12 12v100h12c6.627 0 12 5.373 12 12v24z"
-                                  transform=""
-                                />
-                              </svg>
-                            </InfoCircleIcon>
-                            Jobs Reschedule
-                          </h1>
-                        </Title>
+                            <path
+                              d="M256 8C119.043 8 8 119.083 8 256c0 136.997 111.043 248 248 248s248-111.003 248-248C504 119.083 392.957 8 256 8zm0 110c23.196 0 42 18.804 42 42s-18.804 42-42 42-42-18.804-42-42 18.804-42 42-42zm56 254c0 6.627-5.373 12-12 12h-88c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h12v-64h-12c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h64c6.627 0 12 5.373 12 12v100h12c6.627 0 12 5.373 12 12v24z"
+                              transform=""
+                            />
+                          </svg>
+                        </InfoCircleIcon>
+                        Jobs Reschedule
                       </header>
                     </ModalBoxHeader>
                     <ModalBoxBody
@@ -2798,26 +2732,22 @@ exports[`Job reschedule modal tests test reschedule with null interval/limit 1`]
                 <header
                   class="pf-c-modal-box__header"
                 >
-                  <h1
-                    class="pf-c-title pf-m-2xl"
+                  <svg
+                    aria-hidden="true"
+                    class="pf-u-mr-sm"
+                    fill="var(--pf-global--info-color--100)"
+                    height="1em"
+                    role="img"
+                    style="vertical-align: -0.125em;"
+                    viewBox="0 0 512 512"
+                    width="1em"
                   >
-                    <svg
-                      aria-hidden="true"
-                      class="pf-u-mr-sm"
-                      fill="var(--pf-global--info-color--100)"
-                      height="1em"
-                      role="img"
-                      style="vertical-align: -0.125em;"
-                      viewBox="0 0 512 512"
-                      width="1em"
-                    >
-                      <path
-                        d="M256 8C119.043 8 8 119.083 8 256c0 136.997 111.043 248 248 248s248-111.003 248-248C504 119.083 392.957 8 256 8zm0 110c23.196 0 42 18.804 42 42s-18.804 42-42 42-42-18.804-42-42 18.804-42 42-42zm56 254c0 6.627-5.373 12-12 12h-88c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h12v-64h-12c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h64c6.627 0 12 5.373 12 12v100h12c6.627 0 12 5.373 12 12v24z"
-                        transform=""
-                      />
-                    </svg>
-                    Jobs Reschedule
-                  </h1>
+                    <path
+                      d="M256 8C119.043 8 8 119.083 8 256c0 136.997 111.043 248 248 248s248-111.003 248-248C504 119.083 392.957 8 256 8zm0 110c23.196 0 42 18.804 42 42s-18.804 42-42 42-42-18.804-42-42 18.804-42 42-42zm56 254c0 6.627-5.373 12-12 12h-88c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h12v-64h-12c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h64c6.627 0 12 5.373 12 12v100h12c6.627 0 12 5.373 12 12v24z"
+                      transform=""
+                    />
+                  </svg>
+                  Jobs Reschedule
                 </header>
                 <div
                   class="pf-c-modal-box__body"
@@ -3026,26 +2956,22 @@ exports[`Job reschedule modal tests test reschedule with null interval/limit 1`]
                 <header
                   class="pf-c-modal-box__header"
                 >
-                  <h1
-                    class="pf-c-title pf-m-2xl"
+                  <svg
+                    aria-hidden="true"
+                    class="pf-u-mr-sm"
+                    fill="var(--pf-global--info-color--100)"
+                    height="1em"
+                    role="img"
+                    style="vertical-align: -0.125em;"
+                    viewBox="0 0 512 512"
+                    width="1em"
                   >
-                    <svg
-                      aria-hidden="true"
-                      class="pf-u-mr-sm"
-                      fill="var(--pf-global--info-color--100)"
-                      height="1em"
-                      role="img"
-                      style="vertical-align: -0.125em;"
-                      viewBox="0 0 512 512"
-                      width="1em"
-                    >
-                      <path
-                        d="M256 8C119.043 8 8 119.083 8 256c0 136.997 111.043 248 248 248s248-111.003 248-248C504 119.083 392.957 8 256 8zm0 110c23.196 0 42 18.804 42 42s-18.804 42-42 42-42-18.804-42-42 18.804-42 42-42zm56 254c0 6.627-5.373 12-12 12h-88c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h12v-64h-12c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h64c6.627 0 12 5.373 12 12v100h12c6.627 0 12 5.373 12 12v24z"
-                        transform=""
-                      />
-                    </svg>
-                    Jobs Reschedule
-                  </h1>
+                    <path
+                      d="M256 8C119.043 8 8 119.083 8 256c0 136.997 111.043 248 248 248s248-111.003 248-248C504 119.083 392.957 8 256 8zm0 110c23.196 0 42 18.804 42 42s-18.804 42-42 42-42-18.804-42-42 18.804-42 42-42zm56 254c0 6.627-5.373 12-12 12h-88c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h12v-64h-12c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h64c6.627 0 12 5.373 12 12v100h12c6.627 0 12 5.373 12 12v24z"
+                      transform=""
+                    />
+                  </svg>
+                  Jobs Reschedule
                 </header>
                 <div
                   class="pf-c-modal-box__body"
@@ -3238,17 +3164,15 @@ exports[`Job reschedule modal tests test reschedule with null interval/limit 1`]
         headingLevel="h1"
         size="2xl"
       >
-        <React.Fragment>
-          <InfoCircleIcon
-            className="pf-u-mr-sm"
-            color="var(--pf-global--danger-color--100)"
-            noVerticalAlign={false}
-            size="sm"
-          />
-           
+        <InfoCircleIcon
+          className="pf-u-mr-sm"
+          color="var(--pf-global--danger-color--100)"
+          noVerticalAlign={false}
+          size="sm"
+        />
+        <span>
           Job Reschedule
-           
-        </React.Fragment>
+        </span>
       </Title>
     }
     isOpen={false}
@@ -3290,17 +3214,15 @@ exports[`Job reschedule modal tests test reschedule with null interval/limit 1`]
             headingLevel="h1"
             size="2xl"
           >
-            <React.Fragment>
-              <InfoCircleIcon
-                className="pf-u-mr-sm"
-                color="var(--pf-global--danger-color--100)"
-                noVerticalAlign={false}
-                size="sm"
-              />
-               
+            <InfoCircleIcon
+              className="pf-u-mr-sm"
+              color="var(--pf-global--danger-color--100)"
+              noVerticalAlign={false}
+              size="sm"
+            />
+            <span>
               Job Reschedule
-               
-            </React.Fragment>
+            </span>
           </Title>
         }
         isOpen={false}

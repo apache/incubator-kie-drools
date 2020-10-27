@@ -2,8 +2,6 @@ import React from 'react';
 import { OUIAProps, componentOuiaProps, GraphQL } from '@kogito-apps/common';
 import {
   Modal,
-  Title,
-  TitleSizes,
   TextContent,
   Flex,
   FlexItem,
@@ -143,11 +141,7 @@ const JobsPanelDetailsModal: React.FC<IOwnProps & OUIAProps> = ({
       aria-labelledby={actionType + 'modal'}
       aria-label={actionType + 'modal'}
       title=""
-      header={
-        <Title headingLevel="h1" size={TitleSizes['2xl']}>
-          {modalTitle}
-        </Title>
-      }
+      header={modalTitle}
       isOpen={isModalOpen}
       onClose={handleModalToggle}
       actions={modalAction}

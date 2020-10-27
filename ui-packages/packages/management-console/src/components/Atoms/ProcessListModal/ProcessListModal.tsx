@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-  Modal,
-  Title,
-  Button,
-  TextContent,
-  Text,
-  TitleSizes
-} from '@patternfly/react-core';
+import { Modal, Button, TextContent, Text } from '@patternfly/react-core';
 import ProcessListBulkInstances from '../ProcessListBulkInstances/ProcessListBulkInstances';
 import { IOperation } from '../../Molecules/ProcessListToolbar/ProcessListToolbar';
 import { OUIAProps, componentOuiaProps } from '@kogito-apps/common';
@@ -36,28 +29,28 @@ const ProcessListModal: React.FC<IOwnProps & OUIAProps> = ({
   };
 
   const createBoldText = (text: string, shouldBeBold: string): JSX.Element => {
-    const textArray = text.split(shouldBeBold);
-    return (
-      <span>
-        {textArray.map((item, index) => (
-          <React.Fragment key={index}>
-            {item}
-            {index !== textArray.length - 1 && <b>{shouldBeBold}</b>}
-          </React.Fragment>
-        ))}
-      </span>
-    );
+    if (shouldBeBold && shouldBeBold.length > 0) {
+      const textArray = text.split(shouldBeBold);
+      return (
+        <span>
+          {textArray.map((item, index) => (
+            <React.Fragment key={index}>
+              {item}
+              {index !== textArray.length - 1 && <b>{shouldBeBold}</b>}
+            </React.Fragment>
+          ))}
+        </span>
+      );
+    } else {
+      return <span>{text}</span>;
+    }
   };
 
   return (
     <Modal
       variant="small"
       title=""
-      header={
-        <Title headingLevel="h1" size={TitleSizes['2xl']}>
-          {modalTitle}
-        </Title>
-      }
+      header={modalTitle}
       isOpen={isModalOpen}
       onClose={onOkClick}
       aria-label="process list modal"
@@ -73,11 +66,7 @@ const ProcessListModal: React.FC<IOwnProps & OUIAProps> = ({
         <ProcessListBulkInstances operationResult={operationResult} />
       )}
       <TextContent>
-        <Text>
-          {modalContent &&
-            processName &&
-            createBoldText(modalContent, processName)}
-        </Text>
+        <Text>{createBoldText(modalContent, processName)}</Text>
       </TextContent>
     </Modal>
   );

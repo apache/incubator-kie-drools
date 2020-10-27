@@ -168,6 +168,16 @@ exports[`Process Details Page component tests snapshot testing in Active state 1
           handleModalToggle={[Function]}
           isModalOpen={false}
           modalContent=""
+          modalTitle={
+            <Title
+              headingLevel="h1"
+              size="2xl"
+            >
+              <span>
+                
+              </span>
+            </Title>
+          }
           processName="travels"
         />
         <PageTitle
@@ -1242,6 +1252,16 @@ exports[`Process Details Page component tests snapshot testing in Error state 1`
           handleModalToggle={[Function]}
           isModalOpen={false}
           modalContent=""
+          modalTitle={
+            <Title
+              headingLevel="h1"
+              size="2xl"
+            >
+              <span>
+                
+              </span>
+            </Title>
+          }
           processName="travels"
         />
         <PageTitle
@@ -2238,6 +2258,16 @@ exports[`Process Details Page component tests snapshot testing in Suspended stat
           handleModalToggle={[Function]}
           isModalOpen={false}
           modalContent=""
+          modalTitle={
+            <Title
+              headingLevel="h1"
+              size="2xl"
+            >
+              <span>
+                
+              </span>
+            </Title>
+          }
           processName="travels"
         />
         <PageTitle

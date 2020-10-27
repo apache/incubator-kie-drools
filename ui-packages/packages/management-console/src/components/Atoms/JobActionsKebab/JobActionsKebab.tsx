@@ -8,7 +8,8 @@ import {
 import JobsPanelDetailsModal from '../JobsPanelDetailsModal/JobsPanelDetailsModal';
 import JobsRescheduleModal from '../JobsRescheduleModal/JobsRescheduleModal';
 import { OUIAProps, componentOuiaProps, GraphQL } from '@kogito-apps/common';
-import { setTitle } from '../../../utils/Utils';
+import { setTitle, jobCancel } from '../../../utils/Utils';
+import JobsCancelModal from '../JobsCancelModal/JobsCancelModal';
 interface IOwnProps {
   job: GraphQL.Job;
 }
@@ -21,10 +22,17 @@ const JobActionsKebab: React.FC<IOwnProps & OUIAProps> = ({
   const [isKebabOpen, setIsKebabOpen] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [rescheduleClicked, setRescheduleClicked] = useState<boolean>(false);
-
+  const [isCancelModalOpen, setIsCancelModalOpen] = useState<boolean>(false);
+  const [modalTitle, setModalTitle] = useState<JSX.Element>(null);
+  const [modalContent, setModalContent] = useState<string>('');
   const RescheduleJobs: string[] = ['SCHEDULED', 'ERROR'];
+
   const handleModalToggle = (): void => {
     setIsModalOpen(!isModalOpen);
+  };
+
+  const handleCancelModalToggle = (): void => {
+    setIsCancelModalOpen(!isCancelModalOpen);
   };
 
   const onSelect = (): void => {
@@ -41,6 +49,23 @@ const JobActionsKebab: React.FC<IOwnProps & OUIAProps> = ({
 
   const handleRescheduleAction = (): void => {
     setRescheduleClicked(!rescheduleClicked);
+  };
+
+  const handleCancelAction = (): void => {
+    jobCancel(
+      job,
+      () => {
+        setModalTitle(setTitle('success', 'Job cancel'));
+        setModalContent(`The job: ${job.id} is cancelled successfully`);
+      },
+      errorMessage => {
+        setModalTitle(setTitle('failure', 'Job cancel'));
+        setModalContent(
+          `The job: ${job.id} failed to cancel. Error message: ${errorMessage}`
+        );
+      }
+    );
+    handleCancelModalToggle();
   };
 
   const rescheduleActions: JSX.Element[] = [
@@ -76,6 +101,14 @@ const JobActionsKebab: React.FC<IOwnProps & OUIAProps> = ({
           onClick={handleRescheduleAction}
         >
           Reschedule
+        </DropdownItem>,
+        <DropdownItem
+          key="cancel"
+          component="button"
+          id="cancel-option"
+          onClick={handleCancelAction}
+        >
+          Cancel
         </DropdownItem>
       ];
     } else {
@@ -106,6 +139,14 @@ const JobActionsKebab: React.FC<IOwnProps & OUIAProps> = ({
         setRescheduleClicked={setRescheduleClicked}
         rescheduleClicked={rescheduleClicked}
       />
+      <JobsCancelModal
+        actionType="Job Cancel"
+        isModalOpen={isCancelModalOpen}
+        handleModalToggle={handleCancelModalToggle}
+        modalTitle={modalTitle}
+        modalContent={modalContent}
+      />
+
       <Dropdown
         onSelect={onSelect}
         toggle={<KebabToggle onToggle={onToggle} id="kebab-toggle" />}

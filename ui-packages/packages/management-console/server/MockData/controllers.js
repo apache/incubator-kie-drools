@@ -167,5 +167,18 @@ module.exports = controller = {
     } else {
       res.send([])
     }
+  },
+
+  callJobCancel: (req, res) => {
+    const mockFailedJobs = ['dad3aa88-5c1e-4858-a919-6123c675a0fa_0']
+    const graphData = require('./graphql');
+    const jobData = graphData.JobsData.filter(job => job.id === req.params.jobId);
+    if (mockFailedJobs.includes(jobData[0].id) || jobData.length === 0) {
+      res.status(404).send('job not found')
+    } else {
+      jobData[0].status = 'CANCELLED';
+      jobData[0].lastUpdate = new Date().toISOString();
+      res.status(200).send(jobData[0]);
+    }
   }
 };

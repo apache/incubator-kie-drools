@@ -10,6 +10,16 @@ exports[`ProcessDetailsTimeline component tests Snapshot testing for completed s
     handleModalToggle={[Function]}
     isModalOpen={false}
     modalContent=""
+    modalTitle={
+      <Title
+        headingLevel="h1"
+        size="2xl"
+      >
+        <span>
+          
+        </span>
+      </Title>
+    }
   />
   <CardHeader>
     <Title
@@ -169,6 +179,16 @@ exports[`ProcessDetailsTimeline component tests Snapshot testing for no service 
     handleModalToggle={[Function]}
     isModalOpen={false}
     modalContent=""
+    modalTitle={
+      <Title
+        headingLevel="h1"
+        size="2xl"
+      >
+        <span>
+          
+        </span>
+      </Title>
+    }
   />
   <CardHeader>
     <Title
@@ -328,6 +348,16 @@ exports[`ProcessDetailsTimeline component tests Snapshot testing for service url
     handleModalToggle={[Function]}
     isModalOpen={false}
     modalContent=""
+    modalTitle={
+      <Title
+        headingLevel="h1"
+        size="2xl"
+      >
+        <span>
+          
+        </span>
+      </Title>
+    }
   />
   <CardHeader>
     <Title

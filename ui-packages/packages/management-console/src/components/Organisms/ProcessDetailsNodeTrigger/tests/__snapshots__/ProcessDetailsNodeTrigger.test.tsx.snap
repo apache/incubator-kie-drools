@@ -6,17 +6,20 @@ exports[`Process details node trigger component tests Node trigger failure tests
   isModalOpen={true}
   modalContent="The node Book trigger failed. ErrorMessage : \\"403 error\\""
   modalTitle={
-    <React.Fragment>
+    <Title
+      headingLevel="h1"
+      size="2xl"
+    >
       <InfoCircleIcon
         className="pf-u-mr-sm"
         color="var(--pf-global--danger-color--100)"
         noVerticalAlign={false}
         size="sm"
       />
-       
-      Node trigger process
-       
-    </React.Fragment>
+      <span>
+        Node trigger process
+      </span>
+    </Title>
   }
   processName="Book"
 >
@@ -107,9 +110,9 @@ exports[`Process details node trigger component tests Node trigger failure tests
                         transform=""
                       />
                     </svg>
-                     
-                    Node trigger process
-                     
+                    <span>
+                      Node trigger process
+                    </span>
                   </h1>
                 </header>
                 <div
@@ -217,9 +220,9 @@ exports[`Process details node trigger component tests Node trigger failure tests
                         transform=""
                       />
                     </svg>
-                     
-                    Node trigger process
-                     
+                    <span>
+                      Node trigger process
+                    </span>
                   </h1>
                 </header>
                 <div
@@ -277,17 +280,15 @@ exports[`Process details node trigger component tests Node trigger failure tests
         headingLevel="h1"
         size="2xl"
       >
-        <React.Fragment>
-          <InfoCircleIcon
-            className="pf-u-mr-sm"
-            color="var(--pf-global--danger-color--100)"
-            noVerticalAlign={false}
-            size="sm"
-          />
-           
+        <InfoCircleIcon
+          className="pf-u-mr-sm"
+          color="var(--pf-global--danger-color--100)"
+          noVerticalAlign={false}
+          size="sm"
+        />
+        <span>
           Node trigger process
-           
-        </React.Fragment>
+        </span>
       </Title>
     }
     isOpen={true}
@@ -363,9 +364,9 @@ exports[`Process details node trigger component tests Node trigger failure tests
                         transform=""
                       />
                     </svg>
-                     
-                    Node trigger process
-                     
+                    <span>
+                      Node trigger process
+                    </span>
                   </h1>
                 </header>
                 <div
@@ -436,17 +437,15 @@ exports[`Process details node trigger component tests Node trigger failure tests
             headingLevel="h1"
             size="2xl"
           >
-            <React.Fragment>
-              <InfoCircleIcon
-                className="pf-u-mr-sm"
-                color="var(--pf-global--danger-color--100)"
-                noVerticalAlign={false}
-                size="sm"
-              />
-               
+            <InfoCircleIcon
+              className="pf-u-mr-sm"
+              color="var(--pf-global--danger-color--100)"
+              noVerticalAlign={false}
+              size="sm"
+            />
+            <span>
               Node trigger process
-               
-            </React.Fragment>
+            </span>
           </Title>
         }
         isOpen={true}
@@ -585,9 +584,9 @@ exports[`Process details node trigger component tests Node trigger failure tests
                                 />
                               </svg>
                             </InfoCircleIcon>
-                             
-                            Node trigger process
-                             
+                            <span>
+                              Node trigger process
+                            </span>
                           </h1>
                         </Title>
                       </header>
@@ -668,17 +667,20 @@ exports[`Process details node trigger component tests Node trigger success tests
   isModalOpen={true}
   modalContent="The node Book was triggered successfully"
   modalTitle={
-    <React.Fragment>
+    <Title
+      headingLevel="h1"
+      size="2xl"
+    >
       <InfoCircleIcon
         className="pf-u-mr-sm"
         color="var(--pf-global--info-color--100)"
         noVerticalAlign={false}
         size="sm"
       />
-       
-      Node trigger process
-       
-    </React.Fragment>
+      <span>
+        Node trigger process
+      </span>
+    </Title>
   }
   processName="Book"
 >
@@ -767,9 +769,9 @@ exports[`Process details node trigger component tests Node trigger success tests
                         transform=""
                       />
                     </svg>
-                     
-                    Node trigger process
-                     
+                    <span>
+                      Node trigger process
+                    </span>
                   </h1>
                 </header>
                 <div
@@ -827,17 +829,15 @@ exports[`Process details node trigger component tests Node trigger success tests
         headingLevel="h1"
         size="2xl"
       >
-        <React.Fragment>
-          <InfoCircleIcon
-            className="pf-u-mr-sm"
-            color="var(--pf-global--info-color--100)"
-            noVerticalAlign={false}
-            size="sm"
-          />
-           
+        <InfoCircleIcon
+          className="pf-u-mr-sm"
+          color="var(--pf-global--info-color--100)"
+          noVerticalAlign={false}
+          size="sm"
+        />
+        <span>
           Node trigger process
-           
-        </React.Fragment>
+        </span>
       </Title>
     }
     isOpen={true}
@@ -913,9 +913,9 @@ exports[`Process details node trigger component tests Node trigger success tests
                         transform=""
                       />
                     </svg>
-                     
-                    Node trigger process
-                     
+                    <span>
+                      Node trigger process
+                    </span>
                   </h1>
                 </header>
                 <div
@@ -986,17 +986,15 @@ exports[`Process details node trigger component tests Node trigger success tests
             headingLevel="h1"
             size="2xl"
           >
-            <React.Fragment>
-              <InfoCircleIcon
-                className="pf-u-mr-sm"
-                color="var(--pf-global--info-color--100)"
-                noVerticalAlign={false}
-                size="sm"
-              />
-               
+            <InfoCircleIcon
+              className="pf-u-mr-sm"
+              color="var(--pf-global--info-color--100)"
+              noVerticalAlign={false}
+              size="sm"
+            />
+            <span>
               Node trigger process
-               
-            </React.Fragment>
+            </span>
           </Title>
         }
         isOpen={true}
@@ -1135,9 +1133,9 @@ exports[`Process details node trigger component tests Node trigger success tests
                                 />
                               </svg>
                             </InfoCircleIcon>
-                             
-                            Node trigger process
-                             
+                            <span>
+                              Node trigger process
+                            </span>
                           </h1>
                         </Title>
                       </header>
@@ -1236,6 +1234,16 @@ exports[`Process details node trigger component tests select a node test  1`] = 
         handleModalToggle={[Function]}
         isModalOpen={false}
         modalContent=""
+        modalTitle={
+          <Title
+            headingLevel="h1"
+            size="2xl"
+          >
+            <span>
+              
+            </span>
+          </Title>
+        }
         processName="Book"
       >
         <Modal
@@ -1266,7 +1274,11 @@ exports[`Process details node trigger component tests select a node test  1`] = 
             <Title
               headingLevel="h1"
               size="2xl"
-            />
+            >
+              <span>
+                
+              </span>
+            </Title>
           }
           isOpen={false}
           onClose={[Function]}
@@ -1302,7 +1314,11 @@ exports[`Process details node trigger component tests select a node test  1`] = 
                 <Title
                   headingLevel="h1"
                   size="2xl"
-                />
+                >
+                  <span>
+                    
+                  </span>
+                </Title>
               }
               isOpen={false}
               labelId="pf-modal-part-2"
@@ -1815,6 +1831,16 @@ exports[`Process details node trigger component tests snapshot testing with none
         handleModalToggle={[Function]}
         isModalOpen={false}
         modalContent=""
+        modalTitle={
+          <Title
+            headingLevel="h1"
+            size="2xl"
+          >
+            <span>
+              
+            </span>
+          </Title>
+        }
         processName={null}
       >
         <Modal
@@ -1844,7 +1870,11 @@ exports[`Process details node trigger component tests snapshot testing with none
             <Title
               headingLevel="h1"
               size="2xl"
-            />
+            >
+              <span>
+                
+              </span>
+            </Title>
           }
           isOpen={false}
           onClose={[Function]}
@@ -1880,7 +1910,11 @@ exports[`Process details node trigger component tests snapshot testing with none
                 <Title
                   headingLevel="h1"
                   size="2xl"
-                />
+                >
+                  <span>
+                    
+                  </span>
+                </Title>
               }
               isOpen={false}
               labelId="pf-modal-part-1"
