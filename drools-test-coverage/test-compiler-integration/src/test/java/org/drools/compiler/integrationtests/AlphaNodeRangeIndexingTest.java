@@ -90,7 +90,7 @@ public class AlphaNodeRangeIndexingTest {
     public void testInteger() {
         final String drl = BASIC_DRL;
 
-        final KieBase kbase = createKieBaseWithRangeIndexThresholdValue3(drl);
+        final KieBase kbase = createKieBaseWithRangeIndexThresholdValue(drl, 3);
         final KieSession ksession = kbase.newKieSession();
 
         assertSinks(kbase, Person.class, 6, 6, 0, 6); // sinksLength = 6, sinkAdapterSize = 6, rangeIndexableSinks is null, Size of RangeIndexed nodes = 6
@@ -104,11 +104,11 @@ public class AlphaNodeRangeIndexingTest {
         assertEquals(3, fired);
     }
 
-    private KieBase createKieBaseWithRangeIndexThresholdValue3(String drl) {
+    private KieBase createKieBaseWithRangeIndexThresholdValue(String drl, int rangeIndexThresholdValue) {
         final KieModule kieModule = KieUtil.getKieModuleFromDrls("indexing-test", kieBaseTestConfiguration, drl);
         final KieContainer kieContainer = KieServices.get().newKieContainer(kieModule.getReleaseId());
         final KieBaseConfiguration kieBaseConfiguration = kieBaseTestConfiguration.getKieBaseConfiguration();
-        kieBaseConfiguration.setOption(AlphaRangeIndexThresholdOption.get(3)); // Set 3 for test convenience. Default value is AlphaRangeIndexThresholdOption.DEFAULT_VALUE
+        kieBaseConfiguration.setOption(AlphaRangeIndexThresholdOption.get(rangeIndexThresholdValue)); // for test convenience. Default value is AlphaRangeIndexThresholdOption.DEFAULT_VALUE
         return kieContainer.newKieBase(kieBaseConfiguration);
     }
 
@@ -157,7 +157,7 @@ public class AlphaNodeRangeIndexingTest {
                            "   Person( age >= 50 )\n" +
                            "then\n end\n";
 
-        final KieBase kbase = createKieBaseWithRangeIndexThresholdValue3(drl);
+        final KieBase kbase = createKieBaseWithRangeIndexThresholdValue(drl, 3);
         final KieSession ksession = kbase.newKieSession();
 
         assertSinks(kbase, Person.class, 6, 6, 0, 6);
@@ -195,7 +195,7 @@ public class AlphaNodeRangeIndexingTest {
                            "   Order( total <= 4.0 )\n" +
                            "then\n end\n";
 
-        final KieBase kbase = createKieBaseWithRangeIndexThresholdValue3(drl);
+        final KieBase kbase = createKieBaseWithRangeIndexThresholdValue(drl, 3);
         final KieSession ksession = kbase.newKieSession();
 
         assertSinks(kbase, Order.class, 6, 6, 0, 6);
@@ -237,7 +237,7 @@ public class AlphaNodeRangeIndexingTest {
                            "   Person( name <= \"Paul\" )\n" +
                            "then\n end\n";
 
-        final KieBase kbase = createKieBaseWithRangeIndexThresholdValue3(drl);
+        final KieBase kbase = createKieBaseWithRangeIndexThresholdValue(drl, 3);
         final KieSession ksession = kbase.newKieSession();
 
         assertSinks(kbase, Person.class, 6, 6, 0, 6);
@@ -275,7 +275,7 @@ public class AlphaNodeRangeIndexingTest {
                            "   Primitives( bigDecimal <= 4.0 )\n" +
                            "then\n end\n";
 
-        final KieBase kbase = createKieBaseWithRangeIndexThresholdValue3(drl);
+        final KieBase kbase = createKieBaseWithRangeIndexThresholdValue(drl, 3);
         final KieSession ksession = kbase.newKieSession();
 
         assertSinks(kbase, Primitives.class, 6, 6, 0, 6);
@@ -317,7 +317,7 @@ public class AlphaNodeRangeIndexingTest {
                            "   Primitives( bigDecimal <= 4.0 )\n" +
                            "then\n end\n";
 
-        final KieBase kbase = createKieBaseWithRangeIndexThresholdValue3(drl);
+        final KieBase kbase = createKieBaseWithRangeIndexThresholdValue(drl, 3);
         final KieSession ksession = kbase.newKieSession();
 
         assertSinks(kbase, Primitives.class, 6, 6, 0, 5); // [bigDecimal >= null]  is in OtherSinks
@@ -359,7 +359,7 @@ public class AlphaNodeRangeIndexingTest {
                            "   Person( name <= \"Paul\" )\n" +
                            "then\n end\n";
 
-        final KieBase kbase = createKieBaseWithRangeIndexThresholdValue3(drl);
+        final KieBase kbase = createKieBaseWithRangeIndexThresholdValue(drl, 3);
         final KieSession ksession = kbase.newKieSession();
 
         final ObjectTypeNode otn = KieUtil.getObjectTypeNode(kbase, Person.class);
@@ -406,7 +406,7 @@ public class AlphaNodeRangeIndexingTest {
                            "   Order( date <= \"02-Apr-2020\" )\n" +
                            "then\n end\n";
 
-        final KieBase kbase = createKieBaseWithRangeIndexThresholdValue3(drl);
+        final KieBase kbase = createKieBaseWithRangeIndexThresholdValue(drl, 3);
         final KieSession ksession = kbase.newKieSession();
 
         // DROOLS-5712 : Executable model doesn't add index for Date. Once fixed, we can fix this assert
@@ -441,7 +441,7 @@ public class AlphaNodeRangeIndexingTest {
                            "   Person( age < 25 )\n" +
                            "then\n end\n";
 
-        final KieBase kbase = createKieBaseWithRangeIndexThresholdValue3(drl);
+        final KieBase kbase = createKieBaseWithRangeIndexThresholdValue(drl, 3);
         final KieSession ksession = kbase.newKieSession();
 
         assertSinks(kbase, Person.class, 2, 2, 2, 0);
@@ -470,7 +470,7 @@ public class AlphaNodeRangeIndexingTest {
                            "   Person( age >= 40 && < 60 )\n" +
                            "then\n end\n";
 
-        final KieBase kbase = createKieBaseWithRangeIndexThresholdValue3(drl);
+        final KieBase kbase = createKieBaseWithRangeIndexThresholdValue(drl, 3);
         final KieSession ksession = kbase.newKieSession();
 
         assertSinks(kbase, Person.class, 3, 3, 0, 3);
@@ -488,7 +488,7 @@ public class AlphaNodeRangeIndexingTest {
     public void testRemoveObjectSink() {
         final String drl = BASIC_DRL;
 
-        final KieBase kbase = createKieBaseWithRangeIndexThresholdValue3(drl);
+        final KieBase kbase = createKieBaseWithRangeIndexThresholdValue(drl, 3);
         final KieSession ksession1 = kbase.newKieSession();
 
         ksession1.insert(new Person("John", 18));
@@ -560,7 +560,7 @@ public class AlphaNodeRangeIndexingTest {
                            "   MyComparableHolder( myComparable <= MyComparable.PQR )\n" +
                            "then\n end\n";
 
-        final KieBase kbase = createKieBaseWithRangeIndexThresholdValue3(drl);
+        final KieBase kbase = createKieBaseWithRangeIndexThresholdValue(drl, 3);
         final KieSession ksession = kbase.newKieSession();
 
         // Doesn't support Object type for range index. See CompositeObjectSinkAdapter.isRangeIndexable()
@@ -601,7 +601,7 @@ public class AlphaNodeRangeIndexingTest {
                            "   Person( address.number <= 4 )\n" +
                            "then\n end\n";
 
-        final KieBase kbase = createKieBaseWithRangeIndexThresholdValue3(drl);
+        final KieBase kbase = createKieBaseWithRangeIndexThresholdValue(drl, 3);
         final KieSession ksession = kbase.newKieSession();
 
         // Doesn't support nested prop for range index. See CompositeObjectSinkAdapter.isRangeIndexable()
@@ -662,7 +662,7 @@ public class AlphaNodeRangeIndexingTest {
                            "   Person( name <= \"Paul\" )\n" +
                            "then\n end\n";
 
-        final KieBase kbase = createKieBaseWithRangeIndexThresholdValue3(drl);
+        final KieBase kbase = createKieBaseWithRangeIndexThresholdValue(drl, 3);
         final KieSession ksession = kbase.newKieSession();
 
         final ObjectTypeNode otn = KieUtil.getObjectTypeNode(kbase, Person.class);
@@ -713,7 +713,7 @@ public class AlphaNodeRangeIndexingTest {
                            "  modify($p) { setAge(90) }\n" +
                            "end\n";
 
-        final KieBase kbase = createKieBaseWithRangeIndexThresholdValue3(drl);
+        final KieBase kbase = createKieBaseWithRangeIndexThresholdValue(drl, 3);
         final KieSession ksession = kbase.newKieSession();
 
         assertSinks(kbase, Person.class, 6, 6, 0, 6);
