@@ -102,7 +102,7 @@ public class DMNTypeSchemas {
             FEELSchemaEnum.parseAllowedValuesIntoSchema(schema, t.getAllowedValues());
         }
         schema = nestAsItemIfCollection(schema, t);
-        schema.description(getDMNTypeSchemaDescription(t));
+        schema.addExtension(DMNOASConstants.X_DMN_TYPE, getDMNTypeSchemaXDMNTYPEdescr(t));
         return schema;
     }
 
@@ -122,7 +122,7 @@ public class DMNTypeSchemas {
             schema = refOrBuiltinSchema(ct.getBaseType()); // an anonymous inner type for a base
         }
         schema = nestAsItemIfCollection(schema, ct);
-        schema.description(getDMNTypeSchemaDescription(ct));
+        schema.addExtension(DMNOASConstants.X_DMN_TYPE, getDMNTypeSchemaXDMNTYPEdescr(ct));
         return schema;
     }
 
@@ -134,7 +134,7 @@ public class DMNTypeSchemas {
         }
     }
 
-    private String getDMNTypeSchemaDescription(DMNType t) {
+    private String getDMNTypeSchemaXDMNTYPEdescr(DMNType t) {
         if (((BaseDMNTypeImpl) t).getBelongingType() == null) { // internals for anonymous inner types.
             return t.toString();
         } else {
