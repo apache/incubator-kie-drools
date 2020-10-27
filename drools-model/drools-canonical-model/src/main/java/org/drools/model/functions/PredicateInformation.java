@@ -17,6 +17,7 @@
 package org.drools.model.functions;
 
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Used to generate better error message
@@ -33,9 +34,13 @@ public class PredicateInformation {
     private final String ruleFileName;
 
     public PredicateInformation(String stringConstraint, String ruleName, String ruleFileName) {
-        this.stringConstraint = stringConstraint;
-        this.ruleName = ruleName;
-        this.ruleFileName = ruleFileName;
+        this.stringConstraint = defaultToEmptyString(stringConstraint);
+        this.ruleName = defaultToEmptyString(ruleName);
+        this.ruleFileName = defaultToEmptyString(ruleFileName);
+    }
+
+    private String defaultToEmptyString(String stringConstraint) {
+        return Optional.ofNullable(stringConstraint).orElse("");
     }
 
     public RuntimeException betterErrorMessage(RuntimeException originalException) {
