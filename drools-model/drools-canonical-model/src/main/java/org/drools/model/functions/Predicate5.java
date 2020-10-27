@@ -46,5 +46,10 @@ public interface Predicate5<A, B, C, D, E> extends Serializable {
         public Object getLambda() {
             return predicate;
         }
+
+        @Override
+        public PredicateInformation predicateInformation() {
+            return predicate.predicateInformation();
+        }
     }
 }

@@ -46,5 +46,10 @@ public interface Predicate12<A, B, C, D, E, F, G, H, I, J, K, L> extends Seriali
         public Object getLambda() {
             return predicate;
         }
+
+        @Override
+        public PredicateInformation predicateInformation() {
+            return predicate.predicateInformation();
+        }
     }
 }

@@ -20,7 +20,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 /**
- * Used to generate better error message
+ * Used to generate a better error message when constraints fail
  */
 public class PredicateInformation {
 
@@ -89,5 +89,14 @@ public class PredicateInformation {
     @Override
     public int hashCode() {
         return Objects.hash(stringConstraint, ruleName, ruleFileName);
+    }
+
+    @Override
+    public String toString() {
+        return "PredicateInformation{" +
+                "stringConstraint='" + stringConstraint + '\'' +
+                ", ruleName='" + ruleName + '\'' +
+                ", ruleFileName='" + ruleFileName + '\'' +
+                '}';
     }
 }

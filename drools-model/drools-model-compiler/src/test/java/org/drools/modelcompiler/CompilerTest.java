@@ -52,6 +52,10 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessContext;
 import org.kie.api.runtime.rule.FactHandle;
 
+import static org.drools.core.base.evaluators.StrEvaluatorDefinition.Operations.startsWith;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.startsWith;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -2396,10 +2400,9 @@ public class CompilerTest extends BaseModelTest {
     public ExpectedException exceptionRule = ExpectedException.none();
 
     @Test
-    @Ignore
     public void testNPEOnConstraint() {
         exceptionRule.expect(RuntimeException.class);
-        exceptionRule.expectMessage("Error evaluating constraint 'money < salary * 20' in [Rule \"R\" in r0.drl]");
+        exceptionRule.expectMessage(startsWith("Error evaluating constraint 'money < salary * 20' in"));
 
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +

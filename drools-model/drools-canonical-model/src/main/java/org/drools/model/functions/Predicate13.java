@@ -46,5 +46,10 @@ public interface Predicate13<A, B, C, D, E, F, G, H, I, J, K, L, M> extends Seri
         public Object getLambda() {
             return predicate;
         }
+
+        @Override
+        public PredicateInformation predicateInformation() {
+            return predicate.predicateInformation();
+        }
     }
 }

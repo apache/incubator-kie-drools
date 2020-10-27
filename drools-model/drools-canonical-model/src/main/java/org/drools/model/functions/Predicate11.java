@@ -46,5 +46,10 @@ public interface Predicate11<A, B, C, D, E, F, G, H, I, J, K> extends Serializab
         public Object getLambda() {
             return predicate;
         }
+
+        @Override
+        public PredicateInformation predicateInformation() {
+            return predicate.predicateInformation();
+        }
     }
 }
