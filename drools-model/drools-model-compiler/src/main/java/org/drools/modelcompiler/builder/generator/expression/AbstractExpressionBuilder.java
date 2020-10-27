@@ -425,7 +425,7 @@ public abstract class AbstractExpressionBuilder {
     protected String getExprId(SingleDrlxParseSuccess drlxParseResult) {
         String exprId = drlxParseResult.getExprId(context.getPackageModel().getExprIdGenerator());
 
-        context.getPackageModel().addExprDebugInformation(exprId, new PredicateInformation(
+        context.getPackageModel().indexConstraint(exprId, new PredicateInformation(
                 drlxParseResult.getOriginalDrlConstraint(),
                 context.getRuleName(),
                 context.getRuleName()

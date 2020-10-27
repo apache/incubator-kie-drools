@@ -92,7 +92,7 @@ public class ExecModelLambdaPostProcessor {
         this.imports = pkgModel.getImports();
         this.staticImports = pkgModel.getStaticImports();
         this.lambdaReturnTypes = pkgModel.getLambdaReturnTypes();
-        this.debugPredicateInformation = pkgModel.getExprDebugInformationMap();
+        this.debugPredicateInformation = pkgModel.getAllConstraintsMap();
         this.clone = clone;
     }
 

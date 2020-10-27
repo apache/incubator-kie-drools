@@ -26,9 +26,7 @@ public interface Predicate1<A> extends Serializable {
         return a -> !test( a );
     }
 
-    default PredicateInformation predicateInformation() {
-        throw new UnsupportedOperationException("Shouldn't call this");
-    }
+    default PredicateInformation predicateInformation() { return PredicateInformation.EMPTY_PREDICATE_INFORMATION; }
 
     class Impl<A> extends IntrospectableLambda implements Predicate1<A> {
 

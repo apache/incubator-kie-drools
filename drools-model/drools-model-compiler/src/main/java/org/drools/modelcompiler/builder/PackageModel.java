@@ -148,7 +148,7 @@ public class PackageModel {
 
     private Map<LambdaExpr, java.lang.reflect.Type> lambdaReturnTypes = new HashMap<>();
 
-    private Map<String, PredicateInformation> exprDebugInformationMap = new HashMap<>();
+    private Map<String, PredicateInformation> allConstraintsMap = new HashMap<>();
 
     private boolean oneClassPerRule;
 
@@ -863,15 +863,15 @@ public class PackageModel {
         return lambdaReturnTypes;
     }
 
-    public void addExprDebugInformation(String exprId, PredicateInformation predicateInformation) {
-        exprDebugInformationMap.put(exprId, predicateInformation);
+    public void indexConstraint(String exprId, PredicateInformation predicateInformation) {
+        allConstraintsMap.put(exprId, predicateInformation);
     }
 
-    public Optional<PredicateInformation> getExprDebugInformation(String exprId) {
-        return Optional.ofNullable(exprDebugInformationMap.get(exprId));
+    public Optional<PredicateInformation> findConstraintWithExprId(String exprId) {
+        return Optional.ofNullable(allConstraintsMap.get(exprId));
     }
 
-    public Map<String, PredicateInformation> getExprDebugInformationMap() {
-        return exprDebugInformationMap;
+    public Map<String, PredicateInformation> getAllConstraintsMap() {
+        return allConstraintsMap;
     }
 }

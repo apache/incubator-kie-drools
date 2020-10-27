@@ -19,7 +19,6 @@ package org.drools.model.constraints;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.drools.model.Constraint;
 import org.drools.model.Variable;
