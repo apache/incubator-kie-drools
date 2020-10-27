@@ -20,6 +20,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -82,5 +83,32 @@ public class SettingsTest {
         assertEquals(FILENAME, cloneSettings.getFileName());
         assertEquals(KIE_BASE, cloneSettings.getKieBase());
         assertEquals(KIE_SESSION, cloneSettings.getKieSession());
+    }
+
+    @Test
+    public void cloneSettingsAndModifyIt() {
+        final Settings cloneSettings = settings.cloneSettings();
+        cloneSettings.setDmoSession(DMO_SESSION + "cl");
+        settings.setDmnFilePath("src/" + DMN_PATH);
+        settings.setDmnName("cl" + DMN_NAME);
+        settings.setDmnNamespace("cl" + DMN_NAMESPACE);
+        settings.setRuleFlowGroup("cl" + RULE_FLOW_GROUP);
+        settings.setType(ScenarioSimulationModel.Type.DMN);
+        settings.setStateless(false);
+        settings.setSkipFromBuild(false);
+        settings.setFileName("cl" + FILENAME);
+        settings.setKieBase("cl" + KIE_BASE);
+        settings.setKieSession("cl" + KIE_SESSION);
+        assertNotEquals(settings.getDmoSession(), cloneSettings.getDmoSession());
+        assertNotEquals(settings.getDmnFilePath(), cloneSettings.getDmnFilePath());
+        assertNotEquals(settings.getDmnName(), cloneSettings.getDmnName());
+        assertNotEquals(settings.getDmnNamespace(), cloneSettings.getDmnNamespace());
+        assertNotEquals(settings.getRuleFlowGroup(), cloneSettings.getRuleFlowGroup());
+        assertNotEquals(settings.getType(), cloneSettings.getType());
+        assertNotEquals(settings.isStateless(), cloneSettings.isStateless());
+        assertNotEquals(settings.isSkipFromBuild(), cloneSettings.isSkipFromBuild());
+        assertNotEquals(settings.getFileName(), cloneSettings.getFileName());
+        assertNotEquals(settings.getKieBase(), cloneSettings.getKieBase());
+        assertNotEquals(settings.getKieSession(), cloneSettings.getKieSession());
     }
 }
