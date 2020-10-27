@@ -20,5 +20,7 @@ public class DMNOASConstants {
 
     public static final String X_DMN_TYPE = "x-dmn-type";
 
-
+    private DMNOASConstants() {
+        // no constructor for contants/utility classes.
+    }
 }
