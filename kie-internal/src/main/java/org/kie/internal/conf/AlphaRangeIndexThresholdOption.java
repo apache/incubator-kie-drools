@@ -26,9 +26,14 @@ public class AlphaRangeIndexThresholdOption implements SingleValueKieBaseOption 
     private static final long serialVersionUID = 510l;
 
     /**
-     * The property name for the default DIALECT
+     * The property name
      */
     public static final String PROPERTY_NAME = "drools.alphaNodeRangeIndexThreshold";
+
+    /**
+     * The default value for this option
+     */
+    public static final int DEFAULT_VALUE = 9;
 
     /**
      * alpha node range index threshold
