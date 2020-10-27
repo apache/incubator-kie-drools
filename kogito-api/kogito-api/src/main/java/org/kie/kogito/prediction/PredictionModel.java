@@ -18,8 +18,8 @@ package org.kie.kogito.prediction;
 import java.util.Map;
 
 import org.kie.api.pmml.PMML4Result;
-import org.kie.pmml.commons.model.KiePMMLModel;
-import org.kie.pmml.evaluator.api.executor.PMMLContext;
+import org.kie.pmml.api.models.PMMLModel;
+import org.kie.pmml.api.runtime.PMMLContext;
 
 public interface PredictionModel {
 
@@ -27,6 +27,6 @@ public interface PredictionModel {
 
     PMML4Result evaluateAll(PMMLContext context);
 
-    KiePMMLModel getKiePMMLModel();
+    PMMLModel getPMMLModel();
 
 }

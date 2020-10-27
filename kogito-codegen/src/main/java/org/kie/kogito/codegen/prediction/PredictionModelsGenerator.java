@@ -32,9 +32,9 @@ import org.kie.kogito.codegen.AbstractApplicationSection;
 import org.kie.kogito.codegen.AddonsConfig;
 import org.kie.kogito.prediction.PredictionModels;
 
-public class PredictionContainerGenerator extends AbstractApplicationSection {
+public class PredictionModelsGenerator extends AbstractApplicationSection {
 
-    private static final String TEMPLATE_JAVA = "/class-templates/PMMLApplicationClassDeclTemplate.java";
+    private static final String TEMPLATE_JAVA = "/class-templates/PredictionModelsTemplate.java";
 
     private static final RuntimeException MODIFIED_TEMPLATE_EXCEPTION =
             new RuntimeException("The template " + TEMPLATE_JAVA + " has been modified.");
@@ -43,13 +43,13 @@ public class PredictionContainerGenerator extends AbstractApplicationSection {
     AddonsConfig addonsConfig = AddonsConfig.DEFAULT;
     final List<String> predictionRulesMapperClasses = new ArrayList<>();
 
-    public PredictionContainerGenerator(String applicationCanonicalName, List<PMMLResource> resources) {
+    public PredictionModelsGenerator(String applicationCanonicalName, List<PMMLResource> resources) {
         super("PredictionModels", "predictionModels", PredictionModels.class);
         this.applicationCanonicalName = applicationCanonicalName;
         this.resources = resources;
     }
 
-    public PredictionContainerGenerator withAddons(AddonsConfig addonsConfig) {
+    public PredictionModelsGenerator withAddons(AddonsConfig addonsConfig) {
         this.addonsConfig = addonsConfig;
         return this;
     }

@@ -29,9 +29,9 @@ import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.api.runtime.KieRuntimeFactory;
 import org.kie.kogito.Application;
-import org.kie.pmml.commons.exceptions.KiePMMLException;
-import org.kie.pmml.commons.model.KiePMMLModel;
-import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
+import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.api.models.PMMLModel;
+import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.evaluator.core.PMMLContextImpl;
 
 import static org.kie.kogito.pmml.utils.PMMLUtils.getPMMLRequestData;
@@ -69,9 +69,9 @@ public class PMMLKogito {
         return commonCreateKieRuntimeFactory(KieRuntimeFactoryBuilder::fromResourcesWithInMemoryCompilation, pmmlPaths);
     }
 
-    public static KiePMMLModel modelByName(PMMLRuntime pmmlRuntime, String modelName) {
-        List<KiePMMLModel> modelsWithName =
-                pmmlRuntime.getModels().stream().filter(m -> modelName.equals(m.getName())).collect(Collectors.toList());
+    public static PMMLModel modelByName(PMMLRuntime pmmlRuntime, String modelName) {
+        List<PMMLModel> modelsWithName =
+                pmmlRuntime.getPMMLModels().stream().filter(m -> modelName.equals(m.getName())).collect(Collectors.toList());
         if (modelsWithName.size() == 1) {
             return modelsWithName.get(0);
         } else {

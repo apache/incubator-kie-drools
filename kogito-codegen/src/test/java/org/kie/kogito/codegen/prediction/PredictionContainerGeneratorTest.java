@@ -17,7 +17,6 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import com.github.javaparser.ast.stmt.Statement;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.codegen.AddonsConfig;
@@ -33,12 +32,12 @@ class PredictionContainerGeneratorTest {
 
     private final static String APP_CANONICAL_NAME = "APP_CANONICAL_NAME";
     private final static List<PMMLResource> PMML_RESOURCES = getPMMLResources();
-    private static PredictionContainerGenerator predictionContainerGenerator;
+    private static PredictionModelsGenerator predictionContainerGenerator;
 
     @BeforeAll
     public static void setup() {
-        predictionContainerGenerator = new PredictionContainerGenerator(APP_CANONICAL_NAME,
-                                                                        PMML_RESOURCES);
+        predictionContainerGenerator = new PredictionModelsGenerator(APP_CANONICAL_NAME,
+                                                                     PMML_RESOURCES);
         assertNotNull(predictionContainerGenerator);
     }
 
@@ -50,7 +49,7 @@ class PredictionContainerGeneratorTest {
 
     @Test
     void withAddons() {
-        PredictionContainerGenerator retrieved = predictionContainerGenerator.withAddons(null);
+        PredictionModelsGenerator retrieved = predictionContainerGenerator.withAddons(null);
         assertEquals(retrieved, predictionContainerGenerator);
         assertNull(predictionContainerGenerator.addonsConfig);
         predictionContainerGenerator.withAddons(AddonsConfig.DEFAULT);

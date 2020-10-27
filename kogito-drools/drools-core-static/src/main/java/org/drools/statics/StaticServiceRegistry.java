@@ -73,7 +73,7 @@ public class StaticServiceRegistry implements ServiceRegistry {
         constructorMap.put("TimerService", SimpleInstanceCreator.constructor("org.drools.core.time.impl.JDKTimerService"));
 
         // pmml
-        registerKieRuntimeService("org.kie.pmml.evaluator.api.executor.PMMLRuntime", "org.kie.pmml.evaluator.core.service.PMMLRuntimeService", false);
+        registerKieRuntimeService("org.kie.pmml.api.runtime.PMMLRuntime", "org.kie.pmml.evaluator.core.service.PMMLRuntimeService", false);
         registerKieWeaverService("org.kie.pmml.evaluator.assembler.PMMLWeaverService", false);
 
         // marshalling

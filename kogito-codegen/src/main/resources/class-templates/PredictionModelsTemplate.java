@@ -30,8 +30,8 @@ public class PredictionModels implements org.kie.kogito.prediction.PredictionMod
         return new org.kie.kogito.pmml.PmmlPredictionModel(getPMMLRuntime(modelName), modelName);
     }
 
-    private org.kie.pmml.evaluator.api.executor.PMMLRuntime getPMMLRuntime(java.lang.String modelName) {
-        return kieRuntimeFactoryFunction.apply(modelName).get(org.kie.pmml.evaluator.api.executor.PMMLRuntime.class);
+    private org.kie.pmml.api.runtime.PMMLRuntime getPMMLRuntime(java.lang.String modelName) {
+        return kieRuntimeFactoryFunction.apply(modelName).get(org.kie.pmml.api.runtime.PMMLRuntime.class);
     }
 }
 

@@ -57,7 +57,7 @@ import org.slf4j.LoggerFactory;
 
 import static java.util.stream.Collectors.toList;
 import static org.kie.kogito.codegen.ApplicationGenerator.log;
-import static org.kie.pmml.evaluator.assembler.service.PMMLCompilerService.getKiePMMLModelsFromResourceFromPlugin;
+import static org.kie.pmml.evaluator.assembler.service.PMMLCompilerService.getKiePMMLModelsFromResourceWithSources;
 
 public class PredictionCodegen extends AbstractGenerator {
 
@@ -67,7 +67,7 @@ public class PredictionCodegen extends AbstractGenerator {
     private String packageName;
     private String applicationCanonicalName;
     private DependencyInjectionAnnotator annotator;
-    private PredictionContainerGenerator moduleGenerator;
+    private PredictionModelsGenerator moduleGenerator;
     private AddonsConfig addonsConfig = AddonsConfig.DEFAULT;
 
     public PredictionCodegen(List<PMMLResource> resources) {
@@ -75,7 +75,7 @@ public class PredictionCodegen extends AbstractGenerator {
 
         // set default package name
         setPackageName(ApplicationGenerator.DEFAULT_PACKAGE_NAME);
-        this.moduleGenerator = new PredictionContainerGenerator(applicationCanonicalName, resources);
+        this.moduleGenerator = new PredictionModelsGenerator(applicationCanonicalName, resources);
     }
 
     public static PredictionCodegen ofCollectedResources(boolean isJPMMLAvailable,
@@ -100,7 +100,7 @@ public class PredictionCodegen extends AbstractGenerator {
         KnowledgeBuilderImpl kbuilderImpl = new KnowledgeBuilderImpl(knowledgeBase);
         List<PMMLResource> toReturn = new ArrayList<>();
         resources.forEach(resource -> {
-            List<KiePMMLModel> kiePMMLModels = getKiePMMLModelsFromResourceFromPlugin(kbuilderImpl, resource);
+            List<KiePMMLModel> kiePMMLModels = getKiePMMLModelsFromResourceWithSources(kbuilderImpl, resource);
             String modelPath = resource.getSourcePath();
             PMMLResource toAdd = new PMMLResource(kiePMMLModels, path, modelPath);
             toReturn.add(toAdd);
@@ -139,7 +139,7 @@ public class PredictionCodegen extends AbstractGenerator {
         this.annotator = annotator;
     }
 
-    public PredictionContainerGenerator moduleGenerator() {
+    public PredictionModelsGenerator moduleGenerator() {
         return moduleGenerator;
     }
 
