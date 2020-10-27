@@ -98,10 +98,7 @@ pipeline {
                         sh "echo '\n-B -s ${MAVEN_SETTINGS_FILE}' | tee -a optaplanner/.mvn/maven.config"
                         if (params.MAVEN_DEPENDENCIES_REPOSITORY != '') {
                             sh "echo '\n-Denforcer.skip=true' | tee -a optaplanner/.mvn/maven.config"
-                            sh "sed -i 's|<repositories>|<repositories><repository><id>staging</id><name>Staging Repository</name><url>${params.MAVEN_DEPENDENCIES_REPOSITORY}</url><layout>default</layout><snapshots><enabled>true</enabled></snapshots><releases><enabled>true</enabled></releases></repository>|g' ${MAVEN_SETTINGS_FILE}"
-                            sh "sed -i 's|<pluginRepositories>|<pluginRepositories><pluginRepository><id>staging</id><name>Staging Repository</name><url>${params.MAVEN_DEPENDENCIES_REPOSITORY}</url><layout>default</layout><snapshots><enabled>true</enabled></snapshots><releases><enabled>true</enabled></releases></pluginRepository>|g' ${MAVEN_SETTINGS_FILE}"
-                            sh "sed -i 's|external:\\*|external:*,!staging|g' ${MAVEN_SETTINGS_FILE}"
-                            // Done to allow Maven to download release artifacts from MAVEN_DEPENDENCIES_REPOSITORY
+                            addRepositoryToSettings(params.MAVEN_DEPENDENCIES_REPOSITORY, env.MAVEN_SETTINGS_FILE)
                         }
                     }
                 }
@@ -132,7 +129,15 @@ pipeline {
 
         stage('Build optaplanner') {
             steps {
-                mavenCleanInstall('optaplanner', params.SKIP_TESTS)
+                script {
+                    configFileProvider([configFile(fileId: maven.getSubmarineSettingsXmlId(), targetLocation: 'maven-settings.xml', variable: 'MAVEN_SETTINGS_FILE')]) {
+                        if (params.MAVEN_DEPENDENCIES_REPOSITORY != '') {
+                            addRepositoryToSettings(params.MAVEN_DEPENDENCIES_REPOSITORY, env.MAVEN_SETTINGS_FILE)
+                            mavenCleanInstall('optaplanner', params.SKIP_TESTS, [], "-s ${MAVEN_SETTINGS_FILE} -Denforcer.skip")
+                        }
+                    }
+                }
+
             }
             post {
                 always {
@@ -177,6 +182,13 @@ pipeline {
             cleanWs()
         }
     }
+}
+
+void addRepositoryToSettings(String repository, String settingsFile) {
+    sh "sed -i 's|<repositories>|<repositories><repository><id>staging</id><name>Staging Repository</name><url>${repository}</url><layout>default</layout><snapshots><enabled>true</enabled></snapshots><releases><enabled>true</enabled></releases></repository>|g' ${settingsFile}"
+    sh "sed -i 's|<pluginRepositories>|<pluginRepositories><pluginRepository><id>staging</id><name>Staging Repository</name><url>${repository}</url><layout>default</layout><snapshots><enabled>true</enabled></snapshots><releases><enabled>true</enabled></releases></pluginRepository>|g' ${settingsFile}"
+    // Done to allow Maven to download release artifacts from the repository
+    sh "sed -i 's|external:\\*|external:*,!staging|g' ${settingsFile}"
 }
 
 void saveReports(boolean allowEmpty=false){
