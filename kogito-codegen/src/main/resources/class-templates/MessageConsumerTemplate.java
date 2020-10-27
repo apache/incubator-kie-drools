@@ -28,7 +28,7 @@ public class $Type$MessageConsumer {
         eventConsumerFactory
             .get(event -> {
                 $Type$ model = new $Type$();
-                model.set$ModelRef$(event);
+                model.set$DataType$(event);
                 return model;
             }, $DataType$.class, $DataEventType$.class, useCloudEvents)
             .consume(application, process, payload, "$Trigger$");

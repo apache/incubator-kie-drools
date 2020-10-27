@@ -16,6 +16,7 @@
     <module>monitoring-prometheus-addon</module>
     <module>persistence</module>
     <module>events</module>
+    <module>cloudevents</module>
     <module>jobs</module>
     <module>predictions</module>
     <module>process-management</module>

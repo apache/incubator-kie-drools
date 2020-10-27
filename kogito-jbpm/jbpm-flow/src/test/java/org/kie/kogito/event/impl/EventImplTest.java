@@ -136,7 +136,7 @@ public class EventImplTest {
         final String payload = "{ \"specversion\": \"0.3\"," +
                                "\"id\": \"21627e26-31eb-43e7-8343-92a696fd96b1\"," +
                                "\"source\": \"\"," +
-                               "\"type\": \"DummyEvent\"," +
+                               "\"type\": \"dummyTopic\"," +
                                "\"time\": \"2019-10-01T12:02:23.812262+02:00[Europe/Warsaw]\"," +
                                "\"kogitoReferenceId\": \"1\"," +
                                "\"kogitoProcessinstanceId\": \"1\"," +
@@ -158,7 +158,7 @@ public class EventImplTest {
         final String payload = "{ \"specversion\": \"0.3\"," +
                                "\"id\": \"21627e26-31eb-43e7-8343-92a696fd96b1\"," +
                                "\"source\": \"\"," +
-                               "\"type\": \"DummyEvent\"," +
+                               "\"type\": \"dummyTopic\"," +
                                "\"time\": \"2019-10-01T12:02:23.812262+02:00[Europe/Warsaw]\"," +
                                "\"kogitoProcessinstanceId\": \"1\"," +
                                "\"data\": {\"dummyField\" : \"pepe\"}}";

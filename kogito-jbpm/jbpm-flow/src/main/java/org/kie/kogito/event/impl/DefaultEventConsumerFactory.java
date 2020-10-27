@@ -44,7 +44,7 @@ public class DefaultEventConsumerFactory implements EventConsumerFactory {
     public <M extends Model, D, T extends AbstractProcessDataEvent<D>> EventConsumer<M> get(Function<D, M> function,
             Class<D> dataEventClass, Class<T> cloudEventClass, Optional<Boolean> cloudEvents) {
         return cloudEvents.orElse(true)
-                ? new CloudEventConsumer<>(function, cloudEventClass, mapper)
+                ? new CloudEventConsumer<>(function, dataEventClass, cloudEventClass, mapper)
                 : new DataEventConsumer<>(function, dataEventClass, mapper);
     }
 

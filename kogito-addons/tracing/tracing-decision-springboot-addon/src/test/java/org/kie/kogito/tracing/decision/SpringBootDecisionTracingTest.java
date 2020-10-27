@@ -63,7 +63,7 @@ public class SpringBootDecisionTracingTest {
                 SpringBootDecisionTracingTest.class.getResourceAsStream(modelResource)
         ));
 
-        ConfigBean configBean = new StaticConfigBean(serviceUrl);
+        ConfigBean configBean = new StaticConfigBean(serviceUrl, true);
         ApplicationEventPublisher eventPublisher = mock(ApplicationEventPublisher.class);
 
         SpringBootDecisionTracingListener listener = new SpringBootDecisionTracingListener(eventPublisher);

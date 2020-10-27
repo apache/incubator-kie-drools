@@ -63,7 +63,7 @@ public class QuarkusDecisionTracingTest {
                 QuarkusDecisionTracingTest.class.getResourceAsStream(MODEL_RESOURCE)
         ));
 
-        ConfigBean configBean = new StaticConfigBean(TEST_SERVICE_URL);
+        ConfigBean configBean = new StaticConfigBean(TEST_SERVICE_URL, true);
         EventBus eventBus = mock(EventBus.class);
 
         QuarkusDecisionTracingListener listener = new QuarkusDecisionTracingListener(eventBus);

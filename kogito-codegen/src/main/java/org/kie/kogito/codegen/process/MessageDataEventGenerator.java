@@ -18,6 +18,7 @@ package org.kie.kogito.codegen.process;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
+import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.core.util.StringUtils;
 import org.jbpm.compiler.canonical.TriggerMetaData;
@@ -80,6 +81,7 @@ public class MessageDataEventGenerator {
         
         template.findAll(ClassOrInterfaceType.class).forEach(cls -> interpolateTypes(cls, trigger.getDataType()));
         template.findAll(ConstructorDeclaration.class).stream().forEach(cd -> cd.setName(resourceClazzName));
+        template.findAll(StringLiteralExpr.class).stream().filter(s -> s.getValue().equals("$TypeName$")).forEach(s -> s.setString(resourceClazzName));
 
         template.getMembers().sort(new BodyDeclarationComparator());
         return clazz.toString();

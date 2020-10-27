@@ -14,7 +14,10 @@
  */
 package org.kie.kogito.conf;
 
+import java.util.Optional;
+
 public interface ConfigBean {
 
+    Optional<Boolean> useCloudEvents();
     String getServiceUrl();
 }

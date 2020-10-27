@@ -32,6 +32,11 @@ import static io.restassured.RestAssured.given;
 import static org.awaitility.Awaitility.await;
 import static org.hamcrest.CoreMatchers.equalTo;
 
+import org.junit.jupiter.api.Disabled;
+
+@Disabled("Must implement cloud event producer/emitter for Spring " +
+          "https://issues.redhat.com/browse/KOGITO-3408 " +
+          "https://issues.redhat.com/browse/KOGITO-3591")
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = KogitoSpringbootApplication.class)
 @ContextConfiguration(initializers =  { KafkaSpringBootTestResource.class, InfinispanSpringBootTestResource.Conditional.class })

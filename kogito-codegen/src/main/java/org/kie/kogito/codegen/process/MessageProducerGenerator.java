@@ -17,38 +17,37 @@ package org.kie.kogito.codegen.process;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import com.github.javaparser.ast.body.FieldDeclaration;
-import com.github.javaparser.ast.body.MethodDeclaration;
-import com.github.javaparser.ast.expr.MethodCallExpr;
-import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
-import com.github.javaparser.ast.expr.ThisExpr;
-import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.core.util.StringUtils;
 import org.jbpm.compiler.canonical.TriggerMetaData;
 import org.kie.api.definition.process.WorkflowProcess;
 import org.kie.kogito.codegen.BodyDeclarationComparator;
+import org.kie.kogito.codegen.InvalidTemplateException;
+import org.kie.kogito.codegen.TemplatedGenerator;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 
-import static com.github.javaparser.StaticJavaParser.parse;
 import static org.kie.kogito.codegen.CodegenUtils.interpolateTypes;
 
 public class MessageProducerGenerator {
 
-    private static final String EVENT_DATA_VAR = "eventData";
-    private static final String CLASS_TEMPLATE = "/class-templates/MessageProducerTemplate.java";
+    protected static final String EVENT_DATA_VAR = "eventData";
+    private static final String RESOURCE = "/class-templates/MessageProducerTemplate.java";
+    private static final String RESOURCE_CDI = "/class-templates/CdiMessageProducerTemplate.java";
+    private static final String RESOURCE_SPRING = "/class-templates/SpringMessageProducerTemplate.java";
 
-    private final String relativePath;
+    private final TemplatedGenerator generator;
+
     private final String packageName;
-    private final String resourceClazzName;
+    protected final String resourceClazzName;
     private final String processName;
-    private final String messageDataEventClassName;
-    private WorkflowProcess process;
+    protected final String messageDataEventClassName;
+    protected WorkflowProcess process;
     private String processId;
-    private DependencyInjectionAnnotator annotator;
+    protected DependencyInjectionAnnotator annotator;
 
-    private TriggerMetaData trigger;
+    protected TriggerMetaData trigger;
 
     public MessageProducerGenerator(
             WorkflowProcess process,
@@ -63,13 +62,39 @@ public class MessageProducerGenerator {
         this.processName = processId.substring(processId.lastIndexOf('.') + 1);
         String classPrefix = StringUtils.ucFirst(processName);
         this.resourceClazzName = classPrefix + "MessageProducer_" + trigger.getOwnerId();
-        this.relativePath = packageName.replace(".", "/") + "/" + resourceClazzName + ".java";
         this.messageDataEventClassName = messageDataEventClassName;
+
+        this.generator = new TemplatedGenerator(
+                packageName,
+                resourceClazzName,
+                RESOURCE_CDI,
+                RESOURCE_SPRING,
+                RESOURCE);
     }
 
     public MessageProducerGenerator withDependencyInjection(DependencyInjectionAnnotator annotator) {
         this.annotator = annotator;
+        generator.withDependencyInjection(annotator);
         return this;
+    }
+
+    public String generate() {
+        CompilationUnit clazz = generator.compilationUnit()
+                .orElseThrow(() -> new InvalidTemplateException(resourceClazzName, generator.templatePath(), "Cannot generate message producer"));
+        clazz.setPackageDeclaration(process.getPackageName());
+
+        ClassOrInterfaceDeclaration template = clazz.findFirst(ClassOrInterfaceDeclaration.class).get();
+        template.setName(resourceClazzName);
+        template.findAll(ConstructorDeclaration.class).forEach(cd -> cd.setName(resourceClazzName));
+
+        template.findAll(ClassOrInterfaceType.class).forEach(cls -> interpolateTypes(cls, trigger.getDataType()));
+        template.findAll(ClassOrInterfaceType.class).forEach(t -> t.setName(t.getNameAsString().replace("$DataEventType$", messageDataEventClassName)));
+        template.findAll(ClassOrInterfaceType.class).forEach(t -> t.setName(t.getNameAsString().replace("$DataType$", trigger.getDataType())));
+        template.findAll(StringLiteralExpr.class).forEach(s -> s.setString(s.getValue().replace("$channel$", trigger.getName())));
+        template.findAll(StringLiteralExpr.class).forEach(s -> s.setString(s.getValue().replace("$channel$", trigger.getName())));
+
+        template.getMembers().sort(new BodyDeclarationComparator());
+        return clazz.toString();
     }
 
     public String className() {
@@ -77,69 +102,10 @@ public class MessageProducerGenerator {
     }
 
     public String generatedFilePath() {
-        return relativePath;
+        return generator.generatedFilePath();
     }
 
     protected boolean useInjection() {
         return this.annotator != null;
-    }
-
-    protected String getTemplate() {
-        return CLASS_TEMPLATE;
-    }
-
-    public String generate() {
-        CompilationUnit clazz = parse(
-                this.getClass().getResourceAsStream(this.getTemplate()));
-        clazz.setPackageDeclaration(process.getPackageName());
-
-        ClassOrInterfaceDeclaration template = clazz.findFirst(ClassOrInterfaceDeclaration.class).get();
-        template.setName(resourceClazzName);
-
-        template.findAll(ClassOrInterfaceType.class).forEach(cls -> interpolateTypes(cls, trigger.getDataType()));
-        template.findAll(MethodDeclaration.class).stream().filter(md -> md.getNameAsString().equals("produce")).forEach(md -> md.getParameters().stream().filter(p -> p.getNameAsString().equals(EVENT_DATA_VAR)).forEach(p -> p.setType(trigger.getDataType())));
-        template.findAll(MethodDeclaration.class).stream().filter(md -> md.getNameAsString().equals("configure")).forEach(md -> md.addAnnotation("javax.annotation.PostConstruct"));
-        template.findAll(MethodDeclaration.class).stream().filter(md -> md.getNameAsString().equals("marshall")).forEach(md -> {
-            md.getParameters().stream().filter(p -> p.getNameAsString().equals(EVENT_DATA_VAR)).forEach(p -> p.setType(trigger.getDataType()));
-            md.findAll(StringLiteralExpr.class).forEach(s -> s.setString(s.getValue().replace("$channel$", trigger.getName())));
-            md.findAll(ClassOrInterfaceType.class).forEach(t -> t.setName(t.getNameAsString().replace("$DataEventType$", messageDataEventClassName)));
-        });
-
-        if (useInjection()) {
-            annotator.withApplicationComponent(template);
-
-            FieldDeclaration emitterField = template.findFirst(FieldDeclaration.class)
-                    .filter(fd -> fd.getVariables().stream().anyMatch(v -> v.getNameAsString().equals("emitter")))
-                    .orElseThrow(() -> new IllegalStateException("Cannot find emitter field in MessageProducerTemplate"));
-            annotator.withInjection(emitterField);
-            annotator.withOutgoingMessage(emitterField, trigger.getName());
-            emitterField.getVariable(0).setType(annotator.emitterType("String"));
-
-            MethodDeclaration produceMethod = template.findAll(MethodDeclaration.class).stream()
-                    .filter(md -> md.getNameAsString().equals("produce"))
-                    .findFirst().orElseThrow(() -> new IllegalStateException("Cannot find produce methods in MessageProducerTemplate"));
-
-            MethodCallExpr sendMethodCall = new MethodCallExpr(new NameExpr("emitter"), "send");
-            annotator.withMessageProducer(
-                    sendMethodCall,
-                    trigger.getName(),
-                    new MethodCallExpr(new ThisExpr(), "marshall")
-                            .addArgument(new NameExpr("pi"))
-                            .addArgument(new NameExpr(EVENT_DATA_VAR)));
-
-            this.generateProduceMethodBody(produceMethod, sendMethodCall);
-
-            template.findAll(FieldDeclaration.class,
-                             fd -> fd.getVariable(0).getNameAsString().equals("useCloudEvents")).forEach(fd -> annotator.withConfigInjection(fd, "kogito.messaging.as-cloudevents"));
-        }
-
-        template.getMembers().sort(new BodyDeclarationComparator());
-        return clazz.toString();
-    }
-
-    protected void generateProduceMethodBody(final MethodDeclaration produceMethod, final MethodCallExpr sendMethodCall) {
-        BlockStmt body = new BlockStmt();
-        body.addStatement(sendMethodCall);
-        produceMethod.setBody(body);
     }
 }

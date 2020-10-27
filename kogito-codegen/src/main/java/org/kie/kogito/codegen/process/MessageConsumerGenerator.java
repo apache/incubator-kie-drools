@@ -18,8 +18,8 @@ package org.kie.kogito.codegen.process;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
-import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
@@ -28,10 +28,10 @@ import org.drools.core.util.StringUtils;
 import org.jbpm.compiler.canonical.TriggerMetaData;
 import org.kie.api.definition.process.WorkflowProcess;
 import org.kie.kogito.codegen.BodyDeclarationComparator;
+import org.kie.kogito.codegen.InvalidTemplateException;
+import org.kie.kogito.codegen.TemplatedGenerator;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 
-import static com.github.javaparser.StaticJavaParser.parse;
-import static org.kie.kogito.codegen.CodegenUtils.interpolateArguments;
 import static org.kie.kogito.codegen.CodegenUtils.interpolateTypes;
 import static org.kie.kogito.codegen.CodegenUtils.isApplicationField;
 import static org.kie.kogito.codegen.CodegenUtils.isObjectMapperField;
@@ -39,8 +39,12 @@ import static org.kie.kogito.codegen.CodegenUtils.isProcessField;
 
 public class MessageConsumerGenerator {
 
+    private static final String RESOURCE = "/class-templates/MessageConsumerTemplate.java";
+    private static final String RESOURCE_CDI = "/class-templates/CdiMessageConsumerTemplate.java";
+    private static final String RESOURCE_SPRING = "/class-templates/SpringMessageConsumerTemplate.java";
+
     private static final String OBJECT_MAPPER_CANONICAL_NAME = ObjectMapper.class.getCanonicalName();
-    private final String relativePath;
+    private final TemplatedGenerator generator;
 
     private WorkflowProcess process;
     private final String packageName;
@@ -52,9 +56,9 @@ public class MessageConsumerGenerator {
     private final String appCanonicalName;
     private final String messageDataEventClassName;
     private DependencyInjectionAnnotator annotator;
-    
+
     private TriggerMetaData trigger;
-    
+
     public MessageConsumerGenerator(
             WorkflowProcess process,
             String modelfqcn,
@@ -67,65 +71,57 @@ public class MessageConsumerGenerator {
         this.packageName = process.getPackageName();
         this.processId = process.getId();
         this.processName = processId.substring(processId.lastIndexOf('.') + 1);
-        String classPrefix = StringUtils.ucFirst(processName);
-        this.resourceClazzName = classPrefix + "MessageConsumer_" + trigger.getOwnerId();
-        this.relativePath = packageName.replace(".", "/") + "/" + resourceClazzName + ".java";
+        String capitalizedProcessName = StringUtils.ucFirst(processName);
+        this.resourceClazzName = capitalizedProcessName + "MessageConsumer_" + trigger.getOwnerId();
         this.dataClazzName = modelfqcn.substring(modelfqcn.lastIndexOf('.') + 1);
         this.processClazzName = processfqcn;
         this.appCanonicalName = appCanonicalName;
         this.messageDataEventClassName = messageDataEventClassName;
+
+        this.generator = new TemplatedGenerator(
+                packageName,
+                resourceClazzName,
+                RESOURCE_CDI,
+                RESOURCE_SPRING,
+                RESOURCE);
     }
 
     public MessageConsumerGenerator withDependencyInjection(DependencyInjectionAnnotator annotator) {
         this.annotator = annotator;
+        this.generator.withDependencyInjection(annotator);
         return this;
     }
 
     public String className() {
         return resourceClazzName;
     }
-    
+
     public String generatedFilePath() {
-        return relativePath;
+        return generator.generatedFilePath();
     }
-    
+
     protected boolean useInjection() {
         return this.annotator != null;
     }
-    
+
     public String generate() {
-        CompilationUnit clazz = parse(
-                this.getClass().getResourceAsStream("/class-templates/MessageConsumerTemplate.java"));
+        CompilationUnit clazz = generator.compilationUnit()
+                .orElseThrow(() -> new InvalidTemplateException(resourceClazzName, generator.templatePath(), "Cannot generate message consumer"));
         clazz.setPackageDeclaration(process.getPackageName());
 
         ClassOrInterfaceDeclaration template = clazz.findFirst(ClassOrInterfaceDeclaration.class).get();
-        template.setName(resourceClazzName);        
-        
-        template.findAll(ClassOrInterfaceType.class).forEach(cls -> interpolateTypes(cls, dataClazzName));
-        template.findAll(MethodDeclaration.class).stream().filter(md -> md.getNameAsString().equals("configure")).forEach(md -> md.addAnnotation("javax.annotation.PostConstruct"));
-        template.findAll(MethodDeclaration.class).stream().filter(md -> md.getNameAsString().equals("consume")).forEach(md -> { 
-            interpolateArguments(md, "String");
-            md.findAll(StringLiteralExpr.class).forEach(str -> str.setString(str.asString().replace("$Trigger$", trigger.getName())));
-            md.findAll(ClassOrInterfaceType.class).forEach(t -> t.setName(t.getNameAsString().replace("$DataEventType$", messageDataEventClassName)));
-            md.findAll(ClassOrInterfaceType.class).forEach(t -> t.setName(t.getNameAsString().replace("$DataType$", trigger.getDataType())));
-        });
-        template.findAll(MethodCallExpr.class).forEach(this::interpolateStrings);
-        
-        if (useInjection()) {
-            annotator.withApplicationComponent(template);
-            
-            template.findAll(FieldDeclaration.class,
-                             fd -> isProcessField(fd)).forEach(fd -> annotator.withNamedInjection(fd, processId));
-            template.findAll(FieldDeclaration.class,
-                             fd -> isApplicationField(fd)).forEach(fd -> annotator.withInjection(fd));
-            template.findAll(FieldDeclaration.class,
-                             fd -> isObjectMapperField(fd)).forEach(fd -> annotator.withInjection(fd));
+        template.setName(resourceClazzName);
+        template.findAll(ConstructorDeclaration.class).forEach(cd -> cd.setName(resourceClazzName));
 
-            template.findAll(FieldDeclaration.class,
-                    fd -> fd.getVariable(0).getNameAsString().equals("useCloudEvents")).forEach(fd -> annotator.withConfigInjection(fd, "kogito.messaging.as-cloudevents"));
-            
-            template.findAll(MethodDeclaration.class).stream().filter(md -> md.getNameAsString().equals("consume")).forEach(md -> annotator.withIncomingMessage(md, trigger.getName()));
-        } else {
+        template.findAll(ClassOrInterfaceType.class).forEach(cls -> interpolateTypes(cls, dataClazzName));
+        template.findAll(StringLiteralExpr.class).forEach(str -> str.setString(str.asString().replace("$ProcessName$", processName)));
+        template.findAll(StringLiteralExpr.class).forEach(str -> str.setString(str.asString().replace("$Trigger$", trigger.getName())));
+        template.findAll(ClassOrInterfaceType.class).forEach(t -> t.setName(t.getNameAsString().replace("$DataEventType$", messageDataEventClassName)));
+        template.findAll(ClassOrInterfaceType.class).forEach(t -> t.setName(t.getNameAsString().replace("$DataType$", trigger.getDataType())));
+        template.findAll(MethodCallExpr.class).forEach(this::interpolateStrings);
+
+        // legacy: force initialize fields
+        if (!useInjection()) {
             template.findAll(FieldDeclaration.class,
                              fd -> isProcessField(fd)).forEach(fd -> initializeProcessField(fd));
             template.findAll(FieldDeclaration.class,
@@ -136,11 +132,11 @@ public class MessageConsumerGenerator {
         template.getMembers().sort(new BodyDeclarationComparator());
         return clazz.toString();
     }
-    
+
     private void initializeProcessField(FieldDeclaration fd) {
         fd.getVariable(0).setInitializer(new ObjectCreationExpr().setType(processClazzName));
     }
-    
+
     private void initializeApplicationField(FieldDeclaration fd) {
         fd.getVariable(0).setInitializer(new ObjectCreationExpr().setType(appCanonicalName));
     }
@@ -150,9 +146,9 @@ public class MessageConsumerGenerator {
     }
 
     private void interpolateStrings(MethodCallExpr vv) {
-        String s = vv.getNameAsString();        
+        String s = vv.getNameAsString();
         String interpolated =
-                s.replace("$ModelRef$", StringUtils.ucFirst(trigger.getModelRef()));
+                s.replace("$DataType$", StringUtils.ucFirst(trigger.getModelRef()));
         vv.setName(interpolated);
     }
 }

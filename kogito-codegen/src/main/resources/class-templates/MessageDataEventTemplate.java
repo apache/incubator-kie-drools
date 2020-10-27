@@ -19,7 +19,7 @@ public class $TypeName$ extends AbstractProcessDataEvent<$Type$> {
                       String kogitoProcessinstanceState,
                       String kogitoReferenceId) {
         this(
-            null,
+            "$TypeName$",
             source,
             body,
             kogitoProcessinstanceId,

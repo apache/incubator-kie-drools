@@ -22,6 +22,7 @@ import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.testcontainers.quarkus.KafkaQuarkusTestResource;
 
@@ -31,6 +32,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 
 @QuarkusTest
 @QuarkusTestResource(KafkaQuarkusTestResource.class)
+@Disabled("Must rewrite with cloud event support ! https://issues.redhat.com/browse/KOGITO-3591")
 public class PingPongMessageTest {
 
     static {

@@ -24,9 +24,6 @@ import java.util.stream.Collectors;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
-import com.github.javaparser.ast.body.MethodDeclaration;
-import com.github.javaparser.ast.expr.StringLiteralExpr;
-import com.github.javaparser.ast.stmt.BlockStmt;
 import org.jbpm.compiler.canonical.TriggerMetaData;
 import org.kie.kogito.codegen.BodyDeclarationComparator;
 import org.kie.kogito.codegen.di.CDIDependencyInjectionAnnotator;
@@ -83,7 +80,6 @@ public class CloudEventsResourceGenerator extends AbstractEventResourceGenerator
                 .findFirst(ClassOrInterfaceDeclaration.class)
                 .orElseThrow(() -> new NoSuchElementException("Compilation unit doesn't contain a class or interface declaration!"));
         template.setName(CLASS_NAME);
-        this.addChannels(template);
         this.addInjection(template);
 
         template.getMembers().sort(new BodyDeclarationComparator());
@@ -108,22 +104,6 @@ public class CloudEventsResourceGenerator extends AbstractEventResourceGenerator
             return filteredTriggers;
         }
         return Collections.emptyList();
-    }
-
-    private void addChannels(final ClassOrInterfaceDeclaration template) {
-        // adding Emitters to hashmap
-        final MethodDeclaration setup = template.findFirst(MethodDeclaration.class, m -> m.getAnnotationByName("PostConstruct").isPresent())
-                .orElseThrow(() -> new IllegalArgumentException("No setup method found!"));
-        final BlockStmt setupBody = setup.getBody().orElseThrow(() -> new IllegalArgumentException("No body found in setup method!"));
-        final List<String> lines = this.extractRepeatLinesFromMethod(setupBody);
-        // declaring Emitters
-        this.triggers.forEach(t -> {
-            final String emitterField = this.sanitizeEmitterName(t.getName());
-            // fields to be injected
-            annotator.withOutgoingMessage(template.addField(EMITTER_TYPE, new StringLiteralExpr(emitterField).asString()), t.getName());
-            // hashmap setup
-            lines.forEach(l -> setupBody.addStatement(l.replace("$channel$", t.getName()).replace("$emitter$", emitterField)));
-        });
     }
 
     private void addInjection(final ClassOrInterfaceDeclaration template) {

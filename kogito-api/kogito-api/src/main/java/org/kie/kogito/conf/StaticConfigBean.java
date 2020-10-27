@@ -14,19 +14,32 @@
  */
 package org.kie.kogito.conf;
 
+import java.util.Optional;
+
 public class StaticConfigBean implements ConfigBean {
 
     private String serviceUrl;
+    private Optional<Boolean> useCloudEvents = Optional.empty();
 
     public StaticConfigBean() {
     }
 
-    public StaticConfigBean(String serviceUrl) {
+    public StaticConfigBean(String serviceUrl, boolean useCloudEvents) {
         this.serviceUrl = serviceUrl;
+        this.useCloudEvents = Optional.of(useCloudEvents);
     }
 
     protected void setServiceUrl(String serviceUrl) {
         this.serviceUrl = serviceUrl;
+    }
+
+    protected void setCloudEvents(Optional<Boolean> useCloudEvents) {
+        this.useCloudEvents = useCloudEvents;
+    }
+
+    @Override
+    public Optional<Boolean> useCloudEvents() {
+        return useCloudEvents;
     }
 
     @Override

@@ -28,15 +28,13 @@ public class CloudEventListenerResource {
     @javax.inject.Inject
     ObjectMapper objectMapper;
 
+    @org.eclipse.microprofile.reactive.messaging.Channel("kogito_incoming_stream")
+    @javax.inject.Inject()
+    Emitter<String> emitter;
+
     @javax.annotation.PostConstruct
-    public void setup() {
-        emitters = new HashMap<>();
+    void setup() {
         objectMapper.registerModule(JsonFormat.getCloudEventJacksonModule());
-        /*
-         * $repeat$
-         * emitters.put("$channel$", $emitter$);
-         * $end_repeat$
-         */
     }
 
     @POST()
@@ -45,16 +43,9 @@ public class CloudEventListenerResource {
     public javax.ws.rs.core.Response cloudEventListener(CloudEvent event) {
         try {
             LOGGER.debug("CloudEvent received: {}", Printer.beautify(event));
-            if (emitters.get(event.getType()) != null) {
-                // convert CloudEvent to JSON and send to internal channels
-                emitters.get(event.getType()).send(objectMapper.writeValueAsString(event));
-                return javax.ws.rs.core.Response.ok().build();
-            } else if (emitters.get(event.getSource().toString()) != null) { // try the source instead
-                emitters.get(event.getSource().toString()).send(objectMapper.writeValueAsString(event));
-                return javax.ws.rs.core.Response.ok().build();
-            } else {
-                return Responses.channelNotBound(event.getType(), event);
-            }
+            // convert CloudEvent to JSON and send to internal channels
+            emitter.send(objectMapper.writeValueAsString(event));
+            return javax.ws.rs.core.Response.ok().build();
         } catch (Exception ex) {
             return Responses.errorProcessingCloudEvent(ex);
         }
