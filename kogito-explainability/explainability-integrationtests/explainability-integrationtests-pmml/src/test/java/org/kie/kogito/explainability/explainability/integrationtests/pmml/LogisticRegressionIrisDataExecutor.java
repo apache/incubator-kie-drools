@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.kie.api.pmml.PMML4Result;
-import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
+import org.kie.pmml.api.runtime.PMMLRuntime;
 
 public class LogisticRegressionIrisDataExecutor extends AbstractPMMLExecutor {
 

@@ -37,7 +37,7 @@ import org.kie.kogito.explainability.model.Saliency;
 import org.kie.kogito.explainability.model.Type;
 import org.kie.kogito.explainability.model.Value;
 import org.kie.kogito.explainability.utils.ExplainabilityMetrics;
-import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
+import org.kie.pmml.api.runtime.PMMLRuntime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -46,17 +46,17 @@ import static org.kie.test.util.filesystem.FileUtils.getFile;
 
 class PmmlLimeExplainerTest {
 
-    private static PMMLRuntime logisticRegressionIris;
-    private static PMMLRuntime categoricalVariableRegression;
-    private static PMMLRuntime scorecardCategorical;
-    private static PMMLRuntime compoundScoreCard;
+    private static PMMLRuntime logisticRegressionIrisRuntime;
+    private static PMMLRuntime categoricalVariableRegressionRuntime;
+    private static PMMLRuntime scorecardCategoricalRuntime;
+    private static PMMLRuntime compoundScoreCardRuntime;
 
     @BeforeAll
     static void setUpBefore() {
-        logisticRegressionIris = getPMMLRuntime("LogisticRegressionIrisData", getFile("logisticRegressionIrisData.pmml"));
-        categoricalVariableRegression = getPMMLRuntime("categoricalVariables_Model", getFile("categoricalVariablesRegression.pmml"));
-        scorecardCategorical = getPMMLRuntime("SimpleScorecardCategorical", getFile("SimpleScorecardCategorical.pmml"));
-        compoundScoreCard = getPMMLRuntime("CompoundNestedPredicateScorecard", getFile("CompoundNestedPredicateScorecard.pmml"));
+        logisticRegressionIrisRuntime = getPMMLRuntime(getFile("logisticRegressionIrisData.pmml"));
+        categoricalVariableRegressionRuntime = getPMMLRuntime(getFile("categoricalVariablesRegression.pmml"));
+        scorecardCategoricalRuntime = getPMMLRuntime(getFile("SimpleScorecardCategorical.pmml"));
+        compoundScoreCardRuntime = getPMMLRuntime(getFile("CompoundNestedPredicateScorecard.pmml"));
     }
 
     @Test
@@ -79,7 +79,7 @@ class PmmlLimeExplainerTest {
                     LogisticRegressionIrisDataExecutor pmmlModel = new LogisticRegressionIrisDataExecutor(
                             features1.get(0).getValue().asNumber(), features1.get(1).getValue().asNumber(),
                             features1.get(2).getValue().asNumber(), features1.get(3).getValue().asNumber());
-                    PMML4Result result = pmmlModel.execute(logisticRegressionIris);
+                    PMML4Result result = pmmlModel.execute(logisticRegressionIrisRuntime);
                     String species = result.getResultVariables().get("Species").toString();
                     PredictionOutput predictionOutput = new PredictionOutput(List.of(new Output("species", Type.TEXT, new Value<>(species), 1d)));
                     outputs.add(predictionOutput);
@@ -114,7 +114,7 @@ class PmmlLimeExplainerTest {
                 List<Feature> features1 = input1.getFeatures();
                 CategoricalVariablesRegressionExecutor pmmlModel = new CategoricalVariablesRegressionExecutor(
                         features1.get(0).getValue().asString(), features1.get(1).getValue().asString());
-                PMML4Result result = pmmlModel.execute(categoricalVariableRegression);
+                PMML4Result result = pmmlModel.execute(categoricalVariableRegressionRuntime);
                 String score = result.getResultVariables().get("result").toString();
                 PredictionOutput predictionOutput = new PredictionOutput(List.of(new Output("result", Type.NUMBER, new Value<>(score), 1d)));
                 outputs.add(predictionOutput);
@@ -148,7 +148,7 @@ class PmmlLimeExplainerTest {
                 List<Feature> features1 = input1.getFeatures();
                 SimpleScorecardCategoricalExecutor pmmlModel = new SimpleScorecardCategoricalExecutor(
                         features1.get(0).getValue().asString(), features1.get(1).getValue().asString());
-                PMML4Result result = pmmlModel.execute(scorecardCategorical);
+                PMML4Result result = pmmlModel.execute(scorecardCategoricalRuntime);
                 String score = "" + result.getResultVariables().get(SimpleScorecardCategoricalExecutor.TARGET_FIELD);
                 String reason1 = "" + result.getResultVariables().get(SimpleScorecardCategoricalExecutor.REASON_CODE1_FIELD);
                 String reason2 = "" + result.getResultVariables().get(SimpleScorecardCategoricalExecutor.REASON_CODE2_FIELD);
@@ -192,7 +192,7 @@ class PmmlLimeExplainerTest {
                     List<Feature> features1 = input1.getFeatures();
                     CompoundNestedPredicateScorecardExecutor pmmlModel = new CompoundNestedPredicateScorecardExecutor(
                             features1.get(0).getValue().asNumber(), features1.get(1).getValue().asString());
-                    PMML4Result result = pmmlModel.execute(compoundScoreCard);
+                    PMML4Result result = pmmlModel.execute(compoundScoreCardRuntime);
                     String score = "" + result.getResultVariables().get(CompoundNestedPredicateScorecardExecutor.TARGET_FIELD);
                     String reason1 = "" + result.getResultVariables().get(CompoundNestedPredicateScorecardExecutor.REASON_CODE1_FIELD);
                     PredictionOutput predictionOutput = new PredictionOutput(List.of(

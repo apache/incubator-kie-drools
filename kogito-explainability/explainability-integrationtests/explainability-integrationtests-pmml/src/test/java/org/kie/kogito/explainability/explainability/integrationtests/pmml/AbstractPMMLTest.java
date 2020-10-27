@@ -18,16 +18,16 @@ package org.kie.kogito.explainability.explainability.integrationtests.pmml;
 
 import java.io.File;
 
-import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
-import org.kie.api.runtime.KieRuntimeFactory;
-import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
-import org.kie.pmml.evaluator.assembler.factories.PMMLRuntimeFactory;
+import org.kie.pmml.api.PMMLRuntimeFactory;
+import org.kie.pmml.api.runtime.PMMLRuntime;
+import org.kie.pmml.evaluator.assembler.factories.PMMLRuntimeFactoryImpl;
 
 public abstract class AbstractPMMLTest {
 
     public static KieContainer kieContainer;
+    private static final PMMLRuntimeFactory PMML_RUNTIME_FACTORY = new PMMLRuntimeFactoryImpl();
 
     static {
         final KieServices kieServices = KieServices.get();
@@ -40,7 +40,7 @@ public abstract class AbstractPMMLTest {
         this.pmmlRuntime = pmmlRuntime;
     }
 
-    public static PMMLRuntime getPMMLRuntime(String modelName, File pmmlFile) {
-        return PMMLRuntimeFactory.getPMMLRuntime(modelName, pmmlFile);
+    public static PMMLRuntime getPMMLRuntime(final File pmmlFile) {
+        return PMML_RUNTIME_FACTORY.getPMMLRuntimeFromFile(pmmlFile);
     }
 }
