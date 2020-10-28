@@ -86,9 +86,13 @@ final class ConstraintSubTree {
     }
 
     public RuleAssembler getRuleAssembler() {
-        RuleAssembler builder = isJoin ? leftSubTree.getRuleAssembler()
-                .join(rightSubTree.getRuleAssembler(), nodeList.get(0))
-                : RuleAssembler.from(variableFactory, nodeList.get(0), getGroupByCount());
+        return this.getRuleAssembler(getGroupByCount());
+    }
+
+    public RuleAssembler getRuleAssembler(int totalExpectedGroupByCount) {
+        RuleAssembler builder = isJoin ? leftSubTree.getRuleAssembler(totalExpectedGroupByCount)
+                .join(rightSubTree.getRuleAssembler(totalExpectedGroupByCount), nodeList.get(0))
+                : RuleAssembler.from(variableFactory, nodeList.get(0), totalExpectedGroupByCount);
         for (int i = 1; i < nodeList.size(); i++) {
             builder = builder.andThen(nodeList.get(i));
         }

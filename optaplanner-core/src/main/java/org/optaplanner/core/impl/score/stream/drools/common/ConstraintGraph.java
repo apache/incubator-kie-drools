@@ -389,7 +389,7 @@ public final class ConstraintGraph {
     }
 
     private <Node_ extends ConstraintGraphNode, Consequence_ extends ConstraintConsequence<Node_>>
-            ConstraintTree<Node_, Consequence_> getSubtree(Consequence_ consequence) {
+            ConstraintTree<Node_, Consequence_> getTree(Consequence_ consequence) {
         if (!consequenceSet.contains(consequence)) {
             throw new IllegalStateException(
                     "Impossible state: Requested subtree for a non-existent consequence (" + consequence + ").");
@@ -426,9 +426,9 @@ public final class ConstraintGraph {
 
     private RuleAssembly generateRule(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal,
             DroolsConstraint constraint) {
-        ConstraintTree constraintTree = getSubtree(constraint.getConsequence());
-        return constraintTree.getNestedNodes()
-                .getRuleAssembler()
+        ConstraintTree constraintTree = getTree(constraint.getConsequence());
+        ConstraintSubTree nestedNodes = constraintTree.getNestedNodes();
+        return nestedNodes.getRuleAssembler()
                 .assemble(scoreHolderGlobal, constraint);
     }
 

@@ -45,8 +45,8 @@ final class QuadJoinMutator<A, B, C, D> implements JoinMutator<TriRuleAssembler,
             List<ViewItem> finishedExpressions, List<Variable> variables, List<PatternDef> primaryPatterns,
             Map<Integer, List<ViewItem>> dependentExpressionMap) {
         return new QuadRuleAssembler(leftRuleAssembler, Math.max(leftRuleAssembler.getExpectedGroupByCount(),
-                rightRuleAssembler.getExpectedGroupByCount()), finishedExpressions, variables, primaryPatterns,
-                dependentExpressionMap);
+                rightRuleAssembler.getExpectedGroupByCount()), finishedExpressions, variables.get(0), variables.get(1),
+                variables.get(2), variables.get(3), primaryPatterns, dependentExpressionMap);
     }
 
 }

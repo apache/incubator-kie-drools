@@ -76,8 +76,8 @@ final class BiJoinMutator<A, B> implements JoinMutator<UniRuleAssembler, BiRuleA
             List<ViewItem> finishedExpressions, List<Variable> variables, List<PatternDef> primaryPatterns,
             Map<Integer, List<ViewItem>> dependentExpressionMap) {
         return new BiRuleAssembler(leftRuleAssembler, Math.max(leftRuleAssembler.getExpectedGroupByCount(),
-                rightRuleAssembler.getExpectedGroupByCount()), finishedExpressions, variables, primaryPatterns,
-                dependentExpressionMap);
+                rightRuleAssembler.getExpectedGroupByCount()), finishedExpressions, variables.get(0), variables.get(1),
+                primaryPatterns, dependentExpressionMap);
     }
 
 }

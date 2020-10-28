@@ -45,9 +45,10 @@ final class TriRuleAssembler extends AbstractRuleAssembler<TriPredicate> {
     private TriPredicate filterToApplyToLastPrimaryPattern = null;
 
     public TriRuleAssembler(DroolsVariableFactory variableFactory, int expectedGroupByCount,
-            List<ViewItem> finishedExpressions, List<Variable> variables, List<PatternDef> primaryPatterns,
-            Map<Integer, List<ViewItem>> dependentExpressionMap) {
-        super(variableFactory, expectedGroupByCount, finishedExpressions, variables, primaryPatterns, dependentExpressionMap);
+            List<ViewItem> finishedExpressions, Variable aVariable, Variable bVariable, Variable cVariable,
+            List<PatternDef> primaryPatterns, Map<Integer, List<ViewItem>> dependentExpressionMap) {
+        super(variableFactory, expectedGroupByCount, finishedExpressions, primaryPatterns, dependentExpressionMap,
+                aVariable, bVariable, cVariable);
     }
 
     @Override
@@ -77,31 +78,53 @@ final class TriRuleAssembler extends AbstractRuleAssembler<TriPredicate> {
 
     @Override
     protected AbstractGroupByMutator new1Map0CollectGroupByMutator(Object mapping) {
-        return new TriGroupBy1Map0CollectMutator<>((TriFunction) mapping);
+        if (getExpectedGroupByCount() == 1) {
+            return new TriGroupBy1Map0CollectFastMutator<>((TriFunction) mapping);
+        } else {
+            return new TriGroupBy1Map0CollectMutator<>((TriFunction) mapping);
+        }
     }
 
     @Override
     protected AbstractGroupByMutator new1Map1CollectGroupByMutator(Object mapping, Object collector) {
-        return new TriGroupBy1Map1CollectMutator<>((TriFunction) mapping, (TriConstraintCollector) collector);
+        if (getExpectedGroupByCount() == 1) {
+            return new TriGroupBy1Map1CollectFastMutator<>((TriFunction) mapping, (TriConstraintCollector) collector);
+        } else {
+            return new TriGroupBy1Map1CollectMutator<>((TriFunction) mapping, (TriConstraintCollector) collector);
+        }
     }
 
     @Override
     protected AbstractGroupByMutator new2Map0CollectGroupByMutator(Object mappingA, Object mappingB) {
-        return new TriGroupBy2Map0CollectMutator<>((TriFunction) mappingA, (TriFunction) mappingB);
+        if (getExpectedGroupByCount() == 1) {
+            return new TriGroupBy2Map0CollectFastMutator<>((TriFunction) mappingA, (TriFunction) mappingB);
+        } else {
+            return new TriGroupBy2Map0CollectMutator<>((TriFunction) mappingA, (TriFunction) mappingB);
+        }
     }
 
     @Override
     protected AbstractGroupByMutator new2Map1CollectGroupByMutator(Object mappingA, Object mappingB,
             Object collectorC) {
-        return new TriGroupBy2Map1CollectMutator<>((TriFunction) mappingA, (TriFunction) mappingB,
-                (TriConstraintCollector) collectorC);
+        if (getExpectedGroupByCount() == 1) {
+            return new TriGroupBy2Map1CollectFastMutator<>((TriFunction) mappingA, (TriFunction) mappingB,
+                    (TriConstraintCollector) collectorC);
+        } else {
+            return new TriGroupBy2Map1CollectMutator<>((TriFunction) mappingA, (TriFunction) mappingB,
+                    (TriConstraintCollector) collectorC);
+        }
     }
 
     @Override
     protected AbstractGroupByMutator new2Map2CollectGroupByMutator(Object mappingA, Object mappingB, Object collectorC,
             Object collectorD) {
-        return new TriGroupBy2Map2CollectMutator<>((TriFunction) mappingA, (TriFunction) mappingB,
-                (TriConstraintCollector) collectorC, (TriConstraintCollector) collectorD);
+        if (getExpectedGroupByCount() == 1) {
+            return new TriGroupBy2Map2CollectFastMutator<>((TriFunction) mappingA, (TriFunction) mappingB,
+                    (TriConstraintCollector) collectorC, (TriConstraintCollector) collectorD);
+        } else {
+            return new TriGroupBy2Map2CollectMutator<>((TriFunction) mappingA, (TriFunction) mappingB,
+                    (TriConstraintCollector) collectorC, (TriConstraintCollector) collectorD);
+        }
     }
 
     @Override

@@ -45,9 +45,10 @@ final class QuadRuleAssembler extends AbstractRuleAssembler<QuadPredicate> {
     private QuadPredicate filterToApplyToLastPrimaryPattern = null;
 
     public QuadRuleAssembler(DroolsVariableFactory variableFactory, int expectedGroupByCount,
-            List<ViewItem> finishedExpressions, List<Variable> variables, List<PatternDef> primaryPatterns,
-            Map<Integer, List<ViewItem>> dependentExpressionMap) {
-        super(variableFactory, expectedGroupByCount, finishedExpressions, variables, primaryPatterns, dependentExpressionMap);
+            List<ViewItem> finishedExpressions, Variable aVariable, Variable bVariable, Variable cVariable,
+            Variable dVariable, List<PatternDef> primaryPatterns, Map<Integer, List<ViewItem>> dependentExpressionMap) {
+        super(variableFactory, expectedGroupByCount, finishedExpressions, primaryPatterns, dependentExpressionMap,
+                aVariable, bVariable, cVariable, dVariable);
     }
 
     @Override
@@ -76,31 +77,53 @@ final class QuadRuleAssembler extends AbstractRuleAssembler<QuadPredicate> {
 
     @Override
     protected AbstractGroupByMutator new1Map0CollectGroupByMutator(Object mapping) {
-        return new QuadGroupBy1Map0CollectMutator<>((QuadFunction) mapping);
+        if (getExpectedGroupByCount() == 1) {
+            return new QuadGroupBy1Map0CollectFastMutator<>((QuadFunction) mapping);
+        } else {
+            return new QuadGroupBy1Map0CollectMutator<>((QuadFunction) mapping);
+        }
     }
 
     @Override
     protected AbstractGroupByMutator new1Map1CollectGroupByMutator(Object mapping, Object collector) {
-        return new QuadGroupBy1Map1CollectMutator<>((QuadFunction) mapping, (QuadConstraintCollector) collector);
+        if (getExpectedGroupByCount() == 1) {
+            return new QuadGroupBy1Map1CollectFastMutator<>((QuadFunction) mapping, (QuadConstraintCollector) collector);
+        } else {
+            return new QuadGroupBy1Map1CollectMutator<>((QuadFunction) mapping, (QuadConstraintCollector) collector);
+        }
     }
 
     @Override
     protected AbstractGroupByMutator new2Map0CollectGroupByMutator(Object mappingA, Object mappingB) {
-        return new QuadGroupBy2Map0CollectMutator<>((QuadFunction) mappingA, (QuadFunction) mappingB);
+        if (getExpectedGroupByCount() == 1) {
+            return new QuadGroupBy2Map0CollectFastMutator<>((QuadFunction) mappingA, (QuadFunction) mappingB);
+        } else {
+            return new QuadGroupBy2Map0CollectMutator<>((QuadFunction) mappingA, (QuadFunction) mappingB);
+        }
     }
 
     @Override
     protected AbstractGroupByMutator new2Map1CollectGroupByMutator(Object mappingA, Object mappingB,
             Object collectorC) {
-        return new QuadGroupBy2Map1CollectMutator<>((QuadFunction) mappingA, (QuadFunction) mappingB,
-                (QuadConstraintCollector) collectorC);
+        if (getExpectedGroupByCount() == 1) {
+            return new QuadGroupBy2Map1CollectFastMutator<>((QuadFunction) mappingA, (QuadFunction) mappingB,
+                    (QuadConstraintCollector) collectorC);
+        } else {
+            return new QuadGroupBy2Map1CollectMutator<>((QuadFunction) mappingA, (QuadFunction) mappingB,
+                    (QuadConstraintCollector) collectorC);
+        }
     }
 
     @Override
     protected AbstractGroupByMutator new2Map2CollectGroupByMutator(Object mappingA, Object mappingB, Object collectorC,
             Object collectorD) {
-        return new QuadGroupBy2Map2CollectMutator<>((QuadFunction) mappingA, (QuadFunction) mappingB,
-                (QuadConstraintCollector) collectorC, (QuadConstraintCollector) collectorD);
+        if (getExpectedGroupByCount() == 1) {
+            return new QuadGroupBy2Map2CollectFastMutator<>((QuadFunction) mappingA, (QuadFunction) mappingB,
+                    (QuadConstraintCollector) collectorC, (QuadConstraintCollector) collectorD);
+        } else {
+            return new QuadGroupBy2Map2CollectMutator<>((QuadFunction) mappingA, (QuadFunction) mappingB,
+                    (QuadConstraintCollector) collectorC, (QuadConstraintCollector) collectorD);
+        }
     }
 
     @Override

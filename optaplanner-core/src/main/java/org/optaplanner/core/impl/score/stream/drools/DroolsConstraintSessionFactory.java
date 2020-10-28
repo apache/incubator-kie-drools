@@ -26,8 +26,12 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.drools.model.Model;
+import org.drools.model.functions.accumulate.GroupKey;
 import org.drools.model.impl.ModelImpl;
 import org.drools.modelcompiler.builder.KieBaseBuilder;
 import org.kie.api.KieBase;
@@ -101,23 +105,24 @@ public final class DroolsConstraintSessionFactory<Solution_, Score_ extends Scor
      * @return never null
      */
     private static List<Object> matchJustificationsToOutput(List<Object> justificationList, int expectedCount,
-            Class... expectedTypes) {
+            Class<?>... expectedTypes) {
         if (expectedTypes.length == 0) {
             throw new IllegalStateException("Impossible: there are no 0-cardinality constraint streams.");
         }
+        List<Object> ungroupedJustificationList = ungroupJustifications(justificationList);
         Object[] matching = new Object[expectedTypes.length];
         // First process non-Object matches, as those are the most descriptive.
         for (int i = 0; i < expectedTypes.length; i++) {
-            Class expectedType = expectedTypes[i];
+            Class<?> expectedType = expectedTypes[i];
             if (Objects.equals(expectedType, Object.class)) {
                 continue;
             }
-            Object match = justificationList.stream()
+            Object match = ungroupedJustificationList.stream()
                     .filter(j -> expectedType.isAssignableFrom(j.getClass()))
                     .findFirst()
                     .orElseThrow(() -> new IllegalStateException("Impossible: no justification of type ("
                             + expectedType + ")."));
-            justificationList.remove(match);
+            ungroupedJustificationList.remove(match);
             matching[i] = match;
         }
         // Fill the remaining places with Object matches, but keep their original order coming from expectedMatches.
@@ -125,10 +130,10 @@ public final class DroolsConstraintSessionFactory<Solution_, Score_ extends Scor
             if (matching[i] != null) {
                 continue;
             }
-            Object match = justificationList.stream()
+            Object match = ungroupedJustificationList.stream()
                     .findFirst()
                     .orElseThrow(() -> new IllegalStateException("Impossible: there are no more constraint matches."));
-            justificationList.remove(match);
+            ungroupedJustificationList.remove(match);
             matching[i] = match;
         }
         if (matching.length > 1) {
@@ -136,7 +141,7 @@ public final class DroolsConstraintSessionFactory<Solution_, Score_ extends Scor
             return Arrays.asList(matching);
         }
         Object item = matching[0];
-        Class expectedType = expectedTypes[0];
+        Class<?> expectedType = expectedTypes[0];
         if (FactTuple.class.isAssignableFrom(expectedType) || item instanceof FactTuple) {
             /*
              * The justifications will all come from a single tuple (eg. BiTuple<A, B>).
@@ -150,6 +155,33 @@ public final class DroolsConstraintSessionFactory<Solution_, Score_ extends Scor
             // This comes from a simple uni stream.
             return Collections.singletonList(item);
         }
+    }
+
+    private static List<Object> ungroupJustifications(List<Object> justificationList) {
+        // Send all groupKey instances to the beginning of the justification list as we can not rely on Drools putting
+        // them there for us.
+        Predicate<Object> isGroupKey = o -> o instanceof GroupKey;
+        Stream<Object> groupKeyValues = justificationList.stream()
+                .filter(isGroupKey)
+                .flatMap(groupKey -> {
+                    Object ungrouped = ((GroupKey) groupKey).getKey();
+                    if (ungrouped instanceof FactTuple) {
+                        FactTuple factTuple = (FactTuple) ungrouped;
+                        return factTuple.asList().stream();
+                    }
+                    return Stream.of(ungrouped);
+                });
+        Stream<Object> otherValues = justificationList.stream()
+                .filter(o -> !isGroupKey.test(o))
+                .flatMap(o -> {
+                    if (o instanceof Object[]) { // Double accumulates return results as arrays of two objects.
+                        return Arrays.stream((Object[]) o);
+                    } else {
+                        return Stream.of(o);
+                    }
+                });
+        return Stream.concat(groupKeyValues, otherValues)
+                .collect(Collectors.toList());
     }
 
     @Override

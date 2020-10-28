@@ -44,7 +44,7 @@ public class CloudBalancingConstraintProvider implements ConstraintProvider {
     // Hard constraints
     // ************************************************************************
 
-    private Constraint requiredCpuPowerTotal(ConstraintFactory constraintFactory) {
+    Constraint requiredCpuPowerTotal(ConstraintFactory constraintFactory) {
         return constraintFactory.from(CloudProcess.class)
                 .groupBy(CloudProcess::getComputer, sum(CloudProcess::getRequiredCpuPower))
                 .filter((computer, requiredCpuPower) -> requiredCpuPower > computer.getCpuPower())
@@ -53,7 +53,7 @@ public class CloudBalancingConstraintProvider implements ConstraintProvider {
                         (computer, requiredCpuPower) -> requiredCpuPower - computer.getCpuPower());
     }
 
-    private Constraint requiredMemoryTotal(ConstraintFactory constraintFactory) {
+    Constraint requiredMemoryTotal(ConstraintFactory constraintFactory) {
         return constraintFactory.from(CloudProcess.class)
                 .groupBy(CloudProcess::getComputer, sum(CloudProcess::getRequiredMemory))
                 .filter((computer, requiredMemory) -> requiredMemory > computer.getMemory())
@@ -62,7 +62,7 @@ public class CloudBalancingConstraintProvider implements ConstraintProvider {
                         (computer, requiredMemory) -> requiredMemory - computer.getMemory());
     }
 
-    private Constraint requiredNetworkBandwidthTotal(ConstraintFactory constraintFactory) {
+    Constraint requiredNetworkBandwidthTotal(ConstraintFactory constraintFactory) {
         return constraintFactory.from(CloudProcess.class)
                 .groupBy(CloudProcess::getComputer, sum(CloudProcess::getRequiredNetworkBandwidth))
                 .filter((computer, requiredNetworkBandwidth) -> requiredNetworkBandwidth > computer.getNetworkBandwidth())
@@ -75,7 +75,7 @@ public class CloudBalancingConstraintProvider implements ConstraintProvider {
     // Soft constraints
     // ************************************************************************
 
-    private Constraint computerCost(ConstraintFactory constraintFactory) {
+    Constraint computerCost(ConstraintFactory constraintFactory) {
         return constraintFactory.from(CloudComputer.class)
                 .ifExists(CloudProcess.class, equal(Function.identity(), CloudProcess::getComputer))
                 .penalize("computerCost",

@@ -25,11 +25,13 @@ import static org.drools.model.PatternDSL.rule;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.drools.model.Argument;
@@ -66,18 +68,19 @@ abstract class AbstractRuleAssembler<Predicate_> implements RuleAssembler,
 
     protected AbstractRuleAssembler(DroolsVariableFactory variableFactory, ConstraintGraphNode fromNode,
             int expectedGroupByCount) {
-        this(variableFactory, expectedGroupByCount, emptyList(), emptyList(), emptyList(), emptyMap());
+        this(variableFactory, expectedGroupByCount, emptyList(), emptyList(), emptyMap());
         variables.add(createVariable(((FromNode) fromNode).getFactType(), "var"));
         primaryPatterns.add(pattern(variables.get(0)));
     }
 
     protected AbstractRuleAssembler(DroolsVariableFactory variableFactory, int expectedGroupByCount,
-            List<ViewItem> finishedExpressions, List<Variable> variables, List<PatternDef> primaryPatterns,
-            Map<Integer, List<ViewItem>> dependentExpressionMap) {
+            List<ViewItem> finishedExpressions, List<PatternDef> primaryPatterns,
+            Map<Integer, List<ViewItem>> dependentExpressionMap, Variable... variables) {
         this.variableFactory = variableFactory;
         this.expectedGroupByCount = expectedGroupByCount;
         this.finishedExpressions = new ArrayList<>(finishedExpressions);
-        this.variables = new ArrayList<>(variables);
+        this.variables = Arrays.stream(variables)
+                .collect(Collectors.toList());
         this.primaryPatterns = new ArrayList<>(primaryPatterns);
         this.dependentExpressionMap = new HashMap<>(dependentExpressionMap);
     }
@@ -188,6 +191,10 @@ abstract class AbstractRuleAssembler<Predicate_> implements RuleAssembler,
             boolean shouldExist);
 
     protected final AbstractRuleAssembler andThenGroupBy(AbstractConstraintModelGroupingNode groupingNode) {
+        if (expectedGroupByCount < 1) {
+            throw new IllegalStateException("Impossible state: expectedGroupByCount (" + expectedGroupByCount +
+                    ") is less than 1 when already grouping.");
+        }
         List<Function> mappings = groupingNode.getMappings();
         int mappingCount = mappings.size();
         List<UniConstraintCollector> collectors = groupingNode.getCollectors();

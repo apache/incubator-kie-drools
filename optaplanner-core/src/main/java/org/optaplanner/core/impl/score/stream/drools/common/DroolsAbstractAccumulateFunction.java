@@ -18,7 +18,6 @@ package org.optaplanner.core.impl.score.stream.drools.common;
 
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.Map;
 
 import org.kie.api.runtime.rule.AccumulateFunction;
 
@@ -37,12 +36,11 @@ public abstract class DroolsAbstractAccumulateFunction<ResultContainer_, InTuple
 
     @Override
     public void accumulate(DroolsAccumulateContext<ResultContainer_> context, Object value) {
-        Map<Object, Runnable> undoMap = context.getUndoMap();
-        if (undoMap.containsKey(value)) {
+        Runnable undo = accumulate(context.getContainer(), (InTuple) value);
+        Runnable previousUndo = context.getUndoMap().put(value, undo);
+        if (previousUndo != null) {
             throw new IllegalStateException("Undo for (" + value + ") already exists.");
         }
-        Runnable undo = accumulate(context.getContainer(), (InTuple) value);
-        undoMap.put(value, undo);
     }
 
     @Override

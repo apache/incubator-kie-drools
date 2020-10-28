@@ -45,8 +45,8 @@ final class TriJoinMutator<A, B, C> implements JoinMutator<BiRuleAssembler, TriR
             List<ViewItem> finishedExpressions, List<Variable> variables, List<PatternDef> primaryPatterns,
             Map<Integer, List<ViewItem>> dependentExpressionMap) {
         return new TriRuleAssembler(leftRuleAssembler, Math.max(leftRuleAssembler.getExpectedGroupByCount(),
-                rightRuleAssembler.getExpectedGroupByCount()), finishedExpressions, variables, primaryPatterns,
-                dependentExpressionMap);
+                rightRuleAssembler.getExpectedGroupByCount()), finishedExpressions, variables.get(0), variables.get(1),
+                variables.get(2), primaryPatterns, dependentExpressionMap);
     }
 
 }
