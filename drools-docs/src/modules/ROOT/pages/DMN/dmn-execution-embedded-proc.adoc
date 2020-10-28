@@ -6,14 +6,7 @@ A KIE container is local when the knowledge assets are either embedded directly 
 Using Maven dependencies enables further flexibility because the specific version of the decision can dynamically change, (for example, by using a system property), and it can be periodically scanned for updates and automatically updated. This introduces an external dependency on the deploy time of the service, but executes the decision locally, reducing reliance on an external service being available during run time.
 
 .Prerequisites
-* {KIE_SERVER} is installed and configured, including a known user name and credentials for a user with the `kie-server` role. For installation options, see
-ifdef::DM,PAM[]
-{URL_INSTALLING_AND_CONFIGURING}#assembly-planning[_{PLANNING_INSTALL}_].
-endif::[]
-ifdef::DROOLS,JBPM,OP[]
-<<_installationandsetup>>.
-endif::[]
-* You have built the DMN project as a KJAR artifact and deployed it to {KIE_SERVER}. Ideally, you have built the DMN project as an executable model for more efficient execution:
+* You have built the DMN project as a KJAR artifact and deployed it to a Maven repository, or you have included your DMN assets as part of your project classpath. Ideally, you have built the DMN project as an executable model for more efficient execution:
 +
 --
 [source]
