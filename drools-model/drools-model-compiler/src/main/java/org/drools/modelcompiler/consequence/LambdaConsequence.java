@@ -34,15 +34,16 @@ import org.drools.model.Variable;
 
 public class LambdaConsequence implements Consequence {
 
+    private static final boolean ENABLE_LINEARIZED_ARGUMENTS_RETRIVAL_OPTIMIZATION = true;
+
     private final org.drools.model.Consequence consequence;
     private final Declaration[] declarations;
 
     private FactSupplier[] factSuppliers;
-    private Object[] facts;
 
     public LambdaConsequence( org.drools.model.Consequence consequence, Declaration[] declarations ) {
         this.consequence = consequence;
-        this.declarations = declarations;
+        this.declarations = ENABLE_LINEARIZED_ARGUMENTS_RETRIVAL_OPTIMIZATION ? declarations : null;
     }
 
     @Override
@@ -107,6 +108,7 @@ public class LambdaConsequence implements Consequence {
         if (factSuppliers == null) {
             return initConsequence(knowledgeHelper, workingMemory, tuple);
         }
+        Object[] facts = new Object[factSuppliers.length];
         for (int i = 0; i < facts.length; i++) {
             tuple = factSuppliers[i].get( facts, knowledgeHelper, workingMemory, tuple );
         }
@@ -117,6 +119,7 @@ public class LambdaConsequence implements Consequence {
         Variable[] vars = consequence.getVariables();
         List<FactSupplier> factSuppliers = new ArrayList<>();
 
+        Object[] facts;
         int factsOffset = 0;
         if ( consequence.isUsingDrools() ) {
             factsOffset++;
@@ -138,6 +141,13 @@ public class LambdaConsequence implements Consequence {
             factsOffset++;
         }
 
+        // At this point the FactSuppliers (each of them supplying a single argument to be passed to the consequence)
+        // are sorted as it follows:
+        // - first (if necessary) the DroolsImplSupplier, used to eventually add the drools object to the list of arguments
+        // - second all the TupleFactSuppliers, used to retrieve the facts from the activation tuple
+        // - third the GlobalSupplier, used to retrieve the consequence's arguments from the globals
+        // Internally the TupleFactSuppliers are sorted from the one extracting a fact from the bottom of the tuple to the
+        // one reading from its top. In this way the whole tuple can be traversed only once to retrive all facts.
         Collections.sort( factSuppliers );
 
         int lastOffset = tuple.getIndex();
@@ -145,17 +155,17 @@ public class LambdaConsequence implements Consequence {
         boolean first = true;
         for (int i = consequence.isUsingDrools() ? 1 : 0; i < factSuppliers.size() && factSuppliers.get(i) instanceof TupleFactSupplier; i++) {
             TupleFactSupplier tupleFactSupplier = (( TupleFactSupplier ) factSuppliers.get( i ));
-            tupleFactSupplier.nextOffsetIndex = lastOffset - tupleFactSupplier.declarationOffset;
+            tupleFactSupplier.formerSupplierOffset = lastOffset - tupleFactSupplier.declarationOffset;
 
-            for (int j = 0; j < tupleFactSupplier.nextOffsetIndex; j++) {
+            for (int j = 0; j < tupleFactSupplier.formerSupplierOffset; j++) {
                 if (current.getFactHandle() == null) {
-                    tupleFactSupplier.nextOffsetIndex++;
+                    tupleFactSupplier.formerSupplierOffset++;
                 }
                 current = current.getParent();
             }
 
             while (current != null && current.getFactHandle() == null) {
-                tupleFactSupplier.nextOffsetIndex++;
+                tupleFactSupplier.formerSupplierOffset++;
                 current = current.getParent();
             }
 
@@ -217,7 +227,7 @@ public class LambdaConsequence implements Consequence {
         private final int declarationOffset;
         private boolean useDrools;
 
-        private int nextOffsetIndex;
+        private int formerSupplierOffset;
         private boolean first;
 
         private TupleFactSupplier( int offset, Declaration declaration, boolean useDrools ) {
@@ -230,13 +240,16 @@ public class LambdaConsequence implements Consequence {
         private void setFirst(boolean first) {
             this.first = first;
             if (!first) {
-                useDrools &= nextOffsetIndex > 0;
+                // if this is not the first fact supplier and it's reading a value from the same fact handle of the former
+                // supplier (formerSupplierOffset==0) it is not necessary to register the same fact handle twice on the drools object
+                useDrools &= formerSupplierOffset > 0;
             }
         }
 
         @Override
         public Tuple get( Object[] facts, KnowledgeHelper knowledgeHelper, InternalWorkingMemory workingMemory, Tuple tuple ) {
-            for (int i = 0; i < nextOffsetIndex; i++) {
+            // traverses the tuple of as many steps as distance between the former supplier and this one
+            for (int i = 0; i < formerSupplierOffset; i++) {
                 tuple = tuple.getParent();
             }
             fetchFact( facts, workingMemory, tuple );

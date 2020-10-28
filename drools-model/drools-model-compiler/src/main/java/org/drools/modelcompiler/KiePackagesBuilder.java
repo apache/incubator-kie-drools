@@ -382,7 +382,11 @@ public class KiePackagesBuilder {
     }
 
     private void processConsequence( RuleContext ctx, Consequence consequence, String name ) {
+        // If there's an OR in the rule the fired tuple hasn't fixed structure and size because it dependens
+        // on which branch of the OR gets activated. In this case no optimization is possible and it's usless
+        // to precalculate the declartions at compile time.
         boolean ruleHasFirstLevelOr = ruleHasFirstLevelOr(ctx.getRule());
+
         Variable[] consequenceVars = consequence.getDeclarations();
         String[] requiredDeclarationNames = new String[consequenceVars.length];
         Declaration[] requiredDeclarations = ruleHasFirstLevelOr ? null : new Declaration[consequenceVars.length];
