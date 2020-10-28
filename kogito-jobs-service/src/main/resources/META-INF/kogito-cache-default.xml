@@ -1,4 +1,7 @@
-<infinispan>
+<?xml version="1.0" encoding="UTF-8"?>
+<infinispan xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="urn:infinispan:config:11.0 https://infinispan.org/schemas/infinispan-config-11.0.xsd"
+            xmlns="urn:infinispan:config:11.0">
   <cache-container statistics="true" shutdown-hook="DEFAULT">
     <local-cache name="JOB_DETAILS">
       <indexing>

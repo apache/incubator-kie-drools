@@ -4,7 +4,7 @@ option indexed_by_default = true;
 
 /* @Indexed */
 message KogitoMetadata {
-    /* @Field(store = Store.YES) */
+    /* @Field(store = Store.YES) @SortableField */
     optional int64 lastUpdate = 1;
     /* @Field(store = Store.YES) */
     repeated org.kie.kogito.index.model.ProcessInstanceMeta processInstances = 2;
@@ -44,7 +44,7 @@ message ProcessInstanceMeta {
 message ProcessInstance {
     /* @Field(store = Store.YES) */
     optional string id = 1;
-    /* @Field(store = Store.YES) */
+    /* @Field(store = Store.YES) @SortableField */
     optional string processId = 2;
     /* @Field(store = Store.YES, indexNullAs = "__DEFAULT_NULL_TOKEN__") */
     repeated string roles = 3;
@@ -52,34 +52,36 @@ message ProcessInstance {
     /* @Field(store = Store.YES) */
     optional string endpoint = 5;
     repeated NodeInstance nodes = 6;
-    /* @Field(store = Store.YES) */
+    /* @Field(store = Store.YES) @SortableField */
     optional int32 state = 7;
+    /* @SortableField */
     optional int64 start = 8;
+    /* @SortableField */
     optional int64 end = 9;
     /* @Field(store = Store.YES, indexNullAs = "__DEFAULT_NULL_TOKEN__") */
     optional string rootProcessInstanceId = 10;
-    /* @Field(store = Store.YES, indexNullAs = "__DEFAULT_NULL_TOKEN__") */
+    /* @Field(store = Store.YES, indexNullAs = "__DEFAULT_NULL_TOKEN__") @SortableField */
     optional string rootProcessId = 11;
     /* @Field(store = Store.YES, indexNullAs = "__DEFAULT_NULL_TOKEN__") */
     optional string parentProcessInstanceId = 12;
-    /* @Field(store = Store.YES) */
+    /* @Field(store = Store.YES) @SortableField */
     optional string processName = 13;
     /* @Field(store = Store.YES) */
     optional ProcessInstanceError error = 14;
     /* @Field(store = Store.YES, indexNullAs = "__DEFAULT_NULL_TOKEN__") */
     repeated string addons = 15;
-    /* @Field(store = Store.YES) */
+    /* @Field(store = Store.YES) @SortableField */
     optional int64 lastUpdate = 16;
-    /* @Field(store = Store.YES, indexNullAs = "__DEFAULT_NULL_TOKEN__") */
+    /* @Field(store = Store.YES, indexNullAs = "__DEFAULT_NULL_TOKEN__") @SortableField */
     optional string businessKey = 17;
     repeated Milestone milestones = 18;
 }
 
 /* @Indexed */
 message ProcessInstanceError {
-    /* @Field(store = Store.YES) */
+    /* @Field(store = Store.YES) @SortableField */
     optional string nodeDefinitionId = 1;
-    /* @Field(store = Store.YES) */
+    /* @Field(store = Store.YES) @SortableField */
     optional string message = 2;
 }
 
@@ -113,11 +115,11 @@ message Milestone {
 message UserTaskInstance {
     /* @Field(store = Store.YES) */
     optional string id = 1;
-    /* @Field(store = Store.YES) */
+    /* @Field(store = Store.YES) @SortableField */
     optional string description = 2;
-    /* @Field(store = Store.YES) */
+    /* @Field(store = Store.YES) @SortableField */
     optional string name = 3;
-    /* @Field(store = Store.YES) */
+    /* @Field(store = Store.YES) @SortableField */
     optional string priority = 4;
     /* @Field(store = Store.YES) */
     optional string processInstanceId = 5;
@@ -127,15 +129,17 @@ message UserTaskInstance {
     optional string rootProcessInstanceId = 7;
     /* @Field(store = Store.YES) */
     optional string rootProcessId = 8;
-    /* @Field(store = Store.YES) */
+    /* @Field(store = Store.YES) @SortableField */
     optional string state = 9;
-    /* @Field(store = Store.YES) */
+    /* @Field(store = Store.YES) @SortableField */
     optional string actualOwner = 10;
     /* @Field(store = Store.YES) */
     repeated string adminGroups = 11;
     /* @Field(store = Store.YES) */
     repeated string adminUsers = 12;
+    /* @SortableField */
     optional int64 completed = 13;
+    /* @SortableField */
     optional int64 started = 14;
     /* @Field(store = Store.YES) */
     repeated string excludedUsers = 15;
@@ -145,9 +149,9 @@ message UserTaskInstance {
     repeated string potentialUsers = 17;
     optional string inputs = 18;
     optional string outputs = 19;
-    /* @Field(store = Store.YES) */
+    /* @Field(store = Store.YES) @SortableField */
     optional string referenceName = 20;
-    /* @Field(store = Store.YES) */
+    /* @Field(store = Store.YES) @SortableField */
     optional int64 lastUpdate = 21;
     /* @Field(store = Store.YES) */
     optional string endpoint = 22;
@@ -191,28 +195,30 @@ message UserTaskInstanceMeta {
 message Job {
     /* @Field(store = Store.YES) */
     optional string id = 1;
-    /* @Field(store = Store.YES) */
+    /* @Field(store = Store.YES) @SortableField */
     optional string processId = 2;
     /* @Field(store = Store.YES) */
     optional string processInstanceId = 3;
-    /* @Field(store = Store.YES, indexNullAs = "__DEFAULT_NULL_TOKEN__") */
+    /* @Field(store = Store.YES, indexNullAs = "__DEFAULT_NULL_TOKEN__") @SortableField */
     optional string rootProcessId = 4;
     /* @Field(store = Store.YES, indexNullAs = "__DEFAULT_NULL_TOKEN__") */
     optional string rootProcessInstanceId = 5;
-    /* @Field(store = Store.YES) */
+    /* @Field(store = Store.YES) @SortableField */
     optional int64 expirationTime = 6;
-    /* @Field(store = Store.YES) */
+    /* @Field(store = Store.YES) @SortableField */
     optional int32 priority = 7;
     optional string callbackEndpoint = 8;
     optional int64 repeatInterval = 9;
     optional int32 repeatLimit = 10;
     /* @Field(store = Store.YES) */
     optional string scheduledId = 11;
+    /* @SortableField */
     optional int32 retries = 12;
-    /* @Field(store = Store.YES) */
+    /* @Field(store = Store.YES) @SortableField */
     optional string status = 13;
-    /* @Field(store = Store.YES) */
+    /* @Field(store = Store.YES) @SortableField */
     optional int64 lastUpdate = 14;
+    /* @SortableField */
     optional int32 executionCounter = 15;
     optional string endpoint = 16;
     /* @Field(store = Store.YES) */

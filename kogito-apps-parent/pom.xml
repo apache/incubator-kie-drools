@@ -24,10 +24,7 @@
     <maven.compiler.source>11</maven.compiler.source>
     <maven.compiler.target>11</maven.compiler.target>
 
-    <version.org.infinispan.image>10.1.5.Final</version.org.infinispan.image>
-
     <!-- containers used for testing -->
-    <container.image.infinispan>quay.io/infinispan/server:${version.org.infinispan.image}</container.image.infinispan>
     <container.image.jobs-service>org.kie.kogito/jobs-service:${project.version}</container.image.jobs-service>
   </properties>
 

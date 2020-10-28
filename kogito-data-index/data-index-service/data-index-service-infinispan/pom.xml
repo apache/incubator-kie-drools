@@ -89,11 +89,11 @@
           <excludes>
             <exclude>**/*Native*IT.java</exclude>
           </excludes>
-          <systemProperties>
+          <systemPropertyVariables>
             <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
             <container.image.infinispan>${container.image.infinispan}</container.image.infinispan>
             <container.image.keycloak>${container.image.keycloak}</container.image.keycloak>
-          </systemProperties>
+          </systemPropertyVariables>
         </configuration>
         <executions>
           <execution>
@@ -119,12 +119,12 @@
               <includes>
                 <include>**/InfinispanKeycloak*IT.java</include>
               </includes>
-              <systemProperties>
+              <systemPropertyVariables>
                 <quarkus.test.profile>keycloak-test</quarkus.test.profile>
                 <quarkus.http.auth.policy.role-policy1.roles-allowed>confidential</quarkus.http.auth.policy.role-policy1.roles-allowed>
                 <quarkus.http.auth.permission.roles1.paths>/*</quarkus.http.auth.permission.roles1.paths>
                 <quarkus.http.auth.permission.roles1.policy>role-policy1</quarkus.http.auth.permission.roles1.policy>
-              </systemProperties>
+              </systemPropertyVariables>
             </configuration>
           </execution>
           <execution>
@@ -183,9 +183,9 @@
                   <includes>
                     <include>**/InfinispanNative*IT.java</include>
                   </includes>
-                  <systemProperties>
+                  <systemPropertyVariables>
                     <native.image.path>${project.build.directory}/${project.build.finalName}-runner</native.image.path>
-                  </systemProperties>
+                  </systemPropertyVariables>
                 </configuration>
               </execution>
             </executions>
