@@ -49,7 +49,7 @@ public class PredicateInformation {
         }
 
         String errorMessage = String.format(
-                "Error evaluating constraint '%s' in [Rule %s in %s]",
+                "Error evaluating constraint '%s' in [Rule \"%s\" in %s]",
                 stringConstraint,
                 ruleName,
                 ruleFileName);

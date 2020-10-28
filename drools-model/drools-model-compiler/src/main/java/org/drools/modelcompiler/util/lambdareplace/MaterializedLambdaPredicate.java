@@ -28,7 +28,6 @@ import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.PrimitiveType;
-import com.github.javaparser.ast.type.Type;
 import org.drools.model.functions.PredicateInformation;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
@@ -51,13 +50,13 @@ public class MaterializedLambdaPredicate extends MaterializedLambda {
 
     @Override
     void createMethodsDeclaration(EnumDeclaration classDeclaration) {
-        testMethod(classDeclaration);
+        createTestMethod(classDeclaration);
         if(!predicateInformation.isEmpty()) {
-            predicateInformationMethod(classDeclaration);
+            createPredicateInformationMethod(classDeclaration);
         }
     }
 
-    private void testMethod(EnumDeclaration classDeclaration) {
+    private void createTestMethod(EnumDeclaration classDeclaration) {
         MethodDeclaration methodDeclaration = classDeclaration.addMethod("test", Modifier.Keyword.PUBLIC);
         methodDeclaration.setThrownExceptions(NodeList.nodeList(parseClassOrInterfaceType("java.lang.Exception")));
         methodDeclaration.addAnnotation("Override");
@@ -69,7 +68,7 @@ public class MaterializedLambdaPredicate extends MaterializedLambda {
         methodDeclaration.setBody(new BlockStmt(NodeList.nodeList(new ReturnStmt(clone.getExpression()))));
     }
 
-    private void predicateInformationMethod(EnumDeclaration classDeclaration) {
+    private void createPredicateInformationMethod(EnumDeclaration classDeclaration) {
         MethodDeclaration methodDeclaration = classDeclaration.addMethod("predicateInformation", Modifier.Keyword.PUBLIC);
         methodDeclaration.addAnnotation("Override");
         ClassOrInterfaceType predicateInformationType = (ClassOrInterfaceType) parseType(PredicateInformation.class.getCanonicalName());

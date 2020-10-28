@@ -65,8 +65,4 @@ public class CreatedClass {
     public int hashCode() {
         return Objects.hash(compilationUnit, className, packageName);
     }
-
-    public CompilationUnit getCompilationUnit() {
-        return compilationUnit;
-    }
 }

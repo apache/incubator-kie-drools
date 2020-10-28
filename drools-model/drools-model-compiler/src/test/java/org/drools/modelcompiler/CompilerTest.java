@@ -2402,7 +2402,7 @@ public class CompilerTest extends BaseModelTest {
     @Test
     public void testNPEOnConstraint() {
         exceptionRule.expect(RuntimeException.class);
-        exceptionRule.expectMessage(startsWith("Error evaluating constraint 'money < salary * 20' in"));
+        exceptionRule.expectMessage(equalTo("Error evaluating constraint 'money < salary * 20' in [Rule \"R\" in r0.drl]"));
 
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +

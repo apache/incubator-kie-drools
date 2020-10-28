@@ -44,6 +44,7 @@ import com.github.javaparser.ast.nodeTypes.NodeWithOptionalScope;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.type.PrimitiveType;
 import com.github.javaparser.ast.type.Type;
+import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.model.Index;
 import org.drools.model.functions.PredicateInformation;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
@@ -57,6 +58,7 @@ import org.drools.modelcompiler.builder.generator.drlxparse.SingleDrlxParseSucce
 import org.drools.modelcompiler.util.ClassUtil;
 import org.drools.mvel.parser.ast.expr.BigDecimalLiteralExpr;
 import org.drools.mvel.parser.ast.expr.BigIntegerLiteralExpr;
+import org.kie.api.io.Resource;
 
 import static java.util.Optional.ofNullable;
 
@@ -422,13 +424,16 @@ public abstract class AbstractExpressionBuilder {
         return opt.get().equals(THIS_PLACEHOLDER);
     }
 
-    protected String getExprId(SingleDrlxParseSuccess drlxParseResult) {
+    protected String createExprId(SingleDrlxParseSuccess drlxParseResult) {
         String exprId = drlxParseResult.getExprId(context.getPackageModel().getExprIdGenerator());
 
         context.getPackageModel().indexConstraint(exprId, new PredicateInformation(
                 drlxParseResult.getOriginalDrlConstraint(),
                 context.getRuleName(),
-                context.getRuleName()
+                Optional.ofNullable(context.getRuleDescr())
+                    .map(RuleDescr::getResource)
+                    .map(Resource::getSourcePath)
+                    .orElse("")
         ));
         return exprId;
     }

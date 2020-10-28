@@ -872,6 +872,6 @@ public class PackageModel {
     }
 
     public Map<String, PredicateInformation> getAllConstraintsMap() {
-        return allConstraintsMap;
+        return Collections.unmodifiableMap(allConstraintsMap);
     }
 }
