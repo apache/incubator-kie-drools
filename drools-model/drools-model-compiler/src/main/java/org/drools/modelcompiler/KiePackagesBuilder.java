@@ -382,10 +382,26 @@ public class KiePackagesBuilder {
     }
 
     private void processConsequence( RuleContext ctx, Consequence consequence, String name ) {
+        Declaration[] requiredDeclarations = getRequiredDeclarationsIfPossible( ctx, consequence, name );
+
+        if ( name.equals( RuleImpl.DEFAULT_CONSEQUENCE_NAME ) ) {
+            if ("java".equals(consequence.getLanguage())) {
+                ctx.getRule().setConsequence( new LambdaConsequence( consequence, requiredDeclarations ) );
+            } else {
+                throw new UnsupportedOperationException("Unknown script language for consequence: " + consequence.getLanguage());
+            }
+        } else {
+            ctx.getRule().addNamedConsequence( name, new LambdaConsequence( consequence, requiredDeclarations ) );
+        }
+    }
+
+    private Declaration[] getRequiredDeclarationsIfPossible( RuleContext ctx, Consequence consequence, String name ) {
+        // Retrieving the required declarations for the consequence at build time allows to extract from the activation
+        // tuple the arguments to be passed to the consequence in linear time by traversing the tuple only once.
         // If there's an OR in the rule the fired tuple hasn't fixed structure and size because it dependens
         // on which branch of the OR gets activated. In this case no optimization is possible and it's usless
-        // to precalculate the declartions at compile time.
-        boolean ruleHasFirstLevelOr = ruleHasFirstLevelOr(ctx.getRule());
+        // to precalculate the declartions at build time.
+        boolean ruleHasFirstLevelOr = ruleHasFirstLevelOr( ctx.getRule());
 
         Variable[] consequenceVars = consequence.getDeclarations();
         String[] requiredDeclarationNames = new String[consequenceVars.length];
@@ -398,16 +414,7 @@ public class KiePackagesBuilder {
         }
 
         ctx.getRule().setRequiredDeclarationsForConsequence( name, requiredDeclarationNames );
-
-        if ( name.equals( RuleImpl.DEFAULT_CONSEQUENCE_NAME ) ) {
-            if ("java".equals(consequence.getLanguage())) {
-                ctx.getRule().setConsequence( new LambdaConsequence( consequence, requiredDeclarations ) );
-            } else {
-                throw new UnsupportedOperationException("Unknown script language for consequence: " + consequence.getLanguage());
-            }
-        } else {
-            ctx.getRule().addNamedConsequence( name, new LambdaConsequence( consequence, requiredDeclarations ) );
-        }
+        return requiredDeclarations;
     }
 
     private boolean ruleHasFirstLevelOr(RuleImpl rule) {

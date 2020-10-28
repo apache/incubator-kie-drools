@@ -34,6 +34,8 @@ import org.drools.model.Variable;
 
 public class LambdaConsequence implements Consequence {
 
+    // Enable the optimization to extract from the activation tuple the arguments to be passed to this
+    // consequence in linear time by traversing the tuple only once.
     private static final boolean ENABLE_LINEARIZED_ARGUMENTS_RETRIVAL_OPTIMIZATION = true;
 
     private final org.drools.model.Consequence consequence;
@@ -58,6 +60,7 @@ public class LambdaConsequence implements Consequence {
             Declaration[] declarations = (( RuleTerminalNode ) knowledgeHelper.getMatch().getTuple().getTupleSink()).getRequiredDeclarations();
             facts = declarationsToFacts( knowledgeHelper, ( InternalWorkingMemory ) workingMemory, knowledgeHelper.getTuple(), declarations, consequence.getVariables(), consequence.isUsingDrools() );
         } else {
+            // declarations is not null when first level rule is AND so it is possible to calculate them upfront
             facts = fetchFacts( knowledgeHelper, ( InternalWorkingMemory ) workingMemory );
         }
         consequence.getBlock().execute( facts );
