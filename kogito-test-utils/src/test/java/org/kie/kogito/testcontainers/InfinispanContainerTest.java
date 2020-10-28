@@ -42,8 +42,6 @@ public class InfinispanContainerTest {
     @Test
     public void shouldAddDefaultSettings() {
         assertTrue(container.getExposedPorts().contains(KogitoInfinispanContainer.PORT));
-        assertEquals("admin", container.getEnvMap().get("USER"));
-        assertEquals("admin", container.getEnvMap().get("PASS"));
     }
 
     @Test

@@ -20,7 +20,7 @@ import java.util.Date;
 
 public interface ProtoGenerator<T> {
 
-    String INDEX_COMMENT = "@Field(store = Store.YES)";
+    String INDEX_COMMENT = "@Field(store = Store.YES) @SortableField";
 
     Proto generate(String packageName, Collection<T> dataModel, String... headers);
 

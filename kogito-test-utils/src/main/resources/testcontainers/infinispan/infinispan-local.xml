@@ -1,0 +1,57 @@
+<!--
+  ~ Copyright 2020 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<infinispan
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="urn:infinispan:config:11.0 https://infinispan.org/schemas/infinispan-config-11.0.xsd
+                            urn:infinispan:server:11.0 https://infinispan.org/schemas/infinispan-server-11.0.xsd"
+        xmlns="urn:infinispan:config:11.0"
+        xmlns:server="urn:infinispan:server:11.0">
+
+   <cache-container name="default" statistics="true"/>
+
+   <server xmlns="urn:infinispan:server:11.0">
+      <interfaces>
+         <interface name="public">
+            <inet-address value="${infinispan.bind.address:0.0.0.0}"/>
+         </interface>
+      </interfaces>
+
+      <socket-bindings default-interface="public" port-offset="${infinispan.socket.binding.port-offset:0}">
+         <socket-binding name="default" port="${infinispan.bind.port:11222}"/>
+      </socket-bindings>
+
+      <security>
+         <security-realms>
+            <security-realm name="default">
+               <properties-realm groups-attribute="Roles">
+                  <user-properties path="users.properties" relative-to="infinispan.server.config.path" plain-text="true"/>
+                  <group-properties path="groups.properties" relative-to="infinispan.server.config.path" />
+               </properties-realm>
+            </security-realm>
+         </security-realms>
+      </security>
+
+      <endpoints socket-binding="default" security-realm="default">
+         <hotrod-connector name="hotrod">
+            <authentication>
+               <sasl mechanisms="PLAIN" qop="auth" server-name="infinispan"/>
+            </authentication>
+         </hotrod-connector>
+         <rest-connector name="rest"/>
+      </endpoints>
+   </server>
+</infinispan>
