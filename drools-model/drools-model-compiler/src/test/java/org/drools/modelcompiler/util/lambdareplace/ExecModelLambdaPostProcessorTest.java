@@ -11,9 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static com.github.javaparser.StaticJavaParser.parseResource;
-import static org.hamcrest.Matchers.equalToIgnoringWhiteSpace;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static org.drools.modelcompiler.util.lambdareplace.MaterializedLambdaTestUtils.verifyCreatedClass;
 
 public class ExecModelLambdaPostProcessorTest {
 
@@ -34,8 +32,7 @@ public class ExecModelLambdaPostProcessorTest {
         MethodDeclaration expectedResult = getMethodChangingName(inputCU, PATTERN_HARNESS, "expectedOutput");
         MethodDeclaration actual = getMethodChangingName(clone, PATTERN_HARNESS, "inputMethod");
 
-//        assertEquals(expectedResult, actual); // better diff - fails on String equals
-        assertThat(actual.toString(), equalToIgnoringWhiteSpace(expectedResult.toString()));
+        verifyCreatedClass(expectedResult, actual);
     }
 
     private MethodDeclaration getMethodChangingName(CompilationUnit inputCU, String className, String methodName) {

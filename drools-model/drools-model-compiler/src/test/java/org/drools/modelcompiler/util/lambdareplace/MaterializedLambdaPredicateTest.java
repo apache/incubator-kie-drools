@@ -5,8 +5,7 @@ import java.util.ArrayList;
 import org.drools.model.functions.PredicateInformation;
 import org.junit.Test;
 
-import static org.hamcrest.Matchers.equalToIgnoringWhiteSpace;
-import static org.junit.Assert.assertThat;
+import static org.drools.modelcompiler.util.lambdareplace.MaterializedLambdaTestUtils.verifyCreatedClass;
 
 
 public class MaterializedLambdaPredicateTest {
@@ -38,8 +37,7 @@ public class MaterializedLambdaPredicateTest {
                 "        }\n" +
                 "    }\n";
 
-        assertThat(aClass.getCompilationUnitAsString(), equalToIgnoringWhiteSpace(expectedResult));
-
+        verifyCreatedClass(aClass, expectedResult);
     }
 
     @Test
@@ -63,8 +61,7 @@ public class MaterializedLambdaPredicateTest {
                 "        }\n" +
                 "    }\n";
 
-//        assertEquals(StaticJavaParser.parse(expectedResult), aClass.getCompilationUnit()); // Better diff
-        assertThat(aClass.getCompilationUnitAsString(), equalToIgnoringWhiteSpace(expectedResult));
-
+        verifyCreatedClass(aClass, expectedResult);
     }
+
 }
