@@ -398,7 +398,7 @@ public class KieModuleRepoTest {
         }
 
         @Override
-        public KnowledgeBuilderConfiguration getBuilderConfiguration( KieBaseModel kBaseModel, ClassLoader classLoader ) {
+        public KnowledgeBuilderConfiguration createBuilderConfiguration( KieBaseModel kBaseModel, ClassLoader classLoader ) {
             throw new UnsupportedOperationException();
         }
 

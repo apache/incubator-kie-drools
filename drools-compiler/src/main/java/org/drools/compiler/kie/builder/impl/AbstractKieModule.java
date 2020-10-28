@@ -243,14 +243,14 @@ public abstract class AbstractKieModule
         return kbConf;
     }
 
-    public KnowledgeBuilderConfiguration getBuilderConfiguration(KieBaseModel kBaseModel, ClassLoader classLoader) {
+    public KnowledgeBuilderConfiguration createBuilderConfiguration( KieBaseModel kBaseModel, ClassLoader classLoader) {
         KnowledgeBuilderConfigurationImpl pconf = new KnowledgeBuilderConfigurationImpl(classLoader);
-        setModelPropsOnConf( (KieBaseModelImpl) kBaseModel, pconf );
+        pconf.setCompilationCache(getCompilationCache(kBaseModel.getName()));
+        setModelPropsOnConf( ((KieBaseModelImpl) kBaseModel).getKModule(), pconf );
         return pconf;
     }
 
-    static void setModelPropsOnConf( KieBaseModelImpl kBaseModel, KnowledgeBuilderConfigurationImpl pconf ) {
-        KieModuleModel kModuleModel = kBaseModel.getKModule();
+    static void setModelPropsOnConf( KieModuleModel kModuleModel, KnowledgeBuilderConfigurationImpl pconf ) {
         for (Map.Entry<String, String> entry : kModuleModel.getConfigurationProperties().entrySet()) {
             pconf.setProperty(entry.getKey(), entry.getValue());
         }
