@@ -13,10 +13,7 @@ NOTE: Clustering of the runtime environment is currently supported on {EAP} {EAP
 ifdef::DM,PAM[]
 and {OPENSHIFT}
 endif::[]
-only. Clustering of {CENTRAL} is currently a Technology Preview feature that is not yet intended for production use.
-ifdef::DM,PAM[]
-For more information about Red Hat Technology Preview support, see https://access.redhat.com/support/offerings/techpreview/[Technology Preview Features Support Scope].
-endif::[]
+only.
 
 ifeval::["{context}" != "planning"]
 .Additional resources
