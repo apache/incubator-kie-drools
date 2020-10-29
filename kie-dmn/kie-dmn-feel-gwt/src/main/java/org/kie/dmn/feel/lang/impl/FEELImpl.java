@@ -88,33 +88,14 @@ public class FEELImpl
         return new CompilerContextImpl(getEventsManager(contextListeners)).addFEELFunctions(customFunctions);
     }
 
-    public Collection<FEELFunction> getCustomFunctions() {
-        return customFunctions;
-    }
-
     @Override
     public CompiledExpression compile(String expression, CompilerContext ctx) {
-        return null;
-//        return new ProcessedExpression(
-//                expression,
-//                ctx,
-//                ProcessedFEELUnit.DefaultMode.of(doCompile || ctx.isDoCompile()),
-//                profiles).getResult();
+        throw new UnsupportedOperationException("Not supported in GWT (yet)");
     }
-
-//    public CompilationUnit generateExpressionSource(String expression, CompilerContext ctx) {
-//        return new ProcessedExpression(
-//                expression,
-//                ctx,
-//                ProcessedFEELUnit.DefaultMode.of(doCompile || ctx.isDoCompile()),
-//                profiles).getSourceCode();
-//    }
 
     @Override
     public CompiledExpression compileUnaryTests(String expression, CompilerContext ctx) {
-//    public ProcessedUnaryTest compileUnaryTests(String expressions, CompilerContext ctx) {
-        return null;
-//        return new ProcessedUnaryTest(expressions, ctx, profiles);
+        throw new UnsupportedOperationException("Not supported in GWT (yet)");
     }
 
     @Override
@@ -161,16 +142,12 @@ public class FEELImpl
 
     @Override
     public Object evaluate(CompiledExpression expr, Map<String, Object> inputVariables) {
-//        CompiledFEELExpression e = (CompiledFEELExpression) expr;
-//        return e.apply(newEvaluationContext(Collections.EMPTY_SET, inputVariables));
-        return null;
+        throw new UnsupportedOperationException("Not supported in GWT (yet)");
     }
 
     @Override
     public Object evaluate(CompiledExpression expr, EvaluationContext ctx) {
-//        CompiledFEELExpression e = (CompiledFEELExpression) expr;
-//        return e.apply(ctx.current());
-        return null;
+        throw new UnsupportedOperationException("Not supported in GWT (yet)");
     }
 
     public EvaluationContext newEvaluationContext(Collection<FEELEventListener> listeners, Map<String, Object> inputVariables) {
@@ -195,14 +172,7 @@ public class FEELImpl
 
     @Override
     public List<UnaryTest> evaluateUnaryTests(String expression, Map<String, Type> variableTypes) {
-//        CompilerContext ctx = newCompilerContext(getListeners());
-//        for (Map.Entry<String, Type> e : variableTypes.entrySet()) {
-//            ctx.addInputVariableType(e.getKey(), e.getValue());
-//        }
-//
-//        return compileUnaryTests(expression, ctx)
-//                .apply(newEvaluationContext(ctx.getListeners(), EMPTY_INPUT));
-        return null;
+        throw new UnsupportedOperationException("Not supported in GWT (yet)");
     }
 
     @Override

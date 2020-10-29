@@ -21,7 +21,7 @@ public class AssignableFromUtil {
     XXX: Not as good as the real thing.
      */
     public static boolean isAssignableFrom(final Class thisClass,
-                                           Class otherClass) {
+                                           final Class otherClass) {
         while (otherClass != null) {
             if (otherClass.equals(thisClass)) {
                 return true;

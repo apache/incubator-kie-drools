@@ -33,16 +33,16 @@ import org.kie.dmn.feel.parser.feel11.ASTBuilderVisitor;
 
 import static org.kie.dmn.feel.codegen.feel11.ProcessedFEELUnit.DefaultMode.Compiled;
 
-public class ProcessedExpression extends ProcessedFEELUnit {
+public abstract class ProcessedExpression extends ProcessedFEELUnit {
 
-    private static final String TEMPLATE_RESOURCE = "/TemplateCompiledFEELExpression.java";
-    private static final String TEMPLATE_CLASS = "TemplateCompiledFEELExpression";
-
+//    private static final String TEMPLATE_RESOURCE = "/TemplateCompiledFEELExpression.java";
+//    private static final String TEMPLATE_CLASS = "TemplateCompiledFEELExpression";
+//
     private final BaseNode ast;
     private final DefaultMode defaultBackend;
-    private DirectCompilerResult compiledExpression;
-
-//    private final CompilerBytecodeLoader compiler = new CompilerBytecodeLoader();
+//    private DirectCompilerResult compiledExpression;
+//
+////    private final CompilerBytecodeLoader compiler = new CompilerBytecodeLoader();
     private CompiledFEELExpression defaultResult;
 
     public ProcessedExpression(
@@ -80,54 +80,54 @@ public class ProcessedExpression extends ProcessedFEELUnit {
         return this;
     }
 
-    private DirectCompilerResult getCompilerResult() {
-        if (compiledExpression == null) {
-            if (errorListener.isError()) {
-                compiledExpression =
-                        DirectCompilerResult.of(
-                                CompiledFEELSupport.compiledErrorExpression(
-                                        errorListener.event().getMessage()),
-                                BuiltInType.UNKNOWN);
-            } else {
-                try {
-                    compiledExpression = ast.accept(new ASTCompilerVisitor());
-                } catch (FEELCompilationError e) {
-                    compiledExpression = DirectCompilerResult.of(
-                            CompiledFEELSupport.compiledErrorExpression(e.getMessage()),
-                            BuiltInType.UNKNOWN);
-                }
-            }
-        }
-        return compiledExpression;
-    }
+//    private DirectCompilerResult getCompilerResult() {
+//        if (compiledExpression == null) {
+//            if (errorListener.isError()) {
+//                compiledExpression =
+//                        DirectCompilerResult.of(
+//                                CompiledFEELSupport.compiledErrorExpression(
+//                                        errorListener.event().getMessage()),
+//                                BuiltInType.UNKNOWN);
+//            } else {
+//                try {
+//                    compiledExpression = ast.accept(new ASTCompilerVisitor());
+//                } catch (FEELCompilationError e) {
+//                    compiledExpression = DirectCompilerResult.of(
+//                            CompiledFEELSupport.compiledErrorExpression(e.getMessage()),
+//                            BuiltInType.UNKNOWN);
+//                }
+//            }
+//        }
+//        return compiledExpression;
+//    }
 
-    public CompilationUnit getSourceCode() {
-        DirectCompilerResult compilerResult = getCompilerResult();
-        return compiler.getCompilationUnit(
-                CompiledFEELExpression.class,
-                TEMPLATE_RESOURCE,
-                packageName,
-                TEMPLATE_CLASS,
-                expression,
-                compilerResult.getExpression(),
-                compilerResult.getFieldDeclarations());
-    }
+//    public CompilationUnit getSourceCode() {
+//        DirectCompilerResult compilerResult = getCompilerResult();
+//        return compiler.getCompilationUnit(
+//                CompiledFEELExpression.class,
+//                TEMPLATE_RESOURCE,
+//                packageName,
+//                TEMPLATE_CLASS,
+//                expression,
+//                compilerResult.getExpression(),
+//                compilerResult.getFieldDeclarations());
+//    }
 
     public InterpretedExecutableExpression getInterpreted() {
         return new InterpretedExecutableExpression(new CompiledExpressionImpl(ast));
     }
 
-    public CompiledExecutableExpression getCompiled() {
-        CompiledFEELExpression compiledFEELExpression =
-                compiler.compileUnit(
-                        packageName,
-                        TEMPLATE_CLASS,
-                        getSourceCode());
-        return new CompiledExecutableExpression(compiledFEELExpression);
-    }
+//    public CompiledExecutableExpression getCompiled() {
+//        CompiledFEELExpression compiledFEELExpression =
+//                compiler.compileUnit(
+//                        packageName,
+//                        TEMPLATE_CLASS,
+//                        getSourceCode());
+//        return new CompiledExecutableExpression(compiledFEELExpression);
+//    }
 
-    @Override
-    public Object apply(EvaluationContext evaluationContext) {
-        return defaultResult.apply(evaluationContext);
-    }
+//    @Override
+//    public Object apply(EvaluationContext evaluationContext) {
+//        return defaultResult.apply(evaluationContext);
+//    }
 }

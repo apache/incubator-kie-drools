@@ -19,7 +19,6 @@ package org.kie.dmn.feel.util;
 public class AssignableResolver {
 
     public static boolean isAssignableFrom(Class expectedType, Object object) {
-//        return expectedType.isAssignableFrom(object.getClass());
-        return false;
+        return AssignableFromUtil.isAssignableFrom(expectedType, object);
     }
 }
