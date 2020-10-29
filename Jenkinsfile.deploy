@@ -135,9 +135,11 @@ pipeline {
         stage('Build optaplanner') {
             steps {
                 script {
+                    String extraArgs = ''
                     if (params.MAVEN_DEPENDENCIES_REPOSITORY != '') {
-                        mavenCleanInstall('optaplanner', params.SKIP_TESTS, [], "-s ${env.GLOBAL_MAVEN_SETTINGS} -Denforcer.skip")
+                        extraArgs = "-s ${env.GLOBAL_MAVEN_SETTINGS} -Denforcer.skip"
                     }
+                    mavenCleanInstall('optaplanner', params.SKIP_TESTS, [], extraArgs)
                 }
             }
             post {
