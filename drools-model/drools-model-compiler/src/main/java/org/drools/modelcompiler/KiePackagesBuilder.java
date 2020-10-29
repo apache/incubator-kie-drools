@@ -31,6 +31,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
+import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.rule.builder.ConstraintBuilder;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.ClassFieldAccessorCache;
@@ -140,6 +141,8 @@ import org.kie.api.definition.rule.All;
 import org.kie.api.definition.rule.Direct;
 import org.kie.api.definition.rule.Propagation;
 import org.kie.api.definition.type.Role;
+import org.kie.internal.builder.KnowledgeBuilderConfiguration;
+import org.kie.internal.builder.conf.PropertySpecificOption;
 import org.kie.internal.ruleunit.RuleUnitUtil;
 
 import static java.util.stream.Collectors.toList;
@@ -163,6 +166,7 @@ public class KiePackagesBuilder {
     private static final ObjectType JAVA_CLASS_OBJECT_TYPE = new ClassObjectType( Object.class );
 
     private final RuleBaseConfiguration configuration;
+    private final KnowledgeBuilderConfiguration builderConf;
 
     private final Map<String, InternalKnowledgePackage> packages = new HashMap<>();
 
@@ -171,11 +175,12 @@ public class KiePackagesBuilder {
     private final Collection<Model> models;
 
     public KiePackagesBuilder(KieBaseConfiguration conf) {
-        this(conf, new ArrayList<>());
+        this(conf, null, new ArrayList<>());
     }
 
-    public KiePackagesBuilder(KieBaseConfiguration conf, Collection<Model> models) {
+    public KiePackagesBuilder( KieBaseConfiguration conf, KnowledgeBuilderConfiguration builderConf, Collection<Model> models) {
         this.configuration = ((RuleBaseConfiguration) conf);
+        this.builderConf = builderConf;
         this.models = models;
     }
 
@@ -192,7 +197,7 @@ public class KiePackagesBuilder {
 
             for (TypeMetaData metaType : model.getTypeMetaDatas()) {
                 KnowledgePackageImpl pkg = ( KnowledgePackageImpl ) packages.computeIfAbsent( metaType.getPackage(), this::createKiePackage );
-                pkg.addTypeDeclaration( createTypeDeclaration(metaType ) );
+                pkg.addTypeDeclaration( createTypeDeclaration( metaType, getPropertySpecificOption() ) );
             }
 
             for (Global global : model.getGlobals()) {
@@ -1080,13 +1085,17 @@ public class KiePackagesBuilder {
                 KnowledgePackageImpl pkg = (KnowledgePackageImpl) packages.computeIfAbsent( patternClass.getPackage().getName(), this::createKiePackage );
                 TypeDeclaration typeDeclaration = pkg.getTypeDeclaration( patternClass );
                 if ( typeDeclaration == null ) {
-                    typeDeclaration = createTypeDeclaration( patternClass );
+                    typeDeclaration = createTypeDeclaration( patternClass, getPropertySpecificOption() );
                     pkg.addTypeDeclaration( typeDeclaration );
                 }
                 isEvent = typeDeclaration.getRole() == Role.Type.EVENT;
             }
             return new ClassObjectType( patternClass, isEvent );
         } );
+    }
+
+    private PropertySpecificOption getPropertySpecificOption() {
+        return builderConf != null ? (( KnowledgeBuilderConfigurationImpl ) builderConf).getPropertySpecificOption() : PropertySpecificOption.ALWAYS;
     }
 
     private static GroupElement.Type conditionToGroupElementType( Condition.Type type ) {
