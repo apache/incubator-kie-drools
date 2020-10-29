@@ -19,6 +19,7 @@ import java.io.Serializable;
 import java.lang.invoke.SerializedLambda;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -36,7 +37,7 @@ public class LambdaIntrospector implements Function<Object, String> {
     public static final String LAMBDA_INTROSPECTOR_CACHE_SIZE = "drools.lambda.introspector.cache.size";
     private static final int CACHE_SIZE = Integer.parseInt(System.getProperty(LAMBDA_INTROSPECTOR_CACHE_SIZE, "32"));
 
-    private static final Map<ClassLoader, Map<String, Map<String, String>>> methodFingerprintsMapPerClassLoader = new WeakHashMap<>();
+    private static final Map<ClassLoader, Map<String, Map<String, String>>> methodFingerprintsMapPerClassLoader = Collections.synchronizedMap( new WeakHashMap<>() );
 
     static Map<ClassLoader, Map<String, Map<String, String>>> getMethodFingerprintsMapPerClassLoader() {
         return methodFingerprintsMapPerClassLoader;

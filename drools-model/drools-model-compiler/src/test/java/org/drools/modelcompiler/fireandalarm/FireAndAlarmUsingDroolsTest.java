@@ -1,6 +1,5 @@
 package org.drools.modelcompiler.fireandalarm;
 
-import org.drools.model.BitMask;
 import org.drools.model.Model;
 import org.drools.model.Rule;
 import org.drools.model.Variable;
@@ -16,7 +15,14 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
 import static java.util.Arrays.asList;
-import static org.drools.model.FlowDSL.*;
+
+import static org.drools.model.FlowDSL.any;
+import static org.drools.model.FlowDSL.execute;
+import static org.drools.model.FlowDSL.exists;
+import static org.drools.model.FlowDSL.expr;
+import static org.drools.model.FlowDSL.not;
+import static org.drools.model.FlowDSL.on;
+import static org.drools.model.FlowDSL.rule;
 import static org.junit.Assert.assertTrue;
 
 public class FireAndAlarmUsingDroolsTest {
@@ -41,8 +47,6 @@ public class FireAndAlarmUsingDroolsTest {
                                 })
                      );
 
-        BitMask r2_mask1 = BitMask.getPatternMask( Sprinkler.class, "on" );
-
         Rule r2 = rule("When the fire is gone turn off the sprinkler")
                 .build(
                         expr(sprinkler, Sprinkler::isOn),
@@ -51,7 +55,7 @@ public class FireAndAlarmUsingDroolsTest {
                                 .execute((drools, s) -> {
                                     System.out.println("Turn off the sprinkler for room " + s.getRoom().getName());
                                     s.setOn(false);
-                                    drools.update(s, r2_mask1);
+                                    drools.update(s);
                                 })
                      );
 
