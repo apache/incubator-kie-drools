@@ -82,6 +82,7 @@ public abstract class AbstractMessageConsumer<M extends Model, D, T extends Abst
     }
 
     public void consume(String payload) {
+        logger.debug("Received: {} on thread {}", payload, Thread.currentThread().getName());
         eventConsumerFactory.get(this::eventToModel, dataEventClass, cloudEventClass, useCloudEvents)
                 .consume(application, (Process<Model>) process, payload, trigger);
     }

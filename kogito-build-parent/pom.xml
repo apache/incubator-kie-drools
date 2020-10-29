@@ -138,6 +138,8 @@
     <version.resteasy.springboot>4.6.0.Final</version.resteasy.springboot>
     <version.springboot>2.3.1.RELEASE</version.springboot>
     <version.spring.kafka>2.5.2.RELEASE</version.spring.kafka>
+    <version.spring.reactor>3.3.6.RELEASE</version.spring.reactor>
+    <version.spring.reactor.kafka>1.2.2.RELEASE</version.spring.reactor.kafka>
     <version.spring.netty>4.1.50.Final</version.spring.netty>
     <version.spring.framework>5.2.7.RELEASE</version.spring.framework>
     <version.xmlunit>2.2.1</version.xmlunit>
@@ -678,6 +680,16 @@
         <groupId>org.springframework</groupId>
         <artifactId>spring-web</artifactId>
         <version>${version.spring.framework}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.projectreactor</groupId>
+        <artifactId>reactor-core</artifactId>
+        <version>${version.spring.reactor}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.projectreactor.kafka</groupId>
+        <artifactId>reactor-kafka</artifactId>
+        <version>${version.spring.reactor.kafka}</version>
       </dependency>
 
       <!-- predictions/machine learning related -->

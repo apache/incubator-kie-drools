@@ -2,9 +2,12 @@ package $Package$;
 
 import org.kie.kogito.Application;
 import org.kie.kogito.conf.ConfigBean;
+import org.kie.kogito.event.KogitoEventStreams;
 import org.kie.kogito.event.impl.DefaultEventConsumerFactory;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.services.event.impl.AbstractMessageConsumer;
+import org.reactivestreams.Publisher;
+import reactor.core.publisher.Flux;
 
 @org.springframework.stereotype.Component()
 public class $Type$MessageConsumer extends AbstractMessageConsumer<$Type$, $DataType$, $DataEventType$> {
@@ -13,8 +16,8 @@ public class $Type$MessageConsumer extends AbstractMessageConsumer<$Type$, $Data
     $Type$MessageConsumer(
             Application application,
             @org.springframework.beans.factory.annotation.Qualifier("$ProcessName$") Process<$Type$> process,
-            ConfigBean configBean
-            /*,  @Qualified("kogito_event_publisher") Publisher<String> eventPublisher */) {
+            ConfigBean configBean,
+            @org.springframework.beans.factory.annotation.Qualifier(KogitoEventStreams.PUBLISHER) Publisher<String> eventPublisher) {
         super(application,
               process,
               $DataType$.class,
@@ -22,11 +25,9 @@ public class $Type$MessageConsumer extends AbstractMessageConsumer<$Type$, $Data
               "$Trigger$",
               new DefaultEventConsumerFactory(),
               configBean.useCloudEvents());
-    }
 
-    @org.springframework.kafka.annotation.KafkaListener(topics = "$Trigger$")
-    public void consume(String payload) {
-        super.consume(payload);
+        Flux.from(eventPublisher)
+                .subscribe(this::consume);
     }
 
     protected $Type$ eventToModel($DataType$ event) {
@@ -34,5 +35,4 @@ public class $Type$MessageConsumer extends AbstractMessageConsumer<$Type$, $Data
         model.set$DataType$(event);
         return model;
     }
-
 }

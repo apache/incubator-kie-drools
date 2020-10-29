@@ -19,26 +19,29 @@ package org.kie.kogito.addon.cloudevents.spring;
 
 import java.util.concurrent.CompletionStage;
 
+import org.kie.kogito.event.KogitoEventStreams;
 import org.kie.kogito.services.event.CloudEventEmitter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 /**
  * Spring implementation delegating to kafka template
- * TODO proper error handling https://issues.redhat.com/browse/KOGITO-3408
  */
 @Component
 public class SpringKafkaCloudEventEmitter implements CloudEventEmitter {
+
     @Autowired
     org.springframework.kafka.core.KafkaTemplate<String, String> emitter;
+    @Value(value = "${spring.kafka.bootstrap-servers}")
+    String kafkaBootstrapAddress;
+    @Value(value = "${kogito.addon.cloudevents.kafka." + KogitoEventStreams.OUTGOING + ":" + KogitoEventStreams.OUTGOING + "}")
+    String kafkaTopicName;
 
     public CompletionStage<Void> emit(String e) {
-        return emitter.send("kogito_outgoing_stream", e)
+        return emitter.send(kafkaTopicName, e)
                 .completable()
-                .thenRun(() -> {}); // discard return to comply with the signature
+                .thenApply(r -> null); // discard return to comply with the signature
     }
 
-    public void emit(String topic, String message) {
-        emitter.send(topic, message);
-    }
 }

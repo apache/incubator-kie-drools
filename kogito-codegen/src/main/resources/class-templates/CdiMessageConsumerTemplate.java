@@ -1,19 +1,16 @@
 package $Package$;
 
+import io.smallrye.mutiny.Multi;
 import org.kie.kogito.Application;
 import org.kie.kogito.conf.ConfigBean;
+import org.kie.kogito.event.KogitoEventStreams;
 import org.kie.kogito.event.impl.DefaultEventConsumerFactory;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.services.event.impl.AbstractMessageConsumer;
 import org.reactivestreams.Publisher;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import io.smallrye.mutiny.Multi;
 
 @io.quarkus.runtime.Startup
 public class $Type$MessageConsumer extends AbstractMessageConsumer<$Type$, $DataType$, $DataEventType$> {
-
-    private static final Logger logger = LoggerFactory.getLogger(AbstractMessageConsumer.class);
 
     @javax.inject.Inject
     Application application;
@@ -25,7 +22,7 @@ public class $Type$MessageConsumer extends AbstractMessageConsumer<$Type$, $Data
     ConfigBean configBean;
 
     @javax.inject.Inject
-    @javax.inject.Named("kogito_event_publisher") Publisher<String> eventPublisher;
+    @javax.inject.Named(KogitoEventStreams.PUBLISHER) Publisher<String> eventPublisher;
 
     @javax.annotation.PostConstruct
     void init() {
@@ -38,7 +35,6 @@ public class $Type$MessageConsumer extends AbstractMessageConsumer<$Type$, $Data
               configBean.useCloudEvents());
 
         Multi.createFrom().publisher(eventPublisher)
-                .invoke(x -> logger.info("Received: {} on thread {}", x, Thread.currentThread().getName()))
                 .subscribe()
                 .with(this::consume);
     }

@@ -24,6 +24,7 @@ import javax.inject.Inject;
 
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
+import org.kie.kogito.event.KogitoEventStreams;
 import org.kie.kogito.services.event.CloudEventEmitter;
 
 /**
@@ -34,7 +35,7 @@ import org.kie.kogito.services.event.CloudEventEmitter;
 @ApplicationScoped
 public class QuarkusCloudEventEmitter implements CloudEventEmitter {
     @Inject
-    @Channel("kogito_outgoing_stream")
+    @Channel(KogitoEventStreams.OUTGOING)
     Emitter<String> emitter;
 
     public CompletionStage<Void> emit(String e) {

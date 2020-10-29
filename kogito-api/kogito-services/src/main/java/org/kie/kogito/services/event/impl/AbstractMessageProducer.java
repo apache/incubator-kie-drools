@@ -23,8 +23,12 @@ import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.kogito.services.event.AbstractProcessDataEvent;
 import org.kie.kogito.services.event.CloudEventEmitter;
 import org.kie.kogito.services.event.EventMarshaller;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class AbstractMessageProducer<D, T extends AbstractProcessDataEvent<D>> {
+
+    private static final Logger logger = LoggerFactory.getLogger(AbstractMessageProducer.class);
 
     private Optional<Boolean> useCloudEvents;
     private EventMarshaller marshaller;
@@ -55,7 +59,11 @@ public abstract class AbstractMessageProducer<D, T extends AbstractProcessDataEv
     }
 
     public void produce(ProcessInstance pi, D eventData) {
-        emitter.emit(this.marshall(pi, eventData));
+        emitter.emit(this.marshall(pi, eventData))
+                .exceptionally(ex -> {
+                    logger.error("An error was caught while process " + pi.getProcessId() + " produced message " + eventData, ex);
+                    return null;
+                });
     }
 
     protected String marshall(ProcessInstance pi, D eventData) {

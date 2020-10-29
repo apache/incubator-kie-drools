@@ -5,6 +5,7 @@ import io.cloudevents.CloudEvent;
 import io.cloudevents.jackson.JsonFormat;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
 import org.jboss.resteasy.spi.HttpRequest;
+import org.kie.kogito.event.KogitoEventStreams;
 import org.kie.kogito.events.knative.ce.Printer;
 import org.kie.kogito.events.knative.ce.http.Responses;
 import org.slf4j.Logger;
@@ -28,7 +29,7 @@ public class CloudEventListenerResource {
     @javax.inject.Inject
     ObjectMapper objectMapper;
 
-    @org.eclipse.microprofile.reactive.messaging.Channel("kogito_incoming_stream")
+    @org.eclipse.microprofile.reactive.messaging.Channel(KogitoEventStreams.INCOMING)
     @javax.inject.Inject()
     Emitter<String> emitter;
 
