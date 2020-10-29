@@ -2548,4 +2548,141 @@ public class AccumulateTest extends BaseModelTest {
             this.employee = employee;
         }
     }
+
+    @Test
+    public void testComposedGroupBy() {
+        // DROOLS-5697
+        String str =
+                "import java.util.*;\n" +
+                "import " + GroupResult.class.getCanonicalName() + ";\n" +
+                "import " + GroupKey.class.getCanonicalName() + ";\n" +
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "global Map results;\n" +
+
+                "rule R1 when\n" +
+                "    Person( $initial : name.substring(0,3) )\n" +
+                "    not( GroupKey(topic ==\"a\", key == $initial) )\n" +
+                "then\n" +
+                "    insert( new GroupKey( \"a\", $initial ) );\n" +
+                "end\n" +
+                "\n" +
+                "rule R2 when\n" +
+                "    $k: GroupKey( topic ==\"a\", $initial : key )\n" +
+                "    not( Person( name.substring(0,3) == $initial ) )\n" +
+                "then\n" +
+                "    delete( $k );\n" +
+                "end\n" +
+                "\n" +
+                "rule R3 when\n" +
+                "    $groupKey : GroupKey( topic ==\"a\", $initial : key )\n" +
+                "    accumulate (\n" +
+                "            Person( $age: age, name.substring(0,3) == $initial );\n" +
+                "            $sumOfAges : sum($age)\n" +
+                "         )\n" +
+                "then\n" +
+                "    insertLogical( new GroupResult($groupKey, $sumOfAges) );\n" +
+                "end\n" +
+
+                "rule R4 when\n" +
+                "    GroupResult( topic ==\"a\", $initial : ((String)key).substring(0,2) )\n" +
+                "    not( GroupKey( topic ==\"b\", key == $initial) )\n" +
+                "then\n" +
+                "    insert( new GroupKey( \"b\", $initial ) );\n" +
+                "end\n" +
+                "\n" +
+                "rule R5 when\n" +
+                "    $k: GroupKey( topic ==\"b\", $initial : key )\n" +
+                "    not( GroupResult( topic ==\"a\", ((String)key).substring(0,2) == $initial ) )\n" +
+                "then\n" +
+                "    delete( $k );\n" +
+                "end\n" +
+                "\n" +
+                "rule R6 when\n" +
+                "    GroupKey( topic ==\"b\", $initial : key )\n" +
+                "    accumulate (\n" +
+                "            GroupResult( topic ==\"a\", $value: value, ((String)key).substring(0,2) == $initial );\n" +
+                "            $maxOfValues : max($value)\n" +
+                "         )\n" +
+                "then\n" +
+                "    results.put($initial, $maxOfValues);\n" +
+                "end";
+
+        KieSession ksession = getKieSession(str);
+
+        Map results = new HashMap();
+        ksession.setGlobal( "results", results );
+
+        ksession.insert(new Person("Mark", 42));
+        ksession.insert(new Person("Edson", 38));
+        FactHandle meFH = ksession.insert(new Person("Mario", 45));
+        ksession.insert(new Person("Maciej", 39));
+        ksession.insert(new Person("Edoardo", 33));
+        FactHandle geoffreyFH = ksession.insert(new Person("Geoffrey", 35));
+        ksession.fireAllRules();
+
+        /*
+         * In the first groupBy:
+         *   Mark+Mario become "(Mar, 87)"
+         *   Maciej becomes "(Mac, 39)"
+         *   Geoffrey becomes "(Geo, 35)"
+         *   Edson becomes "(Eds, 38)"
+         *   Edoardo becomes "(Edo, 33)"
+         *
+         * Then in the second groupBy:
+         *   "(Mar, 87)" and "(Mac, 39)" become "(Ma, 87)"
+         *   "(Eds, 38)" and "(Edo, 33)" become "(Ed, 38)"
+         *   "(Geo, 35)" becomes "(Ge, 35)"
+         */
+
+        assertEquals( 3, results.size() );
+        assertEquals( 87, results.get("Ma") );
+        assertEquals( 38, results.get("Ed") );
+        assertEquals( 35, results.get("Ge") );
+        results.clear();
+
+        ksession.delete( meFH );
+        ksession.fireAllRules();
+
+        // No Mario anymore, so "(Mar, 42)" instead of "(Mar, 87)".
+        // Therefore "(Ma, 42)".
+        assertEquals( 1, results.size() );
+        assertEquals( 42, results.get("Ma") );
+        results.clear();
+
+        // "(Geo, 35)" is gone.
+        // "(Mat, 38)" is added, but Mark still wins, so "(Ma, 42)" stays.
+        ksession.delete(geoffreyFH);
+        ksession.insert(new Person("Matteo", 38));
+        ksession.fireAllRules();
+
+        assertEquals( 1, results.size() );
+        assertEquals( 42, results.get("Ma") );
+    }
+
+    public static class GroupResult {
+        private final GroupKey key;
+        private final Object value;
+
+        public GroupResult( GroupKey key, Object value ) {
+            this.key = key;
+            this.value = value;
+        }
+
+        public GroupResult( String topic, Object key, Object value ) {
+            this.key = new GroupKey(topic, key);
+            this.value = value;
+        }
+
+        public String getTopic() {
+            return key.getTopic();
+        }
+
+        public Object getKey() {
+            return key.getKey();
+        }
+
+        public Object getValue() {
+            return value;
+        }
+    }
 }

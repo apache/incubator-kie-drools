@@ -30,4 +30,6 @@ public interface Drools extends DroolsEntryPoint {
     void setFocus(String focus);
 
     Channel getChannel(String name);
+
+    void logicalInsert(Object object);
 }

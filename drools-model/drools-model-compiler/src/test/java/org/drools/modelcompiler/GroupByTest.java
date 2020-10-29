@@ -14,9 +14,6 @@
 
 package org.drools.modelcompiler;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -29,7 +26,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.assertj.core.api.Assertions;
 import org.drools.core.base.accumulators.CountAccumulateFunction;
-import org.drools.core.reteoo.SubnetworkTuple;
+import org.drools.core.base.accumulators.IntegerMaxAccumulateFunction;
+import org.drools.core.base.accumulators.IntegerSumAccumulateFunction;
 import org.drools.model.DSL;
 import org.drools.model.Global;
 import org.drools.model.Index;
@@ -52,7 +50,6 @@ import org.drools.modelcompiler.util.EvaluationUtil;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.rule.AccumulateFunction;
 import org.kie.api.runtime.rule.FactHandle;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -754,5 +751,92 @@ public class GroupByTest {
         ksession.fireAllRules();
 
         assertThat(results).containsExactly(80, 75, 71);
+    }
+
+    @Test
+    public void testTwoGroupBy() {
+        // DROOLS-5697
+        Variable<String> var_$key = D.declarationOf(String.class);
+        Variable<Person> var_$p = D.declarationOf(Person.class);
+        Variable<Integer> var_$age = D.declarationOf(Integer.class);
+        Variable<Integer> var_$sumOfAges = D.declarationOf(Integer.class);
+
+        Rule rule1 = D.rule("R1").build(
+                D.groupBy(
+                        D.pattern(var_$p).bind(var_$age, person -> person.getAge(), D.reactOn("age")),
+                        var_$p, var_$key, person -> person.getName().substring(0, 3),
+                        D.accFunction(IntegerSumAccumulateFunction::new, var_$age).as(var_$sumOfAges)),
+                D.on(var_$key, var_$sumOfAges)
+                        .execute((drools, $key, $sumOfAges) -> drools.logicalInsert(new AccumulateTest.GroupResult("a", $key, $sumOfAges)))
+        );
+
+        Global<Map> var_results = D.globalOf(Map.class, "defaultpkg", "results");
+
+        Variable<AccumulateTest.GroupResult> var_$g1 = D.declarationOf(AccumulateTest.GroupResult.class);
+        Variable<Integer> var_$g1_value = D.declarationOf(Integer.class);
+        Variable<String> var_$key_2 = D.declarationOf(String.class);
+        Variable<Integer> var_$maxOfValues = D.declarationOf(Integer.class);
+
+        Rule rule2 = D.rule("R2").build(
+                D.groupBy(
+                        D.pattern(var_$g1).expr( groupResult -> groupResult.getTopic().equals( "a" ) )
+                                          .bind(var_$g1_value, groupResult -> (Integer) groupResult.getValue(), D.reactOn("value")),
+                        var_$g1, var_$key_2, groupResult -> ((String)groupResult.getKey()).substring(0, 2),
+                        D.accFunction(IntegerMaxAccumulateFunction::new, var_$g1_value).as(var_$maxOfValues)),
+                D.on(var_$key_2, var_results, var_$maxOfValues)
+                        .execute(($key, results, $maxOfValues) -> results.put($key, $maxOfValues))
+        );
+
+        Model model = new ModelImpl().addRule( rule1 ).addRule( rule2 ).addGlobal( var_results );
+        KieSession ksession = KieBaseBuilder.createKieBaseFromModel( model ).newKieSession();
+
+        Map results = new HashMap();
+        ksession.setGlobal( "results", results );
+
+        ksession.insert(new Person("Mark", 42));
+        ksession.insert(new Person("Edson", 38));
+        FactHandle meFH = ksession.insert(new Person("Mario", 45));
+        ksession.insert(new Person("Maciej", 39));
+        ksession.insert(new Person("Edoardo", 33));
+        FactHandle geoffreyFH = ksession.insert(new Person("Geoffrey", 35));
+        ksession.fireAllRules();
+
+        /*
+         * In the first groupBy:
+         *   Mark+Mario become "(Mar, 87)"
+         *   Maciej becomes "(Mac, 39)"
+         *   Geoffrey becomes "(Geo, 35)"
+         *   Edson becomes "(Eds, 38)"
+         *   Edoardo becomes "(Edo, 33)"
+         *
+         * Then in the second groupBy:
+         *   "(Mar, 87)" and "(Mac, 39)" become "(Ma, 87)"
+         *   "(Eds, 38)" and "(Edo, 33)" become "(Ed, 38)"
+         *   "(Geo, 35)" becomes "(Ge, 35)"
+         */
+
+        assertEquals( 3, results.size() );
+        assertEquals( 87, results.get("Ma") );
+        assertEquals( 38, results.get("Ed") );
+        assertEquals( 35, results.get("Ge") );
+        results.clear();
+
+        ksession.delete( meFH );
+        ksession.fireAllRules();
+
+        // No Mario anymore, so "(Mar, 42)" instead of "(Mar, 87)".
+        // Therefore "(Ma, 42)".
+        assertEquals( 1, results.size() );
+        assertEquals( 42, results.get("Ma") );
+        results.clear();
+
+        // "(Geo, 35)" is gone.
+        // "(Mat, 38)" is added, but Mark still wins, so "(Ma, 42)" stays.
+        ksession.delete(geoffreyFH);
+        ksession.insert(new Person("Matteo", 38));
+        ksession.fireAllRules();
+
+        assertEquals( 1, results.size() );
+        assertEquals( 42, results.get("Ma") );
     }
 }
