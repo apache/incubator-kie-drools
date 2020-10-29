@@ -126,18 +126,6 @@ public class FunctionDefNode
         }
     }
 
-//    public static Class<?> getType(String typeName)
-//            throws ClassNotFoundException {
-//        // first check if it is primitive
-//        Class<?> type = convertPrimitiveNameToType( typeName );
-//        if( type == null ) {
-//            // if it is not, then try to load it
-//            type = Class.forName( typeName );
-//
-//        }
-//        return type;
-//    }
-
     public static String[] parseMethod(String signature) {
         MatchResult m = METHOD_PARSER.exec(signature);
         if (m != null) {
