@@ -21,20 +21,26 @@ import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.EnumDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.expr.ObjectCreationExpr;
+import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.PrimitiveType;
+import org.drools.model.functions.PredicateInformation;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
+import static com.github.javaparser.StaticJavaParser.parseType;
 
 public class MaterializedLambdaPredicate extends MaterializedLambda {
 
-    private final static String CLASS_NAME_PREFIX = "LambdaPredicate";
+    private static final String CLASS_NAME_PREFIX = "LambdaPredicate";
+    private final PredicateInformation predicateInformation;
 
-    MaterializedLambdaPredicate(String packageName, String ruleClassName) {
+    MaterializedLambdaPredicate(String packageName, String ruleClassName, PredicateInformation predicateInformation) {
         super(packageName, ruleClassName);
+        this.predicateInformation = predicateInformation;
     }
 
     @Override
@@ -43,7 +49,14 @@ public class MaterializedLambdaPredicate extends MaterializedLambda {
     }
 
     @Override
-    void createMethodDeclaration(EnumDeclaration classDeclaration) {
+    void createMethodsDeclaration(EnumDeclaration classDeclaration) {
+        createTestMethod(classDeclaration);
+        if(!predicateInformation.isEmpty()) {
+            createPredicateInformationMethod(classDeclaration);
+        }
+    }
+
+    private void createTestMethod(EnumDeclaration classDeclaration) {
         MethodDeclaration methodDeclaration = classDeclaration.addMethod("test", Modifier.Keyword.PUBLIC);
         methodDeclaration.setThrownExceptions(NodeList.nodeList(parseClassOrInterfaceType("java.lang.Exception")));
         methodDeclaration.addAnnotation("Override");
@@ -53,6 +66,20 @@ public class MaterializedLambdaPredicate extends MaterializedLambda {
 
         ExpressionStmt clone = (ExpressionStmt) lambdaExpr.getBody().clone();
         methodDeclaration.setBody(new BlockStmt(NodeList.nodeList(new ReturnStmt(clone.getExpression()))));
+    }
+
+    private void createPredicateInformationMethod(EnumDeclaration classDeclaration) {
+        MethodDeclaration methodDeclaration = classDeclaration.addMethod("predicateInformation", Modifier.Keyword.PUBLIC);
+        methodDeclaration.addAnnotation("Override");
+        ClassOrInterfaceType predicateInformationType = (ClassOrInterfaceType) parseType(PredicateInformation.class.getCanonicalName());
+        methodDeclaration.setType(predicateInformationType);
+
+        ObjectCreationExpr newPredicateInformation = new ObjectCreationExpr(null, predicateInformationType, NodeList.nodeList(
+            new StringLiteralExpr().setString(predicateInformation.getStringConstraint()),
+            new StringLiteralExpr().setString(predicateInformation.getRuleName()),
+            new StringLiteralExpr().setString(predicateInformation.getRuleFileName())
+        ));
+        methodDeclaration.setBody(new BlockStmt(NodeList.nodeList(new ReturnStmt(newPredicateInformation))));
     }
 
     @Override

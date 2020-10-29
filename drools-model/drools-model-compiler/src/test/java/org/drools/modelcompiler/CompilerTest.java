@@ -29,6 +29,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+import com.github.javaparser.ast.expr.StringLiteralExpr;
 import org.assertj.core.api.Assertions;
 import org.drools.modelcompiler.domain.Address;
 import org.drools.modelcompiler.domain.Adult;
@@ -43,12 +44,18 @@ import org.drools.modelcompiler.domain.Toy;
 import org.drools.modelcompiler.domain.Woman;
 import org.junit.Assert;
 import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessContext;
 import org.kie.api.runtime.rule.FactHandle;
 
+import static org.drools.core.base.evaluators.StrEvaluatorDefinition.Operations.startsWith;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.startsWith;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -2387,5 +2394,46 @@ public class CompilerTest extends BaseModelTest {
         ksession.fireAllRules();
 
         Assertions.assertThat(list).containsExactly("John");
+    }
+
+    @Rule
+    public ExpectedException exceptionRule = ExpectedException.none();
+
+    @Test
+    public void testNPEOnConstraint() {
+        exceptionRule.expect(RuntimeException.class);
+        exceptionRule.expectMessage(equalTo("Error evaluating constraint 'money < salary * 20' in [Rule \"R\" in r0.drl]"));
+
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                        "rule R when\n" +
+                        "  $p : Person(money < salary * 20 )\n" +
+                        "then\n" +
+                        "end";
+
+        KieSession ksession = getKieSession( str );
+
+        Person me = new Person( "Luca");
+        me.setMoney(null);
+        ksession.insert( me );
+        ksession.fireAllRules();
+    }
+
+    @Test
+    public void testWithQuotedStringConcatenationOnConstraint() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                        "rule R when\n" +
+                        "  $p : Person(name == \"Luca\" + \" II\"  )\n" +
+                        "then\n" +
+                        "end";
+
+        KieSession ksession = getKieSession( str );
+
+        Person me = new Person( "Luca II");
+        me.setMoney(null);
+        ksession.insert( me );
+        int rulesFired = ksession.fireAllRules();
+        assertEquals(rulesFired, 1);
     }
 }

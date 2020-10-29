@@ -78,7 +78,7 @@ abstract class MaterializedLambda {
 
         EnumDeclaration classDeclaration = create(compilationUnit);
 
-        createMethodDeclaration(classDeclaration);
+        createMethodsDeclaration(classDeclaration);
 
         String classHash = classHash(MATERIALIZED_LAMBDA_PRETTY_PRINTER.print(compilationUnit));
         String isolatedPackageName = getIsolatedPackageName(classHash);
@@ -170,7 +170,7 @@ abstract class MaterializedLambda {
 
     abstract ClassOrInterfaceType functionType();
 
-    abstract void createMethodDeclaration(EnumDeclaration classDeclaration);
+    abstract void createMethodsDeclaration(EnumDeclaration classDeclaration);
 
     static class LambdaParameter {
 

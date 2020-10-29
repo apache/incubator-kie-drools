@@ -6,8 +6,7 @@ import java.util.Collections;
 
 import org.junit.Test;
 
-import static org.hamcrest.Matchers.equalToIgnoringWhiteSpace;
-import static org.junit.Assert.*;
+import static org.drools.modelcompiler.util.lambdareplace.MaterializedLambdaTestUtils.verifyCreatedClass;
 
 public class MaterializedLambdaConsequenceTest {
 
@@ -32,8 +31,7 @@ public class MaterializedLambdaConsequenceTest {
                 "        }\n" +
                 "    }\n";
 
-        assertThat(aClass.getCompilationUnitAsString(), equalToIgnoringWhiteSpace(expectedResult));
-
+        verifyCreatedClass(aClass, expectedResult);
     }
 
     @Test
@@ -65,7 +63,7 @@ public class MaterializedLambdaConsequenceTest {
                 "        }\n" +
                 "    }\n";
 
-        assertThat(aClass.getCompilationUnitAsString(), equalToIgnoringWhiteSpace(expectedResult));
+        verifyCreatedClass(aClass, expectedResult);
     }
 
     @Test
@@ -109,7 +107,7 @@ public class MaterializedLambdaConsequenceTest {
                 "    }\n" +
                 "}";
 
-        assertThat(aClass.getCompilationUnitAsString(), equalToIgnoringWhiteSpace(expectedResult));
+        verifyCreatedClass(aClass, expectedResult);
     }
 
     @Test
@@ -149,6 +147,6 @@ public class MaterializedLambdaConsequenceTest {
                 "    }\n" +
                 "}";
 
-        assertThat(aClass.getCompilationUnitAsString(), equalToIgnoringWhiteSpace(expectedResult));
+        verifyCreatedClass(aClass, expectedResult);
     }
 }

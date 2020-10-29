@@ -982,7 +982,7 @@ public class KiePackagesBuilder {
         for ( Predicate1<T> predicate : window.getPredicates()) {
             SingleConstraint singleConstraint = new SingleConstraint1<>( generateName("expr"), variable, predicate );
             ConstraintEvaluator constraintEvaluator = new ConstraintEvaluator( windowPattern, singleConstraint );
-            windowPattern.addConstraint( new LambdaConstraint( constraintEvaluator ) );
+            windowPattern.addConstraint( new LambdaConstraint( constraintEvaluator, singleConstraint.predicateInformation()) );
         }
         windowPattern.addBehavior( createWindow( window ) );
         ctx.getPkg().addWindowDeclaration(windowDeclaration);
@@ -1030,7 +1030,7 @@ public class KiePackagesBuilder {
                                                   new ConstraintEvaluator( declarations, pattern, singleConstraint );
         return unificationDeclaration != null ?
                                          new UnificationConstraint(unificationDeclaration, constraintEvaluator) :
-                                         new LambdaConstraint( constraintEvaluator );
+                                         new LambdaConstraint( constraintEvaluator, singleConstraint.predicateInformation());
     }
 
     private Declaration collectConstraintDeclarations( RuleContext ctx, Pattern pattern, SingleConstraint singleConstraint, Variable[] vars, Declaration[] declarations ) {

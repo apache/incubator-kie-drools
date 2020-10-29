@@ -18,6 +18,7 @@ package org.drools.model.constraints;
 
 import org.drools.model.Variable;
 import org.drools.model.functions.Function1;
+import org.drools.model.functions.PredicateInformation;
 import org.drools.model.functions.PredicateN;
 import org.drools.model.functions.temporal.TemporalPredicate;
 import org.drools.model.view.FixedTemporalExprViewItem;
@@ -30,7 +31,7 @@ public abstract class TemporalConstraint<A> extends AbstractSingleConstraint {
     protected final TemporalPredicate temporalPredicate;
 
     public TemporalConstraint( String exprId, Variable<A> var1, TemporalPredicate temporalPredicate ) {
-        super(exprId);
+        super(exprId, PredicateInformation.EMPTY_PREDICATE_INFORMATION);
         this.var1 = var1;
         this.temporalPredicate = temporalPredicate;
     }

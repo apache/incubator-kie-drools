@@ -22,7 +22,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Supplier;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -35,13 +35,16 @@ import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.LambdaExpr;
+import com.github.javaparser.ast.expr.LiteralStringValueExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.printer.PrettyPrinter;
 import com.github.javaparser.printer.PrettyPrinterConfiguration;
 import org.drools.model.BitMask;
+import org.drools.model.functions.PredicateInformation;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.ModelGenerator;
@@ -70,6 +73,7 @@ public class ExecModelLambdaPostProcessor {
     private final Collection<String> imports;
     private final Collection<String> staticImports;
     private final Map<LambdaExpr, java.lang.reflect.Type> lambdaReturnTypes;
+    private final Map<String, PredicateInformation> debugPredicateInformation;
     private final CompilationUnit clone;
 
     private static final PrettyPrinterConfiguration configuration = new PrettyPrinterConfiguration();
@@ -88,6 +92,7 @@ public class ExecModelLambdaPostProcessor {
         this.imports = pkgModel.getImports();
         this.staticImports = pkgModel.getStaticImports();
         this.lambdaReturnTypes = pkgModel.getLambdaReturnTypes();
+        this.debugPredicateInformation = pkgModel.getAllConstraintsMap();
         this.clone = clone;
     }
 
@@ -97,6 +102,7 @@ public class ExecModelLambdaPostProcessor {
                                         Collection<String> imports,
                                         Collection<String> staticImports,
                                         Map<LambdaExpr, java.lang.reflect.Type> lambdaReturnTypes,
+                                        Map<String, PredicateInformation> debugPredicateInformation,
                                         CompilationUnit clone) {
         this.lambdaClasses = lambdaClasses;
         this.packageName = packageName;
@@ -104,6 +110,7 @@ public class ExecModelLambdaPostProcessor {
         this.imports = imports;
         this.staticImports = staticImports;
         this.lambdaReturnTypes = lambdaReturnTypes;
+        this.debugPredicateInformation = debugPredicateInformation;
         this.clone = clone;
     }
 
@@ -115,7 +122,8 @@ public class ExecModelLambdaPostProcessor {
                  if (containsTemporalPredicate(methodCallExpr1)) {
                      this.convertTemporalExpr(methodCallExpr1);
                  } else {
-                     extractLambdaFromMethodCall(methodCallExpr1, () -> new MaterializedLambdaPredicate(packageName, ruleClassName));
+                     extractLambdaFromMethodCall(methodCallExpr1,
+                                                 (exprId) -> new MaterializedLambdaPredicate(packageName, ruleClassName, getPredicateInformation(exprId)));
                  }
              });
 
@@ -141,8 +149,13 @@ public class ExecModelLambdaPostProcessor {
         clone.findAll(MethodCallExpr.class, this::isExecuteNonNestedCall)
              .forEach(methodCallExpr -> {
                  List<MaterializedLambda.BitMaskVariable> bitMaskVariables = findBitMaskFields(methodCallExpr);
-                 extractLambdaFromMethodCall(methodCallExpr, () -> new MaterializedLambdaConsequence(packageName, ruleClassName, bitMaskVariables));
+                 extractLambdaFromMethodCall(methodCallExpr, (a) -> new MaterializedLambdaConsequence(packageName, ruleClassName, bitMaskVariables));
              });
+    }
+
+    private PredicateInformation getPredicateInformation(Optional<String> exprId) {
+        return exprId.flatMap(e -> Optional.ofNullable(debugPredicateInformation.get(e)))
+                .orElse(PredicateInformation.EMPTY_PREDICATE_INFORMATION);
     }
 
     private void convertTemporalExpr(MethodCallExpr methodCallExpr) {
@@ -155,7 +168,7 @@ public class ExecModelLambdaPostProcessor {
                     logger.debug("Unable to create MaterializedLambdaExtractor for {}", lambdaExpr);
                 } else {
                     MaterializedLambdaExtractor extractor = extractorOpt.get();
-                    replaceLambda(lambdaExpr, () -> extractor);
+                    replaceLambda(lambdaExpr, (i) -> extractor, Optional.empty());
                 }
             }
         });
@@ -187,7 +200,7 @@ public class ExecModelLambdaPostProcessor {
         }
 
         String returnType = getType(argument).asString();
-        extractLambdaFromMethodCall(methodCallExpr, () -> new MaterializedLambdaExtractor(packageName, ruleClassName, returnType));
+        extractLambdaFromMethodCall(methodCallExpr, (i) -> new MaterializedLambdaExtractor(packageName, ruleClassName, returnType));
     }
 
     private void convertBindCall(MethodCallExpr methodCallExpr) {
@@ -205,7 +218,7 @@ public class ExecModelLambdaPostProcessor {
         }
         String returnType = optType.get().asString();
 
-        extractLambdaFromMethodCall(methodCallExpr, () -> new MaterializedLambdaExtractor(packageName, ruleClassName, returnType));
+        extractLambdaFromMethodCall(methodCallExpr, (i) -> new MaterializedLambdaExtractor(packageName, ruleClassName, returnType));
     }
 
     private void convertBindCallForFlowDSL(MethodCallExpr methodCallExpr) {
@@ -234,7 +247,7 @@ public class ExecModelLambdaPostProcessor {
             return; // not externalize
         }
 
-        extractLambdaFromMethodCall(bindAsMethodOpt.get(), () -> new MaterializedLambdaExtractor(packageName, ruleClassName, returnType));
+        extractLambdaFromMethodCall(bindAsMethodOpt.get(), (i) -> new MaterializedLambdaExtractor(packageName, ruleClassName, returnType));
     }
 
     private void convertFromCall(MethodCallExpr methodCallExpr) {
@@ -251,7 +264,7 @@ public class ExecModelLambdaPostProcessor {
         }
 
         MaterializedLambdaExtractor extractor = extractorOpt.get();
-        extractLambdaFromMethodCall(methodCallExpr, () -> extractor);
+        extractLambdaFromMethodCall(methodCallExpr, (i) -> extractor);
     }
 
     private Optional<MaterializedLambdaExtractor> createMaterializedLambdaExtractor(LambdaExpr lambdaExpr) {
@@ -348,17 +361,20 @@ public class ExecModelLambdaPostProcessor {
         return optionalToStream(vd.findAncestor(AssignExpr.class));
     }
 
-    private void extractLambdaFromMethodCall(MethodCallExpr methodCallExpr, Supplier<MaterializedLambda> lambdaExtractor) {
+    private void extractLambdaFromMethodCall(MethodCallExpr methodCallExpr, Function<Optional<String>, MaterializedLambda> lambdaExtractor) {
+        // Assume first argument is the exprId
+        Optional<String> exprId = methodCallExpr.findFirst(StringLiteralExpr.class).map(LiteralStringValueExpr::getValue);
+
         methodCallExpr.getArguments().forEach(a -> {
             if (a.isLambdaExpr()) {
-                replaceLambda(a.asLambdaExpr(), lambdaExtractor);
+                replaceLambda(a.asLambdaExpr(), lambdaExtractor, exprId);
             }
         });
     }
 
-    private void replaceLambda(LambdaExpr lambdaExpr, Supplier<MaterializedLambda> lambdaExtractor) {
+    private void replaceLambda(LambdaExpr lambdaExpr, Function<Optional<String>, MaterializedLambda> lambdaExtractor, Optional<String> exprId) {
         try {
-            CreatedClass aClass = lambdaExtractor.get().create(lambdaExpr.toString(), imports, staticImports);
+            CreatedClass aClass = lambdaExtractor.apply(exprId).create(lambdaExpr.toString(), imports, staticImports);
             lambdaClasses.put(aClass.getClassNameWithPackage(), aClass);
 
             ClassOrInterfaceType type = StaticJavaParser.parseClassOrInterfaceType(aClass.getClassNameWithPackage());
