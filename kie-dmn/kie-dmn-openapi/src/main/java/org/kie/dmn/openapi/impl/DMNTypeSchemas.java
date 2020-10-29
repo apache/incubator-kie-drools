@@ -115,6 +115,8 @@ public class DMNTypeSchemas {
             if (isIOSet(ct)) {
                 schema.required(new ArrayList<>(ct.getFields().keySet()));
             }
+        } else if (ct.isCollection()) {
+            schema = refOrBuiltinSchema(ct.getBaseType());
         } else {
             if (ct.getBelongingType() == null) {
                 throw new IllegalStateException();
