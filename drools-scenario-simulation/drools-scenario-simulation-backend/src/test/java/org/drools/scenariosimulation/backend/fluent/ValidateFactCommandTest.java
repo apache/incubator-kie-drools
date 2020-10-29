@@ -69,7 +69,6 @@ public class ValidateFactCommandTest {
 
         when(kieSession.getObjects(any(ObjectFilter.class))).thenReturn(Collections.emptyList());
         when(scenarioResult.getFactMappingValue()).thenReturn(factMappingValue);
-        when(factMappingValue.getStatus()).thenReturn(FactMappingValueStatus.FAILED_WITH_EXCEPTION);
         validateFactCommand.execute(registryContext);
         verify(scenarioResult, times(0)).setResult(anyBoolean());
     }
