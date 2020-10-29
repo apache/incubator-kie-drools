@@ -118,10 +118,7 @@ public class DMNTypeSchemas {
         } else if (ct.isCollection()) {
             schema = refOrBuiltinSchema(ct.getBaseType());
         } else {
-            if (ct.getBelongingType() == null) {
-                throw new IllegalStateException();
-            }
-            schema = refOrBuiltinSchema(ct.getBaseType()); // an anonymous inner type for a base
+            throw new IllegalStateException();
         }
         schema = nestAsItemIfCollection(schema, ct);
         schema.description(getDMNTypeSchemaDescription(ct));
