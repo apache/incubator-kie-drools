@@ -112,7 +112,7 @@ public class DMNTypeSchemas {
             for (Entry<String, DMNType> fkv : ct.getFields().entrySet()) {
                 schema.addProperty(fkv.getKey(), refOrBuiltinSchema(fkv.getValue()));
             }
-            if (isIOSet(ct)) {
+            if (isIOSet(ct) && ct.getFields().size() > 0) {
                 schema.required(new ArrayList<>(ct.getFields().keySet()));
             }
         } else if (ct.isCollection()) {
