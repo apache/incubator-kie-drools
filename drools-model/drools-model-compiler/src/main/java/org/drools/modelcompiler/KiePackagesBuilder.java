@@ -238,7 +238,7 @@ public class KiePackagesBuilder {
         }
         RuleContext ctx = new RuleContext( this, pkg, ruleImpl );
         populateLHS( ctx, pkg, rule.getView() );
-        processConsequences( ctx, rule );
+        processConsequences( ctx, rule.getConsequences() );
         if (ctx.needsStreamMode()) {
             pkg.setNeedStreamMode();
         }
@@ -375,30 +375,61 @@ public class KiePackagesBuilder {
         queryImpl.setParameters( declarations );
     }
 
-    private void processConsequences( RuleContext ctx, Rule rule ) {
-        for (Map.Entry<String, Consequence> entry : rule.getConsequences().entrySet()) {
+    private void processConsequences( RuleContext ctx, Map<String, Consequence> consequences ) {
+        for (Map.Entry<String, Consequence> entry : consequences.entrySet()) {
             processConsequence( ctx, entry.getValue(), entry.getKey() );
         }
     }
 
     private void processConsequence( RuleContext ctx, Consequence consequence, String name ) {
+        Declaration[] requiredDeclarations = getRequiredDeclarationsIfPossible( ctx, consequence, name );
+
         if ( name.equals( RuleImpl.DEFAULT_CONSEQUENCE_NAME ) ) {
             if ("java".equals(consequence.getLanguage())) {
-                ctx.getRule().setConsequence( new LambdaConsequence( consequence ) );
+                ctx.getRule().setConsequence( new LambdaConsequence( consequence, requiredDeclarations ) );
             } else {
                 throw new UnsupportedOperationException("Unknown script language for consequence: " + consequence.getLanguage());
             }
         } else {
-            ctx.getRule().addNamedConsequence( name, new LambdaConsequence( consequence ) );
+            ctx.getRule().addNamedConsequence( name, new LambdaConsequence( consequence, requiredDeclarations ) );
         }
+    }
+
+    private Declaration[] getRequiredDeclarationsIfPossible( RuleContext ctx, Consequence consequence, String name ) {
+        // Retrieving the required declarations for the consequence at build time allows to extract from the activation
+        // tuple the arguments to be passed to the consequence in linear time by traversing the tuple only once.
+        // If there's an OR in the rule the fired tuple hasn't fixed structure and size because it dependens
+        // on which branch of the OR gets activated. In this case no optimization is possible and it's usless
+        // to precalculate the declartions at build time.
+        boolean ruleHasFirstLevelOr = ruleHasFirstLevelOr( ctx.getRule());
 
         Variable[] consequenceVars = consequence.getDeclarations();
-        String[] requiredDeclarations = new String[consequenceVars.length];
+        String[] requiredDeclarationNames = new String[consequenceVars.length];
+        Declaration[] requiredDeclarations = ruleHasFirstLevelOr ? null : new Declaration[consequenceVars.length];
         for (int i = 0; i < consequenceVars.length; i++) {
-            requiredDeclarations[i] = consequenceVars[i].getName();
+            requiredDeclarationNames[i] = consequenceVars[i].getName();
+            if (!ruleHasFirstLevelOr) {
+                requiredDeclarations[i] = ctx.getRule().getDeclaration( requiredDeclarationNames[i] );
+            }
         }
 
-        ctx.getRule().setRequiredDeclarationsForConsequence( name, requiredDeclarations );
+        ctx.getRule().setRequiredDeclarationsForConsequence( name, requiredDeclarationNames );
+        return requiredDeclarations;
+    }
+
+    private boolean ruleHasFirstLevelOr(RuleImpl rule) {
+        GroupElement lhs = rule.getLhs();
+        if (lhs.getType() == GroupElement.Type.OR) {
+            return true;
+        }
+        if (lhs.getType() == GroupElement.Type.AND) {
+            for (RuleConditionElement child : lhs.getChildren()) {
+                if ( child instanceof GroupElement && (( GroupElement ) child).getType() == GroupElement.Type.OR ) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private void populateLHS( RuleContext ctx, KnowledgePackageImpl pkg, View view ) {
