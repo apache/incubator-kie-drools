@@ -25,6 +25,14 @@ public class KogitoServiceRandomPortQuarkusTestResource extends ConditionalQuark
         super(new KogitoServiceRandomPortTestResource());
     }
 
+    /**
+     * The Kogito Service must be run first to make the port available in the rest of services.
+     */
+    @Override
+    public int order() {
+        return -1;
+    }
+
     @Override
     protected String getKogitoProperty() {
         return QUARKUS_SERVICE_HTTP_PORT;

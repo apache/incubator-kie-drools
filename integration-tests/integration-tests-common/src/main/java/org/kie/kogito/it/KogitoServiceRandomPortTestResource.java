@@ -32,23 +32,13 @@ public class KogitoServiceRandomPortTestResource implements TestResource {
         return NAME;
     }
 
-    public KogitoServiceRandomPortTestResource() {
-        initialize();
-    }
-
-    //The port should be set and Testcontainers.exposeHostPorts should be called before the this.start() method, in
-    // this way the container is able to resolve hostname for the host (running the test) otherwise it won't work.
-    private void initialize() {
+    @Override
+    public void start() {
         httpPort = SocketUtils.findAvailablePort();
         Testcontainers.exposeHostPorts(httpPort);
         //the hostname for the container to access the host is "host.testcontainers.internal"
         //https://www.testcontainers.org/features/networking/#exposing-host-ports-to-the-container
         System.setProperty(KOGITO_SERVICE_URL, "http://host.testcontainers.internal:" + httpPort);
-    }
-
-    @Override
-    public void start() {
-
     }
 
     @Override
