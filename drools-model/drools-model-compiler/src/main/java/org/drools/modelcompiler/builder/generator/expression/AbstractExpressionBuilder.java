@@ -62,7 +62,7 @@ import org.kie.api.io.Resource;
 
 import static java.util.Optional.ofNullable;
 
-import static org.drools.model.bitmask.BitMaskUtil.isAccessibleProperties;
+import static org.drools.modelcompiler.util.ClassUtil.isAccessibleProperties;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.*;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.INPUT_CALL;
 import static org.drools.modelcompiler.util.ClassUtil.isAssignableFrom;
