@@ -4,10 +4,13 @@
 
 The financial industry uses pragmatic AI for decisioning in several areas. One area is credit card charge disputes. When a customer identifies an incorrect or unrecognized charge on a credit card bill, the customer can dispute the charge.  Human intervention in credit card fraud detection is required in some cases but the majority of reported credit card fraud can be completely or partially resolved with pragmatic AI.
 
+ifdef::PAM[]
 This use case example is about the fictitious Fortress Bank, the bank's customer Joe, and the business process management (BPM) developer Michelle. First we will look at how the bank originally used AI through {PRODUCT} digital decisioning and then we will see how Michelle enhanced the decision model with a Predictive Model Markup Language (PMML) model created from machine learning.
+endif::PAM[]
 
-Machine learning models such as Tensorflow™ and R™ produce predictive models. You can save these predicitive models in an open standard such as PMML so that you can use the model with {PRODUCT} or other products that support the PMML standard.
+Machine learning models such as Tensorflow™ and R™ produce predictive models. You can save these predictive models in an open standard such as PMML so that you can use the model with {PRODUCT} or other products that support the PMML standard.
 
+ifdef::PAM[]
 .{PRODUCT} and {OPENSHIFT}
 Fortress Bank uses {PRODUCT} on {OPENSHIFT} to develop and run the Fortress Bank decision services. {OPENSHIFT} is a cloud platform for developing and running containerized applications. It is designed to enable applications and the data centers that support them to expand from just a few machines and applications to thousands of machines that serve millions of clients. {PRODUCT} is the Red Hat middleware platform for creating cloud-native business automation applications and microservices. It enables enterprise business and IT users to document, simulate, manage, automate, and monitor business processes and decisions. {CENTRAL} is the {PRODUCT} dashboard.
 
@@ -105,3 +108,4 @@ image:ai/process-variables-pmml.png[]
 Finally, Fortress Bank uses Prometheus to gather metrics about credit card disputes and Grafana to visualize those metrics in real time. The upper section of the monitor shows the business metrics key performance indicators (KPIs) and the lower section shows the operational metrics KPIs.
 
 image:ai/grafana.png[]
+endif::PAM[]
