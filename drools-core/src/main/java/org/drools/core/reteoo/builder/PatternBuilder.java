@@ -22,9 +22,6 @@ import java.util.ListIterator;
 
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DroolsQuery;
-import org.drools.core.base.mvel.ActivationPropertyHandler;
-import org.drools.core.base.mvel.MVELCompilationUnit.PropertyHandlerFactoryFixer;
-import org.drools.core.common.AgendaItemImpl;
 import org.drools.core.common.InstanceNotEqualsConstraint;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectTypeNode;
@@ -52,8 +49,6 @@ import org.drools.core.time.impl.DurationTimer;
 import org.drools.core.time.impl.Timer;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.definition.type.Expires.Policy;
-import org.mvel2.integration.PropertyHandler;
-import org.mvel2.integration.PropertyHandlerFactory;
 
 import static org.drools.core.reteoo.builder.GroupElementBuilder.AndBuilder.buildJoinNode;
 import static org.drools.core.reteoo.builder.GroupElementBuilder.AndBuilder.buildTupleSource;
@@ -94,14 +89,6 @@ public class PatternBuilder
 
         // Set pattern offset to the appropriate value
         pattern.setOffset( context.getCurrentPatternOffset() );
-        
-        // this is needed for Activation patterns, to allow declarations and annotations to be used like field constraints
-        if ( ClassObjectType.Match_ObjectType.isAssignableFrom( pattern.getObjectType() ) ) {
-            PropertyHandler handler = PropertyHandlerFactory.getPropertyHandler( AgendaItemImpl.class );
-            if ( handler == null ) {
-                PropertyHandlerFactoryFixer.getPropertyHandlerClass().put( AgendaItemImpl.class, new ActivationPropertyHandler() );
-            }
-        }
 
         Constraints constraints = createConstraints(context, pattern);
 

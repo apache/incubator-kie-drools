@@ -17,13 +17,18 @@
 package org.drools.compiler.integrationtests.operators;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 import org.drools.testcoverage.common.model.Person;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -239,5 +244,79 @@ public class ForAllTest {
         ksession.insert(new Date(0));
 
         assertEquals(1, ksession.fireAllRules());
+    }
+
+    public class Pojo {
+
+        private List<Integer> x = new ArrayList<>();
+        private int y;
+        private int z;
+
+        public Pojo(List<Integer> x, int y, int z) {
+            this.x.addAll(x);
+            this.y = y;
+            this.z = z;
+        }
+
+        public List<Integer> getX() {
+            return x;
+        }
+
+        public void setX(List<Integer> x) {
+            this.x.addAll(x);
+        }
+
+        public int getY() {
+            return y;
+        }
+
+        public void setY(int y) {
+            this.y = y;
+        }
+
+        public int getZ() {
+            return z;
+        }
+
+        public void setZ(int z) {
+            this.z = z;
+        }
+
+        @Override
+        public String toString() {
+            return "Pojo{" + "x=" + x + ", y=" + y + ", z=" + z + '}';
+        }
+    }
+
+    @Test
+    public void testForallWithEmptyListConstraintCombinedWithOrFiring() throws Exception {
+        checkForallWithEmptyListConstraintCombinedWithOrFiring(true);
+    }
+
+    @Test
+    public void testForallWithEmptyListConstraintCombinedWithOrNotFiring() throws Exception {
+        checkForallWithEmptyListConstraintCombinedWithOrFiring(false);
+    }
+
+    private void checkForallWithEmptyListConstraintCombinedWithOrFiring(boolean firing) {
+        // DROOLS-5682
+
+        String drl =
+                "import " + Pojo.class.getCanonicalName() + ";\n" +
+                "rule \"forall with not equal\"\n" +
+                "when forall($p : Pojo(y == 1)\n" +
+                "            Pojo(x.empty || x contains 2, z == 3, this == $p))\n" +
+                "then\n" +
+                "end\n";
+
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("forall-test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
+
+        ksession.insert(new Pojo(Collections.emptyList(), 1, 3));
+        ksession.insert(new Pojo(Arrays.asList(2), 1, 3));
+        ksession.insert(new Pojo(Arrays.asList(3), firing ? 0 : 1, 3));
+        ksession.insert(new Pojo(Arrays.asList(2), firing ? 0 : 1, 0));
+
+        Assert.assertEquals(firing ? 1 : 0, ksession.fireAllRules());
     }
 }

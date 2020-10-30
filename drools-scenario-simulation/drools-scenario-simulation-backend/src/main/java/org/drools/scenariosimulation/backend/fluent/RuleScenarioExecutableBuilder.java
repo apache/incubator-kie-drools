@@ -25,6 +25,7 @@ import java.util.function.Function;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioResult;
 import org.drools.scenariosimulation.backend.runner.model.ValueWrapper;
 import org.kie.api.KieBase;
+import org.kie.api.definition.KieDefinition;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.KieContainer;
@@ -68,16 +69,15 @@ public interface RuleScenarioExecutableBuilder {
     default Set<String> getAvailableRules(KieBase kieBase, String activeAgendaGroup) {
         Set<String> toReturn = new HashSet<>();
         for (KiePackage kiePackage : kieBase.getKiePackages()) {
-            for (Rule rule : kiePackage.getRules()) {
-                InternalRule internalRule = (InternalRule) rule;
-
-                // main agenda group is always executed after the active one
-                if (internalRule.isMainAgendaGroup()) {
-                    toReturn.add(prettyFullyQualifiedName(internalRule));
-                } else if (Objects.equals(activeAgendaGroup, internalRule.getAgendaGroup())) {
-                    toReturn.add(prettyFullyQualifiedName(internalRule));
-                }
-            }
+            kiePackage.getRules().stream()
+                    .filter(rule -> KieDefinition.KnowledgeType.RULE.equals(rule.getKnowledgeType()))
+                    .map(rule -> (InternalRule) rule)
+                    .forEach(internalRule -> {
+                        // main agenda group is always executed after the active one
+                        if (internalRule.isMainAgendaGroup() || Objects.equals(activeAgendaGroup, internalRule.getAgendaGroup())) {
+                            toReturn.add(prettyFullyQualifiedName(internalRule));
+                        }
+                    });
         }
 
         return toReturn;

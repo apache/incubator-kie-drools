@@ -17,7 +17,7 @@ package org.kie.pmml.models.naive_bayes.compiler.executor;
 
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.naive_bayes.NaiveBayesModel;
-import org.kie.pmml.commons.model.enums.PMML_MODEL;
+import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.compiler.api.provider.ModelImplementationProvider;
 import org.kie.pmml.models.naive_bayes.compiler.factories.KiePMMLNaiveBayesModelFactory;
 import org.kie.pmml.models.naive_bayes.model.KiePMMLNaiveBayesModel;

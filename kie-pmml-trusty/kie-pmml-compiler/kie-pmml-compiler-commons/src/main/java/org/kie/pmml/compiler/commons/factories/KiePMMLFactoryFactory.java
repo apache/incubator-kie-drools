@@ -28,7 +28,7 @@ import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
-import org.kie.pmml.commons.exceptions.KiePMMLException;
+import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

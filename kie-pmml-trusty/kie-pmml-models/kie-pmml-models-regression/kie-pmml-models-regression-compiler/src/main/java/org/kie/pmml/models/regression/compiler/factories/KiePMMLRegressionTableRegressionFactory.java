@@ -16,7 +16,6 @@
 package org.kie.pmml.models.regression.compiler.factories;
 
 import java.util.AbstractMap;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,8 +43,8 @@ import org.dmg.pmml.regression.NumericPredictor;
 import org.dmg.pmml.regression.PredictorTerm;
 import org.dmg.pmml.regression.RegressionModel;
 import org.dmg.pmml.regression.RegressionTable;
-import org.kie.pmml.commons.exceptions.KiePMMLException;
-import org.kie.pmml.commons.exceptions.KiePMMLInternalException;
+import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.compiler.commons.utils.CommonCodegenUtils;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
@@ -57,7 +56,7 @@ import static java.util.stream.Collectors.groupingBy;
 import static org.kie.pmml.commons.Constants.MISSING_BODY_TEMPLATE;
 import static org.kie.pmml.commons.Constants.MISSING_DEFAULT_CONSTRUCTOR;
 import static org.kie.pmml.commons.Constants.MISSING_VARIABLE_IN_BODY;
-import static org.kie.pmml.commons.model.enums.RESULT_FEATURE.PREDICTED_VALUE;
+import static org.kie.pmml.api.enums.RESULT_FEATURE.PREDICTED_VALUE;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.addMapPopulation;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.addMethod;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getVariableDeclarator;

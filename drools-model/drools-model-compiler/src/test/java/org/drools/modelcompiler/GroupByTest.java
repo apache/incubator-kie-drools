@@ -14,18 +14,25 @@
 
 package org.drools.modelcompiler;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.assertj.core.api.Assertions;
 import org.drools.core.base.accumulators.CountAccumulateFunction;
+import org.drools.core.reteoo.SubnetworkTuple;
 import org.drools.model.DSL;
 import org.drools.model.Global;
+import org.drools.model.Index;
 import org.drools.model.Model;
 import org.drools.model.PatternDSL;
 import org.drools.model.Rule;
@@ -45,8 +52,10 @@ import org.drools.modelcompiler.util.EvaluationUtil;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.AccumulateFunction;
 import org.kie.api.runtime.rule.FactHandle;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
@@ -705,4 +714,45 @@ public class GroupByTest {
         }
     }
 
+    @Test
+    public void testTwoExpressionsOnSecondPattern() {
+        // DROOLS-5704
+        Global<Set> var_results = D.globalOf(Set.class, "defaultpkg", "results");
+
+        Variable<Person> var_$p1 = D.declarationOf(Person.class);
+        Variable<Person> var_$p2 = D.declarationOf(Person.class);
+        Variable<Integer> var_$key = D.declarationOf(Integer.class);
+        Variable<Integer> var_$join = D.declarationOf(Integer.class);
+
+        PatternDSL.PatternDef<Person> p1pattern = D.pattern(var_$p1)
+                .bind(var_$join, Person::getAge);
+        PatternDSL.PatternDef<Person> p2pattern = D.pattern(var_$p2)
+                .expr(p -> true)
+                .expr("Age less than", var_$join, (p1, age) -> p1.getAge() > age,
+                        D.betaIndexedBy(Integer.class, Index.ConstraintType.LESS_THAN, 0, Person::getAge, age -> age));
+
+        Rule rule1 = D.rule("R1").build(
+                D.groupBy(
+                        D.and(p1pattern, p2pattern),
+                        var_$p1,
+                        var_$p2,
+                        var_$key,
+                        (p1, p2) -> p1.getAge() + p2.getAge()),
+                D.on(var_results, var_$key)
+                        .execute(Set::add)
+        );
+
+        Model model = new ModelImpl().addRule( rule1 ).addGlobal( var_results );
+        KieSession ksession = KieBaseBuilder.createKieBaseFromModel( model ).newKieSession();
+
+        Set<Integer> results = new LinkedHashSet<>();
+        ksession.setGlobal( "results", results );
+
+        ksession.insert(new Person("Mark", 42));
+        ksession.insert(new Person("Edson", 38));
+        ksession.insert(new Person("Edoardo", 33));
+        ksession.fireAllRules();
+
+        assertThat(results).containsExactly(80, 75, 71);
+    }
 }

@@ -29,7 +29,6 @@ import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.time.Interval;
 
-import static org.drools.core.base.mvel.MVELCompilationUnit.getFactHandle;
 import static org.drools.core.common.InternalFactHandle.dummyFactHandleOf;
 
 /**
@@ -243,5 +242,10 @@ public class EvaluatorWrapper
 
     public void setBindingName( String bindingName ) {
         this.bindingName = bindingName;
+    }
+
+    private static InternalFactHandle getFactHandle( Declaration declaration,
+                                                    InternalFactHandle[] handles ) {
+        return handles != null && handles.length > declaration.getOffset() ? handles[declaration.getOffset()] : null;
     }
 }

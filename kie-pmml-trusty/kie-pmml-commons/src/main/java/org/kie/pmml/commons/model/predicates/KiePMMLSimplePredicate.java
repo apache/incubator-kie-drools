@@ -19,13 +19,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import org.kie.pmml.commons.exceptions.KiePMMLException;
+import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.KiePMMLExtension;
-import org.kie.pmml.commons.model.enums.OPERATOR;
+import org.kie.pmml.api.enums.OPERATOR;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.pmml.commons.model.enums.BOOLEAN_OPERATOR.SURROGATE;
+import static org.kie.pmml.api.enums.BOOLEAN_OPERATOR.SURROGATE;
 
 /**
  * @see <a href=http://dmg.org/pmml/v4-4/TreeModel.html#xsdElement_SimplePredicate>SimplePredicate</a>

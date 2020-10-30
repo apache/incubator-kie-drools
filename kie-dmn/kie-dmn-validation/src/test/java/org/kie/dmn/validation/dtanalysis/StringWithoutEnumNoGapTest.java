@@ -33,6 +33,7 @@ import org.kie.dmn.validation.dtanalysis.model.MisleadingRule;
 import org.kie.dmn.validation.dtanalysis.model.Overlap;
 
 import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -106,7 +107,7 @@ public class StringWithoutEnumNoGapTest extends AbstractDTAnalysisTest {
         List<MisleadingRule> misleadingRules = Arrays.asList(new MisleadingRule(3, 1),
                                                              new MisleadingRule(3, 2));
         assertThat(misleadingRules, hasSize(2));
-        assertThat(analysis.getMisleadingRules(), contains(misleadingRules.toArray()));
+        assertThat(analysis.getMisleadingRules(), containsInAnyOrder(misleadingRules.toArray()));
         assertTrue("It should NOT contain DMNMessage for the MisleadingRule",
                    validate.stream().noneMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_MISLEADING_RULE)));
     }

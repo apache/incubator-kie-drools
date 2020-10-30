@@ -20,12 +20,12 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import org.kie.pmml.commons.exceptions.KiePMMLException;
+import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.HasNestedModels;
 import org.kie.pmml.commons.model.KiePMMLExtension;
 import org.kie.pmml.commons.model.KiePMMLModel;
-import org.kie.pmml.commons.model.enums.MINING_FUNCTION;
-import org.kie.pmml.commons.model.enums.PMML_MODEL;
+import org.kie.pmml.api.enums.MINING_FUNCTION;
+import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.models.mining.model.segmentation.KiePMMLSegment;
 import org.kie.pmml.models.mining.model.segmentation.KiePMMLSegmentation;
 

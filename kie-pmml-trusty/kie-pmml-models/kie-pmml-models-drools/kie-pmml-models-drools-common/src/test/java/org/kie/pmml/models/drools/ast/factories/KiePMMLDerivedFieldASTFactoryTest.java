@@ -28,7 +28,7 @@ import org.dmg.pmml.DerivedField;
 import org.dmg.pmml.FieldName;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.pmml.commons.model.enums.DATA_TYPE;
+import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsType;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 

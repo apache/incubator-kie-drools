@@ -31,7 +31,6 @@ import com.github.javaparser.ast.type.Type;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static com.github.javaparser.StaticJavaParser.parseType;
-import static org.drools.modelcompiler.util.StringUtil.md5Hash;
 
 public class MaterializedLambdaExtractor extends MaterializedLambda {
 
@@ -44,7 +43,7 @@ public class MaterializedLambdaExtractor extends MaterializedLambda {
     }
 
     @Override
-    void createMethodDeclaration(EnumDeclaration classDeclaration) {
+    void createMethodsDeclaration(EnumDeclaration classDeclaration) {
         MethodDeclaration methodDeclaration = classDeclaration.addMethod("apply", Modifier.Keyword.PUBLIC);
         methodDeclaration.addAnnotation("Override");
         methodDeclaration.setType(returnTypeJP());

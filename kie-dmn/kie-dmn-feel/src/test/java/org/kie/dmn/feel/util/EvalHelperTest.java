@@ -16,10 +16,13 @@
 
 package org.kie.dmn.feel.util;
 
+import java.math.BigDecimal;
+
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.kie.dmn.feel.util.EvalHelper.getBigDecimalOrNull;
 import static org.kie.dmn.feel.util.EvalHelper.normalizeVariableName;
 
 public class EvalHelperTest {
@@ -49,4 +52,12 @@ public class EvalHelperTest {
         assertEquals("ab c", normalizeVariableName("ab c  "));
         assertEquals("a b", normalizeVariableName("a\u00A0b"));
     }
+    
+    @Test
+    public void testGetBigDecimalOrNull() {
+        assertEquals(new BigDecimal("10"), getBigDecimalOrNull(10d));
+        assertEquals(new BigDecimal("10"), getBigDecimalOrNull(10.00000000D));
+        assertEquals(new BigDecimal("10000000000.5"), getBigDecimalOrNull(10000000000.5D));
+    }
+    
 }

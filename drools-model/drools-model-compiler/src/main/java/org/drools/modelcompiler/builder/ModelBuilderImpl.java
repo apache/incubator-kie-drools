@@ -51,6 +51,7 @@ import static java.util.Collections.emptyList;
 
 import static com.github.javaparser.StaticJavaParser.parseImport;
 import static org.drools.compiler.builder.impl.ClassDefinitionFactory.createClassDefinition;
+import static org.drools.core.util.Drools.hasMvel;
 import static org.drools.modelcompiler.builder.generator.ModelGenerator.generateModel;
 import static org.drools.modelcompiler.builder.generator.declaredtype.POJOGenerator.compileType;
 
@@ -130,6 +131,14 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
         DrlxParseUtil.clearAccessorCache();
     }
 
+    protected void processOtherDeclarations(PackageRegistry pkgRegistry, PackageDescr packageDescr) {
+        processAccumulateFunctions(pkgRegistry, packageDescr);
+        if (hasMvel()) {
+            processWindowDeclarations( pkgRegistry, packageDescr );
+        }
+        processFunctions(pkgRegistry, packageDescr);
+        processGlobals(pkgRegistry, packageDescr);    }
+
     private Collection<CompositePackageDescr> findPackages() {
         Collection<CompositePackageDescr> packages;
         if (compositePackages != null && !compositePackages.isEmpty()) {
@@ -181,7 +190,9 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
             TypeDeclaration type = new TypeDeclaration(typeName );
             type.setTypeClass( typeClass );
             type.setResource( typeDescr.getResource() );
-            type.setTypeClassDef( createClassDefinition( typeClass, typeDescr.getResource() ) );
+            if (hasMvel()) {
+                type.setTypeClassDef( createClassDefinition( typeClass, typeDescr.getResource() ) );
+            }
             TypeDeclarationFactory.processAnnotations(typeDescr, type);
             getOrCreatePackageRegistry(new PackageDescr(typePkg)).getPackage().addTypeDeclaration(type );
         } catch (ClassNotFoundException e) {
@@ -260,11 +271,7 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
 
     protected void generatePOJOs(PackageDescr packageDescr, PackageRegistry pkgRegistry) {
         InternalKnowledgePackage pkg = pkgRegistry.getPackage();
-        String pkgName = pkg.getName();
-        PackageModel model = packageModels.computeIfAbsent(pkgName, s -> {
-            final DialectCompiletimeRegistry dialectCompiletimeRegistry = pkgRegistry.getDialectCompiletimeRegistry();
-            return new PackageModel(releaseId, pkgName, this.getBuilderConfiguration(), isPattern, dialectCompiletimeRegistry, exprIdGenerator);
-        });
+        PackageModel model = getPackageModel(packageDescr, pkgRegistry, pkg.getName());
         model.addImports(pkg.getTypeResolver().getImports());
         new POJOGenerator(this, pkg, packageDescr, model).findPOJOorGenerate();
     }
@@ -273,12 +280,17 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
     protected void compileKnowledgePackages(PackageDescr packageDescr, PackageRegistry pkgRegistry) {
         validateUniqueRuleNames(packageDescr);
         InternalKnowledgePackage pkg = pkgRegistry.getPackage();
-        String pkgName = pkg.getName();
-        PackageModel model = packageModels.computeIfAbsent(pkgName, s -> {
-            final DialectCompiletimeRegistry dialectCompiletimeRegistry = pkgRegistry.getDialectCompiletimeRegistry();
-            return new PackageModel(releaseId, pkgName, this.getBuilderConfiguration(), isPattern, dialectCompiletimeRegistry, exprIdGenerator);
-        });
+        PackageModel model = getPackageModel(packageDescr, pkgRegistry, pkg.getName());
         generateModel(this, pkg, packageDescr, model, isPattern);
+    }
+
+    protected PackageModel getPackageModel(PackageDescr packageDescr, PackageRegistry pkgRegistry,  String pkgName) {
+        return packageModels.computeIfAbsent(pkgName, s -> {
+            final DialectCompiletimeRegistry dialectCompiletimeRegistry = pkgRegistry.getDialectCompiletimeRegistry();
+            return packageDescr.getPreferredPkgUUID()
+                    .map(pkgUUI -> new PackageModel(pkgName, this.getBuilderConfiguration(), isPattern, dialectCompiletimeRegistry, exprIdGenerator, pkgUUI))
+                    .orElse(new PackageModel(releaseId, pkgName, this.getBuilderConfiguration(), isPattern, dialectCompiletimeRegistry, exprIdGenerator));
+        });
     }
 
     public Collection<T> getPackageSources() {

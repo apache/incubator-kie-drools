@@ -24,9 +24,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.dmg.pmml.PMML;
-import org.kie.pmml.commons.exceptions.ExternalException;
-import org.kie.pmml.commons.exceptions.KiePMMLException;
-import org.kie.pmml.commons.exceptions.KiePMMLInternalException;
+import org.kie.pmml.api.exceptions.ExternalException;
+import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.model.HasSourcesMap;
 import org.kie.pmml.commons.model.KiePMMLFactoryModel;
 import org.kie.pmml.commons.model.KiePMMLModel;
@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.compiler.commons.factories.KiePMMLFactoryFactory.getFactorySourceCode;
 import static org.kie.pmml.compiler.commons.implementations.KiePMMLModelRetriever.getFromCommonDataAndTransformationDictionaryAndModel;
-import static org.kie.pmml.compiler.commons.implementations.KiePMMLModelRetriever.getFromCommonDataAndTransformationDictionaryAndModelFromPlugin;
+import static org.kie.pmml.compiler.commons.implementations.KiePMMLModelRetriever.getFromCommonDataAndTransformationDictionaryAndModelWithSources;
 
 /**
  * <code>PMMLCompiler</code> default implementation
@@ -47,7 +47,7 @@ public class PMMLCompilerImpl implements PMMLCompiler {
     private static final Logger logger = LoggerFactory.getLogger(PMMLCompilerImpl.class.getName());
 
     @Override
-    public List<KiePMMLModel> getModels(final InputStream inputStream, final String fileName, final Object kbuilder) {
+    public List<KiePMMLModel> getKiePMMLModels(final InputStream inputStream, final String fileName, final Object kbuilder) {
         logger.trace("getModels {} {}", inputStream, kbuilder);
         try {
             PMML commonPMMLModel = KiePMMLUtil.load(inputStream, fileName);
@@ -62,11 +62,11 @@ public class PMMLCompilerImpl implements PMMLCompiler {
     }
 
     @Override
-    public List<KiePMMLModel> getModelsFromPlugin(final String factoryClassName,
-                                                  final String packageName,
-                                                  final InputStream inputStream,
-                                                  final String fileName,
-                                                  final Object kbuilder) {
+    public List<KiePMMLModel> getKiePMMLModelsWithSources(final String factoryClassName,
+                                                          final String packageName,
+                                                          final InputStream inputStream,
+                                                          final String fileName,
+                                                          final Object kbuilder) {
         logger.trace("getModels {} {}", inputStream, kbuilder);
         try {
             PMML commonPMMLModel = KiePMMLUtil.load(inputStream, fileName);
@@ -74,7 +74,7 @@ public class PMMLCompilerImpl implements PMMLCompiler {
                     .stream()
                     .map(model -> packageName + "." + getSanitizedClassName(model.getModelName()))
                     .collect(Collectors.toSet());
-            List<KiePMMLModel> toReturn = getModelsFromPlugin(packageName, commonPMMLModel, kbuilder);
+            List<KiePMMLModel> toReturn = getModelsWithSources(packageName, commonPMMLModel, kbuilder);
             Set<String> generatedClasses = new HashSet<>();
             toReturn.forEach(kiePMMLModel -> {
                 if (kiePMMLModel instanceof HasSourcesMap) {
@@ -126,12 +126,12 @@ public class PMMLCompilerImpl implements PMMLCompiler {
      * @return
      * @throws KiePMMLException if any <code>KiePMMLInternalException</code> has been thrown during execution
      */
-    private List<KiePMMLModel> getModelsFromPlugin(final String packageName, final PMML pmml, final Object kbuilder) {
+    private List<KiePMMLModel> getModelsWithSources(final String packageName, final PMML pmml, final Object kbuilder) {
         logger.trace("getModels {}", pmml);
         return pmml
                 .getModels()
                 .stream()
-                .map(model -> getFromCommonDataAndTransformationDictionaryAndModelFromPlugin(packageName, pmml.getDataDictionary(), pmml.getTransformationDictionary(), model, kbuilder))
+                .map(model -> getFromCommonDataAndTransformationDictionaryAndModelWithSources(packageName, pmml.getDataDictionary(), pmml.getTransformationDictionary(), model, kbuilder))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .collect(Collectors.toList());

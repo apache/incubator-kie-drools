@@ -1,4 +1,4 @@
-// If changing name, location, and structure of this document, align with Docs team
+// If changing name, location, and structure of this document, align with Docs team; the golden master of this file is the one available at https://github.com/kiegroup/drools/blob/master/kie-dmn/ref-dmn-feel-builtin-functions.adoc
 
 [id='ref-dmn-feel-builtin-functions_{context}']
 = Built-in functions in FEEL

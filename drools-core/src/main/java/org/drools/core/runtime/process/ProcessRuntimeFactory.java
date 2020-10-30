@@ -24,7 +24,7 @@ public class ProcessRuntimeFactory {
     private static ProcessRuntimeFactoryService provider = initializeProvider();
 
     private static ProcessRuntimeFactoryService initializeProvider() {
-        return ServiceRegistry.getInstance().get( ProcessRuntimeFactoryService.class );
+        return ServiceRegistry.getService( ProcessRuntimeFactoryService.class );
     }
 
     /**

@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
+import org.drools.compiler.compiler.JavaConfiguration;
 import org.drools.core.reteoo.ReteDumper;
 import org.drools.testcoverage.common.model.Cheese;
 import org.drools.testcoverage.common.model.FactA;
@@ -90,7 +90,7 @@ public class EvalTest {
         final KieBase kbase;
         if (useJaninoCompiler) {
             final KieBaseConfiguration kieBaseConfiguration = kieBaseTestConfiguration.getKieBaseConfiguration();
-            kieBaseConfiguration.setProperty(JavaDialectConfiguration.JAVA_COMPILER_PROPERTY, "JANINO");
+            kieBaseConfiguration.setProperty( JavaConfiguration.JAVA_COMPILER_PROPERTY, "JANINO");
             kbase = kieContainer.newKieBase(kieBaseConfiguration);
         } else {
             kbase = kieContainer.getKieBase();

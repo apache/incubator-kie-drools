@@ -16,20 +16,20 @@
 
 package org.drools.core.time.impl;
 
-import org.drools.core.base.mvel.MVELObjectExpression;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.rule.ConditionalElement;
-import org.drools.core.rule.Declaration;
-import org.drools.core.spi.Tuple;
-import org.drools.core.time.Trigger;
-import org.kie.api.runtime.Calendars;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Date;
 import java.util.Map;
+
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.rule.ConditionalElement;
+import org.drools.core.rule.Declaration;
+import org.drools.core.spi.Tuple;
+import org.drools.core.time.TimerExpression;
+import org.drools.core.time.Trigger;
+import org.kie.api.runtime.Calendars;
 
 import static org.drools.core.time.TimeUtils.evalDateExpression;
 import static org.drools.core.time.TimeUtils.evalTimeExpression;
@@ -39,13 +39,13 @@ public class ExpressionIntervalTimer  extends BaseTimer
     Timer,
     Externalizable {
 
-    private MVELObjectExpression startTime;
-    private MVELObjectExpression endTime;
+    private TimerExpression startTime;
+    private TimerExpression endTime;
 
     private int  repeatLimit;
 
-    private MVELObjectExpression delay;
-    private MVELObjectExpression period;
+    private TimerExpression delay;
+    private TimerExpression period;
 
     public ExpressionIntervalTimer() {
 
@@ -53,11 +53,11 @@ public class ExpressionIntervalTimer  extends BaseTimer
 
 
 
-    public ExpressionIntervalTimer(MVELObjectExpression startTime,
-                                   MVELObjectExpression endTime,
+    public ExpressionIntervalTimer(TimerExpression startTime,
+                                   TimerExpression endTime,
                                    int repeatLimit,
-                                   MVELObjectExpression delay,
-                                   MVELObjectExpression period) {
+                                   TimerExpression delay,
+                                   TimerExpression period) {
         this.startTime = startTime;
         this.endTime = endTime;
         this.repeatLimit = repeatLimit;
@@ -75,27 +75,27 @@ public class ExpressionIntervalTimer  extends BaseTimer
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
-        this.startTime = (MVELObjectExpression) in.readObject();
-        this.endTime = (MVELObjectExpression) in.readObject();
+        this.startTime = (TimerExpression) in.readObject();
+        this.endTime = (TimerExpression) in.readObject();
         this.repeatLimit = in.readInt();
-        this.delay = (MVELObjectExpression) in.readObject();
-        this.period = (MVELObjectExpression) in.readObject();
+        this.delay = (TimerExpression) in.readObject();
+        this.period = (TimerExpression) in.readObject();
     }
     
     public Declaration[] getStartDeclarations() {
-        return this.startTime != null ? this.startTime.getMVELCompilationUnit().getPreviousDeclarations() : null;
+        return this.startTime != null ? this.startTime.getDeclarations() : null;
     }  
     
     public Declaration[] getEndDeclarations() {
-        return this.endTime != null ? this.endTime.getMVELCompilationUnit().getPreviousDeclarations() : null;
+        return this.endTime != null ? this.endTime.getDeclarations() : null;
     }
 
     public Declaration[] getDelayDeclarations() {
-        return this.delay.getMVELCompilationUnit().getPreviousDeclarations();
+        return this.delay.getDeclarations();
     }
 
     public Declaration[] getPeriodDeclarations() {
-        return this.period.getMVELCompilationUnit().getPreviousDeclarations();
+        return this.period.getDeclarations();
     }
 
     public Declaration[][] getTimerDeclarations(Map<String, Declaration> outerDeclrs) {

@@ -256,19 +256,26 @@ public class CommandBasedStatefulKnowledgeSession extends AbstractRuntime
     }
 
     public ProcessInstance startProcess(String processId) {
-        return startProcess( processId,
-                             null );
+        return startProcess( processId, (Map) null, (AgendaFilter) null );
     }
 
-    public ProcessInstance startProcess(String processId,
-                                        Map<String, Object> parameters) {
+    public ProcessInstance startProcess(String processId, Map<String, Object> parameters) {
+        return startProcess( processId, parameters, (AgendaFilter) null );
+    }
+
+    public ProcessInstance startProcess(String processId, AgendaFilter agendaFilter) {
+        return startProcess( processId, (Map) null, agendaFilter );
+    }
+
+    public ProcessInstance startProcess(String processId, Map<String, Object> parameters, AgendaFilter agendaFilter) {
         StartProcessCommand command = new StartProcessCommand();
         command.setProcessId( processId );
         command.setParameters( parameters );
+        command.setAgendaFilter( agendaFilter );
         return runner.execute( command );
     }
 
-	public ProcessInstance createProcessInstance(String processId,
+    public ProcessInstance createProcessInstance(String processId,
 			                                     Map<String, Object> parameters) {
         CreateProcessInstanceCommand command = new CreateProcessInstanceCommand();
         command.setProcessId( processId );

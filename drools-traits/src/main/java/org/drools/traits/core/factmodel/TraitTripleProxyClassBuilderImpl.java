@@ -33,10 +33,11 @@ import org.drools.core.factmodel.FieldDefinition;
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.TraitType;
 import org.drools.core.factmodel.traits.TraitableBean;
-import org.drools.traits.core.factmodel.TraitBuilderUtil.MixinInfo;
 import org.drools.core.util.Triple;
 import org.drools.core.util.TripleFactory;
 import org.drools.core.util.TripleStore;
+import org.drools.mvel.asm.AsmUtil;
+import org.drools.traits.core.factmodel.TraitBuilderUtil.MixinInfo;
 import org.kie.api.definition.type.FactField;
 import org.mvel2.asm.ClassVisitor;
 import org.mvel2.asm.ClassWriter;
@@ -45,10 +46,10 @@ import org.mvel2.asm.Label;
 import org.mvel2.asm.MethodVisitor;
 import org.mvel2.asm.Type;
 
+import static org.drools.mvel.asm.ClassGenerator.createClassWriter;
 import static org.drools.traits.core.factmodel.TraitBuilderUtil.buildMixinMethods;
 import static org.drools.traits.core.factmodel.TraitBuilderUtil.findMixinInfo;
 import static org.drools.traits.core.factmodel.TraitBuilderUtil.getMixinName;
-import static org.drools.core.rule.builder.dialect.asm.ClassGenerator.createClassWriter;
 
 public class TraitTripleProxyClassBuilderImpl extends AbstractProxyClassBuilderImpl implements TraitProxyClassBuilder, Serializable {
 
@@ -439,7 +440,7 @@ public class TraitTripleProxyClassBuilderImpl extends AbstractProxyClassBuilderI
 			mv.visitTypeInsn( CHECKCAST, Type.getInternalName( fieldType ) );
 		}
 
-		mv.visitInsn( BuildUtils.returnType ( fieldType.getName() ) );
+		mv.visitInsn( AsmUtil.returnType ( fieldType.getName() ) );
 		mv.visitMaxs( 0, 0 );
 		mv.visitEnd();
 
@@ -473,7 +474,7 @@ public class TraitTripleProxyClassBuilderImpl extends AbstractProxyClassBuilderI
         mv.visitFieldInsn( GETFIELD, BuildUtils.getInternalType( proxy ), "store", Type.getDescriptor( TripleStore.class ) );
         mv.visitVarInsn( ALOAD, 0 );
         mv.visitLdcInsn( field.resolveAlias() );
-        mv.visitVarInsn( BuildUtils.varType( type ), 1 );
+        mv.visitVarInsn( AsmUtil.varType( type ), 1 );
         if ( BuildUtils.isPrimitive( type ) ) {
             TraitFactoryImpl.valueOf(mv, type );
         }
@@ -529,13 +530,13 @@ public class TraitTripleProxyClassBuilderImpl extends AbstractProxyClassBuilderI
 
         if ( BuildUtils.isPrimitive( type ) ) {
             TraitFactoryImpl.primitiveValue(mv, type );
-            mv.visitInsn( BuildUtils.returnType( type ) );
+            mv.visitInsn( AsmUtil.returnType( type ) );
             mv.visitLabel( l1 );
-            mv.visitInsn( BuildUtils.zero( type ) );
-            mv.visitInsn( BuildUtils.returnType( type ) );
+            mv.visitInsn( AsmUtil.zero( type ) );
+            mv.visitInsn( AsmUtil.returnType( type ) );
             mv.visitLabel( l0 );
-            mv.visitInsn( BuildUtils.zero( type ) );
-            mv.visitInsn( BuildUtils.returnType( type ) );
+            mv.visitInsn( AsmUtil.zero( type ) );
+            mv.visitInsn( AsmUtil.returnType( type ) );
         } else {
             mv.visitInsn( ARETURN );
             mv.visitLabel( l1 );

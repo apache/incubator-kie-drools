@@ -16,23 +16,6 @@
 
 package org.drools.traits.core.factmodel;
 
-import org.drools.core.factmodel.BuildUtils;
-import org.drools.core.factmodel.ClassDefinition;
-import org.drools.core.factmodel.FieldDefinition;
-import org.drools.core.factmodel.traits.CoreWrapper;
-import org.drools.core.factmodel.traits.Thing;
-import org.drools.core.factmodel.traits.TraitFieldTMS;
-import org.drools.core.factmodel.traits.Traitable;
-import org.drools.core.factmodel.traits.TraitableBean;
-import org.kie.api.definition.type.FactField;
-import org.mvel2.asm.AnnotationVisitor;
-import org.mvel2.asm.ClassWriter;
-import org.mvel2.asm.FieldVisitor;
-import org.mvel2.asm.Label;
-import org.mvel2.asm.MethodVisitor;
-import org.mvel2.asm.Opcodes;
-import org.mvel2.asm.Type;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -49,7 +32,25 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import static org.drools.core.rule.builder.dialect.asm.ClassGenerator.createClassWriter;
+import org.drools.core.factmodel.BuildUtils;
+import org.drools.core.factmodel.ClassDefinition;
+import org.drools.core.factmodel.FieldDefinition;
+import org.drools.core.factmodel.traits.CoreWrapper;
+import org.drools.core.factmodel.traits.Thing;
+import org.drools.core.factmodel.traits.TraitFieldTMS;
+import org.drools.core.factmodel.traits.Traitable;
+import org.drools.core.factmodel.traits.TraitableBean;
+import org.drools.mvel.asm.AsmUtil;
+import org.kie.api.definition.type.FactField;
+import org.mvel2.asm.AnnotationVisitor;
+import org.mvel2.asm.ClassWriter;
+import org.mvel2.asm.FieldVisitor;
+import org.mvel2.asm.Label;
+import org.mvel2.asm.MethodVisitor;
+import org.mvel2.asm.Opcodes;
+import org.mvel2.asm.Type;
+
+import static org.drools.mvel.asm.ClassGenerator.createClassWriter;
 
 public class TraitCoreWrapperClassBuilderImpl implements TraitCoreWrapperClassBuilder, Serializable {
 
@@ -116,7 +117,7 @@ public class TraitCoreWrapperClassBuilderImpl implements TraitCoreWrapperClassBu
 
                 mv.visitVarInsn( ALOAD, 0 );
                 for ( Class param : params ) {
-                    mv.visitInsn( BuildUtils.zero( param.getName() ) );
+                    mv.visitInsn( AsmUtil.zero( param.getName() ) );
                 }
                 mv.visitMethodInsn( INVOKESPECIAL,
                                     BuildUtils.getInternalType( coreName ),
@@ -580,8 +581,8 @@ public class TraitCoreWrapperClassBuilderImpl implements TraitCoreWrapperClassBu
                     if ( method.getReturnType() == void.class ) {
                         mv.visitInsn( RETURN );
                     } else {
-                        mv.visitInsn( BuildUtils.zero( method.getReturnType().getName() ) );
-                        mv.visitInsn( BuildUtils.returnType( method.getReturnType().getName() ) );
+                        mv.visitInsn( AsmUtil.zero( method.getReturnType().getName() ) );
+                        mv.visitInsn( AsmUtil.returnType( method.getReturnType().getName() ) );
                     }
                 mv.visitLabel( l0 );
 
@@ -590,14 +591,14 @@ public class TraitCoreWrapperClassBuilderImpl implements TraitCoreWrapperClassBu
 
                 int j = 1;
                 for ( Class arg : method.getParameterTypes() ) {
-                    mv.visitVarInsn( BuildUtils.varType( arg.getName() ), j++ );
+                    mv.visitVarInsn( AsmUtil.varType( arg.getName() ), j++ );
                 }
                 mv.visitMethodInsn( INVOKEVIRTUAL,
                         BuildUtils.getInternalType( coreName ),
                         method.getName(),
                         signature );
 
-                mv.visitInsn( BuildUtils.returnType( method.getReturnType().getName() ) );
+                mv.visitInsn( AsmUtil.returnType( method.getReturnType().getName() ) );
                 int stack = TraitFactoryImpl.getStackSize(method );
                 mv.visitMaxs( 0, 0 );
                 mv.visitEnd();

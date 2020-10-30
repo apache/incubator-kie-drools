@@ -22,7 +22,6 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.ClassObjectType;
@@ -32,11 +31,6 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.marshalling.impl.PersisterHelper;
-import org.drools.core.marshalling.impl.ProtobufInputMarshaller;
-import org.drools.core.marshalling.impl.ProtobufInputMarshaller.TupleKey;
-import org.drools.core.marshalling.impl.ProtobufMessages;
-import org.drools.core.marshalling.impl.ProtobufMessages.FactHandle;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.Accumulate;
 import org.drools.core.rule.ContextEntry;
@@ -167,24 +161,11 @@ public class AccumulateNode extends BetaNode {
                                                      final InternalWorkingMemory workingMemory,
                                                      final LeftTuple leftTuple,
                                                      final Object result) {
-        InternalFactHandle handle;
-        ProtobufMessages.FactHandle _handle = null;
-        if( context.getReaderContext() != null ) {
-            Map<TupleKey, FactHandle> map = (Map<ProtobufInputMarshaller.TupleKey, ProtobufMessages.FactHandle>) context.getReaderContext().getNodeMemories().get( getId() );
-            if( map != null ) {
-                _handle = map.get( PersisterHelper.createTupleKey(leftTuple) );
-            }
+        InternalFactHandle handle = null;
+        if ( context.getReaderContext() != null ) {
+            handle = context.getReaderContext().createAccumulateHandle( context.getEntryPoint(), workingMemory, leftTuple, result, getId() );
         }
-        if( _handle != null ) {
-            // create a handle with the given id
-            handle = workingMemory.getFactHandleFactory().newFactHandle( _handle.getId(),
-                                                                         result,
-                                                                         _handle.getRecency(),
-                                                                         workingMemory.getObjectTypeConfigurationRegistry().getObjectTypeConf( context.getEntryPoint(),
-                                                                                                                                               result ),
-                                                                         workingMemory,
-                                                                         null ); // so far, result is not an event
-        } else {
+        if (handle == null) {
             handle = workingMemory.getFactHandleFactory().newFactHandle( result,
                                                                          workingMemory.getObjectTypeConfigurationRegistry().getObjectTypeConf( context.getEntryPoint(),
                                                                                                                                                result ),

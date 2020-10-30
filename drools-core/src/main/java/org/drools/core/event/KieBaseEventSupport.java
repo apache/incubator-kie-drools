@@ -16,8 +16,6 @@
 
 package org.drools.core.event;
 
-import java.util.Iterator;
-
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.event.knowlegebase.impl.AfterFunctionRemovedEventImpl;
@@ -76,219 +74,128 @@ public class KieBaseEventSupport extends AbstractEventSupport<KieBaseEventListen
     }
 
     public void fireBeforePackageAdded(final InternalKnowledgePackage newPkg) {
-        final Iterator<KieBaseEventListener> iter = getEventListenersIterator();
-
-        if (iter.hasNext()) {
+        if ( hasListeners() ) {
             BeforeKiePackageAddedEvent event = new BeforeKiePackageAddedEventImpl(this.kBase, newPkg);
-
-            do {
-                iter.next().beforeKiePackageAdded(event);
-            } while (iter.hasNext());
+            notifyAllListeners( event, ( l, e ) -> l.beforeKiePackageAdded( e ) );
         }
     }
 
     public void fireAfterPackageAdded(final InternalKnowledgePackage newPkg) {
-        final Iterator<KieBaseEventListener> iter = getEventListenersIterator();
-
-        if (iter.hasNext()) {
+        if ( hasListeners() ) {
             AfterKiePackageAddedEvent event = new AfterKiePackageAddedEventImpl(this.kBase, newPkg);
-
-            do {
-                iter.next().afterKiePackageAdded(event);
-            } while (iter.hasNext());
+            notifyAllListeners( event, ( l, e ) -> l.afterKiePackageAdded( e ) );
         }
     }
 
     public void fireBeforePackageRemoved(InternalKnowledgePackage pkg) {
-        final Iterator<KieBaseEventListener> iter = getEventListenersIterator();
-
-        if (iter.hasNext()) {
+        if ( hasListeners() ) {
             BeforeKiePackageRemovedEvent event = new BeforeKiePackageRemovedEventImpl(this.kBase, pkg);
-
-            do {
-                iter.next().beforeKiePackageRemoved(event);
-            } while (iter.hasNext());
+            notifyAllListeners( event, ( l, e ) -> l.beforeKiePackageRemoved( e ) );
         }
     }
 
     public void fireAfterPackageRemoved(InternalKnowledgePackage pkg) {
-        final Iterator<KieBaseEventListener> iter = getEventListenersIterator();
-
-        if (iter.hasNext()) {
+        if ( hasListeners() ) {
             AfterKiePackageRemovedEvent event = new AfterKiePackageRemovedEventImpl(this.kBase, pkg);
-
-            do {
-                iter.next().afterKiePackageRemoved(event);
-            } while (iter.hasNext());
+            notifyAllListeners( event, ( l, e ) -> l.afterKiePackageRemoved( e ) );
         }
     }
 
     public void fireBeforeRuleBaseLocked() {
-        final Iterator<KieBaseEventListener> iter = getEventListenersIterator();
-
-        if (iter.hasNext()) {
+        if ( hasListeners() ) {
             BeforeKieBaseLockedEvent event = new BeforeKnowledgeBaseLockedEventImpl(this.kBase);
-
-            do {
-                iter.next().beforeKieBaseLocked(event);
-            } while (iter.hasNext());
+            notifyAllListeners( event, ( l, e ) -> l.beforeKieBaseLocked( e ) );
         }
     }
 
     public void fireAfterRuleBaseLocked() {
-        final Iterator<KieBaseEventListener> iter = getEventListenersIterator();
-
-        if (iter.hasNext()) {
+        if ( hasListeners() ) {
             AfterKieBaseLockedEvent event = new AfterKnowledgeBaseLockedEventImpl(this.kBase);
-
-            do {
-                iter.next().afterKieBaseLocked(event);
-            } while (iter.hasNext());
+            notifyAllListeners( event, ( l, e ) -> l.afterKieBaseLocked( e ) );
         }
     }
 
     public void fireBeforeRuleBaseUnlocked() {
-        final Iterator<KieBaseEventListener> iter = getEventListenersIterator();
-
-        if (iter.hasNext()) {
+        if ( hasListeners() ) {
             BeforeKieBaseUnlockedEvent event = new BeforeKnowledgeBaseUnlockedEventImpl(this.kBase);
-
-            do {
-                iter.next().beforeKieBaseUnlocked(event);
-            } while (iter.hasNext());
+            notifyAllListeners( event, ( l, e ) -> l.beforeKieBaseUnlocked( e ) );
         }
     }
 
     public void fireAfterRuleBaseUnlocked() {
-        final Iterator<KieBaseEventListener> iter = getEventListenersIterator();
-
-        if (iter.hasNext()) {
+        if ( hasListeners() ) {
             AfterKieBaseUnlockedEvent event = new AfterKnowledgeBaseUnlockedEventImpl(this.kBase);
-
-            do {
-                iter.next().afterKieBaseUnlocked(event);
-            } while (iter.hasNext());
+            notifyAllListeners( event, ( l, e ) -> l.afterKieBaseUnlocked( e ) );
         }
     }
 
     public void fireBeforeRuleAdded(RuleImpl rule) {
-        final Iterator<KieBaseEventListener> iter = getEventListenersIterator();
-
-        if (iter.hasNext()) {
+        if ( hasListeners() ) {
             BeforeRuleAddedEvent event = new BeforeRuleAddedEventImpl(this.kBase, rule);
-
-            do {
-                iter.next().beforeRuleAdded(event);
-            } while (iter.hasNext());
+            notifyAllListeners( event, ( l, e ) -> l.beforeRuleAdded( e ) );
         }
     }
 
     public void fireAfterRuleAdded(final RuleImpl rule) {
-        final Iterator<KieBaseEventListener> iter = getEventListenersIterator();
-
-        if (iter.hasNext()) {
+        if ( hasListeners() ) {
             AfterRuleAddedEvent event = new AfterRuleAddedEventImpl(this.kBase, rule);
-
-            do {
-                iter.next().afterRuleAdded(event);
-            } while (iter.hasNext());
+            notifyAllListeners( event, ( l, e ) -> l.afterRuleAdded( e ) );
         }
     }
 
     public void fireBeforeRuleRemoved(final RuleImpl rule) {
-        final Iterator<KieBaseEventListener> iter = getEventListenersIterator();
-
-        if (iter.hasNext()) {
+        if ( hasListeners() ) {
             final BeforeRuleRemovedEvent event = new BeforeRuleRemovedEventImpl(this.kBase, rule);
-
-            do {
-                iter.next().beforeRuleRemoved(event);
-            } while (iter.hasNext());
+            notifyAllListeners( event, ( l, e ) -> l.beforeRuleRemoved( e ) );
         }
     }
 
     public void fireAfterRuleRemoved(final RuleImpl rule) {
-        final Iterator<KieBaseEventListener> iter = getEventListenersIterator();
-
-        if (iter.hasNext()) {
+        if ( hasListeners() ) {
             AfterRuleRemovedEvent event = new AfterRuleRemovedEventImpl(this.kBase, rule);
-
-            do {
-                iter.next().afterRuleRemoved(event);
-            } while (iter.hasNext());
+            notifyAllListeners( event, ( l, e ) -> l.afterRuleRemoved( e ) );
         }
     }
 
     public void fireBeforeFunctionRemoved(final InternalKnowledgePackage pkg, final String function) {
-        final Iterator<KieBaseEventListener> iter = getEventListenersIterator();
-
-        if (iter.hasNext()) {
+        if ( hasListeners() ) {
             BeforeFunctionRemovedEvent event = new BeforeFunctionRemovedEventImpl(this.kBase, function);
-
-            do {
-                iter.next().beforeFunctionRemoved(event);
-            } while (iter.hasNext());
+            notifyAllListeners( event, ( l, e ) -> l.beforeFunctionRemoved( e ) );
         }
     }
 
     public void fireAfterFunctionRemoved(final InternalKnowledgePackage pkg, final String function) {
-        final Iterator<KieBaseEventListener> iter = getEventListenersIterator();
-
-        if (iter.hasNext()) {
+        if ( hasListeners() ) {
             AfterFunctionRemovedEvent event = new AfterFunctionRemovedEventImpl(this.kBase, function);
-                    
-            do {
-                iter.next().afterFunctionRemoved(event);
-            } while (iter.hasNext());
+            notifyAllListeners( event, ( l, e ) -> l.afterFunctionRemoved( e ) );
         }
     }
     
     public void fireBeforeProcessAdded(final Process process) {
-        final Iterator<KieBaseEventListener> iter = getEventListenersIterator();
-
-        if (iter.hasNext()) {
+        if ( hasListeners() ) {
             BeforeProcessAddedEvent event = new BeforeProcessAddedEventImpl(this.kBase, process);
-
-            do {
-                iter.next().beforeProcessAdded(event);
-            } while (iter.hasNext());
+            notifyAllListeners( event, ( l, e ) -> l.beforeProcessAdded( e ) );
         }
     }
 
     public void fireAfterProcessAdded(final Process process) {
-        final Iterator<KieBaseEventListener> iter = getEventListenersIterator();
-
-        if (iter.hasNext()) {
+        if ( hasListeners() ) {
             AfterProcessAddedEvent event = new AfterProcessAddedEventImpl(this.kBase, process);
-
-            do {
-                iter.next().afterProcessAdded(event);
-            } while (iter.hasNext());
+            notifyAllListeners( event, ( l, e ) -> l.afterProcessAdded( e ) );
         }
     }
 
     public void fireBeforeProcessRemoved(final Process process) {
-        final Iterator<KieBaseEventListener> iter = getEventListenersIterator();
-
-        if (iter.hasNext()) {
+        if ( hasListeners() ) {
             BeforeProcessRemovedEvent event = new BeforeProcessRemovedEventImpl(this.kBase, process);
-
-            do {
-                iter.next().beforeProcessRemoved(event);
-            } while (iter.hasNext());
+            notifyAllListeners( event, ( l, e ) -> l.beforeProcessRemoved( e ) );
         }
     }
 
     public void fireAfterProcessRemoved(final Process process) {
-        final Iterator<KieBaseEventListener> iter = getEventListenersIterator();
-
-        if (iter.hasNext()) {
+        if ( hasListeners() ) {
             AfterProcessRemovedEvent event = new AfterProcessRemovedEventImpl(this.kBase, process);
-
-            do {
-                iter.next().afterProcessRemoved(event);
-            } while (iter.hasNext());
+            notifyAllListeners( event, ( l, e ) -> l.afterProcessRemoved( e ) );
         }
     }
-
 }

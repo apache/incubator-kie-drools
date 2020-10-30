@@ -15,7 +15,7 @@
  */
 package org.kie.pmml.models.tree.compiler.executor;
 
-import org.kie.pmml.commons.model.enums.PMML_MODEL;
+import org.kie.pmml.api.enums.PMML_MODEL;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

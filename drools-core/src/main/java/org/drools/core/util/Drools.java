@@ -21,6 +21,8 @@ import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.drools.core.base.CoreComponentsBuilder;
+
 public class Drools {
 
     private static Pattern VERSION_PAT = Pattern.compile("(\\d+)\\.(\\d+)\\.(\\d+)([\\.-](.*))?");
@@ -103,5 +105,9 @@ public class Drools {
 
     public static boolean isJndiAvailable() {
         return jndiAvailable;
+    }
+
+    public static boolean hasMvel() {
+        return CoreComponentsBuilder.present();
     }
 }

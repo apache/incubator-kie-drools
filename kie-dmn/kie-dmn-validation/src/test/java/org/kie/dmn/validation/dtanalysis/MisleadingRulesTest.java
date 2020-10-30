@@ -76,4 +76,17 @@ public class MisleadingRulesTest extends AbstractDTAnalysisTest {
         assertTrue("This test case is not a Masked rule example",
                    validate.stream().noneMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_MASKED_RULE)));
     }
+
+    @Test
+    public void testMisleadingRules2() {
+        List<DMNMessage> validate = validator.validate(getReader("MisleadingRules2.dmn"), VALIDATE_COMPILATION, ANALYZE_DECISION_TABLE);
+        DTAnalysis analysis = getAnalysis(validate, "_0cffdf05-071b-423b-94b9-182c2cc2435c");
+
+        assertThat(analysis.getGaps(), hasSize(0));
+
+        // no need for assert overlaps.
+
+        // MisleadingRules count.
+        assertThat(analysis.getMisleadingRules(), hasSize(0));
+    }
 }

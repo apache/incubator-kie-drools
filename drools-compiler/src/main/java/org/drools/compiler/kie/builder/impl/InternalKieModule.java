@@ -116,9 +116,11 @@ public interface InternalKieModule extends KieModule, Serializable {
 
     PomModel getPomModel();
 
-    KnowledgeBuilderConfiguration getBuilderConfiguration( KieBaseModel kBaseModel, ClassLoader classLoader );
+    KnowledgeBuilderConfiguration createBuilderConfiguration( KieBaseModel kBaseModel, ClassLoader classLoader );
 
     InternalKnowledgeBase createKieBase( KieBaseModelImpl kBaseModel, KieProject kieProject, ResultsImpl messages, KieBaseConfiguration conf );
+
+    default void afterKieBaseCreationUpdate(String name, InternalKnowledgeBase kBase) { }
 
     ClassLoader getModuleClassLoader();
 
@@ -136,13 +138,13 @@ public interface InternalKieModule extends KieModule, Serializable {
         return filterFileInKBase(this, kieBase, fileName, () -> getResource( fileName ), false);
     }
 
-    default Runnable createKieBaseUpdater(KieBaseUpdateContext context) {
-        return new KieBaseUpdater( context );
+    default KieBaseUpdater createKieBaseUpdater(KieBaseUpdaterImplContext context) {
+        return new KieBaseUpdaterImpl(context );
     }
 
     default ProjectClassLoader createModuleClassLoader( ClassLoader parent ) {
         if( parent == null ) {
-            ClassLoaderResolver resolver = ServiceRegistry.getInstance().get(ClassLoaderResolver.class);
+            ClassLoaderResolver resolver = ServiceRegistry.getService(ClassLoaderResolver.class);
             if (resolver==null)  {
                 resolver = new NoDepsClassLoaderResolver();
             }

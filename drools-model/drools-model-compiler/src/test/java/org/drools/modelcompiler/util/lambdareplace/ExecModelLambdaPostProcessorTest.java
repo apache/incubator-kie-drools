@@ -11,8 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static com.github.javaparser.StaticJavaParser.parseResource;
-import static org.hamcrest.Matchers.equalToIgnoringWhiteSpace;
-import static org.junit.Assert.assertThat;
+import static org.drools.modelcompiler.util.lambdareplace.MaterializedLambdaTestUtils.verifyCreatedClass;
 
 public class ExecModelLambdaPostProcessorTest {
 
@@ -27,13 +26,13 @@ public class ExecModelLambdaPostProcessorTest {
         CompilationUnit inputCU = parseResource("org/drools/modelcompiler/util/lambdareplace/PatternTestHarness.java");
         CompilationUnit clone = inputCU.clone();
 
-        new ExecModelLambdaPostProcessor(new HashMap<>(), "mypackage", "rulename", new ArrayList<>(), new ArrayList<>(), new HashMap<>(), clone).convertLambdas();
+        new ExecModelLambdaPostProcessor(new HashMap<>(), "mypackage", "rulename", new ArrayList<>(), new ArrayList<>(), new HashMap<>(), new HashMap<>(), clone).convertLambdas();
 
         String PATTERN_HARNESS = "PatternTestHarness";
         MethodDeclaration expectedResult = getMethodChangingName(inputCU, PATTERN_HARNESS, "expectedOutput");
         MethodDeclaration actual = getMethodChangingName(clone, PATTERN_HARNESS, "inputMethod");
 
-        assertThat(actual.toString(), equalToIgnoringWhiteSpace(expectedResult.toString()));
+        verifyCreatedClass(expectedResult, actual);
     }
 
     private MethodDeclaration getMethodChangingName(CompilationUnit inputCU, String className, String methodName) {

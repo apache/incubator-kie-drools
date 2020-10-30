@@ -23,7 +23,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.core.util.MVELSafeHelper;
+import org.drools.mvel.MVELSafeHelper;
 import org.drools.workbench.models.testscenarios.backend.util.DateObjectFactory;
 import org.drools.workbench.models.testscenarios.backend.util.FieldTypeResolver;
 import org.drools.workbench.models.testscenarios.shared.VerifyField;

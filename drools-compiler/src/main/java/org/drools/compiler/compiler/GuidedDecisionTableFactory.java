@@ -20,7 +20,7 @@ import org.kie.api.internal.utils.ServiceRegistry;
 public class GuidedDecisionTableFactory {
 
     private static class LazyHolder {
-        private static final GuidedDecisionTableProvider provider = ServiceRegistry.getInstance().get( GuidedDecisionTableProvider.class );
+        private static final GuidedDecisionTableProvider provider = ServiceRegistry.getService( GuidedDecisionTableProvider.class );
     }
 
     public static GuidedDecisionTableProvider getGuidedDecisionTableProvider() {

@@ -26,6 +26,7 @@ import org.assertj.core.api.Assertions;
 import org.drools.core.common.NamedEntryPoint;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.CompositeObjectSinkAdapter;
+import org.drools.core.reteoo.ObjectSinkPropagator;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.modelcompiler.domain.Address;
 import org.drools.modelcompiler.domain.Person;
@@ -122,7 +123,8 @@ public class ConstraintNormalizationTest extends BaseModelTest {
                                                                                   .map(e -> e.getValue())
                                                                                   .findFirst()
                                                                                   .get();
-        CompositeObjectSinkAdapter sinkAdaptor = (CompositeObjectSinkAdapter) otn.getObjectSinkPropagator();
+        ObjectSinkPropagator objectSinkPropagator = otn.getObjectSinkPropagator();
+        CompositeObjectSinkAdapter sinkAdaptor = (CompositeObjectSinkAdapter) objectSinkPropagator;
 
         assertNotNull(sinkAdaptor.getHashedSinkMap());
         assertEquals(3, sinkAdaptor.getHashedSinkMap().size());
@@ -313,7 +315,7 @@ public class ConstraintNormalizationTest extends BaseModelTest {
         final KieSession ksession = getKieSession(str);
 
         // Check NodeSharing to verify if normalization works expectedly
-        if (testRunType == RUN_TYPE.STANDARD_FROM_DRL) {
+        if (testRunType == RUN_TYPE.STANDARD_FROM_DRL || testRunType == RUN_TYPE.STANDARD_WITH_ALPHA_NETWORK) {
             assertEquals(2, ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count());
         } else {
             // && is not split in case of executable-model

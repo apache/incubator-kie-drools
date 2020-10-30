@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataField;
-import org.kie.pmml.commons.model.enums.DATA_TYPE;
+import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsType;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 

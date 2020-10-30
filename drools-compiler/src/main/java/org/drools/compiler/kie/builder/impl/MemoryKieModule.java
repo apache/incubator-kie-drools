@@ -27,16 +27,22 @@ import java.net.URLStreamHandler;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 
+import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.commons.jci.readers.ResourceReader;
 import org.drools.compiler.compiler.io.FileSystemItem;
 import org.drools.compiler.compiler.io.Folder;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.io.internal.InternalResource;
 import org.drools.reflective.ResourceProvider;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
+import org.kie.api.internal.utils.ServiceRegistry;
+import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.internal.builder.conf.AlphaNetworkCompilerOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -108,6 +114,32 @@ public class MemoryKieModule extends AbstractKieModule
 
     public long getCreationTimestamp() {
         return creationTimestamp;
+    }
+
+    @Override
+    public void afterKieBaseCreationUpdate(String kBaseName, InternalKnowledgeBase kBase) {
+        KnowledgeBuilder knowledgeBuilderForKieBase = getKnowledgeBuilderForKieBase(kBaseName);
+
+        if(knowledgeBuilderForKieBase instanceof KnowledgeBuilderImpl) {
+            KnowledgeBuilderImpl knowledgeBuilderForImpl = (KnowledgeBuilderImpl)knowledgeBuilderForKieBase;
+            KnowledgeBuilderConfigurationImpl builderConfiguration = knowledgeBuilderForImpl.getBuilderConfiguration();
+
+            KieContainerImpl.CompositeRunnable compositeUpdater = new KieContainerImpl.CompositeRunnable();
+
+            KieBaseUpdaterOptions kieBaseUpdaterOptions = new KieBaseUpdaterOptions(new KieBaseUpdaterOptions.OptionEntry(
+                    AlphaNetworkCompilerOption.class, builderConfiguration.getAlphaNetworkCompilerOption()));
+
+            KieBaseUpdaters updaters = ServiceRegistry.getService(KieBaseUpdaters.class);
+            updaters.getChildren()
+                    .stream()
+                    .map(kbu -> kbu.create(new KieBaseUpdatersContext(kieBaseUpdaterOptions,
+                                                                      kBase.getRete(),
+                                                                      kBase.getRootClassLoader()
+                    )))
+                    .forEach(compositeUpdater::add);
+
+            kBase.enqueueModification(compositeUpdater);
+        }
     }
 
     public String toString() {

@@ -325,10 +325,7 @@ public abstract class AbstractKieProject implements KieProject {
     }
 
     protected KnowledgeBuilderConfigurationImpl getBuilderConfiguration( KieBaseModelImpl kBaseModel, InternalKieModule kModule ) {
-        KnowledgeBuilderConfigurationImpl pconf = new KnowledgeBuilderConfigurationImpl(getClassLoader());
-        pconf.setCompilationCache(kModule.getCompilationCache(kBaseModel.getName()));
-        AbstractKieModule.setModelPropsOnConf( kBaseModel, pconf );
-        return pconf;
+        return (KnowledgeBuilderConfigurationImpl) kModule.createBuilderConfiguration(kBaseModel, getClassLoader());
     }
 
     private static class Asset {

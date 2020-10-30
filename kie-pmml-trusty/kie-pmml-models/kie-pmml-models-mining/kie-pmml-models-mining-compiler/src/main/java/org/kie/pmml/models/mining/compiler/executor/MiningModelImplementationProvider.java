@@ -23,9 +23,9 @@ import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.mining.MiningModel;
 import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.pmml.commons.exceptions.KiePMMLException;
+import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.KiePMMLModel;
-import org.kie.pmml.commons.model.enums.PMML_MODEL;
+import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.compiler.api.provider.ModelImplementationProvider;
 import org.kie.pmml.models.mining.compiler.factories.KiePMMLMiningModelFactory;
 import org.kie.pmml.models.mining.model.KiePMMLMiningModel;
@@ -38,8 +38,6 @@ import static org.kie.pmml.models.mining.model.KiePMMLMiningModel.PMML_MODEL_TYP
  * Default <code>ModelImplementationProvider</code> for <b>Mining</b>
  */
 public class MiningModelImplementationProvider implements ModelImplementationProvider<MiningModel, KiePMMLMiningModel> {
-
-    public static final String SEGMENTID_TEMPLATE = "%s_Segment_%s";
 
     @Override
     public PMML_MODEL getPMMLModelType() {
@@ -59,11 +57,11 @@ public class MiningModelImplementationProvider implements ModelImplementationPro
     }
 
     @Override
-    public KiePMMLMiningModel getKiePMMLModelFromPlugin(final String packageName,
-                                                        final DataDictionary dataDictionary,
-                                                        final TransformationDictionary transformationDictionary,
-                                                        final MiningModel model,
-                                                        final Object kBuilder) {
+    public KiePMMLMiningModel getKiePMMLModelWithSources(final String packageName,
+                                                         final DataDictionary dataDictionary,
+                                                         final TransformationDictionary transformationDictionary,
+                                                         final MiningModel model,
+                                                         final Object kBuilder) {
         if (!(kBuilder instanceof KnowledgeBuilder)) {
             throw new KiePMMLException(String.format("Expecting KnowledgeBuilder, received %s",
                                                      kBuilder.getClass().getName()));

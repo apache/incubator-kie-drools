@@ -22,7 +22,7 @@
   <parent>
     <groupId>org.drools</groupId>
     <artifactId>drools</artifactId>
-    <version>7.44.0-SNAPSHOT</version>
+    <version>7.46.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>drools-cdi</artifactId>
@@ -52,9 +52,13 @@
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-compiler</artifactId>
+      <artifactId>drools-mvel</artifactId>
       <type>test-jar</type>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-mvel</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
@@ -113,6 +117,13 @@
       <groupId>org.jboss.weld.se</groupId>
       <artifactId>weld-se-core</artifactId>
       <scope>test</scope>
+      <exclusions>
+        <!-- collides with javax.inject:javax.inject:jar:1:compile -->
+        <exclusion>
+          <groupId>jakarta.enterprise</groupId>
+          <artifactId>jakarta.enterprise.cdi-api</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>

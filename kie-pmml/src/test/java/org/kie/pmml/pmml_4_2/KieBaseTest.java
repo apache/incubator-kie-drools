@@ -16,8 +16,6 @@
 
 package org.kie.pmml.pmml_4_2;
 
-import static org.junit.Assert.assertNotNull;
-
 import org.junit.Test;
 import org.kie.api.internal.assembler.KieAssemblers;
 import org.kie.api.internal.utils.ServiceRegistry;
@@ -25,11 +23,13 @@ import org.kie.api.io.ResourceType;
 import org.kie.internal.services.KieAssemblersImpl;
 import org.kie.pmml.assembler.PMMLAssemblerService;
 
+import static org.junit.Assert.assertNotNull;
+
 public class KieBaseTest {
 
     @Test
     public void testKieBaseCompilation() {
-        KieAssemblersImpl kieAssemblers = (KieAssemblersImpl) ServiceRegistry.getInstance().get(KieAssemblers.class);
+        KieAssemblersImpl kieAssemblers = (KieAssemblersImpl) ServiceRegistry.getService(KieAssemblers.class);
         PMMLAssemblerService assembler = (PMMLAssemblerService)kieAssemblers.getAssemblers().get(ResourceType.PMML);
         assertNotNull(assembler);
     }

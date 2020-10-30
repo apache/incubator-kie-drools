@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.assertj.core.api.Assertions;
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.modelcompiler.domain.Address;
 import org.drools.modelcompiler.domain.Person;
 import org.junit.Test;
@@ -29,6 +30,7 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
+import org.kie.internal.builder.conf.AlphaNetworkCompilerOption;
 
 import static org.junit.Assert.assertEquals;
 
@@ -135,19 +137,24 @@ public class IncrementalCompilationTest extends BaseModelTest {
                 "end\n";
 
         KieServices ks = KieServices.Factory.get();
-
         // Create an in-memory jar for version 1.0.0
         ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-upgrade", "1.0.0" );
-        createAndDeployJar( ks, releaseId1, drl1, drl2_1 );
+
+        KieModuleModel kieModuleModel = ks.newKieModuleModel();
+        if(this.testRunType.isAlphaNetworkCompiler()) {
+            kieModuleModel.setConfigurationProperty("drools.alphaNetworkCompiler", AlphaNetworkCompilerOption.INMEMORY.toString());
+        }
+        createAndDeployJar( ks, kieModuleModel, releaseId1, drl1, drl2_1 );
+
+        KieContainer kc = ks.newKieContainer( releaseId1 );
 
         // Create a session and fire rules
-        KieContainer kc = ks.newKieContainer( releaseId1 );
         KieSession ksession = kc.newKieSession();
         assertEquals( 2, ksession.fireAllRules() );
 
         // Create a new jar for version 1.1.0
         ReleaseId releaseId2 = ks.newReleaseId( "org.kie", "test-upgrade", "1.1.0" );
-        createAndDeployJar( ks, releaseId2, drl1, drl2_2 );
+        createAndDeployJar( ks, kieModuleModel, releaseId2, drl1, drl2_2 );
 
         // try to update the container to version 1.1.0
         kc.updateToVersion( releaseId2 );
@@ -158,10 +165,11 @@ public class IncrementalCompilationTest extends BaseModelTest {
 
         // Create a new jar for version 1.2.0
         ReleaseId releaseId3 = ks.newReleaseId( "org.kie", "test-upgrade", "1.2.0" );
-        createAndDeployJar( ks, releaseId3, drl1, drl2_3 );
+        createAndDeployJar( ks, kieModuleModel, releaseId3, drl1, drl2_3 );
 
         // try to update the container to version 1.2.0
         kc.updateToVersion( releaseId3 );
+        KieSession kieSession3 = kc.newKieSession();
 
         List<String> list = new ArrayList<>();
         ksession2.setGlobal( "list", list );

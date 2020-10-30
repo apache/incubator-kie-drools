@@ -35,11 +35,11 @@ import org.drools.compiler.commons.jci.readers.ResourceReader;
 import org.drools.compiler.compiler.DescrBuildWarning;
 import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.compiler.DroolsParserException;
+import org.drools.compiler.compiler.JavaConfiguration;
 import org.drools.compiler.compiler.ParserError;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kie.builder.impl.KieFileSystemImpl;
 import org.drools.compiler.lang.descr.PackageDescr;
-import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.drools.core.util.ClassUtils;
 import org.drools.reflective.classloader.ProjectClassLoader;
 import org.kie.api.KieServices;
@@ -79,9 +79,6 @@ public class PMMLAssemblerService implements KieAssemblerService {
     }
 
     private static boolean isToEnable() {
-        if (isjPMMLAvailableToClassLoader()) {
-            return false;
-        }
         if (!isOtherImplementationPresent()) {
             return true;
         } else {
@@ -90,9 +87,9 @@ public class PMMLAssemblerService implements KieAssemblerService {
         }
     }
 
-    private static boolean isjPMMLAvailableToClassLoader() {
+    private static boolean isjPMMLAvailableToClassLoader(ClassLoader classLoader) {
         try {
-            Thread.currentThread().getContextClassLoader().loadClass("org.kie.dmn.jpmml.DMNjPMMLInvocationEvaluator");
+            classLoader.loadClass("org.kie.dmn.jpmml.DMNjPMMLInvocationEvaluator");
             log.info("jpmml libraries available on classpath, skipping kie-pmml parsing and compilation");
             return true;
         } catch (ClassNotFoundException e) {
@@ -107,11 +104,13 @@ public class PMMLAssemblerService implements KieAssemblerService {
 
     @Override
     public synchronized void addResource(Object kbuilder, Resource resource, ResourceType type,
-            ResourceConfiguration configuration) throws Exception {
+                                         ResourceConfiguration configuration) throws Exception {
         this.kbuilder = (KnowledgeBuilderImpl) kbuilder;
         this.configuration = this.kbuilder.getBuilderConfiguration();
         this.rootClassLoader = this.kbuilder.getRootClassLoader();
-        addPackage(resource);
+        if (!isjPMMLAvailableToClassLoader(rootClassLoader)) {
+            addPackage(resource);
+        }
     }
 
     @Override
@@ -251,7 +250,7 @@ public class PMMLAssemblerService implements KieAssemblerService {
             if (javaFileNames != null && !javaFileNames.isEmpty()) {
                 ClassLoader classLoader = rootClassLoader;
                 KnowledgeBuilderConfigurationImpl kconf = new KnowledgeBuilderConfigurationImpl(classLoader);
-                JavaDialectConfiguration javaConf = (JavaDialectConfiguration) kconf.getDialectConfiguration("java");
+                JavaConfiguration javaConf = (JavaConfiguration) kconf.getDialectConfiguration("java");
                 MemoryFileSystem trgMfs = new MemoryFileSystem();
                 compileJavaClasses(javaConf, rootClassLoader, javaFileNames, JAVA_ROOT, src, trgMfs);
                 Map<String, byte[]> classesMap = new HashMap<>();
@@ -280,7 +279,7 @@ public class PMMLAssemblerService implements KieAssemblerService {
         return javaFileNames;
     }
 
-    private void compileJavaClasses(JavaDialectConfiguration javaConf, ClassLoader classLoader, List<String> javaFiles,
+    private void compileJavaClasses(JavaConfiguration javaConf, ClassLoader classLoader, List<String> javaFiles,
             String rootFolder, ResourceReader source, MemoryFileSystem trgMfs) {
         if (!javaFiles.isEmpty()) {
             String[] sourceFiles = javaFiles.toArray(new String[javaFiles.size()]);
@@ -319,7 +318,7 @@ public class PMMLAssemblerService implements KieAssemblerService {
         }
     }
 
-    private JavaCompiler createCompiler(JavaDialectConfiguration javaConf, String prefix) {
+    private JavaCompiler createCompiler(JavaConfiguration javaConf, String prefix) {
         JavaCompiler javaCompiler = JavaCompilerFactory.INSTANCE.loadCompiler(javaConf);
         if (javaCompiler instanceof EclipseJavaCompiler) {
             ((EclipseJavaCompiler) javaCompiler).setPrefix(prefix);

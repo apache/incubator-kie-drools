@@ -99,6 +99,10 @@ public class KieModuleKieProject extends AbstractKieProject {
         return this.cl;
     }
 
+    public boolean hasDynamicClassLoader() {
+        return this.cl.isDynamic();
+    }
+
     public Map<String, KieBaseModel> updateToModule(InternalKieModule updatedKieModule) {
         Map<String, KieBaseModel> oldKieBaseModels = new HashMap<String, KieBaseModel>();
         oldKieBaseModels.putAll( kBaseModels );

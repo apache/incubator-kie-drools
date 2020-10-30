@@ -17,7 +17,7 @@ package org.kie.pmml.commons.utils;
 
 import java.util.function.Predicate;
 
-import org.kie.pmml.commons.exceptions.KiePMMLException;
+import org.kie.pmml.api.exceptions.KiePMMLException;
 
 /**
  * Class meant to provide helper methods to <b>convert</b> a given object to another one of a requested type

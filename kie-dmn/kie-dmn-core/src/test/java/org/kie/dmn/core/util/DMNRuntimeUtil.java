@@ -18,9 +18,7 @@ package org.kie.dmn.core.util;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
-import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
@@ -32,13 +30,9 @@ import org.kie.api.builder.KieModule;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.Results;
-import org.kie.api.internal.assembler.KieAssemblerService;
-import org.kie.api.internal.assembler.KieAssemblers;
 import org.kie.api.internal.utils.ServiceDiscoveryImpl;
 import org.kie.api.internal.utils.ServiceRegistry;
-import org.kie.api.internal.utils.ServiceRegistryImpl;
 import org.kie.api.io.Resource;
-import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNRuntime;
@@ -53,7 +47,6 @@ import org.kie.dmn.core.api.event.DefaultDMNRuntimeEventListener;
 import org.kie.dmn.core.compiler.RuntimeTypeCheckOption;
 import org.kie.dmn.core.impl.DMNRuntimeImpl;
 import org.kie.internal.builder.InternalKieBuilder;
-import org.kie.internal.services.KieAssemblersImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -106,7 +99,7 @@ public final class DMNRuntimeUtil {
     public static void resetServices() {
         final ServiceDiscoveryImpl serviceDiscovery = ServiceDiscoveryImpl.getInstance();
         serviceDiscovery.reset();
-        final ServiceRegistryImpl instance = (ServiceRegistryImpl)ServiceRegistry.getInstance();
+        final ServiceRegistry.Impl instance = (ServiceRegistry.Impl)ServiceRegistry.getInstance();
         instance.reload();
     }
 

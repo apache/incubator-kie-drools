@@ -37,7 +37,7 @@ public class EmptyObjectSinkAdapter implements ObjectSinkPropagator {
         return INSTANCE;
     }
 
-    public ObjectSinkPropagator addObjectSink(final ObjectSink sink, int alphaNodeHashingThreshold) {
+    public ObjectSinkPropagator addObjectSink(final ObjectSink sink, int alphaNodeHashingThreshold, int alphaNodeRangeIndexThreshold) {
         return new SingleObjectSinkAdapter( sink );
     }
 

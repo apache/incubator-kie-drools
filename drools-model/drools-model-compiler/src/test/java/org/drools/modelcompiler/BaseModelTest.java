@@ -22,6 +22,9 @@ import java.util.stream.Collectors;
 
 import org.drools.compiler.kie.builder.impl.DrlProject;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.core.reteoo.Rete;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
@@ -34,6 +37,7 @@ import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.runtime.ClassObjectFilter;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
+import org.kie.internal.builder.conf.AlphaNetworkCompilerOption;
 
 import static java.util.Arrays.asList;
 import static org.drools.modelcompiler.BaseModelTest.RUN_TYPE.FLOW_DSL;
@@ -41,7 +45,8 @@ import static org.drools.modelcompiler.BaseModelTest.RUN_TYPE.FLOW_WITH_ALPHA_NE
 import static org.drools.modelcompiler.BaseModelTest.RUN_TYPE.PATTERN_DSL;
 import static org.drools.modelcompiler.BaseModelTest.RUN_TYPE.PATTERN_WITH_ALPHA_NETWORK;
 import static org.drools.modelcompiler.BaseModelTest.RUN_TYPE.STANDARD_WITH_ALPHA_NETWORK;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 @RunWith(Parameterized.class)
 public abstract class BaseModelTest {
@@ -96,8 +101,8 @@ public abstract class BaseModelTest {
     }
 
     protected KieSession getKieSession(String... rules) {
-        KieModuleModel kproj = testRunType.isAlphaNetworkCompiler() ? getKieModuleModelWithAlphaNetworkCompiler() : null;
-        return getKieSession(kproj, rules);
+        KieModuleModel model = testRunType.isAlphaNetworkCompiler() ? getKieModuleModelWithAlphaNetworkCompiler() : null;
+        return getKieSession(model, rules);
     }
 
     protected KieSession getKieSession(KieModuleModel model, String... stringRules) {
@@ -158,9 +163,9 @@ public abstract class BaseModelTest {
     }
 
     protected KieModuleModel getDefaultKieModuleModel( KieServices ks ) {
-        KieModuleModel kproj = ks.newKieModuleModel();
-        kproj.newKieBaseModel( "kbase" ).setDefault( true ).newKieSessionModel( "ksession" ).setDefault( true );
-        return kproj;
+        KieModuleModel model = ks.newKieModuleModel();
+        model.newKieBaseModel( "kbase" ).setDefault( true ).newKieSessionModel( "ksession" ).setDefault( true );
+        return model;
     }
 
     public static <T> List<T> getObjectsIntoList(KieSession ksession, Class<T> clazz) {
@@ -209,8 +214,8 @@ public abstract class BaseModelTest {
     }
 
     private KieModuleModel getKieModuleModelWithAlphaNetworkCompiler() {
-        KieModuleModel kproj = KieServices.get().newKieModuleModel();
-        kproj.setConfigurationProperty( org.drools.compiler.kie.builder.impl.KieContainerImpl.ALPHA_NETWORK_COMPILER_OPTION, "true" );
-        return kproj;
+        KieModuleModel model = KieServices.get().newKieModuleModel();
+        model.setConfigurationProperty(AlphaNetworkCompilerOption.PROPERTY_NAME, AlphaNetworkCompilerOption.INMEMORY.toString());
+        return model;
     }
 }

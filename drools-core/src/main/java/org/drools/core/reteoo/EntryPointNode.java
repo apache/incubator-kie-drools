@@ -107,7 +107,8 @@ public class EntryPointNode extends ObjectSource
                partitionId,
                partitionsEnabled,
                objectSource,
-               999 ); // irrelevant for this node, since it overrides sink management
+               999,
+               999); // irrelevant for this node, since it overrides sink management
         this.entryPoint = entryPoint;
         this.objectTypeNodes = new ConcurrentHashMap<ObjectType, ObjectTypeNode>();
 

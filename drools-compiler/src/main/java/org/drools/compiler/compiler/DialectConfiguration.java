@@ -25,12 +25,12 @@ import org.drools.core.definitions.InternalKnowledgePackage;
  */
 public interface DialectConfiguration {
     
-    public void init(KnowledgeBuilderConfigurationImpl configuration);
+    void init(KnowledgeBuilderConfigurationImpl configuration);
     
-    public Dialect newDialect(ClassLoader rootClassLoader,
-                              KnowledgeBuilderConfigurationImpl pkgConf,
-                              PackageRegistry pkgRegistry,
-                              InternalKnowledgePackage pkg);
+    Dialect newDialect(ClassLoader rootClassLoader,
+                       KnowledgeBuilderConfigurationImpl pkgConf,
+                       PackageRegistry pkgRegistry,
+                       InternalKnowledgePackage pkg);
     
-    public KnowledgeBuilderConfigurationImpl getPackageBuilderConfiguration();
+    KnowledgeBuilderConfigurationImpl getPackageBuilderConfiguration();
 }

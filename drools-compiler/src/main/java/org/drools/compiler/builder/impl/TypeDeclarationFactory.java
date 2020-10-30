@@ -28,10 +28,11 @@ import org.drools.compiler.lang.descr.AbstractClassTypeDeclarationDescr;
 import org.drools.compiler.lang.descr.EnumDeclarationDescr;
 import org.drools.compiler.lang.descr.TypeDeclarationDescr;
 import org.drools.compiler.lang.descr.TypeFieldDescr;
+import org.drools.core.base.ClassFieldInspector;
+import org.drools.core.base.CoreComponentsBuilder;
 import org.drools.core.factmodel.FieldDefinition;
 import org.drools.core.factmodel.GeneratedFact;
 import org.drools.core.rule.TypeDeclaration;
-import org.drools.core.util.asm.ClassFieldInspector;
 import org.kie.api.definition.type.FactField;
 import org.kie.api.definition.type.PropertyChangeSupport;
 import org.kie.api.definition.type.Role;
@@ -110,7 +111,7 @@ public class TypeDeclarationFactory {
                         ) {
                     try {
                         Class existingClass = pkgRegistry.getPackage().getTypeResolver().resolveType( typeDescr.getType().getFullName() );
-                        ClassFieldInspector cfi = new ClassFieldInspector( existingClass );
+                        ClassFieldInspector cfi = CoreComponentsBuilder.get().createClassFieldInspector( existingClass );
 
                         int fieldCount = 0;
                         for ( String existingFieldName : cfi.getFieldTypesField().keySet() ) {

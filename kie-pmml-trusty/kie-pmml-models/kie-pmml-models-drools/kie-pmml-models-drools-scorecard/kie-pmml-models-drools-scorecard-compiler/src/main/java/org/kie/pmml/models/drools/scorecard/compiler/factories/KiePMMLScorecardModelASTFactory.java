@@ -21,7 +21,7 @@ import java.util.Map;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.scorecard.Scorecard;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
-import org.kie.pmml.commons.model.enums.DATA_TYPE;
+import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsAST;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsType;

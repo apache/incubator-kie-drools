@@ -20,7 +20,7 @@ package ${package}.${packageModelName}.compiler.executor;
 
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.${packageModelName}.${modelName}Model;
-import org.kie.pmml.commons.model.enums.PMML_MODEL;
+import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.compiler.api.provider.ModelImplementationProvider;
 import ${package}.${packageModelName}.compiler.factories.KiePMML${modelName}ModelFactory;
 import ${package}.${packageModelName}.model.KiePMML${modelName}Model;

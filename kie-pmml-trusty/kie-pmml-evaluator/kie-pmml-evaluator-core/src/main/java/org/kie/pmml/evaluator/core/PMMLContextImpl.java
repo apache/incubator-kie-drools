@@ -21,7 +21,7 @@ import java.util.Map;
 
 import org.drools.core.command.impl.ContextImpl;
 import org.kie.api.pmml.PMMLRequestData;
-import org.kie.pmml.evaluator.api.executor.PMMLContext;
+import org.kie.pmml.api.runtime.PMMLContext;
 
 public class PMMLContextImpl extends ContextImpl implements PMMLContext {
 

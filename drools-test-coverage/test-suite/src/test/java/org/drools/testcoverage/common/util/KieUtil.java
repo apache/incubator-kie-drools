@@ -41,6 +41,7 @@ import org.kie.api.command.KieCommands;
 import org.kie.api.io.KieResources;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieContainer;
+import org.kie.internal.builder.conf.AlphaNetworkCompilerOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,7 +77,7 @@ public final class KieUtil {
         final KieServices kieServices = KieServices.Factory.get();
         final KieModuleModel kieModuleModel = kieServices.newKieModuleModel();
         if (alphaNetworkEnabled) {
-            kieModuleModel.setConfigurationProperty("drools.alphaNetworkCompiler", "true");
+            kieModuleModel.setConfigurationProperty("drools.alphaNetworkCompiler", AlphaNetworkCompilerOption.INMEMORY.getMode());
         }
         return kieModuleModel;
     }

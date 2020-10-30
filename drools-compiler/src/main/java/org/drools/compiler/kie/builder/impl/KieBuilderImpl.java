@@ -40,9 +40,9 @@ import org.drools.compiler.commons.jci.compilers.JavaCompilerFactory;
 import org.drools.compiler.commons.jci.readers.DiskResourceReader;
 import org.drools.compiler.commons.jci.readers.ResourceReader;
 import org.drools.compiler.compiler.DecisionTableFactory;
+import org.drools.compiler.compiler.JavaConfiguration;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
-import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.drools.core.builder.conf.impl.DecisionTableConfigurationImpl;
 import org.drools.core.builder.conf.impl.ResourceConfigurationImpl;
 import org.drools.core.io.internal.InternalResource;
@@ -259,7 +259,7 @@ public class KieBuilderImpl
     }
 
     void updateKieModuleMetaInfo() {
-        new KieMetaInfoBuilder( kModule ).writeKieModuleMetaInfo( trgMfs );
+        CompilationCacheProvider.get().writeKieModuleMetaInfo( kModule, trgMfs );
     }
 
     public static String getCompilationCachePath( AFReleaseId releaseId,
@@ -281,7 +281,7 @@ public class KieBuilderImpl
         if ( messages.filterMessages( Level.ERROR ).isEmpty() ) {
             InternalKieModule kModule = kProject.getInternalKieModule();
             if ( trgMfs != null ) {
-                new KieMetaInfoBuilder( kModule ).writeKieModuleMetaInfo( trgMfs );
+                CompilationCacheProvider.get().writeKieModuleMetaInfo( kModule, trgMfs );
                 kProject.writeProjectOutput(trgMfs, messages);
             }
             KieRepository kieRepository = KieServices.Factory.get().getRepository();
@@ -716,7 +716,7 @@ public class KieBuilderImpl
 
         if ( !javaFiles.isEmpty() || !javaTestFiles.isEmpty() ) {
             KnowledgeBuilderConfigurationImpl kconf = new KnowledgeBuilderConfigurationImpl( classLoader );
-            JavaDialectConfiguration javaConf = (JavaDialectConfiguration) kconf.getDialectConfiguration( "java" );
+            JavaConfiguration javaConf = (JavaConfiguration) kconf.getDialectConfiguration( "java" );
             compileJavaClasses( javaConf, classLoader, javaFiles, JAVA_ROOT );
             compileJavaClasses( javaConf, classLoader, javaTestFiles, JAVA_TEST_ROOT );
         }
@@ -735,7 +735,7 @@ public class KieBuilderImpl
         return fileName.endsWith( ".java" );
     }
 
-    private void compileJavaClasses( JavaDialectConfiguration javaConf,
+    private void compileJavaClasses( JavaConfiguration javaConf,
                                      ClassLoader classLoader,
                                      List<String> javaFiles,
                                      String rootFolder ) {
@@ -757,7 +757,7 @@ public class KieBuilderImpl
         }
     }
 
-    private JavaCompiler createCompiler( JavaDialectConfiguration javaConf,
+    private JavaCompiler createCompiler( JavaConfiguration javaConf,
                                          String prefix ) {
         JavaCompiler javaCompiler = JavaCompilerFactory.INSTANCE.loadCompiler( javaConf );
         if ( javaCompiler instanceof EclipseJavaCompiler ) {

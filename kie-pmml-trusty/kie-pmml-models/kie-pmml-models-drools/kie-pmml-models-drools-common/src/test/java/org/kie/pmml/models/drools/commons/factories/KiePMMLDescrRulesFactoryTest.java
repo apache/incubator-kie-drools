@@ -20,14 +20,14 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.drools.compiler.lang.DrlDumper;
+import org.drools.mvel.DrlDumper;
 import org.drools.compiler.lang.api.DescrFactory;
 import org.drools.compiler.lang.api.PackageDescrBuilder;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.pmml.commons.model.enums.BOOLEAN_OPERATOR;
-import org.kie.pmml.commons.model.enums.OPERATOR;
+import org.kie.pmml.api.enums.BOOLEAN_OPERATOR;
+import org.kie.pmml.api.enums.OPERATOR;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
 import org.kie.pmml.models.drools.ast.KiePMMLFieldOperatorValue;
 import org.kie.pmml.models.drools.tuples.KiePMMLOperatorValue;

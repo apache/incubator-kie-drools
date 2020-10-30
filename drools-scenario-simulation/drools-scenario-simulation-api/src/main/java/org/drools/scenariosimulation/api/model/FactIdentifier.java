@@ -25,9 +25,9 @@ public class FactIdentifier {
     private String name;
     private String className;
 
-    public static FactIdentifier INDEX = create("#", Integer.class.getCanonicalName());
-    public static FactIdentifier DESCRIPTION = create("Scenario description", String.class.getCanonicalName());
-    public static FactIdentifier EMPTY = create("Empty", Void.class.getName());
+    public static final FactIdentifier INDEX = create("#", Integer.class.getCanonicalName());
+    public static final FactIdentifier DESCRIPTION = create("Scenario description", String.class.getCanonicalName());
+    public static final FactIdentifier EMPTY = create("Empty", Void.class.getName());
 
     public FactIdentifier() {
     }

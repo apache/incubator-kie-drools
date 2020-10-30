@@ -18,7 +18,7 @@ package org.drools.workbench.models.testscenarios.backend.populators;
 
 import java.util.Map;
 
-import org.drools.core.util.MVELSafeHelper;
+import org.drools.mvel.MVELSafeHelper;
 
 public class ExpressionFieldPopulator extends FieldPopulator {
 

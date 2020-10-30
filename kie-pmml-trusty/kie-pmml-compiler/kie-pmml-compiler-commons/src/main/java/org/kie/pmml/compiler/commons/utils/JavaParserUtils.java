@@ -17,11 +17,13 @@ package org.kie.pmml.compiler.commons.utils;
 
 import java.io.InputStream;
 
+import com.github.javaparser.ParseProblemException;
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import org.kie.pmml.commons.exceptions.KiePMMLException;
-import org.kie.pmml.commons.exceptions.KiePMMLInternalException;
+import org.kie.pmml.api.exceptions.ExternalException;
+import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,8 +43,20 @@ public class JavaParserUtils {
         try {
             final InputStream resource = Thread.currentThread().getContextClassLoader().getResourceAsStream(fileName);
             return StaticJavaParser.parse(resource);
-        } catch (Exception e) {
+        } catch (ParseProblemException e) {
             throw new KiePMMLInternalException(String.format("Failed to parse %s due to %s", fileName, e.getMessage()), e);
+        } catch (Exception e) {
+            throw new ExternalException(String.format("Failed to read %s due to %s", fileName, e.getMessage()), e);
+        }
+    }
+
+    public static CompilationUnit getFromSource(String source) {
+        try {
+            return StaticJavaParser.parse(source);
+        } catch (ParseProblemException e) {
+            throw new KiePMMLInternalException(String.format("Failed to parse\r\n%s\r\ndue to %s", source, e.getMessage()), e);
+        } catch (Exception e) {
+            throw new ExternalException(String.format("Failed to parse\r\n%s\r\ndue to %s", source, e.getMessage()), e);
         }
     }
 
@@ -60,7 +74,9 @@ public class JavaParserUtils {
         logger.trace("getKiePMMLModelCompilationUnit {} {}", className, packageName);
         CompilationUnit templateCU = getFromFileName(javaTemplate);
         CompilationUnit toReturn = templateCU.clone();
-        toReturn.setPackageDeclaration(packageName);
+        if (packageName != null && !packageName.isEmpty()) {
+            toReturn.setPackageDeclaration(packageName);
+        }
         ClassOrInterfaceDeclaration modelTemplate = toReturn.getClassByName(modelClassName)
                 .orElseThrow(() -> new KiePMMLException(MAIN_CLASS_NOT_FOUND + ": " + modelClassName));
         modelTemplate.setName(className);

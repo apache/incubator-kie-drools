@@ -30,7 +30,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import org.junit.Test;
-import org.kie.pmml.commons.exceptions.KieEnumException;
+import org.kie.pmml.api.exceptions.KieEnumException;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 import org.kie.pmml.commons.model.tuples.KiePMMLValueWeight;
 

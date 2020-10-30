@@ -19,13 +19,12 @@ package org.drools.dynamic;
 import java.util.function.Supplier;
 
 import org.kie.api.internal.utils.ServiceRegistry;
-import org.kie.api.internal.utils.ServiceRegistryImpl;
 
 public class DynamicServiceRegistrySupplier implements Supplier<ServiceRegistry> {
 
     static class LazyHolder {
 
-        static final ServiceRegistryImpl INSTANCE = new ServiceRegistryImpl();
+        static final ServiceRegistry.Impl INSTANCE = new ServiceRegistry.Impl();
     }
 
     @Override
