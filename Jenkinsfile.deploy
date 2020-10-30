@@ -22,6 +22,7 @@ pipeline {
 
         // Git information
         string(name: 'BUILD_BRANCH_NAME', defaultValue: 'master', description: 'Which branch to build? Set if you are not on a multibranch pipeline.')
+        string(name: 'BUILD_BRANCH_QUICKSTARTS', defaultValue: 'development', description: 'Which branch for quickstarts to build? Set if you are not on a multibranch pipeline.')
         string(name: 'GIT_AUTHOR', defaultValue: 'kiegroup', description: 'Which Git author repository ?')
 
         // Build&test information
@@ -67,6 +68,7 @@ pipeline {
                 success {
                     script {
                         setDeployPropertyIfNeeded('git.branch', getBuildBranch())
+                        setDeployPropertyIfNeeded('git.branchQuickstarts', getQuickStartsBranch())
                         setDeployPropertyIfNeeded('git.author', getGitAuthor())
                         setDeployPropertyIfNeeded('project.version', getProjectVersion())
                         setDeployPropertyIfNeeded('release', isRelease())
@@ -78,7 +80,8 @@ pipeline {
 
         stage('Clone repositories') {
             steps {
-                checkoutRepo('optaplanner')
+                checkoutRepo('optaplanner', getBuildBranch())
+                checkoutRepo('optaplanner-quickstarts', getQuickStartsBranch())
             }
         }
 
@@ -149,6 +152,23 @@ pipeline {
             }
         }
 
+        stage('Build optaplanner-quickstarts') {
+            steps {
+                script {
+                    String extraArgs = ''
+                    if (params.MAVEN_DEPENDENCIES_REPOSITORY != '') {
+                        extraArgs = "-s ${env.GLOBAL_MAVEN_SETTINGS} -Denforcer.skip"
+                    }
+                    mavenCleanInstall('optaplanner-quickstarts', params.SKIP_TESTS, [], extraArgs)
+                }
+            }
+            post {
+                always {
+                    saveReports(params.SKIP_TESTS)
+                }
+            }
+        }
+
         stage('Deploy artifacts') {
             steps {
                 mavenDeploy('optaplanner')
@@ -191,10 +211,10 @@ void saveReports(boolean allowEmpty=false){
     junit testResults: '**/target/surefire-reports/**/*.xml, **/target/failsafe-reports/**/*.xml', allowEmptyResults: allowEmpty
 }
 
-void checkoutRepo(String repo, String dirName=repo) {
+void checkoutRepo(String repo, String branch, String dirName=repo) {
     dir(dirName) {
         deleteDir()
-        checkout(githubscm.resolveRepository(repo, getGitAuthor(), getBuildBranch(), false))
+        checkout(githubscm.resolveRepository(repo, getGitAuthor(), branch, false))
     }
 }
 
@@ -299,4 +319,8 @@ void setDeployPropertyIfNeeded(String key, def value) {
     if (value != null && value != ''){
         deployProperties[key] = value
     }
+}
+
+String[] getQuickStartsBranch(){
+    return params.BUILD_BRANCH_QUICKSTARTS
 }
