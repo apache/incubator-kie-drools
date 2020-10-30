@@ -9,7 +9,7 @@ public class DecisionModelResourcesProvider implements org.kie.internal.decision
         }
 
         try {
-            byte[] bytes = stream.readAllBytes();
+            byte[] bytes = org.drools.core.util.IoUtils.readBytesFromInputStream(stream);
             java.io.ByteArrayInputStream byteArrayInputStream = new java.io.ByteArrayInputStream(bytes);
             return new java.io.InputStreamReader(byteArrayInputStream);
         } catch (java.io.IOException e) {
@@ -28,4 +28,5 @@ public class DecisionModelResourcesProvider implements org.kie.internal.decision
         java.util.List<org.kie.internal.decision.DecisionModelResource> resourcePaths = new java.util.ArrayList<>();
         return resourcePaths;
     }
+
 }
