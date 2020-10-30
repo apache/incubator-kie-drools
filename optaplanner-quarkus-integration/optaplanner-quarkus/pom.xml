@@ -13,10 +13,6 @@
   <name>OptaPlanner Quarkus</name>
   <packaging>pom</packaging>
 
-  <properties>
-    <format.directory>${project.basedir}/../../../ide-configuration</format.directory>
-  </properties>
-
   <modules>
     <module>runtime</module>
     <module>deployment</module>
