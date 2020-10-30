@@ -1278,8 +1278,6 @@ public class FlowTest {
                 "$pattern_List$1$");
         final Variable<TargetPolicy> var_$tp = declarationOf(TargetPolicy.class,
                 "$tp");
-        final org.drools.model.BitMask mask_$target = org.drools.model.BitMask.getPatternMask(TargetPolicy.class,
-                "coefficient");
         org.drools.model.Rule rule = rule("Customer can only have one Target Policy for Product p1 with coefficient 1").build(bind(var_$code).as(var_$customer,
                 (_this) -> _this.getCode())
                         .reactOn("code"),
@@ -1349,8 +1347,7 @@ public class FlowTest {
                                 var_$tp ).as(var_$pattern_List$1$)),
                 on(var_$target).execute((drools, $target) -> {
                     $target.setCoefficient(0);
-                    drools.update($target,
-                            mask_$target);
+                    drools.update($target);
                 }));
 
         Model model = new ModelImpl().addRule( rule );

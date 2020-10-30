@@ -20,18 +20,22 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ClassUtil {
 
-    private static final Map<Class<?>, List<String>> ACCESSIBLE_PROPS_CACHE = new HashMap<>();
+    private static final Map<Class<?>, List<String>> ACCESSIBLE_PROPS_CACHE = new ConcurrentHashMap<>();
 
     public interface NullType { }
 
     public static String asJavaSourceName( Class<?> clazz ) {
         return clazz.getCanonicalName().replace( '.', '_' );
+    }
+
+    public static boolean isAccessibleProperties( Class<?> clazz, String prop ) {
+        return getAccessibleProperties( clazz ).contains( prop );
     }
 
     public static List<String> getAccessibleProperties( Class<?> clazz ) {

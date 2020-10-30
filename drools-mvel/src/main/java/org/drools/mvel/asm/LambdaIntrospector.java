@@ -19,6 +19,7 @@ import java.io.Serializable;
 import java.lang.invoke.SerializedLambda;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -36,9 +37,9 @@ public class LambdaIntrospector implements Function<Object, String> {
     public static final String LAMBDA_INTROSPECTOR_CACHE_SIZE = "drools.lambda.introspector.cache.size";
     private static final int CACHE_SIZE = Integer.parseInt(System.getProperty(LAMBDA_INTROSPECTOR_CACHE_SIZE, "32"));
 
-    private static final Map<ClassLoader, Map<String, Map<String, String>>> methodFingerprintsMapPerClassLoader = new WeakHashMap<>();
+    private static final Map<ClassLoader, ClassesFingerPrintsCache> methodFingerprintsMapPerClassLoader = Collections.synchronizedMap( new WeakHashMap<>() );
 
-    static Map<ClassLoader, Map<String, Map<String, String>>> getMethodFingerprintsMapPerClassLoader() {
+    static Map<ClassLoader, ClassesFingerPrintsCache> getMethodFingerprintsMapPerClassLoader() {
         return methodFingerprintsMapPerClassLoader;
     }
 
@@ -84,34 +85,17 @@ public class LambdaIntrospector implements Function<Object, String> {
         }
     }
 
-    private static Map<String, String> getFingerprintsForClass(Object lambda, SerializedLambda extracted) {
+    private static MethodsFingerPrintsCache getFingerprintsForClass(Object lambda, SerializedLambda extracted) {
         ClassLoader lambdaClassLoader = lambda.getClass().getClassLoader();
         String className = extracted.getCapturingClass();
         if (CACHE_SIZE <= 0) {
-            return getFingerPrints(lambdaClassLoader, className); // don't even create an entry
+            return MethodsFingerPrintsCache.getFingerPrints(lambdaClassLoader, className); // don't even create an entry
         }
-        Map<String, Map<String, String>> methodFingerprintsMap = methodFingerprintsMapPerClassLoader.computeIfAbsent(lambdaClassLoader, k -> new LinkedHashMap<String, Map<String, String>>() {
-
-            @Override
-            protected boolean removeEldestEntry(Map.Entry<String, Map<String, String>> eldest) {
-                return (size() > CACHE_SIZE);
-            }
-        });
-        return methodFingerprintsMap.computeIfAbsent(className, k -> getFingerPrints(lambdaClassLoader, className));
+        ClassesFingerPrintsCache methodFingerprintsMap = methodFingerprintsMapPerClassLoader.computeIfAbsent(lambdaClassLoader, ClassesFingerPrintsCache::new);
+        return methodFingerprintsMap.registerMethodFingerPrints(className);
     }
 
-    private static Map<String, String> getFingerPrints(ClassLoader lambdaClassLoader, String className) {
-        Map<String, String> fingerprints;
-        LambdaIntrospector.LambdaClassVisitor visitor = new LambdaIntrospector.LambdaClassVisitor();
-        try (InputStream classStream = lambdaClassLoader.getResourceAsStream( className.replace( '.', '/' ) + ".class" )) {
-            ClassReader reader = new ClassReader( classStream);
-            reader.accept(visitor, ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
-        } catch (Exception e) {
-            throw new RuntimeException( e );
-        }
-        fingerprints = visitor.getMethodsMap();
-        return fingerprints;
-    }
+
 
     private static class LambdaClassVisitor extends ClassVisitor {
 
@@ -132,6 +116,52 @@ public class LambdaIntrospector implements Function<Object, String> {
 
         Map<String, String> getMethodsMap() {
             return methodsMap;
+        }
+    }
+
+    static class ClassesFingerPrintsCache {
+        private final ClassLoader lambdaClassLoader;
+
+        private final Map<String, MethodsFingerPrintsCache> map = Collections.synchronizedMap( new LinkedHashMap<String, MethodsFingerPrintsCache>() {
+            @Override
+            protected boolean removeEldestEntry(Map.Entry<String, MethodsFingerPrintsCache> eldest) {
+                return (size() > CACHE_SIZE);
+            }
+        });
+
+        ClassesFingerPrintsCache( ClassLoader lambdaClassLoader ) {
+            this.lambdaClassLoader = lambdaClassLoader;
+        }
+
+        public MethodsFingerPrintsCache registerMethodFingerPrints(String className) {
+            return map.computeIfAbsent(className, k -> MethodsFingerPrintsCache.getFingerPrints(lambdaClassLoader, className));
+        }
+
+        public int size() {
+            return map.size();
+        }
+    }
+
+    static class MethodsFingerPrintsCache {
+        private final Map<String, String> map;
+
+        private MethodsFingerPrintsCache( Map<String, String> map ) {
+            this.map = map;
+        }
+
+        private static MethodsFingerPrintsCache getFingerPrints(ClassLoader lambdaClassLoader, String className) {
+            LambdaIntrospector.LambdaClassVisitor visitor = new LambdaIntrospector.LambdaClassVisitor();
+            try (InputStream classStream = lambdaClassLoader.getResourceAsStream( className.replace( '.', '/' ) + ".class" )) {
+                ClassReader reader = new ClassReader( classStream);
+                reader.accept(visitor, ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
+            } catch (Exception e) {
+                throw new RuntimeException( e );
+            }
+            return new MethodsFingerPrintsCache( visitor.getMethodsMap() );
+        }
+
+        public String get( String implMethodName ) {
+            return map.get(implMethodName);
         }
     }
 }
