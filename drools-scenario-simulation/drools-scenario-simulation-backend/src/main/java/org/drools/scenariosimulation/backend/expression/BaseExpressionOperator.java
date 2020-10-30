@@ -121,7 +121,7 @@ public enum BaseExpressionOperator {
 
             String operator = match(rawValue).orElseThrow(() -> new IllegalStateException("Cannot determine operator!"));
             String cleanValue = removeOperator(rawValue);
-            Object stepValue = convertValue(resultClass.getCanonicalName(), cleanValue, classLoader);
+            Object stepValue = convertValue(resultClass.getName(), cleanValue, classLoader);
             if (!areComparable(stepValue, resultValue)) {
                 return false;
             }

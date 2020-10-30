@@ -43,7 +43,6 @@ public class BaseExpressionOperatorTest {
 
     @Test
     public void evaluateLiteralExpression() {
-
         Arrays.stream(values())
                 .filter(e -> !EQUALS.equals(e))
                 .forEach(operator -> {
