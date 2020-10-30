@@ -349,12 +349,13 @@ export const handleJobReschedule = async (
   try {
     await axios.patch(`${job.endpoint}/${job.id}`, parameter).then(res => {
       setRescheduleClicked(!rescheduleClicked);
+      refetch();
     });
   } catch (error) {
     setRescheduleClicked(!rescheduleClicked);
     setErrorMessage(error.message);
+    refetch();
   }
-  refetch();
 };
 
 export const handleNodeTrigger = async (
@@ -389,12 +390,15 @@ export const getTriggerableNodes = async (
 export const jobCancel = async (
   job: Pick<GraphQL.Job, 'id' | 'endpoint'>,
   onJobCancelSuccess: () => void,
-  onJobCancelFailure: (errorMessage: string) => void
+  onJobCancelFailure: (errorMessage: string) => void,
+  refetch
 ) => {
   try {
     await axios.delete(`${job.endpoint}/${job.id}`);
     onJobCancelSuccess();
+    refetch();
   } catch (error) {
     onJobCancelFailure(JSON.stringify(error.message));
+    refetch();
   }
 };

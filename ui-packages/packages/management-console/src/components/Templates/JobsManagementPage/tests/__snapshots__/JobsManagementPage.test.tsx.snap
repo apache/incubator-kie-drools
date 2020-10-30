@@ -1,0 +1,425 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Jobs management page tests mock data with empty response 1`] = `
+<JobsManagementPage>
+  <Redirect
+    to={
+      Object {
+        "pathname": "/NoData",
+        "state": Object {
+          "buttonText": "Go to process instance",
+          "description": "There are no jobs associated with any process instance.",
+          "prev": "/ProcessInstances",
+          "title": "Jobs not found",
+        },
+      }
+    }
+  >
+    <Lifecycle
+      onMount={[Function]}
+      onUpdate={[Function]}
+      to={
+        Object {
+          "pathname": "/NoData",
+          "state": Object {
+            "buttonText": "Go to process instance",
+            "description": "There are no jobs associated with any process instance.",
+            "prev": "/ProcessInstances",
+            "title": "Jobs not found",
+          },
+        }
+      }
+    />
+  </Redirect>
+</JobsManagementPage>
+`;
+
+exports[`Jobs management page tests mock data with error response 1`] = `
+<JobsManagementPage>
+  <div
+    data-ouia-component-type="JobsManagementPage"
+    data-ouia-safe={true}
+  >
+    <ServerErrors
+      error={
+        [Error: Network error: Error writing result to store for query:
+ {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"getAllJobs"},"variableDefinitions":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"Jobs"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"processId"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"processInstanceId"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"rootProcessId"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"status"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"expirationTime"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"priority"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"callbackEndpoint"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"repeatInterval"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"repeatLimit"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"scheduledId"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"retries"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"lastUpdate"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"endpoint"},"arguments":[],"directives":[]}]}}]}}],"loc":{"start":0,"end":325}}
+Cannot read property 'Jobs' of null]
+      }
+      variant="large"
+    >
+      <MockedServerErrors />
+    </ServerErrors>
+  </div>
+</JobsManagementPage>
+`;
+
+exports[`Jobs management page tests snapshot test with mock data 1`] = `
+<JobsManagementPage>
+  <div
+    data-ouia-component-type="JobsManagementPage"
+    data-ouia-safe={true}
+  >
+    <PageSection
+      variant="light"
+    >
+      <section
+        className="pf-c-page__main-section pf-m-light"
+      >
+        <PageTitle
+          title="Jobs Management"
+        >
+          <Title
+            data-ouia-component-type="page-title"
+            data-ouia-safe={true}
+            headingLevel="h1"
+            size="4xl"
+          >
+            <h1
+              className="pf-c-title pf-m-4xl"
+              data-ouia-component-type="page-title"
+              data-ouia-safe={true}
+            >
+              Jobs Management
+            </h1>
+          </Title>
+        </PageTitle>
+        <Breadcrumb>
+          <MockedBreadcrumb />
+        </Breadcrumb>
+      </section>
+    </PageSection>
+    <PageSection>
+      <section
+        className="pf-c-page__main-section"
+      >
+        <Toolbar
+          className="pf-m-toggle-group-container"
+          collapseListedFiltersBreakpoint="md"
+          id="data-toolbar-with-chip-groups"
+        >
+          <div
+            className="pf-c-toolbar pf-m-toggle-group-container"
+            id="data-toolbar-with-chip-groups"
+          >
+            <ToolbarContent
+              isExpanded={false}
+              showClearFiltersButton={false}
+            >
+              <div
+                className="pf-c-toolbar__content"
+              >
+                <div
+                  className="pf-c-toolbar__content-section"
+                >
+                  <ForwardRef>
+                    <ToolbarGroupWithRef
+                      innerRef={null}
+                    >
+                      <div
+                        className="pf-c-toolbar__group"
+                      >
+                        <ToolbarItem>
+                          <div
+                            className="pf-c-toolbar__item"
+                          >
+                            <Button
+                              aria-label="Refresh list"
+                              id="refresh-button"
+                              onClick={[Function]}
+                              ouiaId="refresh-button"
+                              variant="plain"
+                            >
+                              <button
+                                aria-disabled={false}
+                                aria-label="Refresh list"
+                                className="pf-c-button pf-m-plain"
+                                data-ouia-component-id="refresh-button"
+                                data-ouia-component-type="PF4/Button"
+                                data-ouia-safe={true}
+                                disabled={false}
+                                id="refresh-button"
+                                onClick={[Function]}
+                                type="button"
+                              >
+                                <SyncIcon>
+                                  <MockedIcon />
+                                </SyncIcon>
+                              </button>
+                            </Button>
+                          </div>
+                        </ToolbarItem>
+                      </div>
+                    </ToolbarGroupWithRef>
+                  </ForwardRef>
+                </div>
+                <ToolbarExpandableContent
+                  chipContainerRef={
+                    Object {
+                      "current": null,
+                    }
+                  }
+                  clearFiltersButtonText="Clear all filters"
+                  expandableContentRef={
+                    Object {
+                      "current": <div
+                        class="pf-c-toolbar__expandable-content"
+                        id="data-toolbar-with-chip-groups-expandable-content-2"
+                      >
+                        <div
+                          class="pf-c-toolbar__group"
+                        />
+                      </div>,
+                    }
+                  }
+                  id="data-toolbar-with-chip-groups-expandable-content-2"
+                  isExpanded={false}
+                  showClearFiltersButton={false}
+                >
+                  <div
+                    className="pf-c-toolbar__expandable-content"
+                    id="data-toolbar-with-chip-groups-expandable-content-2"
+                  >
+                    <ForwardRef>
+                      <ToolbarGroupWithRef
+                        innerRef={null}
+                      >
+                        <div
+                          className="pf-c-toolbar__group"
+                        />
+                      </ToolbarGroupWithRef>
+                    </ForwardRef>
+                  </div>
+                </ToolbarExpandableContent>
+              </div>
+            </ToolbarContent>
+            <ToolbarChipGroupContent
+              chipGroupContentRef={
+                Object {
+                  "current": <div
+                    class="pf-c-toolbar__content pf-m-hidden"
+                    hidden=""
+                  >
+                    <div
+                      class="pf-c-toolbar__group"
+                    />
+                  </div>,
+                }
+              }
+              clearFiltersButtonText="Clear all filters"
+              collapseListedFiltersBreakpoint="md"
+              isExpanded={false}
+              numberOfFilters={0}
+              showClearFiltersButton={false}
+            >
+              <div
+                className="pf-c-toolbar__content pf-m-hidden"
+                hidden={true}
+              >
+                <ForwardRef
+                  className=""
+                >
+                  <ToolbarGroupWithRef
+                    className=""
+                    innerRef={null}
+                  >
+                    <div
+                      className="pf-c-toolbar__group"
+                    />
+                  </ToolbarGroupWithRef>
+                </ForwardRef>
+              </div>
+            </ToolbarChipGroupContent>
+          </div>
+        </Toolbar>
+        <Card>
+          <article
+            className="pf-c-card"
+            data-ouia-component-id={2}
+            data-ouia-component-type="PF4/Card"
+            data-ouia-safe={true}
+          >
+            <CardBody>
+              <div
+                className="pf-c-card__body"
+              >
+                <JobsManagementTable
+                  data={
+                    Object {
+                      "Jobs": Array [
+                        Object {
+                          "callbackEndpoint": "http://localhost:8080/management/jobs/travels/instances/5c56eeff-4cbf-3313-a325-4c895e0afced/timers/6e74a570-31c8-4020-bd70-19be2cb625f3_0",
+                          "endpoint": "http://localhost:4000/jobs",
+                          "expirationTime": null,
+                          "id": "6e74a570-31c8-4020-bd70-19be2cb625f3_0",
+                          "lastUpdate": "2020-08-27T03:35:50.147Z",
+                          "priority": 0,
+                          "processId": "travels",
+                          "processInstanceId": "8035b580-6ae4-4aa8-9ec0-e18e19809e0b",
+                          "repeatInterval": null,
+                          "repeatLimit": null,
+                          "retries": 0,
+                          "rootProcessId": null,
+                          "scheduledId": "0",
+                          "status": "EXECUTED",
+                        },
+                        Object {
+                          "callbackEndpoint": "http://localhost:8080/management/jobs/travels/instances/5c56eeff-4cbf-3313-a325-4c895e0afced/timers/dad3aa88-5c1e-4858-a919-6123c675a0fa_0",
+                          "endpoint": "http://localhost:4000/jobs",
+                          "expirationTime": "2020-08-27T04:35:54.631Z",
+                          "id": "dad3aa88-5c1e-4858-a919-6123c675a0fa_0",
+                          "lastUpdate": "2020-08-27T03:35:54.635Z",
+                          "priority": 0,
+                          "processId": "travels",
+                          "processInstanceId": "8035b580-6ae4-4aa8-9ec0-e18e19809e0b",
+                          "repeatInterval": null,
+                          "repeatLimit": null,
+                          "retries": 0,
+                          "rootProcessId": "",
+                          "scheduledId": null,
+                          "status": "SCHEDULED",
+                        },
+                        Object {
+                          "callbackEndpoint": "http://localhost:8080/management/jobs/travels/instances/5c56eeff-4cbf-3313-a325-4c895e0afced/timers/dad3aa88-5c1e-4858-a919-6123c675a0fa_0",
+                          "endpoint": "http://localhost:4000/jobs",
+                          "expirationTime": "2020-08-27T04:35:54.631Z",
+                          "id": "2234dde-npce1-2908-b3131-6123c675a0fa_0",
+                          "lastUpdate": "2020-08-27T03:35:54.635Z",
+                          "priority": 0,
+                          "processId": "travels",
+                          "processInstanceId": "8035b580-6ae4-4aa8-9ec0-e18e19809e0b",
+                          "repeatInterval": null,
+                          "repeatLimit": null,
+                          "retries": 0,
+                          "rootProcessId": "",
+                          "scheduledId": null,
+                          "status": "CANCELED",
+                        },
+                      ],
+                    }
+                  }
+                  handleCancelModalToggle={[Function]}
+                  handleDetailsToggle={[Function]}
+                  handleRescheduleToggle={[Function]}
+                  setModalContent={[Function]}
+                  setModalTitle={[Function]}
+                  setSelectedJob={[Function]}
+                />
+              </div>
+            </CardBody>
+          </article>
+        </Card>
+        <MockedJobsPanelDetailsModal
+          actionType="Job Details"
+          handleModalToggle={[Function]}
+          isModalOpen={false}
+          job={
+            Object {
+              "__typename": "Job",
+              "callbackEndpoint": "http://localhost:8080/management/jobs/travels/instances/5c56eeff-4cbf-3313-a325-4c895e0afced/timers/dad3aa88-5c1e-4858-a919-6123c675a0fa_0",
+              "endpoint": "http://localhost:4000/jobs",
+              "expirationTime": "2020-08-27T04:35:54.631Z",
+              "id": "dad3aa88-5c1e-4858-a919-6123c675a0fa_0",
+              "lastUpdate": "2020-08-27T03:35:54.635Z",
+              "priority": 0,
+              "processId": "travels",
+              "processInstanceId": "8035b580-6ae4-4aa8-9ec0-e18e19809e0b",
+              "repeatInterval": null,
+              "repeatLimit": null,
+              "retries": 0,
+              "rootProcessId": "",
+              "scheduledId": null,
+              "status": "SCHEDULED",
+            }
+          }
+          modalAction={
+            Array [
+              <Button
+                onClick={[Function]}
+                variant="primary"
+              >
+                OK
+              </Button>,
+            ]
+          }
+          modalTitle={
+            <Title
+              headingLevel="h1"
+              size="2xl"
+            >
+              <InfoCircleIcon
+                className="pf-u-mr-sm"
+                color="var(--pf-global--info-color--100)"
+                noVerticalAlign={false}
+                size="sm"
+              />
+              <span>
+                Job Details
+              </span>
+            </Title>
+          }
+        />
+        <JobsRescheduleModal
+          actionType="Job Reschedule"
+          handleModalToggle={[Function]}
+          isModalOpen={false}
+          job={
+            Object {
+              "__typename": "Job",
+              "callbackEndpoint": "http://localhost:8080/management/jobs/travels/instances/5c56eeff-4cbf-3313-a325-4c895e0afced/timers/dad3aa88-5c1e-4858-a919-6123c675a0fa_0",
+              "endpoint": "http://localhost:4000/jobs",
+              "expirationTime": "2020-08-27T04:35:54.631Z",
+              "id": "dad3aa88-5c1e-4858-a919-6123c675a0fa_0",
+              "lastUpdate": "2020-08-27T03:35:54.635Z",
+              "priority": 0,
+              "processId": "travels",
+              "processInstanceId": "8035b580-6ae4-4aa8-9ec0-e18e19809e0b",
+              "repeatInterval": null,
+              "repeatLimit": null,
+              "retries": 0,
+              "rootProcessId": "",
+              "scheduledId": null,
+              "status": "SCHEDULED",
+            }
+          }
+          modalAction={
+            Array [
+              <Button
+                onClick={[Function]}
+                variant="secondary"
+              >
+                Cancel
+              </Button>,
+            ]
+          }
+          modalTitle={
+            <Title
+              headingLevel="h1"
+              size="2xl"
+            >
+              <InfoCircleIcon
+                className="pf-u-mr-sm"
+                color="var(--pf-global--info-color--100)"
+                noVerticalAlign={false}
+                size="sm"
+              />
+              <span>
+                Job Reschedule
+              </span>
+            </Title>
+          }
+          rescheduleClicked={false}
+          setRescheduleClicked={[Function]}
+        />
+        <JobsCancelModal
+          actionType="Job Cancel"
+          handleModalToggle={[Function]}
+          isModalOpen={false}
+          modalContent=""
+          modalTitle={null}
+        />
+      </section>
+    </PageSection>
+  </div>
+</JobsManagementPage>
+`;

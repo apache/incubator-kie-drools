@@ -4,7 +4,7 @@ exports[`PageLayout tests snapshot testing 1`] = `
 <PageLayout
   history={
     Object {
-      "action": "PUSH",
+      "action": "POP",
       "block": [Function],
       "canGo": [Function],
       "createHref": [Function],
@@ -15,22 +15,16 @@ exports[`PageLayout tests snapshot testing 1`] = `
           "search": "",
           "state": undefined,
         },
-        Object {
-          "hash": "",
-          "pathname": "/ProcessInstances",
-          "search": "",
-          "state": undefined,
-        },
       ],
       "go": [Function],
       "goBack": [Function],
       "goForward": [Function],
-      "index": 1,
-      "length": 2,
+      "index": 0,
+      "length": 1,
       "listen": [Function],
       "location": Object {
         "hash": "",
-        "pathname": "/ProcessInstances",
+        "pathname": "/",
         "search": "",
         "state": undefined,
       },
@@ -81,6 +75,16 @@ exports[`PageLayout tests snapshot testing 1`] = `
               to="/DomainExplorer"
             >
               Domain Explorer
+            </Link>
+          </NavItem>
+          <NavItem
+            isActive={false}
+          >
+            <Link
+              data-ouia-navigation-name="jobs-management"
+              to="/JobsManagement"
+            >
+              Jobs
             </Link>
           </NavItem>
         </NavList>

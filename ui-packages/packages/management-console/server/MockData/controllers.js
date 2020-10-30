@@ -176,7 +176,7 @@ module.exports = controller = {
     if (mockFailedJobs.includes(jobData[0].id) || jobData.length === 0) {
       res.status(404).send('job not found')
     } else {
-      jobData[0].status = 'CANCELLED';
+      jobData[0].status = 'CANCELED';
       jobData[0].lastUpdate = new Date().toISOString();
       res.status(200).send(jobData[0]);
     }

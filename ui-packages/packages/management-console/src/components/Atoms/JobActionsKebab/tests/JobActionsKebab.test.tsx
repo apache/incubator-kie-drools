@@ -5,6 +5,7 @@ import { mount } from 'enzyme';
 import { Dropdown, KebabToggle, DropdownItem } from '@patternfly/react-core';
 import { act } from 'react-dom/test-utils';
 import axios from 'axios';
+import { refetchContext } from '../../../contexts';
 jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 // tslint:disable: no-string-literal
@@ -167,7 +168,12 @@ describe('job actions kebab tests', () => {
   describe('trigger/test job cancel action', () => {
     it('cancel success', async () => {
       mockedAxios.delete.mockResolvedValue({});
-      let wrapper = mount(<JobActionsKebab {...prop2} />);
+      const refetch = jest.fn();
+      let wrapper = mount(
+        <refetchContext.Provider value={refetch}>
+          <JobActionsKebab {...prop2} />
+        </refetchContext.Provider>
+      );
       await act(async () => {
         wrapper
           .find(Dropdown)
@@ -196,13 +202,18 @@ describe('job actions kebab tests', () => {
         true
       );
       expect(wrapper.find('JobsCancelModal').props()['modalContent']).toEqual(
-        'The job: 6e74a570-31c8-4020-bd70-19be2cb625f3_0 is cancelled successfully'
+        'The job: 6e74a570-31c8-4020-bd70-19be2cb625f3_0 is canceled successfully'
       );
     });
 
     it('cancel failure', async () => {
       mockedAxios.delete.mockRejectedValue({ message: '404 error' });
-      let wrapper = mount(<JobActionsKebab {...prop2} />);
+      const refetch = jest.fn();
+      let wrapper = mount(
+        <refetchContext.Provider value={refetch}>
+          <JobActionsKebab {...prop2} />
+        </refetchContext.Provider>
+      );
       await act(async () => {
         wrapper
           .find(Dropdown)

@@ -681,16 +681,17 @@ describe('uitility function testing', () => {
     };
     const onJobCancelSuccess = jest.fn();
     const onJobCancelFailure = jest.fn();
+    const refetch = jest.fn();
     it('executes job cancel successfully', async () => {
       mockedAxios.delete.mockResolvedValue({});
-      await jobCancel(job, onJobCancelSuccess, onJobCancelFailure);
+      await jobCancel(job, onJobCancelSuccess, onJobCancelFailure, refetch);
       await wait(0);
       expect(onJobCancelSuccess).toHaveBeenCalled();
     });
 
     it('fails to execute job cancel', async () => {
       mockedAxios.delete.mockRejectedValue({ message: '404 error' });
-      await jobCancel(job, onJobCancelSuccess, onJobCancelFailure);
+      await jobCancel(job, onJobCancelSuccess, onJobCancelFailure, refetch);
       await wait(0);
       expect(onJobCancelFailure).toHaveBeenCalled();
       expect(onJobCancelFailure.mock.calls[0][0]).toEqual('"404 error"');

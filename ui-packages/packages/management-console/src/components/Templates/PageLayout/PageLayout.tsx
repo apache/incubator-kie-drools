@@ -13,6 +13,7 @@ import ProcessListPage from '../ProcessListPage/ProcessListPage';
 import ProcessDetailsPage from '../ProcessDetailsPage/ProcessDetailsPage';
 import DomainExplorerPage from '../DomainExplorerPage/DomainExplorerPage';
 import DomainExplorerLandingPage from '../DomainExplorerLandingPage/DomainExplorerLandingPage';
+import JobsManagementPage from '../JobsManagementPage/JobsManagementPage';
 import './PageLayout.css';
 import managementConsoleLogo from '../../../static/managementConsoleLogo.svg';
 import { History, Location } from 'history';
@@ -42,6 +43,14 @@ const PageLayout: React.FC<IOwnProps & OUIAProps> = ({ ...props }) => {
             {...ouiaAttribute('data-ouia-navigation-name', 'domain-explorer')}
           >
             Domain Explorer
+          </Link>
+        </NavItem>
+        <NavItem isActive={pathname === '/JobsManagement'}>
+          <Link
+            to="/JobsManagement"
+            {...ouiaAttribute('data-ouia-navigation-name', 'jobs-management')}
+          >
+            Jobs
           </Link>
         </NavItem>
       </NavList>
@@ -92,6 +101,7 @@ const PageLayout: React.FC<IOwnProps & OUIAProps> = ({ ...props }) => {
               />
             )}
           />
+          <Route exact path="/JobsManagement" component={JobsManagementPage} />
           <Route
             path="/NoData"
             render={_props => (

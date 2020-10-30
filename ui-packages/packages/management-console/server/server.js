@@ -153,13 +153,19 @@ const resolvers = {
       return result;
     },
     Jobs: async (parent, args) => {
-      const result = data.JobsData.filter(jobData => {
-        console.log('Job data args->', args['where'].processInstanceId)
-        if (args['where'].processInstanceId && args['where'].processInstanceId.equal) {
-          return jobData.processInstanceId == args['where'].processInstanceId.equal;
-        }
-      });
-      return result;
+      if (Object.keys(args).length> 0) {
+        const result = data.JobsData.filter(jobData => {
+          console.log('Job data args->', args['where'].processInstanceId)
+          if (args['where'].processInstanceId && args['where'].processInstanceId.equal) {
+            return jobData.processInstanceId == args['where'].processInstanceId.equal;
+          }
+        });
+        return result;
+      } else {
+        await timeout(2000);
+        return data.JobsData
+      }
+      
     }
   },
 

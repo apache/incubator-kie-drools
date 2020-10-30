@@ -10,6 +10,7 @@ import JobsRescheduleModal from '../JobsRescheduleModal/JobsRescheduleModal';
 import { OUIAProps, componentOuiaProps, GraphQL } from '@kogito-apps/common';
 import { setTitle, jobCancel } from '../../../utils/Utils';
 import JobsCancelModal from '../JobsCancelModal/JobsCancelModal';
+import { refetchContext } from '../../contexts';
 interface IOwnProps {
   job: GraphQL.Job;
 }
@@ -51,19 +52,22 @@ const JobActionsKebab: React.FC<IOwnProps & OUIAProps> = ({
     setRescheduleClicked(!rescheduleClicked);
   };
 
+  const refetch = React.useContext(refetchContext);
+
   const handleCancelAction = (): void => {
     jobCancel(
       job,
       () => {
         setModalTitle(setTitle('success', 'Job cancel'));
-        setModalContent(`The job: ${job.id} is cancelled successfully`);
+        setModalContent(`The job: ${job.id} is canceled successfully`);
       },
       errorMessage => {
         setModalTitle(setTitle('failure', 'Job cancel'));
         setModalContent(
           `The job: ${job.id} failed to cancel. Error message: ${errorMessage}`
         );
-      }
+      },
+      refetch
     );
     handleCancelModalToggle();
   };
