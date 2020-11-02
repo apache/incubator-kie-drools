@@ -112,14 +112,13 @@ public class DMNTypeSchemas {
             for (Entry<String, DMNType> fkv : ct.getFields().entrySet()) {
                 schema.addProperty(fkv.getKey(), refOrBuiltinSchema(fkv.getValue()));
             }
-            if (isIOSet(ct)) {
+            if (isIOSet(ct) && ct.getFields().size() > 0) {
                 schema.required(new ArrayList<>(ct.getFields().keySet()));
             }
+        } else if (ct.isCollection()) {
+            schema = refOrBuiltinSchema(ct.getBaseType());
         } else {
-            if (ct.getBelongingType() == null) {
-                throw new IllegalStateException();
-            }
-            schema = refOrBuiltinSchema(ct.getBaseType()); // an anonymous inner type for a base
+            throw new IllegalStateException();
         }
         schema = nestAsItemIfCollection(schema, ct);
         schema.addExtension(DMNOASConstants.X_DMN_TYPE, getDMNTypeSchemaXDMNTYPEdescr(ct));
