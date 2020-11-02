@@ -60,8 +60,6 @@
     <!-- This property needs to be defined in all modules that use the packaging 'jar'.
          It is used by different plugins to make sure the module/bundle names are consistent. -->
     <java.module.name/>
-    <!-- Override format.directory in each parent module in the hierarchy -->
-    <!-- TODO Can we use project.root.dir for it instead? -->
     <formatter.skip>false</formatter.skip>
     <formatter.goal>format</formatter.goal>
     <!-- TODO name impsort should indicate it's related to formatting -->
