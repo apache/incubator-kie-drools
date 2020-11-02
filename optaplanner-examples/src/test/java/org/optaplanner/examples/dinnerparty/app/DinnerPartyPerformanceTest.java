@@ -18,12 +18,10 @@ package org.optaplanner.examples.dinnerparty.app;
 
 import java.util.stream.Stream;
 
-import org.junit.jupiter.api.Disabled;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.dinnerparty.domain.DinnerParty;
 
-@Disabled("TODO Score corruption")
 public class DinnerPartyPerformanceTest extends SolverPerformanceTest<DinnerParty> {
 
     private static final String UNSOLVED_DATA_FILE = "data/dinnerparty/unsolved/wedding01.xml";

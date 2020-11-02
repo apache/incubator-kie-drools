@@ -18,12 +18,10 @@ package org.optaplanner.examples.travelingtournament.app;
 
 import java.util.stream.Stream;
 
-import org.junit.jupiter.api.Disabled;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.travelingtournament.domain.TravelingTournament;
 
-@Disabled("TODO Score corruption")
 public class TravelingTournamentPerformanceTest extends SolverPerformanceTest<TravelingTournament> {
 
     private static final String UNSOLVED_DATA_FILE = "data/travelingtournament/unsolved/1-nl10.xml";

@@ -19,7 +19,6 @@ package org.optaplanner.examples.nqueens.app;
 import java.io.File;
 import java.util.Arrays;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.optaplanner.benchmark.api.PlannerBenchmark;
@@ -44,7 +43,6 @@ public class NQueensBenchmarkTest extends PlannerBenchmarkTest {
     // ************************************************************************
 
     @Timeout(600)
-    @Disabled("DROOLS-5740")
     public void benchmark64queens() {
         NQueens problem = new XStreamSolutionFileIO<NQueens>(NQueens.class)
                 .read(new File("data/nqueens/unsolved/64queens.xml"));
