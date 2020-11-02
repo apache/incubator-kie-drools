@@ -171,27 +171,28 @@ public class DecisionRestResourceGenerator {
             inputRef = withOASResult.getNamingPolicy().getRef(identifyInputSet);
             outputRef = withOASResult.getNamingPolicy().getRef(identifyOutputSet);
         }
+        final String DMN_DEFINITIONS_JSON = "dmnDefinitions.json";
         // MP / Quarkus
         processAnnForRef(dmnMethod,
                          "org.eclipse.microprofile.openapi.annotations.parameters.RequestBody",
                          "org.eclipse.microprofile.openapi.annotations.media.Schema",
-                         "/dmnDefinitions.json" + inputRef,
+                         DMN_DEFINITIONS_JSON + inputRef,
                          !mpAnnPresent);
         processAnnForRef(dmnMethod,
                          "org.eclipse.microprofile.openapi.annotations.responses.APIResponse",
                          "org.eclipse.microprofile.openapi.annotations.media.Schema",
-                         "/dmnDefinitions.json" + outputRef,
+                         DMN_DEFINITIONS_JSON + outputRef,
                          !mpAnnPresent);
         // io.swagger / SB
         processAnnForRef(dmnMethod,
                          "io.swagger.v3.oas.annotations.parameters.RequestBody",
                          "io.swagger.v3.oas.annotations.media.Schema",
-                         "/docs/dmnDefinitions.json" + inputRef,
+                         DMN_DEFINITIONS_JSON + inputRef,
                          !swaggerAnnPresent);
         processAnnForRef(dmnMethod,
                          "io.swagger.v3.oas.annotations.responses.ApiResponse",
                          "io.swagger.v3.oas.annotations.media.Schema",
-                         "/docs/dmnDefinitions.json" + outputRef,
+                         DMN_DEFINITIONS_JSON + outputRef,
                          !swaggerAnnPresent);
     }
 
