@@ -46,6 +46,7 @@ import org.drools.core.builder.conf.impl.DecisionTableConfigurationImpl;
 import org.drools.core.builder.conf.impl.ResourceConfigurationImpl;
 import org.drools.modelcompiler.builder.GeneratedFile;
 import org.drools.modelcompiler.builder.ModelBuilderImpl;
+import org.drools.modelcompiler.builder.ModelSourceClass;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.builder.model.KieSessionModel;
@@ -212,11 +213,12 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
 
         if (hasRuleUnits) {
             generateRuleUnits( errors, generatedFiles );
-        } else if (annotator != null && !hotReloadMode) {
-            generateSessionUnits( generatedFiles );
+        } else {
+            if (annotator != null && !hotReloadMode) {
+                generateSessionUnits( generatedFiles );
+            }
+            generateProject( dummyReleaseId, modelsByUnit, generatedFiles );
         }
-
-        generateProject( dummyReleaseId, modelsByUnit, generatedFiles );
 
         if (!errors.isEmpty()) {
             throw new RuleCodegenError(errors);
@@ -288,15 +290,19 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
     }
 
     private void generateProject( ReleaseIdImpl dummyReleaseId, Map<String, String> modelsByUnit, List<org.kie.kogito.codegen.GeneratedFile> generatedFiles ) {
-        KieModuleModelMethod modelMethod = new KieModuleModelMethod( kieModuleModel.getKieBaseModels() );
-        ModelSourceClass modelSourceClass = new ModelSourceClass( dummyReleaseId, modelMethod, modelsByUnit );
+        Map<String, List<String>> modelsByKBase = new HashMap<>();
+        for (Map.Entry<String, String> entry : modelsByUnit.entrySet()) {
+            modelsByKBase.put( entry.getKey(), Collections.singletonList( entry.getValue() ) );
+        }
+
+        ModelSourceClass modelSourceClass = new ModelSourceClass( dummyReleaseId, kieModuleModel.getKieBaseModels(), modelsByKBase );
 
         generatedFiles.add(new org.kie.kogito.codegen.GeneratedFile(
                 org.kie.kogito.codegen.GeneratedFile.Type.RULE,
                 modelSourceClass.getName(),
                 modelSourceClass.generate()));
 
-        ProjectSourceClass projectSourceClass = new ProjectSourceClass(modelMethod);
+        ProjectSourceClass projectSourceClass = new ProjectSourceClass(modelSourceClass.getModelMethod());
         if (annotator != null) {
             projectSourceClass.withDependencyInjection("@" + annotator.applicationComponentType());
         }

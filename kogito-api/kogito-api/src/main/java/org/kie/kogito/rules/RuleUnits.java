@@ -17,8 +17,6 @@ package org.kie.kogito.rules;
 
 public interface RuleUnits {
 
-    KieRuntimeBuilder ruleRuntimeBuilder();
-
     <T extends RuleUnitData> RuleUnit<T> create(Class<T> clazz);
 
     void register(String name, RuleUnitInstance<?> unitInstance);

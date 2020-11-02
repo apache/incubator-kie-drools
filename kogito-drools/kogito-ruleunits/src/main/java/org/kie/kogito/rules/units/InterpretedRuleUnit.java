@@ -10,7 +10,6 @@ import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.kogito.Config;
-import org.kie.kogito.rules.KieRuntimeBuilder;
 import org.kie.kogito.rules.RuleUnit;
 import org.kie.kogito.rules.RuleUnitData;
 import org.kie.kogito.rules.RuleUnitInstance;
@@ -71,11 +70,6 @@ public class InterpretedRuleUnit<T extends RuleUnitData> extends AbstractRuleUni
         public class RuleUnits extends AbstractRuleUnits {
             @Override
             protected RuleUnit<?> create( String fqcn ) {
-                throw new UnsupportedOperationException();
-            }
-
-            @Override
-            public KieRuntimeBuilder ruleRuntimeBuilder() {
                 throw new UnsupportedOperationException();
             }
         }

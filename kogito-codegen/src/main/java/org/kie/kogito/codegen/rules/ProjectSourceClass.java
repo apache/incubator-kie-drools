@@ -2,6 +2,7 @@ package org.kie.kogito.codegen.rules;
 
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.modelcompiler.builder.KieBaseBuilder;
+import org.drools.modelcompiler.builder.ModelSourceClass;
 import org.kie.api.KieBase;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.runtime.KieSession;
@@ -13,10 +14,10 @@ public class ProjectSourceClass {
     private static final String PROJECT_RUNTIME_RESOURCE_CLASS = PROJECT_RUNTIME_CLASS.replace('.', '/') + ".class";
     private static final String PROJECT_RUNTIME_SOURCE = PROJECT_RUNTIME_CLASS.replace('.', '/') + ".java";
 
-    final KieModuleModelMethod modelMethod;
+    final ModelSourceClass.KieModuleModelMethod modelMethod;
     private String dependencyInjection = "";
 
-    public ProjectSourceClass(KieModuleModelMethod modelMethod) {
+    public ProjectSourceClass(ModelSourceClass.KieModuleModelMethod modelMethod) {
         this.modelMethod = modelMethod;
     }
 
@@ -39,6 +40,8 @@ public class ProjectSourceClass {
                         "\n" +
                         "    private final ProjectModel model = new ProjectModel();\n" +
                         "    private final java.util.Map<String, KieBase> kbases = new java.util.HashMap<>();\n" +
+                        "\n" +
+                        "    public static final ProjectRuntime INSTANCE = new ProjectRuntime();\n" +
                         "\n");
         sb.append(modelMethod.toGetKieBaseMethods());
         sb.append("\n");

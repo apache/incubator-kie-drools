@@ -78,6 +78,46 @@ public class AbstractCodegenTest {
 
     private static final Map<TYPE, Function<List<String>, Generator>> generatorTypeMap = new HashMap<>();
 
+    private static final String DUMMY_PROCESS_RUNTIME =
+            "package org.drools.project.model;\n" +
+            "\n" +
+            "import org.kie.api.KieBase;\n" +
+            "import org.kie.api.builder.model.KieBaseModel;\n" +
+            "import org.kie.api.runtime.KieSession;\n" +
+            "import org.drools.modelcompiler.builder.KieBaseBuilder;\n" +
+            "\n" +
+            "\n" +
+            "public class ProjectRuntime implements org.kie.kogito.rules.KieRuntimeBuilder {\n" +
+            "\n" +
+            "    public static final ProjectRuntime INSTANCE = new ProjectRuntime();\n" +
+            "\n" +
+            "    @Override\n" +
+            "    public KieBase getKieBase() {\n" +
+            "        return null;\n" +
+            "    }\n" +
+            "\n" +
+            "    @Override\n" +
+            "    public KieBase getKieBase(String name) {\n" +
+            "        return null;\n" +
+            "    }\n" +
+            "\n" +
+            "    @Override\n" +
+            "    public KieSession newKieSession() {\n" +
+            "        return null;\n" +
+            "    }\n" +
+            "\n" +
+            "    @Override\n" +
+            "    public KieSession newKieSession(String sessionName) {\n" +
+            "        return null;\n" +
+            "    }\n" +
+            "\n" +
+            "    @Override\n" +
+            "    public KieSession newKieSession(String sessionName, org.kie.kogito.rules.RuleConfig ruleConfig) {\n" +
+            "        return null;\n" +
+            "    }\n" +
+            "\n" +
+            "}";
+
     static {
         generatorTypeMap.put(TYPE.PROCESS, strings -> ProcessCodegen.ofCollectedResources(toCollectedResources(TEST_RESOURCES, strings)));
         generatorTypeMap.put(TYPE.RULES, strings -> IncrementalRuleCodegen.ofCollectedResources(toCollectedResources(TEST_RESOURCES, strings)));
@@ -170,6 +210,11 @@ public class AbstractCodegenTest {
             sources.add( fileName );
             srcMfs.write(fileName, entry.contents());
             log(new String(entry.contents()));
+        }
+
+        if (resourcesTypeMap.size() == 1 && resourcesTypeMap.containsKey(TYPE.PROCESS)) {
+            sources.add( "org/drools/project/model/ProjectRuntime.java" );
+            srcMfs.write( "org/drools/project/model/ProjectRuntime.java", DUMMY_PROCESS_RUNTIME.getBytes() );
         }
 
         if (logger.isDebugEnabled()) {

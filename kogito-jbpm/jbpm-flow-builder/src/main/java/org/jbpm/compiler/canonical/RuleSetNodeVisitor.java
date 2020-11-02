@@ -16,6 +16,8 @@
 
 package org.jbpm.compiler.canonical;
 
+import java.text.MessageFormat;
+
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.Expression;
@@ -43,10 +45,8 @@ import org.kie.kogito.rules.units.impl.RuleUnitComponentFactoryImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.text.MessageFormat;
-
-import static org.jbpm.ruleflow.core.factory.RuleSetNodeFactory.METHOD_PARAMETER;
 import static org.jbpm.ruleflow.core.factory.RuleSetNodeFactory.METHOD_DECISION;
+import static org.jbpm.ruleflow.core.factory.RuleSetNodeFactory.METHOD_PARAMETER;
 
 public class RuleSetNodeVisitor extends AbstractNodeVisitor<RuleSetNode> {
 
@@ -173,10 +173,8 @@ public class RuleSetNodeVisitor extends AbstractNodeVisitor<RuleSetNode> {
         BlockStmt actionBody = new BlockStmt();
         LambdaExpr lambda = new LambdaExpr(new Parameter(new UnknownType(), "()"), actionBody);
 
-        MethodCallExpr ruleRuntimeBuilder = new MethodCallExpr(
-                new MethodCallExpr(new NameExpr("app"), "ruleUnits"), "ruleRuntimeBuilder");
         MethodCallExpr ruleRuntimeSupplier = new MethodCallExpr(
-                ruleRuntimeBuilder, "newKieSession",
+                new NameExpr("org.drools.project.model.ProjectRuntime.INSTANCE"), "newKieSession",
                 NodeList.nodeList(new StringLiteralExpr("defaultStatelessKieSession"), new NameExpr("app.config().rule()")));
         actionBody.addStatement(new ReturnStmt(ruleRuntimeSupplier));
 

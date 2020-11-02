@@ -33,6 +33,10 @@ public class StaticProjectClassLoader extends ProjectClassLoader {
         super( parent, resourceProvider );
     }
 
+    @Override
+    public boolean isDynamic() {
+        return false;
+    }
 
     public static class IBMStaticClassLoader extends StaticProjectClassLoader {
         private final boolean parentImplementsFindResources;

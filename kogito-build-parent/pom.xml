@@ -131,7 +131,7 @@
     <version.org.keycloak>11.0.1</version.org.keycloak>
     <version.org.mockito>3.5.13</version.org.mockito>
     <version.org.mvel>2.4.10.Final</version.org.mvel>
-    <version.org.kie7>7.45.0.Final</version.org.kie7>
+    <version.org.kie7>7.46.0.t20201030</version.org.kie7>
     <version.org.reflections>0.9.11</version.org.reflections>
     <version.org.slf4j>1.7.30</version.org.slf4j>
     <version.testcontainers>1.14.3</version.testcontainers>
