@@ -29,7 +29,7 @@ import javax.persistence.FetchType;
 public abstract class VariableEntity implements Serializable {
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "MAP_VAR_ID", nullable = true)
+    @JoinColumn(name = "MAP_VAR_ID", nullable = true, foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT))
     private Set<MappedVariable> mappedVariables;
 
     public Set<MappedVariable> getMappedVariables() {
