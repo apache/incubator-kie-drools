@@ -95,6 +95,16 @@ public final class SimpleBigDecimalScoreHolderImpl extends AbstractScoreHolder<S
     }
 
     @Override
+    public void impactScore(RuleContext kcontext, int weightMultiplier) {
+        impactScore(kcontext, BigDecimal.valueOf(weightMultiplier));
+    }
+
+    @Override
+    public void impactScore(RuleContext kcontext, long weightMultiplier) {
+        impactScore(kcontext, BigDecimal.valueOf(weightMultiplier));
+    }
+
+    @Override
     public void impactScore(RuleContext kcontext, BigDecimal weightMultiplier) {
         Rule rule = kcontext.getRule();
         BiConsumer<RuleContext, BigDecimal> matchExecutor = matchExecutorByNumberMap.get(rule);

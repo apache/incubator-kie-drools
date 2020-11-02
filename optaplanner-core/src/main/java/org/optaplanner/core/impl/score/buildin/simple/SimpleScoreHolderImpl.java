@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.score.buildin.simple;
 
+import java.math.BigDecimal;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -102,6 +103,22 @@ public final class SimpleScoreHolderImpl extends AbstractScoreHolder<SimpleScore
                     + ConstraintConfiguration.class.getSimpleName() + " annotated class.");
         }
         matchExecutor.accept(kcontext, weightMultiplier);
+    }
+
+    @Override
+    public void impactScore(RuleContext kcontext, long weightMultiplier) {
+        throw new UnsupportedOperationException("In the rule (" + kcontext.getRule().getName()
+                + "), the scoreHolder class (" + getClass()
+                + ") does not support a long weightMultiplier (" + weightMultiplier + ").\n"
+                + "If you're using constraint streams, maybe switch from penalizeLong() to penalize().");
+    }
+
+    @Override
+    public void impactScore(RuleContext kcontext, BigDecimal weightMultiplier) {
+        throw new UnsupportedOperationException("In the rule (" + kcontext.getRule().getName()
+                + "), the scoreHolder class (" + getClass()
+                + ") does not support a BigDecimal weightMultiplier (" + weightMultiplier + ").\n"
+                + "If you're using constraint streams, maybe switch from penalizeBigDecimal() to penalize().");
     }
 
     // ************************************************************************

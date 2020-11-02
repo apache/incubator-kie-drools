@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.score.buildin.bendablelong;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -180,6 +181,11 @@ public final class BendableLongScoreHolderImpl extends AbstractScoreHolder<Benda
     }
 
     @Override
+    public void impactScore(RuleContext kcontext, int weightMultiplier) {
+        impactScore(kcontext, (long) weightMultiplier);
+    }
+
+    @Override
     public void impactScore(RuleContext kcontext, long weightMultiplier) {
         Rule rule = kcontext.getRule();
         BiConsumer<RuleContext, Long> matchExecutor = matchExecutorByNumberMap.get(rule);
@@ -189,6 +195,14 @@ public final class BendableLongScoreHolderImpl extends AbstractScoreHolder<Benda
                     + ConstraintConfiguration.class.getSimpleName() + " annotated class.");
         }
         matchExecutor.accept(kcontext, weightMultiplier);
+    }
+
+    @Override
+    public void impactScore(RuleContext kcontext, BigDecimal weightMultiplier) {
+        throw new UnsupportedOperationException("In the rule (" + kcontext.getRule().getName()
+                + "), the scoreHolder class (" + getClass()
+                + ") does not support a BigDecimal weightMultiplier (" + weightMultiplier + ").\n"
+                + "If you're using constraint streams, maybe switch from penalizeBigDecimal() to penalizeLong().");
     }
 
     private void impactScore(RuleContext kcontext, long[] hardWeightsMultiplier, long[] softWeightsMultiplier) {

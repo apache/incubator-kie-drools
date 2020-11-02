@@ -183,6 +183,16 @@ public final class BendableBigDecimalScoreHolderImpl extends AbstractScoreHolder
     }
 
     @Override
+    public void impactScore(RuleContext kcontext, int weightMultiplier) {
+        impactScore(kcontext, BigDecimal.valueOf(weightMultiplier));
+    }
+
+    @Override
+    public void impactScore(RuleContext kcontext, long weightMultiplier) {
+        impactScore(kcontext, BigDecimal.valueOf(weightMultiplier));
+    }
+
+    @Override
     public void impactScore(RuleContext kcontext, BigDecimal weightMultiplier) {
         Rule rule = kcontext.getRule();
         BiConsumer<RuleContext, BigDecimal> matchExecutor = matchExecutorByNumberMap.get(rule);

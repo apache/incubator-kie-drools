@@ -21,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -132,6 +133,21 @@ public abstract class AbstractScoreHolderTest<Score_ extends Score<Score_>> {
 
             @Override
             public void configureConstraintWeight(org.kie.api.definition.rule.Rule rule, SimpleScore constraintWeight) {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public void impactScore(RuleContext kcontext, int weightMultiplier) {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public void impactScore(RuleContext kcontext, long weightMultiplier) {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public void impactScore(RuleContext kcontext, BigDecimal weightMultiplier) {
                 throw new UnsupportedOperationException();
             }
         };
