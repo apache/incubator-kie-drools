@@ -39,10 +39,10 @@ public class FEELBuiltinTypeSchemas {
         switch (t.getName()) {
             case SimpleType.YEARS_AND_MONTHS_DURATION:
             case "yearMonthDuration":
-                return OASFactory.createObject(Schema.class).description("FEEL:years and months duration").type(SchemaType.STRING).format("years and months duration").example("P1Y2M");
+                return OASFactory.createObject(Schema.class).addExtension(DMNOASConstants.X_DMN_TYPE, "FEEL:years and months duration").type(SchemaType.STRING).format("years and months duration").example("P1Y2M");
             case SimpleType.DAYS_AND_TIME_DURATION:
             case "dayTimeDuration":
-                return OASFactory.createObject(Schema.class).description("FEEL:days and time duration").type(SchemaType.STRING).format("days and time duration").example("P1D");
+                return OASFactory.createObject(Schema.class).addExtension(DMNOASConstants.X_DMN_TYPE, "FEEL:days and time duration").type(SchemaType.STRING).format("days and time duration").example("P1D");
             default:
                 throw new IllegalArgumentException();
         }
@@ -51,19 +51,19 @@ public class FEELBuiltinTypeSchemas {
     private static Schema convertBuiltInToJavaClass(BuiltInType builtin) {
         switch (builtin) {
             case UNKNOWN:
-                return OASFactory.createObject(Schema.class).description("FEEL:Any"); // intentional, do NOT add .type(SchemaType.OBJECT), the JSONSchema to represent FEEL:Any is {}
+                return OASFactory.createObject(Schema.class).addExtension(DMNOASConstants.X_DMN_TYPE, "FEEL:Any"); // intentional, do NOT add .type(SchemaType.OBJECT), the JSONSchema to represent FEEL:Any is {}
             case DATE:
-                return OASFactory.createObject(Schema.class).type(SchemaType.STRING).format("date").description("FEEL:date");
+                return OASFactory.createObject(Schema.class).type(SchemaType.STRING).format("date").addExtension(DMNOASConstants.X_DMN_TYPE, "FEEL:date");
             case TIME:
-                return OASFactory.createObject(Schema.class).type(SchemaType.STRING).format("time").description("FEEL:time");
+                return OASFactory.createObject(Schema.class).type(SchemaType.STRING).format("time").addExtension(DMNOASConstants.X_DMN_TYPE, "FEEL:time");
             case DATE_TIME:
-                return OASFactory.createObject(Schema.class).type(SchemaType.OBJECT).format("date-time").description("FEEL:date and time");
+                return OASFactory.createObject(Schema.class).type(SchemaType.STRING).format("date-time").addExtension(DMNOASConstants.X_DMN_TYPE, "FEEL:date and time");
             case BOOLEAN:
-                return OASFactory.createObject(Schema.class).type(SchemaType.BOOLEAN).description("FEEL:boolean");
+                return OASFactory.createObject(Schema.class).type(SchemaType.BOOLEAN).addExtension(DMNOASConstants.X_DMN_TYPE, "FEEL:boolean");
             case NUMBER:
-                return OASFactory.createObject(Schema.class).type(SchemaType.NUMBER).description("FEEL:number");
+                return OASFactory.createObject(Schema.class).type(SchemaType.NUMBER).addExtension(DMNOASConstants.X_DMN_TYPE, "FEEL:number");
             case STRING:
-                return OASFactory.createObject(Schema.class).type(SchemaType.STRING).description("FEEL:string");
+                return OASFactory.createObject(Schema.class).type(SchemaType.STRING).addExtension(DMNOASConstants.X_DMN_TYPE, "FEEL:string");
             case DURATION:
             default:
                 throw new IllegalArgumentException();
