@@ -25,6 +25,8 @@ import org.junit.jupiter.api.Test;
 import org.kie.kogito.trusty.service.TrustyServiceTestUtils;
 import org.kie.kogito.trusty.storage.api.model.TypedVariable;
 
+import static org.kie.kogito.trusty.service.responses.ResponseUtils.typedVariableResponseFrom;
+
 class TypedVariableResponseTest {
 
     private static final String FIELD_COMPONENTS = "components";
@@ -52,7 +54,7 @@ class TypedVariableResponseTest {
 
     @Test
     void testCollection() throws JsonProcessingException {
-        TypedVariableResponse response = TypedVariableResponse.from(buildTestCollection());
+        TypedVariableResponse response = typedVariableResponseFrom(buildTestCollection());
 
         Assertions.assertEquals(VAR_NAME_COLLECTION, response.getName());
         Assertions.assertEquals(TYPE_REF_STRING, response.getTypeRef());
@@ -71,7 +73,7 @@ class TypedVariableResponseTest {
 
     @Test
     void testCollectionOfStructures() throws JsonProcessingException {
-        TypedVariableResponse response = TypedVariableResponse.from(buildTestCollectionOfStructures());
+        TypedVariableResponse response = typedVariableResponseFrom(buildTestCollectionOfStructures());
 
         Assertions.assertEquals(VAR_NAME_COLLECTION, response.getName());
         Assertions.assertEquals(TYPE_REF_STRUCT, response.getTypeRef());
@@ -123,7 +125,7 @@ class TypedVariableResponseTest {
 
     @Test
     void testStructure() throws JsonProcessingException {
-        TypedVariableResponse response = TypedVariableResponse.from(buildTestStructure());
+        TypedVariableResponse response = typedVariableResponseFrom(buildTestStructure());
 
         Assertions.assertEquals(VAR_NAME_STRUCT, response.getName());
         Assertions.assertEquals(TYPE_REF_STRUCT, response.getTypeRef());
@@ -155,7 +157,7 @@ class TypedVariableResponseTest {
 
     @Test
     void testUnit() throws JsonProcessingException {
-        TypedVariableResponse response = TypedVariableResponse.from(buildTestUnitVariable());
+        TypedVariableResponse response = typedVariableResponseFrom(buildTestUnitVariable());
 
         Assertions.assertEquals(VAR_NAME_UNIT, response.getName());
         Assertions.assertEquals(TYPE_REF_STRING, response.getTypeRef());

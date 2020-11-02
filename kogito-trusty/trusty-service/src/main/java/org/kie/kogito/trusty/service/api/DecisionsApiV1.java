@@ -39,6 +39,7 @@ import org.kie.kogito.trusty.service.responses.DecisionOutcomeResponse;
 import org.kie.kogito.trusty.service.responses.DecisionOutcomesResponse;
 import org.kie.kogito.trusty.service.responses.DecisionStructuredInputsResponse;
 import org.kie.kogito.trusty.service.responses.ExecutionHeaderResponse;
+import org.kie.kogito.trusty.service.responses.ResponseUtils;
 import org.kie.kogito.trusty.storage.api.model.Decision;
 
 @Path("executions/decisions")
@@ -69,7 +70,7 @@ public class DecisionsApiV1 {
                     required = true,
                     schema = @Schema(implementation = String.class)
             ) @PathParam("executionId") String executionId) {
-        return handleDecisionRequest(executionId, ExecutionHeaderResponse::fromExecution);
+        return handleDecisionRequest(executionId, ResponseUtils::executionHeaderResponseFrom);
     }
 
     @GET
@@ -88,7 +89,7 @@ public class DecisionsApiV1 {
                     required = true,
                     schema = @Schema(implementation = String.class)
             ) @PathParam("executionId") String executionId) {
-        return handleDecisionRequest(executionId, DecisionStructuredInputsResponse::from);
+        return handleDecisionRequest(executionId, ResponseUtils::decisionStructuredInputsResponseFrom);
     }
 
     @GET
@@ -107,7 +108,7 @@ public class DecisionsApiV1 {
                     required = true,
                     schema = @Schema(implementation = String.class)
             ) @PathParam("executionId") String executionId) {
-        return handleDecisionRequest(executionId, DecisionOutcomesResponse::from);
+        return handleDecisionRequest(executionId, ResponseUtils::decisionOutcomesResponseFrom);
     }
 
     @GET
@@ -135,7 +136,7 @@ public class DecisionsApiV1 {
         return handleDecisionRequest(executionId, decision -> decision.getOutcomes() == null ? null : decision.getOutcomes().stream()
                 .filter(outcome -> outcomeId != null && outcomeId.equals(outcome.getOutcomeId()))
                 .findFirst()
-                .map(DecisionOutcomeResponse::from)
+                .map(ResponseUtils::decisionOutcomeResponseFrom)
                 .orElse(null)
         );
     }

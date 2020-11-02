@@ -1,0 +1,90 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.kie.kogito</groupId>
+    <artifactId>integration-tests</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>integration-tests-trusty-service</artifactId>
+  <name>Kogito Apps :: Integration Tests :: Trusty Service</name>
+  <packaging>pom</packaging>
+
+  <modules>
+    <module>integration-tests-trusty-service-common</module>
+    <module>integration-tests-trusty-service-quarkus</module>
+    <module>integration-tests-trusty-service-springboot</module>
+  </modules>
+
+  <properties>
+    <container.image.kogito-service>to-be-changed-in-submodules</container.image.kogito-service>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-bom</artifactId>
+        <version>${project.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>io.quarkus</groupId>
+        <artifactId>quarkus-bom</artifactId>
+        <version>${version.io.quarkus}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>integration-tests-trusty-service-common</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-failsafe-plugin</artifactId>
+          <dependencies>
+            <!-- ensure dependent modules were built, but not added in the classpath -->
+            <dependency>
+              <groupId>org.kie.kogito</groupId>
+              <artifactId>explainability-service-messaging</artifactId>
+              <version>${project.version}</version>
+              <scope>runtime</scope>
+            </dependency>
+            <dependency>
+              <groupId>org.kie.kogito</groupId>
+              <artifactId>trusty-service</artifactId>
+              <version>${project.version}</version>
+              <scope>runtime</scope>
+            </dependency>
+          </dependencies>
+          <configuration>
+            <systemPropertyVariables>
+              <container.image.infinispan>${container.image.infinispan}</container.image.infinispan>
+              <container.image.keycloak>${container.image.keycloak}</container.image.keycloak>
+              <container.image.explainability-service-messaging>${container.image.explainability-service-messaging}</container.image.explainability-service-messaging>
+              <container.image.kogito-service>${container.image.kogito-service}</container.image.kogito-service>
+              <container.image.trusty-service>${container.image.trusty-service}</container.image.trusty-service>
+            </systemPropertyVariables>
+            <classesDirectory>${project.build.outputDirectory}</classesDirectory>
+          </configuration>
+          <executions>
+            <execution>
+              <goals>
+                <goal>integration-test</goal>
+                <goal>verify</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+</project>

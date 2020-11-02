@@ -24,8 +24,12 @@
     <maven.compiler.source>11</maven.compiler.source>
     <maven.compiler.target>11</maven.compiler.target>
 
-    <!-- containers used for testing -->
+    <!-- external containers used for testing -->
+    <container.image.infinispan>quay.io/infinispan/server:${version.org.infinispan}</container.image.infinispan>
+    <!-- internal containers used for testing (built by maven using quarkus-container-image-jib) -->
+    <container.image.explainability-service-messaging>org.kie.kogito/explainability-service-messaging:${project.version}</container.image.explainability-service-messaging>
     <container.image.jobs-service>org.kie.kogito/jobs-service:${project.version}</container.image.jobs-service>
+    <container.image.trusty-service>org.kie.kogito/trusty-service:${project.version}</container.image.trusty-service>
   </properties>
 
   <repositories>

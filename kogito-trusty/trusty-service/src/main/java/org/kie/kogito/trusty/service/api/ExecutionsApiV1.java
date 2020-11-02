@@ -49,6 +49,7 @@ import org.kie.kogito.trusty.service.messaging.incoming.ModelIdCreator;
 import org.kie.kogito.trusty.service.models.MatchedExecutionHeaders;
 import org.kie.kogito.trusty.service.responses.ExecutionHeaderResponse;
 import org.kie.kogito.trusty.service.responses.ExecutionsResponse;
+import org.kie.kogito.trusty.service.responses.ResponseUtils;
 import org.kie.kogito.trusty.storage.api.model.Decision;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -134,7 +135,7 @@ public class ExecutionsApiV1 {
         MatchedExecutionHeaders result = executionService.getExecutionHeaders(fromDate, toDate, limit, offset, prefix);
 
         List<ExecutionHeaderResponse> headersResponses = new ArrayList<>();
-        result.getExecutions().forEach(x -> headersResponses.add(ExecutionHeaderResponse.fromExecution(x)));
+        result.getExecutions().forEach(x -> headersResponses.add(ResponseUtils.executionHeaderResponseFrom(x)));
         return Response.ok(new ExecutionsResponse(result.getAvailableResults(), limit, offset, headersResponses)).build();
     }
 
