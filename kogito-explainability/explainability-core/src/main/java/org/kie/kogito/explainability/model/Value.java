@@ -15,11 +15,16 @@
  */
 package org.kie.kogito.explainability.model;
 
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.MappingIterator;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.ArrayUtils;
 
 /**
@@ -42,6 +47,10 @@ public class Value<S> {
                 return composite.stream().map(f -> f.getValue().asString()).collect(Collectors.joining(" "));
             } catch (ClassCastException ignored) {
             }
+        }
+        if (underlyingObject instanceof ByteBuffer) {
+            ByteBuffer byteBuffer = (ByteBuffer) this.underlyingObject;
+            return new String(byteBuffer.array());
         }
         return ArrayUtils.toString(underlyingObject);
     }
@@ -73,23 +82,39 @@ public class Value<S> {
             doubles = (double[]) underlyingObject;
         } else {
             if (underlyingObject instanceof String) {
-                String[] tokens = ((String) underlyingObject).split(",?\\s+");
-                int noOfWords = tokens.length;
-                doubles = new double[noOfWords];
-                // parse string encoded vector
-                if (Arrays.stream(tokens).allMatch(s -> s.matches("-?\\d+(\\.\\d+)?"))) {
-                    for (int i = 0; i < tokens.length; i++) {
-                        doubles[i] = Double.parseDouble(tokens[i]);
-                    }
-                } else { // or make a vector of 1s
-                    Arrays.fill(doubles, 1);
-                }
+                String string = (String) this.underlyingObject;
+                doubles = parseVectorString(string);
+            } else if (underlyingObject instanceof ByteBuffer) {
+                ByteBuffer byteBuffer = (ByteBuffer) underlyingObject;
+                String string = StandardCharsets.UTF_8.decode(byteBuffer).toString();
+                doubles = parseVectorString(string);
             } else {
                 double v = asNumber();
                 doubles = new double[1];
                 doubles[0] = v;
             }
-            // FAI-234 : handle parsing of different underlyingObject types as vectors (e.g. ByteBuffer, etc.)
+        }
+        return doubles;
+    }
+
+    private double[] parseVectorString(String string) {
+        double[] doubles;
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            JsonParser parser = objectMapper.createParser(string);
+            // parse a double[] as a string
+            Double[] ar = objectMapper.readValue(parser, Double[].class);
+            doubles = Arrays.stream(ar).mapToDouble(Double::doubleValue).toArray();
+        } catch (Exception e) {
+            try {
+                // parse a string of whitespace separated doubles
+                JsonParser parser = objectMapper.createParser(string);
+                MappingIterator<Double> iterator = objectMapper.readValues(parser, Double.class);
+                doubles = iterator.readAll().stream().mapToDouble(Double::doubleValue).toArray();
+            } catch (Exception e2) {
+                // it was not possible to parse the string as a vector
+                doubles = new double[0];
+            }
         }
         return doubles;
     }
