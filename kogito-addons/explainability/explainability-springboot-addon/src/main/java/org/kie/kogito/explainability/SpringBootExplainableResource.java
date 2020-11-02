@@ -16,25 +16,24 @@
 
 package org.kie.kogito.explainability;
 
+import java.util.List;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
 import org.kie.kogito.Application;
 import org.kie.kogito.explainability.model.PredictInput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
-
-@RestController
-@RequestMapping("/predict")
+@Path("/predict")
 public class SpringBootExplainableResource {
-    
+
     private static final Logger LOGGER = LoggerFactory.getLogger(SpringBootExplainableResource.class);
     private static final ExplainabilityService explainabilityService = ExplainabilityService.INSTANCE;
 
@@ -45,14 +44,15 @@ public class SpringBootExplainableResource {
         this.application = application;
     }
 
-    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE,
-            consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> predict(List<PredictInput> inputs) {
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response predict(List<PredictInput> inputs) {
         try {
-            return ResponseEntity.ok(explainabilityService.processRequest(application, inputs));
+            return Response.ok(explainabilityService.processRequest(application, inputs)).build();
         } catch (Exception e) {
             LOGGER.warn("An Exception occurred processing the predict request", e);
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
         }
     }
 }

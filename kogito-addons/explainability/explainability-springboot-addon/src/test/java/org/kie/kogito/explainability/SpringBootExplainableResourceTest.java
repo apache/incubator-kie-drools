@@ -16,17 +16,19 @@
 
 package org.kie.kogito.explainability;
 
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.ws.rs.core.GenericType;
+import javax.ws.rs.core.Response;
+
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.explainability.model.ModelIdentifier;
 import org.kie.kogito.explainability.model.PredictInput;
 import org.kie.kogito.explainability.model.PredictOutput;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-
-import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
@@ -47,7 +49,8 @@ class SpringBootExplainableResourceTest {
     void explainServiceTest() {
         List<PredictInput> inputs = singletonList(createInput(40));
 
-        List<PredictOutput> outputs = (List<PredictOutput>) resource.predict(inputs).getBody();
+        List<PredictOutput> outputs = resource.predict(inputs).readEntity(new GenericType<List<PredictOutput>>() {
+        });
 
         assertNotNull(outputs);
         assertEquals(1, outputs.size());
@@ -69,11 +72,11 @@ class SpringBootExplainableResourceTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     void explainServiceTestMultipleInputs() {
         List<PredictInput> inputs = asList(createInput(40), createInput(120));
 
-        List<PredictOutput> outputs = (List<PredictOutput>) resource.predict(inputs).getBody();
+        List<PredictOutput> outputs = resource.predict(inputs).readEntity(new GenericType<List<PredictOutput>>() {
+        });
 
         assertNotNull(outputs);
         assertEquals(2, outputs.size());
@@ -91,9 +94,9 @@ class SpringBootExplainableResourceTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     void explainServiceTestNoInputs() {
-        List<PredictOutput> outputs = (List<PredictOutput>) resource.predict(emptyList()).getBody();
+        List<PredictOutput> outputs = resource.predict(emptyList()).readEntity(new GenericType<List<PredictOutput>>() {
+        });
 
         assertNotNull(outputs);
         assertEquals(0, outputs.size());
@@ -104,10 +107,10 @@ class SpringBootExplainableResourceTest {
         String unknownwResourceId = "unknown:model";
         PredictInput input = createInput(10);
         input.getModelIdentifier().setResourceId(unknownwResourceId);
-        ResponseEntity<Object> responseEntity = resource.predict(singletonList(input));
+        Response responseEntity = resource.predict(singletonList(input));
 
-        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
-        assertEquals("Model " + unknownwResourceId + " not found.", responseEntity.getBody());
+        assertEquals(HttpStatus.BAD_REQUEST.value(), responseEntity.getStatus());
+        assertEquals("Model " + unknownwResourceId + " not found.", responseEntity.readEntity(String.class));
     }
 
     private PredictInput createInput(int speedLimit) {
