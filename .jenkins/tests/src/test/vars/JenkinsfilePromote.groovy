@@ -4,8 +4,8 @@ class JenkinsfilePromote extends JenkinsPipelineSpecification {
 	def Jenkinsfile = null
 
     def setup() {
-        Jenkinsfile = loadPipelineScriptForTest('Jenkinsfile.promote')
-        Jenkinsfile.getBinding().setVariable('PROPERTIES_FILE_NAME', 'deployment.properties')
+			Jenkinsfile = loadPipelineScriptForTest('Jenkinsfile.promote')
+			Jenkinsfile.getBinding().setVariable('PROPERTIES_FILE_NAME', 'deployment.properties')
     }
 
     //////////////////////////////////////////////////////////////////////////////

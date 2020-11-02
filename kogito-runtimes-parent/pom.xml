@@ -128,7 +128,6 @@
     <module>grafana-api</module>
     <module>addons</module>
     <module>integration-tests</module>
-    <module>jenkins-tests</module>
     <module>kogito-workitems</module>
   </modules>
 

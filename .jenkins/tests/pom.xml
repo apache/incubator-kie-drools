@@ -2,14 +2,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-build-parent</artifactId>
-        <version>2.0.0-SNAPSHOT</version>
-        <relativePath>../kogito-build-parent/pom.xml</relativePath>
-    </parent>
-    <artifactId>kogito-runtimes-jenkins-tests</artifactId>
+    <groupId>org.kie.jenkins</groupId>
+    <artifactId>jenkins-tests</artifactId>
     <name>Kogito :: Jenkins Spock Tests</name>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <repositories>
@@ -59,6 +55,14 @@
         </dependencies>
     </dependencyManagement>
     <dependencies>
+        <!-- Needed for pipeline checks as we need some classes from it -->
+        <dependency>
+            <groupId>org.kie</groupId>
+            <artifactId>jenkins-pipeline-shared-libraries</artifactId>
+            <version>1.0.1</version>
+            <scope>test</scope>
+        </dependency>
+
         <dependency>
             <groupId>com.homeaway.devtools.jenkins</groupId>
             <artifactId>jenkins-spock</artifactId>
@@ -273,7 +277,7 @@
         </plugins>
         <testResources>
             <testResource>
-                <directory>${project.basedir}/..</directory>
+                <directory>${project.basedir}/../..</directory>
                 <includes>
                     <include>Jenkinsfile.*</include>
                 </includes>
