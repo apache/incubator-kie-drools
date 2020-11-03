@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -38,7 +39,9 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.IntStream;
 
+import org.apache.commons.math3.util.Pair;
 import org.assertj.core.api.Assertions;
+import org.drools.core.command.assertion.AssertEquals;
 import org.drools.model.functions.accumulate.GroupKey;
 import org.drools.modelcompiler.domain.Adult;
 import org.drools.modelcompiler.domain.Child;
@@ -2547,5 +2550,46 @@ public class AccumulateTest extends BaseModelTest {
         public void setEmployee(String employee) {
             this.employee = employee;
         }
+    }
+
+    @Test
+    public void testAccumulateWithIndirectArgument() {
+        String str =
+                "global java.util.List resultTotal; \n" +
+                "global java.util.List resultPair; \n" +
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "import " + Pair.class.getCanonicalName() + ";\n" +
+                "rule R " +
+                "    when\n" +
+                "        accumulate(\n" +
+                "            Person($n1 : name)\n" +
+                "            and Person($n2 : name);\n" +
+                "            $pair :  collectList(Pair.create($n1, $n2)), \n" +
+                "            $total : count(Pair.create($n1, $n2))\n" +
+                "        )\n" +
+                "    then\n" +
+                "        resultTotal.add($total);\n" +
+                "        resultPair.add($pair);\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        final List<Number> resultTotal = new ArrayList<>();
+        ksession.setGlobal("resultTotal", resultTotal);
+
+        final List<List<Pair>> resultPair = new ArrayList<>();
+        ksession.setGlobal("resultPair", resultPair);
+
+        Person mario = new Person("Mario", 40);
+        ksession.insert(mario);
+
+        int rulesFired = ksession.fireAllRules();
+        Assertions.assertThat(rulesFired).isGreaterThan(0);
+        Assertions.assertThat(resultTotal).contains(1l);
+
+        List<Pair> resultPairItem = resultPair.iterator().next();
+        Pair firstPair = resultPairItem.iterator().next();
+        assertEquals("Mario", firstPair.getFirst());
+        assertEquals("Mario", firstPair.getSecond());
     }
 }
