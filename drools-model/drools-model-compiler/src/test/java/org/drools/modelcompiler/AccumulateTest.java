@@ -2592,4 +2592,33 @@ public class AccumulateTest extends BaseModelTest {
         assertEquals("Mario", firstPair.getFirst());
         assertEquals("Mario", firstPair.getSecond());
     }
+
+    @Test
+    public void testAccumulateOnTwoPatterns2() {
+        // DROOLS-5738
+        String str =
+                "global java.util.List resultTotal; \n" +
+                        "import " + Person.class.getCanonicalName() + ";\n" +
+                        "import " + Pair.class.getCanonicalName() + ";\n" +
+                        "rule R1 when\n" +
+                        "  accumulate (\n" +
+                        "       $p1: Person( $a1 : age) and $p2: Person( $a2 : age ); $sum : collectList(Pair.create($a1, $a2)) " +
+                        "         )" +
+                        "then\n" +
+                        "  resultTotal.add($sum);\n" +
+                        "end\n";
+
+        KieSession ksession = getKieSession( str );
+
+        final List<List<Pair>> resultTotal = new ArrayList<>();
+        ksession.setGlobal("resultTotal", resultTotal);
+
+        ksession.insert( new Person( "Mario", 46 ) );
+
+        ksession.fireAllRules();
+
+        List<List<Pair>> results = resultTotal;
+        assertEquals( 1, results.size() );
+        assertEquals( 46, results.get(0).get(0).getFirst() );
+    }
 }
