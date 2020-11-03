@@ -32,7 +32,8 @@ public enum FilterCondition {
     LTE("lessThanEqual"),
     BETWEEN("between"),
     AND("and"),
-    OR("or");
+    OR("or"),
+    NOT("not");
 
     private String label;
 

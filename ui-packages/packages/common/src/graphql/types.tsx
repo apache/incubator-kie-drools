@@ -223,6 +223,7 @@ export namespace GraphQL {
   export type ProcessInstanceArgument = {
     and?: Maybe<Array<ProcessInstanceArgument>>;
     or?: Maybe<Array<ProcessInstanceArgument>>;
+    not?: Maybe<ProcessInstanceArgument>;
     id?: Maybe<IdArgument>;
     processId?: Maybe<StringArgument>;
     processName?: Maybe<StringArgument>;
@@ -395,6 +396,7 @@ export namespace GraphQL {
   export type UserTaskInstanceArgument = {
     and?: Maybe<Array<UserTaskInstanceArgument>>;
     or?: Maybe<Array<UserTaskInstanceArgument>>;
+    not?: Maybe<UserTaskInstanceArgument>;
     state?: Maybe<StringArgument>;
     id?: Maybe<IdArgument>;
     description?: Maybe<StringArgument>;

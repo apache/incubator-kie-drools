@@ -27,13 +27,17 @@ import graphql.schema.GraphQLInputObjectType;
 import graphql.schema.GraphQLInputType;
 import graphql.schema.GraphQLList;
 import graphql.schema.GraphQLNamedType;
-import graphql.schema.GraphQLTypeUtil;
 import org.kie.kogito.persistence.api.query.AttributeFilter;
 import org.kie.kogito.persistence.api.query.FilterCondition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static graphql.schema.GraphQLTypeUtil.isList;
+import static graphql.schema.GraphQLTypeUtil.simplePrint;
+import static graphql.schema.GraphQLTypeUtil.unwrapNonNull;
+import static graphql.schema.GraphQLTypeUtil.unwrapOne;
 import static java.util.stream.Collectors.toList;
+import static org.kie.kogito.persistence.api.query.FilterCondition.NOT;
 import static org.kie.kogito.persistence.api.query.QueryFilterFactory.and;
 import static org.kie.kogito.persistence.api.query.QueryFilterFactory.between;
 import static org.kie.kogito.persistence.api.query.QueryFilterFactory.contains;
@@ -47,6 +51,7 @@ import static org.kie.kogito.persistence.api.query.QueryFilterFactory.isNull;
 import static org.kie.kogito.persistence.api.query.QueryFilterFactory.lessThan;
 import static org.kie.kogito.persistence.api.query.QueryFilterFactory.lessThanEqual;
 import static org.kie.kogito.persistence.api.query.QueryFilterFactory.like;
+import static org.kie.kogito.persistence.api.query.QueryFilterFactory.not;
 import static org.kie.kogito.persistence.api.query.QueryFilterFactory.notNull;
 import static org.kie.kogito.persistence.api.query.QueryFilterFactory.or;
 
@@ -68,10 +73,12 @@ public class GraphQLQueryMapper implements Function<GraphQLInputObjectType, Grap
 
         type.getFields().forEach(
                 field -> {
-                    LOGGER.debug("Parser type: {}, field = {}:{}", type.getName(), field.getName(), GraphQLTypeUtil.simplePrint(field.getType()));
+                    LOGGER.debug("Parser type: {}, field = {}:{}", type.getName(), field.getName(), simplePrint(field.getType()));
                     if (isEnumFilterType(field.getType())) {
                         parser.mapAttribute(field.getName(), mapEnumArgument(field.getName()));
-                    } else if ((field.getType() instanceof GraphQLList) || ((GraphQLNamedType) field.getType()).getName().equals(type.getName())) {
+                    } else if (isListOfType(field.getType(), type.getName())) {
+                        parser.mapAttribute(field.getName(), mapRecursiveListArgument(field.getName(), parser));
+                    } else if (((GraphQLNamedType) field.getType()).getName().equals(type.getName())) {
                         parser.mapAttribute(field.getName(), mapRecursiveArgument(field.getName(), parser));
                     } else {
                         String name = ((GraphQLNamedType) field.getType()).getName();
@@ -107,6 +114,14 @@ public class GraphQLQueryMapper implements Function<GraphQLInputObjectType, Grap
         return parser;
     }
 
+    private boolean isListOfType(GraphQLInputType source, String type) {
+        if (isList(source)) {
+            return ((GraphQLNamedType) unwrapNonNull(unwrapOne(source))).getName().equals(type);
+        } else {
+            return false;
+        }
+    }
+
     //See ProcessInstanceStateArgument
     private boolean isEnumFilterType(GraphQLInputType inputType) {
         if (!(inputType instanceof GraphQLInputObjectType)) {
@@ -128,7 +143,7 @@ public class GraphQLQueryMapper implements Function<GraphQLInputObjectType, Grap
         }).collect(Collectors.counting()) == type.getFields().size();
     }
 
-    private Function<Object, Stream<AttributeFilter<?>>> mapRecursiveArgument(String joining, GraphQLQueryParser parser) {
+    private Function<Object, Stream<AttributeFilter<?>>> mapRecursiveListArgument(String joining, GraphQLQueryParser parser) {
         return argument -> {
             Stream<AttributeFilter<?>> stream = ((List) argument).stream().flatMap(args -> parser.apply(args).stream());
             List<AttributeFilter<?>> filters = stream.collect(toList());
@@ -142,6 +157,14 @@ public class GraphQLQueryMapper implements Function<GraphQLInputObjectType, Grap
                     return null;
             }
         };
+    }
+
+    private Function<Object, Stream<AttributeFilter<?>>> mapRecursiveArgument(String joining, GraphQLQueryParser parser) {
+        return argument ->
+                parser.apply(argument).stream().map(f -> {
+                    FilterCondition condition = FilterCondition.fromLabel(joining);
+                    return condition == NOT ? not(f) : null;
+                });
     }
 
     private Function<Object, Stream<AttributeFilter<?>>> mapSubEntityArgument(String joining, GraphQLQueryParser parser) {

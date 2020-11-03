@@ -124,6 +124,7 @@ input ProcessInstanceErrorOrderBy {
 input ProcessInstanceArgument {
     and: [ProcessInstanceArgument!]
     or: [ProcessInstanceArgument!]
+    not: ProcessInstanceArgument
     id: IdArgument
     processId: StringArgument
     processName: StringArgument
@@ -292,6 +293,7 @@ type UserTaskInstanceMeta {
 input UserTaskInstanceArgument {
     and: [UserTaskInstanceArgument!]
     or: [UserTaskInstanceArgument!]
+    not: UserTaskInstanceArgument
     state: StringArgument
     id: IdArgument
     description: StringArgument
@@ -396,6 +398,7 @@ input JobStatusArgument {
 input JobArgument {
     and: [JobArgument!]
     or: [JobArgument!]
+    not: JobArgument
     id: IdArgument
     processId: StringArgument
     processInstanceId: IdArgument

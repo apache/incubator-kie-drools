@@ -43,6 +43,7 @@ import static org.kie.kogito.persistence.api.query.QueryFilterFactory.lessThanEq
 import static org.kie.kogito.persistence.api.query.QueryFilterFactory.like;
 import static org.kie.kogito.persistence.api.query.QueryFilterFactory.notNull;
 import static org.kie.kogito.persistence.api.query.QueryFilterFactory.or;
+import static org.kie.kogito.persistence.api.query.QueryFilterFactory.not;
 
 class QueryUtilsTest {
 
@@ -141,5 +142,11 @@ class QueryUtilsTest {
     void testGenerateSingleQuery_and() {
         Bson result = QueryUtils.generateSingleQuery(and(List.of(contains("test", "testValue"))), new MockMongoEntityMapper()::convertToMongoAttribute);
         assertEquals(Filters.and(Filters.eq("test", "testValue")), result);
+    }
+
+    @Test
+    void testGenerateSingleQuery_not() {
+        Bson result = QueryUtils.generateSingleQuery(not(equalTo("test", "testValue")), new MockMongoEntityMapper()::convertToMongoAttribute);
+        assertEquals(Filters.not(Filters.eq("test", "testValue")), result);
     }
 }

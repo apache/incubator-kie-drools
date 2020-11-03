@@ -62,6 +62,7 @@ public class GraphQLInputObjectTypeMapper extends AbstractInputObjectTypeMapper 
             if (mapOperators) {
                 builder.field(newInputObjectField().name("and").type(GraphQLList.list(nonNull(new GraphQLTypeReference(getTypeName(domain))))));
                 builder.field(newInputObjectField().name("or").type(GraphQLList.list(nonNull(new GraphQLTypeReference(getTypeName(domain))))));
+                builder.field(newInputObjectField().name("not").type(new GraphQLTypeReference(getTypeName(domain))));
             }
 
             domain.getFieldDefinitions().forEach(field -> {

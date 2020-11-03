@@ -100,7 +100,7 @@
     }
   },
   "UserTaskInstanceByIdAndActualOwner": {
-    "query": "query ( $id: String, $actualOwner: String ) { UserTaskInstances( where: {  id: {  equal : $id }, actualOwner: { equal: $actualOwner } } ){ %s } }",
+    "query": "query ( $id: String, $actualOwner: String ) { UserTaskInstances( where: {  id: {  equal : $id }, actualOwner: { equal: $actualOwner }, not: { excludedUsers: { contains : $actualOwner } } } ){ %s } }",
     "variables": {
       "id": "%s",
       "actualOwner": "%s"

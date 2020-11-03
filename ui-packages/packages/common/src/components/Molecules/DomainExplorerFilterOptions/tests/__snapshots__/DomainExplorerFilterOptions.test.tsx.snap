@@ -2,6 +2,7 @@
 
 exports[`Domain explorer filter options component tests Snapshot test with default props 1`] = `
 <Memo(DomainExplorerFilterOptions)
+  filterArgument="TravelsArgument"
   filterChips={Array []}
   finalFilters={
     Object {

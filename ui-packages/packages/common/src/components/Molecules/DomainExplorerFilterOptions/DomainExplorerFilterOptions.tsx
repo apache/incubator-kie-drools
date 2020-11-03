@@ -26,6 +26,7 @@ interface ResponseType {
   data: any;
 }
 interface IOwnProps {
+  filterArgument: string;
   filterChips: string[];
   finalFilters: Record<string, Record<string, unknown>>;
   generateFilterQuery: () => void;
@@ -42,6 +43,7 @@ interface IOwnProps {
   setRunQuery: (runQuery: boolean) => void;
 }
 const DomainExplorerFilterOptions: React.FC<IOwnProps & OUIAProps> = ({
+  filterArgument,
   filterChips,
   finalFilters,
   generateFilterQuery,
@@ -249,7 +251,10 @@ const DomainExplorerFilterOptions: React.FC<IOwnProps & OUIAProps> = ({
       getSchema.data.__type &&
       getSchema.data.__type.inputFields
         .filter(group => {
-          if (group.type.kind !== 'LIST') {
+          if (
+            group.type.kind !== 'LIST' &&
+            group.type.name !== filterArgument
+          ) {
             return group;
           }
         })

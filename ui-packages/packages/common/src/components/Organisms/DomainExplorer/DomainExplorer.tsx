@@ -302,6 +302,7 @@ const DomainExplorer: React.FC<IOwnProps & OUIAProps> = ({
                     deleteChip={onDeleteChip}
                   >
                     <DomainExplorerFilterOptions
+                      filterArgument={filterArgument}
                       filterChips={filterChips}
                       finalFilters={finalFilters}
                       getQueryTypes={getQueryTypes}

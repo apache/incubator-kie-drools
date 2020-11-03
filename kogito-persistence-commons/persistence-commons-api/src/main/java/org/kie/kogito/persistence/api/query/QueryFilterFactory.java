@@ -87,4 +87,8 @@ public final class QueryFilterFactory {
     public static AttributeFilter<List<AttributeFilter>> and(List<AttributeFilter<?>> filters) {
         return new AttributeFilter(null, FilterCondition.AND, filters);
     }
+
+    public static <T> AttributeFilter<AttributeFilter<T>> not(AttributeFilter<T> filter) {
+        return new AttributeFilter<>(null, FilterCondition.NOT, filter);
+    }
 }

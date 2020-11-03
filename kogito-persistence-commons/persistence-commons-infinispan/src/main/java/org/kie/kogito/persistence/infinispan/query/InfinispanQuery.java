@@ -138,6 +138,8 @@ public class InfinispanQuery<T> implements Query<T> {
                     return getRecursiveString(filter, OR);
                 case AND:
                     return getRecursiveString(filter, AND);
+                case NOT:
+                    return format("not %s", filterStringFunction().apply((AttributeFilter<?>) filter.getValue()));
                 default:
                     return null;
             }

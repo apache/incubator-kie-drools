@@ -11,6 +11,7 @@ jest.mock('../../../../graphql/types');
 // tslint:disable: no-unexpected-multiline
 describe('Domain explorer filter options component tests', () => {
   const defaultProps = {
+    filterArgument: 'TravelsArgument',
     generateFilterQuery: jest.fn(),
     setOffset: jest.fn(),
     filterChips: ['metadata / processInstances / state: ACTIVE'],
@@ -97,6 +98,7 @@ describe('Domain explorer filter options component tests', () => {
   });
   it('Snapshot test with default props', async () => {
     const props = {
+      filterArgument: 'TravelsArgument',
       generateFilterQuery: jest.fn(),
       reset: false,
       setReset: jest.fn(),
@@ -1420,6 +1422,7 @@ describe('Domain explorer filter options component tests', () => {
   });
   it('test reset to default', () => {
     const props = {
+      filterArgument: 'TravelsArgument',
       generateFilterQuery: jest.fn(),
       setReset: jest.fn(),
       setOffset: jest.fn(),

@@ -508,6 +508,7 @@ exports[`Domain Explorer component Mock query testing 1`] = `
                       className="pf-c-toolbar__item"
                     >
                       <Memo(DomainExplorerFilterOptions)
+                        filterArgument="TravelsArgument"
                         filterChips={
                           Array [
                             "metadata / processInstances / state: ACTIVE",
@@ -1977,6 +1978,7 @@ exports[`Domain Explorer component Snapshot test with default prop 1`] = `
                       className="pf-c-toolbar__item"
                     >
                       <Memo(DomainExplorerFilterOptions)
+                        filterArgument="TravelsArgument"
                         filterChips={
                           Array [
                             "metadata / processInstances / state: ACTIVE",
@@ -3441,6 +3443,7 @@ exports[`Domain Explorer component check assertions on rememberedParams 1`] = `
                       className="pf-c-toolbar__item"
                     >
                       <Memo(DomainExplorerFilterOptions)
+                        filterArgument="TravelsArgument"
                         filterChips={
                           Array [
                             "metadata / processInstances / state: ACTIVE",
