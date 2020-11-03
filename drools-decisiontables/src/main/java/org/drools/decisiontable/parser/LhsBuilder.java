@@ -189,24 +189,28 @@ public class LhsBuilder implements SourceBuilder {
         //we can wrap all values in quotes, it all works
         final FieldType fieldType = calcFieldType( content );
         if ( !isMultipleConstraints() ) {
-            constraints.put( column,
-                             content );
-        } else if ( fieldType == FieldType.FORALL_FIELD ) {
-            forAll = true;
-            constraints.put( column,
-                             content );
-        } else if ( fieldType == FieldType.NORMAL_FIELD ) {
-            constraints.put( column,
-                             content );
-        } else if ( fieldType == FieldType.SINGLE_FIELD ) {
-            constraints.put( column,
-                             content + " == \"" + SnippetBuilder.PARAM_STRING + "\"" );
-        } else if ( fieldType == FieldType.OPERATOR_FIELD ) {
-            constraints.put( column,
-                             content + " \"" + SnippetBuilder.PARAM_STRING + "\"" );
+            constraints.put( column, content );
+        } else {
+            switch (fieldType) {
+                case FORALL_FIELD:
+                    forAll = true;
+                    constraints.put( column, content );
+                    break;
+                case NORMAL_FIELD:
+                    constraints.put( column, content );
+                    break;
+                case SINGLE_FIELD:
+                    constraints.put( column, content + " == \"" + SnippetBuilder.PARAM_STRING + "\"" );
+                    break;
+                case OPERATOR_FIELD:
+                    constraints.put( column, content + " \"" + SnippetBuilder.PARAM_STRING + "\"" );
+                    break;
+                case QUESTION_FIELD:
+                    constraints.put( column, content.substring( 0, content.length()-1 ) );
+                    break;
+            }
         }
-        this.fieldTypes.put( column,
-                             fieldType );
+        this.fieldTypes.put( column, fieldType );
     }
 
     public void clearValues() {
@@ -308,10 +312,9 @@ public class LhsBuilder implements SourceBuilder {
      */
     public FieldType calcFieldType( String content ) {
         final SnippetBuilder.SnippetType snippetType = SnippetBuilder.getType( content );
-        if ( snippetType.equals( SnippetBuilder.SnippetType.FORALL ) ) {
+        if ( snippetType == SnippetBuilder.SnippetType.FORALL ) {
             return FieldType.FORALL_FIELD;
-        } else if ( !snippetType.equals(
-                SnippetBuilder.SnippetType.SINGLE ) ) {
+        } else if ( snippetType != SnippetBuilder.SnippetType.SINGLE ) {
             return FieldType.NORMAL_FIELD;
         }
         for ( String op : operators ) {
@@ -319,24 +322,11 @@ public class LhsBuilder implements SourceBuilder {
                 return FieldType.OPERATOR_FIELD;
             }
         }
-        return FieldType.SINGLE_FIELD;
+        return content.endsWith( "?" ) ? FieldType.QUESTION_FIELD : FieldType.SINGLE_FIELD;
     }
 
-    static class FieldType {
-
-        //This is only used to aid debugging
-        @SuppressWarnings("unused")
-        private String fieldType;
-
-        private FieldType( final String fieldType ) {
-            this.fieldType = fieldType;
-        }
-
-        public static final FieldType SINGLE_FIELD = new FieldType( "single" );
-        public static final FieldType OPERATOR_FIELD = new FieldType( "operator" );
-        public static final FieldType NORMAL_FIELD = new FieldType( "normal" );
-        public static final FieldType FORALL_FIELD = new FieldType( "forall" );
-
+    enum FieldType {
+        SINGLE_FIELD, OPERATOR_FIELD, NORMAL_FIELD, QUESTION_FIELD, FORALL_FIELD;
     }
 
     public boolean hasValues() {
