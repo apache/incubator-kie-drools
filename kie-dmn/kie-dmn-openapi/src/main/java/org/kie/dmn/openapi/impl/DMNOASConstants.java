@@ -1,11 +1,11 @@
 /*
- * Copyright 2005 JBoss Inc
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,17 +14,13 @@
  * limitations under the License.
  */
 
-package org.drools.model.impl;
+package org.kie.dmn.openapi.impl;
 
-import java.util.concurrent.atomic.AtomicInteger;
+public class DMNOASConstants {
 
-public class NamesGenerator {
+    public static final String X_DMN_TYPE = "x-dmn-type";
 
-    private static final AtomicInteger index = new AtomicInteger();
-
-    private NamesGenerator() { }
-
-    public static String generateName(String topic) {
-        return "$" + topic + "$" + index.incrementAndGet() + "$";
+    private DMNOASConstants() {
+        // no constructor for contants/utility classes.
     }
 }
