@@ -22,7 +22,6 @@ pipeline {
 
         // Git information
         string(name: 'BUILD_BRANCH_NAME', defaultValue: 'master', description: 'Which branch to build? Set if you are not on a multibranch pipeline.')
-        string(name: 'BUILD_BRANCH_QUICKSTARTS', defaultValue: 'development', description: 'Which branch for quickstarts to build? Set if you are not on a multibranch pipeline.')
         string(name: 'GIT_AUTHOR', defaultValue: 'kiegroup', description: 'Which Git author repository ?')
 
         // Build&test information
@@ -317,6 +316,6 @@ void setDeployPropertyIfNeeded(String key, def value) {
     }
 }
 
-String[] getQuickStartsBranch(){
-    return params.BUILD_BRANCH_QUICKSTARTS
+String getQuickStartsBranch(String quickStartsBranch = 'development'){
+    return quickStartsBranch
 }
