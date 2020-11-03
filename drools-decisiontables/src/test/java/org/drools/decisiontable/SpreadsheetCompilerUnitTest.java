@@ -838,6 +838,15 @@ public class SpreadsheetCompilerUnitTest {
     }
 
     @Test
+    public void testNoLhsParam() {
+        // DROOLS-5782
+        final SpreadsheetCompiler converter = new SpreadsheetCompiler();
+        final InputStream stream = this.getClass().getResourceAsStream( "/data/CanDrinkNoParam.xls" );
+        final String drl = converter.compile(stream, InputType.XLS);
+        assertTrue( drl.contains( "$p : Person( age < 18 )\n" ) );
+    }
+
+    @Test
     public void testRuleUnit() {
         final SpreadsheetCompiler converter = new SpreadsheetCompiler();
         final InputStream stream = this.getClass().getResourceAsStream( "/data/CanDrinkUnit.xls" );
