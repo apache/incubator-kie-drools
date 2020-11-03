@@ -223,27 +223,6 @@ public class RuleWorksheetParseTest {
     }
 
     /**
-     * Must have a code snippet in a condition.
-     */
-    @Test
-    public void testMissingCodeSnippetCondition() {
-        try {
-            makeRuleSet();
-            makeRuleTable();
-            makeRow( 11, "C",              "C",              "C",   "A",         "A" );
-            makeRow( 12, "Foo",            "Foo",            "Foo" );
-            makeRow( 13, "attr == $param", "attr == $param", "",    "action();", "action();" );
-            makeRow( 15, "1",              "2",              "3",   "",          "" );
-            listener.finishSheet();
-            fail( "should have failed" );
-        } catch( DecisionTableParseException e ) {
-            String badCell = RuleSheetParserUtil.rc2name( 13, 3 );
-            System.err.println( e.getMessage() );
-            assertTrue( e.getMessage().contains( badCell ) );
-        }
-    }
-
-    /**
      * Spurious code snippet.
      */
     @Test

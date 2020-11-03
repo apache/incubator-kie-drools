@@ -151,8 +151,13 @@ public class LhsBuilder implements SourceBuilder {
         }
 
         // <a>
-        colDefPrefix = colDef + '(';
-        colDefSuffix = ")" + annDef;
+        if (colDef.endsWith( ")" )) {
+            colDefPrefix = colDef;
+            colDefSuffix = annDef;
+        } else {
+            colDefPrefix = colDef + '(';
+            colDefSuffix = ")" + annDef;
+        }
     }
 
     private int findFirstAnnotationPos(String colDef) {
@@ -215,6 +220,9 @@ public class LhsBuilder implements SourceBuilder {
 
     public void addCellValue( int row, int column, String value, boolean trim) {
         this.hasValues = true;
+        if (this.constraints.isEmpty()) {
+            return;
+        }
         Integer key = new Integer( column );
         String content = this.constraints.get( key );
         if ( content == null ) {
@@ -222,8 +230,7 @@ public class LhsBuilder implements SourceBuilder {
                                                            RuleSheetParserUtil.rc2name( this.headerRow + 2, this.headerCol ) );
         }
         SnippetBuilder snip = new SnippetBuilder( content, trim );
-        String result = snip.build( fixValue( column,
-                                              value ) );
+        String result = snip.build( fixValue( column, value ) );
         this.values.add( result );
     }
 
