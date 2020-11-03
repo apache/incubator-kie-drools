@@ -20,10 +20,12 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.CascadeType;
+import javax.persistence.ConstraintMode;
 import javax.persistence.JoinColumn;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToMany;
 import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
 
 @MappedSuperclass
 public abstract class VariableEntity implements Serializable {
