@@ -16,18 +16,15 @@
 
 package org.kie.kogito.tracing.decision;
 
-import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import io.quarkus.runtime.Startup;
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.subjects.PublishSubject;
 import org.eclipse.microprofile.reactive.messaging.Outgoing;
 import org.kie.internal.decision.DecisionModelResourcesProvider;
 import org.reactivestreams.Publisher;
 
-@Startup
 @Singleton
 public class QuarkusModelEventEmitter extends BaseModelEventEmitter {
 
@@ -40,7 +37,6 @@ public class QuarkusModelEventEmitter extends BaseModelEventEmitter {
     }
 
     @Override
-    @PostConstruct
     public void publishDecisionModels() {
         super.publishDecisionModels();
     }
