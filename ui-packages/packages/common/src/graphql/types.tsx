@@ -457,6 +457,7 @@ export namespace GraphQL {
     description?: Maybe<OrderBy>;
     name?: Maybe<OrderBy>;
     priority?: Maybe<OrderBy>;
+    processId?: Maybe<OrderBy>;
     completed?: Maybe<OrderBy>;
     started?: Maybe<OrderBy>;
     referenceName?: Maybe<OrderBy>;
