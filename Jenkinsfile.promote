@@ -92,6 +92,52 @@ pipeline {
             }
         }
 
+        stage('Upload documentation and distribution') {
+            when {
+                expression { return isRelease() }
+            }
+            steps {
+                script {
+                    mavenCleanInstall('optaplanner', true, ['full'])
+                    dir('optaplanner') {
+                        withCredentials(bindings: [sshUserPrivateKey(credentialsId: 'optaplanner-filemgmt',
+                                             keyFileVariable: 'SSH_KEY_JBOSS_FILEMGMT')]) {
+                            // For testing, simulate connection via SSH:
+                            // sh "ssh -i $SSH_KEY_JBOSS_FILEMGMT -oKexAlgorithms=+diffie-hellman-group1-sha1 optaplanner@filemgmt.jboss.org"
+                            sh "./build/release/upload_distribution.sh ${getProjectVersion()} $SSH_KEY_JBOSS_FILEMGMT"
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('Update OptaPlanner website') {
+            when {
+                expression { return isRelease() }
+            }
+            steps {
+                script {
+                    final String websiteRepository = 'optaplanner-website'
+                    dir(websiteRepository) {
+                        String prBranchName = createWebsitePrBranch(websiteRepository)
+
+                        // Update versions in links on the website.
+                        sh "./build/update-versions.sh ${getProjectVersion()} ${getNextMinorSnapshotVersion(getProjectVersion())}"
+
+                        // Update the XSDs. OptaPlanner must be cloned and build with the full profile before.
+                        String optaplannerRoot = "$WORKSPACE/optaplanner"
+                        sh "cp $optaplannerRoot/optaplanner-core/target/classes/solver.xsd xsd/solver/solver-8.xsd"
+                        sh "cp $optaplannerRoot/optaplanner-benchmark/target/classes/benchmark.xsd xsd/benchmark/benchmark-8.xsd"
+
+                        // Add changed files, commit, open and merge PR
+                        sh 'git add xsd/\\*.xsd _config/pom.yml'
+                        String prLink = commitAndCreatePR("Release OptaPlanner ${getProjectVersion()}", prBranchName, 'master')
+                        mergeAndPush(websiteRepository, prLink)
+                    }
+                }
+            }
+        }
+
         stage('Set OptaPlanner next snapshot version'){
             when {
                 expression { return isRelease() }
@@ -101,10 +147,13 @@ pipeline {
                     dir('optaplanner-bot') {
                         prepareForPR('optaplanner')
                         setupMavenConfig()
-                        maven.mvnVersionsSet(getNextSnapshotVersion(getProjectVersion()), true)
-                        updateKogitoVersion(getNextSnapshotVersion(getKogitoVersion()))
+                        String nextSnapshotVersion = getNextMicroSnapshotVersion(getProjectVersion())
+                        maven.mvnVersionsSet(nextSnapshotVersion, true)
+                        updateKogitoVersion(getNextMicroSnapshotVersion(getKogitoVersion()))
 
-                        commitAndCreatePR('optaplanner')
+                        addNotIgnoredPoms()
+                        String prLink = commitAndCreatePR("Update snapshot version to ${nextSnapshotVersion}")
+                        setPipelinePrLink('optaplanner', prLink)
                     }
                     dir('optaplanner') {
                         sh "git checkout ${getBuildBranch()}"
@@ -174,8 +223,12 @@ String getKogitoVersion() {
     return getParamOrDeployProperty('KOGITO_VERSION', 'kogito.version')
 }
 
-String getNextSnapshotVersion(String currentVersion) {
+String getNextMicroSnapshotVersion(String currentVersion) {
     return util.getNextVersion(currentVersion, 'micro')
+}
+
+String getNextMinorSnapshotVersion(String currentVersion) {
+    return util.getNextVersion(currentVersion, 'minor')
 }
 
 String getGitTag() {
@@ -215,18 +268,22 @@ void setPipelinePrLink(String repo, String value){
 }
 
 String getSnapshotBranch(){
-    return "${getNextSnapshotVersion(getProjectVersion()).toLowerCase()}-${env.BOT_BRANCH_HASH}"
+    return "${getNextMicroSnapshotVersion(getProjectVersion()).toLowerCase()}-${env.BOT_BRANCH_HASH}"
 }
 
 //////////////////////////////////////////////////////////////////////////////
 // Git
 //////////////////////////////////////////////////////////////////////////////
 
-void checkoutRepo(String repo) {
+void checkoutRepo(String repo, String branch) {
     deleteDir()
-    checkout(githubscm.resolveRepository(repo, getGitAuthor(), getBuildBranch(), false))
+    checkout(githubscm.resolveRepository(repo, getGitAuthor(), branch, false))
     // need to manually checkout branch since on a detached branch after checkout command
-    sh "git checkout ${getBuildBranch()}"
+    sh "git checkout ${branch}"
+}
+
+void checkoutRepo(String repo) {
+    checkoutRepo(repo, getBuildBranch())
 }
 
 void mergeAndPush(String repo, String prLink) {
@@ -264,15 +321,23 @@ void addNotIgnoredPoms() {
     '''
 }
 
-void commitAndCreatePR(String repo) {
-    def commitMsg = "Update snapshot version to ${getSnapshotBranch()}"
+void commitAndCreatePR(String commitMsg, String localBranch, String targetBranch) {
     def prBody = "Generated by build ${BUILD_TAG}: ${BUILD_URL}"
-    // Not using githubscm.commitChanges() because globbing won't work.
-    // See: https://github.com/kiegroup/kogito-runtimes/pull/570#discussion_r449268738
-    addNotIgnoredPoms()
     sh "git commit -m '${commitMsg}'"
-    githubscm.pushObject('origin', getSnapshotBranch(), getBotAuthorCredsID())
-    setPipelinePrLink(repo, githubscm.createPR(commitMsg, prBody, getBuildBranch(), getBotAuthorCredsID()))
+    githubscm.pushObject('origin', localBranch, getBotAuthorCredsID())
+    return githubscm.createPR(commitMsg, prBody, targetBranch, getBotAuthorCredsID())
+}
+
+void commitAndCreatePR(String commitMsg) {
+    commitAndCreatePR(commitMsg, getSnapshotBranch(), getBuildBranch())
+}
+
+String createWebsitePrBranch(String websiteRepository) {
+    checkoutRepo(websiteRepository, 'master') // there is no other branch
+    githubscm.forkRepo(getBotAuthorCredsID())
+    String prBranchName = "${getProjectVersion().toLowerCase()}-${env.BOT_BRANCH_HASH}"
+    githubscm.createBranch(prBranchName)
+    return prBranchName
 }
 
 void installGithubCLI() {
@@ -315,5 +380,22 @@ void deployArtifacts() {
         maven.runMaven(mvnCmd, true)
     } else {
         maven.runMavenWithSubmarineSettings(mvnCmd, true)
+    }
+}
+
+void mavenCleanInstall(String directory, boolean skipTests = false, List profiles = [], String extraArgs = '') {
+    runMaven('clean install', directory, skipTests, profiles, extraArgs)
+}
+
+void runMaven(String goals, String directory, boolean skipTests = false, List profiles = [], String extraArgs = '') {
+    mvnCmd = goals
+    if(!profiles.isEmpty()){
+        mvnCmd += " -P${profiles.join(',')}"
+    }
+    if(extraArgs != ''){
+        mvnCmd += " ${extraArgs}"
+    }
+    dir(directory) {
+        maven.runMaven(mvnCmd, skipTests, ['-fae'])
     }
 }
