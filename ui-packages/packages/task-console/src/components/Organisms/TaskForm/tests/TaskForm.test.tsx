@@ -22,16 +22,20 @@ import {
   DefaultUser,
   getWrapperAsync,
   GraphQL,
+  KogitoEmptyState,
   User
 } from '@kogito-apps/common';
 import UserTaskInstance = GraphQL.UserTaskInstance;
 import TaskForm from '../TaskForm';
 import ApplyForVisaForm from '../../../../util/tests/mocks/ApplyForVisa';
 import FormRenderer from '../../../Molecules/FormRenderer/FormRenderer';
-import FormNotification from '../../../Atoms/FormNotification/FormNotification';
 import { TaskFormSubmitHandler } from '../../../../util/uniforms/TaskFormSubmitHandler/TaskFormSubmitHandler';
 import { getTaskSchemaEndPoint } from '../../../../util/Utils';
 import TaskConsoleContextProvider from '../../../../context/TaskConsoleContext/TaskConsoleContextProvider';
+import TaskConsoleContext, {
+  DefaultContext,
+  IContext
+} from '../../../../context/TaskConsoleContext/TaskConsoleContext';
 
 jest.mock('../../../Molecules/FormRenderer/FormRenderer');
 jest.mock('../../../Atoms/FormNotification/FormNotification');
@@ -44,6 +48,9 @@ jest.mock('axios');
 jest.mock('@kogito-apps/common', () => ({
   ...jest.requireActual('@kogito-apps/common'),
   KogitoEmptyState: () => {
+    return <MockedComponent />;
+  },
+  KogitoSpinner: () => {
     return <MockedComponent />;
   }
 }));
@@ -98,8 +105,8 @@ const testSubmitCallbacks = async (mode: Mode) => {
     <TaskConsoleContextProvider user={testUser}>
       <TaskForm
         userTaskInstance={userTaskInstance}
-        successCallback={formSubmitSuccessCallback}
-        errorCallback={formSubmitErrorCallback}
+        onSubmitSuccess={formSubmitSuccessCallback}
+        onSubmitError={formSubmitErrorCallback}
       />
     </TaskConsoleContextProvider>,
     'TaskForm'
@@ -111,7 +118,7 @@ const testSubmitCallbacks = async (mode: Mode) => {
 
   const renderer = wrapper.find(FormRenderer);
 
-  expect(renderer.getElement()).not.toBeNull();
+  expect(renderer.exists()).toBeTruthy();
 
   // since the FormRenderer is mocked we are forcing the form submit callback
   const callback =
@@ -132,64 +139,39 @@ const testSubmitCallbacks = async (mode: Mode) => {
   wrapper = wrapper.update().find(TaskForm);
 
   expect(wrapper).toMatchSnapshot();
-
-  let notificationComponent = wrapper.find(FormNotification);
-
-  let expectedCallback;
-  let unExpectedCallback;
-  let expectedMessage;
-
-  switch (mode) {
-    case Mode.SUCCESS: {
-      expectedMessage =
-        "Task 'Apply for visa' successfully transitioned to phase 'phase'.";
-      expectedCallback = formSubmitSuccessCallback;
-      unExpectedCallback = formSubmitErrorCallback;
-      break;
-    }
-    case Mode.ERROR: {
-      expectedMessage =
-        "Task 'Apply for visa' couldn't transition to phase 'phase'.";
-      expectedCallback = formSubmitErrorCallback;
-      unExpectedCallback = formSubmitSuccessCallback;
-      break;
-    }
-    case Mode.ERROR_WITH_MESSAGE: {
-      expectedMessage =
-        "Task 'Apply for visa' couldn't transition to phase 'phase'.";
-      expectedCallback = formSubmitErrorCallback;
-      unExpectedCallback = formSubmitSuccessCallback;
-    }
-  }
-
-  expect(notificationComponent.exists()).toBeTruthy();
-
-  const notification = notificationComponent.props().notification;
-
-  expect(notification.message).toStrictEqual(expectedMessage);
-
-  expect(notification.close).not.toBeNull();
-  expect(notification.customAction).not.toBeNull();
-
-  if (mode === Mode.ERROR_WITH_MESSAGE) {
-    expect(notification.details).toStrictEqual('Extra error info.');
-  }
-
-  act(() => {
-    notification.customAction.onClick();
-  });
-
-  expect(expectedCallback).toBeCalled();
-  expect(unExpectedCallback).not.toBeCalled();
-
-  wrapper = wrapper.update().find(TaskForm);
-
-  notificationComponent = wrapper.find(FormNotification);
-
-  expect(notificationComponent.exists()).toBeFalsy();
 };
 
 describe('TaskForm Test', () => {
+  it('Test rendering form from task in context', async () => {
+    mockedAxios.get.mockResolvedValue({
+      status: 200,
+      data: _.cloneDeep(ApplyForVisaForm)
+    });
+    const context: IContext<UserTaskInstance> = new DefaultContext(testUser);
+    context.setActiveItem(userTaskInstance);
+    const wrapper = await getWrapperAsync(
+      <TaskConsoleContext.Provider value={context}>
+        <TaskForm onSubmitSuccess={jest.fn()} onSubmitError={jest.fn()} />
+      </TaskConsoleContext.Provider>,
+      'TaskForm'
+    );
+
+    wrapper.update();
+
+    expect(wrapper).toMatchSnapshot();
+
+    const renderer = wrapper.find(FormRenderer);
+
+    expect(renderer.exists()).toBeTruthy();
+
+    expect(renderer.props().formSubmitHandler).toBeInstanceOf(
+      TaskFormSubmitHandler
+    );
+    expect(renderer.props().model).toStrictEqual(
+      JSON.parse(userTaskInstance.inputs)
+    );
+  });
+
   it('Test rendering form', async () => {
     mockedAxios.get.mockResolvedValue({
       status: 200,
@@ -197,7 +179,11 @@ describe('TaskForm Test', () => {
     });
     const wrapper = await getWrapperAsync(
       <TaskConsoleContextProvider user={testUser}>
-        <TaskForm userTaskInstance={userTaskInstance} />
+        <TaskForm
+          userTaskInstance={userTaskInstance}
+          onSubmitSuccess={jest.fn()}
+          onSubmitError={jest.fn()}
+        />
       </TaskConsoleContextProvider>,
       'TaskForm'
     );
@@ -208,7 +194,7 @@ describe('TaskForm Test', () => {
 
     const renderer = wrapper.find(FormRenderer);
 
-    expect(renderer).not.toBeNull();
+    expect(renderer.exists()).toBeTruthy();
 
     expect(renderer.props().formSubmitHandler).toBeInstanceOf(
       TaskFormSubmitHandler
@@ -218,14 +204,18 @@ describe('TaskForm Test', () => {
     );
   });
 
-  it('Test rendering form with error', async () => {
+  it('Test rendering form with HTTP error', async () => {
     mockedAxios.get.mockResolvedValue({
       status: 500
     });
 
     let wrapper = await getWrapperAsync(
       <TaskConsoleContextProvider user={testUser}>
-        <TaskForm userTaskInstance={userTaskInstance} />
+        <TaskForm
+          userTaskInstance={userTaskInstance}
+          onSubmitSuccess={jest.fn()}
+          onSubmitError={jest.fn()}
+        />
       </TaskConsoleContextProvider>,
       'TaskForm'
     );
@@ -233,6 +223,33 @@ describe('TaskForm Test', () => {
     wrapper = wrapper.update().find(TaskForm);
 
     expect(wrapper).toMatchSnapshot();
+
+    expect(wrapper.find(FormRenderer).exists()).toBeFalsy();
+    expect(wrapper.find(KogitoEmptyState).exists()).toBeTruthy();
+  });
+
+  it('Test rendering form with JS error', async () => {
+    mockedAxios.get.mockImplementationOnce(() =>
+      Promise.reject(new Error('This is an error loading the form'))
+    );
+
+    let wrapper = await getWrapperAsync(
+      <TaskConsoleContextProvider user={testUser}>
+        <TaskForm
+          userTaskInstance={userTaskInstance}
+          onSubmitSuccess={jest.fn()}
+          onSubmitError={jest.fn()}
+        />
+      </TaskConsoleContextProvider>,
+      'TaskForm'
+    );
+
+    wrapper = wrapper.update().find(TaskForm);
+
+    expect(wrapper).toMatchSnapshot();
+
+    expect(wrapper.find(FormRenderer).exists()).toBeFalsy();
+    expect(wrapper.find(KogitoEmptyState).exists()).toBeTruthy();
   });
 
   it('Test successful callback', async () => {
@@ -260,7 +277,11 @@ describe('TaskForm Test', () => {
 
     const wrapper = await getWrapperAsync(
       <TaskConsoleContextProvider user={testUser}>
-        <TaskForm userTaskInstance={task} />
+        <TaskForm
+          userTaskInstance={task}
+          onSubmitSuccess={jest.fn()}
+          onSubmitError={jest.fn()}
+        />
       </TaskConsoleContextProvider>,
       'TaskForm'
     );
@@ -279,7 +300,57 @@ describe('TaskForm Test', () => {
     expect(requestURL).toEqual(getTaskSchemaEndPoint(task, testUser));
   });
 
-  it('Test submit close notification', async () => {
+  it('Test submit success', async () => {
+    const formSubmitSuccessCallback = jest.fn();
+    const formSubmitErrorCallback = jest.fn();
+
+    mockedAxios.get.mockResolvedValue({
+      status: 200,
+      data: _.cloneDeep(ApplyForVisaForm)
+    });
+
+    mockedAxios.post.mockResolvedValue({
+      status: 200,
+      data: {}
+    });
+
+    let wrapper = await getWrapperAsync(
+      <TaskConsoleContextProvider user={testUser}>
+        <TaskForm
+          userTaskInstance={userTaskInstance}
+          onSubmitSuccess={formSubmitSuccessCallback}
+          onSubmitError={formSubmitErrorCallback}
+        />
+      </TaskConsoleContextProvider>,
+      'TaskForm'
+    );
+
+    wrapper = wrapper.update().find(TaskForm);
+
+    expect(wrapper).toMatchSnapshot();
+
+    const renderer = wrapper.find(FormRenderer);
+
+    expect(renderer.exists()).toBeTruthy();
+
+    // since the FormRenderer is mocked we are forcing the form submit callback
+    await act(async () => {
+      const submitHandler: TaskFormSubmitHandler = renderer.props()
+        .formSubmitHandler as TaskFormSubmitHandler;
+      submitHandler.setSelectedPhase('phase');
+      await submitHandler.doSubmit({});
+      wrapper = wrapper.update().find(TaskForm);
+    });
+
+    wrapper = wrapper.update().find(TaskForm);
+
+    expect(wrapper).toMatchSnapshot();
+    expect(wrapper.find(FormRenderer).exists()).toBeTruthy();
+
+    expect(formSubmitSuccessCallback).toBeCalledWith('phase');
+  });
+
+  it('Test submit error', async () => {
     const formSubmitSuccessCallback = jest.fn();
     const formSubmitErrorCallback = jest.fn();
 
@@ -292,8 +363,8 @@ describe('TaskForm Test', () => {
       <TaskConsoleContextProvider user={testUser}>
         <TaskForm
           userTaskInstance={userTaskInstance}
-          successCallback={formSubmitSuccessCallback}
-          errorCallback={formSubmitErrorCallback}
+          onSubmitSuccess={formSubmitSuccessCallback}
+          onSubmitError={formSubmitErrorCallback}
         />
       </TaskConsoleContextProvider>,
       'TaskForm'
@@ -305,33 +376,19 @@ describe('TaskForm Test', () => {
 
     const renderer = wrapper.find(FormRenderer);
 
-    expect(renderer.getElement()).not.toBeNull();
+    expect(renderer.exists()).toBeTruthy();
 
     // since the FormRenderer is mocked we are forcing the form submit callback
     act(() => {
-      renderer.getElement().props.formSubmitHandler.successCallback('phase');
+      renderer
+        .getElement()
+        .props.formSubmitHandler.errorCallback('phase', 'Extra info!');
     });
 
     wrapper = wrapper.update().find(TaskForm);
 
     expect(wrapper).toMatchSnapshot();
 
-    let notificationComponent = wrapper.find(FormNotification);
-
-    expect(notificationComponent.exists()).toBeTruthy();
-
-    const notification = notificationComponent.props().notification;
-
-    expect(notification.close).not.toBeNull();
-
-    act(() => {
-      notification.close();
-    });
-
-    wrapper = wrapper.update().find(TaskForm);
-
-    notificationComponent = wrapper.find(FormNotification);
-
-    expect(notificationComponent.exists()).toBeFalsy();
+    expect(formSubmitErrorCallback).toBeCalledWith('phase', 'Extra info!');
   });
 });

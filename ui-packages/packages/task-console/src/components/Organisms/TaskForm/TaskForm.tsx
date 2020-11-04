@@ -16,7 +16,7 @@
 
 import React, { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
-import { Stack, StackItem } from '@patternfly/react-core';
+import _ from 'lodash';
 import {
   GraphQL,
   KogitoEmptyState,
@@ -30,31 +30,27 @@ import FormRenderer from '../../Molecules/FormRenderer/FormRenderer';
 import { TaskFormSubmitHandler } from '../../../util/uniforms/TaskFormSubmitHandler/TaskFormSubmitHandler';
 import { FormSchema } from '../../../util/uniforms/FormSchema';
 import { getTaskSchemaEndPoint } from '../../../util/Utils';
-import FormNotification, {
-  Notification
-} from '../../Atoms/FormNotification/FormNotification';
 import UserTaskInstance = GraphQL.UserTaskInstance;
-import { NotificationType } from '../../../util/Variants';
 
 interface IOwnProps {
   userTaskInstance?: UserTaskInstance;
-  successCallback?: () => void;
-  errorCallback?: () => void;
+  onSubmitSuccess: (message: string) => void;
+  onSubmitError: (message: string, details?: string) => void;
 }
 
 const TaskForm: React.FC<IOwnProps> = ({
   userTaskInstance,
-  successCallback,
-  errorCallback
+  onSubmitSuccess,
+  onSubmitError
 }) => {
   // tslint:disable: no-floating-promises
   const context: IContext<UserTaskInstance> = useContext(TaskConsoleContext);
-  const [notification, setNotification] = useState<Notification>();
   const [loading, setLoading] = useState<boolean>(true);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [submitted, setSubmitted] = useState<boolean>(false);
   const [stateUserTask, setStateUserTask] = useState<UserTaskInstance>();
   const [taskFormSchema, setTaskFormSchema] = useState<FormSchema>(null);
+  const [formOutput, setFormOutput] = useState<any>(null);
 
   if (!stateUserTask) {
     if (userTaskInstance) {
@@ -95,33 +91,6 @@ const TaskForm: React.FC<IOwnProps> = ({
     }
   };
 
-  const showNotification = (
-    notificationType: NotificationType,
-    submitMessage: string,
-    submitCallback?: () => void,
-    notificationDetails?: string
-  ) => {
-    setNotification({
-      type: notificationType,
-      message: submitMessage,
-      details: notificationDetails,
-      customAction: submitCallback
-        ? {
-            label: 'Select another Task',
-            onClick: () => {
-              setNotification(null);
-              if (submitCallback) {
-                submitCallback();
-              }
-            }
-          }
-        : undefined,
-      close: () => {
-        setNotification(null);
-      }
-    });
-  };
-
   if (stateUserTask) {
     if (loading) {
       return (
@@ -137,17 +106,13 @@ const TaskForm: React.FC<IOwnProps> = ({
 
     if (taskFormSchema) {
       const notifySuccess = (phase: string) => {
-        const message = `Task '${userTaskInstance.referenceName}' successfully transitioned to phase '${phase}'.`;
-
-        showNotification(NotificationType.SUCCESS, message, successCallback);
+        onSubmitSuccess(phase);
         setIsSubmitting(false);
         setSubmitted(true);
       };
 
       const notifyError = (phase: string, error?: string) => {
-        const message = `Task '${userTaskInstance.referenceName}' couldn't transition to phase '${phase}'.`;
-
-        showNotification(NotificationType.ERROR, message, errorCallback, error);
+        onSubmitError(phase, error);
         setIsSubmitting(false);
       };
 
@@ -155,29 +120,45 @@ const TaskForm: React.FC<IOwnProps> = ({
         stateUserTask,
         taskFormSchema,
         context.getUser(),
-        () => setIsSubmitting(true),
+        output => {
+          setFormOutput(output);
+          setIsSubmitting(true);
+        },
         phase => notifySuccess(phase),
         (phase, errorMessage) => notifyError(phase, errorMessage)
       );
 
-      const formData = JSON.parse(stateUserTask.inputs);
+      const toJSON = (value: string) => {
+        if (value) {
+          try {
+            return JSON.parse(value);
+          } catch (e) {
+            // do nothing
+          }
+        }
+        return {};
+      };
+
+      const generateFormData = () => {
+        const taskInputs = toJSON(stateUserTask.inputs);
+        if (!stateUserTask.outputs) {
+          return taskInputs;
+        }
+
+        const taskOutputs = formOutput || toJSON(stateUserTask.outputs);
+
+        return _.merge(taskInputs, taskOutputs);
+      };
+
+      const formData = generateFormData();
 
       return (
-        <Stack hasGutter>
-          {notification && (
-            <StackItem>
-              <FormNotification notification={notification} />
-            </StackItem>
-          )}
-          <StackItem>
-            <FormRenderer
-              formSchema={taskFormSchema}
-              model={formData}
-              readOnly={submitted}
-              formSubmitHandler={formSubmitHandler}
-            />
-          </StackItem>
-        </Stack>
+        <FormRenderer
+          formSchema={taskFormSchema}
+          model={formData}
+          readOnly={submitted}
+          formSubmitHandler={formSubmitHandler}
+        />
       );
     }
   }

@@ -83,7 +83,7 @@ const testSuccessfulRequest = async (phase: string, expectedPayload) => {
   expect(postParams[0]).toBe(expectedEndpoint);
   expect(postParams[1]).toMatchObject(expectedPayload);
 
-  expect(onSubmit).toBeCalled();
+  expect(onSubmit).toBeCalledWith(expectedPayload);
   expect(successCallback).toBeCalledWith(phase);
   expect(errorCallback).not.toBeCalled();
 };
@@ -91,14 +91,15 @@ const testSuccessfulRequest = async (phase: string, expectedPayload) => {
 const testUnSuccessfulRequest = async (
   response,
   phase,
-  expecteErrorMessage
+  expecteErrorMessage,
+  expectedPayload
 ) => {
   mockedAxios.post.mockResolvedValue(response);
 
   handler.getActions()[1].execute();
   await handler.doSubmit(formData);
 
-  expect(onSubmit).toBeCalled();
+  expect(onSubmit).toBeCalledWith(expectedPayload);
   expect(errorCallback).toBeCalledWith(phase, expecteErrorMessage);
   expect(successCallback).not.toBeCalled();
 };
@@ -106,7 +107,8 @@ const testUnSuccessfulRequest = async (
 const testUnexpectedRequestError = async (
   error,
   phase,
-  expecteErrorMessage
+  expecteErrorMessage,
+  expectedPayload
 ) => {
   mockedAxios.post.mockRejectedValue(error);
 
@@ -115,7 +117,7 @@ const testUnexpectedRequestError = async (
 
   expect(mockedAxios.post).toBeCalled();
 
-  expect(onSubmit).toBeCalled();
+  expect(onSubmit).toBeCalledWith(expectedPayload);
   expect(errorCallback).toBeCalledWith(phase, expecteErrorMessage);
   expect(successCallback).not.toBeCalled();
 };
@@ -139,14 +141,19 @@ describe('TaskFormSubmitHandler tests', () => {
     );
   });
 
-  test('Submit without selected phase', () => {
-    handler.doSubmit({});
+  test('Submit without selected phase', async () => {
+    try {
+      await handler.doSubmit({});
+    } catch (err) {
+      expect(err).not.toBeNull();
+      expect(err.message).toStrictEqual('Submit disabled for form');
+    }
 
     expect(successCallback).not.toBeCalled();
     expect(errorCallback).not.toBeCalled();
   });
 
-  test('Submit without actions', () => {
+  test('Submit without actions', async () => {
     delete formSchema.phase;
 
     handler = new TaskFormSubmitHandler(
@@ -157,7 +164,13 @@ describe('TaskFormSubmitHandler tests', () => {
       successCallback,
       errorCallback
     );
-    handler.doSubmit({});
+
+    try {
+      await handler.doSubmit({});
+    } catch (err) {
+      expect(err).not.toBeNull();
+      expect(err.message).toStrictEqual('Submit disabled for form');
+    }
 
     expect(onSubmit).not.toBeCalled();
 
@@ -180,7 +193,10 @@ describe('TaskFormSubmitHandler tests', () => {
     await testUnSuccessfulRequest(
       response,
       formSchema.phases[1],
-      response.data
+      response.data,
+      {
+        traveller: formData.traveller
+      }
     );
   });
 
@@ -194,7 +210,10 @@ describe('TaskFormSubmitHandler tests', () => {
     await testUnexpectedRequestError(
       error,
       formSchema.phases[1],
-      error.response.data
+      error.response.data,
+      {
+        traveller: formData.traveller
+      }
     );
   });
 
@@ -204,7 +223,9 @@ describe('TaskFormSubmitHandler tests', () => {
         status: 500
       }
     };
-    await testUnexpectedRequestError(error, formSchema.phases[1], undefined);
+    await testUnexpectedRequestError(error, formSchema.phases[1], undefined, {
+      traveller: formData.traveller
+    });
   });
 
   it('Unexpected error on submit with JS error', async () => {
@@ -214,7 +235,10 @@ describe('TaskFormSubmitHandler tests', () => {
     await testUnexpectedRequestError(
       error,
       formSchema.phases[1],
-      error.message
+      error.message,
+      {
+        traveller: formData.traveller
+      }
     );
   });
 });

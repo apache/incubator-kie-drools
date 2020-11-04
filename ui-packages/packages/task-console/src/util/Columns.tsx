@@ -61,7 +61,7 @@ export default class Columns {
 
   static getTaskStateColumn(isSortable: boolean): DataTableColumn {
     return {
-      label: 'State',
+      label: 'Status',
       path: 'state',
       bodyCellTransformer: (cellValue, rowTask: GraphQL.UserTaskInstance) => (
         <TaskState task={rowTask} />

@@ -1,3 +1,19 @@
+/*
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import React, { useEffect, useState, useContext } from 'react';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import {
@@ -8,8 +24,6 @@ import {
   CardHeader,
   PageSection,
   Title,
-  Text,
-  TextVariants,
   Button,
   Flex,
   FlexItem,
@@ -21,7 +35,8 @@ import {
   DrawerActions,
   DrawerCloseButton,
   DrawerPanelBody,
-  Bullseye
+  Bullseye,
+  Tooltip
 } from '@patternfly/react-core';
 import {
   componentOuiaProps,
@@ -39,24 +54,23 @@ import TaskConsoleContext, {
 import PageTitle from '../../Molecules/PageTitle/PageTitle';
 import TaskState from '../../Atoms/TaskState/TaskState';
 import TaskForm from '../../Organisms/TaskForm/TaskForm';
-import { TaskStateType } from '../../../util/Variants';
+import { NotificationType, TaskStateType } from '../../../util/Variants';
 import TaskDetails from '../../Organisms/TaskDetails/TaskDetails';
-import { StaticContext } from 'react-router';
-import * as H from 'history';
+import FormNotification, {
+  Notification
+} from '../../Atoms/FormNotification/FormNotification';
+import './UserTaskInstanceDetailsPage.css';
 
 interface MatchProps {
   taskId: string;
 }
 
-const UserTaskInstanceDetailsPage: React.FC<RouteComponentProps<
-  MatchProps,
-  StaticContext,
-  H.LocationState
-> &
+const UserTaskInstanceDetailsPage: React.FC<RouteComponentProps<MatchProps> &
   OUIAProps> = ({ ouiaId, ouiaSafe, ...props }) => {
   const id = props.match.params.taskId;
   const [userTask, setUserTask] = useState<GraphQL.UserTaskInstance>(null);
   const [isDetailsExpanded, setIsDetailsExpanded] = useState<boolean>(false);
+  const [notification, setNotification] = useState<Notification>();
 
   const context: IContext<GraphQL.UserTaskInstance> = useContext(
     TaskConsoleContext
@@ -148,6 +162,45 @@ const UserTaskInstanceDetailsPage: React.FC<RouteComponentProps<
     );
   }
 
+  const showNotification = (
+    notificationType: NotificationType,
+    submitMessage: string,
+    notificationDetails?: string
+  ) => {
+    setNotification({
+      type: notificationType,
+      message: submitMessage,
+      details: notificationDetails,
+      customAction: {
+        label: 'Go to Task Inbox',
+        onClick: () => {
+          setNotification(null);
+          goToInbox();
+        }
+      },
+      close: () => {
+        setNotification(null);
+      }
+    });
+  };
+
+  const onSubmitSuccess = (phase: string) => {
+    const message = `Task '${userTask.referenceName}' successfully transitioned to phase '${phase}'.`;
+
+    showNotification(NotificationType.SUCCESS, message);
+  };
+
+  const onSubmitError = (phase, details?: string) => {
+    const message = `Task '${userTask.referenceName}' couldn't transition to phase '${phase}'.`;
+
+    showNotification(NotificationType.ERROR, message, details);
+  };
+
+  const goToInbox = () => {
+    context.setActiveItem(null);
+    props.history.push('/');
+  };
+
   return (
     <React.Fragment>
       <div {...componentOuiaProps(ouiaId, 'UserTaskInstanceDetails', ouiaSafe)}>
@@ -170,13 +223,14 @@ const UserTaskInstanceDetailsPage: React.FC<RouteComponentProps<
             justifyContent={{ default: 'justifyContentSpaceBetween' }}
           >
             <FlexItem>
-              <PageTitle
-                title={userTask.referenceName}
-                extra={
-                  <TaskState task={userTask} variant={TaskStateType.LABEL} />
-                }
-              />
-              <Text component={TextVariants.small}>ID: {userTask.id}</Text>
+              <Tooltip content={userTask.id}>
+                <PageTitle
+                  title={userTask.referenceName}
+                  extra={
+                    <TaskState task={userTask} variant={TaskStateType.LABEL} />
+                  }
+                />
+              </Tooltip>
             </FlexItem>
             <FlexItem>
               <Button
@@ -188,6 +242,11 @@ const UserTaskInstanceDetailsPage: React.FC<RouteComponentProps<
               </Button>
             </FlexItem>
           </Flex>
+          {notification && (
+            <div className="kogito-task-console--task-details-page">
+              <FormNotification notification={notification} />
+            </div>
+          )}
         </PageSection>
         <PageSection>
           <Drawer isExpanded={isDetailsExpanded}>
@@ -202,14 +261,8 @@ const UserTaskInstanceDetailsPage: React.FC<RouteComponentProps<
                   <CardBody className="pf-u-h-100">
                     <TaskForm
                       userTaskInstance={userTask}
-                      successCallback={() => {
-                        context.setActiveItem(null);
-                        props.history.push('/');
-                      }}
-                      errorCallback={() => {
-                        context.setActiveItem(null);
-                        props.history.push('/');
-                      }}
+                      onSubmitSuccess={onSubmitSuccess}
+                      onSubmitError={onSubmitError}
                     />
                   </CardBody>
                 </Card>

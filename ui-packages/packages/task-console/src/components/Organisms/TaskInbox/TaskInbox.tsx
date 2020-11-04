@@ -63,7 +63,7 @@ const TaskInbox: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
 
   const columns: DataTableColumn[] = [
     Columns.getTaskDescriptionColumn(true),
-    Columns.getDefaultColumn('processId', 'Process', false),
+    Columns.getDefaultColumn('processId', 'Process', true),
     Columns.getDefaultColumn('priority', 'Priority', true),
     Columns.getTaskStateColumn(true),
     Columns.getDateColumn('started', 'Started', true),
@@ -125,7 +125,7 @@ const TaskInbox: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
     context.getActiveFilters().filters.taskNames.forEach(word => {
       formattedTextArray.push({
         referenceName: {
-          like: word
+          like: `*${word}*`
         }
       });
     });

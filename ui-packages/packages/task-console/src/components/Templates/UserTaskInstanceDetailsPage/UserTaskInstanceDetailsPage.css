@@ -14,14 +14,6 @@
  * limitations under the License.
  */
 
-export interface IFormAction {
-  name: string;
-
-  execute?(): void;
-}
-
-export interface IFormSubmitHandler {
-  getActions(): IFormAction[];
-
-  doSubmit(data: any): void;
+.kogito-task-console--task-details-page {
+    margin-top: 21px;
 }

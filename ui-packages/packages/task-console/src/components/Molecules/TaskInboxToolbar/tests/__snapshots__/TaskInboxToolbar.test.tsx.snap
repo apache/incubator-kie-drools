@@ -859,50 +859,131 @@ exports[`TaskInbox toolbar tests toolbar initial snapshot 1`] = `
                     <div
                       className="pf-c-toolbar__item"
                     >
-                      <Button
-                        id="refresh"
-                        onClick={[Function]}
-                        variant="plain"
+                      <Tooltip
+                        content="Refresh"
                       >
-                        <button
-                          aria-disabled={false}
-                          aria-label={null}
-                          className="pf-c-button pf-m-plain"
-                          data-ouia-component-id={11}
-                          data-ouia-component-type="PF4/Button"
-                          data-ouia-safe={true}
-                          disabled={false}
-                          id="refresh"
-                          onClick={[Function]}
-                          type="button"
-                        >
-                          <SyncIcon
-                            color="currentColor"
-                            noVerticalAlign={false}
-                            size="sm"
-                          >
-                            <svg
-                              aria-hidden={true}
-                              aria-labelledby={null}
-                              fill="currentColor"
-                              height="1em"
-                              role="img"
+                        <Popper
+                          appendTo={[Function]}
+                          distance={15}
+                          enableFlip={true}
+                          flipBehavior={
+                            Array [
+                              "top",
+                              "right",
+                              "bottom",
+                              "left",
+                              "top",
+                              "right",
+                              "bottom",
+                            ]
+                          }
+                          isVisible={false}
+                          onBlur={[Function]}
+                          onDocumentClick={false}
+                          onDocumentKeyDown={[Function]}
+                          onFocus={[Function]}
+                          onMouseEnter={[Function]}
+                          onMouseLeave={[Function]}
+                          onTriggerEnter={[Function]}
+                          placement="top"
+                          popper={
+                            <div
+                              className="pf-c-tooltip"
+                              id="pf-tooltip-2"
+                              role="tooltip"
                               style={
                                 Object {
-                                  "verticalAlign": "-0.125em",
+                                  "maxWidth": null,
+                                  "opacity": 0,
+                                  "transition": "opacity 300ms cubic-bezier(.54, 1.5, .38, 1.11)",
                                 }
                               }
-                              viewBox="0 0 512 512"
-                              width="1em"
                             >
-                              <path
-                                d="M440.65 12.57l4 82.77A247.16 247.16 0 0 0 255.83 8C134.73 8 33.91 94.92 12.29 209.82A12 12 0 0 0 24.09 224h49.05a12 12 0 0 0 11.67-9.26 175.91 175.91 0 0 1 317-56.94l-101.46-4.86a12 12 0 0 0-12.57 12v47.41a12 12 0 0 0 12 12H500a12 12 0 0 0 12-12V12a12 12 0 0 0-12-12h-47.37a12 12 0 0 0-11.98 12.57zM255.83 432a175.61 175.61 0 0 1-146-77.8l101.8 4.87a12 12 0 0 0 12.57-12v-47.4a12 12 0 0 0-12-12H12a12 12 0 0 0-12 12V500a12 12 0 0 0 12 12h47.35a12 12 0 0 0 12-12.6l-4.15-82.57A247.17 247.17 0 0 0 255.83 504c121.11 0 221.93-86.92 243.55-201.82a12 12 0 0 0-11.8-14.18h-49.05a12 12 0 0 0-11.67 9.26A175.86 175.86 0 0 1 255.83 432z"
-                                transform=""
+                              <TooltipArrow />
+                              <TooltipContent
+                                isLeftAligned={false}
+                              >
+                                Refresh
+                              </TooltipContent>
+                            </div>
+                          }
+                          popperMatchesTriggerWidth={false}
+                          positionModifiers={
+                            Object {
+                              "bottom": "pf-m-bottom",
+                              "left": "pf-m-left",
+                              "right": "pf-m-right",
+                              "top": "pf-m-top",
+                            }
+                          }
+                          trigger={
+                            <Button
+                              aria-describedby="pf-tooltip-2"
+                              id="refresh"
+                              onClick={[Function]}
+                              variant="plain"
+                            >
+                              <SyncIcon
+                                color="currentColor"
+                                noVerticalAlign={false}
+                                size="sm"
                               />
-                            </svg>
-                          </SyncIcon>
-                        </button>
-                      </Button>
+                            </Button>
+                          }
+                          zIndex={9999}
+                        >
+                          <FindRefWrapper
+                            onFoundRef={[Function]}
+                          >
+                            <Button
+                              aria-describedby="pf-tooltip-2"
+                              id="refresh"
+                              onClick={[Function]}
+                              variant="plain"
+                            >
+                              <button
+                                aria-describedby="pf-tooltip-2"
+                                aria-disabled={false}
+                                aria-label={null}
+                                className="pf-c-button pf-m-plain"
+                                data-ouia-component-id={11}
+                                data-ouia-component-type="PF4/Button"
+                                data-ouia-safe={true}
+                                disabled={false}
+                                id="refresh"
+                                onClick={[Function]}
+                                type="button"
+                              >
+                                <SyncIcon
+                                  color="currentColor"
+                                  noVerticalAlign={false}
+                                  size="sm"
+                                >
+                                  <svg
+                                    aria-hidden={true}
+                                    aria-labelledby={null}
+                                    fill="currentColor"
+                                    height="1em"
+                                    role="img"
+                                    style={
+                                      Object {
+                                        "verticalAlign": "-0.125em",
+                                      }
+                                    }
+                                    viewBox="0 0 512 512"
+                                    width="1em"
+                                  >
+                                    <path
+                                      d="M440.65 12.57l4 82.77A247.16 247.16 0 0 0 255.83 8C134.73 8 33.91 94.92 12.29 209.82A12 12 0 0 0 24.09 224h49.05a12 12 0 0 0 11.67-9.26 175.91 175.91 0 0 1 317-56.94l-101.46-4.86a12 12 0 0 0-12.57 12v47.41a12 12 0 0 0 12 12H500a12 12 0 0 0 12-12V12a12 12 0 0 0-12-12h-47.37a12 12 0 0 0-11.98 12.57zM255.83 432a175.61 175.61 0 0 1-146-77.8l101.8 4.87a12 12 0 0 0 12.57-12v-47.4a12 12 0 0 0-12-12H12a12 12 0 0 0-12 12V500a12 12 0 0 0 12 12h47.35a12 12 0 0 0 12-12.6l-4.15-82.57A247.17 247.17 0 0 0 255.83 504c121.11 0 221.93-86.92 243.55-201.82a12 12 0 0 0-11.8-14.18h-49.05a12 12 0 0 0-11.67 9.26A175.86 175.86 0 0 1 255.83 432z"
+                                      transform=""
+                                    />
+                                  </svg>
+                                </SyncIcon>
+                              </button>
+                            </Button>
+                          </FindRefWrapper>
+                        </Popper>
+                      </Tooltip>
                     </div>
                   </ToolbarItem>
                 </div>

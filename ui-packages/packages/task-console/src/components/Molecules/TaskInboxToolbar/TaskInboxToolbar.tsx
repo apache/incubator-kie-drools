@@ -11,7 +11,8 @@ import {
   Toolbar,
   ToolbarContent,
   TextInput,
-  InputGroup
+  InputGroup,
+  Tooltip
 } from '@patternfly/react-core';
 import { FilterIcon, SyncIcon } from '@patternfly/react-icons';
 import _ from 'lodash';
@@ -193,9 +194,11 @@ const TaskInboxToolbar: React.FC<ITaskInboxFilterProps & OUIAProps> = ({
       </ToolbarToggleGroup>
       <ToolbarGroup variant="icon-button-group">
         <ToolbarItem>
-          <Button variant="plain" onClick={onRefreshClick} id="refresh">
-            <SyncIcon />
-          </Button>
+          <Tooltip content={'Refresh'}>
+            <Button variant="plain" onClick={onRefreshClick} id="refresh">
+              <SyncIcon />
+            </Button>
+          </Tooltip>
         </ToolbarItem>
       </ToolbarGroup>
     </React.Fragment>

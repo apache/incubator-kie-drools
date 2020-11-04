@@ -38,6 +38,7 @@ exports[`PageLayout tests test TaskDetails route 1`] = `
         </NavList>
       </Nav>
     }
+    pageNavOpen={false}
   >
     <MockedComponent />
   </KogitoPageLayout>
@@ -82,6 +83,7 @@ exports[`PageLayout tests test TaskInbox route 1`] = `
         </NavList>
       </Nav>
     }
+    pageNavOpen={false}
   >
     <MockedComponent />
   </KogitoPageLayout>
@@ -126,6 +128,7 @@ exports[`PageLayout tests test default route 1`] = `
         </NavList>
       </Nav>
     }
+    pageNavOpen={false}
   >
     <MockedComponent />
   </KogitoPageLayout>

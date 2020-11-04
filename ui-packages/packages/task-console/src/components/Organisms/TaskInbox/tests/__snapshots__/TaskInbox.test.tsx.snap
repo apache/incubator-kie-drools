@@ -27,7 +27,7 @@ exports[`TaskInbox tests Test load data with LoadMore 1`] = `
             "path": "referenceName",
           },
           Object {
-            "isSortable": false,
+            "isSortable": true,
             "label": "Process",
             "path": "processId",
           },
@@ -39,7 +39,7 @@ exports[`TaskInbox tests Test load data with LoadMore 1`] = `
           Object {
             "bodyCellTransformer": [Function],
             "isSortable": true,
-            "label": "State",
+            "label": "Status",
             "path": "state",
           },
           Object {
@@ -786,7 +786,7 @@ exports[`TaskInbox tests Test load data with LoadMore 2`] = `
             "path": "referenceName",
           },
           Object {
-            "isSortable": false,
+            "isSortable": true,
             "label": "Process",
             "path": "processId",
           },
@@ -798,7 +798,7 @@ exports[`TaskInbox tests Test load data with LoadMore 2`] = `
           Object {
             "bodyCellTransformer": [Function],
             "isSortable": true,
-            "label": "State",
+            "label": "Status",
             "path": "state",
           },
           Object {
@@ -1816,7 +1816,7 @@ exports[`TaskInbox tests Test load data without LoadMore 1`] = `
             "path": "referenceName",
           },
           Object {
-            "isSortable": false,
+            "isSortable": true,
             "label": "Process",
             "path": "processId",
           },
@@ -1828,7 +1828,7 @@ exports[`TaskInbox tests Test load data without LoadMore 1`] = `
           Object {
             "bodyCellTransformer": [Function],
             "isSortable": true,
-            "label": "State",
+            "label": "Status",
             "path": "state",
           },
           Object {

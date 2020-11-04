@@ -49,7 +49,7 @@ describe('Columns testing', () => {
 
     expect(column).not.toBeNull();
     expect(column.path).toBe('state');
-    expect(column.label).toBe('State');
+    expect(column.label).toBe('Status');
     expect(column.bodyCellTransformer).not.toBeUndefined();
   });
 });

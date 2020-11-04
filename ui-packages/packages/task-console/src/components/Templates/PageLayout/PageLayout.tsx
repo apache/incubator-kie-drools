@@ -38,6 +38,7 @@ const PageLayout: React.FC<IOwnProps & OUIAProps> = ({ ouiaId, ...props }) => {
   return (
     <KogitoPageLayout
       PageNav={PageNav}
+      pageNavOpen={false}
       BrandSrc={taskConsoleLogo}
       BrandAltText="Task Console Logo"
       BrandClick={BrandClick}

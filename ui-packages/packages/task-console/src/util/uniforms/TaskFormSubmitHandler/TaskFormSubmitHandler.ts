@@ -33,7 +33,7 @@ export class TaskFormSubmitHandler implements IFormSubmitHandler {
   private readonly user: User;
   private readonly userTaskInstance: UserTaskInstance;
   private readonly formSchema: FormSchema;
-  private readonly onSubmit?: () => void;
+  private readonly onSubmit?: (data: any) => void;
   private readonly successCallback?: (result: string) => void;
   private readonly errorCallback?: (
     errorMessage: string,
@@ -49,7 +49,7 @@ export class TaskFormSubmitHandler implements IFormSubmitHandler {
     userTaskInstance: UserTaskInstance,
     formSchema: FormSchema,
     user: User,
-    onSubmit?: () => void,
+    onSubmit?: (data: any) => void,
     successCallback?: (phase: string) => void,
     errorCallback?: (phase: string, errorMessage?: string) => void
   ) {
@@ -101,7 +101,7 @@ export class TaskFormSubmitHandler implements IFormSubmitHandler {
       }&${getTaskEndpointSecurityParams(this.user)}`;
 
       if (this.onSubmit) {
-        this.onSubmit();
+        this.onSubmit(data);
       }
 
       const response = await axios.post(endpoint, data, {
