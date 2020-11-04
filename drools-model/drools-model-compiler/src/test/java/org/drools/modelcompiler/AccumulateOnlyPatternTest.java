@@ -271,13 +271,10 @@ public class AccumulateOnlyPatternTest extends OnlyPatternTest {
                 accFunction(CollectListAccumulateFunction::new)
                         .as(firstGroupByResult));
 
-        // Take the data from the first groupBy.
+        // Take the data from the first groupBy and put it inside the second groupBy.
         Variable<MrProcessAssignment> tupleFromFirstGroupByPattern =
                 declarationOf(MrProcessAssignment.class, from(firstGroupByResult));
-        PatternDSL.PatternDef<MrProcessAssignment> newTuplePattern = pattern(tupleFromFirstGroupByPattern)
-                .bind(tupleFromFirstGroupByPattern, tuple -> tuple);
-
-        // Take the result of the first groupBy and put it inside the second groupBy
+        PatternDSL.PatternDef<MrProcessAssignment> newTuplePattern = pattern(tupleFromFirstGroupByPattern);
         Variable<Long> outputVariable = declarationOf(Long.class);
         ViewItem<?> secondGroupBy = DSL.accumulate(and(newTuplePattern),
                 accFunction(CountAccumulateFunction::new)
@@ -286,9 +283,8 @@ public class AccumulateOnlyPatternTest extends OnlyPatternTest {
         // And then take the result from the second groupBy and put it into a variable.
         // Also add a no-op consequence.
         PatternDSL.PatternDef<Long> resultPattern = pattern(outputVariable);
-        // The result doesn't really matter.
         ConsequenceBuilder._1<Long> consequence = DSL.on(outputVariable)
-                .execute(System.out::println);
+                .execute(System.out::println); // The result doesn't really matter.
 
         // Build the executable model.
         Rule rule = rule("somepackage", "somerule")
