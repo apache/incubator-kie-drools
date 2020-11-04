@@ -138,7 +138,14 @@ public abstract class LambdaAccumulator implements Accumulator {
                     args = new Object[ bindingDeclarations.length ];
                     for (int i = 0; i < bindingDeclarations.length; i++) {
                         Declaration d = bindingDeclarations[i];
-                        args[i] = ((SubnetworkTuple) accumulateObject).getObject(d);
+                        Object object = ((SubnetworkTuple) accumulateObject).getObject(d);
+                        if(d.getExtractor() instanceof LambdaReadAccessor) {
+                            LambdaReadAccessor extractor = (LambdaReadAccessor) d.getExtractor();
+                            Object value = extractor.getValue(object);
+                            args[i] = value;
+                        } else {
+                            args[i] = object;
+                        }
                     }
                 }
                 return binding.evaluate(args);

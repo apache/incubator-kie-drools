@@ -723,7 +723,11 @@ public class KiePackagesBuilder {
 
     private void buildExistentialPatternImpl( RuleContext ctx, GroupElement group, GroupElement allSubConditions, Condition condition ) {
         ExistentialPatternImpl existentialPattern = (ExistentialPatternImpl) condition;
-        recursivelyAddConditions(ctx, group, allSubConditions, existentialPattern.getSubConditions().iterator().next());
+
+        GroupElement existGroupElement = new GroupElement(GroupElement.Type.EXISTS);
+        allSubConditions.addChild(existGroupElement);
+
+        recursivelyAddConditions(ctx, existGroupElement, existGroupElement, existentialPattern.getSubConditions().iterator().next());
     }
 
     private void buildCompositePatterns( RuleContext ctx, GroupElement group, GroupElement allSubConditions, Condition condition ) {

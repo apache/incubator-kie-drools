@@ -20,10 +20,14 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import org.apache.commons.math3.util.Pair;
 import org.assertj.core.api.Assertions;
+import org.drools.modelcompiler.domain.Person;
+import org.drools.modelcompiler.domain.Result;
 import org.drools.modelcompiler.domain.StockTick;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
@@ -136,5 +140,86 @@ public class AccumulateOnlyPatternTest extends OnlyPatternTest {
 
     private GregorianCalendar calendarFromString(String inputString) {
         return GregorianCalendar.from(ZonedDateTime.from(DateTimeFormatter.ISO_DATE_TIME.parse(inputString)));
+    }
+
+    @Test
+    public void testAccumulateCountWithExists() {
+//        The following rule uses an accumulate to count all the name Strings for which at least one Person
+//        of that name exists. Expected behavior:
+//        - A name should be counted exactly once no matter how many Persons with that name exists.
+//        - The rule should fire exactly once and there should be a single Result inserted.
+        String str = ""
+                + "import " + Person.class.getCanonicalName() + ";\n"
+                + "import " + Result.class.getCanonicalName() + ";\n"
+                + "rule countUsedNames when\n"
+                + "  accumulate(\n"
+                + "    $name : String()\n"
+                + "    and exists Person(name == $name);\n"
+                + "    $count : count($name)\n"
+                + "  )\n"
+                + "then\n"
+                + "  insert( new Result($count));\n"
+                + "  System.out.println(kcontext.getMatch().getObjects());\n"
+                + "end\n";
+        KieSession ksession = getKieSession( str );
+
+        ReteDumper.dumpRete(ksession);
+
+        ksession.insert("Andy"); // used 3x => counted 1x
+        ksession.insert("Bill"); // used 1x => counted 1x
+        ksession.insert("Carl"); // unused => not counted
+        ksession.insert(new Person("Andy", 1));
+        ksession.insert(new Person("Andy", 2));
+        ksession.insert(new Person("Andy", 3));
+        ksession.insert(new Person("Bill", 4));
+        ksession.insert(new Person("x", 8));
+        ksession.insert(new Person("y", 9));
+
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        assertEquals(1, results.size());
+        assertEquals(2L, results.iterator().next().getValue());
+    }
+
+    @Test
+    public void testAccumulateWithIndirectArgument() {
+        String str =
+                "global java.util.List resultTotal; \n" +
+                        "global java.util.List resultPair; \n" +
+                        "import " + Person.class.getCanonicalName() + ";\n" +
+                        "import " + Pair.class.getCanonicalName() + ";\n" +
+                        "rule R " +
+                        "    when\n" +
+                        "        accumulate(\n" +
+                        "            Person($n1 : name)\n" +
+                        "            and Person($n2 : name);\n" +
+                        "            $pair :  collectList(Pair.create($n1, $n2)), \n" +
+                        "            $total : count(Pair.create($n1, $n2))\n" +
+                        "        )\n" +
+                        "    then\n" +
+                        "        resultTotal.add($total);\n" +
+                        "        resultPair.add($pair);\n" +
+                        "end";
+
+        KieSession ksession = getKieSession( str );
+
+        final List<Number> resultTotal = new ArrayList<>();
+        ksession.setGlobal("resultTotal", resultTotal);
+
+        final List<List<Pair>> resultPair = new ArrayList<>();
+        ksession.setGlobal("resultPair", resultPair);
+
+        Person mario = new Person("Mario", 40);
+        ksession.insert(mario);
+
+        int rulesFired = ksession.fireAllRules();
+        Assertions.assertThat(rulesFired).isGreaterThan(0);
+        Assertions.assertThat(resultTotal).contains(1l);
+
+        List<Pair> resultPairItem = resultPair.iterator().next();
+        Pair firstPair = resultPairItem.iterator().next();
+        assertEquals("Mario", firstPair.getFirst());
+        assertEquals("Mario", firstPair.getSecond());
     }
 }
