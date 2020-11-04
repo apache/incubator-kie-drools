@@ -34,8 +34,9 @@
   </licenses>
 
   <properties>
-    <!-- override the default GroupId:ArtifactId to map both master branch and 7.x branches to the same SonarCloud project -->
-    <sonar.projectKey>org.optaplanner:optaplanner</sonar.projectKey>
+    <!-- The property sonar.projectKey is defined in the CI in order not to collide with optawebs. It overrides
+         the default GroupId:ArtifactId to map both master branch and 7.x branches to the same SonarCloud project.
+         As the sonar.moduleKey inherits the value of sonar.projectKey by default, we have to override it too. -->
     <sonar.moduleKey>${project.groupId}:${project.artifactId}</sonar.moduleKey>
   </properties>
 

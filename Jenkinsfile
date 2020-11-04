@@ -49,7 +49,7 @@ pipeline {
         stage('Analyze OptaPlanner by SonarCloud') {
             steps {
                 withCredentials([string(credentialsId: 'SONARCLOUD_TOKEN', variable: 'SONARCLOUD_TOKEN')]) {
-                    runMaven("validate", "optaplanner", true, ["sonarcloud-analysis"], "-e -nsu")
+                    runMaven("validate", "optaplanner", true, ["sonarcloud-analysis"], "-e -nsu -Dsonar.projectKey=org.optaplanner:optaplanner")
                 }
             }
         }
