@@ -23,15 +23,37 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Objects;
 
 import org.apache.commons.math3.util.Pair;
 import org.assertj.core.api.Assertions;
+import org.drools.core.base.accumulators.CollectListAccumulateFunction;
+import org.drools.core.base.accumulators.CountAccumulateFunction;
+import org.drools.model.DSL;
+import org.drools.model.Declaration;
+import org.drools.model.Index;
+import org.drools.model.Model;
+import org.drools.model.PatternDSL;
+import org.drools.model.Rule;
+import org.drools.model.Variable;
+import org.drools.model.consequences.ConsequenceBuilder;
+import org.drools.model.impl.ModelImpl;
+import org.drools.model.view.ViewItem;
+import org.drools.modelcompiler.builder.KieBaseBuilder;
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
 import org.drools.modelcompiler.domain.StockTick;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.FactHandle;
 
+import static org.drools.model.DSL.accFunction;
+import static org.drools.model.DSL.and;
+import static org.drools.model.DSL.declarationOf;
+import static org.drools.model.DSL.from;
+import static org.drools.model.PatternDSL.alphaIndexedBy;
+import static org.drools.model.PatternDSL.pattern;
+import static org.drools.model.PatternDSL.rule;
 import static org.junit.Assert.assertEquals;
 
 public class AccumulateOnlyPatternTest extends OnlyPatternTest {
@@ -222,4 +244,151 @@ public class AccumulateOnlyPatternTest extends OnlyPatternTest {
         assertEquals("Mario", firstPair.getFirst());
         assertEquals("Mario", firstPair.getSecond());
     }
+
+    private static Model getExecutableModel() {
+        // Create the first pattern.
+        Declaration<MrProcessAssignment> processAssignmentDeclaration =
+                declarationOf(MrProcessAssignment.class);
+        PatternDSL.PatternDef<MrProcessAssignment> processAssignmentPatternDef =
+                pattern(processAssignmentDeclaration)
+                        .expr("Problematic filter", a -> a.getMachine() != null && a.isMoved());
+        //                                                                            ^^^^^^^^^^^^^^
+        //                                                                            No a.isMoved() => no NPE.
+        // Note: isMoved() is only true when MrProcessAssignment::originalMachine != MrProcessAssignment::machine.
+        // Therefore, isMoved() is:
+        //   1/ false at the start of the test,
+        //   2/ true after the first switch,
+        //   3/ false after the second switch and
+        //   4/ true again after the third switch, when the exception is thrown
+
+        // Put it inside the first groupBy.
+        Declaration<List<MrProcess>> firstGroupByResult =
+                (Declaration) declarationOf(Collection.class);
+        PatternDSL.PatternDef<List<MrProcess>> firstGroupByResultPattern = pattern(firstGroupByResult)
+                .expr("Non-empty", collection -> !collection.isEmpty(),
+                        alphaIndexedBy(Integer.class, Index.ConstraintType.GREATER_THAN, -1, Collection::size, 0));
+        // Note: Remove the index and the NPE is not thrown!
+        ViewItem<?> firstGroupBy = DSL.accumulate(and(processAssignmentPatternDef),
+                accFunction(() -> new CollectListAccumulateFunction())
+                        .as(firstGroupByResult));
+
+        // Take the data from the first groupBy.
+        Variable<MrProcess> tupleFromFirstGroupByPattern =
+                declarationOf(MrProcess.class, "biGrouped", from(firstGroupByResult));
+        PatternDSL.PatternDef<MrProcess> newTuplePattern = pattern(tupleFromFirstGroupByPattern)
+                .bind(tupleFromFirstGroupByPattern, tuple -> tuple);
+
+        // Take the result of the first groupBy and put it inside the second groupBy
+        Variable<Long> outputVariable = declarationOf(Long.class, "result");
+        ViewItem<?> secondGroupBy = DSL.accumulate(and(newTuplePattern),
+                accFunction(() -> new CountAccumulateFunction())
+                        .as(outputVariable));
+
+        // And then take the result from the second groupBy and put it into a variable.
+        // Also add a no-op consequence.
+        PatternDSL.PatternDef<Long> resultPattern = pattern(outputVariable);
+        ConsequenceBuilder._1<Long> consequence = DSL.on(outputVariable)
+                .execute(result -> {
+                    System.out.println(result); // The result doesn't really matter.
+                });
+
+        // Build the executable model.
+        Rule rule = rule("somepackage", "somerule")
+                .build(firstGroupBy, firstGroupByResultPattern, secondGroupBy, resultPattern, consequence);
+        ModelImpl model = new ModelImpl();
+        model.addRule(rule);
+        return model;
+    }
+
+    private static void switchMachinesInAssignments(KieSession session, MrProcessAssignment left,
+            MrProcessAssignment right) {
+        FactHandle leftHandle = session.getFactHandle(left);
+        FactHandle rightHandle = session.getFactHandle(right);
+        MrMachine original = left.getMachine();
+        left.setMachine(right.getMachine());
+        right.setMachine(original);
+        session.update(leftHandle, left);
+        session.update(rightHandle, right);
+        session.fireAllRules();
+    }
+
+    @Test
+    public void test() {
+        // Prepare reproducing data.
+        MrMachine machine2 = new MrMachine();
+        MrMachine machine3 = new MrMachine();
+        MrProcessAssignment assignment1 = new MrProcessAssignment(new MrProcess(), machine3, machine3);
+        MrProcessAssignment assignment2 = new MrProcessAssignment(new MrProcess(), machine2, machine2);
+        MrProcessAssignment assignment3 = new MrProcessAssignment(new MrProcess(), machine2, machine2);
+        MrProcessAssignment assignment4 = new MrProcessAssignment(new MrProcess(), machine3, machine3);
+
+        // Create executable model session from a Constraint Stream.
+        KieSession kieSession = KieBaseBuilder.createKieBaseFromModel(getExecutableModel())
+                .newKieSession();
+
+        // Insert facts into the session.
+        kieSession.insert(assignment1);
+        kieSession.insert(assignment2);
+        kieSession.insert(assignment3);
+        kieSession.insert(assignment4);
+        kieSession.fireAllRules();
+
+        // Execute the sequence of session events that triggers the exception.
+        switchMachinesInAssignments(kieSession, assignment1, assignment2);
+        switchMachinesInAssignments(kieSession, assignment1, assignment2);
+        switchMachinesInAssignments(kieSession, assignment4, assignment3);
+
+        kieSession.dispose();
+    }
+
+    public static class MrProcess {
+
+    }
+
+    public static class MrProcessAssignment {
+
+        private MrProcess process;
+        private MrMachine originalMachine;
+        private MrMachine machine;
+
+        public MrProcessAssignment(MrProcess process, MrMachine originalMachine, MrMachine machine) {
+            this.process = process;
+            this.originalMachine = originalMachine;
+            this.machine = machine;
+        }
+
+        public MrProcess getProcess() {
+            return process;
+        }
+
+        public MrMachine getOriginalMachine() {
+            return originalMachine;
+        }
+
+        public MrMachine getMachine() {
+            return machine;
+        }
+
+        public void setMachine(MrMachine machine) {
+            this.machine = machine;
+        }
+
+        // ************************************************************************
+        // Complex methods
+        // ************************************************************************
+
+        public boolean isMoved() {
+            if (machine == null) {
+                return false;
+            }
+            return !Objects.equals(originalMachine, machine);
+        }
+
+    }
+
+    public static class MrMachine {
+
+    }
+
+
 }
