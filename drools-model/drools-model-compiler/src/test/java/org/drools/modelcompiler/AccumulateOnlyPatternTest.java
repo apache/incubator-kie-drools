@@ -262,35 +262,33 @@ public class AccumulateOnlyPatternTest extends OnlyPatternTest {
         //   4/ true again after the third switch, when the exception is thrown
 
         // Put it inside the first groupBy.
-        Declaration<List<MrProcess>> firstGroupByResult =
-                (Declaration) declarationOf(Collection.class);
-        PatternDSL.PatternDef<List<MrProcess>> firstGroupByResultPattern = pattern(firstGroupByResult)
+        Declaration<List<MrProcessAssignment>> firstGroupByResult = (Declaration) declarationOf(List.class);
+        PatternDSL.PatternDef<List<MrProcessAssignment>> firstGroupByResultPattern = pattern(firstGroupByResult)
                 .expr("Non-empty", collection -> !collection.isEmpty(),
                         alphaIndexedBy(Integer.class, Index.ConstraintType.GREATER_THAN, -1, Collection::size, 0));
         // Note: Remove the index and the NPE is not thrown!
         ViewItem<?> firstGroupBy = DSL.accumulate(and(processAssignmentPatternDef),
-                accFunction(() -> new CollectListAccumulateFunction())
+                accFunction(CollectListAccumulateFunction::new)
                         .as(firstGroupByResult));
 
         // Take the data from the first groupBy.
-        Variable<MrProcess> tupleFromFirstGroupByPattern =
-                declarationOf(MrProcess.class, "biGrouped", from(firstGroupByResult));
-        PatternDSL.PatternDef<MrProcess> newTuplePattern = pattern(tupleFromFirstGroupByPattern)
+        Variable<MrProcessAssignment> tupleFromFirstGroupByPattern =
+                declarationOf(MrProcessAssignment.class, from(firstGroupByResult));
+        PatternDSL.PatternDef<MrProcessAssignment> newTuplePattern = pattern(tupleFromFirstGroupByPattern)
                 .bind(tupleFromFirstGroupByPattern, tuple -> tuple);
 
         // Take the result of the first groupBy and put it inside the second groupBy
-        Variable<Long> outputVariable = declarationOf(Long.class, "result");
+        Variable<Long> outputVariable = declarationOf(Long.class);
         ViewItem<?> secondGroupBy = DSL.accumulate(and(newTuplePattern),
-                accFunction(() -> new CountAccumulateFunction())
+                accFunction(CountAccumulateFunction::new)
                         .as(outputVariable));
 
         // And then take the result from the second groupBy and put it into a variable.
         // Also add a no-op consequence.
         PatternDSL.PatternDef<Long> resultPattern = pattern(outputVariable);
+        // The result doesn't really matter.
         ConsequenceBuilder._1<Long> consequence = DSL.on(outputVariable)
-                .execute(result -> {
-                    System.out.println(result); // The result doesn't really matter.
-                });
+                .execute(System.out::println);
 
         // Build the executable model.
         Rule rule = rule("somepackage", "somerule")
