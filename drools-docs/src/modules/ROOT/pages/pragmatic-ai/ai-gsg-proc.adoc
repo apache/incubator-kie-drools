@@ -8,14 +8,18 @@ This example shows you how to use {PRODUCT} to create a DMN model that uses a PM
 
 * {PRODUCT} is available and the following JAR file has been added to the `~/kie-server.war/WEB-INF/lib` and `~/business-central.war/WEB-INF/lib` directories in your {PRODUCT} installation:
 +
-** `kie-dmn-jpmml-{BOM_VERSION}.jar`
+** `kie-dmn-jpmml-{MAVEN_ARTIFACT_VERSION}.jar`
 +
-This file is available in the {PRODUCT_DM} {PRODUCT_VERSION}  Maven Repository distribution avaialable from the https://access.redhat.com/jbossnetwork/restricted/listSoftware.html[Software Downloads] page in the Red Hat Customer Portal (login required).
+This file is available in the {PRODUCT_DM} {PRODUCT_VERSION} Maven Repository distribution available from the https://access.redhat.com/jbossnetwork/restricted/listSoftware.html[Software Downloads] page in the Red Hat Customer Portal (login required). The group ID, artifact ID, and version (GAV) identifier of this file is `org.kie:kie-dmn-jpmml:{MAVEN_ARTIFACT_VERSION}`. For more information, see the "Including PMML models within a DMN file in {CENTRAL}" section of {URL_DEVELOPING_DECISION_SERVICES}#assembly-dmn-models[_{DMN_MODELS}_].
 
 ** https://mvnrepository.com/artifact/org.jpmml/pmml-evaluator/1.5.1[JPMML Evaluator 1.5.1 JAR file]
 ** https://mvnrepository.com/artifact/org.jpmml/pmml-evaluator-extension/1.5.1[JPMML Evaluator Extensions 1.5.1 JAR file]
 +
 These files are required to enable JPMML evaluation in {KIE_SERVER} and {CENTRAL}.
++
+ifdef::DM,PAM[]
+IMPORTANT: Red Hat supports integration with the Java Evaluator API for PMML (JPMML) for PMML execution in {PRODUCT}. However, Red Hat does not support the JPMML libraries directly. If you include JPMML libraries in your {PRODUCT} distribution, see the https://openscoring.io/[Openscoring.io] licensing terms for JPMML.
+endif::[]
 
 
 .Procedure
@@ -104,7 +108,7 @@ image:ai/decision-node.png[]
 
 .. Rename the node *Transaction Dispute Risk*.
 .. Select the *Risk Predictor* node and drag the arrow from the top right of the node to the *Transaction Dispute Risk* node.
-.. Select the *Transaction* node and drag the arrow from the top right of the node to the *Transaction Dispute Risk* node.
+.. Select the *Transaction* node and drag the arrow from the bottom right of the node to the *Transaction Dispute Risk* node.
 
 . In the *Transaction Dispute Risk* node, create the *Risk predictor* invocation function:
 +
@@ -122,7 +126,7 @@ image:ai/transaction-dispute-risk.png[]
 .. Click *Select expression* on row *2* and select *Literal expression* from the menu.
 .. Enter `Transaction.cardholder_identifier` in the box next to *amount*.
 
-. Create the *Risk Treshold* input data node with the data type *number*:
+. Create the *Risk Threshold* input data node with the data type *number*:
 +
 image:ai/model4.png[]
 
@@ -141,9 +145,9 @@ image:ai/model5.png[]
 .. Drag a decision node to the DMN editor palette and rename it *Can be automatically processed?*.
 .. Select the node, then click the edit icon on the upper-left side of the node.
 .. Click *Select expression* and then select *Literal expression* from the menu.
-.. Enter `Transaction Dispute Risk.predicted_dispute_risk < Risk threshold` in the box.
+.. Enter `Transaction Dispute Risk.predicted_dispute_risk < Risk Threshold` in the box.
 .. Select the *Transaction Dispute Risk* node and drag the arrow in the top left of the node to the *Can be automatically processed?* node.
-.. Select the *Risk Threshold* node and drag the arrow in the top left of the node to the *Can be automatically processed?* node.
+.. Select the *Risk Threshold* node and drag the arrow from the bottom left of the node to the *Can be automatically processed?* node.
 . Save the model and build the project:
 .. In the DMN editor, click *Save*.
 .. If necessary, correct any errors that appear.
@@ -151,12 +155,14 @@ image:ai/model5.png[]
 .. Click *Build*. The project should successfully build.
 
 . Add and run a test scenario:
-image:ai/test-scenarios-3.png[]
+image:ai/AIScenarioSimulations.png[]
 .. Click *Add Asset*.
 .. Select *Test Scenario*.
 .. In the *Create new Test Scenario* dialog, enter the name `Test Dispute Transaction Check`, select *com* from the *Package* menu, and select *DMN*.
 .. Select *Dispute Transaction Check.dmn* from the *Choose a DMN asset* menu and click *OK*. The test template builds.
-.. Enter the following values and click *Save*.
+.. Enter the following values and click *Save*:
++
+NOTE: Do not add a value to the *Transaction Dispute Risk* column. This value is determined by the test scenario.
 +
 .Test scenario parameters
 [cols="20%,13%,24%,24%,19%", options="header"]
@@ -192,4 +198,4 @@ image:ai/test-scenarios-3.png[]
 | false
 
 |===
-.. To run the test, click *Validate*.
+.. To run the test, click the *Play* button, to the right of *Validate*. The results appear in the *Test Report* panel on the right of the screen.
