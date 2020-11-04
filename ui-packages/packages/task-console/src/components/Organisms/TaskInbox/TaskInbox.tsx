@@ -138,8 +138,17 @@ const TaskInbox: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
     return {
       or: [
         { actualOwner: { equal: context.getUser().id } },
-        { potentialUsers: { contains: context.getUser().id } },
-        { potentialGroups: { containsAny: context.getUser().groups } }
+        {
+          and: [
+            { actualOwner: { isNull: true } },
+            {
+              or: [
+                { potentialUsers: { contains: context.getUser().id } },
+                { potentialGroups: { containsAny: context.getUser().groups } }
+              ]
+            }
+          ]
+        }
       ]
     };
   };

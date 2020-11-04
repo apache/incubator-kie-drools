@@ -131,7 +131,7 @@ message UserTaskInstance {
     optional string rootProcessId = 8;
     /* @Field(store = Store.YES) @SortableField */
     optional string state = 9;
-    /* @Field(store = Store.YES) @SortableField */
+    /* @Field(store = Store.YES, indexNullAs = "__DEFAULT_NULL_TOKEN__") @SortableField */
     optional string actualOwner = 10;
     /* @Field(store = Store.YES) */
     repeated string adminGroups = 11;
@@ -171,7 +171,7 @@ message UserTaskInstanceMeta {
     optional string processInstanceId = 5;
     /* @Field(store = Store.YES) */
     optional string state = 6;
-    /* @Field(store = Store.YES) */
+    /* @Field(store = Store.YES, indexNullAs = "__DEFAULT_NULL_TOKEN__") */
     optional string actualOwner = 7;
     /* @Field(store = Store.YES) */
     repeated string adminGroups = 8;

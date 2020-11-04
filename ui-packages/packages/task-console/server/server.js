@@ -83,16 +83,17 @@ const checkTaskAssignment = (userTaskInstance, assignments) => {
   if (actualOwnerClause.actualOwner.equal === userTaskInstance.actualOwner) {
     return true;
   }
-
-  const potentialUsersClause = assignments.or[1];
-
-  if (userTaskInstance.potentialUsers.includes(potentialUsersClause.potentialUsers.contains)) {
-    return true;
+  if (userTaskInstance.actualOwner === null) {
+    const potentialUsersClause = assignments.or[1].and[1].or[0];
+    if (userTaskInstance.potentialUsers.includes(potentialUsersClause.potentialUsers.contains)) {
+      return true;
+    }
+    const potentialGroupsClause = assignments.or[1].and[1].or[1];
+    if (potentialGroupsClause.potentialGroups.containsAny
+            .some(clauseGroup => userTaskInstance.potentialGroups.includes(clauseGroup))) {
+      return true;
+    }
   }
-
-  const potentialGroupsClause = assignments.or[2];
-  return potentialGroupsClause.potentialGroups.containsAny
-    .some(clauseGroup => userTaskInstance.potentialGroups.includes(clauseGroup));
 }
 
 // Provide resolver functions for your schema fields

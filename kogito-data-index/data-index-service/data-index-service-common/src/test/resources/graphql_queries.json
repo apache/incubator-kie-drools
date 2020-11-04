@@ -106,6 +106,12 @@
       "actualOwner": "%s"
     }
   },
+  "UserTaskInstanceByIdNoActualOwner": {
+    "query": "query ( $id: String ) { UserTaskInstances( where: {  id: {  equal : $id }, actualOwner: { isNull: true } } ){ %s } }",
+    "variables": {
+      "id": "%s"
+    }
+  },
   "UserTaskInstanceByIdAndState": {
     "query": "query ( $id: String, $state: String ) { UserTaskInstances( where: {  id: {  equal : $id }, state: { equal: $state } } ){ %s } }",
     "variables": {
@@ -168,6 +174,12 @@
   },
   "DealsByTaskId": {
     "query": "query ( $id: String ) { Deals ( where: { metadata : { userTasks : { id : { equal : $id } } } } ){ id, __typename, name, review, metadata { lastUpdate, userTasks { id, description, state, name, priority, processInstanceId, actualOwner, started, completed, lastUpdate } } } }",
+    "variables": {
+      "id": "%s"
+    }
+  },
+  "DealsByTaskIdNoActualOwner": {
+    "query": "query ( $id: String ) { Deals ( where: { metadata : { userTasks : { id : { equal : $id }, actualOwner: { isNull: true } } } } ){ id, __typename, name, review, metadata { lastUpdate, userTasks { id, description, state, name, priority, processInstanceId, actualOwner, started, completed, lastUpdate } } } }",
     "variables": {
       "id": "%s"
     }

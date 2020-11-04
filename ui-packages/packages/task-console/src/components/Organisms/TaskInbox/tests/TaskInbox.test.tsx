@@ -91,11 +91,20 @@ describe('TaskInbox tests', () => {
                 {
                   or: [
                     { actualOwner: { equal: 'test' } },
-                    { potentialUsers: { contains: 'test' } },
                     {
-                      potentialGroups: {
-                        containsAny: ['group1', 'group2']
-                      }
+                      and: [
+                        { actualOwner: { isNull: true } },
+                        {
+                          or: [
+                            { potentialUsers: { contains: 'test' } },
+                            {
+                              potentialGroups: {
+                                containsAny: ['group1', 'group2']
+                              }
+                            }
+                          ]
+                        }
+                      ]
                     }
                   ]
                 },
@@ -146,11 +155,20 @@ describe('TaskInbox tests', () => {
                 {
                   or: [
                     { actualOwner: { equal: 'test' } },
-                    { potentialUsers: { contains: 'test' } },
                     {
-                      potentialGroups: {
-                        containsAny: ['group1', 'group2']
-                      }
+                      and: [
+                        { actualOwner: { isNull: true } },
+                        {
+                          or: [
+                            { potentialUsers: { contains: 'test' } },
+                            {
+                              potentialGroups: {
+                                containsAny: ['group1', 'group2']
+                              }
+                            }
+                          ]
+                        }
+                      ]
                     }
                   ]
                 },
@@ -183,11 +201,20 @@ describe('TaskInbox tests', () => {
                 {
                   or: [
                     { actualOwner: { equal: 'test' } },
-                    { potentialUsers: { contains: 'test' } },
                     {
-                      potentialGroups: {
-                        containsAny: ['group1', 'group2']
-                      }
+                      and: [
+                        { actualOwner: { isNull: true } },
+                        {
+                          or: [
+                            { potentialUsers: { contains: 'test' } },
+                            {
+                              potentialGroups: {
+                                containsAny: ['group1', 'group2']
+                              }
+                            }
+                          ]
+                        }
+                      ]
                     }
                   ]
                 },
@@ -256,11 +283,20 @@ describe('TaskInbox tests', () => {
                 {
                   or: [
                     { actualOwner: { equal: 'test' } },
-                    { potentialUsers: { contains: 'test' } },
                     {
-                      potentialGroups: {
-                        containsAny: ['group1', 'group2']
-                      }
+                      and: [
+                        { actualOwner: { isNull: true } },
+                        {
+                          or: [
+                            { potentialUsers: { contains: 'test' } },
+                            {
+                              potentialGroups: {
+                                containsAny: ['group1', 'group2']
+                              }
+                            }
+                          ]
+                        }
+                      ]
                     }
                   ]
                 },
@@ -309,11 +345,20 @@ describe('TaskInbox tests', () => {
                 {
                   or: [
                     { actualOwner: { equal: 'test' } },
-                    { potentialUsers: { contains: 'test' } },
                     {
-                      potentialGroups: {
-                        containsAny: ['group1', 'group2']
-                      }
+                      and: [
+                        { actualOwner: { isNull: true } },
+                        {
+                          or: [
+                            { potentialUsers: { contains: 'test' } },
+                            {
+                              potentialGroups: {
+                                containsAny: ['group1', 'group2']
+                              }
+                            }
+                          ]
+                        }
+                      ]
                     }
                   ]
                 },
@@ -346,11 +391,20 @@ describe('TaskInbox tests', () => {
                 {
                   or: [
                     { actualOwner: { equal: 'test' } },
-                    { potentialUsers: { contains: 'test' } },
                     {
-                      potentialGroups: {
-                        containsAny: ['group1', 'group2']
-                      }
+                      and: [
+                        { actualOwner: { isNull: true } },
+                        {
+                          or: [
+                            { potentialUsers: { contains: 'test' } },
+                            {
+                              potentialGroups: {
+                                containsAny: ['group1', 'group2']
+                              }
+                            }
+                          ]
+                        }
+                      ]
                     }
                   ]
                 },
