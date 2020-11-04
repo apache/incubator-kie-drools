@@ -22,7 +22,7 @@ class DataEventAttrBuilderTest {
         when(pi.getProcessId()).thenReturn(processId);
         when(pi.getId()).thenReturn(instanceId);
         final String source = DataEventAttrBuilder.toSource(pi);
-        assertThat(source).isNotBlank().contains(processId).contains(instanceId);
+        assertThat(source).isNotBlank().contains(processId);
     }
 
     @Test

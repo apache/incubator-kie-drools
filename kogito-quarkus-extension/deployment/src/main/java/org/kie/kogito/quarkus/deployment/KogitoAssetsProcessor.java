@@ -109,6 +109,7 @@ public class KogitoAssetsProcessor {
     private static final DotName tracingClass = DotName.createSimple("org.kie.kogito.tracing.decision.DecisionTracingListener");
     private static final DotName knativeEventingClass = DotName.createSimple("org.kie.kogito.events.knative.ce.extensions.KogitoProcessExtension");
     private static final DotName dmnJpmmlClass = DotName.createSimple( "org.kie.dmn.jpmml.DMNjPMMLInvocationEvaluator");
+    private static final DotName quarkusCloudEvents = DotName.createSimple("org.kie.kogito.addon.cloudevents.quarkus.QuarkusCloudEventEmitter");
 
     @Inject
     ArchiveRootBuildItem root;
@@ -162,12 +163,15 @@ public class KogitoAssetsProcessor {
                 .getClassByName(knativeEventingClass) != null;
         boolean isJPMMLAvailable =combinedIndexBuildItem.getIndex()
                 .getClassByName(dmnJpmmlClass) != null;
+        boolean useCloudEvents = combinedIndexBuildItem.getIndex()
+                .getClassByName(quarkusCloudEvents) != null;
 
         AddonsConfig addonsConfig = new AddonsConfig()
                 .withPersistence(usePersistence)
                 .withMonitoring(useMonitoring)
                 .withTracing(useTracing)
-                .withKnativeEventing(useKnativeEventing);
+                .withKnativeEventing(useKnativeEventing)
+                .withCloudEvents(useCloudEvents);
 
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         GeneratorContext context = buildContext(appPaths, combinedIndexBuildItem.getIndex());

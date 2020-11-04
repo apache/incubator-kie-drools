@@ -16,7 +16,12 @@ public final class DataEventAttrBuilder {
 
     public static String toSource(final ProcessInstance process) {
         Objects.requireNonNull(process);
-        return String.format(AbstractDataEvent.SOURCE_FORMAT, process.getProcessId(), process.getId());
+        return String.format(AbstractDataEvent.SOURCE_FORMAT, process.getProcessId().toLowerCase());
+    }
+
+    public static String toSource(final String processId) {
+        Objects.requireNonNull(processId);
+        return String.format(AbstractDataEvent.SOURCE_FORMAT,processId.toLowerCase());
     }
 
     public static String toType(final String channelName, final ProcessInstance process) {

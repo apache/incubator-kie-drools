@@ -128,6 +128,7 @@
     <version.org.junit.jupiter>${version.org.junit}</version.org.junit.jupiter>
     <version.org.junit.vintage>${version.org.junit}</version.org.junit.vintage>
     <version.org.junit.platform>1.${version.org.junit.minor}</version.org.junit.platform> <!-- otherwise Quarkus brings its own, silently disabling some tests -->
+    <version.org.junit.pioneer>1.0.0</version.org.junit.pioneer>
     <version.org.keycloak>11.0.1</version.org.keycloak>
     <version.org.mockito>3.5.13</version.org.mockito>
     <version.org.mvel>2.4.10.Final</version.org.mvel>

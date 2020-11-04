@@ -21,19 +21,23 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.kie.kogito</groupId>
-    <artifactId>addons</artifactId>
+    <artifactId>cloudevents</artifactId>
     <version>1.0.0-SNAPSHOT</version>
   </parent>
-  <artifactId>cloudevents</artifactId>
-  <packaging>pom</packaging>
-  <name>Kogito :: Add-Ons :: Cloud Events</name>
 
-  <description>Kogito Cloud Events</description>
+  <artifactId>kogito-cloudevents-common-addon</artifactId>
+  <name>Kogito :: Add-Ons :: CloudEvents :: Common</name>
+  <description>CloudEvents AddOn Common Interfaces</description>
 
-  <modules>
-    <module>cloudevents-quarkus-addon</module>
-    <module>cloudevents-spring-boot-addon</module>
-    <module>cloudevents-common-addon</module>
-  </modules>
+  <dependencies>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-services</artifactId>
+    </dependency>
+  </dependencies>
 
 </project>

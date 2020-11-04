@@ -44,5 +44,8 @@ public class AddonsConfigTest {
 
         assertThat(addonsConfig.useKnativeEventing()).isFalse();
         assertThat(addonsConfig.withKnativeEventing(true).useKnativeEventing()).isTrue();
+
+        assertThat(addonsConfig.useCloudEvents()).isFalse();
+        assertThat(addonsConfig.withCloudEvents(true).useCloudEvents()).isTrue();
     }
 }

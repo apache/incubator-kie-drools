@@ -42,10 +42,11 @@ public abstract class AbstractDataEvent<T> implements DataEvent<T> {
     public static final String TYPE_FORMAT = TYPE_PREFIX + ".%s.%s";
     /**
      * String format for Kogito CloudEvents source fields.
-     * Since this is a required field, the constructor will fill them with default value, e.g.: /process/travelAgency/0982-1223-3121-1212
+     * Since this is a required field, the constructor will fill them with default value, e.g.: /process/travelagency
+     * See more about the source format: https://github.com/cloudevents/spec/blob/v1.0/spec.md#source-1
      */
-    public static final String SOURCE_FORMAT = "/process/%s/%s";
-    private static final String SPEC_VERSION = "1.0";
+    public static final String SOURCE_FORMAT = "/process/%s";
+    static final String SPEC_VERSION = "1.0";
     @JsonProperty("specversion")
     private String specVersion;
     private String id;
@@ -114,7 +115,7 @@ public abstract class AbstractDataEvent<T> implements DataEvent<T> {
             this.type = TYPE_PREFIX;
         }
         if (this.source == null || this.source.isEmpty()) {
-            this.source = String.format(SOURCE_FORMAT, kogitoProcessId, kogitoProcessinstanceId);
+            this.source = String.format(SOURCE_FORMAT, kogitoProcessId);
         }
     }
 

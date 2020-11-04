@@ -15,7 +15,29 @@
 
 package org.kie.kogito.event;
 
-public enum TopicType {
-    PRODUCED,
-    CONSUMED;
+/**
+ * Interface for Event metadata information
+ */
+public interface EventMeta {
+
+    /**
+     * Returns specification version of the cloud event
+     *
+     * @return specification version
+     */
+    String getSpecVersion();
+
+    /**
+     * Returns type of the event this instance represents e.g. ProcessInstanceEvent
+     *
+     * @return type of the event
+     */
+    String getType();
+
+    /**
+     * Returns source of the event that is in URI syntax
+     *
+     * @return uri source
+     */
+    String getSource();
 }

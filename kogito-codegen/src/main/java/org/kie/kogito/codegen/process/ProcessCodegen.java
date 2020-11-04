@@ -455,7 +455,8 @@ public class ProcessCodegen extends AbstractGenerator {
             storeFile(Type.REST, ceGenerator.generatedFilePath(), ceGenerator.generate());
         }
 
-        final TopicsInformationResourceGenerator topicsGenerator = new TopicsInformationResourceGenerator(processExecutableModelGenerators);
+        final TopicsInformationResourceGenerator topicsGenerator =
+                new TopicsInformationResourceGenerator(processExecutableModelGenerators, annotator, addonsConfig);
         storeFile(Type.REST, topicsGenerator.generatedFilePath(), topicsGenerator.generate());
 
         for (ProcessInstanceGenerator pi : pis) {

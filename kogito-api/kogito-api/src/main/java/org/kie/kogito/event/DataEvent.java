@@ -30,14 +30,7 @@ package org.kie.kogito.event;
  *
  * @param <T> type of the body of the event
  */
-public interface DataEvent<T> {
-
-    /**
-     * Returns specification version of the cloud event
-     *
-     * @return specification version
-     */
-    String getSpecVersion();
+public interface DataEvent<T> extends EventMeta {
 
     /**
      * Returns unique id of the event
@@ -45,20 +38,6 @@ public interface DataEvent<T> {
      * @return unique event id
      */
     String getId();
-
-    /**
-     * Returns type of the event this instance represents e.g. ProcessInstanceEvent
-     *
-     * @return type of the event
-     */
-    String getType();
-
-    /**
-     * Returns source of the event that is in URI syntax
-     *
-     * @return uri source
-     */
-    String getSource();
 
     /**
      * Returns returns time when the event was created

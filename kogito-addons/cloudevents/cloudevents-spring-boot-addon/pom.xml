@@ -31,7 +31,7 @@
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-api</artifactId>
+      <artifactId>kogito-cloudevents-common-addon</artifactId>
     </dependency>
     <dependency>
       <groupId>org.springframework.kafka</groupId>
@@ -53,10 +53,6 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-services</artifactId>
     </dependency>
   </dependencies>
 </project>

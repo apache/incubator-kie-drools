@@ -15,6 +15,9 @@
 
 package org.kie.kogito.event;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -23,13 +26,15 @@ import java.util.Objects;
 public class Topic {
 
     private String name;
-    private TopicType type;
+    private ChannelType type;
+    private List<CloudEventMeta> eventsMeta;
 
     public Topic() {
-
+        this.eventsMeta = new ArrayList<>();
     }
 
-    public Topic(final String name, final TopicType type) {
+    public Topic(final String name, final ChannelType type) {
+        this();
         this.name = name;
         this.type = type;
     }
@@ -42,12 +47,25 @@ public class Topic {
         this.name = name;
     }
 
-    public TopicType getType() {
+    public ChannelType getType() {
         return type;
     }
 
-    public void setType(TopicType type) {
+    public void setType(ChannelType type) {
         this.type = type;
+    }
+
+    /**
+     * A collection of meta information about events that can be consumed or published by this topic
+     *
+     * @return a list of events
+     */
+    public List<CloudEventMeta> getEventsMeta() {
+        return Collections.unmodifiableList(this.eventsMeta);
+    }
+
+    public void setEventsMeta(List<CloudEventMeta> eventsMeta) {
+        this.eventsMeta = new ArrayList<>(eventsMeta);
     }
 
     @Override
@@ -55,6 +73,7 @@ public class Topic {
         return "Topic{" +
                 "name='" + name + '\'' +
                 ", type=" + type +
+                ", events=" + eventsMeta +
                 '}';
     }
 
@@ -67,12 +86,13 @@ public class Topic {
             return false;
         }
         Topic topic = (Topic) o;
-        return name.equals(topic.name) &&
-                type == topic.type;
+        return Objects.equals(name, topic.name) &&
+                type == topic.type &&
+                Objects.equals(eventsMeta, topic.eventsMeta);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, type);
+        return Objects.hash(name, type, eventsMeta);
     }
 }

@@ -40,16 +40,10 @@
     </dependencies>
   </dependencyManagement>
 
-
-
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-services</artifactId>
+      <artifactId>kogito-cloudevents-common-addon</artifactId>
     </dependency>
     <dependency>
       <groupId>javax.inject</groupId>
@@ -76,6 +70,23 @@
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-core</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-junit5</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit-pioneer</groupId>
+      <artifactId>junit-pioneer</artifactId>
+      <version>${version.org.junit.pioneer}</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 

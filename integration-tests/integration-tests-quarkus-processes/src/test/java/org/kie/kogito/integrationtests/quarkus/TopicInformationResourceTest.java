@@ -21,23 +21,24 @@ import java.util.List;
 
 import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.event.ChannelType;
 import org.kie.kogito.event.Topic;
-import org.kie.kogito.event.TopicType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.notNullValue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @QuarkusTest
 public class TopicInformationResourceTest {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(TopicInformationResourceTest.class);
+
     @Test
     void verifyTopicsInformation() {
         final List<Topic> topics = Arrays.asList(given().get("/messaging/topics").as(Topic[].class));
-        assertThat(topics, notNullValue());
-        assertThat(topics, hasItem(new Topic("pong_send_start", TopicType.PRODUCED)));
-        assertThat(topics, hasItem(new Topic("pong_receive_end", TopicType.CONSUMED)));
+        LOGGER.info("Topics registered in the service are {}", topics);
+        assertThat(topics).isNotEmpty();
+        assertThat(topics.stream().anyMatch(t -> t.getType() == ChannelType.INCOMING && t.getName().equals("pingpong"))).isTrue();
     }
-
 }
