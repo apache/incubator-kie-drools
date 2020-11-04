@@ -84,6 +84,7 @@ implements RuleSheetListener {
     public static final String            VARIABLES_TAG          = "Variables";
     public static final String            RULE_TABLE_TAG         = "ruletable";
     public static final String            RULESET_TAG            = "RuleSet";
+    public static final String            DIALECT_TAG            = "Dialect";
     private static final int              ACTION_ROW             = 1;
     private static final int              OBJECT_TYPE_ROW        = 2;
     private static final int              CODE_ROW               = 3;
@@ -174,6 +175,11 @@ implements RuleSheetListener {
         List<String> units = getProperties().getProperty( UNIT_TAG );
         if (units != null && !units.isEmpty()) {
             ruleset.setRuleUnit( units.get( 0 ) );
+        }
+
+        List<String> dialects = getProperties().getProperty( DIALECT_TAG );
+        if (dialects != null && !dialects.isEmpty()) {
+            ruleset.setDialect( dialects.get( 0 ) );
         }
 
         final List<Import> importList = RuleSheetParserUtil.getImportList( getProperties().getProperty( IMPORT_TAG ) );
