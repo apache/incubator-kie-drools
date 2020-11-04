@@ -2554,11 +2554,15 @@ public class AccumulateTest extends BaseModelTest {
         }
     }
 
+    public static Duration between(OffsetDateTime start, OffsetDateTime end) {
+        return Duration.between(start, end);
+    }
+
     @Test
     public void testAccumulateNumberFromSum() {
         String str =
                 "import " + Shift.class.getCanonicalName() + ";"
-                        + "import " + Duration.class.getCanonicalName() + ";"
+                        + "import " + AccumulateTest.class.getCanonicalName() + ";"
                         + "import " + Result.class.getCanonicalName() + ";"
                         + "rule \"dailyMinutes\"\n"
                         + "    when\n"
@@ -2568,12 +2572,14 @@ public class AccumulateTest extends BaseModelTest {
                         + "                $shiftEnd : endDateTime\n"
                         + "            ),\n"
                         + "            $shiftCount : count($other),\n"
-                        + "            $totalMinutes : sum(Duration.between($shiftStart, $shiftEnd).toMinutes())\n"
+                        + "            $totalMinutes : sum(AccumulateTest.between($shiftStart, $shiftEnd).toMinutes())\n"
                         + "        )\n"
                         + "        Number(this > 0) from $totalMinutes\n"
                         + "    then\n"
                         + "        insert(new Result($totalMinutes));\n"
                         + "end";
+
+
 
         KieSession ksession = getKieSession( str );
 
