@@ -53,6 +53,6 @@ public class LambdaReadAccessor extends BaseObjectClassFieldReader implements In
 
     @Override
     public int hashCode() {
-        return Objects.hash( super.hashCode(), lambda );
+        return Objects.hash(super.hashCode(), System.identityHashCode(lambda));
     }
 }
