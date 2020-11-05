@@ -30,7 +30,9 @@ public abstract class IntrospectableLambda implements Supplier<Object> {
 
     @Override
     public String toString() {
-        if(lambdaFingerprint == null) {
+        if(this.getLambda() instanceof HashedExpression) {
+            lambdaFingerprint = ((HashedExpression) this.getLambda()).getExpressionHash();
+        } else if(lambdaFingerprint == null) {
             lambdaFingerprint = LambdaPrinter.print(getLambda());
         }
         return lambdaFingerprint;

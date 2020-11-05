@@ -38,10 +38,14 @@ import com.github.javaparser.ast.expr.Name;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithMembers;
+import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.type.UnknownType;
+import org.drools.model.functions.HashedExpression;
 
+import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static com.github.javaparser.StaticJavaParser.parseType;
 import static org.drools.core.util.StringUtils.md5Hash;
 import static org.drools.modelcompiler.util.lambdareplace.ExecModelLambdaPostProcessor.MATERIALIZED_LAMBDA_PRETTY_PRINTER;
@@ -137,23 +141,41 @@ abstract class MaterializedLambda {
     protected EnumDeclaration create(CompilationUnit compilationUnit) {
         EnumDeclaration lambdaClass = compilationUnit.addEnum(temporaryClassHash);
         lambdaClass.addAnnotation(org.drools.compiler.kie.builder.MaterializedLambda.class.getCanonicalName());
-        lambdaClass.setImplementedTypes(createImplementedType());
+        lambdaClass.setImplementedTypes(createImplementedTypes());
         lambdaClass.addEntry(new EnumConstantDeclaration("INSTANCE"));
 
         String expressionHash = md5Hash(MATERIALIZED_LAMBDA_PRETTY_PRINTER.print(lambdaExpr));
-        lambdaClass.addFieldWithInitializer(String.class, "EXPRESSION_HASH", new StringLiteralExpr(expressionHash),
-                                            Modifier.Keyword.PUBLIC, Modifier.Keyword.STATIC, Modifier.Keyword.FINAL);
+        String expressionHashFieldName = "EXPRESSION_HASH";
+        lambdaClass.addFieldWithInitializer(String.class, expressionHashFieldName, new StringLiteralExpr(expressionHash),
+                                                                                   Modifier.Keyword.PUBLIC, Modifier.Keyword.STATIC, Modifier.Keyword.FINAL);
+
+        createGetterForExpressionHashField(lambdaClass, expressionHashFieldName);
+
         return lambdaClass;
     }
 
-    protected NodeList<ClassOrInterfaceType> createImplementedType() {
+    private void createGetterForExpressionHashField(EnumDeclaration clazz, String expressionHashFieldName) {
+        final MethodDeclaration getter;
+        getter = clazz.addMethod("getExpressionHash", Modifier.Keyword.PUBLIC);
+        getter.setType(parseClassOrInterfaceType(String.class.getCanonicalName()));
+        BlockStmt blockStmt = new BlockStmt();
+        getter.setBody(blockStmt);
+        blockStmt.addStatement(new ReturnStmt(new NameExpr(expressionHashFieldName)));
+    }
+
+    protected NodeList<ClassOrInterfaceType> createImplementedTypes() {
         ClassOrInterfaceType functionType = functionType();
 
         List<Type> typeArguments = lambdaParametersToType();
         if (!typeArguments.isEmpty()) {
             functionType.setTypeArguments(NodeList.nodeList(typeArguments));
         }
-        return NodeList.nodeList(functionType);
+
+        return NodeList.nodeList(functionType, lambdaExtractorType());
+    }
+
+    protected ClassOrInterfaceType lambdaExtractorType() {
+        return parseClassOrInterfaceType(HashedExpression.class.getCanonicalName());
     }
 
     List<Type> lambdaParametersToType() {
