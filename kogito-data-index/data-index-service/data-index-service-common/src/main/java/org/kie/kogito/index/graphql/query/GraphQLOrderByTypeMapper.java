@@ -50,7 +50,7 @@ public class GraphQLOrderByTypeMapper extends AbstractInputObjectTypeMapper {
     protected Consumer<GraphQLInputObjectType.Builder> build(GraphQLObjectType domain) {
         return builder ->
                 domain.getFieldDefinitions().forEach(field -> {
-                    LOGGER.debug("GraphQL mapping field: {}", field);
+                    LOGGER.debug("GraphQL mapping field: {}", field.getName());
                     switch (field.getName()) {
                         //Skip id, multi instances not sortable
                         case PROCESS_INSTANCES_DOMAIN_ATTRIBUTE:

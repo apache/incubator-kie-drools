@@ -66,7 +66,7 @@ public class GraphQLInputObjectTypeMapper extends AbstractInputObjectTypeMapper 
             }
 
             domain.getFieldDefinitions().forEach(field -> {
-                LOGGER.debug("GraphQL mapping field: {}", field);
+                LOGGER.debug("GraphQL mapping field: {}", field.getName());
                 if (KOGITO_DOMAIN_ATTRIBUTE.equals(field.getName())) {
                     builder.field(newInputObjectField().name(KOGITO_DOMAIN_ATTRIBUTE).type(new GraphQLTypeReference("KogitoMetadataArgument"))).build();
                 } else if ("id".equals(field.getName())) {

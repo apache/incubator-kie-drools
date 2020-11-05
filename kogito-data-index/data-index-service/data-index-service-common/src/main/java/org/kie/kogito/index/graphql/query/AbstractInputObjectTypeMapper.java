@@ -41,7 +41,7 @@ public abstract class AbstractInputObjectTypeMapper implements Function<GraphQLO
 
     @Override
     public GraphQLInputObjectType apply(GraphQLObjectType domain) {
-        LOGGER.debug("GraphQL mapping order by for: {}", domain);
+        LOGGER.debug("GraphQL mapping order by for: {}", domain.getName());
         String typeName = getTypeName(domain);
         final GraphQLInputObjectType existingType = getInputObjectType(typeName);
         if (existingType == null) {

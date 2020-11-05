@@ -72,9 +72,9 @@ public class GraphQLProtoSchemaMapper {
             additionalTypes.put(whereArgumentType.getName(), whereArgumentType);
             GraphQLInputObjectType orderByType = new GraphQLOrderByTypeMapper(schema, additionalTypes).apply(rootType);
             additionalTypes.put(orderByType.getName(), orderByType);
+            LOGGER.debug("New GraphQL types: {}", additionalTypes.keySet());
             Set<GraphQLType> newTypes = additionalTypes.entrySet().stream().map(entry -> entry.getValue()).collect(toSet());
             newTypes.addAll(schema.getAdditionalTypes().stream().filter(type -> additionalTypes.containsKey(((GraphQLNamedType)type).getName()) == false).collect(toSet()));
-            LOGGER.debug("New GraphQL types: {}", newTypes);
             builder.additionalTypes(newTypes);
 
             GraphQLObjectType query = schema.getQueryType();

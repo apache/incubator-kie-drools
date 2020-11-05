@@ -72,7 +72,7 @@ public class GraphQLObjectTypeMapper implements Function<DomainDescriptor, Graph
     private Consumer<GraphQLObjectType.Builder> build(DomainDescriptor domain) {
         return builder ->
                 domain.getAttributes().forEach(field -> {
-                    LOGGER.debug("GraphQL mapping field: {}", field);
+                    LOGGER.debug("GraphQL mapping field: {}", field.getName());
                     if (KogitoMetadata.class.getName().equals(field.getTypeName())) {
                         builder.field(newFieldDefinition().name(KOGITO_DOMAIN_ATTRIBUTE).type(schema.getObjectType("KogitoMetadata"))).build();
                     } else {
