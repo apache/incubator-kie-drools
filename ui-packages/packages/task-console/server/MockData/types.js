@@ -301,6 +301,7 @@ module.exports = typeDefs = gql`
   input UserTaskInstanceArgument {
     and: [UserTaskInstanceArgument!]
     or: [UserTaskInstanceArgument!]
+    not: UserTaskInstanceArgument
     state: StringArgument
     id: IdArgument
     description: StringArgument

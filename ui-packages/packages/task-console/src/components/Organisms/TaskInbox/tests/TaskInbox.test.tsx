@@ -94,6 +94,7 @@ describe('TaskInbox tests', () => {
                     {
                       and: [
                         { actualOwner: { isNull: true } },
+                        { not: { excludedUsers: { contains: 'test' } } },
                         {
                           or: [
                             { potentialUsers: { contains: 'test' } },
@@ -158,6 +159,7 @@ describe('TaskInbox tests', () => {
                     {
                       and: [
                         { actualOwner: { isNull: true } },
+                        { not: { excludedUsers: { contains: 'test' } } },
                         {
                           or: [
                             { potentialUsers: { contains: 'test' } },
@@ -204,6 +206,7 @@ describe('TaskInbox tests', () => {
                     {
                       and: [
                         { actualOwner: { isNull: true } },
+                        { not: { excludedUsers: { contains: 'test' } } },
                         {
                           or: [
                             { potentialUsers: { contains: 'test' } },
@@ -286,6 +289,7 @@ describe('TaskInbox tests', () => {
                     {
                       and: [
                         { actualOwner: { isNull: true } },
+                        { not: { excludedUsers: { contains: 'test' } } },
                         {
                           or: [
                             { potentialUsers: { contains: 'test' } },
@@ -348,6 +352,7 @@ describe('TaskInbox tests', () => {
                     {
                       and: [
                         { actualOwner: { isNull: true } },
+                        { not: { excludedUsers: { contains: 'test' } } },
                         {
                           or: [
                             { potentialUsers: { contains: 'test' } },
@@ -394,6 +399,7 @@ describe('TaskInbox tests', () => {
                     {
                       and: [
                         { actualOwner: { isNull: true } },
+                        { not: { excludedUsers: { contains: 'test' } } },
                         {
                           or: [
                             { potentialUsers: { contains: 'test' } },

@@ -66,6 +66,7 @@ it('show no filters selected state and select reset', async () => {
                   {
                     and: [
                       { actualOwner: { isNull: true } },
+                      { not: { excludedUsers: { contains: 'test' } } },
                       {
                         or: [
                           { potentialUsers: { contains: 'test' } },
@@ -112,6 +113,7 @@ it('show no filters selected state and select reset', async () => {
                   {
                     and: [
                       { actualOwner: { isNull: true } },
+                      { not: { excludedUsers: { contains: 'test' } } },
                       {
                         or: [
                           { potentialUsers: { contains: 'test' } },
@@ -156,6 +158,7 @@ it('show no filters selected state and select reset', async () => {
               {
                 and: [
                   { actualOwner: { isNull: true } },
+                  { not: { excludedUsers: { contains: 'test' } } },
                   {
                     or: [
                       { potentialUsers: { contains: 'test' } },
@@ -190,11 +193,21 @@ it('show no filters selected state and select reset', async () => {
               {
                 or: [
                   { actualOwner: { equal: 'test' } },
-                  { potentialUsers: { contains: 'test' } },
                   {
-                    potentialGroups: {
-                      containsAny: ['group1', 'group2']
-                    }
+                    and: [
+                      { actualOwner: { isNull: true } },
+                      { not: { excludedUsers: { contains: 'test' } } },
+                      {
+                        or: [
+                          { potentialUsers: { contains: 'test' } },
+                          {
+                            potentialGroups: {
+                              containsAny: ['group1', 'group2']
+                            }
+                          }
+                        ]
+                      }
+                    ]
                   }
                 ]
               },

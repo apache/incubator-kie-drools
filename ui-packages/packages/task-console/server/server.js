@@ -85,11 +85,18 @@ const checkTaskAssignment = (userTaskInstance, assignments) => {
     return true;
   }
   if (userTaskInstance.actualOwner === null) {
-    const potentialUsersClause = assignments.or[1].and[1].or[0];
+
+    const excludedUsersClause = assignments.or[1].and[1].not;
+
+    if(userTaskInstance.excludedUsers && userTaskInstance.excludedUsers.includes(excludedUsersClause.excludedUsers.contains)) {
+      return false;
+    }
+
+    const potentialUsersClause = assignments.or[1].and[2].or[0];
     if (userTaskInstance.potentialUsers.includes(potentialUsersClause.potentialUsers.contains)) {
       return true;
     }
-    const potentialGroupsClause = assignments.or[1].and[1].or[1];
+    const potentialGroupsClause = assignments.or[1].and[2].or[1];
     if (potentialGroupsClause.potentialGroups.containsAny
             .some(clauseGroup => userTaskInstance.potentialGroups.includes(clauseGroup))) {
       return true;
