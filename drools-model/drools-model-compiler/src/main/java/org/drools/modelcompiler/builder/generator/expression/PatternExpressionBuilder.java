@@ -139,6 +139,7 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
 
     @Override
     public MethodCallExpr buildBinding(SingleDrlxParseSuccess drlxParseResult) {
+        sortUsedDeclarations(drlxParseResult);
         MethodCallExpr bindDSL = new MethodCallExpr(null, BIND_CALL);
         String boundVar = drlxParseResult.hasUnificationVariable() ?
                 drlxParseResult.getUnificationVariable() :

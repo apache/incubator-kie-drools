@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.github.javaparser.ast.NodeList;
@@ -444,5 +445,15 @@ public abstract class AbstractExpressionBuilder {
                     .orElse("")
         ));
         return exprId;
+    }
+
+    protected void sortUsedDeclarations(SingleDrlxParseSuccess drlxParseResult) {
+        // Binding parameters have to be sorted as when they're sorted lexicographically when invoked
+        // See Accumulate.initInnerDeclarationCache()
+        List<String> sorted = drlxParseResult.getUsedDeclarationsOnLeft()
+                .stream()
+                .sorted()
+                .collect(Collectors.toList());
+        drlxParseResult.setUsedDeclarationsOnLeft(sorted);
     }
 }
