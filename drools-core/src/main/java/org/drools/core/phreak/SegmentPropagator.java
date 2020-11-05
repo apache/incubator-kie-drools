@@ -115,11 +115,7 @@ public class SegmentPropagator {
             AccumulateMemory am = ((AccumulateMemory)wm.getNodeMemory(accNode));
             BetaMemory bm = am.getBetaMemory();
             TupleMemory ltm = bm.getLeftTupleMemory();
-            if (ltm.contains(peer)) {
-                return false;
-            } else {
-                return true;
-            }
+            return !ltm.contains(peer);
         }
         return false;
     }

@@ -2550,7 +2550,7 @@ public class AccumulateTest extends BaseModelTest {
         }
     }
 
-    private static void switchMachinesInAssignments(KieSession session, MrProcessAssignment left,
+    private static int switchMachinesInAssignments(KieSession session, MrProcessAssignment left,
             MrProcessAssignment right) {
         FactHandle leftHandle = session.getFactHandle(left);
         FactHandle rightHandle = session.getFactHandle(right);
@@ -2559,11 +2559,11 @@ public class AccumulateTest extends BaseModelTest {
         right.setMachine(original);
         session.update(leftHandle, left);
         session.update(rightHandle, right);
-        session.fireAllRules();
+        return session.fireAllRules();
     }
 
     @Test
-    public void test() {
+    public void testDoubleAccumulateNPE() {
         // Prepare reproducing data.
         MrMachine machine2 = new MrMachine();
         MrMachine machine3 = new MrMachine();
@@ -2573,20 +2573,20 @@ public class AccumulateTest extends BaseModelTest {
         MrProcessAssignment assignment4 = new MrProcessAssignment(new MrProcess(), machine3, machine3);
 
         String rule = "import " + MrProcessAssignment.class.getCanonicalName() + ";\n" +
-                "import " + List.class.getCanonicalName() + ";\n" +
-                "rule R1\n" +
-                "when\n" +
-                "   $assignments: List(size > 0) from accumulate(\n" +
-                "        $a: MrProcessAssignment(machine != null, this.isMoved() == true),\n" +
-                "        collectList($a)\n" +
-                "   )\n" +
-                "    accumulate(\n" +
-                "        $a2: MrProcessAssignment() from $assignments,\n" +
-                "        $count: count($a2)\n" +
-                "    )\n" +
-                "then\n" +
-                "    System.out.println($count);\n" +
-                "end;";
+                      "import " + List.class.getCanonicalName() + ";\n" +
+                      "rule R1\n" +
+                      "when\n" +
+                      "   $assignments: List(size > 0) from accumulate(\n" +
+                      "        $a: MrProcessAssignment(machine != null, this.isMoved() == true),\n" +
+                      "        collectList($a)\n" +
+                      "   )\n" +
+                      "    accumulate(\n" +
+                      "        $a2: MrProcessAssignment() from $assignments,\n" +
+                      "        $count: count($a2)\n" +
+                      "    )\n" +
+                      "then\n" +
+                      "    System.out.println($count);\n" +
+                      "end;";
         KieSession kieSession = getKieSession(rule);
 
         // Insert facts into the session.
@@ -2594,12 +2594,18 @@ public class AccumulateTest extends BaseModelTest {
         kieSession.insert(assignment2);
         kieSession.insert(assignment3);
         kieSession.insert(assignment4);
-        kieSession.fireAllRules();
+        int fired = kieSession.fireAllRules();
+        assertEquals(0, fired);
 
         // Execute the sequence of session events that triggers the exception.
-        switchMachinesInAssignments(kieSession, assignment1, assignment2);
-        switchMachinesInAssignments(kieSession, assignment1, assignment2);
-        switchMachinesInAssignments(kieSession, assignment4, assignment3);
+        fired = switchMachinesInAssignments(kieSession, assignment1, assignment2);
+        assertEquals(1, fired);
+
+        fired = switchMachinesInAssignments(kieSession, assignment1, assignment2);
+        assertEquals(0, fired);
+
+        fired = switchMachinesInAssignments(kieSession, assignment4, assignment3);
+        assertEquals(1, fired);
 
         kieSession.dispose();
     }
