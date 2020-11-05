@@ -180,6 +180,7 @@ public class ConstraintParser {
                 combo = new BinaryExpr(e, combo, BinaryExpr.Operator.AND );
             }
             return new SingleDrlxParseSuccess(patternType, bindingId, combo, left.getType())
+                    .setReactOnProperties( expressionTyperContext.getReactOnProperties() )
                     .setUsedDeclarations( expressionTyperContext.getUsedDeclarations() );
         } else {
             final ExpressionTyperContext expressionTyperContext = new ExpressionTyperContext();
