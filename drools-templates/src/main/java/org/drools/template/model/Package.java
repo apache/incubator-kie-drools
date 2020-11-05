@@ -44,6 +44,8 @@ public class Package extends AttributedDRLElement
 
     private String ruleUnit;
 
+    private String dialect;
+
     public Package(final String name) {
         this.name = name;
         this.imports = new LinkedList<Import>();
@@ -98,12 +100,19 @@ public class Package extends AttributedDRLElement
         this.ruleUnit = ruleUnit;
     }
 
+    public void setDialect( String dialect ) {
+        this.dialect = dialect;
+    }
+
     public void renderDRL( final DRLOutput out) {
         if ( name != null) {
             out.writeLine("package " + name.replace(' ', '_') + ";");
         }
         if ( ruleUnit != null) {
             out.writeLine("unit " + ruleUnit + ";");
+        }
+        if ( dialect != null) {
+            out.writeLine("dialect \"" + dialect + "\"");
         }
         out.writeLine("//generated from Decision Table");
 

@@ -46,6 +46,10 @@ public interface CoreComponentsBuilder {
         return Holder.cBuilder != null;
     }
 
+    static boolean isNativeImage() {
+        return IS_NATIVE_IMAGE;
+    }
+
     InternalReadAccessor getReadAcessor( String className, String expr, boolean typesafe, Class<?> returnType );
 
     Object evaluateMvelExpression( DialectRuntimeData data, ClassLoader classLoader, String expr );

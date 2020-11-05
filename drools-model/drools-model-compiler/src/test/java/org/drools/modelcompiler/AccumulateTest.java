@@ -2547,5 +2547,50 @@ public class AccumulateTest extends BaseModelTest {
         public void setEmployee(String employee) {
             this.employee = employee;
         }
+
+        public OffsetDateTime getEndDateTime() {
+            // Pretend a shift length is always 8 hours.
+            return startDateTime.plus(8, ChronoUnit.HOURS);
+        }
+    }
+
+    public static Duration between(OffsetDateTime start, OffsetDateTime end) {
+        return Duration.between(start, end);
+    }
+
+    @Test
+    public void testAccumulateNumberFromSum() {
+        String str =
+                "import " + Shift.class.getCanonicalName() + ";"
+                        + "import " + AccumulateTest.class.getCanonicalName() + ";"
+                        + "import " + Result.class.getCanonicalName() + ";"
+                        + "rule \"dailyMinutes\"\n"
+                        + "    when\n"
+                        + "        accumulate(\n"
+                        + "            $other : Shift(\n"
+                        + "                $shiftStart : startDateTime,\n"
+                        + "                $shiftEnd : endDateTime\n"
+                        + "            ),\n"
+                        + "            $shiftCount : count($other),\n"
+                        + "            $totalMinutes : sum(AccumulateTest.between($shiftStart, $shiftEnd).toMinutes())\n"
+                        + "        )\n"
+                        + "        Number(this > 0) from $totalMinutes\n"
+                        + "    then\n"
+                        + "        insert(new Result($totalMinutes));\n"
+                        + "end";
+
+
+
+        KieSession ksession = getKieSession( str );
+
+        Shift shift = new Shift(OffsetDateTime.now());
+
+        ksession.insert(shift);
+
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        assertEquals(1, results.size());
+        assertEquals(8 * 60L, results.iterator().next().getValue());
     }
 }
