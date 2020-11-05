@@ -34,6 +34,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.IntStream;
@@ -2593,4 +2594,114 @@ public class AccumulateTest extends BaseModelTest {
         assertEquals(1, results.size());
         assertEquals(8 * 60L, results.iterator().next().getValue());
     }
+
+    private static int switchMachinesInAssignments(KieSession session, MrProcessAssignment left,
+                                                   MrProcessAssignment right) {
+        FactHandle leftHandle = session.getFactHandle(left);
+        FactHandle rightHandle = session.getFactHandle(right);
+        MrMachine original = left.getMachine();
+        left.setMachine(right.getMachine());
+        right.setMachine(original);
+        session.update(leftHandle, left);
+        session.update(rightHandle, right);
+        return session.fireAllRules();
+    }
+
+    @Test
+    public void testDoubleAccumulateNPE() {
+        // Prepare reproducing data.
+        MrMachine machine2 = new MrMachine();
+        MrMachine machine3 = new MrMachine();
+        MrProcessAssignment assignment1 = new MrProcessAssignment(new MrProcess(), machine3, machine3);
+        MrProcessAssignment assignment2 = new MrProcessAssignment(new MrProcess(), machine2, machine2);
+        MrProcessAssignment assignment3 = new MrProcessAssignment(new MrProcess(), machine2, machine2);
+        MrProcessAssignment assignment4 = new MrProcessAssignment(new MrProcess(), machine3, machine3);
+
+        String rule = "import " + MrProcessAssignment.class.getCanonicalName() + ";\n" +
+                "import " + List.class.getCanonicalName() + ";\n" +
+                "rule R1\n" +
+                "when\n" +
+                "   $assignments: List(size > 0) from accumulate(\n" +
+                "        $a: MrProcessAssignment(machine != null, this.isMoved() == true),\n" +
+                "        collectList($a)\n" +
+                "   )\n" +
+                "    accumulate(\n" +
+                "        $a2: MrProcessAssignment() from $assignments,\n" +
+                "        $count: count($a2)\n" +
+                "    )\n" +
+                "then\n" +
+                "    System.out.println($count);\n" +
+                "end;";
+        KieSession kieSession = getKieSession(rule);
+
+        // Insert facts into the session.
+        kieSession.insert(assignment1);
+        kieSession.insert(assignment2);
+        kieSession.insert(assignment3);
+        kieSession.insert(assignment4);
+        int fired = kieSession.fireAllRules();
+        assertEquals(0, fired);
+
+        // Execute the sequence of session events that triggers the exception.
+        fired = switchMachinesInAssignments(kieSession, assignment1, assignment2);
+        assertEquals(1, fired);
+
+        fired = switchMachinesInAssignments(kieSession, assignment1, assignment2);
+        assertEquals(0, fired);
+
+        fired = switchMachinesInAssignments(kieSession, assignment4, assignment3);
+        assertEquals(1, fired);
+
+        kieSession.dispose();
+    }
+
+    public static class MrProcess {
+
+    }
+
+    public static class MrProcessAssignment {
+
+        private MrProcess process;
+        private MrMachine originalMachine;
+        private MrMachine machine;
+
+        public MrProcessAssignment(MrProcess process, MrMachine originalMachine, MrMachine machine) {
+            this.process = process;
+            this.originalMachine = originalMachine;
+            this.machine = machine;
+        }
+
+        public MrProcess getProcess() {
+            return process;
+        }
+
+        public MrMachine getOriginalMachine() {
+            return originalMachine;
+        }
+
+        public MrMachine getMachine() {
+            return machine;
+        }
+
+        public void setMachine(MrMachine machine) {
+            this.machine = machine;
+        }
+
+        // ************************************************************************
+        // Complex methods
+        // ************************************************************************
+
+        public boolean isMoved() {
+            if (machine == null) {
+                return false;
+            }
+            return !Objects.equals(originalMachine, machine);
+        }
+
+    }
+
+    public static class MrMachine {
+
+    }
+
 }
