@@ -26,7 +26,7 @@
       <bpmn2:incoming>_067B915E-E9C2-47DC-BE71-49F59822971A</bpmn2:incoming>
       <bpmn2:outgoing>_23FA1E11-6847-483D-895E-8CB947842231</bpmn2:outgoing>
       <bpmn2:script>System.out.println("message received: " + message);
-kcontext.setVariable("message", message + " world");</bpmn2:script>
+        kcontext.setVariable("message", message + " world");</bpmn2:script>
     </bpmn2:scriptTask>
     <bpmn2:endEvent id="_B0BFC968-31E3-4098-A16A-91E4AD630B9B">
       <bpmn2:incoming>_184FC675-3749-4587-B86A-5CE2EBF813D5</bpmn2:incoming>

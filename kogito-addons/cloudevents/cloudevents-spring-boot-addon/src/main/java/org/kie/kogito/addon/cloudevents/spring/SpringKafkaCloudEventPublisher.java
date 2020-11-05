@@ -30,13 +30,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.ConnectableFlux;
 import reactor.core.publisher.Flux;
 import reactor.kafka.receiver.KafkaReceiver;
 import reactor.kafka.receiver.ReceiverOffset;
 import reactor.kafka.receiver.ReceiverOptions;
-import reactor.kafka.receiver.ReceiverRecord;
 
 @Component
 public class SpringKafkaCloudEventPublisher {
@@ -64,16 +66,16 @@ public class SpringKafkaCloudEventPublisher {
     }
 
     @Bean
+    @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
     @Qualifier(KogitoEventStreams.PUBLISHER)
     public Flux<String> makeConsumer() {
         ReceiverOptions<Integer, String> options = receiverOptions.subscription(Collections.singleton(topic))
                 .addAssignListener(partitions -> log.debug("onPartitionsAssigned {}", partitions))
                 .addRevokeListener(partitions -> log.debug("onPartitionsRevoked {}", partitions));
-        Flux<ReceiverRecord<Integer, String>> kafkaFlux = KafkaReceiver.create(options).receive();
 
-        return kafkaFlux.map(record -> {
+        ConnectableFlux<String> broadcast = KafkaReceiver.create(options).receive().map(record -> {
             ReceiverOffset offset = record.receiverOffset();
-            log.debug("Received message: topic-partition={} offset={} timestamp={} key={} value={}\n",
+            log.info("Received message: topic-partition={} offset={} timestamp={} key={} value={}\n",
                       offset.topicPartition(),
                       offset.offset(),
                       dateFormat.format(new Date(record.timestamp())),
@@ -82,6 +84,8 @@ public class SpringKafkaCloudEventPublisher {
             offset.acknowledge();
 
             return record.value();
-        });
+        }).publish();
+
+        return broadcast.autoConnect();
     }
 }

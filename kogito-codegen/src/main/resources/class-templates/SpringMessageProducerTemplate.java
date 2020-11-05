@@ -18,11 +18,13 @@ public class MessageProducer extends AbstractMessageProducer<$DataType$, $DataEv
             ConfigBean configBean) {
         super(emitter,
               new DefaultEventMarshaller(),
+              "$Trigger$",
               configBean.useCloudEvents());
     }
 
-    protected $DataEventType$ dataEventTypeConstructor($DataType$ e, ProcessInstance pi) {
+    protected $DataEventType$ dataEventTypeConstructor($DataType$ e, ProcessInstance pi, String trigger) {
         return new $DataEventType$(
+                trigger,
                 "",
                 e,
                 pi.getId(),

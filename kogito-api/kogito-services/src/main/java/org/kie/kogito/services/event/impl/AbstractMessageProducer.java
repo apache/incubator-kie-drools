@@ -32,6 +32,7 @@ public abstract class AbstractMessageProducer<D, T extends AbstractProcessDataEv
 
     private Optional<Boolean> useCloudEvents;
     private EventMarshaller marshaller;
+    private String trigger;
     private CloudEventEmitter emitter;
 
     // in general we should favor the non-empty constructor
@@ -43,18 +44,22 @@ public abstract class AbstractMessageProducer<D, T extends AbstractProcessDataEv
     public AbstractMessageProducer(
             CloudEventEmitter emitter,
             EventMarshaller marshaller,
+            String trigger,
             Optional<Boolean> useCloudEvents) {
         this.emitter = emitter;
         this.marshaller = marshaller;
+        this.trigger = trigger;
         this.useCloudEvents = useCloudEvents;
     }
 
     protected void setParams(
             CloudEventEmitter emitter,
             EventMarshaller marshaller,
+            String trigger,
             Optional<Boolean> useCloudEvents) {
         this.emitter = emitter;
         this.marshaller = marshaller;
+        this.trigger = trigger;
         this.useCloudEvents = useCloudEvents;
     }
 
@@ -68,9 +73,9 @@ public abstract class AbstractMessageProducer<D, T extends AbstractProcessDataEv
 
     protected String marshall(ProcessInstance pi, D eventData) {
         return marshaller.marshall(eventData,
-                                   e -> dataEventTypeConstructor(e, pi),
+                                   e -> dataEventTypeConstructor(e, pi, trigger),
                                    useCloudEvents);
     }
 
-    protected abstract T dataEventTypeConstructor(D e, ProcessInstance pi);
+    protected abstract T dataEventTypeConstructor(D e, ProcessInstance pi, String trigger);
 }

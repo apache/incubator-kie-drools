@@ -17,33 +17,54 @@
 package org.kie.kogito.integrationtests.springboot;
 
 import java.time.Duration;
+import java.util.Map;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
-import org.junit.jupiter.api.extension.ExtendWith;
-import io.restassured.RestAssured;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.testcontainers.springboot.KafkaSpringBootTestResource;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.kie.kogito.event.KogitoEventStreams;
 import org.kie.kogito.testcontainers.springboot.InfinispanSpringBootTestResource;
+import org.kie.kogito.testcontainers.springboot.KafkaSpringBootTestResource;
+import org.reactivestreams.Publisher;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import reactor.core.publisher.Flux;
 
 import static io.restassured.RestAssured.given;
 import static org.awaitility.Awaitility.await;
 import static org.hamcrest.CoreMatchers.equalTo;
 
-import org.junit.jupiter.api.Disabled;
-
-@Disabled("Must implement cloud event producer/emitter for Spring " +
-          "https://issues.redhat.com/browse/KOGITO-3408 " +
-          "https://issues.redhat.com/browse/KOGITO-3591")
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = KogitoSpringbootApplication.class)
 @ContextConfiguration(initializers =  { KafkaSpringBootTestResource.class, InfinispanSpringBootTestResource.Conditional.class })
 public class PingPongMessageTest extends BaseRestTest {
 
+    @Autowired
+    @Qualifier(KogitoEventStreams.PUBLISHER)
+    Publisher<String> publisher;
+
     @Test
-    void testPingPongBetweenProcessInstances() {
+    void testPingPongBetweenProcessInstances() throws InterruptedException {
+        CountDownLatch latch = new CountDownLatch(1);
+        Flux.from(publisher)
+                .map(x -> {
+                    try {
+                        return (Map<String, String>) new ObjectMapper().readValue(x, Map.class);
+                    } catch (JsonProcessingException e) {
+                        throw new Error(e);
+                    }
+                })
+                .filter(m -> "hello world".equals(m.get("data")) &&
+                        m.getOrDefault("source", "").startsWith("/process/pong_message/"))
+                .subscribe(x -> latch.countDown());
+
         String pId = given().body("{ \"message\": \"hello\" }")
                 .contentType(ContentType.JSON)
                 .when()
@@ -76,9 +97,22 @@ public class PingPongMessageTest extends BaseRestTest {
                 .get("/ping_message/{pId}", pId)
                 .then()
                 .statusCode(404);
+
+        latch.await(5, TimeUnit.SECONDS);
+
     }
-    
+
+
     private void validateSubProcess(){
+        await().atMost(Duration.ofSeconds(5))
+                .untilAsserted(() -> given()
+                        .contentType(ContentType.JSON)
+                        .when()
+                        .get("/pong_message/")
+                        .then()
+                        .statusCode(200)
+                        .body("$.size", equalTo(1)));
+
         String pId = given()
                 .contentType(ContentType.JSON)
                 .when()
