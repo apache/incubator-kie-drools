@@ -5,6 +5,7 @@ import { MockedProvider } from '@apollo/react-testing';
 import { BrowserRouter } from 'react-router-dom';
 import { getWrapperAsync, GraphQL } from '@kogito-apps/common';
 import GetProcessInstanceByIdDocument = GraphQL.GetProcessInstanceByIdDocument;
+import GetJobsByProcessInstanceIdDocument = GraphQL.GetJobsByProcessInstanceIdDocument;
 import ProcessInstanceState = GraphQL.ProcessInstanceState;
 import MilestoneStatus = GraphQL.MilestoneStatus;
 import { Button } from '@patternfly/react-core';
@@ -24,6 +25,7 @@ jest.mock(
 jest.mock(
   '../../../Organisms/ProcessDetailsMilestones/ProcessDetailsMilestones'
 );
+jest.mock('../../../Organisms/ProcessDetailsJobsPanel/ProcessDetailsJobsPanel');
 jest.mock(
   '../../../Organisms/ProcessDetailsProcessVariables/ProcessDetailsProcessVariables'
 );
@@ -176,6 +178,59 @@ const mocks1 = [
         ]
       }
     }
+  },
+  {
+    request: {
+      query: GetJobsByProcessInstanceIdDocument,
+      variables: {
+        processInstanceId: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b'
+      },
+      fetchPolicy: 'network-only'
+    },
+    result: {
+      loading: false,
+      refetch: jest.fn(),
+      data: {
+        Jobs: [
+          {
+            id: '6e74a570-31c8-4020-bd70-19be2cb625f3_0',
+            processId: 'travels',
+            processInstanceId: '5c56eeff-4cbf-3313-a325-4c895e0afced',
+            rootProcessId: null,
+            status: 'EXECUTED',
+            priority: 0,
+            callbackEndpoint:
+              'http://localhost:8080/management/jobs/travels/instances/5c56eeff-4cbf-3313-a325-4c895e0afced/timers/6e74a570-31c8-4020-bd70-19be2cb625f3_0',
+            repeatInterval: null,
+            repeatLimit: null,
+            scheduledId: '0',
+            retries: 0,
+            lastUpdate: '2020-08-27T03:35:50.147Z',
+            expirationTime: null,
+            endpoint: 'http://localhost:4000',
+            nodeInstanceId: '69e0a0f5-2360-4174-a8f8-a892a31fc2f9'
+          },
+          {
+            id: '6e74a570-31c8-4020-bd70-19be2cb625f3_0',
+            processId: 'travels',
+            processInstanceId: '5c56eeff-4cbf-3313-a325-4c895e0afced',
+            rootProcessId: null,
+            status: 'SCHEDULED',
+            priority: 0,
+            callbackEndpoint:
+              'http://localhost:8080/management/jobs/travels/instances/5c56eeff-4cbf-3313-a325-4c895e0afced/timers/6e74a570-31c8-4020-bd70-19be2cb625f3_0',
+            repeatInterval: null,
+            repeatLimit: null,
+            scheduledId: '0',
+            retries: 0,
+            lastUpdate: '2020-08-27T03:35:50.147Z',
+            expirationTime: null,
+            endpoint: 'http://localhost:4000',
+            nodeInstanceId: '2f588da5-a323-4111-9017-3093ef9319d1'
+          }
+        ]
+      }
+    }
   }
 ];
 
@@ -248,6 +303,59 @@ const mocks2 = [
         ]
       }
     }
+  },
+  {
+    request: {
+      query: GetJobsByProcessInstanceIdDocument,
+      variables: {
+        processInstanceId: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b'
+      },
+      fetchPolicy: 'network-only'
+    },
+    result: {
+      loading: false,
+      refetch: jest.fn(),
+      data: {
+        Jobs: [
+          {
+            id: '6e74a570-31c8-4020-bd70-19be2cb625f3_0',
+            processId: 'travels',
+            processInstanceId: '5c56eeff-4cbf-3313-a325-4c895e0afced',
+            rootProcessId: null,
+            status: 'EXECUTED',
+            priority: 0,
+            callbackEndpoint:
+              'http://localhost:8080/management/jobs/travels/instances/5c56eeff-4cbf-3313-a325-4c895e0afced/timers/6e74a570-31c8-4020-bd70-19be2cb625f3_0',
+            repeatInterval: null,
+            repeatLimit: null,
+            scheduledId: '0',
+            retries: 0,
+            lastUpdate: '2020-08-27T03:35:50.147Z',
+            expirationTime: null,
+            endpoint: 'http://localhost:4000',
+            nodeInstanceId: '69e0a0f5-2360-4174-a8f8-a892a31fc2f9'
+          },
+          {
+            id: '6e74a570-31c8-4020-bd70-19be2cb625f3_0',
+            processId: 'travels',
+            processInstanceId: '5c56eeff-4cbf-3313-a325-4c895e0afced',
+            rootProcessId: null,
+            status: 'SCHEDULED',
+            priority: 0,
+            callbackEndpoint:
+              'http://localhost:8080/management/jobs/travels/instances/5c56eeff-4cbf-3313-a325-4c895e0afced/timers/6e74a570-31c8-4020-bd70-19be2cb625f3_0',
+            repeatInterval: null,
+            repeatLimit: null,
+            scheduledId: '0',
+            retries: 0,
+            lastUpdate: '2020-08-27T03:35:50.147Z',
+            expirationTime: null,
+            endpoint: 'http://localhost:4000',
+            nodeInstanceId: '2f588da5-a323-4111-9017-3093ef9319d1'
+          }
+        ]
+      }
+    }
   }
 ];
 
@@ -316,6 +424,59 @@ const mocks3 = [
                 __typename: 'Milestones'
               }
             ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    request: {
+      query: GetJobsByProcessInstanceIdDocument,
+      variables: {
+        processInstanceId: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b'
+      },
+      fetchPolicy: 'network-only'
+    },
+    result: {
+      loading: false,
+      refetch: jest.fn(),
+      data: {
+        Jobs: [
+          {
+            id: '6e74a570-31c8-4020-bd70-19be2cb625f3_0',
+            processId: 'travels',
+            processInstanceId: '5c56eeff-4cbf-3313-a325-4c895e0afced',
+            rootProcessId: null,
+            status: 'EXECUTED',
+            priority: 0,
+            callbackEndpoint:
+              'http://localhost:8080/management/jobs/travels/instances/5c56eeff-4cbf-3313-a325-4c895e0afced/timers/6e74a570-31c8-4020-bd70-19be2cb625f3_0',
+            repeatInterval: null,
+            repeatLimit: null,
+            scheduledId: '0',
+            retries: 0,
+            lastUpdate: '2020-08-27T03:35:50.147Z',
+            expirationTime: null,
+            endpoint: 'http://localhost:4000',
+            nodeInstanceId: '69e0a0f5-2360-4174-a8f8-a892a31fc2f9'
+          },
+          {
+            id: '6e74a570-31c8-4020-bd70-19be2cb625f3_0',
+            processId: 'travels',
+            processInstanceId: '5c56eeff-4cbf-3313-a325-4c895e0afced',
+            rootProcessId: null,
+            status: 'SCHEDULED',
+            priority: 0,
+            callbackEndpoint:
+              'http://localhost:8080/management/jobs/travels/instances/5c56eeff-4cbf-3313-a325-4c895e0afced/timers/6e74a570-31c8-4020-bd70-19be2cb625f3_0',
+            repeatInterval: null,
+            repeatLimit: null,
+            scheduledId: '0',
+            retries: 0,
+            lastUpdate: '2020-08-27T03:35:50.147Z',
+            expirationTime: null,
+            endpoint: 'http://localhost:4000',
+            nodeInstanceId: '2f588da5-a323-4111-9017-3093ef9319d1'
           }
         ]
       }

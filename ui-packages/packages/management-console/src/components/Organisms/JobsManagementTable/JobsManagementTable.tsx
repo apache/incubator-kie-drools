@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Table, TableBody, TableHeader, IRow } from '@patternfly/react-table';
 import { OUIAProps, componentOuiaProps, GraphQL } from '@kogito-apps/common';
 import { Tooltip } from '@patternfly/react-core';
-import { JobsIconCreator, jobCancel, setTitle } from '../../../utils/Utils';
+import { JobsIconCreator, jobCancel } from '../../../utils/Utils';
 import Moment from 'react-moment';
 import { HistoryIcon } from '@patternfly/react-icons';
 import { refetchContext } from '../../contexts';
@@ -60,20 +60,7 @@ const JobsManagementTable: React.FC<IOwnProps & OUIAProps> = ({
 
   const handleCancelAction = (id): void => {
     const job = data.Jobs.find(job => job.id === id);
-    jobCancel(
-      job,
-      () => {
-        setModalTitle(setTitle('success', 'Job cancel'));
-        setModalContent(`The job: ${job.id} is canceled successfully`);
-      },
-      errorMessage => {
-        setModalTitle(setTitle('failure', 'Job cancel'));
-        setModalContent(
-          `The job: ${job.id} failed to cancel. Error message: ${errorMessage}`
-        );
-      },
-      refetch
-    );
+    jobCancel(job, setModalTitle, setModalContent, refetch);
     handleCancelModalToggle();
   };
 

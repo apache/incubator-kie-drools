@@ -579,6 +579,7 @@ module.exports = typeDefs = gql`
     scheduledId: IdArgument
     lastUpdate: DateArgument
     endpoint: StringArgument
+    nodeInstanceId: StringArgument
 }
 
 input JobOrderBy {
@@ -614,6 +615,7 @@ type Job {
   lastUpdate: DateTime
   executionCounter: Int
   endpoint: String
+  nodeInstanceId: String
 }
 
 enum JobStatus {

@@ -218,7 +218,7 @@ exports[`Process Details Page component tests snapshot testing in Active state 1
                   <nav
                     aria-label="Breadcrumb"
                     className="pf-c-breadcrumb"
-                    data-ouia-component-id={9}
+                    data-ouia-component-id={13}
                     data-ouia-component-type="PF4/Breadcrumb"
                     data-ouia-safe={true}
                   >
@@ -523,7 +523,7 @@ exports[`Process Details Page component tests snapshot testing in Active state 1
                                         aria-disabled={false}
                                         aria-label={null}
                                         className="pf-c-button pf-m-secondary kogito-management-console--details__buttonMargin"
-                                        data-ouia-component-id={10}
+                                        data-ouia-component-id={14}
                                         data-ouia-component-type="PF4/Button"
                                         data-ouia-safe={true}
                                         disabled={false}
@@ -543,7 +543,7 @@ exports[`Process Details Page component tests snapshot testing in Active state 1
                                         aria-disabled={false}
                                         aria-label={null}
                                         className="pf-c-button pf-m-secondary"
-                                        data-ouia-component-id={11}
+                                        data-ouia-component-id={15}
                                         data-ouia-component-type="PF4/Button"
                                         data-ouia-safe={true}
                                         disabled={false}
@@ -564,7 +564,7 @@ exports[`Process Details Page component tests snapshot testing in Active state 1
                                         aria-disabled={false}
                                         aria-label="Refresh list"
                                         className="pf-c-button pf-m-plain"
-                                        data-ouia-component-id={12}
+                                        data-ouia-component-id={16}
                                         data-ouia-component-type="PF4/Button"
                                         data-ouia-safe={true}
                                         disabled={false}
@@ -882,6 +882,50 @@ exports[`Process Details Page component tests snapshot testing in Active state 1
                           "variables": "{\\"flight\\":{\\"arrival\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"departure\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"flightNumber\\":\\"MX555\\"},\\"hotel\\":{\\"address\\":{\\"city\\":\\"Berlin\\",\\"country\\":\\"Germany\\",\\"street\\":\\"street\\",\\"zipCode\\":\\"12345\\"},\\"bookingNumber\\":\\"XX-012345\\",\\"name\\":\\"Perfect hotel\\",\\"phone\\":\\"09876543\\"},\\"trip\\":{\\"begin\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"city\\":\\"Berlin\\",\\"country\\":\\"Germany\\",\\"end\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"visaRequired\\":false},\\"traveller\\":{\\"address\\":{\\"city\\":\\"Karkow\\",\\"country\\":\\"Poland\\",\\"street\\":\\"palna\\",\\"zipCode\\":\\"200300\\"},\\"email\\":\\"rob@redhat.com\\",\\"firstName\\":\\"Rob\\",\\"lastName\\":\\"Rob\\",\\"nationality\\":\\"Polish\\"}}",
                         }
                       }
+                      jobsResponse={
+                        Object {
+                          "data": Object {
+                            "Jobs": Array [
+                              Object {
+                                "callbackEndpoint": "http://localhost:8080/management/jobs/travels/instances/5c56eeff-4cbf-3313-a325-4c895e0afced/timers/6e74a570-31c8-4020-bd70-19be2cb625f3_0",
+                                "endpoint": "http://localhost:4000",
+                                "expirationTime": null,
+                                "id": "6e74a570-31c8-4020-bd70-19be2cb625f3_0",
+                                "lastUpdate": "2020-08-27T03:35:50.147Z",
+                                "nodeInstanceId": "69e0a0f5-2360-4174-a8f8-a892a31fc2f9",
+                                "priority": 0,
+                                "processId": "travels",
+                                "processInstanceId": "5c56eeff-4cbf-3313-a325-4c895e0afced",
+                                "repeatInterval": null,
+                                "repeatLimit": null,
+                                "retries": 0,
+                                "rootProcessId": null,
+                                "scheduledId": "0",
+                                "status": "EXECUTED",
+                              },
+                              Object {
+                                "callbackEndpoint": "http://localhost:8080/management/jobs/travels/instances/5c56eeff-4cbf-3313-a325-4c895e0afced/timers/6e74a570-31c8-4020-bd70-19be2cb625f3_0",
+                                "endpoint": "http://localhost:4000",
+                                "expirationTime": null,
+                                "id": "6e74a570-31c8-4020-bd70-19be2cb625f3_0",
+                                "lastUpdate": "2020-08-27T03:35:50.147Z",
+                                "nodeInstanceId": "2f588da5-a323-4111-9017-3093ef9319d1",
+                                "priority": 0,
+                                "processId": "travels",
+                                "processInstanceId": "5c56eeff-4cbf-3313-a325-4c895e0afced",
+                                "repeatInterval": null,
+                                "repeatLimit": null,
+                                "retries": 0,
+                                "rootProcessId": null,
+                                "scheduledId": "0",
+                                "status": "SCHEDULED",
+                              },
+                            ],
+                          },
+                          "loading": false,
+                          "refetch": [Function],
+                        }
+                      }
                     />
                   </div>
                 </FlexItem>
@@ -890,7 +934,50 @@ exports[`Process Details Page component tests snapshot testing in Active state 1
                     className=""
                   >
                     <ProcessDetailsJobsPanel
-                      processInstanceId="8035b580-6ae4-4aa8-9ec0-e18e19809e0b"
+                      jobsResponse={
+                        Object {
+                          "data": Object {
+                            "Jobs": Array [
+                              Object {
+                                "callbackEndpoint": "http://localhost:8080/management/jobs/travels/instances/5c56eeff-4cbf-3313-a325-4c895e0afced/timers/6e74a570-31c8-4020-bd70-19be2cb625f3_0",
+                                "endpoint": "http://localhost:4000",
+                                "expirationTime": null,
+                                "id": "6e74a570-31c8-4020-bd70-19be2cb625f3_0",
+                                "lastUpdate": "2020-08-27T03:35:50.147Z",
+                                "nodeInstanceId": "69e0a0f5-2360-4174-a8f8-a892a31fc2f9",
+                                "priority": 0,
+                                "processId": "travels",
+                                "processInstanceId": "5c56eeff-4cbf-3313-a325-4c895e0afced",
+                                "repeatInterval": null,
+                                "repeatLimit": null,
+                                "retries": 0,
+                                "rootProcessId": null,
+                                "scheduledId": "0",
+                                "status": "EXECUTED",
+                              },
+                              Object {
+                                "callbackEndpoint": "http://localhost:8080/management/jobs/travels/instances/5c56eeff-4cbf-3313-a325-4c895e0afced/timers/6e74a570-31c8-4020-bd70-19be2cb625f3_0",
+                                "endpoint": "http://localhost:4000",
+                                "expirationTime": null,
+                                "id": "6e74a570-31c8-4020-bd70-19be2cb625f3_0",
+                                "lastUpdate": "2020-08-27T03:35:50.147Z",
+                                "nodeInstanceId": "2f588da5-a323-4111-9017-3093ef9319d1",
+                                "priority": 0,
+                                "processId": "travels",
+                                "processInstanceId": "5c56eeff-4cbf-3313-a325-4c895e0afced",
+                                "repeatInterval": null,
+                                "repeatLimit": null,
+                                "retries": 0,
+                                "rootProcessId": null,
+                                "scheduledId": "0",
+                                "status": "SCHEDULED",
+                              },
+                            ],
+                          },
+                          "loading": false,
+                          "refetch": [Function],
+                        }
+                      }
                     />
                   </div>
                 </FlexItem>
@@ -1302,7 +1389,7 @@ exports[`Process Details Page component tests snapshot testing in Error state 1`
                   <nav
                     aria-label="Breadcrumb"
                     className="pf-c-breadcrumb"
-                    data-ouia-component-id={78}
+                    data-ouia-component-id={93}
                     data-ouia-component-type="PF4/Breadcrumb"
                     data-ouia-safe={true}
                   >
@@ -1604,7 +1691,7 @@ exports[`Process Details Page component tests snapshot testing in Error state 1`
                                         aria-disabled={true}
                                         aria-label={null}
                                         className="pf-c-button pf-m-secondary pf-m-disabled"
-                                        data-ouia-component-id={79}
+                                        data-ouia-component-id={94}
                                         data-ouia-component-type="PF4/Button"
                                         data-ouia-safe={true}
                                         disabled={true}
@@ -1624,7 +1711,7 @@ exports[`Process Details Page component tests snapshot testing in Error state 1`
                                         aria-disabled={false}
                                         aria-label="Refresh list"
                                         className="pf-c-button pf-m-plain"
-                                        data-ouia-component-id={80}
+                                        data-ouia-component-id={95}
                                         data-ouia-component-type="PF4/Button"
                                         data-ouia-safe={true}
                                         disabled={false}
@@ -1938,6 +2025,50 @@ exports[`Process Details Page component tests snapshot testing in Error state 1`
                           "variables": "{\\"flight\\":{\\"arrival\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"departure\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"flightNumber\\":\\"MX555\\"},\\"hotel\\":{\\"address\\":{\\"city\\":\\"Berlin\\",\\"country\\":\\"Germany\\",\\"street\\":\\"street\\",\\"zipCode\\":\\"12345\\"},\\"bookingNumber\\":\\"XX-012345\\",\\"name\\":\\"Perfect hotel\\",\\"phone\\":\\"09876543\\"},\\"trip\\":{\\"begin\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"city\\":\\"Berlin\\",\\"country\\":\\"Germany\\",\\"end\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"visaRequired\\":false},\\"traveller\\":{\\"address\\":{\\"city\\":\\"Karkow\\",\\"country\\":\\"Poland\\",\\"street\\":\\"palna\\",\\"zipCode\\":\\"200300\\"},\\"email\\":\\"rob@redhat.com\\",\\"firstName\\":\\"Rob\\",\\"lastName\\":\\"Rob\\",\\"nationality\\":\\"Polish\\"}}",
                         }
                       }
+                      jobsResponse={
+                        Object {
+                          "data": Object {
+                            "Jobs": Array [
+                              Object {
+                                "callbackEndpoint": "http://localhost:8080/management/jobs/travels/instances/5c56eeff-4cbf-3313-a325-4c895e0afced/timers/6e74a570-31c8-4020-bd70-19be2cb625f3_0",
+                                "endpoint": "http://localhost:4000",
+                                "expirationTime": null,
+                                "id": "6e74a570-31c8-4020-bd70-19be2cb625f3_0",
+                                "lastUpdate": "2020-08-27T03:35:50.147Z",
+                                "nodeInstanceId": "69e0a0f5-2360-4174-a8f8-a892a31fc2f9",
+                                "priority": 0,
+                                "processId": "travels",
+                                "processInstanceId": "5c56eeff-4cbf-3313-a325-4c895e0afced",
+                                "repeatInterval": null,
+                                "repeatLimit": null,
+                                "retries": 0,
+                                "rootProcessId": null,
+                                "scheduledId": "0",
+                                "status": "EXECUTED",
+                              },
+                              Object {
+                                "callbackEndpoint": "http://localhost:8080/management/jobs/travels/instances/5c56eeff-4cbf-3313-a325-4c895e0afced/timers/6e74a570-31c8-4020-bd70-19be2cb625f3_0",
+                                "endpoint": "http://localhost:4000",
+                                "expirationTime": null,
+                                "id": "6e74a570-31c8-4020-bd70-19be2cb625f3_0",
+                                "lastUpdate": "2020-08-27T03:35:50.147Z",
+                                "nodeInstanceId": "2f588da5-a323-4111-9017-3093ef9319d1",
+                                "priority": 0,
+                                "processId": "travels",
+                                "processInstanceId": "5c56eeff-4cbf-3313-a325-4c895e0afced",
+                                "repeatInterval": null,
+                                "repeatLimit": null,
+                                "retries": 0,
+                                "rootProcessId": null,
+                                "scheduledId": "0",
+                                "status": "SCHEDULED",
+                              },
+                            ],
+                          },
+                          "loading": false,
+                          "refetch": [Function],
+                        }
+                      }
                     />
                   </div>
                 </FlexItem>
@@ -1946,7 +2077,50 @@ exports[`Process Details Page component tests snapshot testing in Error state 1`
                     className=""
                   >
                     <ProcessDetailsJobsPanel
-                      processInstanceId="8035b580-6ae4-4aa8-9ec0-e18e19809e0b"
+                      jobsResponse={
+                        Object {
+                          "data": Object {
+                            "Jobs": Array [
+                              Object {
+                                "callbackEndpoint": "http://localhost:8080/management/jobs/travels/instances/5c56eeff-4cbf-3313-a325-4c895e0afced/timers/6e74a570-31c8-4020-bd70-19be2cb625f3_0",
+                                "endpoint": "http://localhost:4000",
+                                "expirationTime": null,
+                                "id": "6e74a570-31c8-4020-bd70-19be2cb625f3_0",
+                                "lastUpdate": "2020-08-27T03:35:50.147Z",
+                                "nodeInstanceId": "69e0a0f5-2360-4174-a8f8-a892a31fc2f9",
+                                "priority": 0,
+                                "processId": "travels",
+                                "processInstanceId": "5c56eeff-4cbf-3313-a325-4c895e0afced",
+                                "repeatInterval": null,
+                                "repeatLimit": null,
+                                "retries": 0,
+                                "rootProcessId": null,
+                                "scheduledId": "0",
+                                "status": "EXECUTED",
+                              },
+                              Object {
+                                "callbackEndpoint": "http://localhost:8080/management/jobs/travels/instances/5c56eeff-4cbf-3313-a325-4c895e0afced/timers/6e74a570-31c8-4020-bd70-19be2cb625f3_0",
+                                "endpoint": "http://localhost:4000",
+                                "expirationTime": null,
+                                "id": "6e74a570-31c8-4020-bd70-19be2cb625f3_0",
+                                "lastUpdate": "2020-08-27T03:35:50.147Z",
+                                "nodeInstanceId": "2f588da5-a323-4111-9017-3093ef9319d1",
+                                "priority": 0,
+                                "processId": "travels",
+                                "processInstanceId": "5c56eeff-4cbf-3313-a325-4c895e0afced",
+                                "repeatInterval": null,
+                                "repeatLimit": null,
+                                "retries": 0,
+                                "rootProcessId": null,
+                                "scheduledId": "0",
+                                "status": "SCHEDULED",
+                              },
+                            ],
+                          },
+                          "loading": false,
+                          "refetch": [Function],
+                        }
+                      }
                     />
                   </div>
                 </FlexItem>
@@ -2308,7 +2482,7 @@ exports[`Process Details Page component tests snapshot testing in Suspended stat
                   <nav
                     aria-label="Breadcrumb"
                     className="pf-c-breadcrumb"
-                    data-ouia-component-id={90}
+                    data-ouia-component-id={109}
                     data-ouia-component-type="PF4/Breadcrumb"
                     data-ouia-safe={true}
                   >
@@ -2613,7 +2787,7 @@ exports[`Process Details Page component tests snapshot testing in Suspended stat
                                         aria-disabled={false}
                                         aria-label={null}
                                         className="pf-c-button pf-m-secondary kogito-management-console--details__buttonMargin"
-                                        data-ouia-component-id={91}
+                                        data-ouia-component-id={110}
                                         data-ouia-component-type="PF4/Button"
                                         data-ouia-safe={true}
                                         disabled={false}
@@ -2633,7 +2807,7 @@ exports[`Process Details Page component tests snapshot testing in Suspended stat
                                         aria-disabled={false}
                                         aria-label={null}
                                         className="pf-c-button pf-m-secondary"
-                                        data-ouia-component-id={92}
+                                        data-ouia-component-id={111}
                                         data-ouia-component-type="PF4/Button"
                                         data-ouia-safe={true}
                                         disabled={false}
@@ -2654,7 +2828,7 @@ exports[`Process Details Page component tests snapshot testing in Suspended stat
                                         aria-disabled={false}
                                         aria-label="Refresh list"
                                         className="pf-c-button pf-m-plain"
-                                        data-ouia-component-id={93}
+                                        data-ouia-component-id={112}
                                         data-ouia-component-type="PF4/Button"
                                         data-ouia-safe={true}
                                         disabled={false}
@@ -2972,6 +3146,50 @@ exports[`Process Details Page component tests snapshot testing in Suspended stat
                           "variables": "{\\"flight\\":{\\"arrival\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"departure\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"flightNumber\\":\\"MX555\\"},\\"hotel\\":{\\"address\\":{\\"city\\":\\"Berlin\\",\\"country\\":\\"Germany\\",\\"street\\":\\"street\\",\\"zipCode\\":\\"12345\\"},\\"bookingNumber\\":\\"XX-012345\\",\\"name\\":\\"Perfect hotel\\",\\"phone\\":\\"09876543\\"},\\"trip\\":{\\"begin\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"city\\":\\"Berlin\\",\\"country\\":\\"Germany\\",\\"end\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"visaRequired\\":false},\\"traveller\\":{\\"address\\":{\\"city\\":\\"Karkow\\",\\"country\\":\\"Poland\\",\\"street\\":\\"palna\\",\\"zipCode\\":\\"200300\\"},\\"email\\":\\"rob@redhat.com\\",\\"firstName\\":\\"Rob\\",\\"lastName\\":\\"Rob\\",\\"nationality\\":\\"Polish\\"}}",
                         }
                       }
+                      jobsResponse={
+                        Object {
+                          "data": Object {
+                            "Jobs": Array [
+                              Object {
+                                "callbackEndpoint": "http://localhost:8080/management/jobs/travels/instances/5c56eeff-4cbf-3313-a325-4c895e0afced/timers/6e74a570-31c8-4020-bd70-19be2cb625f3_0",
+                                "endpoint": "http://localhost:4000",
+                                "expirationTime": null,
+                                "id": "6e74a570-31c8-4020-bd70-19be2cb625f3_0",
+                                "lastUpdate": "2020-08-27T03:35:50.147Z",
+                                "nodeInstanceId": "69e0a0f5-2360-4174-a8f8-a892a31fc2f9",
+                                "priority": 0,
+                                "processId": "travels",
+                                "processInstanceId": "5c56eeff-4cbf-3313-a325-4c895e0afced",
+                                "repeatInterval": null,
+                                "repeatLimit": null,
+                                "retries": 0,
+                                "rootProcessId": null,
+                                "scheduledId": "0",
+                                "status": "EXECUTED",
+                              },
+                              Object {
+                                "callbackEndpoint": "http://localhost:8080/management/jobs/travels/instances/5c56eeff-4cbf-3313-a325-4c895e0afced/timers/6e74a570-31c8-4020-bd70-19be2cb625f3_0",
+                                "endpoint": "http://localhost:4000",
+                                "expirationTime": null,
+                                "id": "6e74a570-31c8-4020-bd70-19be2cb625f3_0",
+                                "lastUpdate": "2020-08-27T03:35:50.147Z",
+                                "nodeInstanceId": "2f588da5-a323-4111-9017-3093ef9319d1",
+                                "priority": 0,
+                                "processId": "travels",
+                                "processInstanceId": "5c56eeff-4cbf-3313-a325-4c895e0afced",
+                                "repeatInterval": null,
+                                "repeatLimit": null,
+                                "retries": 0,
+                                "rootProcessId": null,
+                                "scheduledId": "0",
+                                "status": "SCHEDULED",
+                              },
+                            ],
+                          },
+                          "loading": false,
+                          "refetch": [Function],
+                        }
+                      }
                     />
                   </div>
                 </FlexItem>
@@ -2980,7 +3198,50 @@ exports[`Process Details Page component tests snapshot testing in Suspended stat
                     className=""
                   >
                     <ProcessDetailsJobsPanel
-                      processInstanceId="8035b580-6ae4-4aa8-9ec0-e18e19809e0b"
+                      jobsResponse={
+                        Object {
+                          "data": Object {
+                            "Jobs": Array [
+                              Object {
+                                "callbackEndpoint": "http://localhost:8080/management/jobs/travels/instances/5c56eeff-4cbf-3313-a325-4c895e0afced/timers/6e74a570-31c8-4020-bd70-19be2cb625f3_0",
+                                "endpoint": "http://localhost:4000",
+                                "expirationTime": null,
+                                "id": "6e74a570-31c8-4020-bd70-19be2cb625f3_0",
+                                "lastUpdate": "2020-08-27T03:35:50.147Z",
+                                "nodeInstanceId": "69e0a0f5-2360-4174-a8f8-a892a31fc2f9",
+                                "priority": 0,
+                                "processId": "travels",
+                                "processInstanceId": "5c56eeff-4cbf-3313-a325-4c895e0afced",
+                                "repeatInterval": null,
+                                "repeatLimit": null,
+                                "retries": 0,
+                                "rootProcessId": null,
+                                "scheduledId": "0",
+                                "status": "EXECUTED",
+                              },
+                              Object {
+                                "callbackEndpoint": "http://localhost:8080/management/jobs/travels/instances/5c56eeff-4cbf-3313-a325-4c895e0afced/timers/6e74a570-31c8-4020-bd70-19be2cb625f3_0",
+                                "endpoint": "http://localhost:4000",
+                                "expirationTime": null,
+                                "id": "6e74a570-31c8-4020-bd70-19be2cb625f3_0",
+                                "lastUpdate": "2020-08-27T03:35:50.147Z",
+                                "nodeInstanceId": "2f588da5-a323-4111-9017-3093ef9319d1",
+                                "priority": 0,
+                                "processId": "travels",
+                                "processInstanceId": "5c56eeff-4cbf-3313-a325-4c895e0afced",
+                                "repeatInterval": null,
+                                "repeatLimit": null,
+                                "retries": 0,
+                                "rootProcessId": null,
+                                "scheduledId": "0",
+                                "status": "SCHEDULED",
+                              },
+                            ],
+                          },
+                          "loading": false,
+                          "refetch": [Function],
+                        }
+                      }
                     />
                   </div>
                 </FlexItem>

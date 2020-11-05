@@ -235,7 +235,7 @@ module.exports ={ ProcessInstanceData : [
       nodeDefinitionId: '_2140F05A-364F-40B3-BB7B-B12927065DF8',
       message: 'Something went wrong'
     },
-    serviceUrl: null,
+    serviceUrl: "http://localhost:4000",
     endpoint: 'http://localhost:4000',
     variables:
       '{"flight":{"arrival":"2019-10-30T22:00:00Z[UTC]","departure":"2019-10-22T22:00:00Z[UTC]","flightNumber":"MX555"},"trip":{"begin":"2019-10-22T22:00:00Z[UTC]","city":"Bangalore","country":"India","end":"2019-10-30T22:00:00Z[UTC]","visaRequired":false},"hotel":{"address":{"city":"Bangalore","country":"India","street":"street","zipCode":"12345"},"bookingNumber":"XX-012345","name":"Perfect hotel","phone":"09876543"},"traveller":{"address":{"city":"Bangalore","country":"US","street":"Bangalore","zipCode":"560093"},"email":"ajaganat@redhat.com","firstName":"Ajay","lastName":"Jaganathan","nationality":"US"}}',
@@ -3147,6 +3147,8 @@ JobsData:[
     lastUpdate: "2020-08-27T03:35:50.147Z",
     expirationTime: null,
     endpoint: 'http://localhost:4000/jobs',
+    nodeInstanceId: 'fd2e12d5-6a4b-4c75-9f31-028d3f032a95'
+    
   },
   {
     id: "dad3aa88-5c1e-4858-a919-6123c675a0fa_0",
@@ -3163,6 +3165,7 @@ JobsData:[
     lastUpdate: "2020-08-27T03:35:54.635Z",
     expirationTime: "2020-08-27T04:35:54.631Z",
     endpoint: 'http://localhost:4000/jobs',
+    nodeInstanceId: '843bd287-fb6e-4ee7-a304-ba9b430e52d8'
   },
   {
     id: "2234dde-npce1-2908-b3131-6123c675a0fa_0",
@@ -3179,6 +3182,7 @@ JobsData:[
     lastUpdate: "2020-08-27T03:35:54.635Z",
     expirationTime: "2020-08-27T04:35:54.631Z",
     endpoint: 'http://localhost:4000/jobs',
+    nodeInstanceId: '7f7d74c1-78f7-49be-b5ad-8d132f46a49c'
   },
   {
     id: "T3113e-vbg43-2234-lo89-cpmw3214ra0fa_0",
@@ -3195,6 +3199,7 @@ JobsData:[
     lastUpdate: "2020-08-27T03:35:54.635Z",
     expirationTime: "2020-08-27T04:35:54.631Z",
     endpoint: 'http://localhost:4000/jobs',
+    nodeInstanceId: 'af0d984c-4abd-4f5c-83a8-426e6b3d102a'
   },
   {
     id: "bff4ee-11qw23-6675-po987-qwedfrt45a0fa_0",
@@ -3211,6 +3216,7 @@ JobsData:[
     lastUpdate: "2020-08-27T03:35:54.635Z",
     expirationTime: "2020-08-27T04:35:54.631Z",
     endpoint: 'http://localhost:4000/jobs',
+    nodeInstanceId: 'b2761011-3043-4f48-82bd-1395bf651a91'
   },
   {
     id: "eff4ee-11qw23-6675-pokau97-qwedjut45a0fa_0",
@@ -3227,6 +3233,24 @@ JobsData:[
     lastUpdate: "2020-08-29T03:35:54.635Z",
     expirationTime: "2020-08-29T04:35:54.631Z",
     endpoint: 'http://localhost:4000/jobs',
+    nodeInstanceId: null
+  },
+  {
+    id: "dad3aa88-5c1e-4858-a919-uey23c675a0fa_0",
+    processId: "travels",
+    processInstanceId: "e4448857-fa0c-403b-ad69-f0a353458b9d",
+    rootProcessId: "",
+    status: "SCHEDULED",
+    priority: 0,
+    callbackEndpoint: "http://localhost:8080/management/jobs/travels/instances/5c56eeff-4cbf-3313-a325-4c895e0afced/timers/dad3aa88-5c1e-4858-a919-6123c675a0fa_0",
+    repeatInterval: null,
+    repeatLimit: null,
+    scheduledId: null,
+    retries: 0,
+    lastUpdate: "2020-08-27T03:35:54.635Z",
+    expirationTime: "2020-08-27T04:35:54.631Z",
+    endpoint: 'http://localhost:4000/jobs',
+    nodeInstanceId: '08c153e8-2766-4675-81f7-29943efdf411'
   }
 ]
 }

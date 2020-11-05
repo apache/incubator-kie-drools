@@ -2,7 +2,32 @@
 
 exports[`Processdetails jobs pannel component tests Snapshot testing 1`] = `
 <ProcessDetailsJobsPanel
-  processInstanceId="5c56eeff-4cbf-3313-a325-4c895e0afced"
+  jobsResponse={
+    Object {
+      "data": Object {
+        "Jobs": Array [
+          Object {
+            "callbackEndpoint": "http://localhost:8080/management/jobs/travels/instances/5c56eeff-4cbf-3313-a325-4c895e0afced/timers/6e74a570-31c8-4020-bd70-19be2cb625f3_0",
+            "endpoint": "http://localhost:4000",
+            "expirationTime": null,
+            "id": "6e74a570-31c8-4020-bd70-19be2cb625f3_0",
+            "lastUpdate": "2020-08-27T03:35:50.147Z",
+            "priority": 0,
+            "processId": "travels",
+            "processInstanceId": "5c56eeff-4cbf-3313-a325-4c895e0afced",
+            "repeatInterval": null,
+            "repeatLimit": null,
+            "retries": 0,
+            "rootProcessId": null,
+            "scheduledId": "0",
+            "status": "EXECUTED",
+          },
+        ],
+      },
+      "loading": false,
+      "refetch": [MockFunction],
+    }
+  }
 >
   <Card
     data-ouia-component-type="process-details-jobs-panel"
@@ -94,7 +119,7 @@ exports[`Processdetails jobs pannel component tests Snapshot testing 1`] = `
                     },
                     Object {
                       "title": <Context.Provider
-                        value={[Function]}
+                        value={[MockFunction]}
                       >
                         <MockedJobActionsKebab
                           job={
@@ -1007,7 +1032,7 @@ exports[`Processdetails jobs pannel component tests Snapshot testing 1`] = `
                             },
                             Object {
                               "title": <Context.Provider
-                                value={[Function]}
+                                value={[MockFunction]}
                               >
                                 <MockedJobActionsKebab
                                   job={
@@ -1047,7 +1072,7 @@ exports[`Processdetails jobs pannel component tests Snapshot testing 1`] = `
                                 "isVisible": true,
                               },
                               "title": <Context.Provider
-                                value={[Function]}
+                                value={[MockFunction]}
                               >
                                 <MockedJobActionsKebab
                                   job={
@@ -1097,7 +1122,7 @@ exports[`Processdetails jobs pannel component tests Snapshot testing 1`] = `
                               },
                               Object {
                                 "title": <Context.Provider
-                                  value={[Function]}
+                                  value={[MockFunction]}
                                 >
                                   <MockedJobActionsKebab
                                     job={
@@ -1174,7 +1199,7 @@ exports[`Processdetails jobs pannel component tests Snapshot testing 1`] = `
                                 "isVisible": true,
                               },
                               "title": <Context.Provider
-                                value={[Function]}
+                                value={[MockFunction]}
                               >
                                 <MockedJobActionsKebab
                                   job={
@@ -1224,7 +1249,7 @@ exports[`Processdetails jobs pannel component tests Snapshot testing 1`] = `
                               },
                               Object {
                                 "title": <Context.Provider
-                                  value={[Function]}
+                                  value={[MockFunction]}
                                 >
                                   <MockedJobActionsKebab
                                     job={
@@ -1479,7 +1504,7 @@ exports[`Processdetails jobs pannel component tests Snapshot testing 1`] = `
                                   "isVisible": true,
                                 },
                                 "title": <Context.Provider
-                                  value={[Function]}
+                                  value={[MockFunction]}
                                 >
                                   <MockedJobActionsKebab
                                     job={
@@ -1529,7 +1554,7 @@ exports[`Processdetails jobs pannel component tests Snapshot testing 1`] = `
                                 },
                                 Object {
                                   "title": <Context.Provider
-                                    value={[Function]}
+                                    value={[MockFunction]}
                                   >
                                     <MockedJobActionsKebab
                                       job={
@@ -1621,7 +1646,7 @@ exports[`Processdetails jobs pannel component tests Snapshot testing 1`] = `
                                   "isVisible": true,
                                 },
                                 "title": <Context.Provider
-                                  value={[Function]}
+                                  value={[MockFunction]}
                                 >
                                   <MockedJobActionsKebab
                                     job={
@@ -1671,7 +1696,7 @@ exports[`Processdetails jobs pannel component tests Snapshot testing 1`] = `
                                 },
                                 Object {
                                   "title": <Context.Provider
-                                    value={[Function]}
+                                    value={[MockFunction]}
                                   >
                                     <MockedJobActionsKebab
                                       job={
@@ -1750,7 +1775,7 @@ exports[`Processdetails jobs pannel component tests Snapshot testing 1`] = `
                                     "isVisible": true,
                                   },
                                   "title": <Context.Provider
-                                    value={[Function]}
+                                    value={[MockFunction]}
                                   >
                                     <MockedJobActionsKebab
                                       job={
@@ -1800,7 +1825,7 @@ exports[`Processdetails jobs pannel component tests Snapshot testing 1`] = `
                                   },
                                   Object {
                                     "title": <Context.Provider
-                                      value={[Function]}
+                                      value={[MockFunction]}
                                     >
                                       <MockedJobActionsKebab
                                         job={
@@ -2064,7 +2089,7 @@ exports[`Processdetails jobs pannel component tests Snapshot testing 1`] = `
                                       "isVisible": true,
                                     },
                                     "title": <Context.Provider
-                                      value={[Function]}
+                                      value={[MockFunction]}
                                     >
                                       <MockedJobActionsKebab
                                         job={
@@ -2114,7 +2139,7 @@ exports[`Processdetails jobs pannel component tests Snapshot testing 1`] = `
                                     },
                                     Object {
                                       "title": <Context.Provider
-                                        value={[Function]}
+                                        value={[MockFunction]}
                                       >
                                         <MockedJobActionsKebab
                                           job={
@@ -2193,7 +2218,7 @@ exports[`Processdetails jobs pannel component tests Snapshot testing 1`] = `
                                         "isVisible": true,
                                       },
                                       "title": <Context.Provider
-                                        value={[Function]}
+                                        value={[MockFunction]}
                                       >
                                         <MockedJobActionsKebab
                                           job={
@@ -2243,7 +2268,7 @@ exports[`Processdetails jobs pannel component tests Snapshot testing 1`] = `
                                       },
                                       Object {
                                         "title": <Context.Provider
-                                          value={[Function]}
+                                          value={[MockFunction]}
                                         >
                                           <MockedJobActionsKebab
                                             job={
@@ -2506,8 +2531,33 @@ exports[`Processdetails jobs pannel component tests Snapshot testing 1`] = `
 
 exports[`Processdetails jobs pannel component tests test expiration time 1`] = `
 <ProcessDetailsJobsPanel
+  jobsResponse={
+    Object {
+      "data": Object {
+        "Jobs": Array [
+          Object {
+            "callbackEndpoint": "http://localhost:8080/management/jobs/travels/instances/5c56eeff-4cbf-3313-a325-4c895e0afced/timers/6e74a570-31c8-4020-bd70-19be2cb625f3_0",
+            "endpoint": "http://localhost:4000",
+            "expirationTime": "2020-08-29T03:35:50.147Z",
+            "id": "6e74a570-31c8-4020-bd70-19be2cb625f3_0",
+            "lastUpdate": "2020-08-27T03:35:50.147Z",
+            "priority": 0,
+            "processId": "travels",
+            "processInstanceId": "5c56eeff-4cbf-3313-a325-4c895e0afced",
+            "repeatInterval": null,
+            "repeatLimit": null,
+            "retries": 0,
+            "rootProcessId": null,
+            "scheduledId": "0",
+            "status": "EXECUTED",
+          },
+        ],
+      },
+      "loading": false,
+      "refetch": [MockFunction],
+    }
+  }
   ouiaSafe={true}
-  processInstanceId="5c56eeff-4cbf-3313-a325-4c895e0afced"
 >
   <Card
     data-ouia-component-type="process-details-jobs-panel"
@@ -2622,7 +2672,7 @@ exports[`Processdetails jobs pannel component tests test expiration time 1`] = `
                     },
                     Object {
                       "title": <Context.Provider
-                        value={[Function]}
+                        value={[MockFunction]}
                       >
                         <MockedJobActionsKebab
                           job={
@@ -3558,7 +3608,7 @@ exports[`Processdetails jobs pannel component tests test expiration time 1`] = `
                             },
                             Object {
                               "title": <Context.Provider
-                                value={[Function]}
+                                value={[MockFunction]}
                               >
                                 <MockedJobActionsKebab
                                   job={
@@ -3598,7 +3648,7 @@ exports[`Processdetails jobs pannel component tests test expiration time 1`] = `
                                 "isVisible": true,
                               },
                               "title": <Context.Provider
-                                value={[Function]}
+                                value={[MockFunction]}
                               >
                                 <MockedJobActionsKebab
                                   job={
@@ -3671,7 +3721,7 @@ exports[`Processdetails jobs pannel component tests test expiration time 1`] = `
                               },
                               Object {
                                 "title": <Context.Provider
-                                  value={[Function]}
+                                  value={[MockFunction]}
                                 >
                                   <MockedJobActionsKebab
                                     job={
@@ -3771,7 +3821,7 @@ exports[`Processdetails jobs pannel component tests test expiration time 1`] = `
                                 "isVisible": true,
                               },
                               "title": <Context.Provider
-                                value={[Function]}
+                                value={[MockFunction]}
                               >
                                 <MockedJobActionsKebab
                                   job={
@@ -3844,7 +3894,7 @@ exports[`Processdetails jobs pannel component tests test expiration time 1`] = `
                               },
                               Object {
                                 "title": <Context.Provider
-                                  value={[Function]}
+                                  value={[MockFunction]}
                                 >
                                   <MockedJobActionsKebab
                                     job={
@@ -4122,7 +4172,7 @@ exports[`Processdetails jobs pannel component tests test expiration time 1`] = `
                                   "isVisible": true,
                                 },
                                 "title": <Context.Provider
-                                  value={[Function]}
+                                  value={[MockFunction]}
                                 >
                                   <MockedJobActionsKebab
                                     job={
@@ -4195,7 +4245,7 @@ exports[`Processdetails jobs pannel component tests test expiration time 1`] = `
                                 },
                                 Object {
                                   "title": <Context.Provider
-                                    value={[Function]}
+                                    value={[MockFunction]}
                                   >
                                     <MockedJobActionsKebab
                                       job={
@@ -4310,7 +4360,7 @@ exports[`Processdetails jobs pannel component tests test expiration time 1`] = `
                                   "isVisible": true,
                                 },
                                 "title": <Context.Provider
-                                  value={[Function]}
+                                  value={[MockFunction]}
                                 >
                                   <MockedJobActionsKebab
                                     job={
@@ -4383,7 +4433,7 @@ exports[`Processdetails jobs pannel component tests test expiration time 1`] = `
                                 },
                                 Object {
                                   "title": <Context.Provider
-                                    value={[Function]}
+                                    value={[MockFunction]}
                                   >
                                     <MockedJobActionsKebab
                                       job={
@@ -4485,7 +4535,7 @@ exports[`Processdetails jobs pannel component tests test expiration time 1`] = `
                                     "isVisible": true,
                                   },
                                   "title": <Context.Provider
-                                    value={[Function]}
+                                    value={[MockFunction]}
                                   >
                                     <MockedJobActionsKebab
                                       job={
@@ -4558,7 +4608,7 @@ exports[`Processdetails jobs pannel component tests test expiration time 1`] = `
                                   },
                                   Object {
                                     "title": <Context.Provider
-                                      value={[Function]}
+                                      value={[MockFunction]}
                                     >
                                       <MockedJobActionsKebab
                                         job={
@@ -4845,7 +4895,7 @@ exports[`Processdetails jobs pannel component tests test expiration time 1`] = `
                                       "isVisible": true,
                                     },
                                     "title": <Context.Provider
-                                      value={[Function]}
+                                      value={[MockFunction]}
                                     >
                                       <MockedJobActionsKebab
                                         job={
@@ -4918,7 +4968,7 @@ exports[`Processdetails jobs pannel component tests test expiration time 1`] = `
                                     },
                                     Object {
                                       "title": <Context.Provider
-                                        value={[Function]}
+                                        value={[MockFunction]}
                                       >
                                         <MockedJobActionsKebab
                                           job={
@@ -5020,7 +5070,7 @@ exports[`Processdetails jobs pannel component tests test expiration time 1`] = `
                                         "isVisible": true,
                                       },
                                       "title": <Context.Provider
-                                        value={[Function]}
+                                        value={[MockFunction]}
                                       >
                                         <MockedJobActionsKebab
                                           job={
@@ -5093,7 +5143,7 @@ exports[`Processdetails jobs pannel component tests test expiration time 1`] = `
                                       },
                                       Object {
                                         "title": <Context.Provider
-                                          value={[Function]}
+                                          value={[MockFunction]}
                                         >
                                           <MockedJobActionsKebab
                                             job={

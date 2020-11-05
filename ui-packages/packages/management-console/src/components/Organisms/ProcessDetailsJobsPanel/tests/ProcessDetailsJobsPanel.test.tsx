@@ -1,8 +1,6 @@
 import React from 'react';
 import ProcessDetailsJobsPanel from '../ProcessDetailsJobsPanel';
-import { GraphQL, getWrapperAsync } from '@kogito-apps/common';
-import { BrowserRouter } from 'react-router-dom';
-import { MockedProvider } from '@apollo/react-testing';
+import { getWrapperAsync } from '@kogito-apps/common';
 jest.mock('../../../Atoms/JobActionsKebab/JobActionsKebab');
 
 const MockedComponent = (): React.ReactElement => {
@@ -28,103 +26,75 @@ jest.mock('@patternfly/react-icons', () => ({
   }
 }));
 
-const mocks = [
-  {
-    request: {
-      query: GraphQL.GetJobsByProcessInstanceIdDocument,
-      variables: {
-        processInstanceId: '5c56eeff-4cbf-3313-a325-4c895e0afced'
-      }
-    },
-    result: {
-      data: {
-        Jobs: [
-          {
-            id: '6e74a570-31c8-4020-bd70-19be2cb625f3_0',
-            processId: 'travels',
-            processInstanceId: '5c56eeff-4cbf-3313-a325-4c895e0afced',
-            rootProcessId: null,
-            status: 'EXECUTED',
-            priority: 0,
-            callbackEndpoint:
-              'http://localhost:8080/management/jobs/travels/instances/5c56eeff-4cbf-3313-a325-4c895e0afced/timers/6e74a570-31c8-4020-bd70-19be2cb625f3_0',
-            repeatInterval: null,
-            repeatLimit: null,
-            scheduledId: '0',
-            retries: 0,
-            lastUpdate: '2020-08-27T03:35:50.147Z',
-            expirationTime: null,
-            endpoint: 'http://localhost:4000'
-          }
-        ]
-      }
-    }
-  }
-];
-
-const mocks2 = [
-  {
-    request: {
-      query: GraphQL.GetJobsByProcessInstanceIdDocument,
-      variables: {
-        processInstanceId: '5c56eeff-4cbf-3313-a325-4c895e0afced'
-      }
-    },
-    result: {
-      data: {
-        Jobs: [
-          {
-            id: '6e74a570-31c8-4020-bd70-19be2cb625f3_0',
-            processId: 'travels',
-            processInstanceId: '5c56eeff-4cbf-3313-a325-4c895e0afced',
-            rootProcessId: null,
-            status: 'EXECUTED',
-            priority: 0,
-            callbackEndpoint:
-              'http://localhost:8080/management/jobs/travels/instances/5c56eeff-4cbf-3313-a325-4c895e0afced/timers/6e74a570-31c8-4020-bd70-19be2cb625f3_0',
-            repeatInterval: null,
-            repeatLimit: null,
-            scheduledId: '0',
-            retries: 0,
-            lastUpdate: '2020-08-27T03:35:50.147Z',
-            expirationTime: '2020-08-29T03:35:50.147Z',
-            endpoint: 'http://localhost:4000'
-          }
-        ]
-      }
-    }
-  }
-];
-
 const props = {
-  processInstanceId: '5c56eeff-4cbf-3313-a325-4c895e0afced'
-};
+  jobsResponse: {
+    data: {
+      Jobs: [
+        {
+          id: '6e74a570-31c8-4020-bd70-19be2cb625f3_0',
+          processId: 'travels',
+          processInstanceId: '5c56eeff-4cbf-3313-a325-4c895e0afced',
+          rootProcessId: null,
+          status: 'EXECUTED',
+          priority: 0,
+          callbackEndpoint:
+            'http://localhost:8080/management/jobs/travels/instances/5c56eeff-4cbf-3313-a325-4c895e0afced/timers/6e74a570-31c8-4020-bd70-19be2cb625f3_0',
+          repeatInterval: null,
+          repeatLimit: null,
+          scheduledId: '0',
+          retries: 0,
+          lastUpdate: '2020-08-27T03:35:50.147Z',
+          expirationTime: null,
+          endpoint: 'http://localhost:4000'
+        }
+      ]
+    },
+    loading: false,
+    refetch: jest.fn()
+  }
+} as any;
 
 const props2 = {
-  processInstanceId: '5c56eeff-4cbf-3313-a325-4c895e0afced',
+  jobsResponse: {
+    data: {
+      Jobs: [
+        {
+          id: '6e74a570-31c8-4020-bd70-19be2cb625f3_0',
+          processId: 'travels',
+          processInstanceId: '5c56eeff-4cbf-3313-a325-4c895e0afced',
+          rootProcessId: null,
+          status: 'EXECUTED',
+          priority: 0,
+          callbackEndpoint:
+            'http://localhost:8080/management/jobs/travels/instances/5c56eeff-4cbf-3313-a325-4c895e0afced/timers/6e74a570-31c8-4020-bd70-19be2cb625f3_0',
+          repeatInterval: null,
+          repeatLimit: null,
+          scheduledId: '0',
+          retries: 0,
+          lastUpdate: '2020-08-27T03:35:50.147Z',
+          expirationTime: '2020-08-29T03:35:50.147Z',
+          endpoint: 'http://localhost:4000'
+        }
+      ]
+    },
+    loading: false,
+    refetch: jest.fn()
+  },
   ouiaSafe: true
-};
+} as any;
 
 Date.now = jest.fn(() => 1592000000000); // UTC Fri Jun 12 2020 22:13:20
 describe('Processdetails jobs pannel component tests', () => {
   it('Snapshot testing', async () => {
     const wrapper = await getWrapperAsync(
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <BrowserRouter>
-          <ProcessDetailsJobsPanel {...props} />
-        </BrowserRouter>
-      </MockedProvider>,
+      <ProcessDetailsJobsPanel {...props} />,
       'ProcessDetailsJobsPanel'
     );
     expect(wrapper).toMatchSnapshot();
   });
   it('test expiration time', async () => {
     const wrapper = await getWrapperAsync(
-      <MockedProvider mocks={mocks2} addTypename={false}>
-        <BrowserRouter>
-          <ProcessDetailsJobsPanel {...props2} />
-        </BrowserRouter>
-      </MockedProvider>,
+      <ProcessDetailsJobsPanel {...props2} />,
       'ProcessDetailsJobsPanel'
     );
     expect(wrapper).toMatchSnapshot();

@@ -55,20 +55,7 @@ const JobActionsKebab: React.FC<IOwnProps & OUIAProps> = ({
   const refetch = React.useContext(refetchContext);
 
   const handleCancelAction = (): void => {
-    jobCancel(
-      job,
-      () => {
-        setModalTitle(setTitle('success', 'Job cancel'));
-        setModalContent(`The job: ${job.id} is canceled successfully`);
-      },
-      errorMessage => {
-        setModalTitle(setTitle('failure', 'Job cancel'));
-        setModalContent(
-          `The job: ${job.id} failed to cancel. Error message: ${errorMessage}`
-        );
-      },
-      refetch
-    );
+    jobCancel(job, setModalTitle, setModalContent, refetch);
     handleCancelModalToggle();
   };
 

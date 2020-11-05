@@ -19,12 +19,21 @@ import JobActionsKebab from '../../Atoms/JobActionsKebab/JobActionsKebab';
 import { OUIAProps, componentOuiaProps, GraphQL } from '@kogito-apps/common';
 import { JobsIconCreator } from '../../../utils/Utils';
 import { refetchContext } from '../../contexts';
+
+interface ResponseDataType {
+  Jobs?: GraphQL.Job[];
+}
+interface JobResponseMeta {
+  data: ResponseDataType;
+  loading: boolean;
+  refetch: () => void;
+}
 interface JobsPanelProps {
-  processInstanceId: string;
+  jobsResponse: JobResponseMeta;
 }
 
 const ProcessDetailsJobsPanel: React.FC<JobsPanelProps & OUIAProps> = ({
-  processInstanceId,
+  jobsResponse,
   ouiaId,
   ouiaSafe
 }) => {
@@ -44,14 +53,6 @@ const ProcessDetailsJobsPanel: React.FC<JobsPanelProps & OUIAProps> = ({
       title: 'Actions'
     }
   ];
-
-  const { data, loading, refetch } = GraphQL.useGetJobsByProcessInstanceIdQuery(
-    {
-      variables: {
-        processInstanceId
-      }
-    }
-  );
 
   const createRows = (jobsArray: GraphQL.Job[]): IRow[] => {
     const jobRows = [];
@@ -87,7 +88,7 @@ const ProcessDetailsJobsPanel: React.FC<JobsPanelProps & OUIAProps> = ({
           },
           {
             title: (
-              <refetchContext.Provider value={refetch}>
+              <refetchContext.Provider value={jobsResponse.refetch}>
                 <JobActionsKebab job={job} />
               </refetchContext.Provider>
             )
@@ -99,18 +100,22 @@ const ProcessDetailsJobsPanel: React.FC<JobsPanelProps & OUIAProps> = ({
   };
 
   useEffect(() => {
-    if (!loading && data) {
-      setRows(createRows(data.Jobs));
+    if (!jobsResponse.loading && jobsResponse.data) {
+      setRows(createRows(jobsResponse.data.Jobs));
     }
-  }, [data]);
+  }, [jobsResponse.data]);
 
-  if (!loading && data && data.Jobs.length > 0) {
+  if (
+    !jobsResponse.loading &&
+    jobsResponse.data &&
+    jobsResponse.data.Jobs.length > 0
+  ) {
     return (
       <Card
         {...componentOuiaProps(
           ouiaId,
           'process-details-jobs-panel',
-          ouiaSafe ? ouiaSafe : !loading
+          ouiaSafe ? ouiaSafe : !jobsResponse.loading
         )}
       >
         <CardHeader>

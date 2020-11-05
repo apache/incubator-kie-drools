@@ -183,7 +183,6 @@ const JobsRescheduleModal: React.FC<IOwnProps & OUIAProps> = ({
       </ModalBoxBody>
     );
   };
-
   return (
     <>
       <Modal

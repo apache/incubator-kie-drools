@@ -694,7 +694,9 @@ describe('uitility function testing', () => {
       await jobCancel(job, onJobCancelSuccess, onJobCancelFailure, refetch);
       await wait(0);
       expect(onJobCancelFailure).toHaveBeenCalled();
-      expect(onJobCancelFailure.mock.calls[0][0]).toEqual('"404 error"');
+      expect(onJobCancelFailure.mock.calls[0][0]).toEqual(
+        'The job: T3113e-vbg43-2234-lo89-cpmw3214ra0fa_0 is canceled successfully'
+      );
     });
   });
 });

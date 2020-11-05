@@ -207,7 +207,7 @@ describe('job actions kebab tests', () => {
     });
 
     it('cancel failure', async () => {
-      mockedAxios.delete.mockRejectedValue({ message: '404 error' });
+      mockedAxios.delete.mockRejectedValue({ message: '"404 error"' });
       const refetch = jest.fn();
       let wrapper = mount(
         <refetchContext.Provider value={refetch}>

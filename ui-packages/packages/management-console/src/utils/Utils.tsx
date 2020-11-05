@@ -389,16 +389,20 @@ export const getTriggerableNodes = async (
 
 export const jobCancel = async (
   job: Pick<GraphQL.Job, 'id' | 'endpoint'>,
-  onJobCancelSuccess: () => void,
-  onJobCancelFailure: (errorMessage: string) => void,
+  setModalTitle: (title: JSX.Element) => void,
+  setModalContent: (content: string) => void,
   refetch
 ) => {
   try {
     await axios.delete(`${job.endpoint}/${job.id}`);
-    onJobCancelSuccess();
+    setModalTitle(setTitle('success', 'Job cancel'));
+    setModalContent(`The job: ${job.id} is canceled successfully`);
     refetch();
   } catch (error) {
-    onJobCancelFailure(JSON.stringify(error.message));
+    setModalTitle(setTitle('failure', 'Job cancel'));
+    setModalContent(
+      `The job: ${job.id} failed to cancel. Error message: ${error.message}`
+    );
     refetch();
   }
 };

@@ -46,8 +46,6 @@ exports[`ProcessDetailsTimeline component tests Snapshot testing for completed s
             <ErrorCircleOIcon
               className="kogito-management-console--timeline-status"
               color="var(--pf-global--danger-color--100)"
-              noVerticalAlign={false}
-              size="sm"
             />
           </Tooltip>
         </SplitItem>
@@ -66,8 +64,6 @@ exports[`ProcessDetailsTimeline component tests Snapshot testing for completed s
                   <UserIcon
                     className="pf-u-ml-sm"
                     color="var(--pf-global--icon--Color--light)"
-                    noVerticalAlign={false}
-                    size="sm"
                   />
                 </Tooltip>
               </span>
@@ -92,9 +88,6 @@ exports[`ProcessDetailsTimeline component tests Snapshot testing for completed s
           >
             <OnRunningIcon
               className="kogito-management-console--timeline-status"
-              color="currentColor"
-              noVerticalAlign={false}
-              size="sm"
             />
           </Tooltip>
         </SplitItem>
@@ -128,9 +121,6 @@ exports[`ProcessDetailsTimeline component tests Snapshot testing for completed s
           >
             <OnRunningIcon
               className="kogito-management-console--timeline-status"
-              color="currentColor"
-              noVerticalAlign={false}
-              size="sm"
             />
           </Tooltip>
         </SplitItem>
@@ -149,8 +139,6 @@ exports[`ProcessDetailsTimeline component tests Snapshot testing for completed s
                   <UserIcon
                     className="pf-u-ml-sm"
                     color="var(--pf-global--icon--Color--light)"
-                    noVerticalAlign={false}
-                    size="sm"
                   />
                 </Tooltip>
               </span>
@@ -166,6 +154,45 @@ exports[`ProcessDetailsTimeline component tests Snapshot testing for completed s
       </Split>
     </Stack>
   </CardBody>
+  <MockedJobsPanelDetailsModal
+    actionType="Job Details"
+    handleModalToggle={[Function]}
+    isModalOpen={false}
+    job={Object {}}
+    modalAction={
+      Array [
+        <Button
+          onClick={[Function]}
+          variant="primary"
+        >
+          OK
+        </Button>,
+      ]
+    }
+    modalTitle={
+      <Title
+        headingLevel="h1"
+        size="2xl"
+      >
+        <InfoCircleIcon
+          className="pf-u-mr-sm"
+          color="var(--pf-global--info-color--100)"
+          noVerticalAlign={false}
+          size="sm"
+        />
+        <span>
+          Job Details
+        </span>
+      </Title>
+    }
+  />
+  <JobsCancelModal
+    actionType="Job Cancel"
+    handleModalToggle={[Function]}
+    isModalOpen={false}
+    modalContent=""
+    modalTitle={null}
+  />
 </Card>
 `;
 
@@ -215,8 +242,6 @@ exports[`ProcessDetailsTimeline component tests Snapshot testing for no service 
             <ErrorCircleOIcon
               className="kogito-management-console--timeline-status"
               color="var(--pf-global--danger-color--100)"
-              noVerticalAlign={false}
-              size="sm"
             />
           </Tooltip>
         </SplitItem>
@@ -235,8 +260,6 @@ exports[`ProcessDetailsTimeline component tests Snapshot testing for no service 
                   <UserIcon
                     className="pf-u-ml-sm"
                     color="var(--pf-global--icon--Color--light)"
-                    noVerticalAlign={false}
-                    size="sm"
                   />
                 </Tooltip>
               </span>
@@ -261,9 +284,6 @@ exports[`ProcessDetailsTimeline component tests Snapshot testing for no service 
           >
             <OnRunningIcon
               className="kogito-management-console--timeline-status"
-              color="currentColor"
-              noVerticalAlign={false}
-              size="sm"
             />
           </Tooltip>
         </SplitItem>
@@ -297,9 +317,6 @@ exports[`ProcessDetailsTimeline component tests Snapshot testing for no service 
           >
             <OnRunningIcon
               className="kogito-management-console--timeline-status"
-              color="currentColor"
-              noVerticalAlign={false}
-              size="sm"
             />
           </Tooltip>
         </SplitItem>
@@ -318,8 +335,6 @@ exports[`ProcessDetailsTimeline component tests Snapshot testing for no service 
                   <UserIcon
                     className="pf-u-ml-sm"
                     color="var(--pf-global--icon--Color--light)"
-                    noVerticalAlign={false}
-                    size="sm"
                   />
                 </Tooltip>
               </span>
@@ -335,6 +350,45 @@ exports[`ProcessDetailsTimeline component tests Snapshot testing for no service 
       </Split>
     </Stack>
   </CardBody>
+  <MockedJobsPanelDetailsModal
+    actionType="Job Details"
+    handleModalToggle={[Function]}
+    isModalOpen={false}
+    job={Object {}}
+    modalAction={
+      Array [
+        <Button
+          onClick={[Function]}
+          variant="primary"
+        >
+          OK
+        </Button>,
+      ]
+    }
+    modalTitle={
+      <Title
+        headingLevel="h1"
+        size="2xl"
+      >
+        <InfoCircleIcon
+          className="pf-u-mr-sm"
+          color="var(--pf-global--info-color--100)"
+          noVerticalAlign={false}
+          size="sm"
+        />
+        <span>
+          Job Details
+        </span>
+      </Title>
+    }
+  />
+  <JobsCancelModal
+    actionType="Job Cancel"
+    handleModalToggle={[Function]}
+    isModalOpen={false}
+    modalContent=""
+    modalTitle={null}
+  />
 </Card>
 `;
 
@@ -384,8 +438,58 @@ exports[`ProcessDetailsTimeline component tests Snapshot testing for service url
             <ErrorCircleOIcon
               className="kogito-management-console--timeline-status"
               color="var(--pf-global--danger-color--100)"
-              noVerticalAlign={false}
-              size="sm"
+            />
+          </Tooltip>
+        </SplitItem>
+        <SplitItem
+          isFilled={true}
+        >
+          <TextContent>
+            <Text
+              component="p"
+            >
+              Confirm travel
+              <span />
+              <Text
+                component="small"
+              >
+                <t
+                  ago={false}
+                  calendar={false}
+                  decimal={false}
+                  element={null}
+                  filter={[Function]}
+                  fromNow={true}
+                  interval={60000}
+                  local={false}
+                  onChange={[Function]}
+                  titleFormat=""
+                  toNow={false}
+                  unit={null}
+                  unix={false}
+                  utc={false}
+                  withTitle={false}
+                >
+                  <Component />
+                </t>
+              </Text>
+            </Text>
+          </TextContent>
+        </SplitItem>
+        <SplitItem />
+      </Split>
+      <Split
+        className="kogito-management-console--timeline-item"
+        hasGutter={true}
+        key="69e0a0f5-2360-4174-a8f8-a892a31fc2f9"
+      >
+        <SplitItem>
+          <Tooltip
+            content="Something went wrong"
+          >
+            <ErrorCircleOIcon
+              className="kogito-management-console--timeline-status"
+              color="var(--pf-global--danger-color--100)"
             />
           </Tooltip>
         </SplitItem>
@@ -404,15 +508,40 @@ exports[`ProcessDetailsTimeline component tests Snapshot testing for service url
                   <UserIcon
                     className="pf-u-ml-sm"
                     color="var(--pf-global--icon--Color--light)"
-                    noVerticalAlign={false}
-                    size="sm"
+                  />
+                </Tooltip>
+                <Tooltip
+                  content="Node has job"
+                >
+                  <OutlinedClockIcon
+                    className="pf-u-ml-sm"
+                    color="var(--pf-global--icon--Color--dark)"
+                    onClick={[Function]}
                   />
                 </Tooltip>
               </span>
               <Text
                 component="small"
               >
-                Active
+                <t
+                  ago={false}
+                  calendar={false}
+                  decimal={false}
+                  element={null}
+                  filter={[Function]}
+                  fromNow={true}
+                  interval={60000}
+                  local={false}
+                  onChange={[Function]}
+                  titleFormat=""
+                  toNow={false}
+                  unit={null}
+                  unix={false}
+                  utc={false}
+                  withTitle={false}
+                >
+                  <Component />
+                </t>
               </Text>
             </Text>
           </TextContent>
@@ -433,6 +562,13 @@ exports[`ProcessDetailsTimeline component tests Snapshot testing for service url
                 >
                   Skip
                 </DropdownItem>,
+                <DropdownItem
+                  component="button"
+                  id="job-details"
+                  onClick={[Function]}
+                >
+                  Job Details
+                </DropdownItem>,
               ]
             }
             isOpen={false}
@@ -441,7 +577,7 @@ exports[`ProcessDetailsTimeline component tests Snapshot testing for service url
             position="right"
             toggle={
               <KebabToggle
-                id="timeline-kebab-toggle-0"
+                id="timeline-kebab-toggle-1"
                 onToggle={[Function]}
               />
             }
@@ -451,7 +587,7 @@ exports[`ProcessDetailsTimeline component tests Snapshot testing for service url
       <Split
         className="kogito-management-console--timeline-item"
         hasGutter={true}
-        key="69e0a0f5-2360-4174-a8f8-a892a31fc2f9"
+        key="7244ba1b-75ec-4789-8c65-499a0c5b1a6f"
       >
         <SplitItem>
           <Tooltip
@@ -459,9 +595,6 @@ exports[`ProcessDetailsTimeline component tests Snapshot testing for service url
           >
             <OnRunningIcon
               className="kogito-management-console--timeline-status"
-              color="currentColor"
-              noVerticalAlign={false}
-              size="sm"
             />
           </Tooltip>
         </SplitItem>
@@ -472,16 +605,48 @@ exports[`ProcessDetailsTimeline component tests Snapshot testing for service url
             <Text
               component="p"
             >
-              Confirm travel
+              End Event 1
+              <span />
+              <Text
+                component="small"
+              >
+                Active
+              </Text>
+            </Text>
+          </TextContent>
+        </SplitItem>
+        <SplitItem />
+      </Split>
+      <Split
+        className="kogito-management-console--timeline-item"
+        hasGutter={true}
+        key="2f588da5-a323-4111-9017-3093ef9319d1"
+      >
+        <SplitItem>
+          <Tooltip
+            content="Active"
+          >
+            <OnRunningIcon
+              className="kogito-management-console--timeline-status"
+            />
+          </Tooltip>
+        </SplitItem>
+        <SplitItem
+          isFilled={true}
+        >
+          <TextContent>
+            <Text
+              component="p"
+            >
+              Book flight
               <span>
                 <Tooltip
-                  content="Human task"
+                  content="Node has job"
                 >
-                  <UserIcon
+                  <OutlinedClockIcon
                     className="pf-u-ml-sm"
-                    color="var(--pf-global--icon--Color--light)"
-                    noVerticalAlign={false}
-                    size="sm"
+                    color="var(--pf-global--icon--Color--dark)"
+                    onClick={[Function]}
                   />
                 </Tooltip>
               </span>
@@ -509,6 +674,27 @@ exports[`ProcessDetailsTimeline component tests Snapshot testing for service url
                 >
                   Cancel node
                 </DropdownItem>,
+                <DropdownItem
+                  component="button"
+                  id="job-details"
+                  onClick={[Function]}
+                >
+                  Job Details
+                </DropdownItem>,
+                <DropdownItem
+                  component="button"
+                  id="job-reschedule"
+                  onClick={[Function]}
+                >
+                  Job Reschedule
+                </DropdownItem>,
+                <DropdownItem
+                  component="button"
+                  id="job-cancel"
+                  onClick={[Function]}
+                >
+                  Job Cancel
+                </DropdownItem>,
               ]
             }
             isOpen={false}
@@ -517,120 +703,12 @@ exports[`ProcessDetailsTimeline component tests Snapshot testing for service url
             position="right"
             toggle={
               <KebabToggle
-                id="timeline-kebab-toggle-1"
+                id="timeline-kebab-toggle-3"
                 onToggle={[Function]}
               />
             }
           />
         </SplitItem>
-      </Split>
-      <Split
-        className="kogito-management-console--timeline-item"
-        hasGutter={true}
-        key="7244ba1b-75ec-4789-8c65-499a0c5b1a6f"
-      >
-        <SplitItem>
-          <Tooltip
-            content="Completed"
-          >
-            <CheckCircleIcon
-              className="kogito-management-console--timeline-status"
-              color="var(--pf-global--success-color--100)"
-              noVerticalAlign={false}
-              size="sm"
-            />
-          </Tooltip>
-        </SplitItem>
-        <SplitItem
-          isFilled={true}
-        >
-          <TextContent>
-            <Text
-              component="p"
-            >
-              End Event 1
-              <span />
-              <Text
-                component="small"
-              >
-                <t
-                  ago={false}
-                  calendar={false}
-                  decimal={false}
-                  element={null}
-                  filter={[Function]}
-                  fromNow={true}
-                  interval={60000}
-                  local={false}
-                  onChange={[Function]}
-                  titleFormat=""
-                  toNow={false}
-                  unit={null}
-                  unix={false}
-                  utc={false}
-                  withTitle={false}
-                >
-                  <Component />
-                </t>
-              </Text>
-            </Text>
-          </TextContent>
-        </SplitItem>
-        <SplitItem />
-      </Split>
-      <Split
-        className="kogito-management-console--timeline-item"
-        hasGutter={true}
-        key="2f588da5-a323-4111-9017-3093ef9319d1"
-      >
-        <SplitItem>
-          <Tooltip
-            content="Completed"
-          >
-            <CheckCircleIcon
-              className="kogito-management-console--timeline-status"
-              color="var(--pf-global--success-color--100)"
-              noVerticalAlign={false}
-              size="sm"
-            />
-          </Tooltip>
-        </SplitItem>
-        <SplitItem
-          isFilled={true}
-        >
-          <TextContent>
-            <Text
-              component="p"
-            >
-              Book flight
-              <span />
-              <Text
-                component="small"
-              >
-                <t
-                  ago={false}
-                  calendar={false}
-                  decimal={false}
-                  element={null}
-                  filter={[Function]}
-                  fromNow={true}
-                  interval={60000}
-                  local={false}
-                  onChange={[Function]}
-                  titleFormat=""
-                  toNow={false}
-                  unit={null}
-                  unix={false}
-                  utc={false}
-                  withTitle={false}
-                >
-                  <Component />
-                </t>
-              </Text>
-            </Text>
-          </TextContent>
-        </SplitItem>
-        <SplitItem />
       </Split>
       <Split
         className="kogito-management-console--timeline-item"
@@ -644,8 +722,6 @@ exports[`ProcessDetailsTimeline component tests Snapshot testing for service url
             <CheckCircleIcon
               className="kogito-management-console--timeline-status"
               color="var(--pf-global--success-color--100)"
-              noVerticalAlign={false}
-              size="sm"
             />
           </Tooltip>
         </SplitItem>
@@ -688,5 +764,44 @@ exports[`ProcessDetailsTimeline component tests Snapshot testing for service url
       </Split>
     </Stack>
   </CardBody>
+  <MockedJobsPanelDetailsModal
+    actionType="Job Details"
+    handleModalToggle={[Function]}
+    isModalOpen={false}
+    job={Object {}}
+    modalAction={
+      Array [
+        <Button
+          onClick={[Function]}
+          variant="primary"
+        >
+          OK
+        </Button>,
+      ]
+    }
+    modalTitle={
+      <Title
+        headingLevel="h1"
+        size="2xl"
+      >
+        <InfoCircleIcon
+          className="pf-u-mr-sm"
+          color="var(--pf-global--info-color--100)"
+          noVerticalAlign={false}
+          size="sm"
+        />
+        <span>
+          Job Details
+        </span>
+      </Title>
+    }
+  />
+  <JobsCancelModal
+    actionType="Job Cancel"
+    handleModalToggle={[Function]}
+    isModalOpen={false}
+    modalContent=""
+    modalTitle={null}
+  />
 </Card>
 `;

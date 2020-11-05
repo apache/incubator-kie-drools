@@ -13,13 +13,15 @@ import {
   Dropdown,
   KebabToggle,
   DropdownItem,
-  Tooltip
+  Tooltip,
+  Button
 } from '@patternfly/react-core';
 import {
   UserIcon,
   CheckCircleIcon,
   ErrorCircleOIcon,
-  OnRunningIcon
+  OnRunningIcon,
+  OutlinedClockIcon
 } from '@patternfly/react-icons';
 import React, { useState } from 'react';
 import './ProcessDetailsTimeline.css';
@@ -29,16 +31,27 @@ import {
   handleSkip,
   handleNodeInstanceRetrigger,
   setTitle,
-  handleNodeInstanceCancel
+  handleNodeInstanceCancel,
+  jobCancel
 } from '../../../utils/Utils';
 import ProcessInstance = GraphQL.ProcessInstance;
 import ProcessListModal from '../../Atoms/ProcessListModal/ProcessListModal';
+import JobsPanelDetailsModal from '../../Atoms/JobsPanelDetailsModal/JobsPanelDetailsModal';
+import JobsRescheduleModal from '../../Atoms/JobsRescheduleModal/JobsRescheduleModal';
+import { refetchContext } from '../../contexts';
+import JobsCancelModal from '../../Atoms/JobsCancelModal/JobsCancelModal';
 
+interface JobResponseMeta {
+  data: any;
+  loading: boolean;
+  refetch: () => void;
+}
 export interface IOwnProps {
   data: Pick<
     ProcessInstance,
     'id' | 'nodes' | 'addons' | 'error' | 'serviceUrl' | 'processId' | 'state'
   >;
+  jobsResponse: JobResponseMeta;
 }
 enum TitleType {
   SUCCESS = 'success',
@@ -46,15 +59,24 @@ enum TitleType {
 }
 const ProcessDetailsTimeline: React.FC<IOwnProps & OUIAProps> = ({
   data,
+  jobsResponse,
   ouiaId,
   ouiaSafe
 }) => {
   const [kebabOpenArray, setKebabOpenArray] = useState([]);
   const [modalTitle, setModalTitle] = useState<string>('');
+  const [cancelModalTitle, setCancelModalTitle] = useState<JSX.Element>(null);
   const [titleType, setTitleType] = useState<string>('');
   const [modalContent, setModalContent] = useState<string>('');
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState<boolean>(false);
+  const [isRescheduleModalOpen, setIsRescheduleModalOpen] = useState<boolean>(
+    false
+  );
+  const [isCancelModalOpen, setIsCancelModalOpen] = useState<boolean>(false);
+  const [selectedJob, setSelectedJob] = useState<any>({});
   const ignoredNodeTypes = ['Join', 'Split', 'EndNode'];
+  const editableJobStatus: string[] = ['SCHEDULED', 'ERROR'];
 
   const onKebabToggle = (isOpen: boolean, id) => {
     if (isOpen) {
@@ -85,12 +107,109 @@ const ProcessDetailsTimeline: React.FC<IOwnProps & OUIAProps> = ({
     setModalContent(content);
     handleModalToggle();
   };
-  const dropdownItems = (processInstanceData, node) => {
+  const handleJobDetails = (job: GraphQL.Job): void => {
+    setSelectedJob(job);
+    handleDetailsToggle();
+  };
+  const handleDetailsToggle = (): void => {
+    setIsDetailsModalOpen(!isDetailsModalOpen);
+  };
+
+  const handleJobReschedule = (job: GraphQL.Job): void => {
+    setSelectedJob(job);
+    handleRescheduleToggle();
+  };
+
+  const handleCancelAction = (job: GraphQL.Job): void => {
+    jobCancel(job, setCancelModalTitle, setModalContent, jobsResponse.refetch);
+    handleCancelModalToggle();
+  };
+
+  const handleRescheduleToggle = (): void => {
+    setIsRescheduleModalOpen(!isRescheduleModalOpen);
+  };
+
+  const handleCancelModalToggle = (): void => {
+    setIsCancelModalOpen(!isCancelModalOpen);
+  };
+
+  const detailsAction: JSX.Element[] = [
+    <Button
+      key="confirm-selection"
+      variant="primary"
+      onClick={handleDetailsToggle}
+    >
+      OK
+    </Button>
+  ];
+
+  const rescheduleActions: JSX.Element[] = [
+    <Button
+      key="cancel-reschedule"
+      variant="secondary"
+      onClick={handleRescheduleToggle}
+    >
+      Cancel
+    </Button>
+  ];
+
+  const renderJobActions = (id, options) => {
+    return jobsResponse.data.Jobs.map(job => {
+      if (id === job.nodeInstanceId && editableJobStatus.includes(job.status)) {
+        return [
+          ...options,
+          <DropdownItem
+            key="job-details"
+            id="job-details"
+            component="button"
+            onClick={() => handleJobDetails(job)}
+          >
+            Job Details
+          </DropdownItem>,
+          <DropdownItem
+            key="job-reschedule"
+            id="job-reschedule"
+            component="button"
+            onClick={() => handleJobReschedule(job)}
+          >
+            Job Reschedule
+          </DropdownItem>,
+          <DropdownItem
+            key="job-cancel"
+            id="job-cancel"
+            component="button"
+            onClick={() => handleCancelAction(job)}
+          >
+            Job Cancel
+          </DropdownItem>
+        ];
+      } else if (
+        id === job.nodeInstanceId &&
+        !editableJobStatus.includes(job.status)
+      ) {
+        return [
+          ...options,
+          <DropdownItem
+            key="job-details"
+            id="job-details"
+            component="button"
+            onClick={() => handleJobDetails(job)}
+          >
+            Job Details
+          </DropdownItem>
+        ];
+      } else {
+        return [];
+      }
+    });
+  };
+
+  const dropdownItems = (processInstanceData, node): JSX.Element[] => {
     if (
       processInstanceData.error &&
       node.definitionId === processInstanceData.error.nodeDefinitionId
     ) {
-      return [
+      const options = [
         <DropdownItem
           key="retry"
           component="button"
@@ -138,8 +257,10 @@ const ProcessDetailsTimeline: React.FC<IOwnProps & OUIAProps> = ({
           Skip
         </DropdownItem>
       ];
+      const items = renderJobActions(node.id, options);
+      return items.flat();
     } else if (node.exit === null && !ignoredNodeTypes.includes(node.type)) {
-      return [
+      const options = [
         <DropdownItem
           key="retrigger"
           component="button"
@@ -189,15 +310,19 @@ const ProcessDetailsTimeline: React.FC<IOwnProps & OUIAProps> = ({
           Cancel node
         </DropdownItem>
       ];
+      const items = renderJobActions(node.id, options);
+      return items.flat();
     } else {
-      return [];
+      const items = renderJobActions(node.id, []);
+      return items.flat();
     }
   };
-  const processManagementKebabButtons = (node, index) => {
-    const dropdownItemsValue = dropdownItems(data, node);
+  const processManagementKebabButtons = (node, index): JSX.Element => {
+    const dropdownItemsValue: JSX.Element[] = dropdownItems(data, node);
     if (
       data.addons.includes('process-management') &&
       data.serviceUrl !== null &&
+      dropdownItemsValue &&
       dropdownItemsValue.length !== 0
     ) {
       return (
@@ -218,6 +343,22 @@ const ProcessDetailsTimeline: React.FC<IOwnProps & OUIAProps> = ({
         />
       );
     }
+  };
+
+  const renderTimerIcon = (id: string): JSX.Element => {
+    return jobsResponse.data.Jobs.map(job => {
+      if (id === job.nodeInstanceId) {
+        return (
+          <Tooltip content={'Node has job'}>
+            <OutlinedClockIcon
+              className="pf-u-ml-sm"
+              color="var(--pf-global--icon--Color--dark)"
+              onClick={() => handleJobDetails(job)}
+            />
+          </Tooltip>
+        );
+      }
+    });
   };
 
   return (
@@ -284,7 +425,9 @@ const ProcessDetailsTimeline: React.FC<IOwnProps & OUIAProps> = ({
                               />
                             </Tooltip>
                           )}
+                          {renderTimerIcon(content.id)}
                         </span>
+
                         <Text component={TextVariants.small}>
                           {content.exit === null ? (
                             'Active'
@@ -305,6 +448,35 @@ const ProcessDetailsTimeline: React.FC<IOwnProps & OUIAProps> = ({
             })}
         </Stack>
       </CardBody>
+      <JobsPanelDetailsModal
+        actionType="Job Details"
+        modalTitle={setTitle('success', 'Job Details')}
+        isModalOpen={isDetailsModalOpen}
+        handleModalToggle={handleDetailsToggle}
+        modalAction={detailsAction}
+        job={selectedJob}
+      />
+      {Object.keys(selectedJob).length > 0 && (
+        <refetchContext.Provider value={jobsResponse.refetch}>
+          <JobsRescheduleModal
+            actionType="Job Reschedule"
+            modalTitle={setTitle('success', 'Job Reschedule')}
+            isModalOpen={isRescheduleModalOpen}
+            handleModalToggle={handleRescheduleToggle}
+            modalAction={rescheduleActions}
+            job={selectedJob}
+            setRescheduleClicked={setIsRescheduleModalOpen}
+            rescheduleClicked={isRescheduleModalOpen}
+          />
+        </refetchContext.Provider>
+      )}
+      <JobsCancelModal
+        actionType="Job Cancel"
+        isModalOpen={isCancelModalOpen}
+        handleModalToggle={handleCancelModalToggle}
+        modalTitle={cancelModalTitle}
+        modalContent={modalContent}
+      />
     </Card>
   );
 };
