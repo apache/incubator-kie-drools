@@ -39,7 +39,7 @@ import org.kie.dmn.feel.runtime.functions.DateAndTimeFunction;
 import org.kie.dmn.feel.runtime.functions.DateFunction;
 import org.kie.dmn.feel.runtime.functions.TimeFunction;
 
-import static org.kie.dmn.feel.util.AssignableResolver.isAssignableFrom;
+import static org.kie.dmn.feel.util.AssignableFromUtil.isAssignableFrom;
 
 public final class TypeUtil {
 
@@ -60,7 +60,7 @@ public final class TypeUtil {
         for (final Object object : collection) {
             if (object == null) {
                 continue;
-            } else if (!isAssignableFrom(expectedType, object)) {
+            } else if (!isAssignableFrom(expectedType, object.getClass())) {
                 return false;
             }
         }
