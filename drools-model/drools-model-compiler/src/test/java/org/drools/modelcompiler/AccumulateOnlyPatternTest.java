@@ -307,7 +307,7 @@ public class AccumulateOnlyPatternTest extends OnlyPatternTest {
     }
 
     @Test
-    public void test() {
+    public void testDoubleGroupBy() {
         // Prepare reproducing data.
         MrMachine machine2 = new MrMachine();
         MrMachine machine3 = new MrMachine();
@@ -320,16 +320,22 @@ public class AccumulateOnlyPatternTest extends OnlyPatternTest {
         KieSession kieSession = KieBaseBuilder.createKieBaseFromModel(getExecutableModel())
                 .newKieSession();
 
+        //ReteDumper.dumpRete(kieSession);
+
         // Insert facts into the session.
         kieSession.insert(assignment1);
         kieSession.insert(assignment2);
         kieSession.insert(assignment3);
         kieSession.insert(assignment4);
+        System.out.println("--- initial evaluation");
         kieSession.fireAllRules();
 
         // Execute the sequence of session events that triggers the exception.
+        System.out.println("--- 1st switch");
         switchMachinesInAssignments(kieSession, assignment1, assignment2);
+        System.out.println("--- 2nd switch");
         switchMachinesInAssignments(kieSession, assignment1, assignment2);
+        System.out.println("--- 3rd switch");
         switchMachinesInAssignments(kieSession, assignment4, assignment3);
 
         kieSession.dispose();

@@ -16,12 +16,17 @@
 package org.drools.core.phreak;
 
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.NetworkNode;
 import org.drools.core.common.TupleSets;
+import org.drools.core.reteoo.AccumulateNode;
+import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
+import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.SegmentMemory;
+import org.drools.core.reteoo.TupleMemory;
 
 import static org.drools.core.phreak.AddRemoveRule.forceFlushLeftTuple;
 
@@ -74,8 +79,13 @@ public class SegmentPropagator {
                         // if the tuple already has a peer avoid to create a new one ...
                         peer = peer.getPeer();
                         peer.setPropagationContext( leftTuple.getPropagationContext() );
-                        // ... and update the staged LeftTupleSets according to its current staged state
-                        PhreakJoinNode.updateChildLeftTuple(peer, smem.getStagedLeftTuples(), smem.getStagedLeftTuples());
+                        if (isDeletedAccumulateLeftTuple(peer, smem, wm)) {
+                            // if deleted, it should be inserted rather than updated
+                            smem.getStagedLeftTuples().addInsert( peer );
+                        } else {
+                            // ... and update the staged LeftTupleSets according to its current staged state
+                            PhreakJoinNode.updateChildLeftTuple(peer, smem.getStagedLeftTuples(), smem.getStagedLeftTuples());
+                        }
                     } else {
                         peer = ((LeftTupleSink)smem.getRootNode()).createPeer( peer );
                         smem.getStagedLeftTuples().addInsert( peer );
@@ -96,6 +106,22 @@ public class SegmentPropagator {
 
         firstSmem.getStagedLeftTuples().addAll( leftTuples );
         leftTuples.resetAll();
+    }
+
+    private static boolean isDeletedAccumulateLeftTuple(LeftTuple peer, SegmentMemory smem, InternalWorkingMemory wm) {
+        NetworkNode rootNode = smem.getRootNode();
+        if (rootNode instanceof AccumulateNode && peer.getStagedType() == LeftTuple.NONE) {
+            AccumulateNode accNode = (AccumulateNode)rootNode;
+            AccumulateMemory am = ((AccumulateMemory)wm.getNodeMemory(accNode));
+            BetaMemory bm = am.getBetaMemory();
+            TupleMemory ltm = bm.getLeftTupleMemory();
+            if (ltm.contains(peer)) {
+                return false;
+            } else {
+                return true;
+            }
+        }
+        return false;
     }
 
     private static void processPeerDeletes( TupleSets<LeftTuple> leftTuples, LeftTuple leftTuple, SegmentMemory firstSmem, InternalWorkingMemory wm ) {
