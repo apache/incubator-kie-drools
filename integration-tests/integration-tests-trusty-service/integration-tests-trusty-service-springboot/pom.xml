@@ -41,22 +41,40 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-remote-resources-plugin</artifactId>
+        <artifactId>maven-resources-plugin</artifactId>
         <executions>
           <execution>
+            <phase>generate-resources</phase>
             <goals>
-              <goal>process</goal>
+              <goal>copy-resources</goal>
             </goals>
             <configuration>
-              <resourceBundles>
-                <resourceBundle>org.kie.kogito:integration-tests-trusty-service-common:${project.version}</resourceBundle>
-              </resourceBundles>
+              <outputDirectory>${project.basedir}/src/main/resources</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${project.parent.basedir}/integration-tests-trusty-service-common/src/main/resources</directory>
+                  <includes>
+                    <include>**/*.dmn</include>
+                  </includes>
+                </resource>
+              </resources>
             </configuration>
           </execution>
         </executions>
       </plugin>
-
+      <plugin>
+        <artifactId>maven-clean-plugin</artifactId>
+        <configuration>
+          <filesets>
+            <fileset>
+              <directory>${project.basedir}/src/main/resources</directory>
+              <includes>
+                <include>*.dmn</include>
+              </includes>
+            </fileset>
+          </filesets>
+        </configuration>
+      </plugin>
       <plugin>
         <groupId>org.kie.kogito</groupId>
         <artifactId>kogito-maven-plugin</artifactId>
