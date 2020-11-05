@@ -1,7 +1,5 @@
 package org.kie.dmn.kogito.quarkus.example;
 
-import java.time.Period;
-
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -9,11 +7,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import org.drools.core.beliefsystem.simple.SimpleMode;
-import org.kie.dmn.api.core.DMNContext;
-import org.kie.dmn.core.impl.DMNContextImpl;
-import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.kie.kogito.Application;
 import org.kie.kogito.dmn.rest.DMNEvaluationErrorException;
 import org.kie.kogito.dmn.rest.DMNJSONUtils;
@@ -24,9 +17,10 @@ import org.kie.kogito.dmn.util.StronglyTypedUtils;
 public class DMNRestResourceTemplate {
 
     Application application;
-    
+
     private static final String KOGITO_DECISION_INFOWARN_HEADER = "X-Kogito-decision-messages";
-    
+    private static final String KOGITO_EXECUTION_ID_HEADER = "X-Kogito-execution-id";
+
     @javax.ws.rs.core.Context
     private org.jboss.resteasy.spi.HttpResponse httpResponse;
 
@@ -39,11 +33,13 @@ public class DMNRestResourceTemplate {
     @io.swagger.v3.oas.annotations.responses.ApiResponse(content = @io.swagger.v3.oas.annotations.media.Content(mediaType = "application/json",schema = @io.swagger.v3.oas.annotations.media.Schema(ref = "/dmnDefinitions.json#/definitions/OutputSet1")), description = "DMN output")
     public $outputType$ dmn($inputType$ variables) {
         org.kie.kogito.decision.DecisionModel decision = application.decisionModels().getDecisionModel("$modelNamespace$", "$modelName$");
-        OutputSet outputSet = (OutputSet)StronglyTypedUtils.convertToOutputSet(variables, OutputSet.class);
-        org.kie.kogito.dmn.rest.DMNResult result = new org.kie.kogito.dmn.rest.DMNResult("$modelNamespace$", "$modelName$", decision.evaluateAll(DMNJSONUtils.ctx(decision, $inputData$)));
+        OutputSet outputSet = (OutputSet) StronglyTypedUtils.convertToOutputSet(variables, OutputSet.class);
+        org.kie.dmn.api.core.DMNResult decisionResult = decision.evaluateAll(DMNJSONUtils.ctx(decision, $inputData$));
+        enrichResponseHeaders(decisionResult);
+        org.kie.kogito.dmn.rest.DMNResult result = new org.kie.kogito.dmn.rest.DMNResult("$modelNamespace$", "$modelName$", decisionResult);
         return $extractContextMethod$(result);
     }
-    
+
     @GET
     @Produces(MediaType.APPLICATION_XML)
     public String dmn() throws java.io.IOException {
@@ -63,7 +59,6 @@ public class DMNRestResourceTemplate {
     private Object extractContextIfSucceded(DMNResult result){
         if (!result.hasErrors()) {
             try {
-                enrichResponseHeaders(result);
                 return objectMapper.writeValueAsString(result.getDmnContext());
             } catch (com.fasterxml.jackson.core.JsonProcessingException e) {
                 throw new RuntimeException(e);
@@ -75,7 +70,6 @@ public class DMNRestResourceTemplate {
 
     private OutputSet extractStronglyTypedContextIfSucceded(DMNResult result) {
         if (!result.hasErrors()) {
-            enrichResponseHeaders(result);
             return (OutputSet)StronglyTypedUtils.extractOutputSet(result, OutputSet.class);
         } else {
             throw new DMNEvaluationErrorException(result);
@@ -93,7 +87,6 @@ public class DMNRestResourceTemplate {
     private Object extractSingletonDSIfSucceded(DMNResult result) {
         if (!result.hasErrors()) {
             try {
-                enrichResponseHeaders(result);
                 return objectMapper.writeValueAsString(result.getDecisionResults().get(0).getResult());
             } catch (com.fasterxml.jackson.core.JsonProcessingException e) {
                 throw new RuntimeException(e);
@@ -102,11 +95,16 @@ public class DMNRestResourceTemplate {
             throw new DMNEvaluationErrorException(result);
         }
     }
-    
-    private void enrichResponseHeaders(DMNResult result) {
-        if (!result.getMessages().isEmpty()) {
+
+    private void enrichResponseHeaders(org.kie.dmn.api.core.DMNResult result) {
+        if (!result.hasErrors() && !result.getMessages().isEmpty()) {
             String infoWarns = result.getMessages().stream().map(m -> m.getLevel() + " " + m.getMessage()).collect(java.util.stream.Collectors.joining(", "));
             httpResponse.getOutputHeaders().add(KOGITO_DECISION_INFOWARN_HEADER, infoWarns);
         }
+
+        org.kie.kogito.decision.DecisionExecutionIdUtils.getOptional(result.getContext())
+                .ifPresent(executionId ->
+                        httpResponse.getOutputHeaders().add(KOGITO_EXECUTION_ID_HEADER, executionId)
+                );
     }
 }
