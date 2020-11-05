@@ -24,7 +24,7 @@ public interface LambdaPrinter {
     String getLambdaFingerprint(Object lambda);
 
     static String print(Object lambda) {
-        throw new UnsupportedOperationException();
+        return Factory.get().getLambdaFingerprint(lambda);
     }
 
     class Factory {
