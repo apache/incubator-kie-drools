@@ -3,6 +3,8 @@ import { Link, Redirect } from 'react-router-dom';
 import {
   componentOuiaProps,
   GraphQL,
+  KogitoEmptyState,
+  KogitoEmptyStateType,
   KogitoSpinner,
   ouiaPageTypeAndObjectId,
   OUIAProps,
@@ -23,6 +25,7 @@ import {
   ToolbarItem
 } from '@patternfly/react-core';
 import JobsManagementTable from '../../Organisms/JobsManagementTable/JobsManagementTable';
+import JobsManagementFiters from '../../Organisms/JobsManagementFilters/JobsManagementFilters';
 import JobsPanelDetailsModal from '../../Atoms/JobsPanelDetailsModal/JobsPanelDetailsModal';
 import JobsRescheduleModal from '../../Atoms/JobsRescheduleModal/JobsRescheduleModal';
 import { refetchContext } from '../../contexts';
@@ -31,10 +34,7 @@ import JobsCancelModal from '../../Atoms/JobsCancelModal/JobsCancelModal';
 import { SyncIcon } from '@patternfly/react-icons';
 
 const JobsManagementPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
-  const { loading, data, error, refetch } = GraphQL.useGetAllJobsQuery({
-    fetchPolicy: 'network-only',
-    notifyOnNetworkStatusChange: true
-  });
+  const defaultStatus: GraphQL.JobStatus[] = [GraphQL.JobStatus.Scheduled];
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState<boolean>(false);
   const [isRescheduleModalOpen, setIsRescheduleModalOpen] = useState<boolean>(
     false
@@ -43,6 +43,18 @@ const JobsManagementPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
   const [modalTitle, setModalTitle] = useState<JSX.Element>(null);
   const [modalContent, setModalContent] = useState<string>('');
   const [selectedJob, setSelectedJob] = useState<any>({});
+  const [selectedStatus, setSelectedStatus] = useState<GraphQL.JobStatus[]>(
+    defaultStatus
+  );
+  const [chips, setChips] = useState<GraphQL.JobStatus[]>(defaultStatus);
+  const [values, setValues] = useState<GraphQL.JobStatus[]>(defaultStatus);
+
+  const { loading, data, error, refetch } = GraphQL.useGetAllJobsQuery({
+    fetchPolicy: 'network-only',
+    notifyOnNetworkStatusChange: true,
+    variables: { values }
+  });
+
   useEffect(() => {
     return ouiaPageTypeAndObjectId('jobs-management');
   });
@@ -83,14 +95,29 @@ const JobsManagementPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
     window.location.reload();
   };
 
+  const onReset = (): void => {
+    setSelectedStatus(defaultStatus);
+    setChips(defaultStatus);
+    setValues(defaultStatus);
+  };
+
   const renderToolbar = (): JSX.Element => {
     return (
       <Toolbar
         id="data-toolbar-with-chip-groups"
         className="pf-m-toggle-group-container"
         collapseListedFiltersBreakpoint="md"
+        clearAllFilters={onReset}
+        clearFiltersButtonText="Reset to default"
       >
         <ToolbarContent>
+          <JobsManagementFiters
+            selectedStatus={selectedStatus}
+            setSelectedStatus={setSelectedStatus}
+            setValues={setValues}
+            chips={chips}
+            setChips={setChips}
+          />
           <ToolbarGroup>
             <ToolbarItem>
               <Button
@@ -112,7 +139,7 @@ const JobsManagementPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
   };
 
   if (data) {
-    if (!loading && data.Jobs.length === 0) {
+    if (!loading && selectedStatus.length > 0 && data.Jobs.length === 0) {
       return (
         <Redirect
           to={{
@@ -163,6 +190,14 @@ const JobsManagementPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
                       setSelectedJob={setSelectedJob}
                     />
                   </refetchContext.Provider>
+                  {selectedStatus.length === 0 && (
+                    <KogitoEmptyState
+                      type={KogitoEmptyStateType.Reset}
+                      title="No filter applied."
+                      body="Try applying at least one filter to see results"
+                      onClick={() => onReset()}
+                    />
+                  )}
                 </CardBody>
               </Card>
             ) : (

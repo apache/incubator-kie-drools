@@ -343,8 +343,8 @@ const GET_JOBS_BY_PROC_INST_ID = gql`
 `;
 
 const GET_ALL_JOBS = gql`
-  query getAllJobs {
-    Jobs {
+  query getAllJobs($values: [JobStatus]) {
+    Jobs(where: { status: { in: $values } }) {
       id
       processId
       processInstanceId

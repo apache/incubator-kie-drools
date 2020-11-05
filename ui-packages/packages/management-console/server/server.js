@@ -158,14 +158,13 @@ const resolvers = {
           console.log('Job data args->', args['where'].processInstanceId)
           if (args['where'].processInstanceId && args['where'].processInstanceId.equal) {
             return jobData.processInstanceId == args['where'].processInstanceId.equal;
+          } else if (args['where'].status && args['where'].status.in) {
+            return args['where'].status.in.includes(jobData.status)
           }
         });
-        return result;
-      } else {
         await timeout(2000);
-        return data.JobsData
-      }
-      
+        return result;
+      }      
     }
   },
 

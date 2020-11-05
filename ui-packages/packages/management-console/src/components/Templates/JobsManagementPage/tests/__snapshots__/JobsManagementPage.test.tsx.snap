@@ -43,7 +43,7 @@ exports[`Jobs management page tests mock data with error response 1`] = `
     <ServerErrors
       error={
         [Error: Network error: Error writing result to store for query:
- {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"getAllJobs"},"variableDefinitions":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"Jobs"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"processId"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"processInstanceId"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"rootProcessId"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"status"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"expirationTime"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"priority"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"callbackEndpoint"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"repeatInterval"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"repeatLimit"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"scheduledId"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"retries"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"lastUpdate"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"endpoint"},"arguments":[],"directives":[]}]}}]}}],"loc":{"start":0,"end":325}}
+ {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"getAllJobs"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"values"}},"type":{"kind":"ListType","type":{"kind":"NamedType","name":{"kind":"Name","value":"JobStatus"}}},"directives":[]}],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"Jobs"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"status"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"in"},"value":{"kind":"Variable","name":{"kind":"Name","value":"values"}}}]}}]}}],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"processId"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"processInstanceId"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"rootProcessId"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"status"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"expirationTime"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"priority"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"callbackEndpoint"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"repeatInterval"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"repeatLimit"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"scheduledId"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"retries"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"lastUpdate"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"endpoint"},"arguments":[],"directives":[]}]}}]}}],"loc":{"start":0,"end":383}}
 Cannot read property 'Jobs' of null]
       }
       variant="large"
@@ -95,6 +95,8 @@ exports[`Jobs management page tests snapshot test with mock data 1`] = `
       >
         <Toolbar
           className="pf-m-toggle-group-container"
+          clearAllFilters={[Function]}
+          clearFiltersButtonText="Reset to default"
           collapseListedFiltersBreakpoint="md"
           id="data-toolbar-with-chip-groups"
         >
@@ -112,6 +114,21 @@ exports[`Jobs management page tests snapshot test with mock data 1`] = `
                 <div
                   className="pf-c-toolbar__content-section"
                 >
+                  <JobsManagementFilters
+                    chips={
+                      Array [
+                        "SCHEDULED",
+                      ]
+                    }
+                    selectedStatus={
+                      Array [
+                        "SCHEDULED",
+                      ]
+                    }
+                    setChips={[Function]}
+                    setSelectedStatus={[Function]}
+                    setValues={[Function]}
+                  />
                   <ForwardRef>
                     <ToolbarGroupWithRef
                       innerRef={null}
@@ -159,7 +176,8 @@ exports[`Jobs management page tests snapshot test with mock data 1`] = `
                       "current": null,
                     }
                   }
-                  clearFiltersButtonText="Clear all filters"
+                  clearAllFilters={[Function]}
+                  clearFiltersButtonText="Reset to default"
                   expandableContentRef={
                     Object {
                       "current": <div
@@ -206,7 +224,8 @@ exports[`Jobs management page tests snapshot test with mock data 1`] = `
                   </div>,
                 }
               }
-              clearFiltersButtonText="Clear all filters"
+              clearAllFilters={[Function]}
+              clearFiltersButtonText="Reset to default"
               collapseListedFiltersBreakpoint="md"
               isExpanded={false}
               numberOfFilters={0}

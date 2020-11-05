@@ -6,6 +6,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { act } from 'react-dom/test-utils';
 
 jest.mock('../../../Organisms/JobsManagementTable/JobsManagementTable');
+jest.mock('../../../Organisms/JobsManagementFilters/JobsManagementFilters');
 jest.mock('../../../Atoms/JobsRescheduleModal/JobsRescheduleModal');
 jest.mock('../../../Atoms/JobsPanelDetailsModal/JobsPanelDetailsModal');
 jest.mock('../../../Atoms/JobsCancelModal/JobsCancelModal');
@@ -42,7 +43,7 @@ describe('Jobs management page tests', () => {
     {
       request: {
         query: GraphQL.GetAllJobsDocument,
-        variables: {}
+        variables: { values: ['SCHEDULED'] }
       },
       result: {
         data: {
@@ -111,7 +112,7 @@ describe('Jobs management page tests', () => {
     {
       request: {
         query: GraphQL.GetAllJobsDocument,
-        variables: {}
+        variables: { values: ['SCHEDULED'] }
       },
       result: {
         data: {
@@ -125,7 +126,7 @@ describe('Jobs management page tests', () => {
     {
       request: {
         query: GraphQL.GetAllJobsDocument,
-        variables: {}
+        variables: { values: ['SCHEDULED'] }
       },
       result: {
         data: null,
@@ -156,7 +157,6 @@ describe('Jobs management page tests', () => {
     );
     expect(wrapper).toMatchSnapshot();
     wrapper.update();
-
     await act(async () => {
       wrapper
         .find('#refresh-button')

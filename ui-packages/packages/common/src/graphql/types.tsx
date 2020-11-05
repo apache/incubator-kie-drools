@@ -1122,7 +1122,9 @@ export namespace GraphQL {
     >;
   };
 
-  export type GetAllJobsQueryVariables = Exact<{ [key: string]: never }>;
+  export type GetAllJobsQueryVariables = Exact<{
+    values?: Maybe<Array<Maybe<JobStatus>>>;
+  }>;
 
   export type GetAllJobsQuery = { __typename?: 'Query' } & {
     Jobs?: Maybe<
@@ -2073,8 +2075,8 @@ export namespace GraphQL {
     GetJobsByProcessInstanceIdQueryVariables
   >;
   export const GetAllJobsDocument = gql`
-    query getAllJobs {
-      Jobs {
+    query getAllJobs($values: [JobStatus]) {
+      Jobs(where: { status: { in: $values } }) {
         id
         processId
         processInstanceId
@@ -2105,6 +2107,7 @@ export namespace GraphQL {
    * @example
    * const { data, loading, error } = useGetAllJobsQuery({
    *   variables: {
+   *      values: // value for 'values'
    *   },
    * });
    */
