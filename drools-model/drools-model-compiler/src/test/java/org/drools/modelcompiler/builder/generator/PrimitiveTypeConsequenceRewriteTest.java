@@ -5,11 +5,10 @@ import java.util.Collections;
 import org.drools.core.addon.ClassTypeResolver;
 import org.drools.core.addon.TypeResolver;
 import org.drools.modelcompiler.builder.PackageModel;
-import org.drools.modelcompiler.domain.Address;
 import org.junit.Test;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalToIgnoringWhiteSpace;
-import static org.junit.Assert.*;
 
 public class PrimitiveTypeConsequenceRewriteTest {
 
@@ -23,6 +22,17 @@ public class PrimitiveTypeConsequenceRewriteTest {
 
         assertThat(rewritten,
                    equalToIgnoringWhiteSpace("{ $address.setShortNumber($interimVar.shortValue()); }"));
+    }
+
+    @Test
+    public void doNotConverLiterals() {
+        RuleContext context = createContext();
+
+        String rewritten = new PrimitiveTypeConsequenceRewrite(context)
+                .rewrite("{ $address.setShortNumber((short) (12)); }");
+
+        assertThat(rewritten,
+                   equalToIgnoringWhiteSpace("{ $address.setShortNumber((short) (12)); }"));
     }
 
     @Test
