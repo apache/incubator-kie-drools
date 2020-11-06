@@ -23,17 +23,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.kie.api.internal.assembler.KieAssemblerService;
-import org.kie.api.internal.assembler.KieAssemblers;
 import org.kie.api.internal.runtime.KieRuntimeService;
 import org.kie.api.internal.runtime.KieRuntimes;
 import org.kie.api.internal.utils.ServiceRegistry;
 import org.kie.api.internal.weaver.KieWeaverService;
 import org.kie.api.internal.weaver.KieWeavers;
-import org.kie.api.io.Resource;
-import org.kie.api.io.ResourceConfiguration;
-import org.kie.api.io.ResourceType;
-import org.kie.api.io.ResourceWithConfiguration;
 import org.kie.internal.services.KieWeaversImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,15 +47,15 @@ public class StaticServiceRegistry implements ServiceRegistry {
     }
 
     private void wireServices() {
-        serviceMap.put(org.kie.api.io.KieResources.class, SimpleInstanceCreator.instance("org.drools.core.io.impl.ResourceFactoryServiceImpl"));
-        serviceMap.put(org.kie.api.concurrent.KieExecutors.class, SimpleInstanceCreator.instance("org.drools.core.concurrent.ExecutorProviderImpl"));
-        serviceMap.put(org.kie.api.KieServices.class, SimpleInstanceCreator.instance("org.drools.compiler.kie.builder.impl.KieServicesImpl"));
-        serviceMap.put(org.kie.internal.builder.KnowledgeBuilderFactoryService.class, SimpleInstanceCreator.instance("org.drools.compiler.builder.impl.KnowledgeBuilderFactoryServiceImpl"));
-        serviceMap.put(org.kie.kogito.rules.DataSource.Factory.class, SimpleInstanceCreator.instance("org.kie.kogito.rules.units.impl.DataSourceFactoryImpl"));
-        serviceMap.put(org.kie.internal.ruleunit.RuleUnitComponentFactory.class, SimpleInstanceCreator.instance("org.kie.kogito.rules.units.impl.RuleUnitComponentFactoryImpl"));
-        serviceMap.put(KieAssemblers.class, new StaticKieAssemblers());
-        serviceMap.put(KieRuntimes.class, SimpleInstanceCreator.instance("org.kie.internal.services.KieRuntimesImpl"));
-        serviceMap.put(KieWeavers.class, new KieWeaversImpl());
+        registerService("org.kie.api.io.KieResources", "org.drools.core.io.impl.ResourceFactoryServiceImpl", true);
+        registerService("org.kie.api.concurrent.KieExecutors", "org.drools.core.concurrent.ExecutorProviderImpl", true);
+        registerService("org.kie.api.KieServices", "org.drools.compiler.kie.builder.impl.KieServicesImpl", false);
+        registerService("org.kie.internal.builder.KnowledgeBuilderFactoryService", "org.drools.compiler.builder.impl.KnowledgeBuilderFactoryServiceImpl", true);
+        registerService("org.kie.kogito.rules.DataSource$Factory", "org.kie.kogito.rules.units.impl.DataSourceFactoryImpl", false);
+        registerService("org.kie.internal.ruleunit.RuleUnitComponentFactory", "org.kie.kogito.rules.units.impl.RuleUnitComponentFactoryImpl", false);
+        registerService("org.kie.api.internal.assembler.KieAssemblers", "org.drools.statics.StaticKieAssemblers", true);
+        registerService("org.kie.api.internal.runtime.KieRuntimes", "org.kie.internal.services.KieRuntimesImpl", true);
+        registerService("org.kie.api.internal.weaver.KieWeavers", "org.kie.internal.services.KieWeaversImpl", true);
 
         registerService("org.drools.compiler.kie.builder.impl.InternalKieModuleProvider", "org.drools.modelcompiler.CanonicalKieModuleProvider", true);
         registerService("org.drools.compiler.compiler.DecisionTableProvider", "org.drools.decisiontable.DecisionTableProviderImpl", false);
@@ -134,38 +128,4 @@ public class StaticServiceRegistry implements ServiceRegistry {
         }
     }
 
-    static class StaticKieAssemblers implements KieAssemblers {
-
-        private Map<ResourceType, KieAssemblerService> assemblers = new HashMap<>();
-
-        public StaticKieAssemblers() {
-            // insert here reflective instantiation to assembler services
-            // this is an ad-interim solution
-            // e.g. assemblers.put(ResourceType.DMN, (KieAssemblerService)
-            //         instance("org.kie.dmn.core.assembler.DMNAssemblerService"));
-        }
-
-        @Override
-        public void addResource(Object knowledgeBuilder, Resource resource, ResourceType type, ResourceConfiguration configuration) throws Exception {
-            KieAssemblerService assembler = assemblers.get(type);
-            if (assembler != null) {
-                assembler.addResource(knowledgeBuilder,
-                                      resource,
-                                      type,
-                                      configuration);
-            } else {
-                log.debug("KieAssemblers: ignored {}", type);
-            }
-        }
-
-        @Override
-        public void addResources(Object knowledgeBuilder, List<ResourceWithConfiguration> resources, ResourceType type) throws Exception {
-            KieAssemblerService assembler = assemblers.get(type);
-            if (assembler != null) {
-                assembler.addResources(knowledgeBuilder, resources, type);
-            } else {
-                log.debug("KieAssemblers: ignored {}", type);
-            }
-        }
-    }
 }
