@@ -114,4 +114,9 @@ public class Drools {
     public static boolean isNativeImage() {
         return CoreComponentsBuilder.isNativeImage();
     }
+
+    // Used only for test purposed, do not call this as it simulates the code path for native image
+    public static void setNativeImage() {
+        System.setProperty("org.graalvm.nativeimage.imagecode", "true");
+    }
 }
