@@ -18,6 +18,8 @@ package org.drools.workbench.models.guided.template.backend;
 
 import org.assertj.core.api.Assertions;
 import org.drools.workbench.models.commons.backend.rule.RuleModelPersistence;
+import org.drools.workbench.models.datamodel.rule.ActionCallMethod;
+import org.drools.workbench.models.datamodel.rule.ActionFieldFunction;
 import org.drools.workbench.models.datamodel.rule.ActionFieldValue;
 import org.drools.workbench.models.datamodel.rule.ActionInsertFact;
 import org.drools.workbench.models.datamodel.rule.ActionSetField;
@@ -37,6 +39,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.soup.project.datamodel.oracle.DataType;
 
+import static org.drools.workbench.models.datamodel.rule.ActionCallMethod.TYPE_DEFINED;
+import static org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint.TYPE_TEMPLATE;
 import static org.junit.Assert.assertNotNull;
 
 public class RuleTemplateModelDRLPersistenceTest {
@@ -68,7 +72,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         con.setFieldName("field1");
         con.setOperator("in");
         con.setValue("$f1");
-        con.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        con.setConstraintValueType(TYPE_TEMPLATE);
         p.addConstraint(con);
 
         m.addLhsItem(p);
@@ -79,23 +83,67 @@ public class RuleTemplateModelDRLPersistenceTest {
 
         final String expected =
                 "rule \"t1_0\"" +
-                "dialect \"mvel\"\n" +
-                "when \n" +
-                "  Person( field1 in (1, 2) )" +
-                "then \n" +
-                "end" +
-                "rule \"t1_1\"" +
-                "dialect \"mvel\"\n" +
-                "when \n" +
-                "  Person( field1 in (3, 4) )" +
-                "then \n" +
-                "end" +
-                "rule \"t1_2\"" +
-                "dialect \"mvel\"\n" +
-                "when \n" +
-                "  Person( field1 in (5, 6) )" +
-                "then \n" +
-                "end";
+                        "dialect \"mvel\"\n" +
+                        "when \n" +
+                        "  Person( field1 in (1, 2) )" +
+                        "then \n" +
+                        "end" +
+                        "rule \"t1_1\"" +
+                        "dialect \"mvel\"\n" +
+                        "when \n" +
+                        "  Person( field1 in (3, 4) )" +
+                        "then \n" +
+                        "end" +
+                        "rule \"t1_2\"" +
+                        "dialect \"mvel\"\n" +
+                        "when \n" +
+                        "  Person( field1 in (5, 6) )" +
+                        "then \n" +
+                        "end";
+
+        checkMarshall(expected, m);
+    }
+
+    @Test
+    public void testActionCallMethod() {
+        final TemplateModel m = new TemplateModel();
+        m.name = "t1";
+
+        final FactPattern p = new FactPattern("Person");
+        p.setBoundName("p");
+        final SingleFieldConstraint con = new SingleFieldConstraint();
+        con.setFieldType(DataType.TYPE_NUMERIC_INTEGER);
+        con.setFieldName("field1");
+        con.setOperator("in");
+        con.setValue("$f1");
+        con.setConstraintValueType(TYPE_TEMPLATE);
+        p.addConstraint(con);
+
+        m.addLhsItem(p);
+
+        final ActionCallMethod actionCallMethod = new ActionCallMethod();
+        actionCallMethod.setMethodName("add");
+        actionCallMethod.setVariable("p");
+        final ActionFieldFunction actionFieldFunction = new ActionFieldFunction();
+        actionFieldFunction.setField("add");
+        actionFieldFunction.setValue("$f2");
+        actionFieldFunction.setType("String");
+        actionFieldFunction.setNature(TYPE_TEMPLATE);
+        actionCallMethod.setFieldValues(new ActionFieldValue[]{actionFieldFunction});
+        actionCallMethod.setState(TYPE_DEFINED);
+
+        m.addRhsItem(actionCallMethod);
+
+        m.addRow(new String[]{"1", "2"});
+
+        final String expected =
+                "rule \"t1_0\"\n" +
+                        "dialect \"mvel\"\n" +
+                        "when\n" +
+                        "p : Person( field1 in  (1) )\n" +
+                        "then\n" +
+                        "p.add( 2 );\n" +
+                        "end";
 
         checkMarshall(expected, m);
     }
@@ -111,7 +159,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         con.setFieldName("field1");
         con.setOperator("in");
         con.setValue("$f1");
-        con.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        con.setConstraintValueType(TYPE_TEMPLATE);
         p.addConstraint(con);
 
         m.addLhsItem(p);
@@ -124,35 +172,35 @@ public class RuleTemplateModelDRLPersistenceTest {
 
         String expected =
                 "rule \"t1_0\"" +
-                "dialect \"mvel\"\n" +
-                "when \n" +
-                "  Person( field1 in (\"ak1\",\"mk1\") )" +
-                "then \n" +
-                "end" +
-                "rule \"t1_1\"" +
-                "dialect \"mvel\"\n" +
-                "when \n" +
-                "  Person( field1 in (\"ak2\",\"mk2\") )" +
-                "then \n" +
-                "end" +
-                "rule \"t1_2\"" +
-                "dialect \"mvel\"\n" +
-                "when \n" +
-                "  Person( field1 in (\"ak3\",\"mk3\") )" +
-                "then \n" +
-                "end" +
-                "rule \"t1_3\"" +
-                "dialect \"mvel\"\n" +
-                "when \n" +
-                "  Person( field1 in (\"ak4\",\"mk4\") )" +
-                "then \n" +
-                "end" +
-                "rule \"t1_4\"" +
-                "dialect \"mvel\"\n" +
-                "when \n" +
-                "  Person( field1 in (\"ak5 \",\" mk5\") )" +
-                "then \n" +
-                "end";
+                        "dialect \"mvel\"\n" +
+                        "when \n" +
+                        "  Person( field1 in (\"ak1\",\"mk1\") )" +
+                        "then \n" +
+                        "end" +
+                        "rule \"t1_1\"" +
+                        "dialect \"mvel\"\n" +
+                        "when \n" +
+                        "  Person( field1 in (\"ak2\",\"mk2\") )" +
+                        "then \n" +
+                        "end" +
+                        "rule \"t1_2\"" +
+                        "dialect \"mvel\"\n" +
+                        "when \n" +
+                        "  Person( field1 in (\"ak3\",\"mk3\") )" +
+                        "then \n" +
+                        "end" +
+                        "rule \"t1_3\"" +
+                        "dialect \"mvel\"\n" +
+                        "when \n" +
+                        "  Person( field1 in (\"ak4\",\"mk4\") )" +
+                        "then \n" +
+                        "end" +
+                        "rule \"t1_4\"" +
+                        "dialect \"mvel\"\n" +
+                        "when \n" +
+                        "  Person( field1 in (\"ak5 \",\" mk5\") )" +
+                        "then \n" +
+                        "end";
 
         checkMarshall(expected,
                       m);
@@ -169,7 +217,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         con.setFieldName("field1");
         con.setOperator("in");
         con.setValue("$f1");
-        con.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        con.setConstraintValueType(TYPE_TEMPLATE);
         p.addConstraint(con);
 
         m.addLhsItem(p);
@@ -198,7 +246,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         con.setFieldName("field1");
         con.setOperator("==");
         con.setValue("$f1");
-        con.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        con.setConstraintValueType(TYPE_TEMPLATE);
         p.addConstraint(con);
 
         m.addLhsItem(p);
@@ -227,7 +275,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         con.setFieldName("field1");
         con.setOperator("==");
         con.setValue("$f1");
-        con.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        con.setConstraintValueType(TYPE_TEMPLATE);
         p.addConstraint(con);
 
         m.addLhsItem(p);
@@ -238,23 +286,23 @@ public class RuleTemplateModelDRLPersistenceTest {
 
         final String expected =
                 "rule \"t1_0\"" +
-                "dialect \"mvel\"\n" +
-                "when \n" +
-                "  Person( field1 == \"foo1\" )" +
-                "then \n" +
-                "end\n" +
-                "rule \"t1_1\"" +
-                "dialect \"mvel\"\n" +
-                "when \n" +
-                "  Person( field1 == \"foo3\" )" +
-                "then \n" +
-                "end" +
-                "rule \"t1_2\"" +
-                "dialect \"mvel\"\n" +
-                "when \n" +
-                "  Person( field1 == \"foo2\" )" +
-                "then \n" +
-                "end";
+                        "dialect \"mvel\"\n" +
+                        "when \n" +
+                        "  Person( field1 == \"foo1\" )" +
+                        "then \n" +
+                        "end\n" +
+                        "rule \"t1_1\"" +
+                        "dialect \"mvel\"\n" +
+                        "when \n" +
+                        "  Person( field1 == \"foo3\" )" +
+                        "then \n" +
+                        "end" +
+                        "rule \"t1_2\"" +
+                        "dialect \"mvel\"\n" +
+                        "when \n" +
+                        "  Person( field1 == \"foo2\" )" +
+                        "then \n" +
+                        "end";
 
         checkMarshall(expected, m);
     }
@@ -269,7 +317,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         con.setFieldName("field1");
         con.setOperator("==");
         con.setValue("$f1");
-        con.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        con.setConstraintValueType(TYPE_TEMPLATE);
         p.addConstraint(con);
 
         m.addLhsItem(p);
@@ -309,7 +357,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         con.setFieldName("field1");
         con.setOperator("==");
         con.setValue("$f1");
-        con.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        con.setConstraintValueType(TYPE_TEMPLATE);
         p.addConstraint(con);
 
         SingleFieldConstraint con2 = new SingleFieldConstraint();
@@ -346,7 +394,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         con.setFieldName("field1");
         con.setOperator("==");
         con.setValue("$f1");
-        con.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        con.setConstraintValueType(TYPE_TEMPLATE);
         p.addConstraint(con);
 
         SingleFieldConstraint con2 = new SingleFieldConstraint();
@@ -354,7 +402,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         con2.setFieldName("field2");
         con2.setOperator("==");
         con2.setValue("$f2");
-        con2.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        con2.setConstraintValueType(TYPE_TEMPLATE);
         p.addConstraint(con2);
 
         m.addLhsItem(p);
@@ -383,7 +431,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         con.setFieldName("field1");
         con.setOperator("==");
         con.setValue("$f1");
-        con.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        con.setConstraintValueType(TYPE_TEMPLATE);
         p.addConstraint(con);
 
         SingleFieldConstraint con2 = new SingleFieldConstraint();
@@ -391,7 +439,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         con2.setFieldName("field2");
         con2.setOperator("==");
         con2.setValue("$f2");
-        con2.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        con2.setConstraintValueType(TYPE_TEMPLATE);
         p.addConstraint(con2);
 
         m.addLhsItem(p);
@@ -420,7 +468,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         con.setFieldName("field1");
         con.setOperator("==");
         con.setValue("$f1");
-        con.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        con.setConstraintValueType(TYPE_TEMPLATE);
         p.addConstraint(con);
 
         SingleFieldConstraint con2 = new SingleFieldConstraint();
@@ -428,7 +476,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         con2.setFieldName("field2");
         con2.setOperator("==");
         con2.setValue("$f2");
-        con2.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        con2.setConstraintValueType(TYPE_TEMPLATE);
         p.addConstraint(con2);
 
         m.addLhsItem(p);
@@ -457,7 +505,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         con.setFieldName("field1");
         con.setOperator("==");
         con.setValue("$f1");
-        con.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        con.setConstraintValueType(TYPE_TEMPLATE);
         p.addConstraint(con);
 
         SingleFieldConstraint con2 = new SingleFieldConstraint();
@@ -465,7 +513,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         con2.setFieldName("field2");
         con2.setOperator("==");
         con2.setValue("$f2");
-        con2.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        con2.setConstraintValueType(TYPE_TEMPLATE);
         p.addConstraint(con2);
 
         m.addLhsItem(p);
@@ -501,7 +549,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         final SingleFieldConstraint X = new SingleFieldConstraint();
         X.setFieldName("field1");
         X.setFieldType(DataType.TYPE_STRING);
-        X.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        X.setConstraintValueType(TYPE_TEMPLATE);
         X.setValue("$f1");
         X.setOperator("==");
         comp.addConstraint(X);
@@ -509,7 +557,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         final SingleFieldConstraint Y = new SingleFieldConstraint();
         Y.setFieldName("field2");
         Y.setFieldType(DataType.TYPE_STRING);
-        Y.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        Y.setConstraintValueType(TYPE_TEMPLATE);
         Y.setValue("$f2");
         Y.setOperator("==");
         comp.addConstraint(Y);
@@ -542,7 +590,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         final SingleFieldConstraint X = new SingleFieldConstraint();
         X.setFieldName("field1");
         X.setFieldType(DataType.TYPE_STRING);
-        X.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        X.setConstraintValueType(TYPE_TEMPLATE);
         X.setValue("$f1");
         X.setOperator("==");
         comp.addConstraint(X);
@@ -550,7 +598,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         final SingleFieldConstraint Y = new SingleFieldConstraint();
         Y.setFieldName("field2");
         Y.setFieldType(DataType.TYPE_STRING);
-        Y.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        Y.setConstraintValueType(TYPE_TEMPLATE);
         Y.setValue("$f2");
         Y.setOperator("==");
         comp.addConstraint(Y);
@@ -583,7 +631,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         final SingleFieldConstraint X = new SingleFieldConstraint();
         X.setFieldName("field1");
         X.setFieldType(DataType.TYPE_STRING);
-        X.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        X.setConstraintValueType(TYPE_TEMPLATE);
         X.setValue("$f1");
         X.setOperator("==");
         comp.addConstraint(X);
@@ -591,7 +639,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         final SingleFieldConstraint Y = new SingleFieldConstraint();
         Y.setFieldName("field2");
         Y.setFieldType(DataType.TYPE_STRING);
-        Y.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        Y.setConstraintValueType(TYPE_TEMPLATE);
         Y.setValue("$f2");
         Y.setOperator("==");
         comp.addConstraint(Y);
@@ -624,7 +672,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         final SingleFieldConstraint X = new SingleFieldConstraint();
         X.setFieldName("field1");
         X.setFieldType(DataType.TYPE_STRING);
-        X.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        X.setConstraintValueType(TYPE_TEMPLATE);
         X.setValue("$f1");
         X.setOperator("==");
         comp.addConstraint(X);
@@ -641,7 +689,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         final SingleFieldConstraint Y = new SingleFieldConstraint();
         Y.setFieldName("field2");
         Y.setFieldType(DataType.TYPE_STRING);
-        Y.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        Y.setConstraintValueType(TYPE_TEMPLATE);
         Y.setValue("$f2");
         Y.setOperator("==");
         comp.addConstraint(Y);
@@ -674,7 +722,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         final SingleFieldConstraint X = new SingleFieldConstraint();
         X.setFieldName("field1");
         X.setFieldType(DataType.TYPE_STRING);
-        X.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        X.setConstraintValueType(TYPE_TEMPLATE);
         X.setValue("$f1");
         X.setOperator("==");
         comp.addConstraint(X);
@@ -691,7 +739,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         final SingleFieldConstraint Y = new SingleFieldConstraint();
         Y.setFieldName("field2");
         Y.setFieldType(DataType.TYPE_STRING);
-        Y.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        Y.setConstraintValueType(TYPE_TEMPLATE);
         Y.setValue("$f2");
         Y.setOperator("==");
         comp.addConstraint(Y);
@@ -724,7 +772,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         final SingleFieldConstraint X = new SingleFieldConstraint();
         X.setFieldName("field1");
         X.setFieldType(DataType.TYPE_STRING);
-        X.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        X.setConstraintValueType(TYPE_TEMPLATE);
         X.setValue("$f1");
         X.setOperator("==");
         comp.addConstraint(X);
@@ -741,7 +789,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         final SingleFieldConstraint Y = new SingleFieldConstraint();
         Y.setFieldName("field2");
         Y.setFieldType(DataType.TYPE_STRING);
-        Y.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        Y.setConstraintValueType(TYPE_TEMPLATE);
         Y.setValue("$f2");
         Y.setOperator("==");
         comp.addConstraint(Y);
@@ -769,7 +817,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         SingleFieldConstraint sfc1 = new SingleFieldConstraint();
         sfc1.setFieldName("field1");
         sfc1.setFieldType(DataType.TYPE_STRING);
-        sfc1.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        sfc1.setConstraintValueType(TYPE_TEMPLATE);
         sfc1.setValue("$f1");
         sfc1.setOperator("==");
         p1.addConstraint(sfc1);
@@ -778,7 +826,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         SingleFieldConstraint sfc2 = new SingleFieldConstraint();
         sfc2.setFieldName("field2");
         sfc2.setFieldType(DataType.TYPE_STRING);
-        sfc2.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        sfc2.setConstraintValueType(TYPE_TEMPLATE);
         sfc2.setValue("$f2");
         sfc2.setOperator("==");
         p2.addConstraint(sfc2);
@@ -815,7 +863,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         SingleFieldConstraint sfc1 = new SingleFieldConstraint();
         sfc1.setFieldName("field1");
         sfc1.setFieldType(DataType.TYPE_STRING);
-        sfc1.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        sfc1.setConstraintValueType(TYPE_TEMPLATE);
         sfc1.setValue("$f1");
         sfc1.setOperator("==");
         p1.addConstraint(sfc1);
@@ -824,7 +872,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         SingleFieldConstraint sfc2 = new SingleFieldConstraint();
         sfc2.setFieldName("field2");
         sfc2.setFieldType(DataType.TYPE_STRING);
-        sfc2.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        sfc2.setConstraintValueType(TYPE_TEMPLATE);
         sfc2.setValue("$f2");
         sfc2.setOperator("==");
         p2.addConstraint(sfc2);
@@ -861,7 +909,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         SingleFieldConstraint sfc1 = new SingleFieldConstraint();
         sfc1.setFieldName("field1");
         sfc1.setFieldType(DataType.TYPE_STRING);
-        sfc1.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        sfc1.setConstraintValueType(TYPE_TEMPLATE);
         sfc1.setValue("$f1");
         sfc1.setOperator("==");
         p1.addConstraint(sfc1);
@@ -870,7 +918,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         SingleFieldConstraint sfc2 = new SingleFieldConstraint();
         sfc2.setFieldName("field2");
         sfc2.setFieldType(DataType.TYPE_STRING);
-        sfc2.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        sfc2.setConstraintValueType(TYPE_TEMPLATE);
         sfc2.setValue("$f2");
         sfc2.setOperator("==");
         p2.addConstraint(sfc2);
@@ -912,7 +960,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         final SingleFieldConstraint sfc1 = new SingleFieldConstraint();
         sfc1.setFieldName("field1");
         sfc1.setFieldType(DataType.TYPE_STRING);
-        sfc1.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        sfc1.setConstraintValueType(TYPE_TEMPLATE);
         sfc1.setValue("$f1");
         sfc1.setOperator("==");
         comp.addConstraint(sfc1);
@@ -924,7 +972,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         comp2sfc1.setFieldName("field2");
         comp2sfc1.setOperator("==");
         comp2sfc1.setValue("$f2");
-        comp2sfc1.setConstraintValueType(BaseSingleFieldConstraint.TYPE_TEMPLATE);
+        comp2sfc1.setConstraintValueType(TYPE_TEMPLATE);
 
         comp2.addConstraint(comp2sfc1);
 
@@ -933,7 +981,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         comp2sfc2.setFieldName("field3");
         comp2sfc2.setOperator("==");
         comp2sfc2.setValue("$f3");
-        comp2sfc2.setConstraintValueType(BaseSingleFieldConstraint.TYPE_TEMPLATE);
+        comp2sfc2.setConstraintValueType(TYPE_TEMPLATE);
 
         comp2.addConstraint(comp2sfc2);
 
@@ -967,7 +1015,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         final SingleFieldConstraint sfc1 = new SingleFieldConstraint();
         sfc1.setFieldName("field1");
         sfc1.setFieldType(DataType.TYPE_STRING);
-        sfc1.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        sfc1.setConstraintValueType(TYPE_TEMPLATE);
         sfc1.setValue("$f1");
         sfc1.setOperator("==");
         comp.addConstraint(sfc1);
@@ -979,7 +1027,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         comp2sfc1.setFieldName("field2");
         comp2sfc1.setOperator("==");
         comp2sfc1.setValue("$f2");
-        comp2sfc1.setConstraintValueType(BaseSingleFieldConstraint.TYPE_TEMPLATE);
+        comp2sfc1.setConstraintValueType(TYPE_TEMPLATE);
 
         comp2.addConstraint(comp2sfc1);
 
@@ -988,7 +1036,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         comp2sfc2.setFieldName("field3");
         comp2sfc2.setOperator("==");
         comp2sfc2.setValue("$f3");
-        comp2sfc2.setConstraintValueType(BaseSingleFieldConstraint.TYPE_TEMPLATE);
+        comp2sfc2.setConstraintValueType(TYPE_TEMPLATE);
 
         comp2.addConstraint(comp2sfc2);
 
@@ -1022,7 +1070,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         final SingleFieldConstraint sfc1 = new SingleFieldConstraint();
         sfc1.setFieldName("field1");
         sfc1.setFieldType(DataType.TYPE_STRING);
-        sfc1.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        sfc1.setConstraintValueType(TYPE_TEMPLATE);
         sfc1.setValue("$f1");
         sfc1.setOperator("==");
         comp.addConstraint(sfc1);
@@ -1034,7 +1082,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         comp2sfc1.setFieldName("field2");
         comp2sfc1.setOperator("==");
         comp2sfc1.setValue("$f2");
-        comp2sfc1.setConstraintValueType(BaseSingleFieldConstraint.TYPE_TEMPLATE);
+        comp2sfc1.setConstraintValueType(TYPE_TEMPLATE);
 
         comp2.addConstraint(comp2sfc1);
 
@@ -1043,7 +1091,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         comp2sfc2.setFieldName("field3");
         comp2sfc2.setOperator("==");
         comp2sfc2.setValue("$f3");
-        comp2sfc2.setConstraintValueType(BaseSingleFieldConstraint.TYPE_TEMPLATE);
+        comp2sfc2.setConstraintValueType(TYPE_TEMPLATE);
 
         comp2.addConstraint(comp2sfc2);
 
@@ -1077,7 +1125,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         final SingleFieldConstraint sfc1 = new SingleFieldConstraint();
         sfc1.setFieldName("field1");
         sfc1.setFieldType(DataType.TYPE_STRING);
-        sfc1.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        sfc1.setConstraintValueType(TYPE_TEMPLATE);
         sfc1.setValue("$f1");
         sfc1.setOperator("==");
         comp.addConstraint(sfc1);
@@ -1089,7 +1137,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         comp2sfc1.setFieldName("field2");
         comp2sfc1.setOperator("==");
         comp2sfc1.setValue("$f2");
-        comp2sfc1.setConstraintValueType(BaseSingleFieldConstraint.TYPE_TEMPLATE);
+        comp2sfc1.setConstraintValueType(TYPE_TEMPLATE);
 
         comp2.addConstraint(comp2sfc1);
 
@@ -1098,7 +1146,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         comp2sfc2.setFieldName("field3");
         comp2sfc2.setOperator("==");
         comp2sfc2.setValue("$f3");
-        comp2sfc2.setConstraintValueType(BaseSingleFieldConstraint.TYPE_TEMPLATE);
+        comp2sfc2.setConstraintValueType(TYPE_TEMPLATE);
 
         comp2.addConstraint(comp2sfc2);
 
@@ -1132,7 +1180,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         final SingleFieldConstraint sfc1 = new SingleFieldConstraint();
         sfc1.setFieldName("field1");
         sfc1.setFieldType(DataType.TYPE_STRING);
-        sfc1.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        sfc1.setConstraintValueType(TYPE_TEMPLATE);
         sfc1.setValue("$f1");
         sfc1.setOperator("==");
         comp.addConstraint(sfc1);
@@ -1144,7 +1192,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         comp2sfc1.setFieldName("field2");
         comp2sfc1.setOperator("==");
         comp2sfc1.setValue("$f2");
-        comp2sfc1.setConstraintValueType(BaseSingleFieldConstraint.TYPE_TEMPLATE);
+        comp2sfc1.setConstraintValueType(TYPE_TEMPLATE);
 
         comp2.addConstraint(comp2sfc1);
 
@@ -1178,7 +1226,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         final SingleFieldConstraint sfc1 = new SingleFieldConstraint();
         sfc1.setFieldName("field1");
         sfc1.setFieldType(DataType.TYPE_STRING);
-        sfc1.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        sfc1.setConstraintValueType(TYPE_TEMPLATE);
         sfc1.setValue("$f1");
         sfc1.setOperator("==");
         comp.addConstraint(sfc1);
@@ -1190,7 +1238,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         comp2sfc1.setFieldName("field2");
         comp2sfc1.setOperator("==");
         comp2sfc1.setValue("$f2");
-        comp2sfc1.setConstraintValueType(BaseSingleFieldConstraint.TYPE_TEMPLATE);
+        comp2sfc1.setConstraintValueType(TYPE_TEMPLATE);
 
         comp2.addConstraint(comp2sfc1);
 
@@ -1224,7 +1272,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         final SingleFieldConstraint sfc1 = new SingleFieldConstraint();
         sfc1.setFieldName("field1");
         sfc1.setFieldType(DataType.TYPE_STRING);
-        sfc1.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        sfc1.setConstraintValueType(TYPE_TEMPLATE);
         sfc1.setValue("$f1");
         sfc1.setOperator("==");
         comp.addConstraint(sfc1);
@@ -1236,7 +1284,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         comp2sfc1.setFieldName("field2");
         comp2sfc1.setOperator("==");
         comp2sfc1.setValue("$f2");
-        comp2sfc1.setConstraintValueType(BaseSingleFieldConstraint.TYPE_TEMPLATE);
+        comp2sfc1.setConstraintValueType(TYPE_TEMPLATE);
 
         comp2.addConstraint(comp2sfc1);
 
@@ -1270,7 +1318,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         final SingleFieldConstraint sfc1 = new SingleFieldConstraint();
         sfc1.setFieldName("field1");
         sfc1.setFieldType(DataType.TYPE_STRING);
-        sfc1.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        sfc1.setConstraintValueType(TYPE_TEMPLATE);
         sfc1.setValue("$f1");
         sfc1.setOperator("==");
         comp.addConstraint(sfc1);
@@ -1278,7 +1326,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         final SingleFieldConstraint sfc2 = new SingleFieldConstraint();
         sfc2.setFieldName("field2");
         sfc2.setFieldType(DataType.TYPE_STRING);
-        sfc2.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        sfc2.setConstraintValueType(TYPE_TEMPLATE);
         sfc2.setValue("$f2");
         sfc2.setOperator("==");
         comp.addConstraint(sfc2);
@@ -1290,7 +1338,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         comp2sfc1.setFieldName("field3");
         comp2sfc1.setOperator("==");
         comp2sfc1.setValue("$f3");
-        comp2sfc1.setConstraintValueType(BaseSingleFieldConstraint.TYPE_TEMPLATE);
+        comp2sfc1.setConstraintValueType(TYPE_TEMPLATE);
 
         comp2.addConstraint(comp2sfc1);
 
@@ -1324,7 +1372,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         final SingleFieldConstraint sfc1 = new SingleFieldConstraint();
         sfc1.setFieldName("field1");
         sfc1.setFieldType(DataType.TYPE_STRING);
-        sfc1.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        sfc1.setConstraintValueType(TYPE_TEMPLATE);
         sfc1.setValue("$f1");
         sfc1.setOperator("==");
         comp.addConstraint(sfc1);
@@ -1332,7 +1380,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         final SingleFieldConstraint sfc2 = new SingleFieldConstraint();
         sfc2.setFieldName("field2");
         sfc2.setFieldType(DataType.TYPE_STRING);
-        sfc2.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        sfc2.setConstraintValueType(TYPE_TEMPLATE);
         sfc2.setValue("$f2");
         sfc2.setOperator("==");
         comp.addConstraint(sfc2);
@@ -1344,7 +1392,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         comp2sfc1.setFieldName("field3");
         comp2sfc1.setOperator("==");
         comp2sfc1.setValue("$f3");
-        comp2sfc1.setConstraintValueType(BaseSingleFieldConstraint.TYPE_TEMPLATE);
+        comp2sfc1.setConstraintValueType(TYPE_TEMPLATE);
 
         comp2.addConstraint(comp2sfc1);
 
@@ -1378,7 +1426,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         final SingleFieldConstraint sfc1 = new SingleFieldConstraint();
         sfc1.setFieldName("field1");
         sfc1.setFieldType(DataType.TYPE_STRING);
-        sfc1.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        sfc1.setConstraintValueType(TYPE_TEMPLATE);
         sfc1.setValue("$f1");
         sfc1.setOperator("==");
         comp.addConstraint(sfc1);
@@ -1386,7 +1434,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         final SingleFieldConstraint sfc2 = new SingleFieldConstraint();
         sfc2.setFieldName("field2");
         sfc2.setFieldType(DataType.TYPE_STRING);
-        sfc2.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        sfc2.setConstraintValueType(TYPE_TEMPLATE);
         sfc2.setValue("$f2");
         sfc2.setOperator("==");
         comp.addConstraint(sfc2);
@@ -1398,7 +1446,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         comp2sfc1.setFieldName("field3");
         comp2sfc1.setOperator("==");
         comp2sfc1.setValue("$f3");
-        comp2sfc1.setConstraintValueType(BaseSingleFieldConstraint.TYPE_TEMPLATE);
+        comp2sfc1.setConstraintValueType(TYPE_TEMPLATE);
 
         comp2.addConstraint(comp2sfc1);
 
@@ -1432,7 +1480,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         final SingleFieldConstraint sfc1 = new SingleFieldConstraint();
         sfc1.setFieldName("field1");
         sfc1.setFieldType(DataType.TYPE_STRING);
-        sfc1.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        sfc1.setConstraintValueType(TYPE_TEMPLATE);
         sfc1.setValue("$f1");
         sfc1.setOperator("==");
         comp.addConstraint(sfc1);
@@ -1440,7 +1488,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         final SingleFieldConstraint sfc2 = new SingleFieldConstraint();
         sfc2.setFieldName("field2");
         sfc2.setFieldType(DataType.TYPE_STRING);
-        sfc2.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        sfc2.setConstraintValueType(TYPE_TEMPLATE);
         sfc2.setValue("$f2");
         sfc2.setOperator("==");
         comp.addConstraint(sfc2);
@@ -1452,7 +1500,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         comp2sfc1.setFieldName("field3");
         comp2sfc1.setOperator("==");
         comp2sfc1.setValue("$f3");
-        comp2sfc1.setConstraintValueType(BaseSingleFieldConstraint.TYPE_TEMPLATE);
+        comp2sfc1.setConstraintValueType(TYPE_TEMPLATE);
 
         comp2.addConstraint(comp2sfc1);
 
@@ -1486,7 +1534,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         final SingleFieldConstraint comp1sfc1 = new SingleFieldConstraint();
         comp1sfc1.setFieldName("field1");
         comp1sfc1.setFieldType(DataType.TYPE_STRING);
-        comp1sfc1.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        comp1sfc1.setConstraintValueType(TYPE_TEMPLATE);
         comp1sfc1.setValue("$f1");
         comp1sfc1.setOperator("==");
         comp1.addConstraint(comp1sfc1);
@@ -1494,7 +1542,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         final SingleFieldConstraint comp1sfc2 = new SingleFieldConstraint();
         comp1sfc2.setFieldName("field2");
         comp1sfc2.setFieldType(DataType.TYPE_STRING);
-        comp1sfc2.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        comp1sfc2.setConstraintValueType(TYPE_TEMPLATE);
         comp1sfc2.setValue("$f2");
         comp1sfc2.setOperator("==");
         comp1.addConstraint(comp1sfc2);
@@ -1509,13 +1557,13 @@ public class RuleTemplateModelDRLPersistenceTest {
         comp2sfc1.setFieldName("field3");
         comp2sfc1.setOperator("==");
         comp2sfc1.setValue("$f3");
-        comp2sfc1.setConstraintValueType(BaseSingleFieldConstraint.TYPE_TEMPLATE);
+        comp2sfc1.setConstraintValueType(TYPE_TEMPLATE);
         comp2.addConstraint(comp2sfc1);
 
         final SingleFieldConstraint comp2sfc2 = new SingleFieldConstraint();
         comp2sfc2.setFieldName("field4");
         comp2sfc2.setFieldType(DataType.TYPE_STRING);
-        comp2sfc2.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        comp2sfc2.setConstraintValueType(TYPE_TEMPLATE);
         comp2sfc2.setValue("$f4");
         comp2sfc2.setOperator("==");
         comp2.addConstraint(comp2sfc2);
@@ -1550,7 +1598,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         final SingleFieldConstraint comp1sfc1 = new SingleFieldConstraint();
         comp1sfc1.setFieldName("field1");
         comp1sfc1.setFieldType(DataType.TYPE_STRING);
-        comp1sfc1.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        comp1sfc1.setConstraintValueType(TYPE_TEMPLATE);
         comp1sfc1.setValue("$f1");
         comp1sfc1.setOperator("==");
         comp1.addConstraint(comp1sfc1);
@@ -1558,7 +1606,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         final SingleFieldConstraint comp1sfc2 = new SingleFieldConstraint();
         comp1sfc2.setFieldName("field2");
         comp1sfc2.setFieldType(DataType.TYPE_STRING);
-        comp1sfc2.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        comp1sfc2.setConstraintValueType(TYPE_TEMPLATE);
         comp1sfc2.setValue("$f2");
         comp1sfc2.setOperator("==");
         comp1.addConstraint(comp1sfc2);
@@ -1573,13 +1621,13 @@ public class RuleTemplateModelDRLPersistenceTest {
         comp2sfc1.setFieldName("field3");
         comp2sfc1.setOperator("==");
         comp2sfc1.setValue("$f3");
-        comp2sfc1.setConstraintValueType(BaseSingleFieldConstraint.TYPE_TEMPLATE);
+        comp2sfc1.setConstraintValueType(TYPE_TEMPLATE);
         comp2.addConstraint(comp2sfc1);
 
         final SingleFieldConstraint comp2sfc2 = new SingleFieldConstraint();
         comp2sfc2.setFieldName("field4");
         comp2sfc2.setFieldType(DataType.TYPE_STRING);
-        comp2sfc2.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        comp2sfc2.setConstraintValueType(TYPE_TEMPLATE);
         comp2sfc2.setValue("$f4");
         comp2sfc2.setOperator("==");
         comp2.addConstraint(comp2sfc2);
@@ -1614,7 +1662,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         final SingleFieldConstraint comp1sfc1 = new SingleFieldConstraint();
         comp1sfc1.setFieldName("field1");
         comp1sfc1.setFieldType(DataType.TYPE_STRING);
-        comp1sfc1.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        comp1sfc1.setConstraintValueType(TYPE_TEMPLATE);
         comp1sfc1.setValue("$f1");
         comp1sfc1.setOperator("==");
         comp1.addConstraint(comp1sfc1);
@@ -1622,7 +1670,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         final SingleFieldConstraint comp1sfc2 = new SingleFieldConstraint();
         comp1sfc2.setFieldName("field2");
         comp1sfc2.setFieldType(DataType.TYPE_STRING);
-        comp1sfc2.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        comp1sfc2.setConstraintValueType(TYPE_TEMPLATE);
         comp1sfc2.setValue("$f2");
         comp1sfc2.setOperator("==");
         comp1.addConstraint(comp1sfc2);
@@ -1637,13 +1685,13 @@ public class RuleTemplateModelDRLPersistenceTest {
         comp2sfc1.setFieldName("field3");
         comp2sfc1.setOperator("==");
         comp2sfc1.setValue("$f3");
-        comp2sfc1.setConstraintValueType(BaseSingleFieldConstraint.TYPE_TEMPLATE);
+        comp2sfc1.setConstraintValueType(TYPE_TEMPLATE);
         comp2.addConstraint(comp2sfc1);
 
         final SingleFieldConstraint comp2sfc2 = new SingleFieldConstraint();
         comp2sfc2.setFieldName("field4");
         comp2sfc2.setFieldType(DataType.TYPE_STRING);
-        comp2sfc2.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        comp2sfc2.setConstraintValueType(TYPE_TEMPLATE);
         comp2sfc2.setValue("$f4");
         comp2sfc2.setOperator("==");
         comp2.addConstraint(comp2sfc2);
@@ -1678,7 +1726,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         final SingleFieldConstraint comp1sfc1 = new SingleFieldConstraint();
         comp1sfc1.setFieldName("field1");
         comp1sfc1.setFieldType(DataType.TYPE_STRING);
-        comp1sfc1.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        comp1sfc1.setConstraintValueType(TYPE_TEMPLATE);
         comp1sfc1.setValue("$f1");
         comp1sfc1.setOperator("==");
         comp1.addConstraint(comp1sfc1);
@@ -1686,7 +1734,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         final SingleFieldConstraint comp1sfc2 = new SingleFieldConstraint();
         comp1sfc2.setFieldName("field2");
         comp1sfc2.setFieldType(DataType.TYPE_STRING);
-        comp1sfc2.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        comp1sfc2.setConstraintValueType(TYPE_TEMPLATE);
         comp1sfc2.setValue("$f2");
         comp1sfc2.setOperator("==");
         comp1.addConstraint(comp1sfc2);
@@ -1701,13 +1749,13 @@ public class RuleTemplateModelDRLPersistenceTest {
         comp2sfc1.setFieldName("field3");
         comp2sfc1.setOperator("==");
         comp2sfc1.setValue("$f3");
-        comp2sfc1.setConstraintValueType(BaseSingleFieldConstraint.TYPE_TEMPLATE);
+        comp2sfc1.setConstraintValueType(TYPE_TEMPLATE);
         comp2.addConstraint(comp2sfc1);
 
         final SingleFieldConstraint comp2sfc2 = new SingleFieldConstraint();
         comp2sfc2.setFieldName("field4");
         comp2sfc2.setFieldType(DataType.TYPE_STRING);
-        comp2sfc2.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        comp2sfc2.setConstraintValueType(TYPE_TEMPLATE);
         comp2sfc2.setValue("$f4");
         comp2sfc2.setOperator("==");
         comp2.addConstraint(comp2sfc2);
@@ -1742,7 +1790,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         final SingleFieldConstraint comp1sfc1 = new SingleFieldConstraint();
         comp1sfc1.setFieldName("field1");
         comp1sfc1.setFieldType(DataType.TYPE_STRING);
-        comp1sfc1.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        comp1sfc1.setConstraintValueType(TYPE_TEMPLATE);
         comp1sfc1.setValue("$f1");
         comp1sfc1.setOperator("==");
         comp1.addConstraint(comp1sfc1);
@@ -1750,7 +1798,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         final SingleFieldConstraint comp1sfc2 = new SingleFieldConstraint();
         comp1sfc2.setFieldName("field2");
         comp1sfc2.setFieldType(DataType.TYPE_STRING);
-        comp1sfc2.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        comp1sfc2.setConstraintValueType(TYPE_TEMPLATE);
         comp1sfc2.setValue("$f2");
         comp1sfc2.setOperator("==");
         comp1.addConstraint(comp1sfc2);
@@ -1765,13 +1813,13 @@ public class RuleTemplateModelDRLPersistenceTest {
         comp2sfc1.setFieldName("field3");
         comp2sfc1.setOperator("==");
         comp2sfc1.setValue("$f3");
-        comp2sfc1.setConstraintValueType(BaseSingleFieldConstraint.TYPE_TEMPLATE);
+        comp2sfc1.setConstraintValueType(TYPE_TEMPLATE);
         comp2.addConstraint(comp2sfc1);
 
         final SingleFieldConstraint comp2sfc2 = new SingleFieldConstraint();
         comp2sfc2.setFieldName("field4");
         comp2sfc2.setFieldType(DataType.TYPE_STRING);
-        comp2sfc2.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        comp2sfc2.setConstraintValueType(TYPE_TEMPLATE);
         comp2sfc2.setValue("$f4");
         comp2sfc2.setOperator("==");
         comp2.addConstraint(comp2sfc2);
@@ -1806,7 +1854,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         final SingleFieldConstraint comp1sfc1 = new SingleFieldConstraint();
         comp1sfc1.setFieldName("field1");
         comp1sfc1.setFieldType(DataType.TYPE_STRING);
-        comp1sfc1.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        comp1sfc1.setConstraintValueType(TYPE_TEMPLATE);
         comp1sfc1.setValue("$f1");
         comp1sfc1.setOperator("==");
         comp.addConstraint(comp1sfc1);
@@ -1814,7 +1862,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         final SingleFieldConstraint comp1sfc2 = new SingleFieldConstraint();
         comp1sfc2.setFieldName("field2");
         comp1sfc2.setFieldType(DataType.TYPE_STRING);
-        comp1sfc2.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        comp1sfc2.setConstraintValueType(TYPE_TEMPLATE);
         comp1sfc2.setValue("$f2");
         comp1sfc2.setOperator("==");
         comp.addConstraint(comp1sfc2);
@@ -1822,7 +1870,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         final SingleFieldConstraint comp1sfc3 = new SingleFieldConstraint();
         comp1sfc3.setFieldName("field3");
         comp1sfc3.setFieldType(DataType.TYPE_STRING);
-        comp1sfc3.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        comp1sfc3.setConstraintValueType(TYPE_TEMPLATE);
         comp1sfc3.setValue("$f3");
         comp1sfc3.setOperator("==");
         comp.addConstraint(comp1sfc3);
@@ -1855,7 +1903,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         final SingleFieldConstraint comp1sfc1 = new SingleFieldConstraint();
         comp1sfc1.setFieldName("field1");
         comp1sfc1.setFieldType(DataType.TYPE_STRING);
-        comp1sfc1.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        comp1sfc1.setConstraintValueType(TYPE_TEMPLATE);
         comp1sfc1.setValue("$f1");
         comp1sfc1.setOperator("==");
         comp.addConstraint(comp1sfc1);
@@ -1863,7 +1911,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         final SingleFieldConstraint comp1sfc2 = new SingleFieldConstraint();
         comp1sfc2.setFieldName("field2");
         comp1sfc2.setFieldType(DataType.TYPE_STRING);
-        comp1sfc2.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        comp1sfc2.setConstraintValueType(TYPE_TEMPLATE);
         comp1sfc2.setValue("$f2");
         comp1sfc2.setOperator("==");
         comp.addConstraint(comp1sfc2);
@@ -1871,7 +1919,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         final SingleFieldConstraint comp1sfc3 = new SingleFieldConstraint();
         comp1sfc3.setFieldName("field3");
         comp1sfc3.setFieldType(DataType.TYPE_STRING);
-        comp1sfc3.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        comp1sfc3.setConstraintValueType(TYPE_TEMPLATE);
         comp1sfc3.setValue("$f3");
         comp1sfc3.setOperator("==");
         comp.addConstraint(comp1sfc3);
@@ -1904,7 +1952,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         final SingleFieldConstraint comp1sfc1 = new SingleFieldConstraint();
         comp1sfc1.setFieldName("field1");
         comp1sfc1.setFieldType(DataType.TYPE_STRING);
-        comp1sfc1.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        comp1sfc1.setConstraintValueType(TYPE_TEMPLATE);
         comp1sfc1.setValue("$f1");
         comp1sfc1.setOperator("==");
         comp.addConstraint(comp1sfc1);
@@ -1912,7 +1960,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         final SingleFieldConstraint comp1sfc2 = new SingleFieldConstraint();
         comp1sfc2.setFieldName("field2");
         comp1sfc2.setFieldType(DataType.TYPE_STRING);
-        comp1sfc2.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        comp1sfc2.setConstraintValueType(TYPE_TEMPLATE);
         comp1sfc2.setValue("$f2");
         comp1sfc2.setOperator("==");
         comp.addConstraint(comp1sfc2);
@@ -1920,7 +1968,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         final SingleFieldConstraint comp1sfc3 = new SingleFieldConstraint();
         comp1sfc3.setFieldName("field3");
         comp1sfc3.setFieldType(DataType.TYPE_STRING);
-        comp1sfc3.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        comp1sfc3.setConstraintValueType(TYPE_TEMPLATE);
         comp1sfc3.setValue("$f3");
         comp1sfc3.setOperator("==");
         comp.addConstraint(comp1sfc3);
@@ -1953,7 +2001,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         final SingleFieldConstraint comp1sfc1 = new SingleFieldConstraint();
         comp1sfc1.setFieldName("field1");
         comp1sfc1.setFieldType(DataType.TYPE_STRING);
-        comp1sfc1.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        comp1sfc1.setConstraintValueType(TYPE_TEMPLATE);
         comp1sfc1.setValue("$f1");
         comp1sfc1.setOperator("==");
         comp.addConstraint(comp1sfc1);
@@ -1961,7 +2009,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         final SingleFieldConstraint comp1sfc2 = new SingleFieldConstraint();
         comp1sfc2.setFieldName("field2");
         comp1sfc2.setFieldType(DataType.TYPE_STRING);
-        comp1sfc2.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        comp1sfc2.setConstraintValueType(TYPE_TEMPLATE);
         comp1sfc2.setValue("$f2");
         comp1sfc2.setOperator("==");
         comp.addConstraint(comp1sfc2);
@@ -1969,7 +2017,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         final SingleFieldConstraint comp1sfc3 = new SingleFieldConstraint();
         comp1sfc3.setFieldName("field3");
         comp1sfc3.setFieldType(DataType.TYPE_STRING);
-        comp1sfc3.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        comp1sfc3.setConstraintValueType(TYPE_TEMPLATE);
         comp1sfc3.setValue("$f3");
         comp1sfc3.setOperator("==");
         comp.addConstraint(comp1sfc3);
@@ -2002,14 +2050,14 @@ public class RuleTemplateModelDRLPersistenceTest {
         final SingleFieldConstraint cfc1sfc1 = new SingleFieldConstraint();
         cfc1sfc1.setFieldName("field1");
         cfc1sfc1.setFieldType(DataType.TYPE_STRING);
-        cfc1sfc1.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        cfc1sfc1.setConstraintValueType(TYPE_TEMPLATE);
         cfc1sfc1.setValue("$f1");
         cfc1sfc1.setOperator("==");
         cfc1.addConstraint(cfc1sfc1);
         final SingleFieldConstraint cfc1sfc2 = new SingleFieldConstraint();
         cfc1sfc2.setFieldName("field2");
         cfc1sfc2.setFieldType(DataType.TYPE_STRING);
-        cfc1sfc2.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        cfc1sfc2.setConstraintValueType(TYPE_TEMPLATE);
         cfc1sfc2.setValue("$f2");
         cfc1sfc2.setOperator("==");
         cfc1.addConstraint(cfc1sfc2);
@@ -2020,14 +2068,14 @@ public class RuleTemplateModelDRLPersistenceTest {
         final SingleFieldConstraint cfc2sfc1 = new SingleFieldConstraint();
         cfc2sfc1.setFieldName("field3");
         cfc2sfc1.setFieldType(DataType.TYPE_STRING);
-        cfc2sfc1.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        cfc2sfc1.setConstraintValueType(TYPE_TEMPLATE);
         cfc2sfc1.setValue("$f3");
         cfc2sfc1.setOperator("==");
         cfc2.addConstraint(cfc2sfc1);
         final SingleFieldConstraint cfc2sfc2 = new SingleFieldConstraint();
         cfc2sfc2.setFieldName("field4");
         cfc2sfc2.setFieldType(DataType.TYPE_STRING);
-        cfc2sfc2.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        cfc2sfc2.setConstraintValueType(TYPE_TEMPLATE);
         cfc2sfc2.setValue("$f4");
         cfc2sfc2.setOperator("==");
         cfc2.addConstraint(cfc2sfc2);
@@ -2038,14 +2086,14 @@ public class RuleTemplateModelDRLPersistenceTest {
         final SingleFieldConstraint cfc3sfc1 = new SingleFieldConstraint();
         cfc3sfc1.setFieldName("field5");
         cfc3sfc1.setFieldType(DataType.TYPE_STRING);
-        cfc3sfc1.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        cfc3sfc1.setConstraintValueType(TYPE_TEMPLATE);
         cfc3sfc1.setValue("$f5");
         cfc3sfc1.setOperator("==");
         cfc3.addConstraint(cfc3sfc1);
         final SingleFieldConstraint cfc3sfc2 = new SingleFieldConstraint();
         cfc3sfc2.setFieldName("field6");
         cfc3sfc2.setFieldType(DataType.TYPE_STRING);
-        cfc3sfc2.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        cfc3sfc2.setConstraintValueType(TYPE_TEMPLATE);
         cfc3sfc2.setValue("$f6");
         cfc3sfc2.setOperator("==");
         cfc3.addConstraint(cfc3sfc2);
@@ -2078,14 +2126,14 @@ public class RuleTemplateModelDRLPersistenceTest {
         final SingleFieldConstraint cfc1sfc1 = new SingleFieldConstraint();
         cfc1sfc1.setFieldName("field1");
         cfc1sfc1.setFieldType(DataType.TYPE_STRING);
-        cfc1sfc1.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        cfc1sfc1.setConstraintValueType(TYPE_TEMPLATE);
         cfc1sfc1.setValue("$f1");
         cfc1sfc1.setOperator("==");
         cfc1.addConstraint(cfc1sfc1);
         final SingleFieldConstraint cfc1sfc2 = new SingleFieldConstraint();
         cfc1sfc2.setFieldName("field2");
         cfc1sfc2.setFieldType(DataType.TYPE_STRING);
-        cfc1sfc2.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        cfc1sfc2.setConstraintValueType(TYPE_TEMPLATE);
         cfc1sfc2.setValue("$f2");
         cfc1sfc2.setOperator("==");
         cfc1.addConstraint(cfc1sfc2);
@@ -2096,14 +2144,14 @@ public class RuleTemplateModelDRLPersistenceTest {
         final SingleFieldConstraint cfc2sfc1 = new SingleFieldConstraint();
         cfc2sfc1.setFieldName("field3");
         cfc2sfc1.setFieldType(DataType.TYPE_STRING);
-        cfc2sfc1.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        cfc2sfc1.setConstraintValueType(TYPE_TEMPLATE);
         cfc2sfc1.setValue("$f3");
         cfc2sfc1.setOperator("==");
         cfc2.addConstraint(cfc2sfc1);
         final SingleFieldConstraint cfc2sfc2 = new SingleFieldConstraint();
         cfc2sfc2.setFieldName("field4");
         cfc2sfc2.setFieldType(DataType.TYPE_STRING);
-        cfc2sfc2.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        cfc2sfc2.setConstraintValueType(TYPE_TEMPLATE);
         cfc2sfc2.setValue("$f4");
         cfc2sfc2.setOperator("==");
         cfc2.addConstraint(cfc2sfc2);
@@ -2114,14 +2162,14 @@ public class RuleTemplateModelDRLPersistenceTest {
         final SingleFieldConstraint cfc3sfc1 = new SingleFieldConstraint();
         cfc3sfc1.setFieldName("field5");
         cfc3sfc1.setFieldType(DataType.TYPE_STRING);
-        cfc3sfc1.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        cfc3sfc1.setConstraintValueType(TYPE_TEMPLATE);
         cfc3sfc1.setValue("$f5");
         cfc3sfc1.setOperator("==");
         cfc3.addConstraint(cfc3sfc1);
         final SingleFieldConstraint cfc3sfc2 = new SingleFieldConstraint();
         cfc3sfc2.setFieldName("field6");
         cfc3sfc2.setFieldType(DataType.TYPE_STRING);
-        cfc3sfc2.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        cfc3sfc2.setConstraintValueType(TYPE_TEMPLATE);
         cfc3sfc2.setValue("$f6");
         cfc3sfc2.setOperator("==");
         cfc3.addConstraint(cfc3sfc2);
@@ -2153,7 +2201,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         final SingleFieldConstraint cfc1sfc1 = new SingleFieldConstraint();
         cfc1sfc1.setFieldName("field1");
         cfc1sfc1.setFieldType(DataType.TYPE_STRING);
-        cfc1sfc1.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        cfc1sfc1.setConstraintValueType(TYPE_TEMPLATE);
         cfc1sfc1.setValue("$f1");
         cfc1sfc1.setOperator("==");
         cfc1.addConstraint(cfc1sfc1);
@@ -2171,7 +2219,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         final SingleFieldConstraint cfc2sfc1 = new SingleFieldConstraint();
         cfc2sfc1.setFieldName("field3");
         cfc2sfc1.setFieldType(DataType.TYPE_STRING);
-        cfc2sfc1.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        cfc2sfc1.setConstraintValueType(TYPE_TEMPLATE);
         cfc2sfc1.setValue("$f3");
         cfc2sfc1.setOperator("==");
         cfc2.addConstraint(cfc2sfc1);
@@ -2189,7 +2237,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         final SingleFieldConstraint cfc3sfc1 = new SingleFieldConstraint();
         cfc3sfc1.setFieldName("field5");
         cfc3sfc1.setFieldType(DataType.TYPE_STRING);
-        cfc3sfc1.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        cfc3sfc1.setConstraintValueType(TYPE_TEMPLATE);
         cfc3sfc1.setValue("$f5");
         cfc3sfc1.setOperator("==");
         cfc3.addConstraint(cfc3sfc1);
@@ -2229,7 +2277,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         final SingleFieldConstraint cfc1sfc1 = new SingleFieldConstraint();
         cfc1sfc1.setFieldName("field1");
         cfc1sfc1.setFieldType(DataType.TYPE_STRING);
-        cfc1sfc1.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        cfc1sfc1.setConstraintValueType(TYPE_TEMPLATE);
         cfc1sfc1.setValue("$f1");
         cfc1sfc1.setOperator("==");
         cfc1.addConstraint(cfc1sfc1);
@@ -2247,7 +2295,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         final SingleFieldConstraint cfc2sfc1 = new SingleFieldConstraint();
         cfc2sfc1.setFieldName("field3");
         cfc2sfc1.setFieldType(DataType.TYPE_STRING);
-        cfc2sfc1.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        cfc2sfc1.setConstraintValueType(TYPE_TEMPLATE);
         cfc2sfc1.setValue("$f3");
         cfc2sfc1.setOperator("==");
         cfc2.addConstraint(cfc2sfc1);
@@ -2265,7 +2313,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         final SingleFieldConstraint cfc3sfc1 = new SingleFieldConstraint();
         cfc3sfc1.setFieldName("field5");
         cfc3sfc1.setFieldType(DataType.TYPE_STRING);
-        cfc3sfc1.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        cfc3sfc1.setConstraintValueType(TYPE_TEMPLATE);
         cfc3sfc1.setValue("$f5");
         cfc3sfc1.setOperator("==");
         cfc3.addConstraint(cfc3sfc1);
@@ -2305,7 +2353,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         final SingleFieldConstraint cfc1sfc1 = new SingleFieldConstraint();
         cfc1sfc1.setFieldName("field1");
         cfc1sfc1.setFieldType(DataType.TYPE_STRING);
-        cfc1sfc1.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        cfc1sfc1.setConstraintValueType(TYPE_TEMPLATE);
         cfc1sfc1.setValue("$f1");
         cfc1sfc1.setOperator("==");
         cfc1.addConstraint(cfc1sfc1);
@@ -2323,7 +2371,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         final SingleFieldConstraint cfc2sfc1 = new SingleFieldConstraint();
         cfc2sfc1.setFieldName("field3");
         cfc2sfc1.setFieldType(DataType.TYPE_STRING);
-        cfc2sfc1.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        cfc2sfc1.setConstraintValueType(TYPE_TEMPLATE);
         cfc2sfc1.setValue("$f3");
         cfc2sfc1.setOperator("==");
         cfc2.addConstraint(cfc2sfc1);
@@ -2341,7 +2389,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         final SingleFieldConstraint cfc3sfc1 = new SingleFieldConstraint();
         cfc3sfc1.setFieldName("field5");
         cfc3sfc1.setFieldType(DataType.TYPE_STRING);
-        cfc3sfc1.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        cfc3sfc1.setConstraintValueType(TYPE_TEMPLATE);
         cfc3sfc1.setValue("$f5");
         cfc3sfc1.setOperator("==");
         cfc3.addConstraint(cfc3sfc1);
@@ -2388,7 +2436,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         final SingleFieldConstraint cfc1sfc2 = new SingleFieldConstraint();
         cfc1sfc2.setFieldName("field2");
         cfc1sfc2.setFieldType(DataType.TYPE_STRING);
-        cfc1sfc2.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        cfc1sfc2.setConstraintValueType(TYPE_TEMPLATE);
         cfc1sfc2.setValue("$f2");
         cfc1sfc2.setOperator("==");
         cfc1.addConstraint(cfc1sfc2);
@@ -2406,7 +2454,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         final SingleFieldConstraint cfc2sfc2 = new SingleFieldConstraint();
         cfc2sfc2.setFieldName("field4");
         cfc2sfc2.setFieldType(DataType.TYPE_STRING);
-        cfc2sfc2.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        cfc2sfc2.setConstraintValueType(TYPE_TEMPLATE);
         cfc2sfc2.setValue("$f4");
         cfc2sfc2.setOperator("==");
         cfc2.addConstraint(cfc2sfc2);
@@ -2424,7 +2472,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         final SingleFieldConstraint cfc3sfc2 = new SingleFieldConstraint();
         cfc3sfc2.setFieldName("field6");
         cfc3sfc2.setFieldType(DataType.TYPE_STRING);
-        cfc3sfc2.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        cfc3sfc2.setConstraintValueType(TYPE_TEMPLATE);
         cfc3sfc2.setValue("$f6");
         cfc3sfc2.setOperator("==");
         cfc3.addConstraint(cfc3sfc2);
@@ -2464,7 +2512,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         final SingleFieldConstraint cfc1sfc2 = new SingleFieldConstraint();
         cfc1sfc2.setFieldName("field2");
         cfc1sfc2.setFieldType(DataType.TYPE_STRING);
-        cfc1sfc2.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        cfc1sfc2.setConstraintValueType(TYPE_TEMPLATE);
         cfc1sfc2.setValue("$f2");
         cfc1sfc2.setOperator("==");
         cfc1.addConstraint(cfc1sfc2);
@@ -2482,7 +2530,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         final SingleFieldConstraint cfc2sfc2 = new SingleFieldConstraint();
         cfc2sfc2.setFieldName("field4");
         cfc2sfc2.setFieldType(DataType.TYPE_STRING);
-        cfc2sfc2.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        cfc2sfc2.setConstraintValueType(TYPE_TEMPLATE);
         cfc2sfc2.setValue("$f4");
         cfc2sfc2.setOperator("==");
         cfc2.addConstraint(cfc2sfc2);
@@ -2500,7 +2548,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         final SingleFieldConstraint cfc3sfc2 = new SingleFieldConstraint();
         cfc3sfc2.setFieldName("field6");
         cfc3sfc2.setFieldType(DataType.TYPE_STRING);
-        cfc3sfc2.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        cfc3sfc2.setConstraintValueType(TYPE_TEMPLATE);
         cfc3sfc2.setValue("$f6");
         cfc3sfc2.setOperator("==");
         cfc3.addConstraint(cfc3sfc2);
@@ -2529,13 +2577,13 @@ public class RuleTemplateModelDRLPersistenceTest {
         final SingleFieldConstraint X = new SingleFieldConstraint();
         X.setFieldName("field1");
         X.setFieldType(DataType.TYPE_STRING);
-        X.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        X.setConstraintValueType(TYPE_TEMPLATE);
         X.setValue("$f1");
         X.setOperator("==");
         p1.addConstraint(X);
 
         ConnectiveConstraint connective = new ConnectiveConstraint();
-        connective.setConstraintValueType(BaseSingleFieldConstraint.TYPE_TEMPLATE);
+        connective.setConstraintValueType(TYPE_TEMPLATE);
         connective.setFieldType(DataType.TYPE_STRING);
         connective.setOperator("|| ==");
         connective.setValue("$f2");
@@ -2567,13 +2615,13 @@ public class RuleTemplateModelDRLPersistenceTest {
         final SingleFieldConstraint X = new SingleFieldConstraint();
         X.setFieldName("field1");
         X.setFieldType(DataType.TYPE_STRING);
-        X.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        X.setConstraintValueType(TYPE_TEMPLATE);
         X.setValue("$f1");
         X.setOperator("==");
         p1.addConstraint(X);
 
         ConnectiveConstraint connective = new ConnectiveConstraint();
-        connective.setConstraintValueType(BaseSingleFieldConstraint.TYPE_TEMPLATE);
+        connective.setConstraintValueType(TYPE_TEMPLATE);
         connective.setFieldType(DataType.TYPE_STRING);
         connective.setOperator("|| ==");
         connective.setValue("$f2");
@@ -2605,13 +2653,13 @@ public class RuleTemplateModelDRLPersistenceTest {
         final SingleFieldConstraint X = new SingleFieldConstraint();
         X.setFieldName("field1");
         X.setFieldType(DataType.TYPE_STRING);
-        X.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        X.setConstraintValueType(TYPE_TEMPLATE);
         X.setValue("$f1");
         X.setOperator("==");
         p1.addConstraint(X);
 
         ConnectiveConstraint connective = new ConnectiveConstraint();
-        connective.setConstraintValueType(BaseSingleFieldConstraint.TYPE_TEMPLATE);
+        connective.setConstraintValueType(TYPE_TEMPLATE);
         connective.setFieldType(DataType.TYPE_STRING);
         connective.setOperator("|| ==");
         connective.setValue("$f2");
@@ -2640,7 +2688,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         FactPattern fp = new FactPattern("Person");
 
         SingleFieldConstraint sfc = new SingleFieldConstraint("field1");
-        sfc.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        sfc.setConstraintValueType(TYPE_TEMPLATE);
         sfc.setFieldType(DataType.TYPE_STRING);
         sfc.setOperator("==");
         sfc.setValue("$f1");
@@ -2672,7 +2720,7 @@ public class RuleTemplateModelDRLPersistenceTest {
 
         FactPattern fp = new FactPattern("Person");
         SingleFieldConstraint sfc = new SingleFieldConstraint("field1");
-        sfc.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        sfc.setConstraintValueType(TYPE_TEMPLATE);
         sfc.setFieldType(DataType.TYPE_STRING);
         sfc.setOperator("==");
         sfc.setValue("$f1");
@@ -2680,7 +2728,7 @@ public class RuleTemplateModelDRLPersistenceTest {
 
         FactPattern fp2 = new FactPattern("java.util.List");
         SingleFieldConstraint sfc2 = new SingleFieldConstraint("size");
-        sfc2.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        sfc2.setConstraintValueType(TYPE_TEMPLATE);
         sfc2.setFieldType(DataType.TYPE_NUMERIC_INTEGER);
         sfc2.setOperator(">");
         sfc2.setValue("$f2");
@@ -2711,7 +2759,7 @@ public class RuleTemplateModelDRLPersistenceTest {
 
         FactPattern fp = new FactPattern("Person");
         SingleFieldConstraint sfc = new SingleFieldConstraint("field1");
-        sfc.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        sfc.setConstraintValueType(TYPE_TEMPLATE);
         sfc.setFieldType(DataType.TYPE_STRING);
         sfc.setOperator("==");
         sfc.setValue("$f1");
@@ -2719,7 +2767,7 @@ public class RuleTemplateModelDRLPersistenceTest {
 
         FactPattern fp2 = new FactPattern("java.util.List");
         SingleFieldConstraint sfc2 = new SingleFieldConstraint("size");
-        sfc2.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        sfc2.setConstraintValueType(TYPE_TEMPLATE);
         sfc2.setFieldType(DataType.TYPE_NUMERIC_INTEGER);
         sfc2.setOperator(">");
         sfc2.setValue("$f2");
@@ -2750,7 +2798,7 @@ public class RuleTemplateModelDRLPersistenceTest {
 
         FactPattern fp = new FactPattern("Person");
         SingleFieldConstraint sfc = new SingleFieldConstraint("field1");
-        sfc.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        sfc.setConstraintValueType(TYPE_TEMPLATE);
         sfc.setFieldType(DataType.TYPE_STRING);
         sfc.setOperator("==");
         sfc.setValue("$f1");
@@ -2758,7 +2806,7 @@ public class RuleTemplateModelDRLPersistenceTest {
 
         FactPattern fp2 = new FactPattern("java.util.List");
         SingleFieldConstraint sfc2 = new SingleFieldConstraint("size");
-        sfc2.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        sfc2.setConstraintValueType(TYPE_TEMPLATE);
         sfc2.setFieldType(DataType.TYPE_NUMERIC_INTEGER);
         sfc2.setOperator(">");
         sfc2.setValue("$f2");
@@ -2871,14 +2919,14 @@ public class RuleTemplateModelDRLPersistenceTest {
 
         FactPattern fp = new FactPattern("Person");
         SingleFieldConstraint sfc = new SingleFieldConstraint("field1");
-        sfc.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        sfc.setConstraintValueType(TYPE_TEMPLATE);
         sfc.setFieldType(DataType.TYPE_STRING);
         sfc.setOperator("==");
         sfc.setValue("$f1");
         fp.addConstraint(sfc);
 
         SingleFieldConstraint sfc1 = new SingleFieldConstraint("field2");
-        sfc1.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        sfc1.setConstraintValueType(TYPE_TEMPLATE);
         sfc1.setFieldType(DataType.TYPE_STRING);
         sfc1.setOperator("==");
         sfc1.setValue("$f2");
@@ -2886,7 +2934,7 @@ public class RuleTemplateModelDRLPersistenceTest {
 
         FactPattern fp2 = new FactPattern("java.util.List");
         SingleFieldConstraint sfc2 = new SingleFieldConstraint("size");
-        sfc2.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        sfc2.setConstraintValueType(TYPE_TEMPLATE);
         sfc2.setFieldType(DataType.TYPE_NUMERIC_INTEGER);
         sfc2.setOperator(">");
         sfc2.setValue("$f3");
@@ -2917,14 +2965,14 @@ public class RuleTemplateModelDRLPersistenceTest {
 
         FactPattern fp = new FactPattern("Person");
         SingleFieldConstraint sfc = new SingleFieldConstraint("field1");
-        sfc.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        sfc.setConstraintValueType(TYPE_TEMPLATE);
         sfc.setFieldType(DataType.TYPE_STRING);
         sfc.setOperator("==");
         sfc.setValue("$f1");
         fp.addConstraint(sfc);
 
         SingleFieldConstraint sfc1 = new SingleFieldConstraint("field2");
-        sfc1.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        sfc1.setConstraintValueType(TYPE_TEMPLATE);
         sfc1.setFieldType(DataType.TYPE_STRING);
         sfc1.setOperator("==");
         sfc1.setValue("$f2");
@@ -2932,7 +2980,7 @@ public class RuleTemplateModelDRLPersistenceTest {
 
         FactPattern fp2 = new FactPattern("java.util.List");
         SingleFieldConstraint sfc2 = new SingleFieldConstraint("size");
-        sfc2.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        sfc2.setConstraintValueType(TYPE_TEMPLATE);
         sfc2.setFieldType(DataType.TYPE_NUMERIC_INTEGER);
         sfc2.setOperator(">");
         sfc2.setValue("$f3");
@@ -2963,14 +3011,14 @@ public class RuleTemplateModelDRLPersistenceTest {
 
         FactPattern fp = new FactPattern("Person");
         SingleFieldConstraint sfc = new SingleFieldConstraint("field1");
-        sfc.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        sfc.setConstraintValueType(TYPE_TEMPLATE);
         sfc.setFieldType(DataType.TYPE_STRING);
         sfc.setOperator("==");
         sfc.setValue("$f1");
         fp.addConstraint(sfc);
 
         SingleFieldConstraint sfc1 = new SingleFieldConstraint("field2");
-        sfc1.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        sfc1.setConstraintValueType(TYPE_TEMPLATE);
         sfc1.setFieldType(DataType.TYPE_STRING);
         sfc1.setOperator("==");
         sfc1.setValue("$f2");
@@ -2978,7 +3026,7 @@ public class RuleTemplateModelDRLPersistenceTest {
 
         FactPattern fp2 = new FactPattern("java.util.List");
         SingleFieldConstraint sfc2 = new SingleFieldConstraint("size");
-        sfc2.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        sfc2.setConstraintValueType(TYPE_TEMPLATE);
         sfc2.setFieldType(DataType.TYPE_NUMERIC_INTEGER);
         sfc2.setOperator(">");
         sfc2.setValue("$f3");
@@ -3452,7 +3500,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         SingleFieldConstraint sfc1 = new SingleFieldConstraint();
         sfc1.setFieldName("field1");
         sfc1.setFieldType(DataType.TYPE_STRING);
-        sfc1.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        sfc1.setConstraintValueType(TYPE_TEMPLATE);
         sfc1.setValue("$f1");
         sfc1.setOperator("==");
         fp.addConstraint(sfc1);
@@ -3959,7 +4007,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         sfc1.setFactType("Smurf");
         sfc1.setFieldName("name");
         sfc1.setFieldType(DataType.TYPE_STRING);
-        sfc1.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        sfc1.setConstraintValueType(TYPE_TEMPLATE);
         sfc1.setValue("$f1");
 
         SingleFieldConstraint sfc2 = new SingleFieldConstraint();
@@ -3967,7 +4015,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         sfc2.setFactType("Smurf");
         sfc2.setFieldName("age");
         sfc2.setFieldType(DataType.TYPE_NUMERIC_INTEGER);
-        sfc2.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        sfc2.setConstraintValueType(TYPE_TEMPLATE);
         sfc2.setValue("$f2");
 
         fp.addConstraint(sfc1);
@@ -4051,7 +4099,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         sfc1.setFactType("Smurf");
         sfc1.setFieldName("name");
         sfc1.setFieldType(DataType.TYPE_STRING);
-        sfc1.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        sfc1.setConstraintValueType(TYPE_TEMPLATE);
         sfc1.setValue("$f1");
 
         SingleFieldConstraint sfc2 = new SingleFieldConstraint();
@@ -4059,7 +4107,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         sfc2.setFactType("Smurf");
         sfc2.setFieldName("age");
         sfc2.setFieldType(DataType.TYPE_NUMERIC_INTEGER);
-        sfc2.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        sfc2.setConstraintValueType(TYPE_TEMPLATE);
         sfc2.setValue("$f2");
 
         fp.addConstraint(sfc1);
@@ -4142,13 +4190,13 @@ public class RuleTemplateModelDRLPersistenceTest {
         auf1.addFieldValue(new ActionFieldValue("name",
                                                 "$name",
                                                 DataType.TYPE_STRING));
-        auf1.getFieldValues()[0].setNature(BaseSingleFieldConstraint.TYPE_TEMPLATE);
+        auf1.getFieldValues()[0].setNature(TYPE_TEMPLATE);
 
         ActionUpdateField auf2 = new ActionUpdateField("p1");
         auf2.addFieldValue(new ActionFieldValue("age",
                                                 "$age",
                                                 DataType.TYPE_NUMERIC_INTEGER));
-        auf2.getFieldValues()[0].setNature(BaseSingleFieldConstraint.TYPE_TEMPLATE);
+        auf2.getFieldValues()[0].setNature(TYPE_TEMPLATE);
 
         //Test 1
         TemplateModel m1 = new TemplateModel();
@@ -4242,13 +4290,13 @@ public class RuleTemplateModelDRLPersistenceTest {
         auf1.addFieldValue(new ActionFieldValue("name",
                                                 "$name",
                                                 DataType.TYPE_STRING));
-        auf1.getFieldValues()[0].setNature(BaseSingleFieldConstraint.TYPE_TEMPLATE);
+        auf1.getFieldValues()[0].setNature(TYPE_TEMPLATE);
 
         ActionUpdateField auf2 = new ActionUpdateField("p1");
         auf2.addFieldValue(new ActionFieldValue("age",
                                                 "$age",
                                                 DataType.TYPE_NUMERIC_INTEGER));
-        auf2.getFieldValues()[0].setNature(BaseSingleFieldConstraint.TYPE_TEMPLATE);
+        auf2.getFieldValues()[0].setNature(TYPE_TEMPLATE);
 
         //Test 1
         TemplateModel m1 = new TemplateModel();
@@ -4348,7 +4396,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         sfc1.setFactType("Smurf");
         sfc1.setFieldName("field1");
         sfc1.setFieldType(DataType.TYPE_STRING);
-        sfc1.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        sfc1.setConstraintValueType(TYPE_TEMPLATE);
         sfc1.setValue("$f1");
 
         SingleFieldConstraint sfc2 = new SingleFieldConstraint();
@@ -4356,7 +4404,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         sfc2.setFactType("Smurf");
         sfc2.setFieldName("field1");
         sfc2.setFieldType(DataType.TYPE_STRING);
-        sfc2.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        sfc2.setConstraintValueType(TYPE_TEMPLATE);
         sfc2.setValue("$f2");
 
         SingleFieldConstraint sfc3 = new SingleFieldConstraint();
@@ -4450,7 +4498,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         sfc1.setFactType("Smurf");
         sfc1.setFieldName("field1");
         sfc1.setFieldType(DataType.TYPE_STRING);
-        sfc1.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        sfc1.setConstraintValueType(TYPE_TEMPLATE);
         sfc1.setValue("$f1");
 
         SingleFieldConstraint sfc2 = new SingleFieldConstraint();
@@ -4466,7 +4514,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         sfc3.setFactType("Smurf");
         sfc3.setFieldName("field1");
         sfc3.setFieldType(DataType.TYPE_STRING);
-        sfc3.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        sfc3.setConstraintValueType(TYPE_TEMPLATE);
         sfc3.setValue("$f2");
 
         fp.addConstraint(sfc1);
@@ -4574,7 +4622,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         p2sfc1.setFactType("Smurf");
         p2sfc1.setFieldName("field3");
         p2sfc1.setFieldType(DataType.TYPE_STRING);
-        p2sfc1.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        p2sfc1.setConstraintValueType(TYPE_TEMPLATE);
         p2sfc1.setValue("$key");
 
         fp2.addConstraint(p2sfc1);
@@ -4660,7 +4708,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         p2sfc1.setFactType("Smurf");
         p2sfc1.setFieldName("field1");
         p2sfc1.setFieldType(DataType.TYPE_STRING);
-        p2sfc1.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        p2sfc1.setConstraintValueType(TYPE_TEMPLATE);
         p2sfc1.setValue("$oldField1");
 
         SingleFieldConstraint p2sfc2 = new SingleFieldConstraint();
@@ -4668,19 +4716,19 @@ public class RuleTemplateModelDRLPersistenceTest {
         p2sfc2.setFactType("Smurf");
         p2sfc2.setFieldName("field2");
         p2sfc2.setFieldType(DataType.TYPE_NUMERIC_INTEGER);
-        p2sfc2.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        p2sfc2.setConstraintValueType(TYPE_TEMPLATE);
         p2sfc2.setValue("$oldField2");
 
         ActionUpdateField p2auf1 = new ActionUpdateField("p2");
         p2auf1.addFieldValue(new ActionFieldValue("field1",
                                                   "$newField1",
                                                   DataType.TYPE_STRING));
-        p2auf1.getFieldValues()[0].setNature(BaseSingleFieldConstraint.TYPE_TEMPLATE);
+        p2auf1.getFieldValues()[0].setNature(TYPE_TEMPLATE);
         ActionUpdateField p2auf2 = new ActionUpdateField("p2");
         p2auf2.addFieldValue(new ActionFieldValue("field2",
                                                   "$newField2",
                                                   DataType.TYPE_NUMERIC_INTEGER));
-        p2auf2.getFieldValues()[0].setNature(BaseSingleFieldConstraint.TYPE_TEMPLATE);
+        p2auf2.getFieldValues()[0].setNature(TYPE_TEMPLATE);
 
         fp2.addConstraint(p2sfc1);
         fp2.addConstraint(p2sfc2);
@@ -4746,7 +4794,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         sfc1.setFactType("Smurf");
         sfc1.setFieldName("field1");
         sfc1.setFieldType(DataType.TYPE_STRING);
-        sfc1.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        sfc1.setConstraintValueType(TYPE_TEMPLATE);
         sfc1.setValue(templateKeyOne);
 
         SingleFieldConstraint sfc2 = new SingleFieldConstraint();
@@ -4754,7 +4802,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         sfc2.setFactType("Smurf");
         sfc2.setFieldName("field2");
         sfc2.setFieldType(DataType.TYPE_STRING);
-        sfc2.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        sfc2.setConstraintValueType(TYPE_TEMPLATE);
         sfc2.setValue(templateKeyOne);
 
         SingleFieldConstraint sfc3 = new SingleFieldConstraint();
@@ -4762,7 +4810,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         sfc3.setFactType("Smurf");
         sfc3.setFieldName("field3");
         sfc3.setFieldType(DataType.TYPE_NUMERIC_INTEGER);
-        sfc3.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        sfc3.setConstraintValueType(TYPE_TEMPLATE);
         sfc3.setValue(templateKeyTwo);
 
         fp.addConstraint(sfc1);
