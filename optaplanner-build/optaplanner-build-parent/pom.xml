@@ -91,11 +91,30 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-      <!-- TODO use org.kie.kogito:kogito-bom instead once Kogito fixes https://issues.redhat.com/browse/KOGITO-3309 -->
+      <!-- TODO use kogito-bom instead once Kogito excludes are obsolete https://issues.redhat.com/browse/KOGITO-3735 -->
       <dependency>
         <groupId>org.kie.kogito</groupId>
         <artifactId>kogito-api</artifactId>
         <version>${version.org.kie.kogito}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.kie</groupId>
+            <artifactId>kie-dmn-api</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.kie.kogito</groupId>
+            <artifactId>kogito-timer</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.kie.kogito</groupId>
+            <artifactId>kogito-pmml-api-dependencies</artifactId>
+          </exclusion>
+          <exclusion>
+            <!-- TODO remove jackson exclusion after fix https://issues.redhat.com/browse/KOGITO-3794 -->
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>org.kie.kogito</groupId>
@@ -108,6 +127,7 @@
         <version>${version.org.kie.kogito}</version>
       </dependency>
       <dependency>
+        <!-- TODO remove kogito-ruleunits with fix https://github.com/kiegroup/kogito-runtimes/pull/871 -->
         <groupId>org.kie.kogito</groupId>
         <artifactId>kogito-ruleunits</artifactId>
         <version>${version.org.kie.kogito}</version>
@@ -116,11 +136,33 @@
         <groupId>org.kie.kogito</groupId>
         <artifactId>drools-core</artifactId>
         <version>${version.org.kie.kogito}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.kie.kogito</groupId>
+            <artifactId>kogito-timer</artifactId>
+          </exclusion>
+          <!-- TODO exclude XStream after switching to KieHelper -->
+<!--          <exclusion>-->
+<!--            <groupId>com.thoughtworks.xstream</groupId>-->
+<!--            <artifactId>xstream</artifactId>-->
+<!--          </exclusion>-->
+<!--          <exclusion>-->
+<!--            <groupId>org.kie.soup</groupId>-->
+<!--            <artifactId>kie-soup-xstream</artifactId>-->
+<!--          </exclusion>-->
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>org.kie.kogito</groupId>
         <artifactId>drools-compiler</artifactId>
         <version>${version.org.kie.kogito}</version>
+        <exclusions>
+          <!-- TODO exclude XStream after switching to KieHelper -->
+<!--          <exclusion>-->
+<!--            <groupId>com.thoughtworks.xstream</groupId>-->
+<!--            <artifactId>xstream</artifactId>-->
+<!--          </exclusion>-->
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>org.kie.kogito</groupId>

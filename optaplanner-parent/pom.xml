@@ -56,17 +56,13 @@
   <repositories>
     <repository>
       <id>jboss-public-repository-group</id>
-      <name>JBoss Public Repository Group</name>
       <url>https://repository.jboss.org/nexus/content/groups/public/</url>
-      <layout>default</layout>
       <releases>
-        <!-- Only get SNAPSHOTS from JBoss repository,
-             so it tries to get releases first (and only) from Maven Central. -->
+        <!-- Get releases only from Maven Central which is faster. -->
         <enabled>false</enabled>
       </releases>
       <snapshots>
         <enabled>true</enabled>
-        <updatePolicy>daily</updatePolicy>
       </snapshots>
     </repository>
   </repositories>

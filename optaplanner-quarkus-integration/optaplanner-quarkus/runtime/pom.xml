@@ -27,16 +27,19 @@
       <artifactId>optaplanner-core</artifactId>
       <exclusions>
         <exclusion>
+          <!-- Dynamic is not compatible with GraalVM native compilation -->
           <groupId>org.kie.kogito</groupId>
           <artifactId>drools-core-dynamic</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
     <dependency>
+      <!-- Static replaces dynamic -->
       <groupId>org.kie.kogito</groupId>
       <artifactId>drools-core-static</artifactId>
     </dependency>
     <dependency>
+      <!-- TODO remove kogito-ruleunits with fix https://github.com/kiegroup/kogito-runtimes/pull/871 -->
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-ruleunits</artifactId>
     </dependency>
