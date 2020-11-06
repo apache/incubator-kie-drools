@@ -7,11 +7,12 @@ import { act } from 'react-dom/test-utils';
 import axios from 'axios';
 import { refetchContext } from '../../../contexts';
 jest.mock('axios');
+jest.mock('../../JobsBulkList/JobsBulkList');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 // tslint:disable: no-string-literal
 // tslint:disable: no-unexpected-multiline
-
 jest.mock('../../../Atoms/JobsRescheduleModal/JobsRescheduleModal');
+
 const MockedIcon = (): React.ReactElement => {
   return <></>;
 };

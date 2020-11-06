@@ -59,9 +59,11 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
   handleCancelModalToggle={[MockFunction]}
   handleDetailsToggle={[MockFunction]}
   handleRescheduleToggle={[MockFunction]}
+  selectedJobInstances={Array []}
   setModalContent={[MockFunction]}
   setModalTitle={[MockFunction]}
   setSelectedJob={[MockFunction]}
+  setSelectedJobInstances={[MockFunction]}
 >
   <Table
     actionResolver={[Function]}
@@ -146,6 +148,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
             },
           ],
           "rowKey": "6e74a570-31c8-4020-bd70-19be2cb625f3_0",
+          "selected": false,
           "type": "Non-editable",
         },
         Object {
@@ -225,6 +228,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
             },
           ],
           "rowKey": "dad3aa88-5c1e-4858-a919-6123c675a0fa_0",
+          "selected": false,
           "type": "Editable",
         },
         Object {
@@ -304,6 +308,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
             },
           ],
           "rowKey": "2234dde-npce1-2908-b3131-6123c675a0fa_0",
+          "selected": false,
           "type": "Non-editable",
         },
       ]
@@ -605,7 +610,694 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
         role="grid"
       >
         <TableHeader>
-          <MockedTableHeader />
+          <ContextHeader
+            headerRows={null}
+          >
+            <Component
+              className=""
+              headerRows={null}
+            >
+              <BaseHeader
+                className=""
+                columns={
+                  Array [
+                    Object {
+                      "cell": Object {
+                        "formatters": Array [
+                          [Function],
+                        ],
+                        "transforms": Array [
+                          [Function],
+                          [Function],
+                        ],
+                      },
+                      "data": undefined,
+                      "extraParams": Object {
+                        "actionResolver": [Function],
+                        "actions": undefined,
+                        "allRowsSelected": false,
+                        "areActionsDisabled": undefined,
+                        "canSelectAll": true,
+                        "contentId": "expanded-content",
+                        "dropdownDirection": "down",
+                        "dropdownPosition": "right",
+                        "expandId": "expandable-toggle",
+                        "firstUserColumnIndex": 1,
+                        "onCollapse": undefined,
+                        "onExpand": undefined,
+                        "onRowEdit": undefined,
+                        "onSelect": [Function],
+                        "onSort": undefined,
+                        "rowLabeledBy": "simple-node",
+                        "sortBy": undefined,
+                      },
+                      "header": Object {
+                        "formatters": Array [],
+                        "label": "",
+                        "transforms": Array [
+                          [Function],
+                          [Function],
+                          [Function],
+                        ],
+                      },
+                      "property": "column-0",
+                      "props": Object {
+                        "data-key": 0,
+                        "data-label": "",
+                      },
+                    },
+                    Object {
+                      "cell": Object {
+                        "formatters": Array [
+                          [Function],
+                        ],
+                        "transforms": Array [
+                          [Function],
+                        ],
+                      },
+                      "data": undefined,
+                      "extraParams": Object {
+                        "actionResolver": [Function],
+                        "actions": undefined,
+                        "allRowsSelected": false,
+                        "areActionsDisabled": undefined,
+                        "canSelectAll": true,
+                        "contentId": "expanded-content",
+                        "dropdownDirection": "down",
+                        "dropdownPosition": "right",
+                        "expandId": "expandable-toggle",
+                        "firstUserColumnIndex": 1,
+                        "onCollapse": undefined,
+                        "onExpand": undefined,
+                        "onRowEdit": undefined,
+                        "onSelect": [Function],
+                        "onSort": undefined,
+                        "rowLabeledBy": "simple-node",
+                        "sortBy": undefined,
+                      },
+                      "header": Object {
+                        "formatters": Array [],
+                        "label": "Id",
+                        "transforms": Array [
+                          [Function],
+                          [Function],
+                        ],
+                      },
+                      "property": "id",
+                      "props": Object {
+                        "data-key": 1,
+                        "data-label": "Id",
+                      },
+                    },
+                    Object {
+                      "cell": Object {
+                        "formatters": Array [
+                          [Function],
+                        ],
+                        "transforms": Array [
+                          [Function],
+                        ],
+                      },
+                      "data": undefined,
+                      "extraParams": Object {
+                        "actionResolver": [Function],
+                        "actions": undefined,
+                        "allRowsSelected": false,
+                        "areActionsDisabled": undefined,
+                        "canSelectAll": true,
+                        "contentId": "expanded-content",
+                        "dropdownDirection": "down",
+                        "dropdownPosition": "right",
+                        "expandId": "expandable-toggle",
+                        "firstUserColumnIndex": 1,
+                        "onCollapse": undefined,
+                        "onExpand": undefined,
+                        "onRowEdit": undefined,
+                        "onSelect": [Function],
+                        "onSort": undefined,
+                        "rowLabeledBy": "simple-node",
+                        "sortBy": undefined,
+                      },
+                      "header": Object {
+                        "formatters": Array [],
+                        "label": "Status",
+                        "transforms": Array [
+                          [Function],
+                          [Function],
+                        ],
+                      },
+                      "property": "status",
+                      "props": Object {
+                        "data-key": 2,
+                        "data-label": "Status",
+                      },
+                    },
+                    Object {
+                      "cell": Object {
+                        "formatters": Array [
+                          [Function],
+                        ],
+                        "transforms": Array [
+                          [Function],
+                        ],
+                      },
+                      "data": undefined,
+                      "extraParams": Object {
+                        "actionResolver": [Function],
+                        "actions": undefined,
+                        "allRowsSelected": false,
+                        "areActionsDisabled": undefined,
+                        "canSelectAll": true,
+                        "contentId": "expanded-content",
+                        "dropdownDirection": "down",
+                        "dropdownPosition": "right",
+                        "expandId": "expandable-toggle",
+                        "firstUserColumnIndex": 1,
+                        "onCollapse": undefined,
+                        "onExpand": undefined,
+                        "onRowEdit": undefined,
+                        "onSelect": [Function],
+                        "onSort": undefined,
+                        "rowLabeledBy": "simple-node",
+                        "sortBy": undefined,
+                      },
+                      "header": Object {
+                        "formatters": Array [],
+                        "label": "Expiration time",
+                        "transforms": Array [
+                          [Function],
+                          [Function],
+                        ],
+                      },
+                      "property": "expiration-time",
+                      "props": Object {
+                        "data-key": 3,
+                        "data-label": "Expiration time",
+                      },
+                    },
+                    Object {
+                      "cell": Object {
+                        "formatters": Array [
+                          [Function],
+                        ],
+                        "transforms": Array [
+                          [Function],
+                        ],
+                      },
+                      "data": undefined,
+                      "extraParams": Object {
+                        "actionResolver": [Function],
+                        "actions": undefined,
+                        "allRowsSelected": false,
+                        "areActionsDisabled": undefined,
+                        "canSelectAll": true,
+                        "contentId": "expanded-content",
+                        "dropdownDirection": "down",
+                        "dropdownPosition": "right",
+                        "expandId": "expandable-toggle",
+                        "firstUserColumnIndex": 1,
+                        "onCollapse": undefined,
+                        "onExpand": undefined,
+                        "onRowEdit": undefined,
+                        "onSelect": [Function],
+                        "onSort": undefined,
+                        "rowLabeledBy": "simple-node",
+                        "sortBy": undefined,
+                      },
+                      "header": Object {
+                        "formatters": Array [],
+                        "label": "Last update",
+                        "transforms": Array [
+                          [Function],
+                          [Function],
+                        ],
+                      },
+                      "property": "last-update",
+                      "props": Object {
+                        "data-key": 4,
+                        "data-label": "Last update",
+                      },
+                    },
+                    Object {
+                      "cell": Object {
+                        "formatters": Array [
+                          [Function],
+                        ],
+                        "transforms": Array [
+                          [Function],
+                          [Function],
+                        ],
+                      },
+                      "data": undefined,
+                      "extraParams": Object {
+                        "actionResolver": [Function],
+                        "actions": undefined,
+                        "allRowsSelected": false,
+                        "areActionsDisabled": undefined,
+                        "canSelectAll": true,
+                        "contentId": "expanded-content",
+                        "dropdownDirection": "down",
+                        "dropdownPosition": "right",
+                        "expandId": "expandable-toggle",
+                        "firstUserColumnIndex": 1,
+                        "onCollapse": undefined,
+                        "onExpand": undefined,
+                        "onRowEdit": undefined,
+                        "onSelect": [Function],
+                        "onSort": undefined,
+                        "rowLabeledBy": "simple-node",
+                        "sortBy": undefined,
+                      },
+                      "header": Object {
+                        "formatters": Array [],
+                        "label": "",
+                        "transforms": Array [
+                          [Function],
+                          [Function],
+                          [Function],
+                        ],
+                      },
+                      "property": "column-5",
+                      "props": Object {
+                        "data-key": 5,
+                        "data-label": "",
+                      },
+                    },
+                  ]
+                }
+                headerRows={null}
+                renderers={
+                  Object {
+                    "body": Object {
+                      "cell": [Function],
+                      "row": [Function],
+                      "wrapper": [Function],
+                    },
+                    "header": Object {
+                      "cell": [Function],
+                      "row": "tr",
+                      "wrapper": "thead",
+                    },
+                    "table": "table",
+                  }
+                }
+              >
+                <thead
+                  className=""
+                >
+                  <HeaderRow
+                    key="0-header-row"
+                    renderers={
+                      Object {
+                        "cell": [Function],
+                        "row": "tr",
+                        "wrapper": "thead",
+                      }
+                    }
+                    rowData={
+                      Array [
+                        Object {
+                          "cell": Object {
+                            "formatters": Array [
+                              [Function],
+                            ],
+                            "transforms": Array [
+                              [Function],
+                              [Function],
+                            ],
+                          },
+                          "data": undefined,
+                          "extraParams": Object {
+                            "actionResolver": [Function],
+                            "actions": undefined,
+                            "allRowsSelected": false,
+                            "areActionsDisabled": undefined,
+                            "canSelectAll": true,
+                            "contentId": "expanded-content",
+                            "dropdownDirection": "down",
+                            "dropdownPosition": "right",
+                            "expandId": "expandable-toggle",
+                            "firstUserColumnIndex": 1,
+                            "onCollapse": undefined,
+                            "onExpand": undefined,
+                            "onRowEdit": undefined,
+                            "onSelect": [Function],
+                            "onSort": undefined,
+                            "rowLabeledBy": "simple-node",
+                            "sortBy": undefined,
+                          },
+                          "header": Object {
+                            "formatters": Array [],
+                            "label": "",
+                            "transforms": Array [
+                              [Function],
+                              [Function],
+                              [Function],
+                            ],
+                          },
+                          "property": "column-0",
+                          "props": Object {
+                            "data-key": 0,
+                            "data-label": "",
+                          },
+                        },
+                        Object {
+                          "cell": Object {
+                            "formatters": Array [
+                              [Function],
+                            ],
+                            "transforms": Array [
+                              [Function],
+                            ],
+                          },
+                          "data": undefined,
+                          "extraParams": Object {
+                            "actionResolver": [Function],
+                            "actions": undefined,
+                            "allRowsSelected": false,
+                            "areActionsDisabled": undefined,
+                            "canSelectAll": true,
+                            "contentId": "expanded-content",
+                            "dropdownDirection": "down",
+                            "dropdownPosition": "right",
+                            "expandId": "expandable-toggle",
+                            "firstUserColumnIndex": 1,
+                            "onCollapse": undefined,
+                            "onExpand": undefined,
+                            "onRowEdit": undefined,
+                            "onSelect": [Function],
+                            "onSort": undefined,
+                            "rowLabeledBy": "simple-node",
+                            "sortBy": undefined,
+                          },
+                          "header": Object {
+                            "formatters": Array [],
+                            "label": "Id",
+                            "transforms": Array [
+                              [Function],
+                              [Function],
+                            ],
+                          },
+                          "property": "id",
+                          "props": Object {
+                            "data-key": 1,
+                            "data-label": "Id",
+                          },
+                        },
+                        Object {
+                          "cell": Object {
+                            "formatters": Array [
+                              [Function],
+                            ],
+                            "transforms": Array [
+                              [Function],
+                            ],
+                          },
+                          "data": undefined,
+                          "extraParams": Object {
+                            "actionResolver": [Function],
+                            "actions": undefined,
+                            "allRowsSelected": false,
+                            "areActionsDisabled": undefined,
+                            "canSelectAll": true,
+                            "contentId": "expanded-content",
+                            "dropdownDirection": "down",
+                            "dropdownPosition": "right",
+                            "expandId": "expandable-toggle",
+                            "firstUserColumnIndex": 1,
+                            "onCollapse": undefined,
+                            "onExpand": undefined,
+                            "onRowEdit": undefined,
+                            "onSelect": [Function],
+                            "onSort": undefined,
+                            "rowLabeledBy": "simple-node",
+                            "sortBy": undefined,
+                          },
+                          "header": Object {
+                            "formatters": Array [],
+                            "label": "Status",
+                            "transforms": Array [
+                              [Function],
+                              [Function],
+                            ],
+                          },
+                          "property": "status",
+                          "props": Object {
+                            "data-key": 2,
+                            "data-label": "Status",
+                          },
+                        },
+                        Object {
+                          "cell": Object {
+                            "formatters": Array [
+                              [Function],
+                            ],
+                            "transforms": Array [
+                              [Function],
+                            ],
+                          },
+                          "data": undefined,
+                          "extraParams": Object {
+                            "actionResolver": [Function],
+                            "actions": undefined,
+                            "allRowsSelected": false,
+                            "areActionsDisabled": undefined,
+                            "canSelectAll": true,
+                            "contentId": "expanded-content",
+                            "dropdownDirection": "down",
+                            "dropdownPosition": "right",
+                            "expandId": "expandable-toggle",
+                            "firstUserColumnIndex": 1,
+                            "onCollapse": undefined,
+                            "onExpand": undefined,
+                            "onRowEdit": undefined,
+                            "onSelect": [Function],
+                            "onSort": undefined,
+                            "rowLabeledBy": "simple-node",
+                            "sortBy": undefined,
+                          },
+                          "header": Object {
+                            "formatters": Array [],
+                            "label": "Expiration time",
+                            "transforms": Array [
+                              [Function],
+                              [Function],
+                            ],
+                          },
+                          "property": "expiration-time",
+                          "props": Object {
+                            "data-key": 3,
+                            "data-label": "Expiration time",
+                          },
+                        },
+                        Object {
+                          "cell": Object {
+                            "formatters": Array [
+                              [Function],
+                            ],
+                            "transforms": Array [
+                              [Function],
+                            ],
+                          },
+                          "data": undefined,
+                          "extraParams": Object {
+                            "actionResolver": [Function],
+                            "actions": undefined,
+                            "allRowsSelected": false,
+                            "areActionsDisabled": undefined,
+                            "canSelectAll": true,
+                            "contentId": "expanded-content",
+                            "dropdownDirection": "down",
+                            "dropdownPosition": "right",
+                            "expandId": "expandable-toggle",
+                            "firstUserColumnIndex": 1,
+                            "onCollapse": undefined,
+                            "onExpand": undefined,
+                            "onRowEdit": undefined,
+                            "onSelect": [Function],
+                            "onSort": undefined,
+                            "rowLabeledBy": "simple-node",
+                            "sortBy": undefined,
+                          },
+                          "header": Object {
+                            "formatters": Array [],
+                            "label": "Last update",
+                            "transforms": Array [
+                              [Function],
+                              [Function],
+                            ],
+                          },
+                          "property": "last-update",
+                          "props": Object {
+                            "data-key": 4,
+                            "data-label": "Last update",
+                          },
+                        },
+                        Object {
+                          "cell": Object {
+                            "formatters": Array [
+                              [Function],
+                            ],
+                            "transforms": Array [
+                              [Function],
+                              [Function],
+                            ],
+                          },
+                          "data": undefined,
+                          "extraParams": Object {
+                            "actionResolver": [Function],
+                            "actions": undefined,
+                            "allRowsSelected": false,
+                            "areActionsDisabled": undefined,
+                            "canSelectAll": true,
+                            "contentId": "expanded-content",
+                            "dropdownDirection": "down",
+                            "dropdownPosition": "right",
+                            "expandId": "expandable-toggle",
+                            "firstUserColumnIndex": 1,
+                            "onCollapse": undefined,
+                            "onExpand": undefined,
+                            "onRowEdit": undefined,
+                            "onSelect": [Function],
+                            "onSort": undefined,
+                            "rowLabeledBy": "simple-node",
+                            "sortBy": undefined,
+                          },
+                          "header": Object {
+                            "formatters": Array [],
+                            "label": "",
+                            "transforms": Array [
+                              [Function],
+                              [Function],
+                              [Function],
+                            ],
+                          },
+                          "property": "column-5",
+                          "props": Object {
+                            "data-key": 5,
+                            "data-label": "",
+                          },
+                        },
+                      ]
+                    }
+                    rowIndex={0}
+                  >
+                    <tr>
+                      <HeaderCell
+                        className="pf-c-table__check"
+                        component="td"
+                        data-key={0}
+                        data-label=""
+                        isVisible={true}
+                        key="0-header"
+                        scope=""
+                      >
+                        <td
+                          className="pf-c-table__check"
+                          data-key={0}
+                          data-label=""
+                          onMouseEnter={[Function]}
+                        >
+                          <SelectColumn
+                            aria-label="Select all rows"
+                            checked={false}
+                            name="check-all"
+                            onSelect={[Function]}
+                          >
+                            <input
+                              aria-label="Select all rows"
+                              checked={false}
+                              name="check-all"
+                              onChange={[Function]}
+                              type="checkbox"
+                            />
+                          </SelectColumn>
+                        </td>
+                      </HeaderCell>
+                      <HeaderCell
+                        data-key={1}
+                        data-label="Id"
+                        key="1-header"
+                        scope="col"
+                      >
+                        <th
+                          className=""
+                          data-key={1}
+                          data-label="Id"
+                          onMouseEnter={[Function]}
+                          scope="col"
+                        >
+                          Id
+                        </th>
+                      </HeaderCell>
+                      <HeaderCell
+                        data-key={2}
+                        data-label="Status"
+                        key="2-header"
+                        scope="col"
+                      >
+                        <th
+                          className=""
+                          data-key={2}
+                          data-label="Status"
+                          onMouseEnter={[Function]}
+                          scope="col"
+                        >
+                          Status
+                        </th>
+                      </HeaderCell>
+                      <HeaderCell
+                        data-key={3}
+                        data-label="Expiration time"
+                        key="3-header"
+                        scope="col"
+                      >
+                        <th
+                          className=""
+                          data-key={3}
+                          data-label="Expiration time"
+                          onMouseEnter={[Function]}
+                          scope="col"
+                        >
+                          Expiration time
+                        </th>
+                      </HeaderCell>
+                      <HeaderCell
+                        data-key={4}
+                        data-label="Last update"
+                        key="4-header"
+                        scope="col"
+                      >
+                        <th
+                          className=""
+                          data-key={4}
+                          data-label="Last update"
+                          onMouseEnter={[Function]}
+                          scope="col"
+                        >
+                          Last update
+                        </th>
+                      </HeaderCell>
+                      <HeaderCell
+                        component="td"
+                        data-key={5}
+                        data-label=""
+                        key="5-header"
+                        scope=""
+                      >
+                        <td
+                          className=""
+                          data-key={5}
+                          data-label=""
+                          onMouseEnter={[Function]}
+                        />
+                      </HeaderCell>
+                    </tr>
+                  </HeaderRow>
+                </thead>
+              </BaseHeader>
+            </Component>
+          </ContextHeader>
         </TableHeader>
         <Component
           rowKey="rowKey"
@@ -939,6 +1631,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                     },
                   ],
                   "rowKey": "6e74a570-31c8-4020-bd70-19be2cb625f3_0",
+                  "selected": false,
                   "type": "Non-editable",
                 },
                 Object {
@@ -1018,6 +1711,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                     },
                   ],
                   "rowKey": "dad3aa88-5c1e-4858-a919-6123c675a0fa_0",
+                  "selected": false,
                   "type": "Editable",
                 },
                 Object {
@@ -1097,6 +1791,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                     },
                   ],
                   "rowKey": "2234dde-npce1-2908-b3131-6123c675a0fa_0",
+                  "selected": false,
                   "type": "Non-editable",
                 },
               ]
@@ -1219,6 +1914,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                       </React.Fragment>,
                     },
                     "rowKey": "6e74a570-31c8-4020-bd70-19be2cb625f3_0",
+                    "selected": false,
                     "status": Object {
                       "props": Object {
                         "isVisible": true,
@@ -1389,6 +2085,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                       </React.Fragment>,
                     },
                     "rowKey": "dad3aa88-5c1e-4858-a919-6123c675a0fa_0",
+                    "selected": false,
                     "status": Object {
                       "props": Object {
                         "isVisible": true,
@@ -1559,6 +2256,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                       </React.Fragment>,
                     },
                     "rowKey": "2234dde-npce1-2908-b3131-6123c675a0fa_0",
+                    "selected": false,
                     "status": Object {
                       "props": Object {
                         "isVisible": true,
@@ -1691,6 +2389,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                       </React.Fragment>,
                     },
                     "rowKey": "6e74a570-31c8-4020-bd70-19be2cb625f3_0",
+                    "selected": false,
                     "status": Object {
                       "props": Object {
                         "isVisible": true,
@@ -1861,6 +2560,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                       </React.Fragment>,
                     },
                     "rowKey": "dad3aa88-5c1e-4858-a919-6123c675a0fa_0",
+                    "selected": false,
                     "status": Object {
                       "props": Object {
                         "isVisible": true,
@@ -2031,6 +2731,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                       </React.Fragment>,
                     },
                     "rowKey": "2234dde-npce1-2908-b3131-6123c675a0fa_0",
+                    "selected": false,
                     "status": Object {
                       "props": Object {
                         "isVisible": true,
@@ -2431,6 +3132,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                         </React.Fragment>,
                       },
                       "rowKey": "6e74a570-31c8-4020-bd70-19be2cb625f3_0",
+                      "selected": false,
                       "status": Object {
                         "props": Object {
                           "isVisible": true,
@@ -2601,6 +3303,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                         </React.Fragment>,
                       },
                       "rowKey": "dad3aa88-5c1e-4858-a919-6123c675a0fa_0",
+                      "selected": false,
                       "status": Object {
                         "props": Object {
                           "isVisible": true,
@@ -2771,6 +3474,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                         </React.Fragment>,
                       },
                       "rowKey": "2234dde-npce1-2908-b3131-6123c675a0fa_0",
+                      "selected": false,
                       "status": Object {
                         "props": Object {
                           "isVisible": true,
@@ -2918,6 +3622,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                         </React.Fragment>,
                       },
                       "rowKey": "6e74a570-31c8-4020-bd70-19be2cb625f3_0",
+                      "selected": false,
                       "status": Object {
                         "props": Object {
                           "isVisible": true,
@@ -3088,6 +3793,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                         </React.Fragment>,
                       },
                       "rowKey": "dad3aa88-5c1e-4858-a919-6123c675a0fa_0",
+                      "selected": false,
                       "status": Object {
                         "props": Object {
                           "isVisible": true,
@@ -3258,6 +3964,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                         </React.Fragment>,
                       },
                       "rowKey": "2234dde-npce1-2908-b3131-6123c675a0fa_0",
+                      "selected": false,
                       "status": Object {
                         "props": Object {
                           "isVisible": true,
@@ -3392,6 +4099,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                           </React.Fragment>,
                         },
                         "rowKey": "6e74a570-31c8-4020-bd70-19be2cb625f3_0",
+                        "selected": false,
                         "status": Object {
                           "props": Object {
                             "isVisible": true,
@@ -3562,6 +4270,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                           </React.Fragment>,
                         },
                         "rowKey": "dad3aa88-5c1e-4858-a919-6123c675a0fa_0",
+                        "selected": false,
                         "status": Object {
                           "props": Object {
                             "isVisible": true,
@@ -3732,6 +4441,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                           </React.Fragment>,
                         },
                         "rowKey": "2234dde-npce1-2908-b3131-6123c675a0fa_0",
+                        "selected": false,
                         "status": Object {
                           "props": Object {
                             "isVisible": true,
@@ -4141,6 +4851,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                             </React.Fragment>,
                           },
                           "rowKey": "6e74a570-31c8-4020-bd70-19be2cb625f3_0",
+                          "selected": false,
                           "status": Object {
                             "props": Object {
                               "isVisible": true,
@@ -4275,6 +4986,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                               </React.Fragment>,
                             },
                             "rowKey": "6e74a570-31c8-4020-bd70-19be2cb625f3_0",
+                            "selected": false,
                             "status": Object {
                               "props": Object {
                                 "isVisible": true,
@@ -4693,6 +5405,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                                       </React.Fragment>,
                                     },
                                     "rowKey": "6e74a570-31c8-4020-bd70-19be2cb625f3_0",
+                                    "selected": false,
                                     "status": Object {
                                       "props": Object {
                                         "isVisible": true,
@@ -5339,6 +6052,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                             </React.Fragment>,
                           },
                           "rowKey": "dad3aa88-5c1e-4858-a919-6123c675a0fa_0",
+                          "selected": false,
                           "status": Object {
                             "props": Object {
                               "isVisible": true,
@@ -5517,6 +6231,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                               </React.Fragment>,
                             },
                             "rowKey": "dad3aa88-5c1e-4858-a919-6123c675a0fa_0",
+                            "selected": false,
                             "status": Object {
                               "props": Object {
                                 "isVisible": true,
@@ -6011,6 +6726,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                                       </React.Fragment>,
                                     },
                                     "rowKey": "dad3aa88-5c1e-4858-a919-6123c675a0fa_0",
+                                    "selected": false,
                                     "status": Object {
                                       "props": Object {
                                         "isVisible": true,
@@ -6685,6 +7401,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                             </React.Fragment>,
                           },
                           "rowKey": "2234dde-npce1-2908-b3131-6123c675a0fa_0",
+                          "selected": false,
                           "status": Object {
                             "props": Object {
                               "isVisible": true,
@@ -6863,6 +7580,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                               </React.Fragment>,
                             },
                             "rowKey": "2234dde-npce1-2908-b3131-6123c675a0fa_0",
+                            "selected": false,
                             "status": Object {
                               "props": Object {
                                 "isVisible": true,
@@ -7349,6 +8067,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                                       </React.Fragment>,
                                     },
                                     "rowKey": "2234dde-npce1-2908-b3131-6123c675a0fa_0",
+                                    "selected": false,
                                     "status": Object {
                                       "props": Object {
                                         "isVisible": true,

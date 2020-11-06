@@ -238,4 +238,32 @@ describe('Jobs management page tests', () => {
       true
     );
   });
+  it('toggle kebab', async () => {
+    let wrapper = await getWrapperAsync(
+      <MockedProvider mocks={mocks} addTypename={false}>
+        <BrowserRouter>
+          <JobsManagementPage />
+        </BrowserRouter>
+      </MockedProvider>,
+      'JobsManagementPage'
+    );
+    await act(async () => {
+      wrapper
+        .find('#jobs-management-buttons')
+        .at(0)
+        .find('Dropdown')
+        .find('KebabToggle')
+        .find('button')
+        .simulate('click');
+    });
+    wrapper = wrapper.update();
+    expect(
+      wrapper
+        .find('Dropdown')
+        .find('DropdownItem')
+        .find('a')
+        .children()
+        .contains('Cancel selected')
+    ).toBeTruthy();
+  });
 });

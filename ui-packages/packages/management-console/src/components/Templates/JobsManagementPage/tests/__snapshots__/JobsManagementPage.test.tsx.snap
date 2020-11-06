@@ -169,6 +169,238 @@ exports[`Jobs management page tests snapshot test with mock data 1`] = `
                       </div>
                     </ToolbarGroupWithRef>
                   </ForwardRef>
+                  <ToolbarItem
+                    variant="separator"
+                  >
+                    <Divider
+                      className="pf-m-vertical"
+                    >
+                      <hr
+                        className="pf-c-divider pf-m-vertical"
+                      />
+                    </Divider>
+                  </ToolbarItem>
+                  <ForwardRef
+                    className="pf-u-ml-md"
+                    id="jobs-management-buttons"
+                  >
+                    <ToolbarGroupWithRef
+                      className="pf-u-ml-md"
+                      id="jobs-management-buttons"
+                      innerRef={null}
+                    >
+                      <div
+                        className="pf-c-toolbar__group pf-u-ml-md"
+                        id="jobs-management-buttons"
+                      >
+                        <OverflowMenu
+                          breakpoint="xl"
+                        >
+                          <div
+                            className="pf-c-overflow-menu"
+                          >
+                            <OverflowMenuContent />
+                            <OverflowMenuControl>
+                              <div
+                                className="pf-c-overflow-menu__control"
+                              >
+                                 
+                                <Dropdown
+                                  dropdownItems={
+                                    Array [
+                                      <DropdownItem
+                                        isDisabled={true}
+                                        onClick={[Function]}
+                                      >
+                                        Cancel selected
+                                      </DropdownItem>,
+                                    ]
+                                  }
+                                  isOpen={false}
+                                  isPlain={true}
+                                  onSelect={[Function]}
+                                  toggle={
+                                    <KebabToggle
+                                      onToggle={[Function]}
+                                    />
+                                  }
+                                >
+                                  <DropdownWithContext
+                                    autoFocus={true}
+                                    className=""
+                                    direction="down"
+                                    dropdownItems={
+                                      Array [
+                                        <DropdownItem
+                                          isDisabled={true}
+                                          onClick={[Function]}
+                                        >
+                                          Cancel selected
+                                        </DropdownItem>,
+                                      ]
+                                    }
+                                    isGrouped={false}
+                                    isOpen={false}
+                                    isPlain={true}
+                                    menuAppendTo="inline"
+                                    onSelect={[Function]}
+                                    position="left"
+                                    toggle={
+                                      <KebabToggle
+                                        onToggle={[Function]}
+                                      />
+                                    }
+                                  >
+                                    <div
+                                      className="pf-c-dropdown"
+                                      data-ouia-component-id={5}
+                                      data-ouia-component-type="PF4/Dropdown"
+                                      data-ouia-safe={true}
+                                    >
+                                      <KebabToggle
+                                        aria-haspopup={true}
+                                        getMenuRef={[Function]}
+                                        id="pf-dropdown-toggle-id-2"
+                                        isOpen={false}
+                                        isPlain={true}
+                                        key=".0"
+                                        onEnter={[Function]}
+                                        onToggle={[Function]}
+                                        parentRef={
+                                          Object {
+                                            "current": <div
+                                              class="pf-c-dropdown"
+                                              data-ouia-component-id="5"
+                                              data-ouia-component-type="PF4/Dropdown"
+                                              data-ouia-safe="true"
+                                            >
+                                              <button
+                                                aria-expanded="false"
+                                                aria-haspopup="true"
+                                                aria-label="Actions"
+                                                class="pf-c-dropdown__toggle pf-m-plain"
+                                                id="pf-dropdown-toggle-id-2"
+                                                type="button"
+                                              >
+                                                <svg
+                                                  aria-hidden="true"
+                                                  fill="currentColor"
+                                                  height="1em"
+                                                  role="img"
+                                                  style="vertical-align: -0.125em;"
+                                                  viewBox="0 0 192 512"
+                                                  width="1em"
+                                                >
+                                                  <path
+                                                    d="M96 184c39.8 0 72 32.2 72 72s-32.2 72-72 72-72-32.2-72-72 32.2-72 72-72zM24 80c0 39.8 32.2 72 72 72s72-32.2 72-72S135.8 8 96 8 24 40.2 24 80zm0 352c0 39.8 32.2 72 72 72s72-32.2 72-72-32.2-72-72-72-72 32.2-72 72z"
+                                                    transform=""
+                                                  />
+                                                </svg>
+                                              </button>
+                                            </div>,
+                                          }
+                                        }
+                                      >
+                                        <Toggle
+                                          aria-haspopup={true}
+                                          aria-label="Actions"
+                                          bubbleEvent={false}
+                                          className=""
+                                          getMenuRef={[Function]}
+                                          id="pf-dropdown-toggle-id-2"
+                                          isActive={false}
+                                          isDisabled={false}
+                                          isOpen={false}
+                                          isPlain={true}
+                                          isPrimary={false}
+                                          isSplitButton={false}
+                                          onEnter={[Function]}
+                                          onToggle={[Function]}
+                                          parentRef={
+                                            Object {
+                                              "current": <div
+                                                class="pf-c-dropdown"
+                                                data-ouia-component-id="5"
+                                                data-ouia-component-type="PF4/Dropdown"
+                                                data-ouia-safe="true"
+                                              >
+                                                <button
+                                                  aria-expanded="false"
+                                                  aria-haspopup="true"
+                                                  aria-label="Actions"
+                                                  class="pf-c-dropdown__toggle pf-m-plain"
+                                                  id="pf-dropdown-toggle-id-2"
+                                                  type="button"
+                                                >
+                                                  <svg
+                                                    aria-hidden="true"
+                                                    fill="currentColor"
+                                                    height="1em"
+                                                    role="img"
+                                                    style="vertical-align: -0.125em;"
+                                                    viewBox="0 0 192 512"
+                                                    width="1em"
+                                                  >
+                                                    <path
+                                                      d="M96 184c39.8 0 72 32.2 72 72s-32.2 72-72 72-72-32.2-72-72 32.2-72 72-72zM24 80c0 39.8 32.2 72 72 72s72-32.2 72-72S135.8 8 96 8 24 40.2 24 80zm0 352c0 39.8 32.2 72 72 72s72-32.2 72-72-32.2-72-72-72-72 32.2-72 72z"
+                                                      transform=""
+                                                    />
+                                                  </svg>
+                                                </button>
+                                              </div>,
+                                            }
+                                          }
+                                        >
+                                          <button
+                                            aria-expanded={false}
+                                            aria-haspopup={true}
+                                            aria-label="Actions"
+                                            className="pf-c-dropdown__toggle pf-m-plain"
+                                            disabled={false}
+                                            id="pf-dropdown-toggle-id-2"
+                                            onClick={[Function]}
+                                            onKeyDown={[Function]}
+                                            type="button"
+                                          >
+                                            <EllipsisVIcon
+                                              color="currentColor"
+                                              noVerticalAlign={false}
+                                              size="sm"
+                                            >
+                                              <svg
+                                                aria-hidden={true}
+                                                aria-labelledby={null}
+                                                fill="currentColor"
+                                                height="1em"
+                                                role="img"
+                                                style={
+                                                  Object {
+                                                    "verticalAlign": "-0.125em",
+                                                  }
+                                                }
+                                                viewBox="0 0 192 512"
+                                                width="1em"
+                                              >
+                                                <path
+                                                  d="M96 184c39.8 0 72 32.2 72 72s-32.2 72-72 72-72-32.2-72-72 32.2-72 72-72zM24 80c0 39.8 32.2 72 72 72s72-32.2 72-72S135.8 8 96 8 24 40.2 24 80zm0 352c0 39.8 32.2 72 72 72s72-32.2 72-72-32.2-72-72-72-72 32.2-72 72z"
+                                                  transform=""
+                                                />
+                                              </svg>
+                                            </EllipsisVIcon>
+                                          </button>
+                                        </Toggle>
+                                      </KebabToggle>
+                                    </div>
+                                  </DropdownWithContext>
+                                </Dropdown>
+                                 
+                              </div>
+                            </OverflowMenuControl>
+                          </div>
+                        </OverflowMenu>
+                      </div>
+                    </ToolbarGroupWithRef>
+                  </ForwardRef>
                 </div>
                 <ToolbarExpandableContent
                   chipContainerRef={
@@ -254,7 +486,7 @@ exports[`Jobs management page tests snapshot test with mock data 1`] = `
         <Card>
           <article
             className="pf-c-card"
-            data-ouia-component-id={2}
+            data-ouia-component-id={6}
             data-ouia-component-type="PF4/Card"
             data-ouia-safe={true}
           >
@@ -320,9 +552,11 @@ exports[`Jobs management page tests snapshot test with mock data 1`] = `
                   handleCancelModalToggle={[Function]}
                   handleDetailsToggle={[Function]}
                   handleRescheduleToggle={[Function]}
+                  selectedJobInstances={Array []}
                   setModalContent={[Function]}
                   setModalTitle={[Function]}
                   setSelectedJob={[Function]}
+                  setSelectedJobInstances={[Function]}
                 />
               </div>
             </CardBody>
@@ -434,6 +668,24 @@ exports[`Jobs management page tests snapshot test with mock data 1`] = `
           actionType="Job Cancel"
           handleModalToggle={[Function]}
           isModalOpen={false}
+          jobOperations={
+            Object {
+              "functions": Object {
+                "perform": [Function],
+              },
+              "messages": Object {
+                "ignoredMessage": "These jobs were ignored because they were already canceled or executed.",
+                "noJobsMessage": "No jobs were canceled",
+                "successMessage": "Canceled jobs: ",
+                "warningMessage": "Note: The job status has been updated. The list may appear inconsistent until you refresh any applied filters.",
+              },
+              "results": Object {
+                "failedJobs": Object {},
+                "ignoredJobs": Object {},
+                "successJobs": Object {},
+              },
+            }
+          }
           modalContent=""
           modalTitle={null}
         />

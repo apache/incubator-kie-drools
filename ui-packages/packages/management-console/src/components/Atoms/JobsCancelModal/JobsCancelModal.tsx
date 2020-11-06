@@ -1,12 +1,16 @@
 import React from 'react';
 import { Modal, Button, TextContent, Text } from '@patternfly/react-core';
 import { OUIAProps, componentOuiaProps } from '@kogito-apps/common';
+import JobsBulkList from '../JobsBulkList/JobsBulkList';
+import { IJobOperation } from '../../Templates/JobsManagementPage/JobsManagementPage';
+
 interface IOwnProps {
   actionType: string;
   modalTitle: JSX.Element;
   modalContent: string;
   handleModalToggle: () => void;
   isModalOpen: boolean;
+  jobOperations?: IJobOperation;
 }
 const JobsCancelModal: React.FC<IOwnProps & OUIAProps> = ({
   actionType,
@@ -14,6 +18,7 @@ const JobsCancelModal: React.FC<IOwnProps & OUIAProps> = ({
   modalTitle,
   isModalOpen,
   handleModalToggle,
+  jobOperations,
   ouiaId,
   ouiaSafe
 }) => {
@@ -37,9 +42,13 @@ const JobsCancelModal: React.FC<IOwnProps & OUIAProps> = ({
       ]}
       {...componentOuiaProps(ouiaId, 'jobs-cancel-modal', ouiaSafe)}
     >
-      <TextContent>
-        <Text>{modalContent}</Text>
-      </TextContent>
+      {modalContent.length > 0 ? (
+        <TextContent>
+          <Text>{modalContent}</Text>
+        </TextContent>
+      ) : (
+        <JobsBulkList operationResult={jobOperations} />
+      )}
     </Modal>
   );
 };

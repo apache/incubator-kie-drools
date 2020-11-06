@@ -6,6 +6,7 @@ import { JobsIconCreator, jobCancel } from '../../../utils/Utils';
 import Moment from 'react-moment';
 import { HistoryIcon } from '@patternfly/react-icons';
 import { refetchContext } from '../../contexts';
+import _ from 'lodash';
 
 interface ActionsMeta {
   title: string;
@@ -26,6 +27,8 @@ interface IOwnProps {
   setModalTitle: (modalTitle: JSX.Element) => void;
   setModalContent: (modalContent: string) => void;
   setSelectedJob: (job: GraphQL.Job) => void;
+  selectedJobInstances: GraphQL.Job[];
+  setSelectedJobInstances: (job: GraphQL.Job[]) => void;
 }
 
 const JobsManagementTable: React.FC<IOwnProps & OUIAProps> = ({
@@ -36,6 +39,8 @@ const JobsManagementTable: React.FC<IOwnProps & OUIAProps> = ({
   setModalTitle,
   setModalContent,
   setSelectedJob,
+  selectedJobInstances,
+  setSelectedJobInstances,
   ouiaId,
   ouiaSafe
 }) => {
@@ -158,7 +163,8 @@ const JobsManagementTable: React.FC<IOwnProps & OUIAProps> = ({
       jobRow.push({
         cells: retrievedValue.tempRows,
         type: retrievedValue.jobType,
-        rowKey: job.id
+        rowKey: job.id,
+        selected: false
       });
     });
     /* istanbul ignore else */
@@ -167,8 +173,42 @@ const JobsManagementTable: React.FC<IOwnProps & OUIAProps> = ({
     }
   };
 
-  const onSelect = (): void => {
-    return null;
+  const onSelect = (event, isSelected, rowId): void => {
+    const copyOfRows = [...rows];
+    if (rowId === -1) {
+      copyOfRows.map(row => {
+        row.selected = isSelected;
+        return row;
+      });
+      if (selectedJobInstances.length === data.Jobs.length) {
+        setSelectedJobInstances([]);
+      } else if (selectedJobInstances.length < data.Jobs.length) {
+        /* istanbul ignore else*/
+        setSelectedJobInstances(data.Jobs);
+      }
+    } else {
+      if (copyOfRows[rowId]) {
+        copyOfRows[rowId].selected = isSelected;
+        const row = data.Jobs.filter(
+          job => job.id === copyOfRows[rowId].rowKey
+        );
+        const rowData = _.find(selectedJobInstances, [
+          'id',
+          copyOfRows[rowId].rowKey
+        ]);
+        if (rowData === undefined) {
+          setSelectedJobInstances([...selectedJobInstances, row[0]]);
+        } else {
+          const copyOfSelectedJobInstances = [...selectedJobInstances];
+          _.remove(
+            copyOfSelectedJobInstances,
+            job => job.id === copyOfRows[rowId].rowKey
+          );
+          setSelectedJobInstances(copyOfSelectedJobInstances);
+        }
+      }
+    }
+    setRows(copyOfRows);
   };
 
   useEffect(() => {

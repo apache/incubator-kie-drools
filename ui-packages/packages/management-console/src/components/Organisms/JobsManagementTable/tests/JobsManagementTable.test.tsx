@@ -1,26 +1,19 @@
 import React from 'react';
 import JobsManagementTable from '../JobsManagementTable';
-import { getWrapperAsync, GraphQL } from '@kogito-apps/common';
+import { getWrapperAsync, GraphQL, getWrapper } from '@kogito-apps/common';
 import { Dropdown, DropdownItem, KebabToggle } from '@patternfly/react-core';
 import { act } from 'react-dom/test-utils';
 import * as Utils from '../../../../utils/Utils';
 import axios from 'axios';
 import { refetchContext } from '../../../contexts';
+import { SelectColumn } from '@patternfly/react-table';
 jest.mock('axios');
 Date.now = jest.fn(() => new Date(Date.UTC(2020, 10, 30)).valueOf());
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
-const MockedTableHeader = (): React.ReactElement => {
-  return <></>;
-};
 const MockedIcon = (): React.ReactElement => {
   return <></>;
 };
-
-jest.mock('@patternfly/react-table', () => ({
-  ...jest.requireActual('@patternfly/react-table'),
-  TableHeader: () => <MockedTableHeader />
-}));
 
 jest.mock('@patternfly/react-icons', () => ({
   ...jest.requireActual('@patternfly/react-icons'),
@@ -99,7 +92,9 @@ describe('Jobs management table component tests', () => {
     handleCancelModalToggle: jest.fn(),
     setModalTitle: jest.fn(),
     setModalContent: jest.fn(),
-    setSelectedJob: jest.fn()
+    setSelectedJob: jest.fn(),
+    selectedJobInstances: [],
+    setSelectedJobInstances: jest.fn()
   };
   it('Snapshot with default props', async () => {
     const wrapper = await getWrapperAsync(
@@ -248,5 +243,56 @@ describe('Jobs management table component tests', () => {
         .simulate('click');
     });
     expect(props.handleRescheduleToggle).toHaveBeenCalled();
+  });
+
+  it('onSelect tests', async () => {
+    const wrapperWithoutSelectedInstances = getWrapper(
+      <JobsManagementTable {...props} />,
+      'JobsManagementTable'
+    );
+    // select 1 row
+    await act(async () => {
+      wrapperWithoutSelectedInstances
+        .find(SelectColumn)
+        .at(2)
+        .simulate('change');
+    });
+    expect(props.setSelectedJobInstances).toHaveBeenCalled();
+    const wrapperWithSelectedInstances = getWrapper(
+      <JobsManagementTable
+        {...{ ...props, selectedJobInstances: [{ ...props.data.Jobs[1] }] }}
+      />,
+      'JobsManagementTable'
+    );
+    //deselect 1 row
+    await act(async () => {
+      wrapperWithSelectedInstances
+        .find(SelectColumn)
+        .at(2)
+        .simulate('change');
+    });
+    expect(props.setSelectedJobInstances).toHaveBeenCalled();
+    //select all rows
+    await act(async () => {
+      wrapperWithoutSelectedInstances
+        .find(SelectColumn)
+        .at(0)
+        .simulate('change');
+    });
+    expect(props.setSelectedJobInstances).toHaveBeenCalled();
+    const wrapperWithAllSelected = getWrapper(
+      <JobsManagementTable
+        {...{ ...props, selectedJobInstances: [...props.data.Jobs] }}
+      />,
+      'JobsManagementTable'
+    );
+    //deselect all rows
+    await act(async () => {
+      wrapperWithAllSelected
+        .find(SelectColumn)
+        .at(0)
+        .simulate('change');
+    });
+    expect(props.setSelectedJobInstances).toHaveBeenCalled();
   });
 });

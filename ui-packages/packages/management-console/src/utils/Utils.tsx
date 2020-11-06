@@ -19,6 +19,7 @@ import {
   OperationType
 } from '../components/Molecules/ProcessListToolbar/ProcessListToolbar';
 import { Title, TitleSizes } from '@patternfly/react-core';
+import { JobsBulkList } from '../components/Templates/JobsManagementPage/JobsManagementPage';
 
 export interface TriggerableNode {
   id: number;
@@ -299,6 +300,13 @@ export const getProcessInstanceDescription = (
   };
 };
 
+export const getJobsDescription = (job: GraphQL.Job) => {
+  return {
+    id: job.id,
+    name: job.processId
+  };
+};
+
 // function containing Api call to update process variables
 export const handleVariableUpdate = async (
   processInstance: Pick<ProcessInstance, 'id' | 'endpoint'>,
@@ -405,4 +413,26 @@ export const jobCancel = async (
     );
     refetch();
   }
+};
+
+export const performMultipleCancel = async (
+  jobsToBeActioned: (GraphQL.Job & { errorMessage?: string })[],
+  multiActionResult: (
+    successJobs: JobsBulkList,
+    failedJobs: JobsBulkList
+  ) => void
+) => {
+  const successJobs = {};
+  const failedJobs = {};
+  for (const job of jobsToBeActioned) {
+    try {
+      await axios.delete(`${job.endpoint}/${job.id}`);
+      successJobs[job.id] = job;
+    } catch (error) {
+      job.errorMessage = error.errorMessage;
+      failedJobs[job.id] = job;
+      failedJobs[job.id].errorMessage = JSON.stringify(error.message);
+    }
+  }
+  multiActionResult(successJobs, failedJobs);
 };
