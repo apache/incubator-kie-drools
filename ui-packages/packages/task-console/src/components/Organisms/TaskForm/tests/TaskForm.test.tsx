@@ -19,11 +19,11 @@ import axios from 'axios';
 import { act } from 'react-dom/test-utils';
 import _ from 'lodash';
 import {
-  DefaultUser,
   getWrapperAsync,
   GraphQL,
-  KogitoEmptyState,
-  User
+  KogitoAppContextProvider,
+  UserContext,
+  KogitoEmptyState
 } from '@kogito-apps/common';
 import UserTaskInstance = GraphQL.UserTaskInstance;
 import TaskForm from '../TaskForm';
@@ -32,9 +32,11 @@ import FormRenderer from '../../../Molecules/FormRenderer/FormRenderer';
 import { TaskFormSubmitHandler } from '../../../../util/uniforms/TaskFormSubmitHandler/TaskFormSubmitHandler';
 import { getTaskSchemaEndPoint } from '../../../../util/Utils';
 import TaskConsoleContextProvider from '../../../../context/TaskConsoleContext/TaskConsoleContextProvider';
+import { TestingUserContext } from '../../../../util/tests/utils/TestingUserContext';
+import wait from 'waait';
 import TaskConsoleContext, {
-  DefaultContext,
-  IContext
+  ITaskConsoleContext,
+  TaskConsoleContextImpl
 } from '../../../../context/TaskConsoleContext/TaskConsoleContext';
 
 jest.mock('../../../Molecules/FormRenderer/FormRenderer');
@@ -84,7 +86,31 @@ const userTaskInstance: UserTaskInstance = {
     'http://localhost:8080/travels/9ae7ce3b-d49c-4f35-b843-8ac3d22fa427/VisaApplication/45a73767-5da3-49bf-9c40-d533c3e77ef3'
 };
 
-const testUser: User = new DefaultUser('test', ['group1', 'group2']);
+const getWrapper = async (
+  userTaskInstance: GraphQL.UserTaskInstance,
+  formSubmitSuccessCallback?: () => void,
+  formSubmitErrorCallback?: () => void
+) => {
+  let wrapper;
+
+  await act(async () => {
+    wrapper = await getWrapperAsync(
+      <KogitoAppContextProvider userContext={userContext}>
+        <TaskConsoleContextProvider>
+          <TaskForm
+            userTaskInstance={userTaskInstance}
+            onSubmitSuccess={formSubmitSuccessCallback}
+            onSubmitError={formSubmitErrorCallback}
+          />
+        </TaskConsoleContextProvider>
+      </KogitoAppContextProvider>,
+      'TaskForm'
+    );
+    await wait();
+  });
+
+  return (wrapper = wrapper.update().find(TaskForm));
+};
 
 enum Mode {
   SUCCESS,
@@ -101,15 +127,10 @@ const testSubmitCallbacks = async (mode: Mode) => {
     data: _.cloneDeep(ApplyForVisaForm)
   });
 
-  let wrapper = await getWrapperAsync(
-    <TaskConsoleContextProvider user={testUser}>
-      <TaskForm
-        userTaskInstance={userTaskInstance}
-        onSubmitSuccess={formSubmitSuccessCallback}
-        onSubmitError={formSubmitErrorCallback}
-      />
-    </TaskConsoleContextProvider>,
-    'TaskForm'
+  let wrapper = await getWrapper(
+    userTaskInstance,
+    formSubmitSuccessCallback,
+    formSubmitErrorCallback
   );
 
   wrapper = wrapper.update().find(TaskForm);
@@ -141,18 +162,26 @@ const testSubmitCallbacks = async (mode: Mode) => {
   expect(wrapper).toMatchSnapshot();
 };
 
+let userContext: UserContext;
+
 describe('TaskForm Test', () => {
+  beforeEach(() => {
+    userContext = new TestingUserContext();
+  });
+
   it('Test rendering form from task in context', async () => {
     mockedAxios.get.mockResolvedValue({
       status: 200,
       data: _.cloneDeep(ApplyForVisaForm)
     });
-    const context: IContext<UserTaskInstance> = new DefaultContext(testUser);
+    const context: ITaskConsoleContext<UserTaskInstance> = new TaskConsoleContextImpl();
     context.setActiveItem(userTaskInstance);
     const wrapper = await getWrapperAsync(
-      <TaskConsoleContext.Provider value={context}>
-        <TaskForm onSubmitSuccess={jest.fn()} onSubmitError={jest.fn()} />
-      </TaskConsoleContext.Provider>,
+      <KogitoAppContextProvider userContext={new TestingUserContext()}>
+        <TaskConsoleContext.Provider value={context}>
+          <TaskForm onSubmitSuccess={jest.fn()} onSubmitError={jest.fn()} />
+        </TaskConsoleContext.Provider>
+      </KogitoAppContextProvider>,
       'TaskForm'
     );
 
@@ -177,16 +206,7 @@ describe('TaskForm Test', () => {
       status: 200,
       data: _.cloneDeep(ApplyForVisaForm)
     });
-    const wrapper = await getWrapperAsync(
-      <TaskConsoleContextProvider user={testUser}>
-        <TaskForm
-          userTaskInstance={userTaskInstance}
-          onSubmitSuccess={jest.fn()}
-          onSubmitError={jest.fn()}
-        />
-      </TaskConsoleContextProvider>,
-      'TaskForm'
-    );
+    const wrapper = await getWrapper(userTaskInstance);
 
     wrapper.update();
 
@@ -209,16 +229,7 @@ describe('TaskForm Test', () => {
       status: 500
     });
 
-    let wrapper = await getWrapperAsync(
-      <TaskConsoleContextProvider user={testUser}>
-        <TaskForm
-          userTaskInstance={userTaskInstance}
-          onSubmitSuccess={jest.fn()}
-          onSubmitError={jest.fn()}
-        />
-      </TaskConsoleContextProvider>,
-      'TaskForm'
-    );
+    let wrapper = await getWrapper(userTaskInstance);
 
     wrapper = wrapper.update().find(TaskForm);
 
@@ -233,18 +244,7 @@ describe('TaskForm Test', () => {
       Promise.reject(new Error('This is an error loading the form'))
     );
 
-    let wrapper = await getWrapperAsync(
-      <TaskConsoleContextProvider user={testUser}>
-        <TaskForm
-          userTaskInstance={userTaskInstance}
-          onSubmitSuccess={jest.fn()}
-          onSubmitError={jest.fn()}
-        />
-      </TaskConsoleContextProvider>,
-      'TaskForm'
-    );
-
-    wrapper = wrapper.update().find(TaskForm);
+    const wrapper = await getWrapper(userTaskInstance, jest.fn(), jest.fn());
 
     expect(wrapper).toMatchSnapshot();
 
@@ -275,16 +275,7 @@ describe('TaskForm Test', () => {
 
     const axiosCalls = mockedAxios.get.mock.calls.length;
 
-    const wrapper = await getWrapperAsync(
-      <TaskConsoleContextProvider user={testUser}>
-        <TaskForm
-          userTaskInstance={task}
-          onSubmitSuccess={jest.fn()}
-          onSubmitError={jest.fn()}
-        />
-      </TaskConsoleContextProvider>,
-      'TaskForm'
-    );
+    const wrapper = await getWrapper(task);
 
     wrapper.update();
 
@@ -297,7 +288,9 @@ describe('TaskForm Test', () => {
     const requestURL = requestParams[0];
 
     expect(requestURL).not.toBe(task.endpoint + '/schema');
-    expect(requestURL).toEqual(getTaskSchemaEndPoint(task, testUser));
+    expect(requestURL).toEqual(
+      getTaskSchemaEndPoint(task, userContext.getCurrentUser())
+    );
   });
 
   it('Test submit success', async () => {
@@ -311,18 +304,13 @@ describe('TaskForm Test', () => {
 
     mockedAxios.post.mockResolvedValue({
       status: 200,
-      data: {}
+      data: _.cloneDeep(ApplyForVisaForm)
     });
 
-    let wrapper = await getWrapperAsync(
-      <TaskConsoleContextProvider user={testUser}>
-        <TaskForm
-          userTaskInstance={userTaskInstance}
-          onSubmitSuccess={formSubmitSuccessCallback}
-          onSubmitError={formSubmitErrorCallback}
-        />
-      </TaskConsoleContextProvider>,
-      'TaskForm'
+    let wrapper = await getWrapper(
+      userTaskInstance,
+      formSubmitSuccessCallback,
+      formSubmitErrorCallback
     );
 
     wrapper = wrapper.update().find(TaskForm);
@@ -359,15 +347,10 @@ describe('TaskForm Test', () => {
       data: _.cloneDeep(ApplyForVisaForm)
     });
 
-    let wrapper = await getWrapperAsync(
-      <TaskConsoleContextProvider user={testUser}>
-        <TaskForm
-          userTaskInstance={userTaskInstance}
-          onSubmitSuccess={formSubmitSuccessCallback}
-          onSubmitError={formSubmitErrorCallback}
-        />
-      </TaskConsoleContextProvider>,
-      'TaskForm'
+    let wrapper = await getWrapper(
+      userTaskInstance,
+      formSubmitSuccessCallback,
+      formSubmitErrorCallback
     );
 
     wrapper = wrapper.update().find(TaskForm);

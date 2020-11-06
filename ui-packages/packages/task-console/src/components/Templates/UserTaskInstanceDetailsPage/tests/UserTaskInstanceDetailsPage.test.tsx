@@ -17,16 +17,14 @@
 import React from 'react';
 import * as H from 'history';
 import {
-  DefaultUser,
   GraphQL,
   KogitoEmptyState,
-  User,
   getWrapperAsync,
   ServerErrors
 } from '@kogito-apps/common';
 import UserTaskInstance = GraphQL.UserTaskInstance;
 import TaskConsoleContext, {
-  DefaultContext
+  TaskConsoleContextImpl
 } from '../../../../context/TaskConsoleContext/TaskConsoleContext';
 import UserTaskInstanceDetailsPage from '../UserTaskInstanceDetailsPage';
 import { BrowserRouter } from 'react-router-dom';
@@ -102,8 +100,6 @@ const userTaskInstance: UserTaskInstance = {
     'http://localhost:8080/travels/9ae7ce3b-d49c-4f35-b843-8ac3d22fa427/VisaApplication/45a73767-5da3-49bf-9c40-d533c3e77ef3'
 };
 
-const testUser: User = new DefaultUser('test', ['group1', 'group2']);
-
 const props = {
   match: {
     params: {
@@ -159,7 +155,7 @@ describe('UserTaskInstanceDetailsPage tests', () => {
         }
       }
     ];
-    const context = new DefaultContext<UserTaskInstance>(testUser);
+    const context = new TaskConsoleContextImpl<UserTaskInstance>();
     context.setActiveItem(null);
     const wrapper = await getWrapper(mocks, context);
     expect(wrapper).toMatchSnapshot();
@@ -187,7 +183,7 @@ describe('UserTaskInstanceDetailsPage tests', () => {
         }
       }
     ];
-    const context = new DefaultContext<UserTaskInstance>(testUser);
+    const context = new TaskConsoleContextImpl<UserTaskInstance>();
     const wrapper = await getWrapper(mocks, context);
     const serverErrors = wrapper.find(ServerErrors);
     expect(serverErrors).toMatchSnapshot();
@@ -198,7 +194,7 @@ describe('UserTaskInstanceDetailsPage tests', () => {
   });
 
   it('Test active task', async () => {
-    const context = new DefaultContext<UserTaskInstance>(testUser);
+    const context = new TaskConsoleContextImpl<UserTaskInstance>();
     const mocks = [
       {
         request: {
@@ -234,7 +230,7 @@ describe('UserTaskInstanceDetailsPage tests', () => {
   });
 
   it('Test submit success notification', async () => {
-    const context = new DefaultContext<UserTaskInstance>(testUser);
+    const context = new TaskConsoleContextImpl<UserTaskInstance>();
     context.setActiveItem(userTaskInstance);
     const mocks = [];
     let wrapper = await getWrapper(mocks, context);
@@ -276,7 +272,7 @@ describe('UserTaskInstanceDetailsPage tests', () => {
   });
 
   it('Test submit notification - go to inbox link', async () => {
-    const context = new DefaultContext<UserTaskInstance>(testUser);
+    const context = new TaskConsoleContextImpl<UserTaskInstance>();
     context.setActiveItem(userTaskInstance);
     const mocks = [];
     let wrapper = await getWrapper(mocks, context);
@@ -313,7 +309,7 @@ describe('UserTaskInstanceDetailsPage tests', () => {
   });
 
   it('Test submit error notification', async () => {
-    const context = new DefaultContext<UserTaskInstance>(testUser);
+    const context = new TaskConsoleContextImpl<UserTaskInstance>();
     context.setActiveItem(userTaskInstance);
     const mocks = [];
     let wrapper = await getWrapper(mocks, context);
@@ -356,7 +352,7 @@ describe('UserTaskInstanceDetailsPage tests', () => {
   });
 
   it('test task details drawer', async () => {
-    const context = new DefaultContext<UserTaskInstance>(testUser);
+    const context = new TaskConsoleContextImpl<UserTaskInstance>();
     const mocks = [
       {
         request: {

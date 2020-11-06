@@ -2,8 +2,6 @@
 
 exports[`TaskForm Test Test render completed task 1`] = `
 <TaskForm
-  onSubmitError={[MockFunction]}
-  onSubmitSuccess={[MockFunction]}
   userTaskInstance={
     Object {
       "actualOwner": null,
@@ -258,10 +256,10 @@ exports[`TaskForm Test Test render completed task 1`] = `
         "successCallback": [Function],
         "user": DefaultUser {
           "groups": Array [
-            "group1",
-            "group2",
+            "employees",
+            "developers",
           ],
-          "id": "test",
+          "id": "john",
         },
         "userTaskInstance": Object {
           "actualOwner": null,
@@ -323,8 +321,6 @@ exports[`TaskForm Test Test render completed task 1`] = `
 
 exports[`TaskForm Test Test rendering form 1`] = `
 <TaskForm
-  onSubmitError={[MockFunction]}
-  onSubmitSuccess={[MockFunction]}
   userTaskInstance={
     Object {
       "actualOwner": null,
@@ -588,10 +584,10 @@ exports[`TaskForm Test Test rendering form 1`] = `
         "successCallback": [Function],
         "user": DefaultUser {
           "groups": Array [
-            "group1",
-            "group2",
+            "employees",
+            "developers",
           ],
-          "id": "test",
+          "id": "john",
         },
         "userTaskInstance": Object {
           "actualOwner": null,
@@ -892,10 +888,10 @@ exports[`TaskForm Test Test rendering form from task in context 1`] = `
         "successCallback": [Function],
         "user": DefaultUser {
           "groups": Array [
-            "group1",
-            "group2",
+            "employees",
+            "developers",
           ],
-          "id": "test",
+          "id": "john",
         },
         "userTaskInstance": Object {
           "actualOwner": null,
@@ -957,8 +953,6 @@ exports[`TaskForm Test Test rendering form from task in context 1`] = `
 
 exports[`TaskForm Test Test rendering form with HTTP error 1`] = `
 <TaskForm
-  onSubmitError={[MockFunction]}
-  onSubmitSuccess={[MockFunction]}
   userTaskInstance={
     Object {
       "actualOwner": null,
@@ -1304,10 +1298,10 @@ exports[`TaskForm Test Test submit error 1`] = `
         "successCallback": [Function],
         "user": DefaultUser {
           "groups": Array [
-            "group1",
-            "group2",
+            "employees",
+            "developers",
           ],
-          "id": "test",
+          "id": "john",
         },
         "userTaskInstance": Object {
           "actualOwner": null,
@@ -1655,10 +1649,10 @@ exports[`TaskForm Test Test submit error 2`] = `
         "successCallback": [Function],
         "user": DefaultUser {
           "groups": Array [
-            "group1",
-            "group2",
+            "employees",
+            "developers",
           ],
-          "id": "test",
+          "id": "john",
         },
         "userTaskInstance": Object {
           "actualOwner": null,
@@ -1985,10 +1979,10 @@ exports[`TaskForm Test Test submit success 1`] = `
         "successCallback": [Function],
         "user": DefaultUser {
           "groups": Array [
-            "group1",
-            "group2",
+            "employees",
+            "developers",
           ],
-          "id": "test",
+          "id": "john",
         },
         "userTaskInstance": Object {
           "actualOwner": null,
@@ -2329,10 +2323,10 @@ exports[`TaskForm Test Test submit success 2`] = `
         "successCallback": [Function],
         "user": DefaultUser {
           "groups": Array [
-            "group1",
-            "group2",
+            "employees",
+            "developers",
           ],
-          "id": "test",
+          "id": "john",
         },
         "userTaskInstance": Object {
           "actualOwner": null,
@@ -2659,10 +2653,10 @@ exports[`TaskForm Test Test successful callback 1`] = `
         "successCallback": [Function],
         "user": DefaultUser {
           "groups": Array [
-            "group1",
-            "group2",
+            "employees",
+            "developers",
           ],
-          "id": "test",
+          "id": "john",
         },
         "userTaskInstance": Object {
           "actualOwner": null,
@@ -3003,10 +2997,10 @@ exports[`TaskForm Test Test successful callback 2`] = `
         "successCallback": [Function],
         "user": DefaultUser {
           "groups": Array [
-            "group1",
-            "group2",
+            "employees",
+            "developers",
           ],
-          "id": "test",
+          "id": "john",
         },
         "userTaskInstance": Object {
           "actualOwner": null,
@@ -3333,10 +3327,10 @@ exports[`TaskForm Test Test unsuccessful callback 1`] = `
         "successCallback": [Function],
         "user": DefaultUser {
           "groups": Array [
-            "group1",
-            "group2",
+            "employees",
+            "developers",
           ],
-          "id": "test",
+          "id": "john",
         },
         "userTaskInstance": Object {
           "actualOwner": null,
@@ -3684,10 +3678,10 @@ exports[`TaskForm Test Test unsuccessful callback 2`] = `
         "successCallback": [Function],
         "user": DefaultUser {
           "groups": Array [
-            "group1",
-            "group2",
+            "employees",
+            "developers",
           ],
-          "id": "test",
+          "id": "john",
         },
         "userTaskInstance": Object {
           "actualOwner": null,
@@ -4014,10 +4008,10 @@ exports[`TaskForm Test Test unsuccessful callback with extra message 1`] = `
         "successCallback": [Function],
         "user": DefaultUser {
           "groups": Array [
-            "group1",
-            "group2",
+            "employees",
+            "developers",
           ],
-          "id": "test",
+          "id": "john",
         },
         "userTaskInstance": Object {
           "actualOwner": null,
@@ -4365,10 +4359,10 @@ exports[`TaskForm Test Test unsuccessful callback with extra message 2`] = `
         "successCallback": [Function],
         "user": DefaultUser {
           "groups": Array [
-            "group1",
-            "group2",
+            "employees",
+            "developers",
           ],
-          "id": "test",
+          "id": "john",
         },
         "userTaskInstance": Object {
           "actualOwner": null,

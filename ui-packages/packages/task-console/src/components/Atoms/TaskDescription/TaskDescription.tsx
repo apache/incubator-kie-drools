@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-import React, { useContext } from 'react';
+import React from 'react';
 import { ItemDescriptor, GraphQL } from '@kogito-apps/common';
 import { Link } from 'react-router-dom';
-import TaskConsoleContext, {
-  IContext
+import {
+  ITaskConsoleContext,
+  useTaskConsoleContext
 } from '../../../context/TaskConsoleContext/TaskConsoleContext';
 import UserTaskInstance = GraphQL.UserTaskInstance;
 
@@ -27,7 +28,7 @@ interface IOwnProps {
 }
 
 const TaskDescription: React.FC<IOwnProps> = ({ task }) => {
-  const context: IContext<UserTaskInstance> = useContext(TaskConsoleContext);
+  const context: ITaskConsoleContext<UserTaskInstance> = useTaskConsoleContext();
 
   return (
     <Link

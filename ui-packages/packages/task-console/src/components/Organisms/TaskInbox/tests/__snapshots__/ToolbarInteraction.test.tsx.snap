@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`show no filters selected state and select reset 1`] = `
+exports[`TaskInbox toolbar interaction tests show no filters selected state and select reset 1`] = `
 <Component
   body="Try selecting at least one status to see results"
   onClick={[Function]}

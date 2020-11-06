@@ -49,7 +49,7 @@ import {
   ServerErrors
 } from '@kogito-apps/common';
 import TaskConsoleContext, {
-  IContext
+  ITaskConsoleContext
 } from '../../../context/TaskConsoleContext/TaskConsoleContext';
 import PageTitle from '../../Molecules/PageTitle/PageTitle';
 import TaskState from '../../Atoms/TaskState/TaskState';
@@ -72,7 +72,7 @@ const UserTaskInstanceDetailsPage: React.FC<RouteComponentProps<MatchProps> &
   const [isDetailsExpanded, setIsDetailsExpanded] = useState<boolean>(false);
   const [notification, setNotification] = useState<Notification>();
 
-  const context: IContext<GraphQL.UserTaskInstance> = useContext(
+  const context: ITaskConsoleContext<GraphQL.UserTaskInstance> = useContext(
     TaskConsoleContext
   );
 

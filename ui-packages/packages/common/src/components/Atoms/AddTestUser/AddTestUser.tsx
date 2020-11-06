@@ -34,7 +34,7 @@ import {
 } from '@patternfly/react-core';
 import {
   AppContext,
-  EnvironmentMode,
+  isContextInTestMode,
   useKogitoAppContext
 } from '../../../environment/context/KogitoAppContext';
 import { TestUserContext } from '../../../environment/auth/TestUserContext';
@@ -148,7 +148,7 @@ const AddTestUser: React.FC<IOwnProps & OUIAProps> = ({
     setLogin(true);
   };
 
-  if (context.environment.mode !== EnvironmentMode.TEST || !isOpen) {
+  if (!isOpen || !isContextInTestMode(context)) {
     return null;
   }
 

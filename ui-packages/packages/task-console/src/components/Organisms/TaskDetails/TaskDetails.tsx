@@ -16,7 +16,7 @@ import {
   OUIAProps
 } from '@kogito-apps/common';
 import TaskConsoleContext, {
-  IContext
+  ITaskConsoleContext
 } from '../../../context/TaskConsoleContext/TaskConsoleContext';
 import TaskState from '../../Atoms/TaskState/TaskState';
 import { resolveTaskPriority, trimTaskEndpoint } from '../../../util/Utils';
@@ -33,7 +33,9 @@ const TaskDetails: React.FC<IOwnProps & OUIAProps> = ({
   ouiaId,
   ouiaSafe
 }) => {
-  const context: IContext<UserTaskInstance> = useContext(TaskConsoleContext);
+  const context: ITaskConsoleContext<UserTaskInstance> = useContext(
+    TaskConsoleContext
+  );
   const [userTask, setUserTask] = useState<UserTaskInstance>();
 
   if (!userTask) {

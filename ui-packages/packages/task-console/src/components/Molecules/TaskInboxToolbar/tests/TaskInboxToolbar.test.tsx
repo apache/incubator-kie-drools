@@ -1,9 +1,6 @@
 import React, { FormEvent } from 'react';
 import TaskInboxToolbar from '../TaskInboxToolbar';
-import { getWrapper, GraphQL, DefaultUser, User } from '@kogito-apps/common';
-import TaskConsoleContext, {
-  DefaultContext
-} from '../../../../context/TaskConsoleContext/TaskConsoleContext';
+import { getWrapper } from '@kogito-apps/common';
 import {
   Select,
   SelectOption,
@@ -12,27 +9,29 @@ import {
 } from '@patternfly/react-core';
 import { act } from 'react-dom/test-utils';
 import wait from 'waait';
-/* tslint:disable */
-const testUser: User = new DefaultUser('test', ['group1', 'group2']);
+import TaskConsoleFilterContext, {
+  TaskConsoleFilterContextImpl
+} from '../../../../context/TaskConsoleFilterContext/TaskConsoleFilterContext';
 const applyFilter = jest.fn();
 const resetFilter = jest.fn();
 
 const getTaskInboxWrapper = context => {
   return getWrapper(
-    <TaskConsoleContext.Provider value={context}>
+    <TaskConsoleFilterContext.Provider value={context}>
       <TaskInboxToolbar applyFilter={applyFilter} resetFilter={resetFilter} />
-    </TaskConsoleContext.Provider>,
+    </TaskConsoleFilterContext.Provider>,
     'TaskInboxToolbar'
   );
 };
 
 describe('TaskInbox toolbar tests', () => {
   it('toolbar initial snapshot', () => {
-    const context = new DefaultContext<GraphQL.UserTaskInstance>(testUser);
+    const context = new TaskConsoleFilterContextImpl();
     expect(getTaskInboxWrapper(context)).toMatchSnapshot();
   });
+
   it('select status from dropdown', () => {
-    const context = new DefaultContext<GraphQL.UserTaskInstance>(testUser);
+    const context = new TaskConsoleFilterContextImpl();
     let wrapper = getTaskInboxWrapper(context);
     wrapper
       .find(Select)
@@ -75,7 +74,7 @@ describe('TaskInbox toolbar tests', () => {
     ]);
   });
   it('delete a chip of status', () => {
-    const context = new DefaultContext<GraphQL.UserTaskInstance>(testUser);
+    const context = new TaskConsoleFilterContextImpl();
     const wrapper = getTaskInboxWrapper(context);
     // deletes 'Reserved' chip from the filter
     wrapper
@@ -88,7 +87,7 @@ describe('TaskInbox toolbar tests', () => {
   });
 
   it('enter a text in search box , click apply filter and delete the chip', async () => {
-    const context = new DefaultContext<GraphQL.UserTaskInstance>(testUser);
+    const context = new TaskConsoleFilterContextImpl();
     let wrapper = getTaskInboxWrapper(context);
     const event = {
       target: {}
@@ -124,7 +123,7 @@ describe('TaskInbox toolbar tests', () => {
   });
 
   it('refresh clicked ', () => {
-    const context = new DefaultContext<GraphQL.UserTaskInstance>(testUser);
+    const context = new TaskConsoleFilterContextImpl();
     const wrapper = getTaskInboxWrapper(context);
     wrapper
       .find('#refresh')
@@ -134,7 +133,7 @@ describe('TaskInbox toolbar tests', () => {
   });
 
   it('disabled filter check', () => {
-    const context = new DefaultContext<GraphQL.UserTaskInstance>(testUser);
+    const context = new TaskConsoleFilterContextImpl();
     let wrapper = getTaskInboxWrapper(context);
     wrapper
       .find(Select)

@@ -14,17 +14,20 @@
  * limitations under the License.
  */
 
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import _ from 'lodash';
 import {
+  AppContext,
   GraphQL,
   KogitoEmptyState,
   KogitoEmptyStateType,
-  KogitoSpinner
+  KogitoSpinner,
+  useKogitoAppContext
 } from '@kogito-apps/common';
-import TaskConsoleContext, {
-  IContext
+import {
+  ITaskConsoleContext,
+  useTaskConsoleContext
 } from '../../../context/TaskConsoleContext/TaskConsoleContext';
 import FormRenderer from '../../Molecules/FormRenderer/FormRenderer';
 import { TaskFormSubmitHandler } from '../../../util/uniforms/TaskFormSubmitHandler/TaskFormSubmitHandler';
@@ -44,7 +47,9 @@ const TaskForm: React.FC<IOwnProps> = ({
   onSubmitError
 }) => {
   // tslint:disable: no-floating-promises
-  const context: IContext<UserTaskInstance> = useContext(TaskConsoleContext);
+  const context: ITaskConsoleContext<UserTaskInstance> = useTaskConsoleContext();
+  const appContext: AppContext = useKogitoAppContext();
+
   const [loading, setLoading] = useState<boolean>(true);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [submitted, setSubmitted] = useState<boolean>(false);
@@ -68,7 +73,10 @@ const TaskForm: React.FC<IOwnProps> = ({
 
   const loadForm = () => {
     if (stateUserTask) {
-      const endpoint = getTaskSchemaEndPoint(stateUserTask, context.getUser());
+      const endpoint = getTaskSchemaEndPoint(
+        stateUserTask,
+        appContext.getCurrentUser()
+      );
 
       axios
         .get(endpoint, {
@@ -119,7 +127,7 @@ const TaskForm: React.FC<IOwnProps> = ({
       const formSubmitHandler = new TaskFormSubmitHandler(
         stateUserTask,
         taskFormSchema,
-        context.getUser(),
+        appContext.getCurrentUser(),
         output => {
           setFormOutput(output);
           setIsSubmitting(true);

@@ -21,56 +21,59 @@ import PageLayout from './components/Templates/PageLayout/PageLayout';
 import TaskConsoleContextProvider from './context/TaskConsoleContext/TaskConsoleContextProvider';
 import taskConsoleLogo from './static/taskConsoleLogo.svg';
 
-const httpLink = new HttpLink({
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  uri: window.DATA_INDEX_ENDPOINT || process.env.KOGITO_DATAINDEX_HTTP_URL
-});
-
-const PageNav = (
-  <Nav aria-label="Nav" theme="dark">
-    <NavList>
-      <NavItem>User Tasks</NavItem>
-      <NavItem>User tasks with filters</NavItem>
-    </NavList>
-  </Nav>
-);
-
-const fallbackUI = onError(({ networkError }: any) => {
-  if (networkError && networkError.stack === 'TypeError: Failed to fetch') {
-    // eslint-disable-next-line react/no-render-return-value
-    return ReactDOM.render(
-      <ApolloProvider client={client}>
-        <ServerUnavailable
-          PageNav={PageNav}
-          src={taskConsoleLogo}
-          alt={'Task Console Logo'}
-        />
-      </ApolloProvider>,
-      document.getElementById('root')
-    );
-  }
-});
-
-const setGQLContext = setContext((_, { headers }) => {
-  if (isAuthEnabled()) {
-    const token = getToken();
-    return {
-      headers: {
-        ...headers,
-        authorization: token ? `Bearer ${token}` : ''
-      }
-    };
-  }
-});
-
-const cache = new InMemoryCache();
-const client: ApolloClient<NormalizedCacheObject> = new ApolloClient({
-  cache,
-  link: setGQLContext.concat(fallbackUI.concat(httpLink))
-});
-
 const appRender = (ctx: UserContext) => {
+  const httpLink = new HttpLink({
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    uri: window.DATA_INDEX_ENDPOINT || process.env.KOGITO_DATAINDEX_HTTP_URL
+  });
+
+  const PageNav = (
+    <Nav aria-label="Nav" theme="dark">
+      <NavList>
+        <NavItem>Task Inbox</NavItem>
+      </NavList>
+    </Nav>
+  );
+
+  const fallbackUI = onError(({ networkError }: any) => {
+    if (networkError && networkError.stack === 'TypeError: Failed to fetch') {
+      // eslint-disable-next-line react/no-render-return-value
+      return ReactDOM.render(
+        <ApolloProvider client={client}>
+          <KogitoAppContextProvider userContext={ctx}>
+            <TaskConsoleContextProvider>
+              <ServerUnavailable
+                PageNav={PageNav}
+                src={taskConsoleLogo}
+                alt={'Task Console Logo'}
+              />
+            </TaskConsoleContextProvider>
+          </KogitoAppContextProvider>
+        </ApolloProvider>,
+        document.getElementById('root')
+      );
+    }
+  });
+
+  const setGQLContext = setContext((_, { headers }) => {
+    if (isAuthEnabled()) {
+      const token = getToken();
+      return {
+        headers: {
+          ...headers,
+          authorization: token ? `Bearer ${token}` : ''
+        }
+      };
+    }
+  });
+
+  const cache = new InMemoryCache();
+  const client: ApolloClient<NormalizedCacheObject> = new ApolloClient({
+    cache,
+    link: setGQLContext.concat(fallbackUI.concat(httpLink))
+  });
+
   ReactDOM.render(
     <ApolloProvider client={client}>
       <KogitoAppContextProvider userContext={ctx}>

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Bullseye } from '@patternfly/react-core';
 import {
   DataTable,
@@ -26,17 +26,20 @@ import {
   LoadMore,
   ServerErrors,
   OUIAProps,
-  componentOuiaProps
+  componentOuiaProps,
+  AppContext,
+  useKogitoAppContext
 } from '@kogito-apps/common';
-import TaskConsoleContext, {
-  IContext
-} from '../../../context/TaskConsoleContext/TaskConsoleContext';
 import Columns from '../../../util/Columns';
-import UserTaskInstance = GraphQL.UserTaskInstance;
 import _ from 'lodash';
 import TaskInboxToolbar from '../../Molecules/TaskInboxToolbar/TaskInboxToolbar';
 import { SortByDirection } from '@patternfly/react-table';
 import { getActiveTaskStates } from '../../../util/Utils';
+import {
+  ITaskConsoleFilterContext,
+  useTaskConsoleFilterContext
+} from '../../../context/TaskConsoleFilterContext/TaskConsoleFilterContext';
+import { buildTaskInboxWhereArgument } from '../../../util/QueryUtils';
 
 const UserTaskLoadingComponent = (
   <Bullseye>
@@ -45,7 +48,9 @@ const UserTaskLoadingComponent = (
 );
 
 const TaskInbox: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
-  const context: IContext<UserTaskInstance> = useContext(TaskConsoleContext);
+  const appContext: AppContext = useKogitoAppContext();
+  const filterContext: ITaskConsoleFilterContext = useTaskConsoleFilterContext();
+
   const [defaultPageSize] = useState<number>(10);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [queryOffset, setOffset] = useState<number>(0);
@@ -88,20 +93,20 @@ const TaskInbox: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
       setPageSize(_pageSize);
     }
 
-    if (!_.isEmpty(context.getActiveQueryInfo().sortBy)) {
+    if (!_.isEmpty(filterContext.getActiveQueryInfo().sortBy)) {
       newQueryOffset = 0;
       newQueryLimit = tableData.length + newQueryLimit;
     }
 
-    context.getActiveQueryInfo().offset = newQueryOffset;
-    context.getActiveQueryInfo().maxElements += _pageSize;
+    filterContext.getActiveQueryInfo().offset = newQueryOffset;
+    filterContext.getActiveQueryInfo().maxElements += _pageSize;
 
     fetchUserTasks(newQueryOffset, newQueryLimit);
   };
 
   const resetAllFilters = (): void => {
-    context.getActiveQueryInfo().offset = 0;
-    context.getActiveQueryInfo().maxElements = 10;
+    filterContext.getActiveQueryInfo().offset = 0;
+    filterContext.getActiveQueryInfo().maxElements = 10;
     setOffset(0);
     setPageSize(10);
   };
@@ -113,76 +118,20 @@ const TaskInbox: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
   };
 
   const resetFilters = (): void => {
-    context.getActiveFilters().filters.status = getActiveTaskStates();
-    context.getActiveFilters().selectedStatus = getActiveTaskStates();
-    context.getActiveFilters().filters.taskNames = [];
+    filterContext.getActiveFilters().filters.status = getActiveTaskStates();
+    filterContext.getActiveFilters().selectedStatus = getActiveTaskStates();
+    filterContext.getActiveFilters().filters.taskNames = [];
     onSorting(5, SortByDirection.desc);
     applyFilter();
-  };
-
-  const createSearchTextArray = () => {
-    const formattedTextArray = [];
-    context.getActiveFilters().filters.taskNames.forEach(word => {
-      formattedTextArray.push({
-        referenceName: {
-          like: `*${word}*`
-        }
-      });
-    });
-    return {
-      or: formattedTextArray
-    };
-  };
-
-  const createUserAssignmentClause = () => {
-    return {
-      or: [
-        { actualOwner: { equal: context.getUser().id } },
-        {
-          and: [
-            { actualOwner: { isNull: true } },
-            {
-              not: { excludedUsers: { contains: context.getUser().id } }
-            },
-            {
-              or: [
-                { potentialUsers: { contains: context.getUser().id } },
-                { potentialGroups: { containsAny: context.getUser().groups } }
-              ]
-            }
-          ]
-        }
-      ]
-    };
-  };
-
-  const createWhereArgument = () => {
-    const filtersClause = [];
-    if (context.getActiveFilters().filters.status.length > 0) {
-      filtersClause.push({
-        state: { in: context.getActiveFilters().filters.status }
-      });
-    }
-    if (context.getActiveFilters().filters.taskNames.length > 0) {
-      filtersClause.push(createSearchTextArray());
-    }
-    if (filtersClause.length > 0) {
-      return {
-        and: [
-          createUserAssignmentClause(),
-          {
-            and: filtersClause
-          }
-        ]
-      };
-    }
-    return createUserAssignmentClause();
   };
 
   const fetchUserTasks = (_queryOffset: number, _queryLimit: number): void => {
     getUserTasks({
       variables: {
-        whereArgument: createWhereArgument(),
+        whereArgument: buildTaskInboxWhereArgument(
+          appContext.getCurrentUser(),
+          filterContext.getActiveFilters()
+        ),
         offset: _queryOffset,
         limit: _queryLimit,
         orderBy: getSortByObject()
@@ -191,18 +140,21 @@ const TaskInbox: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
   };
 
   useEffect(() => {
-    if (!context.getActiveQueryInfo().maxElements) {
-      context.getActiveQueryInfo().maxElements = pageSize;
+    if (!filterContext.getActiveQueryInfo().maxElements) {
+      filterContext.getActiveQueryInfo().maxElements = pageSize;
     }
-    if (context.getActiveQueryInfo().offset) {
-      setOffset(context.getActiveQueryInfo().offset);
+    if (filterContext.getActiveQueryInfo().offset) {
+      setOffset(filterContext.getActiveQueryInfo().offset);
     }
-    fetchUserTasks(0, context.getActiveQueryInfo().maxElements);
+    fetchUserTasks(0, filterContext.getActiveQueryInfo().maxElements);
   }, []);
 
   useEffect(() => {
     if (!loading && data !== undefined) {
-      if (isLoadingMore && _.isEmpty(context.getActiveQueryInfo().sortBy)) {
+      if (
+        isLoadingMore &&
+        _.isEmpty(filterContext.getActiveQueryInfo().sortBy)
+      ) {
         const newData = tableData.concat(data.UserTaskInstances);
         setTableData(newData);
       } else {
@@ -219,18 +171,18 @@ const TaskInbox: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
   const onSorting = (index: number, direction: SortByDirection): void => {
     setIsTableDataLoaded(false);
     if (direction) {
-      context.getActiveQueryInfo().sortBy = { index, direction };
+      filterContext.getActiveQueryInfo().sortBy = { index, direction };
     } else {
-      context.getActiveQueryInfo().sortBy = null;
+      filterContext.getActiveQueryInfo().sortBy = null;
     }
   };
 
   const getSortByObject = () => {
-    if (!_.isEmpty(context.getActiveQueryInfo().sortBy)) {
+    if (!_.isEmpty(filterContext.getActiveQueryInfo().sortBy)) {
       return _.set(
         {},
-        columns[context.getActiveQueryInfo().sortBy.index].path,
-        context.getActiveQueryInfo().sortBy.direction.toUpperCase()
+        columns[filterContext.getActiveQueryInfo().sortBy.index].path,
+        filterContext.getActiveQueryInfo().sortBy.direction.toUpperCase()
       );
     }
     return {
@@ -239,10 +191,10 @@ const TaskInbox: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
   };
 
   useEffect(() => {
-    if (!_.isEmpty(context.getActiveQueryInfo().sortBy)) {
-      fetchUserTasks(0, context.getActiveQueryInfo().maxElements);
+    if (!_.isEmpty(filterContext.getActiveQueryInfo().sortBy)) {
+      fetchUserTasks(0, filterContext.getActiveQueryInfo().maxElements);
     }
-  }, [context.getActiveQueryInfo().sortBy]);
+  }, [filterContext.getActiveQueryInfo().sortBy]);
 
   if (error) {
     return <ServerErrors error={error} variant={'large'} />;
@@ -254,11 +206,11 @@ const TaskInbox: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
 
   const mustShowMore: boolean =
     isLoadingMore ||
-    context.getActiveQueryInfo().maxElements === tableData.length;
+    filterContext.getActiveQueryInfo().maxElements === tableData.length;
 
   const showNoFiltersSelected: boolean =
-    context.getActiveFilters().filters.status.length === 0 &&
-    context.getActiveFilters().filters.taskNames.length === 0;
+    filterContext.getActiveFilters().filters.status.length === 0 &&
+    filterContext.getActiveFilters().filters.taskNames.length === 0;
 
   return (
     <div {...componentOuiaProps(ouiaId, 'task-inbox', ouiaSafe)}>
@@ -280,7 +232,7 @@ const TaskInbox: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
           refetch={refetch}
           LoadingComponent={UserTaskLoadingComponent}
           onSorting={onSorting}
-          sortBy={context.getActiveQueryInfo().sortBy}
+          sortBy={filterContext.getActiveQueryInfo().sortBy}
         />
       ) : (
         UserTaskLoadingComponent
