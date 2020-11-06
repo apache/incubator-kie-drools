@@ -430,6 +430,13 @@
         <scope>test</scope>
       </dependency>
 
+      <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter</artifactId>
+        <version>${version.org.junit.jupiter}</version>
+        <scope>test</scope>
+      </dependency>
+
       <dependency> <!-- TODO move this dep into surefire-plugin when all modules are migrated to JUnit 5 -->
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-engine</artifactId>
@@ -631,6 +638,12 @@
         <artifactId>smallrye-reactive-messaging-http</artifactId>
         <version>${version.io.smallrye.reactive}</version>
       </dependency>
+
+      <dependency>
+        <groupId>io.smallrye.reactive</groupId>
+        <artifactId>smallrye-reactive-messaging-provider</artifactId>
+        <version>${version.io.smallrye.reactive}</version>
+      </dependency>
       
       <dependency>
         <groupId>io.swagger.core.v3</groupId>
@@ -653,6 +666,11 @@
       <dependency>
         <groupId>org.infinispan</groupId>
         <artifactId>infinispan-remote-query-client</artifactId>
+        <version>${version.org.infinispan}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.infinispan</groupId>
+        <artifactId>infinispan-client-hotrod</artifactId>
         <version>${version.org.infinispan}</version>
       </dependency>
       <dependency>

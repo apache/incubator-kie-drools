@@ -29,6 +29,18 @@
   <name>Kogito :: Add-Ons :: Process Management :: SpringBoot Addon</name>
   <description>Management of process instances for Spring Boot</description>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-dependencies</artifactId>
+        <version>${version.springboot}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+  
   <dependencies>
     <dependency>
       <groupId>org.springframework.boot</groupId>

@@ -12,6 +12,18 @@
     <name>Kogito :: Add-Ons :: Events :: Knative Eventing</name>
     <description>Kogito Events handling for Knative Eventing AddOn</description>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>io.quarkus</groupId>
+                <artifactId>quarkus-bom</artifactId>
+                <version>${version.io.quarkus}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+    
     <dependencies>
         <dependency>
             <groupId>org.kie.kogito</groupId>

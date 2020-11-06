@@ -11,6 +11,19 @@
 
     <artifactId>explainability-quarkus-addon</artifactId>
     <name>Kogito :: Add-Ons :: Explainability :: Quarkus Addon</name>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>io.quarkus</groupId>
+                <artifactId>quarkus-bom</artifactId>
+                <version>${version.io.quarkus}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+    
     <dependencies>
         <dependency>
             <groupId>io.quarkus</groupId>
