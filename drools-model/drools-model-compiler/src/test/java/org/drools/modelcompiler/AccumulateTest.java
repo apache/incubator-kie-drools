@@ -61,6 +61,7 @@ import static org.hamcrest.CoreMatchers.hasItem;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 public class AccumulateTest extends BaseModelTest {
 
@@ -2619,6 +2620,7 @@ public class AccumulateTest extends BaseModelTest {
 
         String rule = "import " + MrProcessAssignment.class.getCanonicalName() + ";\n" +
                 "import " + List.class.getCanonicalName() + ";\n" +
+                "global java.util.List result;\n" +
                 "rule R1\n" +
                 "when\n" +
                 "   $assignments: List(size > 0) from accumulate(\n" +
@@ -2630,9 +2632,11 @@ public class AccumulateTest extends BaseModelTest {
                 "        $count: count($a2)\n" +
                 "    )\n" +
                 "then\n" +
-                "    System.out.println($count);\n" +
+                "    result.add($count);\n" +
                 "end;";
         KieSession kieSession = getKieSession(rule);
+        List<Long> result = new ArrayList<>();
+        kieSession.setGlobal("result", result);
 
         // Insert facts into the session.
         kieSession.insert(assignment1);
@@ -2641,16 +2645,22 @@ public class AccumulateTest extends BaseModelTest {
         kieSession.insert(assignment4);
         int fired = kieSession.fireAllRules();
         assertEquals(0, fired);
+        assertTrue(result.isEmpty());
 
         // Execute the sequence of session events that triggers the exception.
         fired = switchMachinesInAssignments(kieSession, assignment1, assignment2);
         assertEquals(1, fired);
+        assertEquals(2, result.get(0).longValue());
+        result.clear();
 
         fired = switchMachinesInAssignments(kieSession, assignment1, assignment2);
         assertEquals(0, fired);
+        assertTrue(result.isEmpty());
 
         fired = switchMachinesInAssignments(kieSession, assignment4, assignment3);
         assertEquals(1, fired);
+        assertEquals(2, result.get(0).longValue());
+        result.clear();
 
         kieSession.dispose();
     }
