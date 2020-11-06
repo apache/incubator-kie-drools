@@ -54,10 +54,6 @@ public class LambdaReadAccessor extends BaseObjectClassFieldReader implements In
 
     @Override
     public int hashCode() {
-        if(!Drools.isNativeImage()) {
-            return Objects.hash(super.hashCode(), lambda);
-        } else { // DROOLS-5795 disable hash code based on LambdaIntrospector as it's not supported by native image
-            return Objects.hash(super.hashCode(), System.identityHashCode(lambda));
-        }
+        return Objects.hash(super.hashCode(), lambda);
     }
 }

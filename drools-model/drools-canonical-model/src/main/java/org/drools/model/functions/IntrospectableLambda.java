@@ -16,7 +16,10 @@
 
 package org.drools.model.functions;
 
+import java.util.UUID;
 import java.util.function.Supplier;
+
+import org.drools.model.Drools;
 
 public abstract class IntrospectableLambda implements Supplier<Object> {
     private String lambdaFingerprint;
@@ -32,8 +35,10 @@ public abstract class IntrospectableLambda implements Supplier<Object> {
     public String toString() {
         if(this.getLambda() instanceof HashedExpression) {
             lambdaFingerprint = ((HashedExpression) this.getLambda()).getExpressionHash();
-        } else if(lambdaFingerprint == null) {
+        } else if(!Drools.isNativeImage()) { // LambdaIntrospector is not supported on native image
             lambdaFingerprint = LambdaPrinter.print(getLambda());
+        } else if( lambdaFingerprint == null) { // Non-native image, lambda without fingerprint
+            lambdaFingerprint = UUID.randomUUID().toString();
         }
         return lambdaFingerprint;
     }
