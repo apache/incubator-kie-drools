@@ -26,6 +26,8 @@ import org.drools.workbench.models.commons.backend.rule.context.LHSGeneratorCont
 import org.drools.workbench.models.commons.backend.rule.context.LHSGeneratorContextFactory;
 import org.drools.workbench.models.commons.backend.rule.context.RHSGeneratorContext;
 import org.drools.workbench.models.commons.backend.rule.context.RHSGeneratorContextFactory;
+import org.drools.workbench.models.datamodel.rule.ActionCallMethod;
+import org.drools.workbench.models.datamodel.rule.ActionFieldFunction;
 import org.drools.workbench.models.datamodel.rule.ActionFieldValue;
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.ExpressionFormLine;
@@ -318,27 +320,66 @@ public class GuidedDTBRDRLPersistence extends RuleModelDRLPersistenceImpl {
         }
 
         @Override
+        public void visitActionCallMethod(final ActionCallMethod action) {
+
+            // Clony clonies
+            final ActionCallMethod clone = new ActionCallMethod();
+            clone.setState(action.getState());
+            clone.setVariable(action.getVariable());
+            clone.setMethodName(action.getMethodName());
+
+            final ActionFieldValue[] actionFieldValuesClones = new ActionFieldValue[action.getFieldValues().length];
+            clone.setFieldValues(actionFieldValuesClones);
+            for (int i = 0; i < action.getFieldValues().length; i++) {
+                final ActionFieldValue fieldValue = action.getFieldValue(i);
+
+                if (fieldValue instanceof ActionFieldFunction) {
+                    final ActionFieldFunction afvClone = new ActionFieldFunction();
+                    afvClone.setMethod(((ActionFieldFunction) fieldValue).getMethod());
+                    afvClone.setField(fieldValue.getField());
+                    afvClone.setNature(BaseSingleFieldConstraint.TYPE_LITERAL);
+                    afvClone.setType(fieldValue.getType());
+                    String value = fieldValue.getValue();
+                    String templateKeyValue = rowDataProvider.getTemplateKeyValue(value);
+                    afvClone.setValue(templateKeyValue);
+
+                    clone.getFieldValues()[i] = afvClone;
+                }
+            }
+
+            super.visitActionCallMethod(clone);
+        }
+
+        @Override
         public void visitFreeFormLine(final FreeFormLine ffl) {
 
+            StringBuffer interpolatedResult = replace(ffl.getText());
+            if (interpolatedResult == null) {
+                return;
+            }
+
+            //Don't update the original FreeFormLine object
+            FreeFormLine fflClone = new FreeFormLine();
+            fflClone.setText(interpolatedResult.toString());
+            super.visitFreeFormLine(fflClone);
+        }
+
+        protected StringBuffer replace(final String text) {
             StringBuffer interpolatedResult = new StringBuffer();
-            final Matcher matcherTemplateKey = patternTemplateKey.matcher(ffl.getText());
+            final Matcher matcherTemplateKey = patternTemplateKey.matcher(text);
             while (matcherTemplateKey.find()) {
                 String varName = matcherTemplateKey.group(1);
                 String value = rowDataProvider.getTemplateKeyValue(varName);
 
                 // All vars must be populated for a single FreeFormLine
                 if (StringUtils.isEmpty(value)) {
-                    return;
+                    return null;
                 }
                 matcherTemplateKey.appendReplacement(interpolatedResult,
                                                      value);
             }
             matcherTemplateKey.appendTail(interpolatedResult);
-
-            //Don't update the original FreeFormLine object
-            FreeFormLine fflClone = new FreeFormLine();
-            fflClone.setText(interpolatedResult.toString());
-            super.visitFreeFormLine(fflClone);
+            return interpolatedResult;
         }
 
         @Override

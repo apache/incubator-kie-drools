@@ -33,6 +33,11 @@ public interface RuleModelPersistence {
     RuleModel unmarshal(final String str,
                         final List<String> globals,
                         final PackageDataModelOracle dmo,
+                        final boolean splitEvals);
+
+    RuleModel unmarshal(final String str,
+                        final List<String> globals,
+                        final PackageDataModelOracle dmo,
                         final Collection<RuleModelIActionPersistenceExtension> extensions);
 
     RuleModel unmarshalUsingDSL(final String str,
