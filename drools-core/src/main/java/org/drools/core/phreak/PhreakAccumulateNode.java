@@ -255,7 +255,6 @@ public class PhreakAccumulateNode {
             AccumulateContext accctx = (AccumulateContext) leftTuple.getContextObject();
             if (accctx == null) {
                 accctx = initAccumulateContextOnLeftTuple( am, wm, accumulate, leftTuple );
-                leftTuple.setContextObject(accctx);
             }
 
             constraints.updateFromTuple(contextEntry,
