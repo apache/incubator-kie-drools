@@ -58,4 +58,9 @@ public class BindingEvaluator {
         Object object = tuple != null && declaration.getOffset() < tuple.size() ? tuple.getObject(declaration.getOffset()) : handle.getObject();
         return declaration.getValue(workingMemory, object);
     }
+
+    // Used for testing purposes
+    public Binding getBinding() {
+        return binding;
+    }
 }
