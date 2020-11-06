@@ -887,7 +887,7 @@ public class PropertyReactivityTest extends BaseModelTest {
                 "import " + Person.class.getCanonicalName() + ";\n" +
                 "\n" +
                 "rule R when\n" +
-                "    $p : Person( dummy(age) < 50 )\n" +
+                "    $p : Person( dummy(age) < 50 ) @watch(*)\n" +
                 "then\n" +
                 "    modify($p) { setName( $p.getName()+\"1\" ) };\n" +
                 "end\n";
@@ -1011,5 +1011,80 @@ public class PropertyReactivityTest extends BaseModelTest {
         ksession.fireAllRules();
 
         assertEquals(10, p.getSalary().intValue()); // R2 should be cancelled
+    }
+
+    public static class Fact {
+        private int a;
+        private String result;
+
+        public int getA() {
+            return a;
+        }
+
+        public void setA(int a) {
+            this.a = a;
+        }
+
+        public String getResult() {
+            return result;
+        }
+
+        public void setResult(String result) {
+            this.result = result;
+        }
+    }
+
+    public static String convertToString(int num) {
+        if (num < 1000) {
+            return "SMALL";
+        }
+        return "BIG";
+    }
+
+    @Test
+    public void testExternalFunction() {
+        // BAPL-1773
+        final String str =
+                "import " + Fact.class.getCanonicalName() + ";\n" +
+                "import static " + PropertyReactivityTest.class.getCanonicalName() + ".*;\n" +
+                "\n" +
+                "rule R1 when\n" +
+                "    $fact: Fact(convertToString(a) == \"BIG\")\n" +
+                "then\n" +
+                "    modify($fact) { setResult(\"OK\") };\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+
+        Fact fact = new Fact();
+        fact.setA(99999);
+        fact.setResult("NG");
+
+        ksession.insert(fact);
+        assertEquals( 1, ksession.fireAllRules(3) );
+        assertEquals( "OK", fact.getResult() );
+    }
+
+    @Test
+    public void testExternalFunction2() {
+        // BAPL-1773
+        final String str =
+                "import " + Fact.class.getCanonicalName() + ";\n" +
+                "import static " + PropertyReactivityTest.class.getCanonicalName() + ".*;\n" +
+                "\n" +
+                "rule R1 when\n" +
+                "    $fact: Fact(convertToString(a) == \"BIG\")\n" +
+                "then\n" +
+                "    modify($fact) { setA(99999) };\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+
+        Fact fact = new Fact();
+        fact.setA(99999);
+        fact.setResult("NG");
+
+        ksession.insert(fact);
+        assertEquals( 3, ksession.fireAllRules(3) );
     }
 }
