@@ -2123,7 +2123,7 @@ public class CompilerTest extends BaseModelTest {
     }
 
 
-    @Test // DROOLS-5709
+    @Test // DROOLS-5709 // DROOLS-5768
     public void testCastingIntegerToShort() {
         String str =
                 "import " + IntegerToShort.class.getCanonicalName() + ";\n " +
@@ -2131,15 +2131,16 @@ public class CompilerTest extends BaseModelTest {
                         "rule \"test_rule\"\n" +
                         "dialect \"java\"\n" +
                         "when\n" +
-                        "$integerToShort : IntegerToShort( " +
-                        "$testInt : testInt, " +
-                        "testBoolean != null, " +
-                        "testBoolean == false" +
+                        "   $integerToShort : IntegerToShort( " +
+                        "           $testInt : testInt, " +
+                        "           testBoolean != null, " +
+                        "           testBoolean == false" +
                         ") \n" +
                         "then\n" +
-                        "$integerToShort.setTestShort((short)($testInt)); \n" +
-                        "$integerToShort.setTestBoolean(true);\n" +
-                        "update($integerToShort);\n" +
+                        "   $integerToShort.setTestShort((short)(12)); \n" +
+                        "   $integerToShort.setTestShort((short)($testInt)); \n" +
+                        "   $integerToShort.setTestBoolean(true);\n" +
+                        "   update($integerToShort);\n" +
                         "end";
 
         KieSession ksession = getKieSession(str);
