@@ -32,6 +32,7 @@ pipeline {
                     checkoutRepo("kogito-examples")
                     checkoutRepo("kogito-examples", "kogito-examples-persistence")
                     checkoutRepo("kogito-examples", "kogito-examples-events")
+                    checkoutRepo("optaplanner")
                 }
             }
         }
@@ -49,6 +50,15 @@ pipeline {
         stage('Build kogito-apps') {
             steps {
                 mavenCleanInstall("kogito-apps")
+            }
+        }
+        stage('Build OptaPlanner') {
+            steps {
+                script {
+                    // Skip unnecessary plugins to save time.
+                    String args = "-Denforcer.skip -Dformatter.skip -Dimpsort.skip -Drevapi.skip"
+                    mavenCleanInstall("optaplanner", false, [], args)
+                }
             }
         }
         stage('Build kogito-examples') {
