@@ -19,25 +19,20 @@ package org.optaplanner.core.impl.score.director;
 import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
 import java.io.File;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
 
+import org.drools.core.io.impl.ClassPathResource;
+import org.drools.core.io.impl.FileSystemResource;
 import org.drools.modelcompiler.ExecutableModelProject;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
-import org.kie.api.builder.KieBuilder;
-import org.kie.api.builder.KieFileSystem;
-import org.kie.api.builder.Message;
-import org.kie.api.builder.Results;
-import org.kie.api.builder.model.KieModuleModel;
-import org.kie.api.io.KieResources;
-import org.kie.api.runtime.KieContainer;
 import org.kie.internal.builder.conf.PropertySpecificOption;
+import org.kie.internal.utils.KieHelper;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
 import org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator;
@@ -237,76 +232,32 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
             return null;
         }
 
-        KieServices kieServices = KieServices.Factory.get();
-        KieResources kieResources = kieServices.getResources();
-        KieFileSystem kieFileSystem = kieServices.newKieFileSystem();
-
-        writeScoreDrlListToKieFileSystem(kieFileSystem, kieResources, classLoader);
-        writeScoreDrlFileListToKieFileSystem(kieFileSystem, kieResources);
-
-        // Can be overwritten by kieBaseConfigurationProperties
-        KieModuleModel kmodel = kieServices.newKieModuleModel()
-                .setConfigurationProperty(PropertySpecificOption.PROPERTY_NAME,
-                        PropertySpecificOption.ALLOWED.toString());
-        kieFileSystem.writeKModuleXML(kmodel.toXML());
-
-        KieBuilder kieBuilder = kieServices.newKieBuilder(kieFileSystem);
-        kieBuilder.buildAll(ExecutableModelProject.class);
-        Results results = kieBuilder.getResults();
-        if (results.hasMessages(Message.Level.ERROR)) {
-            throw new IllegalStateException("There are errors in a score DRL:\n" + results);
-        } else if (results.hasMessages(Message.Level.WARNING)) {
-            logger.warn("There are warnings in a score DRL:\n{}", results);
-        }
-        KieContainer kieContainer = kieServices.newKieContainer(kieBuilder.getKieModule().getReleaseId());
-
-        KieBaseConfiguration kieBaseConfiguration = buildKieBaseConfiguration(kieServices);
-        KieBase kieBase = kieContainer.newKieBase(kieBaseConfiguration);
-        if (generateDroolsTestOnError) {
-            return new TestGenDroolsScoreDirectorFactory<>(solutionDescriptor, kieBase, config.getScoreDrlList(),
-                    config.getScoreDrlFileList());
-        } else {
-            return new DroolsScoreDirectorFactory<>(solutionDescriptor, kieBase);
-        }
-    }
-
-    private void writeScoreDrlListToKieFileSystem(KieFileSystem kieFileSystem, KieResources kieResources,
-            ClassLoader classLoader) {
+        KieHelper kieHelper = new KieHelper(PropertySpecificOption.ALLOWED)
+                .setClassLoader(classLoader);
         if (!ConfigUtils.isEmptyCollection(config.getScoreDrlList())) {
-            ClassLoader actualClassLoader =
-                    (classLoader != null) ? classLoader : Thread.currentThread().getContextClassLoader();
             for (String scoreDrl : config.getScoreDrlList()) {
                 if (scoreDrl == null) {
                     throw new IllegalArgumentException("The scoreDrl (" + scoreDrl + ") cannot be null.");
                 }
-                URL scoreDrlURL = actualClassLoader.getResource(scoreDrl);
-                if (scoreDrlURL == null) {
-                    String errorMessage = "The scoreDrl (" + scoreDrl + ") does not exist as a classpath resource"
-                            + " in the classLoader (" + actualClassLoader + ").";
-                    if (scoreDrl.startsWith("/")) {
-                        errorMessage += "\nAs from 6.1, a classpath resource should not start with a slash (/)."
-                                + " A scoreDrl now adheres to ClassLoader.getResource(String)."
-                                + " Remove the leading slash from the scoreDrl if you're upgrading from 6.0.";
-                    }
-                    throw new IllegalArgumentException(errorMessage);
-                }
-                kieFileSystem.write(kieResources.newClassPathResource(scoreDrl, "UTF-8", actualClassLoader));
+                kieHelper.addResource(new ClassPathResource(scoreDrl, classLoader));
             }
         }
-    }
-
-    private void writeScoreDrlFileListToKieFileSystem(KieFileSystem kieFileSystem, KieResources kieResources) {
         if (!ConfigUtils.isEmptyCollection(config.getScoreDrlFileList())) {
             for (File scoreDrlFile : config.getScoreDrlFileList()) {
-                if (scoreDrlFile == null) {
-                    throw new IllegalArgumentException("The scoreDrlFile (" + scoreDrlFile + ") cannot be null.");
-                }
-                if (!scoreDrlFile.exists()) {
-                    throw new IllegalArgumentException("The scoreDrlFile (" + scoreDrlFile
-                            + ") does not exist.");
-                }
-                kieFileSystem.write(kieResources.newFileSystemResource(scoreDrlFile, "UTF-8"));
+                kieHelper.addResource(new FileSystemResource(scoreDrlFile));
             }
+        }
+
+        try {
+            KieBase kieBase = kieHelper.build(ExecutableModelProject.class);
+            if (generateDroolsTestOnError) {
+                return new TestGenDroolsScoreDirectorFactory<>(solutionDescriptor, kieBase, config.getScoreDrlList(),
+                        config.getScoreDrlFileList());
+            } else {
+                return new DroolsScoreDirectorFactory<>(solutionDescriptor, kieBase);
+            }
+        } catch (Exception ex) {
+            throw new IllegalStateException("There is an error in a scoreDrl or scoreDrlFile.", ex);
         }
     }
 
