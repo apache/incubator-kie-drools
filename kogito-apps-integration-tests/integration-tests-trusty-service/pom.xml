@@ -2,19 +2,23 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.kie.kogito</groupId>
-    <artifactId>integration-tests</artifactId>
+    <artifactId>apps-integration-tests</artifactId>
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>integration-tests-jobs-service</artifactId>
-  <name>Kogito Apps :: Integration Tests :: Jobs Service</name>
+  <artifactId>integration-tests-trusty-service</artifactId>
+  <name>Kogito Apps :: Integration Tests :: Trusty Service</name>
   <packaging>pom</packaging>
 
   <modules>
-    <module>integration-tests-jobs-service-common</module>
-    <module>integration-tests-jobs-service-quarkus</module>
-    <module>integration-tests-jobs-service-springboot</module>
+    <module>integration-tests-trusty-service-common</module>
+    <module>integration-tests-trusty-service-quarkus</module>
+    <module>integration-tests-trusty-service-springboot</module>
   </modules>
+
+  <properties>
+    <container.image.kogito-service>to-be-changed-in-submodules</container.image.kogito-service>
+  </properties>
 
   <dependencyManagement>
     <dependencies>
@@ -34,7 +38,7 @@
       </dependency>
       <dependency>
         <groupId>org.kie.kogito</groupId>
-        <artifactId>integration-tests-jobs-service-common</artifactId>
+        <artifactId>integration-tests-trusty-service-common</artifactId>
         <version>${project.version}</version>
       </dependency>
     </dependencies>
@@ -47,10 +51,16 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-failsafe-plugin</artifactId>
           <dependencies>
-            <!-- ensure jobs-service module was built, but not added in the classpath -->
+            <!-- ensure dependent modules were built, but not added in the classpath -->
             <dependency>
               <groupId>org.kie.kogito</groupId>
-              <artifactId>jobs-service</artifactId>
+              <artifactId>explainability-service-messaging</artifactId>
+              <version>${project.version}</version>
+              <scope>runtime</scope>
+            </dependency>
+            <dependency>
+              <groupId>org.kie.kogito</groupId>
+              <artifactId>trusty-service</artifactId>
               <version>${project.version}</version>
               <scope>runtime</scope>
             </dependency>
@@ -58,15 +68,15 @@
           <configuration>
             <systemPropertyVariables>
               <container.image.infinispan>${container.image.infinispan}</container.image.infinispan>
-              <container.image.jobs-service>${container.image.jobs-service}</container.image.jobs-service>
               <container.image.keycloak>${container.image.keycloak}</container.image.keycloak>
+              <container.image.explainability-service-messaging>${container.image.explainability-service-messaging}</container.image.explainability-service-messaging>
+              <container.image.kogito-service>${container.image.kogito-service}</container.image.kogito-service>
+              <container.image.trusty-service>${container.image.trusty-service}</container.image.trusty-service>
             </systemPropertyVariables>
             <classesDirectory>${project.build.outputDirectory}</classesDirectory>
           </configuration>
           <executions>
             <execution>
-              <id>default</id>
-              <phase>test</phase>
               <goals>
                 <goal>integration-test</goal>
                 <goal>verify</goal>

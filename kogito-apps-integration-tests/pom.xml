@@ -5,7 +5,7 @@
     <artifactId>kogito-apps</artifactId>
     <version>1.0.0-SNAPSHOT</version>
   </parent>
-  <artifactId>integration-tests</artifactId>
+  <artifactId>apps-integration-tests</artifactId>
   <name>Kogito Apps :: Integration Tests</name>
   <packaging>pom</packaging>
 

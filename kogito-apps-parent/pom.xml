@@ -98,6 +98,6 @@
     <module>task-console</module>
     <module>explainability</module>
     <module>trusty</module>
-    <module>integration-tests</module>
+    <module>apps-integration-tests</module>
   </modules>
 </project>
