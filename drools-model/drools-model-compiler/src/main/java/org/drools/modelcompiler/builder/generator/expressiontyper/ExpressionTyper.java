@@ -492,6 +492,27 @@ public class ExpressionTyper {
             if (firstProp != null) {
                 context.addReactOnProperties( firstProp );
             }
+        } else {
+            for (Expression arg : methodArguments) {
+                addReactOnPropertyForArgument( arg );
+            }
+        }
+    }
+
+    private void addReactOnPropertyForArgument( Node arg ) {
+        if ( arg instanceof MethodCallExpr) {
+            MethodCallExpr methodArg = ( MethodCallExpr ) arg;
+            if ( methodArg.getArguments().isEmpty() && isThisExpression( methodArg.getScope().orElse( null ) ) ) {
+                String firstProp = getter2property(methodArg.getNameAsString());
+                if (firstProp != null) {
+                    context.addReactOnProperties( firstProp );
+                    return;
+                }
+            }
+        }
+
+        for (Node child : arg.getChildNodes()) {
+            addReactOnPropertyForArgument( child );
         }
     }
 

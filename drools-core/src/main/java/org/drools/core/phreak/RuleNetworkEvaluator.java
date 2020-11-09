@@ -804,7 +804,9 @@ public class RuleNetworkEvaluator {
 
         // sides must first be re-ordered, to ensure iteration integrity
         for (LeftTuple leftTuple = srcLeftTuples.getUpdateFirst(); leftTuple != null; leftTuple = leftTuple.getStagedNext()) {
-            ltm.remove(leftTuple);
+            if (leftTuple.getMemory() != null) {
+                ltm.remove(leftTuple);
+            }
         }
 
         for (LeftTuple leftTuple = srcLeftTuples.getUpdateFirst(); leftTuple != null; leftTuple = leftTuple.getStagedNext()) {
