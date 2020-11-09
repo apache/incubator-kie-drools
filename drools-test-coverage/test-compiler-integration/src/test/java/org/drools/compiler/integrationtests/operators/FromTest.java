@@ -31,7 +31,6 @@ import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.ObjectTypeNode;
-import org.drools.core.util.Drools;
 import org.drools.testcoverage.common.model.Address;
 import org.drools.testcoverage.common.model.Cheese;
 import org.drools.testcoverage.common.model.Cheesery;
@@ -96,20 +95,10 @@ public class FromTest {
 
     @Test
     public void testFromSharing() {
-        testFromSharingCommon();
+        testFromSharingCommon(kieBaseTestConfiguration);
     }
 
-    @Test // KOGITO-3771
-    public void testFromSharingWithNativeImage() {
-        try {
-            Drools.setNativeImage();
-            testFromSharingCommon();
-        } finally {
-            Drools.unsetNativeImage();
-        }
-    }
-
-    protected void testFromSharingCommon() {
+    public static void testFromSharingCommon(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // Keeping original test as non-property reactive by default, just allowed.
         final String drl = fromSharingRule();
 
@@ -180,7 +169,7 @@ public class FromTest {
         }
     }
 
-    private String fromSharingRule() {
+    public static String fromSharingRule() {
         return "import " + ListsContainer.class.getCanonicalName() + "\n" +
                 "global java.util.List output1;\n" +
                 "global java.util.List output2;\n" +
@@ -204,7 +193,7 @@ public class FromTest {
                 "end\n";
     }
 
-    private ObjectTypeNode insertObjectFireRules(InternalKnowledgeBase kbase, KieSession ksession) {
+    private static ObjectTypeNode insertObjectFireRules(InternalKnowledgeBase kbase, KieSession ksession) {
         final List<String> output1 = new ArrayList<>();
         ksession.setGlobal("output1", output1);
         final List<String> output2 = new ArrayList<>();

@@ -25,14 +25,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
+import static org.drools.compiler.integrationtests.operators.FromTest.testFromSharingCommon;
+
 @RunWith(Parameterized.class)
-public class FromTestOnlyExecModel extends FromTest {
+public class FromOnlyExecModelTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+    protected final KieBaseTestConfiguration kieBaseTestConfiguration;
 
-    public FromTestOnlyExecModel(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        super(kieBaseTestConfiguration);
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public FromOnlyExecModelTest(KieBaseTestConfiguration kieBaseTestConfiguration1) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration1;
     }
 
     @Parameterized.Parameters(name = "KieBase type={0}")
@@ -40,15 +41,13 @@ public class FromTestOnlyExecModel extends FromTest {
         return TestParametersUtil.getKieBaseCloudOnlyPatternExecModelConfiguration();
     }
 
-
     @Test // KOGITO-3771
     public void testFromSharingWithNativeImage() {
         try {
             Drools.setNativeImage();
-            testFromSharingCommon();
+            testFromSharingCommon(kieBaseTestConfiguration);
         } finally {
             Drools.unsetNativeImage();
         }
     }
-
 }

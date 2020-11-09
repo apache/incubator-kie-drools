@@ -165,8 +165,9 @@ public final class TestParametersUtil {
     public static Collection<Object[]> getKieBaseCloudOnlyPatternExecModelConfiguration() {
         final List<EngineTestConfiguration> engineTestConfigurations = new ArrayList<>();
         engineTestConfigurations.add(EngineTestConfiguration.CLOUD_MODE);
-        // Testing just IDENTITY_MODE by default, leaving EQUALITY_MODE to specialized tests.
         engineTestConfigurations.add(EngineTestConfiguration.IDENTITY_MODE);
+        engineTestConfigurations.add(EngineTestConfiguration.ALPHA_NETWORK_COMPILER_FALSE);
+        engineTestConfigurations.add(EngineTestConfiguration.EXECUTABLE_MODEL_FLOW);
         engineTestConfigurations.add(EngineTestConfiguration.EXECUTABLE_MODEL_PATTERN);
 
         return getKieBaseConfigurations(engineTestConfigurations.toArray(new EngineTestConfiguration[]{}));
