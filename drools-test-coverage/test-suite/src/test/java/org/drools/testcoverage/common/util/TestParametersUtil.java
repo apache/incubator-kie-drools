@@ -162,7 +162,7 @@ public final class TestParametersUtil {
         return getKieBaseConfigurations(engineTestConfigurations.toArray(new EngineTestConfiguration[]{}));
     }
 
-    public static Collection<Object[]> getKieBaseCloudOnlyPatternExecModelConfiguration() {
+    public static Collection<Object[]> getKieBaseCloudOnlyExecModelConfiguration() {
         final List<EngineTestConfiguration> engineTestConfigurations = new ArrayList<>();
         engineTestConfigurations.add(EngineTestConfiguration.CLOUD_MODE);
         engineTestConfigurations.add(EngineTestConfiguration.IDENTITY_MODE);

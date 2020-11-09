@@ -22,14 +22,7 @@ import java.util.List;
 
 import org.assertj.core.api.Assertions;
 import org.drools.core.ClockType;
-import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.rule.Pattern;
-import org.drools.core.rule.SingleAccumulate;
-import org.drools.core.spi.Accumulator;
-import org.drools.model.view.BindViewItem2;
 import org.drools.modelcompiler.builder.RuleWriter;
-import org.drools.modelcompiler.constraints.BindingEvaluator;
-import org.drools.modelcompiler.constraints.LambdaAccumulator;
 import org.drools.modelcompiler.domain.Child;
 import org.drools.modelcompiler.domain.Man;
 import org.drools.modelcompiler.domain.Person;
@@ -279,27 +272,9 @@ public class ExternalisedLambdaTest extends BaseModelTest {
 
         ksession.fireAllRules();
 
-        verifyLambdaFingerprint(ksession);
-
         Collection<Result> results = getObjectsIntoList(ksession, Result.class);
         assertEquals(1, results.size());
         assertEquals(77, ((Number) results.iterator().next().getValue()).intValue());
-    }
-
-
-    // This verifies the fingerprint of the lambda of the accumulate is based on the hashed expression calculated in the materialized lambda
-    // see org.drools.modelcompiler.util.lambdareplace.MaterializedLambda::create
-    private void verifyLambdaFingerprint(KieSession ksession) {
-        RuleImpl rule = (RuleImpl) ksession.getKieBase().getKiePackage("defaultpkg").getRules().iterator().next();
-        Pattern accumulatePattern = (Pattern) rule.getLhs().getChildren().get(1);// AccumulatePattern
-        SingleAccumulate singleAccumulate = (SingleAccumulate) accumulatePattern.getSource();
-        Accumulator accumulator = singleAccumulate.getAccumulators()[0];
-        if(accumulator instanceof LambdaAccumulator.BindingAcc) {
-            LambdaAccumulator.BindingAcc accumulator1 = (LambdaAccumulator.BindingAcc) accumulator;
-            BindingEvaluator bindingEvaluator = accumulator1.getBindingEvaluator();
-            BindViewItem2 binding = (BindViewItem2) bindingEvaluator.getBinding();
-            assertEquals("B493B4D14DCA9F3418D45DCEF9D09184", binding.getBindingFunction2().toString());
-        }
     }
 
     @Test

@@ -108,25 +108,20 @@ public abstract class LambdaAccumulator implements Accumulator {
     }
 
     public static class BindingAcc extends LambdaAccumulator {
-        private final BindingEvaluator bindingEvaluator;
+        private final BindingEvaluator binding;
         private final List<String> sourceVariables;
 
-        public BindingAcc(AccumulateFunction accumulateFunction, List<String> sourceVariables, BindingEvaluator bindingEvaluator) {
+        public BindingAcc(AccumulateFunction accumulateFunction, List<String> sourceVariables, BindingEvaluator binding) {
             super(accumulateFunction);
-            this.bindingEvaluator = bindingEvaluator;
+            this.binding = binding;
             this.sourceVariables = sourceVariables;
-        }
-
-        // Used only for testing purposes
-        public BindingEvaluator getBindingEvaluator() {
-            return bindingEvaluator;
         }
 
         @Override
         protected Object getAccumulatedObject( Declaration[] declarations, Declaration[] innerDeclarations, InternalFactHandle handle, Tuple tuple, InternalWorkingMemory wm ) {
             Object accumulateObject = handle.getObject();
             if (accumulateObject instanceof SubnetworkTuple ) {
-                Declaration[] bindingDeclarations = bindingEvaluator.getDeclarations();
+                Declaration[] bindingDeclarations = binding.getDeclarations();
                 Object[] args;
                 if (bindingDeclarations == null || bindingDeclarations.length == 0) {
                     args = new Object[ sourceVariables.size() ];
@@ -153,12 +148,10 @@ public abstract class LambdaAccumulator implements Accumulator {
                         }
                     }
                 }
-                return bindingEvaluator.evaluate(args);
+                return binding.evaluate(args);
             } else {
-                return bindingEvaluator.evaluate(handle, tuple, wm, declarations, innerDeclarations);
+                return binding.evaluate(handle, tuple, wm, declarations, innerDeclarations);
             }
-
-
         }
 
         @Override

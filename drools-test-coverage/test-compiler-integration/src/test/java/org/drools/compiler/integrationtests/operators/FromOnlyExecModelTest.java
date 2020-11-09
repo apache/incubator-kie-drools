@@ -38,7 +38,7 @@ public class FromOnlyExecModelTest {
 
     @Parameterized.Parameters(name = "KieBase type={0}")
     public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudOnlyPatternExecModelConfiguration();
+        return TestParametersUtil.getKieBaseCloudOnlyExecModelConfiguration();
     }
 
     @Test // KOGITO-3771
