@@ -19,7 +19,7 @@ package org.drools.model.functions;
 import java.util.UUID;
 import java.util.function.Supplier;
 
-import org.drools.model.Drools;
+import org.drools.core.util.Drools;
 
 public abstract class IntrospectableLambda implements Supplier<Object> {
     private String lambdaFingerprint;
@@ -33,13 +33,17 @@ public abstract class IntrospectableLambda implements Supplier<Object> {
 
     @Override
     public String toString() {
-        if(this.getLambda() instanceof HashedExpression) {
-            lambdaFingerprint = ((HashedExpression) this.getLambda()).getExpressionHash();
-        } else if(!Drools.isNativeImage()) { // LambdaIntrospector is not supported on native image
-            lambdaFingerprint = LambdaPrinter.print(getLambda());
-        } else if( lambdaFingerprint == null) { // Non-native image, lambda without fingerprint
-            lambdaFingerprint = UUID.randomUUID().toString();
+        if(lambdaFingerprint == null) {
+            // Lambdas generate by the model-compiler have fingerprint calculated
+            if(this.getLambda() instanceof HashedExpression) {
+                lambdaFingerprint = ((HashedExpression) this.getLambda()).getExpressionHash();
+            } else if(!Drools.isNativeImage()) { // LambdaIntrospector is not supported on native image
+                lambdaFingerprint = LambdaPrinter.print(getLambda());
+            } else { // Non-native image, lambda without fingerprint, sharing is disabled
+                lambdaFingerprint = UUID.randomUUID().toString();
+            }
         }
+
         return lambdaFingerprint;
     }
 
