@@ -31,6 +31,7 @@ import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.core.util.Drools;
 import org.drools.testcoverage.common.model.Address;
 import org.drools.testcoverage.common.model.Cheese;
 import org.drools.testcoverage.common.model.Cheesery;
@@ -93,10 +94,18 @@ public class FromTest {
     }
 
 
-    // Run it twice with native image
-    // Make it run with native image + standard DRL
     @Test
     public void testFromSharing() {
+        testFromSharingCommon();
+    }
+
+    @Test // KOGITO-3771
+    public void testFromSharingWithNativeImage() {
+        Drools.setNativeImage();
+        testFromSharingCommon();
+    }
+
+    private void testFromSharingCommon() {
         // Keeping original test as non-property reactive by default, just allowed.
         final String drl = fromSharingRule();
 
