@@ -127,12 +127,6 @@
         <version>${version.org.kie.kogito}</version>
       </dependency>
       <dependency>
-        <!-- TODO remove kogito-ruleunits with fix https://github.com/kiegroup/kogito-runtimes/pull/871 -->
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-ruleunits</artifactId>
-        <version>${version.org.kie.kogito}</version>
-      </dependency>
-      <dependency>
         <groupId>org.kie.kogito</groupId>
         <artifactId>drools-core</artifactId>
         <version>${version.org.kie.kogito}</version>
