@@ -109,7 +109,7 @@ public class FromTest {
         }
     }
 
-    private void testFromSharingCommon() {
+    protected void testFromSharingCommon() {
         // Keeping original test as non-property reactive by default, just allowed.
         final String drl = fromSharingRule();
 
