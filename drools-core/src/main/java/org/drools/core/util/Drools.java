@@ -119,4 +119,9 @@ public class Drools {
     public static void setNativeImage() {
         System.setProperty("org.graalvm.nativeimage.imagecode", "true");
     }
+
+    // Used only for test purposed, do not call this as it simulates the code path for native image
+    public static void unsetNativeImage() {
+        System.setProperty("org.graalvm.nativeimage.imagecode", "true");
+    }
 }

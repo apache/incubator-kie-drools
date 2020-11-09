@@ -101,8 +101,12 @@ public class FromTest {
 
     @Test // KOGITO-3771
     public void testFromSharingWithNativeImage() {
-        Drools.setNativeImage();
-        testFromSharingCommon();
+        try {
+            Drools.setNativeImage();
+            testFromSharingCommon();
+        } finally {
+            Drools.unsetNativeImage();
+        }
     }
 
     private void testFromSharingCommon() {
