@@ -65,11 +65,6 @@ public class BindViewItem2<T> implements ViewItem<T>,
         return null;
     }
 
-    // used for testing purposes
-    public Function2 getBindingFunction2() {
-        return bindingFunction;
-    }
-
     @Override
     public Variable getInputVariable() {
         return inputVariable1;
