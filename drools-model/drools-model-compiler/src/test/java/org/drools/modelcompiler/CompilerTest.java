@@ -29,7 +29,6 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-import com.github.javaparser.ast.expr.StringLiteralExpr;
 import org.assertj.core.api.Assertions;
 import org.drools.modelcompiler.domain.Address;
 import org.drools.modelcompiler.domain.Adult;
@@ -52,10 +51,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessContext;
 import org.kie.api.runtime.rule.FactHandle;
 
-import static org.drools.core.base.evaluators.StrEvaluatorDefinition.Operations.startsWith;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.startsWith;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -2435,5 +2431,22 @@ public class CompilerTest extends BaseModelTest {
         ksession.insert( me );
         int rulesFired = ksession.fireAllRules();
         assertEquals(rulesFired, 1);
+    }
+
+    @Test
+    public void testNegatedConstraint() {
+        // DROOLS-5791
+        String str =
+                "rule R when\n" +
+                "  $i : Integer()\n" +
+                "  String( !($i.intValue > length) )\n" +
+                "then\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert( 5 );
+        ksession.insert( "test" );
+        assertEquals(0, ksession.fireAllRules());
     }
 }
