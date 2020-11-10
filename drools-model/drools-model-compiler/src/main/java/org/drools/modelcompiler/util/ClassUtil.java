@@ -20,13 +20,14 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.WeakHashMap;
 
 public class ClassUtil {
 
-    private static final Map<Class<?>, List<String>> ACCESSIBLE_PROPS_CACHE = new ConcurrentHashMap<>();
+    private static final Map<Class<?>, List<String>> ACCESSIBLE_PROPS_CACHE = Collections.synchronizedMap( new WeakHashMap<>() );
 
     public interface NullType { }
 

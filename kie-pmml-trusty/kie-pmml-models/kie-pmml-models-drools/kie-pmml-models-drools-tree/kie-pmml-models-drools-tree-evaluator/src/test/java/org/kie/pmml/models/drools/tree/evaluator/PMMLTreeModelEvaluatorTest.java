@@ -22,6 +22,7 @@ import org.dmg.pmml.PMML;
 import org.dmg.pmml.tree.TreeModel;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.kproject.ReleaseIdImpl;
+import org.drools.modelcompiler.ExecutableModelProject;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.kie.api.KieBase;
@@ -81,7 +82,7 @@ public class PMMLTreeModelEvaluatorTest {
         kieBase = new KieHelper()
                 .addContent(knowledgeBuilder.getPackageDescrs(kiePMMLModel.getKModulePackageName()).get(0))
                 .setReleaseId(RELEASE_ID)
-                .build();
+                .build( ExecutableModelProject.class );
         assertNotNull(kieBase);
     }
 
