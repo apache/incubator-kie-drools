@@ -20,6 +20,7 @@ import java.util.Collection;
 
 import org.drools.core.util.Drools;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.NativeImageTestUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,10 +45,10 @@ public class FromOnlyExecModelTest {
     @Test // KOGITO-3771
     public void testFromSharingWithNativeImage() {
         try {
-            Drools.setNativeImage();
+            NativeImageTestUtil.setNativeImage();
             testFromSharingCommon(kieBaseTestConfiguration);
         } finally {
-            Drools.unsetNativeImage();
+            NativeImageTestUtil.unsetNativeImage();
         }
     }
 }
