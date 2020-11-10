@@ -354,11 +354,7 @@ public class NativeJavaCompiler extends AbstractJavaCompiler {
         }
 
         private List<JavaFileObject> processJar(URL packageFolderURL) throws IOException {
-            String jarUri = packageFolderURL.toExternalForm();
-            int separator = jarUri.lastIndexOf('!');
-            if (separator >= 0) {
-                jarUri = jarUri.substring(0, separator);
-            }
+            String jarUri = jarUri(packageFolderURL.toExternalForm());
 
             URLConnection urlConnection = packageFolderURL.openConnection();
             if (!(urlConnection instanceof JarURLConnection)) {
@@ -388,6 +384,15 @@ public class NativeJavaCompiler extends AbstractJavaCompiler {
         List<CompilationOutput> getOutputs() {
             return outputs;
         }
+    }
+
+    static String jarUri(String resourceUrl) {
+        String jarUri = resourceUrl;
+        int separator = jarUri.lastIndexOf('!');
+        if (separator >= 0) {
+            jarUri = jarUri.substring(0, separator);
+        }
+        return jarUri;
     }
 
     public static class AggregatingIterable<T> implements Iterable<T> {
