@@ -60,7 +60,7 @@ public class CloudEventConsumer<D, M extends Model, T extends AbstractProcessDat
                 return;
             }
             UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(), () -> {
-                if (cloudEvent.getKogitoReferenceId() != null) {
+                if (cloudEvent.getKogitoReferenceId() != null && !cloudEvent.getKogitoReferenceId().isEmpty()) {
                     logger.debug("Received message with reference id '{}' going to use it to send signal '{}'",
                                  cloudEvent.getKogitoReferenceId(),
                                  trigger);
@@ -78,7 +78,7 @@ public class CloudEventConsumer<D, M extends Model, T extends AbstractProcessDat
                     logger.debug("Received message without reference id, starting new process instance with trigger '{}'",
                                  trigger);
                     ProcessInstance<M> pi = process.createInstance(model);
-                    if (cloudEvent.getKogitoStartFromNode() != null) {
+                    if (cloudEvent.getKogitoStartFromNode() != null && !cloudEvent.getKogitoStartFromNode().isEmpty()) {
                         pi.startFrom(cloudEvent.getKogitoStartFromNode(), cloudEvent.getKogitoProcessinstanceId());
                     } else {
                         pi.start(trigger, cloudEvent.getKogitoProcessinstanceId());
