@@ -18,7 +18,6 @@ package org.drools.compiler.integrationtests.operators;
 
 import java.util.Collection;
 
-import org.drools.core.util.Drools;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.NativeImageTestUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil;
