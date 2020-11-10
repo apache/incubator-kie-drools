@@ -18,12 +18,10 @@ package org.optaplanner.examples.tennis.app;
 
 import java.util.stream.Stream;
 
-import org.junit.jupiter.api.Disabled;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.tennis.domain.TennisSolution;
 
-@Disabled("DROOLS-5776")
 public class TennisPerformanceTest extends SolverPerformanceTest<TennisSolution> {
 
     private static final String UNSOLVED_DATA_FILE = "data/tennis/unsolved/munich-7teams.xml";

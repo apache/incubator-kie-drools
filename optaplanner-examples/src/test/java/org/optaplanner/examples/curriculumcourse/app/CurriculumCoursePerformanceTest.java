@@ -18,12 +18,10 @@ package org.optaplanner.examples.curriculumcourse.app;
 
 import java.util.stream.Stream;
 
-import org.junit.jupiter.api.Disabled;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.curriculumcourse.domain.CourseSchedule;
 
-@Disabled("DROOLS-5781")
 public class CurriculumCoursePerformanceTest extends SolverPerformanceTest<CourseSchedule> {
 
     private static final String UNSOLVED_DATA_FILE = "data/curriculumcourse/unsolved/comp01_initialized.xml";
