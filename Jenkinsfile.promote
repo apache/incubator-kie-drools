@@ -98,7 +98,7 @@ pipeline {
             }
             steps {
                 script {
-                    mavenCleanInstall('optaplanner', true, ['full'])
+                    mavenCleanInstall('optaplanner', true, [], '-Dfull')
                     dir('optaplanner') {
                         withCredentials(bindings: [sshUserPrivateKey(credentialsId: 'optaplanner-filemgmt',
                                              keyFileVariable: 'SSH_KEY_JBOSS_FILEMGMT')]) {

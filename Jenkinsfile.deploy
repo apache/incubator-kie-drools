@@ -137,9 +137,9 @@ pipeline {
         stage('Build optaplanner') {
             steps {
                 script {
-                    String extraArgs = ''
+                    String extraArgs = '-Dfull'
                     if (params.MAVEN_DEPENDENCIES_REPOSITORY != '') {
-                        extraArgs = "-s ${env.GLOBAL_MAVEN_SETTINGS} -Denforcer.skip"
+                        extraArgs = "$extraArgs -s ${env.GLOBAL_MAVEN_SETTINGS} -Denforcer.skip"
                     }
                     mavenCleanInstall('optaplanner', params.SKIP_TESTS, [], extraArgs)
                 }
@@ -166,7 +166,7 @@ pipeline {
 
         stage('Deploy artifacts') {
             steps {
-                mavenDeploy('optaplanner')
+                mavenDeploy('optaplanner', '-Dfull')
             }
         }
 
@@ -254,9 +254,10 @@ void mavenCleanInstall(String directory, boolean skipTests = false, List profile
     runMaven('clean install', directory, skipTests, profiles, extraArgs)
 }
 
-void mavenDeploy(String directory) {
-    extraArgs = params.MAVEN_DEPLOY_REPOSITORY != '' ? "-DaltDeploymentRepository=runtimes-artifacts::default::${params.MAVEN_DEPLOY_REPOSITORY} -Denforcer.skip=true" : ''
-    runMaven('clean deploy', directory, true, [], extraArgs)
+void mavenDeploy(String directory, extraArgs = '') {
+    String deployRepoArgs = params.MAVEN_DEPLOY_REPOSITORY != '' ? "-DaltDeploymentRepository=runtimes-artifacts::default::${params.MAVEN_DEPLOY_REPOSITORY} -Denforcer.skip=true" : ''
+    String resolvedArgs = "$extraArgs $deployRepoArgs".trim()
+    runMaven('clean deploy', directory, true, [], resolvedArgs)
 }
 
 void runMaven(String goals, String directory, boolean skipTests = false, List profiles = [], String extraArgs = '') {
