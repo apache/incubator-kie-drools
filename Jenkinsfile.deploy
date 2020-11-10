@@ -81,10 +81,12 @@ pipeline {
             steps {
                 checkoutRepo('optaplanner', getBuildBranch())
                 checkoutRepo('optaplanner-quickstarts', getQuickStartsBranch())
+                checkoutRepo('optaweb-vehicle-routing', getBuildBranch())
+                checkoutRepo('optaweb-employee-rostering', getBuildBranch())
             }
         }
 
-        stage('Prepare for PR'){
+        stage('Prepare for PR') {
             when {
                 expression { return isRelease() }
             }
@@ -93,7 +95,7 @@ pipeline {
             }
         }
 
-        stage('Setup Maven config'){
+        stage('Setup Maven config') {
             steps {
                 script {
                     configFileProvider([configFile(fileId: maven.getSubmarineSettingsXmlId(), targetLocation: 'maven-settings.xml', variable: 'MAVEN_SETTINGS_FILE')]) {
@@ -164,9 +166,37 @@ pipeline {
             }
         }
 
+        stage('Build optaweb-vehicle-routing') {
+            steps {
+                mavenCleanInstall('optaweb-vehicle-routing', params.SKIP_TESTS, [], "-s ${env.GLOBAL_MAVEN_SETTINGS}")
+            }
+            post {
+                always {
+                    saveReports(params.SKIP_TESTS)
+                    // TODO: Enable together with the profile "integration-tests" once dockerhub pull limit is resolved.
+                    // archiveArtifacts(allowEmptyArchive: true, artifacts: "**/cypress/screenshots/**,**/cypress/videos/**", fingerprint: false)
+                }
+            }
+        }
+
+        stage('Build optaweb-employee-rostering') {
+            steps {
+                mavenCleanInstall('optaweb-employee-rostering', params.SKIP_TESTS, [], "-s ${env.GLOBAL_MAVEN_SETTINGS}")
+            }
+            post {
+                always {
+                    saveReports(params.SKIP_TESTS)
+                    // TODO: Enable together with the profile "integration-tests" once dockerhub pull limit is resolved.
+                    // archiveArtifacts(allowEmptyArchive: true, artifacts: "**/cypress/screenshots/**,**/cypress/videos/**", fingerprint: false)
+                }
+            }
+        }
+
         stage('Deploy artifacts') {
             steps {
                 mavenDeploy('optaplanner', '-Dfull')
+                mavenDeploy('optaweb-vehicle-routing', "-s ${env.GLOBAL_MAVEN_SETTINGS}")
+                mavenDeploy('optaweb-employee-rostering', "-s ${env.GLOBAL_MAVEN_SETTINGS}")
             }
         }
 
