@@ -110,27 +110,6 @@ public class FunctionsTest extends CommonTestMethodBase {
     }
 
     @Test
-    public void testFunctionCallingFunctionWithJanino() throws Exception {
-        KnowledgeBuilderConfiguration kbconf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
-        kbconf.setProperty( "drools.dialect.java.compiler", "JANINO" );
-        KieBase kbase = loadKnowledgeBase( kbconf, "test_functionCallingFunction.drl" );
-
-        KieSession ksession = createKnowledgeSession(kbase);
-
-        final List<Integer> list = new ArrayList<Integer>();
-        ksession.setGlobal( "results",
-                            list );
-
-        ksession.fireAllRules();
-
-        assertEquals( 1,
-                      list.size() );
-
-        assertEquals( 12,
-                      list.get( 0 ).intValue() );
-    }
-
-    @Test
     public void testJBRULES3117() {
         String str = "package org.kie\n" +
                      "function boolean isOutOfRange( Object value, int lower ) { return true; }\n" + 

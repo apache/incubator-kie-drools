@@ -19,7 +19,6 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletionService;
@@ -30,13 +29,13 @@ import java.util.concurrent.Executors;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.api.KieBase;
+import org.kie.api.io.Resource;
+import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.api.KieBase;
-import org.kie.api.io.Resource;
-import org.kie.api.io.ResourceType;
 
 public class ParallelCompilationTest {
     private static final int PARALLEL_THREADS = 5;
@@ -75,7 +74,6 @@ public class ParallelCompilationTest {
             final Reader source = new InputStreamReader(ParallelCompilationTest.class.getResourceAsStream(DRL_FILE));
 
             final Properties props = new Properties();
-            props.setProperty("drools.dialect.java.compiler", "JANINO");
             props.setProperty("drools.dialect.java.compiler.lnglevel", "1.6");
             KieBase result;
 

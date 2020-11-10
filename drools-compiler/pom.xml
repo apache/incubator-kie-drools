@@ -78,11 +78,6 @@
       <artifactId>ecj</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.codehaus.janino</groupId>
-      <artifactId>janino</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
       <groupId>com.thoughtworks.xstream</groupId>
       <artifactId>xstream</artifactId>
       <!-- mdp temporary change, for kmodule.xml, undo once new format is chosen

@@ -17,21 +17,18 @@
 package org.drools.verifier.builder;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.verifier.VerifierConfiguration;
 import org.drools.verifier.VerifierError;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderConfiguration;
-import org.kie.internal.builder.KnowledgeBuilderError;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.api.KieBase;
 import org.kie.api.io.Resource;
+import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilderError;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
 
 public class VerifierKnowledgeBaseBuilder {
 
@@ -41,11 +38,7 @@ public class VerifierKnowledgeBaseBuilder {
 
         InternalKnowledgeBase verifierKnowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
 
-        KnowledgeBuilderConfiguration kbuilderConfiguration = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
-        kbuilderConfiguration.setProperty( "drools.dialect.java.compiler",
-                                           "JANINO" );
-
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder( kbuilderConfiguration );
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
         if ( configuration.getVerifyingResources() != null ) {
             for ( Resource resource : configuration.getVerifyingResources().keySet() ) {
