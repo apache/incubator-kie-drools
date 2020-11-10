@@ -24,6 +24,7 @@ import org.dmg.pmml.PMML;
 import org.dmg.pmml.scorecard.Scorecard;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.kproject.ReleaseIdImpl;
+import org.drools.modelcompiler.ExecutableModelProject;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,6 +34,7 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.internal.utils.KieHelper;
+import org.kie.pmml.api.PMMLRuntimeFactory;
 import org.kie.pmml.api.enums.ResultCode;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.compiler.testutils.TestUtils;
@@ -92,7 +94,7 @@ public class PMMLScorecardModelEvaluatorTest {
         kieBase = new KieHelper()
                 .addContent(knowledgeBuilder.getPackageDescrs(kiePMMLModel.getKModulePackageName()).get(0))
                 .setReleaseId(RELEASE_ID)
-                .build();
+                .build( ExecutableModelProject.class );
         assertNotNull(kieBase);
     }
 
