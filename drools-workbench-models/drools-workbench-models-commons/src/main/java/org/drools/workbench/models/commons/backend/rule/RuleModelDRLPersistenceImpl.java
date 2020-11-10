@@ -3208,7 +3208,7 @@ public class RuleModelDRLPersistenceImpl
         }
         return builder.get(variable,
                            methodName,
-                           unwrapParenthesis(line).split(","));
+                           unwrapParenthesis(line));
     }
 
     private boolean isInsertedFact(final String[] lines,
