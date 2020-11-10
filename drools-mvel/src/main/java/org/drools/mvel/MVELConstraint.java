@@ -296,7 +296,10 @@ public class MVELConstraint extends MutableTypeConstraint implements IndexableCo
         ConditionEvaluator mvelEvaluator = createMvelConditionEvaluator(workingMemory);
         try {
             mvelEvaluator.evaluate(handle, workingMemory, tuple);
-        } catch (ClassCastException cce) { }
+        } catch (ClassCastException cce) {
+        } catch (Exception e) {
+            return createMvelConditionEvaluator( workingMemory );
+        }
         return executeJitting(handle, workingMemory, tuple, mvelEvaluator);
     }
 
