@@ -19,8 +19,6 @@ package org.drools.compiler.lang.dsl;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import org.codehaus.janino.CompileException;
-
 /**
  * An ANTLR-driven implementation for the DSL Mapping Entry interface
  */

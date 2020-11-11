@@ -114,44 +114,6 @@ public class PackageBuilderConfigurationTest {
     }
 
     @Test
-    public void testSystemProperties() {
-        KnowledgeBuilderConfigurationImpl cfg;
-        JavaDialectConfiguration javaConf;
-
-        System.setProperty("drools.dialect.java.compiler",
-                           "JANINO");
-        cfg = new KnowledgeBuilderConfigurationImpl();
-        javaConf = (JavaDialectConfiguration) cfg.getDialectConfiguration("java");
-        assertEquals(JavaDialectConfiguration.CompilerType.JANINO,
-                     javaConf.getCompiler());
-
-        KnowledgeBuilderConfigurationImpl cfg2 = new KnowledgeBuilderConfigurationImpl();
-        JavaDialectConfiguration javaConf2 = (JavaDialectConfiguration) cfg2.getDialectConfiguration("java");
-        assertEquals(javaConf.getCompiler(),
-                     javaConf2.getCompiler());
-
-        System.setProperty("drools.dialect.java.compiler",
-                           "ECLIPSE");
-        cfg = new KnowledgeBuilderConfigurationImpl();
-        javaConf = (JavaDialectConfiguration) cfg.getDialectConfiguration("java");
-        assertEquals(JavaDialectConfiguration.CompilerType.ECLIPSE,
-                     javaConf.getCompiler());
-
-        javaConf2.setCompiler(JavaDialectConfiguration.CompilerType.ECLIPSE);
-        assertEquals(JavaDialectConfiguration.CompilerType.ECLIPSE,
-                     javaConf2.getCompiler());
-
-        javaConf2.setCompiler(JavaDialectConfiguration.CompilerType.JANINO);
-        assertEquals(JavaDialectConfiguration.CompilerType.JANINO,
-                     javaConf2.getCompiler());
-
-        final KnowledgeBuilderConfigurationImpl cfg3 = new KnowledgeBuilderConfigurationImpl();
-        JavaDialectConfiguration javaConf3 = (JavaDialectConfiguration) cfg3.getDialectConfiguration("java");
-        assertEquals(javaConf.getCompiler(),
-                     javaConf3.getCompiler());
-    }
-
-    @Test
     public void testProgrammaticProperties() {
         KnowledgeBuilderConfigurationImpl cfg = new KnowledgeBuilderConfigurationImpl();
         assertTrue(cfg.getDefaultDialect().equals("java"));
@@ -180,18 +142,6 @@ public class PackageBuilderConfigurationTest {
         assertSame(javaConf,
                    javaConf2);
         assertEquals(JavaDialectConfiguration.CompilerType.ECLIPSE,
-                     javaConf2.getCompiler());
-
-        javaConf = new JavaDialectConfiguration();
-        javaConf.init(new KnowledgeBuilderConfigurationImpl());
-        javaConf.setCompiler(JavaDialectConfiguration.CompilerType.JANINO);
-        cfg = new KnowledgeBuilderConfigurationImpl();
-        cfg.setDialectConfiguration("java",
-                                    javaConf);
-        javaConf2 = (JavaDialectConfiguration) cfg.getDialectConfiguration("java");
-        assertSame(javaConf,
-                   javaConf2);
-        assertEquals(JavaDialectConfiguration.CompilerType.JANINO,
                      javaConf2.getCompiler());
     }
 
