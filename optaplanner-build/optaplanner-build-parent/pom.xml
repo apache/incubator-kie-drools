@@ -1203,6 +1203,7 @@
         <sonar.organization>kiegroup</sonar.organization>
         <!--suppress UnresolvedMavenProperty -->
         <sonar.login>${env.SONARCLOUD_TOKEN}</sonar.login>
+        <sonar.java.source>${maven.compiler.release}</sonar.java.source>
       </properties>
       <build>
         <plugins>
