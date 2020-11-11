@@ -59,14 +59,14 @@ public class MaterializedLambdaExtractor extends MaterializedLambda {
     }
 
     @Override
-    protected NodeList<ClassOrInterfaceType> createImplementedType() {
+    protected NodeList<ClassOrInterfaceType> createImplementedTypes() {
         ClassOrInterfaceType functionType = functionType();
 
         List<Type> typeArguments = lambdaParametersToType();
         NodeList<Type> implementedGenericType = NodeList.nodeList(typeArguments);
         implementedGenericType.add(returnTypeJP());
         functionType.setTypeArguments(implementedGenericType);
-        return NodeList.nodeList(functionType);
+        return NodeList.nodeList(functionType, lambdaExtractorType());
     }
 
     @Override

@@ -276,7 +276,7 @@ public class ExternalisedLambdaTest extends BaseModelTest {
         assertEquals(1, results.size());
         assertEquals(77, ((Number) results.iterator().next().getValue()).intValue());
     }
-  
+
     @Test
     public void testOOPath() {
         final String str =

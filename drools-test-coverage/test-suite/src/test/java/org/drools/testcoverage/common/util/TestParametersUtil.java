@@ -162,6 +162,17 @@ public final class TestParametersUtil {
         return getKieBaseConfigurations(engineTestConfigurations.toArray(new EngineTestConfiguration[]{}));
     }
 
+    public static Collection<Object[]> getKieBaseCloudOnlyExecModelConfiguration() {
+        final List<EngineTestConfiguration> engineTestConfigurations = new ArrayList<>();
+        engineTestConfigurations.add(EngineTestConfiguration.CLOUD_MODE);
+        engineTestConfigurations.add(EngineTestConfiguration.IDENTITY_MODE);
+        engineTestConfigurations.add(EngineTestConfiguration.ALPHA_NETWORK_COMPILER_FALSE);
+        engineTestConfigurations.add(EngineTestConfiguration.EXECUTABLE_MODEL_FLOW);
+        engineTestConfigurations.add(EngineTestConfiguration.EXECUTABLE_MODEL_PATTERN);
+
+        return getKieBaseConfigurations(engineTestConfigurations.toArray(new EngineTestConfiguration[]{}));
+    }
+
     /**
      * Prepares various combinations of KieBaseTestConfiguration and KieSessionTestConfiguration.
      * @return Collection of combinations for parameterized tests.

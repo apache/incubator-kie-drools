@@ -80,11 +80,9 @@ public class RuleWriter {
 
                 if (EXTERNALIZE_LAMBDAS && pkgModel.getConfiguration().isExternaliseCanonicalModelLambda()) {
                     CompilationUnit postProcessedCU = cu.clone();
-                    if (pkgModel.getRuleUnits().isEmpty()) {
-                        new ExecModelLambdaPostProcessor(pkgModel, postProcessedCU).convertLambdas();
-                        if (checkNonExternalisedLambda) {
-                            checkNonExternalisedLambda(postProcessedCU);
-                        }
+                    new ExecModelLambdaPostProcessor(pkgModel, postProcessedCU).convertLambdas();
+                    if (checkNonExternalisedLambda) {
+                        checkNonExternalisedLambda(postProcessedCU);
                     }
                     rules.add(new RuleFileSource(addFileName, postProcessedCU));
                 } else {
