@@ -46,6 +46,8 @@ public interface JavaCompiler {
      */
     void setCompilationProblemHandler( final CompilationProblemHandler pHandler );
 
+    default void setSourceFolder( String sourceFolder ) { }
+
     /**
      * factory method to create the underlying default settings
      */

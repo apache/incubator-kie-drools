@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.compiler.compiler.JavaConfiguration;
-import org.drools.core.util.ClassUtils;
 
 /**
  * Creates JavaCompilers
@@ -32,28 +31,11 @@ public enum JavaCompilerFactory {
 
     private final Map classCache = new HashMap();
     
-    /**
-     * Tries to guess the class name by convention. So for compilers
-     * following the naming convention
-     * 
-     *   org.apache.commons.jci.compilers.SomeJavaCompiler
-     *   
-     * you can use the short-hands "some"/"Some"/"SOME". Otherwise
-     * you have to provide the full class name. The compiler is
-     * getting instanciated via (cached) reflection.
-     * 
-     * @param pHint
-     * @return JavaCompiler or null
-     */
-    public JavaCompiler createCompiler(final String pHint) {
-        
-        final String className;
-        if (pHint.indexOf('.') < 0) {
-            className = "org.drools.compiler.commons.jci.compilers." + ClassUtils.toJavaCasing(pHint) + "JavaCompiler";
-        } else {
-            className = pHint;
-        }
-        
+    public JavaCompiler createCompiler(JavaConfiguration.CompilerType compilerType) {
+        return createCompiler(compilerType.getImplClassName());
+    }
+
+    public JavaCompiler createCompiler(String className) {
         Class clazz = (Class) classCache.get(className);
         
         if (clazz == null) {
@@ -70,7 +52,7 @@ public enum JavaCompilerFactory {
         }
         
         try {
-            return (JavaCompiler) clazz.newInstance();
+            return (JavaCompiler) clazz.getConstructor().newInstance();
         } catch (Throwable t) {
             return null;
         }
@@ -81,27 +63,11 @@ public enum JavaCompilerFactory {
     }
 
     public JavaCompiler loadCompiler( JavaConfiguration.CompilerType compilerType, String lngLevel ) {
-        JavaCompiler compiler;
-        switch ( compilerType ) {
-            case NATIVE : {
-                compiler = createCompiler( "native" );
-                if (compiler == null) {
-                    throw new RuntimeException("Instance of native compiler cannot be created!");
-                } else {
-                    updateSettings( compiler.createDefaultSettings(), lngLevel );
-                }
-                break;
-            }
-            case ECLIPSE :
-            default : {
-                compiler = createCompiler( "eclipse" );
-                if (compiler == null) {
-                    throw new RuntimeException("Instance of eclipse compiler cannot be created!");
-                } else {
-                    updateSettings( compiler.createDefaultSettings(), lngLevel );
-                }
-                break;
-            }
+        JavaCompiler compiler = createCompiler( compilerType );
+        if (compiler == null) {
+            throw new RuntimeException("Instance of " + compilerType + " compiler cannot be created!");
+        } else {
+            updateSettings( compiler.createDefaultSettings(), lngLevel );
         }
         return compiler;
     }

@@ -83,7 +83,18 @@ public class JavaConfiguration
     public static final String JAVA_LANG_LEVEL_PROPERTY = "drools.dialect.java.compiler.lnglevel";
 
     public enum CompilerType {
-        ECLIPSE, NATIVE
+        ECLIPSE("org.drools.ecj.EclipseJavaCompiler"),
+        NATIVE("org.drools.compiler.commons.jci.compilers.NativeJavaCompiler");
+
+        private final String implClassName;
+
+        CompilerType( String implClassName ) {
+            this.implClassName = implClassName;
+        }
+
+        public String getImplClassName() {
+            return implClassName;
+        }
     }
 
     // This should be in alphabetic order to search with BinarySearch
@@ -95,7 +106,10 @@ public class JavaConfiguration
 
     private CompilerType                compiler;
 
-    public JavaConfiguration() {
+    public JavaConfiguration() { }
+
+    public JavaConfiguration(KnowledgeBuilderConfigurationImpl conf) {
+        init( conf );
     }
 
     public void init(final KnowledgeBuilderConfigurationImpl conf) {
@@ -160,15 +174,6 @@ public class JavaConfiguration
      * This overrides the default, and even what was set as a system property. 
      */
     public void setCompiler(final CompilerType compiler) {
-        // check that the jar for the specified compiler are present
-        if ( compiler == CompilerType.ECLIPSE ) {
-            try {
-                Class.forName( "org.eclipse.jdt.internal.compiler.Compiler", true, this.conf.getClassLoader() );
-            } catch ( ClassNotFoundException e ) {
-                throw new RuntimeException( "The Eclipse JDT Core jar is not in the classpath" );
-            }
-        }
-        
         switch ( compiler ) {
             case ECLIPSE :
                 this.compiler = CompilerType.ECLIPSE;
@@ -178,6 +183,15 @@ public class JavaConfiguration
                 break;
             default :
                 throw new RuntimeException( "value '" + compiler + "' is not a valid compiler" );
+        }
+    }
+
+    public boolean hasEclipseCompiler() {
+        try {
+            Class.forName( CompilerType.ECLIPSE.getImplClassName(), true, this.conf.getClassLoader() );
+            return true;
+        } catch ( ClassNotFoundException e ) {
+            return false;
         }
     }
 
@@ -192,8 +206,7 @@ public class JavaConfiguration
      */
     private CompilerType getDefaultCompiler() {
         try {
-            final String prop = this.conf.getChainedProperties().getProperty( JAVA_COMPILER_PROPERTY,
-                                                                              "ECLIPSE" );
+            final String prop = this.conf.getChainedProperties().getProperty( JAVA_COMPILER_PROPERTY, hasEclipseCompiler() ? "ECLIPSE" : "NATIVE" );
             if ( prop.equals( "NATIVE" ) ) {
                 return CompilerType.NATIVE;
             } else if ( prop.equals( "ECLIPSE" ) ) {
