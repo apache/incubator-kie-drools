@@ -129,11 +129,16 @@ public class TypedExpression {
     }
 
     public boolean isNumberLiteral() {
+        return isNumberLiteral(expression);
+    }
+
+    public static boolean isNumberLiteral(Expression expression) {
         return expression != null &&
                 (expression.isCharLiteralExpr()
                         || expression.isIntegerLiteralExpr()
                         || expression.isLongLiteralExpr()
-                        || expression.isDoubleLiteralExpr());
+                        || expression.isDoubleLiteralExpr()
+                        || expression.isEnclosedExpr() && isNumberLiteral(expression.asEnclosedExpr().getInner()));
     }
 
     public TypedExpression cloneWithNewExpression( Expression newExpression) {

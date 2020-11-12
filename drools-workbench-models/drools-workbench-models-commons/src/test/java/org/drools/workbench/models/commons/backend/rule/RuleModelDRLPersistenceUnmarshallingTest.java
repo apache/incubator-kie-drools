@@ -1075,6 +1075,34 @@ public class RuleModelDRLPersistenceUnmarshallingTest extends BaseRuleModelTest 
         assertEquals("eval( true )",
                      ((FreeFormLine) m.lhs[0]).getText());
     }
+    @Test
+    public void testInsertFreeFormLine() {
+        String drl = "package com.myspace;\n" +
+                "\n" +
+                "import java.util.logging.Logger;\n" +
+                "\n" +
+                "rule \"initialize\"\n" +
+                "\tdialect \"mvel\"\n" +
+                "\twhen\n" +
+                "\tthen\n" +
+                "\t\tinsert(Logger log = Logger.getLogger(\"com.somepkg\"));\n" +
+                "\t\tinsert(new String(\"hello\"));\n" +
+                "end\n";
+
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal(drl,
+                                                                          Collections.emptyList(),
+                                                                          dmo);
+
+        assertNotNull(m);
+        assertEquals(2,
+                     m.rhs.length);
+        assertTrue(m.rhs[0] instanceof FreeFormLine);
+        assertEquals("insert(Logger log = Logger.getLogger(\"com.somepkg\"));",
+                     ((FreeFormLine) m.rhs[0]).getText());
+        assertTrue(m.rhs[1] instanceof FreeFormLine);
+        assertEquals("insert(new String(\"hello\"));",
+                     ((FreeFormLine) m.rhs[1]).getText());
+    }
 
     @Test
     public void testEval2() {
