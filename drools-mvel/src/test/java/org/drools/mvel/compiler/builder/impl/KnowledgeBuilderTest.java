@@ -28,7 +28,6 @@ import java.util.Map;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.commons.jci.compilers.EclipseJavaCompiler;
-import org.drools.compiler.commons.jci.compilers.JaninoJavaCompiler;
 import org.drools.compiler.commons.jci.compilers.JavaCompiler;
 import org.drools.compiler.commons.jci.compilers.NativeJavaCompiler;
 import org.drools.compiler.compiler.Dialect;
@@ -999,25 +998,9 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
                 break;
             case ECLIPSE: assertSame( EclipseJavaCompiler.class, compiler.getClass() );
                 break;
-            case JANINO: assertSame( JaninoJavaCompiler.class, compiler.getClass() );
-                break;
             default:
                 fail( "Unrecognized java compiler");
         }
-
-        // test JANINO with property settings
-        conf = new KnowledgeBuilderConfigurationImpl();
-        javaConf = (JavaDialectConfiguration) conf.getDialectConfiguration( "java" );
-        javaConf.setCompiler( JavaDialectConfiguration.CompilerType.JANINO );
-        builder = new KnowledgeBuilderImpl( conf );
-        builder.addPackage( pkgDescr );
-
-        dialectName = (String) dialectField.get( builder );
-        reg = builder.getPackageRegistry( pkgDescr.getName() ).getDialectCompiletimeRegistry();
-        dialect = reg.getDialect( dialectName );
-        compiler = (JavaCompiler) compilerField.get( dialect );
-        assertSame( JaninoJavaCompiler.class,
-                    compiler.getClass() );
 
         // test eclipse jdt core with property settings and default source level
         conf = new KnowledgeBuilderConfigurationImpl();
@@ -1261,19 +1244,6 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
                       rule.getName() );
 
         return rule;
-    }
-
-    @Test
-    public void testJaninoWithStaticImports() throws Exception {
-        KnowledgeBuilderConfigurationImpl cfg = new KnowledgeBuilderConfigurationImpl();
-        JavaDialectConfiguration javaConf = (JavaDialectConfiguration) cfg.getDialectConfiguration( "java" );
-        javaConf.setCompiler( JavaDialectConfiguration.CompilerType.JANINO );
-
-        KnowledgeBuilderImpl bldr = new KnowledgeBuilderImpl( cfg );
-        bldr.addPackageFromDrl( new StringReader( "package testBuilderPackageConfig \n import java.util.List" ) );
-        bldr.addPackageFromDrl( new StringReader( "package testBuilderPackageConfig \n function void doSomething() {\n System.err.println(List.class.toString()); }" ) );
-
-        assertFalse( bldr.hasErrors() );
     }
 
     @Test

@@ -64,20 +64,14 @@ import static org.drools.core.base.CoreComponentsBuilder.throwExceptionForMissin
  * Apache JCI is used as the interface to all the runtime compilers.
  * 
  * You can also use the system property "drools.compiler" to set the desired compiler.
- * The valid values are "ECLIPSE" and "JANINO" only. 
+ * The valid values are "ECLIPSE" and "NATIVE" only.
  * 
- * drools.dialect.java.compiler = <ECLIPSE|JANINO>
+ * drools.dialect.java.compiler = <ECLIPSE|NATIVE>
  * drools.dialect.java.compiler.lnglevel = <1.5|1.6>
  * 
  * The default compiler is Eclipse and the default lngLevel is 1.5.
  * The lngLevel will attempt to autodiscover your system using the 
  * system property "java.version"
- * 
- * The JavaDialectConfiguration will attempt to validate that the specified compiler
- * is in the classpath, using ClassLoader.loadClass(String). If you intented to
- * just Janino sa the compiler you must either overload the compiler property before 
- * instantiating this class or the PackageBuilder, or make sure Eclipse is in the 
- * classpath, as Eclipse is the default.
  */
 public class JavaConfiguration
     implements
@@ -89,7 +83,7 @@ public class JavaConfiguration
     public static final String JAVA_LANG_LEVEL_PROPERTY = "drools.dialect.java.compiler.lnglevel";
 
     public enum CompilerType {
-        ECLIPSE, JANINO, NATIVE
+        ECLIPSE, NATIVE
     }
 
     // This should be in alphabetic order to search with BinarySearch
@@ -173,20 +167,11 @@ public class JavaConfiguration
             } catch ( ClassNotFoundException e ) {
                 throw new RuntimeException( "The Eclipse JDT Core jar is not in the classpath" );
             }
-        } else if ( compiler == CompilerType.JANINO ){
-            try {
-                Class.forName( "org.codehaus.janino.Parser", true, this.conf.getClassLoader() );
-            } catch ( ClassNotFoundException e ) {
-                throw new RuntimeException( "The Janino jar is not in the classpath" );
-            }
         }
         
         switch ( compiler ) {
             case ECLIPSE :
                 this.compiler = CompilerType.ECLIPSE;
-                break;
-            case JANINO :
-                this.compiler = CompilerType.JANINO;
                 break;
             case NATIVE :
                 this.compiler = CompilerType.NATIVE;
@@ -213,8 +198,6 @@ public class JavaConfiguration
                 return CompilerType.NATIVE;
             } else if ( prop.equals( "ECLIPSE" ) ) {
                 return CompilerType.ECLIPSE;
-            } else if ( prop.equals( "JANINO" ) ) {
-                return CompilerType.JANINO;
             } else {
                 logger.error( "Drools config: unable to use the drools.compiler property. Using default. It was set to:" + prop );
                 return CompilerType.ECLIPSE;

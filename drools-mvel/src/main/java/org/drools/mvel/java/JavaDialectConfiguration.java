@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
  * Apache JCI is used as the interface to all the runtime compilers.
  * 
  * You can also use the system property "drools.compiler" to set the desired compiler.
- * The valid values are "ECLIPSE" and "JANINO" only. 
+ * The valid values are "ECLIPSE" and "NATIVE" only.
  * 
  * drools.dialect.java.compiler = <ECLIPSE|JANINO>
  * drools.dialect.java.compiler.lnglevel = <1.5|1.6>
@@ -37,12 +37,6 @@ import org.slf4j.LoggerFactory;
  * The default compiler is Eclipse and the default lngLevel is 1.5.
  * The lngLevel will attempt to autodiscover your system using the 
  * system property "java.version"
- * 
- * The JavaDialectConfiguration will attempt to validate that the specified compiler
- * is in the classpath, using ClassLoader.loadClass(String). If you intented to
- * just Janino sa the compiler you must either overload the compiler property before 
- * instantiating this class or the PackageBuilder, or make sure Eclipse is in the 
- * classpath, as Eclipse is the default.
  */
 public class JavaDialectConfiguration extends JavaConfiguration
     implements

@@ -73,9 +73,6 @@ public class ParserTest extends CommonTestMethodBase {
             case ECLIPSE:
                 assertTrue(errors[2].getMessage().contains("add"));
                 break;
-            case JANINO:
-                assertTrue(errors[2].getMessage().contains("Unexpected"));
-                break;
             default:
                 fail("Unknown compiler used");
         }

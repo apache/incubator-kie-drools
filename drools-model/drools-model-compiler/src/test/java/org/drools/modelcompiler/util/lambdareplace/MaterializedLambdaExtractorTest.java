@@ -15,14 +15,17 @@ public class MaterializedLambdaExtractorTest {
 
         //language=JAVA
         String expectedResult = "" +
-                "package org.drools.modelcompiler.util.lambdareplace.PCB;\n" +
+                "package org.drools.modelcompiler.util.lambdareplace.PE2;\n" +
                 "import static rulename.*; " +
                 "import org.drools.modelcompiler.dsl.pattern.D; " +
                 "" +
                 "@org.drools.compiler.kie.builder.MaterializedLambda() " +
-                "public enum LambdaExtractorCBFCD0FE557DC6A623D0DF78A531F1EA implements org.drools.model.functions.Function1<org.drools.modelcompiler.domain.Person, java.lang.String>  {\n" +
+                "public enum LambdaExtractorE266E7B47BEF772A569E939DF87A37BB implements org.drools.model.functions.Function1<org.drools.modelcompiler.domain.Person, java.lang.String>, org.drools.model.functions.HashedExpression  {\n" +
                 " INSTANCE; \n" +
                 "public static final String EXPRESSION_HASH = \"133AF281814F16840FE105EF6D339F8A\";" +
+                "    public java.lang.String getExpressionHash() {\n" +
+                "        return EXPRESSION_HASH;\n" +
+                "    }" +
                 "        @Override()\n" +
                 "        public java.lang.String apply(org.drools.modelcompiler.domain.Person p1) {\n" +
                 "            return p1.getName();\n" +
