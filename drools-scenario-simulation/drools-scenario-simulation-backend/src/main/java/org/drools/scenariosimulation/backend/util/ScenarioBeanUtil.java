@@ -20,7 +20,14 @@ import org.drools.scenariosimulation.backend.runner.ScenarioException;
 import org.drools.scenariosimulation.backend.runner.model.ValueWrapper;
 
 import java.lang.reflect.Field;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
@@ -160,24 +167,32 @@ public class ScenarioBeanUtil {
         try {
             if (clazz.isAssignableFrom(String.class)) {
                 return value;
+            } else if (clazz.isAssignableFrom(BigDecimal.class)) {
+                return parseBigDecimal(value);
+            } else if (clazz.isAssignableFrom(BigInteger.class)) {
+                return parseBigInteger(value);
             } else if (clazz.isAssignableFrom(Boolean.class) || clazz.isAssignableFrom(boolean.class)) {
                 return parseBoolean(value);
-            } else if (clazz.isAssignableFrom(Integer.class) || clazz.isAssignableFrom(int.class)) {
-                return Integer.parseInt(cleanStringForNumberParsing(value));
-            } else if (clazz.isAssignableFrom(Long.class) || clazz.isAssignableFrom(long.class)) {
-                return Long.parseLong(cleanStringForNumberParsing(value));
+            } else if (clazz.isAssignableFrom(Byte.class) || clazz.isAssignableFrom(byte.class)) {
+                return Byte.parseByte(value);
+            } else if (clazz.isAssignableFrom(Character.class) || clazz.isAssignableFrom(char.class)) {
+                return parseChar(value);
             } else if (clazz.isAssignableFrom(Double.class) || clazz.isAssignableFrom(double.class)) {
                 return Double.parseDouble(cleanStringForNumberParsing(value));
             } else if (clazz.isAssignableFrom(Float.class) || clazz.isAssignableFrom(float.class)) {
                 return Float.parseFloat(cleanStringForNumberParsing(value));
-            } else if (clazz.isAssignableFrom(Character.class) || clazz.isAssignableFrom(char.class)) {
-                return parseChar(value);
-            } else if (clazz.isAssignableFrom(Byte.class) || clazz.isAssignableFrom(byte.class)) {
-                return Byte.parseByte(value);
+            } else if (clazz.isAssignableFrom(Integer.class) || clazz.isAssignableFrom(int.class)) {
+                return Integer.parseInt(cleanStringForNumberParsing(value));
+            } else if (clazz.isAssignableFrom(LocalDate.class)) {
+                return LocalDate.parse(value, DateTimeFormatter.ISO_LOCAL_DATE);
+            } else if (clazz.isAssignableFrom(LocalDateTime.class)) {
+                return LocalDateTime.parse(value, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+            } else if (clazz.isAssignableFrom(LocalTime.class)) {
+                return LocalTime.parse(value, DateTimeFormatter.ISO_LOCAL_TIME);
+            } else if (clazz.isAssignableFrom(Long.class) || clazz.isAssignableFrom(long.class)) {
+                return Long.parseLong(cleanStringForNumberParsing(value));
             } else if (clazz.isAssignableFrom(Short.class) || clazz.isAssignableFrom(short.class)) {
                 return Short.parseShort(cleanStringForNumberParsing(value));
-            } else if (clazz.isAssignableFrom(LocalDate.class)) {
-                return LocalDate.parse(value, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             } else if (Enum.class.isAssignableFrom(clazz)) {
                 return Enum.valueOf(((Class<? extends Enum>) clazz), value);
             }
@@ -201,29 +216,60 @@ public class ScenarioBeanUtil {
 
         if (clazz.isAssignableFrom(String.class)) {
             return String.valueOf(cleanValue);
+        } else if (clazz.isAssignableFrom(BigDecimal.class)) {
+            return String.valueOf(cleanValue);
+        } else if (clazz.isAssignableFrom(BigInteger.class)) {
+            return String.valueOf(cleanValue);
         } else if (clazz.isAssignableFrom(Boolean.class) || clazz.isAssignableFrom(boolean.class)) {
             return Boolean.toString((Boolean) cleanValue);
-        } else if (clazz.isAssignableFrom(Integer.class) || clazz.isAssignableFrom(int.class)) {
-            return Integer.toString((Integer) cleanValue);
-        } else if (clazz.isAssignableFrom(Long.class) || clazz.isAssignableFrom(long.class)) {
-            return Long.toString((Long) cleanValue);
+        } else if (clazz.isAssignableFrom(Byte.class) || clazz.isAssignableFrom(byte.class)) {
+            return String.valueOf(cleanValue);
+        } else if (clazz.isAssignableFrom(Character.class) || clazz.isAssignableFrom(char.class)) {
+            return String.valueOf(cleanValue);
         } else if (clazz.isAssignableFrom(Double.class) || clazz.isAssignableFrom(double.class)) {
             return revertDouble((Double) cleanValue);
         } else if (clazz.isAssignableFrom(Float.class) || clazz.isAssignableFrom(float.class)) {
             return cleanValue + "f";
-        } else if (clazz.isAssignableFrom(Character.class) || clazz.isAssignableFrom(char.class)) {
-            return String.valueOf(cleanValue);
-        } else if (clazz.isAssignableFrom(Byte.class) || clazz.isAssignableFrom(byte.class)) {
-            return String.valueOf(cleanValue);
-        } else if (clazz.isAssignableFrom(Short.class) || clazz.isAssignableFrom(short.class)) {
-            return String.valueOf(cleanValue);
+        } else if (clazz.isAssignableFrom(Integer.class) || clazz.isAssignableFrom(int.class)) {
+            return Integer.toString((Integer) cleanValue);
         } else if (clazz.isAssignableFrom(LocalDate.class)) {
             LocalDate localDate = (LocalDate) cleanValue;
             return String.format("%04d-%02d-%02d", localDate.getYear(), localDate.getMonthValue(), localDate.getDayOfMonth());
-        } else if (Enum.class.isAssignableFrom(clazz)) {
+        } else if (clazz.isAssignableFrom(LocalDateTime.class)) {
+            return formatLocalDateTime((LocalDateTime) cleanValue);
+        } else if (clazz.isAssignableFrom(LocalTime.class)) {
+            return formatLocalTime((LocalTime) cleanValue);
+        }
+        else if (clazz.isAssignableFrom(Long.class) || clazz.isAssignableFrom(long.class)) {
+            return Long.toString((Long) cleanValue);
+        } else if (clazz.isAssignableFrom(Short.class) || clazz.isAssignableFrom(short.class)) {
+            return String.valueOf(cleanValue);
+              } else if (Enum.class.isAssignableFrom(clazz)) {
             return String.valueOf(cleanValue);
         } else {
             return String.valueOf(cleanValue);
+        }
+    }
+
+    public static String formatLocalDateTime(LocalDateTime ldt) {
+        String commonFormat = "%04d-%02d-%02dT%02d:%02d:%02d";
+        String nanoFormat = commonFormat + ".%09d";
+        if (ldt.getNano() == 0) {
+            return String.format(commonFormat, ldt.getYear(), ldt.getMonthValue(), ldt.getDayOfMonth(),
+                                 ldt.getHour(), ldt.getMinute(), ldt.getSecond());
+        } else {
+            return String.format(nanoFormat, ldt.getYear(), ldt.getMonthValue(), ldt.getDayOfMonth(),
+                                 ldt.getHour(), ldt.getMinute(), ldt.getSecond(), ldt.getNano());
+        }
+    }
+
+    public static String formatLocalTime(LocalTime lt) {
+        String commonFormat = "%02d:%02d:%02d";
+        String nanoFormat = commonFormat + ".%09d";
+        if (lt.getNano() == 0) {
+            return String.format(commonFormat, lt.getHour(), lt.getMinute(), lt.getSecond());
+        } else {
+            return String.format(nanoFormat, lt.getHour(), lt.getMinute(), lt.getSecond(), lt.getNano());
         }
     }
 
@@ -264,6 +310,21 @@ public class ScenarioBeanUtil {
 
     private static boolean isPrimitive(String className) {
         return primitiveMap.containsKey(className);
+    }
+
+
+    private static BigDecimal parseBigDecimal(String value) {
+        DecimalFormat df = (DecimalFormat) NumberFormat.getInstance();
+        df.setParseBigDecimal(true);
+        try {
+            return (BigDecimal) df.parse(value);
+        } catch (ParseException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+
+    private static BigInteger parseBigInteger(String value) {
+        return parseBigDecimal(value).toBigInteger();
     }
 
     private static boolean parseBoolean(String value) {

@@ -32,6 +32,7 @@ import java.util.Map;
 
 import org.drools.compiler.lang.ExpressionRewriter;
 import org.drools.compiler.lang.MVELDumper;
+import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.mvel2.integration.impl.MapVariableResolverFactory;
 import org.mvel2.optimizers.OptimizerFactory;
@@ -75,6 +76,19 @@ public class DrlDumper  {
                      mvel );
 
         return (String) TemplateRuntime.execute( REPORT_REGISTRY.getNamedTemplate( "drl" ),
+                                                 null,
+                                                 new MapVariableResolverFactory( context ),
+                                                 REPORT_REGISTRY );
+    }
+
+    public String dump( final BaseDescr pattern ) {
+        Map<String, Object> context = new HashMap<String, Object>();
+        context.put( "base",
+                     pattern );
+        context.put( "mvel",
+                     mvel );
+
+        return (String) TemplateRuntime.execute( REPORT_REGISTRY.getNamedTemplate( "ced" ),
                                                  null,
                                                  new MapVariableResolverFactory( context ),
                                                  REPORT_REGISTRY );

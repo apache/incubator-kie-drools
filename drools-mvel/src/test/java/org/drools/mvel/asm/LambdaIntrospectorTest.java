@@ -62,7 +62,7 @@ public class LambdaIntrospectorTest {
         // (mvn test -Dtest=LambdaIntrospectorTest#testMethodFingerprintsMapCacheSize)
         // System.setProperty(LambdaIntrospector.LAMBDA_INTROSPECTOR_CACHE_SIZE, "0");
 
-        Map<ClassLoader, Map<String, Map<String, String>>> methodFingerprintsMapPerClassLoader = LambdaIntrospector.getMethodFingerprintsMapPerClassLoader();
+        Map<ClassLoader, LambdaIntrospector.ClassesFingerPrintsCache> methodFingerprintsMapPerClassLoader = LambdaIntrospector.getMethodFingerprintsMapPerClassLoader();
         methodFingerprintsMapPerClassLoader.clear();
 
         LambdaIntrospector lambdaIntrospector = new LambdaIntrospector();
@@ -70,7 +70,7 @@ public class LambdaIntrospectorTest {
         Predicate1<Person> predicate1 = p -> p.getAge() > 35;
         lambdaIntrospector.apply(predicate1);
 
-        Map<String, Map<String, String>> methodFingerprintsMap = methodFingerprintsMapPerClassLoader.get(predicate1.getClass().getClassLoader());
+        LambdaIntrospector.ClassesFingerPrintsCache methodFingerprintsMap = methodFingerprintsMapPerClassLoader.get(predicate1.getClass().getClassLoader());
 
         assertEquals(1, methodFingerprintsMap.size()); // methodFingerprintsMap is null if cache size is 0.
     }

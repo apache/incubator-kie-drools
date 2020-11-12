@@ -32,6 +32,7 @@ import java.util.Set;
 import org.drools.core.addon.TypeResolver;
 import org.drools.core.factmodel.ClassBuilderFactory;
 import org.drools.core.util.ClassUtils;
+import org.drools.core.util.Drools;
 import org.drools.reflective.util.ByteArrayClassLoader;
 import org.mvel2.asm.ClassWriter;
 import org.mvel2.asm.MethodVisitor;
@@ -112,12 +113,11 @@ public class ClassGenerator {
     private Class<?> clazz;
 
     private static class DefineMethodInitializer {
-        private static final String PROPERTY_IMAGE_CODE_KEY = "org.graalvm.nativeimage.imagecode";
 
         private static final Method defineClassMethod = createDefineMethod();
 
         private static Method createDefineMethod() {
-            if (inImageCode()) {
+            if (Drools.isNativeImage()) {
                 return null;
             }
 
@@ -128,10 +128,6 @@ public class ClassGenerator {
             } catch (NoSuchMethodException e) {
                 throw new RuntimeException(e);
             }
-        }
-
-        private static boolean inImageCode() {
-            return System.getProperty(PROPERTY_IMAGE_CODE_KEY) != null;
         }
     }
 

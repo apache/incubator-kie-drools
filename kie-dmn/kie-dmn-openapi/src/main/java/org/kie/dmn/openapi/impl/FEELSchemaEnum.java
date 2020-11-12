@@ -40,7 +40,7 @@ public class FEELSchemaEnum {
             });
             schema.enumeration(expectLiterals);
         } catch (Exception e) {
-            schema.description(schema.getDescription() + "\n" + list);
+            schema.addExtension(DMNOASConstants.X_DMN_TYPE, schema.getExtensions().get(DMNOASConstants.X_DMN_TYPE) + "\n" + list);
         }
     }
 

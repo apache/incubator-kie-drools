@@ -42,7 +42,7 @@ public class SingleConstraint11<A, B, C, D, E, F, G, H, I, J, K> extends Abstrac
     public SingleConstraint11( Variable<A> var1, Variable<B> var2, Variable<C> var3, Variable<D> var4, Variable<E> var5, Variable<F> var6, Variable<G> var7,
                                Variable<H> var8, Variable<I> var9, Variable<J> var10, Variable<K> var11,
                                Predicate11<A, B, C, D, E, F, G, H, I, J, K> predicate) {
-        super( LambdaPrinter.print(predicate) );
+        super( LambdaPrinter.print(predicate), predicate.predicateInformation() );
         this.var1 = var1;
         this.var2 = var2;
         this.var3 = var3;
@@ -60,7 +60,7 @@ public class SingleConstraint11<A, B, C, D, E, F, G, H, I, J, K> extends Abstrac
     public SingleConstraint11( String exprId, Variable<A> var1, Variable<B> var2, Variable<C> var3, Variable<D> var4, Variable<E> var5, Variable<F> var6, Variable<G> var7,
                                Variable<H> var8, Variable<I> var9, Variable<J> var10, Variable<K> var11,
                                Predicate11<A, B, C, D, E, F, G, H, I, J, K> predicate) {
-        super(exprId);
+        super(exprId, predicate.predicateInformation());
         this.var1 = var1;
         this.var2 = var2;
         this.var3 = var3;

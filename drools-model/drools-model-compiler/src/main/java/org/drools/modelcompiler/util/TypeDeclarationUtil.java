@@ -34,15 +34,16 @@ import org.kie.api.definition.type.Duration;
 import org.kie.api.definition.type.Expires;
 import org.kie.api.definition.type.Role;
 import org.kie.api.definition.type.Timestamp;
+import org.kie.internal.builder.conf.PropertySpecificOption;
 
 import static org.drools.core.rule.TypeDeclaration.createTypeDeclarationForBean;
 
 public class TypeDeclarationUtil {
 
-    public static TypeDeclaration createTypeDeclaration(TypeMetaData metaType) {
+    public static TypeDeclaration createTypeDeclaration(TypeMetaData metaType, PropertySpecificOption propertySpecificOption) {
         Class<?> typeClass = metaType.getType();
 
-        TypeDeclaration typeDeclaration = createTypeDeclarationForBean( typeClass );
+        TypeDeclaration typeDeclaration = createTypeDeclarationForBean( typeClass, propertySpecificOption );
         typeDeclaration.setTypeClassDef( AccessibleFact.class.isAssignableFrom( typeClass ) ?
                 new AccessibleClassDefinition( typeClass ) :
                 new DynamicClassDefinition( typeClass ) );
@@ -110,8 +111,8 @@ public class TypeDeclarationUtil {
         }
     }
 
-    public static TypeDeclaration createTypeDeclaration(Class<?> cls) {
-        TypeDeclaration typeDeclaration = createTypeDeclarationForBean( cls );
+    public static TypeDeclaration createTypeDeclaration(Class<?> cls, PropertySpecificOption propertySpecificOption) {
+        TypeDeclaration typeDeclaration = createTypeDeclarationForBean( cls, propertySpecificOption );
 
         Duration duration = cls.getAnnotation( Duration.class );
         if (duration != null) {

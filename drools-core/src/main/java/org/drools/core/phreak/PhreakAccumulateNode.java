@@ -103,8 +103,9 @@ public class PhreakAccumulateNode {
 
         for (LeftTuple leftTuple = tempLeftTuples.getUpdateFirst(); leftTuple != null; ) {
             LeftTuple next = leftTuple.getStagedNext();
+            AccumulateContext accCtx = (AccumulateContext) leftTuple.getContextObject();
             evaluateResultConstraints( accNode, sink, accumulate, leftTuple, leftTuple.getPropagationContext(),
-                                       wm, am, (AccumulateContext) leftTuple.getContextObject(),
+                                       wm, am, accCtx,
                                        trgLeftTuples, stagedLeftTuples );
             leftTuple.clearStaged();
             leftTuple = next;
@@ -139,16 +140,7 @@ public class PhreakAccumulateNode {
                 ltm.add(leftTuple);
             }
 
-            AccumulateContext accresult = new AccumulateContext();
-
-            leftTuple.setContextObject( accresult );
-
-            accresult.context = accumulate.createContext();
-
-            accumulate.init(am.workingMemoryContext,
-                            accresult.context,
-                            leftTuple,
-                            wm);
+            AccumulateContext accresult = initAccumulateContextOnLeftTuple( am, wm, accumulate, leftTuple );
 
             constraints.updateFromTuple( contextEntry,
                                          wm,
@@ -186,6 +178,14 @@ public class PhreakAccumulateNode {
             leftTuple = next;
         }
         constraints.resetTuple( contextEntry );
+    }
+
+    private AccumulateContext initAccumulateContextOnLeftTuple( AccumulateMemory am, InternalWorkingMemory wm, Accumulate accumulate, LeftTuple leftTuple ) {
+        AccumulateContext accresult = new AccumulateContext();
+        leftTuple.setContextObject( accresult );
+        accresult.context = accumulate.createContext();
+        accumulate.init( am.workingMemoryContext, accresult.context, leftTuple, wm );
+        return accresult;
     }
 
     public void doRightInserts(AccumulateNode accNode,
@@ -252,7 +252,10 @@ public class PhreakAccumulateNode {
 
         for (LeftTuple leftTuple = srcLeftTuples.getUpdateFirst(); leftTuple != null; ) {
             LeftTuple next = leftTuple.getStagedNext();
-            final AccumulateContext accctx = (AccumulateContext) leftTuple.getContextObject();
+            AccumulateContext accctx = (AccumulateContext) leftTuple.getContextObject();
+            if (accctx == null) {
+                accctx = initAccumulateContextOnLeftTuple( am, wm, accumulate, leftTuple );
+            }
 
             constraints.updateFromTuple(contextEntry,
                                         wm,

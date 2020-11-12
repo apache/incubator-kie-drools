@@ -50,10 +50,6 @@
       <artifactId>kie-soup-maven-support</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.soup</groupId>
-      <artifactId>kie-soup-commons</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.osgi</groupId>
       <artifactId>org.osgi.core</artifactId>
       <scope>provided</scope>
@@ -80,11 +76,6 @@
     <dependency>
       <groupId>org.eclipse.jdt</groupId>
       <artifactId>ecj</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.codehaus.janino</groupId>
-      <artifactId>janino</artifactId>
-      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>com.thoughtworks.xstream</groupId>

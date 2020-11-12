@@ -42,7 +42,7 @@ public class MaterializedLambdaConsequence extends MaterializedLambda {
     }
 
     @Override
-    void createMethodDeclaration(EnumDeclaration classDeclaration) {
+    void createMethodsDeclaration(EnumDeclaration classDeclaration) {
         MethodDeclaration methodDeclaration = classDeclaration.addMethod("execute", Modifier.Keyword.PUBLIC);
         methodDeclaration.setThrownExceptions(NodeList.nodeList(parseClassOrInterfaceType("java.lang.Exception")));
         methodDeclaration.addAnnotation("Override");

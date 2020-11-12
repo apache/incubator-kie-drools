@@ -20,7 +20,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.drools.mvel.DrlDumper;
 import org.drools.compiler.lang.api.DescrFactory;
 import org.drools.compiler.lang.api.PackageDescrBuilder;
 import org.drools.compiler.lang.descr.RuleDescr;
@@ -75,15 +74,5 @@ public class KiePMMLDescrRulesFactoryTest {
         assertEquals(agendaGroup, retrieved.getAttributes().get("agenda-group").getValue());
         assertTrue(retrieved.getAttributes().containsKey("activation-group"));
         assertEquals(activationGroup, retrieved.getAttributes().get("activation-group").getValue());
-        printGeneratedRules();
-    }
-
-    private void printGeneratedRules() {
-        try {
-            String string = new DrlDumper().dump(builder.getDescr());
-            logger.debug(string);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 }

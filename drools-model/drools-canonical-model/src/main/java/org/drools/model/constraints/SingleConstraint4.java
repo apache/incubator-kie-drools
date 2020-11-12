@@ -33,7 +33,7 @@ public class SingleConstraint4<A, B, C, D> extends AbstractSingleConstraint {
     private final Predicate4<A, B, C, D> predicate;
 
     public SingleConstraint4( Variable<A> var1, Variable<B> var2, Variable<C> var3, Variable<D> var4, Predicate4<A, B, C, D> predicate) {
-        super( LambdaPrinter.print(predicate) );
+        super( LambdaPrinter.print(predicate), predicate.predicateInformation() );
         this.var1 = var1;
         this.var2 = var2;
         this.var3 = var3;
@@ -42,7 +42,7 @@ public class SingleConstraint4<A, B, C, D> extends AbstractSingleConstraint {
     }
 
     public SingleConstraint4( String exprId, Variable<A> var1, Variable<B> var2, Variable<C> var3, Variable<D> var4, Predicate4<A, B, C, D> predicate) {
-        super(exprId);
+        super(exprId, predicate.predicateInformation());
         this.var1 = var1;
         this.var2 = var2;
         this.var3 = var3;

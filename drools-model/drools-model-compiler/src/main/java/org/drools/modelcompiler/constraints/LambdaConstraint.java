@@ -40,6 +40,7 @@ import org.drools.core.util.index.IndexUtil;
 import org.drools.model.AlphaIndex;
 import org.drools.model.BetaIndex;
 import org.drools.model.Index;
+import org.drools.model.functions.PredicateInformation;
 
 import static org.drools.core.reteoo.PropertySpecificUtil.getEmptyPropertyReactiveMask;
 import static org.drools.modelcompiler.util.EvaluationUtil.adaptBitMask;
@@ -47,13 +48,16 @@ import static org.drools.modelcompiler.util.EvaluationUtil.adaptBitMask;
 public class LambdaConstraint extends AbstractConstraint {
 
     private final ConstraintEvaluator evaluator;
+    private PredicateInformation predicateInformation;
 
     private FieldValue field;
     private InternalReadAccessor readAccessor;
     private Declaration indexingDeclaration;
 
-    public LambdaConstraint(ConstraintEvaluator evaluator) {
+    public LambdaConstraint(ConstraintEvaluator evaluator,
+                            PredicateInformation predicateInformation) {
         this.evaluator = evaluator;
+        this.predicateInformation = predicateInformation;
         initIndexes();
     }
 
@@ -112,7 +116,8 @@ public class LambdaConstraint extends AbstractConstraint {
 
     @Override
     public LambdaConstraint clone() {
-        LambdaConstraint clone = new LambdaConstraint( evaluator.clone() );
+        LambdaConstraint clone = new LambdaConstraint( evaluator.clone(),
+                                                       this.predicateInformation );
         clone.field = this.field;
         clone.readAccessor = this.readAccessor;
         return clone;
@@ -130,7 +135,11 @@ public class LambdaConstraint extends AbstractConstraint {
 
     @Override
     public boolean isAllowed(InternalFactHandle handle, InternalWorkingMemory workingMemory) {
-        return evaluator.evaluate(handle, workingMemory);
+        try {
+            return evaluator.evaluate(handle, workingMemory);
+        } catch (RuntimeException e) {
+            throw predicateInformation.betterErrorMessage(e);
+        }
     }
 
     @Override

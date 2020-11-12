@@ -34,6 +34,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.IntStream;
@@ -60,6 +61,7 @@ import static org.hamcrest.CoreMatchers.hasItem;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 public class AccumulateTest extends BaseModelTest {
 
@@ -2547,5 +2549,169 @@ public class AccumulateTest extends BaseModelTest {
         public void setEmployee(String employee) {
             this.employee = employee;
         }
+
+        public OffsetDateTime getEndDateTime() {
+            // Pretend a shift length is always 8 hours.
+            return startDateTime.plus(8, ChronoUnit.HOURS);
+        }
     }
+
+    public static Duration between(OffsetDateTime start, OffsetDateTime end) {
+        return Duration.between(start, end);
+    }
+
+    @Test
+    public void testAccumulateNumberFromSum() {
+        String str =
+                "import " + Shift.class.getCanonicalName() + ";"
+                        + "import " + AccumulateTest.class.getCanonicalName() + ";"
+                        + "import " + Result.class.getCanonicalName() + ";"
+                        + "rule \"dailyMinutes\"\n"
+                        + "    when\n"
+                        + "        accumulate(\n"
+                        + "            $other : Shift(\n"
+                        + "                $shiftStart : startDateTime,\n"
+                        + "                $shiftEnd : endDateTime\n"
+                        + "            ),\n"
+                        + "            $shiftCount : count($other),\n"
+                        + "            $totalMinutes : sum(AccumulateTest.between($shiftStart, $shiftEnd).toMinutes())\n"
+                        + "        )\n"
+                        + "        Number(this > 0) from $totalMinutes\n"
+                        + "    then\n"
+                        + "        insert(new Result($totalMinutes));\n"
+                        + "end";
+
+
+
+        KieSession ksession = getKieSession( str );
+
+        Shift shift = new Shift(OffsetDateTime.now());
+
+        ksession.insert(shift);
+
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        assertEquals(1, results.size());
+        assertEquals(8 * 60L, results.iterator().next().getValue());
+    }
+
+    private static int switchMachinesInAssignments(KieSession session, MrProcessAssignment left,
+                                                   MrProcessAssignment right) {
+        FactHandle leftHandle = session.getFactHandle(left);
+        FactHandle rightHandle = session.getFactHandle(right);
+        MrMachine original = left.getMachine();
+        left.setMachine(right.getMachine());
+        right.setMachine(original);
+        session.update(leftHandle, left);
+        session.update(rightHandle, right);
+        return session.fireAllRules();
+    }
+
+    @Test
+    public void testDoubleAccumulateNPE() {
+        // Prepare reproducing data.
+        MrMachine machine2 = new MrMachine();
+        MrMachine machine3 = new MrMachine();
+        MrProcessAssignment assignment1 = new MrProcessAssignment(new MrProcess(), machine3, machine3);
+        MrProcessAssignment assignment2 = new MrProcessAssignment(new MrProcess(), machine2, machine2);
+        MrProcessAssignment assignment3 = new MrProcessAssignment(new MrProcess(), machine2, machine2);
+        MrProcessAssignment assignment4 = new MrProcessAssignment(new MrProcess(), machine3, machine3);
+
+        String rule = "import " + MrProcessAssignment.class.getCanonicalName() + ";\n" +
+                "import " + List.class.getCanonicalName() + ";\n" +
+                "global java.util.List result;\n" +
+                "rule R1\n" +
+                "when\n" +
+                "   $assignments: List(size > 0) from accumulate(\n" +
+                "        $a: MrProcessAssignment(machine != null, this.isMoved() == true),\n" +
+                "        collectList($a)\n" +
+                "   )\n" +
+                "    accumulate(\n" +
+                "        $a2: MrProcessAssignment() from $assignments,\n" +
+                "        $count: count($a2)\n" +
+                "    )\n" +
+                "then\n" +
+                "    result.add($count);\n" +
+                "end;";
+        KieSession kieSession = getKieSession(rule);
+        List<Long> result = new ArrayList<>();
+        kieSession.setGlobal("result", result);
+
+        // Insert facts into the session.
+        kieSession.insert(assignment1);
+        kieSession.insert(assignment2);
+        kieSession.insert(assignment3);
+        kieSession.insert(assignment4);
+        int fired = kieSession.fireAllRules();
+        assertEquals(0, fired);
+        assertTrue(result.isEmpty());
+
+        // Execute the sequence of session events that triggers the exception.
+        fired = switchMachinesInAssignments(kieSession, assignment1, assignment2);
+        assertEquals(1, fired);
+        assertEquals(2, result.get(0).longValue());
+        result.clear();
+
+        fired = switchMachinesInAssignments(kieSession, assignment1, assignment2);
+        assertEquals(0, fired);
+        assertTrue(result.isEmpty());
+
+        fired = switchMachinesInAssignments(kieSession, assignment4, assignment3);
+        assertEquals(1, fired);
+        assertEquals(2, result.get(0).longValue());
+        result.clear();
+
+        kieSession.dispose();
+    }
+
+    public static class MrProcess {
+
+    }
+
+    public static class MrProcessAssignment {
+
+        private MrProcess process;
+        private MrMachine originalMachine;
+        private MrMachine machine;
+
+        public MrProcessAssignment(MrProcess process, MrMachine originalMachine, MrMachine machine) {
+            this.process = process;
+            this.originalMachine = originalMachine;
+            this.machine = machine;
+        }
+
+        public MrProcess getProcess() {
+            return process;
+        }
+
+        public MrMachine getOriginalMachine() {
+            return originalMachine;
+        }
+
+        public MrMachine getMachine() {
+            return machine;
+        }
+
+        public void setMachine(MrMachine machine) {
+            this.machine = machine;
+        }
+
+        // ************************************************************************
+        // Complex methods
+        // ************************************************************************
+
+        public boolean isMoved() {
+            if (machine == null) {
+                return false;
+            }
+            return !Objects.equals(originalMachine, machine);
+        }
+
+    }
+
+    public static class MrMachine {
+
+    }
+
 }

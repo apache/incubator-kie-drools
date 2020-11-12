@@ -109,7 +109,7 @@ public class FlowExpressionBuilder extends AbstractExpressionBuilder {
     }
 
     private MethodCallExpr buildSingleExpressionWithIndexing(SingleDrlxParseSuccess drlxParseResult) {
-        String exprId = drlxParseResult.getExprId(context.getPackageModel().getExprIdGenerator());
+        String exprId = createExprId(drlxParseResult);
         MethodCallExpr exprDSL = new MethodCallExpr(null, EXPR_CALL);
         if (exprId != null && !"".equals(exprId)) {
             exprDSL.addArgument( new StringLiteralExpr(exprId) );
@@ -159,6 +159,7 @@ public class FlowExpressionBuilder extends AbstractExpressionBuilder {
 
     @Override
     public MethodCallExpr buildBinding(SingleDrlxParseSuccess drlxParseResult) {
+        sortUsedDeclarations(drlxParseResult);
         MethodCallExpr bindDSL = new MethodCallExpr(null, BIND_CALL);
         if(drlxParseResult.hasUnificationVariable()) {
             bindDSL.addArgument(context.getVarExpr(drlxParseResult.getUnificationVariable()));
@@ -223,7 +224,8 @@ public class FlowExpressionBuilder extends AbstractExpressionBuilder {
         TypedExpression left = drlxParseResult.getLeft();
         TypedExpression right = drlxParseResult.getRight();
 
-        if (!drlxParseResult.isBetaNode() && !(right.getExpression() instanceof LiteralExpr)) {
+        Expression rightExpression = right.getExpression();
+        if (!drlxParseResult.isBetaNode() && !(rightExpression instanceof LiteralExpr || isStringToDateExpression(rightExpression))) {
             return exprDSL;
         }
 

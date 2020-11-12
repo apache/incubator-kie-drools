@@ -26,6 +26,8 @@ public interface Predicate2<A, B> extends Serializable {
         return (a, b) -> !test( a, b );
     }
 
+    default PredicateInformation predicateInformation() { return PredicateInformation.EMPTY_PREDICATE_INFORMATION; }
+
     class Impl<A, B> extends IntrospectableLambda implements Predicate2<A, B> {
 
         private final Predicate2<A, B> predicate;
@@ -42,6 +44,11 @@ public interface Predicate2<A, B> extends Serializable {
         @Override
         public Object getLambda() {
             return predicate;
+        }
+
+        @Override
+        public PredicateInformation predicateInformation() {
+            return predicate.predicateInformation();
         }
     }
 }

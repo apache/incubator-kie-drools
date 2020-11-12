@@ -317,6 +317,17 @@ public class KnowledgeBaseConfigurationTest {
         // checking the string based getProperty() method
         assertEquals( "7",
                       config.getProperty( AlphaRangeIndexThresholdOption.PROPERTY_NAME ) );
+
+        // If empty, default value is set
+        config.setProperty( AlphaRangeIndexThresholdOption.PROPERTY_NAME,
+                            "" );
+
+        // checking the type safe getOption() method
+        assertEquals( AlphaRangeIndexThresholdOption.get(AlphaRangeIndexThresholdOption.DEFAULT_VALUE),
+                      config.getOption( AlphaRangeIndexThresholdOption.class ) );
+        // checking the string based getProperty() method
+        assertEquals( String.valueOf(AlphaRangeIndexThresholdOption.DEFAULT_VALUE),
+                      config.getProperty( AlphaRangeIndexThresholdOption.PROPERTY_NAME ) );
     }
 
     @Test

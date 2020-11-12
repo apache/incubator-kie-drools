@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.github.javaparser.ast.NodeList;
@@ -44,7 +45,10 @@ import com.github.javaparser.ast.nodeTypes.NodeWithOptionalScope;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.type.PrimitiveType;
 import com.github.javaparser.ast.type.Type;
+import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.model.Index;
+import org.drools.model.functions.PredicateInformation;
+import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.builder.generator.DeclarationSpec;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
@@ -56,10 +60,11 @@ import org.drools.modelcompiler.builder.generator.drlxparse.SingleDrlxParseSucce
 import org.drools.modelcompiler.util.ClassUtil;
 import org.drools.mvel.parser.ast.expr.BigDecimalLiteralExpr;
 import org.drools.mvel.parser.ast.expr.BigIntegerLiteralExpr;
+import org.kie.api.io.Resource;
 
 import static java.util.Optional.ofNullable;
 
-import static org.drools.model.bitmask.BitMaskUtil.isAccessibleProperties;
+import static org.drools.modelcompiler.util.ClassUtil.isAccessibleProperties;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.*;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.INPUT_CALL;
 import static org.drools.modelcompiler.util.ClassUtil.isAssignableFrom;
@@ -186,7 +191,10 @@ public abstract class AbstractExpressionBuilder {
     protected boolean shouldIndexConstraintWithRightScopePatternBinding(SingleDrlxParseSuccess result) {
         TypedExpression right = result.getRight();
 
-        if(right != null && right.getExpression() != null && right.getExpression() instanceof NodeWithOptionalScope) {
+        if (right != null && right.getExpression() != null && right.getExpression() instanceof NodeWithOptionalScope) {
+            if (isStringToDateExpression(right.getExpression())) {
+                return true;
+            }
             NodeWithOptionalScope<?> e = (NodeWithOptionalScope<?>) (right.getExpression());
             return e.getScope()
                     .map(Object::toString)
@@ -195,6 +203,10 @@ public abstract class AbstractExpressionBuilder {
         }
 
         return true;
+    }
+
+    protected boolean isStringToDateExpression(Expression expression) {
+        return expression instanceof MethodCallExpr && ((MethodCallExpr) expression).getNameAsString().equals(PackageModel.STRING_TO_DATE_METHOD);
     }
 
     boolean isAlphaIndex( Collection<String> usedDeclarations ) {
@@ -419,5 +431,29 @@ public abstract class AbstractExpressionBuilder {
             return false;
         }
         return opt.get().equals(THIS_PLACEHOLDER);
+    }
+
+    protected String createExprId(SingleDrlxParseSuccess drlxParseResult) {
+        String exprId = drlxParseResult.getExprId(context.getPackageModel().getExprIdGenerator());
+
+        context.getPackageModel().indexConstraint(exprId, new PredicateInformation(
+                drlxParseResult.getOriginalDrlConstraint(),
+                context.getRuleName(),
+                Optional.ofNullable(context.getRuleDescr())
+                    .map(RuleDescr::getResource)
+                    .map(Resource::getSourcePath)
+                    .orElse("")
+        ));
+        return exprId;
+    }
+
+    protected void sortUsedDeclarations(SingleDrlxParseSuccess drlxParseResult) {
+        // Binding parameters have to be sorted as when they're sorted lexicographically when invoked
+        // See Accumulate.initInnerDeclarationCache()
+        List<String> sorted = drlxParseResult.getUsedDeclarationsOnLeft()
+                .stream()
+                .sorted()
+                .collect(Collectors.toList());
+        drlxParseResult.setUsedDeclarationsOnLeft(sorted);
     }
 }

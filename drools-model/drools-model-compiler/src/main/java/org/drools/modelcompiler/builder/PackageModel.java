@@ -26,6 +26,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import com.github.javaparser.StaticJavaParser;
@@ -64,6 +65,7 @@ import org.drools.model.Query;
 import org.drools.model.Rule;
 import org.drools.model.RulesSupplier;
 import org.drools.model.WindowReference;
+import org.drools.model.functions.PredicateInformation;
 import org.drools.modelcompiler.builder.generator.DRLIdGenerator;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.QueryGenerator;
@@ -73,21 +75,22 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.rule.AccumulateFunction;
 import org.kie.internal.ruleunit.RuleUnitDescription;
 
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
+
 import static com.github.javaparser.StaticJavaParser.parseBodyDeclaration;
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static com.github.javaparser.ast.Modifier.finalModifier;
 import static com.github.javaparser.ast.Modifier.publicModifier;
 import static com.github.javaparser.ast.Modifier.staticModifier;
-import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toList;
 import static org.drools.core.impl.StatefulKnowledgeSessionImpl.DEFAULT_RULE_UNIT;
 import static org.drools.core.util.StringUtils.getPkgUUID;
-import static org.drools.model.bitmask.BitMaskUtil.getAccessibleProperties;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.GLOBAL_OF_CALL;
 import static org.drools.modelcompiler.builder.generator.QueryGenerator.QUERY_METHOD_PREFIX;
 import static org.drools.modelcompiler.util.ClassUtil.asJavaSourceName;
+import static org.drools.modelcompiler.util.ClassUtil.getAccessibleProperties;
 
 public class PackageModel {
 
@@ -145,6 +148,8 @@ public class PackageModel {
     private Set<RuleUnitDescription> ruleUnits = new HashSet<>();
 
     private Map<LambdaExpr, java.lang.reflect.Type> lambdaReturnTypes = new HashMap<>();
+
+    private Map<String, PredicateInformation> allConstraintsMap = new HashMap<>();
 
     private boolean oneClassPerRule;
 
@@ -857,5 +862,17 @@ public class PackageModel {
 
     public Map<LambdaExpr, java.lang.reflect.Type> getLambdaReturnTypes() {
         return lambdaReturnTypes;
+    }
+
+    public void indexConstraint(String exprId, PredicateInformation predicateInformation) {
+        allConstraintsMap.put(exprId, predicateInformation);
+    }
+
+    public Optional<PredicateInformation> findConstraintWithExprId(String exprId) {
+        return Optional.ofNullable(allConstraintsMap.get(exprId));
+    }
+
+    public Map<String, PredicateInformation> getAllConstraintsMap() {
+        return Collections.unmodifiableMap(allConstraintsMap);
     }
 }

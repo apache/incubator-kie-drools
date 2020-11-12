@@ -266,7 +266,7 @@ public class KieContainerImpl
 
                 // share Knowledge Builder among updater as it's computationally expensive to create this
                 KnowledgeBuilderConfigurationImpl builderConfiguration =
-                        (KnowledgeBuilderConfigurationImpl) newKM.getBuilderConfiguration(newKieBaseModel, kBase.getRootClassLoader());
+                        (KnowledgeBuilderConfigurationImpl) newKM.createBuilderConfiguration(newKieBaseModel, kBase.getRootClassLoader());
                 InternalKnowledgeBuilder kbuilder =
                         (InternalKnowledgeBuilder) KnowledgeBuilderFactory.newKnowledgeBuilder(kBase, builderConfiguration);
 

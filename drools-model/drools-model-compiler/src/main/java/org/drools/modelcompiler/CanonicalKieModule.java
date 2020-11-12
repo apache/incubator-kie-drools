@@ -38,6 +38,7 @@ import java.util.stream.Stream;
 
 import org.appformer.maven.support.DependencyFilter;
 import org.appformer.maven.support.PomModel;
+import org.drools.compiler.builder.DroolsAssemblerContext;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
@@ -96,6 +97,7 @@ import org.kie.internal.builder.conf.AlphaNetworkCompilerOption;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
+
 import static org.drools.compiler.kie.builder.impl.AbstractKieModule.checkStreamMode;
 import static org.drools.model.impl.ModelComponent.areEqualInModel;
 import static org.drools.modelcompiler.builder.ModelSourceClass.getProjectModelClassNameNameWithReleaseId;
@@ -301,13 +303,18 @@ public class CanonicalKieModule implements InternalKieModule {
             }
         }
 
-        CanonicalKiePackages canonicalKiePkgs = new KiePackagesBuilder(conf, modelsForKBase).build();
+        CanonicalKiePackages canonicalKiePkgs = new KiePackagesBuilder(conf, getBuilderConfiguration( kBaseModel ), modelsForKBase).build();
         CanonicalKiePackages canonicalKiePackages = mergeProcesses(processes, canonicalKiePkgs);
 
         modelsForKBase.clear();
         this.models.clear();
 
         return canonicalKiePackages;
+    }
+
+    private KnowledgeBuilderConfiguration getBuilderConfiguration( KieBaseModelImpl kBaseModel ) {
+        KnowledgeBuilder builder = getKnowledgeBuilderForKieBase( kBaseModel.getName() );
+        return builder != null ? (( DroolsAssemblerContext ) builder).getBuilderConfiguration() : createBuilderConfiguration(kBaseModel, moduleClassLoader);
     }
 
     private CanonicalKiePackages mergeProcesses(List<Process> processes, CanonicalKiePackages canonicalKiePkgs) {
@@ -338,7 +345,7 @@ public class CanonicalKieModule implements InternalKieModule {
                     })
                     .collect(toList());
             if (!processResources.isEmpty()) {
-                KnowledgeBuilderImpl kbuilder = (KnowledgeBuilderImpl) KnowledgeBuilderFactory.newKnowledgeBuilder(getBuilderConfiguration(kBaseModel, moduleClassLoader));
+                KnowledgeBuilderImpl kbuilder = (KnowledgeBuilderImpl) KnowledgeBuilderFactory.newKnowledgeBuilder( createBuilderConfiguration(kBaseModel, moduleClassLoader));
                 for (Resource processResource : processResources) {
                     kbuilder.add(processResource, processResource.getResourceType());
                 }
@@ -815,8 +822,8 @@ public class CanonicalKieModule implements InternalKieModule {
     }
 
     @Override
-    public KnowledgeBuilderConfiguration getBuilderConfiguration(KieBaseModel kBaseModel, ClassLoader classLoader) {
-        return internalKieModule.getBuilderConfiguration(kBaseModel, classLoader);
+    public KnowledgeBuilderConfiguration createBuilderConfiguration( KieBaseModel kBaseModel, ClassLoader classLoader) {
+        return internalKieModule.createBuilderConfiguration(kBaseModel, classLoader);
     }
 
     @Override
