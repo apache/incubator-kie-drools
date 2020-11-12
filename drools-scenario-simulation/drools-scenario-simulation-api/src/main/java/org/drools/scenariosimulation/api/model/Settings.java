@@ -152,4 +152,20 @@ public class Settings {
     public void setStateless(boolean stateless) {
         this.stateless = stateless;
     }
+
+    public Settings cloneSettings() {
+        Settings cloned = new Settings();
+        cloned.dmoSession = this.dmoSession;
+        cloned.dmnFilePath = this.dmnFilePath;
+        cloned.type = this.type;
+        cloned.fileName = this.fileName;
+        cloned.kieSession = this.kieSession;
+        cloned.kieBase = this.kieBase;
+        cloned.ruleFlowGroup = this.ruleFlowGroup;
+        cloned.dmnNamespace = this.dmnNamespace;
+        cloned.dmnName = this.dmnName;
+        cloned.skipFromBuild = this.skipFromBuild;
+        cloned.stateless = this.stateless;
+        return cloned;
+    }
 }
