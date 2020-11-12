@@ -9,7 +9,7 @@ pipeline {
         jdk 'kie-jdk11'
     }
     triggers {
-        cron ('H 10 * * *')
+        cron ('H 2 * * *')
     }
     options {
         buildDiscarder logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '5')
