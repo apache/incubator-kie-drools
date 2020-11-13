@@ -87,4 +87,11 @@ public interface Node {
      */
     Map<String, Object> getMetaData();
 
+    /**
+     * Type of this node
+     * @return one of the possible type of nodes
+     */
+    default NodeType getNodeType() {
+        return NodeType.INTERNAL;
+    }
 }
