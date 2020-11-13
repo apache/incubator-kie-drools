@@ -73,6 +73,15 @@ public final class ConstraintCollectors {
     // count
     // ************************************************************************
 
+    /**
+     * Returns a collector that counts the number of elements that are being grouped.
+     * <p>
+     * For example, {@code [Ann(age = 20), Beth(age = 25), Cathy(age = 30), David(age = 30), Eric(age = 20)]} with
+     * {@code .groupBy(count())} returns {@code 5}.
+     *
+     * @param <A> type of the matched fact
+     * @return never null
+     */
     public static <A> UniConstraintCollector<A, ?, Integer> count() {
         return new DefaultUniConstraintCollector<>(
                 () -> new int[1],
@@ -83,6 +92,9 @@ public final class ConstraintCollectors {
                 resultContainer -> resultContainer[0]);
     }
 
+    /**
+     * As defined by {@link #count()}.
+     */
     public static <A> UniConstraintCollector<A, ?, Long> countLong() {
         return new DefaultUniConstraintCollector<>(
                 () -> new long[1],
@@ -93,6 +105,9 @@ public final class ConstraintCollectors {
                 resultContainer -> resultContainer[0]);
     }
 
+    /**
+     * As defined by {@link #count()}.
+     */
     public static <A, B> BiConstraintCollector<A, B, ?, Integer> countBi() {
         return new DefaultBiConstraintCollector<>(
                 () -> new int[1],
@@ -103,6 +118,9 @@ public final class ConstraintCollectors {
                 resultContainer -> resultContainer[0]);
     }
 
+    /**
+     * As defined by {@link #count()}.
+     */
     public static <A, B> BiConstraintCollector<A, B, ?, Long> countLongBi() {
         return new DefaultBiConstraintCollector<>(
                 () -> new long[1],
@@ -113,6 +131,9 @@ public final class ConstraintCollectors {
                 resultContainer -> resultContainer[0]);
     }
 
+    /**
+     * As defined by {@link #count()}.
+     */
     public static <A, B, C> TriConstraintCollector<A, B, C, ?, Integer> countTri() {
         return new DefaultTriConstraintCollector<>(
                 () -> new int[1],
@@ -123,6 +144,9 @@ public final class ConstraintCollectors {
                 resultContainer -> resultContainer[0]);
     }
 
+    /**
+     * As defined by {@link #count()}.
+     */
     public static <A, B, C> TriConstraintCollector<A, B, C, ?, Long> countLongTri() {
         return new DefaultTriConstraintCollector<>(
                 () -> new long[1],
@@ -133,6 +157,9 @@ public final class ConstraintCollectors {
                 resultContainer -> resultContainer[0]);
     }
 
+    /**
+     * As defined by {@link #count()}.
+     */
     public static <A, B, C, D> QuadConstraintCollector<A, B, C, D, ?, Integer> countQuad() {
         return new DefaultQuadConstraintCollector<>(
                 () -> new int[1],
@@ -143,6 +170,9 @@ public final class ConstraintCollectors {
                 resultContainer -> resultContainer[0]);
     }
 
+    /**
+     * As defined by {@link #count()}.
+     */
     public static <A, B, C, D> QuadConstraintCollector<A, B, C, D, ?, Long> countLongQuad() {
         return new DefaultQuadConstraintCollector<>(
                 () -> new long[1],
@@ -157,10 +187,23 @@ public final class ConstraintCollectors {
     // countDistinct
     // ************************************************************************
 
+    /**
+     * As defined by {@link #countDistinct(Function)}, with {@link Function#identity()} as the argument.
+     */
     public static <A> UniConstraintCollector<A, ?, Integer> countDistinct() {
         return countDistinct(Function.identity());
     }
 
+    /**
+     * Returns a collector that counts the number of unique elements that are being grouped.
+     * Uniqueness is determined by {@link #equals(Object) equality}.
+     * <p>
+     * For example, {@code [Ann(age = 20), Beth(age = 25), Cathy(age = 30), David(age = 30), Eric(age = 20)]} with
+     * {@code .groupBy(countDistinct(Person::getAge))} returns {@code 3}, one for age 20, 25 and 30 each.
+     *
+     * @param <A> type of the matched fact
+     * @return never null
+     */
     public static <A> UniConstraintCollector<A, ?, Integer> countDistinct(Function<A, ?> groupValueMapping) {
         return new DefaultUniConstraintCollector<>(
                 CountDistinctResultContainer::new,
@@ -171,6 +214,9 @@ public final class ConstraintCollectors {
                 resultContainer -> resultContainer.count);
     }
 
+    /**
+     * As defined by {@link #countDistinct(Function)}.
+     */
     public static <A> UniConstraintCollector<A, ?, Long> countDistinctLong(Function<A, ?> groupValueMapping) {
         return new DefaultUniConstraintCollector<>(
                 CountDistinctLongResultContainer::new,
@@ -181,6 +227,9 @@ public final class ConstraintCollectors {
                 resultContainer -> resultContainer.count);
     }
 
+    /**
+     * As defined by {@link #countDistinct(Function)}.
+     */
     public static <A, B> BiConstraintCollector<A, B, ?, Integer> countDistinct(
             BiFunction<A, B, ?> groupValueMapping) {
         return new DefaultBiConstraintCollector<>(
@@ -192,6 +241,9 @@ public final class ConstraintCollectors {
                 resultContainer -> resultContainer.count);
     }
 
+    /**
+     * As defined by {@link #countDistinct(Function)}.
+     */
     public static <A, B> BiConstraintCollector<A, B, ?, Long> countDistinctLong(
             BiFunction<A, B, ?> groupValueMapping) {
         return new DefaultBiConstraintCollector<>(
@@ -203,6 +255,9 @@ public final class ConstraintCollectors {
                 resultContainer -> resultContainer.count);
     }
 
+    /**
+     * As defined by {@link #countDistinct(Function)}.
+     */
     public static <A, B, C> TriConstraintCollector<A, B, C, ?, Integer> countDistinct(
             TriFunction<A, B, C, ?> groupValueMapping) {
         return new DefaultTriConstraintCollector<>(
@@ -214,6 +269,9 @@ public final class ConstraintCollectors {
                 resultContainer -> resultContainer.count);
     }
 
+    /**
+     * As defined by {@link #countDistinct(Function)}.
+     */
     public static <A, B, C> TriConstraintCollector<A, B, C, ?, Long> countDistinctLong(
             TriFunction<A, B, C, ?> groupValueMapping) {
         return new DefaultTriConstraintCollector<>(
@@ -225,6 +283,9 @@ public final class ConstraintCollectors {
                 resultContainer -> resultContainer.count);
     }
 
+    /**
+     * As defined by {@link #countDistinct(Function)}.
+     */
     public static <A, B, C, D> QuadConstraintCollector<A, B, C, D, ?, Integer> countDistinct(
             QuadFunction<A, B, C, D, ?> groupValueMapping) {
         return new DefaultQuadConstraintCollector<>(
@@ -236,6 +297,9 @@ public final class ConstraintCollectors {
                 resultContainer -> resultContainer.count);
     }
 
+    /**
+     * As defined by {@link #countDistinct(Function)}.
+     */
     public static <A, B, C, D> QuadConstraintCollector<A, B, C, D, ?, Long> countDistinctLong(
             QuadFunction<A, B, C, D, ?> groupValueMapping) {
         return new DefaultQuadConstraintCollector<>(
@@ -301,6 +365,15 @@ public final class ConstraintCollectors {
     // sum
     // ************************************************************************
 
+    /**
+     * Returns a collector that sums an {@code int} property of the elements that are being grouped. 
+     * <p>
+     * For example, {@code [Ann(age = 20), Beth(age = 25), Cathy(age = 30), David(age = 30), Eric(age = 20)]} with
+     * {@code .groupBy(sum(Person::getAge))} returns {@code 125}.
+     *
+     * @param <A> type of the matched fact
+     * @return never null
+     */
     public static <A> UniConstraintCollector<A, ?, Integer> sum(ToIntFunction<? super A> groupValueMapping) {
         return new DefaultUniConstraintCollector<>(
                 () -> new int[1],
@@ -312,6 +385,9 @@ public final class ConstraintCollectors {
                 resultContainer -> resultContainer[0]);
     }
 
+    /**
+     * As defined by {@link #sum(ToIntFunction)}.
+     */
     public static <A> UniConstraintCollector<A, ?, Long> sumLong(ToLongFunction<? super A> groupValueMapping) {
         return new DefaultUniConstraintCollector<>(
                 () -> new long[1],
@@ -323,6 +399,9 @@ public final class ConstraintCollectors {
                 resultContainer -> resultContainer[0]);
     }
 
+    /**
+     * As defined by {@link #sum(ToIntFunction)}.
+     */
     public static <A, Result> UniConstraintCollector<A, ?, Result> sum(Function<? super A, Result> groupValueMapping,
             Result zero, BinaryOperator<Result> adder, BinaryOperator<Result> subtractor) {
         return new DefaultUniConstraintCollector<>(
@@ -341,25 +420,40 @@ public final class ConstraintCollectors {
         return container;
     }
 
+    /**
+     * As defined by {@link #sum(ToIntFunction)}.
+     */
     public static <A> UniConstraintCollector<A, ?, BigDecimal> sumBigDecimal(
             Function<? super A, BigDecimal> groupValueMapping) {
         return sum(groupValueMapping, BigDecimal.ZERO, BigDecimal::add, BigDecimal::subtract);
     }
 
+    /**
+     * As defined by {@link #sum(ToIntFunction)}.
+     */
     public static <A> UniConstraintCollector<A, ?, BigInteger> sumBigInteger(
             Function<? super A, BigInteger> groupValueMapping) {
         return sum(groupValueMapping, BigInteger.ZERO, BigInteger::add, BigInteger::subtract);
     }
 
+    /**
+     * As defined by {@link #sum(ToIntFunction)}.
+     */
     public static <A> UniConstraintCollector<A, ?, Duration> sumDuration(
             Function<? super A, Duration> groupValueMapping) {
         return sum(groupValueMapping, Duration.ZERO, Duration::plus, Duration::minus);
     }
 
+    /**
+     * As defined by {@link #sum(ToIntFunction)}.
+     */
     public static <A> UniConstraintCollector<A, ?, Period> sumPeriod(Function<? super A, Period> groupValueMapping) {
         return sum(groupValueMapping, Period.ZERO, Period::plus, Period::minus);
     }
 
+    /**
+     * As defined by {@link #sum(ToIntFunction)}.
+     */
     public static <A, B> BiConstraintCollector<A, B, ?, Integer> sum(
             ToIntBiFunction<? super A, ? super B> groupValueMapping) {
         return new DefaultBiConstraintCollector<>(
@@ -372,6 +466,9 @@ public final class ConstraintCollectors {
                 resultContainer -> resultContainer[0]);
     }
 
+    /**
+     * As defined by {@link #sum(ToIntFunction)}.
+     */
     public static <A, B> BiConstraintCollector<A, B, ?, Long> sumLong(
             ToLongBiFunction<? super A, ? super B> groupValueMapping) {
         return new DefaultBiConstraintCollector<>(
@@ -384,6 +481,9 @@ public final class ConstraintCollectors {
                 resultContainer -> resultContainer[0]);
     }
 
+    /**
+     * As defined by {@link #sum(ToIntFunction)}.
+     */
     public static <A, B, Result> BiConstraintCollector<A, B, ?, Result> sum(
             BiFunction<? super A, ? super B, Result> groupValueMapping, Result zero, BinaryOperator<Result> adder,
             BinaryOperator<Result> subtractor) {
@@ -397,26 +497,41 @@ public final class ConstraintCollectors {
                 resultContainer -> resultContainer[0]);
     }
 
+    /**
+     * As defined by {@link #sum(ToIntFunction)}.
+     */
     public static <A, B> BiConstraintCollector<A, B, ?, BigDecimal> sumBigDecimal(
             BiFunction<? super A, ? super B, BigDecimal> groupValueMapping) {
         return sum(groupValueMapping, BigDecimal.ZERO, BigDecimal::add, BigDecimal::subtract);
     }
 
+    /**
+     * As defined by {@link #sum(ToIntFunction)}.
+     */
     public static <A, B> BiConstraintCollector<A, B, ?, BigInteger> sumBigInteger(
             BiFunction<? super A, ? super B, BigInteger> groupValueMapping) {
         return sum(groupValueMapping, BigInteger.ZERO, BigInteger::add, BigInteger::subtract);
     }
 
+    /**
+     * As defined by {@link #sum(ToIntFunction)}.
+     */
     public static <A, B> BiConstraintCollector<A, B, ?, Duration> sumDuration(
             BiFunction<? super A, ? super B, Duration> groupValueMapping) {
         return sum(groupValueMapping, Duration.ZERO, Duration::plus, Duration::minus);
     }
 
+    /**
+     * As defined by {@link #sum(ToIntFunction)}.
+     */
     public static <A, B> BiConstraintCollector<A, B, ?, Period> sumPeriod(
             BiFunction<? super A, ? super B, Period> groupValueMapping) {
         return sum(groupValueMapping, Period.ZERO, Period::plus, Period::minus);
     }
 
+    /**
+     * As defined by {@link #sum(ToIntFunction)}.
+     */
     public static <A, B, C> TriConstraintCollector<A, B, C, ?, Integer> sum(
             ToIntTriFunction<? super A, ? super B, ? super C> groupValueMapping) {
         return new DefaultTriConstraintCollector<>(
@@ -429,6 +544,9 @@ public final class ConstraintCollectors {
                 resultContainer -> resultContainer[0]);
     }
 
+    /**
+     * As defined by {@link #sum(ToIntFunction)}.
+     */
     public static <A, B, C> TriConstraintCollector<A, B, C, ?, Long> sumLong(
             ToLongTriFunction<? super A, ? super B, ? super C> groupValueMapping) {
         return new DefaultTriConstraintCollector<>(
@@ -441,6 +559,9 @@ public final class ConstraintCollectors {
                 resultContainer -> resultContainer[0]);
     }
 
+    /**
+     * As defined by {@link #sum(ToIntFunction)}.
+     */
     public static <A, B, C, Result> TriConstraintCollector<A, B, C, ?, Result> sum(
             TriFunction<? super A, ? super B, ? super C, Result> groupValueMapping, Result zero,
             BinaryOperator<Result> adder, BinaryOperator<Result> subtractor) {
@@ -454,26 +575,41 @@ public final class ConstraintCollectors {
                 resultContainer -> resultContainer[0]);
     }
 
+    /**
+     * As defined by {@link #sum(ToIntFunction)}.
+     */
     public static <A, B, C> TriConstraintCollector<A, B, C, ?, BigDecimal> sumBigDecimal(
             TriFunction<? super A, ? super B, ? super C, BigDecimal> groupValueMapping) {
         return sum(groupValueMapping, BigDecimal.ZERO, BigDecimal::add, BigDecimal::subtract);
     }
 
+    /**
+     * As defined by {@link #sum(ToIntFunction)}.
+     */
     public static <A, B, C> TriConstraintCollector<A, B, C, ?, BigInteger> sumBigInteger(
             TriFunction<? super A, ? super B, ? super C, BigInteger> groupValueMapping) {
         return sum(groupValueMapping, BigInteger.ZERO, BigInteger::add, BigInteger::subtract);
     }
 
+    /**
+     * As defined by {@link #sum(ToIntFunction)}.
+     */
     public static <A, B, C> TriConstraintCollector<A, B, C, ?, Duration> sumDuration(
             TriFunction<? super A, ? super B, ? super C, Duration> groupValueMapping) {
         return sum(groupValueMapping, Duration.ZERO, Duration::plus, Duration::minus);
     }
 
+    /**
+     * As defined by {@link #sum(ToIntFunction)}.
+     */
     public static <A, B, C> TriConstraintCollector<A, B, C, ?, Period> sumPeriod(
             TriFunction<? super A, ? super B, ? super C, Period> groupValueMapping) {
         return sum(groupValueMapping, Period.ZERO, Period::plus, Period::minus);
     }
 
+    /**
+     * As defined by {@link #sum(ToIntFunction)}.
+     */
     public static <A, B, C, D> QuadConstraintCollector<A, B, C, D, ?, Integer> sum(
             ToIntQuadFunction<? super A, ? super B, ? super C, ? super D> groupValueMapping) {
         return new DefaultQuadConstraintCollector<>(
@@ -486,6 +622,9 @@ public final class ConstraintCollectors {
                 resultContainer -> resultContainer[0]);
     }
 
+    /**
+     * As defined by {@link #sum(ToIntFunction)}.
+     */
     public static <A, B, C, D> QuadConstraintCollector<A, B, C, D, ?, Long> sumLong(
             ToLongQuadFunction<? super A, ? super B, ? super C, ? super D> groupValueMapping) {
         return new DefaultQuadConstraintCollector<>(
@@ -498,6 +637,9 @@ public final class ConstraintCollectors {
                 resultContainer -> resultContainer[0]);
     }
 
+    /**
+     * As defined by {@link #sum(ToIntFunction)}.
+     */
     public static <A, B, C, D, Result> QuadConstraintCollector<A, B, C, D, ?, Result> sum(
             QuadFunction<? super A, ? super B, ? super C, ? super D, Result> groupValueMapping, Result zero,
             BinaryOperator<Result> adder, BinaryOperator<Result> subtractor) {
@@ -511,25 +653,41 @@ public final class ConstraintCollectors {
                 resultContainer -> resultContainer[0]);
     }
 
+    /**
+     * As defined by {@link #sum(ToIntFunction)}.
+     */
     public static <A, B, C, D> QuadConstraintCollector<A, B, C, D, ?, BigDecimal> sumBigDecimal(
             QuadFunction<? super A, ? super B, ? super C, ? super D, BigDecimal> groupValueMapping) {
         return sum(groupValueMapping, BigDecimal.ZERO, BigDecimal::add, BigDecimal::subtract);
     }
 
+    /**
+     * As defined by {@link #sum(ToIntFunction)}.
+     */
     public static <A, B, C, D> QuadConstraintCollector<A, B, C, D, ?, BigInteger> sumBigInteger(
             QuadFunction<? super A, ? super B, ? super C, ? super D, BigInteger> groupValueMapping) {
         return sum(groupValueMapping, BigInteger.ZERO, BigInteger::add, BigInteger::subtract);
     }
 
+    /**
+     * As defined by {@link #sum(ToIntFunction)}.
+     */
     public static <A, B, C, D> QuadConstraintCollector<A, B, C, D, ?, Duration> sumDuration(
             QuadFunction<? super A, ? super B, ? super C, ? super D, Duration> groupValueMapping) {
         return sum(groupValueMapping, Duration.ZERO, Duration::plus, Duration::minus);
     }
 
+    /**
+     * As defined by {@link #sum(ToIntFunction)}.
+     */
     public static <A, B, C, D> QuadConstraintCollector<A, B, C, D, ?, Period> sumPeriod(
             QuadFunction<? super A, ? super B, ? super C, ? super D, Period> groupValueMapping) {
         return sum(groupValueMapping, Period.ZERO, Period::plus, Period::minus);
     }
+
+    // ************************************************************************
+    // min
+    // ************************************************************************
 
     /**
      * Returns a collector that finds a minimum value in a group of {@link Comparable} elements.
@@ -552,10 +710,6 @@ public final class ConstraintCollectors {
     public static <A extends Comparable<A>> UniConstraintCollector<A, ?, A> min() {
         return min(Function.identity(), Comparable::compareTo);
     }
-
-    // ************************************************************************
-    // min
-    // ************************************************************************
 
     /**
      * Returns a collector that finds a minimum value in a group of {@link Comparable} elements.
@@ -642,6 +796,10 @@ public final class ConstraintCollectors {
         return minOrMax(groupValueMapping, comparator, true);
     }
 
+    // ************************************************************************
+    // max
+    // ************************************************************************
+
     /**
      * Returns a collector that finds a maximum value in a group of {@link Comparable} elements.
      * <p>
@@ -663,10 +821,6 @@ public final class ConstraintCollectors {
     public static <A extends Comparable<A>> UniConstraintCollector<A, ?, A> max() {
         return max(Function.identity(), Comparable::compareTo);
     }
-
-    // ************************************************************************
-    // max
-    // ************************************************************************
 
     /**
      * Returns a collector that finds a maximum value in a group of {@link Comparable} elements.
