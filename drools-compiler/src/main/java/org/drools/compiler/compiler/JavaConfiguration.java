@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
+import org.drools.compiler.commons.jci.compilers.JavaCompiler;
+import org.drools.compiler.commons.jci.compilers.JavaCompilerFactory;
 import org.drools.compiler.lang.descr.AndDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.EntryPointDescr;
@@ -77,6 +79,12 @@ public class JavaConfiguration
     implements
     DialectConfiguration {
 
+    // This should be in alphabetic order to search with BinarySearch
+    protected static final String[]  LANGUAGE_LEVELS = new String[]{"1.5", "1.6", "1.7", "1.8", "10", "11", "12", "13", "14", "15", "9"};
+
+    private static final JavaConfiguration DEFAULT_JAVA_CONFIGURATION = new JavaConfiguration(new KnowledgeBuilderConfigurationImpl(JavaConfiguration.class.getClassLoader()));
+    private static final String DEFAULT_JAVA_VERSION = findJavaVersion(DEFAULT_JAVA_CONFIGURATION.conf.getChainedProperties());
+
     protected static final transient Logger logger = LoggerFactory.getLogger( JavaConfiguration.class);
 
     public static final String JAVA_COMPILER_PROPERTY = "drools.dialect.java.compiler";
@@ -97,8 +105,11 @@ public class JavaConfiguration
         }
     }
 
-    // This should be in alphabetic order to search with BinarySearch
-    protected static final String[]  LANGUAGE_LEVELS = new String[]{"1.5", "1.6", "1.7", "1.8", "10", "11", "12", "9"};
+    public static JavaCompiler createDefaultCompiler() {
+        JavaCompiler javaCompiler = JavaCompilerFactory.INSTANCE.loadCompiler(DEFAULT_JAVA_CONFIGURATION.getCompiler(), DEFAULT_JAVA_VERSION);
+        javaCompiler.setSourceFolder("src/main/java/");
+        return javaCompiler;
+    }
 
     private String                      languageLevel;
 
@@ -121,28 +132,7 @@ public class JavaConfiguration
     }
 
     public static String findJavaVersion( ChainedProperties chainedProperties) {
-        String level = chainedProperties.getProperty(JAVA_LANG_LEVEL_PROPERTY,
-                System.getProperty("java.version"));
-
-        if ( level.startsWith( "1.5" ) ) {
-            return "1.5";
-        } else if ( level.startsWith( "1.6" ) ) {
-            return "1.6";
-        } else if ( level.startsWith( "1.7" ) ) {
-            return "1.7";
-        } else if ( level.startsWith( "1.8" ) ) {
-            return "1.8";
-        } else if ( level.startsWith( "9" ) ) {
-            return "9";
-        } else if ( level.startsWith( "10" ) ) {
-            return "10";
-        } else if ( level.startsWith( "11" ) ) {
-            return "11";
-        } else if ( level.startsWith( "12" ) ) {
-            return "11";
-        } else {
-            return "1.8";
-        }
+        return chainedProperties.getProperty(JAVA_LANG_LEVEL_PROPERTY, System.getProperty("java.version"));
     }
 
     public KnowledgeBuilderConfigurationImpl getPackageBuilderConfiguration() {
@@ -162,8 +152,7 @@ public class JavaConfiguration
      * @param languageLevel
      */
     public void setJavaLanguageLevel(final String languageLevel) {
-        if ( Arrays.binarySearch( LANGUAGE_LEVELS,
-                                  languageLevel ) < 0 ) {
+        if ( Arrays.binarySearch( LANGUAGE_LEVELS, languageLevel ) < 0 ) {
             throw new RuntimeException( "value '" + languageLevel + "' is not a valid language level" );
         }
         this.languageLevel = languageLevel;
@@ -207,9 +196,9 @@ public class JavaConfiguration
     private CompilerType getDefaultCompiler() {
         try {
             final String prop = this.conf.getChainedProperties().getProperty( JAVA_COMPILER_PROPERTY, hasEclipseCompiler() ? "ECLIPSE" : "NATIVE" );
-            if ( prop.equals( "NATIVE" ) ) {
+            if ( prop.equalsIgnoreCase( "NATIVE" ) ) {
                 return CompilerType.NATIVE;
-            } else if ( prop.equals( "ECLIPSE" ) ) {
+            } else if ( prop.equalsIgnoreCase( "ECLIPSE" ) ) {
                 return CompilerType.ECLIPSE;
             } else {
                 logger.error( "Drools config: unable to use the drools.compiler property. Using default. It was set to:" + prop );

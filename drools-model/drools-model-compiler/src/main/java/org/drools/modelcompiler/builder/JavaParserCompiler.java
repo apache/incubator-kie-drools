@@ -29,7 +29,6 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.TypeDeclaration;
 import com.github.javaparser.printer.PrettyPrinter;
 import com.github.javaparser.printer.PrettyPrinterConfiguration;
-import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.commons.jci.compilers.CompilationResult;
 import org.drools.compiler.commons.jci.compilers.JavaCompiler;
@@ -41,6 +40,7 @@ import org.kie.internal.jci.CompilationProblem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.drools.compiler.compiler.JavaConfiguration.createDefaultCompiler;
 import static org.drools.core.util.ClassUtils.isJboss;
 
 public class JavaParserCompiler {
@@ -54,8 +54,6 @@ public class JavaParserCompiler {
     private static final JavaCompiler JAVA_COMPILER = createCompiler();
 
     private static final PrettyPrinter PRETTY_PRINTER = createPrettyPrinter();
-
-    private static final JavaConfiguration JAVA_CONFIGURATION = new JavaConfiguration(new KnowledgeBuilderConfigurationImpl(JavaParserCompiler.class.getClassLoader()));
 
     private static JavaCompiler createCompiler() {
         JavaCompiler javaCompiler = JavaCompilerFactory.INSTANCE.loadCompiler( COMPILER_TYPE, "1.8" );
@@ -109,12 +107,6 @@ public class JavaParserCompiler {
             }
         }
         return result;
-    }
-
-    private static JavaCompiler createDefaultCompiler() {
-        JavaCompiler javaCompiler = JavaCompilerFactory.INSTANCE.loadCompiler(JAVA_CONFIGURATION.getCompiler(), "1.8");
-        javaCompiler.setSourceFolder("src/main/java/");
-        return javaCompiler;
     }
 
     private static String[] writeModel(List<GeneratedClassWithPackage> classes, MemoryFileSystem srcMfs ) {

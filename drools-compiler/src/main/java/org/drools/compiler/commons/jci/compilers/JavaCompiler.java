@@ -52,6 +52,8 @@ public interface JavaCompiler {
      * factory method to create the underlying default settings
      */
     JavaCompilerSettings createDefaultSettings();
+
+    void setJavaCompilerSettings( JavaCompilerSettings javaCompilerSettings );
     
     /**
      * uses the default compiler settings and the current classloader

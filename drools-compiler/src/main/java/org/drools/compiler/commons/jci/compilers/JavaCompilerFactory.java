@@ -67,14 +67,16 @@ public enum JavaCompilerFactory {
         if (compiler == null) {
             throw new RuntimeException("Instance of " + compilerType + " compiler cannot be created!");
         } else {
-            updateSettings( compiler.createDefaultSettings(), lngLevel );
+            compiler.setJavaCompilerSettings( updateSettings( compiler.createDefaultSettings(), lngLevel ) );
         }
         return compiler;
     }
 
     private JavaCompilerSettings updateSettings( JavaCompilerSettings settings, String lngLevel ) {
         settings.setTargetVersion( lngLevel );
-        settings.setSourceVersion( lngLevel );
+        if (lngLevel.startsWith( "1." )) { // avoid in memory compilation with JPMS
+            settings.setSourceVersion( lngLevel );
+        }
         return settings;
     }
 }
