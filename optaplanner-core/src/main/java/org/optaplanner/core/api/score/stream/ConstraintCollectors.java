@@ -366,7 +366,7 @@ public final class ConstraintCollectors {
     // ************************************************************************
 
     /**
-     * Returns a collector that sums an {@code int} property of the elements that are being grouped. 
+     * Returns a collector that sums an {@code int} property of the elements that are being grouped.
      * <p>
      * For example, {@code [Ann(age = 20), Beth(age = 25), Cathy(age = 30), David(age = 30), Eric(age = 20)]} with
      * {@code .groupBy(sum(Person::getAge))} returns {@code 125}.
