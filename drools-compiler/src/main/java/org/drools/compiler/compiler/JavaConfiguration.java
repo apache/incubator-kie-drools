@@ -79,6 +79,8 @@ public class JavaConfiguration
     implements
     DialectConfiguration {
 
+    private static final Logger log = LoggerFactory.getLogger( JavaConfiguration.class );
+
     // This should be in alphabetic order to search with BinarySearch
     protected static final String[]  LANGUAGE_LEVELS = new String[]{"1.5", "1.6", "1.7", "1.8", "10", "11", "12", "13", "14", "15", "9"};
 
@@ -132,7 +134,23 @@ public class JavaConfiguration
     }
 
     public static String findJavaVersion( ChainedProperties chainedProperties) {
-        return chainedProperties.getProperty(JAVA_LANG_LEVEL_PROPERTY, System.getProperty("java.version"));
+        String level = chainedProperties.getProperty(JAVA_LANG_LEVEL_PROPERTY, System.getProperty("java.version"));
+
+        if ( level.startsWith( "1.5" ) ) {
+            return "1.5";
+        } else if ( level.startsWith( "1.6" ) ) {
+            return "1.6";
+        } else if ( level.startsWith( "1.7" ) ) {
+            return "1.7";
+        } else if ( level.startsWith( "1.8" ) ) {
+            return "1.8";
+        } else if ( level.startsWith( "9" ) ) {
+            return "9";
+        } else if ( level.startsWith( "10" ) ) {
+            return "10";
+        }
+
+        return "11";
     }
 
     public KnowledgeBuilderConfigurationImpl getPackageBuilderConfiguration() {
@@ -196,6 +214,11 @@ public class JavaConfiguration
     private CompilerType getDefaultCompiler() {
         try {
             final String prop = this.conf.getChainedProperties().getProperty( JAVA_COMPILER_PROPERTY, hasEclipseCompiler() ? "ECLIPSE" : "NATIVE" );
+            if (log.isDebugEnabled()) {
+                log.debug( "Selected compiler " + prop + " [drools.dialect.java.compiler:" +
+                        this.conf.getChainedProperties().getProperty( JAVA_COMPILER_PROPERTY, null ) + ", hasEclipseCompiler:" + hasEclipseCompiler() + "]" );
+            }
+
             if ( prop.equalsIgnoreCase( "NATIVE" ) ) {
                 return CompilerType.NATIVE;
             } else if ( prop.equalsIgnoreCase( "ECLIPSE" ) ) {

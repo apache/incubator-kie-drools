@@ -19,6 +19,7 @@ package org.drools.compiler.commons.jci.compilers;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import org.drools.compiler.compiler.JavaConfiguration;
 
@@ -31,13 +32,32 @@ public enum JavaCompilerFactory {
 
     private final Map classCache = new HashMap();
     
-    public JavaCompiler createCompiler(JavaConfiguration.CompilerType compilerType) {
+    public JavaCompiler loadCompiler( JavaConfiguration configuration) {
+        return loadCompiler( configuration.getCompiler(), configuration.getJavaLanguageLevel() );
+    }
+
+    public JavaCompiler loadCompiler( JavaConfiguration.CompilerType compilerType, String lngLevel ) {
+        JavaCompiler compiler = createCompiler( compilerType ).orElseThrow( () -> new RuntimeException("Instance of " + compilerType + " compiler cannot be created!") );
+        compiler.setJavaCompilerSettings( updateSettings( compiler.createDefaultSettings(), lngLevel ) );
+        return compiler;
+    }
+
+    private JavaCompilerSettings updateSettings( JavaCompilerSettings settings, String lngLevel ) {
+        settings.setTargetVersion( lngLevel );
+        // FIXME: the native Java compiler doesn't work with JPMS
+        if (lngLevel.startsWith( "1." )) {
+            settings.setSourceVersion( lngLevel );
+        }
+        return settings;
+    }
+
+    private Optional<JavaCompiler> createCompiler( JavaConfiguration.CompilerType compilerType) {
         return createCompiler(compilerType.getImplClassName());
     }
 
-    public JavaCompiler createCompiler(String className) {
+    private Optional<JavaCompiler> createCompiler(String className) {
         Class clazz = (Class) classCache.get(className);
-        
+
         if (clazz == null) {
             try {
                 clazz = Class.forName(className);
@@ -50,33 +70,11 @@ public enum JavaCompilerFactory {
         if (clazz == null) {
             return null;
         }
-        
+
         try {
-            return (JavaCompiler) clazz.getConstructor().newInstance();
+            return Optional.of( (JavaCompiler) clazz.getConstructor().newInstance() );
         } catch (Throwable t) {
-            return null;
+            return Optional.empty();
         }
-    }
-
-    public JavaCompiler loadCompiler( JavaConfiguration configuration) {
-        return loadCompiler( configuration.getCompiler(), configuration.getJavaLanguageLevel() );
-    }
-
-    public JavaCompiler loadCompiler( JavaConfiguration.CompilerType compilerType, String lngLevel ) {
-        JavaCompiler compiler = createCompiler( compilerType );
-        if (compiler == null) {
-            throw new RuntimeException("Instance of " + compilerType + " compiler cannot be created!");
-        } else {
-            compiler.setJavaCompilerSettings( updateSettings( compiler.createDefaultSettings(), lngLevel ) );
-        }
-        return compiler;
-    }
-
-    private JavaCompilerSettings updateSettings( JavaCompilerSettings settings, String lngLevel ) {
-        settings.setTargetVersion( lngLevel );
-        if (lngLevel.startsWith( "1." )) { // avoid in memory compilation with JPMS
-            settings.setSourceVersion( lngLevel );
-        }
-        return settings;
     }
 }
