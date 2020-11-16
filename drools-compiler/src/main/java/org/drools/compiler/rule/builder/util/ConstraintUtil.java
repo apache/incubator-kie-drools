@@ -40,7 +40,7 @@ public class ConstraintUtil {
 
         if (canInverse(pattern, operator, operatorDescr, leftProp, rightProp) && isPropertyOnRight(clazz, leftProp, rightProp)) {
             boolean negate = false;
-            if (isNagatedExpression(expression, leftValue, rightValue, operator)) {
+            if ( isNegatedExpression(expression, leftValue, rightValue, operator)) {
                 if (relDescr.getOperatorDescr().isNegated()) {
                     negate = true;
                 } else {
@@ -99,7 +99,7 @@ public class ConstraintUtil {
         }
     }
 
-    private static boolean isNagatedExpression(String expression, String leftValue, String rightValue, String operator) {
-        return expression.matches("^!\\s*\\(\\s*" + leftValue + "\\s*" + operator + "\\s*" + rightValue + "\\s*\\)$");
+    private static boolean isNegatedExpression( String expression, String leftValue, String rightValue, String operator ) {
+        return expression.matches("^!\\s*\\(\\s*\\Q" + leftValue + "\\E\\s*" + operator + "\\s*\\Q" + rightValue + "\\E\\s*\\)$");
     }
 }

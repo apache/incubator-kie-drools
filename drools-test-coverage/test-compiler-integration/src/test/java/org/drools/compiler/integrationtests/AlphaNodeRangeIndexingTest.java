@@ -17,8 +17,11 @@
 package org.drools.compiler.integrationtests;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
+import org.assertj.core.api.Assertions;
 import org.drools.core.reteoo.CompositeObjectSinkAdapter;
 import org.drools.core.reteoo.ObjectSink;
 import org.drools.core.reteoo.ObjectTypeNode;
@@ -387,46 +390,60 @@ public class AlphaNodeRangeIndexingTest {
         final String drl =
                 "package org.drools.compiler.test\n" +
                            "import " + Order.class.getCanonicalName() + "\n" +
+                           "global java.util.List results;\n" +
                            "rule test1\n when\n" +
                            "   Order( date >= \"01-Oct-2020\" )\n" +
-                           "then\n end\n" +
+                           "then\n" +
+                           "   results.add(drools.getRule().getName());" +
+                           "end\n" +
                            "rule test2\n when\n" +
                            "   Order( date < \"01-Nov-2020\" )\n" +
-                           "then\n end\n" +
+                           "then\n" +
+                           "   results.add(drools.getRule().getName());" +
+                           "end\n" +
                            "rule test3\n when\n" +
                            "   Order( date > \"01-Oct-2010\" )\n" +
-                           "then\n end\n" +
+                           "then\n" +
+                           "   results.add(drools.getRule().getName());" +
+                           "end\n" +
                            "rule test4\n when\n" +
                            "   Order( date < \"01-Oct-2030\" )\n" +
-                           "then\n end\n" +
+                           "then\n" +
+                           "   results.add(drools.getRule().getName());" +
+                           "end\n" +
                            "rule test5\n when\n" +
                            "   Order( date > \"02-Oct-2020\" )\n" +
-                           "then\n end\n" +
+                           "then\n" +
+                           "   results.add(drools.getRule().getName());" +
+                           "end\n" +
                            "rule test6\n when\n" +
                            "   Order( date <= \"02-Apr-2020\" )\n" +
-                           "then\n end\n";
+                           "then\n" +
+                           "   results.add(drools.getRule().getName());" +
+                           "end\n";
 
         final KieBase kbase = createKieBaseWithRangeIndexThresholdValue(drl, 3);
         final KieSession ksession = kbase.newKieSession();
 
-        // DROOLS-5712 : Executable model doesn't add index for Date. Once fixed, we can fix this assert
-        if (!kieBaseTestConfiguration.getExecutableModelProjectClass().isPresent()) {
-            assertSinks(kbase, Order.class, 6, 6, 0, 6);
-        } else {
-            assertSinks(kbase, Order.class, 6, 6, 0, 0);
-        }
+        assertSinks(kbase, Order.class, 6, 6, 0, 6);
+
+        List<String> results = new ArrayList<>();
+        ksession.setGlobal("results", results);
 
         Order o1 = new Order();
         o1.setDate(DateUtils.parseDate("01-Oct-2020"));
         ksession.insert(o1);
         int fired = ksession.fireAllRules();
         assertEquals(4, fired);
+        Assertions.assertThat(results).containsOnly("test1", "test2", "test3", "test4");
 
+        results.clear();
         Order o2 = new Order();
         o2.setDate(DateUtils.parseDate("31-Dec-2010"));
         ksession.insert(o2);
         fired = ksession.fireAllRules();
         assertEquals(4, fired);
+        Assertions.assertThat(results).containsOnly("test2", "test3", "test4", "test6");
     }
 
     @Test

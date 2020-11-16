@@ -296,7 +296,10 @@ public class MVELConstraint extends MutableTypeConstraint implements IndexableCo
         ConditionEvaluator mvelEvaluator = createMvelConditionEvaluator(workingMemory);
         try {
             mvelEvaluator.evaluate(handle, workingMemory, tuple);
-        } catch (ClassCastException cce) { }
+        } catch (ClassCastException cce) {
+        } catch (Exception e) {
+            return createMvelConditionEvaluator( workingMemory );
+        }
         return executeJitting(handle, workingMemory, tuple, mvelEvaluator);
     }
 
@@ -471,13 +474,14 @@ public class MVELConstraint extends MutableTypeConstraint implements IndexableCo
         return names;
     }
 
-    private int nextPropertyName( String expression, List<String> names, int cursor) {
+    private int nextPropertyName( String expression, List<String> names, int cursor ) {
         StringBuilder propertyNameBuilder = new StringBuilder();
         cursor = extractFirstIdentifier(expression, propertyNameBuilder, cursor);
         if (propertyNameBuilder.length() == 0) {
             return cursor;
         }
 
+        boolean isAccessor = false;
         String propertyName = propertyNameBuilder.toString();
         if (propertyName.equals("this")) {
             cursor = skipBlanks(expression, cursor);
@@ -502,7 +506,16 @@ public class MVELConstraint extends MutableTypeConstraint implements IndexableCo
                 // the getter has to be used for property reactivity only if it's a true getter (doesn't have any argument)
                 if (expression.substring( propNameEnd+1, argsEnd ).trim().isEmpty()) {
                     propertyName = getter2property(propertyName);
+                    isAccessor = true;
                 }
+            }
+        }
+
+        if (!isAccessor) {
+            String lookAhead = lookAheadIgnoringSpaces( expression, cursor );
+            boolean isMethodInvocation = lookAhead != null && lookAhead.equals( "(" );
+            if (isMethodInvocation) {
+                return nextPropertyName( expression, names, cursor );
             }
         }
 
@@ -510,6 +523,17 @@ public class MVELConstraint extends MutableTypeConstraint implements IndexableCo
             names.add( propertyName );
         }
         return skipOperator( expression, cursor );
+    }
+
+    private String lookAheadIgnoringSpaces( String expression, int cursor ) {
+        while (cursor < expression.length()) {
+            char c = expression.charAt( cursor );
+            if (!Character.isWhitespace( c )) {
+                return "" + c;
+            }
+            cursor++;
+        }
+        return null;
     }
 
     private int skipOperator( String expression, int cursor ) {

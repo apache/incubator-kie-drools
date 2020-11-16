@@ -17,15 +17,18 @@ public class MaterializedLambdaConsequenceTest {
 
         //language=JAVA
         String expectedResult = "" +
-                "package org.drools.modelcompiler.util.lambdareplace.PF2;\n" +
+                "package org.drools.modelcompiler.util.lambdareplace.P98;\n" +
                 "import static rulename.*; " +
                 "import org.drools.modelcompiler.dsl.pattern.D; " +
                 "\n"+
                 "@org.drools.compiler.kie.builder.MaterializedLambda() " +
-                "public enum LambdaConsequenceF23B77D6BCFA8D6EB3EC2C02BACF2BEA implements org.drools.model.functions.Block2<org.drools.modelcompiler.domain.Person, org.drools.modelcompiler.domain.Person>  {\n" +
+                "public enum LambdaConsequence982E2B99D4259D0E7765315FCEE7EA31 implements org.drools.model.functions.Block2<org.drools.modelcompiler.domain.Person, org.drools.modelcompiler.domain.Person>, org.drools.model.functions.HashedExpression  {\n" +
                 "INSTANCE;\n" +
                 "public static final String EXPRESSION_HASH = \"8305FF24AC76CB49E7AAE2C10356A105\";" +
-                "        @Override()\n" +
+                "    public java.lang.String getExpressionHash() {\n" +
+                "        return EXPRESSION_HASH;\n" +
+                "    } " +
+        "        @Override()\n" +
                 "        public void execute(org.drools.modelcompiler.domain.Person p1, org.drools.modelcompiler.domain.Person p2) throws java.lang.Exception {\n" +
                 "            result.setValue(p1.getName() + \" is older than \" + p2.getName());\n" +
                 "        }\n" +
@@ -45,14 +48,17 @@ public class MaterializedLambdaConsequenceTest {
 
         //language=JAVA
         String expectedResult = "" +
-                "package defaultpkg.P52;\n" +
+                "package defaultpkg.P28;\n" +
                 "import static defaultpkg.RulesA3B8DE4BEBF13D94572A10FD20BBE729.*; " +
                 "import org.drools.modelcompiler.dsl.pattern.D; " +
                 "\n"+
                 "@org.drools.compiler.kie.builder.MaterializedLambda() " +
-                "public enum LambdaConsequence526B250E5F70E575F0059D0E397318C6 implements org.drools.model.functions.Block2<org.drools.model.Drools, org.drools.modelcompiler.domain.Person>  {\n" +
+                "public enum LambdaConsequence282F12790B6346F38DD05CDBDFFB4034 implements org.drools.model.functions.Block2<org.drools.model.Drools, org.drools.modelcompiler.domain.Person>, org.drools.model.functions.HashedExpression  {\n" +
                 "        INSTANCE;\n" +
                 "        public static final String EXPRESSION_HASH = \"1FE08C27A04F37AADD1A62E562519E8D\";\n" +
+                "    public java.lang.String getExpressionHash() {\n" +
+                "        return EXPRESSION_HASH;\n" +
+                "    } " +
                 "        private final org.drools.model.BitMask mask_$p = org.drools.model.BitMask.getPatternMask(DomainClassesMetadataA3B8DE4BEBF13D94572A10FD20BBE729.org_drools_modelcompiler_domain_Person_Metadata_INSTANCE, \"age\");\n" +
                 "        @Override()\n" +
                 "        public void execute(org.drools.model.Drools drools, org.drools.modelcompiler.domain.Person $p) throws java.lang.Exception {\n" +
@@ -83,15 +89,18 @@ public class MaterializedLambdaConsequenceTest {
 
         //language=JAVA
         String expectedResult = "" +
-                "package defaultpkg.PB5;\n" +
+                "package defaultpkg.PFB;\n" +
                 "import static defaultpkg.RulesB45236F6195B110E0FA3A5447BC53274.*; " +
                 "import org.drools.modelcompiler.dsl.pattern.D; " +
                 "\n"+
                 "@org.drools.compiler.kie.builder.MaterializedLambda() " +
-                "public enum LambdaConsequenceB5F5DCD7BB99BCAFC00F33AF0841B8C3 implements org.drools.model.functions.Block3<org.drools.model.Drools, org.drools.modelcompiler.domain.Pet, org.drools.modelcompiler.domain.Person> {\n" +
+                "public enum LambdaConsequenceFB58D60433E3A0DF3C5210777CC663FC implements org.drools.model.functions.Block3<org.drools.model.Drools, org.drools.modelcompiler.domain.Pet, org.drools.modelcompiler.domain.Person>, org.drools.model.functions.HashedExpression {\n" +
                 "\n" +
                 "    INSTANCE;\n" +
                 "    public static final String EXPRESSION_HASH = \"2ABFB3D359AC0D0C1F6C1BAF91E05544\";\n" +
+                "    public java.lang.String getExpressionHash() {\n" +
+                "        return EXPRESSION_HASH;\n" +
+                "    }" +
                 "    private final org.drools.model.BitMask mask_$person = org.drools.model.BitMask.getPatternMask(DomainClassesMetadataB45236F6195B110E0FA3A5447BC53274.org_drools_modelcompiler_domain_Person_Metadata_INSTANCE, \"name\");\n" +
                 "\n" +
                 "    private final org.drools.model.BitMask mask_$pet = org.drools.model.BitMask.getPatternMask(DomainClassesMetadataB45236F6195B110E0FA3A5447BC53274.org_drools_modelcompiler_domain_Pet_Metadata_INSTANCE, \"age\");\n" +
@@ -125,16 +134,19 @@ public class MaterializedLambdaConsequenceTest {
 
         //language=JAVA
         String expectedResult = "" +
-                "package defaultpkg.P64;\n" +
+                "package defaultpkg.PF6;\n" +
                 "\n" +
                 "import static defaultpkg.Rules53448E6B9A07CB05B976425EF329E308.*;\n" +
                 "import org.drools.modelcompiler.dsl.pattern.D;\n" +
                 "\n" +
                 "@org.drools.compiler.kie.builder.MaterializedLambda()\n" +
-                "public enum LambdaConsequence642067D01B69A30A6F9EF6A4244CC6A7 implements org.drools.model.functions.Block2<org.drools.model.Drools, org.drools.modelcompiler.domain.Person> {\n" +
+                "public enum LambdaConsequenceF69C3927DEB639FE700B69B42338E5F0 implements org.drools.model.functions.Block2<org.drools.model.Drools, org.drools.modelcompiler.domain.Person>, org.drools.model.functions.HashedExpression {\n" +
                 "\n" +
                 "    INSTANCE;\n" +
                 "    public static final String EXPRESSION_HASH = \"15102979E2E45F1A4617C12D3517D6B5\";\n" +
+                "     public java.lang.String getExpressionHash() {\n" +
+                "        return EXPRESSION_HASH;\n" +
+                "    }" +
                 "    private final org.drools.model.BitMask mask_$p = org.drools.model.BitMask.getPatternMask(DomainClassesMetadata53448E6B9A07CB05B976425EF329E308.org_drools_modelcompiler_domain_Person_Metadata_INSTANCE, \"age\", \"likes\");\n" +
                 "\n" +
                 "    @Override()\n" +

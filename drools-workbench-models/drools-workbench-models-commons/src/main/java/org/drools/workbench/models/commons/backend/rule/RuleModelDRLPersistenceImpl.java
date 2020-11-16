@@ -2993,6 +2993,10 @@ public class RuleModelDRLPersistenceImpl
                                            m,
                                            isJavaDialect);
                     }
+                } else {
+                    FreeFormLine ffl = new FreeFormLine();
+                    ffl.setText(line);
+                    m.addRhsItem(ffl);
                 }
             } else if (line.startsWith("update")) {
                 String variable = unwrapParenthesis(line);
@@ -3208,7 +3212,7 @@ public class RuleModelDRLPersistenceImpl
         }
         return builder.get(variable,
                            methodName,
-                           unwrapParenthesis(line).split(","));
+                           unwrapParenthesis(line));
     }
 
     private boolean isInsertedFact(final String[] lines,

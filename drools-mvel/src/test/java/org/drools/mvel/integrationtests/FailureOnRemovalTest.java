@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.Collection;
-import java.util.Properties;
 
 import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.core.impl.InternalKnowledgeBase;
@@ -98,10 +97,7 @@ public class FailureOnRemovalTest extends CommonTestMethodBase {
     }
 
     private KnowledgeBuilderConfiguration createKnowledgeBuilderConfiguration() {
-        Properties properties = new Properties();
-        properties.setProperty( "drools.dialect.java.compiler",
-                                "JANINO" );
-        KnowledgeBuilderConfiguration kconf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration( properties,
+        KnowledgeBuilderConfiguration kconf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration( null,
                                                                                                         getClass().getClassLoader() );
         kconf.setOption( DefaultDialectOption.get( "java" ) );
         return kconf;

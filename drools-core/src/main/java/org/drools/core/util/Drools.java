@@ -110,4 +110,8 @@ public class Drools {
     public static boolean hasMvel() {
         return CoreComponentsBuilder.present();
     }
+
+    public static boolean isNativeImage() {
+        return CoreComponentsBuilder.isNativeImage();
+    }
 }

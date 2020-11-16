@@ -99,9 +99,23 @@ public final class KieUtil {
         return getKieBuilderFromResources(kieBaseTestConfiguration, failIfBuildError, resources.toArray(new Resource[]{}));
     }
 
+    public static KieBuilder getKieBuilderFromDrls(final KieBaseTestConfiguration kieBaseTestConfiguration,final Map<String, String> kieModuleConfigurationProperties,
+                                                   final boolean failIfBuildError, final String... drls) {
+        final List<Resource> resources = getResourcesFromDrls(drls);
+        return getKieBuilderFromResources(kieBaseTestConfiguration, kieModuleConfigurationProperties, failIfBuildError, resources.toArray(new Resource[]{}));
+    }
+
     public static KieBuilder getKieBuilderFromResources(final KieBaseTestConfiguration kieBaseTestConfiguration,
                                                         final boolean failIfBuildError, final Resource... resources) {
         final KieModuleModel kieModuleModel = createKieModuleModel(kieBaseTestConfiguration.useAlphaNetworkCompiler());
+        final KieFileSystem kieFileSystem = getKieFileSystemWithKieModule(kieModuleModel, KieServices.get().getRepository().getDefaultReleaseId(), resources);
+        return getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kieFileSystem, failIfBuildError);
+    }
+
+    public static KieBuilder getKieBuilderFromResources(final KieBaseTestConfiguration kieBaseTestConfiguration, final Map<String, String> kieModuleConfigurationProperties,
+                                                        final boolean failIfBuildError, final Resource... resources) {
+        final KieModuleModel kieModuleModel =
+                getKieModuleModel(kieBaseTestConfiguration, KieSessionTestConfiguration.STATEFUL_REALTIME, kieModuleConfigurationProperties);
         final KieFileSystem kieFileSystem = getKieFileSystemWithKieModule(kieModuleModel, KieServices.get().getRepository().getDefaultReleaseId(), resources);
         return getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kieFileSystem, failIfBuildError);
     }
