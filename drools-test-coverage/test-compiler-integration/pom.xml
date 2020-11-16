@@ -36,8 +36,13 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>kie-api</artifactId>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-engine</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-engine-classic</artifactId>
       <scope>test</scope>
     </dependency>
 
@@ -50,8 +55,10 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-compiler</artifactId>
+      <type>test-jar</type>
       <scope>test</scope>
     </dependency>
+
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-serialization-protobuf</artifactId>
@@ -65,11 +72,6 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-ruleunit</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-model-compiler</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -102,6 +104,11 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>net.java.dev.glazedlists</groupId>
+      <artifactId>glazedlists_java15</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
