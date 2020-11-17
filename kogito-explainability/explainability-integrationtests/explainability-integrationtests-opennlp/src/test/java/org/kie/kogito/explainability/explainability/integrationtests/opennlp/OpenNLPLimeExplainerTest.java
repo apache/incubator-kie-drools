@@ -36,6 +36,7 @@ import org.kie.kogito.explainability.model.Value;
 import org.kie.kogito.explainability.utils.ExplainabilityMetrics;
 
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -44,6 +45,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class OpenNLPLimeExplainerTest {
@@ -62,16 +64,7 @@ class OpenNLPLimeExplainerTest {
             LimeExplainer limeExplainer = new LimeExplainer(100, 2, random);
             InputStream is = getClass().getResourceAsStream("/opennlp/langdetect-183.bin");
             LanguageDetectorModel languageDetectorModel = new LanguageDetectorModel(is);
-            String inputText = "italiani, spaghetti pizza mandolino";
             LanguageDetector languageDetector = new LanguageDetectorME(languageDetectorModel);
-            Language bestLanguage = languageDetector.predictLanguage(inputText);
-
-            List<Feature> features = new LinkedList<>();
-            features.add(FeatureFactory.newFulltextFeature("text", inputText));
-            PredictionInput input = new PredictionInput(features);
-            PredictionOutput output = new PredictionOutput(List.of(new Output("lang", Type.TEXT, new Value<>(bestLanguage.getLang()),
-                                                                              bestLanguage.getConfidence())));
-            Prediction prediction = new Prediction(input, output);
 
             PredictionProvider model = inputs -> CompletableFuture.supplyAsync(() -> {
                 List<PredictionOutput> results = new LinkedList<>();
@@ -89,6 +82,24 @@ class OpenNLPLimeExplainerTest {
                 }
                 return results;
             });
+
+            String inputText = "italiani,spaghetti pizza mandolino";
+            List<Feature> features = new LinkedList<>();
+            features.add(FeatureFactory.newFulltextFeature("text", inputText, s -> Arrays.asList(s.split("\\W"))));
+            PredictionInput input = new PredictionInput(features);
+
+            List<PredictionOutput> predictionOutputs = model.predictAsync(List.of(input)).get();
+            assertNotNull(predictionOutputs);
+            assertFalse(predictionOutputs.isEmpty());
+            PredictionOutput output = predictionOutputs.get(0);
+            assertNotNull(output);
+            assertNotNull(output.getOutputs());
+            assertEquals(1, output.getOutputs().size());
+            assertEquals("ita", output.getOutputs().get(0).getValue().asString());
+            assertEquals(0.03, output.getOutputs().get(0).getScore(), 1e-2);
+
+            Prediction prediction = new Prediction(input, output);
+
             Map<String, Saliency> saliencyMap = limeExplainer.explainAsync(prediction, model)
                     .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
             for (Saliency saliency : saliencyMap.values()) {
