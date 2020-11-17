@@ -92,6 +92,8 @@ pipeline {
             }
             steps {
                 prepareForPR('optaplanner')
+                prepareForPR('optaweb-vehicle-routing')
+                prepareForPR('optaweb-employee-rostering')
             }
         }
 
@@ -114,24 +116,24 @@ pipeline {
             }
         }
 
-        stage('Update project version'){
+        stage('Update project version') {
             when {
                 expression { return getProjectVersion() != '' }
             }
             steps {
                 script {
-                    // To make sure that the project will resolve during version upgrade.
-                    mavenCleanInstall('optaplanner', true, [], '-U')
+                    mavenCleanInstallOptaPlannerParents('optaplanner')
                     dir('optaplanner') {
                         maven.mvnVersionsSet(getProjectVersion())
                         updateKogitoVersion(getKogitoVersion())
                     }
-                    /* TODO:
-                        Install optaplanner artifacts to a local maven repository to make them accessible
-                        for optaplanner-quickstarts and optaweb apps.
-                     */
-                    //mavenCleanInstall('optaplanner', true, [], '-U')
-
+                    mavenCleanInstallOptaPlannerParents('optaplanner')
+                    dir('optaweb-vehicle-routing') {
+                        maven.mvnVersionsUpdateParentAndChildModules(getProjectVersion())
+                    }
+                    dir('optaweb-employee-rostering') {
+                        maven.mvnVersionsUpdateParentAndChildModules(getProjectVersion())
+                    }
                 }
             }
         }
@@ -168,7 +170,7 @@ pipeline {
 
         stage('Build optaweb-vehicle-routing') {
             steps {
-                mavenCleanInstall('optaweb-vehicle-routing', params.SKIP_TESTS, [], "-s ${env.GLOBAL_MAVEN_SETTINGS}")
+                mavenCleanInstall('optaweb-vehicle-routing', params.SKIP_TESTS, [], "-Denforcer.skip -s ${env.GLOBAL_MAVEN_SETTINGS}")
             }
             post {
                 always {
@@ -181,7 +183,7 @@ pipeline {
 
         stage('Build optaweb-employee-rostering') {
             steps {
-                mavenCleanInstall('optaweb-employee-rostering', params.SKIP_TESTS, [], "-s ${env.GLOBAL_MAVEN_SETTINGS}")
+                mavenCleanInstall('optaweb-employee-rostering', params.SKIP_TESTS, [], "-Denforcer.skip -s ${env.GLOBAL_MAVEN_SETTINGS}")
             }
             post {
                 always {
@@ -200,12 +202,14 @@ pipeline {
             }
         }
 
-        stage('Create PR'){
+        stage('Create PRs'){
             when {
                 expression { return isRelease() }
             }
             steps {
                 commitAndCreatePR('optaplanner')
+                commitAndCreatePRIgnoringNpmRegistry('optaweb-vehicle-routing')
+                commitAndCreatePRIgnoringNpmRegistry('optaweb-employee-rostering')
             }
             post {
                 success {
@@ -214,6 +218,16 @@ pipeline {
                         setDeployPropertyIfNeeded('optaplanner.pr.source.ref', getBotBranch())
                         setDeployPropertyIfNeeded('optaplanner.pr.target.uri', "https://github.com/${getGitAuthor()}/optaplanner")
                         setDeployPropertyIfNeeded('optaplanner.pr.target.ref', getBuildBranch())
+
+                        setDeployPropertyIfNeeded('optaweb-vehicle-routing.pr.source.uri', "https://github.com/${getBotAuthor()}/optaweb-vehicle-routing")
+                        setDeployPropertyIfNeeded('optaweb-vehicle-routing.pr.source.ref', getBotBranch())
+                        setDeployPropertyIfNeeded('optaweb-vehicle-routing.pr.target.uri', "https://github.com/${getGitAuthor()}/optaweb-vehicle-routing")
+                        setDeployPropertyIfNeeded('optaweb-vehicle-routing.pr.target.ref', getBuildBranch())
+
+                        setDeployPropertyIfNeeded('optaweb-employee-rostering.pr.source.uri', "https://github.com/${getBotAuthor()}/optaweb-employee-rostering")
+                        setDeployPropertyIfNeeded('optaweb-employee-rostering.pr.source.ref', getBotBranch())
+                        setDeployPropertyIfNeeded('optaweb-employee-rostering.pr.target.uri', "https://github.com/${getGitAuthor()}/optaweb-employee-rostering")
+                        setDeployPropertyIfNeeded('optaweb-employee-rostering.pr.target.ref', getBuildBranch())
                     }
                 }
             }
@@ -263,6 +277,14 @@ void commitAndCreatePR(String repo) {
     }
 }
 
+void commitAndCreatePRIgnoringNpmRegistry(String repo) {
+    dir(repo) {
+        sh 'sed \'s;repository.engineering.redhat.com/nexus/repository/;;\' -i */package-lock.json'
+        sh 'git add */package-lock.json'
+    }
+    commitAndCreatePR(repo)
+}
+
 // TODO: move to a shared library
 void addNotIgnoredPoms() {
     // based on https://stackoverflow.com/a/59888964/8811872
@@ -282,6 +304,13 @@ void addNotIgnoredPoms() {
 
 void mavenCleanInstall(String directory, boolean skipTests = false, List profiles = [], String extraArgs = '') {
     runMaven('clean install', directory, skipTests, profiles, extraArgs)
+}
+
+/**
+ * Builds the parent modules and the BOM so that project depending on these artifacts can resolve.
+ */
+void mavenCleanInstallOptaPlannerParents(String directory) {
+    mavenCleanInstall(directory, true, [], '-pl org.optaplanner:optaplanner-build-parent,org.optaplanner:optaplanner-bom -am')
 }
 
 void mavenDeploy(String directory, extraArgs = '') {

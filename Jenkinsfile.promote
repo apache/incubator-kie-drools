@@ -4,6 +4,10 @@ import org.jenkinsci.plugins.workflow.libs.Library
 deployProperties = [:]
 pipelineProperties = [:]
 
+String optaplannerRepository = 'optaplanner'
+String vehicleRoutingRepository = 'optaweb-vehicle-routing'
+String employeeRosteringRepository = 'optaweb-employee-rostering'
+
 pipeline {
     agent {
         label 'kie-rhel7'
@@ -77,35 +81,109 @@ pipeline {
             }
         }
 
+        stage('Setup global Maven arguments') {
+            when {
+                expression { return isRelease() }
+            }
+            steps{
+                script {
+                    if (isSpecificMavenConfig()) {
+                        echo 'Setup Maven release config'
+                        configFileProvider([configFile(fileId: maven.getSubmarineSettingsXmlId(), targetLocation: 'maven-settings.xml', variable: 'MAVEN_SETTINGS_FILE')]){
+                            // expose the temp file via a global environment variable for other stages
+                            env.GLOBAL_MAVEN_ARGS = "-B -s ${MAVEN_SETTINGS_FILE} -Denforcer.skip=true"
+
+                            sh "sed -i 's|<repositories>|<repositories><repository><id>staging</id><name>Staging Repository</name><url>${params.MAVEN_DEPENDENCIES_REPOSITORY}</url><layout>default</layout><snapshots><enabled>true</enabled></snapshots><releases><enabled>true</enabled></releases></repository>|g' ${MAVEN_SETTINGS_FILE}"
+                            sh "sed -i 's|<pluginRepositories>|<pluginRepositories><pluginRepository><id>staging</id><name>Staging Repository</name><url>${params.MAVEN_DEPENDENCIES_REPOSITORY}</url><layout>default</layout><snapshots><enabled>true</enabled></snapshots><releases><enabled>true</enabled></releases></pluginRepository>|g' ${MAVEN_SETTINGS_FILE}"
+                            sh "sed -i 's|external:\\*|external:*,!staging|g' ${MAVEN_SETTINGS_FILE}" // Done to allow Maven to download release artifacts from MAVEN_DEPENDENCIES_REPOSITORY
+                        }
+                    }
+                }
+            }
+        }
+
         stage('Merge OptaPlanner deploy PR and tag') {
             when {
                 expression { return isRelease() }
             }
             steps{
                 script {
-                    dir('optaplanner') {
-                        checkoutRepo('optaplanner')
-                        mergeAndPush('optaplanner', getDeployPrLink('optaplanner'))
+                    dir(optaplannerRepository) {
+                        checkoutRepo(optaplannerRepository)
+                        mergeAndPush(getDeployPrLink(optaplannerRepository))
                         tagLatest()
                     }
                 }
             }
         }
 
-        stage('Upload documentation and distribution') {
+        stage('Merge Optaweb Vehicle Routing deploy PR and tag') {
+            when {
+                expression { return isRelease() }
+            }
+            steps{
+                script {
+                    dir(vehicleRoutingRepository) {
+                        checkoutRepo(vehicleRoutingRepository)
+                        mergeAndPush(getDeployPrLink(vehicleRoutingRepository))
+                        tagLatest()
+                    }
+                }
+            }
+        }
+
+        stage('Merge Optaweb Employee Rostering deploy PR and tag') {
+            when {
+                expression { return isRelease() }
+            }
+            steps{
+                script {
+                    dir(employeeRosteringRepository) {
+                        checkoutRepo(employeeRosteringRepository)
+                        mergeAndPush(getDeployPrLink(employeeRosteringRepository))
+                        tagLatest()
+                    }
+                }
+            }
+        }
+
+        stage('Upload OptaPlanner documentation and distribution') {
             when {
                 expression { return isRelease() }
             }
             steps {
                 script {
-                    mavenCleanInstall('optaplanner', true, [], '-Dfull')
-                    dir('optaplanner') {
-                        withCredentials(bindings: [sshUserPrivateKey(credentialsId: 'optaplanner-filemgmt',
-                                             keyFileVariable: 'SSH_KEY_JBOSS_FILEMGMT')]) {
-                            // For testing, simulate connection via SSH:
-                            // sh "ssh -i $SSH_KEY_JBOSS_FILEMGMT -oKexAlgorithms=+diffie-hellman-group1-sha1 optaplanner@filemgmt.jboss.org"
-                            sh "./build/release/upload_distribution.sh ${getProjectVersion()} $SSH_KEY_JBOSS_FILEMGMT"
-                        }
+                    dir(optaplannerRepository) {
+                        mavenCleanInstall(true, [], '-Dfull')
+                        uploadDistribution()
+                    }
+                }
+            }
+        }
+
+        stage('Upload Vehicle Routing documentation and distribution') {
+            when {
+                expression { return isRelease() }
+            }
+            steps {
+                script {
+                    dir(vehicleRoutingRepository) {
+                        mavenCleanInstall(true)
+                        uploadDistribution()
+                    }
+                }
+            }
+        }
+
+        stage('Upload Employee Rostering documentation and distribution') {
+            when {
+                expression { return isRelease() }
+            }
+            steps {
+                script {
+                    dir(employeeRosteringRepository) {
+                        mavenCleanInstall(true)
+                        uploadDistribution()
                     }
                 }
             }
@@ -118,7 +196,8 @@ pipeline {
             steps {
                 script {
                     final String websiteRepository = 'optaplanner-website'
-                    dir(websiteRepository) {
+                    String prLink = null
+                    dir("$websiteRepository-bot") {
                         String prBranchName = createWebsitePrBranch(websiteRepository)
 
                         // Update versions in links on the website.
@@ -131,35 +210,81 @@ pipeline {
 
                         // Add changed files, commit, open and merge PR
                         sh 'git add xsd/\\*.xsd _config/pom.yml'
-                        String prLink = commitAndCreatePR("Release OptaPlanner ${getProjectVersion()}", prBranchName, 'master')
-                        mergeAndPush(websiteRepository, prLink)
+                        prLink = commitAndCreatePR("Release OptaPlanner ${getProjectVersion()}", prBranchName, 'master')
+                    }
+                    dir(websiteRepository) {
+                        checkoutRepo(websiteRepository, 'master')
+                        mergeAndPush(prLink, 'master')
                     }
                 }
             }
         }
 
-        stage('Set OptaPlanner next snapshot version'){
+        stage('Set OptaPlanner next snapshot version') {
             when {
                 expression { return isRelease() }
             }
             steps {
                 script {
-                    dir('optaplanner-bot') {
-                        prepareForPR('optaplanner')
-                        setupMavenConfig()
-                        String nextSnapshotVersion = getNextMicroSnapshotVersion(getProjectVersion())
-                        maven.mvnVersionsSet(nextSnapshotVersion, true)
+                    String nextMicroSnapshotVersion = getNextMicroSnapshotVersion(getProjectVersion())
+
+                    dir("$optaplannerRepository-bot") {
+                        prepareForPR(optaplannerRepository)
+                        maven.mvnVersionsSet(nextMicroSnapshotVersion, true)
                         updateKogitoVersion(getNextMicroSnapshotVersion(getKogitoVersion()))
 
                         addNotIgnoredPoms()
-                        String prLink = commitAndCreatePR("Update snapshot version to ${nextSnapshotVersion}")
-                        setPipelinePrLink('optaplanner', prLink)
+                        String prLink = commitAndCreatePR("Update snapshot version to ${nextMicroSnapshotVersion}")
+                        setPipelinePrLink(optaplannerRepository, prLink)
                     }
-                    dir('optaplanner') {
+                    dir(optaplannerRepository) {
                         sh "git checkout ${getBuildBranch()}"
-                        mergeAndPush('optaplanner', getPipelinePrLink('optaplanner'))
-                        setupMavenConfig()
+                        mergeAndPush(getPipelinePrLink(optaplannerRepository))
                         deployArtifacts()
+                    }
+                }
+            }
+        }
+
+        stage('Set Optaweb Vehicle Routing next snapshot version') {
+            when {
+                expression { return isRelease() }
+            }
+            steps {
+                script {
+                    String nextMicroSnapshotVersion = getNextMicroSnapshotVersion(getProjectVersion())
+                    dir("$vehicleRoutingRepository-bot") {
+                        prepareForPR(vehicleRoutingRepository)
+                        maven.mvnVersionsUpdateParentAndChildModules(nextMicroSnapshotVersion, true)
+                        addNotIgnoredPoms()
+                        String prLink = commitAndCreatePR("Update snapshot version to ${nextMicroSnapshotVersion}")
+                        setPipelinePrLink(vehicleRoutingRepository, prLink)
+                    }
+                    dir(vehicleRoutingRepository) {
+                        sh "git checkout ${getBuildBranch()}"
+                        mergeAndPush(getPipelinePrLink(vehicleRoutingRepository))
+                    }
+                }
+            }
+        }
+
+        stage('Set Optaweb Employee Rostering next snapshot version') {
+            when {
+                expression { return isRelease() }
+            }
+            steps {
+                script {
+                    String nextMicroSnapshotVersion = getNextMicroSnapshotVersion(getProjectVersion())
+                    dir("$employeeRosteringRepository-bot") {
+                        prepareForPR(employeeRosteringRepository)
+                        maven.mvnVersionsUpdateParentAndChildModules(nextMicroSnapshotVersion, true)
+                        addNotIgnoredPoms()
+                        String prLink = commitAndCreatePR("Update snapshot version to ${nextMicroSnapshotVersion}")
+                        setPipelinePrLink(employeeRosteringRepository, prLink)
+                    }
+                    dir(employeeRosteringRepository) {
+                        sh "git checkout ${getBuildBranch()}"
+                        mergeAndPush(getPipelinePrLink(employeeRosteringRepository))
                     }
                 }
             }
@@ -286,11 +411,15 @@ void checkoutRepo(String repo) {
     checkoutRepo(repo, getBuildBranch())
 }
 
-void mergeAndPush(String repo, String prLink) {
+void mergeAndPush(String prLink, String targetBranch) {
     if (prLink != '') {
         githubscm.mergePR(prLink, getGitAuthorCredsID())
-        githubscm.pushObject('origin', getBuildBranch(), getGitAuthorCredsID())
+        githubscm.pushObject('origin', targetBranch, getGitAuthorCredsID())
     }
+}
+
+void mergeAndPush(String prLink) {
+    mergeAndPush(prLink, getBuildBranch())
 }
 
 void tagLatest() {
@@ -353,19 +482,6 @@ void updateKogitoVersion(String newVersion) {
     maven.mvnSetVersionProperty('version.org.kie.kogito', newVersion)
 }
 
-void setupMavenConfig() {
-    if (isSpecificMavenConfig()) {
-        echo 'Setup Maven release config'
-        configFileProvider([configFile(fileId: maven.getSubmarineSettingsXmlId(), targetLocation: 'maven-settings.xml', variable: 'MAVEN_SETTINGS_FILE')]){
-            sh "echo '\n-Denforcer.skip=true' | tee -a .mvn/maven.config"
-            sh "echo '\n-B -s ${MAVEN_SETTINGS_FILE}' | tee -a .mvn/maven.config"
-            sh "sed -i 's|<repositories>|<repositories><repository><id>staging</id><name>Staging Repository</name><url>${params.MAVEN_DEPENDENCIES_REPOSITORY}</url><layout>default</layout><snapshots><enabled>true</enabled></snapshots><releases><enabled>true</enabled></releases></repository>|g' ${MAVEN_SETTINGS_FILE}"
-            sh "sed -i 's|<pluginRepositories>|<pluginRepositories><pluginRepository><id>staging</id><name>Staging Repository</name><url>${params.MAVEN_DEPENDENCIES_REPOSITORY}</url><layout>default</layout><snapshots><enabled>true</enabled></snapshots><releases><enabled>true</enabled></releases></pluginRepository>|g' ${MAVEN_SETTINGS_FILE}"
-            sh "sed -i 's|external:\\*|external:*,!staging|g' ${MAVEN_SETTINGS_FILE}" // Done to allow Maven to download release artifacts from MAVEN_DEPENDENCIES_REPOSITORY
-        }
-    }
-}
-
 boolean isSpecificMavenConfig() {
     return params.MAVEN_DEPENDENCIES_REPOSITORY != ''
 }
@@ -377,25 +493,35 @@ void deployArtifacts() {
     }
 
     if (isSpecificMavenConfig()) {
-        maven.runMaven(mvnCmd, true)
+        runMaven(mvnCmd, true)
     } else {
         maven.runMavenWithSubmarineSettings(mvnCmd, true)
     }
 }
 
-void mavenCleanInstall(String directory, boolean skipTests = false, List profiles = [], String extraArgs = '') {
-    runMaven('clean install', directory, skipTests, profiles, extraArgs)
+void mavenCleanInstall(boolean skipTests = false, List profiles = [], String extraArgs = '') {
+    runMaven('clean install', skipTests, profiles, extraArgs)
 }
 
-void runMaven(String goals, String directory, boolean skipTests = false, List profiles = [], String extraArgs = '') {
+void runMaven(String goals, boolean skipTests = false, List profiles = [], String extraArgs = '') {
     mvnCmd = goals
     if(!profiles.isEmpty()){
         mvnCmd += " -P${profiles.join(',')}"
     }
+    if (env.GLOBAL_MAVEN_ARGS != '') {
+        mvnCmd += " ${env.GLOBAL_MAVEN_ARGS}"
+    }
     if(extraArgs != ''){
         mvnCmd += " ${extraArgs}"
     }
-    dir(directory) {
-        maven.runMaven(mvnCmd, skipTests, ['-fae'])
+    maven.runMaven(mvnCmd, skipTests, ['-fae'])
+}
+
+void uploadDistribution() {
+    withCredentials(bindings: [sshUserPrivateKey(credentialsId: 'optaplanner-filemgmt',
+            keyFileVariable: 'SSH_KEY_JBOSS_FILEMGMT')]) {
+        // For testing, simulate connection via SSH:
+        // sh "ssh -i $SSH_KEY_JBOSS_FILEMGMT -oKexAlgorithms=+diffie-hellman-group1-sha1 optaplanner@filemgmt.jboss.org"
+        sh "./build/release/upload_distribution.sh ${getProjectVersion()} $SSH_KEY_JBOSS_FILEMGMT"
     }
 }
