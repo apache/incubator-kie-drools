@@ -37,9 +37,13 @@ public enum JavaCompilerFactory {
     }
 
     public JavaCompiler loadCompiler( JavaConfiguration.CompilerType compilerType, String lngLevel ) {
+        return loadCompiler( compilerType, lngLevel, "" );
+    }
+
+    public JavaCompiler loadCompiler( JavaConfiguration.CompilerType compilerType, String lngLevel, String sourceFolder ) {
         JavaCompiler compiler = createCompiler( compilerType ).orElseThrow( () -> new RuntimeException("Instance of " + compilerType + " compiler cannot be created!") );
         compiler.setJavaCompilerSettings( createSettings( compiler, compilerType, lngLevel ) );
-        compiler.setSourceFolder("src/main/java/");
+        compiler.setSourceFolder(sourceFolder);
         return compiler;
     }
 
