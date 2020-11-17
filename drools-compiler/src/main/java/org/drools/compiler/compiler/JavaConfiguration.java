@@ -108,9 +108,7 @@ public class JavaConfiguration
     }
 
     public static JavaCompiler createDefaultCompiler() {
-        JavaCompiler javaCompiler = JavaCompilerFactory.INSTANCE.loadCompiler(DEFAULT_JAVA_CONFIGURATION.getCompiler(), DEFAULT_JAVA_VERSION);
-        javaCompiler.setSourceFolder("src/main/java/");
-        return javaCompiler;
+        return JavaCompilerFactory.INSTANCE.loadCompiler(DEFAULT_JAVA_CONFIGURATION.getCompiler(), DEFAULT_JAVA_VERSION);
     }
 
     private String                      languageLevel;

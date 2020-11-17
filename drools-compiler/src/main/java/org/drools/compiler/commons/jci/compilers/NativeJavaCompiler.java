@@ -341,7 +341,7 @@ public class NativeJavaCompiler extends AbstractJavaCompiler {
             try {
                 Enumeration<URL> urlEnumeration = classLoader.getResources(packageName.replace('.', '/'));
                 if (!urlEnumeration.hasMoreElements()) {
-                    return findClassesIndexed(packageName);
+                    return findClassesFromPackage(packageName);
                 }
                 List<JavaFileObject> result = null;
                 while (urlEnumeration.hasMoreElements()) { // one URL for each jar on the classpath that has the given package
@@ -363,7 +363,7 @@ public class NativeJavaCompiler extends AbstractJavaCompiler {
             }
         }
 
-        private List<JavaFileObject> findClassesIndexed(String packageName) {
+        private List<JavaFileObject> findClassesFromPackage(String packageName) {
             List<JavaFileObject> result = new ArrayList<JavaFileObject>();
             for (String className : indexedClasses.getOrDefault( packageName, Collections.emptySet() )) {
                 String binaryName = packageName + "." + className;

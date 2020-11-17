@@ -38,14 +38,16 @@ public enum JavaCompilerFactory {
 
     public JavaCompiler loadCompiler( JavaConfiguration.CompilerType compilerType, String lngLevel ) {
         JavaCompiler compiler = createCompiler( compilerType ).orElseThrow( () -> new RuntimeException("Instance of " + compilerType + " compiler cannot be created!") );
-        compiler.setJavaCompilerSettings( updateSettings( compiler.createDefaultSettings(), lngLevel ) );
+        compiler.setJavaCompilerSettings( createSettings( compiler, compilerType, lngLevel ) );
+        compiler.setSourceFolder("src/main/java/");
         return compiler;
     }
 
-    private JavaCompilerSettings updateSettings( JavaCompilerSettings settings, String lngLevel ) {
+    private JavaCompilerSettings createSettings( JavaCompiler compiler, JavaConfiguration.CompilerType compilerType, String lngLevel ) {
+        JavaCompilerSettings settings = compiler.createDefaultSettings();
         settings.setTargetVersion( lngLevel );
         // FIXME: the native Java compiler doesn't work with JPMS
-        if (lngLevel.startsWith( "1." )) {
+        if (compilerType == JavaConfiguration.CompilerType.ECLIPSE || lngLevel.startsWith( "1." )) {
             settings.setSourceVersion( lngLevel );
         }
         return settings;
