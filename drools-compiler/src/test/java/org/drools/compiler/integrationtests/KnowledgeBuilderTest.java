@@ -35,7 +35,6 @@ import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.internal.utils.ServiceRegistry;
-import org.kie.api.internal.utils.ServiceRegistryImpl;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
@@ -454,7 +453,7 @@ public class KnowledgeBuilderTest {
     @Ignore
     @Test
     public void testResourceMapping() throws Exception {
-        ServiceRegistryImpl serviceRegistry = (ServiceRegistryImpl) ServiceRegistry.getInstance();
+        ServiceRegistry.Impl serviceRegistry = (ServiceRegistry.Impl) ServiceRegistry.getInstance();
         serviceRegistry.reset();
 /*
         ServiceDiscoveryImpl.getInstance().addService(PMMLCompiler.class.getCanonicalName(),

@@ -36,7 +36,6 @@ import org.kie.api.internal.assembler.KieAssemblerService;
 import org.kie.api.internal.assembler.KieAssemblers;
 import org.kie.api.internal.utils.ServiceDiscoveryImpl;
 import org.kie.api.internal.utils.ServiceRegistry;
-import org.kie.api.internal.utils.ServiceRegistryImpl;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
@@ -106,7 +105,7 @@ public final class DMNRuntimeUtil {
     public static void resetServices() {
         final ServiceDiscoveryImpl serviceDiscovery = ServiceDiscoveryImpl.getInstance();
         serviceDiscovery.reset();
-        final ServiceRegistryImpl instance = (ServiceRegistryImpl)ServiceRegistry.getInstance();
+        final ServiceRegistry.Impl instance = (ServiceRegistry.Impl)ServiceRegistry.getInstance();
         instance.reload();
     }
 
