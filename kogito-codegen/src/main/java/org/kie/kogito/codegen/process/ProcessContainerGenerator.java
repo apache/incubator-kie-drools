@@ -25,7 +25,9 @@ import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.BodyDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
@@ -34,11 +36,14 @@ import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.IfStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
+import com.github.javaparser.ast.type.UnknownType;
 import org.kie.kogito.codegen.AbstractApplicationSection;
 import org.kie.kogito.codegen.InvalidTemplateException;
 import org.kie.kogito.codegen.TemplatedGenerator;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 import org.kie.kogito.process.Processes;
+
+import static com.github.javaparser.ast.NodeList.nodeList;
 
 public class ProcessContainerGenerator extends AbstractApplicationSection {
 
@@ -80,14 +85,15 @@ public class ProcessContainerGenerator extends AbstractApplicationSection {
         ObjectCreationExpr newProcess = new ObjectCreationExpr()
                 .setType(r.targetCanonicalName())
                 .addArgument("application");
-        IfStmt byProcessId = new IfStmt(new MethodCallExpr(new StringLiteralExpr(r.processId()), "equals", NodeList.nodeList(new NameExpr("processId"))),
-                                        new ReturnStmt(new MethodCallExpr(
-                                                newProcess,
-                                                "configure")),
+        MethodCallExpr expr = new MethodCallExpr(newProcess, "configure");
+        MethodCallExpr method = new MethodCallExpr(new NameExpr("mappedProcesses"), "computeIfAbsent",
+                                                   nodeList(new StringLiteralExpr(r.processId()), 
+                                                            new LambdaExpr(new Parameter(new UnknownType(), "k"), expr)));
+        IfStmt byProcessId = new IfStmt(new MethodCallExpr(new StringLiteralExpr(r.processId()), "equals", nodeList(new NameExpr("processId"))),
+                                        new ReturnStmt(method),
                                         null);
 
-        byProcessIdBody
-                .addStatement(byProcessId);
+        byProcessIdBody.addStatement(byProcessId);
     }
 
     public ProcessContainerGenerator withDependencyInjection(DependencyInjectionAnnotator annotator) {
@@ -118,7 +124,7 @@ public class ProcessContainerGenerator extends AbstractApplicationSection {
     }
 
     private void setupProcessIds(CompilationUnit compilationUnit) {
-        NodeList<Expression> processIds = NodeList.nodeList(processes.stream().map(p -> new StringLiteralExpr(p.processId())).collect(Collectors.toList()));
+        NodeList<Expression> processIds = nodeList(processes.stream().map(p -> new StringLiteralExpr(p.processId())).collect(Collectors.toList()));
         processesBody
                 .addStatement(new ReturnStmt(new MethodCallExpr(new NameExpr(Arrays.class.getCanonicalName()), "asList", processIds)));
 

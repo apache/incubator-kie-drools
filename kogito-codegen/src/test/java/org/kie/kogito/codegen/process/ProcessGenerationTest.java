@@ -33,6 +33,7 @@ import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.assertj.core.api.Assertions;
 import org.jbpm.process.core.timer.Timer;
 import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
@@ -67,6 +68,7 @@ import org.kie.kogito.Model;
 import org.kie.kogito.codegen.AbstractCodegenTest;
 import org.kie.kogito.process.impl.AbstractProcess;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.jbpm.ruleflow.core.Metadata.ACTION;
 import static org.jbpm.ruleflow.core.Metadata.TRIGGER_REF;
 import static org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE;
@@ -127,6 +129,8 @@ public class ProcessGenerationTest extends AbstractCodegenTest {
 
         Application app = generateCodeProcessesOnly(processFile);
         AbstractProcess<? extends Model> process = (AbstractProcess<? extends Model>) app.processes().processById(expected.getId());
+        assertThat(process).isNotNull().isSameAs(app.processes().processById(expected.getId()));
+        
         RuleFlowProcess current = (RuleFlowProcess) process.process();
 
         assertNotNull(current);
