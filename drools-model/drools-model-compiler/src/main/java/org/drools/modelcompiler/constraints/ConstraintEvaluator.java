@@ -29,38 +29,56 @@ import org.drools.core.time.Interval;
 import org.drools.model.BitMask;
 import org.drools.model.Index;
 import org.drools.model.SingleConstraint;
+import org.drools.model.functions.Predicate1;
+import org.drools.model.functions.Predicate2;
+import org.drools.model.functions.PredicateN;
 
 public class ConstraintEvaluator {
 
     protected final SingleConstraint constraint;
 
-    private final Declaration[] declarations;
+    protected final Declaration[] declarations;
     private Declaration[] requiredDeclarations;
 
-    private final Declaration patternDeclaration;
     private final Pattern pattern;
+
+    private final InnerEvaluator innerEvaluator;
 
     public ConstraintEvaluator(Declaration[] declarations, SingleConstraint constraint) {
         this.constraint = constraint;
         this.pattern = null;
         this.declarations = declarations;
         this.requiredDeclarations = declarations;
-        this.patternDeclaration = null;
+        this.innerEvaluator = initInnerEvaluator(null);
     }
 
     public ConstraintEvaluator(Pattern pattern, SingleConstraint constraint) {
         this.constraint = constraint;
         this.pattern = pattern;
         this.declarations = new Declaration[] { pattern.getDeclaration() };
-        this.patternDeclaration = findPatternDeclaration();
         this.requiredDeclarations = new Declaration[0];
+        this.innerEvaluator = initInnerEvaluator(findPatternDeclaration());
     }
 
     public ConstraintEvaluator(Declaration[] declarations, Pattern pattern, SingleConstraint constraint) {
         this.constraint = constraint;
         this.declarations = declarations;
         this.pattern = pattern;
-        this.patternDeclaration = findPatternAndRequiredDeclaration();
+        this.innerEvaluator = initInnerEvaluator(findPatternAndRequiredDeclaration());
+    }
+
+    private InnerEvaluator initInnerEvaluator(Declaration patternDeclaration) {
+        if (isTemporal()) {
+            setPatternDeclaration( patternDeclaration );
+            return null;
+        }
+        if (declarations.length == 1) {
+            return new InnerEvaluator._1(patternDeclaration, declarations[0], constraint.getPredicate1());
+        }
+        if (declarations.length == 2) {
+            return new InnerEvaluator._2(patternDeclaration, declarations[0], declarations[1], constraint.getPredicate2());
+        }
+        return new InnerEvaluator._N(patternDeclaration, declarations, constraint.getPredicate());
     }
 
     private Declaration findPatternDeclaration() {
@@ -88,59 +106,18 @@ public class ConstraintEvaluator {
 
     public boolean evaluate( InternalFactHandle handle, InternalWorkingMemory workingMemory ) {
         try {
-            return declarations.length == 1 ?
-                    constraint.getPredicate1().test( getSingleArg( handle, workingMemory ) ) :
-                    constraint.getPredicate().test( getAlphaInvocationArgs( handle, workingMemory ) );
+            return innerEvaluator.evaluate( handle, workingMemory );
         } catch (Exception e) {
             throw new RuntimeException( e );
-        }
-    }
-
-    private Object getSingleArg( InternalFactHandle handle, InternalWorkingMemory workingMemory ) {
-        return declarations[0].isInternalFact() ? declarations[0].getValue( workingMemory, handle.getObject() ) : handle.getObject();
-    }
-
-    public Object[] getAlphaInvocationArgs( InternalFactHandle handle, InternalWorkingMemory workingMemory ) {
-        Object[] params = new Object[declarations.length];
-        for (int i = 0; i < params.length; i++) {
-            params[i] = getArgument( handle, workingMemory, declarations[i], null );
-        }
-        return params;
-    }
-
-    private Object getArgument( InternalFactHandle handle, InternalWorkingMemory workingMemory, Declaration declaration, Tuple tuple ) {
-        if (declaration == patternDeclaration) {
-            return handle.getObject();
-        } else {
-            Object object = tuple != null && declaration.getOffset() < tuple.size() ? tuple.getObject(declaration.getOffset()) : handle.getObject();
-            return declaration.getValue(workingMemory, object);
         }
     }
 
     public boolean evaluate(InternalFactHandle handle, Tuple tuple, InternalWorkingMemory workingMemory) {
         try {
-            return constraint.getPredicate().test( getBetaInvocationArgs( handle, tuple, workingMemory ) );
+            return innerEvaluator.evaluate( handle, tuple, workingMemory );
         } catch (Exception e) {
             throw new RuntimeException( e );
         }
-    }
-
-    private Object[] getBetaInvocationArgs( InternalFactHandle handle, Tuple tuple, InternalWorkingMemory workingMemory ) {
-        Object[] params = new Object[declarations.length];
-        for (int i = 0; i < declarations.length; i++) {
-            params[i] = getArgument( handle, workingMemory, declarations[i], tuple );
-        }
-        return params;
-    }
-
-    protected InternalFactHandle[] getBetaInvocationFactHandles( InternalFactHandle handle, Tuple tuple ) {
-        InternalFactHandle[] fhs = new InternalFactHandle[declarations.length];
-        for (int i = 0; i < fhs.length; i++) {
-            fhs[i] = declarations[i] == patternDeclaration ?
-                     handle :
-                     tuple.get(declarations[i].getOffset());
-        }
-        return fhs;
     }
 
     public Index getIndex() {
@@ -192,6 +169,17 @@ public class ConstraintEvaluator {
         for ( int i = 0; i < declarations.length; i++) {
             if ( declarations[i].equals( oldDecl )) {
                 declarations[i] = newDecl;
+                if (i == 0) {
+                    if (innerEvaluator instanceof InnerEvaluator._1) {
+                        (( InnerEvaluator._1 ) innerEvaluator).declaration = newDecl;
+                    }
+                    if (innerEvaluator instanceof InnerEvaluator._2) {
+                        (( InnerEvaluator._2 ) innerEvaluator).declaration1 = newDecl;
+                    }
+                }
+                if (i == 1 && innerEvaluator instanceof InnerEvaluator._2) {
+                    (( InnerEvaluator._2 ) innerEvaluator).declaration2 = newDecl;
+                }
                 break;
             }
         }
@@ -225,5 +213,110 @@ public class ConstraintEvaluator {
 
     public Interval getInterval() {
         throw new UnsupportedOperationException();
+    }
+
+    protected void setPatternDeclaration( Declaration patternDeclaration ) {
+        throw new UnsupportedOperationException();
+    }
+
+    static abstract class InnerEvaluator {
+
+        private final Declaration patternDeclaration;
+
+        protected InnerEvaluator( Declaration patternDeclaration ) {
+            this.patternDeclaration = patternDeclaration;
+        }
+
+        public abstract boolean evaluate( InternalFactHandle handle, InternalWorkingMemory workingMemory ) throws Exception;
+        public abstract boolean evaluate(InternalFactHandle handle, Tuple tuple, InternalWorkingMemory workingMemory) throws Exception;
+
+        protected Object getArgument( InternalFactHandle handle, InternalWorkingMemory workingMemory, Declaration declaration, Tuple tuple ) {
+            if (declaration == patternDeclaration) {
+                return handle.getObject();
+            } else {
+                Object object = tuple != null && declaration.getOffset() < tuple.size() ? tuple.getObject(declaration.getOffset()) : handle.getObject();
+                return declaration.getValue(workingMemory, object);
+            }
+        }
+
+        static class _1 extends InnerEvaluator {
+
+            private Declaration declaration;
+            private final Predicate1 predicate;
+
+            public _1( Declaration patternDeclaration, Declaration declaration, Predicate1 predicate ) {
+                super( patternDeclaration );
+                this.declaration = declaration;
+                this.predicate = predicate;
+            }
+
+            @Override
+            public boolean evaluate( InternalFactHandle handle, InternalWorkingMemory workingMemory ) throws Exception {
+                return predicate.test( getSingleArg( handle, workingMemory ) );
+            }
+
+            @Override
+            public boolean evaluate( InternalFactHandle handle, Tuple tuple, InternalWorkingMemory workingMemory ) throws Exception {
+                return predicate.test( getArgument( handle, workingMemory, declaration, tuple ) );
+            }
+
+            private Object getSingleArg( InternalFactHandle handle, InternalWorkingMemory workingMemory ) {
+                return declaration.isInternalFact() ? declaration.getValue( workingMemory, handle.getObject() ) : handle.getObject();
+            }
+        }
+
+        static class _2 extends InnerEvaluator {
+
+            private Declaration declaration1;
+            private Declaration declaration2;
+            private final Predicate2 predicate;
+
+            public _2( Declaration patternDeclaration, Declaration declaration1, Declaration declaration2, Predicate2 predicate ) {
+                super( patternDeclaration );
+                this.declaration1 = declaration1;
+                this.declaration2 = declaration2;
+                this.predicate = predicate;
+            }
+
+            @Override
+            public boolean evaluate( InternalFactHandle handle, InternalWorkingMemory workingMemory ) throws Exception {
+                return predicate.test( getArgument( handle, workingMemory, declaration1, null ), getArgument( handle, workingMemory, declaration2, null ) );
+            }
+
+            @Override
+            public boolean evaluate( InternalFactHandle handle, Tuple tuple, InternalWorkingMemory workingMemory ) throws Exception {
+                return predicate.test( getArgument( handle, workingMemory, declaration1, tuple ), getArgument( handle, workingMemory, declaration2, tuple ) );
+            }
+        }
+
+        static class _N extends InnerEvaluator {
+
+            private final Declaration[] declarations;
+            private final PredicateN predicate;
+
+            public _N( Declaration patternDeclaration, Declaration[] declarations, PredicateN predicate ) {
+                super( patternDeclaration );
+                this.declarations = declarations;
+                this.predicate = predicate;
+            }
+
+            @Override
+            public boolean evaluate( InternalFactHandle handle, InternalWorkingMemory workingMemory ) throws Exception {
+                return predicate.test( getInvocationArgs( handle, null, workingMemory ) );
+            }
+
+            @Override
+            public boolean evaluate( InternalFactHandle handle, Tuple tuple, InternalWorkingMemory workingMemory ) throws Exception {
+                return predicate.test( getInvocationArgs( handle, tuple, workingMemory ) );
+            }
+
+            private Object[] getInvocationArgs( InternalFactHandle handle, Tuple tuple, InternalWorkingMemory workingMemory ) {
+                Object[] params = new Object[declarations.length];
+                for (int i = 0; i < declarations.length; i++) {
+                    params[i] = getArgument( handle, workingMemory, declarations[i], tuple );
+                }
+                return params;
+            }
+        }
     }
 }
