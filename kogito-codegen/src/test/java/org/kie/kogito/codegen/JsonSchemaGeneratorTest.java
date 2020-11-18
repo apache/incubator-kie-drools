@@ -83,6 +83,16 @@ public class JsonSchemaGeneratorTest {
         @UserTaskParam(UserTaskParam.ParamType.INPUT)
         private Color color;
     }
+    
+    @UserTask(taskName = "name with spaces", processName = "InputOutput")
+    private static class WhitespacesTask {
+
+        @UserTaskParam(UserTaskParam.ParamType.OUTPUT)
+        private int age;
+
+        @UserTaskParam(UserTaskParam.ParamType.INPUT)
+        private String name;
+    }
 
     private static class Address {
 
@@ -168,6 +178,14 @@ public class JsonSchemaGeneratorTest {
         GeneratedFile file = files.iterator().next();
         assertEquals("InputOutput_test.json", file.relativePath());
         assertSchema(file, SchemaVersion.DRAFT_7);
+    }
+    
+    @Test
+    public void testJsonSchemaGeneratorWithSpace() throws IOException {
+        Collection<GeneratedFile> files = new JsonSchemaGenerator.ClassBuilder(Stream.of(WhitespacesTask.class)).build().generate();
+        assertEquals(1, files.size());
+        GeneratedFile file = files.iterator().next();
+        assertEquals("InputOutput_name_with_spaces.json", file.relativePath());
     }
 
     private void assertSchema(GeneratedFile file, SchemaVersion schemaVersion) throws IOException {

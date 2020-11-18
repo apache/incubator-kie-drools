@@ -41,7 +41,7 @@ public class JsonSchemaUtil {
     private static Path jsonDir = Paths.get("META-INF", "jsonSchema");
 
     public static String getJsonSchemaName(String processId, String taskName) {
-        return processId.replace('.', '#') + "_" + taskName;
+        return (processId + "_" + taskName).replace('.', '#').replaceAll("\\s", "_");
     }
 
     public static Path getJsonDir() {
