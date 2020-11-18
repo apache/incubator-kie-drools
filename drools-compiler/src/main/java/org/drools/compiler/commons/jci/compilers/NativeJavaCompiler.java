@@ -340,9 +340,6 @@ public class NativeJavaCompiler extends AbstractJavaCompiler {
         private List<JavaFileObject> findClassesInExternalJars(String packageName) {
             try {
                 Enumeration<URL> urlEnumeration = classLoader.getResources(packageName.replace('.', '/'));
-                if (!urlEnumeration.hasMoreElements()) {
-                    return findClassesFromPackage(packageName);
-                }
                 List<JavaFileObject> result = null;
                 while (urlEnumeration.hasMoreElements()) { // one URL for each jar on the classpath that has the given package
                     URL packageFolderURL = urlEnumeration.nextElement();
@@ -357,7 +354,7 @@ public class NativeJavaCompiler extends AbstractJavaCompiler {
                         }
                     }
                 }
-                return result == null ? Collections.emptyList() : result;
+                return result == null ? findClassesFromPackage(packageName) : result;
             } catch (IOException e) {
                 return Collections.emptyList();
             }
