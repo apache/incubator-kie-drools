@@ -18,7 +18,7 @@ package org.optaplanner.examples.cheaptime.app;
 
 import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
 import org.optaplanner.examples.cheaptime.domain.CheapTimeSolution;
-import org.optaplanner.examples.cheaptime.solver.score.CheapTimeEasyScoreCalculator;
+import org.optaplanner.examples.cheaptime.optional.score.CheapTimeEasyScoreCalculator;
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.app.UnsolvedDirSolveAllTurtleTest;
 

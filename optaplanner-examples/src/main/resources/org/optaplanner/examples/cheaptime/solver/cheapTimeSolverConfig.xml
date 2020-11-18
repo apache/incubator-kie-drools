@@ -10,12 +10,12 @@
 
   <!-- Score configuration -->
   <scoreDirectorFactory>
-    <!--<easyScoreCalculatorClass>org.optaplanner.examples.cheaptime.solver.score.CheapTimeEasyScoreCalculator</easyScoreCalculatorClass>-->
-    <incrementalScoreCalculatorClass>org.optaplanner.examples.cheaptime.solver.score.CheapTimeIncrementalScoreCalculator</incrementalScoreCalculatorClass>
+    <!--<easyScoreCalculatorClass>org.optaplanner.examples.cheaptime.optional.score.CheapTimeEasyScoreCalculator</easyScoreCalculatorClass>-->
+    <incrementalScoreCalculatorClass>org.optaplanner.examples.cheaptime.score.CheapTimeIncrementalScoreCalculator</incrementalScoreCalculatorClass>
     <!--<scoreDrl>org/optaplanner/examples/cheaptime/solver/cheapTimeConstraints.drl</scoreDrl>-->
     <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
     <!--<assertionScoreDirectorFactory>-->
-      <!--<easyScoreCalculatorClass>org.optaplanner.examples.cheaptime.solver.score.CheapTimeEasyScoreCalculator</easyScoreCalculatorClass>-->
+      <!--<easyScoreCalculatorClass>org.optaplanner.examples.cheaptime.optional.score.CheapTimeEasyScoreCalculator</easyScoreCalculatorClass>-->
     <!--</assertionScoreDirectorFactory>-->
   </scoreDirectorFactory>
 
@@ -39,7 +39,7 @@
       </changeMoveSelector>
       <swapMoveSelector/>
       <!--<moveIteratorFactory>-->
-        <!--<moveIteratorFactoryClass>org.optaplanner.examples.cheaptime.solver.move.factory.CheapTimePillarSlideMoveIteratorFactory</moveIteratorFactoryClass>-->
+        <!--<moveIteratorFactoryClass>org.optaplanner.examples.cheaptime.optional.solver.move.factory.CheapTimePillarSlideMoveIteratorFactory</moveIteratorFactoryClass>-->
       <!--</moveIteratorFactory>-->
     </unionMoveSelector>
     <acceptor>

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plannerBenchmark xmlns="https://www.optaplanner.org/xsd/benchmark" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.optaplanner.org/xsd/benchmark https://www.optaplanner.org/xsd/benchmark/benchmark.xsd">
+  <benchmarkDirectory>local/data/machinereassignment</benchmarkDirectory>
+  <!--<parallelBenchmarkCount>AUTO</parallelBenchmarkCount>-->
+
+  <inheritedSolverBenchmark>
+    <solver>
+      <!--<environmentMode>FAST_ASSERT</environmentMode>-->
+      <solutionClass>org.optaplanner.examples.machinereassignment.domain.MachineReassignment</solutionClass>
+      <entityClass>org.optaplanner.examples.machinereassignment.domain.MrProcessAssignment</entityClass>
+
+      <scoreDirectorFactory>
+        <incrementalScoreCalculatorClass>org.optaplanner.examples.machinereassignment.score.MachineReassignmentIncrementalScoreCalculator</incrementalScoreCalculatorClass>
+        <!--<scoreDrl>org/optaplanner/examples/machinereassignment/solver/machineReassignmentConstraints.drl</scoreDrl>-->
+      </scoreDirectorFactory>
+      <termination>
+        <minutesSpentLimit>5</minutesSpentLimit>
+      </termination>
+    </solver>
+    <problemBenchmarks>
+      <solutionFileIOClass>org.optaplanner.examples.machinereassignment.persistence.MachineReassignmentFileIO</solutionFileIOClass>
+      <!--<inputSolutionFile>data/machinereassignment/import/model_a1_1.txt</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/machinereassignment/import/model_a1_2.txt</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/machinereassignment/import/model_a1_3.txt</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/machinereassignment/import/model_a1_4.txt</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/machinereassignment/import/model_a1_5.txt</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/machinereassignment/import/model_a2_1.txt</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/machinereassignment/import/model_a2_2.txt</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/machinereassignment/import/model_a2_3.txt</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/machinereassignment/import/model_a2_4.txt</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/machinereassignment/import/model_a2_5.txt</inputSolutionFile>-->
+      <inputSolutionFile>data/machinereassignment/import/model_b_1.txt</inputSolutionFile>
+      <inputSolutionFile>data/machinereassignment/import/model_b_2.txt</inputSolutionFile>
+      <inputSolutionFile>data/machinereassignment/import/model_b_3.txt</inputSolutionFile>
+      <inputSolutionFile>data/machinereassignment/import/model_b_4.txt</inputSolutionFile>
+      <inputSolutionFile>data/machinereassignment/import/model_b_5.txt</inputSolutionFile>
+      <inputSolutionFile>data/machinereassignment/import/model_b_6.txt</inputSolutionFile>
+      <inputSolutionFile>data/machinereassignment/import/model_b_7.txt</inputSolutionFile>
+      <inputSolutionFile>data/machinereassignment/import/model_b_8.txt</inputSolutionFile>
+      <inputSolutionFile>data/machinereassignment/import/model_b_9.txt</inputSolutionFile>
+      <inputSolutionFile>data/machinereassignment/import/model_b_10.txt</inputSolutionFile>
+      <problemStatisticEnabled>false</problemStatisticEnabled>
+      <!--<problemStatisticType>BEST_SCORE</problemStatisticType>-->
+      <!--<problemStatisticType>STEP_SCORE</problemStatisticType>-->
+      <!--<problemStatisticType>SCORE_CALCULATION_SPEED</problemStatisticType>-->
+      <!--<problemStatisticType>BEST_SOLUTION_MUTATION</problemStatisticType>-->
+      <!--<problemStatisticType>MOVE_COUNT_PER_STEP</problemStatisticType>-->
+      <!--<problemStatisticType>MEMORY_USE</problemStatisticType>-->
+      <!--<singleStatisticType>CONSTRAINT_MATCH_TOTAL_BEST_SCORE</singleStatisticType>-->
+      <!--<singleStatisticType>CONSTRAINT_MATCH_TOTAL_STEP_SCORE</singleStatisticType>-->
+      <!--<singleStatisticType>PICKED_MOVE_TYPE_BEST_SCORE_DIFF</singleStatisticType>-->
+      <!--<singleStatisticType>PICKED_MOVE_TYPE_STEP_SCORE_DIFF</singleStatisticType>-->
+    </problemBenchmarks>
+  </inheritedSolverBenchmark>
+
+  <solverBenchmark>
+    <name>original</name>
+    <solver>
+      <customPhase>
+        <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
+      </customPhase>
+    </solver>
+  </solverBenchmark>
+  <solverBenchmark>
+    <name>Tabu Search</name>
+    <solver>
+      <customPhase>
+        <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
+      </customPhase>
+      <localSearch>
+        <unionMoveSelector>
+          <changeMoveSelector/>
+          <swapMoveSelector/>
+        </unionMoveSelector>
+        <acceptor>
+          <entityTabuSize>7</entityTabuSize>
+        </acceptor>
+        <forager>
+          <acceptedCountLimit>2000</acceptedCountLimit>
+        </forager>
+      </localSearch>
+    </solver>
+  </solverBenchmark>
+  <solverBenchmark>
+    <name>Late Acceptance</name>
+    <solver>
+      <customPhase>
+        <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
+      </customPhase>
+      <localSearch>
+        <unionMoveSelector>
+          <changeMoveSelector/>
+          <swapMoveSelector/>
+        </unionMoveSelector>
+        <acceptor>
+          <lateAcceptanceSize>500</lateAcceptanceSize>
+        </acceptor>
+        <forager>
+          <acceptedCountLimit>1</acceptedCountLimit>
+        </forager>
+      </localSearch>
+    </solver>
+  </solverBenchmark>
+</plannerBenchmark>

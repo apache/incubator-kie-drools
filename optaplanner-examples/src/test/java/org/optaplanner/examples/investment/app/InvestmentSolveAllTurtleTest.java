@@ -20,7 +20,7 @@ import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.app.UnsolvedDirSolveAllTurtleTest;
 import org.optaplanner.examples.investment.domain.InvestmentSolution;
-import org.optaplanner.examples.investment.solver.score.InvestmentEasyScoreCalculator;
+import org.optaplanner.examples.investment.optional.score.InvestmentEasyScoreCalculator;
 
 public class InvestmentSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTest<InvestmentSolution> {
 

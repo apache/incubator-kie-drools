@@ -10,13 +10,13 @@
 
   <!-- Score configuration -->
   <scoreDirectorFactory>
-    <!--<easyScoreCalculatorClass>org.optaplanner.examples.investment.solver.score.InvestmentEasyScoreCalculator</easyScoreCalculatorClass>-->
-    <!--<incrementalScoreCalculatorClass>org.optaplanner.examples.investment.solver.score.InvestmentIncrementalScoreCalculator</incrementalScoreCalculatorClass>-->
+    <!--<easyScoreCalculatorClass>org.optaplanner.examples.investment.optional.score.InvestmentEasyScoreCalculator</easyScoreCalculatorClass>-->
+    <!--<incrementalScoreCalculatorClass>org.optaplanner.examples.investment.optional.score.InvestmentIncrementalScoreCalculator</incrementalScoreCalculatorClass>-->
     <!--<constraintProviderClass>org.optaplanner.examples.investment.optional.score.InvestmentConstraintProvider</constraintProviderClass>-->
     <scoreDrl>org/optaplanner/examples/investment/solver/investmentConstraints.drl</scoreDrl>
     <initializingScoreTrend>ONLY_DOWN/ANY</initializingScoreTrend>
     <!--<assertionScoreDirectorFactory>-->
-    <!--<easyScoreCalculatorClass>org.optaplanner.examples.investment.solver.score.InvestmentEasyScoreCalculator</easyScoreCalculatorClass>-->
+    <!--<easyScoreCalculatorClass>org.optaplanner.examples.investment.optional.score.InvestmentEasyScoreCalculator</easyScoreCalculatorClass>-->
     <!--</assertionScoreDirectorFactory>-->
   </scoreDirectorFactory>
 

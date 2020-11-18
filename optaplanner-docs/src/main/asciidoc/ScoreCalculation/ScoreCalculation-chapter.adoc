@@ -499,7 +499,7 @@ Configure it in the solver configuration:
 [source,xml,options="nowrap"]
 ----
   <scoreDirectorFactory>
-    <easyScoreCalculatorClass>org.optaplanner.examples.nqueens.solver.score.NQueensEasyScoreCalculator</easyScoreCalculatorClass>
+    <easyScoreCalculatorClass>org.optaplanner.examples.nqueens.optional.score.NQueensEasyScoreCalculator</easyScoreCalculatorClass>
   </scoreDirectorFactory>
 ----
 
@@ -660,7 +660,7 @@ Configure it in the solver configuration:
 [source,xml,options="nowrap"]
 ----
   <scoreDirectorFactory>
-    <incrementalScoreCalculatorClass>org.optaplanner.examples.nqueens.solver.score.NQueensAdvancedIncrementalScoreCalculator</incrementalScoreCalculatorClass>
+    <incrementalScoreCalculatorClass>org.optaplanner.examples.nqueens.optional.score.NQueensAdvancedIncrementalScoreCalculator</incrementalScoreCalculatorClass>
   </scoreDirectorFactory>
 ----
 
@@ -805,9 +805,9 @@ To verify the constraints against an independent implementation, configure a ``a
   <environmentMode>FAST_ASSERT</environmentMode>
   ...
   <scoreDirectorFactory>
-    <constraintProviderClass>org.optaplanner.examples.nqueens.solver.score.NQueensConstraintProvider</constraintProviderClass>
+    <constraintProviderClass>org.optaplanner.examples.nqueens.optional.score.NQueensConstraintProviderorg.optaplanner.examples.nqueens.optional.score.NQueensConstraintProvider</constraintProviderClass>
     <assertionScoreDirectorFactory>
-      <easyScoreCalculatorClass>org.optaplanner.examples.nqueens.solver.score.NQueensEasyScoreCalculator</easyScoreCalculatorClass>
+      <easyScoreCalculatorClass>org.optaplanner.examples.nqueens.optional.score.NQueensEasyScoreCalculator</easyScoreCalculatorClass>
     </assertionScoreDirectorFactory>
   </scoreDirectorFactory>
 ----

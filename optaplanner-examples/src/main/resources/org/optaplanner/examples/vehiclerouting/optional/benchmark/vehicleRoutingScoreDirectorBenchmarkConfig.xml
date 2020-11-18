@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plannerBenchmark xmlns="https://www.optaplanner.org/xsd/benchmark" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.optaplanner.org/xsd/benchmark https://www.optaplanner.org/xsd/benchmark/benchmark.xsd">
+  <benchmarkDirectory>local/data/vehiclerouting</benchmarkDirectory>
+  <warmUpSecondsSpentLimit>30</warmUpSecondsSpentLimit>
+
+  <inheritedSolverBenchmark>
+    <solver>
+      <solutionClass>org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution</solutionClass>
+      <entityClass>org.optaplanner.examples.vehiclerouting.domain.Standstill</entityClass>
+      <entityClass>org.optaplanner.examples.vehiclerouting.domain.Customer</entityClass>
+      <entityClass>org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedCustomer</entityClass>
+
+      <scoreDirectorFactory>
+        <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
+      </scoreDirectorFactory>
+      <termination>
+        <secondsSpentLimit>60</secondsSpentLimit>
+      </termination>
+    </solver>
+    <problemBenchmarks>
+      <solutionFileIOClass>org.optaplanner.examples.vehiclerouting.persistence.VehicleRoutingFileIO</solutionFileIOClass>
+      <!-- Belgium datasets -->
+      <inputSolutionFile>data/vehiclerouting/import/belgium/basic/air/belgium-n50-k10.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/import/belgium/basic/air/belgium-n100-k10.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/import/belgium/basic/air/belgium-n500-k20.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/import/belgium/basic/air/belgium-n1000-k20.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/import/belgium/basic/air/belgium-n2750-k55.vrp</inputSolutionFile>
+    </problemBenchmarks>
+  </inheritedSolverBenchmark>
+
+  <solverBenchmark>
+    <name>Easy java</name>
+    <solver>
+      <scoreDirectorFactory>
+        <easyScoreCalculatorClass>org.optaplanner.examples.vehiclerouting.optional.score.VehicleRoutingEasyScoreCalculator</easyScoreCalculatorClass>
+      </scoreDirectorFactory>
+    </solver>
+  </solverBenchmark>
+  <solverBenchmark>
+    <name>Incremental java</name>
+    <solver>
+      <scoreDirectorFactory>
+        <incrementalScoreCalculatorClass>org.optaplanner.examples.vehiclerouting.optional.score.VehicleRoutingIncrementalScoreCalculator</incrementalScoreCalculatorClass>
+      </scoreDirectorFactory>
+    </solver>
+  </solverBenchmark>
+  <solverBenchmark>
+    <name>ConstraintStreams (Drools)</name>
+    <solver>
+      <scoreDirectorFactory>
+        <constraintProviderClass>org.optaplanner.examples.vehiclerouting.optional.score.VehicleRoutingConstraintProvider</constraintProviderClass>
+      </scoreDirectorFactory>
+    </solver>
+  </solverBenchmark>
+  <solverBenchmark>
+    <name>ConstraintStreams (Bavet)</name>
+    <solver>
+      <scoreDirectorFactory>
+        <constraintProviderClass>org.optaplanner.examples.vehiclerouting.optional.score.VehicleRoutingConstraintProvider</constraintProviderClass>
+        <constraintStreamImplType>BAVET</constraintStreamImplType>
+      </scoreDirectorFactory>
+    </solver>
+  </solverBenchmark>
+  <solverBenchmark>
+    <name>DRL (Drools)</name>
+    <solver>
+      <scoreDirectorFactory>
+        <scoreDrl>org/optaplanner/examples/vehiclerouting/solver/vehicleRoutingConstraints.drl</scoreDrl>
+      </scoreDirectorFactory>
+    </solver>
+  </solverBenchmark>
+</plannerBenchmark>

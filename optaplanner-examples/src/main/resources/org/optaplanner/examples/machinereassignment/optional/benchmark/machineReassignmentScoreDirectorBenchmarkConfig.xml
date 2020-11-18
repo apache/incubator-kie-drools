@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plannerBenchmark xmlns="https://www.optaplanner.org/xsd/benchmark" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.optaplanner.org/xsd/benchmark https://www.optaplanner.org/xsd/benchmark/benchmark.xsd">
+  <benchmarkDirectory>local/data/machinereassignment/scoreDirector</benchmarkDirectory>
+  <warmUpSecondsSpentLimit>60</warmUpSecondsSpentLimit>
+
+  <inheritedSolverBenchmark>
+    <solver>
+      <solutionClass>org.optaplanner.examples.machinereassignment.domain.MachineReassignment</solutionClass>
+      <entityClass>org.optaplanner.examples.machinereassignment.domain.MrProcessAssignment</entityClass>
+      <scoreDirectorFactory>
+      </scoreDirectorFactory>
+      <termination>
+        <minutesSpentLimit>5</minutesSpentLimit>
+      </termination>
+      <customPhase>
+        <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
+      </customPhase>
+      <localSearch>
+        <unionMoveSelector>
+          <changeMoveSelector/>
+          <swapMoveSelector/>
+        </unionMoveSelector>
+        <acceptor>
+          <entityTabuSize>5</entityTabuSize>
+        </acceptor>
+        <forager>
+          <acceptedCountLimit>1000</acceptedCountLimit>
+        </forager>
+      </localSearch>
+    </solver>
+    <problemBenchmarks>
+      <solutionFileIOClass>org.optaplanner.examples.machinereassignment.persistence.MachineReassignmentFileIO</solutionFileIOClass>
+      <inputSolutionFile>data/machinereassignment/import/model_a1_1.txt</inputSolutionFile>
+      <inputSolutionFile>data/machinereassignment/import/model_a1_2.txt</inputSolutionFile>
+      <inputSolutionFile>data/machinereassignment/import/model_a1_3.txt</inputSolutionFile>
+      <inputSolutionFile>data/machinereassignment/import/model_a1_4.txt</inputSolutionFile>
+      <inputSolutionFile>data/machinereassignment/import/model_a1_5.txt</inputSolutionFile>
+      <inputSolutionFile>data/machinereassignment/import/model_a2_1.txt</inputSolutionFile>
+      <inputSolutionFile>data/machinereassignment/import/model_a2_2.txt</inputSolutionFile>
+      <inputSolutionFile>data/machinereassignment/import/model_a2_3.txt</inputSolutionFile>
+      <inputSolutionFile>data/machinereassignment/import/model_a2_4.txt</inputSolutionFile>
+      <inputSolutionFile>data/machinereassignment/import/model_a2_5.txt</inputSolutionFile>
+    </problemBenchmarks>
+  </inheritedSolverBenchmark>
+
+  <solverBenchmark>
+    <name>TS with Incremental Java</name>
+    <solver>
+      <scoreDirectorFactory>
+        <incrementalScoreCalculatorClass>org.optaplanner.examples.machinereassignment.score.MachineReassignmentIncrementalScoreCalculator</incrementalScoreCalculatorClass>
+      </scoreDirectorFactory>
+    </solver>
+  </solverBenchmark>
+  <solverBenchmark>
+    <name>TS with Drools</name>
+    <solver>
+      <scoreDirectorFactory>
+        <scoreDrl>org/optaplanner/examples/machinereassignment/solver/machineReassignmentConstraints.drl</scoreDrl>
+      </scoreDirectorFactory>
+    </solver>
+  </solverBenchmark>
+</plannerBenchmark>

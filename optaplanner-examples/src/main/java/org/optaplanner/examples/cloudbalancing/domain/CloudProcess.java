@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,8 +18,8 @@ package org.optaplanner.examples.cloudbalancing.domain;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
-import org.optaplanner.examples.cloudbalancing.optional.domain.CloudComputerStrengthComparator;
-import org.optaplanner.examples.cloudbalancing.optional.domain.CloudProcessDifficultyComparator;
+import org.optaplanner.examples.cloudbalancing.domain.solver.CloudComputerStrengthComparator;
+import org.optaplanner.examples.cloudbalancing.domain.solver.CloudProcessDifficultyComparator;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;

@@ -12,12 +12,12 @@
   <entityClass>org.optaplanner.examples.coachshuttlegathering.domain.Coach</entityClass>
 
   <scoreDirectorFactory>
-    <!--<easyScoreCalculatorClass>org.optaplanner.examples.coachshuttlegathering.solver.CoachShuttleGatheringEasyScoreCalculator</easyScoreCalculatorClass>-->
-    <!--<incrementalScoreCalculatorClass>org.optaplanner.examples.coachshuttlegathering.solver.score.CoachShuttleGatheringIncrementalScoreCalculator</incrementalScoreCalculatorClass>-->
+    <!--<easyScoreCalculatorClass>org.optaplanner.examples.coachshuttlegathering.optional.score.CoachShuttleGatheringEasyScoreCalculator</easyScoreCalculatorClass>-->
+    <!--<incrementalScoreCalculatorClass>org.optaplanner.examples.coachshuttlegathering.optional.score.CoachShuttleGatheringIncrementalScoreCalculator</incrementalScoreCalculatorClass>-->
     <scoreDrl>org/optaplanner/examples/coachshuttlegathering/solver/coachShuttleGatheringConstraints.drl</scoreDrl>
-    <!--<constraintProviderClass>org.optaplanner.examples.coachshuttlegathering.solver.CoachShuttleGatheringConstraintProvider</constraintProviderClass>-->
+    <!--<constraintProviderClass>org.optaplanner.examples.coachshuttlegathering.optional.score.CoachShuttleGatheringConstraintProvider</constraintProviderClass>-->
     <!--<assertionScoreDirectorFactory>-->
-      <!--<easyScoreCalculatorClass>org.optaplanner.examples.coachshuttlegathering.solver.CoachShuttleGatheringEasyScoreCalculator</easyScoreCalculatorClass>-->
+      <!--<easyScoreCalculatorClass>org.optaplanner.examples.coachshuttlegathering.optional.score.CoachShuttleGatheringEasyScoreCalculator</easyScoreCalculatorClass>-->
     <!--</assertionScoreDirectorFactory>-->
     <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
   </scoreDirectorFactory>

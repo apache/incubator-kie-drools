@@ -1695,7 +1695,7 @@ Simple configuration (which can be nested in a `unionMoveSelector` just like any
 [source,xml,options="nowrap"]
 ----
     <moveListFactory>
-      <moveListFactoryClass>org.optaplanner.examples.cloudbalancing.optional.move.CloudComputerChangeMoveFactory</moveListFactoryClass>
+      <moveListFactoryClass>org.optaplanner.examples.cloudbalancing.optional.solver.move.CloudComputerChangeMoveFactory</moveListFactoryClass>
     </moveListFactory>
 ----
 
@@ -1705,7 +1705,7 @@ Advanced configuration:
 ----
     <moveListFactory>
       ... <!-- Normal moveSelector properties -->
-      <moveListFactoryClass>org.optaplanner.examples.cloudbalancing.optional.move.CloudComputerChangeMoveFactory</moveListFactoryClass>
+      <moveListFactoryClass>org.optaplanner.examples.cloudbalancing.optional.solver.move.CloudComputerChangeMoveFactory</moveListFactoryClass>
       <moveListFactoryCustomProperties>
         ...<!-- Custom properties -->
       </moveListFactoryCustomProperties>

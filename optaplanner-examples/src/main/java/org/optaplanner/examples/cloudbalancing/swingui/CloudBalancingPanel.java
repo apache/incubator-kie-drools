@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,10 +37,10 @@ import javax.swing.JPanel;
 import org.optaplanner.examples.cloudbalancing.domain.CloudBalance;
 import org.optaplanner.examples.cloudbalancing.domain.CloudComputer;
 import org.optaplanner.examples.cloudbalancing.domain.CloudProcess;
-import org.optaplanner.examples.cloudbalancing.optional.realtime.AddComputerProblemFactChange;
-import org.optaplanner.examples.cloudbalancing.optional.realtime.AddProcessProblemFactChange;
-import org.optaplanner.examples.cloudbalancing.optional.realtime.DeleteComputerProblemFactChange;
-import org.optaplanner.examples.cloudbalancing.optional.realtime.DeleteProcessProblemFactChange;
+import org.optaplanner.examples.cloudbalancing.swingui.realtime.AddComputerProblemFactChange;
+import org.optaplanner.examples.cloudbalancing.swingui.realtime.AddProcessProblemFactChange;
+import org.optaplanner.examples.cloudbalancing.swingui.realtime.DeleteComputerProblemFactChange;
+import org.optaplanner.examples.cloudbalancing.swingui.realtime.DeleteProcessProblemFactChange;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.common.swingui.components.LabeledComboBoxRenderer;
 import org.optaplanner.swing.impl.SwingUtils;

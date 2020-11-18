@@ -8,8 +8,8 @@
   <entityClass>org.optaplanner.examples.machinereassignment.domain.MrProcessAssignment</entityClass>
 
   <scoreDirectorFactory>
-    <incrementalScoreCalculatorClass>org.optaplanner.examples.machinereassignment.solver.score.MachineReassignmentIncrementalScoreCalculator</incrementalScoreCalculatorClass>
-    <!--<constraintProviderClass>org.optaplanner.examples.machinereassignment.solver.score.MachineReassignmentConstraintProvider</constraintProviderClass>-->
+    <incrementalScoreCalculatorClass>org.optaplanner.examples.machinereassignment.score.MachineReassignmentIncrementalScoreCalculator</incrementalScoreCalculatorClass>
+    <!--<constraintProviderClass>org.optaplanner.examples.machinereassignment.optional.score.MachineReassignmentConstraintProvider</constraintProviderClass>-->
     <!--<scoreDrl>org/optaplanner/examples/machinereassignment/solver/machineReassignmentConstraints.drl</scoreDrl>-->
     <!-- TODO incrementalScoreCalculator and scoreDRL give different scores, so assertionScoreDirectorFactory fails -->
     <!--<assertionScoreDirectorFactory>-->

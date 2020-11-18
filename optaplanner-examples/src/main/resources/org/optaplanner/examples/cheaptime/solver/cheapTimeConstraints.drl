@@ -29,10 +29,10 @@ import org.optaplanner.examples.cheaptime.domain.PeriodPowerPrice;
 import org.optaplanner.examples.cheaptime.domain.Task;
 import org.optaplanner.examples.cheaptime.domain.TaskAssignment;
 import org.optaplanner.examples.cheaptime.domain.TaskRequirement;
-import org.optaplanner.examples.cheaptime.solver.CheapTimeCostCalculator;
-import org.optaplanner.examples.cheaptime.solver.drools.IdleCost;
-import org.optaplanner.examples.cheaptime.solver.drools.PeriodWrapper;
-import org.optaplanner.examples.cheaptime.solver.drools.MachinePeriodPart;
+import org.optaplanner.examples.cheaptime.score.CheapTimeCostCalculator;
+import org.optaplanner.examples.cheaptime.optional.score.drools.IdleCost;
+import org.optaplanner.examples.cheaptime.optional.score.drools.PeriodWrapper;
+import org.optaplanner.examples.cheaptime.optional.score.drools.MachinePeriodPart;
 
 global HardMediumSoftLongScoreHolder scoreHolder;
 

@@ -84,7 +84,7 @@ public class LatitudeLongitudeTranslator {
     }
 
     public double translateYToLatitude(double y) {
-        return maximumLatitude - ((((double) y) - innerHeightMargin) * latitudeLength / innerHeight);
+        return maximumLatitude - ((y - innerHeightMargin) * latitudeLength / innerHeight);
     }
 
     public int getImageWidth() {

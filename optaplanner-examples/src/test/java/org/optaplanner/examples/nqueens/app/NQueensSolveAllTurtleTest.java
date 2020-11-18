@@ -20,7 +20,7 @@ import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.app.UnsolvedDirSolveAllTurtleTest;
 import org.optaplanner.examples.nqueens.domain.NQueens;
-import org.optaplanner.examples.nqueens.solver.score.NQueensEasyScoreCalculator;
+import org.optaplanner.examples.nqueens.optional.score.NQueensEasyScoreCalculator;
 
 public class NQueensSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTest<NQueens> {
 
