@@ -184,7 +184,6 @@ public class ActionCallMethodBuilder {
             default:
                 paramValue = adjustParam(dataType,
                                          param,
-                                         boundParams,
                                          isJavaDialect);
         }
         ActionFieldFunction actionField = new ActionFieldFunction(methodName,
@@ -286,7 +285,6 @@ public class ActionCallMethodBuilder {
                     new SimpleDateFormat(DateUtils.getDateFormatMask(),
                                          Locale.ENGLISH).parse(adjustParam(methodParamDataType,
                                                                            paramValue,
-                                                                           Collections.EMPTY_MAP,
                                                                            isJavaDialect));
                     return methodParamDataType;
                 } catch (ParseException e) {
@@ -304,7 +302,6 @@ public class ActionCallMethodBuilder {
                 try {
                     new BigDecimal(adjustParam(methodParamDataType,
                                                paramValue,
-                                               Collections.EMPTY_MAP,
                                                isJavaDialect));
                     return methodParamDataType;
                 } catch (NumberFormatException e) {
@@ -314,7 +311,6 @@ public class ActionCallMethodBuilder {
                 try {
                     new BigInteger(adjustParam(methodParamDataType,
                                                paramValue,
-                                               Collections.EMPTY_MAP,
                                                isJavaDialect));
                     return methodParamDataType;
                 } catch (NumberFormatException e) {
