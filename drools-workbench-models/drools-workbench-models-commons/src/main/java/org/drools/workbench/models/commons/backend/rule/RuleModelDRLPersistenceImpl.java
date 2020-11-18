@@ -2993,6 +2993,10 @@ public class RuleModelDRLPersistenceImpl
                                            m,
                                            isJavaDialect);
                     }
+                } else {
+                    FreeFormLine ffl = new FreeFormLine();
+                    ffl.setText(line);
+                    m.addRhsItem(ffl);
                 }
             } else if (line.startsWith("update")) {
                 String variable = unwrapParenthesis(line);
