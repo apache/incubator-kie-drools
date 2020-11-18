@@ -396,7 +396,9 @@ public class NativeJavaCompiler extends AbstractJavaCompiler {
                 classesField.setAccessible( true );
                 Collection<Class> classes = new ArrayList<>( (Collection<Class>) classesField.get( classLoader ) );
                 for (Class c : classes) {
-                    indexedClasses.computeIfAbsent( c.getPackage().getName(), p -> new HashSet<>() ).add( c.getSimpleName() );
+                    if (c.getPackage() != null) {
+                        indexedClasses.computeIfAbsent( c.getPackage().getName(), p -> new HashSet<>() ).add( c.getSimpleName() );
+                    }
                 }
             } catch (NoSuchFieldException | IllegalAccessException e) {
                 throw new RuntimeException( e );
