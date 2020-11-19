@@ -8624,6 +8624,52 @@ public class RuleModelDRLPersistenceUnmarshallingTest extends BaseRuleModelTest 
     }
 
     @Test
+    public void testDoNotAddEqualsToExpressionValues() {
+        String drl = "rule \"TestRule\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "t1 : Transaction( $transactiontime1 : transactiontime)\n" +
+                "Transaction( newtransactiontime.isBefore($transactiontime1))\n" +
+                "then\n" +
+                "end\n";
+
+        addModelField("Transaction",
+                      "this",
+                      "Transaction1",
+                      DataType.TYPE_THIS);
+        addModelField("Transaction",
+                      "newtransactiontime",
+                      "Transaction",
+                      DataType.TYPE_OBJECT);
+        addMethodInformation("Transaction",
+                             "isBefore",
+                             new ArrayList<String>() {{
+                                 add("Comparable");
+                             }},
+                             "boolean",
+                             null,
+                             DataType.TYPE_BOOLEAN);
+
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal(drl,
+                                                                                Collections.emptyList(),
+                                                                                dmo);
+
+        assertNotNull(m);
+
+        assertTrue(m.lhs[1] instanceof FactPattern);
+        FactPattern pattern = (FactPattern) m.lhs[1];
+        assertEquals("Transaction",
+                     pattern.getFactType());
+        assertTrue(pattern.getConstraint(0) instanceof SingleFieldConstraintEBLeftSide);
+        SingleFieldConstraintEBLeftSide fieldConstraint = (SingleFieldConstraintEBLeftSide) pattern.getConstraint(0);
+        assertTrue(fieldConstraint.getExpressionLeftSide().getParts().get(2) instanceof ExpressionMethod);
+        ExpressionMethod expressionMethod = (ExpressionMethod) fieldConstraint.getExpressionLeftSide().getParts().get(2);
+        ExpressionFormLine expressionFormLine = expressionMethod.getParams().values().iterator().next();
+        assertEquals("$transactiontime1",
+                     expressionFormLine.getParts().get(0).getName());
+    }
+
+    @Test
     public void testStringReplaceExpression() throws Exception {
         //https://bugzilla.redhat.com/show_bug.cgi?id=1264321
         String drl = "rule \"Replace_condition_Issue\"\n" +

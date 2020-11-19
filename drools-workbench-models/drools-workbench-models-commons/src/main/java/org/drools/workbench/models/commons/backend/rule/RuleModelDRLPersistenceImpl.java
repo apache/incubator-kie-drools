@@ -3462,7 +3462,6 @@ public class RuleModelDRLPersistenceImpl
             default:
                 paramValue = adjustParam(dataType,
                                          value,
-                                         boundParams,
                                          isJavaDialect);
         }
         ActionFieldValue fieldValue = new ActionFieldValue(field,
@@ -4108,7 +4107,6 @@ public class RuleModelDRLPersistenceImpl
 
             return RuleModelPersistenceHelper.adjustParam(paramDataType,
                                                           parameters.get(index).trim(),
-                                                          boundParams,
                                                           isJavaDialect);
         }
 
