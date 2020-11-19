@@ -258,4 +258,20 @@ and also in git under [path]_optaplanner/optaplanner-examples_.
 * Defined by us
 |
 
+|<<coachShuttleGathering,Coach shuttle gathering>>
+|* 2 entity class (BusStop, Shuttle)
+** 1 variable each (previousBusOrStop for BusStop, destination for Shuttle)
+* 1 shadow entity class (Coach)
+** 2 automatic shadow variable (next bus stop and
+passenger quantity total) (also on Shuttle)
+|* Entity <=  `6` shuttles and
+              `12` bus stops
+* Value <= `3` coaches, `6` shuttles and `12` bus stops
+* Search space <= `10^23`
+|* No
+* Defined by us
+|* Custom <<customVariableListener,VariableListener>>
+* <<shadowVariable,Shadow variable>>
+|
+
 |===
