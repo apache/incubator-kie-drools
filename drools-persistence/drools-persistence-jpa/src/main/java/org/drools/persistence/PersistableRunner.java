@@ -562,7 +562,12 @@ public class PersistableRunner implements SingleSessionCommandService {
         }
     }
 
+
+    private static ThreadLocal<String> txParent = new ThreadLocal<>();
+
     private class TransactionInterceptor extends AbstractInterceptor {
+
+
 
         public TransactionInterceptor() {
             setNext(new PseudoClockRunner());
@@ -582,15 +587,13 @@ public class PersistableRunner implements SingleSessionCommandService {
             PersistenceContext persistenceContext = jpm.getApplicationScopedPersistenceContext();
             // We flag the current persistence runner
             final String DROOLS_PARENT_RUNNER = "DROOLS_PARENT_RUNNER";
-            boolean isParentRunner = txm.getResource(DROOLS_PARENT_RUNNER) == null;
+            boolean isParentRunner = txParent.get() == null; //first time ?
+            if (isParentRunner) {
+                txParent.set(DROOLS_PARENT_RUNNER);
+            }
             boolean transactionOwner = false;
-
             try {
                 transactionOwner = txm.begin();
-                if (isParentRunner) {
-                    txm.putResource(DROOLS_PARENT_RUNNER, TRUE);
-                }
-
                 persistenceContext.joinTransaction();
 
                 initExistingKnowledgeSession( sessionInfo.getId(),
@@ -617,6 +620,10 @@ public class PersistableRunner implements SingleSessionCommandService {
                     rollbackTransaction(t1, transactionOwner);
                 }
                 throw new RuntimeException("Wrapped exception see cause", t1);
+            } finally {
+                if(isParentRunner) {
+                    txParent.remove();
+                }
             }
 
             return context;
