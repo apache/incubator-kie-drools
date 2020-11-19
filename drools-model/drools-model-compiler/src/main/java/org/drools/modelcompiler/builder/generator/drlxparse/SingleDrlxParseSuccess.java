@@ -274,6 +274,14 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
         return toRawClass( exprType );
     }
 
+    public Type getLeftExprType() {
+        return left != null ? left.getType() : getExprType();
+    }
+
+    public Class<?> getLeftExprRawClass() {
+        return left != null ? left.getRawClass() : getExprRawClass();
+    }
+
     public Class<?> getPatternType() {
         return patternType;
     }
