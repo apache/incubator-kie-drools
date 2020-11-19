@@ -115,6 +115,19 @@ public class KieRepositoryImpl
         return getKieModule(releaseId, null);
     }
 
+    public KieModule getKieModuleNoCached(ReleaseId releaseId) {
+        KieModule kieModule = checkClasspathForKieModule(releaseId);
+        if (kieModule == null) {
+            log.debug("KieModule Lookup. ReleaseId {} was not in cache, checking maven repository", releaseId.toExternalForm());
+            kieModule = checkClasspathForKieModule(releaseId);
+        }
+
+        if(kieModule == null) {
+            kieModule = loadKieModuleFromMavenRepo(releaseId, null);
+        } 
+        return kieModule;
+    }
+    
     public KieModule removeKieModule(ReleaseId releaseId) {
         return kieModuleRepo.remove(releaseId);
     }

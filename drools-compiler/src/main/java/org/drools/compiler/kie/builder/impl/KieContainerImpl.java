@@ -194,7 +194,8 @@ public class KieContainerImpl
 
     public Results updateToVersion(ReleaseId newReleaseId) {
         checkNotClasspathKieProject();
-        Results results = update(((KieModuleKieProject) kProject).getInternalKieModule(), newReleaseId);
+        ReleaseId installedReleaseId = getReleaseId();
+        Results results = update((InternalKieModule) ((KieRepositoryImpl) kr).getOldKieModule(installedReleaseId), newReleaseId);
         if (results != null) {
             containerReleaseId = newReleaseId;
         } else {
