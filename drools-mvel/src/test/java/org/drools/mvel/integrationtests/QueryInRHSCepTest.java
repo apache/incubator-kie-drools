@@ -16,24 +16,31 @@
 
 package org.drools.mvel.integrationtests;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CompletionService;
+import java.util.concurrent.ExecutorCompletionService;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import org.kie.api.time.SessionPseudoClock;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.conf.EventProcessingOption;
+import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.rule.QueryResults;
+import org.kie.api.time.SessionPseudoClock;
 import org.kie.internal.io.ResourceFactory;
+import org.kie.internal.utils.KieHelper;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class QueryInRHSCepTest {
 	private KieSession ksession;
@@ -140,7 +147,7 @@ public class QueryInRHSCepTest {
                 " insert(new QueryItemPojo());\n" +
                 " myGlobal.add(drools.getKieRuntime().getQueryResults(\"myQuery\"));\n"+
                 " end\n";
-        System.out.println(drl);
+
         final KieServices ks = KieServices.Factory.get();
         KieFileSystem kfs = ks.newKieFileSystem();
         KieModuleModel kmodule = ks.newKieModuleModel();
@@ -169,5 +176,81 @@ public class QueryInRHSCepTest {
         assertEquals(1, fired);
         assertEquals(1, myGlobal.size());
         assertEquals(2, ((QueryResults) myGlobal.get(0)).size()); // notice 1 is manually inserted, 1 get inserted from rule's RHS, for a total of 2.
+    }
+
+    @Test(timeout = 10000L)
+    public void testParallelQueryCallFromRuleAndAPI() {
+        String drl =
+                "global java.util.List myGlobal \n"+
+                "query \"myQuery\"\n" +
+                "    $r : String()\n" +
+                "end\n" +
+                "rule R when\n" +
+                "  $i : Integer()\n" +
+                "then\n" +
+                "  insert($i.toString());\n" +
+                "  myGlobal.add(drools.getKieRuntime().getQueryResults(\"myQuery\"));\n"+
+                "end\n";
+
+        KieSession kSession = new KieHelper().addContent(drl, ResourceType.DRL).build().newKieSession();
+
+        myGlobal = new ArrayList<>();
+        kSession.setGlobal("myGlobal", myGlobal);
+
+        int threadCount = 4;
+        int iterations = 1000;
+
+        ExecutorService executor = Executors.newFixedThreadPool(threadCount);
+
+        try {
+            final Callable[] tasks = new Callable[threadCount];
+            for (int i = 0; i < threadCount; i++) {
+                tasks[i] = createTask( kSession, iterations );
+            }
+
+            final CompletionService<Boolean> ecs = new ExecutorCompletionService<>( executor );
+            for (final Callable task : tasks) {
+                ecs.submit( task );
+            }
+
+            for (int i = 1; i <= iterations; i++) {
+                kSession.insert( i );
+                kSession.fireAllRules();
+                assertEquals( 1, myGlobal.size() );
+                assertEquals( i, (( QueryResults ) myGlobal.get( 0 )).size() );
+                myGlobal.clear();
+            }
+
+            int successCounter = 0;
+            for (int i = 0; i < threadCount; i++) {
+                try {
+                    if ( ecs.take().get() ) {
+                        successCounter++;
+                    }
+                } catch (final Exception e) {
+                    throw new RuntimeException( e );
+                }
+            }
+
+            assertEquals( successCounter, threadCount );
+        } finally {
+            kSession.dispose();
+            executor.shutdownNow();
+        }
+    }
+
+    private Callable<Boolean> createTask(KieSession kSession, int iterations) {
+        return () -> {
+            int currentValue = 0;
+            for (int i = 0; i < iterations; i++) {
+                QueryResults queryResults = kSession.getQueryResults( "myQuery" );
+                int newValue = queryResults.size();
+                if (newValue < currentValue) {
+                    return false;
+                }
+                currentValue = newValue;
+            }
+            return true;
+        };
     }
 }
