@@ -36,7 +36,8 @@ build:
   - project: kiegroup/drools
     build-command:
       current: |
-        mvn -e -nsu -Pwildfly clean install -Dmaven.test.failure.ignore=true -Dmaven.wagon.httpconnectionManager.ttlSeconds=25 -Dmaven.wagon.http.retryHandler.count=3
+        mvn -e -nsu clean install -Dmaven.test.failure.ignore=true -Dmaven.wagon.httpconnectionManager.ttlSeconds=25 -Dmaven.wagon.http.retryHandler.count=3
+        mvn org.apache.maven.plugins:maven-help-plugin:evaluate -Dexpression=project.version
         export DROOLS_VERSION=`mvn org.apache.maven.plugins:maven-help-plugin:evaluate -Dexpression=project.version | grep ^7`
 
   - project: kiegroup/kogito-runtimes
