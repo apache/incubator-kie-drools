@@ -18,10 +18,12 @@ package org.drools.ancompiler;
 
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.BetaNode;
+import org.drools.core.reteoo.CompositeObjectSinkAdapter.FieldIndex;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.WindowNode;
 import org.drools.core.rule.IndexableConstraint;
+import org.drools.core.util.index.AlphaRangeIndex;
 
 /**
  * An abstract adapter class for receiving network node events from the {@link org.kie.reteoo.compiled.ObjectTypeNodeParser}.
@@ -98,5 +100,21 @@ public class NetworkHandlerAdaptor implements NetworkHandler {
     @Override
     public void nullCaseAlphaNodeEnd(AlphaNode hashedAlpha) {
 
+    }
+
+    @Override
+    public void startRangeIndex(FieldIndex fieldIndex, AlphaRangeIndex alphaRangeIndex) {
+    }
+
+    @Override
+    public void endRangeIndex(FieldIndex fieldIndex, AlphaRangeIndex alphaRangeIndex) {
+    }
+
+    @Override
+    public void startRangeIndexedAlphaNode(AlphaNode alphaNode) {
+    }
+
+    @Override
+    public void endRangeIndexedAlphaNode(AlphaNode alphaNode) {
     }
 }

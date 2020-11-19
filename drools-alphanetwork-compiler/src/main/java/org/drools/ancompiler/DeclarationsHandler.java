@@ -22,8 +22,10 @@ import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.Sink;
 import org.drools.core.reteoo.WindowNode;
+import org.drools.core.reteoo.CompositeObjectSinkAdapter.FieldIndex;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.IndexableConstraint;
+import org.drools.core.util.index.AlphaRangeIndex;
 
 import java.util.*;
 
@@ -47,6 +49,8 @@ public class DeclarationsHandler extends AbstractCompilerHandler {
      * @see #startHashedAlphaNode(org.kie.reteoo.AlphaNode, Object)
      */
     private HashedAlphasDeclaration currentHashedAlpha;
+
+    private Map<String, AlphaRangeIndex> rangeIndexDeclarationMap = new HashMap<>();
 
     private final StringBuilder builder;
 
@@ -139,5 +143,34 @@ public class DeclarationsHandler extends AbstractCompilerHandler {
     @Override
     public void startHashedAlphaNode(AlphaNode hashedAlpha, Object hashedValue) {
         currentHashedAlpha.add(hashedValue, String.valueOf(hashedAlpha.getId()));
+    }
+
+    @Override
+    public void startRangeIndex(FieldIndex fieldIndex, AlphaRangeIndex alphaRangeIndex) {
+        builder.append(createRangeIndexDeclaration(fieldIndex, alphaRangeIndex)).append(NEWLINE);
+    }
+
+    private String createRangeIndexDeclaration(FieldIndex fieldIndex, AlphaRangeIndex alphaRangeIndex) {
+        int minId = getMinIdFromRangeIndex(alphaRangeIndex);
+        AlphaNode firstNode = alphaRangeIndex.getAllValues().stream().filter(alpha -> alpha.getId() == minId).findFirst().get();
+        String comment = firstNode.toString();
+        String variableName = getRangeIndexVariableName(alphaRangeIndex, minId);
+        rangeIndexDeclarationMap.put(variableName, alphaRangeIndex);
+        return PRIVATE_MODIFIER + " " + AlphaRangeIndex.class.getName() + " " + variableName + "; // including " + comment + " etc.";
+    }
+
+    public Map<String, AlphaRangeIndex> getRangeIndexDeclarationMap() {
+        return rangeIndexDeclarationMap;
+    }
+
+    @Override
+    public void startRangeIndexedAlphaNode(AlphaNode alphaNode) {
+        builder.append(getAlphaNodeVariableDeclaration(alphaNode)).append(NEWLINE); // range index uses AlphaNode rather than MVELConstraint
+    }
+
+    private String getAlphaNodeVariableDeclaration(AlphaNode alphaNode) {
+        String variableName = getAlphaNodeVariableName(alphaNode);
+        String comment = alphaNode.toString().replace("\\n", "");
+        return PRIVATE_MODIFIER + " " + AlphaNode.class.getName() + " " + variableName + "; // " + comment;
     }
 }
