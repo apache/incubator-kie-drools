@@ -38,13 +38,12 @@ build:
       current: |
         mvn -e -nsu clean install -Dmaven.test.failure.ignore=true -Dmaven.wagon.httpconnectionManager.ttlSeconds=25 -Dmaven.wagon.http.retryHandler.count=3
         mvn org.apache.maven.plugins:maven-help-plugin:evaluate -Dexpression=project.version
-        export DROOLS_VERSION=`mvn org.apache.maven.plugins:maven-help-plugin:evaluate -Dexpression=project.version | grep ^7`
 
   - project: kiegroup/kogito-runtimes
     build-command:
       current: |
-        mvn clean install -Dmaven.wagon.httpconnectionManager.ttlSeconds=25 -Dmaven.wagon.http.retryHandler.count=3  -Dversion.org.kie7=`echo $DROOLS_VERSION`
-        mvn -f kogito-runtimes-integration-tests/pom.xml clean install -Pintegration-tests -Dmaven.wagon.httpconnectionManager.ttlSeconds=25 -Dmaven.wagon.http.retryHandler.count=3 -Dversion.org.kie7=`echo $DROOLS_VERSION`
+        mvn clean install -Dmaven.wagon.httpconnectionManager.ttlSeconds=25 -Dmaven.wagon.http.retryHandler.count=3  -Dversion.org.kie7=7.47.0-SNAPSHOT
+        mvn -f kogito-runtimes-integration-tests/pom.xml clean install -Pintegration-tests -Dmaven.wagon.httpconnectionManager.ttlSeconds=25 -Dmaven.wagon.http.retryHandler.count=3 -Dversion.org.kie7=7.47.0-SNAPSHOT
     clone:
       - kogito-runtimes-integration-tests
 
