@@ -34,6 +34,7 @@ import static org.drools.core.base.evaluators.PointInTimeEvaluator.getTimestampF
 public class TemporalConstraintEvaluator extends ConstraintEvaluator {
 
     private final Interval interval;
+    private Declaration patternDeclaration;
 
     public TemporalConstraintEvaluator( Declaration[] declarations, Pattern pattern, SingleConstraint constraint ) {
         super( declarations, pattern, constraint );
@@ -57,6 +58,16 @@ public class TemporalConstraintEvaluator extends ConstraintEvaluator {
         } else {
             return temporalPredicate.evaluate( start1, duration1, end1, start2, duration2, end2);
         }
+    }
+
+    private InternalFactHandle[] getBetaInvocationFactHandles( InternalFactHandle handle, Tuple tuple ) {
+        InternalFactHandle[] fhs = new InternalFactHandle[declarations.length];
+        for (int i = 0; i < fhs.length; i++) {
+            fhs[i] = declarations[i] == patternDeclaration ?
+                    handle :
+                    tuple.get(declarations[i].getOffset());
+        }
+        return fhs;
     }
 
     private long getDuration( InternalFactHandle fh ) {
@@ -108,5 +119,10 @@ public class TemporalConstraintEvaluator extends ConstraintEvaluator {
     @Override
     public Interval getInterval() {
         return interval;
+    }
+
+    @Override
+    protected void setPatternDeclaration( Declaration patternDeclaration ) {
+        this.patternDeclaration = patternDeclaration;
     }
 }

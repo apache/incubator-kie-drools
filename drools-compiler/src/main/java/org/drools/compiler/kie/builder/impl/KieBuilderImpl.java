@@ -34,7 +34,6 @@ import org.appformer.maven.support.DependencyFilter;
 import org.appformer.maven.support.PomModel;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.commons.jci.compilers.CompilationResult;
-import org.drools.compiler.commons.jci.compilers.EclipseJavaCompiler;
 import org.drools.compiler.commons.jci.compilers.JavaCompiler;
 import org.drools.compiler.commons.jci.compilers.JavaCompilerFactory;
 import org.drools.compiler.commons.jci.readers.DiskResourceReader;
@@ -757,12 +756,9 @@ public class KieBuilderImpl
         }
     }
 
-    private JavaCompiler createCompiler( JavaConfiguration javaConf,
-                                         String prefix ) {
+    private JavaCompiler createCompiler( JavaConfiguration javaConf, String sourceFolder ) {
         JavaCompiler javaCompiler = JavaCompilerFactory.INSTANCE.loadCompiler( javaConf );
-        if ( javaCompiler instanceof EclipseJavaCompiler ) {
-            ( (EclipseJavaCompiler) javaCompiler ).setPrefix( prefix );
-        }
+        javaCompiler.setSourceFolder( sourceFolder );
         return javaCompiler;
     }
     

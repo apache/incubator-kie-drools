@@ -187,4 +187,34 @@ public class MultiKieBaseTest extends BaseModelTest {
         ks4.insert( "test" );
         assertEquals( 0, ks4.fireAllRules() ); // there is no "rules" package and folder is not relevant
     }
+
+    @Test
+    public void testDotInKieBaseName() throws Exception {
+        // DROOLS-5845
+        String drl1 =
+                "package org.pkg1\n" +
+                "rule R1 when\n" +
+                "   $m : String()\n" +
+                "then\n" +
+                "end\n";
+
+        KieServices ks = KieServices.get();
+
+        KieModuleModel kproj = ks.newKieModuleModel();
+
+        kproj.newKieBaseModel("Kie.Base")
+                .addPackage("org.pkg1")
+                .newKieSessionModel("Kie.Session");
+
+        ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-dor", "1.0.0" );
+        createAndDeployJar( ks, kproj, releaseId1,
+                new KieFile( "src/main/resources/org/pkg1/r1.drl", drl1 ) );
+
+        // Create a session and fire rules
+        KieContainer kieContainer = ks.newKieContainer( releaseId1 );
+
+        KieSession ks2 = kieContainer.newKieSession("Kie.Session");
+        ks2.insert( "test" );
+        assertEquals( 1, ks2.fireAllRules() ); // only rule in org.pkg1 should fire
+    }
 }

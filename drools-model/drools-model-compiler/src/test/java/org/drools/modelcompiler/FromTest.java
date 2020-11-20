@@ -1007,4 +1007,21 @@ public class FromTest extends BaseModelTest {
 
         Assertions.assertThat(list).containsExactlyInAnyOrder("AA", "AB", "BA", "BB");
     }
+
+    @Test
+    public void testFromBoolean() {
+        // DROOLS-5830
+        String str =
+                "rule R when\n" +
+                "  $a : String()\n" +
+                "  $b : String()\n" +
+                "  Boolean(booleanValue) from $a == $b\n" +
+                "then\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert( "A" );
+        assertEquals( 1, ksession.fireAllRules() );
+    }
 }

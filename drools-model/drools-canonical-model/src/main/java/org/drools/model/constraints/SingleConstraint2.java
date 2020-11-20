@@ -51,6 +51,11 @@ public class SingleConstraint2<A, B> extends AbstractSingleConstraint {
     }
 
     @Override
+    public Predicate2 getPredicate2() {
+        return predicate;
+    }
+
+    @Override
     public Variable[] getVariables() {
         return new Variable[] { var1, var2 };
     }
