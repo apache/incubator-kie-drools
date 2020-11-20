@@ -23,9 +23,9 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
       - name: Build Chain ${{ matrix.java-version }}
         id: build-chain
-        uses: kiegroup/github-action-build-chain@v2.3
+        uses: kiegroup/github-action-build-chain@issue_112
         with:
           definition-file: https://raw.githubusercontent.com/${GROUP}/drools/${BRANCH}/.ci/kogito-pull-request-config.yaml
-          flow-type: full-downstream
+          starting-project: kiegroup/kogito-examples
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
