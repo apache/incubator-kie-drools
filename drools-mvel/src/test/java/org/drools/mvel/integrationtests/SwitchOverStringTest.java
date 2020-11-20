@@ -32,17 +32,24 @@ public class SwitchOverStringTest {
         double javaVersion = Double.valueOf(System.getProperty("java.specification.version"));
         Assume.assumeTrue("Test only makes sense on Java 7+.", javaVersion >= 1.7);
         System.setProperty("drools.dialect.java.compiler.lnglevel", "1.7");
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(ResourceFactory.newByteArrayResource(FUNCTION_WITH_SWITCH_OVER_STRING.getBytes()), ResourceType.DRL);
-        Assert.assertFalse("Compilation error(s) occurred!", kbuilder.hasErrors());
+        try {
+            KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+            kbuilder.add( ResourceFactory.newByteArrayResource( FUNCTION_WITH_SWITCH_OVER_STRING.getBytes() ), ResourceType.DRL );
+            Assert.assertFalse( "Compilation error(s) occurred!", kbuilder.hasErrors() );
+        } finally {
+            System.clearProperty("drools.dialect.java.compiler.lnglevel");
+        }
     }
 
     @Test
     public void testShouldFailToCompileSwitchOverStringWithLngLevel16() {
         System.setProperty("drools.dialect.java.compiler.lnglevel", "1.6");
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(ResourceFactory.newByteArrayResource(FUNCTION_WITH_SWITCH_OVER_STRING.getBytes()), ResourceType.DRL);
-        Assert.assertTrue("Compilation error(s) expected!", kbuilder.hasErrors());
+        try {
+            KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+            kbuilder.add(ResourceFactory.newByteArrayResource(FUNCTION_WITH_SWITCH_OVER_STRING.getBytes()), ResourceType.DRL);
+            Assert.assertTrue("Compilation error(s) expected!", kbuilder.hasErrors());
+        } finally {
+            System.clearProperty("drools.dialect.java.compiler.lnglevel");
+        }
     }
-
 }

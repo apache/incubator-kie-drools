@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
+import org.drools.compiler.commons.jci.compilers.JavaCompiler;
+import org.drools.compiler.commons.jci.compilers.JavaCompilerFactory;
 import org.drools.compiler.lang.descr.AndDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.EntryPointDescr;
@@ -77,17 +79,37 @@ public class JavaConfiguration
     implements
     DialectConfiguration {
 
+    private static final Logger log = LoggerFactory.getLogger( JavaConfiguration.class );
+
+    // This should be in alphabetic order to search with BinarySearch
+    protected static final String[]  LANGUAGE_LEVELS = new String[]{"1.5", "1.6", "1.7", "1.8", "10", "11", "12", "13", "14", "15", "9"};
+
+    private static final JavaConfiguration DEFAULT_JAVA_CONFIGURATION = new JavaConfiguration(new KnowledgeBuilderConfigurationImpl(JavaConfiguration.class.getClassLoader()));
+    private static final String DEFAULT_JAVA_VERSION = findJavaVersion(DEFAULT_JAVA_CONFIGURATION.conf.getChainedProperties());
+
     protected static final transient Logger logger = LoggerFactory.getLogger( JavaConfiguration.class);
 
     public static final String JAVA_COMPILER_PROPERTY = "drools.dialect.java.compiler";
     public static final String JAVA_LANG_LEVEL_PROPERTY = "drools.dialect.java.compiler.lnglevel";
 
     public enum CompilerType {
-        ECLIPSE, NATIVE
+        ECLIPSE("org.drools.ecj.EclipseJavaCompiler"),
+        NATIVE("org.drools.compiler.commons.jci.compilers.NativeJavaCompiler");
+
+        private final String implClassName;
+
+        CompilerType( String implClassName ) {
+            this.implClassName = implClassName;
+        }
+
+        public String getImplClassName() {
+            return implClassName;
+        }
     }
 
-    // This should be in alphabetic order to search with BinarySearch
-    protected static final String[]  LANGUAGE_LEVELS = new String[]{"1.5", "1.6", "1.7", "1.8", "10", "11", "12", "9"};
+    public static JavaCompiler createDefaultCompiler() {
+        return JavaCompilerFactory.INSTANCE.loadCompiler(DEFAULT_JAVA_CONFIGURATION.getCompiler(), DEFAULT_JAVA_VERSION, "src/main/java/");
+    }
 
     private String                      languageLevel;
 
@@ -95,7 +117,10 @@ public class JavaConfiguration
 
     private CompilerType                compiler;
 
-    public JavaConfiguration() {
+    public JavaConfiguration() { }
+
+    public JavaConfiguration(KnowledgeBuilderConfigurationImpl conf) {
+        init( conf );
     }
 
     public void init(final KnowledgeBuilderConfigurationImpl conf) {
@@ -107,8 +132,7 @@ public class JavaConfiguration
     }
 
     public static String findJavaVersion( ChainedProperties chainedProperties) {
-        String level = chainedProperties.getProperty(JAVA_LANG_LEVEL_PROPERTY,
-                System.getProperty("java.version"));
+        String level = chainedProperties.getProperty(JAVA_LANG_LEVEL_PROPERTY, System.getProperty("java.version"));
 
         if ( level.startsWith( "1.5" ) ) {
             return "1.5";
@@ -122,13 +146,9 @@ public class JavaConfiguration
             return "9";
         } else if ( level.startsWith( "10" ) ) {
             return "10";
-        } else if ( level.startsWith( "11" ) ) {
-            return "11";
-        } else if ( level.startsWith( "12" ) ) {
-            return "11";
-        } else {
-            return "1.8";
         }
+
+        return "11";
     }
 
     public KnowledgeBuilderConfigurationImpl getPackageBuilderConfiguration() {
@@ -148,8 +168,7 @@ public class JavaConfiguration
      * @param languageLevel
      */
     public void setJavaLanguageLevel(final String languageLevel) {
-        if ( Arrays.binarySearch( LANGUAGE_LEVELS,
-                                  languageLevel ) < 0 ) {
+        if ( Arrays.binarySearch( LANGUAGE_LEVELS, languageLevel ) < 0 ) {
             throw new RuntimeException( "value '" + languageLevel + "' is not a valid language level" );
         }
         this.languageLevel = languageLevel;
@@ -160,15 +179,6 @@ public class JavaConfiguration
      * This overrides the default, and even what was set as a system property. 
      */
     public void setCompiler(final CompilerType compiler) {
-        // check that the jar for the specified compiler are present
-        if ( compiler == CompilerType.ECLIPSE ) {
-            try {
-                Class.forName( "org.eclipse.jdt.internal.compiler.Compiler", true, this.conf.getClassLoader() );
-            } catch ( ClassNotFoundException e ) {
-                throw new RuntimeException( "The Eclipse JDT Core jar is not in the classpath" );
-            }
-        }
-        
         switch ( compiler ) {
             case ECLIPSE :
                 this.compiler = CompilerType.ECLIPSE;
@@ -178,6 +188,15 @@ public class JavaConfiguration
                 break;
             default :
                 throw new RuntimeException( "value '" + compiler + "' is not a valid compiler" );
+        }
+    }
+
+    public boolean hasEclipseCompiler() {
+        try {
+            Class.forName( CompilerType.ECLIPSE.getImplClassName(), true, this.conf.getClassLoader() );
+            return true;
+        } catch ( ClassNotFoundException e ) {
+            return false;
         }
     }
 
@@ -192,11 +211,15 @@ public class JavaConfiguration
      */
     private CompilerType getDefaultCompiler() {
         try {
-            final String prop = this.conf.getChainedProperties().getProperty( JAVA_COMPILER_PROPERTY,
-                                                                              "ECLIPSE" );
-            if ( prop.equals( "NATIVE" ) ) {
+            final String prop = this.conf.getChainedProperties().getProperty( JAVA_COMPILER_PROPERTY, hasEclipseCompiler() ? "ECLIPSE" : "NATIVE" );
+            if (log.isDebugEnabled()) {
+                log.debug( "Selected compiler " + prop + " [drools.dialect.java.compiler:" +
+                        this.conf.getChainedProperties().getProperty( JAVA_COMPILER_PROPERTY, null ) + ", hasEclipseCompiler:" + hasEclipseCompiler() + "]" );
+            }
+
+            if ( prop.equalsIgnoreCase( "NATIVE" ) ) {
                 return CompilerType.NATIVE;
-            } else if ( prop.equals( "ECLIPSE" ) ) {
+            } else if ( prop.equalsIgnoreCase( "ECLIPSE" ) ) {
                 return CompilerType.ECLIPSE;
             } else {
                 logger.error( "Drools config: unable to use the drools.compiler property. Using default. It was set to:" + prop );

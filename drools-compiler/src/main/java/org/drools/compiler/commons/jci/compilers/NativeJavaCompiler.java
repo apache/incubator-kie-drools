@@ -23,13 +23,18 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
+import java.lang.reflect.Field;
 import java.net.JarURLConnection;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -82,35 +87,39 @@ public class NativeJavaCompiler extends AbstractJavaCompiler {
         DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<JavaFileObject>();
         javax.tools.JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
 
-        StandardJavaFileManager jFileManager = compiler.getStandardFileManager(diagnostics, null, null);
-        try {
-            jFileManager.setLocation(StandardLocation.CLASS_PATH, pSettings.getClasspathLocations());
-        } catch (IOException e) {
-            // ignore if cannot set the classpath
-        }
-
-        MemoryFileManager fileManager = new MemoryFileManager(jFileManager, pClassLoader);
-
-        final List<JavaFileObject> units = new ArrayList<JavaFileObject>();
-        for (final String sourcePath : pResourcePaths) {
-            units.add(new CompilationUnit(sourcePath, pReader));
-        }
-
-        Iterable<String> options = new NativeJavaCompilerSettings(pSettings).toOptionsList();
-
-        if (compiler.getTask(null, fileManager, diagnostics, options, null, units).call()) {
-            for (CompilationOutput compilationOutput : fileManager.getOutputs()) {
-                pStore.write(compilationOutput.getBinaryName().replace('.', '/') + ".class", compilationOutput.toByteArray());
+        try (StandardJavaFileManager jFileManager = compiler.getStandardFileManager(diagnostics, null, null)) {
+            try {
+                jFileManager.setLocation( StandardLocation.CLASS_PATH, pSettings.getClasspathLocations() );
+            } catch (IOException e) {
+                // ignore if cannot set the classpath
             }
-            return new CompilationResult(new CompilationProblem[0]);
-        }
 
-        List<Diagnostic<? extends JavaFileObject>> problems = diagnostics.getDiagnostics();
-        CompilationProblem[] result = new CompilationProblem[problems.size()];
-        for (int i = 0; i < problems.size(); i++) {
-            result[i] = new NativeCompilationProblem((Diagnostic<JavaFileObject>)problems.get(i));
+            try (MemoryFileManager fileManager = new MemoryFileManager( jFileManager, pClassLoader )) {
+                final List<JavaFileObject> units = new ArrayList<JavaFileObject>();
+                for (final String sourcePath : pResourcePaths) {
+                    units.add( new CompilationUnit( sourcePath, pReader ) );
+                }
+
+                Iterable<String> options = new NativeJavaCompilerSettings( pSettings ).toOptionsList();
+
+                if ( compiler.getTask( null, fileManager, diagnostics, options, null, units ).call() ) {
+                    for (CompilationOutput compilationOutput : fileManager.getOutputs()) {
+                        pStore.write( compilationOutput.getBinaryName().replace( '.', '/' ) + ".class", compilationOutput.toByteArray() );
+                    }
+                    return new CompilationResult( new CompilationProblem[0] );
+                }
+            }
+
+            List<Diagnostic<? extends JavaFileObject>> problems = diagnostics.getDiagnostics();
+            CompilationProblem[] result = new CompilationProblem[problems.size()];
+            for (int i = 0; i < problems.size(); i++) {
+                result[i] = new NativeCompilationProblem( ( Diagnostic<JavaFileObject> ) problems.get( i ) );
+            }
+
+            return new CompilationResult( result );
+        } catch (IOException e) {
+            throw new RuntimeException( e );
         }
-        return new CompilationResult(result);
     }
 
     private static class CompilationUnit extends SimpleJavaFileObject {
@@ -261,7 +270,6 @@ public class NativeJavaCompiler extends AbstractJavaCompiler {
             return binaryName;
         }
 
-
         @Override
         public String toString() {
             return "CustomJavaFileObject{" +
@@ -273,10 +281,12 @@ public class NativeJavaCompiler extends AbstractJavaCompiler {
     private static class MemoryFileManager extends ForwardingJavaFileManager<JavaFileManager> {
         private final List<CompilationOutput> outputs = new ArrayList<CompilationOutput>();
         private final ClassLoader classLoader;
+        private final Map<String, Set<String>> indexedClasses;
 
         MemoryFileManager(JavaFileManager fileManager, ClassLoader classLoader) {
             super(fileManager);
             this.classLoader = classLoader;
+            this.indexedClasses = indexClassesByPackage();
         }
 
         @Override
@@ -330,9 +340,6 @@ public class NativeJavaCompiler extends AbstractJavaCompiler {
         private List<JavaFileObject> findClassesInExternalJars(String packageName) {
             try {
                 Enumeration<URL> urlEnumeration = classLoader.getResources(packageName.replace('.', '/'));
-                if (!urlEnumeration.hasMoreElements()) {
-                    return Collections.emptyList();
-                }
                 List<JavaFileObject> result = null;
                 while (urlEnumeration.hasMoreElements()) { // one URL for each jar on the classpath that has the given package
                     URL packageFolderURL = urlEnumeration.nextElement();
@@ -347,9 +354,51 @@ public class NativeJavaCompiler extends AbstractJavaCompiler {
                         }
                     }
                 }
-                return result == null ? Collections.<JavaFileObject>emptyList() : result;
+                return result == null ? findClassesFromPackage(packageName) : result;
             } catch (IOException e) {
                 return Collections.emptyList();
+            }
+        }
+
+        private List<JavaFileObject> findClassesFromPackage(String packageName) {
+            List<JavaFileObject> result = new ArrayList<JavaFileObject>();
+            for (String className : indexedClasses.getOrDefault( packageName, Collections.emptySet() )) {
+                String binaryName = packageName + "." + className;
+                URL classUrl = classLoader.getResource(binaryName.replace('.', '/') + ".class");
+                if (classUrl != null) {
+                    try {
+                        result.add(new CustomJavaFileObject(binaryName, classUrl.toURI()));
+                    } catch (URISyntaxException e) {
+                        throw new RuntimeException( e );
+                    }
+                }
+            }
+            return result;
+        }
+
+        private Map<String, Set<String>> indexClassesByPackage() {
+            Map<String, Set<String>> indexedClasses = new HashMap<>();
+            for (ClassLoader cl = classLoader; cl != null; cl = cl.getParent()) {
+                indexClassesByPackage(indexedClasses, cl);
+            }
+            return indexedClasses;
+        }
+
+        private void indexClassesByPackage(Map<String, Set<String>> indexedClasses, ClassLoader classLoader) {
+            if (classLoader instanceof ProjectClassLoader || classLoader == NativeJavaCompiler.class.getClassLoader()) {
+                return;
+            }
+            try {
+                Field classesField = ClassLoader.class.getDeclaredField( "classes" );
+                classesField.setAccessible( true );
+                Collection<Class> classes = new ArrayList<>( (Collection<Class>) classesField.get( classLoader ) );
+                for (Class c : classes) {
+                    if (c.getPackage() != null) {
+                        indexedClasses.computeIfAbsent( c.getPackage().getName(), p -> new HashSet<>() ).add( c.getSimpleName() );
+                    }
+                }
+            } catch (NoSuchFieldException | IllegalAccessException e) {
+                throw new RuntimeException( e );
             }
         }
 
@@ -369,13 +418,13 @@ public class NativeJavaCompiler extends AbstractJavaCompiler {
             Enumeration<JarEntry> entryEnum = jarConn.getJarFile().entries();
             while (entryEnum.hasMoreElements()) {
                 String name = entryEnum.nextElement().getName();
-                if (name.startsWith(rootEntryName) && name.indexOf('/', rootEnd) == -1 && name.endsWith(".class")) {
-                    URI uri = URI.create(jarUri + "!/" + name);
-                    String binaryName = name.substring(0, name.length()-6).replace('/', '.');
-                    if (result == null) {
+                if ( name.startsWith( rootEntryName ) && name.indexOf( '/', rootEnd ) == -1 && name.endsWith( ".class" ) ) {
+                    URI uri = URI.create( jarUri + "!/" + name );
+                    String binaryName = name.substring( 0, name.length() - 6 ).replace( '/', '.' );
+                    if ( result == null ) {
                         result = new ArrayList<JavaFileObject>();
                     }
-                    result.add(new CustomJavaFileObject(binaryName, uri));
+                    result.add( new CustomJavaFileObject( binaryName, uri ) );
                 }
             }
             return result;
