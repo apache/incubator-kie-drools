@@ -20,6 +20,7 @@
     <module>jobs</module>
     <module>predictions</module>
     <module>process-management</module>
+    <module>process-svg</module>
     <module>tracing</module>
     <module>explainability-addon</module>
   </modules>

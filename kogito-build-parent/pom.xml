@@ -135,6 +135,7 @@
     <version.org.kie7>7.46.0.Beta1</version.org.kie7>
     <version.org.reflections>0.9.11</version.org.reflections>
     <version.org.slf4j>1.7.30</version.org.slf4j>
+    <version.wiremock>2.27.2</version.wiremock>
     <version.testcontainers>1.15.0</version.testcontainers>
     <version.resteasy.springboot>4.6.0.Final</version.resteasy.springboot>
     <version.springboot>2.3.1.RELEASE</version.springboot>
@@ -148,6 +149,8 @@
     <version.com.github.java-json-tools>2.2.10</version.com.github.java-json-tools>
     <version.json>20200518</version.json>
     <version.org.mongo>4.1.0</version.org.mongo>
+    <version.org.apache.xmlgraphics.batik>1.13</version.org.apache.xmlgraphics.batik>
+    <version.xerces>2.11.0</version.xerces>
 
     <!-- container images for testing -->
     <container.image.infinispan>infinispan/server:${version.org.infinispan}</container.image.infinispan>
@@ -552,6 +555,12 @@
         <version>${version.testcontainers}</version>
         <scope>test</scope>
       </dependency>
+      <dependency>
+        <groupId>com.github.tomakehurst</groupId>
+        <artifactId>wiremock-jre8</artifactId>
+        <version>${version.wiremock}</version>
+        <scope>test</scope>
+      </dependency>
 
       <dependency>
         <groupId>org.apache.maven</groupId>
@@ -795,6 +804,23 @@
         <groupId>org.json</groupId>
         <artifactId>json</artifactId>
         <version>${version.json}</version>
+      </dependency>
+
+      <!-- Process SVG -->
+      <dependency>
+        <groupId>org.apache.xmlgraphics</groupId>
+        <artifactId>batik-util</artifactId>
+        <version>${version.org.apache.xmlgraphics.batik}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.xmlgraphics</groupId>
+        <artifactId>batik-anim</artifactId>
+        <version>${version.org.apache.xmlgraphics.batik}</version>
+      </dependency>
+      <dependency>
+        <groupId>xerces</groupId>
+        <artifactId>xercesImpl</artifactId>
+        <version>${version.xerces}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
