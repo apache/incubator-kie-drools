@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ import java.util.Map.Entry;
 
 import org.optaplanner.benchmark.config.report.BenchmarkReportConfig;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
+import org.optaplanner.benchmark.impl.report.BenchmarkReportFactory;
 import org.optaplanner.benchmark.impl.result.PlannerBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
@@ -102,7 +103,8 @@ public class BenchmarkAggregator {
         plannerBenchmarkResult.setStartingTimestamp(startingTimestamp);
         plannerBenchmarkResult.initBenchmarkReportDirectory(benchmarkDirectory);
 
-        BenchmarkReport benchmarkReport = benchmarkReportConfig.buildBenchmarkReport(plannerBenchmarkResult);
+        BenchmarkReportFactory benchmarkReportFactory = new BenchmarkReportFactory(benchmarkReportConfig);
+        BenchmarkReport benchmarkReport = benchmarkReportFactory.buildBenchmarkReport(plannerBenchmarkResult);
         plannerBenchmarkResult.accumulateResults(benchmarkReport);
         benchmarkReport.writeReport();
 

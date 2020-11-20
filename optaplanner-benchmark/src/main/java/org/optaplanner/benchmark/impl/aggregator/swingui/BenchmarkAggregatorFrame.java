@@ -68,6 +68,7 @@ import org.optaplanner.benchmark.config.PlannerBenchmarkConfig;
 import org.optaplanner.benchmark.config.report.BenchmarkReportConfig;
 import org.optaplanner.benchmark.impl.aggregator.BenchmarkAggregator;
 import org.optaplanner.benchmark.impl.aggregator.swingui.MixedCheckBox.MixedCheckBoxStatus;
+import org.optaplanner.benchmark.impl.report.BenchmarkReportFactory;
 import org.optaplanner.benchmark.impl.result.BenchmarkResultIO;
 import org.optaplanner.benchmark.impl.result.PlannerBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.ProblemBenchmarkResult;
@@ -260,9 +261,9 @@ public class BenchmarkAggregatorFrame extends JFrame {
     private void initPlannerBenchmarkResultList() {
         plannerBenchmarkResultList = benchmarkResultIO.readPlannerBenchmarkResultList(
                 benchmarkAggregator.getBenchmarkDirectory());
+        BenchmarkReportFactory reportFactory = new BenchmarkReportFactory(benchmarkAggregator.getBenchmarkReportConfig());
         for (PlannerBenchmarkResult plannerBenchmarkResult : plannerBenchmarkResultList) {
-            plannerBenchmarkResult.accumulateResults(
-                    benchmarkAggregator.getBenchmarkReportConfig().buildBenchmarkReport(plannerBenchmarkResult));
+            plannerBenchmarkResult.accumulateResults(reportFactory.buildBenchmarkReport(plannerBenchmarkResult));
         }
     }
 

@@ -476,6 +476,15 @@
           "classSimpleName": "SingleStatisticType",
           "elementKind": "enum",
           "justification": "Using JAXB instead of XStream now."
+        },
+        {
+          "code": "java.field.removed",
+          "old": "field org.optaplanner.benchmark.config.PlannerBenchmarkConfig.VALID_NAME_PATTERN",
+          "package": "org.optaplanner.benchmark.config",
+          "classSimpleName": "PlannerBenchmarkConfig",
+          "fieldName": "VALID_NAME_PATTERN",
+          "elementKind": "field",
+          "justification": "Validation of the PlannerBenchmarkConfig moved to the DefaultPlannerBenchmarkFactory class."
         }
       ]
     }

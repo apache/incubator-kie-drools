@@ -38,6 +38,7 @@ import org.optaplanner.benchmark.config.report.BenchmarkReportConfig;
 import org.optaplanner.benchmark.impl.aggregator.BenchmarkAggregator;
 import org.optaplanner.benchmark.impl.loader.FileProblemProvider;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
+import org.optaplanner.benchmark.impl.report.BenchmarkReportFactory;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator;
 import org.optaplanner.core.config.solver.SolverConfig;
@@ -164,8 +165,9 @@ public class PlannerBenchmarkResultTest {
         PlannerBenchmarkResult plannerBenchmarkResult =
                 benchmarkResultIO.readPlannerBenchmarkResult(plannerBenchmarkResultFile);
 
-        BenchmarkReport benchmarkReport =
-                benchmarkAggregator.getBenchmarkReportConfig().buildBenchmarkReport(plannerBenchmarkResult);
+        BenchmarkReportConfig benchmarkReportConfig = benchmarkAggregator.getBenchmarkReportConfig();
+        BenchmarkReport benchmarkReport = new BenchmarkReportFactory(benchmarkReportConfig)
+                .buildBenchmarkReport(plannerBenchmarkResult);
         plannerBenchmarkResult.accumulateResults(benchmarkReport);
 
         PlannerBenchmarkResult aggregatedPlannerBenchmarkResult = benchmarkReport.getPlannerBenchmarkResult();

@@ -16,18 +16,12 @@
 
 package org.optaplanner.benchmark.config;
 
-import java.util.ArrayList;
-
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-import org.optaplanner.benchmark.impl.result.PlannerBenchmarkResult;
-import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
 import org.optaplanner.core.config.AbstractConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.optaplanner.core.impl.solver.DefaultSolverFactory;
 
 @XmlType(propOrder = {
         "name",
@@ -81,56 +75,6 @@ public class SolverBenchmarkConfig extends AbstractConfig<SolverBenchmarkConfig>
 
     public void setSubSingleCount(Integer subSingleCount) {
         this.subSingleCount = subSingleCount;
-    }
-
-    // ************************************************************************
-    // Builder methods
-    // ************************************************************************
-
-    public <Solution_> void buildSolverBenchmark(ClassLoader classLoader, PlannerBenchmarkResult plannerBenchmark,
-            Solution_[] extraProblems) {
-        validate();
-        SolverBenchmarkResult solverBenchmarkResult = new SolverBenchmarkResult(plannerBenchmark);
-        solverBenchmarkResult.setName(name);
-        solverBenchmarkResult.setSubSingleCount(ConfigUtils.inheritOverwritableProperty(subSingleCount, 1));
-        if (solverConfig.getClassLoader() == null) {
-            solverConfig.setClassLoader(classLoader);
-        }
-        solverBenchmarkResult.setSolverConfig(solverConfig);
-        DefaultSolverFactory<Solution_> defaultSolverFactory = new DefaultSolverFactory<>(solverConfig);
-        SolutionDescriptor<Solution_> solutionDescriptor = defaultSolverFactory.buildSolutionDescriptor();
-        for (Solution_ extraProblem : extraProblems) {
-            if (!solutionDescriptor.getSolutionClass().isInstance(extraProblem)) {
-                throw new IllegalArgumentException("The solverBenchmark name (" + name
-                        + ") for solution class (" + solutionDescriptor.getSolutionClass()
-                        + ") cannot solve a problem (" + extraProblem
-                        + ") of class (" + (extraProblem == null ? null : extraProblem.getClass()) + ").");
-            }
-        }
-        solverBenchmarkResult.setScoreDefinition(
-                solutionDescriptor.getScoreDefinition());
-        solverBenchmarkResult.setSingleBenchmarkResultList(new ArrayList<>());
-        ProblemBenchmarksConfig problemBenchmarksConfig_ = problemBenchmarksConfig == null ? new ProblemBenchmarksConfig()
-                : problemBenchmarksConfig;
-        plannerBenchmark.getSolverBenchmarkResultList().add(solverBenchmarkResult);
-        problemBenchmarksConfig_.buildProblemBenchmarkList(solverBenchmarkResult, extraProblems);
-    }
-
-    protected void validate() {
-        if (!PlannerBenchmarkConfig.VALID_NAME_PATTERN.matcher(name).matches()) {
-            throw new IllegalStateException("The solverBenchmark name (" + name
-                    + ") is invalid because it does not follow the nameRegex ("
-                    + PlannerBenchmarkConfig.VALID_NAME_PATTERN.pattern() + ")" +
-                    " which might cause an illegal filename.");
-        }
-        if (!name.trim().equals(name)) {
-            throw new IllegalStateException("The solverBenchmark name (" + name
-                    + ") is invalid because it starts or ends with whitespace.");
-        }
-        if (subSingleCount != null && subSingleCount < 1) {
-            throw new IllegalStateException("The solverBenchmark name (" + name
-                    + ") is invalid because the subSingleCount (" + subSingleCount + ") must be greater than 1.");
-        }
     }
 
     @Override
