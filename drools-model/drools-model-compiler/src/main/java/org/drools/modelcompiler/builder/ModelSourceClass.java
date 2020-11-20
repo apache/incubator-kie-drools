@@ -34,6 +34,7 @@ import static com.github.javaparser.StaticJavaParser.parseExpression;
 import static com.github.javaparser.StaticJavaParser.parseStatement;
 import static com.github.javaparser.ast.Modifier.publicModifier;
 import static com.github.javaparser.ast.NodeList.nodeList;
+import static org.drools.modelcompiler.util.StringUtil.toId;
 
 public class ModelSourceClass {
 
@@ -278,7 +279,7 @@ public class ModelSourceClass {
 
             private BaseModelGenerator(KieBaseModel kieBaseModel) {
                 this.kieBaseModel = kieBaseModel;
-                this.kieBaseModelName = "kieBaseModel_" + kieBaseModel.getName();
+                this.kieBaseModelName = "kieBaseModel_" + toId(kieBaseModel.getName());
                 this.kieBaseModelNameExpr = new NameExpr(kieBaseModelName);
                 this.confExpr = new NameExpr("conf");
             }
@@ -348,7 +349,7 @@ public class ModelSourceClass {
             private SessionModelGenerator(KieSessionModel kieSessionModel, NameExpr kieBaseModelNameExpr) {
                 this.kieSessionModel = kieSessionModel;
                 this.kieBaseModelNameExpr = kieBaseModelNameExpr;
-                this.name = "kieSessionModel_" + kieSessionModel.getName();
+                this.name = "kieSessionModel_" + toId(kieSessionModel.getName());
                 this.nameExpr = new NameExpr(name);
                 this.confExpr = new NameExpr("conf");
                 kSessionConfs.put( kieSessionModel.getName(), this.confBlock );
