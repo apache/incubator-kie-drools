@@ -284,11 +284,10 @@ public class FromVisitor {
 
             return drlxParseResult.acceptWithReturnValue( drlxParseSuccess -> {
                 SingleDrlxParseSuccess singleResult = ( SingleDrlxParseSuccess ) drlxParseResult;
-                TypedExpression left = singleResult.getLeft();
-                if ( left != null && !isCompatibleWithFromReturnType( patternType, left.getRawClass() ) ) {
+                if ( !isCompatibleWithFromReturnType( patternType, singleResult.getExprRawClass() ) ) {
                     context.addCompilationError( new InvalidExpressionErrorResult(
                             "Pattern of type: '" + patternType.getCanonicalName() + "' on rule '" + context.getRuleName() +
-                                    "' is not compatible with type " + left.getRawClass().getCanonicalName() + " returned by source" ) );
+                                    "' is not compatible with type " + singleResult.getExprRawClass().getCanonicalName() + " returned by source" ) );
                 }
                 Expression parsedExpression = drlxParseSuccess.getExpr();
                 Expression newExpr = generateLambdaWithoutParameters( singleResult.getUsedDeclarations(), parsedExpression, singleResult.isSkipThisAsParam(), ofNullable(singleResult.getPatternType()), context );

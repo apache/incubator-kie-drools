@@ -106,7 +106,7 @@ public class ConstraintParser {
             if (hasBind) {
                 SingleDrlxParseSuccess singleResult = (SingleDrlxParseSuccess) result;
                 String bindId = drlx.getBind().asString();
-                DeclarationSpec decl = context.addDeclaration( bindId, singleResult.getExprRawClass() );
+                DeclarationSpec decl = context.addDeclaration( bindId, singleResult.getLeftExprRawClass() );
                 if (drlx.getExpr() instanceof NameExpr) {
                     decl.setBoundVariable( drlx.getExpr().toString() );
                 }
@@ -404,7 +404,7 @@ public class ConstraintParser {
         }
 
         boolean requiresSplit = operator == BinaryExpr.Operator.AND && binaryExpr.getRight() instanceof HalfBinaryExpr && !isBetaNode;
-        return new SingleDrlxParseSuccess(patternType, bindingId, combo, left.getType()).setDecodeConstraintType( constraintType )
+        return new SingleDrlxParseSuccess(patternType, bindingId, combo, isBooleanOperator( operator ) ? boolean.class : left.getType()).setDecodeConstraintType( constraintType )
                 .setUsedDeclarations( expressionTyperContext.getUsedDeclarations() ).setUsedDeclarationsOnLeft( usedDeclarationsOnLeft ).setUnification( constraint.isUnification() )
                 .setReactOnProperties( expressionTyperContext.getReactOnProperties() ).setLeft( left ).setRight( right ).setBetaNode(isBetaNode).setRequiresSplit( requiresSplit );
     }
@@ -539,6 +539,10 @@ public class ConstraintParser {
 
     private static boolean isComparisonOperator( BinaryExpr.Operator op ) {
         return op == LESS || op == GREATER || op == LESS_EQUALS || op == GREATER_EQUALS;
+    }
+
+    private boolean isBooleanOperator( BinaryExpr.Operator op ) {
+        return op == EQUALS || op == NOT_EQUALS || isComparisonOperator( op );
     }
 
     private static List<Expression> recurseCollectArguments(NodeWithArguments<?> methodCallExpr) {
