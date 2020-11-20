@@ -56,12 +56,14 @@
               <groupId>org.kie.kogito</groupId>
               <artifactId>explainability-service-messaging</artifactId>
               <version>${project.version}</version>
+              <classifier>runner</classifier>
               <scope>runtime</scope>
             </dependency>
             <dependency>
               <groupId>org.kie.kogito</groupId>
               <artifactId>trusty-service</artifactId>
               <version>${project.version}</version>
+              <classifier>runner</classifier>
               <scope>runtime</scope>
             </dependency>
           </dependencies>

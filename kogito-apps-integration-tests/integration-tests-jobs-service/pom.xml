@@ -52,6 +52,7 @@
               <groupId>org.kie.kogito</groupId>
               <artifactId>jobs-service</artifactId>
               <version>${project.version}</version>
+              <classifier>runner</classifier>
               <scope>runtime</scope>
             </dependency>
           </dependencies>
