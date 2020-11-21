@@ -67,17 +67,21 @@ public class JavaFunction
             return FEELFnResult.ofResult( result );
         } catch ( InvocationTargetException e ) {
             String message = e.getTargetException().getMessage();
-            capturedException = new FEELEventBase(Severity.ERROR, "Error invoking "+toString()+": "+message, new RuntimeException("Error invoking function " + getSignature() + ".", e));
+            capturedException = buildCaptured(e, message);
         } catch ( IllegalAccessException e ) {
             String message = e.getCause().getMessage();
-            capturedException = new FEELEventBase(Severity.ERROR, "Error invoking "+toString()+": "+message, new RuntimeException("Error invoking function " + getSignature() + ".", e));
+            capturedException = buildCaptured(e, message);
         } catch (Exception e) {
             String message = e.getMessage();
-            capturedException = new FEELEventBase(Severity.ERROR, "Error invoking " + toString() + ": " + message, new RuntimeException("Error invoking function " + getSignature() + ".", e));
+            capturedException = buildCaptured(e, message);
         } finally {
             ctx.exitFrame();
         }
         return FEELFnResult.ofError( capturedException );
+    }
+
+    private FEELEventBase buildCaptured(Exception e, String message) {
+        return new FEELEventBase(Severity.ERROR, "Error invoking " + toString() + ": " + message, new RuntimeException("Error invoking function " + getSignature() + ".", e));
     }
 
     private Object[] prepareParams(Object[] params) {
