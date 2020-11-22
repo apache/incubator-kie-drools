@@ -82,14 +82,16 @@
         <dependency>
             <groupId>io.rest-assured</groupId>
             <artifactId>json-schema-validator</artifactId>
+            <!-- Manually override to 3.3.0 because Spring boot uses rest-assured-common internally -->
+            <version>@version.io.restassured.springboot@</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>io.rest-assured</groupId>
             <artifactId>rest-assured</artifactId>
-            <version>@version.io.restassured.springboot@
-            </version> <!-- Manually override to 3.3.0 because Spring boot uses rest-assured-common internally -->
+            <!-- Manually override to 3.3.0 because Spring boot uses rest-assured-common internally -->
+            <version>@version.io.restassured.springboot@</version>
             <scope>test</scope>
         </dependency>
 
