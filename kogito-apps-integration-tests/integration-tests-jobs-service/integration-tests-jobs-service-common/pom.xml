@@ -23,6 +23,7 @@
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>testcontainers</artifactId>
+      <version>${version.testcontainers}</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
