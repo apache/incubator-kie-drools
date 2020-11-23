@@ -105,6 +105,7 @@
         <version>${version.io.quarkus}</version>
         <configuration>
           <uberJar>true</uberJar>
+          <skipOriginalJarRename>true</skipOriginalJarRename>
         </configuration>
         <executions>
           <execution>
