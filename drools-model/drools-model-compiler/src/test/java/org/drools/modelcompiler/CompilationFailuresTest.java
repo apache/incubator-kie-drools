@@ -22,6 +22,7 @@ import org.junit.Test;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.Results;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
 public class CompilationFailuresTest extends BaseModelTest {
@@ -43,6 +44,9 @@ public class CompilationFailuresTest extends BaseModelTest {
 
         Results results = getCompilationResults(drl);
         assertFalse(results.getMessages( Message.Level.ERROR).isEmpty());
+
+        // line = -1 even with STANDARD_FROM_DRL (PredicateDescr)
+        assertEquals(-1, results.getMessages().get(0).getLine());
     }
 
     @Test
@@ -56,6 +60,8 @@ public class CompilationFailuresTest extends BaseModelTest {
 
         Results results = getCompilationResults(drl);
         assertFalse(results.getMessages( Message.Level.ERROR).isEmpty());
+
+        assertEquals(3, results.getMessages().get(0).getLine());
     }
 
     private Results getCompilationResults( String drl ) {
@@ -97,6 +103,9 @@ public class CompilationFailuresTest extends BaseModelTest {
 
         Results results = getCompilationResults(drl);
         assertFalse(results.getMessages( Message.Level.ERROR).isEmpty());
+
+        // line = -1 even with STANDARD_FROM_DRL (PredicateDescr)
+        assertEquals(-1, results.getMessages().get(0).getLine());
     }
 
     @Test
@@ -133,6 +142,9 @@ public class CompilationFailuresTest extends BaseModelTest {
 
         Results results = getCompilationResults(drl);
         assertFalse(results.getMessages( Message.Level.ERROR).isEmpty());
+
+        // line = 1 with STANDARD_FROM_DRL (RuleDescr)
+        assertEquals(1, results.getMessages().get(0).getLine());
     }
 
 
@@ -149,5 +161,8 @@ public class CompilationFailuresTest extends BaseModelTest {
 
         Results results = getCompilationResults(drl);
         assertFalse(results.getMessages( Message.Level.ERROR).isEmpty());
+
+        // RHS error : line = 1 with STANDARD_FROM_DRL (RuleDescr)
+        assertEquals(1, results.getMessages().get(0).getLine());
     }
 }

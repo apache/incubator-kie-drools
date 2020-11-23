@@ -31,7 +31,6 @@ import com.github.javaparser.printer.PrettyPrinter;
 import com.github.javaparser.printer.PrettyPrinterConfiguration;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.commons.jci.compilers.CompilationResult;
-import org.drools.compiler.commons.jci.compilers.EclipseJavaCompiler;
 import org.drools.compiler.commons.jci.compilers.JavaCompiler;
 import org.drools.compiler.commons.jci.compilers.JavaCompilerFactory;
 import org.drools.compiler.compiler.JavaConfiguration;
@@ -41,6 +40,7 @@ import org.kie.internal.jci.CompilationProblem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.drools.compiler.compiler.JavaConfiguration.createDefaultCompiler;
 import static org.drools.core.util.ClassUtils.isJboss;
 
 public class JavaParserCompiler {
@@ -57,9 +57,7 @@ public class JavaParserCompiler {
 
     private static JavaCompiler createCompiler() {
         JavaCompiler javaCompiler = JavaCompilerFactory.INSTANCE.loadCompiler( COMPILER_TYPE, "1.8" );
-        if (COMPILER_TYPE == JavaConfiguration.CompilerType.ECLIPSE) {
-            ((EclipseJavaCompiler )javaCompiler).setPrefix( "src/main/java/" );
-        }
+        javaCompiler.setSourceFolder( "src/main/java/" );
         return javaCompiler;
     }
 
@@ -87,7 +85,7 @@ public class JavaParserCompiler {
         MemoryFileSystem trgMfs = new MemoryFileSystem();
 
         String[] resources = writeModel(classes, srcMfs);
-        CompilationResult resultCompilation = createEclipseCompiler().compile(resources, srcMfs, trgMfs, classLoader);
+        CompilationResult resultCompilation = createDefaultCompiler().compile(resources, srcMfs, trgMfs, classLoader);
         CompilationProblem[] errors = resultCompilation.getErrors();
         if(errors.length != 0) {
             classes.forEach(c -> logger.error(c.toString()));
@@ -109,12 +107,6 @@ public class JavaParserCompiler {
             }
         }
         return result;
-    }
-
-    private static JavaCompiler createEclipseCompiler() {
-        EclipseJavaCompiler javaCompiler = (EclipseJavaCompiler) JavaCompilerFactory.INSTANCE.loadCompiler(JavaConfiguration.CompilerType.ECLIPSE, "1.8");
-        javaCompiler.setPrefix("src/main/java/");
-        return javaCompiler;
     }
 
     private static String[] writeModel(List<GeneratedClassWithPackage> classes, MemoryFileSystem srcMfs ) {

@@ -46,10 +46,14 @@ public interface JavaCompiler {
      */
     void setCompilationProblemHandler( final CompilationProblemHandler pHandler );
 
+    default void setSourceFolder( String sourceFolder ) { }
+
     /**
      * factory method to create the underlying default settings
      */
     JavaCompilerSettings createDefaultSettings();
+
+    void setJavaCompilerSettings( JavaCompilerSettings javaCompilerSettings );
     
     /**
      * uses the default compiler settings and the current classloader

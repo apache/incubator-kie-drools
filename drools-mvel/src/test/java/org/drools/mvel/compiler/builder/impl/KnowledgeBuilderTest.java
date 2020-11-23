@@ -27,7 +27,6 @@ import java.util.Map;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.drools.compiler.commons.jci.compilers.EclipseJavaCompiler;
 import org.drools.compiler.commons.jci.compilers.JavaCompiler;
 import org.drools.compiler.commons.jci.compilers.NativeJavaCompiler;
 import org.drools.compiler.compiler.Dialect;
@@ -89,6 +88,7 @@ import org.drools.core.spi.PropagationContext;
 import org.drools.core.test.model.DroolsTestCase;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListNode;
+import org.drools.ecj.EclipseJavaCompiler;
 import org.drools.mvel.CompositeObjectSinkAdapterTest;
 import org.drools.mvel.compiler.Cheese;
 import org.drools.mvel.compiler.Primitives;

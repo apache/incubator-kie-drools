@@ -74,10 +74,6 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.eclipse.jdt</groupId>
-      <artifactId>ecj</artifactId>
-    </dependency>
-    <dependency>
       <groupId>com.thoughtworks.xstream</groupId>
       <artifactId>xstream</artifactId>
       <!-- mdp temporary change, for kmodule.xml, undo once new format is chosen
@@ -177,36 +173,6 @@
     </pluginManagement>
 
     <plugins>
-      <!-- shade ecj to allow the gwt compiler to use its own version -->
-      <plugin>
-        <artifactId>maven-shade-plugin</artifactId>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>shade</goal>
-            </goals>
-            <configuration>
-              <createSourcesJar>true</createSourcesJar>
-              <artifactSet>
-                <includes>
-                  <include>org.eclipse.jdt:ecj</include>
-                </includes>
-              </artifactSet>
-              <relocations>
-                <relocation>
-                  <pattern>org.eclipse.jdt</pattern>
-                  <shadedPattern>org.drools.compiler.shade.org.eclipse.jdt</shadedPattern>
-                </relocation>
-              </relocations>
-              <transformers>
-                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
-              </transformers>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
@@ -217,13 +183,10 @@
               com.sun.codemodel;resolution:=optional,
               javax.enterprise.*;resolution:=optional,
               org.antlr.*;resolution:=optional,
-              <!-- Hack/workaround: relying on ECJ package version [0,1) is needed as ECJ does not export specific package
-                   versions (and thus the version defaults to 0.0.0). This is just a workaround as proper fix needs be done
-                   in ECJ directly to export the versions correctly in the MANIFEST.MF. -->
-              org.eclipse.jdt.*;version="[0,1)";resolution:=optional,
               org.osgi.*;resolution:=optional,
               org.drools.core.base.accumulators;resolution:=optional,
               org.drools.core.rule.builder.dialect.asm;resolution:=optional,
+              org.drools.ecj;resolution:=optional,
               org.drools.mvel.asm;resolution:=optional,
               org.drools.cdi;resolution:=optional,
               org.drools.template.parser;resolution:=optional,
