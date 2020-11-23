@@ -67,14 +67,21 @@ public class JavaFunction
             return FEELFnResult.ofResult( result );
         } catch ( InvocationTargetException e ) {
             String message = e.getTargetException().getMessage();
-            capturedException = new FEELEventBase(Severity.ERROR, "Error invoking "+toString()+": "+message, new RuntimeException("Error invoking function " + getSignature() + ".", e));
+            capturedException = buildCaptured(e, message);
         } catch ( IllegalAccessException e ) {
             String message = e.getCause().getMessage();
-            capturedException = new FEELEventBase(Severity.ERROR, "Error invoking "+toString()+": "+message, new RuntimeException("Error invoking function " + getSignature() + ".", e));
+            capturedException = buildCaptured(e, message);
+        } catch (Exception e) {
+            String message = e.getMessage();
+            capturedException = buildCaptured(e, message);
         } finally {
             ctx.exitFrame();
         }
         return FEELFnResult.ofError( capturedException );
+    }
+
+    private FEELEventBase buildCaptured(Exception e, String message) {
+        return new FEELEventBase(Severity.ERROR, "Error invoking " + toString() + ": " + message, new RuntimeException("Error invoking function " + getSignature() + ".", e));
     }
 
     private Object[] prepareParams(Object[] params) {
@@ -102,7 +109,7 @@ public class JavaFunction
                     } else if( paramTypes[i] == double.class || paramTypes[i] == Double.class ) {
                         actual[i] = ((Number) params[i]).doubleValue();
                     } else {
-                        throw new IllegalArgumentException( "Unable to coerce parameter "+parameters.get( 0 )+". Expected "+paramTypes[i]+" but found "+params[i].getClass() );
+                        throw new IllegalArgumentException("Unable to coerce parameter: '" + parameters.get(i).prettyFEEL() + "'. Expected " + paramTypes[i] + " but found " + params[i].getClass());
                     }
                 } else if ( params[i] instanceof String
                         && ((String) params[i]).length() == 1
@@ -112,7 +119,7 @@ public class JavaFunction
                     // Because Boolean can be also null, boolean.class is not assignable from Boolean.class. So we must coerce this.
                     actual[i] = params[i];
                 } else {
-                    throw new IllegalArgumentException( "Unable to coerce parameter "+parameters.get( 0 )+". Expected "+paramTypes[i]+" but found "+params[i].getClass() );
+                    throw new IllegalArgumentException("Unable to coerce parameter: '" + parameters.get(i).prettyFEEL() + "'. Expected " + paramTypes[i] + " but found " + params[i].getClass());
                 }
             }
         }
