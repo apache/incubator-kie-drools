@@ -778,9 +778,10 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     protected QueryResultsImpl internalGetQueryResult(boolean calledFromRHS, String queryName, Object... arguments) {
 
         try {
-            startOperation();
-
-            this.lock.lock();
+            if (!calledFromRHS) {
+                startOperation();
+                this.lock.lock();
+            }
 
             this.kBase.executeQueuedActions();
             // it is necessary to flush the propagation queue twice to perform all the expirations
@@ -828,8 +829,10 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                                          this,
                                          ( queryObject.getQuery() != null ) ? queryObject.getQuery().getParameters()  : new Declaration[0] );
         } finally {
-            this.lock.unlock();
-            endOperation();
+            if (!calledFromRHS) {
+                this.lock.unlock();
+                endOperation();
+            }
         }
     }
 
