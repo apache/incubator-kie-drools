@@ -147,7 +147,7 @@ public abstract class AccumulateVisitor {
                 addNonExistingFunctionError(context, e.function);
                 return;
             } catch (AccumulateParsingFailedException e) {
-                context.addCompilationError(new InvalidExpressionErrorResult(e.getMessage()));
+                context.addCompilationError(new InvalidExpressionErrorResult(e.getMessage(), Optional.of(context.getRuleDescr())));
                 return;
             }
             processNewBinding(accumulateDSL);
@@ -209,7 +209,7 @@ public abstract class AccumulateVisitor {
         } else if (accumulateFunctionParameter instanceof LiteralExpr) {
             literalExprParameter(function, functionDSL, bindingId, accumulateFunctionParameter);
         } else {
-            context.addCompilationError(new InvalidExpressionErrorResult("Invalid expression " + accumulateFunctionParameterStr));
+            context.addCompilationError(new InvalidExpressionErrorResult("Invalid expression " + accumulateFunctionParameterStr, Optional.of(context.getRuleDescr())));
             throw new AccumulateParsingFailedException();
         }
     }
@@ -444,7 +444,7 @@ public abstract class AccumulateVisitor {
                             "Pattern of type: '[ClassObjectType class=%s]' " +
                                     "on rule '%s' " +
                                     "is not compatible with type %s returned by accumulate function."
-                            , expectedResultType.getCanonicalName(), context.getRuleName(), actualResultType.getCanonicalName())));
+                            , expectedResultType.getCanonicalName(), context.getRuleName(), actualResultType.getCanonicalName()), Optional.of(context.getRuleDescr())));
         }
     }
 
@@ -455,7 +455,7 @@ public abstract class AccumulateVisitor {
     }
 
     private void addNonExistingFunctionError(RuleContext context, AccumulateDescr.AccumulateFunctionCallDescr function) {
-        context.addCompilationError(new InvalidExpressionErrorResult(String.format("Unknown accumulate function: '%s' on rule '%s'.", function.getFunction(), context.getRuleDescr().getName())));
+        context.addCompilationError(new InvalidExpressionErrorResult(String.format("Unknown accumulate function: '%s' on rule '%s'.", function.getFunction(), context.getRuleDescr().getName()), Optional.of(context.getRuleDescr())));
     }
 
     private void addBindingAsDeclaration(RuleContext context, String bindingId, AccumulateFunction accumulateFunction) {

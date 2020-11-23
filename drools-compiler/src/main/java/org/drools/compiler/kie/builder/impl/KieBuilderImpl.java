@@ -70,6 +70,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.drools.compiler.kproject.ReleaseIdImpl.adapt;
+import static org.drools.core.util.Drools.hasXSTream;
 import static org.drools.core.util.StringUtils.codeAwareIndexOf;
 
 public class KieBuilderImpl
@@ -98,7 +99,6 @@ public class KieBuilderImpl
     private byte[] pomXml;
     private AFReleaseId releaseId;
 
-    private byte[] kModuleModelXml;
     private KieModuleModel kModuleModel;
 
     private Collection<KieModule> kieDependencies;
@@ -280,7 +280,9 @@ public class KieBuilderImpl
         if ( messages.filterMessages( Level.ERROR ).isEmpty() ) {
             InternalKieModule kModule = kProject.getInternalKieModule();
             if ( trgMfs != null ) {
-                CompilationCacheProvider.get().writeKieModuleMetaInfo( kModule, trgMfs );
+                if (hasXSTream()) {
+                    CompilationCacheProvider.get().writeKieModuleMetaInfo( kModule, trgMfs );
+                }
                 kProject.writeProjectOutput(trgMfs, messages);
             }
             KieRepository kieRepository = KieServices.Factory.get().getRepository();
@@ -529,37 +531,40 @@ public class KieBuilderImpl
         return kModule != null;
     }
 
-    private void buildKieModuleModel() {
-        if ( srcMfs.isAvailable( KieModuleModelImpl.KMODULE_SRC_PATH ) ) {
-            kModuleModelXml = srcMfs.getBytes( KieModuleModelImpl.KMODULE_SRC_PATH );
-            try {
-                kModuleModel = KieModuleModelImpl.fromXML( new ByteArrayInputStream( kModuleModelXml ) );
-            } catch ( Exception e ) {
-                results.addMessage( Level.ERROR,
-                                    "kmodule.xml",
-                                    "kmodule.xml found, but unable to read\n" + e.getMessage() );
-                // Create a default kModuleModel in the event of errors parsing the XML
-                kModuleModel = KieServices.Factory.get().newKieModuleModel();
-            }
-        } else {
-            // There's no kmodule.xml, create a default one
-            kModuleModel = KieServices.Factory.get().newKieModuleModel();
-        }
-        
-        if ( setDefaultsforEmptyKieModule( kModuleModel ) ) {
-            kModuleModelXml = kModuleModel.toXML().getBytes( IoUtils.UTF8_CHARSET );
-        }
+    @Override
+    public InternalKieBuilder withKModuleModel( KieModuleModel kModuleModel ) {
+        this.kModuleModel = kModuleModel;
+        return this;
     }
 
-    public static boolean setDefaultsforEmptyKieModule( KieModuleModel kModuleModel ) {
+    private void buildKieModuleModel() {
+        if (kModuleModel == null) {
+            if ( srcMfs.isAvailable( KieModuleModelImpl.KMODULE_SRC_PATH ) ) {
+                byte[] kModuleModelXml = srcMfs.getBytes( KieModuleModelImpl.KMODULE_SRC_PATH );
+                try {
+                    kModuleModel = KieModuleModelImpl.fromXML( new ByteArrayInputStream( kModuleModelXml ) );
+                } catch (Exception e) {
+                    results.addMessage( Level.ERROR,
+                                        "kmodule.xml",
+                                        "kmodule.xml found, but unable to read\n" + e.getMessage() );
+                    // Create a default kModuleModel in the event of errors parsing the XML
+                    kModuleModel = KieServices.Factory.get().newKieModuleModel();
+                }
+            } else {
+                // There's no kmodule.xml, create a default one
+                kModuleModel = KieServices.Factory.get().newKieModuleModel();
+            }
+        }
+        setDefaultsforEmptyKieModule( kModuleModel );
+    }
+
+    public static void setDefaultsforEmptyKieModule( KieModuleModel kModuleModel ) {
         if ( kModuleModel != null && kModuleModel.getKieBaseModels().isEmpty() ) {
             // would be null if they pass a corrupted kModuleModel
             KieBaseModel kieBaseModel = kModuleModel.newKieBaseModel( "defaultKieBase" ).addPackage( "*" ).setDefault( true );
             kieBaseModel.newKieSessionModel( "defaultKieSession" ).setDefault( true );
             kieBaseModel.newKieSessionModel( "defaultStatelessKieSession" ).setType( KieSessionModel.KieSessionType.STATELESS ).setDefault( true );
-            return true;
         }
-        return false;
     }
 
     public PomModel getPomModel() {
@@ -629,7 +634,7 @@ public class KieBuilderImpl
 
         }
 
-        if ( kModuleModelXml != null ) {
+        if ( kModuleModel != null && hasXSTream() ) {
             trgMfs.write( KieModuleModelImpl.KMODULE_JAR_PATH,
                           kModuleModel.toXML().getBytes( IoUtils.UTF8_CHARSET ),
                           true );

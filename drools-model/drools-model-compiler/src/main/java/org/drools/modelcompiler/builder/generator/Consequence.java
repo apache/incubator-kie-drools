@@ -143,7 +143,7 @@ public class Consequence {
         usedUnusableDeclarations.retainAll(usedDeclarationInRHS);
 
         for (String s : usedUnusableDeclarations) {
-            context.addCompilationError( new InvalidExpressionErrorResult(String.format("%s cannot be resolved to a variable", s)) );
+            context.addCompilationError( new InvalidExpressionErrorResult(String.format("%s cannot be resolved to a variable", s), Optional.of(context.getRuleDescr())) );
         }
 
         MethodCallExpr onCall = onCall(usedDeclarationInRHS);
@@ -213,7 +213,7 @@ public class Consequence {
 
             return parseBlock( ruleConsequenceRewrittenForPrimitives );
         } catch (MvelCompilerException | ParseProblemException e) {
-            context.addCompilationError( new InvalidExpressionErrorResult( "Unable to parse consequence caused by: " + e.getMessage() ) );
+            context.addCompilationError( new InvalidExpressionErrorResult( "Unable to parse consequence caused by: " + e.getMessage(), Optional.of(context.getRuleDescr()) ) );
         }
         return null;
     }

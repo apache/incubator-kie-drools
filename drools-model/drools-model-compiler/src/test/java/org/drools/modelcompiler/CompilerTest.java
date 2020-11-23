@@ -2450,4 +2450,30 @@ public class CompilerTest extends BaseModelTest {
         ksession.insert( "test" );
         assertEquals(0, ksession.fireAllRules());
     }
+
+    @Test
+    public void testMethodCallWithClass() {
+        final String str = "package org.drools.mvel.compiler\n" +
+                "import " + FactWithMethod.class.getCanonicalName() + ";" +
+                "rule r1\n" +
+                "when\n" +
+                "    FactWithMethod( checkClass( java.lang.String.class ) )\n" +
+                "then\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+        final FactWithMethod fact = new FactWithMethod();
+        ksession.insert(fact);
+        final int rules = ksession.fireAllRules();
+        assertEquals(1, rules);
+    }
+
+    public static class FactWithMethod {
+
+        public FactWithMethod() {}
+
+        public boolean checkClass(Class<?> clazz) {
+            return clazz.equals(String.class);
+        }
+    }
 }
