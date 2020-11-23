@@ -969,7 +969,7 @@ public class ExpressionTyper {
         rootNode.ifPresent(n -> {
             // In the error messages HalfBinary are transformed to Binary
             Node withHalfBinaryReplaced = replaceAllHalfBinaryChildren(n);
-            ruleContext.addCompilationError(new ParseExpressionErrorResult((Expression) withHalfBinaryReplaced));
+            ruleContext.addCompilationError(new ParseExpressionErrorResult((Expression) withHalfBinaryReplaced, ruleContext.getCurrentConstraintDescr()));
         });
         return empty();
     }

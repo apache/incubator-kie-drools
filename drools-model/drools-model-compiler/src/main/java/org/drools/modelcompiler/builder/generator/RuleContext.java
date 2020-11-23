@@ -109,6 +109,8 @@ public class RuleContext {
 
     private int legacyAccumulateCounter = 0;
 
+    private Optional<BaseDescr> currentConstraintDescr = empty();
+
     public enum RuleDialect {
         JAVA,
         MVEL;
@@ -591,6 +593,18 @@ public class RuleContext {
 
     public boolean isPatternBinding(String patternBinding) {
         return patternBindings.contains(patternBinding);
+    }
+
+    public Optional<BaseDescr> getCurrentConstraintDescr() {
+        return currentConstraintDescr;
+    }
+
+    public void setCurrentConstraintDescr(Optional<BaseDescr> currentConstraintDescr) {
+        this.currentConstraintDescr = currentConstraintDescr;
+    }
+
+    public void resetCurrentConstraintDescr() {
+        this.currentConstraintDescr = empty();
     }
 
     @Override
