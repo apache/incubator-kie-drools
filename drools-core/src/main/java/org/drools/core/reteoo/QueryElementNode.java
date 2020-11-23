@@ -289,7 +289,6 @@ public class QueryElementNode extends LeftTupleSource
         @Override
         public void rowAdded(final RuleImpl rule,
                              LeftTuple resultLeftTuple,
-                             PropagationContext context,
                              InternalWorkingMemory workingMemory) {
 
             QueryTerminalNode queryTerminalNode = resultLeftTuple.getTupleSink();
@@ -305,7 +304,7 @@ public class QueryElementNode extends LeftTupleSource
                                                   resultLeftTuple.get(decl).getObject());
             }
 
-            QueryElementFactHandle resultHandle = createQueryResultHandle(context,
+            QueryElementFactHandle resultHandle = createQueryResultHandle(leftTuple.findMostRecentPropagationContext(),
                                                                           workingMemory,
                                                                           objects);
             
@@ -409,7 +408,6 @@ public class QueryElementNode extends LeftTupleSource
         @Override
         public void rowRemoved(final RuleImpl rule,
                                final LeftTuple resultLeftTuple,
-                               final PropagationContext context,
                                final InternalWorkingMemory workingMemory) {
             RightTuple rightTuple = (RightTuple) resultLeftTuple.getContextObject();
             rightTuple.setBlocked( null );
@@ -437,7 +435,6 @@ public class QueryElementNode extends LeftTupleSource
         @Override
         public void rowUpdated(final RuleImpl rule,
                                final LeftTuple resultLeftTuple,
-                               final PropagationContext context,
                                final InternalWorkingMemory workingMemory) {
             RightTuple rightTuple = (RightTuple) resultLeftTuple.getContextObject();
             if ( rightTuple.getMemory() != null ) {

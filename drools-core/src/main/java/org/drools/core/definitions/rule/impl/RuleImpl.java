@@ -733,6 +733,10 @@ public class RuleImpl implements Externalizable,
         return isSet(SEMANTICALLY_VALID_BIT);
     }
 
+    public boolean hasCalendars() {
+        return calendars != null && calendars.length > 0;
+    }
+
     public String[] getCalendars() {
         return calendars;
     }
