@@ -32,6 +32,7 @@ import org.kie.api.definition.KieDescr;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
+import org.kie.internal.builder.InternalKieBuilder;
 import org.kie.internal.builder.conf.EvaluatorOption;
 import org.kie.internal.builder.conf.KnowledgeBuilderOption;
 import org.kie.internal.builder.conf.SingleValueKnowledgeBuilderOption;
@@ -49,6 +50,8 @@ public class KieHelper {
     private ClassLoader classLoader;
 
     private int counter = 0;
+
+    private KieModuleModel kieModuleModel;
 
     public KieHelper() {}
 
@@ -93,7 +96,8 @@ public class KieHelper {
     }
 
     public KieContainer getKieContainer(Class<? extends KieBuilder.ProjectType> projectType) {
-        KieBuilder kieBuilder = ks.newKieBuilder( kfs, classLoader ).buildAll(projectType);
+        InternalKieBuilder kieBuilder = (( InternalKieBuilder ) ks.newKieBuilder( kfs, classLoader ));
+        kieBuilder.withKModuleModel( kieModuleModel ).buildAll(projectType);
         Results results = kieBuilder.getResults();
         if (results.hasMessages(Message.Level.ERROR)) {
             throw new RuntimeException(results.getMessages().toString());
@@ -123,8 +127,8 @@ public class KieHelper {
         return this;
     }
 
-    public KieHelper setKieModuleModel(KieModuleModel kieModel) {
-        kfs.writeKModuleXML(kieModel.toXML());
+    public KieHelper setKieModuleModel(KieModuleModel kieModuleModel) {
+        this.kieModuleModel = kieModuleModel;
         return this;
     }
 

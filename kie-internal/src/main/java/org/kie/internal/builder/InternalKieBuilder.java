@@ -21,6 +21,7 @@ import java.util.function.Predicate;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.Message;
+import org.kie.api.builder.model.KieModuleModel;
 
 public interface InternalKieBuilder extends KieBuilder {
 
@@ -39,4 +40,5 @@ public interface InternalKieBuilder extends KieBuilder {
      */
     KieBuilder buildAll(Predicate<String> classFilter);
 
+    InternalKieBuilder withKModuleModel( KieModuleModel kModuleModel );
 }
