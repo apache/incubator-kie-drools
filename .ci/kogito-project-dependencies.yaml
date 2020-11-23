@@ -1,6 +1,6 @@
 version: "2.0"
 
-extends: https://raw.githubusercontent.com/Ginxo/droolsjbpm-build-bootstrap/BXMSPROD-1062/.ci/project-dependencies.yaml
+extends: https://raw.githubusercontent.com/kiegroup/droolsjbpm-build-bootstrap/master/.ci/project-dependencies.yaml
 
 dependencies:
   - project: kiegroup/kogito-runtimes
