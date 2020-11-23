@@ -16,8 +16,8 @@ build:
   - project: kiegroup/kogito-runtimes
     build-command:
       current: |
-        mvn clean install -Dmaven.wagon.httpconnectionManager.ttlSeconds=25 -Dmaven.wagon.http.retryHandler.count=3  -Dversion.org.kie7=${{ env.DROOLS_VERSION }}
-        mvn -f kogito-runtimes-integration-tests/pom.xml clean install -Pintegration-tests -Dmaven.wagon.httpconnectionManager.ttlSeconds=25 -Dmaven.wagon.http.retryHandler.count=3 -Dversion.org.kie7=`echo $DROOLS_VERSION`
+        mvn clean install -Dmaven.wagon.httpconnectionManager.ttlSeconds=25 -Dmaven.wagon.http.retryHandler.count=3 -Dversion.org.kie7=${{ env.DROOLS_VERSION }}
+        mvn -f kogito-runtimes-integration-tests/pom.xml clean install -Pintegration-tests -Dmaven.wagon.httpconnectionManager.ttlSeconds=25 -Dmaven.wagon.http.retryHandler.count=3 -Dversion.org.kie7=${{ env.DROOLS_VERSION }}
     clone:
       - kogito-runtimes-integration-tests
 
