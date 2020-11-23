@@ -23,6 +23,8 @@ import java.util.regex.Pattern;
 
 import org.drools.core.base.CoreComponentsBuilder;
 
+import static org.kie.soup.xstream.XStreamUtils.createTrustingXStream;
+
 public class Drools {
 
     private static Pattern VERSION_PAT = Pattern.compile("(\\d+)\\.(\\d+)\\.(\\d+)([\\.-](.*))?");
@@ -113,5 +115,22 @@ public class Drools {
 
     public static boolean isNativeImage() {
         return CoreComponentsBuilder.isNativeImage();
+    }
+
+    public static boolean hasXSTream() {
+        return XSTreamChekcer.HAS_XSTREAM;
+    }
+
+    private static class XSTreamChekcer {
+        private static final boolean HAS_XSTREAM = checkXStream();
+
+        private static boolean checkXStream() {
+            try {
+                createTrustingXStream();
+                return true;
+            } catch (Throwable e){
+                return false;
+            }
+        }
     }
 }
