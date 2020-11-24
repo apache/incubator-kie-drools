@@ -268,6 +268,10 @@ public class DrlxParseUtil {
             return Object.class;
         }
 
+        if (expr.isClassExpr()) {
+            return Class.class;
+        }
+
         throw new RuntimeException("Unknown expression type: " + PrintUtil.printConstraint(expr));
     }
 

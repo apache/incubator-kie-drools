@@ -16,16 +16,27 @@
 
 package org.drools.modelcompiler.builder.errors;
 
+import java.util.Optional;
+
 import org.drools.compiler.compiler.DroolsError;
+import org.drools.compiler.lang.descr.BaseDescr;
 import org.kie.internal.builder.ResultSeverity;
 
 public class InvalidExpressionErrorResult extends DroolsError {
 
     private String message;
 
+    private int[] errorLines = new int[1];
+
     public InvalidExpressionErrorResult(String message) {
         super();
         this.message = message;
+        this.errorLines[0] = -1;
+    }
+
+    public InvalidExpressionErrorResult(String message, Optional<BaseDescr> descrOpt) {
+        this(message);
+        descrOpt.ifPresent(descr -> this.errorLines[0] = descr.getLine());
     }
 
     @Override
@@ -40,7 +51,7 @@ public class InvalidExpressionErrorResult extends DroolsError {
 
     @Override
     public int[] getLines() {
-        return new int[0];
+        return errorLines;
     }
 }
 

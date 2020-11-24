@@ -14,11 +14,14 @@ public class JavaDialectConfigurationTest {
         new JavaDialectConfiguration().setJavaLanguageLevel("10");
         new JavaDialectConfiguration().setJavaLanguageLevel("11");
         new JavaDialectConfiguration().setJavaLanguageLevel("12");
+        new JavaDialectConfiguration().setJavaLanguageLevel("13");
+        new JavaDialectConfiguration().setJavaLanguageLevel("14");
+        new JavaDialectConfiguration().setJavaLanguageLevel("15");
     }
 
     @Test(expected = RuntimeException.class)
-    public void java13NotSupported() {
-        new JavaDialectConfiguration().setJavaLanguageLevel("13");
+    public void java16NotSupported() {
+        new JavaDialectConfiguration().setJavaLanguageLevel("16");
     }
 
 }

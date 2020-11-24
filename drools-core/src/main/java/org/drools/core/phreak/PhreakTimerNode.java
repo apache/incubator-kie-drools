@@ -29,7 +29,6 @@ import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.PathMemory;
-import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.reteoo.TimerNode;
 import org.drools.core.reteoo.TimerNode.TimerNodeMemory;
@@ -164,7 +163,7 @@ public class PhreakTimerNode {
         }
         for ( LeftTuple leftTuple = srcLeftTuples.getDeleteFirst(); leftTuple != null; ) {
             LeftTuple next = leftTuple.getStagedNext();
-            PropagationContext pctx = leftTuple.getPropagationContext();
+            PropagationContext pctx = leftTuple.findMostRecentPropagationContext();
 
             Object obj = leftTuple.getContextObject();
             if (obj instanceof DefaultJobHandle) {
@@ -172,8 +171,6 @@ public class PhreakTimerNode {
             } else if (obj instanceof TupleKey && pctx.getReaderContext() != null) {
                 pctx.getReaderContext().removeTimerNodeScheduler( timerNode.getId(), (TupleKey) obj );
             }
-
-            pctx = RuleTerminalNode.findMostRecentPropagationContext( leftTuple, pctx );
 
             if ( leftTuple.getMemory() != null ) {
                 leftTuples.remove( leftTuple ); // it gets removed either way.

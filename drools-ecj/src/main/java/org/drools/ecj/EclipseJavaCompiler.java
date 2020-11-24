@@ -1,12 +1,9 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
+ * Copyright (c) 2020. Red Hat, Inc. and/or its affiliates.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,7 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.compiler.commons.jci.compilers;
+package org.drools.ecj;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -27,6 +24,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import org.drools.compiler.commons.jci.compilers.AbstractJavaCompiler;
+import org.drools.compiler.commons.jci.compilers.JavaCompilerSettings;
 import org.drools.compiler.commons.jci.readers.ResourceReader;
 import org.drools.compiler.commons.jci.stores.ResourceStore;
 import org.drools.core.factmodel.ClassBuilderFactory;
@@ -53,7 +52,7 @@ import org.kie.internal.jci.CompilationProblem;
  */
 public final class EclipseJavaCompiler extends AbstractJavaCompiler {
     
-    private String prefix = "";
+    private String sourceFolder = "";
 
     private final EclipseJavaCompilerSettings defaultSettings;
 
@@ -65,24 +64,25 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
         defaultSettings = new EclipseJavaCompilerSettings(pSettings);
     }
 
-    public EclipseJavaCompiler( final EclipseJavaCompilerSettings pSettings, String prefix ) {
+    public EclipseJavaCompiler( final EclipseJavaCompilerSettings pSettings, String sourceFolder ) {
         defaultSettings = pSettings;
-        this.prefix = prefix;
+        this.sourceFolder = sourceFolder;
     }
 
-    public void setPrefix(String prefix) {
-        this.prefix = prefix;
+    @Override
+    public void setSourceFolder( String sourceFolder ) {
+        this.sourceFolder = sourceFolder;
     }
 
     public String getPathName(String fullPath) {
-        if ( prefix.length() == 0 ) {
+        if ( sourceFolder.length() == 0 ) {
             return fullPath;
         }
         
         if ( fullPath.charAt( 0 )  == '/') {
-             return fullPath.substring( prefix.length() + 1 );
+             return fullPath.substring( sourceFolder.length() + 1 );
         } else {
-            return fullPath.substring( prefix.length() );
+            return fullPath.substring( sourceFolder.length() );
         }
     }
 
@@ -304,7 +304,7 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
                 // FIXME: this should not be tied to the extension
                 final String javaSource = pClazzName.replace('.', '/') + ".java";
                 final String classSource = pClazzName.replace('.', '/') + ".class";
-                return pReader.isAvailable( prefix + javaSource ) || pReader.isAvailable(prefix + classSource );
+                return pReader.isAvailable( sourceFolder + javaSource ) || pReader.isAvailable( sourceFolder + classSource );
             }
 
             private boolean isPackage( final String pClazzName ) {
@@ -339,8 +339,6 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
                         result.append(parentPackageName[i]);
                     }
                 }
-
-//                log.debug("isPackage parentPackageName=" + result.toString() + " packageName=" + new String(packageName));
 
                 if (parentPackageName != null && parentPackageName.length > 0) {
                     result.append('.');

@@ -107,10 +107,11 @@ public class LambdaConsequence implements Consequence {
     }
 
     private Object[] fetchFacts( KnowledgeHelper knowledgeHelper, InternalWorkingMemory workingMemory ) {
-        Tuple tuple = knowledgeHelper.getTuple();
         if (factSuppliers == null) {
-            return initConsequence(knowledgeHelper, workingMemory, tuple);
+            return initConsequence(knowledgeHelper, workingMemory);
         }
+
+        Tuple tuple = knowledgeHelper.getTuple();
         Object[] facts = new Object[factSuppliers.length];
         for (int i = 0; i < facts.length; i++) {
             tuple = factSuppliers[i].get( facts, knowledgeHelper, workingMemory, tuple );
@@ -118,8 +119,13 @@ public class LambdaConsequence implements Consequence {
         return facts;
     }
 
-    private Object[] initConsequence( KnowledgeHelper knowledgeHelper, InternalWorkingMemory workingMemory, Tuple tuple ) {
+    private Object[] initConsequence( KnowledgeHelper knowledgeHelper, InternalWorkingMemory workingMemory) {
         Variable[] vars = consequence.getVariables();
+        if (vars.length == 0) {
+            return consequence.isUsingDrools() ? new Object[] { new DroolsImpl( knowledgeHelper, workingMemory ) } : new Object[0];
+        }
+
+        Tuple tuple = knowledgeHelper.getTuple();
         List<FactSupplier> factSuppliers = new ArrayList<>();
 
         Object[] facts;

@@ -199,13 +199,12 @@ public class EvalCondition extends ConditionalElement
 
     public void replaceDeclaration(Declaration declaration,
                                    Declaration resolved) {
+        this.expression.replaceDeclaration( declaration, resolved );
         for ( int i = 0; i < this.requiredDeclarations.length; i++ ) {
             if ( this.requiredDeclarations[i].equals( declaration ) ) {
                 this.requiredDeclarations[i] = resolved;
             }
         }
-        this.expression.replaceDeclaration( declaration,
-                                            resolved );
     }
 
     public List<EvalCondition> getCloned() {

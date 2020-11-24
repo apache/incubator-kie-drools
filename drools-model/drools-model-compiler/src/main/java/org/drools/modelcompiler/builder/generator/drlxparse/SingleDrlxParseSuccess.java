@@ -274,6 +274,14 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
         return toRawClass( exprType );
     }
 
+    public Type getLeftExprType() {
+        return left != null ? left.getType() : getExprType();
+    }
+
+    public Class<?> getLeftExprRawClass() {
+        return left != null ? left.getRawClass() : getExprRawClass();
+    }
+
     public Class<?> getPatternType() {
         return patternType;
     }
@@ -409,8 +417,8 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
         return new SingleDrlxParseSuccess(patternType, patternBinding, new BinaryExpr(expr, otherDrlx.expr, operator), exprType)
                 .setDecodeConstraintType(Index.ConstraintType.UNKNOWN).setUsedDeclarations(newUsedDeclarations).setUsedDeclarationsOnLeft(newUsedDeclarationsOnLeft)
                 .setUnification(this.isUnification() || otherDrlx.isUnification()).setReactOnProperties(newReactOnProperties).setBetaNode(isBetaNode)
-                .setLeft(new TypedExpression(this.expr, boolean.class))
-                .setRight(new TypedExpression(otherDrlx.expr, boolean.class));
+                .setLeft(new TypedExpression(this.expr, left != null ? left.getType() : boolean.class))
+                .setRight(new TypedExpression(otherDrlx.expr, right != null ? right.getType() : boolean.class));
     }
 
     @Override

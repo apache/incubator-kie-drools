@@ -30,6 +30,8 @@ public abstract class AbstractJavaCompiler implements JavaCompiler {
 
     protected CompilationProblemHandler problemHandler;
 
+    private JavaCompilerSettings javaCompilerSettings;
+
     public void setCompilationProblemHandler( final CompilationProblemHandler pHandler ) {
         problemHandler = pHandler;
     }
@@ -46,7 +48,10 @@ public abstract class AbstractJavaCompiler implements JavaCompiler {
     }
 
     public CompilationResult compile( final String[] pClazzNames, final ResourceReader pReader, final ResourceStore pStore, final ClassLoader pClassLoader ) {
-        return compile(pClazzNames, pReader, pStore, pClassLoader, createDefaultSettings());
+        return compile(pClazzNames, pReader, pStore, pClassLoader, javaCompilerSettings != null ? javaCompilerSettings : createDefaultSettings());
     }
 
+    public void setJavaCompilerSettings( JavaCompilerSettings javaCompilerSettings ) {
+        this.javaCompilerSettings = javaCompilerSettings;
+    }
 }
