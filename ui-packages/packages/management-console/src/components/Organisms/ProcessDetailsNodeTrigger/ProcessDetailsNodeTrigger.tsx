@@ -25,6 +25,7 @@ import {
   TriggerableNode
 } from '../../../utils/Utils';
 import { GraphQL, OUIAProps, componentOuiaProps } from '@kogito-apps/common';
+import './ProcessDetailsNodeTrigger.css';
 
 interface IOwnProps {
   processInstanceData: Pick<

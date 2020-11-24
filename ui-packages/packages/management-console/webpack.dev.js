@@ -17,7 +17,14 @@ module.exports = merge(common, {
     historyApiFallback: true,
     hot: true,
     overlay: true,
-    open: true
+    open: true,
+    proxy: {
+      '/svg': {
+          target: 'http://localhost:4000',
+          secure: false,
+          changeOrigin: true
+      },
+    }
   },
   module: {
     rules: [

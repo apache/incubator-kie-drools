@@ -1714,7 +1714,7 @@ module.exports ={ ProcessInstanceData : [
     rootProcessInstanceId: null,
     serviceUrl:'http://localhost:4000',
     endpoint: 'http://localhost:4000/',
-    addons: [],
+    addons: ['process-management'],
     error: {
       nodeDefinitionId: 'a1e139d5-4e77-48c9-84ae-3459188e90433n',
       message: 'Something went wrong'

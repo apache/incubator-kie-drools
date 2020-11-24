@@ -1,5 +1,6 @@
 import React from 'react';
 import axios from 'axios';
+import SVG from 'react-inlinesvg';
 import {
   OnRunningIcon,
   CheckCircleIcon,
@@ -435,4 +436,22 @@ export const performMultipleCancel = async (
     }
   }
   multiActionResult(successJobs, failedJobs);
+};
+
+export const getSvg = async (data, setSvg, setSvgError): Promise<void> => {
+  setSvg(null);
+  try {
+    await axios
+      .get(
+        `/svg/processes/${data.ProcessInstances[0].processId}/instances/${data.ProcessInstances[0].id}`
+      )
+      .then(res => {
+        const temp = <SVG src={res.data} />;
+        setSvg(temp);
+      });
+  } catch (error) {
+    if (error.response && error.response.status !== 404) {
+      setSvgError(error.message);
+    }
+  }
 };

@@ -70,6 +70,7 @@ app.post('/management/processes/:processId/instances/:processInstanceId/nodes/:n
 );
 app.get('/management/processes/:processId/nodes', controller.getTriggerableNodes)
 app.delete('/jobs/:jobId',controller.callJobCancel);
+app.get('/svg/processes/:processId/instances/:id', controller.dispatchSVG);
 
 function timeout(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));

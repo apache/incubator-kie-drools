@@ -613,9 +613,17 @@ exports[`Process Details Page component tests snapshot testing in Active state 1
             </GridItem>
           </div>
         </Grid>
-        <Flex>
+        <Flex
+          className="kogito-management-console--details__marginSpaces"
+          direction={
+            Object {
+              "default": "column",
+              "lg": "row",
+            }
+          }
+        >
           <div
-            className="pf-l-flex"
+            className="pf-l-flex pf-m-column pf-m-row-on-lg kogito-management-console--details__marginSpaces"
           >
             <Flex
               direction={
@@ -1760,9 +1768,17 @@ exports[`Process Details Page component tests snapshot testing in Error state 1`
             </GridItem>
           </div>
         </Grid>
-        <Flex>
+        <Flex
+          className="kogito-management-console--details__marginSpaces"
+          direction={
+            Object {
+              "default": "column",
+              "lg": "row",
+            }
+          }
+        >
           <div
-            className="pf-l-flex"
+            className="pf-l-flex pf-m-column pf-m-row-on-lg kogito-management-console--details__marginSpaces"
           >
             <Flex
               direction={
@@ -2877,9 +2893,17 @@ exports[`Process Details Page component tests snapshot testing in Suspended stat
             </GridItem>
           </div>
         </Grid>
-        <Flex>
+        <Flex
+          className="kogito-management-console--details__marginSpaces"
+          direction={
+            Object {
+              "default": "column",
+              "lg": "row",
+            }
+          }
+        >
           <div
-            className="pf-l-flex"
+            className="pf-l-flex pf-m-column pf-m-row-on-lg kogito-management-console--details__marginSpaces"
           >
             <Flex
               direction={
