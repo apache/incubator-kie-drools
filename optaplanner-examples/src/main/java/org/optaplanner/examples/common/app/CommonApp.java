@@ -56,7 +56,7 @@ public abstract class CommonApp<Solution_> extends LoggingMain {
                     + DATA_DIR_SYSTEM_PROPERTY + " should be set properly.\n" +
                     " The data directory is different in a git clone (optaplanner/optaplanner-examples/data)" +
                     " and in a release zip (examples/sources/data).\n" +
-                    " In an IDE (IntelliJ, Eclipse, NetBeans), open the \"Run configuration\""
+                    " In an IDE (IntelliJ, Eclipse, VSCode), open the \"Run configuration\""
                     + " to change \"Working directory\" (or add the system property in \"VM options\").");
         }
         return dataDir;

@@ -32,7 +32,7 @@ $ cd optaplanner-examples
 $ mvn exec:java
 ----
 
-To develop with IntelliJ IDEA, Eclipse or NetBeans, open the root `pom.xml` as a new project
+To develop with IntelliJ IDEA, Eclipse or VSCode, open the root `pom.xml` as a new project
 and configure a _Run/Debug configuration_ like this:
 
 * Type: Application

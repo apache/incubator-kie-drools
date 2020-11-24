@@ -35,7 +35,7 @@ that deliver a near-optimal solution in a reasonable amount of time.
 
 * https://www.oracle.com/java/technologies/javase-downloads.html[JDK 8 or later]
 * https://maven.apache.org/download.cgi[Maven 3.2+] or https://gradle.org/install/[Gradle4+]
-* An IDE, such as https://www.jetbrains.com/idea[IntelliJ IDEA], VSCode, Eclipse or NetBeans
+* An IDE, such as https://www.jetbrains.com/idea[IntelliJ IDEA], VSCode or Eclipse
 
 == The build file and the dependencies
 

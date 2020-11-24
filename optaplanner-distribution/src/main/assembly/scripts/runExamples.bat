@@ -8,16 +8,14 @@ set "mainClasspath=binaries/*;../binaries/*"
 
 echo Usage: runExamples.bat
 echo Notes:
-echo - Java 11 or higher must be installed. Get OpenJDK 11 from ^(https://adoptopenjdk.net/^).
+echo - Java 11 or higher must be installed. Get the latest OpenJDK from ^(https://adoptopenjdk.net/^).
 echo - For JDK, the environment variable JAVA_HOME should be set to the JDK installation directory
 echo   For example: set "JAVA_HOME=C:\Program Files\Java\jdk-11"
-echo - The working dir should be the directory of this script.
 echo.
 
 if exist "%JAVA_HOME%\bin\java.exe" (
     echo Starting examples app with JDK from environment variable JAVA_HOME ^(%JAVA_HOME%^)...
-    rem JDK supports -server mode
-    "%JAVA_HOME%\bin\java" !jvmOptions! -server -cp !mainClasspath! !mainClass!
+    "%JAVA_HOME%\bin\java" !jvmOptions! -cp !mainClasspath! !mainClass!
     goto endProcess
 ) else (
     rem Find JRE home in Windows Registry

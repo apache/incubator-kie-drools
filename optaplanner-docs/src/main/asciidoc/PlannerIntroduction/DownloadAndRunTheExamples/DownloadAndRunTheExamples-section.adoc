@@ -42,11 +42,11 @@ It runs just as well on a server or a mobile JVM as it does on the desktop.
 
 
 [[runTheExamplesInAnIDE]]
-== Run the examples in an IDE (IntelliJ, Eclipse, NetBeans)
+== Run the examples in an IDE (IntelliJ, Eclipse, VSCode)
 
 To run the examples in your favorite IDE:
 
-* In IntelliJ IDEA, NetBeans or a non-vanilla Eclipse:
+* In IntelliJ IDEA, VSCode or a non-vanilla Eclipse:
 +
 . Open the file [path]_examples/sources/pom.xml_ as a new project, the maven integration will take care of the rest.
 . Run the examples from the project.
