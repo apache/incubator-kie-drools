@@ -18,3 +18,5 @@ subprocess/CallActivityWithTypeInfo.bpmn2
 subprocess/CallActivitySubProcess.bpmn2
 subprocess/CallActivityWithIOexpressionNested.bpmn2
 subprocess/CallActivityMI.bpmn2
+subprocess/ParentProcess.bpmn
+subprocess/SubProcess.bpmn

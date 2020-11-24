@@ -19,16 +19,16 @@ package org.jbpm.workflow.core.node;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
-import org.kie.api.definition.process.Connection;
 import org.jbpm.process.core.Context;
 import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.context.AbstractContext;
 import org.jbpm.process.core.context.variable.Mappable;
 import org.jbpm.process.core.impl.ContextContainerImpl;
+import org.kie.api.definition.process.Connection;
 
 /**
  * Default implementation of a sub-flow node.
@@ -85,15 +85,15 @@ public class SubProcessNode extends StateBasedNode implements Mappable, ContextC
     public String getInMapping(String parameterName) {
     	return getInMappings().get(parameterName);
     }
-    
+
     public Map<String, String> getInMappings() {
-    	Map<String,String> in = new HashMap<String, String>(); 
-    	for(DataAssociation a : inMapping) {
-    		if(a.getSources().size() ==1 && (a.getAssignments() == null || a.getAssignments().size()==0) && a.getTransformation() == null) {
-    			in.put(a.getTarget(), a.getSources().get(0));
-    		}
-    	}
-    	return in;
+        Map<String, String> in = new HashMap<>();
+        for (DataAssociation a : inMapping) {
+            if (a.getSources().size() == 1 && (a.getAssignments() == null || a.getAssignments().size() == 0) && a.getTransformation() == null) {
+                in.put(a.getTarget(), a.getSources().get(0));
+            }
+        }
+        return in;
     }
 
     public void addInAssociation(DataAssociation dataAssociation) {

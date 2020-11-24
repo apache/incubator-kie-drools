@@ -64,6 +64,7 @@ public class ParentSubProcessTest {
                 .body("[0].id", notNullValue())
                 .body("[0].name", is(name))
                 .body("[0].review", nullValue())
+                .body("[0].constant", is("aString"))
                 .extract().path("[0].id");
 
         // get task
