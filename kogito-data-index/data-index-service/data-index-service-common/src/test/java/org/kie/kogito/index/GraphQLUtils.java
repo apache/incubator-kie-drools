@@ -134,6 +134,10 @@ public class GraphQLUtils {
         return getUserTaskInstanceQuery("UserTaskInstanceByIdAndActualOwner", id, actualOwner);
     }
 
+    public static String getUserTaskInstanceByIdAndProcessId(String id, String processId) {
+        return getUserTaskInstanceQuery("UserTaskInstanceByIdAndProcessId", id, processId);
+    }
+
     public static String getUserTaskInstanceByIdNoActualOwner(String id) {
         return getUserTaskInstanceQuery("UserTaskInstanceByIdNoActualOwner", id);
     }

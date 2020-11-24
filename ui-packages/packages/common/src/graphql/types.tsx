@@ -70,6 +70,7 @@ export namespace GraphQL {
   export type JobArgument = {
     and?: Maybe<Array<JobArgument>>;
     or?: Maybe<Array<JobArgument>>;
+    not?: Maybe<JobArgument>;
     id?: Maybe<IdArgument>;
     processId?: Maybe<StringArgument>;
     processInstanceId?: Maybe<IdArgument>;
@@ -402,6 +403,7 @@ export namespace GraphQL {
     description?: Maybe<StringArgument>;
     name?: Maybe<StringArgument>;
     priority?: Maybe<StringArgument>;
+    processId?: Maybe<StringArgument>;
     processInstanceId?: Maybe<IdArgument>;
     actualOwner?: Maybe<StringArgument>;
     potentialUsers?: Maybe<StringArrayArgument>;

@@ -79,6 +79,7 @@ import static org.kie.kogito.index.GraphQLUtils.getUserTaskInstanceByIdAndActual
 import static org.kie.kogito.index.GraphQLUtils.getUserTaskInstanceByIdAndCompleted;
 import static org.kie.kogito.index.GraphQLUtils.getUserTaskInstanceByIdAndPotentialGroups;
 import static org.kie.kogito.index.GraphQLUtils.getUserTaskInstanceByIdAndPotentialUsers;
+import static org.kie.kogito.index.GraphQLUtils.getUserTaskInstanceByIdAndProcessId;
 import static org.kie.kogito.index.GraphQLUtils.getUserTaskInstanceByIdAndStarted;
 import static org.kie.kogito.index.GraphQLUtils.getUserTaskInstanceByIdAndState;
 import static org.kie.kogito.index.GraphQLUtils.getUserTaskInstanceByIdNoActualOwner;
@@ -744,7 +745,7 @@ abstract class AbstractIndexingServiceIT {
 
         validateUserTaskInstance(getUserTaskInstanceById(taskId), event);
         validateUserTaskInstance(getUserTaskInstanceByIdAndActualOwner(taskId, "kogito"), event);
-
+        validateUserTaskInstance(getUserTaskInstanceByIdAndProcessId(taskId, processId), event);
         validateUserTaskInstance(getUserTaskInstanceByIdAndPotentialGroups(taskId, new ArrayList<>(event.getData().getPotentialGroups())), event);
         validateUserTaskInstance(getUserTaskInstanceByIdAndPotentialUsers(taskId, new ArrayList<>(event.getData().getPotentialUsers())), event);
         validateUserTaskInstance(getUserTaskInstanceByIdAndState(taskId, event.getData().getState()), event);

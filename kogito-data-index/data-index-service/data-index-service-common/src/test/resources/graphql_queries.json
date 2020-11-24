@@ -106,6 +106,13 @@
       "actualOwner": "%s"
     }
   },
+  "UserTaskInstanceByIdAndProcessId": {
+    "query": "query ( $id: String, $processId: String ) { UserTaskInstances( where: {  id: {  equal : $id }, processId: { equal: $processId } } ){ %s } }",
+    "variables": {
+      "id": "%s",
+      "processId": "%s"
+    }
+  },
   "UserTaskInstanceByIdNoActualOwner": {
     "query": "query ( $id: String ) { UserTaskInstances( where: {  id: {  equal : $id }, actualOwner: { isNull: true } } ){ %s } }",
     "variables": {

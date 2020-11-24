@@ -299,6 +299,7 @@ input UserTaskInstanceArgument {
     description: StringArgument
     name: StringArgument
     priority: StringArgument
+    processId: StringArgument
     processInstanceId: IdArgument
     actualOwner: StringArgument
     potentialUsers: StringArrayArgument
