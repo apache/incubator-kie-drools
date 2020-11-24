@@ -20,7 +20,7 @@ public class DecisionModels implements org.kie.kogito.decision.DecisionModels {
         }
 
         try {
-            byte[] bytes = stream.readAllBytes();
+            byte[] bytes = org.drools.core.util.IoUtils.readBytesFromInputStream(stream);
             java.io.ByteArrayInputStream byteArrayInputStream = new java.io.ByteArrayInputStream(bytes);
             return new java.io.InputStreamReader(byteArrayInputStream);
         } catch (java.io.IOException e) {
