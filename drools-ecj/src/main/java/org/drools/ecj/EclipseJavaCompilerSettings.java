@@ -17,7 +17,7 @@ package org.drools.ecj;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.compiler.commons.jci.compilers.JavaCompilerSettings;
+import org.kie.memorycompiler.JavaCompilerSettings;
 
 /**
  * Native Eclipse compiler settings

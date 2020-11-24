@@ -19,7 +19,7 @@ import java.util.List;
 
 import org.assertj.core.api.Assertions;
 import org.assertj.core.data.Index;
-import org.drools.compiler.commons.jci.compilers.NativeJavaCompilerSettings;
+import org.kie.memorycompiler.jdknative.NativeJavaCompilerSettings;
 import org.junit.Test;
 
 public class NativeJavaCompilerSettingsTest {

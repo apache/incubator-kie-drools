@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.drools.compiler.builder.InternalKnowledgeBuilder;
-import org.drools.compiler.commons.jci.stores.ResourceStore;
+import org.kie.memorycompiler.resources.ResourceStore;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.core.factmodel.ClassDefinition;
