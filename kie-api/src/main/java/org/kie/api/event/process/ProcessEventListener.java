@@ -95,12 +95,23 @@ public interface ProcessEventListener
      * This listener method is invoked right before a process/node instance's SLA has been violated.
      * @param event
      */
-    default void beforeSLAViolated(SLAViolatedEvent event){};
+    default void beforeSLAViolated(SLAViolatedEvent event) {}
 
     /**
      * This listener method is invoked right after a process/node instance's SLA has been violated.
      * @param event
      */
-    default void afterSLAViolated(SLAViolatedEvent event){};
+    default void afterSLAViolated(SLAViolatedEvent event) {}
 
+    /**
+     * This listener method is invoked when a signal is sent
+     * @param event
+     */
+    default void onSignal(SignalEvent event) {}
+
+    /**
+     * This listener method is invoked when a message is sent
+     * @param event
+     */
+    default void onMessage(MessageEvent event) {}
 }
