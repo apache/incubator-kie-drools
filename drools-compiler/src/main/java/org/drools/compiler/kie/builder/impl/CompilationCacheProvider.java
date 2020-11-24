@@ -16,7 +16,7 @@ package org.drools.compiler.kie.builder.impl;
 
 import java.util.Map;
 
-import org.drools.compiler.commons.jci.stores.ResourceStore;
+import org.drools.java.compiler.resources.ResourceStore;
 import org.kie.api.internal.utils.ServiceRegistry;
 
 public interface CompilationCacheProvider {

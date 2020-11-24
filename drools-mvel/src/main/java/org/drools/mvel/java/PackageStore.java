@@ -16,7 +16,7 @@ package org.drools.mvel.java;
 
 import java.util.List;
 
-import org.drools.compiler.commons.jci.stores.ResourceStore;
+import org.drools.java.compiler.resources.ResourceStore;
 import org.drools.core.rule.JavaDialectRuntimeData;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 

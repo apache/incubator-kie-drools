@@ -29,7 +29,7 @@ import java.util.Collection;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.drools.compiler.commons.jci.readers.ResourceReader;
+import org.drools.java.compiler.resources.ResourceReader;
 import org.drools.compiler.compiler.io.FileSystemItem;
 import org.drools.compiler.compiler.io.Folder;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;

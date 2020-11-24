@@ -33,13 +33,13 @@ import org.appformer.maven.support.AFReleaseIdImpl;
 import org.appformer.maven.support.DependencyFilter;
 import org.appformer.maven.support.PomModel;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
-import org.drools.compiler.commons.jci.compilers.CompilationResult;
-import org.drools.compiler.commons.jci.compilers.JavaCompiler;
-import org.drools.compiler.commons.jci.compilers.JavaCompilerFactory;
-import org.drools.compiler.commons.jci.readers.DiskResourceReader;
-import org.drools.compiler.commons.jci.readers.ResourceReader;
+import org.drools.java.compiler.CompilationResult;
+import org.drools.java.compiler.JavaCompiler;
+import org.drools.java.compiler.JavaCompilerFactory;
+import org.drools.java.compiler.resources.DiskResourceReader;
+import org.drools.java.compiler.resources.ResourceReader;
 import org.drools.compiler.compiler.DecisionTableFactory;
-import org.drools.compiler.compiler.JavaConfiguration;
+import org.drools.java.compiler.JavaConfiguration;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.core.builder.conf.impl.DecisionTableConfigurationImpl;
@@ -762,7 +762,7 @@ public class KieBuilderImpl
     }
 
     private JavaCompiler createCompiler( JavaConfiguration javaConf, String sourceFolder ) {
-        JavaCompiler javaCompiler = JavaCompilerFactory.INSTANCE.loadCompiler( javaConf );
+        JavaCompiler javaCompiler = JavaCompilerFactory.loadCompiler( javaConf );
         javaCompiler.setSourceFolder( sourceFolder );
         return javaCompiler;
     }

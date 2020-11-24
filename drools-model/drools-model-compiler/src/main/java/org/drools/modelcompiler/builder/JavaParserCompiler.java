@@ -30,17 +30,17 @@ import com.github.javaparser.ast.body.TypeDeclaration;
 import com.github.javaparser.printer.PrettyPrinter;
 import com.github.javaparser.printer.PrettyPrinterConfiguration;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.drools.compiler.commons.jci.compilers.CompilationResult;
-import org.drools.compiler.commons.jci.compilers.JavaCompiler;
-import org.drools.compiler.commons.jci.compilers.JavaCompilerFactory;
-import org.drools.compiler.compiler.JavaConfiguration;
+import org.drools.java.compiler.CompilationResult;
+import org.drools.java.compiler.JavaCompiler;
+import org.drools.java.compiler.JavaCompilerFactory;
+import org.drools.java.compiler.JavaConfiguration;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.modelcompiler.builder.errors.CompilationProblemErrorResult;
 import org.kie.internal.jci.CompilationProblem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.drools.compiler.compiler.JavaConfiguration.createDefaultCompiler;
+import static org.drools.compiler.compiler.JavaDialectConfiguration.createDefaultCompiler;
 import static org.drools.core.util.ClassUtils.isJboss;
 
 public class JavaParserCompiler {
@@ -56,7 +56,7 @@ public class JavaParserCompiler {
     private static final PrettyPrinter PRETTY_PRINTER = createPrettyPrinter();
 
     private static JavaCompiler createCompiler() {
-        JavaCompiler javaCompiler = JavaCompilerFactory.INSTANCE.loadCompiler( COMPILER_TYPE, "1.8" );
+        JavaCompiler javaCompiler = JavaCompilerFactory.loadCompiler( COMPILER_TYPE, "1.8" );
         javaCompiler.setSourceFolder( "src/main/java/" );
         return javaCompiler;
     }

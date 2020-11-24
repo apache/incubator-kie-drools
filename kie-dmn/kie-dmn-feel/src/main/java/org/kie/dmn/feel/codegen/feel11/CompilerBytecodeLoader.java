@@ -34,16 +34,16 @@ import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.stmt.ReturnStmt;
-import org.drools.compiler.commons.jci.compilers.CompilationResult;
-import org.drools.compiler.commons.jci.compilers.JavaCompiler;
-import org.drools.compiler.commons.jci.readers.MemoryResourceReader;
+import org.drools.java.compiler.CompilationResult;
+import org.drools.java.compiler.JavaCompiler;
+import org.drools.java.compiler.resources.MemoryResourceReader;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.kie.dmn.feel.util.ClassLoaderUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static com.github.javaparser.StaticJavaParser.parse;
-import static org.drools.compiler.compiler.JavaConfiguration.createDefaultCompiler;
+import static org.drools.compiler.compiler.JavaDialectConfiguration.createDefaultCompiler;
 
 public class CompilerBytecodeLoader {
 

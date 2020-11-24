@@ -60,7 +60,7 @@ import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.RuleConditionElement;
-import org.drools.mvel.java.JavaDialectConfiguration;
+import org.drools.mvel.java.JavaForMvelDialectConfiguration;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -86,14 +86,14 @@ public class PackageBuilderConfigurationTest {
 
     @BeforeClass
     public static void backupPropertyValues() {
-        droolsDialectJavaCompilerOrig = System.getProperty( JavaDialectConfiguration.JAVA_COMPILER_PROPERTY);
+        droolsDialectJavaCompilerOrig = System.getProperty( JavaForMvelDialectConfiguration.JAVA_COMPILER_PROPERTY);
         droolsDialectDefaultOrig = System.getProperty(DefaultDialectOption.PROPERTY_NAME);
     }
 
     @AfterClass
     public static void restorePropertyValues() {
         if (droolsDialectJavaCompilerOrig != null) {
-            System.setProperty(JavaDialectConfiguration.JAVA_COMPILER_PROPERTY, droolsDialectJavaCompilerOrig);
+            System.setProperty( JavaForMvelDialectConfiguration.JAVA_COMPILER_PROPERTY, droolsDialectJavaCompilerOrig);
         }
         if (droolsDialectDefaultOrig != null) {
             System.setProperty(DefaultDialectOption.PROPERTY_NAME, droolsDialectDefaultOrig);
@@ -132,16 +132,16 @@ public class PackageBuilderConfigurationTest {
 
     @Test
     public void testProgramaticProperties2() {
-        JavaDialectConfiguration javaConf = new JavaDialectConfiguration();
+        JavaForMvelDialectConfiguration javaConf = new JavaForMvelDialectConfiguration();
         javaConf.init(new KnowledgeBuilderConfigurationImpl());
-        javaConf.setCompiler(JavaDialectConfiguration.CompilerType.ECLIPSE);
+        javaConf.setCompiler( JavaForMvelDialectConfiguration.CompilerType.ECLIPSE);
         KnowledgeBuilderConfigurationImpl cfg = new KnowledgeBuilderConfigurationImpl();
         cfg.setDialectConfiguration("java",
                                     javaConf);
-        JavaDialectConfiguration javaConf2 = (JavaDialectConfiguration) cfg.getDialectConfiguration("java");
+        JavaForMvelDialectConfiguration javaConf2 = ( JavaForMvelDialectConfiguration ) cfg.getDialectConfiguration("java");
         assertSame(javaConf,
                    javaConf2);
-        assertEquals(JavaDialectConfiguration.CompilerType.ECLIPSE,
+        assertEquals( JavaForMvelDialectConfiguration.CompilerType.ECLIPSE,
                      javaConf2.getCompiler());
     }
 

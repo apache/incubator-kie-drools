@@ -25,7 +25,7 @@ import java.util.function.BiFunction;
 import java.util.stream.Stream;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
-import org.drools.compiler.commons.jci.compilers.CompilationResult;
+import org.drools.java.compiler.CompilationResult;
 import org.drools.compiler.compiler.io.File;
 import org.drools.compiler.compiler.io.memory.MemoryFile;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;

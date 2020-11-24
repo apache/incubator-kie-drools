@@ -21,9 +21,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.drools.compiler.commons.jci.compilers.CompilationResult;
-import org.drools.compiler.commons.jci.compilers.JavaCompiler;
-import org.drools.compiler.commons.jci.compilers.NativeJavaCompiler;
+import org.drools.java.compiler.CompilationResult;
+import org.drools.java.compiler.JavaCompiler;
+import org.drools.java.compiler.jdknative.NativeJavaCompiler;
 import org.drools.compiler.compiler.io.File;
 import org.drools.compiler.compiler.io.FileSystemItem;
 import org.drools.compiler.compiler.io.Folder;

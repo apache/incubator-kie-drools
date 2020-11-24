@@ -40,8 +40,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
-import org.drools.compiler.commons.jci.readers.ResourceReader;
-import org.drools.compiler.commons.jci.stores.ResourceStore;
+import org.drools.java.compiler.resources.ResourceReader;
+import org.drools.java.compiler.resources.ResourceStore;
 import org.drools.compiler.compiler.io.File;
 import org.drools.compiler.compiler.io.FileSystem;
 import org.drools.compiler.compiler.io.FileSystemItem;

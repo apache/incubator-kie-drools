@@ -23,11 +23,12 @@ import java.util.Map;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.errors.ErrorHandler;
 import org.drools.compiler.builder.impl.errors.SrcErrorHandler;
-import org.drools.compiler.commons.jci.compilers.CompilationResult;
-import org.drools.compiler.commons.jci.compilers.JavaCompiler;
-import org.drools.compiler.commons.jci.compilers.JavaCompilerFactory;
-import org.drools.compiler.commons.jci.readers.MemoryResourceReader;
-import org.drools.compiler.commons.jci.stores.ResourceStore;
+import org.drools.java.compiler.CompilationResult;
+import org.drools.java.compiler.JavaCompiler;
+import org.drools.java.compiler.JavaCompilerFactory;
+import org.drools.java.compiler.resources.MemoryResourceReader;
+import org.drools.java.compiler.resources.ResourceStore;
+import org.drools.java.compiler.JavaConfiguration;
 import org.drools.reflective.classloader.ProjectClassLoader;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.jci.CompilationProblem;
@@ -39,11 +40,11 @@ public class ProjectJavaCompiler {
     private final JavaCompiler compiler;
 
     public ProjectJavaCompiler(KnowledgeBuilderConfigurationImpl pkgConf) {
-        this((JavaConfiguration) pkgConf.getDialectConfiguration("java"));
+        this(( JavaConfiguration ) pkgConf.getDialectConfiguration("java"));
     }
 
     public ProjectJavaCompiler(JavaConfiguration configuration) {
-        compiler = JavaCompilerFactory.INSTANCE.loadCompiler(configuration);
+        compiler = JavaCompilerFactory.loadCompiler(configuration);
     }
 
     public List<KnowledgeBuilderResult> compileAll( ProjectClassLoader projectClassLoader,

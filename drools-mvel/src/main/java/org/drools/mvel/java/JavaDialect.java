@@ -32,10 +32,10 @@ import org.drools.compiler.builder.impl.errors.FunctionErrorHandler;
 import org.drools.compiler.builder.impl.errors.RuleErrorHandler;
 import org.drools.compiler.builder.impl.errors.RuleInvokerErrorHandler;
 import org.drools.compiler.builder.impl.errors.SrcErrorHandler;
-import org.drools.compiler.commons.jci.compilers.CompilationResult;
-import org.drools.compiler.commons.jci.compilers.JavaCompiler;
-import org.drools.compiler.commons.jci.compilers.JavaCompilerFactory;
-import org.drools.compiler.commons.jci.readers.MemoryResourceReader;
+import org.drools.java.compiler.CompilationResult;
+import org.drools.java.compiler.JavaCompiler;
+import org.drools.java.compiler.JavaCompilerFactory;
+import org.drools.java.compiler.resources.MemoryResourceReader;
 import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;
@@ -148,7 +148,7 @@ public class JavaDialect
     //
     private static final JavaExprAnalyzer analyzer = new JavaExprAnalyzer();
 
-    private final JavaDialectConfiguration configuration;
+    private final JavaForMvelDialectConfiguration configuration;
 
     private JavaCompiler compiler;
     private final InternalKnowledgePackage pkg;
@@ -171,7 +171,7 @@ public class JavaDialect
         this.pkg = pkg;
         this.packageRegistry = pkgRegistry;
 
-        this.configuration = (JavaDialectConfiguration) pkgConf.getDialectConfiguration("java");
+        this.configuration = ( JavaForMvelDialectConfiguration ) pkgConf.getDialectConfiguration("java");
 
         this.errorHandlers = new ConcurrentHashMap<String, ErrorHandler>();
         this.results = new ArrayList<KnowledgeBuilderResult>();
@@ -648,7 +648,7 @@ public class JavaDialect
     }
 
     private void loadCompiler() {
-        this.compiler = JavaCompilerFactory.INSTANCE.loadCompiler(this.configuration);
+        this.compiler = JavaCompilerFactory.loadCompiler(this.configuration);
     }
 
     public void addImport(ImportDescr importDescr) {

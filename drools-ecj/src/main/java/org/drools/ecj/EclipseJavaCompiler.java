@@ -24,13 +24,14 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import org.drools.compiler.commons.jci.compilers.AbstractJavaCompiler;
-import org.drools.compiler.commons.jci.compilers.JavaCompilerSettings;
-import org.drools.compiler.commons.jci.readers.ResourceReader;
-import org.drools.compiler.commons.jci.stores.ResourceStore;
+import org.drools.java.compiler.AbstractJavaCompiler;
+import org.drools.java.compiler.JavaCompilerSettings;
+import org.drools.java.compiler.resources.ResourceReader;
+import org.drools.java.compiler.resources.ResourceStore;
 import org.drools.core.factmodel.ClassBuilderFactory;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.IoUtils;
+import org.drools.java.compiler.CompilationResult;
 import org.eclipse.jdt.core.compiler.IProblem;
 import org.eclipse.jdt.internal.compiler.ClassFile;
 import org.eclipse.jdt.internal.compiler.Compiler;
@@ -153,7 +154,7 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
     }
 
 
-    public org.drools.compiler.commons.jci.compilers.CompilationResult compile(
+    public CompilationResult compile(
             final String[] pSourceFiles,
             final ResourceReader pReader,
             final ResourceStore pStore,
@@ -219,7 +220,7 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
         if (problems.size() > 0) {
             final CompilationProblem[] result = new CompilationProblem[problems.size()];
             problems.toArray(result);
-            return new org.drools.compiler.commons.jci.compilers.CompilationResult(result);
+            return new CompilationResult(result);
         }
 
         final IErrorHandlingPolicy policy = DefaultErrorHandlingPolicies.proceedWithAllProblems();
@@ -392,7 +393,7 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
 
         final CompilationProblem[] result = new CompilationProblem[problems.size()];
         problems.toArray(result);
-        return new org.drools.compiler.commons.jci.compilers.CompilationResult(result);
+        return new CompilationResult(result);
     }
 
     private void dumpUnits( ICompilationUnit[] compilationUnits, ResourceReader reader ) {

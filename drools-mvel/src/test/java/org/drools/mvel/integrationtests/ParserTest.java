@@ -21,7 +21,7 @@ import java.io.InputStreamReader;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.compiler.compiler.DrlParser;
-import org.drools.compiler.compiler.JavaConfiguration;
+import org.drools.java.compiler.JavaConfiguration;
 import org.drools.compiler.compiler.ParserError;
 import org.drools.mvel.CommonTestMethodBase;
 import org.junit.Test;

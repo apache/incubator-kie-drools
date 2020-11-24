@@ -1,19 +1,18 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
- *
+ * Copyright (c) 2020. Red Hat, Inc. and/or its affiliates.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
-package org.drools.compiler.commons.jci.compilers;
+package org.drools.java.compiler.jdknative;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -53,9 +52,12 @@ import javax.tools.SimpleJavaFileObject;
 import javax.tools.StandardJavaFileManager;
 import javax.tools.StandardLocation;
 import javax.tools.ToolProvider;
-import org.drools.compiler.commons.jci.readers.ResourceReader;
-import org.drools.compiler.commons.jci.stores.ResourceStore;
 import org.drools.core.util.IoUtils;
+import org.drools.java.compiler.AbstractJavaCompiler;
+import org.drools.java.compiler.CompilationResult;
+import org.drools.java.compiler.JavaCompilerSettings;
+import org.drools.java.compiler.resources.ResourceReader;
+import org.drools.java.compiler.resources.ResourceStore;
 import org.drools.reflective.classloader.ProjectClassLoader;
 import org.kie.internal.jci.CompilationProblem;
 
@@ -79,11 +81,11 @@ public class NativeJavaCompiler extends AbstractJavaCompiler {
     }
 
     @Override
-    public CompilationResult compile(String[] pResourcePaths,
-                                     ResourceReader pReader,
-                                     ResourceStore pStore,
-                                     ClassLoader pClassLoader,
-                                     JavaCompilerSettings pSettings) {
+    public CompilationResult compile( String[] pResourcePaths,
+                                      ResourceReader pReader,
+                                      ResourceStore pStore,
+                                      ClassLoader pClassLoader,
+                                      JavaCompilerSettings pSettings) {
         DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<JavaFileObject>();
         javax.tools.JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
 
@@ -398,7 +400,7 @@ public class NativeJavaCompiler extends AbstractJavaCompiler {
                     }
                 }
             } catch (NoSuchFieldException | IllegalAccessException e) {
-                throw new RuntimeException( e );
+                // ignore: this classloader is not indexable
             }
         }
 

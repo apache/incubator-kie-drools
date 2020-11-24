@@ -54,8 +54,9 @@
     <module>drools-core-dynamic</module>
     <module>kie-test-util</module>
     <module>drools-core</module>
-    <module>drools-compiler</module>
+    <module>drools-java-compiler</module>
     <module>drools-ecj</module>
+    <module>drools-compiler</module>
     <module>drools-mvel</module>
     <module>drools-serialization-protobuf</module>
     <module>drools-beliefs</module>

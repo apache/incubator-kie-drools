@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import org.drools.compiler.commons.jci.compilers.CompilationResult;
+import org.drools.java.compiler.CompilationResult;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.reflective.classloader.ProjectClassLoader;
 import org.drools.ruleunit.DataSource;
