@@ -14,14 +14,15 @@
 
 package org.drools.compiler.kie.builder.impl;
 
-
-import org.kie.memorycompiler.CompilationProblem;
-
+/**
+ * This class is intended to adapt the CompilationProblems produced by the in memory java compiler
+ * to the one defined in kie-internal API
+ */
 public class CompilationProblemAdapter implements org.kie.internal.jci.CompilationProblem {
 
-    private final CompilationProblem delegate;
+    private final org.kie.memorycompiler.CompilationProblem delegate;
 
-    public CompilationProblemAdapter( CompilationProblem delegate ) {
+    public CompilationProblemAdapter( org.kie.memorycompiler.CompilationProblem delegate ) {
         this.delegate = delegate;
     }
 
