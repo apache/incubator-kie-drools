@@ -427,6 +427,7 @@
             </dependency>
           </dependencies>
           <executions>
+            <!-- TODO Disabled during kie-parent 7 removal due to false negatives.
             <execution>
               <id>enforce-plugin-versions</id>
               <goals>
@@ -434,13 +435,23 @@
               </goals>
               <configuration>
                 <rules>
-                  <!-- TODO Disabled during kie-parent 7 removal due to false negatives -->
-                  <!--                  <requirePluginVersions>-->
-                  <!--                    <message>One or more plugins do not have valid version! The version needs to be-->
-                  <!--                      explicitly specified, can not be a -SNAPSHOT version and can not be one of-->
-                  <!--                      the special (and buggy) Maven versions (LATEST, RELEASE).-->
-                  <!--                    </message>-->
-                  <!--                  </requirePluginVersions>-->
+                  <requirePluginVersions>
+                    <message>One or more plugins do not have valid version! The version needs to be
+                      explicitly specified, can not be a -SNAPSHOT version and can not be one of
+                      the special (and buggy) Maven versions (LATEST, RELEASE).
+                    </message>
+                  </requirePluginVersions>
+                </rules>
+              </configuration>
+            </execution>
+            -->
+            <execution>
+              <id>enforce-no-logback-test-in-main</id>
+              <goals>
+                <goal>enforce</goal>
+              </goals>
+              <configuration>
+                <rules>
                   <requireFilesDontExist>
                     <files>
                       <file>${project.basedir}/src/main/resources/logback-test.xml</file>
@@ -932,7 +943,7 @@
             <id>javadoc-javadoc</id>
             <phase>package</phase>
             <goals>
-              <goal>javadoc</goal>
+              <goal>javadoc-no-fork</goal>
             </goals>
           </execution>
         </executions>
