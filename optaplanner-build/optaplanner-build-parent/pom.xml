@@ -586,54 +586,6 @@
                           <ignoreClass>*</ignoreClass>
                         </ignoreClasses>
                       </dependency>
-                      <dependency>
-                        <groupId>org.elasticsearch</groupId>
-                        <artifactId>elasticsearch</artifactId>
-                        <ignoreClasses>
-                          <!-- Elasticsearch team claims they fixed performance issues in the class and re-bundled it.
-                               See https://discuss.elastic.co/t/an-unshaded-joda-time-classes-in-elasticsearch-2-1-1-jar/38943
-                               Nothing we can do here. -->
-                          <ignoreClass>org.joda.time.base.BaseDateTime</ignoreClass>
-                        </ignoreClasses>
-                      </dependency>
-                      <!-- ignore jboss-logging included in kie server router as it is required by undertow and uberjar usage-->
-                      <dependency>
-                        <groupId>org.kie.server</groupId>
-                        <artifactId>kie-server-router-proxy</artifactId>
-                        <type>jar</type>
-                        <ignoreClasses>
-                          <ignoreClass>org.jboss.logging.*</ignoreClass>
-                          <ignoreClass>io.undertow.*</ignoreClass>
-                          <ignoreClass>org.json.*</ignoreClass>
-                          <ignoreClass>org.jboss.threads.*</ignoreClass>
-                          <ignoreClass>org.xnio.*</ignoreClass>
-                          <ignoreClass>org.wildfly.*</ignoreClass>
-                          <ignoreClass>org.apache.commons.*</ignoreClass>
-                        </ignoreClasses>
-                      </dependency>
-                      <dependency>
-                        <groupId>org.wildfly.security</groupId>
-                        <artifactId>wildfly-elytron</artifactId>
-                        <type>jar</type>
-                        <ignoreClasses>
-                          <ignoreClass>*</ignoreClass>
-                        </ignoreClasses>
-                      </dependency>
-                      <dependency>
-                        <!-- The openshift-client duplicates these classes from the kubernetes-client.
-                             It is an upstream io.fabric8 issue that needs to be fixed there:
-                             https://github.com/fabric8io/kubernetes-client/issues/828 -->
-                        <groupId>io.fabric8</groupId>
-                        <artifactId>openshift-client</artifactId>
-                        <type>jar</type>
-                        <ignoreClasses>
-                          <ignoreClass>io.fabric8.kubernetes.client.ConfigFluent</ignoreClass>
-                          <ignoreClass>io.fabric8.kubernetes.client.ConfigBuilder
-                          </ignoreClass>
-                          <ignoreClass>io.fabric8.kubernetes.client.ConfigFluentImpl
-                          </ignoreClass>
-                        </ignoreClasses>
-                      </dependency>
                     </dependencies>
                     <findAllDuplicates>true</findAllDuplicates>
                   </banDuplicateClasses>
