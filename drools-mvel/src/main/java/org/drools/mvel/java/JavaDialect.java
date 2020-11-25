@@ -93,10 +93,6 @@ import org.drools.core.rule.LineMappings;
 import org.drools.core.spi.Wireable;
 import org.drools.core.util.IoUtils;
 import org.drools.core.util.StringUtils;
-import org.kie.memorycompiler.CompilationResult;
-import org.kie.memorycompiler.JavaCompiler;
-import org.kie.memorycompiler.JavaCompilerFactory;
-import org.kie.memorycompiler.resources.MemoryResourceReader;
 import org.drools.mvel.asm.ASMConsequenceStubBuilder;
 import org.drools.mvel.asm.ASMEvalStubBuilder;
 import org.drools.mvel.asm.ASMPredicateStubBuilder;
@@ -107,6 +103,10 @@ import org.drools.mvel.builder.MVELSalienceBuilder;
 import org.kie.api.io.Resource;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.jci.CompilationProblem;
+import org.kie.memorycompiler.CompilationResult;
+import org.kie.memorycompiler.JavaCompiler;
+import org.kie.memorycompiler.JavaCompilerFactory;
+import org.kie.memorycompiler.resources.MemoryResourceReader;
 
 public class JavaDialect
         implements

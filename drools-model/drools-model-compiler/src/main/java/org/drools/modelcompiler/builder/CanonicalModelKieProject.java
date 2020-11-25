@@ -26,7 +26,6 @@ import java.util.stream.Stream;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.kie.builder.impl.CompilationProblemAdapter;
-import org.kie.memorycompiler.CompilationResult;
 import org.drools.compiler.compiler.io.File;
 import org.drools.compiler.compiler.io.memory.MemoryFile;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
@@ -38,6 +37,7 @@ import org.drools.modelcompiler.CanonicalKieModule;
 import org.kie.api.builder.Message;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.memorycompiler.CompilationProblem;
+import org.kie.memorycompiler.CompilationResult;
 
 import static java.util.stream.Collectors.groupingBy;
 
