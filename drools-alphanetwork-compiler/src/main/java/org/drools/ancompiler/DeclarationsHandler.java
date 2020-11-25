@@ -16,18 +16,22 @@
 
 package org.drools.ancompiler;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.NoSuchElementException;
+
 import org.drools.core.base.ValueType;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.Sink;
 import org.drools.core.reteoo.WindowNode;
-import org.drools.core.reteoo.CompositeObjectSinkAdapter.FieldIndex;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.IndexableConstraint;
 import org.drools.core.util.index.AlphaRangeIndex;
-
-import java.util.*;
 
 /**
  * This handler is used to create the member declarations section of a generated subclass of a {@link CompiledNetwork}.
@@ -146,13 +150,13 @@ public class DeclarationsHandler extends AbstractCompilerHandler {
     }
 
     @Override
-    public void startRangeIndex(FieldIndex fieldIndex, AlphaRangeIndex alphaRangeIndex) {
-        builder.append(createRangeIndexDeclaration(fieldIndex, alphaRangeIndex)).append(NEWLINE);
+    public void startRangeIndex(AlphaRangeIndex alphaRangeIndex) {
+        builder.append(createRangeIndexDeclaration(alphaRangeIndex)).append(NEWLINE);
     }
 
-    private String createRangeIndexDeclaration(FieldIndex fieldIndex, AlphaRangeIndex alphaRangeIndex) {
+    private String createRangeIndexDeclaration(AlphaRangeIndex alphaRangeIndex) {
         int minId = getMinIdFromRangeIndex(alphaRangeIndex);
-        AlphaNode firstNode = alphaRangeIndex.getAllValues().stream().filter(alpha -> alpha.getId() == minId).findFirst().get();
+        AlphaNode firstNode = alphaRangeIndex.getAllValues().stream().filter(alpha -> alpha.getId() == minId).findFirst().orElseThrow(NoSuchElementException::new);
         String comment = firstNode.toString();
         String variableName = getRangeIndexVariableName(alphaRangeIndex, minId);
         rangeIndexDeclarationMap.put(variableName, alphaRangeIndex);

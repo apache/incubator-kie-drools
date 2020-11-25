@@ -95,6 +95,6 @@ abstract class AbstractCompilerHandler extends NetworkHandlerAdaptor {
     }
 
     protected int getMinIdFromRangeIndex(AlphaRangeIndex alphaRangeIndex) {
-        return alphaRangeIndex.getAllValues().stream().map(alpha -> alpha.getId()).mapToInt(v -> v).min().orElseThrow(NoSuchElementException::new);
+        return alphaRangeIndex.getAllValues().stream().map(AlphaNode::getId).mapToInt(v -> v).min().orElseThrow(NoSuchElementException::new);
     }
 }

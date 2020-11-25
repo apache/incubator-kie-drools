@@ -18,7 +18,6 @@ package org.drools.ancompiler;
 
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.BetaNode;
-import org.drools.core.reteoo.CompositeObjectSinkAdapter.FieldIndex;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.WindowNode;
@@ -138,7 +137,7 @@ public class AssertHandler extends SwitchCompilerHandler {
     }
 
     @Override
-    public void startRangeIndex(FieldIndex fieldIndex, AlphaRangeIndex alphaRangeIndex) {
+    public void startRangeIndex(AlphaRangeIndex alphaRangeIndex) {
         String rangeIndexVariableName = getRangeIndexVariableName(alphaRangeIndex, getMinIdFromRangeIndex(alphaRangeIndex));
         String matchingResultVariableName = rangeIndexVariableName + "_result";
         String matchingNodeVariableName = matchingResultVariableName + "_node";
@@ -158,7 +157,7 @@ public class AssertHandler extends SwitchCompilerHandler {
     }
 
     @Override
-    public void endRangeIndex(FieldIndex fieldIndex, AlphaRangeIndex alphaRangeIndex) {
+    public void endRangeIndex(AlphaRangeIndex alphaRangeIndex) {
         builder.append("}").append(NEWLINE);
         builder.append("}").append(NEWLINE);
     }

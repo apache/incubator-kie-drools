@@ -21,7 +21,6 @@ import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.WindowNode;
-import org.drools.core.reteoo.CompositeObjectSinkAdapter.FieldIndex;
 import org.drools.core.rule.IndexableConstraint;
 import org.drools.core.util.index.AlphaRangeIndex;
 
@@ -88,11 +87,6 @@ public class ModifyHandler extends SwitchCompilerHandler {
     }
 
     @Override
-    public void endWindowNode(WindowNode windowNode) {
-
-    }
-
-    @Override
     public void startLeftInputAdapterNode(LeftInputAdapterNode leftInputAdapterNode) {
         builder.append(getVariableName(leftInputAdapterNode)).append(".modifyObject(").
                 append(FACT_HANDLE_PARAM_NAME).append(",").
@@ -146,7 +140,7 @@ public class ModifyHandler extends SwitchCompilerHandler {
     }
 
     @Override
-    public void startRangeIndex(FieldIndex fieldIndex, AlphaRangeIndex alphaRangeIndex) {
+    public void startRangeIndex(AlphaRangeIndex alphaRangeIndex) {
         String rangeIndexVariableName = getRangeIndexVariableName(alphaRangeIndex, getMinIdFromRangeIndex(alphaRangeIndex));
         String matchingResultVariableName = rangeIndexVariableName + "_result";
         String matchingNodeVariableName = matchingResultVariableName + "_node";
@@ -166,7 +160,7 @@ public class ModifyHandler extends SwitchCompilerHandler {
     }
 
     @Override
-    public void endRangeIndex(FieldIndex fieldIndex, AlphaRangeIndex alphaRangeIndex) {
+    public void endRangeIndex(AlphaRangeIndex alphaRangeIndex) {
         builder.append("}").append(NEWLINE);
         builder.append("}").append(NEWLINE);
     }

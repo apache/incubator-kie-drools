@@ -18,7 +18,6 @@ package org.drools.ancompiler;
 
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.BetaNode;
-import org.drools.core.reteoo.CompositeObjectSinkAdapter.FieldIndex;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.WindowNode;
@@ -38,83 +37,87 @@ import org.drools.core.util.index.AlphaRangeIndex;
  */
 public class NetworkHandlerAdaptor implements NetworkHandler {
     public void startObjectTypeNode(ObjectTypeNode objectTypeNode) {
-
+        // do nothing
     }
 
     public void startNonHashedAlphaNode(AlphaNode alphaNode) {
-
+        // do nothing
     }
 
     public void endNonHashedAlphaNode(AlphaNode alphaNode) {
-
+        // do nothing
     }
 
     public void startBetaNode(BetaNode betaNode) {
-
+        // do nothing
     }
 
     public void endBetaNode(BetaNode betaNode) {
-
+        // do nothing
     }
 
     public void startWindowNode(WindowNode windowNode) {
-
+        // do nothing
     }
 
     public void endWindowNode(WindowNode windowNode) {
-
+        // do nothing
     }
 
     public void startLeftInputAdapterNode(LeftInputAdapterNode leftInputAdapterNode) {
-
+        // do nothing
     }
 
     public void endWindowNode(LeftInputAdapterNode leftInputAdapterNode) {
-
+        // do nothing
     }
 
     public void startHashedAlphaNodes(IndexableConstraint hashedFieldReader) {
-
+        // do nothing
     }
 
     public void endHashedAlphaNodes(IndexableConstraint hashedFieldReader) {
-
+        // do nothing
     }
 
     public void startHashedAlphaNode(AlphaNode hashedAlpha, Object hashedValue) {
-
+        // do nothing
     }
 
     public void endHashedAlphaNode(AlphaNode hashedAlpha, Object hashedValue) {
-
+        // do nothing
     }
 
     public void endObjectTypeNode(ObjectTypeNode objectTypeNode) {
-
+        // do nothing
     }
 
     public void nullCaseAlphaNodeStart(AlphaNode hashedAlpha) {
-
+        // do nothing
     }
 
     @Override
     public void nullCaseAlphaNodeEnd(AlphaNode hashedAlpha) {
-
+        // do nothing
     }
 
     @Override
-    public void startRangeIndex(FieldIndex fieldIndex, AlphaRangeIndex alphaRangeIndex) {
+    public void startRangeIndex(AlphaRangeIndex alphaRangeIndex) {
+        // do nothing
     }
 
     @Override
-    public void endRangeIndex(FieldIndex fieldIndex, AlphaRangeIndex alphaRangeIndex) {
+    public void endRangeIndex(AlphaRangeIndex alphaRangeIndex) {
+        // do nothing
     }
 
     @Override
     public void startRangeIndexedAlphaNode(AlphaNode alphaNode) {
+        // do nothing
     }
 
     @Override
     public void endRangeIndexedAlphaNode(AlphaNode alphaNode) {
+        // do nothing
     }
 }

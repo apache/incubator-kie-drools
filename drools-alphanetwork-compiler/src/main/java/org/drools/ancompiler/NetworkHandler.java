@@ -18,7 +18,6 @@ package org.drools.ancompiler;
 
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.BetaNode;
-import org.drools.core.reteoo.CompositeObjectSinkAdapter;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.WindowNode;
@@ -106,9 +105,9 @@ public interface NetworkHandler {
     /**
      * Receive notification of alpha node range index
      */
-    void startRangeIndex(CompositeObjectSinkAdapter.FieldIndex fieldIndex, AlphaRangeIndex alphaRangeIndex);
+    void startRangeIndex(AlphaRangeIndex alphaRangeIndex);
 
-    void endRangeIndex(CompositeObjectSinkAdapter.FieldIndex fieldIndex, AlphaRangeIndex alphaRangeIndex);
+    void endRangeIndex(AlphaRangeIndex alphaRangeIndex);
 
     void startRangeIndexedAlphaNode(AlphaNode alphaNode);
 

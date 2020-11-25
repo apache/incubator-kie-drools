@@ -17,7 +17,6 @@
 package org.drools.ancompiler;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -172,17 +171,16 @@ public class ObjectTypeNodeParser {
         }
         Collection<Entry<FieldIndex, AlphaRangeIndex>> entrySet = rangeIndexMap.entrySet();
         for (Entry<FieldIndex, AlphaRangeIndex> entry : entrySet) {
-            FieldIndex fieldIndex = entry.getKey();
             AlphaRangeIndex alphaRangeIndex = entry.getValue();
 
-            handler.startRangeIndex(fieldIndex, alphaRangeIndex);
+            handler.startRangeIndex(alphaRangeIndex);
             Collection<AlphaNode> alphaNodes = alphaRangeIndex.getAllValues();
             for (AlphaNode alphaNode : alphaNodes) {
                 handler.startRangeIndexedAlphaNode(alphaNode);
                 traversePropagator(alphaNode.getObjectSinkPropagator(), handler);
                 handler.endRangeIndexedAlphaNode(alphaNode);
             }
-            handler.endRangeIndex(fieldIndex, alphaRangeIndex);
+            handler.endRangeIndex(alphaRangeIndex);
         }
     }
 
