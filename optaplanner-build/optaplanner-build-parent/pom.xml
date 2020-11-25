@@ -466,7 +466,6 @@
               <goals>
                 <goal>enforce</goal>
               </goals>
-              <phase>initialize</phase>
               <configuration>
                 <rules>
                   <requireManagedDeps
@@ -479,7 +478,6 @@
             </execution>
             <execution>
               <id>ban-blacklisted-dependencies</id>
-              <phase>validate</phase>
               <goals>
                 <goal>enforce</goal>
               </goals>
