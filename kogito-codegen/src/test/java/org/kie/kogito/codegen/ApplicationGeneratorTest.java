@@ -87,7 +87,7 @@ public class ApplicationGeneratorTest {
     @Test
     public void generateWithMonitoring() throws IOException {
         final Path targetDirectory = Paths.get("target");
-        final ApplicationGenerator appGenerator = new ApplicationGenerator(PACKAGE_NAME, targetDirectory.toFile()).withAddons(new AddonsConfig().withMonitoring(true));
+        final ApplicationGenerator appGenerator = new ApplicationGenerator(PACKAGE_NAME, targetDirectory.toFile()).withAddons(new AddonsConfig().withPrometheusMonitoring(true));
         appGenerator.generate();
         assertImageMetadata(targetDirectory, new PrometheusLabeler().generateLabels());
     }

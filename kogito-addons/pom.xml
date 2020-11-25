@@ -13,7 +13,6 @@
   <name>Kogito :: Add-Ons</name>
   <description>Various Add-Ons to the runtimes modules (administration, monitoring, etc)</description>
   <modules>
-    <module>monitoring-prometheus-addon</module>
     <module>persistence</module>
     <module>events</module>
     <module>cloudevents</module>
@@ -22,6 +21,7 @@
     <module>process-management</module>
     <module>process-svg</module>
     <module>tracing</module>
+    <module>monitoring-addon</module>
     <module>explainability-addon</module>
   </modules>
 

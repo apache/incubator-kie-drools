@@ -28,7 +28,6 @@ import javax.xml.namespace.QName;
 
 import org.kie.dmn.model.api.Decision;
 import org.kie.kogito.grafana.dmn.SupportedDecisionTypes;
-import org.kie.kogito.grafana.model.link.GrafanaLink;
 import org.kie.kogito.grafana.model.panel.PanelType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,7 +61,7 @@ public class GrafanaConfigurationWriter {
             throw new IllegalArgumentException("Could not parse the dashboard template.", e);
         }
 
-        if (generateAuditLink){
+        if (generateAuditLink) {
             jgrafana.addLink(AUDIT_LINK_NAME, AUDIT_LINK_URL_PLACEHOLDER);
         }
 
@@ -94,7 +93,7 @@ public class GrafanaConfigurationWriter {
             throw new IllegalArgumentException("Could not parse the dashboard template.", e);
         }
 
-        if (generateAuditLink){
+        if (generateAuditLink) {
             jgrafana.addLink(AUDIT_LINK_NAME, AUDIT_LINK_URL_PLACEHOLDER);
         }
 
@@ -106,8 +105,9 @@ public class GrafanaConfigurationWriter {
                 if (SupportedDecisionTypes.isSupported(type.getLocalPart())) {
                     jgrafana.addPanel(PanelType.GRAPH,
                                       "Decision " + decision.getName(),
-                                      String.format("%s_dmn_result{endpoint = \"%s\", decision = \"%s\"}",
+                                      String.format("%s_dmn_result%s{endpoint = \"%s\", decision = \"%s\"}",
                                                     type.toString().replace(" ", "_"),
+                                                    SupportedDecisionTypes.getNameSuffix(type.getLocalPart()),
                                                     endpoint,
                                                     decision.getName()),
                                       SupportedDecisionTypes.getGrafanaFunction(type.getLocalPart()),

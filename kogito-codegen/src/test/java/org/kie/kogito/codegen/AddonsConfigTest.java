@@ -36,6 +36,9 @@ public class AddonsConfigTest {
         assertThat(addonsConfig.useMonitoring()).isFalse();
         assertThat(addonsConfig.withMonitoring(true).useMonitoring()).isTrue();
 
+        assertThat(addonsConfig.usePrometheusMonitoring()).isFalse();
+        assertThat(addonsConfig.withPrometheusMonitoring(true).usePrometheusMonitoring()).isTrue();
+
         assertThat(addonsConfig.useTracing()).isFalse();
         assertThat(addonsConfig.withTracing(true).useTracing()).isTrue();
 

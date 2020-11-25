@@ -24,7 +24,7 @@ import org.kie.kogito.grafana.model.functions.IncreaseFunction;
 public class BooleanType extends AbstractDmnType {
 
     public BooleanType() {
-        super(Boolean.class, "boolean");
+        super(Boolean.class, "boolean", "_total");
         SortedMap<Integer, GrafanaFunction> grafanaFunctionsToApply = new TreeMap<>();
         grafanaFunctionsToApply.put(1, new IncreaseFunction("10m"));
         addFunctions(grafanaFunctionsToApply);

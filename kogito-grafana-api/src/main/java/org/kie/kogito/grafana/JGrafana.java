@@ -124,11 +124,11 @@ public class JGrafana {
     /**
      * Adds a panel of a type to the dashboard.
      *
-     * @param type:  The type of the panel to be added.
-     * @param title: Title of the panel.
-     * @param expr:  Prompql expression of the panel.
+     * @param type:      The type of the panel to be added.
+     * @param title:     Title of the panel.
+     * @param expr:      Prompql expression of the panel.
      * @param functions: The Grafana functions to be applied to the PrompQL query.
-     * @param yaxes: The YAxis of the panel.
+     * @param yaxes:     The YAxis of the panel.
      * @return: The grafana panel added to the dashboard.
      */
     public GrafanaPanel addPanel(PanelType type, String title, String expr, SortedMap<Integer, GrafanaFunction> functions, List<YAxis> yaxes) {
@@ -170,10 +170,10 @@ public class JGrafana {
      * Adds an external link to the dashboard.
      *
      * @param title: The title of the link.
-     * @param url: The url of the link.
+     * @param url:   The url of the link.
      * @return: The updated object.
      */
-    public JGrafana addLink(String title, String url){
+    public JGrafana addLink(String title, String url) {
         this.dashboard.links.add(new GrafanaLink(title, url));
         return this;
     }

@@ -205,14 +205,14 @@ public class QueryEndpointGenerator implements FileGenerator {
     }
 
     private void addMonitoringToResource(CompilationUnit cu, MethodDeclaration[] methods, String nameURL) {
-        cu.addImport(new ImportDeclaration(new Name("org.kie.kogito.monitoring.system.metrics.SystemMetricsCollector"), false, false));
+        cu.addImport(new ImportDeclaration(new Name("org.kie.kogito.monitoring.core.system.metrics.SystemMetricsCollector"), false, false));
 
         for (MethodDeclaration md : methods) {
             BlockStmt body = md.getBody().orElseThrow(() -> new NoSuchElementException("A method declaration doesn't contain a body!"));
             NodeList<Statement> statements = body.getStatements();
             ReturnStmt returnStmt = body.findFirst(ReturnStmt.class).orElseThrow(() -> new NoSuchElementException("A method declaration doesn't contain a return statement!"));
-            statements.addFirst(parseStatement("double startTime = System.nanoTime();"));
-            statements.addBefore(parseStatement("double endTime = System.nanoTime();"), returnStmt);
+            statements.addFirst(parseStatement("long startTime = System.nanoTime();"));
+            statements.addBefore(parseStatement("long endTime = System.nanoTime();"), returnStmt);
             statements.addBefore(parseStatement("SystemMetricsCollector.registerElapsedTimeSampleMetrics(\"" + nameURL + "\", endTime - startTime);"), returnStmt);
             md.setBody(wrapBodyAddingExceptionLogging(body, nameURL));
         }

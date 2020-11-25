@@ -98,7 +98,7 @@ public class ApplicationGenerator {
     }
 
     public ApplicationGenerator withAddons(AddonsConfig addonsConfig) {
-        if (addonsConfig.useMonitoring()) {
+        if (addonsConfig.usePrometheusMonitoring()) {
             this.labelers.put(PrometheusLabeler.class, new PrometheusLabeler());
         }
         return this;

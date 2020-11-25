@@ -21,12 +21,14 @@ public class AddonsConfig {
             .withPersistence(false)
             .withTracing(false)
             .withMonitoring(false)
+            .withPrometheusMonitoring(false)
             .withKnativeEventing(false)
             .withCloudEvents(false);
 
     private boolean usePersistence;
     private boolean useTracing;
     private boolean useMonitoring;
+    private boolean usePrometheusMonitoring;
     private boolean useKnativeEventing;
     private boolean useCloudEvents;
 
@@ -42,6 +44,11 @@ public class AddonsConfig {
 
     public AddonsConfig withMonitoring(boolean useMonitoring) {
         this.useMonitoring = useMonitoring;
+        return this;
+    }
+
+    public AddonsConfig withPrometheusMonitoring(boolean usePrometheusMonitoring) {
+        this.usePrometheusMonitoring = usePrometheusMonitoring;
         return this;
     }
 
@@ -65,6 +72,10 @@ public class AddonsConfig {
 
     public boolean useMonitoring() {
         return useMonitoring;
+    }
+
+    public boolean usePrometheusMonitoring() {
+        return usePrometheusMonitoring;
     }
 
     public boolean useKnativeEventing() {

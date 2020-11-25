@@ -82,6 +82,16 @@ public class SupportedDecisionTypes {
         return new ArrayList<>();
     }
 
+    public static String getNameSuffix(String dmnType) {
+        if (isSupported(dmnType)) {
+            Optional<AbstractDmnType> type = supportedDmnTypes.stream().filter(x -> x.getDmnType().equalsIgnoreCase(dmnType)).findFirst();
+            if (type.isPresent()) {
+                return type.get().getNameSuffix();
+            }
+        }
+        return "";
+    }
+
     public static Collection<String> getSupportedDMNTypes() {
         return dmnInternalClassToDmnStandardMap.values();
     }

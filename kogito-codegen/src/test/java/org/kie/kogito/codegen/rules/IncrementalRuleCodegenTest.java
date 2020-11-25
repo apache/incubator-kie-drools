@@ -167,7 +167,7 @@ public class IncrementalRuleCodegenTest {
                         CollectedResource.fromFiles(
                                 Paths.get("src/test/resources"),
                                 new File("src/test/resources/org/kie/kogito/codegen/unit/RuleUnitQuery.drl")))
-                        .withAddons(new AddonsConfig().withMonitoring(true));
+                        .withAddons(new AddonsConfig().withPrometheusMonitoring(true));
         incrementalRuleCodegen.setPackageName("com.acme");
         List<GeneratedFile> generatedFiles = incrementalRuleCodegen.withHotReloadMode().generate();
 

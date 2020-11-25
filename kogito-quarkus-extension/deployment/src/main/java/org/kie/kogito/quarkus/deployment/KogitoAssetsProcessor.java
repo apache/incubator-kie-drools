@@ -37,6 +37,8 @@ import java.util.stream.Stream;
 
 import javax.inject.Inject;
 
+import javax.inject.Inject;
+
 import io.quarkus.arc.deployment.GeneratedBeanBuildItem;
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
@@ -110,7 +112,8 @@ public class KogitoAssetsProcessor {
 
     private static final String appPackageName = "org.kie.kogito.app";
     private static final DotName persistenceFactoryClass = DotName.createSimple("org.kie.kogito.persistence.KogitoProcessInstancesFactory");
-    private static final DotName metricsClass = DotName.createSimple("org.kie.kogito.monitoring.rest.MetricsResource");
+    private static final DotName prometheusClass = DotName.createSimple("org.kie.kogito.monitoring.prometheus.rest.MetricsResource");
+    private static final DotName monitoringCoreClass = DotName.createSimple("org.kie.kogito.monitoring.core.MonitoringRegistry");
     private static final DotName tracingClass = DotName.createSimple("org.kie.kogito.tracing.decision.DecisionTracingListener");
     private static final DotName knativeEventingClass = DotName.createSimple("org.kie.kogito.events.knative.ce.extensions.KogitoProcessExtension");
     private static final DotName dmnJpmmlClass = DotName.createSimple( "org.kie.dmn.jpmml.DMNjPMMLInvocationEvaluator");
@@ -162,7 +165,8 @@ public class KogitoAssetsProcessor {
 
         // enable addons looking at available classes
         boolean usePersistence = combinedIndexBuildItem.getIndex().getClassByName(persistenceFactoryClass) != null;
-        boolean useMonitoring = combinedIndexBuildItem.getIndex().getClassByName(metricsClass) != null;
+        boolean usePrometheusMonitoring = combinedIndexBuildItem.getIndex().getClassByName(prometheusClass) != null;
+        boolean useMonitoring = usePrometheusMonitoring || combinedIndexBuildItem.getIndex().getClassByName(monitoringCoreClass) != null;
         boolean useTracing = !combinedIndexBuildItem.getIndex().getAllKnownSubclasses(tracingClass).isEmpty();
         boolean useKnativeEventing = combinedIndexBuildItem.getIndex().getClassByName(knativeEventingClass) != null;
         boolean isJPMMLAvailable = combinedIndexBuildItem.getIndex().getClassByName(dmnJpmmlClass) != null;
@@ -172,6 +176,7 @@ public class KogitoAssetsProcessor {
         AddonsConfig addonsConfig = new AddonsConfig()
                 .withPersistence(usePersistence)
                 .withMonitoring(useMonitoring)
+                .withPrometheusMonitoring(usePrometheusMonitoring)
                 .withTracing(useTracing)
                 .withKnativeEventing(useKnativeEventing)
                 .withCloudEvents(useCloudEvents);
@@ -245,7 +250,7 @@ public class KogitoAssetsProcessor {
         // register resources to the Quarkus environment
         registerResources(generatedFiles);
 
-        registerDataEventsForReflection(index);
+        registerDataEventsForReflection(index, addonsConfig);
 
         writeJsonSchema(appPaths, index);
 
@@ -336,7 +341,7 @@ public class KogitoAssetsProcessor {
         if (usePersistence) {
             resource.produce(new NativeImageResourceBuildItem("kogito-types.proto"));
         }
-       
+
         if(persistenceType.equals(PersistenceGenerator.MONGODB_PERSISTENCE_TYPE)) {
             addInnerClasses(org.jbpm.marshalling.impl.JBPMMessages.class, reflectiveClass);
             reflectiveClass.produce(new ReflectiveClassBuildItem(true, true, "java.lang.String"));
@@ -344,7 +349,7 @@ public class KogitoAssetsProcessor {
 
         return persistenceProtoFiles;
     }
-    
+
     private void addInnerClasses(Class<?> superClass, BuildProducer<ReflectiveClassBuildItem> reflectiveClass) {
         Arrays.asList(superClass.getDeclaredClasses()).forEach(c -> {
             reflectiveClass.produce(new ReflectiveClassBuildItem(true, true, c.getName()));
@@ -495,7 +500,7 @@ public class KogitoAssetsProcessor {
         }
     }
 
-    private void registerDataEventsForReflection(Index index) {
+    private void registerDataEventsForReflection(Index index, AddonsConfig addonsConfig) {
         reflectiveClass.produce(
                 new ReflectiveClassBuildItem(true, true, "org.kie.kogito.event.AbstractDataEvent"));
         reflectiveClass.produce(
@@ -516,12 +521,18 @@ public class KogitoAssetsProcessor {
                 new ReflectiveClassBuildItem(true, true, "org.kie.kogito.services.event.UserTaskInstanceDataEvent"));
         reflectiveClass.produce(
                 new ReflectiveClassBuildItem(true, true, "org.kie.kogito.services.event.impl.UserTaskInstanceEventBody"));
+        if (addonsConfig.useMonitoring()){
+            reflectiveClass.produce(
+                    new ReflectiveClassBuildItem(true, true, "org.HdrHistogram.Histogram"));
+            reflectiveClass.produce(
+                    new ReflectiveClassBuildItem(true, true, "org.HdrHistogram.ConcurrentHistogram"));
+        }
 
         // not sure there is any generated class directly inheriting from AbstractDataEvent, keeping just in case
         addChildrenClasses(index, org.kie.kogito.event.AbstractDataEvent.class, reflectiveClass);
         addChildrenClasses(index, org.kie.kogito.services.event.AbstractProcessDataEvent.class, reflectiveClass);
     }
-    
+
     private void addChildrenClasses(Index index,
                                     Class<?> superClass,
                                     BuildProducer<ReflectiveClassBuildItem> reflectiveClass) {

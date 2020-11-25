@@ -180,7 +180,7 @@ public class DecisionCodegen extends AbstractGenerator {
         }
 
         for (DecisionRestResourceGenerator resourceGenerator : rgs) {
-            if (addonsConfig.useMonitoring()) {
+            if (addonsConfig.usePrometheusMonitoring()) {
                 generateAndStoreGrafanaDashboards(resourceGenerator);
             }
 

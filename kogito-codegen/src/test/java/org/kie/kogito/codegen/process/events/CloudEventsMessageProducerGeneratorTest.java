@@ -15,18 +15,17 @@
 
 package org.kie.kogito.codegen.process.events;
 
+import java.util.List;
+
 import org.assertj.core.api.Assertions;
 import org.jbpm.compiler.canonical.TriggerMetaData;
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.codegen.AddonsConfig;
 import org.kie.kogito.codegen.di.CDIDependencyInjectionAnnotator;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 import org.kie.kogito.codegen.process.MessageDataEventGenerator;
 import org.kie.kogito.codegen.process.MessageProducerGenerator;
 import org.kie.kogito.codegen.process.ProcessExecutableModelGenerator;
 import org.kie.kogito.codegen.process.ProcessGenerationUtils;
-
-import java.util.List;
 
 class CloudEventsMessageProducerGeneratorTest {
 

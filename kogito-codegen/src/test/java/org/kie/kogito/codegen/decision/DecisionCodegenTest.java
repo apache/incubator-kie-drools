@@ -89,7 +89,7 @@ public class DecisionCodegenTest {
 
     @Test
     public void givenADMNModelWhenMonitoringIsActiveThenGrafanaDashboardsAreGenerated() throws Exception {
-        List<GeneratedFile> dashboards = generateTestDashboards(new AddonsConfig().withMonitoring(true));
+        List<GeneratedFile> dashboards = generateTestDashboards(new AddonsConfig().withPrometheusMonitoring(true));
 
         JGrafana vacationOperationalDashboard = JGrafana.parse(new String(dashboards.stream().filter(x -> x.relativePath().contains("operational-dashboard-Vacations.json")).findFirst().get().contents()));
 
@@ -104,7 +104,7 @@ public class DecisionCodegenTest {
 
     @Test
     public void givenADMNModelWhenMonitoringAndTracingAreActiveThenTheGrafanaDashboardsContainsTheAuditUILink() throws Exception {
-        List<GeneratedFile> dashboards = generateTestDashboards(new AddonsConfig().withMonitoring(true).withTracing(true));
+        List<GeneratedFile> dashboards = generateTestDashboards(new AddonsConfig().withPrometheusMonitoring(true).withTracing(true));
 
         JGrafana vacationOperationalDashboard = JGrafana.parse(new String(dashboards.stream().filter(x -> x.relativePath().contains("operational-dashboard-Vacations.json")).findFirst().get().contents()));
 

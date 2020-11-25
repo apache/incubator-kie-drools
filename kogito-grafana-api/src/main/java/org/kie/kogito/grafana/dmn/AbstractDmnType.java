@@ -31,9 +31,16 @@ public class AbstractDmnType {
 
     private List<YAxis> yaxes;
 
+    private String nameSuffix;
+
     public AbstractDmnType(Class internalRepresentationClass, String dmnType) {
+        this(internalRepresentationClass, dmnType, "");
+    }
+
+    public AbstractDmnType(Class internalRepresentationClass, String dmnType, String nameSuffix) {
         this.internalRepresentationClass = internalRepresentationClass;
         this.dmnType = dmnType;
+        this.nameSuffix = nameSuffix;
     }
 
     protected void addFunctions(SortedMap<Integer, GrafanaFunction> grafanaFunctionsToApply) {
@@ -42,6 +49,10 @@ public class AbstractDmnType {
 
     protected void setYAxes(List<YAxis> yaxes) {
         this.yaxes = yaxes;
+    }
+
+    public String getNameSuffix() {
+        return nameSuffix;
     }
 
     public Class getInternalClass() {

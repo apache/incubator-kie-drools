@@ -56,7 +56,7 @@
       "pluginVersion": "6.6.1",
       "targets": [
         {
-          "expr": "sum(increase(api_http_response_code{endpoint=\"$handlerName$\"}[1d]))",
+          "expr": "sum(increase(api_http_response_code_total{endpoint=\"$handlerName$\"}[1d]))",
           "format": "time_series",
           "instant": false,
           "intervalFactor": 1,
@@ -109,7 +109,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(increase(api_http_response_code{endpoint=\"$handlerName$\"}[1m]))",
+          "expr": "sum(increase(api_http_response_code_total{endpoint=\"$handlerName$\"}[1m]))",
           "instant": false,
           "intervalFactor": 2,
           "refId": "A"
@@ -201,7 +201,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "api_execution_elapsed_nanosecond{endpoint=\"$handlerName$\"}",
+          "expr": "api_execution_elapsed_seconds{endpoint=\"$handlerName$\"}",
           "format": "time_series",
           "instant": false,
           "intervalFactor": 1,
@@ -228,7 +228,7 @@
       },
       "yaxes": [
         {
-          "format": "ns",
+          "format": "s",
           "label": null,
           "logBase": 1,
           "max": null,
@@ -292,7 +292,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "increase(api_http_response_code{endpoint=\"$handlerName$\"}[1m])",
+          "expr": "increase(api_http_response_code_total{endpoint=\"$handlerName$\"}[1m])",
           "instant": false,
           "intervalFactor": 2,
           "refId": "A"
@@ -378,7 +378,7 @@
       ],
       "targets": [
         {
-          "expr": "increase(api_http_stacktrace_exceptions{endpoint=\"$handlerName$\"}[1d])",
+          "expr": "increase(api_http_stacktrace_exceptions_total{endpoint=\"$handlerName$\"}[1d])",
           "format": "table",
           "instant": true,
           "intervalFactor": 2,
@@ -430,7 +430,7 @@
       "pluginVersion": "6.6.1",
       "targets": [
         {
-          "expr": "sum(increase(api_http_stacktrace_exceptions{endpoint=\"$handlerName$\"}[1d]))",
+          "expr": "sum(increase(api_http_stacktrace_exceptions_total{endpoint=\"$handlerName$\"}[1d]))",
           "instant": true,
           "intervalFactor": 2,
           "refId": "A"

@@ -22,18 +22,21 @@ public interface GrafanaFunction {
 
     /**
      * Gets the function name.
+     *
      * @return The function name.
      */
     String getFunction();
 
     /**
      * Returns a boolean representing the presence of a time parameter for the function.
+     *
      * @return true if the function has a time parameter, false otherwise.
      */
     boolean hasTimeParameter();
 
     /**
      * Gets the time parameter.
+     *
      * @return The time parameter.
      */
     String getTimeParameter();

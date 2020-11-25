@@ -24,7 +24,7 @@ import org.kie.kogito.grafana.model.functions.IncreaseFunction;
 public class StringType extends AbstractDmnType {
 
     public StringType() {
-        super(String.class, "string");
+        super(String.class, "string", "_total");
         SortedMap<Integer, GrafanaFunction> grafanaFunctionsToApply = new TreeMap<>();
         grafanaFunctionsToApply.put(1, new IncreaseFunction("10m"));
         addFunctions(grafanaFunctionsToApply);

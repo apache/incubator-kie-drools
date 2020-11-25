@@ -182,6 +182,19 @@
 
       <dependency>
         <groupId>org.kie.kogito</groupId>
+        <artifactId>monitoring-core</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>monitoring-core</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+
+
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
         <artifactId>grafana-api</artifactId>
         <version>${project.version}</version>
       </dependency>
