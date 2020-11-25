@@ -11,6 +11,11 @@
     text-align: center;
 }
 
+.pf-c-spinner.pf-m-md.kogito-common__load-more-spinner {
+    overflow:hidden;
+    margin-left: 5px;
+}
+
 .kogito-common--domain-explorer__table td:not(:first-of-type) {
     min-width: 10em;
 }

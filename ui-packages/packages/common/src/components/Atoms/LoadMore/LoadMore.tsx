@@ -101,7 +101,10 @@ const LoadMore: React.FC<IOwnProps & OUIAProps> = ({
                       {isLoadingMore ? (
                         <>
                           Loading...
-                          <Spinner size="md" className="pf-u-ml-sm" />{' '}
+                          <Spinner
+                            size="md"
+                            className="kogito-common__load-more-spinner"
+                          />{' '}
                         </>
                       ) : (
                         `Load ${loadMoreValue} more`
