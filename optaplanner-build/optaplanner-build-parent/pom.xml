@@ -411,11 +411,6 @@
               <version>6.2.1</version>
             </dependency>
             <dependency>
-              <groupId>de.is24.maven.enforcer.rules</groupId>
-              <artifactId>illegal-transitive-dependency-check</artifactId>
-              <version>1.7.4</version>
-            </dependency>
-            <dependency>
               <groupId>com.redhat.victims</groupId>
               <artifactId>enforce-victims-rule</artifactId>
               <version>1.3.4</version>
@@ -468,31 +463,6 @@
                     <checkProfiles>true</checkProfiles>
                     <failOnViolation>true</failOnViolation>
                   </requireManagedDeps>
-                </rules>
-              </configuration>
-            </execution>
-            <execution>
-              <id>enforce-direct-dependencies</id>
-              <goals>
-                <goal>enforce</goal>
-              </goals>
-              <phase>none</phase>
-              <configuration>
-                <rules>
-                  <illegalTransitiveDependencyCheck
-                      implementation="de.is24.maven.enforcer.rules.IllegalTransitiveDependencyCheck">
-                    <reportOnly>false</reportOnly>
-                    <regexIgnoredClasses combine.children="append">
-                      <!-- The maven-shade-plugin needs these classes to be compile-scope in guvnor-ala-openshift-client to be picked up, and
-                           then referenced in guvnor-ala-openshift-provider. When we don't need to shade anymore, we can remove these lines. -->
-                      <regexIgnoredClass>io\.fabric8\.kubernetes.*</regexIgnoredClass>
-                      <regexIgnoredClass>io\.fabric8\.openshift.*</regexIgnoredClass>
-                      <regexIgnoredClass>com\.sun\.net\.httpserver\..+</regexIgnoredClass>
-                      <regexIgnoredClass>javax\..+</regexIgnoredClass>
-                      <regexIgnoredClass>org\.w3c\.dom\..+</regexIgnoredClass>
-                      <regexIgnoredClass>org\.xml\.sax\..+</regexIgnoredClass>
-                    </regexIgnoredClasses>
-                  </illegalTransitiveDependencyCheck>
                 </rules>
               </configuration>
             </execution>
