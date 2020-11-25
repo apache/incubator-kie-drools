@@ -493,10 +493,6 @@
                       <!-- In case of transitive dependency, exclude it and use 'org.javassist:javassist' instead -->
                       <exclude>javassist:javassist</exclude>
                       <exclude>org.apache.cxf:cxf-bundle-jaxrs</exclude>
-                      <exclude>org.jboss.weld.se:weld-se
-                      </exclude><!-- Use weld-se-core instead -->
-                      <exclude>org.jboss.weld.servlet:weld-servlet
-                      </exclude><!-- Use weld-servlet-core instead -->
                       <exclude>org.mockito:mockito-all</exclude><!-- Use mockito-core instead -->
                     </excludes>
                   </bannedDependencies>
