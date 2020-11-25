@@ -35,7 +35,7 @@ public interface Rule extends NamedModelItem {
         Attribute<String> RULEFLOW_GROUP = () -> null;
         Attribute<String> DURATION = () -> null;
         Attribute<String> TIMER = () -> null;
-        Attribute<String[]> CALENDARS = () -> new String[0];
+        Attribute<String[]> CALENDARS = () -> null;
         Attribute<Calendar> DATE_EFFECTIVE = () -> null;
         Attribute<Calendar> DATE_EXPIRES = () -> null;
     }

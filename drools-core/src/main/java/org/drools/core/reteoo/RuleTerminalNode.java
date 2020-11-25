@@ -160,20 +160,6 @@ public class RuleTerminalNode extends AbstractTerminalNode {
     }
 
 
-    public static PropagationContext findMostRecentPropagationContext(Tuple leftTuple, PropagationContext context) {
-        // Find the most recent PropagationContext, as this caused this rule to elegible for firing
-        Tuple lt = leftTuple;
-        while ( lt != null ) {
-            if ( lt.getPropagationContext() != null && lt.getPropagationContext().getPropagationNumber() > context.getPropagationNumber() ) {
-                context = lt.getPropagationContext();
-            }
-            lt = lt.getParent();
-        }
-        return context;
-    }
-
-
-
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("[RuleTerminalNode(").append(this.getId()).append("): rule=").append(this.rule.getName());
