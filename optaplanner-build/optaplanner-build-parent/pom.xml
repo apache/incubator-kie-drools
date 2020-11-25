@@ -53,7 +53,8 @@
     <!-- ************************************************************************ -->
 
     <maven.min.version>3.6.2</maven.min.version>
-    <maven.compiler.release>11</maven.compiler.release>
+    <!-- An upcoming minor 8.x release will change this to 11 because the 8.x series require Java 11 or higher. -->
+    <maven.compiler.release>8</maven.compiler.release>
     <!-- The first version that supports analysis of classes compiled by Java 11. -->
     <version.dependency.plugin>3.1.2</version.dependency.plugin>
     <version.surefire.plugin>2.22.2</version.surefire.plugin>
