@@ -427,24 +427,6 @@
             </dependency>
           </dependencies>
           <executions>
-            <!-- TODO Disabled during kie-parent 7 removal due to false negatives.
-            <execution>
-              <id>enforce-plugin-versions</id>
-              <goals>
-                <goal>enforce</goal>
-              </goals>
-              <configuration>
-                <rules>
-                  <requirePluginVersions>
-                    <message>One or more plugins do not have valid version! The version needs to be
-                      explicitly specified, can not be a -SNAPSHOT version and can not be one of
-                      the special (and buggy) Maven versions (LATEST, RELEASE).
-                    </message>
-                  </requirePluginVersions>
-                </rules>
-              </configuration>
-            </execution>
-            -->
             <execution>
               <id>enforce-no-logback-test-in-main</id>
               <goals>
