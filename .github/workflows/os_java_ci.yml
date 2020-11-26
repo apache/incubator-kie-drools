@@ -37,7 +37,7 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
       - name: Build with Maven
-        run: mvn -B clean install
+        run: mvn -B clean install -Dfull
 
   # Early feedback on a compatibility with the newest Java version.
   # TODO: update each time a new major Java version is released.
@@ -59,4 +59,4 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
       - name: Build with Maven
-        run: mvn -B clean install
+        run: mvn -B clean install -Dfull
