@@ -1135,6 +1135,21 @@
         </plugins>
       </build>
     </profile>
+    <profile>
+      <id>quickProfile</id>
+      <activation>
+        <property>
+          <name>quick</name>
+        </property>
+      </activation>
+      <properties>
+        <enforcer.skip>true</enforcer.skip>
+        <revapi.skip>true</revapi.skip>
+        <skipTests>true</skipTests>
+        <skipITs>true</skipITs>
+        <formatter.skip>true</formatter.skip>
+      </properties>
+    </profile>
   </profiles>
 
 </project>
