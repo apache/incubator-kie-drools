@@ -1,19 +1,18 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
- *
+ * Copyright (c) 2020. Red Hat, Inc. and/or its affiliates.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
-package org.drools.compiler.commons.jci.compilers;
+package org.kie.memorycompiler.jdknative;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -29,6 +28,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -53,13 +53,13 @@ import javax.tools.SimpleJavaFileObject;
 import javax.tools.StandardJavaFileManager;
 import javax.tools.StandardLocation;
 import javax.tools.ToolProvider;
-import org.drools.compiler.commons.jci.readers.ResourceReader;
-import org.drools.compiler.commons.jci.stores.ResourceStore;
-import org.drools.core.util.IoUtils;
-import org.drools.reflective.classloader.ProjectClassLoader;
-import org.kie.internal.jci.CompilationProblem;
-
-import static org.drools.core.util.ClassUtils.convertResourceToClassName;
+import org.kie.memorycompiler.AbstractJavaCompiler;
+import org.kie.memorycompiler.CompilationProblem;
+import org.kie.memorycompiler.CompilationResult;
+import org.kie.memorycompiler.JavaCompilerSettings;
+import org.kie.memorycompiler.StoreClassLoader;
+import org.kie.memorycompiler.resources.ResourceReader;
+import org.kie.memorycompiler.resources.ResourceStore;
 
 public class NativeJavaCompiler extends AbstractJavaCompiler {
 
@@ -79,11 +79,11 @@ public class NativeJavaCompiler extends AbstractJavaCompiler {
     }
 
     @Override
-    public CompilationResult compile(String[] pResourcePaths,
-                                     ResourceReader pReader,
-                                     ResourceStore pStore,
-                                     ClassLoader pClassLoader,
-                                     JavaCompilerSettings pSettings) {
+    public CompilationResult compile( String[] pResourcePaths,
+                                      ResourceReader pReader,
+                                      ResourceStore pStore,
+                                      ClassLoader pClassLoader,
+                                      JavaCompilerSettings pSettings) {
         DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<JavaFileObject>();
         javax.tools.JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
 
@@ -123,6 +123,9 @@ public class NativeJavaCompiler extends AbstractJavaCompiler {
     }
 
     private static class CompilationUnit extends SimpleJavaFileObject {
+
+        public static final Charset UTF8_CHARSET = Charset.forName("UTF-8");
+
         private final String content;
         private final String name;
 
@@ -133,7 +136,7 @@ public class NativeJavaCompiler extends AbstractJavaCompiler {
         }
 
         CompilationUnit(String name, ResourceReader pReader) {
-            this(name, new String(pReader.getBytes(name), IoUtils.UTF8_CHARSET));
+            this(name, new String(pReader.getBytes(name), UTF8_CHARSET));
         }
 
         @Override
@@ -320,8 +323,8 @@ public class NativeJavaCompiler extends AbstractJavaCompiler {
 
         private List<JavaFileObject> findCompiledClassInPackage(String packageName) {
             List<JavaFileObject> compiledList = new ArrayList<JavaFileObject>();
-            if (classLoader instanceof ProjectClassLoader ) {
-                Map<String, byte[]> store = ((ProjectClassLoader) classLoader).getStore();
+            if (classLoader instanceof StoreClassLoader ) {
+                Map<String, byte[]> store = ((StoreClassLoader) classLoader).getStore();
                 if (store != null) {
                     for (Map.Entry<String, byte[]> entry : store.entrySet()) {
                         String className = convertResourceToClassName(entry.getKey());
@@ -385,7 +388,7 @@ public class NativeJavaCompiler extends AbstractJavaCompiler {
         }
 
         private void indexClassesByPackage(Map<String, Set<String>> indexedClasses, ClassLoader classLoader) {
-            if (classLoader instanceof ProjectClassLoader || classLoader == NativeJavaCompiler.class.getClassLoader()) {
+            if (classLoader instanceof StoreClassLoader || classLoader == NativeJavaCompiler.class.getClassLoader()) {
                 return;
             }
             try {
@@ -398,7 +401,7 @@ public class NativeJavaCompiler extends AbstractJavaCompiler {
                     }
                 }
             } catch (NoSuchFieldException | IllegalAccessException e) {
-                throw new RuntimeException( e );
+                // ignore: this classloader is not indexable
             }
         }
 
@@ -432,6 +435,15 @@ public class NativeJavaCompiler extends AbstractJavaCompiler {
 
         List<CompilationOutput> getOutputs() {
             return outputs;
+        }
+
+        private static String convertResourceToClassName(final String pResourceName) {
+            return stripExtension(pResourceName).replace('/', '.');
+        }
+
+        private static String stripExtension(final String pResourceName) {
+            final int i = pResourceName.lastIndexOf('.');
+            return pResourceName.substring( 0, i );
         }
     }
 

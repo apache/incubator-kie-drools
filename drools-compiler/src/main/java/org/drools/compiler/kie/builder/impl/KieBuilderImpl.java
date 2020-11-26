@@ -33,13 +33,7 @@ import org.appformer.maven.support.AFReleaseIdImpl;
 import org.appformer.maven.support.DependencyFilter;
 import org.appformer.maven.support.PomModel;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
-import org.drools.compiler.commons.jci.compilers.CompilationResult;
-import org.drools.compiler.commons.jci.compilers.JavaCompiler;
-import org.drools.compiler.commons.jci.compilers.JavaCompilerFactory;
-import org.drools.compiler.commons.jci.readers.DiskResourceReader;
-import org.drools.compiler.commons.jci.readers.ResourceReader;
 import org.drools.compiler.compiler.DecisionTableFactory;
-import org.drools.compiler.compiler.JavaConfiguration;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.core.builder.conf.impl.DecisionTableConfigurationImpl;
@@ -47,6 +41,12 @@ import org.drools.core.builder.conf.impl.ResourceConfigurationImpl;
 import org.drools.core.io.internal.InternalResource;
 import org.drools.core.util.IoUtils;
 import org.drools.core.util.StringUtils;
+import org.kie.memorycompiler.CompilationProblem;
+import org.kie.memorycompiler.CompilationResult;
+import org.kie.memorycompiler.JavaCompiler;
+import org.kie.memorycompiler.JavaCompilerFactory;
+import org.kie.memorycompiler.JavaConfiguration;
+import org.kie.memorycompiler.resources.ResourceReader;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -65,7 +65,6 @@ import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
 import org.kie.internal.builder.KieBuilderSet;
-import org.kie.internal.jci.CompilationProblem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -306,7 +305,7 @@ public class KieBuilderImpl
         if ( !fileName.startsWith( RESOURCES_ROOT ) ) {
             return null;
         }
-        Resource resource = srcMfs.getResource( fileName );
+        Resource resource = getResource( srcMfs, fileName );
         String trgFileName = fileName.substring( RESOURCES_ROOT.length() );
         if ( resource != null ) {
             trgMfs.write( trgFileName, resource, true );
@@ -341,7 +340,7 @@ public class KieBuilderImpl
         for ( String fileName : srcMfs.getFileNames()) {
             if ( fileName.startsWith( RESOURCES_ROOT ) && !isKieExtension( fileName ) ) {
                 trgMfs.write( fileName.substring( RESOURCES_ROOT.length() - 1 ),
-                              srcMfs.getResource( fileName ),
+                              getResource( srcMfs, fileName ),
                               true );
             }
         }
@@ -689,7 +688,7 @@ public class KieBuilderImpl
         for ( String fileName : srcMfs.getFileNames() ) {
             if ( fileName.endsWith( ".class" ) ) {
                 trgMfs.write( fileName,
-                              srcMfs.getResource( fileName ),
+                              getResource( srcMfs, fileName ),
                               true );
                 classFiles.add( fileName.substring( 0,
                                                     fileName.length() - ".class".length() ) );
@@ -753,16 +752,16 @@ public class KieBuilderImpl
                                                           classLoader );
 
             for ( CompilationProblem problem : res.getErrors() ) {
-                results.addMessage( problem );
+                results.addMessage( new CompilationProblemAdapter( problem ) );
             }
             for ( CompilationProblem problem : res.getWarnings() ) {
-                results.addMessage( problem );
+                results.addMessage( new CompilationProblemAdapter( problem ) );
             }
         }
     }
 
     private JavaCompiler createCompiler( JavaConfiguration javaConf, String sourceFolder ) {
-        JavaCompiler javaCompiler = JavaCompilerFactory.INSTANCE.loadCompiler( javaConf );
+        JavaCompiler javaCompiler = JavaCompilerFactory.loadCompiler( javaConf );
         javaCompiler.setSourceFolder( sourceFolder );
         return javaCompiler;
     }
@@ -817,5 +816,13 @@ public class KieBuilderImpl
     @Override
     public IncrementalResults incrementalBuild() {
         return new KieBuilderSetImpl( this ).build();
+    }
+
+    private static Resource getResource( ResourceReader resourceReader, String pResourceName ) {
+        if (resourceReader instanceof MemoryFileSystem) {
+            return (( MemoryFileSystem ) resourceReader).getResource( pResourceName );
+        }
+        byte[] bytes = resourceReader.getBytes( pResourceName );
+        return bytes != null ? KieServices.get().getResources().newByteArrayResource( bytes ) : null;
     }
 }

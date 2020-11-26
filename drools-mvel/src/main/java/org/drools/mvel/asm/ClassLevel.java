@@ -16,7 +16,7 @@ package org.drools.mvel.asm;
 
 import org.kie.internal.utils.ChainedProperties;
 
-import static org.drools.compiler.compiler.JavaConfiguration.JAVA_LANG_LEVEL_PROPERTY;
+import static org.kie.memorycompiler.JavaConfiguration.JAVA_LANG_LEVEL_PROPERTY;
 import static org.mvel2.asm.Opcodes.V10;
 import static org.mvel2.asm.Opcodes.V11;
 import static org.mvel2.asm.Opcodes.V12;

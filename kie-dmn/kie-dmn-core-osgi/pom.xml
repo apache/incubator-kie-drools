@@ -120,9 +120,6 @@
               javax.xml.stream,
               org.antlr.v4.runtime,
               org.drools.compiler.builder.impl,
-              org.drools.compiler.commons.jci.compilers,
-              org.drools.compiler.commons.jci.readers,
-              org.drools.compiler.commons.jci.stores,
               org.drools.compiler.compiler,
               org.drools.compiler.compiler.io.memory,
               org.drools.compiler.kie.builder.impl,
@@ -185,6 +182,9 @@
               org.kie.internal.jci,
               org.kie.internal.osgi,
               org.kie.internal.utils,
+              org.kie.memorycompiler,
+              org.kie.memorycompiler.jdknative,
+              org.kie.memorycompiler.resources,
               org.slf4j
             </Import-Package>
             <Bundle-Activator>org.kie.dmn.core.osgi.Activator</Bundle-Activator>

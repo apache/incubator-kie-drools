@@ -27,8 +27,6 @@ import java.util.Map;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.drools.compiler.commons.jci.compilers.JavaCompiler;
-import org.drools.compiler.commons.jci.compilers.NativeJavaCompiler;
 import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.compiler.DroolsParserException;
@@ -94,7 +92,7 @@ import org.drools.mvel.compiler.Cheese;
 import org.drools.mvel.compiler.Primitives;
 import org.drools.mvel.compiler.StockTick;
 import org.drools.mvel.integrationtests.SerializationHelper;
-import org.drools.mvel.java.JavaDialectConfiguration;
+import org.drools.mvel.java.JavaForMvelDialectConfiguration;
 import org.junit.After;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -104,6 +102,8 @@ import org.kie.api.definition.type.Role;
 import org.kie.api.definition.type.TypeSafe;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
+import org.kie.memorycompiler.JavaCompiler;
+import org.kie.memorycompiler.jdknative.NativeJavaCompiler;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -992,7 +992,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
         JavaCompiler compiler = ( JavaCompiler ) compilerField.get( dialect );
 
         KnowledgeBuilderConfigurationImpl conf = new KnowledgeBuilderConfigurationImpl();
-        JavaDialectConfiguration javaConf = (JavaDialectConfiguration) conf.getDialectConfiguration( "java" );
+        JavaForMvelDialectConfiguration javaConf = ( JavaForMvelDialectConfiguration ) conf.getDialectConfiguration( "java" );
         switch( javaConf.getCompiler() ) {
             case NATIVE : assertSame( NativeJavaCompiler.class, compiler.getClass() );
                 break;
@@ -1004,8 +1004,8 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
 
         // test eclipse jdt core with property settings and default source level
         conf = new KnowledgeBuilderConfigurationImpl();
-        javaConf = (JavaDialectConfiguration) conf.getDialectConfiguration( "java" );
-        javaConf.setCompiler( JavaDialectConfiguration.CompilerType.ECLIPSE );
+        javaConf = ( JavaForMvelDialectConfiguration ) conf.getDialectConfiguration( "java" );
+        javaConf.setCompiler( JavaForMvelDialectConfiguration.CompilerType.ECLIPSE );
         builder = new KnowledgeBuilderImpl( conf );
         builder.addPackage( pkgDescr );
 
