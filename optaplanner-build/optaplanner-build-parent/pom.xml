@@ -1160,20 +1160,6 @@
                                 Include class files from every module.
                               -->
                               <include name="**/target/classes/**/*.class"/>
-                              <!--
-                                Following classes are excluded as they are present in multiple modules. Usually they
-                                are a product of tests or 3rd party dependencies that got unwrapped in target/classes
-                                folder during the build. These are not a subject of test coverage measurement.
-                              -->
-                              <exclude name="**/target/**/target/classes/**/*.class"/>
-                              <exclude name="**/.errai/**/*.class"/>
-                              <exclude name="**/target/classes/org/jboss/errai/**/*.class"/>
-                              <!--
-                                TODO: there are multiple classes of the same fully qualified name in kie-server modules.
-                                They need to be renamed to enable coverage reporting for them.
-                                -->
-                              <exclude name="**/target/classes/**/org/kie/server/gateway/KieServerGateway.class"/>
-                              <exclude name="**/target/classes/**/org/kie/server/springboot/samples/KieServerApplication.class"/>
                             </fileset>
                           </classfiles>
                           <sourcefiles encoding="UTF-8">
