@@ -616,23 +616,14 @@
                 </roots>
               </configurationFile>
             </analysisConfigurationFiles>
-            <!-- By default, revapi will only fail the build if there are potentially breaking or breaking changes. However, in the report
-                 we want even non breaking changes to be present. -->
-            <reportSeverity>nonBreaking</reportSeverity>
             <failSeverity>potentiallyBreaking</failSeverity>
           </configuration>
-          <!-- Running two executions is a workaround to make sure we get a HTML report in case revapi finds
-               some incompatible changes. The "check" goal will simply fail the whole build before it could get
-               to the report. To make sure we always get a HTML report, the "report" goal needs to be executed
-               before the "check" goal.
-               Once https://github.com/revapi/revapi/issues/11 is fixed it should be possible to use single execution. -->
           <executions>
             <execution>
               <id>check</id>
               <goals>
                 <goal>check</goal>
               </goals>
-              <phase>verify</phase>
             </execution>
           </executions>
         </plugin>
@@ -1010,49 +1001,6 @@
             </executions>
           </plugin>
         </plugins>
-      </build>
-    </profile>
-    <profile>
-      <id>generate-revapi-report</id>
-      <!-- There is no need to run tests when generating the report -->
-      <properties>
-        <skipTests>true</skipTests>
-      </properties>
-      <build>
-        <pluginManagement>
-          <plugins>
-            <plugin>
-              <groupId>org.revapi</groupId>
-              <artifactId>revapi-maven-plugin</artifactId>
-              <configuration>
-                <analysisConfigurationFiles>
-                  <configurationFile>
-                    <!-- Only filters should be taken into account, not ignores -->
-                    <roots>
-                      <root>filters</root>
-                    </roots>
-                  </configurationFile>
-                </analysisConfigurationFiles>
-              </configuration>
-              <!-- Run only report generation goal -->
-              <executions>
-                <execution>
-                  <!-- Disable check goal -->
-                  <id>check</id>
-                  <phase>none</phase>
-                </execution>
-                <execution>
-                  <!-- Report can be found in ${build.directory}/site/revapi-report.html -->
-                  <id>report</id>
-                  <goals>
-                    <goal>report</goal>
-                  </goals>
-                  <phase>package</phase>
-                </execution>
-              </executions>
-            </plugin>
-          </plugins>
-        </pluginManagement>
       </build>
     </profile>
     <profile>
