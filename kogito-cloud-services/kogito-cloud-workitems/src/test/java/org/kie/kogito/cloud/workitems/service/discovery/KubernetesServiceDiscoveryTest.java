@@ -141,7 +141,7 @@ public class KubernetesServiceDiscoveryTest {
     }
 
     private void createServiceInMockServer(String name, String serviceIp, Map<String,String> labels) {
-        final ServicePort port = new ServicePort(SERVICE_PROTOCOL, 0, SERVICE_PORT, SERVICE_PROTOCOL, new IntOrString(SERVICE_PORT));
+        final ServicePort port = new ServicePort(SERVICE_PROTOCOL, name, 0, SERVICE_PORT, SERVICE_PROTOCOL, new IntOrString(SERVICE_PORT));
         final Service service = new ServiceBuilder().withNewMetadata()
                                                         .withName(name)
                                                         .withLabels(labels)

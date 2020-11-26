@@ -39,7 +39,7 @@ public class KubernetesDiscoveredServiceWorkItemHandlerTest extends BaseKubernet
     @Test
     public void testGivenServiceExists() {
         final ServiceSpec serviceSpec = new ServiceSpec();
-        serviceSpec.setPorts(Collections.singletonList(new ServicePort("http", 0, 8080, "http", new IntOrString(8080))));
+        serviceSpec.setPorts(Collections.singletonList(new ServicePort("http", "test-kieserver", 0, 8080, "http", new IntOrString(8080))));
         serviceSpec.setClusterIP("172.30.158.31");
         serviceSpec.setType("ClusterIP");
         serviceSpec.setSessionAffinity("ClientIP");

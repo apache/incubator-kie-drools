@@ -98,7 +98,7 @@ public class ServiceOperationsTest extends MockKubernetesServerSupport {
                     .listNamespaced(MOCK_NAMESPACE, null)
                     .asMap();
         assertThat(services, notNullValue());
-        assertThat(services.size(), is(3));
+        assertThat(services.size(), is(4));
         assertThat(services.get("items"), instanceOf(ArrayList.class));
     }
 

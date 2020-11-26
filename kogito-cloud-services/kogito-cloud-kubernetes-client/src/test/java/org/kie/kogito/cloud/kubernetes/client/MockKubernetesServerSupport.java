@@ -113,7 +113,7 @@ public abstract class MockKubernetesServerSupport {
 
     protected void createMockService(final String serviceName, final String ip, final Map<String, String> labels, final String namespace) {
         final ServiceSpec serviceSpec = new ServiceSpec();
-        serviceSpec.setPorts(Collections.singletonList(new ServicePort("http", 0, 8080, "http", new IntOrString(8080))));
+        serviceSpec.setPorts(Collections.singletonList(new ServicePort("http", serviceName, 0, 8080, "http", new IntOrString(8080))));
         serviceSpec.setClusterIP(ip);
         serviceSpec.setType("ClusterIP");
         serviceSpec.setSessionAffinity("ClientIP");
