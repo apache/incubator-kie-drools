@@ -502,8 +502,7 @@
             </execution>
             <execution>
               <id>ban-duplicated-classes</id>
-              <!-- Using phase=none as we don't want this execution as part of the default build. The phase
-                   is specified in the "full" profile and thus the execution will only be activated when using that profile. -->
+              <!-- Currently disabled as it fails the build. See https://issues.redhat.com/browse/PLANNER-2261. -->
               <phase>none</phase>
               <goals>
                 <goal>enforce</goal>
