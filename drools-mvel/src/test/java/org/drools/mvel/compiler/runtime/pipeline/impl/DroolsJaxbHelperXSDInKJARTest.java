@@ -35,6 +35,9 @@ import org.slf4j.LoggerFactory;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
+/**
+ * DROOLS-5803 RHDM-851
+ */
 public class DroolsJaxbHelperXSDInKJARTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(DroolsJaxbHelperXSDInKJARTest.class);
@@ -43,6 +46,7 @@ public class DroolsJaxbHelperXSDInKJARTest {
 
     @Test
     public void testInternalsDryRun() {
+        // DROOLS-5803 RHDM-851
         System.getProperties().entrySet().forEach(e -> LOG.debug("{}", e));
         LOG.info("{}", javax.xml.parsers.SAXParserFactory.newInstance().getClass());
         LOG.info("{}", javax.xml.validation.SchemaFactory.newInstance(javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI).getClass());
@@ -51,6 +55,7 @@ public class DroolsJaxbHelperXSDInKJARTest {
 
     @Test
     public void testXsdModelInKJAR() {
+        // DROOLS-5803 RHDM-851
         KieServices ks = KieServices.Factory.get();
         KieFileSystem kfs = ks.newKieFileSystem();
         KieResources kieResources = ks.getResources();
