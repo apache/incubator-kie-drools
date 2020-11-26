@@ -653,14 +653,6 @@
               </goals>
               <phase>verify</phase>
             </execution>
-            <execution>
-              <!-- report can be found in ${build.directory}/site/revapi-report.html -->
-              <id>report</id>
-              <goals>
-                <goal>report</goal>
-              </goals>
-              <phase>package</phase>
-            </execution>
           </executions>
         </plugin>
 
