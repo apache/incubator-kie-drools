@@ -164,11 +164,6 @@ public abstract class CompiledNetwork implements ObjectSinkPropagator {
         public void startWindowNode(WindowNode windowNode) {
             setNetworkNodeReference(windowNode);
         }
-
-        @Override
-        public void startRangeIndexedAlphaNode(AlphaNode alphaNode) {
-            setNetworkNodeReference(alphaNode);
-        }
     }
 
     @Override

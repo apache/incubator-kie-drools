@@ -166,15 +166,4 @@ public class DeclarationsHandler extends AbstractCompilerHandler {
     public Map<String, AlphaRangeIndex> getRangeIndexDeclarationMap() {
         return rangeIndexDeclarationMap;
     }
-
-    @Override
-    public void startRangeIndexedAlphaNode(AlphaNode alphaNode) {
-        builder.append(getAlphaNodeVariableDeclaration(alphaNode)).append(NEWLINE); // range index uses AlphaNode rather than MVELConstraint
-    }
-
-    private String getAlphaNodeVariableDeclaration(AlphaNode alphaNode) {
-        String variableName = getAlphaNodeVariableName(alphaNode);
-        String comment = alphaNode.toString().replace("\\n", "");
-        return PRIVATE_MODIFIER + " " + AlphaNode.class.getName() + " " + variableName + "; // " + comment;
-    }
 }

@@ -126,19 +126,4 @@ public class SetNodeReferenceHandler extends AbstractCompilerHandler {
         builder.append(getVariableAssignmentStatement(leftInputAdapterNode, PARAM_NAME)).append(NEWLINE);
         builder.append(BREAK).append(NEWLINE);
     }
-
-    @Override
-    public void startRangeIndexedAlphaNode(AlphaNode alphaNode) {
-        // case statement for the range indexed alpha node looks like the following
-        // case 24:
-        //      alphaNode24 = (AlphaNode) node;
-        //      break;
-        builder.append(CASE).append(alphaNode.getId()).append(": ").append(NEWLINE);
-        builder.append(getAlphaNodeAssignmentStatement(alphaNode, PARAM_NAME)).append(NEWLINE);
-        builder.append(BREAK).append(NEWLINE);
-    }
-
-    private String getAlphaNodeAssignmentStatement(AlphaNode alphaNode, String nodeVariableName) {
-        return getVariableName(AlphaNode.class, alphaNode.getId()) + " = (" + AlphaNode.class.getCanonicalName() + ")" + nodeVariableName + ";";
-    }
 }
