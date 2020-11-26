@@ -33,23 +33,8 @@
         <surefire.forkCount>2</surefire.forkCount>
         <excludedGroups>org.kie.test.testcategory.TurtleTestCategory</excludedGroups>
     </properties>
-    
-    <dependencyManagement>
-    <dependencies>
-        <!-- https://mvnrepository.com/artifact/com.sun.xml.parsers/jaxp-ri -->
-<dependency>
-    <groupId>com.sun.xml.parsers</groupId>
-    <artifactId>jaxp-ri</artifactId>
-    <version>1.4.5</version>
-</dependency>
-    </dependencies>
-    </dependencyManagement>
 
     <dependencies>
-<dependency>
-    <groupId>com.sun.xml.parsers</groupId>
-    <artifactId>jaxp-ri</artifactId>
-</dependency>
         <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.core</artifactId>
