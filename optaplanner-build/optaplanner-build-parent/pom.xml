@@ -618,14 +618,6 @@
             </analysisConfigurationFiles>
             <failSeverity>potentiallyBreaking</failSeverity>
           </configuration>
-          <executions>
-            <execution>
-              <id>check</id>
-              <goals>
-                <goal>check</goal>
-              </goals>
-            </execution>
-          </executions>
         </plugin>
 
         <plugin>
@@ -845,35 +837,6 @@
       <plugin>
         <groupId>net.revelc.code</groupId>
         <artifactId>impsort-maven-plugin</artifactId>
-      </plugin>
-      <plugin> <!-- Make sure the build fails-fast on Javadoc issues. -->
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>javadoc-javadoc</id>
-            <phase>package</phase>
-            <goals>
-              <goal>javadoc-no-fork</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>analyze-only</id>
-            <goals>
-              <goal>analyze-only</goal>
-            </goals>
-            <configuration>
-              <failOnWarning>true</failOnWarning>
-              <ignoreNonCompile>true</ignoreNonCompile>
-              <verbose>true</verbose>
-            </configuration>
-          </execution>
-        </executions>
       </plugin>
       <plugin>
         <artifactId>maven-enforcer-plugin</artifactId>
@@ -1117,6 +1080,60 @@
         <!--suppress UnresolvedMavenProperty -->
         <sonar.pullrequest.base>${env.ghprbTargetBranch}</sonar.pullrequest.base>
       </properties>
+    </profile>
+
+    <profile>
+      <id>fullProfile</id>
+      <activation>
+        <property>
+          <name>full</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin> <!-- Make sure the build fails-fast on Javadoc issues. -->
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>javadoc-javadoc</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>javadoc-no-fork</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.revapi</groupId>
+            <artifactId>revapi-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>check</id>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>analyze-only</id>
+                <goals>
+                  <goal>analyze-only</goal>
+                </goals>
+                <configuration>
+                  <failOnWarning>true</failOnWarning>
+                  <ignoreNonCompile>true</ignoreNonCompile>
+                  <verbose>true</verbose>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
     </profile>
   </profiles>
 
