@@ -939,26 +939,6 @@
         <!--        </executions>-->
       </plugin>
       <plugin>
-        <!-- Entry needed to provide parsed version properties -->
-        <!-- also adds generated sources to -source artifact -->
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>build-helper-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>add-source</goal>
-              <goal>parse-version</goal>
-            </goals>
-            <configuration>
-              <sources>
-                <source>target/generated-sources/annotations/</source>
-              </sources>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
       </plugin>
