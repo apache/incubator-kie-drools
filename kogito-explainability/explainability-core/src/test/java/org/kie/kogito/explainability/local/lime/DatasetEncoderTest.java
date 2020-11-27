@@ -42,9 +42,8 @@ class DatasetEncoderTest {
         List<PredictionInput> inputs = new LinkedList<>();
         List<Output> outputs = new LinkedList<>();
         List<Feature> features = new LinkedList<>();
-        PredictionInput originalInput = new PredictionInput(features);
         Output originalOutput = new Output("foo", Type.NUMBER, new Value<>(1), 1d);
-        DatasetEncoder datasetEncoder = new DatasetEncoder(inputs, outputs, originalInput, originalOutput);
+        DatasetEncoder datasetEncoder = new DatasetEncoder(inputs, outputs, features, originalOutput);
         Collection<Pair<double[], Double>> trainingSet = datasetEncoder.getEncodedTrainingSet();
         assertNotNull(trainingSet);
         assertTrue(trainingSet.isEmpty());
@@ -179,7 +178,7 @@ class DatasetEncoderTest {
             outputs.add(new Output("o", Type.NUMBER, new Value<>(i % 2 == 0 ? 1d : 0d), 1d));
         }
         Output originalOutput = new Output("o", Type.BOOLEAN, new Value<>(1d), 1d);
-        DatasetEncoder datasetEncoder = new DatasetEncoder(perturbedInputs, outputs, originalInput, originalOutput);
+        DatasetEncoder datasetEncoder = new DatasetEncoder(perturbedInputs, outputs, originalInput.getFeatures(), originalOutput);
         Collection<Pair<double[], Double>> trainingSet = datasetEncoder.getEncodedTrainingSet();
         assertNotNull(trainingSet);
         assertEquals(10, trainingSet.size());

@@ -17,6 +17,7 @@ package org.kie.kogito.explainability;
 
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.explainability.local.LocalExplainer;
+import org.kie.kogito.explainability.local.lime.LimeConfig;
 import org.kie.kogito.explainability.local.lime.LimeExplainer;
 import org.kie.kogito.explainability.model.Saliency;
 
@@ -35,8 +36,8 @@ class LimeExplainerProducerTest {
 
         assertNotNull(limeExplainer);
         assertTrue(limeExplainer instanceof LimeExplainer);
-        assertEquals(1, ((LimeExplainer) limeExplainer).getNoOfSamples());
-        assertEquals(2, ((LimeExplainer) limeExplainer).getPerturbationContext().getNoOfPerturbations());
-        assertEquals(LimeExplainer.DEFAULT_NO_OF_RETRIES, ((LimeExplainer) limeExplainer).getNoOfRetries());
+        assertEquals(1, ((LimeExplainer) limeExplainer).getLimeConfig().getNoOfSamples());
+        assertEquals(2, ((LimeExplainer) limeExplainer).getLimeConfig().getPerturbationContext().getNoOfPerturbations());
+        assertEquals(LimeConfig.DEFAULT_NO_OF_RETRIES, ((LimeExplainer) limeExplainer).getLimeConfig().getNoOfRetries());
     }
 }

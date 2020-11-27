@@ -28,9 +28,11 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.explainability.Config;
 import org.kie.kogito.explainability.TestUtils;
+import org.kie.kogito.explainability.local.lime.LimeConfig;
 import org.kie.kogito.explainability.local.lime.LimeExplainer;
 import org.kie.kogito.explainability.model.Feature;
 import org.kie.kogito.explainability.model.FeatureFactory;
+import org.kie.kogito.explainability.model.PerturbationContext;
 import org.kie.kogito.explainability.model.Prediction;
 import org.kie.kogito.explainability.model.PredictionInput;
 import org.kie.kogito.explainability.model.PredictionOutput;
@@ -90,7 +92,9 @@ class ExplainabilityMetricsTest {
     @Test
     void testFidelityWithTextClassifier() throws ExecutionException, InterruptedException, TimeoutException {
         List<Pair<Saliency, Prediction>> pairs = new LinkedList<>();
-        LimeExplainer limeExplainer = new LimeExplainer(10, 1);
+        LimeConfig limeConfig = new LimeConfig()
+                .withSamples(10);
+        LimeExplainer limeExplainer = new LimeExplainer(limeConfig);
         PredictionProvider model = TestUtils.getDummyTextClassifier();
         List<Feature> features = new LinkedList<>();
         features.add(FeatureFactory.newFulltextFeature("f-0", "brown fox", s -> Arrays.asList(s.split(" "))));
@@ -114,7 +118,10 @@ class ExplainabilityMetricsTest {
     @Test
     void testFidelityWithEvenSumModel() throws ExecutionException, InterruptedException, TimeoutException {
         List<Pair<Saliency, Prediction>> pairs = new LinkedList<>();
-        LimeExplainer limeExplainer = new LimeExplainer(10, 1);
+        LimeConfig limeConfig = new LimeConfig()
+                .withSamples(10);
+        LimeExplainer limeExplainer = new LimeExplainer(limeConfig);
+
         PredictionProvider model = TestUtils.getEvenSumModel(1);
         List<Feature> features = new LinkedList<>();
         features.add(FeatureFactory.newNumericalFeature("f-1", 1));

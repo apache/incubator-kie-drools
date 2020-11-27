@@ -17,9 +17,10 @@ package org.kie.kogito.explainability.local.lime;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import org.apache.commons.lang3.tuple.Pair;
-import org.kie.kogito.explainability.model.PredictionInput;
+import org.kie.kogito.explainability.model.Feature;
 import org.kie.kogito.explainability.utils.DataUtils;
 
 /**
@@ -29,8 +30,14 @@ class SampleWeighter {
 
     private static final double SIGMA = 0.75;
 
-    static double[] getSampleWeights(PredictionInput targetInput, Collection<Pair<double[], Double>> training) {
-        int noOfFeatures = targetInput.getFeatures().size();
+    /**
+     * Obtain sample weights for a training set, given a list of target input features to compare with.
+     * @param targetInputFeatures target input features
+     * @param training the (sparse) training set
+     * @return a eeight for each sample in the training set
+     */
+    static double[] getSampleWeights(List<Feature> targetInputFeatures, Collection<Pair<double[], Double>> training) {
+        int noOfFeatures = targetInputFeatures.size();
         double[] x = new double[noOfFeatures];
         Arrays.fill(x, 1);
 

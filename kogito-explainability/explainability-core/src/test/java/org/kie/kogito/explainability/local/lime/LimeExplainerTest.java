@@ -44,7 +44,9 @@ class LimeExplainerTest {
         Random random = new Random();
         for (int seed = 0; seed < 5; seed++) {
             random.setSeed(seed);
-            LimeExplainer limeExplainer = new LimeExplainer(10, 1, random);
+            LimeConfig limeConfig = new LimeConfig()
+                    .withSamples(10);
+            LimeExplainer limeExplainer = new LimeExplainer(limeConfig);
             PredictionInput input = new PredictionInput(Collections.emptyList());
             PredictionProvider model = TestUtils.getSumSkipModel(0);
             PredictionOutput output = model.predictAsync(List.of(input))
@@ -61,7 +63,9 @@ class LimeExplainerTest {
         Random random = new Random();
         for (int seed = 0; seed < 5; seed++) {
             random.setSeed(seed);
-            LimeExplainer limeExplainer = new LimeExplainer(10, 1, random);
+            LimeConfig limeConfig = new LimeConfig()
+                    .withSamples(10);
+            LimeExplainer limeExplainer = new LimeExplainer(limeConfig);
             List<Feature> features = new LinkedList<>();
             for (int i = 0; i < 4; i++) {
                 features.add(TestUtils.getMockedNumericFeature(i));

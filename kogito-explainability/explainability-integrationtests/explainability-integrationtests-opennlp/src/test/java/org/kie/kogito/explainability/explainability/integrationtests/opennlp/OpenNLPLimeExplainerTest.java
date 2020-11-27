@@ -22,10 +22,12 @@ import opennlp.tools.langdetect.LanguageDetectorModel;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.explainability.Config;
+import org.kie.kogito.explainability.local.lime.LimeConfig;
 import org.kie.kogito.explainability.local.lime.LimeExplainer;
 import org.kie.kogito.explainability.model.Feature;
 import org.kie.kogito.explainability.model.FeatureFactory;
 import org.kie.kogito.explainability.model.Output;
+import org.kie.kogito.explainability.model.PerturbationContext;
 import org.kie.kogito.explainability.model.Prediction;
 import org.kie.kogito.explainability.model.PredictionInput;
 import org.kie.kogito.explainability.model.PredictionOutput;
@@ -61,7 +63,10 @@ class OpenNLPLimeExplainerTest {
         Random random = new Random();
         for (int seed = 0; seed < 5; seed++) {
             random.setSeed(seed);
-            LimeExplainer limeExplainer = new LimeExplainer(100, 2, random);
+            LimeConfig limeConfig = new LimeConfig()
+                    .withSamples(100)
+                    .withPerturbationContext(new PerturbationContext(random, 2));
+            LimeExplainer limeExplainer = new LimeExplainer(limeConfig);
             InputStream is = getClass().getResourceAsStream("/opennlp/langdetect-183.bin");
             LanguageDetectorModel languageDetectorModel = new LanguageDetectorModel(is);
             LanguageDetector languageDetector = new LanguageDetectorME(languageDetectorModel);

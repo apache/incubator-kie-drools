@@ -39,14 +39,14 @@ class DatasetEncoder {
 
     private final List<PredictionInput> perturbedInputs;
     private final List<Output> predictedOutputs;
-    private final PredictionInput targetInput;
+    private final List<Feature> targetInputFeatures;
     private final Output originalOutput;
 
     DatasetEncoder(List<PredictionInput> perturbedInputs, List<Output> perturbedOutputs,
-                   PredictionInput targetInput, Output targetOutput) {
+                   List<Feature> targetInputFeatures, Output targetOutput) {
         this.perturbedInputs = perturbedInputs;
         this.predictedOutputs = perturbedOutputs;
-        this.targetInput = targetInput;
+        this.targetInputFeatures = targetInputFeatures;
         this.originalOutput = targetOutput;
     }
 
@@ -59,7 +59,7 @@ class DatasetEncoder {
         List<Pair<double[], Double>> trainingSet = new LinkedList<>();
         List<List<double[]>> columnData;
         List<PredictionInput> flatInputs = DataUtils.linearizeInputs(perturbedInputs);
-        if (!flatInputs.isEmpty() && !predictedOutputs.isEmpty() && !targetInput.getFeatures().isEmpty() && originalOutput != null) {
+        if (!flatInputs.isEmpty() && !predictedOutputs.isEmpty() && !targetInputFeatures.isEmpty() && originalOutput != null) {
             columnData = getColumnData(flatInputs);
 
             int pi = 0;
@@ -99,8 +99,8 @@ class DatasetEncoder {
     private List<List<double[]>> getColumnData(List<PredictionInput> perturbedInputs) {
         List<List<double[]>> columnData = new LinkedList<>();
 
-        for (int t = 0; t < targetInput.getFeatures().size(); t++) {
-            Feature targetFeature = targetInput.getFeatures().get(t);
+        for (int t = 0; t < targetInputFeatures.size(); t++) {
+            Feature targetFeature = targetInputFeatures.get(t);
             int finalT = t;
             // encode all inputs with respect to the target, based on their type
             List<double[]> encode = targetFeature.getType().encode(targetFeature.getValue(), perturbedInputs
