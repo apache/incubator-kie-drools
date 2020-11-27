@@ -8,7 +8,6 @@
   <packaging>kjar</packaging>
 
   <name>basic</name>
-  <url>http://drools.org</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -32,10 +31,9 @@
   <dependencies>
 
     <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>drools-compiler</artifactId>
-        <scope>test</scope>
-      </dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-engine-classic</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>junit</groupId>
