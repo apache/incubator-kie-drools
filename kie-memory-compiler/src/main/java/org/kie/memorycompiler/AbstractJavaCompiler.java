@@ -1,12 +1,9 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
+ * Copyright (c) 2020. Red Hat, Inc. and/or its affiliates.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,12 +12,11 @@
  * limitations under the License.
  */
 
-package org.drools.compiler.commons.jci.compilers;
+package org.kie.memorycompiler;
 
-import org.drools.compiler.commons.jci.problems.CompilationProblemHandler;
-import org.drools.compiler.commons.jci.readers.ResourceReader;
-import org.drools.compiler.commons.jci.stores.ResourceStore;
 
+import org.kie.memorycompiler.resources.ResourceReader;
+import org.kie.memorycompiler.resources.ResourceStore;
 
 /**
  * Base class for compiler implementations. Provides just a few
@@ -28,13 +24,7 @@ import org.drools.compiler.commons.jci.stores.ResourceStore;
  */
 public abstract class AbstractJavaCompiler implements JavaCompiler {
 
-    protected CompilationProblemHandler problemHandler;
-
     private JavaCompilerSettings javaCompilerSettings;
-
-    public void setCompilationProblemHandler( final CompilationProblemHandler pHandler ) {
-        problemHandler = pHandler;
-    }
 
     public CompilationResult compile( final String[] pClazzNames, final ResourceReader pReader, final ResourceStore pStore ) {
 

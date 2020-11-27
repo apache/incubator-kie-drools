@@ -71,6 +71,10 @@
       <artifactId>kie-internal</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-memory-compiler</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-core-reflective</artifactId>
     </dependency>
@@ -220,11 +224,6 @@
     <dependency>
       <groupId>org.eclipse</groupId>
       <artifactId>yasson</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>kie-memory-compiler</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>

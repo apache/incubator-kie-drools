@@ -40,8 +40,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
-import org.drools.compiler.commons.jci.readers.ResourceReader;
-import org.drools.compiler.commons.jci.stores.ResourceStore;
+import org.kie.memorycompiler.resources.ResourceReader;
+import org.kie.memorycompiler.resources.ResourceStore;
 import org.drools.compiler.compiler.io.File;
 import org.drools.compiler.compiler.io.FileSystem;
 import org.drools.compiler.compiler.io.FileSystemItem;
@@ -367,7 +367,6 @@ public class MemoryFileSystem
         return getFileContents((MemoryFile) getFile(pResourceName));
     }
 
-    @Override
     public InternalResource getResource(String pResourceName) {
         return getResource((MemoryFile) getFile(pResourceName));
     }

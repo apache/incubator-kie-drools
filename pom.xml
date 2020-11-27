@@ -50,12 +50,13 @@
   </scm>
 
   <modules>
+    <module>kie-memory-compiler</module>
     <module>drools-core-reflective</module>
     <module>drools-core-dynamic</module>
     <module>kie-test-util</module>
     <module>drools-core</module>
-    <module>drools-compiler</module>
     <module>drools-ecj</module>
+    <module>drools-compiler</module>
     <module>drools-mvel</module>
     <module>drools-serialization-protobuf</module>
     <module>drools-beliefs</module>
@@ -79,7 +80,6 @@
     <module>drools-workbench-models</module>
     <module>drools-test-coverage</module>
     <module>drools-scenario-simulation</module>
-    <module>kie-memory-compiler</module>
     <module>drools-metric</module>
     <module>drools-alphanetwork-compiler</module>
     <module>drools-engine</module>

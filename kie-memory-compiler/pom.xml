@@ -36,6 +36,10 @@
         <artifactId>maven-bundle-plugin</artifactId>
         <configuration>
           <instructions>
+            <Import-Package>
+              org.drools.ecj;resolution:=optional,
+              *
+            </Import-Package>
             <Export-Package>
               org.kie.memorycompiler.*
             </Export-Package>

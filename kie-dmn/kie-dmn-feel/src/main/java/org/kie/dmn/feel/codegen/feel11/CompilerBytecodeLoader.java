@@ -34,16 +34,16 @@ import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.stmt.ReturnStmt;
-import org.drools.compiler.commons.jci.compilers.CompilationResult;
-import org.drools.compiler.commons.jci.compilers.JavaCompiler;
-import org.drools.compiler.commons.jci.readers.MemoryResourceReader;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.kie.dmn.feel.util.ClassLoaderUtil;
+import org.kie.memorycompiler.CompilationResult;
+import org.kie.memorycompiler.JavaCompiler;
+import org.kie.memorycompiler.resources.MemoryResourceReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static com.github.javaparser.StaticJavaParser.parse;
-import static org.drools.compiler.compiler.JavaConfiguration.createDefaultCompiler;
+import static org.drools.compiler.compiler.JavaDialectConfiguration.createNativeCompiler;
 
 public class CompilerBytecodeLoader {
 
@@ -110,7 +110,7 @@ public class CompilerBytecodeLoader {
         try {
             MemoryResourceReader pReader = new MemoryResourceReader();
             pReader.add(cuPackage.replaceAll("\\.", "/") + "/" + cuClass + ".java", cu.toString().getBytes());
-            JavaCompiler compiler = createDefaultCompiler();
+            JavaCompiler compiler = createNativeCompiler();
             MemoryFileSystem pStore = new MemoryFileSystem();
             CompilationResult compilationResult = compiler.compile(new String[]{cuPackage.replaceAll("\\.", "/") + "/" + cuClass + ".java"},
                                                                    pReader,
