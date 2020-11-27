@@ -59,3 +59,11 @@ For detailed instructions on how to develop and run the Management Console, plea
 A `locktt` npm script relying on [lock-treatment-tool](https://github.com/Ginxo/lock-treatment-tool) is available to allow the usage of a private npm registry during building.
 
 `locktt` replaces the host from [`ui-packages/yarn.lock`](./ui-packages/yarn.lock) resolved field with the custom registry. It is set to run just before the execution of `yarn install`. See [`ui-packages/pom.xml`](./ui-packages/pom.xml) for further details.
+
+## Skipping frontend build
+
+To skip the frontend build when running maven, simply execute Maven with the following parameters
+
+```bash
+mvn clean install -Dskip.ui.build -Dskip.ui.deps
+```
