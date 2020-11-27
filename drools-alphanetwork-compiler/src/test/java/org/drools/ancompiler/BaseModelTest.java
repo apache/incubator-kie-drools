@@ -97,6 +97,11 @@ public abstract class BaseModelTest {
         return getKieContainer( model, stringRules ).newKieSession();
     }
 
+    protected KieContainer getKieContainer( String... stringRules ) {
+        KieModuleModel model = testRunType.isAlphaNetworkCompiler() ? getKieModuleModelWithAlphaNetworkCompiler() : null;
+        return getKieContainer( model, toKieFiles( stringRules ) );
+    }
+
     protected KieContainer getKieContainer( KieModuleModel model, String... stringRules ) {
         return getKieContainer( model, toKieFiles( stringRules ) );
     }

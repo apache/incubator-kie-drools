@@ -16,9 +16,12 @@
 
 package org.drools.ancompiler;
 
+import java.util.Map;
+
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.rule.IndexableConstraint;
 import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.util.index.AlphaRangeIndex;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,17 +34,20 @@ public class CompiledNetworkSource {
     private final String name;
     private final String sourceName;
     private final ObjectTypeNode objectTypeNode;
+    private final Map<String, AlphaRangeIndex> rangeIndexDeclarationMap;
 
     public CompiledNetworkSource(String source,
                                  IndexableConstraint indexableConstraint,
                                  String name,
                                  String sourceName,
-                                 ObjectTypeNode objectTypeNode) {
+                                 ObjectTypeNode objectTypeNode,
+                                 Map<String, AlphaRangeIndex> rangeIndexDeclarationMap) {
         this.source = source;
         this.indexableConstraint = indexableConstraint;
         this.name = name;
         this.sourceName = sourceName;
         this.objectTypeNode = objectTypeNode;
+        this.rangeIndexDeclarationMap = rangeIndexDeclarationMap;
     }
 
     public String getSource() {
@@ -66,8 +72,8 @@ public class CompiledNetworkSource {
 
     public CompiledNetwork newCompiledNetworkInstance(Class<?> aClass) {
         try {
-            return (CompiledNetwork) aClass.getDeclaredConstructor(org.drools.core.spi.InternalReadAccessor.class)
-                    .newInstance(getFieldExtractor());
+            return (CompiledNetwork) aClass.getDeclaredConstructor(org.drools.core.spi.InternalReadAccessor.class, Map.class)
+                    .newInstance(getFieldExtractor(), rangeIndexDeclarationMap);
         } catch (Exception e) {
             throw new CouldNotCreateAlphaNetworkCompilerException(e);
         }

@@ -22,6 +22,7 @@ import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.WindowNode;
 import org.drools.core.rule.IndexableConstraint;
+import org.drools.core.util.index.AlphaRangeIndex;
 
 /**
  * Receive notification of the logical parts of the RETE-OO network.
@@ -101,5 +102,14 @@ public interface NetworkHandler {
 
     void nullCaseAlphaNodeEnd(AlphaNode hashedAlpha);
 
+    /**
+     * Receive notification of alpha node range index
+     */
+    void startRangeIndex(AlphaRangeIndex alphaRangeIndex);
 
+    void endRangeIndex(AlphaRangeIndex alphaRangeIndex);
+
+    void startRangeIndexedAlphaNode(AlphaNode alphaNode);
+
+    void endRangeIndexedAlphaNode(AlphaNode alphaNode);
 }
