@@ -60,6 +60,12 @@
           <!-- It is impossible to write a configuration that is compatible with both exec:java and exec:exec -->
           <configuration>
             <mainClass>org.optaplanner.examples.app.OptaPlannerExamplesApp</mainClass>
+            <!-- For some reason, Drools cannot find domain classes unless they are specified as a Jar in the classpath -->
+            <!-- (By default, exec:java add target/classes, not target/jarfile) -->
+            <!-- REMOVE ME when https://issues.redhat.com/browse/KOGITO-3954 is fixed -->
+            <additionalClasspathElements>
+                <additionalClasspathElement>${project.build.directory}${file.separator}${project.build.finalName}.jar</additionalClasspathElement>
+            </additionalClasspathElements>
             <arguments>
               <argument>-Xms256m</argument>
               <!-- Most examples run (potentially slower) with max heap of 128 MB (so -Xmx128m), but 1 example's dataset requires 1.5 GB -->
