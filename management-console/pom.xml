@@ -127,6 +127,21 @@
       <build>
         <plugins>
           <plugin>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-maven-plugin</artifactId>
+            <version>${version.io.quarkus}</version>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>native-image</goal>
+                </goals>
+                <configuration>
+                  <enableHttpUrlHandler>true</enableHttpUrlHandler>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
             <artifactId>maven-failsafe-plugin</artifactId>
             <executions>
               <execution>
@@ -144,9 +159,6 @@
           </plugin>
         </plugins>
       </build>
-      <properties>
-        <quarkus.package.type>native</quarkus.package.type>
-      </properties>
     </profile>
   </profiles>
 </project>
