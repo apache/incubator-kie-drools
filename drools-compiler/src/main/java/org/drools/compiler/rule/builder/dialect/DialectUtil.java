@@ -21,7 +21,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.drools.compiler.builder.DroolsAssemblerContext;
-import org.drools.compiler.commons.jci.readers.ResourceReader;
+import org.kie.memorycompiler.resources.ResourceReader;
 import org.drools.compiler.lang.descr.ImportDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.rule.builder.RuleBuildContext;

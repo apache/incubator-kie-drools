@@ -30,17 +30,18 @@ import com.github.javaparser.ast.body.TypeDeclaration;
 import com.github.javaparser.printer.PrettyPrinter;
 import com.github.javaparser.printer.PrettyPrinterConfiguration;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.drools.compiler.commons.jci.compilers.CompilationResult;
-import org.drools.compiler.commons.jci.compilers.JavaCompiler;
-import org.drools.compiler.commons.jci.compilers.JavaCompilerFactory;
-import org.drools.compiler.compiler.JavaConfiguration;
+import org.drools.compiler.kie.builder.impl.CompilationProblemAdapter;
+import org.kie.memorycompiler.CompilationResult;
+import org.kie.memorycompiler.JavaCompiler;
+import org.kie.memorycompiler.JavaCompilerFactory;
+import org.kie.memorycompiler.JavaConfiguration;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.modelcompiler.builder.errors.CompilationProblemErrorResult;
-import org.kie.internal.jci.CompilationProblem;
+import org.kie.memorycompiler.CompilationProblem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.drools.compiler.compiler.JavaConfiguration.createDefaultCompiler;
+import static org.drools.compiler.compiler.JavaDialectConfiguration.createDefaultCompiler;
 import static org.drools.core.util.ClassUtils.isJboss;
 
 public class JavaParserCompiler {
@@ -56,7 +57,7 @@ public class JavaParserCompiler {
     private static final PrettyPrinter PRETTY_PRINTER = createPrettyPrinter();
 
     private static JavaCompiler createCompiler() {
-        JavaCompiler javaCompiler = JavaCompilerFactory.INSTANCE.loadCompiler( COMPILER_TYPE, "1.8" );
+        JavaCompiler javaCompiler = JavaCompilerFactory.loadCompiler( COMPILER_TYPE, "1.8" );
         javaCompiler.setSourceFolder( "src/main/java/" );
         return javaCompiler;
     }
@@ -90,7 +91,7 @@ public class JavaParserCompiler {
         if(errors.length != 0) {
             classes.forEach(c -> logger.error(c.toString()));
             for (CompilationProblem error : errors) {
-                kbuilder.addBuilderResult(new CompilationProblemErrorResult(error));
+                kbuilder.addBuilderResult(new CompilationProblemErrorResult(new CompilationProblemAdapter( error )));
             }
             return Collections.emptyMap();
         }

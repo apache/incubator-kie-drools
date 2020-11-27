@@ -14,8 +14,8 @@
 
 package org.drools.ecj;
 
+import org.kie.memorycompiler.CompilationProblem;
 import org.eclipse.jdt.core.compiler.IProblem;
-import org.kie.internal.jci.CompilationProblem;
 
 /**
  * Wrapping an Eclipse compiler problem

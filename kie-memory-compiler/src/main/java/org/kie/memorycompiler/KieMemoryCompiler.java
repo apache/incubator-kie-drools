@@ -13,28 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.kie.memorycompiler;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
 import java.util.Map;
-import java.util.stream.Collectors;
 
-import javax.tools.Diagnostic;
-import javax.tools.DiagnosticCollector;
-import javax.tools.JavaCompiler;
-import javax.tools.JavaFileObject;
-import javax.tools.ToolProvider;
+import org.kie.memorycompiler.jdknative.NativeJavaCompiler;
+import org.kie.memorycompiler.resources.MemoryResourceReader;
+import org.kie.memorycompiler.resources.MemoryResourceStore;
 
 public class KieMemoryCompiler {
 
-    private static final JavaCompiler JAVA_COMPILER = ToolProvider.getSystemJavaCompiler();
-    private static final List<String> OPTIONS = Arrays.asList("-source", "1.8", "-target", "1.8", "-encoding", "UTF-8");
-
-    private KieMemoryCompiler() {
-    }
+    private KieMemoryCompiler() { }
 
     /**
      * Compile the given sources and add compiled classes to the given <code>ClassLoader</code>
@@ -45,21 +37,30 @@ public class KieMemoryCompiler {
      * @return
      */
     public static Map<String, Class<?>> compile(Map<String, String> classNameSourceMap, ClassLoader classLoader) {
-        Map<String, KieMemoryCompilerSourceCode> sourceCodes = classNameSourceMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey,
-                                                                                                                               entry -> new KieMemoryCompilerSourceCode(entry.getKey(), entry.getValue())));
-        KieMemoryCompilerClassLoader kieMemoryCompilerClassLoader = new KieMemoryCompilerClassLoader(classLoader);
-        DiagnosticCollector<JavaFileObject> collector = new DiagnosticCollector<>();
-        KieMemoryCompilerFileManager fileManager = new KieMemoryCompilerFileManager(JAVA_COMPILER.getStandardFileManager(null, null, null), kieMemoryCompilerClassLoader);
-        JavaCompiler.CompilationTask task = JAVA_COMPILER.getTask(null, fileManager, collector, OPTIONS, null, sourceCodes.values());
+        MemoryResourceReader reader = new MemoryResourceReader();
+        MemoryResourceStore store = new MemoryResourceStore();
+        String[] classNames = new String[classNameSourceMap.size()];
 
-        boolean compilationSuccess = task.call();
-        boolean hasCompilerError = collector.getDiagnostics().stream().anyMatch(d -> d.getKind().equals(Diagnostic.Kind.ERROR));
-        if (!compilationSuccess || hasCompilerError) {
-            compilerError(collector);
+        int i = 0;
+        for (Map.Entry<String, String> entry : classNameSourceMap.entrySet()) {
+            classNames[i] = toJavaSource( entry.getKey() );
+            reader.add( classNames[i], entry.getValue().getBytes());
+            i++;
         }
 
+        NativeJavaCompiler compiler = new NativeJavaCompiler();
+        CompilationResult res = compiler.compile( classNames, reader, store, classLoader );
+
+        if (res.getErrors().length > 0) {
+            throw new KieMemoryCompilerException(Arrays.toString( res.getErrors() ));
+        }
+
+        MemoryCompilerClassLoader kieMemoryCompilerClassLoader = new MemoryCompilerClassLoader(classLoader);
+
         Map<String, Class<?>> toReturn = new HashMap<>();
-        for (String className : sourceCodes.keySet()) {
+        for (String className : classNameSourceMap.keySet()) {
+            byte[] bytes = store.read( toClassSource( className ) );
+            kieMemoryCompilerClassLoader.addCode( className, bytes );
             try {
                 toReturn.put(className, kieMemoryCompilerClassLoader.loadClass(className));
             } catch (ClassNotFoundException e) {
@@ -69,19 +70,33 @@ public class KieMemoryCompiler {
         return toReturn;
     }
 
-    private static void compilerError(DiagnosticCollector<JavaFileObject> collector) {
-        StringBuilder errorBuilder = new StringBuilder();
-        errorBuilder.append("Compilation failed");
-        for (Diagnostic<? extends JavaFileObject> diagnostic : collector.getDiagnostics()) {
-            errorBuilder.append(" file: ");
-            errorBuilder.append(diagnostic.getSource());
-            errorBuilder.append("\r\n");
-            errorBuilder.append(diagnostic.getKind());
-            errorBuilder.append("; line: ");
-            errorBuilder.append(diagnostic.getLineNumber());
-            errorBuilder.append("; ");
-            errorBuilder.append(diagnostic.getMessage(Locale.US));
+    private static String toJavaSource( String s ) {
+        return s.replace( '.', '/' ) + ".java";
+    }
+
+    private static String toClassSource( String s ) {
+        return s.replace( '.', '/' ) + ".class";
+    }
+
+    public static class MemoryCompilerClassLoader extends ClassLoader {
+
+        private Map<String, byte[]> customCompiledCode = new HashMap<>();
+
+        public MemoryCompilerClassLoader(ClassLoader parent) {
+            super(parent);
         }
-        throw new KieMemoryCompilerException(errorBuilder.toString());
+
+        public void addCode(String name, byte[] bytes) {
+            customCompiledCode.put(name, bytes);
+        }
+
+        @Override
+        protected Class<?> findClass(String name) throws ClassNotFoundException {
+            byte[] byteCode = customCompiledCode.get(name);
+            if (byteCode == null) {
+                return super.findClass(name);
+            }
+            return defineClass(name, byteCode, 0, byteCode.length);
+        }
     }
 }

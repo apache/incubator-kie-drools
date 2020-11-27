@@ -75,6 +75,7 @@ import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.THIS_PLAC
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getLiteralExpressionType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.builder.generator.drlxparse.SpecialComparisonCase.specialComparisonFactory;
+import static org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyper.tryParseAsConstantField;
 import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
 
 public class ConstraintParser {
@@ -260,13 +261,18 @@ public class ConstraintParser {
     }
 
     private DrlxParseResult parseFieldAccessExpr( FieldAccessExpr fieldCallExpr, Class<?> patternType, String bindingId ) {
-        ToMethodCall toMethodCall = new ToMethodCall(context);
-        TypedExpression converted = toMethodCall.toMethodCallWithClassCheck(fieldCallExpr, bindingId, patternType);
-        Expression withThis = DrlxParseUtil.prepend(new NameExpr(THIS_PLACEHOLDER), converted.getExpression());
+        try {
+            ToMethodCall toMethodCall = new ToMethodCall(context);
+            TypedExpression converted = toMethodCall.toMethodCallWithClassCheck(fieldCallExpr, bindingId, patternType);
+            Expression withThis = DrlxParseUtil.prepend(new NameExpr(THIS_PLACEHOLDER), converted.getExpression());
 
-        return new SingleDrlxParseSuccess(patternType, bindingId, withThis, converted.getType())
-                .setLeft(converted)
-                .setImplicitCastExpression(toMethodCall.getImplicitCastExpression());
+            return new SingleDrlxParseSuccess(patternType, bindingId, withThis, converted.getType())
+                    .setLeft(converted)
+                    .setImplicitCastExpression(toMethodCall.getImplicitCastExpression());
+        } catch(ToMethodCall.CannotConvertException e) {
+            Optional<TypedExpression> parsed = tryParseAsConstantField(context.getTypeResolver(), fieldCallExpr.getScope(), fieldCallExpr.getNameAsString());
+            return parsed.map( expr -> new SingleDrlxParseSuccess(patternType, bindingId, expr.getExpression(), expr.getType()).setLeft(expr) ).orElseThrow( () -> e );
+        }
     }
 
     private DrlxParseResult parsePointFreeExpr(PointFreeExpr pointFreeExpr, Class<?> patternType, String bindingId, boolean isPositional) {

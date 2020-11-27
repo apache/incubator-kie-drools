@@ -24,13 +24,15 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import org.drools.compiler.commons.jci.compilers.AbstractJavaCompiler;
-import org.drools.compiler.commons.jci.compilers.JavaCompilerSettings;
-import org.drools.compiler.commons.jci.readers.ResourceReader;
-import org.drools.compiler.commons.jci.stores.ResourceStore;
 import org.drools.core.factmodel.ClassBuilderFactory;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.IoUtils;
+import org.kie.memorycompiler.AbstractJavaCompiler;
+import org.kie.memorycompiler.CompilationProblem;
+import org.kie.memorycompiler.CompilationResult;
+import org.kie.memorycompiler.JavaCompilerSettings;
+import org.kie.memorycompiler.resources.ResourceReader;
+import org.kie.memorycompiler.resources.ResourceStore;
 import org.eclipse.jdt.core.compiler.IProblem;
 import org.eclipse.jdt.internal.compiler.ClassFile;
 import org.eclipse.jdt.internal.compiler.Compiler;
@@ -45,7 +47,6 @@ import org.eclipse.jdt.internal.compiler.env.INameEnvironment;
 import org.eclipse.jdt.internal.compiler.env.NameEnvironmentAnswer;
 import org.eclipse.jdt.internal.compiler.impl.CompilerOptions;
 import org.eclipse.jdt.internal.compiler.problem.DefaultProblemFactory;
-import org.kie.internal.jci.CompilationProblem;
 
 /**
  * Eclipse compiler implementation
@@ -153,7 +154,7 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
     }
 
 
-    public org.drools.compiler.commons.jci.compilers.CompilationResult compile(
+    public CompilationResult compile(
             final String[] pSourceFiles,
             final ResourceReader pReader,
             final ResourceStore pStore,
@@ -208,10 +209,6 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
                     }
                 };
 
-                if (problemHandler != null) {
-                    problemHandler.handle(problem);
-                }
-
                 problems.add(problem);
             }
         }
@@ -219,7 +216,7 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
         if (problems.size() > 0) {
             final CompilationProblem[] result = new CompilationProblem[problems.size()];
             problems.toArray(result);
-            return new org.drools.compiler.commons.jci.compilers.CompilationResult(result);
+            return new CompilationResult(result);
         }
 
         final IErrorHandlingPolicy policy = DefaultErrorHandlingPolicies.proceedWithAllProblems();
@@ -356,9 +353,6 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
                 final IProblem[] iproblems = pResult.getProblems();
                 for (final IProblem iproblem : iproblems) {
                     final CompilationProblem problem = new EclipseCompilationProblem(iproblem);
-                    if (problemHandler != null) {
-                        problemHandler.handle(problem);
-                    }
                     problems.add(problem);
                 }
             }
@@ -392,7 +386,7 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
 
         final CompilationProblem[] result = new CompilationProblem[problems.size()];
         problems.toArray(result);
-        return new org.drools.compiler.commons.jci.compilers.CompilationResult(result);
+        return new CompilationResult(result);
     }
 
     private void dumpUnits( ICompilationUnit[] compilationUnits, ResourceReader reader ) {

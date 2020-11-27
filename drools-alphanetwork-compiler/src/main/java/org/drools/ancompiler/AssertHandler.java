@@ -22,6 +22,7 @@ import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.WindowNode;
 import org.drools.core.rule.IndexableConstraint;
+import org.drools.core.util.index.AlphaRangeIndex;
 
 public class AssertHandler extends SwitchCompilerHandler {
 
@@ -132,6 +133,32 @@ public class AssertHandler extends SwitchCompilerHandler {
     @Override
     public void endObjectTypeNode(ObjectTypeNode objectTypeNode) {
         // close the assertObject method
+        builder.append("}").append(NEWLINE);
+    }
+
+    @Override
+    public void startRangeIndex(AlphaRangeIndex alphaRangeIndex) {
+        String rangeIndexVariableName = getRangeIndexVariableName(alphaRangeIndex, getMinIdFromRangeIndex(alphaRangeIndex));
+        String matchingResultVariableName = rangeIndexVariableName + "_result";
+        String matchingNodeVariableName = matchingResultVariableName + "_node";
+        builder.append("java.util.Collection<org.drools.core.reteoo.AlphaNode> " + matchingResultVariableName + " = " + rangeIndexVariableName + ".getMatchingAlphaNodes(" + FACT_HANDLE_PARAM_NAME + ".getObject());").append(NEWLINE);
+        builder.append("for (org.drools.core.reteoo.AlphaNode " + matchingNodeVariableName + " : " + matchingResultVariableName + ") {").append(NEWLINE);
+        builder.append("switch (" + matchingNodeVariableName + ".getId()) {").append(NEWLINE);
+    }
+
+    @Override
+    public void startRangeIndexedAlphaNode(AlphaNode alphaNode) {
+        builder.append("case " + alphaNode.getId() + ":").append(NEWLINE);
+    }
+
+    @Override
+    public void endRangeIndexedAlphaNode(AlphaNode alphaNode) {
+        builder.append("break;").append(NEWLINE);
+    }
+
+    @Override
+    public void endRangeIndex(AlphaRangeIndex alphaRangeIndex) {
+        builder.append("}").append(NEWLINE);
         builder.append("}").append(NEWLINE);
     }
 }

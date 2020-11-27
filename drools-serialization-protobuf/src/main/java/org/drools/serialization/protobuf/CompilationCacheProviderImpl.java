@@ -18,7 +18,7 @@ import java.io.ByteArrayInputStream;
 import java.util.Map;
 
 import com.google.protobuf.ExtensionRegistry;
-import org.drools.compiler.commons.jci.stores.ResourceStore;
+import org.kie.memorycompiler.resources.ResourceStore;
 import org.drools.compiler.kie.builder.impl.AbstractKieModule;
 import org.drools.compiler.kie.builder.impl.CompilationCacheProvider;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;

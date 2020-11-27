@@ -25,7 +25,7 @@ import java.util.Set;
 
 import com.google.protobuf.ByteString;
 import org.drools.compiler.builder.InternalKnowledgeBuilder;
-import org.drools.compiler.commons.jci.stores.ResourceStore;
+import org.kie.memorycompiler.resources.ResourceStore;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieMetaInfoBuilder;
