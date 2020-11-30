@@ -160,4 +160,8 @@ public class AlphaRangeIndex implements Externalizable {
     public void clear() {
         rangeIndex = new RangeIndex<>();
     }
+
+    public CompositeObjectSinkAdapter.FieldIndex getFieldIndex() {
+        return fieldIndex;
+    }
 }
