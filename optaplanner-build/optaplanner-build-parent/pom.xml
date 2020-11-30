@@ -75,8 +75,6 @@
     <!-- Latest release to be used by api-compatibility-check to check backwards compatibility of the API. -->
     <revapi.oldKieVersion>7.39.0.Final</revapi.oldKieVersion>
     <revapi.newKieVersion>${project.version}</revapi.newKieVersion>
-    <!-- Runs only in the fullProfile. -->
-    <revapi.skip>true</revapi.skip>
     <!--suppress UnresolvedMavenProperty-->
     <project.root.dir>${maven.multiModuleProjectDirectory}</project.root.dir>
 
@@ -1093,15 +1091,28 @@
     </profile>
 
     <profile>
+      <id>quickProfile</id>
+      <activation>
+        <property>
+          <name>quickly</name>
+        </property>
+      </activation>
+      <properties>
+        <enforcer.skip>true</enforcer.skip>
+        <revapi.skip>true</revapi.skip>
+        <skipTests>true</skipTests>
+        <skipITs>true</skipITs>
+        <formatter.skip>true</formatter.skip>
+      </properties>
+    </profile>
+
+    <profile>
       <id>fullProfile</id>
       <activation>
         <property>
           <name>full</name>
         </property>
       </activation>
-      <properties>
-        <revapi.skip>false</revapi.skip>
-      </properties>
       <build>
         <plugins>
           <plugin> <!-- Make sure the build fails-fast on Javadoc issues. -->
@@ -1135,21 +1146,6 @@
           </plugin>
         </plugins>
       </build>
-    </profile>
-    <profile>
-      <id>quickProfile</id>
-      <activation>
-        <property>
-          <name>quick</name>
-        </property>
-      </activation>
-      <properties>
-        <enforcer.skip>true</enforcer.skip>
-        <revapi.skip>true</revapi.skip>
-        <skipTests>true</skipTests>
-        <skipITs>true</skipITs>
-        <formatter.skip>true</formatter.skip>
-      </properties>
     </profile>
   </profiles>
 
