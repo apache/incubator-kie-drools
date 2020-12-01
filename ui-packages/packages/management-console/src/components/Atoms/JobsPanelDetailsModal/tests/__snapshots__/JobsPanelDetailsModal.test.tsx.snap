@@ -8,6 +8,7 @@ exports[`Job details modal tests Snapshot testing 1`] = `
   job={
     Object {
       "callbackEndpoint": "http://localhost:8080/management/jobs/travels/instances/5c56eeff-4cbf-3313-a325-4c895e0afced/timers/6e74a570-31c8-4020-bd70-19be2cb625f3_0",
+      "executionCounter": 6,
       "expirationTime": "2020-08-27T03:35:50.147Z",
       "id": "6e74a570-31c8-4020-bd70-19be2cb625f3_0",
       "lastUpdate": "2020-08-27T03:35:50.147Z",
@@ -322,6 +323,29 @@ exports[`Job details modal tests Snapshot testing 1`] = `
                               class="pf-l-split__item"
                             >
                               0
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          class=""
+                        >
+                          <div
+                            class="pf-l-split pf-m-gutter"
+                          >
+                            <div
+                              class="pf-l-split__item"
+                            >
+                              <h6
+                                class=""
+                                data-pf-content="true"
+                              >
+                                Execution counter: 
+                              </h6>
+                            </div>
+                            <div
+                              class="pf-l-split__item"
+                            >
+                              6
                             </div>
                           </div>
                         </div>
@@ -692,6 +716,29 @@ exports[`Job details modal tests Snapshot testing 1`] = `
                               class="pf-l-split__item"
                             >
                               0
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          class=""
+                        >
+                          <div
+                            class="pf-l-split pf-m-gutter"
+                          >
+                            <div
+                              class="pf-l-split__item"
+                            >
+                              <h6
+                                class=""
+                                data-pf-content="true"
+                              >
+                                Execution counter: 
+                              </h6>
+                            </div>
+                            <div
+                              class="pf-l-split__item"
+                            >
+                              6
                             </div>
                           </div>
                         </div>
@@ -1256,6 +1303,43 @@ exports[`Job details modal tests Snapshot testing 1`] = `
                                               className="pf-l-split__item"
                                             >
                                               0
+                                            </div>
+                                          </SplitItem>
+                                        </div>
+                                      </Split>
+                                    </div>
+                                  </FlexItem>
+                                  <FlexItem>
+                                    <div
+                                      className=""
+                                    >
+                                      <Split
+                                        hasGutter={true}
+                                      >
+                                        <div
+                                          className="pf-l-split pf-m-gutter"
+                                        >
+                                          <SplitItem>
+                                            <div
+                                              className="pf-l-split__item"
+                                            >
+                                              <Text
+                                                component="h6"
+                                              >
+                                                <h6
+                                                  className=""
+                                                  data-pf-content={true}
+                                                >
+                                                  Execution counter: 
+                                                </h6>
+                                              </Text>
+                                            </div>
+                                          </SplitItem>
+                                          <SplitItem>
+                                            <div
+                                              className="pf-l-split__item"
+                                            >
+                                              6
                                             </div>
                                           </SplitItem>
                                         </div>

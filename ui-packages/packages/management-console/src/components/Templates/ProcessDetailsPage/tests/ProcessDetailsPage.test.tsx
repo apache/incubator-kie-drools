@@ -209,7 +209,8 @@ const mocks1 = [
             lastUpdate: '2020-08-27T03:35:50.147Z',
             expirationTime: null,
             endpoint: 'http://localhost:4000',
-            nodeInstanceId: '69e0a0f5-2360-4174-a8f8-a892a31fc2f9'
+            nodeInstanceId: '69e0a0f5-2360-4174-a8f8-a892a31fc2f9',
+            executionCounter: 3
           },
           {
             id: '6e74a570-31c8-4020-bd70-19be2cb625f3_0',
@@ -227,7 +228,8 @@ const mocks1 = [
             lastUpdate: '2020-08-27T03:35:50.147Z',
             expirationTime: null,
             endpoint: 'http://localhost:4000',
-            nodeInstanceId: '2f588da5-a323-4111-9017-3093ef9319d1'
+            nodeInstanceId: '2f588da5-a323-4111-9017-3093ef9319d1',
+            executionCounter: 4
           }
         ]
       }
@@ -334,7 +336,8 @@ const mocks2 = [
             lastUpdate: '2020-08-27T03:35:50.147Z',
             expirationTime: null,
             endpoint: 'http://localhost:4000',
-            nodeInstanceId: '69e0a0f5-2360-4174-a8f8-a892a31fc2f9'
+            nodeInstanceId: '69e0a0f5-2360-4174-a8f8-a892a31fc2f9',
+            executionCounter: 6
           },
           {
             id: '6e74a570-31c8-4020-bd70-19be2cb625f3_0',
@@ -352,7 +355,8 @@ const mocks2 = [
             lastUpdate: '2020-08-27T03:35:50.147Z',
             expirationTime: null,
             endpoint: 'http://localhost:4000',
-            nodeInstanceId: '2f588da5-a323-4111-9017-3093ef9319d1'
+            nodeInstanceId: '2f588da5-a323-4111-9017-3093ef9319d1',
+            executionCounter: 1
           }
         ]
       }
@@ -459,7 +463,8 @@ const mocks3 = [
             lastUpdate: '2020-08-27T03:35:50.147Z',
             expirationTime: null,
             endpoint: 'http://localhost:4000',
-            nodeInstanceId: '69e0a0f5-2360-4174-a8f8-a892a31fc2f9'
+            nodeInstanceId: '69e0a0f5-2360-4174-a8f8-a892a31fc2f9',
+            executionCounter: 4
           },
           {
             id: '6e74a570-31c8-4020-bd70-19be2cb625f3_0',
@@ -477,7 +482,8 @@ const mocks3 = [
             lastUpdate: '2020-08-27T03:35:50.147Z',
             expirationTime: null,
             endpoint: 'http://localhost:4000',
-            nodeInstanceId: '2f588da5-a323-4111-9017-3093ef9319d1'
+            nodeInstanceId: '2f588da5-a323-4111-9017-3093ef9319d1',
+            executionCounter: 7
           }
         ]
       }

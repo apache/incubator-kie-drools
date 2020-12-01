@@ -110,6 +110,14 @@ const JobsPanelDetailsModal: React.FC<IOwnProps & OUIAProps> = ({
             <FlexItem>
               <Split hasGutter>
                 <SplitItem>
+                  <Text component={TextVariants.h6}>Execution counter: </Text>
+                </SplitItem>
+                <SplitItem>{job.executionCounter}</SplitItem>
+              </Split>
+            </FlexItem>
+            <FlexItem>
+              <Split hasGutter>
+                <SplitItem>
                   <Text component={TextVariants.h6}>Last Updated: </Text>
                 </SplitItem>
                 <SplitItem>

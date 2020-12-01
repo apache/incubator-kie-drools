@@ -3143,12 +3143,12 @@ JobsData:[
     repeatInterval: null,
     repeatLimit: null,
     scheduledId: "0",
-    retries: 0,
+    retries: 1,
     lastUpdate: "2020-08-27T03:35:50.147Z",
     expirationTime: null,
     endpoint: 'http://localhost:4000/jobs',
-    nodeInstanceId: 'fd2e12d5-6a4b-4c75-9f31-028d3f032a95'
-    
+    nodeInstanceId: 'fd2e12d5-6a4b-4c75-9f31-028d3f032a95',
+    executionCounter: 2
   },
   {
     id: "dad3aa88-5c1e-4858-a919-6123c675a0fa_0",
@@ -3161,11 +3161,12 @@ JobsData:[
     repeatInterval: null,
     repeatLimit: null,
     scheduledId: null,
-    retries: 0,
+    retries: 3,
     lastUpdate: "2020-08-27T03:35:54.635Z",
     expirationTime: "2020-08-27T04:35:54.631Z",
     endpoint: 'http://localhost:4000/jobs',
-    nodeInstanceId: '843bd287-fb6e-4ee7-a304-ba9b430e52d8'
+    nodeInstanceId: '843bd287-fb6e-4ee7-a304-ba9b430e52d8',
+    executionCounter: 6
   },
   {
     id: "2234dde-npce1-2908-b3131-6123c675a0fa_0",
@@ -3178,11 +3179,12 @@ JobsData:[
     repeatInterval: null,
     repeatLimit: null,
     scheduledId: null,
-    retries: 0,
+    retries: 2,
     lastUpdate: "2020-08-27T03:35:54.635Z",
     expirationTime: "2020-08-27T04:35:54.631Z",
     endpoint: 'http://localhost:4000/jobs',
-    nodeInstanceId: '7f7d74c1-78f7-49be-b5ad-8d132f46a49c'
+    nodeInstanceId: '7f7d74c1-78f7-49be-b5ad-8d132f46a49c',
+    executionCounter: 0
   },
   {
     id: "T3113e-vbg43-2234-lo89-cpmw3214ra0fa_0",
@@ -3195,11 +3197,12 @@ JobsData:[
     repeatInterval: 30300,
     repeatLimit: 3,
     scheduledId: null,
-    retries: 0,
+    retries: 7,
     lastUpdate: "2020-08-27T03:35:54.635Z",
     expirationTime: "2020-08-27T04:35:54.631Z",
     endpoint: 'http://localhost:4000/jobs',
-    nodeInstanceId: 'af0d984c-4abd-4f5c-83a8-426e6b3d102a'
+    nodeInstanceId: 'af0d984c-4abd-4f5c-83a8-426e6b3d102a',
+    executionCounter: 3
   },
   {
     id: "bff4ee-11qw23-6675-po987-qwedfrt45a0fa_0",
@@ -3212,11 +3215,12 @@ JobsData:[
     repeatInterval: null,
     repeatLimit: null,
     scheduledId: null,
-    retries: 0,
+    retries: 15,
     lastUpdate: "2020-08-27T03:35:54.635Z",
     expirationTime: "2020-08-27T04:35:54.631Z",
     endpoint: 'http://localhost:4000/jobs',
-    nodeInstanceId: 'b2761011-3043-4f48-82bd-1395bf651a91'
+    nodeInstanceId: 'b2761011-3043-4f48-82bd-1395bf651a91',
+    executionCounter: 2
   },
   {
     id: "eff4ee-11qw23-6675-pokau97-qwedjut45a0fa_0",
@@ -3229,11 +3233,12 @@ JobsData:[
     repeatInterval: null,
     repeatLimit: null,
     scheduledId: null,
-    retries: 0,
+    retries: 2,
     lastUpdate: "2020-08-29T03:35:54.635Z",
     expirationTime: "2020-08-29T04:35:54.631Z",
     endpoint: 'http://localhost:4000/jobs',
-    nodeInstanceId: null
+    nodeInstanceId: null,
+    executionCounter: 0
   },
   {
     id: "dad3aa88-5c1e-4858-a919-uey23c675a0fa_0",
@@ -3246,11 +3251,12 @@ JobsData:[
     repeatInterval: null,
     repeatLimit: null,
     scheduledId: null,
-    retries: 0,
+    retries: 5,
     lastUpdate: "2020-08-27T03:35:54.635Z",
     expirationTime: "2020-08-27T04:35:54.631Z",
     endpoint: 'http://localhost:4000/jobs',
-    nodeInstanceId: '08c153e8-2766-4675-81f7-29943efdf411'
+    nodeInstanceId: '08c153e8-2766-4675-81f7-29943efdf411',
+    executionCounter: 1
   }
 ]
 }

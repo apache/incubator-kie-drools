@@ -3,7 +3,9 @@ import React from 'react';
 const MockedProcessDetailsProcessVariables = ({
   setDisplayLabel
 }): React.ReactElement => {
-  setDisplayLabel(true);
+  React.useEffect(() => {
+    setDisplayLabel(true);
+  }, []);
   return <></>;
 };
 

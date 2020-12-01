@@ -339,6 +339,7 @@ const GET_JOBS_BY_PROC_INST_ID = gql`
       lastUpdate
       endpoint
       nodeInstanceId
+      executionCounter
     }
   }
 `;
@@ -360,6 +361,7 @@ const GET_ALL_JOBS = gql`
       retries
       lastUpdate
       endpoint
+      executionCounter
     }
   }
 `;

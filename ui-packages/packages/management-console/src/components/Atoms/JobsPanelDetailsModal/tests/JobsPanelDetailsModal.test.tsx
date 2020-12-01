@@ -21,7 +21,8 @@ const props = {
     scheduledId: '0',
     retries: 0,
     lastUpdate: '2020-08-27T03:35:50.147Z',
-    expirationTime: '2020-08-27T03:35:50.147Z'
+    expirationTime: '2020-08-27T03:35:50.147Z',
+    executionCounter: 6
   },
   modalTitle: (
     <>

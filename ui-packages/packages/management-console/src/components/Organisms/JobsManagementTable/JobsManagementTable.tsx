@@ -45,10 +45,20 @@ const JobsManagementTable: React.FC<IOwnProps & OUIAProps> = ({
   ouiaSafe
 }) => {
   const [rows, setRows] = useState<IRow[]>([]);
+  const columns = [
+    { title: 'Id' },
+    { title: 'Status' },
+    { title: 'Expiration time' },
+    { title: 'Retries' },
+    { title: 'Execution counter' },
+    { title: 'Last update' }
+  ];
   const editableJobStatus: string[] = ['SCHEDULED', 'ERROR'];
-  const columns: string[] = ['Id', 'Status', 'Expiration time', 'Last update'];
   const jobRow: IRow[] = [];
-
+  columns.map(column => {
+    column['props'] = { className: 'pf-u-text-align-center' };
+    return column;
+  });
   const handleJobDetails = (id): void => {
     const job = data.Jobs.find(job => job.id === id);
     setSelectedJob(job);
@@ -108,7 +118,7 @@ const JobsManagementTable: React.FC<IOwnProps & OUIAProps> = ({
         const ele = {
           title: (
             <Tooltip content={job.id}>
-              <span>{job.id}</span>
+              <span>{job.id.substring(0, 7)}</span>
             </Tooltip>
           )
         };
@@ -152,6 +162,11 @@ const JobsManagementTable: React.FC<IOwnProps & OUIAProps> = ({
           )
         };
         tempRows.push(ele);
+      } else {
+        const ele = {
+          title: <span>{job[item]}</span>
+        };
+        tempRows.push(ele);
       }
     }
     return { tempRows, jobType };
@@ -159,7 +174,16 @@ const JobsManagementTable: React.FC<IOwnProps & OUIAProps> = ({
 
   const tableContent = (): void => {
     data.Jobs.map(job => {
-      const retrievedValue = getValues(job);
+      const retrievedValue = getValues(
+        _.pick(job, [
+          'id',
+          'status',
+          'expirationTime',
+          'retries',
+          'executionCounter',
+          'lastUpdate'
+        ])
+      );
       jobRow.push({
         cells: retrievedValue.tempRows,
         type: retrievedValue.jobType,

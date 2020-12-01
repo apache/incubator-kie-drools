@@ -49,7 +49,8 @@ describe('Jobs management table component tests', () => {
           retries: 0,
           rootProcessId: null,
           scheduledId: '0',
-          status: GraphQL.JobStatus.Executed
+          status: GraphQL.JobStatus.Executed,
+          executionCounter: 1
         },
         {
           callbackEndpoint:
@@ -66,7 +67,8 @@ describe('Jobs management table component tests', () => {
           retries: 0,
           rootProcessId: '',
           scheduledId: null,
-          status: GraphQL.JobStatus.Scheduled
+          status: GraphQL.JobStatus.Scheduled,
+          executionCounter: 2
         },
         {
           callbackEndpoint:
@@ -83,7 +85,8 @@ describe('Jobs management table component tests', () => {
           retries: 0,
           rootProcessId: '',
           scheduledId: null,
-          status: GraphQL.JobStatus.Canceled
+          status: GraphQL.JobStatus.Canceled,
+          executionCounter: 4
         }
       ]
     },

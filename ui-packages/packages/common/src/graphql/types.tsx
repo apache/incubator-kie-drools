@@ -1119,6 +1119,7 @@ export namespace GraphQL {
             | 'lastUpdate'
             | 'endpoint'
             | 'nodeInstanceId'
+            | 'executionCounter'
           >
         >
       >
@@ -1149,6 +1150,7 @@ export namespace GraphQL {
             | 'retries'
             | 'lastUpdate'
             | 'endpoint'
+            | 'executionCounter'
           >
         >
       >
@@ -2026,6 +2028,7 @@ export namespace GraphQL {
         lastUpdate
         endpoint
         nodeInstanceId
+        executionCounter
       }
     }
   `;
@@ -2095,6 +2098,7 @@ export namespace GraphQL {
         retries
         lastUpdate
         endpoint
+        executionCounter
       }
     }
   `;
