@@ -27,6 +27,7 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.conflict.PhreakConflictResolver;
 import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.event.RuleEventListenerSupport;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
@@ -112,9 +113,10 @@ public class RuleExecutor {
 
             RuleTerminalNode rtn = (RuleTerminalNode) pmem.getPathEndNode();
             RuleImpl rule = rtn.getRule();
+            boolean ruleIsAllMatches = rule.isAllMatches();
             Tuple tuple = getNextTuple();
             
-            if (rule.isAllMatches()) {
+            if (ruleIsAllMatches) {
                 fireConsequenceEvent(wm, agenda, (AgendaItem) tuple, DefaultAgenda.ON_BEFORE_ALL_FIRES_CONSEQUENCE_NAME);
             }
 
@@ -149,7 +151,7 @@ public class RuleExecutor {
                     ruleAgendaItem.getAgendaGroup().add( ruleAgendaItem );
                 }
 
-                if (!rule.isAllMatches()) { // if firing rule is @All don't give way to other rules
+                if (!ruleIsAllMatches) { // if firing rule is @All don't give way to other rules
                     if ( haltRuleFiring( fireCount, fireLimit, localFireCount, agenda ) ) {
                         break; // another rule has high priority and is on the agenda, so evaluate it first
                     }
@@ -159,7 +161,7 @@ public class RuleExecutor {
                 }
             }
 
-            if (rule.isAllMatches()) {
+            if (ruleIsAllMatches) {
                 fireConsequenceEvent(wm, agenda, (AgendaItem) lastTuple, DefaultAgenda.ON_AFTER_ALL_FIRES_CONSEQUENCE_NAME);
             }
         }
@@ -228,7 +230,7 @@ public class RuleExecutor {
             return true;
         }
 
-        if (rule.getCalendars() != null) {
+        if (rule.hasCalendars()) {
             long timestamp = wm.getSessionClock().getCurrentTime();
             for (String cal : rule.getCalendars()) {
                 if (!wm.getCalendars().get(cal).isTimeIncluded(timestamp)) {
@@ -427,9 +429,10 @@ public class RuleExecutor {
                 log.trace( "Fire event {} for rule \"{}\" \n{}", consequence.getName(), activation.getRule().getName(), activation.getTuple() );
             }
 
-            wm.getRuleEventSupport().onBeforeMatchFire( activation );
+            RuleEventListenerSupport ruleEventSupport = wm.getRuleEventSupport();
+            ruleEventSupport.onBeforeMatchFire( activation );
             consequence.evaluate(knowledgeHelper, wm);
-            wm.getRuleEventSupport().onAfterMatchFire( activation );
+            ruleEventSupport.onAfterMatchFire( activation );
 
             activation.setActive(false);
             knowledgeHelper.cancelRemainingPreviousLogicalDependencies();

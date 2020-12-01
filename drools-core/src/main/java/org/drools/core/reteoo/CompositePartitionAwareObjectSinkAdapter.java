@@ -52,10 +52,10 @@ public class CompositePartitionAwareObjectSinkAdapter implements ObjectSinkPropa
     }
 
     @Override
-    public ObjectSinkPropagator addObjectSink( ObjectSink sink, int alphaNodeHashingThreshold ) {
+    public ObjectSinkPropagator addObjectSink( ObjectSink sink, int alphaNodeHashingThreshold, int alphaNodeRangeIndexThreshold ) {
         hashed &= hashSink( sink );
         int partition = sink.getPartitionId().getParallelEvaluationSlot();
-        partitionedPropagators[partition] = partitionedPropagators[partition].addObjectSink( sink, alphaNodeHashingThreshold );
+        partitionedPropagators[partition] = partitionedPropagators[partition].addObjectSink( sink, alphaNodeHashingThreshold, alphaNodeRangeIndexThreshold );
         return this;
     }
 
@@ -98,11 +98,11 @@ public class CompositePartitionAwareObjectSinkAdapter implements ObjectSinkPropa
     }
 
     @Override
-    public void changeSinkPartition( ObjectSink sink, RuleBasePartitionId oldPartition, RuleBasePartitionId newPartition, int alphaNodeHashingThreshold ) {
+    public void changeSinkPartition( ObjectSink sink, RuleBasePartitionId oldPartition, RuleBasePartitionId newPartition, int alphaNodeHashingThreshold, int alphaNodeRangeIndexThreshold ) {
         int oldP = oldPartition.getParallelEvaluationSlot();
         partitionedPropagators[oldP] = partitionedPropagators[oldP].removeObjectSink( sink );
         int newP = newPartition.getParallelEvaluationSlot();
-        partitionedPropagators[newP] = partitionedPropagators[newP].addObjectSink( sink, alphaNodeHashingThreshold );
+        partitionedPropagators[newP] = partitionedPropagators[newP].addObjectSink( sink, alphaNodeHashingThreshold, alphaNodeRangeIndexThreshold );
     }
 
     @Override
@@ -247,11 +247,11 @@ public class CompositePartitionAwareObjectSinkAdapter implements ObjectSinkPropa
         }
     }
 
-    public ObjectSinkPropagator asNonPartitionedSinkPropagator(int alphaNodeHashingThreshold) {
+    public ObjectSinkPropagator asNonPartitionedSinkPropagator(int alphaNodeHashingThreshold, int alphaNodeRangeIndexThreshold) {
         ObjectSinkPropagator sinkPropagator = new EmptyObjectSinkAdapter();
         for ( int i = 0; i < partitionedPropagators.length; i++ ) {
             for (ObjectSink sink : partitionedPropagators[i].getSinks()) {
-                sinkPropagator = sinkPropagator.addObjectSink( sink, alphaNodeHashingThreshold );
+                sinkPropagator = sinkPropagator.addObjectSink( sink, alphaNodeHashingThreshold, alphaNodeRangeIndexThreshold );
             }
         }
         return sinkPropagator;

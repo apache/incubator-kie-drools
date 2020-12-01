@@ -27,8 +27,9 @@ import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.scorecard.Scorecard;
 import org.kie.memorycompiler.KieMemoryCompiler;
-import org.kie.pmml.commons.exceptions.KiePMMLException;
-import org.kie.pmml.commons.exceptions.KiePMMLInternalException;
+import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.api.exceptions.KiePMMLInternalException;
+import org.kie.pmml.compiler.commons.utils.ModelUtils;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsAST;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsType;
 import org.kie.pmml.models.drools.scorecard.model.KiePMMLScorecardModel;
@@ -42,6 +43,7 @@ import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageNa
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
 import static org.kie.pmml.compiler.commons.utils.KiePMMLModelFactoryUtils.addTransformationsInClassOrInterfaceDeclaration;
 import static org.kie.pmml.compiler.commons.utils.KiePMMLModelFactoryUtils.setConstructorSuperNameInvocation;
+import static org.kie.pmml.compiler.commons.utils.KiePMMLModelFactoryUtils.setKiePMMLModelConstructor;
 import static org.kie.pmml.models.drools.utils.KiePMMLDroolsModelFactoryUtils.getKiePMMLModelCompilationUnit;
 
 /**
@@ -102,6 +104,8 @@ public class KiePMMLScorecardModelFactory {
     }
 
     static void setConstructor(final Scorecard scorecard, final ConstructorDeclaration constructorDeclaration, final SimpleName modelName) {
-        setConstructorSuperNameInvocation(modelName.asString(), constructorDeclaration, scorecard.getModelName());
+        final List<org.kie.pmml.api.models.MiningField> miningFields = ModelUtils.convertToKieMiningFieldList(scorecard.getMiningSchema());
+        final List<org.kie.pmml.api.models.OutputField> outputFields = ModelUtils.convertToKieOutputFieldList(scorecard.getOutput());
+        setKiePMMLModelConstructor(modelName.asString(), constructorDeclaration, scorecard.getModelName(), miningFields, outputFields);
     }
 }

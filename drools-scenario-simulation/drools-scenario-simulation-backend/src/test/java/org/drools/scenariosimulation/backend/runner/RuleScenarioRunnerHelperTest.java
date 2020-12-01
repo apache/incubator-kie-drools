@@ -220,7 +220,7 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
                 .map(elem -> (Dispute) elem.getValue())
                 .findFirst();
         assertTrue(disputeGivenOptional.isPresent());
-        assertEquals(disputeGivenOptional.get().getDescription(), "dispute description");
+        assertEquals("dispute description", disputeGivenOptional.get().getDescription());
 
         scenario2.addOrUpdateMappingValue(disputeFactIdentifier, amountGivenExpressionIdentifier, "WrongValue");
         assertThatThrownBy(() -> runnerHelper.extractGivenValues(simulation.getScesimModelDescriptor(),

@@ -36,7 +36,7 @@ public class SingleConstraint7<A, B, C, D, E, F, G> extends AbstractSingleConstr
     private final Predicate7<A, B, C, D, E, F, G> predicate;
 
     public SingleConstraint7( Variable<A> var1, Variable<B> var2, Variable<C> var3, Variable<D> var4, Variable<E> var5, Variable<F> var6, Variable<G> var7, Predicate7<A, B, C, D, E, F, G> predicate) {
-        super( LambdaPrinter.print(predicate) );
+        super( LambdaPrinter.print(predicate), predicate.predicateInformation() );
         this.var1 = var1;
         this.var2 = var2;
         this.var3 = var3;
@@ -48,7 +48,7 @@ public class SingleConstraint7<A, B, C, D, E, F, G> extends AbstractSingleConstr
     }
 
     public SingleConstraint7( String exprId, Variable<A> var1, Variable<B> var2, Variable<C> var3, Variable<D> var4, Variable<E> var5, Variable<F> var6, Variable<G> var7, Predicate7<A, B, C, D, E, F, G> predicate) {
-        super(exprId);
+        super(exprId, predicate.predicateInformation());
         this.var1 = var1;
         this.var2 = var2;
         this.var3 = var3;

@@ -401,6 +401,29 @@ public class RuleAttributesTest extends BaseModelTest {
     }
 
     @Test
+    public void testMetadataValue() {
+        final String rule = " package org.test;\n" +
+                            " rule R1\n" +
+                            " @metaValueString(\"asd\")\n" +
+                            " @metaValueCheck1(java.math.BigDecimal.ONE)\n" +
+                            " @metaValueCheck2(Boolean.TRUE)\n" +
+                            " @metaValueCheck3(System.out)\n" +
+                            " when\n" +
+                            " then\n" +
+                            "     System.out.println(\"Hello world!\");\n" +
+                            " end";
+
+        KieSession ksession = getKieSession(rule);
+
+        final Map<String, Object> metadata = ksession.getKieBase().getRule("org.test", "R1").getMetaData();
+
+        Assertions.assertThat(metadata.get("metaValueString")).isEqualTo("asd");
+        Assertions.assertThat(metadata.get("metaValueCheck1")).isSameAs(java.math.BigDecimal.ONE);
+        Assertions.assertThat(metadata.get("metaValueCheck2")).isSameAs(Boolean.TRUE);
+        Assertions.assertThat(metadata.get("metaValueCheck3")).isSameAs(System.out);
+    }
+
+    @Test
     public void testDynamicSalience() {
         String str =
                 "global java.util.List list;\n" +

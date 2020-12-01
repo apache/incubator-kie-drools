@@ -63,6 +63,7 @@ public abstract class ObjectSource extends BaseNode
     protected ObjectSource         source;
 
     protected int                  alphaNodeHashingThreshold;
+    protected int                  alphaNodeRangeIndexThreshold;
 
 
     protected BitMask declaredMask = EmptyBitMask.get();
@@ -78,14 +79,15 @@ public abstract class ObjectSource extends BaseNode
     /**
      * Single parameter constructor that specifies the unique id of the node.
      */
-    ObjectSource(final int id,
+    protected ObjectSource(final int id,
                  final RuleBasePartitionId partitionId,
                  final boolean partitionsEnabled) {
         this( id,
               partitionId,
               partitionsEnabled,
               null,
-              3 );
+              3,
+              3);
     }
 
     /**
@@ -95,10 +97,12 @@ public abstract class ObjectSource extends BaseNode
                  final RuleBasePartitionId partitionId,
                  final boolean partitionsEnabled,
                  final ObjectSource objectSource,
-                 final int alphaNodeHashingThreshold) {
+                 final int alphaNodeHashingThreshold,
+                 final int alphaNodeRangeIndexThreshold) {
         super(id, partitionId, partitionsEnabled);
         this.source = objectSource;
         this.alphaNodeHashingThreshold = alphaNodeHashingThreshold;
+        this.alphaNodeRangeIndexThreshold = alphaNodeRangeIndexThreshold;
         this.sink = EmptyObjectSinkAdapter.getInstance();
     }
 
@@ -110,6 +114,7 @@ public abstract class ObjectSource extends BaseNode
         super.readExternal( in );
         sink = (ObjectSinkPropagator) in.readObject();
         alphaNodeHashingThreshold = in.readInt();
+        alphaNodeRangeIndexThreshold = in.readInt();
         source = ( ObjectSource ) in.readObject();
     }
 
@@ -117,6 +122,7 @@ public abstract class ObjectSource extends BaseNode
         super.writeExternal( out );
         out.writeObject( sink );
         out.writeInt( alphaNodeHashingThreshold );
+        out.writeInt( alphaNodeRangeIndexThreshold );
         out.writeObject( source );
     }
     
@@ -179,7 +185,7 @@ public abstract class ObjectSource extends BaseNode
     @Override
     public void setPartitionId(BuildContext context, RuleBasePartitionId partitionId) {
         if (this.partitionId != null && this.partitionId != partitionId) {
-            source.sink.changeSinkPartition( (ObjectSink)this, this.partitionId, partitionId, source.alphaNodeHashingThreshold );
+            source.sink.changeSinkPartition( (ObjectSink)this, this.partitionId, partitionId, source.alphaNodeHashingThreshold, source.alphaNodeRangeIndexThreshold );
         }
         this.partitionId = partitionId;
     }
@@ -215,7 +221,7 @@ public abstract class ObjectSource extends BaseNode
      *            <code>FactHandleImpl</code>.
      */
     public void addObjectSink(final ObjectSink objectSink) {
-        this.sink = this.sink.addObjectSink( objectSink, this.alphaNodeHashingThreshold );
+        this.sink = this.sink.addObjectSink( objectSink, this.alphaNodeHashingThreshold, this.alphaNodeRangeIndexThreshold );
     }
 
     /**

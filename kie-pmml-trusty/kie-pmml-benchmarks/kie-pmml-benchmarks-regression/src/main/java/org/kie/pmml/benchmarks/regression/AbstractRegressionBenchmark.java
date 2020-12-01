@@ -26,10 +26,10 @@ import org.kie.api.builder.Results;
 import org.kie.api.io.ResourceType;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.runtime.KieSession;
-import org.kie.pmml.commons.exceptions.KiePMMLException;
+import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.KiePMMLModel;
-import org.kie.pmml.evaluator.api.executor.PMMLContext;
-import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
+import org.kie.pmml.api.runtime.PMMLContext;
+import org.kie.pmml.evaluator.api.executor.PMMLRuntimeInternal;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Measurement;
 import org.openjdk.jmh.annotations.Mode;
@@ -48,7 +48,7 @@ public abstract class AbstractRegressionBenchmark {
     protected String modelName;
     protected String fileName;
     protected PMMLContext pmmlContext;
-    private PMMLRuntime pmmlRuntime;
+    private PMMLRuntimeInternal pmmlRuntime;
     private KiePMMLModel model;
 
     protected void setupModel() throws Exception {
@@ -60,8 +60,8 @@ public abstract class AbstractRegressionBenchmark {
         Results res = kieBuilder.getResults();
         KieBase kbase = ks.newKieContainer(relId).getKieBase();
         KieSession session = kbase.newKieSession();
-        pmmlRuntime = session.getKieRuntime(PMMLRuntime.class);
-        model = pmmlRuntime.getModel(modelName).orElseThrow(() -> new KiePMMLException("Failed to retrieve the model"));
+        pmmlRuntime = session.getKieRuntime(PMMLRuntimeInternal.class);
+        model = pmmlRuntime.getKiePMMLModel(modelName).orElseThrow(() -> new KiePMMLException("Failed to retrieve the model"));
     }
 
     protected PMML4Result evaluate() {

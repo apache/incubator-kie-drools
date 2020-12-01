@@ -40,7 +40,7 @@ public class SingleConstraint9<A, B, C, D, E, F, G, H, I> extends AbstractSingle
     public SingleConstraint9( Variable<A> var1, Variable<B> var2, Variable<C> var3, Variable<D> var4, Variable<E> var5, Variable<F> var6, Variable<G> var7,
                               Variable<H> var8, Variable<I> var9,
                               Predicate9<A, B, C, D, E, F, G, H, I> predicate) {
-        super( LambdaPrinter.print(predicate) );
+        super( LambdaPrinter.print(predicate), predicate.predicateInformation() );
         this.var1 = var1;
         this.var2 = var2;
         this.var3 = var3;
@@ -56,7 +56,7 @@ public class SingleConstraint9<A, B, C, D, E, F, G, H, I> extends AbstractSingle
     public SingleConstraint9( String exprId, Variable<A> var1, Variable<B> var2, Variable<C> var3, Variable<D> var4, Variable<E> var5, Variable<F> var6, Variable<G> var7,
                               Variable<H> var8, Variable<I> var9,
                               Predicate9<A, B, C, D, E, F, G, H, I> predicate) {
-        super(exprId);
+        super(exprId, predicate.predicateInformation());
         this.var1 = var1;
         this.var2 = var2;
         this.var3 = var3;

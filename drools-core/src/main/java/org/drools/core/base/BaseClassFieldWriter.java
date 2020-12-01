@@ -16,14 +16,13 @@
 
 package org.drools.core.base;
 
-import org.drools.core.spi.WriteAccessor;
-import org.drools.core.util.asm.ClassFieldInspector;
-
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+
+import org.drools.core.spi.WriteAccessor;
 
 /**
  * This is the supertype for the ASM generated classes for writing values into fields.
@@ -57,7 +56,7 @@ abstract public class BaseClassFieldWriter
     public BaseClassFieldWriter(final Class< ? > clazz,
                                 final String fieldName) {
         try {
-            final ClassFieldInspector inspector = new ClassFieldInspector( clazz );
+            final ClassFieldInspector inspector = CoreComponentsBuilder.get().createClassFieldInspector( clazz );
             this.index = inspector.getFieldNames().get( fieldName );
             this.fieldType = inspector.getFieldType( fieldName );
             this.valueType = ValueType.determineValueType( this.fieldType );

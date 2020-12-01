@@ -21,8 +21,6 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.BetaConstraints;
@@ -32,9 +30,6 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.UpdateContext;
-import org.drools.core.marshalling.impl.PersisterHelper;
-import org.drools.core.marshalling.impl.ProtobufInputMarshaller.TupleKey;
-import org.drools.core.marshalling.impl.ProtobufMessages.FactHandle;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.AsyncSend;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
@@ -173,32 +168,12 @@ public class AsyncSendNode<T extends AsyncSendNode.AsyncSendMemory> extends Left
     }
 
     public InternalFactHandle createFactHandle( Tuple leftTuple, PropagationContext context, InternalWorkingMemory workingMemory, Object object ) {
-        FactHandle _handle = null;
-        if( context.getReaderContext() != null ) {
-            Map<TupleKey, List<FactHandle>> map = (Map<TupleKey, List<FactHandle>>) context.getReaderContext().getNodeMemories().get( getId() );
-            if( map != null ) {
-                TupleKey key = PersisterHelper.createTupleKey( leftTuple );
-                List<FactHandle> list = map.get( key );
-                if( list != null && ! list.isEmpty() ) {
-                    // it is a linked list, so the operation is fairly efficient
-                    _handle = ((java.util.LinkedList<FactHandle>)list).removeFirst();
-                    if( list.isEmpty() ) {
-                        map.remove(key);
-                    }
-                }
-            }
+        InternalFactHandle handle = null;
+        if ( context.getReaderContext() != null ) {
+            handle = context.getReaderContext().createAsyncNodeHandle( leftTuple, workingMemory, object, getId(), getObjectTypeConf( workingMemory ) );
         }
 
-        InternalFactHandle handle;
-        if( _handle != null ) {
-            // create a handle with the given id
-            handle = workingMemory.getFactHandleFactory().newFactHandle( _handle.getId(),
-                                                                         object,
-                                                                         _handle.getRecency(),
-                                                                         getObjectTypeConf( workingMemory ),
-                                                                         workingMemory,
-                                                                         null );
-        } else {
+        if (handle == null) {
             handle = workingMemory.getFactHandleFactory().newFactHandle( object,
                                                                          getObjectTypeConf( workingMemory ),
                                                                          workingMemory,
@@ -207,7 +182,7 @@ public class AsyncSendNode<T extends AsyncSendNode.AsyncSendMemory> extends Left
         return handle;
     }
 
-    private ObjectTypeConf getObjectTypeConf( InternalWorkingMemory workingMemory ) {
+    public ObjectTypeConf getObjectTypeConf( InternalWorkingMemory workingMemory ) {
         if ( objectTypeConf == null ) {
             // use default entry point and object class. Notice that at this point object is assignable to resultClass
             objectTypeConf = new ClassObjectTypeConf( workingMemory.getEntryPoint(), getResultClass(), workingMemory.getKnowledgeBase() );

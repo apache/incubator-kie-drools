@@ -33,8 +33,8 @@ import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.mining.Segment;
 import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.pmml.commons.exceptions.KiePMMLException;
-import org.kie.pmml.commons.exceptions.KiePMMLInternalException;
+import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.model.HasSourcesMap;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.predicates.KiePMMLPredicate;
@@ -53,7 +53,7 @@ import static org.kie.pmml.compiler.commons.factories.KiePMMLExtensionFactory.ge
 import static org.kie.pmml.compiler.commons.factories.KiePMMLPredicateFactory.getPredicate;
 import static org.kie.pmml.compiler.commons.factories.KiePMMLPredicateFactory.getPredicateSourcesMap;
 import static org.kie.pmml.compiler.commons.implementations.KiePMMLModelRetriever.getFromCommonDataAndTransformationDictionaryAndModel;
-import static org.kie.pmml.compiler.commons.implementations.KiePMMLModelRetriever.getFromCommonDataAndTransformationDictionaryAndModelFromPlugin;
+import static org.kie.pmml.compiler.commons.implementations.KiePMMLModelRetriever.getFromCommonDataAndTransformationDictionaryAndModelWithSources;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFullClassName;
 import static org.kie.pmml.compiler.commons.utils.KiePMMLModelFactoryUtils.setConstructorSuperNameInvocation;
@@ -120,7 +120,7 @@ public class KiePMMLSegmentFactory {
             final List<KiePMMLModel> nestedModels) {
         logger.debug(GET_SEGMENT, segment);
         final String packageName = getSanitizedPackageName(parentPackageName + "." + segment.getId());
-        final KiePMMLModel nestedModel = getFromCommonDataAndTransformationDictionaryAndModelFromPlugin(
+        final KiePMMLModel nestedModel = getFromCommonDataAndTransformationDictionaryAndModelWithSources(
                 packageName,
                 dataDictionary,
                 transformationDictionary,

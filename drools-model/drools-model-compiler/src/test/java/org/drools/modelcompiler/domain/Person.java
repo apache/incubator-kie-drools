@@ -3,6 +3,7 @@ package org.drools.modelcompiler.domain;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +37,8 @@ public class Person extends AbstractReactiveObject {
 
     private Map<Integer, Integer> items = new HashMap<>();
     private Map<String, String> itemsString = new HashMap<>();
+
+    private Date birthDay;
 
     public static int countItems(Map<?, ?> items) {
         return items.size();
@@ -217,6 +220,14 @@ public class Person extends AbstractReactiveObject {
         this.itemsString = itemsString;
     }
 
+    public Date getBirthDay() {
+        return birthDay;
+    }
+
+    public void setBirthDay(Date birthDay) {
+        this.birthDay = birthDay;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -232,5 +243,9 @@ public class Person extends AbstractReactiveObject {
         int result = name != null ? name.hashCode() : 0;
         result = 31 * result + age;
         return result;
+    }
+
+    public static int sumAges(Person p1, Person p2) {
+        return p1.getAge() + p2.getAge();
     }
 }

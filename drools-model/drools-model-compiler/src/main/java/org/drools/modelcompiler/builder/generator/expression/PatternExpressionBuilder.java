@@ -39,10 +39,9 @@ import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
 import org.drools.modelcompiler.builder.generator.drlxparse.MultipleDrlxParseSuccess;
 import org.drools.modelcompiler.builder.generator.drlxparse.SingleDrlxParseSuccess;
 
-import static java.util.Optional.of;
-
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static com.github.javaparser.StaticJavaParser.parseType;
+import static java.util.Optional.of;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.THIS_PLACEHOLDER;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ALPHA_INDEXED_BY_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.BETA_INDEXED_BY_CALL;
@@ -93,7 +92,7 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
     }
 
     private MethodCallExpr buildSingleExpressionWithIndexing(SingleDrlxParseSuccess drlxParseResult) {
-        String exprId = drlxParseResult.getExprId(context.getPackageModel().getExprIdGenerator());
+        String exprId = createExprId(drlxParseResult);
         MethodCallExpr exprDSL = new MethodCallExpr(null, EXPR_CALL);
         if (exprId != null && !"".equals(exprId)) {
             exprDSL.addArgument(new StringLiteralExpr(exprId));
@@ -107,12 +106,12 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
     }
 
     private MethodCallExpr buildExpression(SingleDrlxParseSuccess drlxParseResult, MethodCallExpr exprDSL) {
+        if (drlxParseResult.isTemporal()) {
+            return buildTemporalExpression(drlxParseResult, exprDSL);
+        }
+
         final List<String> usedDeclarationsWithUnification = new ArrayList<>();
         usedDeclarationsWithUnification.addAll(drlxParseResult.getUsedDeclarations());
-
-        if (drlxParseResult.isTemporal() && drlxParseResult.getLeft() != null && !drlxParseResult.getLeft().getExpression().isNameExpr()) {
-            exprDSL.addArgument(generateLambdaForTemporalConstraint(drlxParseResult.getLeft(), drlxParseResult.getPatternType()));
-        }
 
         usedDeclarationsWithUnification.stream()
                 .filter( s -> !(drlxParseResult.isSkipThisAsParam() && s.equals( drlxParseResult.getPatternBinding() ) ) )
@@ -121,10 +120,6 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
 
         if (drlxParseResult.getRightLiteral() != null) {
             exprDSL.addArgument( "" + drlxParseResult.getRightLiteral() );
-        } else {
-            if (drlxParseResult.isTemporal() && drlxParseResult.getRight() != null && !drlxParseResult.getRight().getExpression().isNameExpr()) {
-                exprDSL.addArgument(generateLambdaForTemporalConstraint(drlxParseResult.getRight(), drlxParseResult.getPatternType()));
-            }
         }
 
         exprDSL.addArgument(buildConstraintExpression(drlxParseResult, drlxParseResult.getExpr()));
@@ -144,6 +139,7 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
 
     @Override
     public MethodCallExpr buildBinding(SingleDrlxParseSuccess drlxParseResult) {
+        sortUsedDeclarations(drlxParseResult);
         MethodCallExpr bindDSL = new MethodCallExpr(null, BIND_CALL);
         String boundVar = drlxParseResult.hasUnificationVariable() ?
                 drlxParseResult.getUnificationVariable() :
@@ -187,7 +183,8 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
         TypedExpression right = drlxParseResult.getRight();
 
         boolean isBeta = drlxParseResult.isBetaNode();
-        if (!isBeta && !(right.getExpression() instanceof LiteralExpr)) {
+        Expression rightExpression = right.getExpression();
+        if (!isBeta && !(rightExpression instanceof LiteralExpr || isStringToDateExpression(rightExpression))) {
             return Optional.empty();
         }
 

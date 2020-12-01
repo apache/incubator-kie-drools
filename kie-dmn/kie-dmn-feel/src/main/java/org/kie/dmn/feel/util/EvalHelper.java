@@ -711,6 +711,9 @@ public class EvalHelper {
     }
 
     private static String removeTrailingZeros(final String stringNumber) {
+        if(stringNumber.contains("E")) {
+            return stringNumber;
+        }
         final String stringWithoutZeros = stringNumber.replaceAll("0*$", "");
         if (Character.isDigit(stringWithoutZeros.charAt(stringWithoutZeros.length() - 1))) {
             return stringWithoutZeros;

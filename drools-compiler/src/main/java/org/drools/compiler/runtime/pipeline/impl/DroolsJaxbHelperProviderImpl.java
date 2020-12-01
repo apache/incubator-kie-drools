@@ -40,11 +40,11 @@ import com.sun.tools.xjc.model.Model;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.drools.compiler.commons.jci.readers.MemoryResourceReader;
+import org.kie.memorycompiler.resources.MemoryResourceReader;
+import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.compiler.ProjectJavaCompiler;
 import org.drools.compiler.lang.descr.PackageDescr;
-import org.drools.compiler.rule.builder.dialect.java.JavaDialect;
 import org.drools.core.builder.conf.impl.JaxbConfigurationImpl;
 import org.drools.core.command.runtime.BatchExecutionCommandImpl;
 import org.drools.core.command.runtime.GetGlobalCommand;
@@ -177,9 +177,8 @@ public class DroolsJaxbHelperProviderImpl
                 src.add( srcName, entry.getValue() );
                 srcNames.add( srcName );
             } else {
-                JavaDialect dialect = (JavaDialect) pkgReg.getDialectCompiletimeRegistry().getDialect( "java" );
-                dialect.addSrc( convertToResource( entry.getKey() ),
-                                entry.getValue() );
+                Dialect dialect = pkgReg.getDialectCompiletimeRegistry().getDialect( "java" );
+                dialect.addSrc( convertToResource( entry.getKey() ), entry.getValue() );
             }
         }
 

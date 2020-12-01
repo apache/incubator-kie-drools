@@ -30,7 +30,6 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.VoidType;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
-import static org.drools.modelcompiler.util.StringUtil.md5Hash;
 
 public class MaterializedLambdaConsequence extends MaterializedLambda {
 
@@ -43,7 +42,7 @@ public class MaterializedLambdaConsequence extends MaterializedLambda {
     }
 
     @Override
-    void createMethodDeclaration(EnumDeclaration classDeclaration) {
+    void createMethodsDeclaration(EnumDeclaration classDeclaration) {
         MethodDeclaration methodDeclaration = classDeclaration.addMethod("execute", Modifier.Keyword.PUBLIC);
         methodDeclaration.setThrownExceptions(NodeList.nodeList(parseClassOrInterfaceType("java.lang.Exception")));
         methodDeclaration.addAnnotation("Override");

@@ -18,9 +18,9 @@ package org.kie.pmml.compiler.api.provider;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.Model;
 import org.dmg.pmml.TransformationDictionary;
-import org.kie.pmml.commons.exceptions.KiePMMLInternalException;
+import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.model.KiePMMLModel;
-import org.kie.pmml.commons.model.enums.PMML_MODEL;
+import org.kie.pmml.api.enums.PMML_MODEL;
 
 /**
  * API for actual PMML model implementations
@@ -51,5 +51,5 @@ public interface ModelImplementationProvider<T extends Model, E extends KiePMMLM
      * @return
      * @throws KiePMMLInternalException
      */
-    E getKiePMMLModelFromPlugin(final String packageName, final DataDictionary dataDictionary, final TransformationDictionary transformationDictionary, final T model, final Object kBuilder);
+    E getKiePMMLModelWithSources(final String packageName, final DataDictionary dataDictionary, final TransformationDictionary transformationDictionary, final T model, final Object kBuilder);
 }

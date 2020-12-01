@@ -20,25 +20,21 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.io.UncheckedIOException;
 import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.drools.core.base.AccessorKey.AccessorType;
-import org.drools.core.base.extractors.MVELDateClassFieldReader;
-import org.drools.core.base.extractors.MVELNumberClassFieldReader;
-import org.drools.core.base.extractors.MVELObjectClassFieldReader;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.AcceptsClassObjectType;
 import org.drools.core.spi.AcceptsReadAccessor;
 import org.drools.core.spi.ClassWireable;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.ObjectType;
-import org.drools.core.util.asm.ClassFieldInspector;
 import org.kie.api.definition.type.FactField;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 
@@ -145,20 +141,8 @@ public class ClassFieldAccessorStore
     }
     
     public static InternalReadAccessor getReadAcessor(String className, String expr, boolean typesafe, Class<?> returnType) {
-        if (Number.class.isAssignableFrom( returnType ) ||
-            ( returnType == byte.class ||
-              returnType == short.class ||
-              returnType == int.class ||
-              returnType == long.class ||
-              returnType == float.class ||
-              returnType == double.class ) ) {            
-            return new MVELNumberClassFieldReader( className, expr, typesafe );            
-        } else if (  Date.class.isAssignableFrom( returnType ) ) {
-          return new MVELDateClassFieldReader( className, expr, typesafe );
-        } else {
-          return new MVELObjectClassFieldReader( className, expr, typesafe );
-        }       
-    }     
+        return CoreComponentsBuilder.get().getReadAcessor(className, expr, typesafe, returnType);
+    }
 
     public ClassFieldAccessor getAccessor(Class<?> cls, String fieldName) {
         return getAccessor( cls.getName(), fieldName );
@@ -292,7 +276,29 @@ public class ClassFieldAccessorStore
     }
 
     public Class<?> getFieldType(Class<?> clazz, String fieldName) {
-        return ClassFieldAccessorFactory.getFieldType( clazz, fieldName, cache.getCacheEntry(clazz) );
+        ClassFieldAccessorCache.CacheEntry cache = this.cache.getCacheEntry(clazz);
+        ClassFieldInspector inspector;
+        try {
+            inspector = getClassFieldInspector(clazz, cache);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+        Class<?> fieldType = inspector.getFieldType(fieldName);
+        if (fieldType == null && fieldName.length() > 1 && Character.isLowerCase(fieldName.charAt(0)) && Character.isUpperCase(fieldName.charAt(1))) {
+            String altFieldName = Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1);
+            fieldType = inspector.getFieldType(altFieldName);
+        }
+        return fieldType;
+    }
+
+    public static ClassFieldInspector getClassFieldInspector( final Class<?> clazz, ClassFieldAccessorCache.CacheEntry cache ) throws IOException {
+        Map<Class< ? >, ClassFieldInspector> inspectors = cache.getInspectors();
+        ClassFieldInspector inspector = inspectors.get( clazz );
+        if ( inspector == null ) {
+            inspector = CoreComponentsBuilder.get().createClassFieldInspector( clazz );
+            inspectors.put( clazz, inspector );
+        }
+        return inspector;
     }
 
     public BaseClassFieldWriter wire(ClassFieldWriter writer) {

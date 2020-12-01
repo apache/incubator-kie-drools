@@ -23,6 +23,8 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -32,7 +34,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.IntStream;
 
 import org.assertj.core.api.Assertions;
@@ -57,6 +61,7 @@ import static org.hamcrest.CoreMatchers.hasItem;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 public class AccumulateTest extends BaseModelTest {
 
@@ -2389,4 +2394,324 @@ public class AccumulateTest extends BaseModelTest {
         assertEquals(1, results.size());
         assertEquals(5, results.get(0).intValue());
     }
+
+    @Test
+    public void testFalseNodeSharing() {
+        // DROOLS-5686
+        String str =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "rule R1 when\n" +
+                "  accumulate (\n" +
+                "       Person($var : age), $sum : sum( $var ) " +
+                "         )" +
+                "then\n" +
+                "  insert($sum);\n" +
+                "end\n" +
+                "rule R2 when\n" +
+                "  accumulate (\n" +
+                "       Person($var : name.length), $sum : sum( $var ) " +
+                "         )" +
+                "then\n" +
+                "  insert(\"\" + $sum);\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert( new Person( "Mario", 46 ) );
+        ksession.insert( new Person( "Mark", 44 ) );
+        ksession.insert( new Person( "Luca", 36 ) );
+
+        ksession.fireAllRules();
+
+        List<Number> resultsInt = getObjectsIntoList(ksession, Number.class);
+        assertEquals(1, resultsInt.size());
+        assertEquals(126, resultsInt.get(0).intValue());
+
+        List<String> resultsString = getObjectsIntoList(ksession, String.class);
+        assertEquals(1, resultsString.size());
+        assertEquals("13", resultsString.get(0));
+    }
+
+    @Test
+    public void testAccumulateOnTwoPatterns() {
+        // DROOLS-5738
+        String str =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "rule R1 when\n" +
+                "  accumulate (\n" +
+                "       $p1: Person() and $p2: Person( age > $p1.age ), $sum : sum(Person.sumAges($p1, $p2)) " +
+                "         )" +
+                "then\n" +
+                "  insert($sum);\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert( new Person( "Mario", 46 ) );
+        ksession.insert( new Person( "Mark", 44 ) );
+
+        ksession.fireAllRules();
+
+        List<Number> results = getObjectsIntoList(ksession, Number.class);
+        assertEquals( 1, results.size() );
+        assertEquals( 90, results.get(0) );
+    }
+
+    @Test
+    public void testAccumulateWithTwoFunctions1() {
+        // DROOLS-5752
+        String str = "import java.time.Duration;\n" +
+                "import " + Shift.class.getCanonicalName() + ";\n" +
+                "rule \"R1\"\n" +
+                "    when\n" +
+                "        accumulate(\n" +
+                "            $other : Shift(\n" +
+                "                $shiftStart : startDateTime\n" +
+                "            ),\n" +
+                "            $shiftCount : count($other),\n" +
+                "            $totalMinutes : sum(Duration.between($shiftStart, $shiftStart).toMinutes())\n" +
+                "        )\n" +
+                "    then\n" +
+                "        System.out.println($shiftCount + \" \" + $totalMinutes);\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert( new Shift( OffsetDateTime.now()) );
+
+        Assertions.assertThat(ksession.fireAllRules()).isEqualTo(1);
+    }
+
+    @Test
+    public void testAccumulateWithTwoFunctions2() {
+        // DROOLS-5752
+        String str = "import java.time.Duration;\n" +
+                "import " + Shift.class.getCanonicalName() + ";\n" +
+                "rule \"R1\"\n" +
+                "    when\n" +
+                "        accumulate(\n" +
+                "            $other : Shift(\n" +
+                "                $shiftStart : startDateTime\n" +
+                "            ),\n" +
+                "            $totalMinutes : sum(Duration.between($shiftStart, $shiftStart).toMinutes()),\n" +
+                "            $shiftCount : count($other)\n" +
+                "        )\n" +
+                "    then\n" +
+                "        System.out.println($shiftCount + \" \" + $totalMinutes);\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert( new Shift( OffsetDateTime.now()) );
+
+        Assertions.assertThat(ksession.fireAllRules()).isEqualTo(1);
+    }
+
+    public class Shift {
+
+        private final AtomicLong lengthInMinutes = new AtomicLong(-1);
+        private OffsetDateTime startDateTime;
+
+        private String employee = null;
+
+        public Shift(OffsetDateTime startDateTime) {
+            this.startDateTime = startDateTime;
+        }
+
+        @Override
+        public String toString() {
+            return startDateTime.toString();
+        }
+
+        public long getLengthInMinutes() { // Thread-safe cache.
+            long currentLengthInMinutes = lengthInMinutes.get();
+            if (currentLengthInMinutes >= 0) {
+                return currentLengthInMinutes;
+            }
+            long newLengthInMinutes = startDateTime.until(startDateTime, ChronoUnit.MINUTES);
+            lengthInMinutes.set(newLengthInMinutes);
+            return newLengthInMinutes;
+        }
+
+        public OffsetDateTime getStartDateTime() {
+            return startDateTime;
+        }
+
+        public void setStartDateTime(OffsetDateTime startDateTime) {
+            this.startDateTime = startDateTime;
+            this.lengthInMinutes.set(-1);
+        }
+
+        public String getEmployee() {
+            return employee;
+        }
+
+        public void setEmployee(String employee) {
+            this.employee = employee;
+        }
+
+        public OffsetDateTime getEndDateTime() {
+            // Pretend a shift length is always 8 hours.
+            return startDateTime.plus(8, ChronoUnit.HOURS);
+        }
+    }
+
+    public static Duration between(OffsetDateTime start, OffsetDateTime end) {
+        return Duration.between(start, end);
+    }
+
+    @Test
+    public void testAccumulateNumberFromSum() {
+        String str =
+                "import " + Shift.class.getCanonicalName() + ";"
+                        + "import " + AccumulateTest.class.getCanonicalName() + ";"
+                        + "import " + Result.class.getCanonicalName() + ";"
+                        + "rule \"dailyMinutes\"\n"
+                        + "    when\n"
+                        + "        accumulate(\n"
+                        + "            $other : Shift(\n"
+                        + "                $shiftStart : startDateTime,\n"
+                        + "                $shiftEnd : endDateTime\n"
+                        + "            ),\n"
+                        + "            $shiftCount : count($other),\n"
+                        + "            $totalMinutes : sum(AccumulateTest.between($shiftStart, $shiftEnd).toMinutes())\n"
+                        + "        )\n"
+                        + "        Number(this > 0) from $totalMinutes\n"
+                        + "    then\n"
+                        + "        insert(new Result($totalMinutes));\n"
+                        + "end";
+
+
+
+        KieSession ksession = getKieSession( str );
+
+        Shift shift = new Shift(OffsetDateTime.now());
+
+        ksession.insert(shift);
+
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        assertEquals(1, results.size());
+        assertEquals(8 * 60L, results.iterator().next().getValue());
+    }
+
+    private static int switchMachinesInAssignments(KieSession session, MrProcessAssignment left,
+                                                   MrProcessAssignment right) {
+        FactHandle leftHandle = session.getFactHandle(left);
+        FactHandle rightHandle = session.getFactHandle(right);
+        MrMachine original = left.getMachine();
+        left.setMachine(right.getMachine());
+        right.setMachine(original);
+        session.update(leftHandle, left);
+        session.update(rightHandle, right);
+        return session.fireAllRules();
+    }
+
+    @Test
+    public void testDoubleAccumulateNPE() {
+        // Prepare reproducing data.
+        MrMachine machine2 = new MrMachine();
+        MrMachine machine3 = new MrMachine();
+        MrProcessAssignment assignment1 = new MrProcessAssignment(new MrProcess(), machine3, machine3);
+        MrProcessAssignment assignment2 = new MrProcessAssignment(new MrProcess(), machine2, machine2);
+        MrProcessAssignment assignment3 = new MrProcessAssignment(new MrProcess(), machine2, machine2);
+        MrProcessAssignment assignment4 = new MrProcessAssignment(new MrProcess(), machine3, machine3);
+
+        String rule = "import " + MrProcessAssignment.class.getCanonicalName() + ";\n" +
+                "import " + List.class.getCanonicalName() + ";\n" +
+                "global java.util.List result;\n" +
+                "rule R1\n" +
+                "when\n" +
+                "   $assignments: List(size > 0) from accumulate(\n" +
+                "        $a: MrProcessAssignment(machine != null, this.isMoved() == true),\n" +
+                "        collectList($a)\n" +
+                "   )\n" +
+                "    accumulate(\n" +
+                "        $a2: MrProcessAssignment() from $assignments,\n" +
+                "        $count: count($a2)\n" +
+                "    )\n" +
+                "then\n" +
+                "    result.add($count);\n" +
+                "end;";
+        KieSession kieSession = getKieSession(rule);
+        List<Long> result = new ArrayList<>();
+        kieSession.setGlobal("result", result);
+
+        // Insert facts into the session.
+        kieSession.insert(assignment1);
+        kieSession.insert(assignment2);
+        kieSession.insert(assignment3);
+        kieSession.insert(assignment4);
+        int fired = kieSession.fireAllRules();
+        assertEquals(0, fired);
+        assertTrue(result.isEmpty());
+
+        // Execute the sequence of session events that triggers the exception.
+        fired = switchMachinesInAssignments(kieSession, assignment1, assignment2);
+        assertEquals(1, fired);
+        assertEquals(2, result.get(0).longValue());
+        result.clear();
+
+        fired = switchMachinesInAssignments(kieSession, assignment1, assignment2);
+        assertEquals(0, fired);
+        assertTrue(result.isEmpty());
+
+        fired = switchMachinesInAssignments(kieSession, assignment4, assignment3);
+        assertEquals(1, fired);
+        assertEquals(2, result.get(0).longValue());
+        result.clear();
+
+        kieSession.dispose();
+    }
+
+    public static class MrProcess {
+
+    }
+
+    public static class MrProcessAssignment {
+
+        private MrProcess process;
+        private MrMachine originalMachine;
+        private MrMachine machine;
+
+        public MrProcessAssignment(MrProcess process, MrMachine originalMachine, MrMachine machine) {
+            this.process = process;
+            this.originalMachine = originalMachine;
+            this.machine = machine;
+        }
+
+        public MrProcess getProcess() {
+            return process;
+        }
+
+        public MrMachine getOriginalMachine() {
+            return originalMachine;
+        }
+
+        public MrMachine getMachine() {
+            return machine;
+        }
+
+        public void setMachine(MrMachine machine) {
+            this.machine = machine;
+        }
+
+        // ************************************************************************
+        // Complex methods
+        // ************************************************************************
+
+        public boolean isMoved() {
+            if (machine == null) {
+                return false;
+            }
+            return !Objects.equals(originalMachine, machine);
+        }
+
+    }
+
+    public static class MrMachine {
+
+    }
+
 }

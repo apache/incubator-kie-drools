@@ -41,13 +41,17 @@ import org.drools.modelcompiler.domain.Result;
 import org.drools.modelcompiler.domain.StockTick;
 import org.drools.modelcompiler.domain.Toy;
 import org.drools.modelcompiler.domain.Woman;
+import org.junit.Assert;
 import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessContext;
 import org.kie.api.runtime.rule.FactHandle;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -2061,7 +2065,44 @@ public class CompilerTest extends BaseModelTest {
         assertEquals( 5, pet.getAge() );
     }
 
-    @Test
+    public static class IntegerToShort {
+
+        private Boolean testBoolean;
+        private int testInt;
+        private Short testShort;
+
+        public IntegerToShort(Boolean testBoolean, int testInt, Short testShort) {
+            this.testBoolean = testBoolean;
+            this.testInt = testInt;
+            this.testShort = testShort;
+        }
+
+        public void setTestBoolean(Boolean testBoolean) {
+            this.testBoolean = testBoolean;
+        }
+
+        public void setTestInt(int testInt) {
+            this.testInt = testInt;
+        }
+
+        public void setTestShort(Short testShort) {
+            this.testShort = testShort;
+        }
+
+        public Boolean getTestBoolean() {
+            return testBoolean;
+        }
+
+        public int getTestInt() {
+            return testInt;
+        }
+
+        public Short getTestShort() {
+            return testShort;
+        }
+    }
+
+    @Test // DROOLS-5007
     public void testIntToShortCast() {
         String str = "import " + Address.class.getCanonicalName() + ";\n" +
                 "rule \"rule1\"\n" +
@@ -2079,6 +2120,40 @@ public class CompilerTest extends BaseModelTest {
         address.setNumber(1);
         ksession.insert( address );
         assertEquals( 1, ksession.fireAllRules() );
+    }
+
+
+    @Test // DROOLS-5709 // DROOLS-5768
+    public void testCastingIntegerToShort() {
+        String str =
+                "import " + IntegerToShort.class.getCanonicalName() + ";\n " +
+                        "global java.util.List list;\n" +
+                        "rule \"test_rule\"\n" +
+                        "dialect \"java\"\n" +
+                        "when\n" +
+                        "   $integerToShort : IntegerToShort( " +
+                        "           $testInt : testInt, " +
+                        "           testBoolean != null, " +
+                        "           testBoolean == false" +
+                        ") \n" +
+                        "then\n" +
+                        "   $integerToShort.setTestShort((short)(12)); \n" +
+                        "   $integerToShort.setTestShort((short)($testInt)); \n" +
+                        "   $integerToShort.setTestBoolean(true);\n" +
+                        "   update($integerToShort);\n" +
+                        "end";
+
+        KieSession ksession = getKieSession(str);
+        final List<String> list = new ArrayList<>();
+
+        ksession.setGlobal("list", list);
+
+        IntegerToShort integerToShort = new IntegerToShort(false, Integer.MAX_VALUE, Short.MAX_VALUE);
+
+        ksession.insert(integerToShort);
+        int rulesFired = ksession.fireAllRules();
+
+        Assert.assertEquals(1, rulesFired);
     }
 
     @Test
@@ -2294,5 +2369,111 @@ public class CompilerTest extends BaseModelTest {
         ksession.fireAllRules();
 
         Assertions.assertThat(list).containsExactlyInAnyOrder(40, 38, 41, 38, 41, 43);
+    }
+
+    @Test()
+    public void testStringRelationalComparison() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "global java.util.List list;\n" +
+                "rule R when\n" +
+                "  $p : Person(name > \"Bob\" && name < \"Ken\")\n" +
+                "then\n" +
+                "  list.add($p.getName());" +
+                "end";
+
+        KieSession ksession = getKieSession(str);
+        final List<String> list = new ArrayList<>();
+        ksession.setGlobal("list", list);
+
+        ksession.insert(new Person("John"));
+        ksession.insert(new Person("Ann"));
+        ksession.fireAllRules();
+
+        Assertions.assertThat(list).containsExactly("John");
+    }
+
+    @Rule
+    public ExpectedException exceptionRule = ExpectedException.none();
+
+    @Test
+    public void testNPEOnConstraint() {
+        exceptionRule.expect(RuntimeException.class);
+        exceptionRule.expectMessage(equalTo("Error evaluating constraint 'money < salary * 20' in [Rule \"R\" in r0.drl]"));
+
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                        "rule R when\n" +
+                        "  $p : Person(money < salary * 20 )\n" +
+                        "then\n" +
+                        "end";
+
+        KieSession ksession = getKieSession( str );
+
+        Person me = new Person( "Luca");
+        me.setMoney(null);
+        ksession.insert( me );
+        ksession.fireAllRules();
+    }
+
+    @Test
+    public void testWithQuotedStringConcatenationOnConstraint() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                        "rule R when\n" +
+                        "  $p : Person(name == \"Luca\" + \" II\"  )\n" +
+                        "then\n" +
+                        "end";
+
+        KieSession ksession = getKieSession( str );
+
+        Person me = new Person( "Luca II");
+        me.setMoney(null);
+        ksession.insert( me );
+        int rulesFired = ksession.fireAllRules();
+        assertEquals(rulesFired, 1);
+    }
+
+    @Test
+    public void testNegatedConstraint() {
+        // DROOLS-5791
+        String str =
+                "rule R when\n" +
+                "  $i : Integer()\n" +
+                "  String( !($i.intValue > length) )\n" +
+                "then\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert( 5 );
+        ksession.insert( "test" );
+        assertEquals(0, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testMethodCallWithClass() {
+        final String str = "package org.drools.mvel.compiler\n" +
+                "import " + FactWithMethod.class.getCanonicalName() + ";" +
+                "rule r1\n" +
+                "when\n" +
+                "    FactWithMethod( checkClass( java.lang.String.class ) )\n" +
+                "then\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+        final FactWithMethod fact = new FactWithMethod();
+        ksession.insert(fact);
+        final int rules = ksession.fireAllRules();
+        assertEquals(1, rules);
+    }
+
+    public static class FactWithMethod {
+
+        public FactWithMethod() {}
+
+        public boolean checkClass(Class<?> clazz) {
+            return clazz.equals(String.class);
+        }
     }
 }

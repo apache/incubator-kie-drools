@@ -94,7 +94,7 @@ public class KieBuilderSetImpl implements KieBuilderSet {
         }
     }
 
-    KieBuilderSetImpl setFiles( String[] files) {
+    public KieBuilderSetImpl setFiles( String[] files) {
         this.files = files;
         return this;
     }

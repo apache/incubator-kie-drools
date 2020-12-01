@@ -34,6 +34,7 @@ import static org.drools.core.base.evaluators.PointInTimeEvaluator.getTimestampF
 public class TemporalConstraintEvaluator extends ConstraintEvaluator {
 
     private final Interval interval;
+    private Declaration patternDeclaration;
 
     public TemporalConstraintEvaluator( Declaration[] declarations, Pattern pattern, SingleConstraint constraint ) {
         super( declarations, pattern, constraint );
@@ -51,7 +52,22 @@ public class TemporalConstraintEvaluator extends ConstraintEvaluator {
         long start2 = getStartTimestamp( fhs[1], workingMemory, getDeclarations()[1], temporalConstraint.getF2() );
         long duration2 = getDuration( fhs[1] );
         long end2 = start2 + duration2;
-        return temporalConstraint.getTemporalPredicate().evaluate( start1, duration1, end1, start2, duration2, end2);
+        TemporalPredicate temporalPredicate = temporalConstraint.getTemporalPredicate();
+        if (temporalPredicate.isThisOnRight()) {
+            return temporalPredicate.evaluate( start2, duration2, end2, start1, duration1, end1);
+        } else {
+            return temporalPredicate.evaluate( start1, duration1, end1, start2, duration2, end2);
+        }
+    }
+
+    private InternalFactHandle[] getBetaInvocationFactHandles( InternalFactHandle handle, Tuple tuple ) {
+        InternalFactHandle[] fhs = new InternalFactHandle[declarations.length];
+        for (int i = 0; i < fhs.length; i++) {
+            fhs[i] = declarations[i] == patternDeclaration ?
+                    handle :
+                    tuple.get(declarations[i].getOffset());
+        }
+        return fhs;
     }
 
     private long getDuration( InternalFactHandle fh ) {
@@ -76,7 +92,12 @@ public class TemporalConstraintEvaluator extends ConstraintEvaluator {
         long start2 = getNonEventTimestamp(temporalConstraint, handle, workingMemory);
         long duration2 = 0;
         long end2 = start2 + duration2;
-        return temporalConstraint.getTemporalPredicate().evaluate( start1, duration1, end1, start2, duration2, end2);
+        TemporalPredicate temporalPredicate = temporalConstraint.getTemporalPredicate();
+        if (temporalPredicate.isThisOnRight()) {
+            return temporalPredicate.evaluate( start2, duration2, end2, start1, duration1, end1);
+        } else {
+            return temporalPredicate.evaluate( start1, duration1, end1, start2, duration2, end2);
+        }
     }
 
     private long getNonEventTimestamp(TemporalConstraint temporalConstraint, InternalFactHandle handle, InternalWorkingMemory workingMemory) {
@@ -98,5 +119,10 @@ public class TemporalConstraintEvaluator extends ConstraintEvaluator {
     @Override
     public Interval getInterval() {
         return interval;
+    }
+
+    @Override
+    protected void setPatternDeclaration( Declaration patternDeclaration ) {
+        this.patternDeclaration = patternDeclaration;
     }
 }

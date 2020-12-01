@@ -16,15 +16,14 @@
 
 package org.drools.core.factmodel;
 
-import org.kie.api.Service;
-import org.mvel2.asm.Opcodes;
-
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
-public interface ClassBuilder extends Opcodes, Service {
+import org.kie.api.Service;
 
-    public byte[] buildClass( ClassDefinition def, ClassLoader classLoader ) throws IOException,
+public interface ClassBuilder extends Service {
+
+    byte[] buildClass( ClassDefinition def, ClassLoader classLoader ) throws IOException,
             SecurityException,
             IllegalArgumentException,
             ClassNotFoundException,

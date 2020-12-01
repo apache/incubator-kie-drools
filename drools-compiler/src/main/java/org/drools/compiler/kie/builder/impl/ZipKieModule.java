@@ -57,7 +57,7 @@ public class ZipKieModule extends AbstractKieModule implements InternalKieModule
     @Override
     public InternalResource getResource( String fileName) {
         byte[] bytes = getBytes(fileName);
-        if (bytes != null && bytes.length > 0) {
+        if (bytes != null) {
             return (InternalResource) ResourceFactory.newByteArrayResource(bytes).setSourcePath(fileName);
         }
         return null;

@@ -86,5 +86,9 @@ public interface FEELFunction {
             return type;
         }
 
+        public String prettyFEEL() {
+            return name + " : " + type.getName();
+        }
+
     }
 }

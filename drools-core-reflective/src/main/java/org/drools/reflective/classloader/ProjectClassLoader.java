@@ -20,20 +20,24 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
 
+import org.kie.memorycompiler.StoreClassLoader;
 import org.drools.reflective.ComponentsFactory;
 import org.drools.reflective.ResourceProvider;
 import org.drools.reflective.util.ClassUtils;
 import org.kie.internal.utils.KieTypeResolver;
 
-public abstract class ProjectClassLoader extends ClassLoader implements KieTypeResolver {
+public abstract class ProjectClassLoader extends ClassLoader implements KieTypeResolver, StoreClassLoader {
 
     private static final boolean CACHE_NON_EXISTING_CLASSES = true;
     private static final ClassNotFoundException dummyCFNE = CACHE_NON_EXISTING_CLASSES ?
@@ -108,6 +112,8 @@ public abstract class ProjectClassLoader extends ClassLoader implements KieTypeR
         projectClassLoader.store = store;
         return projectClassLoader;
     }
+
+    public abstract boolean isDynamic();
 
     @Override
     protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
@@ -319,6 +325,7 @@ public abstract class ProjectClassLoader extends ClassLoader implements KieTypeR
         return store == null ? null : store.get(resourceName);
     }
 
+    @Override
     public Map<String, byte[]> getStore() {
         return store;
     }
@@ -377,13 +384,16 @@ public abstract class ProjectClassLoader extends ClassLoader implements KieTypeR
         Class<?> loadType( String name, boolean resolve ) throws ClassNotFoundException;
     }
 
-    public synchronized void reinitTypes() {
+    public synchronized List<String> reinitTypes() {
         typesClassLoader = null;
         nonExistingClasses.clear();
         loadedClasses.clear();
         if (definedTypes != null) {
+            List<String> removedTypes = new ArrayList<>(definedTypes.keySet());
             definedTypes.clear();
+            return removedTypes;
         }
+        return Collections.emptyList();
     }
 
     private static class ClassBytecode {

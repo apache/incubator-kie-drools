@@ -17,6 +17,7 @@
 package org.kie.dmn.signavio.feel.runtime.functions;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,26 +34,30 @@ public class ZipFunction
     public ZipFunction() {
         super("zip");
     }
-
+    
     public FEELFnResult<List> invoke(@ParameterName("attributes") List<?> attributes, @ParameterName("values") Object[] values) {
+        return invoke(attributes, Arrays.asList(values));
+    }
+    
+    public FEELFnResult<List> invoke(@ParameterName("attributes") List<?> attributes, @ParameterName("values") List<?> values) {
         if (attributes.isEmpty()) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "attributes", "attributes cannot be empty"));
         } else if (!(attributes.get(0) instanceof String)) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "attributes", "attributes must be a list of string"));
         }
 
-        if (values.length != attributes.size()) {
+        if (values.size() != attributes.size()) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "values", "values must be a list of the same size as of attributes"));
         }
 
         // spec requires us to return a new list
         final List<Map<Object, Object>> result = new ArrayList<>();
         
-        for (int aIdx = 0; aIdx < values.length; aIdx++) {
-            if (!(values[aIdx] instanceof List)) {
+        for (int aIdx = 0; aIdx < values.size(); aIdx++) {
+            if (!(values.get(aIdx) instanceof List)) {
                 return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "values", "each value must be a list"));
             }
-            List<?> value = (List<?>) values[aIdx];
+            List<?> value = (List<?>) values.get(aIdx);
 
             if (result.isEmpty()) {
                 // first time init list

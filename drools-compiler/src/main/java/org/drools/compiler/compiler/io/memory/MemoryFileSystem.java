@@ -40,8 +40,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
-import org.drools.compiler.commons.jci.readers.ResourceReader;
-import org.drools.compiler.commons.jci.stores.ResourceStore;
+import org.kie.memorycompiler.resources.ResourceReader;
+import org.kie.memorycompiler.resources.ResourceStore;
 import org.drools.compiler.compiler.io.File;
 import org.drools.compiler.compiler.io.FileSystem;
 import org.drools.compiler.compiler.io.FileSystemItem;
@@ -367,7 +367,6 @@ public class MemoryFileSystem
         return getFileContents((MemoryFile) getFile(pResourceName));
     }
 
-    @Override
     public InternalResource getResource(String pResourceName) {
         return getResource((MemoryFile) getFile(pResourceName));
     }
@@ -507,9 +506,7 @@ public class MemoryFileSystem
 
     public static MemoryFileSystem readFromJar(java.io.File jarFile) {
         MemoryFileSystem mfs = new MemoryFileSystem();
-        ZipFile zipFile = null;
-        try {
-            zipFile = new ZipFile( jarFile );
+        try ( ZipFile zipFile = new ZipFile( jarFile ) ) {
             Enumeration< ? extends ZipEntry> entries = zipFile.entries();
             while ( entries.hasMoreElements() ) {
                 ZipEntry entry = entries.nextElement();
@@ -525,14 +522,6 @@ public class MemoryFileSystem
             }
         } catch ( IOException e ) {
             throw new RuntimeException( e );
-        } finally {
-            if ( zipFile != null ) {
-                try {
-                    zipFile.close();
-                } catch ( IOException e ) {
-                    log.error(e.getMessage(), e);
-                }
-            }
         }
         return mfs;
     }
@@ -543,9 +532,7 @@ public class MemoryFileSystem
 
     public static MemoryFileSystem readFromJar(InputStream jarFile) {
         MemoryFileSystem mfs = new MemoryFileSystem();
-        JarInputStream zipFile = null;
-        try {
-            zipFile = new JarInputStream( jarFile );
+        try (JarInputStream zipFile = new JarInputStream( jarFile )) {
             ZipEntry entry;
             while ( (entry = zipFile.getNextEntry()) != null ) {
                 if (entry.isDirectory()) {
@@ -561,14 +548,6 @@ public class MemoryFileSystem
             }
         } catch ( IOException e ) {
             throw new RuntimeException( e );
-        } finally {
-            if ( zipFile != null ) {
-                try {
-                    zipFile.close();
-                } catch ( IOException e ) {
-                    log.error(e.getMessage(), e);
-                }
-            }
         }
         return mfs;
     }

@@ -27,11 +27,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.pmml.PMML4Result;
-import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
+import org.kie.pmml.api.runtime.PMMLRuntime;
+import org.kie.pmml.models.tests.AbstractPMMLTest;
 
 @RunWith(Parameterized.class)
-public class SimpleScorecardWithTransformationsTest extends AbstractPMMLScorecardTest {
+public class SimpleScorecardWithTransformationsTest extends AbstractPMMLTest {
 
+
+    private static final String FILE_NAME = "SimpleScorecardWithTransformations.pmml";
     private static final String MODEL_NAME = "SimpleScorecardWithTransformations";
     private static final String TARGET_FIELD = "Score";
     private static final String REASON_CODE1_FIELD = "Reason Code 1";
@@ -57,9 +60,9 @@ public class SimpleScorecardWithTransformationsTest extends AbstractPMMLScorecar
         this.reasonCode2 = reasonCode2;
     }
 
-    @BeforeClass
+  @BeforeClass
     public static void setupClass() {
-        pmmlRuntime = getPMMLRuntime(MODEL_NAME);
+        pmmlRuntime = getPMMLRuntime(FILE_NAME);
     }
 
     @Parameterized.Parameters
@@ -86,7 +89,7 @@ public class SimpleScorecardWithTransformationsTest extends AbstractPMMLScorecar
         Assertions.assertThat(pmml4Result.getResultVariables().get(REASON_CODE1_FIELD)).isEqualTo(reasonCode1);
         Assertions.assertThat(pmml4Result.getResultVariables().get(REASON_CODE2_FIELD)).isEqualTo(reasonCode2);
 
-        // TODO {gcardosi} TO BE FIXED WITH DROOLS-5453
+        // TODO {gcardosi} TO BE FIXED WITH DROOLS-5490
 //        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DER_INPUT1)).isEqualTo(input1);
 //        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DER_INPUT2)).isEqualTo(input2);
 //        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DER_CONSTANT)).isEqualTo(CONSTANT);

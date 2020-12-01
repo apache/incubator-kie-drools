@@ -18,8 +18,8 @@ package org.kie.pmml.models.regression.evaluator;
 import java.util.Map;
 
 import org.kie.api.pmml.PMMLRequestData;
-import org.kie.pmml.commons.model.enums.MINING_FUNCTION;
-import org.kie.pmml.commons.model.enums.OP_TYPE;
+import org.kie.pmml.api.enums.MINING_FUNCTION;
+import org.kie.pmml.api.enums.OP_TYPE;
 import org.kie.pmml.evaluator.core.utils.PMMLRequestDataBuilder;
 import org.kie.pmml.models.regression.model.enums.MODEL_TYPE;
 import org.kie.pmml.models.regression.model.enums.REGRESSION_NORMALIZATION_METHOD;

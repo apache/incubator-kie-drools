@@ -32,6 +32,7 @@ import org.drools.core.factmodel.FieldDefinition;
 import org.drools.core.util.Triple;
 import org.drools.core.util.TripleFactory;
 import org.drools.core.util.TripleStore;
+import org.drools.mvel.asm.AsmUtil;
 import org.mvel2.asm.ClassVisitor;
 import org.mvel2.asm.ClassWriter;
 import org.mvel2.asm.FieldVisitor;
@@ -39,7 +40,7 @@ import org.mvel2.asm.Label;
 import org.mvel2.asm.MethodVisitor;
 import org.mvel2.asm.Type;
 
-import static org.drools.core.rule.builder.dialect.asm.ClassGenerator.createClassWriter;
+import static org.drools.mvel.asm.ClassGenerator.createClassWriter;
 
 public class TraitTriplePropertyWrapperClassBuilderImpl extends AbstractPropertyWrapperClassBuilderImpl implements TraitPropertyWrapperClassBuilder, Serializable {
 
@@ -255,7 +256,7 @@ public class TraitTriplePropertyWrapperClassBuilderImpl extends AbstractProperty
 				mv.visitVarInsn( ASTORE, 2 );
 				mv.visitVarInsn( ALOAD, 0 );
 				mv.visitLdcInsn( field.getName() );
-				mv.visitInsn( BuildUtils.zero( field.getTypeName() ) );
+				mv.visitInsn( AsmUtil.zero( field.getTypeName() ) );
 
 				if ( BuildUtils.isPrimitive( field.getTypeName() ) ) {
 					TraitFactoryImpl.valueOf(mv, field.getTypeName() );
@@ -340,7 +341,7 @@ public class TraitTriplePropertyWrapperClassBuilderImpl extends AbstractProperty
 		mv.visitLdcInsn( field.resolveAlias() );
 
 
-		mv.visitInsn( BuildUtils.zero( field.getTypeName() ) );
+		mv.visitInsn( AsmUtil.zero( field.getTypeName() ) );
 		if ( BuildUtils.isPrimitive( field.getTypeName() ) ) {
 			TraitFactoryImpl.valueOf(mv, field.getTypeName() );
 		}
@@ -418,7 +419,7 @@ public class TraitTriplePropertyWrapperClassBuilderImpl extends AbstractProperty
 		mv.visitLdcInsn( field.getName() );
 
 
-		mv.visitInsn( BuildUtils.zero( field.getTypeName() ) );
+		mv.visitInsn( AsmUtil.zero( field.getTypeName() ) );
 		if ( BuildUtils.isPrimitive( field.getTypeName() ) ) {
 			TraitFactoryImpl.valueOf(mv, field.getTypeName() );
 		}

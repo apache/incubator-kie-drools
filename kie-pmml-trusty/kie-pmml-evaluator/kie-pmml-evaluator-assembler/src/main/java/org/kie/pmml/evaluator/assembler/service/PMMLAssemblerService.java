@@ -43,8 +43,8 @@ import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
 import static org.kie.pmml.evaluator.assembler.service.PMMLCompilerService.getKiePMMLModelsCompiledFromResource;
 import static org.kie.pmml.evaluator.assembler.service.PMMLCompilerService.getKiePMMLModelsCompiledFromResourcesWithConfigurations;
-import static org.kie.pmml.evaluator.assembler.service.PMMLCompilerService.getKiePMMLModelsFromResourceFromPlugin;
-import static org.kie.pmml.evaluator.assembler.service.PMMLCompilerService.getKiePMMLModelsFromResourcesWithConfigurationsFromPlugin;
+import static org.kie.pmml.evaluator.assembler.service.PMMLCompilerService.getKiePMMLModelsFromResourceWithSources;
+import static org.kie.pmml.evaluator.assembler.service.PMMLCompilerService.getKiePMMLModelsFromResourcesWithConfigurationsWithSources;
 import static org.kie.pmml.evaluator.assembler.service.PMMLLoaderService.getKiePMMLModelsLoadedFromResource;
 import static org.kie.pmml.evaluator.assembler.service.PMMLLoaderService.getKiePMMLModelsLoadedFromResourcesWithConfigurations;
 
@@ -68,9 +68,6 @@ public class PMMLAssemblerService implements KieAssemblerService {
     }
 
     private static boolean isToEnable() {
-        if (isjPMMLAvailableToClassLoader()) {
-            return false;
-        }
         if (!isOtherImplementationPresent()) {
             return true;
         } else {
@@ -79,9 +76,9 @@ public class PMMLAssemblerService implements KieAssemblerService {
         }
     }
 
-    private static boolean isjPMMLAvailableToClassLoader() {
+    private static boolean isjPMMLAvailableToClassLoader(ClassLoader classLoader) {
         try {
-            Thread.currentThread().getContextClassLoader().loadClass("org.kie.dmn.jpmml.DMNjPMMLInvocationEvaluator");
+            classLoader.loadClass("org.kie.dmn.jpmml.DMNjPMMLInvocationEvaluator");
             logger.info("jpmml libraries available on classpath, skipping kie-pmml parsing and compilation");
             return true;
         } catch (ClassNotFoundException e) {
@@ -112,8 +109,11 @@ public class PMMLAssemblerService implements KieAssemblerService {
     @Override
     public void addResources(Object kbuilder, Collection<ResourceWithConfiguration> resources, ResourceType type) {
         KnowledgeBuilderImpl kbuilderImpl = (KnowledgeBuilderImpl) kbuilder;
+        if (isjPMMLAvailableToClassLoader(kbuilderImpl.getRootClassLoader())) {
+            return;
+        }
         if (isBuildFromMaven()) {
-            addModels(kbuilderImpl, getKiePMMLModelsFromResourcesWithConfigurationsFromPlugin(kbuilderImpl, resources));
+            addModels(kbuilderImpl, getKiePMMLModelsFromResourcesWithConfigurationsWithSources(kbuilderImpl, resources));
         } else {
             List<KiePMMLModel> toAdd = getKiePMMLModelsLoadedFromResourcesWithConfigurations(kbuilderImpl, resources);
             if (toAdd.isEmpty()) {
@@ -127,8 +127,11 @@ public class PMMLAssemblerService implements KieAssemblerService {
     public void addResource(Object kbuilder, Resource resource, ResourceType type, ResourceConfiguration configuration) {
         logger.warn("invoked legacy addResource (no control on the order of the assembler compilation): {}", resource.getSourcePath());
         KnowledgeBuilderImpl kbuilderImpl = (KnowledgeBuilderImpl) kbuilder;
+        if (isjPMMLAvailableToClassLoader(kbuilderImpl.getRootClassLoader())) {
+            return;
+        }
         if (isBuildFromMaven()) {
-            addModels(kbuilderImpl, getKiePMMLModelsFromResourceFromPlugin(kbuilderImpl, resource));
+            addModels(kbuilderImpl, getKiePMMLModelsFromResourceWithSources(kbuilderImpl, resource));
         } else {
             List<KiePMMLModel> toAdd = getKiePMMLModelsLoadedFromResource(kbuilderImpl, resource);
             if (toAdd.isEmpty()) {
@@ -147,7 +150,7 @@ public class PMMLAssemblerService implements KieAssemblerService {
             PMMLPackage pmmlPkg = rpkg.computeIfAbsent(ResourceType.PMML, rtp -> new PMMLPackageImpl());
             pmmlPkg.addAll(Collections.singletonList(kiePMMLModel));
             if (kiePMMLModel instanceof HasNestedModels) {
-                addModels(kbuilderImpl, ((HasNestedModels)kiePMMLModel).getNestedModels());
+                addModels(kbuilderImpl, ((HasNestedModels) kiePMMLModel).getNestedModels());
             }
         }
     }

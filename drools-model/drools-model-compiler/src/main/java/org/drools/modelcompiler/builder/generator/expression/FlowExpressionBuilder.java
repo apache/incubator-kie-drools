@@ -109,7 +109,7 @@ public class FlowExpressionBuilder extends AbstractExpressionBuilder {
     }
 
     private MethodCallExpr buildSingleExpressionWithIndexing(SingleDrlxParseSuccess drlxParseResult) {
-        String exprId = drlxParseResult.getExprId(context.getPackageModel().getExprIdGenerator());
+        String exprId = createExprId(drlxParseResult);
         MethodCallExpr exprDSL = new MethodCallExpr(null, EXPR_CALL);
         if (exprId != null && !"".equals(exprId)) {
             exprDSL.addArgument( new StringLiteralExpr(exprId) );
@@ -122,6 +122,10 @@ public class FlowExpressionBuilder extends AbstractExpressionBuilder {
     }
 
     private MethodCallExpr buildExpression(SingleDrlxParseSuccess drlxParseResult, MethodCallExpr exprDSL ) {
+        if (drlxParseResult.isTemporal()) {
+            return buildTemporalExpression(drlxParseResult, exprDSL);
+        }
+
         final List<String> usedDeclarationsWithUnification = new ArrayList<>();
         if( drlxParseResult.isPatternBindingUnification() ) {
             usedDeclarationsWithUnification.add(drlxParseResult.getPatternBinding());
@@ -129,10 +133,6 @@ public class FlowExpressionBuilder extends AbstractExpressionBuilder {
             if (drlxParseResult.getPatternBinding() != null) {
                 exprDSL.addArgument(context.getVarExpr(drlxParseResult.getPatternBinding()));
             }
-        }
-
-        if (drlxParseResult.isTemporal() && drlxParseResult.getLeft() != null && !(drlxParseResult.getLeft().getExpression() instanceof NameExpr)) {
-            exprDSL.addArgument(generateLambdaForTemporalConstraint(drlxParseResult.getLeft(), drlxParseResult.getPatternType()));
         }
 
         usedDeclarationsWithUnification.addAll(drlxParseResult.getUsedDeclarations());
@@ -143,8 +143,6 @@ public class FlowExpressionBuilder extends AbstractExpressionBuilder {
 
         if (drlxParseResult.getRightLiteral() != null) {
             exprDSL.addArgument( "" + drlxParseResult.getRightLiteral() );
-        } else if (drlxParseResult.isTemporal() && drlxParseResult.getRight() != null && !(drlxParseResult.getRight().getExpression() instanceof NameExpr)) {
-            exprDSL.addArgument(generateLambdaForTemporalConstraint(drlxParseResult.getRight(), drlxParseResult.getPatternType()));
         }
 
         exprDSL.addArgument(buildConstraintExpression( drlxParseResult, drlxParseResult.getExpr() ));
@@ -152,7 +150,16 @@ public class FlowExpressionBuilder extends AbstractExpressionBuilder {
     }
 
     @Override
+    protected MethodCallExpr buildTemporalExpression(SingleDrlxParseSuccess drlxParseResult, MethodCallExpr exprDSL) {
+        if (drlxParseResult.getPatternBinding() != null) {
+            exprDSL.addArgument(context.getVarExpr(drlxParseResult.getPatternBinding()));
+        }
+        return super.buildTemporalExpression(drlxParseResult, exprDSL);
+    }
+
+    @Override
     public MethodCallExpr buildBinding(SingleDrlxParseSuccess drlxParseResult) {
+        sortUsedDeclarations(drlxParseResult);
         MethodCallExpr bindDSL = new MethodCallExpr(null, BIND_CALL);
         if(drlxParseResult.hasUnificationVariable()) {
             bindDSL.addArgument(context.getVarExpr(drlxParseResult.getUnificationVariable()));
@@ -217,7 +224,8 @@ public class FlowExpressionBuilder extends AbstractExpressionBuilder {
         TypedExpression left = drlxParseResult.getLeft();
         TypedExpression right = drlxParseResult.getRight();
 
-        if (!drlxParseResult.isBetaNode() && !(right.getExpression() instanceof LiteralExpr)) {
+        Expression rightExpression = right.getExpression();
+        if (!drlxParseResult.isBetaNode() && !(rightExpression instanceof LiteralExpr || isStringToDateExpression(rightExpression))) {
             return exprDSL;
         }
 

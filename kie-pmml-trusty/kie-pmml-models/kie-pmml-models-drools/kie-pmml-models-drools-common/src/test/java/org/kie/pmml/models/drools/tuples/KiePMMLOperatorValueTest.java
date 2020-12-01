@@ -17,7 +17,7 @@
 package org.kie.pmml.models.drools.tuples;
 
 import org.junit.Test;
-import org.kie.pmml.commons.model.enums.OPERATOR;
+import org.kie.pmml.api.enums.OPERATOR;
 
 import static org.junit.Assert.assertEquals;
 import static org.kie.pmml.models.drools.tuples.KiePMMLOperatorValue.VALUE_CONSTRAINT_PATTERN;

@@ -39,7 +39,7 @@ import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.time.SessionPseudoClock;
 
-import static org.drools.compiler.TestUtil.assertDrlHasCompilationError;
+import static org.drools.mvel.compiler.TestUtil.assertDrlHasCompilationError;
 
 /**
  * Tests usage of OOPath expressions with CEP (events, event windows, event streams).

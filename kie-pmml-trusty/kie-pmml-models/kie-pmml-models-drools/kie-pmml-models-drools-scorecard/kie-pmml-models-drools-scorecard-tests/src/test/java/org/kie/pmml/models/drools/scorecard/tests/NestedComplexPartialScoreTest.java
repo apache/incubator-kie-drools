@@ -28,11 +28,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.pmml.PMML4Result;
-import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
+import org.kie.pmml.api.runtime.PMMLRuntime;
+import org.kie.pmml.models.tests.AbstractPMMLTest;
 
 @RunWith(Parameterized.class)
-public class NestedComplexPartialScoreTest extends AbstractPMMLScorecardTest {
+public class NestedComplexPartialScoreTest extends AbstractPMMLTest {
 
+    private static final String FILE_NAME = "NestedComplexPartialScore.pmml";
     private static final String MODEL_NAME = "NestedComplexPartialScoreScorecard";
     private static final String TARGET_FIELD = "Score";
     private static final String REASON_CODE1_FIELD = "Reason Code 1";
@@ -54,9 +56,9 @@ public class NestedComplexPartialScoreTest extends AbstractPMMLScorecardTest {
         this.reasonCode2 = reasonCode2;
     }
 
-    @BeforeClass
+  @BeforeClass
     public static void setupClass() {
-        pmmlRuntime = getPMMLRuntime(MODEL_NAME);
+        pmmlRuntime = getPMMLRuntime(FILE_NAME);
     }
 
     @Parameterized.Parameters

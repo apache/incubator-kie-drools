@@ -548,7 +548,7 @@ public abstract class ClassUtils {
     public static boolean isConvertible( Class<?> srcPrimitive, Class<?> tgtPrimitive ) {
         if ( Boolean.TYPE.equals( srcPrimitive ) ) {
             return Boolean.TYPE.equals( tgtPrimitive );
-        } else if ( Byte.TYPE.equals( tgtPrimitive ) ) {
+        } else if ( Byte.TYPE.equals( srcPrimitive ) ) {
             return Byte.TYPE.equals( tgtPrimitive )
                    || Short.TYPE.equals( tgtPrimitive )
                    || Integer.TYPE.equals( tgtPrimitive )

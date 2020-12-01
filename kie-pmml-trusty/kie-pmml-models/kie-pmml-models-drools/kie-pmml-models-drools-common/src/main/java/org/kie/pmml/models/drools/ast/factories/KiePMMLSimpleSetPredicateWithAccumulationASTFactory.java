@@ -17,7 +17,7 @@ package org.kie.pmml.models.drools.ast.factories;
 
 import java.util.List;
 
-import org.kie.pmml.commons.enums.ResultCode;
+import org.kie.pmml.api.enums.ResultCode;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

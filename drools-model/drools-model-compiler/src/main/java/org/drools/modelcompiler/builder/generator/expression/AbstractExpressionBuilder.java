@@ -18,9 +18,12 @@ package org.drools.modelcompiler.builder.generator.expression;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.github.javaparser.ast.NodeList;
@@ -36,12 +39,16 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
+import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithOptionalScope;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.type.PrimitiveType;
 import com.github.javaparser.ast.type.Type;
+import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.model.Index;
+import org.drools.model.functions.PredicateInformation;
+import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.builder.generator.DeclarationSpec;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
@@ -53,10 +60,11 @@ import org.drools.modelcompiler.builder.generator.drlxparse.SingleDrlxParseSucce
 import org.drools.modelcompiler.util.ClassUtil;
 import org.drools.mvel.parser.ast.expr.BigDecimalLiteralExpr;
 import org.drools.mvel.parser.ast.expr.BigIntegerLiteralExpr;
+import org.kie.api.io.Resource;
 
 import static java.util.Optional.ofNullable;
 
-import static org.drools.model.bitmask.BitMaskUtil.isAccessibleProperties;
+import static org.drools.modelcompiler.util.ClassUtil.isAccessibleProperties;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.*;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.INPUT_CALL;
 import static org.drools.modelcompiler.util.ClassUtil.isAssignableFrom;
@@ -183,7 +191,10 @@ public abstract class AbstractExpressionBuilder {
     protected boolean shouldIndexConstraintWithRightScopePatternBinding(SingleDrlxParseSuccess result) {
         TypedExpression right = result.getRight();
 
-        if(right != null && right.getExpression() != null && right.getExpression() instanceof NodeWithOptionalScope) {
+        if (right != null && right.getExpression() != null && right.getExpression() instanceof NodeWithOptionalScope) {
+            if (isStringToDateExpression(right.getExpression())) {
+                return true;
+            }
             NodeWithOptionalScope<?> e = (NodeWithOptionalScope<?>) (right.getExpression());
             return e.getScope()
                     .map(Object::toString)
@@ -192,6 +203,10 @@ public abstract class AbstractExpressionBuilder {
         }
 
         return true;
+    }
+
+    protected boolean isStringToDateExpression(Expression expression) {
+        return expression instanceof MethodCallExpr && ((MethodCallExpr) expression).getNameAsString().equals(PackageModel.STRING_TO_DATE_METHOD);
     }
 
     boolean isAlphaIndex( Collection<String> usedDeclarations ) {
@@ -344,5 +359,101 @@ public abstract class AbstractExpressionBuilder {
             context.getPackageModel().getLambdaReturnTypes().put((LambdaExpr) generatedExpr, typedExpression.getType());
         }
         return generatedExpr;
+    }
+
+    protected MethodCallExpr buildTemporalExpression(SingleDrlxParseSuccess drlxParseResult, MethodCallExpr exprDSL) {
+        boolean thisOnRight = isThisOnRight(drlxParseResult);
+
+        // function for "this" should be added first
+        if (thisOnRight) {
+            if (drlxParseResult.getRight() != null && !drlxParseResult.getRight().getExpression().isNameExpr()) {
+                exprDSL.addArgument(generateLambdaForTemporalConstraint(drlxParseResult.getRight(), drlxParseResult.getPatternType()));
+            }
+        } else {
+            if (drlxParseResult.getLeft() != null && !drlxParseResult.getLeft().getExpression().isNameExpr()) {
+                exprDSL.addArgument(generateLambdaForTemporalConstraint(drlxParseResult.getLeft(), drlxParseResult.getPatternType()));
+            }
+        }
+
+        final List<String> usedDeclarationsWithUnification = new ArrayList<>();
+        usedDeclarationsWithUnification.addAll(drlxParseResult.getUsedDeclarations());
+
+        usedDeclarationsWithUnification.stream()
+                .filter( s -> !(drlxParseResult.isSkipThisAsParam() && s.equals( drlxParseResult.getPatternBinding() ) ) )
+                .map(context::getVarExpr)
+                .forEach(exprDSL::addArgument);
+
+        if (drlxParseResult.getRightLiteral() != null) {
+            exprDSL.addArgument( "" + drlxParseResult.getRightLiteral() );
+        } else {
+            // function for variable
+            if (thisOnRight) {
+                if (drlxParseResult.getLeft() != null && !drlxParseResult.getLeft().getExpression().isNameExpr()) {
+                    exprDSL.addArgument(generateLambdaForTemporalConstraint(drlxParseResult.getLeft(), drlxParseResult.getPatternType()));
+                }
+            } else {
+                if (drlxParseResult.getRight() != null && !drlxParseResult.getRight().getExpression().isNameExpr()) {
+                    exprDSL.addArgument(generateLambdaForTemporalConstraint(drlxParseResult.getRight(), drlxParseResult.getPatternType()));
+                }
+            }
+        }
+
+        if (thisOnRight) {
+            exprDSL.addArgument(buildConstraintExpression(drlxParseResult, new MethodCallExpr(drlxParseResult.getExpr(), "thisOnRight")));
+        } else {
+            exprDSL.addArgument(buildConstraintExpression(drlxParseResult, drlxParseResult.getExpr()));
+        }
+        return exprDSL;
+    }
+
+    protected boolean isThisOnRight(SingleDrlxParseSuccess drlxParseResult) {
+        if (drlxParseResult.getRight() != null) {
+            if (drlxParseResult.getRight().getExpression().isNameExpr()) {
+                NameExpr name = drlxParseResult.getRight().getExpression().asNameExpr();
+                if (name.equals(new NameExpr(THIS_PLACEHOLDER))) {
+                    return true;
+                }
+            } else {
+                return containsThis(drlxParseResult.getRight());
+            }
+        }
+        return false;
+    }
+
+    protected boolean containsThis(TypedExpression typedExpression) {
+        Expression expr = typedExpression.getExpression();
+        Optional<String> opt = expr.findAll(NameExpr.class)
+                .stream()
+                .map(NameExpr::getName)
+                .map(SimpleName::getIdentifier)
+                .findFirst(); // just first one
+        if (!opt.isPresent()) {
+            return false;
+        }
+        return opt.get().equals(THIS_PLACEHOLDER);
+    }
+
+    protected String createExprId(SingleDrlxParseSuccess drlxParseResult) {
+        String exprId = drlxParseResult.getExprId(context.getPackageModel().getExprIdGenerator());
+
+        context.getPackageModel().indexConstraint(exprId, new PredicateInformation(
+                drlxParseResult.getOriginalDrlConstraint(),
+                context.getRuleName(),
+                Optional.ofNullable(context.getRuleDescr())
+                    .map(RuleDescr::getResource)
+                    .map(Resource::getSourcePath)
+                    .orElse("")
+        ));
+        return exprId;
+    }
+
+    protected void sortUsedDeclarations(SingleDrlxParseSuccess drlxParseResult) {
+        // Binding parameters have to be sorted as when they're sorted lexicographically when invoked
+        // See Accumulate.initInnerDeclarationCache()
+        List<String> sorted = drlxParseResult.getUsedDeclarationsOnLeft()
+                .stream()
+                .sorted()
+                .collect(Collectors.toList());
+        drlxParseResult.setUsedDeclarationsOnLeft(sorted);
     }
 }

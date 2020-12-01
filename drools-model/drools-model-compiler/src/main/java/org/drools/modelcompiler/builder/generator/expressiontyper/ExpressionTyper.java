@@ -127,6 +127,11 @@ public class ExpressionTyper {
         this(ruleContext, patternType, bindingId, isPositional, new ExpressionTyperContext());
     }
 
+    // When using the ExpressionTyper outside of a pattern
+    public ExpressionTyper(RuleContext ruleContext) {
+        this(ruleContext, Object.class, null, false, new ExpressionTyperContext());
+    }
+
     public ExpressionTyper(RuleContext ruleContext, Class<?> patternType, String bindingId, boolean isPositional, ExpressionTyperContext context) {
         this.ruleContext = ruleContext;
         packageModel = ruleContext.getPackageModel();
@@ -487,6 +492,27 @@ public class ExpressionTyper {
             if (firstProp != null) {
                 context.addReactOnProperties( firstProp );
             }
+        } else {
+            for (Expression arg : methodArguments) {
+                addReactOnPropertyForArgument( arg );
+            }
+        }
+    }
+
+    private void addReactOnPropertyForArgument( Node arg ) {
+        if ( arg instanceof MethodCallExpr) {
+            MethodCallExpr methodArg = ( MethodCallExpr ) arg;
+            if ( methodArg.getArguments().isEmpty() && isThisExpression( methodArg.getScope().orElse( null ) ) ) {
+                String firstProp = getter2property(methodArg.getNameAsString());
+                if (firstProp != null) {
+                    context.addReactOnProperties( firstProp );
+                    return;
+                }
+            }
+        }
+
+        for (Node child : arg.getChildNodes()) {
+            addReactOnPropertyForArgument( child );
         }
     }
 
@@ -943,7 +969,7 @@ public class ExpressionTyper {
         rootNode.ifPresent(n -> {
             // In the error messages HalfBinary are transformed to Binary
             Node withHalfBinaryReplaced = replaceAllHalfBinaryChildren(n);
-            ruleContext.addCompilationError(new ParseExpressionErrorResult((Expression) withHalfBinaryReplaced));
+            ruleContext.addCompilationError(new ParseExpressionErrorResult((Expression) withHalfBinaryReplaced, ruleContext.getCurrentConstraintDescr()));
         });
         return empty();
     }

@@ -23,14 +23,16 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
+import org.appformer.maven.integration.MavenRepository;
+import org.appformer.maven.support.DependencyFilter;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieContainerImpl;
 import org.drools.compiler.kie.builder.impl.KieRepositoryImpl;
 import org.drools.compiler.kie.builder.impl.KieServicesImpl;
-import org.drools.core.factmodel.ClassBuilderFactory;
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.factmodel.FieldDefinition;
+import org.drools.mvel.asm.DefaultBeanClassBuilder;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
@@ -45,13 +47,13 @@ import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.utils.KieTypeResolver;
-import org.appformer.maven.integration.MavenRepository;
-import org.appformer.maven.support.DependencyFilter;
 
+import static org.appformer.maven.integration.MavenRepository.getMavenRepository;
 import static org.drools.core.util.DroolsAssert.assertEnumerationSize;
 import static org.drools.core.util.DroolsAssert.assertUrlEnumerationContainsMatch;
-import static org.junit.Assert.*;
-import static org.appformer.maven.integration.MavenRepository.getMavenRepository;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class KieModuleMavenTest extends AbstractKieCiTest {
 
@@ -185,7 +187,7 @@ public class KieModuleMavenTest extends AbstractKieCiTest {
 
         ClassDefinition def = new ClassDefinition(pojoNS + "." + className);
         def.addField(new FieldDefinition("text", String.class.getName()));
-        byte[] messageClazz = ClassBuilderFactory.getDefaultBeanClassBuilder().buildClass(def,null);
+        byte[] messageClazz = new DefaultBeanClassBuilder(true).buildClass(def,null);
         MemoryFileSystem mfs = new MemoryFileSystem();
         mfs.write(pojoNS.replace('.', '/') + "/" + className+".class", messageClazz);
         byte[] pomContent = generatePomXml(pojoID).getBytes();

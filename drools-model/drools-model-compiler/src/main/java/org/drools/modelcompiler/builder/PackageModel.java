@@ -26,6 +26,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import com.github.javaparser.StaticJavaParser;
@@ -64,6 +65,7 @@ import org.drools.model.Query;
 import org.drools.model.Rule;
 import org.drools.model.RulesSupplier;
 import org.drools.model.WindowReference;
+import org.drools.model.functions.PredicateInformation;
 import org.drools.modelcompiler.builder.generator.DRLIdGenerator;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.QueryGenerator;
@@ -82,14 +84,13 @@ import static com.github.javaparser.ast.Modifier.finalModifier;
 import static com.github.javaparser.ast.Modifier.publicModifier;
 import static com.github.javaparser.ast.Modifier.staticModifier;
 import static org.drools.core.impl.StatefulKnowledgeSessionImpl.DEFAULT_RULE_UNIT;
-import static org.drools.core.util.StringUtils.generateUUID;
-import static org.drools.model.bitmask.BitMaskUtil.getAccessibleProperties;
+import static org.drools.core.util.StringUtils.getPkgUUID;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.GLOBAL_OF_CALL;
 import static org.drools.modelcompiler.builder.generator.QueryGenerator.QUERY_METHOD_PREFIX;
 import static org.drools.modelcompiler.util.ClassUtil.asJavaSourceName;
-import static org.drools.modelcompiler.util.StringUtil.md5Hash;
+import static org.drools.modelcompiler.util.ClassUtil.getAccessibleProperties;
 
 public class PackageModel {
 
@@ -148,21 +149,21 @@ public class PackageModel {
 
     private Map<LambdaExpr, java.lang.reflect.Type> lambdaReturnTypes = new HashMap<>();
 
+    private Map<String, PredicateInformation> allConstraintsMap = new HashMap<>();
+
     private boolean oneClassPerRule;
 
     public PackageModel( ReleaseId releaseId, String name, KnowledgeBuilderConfigurationImpl configuration, boolean isPattern, DialectCompiletimeRegistry dialectCompiletimeRegistry, DRLIdGenerator exprIdGenerator) {
-        this.name = name;
-        this.pkgUUID = (releaseId != null && !releaseId.isSnapshot()) ? md5Hash(releaseId.toString()+name) : generateUUID();
-        this.isPattern = isPattern;
-        this.rulesFileName = RULES_FILE_NAME + pkgUUID;
-        this.configuration = configuration;
-        this.exprIdGenerator = exprIdGenerator;
-        this.dialectCompiletimeRegistry = dialectCompiletimeRegistry;
+        this(name, configuration, isPattern, dialectCompiletimeRegistry, exprIdGenerator, getPkgUUID(releaseId, name));
     }
 
     public PackageModel(String gav, String name, KnowledgeBuilderConfigurationImpl configuration, boolean isPattern, DialectCompiletimeRegistry dialectCompiletimeRegistry, DRLIdGenerator exprIdGenerator) {
+        this(name, configuration, isPattern, dialectCompiletimeRegistry, exprIdGenerator, getPkgUUID(gav, name));
+    }
+
+    public PackageModel(String name, KnowledgeBuilderConfigurationImpl configuration, boolean isPattern, DialectCompiletimeRegistry dialectCompiletimeRegistry, DRLIdGenerator exprIdGenerator, String pkgUUID) {
         this.name = name;
-        this.pkgUUID = md5Hash(gav+name);
+        this.pkgUUID = pkgUUID;
         this.isPattern = isPattern;
         this.rulesFileName = RULES_FILE_NAME + pkgUUID;
         this.configuration = configuration;
@@ -861,5 +862,17 @@ public class PackageModel {
 
     public Map<LambdaExpr, java.lang.reflect.Type> getLambdaReturnTypes() {
         return lambdaReturnTypes;
+    }
+
+    public void indexConstraint(String exprId, PredicateInformation predicateInformation) {
+        allConstraintsMap.put(exprId, predicateInformation);
+    }
+
+    public Optional<PredicateInformation> findConstraintWithExprId(String exprId) {
+        return Optional.ofNullable(allConstraintsMap.get(exprId));
+    }
+
+    public Map<String, PredicateInformation> getAllConstraintsMap() {
+        return Collections.unmodifiableMap(allConstraintsMap);
     }
 }

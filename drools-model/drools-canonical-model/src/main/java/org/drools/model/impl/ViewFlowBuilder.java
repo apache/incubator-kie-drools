@@ -434,7 +434,9 @@ public class ViewFlowBuilder implements ViewBuilder {
                 newCondition = condition;
             } else if (acc.getExpr() instanceof Binding) {
                 Binding binding = (( Binding ) acc.getExpr());
-                PatternImpl bindingPattern = new PatternImpl( binding.getInputVariable() );
+                PatternImpl bindingPattern = condition instanceof PatternImpl && (( PatternImpl<?> ) condition).getPatternVariable() == binding.getInputVariable() ?
+                    ( PatternImpl<?> ) condition :
+                    new PatternImpl( binding.getInputVariable() );
                 bindingPattern.addBinding( binding );
                 newCondition = bindingPattern;
                 ctx.usedVars.add( binding.getBoundVariable() );

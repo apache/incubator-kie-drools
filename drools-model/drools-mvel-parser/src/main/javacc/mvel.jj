@@ -302,6 +302,9 @@ TOKEN :
 | < MVEL_STARTS_WITH: "str[startsWith]" >
 | < MVEL_ENDS_WITH: "str[endsWith]" >
 | < MVEL_LENGTH: "str[length]" >
+| < DOT_DOT_SLASH: "../" >
+| < HASHMARK: "#" >
+| < EXCL_DOT: "!." >
 | <UNIX_EOL: "\n">
 | <WINDOWS_EOL : "\r\n">
 

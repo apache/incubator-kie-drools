@@ -660,7 +660,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
     @Override
     public void setPartitionId(BuildContext context, RuleBasePartitionId partitionId) {
         if (this.partitionId != null && this.partitionId != partitionId) {
-            objectSource.sink.changeSinkPartition(this, this.partitionId, partitionId, objectSource.alphaNodeHashingThreshold );
+            objectSource.sink.changeSinkPartition(this, this.partitionId, partitionId, objectSource.alphaNodeHashingThreshold, objectSource.alphaNodeRangeIndexThreshold );
         }
         this.partitionId = partitionId;
     }

@@ -50,13 +50,13 @@ import org.dmg.pmml.Predicate;
 import org.dmg.pmml.SimplePredicate;
 import org.dmg.pmml.SimpleSetPredicate;
 import org.dmg.pmml.True;
-import org.kie.pmml.commons.exceptions.KiePMMLException;
-import org.kie.pmml.commons.exceptions.KiePMMLInternalException;
-import org.kie.pmml.commons.model.enums.ARRAY_TYPE;
-import org.kie.pmml.commons.model.enums.BOOLEAN_OPERATOR;
-import org.kie.pmml.commons.model.enums.DATA_TYPE;
-import org.kie.pmml.commons.model.enums.IN_NOTIN;
-import org.kie.pmml.commons.model.enums.OPERATOR;
+import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.api.exceptions.KiePMMLInternalException;
+import org.kie.pmml.api.enums.ARRAY_TYPE;
+import org.kie.pmml.api.enums.BOOLEAN_OPERATOR;
+import org.kie.pmml.api.enums.DATA_TYPE;
+import org.kie.pmml.api.enums.IN_NOTIN;
+import org.kie.pmml.api.enums.OPERATOR;
 import org.kie.pmml.commons.model.predicates.KiePMMLCompoundPredicate;
 import org.kie.pmml.commons.model.predicates.KiePMMLFalsePredicate;
 import org.kie.pmml.commons.model.predicates.KiePMMLPredicate;
@@ -76,7 +76,7 @@ import static org.kie.pmml.commons.Constants.MISSING_EXPRESSION_IN_RETURN;
 import static org.kie.pmml.commons.Constants.MISSING_METHOD_IN_CLASS;
 import static org.kie.pmml.commons.Constants.MISSING_RETURN_IN_METHOD;
 import static org.kie.pmml.commons.Constants.MISSING_VARIABLE_IN_BODY;
-import static org.kie.pmml.commons.model.enums.BOOLEAN_OPERATOR.SURROGATE;
+import static org.kie.pmml.api.enums.BOOLEAN_OPERATOR.SURROGATE;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFromFileName;
@@ -103,12 +103,12 @@ public class KiePMMLPredicateFactory {
     }
 
     public static List<KiePMMLPredicate> getPredicates(List<Predicate> predicates, DataDictionary dataDictionary) {
-        logger.info("getPredicates {}", predicates);
+        logger.trace("getPredicates {}", predicates);
         return predicates.stream().map(predicate -> getPredicate(predicate, dataDictionary)).collect(Collectors.toList());
     }
 
     public static KiePMMLPredicate getPredicate(Predicate predicate, DataDictionary dataDictionary) {
-        logger.info("getPredicate {}", predicate);
+        logger.trace("getPredicate {}", predicate);
         if (predicate instanceof SimplePredicate) {
             final DataType dataType = dataDictionary.getDataFields().stream()
                     .filter(dataField -> dataField.getName().getValue().equals(((SimplePredicate) predicate).getField().getValue()))
@@ -166,7 +166,7 @@ public class KiePMMLPredicateFactory {
 
     public static Map<String, String> getPredicateSourcesMap(final KiePMMLPredicate kiePMMLPredicate,
                                                              final String packageName) {
-        logger.info("getPredicateSourcesMap {}", kiePMMLPredicate);
+        logger.trace("getPredicateSourcesMap {}", kiePMMLPredicate);
         if (kiePMMLPredicate instanceof KiePMMLSimplePredicate) {
             return getKiePMMLSimplePredicateSourcesMap((KiePMMLSimplePredicate) kiePMMLPredicate, packageName);
         } else if (kiePMMLPredicate instanceof KiePMMLSimpleSetPredicate) {

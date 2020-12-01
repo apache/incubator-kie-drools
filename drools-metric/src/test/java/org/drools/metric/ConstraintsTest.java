@@ -19,9 +19,9 @@ package org.drools.metric;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.compiler.CommonTestMethodBase;
-import org.drools.compiler.Person;
+import org.drools.mvel.compiler.Person;
 import org.drools.metric.util.MetricLogUtils;
+import org.drools.mvel.CommonTestMethodBase;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.KieBase;
@@ -40,7 +40,7 @@ public class ConstraintsTest extends CommonTestMethodBase {
     @Test
     public void testDoubleBetaConstraints() {
         String str =
-                "import org.drools.compiler.Person\n" +
+                "import " + Person.class.getCanonicalName() + "\n" +
                      "global java.util.List list;\n" +
                      "rule R when\n" +
                      "  Person( $age : age, $name : name )\n" +
@@ -71,7 +71,7 @@ public class ConstraintsTest extends CommonTestMethodBase {
     @Test
     public void testTripleBetaConstraints() {
         String str =
-                "import org.drools.compiler.Person\n" +
+                "import " + Person.class.getCanonicalName() + "\n" +
                      "global java.util.List list;\n" +
                      "rule R when\n" +
                      "  Person( $age : age, $name : name, $happy : happy )\n" +
@@ -102,7 +102,7 @@ public class ConstraintsTest extends CommonTestMethodBase {
     @Test
     public void testQuadroupleBetaConstraints() {
         String str =
-                "import org.drools.compiler.Person\n" +
+                "import " + Person.class.getCanonicalName() + "\n" +
                      "global java.util.List list;\n" +
                      "rule R when\n" +
                      "  Person( $age : age, $name : name, $happy : happy, $alive : alive )\n" +
@@ -136,7 +136,7 @@ public class ConstraintsTest extends CommonTestMethodBase {
     @Test
     public void testDefaultBetaConstraints() {
         String str =
-                "import org.drools.compiler.Person\n" +
+                "import " + Person.class.getCanonicalName() + "\n" +
                      "global java.util.List list;\n" +
                      "rule R when\n" +
                      "  Person( $age : age, $name : name, $happy : happy, $alive : alive, $status : status )\n" +

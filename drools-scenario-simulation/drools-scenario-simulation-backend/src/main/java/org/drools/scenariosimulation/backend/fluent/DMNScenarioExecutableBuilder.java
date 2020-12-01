@@ -30,9 +30,9 @@ import org.kie.internal.command.RegistryContext;
 
 public class DMNScenarioExecutableBuilder {
 
-    public static String DEFAULT_APPLICATION = "defaultApplication";
-    public static String DMN_RESULT = "dmnResult";
-    public static String DMN_MODEL = "dmnModel";
+    public static final String DEFAULT_APPLICATION = "defaultApplication";
+    public static final String DMN_RESULT = "dmnResult";
+    public static final String DMN_MODEL = "dmnModel";
 
     private final DMNRuntimeFluent dmnRuntimeFluent;
     private final ExecutableBuilder executableBuilder;

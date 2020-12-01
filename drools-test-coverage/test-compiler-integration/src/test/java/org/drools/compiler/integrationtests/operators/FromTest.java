@@ -92,32 +92,15 @@ public class FromTest {
         }
     }
 
+
     @Test
     public void testFromSharing() {
-        // Keeping original test as non-property reactive by default, just allowed.
-        final String drl =
-                "import " + ListsContainer.class.getCanonicalName() + "\n" +
-                        "global java.util.List output1;\n" +
-                        "global java.util.List output2;\n" +
-                        "rule R1 when\n" +
-                        "    ListsContainer( $list : list1 )\n" +
-                        "    $s : String( length == 2 ) from $list\n" +
-                        "then\n" +
-                        "    output1.add($s);\n" +
-                        "end\n" +
-                        "rule R2 when\n" +
-                        "    ListsContainer( $list : list2 )\n" +
-                        "    $s : String( length == 2 ) from $list\n" +
-                        "then\n" +
-                        "    output2.add($s);\n" +
-                        "end\n" +
-                        "rule R3 when\n" +
-                        "    ListsContainer( $list : list2 )\n" +
-                        "    $s : String( length == 2 ) from $list\n" +
-                        "then\n" +
-                        "    output2.add($s);\n" +
-                        "end\n";
+        testFromSharingCommon(kieBaseTestConfiguration);
+    }
 
+    public static void testFromSharingCommon(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        // Keeping original test as non-property reactive by default, just allowed.
+        final String drl = fromSharingRule();
 
         final ReleaseId releaseId1 = KieServices.get().newReleaseId("org.kie", "from-test", "1");
         final Map<String, String> kieModuleConfigurationProperties = new HashMap<>();
@@ -133,20 +116,7 @@ public class FromTest {
 
         final KieSession ksession = kbase.newKieSession();
         try {
-            final List<String> output1 = new ArrayList<>();
-            ksession.setGlobal( "output1", output1 );
-            final List<String> output2 = new ArrayList<>();
-            ksession.setGlobal( "output2", output2 );
-
-            ksession.insert(new ListsContainer() );
-            ksession.fireAllRules();
-
-            assertEquals("bb", output1.get( 0 ));
-            assertEquals("22", output2.get( 0 ));
-            assertEquals("22", output2.get( 1 ));
-
-            final EntryPointNode epn = ( (InternalKnowledgeBase)kbase ).getRete().getEntryPointNodes().values().iterator().next();
-            final ObjectTypeNode otn = epn.getObjectTypeNodes().get(new ClassObjectType(ListsContainer.class ) );
+            final ObjectTypeNode otn = insertObjectFireRules((InternalKnowledgeBase) kbase, ksession);
 
             // There is only 1 LIA
             assertEquals( 1, otn.getObjectSinkPropagator().size() );
@@ -169,48 +139,14 @@ public class FromTest {
     @Test
     public void testFromSharingWithPropertyReactive() {
         // As above but with property reactive as default
-        final String drl =
-                "import " + ListsContainer.class.getCanonicalName() + "\n" +
-                        "global java.util.List output1;\n" +
-                        "global java.util.List output2;\n" +
-                        "rule R1 when\n" +
-                        "    ListsContainer( $list : list1 )\n" +
-                        "    $s : String( length == 2 ) from $list\n" +
-                        "then\n" +
-                        "    output1.add($s);\n" +
-                        "end\n" +
-                        "rule R2 when\n" +
-                        "    ListsContainer( $list : list2 )\n" +
-                        "    $s : String( length == 2 ) from $list\n" +
-                        "then\n" +
-                        "    output2.add($s);\n" +
-                        "end\n" +
-                        "rule R3 when\n" +
-                        "    ListsContainer( $list : list2 )\n" +
-                        "    $s : String( length == 2 ) from $list\n" +
-                        "then\n" +
-                        "    output2.add($s);\n" +
-                        "end\n";
+        final String drl = fromSharingRule();
         // property reactive as default:
         final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("from-test",
                                                                          kieBaseTestConfiguration,
                                                                          drl);
         final KieSession ksession = kbase.newKieSession();
         try {
-            final List<String> output1 = new ArrayList<>();
-            ksession.setGlobal( "output1", output1 );
-            final List<String> output2 = new ArrayList<>();
-            ksession.setGlobal( "output2", output2 );
-
-            ksession.insert(new ListsContainer() );
-            ksession.fireAllRules();
-
-            assertEquals("bb", output1.get( 0 ));
-            assertEquals("22", output2.get( 0 ));
-            assertEquals("22", output2.get( 1 ));
-
-            final EntryPointNode epn = ( (InternalKnowledgeBase)kbase ).getRete().getEntryPointNodes().values().iterator().next();
-            final ObjectTypeNode otn = epn.getObjectTypeNodes().get(new ClassObjectType(ListsContainer.class ) );
+            final ObjectTypeNode otn = insertObjectFireRules((InternalKnowledgeBase) kbase, ksession);
 
             // There are 2 LIAs, one for the list1 and the other for the list2
             assertEquals( 2, otn.getObjectSinkPropagator().size() );
@@ -231,6 +167,47 @@ public class FromTest {
         } finally {
             ksession.dispose();
         }
+    }
+
+    public static String fromSharingRule() {
+        return "import " + ListsContainer.class.getCanonicalName() + "\n" +
+                "global java.util.List output1;\n" +
+                "global java.util.List output2;\n" +
+                "rule R1 when\n" +
+                "    ListsContainer( $list : list1 )\n" +
+                "    $s : String( length == 2 ) from $list\n" +
+                "then\n" +
+                "    output1.add($s);\n" +
+                "end\n" +
+                "rule R2 when\n" +
+                "    ListsContainer( $list : list2 )\n" +
+                "    $s : String( length == 2 ) from $list\n" +
+                "then\n" +
+                "    output2.add($s);\n" +
+                "end\n" +
+                "rule R3 when\n" +
+                "    ListsContainer( $list : list2 )\n" +
+                "    $s : String( length == 2 ) from $list\n" +
+                "then\n" +
+                "    output2.add($s);\n" +
+                "end\n";
+    }
+
+    private static ObjectTypeNode insertObjectFireRules(InternalKnowledgeBase kbase, KieSession ksession) {
+        final List<String> output1 = new ArrayList<>();
+        ksession.setGlobal("output1", output1);
+        final List<String> output2 = new ArrayList<>();
+        ksession.setGlobal("output2", output2);
+
+        ksession.insert(new ListsContainer());
+        ksession.fireAllRules();
+
+        assertEquals("bb", output1.get(0));
+        assertEquals("22", output2.get(0));
+        assertEquals("22", output2.get(1));
+
+        final EntryPointNode epn = kbase.getRete().getEntryPointNodes().values().iterator().next();
+        return epn.getObjectTypeNodes().get(new ClassObjectType(ListsContainer.class));
     }
 
     @Test

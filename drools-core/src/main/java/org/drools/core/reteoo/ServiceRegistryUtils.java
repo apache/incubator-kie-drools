@@ -25,7 +25,7 @@ public class ServiceRegistryUtils {
 
     public static <T> Optional<T> optionalService(Class<T> clazz) {
         try {
-            return Optional.ofNullable(ServiceRegistry.getInstance().get(clazz));
+            return Optional.ofNullable(ServiceRegistry.getService(clazz));
         } catch (RuntimeException e) {
             return Optional.empty();
         }

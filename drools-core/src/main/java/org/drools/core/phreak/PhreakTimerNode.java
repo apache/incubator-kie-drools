@@ -15,7 +15,6 @@
 
 package org.drools.core.phreak;
 
-import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
@@ -24,21 +23,12 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.NetworkNode;
 import org.drools.core.common.TupleSets;
 import org.drools.core.common.WorkingMemoryAction;
-import org.drools.core.marshalling.impl.MarshallerReaderContext;
-import org.drools.core.marshalling.impl.MarshallerWriteContext;
-import org.drools.core.marshalling.impl.PersisterHelper;
-import org.drools.core.marshalling.impl.ProtobufInputMarshaller;
-import org.drools.core.marshalling.impl.ProtobufInputMarshaller.TupleKey;
-import org.drools.core.marshalling.impl.ProtobufMessages;
-import org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerNodeTimer;
-import org.drools.core.marshalling.impl.ProtobufOutputMarshaller;
-import org.drools.core.marshalling.impl.TimersInputMarshaller;
-import org.drools.core.marshalling.impl.TimersOutputMarshaller;
+import org.drools.core.marshalling.impl.MarshallingHelper;
+import org.drools.core.marshalling.impl.TupleKey;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.PathMemory;
-import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.reteoo.TimerNode;
 import org.drools.core.reteoo.TimerNode.TimerNodeMemory;
@@ -173,7 +163,7 @@ public class PhreakTimerNode {
         }
         for ( LeftTuple leftTuple = srcLeftTuples.getDeleteFirst(); leftTuple != null; ) {
             LeftTuple next = leftTuple.getStagedNext();
-            PropagationContext pctx = leftTuple.getPropagationContext();
+            PropagationContext pctx = leftTuple.findMostRecentPropagationContext();
 
             Object obj = leftTuple.getContextObject();
             if (obj instanceof DefaultJobHandle) {
@@ -181,8 +171,6 @@ public class PhreakTimerNode {
             } else if (obj instanceof TupleKey && pctx.getReaderContext() != null) {
                 pctx.getReaderContext().removeTimerNodeScheduler( timerNode.getId(), (TupleKey) obj );
             }
-
-            pctx = RuleTerminalNode.findMostRecentPropagationContext( leftTuple, pctx );
 
             if ( leftTuple.getMemory() != null ) {
                 leftTuples.remove( leftTuple ); // it gets removed either way.
@@ -247,7 +235,7 @@ public class PhreakTimerNode {
                     return createTrigger( timerNode, wm, timer, timestamp, calendarNames, calendars, leftTuple );
                 }
             };
-            TupleKey key = PersisterHelper.createTupleKey( leftTuple );
+            TupleKey key = MarshallingHelper.createTupleKey( leftTuple );
             leftTuple.getPropagationContext().getReaderContext().addTimerNodeScheduler( timerNode.getId(), key, scheduler );
             leftTuple.setContextObject( key );
         }
@@ -383,11 +371,6 @@ public class PhreakTimerNode {
 
         private TimerAction( TimerNodeJobContext timerJobCtx ) {
             this.timerJobCtx = timerJobCtx;
-        }
-
-        @Override
-        public ProtobufMessages.ActionQueue.Action serialize( MarshallerWriteContext context ) throws IOException {
-            throw new UnsupportedOperationException();
         }
 
         @Override
@@ -537,49 +520,4 @@ public class PhreakTimerNode {
             return timerNodeId;
         }
     }
-
-    public static class TimerNodeTimerOutputMarshaller
-            implements
-            TimersOutputMarshaller {
-
-        public ProtobufMessages.Timers.Timer serialize(JobContext jobCtx,
-                                                       MarshallerWriteContext outputCtx) {
-            // TimerNodeJobContext   
-            TimerNodeJobContext tnJobCtx = (TimerNodeJobContext) jobCtx;
-            ProtobufMessages.Trigger trigger = ProtobufOutputMarshaller.writeTrigger( tnJobCtx.getTrigger(), outputCtx );
-            if (trigger != null) {
-                return ProtobufMessages.Timers.Timer.newBuilder()
-                        .setType( ProtobufMessages.Timers.TimerType.TIMER_NODE )
-                        .setTimerNode( ProtobufMessages.Timers.TimerNodeTimer.newBuilder()
-                                               .setNodeId( tnJobCtx.getTimerNodeId() )
-                                               .setTuple( PersisterHelper.createTuple( tnJobCtx.getTuple() ) )
-                                               .setTrigger( trigger )
-                                               .build() )
-                        .build();
-            } else {
-                return null;
-            }
-        }
-    }
-
-    public static class TimerNodeTimerInputMarshaller
-            implements
-            TimersInputMarshaller {
-
-        public void deserialize(MarshallerReaderContext inCtx,
-                                ProtobufMessages.Timers.Timer _timer) throws ClassNotFoundException {
-            TimerNodeTimer _tn = _timer.getTimerNode();
-
-            int timerNodeId = _tn.getNodeId();
-            TupleKey tuple = PersisterHelper.createTupleKey( _tn.getTuple() );
-            Trigger trigger = ProtobufInputMarshaller.readTrigger( inCtx,
-                                                                   _tn.getTrigger() );
-
-            Scheduler scheduler = inCtx.removeTimerNodeScheduler( timerNodeId, tuple );
-            if( scheduler != null ) {
-                scheduler.schedule( trigger );
-            }
-        }
-    }
-
 }

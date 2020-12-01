@@ -16,6 +16,7 @@
 
 package org.kie.dmn.signavio.feel.runtime;
 
+import static org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity.ERROR;
 import static org.kie.dmn.signavio.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.signavio.util.DynamicTypeUtils.mapOf;
 
@@ -124,6 +125,13 @@ public class FEELExtendedFunctionsTest extends ExtendedFunctionsBaseFEELTest {
                 { "dayDiff( \"2015-07-02T14:40:23-06:00\", \"2017-07-02T14:40:23-06:00\" )", new BigDecimal( "731" ), null },
                 { "dayDiff( \"2015-06-02T14:40:23-06:00\", \"2017-07-02T14:40:23-06:00\" )", new BigDecimal( "761" ), null },
                 { "dayDiff( \"2015-08-02T14:40:23-06:00\", \"2017-07-02T14:40:23-06:00\" )", new BigDecimal( "700" ), null },
+                { "dayDiff( date ( \"2015-08-02\" ), date( \"2017-07-02\" ) )", new BigDecimal( "700" ), null },
+                { "dayDiff( date ( \"2015-08-02\" ), date and time(\"2017-07-02T14:40:23-06:00\") )", new BigDecimal( "700" ), null },
+                { "dayDiff( date and time( \"2015-08-02T14:40:23-06:00\" ), date( \"2017-07-02\" ) )", new BigDecimal( "699" ), null },
+                { "dayDiff( date( \"2015-08-02\" ), today() )", BigDecimal.class, null },
+                { "dayDiff( date and time( \"2015-07-02T14:40:23-06:00\" ), today() )", BigDecimal.class, null },
+                { "dayDiff( date( \"2015-08-02\" ), now() )", BigDecimal.class, null },
+                { "dayDiff( date and time( \"2015-07-02T14:40:23-06:00\" ), now() )", BigDecimal.class, null },
                 { "dateTime(\"2016-07-29T05:48:23\")", LocalDateTime.of( 2016, 7, 29, 5, 48, 23, 0 ) , null},
                 { "dateTime( 2016, 7, 29, 5, 48, 23 )", LocalDateTime.of( 2016, 7, 29, 5, 48, 23, 0 ) , null},
                 { "dateTime(\"2016-07-29T05:48:23Z\")", ZonedDateTime.of(2016, 7, 29, 5, 48, 23, 0, ZoneId.of("Z").normalized()) , null},
@@ -193,6 +201,7 @@ public class FEELExtendedFunctionsTest extends ExtendedFunctionsBaseFEELTest {
                 {"areElementsOf([\"item0\", \"item3\"], [\"item1\", \"item2\", \"item3\"])", false, null},
                 {"areElementsOf([], [\"item1\", \"item2\", \"item3\"])", true, null},
                 {"zip([\"id\", \"value\"], [\"23a3e98\", \"c45da1b\"], [40, 120])", Arrays.asList(mapOf(entry("id", "23a3e98"), entry("value", new BigDecimal("40"))), mapOf(entry("id", "c45da1b"), entry("value", new BigDecimal("120")))), null},
+                {"zip([\"id\", \"value\"], [[\"23a3e98\", \"c45da1b\"], [40, 120]])", Arrays.asList(mapOf(entry("id", "23a3e98"), entry("value", new BigDecimal("40"))), mapOf(entry("id", "c45da1b"), entry("value", new BigDecimal("120")))), null},
                 {"remove([\"item1\", \"item2\"], \"item1\")", Arrays.asList("item2"), null},
                 {"removeAll([\"item1\", \"item2\", \"item3\"], [\"item1\", \"item2\"])", Arrays.asList("item3"), null},
                 {"removeAll([\"item1\", \"item2\", \"item3\"], [\"item1\", \"item0\"])", Arrays.asList("item2", "item3"), null},
@@ -232,6 +241,14 @@ public class FEELExtendedFunctionsTest extends ExtendedFunctionsBaseFEELTest {
                 {"isNumeric(\"2.3\")", true, null},
                 {"isAlphanumeric(\"abcdefg5\")", true, null},
                 {"isAlpha(\"abcdefg5\")", false, null},
+                {"concat([\"a\", \"b\", \"c\"])", "abc", null},
+                {"concat(\"a\", \"b\", \"c\")", "abc", null},
+                {"concat(\"abc\")", "abc", null},
+                {"concat([])", "", null},
+                {"concat([\"a\", null, \"b\"])", null, ERROR},
+                {"concat([1, 2, 3])", null, ERROR},
+                {"concat(null)", null, ERROR},
+                {"concat()", null, ERROR},
         };
         return Arrays.asList( cases );
     }

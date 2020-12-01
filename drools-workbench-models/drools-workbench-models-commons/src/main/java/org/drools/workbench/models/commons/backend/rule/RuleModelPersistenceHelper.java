@@ -119,7 +119,6 @@ class RuleModelPersistenceHelper {
                 new SimpleDateFormat(DateUtils.getDateFormatMask(),
                                      Locale.ENGLISH).parse(adjustParam(dataType,
                                                                        value,
-                                                                       Collections.emptyMap(),
                                                                        isJavaDialect));
                 return FieldNatureType.TYPE_LITERAL;
             } catch (ParseException e) {
@@ -129,7 +128,6 @@ class RuleModelPersistenceHelper {
             try {
                 LocalDate.parse(adjustParam(dataType,
                                             value,
-                                            Collections.emptyMap(),
                                             isJavaDialect), DateTimeFormatter.ofPattern(DateUtils.getDateFormatMask()));
                 return FieldNatureType.TYPE_LITERAL;
             } catch (DateTimeParseException e) {
@@ -150,7 +148,6 @@ class RuleModelPersistenceHelper {
             try {
                 new BigDecimal(adjustParam(dataType,
                                            value,
-                                           Collections.EMPTY_MAP,
                                            isJavaDialect));
                 return FieldNatureType.TYPE_LITERAL;
             } catch (NumberFormatException e) {
@@ -160,7 +157,6 @@ class RuleModelPersistenceHelper {
             try {
                 new BigInteger(adjustParam(dataType,
                                            value,
-                                           Collections.EMPTY_MAP,
                                            isJavaDialect));
                 return FieldNatureType.TYPE_LITERAL;
             } catch (NumberFormatException e) {
@@ -498,7 +494,6 @@ class RuleModelPersistenceHelper {
 
     static String adjustParam(final String dataType,
                               final String param,
-                              final Map<String, String> boundParams,
                               final boolean isJavaDialect) {
         if (DataType.TYPE_DATE.equals(dataType)) {
             if (param.contains("sdf.parse(\"")) {
@@ -537,8 +532,6 @@ class RuleModelPersistenceHelper {
                 return param.substring(0,
                                        param.length() - 1);
             }
-        } else if (boundParams.containsKey(param)) {
-            return "=" + param;
         }
         return param;
     }

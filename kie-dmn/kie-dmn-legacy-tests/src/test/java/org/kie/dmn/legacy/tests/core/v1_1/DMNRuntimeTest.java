@@ -60,7 +60,6 @@ import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.model.Person;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.kie.dmn.core.util.KieHelper;
-import org.kie.dmn.feel.lang.FEELProperty;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.kie.dmn.feel.marshaller.FEELStringMarshaller;
@@ -2318,20 +2317,6 @@ public class DMNRuntimeTest extends BaseDMN1_1VariantTest {
         assertThat((List<?>) result.get("D5"), contains(is("r1"), is("r2")));
     }
 
-    private void verify_testItemDefinitionInXmlns(final DMNRuntime runtime) {
-        final DMNModel dmnModel = runtime.getModel("http://sample.dmn", "MyDecision");
-        assertThat(dmnModel, notNullValue());
-        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
-
-        final DMNContext context = DMNFactory.newContext();
-        context.set("person", mapOf(entry("name", "John"), entry("age", new BigDecimal(9))));
-
-        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
-        LOG.debug("{}", dmnResult);
-        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
-        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.getDecisionResultByName("greet").getResult(), is("Hello, John"));
-    }
-
     @Test(expected = IllegalArgumentException.class)
     public void testEvaluateByNameWithEmptyParam() {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("simple-item-def.dmn", this.getClass());
@@ -2358,33 +2343,6 @@ public class DMNRuntimeTest extends BaseDMN1_1VariantTest {
 
         String[] decisionIds = new String[]{};
         runtime.evaluateById(dmnModel, context, decisionIds);
-    }
-
-    public static class JavaPojoCharUtilDate {
-
-        private final String surname;
-        private final Character initial;
-        private final java.util.Date when;
-
-        public JavaPojoCharUtilDate(String surname, Character initial, java.util.Date when) {
-            super();
-            this.surname = surname;
-            this.initial = initial;
-            this.when = when;
-        }
-
-        public String getSurname() {
-            return surname;
-        }
-
-        @FEELProperty("name initial")
-        public Character getInitial() {
-            return initial;
-        }
-
-        public java.util.Date getWhen() {
-            return when;
-        }
     }
 
     @Test

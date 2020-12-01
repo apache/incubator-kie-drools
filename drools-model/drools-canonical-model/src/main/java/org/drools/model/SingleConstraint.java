@@ -33,6 +33,8 @@ import org.drools.model.constraints.SingleConstraint7;
 import org.drools.model.constraints.SingleConstraint8;
 import org.drools.model.constraints.SingleConstraint9;
 import org.drools.model.functions.Predicate1;
+import org.drools.model.functions.Predicate2;
+import org.drools.model.functions.PredicateInformation;
 import org.drools.model.functions.PredicateN;
 import org.drools.model.impl.ModelComponent;
 import org.drools.model.view.Expr10ViewItemImpl;
@@ -59,6 +61,10 @@ public interface SingleConstraint extends Constraint {
         throw new UnsupportedOperationException();
     }
 
+    default Predicate2 getPredicate2() {
+        throw new UnsupportedOperationException();
+    }
+
     Index getIndex();
 
     String getExprId();
@@ -75,7 +81,7 @@ public interface SingleConstraint extends Constraint {
         return Type.SINGLE;
     }
 
-    SingleConstraint TRUE = new AbstractSingleConstraint("TRUE") {
+    SingleConstraint TRUE = new AbstractSingleConstraint("TRUE", PredicateInformation.EMPTY_PREDICATE_INFORMATION) {
         @Override
         public Constraint negate() {
             return FALSE;
@@ -107,7 +113,7 @@ public interface SingleConstraint extends Constraint {
         }
     };
 
-    SingleConstraint FALSE = new AbstractSingleConstraint("FALSE") {
+    SingleConstraint FALSE = new AbstractSingleConstraint("FALSE", PredicateInformation.EMPTY_PREDICATE_INFORMATION) {
         @Override
         public Constraint negate() {
             return TRUE;

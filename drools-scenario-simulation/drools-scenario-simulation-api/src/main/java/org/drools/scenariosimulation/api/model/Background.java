@@ -44,7 +44,7 @@ public class Background extends AbstractScesimModel<BackgroundData> {
             final FactMapping originalFactMapping = originalFactMappings.get(i);
             toReturn.scesimModelDescriptor.addFactMapping(i, originalFactMapping);
         }
-        this.scesimData.forEach(scenario -> toReturn.scesimData.add(scenario.cloneInstance()));
+        this.scesimData.forEach(backgroundData -> toReturn.scesimData.add(backgroundData.cloneInstance()));
         return toReturn;
     }
 }

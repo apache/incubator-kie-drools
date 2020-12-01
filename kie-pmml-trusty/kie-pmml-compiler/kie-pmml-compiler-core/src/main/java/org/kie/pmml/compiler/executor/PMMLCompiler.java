@@ -18,8 +18,8 @@ package org.kie.pmml.compiler.executor;
 import java.io.InputStream;
 import java.util.List;
 
-import org.kie.pmml.commons.exceptions.ExternalException;
-import org.kie.pmml.commons.exceptions.KiePMMLException;
+import org.kie.pmml.api.exceptions.ExternalException;
+import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.KiePMMLModel;
 
 /**
@@ -37,7 +37,7 @@ public interface PMMLCompiler {
      * @throws KiePMMLException if any <code>KiePMMLInternalException</code> has been thrown during execution
      * @throws ExternalException if any other kind of <code>Exception</code> has been thrown during execution
      */
-    List<KiePMMLModel> getModels(final InputStream inputStream, final String fileName, final Object kbuilder);
+    List<KiePMMLModel> getKiePMMLModels(final InputStream inputStream, final String fileName, final Object kbuilder);
 
     /**
      * Read the given <code>InputStream</code> to return a <code>List&lt;KiePMMLModel&gt;</code> following a
@@ -51,5 +51,5 @@ public interface PMMLCompiler {
      * @throws KiePMMLException if any <code>KiePMMLInternalException</code> has been thrown during execution
      * @throws ExternalException if any other kind of <code>Exception</code> has been thrown during execution
      */
-    List<KiePMMLModel> getModelsFromPlugin(final String factoryClassName, final String packageName, final InputStream inputStream, final String fileName, final Object kbuilder);
+    List<KiePMMLModel> getKiePMMLModelsWithSources(final String factoryClassName, final String packageName, final InputStream inputStream, final String fileName, final Object kbuilder);
 }

@@ -27,11 +27,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.pmml.PMML4Result;
-import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
+import org.kie.pmml.api.runtime.PMMLRuntime;
+import org.kie.pmml.models.tests.AbstractPMMLTest;
 
 @RunWith(Parameterized.class)
-public class CategoricalVariablesRegressionTest extends AbstractPMMLRegressionTest {
+public class CategoricalVariablesRegressionTest extends AbstractPMMLTest {
 
+    private static final String FILE_NAME = "CategoricalVariablesRegression.pmml";
     private static final String MODEL_NAME = "CategoricalVariablesRegression";
     private static final String TARGET_FIELD = "result";
     private static PMMLRuntime pmmlRuntime;
@@ -44,9 +46,9 @@ public class CategoricalVariablesRegressionTest extends AbstractPMMLRegressionTe
         this.y = y;
     }
 
-    @BeforeClass
+  @BeforeClass
     public static void setupClass() {
-        pmmlRuntime = getPMMLRuntime(MODEL_NAME);
+        pmmlRuntime = getPMMLRuntime(FILE_NAME);
     }
 
     @Parameterized.Parameters
@@ -75,7 +77,7 @@ public class CategoricalVariablesRegressionTest extends AbstractPMMLRegressionTe
     }
 
     @Test
-    public void testCategoricalVariablesRegression() throws Exception {
+    public void testCategoricalVariablesRegression() {
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("x", x);
         inputData.put("y", y);

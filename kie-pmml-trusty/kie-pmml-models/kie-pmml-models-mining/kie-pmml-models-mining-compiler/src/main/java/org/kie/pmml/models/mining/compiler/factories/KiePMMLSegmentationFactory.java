@@ -36,8 +36,8 @@ import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.mining.Segmentation;
 import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.pmml.commons.exceptions.KiePMMLException;
-import org.kie.pmml.commons.exceptions.KiePMMLInternalException;
+import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.compiler.commons.utils.CommonCodegenUtils;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
@@ -94,7 +94,7 @@ public class KiePMMLSegmentationFactory {
                                                                    dataDictionary,
                                                                    transformationDictionary,
                                                                    segmentation.getSegments(),
-                                                                   kBuilder,
+                                                                  kBuilder,
                                                                    nestedModels);
         String className = getSanitizedClassName(segmentationName);
         CompilationUnit cloneCU = JavaParserUtils.getKiePMMLModelCompilationUnit(className, packageName,

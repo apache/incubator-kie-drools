@@ -33,8 +33,8 @@ import org.xml.sax.SAXException;
  */
 public class KiePMMLUtil {
 
+    public static final String SEGMENTID_TEMPLATE = "%sSegment%s";
     static final String MODELNAME_TEMPLATE = "%s%s%s";
-    static final String SEGMENTID_TEMPLATE = "%sSegment%s";
     static final String SEGMENTMODELNAME_TEMPLATE = "Segment%s%s";
 
     private KiePMMLUtil() {
@@ -88,27 +88,30 @@ public class KiePMMLUtil {
 
             }
             if (model instanceof MiningModel) {
-                populateMissingIds((MiningModel) model);
+                populateCorrectMiningModel((MiningModel) model);
             }
         }
     }
 
     /**
-     * Recursively populate <code>Segment</code>s with auto generated id
-     * if missing in original model
+     * Recursively populate or correct <code>Segment</code>s with auto generated id,
+     * if missing in original model, and auto generated model name, if missing in original model
      *
      * @param miningModel
      */
-    static void populateMissingIds(final MiningModel miningModel) {
+    static void populateCorrectMiningModel(final MiningModel miningModel) {
         final List<Segment> segments =miningModel.getSegmentation().getSegments();
         for (int i = 0; i < segments.size(); i ++) {
             Segment segment = segments.get(i);
+            String toSet = null;
             if (segment.getId() == null || segment.getId().isEmpty()) {
-                String toSet = String.format(SEGMENTID_TEMPLATE,
+                toSet = String.format(SEGMENTID_TEMPLATE,
                                              miningModel.getModelName(),
                                              i);
-                segment.setId(toSet);
+            } else {
+                toSet = getSanitizedId(segment.getId(), miningModel.getModelName());
             }
+            segment.setId(toSet);
             Model model = segment.getModel();
             if (model.getModelName() == null || model.getModelName().isEmpty()) {
                 String modelName = String.format(SEGMENTMODELNAME_TEMPLATE,
@@ -117,8 +120,20 @@ public class KiePMMLUtil {
                 model.setModelName(modelName);
             }
             if (segment.getModel() instanceof MiningModel) {
-                populateMissingIds((MiningModel) segment.getModel());
+                populateCorrectMiningModel((MiningModel) segment.getModel());
             }
         }
+    }
+
+    static String getSanitizedId(String id, String modelName) {
+        String toReturn = id.replace(".", "")
+                .replace(",", "");
+        try {
+            Integer.parseInt(toReturn);
+            toReturn = String.format(SEGMENTID_TEMPLATE, modelName, id);
+        } catch (NumberFormatException e) {
+            // ignore
+        }
+        return toReturn;
     }
 }

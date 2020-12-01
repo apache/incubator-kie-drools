@@ -29,7 +29,7 @@ public interface EvalConditionFactory {
             private static final EvalConditionFactory INSTANCE = createInstance();
 
             private static EvalConditionFactory createInstance() {
-                EvalConditionFactory factory = ServiceRegistry.getInstance().get(EvalConditionFactory.class);
+                EvalConditionFactory factory = ServiceRegistry.getService(EvalConditionFactory.class);
                 return factory != null ? factory : new EvalConditionFactoryImpl();
             }
         }

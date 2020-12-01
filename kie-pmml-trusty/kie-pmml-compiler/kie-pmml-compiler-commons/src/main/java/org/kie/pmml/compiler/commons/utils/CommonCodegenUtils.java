@@ -35,6 +35,7 @@ import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.MethodReferenceExpr;
 import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.ThisExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
@@ -44,10 +45,12 @@ import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
-import org.kie.pmml.commons.exceptions.KiePMMLException;
+import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
+import static org.kie.pmml.commons.Constants.MISSING_BODY_TEMPLATE;
 import static org.kie.pmml.commons.Constants.MISSING_PARAMETER_IN_CONSTRUCTOR_INVOCATION;
 import static org.kie.pmml.commons.Constants.MISSING_VARIABLE_IN_BODY;
 
@@ -169,6 +172,39 @@ public class CommonCodegenUtils {
             methodReferenceExpr.setIdentifier(methodDeclaration.getNameAsString());
             NodeList<Expression> expressions = NodeList.nodeList(new StringLiteralExpr(s), methodReferenceExpr);
             body.addStatement(new MethodCallExpr(new NameExpr(mapName), "put", expressions));
+        });
+    }
+
+    /**
+     * For every entry in the given list, add
+     * <pre>
+     *     (<i>listName</i>).add(new <i>ObjectCreationExpr</i>>);
+     * </pre>
+     * e.g.
+     * <pre>
+     *     LIST_NAME.add(new OBJA());
+     *     LIST_NAME.add(new OBJB());
+     *     LIST_NAME.add(new OBJC());
+     *     LIST_NAME.add(new OBJD());
+     * </pre>
+     * inside the given <code>BlockStmt</code>
+     *
+     * @param toAdd
+     * @param body
+     * @param listName
+     */
+    public static void addListPopulation(final List<ObjectCreationExpr> toAdd,
+                                        final BlockStmt body,
+                                        final String listName) {
+        toAdd.forEach(objectCreationExpr -> {
+            NodeList<Expression> arguments = NodeList.nodeList(objectCreationExpr);
+            MethodCallExpr methodCallExpr = new MethodCallExpr();
+            methodCallExpr.setScope(new NameExpr(listName));
+            methodCallExpr.setName("add");
+            methodCallExpr.setArguments(arguments);
+            ExpressionStmt expressionStmt = new ExpressionStmt();
+            expressionStmt.setExpression(methodCallExpr);
+            body.addStatement(expressionStmt);
         });
     }
 
@@ -342,5 +378,38 @@ public class CommonCodegenUtils {
     public static Optional<MethodDeclaration> getMethodDeclaration(final ClassOrInterfaceDeclaration classOrInterfaceDeclaration, final String methodName) {
         final List<MethodDeclaration> assignExprs = classOrInterfaceDeclaration.getMethodsByName(methodName);
         return assignExprs.isEmpty() ? Optional.empty() : Optional.of(assignExprs.get(0));
+    }
+
+    /**
+     * Add a <code>MethodDeclaration</code> to the class
+     * @param methodTemplate
+     * @param tableTemplate
+     * @param methodName
+     * @return
+     */
+    public static MethodDeclaration addMethod(final MethodDeclaration methodTemplate,
+                                                 final ClassOrInterfaceDeclaration tableTemplate,
+                                                 final String methodName) {
+        final BlockStmt body =
+                methodTemplate.getBody().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_BODY_TEMPLATE, methodTemplate.getName())));
+        final MethodDeclaration toReturn = tableTemplate.addMethod(methodName).setBody(body);
+        toReturn.setModifiers(methodTemplate.getModifiers());
+        methodTemplate.getParameters().forEach(toReturn::addParameter);
+        toReturn.setType(methodTemplate.getType());
+        return toReturn;
+    }
+
+    /**
+     * Return an <code>Optional&lt;VariableDeclarator&gt;</code> with the <b>first</b> variable <b>variableName</b> from the given <code>BlockStmt</code>
+     * @param body
+     * @param variableName
+     * @return <code>Optional&lt;VariableDeclarator&gt;</code> with the first found <code>VariableDeclarator</code>, or <code>Optional.empty()</code> if no match
+     * has been found
+     */
+    public static Optional<VariableDeclarator> getVariableDeclarator(final BlockStmt body, final String variableName) {
+        return body.findAll(VariableDeclarator.class)
+                .stream()
+                .filter(variableDeclarator -> variableDeclarator.getName().asString().equals(variableName))
+                .findFirst();
     }
 }

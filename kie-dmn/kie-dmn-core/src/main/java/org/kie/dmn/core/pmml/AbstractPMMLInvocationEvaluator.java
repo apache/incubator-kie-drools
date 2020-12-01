@@ -241,7 +241,7 @@ public abstract class AbstractPMMLInvocationEvaluator implements DMNExpressionEv
 
     private static boolean isNewImplementationPresent() {
         try {
-            Class.forName("org.kie.pmml.evaluator.api.executor.PMMLRuntime");
+            Class.forName("org.kie.pmml.evaluator.api.executor.PMMLRuntimeInternal");
             return true;
         } catch (NoClassDefFoundError | ClassNotFoundException e) {
             return false;

@@ -20,16 +20,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.assertj.core.api.Assertions;
 import org.drools.core.ClockType;
 import org.drools.core.rule.QueryImpl;
-import org.drools.model.BitMask;
 import org.drools.model.DSL;
 import org.drools.model.Global;
 import org.drools.model.Index;
@@ -38,7 +35,6 @@ import org.drools.model.Query;
 import org.drools.model.Query2Def;
 import org.drools.model.Rule;
 import org.drools.model.Variable;
-import org.drools.model.functions.accumulate.GroupKey;
 import org.drools.model.impl.ModelImpl;
 import org.drools.modelcompiler.builder.KieBaseBuilder;
 import org.drools.modelcompiler.domain.Adult;
@@ -51,7 +47,6 @@ import org.drools.modelcompiler.domain.StockTick;
 import org.drools.modelcompiler.domain.Toy;
 import org.drools.modelcompiler.domain.Woman;
 import org.drools.modelcompiler.dsl.pattern.D;
-import org.drools.modelcompiler.util.EvaluationUtil;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
@@ -560,7 +555,6 @@ public class PatternDSLTest {
     @Test
     public void testWatch() {
         Variable<Person> var_$p = declarationOf(Person.class, "$p");
-        BitMask mask_$p = BitMask.getPatternMask(org.drools.modelcompiler.domain.Person.class, "age");
 
         Rule rule = rule("R").build(
                 pattern(var_$p)
@@ -570,7 +564,7 @@ public class PatternDSLTest {
                 .watch("!age"),
                 on(var_$p).execute((drools, $p) -> {
                     $p.setAge($p.getAge() + 1);
-                    drools.update($p, mask_$p);
+                    drools.update($p, "age");
                 }));
 
         Model model = new ModelImpl().addRule( rule );

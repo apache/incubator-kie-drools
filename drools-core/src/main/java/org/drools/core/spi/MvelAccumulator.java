@@ -19,6 +19,7 @@ import org.drools.core.rule.Declaration;
 
 public interface MvelAccumulator extends Accumulator {
 
-    public Declaration[] getRequiredDeclarations();
+    Declaration[] getRequiredDeclarations();
 
+    default void replaceDeclaration(Declaration declaration, Declaration resolved) { }
 }
