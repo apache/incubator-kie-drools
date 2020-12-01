@@ -115,11 +115,7 @@ exports[`Jobs management page tests snapshot test with mock data 1`] = `
                   className="pf-c-toolbar__content-section"
                 >
                   <JobsManagementFilters
-                    chips={
-                      Array [
-                        "SCHEDULED",
-                      ]
-                    }
+                    chips={Array []}
                     selectedStatus={
                       Array [
                         "SCHEDULED",
@@ -253,7 +249,7 @@ exports[`Jobs management page tests snapshot test with mock data 1`] = `
                                   >
                                     <div
                                       className="pf-c-dropdown"
-                                      data-ouia-component-id={5}
+                                      data-ouia-component-id={6}
                                       data-ouia-component-type="PF4/Dropdown"
                                       data-ouia-safe={true}
                                     >
@@ -270,7 +266,7 @@ exports[`Jobs management page tests snapshot test with mock data 1`] = `
                                           Object {
                                             "current": <div
                                               class="pf-c-dropdown"
-                                              data-ouia-component-id="5"
+                                              data-ouia-component-id="6"
                                               data-ouia-component-type="PF4/Dropdown"
                                               data-ouia-safe="true"
                                             >
@@ -320,7 +316,7 @@ exports[`Jobs management page tests snapshot test with mock data 1`] = `
                                             Object {
                                               "current": <div
                                                 class="pf-c-dropdown"
-                                                data-ouia-component-id="5"
+                                                data-ouia-component-id="6"
                                                 data-ouia-component-type="PF4/Dropdown"
                                                 data-ouia-safe="true"
                                               >
@@ -414,7 +410,7 @@ exports[`Jobs management page tests snapshot test with mock data 1`] = `
                     Object {
                       "current": <div
                         class="pf-c-toolbar__expandable-content"
-                        id="data-toolbar-with-chip-groups-expandable-content-2"
+                        id="data-toolbar-with-chip-groups-expandable-content-3"
                       >
                         <div
                           class="pf-c-toolbar__group"
@@ -422,13 +418,13 @@ exports[`Jobs management page tests snapshot test with mock data 1`] = `
                       </div>,
                     }
                   }
-                  id="data-toolbar-with-chip-groups-expandable-content-2"
+                  id="data-toolbar-with-chip-groups-expandable-content-3"
                   isExpanded={false}
                   showClearFiltersButton={false}
                 >
                   <div
                     className="pf-c-toolbar__expandable-content"
-                    id="data-toolbar-with-chip-groups-expandable-content-2"
+                    id="data-toolbar-with-chip-groups-expandable-content-3"
                   >
                     <ForwardRef>
                       <ToolbarGroupWithRef
@@ -486,7 +482,7 @@ exports[`Jobs management page tests snapshot test with mock data 1`] = `
         <Card>
           <article
             className="pf-c-card"
-            data-ouia-component-id={6}
+            data-ouia-component-id={7}
             data-ouia-component-type="PF4/Card"
             data-ouia-safe={true}
           >
@@ -558,6 +554,14 @@ exports[`Jobs management page tests snapshot test with mock data 1`] = `
                   setSelectedJob={[Function]}
                   setSelectedJobInstances={[Function]}
                 />
+                <KogitoEmptyState
+                  body="Try applying at least one filter to see results"
+                  onClick={[Function]}
+                  title="No filter applied."
+                  type={2}
+                >
+                  <MockedKogitoEmptyState />
+                </KogitoEmptyState>
               </div>
             </CardBody>
           </article>

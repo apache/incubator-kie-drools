@@ -52,7 +52,7 @@ const JobsManagementFilters: React.FC<IOwnProps & OUIAProps> = ({
 
   const onSelect = (event, selection: GraphQL.JobStatus): void => {
     let selectionText = event.target.id;
-    selectionText = selectionText.split('pf-random-id-2-')[1];
+    selectionText = selectionText.split('pf-random-id-')[1].split('-')[1];
     if (selectedStatus.includes(selectionText)) {
       setSelectedStatus(prev => prev.filter(item => item !== selectionText));
     } else {

@@ -1,6 +1,9 @@
 import React from 'react';
 
-const JobsManagementFilters = () => {
+const JobsManagementFilters = ({ setChips }) => {
+  React.useEffect(() => {
+    setChips([]);
+  }, []);
   return <></>;
 };
 

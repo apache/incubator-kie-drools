@@ -103,10 +103,12 @@ describe('Jobs management table component tests', () => {
     );
     expect(wrapper).toMatchSnapshot();
     const event: any = {};
-    wrapper
-      .find('Table')
-      .props()
-      ['onSelect'](event);
+    await act(async () => {
+      wrapper
+        .find('Table')
+        .props()
+        ['onSelect'](event);
+    });
   });
 
   it('test job details action', async () => {

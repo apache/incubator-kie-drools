@@ -93,12 +93,6 @@ const JobsManagementPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
   );
   const [chips, setChips] = useState<GraphQL.JobStatus[]>(defaultStatus);
   const [values, setValues] = useState<GraphQL.JobStatus[]>(defaultStatus);
-
-  const { loading, data, error, refetch } = GraphQL.useGetAllJobsQuery({
-    fetchPolicy: 'network-only',
-    notifyOnNetworkStatusChange: true,
-    variables: { values }
-  });
   const [isKebabOpen, setIsKebabOpen] = useState<boolean>(false);
   const [selectedJobInstances, setSelectedJobInstances] = useState<
     GraphQL.Job[]
@@ -112,6 +106,13 @@ const JobsManagementPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
       ignoredJobs: {}
     }
   });
+
+  const { loading, data, error, refetch } = GraphQL.useGetAllJobsQuery({
+    fetchPolicy: 'network-only',
+    notifyOnNetworkStatusChange: true,
+    variables: { values }
+  });
+
   const jobOperations: IOperations = {
     CANCEL: {
       results: jobOperationResults[JobOperationType.CANCEL],
@@ -212,7 +213,7 @@ const JobsManagementPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
     setValues(defaultStatus);
   };
 
-  const dropdownItemsJobsManagementButtons = () => {
+  const dropdownItemsJobsManagementButtons = (): JSX.Element[] => {
     return [
       <DropdownItem
         key="cancel"
@@ -224,7 +225,7 @@ const JobsManagementPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
     ];
   };
 
-  const jobManagementButtons = (
+  const jobManagementButtons: JSX.Element = (
     <OverflowMenu breakpoint="xl">
       <OverflowMenuContent>
         <OverflowMenuItem>
@@ -291,7 +292,7 @@ const JobsManagementPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
   };
 
   if (data) {
-    if (!loading && selectedStatus.length > 0 && data.Jobs.length === 0) {
+    if (!loading && values.length > 0 && data.Jobs.length === 0) {
       return (
         <Redirect
           to={{
@@ -344,7 +345,7 @@ const JobsManagementPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
                       setSelectedJobInstances={setSelectedJobInstances}
                     />
                   </refetchContext.Provider>
-                  {selectedStatus.length === 0 && (
+                  {chips.length === 0 && (
                     <KogitoEmptyState
                       type={KogitoEmptyStateType.Reset}
                       title="No filter applied."
