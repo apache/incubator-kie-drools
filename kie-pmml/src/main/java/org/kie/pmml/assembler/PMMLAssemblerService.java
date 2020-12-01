@@ -56,8 +56,8 @@ import org.kie.pmml.pmml_4_2.PMML4Exception;
 import org.kie.pmml.pmml_4_2.PMMLResource;
 
 import static org.kie.api.pmml.PMMLConstants.LEGACY;
-import static org.kie.api.pmml.PMMLImplementationsUtil.isToEnable;
 import static org.kie.api.pmml.PMMLImplementationsUtil.isjPMMLAvailableToClassLoader;
+import static org.kie.api.pmml.PMMLImplementationsUtil.toEnable;
 
 public class PMMLAssemblerService implements KieAssemblerService {
 
@@ -69,9 +69,7 @@ public class PMMLAssemblerService implements KieAssemblerService {
 
     @Override
     public ResourceType getResourceType() {
-        return isToEnable("org.kie.pmml.evaluator.assembler.service.PMMLAssemblerService", 
-                          Thread.currentThread().getContextClassLoader(),
-                          LEGACY.getName()) ? ResourceType.PMML : ResourceType.NOOP;
+        return LEGACY.equals(toEnable(Thread.currentThread().getContextClassLoader())) ? ResourceType.PMML : ResourceType.NOOP;
     }
 
     @Override

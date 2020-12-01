@@ -37,8 +37,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.kie.api.pmml.PMMLConstants.NEW;
-import static org.kie.api.pmml.PMMLImplementationsUtil.isToEnable;
 import static org.kie.api.pmml.PMMLImplementationsUtil.isjPMMLAvailableToClassLoader;
+import static org.kie.api.pmml.PMMLImplementationsUtil.toEnable;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
 import static org.kie.pmml.evaluator.assembler.service.PMMLCompilerService.getKiePMMLModelsCompiledFromResource;
@@ -75,9 +75,7 @@ public class PMMLAssemblerService implements KieAssemblerService {
 
     @Override
     public ResourceType getResourceType() {
-        return isToEnable("org.kie.pmml.assembler.PMMLAssemblerService",
-                          Thread.currentThread().getContextClassLoader(),
-                          NEW.getName()) ? ResourceType.PMML : ResourceType.NOOP;
+        return NEW.equals(toEnable(Thread.currentThread().getContextClassLoader())) ? ResourceType.PMML : ResourceType.NOOP;
     }
 
     @Override

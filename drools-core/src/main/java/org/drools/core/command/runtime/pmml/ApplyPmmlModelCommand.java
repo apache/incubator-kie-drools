@@ -24,12 +24,17 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
+
 import org.drools.core.command.IdentifiableResult;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.pmml.PMML4Result;
+import org.kie.api.pmml.PMMLConstants;
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.api.runtime.Context;
+import org.kie.internal.pmml.PMMLCommandExecutorFactory;
 import org.kie.internal.ruleunit.RuleUnitComponentFactory;
+
+import static org.kie.api.pmml.PMMLImplementationsUtil.toEnable;
 
 @XmlRootElement(name="apply-pmml-model-command")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -119,6 +124,26 @@ public class ApplyPmmlModelCommand implements ExecutableCommand<PMML4Result>, Id
     
     @Override
     public PMML4Result execute(Context context) {
+        final PMMLConstants toInvoke = getToInvoke();
+        switch (toInvoke) {
+            case NEW:
+                return executePMMLTrusty();
+            case LEGACY:
+                return executePMMLLegacy(context);
+            default:
+                throw new RuntimeException("Unmanaged PMMLConstants " + toInvoke);
+        }
+    }
+
+    PMMLConstants getToInvoke() {
+        return toEnable(Thread.currentThread().getContextClassLoader());
+    }
+
+    private PMML4Result executePMMLLegacy(Context context) {
         return RuleUnitComponentFactory.get().newApplyPmmlModelCommandExecutor().execute( context, requestData, complexInputObjects, packageName, isMining() );
+    }
+
+    private PMML4Result executePMMLTrusty() {
+        return PMMLCommandExecutorFactory.get().newPMMLCommandExecutor().execute (requestData);
     }
 }
