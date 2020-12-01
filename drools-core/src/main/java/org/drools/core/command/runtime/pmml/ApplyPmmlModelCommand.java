@@ -124,6 +124,9 @@ public class ApplyPmmlModelCommand implements ExecutableCommand<PMML4Result>, Id
     
     @Override
     public PMML4Result execute(Context context) {
+        if (requestData == null) {
+            throw new IllegalStateException("ApplyPmmlModelCommand requires request data (PMMLRequestData) to execute");
+        }
         final PMMLConstants toInvoke = getToInvoke();
         switch (toInvoke) {
             case NEW:
@@ -135,7 +138,7 @@ public class ApplyPmmlModelCommand implements ExecutableCommand<PMML4Result>, Id
         }
     }
 
-    PMMLConstants getToInvoke() {
+    protected PMMLConstants getToInvoke() {
         return toEnable(Thread.currentThread().getContextClassLoader());
     }
 

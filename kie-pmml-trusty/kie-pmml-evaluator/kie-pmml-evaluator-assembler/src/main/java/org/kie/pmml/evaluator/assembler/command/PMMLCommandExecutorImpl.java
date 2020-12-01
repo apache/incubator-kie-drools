@@ -30,13 +30,13 @@ public class PMMLCommandExecutorImpl implements PMMLCommandExecutor {
     private static final PMMLRuntimeFactory PMML_RUNTIME_FACTORY = new PMMLRuntimeFactoryImpl();
 
     /**
-     * Evaluate the given <&lt;>PMMLRequestData<&gt;>
+     * Evaluate the given <code>PMMLRequestData<code>
      * @param pmmlRequestData : it must contain the pmml file name (in the <i>source</i> property)
      * and the model name
      * @return
      */
     @Override
-    public PMML4Result evaluate(final PMMLRequestData pmmlRequestData) {
+    public PMML4Result execute(final PMMLRequestData pmmlRequestData) {
         final String pmmlFileName = pmmlRequestData.getSource();
         if (pmmlFileName == null || pmmlFileName.isEmpty()) {
             throw new KiePMMLException("Missing required field 'source' with the PMML file name");
