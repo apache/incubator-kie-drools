@@ -70,6 +70,7 @@ import org.optaplanner.core.impl.score.stream.drools.common.nodes.QuadConstraint
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.TriConstraintGraphNode;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.UniConstraintGraphChildNode;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.UniConstraintGraphNode;
+import org.optaplanner.core.impl.score.stream.drools.common.rules.RuleAssembler;
 import org.optaplanner.core.impl.score.stream.drools.common.rules.RuleAssembly;
 
 public final class ConstraintGraph {
@@ -428,8 +429,8 @@ public final class ConstraintGraph {
             DroolsConstraint constraint) {
         ConstraintTree constraintTree = getTree(constraint.getConsequence());
         ConstraintSubTree nestedNodes = constraintTree.getNestedNodes();
-        return nestedNodes.getRuleAssembler()
-                .assemble(scoreHolderGlobal, constraint);
+        RuleAssembler assembler = nestedNodes.getRuleAssembler();
+        return assembler.assemble(scoreHolderGlobal, constraint);
     }
 
 }

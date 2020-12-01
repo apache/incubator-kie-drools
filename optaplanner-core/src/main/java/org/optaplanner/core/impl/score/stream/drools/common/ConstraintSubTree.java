@@ -90,12 +90,22 @@ final class ConstraintSubTree {
     }
 
     public RuleAssembler getRuleAssembler(int totalExpectedGroupByCount) {
-        RuleAssembler builder = isJoin ? leftSubTree.getRuleAssembler(totalExpectedGroupByCount)
-                .join(rightSubTree.getRuleAssembler(totalExpectedGroupByCount), nodeList.get(0))
-                : RuleAssembler.from(variableFactory, nodeList.get(0), totalExpectedGroupByCount);
+        RuleAssembler assembler = getRuleAssemblerForFirstNode(totalExpectedGroupByCount);
         for (int i = 1; i < nodeList.size(); i++) {
-            builder = builder.andThen(nodeList.get(i));
+            ConstraintGraphNode nextNode = nodeList.get(i);
+            assembler = assembler.andThen(nextNode);
         }
-        return builder;
+        return assembler;
+    }
+
+    private RuleAssembler getRuleAssemblerForFirstNode(int totalExpectedGroupByCount) {
+        ConstraintGraphNode firstNode = nodeList.get(0);
+        if (isJoin) {
+            RuleAssembler left = leftSubTree.getRuleAssembler(totalExpectedGroupByCount);
+            RuleAssembler right = rightSubTree.getRuleAssembler(totalExpectedGroupByCount);
+            return left.join(right, firstNode);
+        } else {
+            return RuleAssembler.from(variableFactory, firstNode, totalExpectedGroupByCount);
+        }
     }
 }
