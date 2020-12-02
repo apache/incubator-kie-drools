@@ -37,8 +37,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.kie.api.pmml.PMMLConstants.NEW;
-import static org.kie.api.pmml.PMMLImplementationsUtil.isjPMMLAvailableToClassLoader;
-import static org.kie.api.pmml.PMMLImplementationsUtil.toEnable;
+import static org.kie.internal.pmml.PMMLImplementationsUtil.isjPMMLAvailableToClassLoader;
+import static org.kie.internal.pmml.PMMLImplementationsUtil.toEnable;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
 import static org.kie.pmml.evaluator.assembler.service.PMMLCompilerService.getKiePMMLModelsCompiledFromResource;

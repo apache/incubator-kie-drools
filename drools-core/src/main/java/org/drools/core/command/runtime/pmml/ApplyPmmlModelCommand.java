@@ -36,41 +36,46 @@ import org.kie.api.runtime.KieSession;
 import org.kie.internal.command.RegistryContext;
 import org.kie.internal.pmml.PMMLCommandExecutorFactory;
 import org.kie.internal.ruleunit.RuleUnitComponentFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import static org.kie.api.pmml.PMMLImplementationsUtil.toEnable;
+import static org.kie.internal.pmml.PMMLImplementationsUtil.toEnable;
 
-@XmlRootElement(name="apply-pmml-model-command")
+@XmlRootElement(name = "apply-pmml-model-command")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class ApplyPmmlModelCommand implements ExecutableCommand<PMML4Result>, IdentifiableResult {
+public class ApplyPmmlModelCommand implements ExecutableCommand<PMML4Result>,
+                                              IdentifiableResult {
+
+    private static Logger logger = LoggerFactory.getLogger(ApplyPmmlModelCommand.class);
+
     private static final long serialVersionUID = 19630331;
-    @XmlAttribute(name="outIdentifier")
+    @XmlAttribute(name = "outIdentifier")
     private String outIdentifier;
-    @XmlAttribute(name="packageName")
+    @XmlAttribute(name = "packageName")
     private String packageName;
-    @XmlAttribute(name="hasMining")
+    @XmlAttribute(name = "hasMining")
     private Boolean hasMining;
-    @XmlElement(name="requestData")
+    @XmlElement(name = "requestData")
     private PMMLRequestData requestData;
     @XmlElements(
-        @XmlElement(name = "complexInputObject", type = Object.class)
+            @XmlElement(name = "complexInputObject", type = Object.class)
     )
     private List<Object> complexInputObjects;
 
-    
     public ApplyPmmlModelCommand() {
         // Necessary for JAXB
         super();
     }
-    
-    public ApplyPmmlModelCommand( PMMLRequestData requestData) {
+
+    public ApplyPmmlModelCommand(PMMLRequestData requestData) {
         initialize(requestData, null, null);
     }
 
-    public ApplyPmmlModelCommand( PMMLRequestData requestData, List<Object> complexInputList) {
+    public ApplyPmmlModelCommand(PMMLRequestData requestData, List<Object> complexInputList) {
         initialize(requestData, complexInputList, null);
     }
-    
-    public ApplyPmmlModelCommand( PMMLRequestData requestData, List<Object> complexInputList, Boolean hasMining) {
+
+    public ApplyPmmlModelCommand(PMMLRequestData requestData, List<Object> complexInputList, Boolean hasMining) {
         initialize(requestData, complexInputList, hasMining);
     }
 
@@ -79,7 +84,7 @@ public class ApplyPmmlModelCommand implements ExecutableCommand<PMML4Result>, Id
         this.complexInputObjects = complexInputList != null ? new ArrayList(complexInputList) : new ArrayList<>();
         this.hasMining = hasMining != null ? hasMining : Boolean.FALSE;
     }
-    
+
     public PMMLRequestData getRequestData() {
         return requestData;
     }
@@ -87,7 +92,7 @@ public class ApplyPmmlModelCommand implements ExecutableCommand<PMML4Result>, Id
     public void setRequestData(PMMLRequestData requestData) {
         this.requestData = requestData;
     }
-    
+
     public String getPackageName() {
         return packageName;
     }
@@ -95,7 +100,7 @@ public class ApplyPmmlModelCommand implements ExecutableCommand<PMML4Result>, Id
     public void setPackageName(String packageName) {
         this.packageName = packageName;
     }
-    
+
     public Boolean getHasMining() {
         return hasMining;
     }
@@ -103,9 +108,11 @@ public class ApplyPmmlModelCommand implements ExecutableCommand<PMML4Result>, Id
     public void setHasMining(Boolean hasMining) {
         this.hasMining = hasMining;
     }
-    
+
     public boolean isMining() {
-        if (hasMining == null || hasMining.booleanValue() == false) return false;
+        if (hasMining == null || !hasMining.booleanValue() == false) {
+            return false;
+        }
         return true;
     }
 
@@ -124,7 +131,7 @@ public class ApplyPmmlModelCommand implements ExecutableCommand<PMML4Result>, Id
     public void setOutIdentifier(String outIdentifier) {
         this.outIdentifier = outIdentifier;
     }
-    
+
     @Override
     public PMML4Result execute(Context context) {
         if (requestData == null) {
@@ -142,21 +149,28 @@ public class ApplyPmmlModelCommand implements ExecutableCommand<PMML4Result>, Id
     }
 
     protected PMMLConstants getToInvoke(Context context) {
-        ClassLoader classLoader = getClassLoader((RegistryContext)context);
+        ClassLoader classLoader = getClassLoader((RegistryContext) context);
         return toEnable(classLoader);
     }
 
     private ClassLoader getClassLoader(RegistryContext registryContext) {
-        KieSession kieSession = registryContext.lookup(KieSession.class);
-        InternalKnowledgeBase kieBase = (InternalKnowledgeBase) kieSession.getKieBase();
-        return kieBase.getRootClassLoader();
+        try {
+            KieSession kieSession = registryContext.lookup(KieSession.class);
+            InternalKnowledgeBase kieBase = (InternalKnowledgeBase) kieSession.getKieBase();
+            return kieBase.getRootClassLoader();
+        } catch (Exception e) {
+            logger.warn("Impossible to retrieve RootClassLoader, using ContextClassLoader {}", e.getMessage(), e);
+            return Thread.currentThread().getContextClassLoader();
+        }
     }
 
     private PMML4Result executePMMLLegacy(Context context) {
-        return RuleUnitComponentFactory.get().newApplyPmmlModelCommandExecutor().execute( context, requestData, complexInputObjects, packageName, isMining() );
+        return RuleUnitComponentFactory.get().newApplyPmmlModelCommandExecutor().execute(context, requestData,
+                                                                                         complexInputObjects,
+                                                                                         packageName, isMining());
     }
 
     private PMML4Result executePMMLTrusty() {
-        return PMMLCommandExecutorFactory.get().newPMMLCommandExecutor().execute (requestData);
+        return PMMLCommandExecutorFactory.get().newPMMLCommandExecutor().execute(requestData);
     }
 }

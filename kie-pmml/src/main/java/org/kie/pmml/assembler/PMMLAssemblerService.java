@@ -56,8 +56,8 @@ import org.kie.pmml.pmml_4_2.PMML4Exception;
 import org.kie.pmml.pmml_4_2.PMMLResource;
 
 import static org.kie.api.pmml.PMMLConstants.LEGACY;
-import static org.kie.api.pmml.PMMLImplementationsUtil.isjPMMLAvailableToClassLoader;
-import static org.kie.api.pmml.PMMLImplementationsUtil.toEnable;
+import static org.kie.internal.pmml.PMMLImplementationsUtil.isjPMMLAvailableToClassLoader;
+import static org.kie.internal.pmml.PMMLImplementationsUtil.toEnable;
 
 public class PMMLAssemblerService implements KieAssemblerService {
 
