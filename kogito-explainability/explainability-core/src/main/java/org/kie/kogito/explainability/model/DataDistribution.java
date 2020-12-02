@@ -15,26 +15,34 @@
  */
 package org.kie.kogito.explainability.model;
 
-import java.util.Collections;
 import java.util.List;
 
 /**
- * Information about distribution of data used for training a model.
+ * Information about distribution of data (e.g. used for training a model).
  */
-public class DataDistribution {
-
-    private final List<FeatureDistribution> featureDistributions;
-
-    public DataDistribution(List<FeatureDistribution> featureDistributions) {
-        this.featureDistributions = Collections.unmodifiableList(featureDistributions);
-    }
+public interface DataDistribution {
 
     /**
-     * Get each feature data distribution
-     *
-     * @return feature distributions
+     * Sample a {@code PredictionInput} from this distribution.
+     * @return a prediction input
      */
-    public List<FeatureDistribution> getFeatureDistributions() {
-        return featureDistributions;
-    }
+    PredictionInput sample();
+
+    /**
+     * Sample a number of {@code PredictionInputs} from this distribution.
+     * @return a list of prediction inputs
+     */
+    List<PredictionInput> sample(int sampleSize);
+
+    /**
+     * Get all the {@code PredictionInputs} from this distribution.
+     * @return a list of prediction inputs
+     */
+    List<PredictionInput> getAllSamples();
+
+    /**
+     * Get separate (independent) distributions for each feature.
+     * @return a list of feature distributions
+     */
+    List<FeatureDistribution> asFeatureDistributions();
 }

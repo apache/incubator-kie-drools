@@ -17,10 +17,12 @@ package org.kie.kogito.explainability.utils;
 
 import java.time.Duration;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -35,7 +37,6 @@ import org.kie.kogito.explainability.model.Type;
 import org.kie.kogito.explainability.model.Value;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.in;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -330,18 +331,10 @@ class DataUtilsTest {
     void testRandomDistributionGeneration() {
         DataDistribution dataDistribution = DataUtils.generateRandomDataDistribution(10, 10, random);
         assertNotNull(dataDistribution);
-        assertNotNull(dataDistribution.getFeatureDistributions());
-        for (FeatureDistribution featureDistribution : dataDistribution.getFeatureDistributions()) {
+        assertNotNull(dataDistribution.asFeatureDistributions());
+        for (FeatureDistribution featureDistribution : dataDistribution.asFeatureDistributions()) {
             assertNotNull(featureDistribution);
         }
-    }
-
-    @Test
-    void testGetFeatureDistribution() {
-        double[] doubles = new double[10];
-        Arrays.fill(doubles, 1);
-        FeatureDistribution featureDistribution = DataUtils.getFeatureDistribution(doubles);
-        assertNotNull(featureDistribution);
     }
 
     @Test
@@ -408,5 +401,26 @@ class DataUtilsTest {
             Feature newFeature = DataUtils.dropOnLinearizedFeatures(target, source);
             assertNotEquals(source, newFeature);
         }
+    }
+
+    @Test
+    void testSampleWithReplacement() {
+        List<Double> emptyValues = new ArrayList<>();
+        List<Double> emptySamples = DataUtils.sampleWithReplacement(emptyValues, 1, random);
+        assertNotNull(emptySamples);
+        assertEquals(0, emptySamples.size());
+
+        List<Double> values = Arrays.stream(DataUtils.generateData(0, 1, 100, random)).boxed().collect(Collectors.toList());
+        int sampleSize = 10;
+        List<Double> samples = DataUtils.sampleWithReplacement(values, sampleSize, random);
+        assertNotNull(samples);
+        assertEquals(sampleSize, samples.size());
+        assertThat(values).contains(samples.get(random.nextInt(sampleSize - 1)));
+
+        int largerSampleSize = 300;
+        List<Double> largerSamples = DataUtils.sampleWithReplacement(values, largerSampleSize, random);
+        assertThat(largerSamples).isNotNull();
+        assertThat(largerSampleSize).isEqualTo(largerSamples.size());
+        assertThat(values).contains(largerSamples.get(random.nextInt(largerSampleSize - 1)));
     }
 }

@@ -16,18 +16,24 @@
 package org.kie.kogito.explainability.utils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
+import java.util.stream.IntStream;
 
 import org.kie.kogito.explainability.model.DataDistribution;
 import org.kie.kogito.explainability.model.Feature;
 import org.kie.kogito.explainability.model.FeatureDistribution;
 import org.kie.kogito.explainability.model.FeatureFactory;
+import org.kie.kogito.explainability.model.IndependentFeaturesDataDistribution;
+import org.kie.kogito.explainability.model.NumericFeatureDistribution;
 import org.kie.kogito.explainability.model.PerturbationContext;
+import org.kie.kogito.explainability.model.Prediction;
 import org.kie.kogito.explainability.model.PredictionInput;
+import org.kie.kogito.explainability.model.PredictionOutput;
 import org.kie.kogito.explainability.model.Type;
 import org.kie.kogito.explainability.model.Value;
 
@@ -328,20 +334,6 @@ public class DataUtils {
     }
 
     /**
-     * Calculate distribution statistics for an array of numbers.
-     *
-     * @param doubles an array of numbers
-     * @return feature distribution statistics
-     */
-    public static FeatureDistribution getFeatureDistribution(double[] doubles) {
-        double min = DoubleStream.of(doubles).min().orElse(0);
-        double max = DoubleStream.of(doubles).max().orElse(0);
-        double mean = getMean(doubles);
-        double stdDev = getStdDev(doubles, mean);
-        return new FeatureDistribution(min, max, mean, stdDev);
-    }
-
-    /**
      * Generate a random data distribution.
      *
      * @param noOfFeatures     number of features
@@ -352,10 +344,11 @@ public class DataUtils {
         List<FeatureDistribution> featureDistributions = new LinkedList<>();
         for (int i = 0; i < noOfFeatures; i++) {
             double[] doubles = generateData(random.nextDouble(), random.nextDouble(), distributionSize, random);
-            FeatureDistribution featureDistribution = DataUtils.getFeatureDistribution(doubles);
+            Feature feature = FeatureFactory.newNumericalFeature("f_" + i, Double.NaN);
+            FeatureDistribution featureDistribution = new NumericFeatureDistribution(feature, doubles);
             featureDistributions.add(featureDistribution);
         }
-        return new DataDistribution(featureDistributions);
+        return new IndependentFeaturesDataDistribution(featureDistributions);
     }
 
     /**
@@ -406,6 +399,38 @@ public class DataUtils {
             }
         } else {
             flattenedFeatures.add(f);
+        }
+    }
+
+    /**
+     * Build Predictions from PredictionInputs and PredictionOutputs.
+     *
+     * @param inputs prediction inputs
+     * @param os     prediction outputs
+     * @return a list of predictions
+     */
+    public static List<Prediction> getPredictions(List<PredictionInput> inputs, List<PredictionOutput> os) {
+        return IntStream.range(0, os.size())
+                .mapToObj(i -> new Prediction(inputs.get(i), os.get(i))).collect(Collectors.toList());
+    }
+
+    /**
+     * Sample (with replacement) from a list of values.
+     *
+     * @param values     the list to sample from
+     * @param sampleSize the no. of samples to draw
+     * @param random     a random instance
+     * @param <T>        the type of values to sample
+     * @return a list of sampled values
+     */
+    public static <T> List<T> sampleWithReplacement(List<T> values, int sampleSize, Random random) {
+        if (sampleSize <= 0 || values.isEmpty()) {
+            return Collections.emptyList();
+        } else {
+            return random
+                    .ints(sampleSize, 0, values.size())
+                    .mapToObj(values::get)
+                    .collect(Collectors.toList());
         }
     }
 }

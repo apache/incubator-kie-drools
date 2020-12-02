@@ -15,56 +15,24 @@
  */
 package org.kie.kogito.explainability.model;
 
+import java.util.List;
+
 /**
  * The data distribution for a given feature.
  */
-public class FeatureDistribution {
-
-    private final double min;
-    private final double max;
-    private final double mean;
-    private final double stdDev;
-
-    public FeatureDistribution(double min, double max, double mean, double stdDev) {
-        this.min = min;
-        this.max = max;
-        this.mean = mean;
-        this.stdDev = stdDev;
-    }
+public interface FeatureDistribution {
 
     /**
-     * Get minimum value for this feature
-     *
-     * @return the min value
+     * Get the feature associated with this distribution.
+     * Such features are expected to have {@code null} {@code Values}
+     * @return the feature associated with this distribution
      */
-    public double getMin() {
-        return min;
-    }
+    Feature getFeature();
 
-    /**
-     * Get the maximum value for this feature
-     *
-     * @return the max value
-     */
-    public double getMax() {
-        return max;
-    }
+    Value<?> sample();
 
-    /**
-     * Get the mean value for this feature
-     *
-     * @return the mean value
-     */
-    public double getMean() {
-        return mean;
-    }
+    List<Value<?>> sample(int sampleSize);
 
-    /**
-     * Get the standard deviation for this feature
-     *
-     * @return the standard deviation
-     */
-    public double getStdDev() {
-        return stdDev;
-    }
+    List<Value<?>> getAllSamples();
+
 }
