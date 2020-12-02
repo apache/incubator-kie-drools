@@ -25,7 +25,7 @@ import java.util.function.BiFunction;
 import java.util.stream.Stream;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
-import org.drools.compiler.commons.jci.compilers.CompilationResult;
+import org.drools.compiler.kie.builder.impl.CompilationProblemAdapter;
 import org.drools.compiler.compiler.io.File;
 import org.drools.compiler.compiler.io.memory.MemoryFile;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
@@ -36,7 +36,8 @@ import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.modelcompiler.CanonicalKieModule;
 import org.kie.api.builder.Message;
 import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.jci.CompilationProblem;
+import org.kie.memorycompiler.CompilationProblem;
+import org.kie.memorycompiler.CompilationResult;
 
 import static java.util.stream.Collectors.groupingBy;
 
@@ -100,7 +101,7 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
 
             Stream.of(res.getErrors()).collect(groupingBy( CompilationProblem::getFileName))
                     .forEach( (name, errors) -> {
-                        errors.forEach( messages::addMessage );
+                        errors.forEach( m -> messages.addMessage(new CompilationProblemAdapter( m )) );
                         File srcFile = srcMfs.getFile( name );
                         if ( srcFile instanceof MemoryFile ) {
                             String src = new String ( srcMfs.getFileContents( ( MemoryFile ) srcFile ) );
@@ -109,7 +110,7 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
                     } );
 
             for (CompilationProblem problem : res.getWarnings()) {
-                messages.addMessage(problem);
+                messages.addMessage(new CompilationProblemAdapter(problem));
             }
         }
 

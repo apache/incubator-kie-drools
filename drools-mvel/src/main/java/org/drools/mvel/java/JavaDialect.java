@@ -32,15 +32,12 @@ import org.drools.compiler.builder.impl.errors.FunctionErrorHandler;
 import org.drools.compiler.builder.impl.errors.RuleErrorHandler;
 import org.drools.compiler.builder.impl.errors.RuleInvokerErrorHandler;
 import org.drools.compiler.builder.impl.errors.SrcErrorHandler;
-import org.drools.compiler.commons.jci.compilers.CompilationResult;
-import org.drools.compiler.commons.jci.compilers.JavaCompiler;
-import org.drools.compiler.commons.jci.compilers.JavaCompilerFactory;
-import org.drools.compiler.commons.jci.readers.MemoryResourceReader;
 import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.PackageRegistry;
+import org.drools.compiler.kie.builder.impl.CompilationProblemAdapter;
 import org.drools.compiler.kie.builder.impl.InternalKieModule.CompilationCacheEntry;
 import org.drools.compiler.lang.descr.AccumulateDescr;
 import org.drools.compiler.lang.descr.AndDescr;
@@ -106,6 +103,10 @@ import org.drools.mvel.builder.MVELSalienceBuilder;
 import org.kie.api.io.Resource;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.jci.CompilationProblem;
+import org.kie.memorycompiler.CompilationResult;
+import org.kie.memorycompiler.JavaCompiler;
+import org.kie.memorycompiler.JavaCompilerFactory;
+import org.kie.memorycompiler.resources.MemoryResourceReader;
 
 public class JavaDialect
         implements
@@ -148,7 +149,7 @@ public class JavaDialect
     //
     private static final JavaExprAnalyzer analyzer = new JavaExprAnalyzer();
 
-    private final JavaDialectConfiguration configuration;
+    private final JavaForMvelDialectConfiguration configuration;
 
     private JavaCompiler compiler;
     private final InternalKnowledgePackage pkg;
@@ -171,7 +172,7 @@ public class JavaDialect
         this.pkg = pkg;
         this.packageRegistry = pkgRegistry;
 
-        this.configuration = (JavaDialectConfiguration) pkgConf.getDialectConfiguration("java");
+        this.configuration = ( JavaForMvelDialectConfiguration ) pkgConf.getDialectConfiguration("java");
 
         this.errorHandlers = new ConcurrentHashMap<String, ErrorHandler>();
         this.results = new ArrayList<KnowledgeBuilderResult>();
@@ -423,7 +424,7 @@ public class JavaDialect
         //this will sort out the errors based on what class/file they happened in
         if (result.getErrors().length > 0) {
             for (int i = 0; i < result.getErrors().length; i++) {
-                final CompilationProblem err = result.getErrors()[i];
+                final CompilationProblem err = new CompilationProblemAdapter( result.getErrors()[i] );
                 final ErrorHandler handler = this.errorHandlers.get(err.getFileName());
                 handler.addError(err);
             }
@@ -648,7 +649,7 @@ public class JavaDialect
     }
 
     private void loadCompiler() {
-        this.compiler = JavaCompilerFactory.INSTANCE.loadCompiler(this.configuration);
+        this.compiler = JavaCompilerFactory.loadCompiler(this.configuration);
     }
 
     public void addImport(ImportDescr importDescr) {

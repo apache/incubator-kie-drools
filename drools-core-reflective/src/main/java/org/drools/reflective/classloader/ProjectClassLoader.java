@@ -31,12 +31,13 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
 
+import org.kie.memorycompiler.StoreClassLoader;
 import org.drools.reflective.ComponentsFactory;
 import org.drools.reflective.ResourceProvider;
 import org.drools.reflective.util.ClassUtils;
 import org.kie.internal.utils.KieTypeResolver;
 
-public abstract class ProjectClassLoader extends ClassLoader implements KieTypeResolver {
+public abstract class ProjectClassLoader extends ClassLoader implements KieTypeResolver, StoreClassLoader {
 
     private static final boolean CACHE_NON_EXISTING_CLASSES = true;
     private static final ClassNotFoundException dummyCFNE = CACHE_NON_EXISTING_CLASSES ?
@@ -324,6 +325,7 @@ public abstract class ProjectClassLoader extends ClassLoader implements KieTypeR
         return store == null ? null : store.get(resourceName);
     }
 
+    @Override
     public Map<String, byte[]> getStore() {
         return store;
     }

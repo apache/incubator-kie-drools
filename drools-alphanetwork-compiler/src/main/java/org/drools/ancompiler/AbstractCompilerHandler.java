@@ -16,10 +16,13 @@
 
 package org.drools.ancompiler;
 
+import java.util.NoSuchElementException;
+
 import org.drools.core.base.ClassFieldReader;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.Sink;
 import org.drools.core.rule.ContextEntry;
+import org.drools.core.util.index.AlphaRangeIndex;
 
 /**
  * This handler is used as a base class for all {@link org.kie.reteoo.compiled.NetworkHandler}s used for
@@ -30,6 +33,8 @@ abstract class AbstractCompilerHandler extends NetworkHandlerAdaptor {
     protected static final String NEWLINE = "\n";
 
     private static final String MAP_VARIABLE_NAME_SUFFIX = "ToNodeId";
+
+    protected static final String RANGE_INDEX_VARIABLE_NAME_PREFIX = "rangeIndex";
 
     protected Class<?> getVariableType(AlphaNode alphaNode) {
 
@@ -73,8 +78,23 @@ abstract class AbstractCompilerHandler extends NetworkHandlerAdaptor {
      * @return variable name
      * @see Class#getSimpleName()
      */
-    private String getVariableName(Class<?> clazz, int nodeId) {
+    protected String getVariableName(Class<?> clazz, int nodeId) {
         String type = clazz.getSimpleName();
         return Character.toLowerCase(type.charAt(0)) + type.substring(1) + nodeId;
+    }
+
+    /*
+     * don't use internal constraint. Simply make an alphaNode variable
+     */
+    protected String getAlphaNodeVariableName(AlphaNode alphaNode) {
+        return getVariableName(AlphaNode.class, alphaNode.getId());
+    }
+
+    protected String getRangeIndexVariableName(AlphaRangeIndex alphaRangeIndex, int minId) {
+        return RANGE_INDEX_VARIABLE_NAME_PREFIX + minId + "_" + alphaRangeIndex.getFieldIndex().getIndex();
+    }
+
+    protected int getMinIdFromRangeIndex(AlphaRangeIndex alphaRangeIndex) {
+        return alphaRangeIndex.getAllValues().stream().map(AlphaNode::getId).mapToInt(v -> v).min().orElseThrow(NoSuchElementException::new);
     }
 }

@@ -28,6 +28,7 @@ import org.drools.core.InitialFact;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.Rete;
+import org.drools.core.util.index.AlphaRangeIndex;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -80,7 +81,9 @@ public class ObjectTypeNodeCompiler {
         // we need the hashed declarations when creating the constructor
         Collection<HashedAlphasDeclaration> hashedAlphaDeclarations = declarations.getHashedAlphaDeclarations();
 
-        createConstructor(hashedAlphaDeclarations);
+        Map<String, AlphaRangeIndex> rangeIndexDeclarationMap = declarations.getRangeIndexDeclarationMap();
+
+        createConstructor(hashedAlphaDeclarations, rangeIndexDeclarationMap);
 
         // create set node method
         SetNodeReferenceHandler setNode = new SetNodeReferenceHandler(builder);
@@ -109,7 +112,8 @@ public class ObjectTypeNodeCompiler {
                 parser.getIndexableConstraint(),
                 getName(),
                 getSourceName(),
-                objectTypeNode);
+                objectTypeNode,
+                rangeIndexDeclarationMap);
     }
 
     /**
@@ -132,8 +136,8 @@ public class ObjectTypeNodeCompiler {
      * @param hashedAlphaDeclarations declarations used for creating statements to populate the hashed alpha
      *                                maps for the generate class
      */
-    private void createConstructor(Collection<HashedAlphasDeclaration> hashedAlphaDeclarations) {
-        builder.append("public ").append(generatedClassSimpleName).append("(org.drools.core.spi.InternalReadAccessor readAccessor) {").append(NEWLINE);
+    private void createConstructor(Collection<HashedAlphasDeclaration> hashedAlphaDeclarations, Map<String, AlphaRangeIndex> rangeIndexDeclarationMap) {
+        builder.append("public ").append(generatedClassSimpleName).append("(org.drools.core.spi.InternalReadAccessor readAccessor, java.util.Map<String, " + AlphaRangeIndex.class.getCanonicalName() + "> rangeIndexDeclarationMap) {").append(NEWLINE);
 
         builder.append("this.readAccessor = readAccessor;\n");
         // for each hashed alpha, we need to fill in the map member variable with the hashed values to node Ids
@@ -167,6 +171,12 @@ public class ObjectTypeNodeCompiler {
                     builder.append(NEWLINE);
                 }
             }
+        }
+
+        // Range Index
+        for (String variableName : rangeIndexDeclarationMap.keySet()) {
+            builder.append("this." + variableName + " = rangeIndexDeclarationMap.get(\"" + variableName + "\");");
+            builder.append(NEWLINE);
         }
 
         builder.append("}").append(NEWLINE);

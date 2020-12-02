@@ -21,7 +21,7 @@ import java.util.Map;
 
 import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.DialectConfiguration;
-import org.drools.compiler.compiler.JavaConfiguration;
+import org.drools.compiler.compiler.JavaDialectConfiguration;
 import org.drools.compiler.kie.util.BeanCreator;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.LiteralRestrictionDescr;
@@ -144,7 +144,7 @@ public interface ConstraintBuilder {
 
         @Override
         public DialectConfiguration createJavaDialectConfiguration() {
-            return new JavaConfiguration();
+            return new JavaDialectConfiguration();
         }
 
         @Override

@@ -40,7 +40,7 @@ import com.sun.tools.xjc.model.Model;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.drools.compiler.commons.jci.readers.MemoryResourceReader;
+import org.kie.memorycompiler.resources.MemoryResourceReader;
 import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.compiler.ProjectJavaCompiler;

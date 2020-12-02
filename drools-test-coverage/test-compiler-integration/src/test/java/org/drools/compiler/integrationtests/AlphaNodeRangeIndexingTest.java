@@ -22,8 +22,10 @@ import java.util.Collection;
 import java.util.List;
 
 import org.assertj.core.api.Assertions;
+import org.drools.ancompiler.CompiledNetwork;
 import org.drools.core.reteoo.CompositeObjectSinkAdapter;
 import org.drools.core.reteoo.ObjectSink;
+import org.drools.core.reteoo.ObjectSinkPropagator;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.util.DateUtils;
 import org.drools.core.util.index.AlphaRangeIndex;
@@ -116,10 +118,15 @@ public class AlphaNodeRangeIndexingTest {
     }
 
     private void assertSinks(KieBase kbase, Class<?> factClass, int sinksLength, int sinkAdapterSize, int rangeIndexableSinksSize, int rangeIndexSize) {
-        // Need to change the logic if you test with ANC
         final ObjectTypeNode otn = KieUtil.getObjectTypeNode(kbase, factClass);
         assertNotNull(otn);
-        final CompositeObjectSinkAdapter sinkAdapter = (CompositeObjectSinkAdapter) otn.getObjectSinkPropagator();
+
+        ObjectSinkPropagator objectSinkPropagator = otn.getObjectSinkPropagator();
+        if (this.kieBaseTestConfiguration.useAlphaNetworkCompiler()) {
+            objectSinkPropagator = ((CompiledNetwork) objectSinkPropagator).getOriginalSinkPropagator();
+        }
+        CompositeObjectSinkAdapter sinkAdapter = (CompositeObjectSinkAdapter) objectSinkPropagator;
+
         ObjectSink[] sinks = sinkAdapter.getSinks();
         assertEquals(sinksLength, sinks.length);
         assertEquals(sinkAdapterSize, sinkAdapter.size());
@@ -365,15 +372,6 @@ public class AlphaNodeRangeIndexingTest {
         final KieBase kbase = createKieBaseWithRangeIndexThresholdValue(drl, 3);
         final KieSession ksession = kbase.newKieSession();
 
-        final ObjectTypeNode otn = KieUtil.getObjectTypeNode(kbase, Person.class);
-        assertNotNull(otn);
-        final CompositeObjectSinkAdapter sinkAdapter = (CompositeObjectSinkAdapter) otn.getObjectSinkPropagator();
-        ObjectSink[] sinks = sinkAdapter.getSinks();
-        assertEquals(6, sinks.length);
-        assertEquals(6, sinkAdapter.size());
-        assertNull(sinkAdapter.getRangeIndexableSinks());
-        assertEquals(6, sinkAdapter.getRangeIndexMap().entrySet().iterator().next().getValue().size());
-
         assertSinks(kbase, Person.class, 6, 6, 0, 6);
 
         ksession.insert(new Person("John"));
@@ -520,6 +518,11 @@ public class AlphaNodeRangeIndexingTest {
         // remove 2 rules
         kbase.removeRule("org.drools.compiler.test", "test2");
         kbase.removeRule("org.drools.compiler.test", "test3");
+
+        if (this.kieBaseTestConfiguration.useAlphaNetworkCompiler()) {
+            // after removeRule, ANC is not recreated
+            return;
+        }
 
         assertSinks(kbase, Person.class, 4, 4, 0, 4); // still above threshold
 
@@ -684,7 +687,11 @@ public class AlphaNodeRangeIndexingTest {
 
         final ObjectTypeNode otn = KieUtil.getObjectTypeNode(kbase, Person.class);
         assertNotNull(otn);
-        final CompositeObjectSinkAdapter sinkAdapter = (CompositeObjectSinkAdapter) otn.getObjectSinkPropagator();
+        ObjectSinkPropagator objectSinkPropagator = otn.getObjectSinkPropagator();
+        if (this.kieBaseTestConfiguration.useAlphaNetworkCompiler()) {
+            objectSinkPropagator = ((CompiledNetwork) objectSinkPropagator).getOriginalSinkPropagator();
+        }
+        CompositeObjectSinkAdapter sinkAdapter = (CompositeObjectSinkAdapter) objectSinkPropagator;
         ObjectSink[] sinks = sinkAdapter.getSinks();
         assertEquals(12, sinks.length);
         assertEquals(12, sinkAdapter.size());
@@ -891,6 +898,11 @@ public class AlphaNodeRangeIndexingTest {
 
         kbase.removeRule("org.drools.compiler.test", "test9");
 
+        if (this.kieBaseTestConfiguration.useAlphaNetworkCompiler()) {
+            // after removeRule, ANC is not recreated
+            return;
+        }
+
         assertSinks(kbase, Person.class, 8, 8, 8, 0); // under threshold so not indexed
 
         final KieSession ksession = kbase.newKieSession();
@@ -902,5 +914,77 @@ public class AlphaNodeRangeIndexingTest {
         ksession.insert(new Person("Paul", 60));
         fired = ksession.fireAllRules();
         assertEquals(3, fired);
+    }
+
+    @Test
+    public void testMixedRangeHashAndOther() {
+        final String drl =             "package org.drools.compiler.test\n" +
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "global java.util.List results;\n" +
+                "rule test1\n when\n" +
+                "   Person( age >= 18 )\n" +
+                "then\n" +
+                "   results.add(drools.getRule().getName());" +
+                "end\n" +
+                "rule test2\n when\n" +
+                "   Person( age < 25 )\n" +
+                "then\n" +
+                "   results.add(drools.getRule().getName());" +
+                "end\n" +
+                "rule test3\n when\n" +
+                "   Person( age > 8 )\n" +
+                "then\n" +
+                "   results.add(drools.getRule().getName());" +
+                "end\n" +
+                "rule test4\n when\n" +
+                "   Person( age == 60 )\n" +
+                "then\n" +
+                "   results.add(drools.getRule().getName());" +
+                "end\n" +
+                "rule test5\n when\n" +
+                "   Person( age == 12 )\n" +
+                "then\n" +
+                "   results.add(drools.getRule().getName());" +
+                "end\n" +
+                "rule test6\n when\n" +
+                "   Person( age == 4 )\n" +
+                "then\n" +
+                "   results.add(drools.getRule().getName());" +
+                "end\n" +
+                "rule test7\n when\n" +
+                "   Person( age != 18 )\n" +
+                "then\n" +
+                "   results.add(drools.getRule().getName());" +
+                "end\n";
+
+        final KieBase kbase = createKieBaseWithRangeIndexThresholdValue(drl, 3);
+        final KieSession ksession = kbase.newKieSession();
+
+        final ObjectTypeNode otn = KieUtil.getObjectTypeNode(kbase, Person.class);
+        assertNotNull(otn);
+        ObjectSinkPropagator objectSinkPropagator = otn.getObjectSinkPropagator();
+        if (this.kieBaseTestConfiguration.useAlphaNetworkCompiler()) {
+            objectSinkPropagator = ((CompiledNetwork) objectSinkPropagator).getOriginalSinkPropagator();
+        }
+        CompositeObjectSinkAdapter sinkAdapter = (CompositeObjectSinkAdapter) objectSinkPropagator;
+        ObjectSink[] sinks = sinkAdapter.getSinks();
+        assertEquals(7, sinks.length);
+        assertEquals(7, sinkAdapter.size());
+        assertNull(sinkAdapter.getRangeIndexableSinks());
+        assertEquals(3, sinkAdapter.getRangeIndexMap().entrySet().iterator().next().getValue().size());
+        assertEquals(3, sinkAdapter.getHashedSinkMap().size());
+        assertEquals(1, sinkAdapter.getOtherSinks().size());
+
+        List<String> results = new ArrayList<>();
+        ksession.setGlobal("results", results);
+
+        ksession.insert(new Person("John", 18));
+        ksession.fireAllRules();
+        Assertions.assertThat(results).containsOnly("test1", "test2", "test3");
+        results.clear();
+
+        ksession.insert(new Person("Paul", 60));
+        ksession.fireAllRules();
+        Assertions.assertThat(results).containsOnly("test1", "test3", "test4", "test7");
     }
 }
