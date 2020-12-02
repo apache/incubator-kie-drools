@@ -48,16 +48,16 @@ public class MVELExpressionEvaluator implements ExpressionEvaluator {
     }
 
     @Override
-    public boolean evaluateUnaryExpression(String rawExpression, Object resultValue, Class<?> resultClass) {
+    public ExpressionEvaluatorResult evaluateUnaryExpression(String rawExpression, Object resultValue, Class<?> resultClass) {
         Map<String, Object> params = new HashMap<>();
         params.put(ACTUAL_VALUE_IDENTIFIER, resultValue);
 
         Object expressionResult = compileAndExecute(rawExpression, params);
         if (!(expressionResult instanceof Boolean)) {
             // try to compare via compare/equals operators
-            return compareValues(expressionResult, resultValue);
+            return new ExpressionEvaluatorResult(compareValues(expressionResult, resultValue));
         }
-        return (boolean) expressionResult;
+        return new ExpressionEvaluatorResult((boolean) expressionResult);
     }
 
     @Override

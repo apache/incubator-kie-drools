@@ -91,9 +91,9 @@ public class AbstractExpressionEvaluatorTest {
 
     @Test
     public void evaluateUnaryExpression() {
-        assertTrue(expressionEvaluatorLocal.evaluateUnaryExpression(null, null, String.class));
-        assertTrue(expressionEvaluatorLocal.evaluateUnaryExpression(null, null, Map.class));
-        assertTrue(expressionEvaluatorLocal.evaluateUnaryExpression(null, null, List.class));
+        assertTrue(expressionEvaluatorLocal.evaluateUnaryExpression(null, null, String.class).isSuccessful());
+        assertTrue(expressionEvaluatorLocal.evaluateUnaryExpression(null, null, Map.class).isSuccessful());
+        assertTrue(expressionEvaluatorLocal.evaluateUnaryExpression(null, null, List.class).isSuccessful());
     }
 
     @Test
