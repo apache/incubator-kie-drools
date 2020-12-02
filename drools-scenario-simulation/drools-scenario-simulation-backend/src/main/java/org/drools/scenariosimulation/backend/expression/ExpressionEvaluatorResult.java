@@ -16,17 +16,14 @@
 package org.drools.scenariosimulation.backend.expression;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static org.drools.scenariosimulation.backend.runner.model.ValueWrapper.errorWithMessage;
-
 public class ExpressionEvaluatorResult {
 
-    private boolean successful;
-    private List<String> pathToWrongValue;
-    private String wrongValue;
+    private final boolean successful;
+    private final List<String> pathToWrongValue;
+    private final String wrongValue;
 
     public static ExpressionEvaluatorResult ofSuccessful() {
         return new ExpressionEvaluatorResult(true);
@@ -48,45 +45,29 @@ public class ExpressionEvaluatorResult {
 
     public ExpressionEvaluatorResult(boolean successful) {
         this.successful = successful;
-        pathToWrongValue = new ArrayList<>();
+        this.wrongValue = null;
+        this.pathToWrongValue = null;
     }
 
     public boolean isSuccessful() {
         return successful;
     }
 
-    public void setSuccessful(boolean successful) {
-        this.successful = successful;
-    }
-
-    public List<String> getPathToWrongValue() {
-        return Collections.unmodifiableList(pathToWrongValue);
-    }
-
-    public void setPathToWrongValue(List<String> pathToWrongValue) {
-        this.pathToWrongValue = pathToWrongValue;
-    }
-
-    public Optional<String> getWrongValue() {
-        return Optional.ofNullable(wrongValue);
-    }
-
-    public void setWrongValue(String wrongValue) {
-        this.wrongValue = wrongValue;
-    }
-
     public Optional<String> getMessage() {
-        if (!isSuccessful() && (pathToWrongValue != null || !pathToWrongValue.isEmpty())) {
+        if (!successful && (null != pathToWrongValue || !pathToWrongValue.isEmpty())) {
             if (wrongValue != null) {
-                return Optional.ofNullable("Value \"" + wrongValue + "\" of " + String.join(".", pathToWrongValue) + " item is wrong");
+                return Optional.ofNullable("Value \"" + wrongValue + "\" of " + String.join(".", pathToWrongValue) + " item is wrong.");
             } else {
-                return Optional.ofNullable("Item " + String.join(".", pathToWrongValue) + " is undefined or not expected");
+                return Optional.ofNullable("Item " + String.join(".", pathToWrongValue) + " is undefined or not expected.");
             }
         }
         return Optional.empty();
     }
 
     public void addStepToPath(String path) {
+        if (successful || null == pathToWrongValue) {
+            throw new UnsupportedOperationException("This instance doesn't hold additional information.");
+        }
         pathToWrongValue.add(0, path);
     }
 }

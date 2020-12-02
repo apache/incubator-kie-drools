@@ -190,13 +190,14 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
                     }
                 }
             }
+
             if (!success) {
-                String wrongValue = simpleTypeNode ? getSimpleTypeNodeTextValue(node) : verifiedObject.getWrongValue().get();
-                List<String> pathToWrongValue = Arrays.asList("List(" + elementNumber + ")");
+                String listElement = "Item(" + elementNumber + ")";
                 if (!simpleTypeNode) {
-                    pathToWrongValue.addAll(verifiedObject.getPathToWrongValue());
+                    verifiedObject.addStepToPath(listElement);
+                    return verifiedObject;
                 }
-                return ExpressionEvaluatorResult.ofFailed(wrongValue, pathToWrongValue);
+                return ExpressionEvaluatorResult.ofFailed(getSimpleTypeNodeTextValue(node), Arrays.asList(listElement));
             }
         }
         return ExpressionEvaluatorResult.ofSuccessful();

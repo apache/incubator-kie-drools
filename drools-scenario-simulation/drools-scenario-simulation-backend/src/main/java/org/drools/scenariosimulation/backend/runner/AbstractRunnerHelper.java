@@ -312,7 +312,7 @@ public abstract class AbstractRunnerHelper {
                 return of(resultRaw);
             } else if (isCollection(className)) {
                 return errorWithMessage(evaluationResult.getMessage().orElse(
-                        "Impossible to find elements in the collection to satisfy the conditions"));
+                        "Impossible to find elements in the collection to satisfy the conditions."));
             } else {
                 return errorWithValidValue(resultRaw, expectedResultRaw);
             }
