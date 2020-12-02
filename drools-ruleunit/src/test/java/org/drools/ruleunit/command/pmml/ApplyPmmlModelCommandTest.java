@@ -8,11 +8,11 @@ import org.kie.api.KieBase;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLConstants;
 import org.kie.api.pmml.PMMLRequestData;
+import org.kie.api.runtime.Context;
 import org.kie.internal.command.RegistryContext;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.kie.api.pmml.PMMLImplementationsUtil.toEnable;
 
 public class ApplyPmmlModelCommandTest {
 
@@ -98,7 +98,7 @@ public class ApplyPmmlModelCommandTest {
         }
 
         @Override
-        protected PMMLConstants getToInvoke() {
+        protected PMMLConstants getToInvoke(Context context) {
             return IMPLEMENTATION;
         }
 

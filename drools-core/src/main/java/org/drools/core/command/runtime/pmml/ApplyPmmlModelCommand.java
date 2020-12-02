@@ -26,11 +26,14 @@ import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.drools.core.command.IdentifiableResult;
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLConstants;
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.api.runtime.Context;
+import org.kie.api.runtime.KieSession;
+import org.kie.internal.command.RegistryContext;
 import org.kie.internal.pmml.PMMLCommandExecutorFactory;
 import org.kie.internal.ruleunit.RuleUnitComponentFactory;
 
@@ -127,7 +130,7 @@ public class ApplyPmmlModelCommand implements ExecutableCommand<PMML4Result>, Id
         if (requestData == null) {
             throw new IllegalStateException("ApplyPmmlModelCommand requires request data (PMMLRequestData) to execute");
         }
-        final PMMLConstants toInvoke = getToInvoke();
+        final PMMLConstants toInvoke = getToInvoke(context);
         switch (toInvoke) {
             case NEW:
                 return executePMMLTrusty();
@@ -138,8 +141,15 @@ public class ApplyPmmlModelCommand implements ExecutableCommand<PMML4Result>, Id
         }
     }
 
-    protected PMMLConstants getToInvoke() {
-        return toEnable(Thread.currentThread().getContextClassLoader());
+    protected PMMLConstants getToInvoke(Context context) {
+        ClassLoader classLoader = getClassLoader((RegistryContext)context);
+        return toEnable(classLoader);
+    }
+
+    private ClassLoader getClassLoader(RegistryContext registryContext) {
+        KieSession kieSession = registryContext.lookup(KieSession.class);
+        InternalKnowledgeBase kieBase = (InternalKnowledgeBase) kieSession.getKieBase();
+        return kieBase.getRootClassLoader();
     }
 
     private PMML4Result executePMMLLegacy(Context context) {
