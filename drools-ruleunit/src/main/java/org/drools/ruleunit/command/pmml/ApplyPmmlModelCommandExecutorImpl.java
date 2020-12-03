@@ -212,11 +212,6 @@ public class ApplyPmmlModelCommandExecutorImpl implements ApplyPmmlModelCommandE
     }
 
     protected boolean isjPMMLAvailableToClassLoader(ClassLoader classLoader) {
-        try {
-            classLoader.loadClass("org.kie.dmn.jpmml.DMNjPMMLInvocationEvaluator");
-            return true;
-        } catch (ClassNotFoundException e) {
-            return false;
-        }
+        return org.kie.internal.pmml.PMMLImplementationsUtil.isjPMMLAvailableToClassLoader(classLoader);
     }
 }
