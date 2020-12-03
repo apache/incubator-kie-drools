@@ -990,8 +990,7 @@ public class DefaultAgenda
         for ( Declaration declaration : declarations.values() ) {
             if ( "processInstance".equals( declaration.getIdentifier() )
                     || "org.kie.api.runtime.process.WorkflowProcessInstance".equals(declaration.getTypeName())) {
-                Object value = declaration.getValue( workingMemory,
-                                                     activation.getTuple().get( declaration ).getObject() );
+                Object value = declaration.getValue( workingMemory, activation.getTuple() );
                 if ( value instanceof ProcessInstance ) {
                     return sameProcessInstance( processInstanceId, ( ProcessInstance ) value );
                 }

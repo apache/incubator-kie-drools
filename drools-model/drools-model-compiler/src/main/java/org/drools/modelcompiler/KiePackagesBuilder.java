@@ -39,6 +39,7 @@ import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.base.EnabledBoolean;
 import org.drools.core.base.SalienceInteger;
+import org.drools.core.base.accumulators.DummyAccumulateFunction;
 import org.drools.core.base.extractors.ArrayElementReader;
 import org.drools.core.base.extractors.SelfReferenceClassFieldReader;
 import org.drools.core.definitions.InternalKnowledgePackage;
@@ -129,10 +130,12 @@ import org.drools.modelcompiler.constraints.BindingEvaluator;
 import org.drools.modelcompiler.constraints.BindingInnerObjectEvaluator;
 import org.drools.modelcompiler.constraints.CombinedConstraint;
 import org.drools.modelcompiler.constraints.ConstraintEvaluator;
+import org.drools.modelcompiler.constraints.GroupByDeclaration;
 import org.drools.modelcompiler.constraints.LambdaAccumulator;
 import org.drools.modelcompiler.constraints.LambdaConstraint;
 import org.drools.modelcompiler.constraints.LambdaDataProvider;
 import org.drools.modelcompiler.constraints.LambdaEvalExpression;
+import org.drools.modelcompiler.constraints.LambdaGroupByAccumulator;
 import org.drools.modelcompiler.constraints.LambdaReadAccessor;
 import org.drools.modelcompiler.constraints.TemporalConstraintEvaluator;
 import org.drools.modelcompiler.constraints.UnificationConstraint;
@@ -414,7 +417,7 @@ public class KiePackagesBuilder {
         for (int i = 0; i < consequenceVars.length; i++) {
             requiredDeclarationNames[i] = consequenceVars[i].getName();
             if (!ruleHasFirstLevelOr) {
-                requiredDeclarations[i] = ctx.getRule().getDeclaration( requiredDeclarationNames[i] );
+                requiredDeclarations[i] = ctx.getDeclaration( consequenceVars[i] );
             }
         }
 
@@ -488,9 +491,7 @@ public class KiePackagesBuilder {
                 return buildAccumulate( ctx, group, (AccumulatePattern) condition );
 
             case GROUP_BY:
-                GroupByPattern groupByPattern = ( GroupByPattern ) condition;
-                group.addChild( buildPattern( ctx, group, new GroupByBuilder( ctx, groupByPattern ).build() ) );
-                return buildAccumulate( ctx, group, groupByPattern );
+                return buildGroupBy( ctx, group, ( GroupByPattern ) condition );
 
             case QUERY:
                 return buildQueryPattern( ctx, ( (QueryCallPattern) condition ) );
@@ -533,6 +534,15 @@ public class KiePackagesBuilder {
                 }
         }
         throw new UnsupportedOperationException();
+    }
+
+    private RuleConditionElement buildGroupBy( RuleContext ctx, GroupElement group, GroupByPattern groupByPattern ) {
+        if (GroupByBuilder.USE_GROUP_BY_NODE) {
+            return buildAccumulate( ctx, group, groupByPattern );
+        }
+
+        group.addChild( buildPattern( ctx, group, new GroupByBuilder( ctx, groupByPattern ).build() ) );
+        return buildAccumulate( ctx, group, groupByPattern );
     }
 
     private RuleConditionElement buildAccumulate( RuleContext ctx, GroupElement group, AccumulatePattern accumulatePattern ) {
@@ -662,7 +672,7 @@ public class KiePackagesBuilder {
                                                                         arg.getType() );
                     Declaration varDeclaration = pattern.addDeclaration( var.getName() );
                     varDeclaration.setReadAccessor( reader );
-                    ctx.addInnerDeclaration( var, varDeclaration );
+                    ctx.addDeclaration( var, varDeclaration );
                     arguments[i] = QueryArgument.VAR;
                     varIndexList.add( i );
                 }
@@ -694,7 +704,7 @@ public class KiePackagesBuilder {
             if (binding.getReactOn() != null) {
                 addFieldsToPatternWatchlist( pattern, binding.getReactOn() );
             }
-            ctx.addInnerDeclaration(binding.getBoundVariable(), declaration);
+            ctx.addDeclaration(binding.getBoundVariable(), declaration);
         }
 
         Declaration queryArgDecl = ctx.getQueryDeclaration( modelPattern.getPatternVariable() );
@@ -739,7 +749,11 @@ public class KiePackagesBuilder {
                                        RuleConditionElement source, Pattern pattern,
                                        List<String> usedVariableName, Collection<Binding> bindings) {
 
+        boolean isGroupBy = GroupByBuilder.USE_GROUP_BY_NODE && accPattern instanceof GroupByPattern;
         AccumulateFunction[] accFunctions = accPattern.getAccumulateFunctions();
+        if (isGroupBy && accFunctions.length == 0) {
+            accFunctions = new AccumulateFunction[] { new AccumulateFunction( null, () -> DummyAccumulateFunction.INSTANCE ) };
+        }
         Accumulate accumulate;
 
         if (accFunctions.length == 1) {
@@ -753,14 +767,25 @@ public class KiePackagesBuilder {
             }
             final BindingEvaluator bindingEvaluator = createBindingEvaluator(ctx, binding);
 
-            final Accumulator accumulator = createAccumulator(usedVariableName, bindingEvaluator, accFunction);
-            final Variable boundVar = accPattern.getBoundVariables()[0];
+
+            final Variable boundVar = accPattern.getBoundVariables().length == 0 ? new DeclarationImpl( Object.class ) : accPattern.getBoundVariables()[0];
             final Declaration declaration = new Declaration(boundVar.getName(),
                                                             getReadAcessor( JAVA_CLASS_OBJECT_TYPE ),
                                                             pattern,
                                                             true);
             pattern.addDeclaration(declaration);
-            ctx.addInnerDeclaration( boundVar, declaration );
+            ctx.addDeclaration( boundVar, declaration );
+
+            Accumulator accumulator = createAccumulator(usedVariableName, bindingEvaluator, accFunction);
+            if (isGroupBy) {
+                GroupByPattern groupBy = ( GroupByPattern ) accPattern;
+                ctx.addDependantDeclaration( groupBy.getVarKey(), boundVar, new GroupByDeclaration(declaration.getPattern()) );
+                Declaration[] groupingDeclarations = new Declaration[groupBy.getVars().length];
+                for (int i = 0; i < groupBy.getVars().length; i++) {
+                    groupingDeclarations[i] = ctx.getDeclaration( groupBy.getVars()[i] );
+                }
+                accumulator = new LambdaGroupByAccumulator(accumulator, groupingDeclarations, groupBy.getGroupingFunction());
+            }
 
             Declaration[] requiredDeclarations = getRequiredDeclarationsForAccumulate( ctx, source, accFunction, binding, bindingEvaluator );
             accumulate = new SingleAccumulate(source, requiredDeclarations, accumulator);
@@ -780,7 +805,7 @@ public class KiePackagesBuilder {
                                                            pattern,
                                                            true );
                 pattern.addDeclaration( declaration );
-                ctx.addInnerDeclaration( boundVar, declaration );
+                ctx.addDeclaration( boundVar, declaration );
                 accumulators[i] = accumulator;
 
                 Declaration[] requiredDeclarations = getRequiredDeclarationsForAccumulate( ctx, source, accFunctions[i], binding, bindingEvaluator );
