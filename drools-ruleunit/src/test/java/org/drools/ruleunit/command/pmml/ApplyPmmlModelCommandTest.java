@@ -12,7 +12,10 @@ import org.kie.api.runtime.Context;
 import org.kie.internal.command.RegistryContext;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 public class ApplyPmmlModelCommandTest {
 
@@ -98,6 +101,17 @@ public class ApplyPmmlModelCommandTest {
         PMMLRequestData data = new PMMLRequestData("123", "Sample Score");
         cmd.setRequestData(data);
         cmd.execute(new ContextImpl());
+    }
+
+    @Test
+    public void testIsMining() {
+        ApplyPmmlModelCommand cmd = new ApplyPmmlModelCommand();
+        assertNull(cmd.getHasMining());
+        assertFalse(cmd.isMining());
+        cmd.setHasMining(false);
+        assertFalse(cmd.isMining());
+        cmd.setHasMining(true);
+        assertTrue(cmd.isMining());
     }
 
     private class ApplyPmmlModelCommandTester extends ApplyPmmlModelCommand {
