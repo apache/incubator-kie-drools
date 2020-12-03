@@ -149,7 +149,13 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
     public <GroupKey_, ResultContainer_, Result_> BiConstraintStream<GroupKey_, Result_> groupBy(
             BiFunction<A, B, GroupKey_> groupKeyMapping,
             BiConstraintCollector<A, B, ResultContainer_, Result_> collector) {
-        throw new UnsupportedOperationException();
+        BavetGroupBridgeBiConstraintStream<Solution_, A, B, GroupKey_, ResultContainer_, Result_> bridge =
+                new BavetGroupBridgeBiConstraintStream<>(constraintFactory, this, groupKeyMapping, collector);
+        childStreamList.add(bridge);
+        BavetGroupBiConstraintStream<Solution_, GroupKey_, ResultContainer_, Result_> groupStream =
+                new BavetGroupBiConstraintStream<>(constraintFactory, bridge, collector.finisher());
+        bridge.setGroupStream(groupStream);
+        return groupStream;
     }
 
     @Override

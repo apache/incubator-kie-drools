@@ -750,7 +750,7 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
 
     @TestTemplate
     public void groupBy_1Mapping1Collector_count() {
-        assumeDrools();
+
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 3, 7);
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector((factory) -> {
