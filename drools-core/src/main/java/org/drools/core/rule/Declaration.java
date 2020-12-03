@@ -24,9 +24,11 @@ import java.lang.reflect.Method;
 import org.drools.core.base.ClassFieldReader;
 import org.drools.core.base.ValueType;
 import org.drools.core.common.DroolsObjectInputStream;
+import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.spi.AcceptsReadAccessor;
 import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.spi.Tuple;
 
 import static org.drools.core.util.ClassUtils.canonicalName;
 import static org.drools.core.util.ClassUtils.convertFromPrimitiveType;
@@ -229,6 +231,14 @@ public class Declaration
 
     public void setDeclarationClass( Class<?> declarationClass ) {
         this.declarationClass = declarationClass;
+    }
+
+    public Object getValue(InternalWorkingMemory workingMemory, Tuple tuple) {
+        return getValue( workingMemory, tuple.get( this ) );
+    }
+
+    public Object getValue(InternalWorkingMemory workingMemory, InternalFactHandle fh) {
+        return getValue( workingMemory, fh.getObject() );
     }
 
     public Object getValue(InternalWorkingMemory workingMemory,

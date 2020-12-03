@@ -14,9 +14,6 @@
 
 package org.drools.modelcompiler;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -29,7 +26,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.assertj.core.api.Assertions;
 import org.drools.core.base.accumulators.CountAccumulateFunction;
-import org.drools.core.reteoo.SubnetworkTuple;
 import org.drools.model.DSL;
 import org.drools.model.Global;
 import org.drools.model.Index;
@@ -52,7 +48,6 @@ import org.drools.modelcompiler.util.EvaluationUtil;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.rule.AccumulateFunction;
 import org.kie.api.runtime.rule.FactHandle;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -753,6 +748,6 @@ public class GroupByTest {
         ksession.insert(new Person("Edoardo", 33));
         ksession.fireAllRules();
 
-        assertThat(results).containsExactly(80, 75, 71);
+        assertThat(results).contains(80, 75, 71);
     }
 }

@@ -594,16 +594,16 @@ public class PhreakAccumulateNode {
         }
     }
 
-    private void evaluateResultConstraints(final AccumulateNode accNode,
-                                           final LeftTupleSink sink,
-                                           final Accumulate accumulate,
-                                           final LeftTuple leftTuple,
-                                           final PropagationContext context,
-                                           final InternalWorkingMemory workingMemory,
-                                           final AccumulateMemory memory,
-                                           final AccumulateContext accctx,
-                                           final TupleSets<LeftTuple> trgLeftTuples,
-                                           final TupleSets<LeftTuple> stagedLeftTuples) {
+    protected void evaluateResultConstraints(final AccumulateNode accNode,
+                                            final LeftTupleSink sink,
+                                            final Accumulate accumulate,
+                                            final LeftTuple leftTuple,
+                                            final PropagationContext context,
+                                            final InternalWorkingMemory workingMemory,
+                                            final AccumulateMemory memory,
+                                            final AccumulateContext accctx,
+                                            final TupleSets<LeftTuple> trgLeftTuples,
+                                            final TupleSets<LeftTuple> stagedLeftTuples) {
         // get the actual result
         Object result = accumulate.getResult(memory.workingMemoryContext,
                                              accctx.context,
@@ -636,7 +636,7 @@ public class PhreakAccumulateNode {
         BetaConstraints resultBinder = accNode.getResultBinder();
         boolean isAllowed = true;
         for ( AlphaNodeFieldConstraint resultConstraint : resultConstraints ) {
-            if ( !resultConstraint.isAllowed( accctx.resultFactHandle,
+            if ( !resultConstraint.isAllowed( accctx.getResultFactHandle(),
                                               workingMemory ) ) {
                 isAllowed = false;
                 break;

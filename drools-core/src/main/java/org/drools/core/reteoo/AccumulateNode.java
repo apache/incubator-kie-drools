@@ -140,7 +140,6 @@ public class AccumulateNode extends BetaNode {
         return NodeTypeEnums.AccumulateNode;
     }
 
-
     public Accumulate getAccumulate() {
         return this.accumulate;
     }       
@@ -306,7 +305,7 @@ public class AccumulateNode extends BetaNode {
         ContextOwner, Externalizable {
         public  Object              context;
         public  RightTuple          result;
-        public  InternalFactHandle  resultFactHandle;
+        private InternalFactHandle  resultFactHandle;
         public  LeftTuple           resultLeftTuple;
         public  boolean             propagated;
         private WorkingMemoryAction action; // is transiant
