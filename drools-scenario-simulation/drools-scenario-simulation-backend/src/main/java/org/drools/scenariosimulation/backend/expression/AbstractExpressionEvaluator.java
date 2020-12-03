@@ -176,7 +176,7 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
             elementNumber++;
             boolean success = false;
             boolean simpleTypeNode = isSimpleTypeNode(node);
-            ExpressionEvaluatorResult evaluatorResult = ExpressionEvaluatorResult.ofFailed(getSimpleTypeNodeTextValue(node), new ArrayList<>());
+            ExpressionEvaluatorResult evaluatorResult = ExpressionEvaluatorResult.ofFailed();
 
             for (Object result : resultRaw) {
                 if (simpleTypeNode && internalUnaryEvaluation(getSimpleTypeNodeTextValue(node), result, result.getClass(), true)) {
@@ -193,6 +193,9 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
             }
 
             if (!success) {
+                if (simpleTypeNode) {
+                    evaluatorResult.setWrongValue(getSimpleTypeNodeTextValue(node));
+                }
                 evaluatorResult.addListItemStepToPath(elementNumber);
                 return evaluatorResult;
             }

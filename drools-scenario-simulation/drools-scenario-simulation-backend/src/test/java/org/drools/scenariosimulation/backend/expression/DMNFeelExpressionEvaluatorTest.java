@@ -121,7 +121,7 @@ public class DMNFeelExpressionEvaluatorTest {
         assertTrue(parsedValue.containsKey("key_a"));
         assertEquals(parsedValue.get("key_a"), BigDecimal.valueOf(1));
         List<BigDecimal> parsedValueListExpression = (List<BigDecimal>) expressionEvaluator.evaluateLiteralExpression(new TextNode("[10, 12]").toString(), List.class.getCanonicalName(), Collections.emptyList());
-        assertTrue(parsedValueListExpression.size() == 2);
+        assertEquals(2, parsedValueListExpression.size());
         assertEquals(BigDecimal.valueOf(10), parsedValueListExpression.get(0));
         assertEquals(BigDecimal.valueOf(12), parsedValueListExpression.get(1));
 
@@ -225,7 +225,7 @@ public class DMNFeelExpressionEvaluatorTest {
     public void expressionListTest() {
         String expressionCollectionJsonString = new TextNode("[ 1, 10 ]").toString();
         List<BigDecimal> result = (List<BigDecimal>) expressionEvaluator.convertResult(expressionCollectionJsonString, List.class.getCanonicalName(), Collections.EMPTY_LIST);
-        assertTrue(result.size() == 2);
+        assertEquals(2, result.size());
         assertEquals(BigDecimal.ONE, result.get(0));
         assertEquals(BigDecimal.TEN, result.get(1));
     }
@@ -237,7 +237,7 @@ public class DMNFeelExpressionEvaluatorTest {
                 (List<Map<String, Object>>) expressionEvaluator.convertResult(expressionCollectionJsonString,
                                                                               List.class.getCanonicalName(),
                                                                               Collections.EMPTY_LIST);
-        assertTrue(result.size() == 2);
+        assertEquals(2, result.size());
         assertThat(result.get(0)).containsOnly(entry("age", BigDecimal.TEN));
         assertThat(result.get(1)).containsOnly(entry("name", "John"));
     }
@@ -252,7 +252,7 @@ public class DMNFeelExpressionEvaluatorTest {
     public void expressionMapTest() {
         String expressionCollectionJsonString = new TextNode("{ x : 5, y : 3 }").toString();
         Map<String, BigDecimal> result = (Map<String, BigDecimal>) expressionEvaluator.convertResult(expressionCollectionJsonString, Map.class.getCanonicalName(), Collections.EMPTY_LIST);
-        assertTrue(result.size() == 2);
+        assertEquals(2, result.size());
         assertEquals(BigDecimal.valueOf(5), result.get("x"));
         assertEquals(BigDecimal.valueOf(3), result.get("y"));
     }
