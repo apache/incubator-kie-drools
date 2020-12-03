@@ -150,7 +150,7 @@ public abstract class AbstractRunnerHelper {
                 instanceGiven.add(new InstanceGiven(factIdentifier, bean));
             } catch (Exception e) {
                 String errorMessage = e.getMessage() != null ? e.getMessage() : e.getClass().getCanonicalName();
-                logger.error("Error in GIVEN data {0}" + entry.getKey() + ": " + errorMessage, e);
+                logger.error("Error in GIVEN data " + entry.getKey() + ": " + errorMessage, e);
                 hasError = true;
             }
         }
@@ -305,9 +305,7 @@ public abstract class AbstractRunnerHelper {
                                             Object resultRaw,
                                             Class<?> resultClass) {
         try {
-            ExpressionEvaluatorResult evaluationResult = expressionEvaluator.evaluateUnaryExpression((String) expectedResultRaw,
-                                                                                                     resultRaw,
-                                                                                                     resultClass);
+            ExpressionEvaluatorResult evaluationResult = expressionEvaluator.evaluateUnaryExpression((String) expectedResultRaw, resultRaw, resultClass);
             if (evaluationResult.isSuccessful()) {
                 return of(resultRaw);
             } else if (isCollection(className)) {
