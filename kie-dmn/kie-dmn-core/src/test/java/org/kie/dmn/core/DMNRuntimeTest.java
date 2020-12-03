@@ -2952,5 +2952,24 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(true));
         assertThat(dmnResult.getDecisionResultByName("hardcoded").getEvaluationStatus(), is(DecisionEvaluationStatus.FAILED));
     }
+
+    @Test
+    public void testPersonInReq1() {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("personInReq1.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_EA9DA906-5A01-4AAA-B341-792486A67097", "personInReq1");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        final DMNContext context = DMNFactory.newContext();
+        context.set("a person", mapOf(entry("age", new BigDecimal(47)),
+                                      entry("name", "John Doe")));
+        context.set("reqs", Arrays.asList(mapOf(entry("description", "req1"),
+                                                entry("bounds", mapOf(entry("LB", new BigDecimal(18)),
+                                                                      entry("UB", new BigDecimal(99)))))));
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        LOG.debug("{}", dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+        assertThat(dmnResult.getDecisionResultByName("Decision-1").getResult(), is(Boolean.TRUE));
+    }
 }
 

@@ -139,7 +139,6 @@ public class ParserHelper {
             }
 
             if (resolved != null && scopeType instanceof CompositeType) {
-                pushName(name);
                 pushScope(scopeType);
                 CompositeType type = (CompositeType) scopeType;
                 for ( Map.Entry<String, Type> f : type.getFields().entrySet() ) {
@@ -155,7 +154,6 @@ public class ParserHelper {
                 } else {
                     throw new UnsupportedOperationException("Unsupported BIType " + scopeType + "!");
                 }
-                pushName(name);
                 pushScope(resolvedBIType);
                 switch (resolvedBIType) {
                     // FEEL spec table 53

@@ -67,6 +67,9 @@ public class FEELContextsTest extends BaseFEELTest {
                                                                                                              Arrays.asList(new BigDecimal( "2.1" ), new BigDecimal("2.2")),
                                                                                                              Arrays.asList(new BigDecimal( 3 )),
                                                                                                              Arrays.asList(new BigDecimal( 4 ), new BigDecimal( 5 ))), null},
+                {"{a:{p:{x:10,y:5}},b : a.p.x*10+a.p.y*10}.b", BigDecimal.valueOf( 150 ), null},
+                {"{a:{p:{x:10,y:5}},b : a.p.y < a.p.x and a.p.x > a.p.y }.b", Boolean.TRUE, null},
+                {"{a:{p:{x:10,y:5}},b : a.p.y < a.p.x or a.p.y <= a.p.x }.b", Boolean.TRUE, null},
         };
         return addAdditionalParameters(cases, false);
     }
