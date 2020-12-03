@@ -144,7 +144,7 @@ public class ApplyPmmlModelCommand implements ExecutableCommand<PMML4Result>,
             case LEGACY:
                 return executePMMLLegacy(context);
             default:
-                throw new RuntimeException("Unmanaged PMMLConstants " + toInvoke);
+                throw new IllegalArgumentException("Unmanaged PMMLConstants " + toInvoke);
         }
     }
 

@@ -211,7 +211,7 @@ public class ApplyPmmlModelCommandExecutorImpl implements ApplyPmmlModelCommandE
         return resultHolder;
     }
 
-    private boolean isjPMMLAvailableToClassLoader(ClassLoader classLoader) {
+    protected boolean isjPMMLAvailableToClassLoader(ClassLoader classLoader) {
         try {
             classLoader.loadClass("org.kie.dmn.jpmml.DMNjPMMLInvocationEvaluator");
             return true;

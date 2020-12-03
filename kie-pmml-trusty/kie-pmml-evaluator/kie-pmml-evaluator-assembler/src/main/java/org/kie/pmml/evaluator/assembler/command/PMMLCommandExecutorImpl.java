@@ -37,19 +37,25 @@ public class PMMLCommandExecutorImpl implements PMMLCommandExecutor {
      */
     @Override
     public PMML4Result execute(final PMMLRequestData pmmlRequestData) {
+        validate(pmmlRequestData);
         final String pmmlFileName = pmmlRequestData.getSource();
-        if (pmmlFileName == null || pmmlFileName.isEmpty()) {
-            throw new KiePMMLException("Missing required field 'source' with the PMML file name");
-        }
         final PMMLRuntime pmmlRuntime = getPMMLRuntime(pmmlFileName);
         return evaluate(pmmlRequestData, pmmlRuntime);
     }
 
-    private PMML4Result evaluate(final PMMLRequestData pmmlRequestData, final PMMLRuntime pmmlRuntime) {
-        String modelName = pmmlRequestData.getModelName();
-        if (modelName == null || modelName.isEmpty()) {
+    protected void validate(final PMMLRequestData pmmlRequestData) {
+        String toValidate = pmmlRequestData.getSource();
+        if (toValidate == null || toValidate.isEmpty()) {
+            throw new KiePMMLException("Missing required field 'source' with the PMML file name");
+        }
+        toValidate = pmmlRequestData.getModelName();
+        if (toValidate == null || toValidate.isEmpty()) {
             throw new KiePMMLException("Missing required field 'modelName'");
         }
+    }
+
+    private PMML4Result evaluate(final PMMLRequestData pmmlRequestData, final PMMLRuntime pmmlRuntime) {
+        String modelName = pmmlRequestData.getModelName();
         final PMMLContext pmmlContext = new PMMLContextImpl(pmmlRequestData);
         return pmmlRuntime.evaluate(modelName, pmmlContext);
     }
