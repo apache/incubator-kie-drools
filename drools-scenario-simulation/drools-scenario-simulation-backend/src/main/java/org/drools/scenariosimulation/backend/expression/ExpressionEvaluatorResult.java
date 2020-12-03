@@ -35,6 +35,10 @@ public class ExpressionEvaluatorResult {
     private List<String> pathToWrongValue;
     private String wrongValue;
 
+    public static ExpressionEvaluatorResult of(boolean successful) {
+        return new ExpressionEvaluatorResult(successful);
+    }
+
     public static ExpressionEvaluatorResult ofSuccessful() {
         return new ExpressionEvaluatorResult(true);
     }
@@ -47,13 +51,13 @@ public class ExpressionEvaluatorResult {
         return new ExpressionEvaluatorResult(false, wrongValue, pathToWrongValue);
     }
 
-    public ExpressionEvaluatorResult(boolean successful, String wrongValue, List<String> pathToWrongValue) {
+    private ExpressionEvaluatorResult(boolean successful, String wrongValue, List<String> pathToWrongValue) {
         this.successful = successful;
         this.pathToWrongValue = new ArrayList<>(pathToWrongValue);
         this.wrongValue = wrongValue;
     }
 
-    public ExpressionEvaluatorResult(boolean successful) {
+    private ExpressionEvaluatorResult(boolean successful) {
         this.successful = successful;
         this.pathToWrongValue = new ArrayList<>();
         this.wrongValue = null;

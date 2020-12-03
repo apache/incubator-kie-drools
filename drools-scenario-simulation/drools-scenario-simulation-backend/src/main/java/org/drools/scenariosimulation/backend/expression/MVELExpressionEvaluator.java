@@ -55,9 +55,9 @@ public class MVELExpressionEvaluator implements ExpressionEvaluator {
         Object expressionResult = compileAndExecute(rawExpression, params);
         if (!(expressionResult instanceof Boolean)) {
             // try to compare via compare/equals operators
-            return new ExpressionEvaluatorResult(compareValues(expressionResult, resultValue));
+            return ExpressionEvaluatorResult.of(compareValues(expressionResult, resultValue));
         }
-        return new ExpressionEvaluatorResult((boolean) expressionResult);
+        return ExpressionEvaluatorResult.of((boolean) expressionResult);
     }
 
     @Override

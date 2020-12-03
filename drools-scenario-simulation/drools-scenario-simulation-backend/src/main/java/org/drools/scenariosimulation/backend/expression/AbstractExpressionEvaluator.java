@@ -48,7 +48,7 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
         if (isStructuredResult(resultClass)) {
             return verifyResult(rawExpression, resultValue, resultClass);
         } else {
-            return new ExpressionEvaluatorResult(internalUnaryEvaluation(rawExpression, resultValue, resultClass, false));
+            return ExpressionEvaluatorResult.of(internalUnaryEvaluation(rawExpression, resultValue, resultClass, false));
         }
     }
 
@@ -146,7 +146,7 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
 
     protected ExpressionEvaluatorResult verifyResult(String rawExpression, Object resultRaw, Class<?> resultClass) {
         if (rawExpression == null) {
-            return new ExpressionEvaluatorResult(resultRaw == null);
+            return ExpressionEvaluatorResult.of(resultRaw == null);
         }
         if (resultRaw != null && !(resultRaw instanceof List) && !(resultRaw instanceof Map)) {
             throw new IllegalArgumentException("A list or map was expected");
@@ -156,7 +156,7 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
 
         if (jsonNode.isTextual()) {
             /* JSON Text: expression manually written by the user to build a list/map */
-            return new ExpressionEvaluatorResult(internalUnaryEvaluation(jsonNode.asText(), resultRaw, resultClass, false));
+            return ExpressionEvaluatorResult.of(internalUnaryEvaluation(jsonNode.asText(), resultRaw, resultClass, false));
         } else if (jsonNode.isArray()) {
             /* JSON Array: list of expressions created using List collection editor */
             return verifyList((ArrayNode) jsonNode, (List<Object>) resultRaw);
@@ -169,7 +169,7 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
 
     protected ExpressionEvaluatorResult verifyList(ArrayNode json, List<Object> resultRaw) {
         if (resultRaw == null) {
-            return new ExpressionEvaluatorResult(isListEmpty(json));
+            return ExpressionEvaluatorResult.of(isListEmpty(json));
         }
         int elementNumber = 0;
         for (JsonNode node : json) {
@@ -205,7 +205,7 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
 
     protected ExpressionEvaluatorResult verifyObject(ObjectNode json, Object resultRaw) {
         if (resultRaw == null) {
-            return new ExpressionEvaluatorResult(isObjectEmpty(json));
+            return ExpressionEvaluatorResult.of(isObjectEmpty(json));
         }
         Iterator<Map.Entry<String, JsonNode>> fields = json.fields();
         while (fields.hasNext()) {
