@@ -19,11 +19,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * This DTO holds info related to an expression evaluation.
+ * - successful: field represents status of involved evaluation (sucessful or failed);
+ * - pathToWrongValue: a list which contains the steps to describe the wrong value. In case of nested object or collections,
+ *                     can require multiple steps (eg. Author.books). In case of a list, conversion is to report the Item
+ *                     number (eg. Author.books.Item(2).isAvailable)
+ * - wrongValue: The actual wrong value
+ * Instantiated objects can be accessed only to retrieve the success status and to generate an error message, if evaluation
+ * failed, based on wrongVaue and its path.
+ */
 public class ExpressionEvaluatorResult {
 
-    private final boolean successful;
-    private final List<String> pathToWrongValue;
-    private final String wrongValue;
+    private boolean successful;
+    private List<String> pathToWrongValue;
+    private String wrongValue;
 
     public static ExpressionEvaluatorResult ofSuccessful() {
         return new ExpressionEvaluatorResult(true);
@@ -39,22 +49,22 @@ public class ExpressionEvaluatorResult {
 
     public ExpressionEvaluatorResult(boolean successful, String wrongValue, List<String> pathToWrongValue) {
         this.successful = successful;
-        this.wrongValue = wrongValue;
         this.pathToWrongValue = new ArrayList<>(pathToWrongValue);
+        this.wrongValue = wrongValue;
     }
 
     public ExpressionEvaluatorResult(boolean successful) {
         this.successful = successful;
+        this.pathToWrongValue = new ArrayList<>();
         this.wrongValue = null;
-        this.pathToWrongValue = null;
     }
 
     public boolean isSuccessful() {
         return successful;
     }
 
-    public Optional<String> getMessage() {
-        if (!successful && (null != pathToWrongValue || !pathToWrongValue.isEmpty())) {
+    public Optional<String> getErrorMessage() {
+        if (!successful && !pathToWrongValue.isEmpty()) {
             if (wrongValue != null) {
                 return Optional.ofNullable("Value \"" + wrongValue + "\" of " + String.join(".", pathToWrongValue) + " item is wrong.");
             } else {
@@ -65,9 +75,14 @@ public class ExpressionEvaluatorResult {
     }
 
     public void addStepToPath(String path) {
-        if (successful || null == pathToWrongValue) {
-            throw new UnsupportedOperationException("This instance doesn't hold additional information.");
-        }
         pathToWrongValue.add(0, path);
+    }
+
+    public void addListItemStepToPath(int elementNumber) {
+        pathToWrongValue.add(0, "Item(" + elementNumber + ")");
+    }
+
+    public void setWrongValue(String wrongValue) {
+        this.wrongValue = wrongValue;
     }
 }

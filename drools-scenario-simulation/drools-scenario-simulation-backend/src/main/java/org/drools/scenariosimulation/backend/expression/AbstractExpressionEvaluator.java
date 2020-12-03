@@ -159,7 +159,7 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
             return new ExpressionEvaluatorResult(internalUnaryEvaluation(jsonNode.asText(), resultRaw, resultClass, false));
         } else if (jsonNode.isArray()) {
             /* JSON Array: list of expressions created using List collection editor */
-            return verifyList((ArrayNode) jsonNode, (List) resultRaw);
+            return verifyList((ArrayNode) jsonNode, (List<Object>) resultRaw);
         } else if (jsonNode.isObject()) {
             /* JSON Map: map of expressions created using Map collection editor */
             return verifyObject((ObjectNode) jsonNode, resultRaw);
@@ -167,7 +167,7 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
         throw new IllegalArgumentException(ConstantsHolder.MALFORMED_RAW_DATA_MESSAGE);
     }
 
-    protected ExpressionEvaluatorResult verifyList(ArrayNode json, List resultRaw) {
+    protected ExpressionEvaluatorResult verifyList(ArrayNode json, List<Object> resultRaw) {
         if (resultRaw == null) {
             return new ExpressionEvaluatorResult(isListEmpty(json));
         }
@@ -176,28 +176,25 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
             elementNumber++;
             boolean success = false;
             boolean simpleTypeNode = isSimpleTypeNode(node);
-            ExpressionEvaluatorResult verifiedObject = null;
+            ExpressionEvaluatorResult evaluatorResult = ExpressionEvaluatorResult.ofFailed(getSimpleTypeNodeTextValue(node), new ArrayList<>());
 
             for (Object result : resultRaw) {
                 if (simpleTypeNode && internalUnaryEvaluation(getSimpleTypeNodeTextValue(node), result, result.getClass(), true)) {
                     success = true;
-                    break;
                 } else if (!simpleTypeNode) {
-                    verifiedObject = verifyObject((ObjectNode) node, result);
-                    if (verifiedObject.isSuccessful()) {
+                    evaluatorResult = verifyObject((ObjectNode) node, result);
+                    if (evaluatorResult.isSuccessful()) {
                         success = true;
-                        break;
                     }
+                }
+                if (success) {
+                    break;
                 }
             }
 
             if (!success) {
-                String listElement = "Item(" + elementNumber + ")";
-                if (!simpleTypeNode) {
-                    verifiedObject.addStepToPath(listElement);
-                    return verifiedObject;
-                }
-                return ExpressionEvaluatorResult.ofFailed(getSimpleTypeNodeTextValue(node), Arrays.asList(listElement));
+                evaluatorResult.addListItemStepToPath(elementNumber);
+                return evaluatorResult;
             }
         }
         return ExpressionEvaluatorResult.ofSuccessful();

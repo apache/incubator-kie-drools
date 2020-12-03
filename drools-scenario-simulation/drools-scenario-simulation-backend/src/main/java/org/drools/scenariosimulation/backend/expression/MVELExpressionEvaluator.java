@@ -79,7 +79,7 @@ public class MVELExpressionEvaluator implements ExpressionEvaluator {
     protected Object compileAndExecute(String rawExpression, Map<String, Object> params) {
         ParserContext ctx = new ParserContext(this.config);
         for (Map.Entry<String, Object> entry : params.entrySet()) {
-            Class type = entry.getValue() != null ? entry.getValue().getClass() : null;
+            Class<?> type = entry.getValue() != null ? entry.getValue().getClass() : null;
             ctx.addVariable(entry.getKey(), type);
         }
 

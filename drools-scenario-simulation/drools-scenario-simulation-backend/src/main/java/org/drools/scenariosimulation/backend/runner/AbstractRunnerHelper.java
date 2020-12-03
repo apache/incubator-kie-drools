@@ -150,7 +150,7 @@ public abstract class AbstractRunnerHelper {
                 instanceGiven.add(new InstanceGiven(factIdentifier, bean));
             } catch (Exception e) {
                 String errorMessage = e.getMessage() != null ? e.getMessage() : e.getClass().getCanonicalName();
-                logger.error("Error in GIVEN data " + entry.getKey() + ": " + errorMessage, e);
+                logger.error("Error in GIVEN data {0}" + entry.getKey() + ": " + errorMessage, e);
                 hasError = true;
             }
         }
@@ -311,7 +311,7 @@ public abstract class AbstractRunnerHelper {
             if (evaluationResult.isSuccessful()) {
                 return of(resultRaw);
             } else if (isCollection(className)) {
-                return errorWithMessage(evaluationResult.getMessage().orElse(
+                return errorWithMessage(evaluationResult.getErrorMessage().orElse(
                         "Impossible to find elements in the collection to satisfy the conditions."));
             } else {
                 return errorWithValidValue(resultRaw, expectedResultRaw);
