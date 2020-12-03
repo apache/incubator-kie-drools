@@ -97,8 +97,7 @@ public class ApplyPmmlModelCommand implements ExecutableCommand<PMML4Result>, Id
     }
     
     public boolean isMining() {
-        if (hasMining == null || hasMining.booleanValue() == false) return false;
-        return true;
+        return hasMining != null && hasMining;
     }
 
     public void addComplexInputObject(Object o) {
