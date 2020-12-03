@@ -65,7 +65,7 @@ public class ApplyPmmlModelCommandTest {
     }
 
     @Test
-    public void isMining() {
+    public void testIsMining() {
         ApplyPmmlModelCommand cmd = new ApplyPmmlModelCommand();
         assertNull(cmd.getHasMining());
         assertFalse(cmd.isMining());
