@@ -20,6 +20,7 @@ import java.util.ArrayList;
 
 import org.drools.core.command.impl.ContextImpl;
 import org.junit.Test;
+import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
 
 import static org.junit.Assert.*;
@@ -35,7 +36,8 @@ public class ApplyPmmlModelCommandExecutorImplTest {
     @Test
     public void executeWithoutjPMMML() {
         ApplyPmmlModelCommandExecutorImpl cmdExecutor = new ApplyPmmlModelCommandExecutorImplMock(false);
-        cmdExecutor.execute(new ContextImpl(), new PMMLRequestData(), new ArrayList<>(), "packageName", true);
+        PMML4Result retrieved = cmdExecutor.execute(new ContextImpl(), new PMMLRequestData(), new ArrayList<>(), "packageName", true);
+        assertNotNull(retrieved);
     }
 
     @Test(expected = IllegalStateException.class)
@@ -47,7 +49,8 @@ public class ApplyPmmlModelCommandExecutorImplTest {
     @Test
     public void executeWithRequestData() {
         ApplyPmmlModelCommandExecutorImpl cmdExecutor = new ApplyPmmlModelCommandExecutorImplMock(false);
-        cmdExecutor.execute(new ContextImpl(), new PMMLRequestData(), new ArrayList<>(), "packageName", true);
+        PMML4Result retrieved = cmdExecutor.execute(new ContextImpl(), new PMMLRequestData(), new ArrayList<>(), "packageName", true);
+        assertNotNull(retrieved);
     }
 
     private class ApplyPmmlModelCommandExecutorImplMock extends ApplyPmmlModelCommandExecutorImpl {

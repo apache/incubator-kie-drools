@@ -164,13 +164,13 @@ public class ApplyPmmlModelCommand implements ExecutableCommand<PMML4Result>,
         }
     }
 
-    private PMML4Result executePMMLLegacy(Context context) {
+    protected PMML4Result executePMMLLegacy(Context context) {
         return RuleUnitComponentFactory.get().newApplyPmmlModelCommandExecutor().execute(context, requestData,
                                                                                          complexInputObjects,
                                                                                          packageName, isMining());
     }
 
-    private PMML4Result executePMMLTrusty() {
+    protected PMML4Result executePMMLTrusty() {
         return PMMLCommandExecutorFactory.get().newPMMLCommandExecutor().execute(requestData);
     }
 }

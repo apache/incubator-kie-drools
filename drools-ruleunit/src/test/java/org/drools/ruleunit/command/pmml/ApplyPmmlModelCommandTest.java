@@ -38,6 +38,8 @@ public class ApplyPmmlModelCommandTest {
         PMML4Result resultHolder = cmd.execute(ctx);
 
         assertNotNull(resultHolder);
+        String invoked = (String) resultHolder.getResultVariables().get("TYPE");
+        assertEquals("LEGACY", invoked);
         String resultCode = resultHolder.getResultCode();
         // The empty KieBase doesn't have a rule unit associated with it
         assertEquals("ERROR-2", resultCode);
@@ -57,6 +59,8 @@ public class ApplyPmmlModelCommandTest {
         PMML4Result resultHolder = cmd.execute(ctx);
 
         assertNotNull(resultHolder);
+        String invoked = (String) resultHolder.getResultVariables().get("TYPE");
+        assertEquals("LEGACY", invoked);
         String resultCode = resultHolder.getResultCode();
         // Since we don't have a real KieBase we expect this error
         assertEquals("ERROR-1", resultCode);
@@ -84,8 +88,16 @@ public class ApplyPmmlModelCommandTest {
         PMML4Result resultHolder = cmd.execute(ctx);
 
         assertNotNull(resultHolder);
-        String resultCode = resultHolder.getResultCode();
-        assertEquals("PMMLCommandExecutorTest", resultCode);
+        String invoked = (String) resultHolder.getResultVariables().get("TYPE");
+        assertEquals("TRUSTY", invoked);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void executeInvalid() {
+        ApplyPmmlModelCommand cmd = new ApplyPmmlModelCommandTester(PMMLConstants.KIE_PMML_IMPLEMENTATION);
+        PMMLRequestData data = new PMMLRequestData("123", "Sample Score");
+        cmd.setRequestData(data);
+        cmd.execute(new ContextImpl());
     }
 
     private class ApplyPmmlModelCommandTester extends ApplyPmmlModelCommand {
@@ -102,7 +114,19 @@ public class ApplyPmmlModelCommandTest {
             return IMPLEMENTATION;
         }
 
+        @Override
+        protected PMML4Result executePMMLLegacy(Context context) {
+            PMML4Result toReturn = super.executePMMLLegacy(context);
+            toReturn.addResultVariable("TYPE", "LEGACY");
+            return toReturn;
+        }
 
+        @Override
+        protected PMML4Result executePMMLTrusty() {
+            PMML4Result toReturn = super.executePMMLTrusty();
+            toReturn.addResultVariable("TYPE", "TRUSTY");
+            return toReturn;
+        }
     }
 
 

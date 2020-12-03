@@ -33,9 +33,27 @@ public class PMMLCommandExecutorImplTest {
     }
 
     @Test(expected = KiePMMLException.class)
+    public void validateEmptySource() {
+        PMMLRequestData pmmlRequestData = new PMMLRequestData();
+        pmmlRequestData.setModelName("modelName");
+        pmmlRequestData.setSource("");
+        PMMLCommandExecutorImpl cmdExecutor = new PMMLCommandExecutorImpl();
+        cmdExecutor.validate(pmmlRequestData);
+    }
+
+    @Test(expected = KiePMMLException.class)
     public void validateNoModelName() {
         PMMLRequestData pmmlRequestData = new PMMLRequestData();
         pmmlRequestData.setSource("source");
+        PMMLCommandExecutorImpl cmdExecutor = new PMMLCommandExecutorImpl();
+        cmdExecutor.validate(pmmlRequestData);
+    }
+
+    @Test(expected = KiePMMLException.class)
+    public void validateEmptyModelName() {
+        PMMLRequestData pmmlRequestData = new PMMLRequestData();
+        pmmlRequestData.setSource("source");
+        pmmlRequestData.setModelName("");
         PMMLCommandExecutorImpl cmdExecutor = new PMMLCommandExecutorImpl();
         cmdExecutor.validate(pmmlRequestData);
     }
