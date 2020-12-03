@@ -27,6 +27,7 @@ import java.time.temporal.ChronoUnit;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 
+import graphql.language.StringValue;
 import graphql.schema.Coercing;
 import graphql.schema.CoercingSerializeException;
 import graphql.schema.GraphQLScalarType;
@@ -77,12 +78,20 @@ public class GraphQLScalarTypeProducer {
 
                     @Override
                     public Object parseValue(Object input) {
-                        return input == null ? null : parseDateTime((String) input).truncatedTo(ChronoUnit.MILLIS).toInstant().toEpochMilli();
+                        return input == null ? null : getDateTimeAsLong((String) input);
+                    }
+
+                    private long getDateTimeAsLong(String input) {
+                        return parseDateTime(input).truncatedTo(ChronoUnit.MILLIS).toInstant().toEpochMilli();
                     }
 
                     @Override
                     public Object parseLiteral(Object input) {
-                        return null;
+                        if (input instanceof StringValue) {
+                            return getDateTimeAsLong(((StringValue) input).getValue());
+                        } else {
+                            return null;
+                        }
                     }
                 })
                 .build();
