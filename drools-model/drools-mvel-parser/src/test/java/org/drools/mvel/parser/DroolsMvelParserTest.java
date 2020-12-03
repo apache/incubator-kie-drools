@@ -30,6 +30,7 @@ import java.util.HashSet;
 import java.util.concurrent.TimeUnit;
 
 import com.github.javaparser.ParseProblemException;
+import com.github.javaparser.ParseResult;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.BinaryExpr.Operator;
@@ -52,10 +53,12 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.drools.mvel.parser.DrlxParser.parseExpression;
+import static org.drools.mvel.parser.Providers.provider;
 import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
@@ -903,6 +906,18 @@ public class DroolsMvelParserTest {
         assertEquals(expr, printConstraint(expression));
     }
 
+    @Test
+    public void testSpecialNewlineHandling() {
+        String expr = "1 \n + 1";
+
+        Expression r1 = parseExpression(parser, expr).getExpr();
+        assertEquals("Parsing should stop at newline", "1", printConstraint(r1));
+
+        MvelParser mvelParser = new MvelParser();
+        mvelParser.setIgnoreNewlines(true);
+        Expression r2 = mvelParser.parse(GeneratedMvelParser::Expression, new StringProvider(expr)).getResult().get();
+        assertEquals("Parsing must ignore newlines","1 + 1", printConstraint(r2));
+    }
 
     private void testMvelSquareOperator(String wholeExpression, String operator, String left, String right, boolean isNegated) {
         String expr = wholeExpression;

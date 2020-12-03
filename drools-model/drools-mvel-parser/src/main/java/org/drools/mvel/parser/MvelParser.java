@@ -64,6 +64,7 @@ import static org.drools.mvel.parser.Providers.resourceProvider;
  */
 public final class MvelParser {
     private final ParserConfiguration configuration;
+    private boolean ignoreNewlines = false;
 
     private GeneratedMvelParser astParser = null;
     private static ParserConfiguration staticConfiguration = new ParserConfiguration();
@@ -118,6 +119,10 @@ public final class MvelParser {
         return this.configuration;
     }
 
+    public void setIgnoreNewlines(boolean ignoreNewlines) {
+        this.ignoreNewlines = ignoreNewlines;
+    }
+
     private GeneratedMvelParser getParserForProvider(Provider provider) {
         if (astParser == null) {
             astParser = new GeneratedMvelParser(provider);
@@ -126,6 +131,10 @@ public final class MvelParser {
         }
         astParser.setTabSize(configuration.getTabSize());
         astParser.setStoreTokens(configuration.isStoreTokens());
+        if (ignoreNewlines) {
+            astParser.getTokenSource()
+                    .setDefaultState(GeneratedMvelParserTokenManager.NEWLINES_SKIPPED);
+        }
         return astParser;
     }
 

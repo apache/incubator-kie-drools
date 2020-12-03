@@ -125,6 +125,14 @@ PARSER_END(GeneratedMvelParser)
 
 /* WHITE SPACE */
 
+<NEWLINES_SKIPPED>
+SPECIAL_TOKEN :
+{
+<UNIX_EOL_SKIPPED: "\n">
+| <WINDOWS_EOL_SKIPPED : "\r\n">
+}
+
+<DEFAULT, NEWLINES_SKIPPED>
 SPECIAL_TOKEN :
 {
   <SPACE: [" ", "\t", "\f", "\u0085", "\u00A0", "\u1680", "\u180e", "\u2000", "\u2001", "\u2002", "\u2003", "\u2004", "\u2005",
@@ -139,6 +147,16 @@ TOKEN_MGR_DECLS :
     private JavaToken homeToken;
     private Stack<Token> tokenWorkStack = new Stack<Token>();
     private boolean storeTokens;
+    private int defaultState = DEFAULT;
+
+    void switchToDefaultState() {
+        SwitchTo(defaultState);
+    }
+
+    void setDefaultState(int defaultState) {
+        this.defaultState = defaultState;
+        SwitchTo(defaultState);
+    }
 
     void reset() {
         tokens = new ArrayList<JavaToken>();
@@ -199,11 +217,13 @@ TOKEN_MGR_DECLS :
 
 /* COMMENTS */
 
+<DEFAULT, NEWLINES_SKIPPED>
 SPECIAL_TOKEN :
 {
   <SINGLE_LINE_COMMENT: "//" (~["\n","\r"])* >
 }
 
+<DEFAULT, NEWLINES_SKIPPED>
 MORE :
 {
   <ENTER_JAVADOC_COMMENT: "/**" ~["/"]> { input_stream.backup(1); } : IN_JAVADOC_COMMENT
@@ -214,13 +234,13 @@ MORE :
 <IN_JAVADOC_COMMENT>
 SPECIAL_TOKEN :
 {
-  <JAVADOC_COMMENT: "*/" > : DEFAULT
+  <JAVADOC_COMMENT: "*/" > { switchToDefaultState(); }
 }
 
 <IN_MULTI_LINE_COMMENT>
 SPECIAL_TOKEN :
 {
-  <MULTI_LINE_COMMENT: "*/" > : DEFAULT
+  <MULTI_LINE_COMMENT: "*/" >  { switchToDefaultState(); }
 }
 
 <IN_JAVADOC_COMMENT, IN_MULTI_LINE_COMMENT>
@@ -231,6 +251,7 @@ MORE :
 
 /* RESERVED WORDS AND LITERALS */
 
+<DEFAULT, NEWLINES_SKIPPED>
 TOKEN :
 {
   < ABSTRACT: "abstract" >
@@ -305,13 +326,18 @@ TOKEN :
 | < DOT_DOT_SLASH: "../" >
 | < HASHMARK: "#" >
 | < EXCL_DOT: "!." >
-| <UNIX_EOL: "\n">
-| <WINDOWS_EOL : "\r\n">
+}
 
+<DEFAULT>
+TOKEN :
+{
+<UNIX_EOL: "\n">
+| <WINDOWS_EOL : "\r\n">
 }
 
 /* LITERALS */
 
+<DEFAULT, NEWLINES_SKIPPED>
 TOKEN :
 {
   < LONG_LITERAL:
@@ -411,6 +437,7 @@ TOKEN :
 
 /* IDENTIFIERS */
 
+<DEFAULT, NEWLINES_SKIPPED>
 TOKEN :
 {
   < IDENTIFIER: <LETTER> (<PART_LETTER>)* >
@@ -577,6 +604,7 @@ TOKEN :
 
 /* SEPARATORS */
 
+<DEFAULT, NEWLINES_SKIPPED>
 TOKEN :
 {
   < LPAREN: "(" >
@@ -593,6 +621,7 @@ TOKEN :
 
 /* OPERATORS */
 
+<DEFAULT, NEWLINES_SKIPPED>
 TOKEN :
 {
   < ASSIGN: "=" >
@@ -635,6 +664,7 @@ TOKEN :
 }
 
 /* >'s need special attention due to generics syntax. */
+<DEFAULT, NEWLINES_SKIPPED>
 TOKEN :
 {
   < RUNSIGNEDSHIFT: ">>>" >
@@ -652,6 +682,7 @@ TOKEN :
 | < GT: ">" >
 }
 
+<DEFAULT, NEWLINES_SKIPPED>
 TOKEN: { <CTRL_Z: "\u001A" /** ctrl+z char **/> }
 
 /*****************************************
