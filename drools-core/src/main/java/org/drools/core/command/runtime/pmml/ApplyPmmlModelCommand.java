@@ -110,9 +110,7 @@ public class ApplyPmmlModelCommand implements ExecutableCommand<PMML4Result>,
     }
 
     public boolean isMining() {
-        if (hasMining == null || !hasMining.booleanValue() == false) {
-            return false;
-        }
+        if (hasMining == null || hasMining.booleanValue() == false) return false;
         return true;
     }
 
