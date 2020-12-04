@@ -23,23 +23,31 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.comments.Comment;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import org.kie.kogito.codegen.ApplicationGenerator;
+import org.kie.kogito.codegen.TemplatedGenerator;
 
 import static com.github.javaparser.StaticJavaParser.parse;
 
 abstract class AbstractEventResourceGenerator {
 
-    protected abstract String getResourceTemplate();
+    protected TemplatedGenerator generator;
 
-    protected abstract String getClassName();
+    public AbstractEventResourceGenerator(TemplatedGenerator generator){
+        this.generator = generator;
+    }
+
+    protected final String getResourceTemplate(){
+        return generator.templatePath();
+    }
+
+    protected final String getClassName(){
+        return generator.typeName();
+    }
+
+    public final String generatedFilePath() {
+        return generator.generatedFilePath();
+    }
 
     public abstract String generate();
-
-    /**
-     * @return String with the full class name in path format like <code>org/my/ns/Class.java</code>
-     */
-    public final String generatedFilePath() {
-        return String.format("%s/%s.java", ApplicationGenerator.DEFAULT_PACKAGE_NAME.replace(".", "/"), getClassName());
-    }
 
     protected final List<String> extractRepeatLinesFromMethod(final BlockStmt block) {
         // first we take the comment block and then filter the content to use only the lines we are interested
@@ -53,9 +61,5 @@ abstract class AbstractEventResourceGenerator {
         // clean up the comments
         block.getAllContainedComments().forEach(Comment::remove);
         return linesSetup;
-    }
-
-    protected CompilationUnit parseTemplate() {
-        return parse(this.getClass().getResourceAsStream(getResourceTemplate())).setPackageDeclaration(ApplicationGenerator.DEFAULT_PACKAGE_NAME);
     }
 }

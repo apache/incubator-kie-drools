@@ -275,7 +275,8 @@ public class GenerateModelMojo extends AbstractKieMojo {
         }
 
         if (generateRules()) {
-            boolean useRestServices = hasClassOnClasspath(project, "javax.ws.rs.Path");
+            boolean useRestServices = hasClassOnClasspath(project, "javax.ws.rs.Path")
+                    || hasClassOnClasspath(project, "org.springframework.web.bind.annotation.RestController");
             appGen.withGenerator(IncrementalRuleCodegen.ofCollectedResources(CollectedResource.fromDirectory(kieSourcesDirectory.toPath())))
                     .withKModule(getKModuleModel())
                     .withClassLoader(projectClassLoader)

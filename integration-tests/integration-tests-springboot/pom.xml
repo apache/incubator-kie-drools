@@ -19,7 +19,7 @@
       <artifactId>kogito-springboot-starter</artifactId>
       <version>${project.version}</version>
     </dependency>
-    
+
     <!-- Force resolving dependencies in local Maven repo, needed for it tests -->
     <dependency>
        <groupId>io.rest-assured</groupId>

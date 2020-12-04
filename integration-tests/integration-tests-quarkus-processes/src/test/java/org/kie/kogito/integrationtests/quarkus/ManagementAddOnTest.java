@@ -28,9 +28,11 @@ import org.kie.kogito.testcontainers.quarkus.InfinispanQuarkusTestResource;
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.emptyOrNullString;
+import static org.hamcrest.Matchers.hasEntry;
 
 @QuarkusTest
 @QuarkusTestResource(InfinispanQuarkusTestResource.Conditional.class)
@@ -70,15 +72,14 @@ class ManagementAddOnTest {
         String pid = givenGreetingsProcess();
 
         given().contentType(ContentType.JSON)
-               .when()
-               .get("/management/processes/{processId}/instances/{processInstanceId}/nodeInstances", GREETINGS, pid)
-               .then()
-               .statusCode(200)
-               .body("$.size", is(2))
-               .body("[0].name", is("Task"))
-               .body("[0].state", is(0))
-               .body("[1].name", is("Task"))
-               .body("[1].state", is(0));
+                .when()
+                .get("/management/processes/{processId}/instances/{processInstanceId}/nodeInstances", GREETINGS, pid)
+                .then()
+                .statusCode(200)
+                .body("$.size", is(2))
+                .body("$", hasItems(hasEntry("name", "Hello1"), hasEntry("name", "Hello2")))
+                .body("[0].state", is(0))
+                .body("[1].state", is(0));
     }
 
     @Test

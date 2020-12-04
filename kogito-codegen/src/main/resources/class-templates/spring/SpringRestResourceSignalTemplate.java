@@ -32,7 +32,7 @@ public class $Type$Resource {
     Process<$Type$> process;
 
     @PostMapping(value = "/{id}/$signalPath$", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<$Type$Output> signal(@PathVariable("id") final String id, final @RequestBody $signalType$ data) {
+    public ResponseEntity<$Type$Output> signal(@PathVariable("id") final String id, final @RequestBody(required = false) $signalType$ data) {
         return UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(), () -> {
             return process.instances().findById(id).map(pi -> {
                 pi.send(Sig.of("$signalName$", data));

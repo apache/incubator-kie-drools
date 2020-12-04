@@ -21,14 +21,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.Response;
-
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.explainability.model.ModelIdentifier;
 import org.kie.kogito.explainability.model.PredictInput;
 import org.kie.kogito.explainability.model.PredictOutput;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
@@ -49,8 +47,7 @@ class SpringBootExplainableResourceTest {
     void explainServiceTest() {
         List<PredictInput> inputs = singletonList(createInput(40));
 
-        List<PredictOutput> outputs = resource.predict(inputs).readEntity(new GenericType<List<PredictOutput>>() {
-        });
+        List<PredictOutput> outputs = (List<PredictOutput>) resource.predict(inputs).getBody();
 
         assertNotNull(outputs);
         assertEquals(1, outputs.size());
@@ -75,8 +72,7 @@ class SpringBootExplainableResourceTest {
     void explainServiceTestMultipleInputs() {
         List<PredictInput> inputs = asList(createInput(40), createInput(120));
 
-        List<PredictOutput> outputs = resource.predict(inputs).readEntity(new GenericType<List<PredictOutput>>() {
-        });
+        List<PredictOutput> outputs = (List<PredictOutput>) resource.predict(inputs).getBody();
 
         assertNotNull(outputs);
         assertEquals(2, outputs.size());
@@ -95,8 +91,7 @@ class SpringBootExplainableResourceTest {
 
     @Test
     void explainServiceTestNoInputs() {
-        List<PredictOutput> outputs = resource.predict(emptyList()).readEntity(new GenericType<List<PredictOutput>>() {
-        });
+        List<PredictOutput> outputs = (List<PredictOutput>) resource.predict(emptyList()).getBody();
 
         assertNotNull(outputs);
         assertEquals(0, outputs.size());
@@ -107,10 +102,10 @@ class SpringBootExplainableResourceTest {
         String unknownwResourceId = "unknown:model";
         PredictInput input = createInput(10);
         input.getModelIdentifier().setResourceId(unknownwResourceId);
-        Response responseEntity = resource.predict(singletonList(input));
+        ResponseEntity responseEntity = resource.predict(singletonList(input));
 
-        assertEquals(HttpStatus.BAD_REQUEST.value(), responseEntity.getStatus());
-        assertEquals("Model " + unknownwResourceId + " not found.", responseEntity.readEntity(String.class));
+        assertEquals(HttpStatus.BAD_REQUEST.value(), responseEntity.getStatusCodeValue());
+        assertEquals("Model " + unknownwResourceId + " not found.", responseEntity.getBody());
     }
 
     private PredictInput createInput(int speedLimit) {

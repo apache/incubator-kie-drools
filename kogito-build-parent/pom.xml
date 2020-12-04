@@ -1319,6 +1319,7 @@
                               <exclude name="**/target/classes/**/RuleUnits.class"/>
                               <!-- To avoid a complaint about duplicate classes created by code generation in IT tests. -->
                               <exclude name="**/it/integration-tests-springboot-it/target/classes/**/*.class"/>
+                              <exclude name="**/it/integration-tests-springboot-kakfa-it/target/classes/**/*.class"/>
                               <exclude name="**/it/integration-tests-kogito-plugin-it/target/classes/**/*.class"/>
                               <exclude name="**/apps-integration-tests/**/target/classes/**/*.class"/>
                               <exclude name="**/integration-tests/**/target/classes/**/*.class"/>

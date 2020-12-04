@@ -25,7 +25,10 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import org.jbpm.compiler.canonical.TriggerMetaData;
+import org.kie.kogito.codegen.ApplicationGenerator;
 import org.kie.kogito.codegen.BodyDeclarationComparator;
+import org.kie.kogito.codegen.InvalidTemplateException;
+import org.kie.kogito.codegen.TemplatedGenerator;
 import org.kie.kogito.codegen.di.CDIDependencyInjectionAnnotator;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 import org.kie.kogito.codegen.process.ProcessExecutableModelGenerator;
@@ -33,8 +36,7 @@ import org.kie.kogito.codegen.process.ProcessExecutableModelGenerator;
 public class CloudEventsResourceGenerator extends AbstractEventResourceGenerator {
 
     static final String EMITTER_PREFIX = "emitter_";
-    static final String EMITTER_TYPE = "Emitter<String>";
-    private static final String RESOURCE_TEMPLATE = "/class-templates/events/CloudEventsListenerResource.java";
+    private static final String CDI_TEMPLATE = "/class-templates/events/CloudEventsListenerResource.java";
     private static final String CLASS_NAME = "CloudEventListenerResource";
 
     // even if we only support Quarkus for now, this will come in handy when we add SpringBoot support.
@@ -42,22 +44,11 @@ public class CloudEventsResourceGenerator extends AbstractEventResourceGenerator
     private final List<TriggerMetaData> triggers;
 
     public CloudEventsResourceGenerator(final List<ProcessExecutableModelGenerator> generators, final DependencyInjectionAnnotator annotator) {
+        super(new TemplatedGenerator(ApplicationGenerator.DEFAULT_PACKAGE_NAME, CLASS_NAME, CDI_TEMPLATE,
+                                     null, CDI_TEMPLATE)
+                      .withDependencyInjection(annotator));
         this.triggers = this.filterTriggers(generators);
         this.annotator = annotator;
-    }
-
-    // constructor shortcode used on unit tests
-    CloudEventsResourceGenerator(final List<ProcessExecutableModelGenerator> generators) {
-        this.triggers = this.filterTriggers(generators);
-        this.annotator = new CDIDependencyInjectionAnnotator();
-    }
-
-    protected String getResourceTemplate() {
-        return RESOURCE_TEMPLATE;
-    }
-
-    protected String getClassName() {
-        return CLASS_NAME;
     }
 
     /**
@@ -75,13 +66,13 @@ public class CloudEventsResourceGenerator extends AbstractEventResourceGenerator
      * @return
      */
     public String generate() {
-        final CompilationUnit clazz = this.parseTemplate();
+        final CompilationUnit clazz = generator.compilationUnit()
+                .orElseThrow(() -> new InvalidTemplateException(CLASS_NAME, generator.templatePath(),
+                                                                "Cannot generate CloudEvents REST Resource"));
         final ClassOrInterfaceDeclaration template = clazz
                 .findFirst(ClassOrInterfaceDeclaration.class)
                 .orElseThrow(() -> new NoSuchElementException("Compilation unit doesn't contain a class or interface declaration!"));
-        template.setName(CLASS_NAME);
         this.addInjection(template);
-
         template.getMembers().sort(new BodyDeclarationComparator());
         return clazz.toString();
     }

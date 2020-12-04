@@ -69,10 +69,10 @@ class AdHocFragmentsTest extends BaseRestTest {
         params.put("newVar1", "Gonzo");
         given()
                 .contentType(ContentType.JSON)
-            .when()
+                .when()
                 .body(params)
                 .post("/AdHocFragments/{id}/AdHocTask1/{taskId}", id, taskId)
-            .then()
+                .then()
                 .statusCode(200)
                 .body("var1", equalTo("Gonzo"));
     }

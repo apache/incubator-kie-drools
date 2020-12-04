@@ -25,7 +25,7 @@
     </parent>
     
     <groupId>org.kie.kogito</groupId>
-    <artifactId>integration-tests-springboot-it</artifactId>
+    <artifactId>integration-tests-springboot-kakfa-it</artifactId>
     <version>@project.version@</version>
 
     <properties>
@@ -73,6 +73,13 @@
         <dependency>
             <groupId>org.springframework.kafka</groupId>
             <artifactId>spring-kafka</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.infinispan</groupId>
+            <artifactId>infinispan-spring-boot-starter-remote</artifactId>
+            <version>${version.infinispan.starter}</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
@@ -152,22 +159,6 @@
                     <name>persistence</name>
                 </property>
             </activation>
-            <dependencyManagement>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.infinispan</groupId>
-                        <artifactId>infinispan-bom</artifactId>
-                        <version>${infinispan.version}</version>
-                        <type>pom</type>
-                        <scope>import</scope>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.infinispan</groupId>
-                        <artifactId>infinispan-spring-boot-starter</artifactId>
-                        <version>${version.infinispan.starter}</version>
-                    </dependency>
-                </dependencies>
-            </dependencyManagement>
             <dependencies>
                 <dependency>
                     <groupId>org.infinispan</groupId>
@@ -186,9 +177,13 @@
                         <artifactId>maven-surefire-plugin</artifactId>
                         <version>@version.surefire.plugin@</version>
                         <configuration>
-                            <systemProperties>
+                            <includes>
+                                <include>org/kie/kogito/integrationtests/springboot/*</include>
+                                <include>org/kie/kogito/integrationtests/springboot/infinispan/*</include>
+                            </includes>
+                            <systemPropertyVariables>
                                 <enable.resource.infinispan>true</enable.resource.infinispan>
-                            </systemProperties>
+                            </systemPropertyVariables>
                         </configuration>
                     </plugin>
                 </plugins>

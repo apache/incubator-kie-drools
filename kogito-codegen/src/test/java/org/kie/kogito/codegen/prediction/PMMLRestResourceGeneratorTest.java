@@ -33,6 +33,7 @@ import org.drools.core.util.StringUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.codegen.feel11.CodegenStringUtil;
+import org.kie.kogito.codegen.di.CDIDependencyInjectionAnnotator;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 import org.kie.pmml.commons.model.KiePMMLModel;
 
@@ -43,7 +44,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
-import static org.kie.kogito.codegen.prediction.PMMLRestResourceGenerator.TEMPLATE_JAVA;
+import static org.kie.kogito.codegen.prediction.PMMLRestResourceGenerator.CDI_TEMPLATE;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.mockito.Mockito.mock;
 
@@ -72,7 +73,7 @@ class PMMLRestResourceGeneratorTest {
     }
 
     private static ClassOrInterfaceDeclaration getClassOrInterfaceDeclaration() {
-        CompilationUnit clazz = parse(PMMLRestResourceGeneratorTest.class.getResourceAsStream(TEMPLATE_JAVA));
+        CompilationUnit clazz = parse(PMMLRestResourceGeneratorTest.class.getResourceAsStream(CDI_TEMPLATE));
         clazz.setPackageDeclaration(CodegenStringUtil.escapeIdentifier("IDENTIFIER"));
         return clazz
                 .findFirst(ClassOrInterfaceDeclaration.class)
@@ -88,7 +89,7 @@ class PMMLRestResourceGeneratorTest {
 
     @Test
     void generateWithDependencyInjection() {
-        String retrieved = pmmlRestResourceGenerator.withDependencyInjection(mock(DependencyInjectionAnnotator.class)).generate();
+        String retrieved = pmmlRestResourceGenerator.withDependencyInjection(new CDIDependencyInjectionAnnotator()).generate();
         commonEvaluateGenerate(retrieved);
         String expected = "Application application;";
         assertTrue(retrieved.contains(expected));
@@ -105,7 +106,7 @@ class PMMLRestResourceGeneratorTest {
     @Test
     void getNameURL() {
         String classPrefix = getSanitizedClassName(KIE_PMML_MODEL.getName());
-        String expected = URLEncoder.encode(classPrefix).replaceAll("\\+", "%20");
+        String expected = URLEncoder.encode(classPrefix).replaceAll("\\+", " ");
         assertEquals(expected, pmmlRestResourceGenerator.getNameURL());
     }
 
@@ -157,7 +158,7 @@ class PMMLRestResourceGeneratorTest {
         pmmlRestResourceGenerator.setPathValue(template);
         try {
             String classPrefix = getSanitizedClassName(KIE_PMML_MODEL.getName());
-            String expected = URLEncoder.encode(classPrefix).replaceAll("\\+", "%20");
+            String expected = URLEncoder.encode(classPrefix).replaceAll("\\+", " ");
             assertEquals(expected, retrieved.getMemberValue().asStringLiteralExpr().asString());
         } catch (Exception e) {
             fail(e);

@@ -50,6 +50,8 @@ import org.kie.dmn.openapi.model.DMNOASResult;
 import org.kie.kogito.codegen.AddonsConfig;
 import org.kie.kogito.codegen.BodyDeclarationComparator;
 import org.kie.kogito.codegen.CodegenUtils;
+import org.kie.kogito.codegen.InvalidTemplateException;
+import org.kie.kogito.codegen.TemplatedGenerator;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 
 import static com.github.javaparser.StaticJavaParser.parse;
@@ -57,6 +59,8 @@ import static com.github.javaparser.StaticJavaParser.parseStatement;
 
 public class DecisionRestResourceGenerator {
 
+    public static final String CDI_TEMPLATE = "/class-templates/DecisionRestResourceTemplate.java";
+    public static final String SPRING_TEMPLATE = "/class-templates/spring/SpringDecisionRestResourceTemplate.java";
     private final DMNModel dmnModel;
     private final String decisionName;
     private final String nameURL;
@@ -71,6 +75,7 @@ public class DecisionRestResourceGenerator {
     private DMNOASResult withOASResult;
     private boolean mpAnnPresent;
     private boolean swaggerAnnPresent;
+    private final TemplatedGenerator generator;
 
     private static final Supplier<RuntimeException> TEMPLATE_WAS_MODIFIED = () -> new RuntimeException("Template was modified!");
 
@@ -79,16 +84,18 @@ public class DecisionRestResourceGenerator {
         this.packageName = CodegenStringUtil.escapeIdentifier(model.getNamespace());
         this.decisionId = model.getDefinitions().getId();
         this.decisionName = CodegenStringUtil.escapeIdentifier(model.getName());
-        this.nameURL = URLEncoder.encode(model.getName()).replace("+", "%20");
+        this.nameURL = URLEncoder.encode(model.getName()).replace("+", " ");
         this.appCanonicalName = appCanonicalName;
         String classPrefix = StringUtils.ucFirst(decisionName);
         this.resourceClazzName = classPrefix + "Resource";
         this.relativePath = packageName.replace(".", "/") + "/" + resourceClazzName + ".java";
+        generator = new TemplatedGenerator(packageName, "DecisionRestResource",CDI_TEMPLATE, SPRING_TEMPLATE, CDI_TEMPLATE);
     }
 
     public String generate() {
-        CompilationUnit clazz = parse(this.getClass().getResourceAsStream("/class-templates/DecisionRestResourceTemplate.java"));
-        clazz.setPackageDeclaration(this.packageName);
+        CompilationUnit clazz = generator.compilationUnit()
+                .orElseThrow(() -> new InvalidTemplateException(resourceClazzName, generator.templatePath(), "Cannot " +
+                        "generate Decision REST Resource"));
 
         ClassOrInterfaceDeclaration template = clazz
                 .findFirst(ClassOrInterfaceDeclaration.class)
@@ -115,7 +122,7 @@ public class DecisionRestResourceGenerator {
 
         MethodDeclaration dmnMethod = template.findAll(MethodDeclaration.class, x -> x.getName().toString().equals("dmn")).get(0);
         processOASAnn(dmnMethod, null);
-        template.addMember(cloneForDMNResult(dmnMethod, "dmn_dmnresult", "dmnresult"));
+        template.addMember(cloneForDMNResult(dmnMethod, "dmn_dmnresult", "dmnresult", "$dmnMethodUrl$"));
         for (DecisionService ds : dmnModel.getDefinitions().getDecisionService()) {
             if (ds.getAdditionalAttributes().keySet().stream().anyMatch(qn -> qn.getLocalPart().equals("dynamicDecisionService"))) {
                 continue;
@@ -130,7 +137,11 @@ public class DecisionRestResourceGenerator {
             evaluateCall.addArgument(new StringLiteralExpr(ds.getName()));
             MethodCallExpr ctxCall = clonedMethod.findFirst(MethodCallExpr.class, x -> x.getNameAsString().equals("ctx")).orElseThrow(TEMPLATE_WAS_MODIFIED);
             ctxCall.addArgument(new StringLiteralExpr(ds.getName()));
-            clonedMethod.addAnnotation(new SingleMemberAnnotationExpr(new Name("javax.ws.rs.Path"), new StringLiteralExpr(ds.getName())));
+
+            //insert request path
+            final String path = ds.getName();
+            interpolateRequestPath(path, "$dmnMethodUrl$", clonedMethod);
+
             ReturnStmt returnStmt = clonedMethod.findFirst(ReturnStmt.class).orElseThrow(TEMPLATE_WAS_MODIFIED);
             if (ds.getOutputDecision().size() == 1) {
                 MethodCallExpr rewrittenReturnExpr = returnStmt.findFirst(MethodCallExpr.class,
@@ -144,8 +155,11 @@ public class DecisionRestResourceGenerator {
             }
 
             template.addMember(clonedMethod);
-            template.addMember(cloneForDMNResult(clonedMethod, name + "_dmnresult", ds.getName() + "/dmnresult"));
+            template.addMember(cloneForDMNResult(clonedMethod, name + "_dmnresult", ds.getName() + "/dmnresult", path));
         }
+
+        //set the root path for the dmnMethod itself
+        interpolateRequestPath("", "$dmnMethodUrl$", dmnMethod);
 
         interpolateOutputType(template);
 
@@ -240,18 +254,29 @@ public class DecisionRestResourceGenerator {
         }
     }
 
-    private MethodDeclaration cloneForDMNResult(MethodDeclaration dmnMethod, String name, String pathName) {
+    private MethodDeclaration cloneForDMNResult(MethodDeclaration dmnMethod, String name, String pathName,
+                                                String placeHolder) {
         MethodDeclaration clonedDmnMethod = dmnMethod.clone();
         // a DMNResult-returning method doesn't need the OAS annotations for the $ref of return type.
         removeAnnFromMethod(clonedDmnMethod, "org.eclipse.microprofile.openapi.annotations.responses.APIResponse");
         removeAnnFromMethod(clonedDmnMethod, "io.swagger.v3.oas.annotations.responses.ApiResponse");
         clonedDmnMethod.setName(name);
-        final Name jaxrsPathAnnName = new Name("javax.ws.rs.Path");
-        clonedDmnMethod.getAnnotations().removeIf(ae -> ae.getName().equals(jaxrsPathAnnName));
-        clonedDmnMethod.addAnnotation(new SingleMemberAnnotationExpr(jaxrsPathAnnName, new StringLiteralExpr(pathName)));
+
+        interpolateRequestPath(pathName, placeHolder, clonedDmnMethod);
+
         ReturnStmt returnStmt = clonedDmnMethod.findFirst(ReturnStmt.class).orElseThrow(TEMPLATE_WAS_MODIFIED);
         returnStmt.setExpression(new NameExpr("result"));
         return clonedDmnMethod;
+    }
+
+    private void interpolateRequestPath(String pathName, String placeHolder, MethodDeclaration clonedDmnMethod) {
+        clonedDmnMethod.getAnnotations().stream()
+                .flatMap(a -> a.findAll(StringLiteralExpr.class).stream())
+                .forEach(vv -> {
+                    String s = vv.getValue();
+                    String interpolated = s.replace(placeHolder, pathName);
+                    vv.setString(interpolated);
+                });
     }
 
     private void interpolateInputType(ClassOrInterfaceDeclaration template) {
@@ -315,6 +340,7 @@ public class DecisionRestResourceGenerator {
 
     public DecisionRestResourceGenerator withDependencyInjection(DependencyInjectionAnnotator annotator) {
         this.annotator = annotator;
+        this.generator.withDependencyInjection(annotator);
         return this;
     }
 

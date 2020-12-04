@@ -27,6 +27,8 @@ import com.github.javaparser.ast.expr.StringLiteralExpr;
 import org.kie.dmn.feel.codegen.feel11.CodegenStringUtil;
 import org.kie.kogito.codegen.BodyDeclarationComparator;
 import org.kie.kogito.codegen.CodegenUtils;
+import org.kie.kogito.codegen.InvalidTemplateException;
+import org.kie.kogito.codegen.TemplatedGenerator;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 import org.kie.pmml.commons.model.KiePMMLModel;
 
@@ -35,10 +37,9 @@ import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName
 
 public class PMMLRestResourceGenerator {
 
-    static final String TEMPLATE_JAVA = "/class-templates/PMMLRestResourceTemplate.java";
+    public static final String CDI_TEMPLATE = "/class-templates/PMMLRestResourceTemplate.java";
+    private static final String SPRING_TEMPLATE = "/class-templates/spring/SpringPMMLRestResourceTemplate.java";
 
-    private static final RuntimeException MODIFIED_TEMPLATE_EXCEPTION =
-            new RuntimeException("The template " + TEMPLATE_JAVA + " has been modified.");
     private final String nameURL;
     final String packageName;
     final String appCanonicalName;
@@ -46,6 +47,7 @@ public class PMMLRestResourceGenerator {
     private final String resourceClazzName;
     private final String relativePath;
     private final KiePMMLModel kiePMMLModel;
+    private final TemplatedGenerator generator;
 
     public PMMLRestResourceGenerator(KiePMMLModel model, String appCanonicalName) {
         this.kiePMMLModel = model;
@@ -55,11 +57,13 @@ public class PMMLRestResourceGenerator {
         this.appCanonicalName = appCanonicalName;
         this.resourceClazzName = classPrefix + "Resource";
         this.relativePath = packageName.replace(".", "/") + "/" + resourceClazzName + ".java";
+        this.generator = new TemplatedGenerator(packageName, "DecisionRestResource",CDI_TEMPLATE, SPRING_TEMPLATE, CDI_TEMPLATE);
     }
 
     public String generate() {
-        CompilationUnit clazz = parse(this.getClass().getResourceAsStream(TEMPLATE_JAVA));
-        clazz.setPackageDeclaration(this.packageName);
+        CompilationUnit clazz = generator.compilationUnit()
+                .orElseThrow(() -> new InvalidTemplateException(resourceClazzName, generator.templatePath(), "Cannot " +
+                        "generate Prediction REST Resource"));
 
         ClassOrInterfaceDeclaration template = clazz
                 .findFirst(ClassOrInterfaceDeclaration.class)
@@ -68,12 +72,8 @@ public class PMMLRestResourceGenerator {
 
         template.setName(resourceClazzName);
 
-        try {
-            setPathValue(template);
-            setPredictionModelName(template);
-        } catch (Exception e) {
-            throw MODIFIED_TEMPLATE_EXCEPTION;
-        }
+        setPathValue(template);
+        setPredictionModelName(template);
 
         if (useInjection()) {
             template.findAll(FieldDeclaration.class,
@@ -97,6 +97,7 @@ public class PMMLRestResourceGenerator {
 
     public PMMLRestResourceGenerator withDependencyInjection(DependencyInjectionAnnotator annotator) {
         this.annotator = annotator;
+        this.generator.withDependencyInjection(annotator);
         return this;
     }
 

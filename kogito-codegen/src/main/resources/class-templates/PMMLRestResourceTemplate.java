@@ -20,5 +20,4 @@ public class PMMLRestResourceTemplate {
         org.kie.kogito.prediction.PredictionModel prediction = application.predictionModels().getPredictionModel("$modelName$");
         return prediction.evaluateAll(prediction.newContext(variables));
     }
-
 }

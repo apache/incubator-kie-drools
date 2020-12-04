@@ -99,7 +99,7 @@ public class ExceptionsHandler extends BaseExceptionHandler<ResponseEntity> {
         return mapException(exception);
     }
 
-    @ExceptionHandler(value = {ProcessInstanceDuplicatedException.class})
+    @ExceptionHandler(ProcessInstanceDuplicatedException.class)
     public ResponseEntity<Object> toResponse(ProcessInstanceDuplicatedException exception) {
         return mapException(exception);
     }

@@ -64,9 +64,9 @@ public class $Type$Resource {
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<$Type$Output> createResource_$name$(@RequestHeader HttpHeaders httpHeaders,
-                                              @RequestParam(value = "businessKey", required = false) String businessKey,
-                                              @RequestBody $Type$Input resource,
-                                              UriComponentsBuilder uriComponentsBuilder) {
+                                                              @RequestParam(value = "businessKey", required = false) String businessKey,
+                                                              @RequestBody(required = false) $Type$Input resource,
+                                                              UriComponentsBuilder uriComponentsBuilder) {
         return UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(), () -> {
             $Type$Input inputModel = resource != null ? resource : new $Type$Input();
             ProcessInstance<$Type$> pi = process.createInstance(businessKey, inputModel.toModel());
@@ -77,72 +77,66 @@ public class $Type$Resource {
             } else {
                 pi.start();
             }
-            UriComponents uriComponents = uriComponentsBuilder.path("/{id}").buildAndExpand(pi.id());
+            UriComponents uriComponents = uriComponentsBuilder.path("/$name$/{id}").buildAndExpand(pi.id());
             URI location = uriComponents.toUri();
             return ResponseEntity.created(location)
                     .body(pi.checkError().variables().toOutput());
         });
-
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public List<$Type$Output> getResources_$name$() {
         return process.instances()
-                      .values()
-                      .stream()
-                      .map(pi -> pi.variables().toOutput())
-                      .collect(Collectors.toList());
+                .values()
+                .stream()
+                .map(pi -> pi.variables().toOutput())
+                .collect(Collectors.toList());
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<$Type$Output> getResource_$name$(@PathVariable("id") String id) {
         return process.instances()
-                      .findById(id, ProcessInstanceReadMode.READ_ONLY)
-                      .map(m -> ResponseEntity.ok(m.variables().toOutput()))
-                      .orElseGet(() -> ResponseEntity.notFound().build());
+                .findById(id, ProcessInstanceReadMode.READ_ONLY)
+                .map(m -> ResponseEntity.ok(m.variables().toOutput()))
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<$Type$Output> deleteResource_$name$(@PathVariable("id") final String id) {
         return UnitOfWorkExecutor.executeInUnitOfWork(
-                                                      application.unitOfWorkManager(),
-                                                      () -> process
-                                                                   .instances()
-                                                                   .findById(id)
-                                                                   .map(pi -> {
-                                                                       pi.abort();
-                                                                       return pi.checkError().variables().toOutput();
-                                                                   })
-                                                                   .map(m -> ResponseEntity.ok(m)))
-                                                                   .orElseGet(() -> ResponseEntity.notFound().build());
+                application.unitOfWorkManager(),
+                () -> process
+                        .instances()
+                        .findById(id)
+                        .map(pi -> {
+                            pi.abort();
+                            return pi.checkError().variables().toOutput();
+                        })
+                        .map(m -> ResponseEntity.ok(m)))
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE,
-                 consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<$Type$Output> updateModel_$name$(@PathVariable("id") String id, @RequestBody $Type$ resource) {
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<$Type$Output> updateModel_$name$(@PathVariable("id") String id, @RequestBody(required = false) $Type$ resource) {
         return UnitOfWorkExecutor.executeInUnitOfWork(
-                                                      application.unitOfWorkManager(),
-                                                      () -> process
-                                                                   .instances()
-                                                                   .findById(id)
-                                                                   .map(pi -> pi
-                                                                                .updateVariables(resource)
-                                                                                .toOutput())
-                                                                   .map(m -> ResponseEntity.ok(m)))
-                                                                   .orElseGet(() -> ResponseEntity.notFound().build());
+                application.unitOfWorkManager(),
+                () -> process
+                        .instances()
+                        .findById(id)
+                        .map(pi -> pi.updateVariables(resource).toOutput())
+                        .map(m -> ResponseEntity.ok(m)))
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping(value = "/{id}/tasks", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<WorkItem>> getTasks_$name$(@PathVariable("id") String id,
-                                               @RequestParam(value = "user", required = false) final String user,
-                                               @RequestParam(value = "group",
-                                                             required = false) final List<String> groups) {
+                                                          @RequestParam(value = "user", required = false) final String user,
+                                                          @RequestParam(value = "group", required = false, defaultValue = "") final List<String> groups) {
         return process.instances()
-                      .findById(id, ProcessInstanceReadMode.READ_ONLY)
-                      .map(pi -> pi.workItems(Policies.of(user, groups)))
-                      .map(m -> ResponseEntity.ok(m))
-                      .orElseGet(() -> ResponseEntity.notFound().build());
+                .findById(id, ProcessInstanceReadMode.READ_ONLY)
+                .map(pi -> pi.workItems(Policies.of(user, groups)))
+                .map(m -> ResponseEntity.ok(m))
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
-
-    
 }

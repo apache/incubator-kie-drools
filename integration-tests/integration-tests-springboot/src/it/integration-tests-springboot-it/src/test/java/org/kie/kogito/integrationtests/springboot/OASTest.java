@@ -16,27 +16,15 @@
 
 package org.kie.kogito.integrationtests.springboot;
 
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.Period;
-
-import io.restassured.http.ContentType;
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.kie.kogito.testcontainers.springboot.InfinispanSpringBootTestResource;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.ContextConfiguration;
-
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-
-
 import static org.hamcrest.Matchers.aMapWithSize;
 import static org.hamcrest.Matchers.greaterThan;
 
@@ -52,9 +40,9 @@ class OASTest extends BaseRestTest {
     @Test
     public void testOASdmnDefinitions() {
         RestAssured.given()
-                   .get("/docs/dmnDefinitions.json")
-                   .then()
-                   .statusCode(200)
-                   .body("definitions", aMapWithSize(greaterThan(0)));
+                .get("/dmnDefinitions.json")
+                .then()
+                .statusCode(200)
+                .body("definitions", aMapWithSize(greaterThan(0)));
     }
 }

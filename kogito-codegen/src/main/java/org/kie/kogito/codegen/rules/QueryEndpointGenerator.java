@@ -48,14 +48,19 @@ import org.kie.internal.ruleunit.RuleUnitDescription;
 import org.kie.kogito.codegen.AddonsConfig;
 import org.kie.kogito.codegen.BodyDeclarationComparator;
 import org.kie.kogito.codegen.FileGenerator;
+import org.kie.kogito.codegen.TemplateInstantiationException;
+import org.kie.kogito.codegen.TemplatedGenerator;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 
-import static com.github.javaparser.StaticJavaParser.parse;
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static com.github.javaparser.StaticJavaParser.parseStatement;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.classNameToReferenceType;
 
 public class QueryEndpointGenerator implements FileGenerator {
+
+    public static final String RESOURCE_CDI = "/class-templates/rules/CdiRestQueryTemplate.java";
+    public static final String RESOURCE_SPRING = "/class-templates/rules/SpringRestQueryTemplate.java";
+    public static final String RESOURCE_DEFAULT = "/class-templates/rules/RestQueryTemplate.java";
 
     private final RuleUnitDescription ruleUnit;
     private final QueryModel query;
@@ -67,6 +72,7 @@ public class QueryEndpointGenerator implements FileGenerator {
     private final String targetCanonicalName;
     private final String generatedFilePath;
     private final AddonsConfig addonsConfig;
+    private final TemplatedGenerator generator;
 
     public QueryEndpointGenerator(RuleUnitDescription ruleUnit, QueryModel query, DependencyInjectionAnnotator annotator, AddonsConfig addonsConfig) {
         this.ruleUnit = ruleUnit;
@@ -79,6 +85,9 @@ public class QueryEndpointGenerator implements FileGenerator {
         this.targetCanonicalName = queryClassName + "Endpoint";
         this.generatedFilePath = (query.getNamespace() + "." + targetCanonicalName).replace('.', '/') + ".java";
         this.addonsConfig = addonsConfig;
+        this.generator =
+                new TemplatedGenerator(query.getNamespace(), targetCanonicalName, RESOURCE_CDI, RESOURCE_SPRING, RESOURCE_DEFAULT)
+                        .withDependencyInjection(annotator);
     }
 
     public QueryGenerator getQueryGenerator() {
@@ -125,8 +134,11 @@ public class QueryEndpointGenerator implements FileGenerator {
 
     @Override
     public String generate() {
-        CompilationUnit cu = parse(
-                this.getClass().getResourceAsStream("/class-templates/rules/RestQueryTemplate.java"));
+        CompilationUnit cu = generator.compilationUnit()
+                .orElseThrow(() -> {
+                    throw new TemplateInstantiationException(
+                            generator.typeName(), generator.templatePath(), "Could not create CompilationUnit");
+                });
         cu.setPackageDeclaration(query.getNamespace());
 
         ClassOrInterfaceDeclaration clazz = cu
@@ -140,9 +152,6 @@ public class QueryEndpointGenerator implements FileGenerator {
                 .getFieldByName("ruleUnit")
                 .orElseThrow(() -> new NoSuchElementException("ClassOrInterfaceDeclaration doesn't contain a field named ruleUnit!"));
         setUnitGeneric(ruleUnitDeclaration.getElementType());
-        if (annotator != null) {
-            annotator.withInjection(ruleUnitDeclaration);
-        }
 
         String returnType = getReturnType(clazz);
         generateConstructors(clazz);
