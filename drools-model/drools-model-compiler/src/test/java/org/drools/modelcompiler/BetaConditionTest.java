@@ -23,8 +23,8 @@ import org.drools.modelcompiler.domain.Person;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 // DROOLS-5852
 public class BetaConditionTest extends BaseModelTest {
@@ -33,9 +33,9 @@ public class BetaConditionTest extends BaseModelTest {
         super( testRunType );
     }
 
-    @Test // why 1 fired?
+    @Test
     public void betaCheckTwoConditionsExplicit() {
-        final String str =
+        final String drl =
                 "global java.util.List list\n" +
                 "import " + Person.class.getCanonicalName() + ";" +
                 "rule R when\n" +
@@ -45,27 +45,12 @@ public class BetaConditionTest extends BaseModelTest {
                 "   list.add($p2);" +
                 "end\n";
 
-        KieSession ksession = getKieSession( str );
-
-        List<Person> results = new ArrayList<>();
-        ksession.setGlobal("list", results);
-
-        Person mark = new Person("Mark", 37).setEmployed(false);
-        Person edson = new Person("Edson", 35).setEmployed(true);
-
-        ksession.insert(mark);
-        ksession.insert(edson);
-        int rulesFired = ksession.fireAllRules();
-
-        assertEquals(2, results.size());
-        assertEquals(2, rulesFired);
-        assertTrue(results.contains(mark));
-        assertTrue(results.contains(edson));
+        verify(drl, 2);
     }
 
-    @Test // this should have the same result as betaCheckTwoConditionsExplicit ( 2 fired)
+    @Test
     public void betaCheckTwoConditionsImplicit() {
-        final String str =
+        final String drl =
                 "global java.util.List list\n" +
                 "import " + Person.class.getCanonicalName() + ";" +
                 "rule R when\n" +
@@ -75,27 +60,12 @@ public class BetaConditionTest extends BaseModelTest {
                 "   list.add($p2);" +
                 "end\n";
 
-        KieSession ksession = getKieSession( str );
-
-        List<Person> results = new ArrayList<>();
-        ksession.setGlobal("list", results);
-
-        Person mark = new Person("Mark", 37).setEmployed(false);
-        Person edson = new Person("Edson", 35).setEmployed(true);
-
-        ksession.insert(mark);
-        ksession.insert(edson);
-        int rulesFired = ksession.fireAllRules();
-
-        assertEquals(2, results.size());
-        assertEquals(2, rulesFired);
-        assertTrue(results.contains(mark));
-        assertTrue(results.contains(edson));
+        verify(drl, 2);
     }
 
-    @Test // this works in three cases but fires 3 times
+    @Test
     public void betaCheckORExplicit() {
-        final String str =
+        final String drl =
                 "global java.util.List list\n" +
                 "import " + Person.class.getCanonicalName() + ";" +
                 "rule R when\n" +
@@ -105,25 +75,10 @@ public class BetaConditionTest extends BaseModelTest {
                 "   list.add($p2);" +
                 "end\n";
 
-        KieSession ksession = getKieSession( str );
-
-        List<Person> results = new ArrayList<>();
-        ksession.setGlobal("list", results);
-
-        Person mark = new Person("Mark", 37).setEmployed(false);
-        Person edson = new Person("Edson", 35).setEmployed(true);
-
-        ksession.insert(mark);
-        ksession.insert(edson);
-        int rulesFired = ksession.fireAllRules();
-
-        assertEquals(3, results.size());
-        assertEquals(3, rulesFired);
-        assertTrue(results.contains(mark));
-        assertTrue(results.contains(edson));
+        verify(drl, 3);
     }
 
-    @Test // does not work in exec model but has same result than betaCheckORExplicit
+    @Test
     public void betaCheckORImplicit() {
         final String str =
                 "global java.util.List list\n" +
@@ -135,27 +90,12 @@ public class BetaConditionTest extends BaseModelTest {
                 "   list.add($p2);" +
                 "end\n";
 
-        KieSession ksession = getKieSession( str );
-
-        List<Person> results = new ArrayList<>();
-        ksession.setGlobal("list", results);
-
-        Person mark = new Person("Mark", 37).setEmployed(false);
-        Person edson = new Person("Edson", 35).setEmployed(true);
-
-        ksession.insert(mark);
-        ksession.insert(edson);
-        int rulesFired = ksession.fireAllRules();
-
-        assertEquals(3, results.size());
-        assertEquals(3, rulesFired);
-        assertTrue(results.contains(mark));
-        assertTrue(results.contains(edson));
+        verify(str, 3);
     }
 
-    @Test // works in three cases, fire 2 times
+    @Test
     public void betaCheckExplicit() {
-        final String str =
+        final String drl =
                 "global java.util.List list\n" +
                         "import " + Person.class.getCanonicalName() + ";" +
                         "rule R when\n" +
@@ -165,28 +105,13 @@ public class BetaConditionTest extends BaseModelTest {
                         "   list.add($p2);" +
                         "end\n";
 
-        KieSession ksession = getKieSession( str );
-
-        List<Person> results = new ArrayList<>();
-        ksession.setGlobal("list", results);
-
-        Person mark = new Person("Mark", 37).setEmployed(false);
-        Person edson = new Person("Edson", 35).setEmployed(true);
-
-        ksession.insert(mark);
-        ksession.insert(edson);
-        int rulesFired = ksession.fireAllRules();
-
-        assertEquals(2, results.size());
-        assertEquals(2, rulesFired);
-        assertTrue(results.contains(mark));
-        assertTrue(results.contains(edson));
+        verify(drl, 2);
     }
 
 
-    @Test // should have same result as betaCheckExplicit, does not work with exec model
+    @Test
     public void betaCheckImplicit() {
-        final String str =
+        final String drl =
                 "global java.util.List list\n" +
                 "import " + Person.class.getCanonicalName() + ";" +
                 "rule R when\n" +
@@ -196,22 +121,7 @@ public class BetaConditionTest extends BaseModelTest {
                 "   list.add($p2);" +
                 "end\n";
 
-        KieSession ksession = getKieSession( str );
-
-        List<Person> results = new ArrayList<>();
-        ksession.setGlobal("list", results);
-
-        Person mark = new Person("Mark", 37).setEmployed(false);
-        Person edson = new Person("Edson", 35).setEmployed(true);
-
-        ksession.insert(mark);
-        ksession.insert(edson);
-        int rulesFired = ksession.fireAllRules();
-
-        assertEquals(2, results.size());
-        assertEquals(2, rulesFired);
-        assertTrue(results.contains(mark));
-        assertTrue(results.contains(edson));
+        verify(drl, 2);
     }
 
     @Test
@@ -225,27 +135,13 @@ public class BetaConditionTest extends BaseModelTest {
                         "   list.add($p2);" +
                         "end\n";
 
-        KieSession ksession = getKieSession( str );
-
-        List<Person> results = new ArrayList<>();
-        ksession.setGlobal("list", results);
-
-        Person mark = new Person("Mark", 37).setEmployed(false);
-        Person edson = new Person("Edson", 35).setEmployed(true);
-
-        ksession.insert(mark);
-        ksession.insert(edson);
-        int rulesFired = ksession.fireAllRules();
-
-        assertEquals(1, results.size());
-        assertEquals(1, rulesFired);
-        assertTrue(results.contains(edson));
+        verify(str, 1);
     }
 
 
     @Test
     public void checkBooleanImplicit() {
-        final String str =
+        final String drl =
                 "global java.util.List list\n" +
                 "import " + Person.class.getCanonicalName() + ";" +
                 "rule R when\n" +
@@ -254,7 +150,11 @@ public class BetaConditionTest extends BaseModelTest {
                 "   list.add($p2);" +
                 "end\n";
 
-        KieSession ksession = getKieSession( str );
+        verify(drl, 1);
+    }
+
+    private void verify(String str, int numberOfResults) {
+        KieSession ksession = getKieSession(str);
 
         List<Person> results = new ArrayList<>();
         ksession.setGlobal("list", results);
@@ -266,10 +166,11 @@ public class BetaConditionTest extends BaseModelTest {
         ksession.insert(edson);
         int rulesFired = ksession.fireAllRules();
 
-        assertEquals(1, results.size());
-        assertEquals(1, rulesFired);
-        assertTrue(results.contains(edson));
-    }
+        assertEquals(numberOfResults, results.size());
+        assertEquals(numberOfResults, rulesFired);
 
+        assertThat(results.size()).isEqualTo(numberOfResults);
+        assertThat(rulesFired).isEqualTo(numberOfResults);
+    }
 
 }
