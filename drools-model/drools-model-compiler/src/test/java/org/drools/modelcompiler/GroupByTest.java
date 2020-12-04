@@ -276,6 +276,67 @@ public class GroupByTest {
     }
 
     @Test
+    public void testSumPersonAgeGroupByInitialWithBetaFilter() throws Exception {
+        Global<Map> var_results = D.globalOf(Map.class, "defaultpkg", "results");
+
+        Variable<String> var_$key = D.declarationOf(String.class);
+        Variable<Person> var_$p = D.declarationOf(Person.class);
+        Variable<Integer> var_$age = D.declarationOf(Integer.class);
+        Variable<Integer> var_$sumOfAges = D.declarationOf(Integer.class);
+
+        Rule rule1 = D.rule("R1").build(
+                D.groupBy(
+                        // Patterns
+                        D.pattern(var_$p).bind(var_$age, person -> person.getAge(), D.reactOn("age")),
+                        // Grouping Function
+                        var_$p, var_$key, person -> person.getName().substring(0, 1),
+                        // Accumulate Result (can be more than one)
+                        D.accFunction(org.drools.core.base.accumulators.IntegerSumAccumulateFunction::new, var_$age).as(var_$sumOfAges)),
+                // Filter
+                D.pattern(var_$sumOfAges)
+                        .expr(var_$key, ($sumOfAges, $key) -> EvaluationUtil.greaterThanNumbers($sumOfAges, $key.length())),
+                // Consequence
+                D.on(var_$key, var_results, var_$sumOfAges)
+                        .execute(($key, results, $sumOfAges) -> results.put($key, $sumOfAges))
+        );
+
+        Model model = new ModelImpl().addRule( rule1 ).addGlobal( var_results );
+        KieSession ksession = KieBaseBuilder.createKieBaseFromModel( model ).newKieSession();
+
+        Map results = new HashMap();
+        ksession.setGlobal( "results", results );
+
+        ksession.insert(new Person("Mark", 42));
+        ksession.insert(new Person("Edson", 38));
+        FactHandle meFH = ksession.insert(new Person("Mario", 45));
+        ksession.insert(new Person("Maciej", 39));
+        ksession.insert(new Person("Edoardo", 33));
+        FactHandle geoffreyFH = ksession.insert(new Person("Geoffrey", 35));
+        ksession.fireAllRules();
+
+        assertEquals( 3, results.size() );
+        assertEquals( 35, results.get("G") );
+        assertEquals( 71, results.get("E") );
+        assertEquals( 126, results.get("M") );
+        results.clear();
+
+        ksession.delete( meFH );
+        ksession.fireAllRules();
+
+        assertEquals( 1, results.size() );
+        assertEquals( 81, results.get("M") );
+        results.clear();
+
+        ksession.update(geoffreyFH, new Person("Geoffrey", 40));
+        ksession.insert(new Person("Matteo", 38));
+        ksession.fireAllRules();
+
+        assertEquals( 2, results.size() );
+        assertEquals( 40, results.get("G") );
+        assertEquals( 119, results.get("M") );
+    }
+
+    @Test
     public void testSumPersonAgeGroupByInitialWithExists() throws Exception {
         final Global<Map> var_results = D.globalOf(Map.class, "defaultpkg", "results");
 
