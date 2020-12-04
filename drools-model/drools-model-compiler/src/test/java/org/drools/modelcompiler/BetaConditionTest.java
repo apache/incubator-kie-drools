@@ -40,7 +40,7 @@ public class BetaConditionTest extends BaseModelTest {
                 "import " + Person.class.getCanonicalName() + ";" +
                 "rule R when\n" +
                     "$p1 : Person()" +
-                    "$p2 : Person(this != $p1, employed == (employed || $p1.employed) )" +
+                    "$p2 : Person(this != $p1, employed == true || $p1.employed == true )" +
                 "then\n" +
                 "   list.add($p2);" +
                 "end\n";
@@ -100,7 +100,7 @@ public class BetaConditionTest extends BaseModelTest {
                 "import " + Person.class.getCanonicalName() + ";" +
                 "rule R when\n" +
                     "$p1 : Person()" +
-                    "$p2 : Person(employed == (employed || $p1.employed) )" +
+                    "$p2 : Person(employed == true || $p1.employed == true )" +
                 "then\n" +
                 "   list.add($p2);" +
                 "end\n";
@@ -160,7 +160,7 @@ public class BetaConditionTest extends BaseModelTest {
                         "import " + Person.class.getCanonicalName() + ";" +
                         "rule R when\n" +
                         "$p1 : Person()" +
-                        "$p2 : Person(employed == $p1.employed)" +
+                        "$p2 : Person($p1.employed == true)" +
                         "then\n" +
                         "   list.add($p2);" +
                         "end\n";
@@ -211,6 +211,63 @@ public class BetaConditionTest extends BaseModelTest {
         assertEquals(2, results.size());
         assertEquals(2, rulesFired);
         assertTrue(results.contains(mark));
+        assertTrue(results.contains(edson));
+    }
+
+    @Test
+    public void checkBooleanExplicit() {
+        final String str =
+                "global java.util.List list\n" +
+                        "import " + Person.class.getCanonicalName() + ";" +
+                        "rule R when\n" +
+                        "$p2 : Person(employed == true)" +
+                        "then\n" +
+                        "   list.add($p2);" +
+                        "end\n";
+
+        KieSession ksession = getKieSession( str );
+
+        List<Person> results = new ArrayList<>();
+        ksession.setGlobal("list", results);
+
+        Person mark = new Person("Mark", 37).setEmployed(false);
+        Person edson = new Person("Edson", 35).setEmployed(true);
+
+        ksession.insert(mark);
+        ksession.insert(edson);
+        int rulesFired = ksession.fireAllRules();
+
+        assertEquals(1, results.size());
+        assertEquals(1, rulesFired);
+        assertTrue(results.contains(edson));
+    }
+
+
+    @Test
+    public void checkBooleanImplicit() {
+        final String str =
+                "global java.util.List list\n" +
+                "import " + Person.class.getCanonicalName() + ";" +
+                "rule R when\n" +
+                    "$p2 : Person(employed) " +
+                "then\n" +
+                "   list.add($p2);" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+
+        List<Person> results = new ArrayList<>();
+        ksession.setGlobal("list", results);
+
+        Person mark = new Person("Mark", 37).setEmployed(false);
+        Person edson = new Person("Edson", 35).setEmployed(true);
+
+        ksession.insert(mark);
+        ksession.insert(edson);
+        int rulesFired = ksession.fireAllRules();
+
+        assertEquals(1, results.size());
+        assertEquals(1, rulesFired);
         assertTrue(results.contains(edson));
     }
 
