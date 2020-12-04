@@ -329,9 +329,9 @@ TOKEN :
 }
 
 <DEFAULT>
-TOKEN :
+SPECIAL_TOKEN :
 {
-<UNIX_EOL: "\n">
+<UNIX_EOL: "\n"> { System.out.println("NEWLINESSS"); }
 | <WINDOWS_EOL : "\r\n">
 }
 
@@ -2275,7 +2275,7 @@ Statement BlockStatement():
             modifier = Modifiers()
             typeDecl = ClassOrInterfaceDeclaration(modifier) { ret = new LocalClassDeclarationStmt(range(typeDecl, token()), typeDecl); }
         | LOOKAHEAD(VariableDeclarationExpression() )
-            expr = VariableDeclarationExpression() ";"
+            expr = VariableDeclarationExpression() EOS()
             { ret = new ExpressionStmt(range(expr, token()), expr); }
         |
             ret = Statement()
@@ -2351,8 +2351,7 @@ ExpressionStmt StatementExpression():
             op = AssignmentOperator() value = Expression() { expr = new AssignExpr(range(expr, token()), expr, value, op); }
         ]
     )
-    (";")*
-    (EOL())* // TODO: should support also windows EOL
+    (EOS())// TODO: should support also windows EOL
     { return new ExpressionStmt(range(expr, token()), expr); }
 }
 
@@ -2648,13 +2647,13 @@ ModifyStatement ModifyStatement():
     (
         (
             <MODIFY><LPAREN> (modifyObject = UnaryExpressionNotPlusMinus())<RPAREN> <LBRACE>
-            (first = Statement()(<SEMICOLON>|EOL())?)* { begin=token(); all.add(first); }
+            (first = Statement()(EOS()))* { begin=token(); all.add(first); }
             (
                           (<COMMA>)*(EOL())*
                           other = Statement() { all.add(other); }
             )*
             <RBRACE>
-            (<SEMICOLON>|EOL())*
+            EOS()
             {
                 return new ModifyStatement(range(begin, token()), modifyObject, all);
             }
@@ -2676,13 +2675,13 @@ WithStatement WithStatement():
     (
         (
             <WITH><LPAREN> (withObject = Expression())<RPAREN> <LBRACE>
-            (first = Statement()(<SEMICOLON>|EOL())?)* { begin=token(); all.add(first); }
+            (first = Statement()(EOS()))* { begin=token(); all.add(first); }
             (
                           (<COMMA>|EOL())
                           other = Statement() { all.add(other); }
             )*
             <RBRACE>
-            (<SEMICOLON>|EOL())*
+            (EOS())
             {
                 return new WithStatement(range(begin, token()), withObject, all);
             }
@@ -3399,5 +3398,12 @@ void EOL():
 {
 }
 {
-    <UNIX_EOL>|<WINDOWS_EOL>
+    "%%%"//<UNIX_EOL>|<WINDOWS_EOL>
+}
+
+void EOS():
+{
+}
+{
+   (<SEMICOLON>)* | ( LOOKAHEAD( { getToken(1).specialToken.kind == UNIX_EOL ||  getToken(1).specialToken.kind == WINDOWS_EOL } ) {} )
 }
