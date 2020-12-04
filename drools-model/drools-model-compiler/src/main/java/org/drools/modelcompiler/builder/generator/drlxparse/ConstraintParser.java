@@ -233,7 +233,15 @@ public class ConstraintParser {
     private DrlxParseResult parseNameExpr(DrlNameExpr nameExpr, Class<?> patternType, String bindingId, Expression drlxExpr, boolean hasBind, String expression) {
         TypedExpression converted;
         try {
-            converted = new ToMethodCall(context).toMethodCallWithClassCheck(nameExpr, bindingId, patternType);
+            final ExpressionTyperContext expressionTyperContext = new ExpressionTyperContext();
+            final ExpressionTyper expressionTyper = new ExpressionTyper(context, patternType, bindingId, false, expressionTyperContext);
+
+            Optional<TypedExpression> typedExpressionResult = expressionTyper.toTypedExpression(nameExpr).getTypedExpression();
+            if ( !typedExpressionResult.isPresent() ) {
+                return new DrlxParseFail();
+            }
+
+            converted = typedExpressionResult.get();
         } catch(ToMethodCall.CannotConvertException e) {
             context.addCompilationError(e.getInvalidExpressionErrorResult());
             converted = null;
