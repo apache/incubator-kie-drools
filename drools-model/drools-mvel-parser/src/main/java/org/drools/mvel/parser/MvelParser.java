@@ -64,7 +64,7 @@ import static org.drools.mvel.parser.Providers.resourceProvider;
  */
 public final class MvelParser {
     private final ParserConfiguration configuration;
-    private boolean ignoreNewlines = false;
+    private final boolean ignoreNewlines;
 
     private GeneratedMvelParser astParser = null;
     private static ParserConfiguration staticConfiguration = new ParserConfiguration();
@@ -92,6 +92,13 @@ public final class MvelParser {
     public MvelParser(ParserConfiguration configuration) {
         this.configuration = configuration;
         configuration.getPostProcessors().clear();
+        this.ignoreNewlines = false;
+    }
+
+    public MvelParser(ParserConfiguration configuration, boolean ignoreNewlines) {
+        this.configuration = configuration;
+        configuration.getPostProcessors().clear();
+        this.ignoreNewlines = ignoreNewlines;
     }
 
     /**
@@ -117,10 +124,6 @@ public final class MvelParser {
      */
     public ParserConfiguration getParserConfiguration() {
         return this.configuration;
-    }
-
-    public void setIgnoreNewlines(boolean ignoreNewlines) {
-        this.ignoreNewlines = ignoreNewlines;
     }
 
     private GeneratedMvelParser getParserForProvider(Provider provider) {

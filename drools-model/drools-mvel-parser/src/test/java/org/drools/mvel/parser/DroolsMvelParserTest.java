@@ -31,6 +31,7 @@ import java.util.concurrent.TimeUnit;
 
 import com.github.javaparser.ParseProblemException;
 import com.github.javaparser.ParseResult;
+import com.github.javaparser.ParserConfiguration;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.BinaryExpr.Operator;
@@ -122,12 +123,15 @@ public class DroolsMvelParserTest {
     }
 
     @Test
-    @Ignore
     public void testBinaryWithNewLineBeforeOperator() {
-        Expression and2 = parseExpression(parser, "(addresses == 2" + newLine() + "&& addresses == 3  )").getExpr();
+        String andExpr = "(addresses == 2" + newLine() + "&& addresses == 3  )";
+        MvelParser mvelParser1 = new MvelParser(new ParserConfiguration(), true);
+        Expression and2 = mvelParser1.parse(GeneratedMvelParser::Expression, new StringProvider(andExpr)).getResult().get();
         assertEquals("(addresses == 2 && addresses == 3)", printConstraint(and2));
 
-        Expression or2 = parseExpression(parser, "(addresses == 2" + newLine() + "|| addresses == 3  )").getExpr();
+        String orExpr = "(addresses == 2" + newLine() + "|| addresses == 3  )";
+        MvelParser mvelParser2 = new MvelParser(new ParserConfiguration(), true);
+        Expression or2 = mvelParser2.parse(GeneratedMvelParser::Expression, new StringProvider(orExpr)).getResult().get();
         assertEquals("(addresses == 2 || addresses == 3)", printConstraint(or2));
     }
 
@@ -913,8 +917,7 @@ public class DroolsMvelParserTest {
         Expression r1 = parseExpression(parser, expr).getExpr();
         assertEquals("Parsing should stop at newline", "1", printConstraint(r1));
 
-        MvelParser mvelParser = new MvelParser();
-        mvelParser.setIgnoreNewlines(true);
+        MvelParser mvelParser = new MvelParser(new ParserConfiguration(), true);
         Expression r2 = mvelParser.parse(GeneratedMvelParser::Expression, new StringProvider(expr)).getResult().get();
         assertEquals("Parsing must ignore newlines","1 + 1", printConstraint(r2));
     }
