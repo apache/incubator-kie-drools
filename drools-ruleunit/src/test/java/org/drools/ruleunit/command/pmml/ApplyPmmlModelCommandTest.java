@@ -6,12 +6,15 @@ import org.drools.core.impl.KnowledgeBaseFactory;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.pmml.PMML4Result;
+import org.kie.api.pmml.PMMLConstants;
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.internal.command.RegistryContext;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 public class ApplyPmmlModelCommandTest {
 
@@ -59,6 +62,17 @@ public class ApplyPmmlModelCommandTest {
         String resultCode = resultHolder.getResultCode();
         // Since we don't have a real KieBase we expect this error
         assertEquals("ERROR-1", resultCode);
+    }
+
+    @Test
+    public void testIsMining() {
+        ApplyPmmlModelCommand cmd = new ApplyPmmlModelCommand();
+        assertNull(cmd.getHasMining());
+        assertFalse(cmd.isMining());
+        cmd.setHasMining(false);
+        assertFalse(cmd.isMining());
+        cmd.setHasMining(true);
+        assertTrue(cmd.isMining());
     }
 
 
