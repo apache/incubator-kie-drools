@@ -275,8 +275,9 @@ public class ConstraintParser {
             Expression withThis = DrlxParseUtil.prepend(new NameExpr(THIS_PLACEHOLDER), converted.getExpression());
 
             return new SingleDrlxParseSuccess(patternType, bindingId, withThis, converted.getType())
+                    .setUsedDeclarations(expressionTyperContext.getUsedDeclarations())
                     .setLeft(converted)
-                    .setUsedDeclarations(expressionTyperContext.getUsedDeclarations());
+                    .setImplicitCastExpression(expressionTyperContext.getInlineCastExpression());
         } catch(ToMethodCall.CannotConvertException e) {
             Optional<TypedExpression> parsed = tryParseAsConstantField(context.getTypeResolver(), fieldCallExpr.getScope(), fieldCallExpr.getNameAsString());
             return parsed.map( expr -> new SingleDrlxParseSuccess(patternType, bindingId, expr.getExpression(), expr.getType()).setLeft(expr) ).orElseThrow( () -> e );
