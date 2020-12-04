@@ -38,6 +38,14 @@ public class GroupByFactHandle implements InternalFactHandle {
     }
 
     @Override
+    public String toString() {
+        return "GroupByFactHandle{" +
+                "groupKey=" + groupKey +
+                ", handle=" + handle +
+                '}';
+    }
+
+    @Override
     public long getId() {
         return handle.getId();
     }
