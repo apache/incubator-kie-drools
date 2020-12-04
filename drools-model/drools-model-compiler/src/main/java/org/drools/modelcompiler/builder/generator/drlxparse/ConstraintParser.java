@@ -262,13 +262,21 @@ public class ConstraintParser {
 
     private DrlxParseResult parseFieldAccessExpr( FieldAccessExpr fieldCallExpr, Class<?> patternType, String bindingId ) {
         try {
-            ToMethodCall toMethodCall = new ToMethodCall(context);
-            TypedExpression converted = toMethodCall.toMethodCallWithClassCheck(fieldCallExpr, bindingId, patternType);
+            final ExpressionTyperContext expressionTyperContext = new ExpressionTyperContext();
+            final ExpressionTyper expressionTyper = new ExpressionTyper(context, patternType, bindingId, false, expressionTyperContext);
+
+            Optional<TypedExpression> typedExpressionResult = expressionTyper.toTypedExpression(fieldCallExpr).getTypedExpression();
+            if ( !typedExpressionResult.isPresent() ) {
+                return new DrlxParseFail();
+            }
+
+            TypedExpression converted = typedExpressionResult.get();
+
             Expression withThis = DrlxParseUtil.prepend(new NameExpr(THIS_PLACEHOLDER), converted.getExpression());
 
             return new SingleDrlxParseSuccess(patternType, bindingId, withThis, converted.getType())
                     .setLeft(converted)
-                    .setImplicitCastExpression(toMethodCall.getImplicitCastExpression());
+                    .setUsedDeclarations(expressionTyperContext.getUsedDeclarations());
         } catch(ToMethodCall.CannotConvertException e) {
             Optional<TypedExpression> parsed = tryParseAsConstantField(context.getTypeResolver(), fieldCallExpr.getScope(), fieldCallExpr.getNameAsString());
             return parsed.map( expr -> new SingleDrlxParseSuccess(patternType, bindingId, expr.getExpression(), expr.getType()).setLeft(expr) ).orElseThrow( () -> e );
