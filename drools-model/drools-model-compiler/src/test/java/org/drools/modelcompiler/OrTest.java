@@ -181,40 +181,7 @@ public class OrTest extends BaseModelTest {
         assertFalse(results.getMessages().isEmpty());
     }
 
-
     private Results getCompilationResults( String drl ) {
         return createKieBuilder( drl ).getResults();
     }
-
-    @Test
-    public void orField() {
-        // DROOLS-5852
-        final String str =
-                "global java.util.List list\n" +
-                "import " + Person.class.getCanonicalName() + ";" +
-                "rule R when\n" +
-                    "$p1 : Person()" +
-                    "$p2 : Person(this != $p1, employed || $p1.employed )" +
-                "then\n" +
-                "   list.add($p2);" +
-                "end\n";
-
-        KieSession ksession = getKieSession( str );
-
-        List<Person> results = new ArrayList<>();
-        ksession.setGlobal("list", results);
-
-        Person mark = new Person("Mark", 37).setEmployed(false);
-        Person edson = new Person("Edson", 35).setEmployed(true);
-
-        ksession.insert(mark);
-        ksession.insert(edson);
-        int rulesFired = ksession.fireAllRules();
-
-        assertEquals(2, results.size());
-        assertEquals(2, rulesFired);
-        assertTrue(results.contains(mark));
-        assertTrue(results.contains(edson));
-    }
-
 }
