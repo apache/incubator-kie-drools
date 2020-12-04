@@ -911,13 +911,18 @@ public class DroolsMvelParserTest {
 
     @Test
     public void testSpecialNewlineHandling() {
-        String expr = "{ a() \n + 1}";
+        String expr = "{ a() \nprint(1) }";
 
-        assertThrows("Parsing should stop at newline", ParseProblemException.class, () -> MvelParser.parseBlock(expr));
+        assertEquals("There should be 2 statements",
+                     "{\n" +
+                             "    a();\n" +
+                             "    print(1);\n" +
+                             "}",
+                     printConstraint(MvelParser.parseBlock(expr)));
 
-//        MvelParser mvelParser = new MvelParser(new ParserConfiguration(), true);
-//        BlockStmt r2 = mvelParser.parse(GeneratedMvelParser::BlockParseStart, new StringProvider(expr)).getResult().get();
-//        assertEquals("Parsing must ignore newlines","1 + 1", r2.toString());
+        MvelParser mvelParser = new MvelParser(new ParserConfiguration(), false);
+        ParseResult<BlockStmt> r = mvelParser.parse(GeneratedMvelParser::BlockParseStart, new StringProvider(expr));
+        assertFalse("Parsing should break at newline", r.isSuccessful());
     }
 
     private void testMvelSquareOperator(String wholeExpression, String operator, String left, String right, boolean isNegated) {

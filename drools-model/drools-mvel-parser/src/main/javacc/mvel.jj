@@ -2622,13 +2622,13 @@ ModifyStatement ModifyStatement():
     (
         (
             <MODIFY><LPAREN> (modifyObject = UnaryExpressionNotPlusMinus())<RPAREN> <LBRACE>
-            (first = Statement()(EOS()))* { begin=token(); all.add(first); }
+            (first = Statement()(";")*)* { begin=token(); all.add(first); }
             (
                           (<COMMA>)*
                           other = Statement() { all.add(other); }
             )*
             <RBRACE>
-            EOS()
+            (<SEMICOLON>)?
             {
                 return new ModifyStatement(range(begin, token()), modifyObject, all);
             }
@@ -2650,7 +2650,7 @@ WithStatement WithStatement():
     (
         (
             <WITH><LPAREN> (withObject = Expression())<RPAREN> <LBRACE>
-            (first = Statement()(EOS()))* { begin=token(); all.add(first); }
+            (first = Statement()(";")*)* { begin=token(); all.add(first); }
             (
                           <COMMA>
                           other = Statement() { all.add(other); }
@@ -3373,5 +3373,8 @@ void EOS():
 {
 }
 {
-   (<SEMICOLON>)* | ( LOOKAHEAD( { this.optionalSemicolon && getToken(1).specialToken.kind == UNIX_EOL ||  getToken(1).specialToken.kind == WINDOWS_EOL } ) {} )
+   <SEMICOLON>
+   | LOOKAHEAD("}") {}
+   | LOOKAHEAD( { this.optionalSemicolon && ( getToken(1).specialToken != null &&
+                    ( getToken(1).specialToken.kind == UNIX_EOL ||  getToken(1).specialToken.kind == WINDOWS_EOL ) ) } ) {}
 }
