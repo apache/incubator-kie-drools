@@ -35,31 +35,38 @@
         <module>drools-impact-analysis-itests</module>
     </modules>
 
-    <build>
-        <plugins>
-            <!-- Override enforcer setting to allow using versions for dependencies in pom -->
-            <!-- TODO to be removed when the module will be activated -->
-            <plugin>
-                <artifactId>maven-enforcer-plugin</artifactId>
-                <version>3.0.0-M1</version>
-                <executions>
-                    <execution>
-                        <id>no-managed-deps</id>
-                        <phase>initialize</phase>
-                        <goals>
-                            <goal>enforce</goal>
-                        </goals>
-                        <configuration>
-                            <rules>
-                                <requireManagedDeps implementation="org.commonjava.maven.enforcer.rule.EnforceManagedDepsRule">
-                                    <checkProfiles>true</checkProfiles>
-                                    <failOnViolation>false</failOnViolation>
-                                </requireManagedDeps>
-                            </rules>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>guru.nidi</groupId>
+                <artifactId>graphviz-java</artifactId>
+                <version>0.18.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.drools</groupId>
+                <artifactId>drools-impact-analysis-model</artifactId>
+                <version>7.48.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.drools</groupId>
+                <artifactId>drools-impact-analysis-parser</artifactId>
+                <version>7.48.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.drools</groupId>
+                <artifactId>drools-impact-analysis-graph-common</artifactId>
+                <version>7.48.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.drools</groupId>
+                <artifactId>drools-impact-analysis-graph-graphviz</artifactId>
+                <version>7.48.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.drools</groupId>
+                <artifactId>drools-impact-analysis-itests</artifactId>
+                <version>7.48.0-SNAPSHOT</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 </project>

@@ -15,19 +15,16 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-impact-analysis-graph-common</artifactId>
-      <version>7.48.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-impact-analysis-parser</artifactId>
-      <version>7.48.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>guru.nidi</groupId>
       <artifactId>graphviz-java</artifactId>
-      <version>0.18.0</version>
     </dependency>
 
     <dependency>
