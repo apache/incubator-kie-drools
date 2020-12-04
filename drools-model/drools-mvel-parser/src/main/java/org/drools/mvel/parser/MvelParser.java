@@ -64,7 +64,7 @@ import static org.drools.mvel.parser.Providers.resourceProvider;
  */
 public final class MvelParser {
     private final ParserConfiguration configuration;
-    private final boolean ignoreNewlines;
+    private final boolean optionalSemicolon;
 
     private GeneratedMvelParser astParser = null;
     private static ParserConfiguration staticConfiguration = new ParserConfiguration();
@@ -92,13 +92,13 @@ public final class MvelParser {
     public MvelParser(ParserConfiguration configuration) {
         this.configuration = configuration;
         configuration.getPostProcessors().clear();
-        this.ignoreNewlines = false;
+        this.optionalSemicolon = true;
     }
 
-    public MvelParser(ParserConfiguration configuration, boolean ignoreNewlines) {
+    public MvelParser(ParserConfiguration configuration, boolean optionalSemicolon) {
         this.configuration = configuration;
         configuration.getPostProcessors().clear();
-        this.ignoreNewlines = ignoreNewlines;
+        this.optionalSemicolon = optionalSemicolon;
     }
 
     /**
@@ -134,10 +134,7 @@ public final class MvelParser {
         }
         astParser.setTabSize(configuration.getTabSize());
         astParser.setStoreTokens(configuration.isStoreTokens());
-        if (ignoreNewlines) {
-            astParser.getTokenSource()
-                    .setDefaultState(GeneratedMvelParserTokenManager.NEWLINES_SKIPPED);
-        }
+        astParser.setOptionalSemicolon(optionalSemicolon);
         return astParser;
     }
 

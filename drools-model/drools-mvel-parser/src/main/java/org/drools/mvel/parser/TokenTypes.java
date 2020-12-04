@@ -175,13 +175,11 @@ import static org.drools.mvel.parser.GeneratedMvelParserConstants.TRUE;
 import static org.drools.mvel.parser.GeneratedMvelParserConstants.TRY;
 import static org.drools.mvel.parser.GeneratedMvelParserConstants.UNICODE_ESCAPE;
 import static org.drools.mvel.parser.GeneratedMvelParserConstants.UNIX_EOL;
-import static org.drools.mvel.parser.GeneratedMvelParserConstants.UNIX_EOL_SKIPPED;
 import static org.drools.mvel.parser.GeneratedMvelParserConstants.USES;
 import static org.drools.mvel.parser.GeneratedMvelParserConstants.VOID;
 import static org.drools.mvel.parser.GeneratedMvelParserConstants.VOLATILE;
 import static org.drools.mvel.parser.GeneratedMvelParserConstants.WHILE;
 import static org.drools.mvel.parser.GeneratedMvelParserConstants.WINDOWS_EOL;
-import static org.drools.mvel.parser.GeneratedMvelParserConstants.WINDOWS_EOL_SKIPPED;
 import static org.drools.mvel.parser.GeneratedMvelParserConstants.WITH;
 import static org.drools.mvel.parser.GeneratedMvelParserConstants.XOR;
 import static org.drools.mvel.parser.GeneratedMvelParserConstants.XORASSIGN;
@@ -268,8 +266,6 @@ public class TokenTypes {
                 return JavaToken.Category.KEYWORD;
             case WINDOWS_EOL:
             case UNIX_EOL:
-            case WINDOWS_EOL_SKIPPED:
-            case UNIX_EOL_SKIPPED:
             case OLD_MAC_EOL:
                 return JavaToken.Category.EOL;
             case EOF:

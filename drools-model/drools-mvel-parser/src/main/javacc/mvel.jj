@@ -91,6 +91,12 @@ import static org.drools.mvel.parser.GeneratedMvelParserTokenManagerBase.*;
 
 @Generated("JavaCC")
 public final class GeneratedMvelParser extends GeneratedMvelParserBase {
+    private boolean optionalSemicolon = true;
+
+    public void setOptionalSemicolon(boolean optionalSemicolon) {
+        this.optionalSemicolon = optionalSemicolon;
+    }
+
     /* Returns the JavaParser specific token type of the last matched token */
     JavaToken token() {
         if(token.toString() == null) {
@@ -125,19 +131,17 @@ PARSER_END(GeneratedMvelParser)
 
 /* WHITE SPACE */
 
-<NEWLINES_SKIPPED>
-SPECIAL_TOKEN :
-{
-<UNIX_EOL_SKIPPED: "\n">
-| <WINDOWS_EOL_SKIPPED : "\r\n">
-}
-
-<DEFAULT, NEWLINES_SKIPPED>
 SPECIAL_TOKEN :
 {
   <SPACE: [" ", "\t", "\f", "\u0085", "\u00A0", "\u1680", "\u180e", "\u2000", "\u2001", "\u2002", "\u2003", "\u2004", "\u2005",
       "\u2006", "\u2007", "\u2008", "\u2009", "\u200a", "\u200b", "\u200c", "\u200d", "\u2028", "\u2029", "\u202f", "\u205f", "\u2060", "\u3000", "\ufeff"]>
 | <OLD_MAC_EOL: "\r">
+}
+
+SPECIAL_TOKEN :
+{
+<UNIX_EOL: "\n">
+| <WINDOWS_EOL : "\r\n">
 }
 
 TOKEN_MGR_DECLS :
@@ -147,16 +151,6 @@ TOKEN_MGR_DECLS :
     private JavaToken homeToken;
     private Stack<Token> tokenWorkStack = new Stack<Token>();
     private boolean storeTokens;
-    private int defaultState = DEFAULT;
-
-    void switchToDefaultState() {
-        SwitchTo(defaultState);
-    }
-
-    void setDefaultState(int defaultState) {
-        this.defaultState = defaultState;
-        SwitchTo(defaultState);
-    }
 
     void reset() {
         tokens = new ArrayList<JavaToken>();
@@ -217,13 +211,11 @@ TOKEN_MGR_DECLS :
 
 /* COMMENTS */
 
-<DEFAULT, NEWLINES_SKIPPED>
 SPECIAL_TOKEN :
 {
   <SINGLE_LINE_COMMENT: "//" (~["\n","\r"])* >
 }
 
-<DEFAULT, NEWLINES_SKIPPED>
 MORE :
 {
   <ENTER_JAVADOC_COMMENT: "/**" ~["/"]> { input_stream.backup(1); } : IN_JAVADOC_COMMENT
@@ -234,13 +226,13 @@ MORE :
 <IN_JAVADOC_COMMENT>
 SPECIAL_TOKEN :
 {
-  <JAVADOC_COMMENT: "*/" > { switchToDefaultState(); }
+  <JAVADOC_COMMENT: "*/" > : DEFAULT
 }
 
 <IN_MULTI_LINE_COMMENT>
 SPECIAL_TOKEN :
 {
-  <MULTI_LINE_COMMENT: "*/" >  { switchToDefaultState(); }
+  <MULTI_LINE_COMMENT: "*/" > : DEFAULT
 }
 
 <IN_JAVADOC_COMMENT, IN_MULTI_LINE_COMMENT>
@@ -251,7 +243,6 @@ MORE :
 
 /* RESERVED WORDS AND LITERALS */
 
-<DEFAULT, NEWLINES_SKIPPED>
 TOKEN :
 {
   < ABSTRACT: "abstract" >
@@ -328,16 +319,8 @@ TOKEN :
 | < EXCL_DOT: "!." >
 }
 
-<DEFAULT>
-SPECIAL_TOKEN :
-{
-<UNIX_EOL: "\n"> { System.out.println("NEWLINESSS"); }
-| <WINDOWS_EOL : "\r\n">
-}
-
 /* LITERALS */
 
-<DEFAULT, NEWLINES_SKIPPED>
 TOKEN :
 {
   < LONG_LITERAL:
@@ -437,7 +420,6 @@ TOKEN :
 
 /* IDENTIFIERS */
 
-<DEFAULT, NEWLINES_SKIPPED>
 TOKEN :
 {
   < IDENTIFIER: <LETTER> (<PART_LETTER>)* >
@@ -604,7 +586,6 @@ TOKEN :
 
 /* SEPARATORS */
 
-<DEFAULT, NEWLINES_SKIPPED>
 TOKEN :
 {
   < LPAREN: "(" >
@@ -621,7 +602,6 @@ TOKEN :
 
 /* OPERATORS */
 
-<DEFAULT, NEWLINES_SKIPPED>
 TOKEN :
 {
   < ASSIGN: "=" >
@@ -664,7 +644,6 @@ TOKEN :
 }
 
 /* >'s need special attention due to generics syntax. */
-<DEFAULT, NEWLINES_SKIPPED>
 TOKEN :
 {
   < RUNSIGNEDSHIFT: ">>>" >
@@ -682,7 +661,6 @@ TOKEN :
 | < GT: ">" >
 }
 
-<DEFAULT, NEWLINES_SKIPPED>
 TOKEN: { <CTRL_Z: "\u001A" /** ctrl+z char **/> }
 
 /*****************************************
@@ -1524,7 +1502,7 @@ Expression ConditionalOrExpression():
 }
 {
   ret = ConditionalAndExpression()
-  ( "||" (EOL())* right = ConditionalAndExpression() { ret = new BinaryExpr(range(ret, token()), ret, right, BinaryExpr.Operator.OR); } )*
+  ( "||"  right = ConditionalAndExpression() { ret = new BinaryExpr(range(ret, token()), ret, right, BinaryExpr.Operator.OR); } )*
   { return ret; }
 }
 
@@ -1534,7 +1512,7 @@ Expression ConditionalAndExpression():
 	Expression right;
 }
 {
-  ret = InclusiveOrExpression() ( "&&" (EOL())* right = InclusiveOrExpression() { ret = new BinaryExpr(range(ret, token()), ret, right, BinaryExpr.Operator.AND); } )*
+  ret = InclusiveOrExpression() ( "&&"  right = InclusiveOrExpression() { ret = new BinaryExpr(range(ret, token()), ret, right, BinaryExpr.Operator.AND); } )*
   { return ret; }
 }
 
@@ -1680,7 +1658,6 @@ Expression UnaryExpression():
 	  ( "+" { op = UnaryExpr.Operator.PLUS; begin=token();} |
 	    "-" { op = UnaryExpr.Operator.MINUS; begin=token();}
 	  ) ret = UnaryExpression()
-	  (EOL())*
 	  {
         ret = new UnaryExpr(range(begin, token()), ret, op);
 	  }
@@ -2103,10 +2080,8 @@ NodeList<Expression> ArgumentList():
 	Expression expr;
 }
 {
-  (EOL())*
   expr = Expression() { ret.add(expr); }
-  (EOL())*
-  ( "," (EOL())* expr = Expression() { ret.add(expr); } )*
+  ( ","  expr = Expression() { ret.add(expr); } )*
   { return ret; }
 }
 
@@ -2305,7 +2280,7 @@ VariableDeclarationExpr VariableDeclarationExpression():
 EmptyStmt EmptyStatement():
 {}
 {
-    (";"|EOL())
+    ";"
     { return new EmptyStmt(tokenRange()); }
 }
 
@@ -2649,7 +2624,7 @@ ModifyStatement ModifyStatement():
             <MODIFY><LPAREN> (modifyObject = UnaryExpressionNotPlusMinus())<RPAREN> <LBRACE>
             (first = Statement()(EOS()))* { begin=token(); all.add(first); }
             (
-                          (<COMMA>)*(EOL())*
+                          (<COMMA>)*
                           other = Statement() { all.add(other); }
             )*
             <RBRACE>
@@ -2677,7 +2652,7 @@ WithStatement WithStatement():
             <WITH><LPAREN> (withObject = Expression())<RPAREN> <LBRACE>
             (first = Statement()(EOS()))* { begin=token(); all.add(first); }
             (
-                          (<COMMA>|EOL())
+                          <COMMA>
                           other = Statement() { all.add(other); }
             )*
             <RBRACE>
@@ -3394,16 +3369,9 @@ TemporalLiteralChunkExpr TemporalLiteralChunk():
   { return ret; }
 }
 
-void EOL():
-{
-}
-{
-    "%%%"//<UNIX_EOL>|<WINDOWS_EOL>
-}
-
 void EOS():
 {
 }
 {
-   (<SEMICOLON>)* | ( LOOKAHEAD( { getToken(1).specialToken.kind == UNIX_EOL ||  getToken(1).specialToken.kind == WINDOWS_EOL } ) {} )
+   (<SEMICOLON>)* | ( LOOKAHEAD( { this.optionalSemicolon && getToken(1).specialToken.kind == UNIX_EOL ||  getToken(1).specialToken.kind == WINDOWS_EOL } ) {} )
 }

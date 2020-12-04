@@ -105,7 +105,6 @@ public class DroolsMvelParserTest {
         assertEquals("(addresses == 2 && addresses == 3)", printConstraint(and));
     }
 
-    @Test(expected = ParseProblemException.class)
     public void testBinaryWithNewLineBeginning() {
         Expression or = parseExpression(parser, "(" + newLine() + "addresses == 2 || addresses == 3  )").getExpr();
         assertEquals("(addresses == 2 || addresses == 3)", printConstraint(or));
@@ -114,7 +113,6 @@ public class DroolsMvelParserTest {
         assertEquals("(addresses == 2 && addresses == 3)", printConstraint(and));
     }
 
-    @Test(expected = ParseProblemException.class)
     public void testBinaryWithNewLineEnd() {
         Expression or = parseExpression(parser, "(addresses == 2 || addresses == 3 " + newLine() + ")").getExpr();
         assertEquals("(addresses == 2 || addresses == 3)", printConstraint(or));
@@ -131,7 +129,7 @@ public class DroolsMvelParserTest {
         assertEquals("(addresses == 2 && addresses == 3)", printConstraint(and2));
 
         String orExpr = "(addresses == 2" + newLine() + "|| addresses == 3  )";
-        MvelParser mvelParser2 = new MvelParser(new ParserConfiguration(), true);
+        MvelParser mvelParser2 = new MvelParser(new ParserConfiguration(), false);
         Expression or2 = mvelParser2.parse(GeneratedMvelParser::Expression, new StringProvider(orExpr)).getResult().get();
         assertEquals("(addresses == 2 || addresses == 3)", printConstraint(or2));
     }
