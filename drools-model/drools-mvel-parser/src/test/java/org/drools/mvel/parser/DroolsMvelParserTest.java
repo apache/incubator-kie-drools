@@ -821,8 +821,6 @@ public class DroolsMvelParserTest {
 
         BlockStmt expression = MvelParser.parseBlock(expr);
         assertEquals("{" + newLine() +
-                             "    ;" + newLine() +
-                             "    ;" + newLine() +
                              "    setAge(47);" + newLine() +
                              "}", printConstraint(expression));
     }

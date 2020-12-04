@@ -92,6 +92,7 @@ import static org.drools.mvel.parser.GeneratedMvelParserTokenManagerBase.*;
 @Generated("JavaCC")
 public final class GeneratedMvelParser extends GeneratedMvelParserBase {
     private boolean optionalSemicolon = true;
+    private boolean isWithOrModify = false;
 
     public void setOptionalSemicolon(boolean optionalSemicolon) {
         this.optionalSemicolon = optionalSemicolon;
@@ -2619,10 +2620,11 @@ ModifyStatement ModifyStatement():
     Expression modifyObject = null;
 }
 {
+    { this.isWithOrModify = true; }
     (
         (
             <MODIFY><LPAREN> (modifyObject = UnaryExpressionNotPlusMinus())<RPAREN> <LBRACE>
-            (first = Statement()(";")*)* { begin=token(); all.add(first); }
+            (first = Statement()(";")?)* { begin=token(); all.add(first); }
             (
                           (<COMMA>)*
                           other = Statement() { all.add(other); }
@@ -2630,6 +2632,7 @@ ModifyStatement ModifyStatement():
             <RBRACE>
             (<SEMICOLON>)?
             {
+                this.isWithOrModify = false;
                 return new ModifyStatement(range(begin, token()), modifyObject, all);
             }
 
@@ -2647,6 +2650,7 @@ WithStatement WithStatement():
     Expression withObject = null;
 }
 {
+    { this.isWithOrModify = true; }
     (
         (
             <WITH><LPAREN> (withObject = Expression())<RPAREN> <LBRACE>
@@ -2656,8 +2660,9 @@ WithStatement WithStatement():
                           other = Statement() { all.add(other); }
             )*
             <RBRACE>
-            (EOS())
+            (";")?
             {
+                this.isWithOrModify = false;
                 return new WithStatement(range(begin, token()), withObject, all);
             }
 
@@ -3373,8 +3378,16 @@ void EOS():
 {
 }
 {
-   <SEMICOLON>
-   | LOOKAHEAD("}") {}
-   | LOOKAHEAD( { this.optionalSemicolon && ( getToken(1).specialToken != null &&
-                    ( getToken(1).specialToken.kind == UNIX_EOL ||  getToken(1).specialToken.kind == WINDOWS_EOL ) ) } ) {}
+   <SEMICOLON> | AutoEOS()
+}
+
+void AutoEOS():
+{
+}
+{
+    LOOKAHEAD( { this.optionalSemicolon && (
+                    ( getToken(1).kind == RBRACE ) ||
+                    ( this.isWithOrModify && getToken(1).kind == COMMA ) ||
+                    ( getToken(1).specialToken != null &&
+                        ( getToken(1).specialToken.kind == UNIX_EOL ||  getToken(1).specialToken.kind == WINDOWS_EOL ) ) ) } ) {}
 }
