@@ -18,6 +18,7 @@ package org.drools.core.event;
 
 import java.util.List;
 
+import org.kie.api.event.process.MessageEvent;
 import org.kie.api.event.process.ProcessCompletedEvent;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.process.ProcessNodeLeftEvent;
@@ -25,6 +26,7 @@ import org.kie.api.event.process.ProcessNodeTriggeredEvent;
 import org.kie.api.event.process.ProcessStartedEvent;
 import org.kie.api.event.process.ProcessVariableChangedEvent;
 import org.kie.api.event.process.SLAViolatedEvent;
+import org.kie.api.event.process.SignalEvent;
 import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.ProcessInstance;
@@ -140,6 +142,29 @@ public class ProcessEventSupport extends AbstractEventSupport<ProcessEventListen
         if ( hasListeners() ) {
             final SLAViolatedEvent event = new SLAViolatedEventImpl(instance, nodeInstance, kruntime);
             notifyAllListeners( event, ( l, e ) -> l.afterSLAViolated( e ) );
+        }
+    }
+
+    public void fireOnSignal(final ProcessInstance instance,
+                             NodeInstance nodeInstance,
+                             KieRuntime kruntime,
+                             String signalName,
+                             Object signalObject) {
+        if (hasListeners()) {
+            final SignalEvent event = new SignalEventImpl(instance, kruntime, nodeInstance, signalName, signalObject);
+            notifyAllListeners(event, ProcessEventListener::onSignal);
+        }
+    }
+
+    public void fireOnMessage(final ProcessInstance instance,
+                              NodeInstance nodeInstance,
+                              KieRuntime kruntime,
+                              String messageName,
+                              Object messageObject) {
+        if (hasListeners()) {
+            final MessageEvent event = new MessageEventImpl(instance, kruntime, nodeInstance, messageName,
+                    messageObject);
+            notifyAllListeners(event, ProcessEventListener::onMessage);
         }
     }
 
