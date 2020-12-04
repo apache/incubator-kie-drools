@@ -137,15 +137,6 @@ public class DrlxParseUtil {
         return Operator.valueOf(operator.name());
     }
 
-    public static TypedExpression nameExprToMethodCallExprWithCast(String name, java.lang.reflect.Type type, Expression scope, Type castType) {
-        TypedExpression typedExpression = nameExprToMethodCallExpr(name, type, scope);
-        if(typedExpression != null) {
-            return typedExpression.cloneWithNewExpression(new EnclosedExpr(new CastExpr(castType, typedExpression.getExpression())));
-        } else {
-            return null;
-        }
-    }
-
     public static TypedExpression nameExprToMethodCallExpr(String name, java.lang.reflect.Type type, Expression scope) {
         if (type == null) {
             return null;
