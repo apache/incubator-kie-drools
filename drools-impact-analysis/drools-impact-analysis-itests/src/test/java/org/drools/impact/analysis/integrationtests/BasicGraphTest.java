@@ -216,4 +216,36 @@ public class BasicGraphTest extends AbstractGraphTest {
         GraphImageGenerator generator = new GraphImageGenerator("blackBox");
         generator.generatePng(graph);
     }
+
+    @Test
+    public void testInsertDelete() {
+        String str =
+                "package mypkg;\n" +
+                     "import " + Person.class.getCanonicalName() + ";" +
+                     "import " + Address.class.getCanonicalName() + ";" +
+                     "rule R1 when\n" +
+                     "  $p : Person()\n" +
+                     "then\n" +
+                     "  insert(new Address());" +
+                     "end\n" +
+                     "rule R2 when\n" +
+                     "  $p : Person()\n" +
+                     "  $a : Address()\n" +
+                     "then\n" +
+                     "  delete($p);" +
+                     "end\n";
+
+        AnalysisModel analysisModel = new ModelBuilder().build(str);
+        //System.out.println(analysisModel);
+
+        ModelToGraphConverter converter = new ModelToGraphConverter();
+        Graph graph = converter.toGraph(analysisModel);
+
+        assertNodeLink(graph, "mypkg.R1", "mypkg.R2", Link.Type.POSITIVE);
+        assertNodeLink(graph, "mypkg.R2", "mypkg.R1", Link.Type.NEGATIVE);
+        assertNodeLink(graph, "mypkg.R2", "mypkg.R2", Link.Type.NEGATIVE);
+
+        GraphImageGenerator generator = new GraphImageGenerator("insert-delete");
+        generator.generatePng(graph);
+    }
 }
