@@ -209,7 +209,7 @@ pipeline {
                         maven.mvnVersionsSet(getMavenCommand(), nextSnapshotVersion, true)
                         maven.mvnSetVersionProperty(getMavenCommand(), 'version.org.kie.kogito', getNextMicroSnapshotVersion(getKogitoVersion()))
 
-                        String prLink = commitAndCreatePR("Update snapshot version to ${nextMicroSnapshotVersion}")
+                        String prLink = commitAndCreatePR("[${getBuildBranch()}] Update snapshot version to ${nextMicroSnapshotVersion}")
                         setPipelinePrLink(optaplannerRepository, prLink)
                     }
                     dir(optaplannerRepository) {
@@ -232,7 +232,7 @@ pipeline {
                         prepareForPR(vehicleRoutingRepository)
                         maven.mvnVersionsUpdateParentAndChildModules(nextMicroSnapshotVersion, true)
                         
-                        String prLink = commitAndCreatePR("Update snapshot version to ${nextMicroSnapshotVersion}")
+                        String prLink = commitAndCreatePR("[${getBuildBranch()}] Update snapshot version to ${nextMicroSnapshotVersion}")
                         setPipelinePrLink(vehicleRoutingRepository, prLink)
                     }
                     dir(vehicleRoutingRepository) {
@@ -255,7 +255,7 @@ pipeline {
                         prepareForPR(employeeRosteringRepository)
                         maven.mvnVersionsUpdateParentAndChildModules(nextMicroSnapshotVersion, true)
                         
-                        String prLink = commitAndCreatePR("Update snapshot version to ${nextMicroSnapshotVersion}")
+                        String prLink = commitAndCreatePR("[${getBuildBranch()}] Update snapshot version to ${nextMicroSnapshotVersion}")
                         setPipelinePrLink(employeeRosteringRepository, prLink)
                     }
                     dir(employeeRosteringRepository) {
