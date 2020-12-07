@@ -1,6 +1,8 @@
 import org.jenkinsci.plugins.workflow.libs.Library
 @Library('jenkins-pipeline-shared-libraries')_
 
+import org.kie.jenkins.MavenCommand
+
 deployProperties = [:]
 pipelineProperties = [:]
 
@@ -33,6 +35,7 @@ pipeline {
         string(name: 'GIT_AUTHOR', defaultValue: '', description: 'Override `deployment.properties`. Which Git author repository ?')
 
         // Build&Deploy information for next snapshots
+        string(name: 'MAVEN_SETTINGS_CONFIG_FILE_ID', defaultValue: 'kogito_release_settings', description: 'Maven settings configfile to use in pipeline for Maven commands')
         string(name: 'MAVEN_DEPENDENCIES_REPOSITORY', defaultValue: '', description: 'Maven repository where to find dependencies if those are not in the default Jboss repository.')
         string(name: 'MAVEN_DEPLOY_REPOSITORY', defaultValue: '', description: 'Specify a Maven repository to deploy the artifacts.')
         
@@ -77,27 +80,6 @@ pipeline {
                     }
 
                     installGithubCLI()
-                }
-            }
-        }
-
-        stage('Setup global Maven arguments') {
-            when {
-                expression { return isRelease() }
-            }
-            steps{
-                script {
-                    if (isSpecificMavenConfig()) {
-                        echo 'Setup Maven release config'
-                        configFileProvider([configFile(fileId: maven.getSubmarineSettingsXmlId(), targetLocation: 'maven-settings.xml', variable: 'MAVEN_SETTINGS_FILE')]){
-                            // expose the temp file via a global environment variable for other stages
-                            env.GLOBAL_MAVEN_ARGS = "-B -s ${MAVEN_SETTINGS_FILE} -Denforcer.skip=true"
-
-                            sh "sed -i 's|<repositories>|<repositories><repository><id>staging</id><name>Staging Repository</name><url>${params.MAVEN_DEPENDENCIES_REPOSITORY}</url><layout>default</layout><snapshots><enabled>true</enabled></snapshots><releases><enabled>true</enabled></releases></repository>|g' ${MAVEN_SETTINGS_FILE}"
-                            sh "sed -i 's|<pluginRepositories>|<pluginRepositories><pluginRepository><id>staging</id><name>Staging Repository</name><url>${params.MAVEN_DEPENDENCIES_REPOSITORY}</url><layout>default</layout><snapshots><enabled>true</enabled></snapshots><releases><enabled>true</enabled></releases></pluginRepository>|g' ${MAVEN_SETTINGS_FILE}"
-                            sh "sed -i 's|external:\\*|external:*,!staging|g' ${MAVEN_SETTINGS_FILE}" // Done to allow Maven to download release artifacts from MAVEN_DEPENDENCIES_REPOSITORY
-                        }
-                    }
                 }
             }
         }
@@ -153,10 +135,8 @@ pipeline {
             }
             steps {
                 script {
-                    dir(optaplannerRepository) {
-                        mavenCleanInstall(true, [], '-Dfull')
-                        uploadDistribution()
-                    }
+                    getMavenCommand().inDirectory(optaplannerRepository).skipTests(true).withProperty('full').run('clean install')
+                    uploadDistribution(optaplannerRepository)
                 }
             }
         }
@@ -167,10 +147,8 @@ pipeline {
             }
             steps {
                 script {
-                    dir(vehicleRoutingRepository) {
-                        mavenCleanInstall(true)
-                        uploadDistribution()
-                    }
+                    getMavenCommand().inDirectory(vehicleRoutingRepository).skipTests(true).run('clean install')
+                    uploadDistribution(vehicleRoutingRepository)
                 }
             }
         }
@@ -181,10 +159,8 @@ pipeline {
             }
             steps {
                 script {
-                    dir(employeeRosteringRepository) {
-                        mavenCleanInstall(true)
-                        uploadDistribution()
-                    }
+                    getMavenCommand().inDirectory(employeeRosteringRepository).skipTests(true).run('clean install')
+                    uploadDistribution(employeeRosteringRepository)
                 }
             }
         }
@@ -209,8 +185,7 @@ pipeline {
                         sh "cp $optaplannerRoot/optaplanner-benchmark/target/classes/benchmark.xsd xsd/benchmark/benchmark-8.xsd"
 
                         // Add changed files, commit, open and merge PR
-                        sh 'git add xsd/\\*.xsd _config/pom.yml'
-                        prLink = commitAndCreatePR("Release OptaPlanner ${getProjectVersion()}", prBranchName, 'master')
+                        prLink = commitAndCreatePR("Release OptaPlanner ${getProjectVersion()}", { sh 'git add xsd/\\*.xsd _config/pom.yml' }, prBranchName, 'master')
                     }
                     dir(websiteRepository) {
                         checkoutRepo(websiteRepository, 'master')
@@ -228,19 +203,19 @@ pipeline {
                 script {
                     String nextMicroSnapshotVersion = getNextMicroSnapshotVersion(getProjectVersion())
 
-                    dir("$optaplannerRepository-bot") {
+                    dir("${optaplannerRepository}-bot") {
                         prepareForPR(optaplannerRepository)
-                        maven.mvnVersionsSet(nextMicroSnapshotVersion, true)
-                        updateKogitoVersion(getNextMicroSnapshotVersion(getKogitoVersion()))
+                        String nextSnapshotVersion = getNextMicroSnapshotVersion(getProjectVersion())
+                        maven.mvnVersionsSet(getMavenCommand(), nextSnapshotVersion, true)
+                        maven.mvnSetVersionProperty(getMavenCommand(), 'version.org.kie.kogito', getNextMicroSnapshotVersion(getKogitoVersion()))
 
-                        addNotIgnoredPoms()
                         String prLink = commitAndCreatePR("Update snapshot version to ${nextMicroSnapshotVersion}")
                         setPipelinePrLink(optaplannerRepository, prLink)
                     }
                     dir(optaplannerRepository) {
                         sh "git checkout ${getBuildBranch()}"
                         mergeAndPush(getPipelinePrLink(optaplannerRepository))
-                        deployArtifacts()
+                        runMavenDeploy(getMavenCommand())
                     }
                 }
             }
@@ -256,13 +231,14 @@ pipeline {
                     dir("$vehicleRoutingRepository-bot") {
                         prepareForPR(vehicleRoutingRepository)
                         maven.mvnVersionsUpdateParentAndChildModules(nextMicroSnapshotVersion, true)
-                        addNotIgnoredPoms()
+                        
                         String prLink = commitAndCreatePR("Update snapshot version to ${nextMicroSnapshotVersion}")
                         setPipelinePrLink(vehicleRoutingRepository, prLink)
                     }
                     dir(vehicleRoutingRepository) {
                         sh "git checkout ${getBuildBranch()}"
                         mergeAndPush(getPipelinePrLink(vehicleRoutingRepository))
+                        runMavenDeploy(getMavenCommand())
                     }
                 }
             }
@@ -278,13 +254,14 @@ pipeline {
                     dir("$employeeRosteringRepository-bot") {
                         prepareForPR(employeeRosteringRepository)
                         maven.mvnVersionsUpdateParentAndChildModules(nextMicroSnapshotVersion, true)
-                        addNotIgnoredPoms()
+                        
                         String prLink = commitAndCreatePR("Update snapshot version to ${nextMicroSnapshotVersion}")
                         setPipelinePrLink(employeeRosteringRepository, prLink)
                     }
                     dir(employeeRosteringRepository) {
                         sh "git checkout ${getBuildBranch()}"
                         mergeAndPush(getPipelinePrLink(employeeRosteringRepository))
+                        runMavenDeploy(getMavenCommand())
                     }
                 }
             }
@@ -435,30 +412,16 @@ void prepareForPR(String repo) {
     githubscm.createBranch(getSnapshotBranch())
 }
 
-void addNotIgnoredPoms() {
-    // based on https://stackoverflow.com/a/59888964/8811872
-    sh '''
-    find . -type f -name 'pom.xml' > found_poms.txt
-    poms_to_add=""
-    while IFS= read -r pom; do
-        if ! git check-ignore -q "\$pom"; then
-            poms_to_add="\$poms_to_add \$pom"
-        fi
-    done < found_poms.txt
-    rm found_poms.txt
-    git add \$poms_to_add
-    '''
-}
-
-void commitAndCreatePR(String commitMsg, String localBranch, String targetBranch) {
+String commitAndCreatePR(String commitMsg, Closure precommit, String localBranch, String targetBranch) {
     def prBody = "Generated by build ${BUILD_TAG}: ${BUILD_URL}"
-    sh "git commit -m '${commitMsg}'"
+    
+    githubscm.commitChanges(commitMsg, precommit)
     githubscm.pushObject('origin', localBranch, getBotAuthorCredsID())
     return githubscm.createPR(commitMsg, prBody, targetBranch, getBotAuthorCredsID())
 }
 
-void commitAndCreatePR(String commitMsg) {
-    commitAndCreatePR(commitMsg, getSnapshotBranch(), getBuildBranch())
+String commitAndCreatePR(String commitMsg) {
+    return commitAndCreatePR(commitMsg, { githubscm.findAndStageNotIgnoredFiles('pom.xml') }, getSnapshotBranch(), getBuildBranch())
 }
 
 String createWebsitePrBranch(String websiteRepository) {
@@ -478,50 +441,31 @@ void installGithubCLI() {
     """
 }
 
-void updateKogitoVersion(String newVersion) {
-    maven.mvnSetVersionProperty('version.org.kie.kogito', newVersion)
-}
-
-boolean isSpecificMavenConfig() {
-    return params.MAVEN_DEPENDENCIES_REPOSITORY != ''
-}
-
-void deployArtifacts() {
-    def mvnCmd = 'clean deploy'
-    if (params.MAVEN_DEPLOY_REPOSITORY) {
-        mvnCmd += " -DaltDeploymentRepository=runtimes-artifacts::default::${params.MAVEN_DEPLOY_REPOSITORY} -Denforcer.skip=true"
-    }
-
-    if (isSpecificMavenConfig()) {
-        runMaven(mvnCmd, true)
-    } else {
-        maven.runMavenWithSubmarineSettings(mvnCmd, true)
+void uploadDistribution(String directory) {
+    dir(directory) {
+        echo "uploadDistribution for ${directory}"
+        withCredentials(bindings: [sshUserPrivateKey(credentialsId: 'optaplanner-filemgmt',
+                keyFileVariable: 'SSH_KEY_JBOSS_FILEMGMT')]) {
+            // For testing, simulate connection via SSH:
+            // sh "ssh -i $SSH_KEY_JBOSS_FILEMGMT -oKexAlgorithms=+diffie-hellman-group1-sha1 optaplanner@filemgmt.jboss.org"
+            sh "./build/release/upload_distribution.sh ${getProjectVersion()} $SSH_KEY_JBOSS_FILEMGMT"
+        }
     }
 }
 
-void mavenCleanInstall(boolean skipTests = false, List profiles = [], String extraArgs = '') {
-    runMaven('clean install', skipTests, profiles, extraArgs)
+MavenCommand getMavenCommand() {
+    mvnCmd = new MavenCommand(this, ['-fae'])
+                    .withSettingsXmlId(params.MAVEN_SETTINGS_CONFIG_FILE_ID)
+    if (params.MAVEN_DEPENDENCIES_REPOSITORY) {
+        mvnCmd.withDependencyRepositoryInSettings('deps-repo', params.MAVEN_DEPENDENCIES_REPOSITORY)
+    }
+    return mvnCmd
 }
 
-void runMaven(String goals, boolean skipTests = false, List profiles = [], String extraArgs = '') {
-    mvnCmd = goals
-    if(!profiles.isEmpty()){
-        mvnCmd += " -P${profiles.join(',')}"
+void runMavenDeploy(MavenCommand mvnCmd) {
+    mvnCmd = mvnCmd.clone()
+    if(params.MAVEN_DEPLOY_REPOSITORY){
+        mvnCmd.withDeployRepository(params.MAVEN_DEPLOY_REPOSITORY)
     }
-    if (env.GLOBAL_MAVEN_ARGS != '') {
-        mvnCmd += " ${env.GLOBAL_MAVEN_ARGS}"
-    }
-    if(extraArgs != ''){
-        mvnCmd += " ${extraArgs}"
-    }
-    maven.runMaven(mvnCmd, skipTests, ['-fae'])
-}
-
-void uploadDistribution() {
-    withCredentials(bindings: [sshUserPrivateKey(credentialsId: 'optaplanner-filemgmt',
-            keyFileVariable: 'SSH_KEY_JBOSS_FILEMGMT')]) {
-        // For testing, simulate connection via SSH:
-        // sh "ssh -i $SSH_KEY_JBOSS_FILEMGMT -oKexAlgorithms=+diffie-hellman-group1-sha1 optaplanner@filemgmt.jboss.org"
-        sh "./build/release/upload_distribution.sh ${getProjectVersion()} $SSH_KEY_JBOSS_FILEMGMT"
-    }
+    mvnCmd.skipTests(true).run('clean deploy')
 }

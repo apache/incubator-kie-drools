@@ -1,6 +1,15 @@
+import org.jenkinsci.plugins.workflow.libs.Library
 @Library('jenkins-pipeline-shared-libraries')_
 
+import org.kie.jenkins.MavenCommand
+import org.kie.jenkins.MavenStagingHelper
+
 deployProperties = [:]
+
+optaplannerRepository = 'optaplanner'
+quickstartsRepository = 'optaplanner-quickstarts'
+vehicleRoutingRepository = 'optaweb-vehicle-routing'
+employeeRosteringRepository = 'optaweb-employee-rostering'
 
 pipeline {
     agent {
@@ -27,6 +36,7 @@ pipeline {
         // Build&test information
         string(name: 'MAVEN_DEPENDENCIES_REPOSITORY', defaultValue: '', description: 'Maven repository where to find dependencies if those are not in the default JBoss repository.')
         booleanParam(name: 'SKIP_TESTS', defaultValue: false, description: 'Skip tests')
+        string(name: 'MAVEN_SETTINGS_CONFIG_FILE_ID', defaultValue: 'kogito_release_settings', description: 'Maven settings configfile to use in pipeline for Maven commands')
 
         // Deploy information
         string(name: 'MAVEN_DEPLOY_REPOSITORY', defaultValue: '', description: 'Specify a Maven repository to deploy the artifacts.')
@@ -35,6 +45,12 @@ pipeline {
         booleanParam(name: 'RELEASE', defaultValue: false, description: 'Is this build for a release?')
         string(name: 'PROJECT_VERSION', defaultValue: '', description: 'Optional if not RELEASE. If RELEASE, cannot be empty.')
         string(name: 'KOGITO_VERSION', defaultValue: '', description: 'Optional if not RELEASE. If RELEASE, cannot be empty.')
+        
+        // Nexus staging default parameters
+        string(name: 'NEXUS_RELEASE_URL', defaultValue: 'https://repository.jboss.org/nexus', description: 'Nexus URL for release staging')
+        string(name: 'NEXUS_RELEASE_REPOSITORY_ID', defaultValue: 'jboss-releases-repository', description: 'Nexus Release repository ID for staging')
+        string(name: 'NEXUS_STAGING_PROFILE_ID', defaultValue: '2161b7b8da0080', description: 'Nexus staging profile ID for release process ')
+        string(name: 'NEXUS_BUILD_PROMOTION_PROFILE_ID', defaultValue: 'ea49ccd6f174', description: 'Nexus Build Promotion profile ID for release process')
 
         // Bot author information. Set as params for easy testing.
         string(name: 'GIT_AUTHOR_BOT', defaultValue: 'bsig-gh-bot', description: 'From which author should the PR be created ?')
@@ -45,6 +61,9 @@ pipeline {
         MAVEN_OPTS = '-Xms1024m -Xmx4g'
 
         BOT_BRANCH_HASH = "${util.generateHash(10)}"
+
+        // Maven configuration
+        MAVEN_DEPLOY_LOCAL_DIR="${WORKSPACE}/maven_deploy_dir"
     }
 
     stages {
@@ -79,10 +98,10 @@ pipeline {
 
         stage('Clone repositories') {
             steps {
-                checkoutRepo('optaplanner', getBuildBranch())
-                checkoutRepo('optaplanner-quickstarts', getQuickStartsBranch())
-                checkoutRepo('optaweb-vehicle-routing', getBuildBranch())
-                checkoutRepo('optaweb-employee-rostering', getBuildBranch())
+                checkoutRepo(optaplannerRepository, getBuildBranch())
+                checkoutRepo(quickstartsRepository, getQuickStartsBranch())
+                checkoutRepo(vehicleRoutingRepository, getBuildBranch())
+                checkoutRepo(employeeRosteringRepository, getBuildBranch())
             }
         }
 
@@ -91,28 +110,9 @@ pipeline {
                 expression { return isRelease() }
             }
             steps {
-                prepareForPR('optaplanner')
-                prepareForPR('optaweb-vehicle-routing')
-                prepareForPR('optaweb-employee-rostering')
-            }
-        }
-
-        stage('Setup Maven config') {
-            steps {
-                script {
-                    configFileProvider([configFile(fileId: maven.getSubmarineSettingsXmlId(), targetLocation: 'maven-settings.xml', variable: 'MAVEN_SETTINGS_FILE')]) {
-                        // expose the temp file via a global environment variable for other stages
-                        env.GLOBAL_MAVEN_SETTINGS = "${MAVEN_SETTINGS_FILE}"
-                        sh "echo '\n-B -s ${MAVEN_SETTINGS_FILE}' | tee -a optaplanner/.mvn/maven.config"
-                        if (params.MAVEN_DEPENDENCIES_REPOSITORY != '') {
-                            sh "echo '\n-Denforcer.skip=true' | tee -a optaplanner/.mvn/maven.config"
-                            sh "sed -i 's|<repositories>|<repositories><repository><id>staging</id><name>Staging Repository</name><url>${params.MAVEN_DEPENDENCIES_REPOSITORY}</url><layout>default</layout><snapshots><enabled>true</enabled></snapshots><releases><enabled>true</enabled></releases></repository>|g' ${MAVEN_SETTINGS_FILE}"
-                            sh "sed -i 's|<pluginRepositories>|<pluginRepositories><pluginRepository><id>staging</id><name>Staging Repository</name><url>${params.MAVEN_DEPENDENCIES_REPOSITORY}</url><layout>default</layout><snapshots><enabled>true</enabled></snapshots><releases><enabled>true</enabled></releases></pluginRepository>|g' ${MAVEN_SETTINGS_FILE}"
-                            // Done to allow Maven to download release artifacts from the repository
-                            sh "sed -i 's|external:\\*|external:*,!staging|g' ${MAVEN_SETTINGS_FILE}"
-                        }
-                    }
-                }
+                prepareForPR(optaplannerRepository)
+                prepareForPR(vehicleRoutingRepository)
+                prepareForPR(employeeRosteringRepository)
             }
         }
 
@@ -122,30 +122,21 @@ pipeline {
             }
             steps {
                 script {
-                    mavenCleanInstallOptaPlannerParents('optaplanner')
-                    dir('optaplanner') {
-                        maven.mvnVersionsSet(getProjectVersion())
-                        updateKogitoVersion(getKogitoVersion())
-                    }
-                    mavenCleanInstallOptaPlannerParents('optaplanner')
-                    dir('optaweb-vehicle-routing') {
-                        maven.mvnVersionsUpdateParentAndChildModules(getProjectVersion())
-                    }
-                    dir('optaweb-employee-rostering') {
-                        maven.mvnVersionsUpdateParentAndChildModules(getProjectVersion())
-                    }
+                    maven.mvnVersionsSet(getOptaplannerMavenCommand(), getProjectVersion())
+                    maven.mvnSetVersionProperty(getOptaplannerMavenCommand(), 'version.org.kie.kogito', getKogitoVersion())
+
+                    mavenCleanInstallOptaPlannerParents()
+
+                    maven.mvnVersionsUpdateParentAndChildModules(getOptawebVehicleRoutingMavenCommand(), getProjectVersion())
+                    maven.mvnVersionsUpdateParentAndChildModules(getOptawebEmployeeRosteringMavenCommand(), getProjectVersion())
                 }
             }
         }
 
-        stage('Build optaplanner') {
+        stage('Build OptaPlanner') {
             steps {
                 script {
-                    String extraArgs = '-Dfull'
-                    if (params.MAVEN_DEPENDENCIES_REPOSITORY != '') {
-                        extraArgs = "$extraArgs -s ${env.GLOBAL_MAVEN_SETTINGS} -Denforcer.skip"
-                    }
-                    mavenCleanInstall('optaplanner', params.SKIP_TESTS, [], extraArgs)
+                    getOptaplannerMavenCommand().skipTests(params.SKIP_TESTS).run('clean install')
                 }
             }
             post {
@@ -155,10 +146,10 @@ pipeline {
             }
         }
 
-        stage('Build optaplanner-quickstarts') {
+        stage('Build Quickstarts') {
             steps {
                 script {
-                    mavenCleanInstall('optaplanner-quickstarts', params.SKIP_TESTS, [])
+                    getOptaplannerQuickstartsMavenCommand().skipTests(params.SKIP_TESTS).run('clean install')
                 }
             }
             post {
@@ -168,9 +159,11 @@ pipeline {
             }
         }
 
-        stage('Build optaweb-vehicle-routing') {
+        stage("Build Vehicle Routing") {
             steps {
-                mavenCleanInstall('optaweb-vehicle-routing', params.SKIP_TESTS, [], "-Denforcer.skip -s ${env.GLOBAL_MAVEN_SETTINGS}")
+                script {
+                    getOptawebVehicleRoutingMavenCommand().skipTests(params.SKIP_TESTS).run('clean install')
+                }
             }
             post {
                 always {
@@ -181,9 +174,11 @@ pipeline {
             }
         }
 
-        stage('Build optaweb-employee-rostering') {
+        stage("Build Employee Rostering") {
             steps {
-                mavenCleanInstall('optaweb-employee-rostering', params.SKIP_TESTS, [], "-Denforcer.skip -s ${env.GLOBAL_MAVEN_SETTINGS}")
+                script {
+                    getOptawebEmployeeRosteringMavenCommand().skipTests(params.SKIP_TESTS).run('clean install')
+                }
             }
             post {
                 always {
@@ -196,9 +191,11 @@ pipeline {
 
         stage('Deploy artifacts') {
             steps {
-                mavenDeploy('optaplanner', '-Dfull')
-                mavenDeploy('optaweb-vehicle-routing', "-s ${env.GLOBAL_MAVEN_SETTINGS}")
-                mavenDeploy('optaweb-employee-rostering', "-s ${env.GLOBAL_MAVEN_SETTINGS}")
+                script {
+                    deployMavenArtifacts(getOptaplannerMavenCommand(), optaplannerRepository)
+                    deployMavenArtifacts(getOptawebVehicleRoutingMavenCommand(), vehicleRoutingRepository)
+                    deployMavenArtifacts(getOptawebEmployeeRosteringMavenCommand(), employeeRosteringRepository)
+                }
             }
         }
 
@@ -207,27 +204,27 @@ pipeline {
                 expression { return isRelease() }
             }
             steps {
-                commitAndCreatePR('optaplanner')
-                commitAndCreatePRIgnoringNpmRegistry('optaweb-vehicle-routing')
-                commitAndCreatePRIgnoringNpmRegistry('optaweb-employee-rostering')
+                commitAndCreatePR(optaplannerRepository)
+                commitAndCreatePRIgnoringNpmRegistry(vehicleRoutingRepository)
+                commitAndCreatePRIgnoringNpmRegistry(employeeRosteringRepository)
             }
             post {
                 success {
                     script {
-                        setDeployPropertyIfNeeded('optaplanner.pr.source.uri', "https://github.com/${getBotAuthor()}/optaplanner")
-                        setDeployPropertyIfNeeded('optaplanner.pr.source.ref', getBotBranch())
-                        setDeployPropertyIfNeeded('optaplanner.pr.target.uri', "https://github.com/${getGitAuthor()}/optaplanner")
-                        setDeployPropertyIfNeeded('optaplanner.pr.target.ref', getBuildBranch())
+                        setDeployPropertyIfNeeded("${optaplannerRepository}.pr.source.uri", "https://github.com/${getBotAuthor()}/${optaplannerRepository}")
+                        setDeployPropertyIfNeeded("${optaplannerRepository}.pr.source.ref", getBotBranch())
+                        setDeployPropertyIfNeeded("${optaplannerRepository}.pr.target.uri", "https://github.com/${getGitAuthor()}/${optaplannerRepository}")
+                        setDeployPropertyIfNeeded("${optaplannerRepository}.pr.target.ref", getBuildBranch())
 
-                        setDeployPropertyIfNeeded('optaweb-vehicle-routing.pr.source.uri', "https://github.com/${getBotAuthor()}/optaweb-vehicle-routing")
-                        setDeployPropertyIfNeeded('optaweb-vehicle-routing.pr.source.ref', getBotBranch())
-                        setDeployPropertyIfNeeded('optaweb-vehicle-routing.pr.target.uri', "https://github.com/${getGitAuthor()}/optaweb-vehicle-routing")
-                        setDeployPropertyIfNeeded('optaweb-vehicle-routing.pr.target.ref', getBuildBranch())
+                        setDeployPropertyIfNeeded("${vehicleRoutingRepository}.pr.source.uri", "https://github.com/${getBotAuthor()}/${vehicleRoutingRepository}")
+                        setDeployPropertyIfNeeded("${vehicleRoutingRepository}.pr.source.ref", getBotBranch())
+                        setDeployPropertyIfNeeded("${vehicleRoutingRepository}.pr.target.uri", "https://github.com/${getGitAuthor()}/${vehicleRoutingRepository}")
+                        setDeployPropertyIfNeeded("${vehicleRoutingRepository}.pr.target.ref", getBuildBranch())
 
-                        setDeployPropertyIfNeeded('optaweb-employee-rostering.pr.source.uri', "https://github.com/${getBotAuthor()}/optaweb-employee-rostering")
-                        setDeployPropertyIfNeeded('optaweb-employee-rostering.pr.source.ref', getBotBranch())
-                        setDeployPropertyIfNeeded('optaweb-employee-rostering.pr.target.uri', "https://github.com/${getGitAuthor()}/optaweb-employee-rostering")
-                        setDeployPropertyIfNeeded('optaweb-employee-rostering.pr.target.ref', getBuildBranch())
+                        setDeployPropertyIfNeeded("${employeeRosteringRepository}.pr.source.uri", "https://github.com/${getBotAuthor()}/${employeeRosteringRepository}")
+                        setDeployPropertyIfNeeded("${employeeRosteringRepository}.pr.source.ref", getBotBranch())
+                        setDeployPropertyIfNeeded("${employeeRosteringRepository}.pr.target.uri", "https://github.com/${getGitAuthor()}/${employeeRosteringRepository}")
+                        setDeployPropertyIfNeeded("${employeeRosteringRepository}.pr.target.ref", getBuildBranch())
                     }
                 }
             }
@@ -265,13 +262,11 @@ void prepareForPR(String repo) {
 }
 
 void commitAndCreatePR(String repo) {
-    def commitMsg = "Update project version to ${getProjectVersion()} for release"
-    def prBody = "Generated by build ${BUILD_TAG}: ${BUILD_URL}.\nPlease do not merge, it will be merged automatically after testing."
-    // Not using githubscm.commitChanges() because globbing won't work.
-    // See: https://github.com/kiegroup/kogito-runtimes/pull/570#discussion_r449268738
     dir(repo) {
-        addNotIgnoredPoms()
-        sh "git commit -m '${commitMsg}'"
+        def commitMsg = "Update project version to ${getProjectVersion()} for release"
+        def prBody = "Generated by build ${BUILD_TAG}: ${BUILD_URL}.\nPlease do not merge, it will be merged automatically after testing."
+
+        githubscm.commitChanges(commitMsg, { githubscm.findAndStageNotIgnoredFiles('pom.xml') })
         githubscm.pushObject('origin', getBotBranch(), getBotAuthorCredsID())
         deployProperties["${repo}.pr.link"] = githubscm.createPR(commitMsg, prBody, getBuildBranch(), getBotAuthorCredsID())
     }
@@ -285,55 +280,83 @@ void commitAndCreatePRIgnoringNpmRegistry(String repo) {
     commitAndCreatePR(repo)
 }
 
-// TODO: move to a shared library
-void addNotIgnoredPoms() {
-    // based on https://stackoverflow.com/a/59888964/8811872
-    sh '''
-    find . -type f -name 'pom.xml' > found_poms.txt
-    poms_to_add=""
-    while IFS= read -r pom; do
-        if ! git check-ignore -q "\$pom"; then
-            poms_to_add="\$poms_to_add \$pom"
-        fi
-    done < found_poms.txt
-    rm found_poms.txt
-    git add \$poms_to_add
-    git status
-    '''
+MavenCommand getMavenDefaultCommand(){
+    MavenCommand mvnCmd = new MavenCommand(this, ['-fae']).withSettingsXmlId(params.MAVEN_SETTINGS_CONFIG_FILE_ID)
+    if (params.MAVEN_DEPENDENCIES_REPOSITORY) {
+        mvnCmd.withDependencyRepositoryInSettings('deps-repo', params.MAVEN_DEPENDENCIES_REPOSITORY)
+    }
+    return mvnCmd
 }
 
-void mavenCleanInstall(String directory, boolean skipTests = false, List profiles = [], String extraArgs = '') {
-    runMaven('clean install', directory, skipTests, profiles, extraArgs)
+
+MavenCommand getOptaplannerMavenCommand(){
+    return getMavenDefaultCommand().inDirectory(optaplannerRepository).withProperty('full')
+}
+
+MavenCommand getOptaplannerQuickstartsMavenCommand(){
+    return getMavenDefaultCommand().inDirectory(quickstartsRepository)
+}
+
+MavenCommand getOptawebVehicleRoutingMavenCommand(){
+    return getMavenDefaultCommand().inDirectory(vehicleRoutingRepository)
+}
+
+MavenCommand getOptawebEmployeeRosteringMavenCommand(){
+    return getMavenDefaultCommand().inDirectory(employeeRosteringRepository)
 }
 
 /**
  * Builds the parent modules and the BOM so that project depending on these artifacts can resolve.
  */
-void mavenCleanInstallOptaPlannerParents(String directory) {
-    mavenCleanInstall(directory, true, [], '-pl org.optaplanner:optaplanner-build-parent,org.optaplanner:optaplanner-bom -am')
+void mavenCleanInstallOptaPlannerParents() {
+    getOptaplannerMavenCommand()
+        .skipTests(true)
+        .withOptions(['-U', '-pl org.optaplanner:optaplanner-build-parent,org.optaplanner:optaplanner-bom', '-am'])
+        .run('clean install')
 }
 
-void mavenDeploy(String directory, extraArgs = '') {
-    String deployRepoArgs = params.MAVEN_DEPLOY_REPOSITORY != '' ? "-DaltDeploymentRepository=runtimes-artifacts::default::${params.MAVEN_DEPLOY_REPOSITORY} -Denforcer.skip=true" : ''
-    String resolvedArgs = "$extraArgs $deployRepoArgs".trim()
-    runMaven('clean deploy', directory, true, [], resolvedArgs)
-}
-
-void runMaven(String goals, String directory, boolean skipTests = false, List profiles = [], String extraArgs = '') {
-    mvnCmd = goals
-    if(!profiles.isEmpty()){
-        mvnCmd += " -P${profiles.join(',')}"
-    }
-    if(extraArgs != ''){
-        mvnCmd += " ${extraArgs}"
-    }
-    dir(directory) {
-        maven.runMaven(mvnCmd, skipTests, ['-fae'])
+void deployMavenArtifacts(MavenCommand mvnCmd, String localDeployId){
+    if(!isRelease() || params.MAVEN_DEPLOY_REPOSITORY){
+        // Normal deploy
+        runMavenDeploy(mvnCmd)
+    } else {
+        // Deploy locally and then to staging
+        runMavenDeployLocally(mvnCmd, localDeployId)
+        runMavenStage(mvnCmd, localDeployId)
     }
 }
 
-void updateKogitoVersion(String newVersion) {
-    maven.mvnSetVersionProperty('version.org.kie.kogito', newVersion)
+void runMavenDeploy(MavenCommand mvnCmd) {
+    mvnCmd= mvnCmd.clone()
+    
+    if(params.MAVEN_DEPLOY_REPOSITORY) {
+        mvnCmd.withDeployRepository(params.MAVEN_DEPLOY_REPOSITORY)
+    }
+
+    mvnCmd.skipTests(true).run('clean deploy')
+}
+
+void runMavenDeployLocally(MavenCommand mvnCmd, String localDeployId) {
+    mvnCmd.clone()
+        .skipTests(true)
+        .withLocalDeployFolder(getLocalDeploymentFolder(localDeployId))
+        .run('clean deploy')
+}
+
+void runMavenStage(MavenCommand mvnCmd, String localDeployId) {
+    MavenStagingHelper stagingHelper = getStagingHelper(mvnCmd)
+    deployProperties.putAll(stagingHelper.stageLocalArtifacts(params.NEXUS_STAGING_PROFILE_ID, getLocalDeploymentFolder(localDeployId)))
+    stagingHelper.promoteStagingRepository(params.NEXUS_BUILD_PROMOTION_PROFILE_ID)
+}
+
+MavenStagingHelper getStagingHelper(MavenCommand mvnCmd) {
+    return new MavenStagingHelper(this, mvnCmd)
+                .withNexusReleaseUrl(params.NEXUS_RELEASE_URL)
+                .withNexusReleaseRepositoryId(params.NEXUS_RELEASE_REPOSITORY_ID)
+}
+
+String getLocalDeploymentFolder(String localDeployId) {
+    return "${env.MAVEN_DEPLOY_LOCAL_DIR}/${localDeployId}"
 }
 
 // Getters and Setters of params/properties
