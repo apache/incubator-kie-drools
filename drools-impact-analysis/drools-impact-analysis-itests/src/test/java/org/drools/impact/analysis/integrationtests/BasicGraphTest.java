@@ -19,7 +19,6 @@ package org.drools.impact.analysis.integrationtests;
 import org.drools.impact.analysis.graph.Graph;
 import org.drools.impact.analysis.graph.Link;
 import org.drools.impact.analysis.graph.ModelToGraphConverter;
-import org.drools.impact.analysis.graph.graphviz.GraphImageGenerator;
 import org.drools.impact.analysis.integrationtests.domain.Address;
 import org.drools.impact.analysis.integrationtests.domain.Person;
 import org.drools.impact.analysis.model.AnalysisModel;
@@ -57,8 +56,7 @@ public class BasicGraphTest extends AbstractGraphTest {
         assertNodeLink(graph, "mypkg.R1", "mypkg.R2", Link.Type.POSITIVE);
         assertNodeLink(graph, "mypkg.R1", "mypkg.R3", Link.Type.POSITIVE);
 
-        GraphImageGenerator generator = new GraphImageGenerator("3rules");
-        generator.generatePng(graph);
+        generatePng(graph);
     }
 
     @Test
@@ -102,8 +100,7 @@ public class BasicGraphTest extends AbstractGraphTest {
         assertNodeLink(graph, "mypkg.R2", "mypkg.R4", Link.Type.POSITIVE);
         assertNodeLink(graph, "mypkg.R3", "mypkg.R4", Link.Type.POSITIVE);
 
-        GraphImageGenerator generator = new GraphImageGenerator("5rules");
-        generator.generatePng(graph);
+        generatePng(graph);
     }
 
     @Test
@@ -130,8 +127,7 @@ public class BasicGraphTest extends AbstractGraphTest {
 
         assertNodeLink(graph, "mypkg.R1", "mypkg.R2", Link.Type.UNKNOWN);
 
-        GraphImageGenerator generator = new GraphImageGenerator("beta");
-        generator.generatePng(graph);
+        generatePng(graph);
     }
 
     @Test
@@ -159,8 +155,7 @@ public class BasicGraphTest extends AbstractGraphTest {
         assertNodeLink(graph, "mypkg.R1", "mypkg.R2", Link.Type.POSITIVE);
         assertNodeLink(graph, "mypkg.R2", "mypkg.R1", Link.Type.NEGATIVE);
 
-        GraphImageGenerator generator = new GraphImageGenerator("loop");
-        generator.generatePng(graph);
+        generatePng(graph);
     }
 
     @Test
@@ -186,8 +181,7 @@ public class BasicGraphTest extends AbstractGraphTest {
 
         assertNoNodeLink(graph, "mypkg.R1", "mypkg.R2");
 
-        GraphImageGenerator generator = new GraphImageGenerator("no-constraint");
-        generator.generatePng(graph);
+        generatePng(graph);
     }
 
     @Test
@@ -213,8 +207,7 @@ public class BasicGraphTest extends AbstractGraphTest {
 
         assertNodeLink(graph, "mypkg.R1", "mypkg.R2", Link.Type.UNKNOWN);
 
-        GraphImageGenerator generator = new GraphImageGenerator("blackBox");
-        generator.generatePng(graph);
+        generatePng(graph);
     }
 
     @Test
@@ -245,7 +238,6 @@ public class BasicGraphTest extends AbstractGraphTest {
         assertNodeLink(graph, "mypkg.R2", "mypkg.R1", Link.Type.NEGATIVE);
         assertNodeLink(graph, "mypkg.R2", "mypkg.R2", Link.Type.NEGATIVE);
 
-        GraphImageGenerator generator = new GraphImageGenerator("insert-delete");
-        generator.generatePng(graph);
+        generatePng(graph);
     }
 }

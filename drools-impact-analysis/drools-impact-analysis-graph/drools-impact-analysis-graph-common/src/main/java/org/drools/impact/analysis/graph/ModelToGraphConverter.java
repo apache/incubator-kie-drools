@@ -145,7 +145,7 @@ public class ModelToGraphConverter {
                 List<Constraint> constraints = reactedRule.getLhs().getPatterns().stream()
                                                           .filter(pattern -> pattern.getPatternClass() == modifiedClass)
                                                           .flatMap(pattern -> pattern.getConstraints().stream())
-                                                          .filter(constraint -> constraint.getProperty().equals(property))
+                                                          .filter(constraint -> constraint.getProperty() != null && constraint.getProperty().equals(property))
                                                           .collect(Collectors.toList());
                 Link.Type combinedLinkType = Link.Type.UNKNOWN;
                 if (constraints.size() == 0) {

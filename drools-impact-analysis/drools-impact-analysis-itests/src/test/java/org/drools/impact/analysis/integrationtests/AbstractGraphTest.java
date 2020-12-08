@@ -21,11 +21,27 @@ import java.util.Optional;
 import org.drools.impact.analysis.graph.Graph;
 import org.drools.impact.analysis.graph.Link;
 import org.drools.impact.analysis.graph.Node;
+import org.drools.impact.analysis.graph.graphviz.GraphImageGenerator;
+import org.junit.Rule;
+import org.junit.rules.TestName;
+import org.kie.api.runtime.KieSession;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 public class AbstractGraphTest {
+
+    @Rule
+    public TestName testName = new TestName();
+
+    protected String getTestMethodName() {
+        return testName.getMethodName();
+    }
+
+    protected void generatePng(Graph graph) {
+        GraphImageGenerator generator = new GraphImageGenerator(getTestMethodName());
+        generator.generatePng(graph);
+    }
 
     protected void assertNodeLink(Graph graph, String sourceFqdn, String targetFqdn, Link.Type type) {
         Node source = graph.getNodeMap().get(sourceFqdn);
@@ -58,6 +74,19 @@ public class AbstractGraphTest {
         if (optIncoming.isPresent()) {
             fail("incomingLink exists : source = " + sourceFqdn + ", target = " + targetFqdn);
         }
-
     }
+
+    /*
+     * Only for test development convenience (to confirm if the rule is valid)
+     */
+    protected void runRule(String drl, Object... facts) {
+        final KieSession ksession = RuleExecutionHelper.getKieSession(drl);
+        for (Object fact : facts) {
+            ksession.insert(fact);
+        }
+        int fired = ksession.fireAllRules(100);
+        System.out.println("fired = " + fired);
+        ksession.dispose();
+    }
+
 }
