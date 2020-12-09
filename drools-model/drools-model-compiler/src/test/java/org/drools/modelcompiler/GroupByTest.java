@@ -855,4 +855,58 @@ public class GroupByTest {
         int fireCount = ksession.fireAllRules();
         assertThat( fireCount ).isGreaterThan( 0 );
     }
+
+    @Test
+    public void testGroupByUpdatingKey() throws Exception {
+        Global<Map> var_results = D.globalOf(Map.class, "defaultpkg", "results");
+
+        Variable<String> var_$key = D.declarationOf(String.class);
+        Variable<Person> var_$p = D.declarationOf(Person.class);
+        Variable<Integer> var_$age = D.declarationOf(Integer.class);
+        Variable<Integer> var_$sumOfAges = D.declarationOf(Integer.class);
+
+        Rule rule1 = D.rule("R1").build(
+                D.groupBy(
+                        // Patterns
+                        D.pattern(var_$p).bind(var_$age, person -> person.getAge(), D.reactOn("age")),
+                        // Grouping Function
+                        var_$p, var_$key, person -> person.getName().substring(0, 1),
+                        // Accumulate Result (can be more than one)
+                        D.accFunction(org.drools.core.base.accumulators.IntegerSumAccumulateFunction::new, var_$age).as(var_$sumOfAges)),
+                // Filter
+                D.pattern(var_$sumOfAges)
+                        .expr($sumOfAges -> EvaluationUtil.greaterThanNumbers($sumOfAges, 10)),
+                // Consequence
+                D.on(var_$key, var_results, var_$sumOfAges)
+                        .execute(($key, results, $sumOfAges) -> results.put($key, $sumOfAges))
+        );
+
+        Model model = new ModelImpl().addRule( rule1 ).addGlobal( var_results );
+        KieSession ksession = KieBaseBuilder.createKieBaseFromModel( model ).newKieSession();
+
+        Map results = new HashMap();
+        ksession.setGlobal( "results", results );
+
+        Person me = new Person("Mario", 45);
+        FactHandle meFH = ksession.insert(me);
+
+        ksession.insert(new Person("Mark", 42));
+        ksession.insert(new Person("Edson", 38));
+        ksession.insert(new Person("Maciej", 39));
+        ksession.insert(new Person("Edoardo", 33));
+        ksession.fireAllRules();
+
+        assertEquals( 2, results.size() );
+        assertEquals( 71, results.get("E") );
+        assertEquals( 126, results.get("M") );
+        results.clear();
+
+        me.setName("EMario");
+        ksession.update(meFH, me);
+        ksession.fireAllRules();
+
+        assertEquals( 2, results.size() );
+        assertEquals( 116, results.get("E") );
+        assertEquals( 81, results.get("M") );
+    }
 }

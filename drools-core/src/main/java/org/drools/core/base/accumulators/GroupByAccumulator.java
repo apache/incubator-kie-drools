@@ -63,7 +63,7 @@ public abstract class GroupByAccumulator implements Accumulator, Externalizable 
 
     @Override
     public Serializable createContext() {
-        return new GroupByContext();
+        return new GroupByContext(supportsReverse());
     }
 
     @Override
@@ -74,7 +74,7 @@ public abstract class GroupByAccumulator implements Accumulator, Externalizable 
 
     @Override
     public void accumulate( Object workingMemoryContext, Object context, Tuple leftTuple, InternalFactHandle handle, Declaration[] declarations, Declaration[] innerDeclarations, WorkingMemory workingMemory ) throws Exception {
-        Serializable groupContext = (( GroupByContext ) context).loadContext( innerAccumulator, getKey(leftTuple, handle, workingMemory) );
+        Serializable groupContext = (( GroupByContext ) context).loadContext( innerAccumulator, handle, getKey(leftTuple, handle, workingMemory) );
         innerAccumulator.accumulate( workingMemoryContext, groupContext, leftTuple, handle, declarations, innerDeclarations, workingMemory );
     }
 
@@ -85,7 +85,7 @@ public abstract class GroupByAccumulator implements Accumulator, Externalizable 
 
     @Override
     public void reverse( Object workingMemoryContext, Object context, Tuple leftTuple, InternalFactHandle handle, Declaration[] declarations, Declaration[] innerDeclarations, WorkingMemory workingMemory ) throws Exception {
-        Serializable groupContext = (( GroupByContext ) context).loadContext( innerAccumulator, getKey(leftTuple, handle, workingMemory) );
+        Serializable groupContext = (( GroupByContext ) context).loadContextForReverse( handle );
         innerAccumulator.reverse( workingMemoryContext, groupContext, leftTuple, handle, declarations, innerDeclarations, workingMemory );
     }
 
@@ -100,14 +100,29 @@ public abstract class GroupByAccumulator implements Accumulator, Externalizable 
         } );
     }
 
-    public static class GroupByContext implements Serializable {
-        private final Set<Object> keys = new HashSet<>();
+    private static class GroupByContext implements Serializable {
         private final Map<Object, Serializable> contextsByGroup = new HashMap<>();
+        private final Set<Object> keys = new HashSet<>();
         private final List<Object[]> results = new ArrayList<>();
+        private final Map<Long, GroupInfo> reverseSupport;
 
-        Serializable loadContext(Accumulator innerAccumulator, Object key) {
+        private GroupByContext(boolean supportsReverse) {
+            reverseSupport = supportsReverse ? new HashMap<>() : null;
+        }
+
+        Serializable loadContext(Accumulator innerAccumulator, InternalFactHandle handle, Object key) {
             keys.add( key );
-            return contextsByGroup.computeIfAbsent( key, k -> innerAccumulator.createContext() );
+            Serializable groupContext = contextsByGroup.computeIfAbsent( key, k -> innerAccumulator.createContext() );
+            if (reverseSupport != null) {
+                reverseSupport.put( handle.getId(), new GroupInfo( key, groupContext ) );
+            }
+            return groupContext;
+        }
+
+        Serializable loadContextForReverse(InternalFactHandle handle) {
+            GroupInfo groupInfo = reverseSupport.remove( handle.getId() );
+            keys.add( groupInfo.key );
+            return groupInfo.context;
         }
 
         public void init() {
@@ -123,6 +138,16 @@ public abstract class GroupByAccumulator implements Accumulator, Externalizable 
             }
             keys.clear();
             return results;
+        }
+    }
+
+    private static class GroupInfo {
+        private final Object key;
+        private final Serializable context;
+
+        private GroupInfo( Object key, Serializable context ) {
+            this.key = key;
+            this.context = context;
         }
     }
 }

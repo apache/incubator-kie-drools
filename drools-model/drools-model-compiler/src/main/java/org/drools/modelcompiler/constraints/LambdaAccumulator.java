@@ -99,7 +99,11 @@ public abstract class LambdaAccumulator implements Accumulator {
 
     @Override
     public void reverse(Object workingMemoryContext, Object context, Tuple leftTuple, InternalFactHandle handle, Declaration[] declarations, Declaration[] innerDeclarations, WorkingMemory workingMemory) throws Exception {
-        accumulateFunction.reverse( (( LambdaAccContext ) context).context, (( LambdaAccContext ) context).reverseSupport.remove(handle.getId()));
+        Object value = (( LambdaAccContext ) context).reverseSupport.remove(handle.getId());
+        if (value == null) {
+            throw new IllegalStateException("Reversing a not existing accumulated object for fact " + handle);
+        }
+        accumulateFunction.reverse( (( LambdaAccContext ) context).context, value);
     }
 
     @Override
