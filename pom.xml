@@ -84,6 +84,7 @@
     <module>drools-alphanetwork-compiler</module>
     <module>drools-engine</module>
     <module>drools-engine-classic</module>
+<!--    <module>drools-impact-analysis</module>-->
   </modules>
 
   <dependencyManagement>
