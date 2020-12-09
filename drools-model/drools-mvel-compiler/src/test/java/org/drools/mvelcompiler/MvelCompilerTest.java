@@ -477,22 +477,4 @@ public class MvelCompilerTest implements CompilerTest {
                      "}"
         );
     }
-
-    @Ignore
-    @Test
-    public void forIterationWithMultipleElements() {
-        test(ctx -> ctx.addDeclaration("$people", List.class),
-             "{" +
-                     "    for (Person p : $people ) {\n" +
-                     "        System.out.println(\"Person: \" + p);\n" +
-                     "    }\n" +
-                     "}",
-             "{" +
-                     "    for (Object pObject : $people ) {\n" +
-                     "        Person p = (Person) pObject;" +
-                     "        System.out.println(\"Person: \" + p);\n" +
-                     "    }\n" +
-                     "}"
-        );
-    }
 }
