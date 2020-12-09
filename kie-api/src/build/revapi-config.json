@@ -88,6 +88,15 @@
                  "methodName": "getIncludes",
                  "elementKind": "method",
                  "justification": "generate ProjectModel for executable model"
+              },
+              {
+                "code": "java.method.addedToInterface",
+                "new": "method org.kie.api.command.Command org.kie.api.command.KieCommands::newApplyPmmlModel(org.kie.api.pmml.PMMLRequestData)",
+                "package": "org.kie.api.command",
+                "classSimpleName": "KieCommands",
+                "methodName": "newApplyPmmlModel",
+                "elementKind": "method",
+                "justification": "Move newApplyPmmlModel to publicly available API to avoid downcasting"
               }
             ]
         }
