@@ -17,11 +17,15 @@
 package org.jbpm.bpmn2.xml;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.drools.core.xml.BaseAbstractHandler;
 import org.drools.core.xml.ExtensibleXmlParser;
@@ -86,6 +90,7 @@ import org.jbpm.workflow.core.node.Trigger;
 import org.jbpm.workflow.core.node.WorkItemNode;
 import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.NodeContainer;
+import org.kie.api.definition.process.Process;
 import org.kie.api.definition.process.WorkflowProcess;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -127,6 +132,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
 		}
 	}
 
+	@Override
 	public Object start(final String uri, final String localName,
 			            final Attributes attrs, final ExtensibleXmlParser parser)
 			throws SAXException {
@@ -183,6 +189,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
 		return process;
 	}
 
+	@Override
 	@SuppressWarnings("unchecked")
 	public Object end(final String uri, final String localName,
 			          final ExtensibleXmlParser parser) throws SAXException {
@@ -209,65 +216,92 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
 		return process;
 	}
 	
-	 public static void linkIntermediateLinks(NodeContainer process,
-	            List<IntermediateLink> links) {
+	
+    public static void linkIntermediateLinks(NodeContainer process, List<IntermediateLink> links) {
+        if (links == null) {
+            return;
+        }
+        Map<String, IntermediateLink> catchLinks = new HashMap<>();
+        Map<String, Collection<IntermediateLink>> throwLinks = new HashMap<>();
+        Collection<IntermediateLink> noNameLinks = new ArrayList<>();
+        Collection<IntermediateLink> duplicatedTarget = new LinkedHashSet<>();
+        Collection<IntermediateLink> unconnectedTarget = new ArrayList<>();
 
-	        if (null != links) {
+        // collect errors and nodes in first loop
+        for (IntermediateLink link : links) {
+            if (link.getName() == null || link.getName().isEmpty()) {
+                noNameLinks.add(link);
+            } else if (link.isThrowLink()) {
+                throwLinks.computeIfAbsent(link.getName(), s -> new ArrayList<>()).add(link);
+            } else {
+                IntermediateLink duplicateLink = catchLinks.putIfAbsent(link.getName(), link);
+                if (duplicateLink != null) {
+                    duplicatedTarget.add(duplicateLink);
+                    duplicatedTarget.add(link);
+                }
+            }
+        }
 
-	            // Search throw links
-	            ArrayList<IntermediateLink> throwLinks = new ArrayList<IntermediateLink>();
-	            for (IntermediateLink aLinks : links) {
-	                if (aLinks.isThrowLink()) {
-	                    throwLinks.add(aLinks);
-	                }
-	            }
+        // second loop for connection
+        for (IntermediateLink catchLink : catchLinks.values()) {
+            Collection<IntermediateLink> associatedLinks = throwLinks.remove(catchLink.getName());
+            if (associatedLinks != null) {
+                // connect throw to catch
+                Node catchNode = findNodeByIdOrUniqueIdInMetadata(process, catchLink.getUniqueId());
+                if (catchNode != null) {
+                    for (IntermediateLink throwLink : associatedLinks) {
+                        Node throwNode = findNodeByIdOrUniqueIdInMetadata(process,
+                                throwLink.getUniqueId());
+                        if (throwNode != null) {
+                            Connection result = new ConnectionImpl(throwNode,
+                                    NodeImpl.CONNECTION_DEFAULT_TYPE, catchNode,
+                                    NodeImpl.CONNECTION_DEFAULT_TYPE);
+                            result.setMetaData("linkNodeHidden", "yes");
+                        }
+                    }
+                }
+            } else {
+                unconnectedTarget.add(catchLink);
+            }
+        }
 
-	            // Look for catch links for a throw link
-	            for (IntermediateLink throwLink : throwLinks) {
+        // throw exception if any error (this is done at the end of the process to show the user as much errors as possible) 
+        StringBuilder errors = new StringBuilder();
+        if (!noNameLinks.isEmpty()) {
+            formatError(errors, "These nodes do not have a name ", noNameLinks.stream(), process);
+        }
+        if (!duplicatedTarget.isEmpty()) {
+            formatError(errors, "\nThere are multiple catch nodes with the same name ", duplicatedTarget.stream(),
+                    process);
+        }
+        if (!unconnectedTarget.isEmpty()) {
+            formatError(errors, "\nThere is not connection from any throw link to these catch links ", unconnectedTarget
+                    .stream(), process);
+        }
+        if (!throwLinks.isEmpty()) {
+            formatError(errors, "\nThere is not connection to any catch link from these throw links ", throwLinks
+                    .values()
+                    .stream()
+                    .flatMap(Collection::stream), process);
+        }
+        if (errors.length() > 0) {
+            throw new IllegalArgumentException(errors.toString());
+        }
 
-	                ArrayList<IntermediateLink> linksWithSharedNames = new ArrayList<IntermediateLink>();
-	                for (IntermediateLink aLink : links) {
-	                    if (throwLink.getName().equals(aLink.getName())) {
-	                        linksWithSharedNames.add(aLink);
-	                    }
-	                }
+    }
 
-	                if (linksWithSharedNames.size() < 2) {
-	                    throw new IllegalArgumentException(
-	                            "There should be at least 2 link events to make a connection");
-	                }
-
-	                linksWithSharedNames.remove(throwLink);
-
-	                // Make the connections
-	                Node t = findNodeByIdOrUniqueIdInMetadata(process,
-	                        throwLink.getUniqueId());
-
-	                // connect throw to catch
-	                for (IntermediateLink catchLink : linksWithSharedNames) {
-
-	                    Node c = findNodeByIdOrUniqueIdInMetadata(process,
-	                            catchLink.getUniqueId());
-	                    if (t != null && c != null) {
-	                        Connection result = new ConnectionImpl(t,
-	                                NodeImpl.CONNECTION_DEFAULT_TYPE, c,
-	                                NodeImpl.CONNECTION_DEFAULT_TYPE);
-	                        result.setMetaData("linkNodeHidden", "yes");
-	                    }
-	                }
-
-	                // Remove processed links
-	                links.remove(throwLink);
-	                links.removeAll(linksWithSharedNames);
-	            }
-
-	            if (links.size() > 0) {
-	                throw new IllegalArgumentException(links.size()
-	                        + " links were not processed");
-	            }
-
-	        }
-	 }
+    private static void formatError(StringBuilder errors,
+                                    String message,
+                                    Stream<IntermediateLink> stream,
+                                    NodeContainer container) {
+        errors.append(message).append(stream.map(IntermediateLink::getUniqueId).collect(Collectors.joining(", ", "{",
+                "}")));
+        if (container instanceof Process) {
+            errors.append(" for process ").append(((Process) container).getId());
+        } else if (container instanceof Node) {
+            errors.append(" for subprocess ").append(((Node) container).getId());
+        }
+    }
 
 	 private static Object findNodeOrDataStoreByUniqueId(Definitions definitions, NodeContainer nodeContainer, final String nodeRef, String errorMsg) { 
 	     if( definitions !=  null ) { 
@@ -303,7 +337,8 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
 	     return node;
 	 }
 
-	 public Class<?> generateNodeFor() {
+	@Override
+	public Class<?> generateNodeFor() {
 		return RuleFlowProcess.class;
 	}
 	

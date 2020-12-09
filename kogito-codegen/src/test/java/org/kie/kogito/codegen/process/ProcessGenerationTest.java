@@ -80,6 +80,8 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
+
+
 /**
  * ProcessGenerationTest iterates over all the process files in the project except the
  * ones listed in process-generation-test.skip.txt
@@ -163,7 +165,30 @@ public class ProcessGenerationTest extends AbstractCodegenTest {
             assertNotNull(e);
         }
     }
+    @Test
+    public void testDifferentLinkProcess() throws Exception {
+        Assertions.assertThatThrownBy(() -> testProcessGeneration("links/DifferentLinkProcess.bpmn2")).isInstanceOf(
+                ProcessCodegenException.class).hasMessageContaining("not connection");
+    }
 
+    @Test
+    public void testMultipleCatchLink() throws Exception {
+        Assertions.assertThatThrownBy(() -> testProcessGeneration("links/MultipleCatchLinkProcess.bpmn2")).isInstanceOf(
+                ProcessCodegenException.class).hasMessageContaining("multiple catch nodes");
+    }
+
+    @Test
+    public void testEmptyLinkProcess() throws Exception {
+        Assertions.assertThatThrownBy(() -> testProcessGeneration("links/EmptyLinkProcess.bpmn2")).isInstanceOf(
+                ProcessCodegenException.class).hasMessageContaining("nodes do not have a name");
+    }
+
+    @Test
+    public void testMissingLinkProcess() throws Exception {
+        Assertions.assertThatThrownBy(() -> testProcessGeneration("links/UnconnectedLinkProcess.bpmn2")).isInstanceOf(
+                ProcessCodegenException.class).hasMessageContaining("not connection");
+    }
+  
     private static void assertNodes(Node[] expected, Node[] current) {
         assertEquals(expected.length, current.length);
         Stream.of(expected).forEach(eNode -> {

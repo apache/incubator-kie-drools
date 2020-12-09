@@ -40,5 +40,15 @@ class LinkTest {
             .then()
                 .statusCode(201);
     }
+    
+    @Test
+    void testMultipleLink() {
+        given()
+                .contentType(ContentType.JSON)
+            .when()
+                .post("/MultipleThrowLinkProcess")
+            .then()
+                .statusCode(201);
+    }
 
 }

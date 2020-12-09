@@ -20,3 +20,7 @@ subprocess/CallActivityWithIOexpressionNested.bpmn2
 subprocess/CallActivityMI.bpmn2
 subprocess/ParentProcess.bpmn
 subprocess/SubProcess.bpmn
+links/DifferentLinkProcess.bpmn2
+links/EmptyLinkProcess.bpmn2
+links/MultipleCatchLinkProcess.bpmn2
+links/UnconnectedLinkProcess.bpmn2
