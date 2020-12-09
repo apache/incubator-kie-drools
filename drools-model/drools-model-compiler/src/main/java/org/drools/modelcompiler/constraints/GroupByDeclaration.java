@@ -22,12 +22,17 @@ import org.drools.core.rule.Pattern;
 
 public class GroupByDeclaration extends Declaration {
 
-    public GroupByDeclaration( Pattern pattern) {
+    public GroupByDeclaration(Pattern pattern) {
         super("GROUP_KEY_DECLARATION_NAME", new LambdaReadAccessor( Object.class, x -> x ), pattern);
     }
 
     @Override
     public Object getValue( InternalWorkingMemory workingMemory, InternalFactHandle fh) {
         return (( GroupByFactHandle ) fh).getGroupKey();
+    }
+
+    @Override
+    public Declaration cloneWithPattern(Pattern pattern) {
+        return new GroupByDeclaration( pattern );
     }
 }

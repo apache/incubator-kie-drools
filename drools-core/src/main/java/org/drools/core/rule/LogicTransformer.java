@@ -198,7 +198,7 @@ public class LogicTransformer {
                     Pattern old = aDecl.getPattern();
                     Pattern current = resolver.findPatternByIndex(old.getIndex());
                     if (current != null && old != current) {
-                        resolved = new Declaration(aDecl.getIdentifier(), aDecl.getExtractor(), current);
+                        resolved = aDecl.cloneWithPattern(current);
                         provider.replaceDeclaration(aDecl, resolved);
                     }
                 }
@@ -277,8 +277,7 @@ public class LogicTransformer {
                 Pattern old = aDecl.getPattern();
                 Pattern current = resolver.findPatternByIndex( old.getIndex() );
                 if ( current != null && old != current ) {
-                    resolved = new Declaration( aDecl.getIdentifier(), aDecl.getExtractor(),
-                                                current );
+                    resolved = aDecl.cloneWithPattern( current );
                     constraint.replaceDeclaration( aDecl, resolved );
                 }
             }
@@ -298,8 +297,7 @@ public class LogicTransformer {
                 Pattern old = aDecl.getPattern();
                 Pattern current = resolver.findPatternByIndex( old.getIndex() );
                 if ( current != null && old != current ) {
-                    resolved = new Declaration( aDecl.getIdentifier(), aDecl.getExtractor(),
-                                                current );
+                    resolved = aDecl.cloneWithPattern( current );
                     accumulate.replaceDeclaration( aDecl, resolved );
                 }
             }
