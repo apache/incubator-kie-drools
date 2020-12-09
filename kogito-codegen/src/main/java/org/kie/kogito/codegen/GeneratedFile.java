@@ -16,6 +16,8 @@
 package org.kie.kogito.codegen;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.Objects;
 
 public class GeneratedFile {
 
@@ -86,5 +88,22 @@ public class GeneratedFile {
                 "type=" + type +
                 ", relativePath='" + relativePath + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        GeneratedFile that = (GeneratedFile) o;
+        return Objects.equals(relativePath, that.relativePath);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(relativePath);
     }
 }

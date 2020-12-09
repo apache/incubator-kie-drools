@@ -174,7 +174,7 @@ public class ProcessCodegen extends AbstractGenerator {
     private ProcessContainerGenerator moduleGenerator;
 
     private final Map<String, WorkflowProcess> processes;
-    private final List<GeneratedFile> generatedFiles = new ArrayList<>();
+    private final Set<GeneratedFile> generatedFiles = new HashSet<>();
 
     private AddonsConfig addonsConfig = AddonsConfig.DEFAULT;
 
@@ -227,9 +227,9 @@ public class ProcessCodegen extends AbstractGenerator {
         return this;
     }
 
-    public List<GeneratedFile> generate() {
+    public Set<GeneratedFile> generate() {
         if (processes.isEmpty()) {
-            return Collections.emptyList();
+            return Collections.emptySet();
         }
 
         List<ProcessGenerator> ps = new ArrayList<>();
@@ -480,10 +480,14 @@ public class ProcessCodegen extends AbstractGenerator {
     }
 
     private void storeFile(Type type, String path, String source) {
-        generatedFiles.add(new GeneratedFile(type, path, log(source).getBytes(StandardCharsets.UTF_8)));
+        if (generatedFiles.stream().anyMatch(f -> path.equals(f.relativePath()))) {
+            LOGGER.warn("There's already a generated file named {} to be compiled. Ignoring.", path);
+        } else {
+            generatedFiles.add(new GeneratedFile(type, path, log(source).getBytes(StandardCharsets.UTF_8)));
+        }
     }
 
-    public List<GeneratedFile> getGeneratedFiles() {
+    public Set<GeneratedFile> getGeneratedFiles() {
         return generatedFiles;
     }
 
