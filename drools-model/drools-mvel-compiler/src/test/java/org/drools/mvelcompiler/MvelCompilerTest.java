@@ -450,13 +450,18 @@ public class MvelCompilerTest implements CompilerTest {
         test(ctx -> ctx.addDeclaration("$people", List.class),
              "{" +
                      "    for (Person p : $people ) {\n" +
-                     "        System.out.println(\"Person: \" + p);\n" +
+                     "       for (Address a : $addresses ) {\n" +
+                     "           System.out.println(\"Person: \" + p + \" address: \" + a);\n" +
+                     "       }\n" +
                      "    }\n" +
                      "}",
              "{\n" +
                      "    for (Object _p : $people) {\n" +
                      "        Person p = (Person) _p;\n" +
-                     "        System.out.println(\"Person: \" + p);\n" +
+                     "        for (Object _a : $addresses) {\n" +
+                     "            Address a = (Address) _a;\n" +
+                     "            System.out.println(\"Person: \" + p + \" address: \" + a);\n" +
+                     "        }\n" +
                      "    }\n" +
                      "}"
         );

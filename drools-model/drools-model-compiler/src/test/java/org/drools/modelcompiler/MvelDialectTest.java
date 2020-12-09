@@ -508,4 +508,38 @@ public class MvelDialectTest extends BaseModelTest {
 
         assertEquals(1, ksession.fireAllRules());
     }
+
+    @Test
+    public void testCollectSubtypeInConsequenceNested() {
+        // DROOLS-5887
+        String drl =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "import " + Address.class.getCanonicalName() + "\n" +
+                "import " + ArrayList.class.getCanonicalName() + "\n" +
+                "dialect \"mvel\"\n" +
+                "rule \"bus1\"\n" +
+                "when\n" +
+                "    $people : ArrayList() from collect ( Person() )\n" +
+                "    $addresses : ArrayList() from collect ( Address() )\n" +
+                "then\n" +
+                "    for (Person p : $people ) {\n" +
+                "       for (Address a : $addresses ) {\n" +
+                "           System.out.println(\"Person: \" + p + \" address: \" + a);\n" +
+                "       }\n" +
+                "    }\n" +
+                "end";
+
+        KieSession ksession = getKieSession(drl);
+
+        Person mario = new Person("Mario", 46);
+        Person luca = new Person("Luca", 36);
+        Person leonardo = new Person("Leonardo", 3);
+
+        Arrays.asList(mario, luca, leonardo).forEach(ksession::insert);
+
+        Address a = new Address("Milan");
+        ksession.insert(a);
+
+        assertEquals(1, ksession.fireAllRules());
+    }
 }
