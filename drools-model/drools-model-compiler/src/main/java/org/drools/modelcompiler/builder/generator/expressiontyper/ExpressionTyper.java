@@ -143,6 +143,7 @@ public class ExpressionTyper {
     }
 
     public TypedExpressionResult toTypedExpression(Expression drlxExpr) {
+        context.setOriginalExpression(drlxExpr);
         if (logger.isDebugEnabled()) {
             logger.debug( "Typed expression Input: drlxExpr = {} , patternType = {} ,declarations = {}", printConstraint(drlxExpr), patternType, context.getUsedDeclarations() );
         }

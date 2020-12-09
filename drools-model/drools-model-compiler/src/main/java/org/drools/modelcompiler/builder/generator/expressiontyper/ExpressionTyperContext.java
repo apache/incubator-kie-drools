@@ -32,6 +32,7 @@ public class ExpressionTyperContext {
     private List<String> usedDeclarations = new ArrayList<>();
     private Set<String> reactOnProperties = new HashSet<>();
     private List<Expression> prefixExpresssions = new ArrayList<>();
+    private Expression originalExpression;
 
     private boolean registerPropertyReactivity = true;
 
@@ -73,5 +74,13 @@ public class ExpressionTyperContext {
 
     public void setInlineCastExpression(Optional<Expression> inlineCastExpression) {
         this.inlineCastExpression = inlineCastExpression;
+    }
+
+    public Expression getOriginalExpression() {
+        return originalExpression;
+    }
+
+    public void setOriginalExpression(Expression originalExpression) {
+        this.originalExpression = originalExpression;
     }
 }

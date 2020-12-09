@@ -260,10 +260,11 @@ public abstract class AccumulateVisitor {
         final ExpressionTyperContext expressionTyperContext = new ExpressionTyperContext();
         final ExpressionTyper expressionTyper = new ExpressionTyper(context, clazz, bindingId, false, expressionTyperContext);
 
-        Optional<TypedExpression> typedExpressionResult = expressionTyper.toTypedExpression(methodCallWithoutRootNode.getWithoutRootNode()).getTypedExpression();
+        TypedExpression typedExpression =
+                expressionTyper
+                        .toTypedExpression(methodCallWithoutRootNode.getWithoutRootNode())
+                        .typedExpressionOrException();
 
-
-        final TypedExpression typedExpression = typedExpressionResult.get();
         final Class<?> methodCallExprType = typedExpression.getRawClass();
 
         final AccumulateFunction accumulateFunction = getAccumulateFunction(function, methodCallExprType);
