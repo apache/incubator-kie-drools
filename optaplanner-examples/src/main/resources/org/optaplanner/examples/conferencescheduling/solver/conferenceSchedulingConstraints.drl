@@ -55,7 +55,7 @@ end
 
 rule "Speaker unavailable timeslot"
     when
-        $talk : Talk(hasAnyUnavailableSpeaker())
+        $talk : Talk(timeslot != null, hasAnyUnavailableSpeaker())
     then
         scoreHolder.penalize(kcontext,
                 $talk.getDurationInMinutes());
@@ -134,7 +134,7 @@ end
 
 rule "Speaker required timeslot tags"
     when
-        $talk : Talk($count : missingSpeakerRequiredTimeslotTagCount() > 0)
+        $talk : Talk(timeslot != null, $count : missingSpeakerRequiredTimeslotTagCount() > 0)
     then
         scoreHolder.penalize(kcontext,
                 $count * $talk.getDurationInMinutes());
@@ -142,7 +142,7 @@ end
 
 rule "Speaker prohibited timeslot tags"
     when
-        $talk : Talk($count : prevailingSpeakerProhibitedTimeslotTagCount() > 0)
+        $talk : Talk(timeslot != null, $count : prevailingSpeakerProhibitedTimeslotTagCount() > 0)
     then
         scoreHolder.penalize(kcontext,
                 $count * $talk.getDurationInMinutes());
@@ -150,7 +150,7 @@ end
 
 rule "Talk required timeslot tags"
     when
-        $talk : Talk($count : missingRequiredTimeslotTagCount() > 0)
+        $talk : Talk(timeslot != null, $count : missingRequiredTimeslotTagCount() > 0)
     then
         scoreHolder.penalize(kcontext,
                 $count * $talk.getDurationInMinutes());
@@ -158,7 +158,7 @@ end
 
 rule "Talk prohibited timeslot tags"
     when
-        $talk : Talk($count : prevailingProhibitedTimeslotTagCount() > 0)
+        $talk : Talk(timeslot != null, $count : prevailingProhibitedTimeslotTagCount() > 0)
     then
         scoreHolder.penalize(kcontext,
                 $count * $talk.getDurationInMinutes());
@@ -166,7 +166,7 @@ end
 
 rule "Speaker required room tags"
     when
-        $talk : Talk($count : missingSpeakerRequiredRoomTagCount() > 0)
+        $talk : Talk(timeslot != null, $count : missingSpeakerRequiredRoomTagCount() > 0)
     then
         scoreHolder.penalize(kcontext,
                 $count * $talk.getDurationInMinutes());
@@ -174,7 +174,7 @@ end
 
 rule "Speaker prohibited room tags"
     when
-        $talk : Talk($count : prevailingSpeakerProhibitedRoomTagCount() > 0)
+        $talk : Talk(timeslot != null, $count : prevailingSpeakerProhibitedRoomTagCount() > 0)
     then
         scoreHolder.penalize(kcontext,
                 $count * $talk.getDurationInMinutes());
@@ -182,7 +182,7 @@ end
 
 rule "Talk required room tags"
     when
-        $talk : Talk($count : missingRequiredRoomTagCount() > 0)
+        $talk : Talk(timeslot != null, $count : missingRequiredRoomTagCount() > 0)
     then
         scoreHolder.penalize(kcontext,
                 $count * $talk.getDurationInMinutes());
@@ -190,7 +190,7 @@ end
 
 rule "Talk prohibited room tags"
     when
-        $talk : Talk($count : prevailingProhibitedRoomTagCount() > 0)
+        $talk : Talk(timeslot != null, $count : prevailingProhibitedRoomTagCount() > 0)
     then
         scoreHolder.penalize(kcontext,
                 $count * $talk.getDurationInMinutes());
