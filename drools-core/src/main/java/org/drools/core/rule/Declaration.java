@@ -367,18 +367,18 @@ public class Declaration
     }
 
     public Declaration clone() {
-        return new Declaration( this.identifier,
-                                this.readAccessor,
-                                this.pattern );
+        return new Declaration( this.identifier, this.readAccessor, this.pattern );
     }
 
     public Declaration cloneWithPattern() {
-        return new Declaration( this.identifier,
-                                this.readAccessor,
-                                new Pattern( this.pattern.getIndex(),
+        return cloneWithPattern( new Pattern( this.pattern.getIndex(),
                                              this.pattern.getOffset(),
                                              this.pattern.getObjectType(),
                                              getIdentifier(),
                                              isInternalFact()) );
+    }
+
+    public Declaration cloneWithPattern(Pattern pattern) {
+        return new Declaration( this.identifier, this.readAccessor, pattern );
     }
 }

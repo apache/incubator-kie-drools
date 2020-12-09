@@ -51,6 +51,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.drools.model.DSL.from;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
@@ -509,7 +510,7 @@ public class GroupByTest {
         Variable<String> existsVar = D.declarationOf(String.class);
         Variable<Integer> keyVar = D.declarationOf(Integer.class);
         Variable<Long> resultVar = D.declarationOf(Long.class);
-        Variable<Integer> mappedResultVar = D.declarationOf(Integer.class, D.from(resultVar, Long::intValue));
+        Variable<Integer> mappedResultVar = D.declarationOf(Integer.class, from(resultVar, Long::intValue));
 
         D.PatternDef<Integer> pattern = D.pattern(patternVar);
         D.PatternDef<String> exist = D.pattern(existsVar);
@@ -674,7 +675,7 @@ public class GroupByTest {
         Variable<Integer> var_$sumOfAges = D.declarationOf(Integer.class);
 
         // Define key1 with from
-        Variable<Object> var_$key1 = D.declarationOf( Object.class, D.from( var_$key, CompositeKey::getKey1 ) );
+        Variable<Object> var_$key1 = D.declarationOf( Object.class, from( var_$key, CompositeKey::getKey1 ) );
 
         Rule rule1 = D.rule("R1").build(
                 D.groupBy(
@@ -810,5 +811,48 @@ public class GroupByTest {
         ksession.fireAllRules();
 
         assertThat(results).contains(80, 75, 71);
+    }
+
+    @Test
+    public void testFromAfterGroupBy() {
+        Global<Set> var_results = D.globalOf( Set.class, "defaultpkg", "results" );
+
+        Variable var_$p1 = D.declarationOf( Person.class );
+        Variable var_$key = D.declarationOf( String.class );
+        Variable var_$count = D.declarationOf( Long.class );
+        Variable var_$remapped1 = D.declarationOf( Object.class, from( var_$key ) );
+        Variable var_$remapped2 = D.declarationOf( Long.class, from( var_$count ) );
+
+        PatternDSL.PatternDef<Person> p1pattern = D.pattern( var_$p1 )
+                .expr( p -> (( Person ) p).getName() != null );
+
+        Rule rule1 = D.rule( "R1" ).build(
+                D.groupBy(
+                        p1pattern,
+                        var_$p1,
+                        var_$key,
+                        Person::getName,
+                        DSL.accFunction( CountAccumulateFunction::new, var_$p1 ).as( var_$count ) ),
+                D.pattern( var_$remapped1 ),
+                D.pattern( var_$remapped2 ),
+                D.on( var_$remapped1, var_$remapped2 )
+                        .execute( ( ctx, name, count ) -> {
+                            if ( !(name instanceof String) ) {
+                                throw new IllegalStateException( "Name not String, but " + name.getClass() );
+                            }
+                        } )
+        );
+
+        Model model = new ModelImpl().addRule( rule1 ).addGlobal( var_results );
+        KieSession ksession = KieBaseBuilder.createKieBaseFromModel( model ).newKieSession();
+
+        Set<Integer> results = new LinkedHashSet<>();
+        ksession.setGlobal( "results", results );
+
+        ksession.insert( new Person( "Mark", 42 ) );
+        ksession.insert( new Person( "Edson", 38 ) );
+        ksession.insert( new Person( "Edoardo", 33 ) );
+        int fireCount = ksession.fireAllRules();
+        assertThat( fireCount ).isGreaterThan( 0 );
     }
 }
