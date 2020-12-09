@@ -135,7 +135,7 @@ import org.drools.modelcompiler.constraints.LambdaAccumulator;
 import org.drools.modelcompiler.constraints.LambdaConstraint;
 import org.drools.modelcompiler.constraints.LambdaDataProvider;
 import org.drools.modelcompiler.constraints.LambdaEvalExpression;
-import org.drools.modelcompiler.constraints.LambdaGroupByAccumulator;
+import org.drools.modelcompiler.constraints.LambdaGroupByAccumulate;
 import org.drools.modelcompiler.constraints.LambdaReadAccessor;
 import org.drools.modelcompiler.constraints.TemporalConstraintEvaluator;
 import org.drools.modelcompiler.constraints.UnificationConstraint;
@@ -778,13 +778,7 @@ public class KiePackagesBuilder {
 
             Accumulator accumulator = createAccumulator(usedVariableName, bindingEvaluator, accFunction);
             if (isGroupBy) {
-                GroupByPattern groupBy = ( GroupByPattern ) accPattern;
-                ctx.addDependantDeclaration( groupBy.getVarKey(), boundVar, new GroupByDeclaration(declaration.getPattern()) );
-                Declaration[] groupingDeclarations = new Declaration[groupBy.getVars().length];
-                for (int i = 0; i < groupBy.getVars().length; i++) {
-                    groupingDeclarations[i] = ctx.getDeclaration( groupBy.getVars()[i] );
-                }
-                accumulator = new LambdaGroupByAccumulator(accumulator, groupingDeclarations, groupBy.getGroupingFunction());
+                ctx.addDependantDeclaration( (( GroupByPattern ) accPattern).getVarKey(), boundVar, new GroupByDeclaration(declaration.getPattern()) );
             }
 
             Declaration[] requiredDeclarations = getRequiredDeclarationsForAccumulate( ctx, source, accFunction, binding, bindingEvaluator );
@@ -806,6 +800,9 @@ public class KiePackagesBuilder {
                                                            true );
                 pattern.addDeclaration( declaration );
                 ctx.addDeclaration( boundVar, declaration );
+                if (isGroupBy) {
+                    ctx.addDependantDeclaration( (( GroupByPattern ) accPattern).getVarKey(), boundVar, new GroupByDeclaration(declaration.getPattern()) );
+                }
                 accumulators[i] = accumulator;
 
                 Declaration[] requiredDeclarations = getRequiredDeclarationsForAccumulate( ctx, source, accFunctions[i], binding, bindingEvaluator );
@@ -818,6 +815,15 @@ public class KiePackagesBuilder {
                 requiredDeclarationList.forEach( d -> (( Pattern ) source).addDeclaration( d ) );
             }
             accumulate = new MultiAccumulate( source, new Declaration[0], accumulators );
+        }
+
+        if (isGroupBy) {
+            GroupByPattern groupBy = ( GroupByPattern ) accPattern;
+            Declaration[] groupingDeclarations = new Declaration[groupBy.getVars().length];
+            for (int i = 0; i < groupBy.getVars().length; i++) {
+                groupingDeclarations[i] = ctx.getDeclaration( groupBy.getVars()[i] );
+            }
+            accumulate = new LambdaGroupByAccumulate(accumulate, groupingDeclarations, groupBy.getGroupingFunction());
         }
 
         for (Variable boundVar : accPattern.getBoundVariables()) {
