@@ -180,7 +180,7 @@ public class CustomShadowVariableDescriptor<Solution_> extends ShadowVariableDes
                             + ") with sourceVariableName (" + sourceVariableName
                             + ") which is not a valid planning variable on entityClass ("
                             + sourceEntityDescriptor.getEntityClass() + ").\n"
-                            + entityDescriptor.buildInvalidVariableNameExceptionMessage(sourceVariableName));
+                            + sourceEntityDescriptor.buildInvalidVariableNameExceptionMessage(sourceVariableName));
                 }
                 sourceVariableDescriptor.registerSinkVariableDescriptor(this);
                 sourceVariableDescriptorList.add(sourceVariableDescriptor);
