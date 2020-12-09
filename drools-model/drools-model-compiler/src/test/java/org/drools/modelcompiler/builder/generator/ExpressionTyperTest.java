@@ -5,8 +5,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
@@ -25,6 +27,7 @@ import org.drools.modelcompiler.inlinecast.ICAbstractB;
 import org.drools.modelcompiler.inlinecast.ICAbstractC;
 import org.drools.modelcompiler.inlinecast.ICB;
 import org.drools.modelcompiler.inlinecast.ICC;
+import org.drools.mvel.parser.ast.expr.DrlxExpression;
 import org.drools.mvel.parser.ast.expr.PointFreeExpr;
 import org.junit.Before;
 import org.junit.Test;
@@ -187,6 +190,30 @@ public class ExpressionTyperTest {
     public void testAssignment2() {
         assertEquals(THIS_PLACEHOLDER + ".getName().length()", toTypedExpression("name.length", Person.class).getExpression().toString());
 
+    }
+
+    @Test
+    public void transformMethodExpressionToMethodCallExpressionTypeSafe() {
+
+        final String expr = StaticJavaParser.parseExpression("address.city.startsWith(\"M\")").toString();
+        final String expr1 = StaticJavaParser.parseExpression("getAddress().city.startsWith(\"M\")").toString();
+        final String expr2 = StaticJavaParser.parseExpression("address.getCity().startsWith(\"M\")").toString();
+
+        final MethodCallExpr expected = StaticJavaParser.parseExpression("_this.getAddress().getCity().startsWith(\"M\")");
+
+        assertEquals(expected.toString(), toTypedExpression(expr, Person.class).getExpression().toString());
+        assertEquals(expected.toString(), toTypedExpression(expr1, Person.class).getExpression().toString());
+        assertEquals(expected.toString(), toTypedExpression(expr2, Person.class).getExpression().toString());
+    }
+
+    @Test
+    public void transformMethodExpressionToMethodCallWithInlineCast() {
+        typeResolver.addImport("org.drools.modelcompiler.domain.InternationalAddress");
+
+        final DrlxExpression expr = DrlxParseUtil.parseExpression("address#InternationalAddress.state");
+        final MethodCallExpr expected = StaticJavaParser.parseExpression("((org.drools.modelcompiler.domain.InternationalAddress)_this.getAddress()).getState()");
+
+        assertEquals(expected.toString(),  toTypedExpression(expr.getExpr().toString(), Person.class).getExpression().toString());
     }
 
     private TypedExpression toTypedExpression(String inputExpression, Class<?> patternType, DeclarationSpec... declarations) {
