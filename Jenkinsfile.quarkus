@@ -25,7 +25,7 @@ pipeline {
                 checkout([$class: 'GitSCM', branches: [[name: 'master']], browser: [$class: 'GithubWeb', repoUrl: 'git@github.com:quarkusio/quarkus.git'], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'quarkus']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'kie-ci-user-key', url: 'git@github.com:quarkusio/quarkus.git']]])
                 dir("quarkus") {
                     script {
-                        maven.runMavenWithSubmarineSettings('clean install -Pquick-build', true)
+                        maven.runMavenWithSubmarineSettings('clean install -Dquickly', true)
                     }
                 }
             }
