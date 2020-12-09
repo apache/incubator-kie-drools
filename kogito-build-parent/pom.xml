@@ -91,7 +91,7 @@
     <version.org.graalvm.nativeimage>20.2.0</version.org.graalvm.nativeimage>
     <version.com.squareup.okhttp3>3.14.6</version.com.squareup.okhttp3>
     <version.com.sun.xml.bind>2.3.0</version.com.sun.xml.bind>
-    <version.com.thoughtworks.xstream>1.4.11.1</version.com.thoughtworks.xstream>
+    <version.com.thoughtworks.xstream>1.4.14</version.com.thoughtworks.xstream>
     <version.cz.xtf>0.14</version.cz.xtf>
 
     <version.javassist>3.20.0-GA</version.javassist>
