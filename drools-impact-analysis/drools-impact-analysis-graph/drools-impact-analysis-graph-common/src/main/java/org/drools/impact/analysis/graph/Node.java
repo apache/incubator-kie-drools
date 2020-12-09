@@ -63,6 +63,7 @@ public class Node {
     }
 
     public static void linkNodes(Node source, Node target, Link.Type type) {
+        // TODO: We may omit a link to oneself (Or it may be decided when rendering)
         Link link = new Link(source, target, type);
         source.getOutgoingLinks().add(link);
         target.getIncomingLinks().add(link);

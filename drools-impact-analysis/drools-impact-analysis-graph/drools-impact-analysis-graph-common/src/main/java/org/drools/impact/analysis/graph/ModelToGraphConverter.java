@@ -38,20 +38,18 @@ public class ModelToGraphConverter {
 
     private static Logger logger = LoggerFactory.getLogger(ModelToGraphConverter.class);
 
-    private static final String NO_REACT = "this";
-
     public Graph toGraph(AnalysisModel model) {
-        GraphAnalysis graphAnalysis = generateGraphAnalysis( model );
-        parseGraphAnalysis( model, graphAnalysis );
+        GraphAnalysis graphAnalysis = generateGraphAnalysis(model);
+        parseGraphAnalysis(model, graphAnalysis);
         return new Graph(graphAnalysis.getNodeMap());
     }
 
-    private GraphAnalysis generateGraphAnalysis( AnalysisModel model ) {
+    private GraphAnalysis generateGraphAnalysis(AnalysisModel model) {
         GraphAnalysis graphAnalysis = new GraphAnalysis();
         for (Package pkg : model.getPackages()) {
             List<Rule> rules = pkg.getRules();
             for (Rule rule : rules) {
-                graphAnalysis.addNode( new Node(rule) );
+                graphAnalysis.addNode(new Node(rule));
 
                 LeftHandSide lhs = rule.getLhs();
                 List<Pattern> patterns = lhs.getPatterns();
@@ -59,10 +57,11 @@ public class ModelToGraphConverter {
                     Class<?> patternClass = pattern.getPatternClass();
                     Collection<String> reactOnFields = pattern.getReactOnFields();
                     if (pattern.isClassReactive()) {
-                        graphAnalysis.addClassReactiveRule( patternClass, rule );
+                        // Pattern which cannot analyze reactivity (e.g. Person(blackBoxMethod())) so reacts to all properties
+                        graphAnalysis.addClassReactiveRule(patternClass, rule);
                     } else if (reactOnFields.size() == 0) {
-                        // TODO: Currently reactOnFields.size() == 0 assumes that the pattern doesn't have a constraint (e.g. Person()) so no react
-                        graphAnalysis.addPropertyReactiveRule(patternClass, NO_REACT, rule);
+                        // Pattern without constraint (e.g. Person()) so doesn't react to properties (only react to  insert/delete)
+                        graphAnalysis.addInsertReactiveRule(patternClass, rule);
                     } else {
                         for (String field : reactOnFields) {
                             graphAnalysis.addPropertyReactiveRule(patternClass, field, rule);
@@ -74,7 +73,7 @@ public class ModelToGraphConverter {
         return graphAnalysis;
     }
 
-    private void parseGraphAnalysis( AnalysisModel model, GraphAnalysis graphAnalysis ) {
+    private void parseGraphAnalysis(AnalysisModel model, GraphAnalysis graphAnalysis) {
         for (Package pkg : model.getPackages()) {
             String pkgName = pkg.getName();
             List<Rule> rules = pkg.getRules();
@@ -85,13 +84,13 @@ public class ModelToGraphConverter {
                 for (ConsequenceAction action : actions) {
                     switch (action.getType()) {
                         case INSERT:
-                            processInsert( graphAnalysis, pkgName, ruleName, action);
+                            processInsert(graphAnalysis, pkgName, ruleName, action);
                             break;
                         case DELETE:
-                            processDelete( graphAnalysis, pkgName, ruleName, action);
+                            processDelete(graphAnalysis, pkgName, ruleName, action);
                             break;
                         case MODIFY:
-                            processModify( graphAnalysis, pkgName, ruleName, (ModifyAction) action);
+                            processModify(graphAnalysis, pkgName, ruleName, (ModifyAction) action);
                             break;
                     }
                 }
@@ -128,29 +127,29 @@ public class ModelToGraphConverter {
         Node source = graphAnalysis.getNode(fqdn(pkgName, ruleName));
 
         Class<?> modifiedClass = action.getActionClass();
-        if (!graphAnalysis.isRegisteredClass( modifiedClass )) {
+        if (!graphAnalysis.isRegisteredClass(modifiedClass)) {
             // Not likely happen but not invalid
-            logger.warn("Not found " + modifiedClass + " in reactFactMap");
+            logger.warn("Not found " + modifiedClass + " in reactiveMap");
             return;
         }
         List<ModifiedProperty> modifiedProperties = action.getModifiedProperties();
         for (ModifiedProperty modifiedProperty : modifiedProperties) {
             String property = modifiedProperty.getProperty();
-            Set<Rule> rules = graphAnalysis.getRulesReactiveTo( modifiedClass, property );
+            Set<Rule> rules = graphAnalysis.getRulesReactiveTo(modifiedClass, property);
             if (rules == null) {
                 // Not likely happen but not invalid
-                logger.warn("Not found " + property + " in reactFieldMap");
+                logger.warn("Not found " + property + " in reactiveMap");
                 continue;
             }
             for (Rule reactedRule : rules) {
                 List<Constraint> constraints = reactedRule.getLhs().getPatterns().stream()
                                                           .filter(pattern -> pattern.getPatternClass() == modifiedClass)
                                                           .flatMap(pattern -> pattern.getConstraints().stream())
-                                                          .filter(constraint -> constraint.getProperty().equals(property))
+                                                          .filter(constraint -> constraint.getProperty() != null && constraint.getProperty().equals(property))
                                                           .collect(Collectors.toList());
                 Link.Type combinedLinkType = Link.Type.UNKNOWN;
                 if (constraints.size() == 0) {
-                    // This rule is reactive to the property but cannot find its constraint (e.g. [age > $a] non-literal constraint) It means UNKNOWN impact
+                    // This rule is reactive to the property but cannot find its constraint (e.g. [age > $a] non-literal constraint). It means UNKNOWN impact
                     combinedLinkType = Link.Type.UNKNOWN;
                 } else {
                     // If constraints contain at least one POSITIVE, we consider it's POSITIVE.
@@ -175,9 +174,6 @@ public class ModelToGraphConverter {
     private Link.Type linkType(Constraint constraint, ModifiedProperty modifiedProperty) {
         Object value = constraint.getValue();
         Object modifiedValue = modifiedProperty.getValue();
-
-        // If value and/or modifiedValue are not literal (e.g. age > $a), return Link.Type.UNKNOWN
-        // Check with Mario if we can distinguish literal or not on the model side
 
         switch (constraint.getType()) {
             case EQUAL:
