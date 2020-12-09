@@ -1420,45 +1420,6 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
-    public void globalNodeOrder() {
-        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 1);
-        TestdataLavishEntityGroup entityGroup = new TestdataLavishEntityGroup("MyEntityGroup");
-        solution.getEntityGroupList().add(entityGroup);
-        TestdataLavishEntity entity1 = new TestdataLavishEntity("MyEntity 1", entityGroup, solution.getFirstValue());
-        entity1.setStringProperty("MyString1");
-        solution.getEntityList().add(entity1);
-
-        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector1 = buildScoreDirector((factory) -> {
-            return factory.from(TestdataLavishEntity.class)
-                    .filter(entity -> entity.getEntityGroup() == entityGroup)
-                    .filter(entity -> entity.getStringProperty().equals("MyString1"))
-                    .join(TestdataLavishEntity.class, equal(TestdataLavishEntity::getIntegerProperty))
-                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
-        });
-
-        // From scratch
-        scoreDirector1.setWorkingSolution(solution);
-        assertScore(scoreDirector1,
-                assertMatch(entity1, solution.getFirstEntity()),
-                assertMatch(entity1, entity1));
-
-        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector2 = buildScoreDirector((factory) -> {
-            return factory.from(TestdataLavishEntity.class)
-                    .join(factory.from(TestdataLavishEntity.class)
-                            .filter(entity -> entity.getEntityGroup() == entityGroup)
-                            .filter(entity -> entity.getStringProperty().equals("MyString1")),
-                            equal(TestdataLavishEntity::getIntegerProperty))
-                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
-        });
-
-        // From scratch
-        scoreDirector2.setWorkingSolution(solution);
-        assertScore(scoreDirector2,
-                assertMatch(solution.getFirstEntity(), entity1),
-                assertMatch(entity1, entity1));
-    }
-
-    @TestTemplate
     public void zeroConstraintWeightDisabled() {
         /*
          * This may never be possible for Drools. If implemented, please remember that some rules may be shared by

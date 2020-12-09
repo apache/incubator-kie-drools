@@ -39,10 +39,10 @@ public final class BavetScoringBiNode<A, B> extends BavetAbstractBiNode<A, B> im
     private final boolean constraintMatchEnabled;
     private final Set<BavetScoringBiTuple<A, B>> tupleSet;
 
-    public BavetScoringBiNode(BavetConstraintSession session, int nodeOrder,
+    public BavetScoringBiNode(BavetConstraintSession session, int nodeIndex,
             String constraintPackage, String constraintName, Score<?> constraintWeight,
             TriFunction<A, B, Consumer<Score<?>>, UndoScoreImpacter> scoreImpacter) {
-        super(session, nodeOrder);
+        super(session, nodeIndex);
         this.constraintPackage = constraintPackage;
         this.constraintName = constraintName;
         this.constraintWeight = constraintWeight;

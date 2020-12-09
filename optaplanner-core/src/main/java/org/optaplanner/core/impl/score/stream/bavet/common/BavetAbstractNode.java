@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,11 +21,11 @@ import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintSession;
 public class BavetAbstractNode implements BavetNode {
 
     protected final BavetConstraintSession session;
-    protected final int nodeOrder;
+    protected final int nodeIndex;
 
-    public BavetAbstractNode(BavetConstraintSession session, int nodeOrder) {
+    public BavetAbstractNode(BavetConstraintSession session, int nodeIndex) {
         this.session = session;
-        this.nodeOrder = nodeOrder;
+        this.nodeIndex = nodeIndex;
     }
 
     // ************************************************************************
@@ -33,8 +33,8 @@ public class BavetAbstractNode implements BavetNode {
     // ************************************************************************
 
     @Override
-    public int getNodeOrder() {
-        return nodeOrder;
+    public int getNodeIndex() {
+        return nodeIndex;
     }
 
 }

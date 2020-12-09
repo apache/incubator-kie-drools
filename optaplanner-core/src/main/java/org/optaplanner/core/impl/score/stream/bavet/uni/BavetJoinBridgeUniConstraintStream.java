@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,14 +63,13 @@ public final class BavetJoinBridgeUniConstraintStream<Solution_, A>
 
     @Override
     protected BavetJoinBridgeUniNode<A> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
-            Score<?> constraintWeight, int nodeOrder, BavetAbstractUniNode<A> parentNode) {
-        BavetJoinBridgeUniNode<A> node = new BavetJoinBridgeUniNode<>(buildPolicy.getSession(),
-                nodeOrder, parentNode, mapping, indexFactory.buildIndex(isLeftBridge));
-        return node;
+            Score<?> constraintWeight, BavetAbstractUniNode<A> parentNode) {
+        return new BavetJoinBridgeUniNode<>(buildPolicy.getSession(), buildPolicy.nextNodeIndex(), parentNode, mapping,
+                indexFactory.buildIndex(isLeftBridge));
     }
 
     @Override
-    protected void createChildNodeChains(BavetNodeBuildPolicy<Solution_> buildPolicy, Score<?> constraintWeight, int nodeOrder,
+    protected void createChildNodeChains(BavetNodeBuildPolicy<Solution_> buildPolicy, Score<?> constraintWeight,
             BavetAbstractUniNode<A> uncastedNode) {
         if (!childStreamList.isEmpty()) {
             throw new IllegalStateException("Impossible state: the stream (" + this
@@ -83,8 +82,7 @@ public final class BavetJoinBridgeUniConstraintStream<Solution_, A>
         } else {
             BavetJoinBridgeNode leftNode = isLeftBridge ? node : otherBridgeNode;
             BavetJoinBridgeNode rightNode = isLeftBridge ? otherBridgeNode : node;
-            int maxNodeOrder = Math.max(leftNode.getNodeOrder(), rightNode.getNodeOrder());
-            joinStream.createNodeChain(buildPolicy, constraintWeight, maxNodeOrder + 1, leftNode, rightNode);
+            joinStream.createNodeChain(buildPolicy, constraintWeight, leftNode, rightNode);
         }
     }
 

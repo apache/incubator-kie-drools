@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,19 +16,23 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.uni;
 
+import java.util.List;
+
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintSession;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetAbstractNode;
 
 public abstract class BavetAbstractUniNode<A> extends BavetAbstractNode {
 
-    public BavetAbstractUniNode(BavetConstraintSession session, int nodeOrder) {
-        super(session, nodeOrder);
+    public BavetAbstractUniNode(BavetConstraintSession session, int nodeIndex) {
+        super(session, nodeIndex);
     }
 
     public void addChildNode(BavetAbstractUniNode<A> childNode) {
         throw new IllegalStateException("Impossible state: the ConstraintStream for this node (" + this
                 + ") cannot handle a childNode (" + childNode + ").");
     }
+
+    public abstract List<BavetAbstractUniNode<A>> getChildNodes();
 
     public abstract BavetAbstractUniTuple<A> createTuple(BavetAbstractUniTuple<A> parentTuple);
 

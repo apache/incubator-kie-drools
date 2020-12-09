@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,9 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.uni;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -31,19 +33,21 @@ public final class BavetGroupBridgeUniNode<A, NewA, ResultContainer_, NewB> exte
     private final BavetAbstractUniNode<A> parentNode;
     private final Function<A, NewA> groupKeyMapping;
     private final UniConstraintCollector<A, ResultContainer_, NewB> collector;
-    private final BavetGroupBiNode<NewA, ResultContainer_, NewB> groupNode;
-
     private final Map<NewA, BavetGroupBiTuple<NewA, ResultContainer_, NewB>> tupleMap;
+    private BavetGroupBiNode<NewA, ResultContainer_, NewB> groupNode;
 
-    public BavetGroupBridgeUniNode(BavetConstraintSession session, int nodeOrder, BavetAbstractUniNode<A> parentNode,
-            Function<A, NewA> groupKeyMapping, UniConstraintCollector<A, ResultContainer_, NewB> collector,
-            BavetGroupBiNode<NewA, ResultContainer_, NewB> groupNode) {
-        super(session, nodeOrder);
+    public BavetGroupBridgeUniNode(BavetConstraintSession session, int nodeIndex, BavetAbstractUniNode<A> parentNode,
+            Function<A, NewA> groupKeyMapping, UniConstraintCollector<A, ResultContainer_, NewB> collector) {
+        super(session, nodeIndex);
         this.parentNode = parentNode;
         this.groupKeyMapping = groupKeyMapping;
         this.collector = collector;
-        this.groupNode = groupNode;
         tupleMap = new HashMap<>();
+    }
+
+    @Override
+    public List<BavetAbstractUniNode<A>> getChildNodes() {
+        return Collections.emptyList();
     }
 
     @Override
@@ -51,7 +55,15 @@ public final class BavetGroupBridgeUniNode<A, NewA, ResultContainer_, NewB> exte
         return new BavetGroupBridgeUniTuple<>(this, parentTuple);
     }
 
+    public void setGroupNode(BavetGroupBiNode<NewA, ResultContainer_, NewB> groupNode) {
+        this.groupNode = groupNode;
+    }
+
     public void refresh(BavetGroupBridgeUniTuple<A, NewA, ResultContainer_, NewB> tuple) {
+        if (groupNode == null) {
+            throw new IllegalStateException("Impossible state: GroupBridgeNode (" + this +
+                    ") has no child GroupNode (" + groupNode + ").");
+        }
         if (tuple.getChildTuple() != null) {
             BavetGroupBiTuple<NewA, ResultContainer_, NewB> childTuple = tuple.getChildTuple();
             NewA oldGroupKey = childTuple.getGroupKey();
@@ -82,7 +94,7 @@ public final class BavetGroupBridgeUniNode<A, NewA, ResultContainer_, NewB> exte
             if (parentCount == 1) {
                 session.transitionTuple(childTuple, BavetTupleState.CREATING);
             } else {
-                // It might have just been created by an earlier tuple in the same nodeOrder
+                // It might have just been created by an earlier tuple in the same nodeIndex
                 if (childTuple.getState() != BavetTupleState.CREATING) {
                     session.transitionTuple(childTuple, BavetTupleState.UPDATING);
                 }

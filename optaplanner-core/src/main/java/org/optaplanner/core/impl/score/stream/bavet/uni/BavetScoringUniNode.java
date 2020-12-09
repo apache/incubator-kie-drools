@@ -18,6 +18,7 @@ package org.optaplanner.core.impl.score.stream.bavet.uni;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
@@ -40,10 +41,10 @@ public final class BavetScoringUniNode<A> extends BavetAbstractUniNode<A> implem
     private final boolean constraintMatchEnabled;
     private final Set<BavetScoringUniTuple<A>> tupleSet;
 
-    public BavetScoringUniNode(BavetConstraintSession session, int nodeOrder, BavetAbstractUniNode<A> parentNode,
+    public BavetScoringUniNode(BavetConstraintSession session, int nodeIndex, BavetAbstractUniNode<A> parentNode,
             String constraintPackage, String constraintName, Score<?> constraintWeight,
             BiFunction<A, Consumer<Score<?>>, UndoScoreImpacter> scoreImpacter) {
-        super(session, nodeOrder);
+        super(session, nodeIndex);
         this.parentNode = parentNode;
         this.constraintPackage = constraintPackage;
         this.constraintName = constraintName;
@@ -62,6 +63,11 @@ public final class BavetScoringUniNode<A> extends BavetAbstractUniNode<A> implem
     // ************************************************************************
     // Runtime
     // ************************************************************************
+
+    @Override
+    public List<BavetAbstractUniNode<A>> getChildNodes() {
+        return Collections.emptyList();
+    }
 
     @Override
     public BavetScoringUniTuple<A> createTuple(BavetAbstractUniTuple<A> parentTuple) {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,19 +50,19 @@ public final class BavetGroupBiConstraintStream<Solution_, GroupKey_, ResultCont
 
     @Override
     public BavetGroupBiNode<GroupKey_, ResultContainer_, Result_> createNodeChain(BavetNodeBuildPolicy<Solution_> buildPolicy,
-            Score<?> constraintWeight, int nodeOrder, BavetAbstractBiNode<GroupKey_, Result_> parentNode) {
+            Score<?> constraintWeight, BavetAbstractBiNode<GroupKey_, Result_> parentNode) {
         return (BavetGroupBiNode<GroupKey_, ResultContainer_, Result_>) super.createNodeChain(buildPolicy, constraintWeight,
-                nodeOrder, parentNode);
+                parentNode);
     }
 
     @Override
     protected BavetGroupBiNode<GroupKey_, ResultContainer_, Result_> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
-            Score<?> constraintWeight, int nodeOrder, BavetAbstractBiNode<GroupKey_, Result_> parentNode) {
+            Score<?> constraintWeight, BavetAbstractBiNode<GroupKey_, Result_> parentNode) {
         if (parentNode != null) {
             throw new IllegalStateException("Impossible state: the stream (" + this
                     + ") cannot have a parentNode (" + parentNode + ").");
         }
-        return new BavetGroupBiNode<>(buildPolicy.getSession(), nodeOrder, finisher);
+        return new BavetGroupBiNode<>(buildPolicy.getSession(), buildPolicy.nextNodeIndex(), finisher);
     }
 
     @Override

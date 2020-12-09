@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,20 +56,21 @@ public final class BavetJoinBiConstraintStream<Solution_, A, B> extends BavetAbs
 
     @Override
     public BavetJoinBiNode<A, B> createNodeChain(BavetNodeBuildPolicy<Solution_> buildPolicy,
-            Score<?> constraintWeight, int nodeOrder, BavetJoinBridgeNode leftNode_, BavetJoinBridgeNode rightNode_) {
+            Score<?> constraintWeight, BavetJoinBridgeNode leftNode_, BavetJoinBridgeNode rightNode_) {
         BavetJoinBridgeUniNode<A> leftNode = (BavetJoinBridgeUniNode<A>) leftNode_;
         BavetJoinBridgeUniNode<B> rightNode = (BavetJoinBridgeUniNode<B>) rightNode_;
-        BavetJoinBiNode<A, B> node = new BavetJoinBiNode<>(buildPolicy.getSession(), nodeOrder, leftNode, rightNode);
+        BavetJoinBiNode<A, B> node = new BavetJoinBiNode<>(buildPolicy.getSession(), buildPolicy.nextNodeIndex(),
+                leftNode, rightNode);
         leftNode.setChildTupleRefresher(node::refreshChildTuplesLeft); // TODO don't register if shared
         rightNode.setChildTupleRefresher(node::refreshChildTuplesRight);
-        node = (BavetJoinBiNode<A, B>) processNode(buildPolicy, nodeOrder, null, node); // TODO Sharing never happens
-        createChildNodeChains(buildPolicy, constraintWeight, nodeOrder, node);
+        node = (BavetJoinBiNode<A, B>) processNode(buildPolicy, null, node); // TODO Sharing never happens
+        createChildNodeChains(buildPolicy, constraintWeight, node);
         return node;
     }
 
     @Override
     protected BavetJoinBiNode<A, B> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
-            Score<?> constraintWeight, int nodeOrder, BavetAbstractBiNode<A, B> parentNode) {
+            Score<?> constraintWeight, BavetAbstractBiNode<A, B> parentNode) {
         throw new IllegalStateException("Impossible state: this code is never called.");
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,9 +29,9 @@ public final class BavetGroupBiNode<GroupKey_, ResultContainer_, Result_> extend
 
     private final List<BavetAbstractBiNode<GroupKey_, Result_>> childNodeList = new ArrayList<>();
 
-    public BavetGroupBiNode(BavetConstraintSession session, int nodeOrder,
+    public BavetGroupBiNode(BavetConstraintSession session, int nodeIndex,
             Function<ResultContainer_, Result_> finisher) {
-        super(session, nodeOrder);
+        super(session, nodeIndex);
         this.finisher = finisher;
     }
 

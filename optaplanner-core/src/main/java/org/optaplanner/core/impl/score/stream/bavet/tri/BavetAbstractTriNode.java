@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,8 +21,8 @@ import org.optaplanner.core.impl.score.stream.bavet.common.BavetAbstractNode;
 
 public abstract class BavetAbstractTriNode<A, B, C> extends BavetAbstractNode {
 
-    public BavetAbstractTriNode(BavetConstraintSession session, int nodeOrder) {
-        super(session, nodeOrder);
+    public BavetAbstractTriNode(BavetConstraintSession session, int nodeIndex) {
+        super(session, nodeIndex);
     }
 
     public void addChildNode(BavetAbstractTriNode<A, B, C> childNode) {

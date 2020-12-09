@@ -39,10 +39,10 @@ public final class BavetScoringTriNode<A, B, C> extends BavetAbstractTriNode<A, 
     private final boolean constraintMatchEnabled;
     private final Set<BavetScoringTriTuple<A, B, C>> tupleSet;
 
-    public BavetScoringTriNode(BavetConstraintSession session, int nodeOrder,
+    public BavetScoringTriNode(BavetConstraintSession session, int nodeIndex,
             String constraintPackage, String constraintName, Score<?> constraintWeight,
             QuadFunction<A, B, C, Consumer<Score<?>>, UndoScoreImpacter> scoreImpacter) {
-        super(session, nodeOrder);
+        super(session, nodeIndex);
         this.constraintPackage = constraintPackage;
         this.constraintName = constraintName;
         this.constraintWeight = constraintWeight;

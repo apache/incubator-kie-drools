@@ -899,12 +899,6 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
     // ************************************************************************
 
     @TestTemplate
-    @Disabled("Not yet implemented") // TODO
-    public void globalNodeOrder() {
-
-    }
-
-    @TestTemplate
     @Disabled("Not yet supported") // TODO
     public void nodeSharing() {
 

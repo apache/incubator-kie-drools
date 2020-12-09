@@ -172,4 +172,11 @@ public class ConstraintStreamScoreDirector<Solution_, Score_ extends Score<Score
         super.afterProblemFactRemoved(problemFact);
     }
 
+    // ************************************************************************
+    // Getters/setters
+    // ************************************************************************
+
+    public ConstraintSession<Solution_, Score_> getSession() {
+        return session;
+    }
 }

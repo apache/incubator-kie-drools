@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,20 +57,21 @@ public final class BavetJoinTriConstraintStream<Solution_, A, B, C> extends Bave
 
     @Override
     public BavetJoinTriNode<A, B, C> createNodeChain(BavetNodeBuildPolicy<Solution_> buildPolicy,
-            Score<?> constraintWeight, int nodeOrder, BavetJoinBridgeNode leftNode_, BavetJoinBridgeNode rightNode_) {
+            Score<?> constraintWeight, BavetJoinBridgeNode leftNode_, BavetJoinBridgeNode rightNode_) {
         BavetJoinBridgeBiNode<A, B> leftNode = (BavetJoinBridgeBiNode<A, B>) leftNode_;
         BavetJoinBridgeUniNode<C> rightNode = (BavetJoinBridgeUniNode<C>) rightNode_;
-        BavetJoinTriNode<A, B, C> node = new BavetJoinTriNode<>(buildPolicy.getSession(), nodeOrder, leftNode, rightNode);
+        BavetJoinTriNode<A, B, C> node = new BavetJoinTriNode<>(buildPolicy.getSession(), buildPolicy.nextNodeIndex(),
+                leftNode, rightNode);
         leftNode.setChildTupleRefresher(node::refreshChildTuplesLeft); // TODO don't register if shared
         rightNode.setChildTupleRefresher(node::refreshChildTuplesRight);
-        node = (BavetJoinTriNode<A, B, C>) processNode(buildPolicy, nodeOrder, null, node); // TODO Sharing never happens
-        createChildNodeChains(buildPolicy, constraintWeight, nodeOrder, node);
+        node = (BavetJoinTriNode<A, B, C>) processNode(buildPolicy, null, node); // TODO Sharing never happens
+        createChildNodeChains(buildPolicy, constraintWeight, node);
         return node;
     }
 
     @Override
     protected BavetJoinTriNode<A, B, C> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
-            Score<?> constraintWeight, int nodeOrder, BavetAbstractTriNode<A, B, C> parentNode) {
+            Score<?> constraintWeight, BavetAbstractTriNode<A, B, C> parentNode) {
         throw new IllegalStateException("Impossible state: this code is never called.");
     }
 

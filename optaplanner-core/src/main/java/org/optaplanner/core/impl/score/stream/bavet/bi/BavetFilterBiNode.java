@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,9 +31,9 @@ public final class BavetFilterBiNode<A, B> extends BavetAbstractBiNode<A, B> {
 
     private final List<BavetAbstractBiNode<A, B>> childNodeList = new ArrayList<>();
 
-    public BavetFilterBiNode(BavetConstraintSession session, int nodeOrder,
+    public BavetFilterBiNode(BavetConstraintSession session, int nodeIndex,
             BavetAbstractBiNode<A, B> parentNode, BiPredicate<A, B> predicate) {
-        super(session, nodeOrder);
+        super(session, nodeIndex);
         this.parentNode = parentNode;
         this.predicate = predicate;
     }

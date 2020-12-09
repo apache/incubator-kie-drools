@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,9 +35,9 @@ public final class BavetJoinBridgeBiNode<A, B> extends BavetAbstractBiNode<A, B>
 
     private final BavetIndex<BavetJoinBridgeBiTuple<A, B>> index;
 
-    public BavetJoinBridgeBiNode(BavetConstraintSession session, int nodeOrder, BavetAbstractBiNode<A, B> parentNode,
+    public BavetJoinBridgeBiNode(BavetConstraintSession session, int nodeIndex, BavetAbstractBiNode<A, B> parentNode,
             BiFunction<A, B, Object[]> mapping, BavetIndex<BavetJoinBridgeBiTuple<A, B>> index) {
-        super(session, nodeOrder);
+        super(session, nodeIndex);
         this.parentNode = parentNode;
         this.mapping = mapping;
         this.index = index;

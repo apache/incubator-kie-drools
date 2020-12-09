@@ -18,6 +18,7 @@ package org.optaplanner.core.impl.score.stream.bavet;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
@@ -34,6 +35,7 @@ import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
 import org.optaplanner.core.impl.score.stream.ConstraintSession;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetAbstractTuple;
+import org.optaplanner.core.impl.score.stream.bavet.common.BavetNode;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetNodeBuildPolicy;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetScoringNode;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetTupleState;
@@ -48,12 +50,13 @@ public final class BavetConstraintSession<Solution_, Score_ extends Score<Score_
     private final ScoreInliner<Score_> scoreInliner;
 
     private final Map<Class<?>, BavetFromUniNode<Object>> declaredClassToNodeMap;
-    private final int nodeOrderSize;
+    private final List<BavetNode> nodeIndexedNodeMap;
+    private final int nodeCount;
     private final Map<String, BavetScoringNode> constraintIdToScoringNodeMap;
 
     private final Map<Class<?>, List<BavetFromUniNode<Object>>> effectiveClassToNodeListMap;
 
-    private final List<Queue<BavetAbstractTuple>> nodeOrderedQueueList;
+    private final List<Queue<BavetAbstractTuple>> nodeIndexedQueueList;
     private final Map<Object, List<BavetFromUniTuple<Object>>> fromTupleListMap;
 
     public BavetConstraintSession(boolean constraintMatchEnabled, ScoreDefinition<Score_> scoreDefinition,
@@ -66,14 +69,23 @@ public final class BavetConstraintSession<Solution_, Score_ extends Score<Score_
         constraintToWeightMap.forEach((constraint, constraintWeight) -> {
             constraint.createNodes(buildPolicy, declaredClassToNodeMap, constraintWeight);
         });
-        this.nodeOrderSize = buildPolicy.getNodeOrderMaximum() + 1;
+        nodeIndexedNodeMap = buildPolicy.getCreatedNodes();
+        nodeCount = nodeIndexedNodeMap.size();
         constraintIdToScoringNodeMap = buildPolicy.getConstraintIdToScoringNodeMap();
         effectiveClassToNodeListMap = new HashMap<>(declaredClassToNodeMap.size());
-        nodeOrderedQueueList = new ArrayList<>(nodeOrderSize);
-        for (int i = 0; i < nodeOrderSize; i++) {
-            nodeOrderedQueueList.add(new ArrayDeque<>(1000));
+        nodeIndexedQueueList = new ArrayList<>(nodeCount);
+        for (int i = 0; i < nodeCount; i++) {
+            nodeIndexedQueueList.add(new ArrayDeque<>(1000));
         }
         fromTupleListMap = new IdentityHashMap<>(1000);
+    }
+
+    public Collection<BavetScoringNode> getScoringNodes() {
+        return constraintIdToScoringNodeMap.values();
+    }
+
+    public List<BavetNode> getNodes() {
+        return nodeIndexedNodeMap;
     }
 
     public List<BavetFromUniNode<Object>> findFromNodeList(Class<?> factClass) {
@@ -143,13 +155,13 @@ public final class BavetConstraintSession<Solution_, Score_ extends Score<Score_
             return;
         }
         tuple.setState(newState);
-        nodeOrderedQueueList.get(tuple.getNodeOrder()).add(tuple);
+        nodeIndexedQueueList.get(tuple.getNodeIndex()).add(tuple);
     }
 
     @Override
     public Score_ calculateScore(int initScore) {
-        for (int i = 0; i < nodeOrderSize; i++) {
-            Queue<BavetAbstractTuple> queue = nodeOrderedQueueList.get(i);
+        for (int i = 0; i < nodeCount; i++) {
+            Queue<BavetAbstractTuple> queue = nodeIndexedQueueList.get(i);
             BavetAbstractTuple tuple = queue.poll();
             while (tuple != null) {
                 tuple.refresh();

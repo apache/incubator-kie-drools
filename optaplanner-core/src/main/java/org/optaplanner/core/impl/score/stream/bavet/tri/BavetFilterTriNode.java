@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,9 +31,9 @@ public final class BavetFilterTriNode<A, B, C> extends BavetAbstractTriNode<A, B
 
     private final List<BavetAbstractTriNode<A, B, C>> childNodeList = new ArrayList<>();
 
-    public BavetFilterTriNode(BavetConstraintSession session, int nodeOrder,
+    public BavetFilterTriNode(BavetConstraintSession session, int nodeIndex,
             BavetAbstractTriNode<A, B, C> parentNode, TriPredicate<A, B, C> predicate) {
-        super(session, nodeOrder);
+        super(session, nodeIndex);
         this.parentNode = parentNode;
         this.predicate = predicate;
     }

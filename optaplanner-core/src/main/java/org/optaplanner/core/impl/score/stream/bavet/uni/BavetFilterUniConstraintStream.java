@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,8 +50,8 @@ public final class BavetFilterUniConstraintStream<Solution_, A> extends BavetAbs
 
     @Override
     protected BavetAbstractUniNode<A> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
-            Score<?> constraintWeight, int nodeOrder, BavetAbstractUniNode<A> parentNode) {
-        return new BavetFilterUniNode<>(buildPolicy.getSession(), nodeOrder, parentNode, predicate);
+            Score<?> constraintWeight, BavetAbstractUniNode<A> parentNode) {
+        return new BavetFilterUniNode<>(buildPolicy.getSession(), buildPolicy.nextNodeIndex(), parentNode, predicate);
     }
 
     @Override

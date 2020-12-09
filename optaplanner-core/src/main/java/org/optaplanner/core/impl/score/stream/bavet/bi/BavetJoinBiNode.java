@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,9 +35,9 @@ public final class BavetJoinBiNode<A, B> extends BavetAbstractBiNode<A, B> imple
 
     private final List<BavetAbstractBiNode<A, B>> childNodeList = new ArrayList<>();
 
-    public BavetJoinBiNode(BavetConstraintSession session, int nodeOrder,
+    public BavetJoinBiNode(BavetConstraintSession session, int nodeIndex,
             BavetJoinBridgeUniNode<A> leftParentNode, BavetJoinBridgeUniNode<B> rightParentNode) {
-        super(session, nodeOrder);
+        super(session, nodeIndex);
         this.leftParentNode = leftParentNode;
         this.rightParentNode = rightParentNode;
     }

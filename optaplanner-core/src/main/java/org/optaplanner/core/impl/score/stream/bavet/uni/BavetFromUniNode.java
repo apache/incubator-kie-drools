@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.score.stream.bavet.uni;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintSession;
@@ -28,15 +29,20 @@ public final class BavetFromUniNode<A> extends BavetAbstractUniNode<A> {
 
     private List<BavetAbstractUniNode<A>> childNodeList = new ArrayList<>();
 
-    public BavetFromUniNode(BavetConstraintSession session, int nodeOrder,
+    public BavetFromUniNode(BavetConstraintSession session, int nodeIndex,
             Class<A> fromClass) {
-        super(session, nodeOrder);
+        super(session, nodeIndex);
         this.fromClass = fromClass;
     }
 
     @Override
     public void addChildNode(BavetAbstractUniNode<A> childNode) {
         childNodeList.add(childNode);
+    }
+
+    @Override
+    public List<BavetAbstractUniNode<A>> getChildNodes() {
+        return Collections.unmodifiableList(childNodeList);
     }
 
     // ************************************************************************

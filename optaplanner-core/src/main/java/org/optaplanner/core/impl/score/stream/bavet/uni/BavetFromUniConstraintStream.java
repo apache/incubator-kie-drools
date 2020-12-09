@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,18 +46,18 @@ public final class BavetFromUniConstraintStream<Solution_, A> extends BavetAbstr
 
     @Override
     public BavetFromUniNode<A> createNodeChain(BavetNodeBuildPolicy<Solution_> buildPolicy, Score<?> constraintWeight,
-            int nodeOrder, BavetAbstractUniNode<A> parentNode) {
-        return (BavetFromUniNode<A>) super.createNodeChain(buildPolicy, constraintWeight, nodeOrder, parentNode);
+            BavetAbstractUniNode<A> parentNode) {
+        return (BavetFromUniNode<A>) super.createNodeChain(buildPolicy, constraintWeight, parentNode);
     }
 
     @Override
     protected BavetFromUniNode<A> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy, Score<?> constraintWeight,
-            int nodeOrder, BavetAbstractUniNode<A> parentNode) {
+            BavetAbstractUniNode<A> parentNode) {
         if (parentNode != null) {
             throw new IllegalStateException("Impossible state: the stream (" + this
                     + ") cannot have a parentNode (" + parentNode + ").");
         }
-        return new BavetFromUniNode<>(buildPolicy.getSession(), nodeOrder, fromClass);
+        return new BavetFromUniNode<>(buildPolicy.getSession(), buildPolicy.nextNodeIndex(), fromClass);
     }
 
     @Override
