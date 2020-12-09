@@ -864,6 +864,7 @@ public class GroupByTest {
         Variable<Person> var_$p = D.declarationOf(Person.class);
         Variable<Integer> var_$age = D.declarationOf(Integer.class);
         Variable<Integer> var_$sumOfAges = D.declarationOf(Integer.class);
+        Variable<Long> var_$countOfPersons = D.declarationOf(Long.class);
 
         Rule rule1 = D.rule("R1").build(
                 D.groupBy(
@@ -872,13 +873,14 @@ public class GroupByTest {
                         // Grouping Function
                         var_$p, var_$key, person -> person.getName().substring(0, 1),
                         // Accumulate Result (can be more than one)
-                        D.accFunction(org.drools.core.base.accumulators.IntegerSumAccumulateFunction::new, var_$age).as(var_$sumOfAges)),
+                        D.accFunction(org.drools.core.base.accumulators.IntegerSumAccumulateFunction::new, var_$age).as(var_$sumOfAges),
+                        D.accFunction(org.drools.core.base.accumulators.CountAccumulateFunction::new).as(var_$countOfPersons)),
                 // Filter
                 D.pattern(var_$sumOfAges)
                         .expr($sumOfAges -> EvaluationUtil.greaterThanNumbers($sumOfAges, 10)),
                 // Consequence
-                D.on(var_$key, var_results, var_$sumOfAges)
-                        .execute(($key, results, $sumOfAges) -> results.put($key, $sumOfAges))
+                D.on(var_$key, var_results, var_$sumOfAges, var_$countOfPersons)
+                        .execute(($key, results, $sumOfAges, $countOfPersons) -> results.put($key, $sumOfAges + $countOfPersons.intValue()))
         );
 
         Model model = new ModelImpl().addRule( rule1 ).addGlobal( var_results );
@@ -897,8 +899,8 @@ public class GroupByTest {
         ksession.fireAllRules();
 
         assertEquals( 2, results.size() );
-        assertEquals( 71, results.get("E") );
-        assertEquals( 126, results.get("M") );
+        assertEquals( 73, results.get("E") );
+        assertEquals( 129, results.get("M") );
         results.clear();
 
         me.setName("EMario");
@@ -906,7 +908,7 @@ public class GroupByTest {
         ksession.fireAllRules();
 
         assertEquals( 2, results.size() );
-        assertEquals( 116, results.get("E") );
-        assertEquals( 81, results.get("M") );
+        assertEquals( 119, results.get("E") );
+        assertEquals( 83, results.get("M") );
     }
 }

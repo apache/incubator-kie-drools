@@ -165,7 +165,7 @@ public class MultiAccumulate extends Accumulate {
         }
     }
 
-    protected void replaceAccumulatorDeclaration(Declaration declaration, Declaration resolved) {
+    public void replaceAccumulatorDeclaration(Declaration declaration, Declaration resolved) {
         for (Accumulator accumulator : accumulators) {
             if ( accumulator instanceof MvelAccumulator ) {
                 ( (MvelAccumulator) accumulator ).replaceDeclaration( declaration, resolved );

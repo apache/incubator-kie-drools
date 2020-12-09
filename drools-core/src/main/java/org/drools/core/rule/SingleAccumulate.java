@@ -22,7 +22,6 @@ import java.io.Serializable;
 import java.util.Arrays;
 
 import org.drools.core.WorkingMemory;
-import org.drools.core.base.accumulators.GroupByAccumulator;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.spi.Accumulator;
 import org.drools.core.spi.MvelAccumulator;
@@ -154,7 +153,7 @@ public class SingleAccumulate extends Accumulate {
         return clone;
     }
 
-    protected void replaceAccumulatorDeclaration(Declaration declaration, Declaration resolved) {
+    public void replaceAccumulatorDeclaration(Declaration declaration, Declaration resolved) {
         if (accumulator instanceof MvelAccumulator ) {
             ( (MvelAccumulator) accumulator ).replaceDeclaration( declaration, resolved );
         }
@@ -205,10 +204,5 @@ public class SingleAccumulate extends Accumulate {
             if ( other.source != null ) return false;
         } else if ( !source.equals( other.source ) ) return false;
         return true;
-    }
-
-    @Override
-    public boolean isGroupBy() {
-        return accumulator instanceof GroupByAccumulator;
     }
 }

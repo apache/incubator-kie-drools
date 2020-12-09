@@ -164,7 +164,7 @@ public abstract class Accumulate extends ConditionalElement
         replaceAccumulatorDeclaration(declaration, resolved);
     }
 
-    protected abstract void replaceAccumulatorDeclaration(Declaration declaration,
+    public abstract void replaceAccumulatorDeclaration(Declaration declaration,
                                                           Declaration resolved);
     
     protected Declaration[] getInnerDeclarationCache() {
