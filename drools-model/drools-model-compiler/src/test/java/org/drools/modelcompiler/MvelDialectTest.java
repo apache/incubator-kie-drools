@@ -17,6 +17,8 @@
 package org.drools.modelcompiler;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -478,5 +480,32 @@ public class MvelDialectTest extends BaseModelTest {
         ksession.insert(john);
         assertEquals(1, ksession.fireAllRules());
         assertEquals(50000, (int) john.getSalary());
+    }
+
+    @Test
+    public void testCollectSubtypeInConsequence() {
+        // DROOLS-5887
+        String drl =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "import " + ArrayList.class.getCanonicalName() + "\n" +
+                "dialect \"mvel\"\n" +
+                "rule \"bus1\"\n" +
+                "when\n" +
+                "    $people : ArrayList() from collect ( Person() )\n" +
+                "then\n" +
+                "    for (Person p : $people ) {\n" +
+                "        System.out.println(\"Person: \" + p);\n" +
+                "    }\n" +
+                "end";
+
+        KieSession ksession = getKieSession(drl);
+
+        Person mario = new Person("Mario", 46);
+        Person luca = new Person("Luca", 36);
+        Person leonardo = new Person("Leonardo", 3);
+
+        Arrays.asList(mario, luca, leonardo).forEach(ksession::insert);
+
+        assertEquals(1, ksession.fireAllRules());
     }
 }
