@@ -11,9 +11,10 @@ import org.drools.Person;
 import org.drools.core.addon.ClassTypeResolver;
 import org.drools.core.addon.TypeResolver;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
+import org.hamcrest.MatcherAssert;
 
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.equalToIgnoringWhiteSpace;
-import static org.junit.Assert.assertThat;
 
 interface CompilerTest {
 
@@ -34,8 +35,16 @@ interface CompilerTest {
         MvelCompilerContext mvelCompilerContext = new MvelCompilerContext(typeResolver);
         testFunction.accept(mvelCompilerContext);
         ParsingResult compiled = new MvelCompiler(mvelCompilerContext).compile(actualExpression);
-        assertThat(compiled.resultAsString(), equalToIgnoringWhiteSpace(expectedResult));
+        verifyBodyWithBetterDiff(expectedResult, compiled.resultAsString());
         resultAssert.accept(compiled);
+    }
+
+    default void verifyBodyWithBetterDiff(Object expected, Object actual) {
+        try {
+            MatcherAssert.assertThat(actual.toString(), equalToIgnoringWhiteSpace(expected.toString()));
+        } catch (AssertionError e) {
+            MatcherAssert.assertThat(actual, equalTo(expected));
+        }
     }
 
     default void test(String actualExpression,

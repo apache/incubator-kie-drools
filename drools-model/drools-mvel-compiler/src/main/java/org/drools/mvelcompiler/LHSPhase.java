@@ -16,6 +16,7 @@ import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
+import com.github.javaparser.ast.stmt.ForEachStmt;
 import com.github.javaparser.ast.stmt.IfStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import org.drools.mvel.parser.ast.expr.DrlNameExpr;
@@ -23,6 +24,7 @@ import org.drools.mvel.parser.ast.visitor.DrlGenericVisitor;
 import org.drools.mvelcompiler.ast.AssignExprT;
 import org.drools.mvelcompiler.ast.ExpressionStmtT;
 import org.drools.mvelcompiler.ast.FieldToAccessorTExpr;
+import org.drools.mvelcompiler.ast.ForEachDowncastStmtT;
 import org.drools.mvelcompiler.ast.ListAccessExprT;
 import org.drools.mvelcompiler.ast.MapPutExprT;
 import org.drools.mvelcompiler.ast.SimpleNameTExpr;
@@ -214,6 +216,24 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, Void> {
     @Override
     public TypedExpression visit(IfStmt n, Void arg) {
         return new UnalteredTypedExpression(n);
+    }
+
+    @Override
+    public TypedExpression visit(ForEachStmt n, Void arg) {
+        Expression iterable = n.getIterable();
+        if(iterable.isNameExpr()) {
+            return mvelCompilerContext.findDeclarations(iterable.asNameExpr().toString())
+            .filter(this::isDeclarationOfDifferentTypeThanIterator)
+            .<TypedExpression>map(d -> new ForEachDowncastStmtT(n))
+                    .orElse(new UnalteredTypedExpression(n));
+
+        }
+        return new UnalteredTypedExpression(n);
+    }
+
+    private boolean isDeclarationOfDifferentTypeThanIterator(Declaration declaration) {
+        Class<?> declarationClazz = declaration.getClazz();
+        return Iterable.class.isAssignableFrom(declarationClazz);
     }
 
     private TypedExpression rhsOrNull() {

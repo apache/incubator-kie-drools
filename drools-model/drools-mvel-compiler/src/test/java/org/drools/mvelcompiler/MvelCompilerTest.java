@@ -1,5 +1,6 @@
 package org.drools.mvelcompiler;
 
+import java.util.List;
 import java.util.Map;
 
 import org.drools.Person;
@@ -424,5 +425,22 @@ public class MvelCompilerTest implements CompilerTest {
                              "insert($newAddress); " +
                              "$person.setAddress($newAddress); " +
                           "}");
+    }
+
+    @Test
+    public void forIterationWithSubtype() {
+        test(ctx -> ctx.addDeclaration("$people", List.class),
+             "{" +
+                     "    for (Person p : $people ) {\n" +
+                     "        System.out.println(\"Person: \" + p);\n" +
+                     "    }\n" +
+                     "}",
+             "{" +
+                     "    for (Object pObject : $people ) {\n" +
+                     "        Person p = (Person) pObject;" +
+                     "        System.out.println(\"Person: \" + p);\n" +
+                     "    }\n" +
+                     "}"
+        );
     }
 }
