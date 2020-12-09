@@ -4,12 +4,13 @@ import java.lang.reflect.Type;
 import java.util.Optional;
 
 import com.github.javaparser.ast.Node;
-import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.body.VariableDeclarator;
+import com.github.javaparser.ast.expr.CastExpr;
+import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
-import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.ForEachStmt;
-import com.github.javaparser.ast.stmt.Statement;
+import org.drools.mvel.parser.ast.visitor.DrlCloneVisitor;
 
 /**
  * A ForEachStatement that downcast the iterable variable
@@ -29,16 +30,24 @@ public class ForEachDowncastStmtT implements TypedExpression {
 
     @Override
     public Node toJavaExpression() {
-        ForEachStmt clone = new ForEachStmt();
+        ForEachStmt clone = (ForEachStmt) originalExpression.accept(new DrlCloneVisitor(), null);
 
-        VariableDeclarationExpr variableDeclarationExpr = new VariableDeclarationExpr();
-        Expression iterable = clone.getIterable();
-        Statement body = new BlockStmt();
+        BlockStmt body = (BlockStmt) clone.getBody();
+        VariableDeclarationExpr variableDeclarationExpr = clone.getVariable();
+        for (VariableDeclarator v : variableDeclarationExpr.getVariables()) {
+            String newIteratorVariable = "_" + v.getNameAsString();
 
+            VariableDeclarationExpr castAssign = new VariableDeclarationExpr(
+                    new VariableDeclarator(v.getType(), v.getName(),
+                                           new CastExpr(v.getType(), new NameExpr(newIteratorVariable))));
 
-        ForEachStmt forEachStmt = new ForEachStmt(variableDeclarationExpr, iterable, body);
+            body.addStatement(0, castAssign);
 
-        return forEachStmt;
+            v.setType(Object.class);
+            v.setName(newIteratorVariable);
+        }
+
+        return clone;
     }
 
     @Override

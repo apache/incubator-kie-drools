@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.Person;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
@@ -429,6 +430,41 @@ public class MvelCompilerTest implements CompilerTest {
 
     @Test
     public void forIterationWithSubtype() {
+        test(ctx -> ctx.addDeclaration("$people", List.class),
+             "{" +
+                     "    for (Person p : $people ) {\n" +
+                     "        System.out.println(\"Person: \" + p);\n" +
+                     "    }\n" +
+                     "}",
+             "{\n" +
+                     "    for (Object _p : $people) {\n" +
+                     "        Person p = (Person) _p;\n" +
+                     "        System.out.println(\"Person: \" + p);\n" +
+                     "    }\n" +
+                     "}"
+        );
+    }
+
+    @Test
+    public void forIterationWithSubtypeNested() {
+        test(ctx -> ctx.addDeclaration("$people", List.class),
+             "{" +
+                     "    for (Person p : $people ) {\n" +
+                     "        System.out.println(\"Person: \" + p);\n" +
+                     "    }\n" +
+                     "}",
+             "{\n" +
+                     "    for (Object _p : $people) {\n" +
+                     "        Person p = (Person) _p;\n" +
+                     "        System.out.println(\"Person: \" + p);\n" +
+                     "    }\n" +
+                     "}"
+        );
+    }
+
+    @Ignore
+    @Test
+    public void forIterationWithMultipleElements() {
         test(ctx -> ctx.addDeclaration("$people", List.class),
              "{" +
                      "    for (Person p : $people ) {\n" +
