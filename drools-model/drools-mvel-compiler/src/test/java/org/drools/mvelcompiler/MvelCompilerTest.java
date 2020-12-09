@@ -439,7 +439,9 @@ public class MvelCompilerTest implements CompilerTest {
              "{\n" +
                      "    for (Object _p : $people) {\n" +
                      "        Person p = (Person) _p;\n" +
-                     "        System.out.println(\"Person: \" + p);\n" +
+                     "        {\n " +
+                     "              System.out.println(\"Person: \" + p);\n" +
+                     "        }\n" +
                      "    }\n" +
                      "}"
         );
@@ -447,9 +449,13 @@ public class MvelCompilerTest implements CompilerTest {
 
     @Test
     public void forIterationWithSubtypeNested() {
-        test(ctx -> ctx.addDeclaration("$people", List.class),
+        test(ctx -> {
+                 ctx.addDeclaration("$people", List.class);
+                 ctx.addDeclaration("$addresses", List.class);
+             },
              "{" +
                      "    for (Person p : $people ) {\n" +
+                     "       System.out.println(\"Simple statement\");\n" +
                      "       for (Address a : $addresses ) {\n" +
                      "           System.out.println(\"Person: \" + p + \" address: \" + a);\n" +
                      "       }\n" +
@@ -458,9 +464,14 @@ public class MvelCompilerTest implements CompilerTest {
              "{\n" +
                      "    for (Object _p : $people) {\n" +
                      "        Person p = (Person) _p;\n" +
-                     "        for (Object _a : $addresses) {\n" +
-                     "            Address a = (Address) _a;\n" +
-                     "            System.out.println(\"Person: \" + p + \" address: \" + a);\n" +
+                     "        {\n " +
+                     "           System.out.println(\"Simple statement\");\n" +
+                     "           for (Object _a : $addresses) {\n" +
+                     "               Address a = (Address) _a;\n" +
+                     "                   {\n " +
+                     "                       System.out.println(\"Person: \" + p + \" address: \" + a);\n" +
+                     "                }\n" +
+                     "            }\n" +
                      "        }\n" +
                      "    }\n" +
                      "}"

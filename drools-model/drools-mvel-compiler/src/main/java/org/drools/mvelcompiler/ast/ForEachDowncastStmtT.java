@@ -4,23 +4,29 @@ import java.lang.reflect.Type;
 import java.util.Optional;
 
 import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ForEachStmt;
-import org.drools.mvel.parser.ast.visitor.DrlCloneVisitor;
+
+import static com.github.javaparser.ast.NodeList.nodeList;
 
 /**
  * A ForEachStatement that downcast the iterable variable
  */
 public class ForEachDowncastStmtT implements TypedExpression {
 
-    ForEachStmt originalExpression;
+    private VariableDeclarationExpr variableDeclarationExpr;
+    private String iterable;
+    private TypedExpression child;
 
-    public ForEachDowncastStmtT(ForEachStmt originalExpression) {
-        this.originalExpression = originalExpression;
+    public ForEachDowncastStmtT(VariableDeclarationExpr variableDeclarationExpr, String iterable, TypedExpression child) {
+        this.variableDeclarationExpr = variableDeclarationExpr;
+        this.iterable = iterable;
+        this.child = child;
     }
 
     @Override
@@ -30,11 +36,15 @@ public class ForEachDowncastStmtT implements TypedExpression {
 
     @Override
     public Node toJavaExpression() {
-        ForEachStmt clone = (ForEachStmt) originalExpression.accept(new DrlCloneVisitor(), null);
+        ForEachStmt newForEachStmt = new ForEachStmt();
 
-        BlockStmt body = (BlockStmt) clone.getBody();
-        VariableDeclarationExpr variableDeclarationExpr = clone.getVariable();
+        BlockStmt body = new BlockStmt();
+
+        NodeList<VariableDeclarator> variables = nodeList();
+
         for (VariableDeclarator v : variableDeclarationExpr.getVariables()) {
+            VariableDeclarator newVariable = v.clone();
+
             String newIteratorVariable = "_" + v.getNameAsString();
 
             VariableDeclarationExpr castAssign = new VariableDeclarationExpr(
@@ -43,17 +53,26 @@ public class ForEachDowncastStmtT implements TypedExpression {
 
             body.addStatement(0, castAssign);
 
-            v.setType(Object.class);
-            v.setName(newIteratorVariable);
+            newVariable.setType(Object.class);
+            newVariable.setName(newIteratorVariable);
+
+            variables.add(newVariable);
         }
 
-        return clone;
+        body.addStatement((BlockStmt) child.toJavaExpression());
+        newForEachStmt.setBody(body);
+
+        VariableDeclarationExpr newVariables = new VariableDeclarationExpr(variables);
+        newForEachStmt.setVariable(newVariables);
+
+        return new ForEachStmt(newVariables, new NameExpr(iterable), body);
     }
 
     @Override
     public String toString() {
-        return "ForEachStmtT{" +
-                "originalExpression=" + originalExpression +
+        return "ForEachDowncastStmtT{" +
+                "variableDeclarationExpr=" + variableDeclarationExpr +
+                ", child=" + child +
                 '}';
     }
 }
