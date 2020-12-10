@@ -34,26 +34,32 @@ public abstract class AbstractEntityPlacer<Solution_> implements EntityPlacer<So
 
     protected PhaseLifecycleSupport<Solution_> phaseLifecycleSupport = new PhaseLifecycleSupport<>();
 
+    @Override
     public void solvingStarted(SolverScope<Solution_> solverScope) {
         phaseLifecycleSupport.fireSolvingStarted(solverScope);
     }
 
+    @Override
     public void phaseStarted(AbstractPhaseScope<Solution_> phaseScope) {
         phaseLifecycleSupport.firePhaseStarted(phaseScope);
     }
 
+    @Override
     public void stepStarted(AbstractStepScope<Solution_> stepScope) {
         phaseLifecycleSupport.fireStepStarted(stepScope);
     }
 
+    @Override
     public void stepEnded(AbstractStepScope<Solution_> stepScope) {
         phaseLifecycleSupport.fireStepEnded(stepScope);
     }
 
+    @Override
     public void phaseEnded(AbstractPhaseScope<Solution_> phaseScope) {
         phaseLifecycleSupport.firePhaseEnded(phaseScope);
     }
 
+    @Override
     public void solvingEnded(SolverScope<Solution_> solverScope) {
         phaseLifecycleSupport.fireSolvingEnded(solverScope);
     }
