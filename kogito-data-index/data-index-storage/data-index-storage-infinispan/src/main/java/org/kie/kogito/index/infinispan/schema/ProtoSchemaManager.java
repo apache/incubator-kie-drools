@@ -52,22 +52,23 @@ public class ProtoSchemaManager {
     public void onSchemaRegisteredEvent(@Observes SchemaRegisteredEvent event) {
         if (schemaAcceptor.accept(event.getSchemaType())) {
             SchemaDescriptor schemaDescriptor = event.getSchemaDescriptor();
-            protobufCacheService.getProtobufCache().put(schemaDescriptor.getName(), schemaDescriptor.getSchemaContent());
+            Storage<String, String> cache = protobufCacheService.getProtobufCache();
+            cache.put(schemaDescriptor.getName(), schemaDescriptor.getSchemaContent());
             schemaDescriptor.getProcessDescriptor().ifPresent(processDescriptor -> {
-                Storage<String, String> cache = protobufCacheService.getProtobufCache();
                 cacheManager.getProcessIdModelCache().put(processDescriptor.getProcessId(), processDescriptor.getProcessType());
-
-                List<String> errors = checkSchemaErrors(cache);
-
-                if (!errors.isEmpty()) {
-                    String message = "Proto Schema contain errors:\n" + String.join("\n", errors);
-                    throw new SchemaRegistrationException(message);
-                }
-
-                if (LOGGER.isDebugEnabled()) {
-                    logProtoCacheKeys();
-                }
+                //Initialize domain cache
+                cacheManager.getDomainModelCache(processDescriptor.getProcessId());
             });
+            List<String> errors = checkSchemaErrors(cache);
+
+            if (!errors.isEmpty()) {
+                String message = "Proto Schema contain errors:\n" + String.join("\n", errors);
+                throw new SchemaRegistrationException(message);
+            }
+
+            if (LOGGER.isDebugEnabled()) {
+                logProtoCacheKeys();
+            }
         }
     }
 

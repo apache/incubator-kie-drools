@@ -119,10 +119,10 @@ public class ProtobufService {
 
         Map<String, EntityIndexDescriptor> entityIndexes = desc.getMessageTypes().stream().map(t -> t.<EntityIndexDescriptor>getProcessedAnnotation(INDEXED_ANNOTATION))
                 .filter(Objects::nonNull).collect(toMap(EntityIndexDescriptor::getName, Function.identity()));
-        Map<String, EntityIndexDescriptor> entityIndexeDescriptors = createEntityIndexeDescriptors(desc, entityIndexes);
+        Map<String, EntityIndexDescriptor> entityIndexedDescriptors = createEntityIndexeDescriptors(desc, entityIndexes);
 
         try {
-            schemaEvent.fire(new SchemaRegisteredEvent(new SchemaDescriptor(processId + ".proto", content, entityIndexeDescriptors, new ProcessDescriptor(processId, fullTypeName)), SCHEMA_TYPE));
+            schemaEvent.fire(new SchemaRegisteredEvent(new SchemaDescriptor(processId + ".proto", content, entityIndexedDescriptors, new ProcessDescriptor(processId, fullTypeName)), SCHEMA_TYPE));
         } catch (RuntimeException ex) {
             throw new ProtobufValidationException(ex.getMessage());
         }

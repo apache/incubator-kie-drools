@@ -72,4 +72,14 @@ public class SchemaDescriptor {
     public int hashCode() {
         return Objects.hash(name, schemaContent, entityIndexDescriptors, processDescriptor);
     }
+
+    @Override
+    public String toString() {
+        return "SchemaDescriptor{" +
+                "name='" + name + '\'' +
+                ", schemaContent='" + schemaContent + '\'' +
+                ", entityIndexDescriptors=" + entityIndexDescriptors +
+                ", processDescriptor=" + processDescriptor +
+                '}';
+    }
 }

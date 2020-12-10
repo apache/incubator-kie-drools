@@ -61,13 +61,13 @@ abstract class AbstractReactiveMessagingEventConsumerKafkaIT {
 
     @Test
     void testProcessInstanceEvent() throws Exception {
+        protobufService.registerProtoBufferType(getTestProtobufFileContent());
+
         sendProcessInstanceEvent();
 
         String processInstanceId = "c2fa5c5e-3002-44c7-aef7-bce82297e3fe";
 
-        protobufService.registerProtoBufferType(getTestProtobufFileContent());
-
-        given().contentType(ContentType.JSON).body("{ \"query\" : \"{Travels{ id } }\" }")
+        given().contentType(ContentType.JSON).body("{ \"query\" : \"{ Travels { id } }\" }")
                 .when().post("/graphql")
                 .then().log().ifValidationFails().statusCode(200)
                 .body("data.Travels", isA(Collection.class));
@@ -77,7 +77,7 @@ abstract class AbstractReactiveMessagingEventConsumerKafkaIT {
         await()
                 .atMost(5, SECONDS)
                 .untilAsserted(() -> {
-                                   given().contentType(ContentType.JSON).body("{ \"query\" : \"{ProcessInstances{ id } }\" }")
+                                   given().contentType(ContentType.JSON).body("{ \"query\" : \"{ ProcessInstances { id } }\" }")
                                            .when().post("/graphql")
                                            .then().log().ifValidationFails().statusCode(200)
                                            .body("data.ProcessInstances.size()", is(1))
@@ -88,7 +88,7 @@ abstract class AbstractReactiveMessagingEventConsumerKafkaIT {
         await()
                 .atMost(5, SECONDS)
                 .untilAsserted(() -> {
-                                   given().contentType(ContentType.JSON).body("{ \"query\" : \"{Travels{ id } }\" }")
+                                   given().contentType(ContentType.JSON).body("{ \"query\" : \"{ Travels { id } }\" }")
                                            .when().post("/graphql")
                                            .then().log().ifValidationFails().statusCode(200)
                                            .body("data.Travels[0].id", is("f8868a2e-1bbb-47eb-93cf-fa46ff9dbfee"));
@@ -110,7 +110,6 @@ abstract class AbstractReactiveMessagingEventConsumerKafkaIT {
     private void sendProcessInstanceEvent() throws Exception {
         String json = readFileContent("process_instance_event.json");
         kafkaClient.produce(json, "kogito-processinstances-events");
-        return;
     }
 
     protected abstract String getTestProtobufFileContent() throws Exception;

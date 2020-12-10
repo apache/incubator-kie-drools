@@ -54,4 +54,12 @@ public class SchemaRegisteredEvent {
     public int hashCode() {
         return Objects.hash(schemaDescriptor, schemaType);
     }
+
+    @Override
+    public String toString() {
+        return "SchemaRegisteredEvent{" +
+                "schemaDescriptor=" + schemaDescriptor +
+                ", schemaType=" + schemaType +
+                '}';
+    }
 }

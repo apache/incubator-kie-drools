@@ -54,4 +54,12 @@ public class ProcessDescriptor {
     public int hashCode() {
         return Objects.hash(processId, processType);
     }
+
+    @Override
+    public String toString() {
+        return "ProcessDescriptor{" +
+                "processId='" + processId + '\'' +
+                ", processType='" + processType + '\'' +
+                '}';
+    }
 }

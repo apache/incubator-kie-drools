@@ -46,4 +46,11 @@ public class SchemaType {
     public int hashCode() {
         return Objects.hash(type);
     }
+
+    @Override
+    public String toString() {
+        return "SchemaType{" +
+                "type='" + type + '\'' +
+                '}';
+    }
 }

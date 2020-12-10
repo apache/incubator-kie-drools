@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -36,7 +37,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
 import graphql.schema.GraphQLInputObjectType;
-import graphql.schema.GraphQLNamedInputType;
 import graphql.schema.GraphQLNamedType;
 import graphql.schema.GraphQLScalarType;
 import graphql.schema.GraphQLSchema;
@@ -240,35 +240,35 @@ public class GraphQLSchemaManager {
     }
 
     private DataFetcher<Publisher<ObjectNode>> getProcessInstanceAddedDataFetcher() {
-        return ojectCreatedPublisher(PROCESS_INSTANCE_ADDED, cacheService.getProcessInstancesCache());
+        return objectCreatedPublisher(PROCESS_INSTANCE_ADDED, () -> cacheService.getProcessInstancesCache());
     }
 
     private DataFetcher<Publisher<ObjectNode>> getProcessInstanceUpdatedDataFetcher() {
-        return objectUpdatedPublisher(PROCESS_INSTANCE_UPDATED, cacheService.getProcessInstancesCache());
+        return objectUpdatedPublisher(PROCESS_INSTANCE_UPDATED, () -> cacheService.getProcessInstancesCache());
     }
 
     private DataFetcher<Publisher<ObjectNode>> getUserTaskInstanceAddedDataFetcher() {
-        return ojectCreatedPublisher(USER_TASK_INSTANCE_ADDED, cacheService.getUserTaskInstancesCache());
+        return objectCreatedPublisher(USER_TASK_INSTANCE_ADDED, () -> cacheService.getUserTaskInstancesCache());
     }
 
     private DataFetcher<Publisher<ObjectNode>> getUserTaskInstanceUpdatedDataFetcher() {
-        return objectUpdatedPublisher(USER_TASK_INSTANCE_UPDATED, cacheService.getUserTaskInstancesCache());
+        return objectUpdatedPublisher(USER_TASK_INSTANCE_UPDATED, () -> cacheService.getUserTaskInstancesCache());
     }
 
     private DataFetcher<Publisher<ObjectNode>> getJobUpdatedDataFetcher() {
-        return objectUpdatedPublisher(JOB_UPDATED, cacheService.getJobsCache());
+        return objectUpdatedPublisher(JOB_UPDATED, () -> cacheService.getJobsCache());
     }
 
     private DataFetcher<Publisher<ObjectNode>> getJobAddedDataFetcher() {
-        return ojectCreatedPublisher(JOB_ADDED, cacheService.getJobsCache());
+        return objectCreatedPublisher(JOB_ADDED, () -> cacheService.getJobsCache());
     }
 
-    private DataFetcher<Publisher<ObjectNode>> ojectCreatedPublisher(String address, Storage cache) {
-        return env -> createPublisher(address, producer -> cache.addObjectCreatedListener(ut -> producer.write(getObjectMapper().convertValue(ut, ObjectNode.class))));
+    private DataFetcher<Publisher<ObjectNode>> objectCreatedPublisher(String address, Supplier<Storage> cache) {
+        return env -> createPublisher(address, producer -> cache.get().addObjectCreatedListener(ut -> producer.write(getObjectMapper().convertValue(ut, ObjectNode.class))));
     }
 
-    private DataFetcher<Publisher<ObjectNode>> objectUpdatedPublisher(String address, Storage cache) {
-        return env -> createPublisher(address, producer -> cache.addObjectUpdatedListener(ut -> producer.write(getObjectMapper().convertValue(ut, ObjectNode.class))));
+    private DataFetcher<Publisher<ObjectNode>> objectUpdatedPublisher(String address, Supplier<Storage> cache) {
+        return env -> createPublisher(address, producer -> cache.get().addObjectUpdatedListener(ut -> producer.write(getObjectMapper().convertValue(ut, ObjectNode.class))));
     }
 
     private Publisher<ObjectNode> createPublisher(String address, Consumer<MessageProducer<ObjectNode>> consumer) {
