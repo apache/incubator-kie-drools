@@ -17,10 +17,15 @@
 package org.drools.modelcompiler;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import org.assertj.core.api.Assertions;
 import org.drools.modelcompiler.domain.Address;
 import org.drools.modelcompiler.domain.Person;
 import org.junit.Test;
@@ -478,5 +483,83 @@ public class MvelDialectTest extends BaseModelTest {
         ksession.insert(john);
         assertEquals(1, ksession.fireAllRules());
         assertEquals(50000, (int) john.getSalary());
+    }
+
+    @Test
+    public void testCollectSubtypeInConsequence() {
+        // DROOLS-5887
+        String drl =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "import " + ArrayList.class.getCanonicalName() + "\n" +
+                "global java.util.List names;\n" +
+                "dialect \"mvel\"\n" +
+                "rule \"use subtype\"\n" +
+                "when\n" +
+                "    $people : ArrayList() from collect ( Person() )\n" +
+                "then\n" +
+                "    for (Person p : $people ) {\n" +
+                "        names.add(p.getName());\n" +
+                "    }\n" +
+                "end";
+
+        KieSession ksession = getKieSession(drl);
+
+        List<String> names = new ArrayList<>();
+        ksession.setGlobal("names", names);
+
+        Person mario = new Person("Mario", 46);
+        Person luca = new Person("Luca", 36);
+        Person leonardo = new Person("Leonardo", 3);
+
+        Arrays.asList(mario, luca, leonardo).forEach(ksession::insert);
+
+        assertEquals(1, ksession.fireAllRules());
+        Assertions.assertThat(names).containsExactlyInAnyOrder("Mario", "Luca", "Leonardo");
+    }
+
+    @Test
+    public void testCollectSubtypeInConsequenceNested() {
+        // DROOLS-5887
+        String drl =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "import " + Address.class.getCanonicalName() + "\n" +
+                "import " + ArrayList.class.getCanonicalName() + "\n" +
+                "dialect \"mvel\"\n" +
+                "global java.util.List names;\n" +
+                "global java.util.Set  addresses;\n" +
+                "rule \"use subtypes in nested fors\"\n" +
+                "when\n" +
+                "    $people : ArrayList() from collect ( Person() )\n" +
+                "    $addresses : ArrayList() from collect ( Address() )\n" +
+                "then\n" +
+                "    for (Person p : $people ) {\n" +
+                "        names.add(p.getName());\n" +
+                "           for (Address a : $addresses ) {\n" +
+                "               addresses.add(a.getCity());\n" +
+                "       }\n" +
+                "    }\n" +
+                "end";
+
+        KieSession ksession = getKieSession(drl);
+
+        List<String> names = new ArrayList<>();
+        ksession.setGlobal("names", names);
+
+        Set<String> addresses = new HashSet<>();
+        ksession.setGlobal("addresses", addresses);
+
+
+        Person mario = new Person("Mario", 46);
+        Person luca = new Person("Luca", 36);
+        Person leonardo = new Person("Leonardo", 3);
+
+        Arrays.asList(mario, luca, leonardo).forEach(ksession::insert);
+
+        Address a = new Address("Milan");
+        ksession.insert(a);
+
+        assertEquals(1, ksession.fireAllRules());
+        Assertions.assertThat(names).containsExactlyInAnyOrder("Mario", "Luca", "Leonardo");
+        Assertions.assertThat(addresses).contains("Milan");
     }
 }

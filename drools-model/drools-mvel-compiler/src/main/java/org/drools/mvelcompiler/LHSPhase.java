@@ -2,6 +2,7 @@ package org.drools.mvelcompiler;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -15,14 +16,18 @@ import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
+import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
+import com.github.javaparser.ast.stmt.ForEachStmt;
 import com.github.javaparser.ast.stmt.IfStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import org.drools.mvel.parser.ast.expr.DrlNameExpr;
 import org.drools.mvel.parser.ast.visitor.DrlGenericVisitor;
 import org.drools.mvelcompiler.ast.AssignExprT;
+import org.drools.mvelcompiler.ast.BlockStmtT;
 import org.drools.mvelcompiler.ast.ExpressionStmtT;
 import org.drools.mvelcompiler.ast.FieldToAccessorTExpr;
+import org.drools.mvelcompiler.ast.ForEachDowncastStmtT;
 import org.drools.mvelcompiler.ast.ListAccessExprT;
 import org.drools.mvelcompiler.ast.MapPutExprT;
 import org.drools.mvelcompiler.ast.SimpleNameTExpr;
@@ -216,6 +221,41 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, Void> {
         return new UnalteredTypedExpression(n);
     }
 
+    @Override
+    public TypedExpression visit(ForEachStmt n, Void arg) {
+        Expression iterable = n.getIterable();
+        if(iterable.isNameExpr()) {
+            return mvelCompilerContext.findDeclarations(iterable.asNameExpr().toString())
+            .filter(this::isDeclarationIterable)
+            .<TypedExpression>map(d -> {
+                TypedExpression child = this.visit((BlockStmt)n.getBody(), arg);
+                return new ForEachDowncastStmtT(n.getVariable(), n.getIterable().asNameExpr().toString(), child);
+            }).orElse(new UnalteredTypedExpression(n));
+
+        }
+        return new UnalteredTypedExpression(n);
+    }
+
+    @Override
+    public TypedExpression visit(BlockStmt n, Void arg) {
+        List<TypedExpression> statements = new ArrayList<>();
+        for (Statement s : n.getStatements()) {
+            TypedExpression visit;
+            if (s.isForEachStmt()) {
+                visit = visit((ForEachStmt) s, arg);
+            } else {
+                visit = defaultMethod(s, arg);
+            }
+            statements.add(visit);
+        }
+        return new BlockStmtT(statements);
+    }
+
+    private boolean isDeclarationIterable(Declaration declaration) {
+        Class<?> declarationClazz = declaration.getClazz();
+        return Iterable.class.isAssignableFrom(declarationClazz);
+    }
+
     private TypedExpression rhsOrNull() {
         return rhs.orElse(null);
     }
@@ -250,6 +290,11 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, Void> {
         if(logger.isDebugEnabled()) {
             logger.debug(phase, printConstraint(statement));
         }
+    }
+
+    @Override
+    public TypedExpression defaultMethod(Node n, Void unused) {
+        return new UnalteredTypedExpression(n);
     }
 }
 
