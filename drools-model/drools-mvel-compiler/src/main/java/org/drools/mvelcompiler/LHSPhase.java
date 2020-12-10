@@ -3,6 +3,7 @@ package org.drools.mvelcompiler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -118,6 +119,8 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, Void> {
                     .orElse(new UnalteredTypedExpression(n));
         } else {
             return tryParseItAsSetter(n, scope, getRHSType())
+                    .map(Optional::of)
+                    .orElseGet(() -> tryParseItAsSetter(n, scope, BigDecimal.class)) // used for BigDecimal coercion
                     .orElse(new UnalteredTypedExpression(n));
         }
     }

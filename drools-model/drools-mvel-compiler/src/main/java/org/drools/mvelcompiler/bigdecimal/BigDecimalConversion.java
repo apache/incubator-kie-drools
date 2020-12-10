@@ -42,20 +42,18 @@ public abstract class BigDecimalConversion<T extends TypedExpression> {
         }
 
         if (targetType.filter(t -> t == BigDecimal.class).isPresent()) {
-            if (AssignExpr.Operator.PLUS == operator) {
-                return new ConvertPlus(rhs);
-            }
-            if (AssignExpr.Operator.MINUS == operator) {
-                return new ConvertMinus(rhs);
-            }
             if (rhs instanceof BinaryTExpr) {
-                BinaryExpr.Operator binOp = (( BinaryTExpr ) rhs).getOperator();
+                BinaryExpr.Operator binOp = ((BinaryTExpr) rhs).getOperator();
                 if (binOp == BinaryExpr.Operator.PLUS) {
                     return new ConvertBinaryPlus((BinaryTExpr) rhs);
                 }
                 if (binOp == BinaryExpr.Operator.MINUS) {
                     return new ConvertBinaryMinus((BinaryTExpr) rhs);
                 }
+            } else if (AssignExpr.Operator.PLUS == operator) {
+                return new ConvertPlus(rhs);
+            } else if (AssignExpr.Operator.MINUS == operator) {
+                return new ConvertMinus(rhs);
             }
         }
         return new DoNotConvert(null);
@@ -68,6 +66,7 @@ public abstract class BigDecimalConversion<T extends TypedExpression> {
     protected TypedExpression convertExpression(TypedExpression target, TypedExpression leftExpr, TypedExpression rightExpr, String op) {
         Optional<Type> rightType = rightExpr.getType();
         if (rightType.isPresent() && rightType.get() != BigDecimal.class) {
+            // TODO is this branch dead?
             ObjectCreationExpr creationExpr = new ObjectCreationExpr(null, parseClassOrInterfaceType(BigDecimal.class.getCanonicalName()), NodeList.nodeList(( Expression ) rightExpr.toJavaExpression()));
             rightExpr = new ObjectCreationExpressionT( creationExpr, BigDecimal.class);
         }
