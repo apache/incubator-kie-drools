@@ -10,15 +10,13 @@ import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import org.drools.mvelcompiler.ast.AssignExprT;
+import org.drools.mvelcompiler.ast.BigDecimalExprT;
 import org.drools.mvelcompiler.ast.BinaryTExpr;
 import org.drools.mvelcompiler.ast.FieldToAccessorTExpr;
-import org.drools.mvelcompiler.ast.MethodCallExprT;
 import org.drools.mvelcompiler.ast.ObjectCreationExpressionT;
 import org.drools.mvelcompiler.ast.TypedExpression;
 
 import static java.util.Collections.singletonList;
-import static java.util.Optional.of;
-
 import static org.drools.mvel.parser.MvelParser.parseClassOrInterfaceType;
 
 public abstract class BigDecimalConversion<T extends TypedExpression> {
@@ -70,7 +68,7 @@ public abstract class BigDecimalConversion<T extends TypedExpression> {
             ObjectCreationExpr creationExpr = new ObjectCreationExpr(null, parseClassOrInterfaceType(BigDecimal.class.getCanonicalName()), NodeList.nodeList(( Expression ) rightExpr.toJavaExpression()));
             rightExpr = new ObjectCreationExpressionT( creationExpr, BigDecimal.class);
         }
-        TypedExpression arithmeticExpression = new MethodCallExprT(op, of(leftExpr), singletonList(rightExpr), of(BigDecimal.class));
+        TypedExpression arithmeticExpression = new BigDecimalExprT(op, leftExpr, rightExpr);
         if (target instanceof FieldToAccessorTExpr ) {
             return (( FieldToAccessorTExpr ) target).withArguments( singletonList(arithmeticExpression) );
         }
