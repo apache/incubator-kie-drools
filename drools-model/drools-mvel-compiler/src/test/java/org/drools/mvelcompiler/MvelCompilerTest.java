@@ -138,6 +138,14 @@ public class MvelCompilerTest implements CompilerTest {
     }
 
     @Test
+    public void testDoNotConvertAdditionInStringConcatenation() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ list.add(\"***** \" + $p + \", money = \" + $p.salary); }",
+             "{ list.add(\"***** \" + $p + \", money = \" + $p.getSalary()); }"
+             );
+    }
+
+    @Test
     public void testSetterPublicField() {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{ $p.nickName = \"Luca\"; } ",

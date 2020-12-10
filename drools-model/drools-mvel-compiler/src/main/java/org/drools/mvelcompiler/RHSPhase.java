@@ -50,6 +50,7 @@ import org.drools.mvelcompiler.context.Declaration;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
 import org.drools.mvelcompiler.util.TypeUtils;
 
+import static java.util.Arrays.asList;
 import static java.util.Optional.ofNullable;
 import static org.drools.core.util.ClassUtils.getAccessor;
 import static org.drools.mvelcompiler.util.OptionalUtils.map2;
@@ -183,18 +184,24 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
     }
 
     private TypedExpression withPossiblyBigDecimalConversion(TypedExpression left, TypedExpression right, BinaryExpr.Operator operator) {
-        Optional<Type> typeLeft = left.getType();
-        Optional<Type> typeRight = right.getType();
+        Optional<Type> optTypeLeft = left.getType();
+        Optional<Type> optTypeRight = right.getType();
 
-        if (!typeLeft.isPresent() || !typeRight.isPresent()) { // coerce only when types are known
+        if (!optTypeLeft.isPresent() || !optTypeRight.isPresent()) { // coerce only when types are known
             return new BinaryTExpr(left, right, operator);
         }
 
-        if (Arrays.asList(BinaryExpr.Operator.PLUS, BinaryExpr.Operator.MINUS).contains(operator)) {
-            if (typeLeft.get() != BigDecimal.class && typeRight.get() == BigDecimal.class) { // convert left
+        Type typeLeft = optTypeLeft.get();
+        Type typeRight = optTypeRight.get();
+
+        boolean isArithmeticOperator = asList(BinaryExpr.Operator.PLUS, BinaryExpr.Operator.MINUS).contains(operator);
+        boolean isStringConcatenation = typeLeft == String.class || typeRight == String.class;
+        if (isArithmeticOperator && !isStringConcatenation) {
+
+            if (typeLeft != BigDecimal.class && typeRight == BigDecimal.class) { // convert left
                 return new BigDecimalExprT(BigDecimalExprT.toBigDecimalMethod(operator.toString()),
                                            BigDecimalExprT.valueOf(left), right);
-            } else if (typeLeft.get() == BigDecimal.class && typeRight.get() != BigDecimal.class) {
+            } else if (typeLeft == BigDecimal.class && typeRight != BigDecimal.class) {
                 return new BigDecimalExprT(BigDecimalExprT.toBigDecimalMethod(operator.toString()),
                                            left, BigDecimalExprT.valueOf(right));
             }
