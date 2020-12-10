@@ -440,6 +440,31 @@ public class MvelDialectTest extends BaseModelTest {
     }
 
     @Test
+    public void testModifyOnBigDecimal() throws Exception {
+        // DROOLS-5889
+        String drl =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "dialect \"mvel\"\n" +
+                "rule R\n" +
+                "when\n" +
+                "    $p : Person( age >= 26 )\n" +
+                "then\n" +
+                "modify($p) {" +
+                "    money = 30000;\n" +
+                "} " +
+                "end";
+
+        KieSession ksession = getKieSession(drl);
+
+        Person john = new Person("John", 30);
+        john.setMoney( new BigDecimal( 70000 ) );
+
+        ksession.insert(john);
+        assertEquals(1, ksession.fireAllRules());
+        assertEquals(new BigDecimal( 30000 ), john.getMoney());
+    }
+
+    @Test
     public void testBinaryOperationOnInteger() throws Exception {
         // RHDM-1421
         String drl =
