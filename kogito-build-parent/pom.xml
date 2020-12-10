@@ -78,7 +78,7 @@
     <version.vertx.web.client>3.9.4</version.vertx.web.client>
 
     <!-- this version property is used in plugins but also in dependencies too -->
-    <version.io.quarkus>1.10.0.Final</version.io.quarkus>
+    <version.io.quarkus>1.10.3.Final</version.io.quarkus>
     <quarkus.logging.manager>org.jboss.logmanager.LogManager</quarkus.logging.manager>
 
     <!-- dependencies versions -->
