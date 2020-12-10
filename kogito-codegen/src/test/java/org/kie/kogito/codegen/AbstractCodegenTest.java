@@ -35,10 +35,10 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import org.drools.compiler.commons.jci.compilers.CompilationResult;
-import org.drools.compiler.commons.jci.compilers.JavaCompiler;
-import org.drools.compiler.commons.jci.compilers.JavaCompilerFactory;
-import org.drools.compiler.compiler.JavaConfiguration;
+import org.kie.memorycompiler.CompilationResult;
+import org.kie.memorycompiler.JavaCompiler;
+import org.kie.memorycompiler.JavaCompilerFactory;
+import org.kie.memorycompiler.JavaConfiguration;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.kie.kogito.Application;
 import org.kie.kogito.codegen.context.KogitoBuildContext;
@@ -72,7 +72,7 @@ public class AbstractCodegenTest {
     }
     private TestClassLoader classloader;
 
-    private static final JavaCompiler JAVA_COMPILER = JavaCompilerFactory.INSTANCE.loadCompiler( JavaConfiguration.CompilerType.NATIVE, "11");
+    private static final JavaCompiler JAVA_COMPILER = JavaCompilerFactory.loadCompiler( JavaConfiguration.CompilerType.NATIVE, "11");
     private static final String TEST_JAVA = "src/test/java/";
     private static final String TEST_RESOURCES = "src/test/resources";
 

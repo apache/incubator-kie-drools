@@ -22,12 +22,12 @@ import java.util.Collection;
 import java.util.List;
 
 import io.quarkus.bootstrap.model.AppDependency;
-import org.drools.compiler.commons.jci.compilers.CompilationResult;
-import org.drools.compiler.commons.jci.compilers.JavaCompiler;
-import org.drools.compiler.commons.jci.compilers.JavaCompilerSettings;
+import org.kie.memorycompiler.CompilationResult;
+import org.kie.memorycompiler.JavaCompiler;
+import org.kie.memorycompiler.JavaCompilerSettings;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.modelcompiler.builder.JavaParserCompiler;
-import org.kie.internal.jci.CompilationProblem;
+import org.kie.memorycompiler.CompilationProblem;
 import org.kie.kogito.codegen.GeneratedFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

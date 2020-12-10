@@ -26,10 +26,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 
-import org.drools.compiler.commons.jci.compilers.CompilationResult;
-import org.drools.compiler.commons.jci.compilers.JavaCompiler;
-import org.drools.compiler.commons.jci.compilers.JavaCompilerFactory;
-import org.drools.compiler.compiler.JavaConfiguration;
+import org.kie.memorycompiler.CompilationResult;
+import org.kie.memorycompiler.JavaCompiler;
+import org.kie.memorycompiler.JavaCompilerFactory;
+import org.kie.memorycompiler.JavaConfiguration;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.core.io.impl.ClassPathResource;
 import org.jbpm.bpmn2.JbpmBpmn2TestCase;
@@ -68,7 +68,7 @@ import static org.kie.api.runtime.process.ProcessInstance.STATE_ERROR;
 
 public class ActivityGenerationModelTest extends JbpmBpmn2TestCase {
 
-    private static final JavaCompiler JAVA_COMPILER = JavaCompilerFactory.INSTANCE.loadCompiler( JavaConfiguration.CompilerType.NATIVE, "1.8" );
+    private static final JavaCompiler JAVA_COMPILER = JavaCompilerFactory.loadCompiler( JavaConfiguration.CompilerType.NATIVE, "1.8" );
 
     @Test
     public void testMinimalProcess() throws Exception {

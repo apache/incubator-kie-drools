@@ -38,11 +38,11 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
-import org.drools.compiler.commons.jci.compilers.CompilationResult;
-import org.drools.compiler.commons.jci.compilers.JavaCompiler;
-import org.drools.compiler.commons.jci.compilers.JavaCompilerFactory;
-import org.drools.compiler.commons.jci.compilers.JavaCompilerSettings;
-import org.drools.compiler.compiler.JavaConfiguration;
+import org.kie.memorycompiler.CompilationResult;
+import org.kie.memorycompiler.JavaCompiler;
+import org.kie.memorycompiler.JavaCompilerFactory;
+import org.kie.memorycompiler.JavaCompilerSettings;
+import org.kie.memorycompiler.JavaConfiguration;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.jbpm.util.JsonSchemaUtil;
 import org.kie.kogito.Model;
@@ -64,7 +64,7 @@ import org.reflections.util.ConfigurationBuilder;
       threadSafe = true)
 public class ProcessClassesMojo extends AbstractKieMojo {
         
-    private static final JavaCompiler JAVA_COMPILER = JavaCompilerFactory.INSTANCE.loadCompiler( JavaConfiguration.CompilerType.NATIVE, "1.8");
+    private static final JavaCompiler JAVA_COMPILER = JavaCompilerFactory.loadCompiler( JavaConfiguration.CompilerType.NATIVE, "1.8");
 
 
     @Parameter(defaultValue = "${project}", readonly = true, required = true)
