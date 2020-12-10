@@ -28,13 +28,13 @@ import java.util.Set;
 import org.assertj.core.api.Assertions;
 import org.drools.modelcompiler.domain.Address;
 import org.drools.modelcompiler.domain.Person;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.Results;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -445,17 +445,22 @@ public class MvelDialectTest extends BaseModelTest {
         // DROOLS-5889
         String drl =
                 "import " + Person.class.getCanonicalName() + "\n" +
+                "global java.util.List list;\n" +
                 "dialect \"mvel\"\n" +
                 "rule R\n" +
                 "when\n" +
                 "    $p : Person( age >= 26 )\n" +
                 "then\n" +
-                "modify($p) {" +
-                "    money = 30000;\n" +
-                "} " +
+                "   modify($p) {" +
+                "       money = 30000;\n" +
+                "   } " +
+                "   list.add(\"***** \" + $p + \", money = \" + $p.money);" +
                 "end";
 
         KieSession ksession = getKieSession(drl);
+
+        ArrayList<String> logMessages = new ArrayList<>();
+        ksession.setGlobal("list", logMessages);
 
         Person john = new Person("John", 30);
         john.setMoney( new BigDecimal( 70000 ) );
@@ -463,6 +468,7 @@ public class MvelDialectTest extends BaseModelTest {
         ksession.insert(john);
         assertEquals(1, ksession.fireAllRules());
         assertEquals(new BigDecimal( 30000 ), john.getMoney());
+        assertThat(logMessages).contains("***** John, money = 30000");
     }
 
     @Test
