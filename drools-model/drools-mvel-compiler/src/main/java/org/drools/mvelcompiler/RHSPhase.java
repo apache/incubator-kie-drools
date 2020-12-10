@@ -3,7 +3,9 @@ package org.drools.mvelcompiler;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,6 +30,7 @@ import com.github.javaparser.ast.stmt.Statement;
 import org.drools.core.util.ClassUtils;
 import org.drools.mvel.parser.ast.expr.DrlNameExpr;
 import org.drools.mvel.parser.ast.visitor.DrlGenericVisitor;
+import org.drools.mvelcompiler.ast.BigDecimalExprT;
 import org.drools.mvelcompiler.ast.BinaryTExpr;
 import org.drools.mvelcompiler.ast.CastExprT;
 import org.drools.mvelcompiler.ast.CharacterLiteralExpressionT;
@@ -174,7 +177,28 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
     public TypedExpression visit(BinaryExpr n, Context arg) {
         TypedExpression left = n.getLeft().accept(this, arg);
         TypedExpression right = n.getRight().accept(this, arg);
-        return new BinaryTExpr(left, right, n.getOperator());
+        return convertBigDecimal(left, right, n.getOperator());
+    }
+
+    private TypedExpression convertBigDecimal(TypedExpression left, TypedExpression right, BinaryExpr.Operator operator) {
+        Optional<Type> typeLeft = left.getType();
+        Optional<Type> typeRight = right.getType();
+
+        if (!typeLeft.isPresent() || !typeRight.isPresent()) { // coerce only when types are known
+            return new BinaryTExpr(left, right, operator);
+        }
+
+        if (Arrays.asList(BinaryExpr.Operator.PLUS, BinaryExpr.Operator.MINUS).contains(operator)) {
+            if (typeLeft.get() != BigDecimal.class && typeRight.get() == BigDecimal.class) { // convert left
+                return new BigDecimalExprT(BigDecimalExprT.toBigDecimalMethod(operator.toString()),
+                                           BigDecimalExprT.valueOf(left), right);
+            } else if (typeLeft.get() == BigDecimal.class && typeRight.get() != BigDecimal.class) {
+                return new BigDecimalExprT(BigDecimalExprT.toBigDecimalMethod(operator.toString()),
+                                           left, BigDecimalExprT.valueOf(right));
+            }
+        }
+
+        return new BinaryTExpr(left, right, operator);
     }
 
     @Override

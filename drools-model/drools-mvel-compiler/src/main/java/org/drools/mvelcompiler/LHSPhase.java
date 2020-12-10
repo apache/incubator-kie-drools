@@ -47,7 +47,6 @@ import static java.util.Optional.ofNullable;
 import static org.drools.core.util.ClassUtils.getAccessor;
 import static org.drools.core.util.ClassUtils.getSetter;
 import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
-import static org.drools.mvelcompiler.bigdecimal.BigDecimalConversion.shouldConvertPlusEqualsOperatorBigDecimal;
 
 /**
  * This phase processes the left hand side of a MVEL target expression, if present, such as
@@ -188,10 +187,14 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, Void> {
 
         TypedExpression target = n.getTarget().accept(this, arg);
 
-        BigDecimalConversion bigDecimalConversion = shouldConvertPlusEqualsOperatorBigDecimal(rhs, target.getType(), n.getOperator());
-        if (bigDecimalConversion.shouldConvert()) {
-            return bigDecimalConversion.convertExpression(target);
+        Optional<TypedExpression> bigDecimalConversion =
+                new BigDecimalConversion()
+                        .convertAssignExpr(n, target, rhsOrError());
+
+        if(bigDecimalConversion.isPresent()) {
+            return bigDecimalConversion.get();
         }
+
         if (target instanceof FieldToAccessorTExpr || target instanceof VariableDeclaratorTExpr || target instanceof MapPutExprT) {
             return target;
         }

@@ -112,7 +112,7 @@ public class MvelCompilerTest implements CompilerTest {
     public void testSetterBigDecimal() {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{ $p.salary = $p.salary + 50000; }",
-             "{ $p.setSalary($p.getSalary().add(new java.math.BigDecimal(50000))); }");
+             "{ $p.setSalary($p.getSalary().add(java.math.BigDecimal.valueOf(50000))); }");
     }
 
     @Test

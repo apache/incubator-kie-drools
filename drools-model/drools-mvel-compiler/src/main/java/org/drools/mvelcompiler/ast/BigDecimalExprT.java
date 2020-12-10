@@ -5,7 +5,10 @@ import java.math.BigDecimal;
 import java.util.Optional;
 
 import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.expr.AssignExpr;
+import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 
 import static com.github.javaparser.ast.NodeList.nodeList;
@@ -13,37 +16,53 @@ import static com.github.javaparser.ast.NodeList.nodeList;
 public class BigDecimalExprT implements TypedExpression {
 
     private final String name;
-    private final Optional<TypedExpression> scope;
     private final TypedExpression argument;
-    private final Optional<Type> type;
+    private final TypedExpression scope;
+    private final Type type = BigDecimal.class;
+
+    public static String toBigDecimalMethod(String operator) {
+        switch (operator) {
+            case "PLUS":
+                return "add";
+            case "MINUS":
+                return "subtract";
+            case "ASSIGN":
+                return "valueOf";
+        }
+        throw new RuntimeException("Unknown operator");
+    }
 
     public BigDecimalExprT(String bigDecimalMethod,
                            TypedExpression scope,
                            TypedExpression argument) {
         this.name = bigDecimalMethod;
-        this.scope = Optional.of(scope);
+        this.scope = scope;
         this.argument = argument;
-        this.type = Optional.of(BigDecimal.class);
+    }
+
+    public static BigDecimalExprT valueOf(TypedExpression value) {
+        return new BigDecimalExprT("valueOf", new SimpleNameTExpr(BigDecimal.class.getCanonicalName(), BigDecimal.class),
+                                   value);
     }
 
     @Override
     public Optional<Type> getType() {
-        return type;
+        return Optional.of(type);
     }
 
     @Override
     public Node toJavaExpression() {
-        Node scopeE = scope.map(TypedExpression::toJavaExpression).orElse(null);
 
-        return new MethodCallExpr((Expression) scopeE, name, nodeList((Expression) argument.toJavaExpression()));
+        return new MethodCallExpr((Expression) scope.toJavaExpression(),
+                                  name,
+                                  nodeList((Expression) argument.toJavaExpression()));
     }
 
     @Override
     public String toString() {
         return "BigDecimalExprT{" +
                 "name='" + name + '\'' +
-                ", scope=" + scope +
-                ", arguments=" + argument +
+                ", argument=" + argument +
                 ", type=" + type +
                 '}';
     }
