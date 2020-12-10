@@ -20,9 +20,12 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import org.assertj.core.api.Assertions;
 import org.drools.modelcompiler.domain.Address;
 import org.drools.modelcompiler.domain.Person;
 import org.junit.Test;
@@ -488,17 +491,21 @@ public class MvelDialectTest extends BaseModelTest {
         String drl =
                 "import " + Person.class.getCanonicalName() + "\n" +
                 "import " + ArrayList.class.getCanonicalName() + "\n" +
+                "global java.util.List names;\n" +
                 "dialect \"mvel\"\n" +
-                "rule \"bus1\"\n" +
+                "rule \"use subtype\"\n" +
                 "when\n" +
                 "    $people : ArrayList() from collect ( Person() )\n" +
                 "then\n" +
                 "    for (Person p : $people ) {\n" +
-                "        System.out.println(\"Person: \" + p);\n" +
+                "        names.add(p.getName());\n" +
                 "    }\n" +
                 "end";
 
         KieSession ksession = getKieSession(drl);
+
+        List<String> names = new ArrayList<>();
+        ksession.setGlobal("names", names);
 
         Person mario = new Person("Mario", 46);
         Person luca = new Person("Luca", 36);
@@ -507,6 +514,7 @@ public class MvelDialectTest extends BaseModelTest {
         Arrays.asList(mario, luca, leonardo).forEach(ksession::insert);
 
         assertEquals(1, ksession.fireAllRules());
+        Assertions.assertThat(names).containsExactlyInAnyOrder("Mario", "Luca", "Leonardo");
     }
 
     @Test
@@ -517,19 +525,29 @@ public class MvelDialectTest extends BaseModelTest {
                 "import " + Address.class.getCanonicalName() + "\n" +
                 "import " + ArrayList.class.getCanonicalName() + "\n" +
                 "dialect \"mvel\"\n" +
-                "rule \"bus1\"\n" +
+                "global java.util.List names;\n" +
+                "global java.util.Set  addresses;\n" +
+                "rule \"use subtypes in nested fors\"\n" +
                 "when\n" +
                 "    $people : ArrayList() from collect ( Person() )\n" +
                 "    $addresses : ArrayList() from collect ( Address() )\n" +
                 "then\n" +
                 "    for (Person p : $people ) {\n" +
-                "       for (Address a : $addresses ) {\n" +
-                "           System.out.println(\"Person: \" + p + \" address: \" + a);\n" +
+                "        names.add(p.getName());\n" +
+                "           for (Address a : $addresses ) {\n" +
+                "               addresses.add(a.getCity());\n" +
                 "       }\n" +
                 "    }\n" +
                 "end";
 
         KieSession ksession = getKieSession(drl);
+
+        List<String> names = new ArrayList<>();
+        ksession.setGlobal("names", names);
+
+        Set<String> addresses = new HashSet<>();
+        ksession.setGlobal("addresses", addresses);
+
 
         Person mario = new Person("Mario", 46);
         Person luca = new Person("Luca", 36);
@@ -541,5 +559,7 @@ public class MvelDialectTest extends BaseModelTest {
         ksession.insert(a);
 
         assertEquals(1, ksession.fireAllRules());
+        Assertions.assertThat(names).containsExactlyInAnyOrder("Mario", "Luca", "Leonardo");
+        Assertions.assertThat(addresses).contains("Milan");
     }
 }
