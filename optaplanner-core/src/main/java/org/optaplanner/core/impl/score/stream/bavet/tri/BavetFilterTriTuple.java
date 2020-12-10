@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,25 +16,14 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.tri;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public final class BavetFilterTriTuple<A, B, C> extends BavetAbstractTriTuple<A, B, C> {
 
     private final BavetFilterTriNode<A, B, C> node;
     private final BavetAbstractTriTuple<A, B, C> parentTuple;
 
-    protected List<BavetAbstractTriTuple<A, B, C>> childTupleList = null;
-
     public BavetFilterTriTuple(BavetFilterTriNode<A, B, C> node, BavetAbstractTriTuple<A, B, C> parentTuple) {
         this.node = node;
         this.parentTuple = parentTuple;
-        childTupleList = new ArrayList<>();
-    }
-
-    @Override
-    public void refresh() {
-        node.refresh(this);
     }
 
     @Override
@@ -64,10 +53,6 @@ public final class BavetFilterTriTuple<A, B, C> extends BavetAbstractTriTuple<A,
     @Override
     public C getFactC() {
         return parentTuple.getFactC();
-    }
-
-    public List<BavetAbstractTriTuple<A, B, C>> getChildTupleList() {
-        return childTupleList;
     }
 
 }

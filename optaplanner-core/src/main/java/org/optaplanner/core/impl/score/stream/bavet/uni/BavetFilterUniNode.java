@@ -17,12 +17,12 @@
 package org.optaplanner.core.impl.score.stream.bavet.uni;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
 
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintSession;
+import org.optaplanner.core.impl.score.stream.bavet.common.BavetAbstractTuple;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetTupleState;
 
 public final class BavetFilterUniNode<A> extends BavetAbstractUniNode<A> {
@@ -45,8 +45,8 @@ public final class BavetFilterUniNode<A> extends BavetAbstractUniNode<A> {
     }
 
     @Override
-    public List<BavetAbstractUniNode<A>> getChildNodes() {
-        return Collections.unmodifiableList(childNodeList);
+    public List<BavetAbstractUniNode<A>> getChildNodeList() {
+        return childNodeList;
     }
 
     // ************************************************************************
@@ -81,10 +81,12 @@ public final class BavetFilterUniNode<A> extends BavetAbstractUniNode<A> {
         return new BavetFilterUniTuple<>(this, parentTuple);
     }
 
-    public void refresh(BavetFilterUniTuple<A> tuple) {
+    @Override
+    public void refresh(BavetAbstractTuple uncastTuple) {
+        BavetFilterUniTuple<A> tuple = (BavetFilterUniTuple<A>) uncastTuple;
         A a = tuple.getFactA();
-        List<BavetAbstractUniTuple<A>> childTupleList = tuple.getChildTupleList();
-        for (BavetAbstractUniTuple<A> childTuple : childTupleList) {
+        List<BavetAbstractTuple> childTupleList = tuple.getChildTupleList();
+        for (BavetAbstractTuple childTuple : childTupleList) {
             session.transitionTuple(childTuple, BavetTupleState.DYING);
         }
         childTupleList.clear();
@@ -97,7 +99,6 @@ public final class BavetFilterUniNode<A> extends BavetAbstractUniNode<A> {
                 }
             }
         }
-        tuple.refreshed();
     }
 
     @Override

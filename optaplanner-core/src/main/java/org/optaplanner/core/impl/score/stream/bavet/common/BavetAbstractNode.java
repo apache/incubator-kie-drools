@@ -18,7 +18,7 @@ package org.optaplanner.core.impl.score.stream.bavet.common;
 
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintSession;
 
-public class BavetAbstractNode implements BavetNode {
+public abstract class BavetAbstractNode implements BavetNode {
 
     protected final BavetConstraintSession session;
     protected final int nodeIndex;
@@ -27,6 +27,8 @@ public class BavetAbstractNode implements BavetNode {
         this.session = session;
         this.nodeIndex = nodeIndex;
     }
+
+    public abstract void refresh(BavetAbstractTuple tuple);
 
     // ************************************************************************
     // Getters/setters

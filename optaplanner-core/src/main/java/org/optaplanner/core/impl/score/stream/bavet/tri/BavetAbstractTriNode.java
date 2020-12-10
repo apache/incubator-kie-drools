@@ -16,6 +16,9 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.tri;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintSession;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetAbstractNode;
 
@@ -28,6 +31,10 @@ public abstract class BavetAbstractTriNode<A, B, C> extends BavetAbstractNode {
     public void addChildNode(BavetAbstractTriNode<A, B, C> childNode) {
         throw new IllegalStateException("Impossible state: the ConstraintStream for this node (" + this
                 + ") cannot handle a childNode (" + childNode + ").");
+    }
+
+    public List<BavetAbstractTriNode<A, B, C>> getChildNodeList() {
+        return Collections.emptyList();
     }
 
     public abstract BavetAbstractTriTuple<A, B, C> createTuple(BavetAbstractTriTuple<A, B, C> parentTuple);

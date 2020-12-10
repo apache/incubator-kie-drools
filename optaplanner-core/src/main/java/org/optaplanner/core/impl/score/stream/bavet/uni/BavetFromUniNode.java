@@ -17,10 +17,10 @@
 package org.optaplanner.core.impl.score.stream.bavet.uni;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintSession;
+import org.optaplanner.core.impl.score.stream.bavet.common.BavetAbstractTuple;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetTupleState;
 
 public final class BavetFromUniNode<A> extends BavetAbstractUniNode<A> {
@@ -41,8 +41,8 @@ public final class BavetFromUniNode<A> extends BavetAbstractUniNode<A> {
     }
 
     @Override
-    public List<BavetAbstractUniNode<A>> getChildNodes() {
-        return Collections.unmodifiableList(childNodeList);
+    public List<BavetAbstractUniNode<A>> getChildNodeList() {
+        return childNodeList;
     }
 
     // ************************************************************************
@@ -80,9 +80,11 @@ public final class BavetFromUniNode<A> extends BavetAbstractUniNode<A> {
                 + ") can't have a parentTuple (" + parentTuple + ");");
     }
 
-    public void refresh(BavetFromUniTuple<A> tuple) {
-        List<BavetAbstractUniTuple<A>> childTupleList = tuple.getChildTupleList();
-        for (BavetAbstractUniTuple<A> childTuple : childTupleList) {
+    @Override
+    public void refresh(BavetAbstractTuple uncastTuple) {
+        BavetFromUniTuple<A> tuple = (BavetFromUniTuple<A>) uncastTuple;
+        List<BavetAbstractTuple> childTupleList = tuple.getChildTupleList();
+        for (BavetAbstractTuple childTuple : childTupleList) {
             // TODO the entire FromUniNode isn't really doing anything
             // so the destruction/construction is just an update op unless it's CREATING or DYING
             session.transitionTuple(childTuple, BavetTupleState.DYING);
@@ -95,7 +97,6 @@ public final class BavetFromUniNode<A> extends BavetAbstractUniNode<A> {
                 session.transitionTuple(childTuple, BavetTupleState.CREATING);
             }
         }
-        tuple.refreshed();
     }
 
     @Override

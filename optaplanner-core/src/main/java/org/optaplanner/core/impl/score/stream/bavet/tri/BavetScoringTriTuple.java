@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,11 +33,6 @@ public final class BavetScoringTriTuple<A, B, C> extends BavetAbstractTriTuple<A
     public BavetScoringTriTuple(BavetScoringTriNode<A, B, C> node, BavetAbstractTriTuple<A, B, C> parentTuple) {
         this.node = node;
         this.parentTuple = parentTuple;
-    }
-
-    @Override
-    public void refresh() {
-        node.refresh(this);
     }
 
     @Override

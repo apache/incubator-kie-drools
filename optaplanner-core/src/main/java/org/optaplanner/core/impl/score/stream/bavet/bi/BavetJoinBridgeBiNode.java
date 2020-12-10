@@ -20,6 +20,7 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintSession;
+import org.optaplanner.core.impl.score.stream.bavet.common.BavetAbstractTuple;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetJoinBridgeNode;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetTupleState;
 import org.optaplanner.core.impl.score.stream.bavet.common.index.BavetIndex;
@@ -48,7 +49,9 @@ public final class BavetJoinBridgeBiNode<A, B> extends BavetAbstractBiNode<A, B>
         return new BavetJoinBridgeBiTuple<>(this, parentTuple);
     }
 
-    public void refresh(BavetJoinBridgeBiTuple<A, B> tuple) {
+    @Override
+    public void refresh(BavetAbstractTuple uncastTuple) {
+        BavetJoinBridgeBiTuple<A, B> tuple = (BavetJoinBridgeBiTuple<A, B>) uncastTuple;
         A a = tuple.getFactA();
         B b = tuple.getFactB();
         if (tuple.getState() != BavetTupleState.CREATING) {
@@ -60,7 +63,6 @@ public final class BavetJoinBridgeBiNode<A, B> extends BavetAbstractBiNode<A, B>
             index.put(indexProperties, tuple);
         }
         childTupleRefresher.accept(tuple);
-        tuple.refreshed();
     }
 
     @Override

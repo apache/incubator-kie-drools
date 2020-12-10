@@ -22,6 +22,7 @@ import java.util.Objects;
 
 import org.optaplanner.core.api.function.TriPredicate;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintSession;
+import org.optaplanner.core.impl.score.stream.bavet.common.BavetAbstractTuple;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetTupleState;
 
 public final class BavetFilterTriNode<A, B, C> extends BavetAbstractTriNode<A, B, C> {
@@ -41,6 +42,11 @@ public final class BavetFilterTriNode<A, B, C> extends BavetAbstractTriNode<A, B
     @Override
     public void addChildNode(BavetAbstractTriNode<A, B, C> childNode) {
         childNodeList.add(childNode);
+    }
+
+    @Override
+    public List<BavetAbstractTriNode<A, B, C>> getChildNodeList() {
+        return childNodeList;
     }
 
     // ************************************************************************
@@ -75,12 +81,14 @@ public final class BavetFilterTriNode<A, B, C> extends BavetAbstractTriNode<A, B
         return new BavetFilterTriTuple<>(this, parentTuple);
     }
 
-    public void refresh(BavetFilterTriTuple<A, B, C> tuple) {
+    @Override
+    public void refresh(BavetAbstractTuple uncastTuple) {
+        BavetFilterTriTuple<A, B, C> tuple = (BavetFilterTriTuple<A, B, C>) uncastTuple;
         A a = tuple.getFactA();
         B b = tuple.getFactB();
         C c = tuple.getFactC();
-        List<BavetAbstractTriTuple<A, B, C>> childTupleList = tuple.getChildTupleList();
-        for (BavetAbstractTriTuple<A, B, C> childTuple : childTupleList) {
+        List<BavetAbstractTuple> childTupleList = tuple.getChildTupleList();
+        for (BavetAbstractTuple childTuple : childTupleList) {
             session.transitionTuple(childTuple, BavetTupleState.DYING);
         }
         childTupleList.clear();
@@ -93,7 +101,6 @@ public final class BavetFilterTriNode<A, B, C> extends BavetAbstractTriNode<A, B
                 }
             }
         }
-        tuple.refreshed();
     }
 
     @Override

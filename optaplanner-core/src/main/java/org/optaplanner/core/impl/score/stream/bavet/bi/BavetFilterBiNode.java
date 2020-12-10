@@ -22,6 +22,7 @@ import java.util.Objects;
 import java.util.function.BiPredicate;
 
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintSession;
+import org.optaplanner.core.impl.score.stream.bavet.common.BavetAbstractTuple;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetTupleState;
 
 public final class BavetFilterBiNode<A, B> extends BavetAbstractBiNode<A, B> {
@@ -41,6 +42,11 @@ public final class BavetFilterBiNode<A, B> extends BavetAbstractBiNode<A, B> {
     @Override
     public void addChildNode(BavetAbstractBiNode<A, B> childNode) {
         childNodeList.add(childNode);
+    }
+
+    @Override
+    public List<BavetAbstractBiNode<A, B>> getChildNodeList() {
+        return childNodeList;
     }
 
     // ************************************************************************
@@ -75,11 +81,13 @@ public final class BavetFilterBiNode<A, B> extends BavetAbstractBiNode<A, B> {
         return new BavetFilterBiTuple<>(this, parentTuple);
     }
 
-    public void refresh(BavetFilterBiTuple<A, B> tuple) {
+    @Override
+    public void refresh(BavetAbstractTuple uncastTuple) {
+        BavetFilterBiTuple<A, B> tuple = (BavetFilterBiTuple<A, B>) uncastTuple;
         A a = tuple.getFactA();
         B b = tuple.getFactB();
-        List<BavetAbstractBiTuple<A, B>> childTupleList = tuple.getChildTupleList();
-        for (BavetAbstractBiTuple<A, B> childTuple : childTupleList) {
+        List<BavetAbstractTuple> childTupleList = tuple.getChildTupleList();
+        for (BavetAbstractTuple childTuple : childTupleList) {
             session.transitionTuple(childTuple, BavetTupleState.DYING);
         }
         childTupleList.clear();
@@ -92,7 +100,6 @@ public final class BavetFilterBiNode<A, B> extends BavetAbstractBiNode<A, B> {
                 }
             }
         }
-        tuple.refreshed();
     }
 
     @Override

@@ -17,7 +17,6 @@
 package org.optaplanner.core.impl.score.stream.bavet.common;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -91,7 +90,7 @@ public class BavetNodeBuildPolicy<Solution_> {
             throw new IllegalStateException("Impossible state: maximum node index (" + maxNodeIndex +
                     ") does not match the expected maximum node index (" + expectedMaxNodeIndex + ").");
         }
-        return Collections.unmodifiableList(new ArrayList<>(nodeIndexToNodeMap.values()));
+        return new ArrayList<>(nodeIndexToNodeMap.values());
     }
 
 }

@@ -28,6 +28,7 @@ import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.impl.score.constraint.DefaultConstraintMatchTotal;
 import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintSession;
+import org.optaplanner.core.impl.score.stream.bavet.common.BavetAbstractTuple;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetScoringNode;
 
 public final class BavetScoringUniNode<A> extends BavetAbstractUniNode<A> implements BavetScoringNode {
@@ -65,7 +66,7 @@ public final class BavetScoringUniNode<A> extends BavetAbstractUniNode<A> implem
     // ************************************************************************
 
     @Override
-    public List<BavetAbstractUniNode<A>> getChildNodes() {
+    public List<BavetAbstractUniNode<A>> getChildNodeList() {
         return Collections.emptyList();
     }
 
@@ -74,7 +75,9 @@ public final class BavetScoringUniNode<A> extends BavetAbstractUniNode<A> implem
         return new BavetScoringUniTuple<>(this, parentTuple);
     }
 
-    public void refresh(BavetScoringUniTuple<A> tuple) {
+    @Override
+    public void refresh(BavetAbstractTuple uncastTuple) {
+        BavetScoringUniTuple<A> tuple = (BavetScoringUniTuple<A>) uncastTuple;
         A a = tuple.getFactA();
         UndoScoreImpacter oldUndoScoreImpacter = tuple.getUndoScoreImpacter();
         if (oldUndoScoreImpacter != null) {
@@ -101,7 +104,6 @@ public final class BavetScoringUniNode<A> extends BavetAbstractUniNode<A> implem
         } else {
             tuple.setUndoScoreImpacter(null);
         }
-        tuple.refreshed();
     }
 
     @Override

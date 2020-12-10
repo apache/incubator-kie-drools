@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.uni;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintSession;
@@ -32,7 +33,9 @@ public abstract class BavetAbstractUniNode<A> extends BavetAbstractNode {
                 + ") cannot handle a childNode (" + childNode + ").");
     }
 
-    public abstract List<BavetAbstractUniNode<A>> getChildNodes();
+    public List<BavetAbstractUniNode<A>> getChildNodeList() {
+        return Collections.emptyList();
+    }
 
     public abstract BavetAbstractUniTuple<A> createTuple(BavetAbstractUniTuple<A> parentTuple);
 

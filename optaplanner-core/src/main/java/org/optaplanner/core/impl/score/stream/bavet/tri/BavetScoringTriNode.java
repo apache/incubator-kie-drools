@@ -27,6 +27,7 @@ import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.impl.score.constraint.DefaultConstraintMatchTotal;
 import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintSession;
+import org.optaplanner.core.impl.score.stream.bavet.common.BavetAbstractTuple;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetScoringNode;
 
 public final class BavetScoringTriNode<A, B, C> extends BavetAbstractTriNode<A, B, C> implements BavetScoringNode {
@@ -66,7 +67,9 @@ public final class BavetScoringTriNode<A, B, C> extends BavetAbstractTriNode<A, 
         return new BavetScoringTriTuple<>(this, parentTuple);
     }
 
-    public void refresh(BavetScoringTriTuple<A, B, C> tuple) {
+    @Override
+    public void refresh(BavetAbstractTuple uncastTuple) {
+        BavetScoringTriTuple<A, B, C> tuple = (BavetScoringTriTuple<A, B, C>) uncastTuple;
         A a = tuple.getFactA();
         B b = tuple.getFactB();
         C c = tuple.getFactC();
@@ -95,7 +98,6 @@ public final class BavetScoringTriNode<A, B, C> extends BavetAbstractTriNode<A, 
         } else {
             tuple.setUndoScoreImpacter(null);
         }
-        tuple.refreshed();
     }
 
     @Override

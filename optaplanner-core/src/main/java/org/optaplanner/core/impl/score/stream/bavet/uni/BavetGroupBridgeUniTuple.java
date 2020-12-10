@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,11 +30,6 @@ public final class BavetGroupBridgeUniTuple<A, NewA, ResultContainer_, NewB> ext
             BavetAbstractUniTuple<A> parentTuple) {
         this.node = node;
         this.parentTuple = parentTuple;
-    }
-
-    @Override
-    public void refresh() {
-        node.refresh(this);
     }
 
     @Override

@@ -23,6 +23,7 @@ import java.util.function.Function;
 
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintSession;
 import org.optaplanner.core.impl.score.stream.bavet.bi.BavetJoinBiNode;
+import org.optaplanner.core.impl.score.stream.bavet.common.BavetAbstractTuple;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetJoinBridgeNode;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetTupleState;
 import org.optaplanner.core.impl.score.stream.bavet.common.index.BavetIndex;
@@ -46,7 +47,7 @@ public final class BavetJoinBridgeUniNode<A> extends BavetAbstractUniNode<A>
     }
 
     @Override
-    public List<BavetAbstractUniNode<A>> getChildNodes() {
+    public List<BavetAbstractUniNode<A>> getChildNodeList() {
         return Collections.emptyList();
     }
 
@@ -55,7 +56,9 @@ public final class BavetJoinBridgeUniNode<A> extends BavetAbstractUniNode<A>
         return new BavetJoinBridgeUniTuple<>(this, parentTuple);
     }
 
-    public void refresh(BavetJoinBridgeUniTuple<A> tuple) {
+    @Override
+    public void refresh(BavetAbstractTuple uncastTuple) {
+        BavetJoinBridgeUniTuple<A> tuple = (BavetJoinBridgeUniTuple<A>) uncastTuple;
         A a = tuple.getFactA();
         if (tuple.getState() != BavetTupleState.CREATING) {
             // Clean up index
@@ -66,7 +69,6 @@ public final class BavetJoinBridgeUniNode<A> extends BavetAbstractUniNode<A>
             index.put(indexProperties, tuple);
         }
         childTupleRefresher.accept(tuple);
-        tuple.refreshed();
     }
 
     @Override

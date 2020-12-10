@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,20 +17,37 @@
 package org.optaplanner.core.impl.score.stream.bavet.common;
 
 public enum BavetTupleState {
-    NEW,
-    CREATING,
-    UPDATING,
-    OK,
-    DYING,
-    DEAD,
-    ABORTING;
+    NEW(false, true),
+    CREATING(true, true),
+    UPDATING(true, true),
+    /**
+     * Freshly refreshed tuple.
+     */
+    OK(false, true),
+    /**
+     * Tuple which was {@link #UPDATING} and then invalidated by subsequent tuple.
+     */
+    DYING(true, false),
+    DEAD(false, false),
+    /**
+     * Tuple which was {@link #CREATING} and then invalidated by subsequent tuple.
+     */
+    ABORTING(true, false);
+
+    private final boolean dirty;
+    private final boolean active;
+
+    BavetTupleState(boolean dirty, boolean active) {
+        this.dirty = dirty;
+        this.active = active;
+    }
 
     public boolean isDirty() {
-        return this == CREATING || this == UPDATING || this == DYING || this == ABORTING;
+        return dirty;
     }
 
     public boolean isActive() {
-        return this != DYING && this != DEAD && this != ABORTING;
+        return active;
     }
 
 }

@@ -16,11 +16,13 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.common;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public abstract class BavetAbstractTuple implements BavetTuple {
 
     protected BavetTupleState state = BavetTupleState.NEW;
-
-    public abstract void refresh();
+    protected final List<BavetAbstractTuple> childTupleList = new ArrayList<>(); // TODO initial capacity
 
     public boolean isDirty() {
         return state.isDirty();
@@ -30,27 +32,12 @@ public abstract class BavetAbstractTuple implements BavetTuple {
         return state.isActive();
     }
 
-    public void refreshed() {
-        switch (state) {
-            case CREATING:
-                state = BavetTupleState.OK;
-                break;
-            case UPDATING:
-                state = BavetTupleState.OK;
-                break;
-            case DYING:
-            case ABORTING:
-                state = BavetTupleState.DEAD;
-                break;
-            case DEAD:
-                throw new IllegalStateException("The tuple (" + this
-                        + ") is already in the dead state (" + state + ").");
-        }
-    }
-
     // ************************************************************************
     // Getters/setters
     // ************************************************************************
+
+    @Override
+    public abstract BavetAbstractNode getNode();
 
     public int getNodeIndex() {
         return getNode().getNodeIndex();
@@ -62,6 +49,10 @@ public abstract class BavetAbstractTuple implements BavetTuple {
 
     public void setState(BavetTupleState state) {
         this.state = state;
+    }
+
+    public final List<BavetAbstractTuple> getChildTupleList() {
+        return childTupleList;
     }
 
 }

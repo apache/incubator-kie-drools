@@ -87,7 +87,7 @@ public class BavetConstraintStreamNodeOrderingTest {
                 .as("fromNode is the first node of the constraint stream.")
                 .isEqualTo(0);
 
-        List<BavetAbstractUniNode<Object>> fromNodeChildNodes = fromNode.getChildNodes();
+        List<BavetAbstractUniNode<Object>> fromNodeChildNodes = fromNode.getChildNodeList();
         assertThat(fromNodeChildNodes)
                 .as("fromNode has a single child, a filterNode.")
                 .hasSize(1);
@@ -97,7 +97,7 @@ public class BavetConstraintStreamNodeOrderingTest {
                 .as("filterNode is the second node of the constraint stream.")
                 .isEqualTo(1);
 
-        List<BavetAbstractUniNode<Object>> filterChildNodes = filterNode.getChildNodes();
+        List<BavetAbstractUniNode<Object>> filterChildNodes = filterNode.getChildNodeList();
         assertThat(filterChildNodes)
                 .as("filterNode has two children, left and right join bridge for the unique pair.")
                 .hasSize(2);
@@ -122,7 +122,7 @@ public class BavetConstraintStreamNodeOrderingTest {
                 .as("Second fromNode follows the join (4), group (6), filter (7), left join bridge (8).")
                 .isEqualTo(9);
 
-        List<BavetAbstractUniNode<Object>> fromNodeChildNodes = fromNode.getChildNodes();
+        List<BavetAbstractUniNode<Object>> fromNodeChildNodes = fromNode.getChildNodeList();
         assertThat(fromNodeChildNodes)
                 .as("Second fromNode has a single child, the right JoinBridge.")
                 .hasSize(1);

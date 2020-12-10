@@ -26,6 +26,7 @@ import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintSession;
 import org.optaplanner.core.impl.score.stream.bavet.bi.BavetGroupBiNode;
 import org.optaplanner.core.impl.score.stream.bavet.bi.BavetGroupBiTuple;
+import org.optaplanner.core.impl.score.stream.bavet.common.BavetAbstractTuple;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetTupleState;
 
 public final class BavetGroupBridgeUniNode<A, NewA, ResultContainer_, NewB> extends BavetAbstractUniNode<A> {
@@ -46,7 +47,7 @@ public final class BavetGroupBridgeUniNode<A, NewA, ResultContainer_, NewB> exte
     }
 
     @Override
-    public List<BavetAbstractUniNode<A>> getChildNodes() {
+    public List<BavetAbstractUniNode<A>> getChildNodeList() {
         return Collections.emptyList();
     }
 
@@ -59,11 +60,14 @@ public final class BavetGroupBridgeUniNode<A, NewA, ResultContainer_, NewB> exte
         this.groupNode = groupNode;
     }
 
-    public void refresh(BavetGroupBridgeUniTuple<A, NewA, ResultContainer_, NewB> tuple) {
+    @Override
+    public void refresh(BavetAbstractTuple uncastTuple) {
         if (groupNode == null) {
             throw new IllegalStateException("Impossible state: GroupBridgeNode (" + this +
                     ") has no child GroupNode (" + groupNode + ").");
         }
+        BavetGroupBridgeUniTuple<A, NewA, ResultContainer_, NewB> tuple =
+                (BavetGroupBridgeUniTuple<A, NewA, ResultContainer_, NewB>) uncastTuple;
         if (tuple.getChildTuple() != null) {
             BavetGroupBiTuple<NewA, ResultContainer_, NewB> childTuple = tuple.getChildTuple();
             NewA oldGroupKey = childTuple.getGroupKey();
@@ -100,7 +104,6 @@ public final class BavetGroupBridgeUniNode<A, NewA, ResultContainer_, NewB> exte
                 }
             }
         }
-        tuple.refreshed();
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,6 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.tri;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.optaplanner.core.impl.score.stream.bavet.bi.BavetJoinBridgeBiTuple;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetJoinTuple;
 import org.optaplanner.core.impl.score.stream.bavet.uni.BavetJoinBridgeUniTuple;
@@ -30,19 +27,11 @@ public final class BavetJoinTriTuple<A, B, C> extends BavetAbstractTriTuple<A, B
     private final BavetJoinBridgeBiTuple<A, B> abTuple;
     private final BavetJoinBridgeUniTuple<C> cTuple;
 
-    protected List<BavetAbstractTriTuple<A, B, C>> childTupleList = null;
-
     public BavetJoinTriTuple(BavetJoinTriNode<A, B, C> node,
             BavetJoinBridgeBiTuple<A, B> abTuple, BavetJoinBridgeUniTuple<C> cTuple) {
         this.node = node;
         this.abTuple = abTuple;
         this.cTuple = cTuple;
-        childTupleList = new ArrayList<>();
-    }
-
-    @Override
-    public void refresh() {
-        node.refresh(this);
     }
 
     @Override
@@ -80,10 +69,6 @@ public final class BavetJoinTriTuple<A, B, C> extends BavetAbstractTriTuple<A, B
 
     public BavetJoinBridgeUniTuple<C> getCTuple() {
         return cTuple;
-    }
-
-    public List<BavetAbstractTriTuple<A, B, C>> getChildTupleList() {
-        return childTupleList;
     }
 
 }

@@ -27,6 +27,7 @@ import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.impl.score.constraint.DefaultConstraintMatchTotal;
 import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintSession;
+import org.optaplanner.core.impl.score.stream.bavet.common.BavetAbstractTuple;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetScoringNode;
 
 public final class BavetScoringBiNode<A, B> extends BavetAbstractBiNode<A, B> implements BavetScoringNode {
@@ -66,7 +67,9 @@ public final class BavetScoringBiNode<A, B> extends BavetAbstractBiNode<A, B> im
         return new BavetScoringBiTuple<>(this, parentTuple);
     }
 
-    public void refresh(BavetScoringBiTuple<A, B> tuple) {
+    @Override
+    public void refresh(BavetAbstractTuple uncastTuple) {
+        BavetScoringBiTuple<A, B> tuple = (BavetScoringBiTuple<A, B>) uncastTuple;
         A a = tuple.getFactA();
         B b = tuple.getFactB();
         UndoScoreImpacter oldUndoScoreImpacter = tuple.getUndoScoreImpacter();
@@ -94,7 +97,6 @@ public final class BavetScoringBiNode<A, B> extends BavetAbstractBiNode<A, B> im
         } else {
             tuple.setUndoScoreImpacter(null);
         }
-        tuple.refreshed();
     }
 
     @Override
