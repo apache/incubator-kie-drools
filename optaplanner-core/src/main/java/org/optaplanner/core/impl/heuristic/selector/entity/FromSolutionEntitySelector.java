@@ -115,7 +115,7 @@ public class FromSolutionEntitySelector<Solution_> extends AbstractEntitySelecto
 
     @Override
     public long getSize() {
-        return (long) cachedEntityList.size();
+        return cachedEntityList.size();
     }
 
     @Override
