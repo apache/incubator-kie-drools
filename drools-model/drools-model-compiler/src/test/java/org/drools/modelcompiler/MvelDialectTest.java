@@ -441,7 +441,6 @@ public class MvelDialectTest extends BaseModelTest {
     }
 
     @Test
-    @Ignore
     public void testModifyOnBigDecimal() throws Exception {
         // DROOLS-5889
         String drl =

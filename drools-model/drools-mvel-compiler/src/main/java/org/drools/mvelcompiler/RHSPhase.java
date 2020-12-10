@@ -177,10 +177,10 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
     public TypedExpression visit(BinaryExpr n, Context arg) {
         TypedExpression left = n.getLeft().accept(this, arg);
         TypedExpression right = n.getRight().accept(this, arg);
-        return convertBigDecimal(left, right, n.getOperator());
+        return withPossiblyBigDecimalConversion(left, right, n.getOperator());
     }
 
-    private TypedExpression convertBigDecimal(TypedExpression left, TypedExpression right, BinaryExpr.Operator operator) {
+    private TypedExpression withPossiblyBigDecimalConversion(TypedExpression left, TypedExpression right, BinaryExpr.Operator operator) {
         Optional<Type> typeLeft = left.getType();
         Optional<Type> typeRight = right.getType();
 

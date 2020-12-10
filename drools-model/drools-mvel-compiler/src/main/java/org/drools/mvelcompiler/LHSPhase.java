@@ -26,6 +26,7 @@ import org.drools.mvel.parser.ast.expr.DrlNameExpr;
 import org.drools.mvel.parser.ast.visitor.DrlGenericVisitor;
 import org.drools.mvelcompiler.ast.AssignExprT;
 import org.drools.mvelcompiler.ast.BlockStmtT;
+import org.drools.mvelcompiler.ast.BigDecimalExprT;
 import org.drools.mvelcompiler.ast.ExpressionStmtT;
 import org.drools.mvelcompiler.ast.FieldToAccessorTExpr;
 import org.drools.mvelcompiler.ast.ForEachDowncastStmtT;
@@ -35,7 +36,6 @@ import org.drools.mvelcompiler.ast.SimpleNameTExpr;
 import org.drools.mvelcompiler.ast.TypedExpression;
 import org.drools.mvelcompiler.ast.UnalteredTypedExpression;
 import org.drools.mvelcompiler.ast.VariableDeclaratorTExpr;
-import org.drools.mvelcompiler.bigdecimal.BigDecimalConversion;
 import org.drools.mvelcompiler.context.Declaration;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
 import org.drools.mvelcompiler.util.TypeUtils;
@@ -188,8 +188,7 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, Void> {
         TypedExpression target = n.getTarget().accept(this, arg);
 
         Optional<TypedExpression> bigDecimalConversion =
-                new BigDecimalConversion()
-                        .convertAssignExpr(n, target, rhsOrError());
+                withBigDecimalConversion(n, target, rhsOrError());
 
         if(bigDecimalConversion.isPresent()) {
             return bigDecimalConversion.get();
@@ -199,6 +198,28 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, Void> {
             return target;
         }
         return new AssignExprT(n.getOperator(), target, rhsOrNull());
+    }
+
+    public Optional<TypedExpression> withBigDecimalConversion(AssignExpr assignExpr,
+                                                              TypedExpression target,
+                                                              TypedExpression value) {
+
+        Optional<Type> optRHSType = value.getType();
+        if(!optRHSType.isPresent()) {
+            return Optional.empty();
+        }
+
+        AssignExpr.Operator operator = assignExpr.getOperator();
+        if(operator == AssignExpr.Operator.ASSIGN) {
+            return Optional.empty();
+        }
+
+        if (target.getType().filter(t -> t == BigDecimal.class).isPresent()) {
+            String bigDecimalMethod = BigDecimalExprT.toBigDecimalMethod(operator.toString());
+            BigDecimalExprT convertedBigDecimalExpr = new BigDecimalExprT(bigDecimalMethod, target, value);
+            return Optional.of(new AssignExprT(AssignExpr.Operator.ASSIGN, target, convertedBigDecimalExpr));
+        }
+        return Optional.empty();
     }
 
     @Override
