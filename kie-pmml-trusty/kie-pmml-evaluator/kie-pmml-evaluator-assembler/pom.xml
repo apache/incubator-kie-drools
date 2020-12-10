@@ -22,6 +22,10 @@
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-evaluator-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
       <artifactId>kie-pmml-compiler-core</artifactId>
     </dependency>
     <!-- DROOLS -->

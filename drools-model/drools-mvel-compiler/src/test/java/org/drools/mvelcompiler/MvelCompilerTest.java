@@ -1,8 +1,10 @@
 package org.drools.mvelcompiler;
 
+import java.util.List;
 import java.util.Map;
 
 import org.drools.Person;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
@@ -424,5 +426,55 @@ public class MvelCompilerTest implements CompilerTest {
                              "insert($newAddress); " +
                              "$person.setAddress($newAddress); " +
                           "}");
+    }
+
+    @Test
+    public void forIterationWithSubtype() {
+        test(ctx -> ctx.addDeclaration("$people", List.class),
+             "{" +
+                     "    for (Person p : $people ) {\n" +
+                     "        System.out.println(\"Person: \" + p);\n" +
+                     "    }\n" +
+                     "}",
+             "{\n" +
+                     "    for (Object _p : $people) {\n" +
+                     "        Person p = (Person) _p;\n" +
+                     "        {\n " +
+                     "              System.out.println(\"Person: \" + p);\n" +
+                     "        }\n" +
+                     "    }\n" +
+                     "}"
+        );
+    }
+
+    @Test
+    public void forIterationWithSubtypeNested() {
+        test(ctx -> {
+                 ctx.addDeclaration("$people", List.class);
+                 ctx.addDeclaration("$addresses", List.class);
+             },
+             "{" +
+                     "    for (Person p : $people ) {\n" +
+                     "       System.out.println(\"Simple statement\");\n" +
+                     "       for (Address a : $addresses ) {\n" +
+                     "           System.out.println(\"Person: \" + p + \" address: \" + a);\n" +
+                     "       }\n" +
+                     "    }\n" +
+                     "}",
+             "{\n" +
+                     "    for (Object _p : $people) {\n" +
+                     "        Person p = (Person) _p;\n" +
+                     "        {\n " +
+                     "           System.out.println(\"Simple statement\");\n" +
+                     "           for (Object _a : $addresses) {\n" +
+                     "               Address a = (Address) _a;\n" +
+                     "                   {\n " +
+                     "                       System.out.println(\"Person: \" + p + \" address: \" + a);\n" +
+                     "                }\n" +
+                     "            }\n" +
+                     "        }\n" +
+                     "    }\n" +
+                     "}"
+        );
     }
 }
