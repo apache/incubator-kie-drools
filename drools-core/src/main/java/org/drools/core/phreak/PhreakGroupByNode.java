@@ -16,19 +16,31 @@ package org.drools.core.phreak;
 
 import java.util.List;
 
-import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.GroupByFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.TupleSets;
 import org.drools.core.reteoo.AccumulateNode;
+import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
+import org.drools.core.reteoo.AccumulateNode.AccumulatePropagationContext;
+import org.drools.core.reteoo.AccumulateNode.AccumulationContext;
+import org.drools.core.reteoo.AccumulateNode.GroupByContext;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.rule.Accumulate;
-import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.PropagationContext;
 
 public class PhreakGroupByNode extends PhreakAccumulateNode {
+
+    @Override
+    protected AccumulationContext createAccumulationContext() {
+        return new GroupByContext();
+    }
+
+    @Override
+    protected InternalFactHandle createFactHandle( AccumulateNode accNode, LeftTuple leftTuple, PropagationContext context, InternalWorkingMemory workingMemory, Object key, Object result ) {
+        return new GroupByFactHandle( accNode.createResultFactHandle( context, workingMemory, leftTuple, result ), key );
+    }
 
     @Override
     protected void evaluateResultConstraints(final AccumulateNode accNode,
@@ -37,83 +49,27 @@ public class PhreakGroupByNode extends PhreakAccumulateNode {
                                              final LeftTuple leftTuple,
                                              final PropagationContext context,
                                              final InternalWorkingMemory workingMemory,
-                                             final AccumulateNode.AccumulateMemory memory,
-                                             final AccumulateNode.AccumulateContext accctx,
+                                             final AccumulateMemory memory,
+                                             final AccumulationContext accctx,
                                              final TupleSets<LeftTuple> trgLeftTuples,
                                              final TupleSets<LeftTuple> stagedLeftTuples) {
-
-        List<Object[]> results = (List<Object[]>) accumulate.getResult(memory.workingMemoryContext, accctx.context, leftTuple, workingMemory);
-
-//        if (result == null) {
-//            if (accctx.propagated) {
-//                // retract
-//                trgLeftTuples.addDelete(accctx.getResultLeftTuple());
-//                accctx.propagated = false;
-//            }
-//            return;
-//        }
 
         PropagationContext propagationContext = accctx.getPropagationContext();
         accctx.setPropagationContext( null );
 
+        List<Object[]> results = (List<Object[]>) accumulate.getResult(memory.workingMemoryContext, accctx.getContext(), leftTuple, workingMemory);
         for (Object[] keyValuePair : results) {
+            Object key = keyValuePair[0];
+            Object result = keyValuePair[1];
+            AccumulatePropagationContext accPropCtx = (( GroupByContext ) accctx).getAccPropCtx(key);
+            propagateResult( accNode, sink, leftTuple, context, workingMemory, memory, trgLeftTuples, stagedLeftTuples, key, result, accPropCtx, propagationContext );
+        }
+    }
 
-            final InternalFactHandle handle = new GroupByFactHandle( accNode.createResultFactHandle( context, workingMemory, leftTuple, keyValuePair[1] ), keyValuePair[0] );
-
-//            if ( accctx.getResultFactHandle() == null ) {
-//                final InternalFactHandle handle = accNode.createResultFactHandle( context, workingMemory, leftTuple, keyValuePair[1] );
-//
-//                accctx.setResultFactHandle( handle );
-//
-//                accctx.setResultLeftTuple( sink.createLeftTuple( handle, leftTuple, sink ) );
-//            } else {
-//                accctx.getResultFactHandle().setObject( keyValuePair[1] );
-//            }
-
-            // First alpha node filters
-            AlphaNodeFieldConstraint[] resultConstraints = accNode.getResultConstraints();
-            boolean isAllowed = true;
-            for (AlphaNodeFieldConstraint resultConstraint : resultConstraints) {
-                if ( !resultConstraint.isAllowed( handle, workingMemory ) ) {
-                    isAllowed = false;
-                    break;
-                }
-            }
-
-            if ( isAllowed ) {
-                BetaConstraints resultBinder = accNode.getResultBinder();
-                resultBinder.updateFromTuple( memory.resultsContext, workingMemory, leftTuple );
-                if ( !resultBinder.isAllowedCachedLeft( memory.resultsContext, handle ) ) {
-                    isAllowed = false;
-                }
-                resultBinder.resetTuple( memory.resultsContext );
-            }
-
-            LeftTuple childLeftTuple = sink.createLeftTuple( handle, leftTuple, sink );
-            if ( propagationContext != null ) {
-                childLeftTuple.setPropagationContext( propagationContext);
-            } else {
-                childLeftTuple.setPropagationContext( leftTuple.getPropagationContext() );
-            }
-
-//            if ( accctx.propagated ) {
-//                normalizeStagedTuples( stagedLeftTuples, childLeftTuple );
-//
-//                if ( isAllowed ) {
-//                    // modify
-//                    trgLeftTuples.addUpdate( childLeftTuple );
-//                } else {
-//                    // retract
-//                    trgLeftTuples.addDelete( childLeftTuple );
-//                    accctx.propagated = false;
-//                }
-//            } else if ( isAllowed ) {
-//                // assert
-//                trgLeftTuples.addInsert( childLeftTuple );
-//                accctx.propagated = true;
-//            }
-
-            trgLeftTuples.addInsert( childLeftTuple );
+    @Override
+    protected void propagateDelete( TupleSets<LeftTuple> trgLeftTuples, TupleSets<LeftTuple> stagedLeftTuples, AccumulationContext accctx ) {
+        for (AccumulatePropagationContext accPropCtx : (( GroupByContext ) accctx).getAllAccPropCtxs()) {
+            propagateDelete( trgLeftTuples, stagedLeftTuples, accPropCtx );
         }
     }
 }

@@ -138,7 +138,7 @@ public class PhreakActivationIterator
                         Tuple lt = BetaNode.getFirstTuple( bm.getLeftTupleMemory(), it );
                         for (; lt != null; lt = (LeftTuple) it.next(lt)) {
                             AccumulateContext accctx = (AccumulateContext) lt.getContextObject();
-                            collectFromPeers(accctx.getResultLeftTuple(), agendaItems, nodeSet, wm);
+                            collectFromPeers(accctx.getAccPropCtx().getResultLeftTuple(), agendaItems, nodeSet, wm);
                         }
                     } else if ( NodeTypeEnums.ExistsNode == node.getType() ) {
                         bm = (BetaMemory) wm.getNodeMemory((MemoryFactory) node);
@@ -219,7 +219,7 @@ public class PhreakActivationIterator
                 AccumulateContext accctx = (AccumulateContext) peer.getContextObject();
                 if (accctx != null) {
                     // the accumulate context can be null if the lefttuple hasn't been evaluated yet
-                    collectFromLeftInput(accctx.getResultLeftTuple(), agendaItems, nodeSet, wm);
+                    collectFromLeftInput(accctx.getAccPropCtx().getResultLeftTuple(), agendaItems, nodeSet, wm);
                 }
             } else if ( peer.getFirstChild() != null ) {
                 for (LeftTuple childLt = peer.getFirstChild(); childLt != null; childLt = childLt.getHandleNext()) {

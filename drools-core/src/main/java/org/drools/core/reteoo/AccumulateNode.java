@@ -21,7 +21,10 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.ClassObjectType;
@@ -29,7 +32,6 @@ import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
-import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.Accumulate;
@@ -99,7 +101,7 @@ public class AccumulateNode extends BetaNode {
         BitMask leftMask = getLeftInferredMask();
         ObjectType leftObjectType = leftInput.getObjectType();
         if (leftObjectType instanceof ClassObjectType ) {
-            TypeDeclaration typeDeclaration = kbase.getExactTypeDeclaration( ((ClassObjectType) leftObjectType).getClassType() );
+            TypeDeclaration typeDeclaration = kbase.getExactTypeDeclaration( leftObjectType.getClassType() );
             if (typeDeclaration != null && typeDeclaration.isPropertyReactive()) {
                 List<String> accessibleProperties = typeDeclaration.getAccessibleProperties();
                 for ( Declaration decl : accumulate.getRequiredDeclarations() ) {
@@ -300,38 +302,100 @@ public class AccumulateNode extends BetaNode {
         }
     }
 
-    public static class AccumulateContext
-        implements
-        ContextOwner, Externalizable {
-        public  Object              context;
-        public  RightTuple          result;
-        private InternalFactHandle  resultFactHandle;
-        public  LeftTuple           resultLeftTuple;
-        public  boolean             propagated;
-        private WorkingMemoryAction action; // is transiant
+    public static abstract class AccumulationContext implements ContextOwner, Externalizable {
         private PropagationContext  propagationContext;
+        private Object context;
 
-        public void readExternal(ObjectInput in) throws IOException,
-                ClassNotFoundException {
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
             context = in.readObject();
-            result = (RightTuple) in.readObject();
-            propagated = in.readBoolean();
             propagationContext = (PropagationContext) in.readObject();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
             out.writeObject(context);
-            out.writeObject(result);
-            out.writeBoolean(propagated);
             out.writeObject(propagationContext);
         }
 
-        public WorkingMemoryAction getAction() {
-            return action;
+        public Object getContext() {
+            return context;
         }
 
-        public void setAction(WorkingMemoryAction action) {
-            this.action = action;
+        public void setContext( Object context ) {
+            this.context = context;
+        }
+
+        public <T> T getContext( Class<T> contextClass) {
+            if (contextClass.isInstance( context )) {
+                return (T) context;
+            }
+            return null;
+        }
+
+        public PropagationContext getPropagationContext() {
+            return propagationContext;
+        }
+
+        public void setPropagationContext(PropagationContext propagationContext) {
+            this.propagationContext = propagationContext;
+        }
+
+        public AccumulatePropagationContext getAccPropCtx() {
+            throw new UnsupportedOperationException();
+        }
+    }
+
+    public static class AccumulateContext extends AccumulationContext implements Externalizable {
+        private AccumulatePropagationContext accPropCtx = new AccumulatePropagationContext();
+
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            super.readExternal( in );
+            accPropCtx = (AccumulatePropagationContext) in.readObject();
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            super.writeExternal( out );
+            out.writeObject(accPropCtx);
+        }
+
+        @Override
+        public AccumulatePropagationContext getAccPropCtx() {
+            return accPropCtx;
+        }
+    }
+
+    public static class GroupByContext extends AccumulationContext implements Externalizable {
+        private Map<Object, AccumulatePropagationContext> accPropCtxMap = new HashMap<>();
+
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            super.readExternal( in );
+            accPropCtxMap = (Map<Object, AccumulatePropagationContext>) in.readObject();
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            super.writeExternal( out );
+            out.writeObject(accPropCtxMap);
+        }
+
+        public AccumulatePropagationContext getAccPropCtx(Object key) {
+            return accPropCtxMap.computeIfAbsent( key, k -> new AccumulatePropagationContext() );
+        }
+
+        public Collection<AccumulatePropagationContext> getAllAccPropCtxs() {
+            return accPropCtxMap.values();
+        }
+    }
+
+    public static class AccumulatePropagationContext implements Externalizable {
+        private InternalFactHandle  resultFactHandle;
+        private LeftTuple           resultLeftTuple;
+        private boolean             propagated;
+
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            propagated = in.readBoolean();
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeBoolean(propagated);
         }
 
         public InternalFactHandle getResultFactHandle() {
@@ -350,19 +414,12 @@ public class AccumulateNode extends BetaNode {
             this.resultLeftTuple = resultLeftTuple;
         }
 
-        public PropagationContext getPropagationContext() {
-            return propagationContext;
+        public boolean isPropagated() {
+            return propagated;
         }
 
-        public void setPropagationContext(PropagationContext propagationContext) {
-            this.propagationContext = propagationContext;
-        }
-
-        public <T> T getContext(Class<T> contextClass) {
-            if (contextClass.isInstance( context )) {
-                return (T) context;
-            }
-            return null;
+        public void setPropagated( boolean propagated ) {
+            this.propagated = propagated;
         }
     }
 
@@ -405,10 +462,6 @@ public class AccumulateNode extends BetaNode {
         peer.initPeer((BaseLeftTuple) original, this);
         original.setPeer(peer);
         return peer;
-    }
-
-    public enum ActivitySource {
-        LEFT, RIGHT
     }
 
     /**

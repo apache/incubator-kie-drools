@@ -171,9 +171,12 @@ public class LambdaGroupByAccumulate extends Accumulate {
         }
 
         public void init() {
-            this.keys.clear();;
-            this.contextsByGroup.clear();;
-            this.results.clear();
+            keys.clear();
+            contextsByGroup.clear();
+            results.clear();
+            if (reverseSupport != null) {
+                reverseSupport.clear();
+            }
         }
 
         public List<Object[]> result( Function<Object, Object> groupResultSupplier ) {
