@@ -123,27 +123,17 @@ public class MvelCompilerTest implements CompilerTest {
     }
 
     @Test
-    @Ignore
-    public void testSetterBigDecimalConstantFromDouble() {
-        test(ctx -> ctx.addDeclaration("$p", Person.class),
-             "{ $p.salary = 50000d; }",
-             "{ $p.setSalary(new java.math.BigDecimal(50000)); }");
-    }
-
-    @Test
-    @Ignore
     public void testSetterBigDecimalConstantFromLong() {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
-             "{ $p.salary = 50000l; }",
-             "{ $p.setSalary(new java.math.BigDecimal(50000)); }");
+             "{ $p.salary = 50000L; }",
+             "{ $p.setSalary(java.math.BigDecimal.valueOf(50000L)); }");
     }
 
     @Test
-    @Ignore
     public void testSetterBigDecimalConstantModify() {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{ modify ( $p )  { salary = 50000 }; }",
-             "{ $p.setSalary(new java.math.BigDecimal(50000)); }",
+             "{ $p.setSalary(java.math.BigDecimal.valueOf(50000)); }",
              result -> assertThat(allUsedBindings(result), containsInAnyOrder("$p")));
     }
 

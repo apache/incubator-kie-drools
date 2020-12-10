@@ -61,10 +61,10 @@ public class ModifyCompilerTest implements CompilerTest {
 
     @Override
     public void test(Consumer<MvelCompilerContext> testFunction,
-                      String actualExpression,
+                      String inputExpression,
                       String expectedResult,
                       Consumer<ParsingResult> resultAssert) {
-        ParsingResult compiled = new ModifyCompiler().compile(actualExpression);
+        ParsingResult compiled = new ModifyCompiler().compile(inputExpression);
         assertThat(compiled.resultAsString(), equalToIgnoringWhiteSpace(expectedResult));
         resultAssert.accept(compiled);
     }
