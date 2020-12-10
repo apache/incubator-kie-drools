@@ -15,6 +15,7 @@
 
 package org.kie.internal.runtime.manager;
 
+import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.runtime.manager.RegisterableItemsFactory;
 
 public interface InternalRegisterableItemsFactory extends RegisterableItemsFactory {
@@ -22,4 +23,8 @@ public interface InternalRegisterableItemsFactory extends RegisterableItemsFacto
     InternalRuntimeManager getRuntimeManager();
 
     void setRuntimeManager(InternalRuntimeManager manager);
+
+    default void addProcessListener(Class<? extends ProcessEventListener> clazz) {}
+
+    default void addProcessListener(ProcessEventListener listener) {};
 }
