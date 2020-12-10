@@ -451,10 +451,11 @@ public class MvelDialectTest extends BaseModelTest {
                 "when\n" +
                 "    $p : Person( age >= 26 )\n" +
                 "then\n" +
+                "   list.add(\"before \" + $p + \", money = \" + $p.money);" +
                 "   modify($p) {" +
                 "       money = 30000;\n" +
                 "   } " +
-                "   list.add(\"***** \" + $p + \", money = \" + $p.money);" +
+                "   list.add(\"after \" + $p + \", money = \" + $p.money);" +
                 "end";
 
         KieSession ksession = getKieSession(drl);
@@ -468,7 +469,9 @@ public class MvelDialectTest extends BaseModelTest {
         ksession.insert(john);
         assertEquals(1, ksession.fireAllRules());
         assertEquals(new BigDecimal( 30000 ), john.getMoney());
-        assertThat(logMessages).contains("***** John, money = 30000");
+        assertThat(logMessages).containsExactly(
+                "before John, money = 70000",
+                "after John, money = 30000");
     }
 
     @Test

@@ -140,9 +140,17 @@ public class MvelCompilerTest implements CompilerTest {
     @Test
     public void testDoNotConvertAdditionInStringConcatenation() {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
-             "{ list.add(\"***** \" + $p + \", money = \" + $p.salary); }",
-             "{ list.add(\"***** \" + $p + \", money = \" + $p.getSalary()); }"
-             );
+             "{ " +
+                          "     list.add(\"before \" + $p + \", money = \" + $p.salary); " +
+                          "     modify ( $p )  { salary = 50000 };  " +
+                          "     list.add(\"after \" + $p + \", money = \" + $p.salary); " +
+                          "}",
+             "{\n " +
+                         "      list.add(\"before \" + $p + \", money = \" + $p.getSalary()); " +
+                         "      $p.setSalary(java.math.BigDecimal.valueOf(50000));" +
+                         "      list.add(\"after \" + $p + \", money = \" + $p.getSalary()); " +
+                         "}\n",
+             result -> assertThat(allUsedBindings(result), containsInAnyOrder("$p")));
     }
 
     @Test
