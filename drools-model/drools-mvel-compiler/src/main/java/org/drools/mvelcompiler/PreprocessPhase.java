@@ -55,13 +55,9 @@ public class PreprocessPhase {
 
         PreprocessPhaseResult addUsedBinding(String bindingName);
 
-        List<Statement> getNewObjectStatements();
-
         List<Statement> getOtherStatements();
 
         PreprocessPhaseResult addOtherStatements(List<Statement> statements);
-
-        PreprocessPhaseResult addNewObjectStatements(ExpressionStmt expressionStmt);
     }
 
     static class PreprocessedResult implements PreprocessPhaseResult {
@@ -104,7 +100,6 @@ public class PreprocessPhase {
 
     static class StatementResult implements PreprocessPhaseResult {
 
-        final List<Statement> newObjectStatements = new ArrayList<>();
         final List<Statement> otherStatements = new ArrayList<>();
 
         @Override
@@ -117,21 +112,12 @@ public class PreprocessPhase {
             return this;
         }
 
-        public List<Statement> getNewObjectStatements() {
-            return newObjectStatements;
-        }
-
         public List<Statement> getOtherStatements() {
             return otherStatements;
         }
 
         public PreprocessPhaseResult addOtherStatements(List<Statement> statements) {
             otherStatements.addAll(statements);
-            return this;
-        }
-
-        public PreprocessPhaseResult addNewObjectStatements(ExpressionStmt expressionStmt) {
-            newObjectStatements.add(expressionStmt);
             return this;
         }
     }
@@ -198,7 +184,7 @@ public class PreprocessPhase {
                 VariableDeclarationExpr variableDeclarationExpr = new VariableDeclarationExpr(ctorType, targetVariableName);
                 AssignExpr withTypeAssignmentExpr = new AssignExpr(variableDeclarationExpr, assignExprValue, assignExpr.getOperator());
                 ExpressionStmt expressionStmt = new ExpressionStmt(withTypeAssignmentExpr);
-                result.addNewObjectStatements(expressionStmt);
+                result.addOtherStatements(Collections.singletonList(expressionStmt));
                 return of(new DrlNameExpr(targetVariableName));
             }
         }

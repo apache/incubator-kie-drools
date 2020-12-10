@@ -437,12 +437,12 @@ public class MvelCompilerTest implements CompilerTest {
                      "     }",
 
              "{ " +
-                             "org.drools.Person s1 = new Person(); " +
                              "org.drools.Person s0 = new Person(); " +
-                             "insertLogical(s0); " +
-                             "insertLogical(s1); " +
                              "s0.setAge(0); " +
+                             "insertLogical(s0); " +
+                             "org.drools.Person s1 = new Person(); " +
                              "s1.setAge(1); " +
+                             "insertLogical(s1); " +
                           "}");
     }
 

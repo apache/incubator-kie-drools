@@ -32,7 +32,6 @@ public class ModifyCompiler {
                     Optional<Node> parentNode = s.getParentNode();
                     parentNode.ifPresent(p -> {
                         BlockStmt replacementBlock = new BlockStmt();
-                        replacementBlock.getStatements().addAll(invoke.getNewObjectStatements());
                         replacementBlock.getStatements().addAll(invoke.getOtherStatements());
                         for (String modifiedFact : invoke.getUsedBindings()) {
                             replacementBlock.addStatement(new MethodCallExpr(null, "update", nodeList(new NameExpr(modifiedFact))));
