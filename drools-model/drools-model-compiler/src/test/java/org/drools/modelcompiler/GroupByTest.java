@@ -234,7 +234,7 @@ public class GroupByTest {
                         D.accFunction(org.drools.core.base.accumulators.IntegerSumAccumulateFunction::new, var_$age).as(var_$sumOfAges)),
                 // Filter
                 D.pattern(var_$sumOfAges)
-                        .expr($sumOfAges -> EvaluationUtil.greaterThanNumbers($sumOfAges, 10)),
+                        .expr($sumOfAges -> EvaluationUtil.greaterThanNumbers($sumOfAges, 36)),
                 // Consequence
                 D.on(var_$key, var_results, var_$sumOfAges)
                         .execute(($key, results, $sumOfAges) -> results.put($key, $sumOfAges))
@@ -254,8 +254,7 @@ public class GroupByTest {
         FactHandle geoffreyFH = ksession.insert(new Person("Geoffrey", 35));
         ksession.fireAllRules();
 
-        assertEquals( 3, results.size() );
-        assertEquals( 35, results.get("G") );
+        assertEquals( 2, results.size() );
         assertEquals( 71, results.get("E") );
         assertEquals( 126, results.get("M") );
         results.clear();
