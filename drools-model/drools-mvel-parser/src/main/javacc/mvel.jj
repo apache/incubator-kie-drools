@@ -98,6 +98,19 @@ public final class GeneratedMvelParser extends GeneratedMvelParserBase {
         this.optionalSemicolon = optionalSemicolon;
     }
 
+    public boolean shouldTerminateStatement() {
+        Token token = getToken(1);
+        return (this.optionalSemicolon && (
+                    ( token.kind == RBRACE ) ||
+                    ( token.kind == IDENTIFIER ) ||
+                    ( this.isWithOrModify && token.kind == COMMA ) ||
+                    ( token.specialToken != null &&
+                        ( token.specialToken.kind == UNIX_EOL ||
+                          token.specialToken.kind == WINDOWS_EOL ||
+                          token.specialToken.kind == SINGLE_LINE_COMMENT ) ) ) );
+
+    }
+
     /* Returns the JavaParser specific token type of the last matched token */
     JavaToken token() {
         if(token.toString() == null) {
@@ -3378,16 +3391,5 @@ void EOS():
 {
 }
 {
-   <SEMICOLON> | AutoEOS()
-}
-
-void AutoEOS():
-{
-}
-{
-    LOOKAHEAD( { this.optionalSemicolon && (
-                    ( getToken(1).kind == RBRACE ) ||
-                    ( this.isWithOrModify && getToken(1).kind == COMMA ) ||
-                    ( getToken(1).specialToken != null &&
-                        ( getToken(1).specialToken.kind == UNIX_EOL ||  getToken(1).specialToken.kind == WINDOWS_EOL ) ) ) } ) {}
+   <SEMICOLON> | <EOF> | LOOKAHEAD( { this.shouldTerminateStatement() } ) {}
 }
