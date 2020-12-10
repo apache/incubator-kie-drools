@@ -441,7 +441,7 @@ public class MvelDialectTest extends BaseModelTest {
     }
 
     @Test
-    public void testModifyOnBigDecimal() throws Exception {
+    public void testModifyOnBigDecimal() {
         // DROOLS-5889
         String drl =
                 "import " + Person.class.getCanonicalName() + "\n" +
@@ -466,7 +466,7 @@ public class MvelDialectTest extends BaseModelTest {
     }
 
     @Test
-    public void testBinaryOperationOnInteger() throws Exception {
+    public void testBinaryOperationOnInteger() {
         // RHDM-1421
         String drl =
                 "import " + Person.class.getCanonicalName() + "\n" +
@@ -489,7 +489,7 @@ public class MvelDialectTest extends BaseModelTest {
     }
 
     @Test
-    public void testSetOnInteger() throws Exception {
+    public void testSetOnInteger() {
         // RHDM-1421
         String drl =
                 "import " + Person.class.getCanonicalName() + "\n" +
