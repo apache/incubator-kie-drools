@@ -185,7 +185,7 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, Void> {
 
         TypedExpression target = n.getTarget().accept(this, arg);
 
-        BigDecimalConversion bigDecimalConversion = shouldConvertPlusEqualsOperatorBigDecimal(n, rhs);
+        BigDecimalConversion bigDecimalConversion = shouldConvertPlusEqualsOperatorBigDecimal(rhs, target.getType(), n.getOperator());
         if (bigDecimalConversion.shouldConvert()) {
             return bigDecimalConversion.convertExpression(target);
         }

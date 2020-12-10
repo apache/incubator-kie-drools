@@ -28,6 +28,7 @@ import java.util.Set;
 import org.assertj.core.api.Assertions;
 import org.drools.modelcompiler.domain.Address;
 import org.drools.modelcompiler.domain.Person;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.Results;
@@ -440,6 +441,7 @@ public class MvelDialectTest extends BaseModelTest {
     }
 
     @Test
+    @Ignore
     public void testModifyOnBigDecimal() throws Exception {
         // DROOLS-5889
         String drl =

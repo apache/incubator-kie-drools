@@ -28,7 +28,9 @@ public abstract class BigDecimalConversion<T extends TypedExpression> {
         this.rhs = rhs;
     }
 
-    public static BigDecimalConversion shouldConvertPlusEqualsOperatorBigDecimal(AssignExpr n, Optional<TypedExpression> optRHS) {
+    public static BigDecimalConversion shouldConvertPlusEqualsOperatorBigDecimal(Optional<TypedExpression> optRHS,
+                                                                                 Optional<Type> targetType,
+                                                                                 AssignExpr.Operator operator) {
         if(!optRHS.isPresent() || (!optRHS.get().getType().isPresent())) {
             return new DoNotConvert(null);
         }
@@ -39,14 +41,11 @@ public abstract class BigDecimalConversion<T extends TypedExpression> {
             return new DoNotConvert(null);
         }
 
-        Type rhsType = optRHSType.get();
-
-        boolean isBigDecimal = BigDecimal.class == rhsType;
-        if (isBigDecimal) {
-            if (AssignExpr.Operator.PLUS == n.getOperator()) {
+        if (targetType.filter(t -> t == BigDecimal.class).isPresent()) {
+            if (AssignExpr.Operator.PLUS == operator) {
                 return new ConvertPlus(rhs);
             }
-            if (AssignExpr.Operator.MINUS == n.getOperator()) {
+            if (AssignExpr.Operator.MINUS == operator) {
                 return new ConvertMinus(rhs);
             }
             if (rhs instanceof BinaryTExpr) {
