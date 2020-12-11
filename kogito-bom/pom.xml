@@ -170,24 +170,68 @@
 
       <dependency>
         <groupId>org.kie.kogito</groupId>
-        <artifactId>monitoring-prometheus-addon</artifactId>
+        <artifactId>monitoring-prometheus-common</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.kie.kogito</groupId>
-        <artifactId>monitoring-prometheus-addon</artifactId>
+        <artifactId>monitoring-prometheus-common</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>monitoring-prometheus-quarkus-addon</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>monitoring-prometheus-quarkus-addon</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>monitoring-prometheus-springboot-addon</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>monitoring-prometheus-springboot-addon</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
 
       <dependency>
         <groupId>org.kie.kogito</groupId>
-        <artifactId>monitoring-core</artifactId>
+        <artifactId>monitoring-core-common</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.kie.kogito</groupId>
-        <artifactId>monitoring-core</artifactId>
+        <artifactId>monitoring-core-common</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>monitoring-core-quarkus-addon</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>monitoring-core-quarkus-addon</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>monitoring-core-springboot-addon</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>monitoring-core-springboot-addon</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>

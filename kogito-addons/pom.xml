@@ -21,7 +21,7 @@
     <module>process-management</module>
     <module>process-svg</module>
     <module>tracing</module>
-    <module>monitoring-addon</module>
+    <module>monitoring</module>
     <module>explainability-addon</module>
   </modules>
 
