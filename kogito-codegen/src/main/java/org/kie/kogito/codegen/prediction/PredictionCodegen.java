@@ -56,12 +56,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static java.util.stream.Collectors.toList;
-import static org.kie.kogito.codegen.ApplicationGenerator.log;
 import static org.kie.pmml.evaluator.assembler.service.PMMLCompilerService.getKiePMMLModelsFromResourceWithSources;
 
 public class PredictionCodegen extends AbstractGenerator {
 
-    private static final Logger logger = LoggerFactory.getLogger(PredictionCodegen.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PredictionCodegen.class);
     private final List<PMMLResource> resources;
     private final List<GeneratedFile> generatedFiles = new ArrayList<>();
     private String packageName;
@@ -81,7 +80,7 @@ public class PredictionCodegen extends AbstractGenerator {
     public static PredictionCodegen ofCollectedResources(boolean isJPMMLAvailable,
                                                          Collection<CollectedResource> resources) {
         if (isJPMMLAvailable) {
-            logger.info("jpmml libraries available on classpath, skipping kie-pmml parsing and compilation");
+            LOGGER.info("jpmml libraries available on classpath, skipping kie-pmml parsing and compilation");
             return ofPredictions(Collections.emptyList());
         }
         List<PMMLResource> pmmlResources = resources.stream()
@@ -202,15 +201,15 @@ public class PredictionCodegen extends AbstractGenerator {
             batch.build();
         } catch (RuntimeException e) {
             for (DroolsError error : modelBuilder.getErrors().getErrors()) {
-                logger.error(error.toString());
+                LOGGER.error(error.toString());
             }
-            logger.error(e.getMessage());
+            LOGGER.error(e.getMessage());
             throw new RuleCodegenError(e, modelBuilder.getErrors().getErrors());
         }
 
         if (modelBuilder.hasErrors()) {
             for (DroolsError error : modelBuilder.getErrors().getErrors()) {
-                logger.error(error.toString());
+                LOGGER.error(error.toString());
             }
             throw new RuleCodegenError(modelBuilder.getErrors().getErrors());
         }
@@ -234,6 +233,6 @@ public class PredictionCodegen extends AbstractGenerator {
 
 
     private void storeFile(GeneratedFile.Type type, String path, String source) {
-        generatedFiles.add(new GeneratedFile(type, path, log(source).getBytes(StandardCharsets.UTF_8)));
+        generatedFiles.add(new GeneratedFile(type, path, source));
     }
 }

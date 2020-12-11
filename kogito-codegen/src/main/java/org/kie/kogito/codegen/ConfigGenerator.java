@@ -30,8 +30,6 @@ import org.kie.kogito.codegen.rules.config.RuleConfigGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.kogito.codegen.ApplicationGenerator.log;
-
 public class ConfigGenerator {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ConfigGenerator.class);
@@ -44,16 +42,13 @@ public class ConfigGenerator {
     private PredictionConfigGenerator predictionConfig;
 
     private String packageName;
-    private final String sourceFilePath;
     private final String targetTypeName;
     private final String targetCanonicalName;
-    private Collection<String> addons;
 
     public ConfigGenerator(String packageName) {
         this.packageName = packageName;
         this.targetTypeName = "ApplicationConfig";
         this.targetCanonicalName = this.packageName + "." + targetTypeName;
-        this.sourceFilePath = targetCanonicalName.replace('.', '/') + ".java";
         this.applicationConfigGenerator = new ApplicationConfigGenerator(packageName);
     }
 
@@ -121,7 +116,7 @@ public class ConfigGenerator {
                         "Missing template"));
         return new GeneratedFile(GeneratedFile.Type.APPLICATION_CONFIG,
                                  applicationConfigGenerator.generatedFilePath(),
-                                 log(compilationUnit.toString()).getBytes(StandardCharsets.UTF_8));
+                                 compilationUnit.toString());
     }
 
     private Optional<GeneratedFile> generateProcessConfigDescriptor() {
@@ -131,7 +126,7 @@ public class ConfigGenerator {
         Optional<CompilationUnit> compilationUnit = processConfig.compilationUnit();
         return compilationUnit.map(c -> new GeneratedFile(GeneratedFile.Type.APPLICATION_CONFIG,
                                                           processConfig.generatedFilePath(),
-                                                          log(c.toString()).getBytes(StandardCharsets.UTF_8)));
+                                                          c.toString()));
     }
 
     private Optional<GeneratedFile> generateRuleConfigDescriptor() {
@@ -141,7 +136,7 @@ public class ConfigGenerator {
         Optional<CompilationUnit> compilationUnit = ruleConfig.compilationUnit();
         return compilationUnit.map(c -> new GeneratedFile(GeneratedFile.Type.APPLICATION_CONFIG,
                                                           ruleConfig.generatedFilePath(),
-                                                          log(c.toString()).getBytes(StandardCharsets.UTF_8)));
+                                                          c.toString()));
     }
 
     private Optional<GeneratedFile> generateDecisionConfigDescriptor() {
@@ -151,7 +146,7 @@ public class ConfigGenerator {
         Optional<CompilationUnit> compilationUnit = decisionConfig.compilationUnit();
         return compilationUnit.map(c -> new GeneratedFile(GeneratedFile.Type.APPLICATION_CONFIG,
                                                           decisionConfig.generatedFilePath(),
-                                                          log(c.toString()).getBytes(StandardCharsets.UTF_8)));
+                                                          c.toString()));
     }
 
     private Optional<GeneratedFile> generatePredictionConfigDescriptor() {
@@ -161,7 +156,7 @@ public class ConfigGenerator {
         Optional<CompilationUnit> compilationUnit = predictionConfig.compilationUnit();
         return compilationUnit.map(c -> new GeneratedFile(GeneratedFile.Type.APPLICATION_CONFIG,
                                                           predictionConfig.generatedFilePath(),
-                                                          log(c.toString()).getBytes(StandardCharsets.UTF_8)));
+                                                          c.toString()));
     }
 
     private Optional<GeneratedFile> generateBeanConfig() {
@@ -171,7 +166,7 @@ public class ConfigGenerator {
         Optional<CompilationUnit> compilationUnit = configBeanGenerator.compilationUnit();
         return compilationUnit.map(c -> new GeneratedFile(GeneratedFile.Type.APPLICATION_CONFIG,
                                                           configBeanGenerator.generatedFilePath(),
-                                                          log(c.toString()).getBytes(StandardCharsets.UTF_8)));
+                                                          c.toString()));
     }
 
     public void withAddons(Collection<String> addons) {

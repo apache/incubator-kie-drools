@@ -99,7 +99,7 @@ public class PublishEventTest extends AbstractCodegenTest {
         Map<TYPE, List<String>> resourcesTypeMap = new HashMap<>();
         resourcesTypeMap.put(TYPE.PROCESS, Collections.singletonList("ruletask/BusinessRuleTask.bpmn2"));
         resourcesTypeMap.put(TYPE.RULES, Collections.singletonList("ruletask/BusinessRuleTask.drl"));
-        Application app = generateCode(resourcesTypeMap, false);
+        Application app = generateCode(resourcesTypeMap);
         assertThat(app).isNotNull();
         TestEventPublisher publisher = new TestEventPublisher();
         app.unitOfWorkManager().eventManager().setService("http://myhost");
@@ -325,7 +325,7 @@ public class PublishEventTest extends AbstractCodegenTest {
         Map<TYPE, List<String>> resourcesTypeMap = new HashMap<>();
         resourcesTypeMap.put(TYPE.PROCESS, Collections.singletonList("ruletask/BusinessRuleTask.bpmn2"));
         resourcesTypeMap.put(TYPE.RULES, Collections.singletonList("ruletask/BusinessRuleTask.drl"));
-        Application app = generateCode(resourcesTypeMap, false);
+        Application app = generateCode(resourcesTypeMap);
         assertThat(app).isNotNull();
         TestEventPublisher publisher = new TestEventPublisher();
         app.unitOfWorkManager().eventManager().setService("http://myhost");
@@ -475,7 +475,7 @@ public class PublishEventTest extends AbstractCodegenTest {
         Map<TYPE, List<String>> resourcesTypeMap = new HashMap<>();
         resourcesTypeMap.put(TYPE.PROCESS, Collections.singletonList("ruletask/BusinessRuleTaskVariableTags.bpmn2"));
         resourcesTypeMap.put(TYPE.RULES, Collections.singletonList("ruletask/BusinessRuleTask.drl"));
-        Application app = generateCode(resourcesTypeMap, false);
+        Application app = generateCode(resourcesTypeMap);
         assertThat(app).isNotNull();
         TestEventPublisher publisher = new TestEventPublisher();
         app.unitOfWorkManager().eventManager().setService("http://myhost");

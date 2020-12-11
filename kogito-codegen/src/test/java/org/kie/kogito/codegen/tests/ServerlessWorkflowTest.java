@@ -533,7 +533,7 @@ public class ServerlessWorkflowTest extends AbstractCodegenTest {
         Map<TYPE, List<String>> resourcesTypeMap = new HashMap<>();
         resourcesTypeMap.put(TYPE.PROCESS, Collections.singletonList(processLocation));
         resourcesTypeMap.put(TYPE.RULES, Collections.singletonList("serverless/workflowrule.drl"));
-        Application app = generateCode(resourcesTypeMap, false);
+        Application app = generateCode(resourcesTypeMap);
         assertThat(app).isNotNull();
 
         Process<? extends Model> p = app.processes().processById("ruleworkflow");

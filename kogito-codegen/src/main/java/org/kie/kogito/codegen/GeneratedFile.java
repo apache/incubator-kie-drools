@@ -16,7 +16,6 @@
 package org.kie.kogito.codegen;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.Objects;
 
 public class GeneratedFile {

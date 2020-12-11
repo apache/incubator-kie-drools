@@ -68,7 +68,6 @@ import org.xml.sax.SAXException;
 
 import static java.lang.String.format;
 import static java.util.stream.Collectors.toList;
-import static org.kie.kogito.codegen.ApplicationGenerator.log;
 
 /**
  * Entry point to process code generation
@@ -483,7 +482,7 @@ public class ProcessCodegen extends AbstractGenerator {
         if (generatedFiles.stream().anyMatch(f -> path.equals(f.relativePath()))) {
             LOGGER.warn("There's already a generated file named {} to be compiled. Ignoring.", path);
         } else {
-            generatedFiles.add(new GeneratedFile(type, path, log(source).getBytes(StandardCharsets.UTF_8)));
+            generatedFiles.add(new GeneratedFile(type, path, source));
         }
     }
 

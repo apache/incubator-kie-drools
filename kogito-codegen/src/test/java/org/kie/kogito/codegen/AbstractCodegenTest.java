@@ -56,10 +56,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class AbstractCodegenTest {
     
-    private static final Logger logger = LoggerFactory.getLogger(AbstractCodegenTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractCodegenTest.class);
 
     /**
-     * Order matters here because inside {@link AbstractCodegenTest#generateCode(Map, boolean)} it is the order used to invoke
+     * Order matters here because inside {@link AbstractCodegenTest#generateCode(Map)} it is the order used to invoke
      *
      * {@link ApplicationGenerator#withGenerator(Generator) }
      */
@@ -152,23 +152,22 @@ public class AbstractCodegenTest {
     protected Application generateCodeProcessesOnly(String... processes) throws Exception {
         Map<TYPE, List<String>> resourcesTypeMap = new HashMap<>();
         resourcesTypeMap.put(TYPE.PROCESS, Arrays.asList(processes));
-        return generateCode(resourcesTypeMap, false);
+        return generateCode(resourcesTypeMap);
     }
 
     protected Application generateCodeRulesOnly(String... rules) throws Exception {
         Map<TYPE, List<String>> resourcesTypeMap = new HashMap<>();
         resourcesTypeMap.put(TYPE.RULES, Arrays.asList(rules));
-        return generateCode(resourcesTypeMap, true);
+        return generateCode(resourcesTypeMap);
     }
 
     protected Application generateRulesFromJava(String... javaSourceCode) throws Exception {
         Map<TYPE, List<String>> resourcesTypeMap = new HashMap<>();
         resourcesTypeMap.put(TYPE.JAVA, Arrays.asList(javaSourceCode));
-        return generateCode(resourcesTypeMap, true);
+        return generateCode(resourcesTypeMap);
     }
 
-    protected Application generateCode(Map<TYPE, List<String>> resourcesTypeMap,
-            boolean hasRuleUnit) throws Exception {
+    protected Application generateCode(Map<TYPE, List<String>> resourcesTypeMap) throws Exception {
         GeneratorContext context = GeneratorContext.ofResourcePath(new File(TEST_RESOURCES));
 
         //Testing based on Quarkus as Default
@@ -180,7 +179,6 @@ public class AbstractCodegenTest {
         ApplicationGenerator appGen =
                 new ApplicationGenerator(this.getClass().getPackage().getName(), new File("target/codegen-tests"))
                         .withGeneratorContext(context)
-                        .withRuleUnits(hasRuleUnit)
                         .withDependencyInjection(null);
 
         // Hack just to avoid test breaking
@@ -217,9 +215,9 @@ public class AbstractCodegenTest {
             srcMfs.write( "org/drools/project/model/ProjectRuntime.java", DUMMY_PROCESS_RUNTIME.getBytes() );
         }
 
-        if (logger.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             Path temp = Files.createTempDirectory("KOGITO_TESTS");
-            logger.debug("Dumping generated files in " + temp);
+            LOGGER.debug("Dumping generated files in " + temp);
             for (GeneratedFile entry : generatedFiles) {
                 Path fpath = temp.resolve(entry.relativePath());
                 fpath.getParent().toFile().mkdirs();
@@ -245,7 +243,7 @@ public class AbstractCodegenTest {
     }
     
     protected void log(String content) {
-        logger.debug(content);
+        LOGGER.debug(content);
     }
 
     private static class TestClassLoader extends URLClassLoader {

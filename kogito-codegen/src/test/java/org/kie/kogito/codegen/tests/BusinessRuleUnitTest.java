@@ -66,7 +66,7 @@ public class BusinessRuleUnitTest extends AbstractCodegenTest {
         Map<AbstractCodegenTest.TYPE, List<String>> resourcesTypeMap = new HashMap<>();
         resourcesTypeMap.put(TYPE.PROCESS, Collections.singletonList(bpmnPath));
         resourcesTypeMap.put(TYPE.RULES, Collections.singletonList("org/kie/kogito/codegen/tests/BusinessRuleUnit.drl"));
-        Application app = generateCode(resourcesTypeMap, false);
+        Application app = generateCode(resourcesTypeMap);
         assertThat(app).isNotNull();
 
         Process<? extends Model> p = app.processes().processById("BusinessRuleUnit");
@@ -89,7 +89,7 @@ public class BusinessRuleUnitTest extends AbstractCodegenTest {
         Map<AbstractCodegenTest.TYPE, List<String>> resourcesTypeMap = new HashMap<>();
         resourcesTypeMap.put(TYPE.PROCESS, Collections.singletonList(bpmnPath));
         resourcesTypeMap.put(TYPE.RULES, Collections.singletonList("org/kie/kogito/codegen/tests/BusinessRuleUnit.drl"));
-        Application app = generateCode(resourcesTypeMap, false);
+        Application app = generateCode(resourcesTypeMap);
         assertThat(app).isNotNull();
         final AtomicInteger counter = new AtomicInteger();
         app.config().rule().ruleEventListeners().agendaListeners().add(new DefaultAgendaEventListener() {
@@ -122,7 +122,7 @@ public class BusinessRuleUnitTest extends AbstractCodegenTest {
         Map<AbstractCodegenTest.TYPE, List<String>> resourcesTypeMap = new HashMap<>();
         resourcesTypeMap.put(TYPE.PROCESS, Collections.singletonList(bpmnPath));
         resourcesTypeMap.put(TYPE.RULES, Collections.singletonList("org/kie/kogito/codegen/tests/BusinessRuleUnit.drl"));
-        Application app = generateCode(resourcesTypeMap, false);
+        Application app = generateCode(resourcesTypeMap);
         assertThat(app).isNotNull();
         final List<String> startedProcesses = new ArrayList<>();
         // add custom event listener that collects data
@@ -162,7 +162,7 @@ public class BusinessRuleUnitTest extends AbstractCodegenTest {
         Map<AbstractCodegenTest.TYPE, List<String>> resourcesTypeMap = new HashMap<>();
         resourcesTypeMap.put(TYPE.PROCESS, Collections.singletonList("ruletask/ExampleP.bpmn"));
         resourcesTypeMap.put(TYPE.RULES, Collections.singletonList("ruletask/Example.drl"));
-        Application app = generateCode(resourcesTypeMap, false);
+        Application app = generateCode(resourcesTypeMap);
         Process<? extends Model> process = app.processes().processById("ruletask.ExampleP");
 
         HashMap<String, Object> map = new HashMap<>();
@@ -204,7 +204,7 @@ public class BusinessRuleUnitTest extends AbstractCodegenTest {
         Map<AbstractCodegenTest.TYPE, List<String>> resourcesTypeMap = new HashMap<>();
         resourcesTypeMap.put(TYPE.PROCESS, Collections.singletonList("ruletask/ExampleGenerated.bpmn"));
         resourcesTypeMap.put(TYPE.RULES, Collections.singletonList("ruletask/Generated.drl"));
-        Application app = generateCode(resourcesTypeMap, false);
+        Application app = generateCode(resourcesTypeMap);
         Process<? extends Model> process = app.processes().processById("ruletask.ExampleGenerated");
 
         HashMap<String, Object> map = new HashMap<>();
@@ -238,7 +238,7 @@ public class BusinessRuleUnitTest extends AbstractCodegenTest {
         Map<AbstractCodegenTest.TYPE, List<String>> resourcesTypeMap = new HashMap<>();
         resourcesTypeMap.put(TYPE.PROCESS, Collections.singletonList("ruletask/ExampleGenerated.bpmn"));
         resourcesTypeMap.put(TYPE.RULES, Collections.singletonList("ruletask/Generated.drl"));
-        Application app = generateCode(resourcesTypeMap, false);
+        Application app = generateCode(resourcesTypeMap);
         Process<? extends Model> process = app.processes().processById("ruletask.ExampleGenerated");
 
         HashMap<String, Object> map = new HashMap<>();
@@ -270,7 +270,7 @@ public class BusinessRuleUnitTest extends AbstractCodegenTest {
         Map<AbstractCodegenTest.TYPE, List<String>> resourcesTypeMap = new HashMap<>();
         resourcesTypeMap.put(TYPE.PROCESS, Collections.singletonList("ruletask/ExampleGenerated.bpmn"));
         resourcesTypeMap.put(TYPE.RULES, Collections.singletonList("ruletask/Generated.drl"));
-        Application app = generateCode(resourcesTypeMap, false);
+        Application app = generateCode(resourcesTypeMap);
         Process<? extends Model> process = app.processes().processById("ruletask.ExampleGenerated");
 
         HashMap<String, Object> map = new HashMap<>();
@@ -304,7 +304,7 @@ public class BusinessRuleUnitTest extends AbstractCodegenTest {
             Map<AbstractCodegenTest.TYPE, List<String>> resourcesTypeMap = new HashMap<>();
             resourcesTypeMap.put(TYPE.PROCESS, Collections.singletonList("ruletask/ExampleGeneratedWrong.bpmn"));
             resourcesTypeMap.put(TYPE.RULES, Collections.singletonList("ruletask/Generated.drl"));
-            Application app = generateCode(resourcesTypeMap, false);
+            Application app = generateCode(resourcesTypeMap);
         }).withCauseInstanceOf(UndefinedGeneratedRuleUnitVariable.class);
     }
 
@@ -314,7 +314,7 @@ public class BusinessRuleUnitTest extends AbstractCodegenTest {
         Map<AbstractCodegenTest.TYPE, List<String>> resourcesTypeMap = new HashMap<>();
         resourcesTypeMap.put(TYPE.PROCESS, Collections.singletonList("ruletask/ExampleP.bpmn"));
         resourcesTypeMap.put(TYPE.RULES, Collections.singletonList("ruletask/Example.drl"));
-        Application app = generateCode(resourcesTypeMap, false);
+        Application app = generateCode(resourcesTypeMap);
         Process<? extends Model> process = app.processes().processById("ruletask.ExampleP");
 
         HashMap<String, Object> map = new HashMap<>();
@@ -344,7 +344,7 @@ public class BusinessRuleUnitTest extends AbstractCodegenTest {
         Map<AbstractCodegenTest.TYPE, List<String>> resourcesTypeMap = new HashMap<>();
         resourcesTypeMap.put(TYPE.PROCESS, Collections.singletonList("ruletask/ExampleP.bpmn"));
         resourcesTypeMap.put(TYPE.RULES, Collections.singletonList("ruletask/Example.drl"));
-        Application app = generateCode(resourcesTypeMap, false);
+        Application app = generateCode(resourcesTypeMap);
         Process<? extends Model> process = app.processes().processById("ruletask.ExampleP");
 
         HashMap<String, Object> map = new HashMap<>();

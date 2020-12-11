@@ -42,7 +42,7 @@ public class SignalEventTest extends AbstractCodegenTest {
         Map<TYPE, List<String>> resourcesTypeMap = new HashMap<>();
         resourcesTypeMap.put(TYPE.PROCESS, Collections.singletonList("signalevent/IntermediateCatchEventSignal.bpmn2"));
         resourcesTypeMap.put(TYPE.RULES, Collections.singletonList("ruletask/BusinessRuleTask.drl"));
-        Application app = generateCode(resourcesTypeMap, false);
+        Application app = generateCode(resourcesTypeMap);
         assertThat(app).isNotNull();
                 
         Process<? extends Model> p = app.processes().processById("IntermediateCatchEvent");
@@ -94,7 +94,7 @@ public class SignalEventTest extends AbstractCodegenTest {
         Map<TYPE, List<String>> resourcesTypeMap = new HashMap<>();
         resourcesTypeMap.put(TYPE.PROCESS, Collections.singletonList("signalevent/BoundarySignalEventOnTask.bpmn2"));
         resourcesTypeMap.put(TYPE.RULES, Collections.singletonList("ruletask/BusinessRuleTask.drl"));
-        Application app = generateCode(resourcesTypeMap, false);
+        Application app = generateCode(resourcesTypeMap);
         assertThat(app).isNotNull();
                 
         Process<? extends Model> p = app.processes().processById("BoundarySignalOnTask");
@@ -133,7 +133,7 @@ public class SignalEventTest extends AbstractCodegenTest {
         Map<TYPE, List<String>> resourcesTypeMap = new HashMap<>();
         resourcesTypeMap.put(TYPE.PROCESS, Collections.singletonList("signalevent/BoundaryInterruptingSignalEventOnTask.bpmn2"));
         resourcesTypeMap.put(TYPE.RULES, Collections.singletonList("ruletask/BusinessRuleTask.drl"));
-        Application app = generateCode(resourcesTypeMap, false);
+        Application app = generateCode(resourcesTypeMap);
         assertThat(app).isNotNull();
                 
         Process<? extends Model> p = app.processes().processById("BoundarySignalOnTask");
@@ -161,7 +161,7 @@ public class SignalEventTest extends AbstractCodegenTest {
         Map<TYPE, List<String>> resourcesTypeMap = new HashMap<>();
         resourcesTypeMap.put(TYPE.PROCESS, Collections.singletonList("signalevent/IntermediateCatchEventSignal.bpmn2"));
         resourcesTypeMap.put(TYPE.RULES, Collections.singletonList("ruletask/BusinessRuleTask.drl"));
-        Application app = generateCode(resourcesTypeMap, false);
+        Application app = generateCode(resourcesTypeMap);
         assertThat(app).isNotNull();
         // create first unit of work
         UnitOfWork uow = app.unitOfWorkManager().newUnitOfWork();                        
