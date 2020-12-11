@@ -29,9 +29,11 @@ import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import org.drools.core.util.ClassUtils;
+import org.drools.mvel.parser.ast.expr.BigDecimalLiteralExpr;
 import org.drools.mvel.parser.ast.expr.DrlNameExpr;
 import org.drools.mvel.parser.ast.visitor.DrlGenericVisitor;
-import org.drools.mvelcompiler.ast.BigDecimalExprT;
+import org.drools.mvelcompiler.ast.BigDecimalArithmeticExprT;
+import org.drools.mvelcompiler.ast.BigDecimalConstantExprT;
 import org.drools.mvelcompiler.ast.BinaryTExpr;
 import org.drools.mvelcompiler.ast.CastExprT;
 import org.drools.mvelcompiler.ast.CharacterLiteralExpressionT;
@@ -53,6 +55,7 @@ import org.drools.mvelcompiler.util.TypeUtils;
 import static java.util.Arrays.asList;
 import static java.util.Optional.ofNullable;
 import static org.drools.core.util.ClassUtils.getAccessor;
+import static org.drools.mvelcompiler.ast.BigDecimalArithmeticExprT.toBigDecimalMethod;
 import static org.drools.mvelcompiler.util.OptionalUtils.map2;
 import static org.drools.mvelcompiler.util.TypeUtils.classFromType;
 
@@ -199,11 +202,11 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
         if (isArithmeticOperator && !isStringConcatenation) {
 
             if (typeLeft != BigDecimal.class && typeRight == BigDecimal.class) { // convert left
-                return new BigDecimalExprT(BigDecimalExprT.toBigDecimalMethod(operator.toString()),
-                                           BigDecimalExprT.valueOf(left), right);
+                return new BigDecimalArithmeticExprT(toBigDecimalMethod(operator.toString()),
+                                                     new BigDecimalConstantExprT(left), right);
             } else if (typeLeft == BigDecimal.class && typeRight != BigDecimal.class) {
-                return new BigDecimalExprT(BigDecimalExprT.toBigDecimalMethod(operator.toString()),
-                                           left, BigDecimalExprT.valueOf(right));
+                return new BigDecimalArithmeticExprT(toBigDecimalMethod(operator.toString()),
+                                                     left, new BigDecimalConstantExprT(right));
             }
         }
 
@@ -281,6 +284,11 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
     public TypedExpression visit(CastExpr n, Context arg) {
         TypedExpression innerExpr = n.getExpression().accept(this, arg);
         return new CastExprT(innerExpr, resolveType(n.getType()));
+    }
+
+    @Override
+    public TypedExpression visit(BigDecimalLiteralExpr n, Context arg) {
+        return new BigDecimalConstantExprT(new StringLiteralExpressionT(new StringLiteralExpr(n.getValue())));
     }
 
     private Class<?> resolveType(com.github.javaparser.ast.type.Type type) {
