@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.taskassigning.process.service.client;
+package org.kie.kogito.taskassigning.index.service.client.graphql.date;
 
-import org.kie.kogito.taskassigning.config.AbstractServiceClientConfigTest;
+import java.time.ZonedDateTime;
 
-class ProcessServiceClientConfigTest extends AbstractServiceClientConfigTest<ProcessServiceClientConfig> {
+public class DateEqualArgument extends SimpleDateArgument<ZonedDateTime> {
+
+    public DateEqualArgument(ZonedDateTime value) {
+        super(value, Condition.EQUAL);
+    }
 
     @Override
-    protected ProcessServiceClientConfig createConfig() {
-        return ProcessServiceClientConfig.newBuilder()
-                .serviceUrl(SERVICE_URL)
-                .connectTimeoutMillis(CONNECT_TIMEOUT)
-                .readTimeoutMillis(READ_TIMOUT).build();
+    public String getStringValue() {
+        return formatDateTime(getValue());
     }
 }

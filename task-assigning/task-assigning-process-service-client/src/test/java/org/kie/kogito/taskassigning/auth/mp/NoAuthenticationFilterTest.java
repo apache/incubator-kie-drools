@@ -14,17 +14,28 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.taskassigning.process.service.client;
+package org.kie.kogito.taskassigning.auth.mp;
 
-import org.kie.kogito.taskassigning.config.AbstractServiceClientConfigTest;
+import java.io.IOException;
 
-class ProcessServiceClientConfigTest extends AbstractServiceClientConfigTest<ProcessServiceClientConfig> {
+import javax.ws.rs.client.ClientRequestContext;
 
-    @Override
-    protected ProcessServiceClientConfig createConfig() {
-        return ProcessServiceClientConfig.newBuilder()
-                .serviceUrl(SERVICE_URL)
-                .connectTimeoutMillis(CONNECT_TIMEOUT)
-                .readTimeoutMillis(READ_TIMOUT).build();
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import static org.mockito.Mockito.verifyNoInteractions;
+
+@ExtendWith(MockitoExtension.class)
+class NoAuthenticationFilterTest {
+
+    @Mock
+    private ClientRequestContext requestContext;
+
+    @Test
+    void filter() throws IOException {
+        NoAuthenticationFilter.INSTANCE.filter(requestContext);
+        verifyNoInteractions(requestContext);
     }
 }

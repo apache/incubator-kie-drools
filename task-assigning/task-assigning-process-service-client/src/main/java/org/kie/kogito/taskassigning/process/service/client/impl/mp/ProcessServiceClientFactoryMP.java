@@ -16,15 +16,14 @@
 
 package org.kie.kogito.taskassigning.process.service.client.impl.mp;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
-import org.kie.kogito.taskassigning.process.service.client.AuthenticationCredentials;
+import org.kie.kogito.taskassigning.auth.AuthenticationCredentials;
+import org.kie.kogito.taskassigning.auth.mp.AuthenticationFilterFactory;
 import org.kie.kogito.taskassigning.process.service.client.ProcessServiceClient;
 import org.kie.kogito.taskassigning.process.service.client.ProcessServiceClientConfig;
 import org.kie.kogito.taskassigning.process.service.client.ProcessServiceClientFactory;
@@ -45,14 +44,8 @@ public class ProcessServiceClientFactoryMP implements ProcessServiceClientFactor
 
     @Override
     public ProcessServiceClient newClient(ProcessServiceClientConfig config, AuthenticationCredentials credentials) {
-        URL url;
-        try {
-            url = new URL(config.getServiceUrl());
-        } catch (MalformedURLException e) {
-            throw new IllegalArgumentException("Invalid serviceUrl: " + config.getServiceUrl(), e);
-        }
         ProcessServiceClientRest restClient = RestClientBuilder.newBuilder()
-                .baseUrl(url)
+                .baseUrl(config.getServiceUrl())
                 .register(filterFactory.newAuthenticationFilter(credentials))
                 .connectTimeout(config.getConnectTimeoutMillis(), TimeUnit.MILLISECONDS)
                 .readTimeout(config.getReadTimeoutMillis(), TimeUnit.MILLISECONDS)

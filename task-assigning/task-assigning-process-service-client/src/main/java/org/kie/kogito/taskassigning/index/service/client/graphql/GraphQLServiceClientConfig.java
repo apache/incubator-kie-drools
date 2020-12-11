@@ -14,33 +14,33 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.taskassigning.process.service.client;
+package org.kie.kogito.taskassigning.index.service.client.graphql;
 
 import java.net.URL;
 
 import org.kie.kogito.taskassigning.config.ServiceClientConfig;
 
-public class ProcessServiceClientConfig extends ServiceClientConfig {
+public class GraphQLServiceClientConfig extends ServiceClientConfig {
 
-    private ProcessServiceClientConfig() {
+    private GraphQLServiceClientConfig() {
     }
 
-    private ProcessServiceClientConfig(URL serviceUrl, long connectTimeoutMillis, long readTimeoutMillis) {
+    private GraphQLServiceClientConfig(URL serviceUrl, long connectTimeoutMillis, long readTimeoutMillis) {
         super(serviceUrl, connectTimeoutMillis, readTimeoutMillis);
     }
 
-    public static Builder newBuilder() {
-        return new Builder();
+    public static GraphQLServiceClientConfig.Builder newBuilder() {
+        return new GraphQLServiceClientConfig.Builder();
     }
 
-    public static class Builder extends ServiceClientConfig.Builder<ProcessServiceClientConfig, Builder> {
+    public static class Builder extends ServiceClientConfig.Builder<GraphQLServiceClientConfig, GraphQLServiceClientConfig.Builder> {
 
         private Builder() {
         }
 
         @Override
-        public ProcessServiceClientConfig build() {
-            return new ProcessServiceClientConfig(serviceUrl, connectTimeoutMillis, readTimeoutMillis);
+        public GraphQLServiceClientConfig build() {
+            return new GraphQLServiceClientConfig(serviceUrl, connectTimeoutMillis, readTimeoutMillis);
         }
     }
 }

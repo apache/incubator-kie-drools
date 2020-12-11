@@ -14,17 +14,30 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.taskassigning.process.service.client;
+package org.kie.kogito.taskassigning.index.service.client.graphql;
 
-import org.kie.kogito.taskassigning.config.AbstractServiceClientConfigTest;
+import org.junit.jupiter.api.Test;
 
-class ProcessServiceClientConfigTest extends AbstractServiceClientConfigTest<ProcessServiceClientConfig> {
+import static org.assertj.core.api.Assertions.assertThat;
 
-    @Override
-    protected ProcessServiceClientConfig createConfig() {
-        return ProcessServiceClientConfig.newBuilder()
-                .serviceUrl(SERVICE_URL)
-                .connectTimeoutMillis(CONNECT_TIMEOUT)
-                .readTimeoutMillis(READ_TIMOUT).build();
+class OrderByTest {
+
+    @Test
+    void ascAsJson() {
+        doAsJson(OrderBy.ASC, "\"ASC\"");
+    }
+
+    @Test
+    void descAsJson() {
+        doAsJson(OrderBy.DESC, "\"DESC\"");
+    }
+
+    private void doAsJson(OrderBy value, String expectedValue) {
+        assertThat(value.asJson()).hasToString(expectedValue);
+    }
+
+    @Test
+    void getTypeId() {
+        assertThat(OrderBy.ASC.getTypeId()).isEqualTo("OrderBy");
     }
 }

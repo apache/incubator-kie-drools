@@ -14,17 +14,24 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.taskassigning.process.service.client;
+package org.kie.kogito.taskassigning.auth.mp;
 
-import org.kie.kogito.taskassigning.config.AbstractServiceClientConfigTest;
+import org.kie.kogito.taskassigning.auth.NoAuthenticationCredentials;
 
-class ProcessServiceClientConfigTest extends AbstractServiceClientConfigTest<ProcessServiceClientConfig> {
+class NoAuthenticationFilterProviderTest extends AbstractAuthenticationFilterProviderTest<NoAuthenticationCredentials> {
 
     @Override
-    protected ProcessServiceClientConfig createConfig() {
-        return ProcessServiceClientConfig.newBuilder()
-                .serviceUrl(SERVICE_URL)
-                .connectTimeoutMillis(CONNECT_TIMEOUT)
-                .readTimeoutMillis(READ_TIMOUT).build();
+    AuthenticationFilterProvider<NoAuthenticationCredentials> createProvider() {
+        return new NoAuthenticationFilterProvider();
+    }
+
+    @Override
+    Class<NoAuthenticationCredentials> getType() {
+        return NoAuthenticationCredentials.class;
+    }
+
+    @Override
+    NoAuthenticationCredentials getCredentials() {
+        return NoAuthenticationCredentials.INSTANCE;
     }
 }

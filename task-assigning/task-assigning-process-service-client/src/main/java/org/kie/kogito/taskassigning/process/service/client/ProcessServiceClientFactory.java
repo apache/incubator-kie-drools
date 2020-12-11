@@ -16,6 +16,8 @@
 
 package org.kie.kogito.taskassigning.process.service.client;
 
+import org.kie.kogito.taskassigning.auth.AuthenticationCredentials;
+
 public interface ProcessServiceClientFactory {
 
     ProcessServiceClient newClient(ProcessServiceClientConfig config, AuthenticationCredentials credentials);

@@ -14,17 +14,11 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.taskassigning.process.service.client;
+package org.kie.kogito.taskassigning.index.service.client.graphql;
 
-import org.kie.kogito.taskassigning.config.AbstractServiceClientConfigTest;
+import java.io.Closeable;
 
-class ProcessServiceClientConfigTest extends AbstractServiceClientConfigTest<ProcessServiceClientConfig> {
+public interface GraphQLServiceClient extends Closeable {
 
-    @Override
-    protected ProcessServiceClientConfig createConfig() {
-        return ProcessServiceClientConfig.newBuilder()
-                .serviceUrl(SERVICE_URL)
-                .connectTimeoutMillis(CONNECT_TIMEOUT)
-                .readTimeoutMillis(READ_TIMOUT).build();
-    }
+    <T> T executeQuery(String queryName, String query, Class<T> resultType);
 }

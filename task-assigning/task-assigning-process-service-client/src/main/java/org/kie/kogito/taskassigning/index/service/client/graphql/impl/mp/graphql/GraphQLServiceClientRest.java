@@ -14,17 +14,24 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.taskassigning.process.service.client;
+package org.kie.kogito.taskassigning.index.service.client.graphql.impl.mp.graphql;
 
-import org.kie.kogito.taskassigning.config.AbstractServiceClientConfigTest;
+import java.io.Closeable;
 
-class ProcessServiceClientConfigTest extends AbstractServiceClientConfigTest<ProcessServiceClientConfig> {
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 
-    @Override
-    protected ProcessServiceClientConfig createConfig() {
-        return ProcessServiceClientConfig.newBuilder()
-                .serviceUrl(SERVICE_URL)
-                .connectTimeoutMillis(CONNECT_TIMEOUT)
-                .readTimeoutMillis(READ_TIMOUT).build();
-    }
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+
+public interface GraphQLServiceClientRest extends Closeable {
+
+    @Path("/")
+    @POST
+    @Consumes(APPLICATION_JSON)
+    @Produces(APPLICATION_JSON)
+    ObjectNode executeQuery(String query);
 }

@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.taskassigning.process.service.client;
+package org.kie.kogito.taskassigning.index.service.client;
 
-import org.kie.kogito.taskassigning.config.AbstractServiceClientConfigTest;
+import java.io.Closeable;
+import java.time.ZonedDateTime;
+import java.util.List;
 
-class ProcessServiceClientConfigTest extends AbstractServiceClientConfigTest<ProcessServiceClientConfig> {
+import org.kie.kogito.taskassigning.index.service.client.graphql.UserTaskInstance;
 
-    @Override
-    protected ProcessServiceClientConfig createConfig() {
-        return ProcessServiceClientConfig.newBuilder()
-                .serviceUrl(SERVICE_URL)
-                .connectTimeoutMillis(CONNECT_TIMEOUT)
-                .readTimeoutMillis(READ_TIMOUT).build();
-    }
+/**
+ * Contract for abstracting the data index queries execution.
+ */
+public interface DataIndexServiceClient extends Closeable {
+
+    List<UserTaskInstance> findTasks(List<String> state, ZonedDateTime startedAfter, String orderBy, boolean asc, int offset, int limit);
 }

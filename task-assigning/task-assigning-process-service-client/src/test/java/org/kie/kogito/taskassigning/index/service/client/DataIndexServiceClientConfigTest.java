@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.taskassigning.process.service.client;
+package org.kie.kogito.taskassigning.index.service.client;
 
 import org.kie.kogito.taskassigning.config.AbstractServiceClientConfigTest;
 
-class ProcessServiceClientConfigTest extends AbstractServiceClientConfigTest<ProcessServiceClientConfig> {
+class DataIndexServiceClientConfigTest extends AbstractServiceClientConfigTest<DataIndexServiceClientConfig> {
 
     @Override
-    protected ProcessServiceClientConfig createConfig() {
-        return ProcessServiceClientConfig.newBuilder()
+    protected DataIndexServiceClientConfig createConfig() {
+        return DataIndexServiceClientConfig.newBuilder()
                 .serviceUrl(SERVICE_URL)
                 .connectTimeoutMillis(CONNECT_TIMEOUT)
                 .readTimeoutMillis(READ_TIMOUT).build();

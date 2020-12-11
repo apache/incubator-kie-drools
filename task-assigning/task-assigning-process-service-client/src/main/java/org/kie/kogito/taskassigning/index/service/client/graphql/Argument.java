@@ -14,17 +14,13 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.taskassigning.process.service.client;
+package org.kie.kogito.taskassigning.index.service.client.graphql;
 
-import org.kie.kogito.taskassigning.config.AbstractServiceClientConfigTest;
+import com.fasterxml.jackson.databind.JsonNode;
 
-class ProcessServiceClientConfigTest extends AbstractServiceClientConfigTest<ProcessServiceClientConfig> {
+public interface Argument {
 
-    @Override
-    protected ProcessServiceClientConfig createConfig() {
-        return ProcessServiceClientConfig.newBuilder()
-                .serviceUrl(SERVICE_URL)
-                .connectTimeoutMillis(CONNECT_TIMEOUT)
-                .readTimeoutMillis(READ_TIMOUT).build();
-    }
+    JsonNode asJson();
+
+    String getTypeId();
 }

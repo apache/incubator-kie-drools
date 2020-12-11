@@ -14,17 +14,11 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.taskassigning.process.service.client;
+package org.kie.kogito.taskassigning.auth;
 
-import org.kie.kogito.taskassigning.config.AbstractServiceClientConfigTest;
+/**
+ * Marker interface that represents the necessary information for authenticating a REST service invocation.
+ */
+public interface AuthenticationCredentials {
 
-class ProcessServiceClientConfigTest extends AbstractServiceClientConfigTest<ProcessServiceClientConfig> {
-
-    @Override
-    protected ProcessServiceClientConfig createConfig() {
-        return ProcessServiceClientConfig.newBuilder()
-                .serviceUrl(SERVICE_URL)
-                .connectTimeoutMillis(CONNECT_TIMEOUT)
-                .readTimeoutMillis(READ_TIMOUT).build();
-    }
 }

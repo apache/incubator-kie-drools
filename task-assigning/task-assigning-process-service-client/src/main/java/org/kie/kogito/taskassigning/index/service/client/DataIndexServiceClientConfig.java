@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.taskassigning.process.service.client;
+package org.kie.kogito.taskassigning.index.service.client;
 
 import java.net.URL;
 
 import org.kie.kogito.taskassigning.config.ServiceClientConfig;
 
-public class ProcessServiceClientConfig extends ServiceClientConfig {
+public class DataIndexServiceClientConfig extends ServiceClientConfig {
 
-    private ProcessServiceClientConfig() {
+    private DataIndexServiceClientConfig() {
     }
 
-    private ProcessServiceClientConfig(URL serviceUrl, long connectTimeoutMillis, long readTimeoutMillis) {
+    private DataIndexServiceClientConfig(URL serviceUrl, long connectTimeoutMillis, long readTimeoutMillis) {
         super(serviceUrl, connectTimeoutMillis, readTimeoutMillis);
     }
 
@@ -33,14 +33,14 @@ public class ProcessServiceClientConfig extends ServiceClientConfig {
         return new Builder();
     }
 
-    public static class Builder extends ServiceClientConfig.Builder<ProcessServiceClientConfig, Builder> {
+    public static class Builder extends ServiceClientConfig.Builder<DataIndexServiceClientConfig, Builder> {
 
         private Builder() {
         }
 
         @Override
-        public ProcessServiceClientConfig build() {
-            return new ProcessServiceClientConfig(serviceUrl, connectTimeoutMillis, readTimeoutMillis);
+        public DataIndexServiceClientConfig build() {
+            return new DataIndexServiceClientConfig(serviceUrl, connectTimeoutMillis, readTimeoutMillis);
         }
     }
 }

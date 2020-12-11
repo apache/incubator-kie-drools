@@ -14,17 +14,20 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.taskassigning.process.service.client;
+package org.kie.kogito.taskassigning.auth.mp;
 
-import org.kie.kogito.taskassigning.config.AbstractServiceClientConfigTest;
+import org.keycloak.admin.client.Keycloak;
 
-class ProcessServiceClientConfigTest extends AbstractServiceClientConfigTest<ProcessServiceClientConfig> {
+public class KeycloakTokenManager implements TokenManager {
+
+    private Keycloak keycloak;
+
+    public KeycloakTokenManager(Keycloak keycloak) {
+        this.keycloak = keycloak;
+    }
 
     @Override
-    protected ProcessServiceClientConfig createConfig() {
-        return ProcessServiceClientConfig.newBuilder()
-                .serviceUrl(SERVICE_URL)
-                .connectTimeoutMillis(CONNECT_TIMEOUT)
-                .readTimeoutMillis(READ_TIMOUT).build();
+    public String getAccessTokenString() {
+        return keycloak.tokenManager().getAccessTokenString();
     }
 }

@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.taskassigning.process.service.client;
+package org.kie.kogito.taskassigning;
 
-import org.kie.kogito.taskassigning.config.AbstractServiceClientConfigTest;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
-class ProcessServiceClientConfigTest extends AbstractServiceClientConfigTest<ProcessServiceClientConfig> {
+public class TestUtil {
 
-    @Override
-    protected ProcessServiceClientConfig createConfig() {
-        return ProcessServiceClientConfig.newBuilder()
-                .serviceUrl(SERVICE_URL)
-                .connectTimeoutMillis(CONNECT_TIMEOUT)
-                .readTimeoutMillis(READ_TIMOUT).build();
+    private TestUtil() {
+    }
+
+    public static ZonedDateTime parseZonedDateTime(String value) {
+        return ZonedDateTime.parse(value, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
     }
 }

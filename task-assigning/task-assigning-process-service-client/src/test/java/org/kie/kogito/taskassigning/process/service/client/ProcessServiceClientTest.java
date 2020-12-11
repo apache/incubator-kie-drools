@@ -24,6 +24,10 @@ import javax.inject.Inject;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.taskassigning.ClientServices;
+import org.kie.kogito.taskassigning.auth.BasicAuthenticationCredentials;
+import org.kie.kogito.taskassigning.auth.KeycloakAuthenticationCredentials;
+import org.kie.kogito.taskassigning.auth.NoAuthenticationCredentials;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.kogito.taskassigning.process.service.client.WireMockKeycloakResource.CLIENT_ID;

@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.taskassigning.process.service.client;
+package org.kie.kogito.taskassigning.index.service.client.graphql.string;
 
-import org.kie.kogito.taskassigning.config.AbstractServiceClientConfigTest;
+public class StringIsNullArgument extends SimpleStringArgument<Boolean> {
 
-class ProcessServiceClientConfigTest extends AbstractServiceClientConfigTest<ProcessServiceClientConfig> {
+    public StringIsNullArgument(boolean value) {
+        super(value, Condition.IS_NULL);
+    }
 
     @Override
-    protected ProcessServiceClientConfig createConfig() {
-        return ProcessServiceClientConfig.newBuilder()
-                .serviceUrl(SERVICE_URL)
-                .connectTimeoutMillis(CONNECT_TIMEOUT)
-                .readTimeoutMillis(READ_TIMOUT).build();
+    public String getStringValue() {
+        return Boolean.toString(value);
     }
 }
