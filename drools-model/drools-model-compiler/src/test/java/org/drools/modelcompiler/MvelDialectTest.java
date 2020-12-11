@@ -28,6 +28,7 @@ import java.util.Set;
 import org.assertj.core.api.Assertions;
 import org.drools.modelcompiler.domain.Address;
 import org.drools.modelcompiler.domain.Person;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.Results;
@@ -438,6 +439,79 @@ public class MvelDialectTest extends BaseModelTest {
         ksession.insert(john);
         assertEquals(1, ksession.fireAllRules());
         assertEquals(new BigDecimal( 120000 ), john.getMoney());
+    }
+
+    // TODO without B it doesn't work on MVEL
+    @Test
+    public void testCompoundOperator() throws Exception {
+
+        // DROOLS-5894
+        String drl =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "dialect \"mvel\"\n" +
+                "rule R\n" +
+                "when\n" +
+                "    $p : Person( age >= 26 )\n" +
+                "then\n" +
+                "    $p.money += 50000;\n" +
+                "end";
+
+        KieSession ksession = getKieSession(drl);
+
+        Person john = new Person("John", 30);
+        john.setMoney( new BigDecimal( 70000 ) );
+
+        ksession.insert(john);
+        assertEquals(1, ksession.fireAllRules());
+        assertEquals(new BigDecimal( 120000 ), john.getMoney());
+    }
+
+    @Test
+    public void testCompoundOperatorBigDecimalConstant() throws Exception {
+
+        // DROOLS-5894
+        String drl =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "dialect \"mvel\"\n" +
+                "rule R\n" +
+                "when\n" +
+                "    $p : Person( age >= 26 )\n" +
+                "then\n" +
+                "    $p.money += 50000B;\n" +
+                "end";
+
+        KieSession ksession = getKieSession(drl);
+
+        Person john = new Person("John", 30);
+        john.setMoney( new BigDecimal( 70000 ) );
+
+        ksession.insert(john);
+        assertEquals(1, ksession.fireAllRules());
+        assertEquals(new BigDecimal( 120000 ), john.getMoney());
+    }
+
+    @Test
+    public void testCompoundOperatorOnfield() throws Exception {
+
+        // DROOLS-5895
+        String drl =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "dialect \"mvel\"\n" +
+                "rule R\n" +
+                "when\n" +
+                "    $p : Person( age >= 26 )\n" +
+                "then\n" +
+                "    $p.money += $p.money;\n" +
+                "end";
+
+        KieSession ksession = getKieSession(drl);
+
+        Person john = new Person("John", 30);
+        john.setMoney( new BigDecimal( 70000 ) );
+
+        ksession.insert(john);
+        assertEquals(1, ksession.fireAllRules());
+        assertEquals(new BigDecimal( 140000 ), john.getMoney());
     }
 
     @Test
