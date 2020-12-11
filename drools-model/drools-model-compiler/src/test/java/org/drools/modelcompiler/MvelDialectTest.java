@@ -34,6 +34,7 @@ import org.kie.api.builder.Results;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -440,7 +441,41 @@ public class MvelDialectTest extends BaseModelTest {
     }
 
     @Test
-    public void testBinaryOperationOnInteger() throws Exception {
+    public void testModifyOnBigDecimal() {
+        // DROOLS-5889
+        String drl =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "global java.util.List list;\n" +
+                "dialect \"mvel\"\n" +
+                "rule R\n" +
+                "when\n" +
+                "    $p : Person( age >= 26 )\n" +
+                "then\n" +
+                "   list.add(\"before \" + $p + \", money = \" + $p.money);" +
+                "   modify($p) {" +
+                "       money = 30000;\n" +
+                "   } " +
+                "   list.add(\"after \" + $p + \", money = \" + $p.money);" +
+                "end";
+
+        KieSession ksession = getKieSession(drl);
+
+        ArrayList<String> logMessages = new ArrayList<>();
+        ksession.setGlobal("list", logMessages);
+
+        Person john = new Person("John", 30);
+        john.setMoney( new BigDecimal( 70000 ) );
+
+        ksession.insert(john);
+        assertEquals(1, ksession.fireAllRules());
+        assertEquals(new BigDecimal( 30000 ), john.getMoney());
+        assertThat(logMessages).containsExactly(
+                "before John, money = 70000",
+                "after John, money = 30000");
+    }
+
+    @Test
+    public void testBinaryOperationOnInteger() {
         // RHDM-1421
         String drl =
                 "import " + Person.class.getCanonicalName() + "\n" +
@@ -463,7 +498,7 @@ public class MvelDialectTest extends BaseModelTest {
     }
 
     @Test
-    public void testSetOnInteger() throws Exception {
+    public void testSetOnInteger() {
         // RHDM-1421
         String drl =
                 "import " + Person.class.getCanonicalName() + "\n" +

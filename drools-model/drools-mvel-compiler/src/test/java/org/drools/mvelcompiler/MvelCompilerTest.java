@@ -112,7 +112,45 @@ public class MvelCompilerTest implements CompilerTest {
     public void testSetterBigDecimal() {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{ $p.salary = $p.salary + 50000; }",
-             "{ $p.setSalary($p.getSalary().add(new java.math.BigDecimal(50000))); }");
+             "{ $p.setSalary($p.getSalary().add(java.math.BigDecimal.valueOf(50000))); }");
+    }
+
+    @Test
+    public void testSetterBigDecimalConstant() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ $p.salary = 50000; }",
+             "{ $p.setSalary(java.math.BigDecimal.valueOf(50000)); }");
+    }
+
+    @Test
+    public void testSetterBigDecimalConstantFromLong() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ $p.salary = 50000L; }",
+             "{ $p.setSalary(java.math.BigDecimal.valueOf(50000L)); }");
+    }
+
+    @Test
+    public void testSetterBigDecimalConstantModify() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ modify ( $p )  { salary = 50000 }; }",
+             "{ $p.setSalary(java.math.BigDecimal.valueOf(50000)); }",
+             result -> assertThat(allUsedBindings(result), containsInAnyOrder("$p")));
+    }
+
+    @Test
+    public void testDoNotConvertAdditionInStringConcatenation() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ " +
+                          "     list.add(\"before \" + $p + \", money = \" + $p.salary); " +
+                          "     modify ( $p )  { salary = 50000 };  " +
+                          "     list.add(\"after \" + $p + \", money = \" + $p.salary); " +
+                          "}",
+             "{\n " +
+                         "      list.add(\"before \" + $p + \", money = \" + $p.getSalary()); " +
+                         "      $p.setSalary(java.math.BigDecimal.valueOf(50000));" +
+                         "      list.add(\"after \" + $p + \", money = \" + $p.getSalary()); " +
+                         "}\n",
+             result -> assertThat(allUsedBindings(result), containsInAnyOrder("$p")));
     }
 
     @Test
@@ -399,12 +437,12 @@ public class MvelCompilerTest implements CompilerTest {
                      "     }",
 
              "{ " +
-                             "org.drools.Person s1 = new Person(); " +
                              "org.drools.Person s0 = new Person(); " +
-                             "insertLogical(s0); " +
-                             "insertLogical(s1); " +
                              "s0.setAge(0); " +
+                             "insertLogical(s0); " +
+                             "org.drools.Person s1 = new Person(); " +
                              "s1.setAge(1); " +
+                             "insertLogical(s1); " +
                           "}");
     }
 

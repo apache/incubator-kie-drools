@@ -1,16 +1,16 @@
 package org.drools.mvelcompiler;
 
 import java.math.BigDecimal;
-import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.expr.IntegerLiteralExpr;
+import com.github.javaparser.ast.expr.LongLiteralExpr;
 import org.drools.mvel.parser.ast.visitor.DrlGenericVisitor;
+import org.drools.mvelcompiler.ast.BigDecimalExprT;
 import org.drools.mvelcompiler.ast.IntegerLiteralExpressionT;
-import org.drools.mvelcompiler.ast.MethodCallExprT;
-import org.drools.mvelcompiler.ast.SimpleNameTExpr;
+import org.drools.mvelcompiler.ast.LongLiteralExpressionT;
 import org.drools.mvelcompiler.ast.TypedExpression;
 
 /**
@@ -35,18 +35,17 @@ public class ReProcessRHSPhase implements DrlGenericVisitor<Optional<TypedExpres
 
     @Override
     public Optional<TypedExpression> visit(IntegerLiteralExpr n, Void arg) {
-        return lhs.getType().flatMap(t -> {
-            if (BigDecimal.class.equals(t)) {
-                return asBigDecimalValueOf(n);
-            }
-            return Optional.empty();
-        });
+        return convertWhenLHSISBigDecimal(() -> new IntegerLiteralExpressionT(n));
     }
 
-    private Optional<TypedExpression> asBigDecimalValueOf(IntegerLiteralExpr n) {
-        Optional<TypedExpression> bigDecimal = Optional.of(new SimpleNameTExpr(BigDecimal.class.getCanonicalName(), null));
-        List<TypedExpression> arguments = Collections.singletonList(new IntegerLiteralExpressionT(new IntegerLiteralExpr(n.asInt())));
-        MethodCallExprT valueOf = new MethodCallExprT("valueOf", bigDecimal, arguments, Optional.of(BigDecimal.class));
-        return Optional.of(valueOf);
+    @Override
+    public Optional<TypedExpression> visit(LongLiteralExpr n, Void arg) {
+        return convertWhenLHSISBigDecimal(() -> new LongLiteralExpressionT(n));
+    }
+
+    private Optional<TypedExpression> convertWhenLHSISBigDecimal(Supplier<TypedExpression> conversionFunction) {
+        return lhs.getType()
+                .filter(BigDecimal.class::equals)
+                .flatMap(t -> Optional.of(BigDecimalExprT.valueOf(conversionFunction.get())));
     }
 }

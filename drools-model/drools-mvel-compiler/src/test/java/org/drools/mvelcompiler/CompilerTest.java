@@ -19,7 +19,7 @@ import static org.hamcrest.Matchers.equalToIgnoringWhiteSpace;
 interface CompilerTest {
 
     default void test(Consumer<MvelCompilerContext> testFunction,
-                      String actualExpression,
+                      String inputExpression,
                       String expectedResult,
                       Consumer<ParsingResult> resultAssert) {
         Set<String> imports = new HashSet<>();
@@ -34,7 +34,7 @@ interface CompilerTest {
         TypeResolver typeResolver = new ClassTypeResolver(imports, this.getClass().getClassLoader());
         MvelCompilerContext mvelCompilerContext = new MvelCompilerContext(typeResolver);
         testFunction.accept(mvelCompilerContext);
-        ParsingResult compiled = new MvelCompiler(mvelCompilerContext).compile(actualExpression);
+        ParsingResult compiled = new MvelCompiler(mvelCompilerContext).compile(inputExpression);
         verifyBodyWithBetterDiff(expectedResult, compiled.resultAsString());
         resultAssert.accept(compiled);
     }
@@ -47,24 +47,24 @@ interface CompilerTest {
         }
     }
 
-    default void test(String actualExpression,
+    default void test(String inputExpression,
                       String expectedResult,
                       Consumer<ParsingResult> resultAssert) {
         test(id -> {
-        }, actualExpression, expectedResult, resultAssert);
+        }, inputExpression, expectedResult, resultAssert);
     }
 
     default void test(Consumer<MvelCompilerContext> testFunction,
-                      String actualExpression,
+                      String inputExpression,
                       String expectedResult) {
-        test(testFunction, actualExpression, expectedResult, t -> {
+        test(testFunction, inputExpression, expectedResult, t -> {
         });
     }
 
-    default void test(String actualExpression,
+    default void test(String inputExpression,
                       String expectedResult) {
         test(d -> {
-        }, actualExpression, expectedResult, t -> {
+        }, inputExpression, expectedResult, t -> {
         });
     }
 
