@@ -130,14 +130,6 @@ public class KogitoAssetsProcessor {
     CurateOutcomeBuildItem curateOutcomeBuildItem;
     @Inject
     CombinedIndexBuildItem combinedIndexBuildItem;
-    @Inject
-    BuildProducer<GeneratedBeanBuildItem> generatedBeans;
-    @Inject
-    BuildProducer<NativeImageResourceBuildItem> resource;
-    @Inject
-    BuildProducer<ReflectiveClassBuildItem> reflectiveClass;
-    @Inject
-    BuildProducer<GeneratedResourceBuildItem> genResBI;
 
     @BuildStep
     CapabilityBuildItem capability() {
@@ -153,7 +145,12 @@ public class KogitoAssetsProcessor {
      * Main entry point of the Quarkus extension
      */
     @BuildStep
-    public void generateModel() throws IOException {
+    public void generateModel(
+            BuildProducer<GeneratedBeanBuildItem> generatedBeans,
+            BuildProducer<NativeImageResourceBuildItem> resource,
+            BuildProducer<ReflectiveClassBuildItem> reflectiveClass,
+            BuildProducer<GeneratedResourceBuildItem> genResBI
+    ) throws IOException {
 
         if (liveReload.isLiveReload()) {
             return;
@@ -228,12 +225,13 @@ public class KogitoAssetsProcessor {
         }
 
         // register resources to the Quarkus environment
-        registerResources(generatedFiles);
+        registerResources(generatedFiles, resource, genResBI);
 
         // build Java source code and register the generated beans
         Index index = processGeneratedJavaSourceCode(
                 appPaths,
-                generatedFiles);
+                generatedFiles,
+                generatedBeans);
 
         // no java source code has been generated. Stop.
         if (index == null) {
@@ -241,21 +239,26 @@ public class KogitoAssetsProcessor {
         }
 
         // further processing
-        Collection<GeneratedFile> persistenceGeneratedFiles = generatePersistenceInfo(appPaths, index);
+        Collection<GeneratedFile> persistenceGeneratedFiles = generatePersistenceInfo(
+                appPaths,
+                index,
+                generatedBeans,
+                resource,
+                reflectiveClass);
         generatedFiles.addAll(persistenceGeneratedFiles);
 
         // Write files to disk
         dumpFilesToDisk(appPaths, generatedFiles);
 
         // register resources to the Quarkus environment
-        registerResources(generatedFiles);
+        registerResources(generatedFiles, resource, genResBI);
 
-        registerDataEventsForReflection(index, addonsConfig);
+        registerDataEventsForReflection(index, addonsConfig, reflectiveClass);
 
-        writeJsonSchema(appPaths, index);
+        writeJsonSchema(appPaths, index, resource);
 
         if (useProcessSVG) {
-            registerProcessSVG(appPaths);
+            registerProcessSVG(appPaths, resource);
         }
     }
 
@@ -267,7 +270,9 @@ public class KogitoAssetsProcessor {
         }
     }
 
-    private void registerResources(Collection<GeneratedFile> generatedFiles) {
+    private void registerResources(Collection<GeneratedFile> generatedFiles,
+                                   BuildProducer<NativeImageResourceBuildItem> resource,
+                                   BuildProducer<GeneratedResourceBuildItem> genResBI) {
         for (GeneratedFile f : generatedFiles) {
             if (f.getType() == GeneratedFile.Type.GENERATED_CP_RESOURCE) {
                 genResBI.produce(new GeneratedResourceBuildItem(f.relativePath(), f.contents()));
@@ -278,7 +283,8 @@ public class KogitoAssetsProcessor {
 
     private Index processGeneratedJavaSourceCode(
             AppPaths appPaths,
-            Collection<GeneratedFile> generatedFiles) throws IOException {
+            Collection<GeneratedFile> generatedFiles,
+            BuildProducer<GeneratedBeanBuildItem> generatedBeans) throws IOException {
 
         // we are currently filtering on file extension,
         // but we should tag GeneratedFile properly
@@ -302,7 +308,12 @@ public class KogitoAssetsProcessor {
         return indexBuildItems(generatedBeanBuildItems);
     }
 
-    private Collection<GeneratedFile> generatePersistenceInfo(AppPaths appPaths, IndexView inputIndex) throws IOException {
+    private Collection<GeneratedFile> generatePersistenceInfo(
+            AppPaths appPaths,
+            IndexView inputIndex,
+            BuildProducer<GeneratedBeanBuildItem> generatedBeans,
+            BuildProducer<NativeImageResourceBuildItem> resource,
+            BuildProducer<ReflectiveClassBuildItem> reflectiveClass) throws IOException {
 
         CompositeIndex index = CompositeIndex.create(combinedIndexBuildItem.getIndex(), inputIndex);
 
@@ -473,7 +484,7 @@ public class KogitoAssetsProcessor {
         return new ReflectiveClassBuildItem(true, true, "org.kie.kogito.jobs.api.Job");
     }
 
-    private void registerProcessSVG(AppPaths appPaths) throws IOException {
+    private void registerProcessSVG(AppPaths appPaths, BuildProducer<NativeImageResourceBuildItem> resource) throws IOException {
         Path relativePath = Paths.get("META-INF", "processSVG");
         Path targetClasses = appPaths.getFirstProjectPath().resolve(targetClassesDir);
 
@@ -487,7 +498,7 @@ public class KogitoAssetsProcessor {
         }
     }
 
-    private void writeJsonSchema(AppPaths appPaths, Index index) throws IOException {
+    private void writeJsonSchema(AppPaths appPaths, Index index, BuildProducer<NativeImageResourceBuildItem> resource) throws IOException {
         Path relativePath = JsonSchemaUtil.getJsonDir();
         Path targetClasses = appPaths.getFirstProjectPath().resolve(targetClassesDir);
         Collection<GeneratedFile> jsonFiles = getJsonSchemaFiles(targetClasses, index);
@@ -500,7 +511,7 @@ public class KogitoAssetsProcessor {
         }
     }
 
-    private void registerDataEventsForReflection(Index index, AddonsConfig addonsConfig) {
+    private void registerDataEventsForReflection(Index index, AddonsConfig addonsConfig, BuildProducer<ReflectiveClassBuildItem> reflectiveClass) {
         reflectiveClass.produce(
                 new ReflectiveClassBuildItem(true, true, "org.kie.kogito.event.AbstractDataEvent"));
         reflectiveClass.produce(
