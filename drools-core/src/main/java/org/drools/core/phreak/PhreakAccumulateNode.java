@@ -586,7 +586,6 @@ public class PhreakAccumulateNode {
                             trgLeftTuples.addUpdate(leftTuple);
                         }
 
-
                         match = nextLeft;
                     }
                 }
@@ -650,12 +649,12 @@ public class PhreakAccumulateNode {
             if (!resultBinder.isAllowedCachedLeft( memory.resultsContext, accPropCtx.getResultFactHandle())) {
                 isAllowed = false;
             }
-            resultBinder.resetTuple( memory.resultsContext);
+            resultBinder.resetTuple( memory.resultsContext );
         }
 
 
         LeftTuple childLeftTuple = accPropCtx.getResultLeftTuple();
-        childLeftTuple.setPropagationContext( propagationContext != null ? propagationContext : leftTuple.getPropagationContext());
+        childLeftTuple.setPropagationContext( propagationContext != null ? propagationContext : leftTuple.getPropagationContext() );
 
         if ( accPropCtx.isPropagated()) {
             normalizeStagedTuples( stagedLeftTuples, childLeftTuple );

@@ -26,6 +26,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.assertj.core.api.Assertions;
 import org.drools.core.base.accumulators.CountAccumulateFunction;
+import org.drools.core.common.GroupByFactHandle;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.model.DSL;
 import org.drools.model.Global;
 import org.drools.model.Index;
@@ -49,6 +52,9 @@ import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
+import org.kie.api.runtime.rule.Match;
+import org.kie.internal.event.rule.RuleEventListener;
+import org.kie.internal.event.rule.RuleEventManager;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.model.DSL.from;
@@ -909,5 +915,73 @@ public class GroupByTest {
         assertEquals( 2, results.size() );
         assertEquals( 119, results.get("E") );
         assertEquals( 83, results.get("M") );
+    }
+
+    @Test
+    public void doesNotRemoveProperly() {
+        Global<Set> var_results = D.globalOf( Set.class, "defaultpkg", "results" );
+
+        Variable<Person> var_$p1 = D.declarationOf( Person.class );
+        Variable<Integer> var_$key = D.declarationOf( Integer.class );
+
+        PatternDSL.PatternDef<Person> p1pattern = D.pattern( var_$p1 )
+                .expr( p -> p.getName() != null );
+
+        Set<Integer> results = new LinkedHashSet<>();
+        Rule rule1 = D.rule( "R1" ).build(
+                D.groupBy(
+                        p1pattern,
+                        var_$p1,
+                        var_$key,
+                        Person::getAge),
+                D.on( var_$key )
+                        .execute( ( ctx, key ) -> {
+                            results.add(key);
+                        } )
+        );
+
+        Model model = new ModelImpl().addRule( rule1 ).addGlobal( var_results );
+        KieSession ksession = KieBaseBuilder.createKieBaseFromModel( model ).newKieSession();
+
+        (( RuleEventManager ) ksession).addEventListener( new RuleEventListener() {
+            @Override
+            public void onDeleteMatch( Match match) {
+                if (!match.getRule().getName().equals( "R1" )) {
+                    return;
+                }
+                RuleTerminalNodeLeftTuple tuple = (RuleTerminalNodeLeftTuple) match;
+                InternalFactHandle handle = tuple.getFactHandle();
+                if (handle instanceof GroupByFactHandle) {
+                    results.remove( (( GroupByFactHandle ) handle).getGroupKey() );
+                } else {
+                    GroupKey groupKey = (( GroupKey ) match.getObjects().get( 0 ));
+                    results.remove( groupKey.getKey() );
+                }
+            }
+
+            @Override
+            public void onUpdateMatch(Match match) {
+                onDeleteMatch(match);
+            }
+        });
+        ksession.setGlobal( "results", results );
+
+        ksession.insert( new Person( "Mark", 42 ) );
+        ksession.insert( new Person( "Edson", 38 ) );
+        int edoardoAge = 33;
+        FactHandle fh1 = ksession.insert( new Person( "Edoardo", edoardoAge ) );
+        FactHandle fh2 = ksession.insert( new Person( "Edoardo's clone", edoardoAge ) );
+        ksession.fireAllRules();
+        assertThat( results ).contains(edoardoAge);
+
+        // Remove first Edoardo. Nothing should happen, because age 33 is still present.
+        ksession.delete(fh1);
+        ksession.fireAllRules();
+        assertThat( results ).contains(edoardoAge);
+
+        // Remove Edoardo's clone. The group for age 33 should be undone.
+        ksession.delete(fh2);
+        ksession.fireAllRules();
+        assertThat( results ).doesNotContain(edoardoAge);
     }
 }

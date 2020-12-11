@@ -39,7 +39,7 @@ import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.base.EnabledBoolean;
 import org.drools.core.base.SalienceInteger;
-import org.drools.core.base.accumulators.DummyAccumulateFunction;
+import org.drools.core.base.accumulators.CountAccumulateFunction;
 import org.drools.core.base.extractors.ArrayElementReader;
 import org.drools.core.base.extractors.SelfReferenceClassFieldReader;
 import org.drools.core.definitions.InternalKnowledgePackage;
@@ -752,7 +752,7 @@ public class KiePackagesBuilder {
         boolean isGroupBy = GroupByBuilder.USE_GROUP_BY_NODE && accPattern instanceof GroupByPattern;
         AccumulateFunction[] accFunctions = accPattern.getAccumulateFunctions();
         if (isGroupBy && accFunctions.length == 0) {
-            accFunctions = new AccumulateFunction[] { new AccumulateFunction( null, () -> DummyAccumulateFunction.INSTANCE ) };
+            accFunctions = new AccumulateFunction[] { new AccumulateFunction( null, CountAccumulateFunction::new ) };
         }
         Accumulate accumulate;
 

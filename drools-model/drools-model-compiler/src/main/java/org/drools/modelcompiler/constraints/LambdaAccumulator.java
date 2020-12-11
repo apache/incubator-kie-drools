@@ -211,7 +211,7 @@ public abstract class LambdaAccumulator implements Accumulator {
         }
     }
 
-    private static class LambdaAccContext implements Externalizable {
+    static class LambdaAccContext implements Externalizable {
         private Serializable context;
         private Map<Long, Object> reverseSupport;
 
@@ -222,6 +222,10 @@ public abstract class LambdaAccumulator implements Accumulator {
             if (supportReverse) {
                 reverseSupport = new HashMap<>();
             }
+        }
+
+        public boolean isEmpty() {
+            return reverseSupport != null && reverseSupport.isEmpty();
         }
 
         public void readExternal( ObjectInput in) throws IOException, ClassNotFoundException {

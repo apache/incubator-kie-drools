@@ -147,9 +147,10 @@ public class LambdaGroupByAccumulate extends Accumulate {
 
     private static class GroupByContext implements Serializable {
         private final Map<Object, Object> contextsByGroup = new HashMap<>();
-        private final Set<Object> keys = new HashSet<>();
         private final List<Object[]> results = new ArrayList<>();
         private final Map<Long, GroupInfo> reverseSupport;
+
+        private final Set<Object> keys = new HashSet<>();
 
         private GroupByContext(boolean supportsReverse) {
             reverseSupport = supportsReverse ? new HashMap<>() : null;
@@ -182,10 +183,21 @@ public class LambdaGroupByAccumulate extends Accumulate {
         public List<Object[]> result( Function<Object, Object> groupResultSupplier ) {
             results.clear();
             for (Object k : keys) {
-                results.add( new Object[]{ k, groupResultSupplier.apply( contextsByGroup.get(k) ) } );
+                Object ctx = contextsByGroup.get(k);
+                results.add( new Object[]{ k, isEmptyContext(ctx) ? null : groupResultSupplier.apply( ctx ) } );
             }
             keys.clear();
             return results;
+        }
+
+        private boolean isEmptyContext(Object ctx) {
+            if (ctx instanceof LambdaAccumulator.LambdaAccContext) {
+                return (( LambdaAccumulator.LambdaAccContext ) ctx).isEmpty();
+            }
+            if (ctx instanceof Object[]) {
+                return isEmptyContext( (( Object[] ) ctx)[0] );
+            }
+            return false;
         }
     }
 
@@ -198,4 +210,6 @@ public class LambdaGroupByAccumulate extends Accumulate {
             this.context = context;
         }
     }
+
+
 }
