@@ -38,7 +38,7 @@ public class RulesCompilationProvider extends KogitoCompilationProvider {
     protected Generator addGenerator(ApplicationGenerator appGen, Set<File> filesToCompile, Context context, ClassLoader cl) {
         Path resources = context.getProjectDirectory().toPath().resolve("src").resolve("main").resolve("resources");
         Collection<File> files = PackageWalker.getAllSiblings(filesToCompile);
-        return appGen.withGenerator(
+        return appGen.setupGenerator(
                 IncrementalRuleCodegen.ofCollectedResources(
                         CollectedResource.fromFiles(resources, files.toArray(new File[0]))))
                 .withClassLoader(cl)

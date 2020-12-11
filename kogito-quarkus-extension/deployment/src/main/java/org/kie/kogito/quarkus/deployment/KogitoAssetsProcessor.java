@@ -37,8 +37,6 @@ import java.util.stream.Stream;
 
 import javax.inject.Inject;
 
-import javax.inject.Inject;
-
 import io.quarkus.arc.deployment.GeneratedBeanBuildItem;
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
@@ -195,19 +193,19 @@ public class KogitoAssetsProcessor {
 
         // configure each individual generator. Ordering is relevant.
 
-        appGen.withGenerator(ProcessCodegen.ofCollectedResources(CollectedResource.fromPaths(paths)))
+        appGen.setupGenerator(ProcessCodegen.ofCollectedResources(CollectedResource.fromPaths(paths)))
                 .withAddons(addonsConfig)
                 .withClassLoader(classLoader);
 
-        appGen.withGenerator(IncrementalRuleCodegen.ofCollectedResources(CollectedResource.fromPaths(paths)))
+        appGen.setupGenerator(IncrementalRuleCodegen.ofCollectedResources(CollectedResource.fromPaths(paths)))
                 .withKModule(findKieModuleModel(appPaths))
                 .withAddons(addonsConfig)
                 .withClassLoader(classLoader);
 
-        appGen.withGenerator(PredictionCodegen.ofCollectedResources(isJPMMLAvailable, CollectedResource.fromPaths(paths)))
+        appGen.setupGenerator(PredictionCodegen.ofCollectedResources(isJPMMLAvailable, CollectedResource.fromPaths(paths)))
                 .withAddons(addonsConfig);
 
-        appGen.withGenerator(DecisionCodegen.ofCollectedResources(CollectedResource.fromPaths(paths)))
+        appGen.setupGenerator(DecisionCodegen.ofCollectedResources(CollectedResource.fromPaths(paths)))
               .withAddons(addonsConfig)
               .withClassLoader(classLoader);
 

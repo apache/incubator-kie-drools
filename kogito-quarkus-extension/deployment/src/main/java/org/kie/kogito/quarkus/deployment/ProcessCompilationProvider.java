@@ -38,7 +38,7 @@ public class ProcessCompilationProvider extends KogitoCompilationProvider {
     @Override
     protected Generator addGenerator(ApplicationGenerator appGen, Set<File> filesToCompile, Context context, ClassLoader cl) {
         Path resources = context.getProjectDirectory().toPath().resolve("src").resolve("main").resolve("resources");
-        return appGen.withGenerator(
+        return appGen.setupGenerator(
                 ProcessCodegen.ofCollectedResources(CollectedResource.fromFiles(resources, filesToCompile.toArray(new File[0]))))
                 .withClassLoader(cl);
     }
