@@ -231,7 +231,7 @@ class TypeTest {
     @Test
     void testPerturbCurrencyFeature() {
         PerturbationContext perturbationContext = new PerturbationContext(new Random(), 1);
-        Currency currency = Currency.getInstance(Locale.getDefault());
+        Currency currency = Currency.getInstance(Locale.ITALY);
         Feature feature = new Feature("name", Type.CURRENCY, new Value<>(currency));
         Value<?> perturbedValue = feature.getType().perturb(feature.getValue(), perturbationContext);
         assertNotEquals(feature.getValue(), perturbedValue);

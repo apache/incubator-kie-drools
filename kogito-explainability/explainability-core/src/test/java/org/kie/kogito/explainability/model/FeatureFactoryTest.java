@@ -89,7 +89,7 @@ class FeatureFactoryTest {
     @Test
     void testCurrencyFeature() {
         String name = "some-name";
-        Currency currency = Currency.getInstance(Locale.getDefault());
+        Currency currency = Currency.getInstance(Locale.ITALY);
         Feature feature = FeatureFactory.newCurrencyFeature(name, currency);
         assertFeature(Type.CURRENCY, currency, feature);
     }
