@@ -143,6 +143,7 @@ public class ExpressionTyper {
     }
 
     public TypedExpressionResult toTypedExpression(Expression drlxExpr) {
+        context.setOriginalExpression(drlxExpr);
         if (logger.isDebugEnabled()) {
             logger.debug( "Typed expression Input: drlxExpr = {} , patternType = {} ,declarations = {}", printConstraint(drlxExpr), patternType, context.getUsedDeclarations() );
         }
@@ -398,6 +399,11 @@ public class ExpressionTyper {
             InlineCastExpr inlineCast = (InlineCastExpr) firstChild;
             originalTypeCursor = originalTypeCursorFromInlineCast(inlineCast);
             firstNode = inlineCast.getExpression();
+
+            if(inlineCast.getExpression().isThisExpr()) {
+                context.setInlineCastExpression(
+                        Optional.of(new InstanceOfExpr(new NameExpr(THIS_PLACEHOLDER), (ReferenceType) inlineCast.getType())));
+            }
         } else {
             originalTypeCursor = patternType;
             firstNode = firstChild;

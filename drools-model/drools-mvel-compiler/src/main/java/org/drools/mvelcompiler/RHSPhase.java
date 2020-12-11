@@ -3,7 +3,9 @@ package org.drools.mvelcompiler;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,6 +20,7 @@ import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.IntegerLiteralExpr;
+import com.github.javaparser.ast.expr.LongLiteralExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.SimpleName;
@@ -28,6 +31,7 @@ import com.github.javaparser.ast.stmt.Statement;
 import org.drools.core.util.ClassUtils;
 import org.drools.mvel.parser.ast.expr.DrlNameExpr;
 import org.drools.mvel.parser.ast.visitor.DrlGenericVisitor;
+import org.drools.mvelcompiler.ast.BigDecimalExprT;
 import org.drools.mvelcompiler.ast.BinaryTExpr;
 import org.drools.mvelcompiler.ast.CastExprT;
 import org.drools.mvelcompiler.ast.CharacterLiteralExpressionT;
@@ -35,6 +39,7 @@ import org.drools.mvelcompiler.ast.FieldAccessTExpr;
 import org.drools.mvelcompiler.ast.FieldToAccessorTExpr;
 import org.drools.mvelcompiler.ast.IntegerLiteralExpressionT;
 import org.drools.mvelcompiler.ast.ListAccessExprT;
+import org.drools.mvelcompiler.ast.LongLiteralExpressionT;
 import org.drools.mvelcompiler.ast.MethodCallExprT;
 import org.drools.mvelcompiler.ast.ObjectCreationExpressionT;
 import org.drools.mvelcompiler.ast.SimpleNameTExpr;
@@ -45,6 +50,7 @@ import org.drools.mvelcompiler.context.Declaration;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
 import org.drools.mvelcompiler.util.TypeUtils;
 
+import static java.util.Arrays.asList;
 import static java.util.Optional.ofNullable;
 import static org.drools.core.util.ClassUtils.getAccessor;
 import static org.drools.mvelcompiler.util.OptionalUtils.map2;
@@ -174,7 +180,34 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
     public TypedExpression visit(BinaryExpr n, Context arg) {
         TypedExpression left = n.getLeft().accept(this, arg);
         TypedExpression right = n.getRight().accept(this, arg);
-        return new BinaryTExpr(left, right, n.getOperator());
+        return withPossiblyBigDecimalConversion(left, right, n.getOperator());
+    }
+
+    private TypedExpression withPossiblyBigDecimalConversion(TypedExpression left, TypedExpression right, BinaryExpr.Operator operator) {
+        Optional<Type> optTypeLeft = left.getType();
+        Optional<Type> optTypeRight = right.getType();
+
+        if (!optTypeLeft.isPresent() || !optTypeRight.isPresent()) { // coerce only when types are known
+            return new BinaryTExpr(left, right, operator);
+        }
+
+        Type typeLeft = optTypeLeft.get();
+        Type typeRight = optTypeRight.get();
+
+        boolean isArithmeticOperator = asList(BinaryExpr.Operator.PLUS, BinaryExpr.Operator.MINUS).contains(operator);
+        boolean isStringConcatenation = typeLeft == String.class || typeRight == String.class;
+        if (isArithmeticOperator && !isStringConcatenation) {
+
+            if (typeLeft != BigDecimal.class && typeRight == BigDecimal.class) { // convert left
+                return new BigDecimalExprT(BigDecimalExprT.toBigDecimalMethod(operator.toString()),
+                                           BigDecimalExprT.valueOf(left), right);
+            } else if (typeLeft == BigDecimal.class && typeRight != BigDecimal.class) {
+                return new BigDecimalExprT(BigDecimalExprT.toBigDecimalMethod(operator.toString()),
+                                           left, BigDecimalExprT.valueOf(right));
+            }
+        }
+
+        return new BinaryTExpr(left, right, operator);
     }
 
     @Override
@@ -211,6 +244,11 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
     @Override
     public TypedExpression visit(CharLiteralExpr n, Context arg) {
         return new CharacterLiteralExpressionT(n);
+    }
+
+    @Override
+    public TypedExpression visit(LongLiteralExpr n, Context arg) {
+        return new LongLiteralExpressionT(n);
     }
 
     @Override

@@ -37,7 +37,6 @@ import com.github.javaparser.ast.expr.MethodReferenceExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
-import com.github.javaparser.ast.type.Type;
 import org.drools.compiler.lang.descr.AccumulateDescr;
 import org.drools.compiler.lang.descr.AndDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
@@ -52,7 +51,6 @@ import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.builder.generator.DeclarationSpec;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.RuleContext;
-import org.drools.modelcompiler.builder.generator.ToMethodCall;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
 import org.drools.modelcompiler.builder.generator.drlxparse.ConstraintParser;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseFail;
@@ -62,6 +60,7 @@ import org.drools.modelcompiler.builder.generator.drlxparse.ParseResultVisitor;
 import org.drools.modelcompiler.builder.generator.drlxparse.SingleDrlxParseSuccess;
 import org.drools.modelcompiler.builder.generator.expression.AbstractExpressionBuilder;
 import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyper;
+import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyperContext;
 import org.drools.modelcompiler.builder.generator.visitor.ModelGeneratorVisitor;
 import org.drools.mvel.parser.ast.expr.DrlNameExpr;
 import org.kie.api.runtime.rule.AccumulateFunction;
@@ -258,7 +257,14 @@ public abstract class AccumulateVisitor {
                     }
                 } );
 
-        final TypedExpression typedExpression = new ToMethodCall(context).toMethodCallWithClassCheck(methodCallWithoutRootNode.getWithoutRootNode(), null, clazz);
+        final ExpressionTyperContext expressionTyperContext = new ExpressionTyperContext();
+        final ExpressionTyper expressionTyper = new ExpressionTyper(context, clazz, bindingId, false, expressionTyperContext);
+
+        TypedExpression typedExpression =
+                expressionTyper
+                        .toTypedExpression(methodCallWithoutRootNode.getWithoutRootNode())
+                        .typedExpressionOrException();
+
         final Class<?> methodCallExprType = typedExpression.getRawClass();
 
         final AccumulateFunction accumulateFunction = getAccumulateFunction(function, methodCallExprType);

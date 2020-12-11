@@ -1,0 +1,17 @@
+version: "2.0"
+
+extends: https://raw.githubusercontent.com/kiegroup/droolsjbpm-build-bootstrap/master/.ci/project-dependencies.yaml
+
+dependencies:
+  - project: kiegroup/kogito-runtimes
+    dependencies:
+      - project: kiegroup/drools
+
+  - project: kiegroup/kogito-apps
+    dependencies:
+      - project: kiegroup/kogito-runtimes
+
+  - project: kiegroup/kogito-examples
+    dependencies:
+      - project: kiegroup/kogito-runtimes
+      - project: kiegroup/kogito-apps
