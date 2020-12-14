@@ -67,6 +67,10 @@ class DummyModelsLimeExplainerTest {
                 assertEquals(3, topFeatures.size());
                 assertEquals(1d, ExplainabilityMetrics.impactScore(model, prediction, topFeatures));
             }
+            int topK = 1;
+            double minimumPositiveStabilityRate = 0.5;
+            double minimumNegativeStabilityRate = 0.5;
+            TestUtils.assertLimeStability(model, prediction, limeExplainer, topK, minimumPositiveStabilityRate, minimumNegativeStabilityRate);
         }
     }
 
@@ -95,6 +99,10 @@ class DummyModelsLimeExplainerTest {
                 assertEquals(3, topFeatures.size());
                 assertEquals(1d, ExplainabilityMetrics.impactScore(model, prediction, topFeatures));
             }
+            int topK = 1;
+            double minimumPositiveStabilityRate = 0.5;
+            double minimumNegativeStabilityRate = 0.5;
+            TestUtils.assertLimeStability(model, prediction, limeExplainer, topK, minimumPositiveStabilityRate, minimumNegativeStabilityRate);
         }
     }
 
@@ -153,6 +161,10 @@ class DummyModelsLimeExplainerTest {
                 assertEquals(1, topFeatures.size());
                 assertEquals(1d, ExplainabilityMetrics.impactScore(model, prediction, topFeatures));
             }
+            int topK = 1;
+            double minimumPositiveStabilityRate = 0.5;
+            double minimumNegativeStabilityRate = 0.5;
+            TestUtils.assertLimeStability(model, prediction, limeExplainer, topK, minimumPositiveStabilityRate, minimumNegativeStabilityRate);
         }
     }
 
@@ -181,6 +193,10 @@ class DummyModelsLimeExplainerTest {
                 assertEquals(3, topFeatures.size());
                 assertEquals(1d, ExplainabilityMetrics.impactScore(model, prediction, topFeatures));
             }
+            int topK = 1;
+            double minimumPositiveStabilityRate = 0.5;
+            double minimumNegativeStabilityRate = 0.5;
+            TestUtils.assertLimeStability(model, prediction, limeExplainer, topK, minimumPositiveStabilityRate, minimumNegativeStabilityRate);
         }
     }
 
@@ -211,6 +227,10 @@ class DummyModelsLimeExplainerTest {
                 }
                 assertEquals(0d, ExplainabilityMetrics.impactScore(model, prediction, topFeatures));
             }
+            int topK = 1;
+            double minimumPositiveStabilityRate = 0.5;
+            double minimumNegativeStabilityRate = 0.5;
+            TestUtils.assertLimeStability(model, prediction, limeExplainer, topK, minimumPositiveStabilityRate, minimumNegativeStabilityRate);
         }
     }
 }

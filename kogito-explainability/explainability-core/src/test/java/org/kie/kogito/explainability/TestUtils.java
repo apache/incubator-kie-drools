@@ -19,15 +19,19 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.kie.kogito.explainability.local.lime.LimeExplainer;
 import org.kie.kogito.explainability.model.Feature;
 import org.kie.kogito.explainability.model.Output;
+import org.kie.kogito.explainability.model.Prediction;
 import org.kie.kogito.explainability.model.PredictionInput;
 import org.kie.kogito.explainability.model.PredictionOutput;
 import org.kie.kogito.explainability.model.PredictionProvider;
 import org.kie.kogito.explainability.model.Type;
 import org.kie.kogito.explainability.model.Value;
+import org.kie.kogito.explainability.utils.ValidationUtils;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -171,5 +175,11 @@ public class TestUtils {
         when(value.asString()).thenReturn(String.valueOf(d));
         when(f.getValue()).thenReturn(value);
         return f;
+    }
+
+    public static void assertLimeStability(PredictionProvider model, Prediction prediction, LimeExplainer limeExplainer,
+                                       int topK, double minimumPositiveStabilityRate, double minimumNegativeStabilityRate) {
+        assertDoesNotThrow(() -> ValidationUtils.validateLocalSaliencyStability(model, prediction, limeExplainer, topK,
+                                                                  minimumPositiveStabilityRate, minimumNegativeStabilityRate));
     }
 }

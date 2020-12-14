@@ -168,7 +168,7 @@ public class DataUtils {
                 perturbationSize = lowerBound;
             }
             else if (upperBound > lowerBound) {
-                perturbationSize = perturbationContext.getRandom().ints(1, lowerBound, upperBound).findFirst().orElse(1);
+                perturbationSize = perturbationContext.getRandom().ints(1, lowerBound, 1 + upperBound).findFirst().orElse(1);
             }
             if (perturbationSize > 0) {
                 int[] indexesToBePerturbed = perturbationContext.getRandom().ints(0, newFeatures.size())

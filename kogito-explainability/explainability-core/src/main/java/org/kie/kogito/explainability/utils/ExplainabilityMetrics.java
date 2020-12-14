@@ -17,6 +17,7 @@ package org.kie.kogito.explainability.utils;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.kie.kogito.explainability.Config;
+import org.kie.kogito.explainability.local.LocalExplainer;
 import org.kie.kogito.explainability.model.Feature;
 import org.kie.kogito.explainability.model.FeatureImportance;
 import org.kie.kogito.explainability.model.Output;
@@ -29,9 +30,15 @@ import org.kie.kogito.explainability.model.Type;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Utility class providing different methods to evaluate explainability.
@@ -131,5 +138,103 @@ public class ExplainabilityMetrics {
             }
         }
         return evals == 0 ? 0 : acc / evals;
+    }
+
+    /**
+     * Evaluate stability of a local explainer generating {@code Saliencies}.
+     * Such an evaluation is intended to measure how stable the explanations are in terms of "are the top k most important
+     * positive/negative features always the same for a single prediction?".
+     *
+     * @param model                  a model to explain
+     * @param prediction             the prediction on which explanation stability will be evaluated
+     * @param saliencyLocalExplainer a local saliency explainer
+     * @param topK                   no. of top k positive/negative features for which stability report will be generated
+     * @return a report about stability of all the decisions/predictions (and for each {@code k < topK})
+     */
+    public static LocalSaliencyStability getLocalSaliencyStability(PredictionProvider model, Prediction prediction,
+                                                                   LocalExplainer<Map<String, Saliency>> saliencyLocalExplainer,
+                                                                   int topK, int runs)
+            throws InterruptedException, ExecutionException, TimeoutException {
+        Map<String, List<Saliency>> saliencies = getMultipleSaliencies(model, prediction, saliencyLocalExplainer, runs);
+
+        LocalSaliencyStability saliencyStability = new LocalSaliencyStability(saliencies.keySet());
+        // for each decision, calculate the stability rate for the top k important feature set, for each k < topK
+        for (Map.Entry<String, List<Saliency>> entry : saliencies.entrySet()) {
+            for (int k = 1; k <= topK; k++) {
+                String decision = entry.getKey();
+                List<Saliency> perDecisionSaliencies = entry.getValue();
+
+                int finalK = k;
+                // get the top k positive features list from each saliency and count the frequency of each such list across all saliencies
+                Map<List<String>, Long> topKPositive = getTopKFeaturesFrequency(perDecisionSaliencies, s -> s.getPositiveFeatures(finalK));
+                // get the most frequent list of positive features
+                Pair<List<String>, Long> positiveMostFrequent = getMostFrequent(topKPositive);
+                double positiveFrequencyRate = (double) positiveMostFrequent.getValue() / (double) perDecisionSaliencies.size();
+
+                // get the top k negative features list from each saliency and count the frequency of each such list across all saliencies
+                Map<List<String>, Long> topKNegative = getTopKFeaturesFrequency(perDecisionSaliencies, s -> s.getNegativeFeatures(finalK));
+                // get the most frequent list of negative features
+                Pair<List<String>, Long> negativeMostFrequent = getMostFrequent(topKNegative);
+                double negativeFrequencyRate = (double) negativeMostFrequent.getValue() / (double) perDecisionSaliencies.size();
+
+                // decision stability at k
+                List<String> positiveFeatureNames = positiveMostFrequent.getKey();
+                List<String> negativeFeatureNames = negativeMostFrequent.getKey();
+                saliencyStability.add(decision, k, positiveFeatureNames, positiveFrequencyRate, negativeFeatureNames, negativeFrequencyRate);
+            }
+        }
+        return saliencyStability;
+    }
+
+    /**
+     * Get multiple saliencies, aggregated by decision name.
+     *
+     * @param model                  the model used to perform predictions
+     * @param prediction             the prediction to explain
+     * @param saliencyLocalExplainer a local explainer that generates saliences
+     * @param runs                   the no. of explanations to be generated
+     * @return the generated saliencies, aggregated by decision name, across the different runs
+     */
+    private static Map<String, List<Saliency>> getMultipleSaliencies(PredictionProvider model, Prediction prediction,
+                                                                     LocalExplainer<Map<String, Saliency>> saliencyLocalExplainer,
+                                                                     int runs)
+            throws InterruptedException, ExecutionException, TimeoutException {
+        Map<String, List<Saliency>> saliencies = new HashMap<>();
+        int skipped = 0;
+        for (int i = 0; i < runs; i++) {
+            Map<String, Saliency> saliencyMap = saliencyLocalExplainer.explainAsync(prediction, model)
+                    .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
+            for (Map.Entry<String, Saliency> saliencyEntry : saliencyMap.entrySet()) {
+                // aggregate saliencies by output name
+                List<FeatureImportance> topFeatures = saliencyEntry.getValue().getTopFeatures(1);
+                if (!topFeatures.isEmpty() && topFeatures.get(0).getScore() != 0) { // skip empty or 0 valued saliencies
+                    if (saliencies.containsKey(saliencyEntry.getKey())) {
+                        List<Saliency> localSaliencies = saliencies.get(saliencyEntry.getKey());
+                        List<Saliency> updatedSaliencies = new ArrayList<>(localSaliencies);
+                        updatedSaliencies.add(saliencyEntry.getValue());
+                        saliencies.put(saliencyEntry.getKey(), updatedSaliencies);
+                    } else {
+                        saliencies.put(saliencyEntry.getKey(), List.of(saliencyEntry.getValue()));
+                    }
+                } else {
+                    LOGGER.debug("skipping empty / zero saliency for {}", saliencyEntry.getKey());
+                    skipped++;
+                }
+            }
+        }
+        LOGGER.debug("skipped {} useless saliencies", skipped);
+        return saliencies;
+    }
+
+    private static Map<List<String>, Long> getTopKFeaturesFrequency(List<Saliency> saliencies, Function<Saliency, List<FeatureImportance>> saliencyListFunction) {
+        return saliencies.stream().map(saliencyListFunction)
+                .map(l -> l.stream().map(f -> f.getFeature().getName())
+                        .collect(Collectors.toList()))
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+    }
+
+    private static Pair<List<String>, Long> getMostFrequent(Map<List<String>, Long> collect) {
+        Map.Entry<List<String>, Long> maxEntry = Collections.max(collect.entrySet(), Map.Entry.comparingByValue());
+        return Pair.of(maxEntry.getKey(), maxEntry.getValue());
     }
 }

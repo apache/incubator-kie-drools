@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
@@ -33,53 +34,65 @@ import org.kie.kogito.explainability.local.lime.LimeConfig;
 import org.kie.kogito.explainability.local.lime.LimeExplainer;
 import org.kie.kogito.explainability.model.Feature;
 import org.kie.kogito.explainability.model.FeatureFactory;
+import org.kie.kogito.explainability.model.FeatureImportance;
+import org.kie.kogito.explainability.model.PerturbationContext;
 import org.kie.kogito.explainability.model.Prediction;
 import org.kie.kogito.explainability.model.PredictionInput;
 import org.kie.kogito.explainability.model.PredictionOutput;
 import org.kie.kogito.explainability.model.PredictionProvider;
 import org.kie.kogito.explainability.model.Saliency;
+import org.kie.kogito.explainability.utils.ExplainabilityMetrics;
 import org.kie.kogito.explainability.utils.ValidationUtils;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-class LoanEligibilityDmnLimeExplainerTest {
+class PrequalificationDmnLimeExplainerTest {
 
     @Test
-    void testLoanEligibilityDMNExplanation() throws ExecutionException, InterruptedException, TimeoutException {
-        DMNRuntime dmnRuntime = DMNKogito.createGenericDMNRuntime(new InputStreamReader(getClass().getResourceAsStream("/dmn/LoanEligibility.dmn")));
+    void testPrequalificationDMNExplanation() throws ExecutionException, InterruptedException, TimeoutException {
+        DMNRuntime dmnRuntime = DMNKogito.createGenericDMNRuntime(new InputStreamReader(getClass().getResourceAsStream("/dmn/Prequalification-1.dmn")));
         assertEquals(1, dmnRuntime.getModels().size());
 
-        final String FRAUD_NS = "https://github.com/kiegroup/kogito-examples/dmn-quarkus-listener-example";
-        final String FRAUD_NAME = "LoanEligibility";
-        DecisionModel decisionModel = new DmnDecisionModel(dmnRuntime, FRAUD_NS, FRAUD_NAME);
+        final String NS = "http://www.trisotech.com/definitions/_f31e1f8e-d4ce-4a3a-ac3b-747efa6b3401";
+        final String NAME = "Prequalification";
+        DecisionModel decisionModel = new DmnDecisionModel(dmnRuntime, NS, NAME);
 
-        final Map<String, Object> client = new HashMap<>();
-        client.put("Age", 43);
-        client.put("Salary", 1950);
-        client.put("Existing payments", 100);
-        final Map<String, Object> loan = new HashMap<>();
-        loan.put("Duration", 15);
-        loan.put("Installment", 100);
+        final Map<String, Object> borrower = new HashMap<>();
+        borrower.put("Monthly Other Debt", 1000);
+        borrower.put("Monthly Income", 10000);
         final Map<String, Object> contextVariables = new HashMap<>();
-        contextVariables.put("Client", client);
-        contextVariables.put("Loan", loan);
-
-        PredictionProvider model = new DecisionModelWrapper(decisionModel);
+        contextVariables.put("Appraised Value", 500000);
+        contextVariables.put("Loan Amount", 300000);
+        contextVariables.put("Credit Score", 600);
+        contextVariables.put("Borrower", borrower);
         List<Feature> features = new LinkedList<>();
         features.add(FeatureFactory.newCompositeFeature("context", contextVariables));
         PredictionInput predictionInput = new PredictionInput(features);
+
+        PredictionProvider model = new DecisionModelWrapper(decisionModel);
+
+        Random random = new Random();
+        random.setSeed(4);
+        LimeConfig limeConfig = new LimeConfig().withSamples(3000)
+                .withPerturbationContext(new PerturbationContext(random, 3));
+        LimeExplainer limeExplainer = new LimeExplainer(limeConfig);
+
         List<PredictionOutput> predictionOutputs = model.predictAsync(List.of(predictionInput))
                 .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
         Prediction prediction = new Prediction(predictionInput, predictionOutputs.get(0));
-        LimeConfig limeConfig = new LimeConfig().withSamples(300);
-        LimeExplainer limeExplainer = new LimeExplainer(limeConfig);
         Map<String, Saliency> saliencyMap = limeExplainer.explainAsync(prediction, model)
                 .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
         for (Saliency saliency : saliencyMap.values()) {
             assertNotNull(saliency);
+            List<FeatureImportance> topFeatures = saliency.getTopFeatures(2);
+            if (!topFeatures.isEmpty()) {
+                assertThat(ExplainabilityMetrics.impactScore(model, prediction, topFeatures)).isPositive();
+            }
         }
+
         assertDoesNotThrow(() -> ValidationUtils.validateLocalSaliencyStability(model, prediction, limeExplainer, 1,
                                                                                 0.5, 0.5));
     }

@@ -28,7 +28,7 @@ import org.kie.kogito.explainability.utils.DataUtils;
  */
 class SampleWeighter {
 
-    private static final double SIGMA = 0.75;
+    private static final double SIGMA = 0.675;
 
     /**
      * Obtain sample weights for a training set, given a list of target input features to compare with.

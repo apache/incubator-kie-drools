@@ -42,8 +42,10 @@ import org.kie.kogito.explainability.model.PredictionOutput;
 import org.kie.kogito.explainability.model.PredictionProvider;
 import org.kie.kogito.explainability.model.Saliency;
 import org.kie.kogito.explainability.utils.ExplainabilityMetrics;
+import org.kie.kogito.explainability.utils.ValidationUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -83,7 +85,7 @@ class FraudScoringDmnLimeExplainerTest {
         Random random = new Random();
         random.setSeed(4);
         LimeConfig limeConfig = new LimeConfig()
-                .withSamples(100)
+                .withSamples(300)
                 .withPerturbationContext(new PerturbationContext(random, 5));
         LimeExplainer limeExplainer = new LimeExplainer(limeConfig);
         Map<String, Saliency> saliencyMap = limeExplainer.explainAsync(prediction, model)
@@ -97,5 +99,7 @@ class FraudScoringDmnLimeExplainerTest {
                 assertThat(v).isPositive(); // checks the drop of important features triggers a flipped prediction (or a significant drop in the output score).
             }
         }
+        assertDoesNotThrow(() -> ValidationUtils.validateLocalSaliencyStability(model, prediction, limeExplainer, 1,
+                                                                                0.5, 0.5));
     }
 }

@@ -93,8 +93,11 @@ class DataUtilsTest {
 
     @Test
     void testGaussianKernel() {
-        double x = 0.218;
+        double x = 0;
         double k = DataUtils.gaussianKernel(x, 0, 1);
+        assertEquals(0.398, k, 1e-3);
+        x = 0.218;
+        k = DataUtils.gaussianKernel(x, 0, 1);
         assertEquals(0.389, k, 1e-3);
     }
 

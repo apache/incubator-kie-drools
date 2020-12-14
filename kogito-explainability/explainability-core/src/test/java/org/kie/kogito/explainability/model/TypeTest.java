@@ -309,6 +309,43 @@ class TypeTest {
         }
     }
 
+    @Test
+    void testEncodeNumericSymmetric() {
+        for (int seed = 0; seed < 5; seed++) {
+            Random random = new Random();
+            random.setSeed(seed);
+            PerturbationContext perturbationContext = new PerturbationContext(random, random.nextInt());
+            Value<?> target = Type.NUMBER.randomValue(perturbationContext);
+            Value<?>[] values = new Value<?>[6];
+            for (int i = 0; i < values.length / 2; i++) {
+                values[i] = new Value<>(target.asNumber() + target.asNumber() * (1 + i) / 100d);
+                values[values.length - 1 - i] = new Value<>(target.asNumber() - target.asNumber() * (1 + i) / 100d);
+            }
+            List<double[]> vectors = Type.NUMBER.encode(target, values);
+            assertNotNull(vectors);
+            assertEquals(values.length, vectors.size());
+            for (int i = 0; i < vectors.size() / 2; i++) {
+                assertThat(vectors.get(i)[0]).isEqualTo(vectors.get(vectors.size() - 1 - i)[0]);
+            }
+        }
+    }
+
+    @Test
+    void testEncodeNaN() {
+        Random random = new Random();
+        random.setSeed(4);
+        PerturbationContext perturbationContext = new PerturbationContext(random, 1);
+        Value<?> target = Type.NUMBER.randomValue(perturbationContext);
+        Value<?>[] values = new Value<?>[6];
+        for (int i = 0; i < values.length - 1; i++) {
+            values[i] = Type.NUMBER.randomValue(perturbationContext);
+        }
+        values[5] = new Value<>(Double.NaN);
+        List<double[]> vectors = Type.NUMBER.encode(target, values);
+        assertThat(vectors).isNotEmpty();
+        assertThat(vectors).doesNotContain(new double[]{Double.NaN});
+    }
+
     @ParameterizedTest
     @EnumSource
     void testRandomValue(Type type) {
