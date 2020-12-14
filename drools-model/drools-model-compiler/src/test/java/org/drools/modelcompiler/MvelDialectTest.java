@@ -477,21 +477,22 @@ public class MvelDialectTest extends BaseModelTest {
                 "when\n" +
                 "    $p : Person( age >= 26 )\n" +
                 "then\n" +
-                "    $p.money += 50000B;\n" +
-                "    $p.money -= 50000B;\n" +
-                "    $p.money /= 10;\n" +
-                "    $p.money *= 10;\n" +
+                "    BigDecimal result = 0B;" +
+                "    result += 50000B;\n" + // 50000
+                "    result -= 10000B;\n" + // 40000
+                "    result /= 10B;\n" + // 4000
+                "    result *= 10B;\n" + // 40000
+                "    $p.money = result;" +
                 "end";
 
         KieSession ksession = getKieSession(drl);
 
         Person john = new Person("John", 30);
         john.setMoney( new BigDecimal( 70000 ) );
-        john.setOtherBigDecimalField(new BigDecimal("10"));
 
         ksession.insert(john);
         assertEquals(1, ksession.fireAllRules());
-        assertEquals(new BigDecimal( 70000 ), john.getMoney());
+        assertEquals(new BigDecimal( 40000 ), john.getMoney());
     }
 
     @Test
