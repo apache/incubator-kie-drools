@@ -121,7 +121,7 @@
 
   <profiles>
     <profile>
-      <id>native-image</id>
+      <id>native</id>
       <activation>
         <property>
           <name>native</name>
