@@ -441,8 +441,8 @@ public class MvelDialectTest extends BaseModelTest {
         assertEquals(new BigDecimal( 120000 ), john.getMoney());
     }
 
-    // TODO without B it doesn't work on MVEL
     @Test
+    @Ignore("without B it doesn't work on MVEL - see https://issues.redhat.com/browse/DROOLS-5897")
     public void testCompoundOperator() throws Exception {
 
         // DROOLS-5894
