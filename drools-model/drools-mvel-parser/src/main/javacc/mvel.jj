@@ -2637,7 +2637,7 @@ ModifyStatement ModifyStatement():
     (
         (
             <MODIFY><LPAREN> (modifyObject = UnaryExpressionNotPlusMinus())<RPAREN> <LBRACE>
-            (first = Statement()(";")?)* { begin=token(); all.add(first); }
+            (first = Statement()(<SEMICOLON>)?)* { begin=token(); all.add(first); }
             (
                           (<COMMA>)*
                           other = Statement() { all.add(other); }
@@ -2667,13 +2667,13 @@ WithStatement WithStatement():
     (
         (
             <WITH><LPAREN> (withObject = Expression())<RPAREN> <LBRACE>
-            (first = Statement()(";")*)* { begin=token(); all.add(first); }
+            (first = Statement()(<SEMICOLON>)*)* { begin=token(); all.add(first); }
             (
                           <COMMA>
                           other = Statement() { all.add(other); }
             )*
             <RBRACE>
-            (";")?
+            (<SEMICOLON>)?
             {
                 this.isWithOrModify = false;
                 return new WithStatement(range(begin, token()), withObject, all);
