@@ -468,26 +468,56 @@ public class MvelDialectTest extends BaseModelTest {
 
     @Test
     public void testCompoundOperatorBigDecimalConstant() throws Exception {
-
         // DROOLS-5894
         String drl =
                 "import " + Person.class.getCanonicalName() + "\n" +
+                "import " + BigDecimal.class.getCanonicalName() + "\n" +
                 "dialect \"mvel\"\n" +
                 "rule R\n" +
                 "when\n" +
                 "    $p : Person( age >= 26 )\n" +
                 "then\n" +
                 "    $p.money += 50000B;\n" +
+                "    $p.money -= 50000B;\n" +
+                "    $p.money /= 10;\n" +
+                "    $p.money *= 10;\n" +
                 "end";
 
         KieSession ksession = getKieSession(drl);
 
         Person john = new Person("John", 30);
         john.setMoney( new BigDecimal( 70000 ) );
+        john.setOtherBigDecimalField(new BigDecimal("10"));
 
         ksession.insert(john);
         assertEquals(1, ksession.fireAllRules());
-        assertEquals(new BigDecimal( 120000 ), john.getMoney());
+        assertEquals(new BigDecimal( 70000 ), john.getMoney());
+    }
+
+    @Test
+    public void testArithmeticOperationsOnBigDecimal() throws Exception {
+        // DROOLS-5894
+        String drl =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "import " + BigDecimal.class.getCanonicalName() + "\n" +
+                "dialect \"mvel\"\n" +
+                "rule R\n" +
+                "when\n" +
+                "    $p : Person( age >= 26 )\n" +
+                "then\n" +
+                "    $p.money += 50000B;\n" +
+                "    BigDecimal operation = $p.money + $p.otherBigDecimalField * 1 + $p.otherBigDecimalField;" +
+                "end";
+
+        KieSession ksession = getKieSession(drl);
+
+        Person john = new Person("John", 30);
+        john.setMoney( new BigDecimal( 70000 ) );
+        john.setOtherBigDecimalField(new BigDecimal("10"));
+
+        ksession.insert(john);
+        assertEquals(1, ksession.fireAllRules());
+        assertEquals(new BigDecimal( 70000 ), john.getMoney());
     }
 
     @Test

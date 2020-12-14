@@ -35,6 +35,10 @@ public class BigDecimalArithmeticExprT implements TypedExpression {
                 return "add";
             case MINUS: // -=
                 return "subtract";
+            case MULTIPLY: // *=
+                return "multiply";
+            case DIVIDE: // /=
+                return "divide";
             case ASSIGN: // =
                 return "valueOf";
         }
