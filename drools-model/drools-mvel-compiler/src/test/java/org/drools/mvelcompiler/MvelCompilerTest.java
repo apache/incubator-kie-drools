@@ -379,6 +379,39 @@ public class MvelCompilerTest implements CompilerTest {
     }
 
     @Test
+    public void testBigDecimalArithmetic() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ " +
+                     "    java.math.BigDecimal operation = $p.salary + $p.salary;\n" +
+                     "}",
+             "{ " +
+                     "    java.math.BigDecimal operation = $p.getSalary().add($p.getSalary());\n" +
+                     "}");
+    }
+
+    @Test
+    public void testBigDecimalArithmeticWithConversionLiteral() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ " +
+                     "    java.math.BigDecimal operation = $p.salary + 10B;\n" +
+                     "}",
+             "{ " +
+                     "    java.math.BigDecimal operation = $p.getSalary().add(new java.math.BigDecimal(\"10\"));\n" +
+                     "}");
+    }
+
+    @Test
+    public void testBigDecimalArithmeticWithConversionFromInteger() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ " +
+                     "    java.math.BigDecimal operation = $p.salary + 10;\n" +
+                     "}",
+             "{ " +
+                     "    java.math.BigDecimal operation = $p.getSalary().add(new java.math.BigDecimal(10));\n" +
+                     "}");
+    }
+
+    @Test
     public void testModify() {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{ modify ( $p )  { name = \"Luca\", age = 35 }; }",

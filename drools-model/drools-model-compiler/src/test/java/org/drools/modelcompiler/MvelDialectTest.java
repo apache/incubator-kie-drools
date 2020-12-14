@@ -496,7 +496,6 @@ public class MvelDialectTest extends BaseModelTest {
 
     @Test
     public void testArithmeticOperationsOnBigDecimal() throws Exception {
-        // DROOLS-5894
         String drl =
                 "import " + Person.class.getCanonicalName() + "\n" +
                 "import " + BigDecimal.class.getCanonicalName() + "\n" +
@@ -505,8 +504,8 @@ public class MvelDialectTest extends BaseModelTest {
                 "when\n" +
                 "    $p : Person( age >= 26 )\n" +
                 "then\n" +
-                "    $p.money += 50000B;\n" +
-                "    BigDecimal operation = $p.money + $p.otherBigDecimalField * 1 + $p.otherBigDecimalField;" +
+                "    BigDecimal operation = $p.money + $p.otherBigDecimalField;" +
+                "    $p.money = operation;\n" +
                 "end";
 
         KieSession ksession = getKieSession(drl);
@@ -517,7 +516,7 @@ public class MvelDialectTest extends BaseModelTest {
 
         ksession.insert(john);
         assertEquals(1, ksession.fireAllRules());
-        assertEquals(new BigDecimal( 70000 ), john.getMoney());
+        assertEquals(new BigDecimal( 70010 ), john.getMoney());
     }
 
     @Test
