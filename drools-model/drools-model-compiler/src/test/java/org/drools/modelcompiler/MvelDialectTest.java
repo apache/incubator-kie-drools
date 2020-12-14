@@ -504,7 +504,7 @@ public class MvelDialectTest extends BaseModelTest {
                 "when\n" +
                 "    $p : Person( age >= 26 )\n" +
                 "then\n" +
-                "    BigDecimal operation = $p.money + $p.otherBigDecimalField;" +
+                "    BigDecimal operation = ($p.money + $p.otherBigDecimalField * 2) / 10;" +
                 "    $p.money = operation;\n" +
                 "end";
 
@@ -516,7 +516,7 @@ public class MvelDialectTest extends BaseModelTest {
 
         ksession.insert(john);
         assertEquals(1, ksession.fireAllRules());
-        assertEquals(new BigDecimal( 70010 ), john.getMoney());
+        assertEquals(new BigDecimal( 7002 ), john.getMoney());
     }
 
     @Test
