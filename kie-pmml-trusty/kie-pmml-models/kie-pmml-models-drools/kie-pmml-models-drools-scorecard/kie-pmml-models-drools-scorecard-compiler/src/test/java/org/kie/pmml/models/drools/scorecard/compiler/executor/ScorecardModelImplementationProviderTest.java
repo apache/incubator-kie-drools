@@ -21,9 +21,9 @@ import org.dmg.pmml.PMML;
 import org.dmg.pmml.scorecard.Scorecard;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.junit.Test;
-import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.compiler.commons.utils.KiePMMLUtil;
+import org.kie.pmml.models.drools.commons.implementations.HasKnowledgeBuilderMock;
 import org.kie.pmml.models.drools.commons.model.KiePMMLDroolsModel;
 import org.kie.pmml.models.drools.scorecard.model.KiePMMLScorecardModel;
 import org.kie.test.util.filesystem.FileUtils;
@@ -35,7 +35,6 @@ import static org.junit.Assert.assertTrue;
 public class ScorecardModelImplementationProviderTest {
 
     private static final ScorecardModelImplementationProvider PROVIDER = new ScorecardModelImplementationProvider();
-    private final static KnowledgeBuilder KNOWLEDGE_BUILDER = new KnowledgeBuilderImpl();
     private static final String SOURCE_1 = "ScorecardSample.pmml";
 
     @Test
@@ -46,10 +45,11 @@ public class ScorecardModelImplementationProviderTest {
     @Test
     public void getKiePMMLModel() throws Exception {
         final PMML pmml = getPMML(SOURCE_1);
+        KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
         final KiePMMLScorecardModel kiePMMLModel = PROVIDER.getKiePMMLModel(pmml.getDataDictionary(),
                                                                             pmml.getTransformationDictionary(),
                                                                             (Scorecard) pmml.getModels().get(0),
-                                                                            KNOWLEDGE_BUILDER);
+                                                                            new HasKnowledgeBuilderMock(knowledgeBuilder));
         assertNotNull(kiePMMLModel);
     }
 
@@ -61,7 +61,7 @@ public class ScorecardModelImplementationProviderTest {
                                                                                  pmml.getDataDictionary(),
                                                                                  pmml.getTransformationDictionary(),
                                                                                  (Scorecard) pmml.getModels().get(0),
-                                                                                 knowledgeBuilder);
+                                                                                 new HasKnowledgeBuilderMock(knowledgeBuilder));
         assertNotNull(retrieved);
     }
 

@@ -19,6 +19,7 @@ import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.Model;
 import org.dmg.pmml.TransformationDictionary;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
+import org.kie.pmml.commons.model.HasClassLoader;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.api.enums.PMML_MODEL;
 
@@ -34,11 +35,11 @@ public interface ModelImplementationProvider<T extends Model, E extends KiePMMLM
      * @param dataDictionary
      * @param transformationDictionary
      * @param model
-     * @param kBuilder Using <code>Object</code> to avoid coupling with drools
+     * @param hasClassloader Using <code>HasClassloader</code> to avoid coupling with drools
      * @return
      * @throws KiePMMLInternalException
      */
-    E getKiePMMLModel(final DataDictionary dataDictionary, final TransformationDictionary transformationDictionary, final T model, final Object kBuilder);
+    E getKiePMMLModel(final DataDictionary dataDictionary, final TransformationDictionary transformationDictionary, final T model, final HasClassLoader hasClassloader);
 
     /**
      * Method to be called following a <b>kie-maven-plugin</b> invocation
@@ -47,9 +48,9 @@ public interface ModelImplementationProvider<T extends Model, E extends KiePMMLM
      * @param dataDictionary
      * @param transformationDictionary
      * @param model
-     * @param kBuilder Using <code>Object</code> to avoid coupling with drools
+     * @param hasClassloader Using <code>HasClassloader</code> to avoid coupling with drools
      * @return
      * @throws KiePMMLInternalException
      */
-    E getKiePMMLModelWithSources(final String packageName, final DataDictionary dataDictionary, final TransformationDictionary transformationDictionary, final T model, final Object kBuilder);
+    E getKiePMMLModelWithSources(final String packageName, final DataDictionary dataDictionary, final TransformationDictionary transformationDictionary, final T model, final HasClassLoader hasClassloader);
 }

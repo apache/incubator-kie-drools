@@ -29,6 +29,7 @@ import org.dmg.pmml.regression.RegressionModel;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.enums.OP_TYPE;
 import org.kie.pmml.api.enums.PMML_MODEL;
+import org.kie.pmml.commons.model.HasClassLoader;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameOpType;
 import org.kie.pmml.compiler.api.provider.ModelImplementationProvider;
 import org.kie.pmml.models.regression.compiler.factories.KiePMMLRegressionModelFactory;
@@ -55,19 +56,19 @@ public class RegressionModelImplementationProvider implements ModelImplementatio
     }
 
     @Override
-    public KiePMMLRegressionModel getKiePMMLModel(final DataDictionary dataDictionary, final TransformationDictionary transformationDictionary, final RegressionModel model, final Object kBuilder) {
-        logger.trace("getKiePMMLModel {} {} {}", dataDictionary, model, kBuilder);
+    public KiePMMLRegressionModel getKiePMMLModel(final DataDictionary dataDictionary, final TransformationDictionary transformationDictionary, final RegressionModel model, final HasClassLoader hasClassloader) {
+        logger.trace("getKiePMMLModel {} {} {}", dataDictionary, model, hasClassloader);
         validate(dataDictionary, model);
         try {
-            return KiePMMLRegressionModelFactory.getKiePMMLRegressionModelClasses(dataDictionary, transformationDictionary, model);
+            return KiePMMLRegressionModelFactory.getKiePMMLRegressionModelClasses(dataDictionary, transformationDictionary, model, hasClassloader.getClassLoader());
         } catch (IOException | IllegalAccessException | InstantiationException e) {
             throw new KiePMMLException(e.getMessage(), e);
         }
     }
 
     @Override
-    public KiePMMLRegressionModel getKiePMMLModelWithSources(final String packageName, final DataDictionary dataDictionary, final TransformationDictionary transformationDictionary, final RegressionModel model, final Object kBuilder) {
-        logger.trace("getKiePMMLModelWithSources {} {} {}", dataDictionary, model, kBuilder);
+    public KiePMMLRegressionModel getKiePMMLModelWithSources(final String packageName, final DataDictionary dataDictionary, final TransformationDictionary transformationDictionary, final RegressionModel model, final HasClassLoader hasClassloader) {
+        logger.trace("getKiePMMLModelWithSources {} {} {}", dataDictionary, model, hasClassloader);
         try {
             final Map<String, String> sourcesMap = KiePMMLRegressionModelFactory.getKiePMMLRegressionModelSourcesMap(dataDictionary, transformationDictionary, model, packageName);
             return new KiePMMLRegressionModelWithSources(model.getModelName(), packageName, sourcesMap);

@@ -39,6 +39,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.kie.pmml.commons.model.HasSourcesMap;
 import org.kie.pmml.commons.model.KiePMMLModel;
+import org.kie.pmml.models.mining.compiler.HasKnowledgeBuilderMock;
 import org.kie.pmml.models.mining.model.segmentation.KiePMMLSegment;
 import org.xml.sax.SAXException;
 
@@ -70,7 +71,7 @@ public class KiePMMLSegmentFactoryTest extends AbstractKiePMMLFactoryTest {
         final List<KiePMMLSegment> retrieved = KiePMMLSegmentFactory.getSegments(DATA_DICTIONARY,
                                                                                  TRANSFORMATION_DICTIONARY,
                                                                                  segments,
-                                                                                 KNOWLEDGE_BUILDER);
+                                                                                 new HasKnowledgeBuilderMock(KNOWLEDGE_BUILDER));
         assertNotNull(retrieved);
         assertEquals(segments.size(), retrieved.size());
         for (int i = 0; i < segments.size(); i++) {
@@ -84,7 +85,7 @@ public class KiePMMLSegmentFactoryTest extends AbstractKiePMMLFactoryTest {
         final KiePMMLSegment retrieved = KiePMMLSegmentFactory.getSegment(DATA_DICTIONARY,
                                                                           TRANSFORMATION_DICTIONARY,
                                                                           segment,
-                                                                          KNOWLEDGE_BUILDER);
+                                                                          new HasKnowledgeBuilderMock(KNOWLEDGE_BUILDER));
         commonEvaluateSegment(retrieved, segment);
     }
 
@@ -98,7 +99,7 @@ public class KiePMMLSegmentFactoryTest extends AbstractKiePMMLFactoryTest {
                 DATA_DICTIONARY,
                 TRANSFORMATION_DICTIONARY,
                 segments,
-                KNOWLEDGE_BUILDER,
+                new HasKnowledgeBuilderMock(KNOWLEDGE_BUILDER),
                 nestedModels);
         assertNotNull(retrieved);
         commonEvaluateNestedModels(nestedModels);
@@ -116,7 +117,7 @@ public class KiePMMLSegmentFactoryTest extends AbstractKiePMMLFactoryTest {
                                                                                          DATA_DICTIONARY,
                                                                                          TRANSFORMATION_DICTIONARY,
                                                                                          segment,
-                                                                                         KNOWLEDGE_BUILDER,
+                                                                                         new HasKnowledgeBuilderMock(KNOWLEDGE_BUILDER),
                                                                                          nestedModels);
         commonEvaluateNestedModels(nestedModels);
         commonEvaluateMap(retrieved, segment);

@@ -70,13 +70,14 @@ public class KiePMMLRegressionModelFactory {
 
     public static KiePMMLRegressionModel getKiePMMLRegressionModelClasses(final DataDictionary dataDictionary,
                                                                           final TransformationDictionary transformationDictionary,
-                                                                          final RegressionModel model) throws IOException, IllegalAccessException, InstantiationException {
+                                                                          final RegressionModel model,
+                                                                          final ClassLoader classLoader) throws IOException, IllegalAccessException, InstantiationException {
         logger.trace("getKiePMMLRegressionModelClasses {} {}", dataDictionary, model);
         String className = getSanitizedClassName(model.getModelName());
         String packageName = getSanitizedPackageName(model.getModelName());
         Map<String, String> sourcesMap = getKiePMMLRegressionModelSourcesMap(dataDictionary, transformationDictionary, model, packageName);
         String fullClassName = packageName + "." + className;
-        final Map<String, Class<?>> compiledClasses = KieMemoryCompiler.compile(sourcesMap, Thread.currentThread().getContextClassLoader());
+        final Map<String, Class<?>> compiledClasses = KieMemoryCompiler.compile(sourcesMap, classLoader);
         return (KiePMMLRegressionModel) compiledClasses.get(fullClassName).newInstance();
     }
 

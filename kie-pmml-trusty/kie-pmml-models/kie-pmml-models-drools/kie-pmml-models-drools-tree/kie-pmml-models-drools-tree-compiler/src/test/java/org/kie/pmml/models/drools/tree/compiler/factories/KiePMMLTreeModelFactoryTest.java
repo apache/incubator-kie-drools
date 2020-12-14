@@ -74,7 +74,11 @@ public class KiePMMLTreeModelFactoryTest {
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = getFieldTypeMap(pmml.getDataDictionary(),
                                                                                            pmml.getTransformationDictionary(),
                                                                                            treeModel.getLocalTransformations());
-        KiePMMLTreeModel retrieved = KiePMMLTreeModelFactory.getKiePMMLTreeModel(pmml.getDataDictionary(),pmml.getTransformationDictionary(), treeModel, fieldTypeMap);
+        KiePMMLTreeModel retrieved = KiePMMLTreeModelFactory.getKiePMMLTreeModel(pmml.getDataDictionary(),
+                                                                                 pmml.getTransformationDictionary(),
+                                                                                 treeModel,
+                                                                                 fieldTypeMap,
+                                                                                 Thread.currentThread().getContextClassLoader());
         assertNotNull(retrieved);
         assertEquals(treeModel.getModelName(), retrieved.getName());
         assertEquals(TARGET_FIELD, retrieved.getTargetField());

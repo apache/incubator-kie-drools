@@ -26,6 +26,7 @@ import javax.xml.bind.JAXBException;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.kie.pmml.commons.model.KiePMMLModel;
+import org.kie.pmml.models.mining.compiler.HasKnowledgeBuilderMock;
 import org.kie.pmml.models.mining.model.segmentation.KiePMMLSegmentation;
 import org.xml.sax.SAXException;
 
@@ -47,7 +48,7 @@ public class KiePMMLSegmentationFactoryTest extends AbstractKiePMMLFactoryTest {
                                                                                          TRANSFORMATION_DICTIONARY,
                                                                                          MINING_MODEL.getSegmentation(),
                                                                                          segmentationName,
-                                                                                         KNOWLEDGE_BUILDER);
+                                                                                         new HasKnowledgeBuilderMock(KNOWLEDGE_BUILDER));
         assertNotNull(retrieved);
         assertEquals(segmentationName, retrieved.getName());
     }
@@ -62,7 +63,7 @@ public class KiePMMLSegmentationFactoryTest extends AbstractKiePMMLFactoryTest {
                                                                                                    TRANSFORMATION_DICTIONARY,
                                                                                                    MINING_MODEL.getSegmentation(),
                                                                                                    segmentationName,
-                                                                                                   KNOWLEDGE_BUILDER,
+                                                                                                   new HasKnowledgeBuilderMock(KNOWLEDGE_BUILDER),
                                                                                                    nestedModels);
         assertNotNull(retrieved);
         int expectedNestedModels = MINING_MODEL.getSegmentation().getSegments().size();
