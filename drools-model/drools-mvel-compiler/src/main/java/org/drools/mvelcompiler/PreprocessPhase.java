@@ -1,7 +1,6 @@
 package org.drools.mvelcompiler;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -27,6 +26,7 @@ import org.drools.mvel.parser.ast.expr.DrlNameExpr;
 import org.drools.mvel.parser.ast.expr.ModifyStatement;
 import org.drools.mvel.parser.ast.expr.WithStatement;
 
+import static com.github.javaparser.ast.NodeList.nodeList;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
@@ -54,20 +54,9 @@ public class PreprocessPhase {
         Set<String> getUsedBindings();
 
         PreprocessPhaseResult addUsedBinding(String bindingName);
-
-        List<Statement> getNewObjectStatements();
-
-        List<Statement> getOtherStatements();
-
-        PreprocessPhaseResult addOtherStatements(List<Statement> statements);
-
-        PreprocessPhaseResult addNewObjectStatements(ExpressionStmt expressionStmt);
     }
 
     static class PreprocessedResult implements PreprocessPhaseResult {
-
-        final List<Statement> newObjectStatements = new ArrayList<>();
-        final List<Statement> otherStatements = new ArrayList<>();
 
         final Set<String> usedBindings = new HashSet<>();
 
@@ -82,29 +71,10 @@ public class PreprocessPhase {
         public Set<String> getUsedBindings() {
             return usedBindings;
         }
-
-        public List<Statement> getNewObjectStatements() {
-            return newObjectStatements;
-        }
-
-        public List<Statement> getOtherStatements() {
-            return otherStatements;
-        }
-
-        public PreprocessPhaseResult addOtherStatements(List<Statement> statements) {
-            otherStatements.addAll(statements);
-            return this;
-        }
-
-        public PreprocessPhaseResult addNewObjectStatements(ExpressionStmt expressionStmt) {
-            newObjectStatements.add(expressionStmt);
-            return this;
-        }
     }
 
     static class StatementResult implements PreprocessPhaseResult {
 
-        final List<Statement> newObjectStatements = new ArrayList<>();
         final List<Statement> otherStatements = new ArrayList<>();
 
         @Override
@@ -116,24 +86,6 @@ public class PreprocessPhase {
         public PreprocessPhaseResult addUsedBinding(String bindingName) {
             return this;
         }
-
-        public List<Statement> getNewObjectStatements() {
-            return newObjectStatements;
-        }
-
-        public List<Statement> getOtherStatements() {
-            return otherStatements;
-        }
-
-        public PreprocessPhaseResult addOtherStatements(List<Statement> statements) {
-            otherStatements.addAll(statements);
-            return this;
-        }
-
-        public PreprocessPhaseResult addNewObjectStatements(ExpressionStmt expressionStmt) {
-            newObjectStatements.add(expressionStmt);
-            return this;
-        }
     }
 
     public PreprocessPhaseResult invoke(Statement statement) {
@@ -143,7 +95,7 @@ public class PreprocessPhase {
         } else if (statement instanceof WithStatement) {
             return withPreprocessor((WithStatement) statement);
         } else {
-            return new StatementResult().addOtherStatements(Collections.singletonList(statement));
+            return new StatementResult();
         }
     }
 
@@ -160,14 +112,19 @@ public class PreprocessPhase {
                 .getExpressions()
                 .replaceAll(e -> addScopeToMethodCallExpr(result, scope, e));
 
-        List<Statement> statements = wrapToExpressionStmt(modifyStatement.getExpressions());
-        return result.addOtherStatements(statements);
+        NodeList<Statement> statements = wrapToExpressionStmt(modifyStatement.getExpressions());
+        // delete modify statement and replace its own block of statements
+        modifyStatement.replace(new BlockStmt(statements));
+
+        return result;
     }
 
     private PreprocessPhaseResult withPreprocessor(WithStatement withStatement) {
         PreprocessPhaseResult result = new StatementResult();
 
-        Optional<Expression> initScope = addTypeToInitialization(withStatement, result);
+        BlockStmt allNewStatements = new BlockStmt();
+
+        Optional<Expression> initScope = addTypeToInitialization(withStatement, allNewStatements);
         final Expression scope = initScope.orElse(withStatement.getWithObject());
 
         withStatement
@@ -179,12 +136,17 @@ public class PreprocessPhase {
                 .getExpressions()
                 .replaceAll(e -> addScopeToMethodCallExpr(result, scope, e));
 
-        List<Statement> statements = wrapToExpressionStmt(withStatement.getExpressions());
+        NodeList<Statement> bodyStatements = wrapToExpressionStmt(withStatement.getExpressions());
 
-        return result.addOtherStatements(statements);
+        bodyStatements.forEach(allNewStatements::addStatement);
+
+        // delete modify statement and replace its own block of statements
+        withStatement.replace(allNewStatements);
+
+        return result;
     }
 
-    private Optional<Expression> addTypeToInitialization(WithStatement withStatement, PreprocessPhaseResult result) {
+    private Optional<Expression> addTypeToInitialization(WithStatement withStatement, BlockStmt allNewStatements) {
         if (withStatement.getWithObject().isAssignExpr()) {
             AssignExpr assignExpr = withStatement.getWithObject().asAssignExpr();
             Expression assignExprValue = assignExpr.getValue();
@@ -197,22 +159,21 @@ public class PreprocessPhase {
                 String targetVariableName = ((DrlNameExpr) assignExprTarget).getNameAsString();
                 VariableDeclarationExpr variableDeclarationExpr = new VariableDeclarationExpr(ctorType, targetVariableName);
                 AssignExpr withTypeAssignmentExpr = new AssignExpr(variableDeclarationExpr, assignExprValue, assignExpr.getOperator());
-                ExpressionStmt expressionStmt = new ExpressionStmt(withTypeAssignmentExpr);
-                result.addNewObjectStatements(expressionStmt);
+                allNewStatements.addStatement(withTypeAssignmentExpr);
                 return of(new DrlNameExpr(targetVariableName));
             }
         }
         return empty();
     }
 
-    private List<Statement> wrapToExpressionStmt(NodeList<Statement> expressions) {
-        return expressions
+    private NodeList<Statement> wrapToExpressionStmt(NodeList<Statement> expressions) {
+        return nodeList(expressions
                 .stream()
                 .filter(Objects::nonNull)
                 .filter(Statement::isExpressionStmt)
                 .map(s -> s.asExpressionStmt().getExpression())
                 .map(ExpressionStmt::new)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()));
     }
 
     private Statement addScopeToMethodCallExpr(PreprocessPhaseResult result, Expression scope, Statement e) {

@@ -145,8 +145,9 @@ public class Person extends AbstractReactiveObject {
         return employed;
     }
 
-    public void setEmployed(Boolean employed) {
+    public Person setEmployed(Boolean employed) {
         this.employed = employed;
+        return this;
     }
 
     /**

@@ -2,6 +2,8 @@ package org.drools.mvelcompiler;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -15,21 +17,25 @@ import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
+import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
+import com.github.javaparser.ast.stmt.ForEachStmt;
 import com.github.javaparser.ast.stmt.IfStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import org.drools.mvel.parser.ast.expr.DrlNameExpr;
 import org.drools.mvel.parser.ast.visitor.DrlGenericVisitor;
 import org.drools.mvelcompiler.ast.AssignExprT;
+import org.drools.mvelcompiler.ast.BlockStmtT;
+import org.drools.mvelcompiler.ast.BigDecimalExprT;
 import org.drools.mvelcompiler.ast.ExpressionStmtT;
 import org.drools.mvelcompiler.ast.FieldToAccessorTExpr;
+import org.drools.mvelcompiler.ast.ForEachDowncastStmtT;
 import org.drools.mvelcompiler.ast.ListAccessExprT;
 import org.drools.mvelcompiler.ast.MapPutExprT;
 import org.drools.mvelcompiler.ast.SimpleNameTExpr;
 import org.drools.mvelcompiler.ast.TypedExpression;
 import org.drools.mvelcompiler.ast.UnalteredTypedExpression;
 import org.drools.mvelcompiler.ast.VariableDeclaratorTExpr;
-import org.drools.mvelcompiler.bigdecimal.BigDecimalConversion;
 import org.drools.mvelcompiler.context.Declaration;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
 import org.drools.mvelcompiler.util.TypeUtils;
@@ -41,7 +47,6 @@ import static java.util.Optional.ofNullable;
 import static org.drools.core.util.ClassUtils.getAccessor;
 import static org.drools.core.util.ClassUtils.getSetter;
 import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
-import static org.drools.mvelcompiler.bigdecimal.BigDecimalConversion.shouldConvertPlusEqualsOperatorBigDecimal;
 
 /**
  * This phase processes the left hand side of a MVEL target expression, if present, such as
@@ -113,6 +118,8 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, Void> {
                     .orElse(new UnalteredTypedExpression(n));
         } else {
             return tryParseItAsSetter(n, scope, getRHSType())
+                    .map(Optional::of)
+                    .orElseGet(() -> tryParseItAsSetter(n, scope, BigDecimal.class)) // used for BigDecimal coercion
                     .orElse(new UnalteredTypedExpression(n));
         }
     }
@@ -180,14 +187,39 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, Void> {
 
         TypedExpression target = n.getTarget().accept(this, arg);
 
-        BigDecimalConversion bigDecimalConversion = shouldConvertPlusEqualsOperatorBigDecimal(n, rhs);
-        if (bigDecimalConversion.shouldConvert()) {
-            return bigDecimalConversion.convertExpression(target);
+        Optional<TypedExpression> bigDecimalConversion =
+                withBigDecimalConversion(n, target, rhsOrError());
+
+        if(bigDecimalConversion.isPresent()) {
+            return bigDecimalConversion.get();
         }
+
         if (target instanceof FieldToAccessorTExpr || target instanceof VariableDeclaratorTExpr || target instanceof MapPutExprT) {
             return target;
         }
         return new AssignExprT(n.getOperator(), target, rhsOrNull());
+    }
+
+    public Optional<TypedExpression> withBigDecimalConversion(AssignExpr assignExpr,
+                                                              TypedExpression target,
+                                                              TypedExpression value) {
+
+        Optional<Type> optRHSType = value.getType();
+        if(!optRHSType.isPresent()) {
+            return Optional.empty();
+        }
+
+        AssignExpr.Operator operator = assignExpr.getOperator();
+        if(operator == AssignExpr.Operator.ASSIGN) {
+            return Optional.empty();
+        }
+
+        if (target.getType().filter(t -> t == BigDecimal.class).isPresent()) {
+            String bigDecimalMethod = BigDecimalExprT.toBigDecimalMethod(operator.toString());
+            BigDecimalExprT convertedBigDecimalExpr = new BigDecimalExprT(bigDecimalMethod, target, value);
+            return Optional.of(new AssignExprT(AssignExpr.Operator.ASSIGN, target, convertedBigDecimalExpr));
+        }
+        return Optional.empty();
     }
 
     @Override
@@ -214,6 +246,41 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, Void> {
     @Override
     public TypedExpression visit(IfStmt n, Void arg) {
         return new UnalteredTypedExpression(n);
+    }
+
+    @Override
+    public TypedExpression visit(ForEachStmt n, Void arg) {
+        Expression iterable = n.getIterable();
+        if(iterable.isNameExpr()) {
+            return mvelCompilerContext.findDeclarations(iterable.asNameExpr().toString())
+            .filter(this::isDeclarationIterable)
+            .<TypedExpression>map(d -> {
+                TypedExpression child = this.visit((BlockStmt)n.getBody(), arg);
+                return new ForEachDowncastStmtT(n.getVariable(), n.getIterable().asNameExpr().toString(), child);
+            }).orElse(new UnalteredTypedExpression(n));
+
+        }
+        return new UnalteredTypedExpression(n);
+    }
+
+    @Override
+    public TypedExpression visit(BlockStmt n, Void arg) {
+        List<TypedExpression> statements = new ArrayList<>();
+        for (Statement s : n.getStatements()) {
+            TypedExpression visit;
+            if (s.isForEachStmt()) {
+                visit = visit((ForEachStmt) s, arg);
+            } else {
+                visit = defaultMethod(s, arg);
+            }
+            statements.add(visit);
+        }
+        return new BlockStmtT(statements);
+    }
+
+    private boolean isDeclarationIterable(Declaration declaration) {
+        Class<?> declarationClazz = declaration.getClazz();
+        return Iterable.class.isAssignableFrom(declarationClazz);
     }
 
     private TypedExpression rhsOrNull() {
@@ -250,6 +317,11 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, Void> {
         if(logger.isDebugEnabled()) {
             logger.debug(phase, printConstraint(statement));
         }
+    }
+
+    @Override
+    public TypedExpression defaultMethod(Node n, Void unused) {
+        return new UnalteredTypedExpression(n);
     }
 }
 

@@ -24,8 +24,16 @@ public class FieldToAccessorTExpr implements TypedExpression {
     public FieldToAccessorTExpr(TypedExpression scope, Method accessor, List<TypedExpression> arguments) {
         this.scope = scope;
         this.accessor = accessor;
-        this.type = accessor.getGenericReturnType();
+        this.type = parseType(accessor);
         this.arguments = arguments;
+    }
+
+    private Type parseType(Method accessor) {
+        if(accessor.getParameterTypes().length == 1) {
+            return accessor.getParameterTypes()[0]; // setter
+        } else {
+            return accessor.getGenericReturnType(); // getter
+        }
     }
 
     public FieldToAccessorTExpr(TypedExpression scope, Method accessor) {
