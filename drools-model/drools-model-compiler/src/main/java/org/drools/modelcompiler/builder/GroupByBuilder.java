@@ -60,7 +60,7 @@ import static org.drools.model.impl.ViewPatternBuilder.ruleItem2Condition;
 
 public class GroupByBuilder {
 
-    public static final boolean USE_GROUP_BY_NODE = true;
+    public static final boolean USE_GROUP_BY_NODE = Boolean.valueOf( System.getProperty( "drools.usegroupbynode", "true" ) );
 
     private final RuleContext ctx;
     private final GroupByPattern groupByPattern;
