@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.kie.jenkins</groupId>
     <artifactId>jenkins-tests</artifactId>
@@ -9,6 +8,20 @@
     <packaging>jar</packaging>
 
     <repositories>
+        <repository>
+            <id>jboss-public-repository-group</id>
+            <name>JBoss Public Repository Group</name>
+            <url>https://repository.jboss.org/nexus/content/groups/public/</url>
+            <layout>default</layout>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>daily</updatePolicy>
+            </snapshots>
+        </repository>
         <repository>
             <id>jenkins-releases</id>
             <name>Jenkins Releases</name>
@@ -57,9 +70,9 @@
     <dependencies>
         <!-- Needed for pipeline checks as we need some classes from it -->
         <dependency>
-            <groupId>org.kie</groupId>
+            <groupId>org.kie.jenkins</groupId>
             <artifactId>jenkins-pipeline-shared-libraries</artifactId>
-            <version>1.0.1</version>
+            <version>1.0.0-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
 
