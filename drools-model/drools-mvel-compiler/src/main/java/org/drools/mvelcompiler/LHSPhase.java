@@ -25,8 +25,8 @@ import com.github.javaparser.ast.stmt.Statement;
 import org.drools.mvel.parser.ast.expr.DrlNameExpr;
 import org.drools.mvel.parser.ast.visitor.DrlGenericVisitor;
 import org.drools.mvelcompiler.ast.AssignExprT;
+import org.drools.mvelcompiler.ast.BigDecimalArithmeticExprT;
 import org.drools.mvelcompiler.ast.BlockStmtT;
-import org.drools.mvelcompiler.ast.BigDecimalExprT;
 import org.drools.mvelcompiler.ast.ExpressionStmtT;
 import org.drools.mvelcompiler.ast.FieldToAccessorTExpr;
 import org.drools.mvelcompiler.ast.ForEachDowncastStmtT;
@@ -215,8 +215,8 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, Void> {
         }
 
         if (target.getType().filter(t -> t == BigDecimal.class).isPresent()) {
-            String bigDecimalMethod = BigDecimalExprT.toBigDecimalMethod(operator.toString());
-            BigDecimalExprT convertedBigDecimalExpr = new BigDecimalExprT(bigDecimalMethod, target, value);
+            String bigDecimalMethod = BigDecimalArithmeticExprT.toBigDecimalMethod(operator.toString());
+            BigDecimalArithmeticExprT convertedBigDecimalExpr = new BigDecimalArithmeticExprT(bigDecimalMethod, target, value);
             return Optional.of(new AssignExprT(AssignExpr.Operator.ASSIGN, target, convertedBigDecimalExpr));
         }
         return Optional.empty();

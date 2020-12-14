@@ -112,28 +112,36 @@ public class MvelCompilerTest implements CompilerTest {
     public void testSetterBigDecimal() {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{ $p.salary = $p.salary + 50000; }",
-             "{ $p.setSalary($p.getSalary().add(java.math.BigDecimal.valueOf(50000))); }");
+             "{ $p.setSalary($p.getSalary().add(new java.math.BigDecimal(50000))); }");
     }
 
     @Test
     public void testSetterBigDecimalConstant() {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{ $p.salary = 50000; }",
-             "{ $p.setSalary(java.math.BigDecimal.valueOf(50000)); }");
+             "{ $p.setSalary(new java.math.BigDecimal(50000)); }");
     }
 
     @Test
     public void testSetterBigDecimalConstantFromLong() {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{ $p.salary = 50000L; }",
-             "{ $p.setSalary(java.math.BigDecimal.valueOf(50000L)); }");
+             "{ $p.setSalary(new java.math.BigDecimal(50000L)); }");
     }
 
     @Test
     public void testSetterBigDecimalConstantModify() {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{ modify ( $p )  { salary = 50000 }; }",
-             "{ $p.setSalary(java.math.BigDecimal.valueOf(50000)); }",
+             "{ $p.setSalary(new java.math.BigDecimal(50000)); }",
+             result -> assertThat(allUsedBindings(result), containsInAnyOrder("$p")));
+    }
+
+    @Test
+    public void testSetterBigDecimalLiteralModify() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ modify ( $p )  { salary = 50000B }; }",
+             "{ $p.setSalary(new java.math.BigDecimal(\"50000\")); }",
              result -> assertThat(allUsedBindings(result), containsInAnyOrder("$p")));
     }
 
@@ -147,7 +155,7 @@ public class MvelCompilerTest implements CompilerTest {
                           "}",
              "{\n " +
                          "      list.add(\"before \" + $p + \", money = \" + $p.getSalary()); " +
-                         "      $p.setSalary(java.math.BigDecimal.valueOf(50000));" +
+                         "      $p.setSalary(new java.math.BigDecimal(50000));" +
                          "      list.add(\"after \" + $p + \", money = \" + $p.getSalary()); " +
                          "}\n",
              result -> assertThat(allUsedBindings(result), containsInAnyOrder("$p")));
@@ -341,8 +349,8 @@ public class MvelCompilerTest implements CompilerTest {
                      "    sum -= money;\n" +
                      "}",
              "{ " +
-                     "    java.math.BigDecimal sum = java.math.BigDecimal.valueOf(0);\n" +
-                     "    java.math.BigDecimal money = java.math.BigDecimal.valueOf(10);\n" +
+                     "    java.math.BigDecimal sum = new java.math.BigDecimal(0);\n" +
+                     "    java.math.BigDecimal money = new java.math.BigDecimal(10);\n" +
                      "    sum = sum.add(money);\n" +
                      "    sum = sum.subtract(money);\n" +
                      "}");

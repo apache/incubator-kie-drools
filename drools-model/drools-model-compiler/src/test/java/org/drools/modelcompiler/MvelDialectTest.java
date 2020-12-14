@@ -475,6 +475,35 @@ public class MvelDialectTest extends BaseModelTest {
     }
 
     @Test
+    public void testModifyOnBigDecimalWithLiteral() {
+        // DROOLS-5891
+        String drl =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "dialect \"mvel\"\n" +
+                "rule R\n" +
+                "when\n" +
+                "    $p : Person( age >= 26 )\n" +
+                "then\n" +
+                "   modify($p) {" +
+                "       money = 1000.23B;\n" +
+                "   } " +
+                "end";
+
+        KieSession ksession = getKieSession(drl);
+
+        Person john = new Person("John", 30);
+        john.setMoney( new BigDecimal( 70000 ) );
+
+        Person leonardo = new Person("Leonardo", 4);
+        leonardo.setMoney( new BigDecimal( 500 ) );
+
+        ksession.insert(john);
+        assertEquals(1, ksession.fireAllRules());
+        assertEquals(new BigDecimal( "1000.23" ), john.getMoney());
+        assertEquals(new BigDecimal( 500 ), leonardo.getMoney());
+    }
+
+    @Test
     public void testBinaryOperationOnInteger() {
         // RHDM-1421
         String drl =
