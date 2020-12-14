@@ -12,8 +12,4 @@ public class OptionalUtils {
     public static <T, K, V> Optional<V> map2(Optional<T> opt1, Optional<K> opt2, BiFunction<T, K, V> f) {
         return opt1.flatMap(t1 -> opt2.map(t2 -> f.apply(t1, t2)));
     }
-
-    public static <T, K, V> Optional<V> flatMap2(Optional<T> opt1, Optional<K> opt2, BiFunction<T, K, Optional<V>> f) {
-        return opt1.flatMap(t1 -> opt2.flatMap(t2 -> f.apply(t1, t2)));
-    }
 }
