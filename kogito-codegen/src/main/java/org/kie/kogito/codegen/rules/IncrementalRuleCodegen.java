@@ -54,13 +54,11 @@ import org.kie.internal.builder.CompositeKnowledgeBuilder;
 import org.kie.internal.builder.DecisionTableConfiguration;
 import org.kie.internal.ruleunit.RuleUnitDescription;
 import org.kie.kogito.codegen.AbstractGenerator;
-import org.kie.kogito.codegen.AddonsConfig;
 import org.kie.kogito.codegen.ApplicationSection;
 import org.kie.kogito.codegen.ConfigGenerator;
 import org.kie.kogito.codegen.DashboardGeneratedFileUtils;
 import org.kie.kogito.codegen.GeneratorContext;
 import org.kie.kogito.codegen.KogitoPackageSources;
-import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 import org.kie.kogito.codegen.io.CollectedResource;
 import org.kie.kogito.codegen.rules.config.NamedRuleUnitConfig;
 import org.kie.kogito.codegen.rules.config.RuleConfigGenerator;
@@ -108,9 +106,8 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
 
     private static final String operationalDashboardDmnTemplate = "/grafana-dashboard-template/operational-dashboard-template.json";
     private final Collection<Resource> resources;
-    private RuleUnitContainerGenerator moduleGenerator;
+    private final List<RuleUnitGenerator> ruleUnitGenerators = new ArrayList<>();
 
-    private DependencyInjectionAnnotator annotator;
     /**
      * used for type-resolving during codegen/type-checking
      */
@@ -118,9 +115,7 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
 
     private KieModuleModel kieModuleModel;
     private boolean hotReloadMode = false;
-    private AddonsConfig addonsConfig = AddonsConfig.DEFAULT;
     private boolean useRestServices = true;
-    private String packageName = KnowledgeBuilderConfigurationImpl.DEFAULT_PACKAGE;
     private final boolean decisionTableSupported;
     private final Map<String, RuleUnitConfig> configs;
 
@@ -132,15 +127,7 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
         this.contextClassLoader = getClass().getClassLoader();
         this.decisionTableSupported = DecisionTableFactory.getDecisionTableProvider() != null;
         this.configs = new HashMap<>();
-    }
-
-    @Override
-    public void setPackageName(String packageName) {
-        this.packageName = packageName;
-    }
-
-    public void setDependencyInjection(DependencyInjectionAnnotator annotator) {
-        this.annotator = annotator;
+        setPackageName(KnowledgeBuilderConfigurationImpl.DEFAULT_PACKAGE);
     }
 
     @Override
@@ -154,18 +141,19 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
 
     @Override
     public ApplicationSection section() {
+        RuleUnitContainerGenerator moduleGenerator = new RuleUnitContainerGenerator(packageName);
+        moduleGenerator.withDependencyInjection(annotator);
+        ruleUnitGenerators.forEach(moduleGenerator::addRuleUnit);
         return moduleGenerator;
     }
 
+    @Override
     public List<org.kie.kogito.codegen.GeneratedFile> generate() {
         ReleaseIdImpl dummyReleaseId = new ReleaseIdImpl("dummy:dummy:0.0.0");
         if (!decisionTableSupported &&
                 resources.stream().anyMatch(r -> r.getResourceType() == ResourceType.DTABLE)) {
             throw new MissingDecisionTableDependencyError();
         }
-
-        moduleGenerator = new RuleUnitContainerGenerator(packageName);
-        moduleGenerator.withDependencyInjection(annotator);
 
         KnowledgeBuilderConfigurationImpl configuration =
                 new KogitoKnowledgeBuilderConfigurationImpl(contextClassLoader);
@@ -271,7 +259,7 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
                             .withAddons(addonsConfig)
                             .mergeConfig(configs.get(canonicalName));
 
-                    moduleGenerator.addRuleUnit(ruSource);
+                    ruleUnitGenerators.add(ruSource);
                     unitsMap.put(canonicalName, ruSource.targetCanonicalName());
                     // only Class<?> has config for now
                     addUnitConfToKieModule(ruleUnit);
@@ -313,7 +301,7 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
                     packageName.replace('.', '/') + "/KogitoObjectMapper.java", annotator.objectMapperInjectorSource(packageName) ) );
         }
 
-        for (RuleUnitGenerator ruleUnit : moduleGenerator.getRuleUnits()) {
+        for (RuleUnitGenerator ruleUnit : ruleUnitGenerators) {
             initRuleUnitHelper( ruleUnitHelper, ruleUnit.getRuleUnitDescription() );
 
             // add the label id of the rule unit with value set to `rules` as resource type
@@ -445,11 +433,6 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
 
     public IncrementalRuleCodegen withHotReloadMode() {
         this.hotReloadMode = true;
-        return this;
-    }
-
-    public IncrementalRuleCodegen withAddons(AddonsConfig addonsConfig) {
-        this.addonsConfig = addonsConfig;
         return this;
     }
 

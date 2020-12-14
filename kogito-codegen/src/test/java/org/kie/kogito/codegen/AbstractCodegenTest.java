@@ -168,6 +168,10 @@ public class AbstractCodegenTest {
     }
 
     protected Application generateCode(Map<TYPE, List<String>> resourcesTypeMap) throws Exception {
+        return generateCode(resourcesTypeMap, this.getClass().getPackage().getName());
+    }
+
+    protected Application generateCode(Map<TYPE, List<String>> resourcesTypeMap, String packageName) throws Exception {
         GeneratorContext context = GeneratorContext.ofResourcePath(new File(TEST_RESOURCES));
 
         //Testing based on Quarkus as Default
@@ -177,7 +181,7 @@ public class AbstractCodegenTest {
                                          .orElse(new QuarkusKogitoBuildContext((className -> true))));
 
         ApplicationGenerator appGen =
-                new ApplicationGenerator(this.getClass().getPackage().getName(), new File("target/codegen-tests"))
+                new ApplicationGenerator(packageName, new File("target/codegen-tests"))
                         .withGeneratorContext(context)
                         .withDependencyInjection(null);
 
@@ -232,7 +236,7 @@ public class AbstractCodegenTest {
         classloader = new TestClassLoader(this.getClass().getClassLoader(), trgMfs.getMap());
 
         @SuppressWarnings("unchecked")
-        Class<Application> app = (Class<Application>) Class.forName(this.getClass().getPackage().getName() + ".Application", true, classloader);
+        Class<Application> app = (Class<Application>) Class.forName(packageName + ".Application", true, classloader);
 
         Application application = app.getDeclaredConstructor().newInstance();
         return application;

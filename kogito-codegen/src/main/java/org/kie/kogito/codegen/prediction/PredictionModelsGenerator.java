@@ -15,38 +15,41 @@
 
 package org.kie.kogito.codegen.prediction;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.NodeList;
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.InitializerDeclaration;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
-import com.github.javaparser.ast.expr.VariableDeclarationExpr;
-import com.github.javaparser.ast.stmt.ExpressionStmt;
-import com.github.javaparser.ast.stmt.Statement;
 import org.kie.kogito.codegen.AbstractApplicationSection;
 import org.kie.kogito.codegen.AddonsConfig;
-import org.kie.kogito.prediction.PredictionModels;
+import org.kie.kogito.codegen.InvalidTemplateException;
+import org.kie.kogito.codegen.TemplatedGenerator;
+import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
+
+import java.util.List;
 
 public class PredictionModelsGenerator extends AbstractApplicationSection {
 
-    private static final String TEMPLATE_JAVA = "/class-templates/PredictionModelsTemplate.java";
+    private static final String RESOURCE = "/class-templates/PredictionModelsTemplate.java";
+    private static final String RESOURCE_CDI = "/class-templates/CdiPredictionModelsTemplate.java";
+    private static final String RESOURCE_SPRING = "/class-templates/spring/SpringPredictionModelsTemplate.java";
+    private static final String SECTION_CLASS_NAME = "PredictionModels";
 
-    private static final RuntimeException MODIFIED_TEMPLATE_EXCEPTION =
-            new RuntimeException("The template " + TEMPLATE_JAVA + " has been modified.");
-    final List<PMMLResource> resources;
-    final String applicationCanonicalName;
-    AddonsConfig addonsConfig = AddonsConfig.DEFAULT;
-    final List<String> predictionRulesMapperClasses = new ArrayList<>();
+    protected final List<PMMLResource> resources;
+    protected final String applicationCanonicalName;
+    protected AddonsConfig addonsConfig = AddonsConfig.DEFAULT;
+    protected final TemplatedGenerator templatedGenerator;
 
-    public PredictionModelsGenerator(String applicationCanonicalName, List<PMMLResource> resources) {
-        super("PredictionModels", "predictionModels", PredictionModels.class);
+    public PredictionModelsGenerator(String packageName, String applicationCanonicalName, List<PMMLResource> resources) {
+        super(SECTION_CLASS_NAME);
         this.applicationCanonicalName = applicationCanonicalName;
         this.resources = resources;
+
+        this.templatedGenerator = new TemplatedGenerator(
+                packageName,
+                SECTION_CLASS_NAME,
+                RESOURCE_CDI,
+                RESOURCE_SPRING,
+                RESOURCE);
     }
 
     public PredictionModelsGenerator withAddons(AddonsConfig addonsConfig) {
@@ -54,39 +57,39 @@ public class PredictionModelsGenerator extends AbstractApplicationSection {
         return this;
     }
 
+    public PredictionModelsGenerator withDependencyInjection(DependencyInjectionAnnotator annotator) {
+        this.templatedGenerator.withDependencyInjection(annotator);
+        return this;
+    }
+
     @Override
-    public ClassOrInterfaceDeclaration classDeclaration() {
-        CompilationUnit clazz = StaticJavaParser.parse(this.getClass().getResourceAsStream(TEMPLATE_JAVA));
-        ClassOrInterfaceDeclaration typeDeclaration = (ClassOrInterfaceDeclaration) clazz.getTypes().get(0);
-        populateStaticKieRuntimeFactoryFunctionInit(typeDeclaration);
-        return typeDeclaration;
+    public CompilationUnit compilationUnit() {
+        CompilationUnit compilationUnit = templatedGenerator.compilationUnit()
+                .orElseThrow(() -> new InvalidTemplateException(
+                        SECTION_CLASS_NAME,
+                        templatedGenerator.templatePath(),
+                        "Invalid Template: No CompilationUnit"));
+        populateStaticKieRuntimeFactoryFunctionInit(compilationUnit);
+        return compilationUnit;
     }
 
-    public void addPredictionRulesMapperClass(String predictionRulesMapperClass) {
-        predictionRulesMapperClasses.add(predictionRulesMapperClass);
-    }
+    private void populateStaticKieRuntimeFactoryFunctionInit(CompilationUnit compilationUnit) {
+        final InitializerDeclaration staticDeclaration = compilationUnit
+                .findFirst(InitializerDeclaration.class)
+                .orElseThrow(() -> new InvalidTemplateException(
+                        SECTION_CLASS_NAME,
+                        templatedGenerator.templatePath(),
+                        "Missing static block"));
+        final MethodCallExpr initMethod = staticDeclaration
+                .findFirst(MethodCallExpr.class, mtd -> "init".equals(mtd.getNameAsString()))
+                .orElseThrow(() -> new InvalidTemplateException(
+                        SECTION_CLASS_NAME,
+                        templatedGenerator.templatePath(),
+                        "Missing init() method"));
 
-    private void populateStaticKieRuntimeFactoryFunctionInit(ClassOrInterfaceDeclaration typeDeclaration) {
-        final InitializerDeclaration staticDeclaration = typeDeclaration.getMembers()
-                .stream()
-                .filter(member -> member instanceof InitializerDeclaration)
-                .findFirst()
-                .map(member -> (InitializerDeclaration) member)
-                .orElseThrow(() -> MODIFIED_TEMPLATE_EXCEPTION);
-        final NodeList<Statement> statements = staticDeclaration.getBody().getStatements();
-        final VariableDeclarationExpr kieRuntimeFactories = statements.stream()
-                .filter(statement -> statement instanceof ExpressionStmt && ((ExpressionStmt) statement).getExpression() instanceof VariableDeclarationExpr)
-                .map(statement -> (VariableDeclarationExpr) ((ExpressionStmt) statement).getExpression())
-                .filter(expression -> expression.getVariable(0).getName().asString().equals("kieRuntimeFactories"))
-                .findFirst()
-                .orElseThrow(() -> MODIFIED_TEMPLATE_EXCEPTION);
-        MethodCallExpr methodCallExpr = kieRuntimeFactories.getVariable(0)
-                .getInitializer()
-                .map(expression -> (MethodCallExpr) expression)
-                .orElseThrow(() -> MODIFIED_TEMPLATE_EXCEPTION);
         for (PMMLResource resource : resources) {
             StringLiteralExpr getResAsStream = getReadResourceMethod(resource);
-            methodCallExpr.addArgument(getResAsStream);
+            initMethod.addArgument(getResAsStream);
         }
     }
 

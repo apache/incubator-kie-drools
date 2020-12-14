@@ -97,7 +97,7 @@ public class CodegenUtils {
     }
 
     public static void interpolateTypes(SimpleName returnType, Map<String, String> typeInterpolations) {
-        typeInterpolations.entrySet().stream().forEach(entry -> {
+        typeInterpolations.entrySet().forEach(entry -> {
             String identifier = returnType.getIdentifier();
             String newIdentifier = identifier.replace(entry.getKey(), entry.getValue());
             returnType.setIdentifier(newIdentifier);

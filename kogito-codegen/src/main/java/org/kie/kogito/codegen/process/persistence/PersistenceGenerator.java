@@ -91,9 +91,6 @@ public class PersistenceGenerator extends AbstractGenerator {
 
     private List<String> parameters;
 
-    private String packageName;
-    private DependencyInjectionAnnotator annotator;
-
     private ClassLoader classLoader;
     private String persistenceType;
 
@@ -146,16 +143,6 @@ public class PersistenceGenerator extends AbstractGenerator {
 
     @Override
     public void updateConfig(ConfigGenerator cfg) {
-    }
-
-    @Override
-    public void setPackageName(String packageName) {
-        this.packageName = packageName;
-    }
-
-    @Override
-    public void setDependencyInjection(DependencyInjectionAnnotator annotator) {
-        this.annotator = annotator;
     }
 
     protected boolean useInjection() {

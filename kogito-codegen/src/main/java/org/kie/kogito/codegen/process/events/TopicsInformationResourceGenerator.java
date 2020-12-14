@@ -30,7 +30,6 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import org.jbpm.compiler.canonical.TriggerMetaData;
 import org.kie.kogito.codegen.AddonsConfig;
-import org.kie.kogito.codegen.ApplicationGenerator;
 import org.kie.kogito.codegen.BodyDeclarationComparator;
 import org.kie.kogito.codegen.InvalidTemplateException;
 import org.kie.kogito.codegen.TemplatedGenerator;
@@ -49,10 +48,11 @@ public class TopicsInformationResourceGenerator extends AbstractEventResourceGen
     private final Map<String, List<TriggerMetaData>> triggers;
     private final AddonsConfig addonsConfig;
 
-    public TopicsInformationResourceGenerator(final List<ProcessExecutableModelGenerator> generators,
+    public TopicsInformationResourceGenerator(final String packageName,
+                                              final List<ProcessExecutableModelGenerator> generators,
                                               final DependencyInjectionAnnotator annotator,
                                               final AddonsConfig addonsConfig) {
-        super(new TemplatedGenerator(ApplicationGenerator.DEFAULT_PACKAGE_NAME, CLASS_NAME,
+        super(new TemplatedGenerator(packageName, CLASS_NAME,
                                      CDI_TEMPLATE, SPRING_TEMPLATE, CDI_TEMPLATE)
                       .withDependencyInjection(annotator));
         this.triggers = this.filterTriggers(generators);

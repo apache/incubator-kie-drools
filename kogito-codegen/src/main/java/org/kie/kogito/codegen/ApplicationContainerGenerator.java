@@ -15,10 +15,6 @@
 
 package org.kie.kogito.codegen;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
@@ -26,6 +22,10 @@ import com.github.javaparser.ast.comments.BlockComment;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.ThisExpr;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 public class ApplicationContainerGenerator extends TemplatedGenerator {
 
@@ -57,6 +57,7 @@ public class ApplicationContainerGenerator extends TemplatedGenerator {
                         "Cannot find template for " + super.typeName()));
     }
 
+    @Override
     public Optional<CompilationUnit> compilationUnit() {
         Optional<CompilationUnit> optionalCompilationUnit = super.compilationUnit();
         CompilationUnit compilationUnit =
@@ -73,8 +74,11 @@ public class ApplicationContainerGenerator extends TemplatedGenerator {
                         templatePath(),
                         "Compilation unit doesn't contain a class or interface declaration!"));
 
-        for (String section : sections) {
-            replaceSectionPlaceHolder(cls, section);
+        // ApplicationTemplate (no CDI/Spring) has placeholders to replace
+        if (annotator == null) {
+            for (String section : sections) {
+                replaceSectionPlaceHolder(cls, section);
+            }
         }
 
         cls.getMembers().sort(new BodyDeclarationComparator());
@@ -99,6 +103,5 @@ public class ApplicationContainerGenerator extends TemplatedGenerator {
                 .map(e -> e.getExpression().asAssignExpr())
                 .ifPresent(assignExpr -> assignExpr.setValue(sectionCreationExpr));
         // else ignore: there is no such templated argument
-
     }
 }

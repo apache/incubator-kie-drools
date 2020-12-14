@@ -44,6 +44,10 @@ public class StaticApplication implements Application {
         this.ruleUnits = ruleUnits;
         this.decisionModels = decisionModels;
         this.predictionModels = predictionModels;
+
+        if (config() != null && config().process() != null) {
+            unitOfWorkManager().eventManager().setAddons(config().addons());
+        }
     }
 
     public Config config() {

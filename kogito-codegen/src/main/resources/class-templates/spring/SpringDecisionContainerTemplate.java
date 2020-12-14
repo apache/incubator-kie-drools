@@ -1,3 +1,5 @@
+@org.springframework.stereotype.Component
+@org.springframework.web.context.annotation.ApplicationScope
 public class DecisionModels extends org.kie.kogito.dmn.AbstractDecisionModels {
 
     static {

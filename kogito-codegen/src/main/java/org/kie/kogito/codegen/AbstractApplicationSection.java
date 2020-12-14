@@ -15,9 +15,6 @@
 
 package org.kie.kogito.codegen;
 
-import com.github.javaparser.ast.Modifier;
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-
 /**
  * Base implementation for an {@link ApplicationSection}.
  * <p>
@@ -25,31 +22,12 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
  * Subclasses may extend this base class and decorate the provided
  * simple implementations of the interface methods with custom logic.
  */
-public class AbstractApplicationSection implements ApplicationSection {
+public abstract class AbstractApplicationSection implements ApplicationSection {
 
     private final String sectionClassName;
-    private final String methodName;
-    private final Class<?> classType;
 
-    public AbstractApplicationSection(String sectionClassName, String methodName, Class<?> classType) {
+    public AbstractApplicationSection(String sectionClassName) {
         this.sectionClassName = sectionClassName;
-        this.methodName = methodName;
-        this.classType = classType;
-    }
-
-    @Override
-    public ClassOrInterfaceDeclaration classDeclaration() {
-        ClassOrInterfaceDeclaration classDeclaration = new ClassOrInterfaceDeclaration()
-                .setModifiers(Modifier.Keyword.PUBLIC)
-                .setName(sectionClassName);
-
-        if (classType.isInterface()) {
-            classDeclaration.addImplementedType(classType.getCanonicalName());
-        } else {
-            classDeclaration.addExtendedType(classType.getCanonicalName());
-        }
-
-        return classDeclaration;
     }
 
     @Override

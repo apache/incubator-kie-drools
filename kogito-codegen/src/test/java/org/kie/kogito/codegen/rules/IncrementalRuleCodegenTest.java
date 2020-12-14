@@ -174,9 +174,9 @@ public class IncrementalRuleCodegenTest {
                 IncrementalRuleCodegen.ofCollectedResources(
                         CollectedResource.fromFiles(
                                 Paths.get("src/test/resources"),
-                                new File("src/test/resources/org/kie/kogito/codegen/unit/RuleUnitQuery.drl")))
-                        .withAddons(new AddonsConfig().withPrometheusMonitoring(true));
+                                new File("src/test/resources/org/kie/kogito/codegen/unit/RuleUnitQuery.drl")));
         incrementalRuleCodegen.setPackageName("com.acme");
+        incrementalRuleCodegen.setAddonsConfig(new AddonsConfig().withPrometheusMonitoring(true));
         List<GeneratedFile> generatedFiles = incrementalRuleCodegen.withHotReloadMode().generate();
 
         assertEquals(2, generatedFiles.stream().filter(x -> x.getType() == GeneratedFile.Type.RESOURCE).count());

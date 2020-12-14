@@ -20,9 +20,10 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Properties;
 
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.CompilationUnit;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.codegen.AbstractCodegenTest;
+import org.kie.kogito.codegen.ApplicationGenerator;
 import org.kie.kogito.codegen.GeneratedFile;
 import org.kie.kogito.codegen.GeneratorContext;
 import org.kie.kogito.codegen.io.CollectedResource;
@@ -37,19 +38,20 @@ public class PredictionCodegenTest extends AbstractCodegenTest {
     private static final Path FULL_SOURCE = BASE_PATH.resolve(SOURCE);
 
     @Test
-    public void generateAllFiles() throws Exception {
+    public void generateAllFiles() {
 
         GeneratorContext context = GeneratorContext.ofProperties(new Properties());
 
         PredictionCodegen codeGenerator = PredictionCodegen.ofCollectedResources(false,
                 CollectedResource.fromFiles(BASE_PATH, FULL_SOURCE.toFile()));
         codeGenerator.setContext(context);
+        codeGenerator.setPackageName(ApplicationGenerator.DEFAULT_PACKAGE_NAME);
 
         List<GeneratedFile> generatedFiles = codeGenerator.generate();
         assertEquals(4, generatedFiles.size());
 
-        ClassOrInterfaceDeclaration classDeclaration = codeGenerator.moduleGenerator().classDeclaration();
-        assertNotNull(classDeclaration);
+        CompilationUnit compilationUnit = codeGenerator.section().compilationUnit();
+        assertNotNull(compilationUnit);
     }
 
 }

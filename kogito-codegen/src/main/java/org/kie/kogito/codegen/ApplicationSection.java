@@ -15,7 +15,7 @@
 
 package org.kie.kogito.codegen;
 
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.CompilationUnit;
 
 /**
  * A descriptor for a "section" of the root Application class.
@@ -32,6 +32,6 @@ public interface ApplicationSection {
 
     String sectionClassName();
 
-    ClassOrInterfaceDeclaration classDeclaration();
+    CompilationUnit compilationUnit();
 
 }

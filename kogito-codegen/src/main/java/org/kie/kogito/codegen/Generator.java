@@ -55,6 +55,8 @@ public interface Generator {
     void setProjectDirectory(Path projectDirectory);
     
     void setContext(GeneratorContext context);
+
+    void setAddonsConfig(AddonsConfig addonsConfig);
     
     GeneratorContext context();
     

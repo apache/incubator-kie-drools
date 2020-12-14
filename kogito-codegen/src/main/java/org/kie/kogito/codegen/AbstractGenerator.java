@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 import org.kie.kogito.codegen.metadata.DefaultLabeler;
 import org.kie.kogito.codegen.metadata.Labeler;
 
@@ -28,10 +29,13 @@ public abstract class AbstractGenerator implements Generator {
 
     protected Path projectDirectory;
     protected GeneratorContext context;
+    protected DependencyInjectionAnnotator annotator;
+    protected String packageName = ApplicationGenerator.DEFAULT_PACKAGE_NAME;
+    protected AddonsConfig addonsConfig = AddonsConfig.DEFAULT;
 
     private final List<Labeler> labelers = new ArrayList<>();
     private final DefaultLabeler defaultLabeler = new DefaultLabeler();
-    
+
     protected AbstractGenerator() {
         this.labelers.add(defaultLabeler);
     }
@@ -66,4 +70,22 @@ public abstract class AbstractGenerator implements Generator {
         return labels;
     }
 
+    @Override
+    public void setDependencyInjection(DependencyInjectionAnnotator annotator) {
+        this.annotator = annotator;
+    }
+
+    @Override
+    public void setPackageName(String packageName) {
+        this.packageName = packageName;
+    }
+
+    @Override
+    public void setAddonsConfig(AddonsConfig addonsConfig) {
+        this.addonsConfig = addonsConfig;
+    }
+
+    protected String applicationCanonicalName() {
+        return packageName + ".Application";
+    }
 }

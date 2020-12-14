@@ -36,6 +36,7 @@ import com.github.javaparser.ast.stmt.Statement;
 import org.junit.jupiter.api.Test;
 import org.kie.api.io.ResourceType;
 import org.kie.kogito.codegen.AddonsConfig;
+import org.kie.kogito.codegen.ApplicationGenerator;
 import org.kie.kogito.codegen.GeneratedFile;
 import org.kie.kogito.codegen.GeneratorContext;
 import org.kie.kogito.codegen.io.CollectedResource;
@@ -66,9 +67,10 @@ public class DecisionModelResourcesProviderGeneratorTest {
                 .count();;
 
         final DecisionCodegen codeGenerator = DecisionCodegen
-                .ofCollectedResources(collectedResources)
-                .withAddons(new AddonsConfig().withTracing(true));
+                .ofCollectedResources(collectedResources);
         codeGenerator.setContext(context);
+        codeGenerator.setAddonsConfig(new AddonsConfig().withTracing(true));
+        codeGenerator.setPackageName(ApplicationGenerator.DEFAULT_PACKAGE_NAME);
 
         final List<GeneratedFile> generatedFiles = codeGenerator.generate();
         assertThat(generatedFiles.size()).isGreaterThanOrEqualTo(2); // the two resources below, see https://github.com/kiegroup/kogito-runtimes/commit/18ec525f530b1ff1bddcf18c0083f14f86aff171#diff-edd3a09d62dc627ee10fe37925944217R53

@@ -77,6 +77,7 @@ import org.kie.kogito.codegen.JsonSchemaGenerator;
 import org.kie.kogito.codegen.context.QuarkusKogitoBuildContext;
 import org.kie.kogito.codegen.decision.DecisionCodegen;
 import org.kie.kogito.codegen.di.CDIDependencyInjectionAnnotator;
+import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 import org.kie.kogito.codegen.io.CollectedResource;
 import org.kie.kogito.codegen.prediction.PredictionCodegen;
 import org.kie.kogito.codegen.process.ProcessCodegen;
@@ -168,6 +169,8 @@ public class KogitoAssetsProcessor {
         boolean useCloudEvents = combinedIndexBuildItem.getIndex().getClassByName(quarkusCloudEvents) != null;
         boolean useProcessSVG = combinedIndexBuildItem.getIndex().getClassByName(quarkusSVGService) != null;
 
+        DependencyInjectionAnnotator dependencyInjectionAnnotator = new CDIDependencyInjectionAnnotator();
+
         AddonsConfig addonsConfig = new AddonsConfig()
                 .withPersistence(usePersistence)
                 .withMonitoring(useMonitoring)
@@ -177,7 +180,7 @@ public class KogitoAssetsProcessor {
                 .withCloudEvents(useCloudEvents);
 
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        GeneratorContext context = buildContext(appPaths, combinedIndexBuildItem.getIndex());
+        GeneratorContext context = generatorContext(appPaths, combinedIndexBuildItem.getIndex());
 
         Path[] paths = appPaths.getPath();
 
@@ -187,27 +190,23 @@ public class KogitoAssetsProcessor {
                 new ApplicationGenerator(
                         appPackageName,
                         new File(appPaths.getFirstProjectPath().toFile(), "target"))
-                        .withDependencyInjection(new CDIDependencyInjectionAnnotator())
+                        .withDependencyInjection(dependencyInjectionAnnotator)
                         .withAddons(addonsConfig)
                         .withGeneratorContext(context);
 
         // configure each individual generator. Ordering is relevant.
 
         appGen.setupGenerator(ProcessCodegen.ofCollectedResources(CollectedResource.fromPaths(paths)))
-                .withAddons(addonsConfig)
                 .withClassLoader(classLoader);
 
         appGen.setupGenerator(IncrementalRuleCodegen.ofCollectedResources(CollectedResource.fromPaths(paths)))
                 .withKModule(findKieModuleModel(appPaths))
-                .withAddons(addonsConfig)
                 .withClassLoader(classLoader);
 
-        appGen.setupGenerator(PredictionCodegen.ofCollectedResources(isJPMMLAvailable, CollectedResource.fromPaths(paths)))
-                .withAddons(addonsConfig);
+        appGen.setupGenerator(PredictionCodegen.ofCollectedResources(isJPMMLAvailable, CollectedResource.fromPaths(paths)));
 
         appGen.setupGenerator(DecisionCodegen.ofCollectedResources(CollectedResource.fromPaths(paths)))
-              .withAddons(addonsConfig)
-              .withClassLoader(classLoader);
+                .withClassLoader(classLoader);
 
         // real work occurs here: invoke the code-generation procedure
         Collection<GeneratedFile> generatedFiles = appGen.generate();
@@ -328,7 +327,7 @@ public class KogitoAssetsProcessor {
                 }
             }
         }
-        GeneratorContext context = buildContext(appPaths, index);
+        GeneratorContext context = generatorContext(appPaths, index);
         String persistenceType = context.getApplicationProperty("kogito.persistence.type").orElse(PersistenceGenerator.DEFAULT_PERSISTENCE_TYPE);
         Collection<GeneratedFile> persistenceGeneratedFiles = getGeneratedPersistenceFiles(appPaths, index, usePersistence, parameters, context, persistenceType);
 
@@ -621,7 +620,7 @@ public class KogitoAssetsProcessor {
         return path;
     }
 
-    private GeneratorContext buildContext(AppPaths appPaths, IndexView index) {
+    private GeneratorContext generatorContext(AppPaths appPaths, IndexView index) {
         GeneratorContext context = GeneratorContext.ofResourcePath(appPaths.getResourceFiles());
         context.withBuildContext(new QuarkusKogitoBuildContext(className -> {
             DotName classDotName = DotName.createSimple(className);

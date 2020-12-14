@@ -19,35 +19,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.body.ConstructorDeclaration;
 import org.kie.kogito.codegen.AbstractApplicationSection;
-import org.kie.kogito.codegen.BodyDeclarationComparator;
 import org.kie.kogito.codegen.InvalidTemplateException;
 import org.kie.kogito.codegen.TemplatedGenerator;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
-import org.kie.kogito.rules.KieRuntimeBuilder;
-import org.kie.kogito.rules.RuleUnit;
-import org.kie.kogito.rules.units.impl.AbstractRuleUnits;
 
-import com.github.javaparser.ast.Modifier;
-import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.BodyDeclaration;
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
-import com.github.javaparser.ast.body.VariableDeclarator;
-import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
-import com.github.javaparser.ast.expr.ThisExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.stmt.SwitchEntry;
 import com.github.javaparser.ast.stmt.SwitchStmt;
 import com.github.javaparser.ast.stmt.ThrowStmt;
-import com.github.javaparser.ast.type.ClassOrInterfaceType;
-import com.github.javaparser.ast.type.WildcardType;
 
 public class RuleUnitContainerGenerator extends AbstractApplicationSection {
 
@@ -62,7 +48,7 @@ public class RuleUnitContainerGenerator extends AbstractApplicationSection {
     private List<BodyDeclaration<?>> factoryMethods = new ArrayList<>();
 
     public RuleUnitContainerGenerator(String packageName) {
-        super(SECTION_CLASS_NAME, "ruleUnits", AbstractRuleUnits.class);
+        super(SECTION_CLASS_NAME);
         this.ruleUnits = new ArrayList<>();
         this.templatedGenerator = new TemplatedGenerator(
                 packageName,
@@ -99,7 +85,7 @@ public class RuleUnitContainerGenerator extends AbstractApplicationSection {
     }
 
     @Override
-    public ClassOrInterfaceDeclaration classDeclaration() {
+    public CompilationUnit compilationUnit() {
         CompilationUnit compilationUnit = templatedGenerator.compilationUnit()
                 .orElseThrow(() -> new InvalidTemplateException(
                         SECTION_CLASS_NAME,
@@ -112,11 +98,7 @@ public class RuleUnitContainerGenerator extends AbstractApplicationSection {
                     .ifPresent(m -> m.setBody(factoryByIdBody())); // ignore if missing
         }
 
-        return compilationUnit.findFirst(ClassOrInterfaceDeclaration.class)
-                .orElseThrow(() -> new InvalidTemplateException(
-                        SECTION_CLASS_NAME,
-                        templatedGenerator.templatePath(),
-                        "No class declaration"));
+        return compilationUnit;
     }
 
     public RuleUnitContainerGenerator withDependencyInjection(DependencyInjectionAnnotator annotator) {

@@ -43,8 +43,8 @@ public class CloudEventsResourceGenerator extends AbstractEventResourceGenerator
     private final DependencyInjectionAnnotator annotator;
     private final List<TriggerMetaData> triggers;
 
-    public CloudEventsResourceGenerator(final List<ProcessExecutableModelGenerator> generators, final DependencyInjectionAnnotator annotator) {
-        super(new TemplatedGenerator(ApplicationGenerator.DEFAULT_PACKAGE_NAME, CLASS_NAME, CDI_TEMPLATE,
+    public CloudEventsResourceGenerator(final String packageName, final List<ProcessExecutableModelGenerator> generators, final DependencyInjectionAnnotator annotator) {
+        super(new TemplatedGenerator(packageName, CLASS_NAME, CDI_TEMPLATE,
                                      null, CDI_TEMPLATE)
                       .withDependencyInjection(annotator));
         this.triggers = this.filterTriggers(generators);

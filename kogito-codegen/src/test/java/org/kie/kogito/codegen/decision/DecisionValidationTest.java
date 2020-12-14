@@ -22,6 +22,7 @@ import java.util.function.Consumer;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.codegen.ApplicationGenerator;
 import org.kie.kogito.codegen.GeneratedFile;
 import org.kie.kogito.codegen.GeneratorContext;
 
@@ -34,6 +35,7 @@ public class DecisionValidationTest {
         Properties props = new Properties();
         codeGenContextProperties.accept(props);
         codeGenerator.setContext(GeneratorContext.ofProperties(props));
+        codeGenerator.setPackageName(ApplicationGenerator.DEFAULT_PACKAGE_NAME);
         return codeGenerator;
     }
 

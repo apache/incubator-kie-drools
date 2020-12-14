@@ -50,6 +50,7 @@ import org.kie.kogito.codegen.GeneratedFile.Type;
 import org.kie.kogito.codegen.GeneratorContext;
 import org.kie.kogito.codegen.DashboardGeneratedFileUtils;
 import org.kie.kogito.codegen.decision.DecisionCodegen;
+import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 import org.kie.kogito.codegen.io.CollectedResource;
 import org.kie.kogito.codegen.prediction.PredictionCodegen;
 import org.kie.kogito.codegen.process.ProcessCodegen;
@@ -241,6 +242,7 @@ public class GenerateModelMojo extends AbstractKieMojo {
         boolean useTracing = hasClassOnClasspath(project, "org.kie.kogito.tracing.decision.DecisionTracingListener");
         boolean useKnativeEventing = hasClassOnClasspath(project, "org.kie.kogito.events.knative.ce.extensions.KogitoProcessExtension");
         boolean useCloudEvents = hasClassOnClasspath(project, "org.kie.kogito.addon.cloudevents.AbstractTopicDiscovery");
+        DependencyInjectionAnnotator dependencyInjectionAnnotator = discoverDependencyInjectionAnnotator(project);
 
         AddonsConfig addonsConfig = new AddonsConfig()
                 .withPersistence(usePersistence)
@@ -260,7 +262,7 @@ public class GenerateModelMojo extends AbstractKieMojo {
 
         ApplicationGenerator appGen =
                 new ApplicationGenerator(appPackageName, targetDirectory)
-                        .withDependencyInjection(discoverDependencyInjectionAnnotator(project))
+                        .withDependencyInjection(dependencyInjectionAnnotator)
                         .withAddons(addonsConfig)
                         .withClassLoader(projectClassLoader)
                         .withGeneratorContext(context);
@@ -270,7 +272,6 @@ public class GenerateModelMojo extends AbstractKieMojo {
 
         if (generateProcesses()) {
             appGen.setupGenerator(ProcessCodegen.ofCollectedResources(CollectedResource.fromDirectory(kieSourcesDirectory.toPath())))
-                    .withAddons(addonsConfig)
                     .withClassLoader(projectClassLoader);
         }
 
@@ -280,19 +281,18 @@ public class GenerateModelMojo extends AbstractKieMojo {
             appGen.setupGenerator(IncrementalRuleCodegen.ofCollectedResources(CollectedResource.fromDirectory(kieSourcesDirectory.toPath())))
                     .withKModule(getKModuleModel())
                     .withClassLoader(projectClassLoader)
-                    .withAddons(addonsConfig)
                     .withRestServices(useRestServices);
         }
 
         boolean isJPMMLAvailable = hasClassOnClasspath(project, "org.kie.dmn.jpmml.DMNjPMMLInvocationEvaluator");
-        appGen.setupGenerator(PredictionCodegen.ofCollectedResources(isJPMMLAvailable, CollectedResource.fromDirectory(kieSourcesDirectory.toPath())))
-                .withAddons(addonsConfig);
+        if(generatePredictions()) {
+            appGen.setupGenerator(PredictionCodegen.ofCollectedResources(isJPMMLAvailable, CollectedResource.fromDirectory(kieSourcesDirectory.toPath())));
+        }
 
         if (generateDecisions()) {
             appGen.setupGenerator(DecisionCodegen.ofCollectedResources(CollectedResource.fromDirectory(kieSourcesDirectory.toPath())))
-                  .withAddons(addonsConfig)
-                  .withClassLoader(projectClassLoader)
-                  .withPCLResolverFn(x -> hasClassOnClasspath(project, x));
+                    .withClassLoader(projectClassLoader)
+                    .withPCLResolverFn(x -> hasClassOnClasspath(project, x));
         }
 
         return appGen;

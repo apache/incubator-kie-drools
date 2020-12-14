@@ -37,7 +37,7 @@ public class TemplatedGenerator {
     private final String resourceSpring;
     private final String resourceDefault;
 
-    private DependencyInjectionAnnotator annotator;
+    protected DependencyInjectionAnnotator annotator;
     private final String targetTypeName;
 
     public TemplatedGenerator(

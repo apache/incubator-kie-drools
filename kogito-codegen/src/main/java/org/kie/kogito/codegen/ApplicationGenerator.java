@@ -58,6 +58,7 @@ public class ApplicationGenerator {
 
     private GeneratorContext context;
     private ClassLoader classLoader;
+    private AddonsConfig addonsConfig = AddonsConfig.DEFAULT;
 
     public ApplicationGenerator(String packageName, File targetDirectory) {
 
@@ -94,6 +95,7 @@ public class ApplicationGenerator {
         if (addonsConfig.usePrometheusMonitoring()) {
             this.labelers.put(PrometheusLabeler.class, new PrometheusLabeler());
         }
+        this.addonsConfig = addonsConfig;
         return this;
     }
 
@@ -142,13 +144,10 @@ public class ApplicationGenerator {
             if (section == null) {
                 continue;
             }
-            CompilationUnit sectionUnit = new CompilationUnit();
-            sectionUnit.setPackageDeclaration(this.packageName);
-            sectionUnit.addType(section.classDeclaration());
             generatedFiles.add(
                     new GeneratedFile(GeneratedFile.Type.APPLICATION_SECTION,
                                       getFilePath(section.sectionClassName()),
-                                      sectionUnit.toString()));
+                                      section.compilationUnit().toString()));
         }
         return generatedFiles;
     }
@@ -165,6 +164,7 @@ public class ApplicationGenerator {
         generator.setDependencyInjection(annotator);
         generator.setProjectDirectory(targetDirectory.getParentFile().toPath());
         generator.setContext(context);
+        generator.setAddonsConfig(addonsConfig);
         return generator;
     }
 
