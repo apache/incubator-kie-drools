@@ -202,10 +202,10 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
         if (isArithmeticOperator && !isStringConcatenation) {
 
             if (typeLeft != BigDecimal.class && typeRight == BigDecimal.class) { // convert left
-                return new BigDecimalArithmeticExprT(toBigDecimalMethod(operator.toString()),
+                return new BigDecimalArithmeticExprT(toBigDecimalMethod(operator),
                                                      new BigDecimalConstantExprT(left), right);
             } else if (typeLeft == BigDecimal.class && typeRight != BigDecimal.class) {
-                return new BigDecimalArithmeticExprT(toBigDecimalMethod(operator.toString()),
+                return new BigDecimalArithmeticExprT(toBigDecimalMethod(operator),
                                                      left, new BigDecimalConstantExprT(right));
             }
         }

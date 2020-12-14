@@ -357,6 +357,17 @@ public class MvelCompilerTest implements CompilerTest {
     }
 
     @Test
+    public void testBigDecimalCompoundOperatorOnField() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ " +
+                     "    $p.salary += 50000B;\n" +
+                     "}",
+             "{ " +
+                     "    $p.setSalary($p.getSalary().add(new java.math.BigDecimal(\"50000\")));\n" +
+                     "}");
+    }
+
+    @Test
     public void testModify() {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{ modify ( $p )  { name = \"Luca\", age = 35 }; }",
