@@ -32,7 +32,6 @@
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-pmml-dependencies</artifactId>
-      <type>pom</type>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
@@ -56,17 +55,6 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-pmml-dependencies</artifactId>
-        <version>${version.org.kie}</version>
-        <type>pom</type>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
 
   <profiles>
     <profile>
