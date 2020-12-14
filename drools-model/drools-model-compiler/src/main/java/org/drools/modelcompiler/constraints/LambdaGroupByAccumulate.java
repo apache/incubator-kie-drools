@@ -24,7 +24,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
 
 import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalFactHandle;
@@ -109,13 +108,7 @@ public class LambdaGroupByAccumulate extends Accumulate {
 
     @Override
     public Object getResult( Object workingMemoryContext, Object context, Tuple leftTuple, WorkingMemory workingMemory ) {
-        return (( GroupByContext ) context).result( groupContext -> {
-            try {
-                return innerAccumulate.getResult( workingMemoryContext, groupContext, leftTuple, workingMemory );
-            } catch (Exception e) {
-                throw new RuntimeException( e );
-            }
-        } );
+        return (( GroupByContext ) context).result( innerAccumulate, workingMemoryContext, leftTuple, workingMemory );
     }
 
     @Override
@@ -150,10 +143,8 @@ public class LambdaGroupByAccumulate extends Accumulate {
 
     private static class GroupByContext implements Serializable {
         private final Map<Object, Object> contextsByGroup = new HashMap<>();
-        private final List<Object[]> results = new ArrayList<>();
-        private final Map<Long, GroupInfo> reverseSupport;
-
         private final Set<Object> keys = new HashSet<>();
+        private final Map<Long, GroupInfo> reverseSupport;
 
         private GroupByContext(boolean supportsReverse) {
             reverseSupport = supportsReverse ? new HashMap<>() : null;
@@ -177,17 +168,16 @@ public class LambdaGroupByAccumulate extends Accumulate {
         public void init() {
             keys.clear();
             contextsByGroup.clear();
-            results.clear();
             if (reverseSupport != null) {
                 reverseSupport.clear();
             }
         }
 
-        public List<Object[]> result( Function<Object, Object> groupResultSupplier ) {
-            results.clear();
+        public List<Object[]> result( Accumulate innerAccumulate, Object workingMemoryContext, Tuple leftTuple, WorkingMemory workingMemory ) {
+            List<Object[]> results = new ArrayList<>(keys.size());
             for (Object k : keys) {
                 Object ctx = contextsByGroup.get(k);
-                results.add( new Object[]{ k, isEmptyContext(ctx) ? null : groupResultSupplier.apply( ctx ) } );
+                results.add( new Object[]{ k, isEmptyContext(ctx) ? null : innerAccumulate.getResult( workingMemoryContext, ctx, leftTuple, workingMemory ) } );
             }
             keys.clear();
             return results;
