@@ -16,6 +16,7 @@
 package org.kie.pmml.models.mining.compiler.executor;
 
 import java.io.FileInputStream;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,10 +25,13 @@ import org.dmg.pmml.PMML;
 import org.dmg.pmml.mining.MiningModel;
 import org.dmg.pmml.mining.Segment;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.core.util.ClassUtils;
 import org.junit.Test;
 import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.commons.model.HasSourcesMap;
+import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLComponent;
+import org.kie.pmml.compiler.commons.mocks.ExternalizableMock;
 import org.kie.pmml.compiler.commons.utils.KiePMMLUtil;
 import org.kie.pmml.models.mining.compiler.HasKnowledgeBuilderMock;
 import org.kie.pmml.models.mining.model.KiePMMLMiningModel;
@@ -124,6 +128,8 @@ public class MiningModelImplementationProviderTest {
                                                                       (MiningModel) pmml.getModels().get(0),
                                                                       new HasKnowledgeBuilderMock(knowledgeBuilder));
         assertNotNull(retrieved);
+        assertTrue(retrieved instanceof Serializable);
+        commonVerifyIsDeepCloneable(retrieved);
     }
 
     private void commonGetKiePMMLModelWithSources(String source) throws Exception {
@@ -135,6 +141,7 @@ public class MiningModelImplementationProviderTest {
                                                                                  (MiningModel) pmml.getModels().get(0),
                                                                                  new HasKnowledgeBuilderMock(knowledgeBuilder));
         assertNotNull(retrieved);
+        commonVerifyIsDeepCloneable(retrieved);
         assertNotNull(retrieved.getNestedModels());
         assertFalse(retrieved.getNestedModels().isEmpty());
         assertTrue(retrieved instanceof KiePMMLMiningModelWithSources);
@@ -162,5 +169,12 @@ public class MiningModelImplementationProviderTest {
         assertEquals(1, toReturn.getModels().size());
         assertTrue(toReturn.getModels().get(0) instanceof MiningModel);
         return toReturn;
+    }
+
+    private void commonVerifyIsDeepCloneable(AbstractKiePMMLComponent toVerify) {
+        assertTrue(toVerify instanceof Serializable);
+        ExternalizableMock externalizableMock = new ExternalizableMock();
+        externalizableMock.setKiePMMLComponent(toVerify);
+        ClassUtils.deepClone(externalizableMock);
     }
 }

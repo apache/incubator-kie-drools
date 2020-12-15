@@ -16,6 +16,7 @@
 
 package org.kie.pmml.models.regression.compiler.executor;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -76,6 +77,7 @@ public class RegressionModelImplementationProviderTest {
                                                                           (RegressionModel) pmml.getModels().get(0),
                                                                           () -> Thread.currentThread().getContextClassLoader());
         assertNotNull(retrieved);
+        assertTrue(retrieved instanceof Serializable);
     }
 
     @Test
@@ -93,10 +95,15 @@ public class RegressionModelImplementationProviderTest {
         assertNotNull(retrieved);
         assertTrue(retrieved instanceof KiePMMLRegressionModelWithSources);
         KiePMMLRegressionModelWithSources retrievedWithSources = (KiePMMLRegressionModelWithSources) retrieved;
+        assertTrue(retrievedWithSources instanceof Serializable);
         final Map<String, String> sourcesMap = retrievedWithSources.getSourcesMap();
         assertNotNull(sourcesMap);
         assertFalse(sourcesMap.isEmpty());
-        KieMemoryCompiler.compile(sourcesMap, Thread.currentThread().getContextClassLoader());
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        final Map<String, Class<?>> compiled = KieMemoryCompiler.compile(sourcesMap, classLoader);
+        for (Class<?> clazz : compiled.values()) {
+            assertTrue(clazz instanceof Serializable);
+        }
     }
 
     @Test
@@ -158,4 +165,5 @@ public class RegressionModelImplementationProviderTest {
         assertTrue(pmml.getModels().get(0) instanceof RegressionModel);
         PROVIDER.validate(pmml.getDataDictionary(), (RegressionModel) pmml.getModels().get(0));
     }
+
 }
