@@ -357,6 +357,82 @@ public class MvelCompilerTest implements CompilerTest {
     }
 
     @Test
+    public void testBigDecimalCompoundOperatorOnField() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ " +
+                     "    $p.salary += 50000B;\n" +
+                     "}",
+             "{ " +
+                     "    $p.setSalary($p.getSalary().add(new java.math.BigDecimal(\"50000\")));\n" +
+                     "}");
+    }
+
+    @Test
+    public void testBigDecimalCompoundOperatorWithOnField() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ " +
+                     "    $p.salary += $p.salary;\n" +
+                     "}",
+             "{ " +
+                     "    $p.setSalary($p.getSalary().add($p.getSalary()));\n" +
+                     "}");
+    }
+
+    @Test
+    public void testBigDecimalArithmetic() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ " +
+                     "    java.math.BigDecimal operation = $p.salary + $p.salary;\n" +
+                     "}",
+             "{ " +
+                     "    java.math.BigDecimal operation = $p.getSalary().add($p.getSalary());\n" +
+                     "}");
+    }
+
+    @Test
+    public void testBigDecimalArithmeticWithConversionLiteral() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ " +
+                     "    java.math.BigDecimal operation = $p.salary + 10B;\n" +
+                     "}",
+             "{ " +
+                     "    java.math.BigDecimal operation = $p.getSalary().add(new java.math.BigDecimal(\"10\"));\n" +
+                     "}");
+    }
+
+    @Test
+    public void testBigDecimalArithmeticWithConversionFromInteger() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ " +
+                     "    java.math.BigDecimal operation = $p.salary + 10;\n" +
+                     "}",
+             "{ " +
+                     "    java.math.BigDecimal operation = $p.getSalary().add(new java.math.BigDecimal(10));\n" +
+                     "}");
+    }
+
+    @Test
+    public void testBigDecimalPromotionAllFourOperations() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ " +
+                     "    BigDecimal result = 0B;" +
+                     "    result += 50000;\n" + // 50000
+                     "    result -= 10000;\n" + // 40000
+                     "    result /= 10;\n" + // 4000
+                     "    result *= 10;\n" + // 40000
+                     "    $p.salary = result;" +
+                     "}",
+             "{ " +
+                     "        java.math.BigDecimal result = new java.math.BigDecimal(\"0\");\n" +
+                     "        result = result.add(new java.math.BigDecimal(50000));\n" +
+                     "        result = result.subtract(new java.math.BigDecimal(10000));\n" +
+                     "        result = result.divide(new java.math.BigDecimal(10));\n" +
+                     "        result = result.multiply(new java.math.BigDecimal(10));\n" +
+                     "        $p.setSalary(result);\n" +
+                     "}");
+    }
+
+    @Test
     public void testModify() {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{ modify ( $p )  { name = \"Luca\", age = 35 }; }",

@@ -2,8 +2,8 @@ package org.drools.mvelcompiler;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +43,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static java.util.Optional.ofNullable;
 import static org.drools.core.util.ClassUtils.getAccessor;
 import static org.drools.core.util.ClassUtils.getSetter;
@@ -108,20 +109,91 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, Void> {
             return rhsOrError();
         }
 
-        TypedExpression scope = n.getScope().accept(this, arg);
+        TypedExpression fieldAccessScope = n.getScope().accept(this, arg);
         n.getName().accept(this, arg);
 
         if(parentIsArrayAccessExpr(n)) {
-            return tryParseItAsMap(n, scope)
+            return tryParseItAsMap(n, fieldAccessScope)
                     .map(Optional::of)
-                    .orElseGet(() -> tryParseItAsSetter(n, scope, getRHSType()))
+                    .orElseGet(() -> tryParseItAsSetter(n, fieldAccessScope, getRHSType()))
                     .orElse(new UnalteredTypedExpression(n));
         } else {
-            return tryParseItAsSetter(n, scope, getRHSType())
+            return tryParseAsBigDecimalArithmeticExpression(n, fieldAccessScope)
                     .map(Optional::of)
-                    .orElseGet(() -> tryParseItAsSetter(n, scope, BigDecimal.class)) // used for BigDecimal coercion
+                    .orElseGet(() -> tryParseItAsSetter(n, fieldAccessScope, getRHSType()))
                     .orElse(new UnalteredTypedExpression(n));
         }
+    }
+
+
+    // Conversion of AssignExpr to BigDecimal Arithmetic operation when LHS is is a BigDecimal variable
+    public Optional<TypedExpression> withBigDecimalConversion(AssignExpr assignExpr,
+                                                              TypedExpression target,
+                                                              TypedExpression value) {
+
+        Optional<Type> optRHSType = value.getType();
+        if(!optRHSType.isPresent()) {
+            return Optional.empty();
+        }
+
+        AssignExpr.Operator operator = assignExpr.getOperator();
+        if(operator == AssignExpr.Operator.ASSIGN) {
+            return Optional.empty();
+        }
+
+        boolean assigningToFieldAccess = target instanceof FieldToAccessorTExpr; // handled previously in FieldAccessExpr visitor
+        if (!assigningToFieldAccess && target.getType().filter(t -> t == BigDecimal.class).isPresent()) {
+            String bigDecimalMethod = BigDecimalArithmeticExprT.toBigDecimalMethod(operator);
+            BigDecimalArithmeticExprT convertedBigDecimalExpr = new BigDecimalArithmeticExprT(bigDecimalMethod, target, value);
+            return Optional.of(new AssignExprT(AssignExpr.Operator.ASSIGN, target, convertedBigDecimalExpr));
+        }
+        return Optional.empty();
+    }
+
+    // Conversion to BigDecimal Arithmetic operation when LHS is is a BigDecimal variable
+    private Optional<TypedExpression> tryParseAsBigDecimalArithmeticExpression(FieldAccessExpr n, TypedExpression scope) {
+        Optional<Node> optParentAssignExpr = n.getParentNode().filter(p -> p instanceof AssignExpr);
+        String setterName = printConstraint(n.getName());
+
+        return optParentAssignExpr.flatMap(parentAssignExpr -> findAccessorsAndConvert(scope, setterName, (AssignExpr) parentAssignExpr));
+    }
+
+    private Optional<TypedExpression> findAccessorsAndConvert(TypedExpression fieldAccessScope,
+                                                              String accessorName,
+                                                              AssignExpr parentAssignExpr) {
+
+        Class<?> scopeType = (Class<?>) fieldAccessScope.getType().orElseThrow(() -> new MvelCompilerException("Scope without a type"));
+
+        Optional<Method> optSetter = ofNullable(getSetter( scopeType, accessorName, BigDecimal.class));
+        AssignExpr.Operator parentOperator = parentAssignExpr.getOperator();
+
+        return optSetter.map(setter -> {
+            if(parentOperator.equals(AssignExpr.Operator.ASSIGN)) {
+                return new FieldToAccessorTExpr(fieldAccessScope, setter, singletonList(rhsOrError()));
+            } else {
+                return bigDecimalCompoundOperator(fieldAccessScope, accessorName, scopeType, parentOperator, setter);
+            }
+        });
+    }
+
+    /**
+        Conversion of the compound operator applied to BigDecimal
+        $p.salary += 50000B;
+        $p.setSalary($p.getSalary().add(new BigDecimal(\"50000\")));
+     */
+    private FieldToAccessorTExpr bigDecimalCompoundOperator(TypedExpression fieldAccessScope,
+                                                            String accessorName,
+                                                            Class<?> scopeType,
+                                                            AssignExpr.Operator parentOperator,
+                                                            Method setter) {
+        String bigDecimalArithmeticMethod = BigDecimalArithmeticExprT.toBigDecimalMethod(parentOperator);
+
+        Method optGetter = ofNullable(getAccessor(scopeType, accessorName))
+                .orElseThrow(() -> new MvelCompilerException("No getter found but setter is present for accessor: " + accessorName));
+
+        FieldToAccessorTExpr getterExpression = new FieldToAccessorTExpr(fieldAccessScope, optGetter, emptyList());
+        BigDecimalArithmeticExprT bigDecimalArithmeticExprT = new BigDecimalArithmeticExprT(bigDecimalArithmeticMethod, getterExpression, rhsOrError());
+        return new FieldToAccessorTExpr(fieldAccessScope, setter, singletonList(bigDecimalArithmeticExprT));
     }
 
     private Optional<TypedExpression> tryParseItAsMap(FieldAccessExpr n, TypedExpression scope) {
@@ -198,28 +270,6 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, Void> {
             return target;
         }
         return new AssignExprT(n.getOperator(), target, rhsOrNull());
-    }
-
-    public Optional<TypedExpression> withBigDecimalConversion(AssignExpr assignExpr,
-                                                              TypedExpression target,
-                                                              TypedExpression value) {
-
-        Optional<Type> optRHSType = value.getType();
-        if(!optRHSType.isPresent()) {
-            return Optional.empty();
-        }
-
-        AssignExpr.Operator operator = assignExpr.getOperator();
-        if(operator == AssignExpr.Operator.ASSIGN) {
-            return Optional.empty();
-        }
-
-        if (target.getType().filter(t -> t == BigDecimal.class).isPresent()) {
-            String bigDecimalMethod = BigDecimalArithmeticExprT.toBigDecimalMethod(operator.toString());
-            BigDecimalArithmeticExprT convertedBigDecimalExpr = new BigDecimalArithmeticExprT(bigDecimalMethod, target, value);
-            return Optional.of(new AssignExprT(AssignExpr.Operator.ASSIGN, target, convertedBigDecimalExpr));
-        }
-        return Optional.empty();
     }
 
     @Override

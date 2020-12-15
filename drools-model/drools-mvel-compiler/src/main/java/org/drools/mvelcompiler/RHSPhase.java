@@ -197,15 +197,22 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
         Type typeLeft = optTypeLeft.get();
         Type typeRight = optTypeRight.get();
 
-        boolean isArithmeticOperator = asList(BinaryExpr.Operator.PLUS, BinaryExpr.Operator.MINUS).contains(operator);
+        boolean isArithmeticOperator = asList(BinaryExpr.Operator.PLUS,
+                                              BinaryExpr.Operator.DIVIDE,
+                                              BinaryExpr.Operator.MINUS,
+                                              BinaryExpr.Operator.MULTIPLY
+                                              ).contains(operator);
         boolean isStringConcatenation = typeLeft == String.class || typeRight == String.class;
         if (isArithmeticOperator && !isStringConcatenation) {
 
-            if (typeLeft != BigDecimal.class && typeRight == BigDecimal.class) { // convert left
-                return new BigDecimalArithmeticExprT(toBigDecimalMethod(operator.toString()),
+            if (typeLeft == BigDecimal.class && typeRight == BigDecimal.class) { // do not convert
+                return new BigDecimalArithmeticExprT(toBigDecimalMethod(operator),
+                                                     left, right);
+            } else if (typeLeft != BigDecimal.class && typeRight == BigDecimal.class) { // convert left
+                return new BigDecimalArithmeticExprT(toBigDecimalMethod(operator),
                                                      new BigDecimalConstantExprT(left), right);
-            } else if (typeLeft == BigDecimal.class && typeRight != BigDecimal.class) {
-                return new BigDecimalArithmeticExprT(toBigDecimalMethod(operator.toString()),
+            } else if (typeLeft == BigDecimal.class && typeRight != BigDecimal.class) { // convert right
+                return new BigDecimalArithmeticExprT(toBigDecimalMethod(operator),
                                                      left, new BigDecimalConstantExprT(right));
             }
         }

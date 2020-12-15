@@ -5,6 +5,8 @@ import java.math.BigDecimal;
 import java.util.Optional;
 
 import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.expr.AssignExpr;
+import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 
@@ -17,13 +19,31 @@ public class BigDecimalArithmeticExprT implements TypedExpression {
     private final TypedExpression scope;
     private final Type type = BigDecimal.class;
 
-    public static String toBigDecimalMethod(String operator) {
+    public static String toBigDecimalMethod(BinaryExpr.Operator operator) {
         switch (operator) {
-            case "PLUS":
+            case PLUS: // +
                 return "add";
-            case "MINUS":
+            case MINUS: // -
                 return "subtract";
-            case "ASSIGN":
+            case MULTIPLY: // *
+                return "multiply";
+            case DIVIDE: // /
+                return "divide";
+        }
+        throw new RuntimeException("Unknown operator");
+    }
+
+    public static String toBigDecimalMethod(AssignExpr.Operator operator) {
+        switch (operator) {
+            case PLUS: // +=
+                return "add";
+            case MINUS: // -=
+                return "subtract";
+            case MULTIPLY: // *=
+                return "multiply";
+            case DIVIDE: // /=
+                return "divide";
+            case ASSIGN: // =
                 return "valueOf";
         }
         throw new RuntimeException("Unknown operator");
