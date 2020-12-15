@@ -9,7 +9,7 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>kie-pmml-kie-dependencies</artifactId>
+  <artifactId>kie-pmml-kie-internal</artifactId>
 
   <name>KIE :: PMML :: Kie :: Dependencies</name>
   <description>PMML Kie-dependant module</description>
@@ -20,7 +20,7 @@
       <groupId>org.kie</groupId>
       <artifactId>kie-pmml-commons</artifactId>
     </dependency>
-    <!-- EXTERNAL -->
+    <!-- DROOLS -->
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-internal</artifactId>

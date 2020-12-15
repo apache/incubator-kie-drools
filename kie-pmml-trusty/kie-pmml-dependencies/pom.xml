@@ -56,7 +56,7 @@
     <!-- Kie dep -->
     <dependency>
       <groupId>org.kie</groupId>
-      <artifactId>kie-pmml-kie-dependencies</artifactId>
+      <artifactId>kie-pmml-kie-internal</artifactId>
     </dependency>
     <!-- Drools -->
     <dependency>
