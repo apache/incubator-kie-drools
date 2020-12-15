@@ -22,6 +22,7 @@ import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.kogito.explainability.Config;
@@ -48,6 +49,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.kie.kogito.explainability.explainability.integrationtests.pmml.AbstractPMMLTest.getPMMLRuntime;
 import static org.kie.test.util.filesystem.FileUtils.getFile;
 
+@Disabled
 class PmmlLimeExplainerTest {
 
     private static PMMLRuntime logisticRegressionIrisRuntime;
