@@ -90,9 +90,7 @@ public final class MvelParser {
      * Creating an instance will reduce setup time between parsing files.
      */
     public MvelParser(ParserConfiguration configuration) {
-        this.configuration = configuration;
-        configuration.getPostProcessors().clear();
-        this.optionalSemicolon = true;
+        this(configuration, true /* default to optional semicolon */);
     }
 
     public MvelParser(ParserConfiguration configuration, boolean optionalSemicolon) {
