@@ -18,10 +18,12 @@ package org.kie.dmn.core.impl;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Map.Entry;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Properties;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -43,6 +45,7 @@ import org.kie.dmn.core.compiler.DMNProfile;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.util.ClassLoaderUtil;
+import org.kie.internal.utils.ChainedProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,9 +77,16 @@ public class DMNRuntimeKBWrappingIKB implements DMNRuntimeKB {
     public List<DMNRuntimeEventListener> getListeners() {
         if (knowledgeBase != null && knowledgeBase instanceof KnowledgeBaseImpl && ((KnowledgeBaseImpl) knowledgeBase).getKieContainer() instanceof KieContainerImpl) {
             KieBaseModelImpl kieBaseModel = (KieBaseModelImpl) ((KieContainerImpl) ((KnowledgeBaseImpl) knowledgeBase).getKieContainer()).getKieProject().getKieBaseModel(knowledgeBase.getId());
-            return kieBaseModel.getKModule().getConfigurationProperties().entrySet().stream()
-                               .filter(kv -> kv.getKey() != null && kv.getKey().startsWith(DMNAssemblerService.DMN_RUNTIME_LISTENER_PREFIX))
-                               .map(Entry::getValue)
+            ChainedProperties cp = ChainedProperties.getChainedProperties(getRootClassLoader());
+            Properties kmoduleProperties = new Properties();
+            kmoduleProperties.putAll(kieBaseModel.getKModule().getConfigurationProperties());
+            cp.addProperties(kmoduleProperties);
+
+            Map<String, String> listenersMap = new HashMap<>();
+            cp.mapStartsWith(listenersMap, DMNAssemblerService.DMN_RUNTIME_LISTENER_PREFIX, true);
+            logger.debug("{}", listenersMap);
+
+            return listenersMap.values().stream()
                                .map(this::loadEventListener)
                                .flatMap(o -> o.map(Stream::of).orElseGet(Stream::empty))
                                .collect(Collectors.toList());

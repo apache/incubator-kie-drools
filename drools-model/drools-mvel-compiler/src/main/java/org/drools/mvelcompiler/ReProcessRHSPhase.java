@@ -8,7 +8,7 @@ import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import com.github.javaparser.ast.expr.LongLiteralExpr;
 import org.drools.mvel.parser.ast.visitor.DrlGenericVisitor;
-import org.drools.mvelcompiler.ast.BigDecimalExprT;
+import org.drools.mvelcompiler.ast.BigDecimalConstantExprT;
 import org.drools.mvelcompiler.ast.IntegerLiteralExpressionT;
 import org.drools.mvelcompiler.ast.LongLiteralExpressionT;
 import org.drools.mvelcompiler.ast.TypedExpression;
@@ -46,6 +46,6 @@ public class ReProcessRHSPhase implements DrlGenericVisitor<Optional<TypedExpres
     private Optional<TypedExpression> convertWhenLHSISBigDecimal(Supplier<TypedExpression> conversionFunction) {
         return lhs.getType()
                 .filter(BigDecimal.class::equals)
-                .flatMap(t -> Optional.of(BigDecimalExprT.valueOf(conversionFunction.get())));
+                .flatMap(t -> Optional.of(new BigDecimalConstantExprT(conversionFunction.get())));
     }
 }
