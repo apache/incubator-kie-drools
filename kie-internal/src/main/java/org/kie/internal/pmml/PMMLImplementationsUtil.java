@@ -43,7 +43,9 @@ public class PMMLImplementationsUtil {
         boolean isLegacyPresent = isImplementationPresent(LEGACY_IMPL, classLoader);
         boolean isTrustyPresent = isImplementationPresent(TRUSTY_IMPL, classLoader);
         if (!isLegacyPresent && !isTrustyPresent) {
-            throw new IllegalStateException("Could not find PMML implementation");
+            // if no pmml implementation can be loaded from the classloader we assume that we are
+            // running under OSGi and use the legacy implementation which is the only one OSGi-compatible
+            return LEGACY;
         }
         return getPMMLConstants(isLegacyPresent, isTrustyPresent);
     }

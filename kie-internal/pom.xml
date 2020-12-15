@@ -87,6 +87,7 @@
               org.kie.api.logger,
               org.kie.api.marshalling,
               org.kie.api.persistence.jpa,
+              org.kie.api.pmml,
               org.kie.api.runtime,
               org.kie.api.runtime.conf,
               org.kie.api.runtime.manager,
@@ -99,7 +100,8 @@
               org.kie.scanner;resolution:=optional,
               org.osgi.framework,
               org.osgi.util.tracker,
-              org.slf4j
+              org.slf4j,
+              *
             </Import-Package>
             <Export-Package>
               org.kie.internal.*
