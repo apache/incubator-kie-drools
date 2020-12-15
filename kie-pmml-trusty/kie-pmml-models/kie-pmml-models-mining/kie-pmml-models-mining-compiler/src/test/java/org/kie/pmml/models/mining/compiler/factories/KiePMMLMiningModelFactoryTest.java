@@ -40,6 +40,7 @@ import org.junit.Test;
 import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.commons.model.KiePMMLModel;
+import org.kie.pmml.models.mining.compiler.HasKnowledgeBuilderMock;
 import org.kie.pmml.models.mining.model.KiePMMLMiningModel;
 import org.xml.sax.SAXException;
 
@@ -71,7 +72,7 @@ public class KiePMMLMiningModelFactoryTest extends AbstractKiePMMLFactoryTest {
         final KiePMMLMiningModel retrieved = KiePMMLMiningModelFactory.getKiePMMLMiningModel(DATA_DICTIONARY,
                                                                                              TRANSFORMATION_DICTIONARY,
                                                                                              MINING_MODEL,
-                                                                                             KNOWLEDGE_BUILDER);
+                                                                                             new HasKnowledgeBuilderMock(KNOWLEDGE_BUILDER));
         assertNotNull(retrieved);
         assertEquals(MINING_MODEL.getAlgorithmName(), retrieved.getAlgorithmName());
         assertEquals(MINING_MODEL.isScorable(), retrieved.isScorable());
@@ -87,8 +88,8 @@ public class KiePMMLMiningModelFactoryTest extends AbstractKiePMMLFactoryTest {
                                                                                                         TRANSFORMATION_DICTIONARY,
                                                                                                         MINING_MODEL,
                                                                                                         packageName,
-                                                                                                       KNOWLEDGE_BUILDER,
-                                                                                                       nestedModels);
+                                                                                                        new HasKnowledgeBuilderMock(KNOWLEDGE_BUILDER),
+                                                                                                        nestedModels);
         assertNotNull(retrieved);
         int expectedNestedModels = MINING_MODEL.getSegmentation().getSegments().size();
         assertEquals(expectedNestedModels, nestedModels.size());

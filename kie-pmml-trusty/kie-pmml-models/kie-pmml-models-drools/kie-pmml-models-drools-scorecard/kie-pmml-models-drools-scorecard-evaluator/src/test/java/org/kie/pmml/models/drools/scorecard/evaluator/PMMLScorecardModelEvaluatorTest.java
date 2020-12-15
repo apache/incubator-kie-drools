@@ -90,7 +90,7 @@ public class PMMLScorecardModelEvaluatorTest {
         assertEquals(1, pmml.getModels().size());
         assertTrue(pmml.getModels().get(0) instanceof Scorecard);
         KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
-        kiePMMLModel = provider.getKiePMMLModel(pmml.getDataDictionary(), pmml.getTransformationDictionary(), (Scorecard) pmml.getModels().get(0), knowledgeBuilder);
+        kiePMMLModel = provider.getKiePMMLModel(pmml.getDataDictionary(), pmml.getTransformationDictionary(), (Scorecard) pmml.getModels().get(0), new HasKnowledgeBuilderMock(knowledgeBuilder));
         kieBase = new KieHelper()
                 .addContent(knowledgeBuilder.getPackageDescrs(kiePMMLModel.getKModulePackageName()).get(0))
                 .setReleaseId(RELEASE_ID)

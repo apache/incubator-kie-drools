@@ -37,6 +37,7 @@ import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
+import org.kie.pmml.commons.model.HasClassLoader;
 import org.kie.pmml.commons.model.KiePMMLExtension;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
@@ -76,7 +77,7 @@ public class KiePMMLMiningModelFactory {
     public static KiePMMLMiningModel getKiePMMLMiningModel(final DataDictionary dataDictionary,
                                                            final TransformationDictionary transformationDictionary,
                                                            final MiningModel model,
-                                                           final KnowledgeBuilder kBuilder) {
+                                                           final HasClassLoader hasClassloader) {
         logger.debug("getKiePMMLMiningModel {}", model);
         String name = model.getModelName();
         Optional<String> targetFieldName = getTargetFieldName(dataDictionary, model);
@@ -88,7 +89,7 @@ public class KiePMMLMiningModelFactory {
                                                   transformationDictionary,
                                                   model.getSegmentation(),
                                                   String.format(SEGMENTATIONNAME_TEMPLATE, model.getModelName()),
-                                                  kBuilder))
+                                                  hasClassloader))
                 .withTargetField(targetFieldName.orElse(null))
                 .build();
     }
@@ -97,7 +98,7 @@ public class KiePMMLMiningModelFactory {
                                                                       final TransformationDictionary transformationDictionary,
                                                                       final MiningModel model,
                                                                       final String parentPackageName,
-                                                                      final KnowledgeBuilder kBuilder,
+                                                                      final HasClassLoader hasClassloader,
                                                                       final List<KiePMMLModel> nestedModels) {
         logger.trace("getKiePMMLMiningModelSourcesMap {} {} {}", dataDictionary, model, parentPackageName);
         final String segmentationName = String.format(SEGMENTATIONNAME_TEMPLATE, model.getModelName());
@@ -106,7 +107,7 @@ public class KiePMMLMiningModelFactory {
                                                                        transformationDictionary,
                                                                        model.getSegmentation(),
                                                                        segmentationName,
-                                                                       kBuilder,
+                                                                       hasClassloader,
                                                                        nestedModels);
         String segmentationClass =
                 getSanitizedPackageName(parentPackageName + "." + segmentationName) + "." + getSanitizedClassName(segmentationName);
