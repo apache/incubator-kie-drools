@@ -32,12 +32,14 @@ import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.api.enums.PMML_MODEL;
+import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.commons.model.HasClassLoader;
 import org.kie.pmml.compiler.testutils.TestUtils;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsAST;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsType;
+import org.kie.pmml.models.drools.commons.implementations.HasKnowledgeBuilderMock;
 import org.kie.pmml.models.drools.commons.model.KiePMMLDroolsModel;
 import org.kie.pmml.models.drools.commons.model.KiePMMLDroolsModelWithSources;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
@@ -69,7 +71,8 @@ public class DroolsModelProviderTest {
             public KiePMMLDroolsModel getKiePMMLDroolsModel(final DataDictionary dataDictionary,
                                                             final TransformationDictionary transformationDictionary,
                                                             final Scorecard model,
-                                                            final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
+                                                            final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap,
+                                                            final HasClassLoader hasClassLoader) {
                 //  Needed to avoid Mockito usage
                 return new KiePMMLDroolsModelTest(dataDictionary, transformationDictionary, model, fieldTypeMap);
             }
@@ -107,7 +110,7 @@ public class DroolsModelProviderTest {
         KiePMMLDroolsModel retrieved = droolsModelProvider.getKiePMMLModel(pmml.getDataDictionary(),
                                                                            pmml.getTransformationDictionary(),
                                                                            scorecard,
-                                                                           knowledgeBuilder);
+                                                                           new HasKnowledgeBuilderMock(knowledgeBuilder));
         assertNotNull(retrieved);
         assertTrue(retrieved instanceof KiePMMLDroolsModelTest);
         KiePMMLDroolsModelTest retrievedTest = (KiePMMLDroolsModelTest) retrieved;
@@ -124,9 +127,9 @@ public class DroolsModelProviderTest {
     @Test(expected = KiePMMLException.class)
     public void getKiePMMLModelNoKnowledgeBuilder() {
         droolsModelProvider.getKiePMMLModel(pmml.getDataDictionary(),
-                                                                           pmml.getTransformationDictionary(),
-                                                                           scorecard,
-                                                                           "knowledgeBuilder");
+                                            pmml.getTransformationDictionary(),
+                                            scorecard,
+                                            () -> null);
     }
 
     @Test
@@ -136,7 +139,7 @@ public class DroolsModelProviderTest {
                                                                                       pmml.getDataDictionary(),
                                                                                       pmml.getTransformationDictionary(),
                                                                                       scorecard,
-                                                                                      knowledgeBuilder);
+                                                                                      new HasKnowledgeBuilderMock(knowledgeBuilder));
         assertNotNull(retrieved);
         assertTrue(retrieved instanceof KiePMMLDroolsModelWithSources);
         KiePMMLDroolsModelWithSources retrievedSources = (KiePMMLDroolsModelWithSources) retrieved;
@@ -154,7 +157,7 @@ public class DroolsModelProviderTest {
                                                        null,
                                                        null,
                                                        null,
-                                                       knowledgeBuilder);
+                                                       new HasKnowledgeBuilderMock(knowledgeBuilder));
     }
 
     @Test(expected = KiePMMLException.class)
@@ -163,7 +166,7 @@ public class DroolsModelProviderTest {
                                                        pmml.getDataDictionary(),
                                                        pmml.getTransformationDictionary(),
                                                        scorecard,
-                                                       "knowledgeBuilder");
+                                                       () -> null);
     }
 
     @Test
@@ -332,4 +335,5 @@ public class DroolsModelProviderTest {
             this.packageName = packageName;
         }
     }
+
 }

@@ -64,13 +64,17 @@ public class KiePMMLTreeModelFactory {
         // Avoid instantiation
     }
 
-    public static KiePMMLTreeModel getKiePMMLTreeModel(final DataDictionary dataDictionary, final TransformationDictionary transformationDictionary, final TreeModel model, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) throws IllegalAccessException, InstantiationException {
+    public static KiePMMLTreeModel getKiePMMLTreeModel(final DataDictionary dataDictionary,
+                                                       final TransformationDictionary transformationDictionary,
+                                                       final TreeModel model,
+                                                       final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap,
+                                                       final ClassLoader classLoader) throws IllegalAccessException, InstantiationException {
         logger.trace("getKiePMMLTreeModel {}", model);
         String className = getSanitizedClassName(model.getModelName());
         String packageName = getSanitizedPackageName(className);
         Map<String, String> sourcesMap = getKiePMMLTreeModelSourcesMap(dataDictionary, transformationDictionary, model, fieldTypeMap, packageName);
         String fullClassName = packageName + "." + className;
-        final Map<String, Class<?>> compiledClasses = KieMemoryCompiler.compile(sourcesMap, Thread.currentThread().getContextClassLoader());
+        final Map<String, Class<?>> compiledClasses = KieMemoryCompiler.compile(sourcesMap, classLoader);
         return (KiePMMLTreeModel) compiledClasses.get(fullClassName).newInstance();
     }
 

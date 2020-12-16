@@ -60,13 +60,17 @@ public class KiePMMLScorecardModelFactory {
         // Avoid instantiation
     }
 
-    public static KiePMMLScorecardModel getKiePMMLScorecardModel(final DataDictionary dataDictionary, final TransformationDictionary transformationDictionary, final Scorecard model, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) throws IllegalAccessException, InstantiationException {
+    public static KiePMMLScorecardModel getKiePMMLScorecardModel(final DataDictionary dataDictionary,
+                                                                 final TransformationDictionary transformationDictionary,
+                                                                 final Scorecard model,
+                                                                 final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap,
+                                                                 final ClassLoader classLoader) throws IllegalAccessException, InstantiationException {
         logger.trace("getKiePMMLScorecardModel {}", model);
         String className = getSanitizedClassName(model.getModelName());
         String packageName = getSanitizedPackageName(className);
         Map<String, String> sourcesMap = getKiePMMLScorecardModelSourcesMap(dataDictionary, transformationDictionary, model, fieldTypeMap, packageName);
         String fullClassName = packageName + "." + className;
-        final Map<String, Class<?>> compiledClasses = KieMemoryCompiler.compile(sourcesMap, Thread.currentThread().getContextClassLoader());
+        final Map<String, Class<?>> compiledClasses = KieMemoryCompiler.compile(sourcesMap, classLoader);
         return (KiePMMLScorecardModel) compiledClasses.get(fullClassName).newInstance();
     }
 

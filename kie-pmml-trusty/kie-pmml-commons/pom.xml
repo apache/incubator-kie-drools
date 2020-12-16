@@ -11,7 +11,7 @@
 
   <artifactId>kie-pmml-commons</artifactId>
 
-  <name>KIE :: PMML :: COMMONS</name>
+  <name>KIE :: PMML :: Commons</name>
   <description>Common code for PMML module</description>
 
   <properties>

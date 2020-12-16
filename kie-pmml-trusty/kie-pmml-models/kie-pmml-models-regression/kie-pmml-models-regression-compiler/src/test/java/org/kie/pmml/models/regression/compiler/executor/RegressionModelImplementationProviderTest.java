@@ -24,8 +24,8 @@ import org.dmg.pmml.PMML;
 import org.dmg.pmml.regression.RegressionModel;
 import org.junit.Test;
 import org.kie.memorycompiler.KieMemoryCompiler;
-import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.enums.PMML_MODEL;
+import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.compiler.testutils.TestUtils;
 import org.kie.pmml.models.regression.model.KiePMMLRegressionModel;
 import org.kie.pmml.models.regression.model.KiePMMLRegressionModelWithSources;
@@ -74,7 +74,7 @@ public class RegressionModelImplementationProviderTest {
         final KiePMMLRegressionModel retrieved = PROVIDER.getKiePMMLModel(pmml.getDataDictionary(),
                                                                           pmml.getTransformationDictionary(),
                                                                           (RegressionModel) pmml.getModels().get(0),
-                                                                          RELEASE_ID);
+                                                                          () -> Thread.currentThread().getContextClassLoader());
         assertNotNull(retrieved);
     }
 
@@ -89,7 +89,7 @@ public class RegressionModelImplementationProviderTest {
                 packageName,
                 pmml.getDataDictionary(),
                 pmml.getTransformationDictionary(),
-                (RegressionModel) pmml.getModels().get(0), RELEASE_ID);
+                (RegressionModel) pmml.getModels().get(0), () -> null);
         assertNotNull(retrieved);
         assertTrue(retrieved instanceof KiePMMLRegressionModelWithSources);
         KiePMMLRegressionModelWithSources retrievedWithSources = (KiePMMLRegressionModelWithSources) retrieved;

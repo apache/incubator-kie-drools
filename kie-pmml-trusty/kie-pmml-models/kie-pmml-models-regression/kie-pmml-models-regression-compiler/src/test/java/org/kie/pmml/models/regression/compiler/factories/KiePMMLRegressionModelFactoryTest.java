@@ -137,7 +137,10 @@ public class KiePMMLRegressionModelFactoryTest {
 
     @Test
     public void getKiePMMLRegressionModelClasses() throws IOException, IllegalAccessException, InstantiationException {
-        KiePMMLRegressionModel retrieved = KiePMMLRegressionModelFactory.getKiePMMLRegressionModelClasses(dataDictionary, transformationDictionary, regressionModel);
+        KiePMMLRegressionModel retrieved = KiePMMLRegressionModelFactory.getKiePMMLRegressionModelClasses(dataDictionary,
+                                                                                                          transformationDictionary,
+                                                                                                          regressionModel,
+                                                                                                          Thread.currentThread().getContextClassLoader());
         assertNotNull(retrieved);
         assertEquals(regressionModel.getModelName(), retrieved.getName());
         assertEquals(MINING_FUNCTION.byName(regressionModel.getMiningFunction().value()), retrieved.getMiningFunction());

@@ -27,6 +27,7 @@ import org.dmg.pmml.TransformationDictionary;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
+import org.kie.pmml.commons.model.HasClassLoader;
 import org.kie.pmml.compiler.api.provider.ModelImplementationProvider;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 
@@ -55,7 +56,8 @@ public class TestingModelImplementationProvider implements ModelImplementationPr
     @Override
     public KiePMMLTestModel getKiePMMLModel(final DataDictionary dataDictionary,
                                             final TransformationDictionary transformationDictionary,
-                                            final TestModel model, Object kBuilder) {
+                                            final TestModel model,
+                                            final HasClassLoader hasClassLoader) {
         return new KiePMMLTestModel("TEST_MODEL", Collections.emptyList());
     }
 
@@ -64,7 +66,7 @@ public class TestingModelImplementationProvider implements ModelImplementationPr
                                                        final DataDictionary dataDictionary,
                                                        final TransformationDictionary transformationDictionary,
                                                        final TestModel model,
-                                                       Object kBuilder) {
+                                                       final HasClassLoader hasClassLoader) {
         final Map<String, String> sourcesMap = getKiePMMLTestModelSourcesMap(dataDictionary, transformationDictionary
                 , model, packageName);
         return new KiePMMLTestingModelWithSources(model.getModelName(), packageName, sourcesMap);

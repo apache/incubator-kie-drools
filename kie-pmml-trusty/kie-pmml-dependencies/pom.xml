@@ -10,7 +10,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>kie-pmml-dependencies</artifactId>
-  <packaging>pom</packaging>
+  <packaging>jar</packaging>
 
   <name>KIE :: PMML :: Dependencies</name>
   <description>
@@ -52,6 +52,11 @@
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-pmml-evaluator-assembler</artifactId>
+    </dependency>
+    <!-- Kie dep -->
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-kie-internal</artifactId>
     </dependency>
     <!-- Drools -->
     <dependency>

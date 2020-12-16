@@ -21,9 +21,9 @@ import org.dmg.pmml.PMML;
 import org.dmg.pmml.tree.TreeModel;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.junit.Test;
-import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.compiler.commons.utils.KiePMMLUtil;
+import org.kie.pmml.models.drools.commons.implementations.HasKnowledgeBuilderMock;
 import org.kie.pmml.models.drools.commons.model.KiePMMLDroolsModel;
 import org.kie.pmml.models.drools.tree.model.KiePMMLTreeModel;
 import org.kie.test.util.filesystem.FileUtils;
@@ -35,7 +35,6 @@ import static org.junit.Assert.assertTrue;
 public class TreeModelImplementationProviderTest {
 
     private static final TreeModelImplementationProvider PROVIDER = new TreeModelImplementationProvider();
-    private final static KnowledgeBuilder KNOWLEDGE_BUILDER = new KnowledgeBuilderImpl();
     private static final String SOURCE_1 = "TreeSample.pmml";
 
     @Test
@@ -46,7 +45,11 @@ public class TreeModelImplementationProviderTest {
     @Test
     public void getKiePMMLModel() throws Exception {
         final PMML pmml = getPMML(SOURCE_1);
-        final KiePMMLTreeModel kiePMMLModel = PROVIDER.getKiePMMLModel(pmml.getDataDictionary(), pmml.getTransformationDictionary(), (TreeModel) pmml.getModels().get(0), KNOWLEDGE_BUILDER);
+        KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
+        final KiePMMLTreeModel kiePMMLModel = PROVIDER.getKiePMMLModel(pmml.getDataDictionary(),
+                                                                       pmml.getTransformationDictionary(),
+                                                                       (TreeModel) pmml.getModels().get(0),
+                                                                       new HasKnowledgeBuilderMock(knowledgeBuilder));
         assertNotNull(kiePMMLModel);
     }
 
@@ -58,7 +61,7 @@ public class TreeModelImplementationProviderTest {
                                                                                  pmml.getDataDictionary(),
                                                                                  pmml.getTransformationDictionary(),
                                                                                  (TreeModel) pmml.getModels().get(0),
-                                                                                 knowledgeBuilder);
+                                                                                 new HasKnowledgeBuilderMock(knowledgeBuilder));
         assertNotNull(retrieved);
     }
 
