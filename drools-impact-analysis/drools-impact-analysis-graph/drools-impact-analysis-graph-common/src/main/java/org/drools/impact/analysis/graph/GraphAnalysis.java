@@ -41,7 +41,7 @@ public class GraphAnalysis {
     }
 
     public void addNode(Node node) {
-        nodeMap.put(node.getFqdn(), node);
+        nodeMap.put(node.getId(), node);
     }
 
     public boolean isRegisteredClass(Class<?> clazz) {
