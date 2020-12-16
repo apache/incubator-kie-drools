@@ -26,6 +26,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.assertj.core.api.Assertions;
 import org.drools.core.base.accumulators.CountAccumulateFunction;
+import org.drools.core.base.accumulators.IntegerMaxAccumulateFunction;
+import org.drools.core.base.accumulators.IntegerSumAccumulateFunction;
 import org.drools.core.common.GroupByFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
@@ -983,5 +985,103 @@ public class GroupByTest {
         ksession.delete(fh2);
         ksession.fireAllRules();
         assertThat( results ).doesNotContain(edoardoAge);
+    }
+
+    @Test
+    public void testTwoGroupBy() {
+        // DROOLS-5697
+        Global<Map> var_results = D.globalOf(Map.class, "defaultpkg", "results");
+
+        Variable<String> var_$key_1 = D.declarationOf(String.class);
+        Variable<Person> var_$p = D.declarationOf(Person.class);
+        Variable<Integer> var_$age = D.declarationOf(Integer.class);
+        Variable<Integer> var_$sumOfAges = D.declarationOf(Integer.class);
+        Variable<Group> var_$g1 = D.declarationOf(Group.class, "$g1", D.from(var_$key_1, var_$sumOfAges, ($k, $v) -> new Group($k, $v)));
+        Variable<Integer> var_$g1_value = D.declarationOf(Integer.class);
+        Variable<String> var_$key_2 = D.declarationOf(String.class);
+        Variable<Integer> var_$maxOfValues = D.declarationOf(Integer.class);
+
+        Rule rule1 = D.rule("R1").build(
+                D.groupBy(
+                        D.pattern(var_$p).bind(var_$age, person -> person.getAge()),
+                        var_$p, var_$key_1, person -> person.getName().substring(0, 3),
+                        D.accFunction( IntegerSumAccumulateFunction::new, var_$age).as(var_$sumOfAges)),
+                D.groupBy(
+                        D.pattern(var_$g1).bind(var_$g1_value, group -> (Integer) group.getValue()),
+                        var_$g1, var_$key_2, groupResult -> ((String)groupResult.getKey()).substring(0, 2),
+                        D.accFunction( IntegerMaxAccumulateFunction::new, var_$g1_value).as(var_$maxOfValues)),
+                D.on(var_$key_2, var_results, var_$maxOfValues)
+                        .execute(($key, results, $maxOfValues) -> results.put($key, $maxOfValues))
+        );
+
+        Model model = new ModelImpl().addRule( rule1 ).addGlobal( var_results );
+        KieSession ksession = KieBaseBuilder.createKieBaseFromModel( model ).newKieSession();
+
+        Map results = new HashMap();
+        ksession.setGlobal( "results", results );
+
+        ksession.insert(new Person("Mark", 42));
+        ksession.insert(new Person("Edson", 38));
+        FactHandle meFH = ksession.insert(new Person("Mario", 45));
+        ksession.insert(new Person("Maciej", 39));
+        ksession.insert(new Person("Edoardo", 33));
+        FactHandle geoffreyFH = ksession.insert(new Person("Geoffrey", 35));
+        ksession.fireAllRules();
+
+        /*
+         * In the first groupBy:
+         *   Mark+Mario become "(Mar, 87)"
+         *   Maciej becomes "(Mac, 39)"
+         *   Geoffrey becomes "(Geo, 35)"
+         *   Edson becomes "(Eds, 38)"
+         *   Edoardo becomes "(Edo, 33)"
+         *
+         * Then in the second groupBy:
+         *   "(Mar, 87)" and "(Mac, 39)" become "(Ma, 87)"
+         *   "(Eds, 38)" and "(Edo, 33)" become "(Ed, 38)"
+         *   "(Geo, 35)" becomes "(Ge, 35)"
+         */
+
+        assertEquals( 3, results.size() );
+        assertEquals( 87, results.get("Ma") );
+        assertEquals( 38, results.get("Ed") );
+        assertEquals( 35, results.get("Ge") );
+        results.clear();
+
+        ksession.delete( meFH );
+        ksession.fireAllRules();
+
+        // No Mario anymore, so "(Mar, 42)" instead of "(Mar, 87)".
+        // Therefore "(Ma, 42)".
+        assertEquals( 1, results.size() );
+        assertEquals( 42, results.get("Ma") );
+        results.clear();
+
+        // "(Geo, 35)" is gone.
+        // "(Mat, 38)" is added, but Mark still wins, so "(Ma, 42)" stays.
+        ksession.delete(geoffreyFH);
+        ksession.insert(new Person("Matteo", 38));
+        ksession.fireAllRules();
+
+        assertEquals( 1, results.size() );
+        assertEquals( 42, results.get("Ma") );
+    }
+
+    public static class Group {
+        private final Object key;
+        private final Object value;
+
+        public Group( Object key, Object value ) {
+            this.key = key;
+            this.value = value;
+        }
+
+        public Object getKey() {
+            return key;
+        }
+
+        public Object getValue() {
+            return value;
+        }
     }
 }
