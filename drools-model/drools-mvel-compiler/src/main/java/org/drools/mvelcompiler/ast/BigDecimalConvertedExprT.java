@@ -27,12 +27,12 @@ import com.github.javaparser.ast.expr.ObjectCreationExpr;
 
 import static com.github.javaparser.ast.NodeList.nodeList;
 
-public class BigDecimalConstantExprT implements TypedExpression {
+public class BigDecimalConvertedExprT implements TypedExpression {
 
     private final TypedExpression value;
     private final Type type = BigDecimal.class;
 
-    public BigDecimalConstantExprT(TypedExpression value) {
+    public BigDecimalConvertedExprT(TypedExpression value) {
         this.value = value;
     }
 
