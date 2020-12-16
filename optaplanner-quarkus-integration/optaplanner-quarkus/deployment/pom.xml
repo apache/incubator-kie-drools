@@ -66,6 +66,17 @@
       </exclusions>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <!-- Required to test Quarkus with constraints DRL. -->
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>drools-core-dynamic</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>

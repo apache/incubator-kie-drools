@@ -31,8 +31,6 @@ import io.quarkus.runtime.annotations.ConfigItem;
 @ConfigGroup
 public class SolverBuildTimeConfig {
 
-    public static final String DEFAULT_SCORE_DRL_URL = "constraints.drl";
-
     /**
      * Enable runtime assertions to detect common bugs in your implementation during development.
      * Defaults to {@link EnvironmentMode#REPRODUCIBLE}.

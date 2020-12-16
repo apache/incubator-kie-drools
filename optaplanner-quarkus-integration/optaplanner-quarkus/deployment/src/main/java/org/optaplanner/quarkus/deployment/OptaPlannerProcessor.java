@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.inject.Singleton;
@@ -77,8 +78,10 @@ class OptaPlannerProcessor {
     }
 
     @BuildStep
-    HotDeploymentWatchedFileBuildItem watchScoreDrl() {
-        return new HotDeploymentWatchedFileBuildItem(SolverBuildTimeConfig.DEFAULT_SCORE_DRL_URL);
+    HotDeploymentWatchedFileBuildItem watchConstraintsDrl() {
+        String constraintsDrl =
+                optaPlannerBuildTimeConfig.scoreDrl.orElse(OptaPlannerBuildTimeConfig.DEFAULT_CONSTRAINTS_DRL_URL);
+        return new HotDeploymentWatchedFileBuildItem(constraintsDrl);
     }
 
     @BuildStep
@@ -210,32 +213,88 @@ class OptaPlannerProcessor {
                 .collect(Collectors.toList());
     }
 
-    private void applyScoreDirectorFactoryProperties(IndexView indexView, SolverConfig solverConfig) {
+    protected void applyScoreDirectorFactoryProperties(IndexView indexView, SolverConfig solverConfig) {
+        Optional<String> constraintsDrlFromProperty = constraintsDrl();
+        Optional<String> defaultConstraintsDrl = defaultConstraintsDrl();
+        Optional<String> effectiveConstraintsDrl = constraintsDrlFromProperty.map(Optional::of).orElse(defaultConstraintsDrl);
         if (solverConfig.getScoreDirectorFactoryConfig() == null) {
-            ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = new ScoreDirectorFactoryConfig();
-            scoreDirectorFactoryConfig.setEasyScoreCalculatorClass(
-                    findImplementingClass(DotNames.EASY_SCORE_CALCULATOR, indexView));
-            scoreDirectorFactoryConfig.setConstraintProviderClass(
-                    findImplementingClass(DotNames.CONSTRAINT_PROVIDER, indexView));
-            scoreDirectorFactoryConfig.setIncrementalScoreCalculatorClass(
-                    findImplementingClass(DotNames.INCREMENTAL_SCORE_CALCULATOR, indexView));
-            ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-            if (classLoader.getResource(SolverBuildTimeConfig.DEFAULT_SCORE_DRL_URL) != null) {
-                scoreDirectorFactoryConfig.setScoreDrlList(Collections.singletonList(
-                        SolverBuildTimeConfig.DEFAULT_SCORE_DRL_URL));
-            }
-            if (scoreDirectorFactoryConfig.getEasyScoreCalculatorClass() == null
-                    && scoreDirectorFactoryConfig.getConstraintProviderClass() == null
-                    && scoreDirectorFactoryConfig.getIncrementalScoreCalculatorClass() == null
-                    && scoreDirectorFactoryConfig.getScoreDrlList() == null) {
-                throw new IllegalStateException("No classes found that implement "
-                        + EasyScoreCalculator.class.getSimpleName() + ", "
-                        + ConstraintProvider.class.getSimpleName() + " or "
-                        + IncrementalScoreCalculator.class.getSimpleName() + ", nor a "
-                        + SolverBuildTimeConfig.DEFAULT_SCORE_DRL_URL + " resource.");
-            }
+            ScoreDirectorFactoryConfig scoreDirectorFactoryConfig =
+                    defaultScoreDirectoryFactoryConfig(indexView, effectiveConstraintsDrl);
             solverConfig.setScoreDirectorFactoryConfig(scoreDirectorFactoryConfig);
+        } else {
+            ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = solverConfig.getScoreDirectorFactoryConfig();
+            if (constraintsDrlFromProperty.isPresent()) {
+                scoreDirectorFactoryConfig.setScoreDrlList(Collections.singletonList(constraintsDrlFromProperty.get()));
+            } else {
+                if (scoreDirectorFactoryConfig.getScoreDrlList() == null) {
+                    defaultConstraintsDrl.ifPresent(resolvedConstraintsDrl -> scoreDirectorFactoryConfig
+                            .setScoreDrlList(Collections.singletonList(resolvedConstraintsDrl)));
+                }
+            }
         }
+
+        if (solverConfig.getScoreDirectorFactoryConfig().getScoreDrlList() != null) {
+            boolean isDroolsDynamicPresent = isClassDefined("org.drools.dynamic.DynamicServiceRegistrySupplier");
+            if (!isDroolsDynamicPresent) {
+                throw new IllegalStateException(
+                        "Using scoreDRL in Quarkus, but the dependency drools-core-dynamic is not on the classpath.\n"
+                                + "Maybe add the dependency org.kie.kogito:drools-core-dynamic and exclude the dependency"
+                                + " org.kie.kogito:drools-core-static."
+                                + "\nOr maybe use a " + ConstraintProvider.class.getSimpleName() + " instead of the scoreDRL.");
+            }
+        }
+    }
+
+    private boolean isClassDefined(String className) {
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        try {
+            Class.forName(className, false, classLoader);
+            return true;
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
+    }
+
+    protected Optional<String> constraintsDrl() {
+        if (optaPlannerBuildTimeConfig.scoreDrl.isPresent()) {
+            String constraintsDrl = optaPlannerBuildTimeConfig.scoreDrl.get();
+            ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+            if (classLoader.getResource(constraintsDrl) == null) {
+                throw new IllegalStateException("Invalid " + OptaPlannerBuildTimeConfig.CONSTRAINTS_DRL_PROPERTY
+                        + " property (" + constraintsDrl + "): that classpath resource does not exist.");
+            }
+        }
+        return optaPlannerBuildTimeConfig.scoreDrl;
+    }
+
+    protected Optional<String> defaultConstraintsDrl() {
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        return classLoader.getResource(OptaPlannerBuildTimeConfig.DEFAULT_CONSTRAINTS_DRL_URL) != null
+                ? Optional.of(OptaPlannerBuildTimeConfig.DEFAULT_CONSTRAINTS_DRL_URL)
+                : Optional.empty();
+    }
+
+    private ScoreDirectorFactoryConfig defaultScoreDirectoryFactoryConfig(IndexView indexView, Optional<String> constrainsDrl) {
+        ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = new ScoreDirectorFactoryConfig();
+        scoreDirectorFactoryConfig.setEasyScoreCalculatorClass(
+                findImplementingClass(DotNames.EASY_SCORE_CALCULATOR, indexView));
+        scoreDirectorFactoryConfig.setConstraintProviderClass(
+                findImplementingClass(DotNames.CONSTRAINT_PROVIDER, indexView));
+        scoreDirectorFactoryConfig.setIncrementalScoreCalculatorClass(
+                findImplementingClass(DotNames.INCREMENTAL_SCORE_CALCULATOR, indexView));
+        constrainsDrl.ifPresent(value -> scoreDirectorFactoryConfig.setScoreDrlList(Collections.singletonList(value)));
+        if (scoreDirectorFactoryConfig.getEasyScoreCalculatorClass() == null
+                && scoreDirectorFactoryConfig.getConstraintProviderClass() == null
+                && scoreDirectorFactoryConfig.getIncrementalScoreCalculatorClass() == null
+                && scoreDirectorFactoryConfig.getScoreDrlList() == null) {
+            throw new IllegalStateException("No classes found that implement "
+                    + EasyScoreCalculator.class.getSimpleName() + ", "
+                    + ConstraintProvider.class.getSimpleName() + " or "
+                    + IncrementalScoreCalculator.class.getSimpleName() + ".\n"
+                    + "Neither was a property " + OptaPlannerBuildTimeConfig.CONSTRAINTS_DRL_PROPERTY + " defined, nor a "
+                    + OptaPlannerBuildTimeConfig.DEFAULT_CONSTRAINTS_DRL_URL + " resource found.\n");
+        }
+        return scoreDirectorFactoryConfig;
     }
 
     private <T> Class<? extends T> findImplementingClass(DotName targetDotName, IndexView indexView) {

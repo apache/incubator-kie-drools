@@ -200,33 +200,69 @@ public class OptaPlannerAutoConfiguration implements BeanClassLoaderAware {
         return new ArrayList<>(entityClassSet);
     }
 
-    private void applyScoreDirectorFactoryProperties(SolverConfig solverConfig) {
+    protected void applyScoreDirectorFactoryProperties(SolverConfig solverConfig) {
+        String constraintsDrlFromProperty = constraintsDrl();
+        String defaultConstraintsDrl = defaultConstraintsDrl();
+        String effectiveConstraintsDrl =
+                constraintsDrlFromProperty != null ? constraintsDrlFromProperty : defaultConstraintsDrl;
         if (solverConfig.getScoreDirectorFactoryConfig() == null) {
-            ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = new ScoreDirectorFactoryConfig();
-            scoreDirectorFactoryConfig.setEasyScoreCalculatorClass(findImplementingClass(EasyScoreCalculator.class));
-            scoreDirectorFactoryConfig.setConstraintProviderClass(findImplementingClass(ConstraintProvider.class));
-            scoreDirectorFactoryConfig
-                    .setIncrementalScoreCalculatorClass(findImplementingClass(IncrementalScoreCalculator.class));
-            if (beanClassLoader.getResource(SolverProperties.DEFAULT_SCORE_DRL_URL) != null) {
-                scoreDirectorFactoryConfig.setScoreDrlList(Collections.singletonList(
-                        SolverProperties.DEFAULT_SCORE_DRL_URL));
+            solverConfig.setScoreDirectorFactoryConfig(defaultScoreDirectoryFactoryConfig(effectiveConstraintsDrl));
+        } else {
+            ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = solverConfig.getScoreDirectorFactoryConfig();
+            if (constraintsDrlFromProperty != null) {
+                scoreDirectorFactoryConfig.setScoreDrlList(Collections.singletonList(constraintsDrlFromProperty));
+            } else {
+                if (scoreDirectorFactoryConfig.getScoreDrlList() == null && defaultConstraintsDrl != null) {
+                    scoreDirectorFactoryConfig.setScoreDrlList(Collections.singletonList(defaultConstraintsDrl));
+                }
             }
-            if (scoreDirectorFactoryConfig.getEasyScoreCalculatorClass() == null
-                    && scoreDirectorFactoryConfig.getConstraintProviderClass() == null
-                    && scoreDirectorFactoryConfig.getIncrementalScoreCalculatorClass() == null
-                    && scoreDirectorFactoryConfig.getScoreDrlList() == null) {
-                throw new IllegalStateException("No classes found that implement "
-                        + EasyScoreCalculator.class.getSimpleName() + ", "
-                        + ConstraintProvider.class.getSimpleName() + " or "
-                        + IncrementalScoreCalculator.class.getSimpleName() + ", nor a "
-                        + SolverProperties.DEFAULT_SCORE_DRL_URL + " resource.\n"
-                        + "Maybe your @" + ConstraintProvider.class.getSimpleName() + " annotated class "
-                        + " is not in a subpackage of your @" + SpringBootApplication.class.getSimpleName()
-                        + " annotated class's package.\n"
-                        + "Maybe move your constraint provider class to your application class's (sub)package.");
-            }
-            solverConfig.setScoreDirectorFactoryConfig(scoreDirectorFactoryConfig);
         }
+    }
+
+    protected String constraintsDrl() {
+        String constraintsDrl = optaPlannerProperties.getScoreDrl();
+
+        if (constraintsDrl != null) {
+            if (beanClassLoader.getResource(constraintsDrl) == null) {
+                throw new IllegalStateException("Invalid " + OptaPlannerProperties.SCORE_DRL_PROPERTY
+                        + " property (" + constraintsDrl + "): that classpath resource does not exist.");
+            }
+        }
+        return constraintsDrl;
+    }
+
+    protected String defaultConstraintsDrl() {
+        return beanClassLoader.getResource(OptaPlannerProperties.DEFAULT_CONSTRAINTS_DRL_URL) != null
+                ? OptaPlannerProperties.DEFAULT_CONSTRAINTS_DRL_URL
+                : null;
+    }
+
+    private ScoreDirectorFactoryConfig defaultScoreDirectoryFactoryConfig(String constraintsDrl) {
+        ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = new ScoreDirectorFactoryConfig();
+        scoreDirectorFactoryConfig.setEasyScoreCalculatorClass(findImplementingClass(EasyScoreCalculator.class));
+        scoreDirectorFactoryConfig.setConstraintProviderClass(findImplementingClass(ConstraintProvider.class));
+        scoreDirectorFactoryConfig
+                .setIncrementalScoreCalculatorClass(findImplementingClass(IncrementalScoreCalculator.class));
+        if (constraintsDrl != null) {
+            scoreDirectorFactoryConfig.setScoreDrlList(Collections.singletonList(constraintsDrl));
+        }
+
+        if (scoreDirectorFactoryConfig.getEasyScoreCalculatorClass() == null
+                && scoreDirectorFactoryConfig.getConstraintProviderClass() == null
+                && scoreDirectorFactoryConfig.getIncrementalScoreCalculatorClass() == null
+                && scoreDirectorFactoryConfig.getScoreDrlList() == null) {
+            throw new IllegalStateException("No classes found that implement "
+                    + EasyScoreCalculator.class.getSimpleName() + ", "
+                    + ConstraintProvider.class.getSimpleName() + " or "
+                    + IncrementalScoreCalculator.class.getSimpleName() + ".\n"
+                    + "Neither was a property " + OptaPlannerProperties.SCORE_DRL_PROPERTY + " defined, nor a "
+                    + OptaPlannerProperties.DEFAULT_CONSTRAINTS_DRL_URL + " resource found.\n"
+                    + "Maybe your @" + ConstraintProvider.class.getSimpleName() + " annotated class "
+                    + " is not in a subpackage of your @" + SpringBootApplication.class.getSimpleName()
+                    + " annotated class's package.\n"
+                    + "Maybe move your constraint provider class to your application class's (sub)package.");
+        }
+        return scoreDirectorFactoryConfig;
     }
 
     private <T> Class<? extends T> findImplementingClass(Class<T> targetClass) {

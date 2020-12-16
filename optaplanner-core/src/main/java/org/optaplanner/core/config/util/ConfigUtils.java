@@ -414,6 +414,21 @@ public class ConfigUtils {
         return memberAccessor;
     }
 
+    public static String abbreviate(List<String> list, int limit) {
+        String abbreviation = "";
+        if (list != null) {
+            abbreviation = list.stream().limit(limit).collect(Collectors.joining(", "));
+            if (list.size() > limit) {
+                abbreviation += ", ...";
+            }
+        }
+        return abbreviation;
+    }
+
+    public static String abbreviate(List<String> list) {
+        return abbreviate(list, 3);
+    }
+
     // ************************************************************************
     // Private constructor
     // ************************************************************************

@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.drools.core.io.impl.ClassPathResource;
@@ -49,13 +50,10 @@ import org.optaplanner.core.impl.score.director.easy.EasyScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.incremental.IncrementalScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.stream.ConstraintStreamScoreDirectorFactory;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>> {
 
     private static final String GENERATE_DROOLS_TEST_ON_ERROR_PROPERTY_NAME = "optaplanner.drools.generateTestOnError";
-    private static final Logger logger = LoggerFactory.getLogger(ScoreDirectorFactoryFactory.class);
 
     private final ScoreDirectorFactoryConfig config;
 
@@ -95,33 +93,18 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
 
     protected AbstractScoreDirectorFactory<Solution_, Score_> decideMultipleScoreDirectorFactories(
             ClassLoader classLoader, SolutionDescriptor<Solution_> solutionDescriptor) {
-        AbstractScoreDirectorFactory<Solution_, Score_> easyScoreDirectorFactory =
+        EasyScoreDirectorFactory<Solution_, Score_> easyScoreDirectorFactory =
                 buildEasyScoreDirectorFactory(solutionDescriptor);
-        AbstractScoreDirectorFactory<Solution_, Score_> constraintStreamScoreDirectorFactory =
+        ConstraintStreamScoreDirectorFactory<Solution_, Score_> constraintStreamScoreDirectorFactory =
                 buildConstraintStreamScoreDirectorFactory(solutionDescriptor);
-        AbstractScoreDirectorFactory<Solution_, Score_> incrementalScoreDirectorFactory =
+        IncrementalScoreDirectorFactory<Solution_, Score_> incrementalScoreDirectorFactory =
                 buildIncrementalScoreDirectorFactory(solutionDescriptor);
-        AbstractScoreDirectorFactory<Solution_, Score_> droolsScoreDirectorFactory = buildDroolsScoreDirectorFactory(
+        DroolsScoreDirectorFactory<Solution_, Score_> droolsScoreDirectorFactory = buildDroolsScoreDirectorFactory(
                 classLoader, solutionDescriptor);
-        if (Stream.of(easyScoreDirectorFactory, constraintStreamScoreDirectorFactory,
-                incrementalScoreDirectorFactory, droolsScoreDirectorFactory)
-                .filter(Objects::nonNull).count() > 1) {
-            List<String> scoreDirectorFactoryPropertyList = new ArrayList<>(4);
-            if (easyScoreDirectorFactory != null) {
-                scoreDirectorFactoryPropertyList.add("an easyScoreCalculatorClass");
-            }
-            if (constraintStreamScoreDirectorFactory != null) {
-                scoreDirectorFactoryPropertyList.add("a constraintProviderClass");
-            }
-            if (incrementalScoreDirectorFactory != null) {
-                scoreDirectorFactoryPropertyList.add("an incrementalScoreCalculatorClass");
-            }
-            if (droolsScoreDirectorFactory != null) {
-                scoreDirectorFactoryPropertyList.add("a droolsScoreDirectorFactory");
-            }
-            throw new IllegalArgumentException("The scoreDirectorFactory cannot have "
-                    + String.join(" and ", scoreDirectorFactoryPropertyList) + " together.");
-        }
+
+        checkMultipleScoreDirectorFactoryTypes(easyScoreDirectorFactory, constraintStreamScoreDirectorFactory,
+                incrementalScoreDirectorFactory, droolsScoreDirectorFactory);
+
         AbstractScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory;
         if (easyScoreDirectorFactory != null) {
             scoreDirectorFactory = easyScoreDirectorFactory;
@@ -137,6 +120,42 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
         }
 
         return scoreDirectorFactory;
+    }
+
+    private void checkMultipleScoreDirectorFactoryTypes(EasyScoreDirectorFactory easyScoreDirectorFactory,
+            ConstraintStreamScoreDirectorFactory constraintStreamScoreDirectorFactory,
+            IncrementalScoreDirectorFactory incrementalScoreDirectorFactory,
+            DroolsScoreDirectorFactory droolsScoreDirectorFactory) {
+        if (Stream.of(easyScoreDirectorFactory, constraintStreamScoreDirectorFactory,
+                incrementalScoreDirectorFactory, droolsScoreDirectorFactory)
+                .filter(Objects::nonNull).count() > 1) {
+            List<String> scoreDirectorFactoryPropertyList = new ArrayList<>(4);
+            if (easyScoreDirectorFactory != null) {
+                scoreDirectorFactoryPropertyList
+                        .add("an easyScoreCalculatorClass (" + config.getEasyScoreCalculatorClass().getName() + ")");
+            }
+            if (constraintStreamScoreDirectorFactory != null) {
+                scoreDirectorFactoryPropertyList
+                        .add("a constraintProviderClass (" + config.getConstraintProviderClass().getName() + ")");
+            }
+            if (incrementalScoreDirectorFactory != null) {
+                scoreDirectorFactoryPropertyList.add(
+                        "an incrementalScoreCalculatorClass (" + config.getIncrementalScoreCalculatorClass().getName() + ")");
+            }
+            if (droolsScoreDirectorFactory != null) {
+                String abbreviatedScoreDrlList = ConfigUtils.abbreviate(config.getScoreDrlList());
+                String abbreviatedScoreDrlFileList = config.getScoreDrlFileList() == null ? ""
+                        : ConfigUtils.abbreviate(config.getScoreDrlFileList()
+                                .stream()
+                                .map(File::getName)
+                                .collect(Collectors.toList()));
+                scoreDirectorFactoryPropertyList
+                        .add("a scoreDrlList (" + abbreviatedScoreDrlList + ") or a scoreDrlFileList ("
+                                + abbreviatedScoreDrlFileList + ")");
+            }
+            throw new IllegalArgumentException("The scoreDirectorFactory cannot have "
+                    + String.join(" and ", scoreDirectorFactoryPropertyList) + " together.");
+        }
     }
 
     protected EasyScoreDirectorFactory<Solution_, Score_> buildEasyScoreDirectorFactory(

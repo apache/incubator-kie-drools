@@ -25,36 +25,38 @@ import javax.inject.Inject;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.solver.SolverConfig;
+import org.optaplanner.quarkus.deployment.OptaPlannerBuildTimeConfig;
 import org.optaplanner.quarkus.testdata.normal.domain.TestdataQuarkusEntity;
 import org.optaplanner.quarkus.testdata.normal.domain.TestdataQuarkusSolution;
 
 import io.quarkus.test.QuarkusUnitTest;
 
-@Disabled("DRL currently not supported on Quarkus.")
-public class OptaPlannerProcessorScoreDrlDefaultTest {
+class OptaPlannerProcessorConstraintsDrlTest {
+
+    private static final String CONSTRAINTS_DRL = "customConstraints.drl";
 
     @RegisterExtension
     static final QuarkusUnitTest config = new QuarkusUnitTest()
             .setArchiveProducer(() -> ShrinkWrap.create(JavaArchive.class)
                     .addClasses(TestdataQuarkusEntity.class,
                             TestdataQuarkusSolution.class)
-                    .addAsResource("org/optaplanner/quarkus/constraints/defaultConstraints.drl", "constraints.drl"));
+                    .addAsResource("org/optaplanner/quarkus/constraints/defaultConstraints.drl", CONSTRAINTS_DRL))
+            .overrideConfigKey(OptaPlannerBuildTimeConfig.CONSTRAINTS_DRL_PROPERTY, CONSTRAINTS_DRL);
 
     @Inject
     SolverConfig solverConfig;
+
     @Inject
     SolverFactory<TestdataQuarkusSolution> solverFactory;
 
     @Test
-    public void solverConfigXml_default() {
-        assertEquals(Collections.singletonList("constraints.drl"),
+    public void constraintsDrl() {
+        assertEquals(Collections.singletonList(CONSTRAINTS_DRL),
                 solverConfig.getScoreDirectorFactoryConfig().getScoreDrlList());
         assertNotNull(solverFactory.buildSolver());
     }
-
 }

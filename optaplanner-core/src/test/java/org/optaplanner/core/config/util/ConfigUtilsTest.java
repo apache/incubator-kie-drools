@@ -23,6 +23,8 @@ import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.assertj.core.data.Offset.offset;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -250,6 +252,14 @@ public class ConfigUtilsTest {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> ConfigUtils.newInstance(this, "testProperty", LocalClass.class))
                 .withMessageContaining("inner class");
+    }
+
+    @Test
+    void abbreviate() {
+        assertThat(ConfigUtils.abbreviate(null)).isEmpty();
+        assertThat(ConfigUtils.abbreviate(Collections.emptyList())).isEmpty();
+        assertThat(ConfigUtils.abbreviate(Arrays.asList("A", "B", "C"))).isEqualTo("A, B, C");
+        assertThat(ConfigUtils.abbreviate(Arrays.asList("A", "B", "C", "D"))).isEqualTo("A, B, C, ...");
     }
 
 }

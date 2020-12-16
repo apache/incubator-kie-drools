@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2010 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,13 +14,8 @@
  * limitations under the License.
  */
 
-package org.optaplanner.spring.boot.autoconfigure.normal;
+dialect "java"
 
-import org.springframework.boot.autoconfigure.AutoConfigurationPackage;
-import org.springframework.context.annotation.Configuration;
+import org.optaplanner.core.api.score.buildin.simple.SimpleScoreHolder;
 
-@Configuration
-@AutoConfigurationPackage
-public class SpringTestConfiguration {
-
-}
+global SimpleScoreHolder scoreHolder;

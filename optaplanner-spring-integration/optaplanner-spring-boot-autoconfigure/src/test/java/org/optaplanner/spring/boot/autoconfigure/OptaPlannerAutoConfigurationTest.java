@@ -17,6 +17,9 @@
 package org.optaplanner.spring.boot.autoconfigure;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 import java.time.Duration;
 import java.util.Collections;
@@ -29,6 +32,7 @@ import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.api.solver.SolverJob;
 import org.optaplanner.core.api.solver.SolverManager;
+import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
@@ -38,7 +42,8 @@ import org.optaplanner.spring.boot.autoconfigure.chained.constraints.TestdataCha
 import org.optaplanner.spring.boot.autoconfigure.chained.domain.TestdataChainedSpringEntity;
 import org.optaplanner.spring.boot.autoconfigure.chained.domain.TestdataChainedSpringObject;
 import org.optaplanner.spring.boot.autoconfigure.chained.domain.TestdataChainedSpringSolution;
-import org.optaplanner.spring.boot.autoconfigure.normal.SpringTestConfiguration;
+import org.optaplanner.spring.boot.autoconfigure.normal.NoConstraintsSpringTestConfiguration;
+import org.optaplanner.spring.boot.autoconfigure.normal.NormalSpringTestConfiguration;
 import org.optaplanner.spring.boot.autoconfigure.normal.constraints.TestdataSpringConstraintProvider;
 import org.optaplanner.spring.boot.autoconfigure.normal.domain.TestdataSpringEntity;
 import org.optaplanner.spring.boot.autoconfigure.normal.domain.TestdataSpringSolution;
@@ -50,21 +55,32 @@ import org.springframework.core.io.ClassPathResource;
 public class OptaPlannerAutoConfigurationTest {
 
     private final ApplicationContextRunner contextRunner;
+    private final ApplicationContextRunner noConstraintsContextRunner;
     private final ApplicationContextRunner chainedContextRunner;
+    private final FilteredClassLoader allDefaultsFilteredClassLoader;
+    private final FilteredClassLoader defaultConstraintsDrlFilteredClassLoader;
 
     public OptaPlannerAutoConfigurationTest() {
         contextRunner = new ApplicationContextRunner()
                 .withConfiguration(AutoConfigurations.of(OptaPlannerAutoConfiguration.class))
-                .withUserConfiguration(SpringTestConfiguration.class);
+                .withUserConfiguration(NormalSpringTestConfiguration.class);
+        noConstraintsContextRunner = new ApplicationContextRunner()
+                .withConfiguration(AutoConfigurations.of(OptaPlannerAutoConfiguration.class))
+                .withUserConfiguration(NoConstraintsSpringTestConfiguration.class);
         chainedContextRunner = new ApplicationContextRunner()
                 .withConfiguration(AutoConfigurations.of(OptaPlannerAutoConfiguration.class))
                 .withUserConfiguration(ChainedSpringTestConfiguration.class);
+        allDefaultsFilteredClassLoader =
+                new FilteredClassLoader(new ClassPathResource(OptaPlannerProperties.DEFAULT_SOLVER_CONFIG_URL),
+                        new ClassPathResource(OptaPlannerProperties.DEFAULT_CONSTRAINTS_DRL_URL));
+        defaultConstraintsDrlFilteredClassLoader =
+                new FilteredClassLoader(new ClassPathResource(OptaPlannerProperties.DEFAULT_CONSTRAINTS_DRL_URL));
     }
 
     @Test
     public void solverConfigXml_none() {
         contextRunner
-                .withClassLoader(new FilteredClassLoader(new ClassPathResource("solverConfig.xml")))
+                .withClassLoader(allDefaultsFilteredClassLoader)
                 .run(context -> {
                     SolverConfig solverConfig = context.getBean(SolverConfig.class);
                     assertThat(solverConfig).isNotNull();
@@ -84,6 +100,7 @@ public class OptaPlannerAutoConfigurationTest {
     @Test
     public void solverConfigXml_default() {
         contextRunner
+                .withClassLoader(defaultConstraintsDrlFilteredClassLoader)
                 .run(context -> {
                     SolverConfig solverConfig = context.getBean(SolverConfig.class);
                     assertThat(solverConfig).isNotNull();
@@ -103,6 +120,7 @@ public class OptaPlannerAutoConfigurationTest {
     @Test
     public void solverConfigXml_property() {
         contextRunner
+                .withClassLoader(defaultConstraintsDrlFilteredClassLoader)
                 .withPropertyValues(
                         "optaplanner.solver-config-xml=org/optaplanner/spring/boot/autoconfigure/customSpringBootSolverConfig.xml")
                 .run(context -> {
@@ -124,6 +142,7 @@ public class OptaPlannerAutoConfigurationTest {
     @Test
     public void solverProperties() {
         contextRunner
+                .withClassLoader(defaultConstraintsDrlFilteredClassLoader)
                 .withPropertyValues("optaplanner.solver.environment-mode=FULL_ASSERT")
                 .run(context -> {
                     SolverConfig solverConfig = context.getBean(SolverConfig.class);
@@ -131,6 +150,7 @@ public class OptaPlannerAutoConfigurationTest {
                     assertThat(context.getBean(SolverFactory.class)).isNotNull();
                 });
         contextRunner
+                .withClassLoader(defaultConstraintsDrlFilteredClassLoader)
                 .withPropertyValues("optaplanner.solver.daemon=true")
                 .run(context -> {
                     SolverConfig solverConfig = context.getBean(SolverConfig.class);
@@ -138,6 +158,7 @@ public class OptaPlannerAutoConfigurationTest {
                     assertThat(context.getBean(SolverFactory.class)).isNotNull();
                 });
         contextRunner
+                .withClassLoader(defaultConstraintsDrlFilteredClassLoader)
                 .withPropertyValues("optaplanner.solver.move-thread-count=2")
                 .run(context -> {
                     SolverConfig solverConfig = context.getBean(SolverConfig.class);
@@ -149,6 +170,7 @@ public class OptaPlannerAutoConfigurationTest {
     @Test
     public void terminationProperties() {
         contextRunner
+                .withClassLoader(defaultConstraintsDrlFilteredClassLoader)
                 .withPropertyValues("optaplanner.solver.termination.spent-limit=4h")
                 .run(context -> {
                     TerminationConfig terminationConfig = context.getBean(SolverConfig.class).getTerminationConfig();
@@ -156,6 +178,7 @@ public class OptaPlannerAutoConfigurationTest {
                     assertThat(context.getBean(SolverFactory.class)).isNotNull();
                 });
         contextRunner
+                .withClassLoader(defaultConstraintsDrlFilteredClassLoader)
                 .withPropertyValues("optaplanner.solver.termination.unimproved-spent-limit=5h")
                 .run(context -> {
                     TerminationConfig terminationConfig = context.getBean(SolverConfig.class).getTerminationConfig();
@@ -163,6 +186,7 @@ public class OptaPlannerAutoConfigurationTest {
                     assertThat(context.getBean(SolverFactory.class)).isNotNull();
                 });
         contextRunner
+                .withClassLoader(defaultConstraintsDrlFilteredClassLoader)
                 .withPropertyValues("optaplanner.solver.termination.best-score-limit=6")
                 .run(context -> {
                     TerminationConfig terminationConfig = context.getBean(SolverConfig.class).getTerminationConfig();
@@ -174,6 +198,7 @@ public class OptaPlannerAutoConfigurationTest {
     @Test
     public void singletonSolverFactory() {
         contextRunner
+                .withClassLoader(defaultConstraintsDrlFilteredClassLoader)
                 .run(context -> {
                     SolverFactory<TestdataSpringSolution> solverFactory = context.getBean(SolverFactory.class);
                     assertThat(solverFactory).isNotNull();
@@ -192,7 +217,7 @@ public class OptaPlannerAutoConfigurationTest {
     @Test
     public void solve() {
         contextRunner
-                .withClassLoader(new FilteredClassLoader(new ClassPathResource("solverConfig.xml")))
+                .withClassLoader(allDefaultsFilteredClassLoader)
                 .withPropertyValues("optaplanner.solver.termination.best-score-limit=0")
                 .run(context -> {
                     SolverManager<TestdataSpringSolution, Long> solverManager = context.getBean(SolverManager.class);
@@ -213,7 +238,7 @@ public class OptaPlannerAutoConfigurationTest {
     @Test
     public void chained_solverConfigXml_none() {
         chainedContextRunner
-                .withClassLoader(new FilteredClassLoader(new ClassPathResource("solverConfig.xml")))
+                .withClassLoader(allDefaultsFilteredClassLoader)
                 .run(context -> {
                     SolverConfig solverConfig = context.getBean(SolverConfig.class);
                     assertThat(solverConfig).isNotNull();
@@ -231,4 +256,90 @@ public class OptaPlannerAutoConfigurationTest {
                 });
     }
 
+    @Test
+    void constraintsDrlProperty() {
+        String constraintsUrl = "org/optaplanner/spring/boot/autoconfigure/customConstraints.drl";
+        noConstraintsContextRunner
+                .withPropertyValues(OptaPlannerProperties.SCORE_DRL_PROPERTY + "=" + constraintsUrl)
+                .run(context -> {
+                    SolverConfig solverConfig = context.getBean(SolverConfig.class);
+                    assertThat(solverConfig).isNotNull();
+                    assertThat(solverConfig.getScoreDirectorFactoryConfig().getScoreDrlList())
+                            .isNotNull()
+                            .containsExactly(constraintsUrl);
+                });
+    }
+
+    @Test
+    void constraintsDrlDefault() {
+        noConstraintsContextRunner
+                .run(context -> {
+                    SolverConfig solverConfig = context.getBean(SolverConfig.class);
+                    assertThat(solverConfig).isNotNull();
+                    assertThat(solverConfig.getScoreDirectorFactoryConfig().getScoreDrlList())
+                            .isNotNull()
+                            .containsExactly("constraints.drl");
+                });
+    }
+
+    @Test
+    void constraintsDrlProperty_conflictWithConstraintProvider() {
+        String constraintsUrl = "org/optaplanner/spring/boot/autoconfigure/customConstraints.drl";
+        contextRunner
+                .withPropertyValues(OptaPlannerProperties.SCORE_DRL_PROPERTY + "=" + constraintsUrl)
+                .run(context -> {
+                    assertThatExceptionOfType(IllegalStateException.class)
+                            .isThrownBy(() -> context.getBean(SolverConfig.class))
+                            .withStackTraceContaining("The scoreDirectorFactory cannot have a constraintProviderClass ("
+                                    + TestdataSpringConstraintProvider.class.getName() + ") and a scoreDrlList ("
+                                    + constraintsUrl + ")");
+                });
+    }
+
+    @Test
+    void customScoreDrl_overrides_solverConfig() {
+        ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = new ScoreDirectorFactoryConfig()
+                .withScoreDrls("config_constraints.drl");
+        SolverConfig solverConfig = new SolverConfig().withScoreDirectorFactory(scoreDirectorFactoryConfig);
+        OptaPlannerAutoConfiguration autoConfiguration = mockAutoConfiguration();
+        when(autoConfiguration.constraintsDrl()).thenReturn("some.drl");
+
+        autoConfiguration.applyScoreDirectorFactoryProperties(solverConfig);
+        assertThat(scoreDirectorFactoryConfig.getScoreDrlList()).containsExactly("some.drl");
+    }
+
+    @Test
+    void defaultScoreDrl_does_not_override_solverConfig() {
+        ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = new ScoreDirectorFactoryConfig()
+                .withScoreDrls("config_constraints.drl");
+        SolverConfig solverConfig = new SolverConfig().withScoreDirectorFactory(scoreDirectorFactoryConfig);
+        OptaPlannerAutoConfiguration autoConfiguration = mockAutoConfiguration();
+        when(autoConfiguration.constraintsDrl()).thenReturn(null);
+        when(autoConfiguration.defaultConstraintsDrl())
+                .thenReturn(OptaPlannerProperties.DEFAULT_CONSTRAINTS_DRL_URL);
+
+        autoConfiguration.applyScoreDirectorFactoryProperties(solverConfig);
+        assertThat(scoreDirectorFactoryConfig.getScoreDrlList())
+                .containsExactly("config_constraints.drl");
+    }
+
+    @Test
+    void defaultScoreDrl_applies_if_solverConfig_does_not_define_scoreDrl() {
+        ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = new ScoreDirectorFactoryConfig();
+        SolverConfig solverConfig = new SolverConfig().withScoreDirectorFactory(scoreDirectorFactoryConfig);
+        OptaPlannerAutoConfiguration autoConfiguration = mockAutoConfiguration();
+        when(autoConfiguration.constraintsDrl()).thenReturn(null);
+        when(autoConfiguration.defaultConstraintsDrl())
+                .thenReturn(OptaPlannerProperties.DEFAULT_CONSTRAINTS_DRL_URL);
+
+        autoConfiguration.applyScoreDirectorFactoryProperties(solverConfig);
+        assertThat(scoreDirectorFactoryConfig.getScoreDrlList())
+                .containsExactly(OptaPlannerProperties.DEFAULT_CONSTRAINTS_DRL_URL);
+    }
+
+    private OptaPlannerAutoConfiguration mockAutoConfiguration() {
+        OptaPlannerAutoConfiguration autoConfiguration = mock(OptaPlannerAutoConfiguration.class);
+        doCallRealMethod().when(autoConfiguration).applyScoreDirectorFactoryProperties(any());
+        return autoConfiguration;
+    }
 }
