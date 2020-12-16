@@ -442,18 +442,36 @@ public class MvelDialectTest extends BaseModelTest {
     }
 
     @Test
-    @Ignore("without B it doesn't work on MVEL - see https://issues.redhat.com/browse/DROOLS-5897")
+    // @Ignore("without B it doesn't work on MVEL - see https://issues.redhat.com/browse/DROOLS-5897")
     public void testCompoundOperator() throws Exception {
-
-        // DROOLS-5894
+        // DROOLS-5894 // DROOLS-5901
         String drl =
                 "import " + Person.class.getCanonicalName() + "\n" +
+                "import " + BigDecimal.class.getCanonicalName() + "\n" +
                 "dialect \"mvel\"\n" +
                 "rule R\n" +
                 "when\n" +
                 "    $p : Person( age >= 26 )\n" +
                 "then\n" +
-                "    $p.money += 50000;\n" +
+                "    BigDecimal result = 0B;" +
+                "    $p.money += 50000;\n" + // 50000
+                "    $p.money -= 10000;\n" + // 40000
+                "    $p.money /= 10;\n" + // 4000
+                "    $p.money *= 10;\n" + // 40000
+                "    $p.money += $p.money;\n" + // 80000
+                "    $p.money /= $p.money;\n" + // 1
+                "    $p.money *= $p.money;\n" + // 1
+                "    $p.money -= $p.money;\n" + // 0
+                "    BigDecimal anotherVar = 10B;" +
+                "    $p.money += anotherVar;\n" + // 10
+                "    $p.money /= anotherVar;\n" + // 1
+                "    $p.money *= anotherVar;\n" + // 1
+                "    $p.money -= anotherVar;\n" + // 0
+                "    int intVar = 20;" +
+                "    $p.money += intVar;\n" + // 20
+                "    $p.money /= intVar;\n" + // 1
+                "    $p.money *= intVar;\n" + // 1
+                "    $p.money -= intVar;\n" + // 0
                 "end";
 
         KieSession ksession = getKieSession(drl);
@@ -463,7 +481,7 @@ public class MvelDialectTest extends BaseModelTest {
 
         ksession.insert(john);
         assertEquals(1, ksession.fireAllRules());
-        assertEquals(new BigDecimal( 120000 ), john.getMoney());
+        assertEquals(new BigDecimal( 0 ), john.getMoney());
     }
 
     @Test
@@ -496,7 +514,7 @@ public class MvelDialectTest extends BaseModelTest {
     }
 
     @Test
-    public void testCompoundOperatorBigDecimalConstantWithoutLiterals() throws Exception {
+    public void testCompoundOperatorBigDecimalConstantWithoutLiterals() {
         // DROOLS-5894
         String drl =
                 "import " + Person.class.getCanonicalName() + "\n" +
@@ -511,6 +529,15 @@ public class MvelDialectTest extends BaseModelTest {
                 "    result -= 10000;\n" + // 40000
                 "    result /= 10;\n" + // 4000
                 "    result *= 10;\n" + // 40000
+                "    result += result;\n" + // 80000
+                "    result /= result;\n" + // 1
+                "    result *= result;\n" + // 1
+                "    result -= result;\n" + // 0
+                "    int anotherVariable = 20;" +
+                "    result += anotherVariable;\n" + // 20
+                "    result /= anotherVariable;\n" + // 1
+                "    result *= anotherVariable;\n" + // 20
+                "    result -= anotherVariable;\n" + // 20
                 "    $p.money = result;" +
                 "end";
 
@@ -521,11 +548,11 @@ public class MvelDialectTest extends BaseModelTest {
 
         ksession.insert(john);
         assertEquals(1, ksession.fireAllRules());
-        assertEquals(new BigDecimal( 40000 ), john.getMoney());
+        assertEquals(new BigDecimal( 0 ), john.getMoney());
     }
 
     @Test
-    public void testArithmeticOperationsOnBigDecimal() throws Exception {
+    public void testArithmeticOperationsOnBigDecimal() {
         String drl =
                 "import " + Person.class.getCanonicalName() + "\n" +
                 "import " + BigDecimal.class.getCanonicalName() + "\n" +

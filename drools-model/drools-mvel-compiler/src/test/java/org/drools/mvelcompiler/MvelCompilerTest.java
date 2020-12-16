@@ -433,6 +433,20 @@ public class MvelCompilerTest implements CompilerTest {
     }
 
     @Test
+    public void testPromotionOfIntToBigDecimal() {
+        test("{ " +
+                     "    BigDecimal result = 0B;" +
+                     "    int anotherVariable = 20;" +
+                     "    result += anotherVariable;\n" + // 20
+                     "}",
+             "{ " +
+                     "        java.math.BigDecimal result = new java.math.BigDecimal(\"0\");\n" +
+                     "        int anotherVariable = 20;\n" +
+                     "        result = result.add(new java.math.BigDecimal(20));\n" +
+                     "}");
+    }
+
+    @Test
     public void testModify() {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{ modify ( $p )  { name = \"Luca\", age = 35 }; }",
