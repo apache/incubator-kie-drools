@@ -1011,7 +1011,10 @@ public class GroupByTest {
                         var_$g1, var_$key_2, groupResult -> ((String)groupResult.getKey()).substring(0, 2),
                         D.accFunction( IntegerMaxAccumulateFunction::new, var_$g1_value).as(var_$maxOfValues)),
                 D.on(var_$key_2, var_results, var_$maxOfValues)
-                        .execute(($key, results, $maxOfValues) -> results.put($key, $maxOfValues))
+                        .execute(($key, results, $maxOfValues) -> {
+                            System.out.println($key + " -> " + $maxOfValues);
+                            results.put($key, $maxOfValues);
+                        })
         );
 
         Model model = new ModelImpl().addRule( rule1 ).addGlobal( var_results );
@@ -1021,12 +1024,13 @@ public class GroupByTest {
         ksession.setGlobal( "results", results );
 
         ksession.insert(new Person("Mark", 42));
-        ksession.insert(new Person("Edson", 38));
+        ksession.insert(new Person("Edoardo", 33));
         FactHandle meFH = ksession.insert(new Person("Mario", 45));
         ksession.insert(new Person("Maciej", 39));
-        ksession.insert(new Person("Edoardo", 33));
+        ksession.insert(new Person("Edson", 38));
         FactHandle geoffreyFH = ksession.insert(new Person("Geoffrey", 35));
         ksession.fireAllRules();
+        System.out.println("-----");
 
         /*
          * In the first groupBy:
@@ -1050,6 +1054,7 @@ public class GroupByTest {
 
         ksession.delete( meFH );
         ksession.fireAllRules();
+        System.out.println("-----");
 
         // No Mario anymore, so "(Mar, 42)" instead of "(Mar, 87)".
         // Therefore "(Ma, 42)".

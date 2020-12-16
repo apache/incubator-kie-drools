@@ -84,7 +84,7 @@ public class LambdaGroupByAccumulate extends Accumulate {
 
     @Override
     public Object createContext() {
-        return new GroupByContext(supportsReverse(), propagateAll);
+        return new GroupByContext(supportsReverse());
     }
 
     @Override
@@ -147,11 +147,9 @@ public class LambdaGroupByAccumulate extends Accumulate {
         private final Map<Object, Object> contextsByGroup = new HashMap<>();
         private final Map<Object, Object> changedGroups = new HashMap<>();
         private final Map<Long, GroupInfo> reverseSupport;
-        private final boolean propagateAll;
 
-        private GroupByContext(boolean supportsReverse, boolean propagateAll) {
+        private GroupByContext(boolean supportsReverse) {
             reverseSupport = supportsReverse ? new HashMap<>() : null;
-            this.propagateAll = false; // propagateAll;
         }
 
         Object loadContext(Accumulate innerAccumulate, InternalFactHandle handle, Object key) {
@@ -178,9 +176,8 @@ public class LambdaGroupByAccumulate extends Accumulate {
         }
 
         public List<Object[]> result( Accumulate innerAccumulate, Object wmCtx, Tuple leftTuple, WorkingMemory wm ) {
-            Map<Object, Object> resultMap = propagateAll ? contextsByGroup : changedGroups;
-            List<Object[]> results = new ArrayList<>( resultMap.size());
-            for (Map.Entry<Object, Object> entry : resultMap.entrySet()) {
+            List<Object[]> results = new ArrayList<>( changedGroups.size() );
+            for (Map.Entry<Object, Object> entry : changedGroups.entrySet()) {
                 results.add( new Object[]{ entry.getKey(), isEmptyContext(entry.getValue()) ? null : innerAccumulate.getResult( wmCtx, entry.getValue(), leftTuple, wm ) } );
             }
             changedGroups.clear();
