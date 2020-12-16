@@ -17,12 +17,13 @@ package org.drools.impact.analysis.model.left;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 
 import static java.util.stream.Collectors.joining;
 
 public class Pattern {
     private final Class<?> patternClass;
-    private final Collection<Constraint> constraints = new ArrayList<>();
+    private final List<Constraint> constraints = new ArrayList<>();
     private final Collection<String> reactOnFields = new HashSet<>();
     private boolean classReactive = false;
 
@@ -38,7 +39,7 @@ public class Pattern {
         constraints.add( constraint );
     }
 
-    public Collection<Constraint> getConstraints() {
+    public List<Constraint> getConstraints() {
         return constraints;
     }
 

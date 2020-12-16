@@ -17,6 +17,8 @@
 package org.drools.impact.analysis.graph;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -49,24 +51,59 @@ public class ModelToGraphConverter {
         for (Package pkg : model.getPackages()) {
             List<Rule> rules = pkg.getRules();
             for (Rule rule : rules) {
-                graphAnalysis.addNode(new Node(rule));
-
                 LeftHandSide lhs = rule.getLhs();
                 List<Pattern> patterns = lhs.getPatterns();
-                for (Pattern pattern : patterns) {
+                for (int patternIndex = 0; patternIndex < patterns.size(); patternIndex++) {
+                    Pattern pattern = patterns.get(patternIndex);
+                    List<Constraint> constraints = pattern.getConstraints();
+                    for (int constraintIndex = 0; constraintIndex < constraints.size(); constraintIndex++) {
+                        Constraint constraint = constraints.get(constraintIndex);
+                        graphAnalysis.addNode(new ConstraintNode(rule, pattern, patternIndex, constraint, constraintIndex));
+                    }
+
                     Class<?> patternClass = pattern.getPatternClass();
                     Collection<String> reactOnFields = pattern.getReactOnFields();
                     if (pattern.isClassReactive()) {
                         // Pattern which cannot analyze reactivity (e.g. Person(blackBoxMethod())) so reacts to all properties
                         graphAnalysis.addClassReactiveRule(patternClass, rule);
+                        if (constraints.isEmpty()) {
+                            // Supply a dummy constraint for the empty case. TODO: model can provide such un-analyzed constraints
+                            Constraint emptyConstraint = new Constraint();
+                            emptyConstraint.setProperty(null);
+                            emptyConstraint.setType(Constraint.Type.UNKNOWN);
+                            emptyConstraint.setValue(null);
+                            graphAnalysis.addClassReactiveConstraints(patternClass, Collections.singletonList(emptyConstraint));
+                            graphAnalysis.addNode(new ConstraintNode(rule, pattern, patternIndex, emptyConstraint, 0));
+                        } else {
+                            graphAnalysis.addClassReactiveConstraints(patternClass, constraints);
+                        }
                     } else if (reactOnFields.size() == 0) {
                         // Pattern without constraint (e.g. Person()) so doesn't react to properties (only react to  insert/delete)
                         graphAnalysis.addInsertReactiveRule(patternClass, rule);
+                        if (constraints.isEmpty()) {
+                            // Supply a dummy constraint for the empty case.
+                            Constraint emptyConstraint = new Constraint();
+                            emptyConstraint.setProperty(null);
+                            emptyConstraint.setType(Constraint.Type.UNKNOWN);
+                            emptyConstraint.setValue(null);
+                            graphAnalysis.addInsertReactiveConstraint(patternClass, emptyConstraint);
+                            graphAnalysis.addNode(new ConstraintNode(rule, pattern, patternIndex, emptyConstraint, 0));
+                        } else {
+                            throw new RuntimeException("constraints should be empty : constraints = " + constraints);
+                        }
                     } else {
                         for (String field : reactOnFields) {
                             graphAnalysis.addPropertyReactiveRule(patternClass, field, rule);
+                            graphAnalysis.addPropertyReactiveConstraints(patternClass, field, pattern);
                         }
                     }
+                }
+
+                RightHandSide rhs = rule.getRhs();
+                List<ConsequenceAction> actions = rhs.getActions();
+                for (int actionIndex = 0; actionIndex < actions.size(); actionIndex++) {
+                    ConsequenceAction action = actions.get(actionIndex);
+                    graphAnalysis.addNode(new ActionNode(rule, action, actionIndex));
                 }
             }
         }
@@ -75,22 +112,41 @@ public class ModelToGraphConverter {
 
     private void parseGraphAnalysis(AnalysisModel model, GraphAnalysis graphAnalysis) {
         for (Package pkg : model.getPackages()) {
-            String pkgName = pkg.getName();
             List<Rule> rules = pkg.getRules();
             for (Rule rule : rules) {
-                String ruleName = rule.getName();
+
+                LeftHandSide lhs = rule.getLhs();
+                List<Pattern> patterns = lhs.getPatterns();
                 RightHandSide rhs = rule.getRhs();
                 List<ConsequenceAction> actions = rhs.getActions();
+
+                // Constraint to Action relationships in the same rule
+                for (Pattern pattern : patterns) {
+                    List<Constraint> constraints = pattern.getConstraints();
+                    if (constraints.isEmpty()) {
+                        Constraint constraint = graphAnalysis.getEmptyConstraintForPattern(rule, pattern);
+                        for (ConsequenceAction action : actions) {
+                            linkIfdependent(graphAnalysis, pattern, constraint, action);
+                        }
+                    }
+                    for (Constraint constraint : constraints) {
+                        for (ConsequenceAction action : actions) {
+                            linkIfdependent(graphAnalysis, pattern, constraint, action);
+                        }
+                    }
+                }
+
+                // Action to other rule's Constraint relationships
                 for (ConsequenceAction action : actions) {
                     switch (action.getType()) {
                         case INSERT:
-                            processInsert(graphAnalysis, pkgName, ruleName, action);
+                            processInsert(graphAnalysis, rule, action);
                             break;
                         case DELETE:
-                            processDelete(graphAnalysis, pkgName, ruleName, action);
+                            processDelete(graphAnalysis, rule, action);
                             break;
                         case MODIFY:
-                            processModify(graphAnalysis, pkgName, ruleName, (ModifyAction) action);
+                            processModify(graphAnalysis, rule, (ModifyAction) action);
                             break;
                     }
                 }
@@ -98,33 +154,43 @@ public class ModelToGraphConverter {
         }
     }
 
-    private void processInsert(GraphAnalysis graphAnalysis, String pkgName, String ruleName, ConsequenceAction action) {
-        // TODO: consider not()
-        Class<?> insertedClass = action.getActionClass();
-        // all rules which react to the fact
-        Set<Rule> reactedRules = graphAnalysis.getRulesReactiveTo(insertedClass);
-        Node source = graphAnalysis.getNode(fqdn(pkgName, ruleName));
-        for (Rule reactedRule : reactedRules) {
-            Node target = graphAnalysis.getNode(fqdn(pkgName, reactedRule.getName()));
+    private void linkIfdependent(GraphAnalysis graphAnalysis, Pattern pattern, Constraint constraint, ConsequenceAction action) {
+        // TODO: Only check class at the moment
+        // Possible approach for "if their associated literals share a common term": bind variable
+        if (pattern.getPatternClass().equals(action.getActionClass())) {
+            Node source = graphAnalysis.lookup(constraint);
+            Node target = graphAnalysis.lookup(action);
             Node.linkNodes(source, target, Link.Type.POSITIVE);
         }
     }
 
-    private void processDelete(GraphAnalysis graphAnalysis, String pkgName, String ruleName, ConsequenceAction action) {
+    private void processInsert(GraphAnalysis graphAnalysis, Rule rule, ConsequenceAction action) {
+        // TODO: consider not()
+        Class<?> insertedClass = action.getActionClass();
+        // all rules which react to the fact
+        Set<Constraint> reactedConstraints = graphAnalysis.getConstraintsReactiveTo(insertedClass);
+        Node source = graphAnalysis.lookup(action);
+        for (Constraint reactedConstraint : reactedConstraints) {
+            Node target = graphAnalysis.lookup(reactedConstraint);
+            Node.linkNodes(source, target, Link.Type.POSITIVE);
+        }
+    }
+
+    private void processDelete(GraphAnalysis graphAnalysis, Rule rule, ConsequenceAction action) {
         // TODO: consider exists()
         Class<?> deletedClass = action.getActionClass();
         // all rules which react to the fact
-        Set<Rule> reactedRules = graphAnalysis.getRulesReactiveTo(deletedClass);
-        Node source = graphAnalysis.getNode(fqdn(pkgName, ruleName));
-        for (Rule reactedRule : reactedRules) {
-            Node target = graphAnalysis.getNode(fqdn(pkgName, reactedRule.getName()));
+        Set<Constraint> reactedConstraints = graphAnalysis.getConstraintsReactiveTo(deletedClass);
+        Node source = graphAnalysis.lookup(action);
+        for (Constraint reactedConstraint : reactedConstraints) {
+            Node target = graphAnalysis.lookup(reactedConstraint);
             Node.linkNodes(source, target, Link.Type.NEGATIVE);
         }
     }
 
-    private void processModify(GraphAnalysis graphAnalysis, String pkgName, String ruleName, ModifyAction action) {
+    private void processModify(GraphAnalysis graphAnalysis, Rule rule, ModifyAction action) {
         // TODO: consider exists()/not()
-        Node source = graphAnalysis.getNode(fqdn(pkgName, ruleName));
+        Node source = graphAnalysis.lookup(action);
 
         Class<?> modifiedClass = action.getActionClass();
         if (!graphAnalysis.isRegisteredClass(modifiedClass)) {
@@ -135,45 +201,36 @@ public class ModelToGraphConverter {
         List<ModifiedProperty> modifiedProperties = action.getModifiedProperties();
         for (ModifiedProperty modifiedProperty : modifiedProperties) {
             String property = modifiedProperty.getProperty();
-            Set<Rule> rules = graphAnalysis.getRulesReactiveTo(modifiedClass, property);
-            if (rules == null) {
-                // Not likely happen but not invalid
-                logger.warn("Not found " + property + " in reactiveMap");
+            Set<Constraint> constraints = graphAnalysis.getConstraintsReactiveTo(modifiedClass, property);
+
+            if (constraints.size() == 0) {
+                // This rule is reactive to the property but cannot find its constraint (e.g. [age > $a] non-literal constraint). It means UNKNOWN impact
+                System.out.println("************ constraints.size() == 0");
+                //                combinedLinkType = Link.Type.UNKNOWN;
                 continue;
-            }
-            for (Rule reactedRule : rules) {
-                List<Constraint> constraints = reactedRule.getLhs().getPatterns().stream()
-                                                          .filter(pattern -> pattern.getPatternClass() == modifiedClass)
-                                                          .flatMap(pattern -> pattern.getConstraints().stream())
-                                                          .filter(constraint -> constraint.getProperty() != null && constraint.getProperty().equals(property))
-                                                          .collect(Collectors.toList());
-                Link.Type combinedLinkType = Link.Type.UNKNOWN;
-                if (constraints.size() == 0) {
-                    // This rule is reactive to the property but cannot find its constraint (e.g. [age > $a] non-literal constraint). It means UNKNOWN impact
-                    combinedLinkType = Link.Type.UNKNOWN;
-                } else {
-                    // If constraints contain at least one POSITIVE, we consider it's POSITIVE.
-                    for (Constraint constraint : constraints) {
-                        Link.Type linkType = linkType(constraint, modifiedProperty);
-                        if (linkType == Link.Type.POSITIVE) {
-                            combinedLinkType = Link.Type.POSITIVE;
-                            break;
-                        } else if (linkType == Link.Type.NEGATIVE) {
-                            combinedLinkType = Link.Type.NEGATIVE; // TODO: consider whether NEGATIVE or UNKNOWN should be stronger (meaningful for users)
-                        } else {
-                            combinedLinkType = linkType; // UNKNOWN
-                        }
-                    }
+            } else {
+                // If constraints contain at least one POSITIVE, we consider it's POSITIVE.
+                for (Constraint constraint : constraints) {
+                    Link.Type linkType = linkType(constraint, modifiedProperty);
+                    Node target = graphAnalysis.lookup(constraint);
+                    Node.linkNodes(source, target, linkType);
                 }
-                Node target = graphAnalysis.getNode(fqdn(pkgName, reactedRule.getName()));
-                Node.linkNodes(source, target, combinedLinkType);
             }
+
         }
     }
 
     private Link.Type linkType(Constraint constraint, ModifiedProperty modifiedProperty) {
         Object value = constraint.getValue();
         Object modifiedValue = modifiedProperty.getValue();
+        if (modifiedValue == null || value == null) {
+            return Link.Type.UNKNOWN;
+        }
+
+        if (value instanceof Number && modifiedValue instanceof Number) {
+            value = ((Number) value).doubleValue();
+            modifiedValue = ((Number) modifiedValue).doubleValue();
+        }
 
         switch (constraint.getType()) {
             case EQUAL:

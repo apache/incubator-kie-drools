@@ -23,6 +23,7 @@ import org.drools.impact.analysis.integrationtests.domain.Address;
 import org.drools.impact.analysis.integrationtests.domain.Person;
 import org.drools.impact.analysis.model.AnalysisModel;
 import org.drools.impact.analysis.parser.ModelBuilder;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -32,6 +33,7 @@ import org.junit.Test;
  */
 public class DrlSyntaxTest extends AbstractGraphTest {
 
+    @Ignore
     @Test
     public void testExists1() {
         String str =
@@ -58,6 +60,7 @@ public class DrlSyntaxTest extends AbstractGraphTest {
 
     }
 
+    @Ignore
     @Test
     public void testExists2() {
         String str =
@@ -86,6 +89,7 @@ public class DrlSyntaxTest extends AbstractGraphTest {
         generatePng(graph);
     }
 
+    @Ignore
     @Test
     public void testNot1() {
         String str =
@@ -112,6 +116,7 @@ public class DrlSyntaxTest extends AbstractGraphTest {
 
     }
 
+    @Ignore
     @Test
     public void testNot2() {
         String str =

@@ -23,6 +23,7 @@ import org.drools.impact.analysis.integrationtests.domain.Address;
 import org.drools.impact.analysis.integrationtests.domain.Person;
 import org.drools.impact.analysis.model.AnalysisModel;
 import org.drools.impact.analysis.parser.ModelBuilder;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class BasicGraphTest extends AbstractGraphTest {
@@ -53,8 +54,11 @@ public class BasicGraphTest extends AbstractGraphTest {
         ModelToGraphConverter converter = new ModelToGraphConverter();
         Graph graph = converter.toGraph(analysisModel);
 
-        assertNodeLink(graph, "mypkg.R1", "mypkg.R2", Link.Type.POSITIVE);
-        assertNodeLink(graph, "mypkg.R1", "mypkg.R3", Link.Type.POSITIVE);
+        // TODO: Consider action index from model (A0 -> insert, A1 -> modify now)
+        assertNodeLink(graph, "mypkg.R1:P0:C0", "mypkg.R1:A1", Link.Type.POSITIVE);
+
+        assertNodeLink(graph, "mypkg.R1:A0", "mypkg.R3:P0:C0", Link.Type.POSITIVE);
+        assertNodeLink(graph, "mypkg.R1:A1", "mypkg.R2:P0:C0", Link.Type.POSITIVE);
 
         generatePng(graph);
     }
@@ -95,14 +99,18 @@ public class BasicGraphTest extends AbstractGraphTest {
         ModelToGraphConverter converter = new ModelToGraphConverter();
         Graph graph = converter.toGraph(analysisModel);
 
-        assertNodeLink(graph, "mypkg.R1", "mypkg.R2", Link.Type.POSITIVE);
-        assertNodeLink(graph, "mypkg.R1", "mypkg.R3", Link.Type.NEGATIVE);
-        assertNodeLink(graph, "mypkg.R2", "mypkg.R4", Link.Type.POSITIVE);
-        assertNodeLink(graph, "mypkg.R3", "mypkg.R4", Link.Type.POSITIVE);
+        assertNodeLink(graph, "mypkg.R1:P0:C0", "mypkg.R1:A0", Link.Type.POSITIVE);
+        assertNodeLink(graph, "mypkg.R1:A0", "mypkg.R2:P0:C0", Link.Type.POSITIVE);
+        assertNodeLink(graph, "mypkg.R1:A0", "mypkg.R3:P0:C0", Link.Type.NEGATIVE);
+
+        assertNodeLink(graph, "mypkg.R2:A0", "mypkg.R4:P0:C0", Link.Type.POSITIVE);
+
+        assertNodeLink(graph, "mypkg.R3:A0", "mypkg.R4:P0:C0", Link.Type.POSITIVE);
 
         generatePng(graph);
     }
 
+    @Ignore("Need beta constraint from model")
     @Test
     public void testBeta() {
         String str =
@@ -125,7 +133,8 @@ public class BasicGraphTest extends AbstractGraphTest {
         ModelToGraphConverter converter = new ModelToGraphConverter();
         Graph graph = converter.toGraph(analysisModel);
 
-        assertNodeLink(graph, "mypkg.R1", "mypkg.R2", Link.Type.UNKNOWN);
+        assertNodeLink(graph, "mypkg.R1:P0:C0", "mypkg.R1:A0", Link.Type.POSITIVE);
+        assertNodeLink(graph, "mypkg.R1:A0", "mypkg.R2:P1:C0", Link.Type.UNKNOWN);
 
         generatePng(graph);
     }
@@ -152,8 +161,11 @@ public class BasicGraphTest extends AbstractGraphTest {
         ModelToGraphConverter converter = new ModelToGraphConverter();
         Graph graph = converter.toGraph(analysisModel);
 
-        assertNodeLink(graph, "mypkg.R1", "mypkg.R2", Link.Type.POSITIVE);
-        assertNodeLink(graph, "mypkg.R2", "mypkg.R1", Link.Type.NEGATIVE);
+        assertNodeLink(graph, "mypkg.R1:P0:C0", "mypkg.R1:A0", Link.Type.POSITIVE);
+        assertNodeLink(graph, "mypkg.R1:A0", "mypkg.R2:P0:C0", Link.Type.POSITIVE);
+
+        assertNodeLink(graph, "mypkg.R2:P0:C0", "mypkg.R2:A0", Link.Type.POSITIVE);
+        assertNodeLink(graph, "mypkg.R2:A0", "mypkg.R1:P0:C0", Link.Type.NEGATIVE);
 
         generatePng(graph);
     }
@@ -179,7 +191,8 @@ public class BasicGraphTest extends AbstractGraphTest {
         ModelToGraphConverter converter = new ModelToGraphConverter();
         Graph graph = converter.toGraph(analysisModel);
 
-        assertNoNodeLink(graph, "mypkg.R1", "mypkg.R2");
+        assertNodeLink(graph, "mypkg.R1:P0:C0", "mypkg.R1:A0", Link.Type.POSITIVE);
+        assertNoNodeLink(graph, "mypkg.R1:A0", "mypkg.R2:P0:C0");
 
         generatePng(graph);
     }
@@ -205,8 +218,8 @@ public class BasicGraphTest extends AbstractGraphTest {
         ModelToGraphConverter converter = new ModelToGraphConverter();
         Graph graph = converter.toGraph(analysisModel);
 
-        assertNodeLink(graph, "mypkg.R1", "mypkg.R2", Link.Type.UNKNOWN);
-
+        assertNodeLink(graph, "mypkg.R1:P0:C0", "mypkg.R1:A0", Link.Type.POSITIVE);
+        assertNodeLink(graph, "mypkg.R1:A0", "mypkg.R2:P0:C0", Link.Type.UNKNOWN);
         generatePng(graph);
     }
 
@@ -234,9 +247,16 @@ public class BasicGraphTest extends AbstractGraphTest {
         ModelToGraphConverter converter = new ModelToGraphConverter();
         Graph graph = converter.toGraph(analysisModel);
 
-        assertNodeLink(graph, "mypkg.R1", "mypkg.R2", Link.Type.POSITIVE);
-        assertNodeLink(graph, "mypkg.R2", "mypkg.R1", Link.Type.NEGATIVE);
-        assertNodeLink(graph, "mypkg.R2", "mypkg.R2", Link.Type.NEGATIVE);
+        assertNoNodeLink(graph, "mypkg.R1:P0:C0", "mypkg.R1:A0");
+        assertNoNodeLink(graph, "mypkg.R1:A0", "mypkg.R2:P0:C0");
+        assertNodeLink(graph, "mypkg.R1:A0", "mypkg.R2:P1:C0", Link.Type.POSITIVE);
+
+        assertNodeLink(graph, "mypkg.R2:P0:C0", "mypkg.R2:A0", Link.Type.POSITIVE);
+        assertNodeLink(graph, "mypkg.R2:A0", "mypkg.R2:P0:C0", Link.Type.NEGATIVE);
+        assertNoNodeLink(graph, "mypkg.R2:A0", "mypkg.R2:P1:C0");
+        assertNodeLink(graph, "mypkg.R2:A0", "mypkg.R1:P0:C0", Link.Type.NEGATIVE);
+
+        assertNoNodeLink(graph, "mypkg.R2:P1:C0", "mypkg.R2:A0");
 
         generatePng(graph);
     }

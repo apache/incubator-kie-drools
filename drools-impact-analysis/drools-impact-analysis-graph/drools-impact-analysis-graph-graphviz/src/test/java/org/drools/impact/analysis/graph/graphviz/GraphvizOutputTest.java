@@ -21,6 +21,7 @@ import java.util.Map;
 
 import org.drools.impact.analysis.graph.Graph;
 import org.drools.impact.analysis.graph.Link;
+import org.drools.impact.analysis.graph.BaseNode;
 import org.drools.impact.analysis.graph.Node;
 import org.drools.impact.analysis.model.Rule;
 import org.junit.Test;
@@ -36,11 +37,11 @@ public class GraphvizOutputTest {
 
     @Test
     public void testSimpleGraph() {
-        Node node1 = new Node(new Rule("org.example", "rule1", "dummy"));
-        Node node2 = new Node(new Rule("org.example", "rule2", "dummy"));
-        Node node3 = new Node(new Rule("org.example", "rule3", "dummy"));
-        Node node4 = new Node(new Rule("org.example", "rule4", "dummy"));
-        Node node5 = new Node(new Rule("org.example", "rule5", "dummy"));
+        Node node1 = new DummyNode(new Rule("org.example", "rule1", "dummy"));
+        Node node2 = new DummyNode(new Rule("org.example", "rule2", "dummy"));
+        Node node3 = new DummyNode(new Rule("org.example", "rule3", "dummy"));
+        Node node4 = new DummyNode(new Rule("org.example", "rule4", "dummy"));
+        Node node5 = new DummyNode(new Rule("org.example", "rule5", "dummy"));
 
         Node.linkNodes(node1, node2, Link.Type.POSITIVE);
         Node.linkNodes(node1, node3, Link.Type.NEGATIVE);
@@ -58,5 +59,16 @@ public class GraphvizOutputTest {
 
         GraphImageGenerator generator = new GraphImageGenerator("simple");
         generator.generatePng(graph);
+    }
+
+    private static class DummyNode extends BaseNode {
+
+        public DummyNode(Rule rule) {
+            super(rule);
+        }
+
+        public String getId() {
+            return getFqdn();
+        }
     }
 }

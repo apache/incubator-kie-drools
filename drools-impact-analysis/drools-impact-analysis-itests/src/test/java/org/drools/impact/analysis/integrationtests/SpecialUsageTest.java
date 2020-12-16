@@ -26,6 +26,7 @@ import org.drools.impact.analysis.integrationtests.domain.FunctionUtils;
 import org.drools.impact.analysis.integrationtests.domain.ProductItem;
 import org.drools.impact.analysis.model.AnalysisModel;
 import org.drools.impact.analysis.parser.ModelBuilder;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -35,6 +36,7 @@ import org.junit.Test;
  */
 public class SpecialUsageTest extends AbstractGraphTest {
 
+    @Ignore
     @Test
     public void testModifyMap() {
         String str =
@@ -65,6 +67,7 @@ public class SpecialUsageTest extends AbstractGraphTest {
         generatePng(graph);
     }
 
+    @Ignore
     @Test
     public void testInsertWithValue() {
         String str =
@@ -97,6 +100,7 @@ public class SpecialUsageTest extends AbstractGraphTest {
         generatePng(graph);
     }
 
+    @Ignore
     @Test
     public void testExistsNot() {
         String str =
@@ -130,6 +134,7 @@ public class SpecialUsageTest extends AbstractGraphTest {
         generatePng(graph);
     }
 
+    @Ignore
     @Test
     public void testMapWithFunction() {
         String str =
