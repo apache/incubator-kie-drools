@@ -131,7 +131,7 @@ public class SpringBootDecisionTracingTest {
         when(mockedDecisionModels.getDecisionModel(TEST_MODEL_NAMESPACE, TEST_MODEL_NAME)).thenReturn(model);
 
         final Application mockedApplication = mock(Application.class);
-        when(mockedApplication.decisionModels()).thenReturn(mockedDecisionModels);
+        when(mockedApplication.get(any())).thenReturn(mockedDecisionModels);
 
         final ConfigBean configBean = new StaticConfigBean(TEST_SERVICE_URL, true);
 

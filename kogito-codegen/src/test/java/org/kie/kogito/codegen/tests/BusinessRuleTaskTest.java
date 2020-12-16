@@ -34,7 +34,10 @@ import org.kie.kogito.codegen.AbstractCodegenTest;
 import org.kie.kogito.codegen.data.Account;
 import org.kie.kogito.codegen.data.Person;
 import org.kie.kogito.process.Process;
+import org.kie.kogito.process.ProcessConfig;
 import org.kie.kogito.process.ProcessInstance;
+import org.kie.kogito.process.Processes;
+import org.kie.kogito.rules.RuleConfig;
 import org.kie.kogito.uow.UnitOfWork;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -50,7 +53,7 @@ public class BusinessRuleTaskTest extends AbstractCodegenTest {
         Application app = generateCode(resourcesTypeMap);
         assertThat(app).isNotNull();
 
-        Process<? extends Model> p = app.processes().processById("BusinessRuleTask");
+        Process<? extends Model> p = app.get(Processes.class).processById("BusinessRuleTask");
 
         Model m = p.createModel();
         m.fromMap(Collections.singletonMap("person", new Person("john", 25)));
@@ -72,7 +75,7 @@ public class BusinessRuleTaskTest extends AbstractCodegenTest {
         Application app = generateCode(resourcesTypeMap);
         assertThat(app).isNotNull();
         final AtomicInteger counter = new AtomicInteger();
-        app.config().rule().ruleEventListeners().agendaListeners().add(new DefaultAgendaEventListener() {
+        app.config().get(RuleConfig.class).ruleEventListeners().agendaListeners().add(new DefaultAgendaEventListener() {
 
             @Override
             public void afterMatchFired(AfterMatchFiredEvent event) {
@@ -80,7 +83,7 @@ public class BusinessRuleTaskTest extends AbstractCodegenTest {
             }
 
         });
-        Process<? extends Model> p = app.processes().processById("BusinessRuleTask");
+        Process<? extends Model> p = app.get(Processes.class).processById("BusinessRuleTask");
 
         Model m = p.createModel();
         m.fromMap(Collections.singletonMap("person", new Person("john", 25)));
@@ -105,7 +108,7 @@ public class BusinessRuleTaskTest extends AbstractCodegenTest {
         assertThat(app).isNotNull();
         final List<String> startedProcesses = new ArrayList<>();
         // add custom event listener that collects data
-        app.config().process().processEventListeners().listeners().add(new DefaultProcessEventListener() {
+        app.config().get(ProcessConfig.class).processEventListeners().listeners().add(new DefaultProcessEventListener() {
 
             @Override
             public void beforeProcessStarted(ProcessStartedEvent event) {
@@ -116,7 +119,7 @@ public class BusinessRuleTaskTest extends AbstractCodegenTest {
         UnitOfWork uow = app.unitOfWorkManager().newUnitOfWork();
         uow.start();
 
-        Process<? extends Model> p = app.processes().processById("BusinessRuleTask");
+        Process<? extends Model> p = app.get(Processes.class).processById("BusinessRuleTask");
 
         Model m = p.createModel();
         m.fromMap(Collections.singletonMap("person", new Person("john", 25)));
@@ -143,7 +146,7 @@ public class BusinessRuleTaskTest extends AbstractCodegenTest {
         resourcesTypeMap.put(TYPE.DECISION, Collections.singletonList("decision/models/vacationDaysAlt/vacationDaysAlt.dmn"));
         Application app = generateCode(resourcesTypeMap);
         Process<? extends Model> p =
-                app.processes()
+                app.get(Processes.class)
                         .processById("DmnProcess");
 
         // first run 16, 1 and expected days is 27
@@ -212,7 +215,7 @@ public class BusinessRuleTaskTest extends AbstractCodegenTest {
         Application app = generateCode(resourcesTypeMap);
         assertThat(app).isNotNull();
 
-        Process<? extends Model> p = app.processes().processById("BusinessRuleTask");
+        Process<? extends Model> p = app.get(Processes.class).processById("BusinessRuleTask");
 
         Model m = p.createModel();
         Map<String, Object> params = new HashMap<>();

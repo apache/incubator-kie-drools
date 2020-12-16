@@ -53,8 +53,8 @@ The result of the processing is the main entry point `your.group.id.Application`
   it is possible to invoke some method such that an instance of C is returned.
   e.g.:
   
-   * for process P, one may write `new Application().processes().create("P")`
-   * for rule unit R, one may write `new Application().ruleUnits().create("R")`
+   * for process P, one may write `new Application().get(Processes.class).create("P")`
+   * for rule unit R, one may write `new Application().get(RuleUnits.class).create("R")`
   
   note: specific APIs may vary.
 

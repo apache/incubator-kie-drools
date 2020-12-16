@@ -25,6 +25,7 @@ import org.kie.kogito.Model;
 import org.kie.kogito.codegen.AbstractCodegenTest;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
+import org.kie.kogito.process.Processes;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -35,7 +36,7 @@ public class VariableTest extends AbstractCodegenTest {
         Application app = generateCodeProcessesOnly("servicetask/ServiceTaskWithReservedNameVariable.bpmn2");
         assertThat(app).isNotNull();
 
-        Process<? extends Model> p = app.processes().processById("test");
+        Process<? extends Model> p = app.get(Processes.class).processById("test");
 
         Model m = p.createModel();
         Map<String, Object> parameters = new HashMap<>();

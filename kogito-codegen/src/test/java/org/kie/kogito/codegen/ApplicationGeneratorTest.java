@@ -34,7 +34,7 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.TypeDeclaration;
 import com.github.javaparser.ast.expr.Expression;
-import com.github.javaparser.ast.stmt.ExplicitConstructorInvocationStmt;
+import com.github.javaparser.ast.expr.MethodCallExpr;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.codegen.di.CDIDependencyInjectionAnnotator;
 import org.kie.kogito.codegen.metadata.MetaDataWriter;
@@ -110,6 +110,15 @@ public class ApplicationGeneratorTest {
         assertImageMetadata(targetDirectory, labels);
     }
 
+    @Test
+    public void applicationSectionReplace() {
+        final ApplicationContainerGenerator appGenerator = new ApplicationContainerGenerator(PACKAGE_NAME);
+        assertApplicationPlaceholderReplace(appGenerator, 0);
+
+        appGenerator.withSections(Arrays.asList("Processes", "DecisionModels"));
+        assertApplicationPlaceholderReplace(appGenerator, 2);
+    }
+
     private void assertImageMetadata(final Path directory, final Map<String, String> expectedLabels) throws IOException {
         try (Stream<Path> stream = Files.walk(directory, 1)) {
             final Optional<Path> generatedFile = stream
@@ -167,5 +176,25 @@ public class ApplicationGeneratorTest {
                 }
             }
         }
+    }
+
+    private void assertApplicationPlaceholderReplace(ApplicationContainerGenerator appGenerator, long expectedParams) {
+        Optional<CompilationUnit> compilationUnit = appGenerator.compilationUnit();
+        assertThat(compilationUnit).isPresent();
+
+        Optional<NodeList<Expression>> expressions = compilationUnit.get().findFirst(MethodCallExpr.class, mtd -> "loadEngines".equals(mtd.getNameAsString()))
+                .map(MethodCallExpr::getArguments);
+        assertThat(expressions).isPresent();
+
+        expressions.get()
+                .forEach(expression -> assertThat(expression.toString()).doesNotContain("$"));
+
+        long numberOfNull = expressions.get().stream()
+                .filter(Expression::isNullLiteralExpr)
+                .count();
+
+        assertThat(numberOfNull).isZero();
+
+        assertThat(expressions.get().size()).isEqualTo(expectedParams);
     }
 }

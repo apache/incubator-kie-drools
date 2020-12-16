@@ -19,6 +19,7 @@ import org.kie.kogito.Application;
 import org.kie.kogito.rules.RuleUnit;
 import org.kie.kogito.rules.RuleUnitData;
 import org.kie.kogito.rules.RuleUnitInstance;
+import org.kie.kogito.rules.RuleUnits;
 
 public abstract class AbstractRuleUnit<T extends RuleUnitData> implements RuleUnit<T> {
 
@@ -40,7 +41,7 @@ public abstract class AbstractRuleUnit<T extends RuleUnitData> implements RuleUn
     @Override
     public RuleUnitInstance<T> createInstance(T data, String name) {
         RuleUnitInstance<T> instance = internalCreateInstance(data);
-        app.ruleUnits().register( name, instance );
+        app.get(RuleUnits.class).register( name, instance );
         return instance;
     }
 }

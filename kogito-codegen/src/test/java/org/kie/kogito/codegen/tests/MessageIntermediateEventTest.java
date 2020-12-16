@@ -25,6 +25,7 @@ import org.kie.kogito.codegen.AbstractCodegenTest;
 import org.kie.kogito.codegen.process.ProcessCodegenException;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
+import org.kie.kogito.process.Processes;
 import org.kie.kogito.process.impl.Sig;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -38,7 +39,7 @@ public class MessageIntermediateEventTest extends AbstractCodegenTest {
         Application app = generateCodeProcessesOnly("messageevent/IntermediateThrowEventMessage.bpmn2");        
         assertThat(app).isNotNull();
                 
-        Process<? extends Model> p = app.processes().processById("MessageIntermediateEvent");
+        Process<? extends Model> p = app.get(Processes.class).processById("MessageIntermediateEvent");
         
         Model m = p.createModel();
         Map<String, Object> parameters = new HashMap<>();        
@@ -58,7 +59,7 @@ public class MessageIntermediateEventTest extends AbstractCodegenTest {
         Application app = generateCodeProcessesOnly("messageevent/IntermediateCatchEventMessage.bpmn2");        
         assertThat(app).isNotNull();
                 
-        Process<? extends Model> p = app.processes().processById("IntermediateCatchEvent");
+        Process<? extends Model> p = app.get(Processes.class).processById("IntermediateCatchEvent");
         
         Model m = p.createModel();
         Map<String, Object> parameters = new HashMap<>();        
@@ -83,7 +84,7 @@ public class MessageIntermediateEventTest extends AbstractCodegenTest {
         Application app = generateCodeProcessesOnly("messageevent/BoundaryMessageEventOnTask.bpmn2");        
         assertThat(app).isNotNull();
                 
-        Process<? extends Model> p = app.processes().processById("BoundaryMessageOnTask");
+        Process<? extends Model> p = app.get(Processes.class).processById("BoundaryMessageOnTask");
         
         Model m = p.createModel();
         Map<String, Object> parameters = new HashMap<>();        

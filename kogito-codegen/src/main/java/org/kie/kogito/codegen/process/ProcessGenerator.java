@@ -38,6 +38,7 @@ import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.AssignExpr.Operator;
 import com.github.javaparser.ast.expr.CastExpr;
+import com.github.javaparser.ast.expr.ClassExpr;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
@@ -64,6 +65,7 @@ import org.kie.kogito.codegen.AddonsConfig;
 import org.kie.kogito.codegen.BodyDeclarationComparator;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 import org.kie.kogito.process.ProcessInstancesFactory;
+import org.kie.kogito.process.Processes;
 import org.kie.kogito.process.impl.AbstractProcess;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
@@ -456,9 +458,10 @@ public class ProcessGenerator {
                         .addVariable(new VariableDeclarator(modelType, fieldName));
                     annotator.withInjection(subprocessFieldDeclaration);
                 } else {
-                    // app.processes().processById()
+                    // app.get(org.kie.kogito.process.Processes.class).processById()
                     MethodCallExpr initSubProcessField = new MethodCallExpr(
-                            new MethodCallExpr(new NameExpr(APPLICATION), "processes"),
+                            new MethodCallExpr(new NameExpr(APPLICATION), "get")
+                                    .addArgument(new ClassExpr().setType(Processes.class.getCanonicalName())),
                             "processById").addArgument(new StringLiteralExpr(subProcess.getKey()));
                     
                     subprocessFieldDeclaration.addVariable(new VariableDeclarator(modelType, fieldName));

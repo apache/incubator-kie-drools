@@ -38,6 +38,7 @@ import org.kie.kogito.process.workitem.Policy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -118,7 +119,7 @@ public class JsonSchemaUtilTest {
         Config config = mock(Config.class);
         ProcessConfig processConfig = mock(ProcessConfig.class);
         when(application.config()).thenReturn(config);
-        when(config.process()).thenReturn(processConfig);
+        when(config.get(any())).thenReturn(processConfig);
         WorkItemHandlerConfig workItemHandlerConfig = mock(WorkItemHandlerConfig.class);
         when(processConfig.workItemHandlers()).thenReturn(workItemHandlerConfig);
         WorkItemHandler workItemHandler = new HumanTaskWorkItemHandler();

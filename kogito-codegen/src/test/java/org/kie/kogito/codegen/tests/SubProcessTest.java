@@ -25,6 +25,7 @@ import org.kie.kogito.Model;
 import org.kie.kogito.codegen.AbstractCodegenTest;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
+import org.kie.kogito.process.Processes;
 import org.kie.kogito.process.impl.Sig;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -37,8 +38,8 @@ public class SubProcessTest extends AbstractCodegenTest {
         Application app = generateCodeProcessesOnly("subprocess/SubProcess.bpmn", "subprocess/ParentProcess.bpmn");
         assertThat(app).isNotNull();
 
-        Process<? extends Model> parent = app.processes().processById("parent");
-        Process<? extends Model> subProcess = app.processes().processById("subprocess");
+        Process<? extends Model> parent = app.get(Processes.class).processById("parent");
+        Process<? extends Model> subProcess = app.get(Processes.class).processById("subprocess");
 
         Model m = parent.createModel();
         m.fromMap(Collections.singletonMap("name", "test"));

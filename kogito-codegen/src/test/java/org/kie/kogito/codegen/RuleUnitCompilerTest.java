@@ -38,6 +38,7 @@ import org.kie.kogito.rules.DataStore;
 import org.kie.kogito.rules.RuleUnit;
 import org.kie.kogito.rules.RuleUnitInstance;
 import org.kie.kogito.rules.RuleUnitQuery;
+import org.kie.kogito.rules.RuleUnits;
 
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
@@ -60,7 +61,7 @@ public class RuleUnitCompilerTest extends AbstractCodegenTest {
         Person sofia = new Person( "Sofia", 7 );
         DataHandle dhSofia = adults.getPersons().add(sofia);
 
-        RuleUnit<AdultUnit> unit = application.ruleUnits().create(AdultUnit.class);
+        RuleUnit<AdultUnit> unit = application.get(RuleUnits.class).create(AdultUnit.class);
         RuleUnitInstance<AdultUnit> instance = unit.createInstance(adults);
 
         assertTrue( instance.getClock() instanceof SessionPseudoClock );
@@ -83,7 +84,7 @@ public class RuleUnitCompilerTest extends AbstractCodegenTest {
         Person sofia = new Person( "Sofia", 7 );
         DataHandle dhSofia = adults.getPersons().add(sofia);
 
-        RuleUnit<AdultUnit> unit = application.ruleUnits().create(AdultUnit.class);
+        RuleUnit<AdultUnit> unit = application.get(RuleUnits.class).create(AdultUnit.class);
         RuleUnitInstance<AdultUnit> instance = unit.createInstance(adults);
 
         assertEquals(2, instance.fire() );
@@ -101,7 +102,7 @@ public class RuleUnitCompilerTest extends AbstractCodegenTest {
         adults.getPersons().add(new Person( "Marilena", 47 ));
         adults.getPersons().add(new Person( "Sofia", 7 ));
 
-        RuleUnit<AdultUnit> unit = application.ruleUnits().create(AdultUnit.class);
+        RuleUnit<AdultUnit> unit = application.get(RuleUnits.class).create(AdultUnit.class);
         RuleUnitInstance<AdultUnit> instance = unit.createInstance(adults);
 
         instance.fire();
@@ -121,7 +122,7 @@ public class RuleUnitCompilerTest extends AbstractCodegenTest {
         adults.getPersons().add(new Person( "Marilena", 47 ));
         adults.getPersons().add(new Person( "Sofia", 7 ));
 
-        RuleUnit<AdultUnit> unit = application.ruleUnits().create(AdultUnit.class);
+        RuleUnit<AdultUnit> unit = application.get(RuleUnits.class).create(AdultUnit.class);
         RuleUnitInstance<AdultUnit> instance = unit.createInstance(adults);
 
         Class<? extends RuleUnitQuery<List<String>>> queryClass = (Class<? extends RuleUnitQuery<List<String>>>) application.getClass()
@@ -143,7 +144,7 @@ public class RuleUnitCompilerTest extends AbstractCodegenTest {
         adults.getPersons().add(new Person( "Marilena", 47 ));
         adults.getPersons().add(new Person( "Sofia", 7 ));
 
-        RuleUnit<AdultUnit> unit = application.ruleUnits().create(AdultUnit.class);
+        RuleUnit<AdultUnit> unit = application.get(RuleUnits.class).create(AdultUnit.class);
         RuleUnitInstance<AdultUnit> instance = unit.createInstance(adults);
 
         List<Integer> results = instance.executeQuery( "FindAdultsAge" )
@@ -167,7 +168,7 @@ public class RuleUnitCompilerTest extends AbstractCodegenTest {
         persons.add(new Person( "Marilena", 17 ));
         persons.add(new Person( "Sofia", 7 ));
 
-        RuleUnit<AdultUnit> adultUnit = application.ruleUnits().create(AdultUnit.class);
+        RuleUnit<AdultUnit> adultUnit = application.get(RuleUnits.class).create(AdultUnit.class);
 
         AdultUnit adultData18 = new AdultUnit(persons, 18);
         RuleUnitInstance<AdultUnit> adultUnitInstance18 = adultUnit.createInstance(adultData18, "adult18");
@@ -175,7 +176,7 @@ public class RuleUnitCompilerTest extends AbstractCodegenTest {
         AdultUnit adultData21 = new AdultUnit(persons, 21);
         RuleUnitInstance<AdultUnit> adultUnitInstance21 = adultUnit.createInstance(adultData21, "adult21");
 
-        RuleUnit<PersonsUnit> personsUnit = application.ruleUnits().create(PersonsUnit.class);
+        RuleUnit<PersonsUnit> personsUnit = application.get(RuleUnits.class).create(PersonsUnit.class);
         personsUnit.createInstance( new PersonsUnit(persons) ).fire();
 
         assertEquals( 2, adultData18.getResults().getResults().size() );
@@ -192,7 +193,7 @@ public class RuleUnitCompilerTest extends AbstractCodegenTest {
 
         ArrayList<String> strings = new ArrayList<>();
 
-        RuleUnit<MultiUnit> mu = application.ruleUnits().create(MultiUnit.class);
+        RuleUnit<MultiUnit> mu = application.get(RuleUnits.class).create(MultiUnit.class);
         MultiUnit data = new MultiUnit();
         RuleUnitInstance<MultiUnit> instance = mu.createInstance(data);
         data.getValues().subscribe(DataObserver.of(v -> { if (v!=null) strings.add((String) v); }));
@@ -211,7 +212,7 @@ public class RuleUnitCompilerTest extends AbstractCodegenTest {
         ArrayList<String> data = new ArrayList<>();
         AtomicReference<Datum> lastSeen = new AtomicReference<>();
 
-        RuleUnit<Singleton> mu = application.ruleUnits().create(Singleton.class);
+        RuleUnit<Singleton> mu = application.get(RuleUnits.class).create(Singleton.class);
         Singleton unitData = new Singleton();
         RuleUnitInstance<Singleton> instance = mu.createInstance(unitData);
         unitData.getOutput().subscribe(
@@ -248,7 +249,7 @@ public class RuleUnitCompilerTest extends AbstractCodegenTest {
         adults.getPersons().add(mark);
         adults.getPersons().add(edson);
 
-        RuleUnit<AdultUnit> unit = application.ruleUnits().create(AdultUnit.class);
+        RuleUnit<AdultUnit> unit = application.get(RuleUnits.class).create(AdultUnit.class);
         RuleUnitInstance<AdultUnit> instance = unit.createInstance(adults);
 
         List<Person> results = instance.executeQuery( "FindPeopleInMilano" )

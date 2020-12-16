@@ -19,6 +19,7 @@ package org.kie.kogito.explainability;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.kogito.Application;
 import org.kie.kogito.Config;
+import org.kie.kogito.KogitoEngine;
 import org.kie.kogito.decision.DecisionModels;
 import org.kie.kogito.dmn.DMNKogito;
 import org.kie.kogito.dmn.DmnDecisionModel;
@@ -55,8 +56,9 @@ public class ApplicationMock implements Application {
         return null;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public DecisionModels decisionModels() {
-        return decisionModels;
+    public <T extends KogitoEngine> T get(Class<T> clazz) {
+        return (T) decisionModels;
     }
 }

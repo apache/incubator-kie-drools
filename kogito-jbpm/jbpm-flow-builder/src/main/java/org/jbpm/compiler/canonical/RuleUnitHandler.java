@@ -30,6 +30,7 @@ import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.jbpm.workflow.core.node.RuleSetNode;
 import org.kie.internal.ruleunit.RuleUnitDescription;
+import org.kie.kogito.rules.RuleUnits;
 import org.kie.kogito.rules.units.AssignableChecker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -88,8 +89,10 @@ public class RuleUnitHandler {
     }
 
     private BlockStmt unit(String unitName) {
+        // app.get(org.kie.kogito.rules.RuleUnits.class).create(unitName)
         MethodCallExpr ruleUnit = new MethodCallExpr(
-                new MethodCallExpr(new NameExpr("app"), "ruleUnits"), "create")
+                new MethodCallExpr(new NameExpr("app"), "get")
+                        .addArgument(new ClassExpr().setType(RuleUnits.class.getCanonicalName())), "create")
                 .addArgument(new ClassExpr().setType(unitName));
         return new BlockStmt().addStatement(new ReturnStmt(ruleUnit));
     }

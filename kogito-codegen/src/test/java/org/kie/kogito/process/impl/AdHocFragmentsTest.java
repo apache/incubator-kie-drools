@@ -32,6 +32,7 @@ import org.kie.kogito.Model;
 import org.kie.kogito.codegen.AbstractCodegenTest;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
+import org.kie.kogito.process.Processes;
 import org.kie.kogito.process.WorkItem;
 import org.kie.kogito.process.flexible.AdHocFragment;
 
@@ -46,7 +47,7 @@ class AdHocFragmentsTest extends AbstractCodegenTest {
         Application app = generateCodeProcessesOnly("cases/AdHocFragments.bpmn");
         assertThat(app).isNotNull();
 
-        Process<? extends Model> p = app.processes().processById("TestCase.AdHocFragments");
+        Process<? extends Model> p = app.get(Processes.class).processById("TestCase.AdHocFragments");
         ProcessInstance<?> processInstance = p.createInstance(p.createModel());
         Collection<AdHocFragment> adHocFragments = processInstance.adHocFragments();
         List<AdHocFragment> expected = new ArrayList<>();
@@ -64,7 +65,7 @@ class AdHocFragmentsTest extends AbstractCodegenTest {
         Application app = generateCodeProcessesOnly("cases/AdHocFragments.bpmn");
         assertThat(app).isNotNull();
 
-        Process<? extends Model> p = app.processes().processById("TestCase.AdHocFragments");
+        Process<? extends Model> p = app.get(Processes.class).processById("TestCase.AdHocFragments");
         ProcessInstance<? extends Model> processInstance = p.createInstance(p.createModel());
         processInstance.start();
 
@@ -85,7 +86,7 @@ class AdHocFragmentsTest extends AbstractCodegenTest {
         Application app = generateCodeProcessesOnly("cases/AdHocFragments.bpmn");
         assertThat(app).isNotNull();
 
-        Process<? extends Model> p = app.processes().processById("TestCase.AdHocFragments");
+        Process<? extends Model> p = app.get(Processes.class).processById("TestCase.AdHocFragments");
         ProcessInstance<? extends Model> processInstance = p.createInstance(p.createModel());
         processInstance.start();
         Map<String, Object> params = new HashMap<>();
@@ -103,7 +104,7 @@ class AdHocFragmentsTest extends AbstractCodegenTest {
         Application app = generateCodeProcessesOnly("cases/AdHocProcess.bpmn");
         assertThat(app).isNotNull();
 
-        Process<? extends Model> p = app.processes().processById("AdHocProcess");
+        Process<? extends Model> p = app.get(Processes.class).processById("AdHocProcess");
         Model model = p.createModel();
         Map<String, Object> params = new HashMap<>();
         params.put("var1", "Pablo");

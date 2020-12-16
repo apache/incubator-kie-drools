@@ -27,6 +27,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.kogito.Application;
 import org.kie.kogito.process.Process;
+import org.kie.kogito.process.ProcessConfig;
 import org.kie.kogito.process.ProcessInstanceNotFoundException;
 import org.kie.kogito.process.ProcessInstanceReadMode;
 import org.kie.kogito.process.WorkItem;
@@ -80,7 +81,7 @@ public class JsonSchemaUtil {
                 .put(
                     "phases",
                     allowedPhases(
-                        application.config().process().workItemHandlers().forName("Human Task"),
+                        application.config().get(ProcessConfig.class).workItemHandlers().forName("Human Task"),
                         pi.workItem(workItemId, policies)));
             return jsonSchema;
         }).orElseThrow(() -> new ProcessInstanceNotFoundException(processInstanceId));

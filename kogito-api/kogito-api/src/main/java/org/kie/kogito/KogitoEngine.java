@@ -13,24 +13,10 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.process;
+package org.kie.kogito;
 
-import java.util.Collection;
-
-import org.kie.kogito.KogitoEngine;
-import org.kie.kogito.Model;
-
-public interface Processes extends KogitoEngine {
-
-    Process<? extends Model> processById(String processId);
-    
-    Collection<String> processIds();
-
-    default void activate() {
-
-    }
-
-    default void deactivate() {
-
-    }
+/**
+ * Marker interface to identify a KogitoEngine (i.e. Processes, RuleUnits, ...)
+ */
+public interface KogitoEngine {
 }

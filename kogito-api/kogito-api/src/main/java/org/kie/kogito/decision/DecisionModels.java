@@ -15,7 +15,9 @@
 
 package org.kie.kogito.decision;
 
-public interface DecisionModels {
+import org.kie.kogito.KogitoEngine;
+
+public interface DecisionModels extends KogitoEngine {
 
     DecisionModel getDecisionModel(String namespace, String name);
 }

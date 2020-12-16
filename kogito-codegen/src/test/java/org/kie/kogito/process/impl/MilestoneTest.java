@@ -33,6 +33,7 @@ import org.kie.kogito.Model;
 import org.kie.kogito.codegen.AbstractCodegenTest;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
+import org.kie.kogito.process.Processes;
 import org.kie.kogito.process.WorkItem;
 import org.kie.kogito.process.flexible.Milestone;
 
@@ -51,7 +52,7 @@ class MilestoneTest extends AbstractCodegenTest {
         Application app = generateCodeProcessesOnly("cases/milestones/SimpleMilestone.bpmn");
         assertThat(app).isNotNull();
 
-        Process<? extends Model> p = app.processes().processById("TestCase.SimpleMilestone");
+        Process<? extends Model> p = app.get(Processes.class).processById("TestCase.SimpleMilestone");
         ProcessInstance<?> processInstance = p.createInstance(p.createModel());
         assertState(processInstance, ProcessInstance.STATE_PENDING);
 
@@ -82,7 +83,7 @@ class MilestoneTest extends AbstractCodegenTest {
         Application app = generateCodeProcessesOnly("cases/milestones/ConditionalMilestone.bpmn");
         assertThat(app).isNotNull();
 
-        Process<? extends Model> p = app.processes().processById("TestCase.ConditionalMilestone");
+        Process<? extends Model> p = app.get(Processes.class).processById("TestCase.ConditionalMilestone");
         Model model = p.createModel();
         Map<String, Object> params = new HashMap<>();
         params.put("favouriteColour", "orange");

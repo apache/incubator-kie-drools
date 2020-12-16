@@ -23,6 +23,7 @@ import org.kie.kogito.Model;
 import org.kie.kogito.codegen.AbstractCodegenTest;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
+import org.kie.kogito.process.Processes;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -33,7 +34,7 @@ class WorkItemParamsTest extends AbstractCodegenTest {
         Application app = generateCodeProcessesOnly("servicetask/WorkItemParams.bpmn");
         assertThat(app).isNotNull();
 
-        Process<? extends Model> p = app.processes().processById("WorkItemParamsTest");
+        Process<? extends Model> p = app.get(Processes.class).processById("WorkItemParamsTest");
 
         ProcessInstance<?> processInstance = p.createInstance(p.createModel());
         processInstance.start();

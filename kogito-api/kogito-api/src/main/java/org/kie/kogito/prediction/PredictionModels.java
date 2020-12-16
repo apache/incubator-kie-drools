@@ -15,7 +15,9 @@
 
 package org.kie.kogito.prediction;
 
-public interface PredictionModels {
+import org.kie.kogito.KogitoEngine;
+
+public interface PredictionModels extends KogitoEngine {
 
     PredictionModel getPredictionModel(String modelName);
 

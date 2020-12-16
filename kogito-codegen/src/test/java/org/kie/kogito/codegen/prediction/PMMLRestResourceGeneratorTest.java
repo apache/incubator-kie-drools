@@ -195,8 +195,8 @@ class PMMLRestResourceGeneratorTest {
         expected = StringUtils.ucFirst(classPrefix) + "Resource";
         expected = String.format("public class %s {", expected);
         assertTrue(retrieved.contains(expected));
-        expected = String.format("org.kie.kogito.prediction.PredictionModel prediction = application.predictionModels" +
-                                         "().getPredictionModel(\"%s\");", KIE_PMML_MODEL.getName());
+        expected = String.format("org.kie.kogito.prediction.PredictionModel prediction = application" +
+                ".get(org.kie.kogito.prediction.PredictionModels.class).getPredictionModel(\"%s\");", KIE_PMML_MODEL.getName());
         assertTrue(retrieved.contains(expected));
     }
 

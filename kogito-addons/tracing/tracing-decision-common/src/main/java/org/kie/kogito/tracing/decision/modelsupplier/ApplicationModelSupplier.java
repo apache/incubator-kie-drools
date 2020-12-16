@@ -20,6 +20,7 @@ import java.util.function.BiFunction;
 
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.kogito.Application;
+import org.kie.kogito.decision.DecisionModels;
 
 public class ApplicationModelSupplier implements BiFunction<String, String, DMNModel> {
 
@@ -34,7 +35,7 @@ public class ApplicationModelSupplier implements BiFunction<String, String, DMNM
         if (namespace == null || name == null) {
             return null;
         }
-        return application.decisionModels().getDecisionModel(namespace, name).getDMNModel();
+        return application.get(DecisionModels.class).getDecisionModel(namespace, name).getDMNModel();
     }
 
 }

@@ -35,9 +35,10 @@ public class $Name$ extends AbstractRuleUnit<$ModelName$> {
         ((org.drools.core.impl.KogitoStatefulKnowledgeSessionImpl)ks).setStateless( /*$IsStateful$*/ true );
         ((org.drools.core.impl.KogitoStatefulKnowledgeSessionImpl)ks).setApplication( app );
 
-        org.kie.kogito.Config cfg = app.config();
-        if (cfg != null) {
-            RuleEventListenerConfig ruleEventListenerConfig = cfg.rule().ruleEventListeners();
+        org.kie.kogito.Config config = app.config();
+        if (config != null) {
+            RuleEventListenerConfig ruleEventListenerConfig = config.get(org.kie.kogito.rules.RuleConfig.class)
+                    .ruleEventListeners();
             ruleEventListenerConfig.agendaListeners().forEach(ks::addEventListener);
             ruleEventListenerConfig.ruleRuntimeListeners().forEach(ks::addEventListener);
         }

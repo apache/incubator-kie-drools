@@ -15,11 +15,12 @@
 
 package org.kie.kogito.process;
 
+import org.kie.kogito.KogitoConfig;
 import org.kie.kogito.jobs.JobsService;
 import org.kie.kogito.signal.SignalManagerHub;
 import org.kie.kogito.uow.UnitOfWorkManager;
 
-public interface ProcessConfig {
+public interface ProcessConfig extends KogitoConfig {
     WorkItemHandlerConfig workItemHandlers();
     
     ProcessEventListenerConfig processEventListeners();

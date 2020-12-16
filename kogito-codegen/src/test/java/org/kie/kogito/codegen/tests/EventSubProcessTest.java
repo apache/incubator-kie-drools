@@ -27,6 +27,7 @@ import org.kie.kogito.codegen.AbstractCodegenTest;
 import org.kie.kogito.codegen.data.Person;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
+import org.kie.kogito.process.Processes;
 import org.kie.kogito.process.impl.Sig;
 
 
@@ -38,7 +39,7 @@ public class EventSubProcessTest extends AbstractCodegenTest {
         Application app = generateCodeProcessesOnly("event-subprocess/EventSubprocessSignal.bpmn2");        
         assertThat(app).isNotNull();
                 
-        Process<? extends Model> p = app.processes().processById("EventSubprocessSignal");
+        Process<? extends Model> p = app.get(Processes.class).processById("EventSubprocessSignal");
         
         Model m = p.createModel();
         Map<String, Object> parameters = new HashMap<>();
@@ -60,7 +61,7 @@ public class EventSubProcessTest extends AbstractCodegenTest {
         Application app = generateCodeProcessesOnly("event-subprocess/EventSubprocessSignalWithData.bpmn2");        
         assertThat(app).isNotNull();
                 
-        Process<? extends Model> p = app.processes().processById("EventSubprocessSignal");
+        Process<? extends Model> p = app.get(Processes.class).processById("EventSubprocessSignal");
         
         Model m = p.createModel();
         Map<String, Object> parameters = new HashMap<>();

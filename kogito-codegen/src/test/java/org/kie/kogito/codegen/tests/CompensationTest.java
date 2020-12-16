@@ -21,6 +21,7 @@ import org.kie.kogito.Model;
 import org.kie.kogito.codegen.AbstractCodegenTest;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
+import org.kie.kogito.process.Processes;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -34,7 +35,7 @@ class CompensationTest extends AbstractCodegenTest {
         Application app = generateCodeProcessesOnly("compensation/compensateFirst.bpmn2");
         assertThat(app).isNotNull();
 
-        Process<? extends Model> p = app.processes().processById("compensateFirst");
+        Process<? extends Model> p = app.get(Processes.class).processById("compensateFirst");
         ProcessInstance<?> processInstance = p.createInstance(p.createModel());
         processInstance.start();
         assertState(processInstance, ProcessInstance.STATE_COMPLETED);
@@ -49,7 +50,7 @@ class CompensationTest extends AbstractCodegenTest {
         Application app = generateCodeProcessesOnly("compensation/compensateSecond.bpmn2");
         assertThat(app).isNotNull();
 
-        Process<? extends Model> p = app.processes().processById("compensateSecond");
+        Process<? extends Model> p = app.get(Processes.class).processById("compensateSecond");
         ProcessInstance<?> processInstance = p.createInstance(p.createModel());
         processInstance.start();
         assertState(processInstance, ProcessInstance.STATE_COMPLETED);
@@ -64,7 +65,7 @@ class CompensationTest extends AbstractCodegenTest {
         Application app = generateCodeProcessesOnly("compensation/compensateAll.bpmn2");
         assertThat(app).isNotNull();
 
-        Process<? extends Model> p = app.processes().processById("compensateAll");
+        Process<? extends Model> p = app.get(Processes.class).processById("compensateAll");
         ProcessInstance<?> processInstance = p.createInstance(p.createModel());
         processInstance.start();
         assertState(processInstance, ProcessInstance.STATE_COMPLETED);
@@ -79,7 +80,7 @@ class CompensationTest extends AbstractCodegenTest {
         Application app = generateCodeProcessesOnly("compensation/BPMN2-Compensation-ThrowSpecificForSubProcess.bpmn2");
         assertThat(app).isNotNull();
 
-        Process<? extends Model> p = app.processes().processById("CompensationSpecificSubProcess");
+        Process<? extends Model> p = app.get(Processes.class).processById("CompensationSpecificSubProcess");
         ProcessInstance<?> processInstance = p.createInstance(p.createModel());
         processInstance.start();
 

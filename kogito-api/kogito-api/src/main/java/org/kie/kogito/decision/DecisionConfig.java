@@ -15,7 +15,9 @@
 
 package org.kie.kogito.decision;
 
-public interface DecisionConfig {
+import org.kie.kogito.KogitoConfig;
+
+public interface DecisionConfig extends KogitoConfig {
 
     DecisionEventListenerConfig decisionEventListeners();
 

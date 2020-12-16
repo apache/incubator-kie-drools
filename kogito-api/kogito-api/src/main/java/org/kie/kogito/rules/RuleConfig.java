@@ -15,7 +15,9 @@
 
 package org.kie.kogito.rules;
 
-public interface RuleConfig {
+import org.kie.kogito.KogitoConfig;
+
+public interface RuleConfig extends KogitoConfig {
 
     RuleEventListenerConfig ruleEventListeners();
 }

@@ -15,6 +15,8 @@
 
 package org.kie.kogito.prediction;
 
-public interface PredictionConfig {
+import org.kie.kogito.KogitoConfig;
+
+public interface PredictionConfig extends KogitoConfig {
 
 }

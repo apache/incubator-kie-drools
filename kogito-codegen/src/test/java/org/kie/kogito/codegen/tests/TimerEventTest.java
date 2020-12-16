@@ -26,8 +26,10 @@ import org.kie.kogito.Application;
 import org.kie.kogito.Model;
 import org.kie.kogito.codegen.AbstractCodegenTest;
 import org.kie.kogito.process.Process;
+import org.kie.kogito.process.ProcessConfig;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.ProcessInstanceReadMode;
+import org.kie.kogito.process.Processes;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -40,9 +42,9 @@ public class TimerEventTest extends AbstractCodegenTest {
         assertThat(app).isNotNull();
 
         NodeLeftCountDownProcessEventListener listener = new NodeLeftCountDownProcessEventListener("timer", 3);
-        app.config().process().processEventListeners().listeners().add(listener);
+        app.config().get(ProcessConfig.class).processEventListeners().listeners().add(listener);
 
-        Process<? extends Model> p = app.processes().processById("IntermediateCatchEvent");
+        Process<? extends Model> p = app.get(Processes.class).processById("IntermediateCatchEvent");
 
         Model m = p.createModel();
         Map<String, Object> parameters = new HashMap<>();
@@ -67,9 +69,9 @@ public class TimerEventTest extends AbstractCodegenTest {
         assertThat(app).isNotNull();
 
         NodeLeftCountDownProcessEventListener listener = new NodeLeftCountDownProcessEventListener("timer", 1);
-        app.config().process().processEventListeners().listeners().add(listener);
+        app.config().get(ProcessConfig.class).processEventListeners().listeners().add(listener);
 
-        Process<? extends Model> p = app.processes().processById("IntermediateCatchEvent");
+        Process<? extends Model> p = app.get(Processes.class).processById("IntermediateCatchEvent");
 
         Model m = p.createModel();
         Map<String, Object> parameters = new HashMap<>();
@@ -91,9 +93,9 @@ public class TimerEventTest extends AbstractCodegenTest {
         assertThat(app).isNotNull();
 
         NodeLeftCountDownProcessEventListener listener = new NodeLeftCountDownProcessEventListener("timer", 1);
-        app.config().process().processEventListeners().listeners().add(listener);
+        app.config().get(ProcessConfig.class).processEventListeners().listeners().add(listener);
 
-        Process<? extends Model> p = app.processes().processById("IntermediateCatchEvent");
+        Process<? extends Model> p = app.get(Processes.class).processById("IntermediateCatchEvent");
 
         Model m = p.createModel();
         Map<String, Object> parameters = new HashMap<>();
@@ -117,9 +119,9 @@ public class TimerEventTest extends AbstractCodegenTest {
         assertThat(app).isNotNull();
 
         NodeLeftCountDownProcessEventListener listener = new NodeLeftCountDownProcessEventListener("TimerEvent", 1);
-        app.config().process().processEventListeners().listeners().add(listener);
+        app.config().get(ProcessConfig.class).processEventListeners().listeners().add(listener);
 
-        Process<? extends Model> p = app.processes().processById("TimerBoundaryEvent");
+        Process<? extends Model> p = app.get(Processes.class).processById("TimerBoundaryEvent");
 
         Model m = p.createModel();
         Map<String, Object> parameters = new HashMap<>();
@@ -141,9 +143,9 @@ public class TimerEventTest extends AbstractCodegenTest {
         assertThat(app).isNotNull();
 
         NodeLeftCountDownProcessEventListener listener = new NodeLeftCountDownProcessEventListener("TimerEvent", 1);
-        app.config().process().processEventListeners().listeners().add(listener);
+        app.config().get(ProcessConfig.class).processEventListeners().listeners().add(listener);
 
-        Process<? extends Model> p = app.processes().processById("TimerBoundaryEvent");
+        Process<? extends Model> p = app.get(Processes.class).processById("TimerBoundaryEvent");
 
         Model m = p.createModel();
         Map<String, Object> parameters = new HashMap<>();
@@ -165,9 +167,9 @@ public class TimerEventTest extends AbstractCodegenTest {
         assertThat(app).isNotNull();
 
         NodeLeftCountDownProcessEventListener listener = new NodeLeftCountDownProcessEventListener("TimerEvent", 1);
-        app.config().process().processEventListeners().listeners().add(listener);
+        app.config().get(ProcessConfig.class).processEventListeners().listeners().add(listener);
 
-        Process<? extends Model> p = app.processes().processById("TimerBoundaryEvent");
+        Process<? extends Model> p = app.get(Processes.class).processById("TimerBoundaryEvent");
 
         Model m = p.createModel();
         Map<String, Object> parameters = new HashMap<>();
@@ -191,9 +193,9 @@ public class TimerEventTest extends AbstractCodegenTest {
         assertThat(app).isNotNull();
 
         NodeLeftCountDownProcessEventListener listener = new NodeLeftCountDownProcessEventListener("TimerEvent", 1);
-        app.config().process().processEventListeners().listeners().add(listener);
+        app.config().get(ProcessConfig.class).processEventListeners().listeners().add(listener);
 
-        Process<? extends Model> p = app.processes().processById("TimerBoundaryEvent");
+        Process<? extends Model> p = app.get(Processes.class).processById("TimerBoundaryEvent");
 
         Model m = p.createModel();
         Map<String, Object> parameters = new HashMap<>();
@@ -215,9 +217,9 @@ public class TimerEventTest extends AbstractCodegenTest {
         assertThat(app).isNotNull();
 
         NodeLeftCountDownProcessEventListener listener = new NodeLeftCountDownProcessEventListener("timer fired", 1);
-        app.config().process().processEventListeners().listeners().add(listener);
+        app.config().get(ProcessConfig.class).processEventListeners().listeners().add(listener);
 
-        Process<? extends Model> p = app.processes().processById("defaultPackage.TimerProcess");
+        Process<? extends Model> p = app.get(Processes.class).processById("defaultPackage.TimerProcess");
         // activate to schedule timers
         p.activate();
 
@@ -244,9 +246,9 @@ public class TimerEventTest extends AbstractCodegenTest {
         assertThat(app).isNotNull();
 
         NodeLeftCountDownProcessEventListener listener = new NodeLeftCountDownProcessEventListener("timer fired", 2);
-        app.config().process().processEventListeners().listeners().add(listener);
+        app.config().get(ProcessConfig.class).processEventListeners().listeners().add(listener);
 
-        Process<? extends Model> p = app.processes().processById("defaultPackage.TimerProcess");
+        Process<? extends Model> p = app.get(Processes.class).processById("defaultPackage.TimerProcess");
         // activate to schedule timers
         p.activate();
 

@@ -29,6 +29,7 @@ import org.kie.kogito.codegen.AbstractCodegenTest;
 import org.kie.kogito.codegen.data.Person;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
+import org.kie.kogito.process.Processes;
 import org.kie.kogito.process.WorkItem;
 
 
@@ -40,7 +41,7 @@ public class EmbeddedSubProcessTest extends AbstractCodegenTest {
         Application app = generateCodeProcessesOnly("subprocess/EmbeddedSubProcess.bpmn2");        
         assertThat(app).isNotNull();
                 
-        Process<? extends Model> p = app.processes().processById("SubProcess");
+        Process<? extends Model> p = app.get(Processes.class).processById("SubProcess");
         
         Model m = p.createModel();
         Map<String, Object> parameters = new HashMap<>();
@@ -59,7 +60,7 @@ public class EmbeddedSubProcessTest extends AbstractCodegenTest {
         Application app = generateCodeProcessesOnly("subprocess/EmbeddedSubProcessWithUserTask.bpmn2");        
         assertThat(app).isNotNull();
                 
-        Process<? extends Model> p = app.processes().processById("embeddedWithUserTask");
+        Process<? extends Model> p = app.get(Processes.class).processById("embeddedWithUserTask");
         Person person = new Person("john", 25);
         Model m = p.createModel();
         Map<String, Object> parameters = new HashMap<>();

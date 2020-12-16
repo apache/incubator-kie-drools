@@ -15,10 +15,6 @@
 
 package org.kie.kogito;
 
-import org.kie.kogito.decision.DecisionModels;
-import org.kie.kogito.prediction.PredictionModels;
-import org.kie.kogito.process.Processes;
-import org.kie.kogito.rules.RuleUnits;
 import org.kie.kogito.uow.UnitOfWorkManager;
 
 /**
@@ -37,36 +33,12 @@ public interface Application {
     Config config();
 
     /**
-     * Returns processes found in the application otherwise null
-     * @return processes information or null of non found
+     * Returns the desired KogitoEngine impl or null if not found
+     * @param clazz of the desired KogitoEngine
+     * @return
      */
-    default Processes processes() {
-        return null;
-    }
 
-    /**
-     * Returns rule units found in the application otherwise null
-     * @return rule unit information or null if not found
-     */
-    default RuleUnits ruleUnits() {
-        return null;
-    }
-
-    /**
-     * Returns prediction models found in the application otherwise null
-     * @return prediction models or null if not found
-     */
-    default PredictionModels predictionModels() {
-        return null;
-    }
-
-    /**
-     * Returns decision models found in the application otherwise null
-     * @return decision models or null if not found
-     */
-    default DecisionModels decisionModels() {
-        return null;
-    }
+    <T extends KogitoEngine> T get(Class<T> clazz);
 
     /**
      * Returns unit of work manager that allows to control execution within the application

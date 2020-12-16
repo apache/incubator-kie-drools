@@ -79,7 +79,7 @@ public abstract class AbstractProcess<T extends Model> implements Process<T> {
     }
     
     protected AbstractProcess(Application app, Collection<WorkItemHandler> handlers, ProcessInstancesFactory factory) {
-        this(new ConfiguredProcessServices(app.config().process()), handlers, factory);
+        this(new ConfiguredProcessServices(app.config().get(ProcessConfig.class)), handlers, factory);
         this.app = app;
     }
 

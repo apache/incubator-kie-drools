@@ -36,6 +36,7 @@ import org.kie.kogito.codegen.data.Person;
 import org.kie.kogito.codegen.data.PersonWithAddress;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
+import org.kie.kogito.process.Processes;
 import org.kie.kogito.process.WorkItem;
 import org.kie.kogito.process.workitem.Policy;
 import org.kie.kogito.services.identity.StaticIdentityProvider;
@@ -51,7 +52,7 @@ public class CallActivityTaskTest extends AbstractCodegenTest {
         Application app = generateCodeProcessesOnly("subprocess/CallActivity.bpmn2", "subprocess/CallActivitySubProcess.bpmn2");        
         assertThat(app).isNotNull();
                 
-        Process<? extends Model> p = app.processes().processById("ParentProcess");
+        Process<? extends Model> p = app.get(Processes.class).processById("ParentProcess");
         
         Model m = p.createModel();
         Map<String, Object> parameters = new HashMap<>();
@@ -75,7 +76,7 @@ public class CallActivityTaskTest extends AbstractCodegenTest {
         Application app = generateCodeProcessesOnly("subprocess/CallActivityWithTypeInfo.bpmn2", "subprocess/CallActivitySubProcess.bpmn2");        
         assertThat(app).isNotNull();
                 
-        Process<? extends Model> p = app.processes().processById("ParentProcess");
+        Process<? extends Model> p = app.get(Processes.class).processById("ParentProcess");
         
         Model m = p.createModel();
         Map<String, Object> parameters = new HashMap<>();
@@ -99,7 +100,7 @@ public class CallActivityTaskTest extends AbstractCodegenTest {
         Application app = generateCodeProcessesOnly("subprocess/CallActivityMI.bpmn2", "subprocess/CallActivitySubProcess.bpmn2");        
         assertThat(app).isNotNull();
                 
-        Process<? extends Model> p = app.processes().processById("ParentProcess");
+        Process<? extends Model> p = app.get(Processes.class).processById("ParentProcess");
         
         List<String> list = new ArrayList<String>();
         list.add("first");
@@ -128,7 +129,7 @@ public class CallActivityTaskTest extends AbstractCodegenTest {
         Application app = generateCodeProcessesOnly("subprocess/CallActivityWithIOexpression.bpmn2", "subprocess/CallActivitySubProcess.bpmn2");        
         assertThat(app).isNotNull();
                 
-        Process<? extends Model> p = app.processes().processById("ParentProcess");
+        Process<? extends Model> p = app.get(Processes.class).processById("ParentProcess");
         
         Model m = p.createModel();
         Map<String, Object> parameters = new HashMap<>();
@@ -163,7 +164,7 @@ public class CallActivityTaskTest extends AbstractCodegenTest {
         Application app = generateCodeProcessesOnly("subprocess/CallActivityWithIOexpressionNested.bpmn2", "subprocess/CallActivitySubProcess.bpmn2");        
         assertThat(app).isNotNull();
                 
-        Process<? extends Model> p = app.processes().processById("ParentProcess");
+        Process<? extends Model> p = app.get(Processes.class).processById("ParentProcess");
         
         Model m = p.createModel();
         Map<String, Object> parameters = new HashMap<>();
@@ -202,7 +203,7 @@ public class CallActivityTaskTest extends AbstractCodegenTest {
         Application app = generateCodeProcessesOnly("subprocess/CallActivityVarIOExpression.bpmn2", "subprocess/CallActivitySubProcess.bpmn2");        
         assertThat(app).isNotNull();
                 
-        Process<? extends Model> p = app.processes().processById("ParentProcess");
+        Process<? extends Model> p = app.get(Processes.class).processById("ParentProcess");
         
         Model m = p.createModel();
         Map<String, Object> parameters = new HashMap<>();

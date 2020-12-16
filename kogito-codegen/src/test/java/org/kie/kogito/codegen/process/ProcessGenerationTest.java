@@ -66,6 +66,7 @@ import org.kie.api.definition.process.Node;
 import org.kie.kogito.Application;
 import org.kie.kogito.Model;
 import org.kie.kogito.codegen.AbstractCodegenTest;
+import org.kie.kogito.process.Processes;
 import org.kie.kogito.process.impl.AbstractProcess;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -130,8 +131,8 @@ public class ProcessGenerationTest extends AbstractCodegenTest {
         RuleFlowProcess expected = (RuleFlowProcess) processes.get(0);
 
         Application app = generateCodeProcessesOnly(processFile);
-        AbstractProcess<? extends Model> process = (AbstractProcess<? extends Model>) app.processes().processById(expected.getId());
-        assertThat(process).isNotNull().isSameAs(app.processes().processById(expected.getId()));
+        AbstractProcess<? extends Model> process = (AbstractProcess<? extends Model>) app.get(Processes.class).processById(expected.getId());
+        assertThat(process).isNotNull().isSameAs(app.get(Processes.class).processById(expected.getId()));
         
         RuleFlowProcess current = (RuleFlowProcess) process.process();
 

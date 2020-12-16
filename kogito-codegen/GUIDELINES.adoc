@@ -291,7 +291,7 @@ public class TravelersProcess extends AbstractProcess<TravelersModel> {
     // constructor injection
     @org.springframework.beans.factory.annotation.Autowired()
     public TravelersProcess(org.kie.kogito.app.Application app) {
-        super(app.config().process());
+        super(app.config().get(org.kie.kogito.process.ProcessConfig.class));
         this.app = app;
     }
 

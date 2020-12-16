@@ -39,7 +39,7 @@ public class DecisionExplainabilityResourceExecutor implements ExplainabilityRes
 
     @Override
     public PredictOutput processRequest(Application application, PredictInput predictInput) {
-        DecisionModel decisionModel = getDecisionModel(application.decisionModels(), predictInput.getModelIdentifier());
+        DecisionModel decisionModel = getDecisionModel(application.get(DecisionModels.class), predictInput.getModelIdentifier());
         DMNContext dmnContext = decisionModel.newContext(convertDMNInput(predictInput));
         dmnContext.getMetadata().set(SKIP_TRACING, true);
         return convertDMNOutput(decisionModel.evaluateAll(dmnContext), predictInput);

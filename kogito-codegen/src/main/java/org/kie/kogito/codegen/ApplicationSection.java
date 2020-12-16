@@ -26,7 +26,7 @@ import com.github.javaparser.ast.CompilationUnit;
  *    app.$sectionname().$method()
  *
  * e.g.:
- *    app.processes().createMyProcess()
+ *    app.get(Processes.class)().createMyProcess()
  */
 public interface ApplicationSection {
 

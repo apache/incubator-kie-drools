@@ -15,7 +15,9 @@
 
 package org.kie.kogito.rules;
 
-public interface RuleUnits {
+import org.kie.kogito.KogitoEngine;
+
+public interface RuleUnits extends KogitoEngine {
 
     <T extends RuleUnitData> RuleUnit<T> create(Class<T> clazz);
 

@@ -30,6 +30,7 @@ import org.kie.kogito.Model;
 import org.kie.kogito.codegen.AbstractCodegenTest;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
+import org.kie.kogito.process.Processes;
 
 public class MessageStartEventTest extends AbstractCodegenTest {
     
@@ -39,7 +40,7 @@ public class MessageStartEventTest extends AbstractCodegenTest {
         Application app = generateCodeProcessesOnly("messagestartevent/MessageStartEvent.bpmn2");        
         assertThat(app).isNotNull();
                 
-        Process<? extends Model> p = app.processes().processById("MessageStartEvent");
+        Process<? extends Model> p = app.get(Processes.class).processById("MessageStartEvent");
         
         Model m = p.createModel();
         Map<String, Object> parameters = new HashMap<>();
@@ -61,7 +62,7 @@ public class MessageStartEventTest extends AbstractCodegenTest {
         Application app = generateCodeProcessesOnly("messagestartevent/MessageStartAndEndEvent.bpmn2");        
         assertThat(app).isNotNull();
                 
-        Process<? extends Model> p = app.processes().processById("MessageStartEvent");
+        Process<? extends Model> p = app.get(Processes.class).processById("MessageStartEvent");
         
         Model m = p.createModel();
         Map<String, Object> parameters = new HashMap<>();
@@ -124,7 +125,7 @@ public class MessageStartEventTest extends AbstractCodegenTest {
         Application app = generateCodeProcessesOnly("messagestartevent/NoneAndMessageStartEvent.bpmn2");        
         assertThat(app).isNotNull();
                 
-        Process<? extends Model> p = app.processes().processById("MessageStartEvent");
+        Process<? extends Model> p = app.get(Processes.class).processById("MessageStartEvent");
         
         Model m = p.createModel();
         Map<String, Object> parameters = new HashMap<>();

@@ -25,6 +25,7 @@ import org.kie.kogito.Model;
 import org.kie.kogito.codegen.AbstractCodegenTest;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
+import org.kie.kogito.process.Processes;
 import org.kie.kogito.process.WorkItem;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -37,7 +38,7 @@ class AdHocSubProcessTest extends AbstractCodegenTest {
         Application app = generateCodeProcessesOnly("cases/ActivationAdHoc.bpmn");
         assertThat(app).isNotNull();
 
-        Process<? extends Model> p = app.processes().processById("TestCase.ActivationAdHoc");
+        Process<? extends Model> p = app.get(Processes.class).processById("TestCase.ActivationAdHoc");
         Model model = p.createModel();
         Map<String, Object> params = new HashMap<>();
         params.put("favouriteColour", "yellow");
@@ -63,7 +64,7 @@ class AdHocSubProcessTest extends AbstractCodegenTest {
         Application app = generateCodeProcessesOnly("cases/CompletionAdHoc.bpmn");
         assertThat(app).isNotNull();
 
-        Process<? extends Model> p = app.processes().processById("TestCase.CompletionAdHoc");
+        Process<? extends Model> p = app.get(Processes.class).processById("TestCase.CompletionAdHoc");
         Model model = p.createModel();
         Map<String, Object> params = new HashMap<>();
         params.put("favouriteColour", "yellow");

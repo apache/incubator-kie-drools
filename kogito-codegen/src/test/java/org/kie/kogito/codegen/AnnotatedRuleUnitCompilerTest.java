@@ -23,6 +23,7 @@ import org.kie.kogito.codegen.unit.AnnotatedRules;
 import org.kie.kogito.rules.DataHandle;
 import org.kie.kogito.rules.RuleUnit;
 import org.kie.kogito.rules.RuleUnitInstance;
+import org.kie.kogito.rules.RuleUnits;
 
 public class AnnotatedRuleUnitCompilerTest extends AbstractCodegenTest {
 
@@ -38,7 +39,7 @@ public class AnnotatedRuleUnitCompilerTest extends AbstractCodegenTest {
         Person sofia = new Person( "Sofia", 7 );
         DataHandle dhSofia = adults.getPersons().add(sofia);
 
-        RuleUnit<AnnotatedRules> unit = application.ruleUnits().create(AnnotatedRules.class);
+        RuleUnit<AnnotatedRules> unit = application.get(RuleUnits.class).create(AnnotatedRules.class);
         RuleUnitInstance<AnnotatedRules> instance = unit.createInstance(adults);
 
     }

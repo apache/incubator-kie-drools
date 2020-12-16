@@ -36,6 +36,7 @@ import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.kogito.Application;
+import org.kie.kogito.rules.RuleUnits;
 
 public class KogitoStatefulKnowledgeSessionImpl extends StatefulKnowledgeSessionImpl {
 
@@ -110,7 +111,7 @@ public class KogitoStatefulKnowledgeSessionImpl extends StatefulKnowledgeSession
 
         @Override
         public void run(String ruleUnitName) {
-            kogitoSession.getApplication().ruleUnits().getRegisteredInstance( ruleUnitName ).fire();
+            kogitoSession.getApplication().get(RuleUnits.class).getRegisteredInstance( ruleUnitName ).fire();
         }
 
         @Override

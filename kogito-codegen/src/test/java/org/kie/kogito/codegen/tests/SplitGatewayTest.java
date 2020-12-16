@@ -27,6 +27,7 @@ import org.kie.kogito.Model;
 import org.kie.kogito.codegen.AbstractCodegenTest;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
+import org.kie.kogito.process.Processes;
 
 import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -40,7 +41,7 @@ public class SplitGatewayTest extends AbstractCodegenTest {
         Application app = generateCode(resourcesTypeMap);
         assertThat(app).isNotNull();
 
-        Process<? extends Model> p = app.processes().processById("SplitMultilineExpression");
+        Process<? extends Model> p = app.get(Processes.class).processById("SplitMultilineExpression");
 
         Model m = p.createModel();
         m.fromMap(singletonMap("valid", false));

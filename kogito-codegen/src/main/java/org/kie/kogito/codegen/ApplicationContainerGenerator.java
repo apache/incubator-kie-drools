@@ -16,16 +16,20 @@
 package org.kie.kogito.codegen;
 
 import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import com.github.javaparser.ast.comments.BlockComment;
+import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.ThisExpr;
-import com.github.javaparser.ast.stmt.ExpressionStmt;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+
+import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 
 public class ApplicationContainerGenerator extends TemplatedGenerator {
 
@@ -76,32 +80,52 @@ public class ApplicationContainerGenerator extends TemplatedGenerator {
 
         // ApplicationTemplate (no CDI/Spring) has placeholders to replace
         if (annotator == null) {
-            for (String section : sections) {
-                replaceSectionPlaceHolder(cls, section);
-            }
+            replacePlaceholder(getLoadEnginesMethod(cls), sections);
         }
 
         cls.getMembers().sort(new BodyDeclarationComparator());
         return optionalCompilationUnit;
     }
 
-    private void replaceSectionPlaceHolder(ClassOrInterfaceDeclaration cls, String sectionClassName) {
-        // look for an expression of the form: foo = ... /* $SectionName$ */ ;
-        //      e.g.: this.processes = null /* $Processes$ */;
-        // and replaces the entire expression with an initializer; e.g.:
-        //      e.g.: this.processes = new Processes(this);
+    private MethodCallExpr getLoadEnginesMethod(ClassOrInterfaceDeclaration cls) {
+        return cls.findFirst(MethodCallExpr.class, mtd -> "loadEngines".equals(mtd.getNameAsString()))
+                    .orElseThrow(() -> new InvalidTemplateException(
+                            APPLICATION_CLASS_NAME,
+                            templatePath(),
+                            "Impossible to find loadEngines invocation"));
+    }
 
-        // new $SectionName$(this)
-        ObjectCreationExpr sectionCreationExpr = new ObjectCreationExpr()
-                .setType(sectionClassName)
-                .addArgument(new ThisExpr());
+    private void replacePlaceholder(MethodCallExpr methodCallExpr, List<String> sections) {
+        // look for expressions that contain $ and replace them with an initializer
+        //      e.g.: $Processes$
+        // is replaced with:
+        //      e.g.: new Processes(this)
+        // or remove the parameter if section is not available
 
-        cls.findFirst(
-                BlockComment.class, c -> c.getContent().trim().equals('$' + sectionClassName + '$'))
-                .flatMap(Node::getParentNode)
-                .map(ExpressionStmt.class::cast)
-                .map(e -> e.getExpression().asAssignExpr())
-                .ifPresent(assignExpr -> assignExpr.setValue(sectionCreationExpr));
-        // else ignore: there is no such templated argument
+        Map<String, Expression> replacementMap = sections.stream()
+                .collect(toMap(
+                        identity(),
+                        sectionClassName -> new ObjectCreationExpr()
+                                .setType(sectionClassName)
+                                .addArgument(new ThisExpr())
+                ));
+
+        List<Expression> toBeRemoved = methodCallExpr.getArguments().stream()
+                .filter(exp -> exp.toString().contains("$"))
+                .filter(argument -> !replace(argument, replacementMap))
+                .collect(toList());
+
+        // remove using parentNode.remove(node) instead of node.remove() to prevent ConcurrentModificationException
+        toBeRemoved.forEach(methodCallExpr::remove);
+    }
+
+    private boolean replace(Expression originalExpression, Map<String, Expression> expressionMap) {
+        for (Map.Entry<String, Expression> entry : expressionMap.entrySet()) {
+            if (originalExpression.toString().contains("$" + entry.getKey() + "$")) {
+                originalExpression.replace(entry.getValue());
+                return true;
+            }
+        }
+        return false;
     }
 }

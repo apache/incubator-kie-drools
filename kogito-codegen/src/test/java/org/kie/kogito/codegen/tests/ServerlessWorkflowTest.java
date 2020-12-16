@@ -33,7 +33,9 @@ import org.kie.kogito.Model;
 import org.kie.kogito.auth.SecurityPolicy;
 import org.kie.kogito.codegen.AbstractCodegenTest;
 import org.kie.kogito.process.Process;
+import org.kie.kogito.process.ProcessConfig;
 import org.kie.kogito.process.ProcessInstance;
+import org.kie.kogito.process.Processes;
 import org.kie.kogito.process.WorkItem;
 import org.kie.kogito.process.impl.DefaultProcessEventListenerConfig;
 import org.kie.kogito.process.workitem.Policy;
@@ -48,7 +50,7 @@ public class ServerlessWorkflowTest extends AbstractCodegenTest {
         Application app = generateCodeProcessesOnly(processLocation);
         assertThat(app).isNotNull();
 
-        Process<? extends Model> p = app.processes().processById("function");
+        Process<? extends Model> p = app.get(Processes.class).processById("function");
 
         Model m = p.createModel();
         Map<String, Object> parameters = new HashMap<>();
@@ -68,10 +70,10 @@ public class ServerlessWorkflowTest extends AbstractCodegenTest {
         assertThat(app).isNotNull();
 
         NodeLeftCountDownProcessEventListener listener = new NodeLeftCountDownProcessEventListener("SmallDelay", 1);
-        app.config().process().processEventListeners().listeners().add(listener);
+        app.config().get(ProcessConfig.class).processEventListeners().listeners().add(listener);
 
 
-        Process<? extends Model> p = app.processes().processById("function");
+        Process<? extends Model> p = app.get(Processes.class).processById("function");
 
         Model m = p.createModel();
         Map<String, Object> parameters = new HashMap<>();
@@ -93,7 +95,7 @@ public class ServerlessWorkflowTest extends AbstractCodegenTest {
         Application app = generateCodeProcessesOnly(processLocation);
         assertThat(app).isNotNull();
 
-        Process<? extends Model> p = app.processes().processById("function");
+        Process<? extends Model> p = app.get(Processes.class).processById("function");
 
         Model m = p.createModel();
         Map<String, Object> parameters = new HashMap<>();
@@ -112,7 +114,7 @@ public class ServerlessWorkflowTest extends AbstractCodegenTest {
         Application app = generateCodeProcessesOnly(processLocation);
         assertThat(app).isNotNull();
 
-        Process<? extends Model> p = app.processes().processById("function");
+        Process<? extends Model> p = app.get(Processes.class).processById("function");
 
         Model m = p.createModel();
         Map<String, Object> parameters = new HashMap<>();
@@ -131,7 +133,7 @@ public class ServerlessWorkflowTest extends AbstractCodegenTest {
         Application app = generateCodeProcessesOnly(processLocation);
         assertThat(app).isNotNull();
 
-        Process<? extends Model> p = app.processes().processById("singleservice");
+        Process<? extends Model> p = app.get(Processes.class).processById("singleservice");
 
         Model m = p.createModel();
         Map<String, Object> parameters = new HashMap<>();
@@ -168,7 +170,7 @@ public class ServerlessWorkflowTest extends AbstractCodegenTest {
         Application app = generateCodeProcessesOnly(processLocation);
         assertThat(app).isNotNull();
 
-        Process<? extends Model> p = app.processes().processById("singleinject");
+        Process<? extends Model> p = app.get(Processes.class).processById("singleinject");
 
         Model m = p.createModel();
         Map<String, Object> parameters = new HashMap<>();
@@ -203,7 +205,7 @@ public class ServerlessWorkflowTest extends AbstractCodegenTest {
         Application app = generateCodeProcessesOnly(processLocation);
         assertThat(app).isNotNull();
 
-        Process<? extends Model> p = app.processes().processById("switchworkflow");
+        Process<? extends Model> p = app.get(Processes.class).processById("switchworkflow");
 
         Model m = p.createModel();
         Map<String, Object> parameters = new HashMap<>();
@@ -238,7 +240,7 @@ public class ServerlessWorkflowTest extends AbstractCodegenTest {
         Application app = generateCodeProcessesOnly(processLocation);
         assertThat(app).isNotNull();
 
-        Process<? extends Model> p = app.processes().processById("switchworkflow");
+        Process<? extends Model> p = app.get(Processes.class).processById("switchworkflow");
 
         Model m = p.createModel();
         Map<String, Object> parameters = new HashMap<>();
@@ -273,7 +275,7 @@ public class ServerlessWorkflowTest extends AbstractCodegenTest {
         Application app = generateCodeProcessesOnly(processLocation);
         assertThat(app).isNotNull();
 
-        Process<? extends Model> p = app.processes().processById("switchworkflow");
+        Process<? extends Model> p = app.get(Processes.class).processById("switchworkflow");
 
         Model m = p.createModel();
         Map<String, Object> parameters = new HashMap<>();
@@ -299,7 +301,7 @@ public class ServerlessWorkflowTest extends AbstractCodegenTest {
         Application app = generateCodeProcessesOnly("serverless/single-subflow.sw.json", "serverless/called-subflow.sw.json");
         assertThat(app).isNotNull();
 
-        Process<? extends Model> p = app.processes().processById("singlesubflow");
+        Process<? extends Model> p = app.get(Processes.class).processById("singlesubflow");
 
         Model m = p.createModel();
         Map<String, Object> parameters = new HashMap<>();
@@ -336,7 +338,7 @@ public class ServerlessWorkflowTest extends AbstractCodegenTest {
             Application app = generateCodeProcessesOnly("serverless/parallel-state.sw.json", "serverless/parallel-state-branch1.sw.json", "serverless/parallel-state-branch2.sw.json");
             assertThat(app).isNotNull();
 
-            Process<? extends Model> p = app.processes().processById("parallelworkflow");
+            Process<? extends Model> p = app.get(Processes.class).processById("parallelworkflow");
 
             Model m = p.createModel();
             Map<String, Object> parameters = new HashMap<>();
@@ -378,7 +380,7 @@ public class ServerlessWorkflowTest extends AbstractCodegenTest {
         Application app = generateCodeProcessesOnly(processLocation);
         assertThat(app).isNotNull();
         final List<String> workItemTransitionEvents = new ArrayList<>();
-        app.config().process().processEventListeners().listeners().add(new DefaultProcessEventListener() {
+        app.config().get(ProcessConfig.class).processEventListeners().listeners().add(new DefaultProcessEventListener() {
 
             @Override
             public void beforeWorkItemTransition(ProcessWorkItemTransitionEvent event) {
@@ -391,7 +393,7 @@ public class ServerlessWorkflowTest extends AbstractCodegenTest {
             }
         });
 
-        Process<? extends Model> p = app.processes().processById("decisionworkflow");
+        Process<? extends Model> p = app.get(Processes.class).processById("decisionworkflow");
 
         Model m = p.createModel();
         Map<String, Object> parameters = new HashMap<>();
@@ -456,7 +458,7 @@ public class ServerlessWorkflowTest extends AbstractCodegenTest {
         Application app = generateCodeProcessesOnly(processLocation);
         assertThat(app).isNotNull();
         final List<String> workItemTransitionEvents = new ArrayList<>();
-        app.config().process().processEventListeners().listeners().add(new DefaultProcessEventListener() {
+        app.config().get(ProcessConfig.class).processEventListeners().listeners().add(new DefaultProcessEventListener() {
 
             @Override
             public void beforeWorkItemTransition(ProcessWorkItemTransitionEvent event) {
@@ -469,7 +471,7 @@ public class ServerlessWorkflowTest extends AbstractCodegenTest {
             }
         });
 
-        Process<? extends Model> p = app.processes().processById("multidecisionworkflow");
+        Process<? extends Model> p = app.get(Processes.class).processById("multidecisionworkflow");
 
         Model m = p.createModel();
         Map<String, Object> parameters = new HashMap<>();
@@ -536,7 +538,7 @@ public class ServerlessWorkflowTest extends AbstractCodegenTest {
         Application app = generateCode(resourcesTypeMap);
         assertThat(app).isNotNull();
 
-        Process<? extends Model> p = app.processes().processById("ruleworkflow");
+        Process<? extends Model> p = app.get(Processes.class).processById("ruleworkflow");
 
         Model m = p.createModel();
         Map<String, Object> parameters = new HashMap<>();
@@ -575,7 +577,7 @@ public class ServerlessWorkflowTest extends AbstractCodegenTest {
         Application app = generateCodeProcessesOnly(processLocation);
         assertThat(app).isNotNull();
 
-        Process<? extends Model> p = app.processes().processById("prchecker");
+        Process<? extends Model> p = app.get(Processes.class).processById("prchecker");
 
         Model m = p.createModel();
         Map<String, Object> parameters = new HashMap<>();

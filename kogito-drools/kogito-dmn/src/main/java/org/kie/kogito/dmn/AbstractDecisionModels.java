@@ -17,6 +17,7 @@ package org.kie.kogito.dmn;
 import org.kie.api.runtime.KieRuntimeFactory;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.kogito.ExecutionIdSupplier;
+import org.kie.kogito.decision.DecisionConfig;
 import org.kie.kogito.decision.DecisionModels;
 
 import java.io.Reader;
@@ -48,7 +49,7 @@ public abstract class AbstractDecisionModels implements DecisionModels {
     }
 
     protected void initApplication(org.kie.kogito.Application app) {
-        app.config().decision().decisionEventListeners().listeners().forEach(dmnRuntime::addListener);
+        app.config().get(DecisionConfig.class).decisionEventListeners().listeners().forEach(dmnRuntime::addListener);
     }
 
     protected static java.io.InputStreamReader readResource(java.io.InputStream stream) {

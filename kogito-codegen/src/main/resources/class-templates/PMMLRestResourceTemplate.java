@@ -17,7 +17,7 @@ public class PMMLRestResourceTemplate {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Object pmml(java.util.Map<String, Object> variables) {
-        org.kie.kogito.prediction.PredictionModel prediction = application.predictionModels().getPredictionModel("$modelName$");
+        org.kie.kogito.prediction.PredictionModel prediction = application.get(org.kie.kogito.prediction.PredictionModels.class).getPredictionModel("$modelName$");
         return prediction.evaluateAll(prediction.newContext(variables));
     }
 }

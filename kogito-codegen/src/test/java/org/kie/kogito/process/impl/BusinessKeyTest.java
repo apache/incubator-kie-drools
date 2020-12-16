@@ -21,6 +21,7 @@ import org.kie.kogito.Model;
 import org.kie.kogito.codegen.AbstractCodegenTest;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
+import org.kie.kogito.process.Processes;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -34,7 +35,7 @@ class BusinessKeyTest extends AbstractCodegenTest {
         Application app = generateCodeProcessesOnly("cases/ActivationAdHoc.bpmn");
         assertThat(app).isNotNull();
 
-        Process<? extends Model> p = app.processes().processById("TestCase.ActivationAdHoc");
+        Process<? extends Model> p = app.get(Processes.class).processById("TestCase.ActivationAdHoc");
         ProcessInstance<?> processInstance = p.createInstance(businessKey, p.createModel());
         assertState(processInstance, ProcessInstance.STATE_PENDING);
         assertEquals(businessKey, processInstance.businessKey());
