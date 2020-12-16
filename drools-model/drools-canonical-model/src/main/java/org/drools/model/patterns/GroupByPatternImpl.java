@@ -33,6 +33,8 @@ public class GroupByPatternImpl<T, K> extends AccumulatePatternImpl<T> implement
 
     private final Pattern[] groupingPatterns;
 
+    private boolean propagateAll = false;
+
     public GroupByPatternImpl( Condition condition, Variable[] vars, Variable<K> varKey, FunctionN groupingFunction, AccumulateFunction... accumulateFunctions ) {
         super( condition, accumulateFunctions );
         this.vars = vars;
@@ -91,5 +93,13 @@ public class GroupByPatternImpl<T, K> extends AccumulatePatternImpl<T> implement
         }
 
         return patterns;
+    }
+
+    public void setPropagateAll( boolean propagateAll ) {
+        this.propagateAll = propagateAll;
+    }
+
+    public boolean isPropagateAll() {
+        return propagateAll;
     }
 }

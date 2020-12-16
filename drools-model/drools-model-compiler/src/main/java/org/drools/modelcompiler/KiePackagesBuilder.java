@@ -120,6 +120,7 @@ import org.drools.model.impl.Exchange;
 import org.drools.model.patterns.CompositePatterns;
 import org.drools.model.patterns.EvalImpl;
 import org.drools.model.patterns.ExistentialPatternImpl;
+import org.drools.model.patterns.GroupByPatternImpl;
 import org.drools.model.patterns.PatternImpl;
 import org.drools.model.patterns.QueryCallPattern;
 import org.drools.modelcompiler.attributes.LambdaEnabled;
@@ -662,7 +663,9 @@ public class KiePackagesBuilder {
     }
 
     private RuleConditionElement addSubConditions( RuleContext ctx, GroupElement ge, List<Condition> subconditions) {
-        for (Condition subCondition : subconditions) {
+        for (int i = 0; i < subconditions.size(); i++) {
+            Condition subCondition = subconditions.get(i);
+            checkCompositeGroupBy( subconditions, i, subCondition );
             RuleConditionElement element = conditionToElement( ctx, ge, subCondition );
             if (element != null) {
                 ge.addChild( element );
@@ -672,6 +675,17 @@ public class KiePackagesBuilder {
             return ge.getChildren().get(0);
         }
         return ge;
+    }
+
+    private void checkCompositeGroupBy( List<Condition> subconditions, int i, Condition subCondition ) {
+        if ( subCondition.getType() == Condition.Type.GROUP_BY) {
+            for (int j = i +1; j < subconditions.size(); j++) {
+                if ( subconditions.get(j).getType() == Condition.Type.GROUP_BY) {
+                    (( GroupByPatternImpl ) subCondition).setPropagateAll( true );
+                    break;
+                }
+            }
+        }
     }
 
     private RuleConditionElement buildQueryPattern( RuleContext ctx, QueryCallPattern queryPattern ) {
@@ -828,12 +842,12 @@ public class KiePackagesBuilder {
         }
 
         if (isGroupBy) {
-            GroupByPattern groupBy = ( GroupByPattern ) accPattern;
+            GroupByPatternImpl groupBy = ( GroupByPatternImpl ) accPattern;
             Declaration[] groupingDeclarations = new Declaration[groupBy.getVars().length];
             for (int i = 0; i < groupBy.getVars().length; i++) {
                 groupingDeclarations[i] = ctx.getDeclaration( groupBy.getVars()[i] );
             }
-            accumulate = new LambdaGroupByAccumulate(accumulate, groupingDeclarations, groupBy.getGroupingFunction());
+            accumulate = new LambdaGroupByAccumulate(accumulate, groupingDeclarations, groupBy.getGroupingFunction(), groupBy.isPropagateAll());
         }
 
         for (Variable boundVar : accPattern.getBoundVariables()) {
