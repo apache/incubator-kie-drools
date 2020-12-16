@@ -22,7 +22,9 @@ import org.drools.compiler.lang.descr.ConditionalBranchDescr;
 
 @foreach{ imp : pkg.imports }import @{imp.target}@end{"\n"}@end{}@if{!pkg.functionImports.isEmpty()}
 
-@foreach{ imp : pkg.functionImports }import function @{imp.target}@end{"\n"}@end{}@if{!pkg.globals.isEmpty()}
+@foreach{ imp : pkg.functionImports }import function @{imp.target}@end{"\n"}@end{}@if{!pkg.accumulateImports.isEmpty()}
+
+@foreach{ imp : pkg.accumulateImports }import accumulate @{imp.target} @{imp.functionName}@end{"\n"}@end{}@if{!pkg.globals.isEmpty()}
 
 @foreach{ global : pkg.globals }global @{global.type} @{global.identifier}@end{"\n"}@end{}@if{!pkg.attributes.isEmpty()}
 
@@ -90,7 +92,7 @@ end
 @declare{"psource"}@if{source!=null}@if{(source instanceof FromDescr) || (source instanceof EntryPointDescr)}@{source.toString()}@comment{
 }@elseif{source instanceof CollectDescr}from collect( @includeNamed{"ced"; base=source.inputPattern; root=false; inAcc=false} )@comment{
 }@elseif{source instanceof AccumulateDescr}@code{isFunc=source.isExternalFunction()}@code{cp=source}@if{!topLevelAcc}from @end{}accumulate(     @includeNamed{"ced"; base=source.input; root=false; inAcc=true},
-        @if{isFunc}@includeNamed{"accFunctions"; functions=cp.functions}@else{}@includeNamed{"accCustom";acc=cp}@end{} @if{topLevelAcc};
+        @if{isFunc}@includeNamed{"accFunctions"; functions=cp.functions}@else{}@includeNamed{"accCustom";acc=cp}@end{} @if{topLevelAcc}@if{!constrs.isEmpty()};@end{}
         @foreach{constr:constrs}@{constr}@end{", "}@end{} )@end{}@end{}@end{}
 
 @comment{***************************************************************
