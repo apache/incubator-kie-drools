@@ -442,49 +442,6 @@ public class MvelDialectTest extends BaseModelTest {
     }
 
     @Test
-    // @Ignore("without B it doesn't work on MVEL - see https://issues.redhat.com/browse/DROOLS-5897")
-    public void testCompoundOperator() throws Exception {
-        // DROOLS-5894 // DROOLS-5901
-        String drl =
-                "import " + Person.class.getCanonicalName() + "\n" +
-                "import " + BigDecimal.class.getCanonicalName() + "\n" +
-                "dialect \"mvel\"\n" +
-                "rule R\n" +
-                "when\n" +
-                "    $p : Person( age >= 26 )\n" +
-                "then\n" +
-                "    BigDecimal result = 0B;" +
-                "    $p.money += 50000;\n" + // 50000
-                "    $p.money -= 10000;\n" + // 40000
-                "    $p.money /= 10;\n" + // 4000
-                "    $p.money *= 10;\n" + // 40000
-                "    $p.money += $p.money;\n" + // 80000
-                "    $p.money /= $p.money;\n" + // 1
-                "    $p.money *= $p.money;\n" + // 1
-                "    $p.money -= $p.money;\n" + // 0
-                "    BigDecimal anotherVar = 10B;" +
-                "    $p.money += anotherVar;\n" + // 10
-                "    $p.money /= anotherVar;\n" + // 1
-                "    $p.money *= anotherVar;\n" + // 1
-                "    $p.money -= anotherVar;\n" + // 0
-                "    int intVar = 20;" +
-                "    $p.money += intVar;\n" + // 20
-                "    $p.money /= intVar;\n" + // 1
-                "    $p.money *= intVar;\n" + // 1
-                "    $p.money -= intVar;\n" + // 0
-                "end";
-
-        KieSession ksession = getKieSession(drl);
-
-        Person john = new Person("John", 30);
-        john.setMoney( new BigDecimal( 70000 ) );
-
-        ksession.insert(john);
-        assertEquals(1, ksession.fireAllRules());
-        assertEquals(new BigDecimal( 0 ), john.getMoney());
-    }
-
-    @Test
     public void testCompoundOperatorBigDecimalConstant() throws Exception {
         // DROOLS-5894
         String drl =
@@ -515,7 +472,7 @@ public class MvelDialectTest extends BaseModelTest {
 
     @Test
     public void testCompoundOperatorBigDecimalConstantWithoutLiterals() {
-        // DROOLS-5894
+        // DROOLS-5894 // DROOLS-5901
         String drl =
                 "import " + Person.class.getCanonicalName() + "\n" +
                 "import " + BigDecimal.class.getCanonicalName() + "\n" +
