@@ -22,11 +22,12 @@ import java.util.Map;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.mining.MiningModel;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.pmml.api.exceptions.KiePMMLException;
-import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.api.enums.PMML_MODEL;
+import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.commons.model.HasClassLoader;
+import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.compiler.api.provider.ModelImplementationProvider;
+import org.kie.pmml.kie.dependencies.HasKnowledgeBuilder;
 import org.kie.pmml.models.mining.compiler.factories.KiePMMLMiningModelFactory;
 import org.kie.pmml.models.mining.model.KiePMMLMiningModel;
 import org.kie.pmml.models.mining.model.KiePMMLMiningModelWithSources;
@@ -48,12 +49,11 @@ public class MiningModelImplementationProvider implements ModelImplementationPro
     public KiePMMLMiningModel getKiePMMLModel(final DataDictionary dataDictionary,
                                               final TransformationDictionary transformationDictionary,
                                               final MiningModel model,
-                                              final Object kBuilder) {
-        if (!(kBuilder instanceof KnowledgeBuilder)) {
-            throw new KiePMMLException(String.format("Expecting KnowledgeBuilder, received %s",
-                                                     kBuilder.getClass().getName()));
+                                              final HasClassLoader hasClassloader) {
+        if (!(hasClassloader instanceof HasKnowledgeBuilder)) {
+            throw new KiePMMLException(String.format("Expecting HasKnowledgeBuilder, received %s", hasClassloader.getClass().getName()));
         }
-        return getKiePMMLMiningModel(dataDictionary, transformationDictionary, model, (KnowledgeBuilder) kBuilder);
+        return getKiePMMLMiningModel(dataDictionary, transformationDictionary, model, hasClassloader);
     }
 
     @Override
@@ -61,16 +61,16 @@ public class MiningModelImplementationProvider implements ModelImplementationPro
                                                          final DataDictionary dataDictionary,
                                                          final TransformationDictionary transformationDictionary,
                                                          final MiningModel model,
-                                                         final Object kBuilder) {
-        if (!(kBuilder instanceof KnowledgeBuilder)) {
+                                                         final HasClassLoader hasClassloader) {
+        if (!(hasClassloader instanceof HasKnowledgeBuilder)) {
             throw new KiePMMLException(String.format("Expecting KnowledgeBuilder, received %s",
-                                                     kBuilder.getClass().getName()));
+                                                     hasClassloader.getClass().getName()));
         }
         final List<KiePMMLModel> nestedModels = new ArrayList<>();
         final Map<String, String> sourcesMap =
                 KiePMMLMiningModelFactory.getKiePMMLMiningModelSourcesMap(dataDictionary, transformationDictionary,
                                                                           model, packageName,
-                                                                          (KnowledgeBuilder) kBuilder,
+                                                                          hasClassloader,
                                                                           nestedModels);
         return new KiePMMLMiningModelWithSources(model.getModelName(), packageName, sourcesMap, nestedModels);
     }
