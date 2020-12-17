@@ -17,12 +17,14 @@ package org.kie.kogito.services.event;
 
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import org.kie.kogito.event.AbstractDataEvent;
 import org.kie.kogito.services.event.impl.ProcessInstanceEventBody;
 import org.kie.kogito.services.event.impl.VariableInstanceEventBody;
 
 public class VariableInstanceDataEvent extends AbstractDataEvent<VariableInstanceEventBody> {
 
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private final String kogitoVariableName;    
 
     public VariableInstanceDataEvent(String source, String addons, Map<String, String> metaData, VariableInstanceEventBody body) {

@@ -15,13 +15,18 @@
 
 package org.kie.kogito.services.event;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import org.kie.kogito.event.AbstractDataEvent;
 
 public abstract class AbstractProcessDataEvent<T> extends AbstractDataEvent<T> {
 
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     protected String kogitoParentProcessinstanceId;
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     protected String kogitoProcessinstanceState;
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     protected String kogitoReferenceId;
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     protected String kogitoStartFromNode;
 
     public AbstractProcessDataEvent() {}

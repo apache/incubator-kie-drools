@@ -21,6 +21,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -47,24 +48,31 @@ public abstract class AbstractDataEvent<T> implements DataEvent<T> {
      */
     public static final String SOURCE_FORMAT = "/process/%s";
     static final String SPEC_VERSION = "1.0";
+
     @JsonProperty("specversion")
     private String specVersion;
     private String id;
     private String source;
     private String type;
     private String time;
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private String subject;
     @JsonProperty("datacontenttype")
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private String dataContentType;
     @JsonProperty("dataschema")
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private String dataSchema;
 
     private T data;
 
     private String kogitoProcessinstanceId;
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private String kogitoRootProcessinstanceId;
     private String kogitoProcessId;
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private String kogitoRootProcessId;
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private String kogitoAddons;
 
     public AbstractDataEvent() {}
