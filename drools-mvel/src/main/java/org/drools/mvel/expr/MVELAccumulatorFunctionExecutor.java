@@ -85,9 +85,6 @@ public class MVELAccumulatorFunctionExecutor
     public Serializable createContext() {
         MVELAccumulatorFunctionContext context = new MVELAccumulatorFunctionContext();
         context.context = this.function.createContext();
-        if ( this.function.supportsReverse() ) {
-            context.reverseSupport = new HashMap<>();
-        }
         return context;
     }
 
@@ -105,7 +102,7 @@ public class MVELAccumulatorFunctionExecutor
     /* (non-Javadoc)
      * @see org.kie.spi.Accumulator#accumulate(java.lang.Object, org.kie.spi.Tuple, org.kie.common.InternalFactHandle, org.kie.rule.Declaration[], org.kie.rule.Declaration[], org.kie.WorkingMemory)
      */
-    public void accumulate(Object workingMemoryContext,
+    public Object accumulate(Object workingMemoryContext,
                            Object context,
                            Tuple tuple,
                            InternalFactHandle handle,
@@ -118,21 +115,20 @@ public class MVELAccumulatorFunctionExecutor
         final Object value = MVEL.executeExpression( this.expression,
                                                      handle.getObject(),
                                                      factory );
-        if ( this.function.supportsReverse() ) {
-            ((MVELAccumulatorFunctionContext) context).reverseSupport.put( handle.getId(), value );
-        }
         this.function.accumulate( ((MVELAccumulatorFunctionContext) context).context,
                                   value );
+
+        return value;
     }
 
     public void reverse(Object workingMemoryContext,
                         Object context,
                         Tuple leftTuple,
                         InternalFactHandle handle,
+                        Object value,
                         Declaration[] declarations,
                         Declaration[] innerDeclarations,
                         WorkingMemory workingMemory) throws Exception {
-        final Object value = ((MVELAccumulatorFunctionContext) context).reverseSupport.remove( handle.getId() );
         this.function.reverse( ((MVELAccumulatorFunctionContext) context).context,
                                value );
     }
@@ -170,7 +166,6 @@ public class MVELAccumulatorFunctionExecutor
         implements
         Externalizable {
         public Serializable               context;
-        public Map<Long, Object> reverseSupport;
 
         public MVELAccumulatorFunctionContext() {
         }
@@ -179,12 +174,10 @@ public class MVELAccumulatorFunctionExecutor
         public void readExternal(ObjectInput in) throws IOException,
                                                 ClassNotFoundException {
             context = (Serializable) in.readObject();
-            reverseSupport = (Map<Long, Object>) in.readObject();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
             out.writeObject( context );
-            out.writeObject( reverseSupport );
         }
     }
 

@@ -86,11 +86,11 @@ public abstract class Accumulate extends ConditionalElement
     /**
      * Executes the accumulate (action) code for the given fact handle
      */
-    public abstract void accumulate(final Object workingMemoryContext,
-                                    final Object context,
-                                    final Tuple leftTuple,
-                                    final InternalFactHandle handle,
-                                    final WorkingMemory workingMemory);
+    public abstract Object accumulate(final Object workingMemoryContext,
+                                      final Object context,
+                                      final Tuple leftTuple,
+                                      final InternalFactHandle handle,
+                                      final WorkingMemory workingMemory);
 
     /**
      * Executes the reverse (action) code for the given fact handle
@@ -99,6 +99,7 @@ public abstract class Accumulate extends ConditionalElement
                                  final Object context,
                                  final Tuple leftTuple,
                                  final InternalFactHandle handle,
+                                 final Object value,
                                  final WorkingMemory workingMemory);
 
     /**

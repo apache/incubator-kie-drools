@@ -98,11 +98,11 @@ public class MVELAccumulateBuilderTest {
                   tuple,
                   ksession );
 
-        acc.accumulate( wmContext,
-                        accContext,
-                        tuple,
-                        f1,
-                        ksession );
+        Object value1 = acc.accumulate( wmContext,
+                                        accContext,
+                                        tuple,
+                                        f1,
+                                        ksession );
         acc.accumulate( wmContext,
                         accContext,
                         tuple,
@@ -115,11 +115,12 @@ public class MVELAccumulateBuilderTest {
                                      tuple,
                                      ksession ) );
 
-        acc.reverse( wmContext,
-                     accContext,
-                     tuple,
-                     f1,
-                     ksession );
+        acc.reverse(wmContext,
+                    accContext,
+                    tuple,
+                    f1,
+                    value1,
+                    ksession);
 
         assertEquals( new Integer( 8 ),
                       acc.getResult( wmContext,

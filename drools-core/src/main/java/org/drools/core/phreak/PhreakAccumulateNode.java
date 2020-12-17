@@ -705,21 +705,22 @@ public class PhreakAccumulateNode {
 
         accctx.setPropagationContext(rightTuple.getPropagationContext());
 
-        accumulate.accumulate(am.workingMemoryContext,
-                              accctx.getContext(),
-                              tuple,
-                              handle,
-                              wm);
+        Object value = accumulate.accumulate(am.workingMemoryContext,
+                                  accctx.getContext(),
+                                  tuple,
+                                  handle,
+                                  wm);
 
         // in sequential mode, we don't need to keep record of matched tuples
         if (useLeftMemory) {
             // linking left and right by creating a new left tuple
-            accNode.createLeftTuple(leftTuple,
-                                    rightTuple,
-                                    currentLeftChild,
-                                    currentRightChild,
-                                    accNode,
-                                    true);
+            LeftTuple childLeftTuple = accNode.createLeftTuple(leftTuple,
+                                                               rightTuple,
+                                                               currentLeftChild,
+                                                               currentRightChild,
+                                                               accNode,
+                                                               true);
+            childLeftTuple.setContextObject(value);
         }
     }
 
@@ -755,6 +756,7 @@ public class PhreakAccumulateNode {
                                accctx.getContext(),
                                tuple,
                                handle,
+                               match.getContextObject(),
                                wm);
         } else {
             // otherwise need to recalculate all matches for the given leftTuple

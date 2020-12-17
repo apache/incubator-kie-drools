@@ -80,7 +80,7 @@ public class MockAccumulator
         this.workingMemory = workingMemory;
     }
 
-    public void accumulate(Object workingMemoryContext,
+    public Object accumulate(Object workingMemoryContext,
                            Object context,
                            Tuple leftTuple,
                            InternalFactHandle handle,
@@ -88,6 +88,7 @@ public class MockAccumulator
                            Declaration[] innerDeclarations,
                            WorkingMemory workingMemory) throws Exception {
         this.matchingObjects.add( handle.getObject() );
+        return handle.getObject();
     }
 
     public Object getResult(Object workingMemoryContext,
@@ -102,6 +103,7 @@ public class MockAccumulator
                         Object context,
                         Tuple leftTuple,
                         InternalFactHandle handle,
+                        Object value,
                         Declaration[] declarations,
                         Declaration[] innerDeclarations,
                         WorkingMemory workingMemory) throws Exception {

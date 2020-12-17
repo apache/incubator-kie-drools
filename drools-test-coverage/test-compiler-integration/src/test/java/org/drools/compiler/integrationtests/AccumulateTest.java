@@ -299,7 +299,7 @@ public class AccumulateTest {
 
     }
 
-    @Test(timeout = 10000)
+    @Test()
     public void testAccumulateReverseModify() {
 
         final String drl = "package org.drools.compiler.test;\n" +

@@ -77,13 +77,13 @@ public interface Accumulator
      * @param workingMemory
      * @throws Exception
      */
-    void accumulate(Object workingMemoryContext,
-                    Object context,
-                    Tuple leftTuple,
-                    InternalFactHandle handle,
-                    Declaration[] declarations,
-                    Declaration[] innerDeclarations,
-                    WorkingMemory workingMemory) throws Exception;
+    Object accumulate(Object workingMemoryContext,
+                      Object context,
+                      Tuple leftTuple,
+                      InternalFactHandle handle,
+                      Declaration[] declarations,
+                      Declaration[] innerDeclarations,
+                      WorkingMemory workingMemory) throws Exception;
     
     /**
      * Returns true if this accumulator supports operation reversal
@@ -107,6 +107,7 @@ public interface Accumulator
                  Object context,
                  Tuple leftTuple,
                  InternalFactHandle handle,
+                 Object value,
                  Declaration[] declarations,
                  Declaration[] innerDeclarations,
                  WorkingMemory workingMemory) throws Exception;
@@ -171,7 +172,7 @@ public interface Accumulator
             }, KiePolicyHelper.getAccessContext());
         }
 
-        public void accumulate(final Object workingMemoryContext, 
+        public Object accumulate(final Object workingMemoryContext,
                 final Object context, 
                 final Tuple leftTuple, 
                 final InternalFactHandle handle, 
@@ -181,10 +182,10 @@ public interface Accumulator
             AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
                 @Override
                 public Object run() throws Exception {
-                    delegate.accumulate(workingMemoryContext, context, leftTuple, handle, declarations, innerDeclarations, workingMemory);
-                    return null;
+                    return delegate.accumulate(workingMemoryContext, context, leftTuple, handle, declarations, innerDeclarations, workingMemory);
                 }
             }, KiePolicyHelper.getAccessContext());
+            throw new IllegalStateException("Should not reach here, as it should return from the prior 'run'");
         }
 
         public boolean supportsReverse() {
@@ -200,14 +201,16 @@ public interface Accumulator
         public void reverse(final Object workingMemoryContext, 
                 final Object context, 
                 final Tuple leftTuple, 
-                final InternalFactHandle handle, 
+                final InternalFactHandle handle,
+                final Object value,
                 final Declaration[] declarations, 
                 final Declaration[] innerDeclarations, 
                 final WorkingMemory workingMemory) throws Exception {
             AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
                 @Override
                 public Object run() throws Exception {
-                    delegate.reverse(workingMemoryContext, context, leftTuple, handle, declarations, innerDeclarations, workingMemory);
+                    delegate.reverse(workingMemoryContext, context, leftTuple, handle, value,
+                                     declarations, innerDeclarations, workingMemory);
                     return null;
                 }
             }, KiePolicyHelper.getAccessContext());

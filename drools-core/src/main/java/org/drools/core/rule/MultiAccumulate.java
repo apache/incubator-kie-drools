@@ -95,21 +95,23 @@ public class MultiAccumulate extends Accumulate {
         }
     }
 
-    public void accumulate(final Object workingMemoryContext,
-                           final Object context,
-                           final Tuple leftTuple,
-                           final InternalFactHandle handle,
-                           final WorkingMemory workingMemory) {
+    public Object accumulate(final Object workingMemoryContext,
+                             final Object context,
+                             final Tuple leftTuple,
+                             final InternalFactHandle handle,
+                             final WorkingMemory workingMemory) {
         try {
+            Object[] values = new Object[accumulators.length];
             for ( int i = 0; i < this.accumulators.length; i++ ) {
-                this.accumulators[i].accumulate( ((Object[])workingMemoryContext)[i],
-                                                 ((Object[])context)[i],
-                                                 leftTuple,
-                                                 handle,
-                                                 this.requiredDeclarations,
-                                                 getInnerDeclarationCache(),
-                                                 workingMemory );
+                values[i] = this.accumulators[i].accumulate( ((Object[])workingMemoryContext)[i],
+                                                             ((Object[])context)[i],
+                                                             leftTuple,
+                                                             handle,
+                                                             this.requiredDeclarations,
+                                                             getInnerDeclarationCache(),
+                                                             workingMemory );
             }
+            return values;
         } catch ( final Exception e ) {
             throw new RuntimeException( e );
         }
@@ -119,13 +121,16 @@ public class MultiAccumulate extends Accumulate {
                         final Object context,
                         final Tuple leftTuple,
                         final InternalFactHandle handle,
+                        final Object value,
                         final WorkingMemory workingMemory) {
         try {
+            Object[] values = (Object[]) value;
             for ( int i = 0; i < this.accumulators.length; i++ ) {
                 this.accumulators[i].reverse( ((Object[])workingMemoryContext)[i],
                                               ((Object[])context)[i],
                                               leftTuple,
                                               handle,
+                                              values[i],
                                               this.requiredDeclarations,
                                               getInnerDeclarationCache(),
                                               workingMemory );

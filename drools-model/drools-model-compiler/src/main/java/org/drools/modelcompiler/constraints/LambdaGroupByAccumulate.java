@@ -94,18 +94,20 @@ public class LambdaGroupByAccumulate extends Accumulate {
     }
 
     @Override
-    public void accumulate( Object workingMemoryContext, Object context, Tuple leftTuple, InternalFactHandle handle, WorkingMemory workingMemory ) {
+    public Object accumulate( Object workingMemoryContext, Object context, Tuple leftTuple, InternalFactHandle handle, WorkingMemory workingMemory ) {
         Object key = getKey(leftTuple, handle, workingMemory);
+        Object value = null;
         if (key != null) {
             Object groupContext = (( GroupByContext ) context).loadContext( innerAccumulate, handle, key );
-            innerAccumulate.accumulate( workingMemoryContext, groupContext, leftTuple, handle, workingMemory );
+            value = innerAccumulate.accumulate( workingMemoryContext, groupContext, leftTuple, handle, workingMemory );
         }
+        return value;
     }
 
     @Override
-    public void reverse( Object workingMemoryContext, Object context, Tuple leftTuple, InternalFactHandle handle, WorkingMemory workingMemory ) {
+    public void reverse(Object workingMemoryContext, Object context, Tuple leftTuple, InternalFactHandle handle, Object value, WorkingMemory workingMemory) {
         Object groupContext = (( GroupByContext ) context).loadContextForReverse( handle );
-        innerAccumulate.reverse( workingMemoryContext, groupContext, leftTuple, handle, workingMemory );
+        innerAccumulate.reverse(workingMemoryContext, groupContext, leftTuple, handle, value, workingMemory);
     }
 
     @Override

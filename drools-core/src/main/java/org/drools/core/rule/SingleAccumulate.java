@@ -85,22 +85,22 @@ public class SingleAccumulate extends Accumulate {
                                    workingMemory );
         } catch ( final Exception e ) {
             throw new RuntimeException( e );
-        }
+         }
     }
 
-    public void accumulate(final Object workingMemoryContext,
-                           final Object context,
-                           final Tuple leftTuple,
-                           final InternalFactHandle handle,
-                           final WorkingMemory workingMemory) {
+    public Object accumulate(final Object workingMemoryContext,
+                             final Object context,
+                             final Tuple leftTuple,
+                             final InternalFactHandle handle,
+                             final WorkingMemory workingMemory) {
         try {
-            this.accumulator.accumulate( workingMemoryContext,
-                                         context,
-                                         leftTuple,
-                                         handle,
-                                         this.requiredDeclarations,
-                                         getInnerDeclarationCache(),
-                                         workingMemory );
+            return this.accumulator.accumulate( workingMemoryContext,
+                                                 context,
+                                                 leftTuple,
+                                                 handle,
+                                                 this.requiredDeclarations,
+                                                 getInnerDeclarationCache(),
+                                                 workingMemory );
         } catch ( final Exception e ) {
             throw new RuntimeException( e );
         }
@@ -110,12 +110,14 @@ public class SingleAccumulate extends Accumulate {
                         final Object context,
                         final Tuple leftTuple,
                         final InternalFactHandle handle,
+                        Object value,
                         final WorkingMemory workingMemory) {
         try {
             this.accumulator.reverse( workingMemoryContext,
                                       context,
                                       leftTuple,
                                       handle,
+                                      value,
                                       this.requiredDeclarations,
                                       getInnerDeclarationCache(),
                                       workingMemory );
