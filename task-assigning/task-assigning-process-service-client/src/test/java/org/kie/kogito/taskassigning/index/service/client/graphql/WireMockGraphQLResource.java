@@ -33,7 +33,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 import static javax.ws.rs.core.HttpHeaders.CONTENT_TYPE;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static org.kie.kogito.taskassigning.index.service.client.graphql.util.JsonUtils.OBJECT_MAPPER;
+import static org.kie.kogito.taskassigning.util.JsonUtils.OBJECT_MAPPER;
 
 public class WireMockGraphQLResource implements QuarkusTestResourceLifecycleManager {
 

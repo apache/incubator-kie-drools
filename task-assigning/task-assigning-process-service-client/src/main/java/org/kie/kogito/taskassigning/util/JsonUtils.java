@@ -14,24 +14,26 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.taskassigning.index.service.client.graphql.util;
+package org.kie.kogito.taskassigning.util;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.junit.jupiter.api.Test;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+public class JsonUtils {
 
-class JsonUtilsTest {
+    public static final ObjectMapper OBJECT_MAPPER = new ObjectMapper().registerModule(new JavaTimeModule());
 
-    private static final String FIELD_NAME = "FIELD_NAME";
-    private static final String FIELD_VALUE = "FIELD_VALUE";
+    private JsonUtils() {
+    }
 
-    @Test
-    void newObjectNode() {
-        ObjectNode result = JsonUtils.newObjectNode(FIELD_NAME, FIELD_VALUE);
-        JsonNode node = result.get(FIELD_NAME);
-        assertThat(node).isNotNull();
-        assertThat(node.asText()).isEqualTo(FIELD_VALUE);
+    public static ObjectNode newObjectNode(String withField, String withFieldValue) {
+        ObjectNode result = OBJECT_MAPPER.createObjectNode();
+        if (withFieldValue == null) {
+            result.putNull(withField);
+        } else {
+            result.put(withField, withFieldValue);
+        }
+        return result;
     }
 }

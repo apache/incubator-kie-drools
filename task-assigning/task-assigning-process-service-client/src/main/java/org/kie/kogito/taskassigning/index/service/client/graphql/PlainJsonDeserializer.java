@@ -23,7 +23,7 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
-import static org.kie.kogito.taskassigning.index.service.client.graphql.util.JsonUtils.OBJECT_MAPPER;
+import static org.kie.kogito.taskassigning.util.JsonUtils.OBJECT_MAPPER;
 
 public class PlainJsonDeserializer extends StdDeserializer<JsonNode> {
 

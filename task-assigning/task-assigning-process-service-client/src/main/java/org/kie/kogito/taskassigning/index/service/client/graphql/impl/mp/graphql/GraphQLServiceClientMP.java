@@ -26,7 +26,7 @@ import org.kie.kogito.taskassigning.index.service.client.graphql.GraphQLServiceE
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.kogito.taskassigning.index.service.client.graphql.util.JsonUtils.OBJECT_MAPPER;
+import static org.kie.kogito.taskassigning.util.JsonUtils.OBJECT_MAPPER;
 
 /**
  * Basic GraphQLServiceClient implementation for avoiding introducing third party libraries. This implementation

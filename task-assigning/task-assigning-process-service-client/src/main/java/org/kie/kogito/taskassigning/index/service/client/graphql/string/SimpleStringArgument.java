@@ -18,7 +18,7 @@ package org.kie.kogito.taskassigning.index.service.client.graphql.string;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import static org.kie.kogito.taskassigning.index.service.client.graphql.util.JsonUtils.newObjectNode;
+import static org.kie.kogito.taskassigning.util.JsonUtils.newObjectNode;
 
 public abstract class SimpleStringArgument<T> extends StringArgument<T> {
 

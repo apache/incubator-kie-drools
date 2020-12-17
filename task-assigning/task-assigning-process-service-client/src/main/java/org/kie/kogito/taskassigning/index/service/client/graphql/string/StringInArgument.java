@@ -22,7 +22,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import static org.kie.kogito.taskassigning.index.service.client.graphql.util.JsonUtils.OBJECT_MAPPER;
+import static org.kie.kogito.taskassigning.util.JsonUtils.OBJECT_MAPPER;
 
 public class StringInArgument extends StringArgument<List<String>> {
 

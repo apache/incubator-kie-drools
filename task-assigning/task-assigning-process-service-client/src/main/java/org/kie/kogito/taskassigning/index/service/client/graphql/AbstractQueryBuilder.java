@@ -21,7 +21,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import static org.kie.kogito.taskassigning.index.service.client.graphql.util.JsonUtils.OBJECT_MAPPER;
+import static org.kie.kogito.taskassigning.util.JsonUtils.OBJECT_MAPPER;
 
 public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder> {
 
