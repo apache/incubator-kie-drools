@@ -91,6 +91,26 @@ import static org.drools.mvel.parser.GeneratedMvelParserTokenManagerBase.*;
 
 @Generated("JavaCC")
 public final class GeneratedMvelParser extends GeneratedMvelParserBase {
+    private boolean optionalSemicolon = true;
+    private boolean isWithOrModify = false;
+
+    public void setOptionalSemicolon(boolean optionalSemicolon) {
+        this.optionalSemicolon = optionalSemicolon;
+    }
+
+    public boolean shouldTerminateStatement() {
+        Token token = getToken(1);
+        return (this.optionalSemicolon && (
+                    ( token.kind == RBRACE ) ||
+                    ( token.kind == IDENTIFIER ) ||
+                    ( this.isWithOrModify && token.kind == COMMA ) ||
+                    ( token.specialToken != null &&
+                        ( token.specialToken.kind == UNIX_EOL ||
+                          token.specialToken.kind == WINDOWS_EOL ||
+                          token.specialToken.kind == SINGLE_LINE_COMMENT ) ) ) );
+
+    }
+
     /* Returns the JavaParser specific token type of the last matched token */
     JavaToken token() {
         if(token.toString() == null) {
@@ -130,6 +150,12 @@ SPECIAL_TOKEN :
   <SPACE: [" ", "\t", "\f", "\u0085", "\u00A0", "\u1680", "\u180e", "\u2000", "\u2001", "\u2002", "\u2003", "\u2004", "\u2005",
       "\u2006", "\u2007", "\u2008", "\u2009", "\u200a", "\u200b", "\u200c", "\u200d", "\u2028", "\u2029", "\u202f", "\u205f", "\u2060", "\u3000", "\ufeff"]>
 | <OLD_MAC_EOL: "\r">
+}
+
+SPECIAL_TOKEN :
+{
+<UNIX_EOL: "\n">
+| <WINDOWS_EOL : "\r\n">
 }
 
 TOKEN_MGR_DECLS :
@@ -305,9 +331,6 @@ TOKEN :
 | < DOT_DOT_SLASH: "../" >
 | < HASHMARK: "#" >
 | < EXCL_DOT: "!." >
-| <UNIX_EOL: "\n">
-| <WINDOWS_EOL : "\r\n">
-
 }
 
 /* LITERALS */
@@ -1493,7 +1516,7 @@ Expression ConditionalOrExpression():
 }
 {
   ret = ConditionalAndExpression()
-  ( "||" (EOL())* right = ConditionalAndExpression() { ret = new BinaryExpr(range(ret, token()), ret, right, BinaryExpr.Operator.OR); } )*
+  ( "||"  right = ConditionalAndExpression() { ret = new BinaryExpr(range(ret, token()), ret, right, BinaryExpr.Operator.OR); } )*
   { return ret; }
 }
 
@@ -1503,7 +1526,7 @@ Expression ConditionalAndExpression():
 	Expression right;
 }
 {
-  ret = InclusiveOrExpression() ( "&&" (EOL())* right = InclusiveOrExpression() { ret = new BinaryExpr(range(ret, token()), ret, right, BinaryExpr.Operator.AND); } )*
+  ret = InclusiveOrExpression() ( "&&"  right = InclusiveOrExpression() { ret = new BinaryExpr(range(ret, token()), ret, right, BinaryExpr.Operator.AND); } )*
   { return ret; }
 }
 
@@ -1649,7 +1672,6 @@ Expression UnaryExpression():
 	  ( "+" { op = UnaryExpr.Operator.PLUS; begin=token();} |
 	    "-" { op = UnaryExpr.Operator.MINUS; begin=token();}
 	  ) ret = UnaryExpression()
-	  (EOL())*
 	  {
         ret = new UnaryExpr(range(begin, token()), ret, op);
 	  }
@@ -2072,10 +2094,8 @@ NodeList<Expression> ArgumentList():
 	Expression expr;
 }
 {
-  (EOL())*
   expr = Expression() { ret.add(expr); }
-  (EOL())*
-  ( "," (EOL())* expr = Expression() { ret.add(expr); } )*
+  ( ","  expr = Expression() { ret.add(expr); } )*
   { return ret; }
 }
 
@@ -2244,7 +2264,7 @@ Statement BlockStatement():
             modifier = Modifiers()
             typeDecl = ClassOrInterfaceDeclaration(modifier) { ret = new LocalClassDeclarationStmt(range(typeDecl, token()), typeDecl); }
         | LOOKAHEAD(VariableDeclarationExpression() )
-            expr = VariableDeclarationExpression() ";"
+            expr = VariableDeclarationExpression() EOS()
             { ret = new ExpressionStmt(range(expr, token()), expr); }
         |
             ret = Statement()
@@ -2274,7 +2294,7 @@ VariableDeclarationExpr VariableDeclarationExpression():
 EmptyStmt EmptyStatement():
 {}
 {
-    (";"|EOL())
+    ";"
     { return new EmptyStmt(tokenRange()); }
 }
 
@@ -2320,8 +2340,7 @@ ExpressionStmt StatementExpression():
             op = AssignmentOperator() value = Expression() { expr = new AssignExpr(range(expr, token()), expr, value, op); }
         ]
     )
-    (";")*
-    (EOL())* // TODO: should support also windows EOL
+    (EOS())// TODO: should support also windows EOL
     { return new ExpressionStmt(range(expr, token()), expr); }
 }
 
@@ -2614,17 +2633,19 @@ ModifyStatement ModifyStatement():
     Expression modifyObject = null;
 }
 {
+    { this.isWithOrModify = true; }
     (
         (
             <MODIFY><LPAREN> (modifyObject = UnaryExpressionNotPlusMinus())<RPAREN> <LBRACE>
-            (first = Statement()(<SEMICOLON>|EOL())?)* { begin=token(); all.add(first); }
+            (first = Statement()(<SEMICOLON>)?)* { begin=token(); all.add(first); }
             (
-                          (<COMMA>)*(EOL())*
+                          (<COMMA>)*
                           other = Statement() { all.add(other); }
             )*
             <RBRACE>
-            (<SEMICOLON>|EOL())*
+            (<SEMICOLON>)?
             {
+                this.isWithOrModify = false;
                 return new ModifyStatement(range(begin, token()), modifyObject, all);
             }
 
@@ -2642,17 +2663,19 @@ WithStatement WithStatement():
     Expression withObject = null;
 }
 {
+    { this.isWithOrModify = true; }
     (
         (
             <WITH><LPAREN> (withObject = Expression())<RPAREN> <LBRACE>
-            (first = Statement()(<SEMICOLON>|EOL())?)* { begin=token(); all.add(first); }
+            (first = Statement()(<SEMICOLON>)*)* { begin=token(); all.add(first); }
             (
-                          (<COMMA>|EOL())
+                          <COMMA>
                           other = Statement() { all.add(other); }
             )*
             <RBRACE>
-            (<SEMICOLON>|EOL())*
+            (<SEMICOLON>)?
             {
+                this.isWithOrModify = false;
                 return new WithStatement(range(begin, token()), withObject, all);
             }
 
@@ -3364,9 +3387,9 @@ TemporalLiteralChunkExpr TemporalLiteralChunk():
   { return ret; }
 }
 
-void EOL():
+void EOS():
 {
 }
 {
-    <UNIX_EOL>|<WINDOWS_EOL>
+   <SEMICOLON> | <EOF> | LOOKAHEAD( { this.shouldTerminateStatement() } ) {}
 }
