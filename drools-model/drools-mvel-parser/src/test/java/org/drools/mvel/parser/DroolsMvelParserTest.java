@@ -30,6 +30,8 @@ import java.util.HashSet;
 import java.util.concurrent.TimeUnit;
 
 import com.github.javaparser.ParseProblemException;
+import com.github.javaparser.ParseResult;
+import com.github.javaparser.ParserConfiguration;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.BinaryExpr.Operator;
@@ -52,11 +54,14 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.drools.mvel.parser.DrlxParser.parseExpression;
+import static org.drools.mvel.parser.Providers.provider;
 import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
 public class DroolsMvelParserTest {
@@ -100,7 +105,6 @@ public class DroolsMvelParserTest {
         assertEquals("(addresses == 2 && addresses == 3)", printConstraint(and));
     }
 
-    @Test(expected = ParseProblemException.class)
     public void testBinaryWithNewLineBeginning() {
         Expression or = parseExpression(parser, "(" + newLine() + "addresses == 2 || addresses == 3  )").getExpr();
         assertEquals("(addresses == 2 || addresses == 3)", printConstraint(or));
@@ -109,7 +113,6 @@ public class DroolsMvelParserTest {
         assertEquals("(addresses == 2 && addresses == 3)", printConstraint(and));
     }
 
-    @Test(expected = ParseProblemException.class)
     public void testBinaryWithNewLineEnd() {
         Expression or = parseExpression(parser, "(addresses == 2 || addresses == 3 " + newLine() + ")").getExpr();
         assertEquals("(addresses == 2 || addresses == 3)", printConstraint(or));
@@ -119,12 +122,15 @@ public class DroolsMvelParserTest {
     }
 
     @Test
-    @Ignore
     public void testBinaryWithNewLineBeforeOperator() {
-        Expression and2 = parseExpression(parser, "(addresses == 2" + newLine() + "&& addresses == 3  )").getExpr();
+        String andExpr = "(addresses == 2" + newLine() + "&& addresses == 3  )";
+        MvelParser mvelParser1 = new MvelParser(new ParserConfiguration(), true);
+        Expression and2 = mvelParser1.parse(GeneratedMvelParser::Expression, new StringProvider(andExpr)).getResult().get();
         assertEquals("(addresses == 2 && addresses == 3)", printConstraint(and2));
 
-        Expression or2 = parseExpression(parser, "(addresses == 2" + newLine() + "|| addresses == 3  )").getExpr();
+        String orExpr = "(addresses == 2" + newLine() + "|| addresses == 3  )";
+        MvelParser mvelParser2 = new MvelParser(new ParserConfiguration(), false);
+        Expression or2 = mvelParser2.parse(GeneratedMvelParser::Expression, new StringProvider(orExpr)).getResult().get();
         assertEquals("(addresses == 2 || addresses == 3)", printConstraint(or2));
     }
 
@@ -716,14 +722,14 @@ public class DroolsMvelParserTest {
     @Test
     public void testWithoutSemicolon() {
         String expr = "{             " +
-                        "a" + newLine() +
-                        "b" + newLine() +
+                        "a()" + newLine() +
+                        "b()" + newLine() +
                         "}";
 
         BlockStmt expression = MvelParser.parseBlock(expr);
         assertEquals("{" + newLine() +
-                             "    a;" + newLine() +
-                             "    b;" + newLine() +
+                             "    a();" + newLine() +
+                             "    b();" + newLine() +
                              "}", printConstraint(expression));
     }
 
@@ -815,8 +821,6 @@ public class DroolsMvelParserTest {
 
         BlockStmt expression = MvelParser.parseBlock(expr);
         assertEquals("{" + newLine() +
-                             "    ;" + newLine() +
-                             "    ;" + newLine() +
                              "    setAge(47);" + newLine() +
                              "}", printConstraint(expression));
     }
@@ -903,6 +907,21 @@ public class DroolsMvelParserTest {
         assertEquals(expr, printConstraint(expression));
     }
 
+    @Test
+    public void testSpecialNewlineHandling() {
+        String expr = "{ a() \nprint(1) }";
+
+        assertEquals("There should be 2 statements",
+                     "{\n" +
+                             "    a();\n" +
+                             "    print(1);\n" +
+                             "}",
+                     printConstraint(MvelParser.parseBlock(expr)));
+
+        MvelParser mvelParser = new MvelParser(new ParserConfiguration(), false);
+        ParseResult<BlockStmt> r = mvelParser.parse(GeneratedMvelParser::BlockParseStart, new StringProvider(expr));
+        assertFalse("Parsing should break at newline", r.isSuccessful());
+    }
 
     private void testMvelSquareOperator(String wholeExpression, String operator, String left, String right, boolean isNegated) {
         String expr = wholeExpression;
