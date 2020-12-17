@@ -50,7 +50,7 @@ public class PMMLImplementationsUtilTest {
     @Test
     public void testGetFromClassPathBothPresent() {
         PMMLConstants retrieved = PMMLImplementationsUtil.getFromClassPath(true, true);
-        assertEquals(NEW, retrieved);
+        assertEquals(LEGACY, retrieved);
     }
 
     @Test
