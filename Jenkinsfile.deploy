@@ -1,0 +1,270 @@
+import org.jenkinsci.plugins.workflow.libs.Library
+@Library('jenkins-pipeline-shared-libraries')_
+
+import org.kie.jenkins.MavenCommand
+import org.kie.jenkins.MavenStagingHelper
+
+deployProperties = [:]
+
+pipeline {
+    agent {
+        label 'kie-rhel7 && kie-mem16g'
+    }
+
+    tools {
+        maven 'kie-maven-3.6.2'
+        jdk 'kie-jdk11'
+    }
+    
+    options {
+        buildDiscarder logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '10')
+    }
+
+    parameters {
+        string(name: 'DISPLAY_NAME', defaultValue: '', description: 'Setup a specific build display name')
+        
+        // Git information
+        string(name: 'BUILD_BRANCH_NAME', defaultValue: 'master', description: 'Which branch to build? Set if you are not on a multibranch pipeline.')
+        string(name: 'GIT_AUTHOR', defaultValue: 'kiegroup', description: 'Which Git author repository ?')
+
+        // Build&test information
+        string(name: 'MAVEN_DEPENDENCIES_REPOSITORY', defaultValue: '', description: 'Maven repository where to find dependencies if those are not in the default Jboss repository.')
+        booleanParam(name: 'SKIP_TESTS', defaultValue: false, description: 'Skip tests')
+        string(name: 'MAVEN_SETTINGS_CONFIG_FILE_ID', defaultValue: 'kogito_release_settings', description: 'Maven settings configfile to use in pipeline for Maven commands')
+
+        // Deploy information
+        string(name: 'MAVEN_DEPLOY_REPOSITORY', defaultValue: '', description: 'Specify a Maven repository to deploy the artifacts.')
+
+        // Release information
+        booleanParam(name: 'RELEASE', defaultValue: false, description: 'Is this build for a release?')
+        string(name: 'PROJECT_VERSION', defaultValue: '', description: 'Optional if not RELEASE. If RELEASE, cannot be empty.')
+        
+        // Nexus staging default parameters
+        string(name: 'NEXUS_RELEASE_URL', defaultValue: 'https://repository.jboss.org/nexus', description: 'Nexus URL for release staging')
+        string(name: 'NEXUS_RELEASE_REPOSITORY_ID', defaultValue: 'jboss-releases-repository', description: 'Nexus Release repository ID for staging')
+        string(name: 'NEXUS_STAGING_PROFILE_ID', defaultValue: '2161b7b8da0080', description: 'Nexus staging profile ID for release process ')
+        string(name: 'NEXUS_BUILD_PROMOTION_PROFILE_ID', defaultValue: 'ea49ccd6f174', description: 'Nexus Build Promotion profile ID for release process')
+
+        // Bot author information. Set as params for easy testing.
+        string(name: 'GIT_AUTHOR_BOT', defaultValue: 'bsig-gh-bot', description: 'From which author should the PR be created ?')
+        string(name: 'BOT_CREDENTIALS_ID', defaultValue: 'bsig-gh-bot', description: 'Credentials for PR creation')
+    }
+
+    environment {
+        MAVEN_OPTS = '-Xms1024m -Xmx4g'
+
+        BOT_BRANCH_HASH = "${util.generateHash(10)}"
+
+        // Maven configuration
+        MAVEN_DEPLOY_LOCAL_DIR="${WORKSPACE}/maven_deploy_dir"
+    }
+
+    stages {
+        stage('Initialize') {
+            steps {
+                script {
+                    cleanWs()
+                    
+                    if (params.DISPLAY_NAME != '') {
+                        currentBuild.displayName = params.DISPLAY_NAME
+                    }
+
+                    if (isRelease()) {
+                        assert getProjectVersion() != ''
+                    }
+
+                    checkoutRepo('kogito-apps')
+                }
+            }
+            post {
+                success {
+                    script {
+                        setDeployPropertyIfNeeded('git.branch', getBuildBranch())
+                        setDeployPropertyIfNeeded('git.author', getGitAuthor())
+                        setDeployPropertyIfNeeded('project.version', getProjectVersion())
+                        setDeployPropertyIfNeeded('release', isRelease())
+
+                    }
+                }
+            }
+        }
+
+        stage('Prepare for PR'){
+            when {
+                expression { return isRelease() }
+            }
+            steps {
+                prepareForPR('kogito-apps')
+            }
+        }
+        stage('Update project version'){
+            when {
+                expression { return getProjectVersion() != '' }
+            }
+            steps {
+                script {
+                    maven.mvnVersionsUpdateParentAndChildModules(getMavenCommand(), getProjectVersion(), true)
+                }
+            }
+        }
+        stage('Build kogito-apps') {
+            steps {
+                script {
+                    getMavenCommand().skipTests(params.SKIP_TESTS).run('clean install')
+                }
+            }
+            post {
+                always {
+                    saveReports(params.SKIP_TESTS)
+                }
+            }
+        }
+        stage('Deploy artifacts') {
+            steps {
+                script {
+                    if(!isRelease() || params.MAVEN_DEPLOY_REPOSITORY){
+                        runMavenDeploy(getMavenCommand())
+                    } else {
+                         // Deploy locally and then to staging
+                        runMavenDeployLocally(getMavenCommand())
+                        runMavenStage(getMavenCommand())
+                    }
+                }
+            }
+        }
+        stage('Create PR'){
+            when {
+                expression { return isRelease() }
+            }
+            steps {
+                commitAndCreatePR('kogito-apps')
+            }
+            post {
+                success {
+                    script {
+                        setDeployPropertyIfNeeded('kogito-apps.pr.source.uri', "https://github.com/${getBotAuthor()}/kogito-apps")
+                        setDeployPropertyIfNeeded('kogito-apps.pr.source.ref', getBotBranch())
+                        setDeployPropertyIfNeeded('kogito-apps.pr.target.uri', "https://github.com/${getGitAuthor()}/kogito-apps")
+                        setDeployPropertyIfNeeded('kogito-apps.pr.target.ref', getBuildBranch())
+                    }
+                }
+            }
+        }
+    }
+    post {
+        always {
+            script {
+                def propertiesStr = deployProperties.collect{ entry ->  "${entry.key}=${entry.value}" }.join("\n")
+                writeFile(text: propertiesStr, file: 'deployment.properties')
+                archiveArtifacts(artifacts: 'deployment.properties')
+            }
+            cleanWs()
+        }
+    }
+}
+
+void saveReports(boolean allowEmpty=false){
+    junit testResults: '**/target/surefire-reports/**/*.xml, **/target/failsafe-reports/**/*.xml', allowEmptyResults: allowEmpty
+}
+
+void checkoutRepo(String repo, String dirName=repo) {
+    dir(dirName) {
+        deleteDir()
+        checkout(githubscm.resolveRepository(repo, getGitAuthor(), getBuildBranch(), false))
+    }
+}
+
+void prepareForPR(String repo) {
+    dir(repo) {
+        githubscm.forkRepo(getBotAuthorCredsID())
+        githubscm.createBranch(getBotBranch())
+    }
+}
+
+void commitAndCreatePR(String repo) {
+    def commitMsg = "[${getBuildBranch()}] Update project version to ${getProjectVersion()} for release"
+    def prBody = "Generated by build ${BUILD_TAG}: ${BUILD_URL}.\nPlease do not merge, it will be merged automatically after testing."
+    dir(repo) {
+        githubscm.commitChanges(commitMsg, { githubscm.findAndStageNotIgnoredFiles('pom.xml') })
+        githubscm.pushObject('origin', getBotBranch(), getBotAuthorCredsID())
+        deployProperties["${repo}.pr.link"] = githubscm.createPR(commitMsg, prBody, getBuildBranch(), getBotAuthorCredsID())
+    }
+}
+
+boolean isRelease() {
+    return params.RELEASE
+}
+
+String getGitAuthor(){
+    return params.GIT_AUTHOR
+}
+
+String getBuildBranch(){
+    return params.BUILD_BRANCH_NAME
+}
+
+String getProjectVersion(){
+    return params.PROJECT_VERSION
+}
+
+String getBotBranch(){
+    return "${getProjectVersion()}-${env.BOT_BRANCH_HASH}"
+}
+
+String getBotAuthor(){
+    return params.GIT_AUTHOR_BOT
+}
+
+String getBotAuthorCredsID(){
+    return params.BOT_CREDENTIALS_ID
+}
+
+void setDeployPropertyIfNeeded(String key, def value){
+    if (value != null && value != ''){
+        deployProperties[key] = value
+    }
+}
+
+MavenCommand getMavenCommand(String directory = 'kogito-apps'){
+    MavenCommand mvnCmd = new MavenCommand(this, ['-fae'])
+                .withSettingsXmlId(params.MAVEN_SETTINGS_CONFIG_FILE_ID)
+                .inDirectory(directory)
+                .withProperty('full')
+    if (params.MAVEN_DEPENDENCIES_REPOSITORY) {
+        mvnCmd.withDependencyRepositoryInSettings('deps-repo', params.MAVEN_DEPENDENCIES_REPOSITORY)
+    }
+    return mvnCmd
+}
+
+void runMavenDeploy(MavenCommand mvnCmd){
+    mvnCmd = mvnCmd.clone()
+
+    if(params.MAVEN_DEPLOY_REPOSITORY){
+        mvnCmd.withDeployRepository(params.MAVEN_DEPLOY_REPOSITORY)
+    }
+
+    mvnCmd.skipTests(true).run('clean deploy')
+}
+
+void runMavenDeployLocally(MavenCommand mvnCmd) {
+    mvnCmd.clone()
+        .skipTests(true)
+        .withLocalDeployFolder(getLocalDeploymentFolder())
+        .run('clean deploy')
+}
+
+void runMavenStage(MavenCommand mvnCmd) {
+    MavenStagingHelper stagingHelper = getStagingHelper(mvnCmd)
+    deployProperties.putAll(stagingHelper.stageLocalArtifacts(params.NEXUS_STAGING_PROFILE_ID, getLocalDeploymentFolder()))
+    stagingHelper.promoteStagingRepository(params.NEXUS_BUILD_PROMOTION_PROFILE_ID)
+}
+
+MavenStagingHelper getStagingHelper(MavenCommand mvnCmd) {
+    return new MavenStagingHelper(this, mvnCmd)
+                .withNexusReleaseUrl(params.NEXUS_RELEASE_URL)
+                .withNexusReleaseRepositoryId(params.NEXUS_RELEASE_REPOSITORY_ID)
+}
+
+String getLocalDeploymentFolder(){
+    return "${env.MAVEN_DEPLOY_LOCAL_DIR}/kogito-apps"
+} 
