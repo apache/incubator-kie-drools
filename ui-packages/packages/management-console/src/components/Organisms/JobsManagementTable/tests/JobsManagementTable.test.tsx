@@ -95,9 +95,12 @@ describe('Jobs management table component tests', () => {
     handleCancelModalToggle: jest.fn(),
     setModalTitle: jest.fn(),
     setModalContent: jest.fn(),
+    setOrderBy: jest.fn(),
     setSelectedJob: jest.fn(),
     selectedJobInstances: [],
-    setSelectedJobInstances: jest.fn()
+    setSelectedJobInstances: jest.fn(),
+    sortBy: {},
+    setSortBy: jest.fn()
   };
   it('Snapshot with default props', async () => {
     const wrapper = await getWrapperAsync(
@@ -299,5 +302,24 @@ describe('Jobs management table component tests', () => {
         .simulate('change');
     });
     expect(props.setSelectedJobInstances).toHaveBeenCalled();
+  });
+  it('test sorting controls', async () => {
+    const handleSort: any = jest.spyOn(React, 'useState');
+    handleSort.mockImplementation(sortBy => [sortBy, props.setSortBy]);
+    let wrapper = await getWrapperAsync(
+      <JobsManagementTable {...props} />,
+      'JobsManagementTable'
+    );
+    const event = { target: { innerText: 'Last update' } };
+    const index = 1;
+    const direction = 'asc';
+    await act(async () => {
+      wrapper
+        .find('Table')
+        .props()
+        ['onSort'](event, index, direction);
+    });
+    wrapper = wrapper.update();
+    expect(props.setSortBy).toBeTruthy();
   });
 });

@@ -127,7 +127,7 @@ export const clearEmpties = obj => {
 };
 
 // function adds new property to existing object
-export const set = (obj, path, val) => {
+export const constructObject = (obj, path, val) => {
   const keys = path.split(',');
   const lastKey = keys.pop();
   // tslint:disable-next-line: no-shadowed-variable

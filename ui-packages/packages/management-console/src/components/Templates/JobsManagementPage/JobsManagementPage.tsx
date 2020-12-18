@@ -31,6 +31,7 @@ import {
   Dropdown,
   KebabToggle
 } from '@patternfly/react-core';
+import { ISortBy } from '@patternfly/react-table';
 import JobsManagementTable from '../../Organisms/JobsManagementTable/JobsManagementTable';
 import JobsManagementFiters from '../../Organisms/JobsManagementFilters/JobsManagementFilters';
 import JobsPanelDetailsModal from '../../Atoms/JobsPanelDetailsModal/JobsPanelDetailsModal';
@@ -79,6 +80,10 @@ interface IOperations {
 }
 
 const JobsManagementPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
+  const defaultOrderBy: GraphQL.JobOrderBy = {
+    lastUpdate: GraphQL.OrderBy.Asc
+  };
+  const defaultSortBy: ISortBy = { index: 6, direction: 'asc' };
   const defaultStatus: GraphQL.JobStatus[] = [GraphQL.JobStatus.Scheduled];
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState<boolean>(false);
   const [isRescheduleModalOpen, setIsRescheduleModalOpen] = useState<boolean>(
@@ -93,6 +98,8 @@ const JobsManagementPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
   );
   const [chips, setChips] = useState<GraphQL.JobStatus[]>(defaultStatus);
   const [values, setValues] = useState<GraphQL.JobStatus[]>(defaultStatus);
+  const [orderBy, setOrderBy] = useState<GraphQL.JobOrderBy>(defaultOrderBy);
+  const [sortBy, setSortBy] = useState<ISortBy>(defaultSortBy);
   const [isKebabOpen, setIsKebabOpen] = useState<boolean>(false);
   const [selectedJobInstances, setSelectedJobInstances] = useState<
     GraphQL.Job[]
@@ -107,10 +114,10 @@ const JobsManagementPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
     }
   });
 
-  const { loading, data, error, refetch } = GraphQL.useGetAllJobsQuery({
+  const { loading, data, error, refetch } = GraphQL.useGetJobsWithFiltersQuery({
     fetchPolicy: 'network-only',
     notifyOnNetworkStatusChange: true,
-    variables: { values }
+    variables: { values, orderBy }
   });
 
   const jobOperations: IOperations = {
@@ -340,9 +347,12 @@ const JobsManagementPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
                       handleCancelModalToggle={handleCancelModalToggle}
                       setModalTitle={setModalTitle}
                       setModalContent={setModalContent}
+                      setOrderBy={setOrderBy}
                       setSelectedJob={setSelectedJob}
+                      setSortBy={setSortBy}
                       selectedJobInstances={selectedJobInstances}
                       setSelectedJobInstances={setSelectedJobInstances}
+                      sortBy={sortBy}
                     />
                   </refetchContext.Provider>
                   {chips.length === 0 && (

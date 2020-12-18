@@ -38,7 +38,7 @@ import {
   KogitoEmptyState,
   KogitoEmptyStateType
 } from '../../Atoms/KogitoEmptyState/KogitoEmptyState';
-import { set } from '../../../utils/Utils';
+import { constructObject } from '../../../utils/Utils';
 import { OUIAProps, componentOuiaProps } from '../../../utils/OuiaUtils';
 
 interface RowContent {
@@ -376,7 +376,7 @@ const DomainExplorerTable: React.FC<IOwnProps & OUIAProps> = ({
     setSortBy({ index, direction });
     const sortingColumn = event.target.innerText.replace(' / ', ',');
     const obj = {};
-    set(obj, sortingColumn, direction.toUpperCase());
+    constructObject(obj, sortingColumn, direction.toUpperCase());
     setOrderByObj(obj);
     setRunQuery(true);
   };

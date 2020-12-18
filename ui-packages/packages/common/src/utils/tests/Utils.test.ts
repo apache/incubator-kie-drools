@@ -3,7 +3,7 @@ import {
   filterColumnSelection,
   deleteKey,
   clearEmpties,
-  set
+  constructObject
 } from '../Utils';
 
 describe('Tests for utility functions', () => {
@@ -215,11 +215,11 @@ describe('Tests for utility functions', () => {
     const result2 = clearEmpties(obj2);
     expect(result2).toEqual({ country: { equal: 'Australia' } });
   });
-  it('Test set function', () => {
+  it('Test constructObject function', () => {
     const obj = {};
     const keys = 'trip,country,equal';
     const value = 'India';
-    set(obj, keys, value);
+    constructObject(obj, keys, value);
     expect(obj).toEqual({ trip: { country: { equal: 'India' } } });
   });
 });

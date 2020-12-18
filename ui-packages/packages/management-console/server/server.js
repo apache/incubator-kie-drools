@@ -163,7 +163,31 @@ const resolvers = {
             return args['where'].status.in.includes(jobData.status)
           }
         });
+        console.log('orderby',args['orderBy'])
         await timeout(2000);
+        if (args['orderBy'] && Object.values(args['orderBy'])[0] === 'ASC') {
+          const orderArg = Object.keys(args['orderBy'])[0]
+          result.sort((a,b) => {
+            if (orderArg === 'lastUpdate' || orderArg === 'expirationTime') {
+              return new Date(a[orderArg]) - new Date(b[orderArg])  
+            } else if (orderArg === 'status') {
+              return a[orderArg].localeCompare(b[orderArg])
+            } else {
+              return a[orderArg] - b[orderArg];
+            }
+          })
+        } else if (args['orderBy'] && Object.values(args['orderBy'])[0] === 'DESC') {
+          const orderArg = Object.keys(args['orderBy'])[0]
+          result.sort((a,b) => {
+            if (orderArg === 'lastUpdate' || orderArg === 'expirationTime') {
+              return new Date(b[orderArg]) - new Date(a[orderArg])  
+            } else if (orderArg === 'status') {
+              return b[orderArg].localeCompare(a[orderArg])
+            } else {
+              return b[orderArg] - a[orderArg];
+            }
+          });
+        }
         return result;
       }      
     }

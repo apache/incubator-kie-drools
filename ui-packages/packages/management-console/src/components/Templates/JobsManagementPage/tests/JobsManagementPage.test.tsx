@@ -49,8 +49,13 @@ describe('Jobs management page tests', () => {
   const mocks = [
     {
       request: {
-        query: GraphQL.GetAllJobsDocument,
-        variables: { values: ['SCHEDULED'] }
+        query: GraphQL.GetJobsWithFiltersDocument,
+        variables: {
+          values: ['SCHEDULED'],
+          orderBy: {
+            lastUpdate: GraphQL.OrderBy.Asc
+          }
+        }
       },
       result: {
         data: {
@@ -121,8 +126,13 @@ describe('Jobs management page tests', () => {
   const mocks2 = [
     {
       request: {
-        query: GraphQL.GetAllJobsDocument,
-        variables: { values: ['SCHEDULED'] }
+        query: GraphQL.GetJobsWithFiltersDocument,
+        variables: {
+          values: ['SCHEDULED'],
+          orderBy: {
+            lastUpdate: GraphQL.OrderBy.Asc
+          }
+        }
       },
       result: {
         data: {
@@ -135,8 +145,13 @@ describe('Jobs management page tests', () => {
   const mocks3 = [
     {
       request: {
-        query: GraphQL.GetAllJobsDocument,
-        variables: { values: ['SCHEDULED'] }
+        query: GraphQL.GetJobsWithFiltersDocument,
+        variables: {
+          values: ['SCHEDULED'],
+          orderBy: {
+            lastUpdate: GraphQL.OrderBy.Asc
+          }
+        }
       },
       result: {
         data: null,

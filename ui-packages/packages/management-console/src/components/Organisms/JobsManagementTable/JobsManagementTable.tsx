@@ -1,13 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import { Table, TableBody, TableHeader, IRow } from '@patternfly/react-table';
-import { OUIAProps, componentOuiaProps, GraphQL } from '@kogito-apps/common';
+import {
+  Table,
+  TableBody,
+  TableHeader,
+  IRow,
+  sortable,
+  ISortBy
+} from '@patternfly/react-table';
+import {
+  OUIAProps,
+  componentOuiaProps,
+  GraphQL,
+  constructObject
+} from '@kogito-apps/common';
 import { Tooltip } from '@patternfly/react-core';
 import { JobsIconCreator, jobCancel } from '../../../utils/Utils';
 import Moment from 'react-moment';
 import { HistoryIcon } from '@patternfly/react-icons';
 import { refetchContext } from '../../contexts';
 import _ from 'lodash';
-
+import './JobsManagementTable.css';
 interface ActionsMeta {
   title: string;
   onClick: (event, rowId, rowData, extra) => void;
@@ -20,15 +32,18 @@ interface RetrievedValueType {
   jobType: string;
 }
 interface IOwnProps {
-  data: GraphQL.GetAllJobsQuery;
+  data: GraphQL.GetJobsWithFiltersQuery;
   handleDetailsToggle: () => void;
   handleRescheduleToggle: () => void;
   handleCancelModalToggle: () => void;
   setModalTitle: (modalTitle: JSX.Element) => void;
   setModalContent: (modalContent: string) => void;
+  setOrderBy: (order: GraphQL.JobOrderBy) => void;
   setSelectedJob: (job: GraphQL.Job) => void;
   selectedJobInstances: GraphQL.Job[];
   setSelectedJobInstances: (job: GraphQL.Job[]) => void;
+  sortBy: ISortBy;
+  setSortBy: (sortObj: ISortBy) => void;
 }
 
 const JobsManagementTable: React.FC<IOwnProps & OUIAProps> = ({
@@ -38,9 +53,12 @@ const JobsManagementTable: React.FC<IOwnProps & OUIAProps> = ({
   handleCancelModalToggle,
   setModalTitle,
   setModalContent,
+  setOrderBy,
   setSelectedJob,
+  setSortBy,
   selectedJobInstances,
   setSelectedJobInstances,
+  sortBy,
   ouiaId,
   ouiaSafe
 }) => {
@@ -57,8 +75,10 @@ const JobsManagementTable: React.FC<IOwnProps & OUIAProps> = ({
   const jobRow: IRow[] = [];
   columns.map(column => {
     column['props'] = { className: 'pf-u-text-align-center' };
+    column.title !== 'Id' ? (column['transforms'] = [sortable]) : '';
     return column;
   });
+
   const handleJobDetails = (id): void => {
     const job = data.Jobs.find(job => job.id === id);
     setSelectedJob(job);
@@ -239,6 +259,15 @@ const JobsManagementTable: React.FC<IOwnProps & OUIAProps> = ({
     tableContent();
   }, [data]);
 
+  const onSort = (event, index: number, direction: 'asc' | 'desc'): void => {
+    setSortBy({ index, direction });
+    let sortingColumn: string = event.target.innerText;
+    sortingColumn = _.camelCase(sortingColumn);
+    const obj: GraphQL.JobOrderBy = {};
+    constructObject(obj, sortingColumn, direction.toUpperCase());
+    setOrderBy(obj);
+  };
+
   return (
     <>
       {rows.length > 0 && (
@@ -246,9 +275,11 @@ const JobsManagementTable: React.FC<IOwnProps & OUIAProps> = ({
           onSelect={onSelect}
           cells={columns}
           rows={rows}
+          sortBy={sortBy}
+          onSort={onSort}
           actionResolver={actionResolver}
           aria-label="Jobs management Table"
-          className="kogito-common--domain-explorer__table"
+          className="kogito-management-console--jobsManagement__table"
           {...componentOuiaProps(ouiaId, 'jobs-management-table', ouiaSafe)}
         >
           <TableHeader />

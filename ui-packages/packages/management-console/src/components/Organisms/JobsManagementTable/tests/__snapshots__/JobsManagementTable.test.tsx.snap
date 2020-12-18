@@ -65,8 +65,11 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
   selectedJobInstances={Array []}
   setModalContent={[MockFunction]}
   setModalTitle={[MockFunction]}
+  setOrderBy={[MockFunction]}
   setSelectedJob={[MockFunction]}
   setSelectedJobInstances={[MockFunction]}
+  setSortBy={[MockFunction]}
+  sortBy={Object {}}
 >
   <Table
     actionResolver={[Function]}
@@ -86,34 +89,49 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
             "className": "pf-u-text-align-center",
           },
           "title": "Status",
+          "transforms": Array [
+            [Function],
+          ],
         },
         Object {
           "props": Object {
             "className": "pf-u-text-align-center",
           },
           "title": "Expiration time",
+          "transforms": Array [
+            [Function],
+          ],
         },
         Object {
           "props": Object {
             "className": "pf-u-text-align-center",
           },
           "title": "Retries",
+          "transforms": Array [
+            [Function],
+          ],
         },
         Object {
           "props": Object {
             "className": "pf-u-text-align-center",
           },
           "title": "Execution counter",
+          "transforms": Array [
+            [Function],
+          ],
         },
         Object {
           "props": Object {
             "className": "pf-u-text-align-center",
           },
           "title": "Last update",
+          "transforms": Array [
+            [Function],
+          ],
         },
       ]
     }
-    className="kogito-common--domain-explorer__table"
+    className="kogito-management-console--jobsManagement__table"
     contentId="expanded-content"
     data-ouia-component-type="jobs-management-table"
     data-ouia-safe={true}
@@ -123,6 +141,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
     gridBreakPoint="grid-md"
     isStickyHeader={false}
     onSelect={[Function]}
+    onSort={[Function]}
     ouiaSafe={true}
     role="grid"
     rowLabeledBy="simple-node"
@@ -378,11 +397,12 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
         },
       ]
     }
+    sortBy={Object {}}
     variant={null}
   >
     <Provider
       aria-label="Jobs management Table"
-      className="pf-c-table pf-m-grid-md kogito-common--domain-explorer__table"
+      className="pf-c-table pf-m-grid-md kogito-management-console--jobsManagement__table"
       columns={
         Array [
           Object {
@@ -411,9 +431,9 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
               "onExpand": undefined,
               "onRowEdit": undefined,
               "onSelect": [Function],
-              "onSort": undefined,
+              "onSort": [Function],
               "rowLabeledBy": "simple-node",
-              "sortBy": undefined,
+              "sortBy": Object {},
             },
             "header": Object {
               "formatters": Array [],
@@ -455,9 +475,9 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
               "onExpand": undefined,
               "onRowEdit": undefined,
               "onSelect": [Function],
-              "onSort": undefined,
+              "onSort": [Function],
               "rowLabeledBy": "simple-node",
-              "sortBy": undefined,
+              "sortBy": Object {},
             },
             "header": Object {
               "formatters": Array [],
@@ -499,14 +519,15 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
               "onExpand": undefined,
               "onRowEdit": undefined,
               "onSelect": [Function],
-              "onSort": undefined,
+              "onSort": [Function],
               "rowLabeledBy": "simple-node",
-              "sortBy": undefined,
+              "sortBy": Object {},
             },
             "header": Object {
               "formatters": Array [],
               "label": "Status",
               "transforms": Array [
+                [Function],
                 [Function],
                 [Function],
               ],
@@ -543,14 +564,15 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
               "onExpand": undefined,
               "onRowEdit": undefined,
               "onSelect": [Function],
-              "onSort": undefined,
+              "onSort": [Function],
               "rowLabeledBy": "simple-node",
-              "sortBy": undefined,
+              "sortBy": Object {},
             },
             "header": Object {
               "formatters": Array [],
               "label": "Expiration time",
               "transforms": Array [
+                [Function],
                 [Function],
                 [Function],
               ],
@@ -587,14 +609,15 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
               "onExpand": undefined,
               "onRowEdit": undefined,
               "onSelect": [Function],
-              "onSort": undefined,
+              "onSort": [Function],
               "rowLabeledBy": "simple-node",
-              "sortBy": undefined,
+              "sortBy": Object {},
             },
             "header": Object {
               "formatters": Array [],
               "label": "Retries",
               "transforms": Array [
+                [Function],
                 [Function],
                 [Function],
               ],
@@ -631,14 +654,15 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
               "onExpand": undefined,
               "onRowEdit": undefined,
               "onSelect": [Function],
-              "onSort": undefined,
+              "onSort": [Function],
               "rowLabeledBy": "simple-node",
-              "sortBy": undefined,
+              "sortBy": Object {},
             },
             "header": Object {
               "formatters": Array [],
               "label": "Execution counter",
               "transforms": Array [
+                [Function],
                 [Function],
                 [Function],
               ],
@@ -675,14 +699,15 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
               "onExpand": undefined,
               "onRowEdit": undefined,
               "onSelect": [Function],
-              "onSort": undefined,
+              "onSort": [Function],
               "rowLabeledBy": "simple-node",
-              "sortBy": undefined,
+              "sortBy": Object {},
             },
             "header": Object {
               "formatters": Array [],
               "label": "Last update",
               "transforms": Array [
+                [Function],
                 [Function],
                 [Function],
               ],
@@ -720,9 +745,9 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
               "onExpand": undefined,
               "onRowEdit": undefined,
               "onSelect": [Function],
-              "onSort": undefined,
+              "onSort": [Function],
               "rowLabeledBy": "simple-node",
-              "sortBy": undefined,
+              "sortBy": Object {},
             },
             "header": Object {
               "formatters": Array [],
@@ -760,7 +785,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
     >
       <table
         aria-label="Jobs management Table"
-        className="pf-c-table pf-m-grid-md kogito-common--domain-explorer__table"
+        className="pf-c-table pf-m-grid-md kogito-management-console--jobsManagement__table"
         data-ouia-component-id={0}
         data-ouia-component-type="PF4/Table"
         data-ouia-safe={true}
@@ -804,9 +829,9 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                         "onExpand": undefined,
                         "onRowEdit": undefined,
                         "onSelect": [Function],
-                        "onSort": undefined,
+                        "onSort": [Function],
                         "rowLabeledBy": "simple-node",
-                        "sortBy": undefined,
+                        "sortBy": Object {},
                       },
                       "header": Object {
                         "formatters": Array [],
@@ -848,9 +873,9 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                         "onExpand": undefined,
                         "onRowEdit": undefined,
                         "onSelect": [Function],
-                        "onSort": undefined,
+                        "onSort": [Function],
                         "rowLabeledBy": "simple-node",
-                        "sortBy": undefined,
+                        "sortBy": Object {},
                       },
                       "header": Object {
                         "formatters": Array [],
@@ -892,14 +917,15 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                         "onExpand": undefined,
                         "onRowEdit": undefined,
                         "onSelect": [Function],
-                        "onSort": undefined,
+                        "onSort": [Function],
                         "rowLabeledBy": "simple-node",
-                        "sortBy": undefined,
+                        "sortBy": Object {},
                       },
                       "header": Object {
                         "formatters": Array [],
                         "label": "Status",
                         "transforms": Array [
+                          [Function],
                           [Function],
                           [Function],
                         ],
@@ -936,14 +962,15 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                         "onExpand": undefined,
                         "onRowEdit": undefined,
                         "onSelect": [Function],
-                        "onSort": undefined,
+                        "onSort": [Function],
                         "rowLabeledBy": "simple-node",
-                        "sortBy": undefined,
+                        "sortBy": Object {},
                       },
                       "header": Object {
                         "formatters": Array [],
                         "label": "Expiration time",
                         "transforms": Array [
+                          [Function],
                           [Function],
                           [Function],
                         ],
@@ -980,14 +1007,15 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                         "onExpand": undefined,
                         "onRowEdit": undefined,
                         "onSelect": [Function],
-                        "onSort": undefined,
+                        "onSort": [Function],
                         "rowLabeledBy": "simple-node",
-                        "sortBy": undefined,
+                        "sortBy": Object {},
                       },
                       "header": Object {
                         "formatters": Array [],
                         "label": "Retries",
                         "transforms": Array [
+                          [Function],
                           [Function],
                           [Function],
                         ],
@@ -1024,14 +1052,15 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                         "onExpand": undefined,
                         "onRowEdit": undefined,
                         "onSelect": [Function],
-                        "onSort": undefined,
+                        "onSort": [Function],
                         "rowLabeledBy": "simple-node",
-                        "sortBy": undefined,
+                        "sortBy": Object {},
                       },
                       "header": Object {
                         "formatters": Array [],
                         "label": "Execution counter",
                         "transforms": Array [
+                          [Function],
                           [Function],
                           [Function],
                         ],
@@ -1068,14 +1097,15 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                         "onExpand": undefined,
                         "onRowEdit": undefined,
                         "onSelect": [Function],
-                        "onSort": undefined,
+                        "onSort": [Function],
                         "rowLabeledBy": "simple-node",
-                        "sortBy": undefined,
+                        "sortBy": Object {},
                       },
                       "header": Object {
                         "formatters": Array [],
                         "label": "Last update",
                         "transforms": Array [
+                          [Function],
                           [Function],
                           [Function],
                         ],
@@ -1113,9 +1143,9 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                         "onExpand": undefined,
                         "onRowEdit": undefined,
                         "onSelect": [Function],
-                        "onSort": undefined,
+                        "onSort": [Function],
                         "rowLabeledBy": "simple-node",
-                        "sortBy": undefined,
+                        "sortBy": Object {},
                       },
                       "header": Object {
                         "formatters": Array [],
@@ -1191,9 +1221,9 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                             "onExpand": undefined,
                             "onRowEdit": undefined,
                             "onSelect": [Function],
-                            "onSort": undefined,
+                            "onSort": [Function],
                             "rowLabeledBy": "simple-node",
-                            "sortBy": undefined,
+                            "sortBy": Object {},
                           },
                           "header": Object {
                             "formatters": Array [],
@@ -1235,9 +1265,9 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                             "onExpand": undefined,
                             "onRowEdit": undefined,
                             "onSelect": [Function],
-                            "onSort": undefined,
+                            "onSort": [Function],
                             "rowLabeledBy": "simple-node",
-                            "sortBy": undefined,
+                            "sortBy": Object {},
                           },
                           "header": Object {
                             "formatters": Array [],
@@ -1279,14 +1309,15 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                             "onExpand": undefined,
                             "onRowEdit": undefined,
                             "onSelect": [Function],
-                            "onSort": undefined,
+                            "onSort": [Function],
                             "rowLabeledBy": "simple-node",
-                            "sortBy": undefined,
+                            "sortBy": Object {},
                           },
                           "header": Object {
                             "formatters": Array [],
                             "label": "Status",
                             "transforms": Array [
+                              [Function],
                               [Function],
                               [Function],
                             ],
@@ -1323,14 +1354,15 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                             "onExpand": undefined,
                             "onRowEdit": undefined,
                             "onSelect": [Function],
-                            "onSort": undefined,
+                            "onSort": [Function],
                             "rowLabeledBy": "simple-node",
-                            "sortBy": undefined,
+                            "sortBy": Object {},
                           },
                           "header": Object {
                             "formatters": Array [],
                             "label": "Expiration time",
                             "transforms": Array [
+                              [Function],
                               [Function],
                               [Function],
                             ],
@@ -1367,14 +1399,15 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                             "onExpand": undefined,
                             "onRowEdit": undefined,
                             "onSelect": [Function],
-                            "onSort": undefined,
+                            "onSort": [Function],
                             "rowLabeledBy": "simple-node",
-                            "sortBy": undefined,
+                            "sortBy": Object {},
                           },
                           "header": Object {
                             "formatters": Array [],
                             "label": "Retries",
                             "transforms": Array [
+                              [Function],
                               [Function],
                               [Function],
                             ],
@@ -1411,14 +1444,15 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                             "onExpand": undefined,
                             "onRowEdit": undefined,
                             "onSelect": [Function],
-                            "onSort": undefined,
+                            "onSort": [Function],
                             "rowLabeledBy": "simple-node",
-                            "sortBy": undefined,
+                            "sortBy": Object {},
                           },
                           "header": Object {
                             "formatters": Array [],
                             "label": "Execution counter",
                             "transforms": Array [
+                              [Function],
                               [Function],
                               [Function],
                             ],
@@ -1455,14 +1489,15 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                             "onExpand": undefined,
                             "onRowEdit": undefined,
                             "onSelect": [Function],
-                            "onSort": undefined,
+                            "onSort": [Function],
                             "rowLabeledBy": "simple-node",
-                            "sortBy": undefined,
+                            "sortBy": Object {},
                           },
                           "header": Object {
                             "formatters": Array [],
                             "label": "Last update",
                             "transforms": Array [
+                              [Function],
                               [Function],
                               [Function],
                             ],
@@ -1500,9 +1535,9 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                             "onExpand": undefined,
                             "onRowEdit": undefined,
                             "onSelect": [Function],
-                            "onSort": undefined,
+                            "onSort": [Function],
                             "rowLabeledBy": "simple-node",
-                            "sortBy": undefined,
+                            "sortBy": Object {},
                           },
                           "header": Object {
                             "formatters": Array [],
@@ -1573,88 +1608,358 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                         </th>
                       </HeaderCell>
                       <HeaderCell
-                        className="pf-u-text-align-center"
+                        aria-sort="none"
+                        className="pf-u-text-align-center pf-c-table__sort"
                         data-key={2}
                         data-label="Status"
                         key="2-header"
                         scope="col"
                       >
                         <th
-                          className="pf-u-text-align-center"
+                          aria-sort="none"
+                          className="pf-u-text-align-center pf-c-table__sort"
                           data-key={2}
                           data-label="Status"
                           onMouseEnter={[Function]}
                           scope="col"
                         >
-                          Status
+                          <SortColumn
+                            isSortedBy={false}
+                            onSort={[Function]}
+                            sortDirection=""
+                          >
+                            <button
+                              className="pf-c-table__button"
+                              onClick={[Function]}
+                              type="button"
+                            >
+                              <div
+                                className="pf-c-table__button-content"
+                              >
+                                <TableText>
+                                  <span
+                                    className="pf-c-table__text"
+                                    onMouseEnter={[Function]}
+                                  >
+                                    Status
+                                  </span>
+                                </TableText>
+                                <span
+                                  className="pf-c-table__sort-indicator"
+                                >
+                                  <ArrowsAltVIcon
+                                    color="currentColor"
+                                    noVerticalAlign={false}
+                                    size="sm"
+                                  >
+                                    <svg
+                                      aria-hidden={true}
+                                      aria-labelledby={null}
+                                      fill="currentColor"
+                                      height="1em"
+                                      role="img"
+                                      style={
+                                        Object {
+                                          "verticalAlign": "-0.125em",
+                                        }
+                                      }
+                                      viewBox="0 0 256 512"
+                                      width="1em"
+                                    >
+                                      <path
+                                        d="M214.059 377.941H168V134.059h46.059c21.382 0 32.09-25.851 16.971-40.971L144.971 7.029c-9.373-9.373-24.568-9.373-33.941 0L24.971 93.088c-15.119 15.119-4.411 40.971 16.971 40.971H88v243.882H41.941c-21.382 0-32.09 25.851-16.971 40.971l86.059 86.059c9.373 9.373 24.568 9.373 33.941 0l86.059-86.059c15.12-15.119 4.412-40.971-16.97-40.971z"
+                                        transform=""
+                                      />
+                                    </svg>
+                                  </ArrowsAltVIcon>
+                                </span>
+                              </div>
+                            </button>
+                          </SortColumn>
                         </th>
                       </HeaderCell>
                       <HeaderCell
-                        className="pf-u-text-align-center"
+                        aria-sort="none"
+                        className="pf-u-text-align-center pf-c-table__sort"
                         data-key={3}
                         data-label="Expiration time"
                         key="3-header"
                         scope="col"
                       >
                         <th
-                          className="pf-u-text-align-center"
+                          aria-sort="none"
+                          className="pf-u-text-align-center pf-c-table__sort"
                           data-key={3}
                           data-label="Expiration time"
                           onMouseEnter={[Function]}
                           scope="col"
                         >
-                          Expiration time
+                          <SortColumn
+                            isSortedBy={false}
+                            onSort={[Function]}
+                            sortDirection=""
+                          >
+                            <button
+                              className="pf-c-table__button"
+                              onClick={[Function]}
+                              type="button"
+                            >
+                              <div
+                                className="pf-c-table__button-content"
+                              >
+                                <TableText>
+                                  <span
+                                    className="pf-c-table__text"
+                                    onMouseEnter={[Function]}
+                                  >
+                                    Expiration time
+                                  </span>
+                                </TableText>
+                                <span
+                                  className="pf-c-table__sort-indicator"
+                                >
+                                  <ArrowsAltVIcon
+                                    color="currentColor"
+                                    noVerticalAlign={false}
+                                    size="sm"
+                                  >
+                                    <svg
+                                      aria-hidden={true}
+                                      aria-labelledby={null}
+                                      fill="currentColor"
+                                      height="1em"
+                                      role="img"
+                                      style={
+                                        Object {
+                                          "verticalAlign": "-0.125em",
+                                        }
+                                      }
+                                      viewBox="0 0 256 512"
+                                      width="1em"
+                                    >
+                                      <path
+                                        d="M214.059 377.941H168V134.059h46.059c21.382 0 32.09-25.851 16.971-40.971L144.971 7.029c-9.373-9.373-24.568-9.373-33.941 0L24.971 93.088c-15.119 15.119-4.411 40.971 16.971 40.971H88v243.882H41.941c-21.382 0-32.09 25.851-16.971 40.971l86.059 86.059c9.373 9.373 24.568 9.373 33.941 0l86.059-86.059c15.12-15.119 4.412-40.971-16.97-40.971z"
+                                        transform=""
+                                      />
+                                    </svg>
+                                  </ArrowsAltVIcon>
+                                </span>
+                              </div>
+                            </button>
+                          </SortColumn>
                         </th>
                       </HeaderCell>
                       <HeaderCell
-                        className="pf-u-text-align-center"
+                        aria-sort="none"
+                        className="pf-u-text-align-center pf-c-table__sort"
                         data-key={4}
                         data-label="Retries"
                         key="4-header"
                         scope="col"
                       >
                         <th
-                          className="pf-u-text-align-center"
+                          aria-sort="none"
+                          className="pf-u-text-align-center pf-c-table__sort"
                           data-key={4}
                           data-label="Retries"
                           onMouseEnter={[Function]}
                           scope="col"
                         >
-                          Retries
+                          <SortColumn
+                            isSortedBy={false}
+                            onSort={[Function]}
+                            sortDirection=""
+                          >
+                            <button
+                              className="pf-c-table__button"
+                              onClick={[Function]}
+                              type="button"
+                            >
+                              <div
+                                className="pf-c-table__button-content"
+                              >
+                                <TableText>
+                                  <span
+                                    className="pf-c-table__text"
+                                    onMouseEnter={[Function]}
+                                  >
+                                    Retries
+                                  </span>
+                                </TableText>
+                                <span
+                                  className="pf-c-table__sort-indicator"
+                                >
+                                  <ArrowsAltVIcon
+                                    color="currentColor"
+                                    noVerticalAlign={false}
+                                    size="sm"
+                                  >
+                                    <svg
+                                      aria-hidden={true}
+                                      aria-labelledby={null}
+                                      fill="currentColor"
+                                      height="1em"
+                                      role="img"
+                                      style={
+                                        Object {
+                                          "verticalAlign": "-0.125em",
+                                        }
+                                      }
+                                      viewBox="0 0 256 512"
+                                      width="1em"
+                                    >
+                                      <path
+                                        d="M214.059 377.941H168V134.059h46.059c21.382 0 32.09-25.851 16.971-40.971L144.971 7.029c-9.373-9.373-24.568-9.373-33.941 0L24.971 93.088c-15.119 15.119-4.411 40.971 16.971 40.971H88v243.882H41.941c-21.382 0-32.09 25.851-16.971 40.971l86.059 86.059c9.373 9.373 24.568 9.373 33.941 0l86.059-86.059c15.12-15.119 4.412-40.971-16.97-40.971z"
+                                        transform=""
+                                      />
+                                    </svg>
+                                  </ArrowsAltVIcon>
+                                </span>
+                              </div>
+                            </button>
+                          </SortColumn>
                         </th>
                       </HeaderCell>
                       <HeaderCell
-                        className="pf-u-text-align-center"
+                        aria-sort="none"
+                        className="pf-u-text-align-center pf-c-table__sort"
                         data-key={5}
                         data-label="Execution counter"
                         key="5-header"
                         scope="col"
                       >
                         <th
-                          className="pf-u-text-align-center"
+                          aria-sort="none"
+                          className="pf-u-text-align-center pf-c-table__sort"
                           data-key={5}
                           data-label="Execution counter"
                           onMouseEnter={[Function]}
                           scope="col"
                         >
-                          Execution counter
+                          <SortColumn
+                            isSortedBy={false}
+                            onSort={[Function]}
+                            sortDirection=""
+                          >
+                            <button
+                              className="pf-c-table__button"
+                              onClick={[Function]}
+                              type="button"
+                            >
+                              <div
+                                className="pf-c-table__button-content"
+                              >
+                                <TableText>
+                                  <span
+                                    className="pf-c-table__text"
+                                    onMouseEnter={[Function]}
+                                  >
+                                    Execution counter
+                                  </span>
+                                </TableText>
+                                <span
+                                  className="pf-c-table__sort-indicator"
+                                >
+                                  <ArrowsAltVIcon
+                                    color="currentColor"
+                                    noVerticalAlign={false}
+                                    size="sm"
+                                  >
+                                    <svg
+                                      aria-hidden={true}
+                                      aria-labelledby={null}
+                                      fill="currentColor"
+                                      height="1em"
+                                      role="img"
+                                      style={
+                                        Object {
+                                          "verticalAlign": "-0.125em",
+                                        }
+                                      }
+                                      viewBox="0 0 256 512"
+                                      width="1em"
+                                    >
+                                      <path
+                                        d="M214.059 377.941H168V134.059h46.059c21.382 0 32.09-25.851 16.971-40.971L144.971 7.029c-9.373-9.373-24.568-9.373-33.941 0L24.971 93.088c-15.119 15.119-4.411 40.971 16.971 40.971H88v243.882H41.941c-21.382 0-32.09 25.851-16.971 40.971l86.059 86.059c9.373 9.373 24.568 9.373 33.941 0l86.059-86.059c15.12-15.119 4.412-40.971-16.97-40.971z"
+                                        transform=""
+                                      />
+                                    </svg>
+                                  </ArrowsAltVIcon>
+                                </span>
+                              </div>
+                            </button>
+                          </SortColumn>
                         </th>
                       </HeaderCell>
                       <HeaderCell
-                        className="pf-u-text-align-center"
+                        aria-sort="none"
+                        className="pf-u-text-align-center pf-c-table__sort"
                         data-key={6}
                         data-label="Last update"
                         key="6-header"
                         scope="col"
                       >
                         <th
-                          className="pf-u-text-align-center"
+                          aria-sort="none"
+                          className="pf-u-text-align-center pf-c-table__sort"
                           data-key={6}
                           data-label="Last update"
                           onMouseEnter={[Function]}
                           scope="col"
                         >
-                          Last update
+                          <SortColumn
+                            isSortedBy={false}
+                            onSort={[Function]}
+                            sortDirection=""
+                          >
+                            <button
+                              className="pf-c-table__button"
+                              onClick={[Function]}
+                              type="button"
+                            >
+                              <div
+                                className="pf-c-table__button-content"
+                              >
+                                <TableText>
+                                  <span
+                                    className="pf-c-table__text"
+                                    onMouseEnter={[Function]}
+                                  >
+                                    Last update
+                                  </span>
+                                </TableText>
+                                <span
+                                  className="pf-c-table__sort-indicator"
+                                >
+                                  <ArrowsAltVIcon
+                                    color="currentColor"
+                                    noVerticalAlign={false}
+                                    size="sm"
+                                  >
+                                    <svg
+                                      aria-hidden={true}
+                                      aria-labelledby={null}
+                                      fill="currentColor"
+                                      height="1em"
+                                      role="img"
+                                      style={
+                                        Object {
+                                          "verticalAlign": "-0.125em",
+                                        }
+                                      }
+                                      viewBox="0 0 256 512"
+                                      width="1em"
+                                    >
+                                      <path
+                                        d="M214.059 377.941H168V134.059h46.059c21.382 0 32.09-25.851 16.971-40.971L144.971 7.029c-9.373-9.373-24.568-9.373-33.941 0L24.971 93.088c-15.119 15.119-4.411 40.971 16.971 40.971H88v243.882H41.941c-21.382 0-32.09 25.851-16.971 40.971l86.059 86.059c9.373 9.373 24.568 9.373 33.941 0l86.059-86.059c15.12-15.119 4.412-40.971-16.97-40.971z"
+                                        transform=""
+                                      />
+                                    </svg>
+                                  </ArrowsAltVIcon>
+                                </span>
+                              </div>
+                            </button>
+                          </SortColumn>
                         </th>
                       </HeaderCell>
                       <HeaderCell
@@ -1711,9 +2016,9 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                     "onExpand": undefined,
                     "onRowEdit": undefined,
                     "onSelect": [Function],
-                    "onSort": undefined,
+                    "onSort": [Function],
                     "rowLabeledBy": "simple-node",
-                    "sortBy": undefined,
+                    "sortBy": Object {},
                   },
                   "header": Object {
                     "formatters": Array [],
@@ -1755,9 +2060,9 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                     "onExpand": undefined,
                     "onRowEdit": undefined,
                     "onSelect": [Function],
-                    "onSort": undefined,
+                    "onSort": [Function],
                     "rowLabeledBy": "simple-node",
-                    "sortBy": undefined,
+                    "sortBy": Object {},
                   },
                   "header": Object {
                     "formatters": Array [],
@@ -1799,14 +2104,15 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                     "onExpand": undefined,
                     "onRowEdit": undefined,
                     "onSelect": [Function],
-                    "onSort": undefined,
+                    "onSort": [Function],
                     "rowLabeledBy": "simple-node",
-                    "sortBy": undefined,
+                    "sortBy": Object {},
                   },
                   "header": Object {
                     "formatters": Array [],
                     "label": "Status",
                     "transforms": Array [
+                      [Function],
                       [Function],
                       [Function],
                     ],
@@ -1843,14 +2149,15 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                     "onExpand": undefined,
                     "onRowEdit": undefined,
                     "onSelect": [Function],
-                    "onSort": undefined,
+                    "onSort": [Function],
                     "rowLabeledBy": "simple-node",
-                    "sortBy": undefined,
+                    "sortBy": Object {},
                   },
                   "header": Object {
                     "formatters": Array [],
                     "label": "Expiration time",
                     "transforms": Array [
+                      [Function],
                       [Function],
                       [Function],
                     ],
@@ -1887,14 +2194,15 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                     "onExpand": undefined,
                     "onRowEdit": undefined,
                     "onSelect": [Function],
-                    "onSort": undefined,
+                    "onSort": [Function],
                     "rowLabeledBy": "simple-node",
-                    "sortBy": undefined,
+                    "sortBy": Object {},
                   },
                   "header": Object {
                     "formatters": Array [],
                     "label": "Retries",
                     "transforms": Array [
+                      [Function],
                       [Function],
                       [Function],
                     ],
@@ -1931,14 +2239,15 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                     "onExpand": undefined,
                     "onRowEdit": undefined,
                     "onSelect": [Function],
-                    "onSort": undefined,
+                    "onSort": [Function],
                     "rowLabeledBy": "simple-node",
-                    "sortBy": undefined,
+                    "sortBy": Object {},
                   },
                   "header": Object {
                     "formatters": Array [],
                     "label": "Execution counter",
                     "transforms": Array [
+                      [Function],
                       [Function],
                       [Function],
                     ],
@@ -1975,14 +2284,15 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                     "onExpand": undefined,
                     "onRowEdit": undefined,
                     "onSelect": [Function],
-                    "onSort": undefined,
+                    "onSort": [Function],
                     "rowLabeledBy": "simple-node",
-                    "sortBy": undefined,
+                    "sortBy": Object {},
                   },
                   "header": Object {
                     "formatters": Array [],
                     "label": "Last update",
                     "transforms": Array [
+                      [Function],
                       [Function],
                       [Function],
                     ],
@@ -2020,9 +2330,9 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                     "onExpand": undefined,
                     "onRowEdit": undefined,
                     "onSelect": [Function],
-                    "onSort": undefined,
+                    "onSort": [Function],
                     "rowLabeledBy": "simple-node",
-                    "sortBy": undefined,
+                    "sortBy": Object {},
                   },
                   "header": Object {
                     "formatters": Array [],
@@ -3436,9 +3746,9 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                         "onExpand": undefined,
                         "onRowEdit": undefined,
                         "onSelect": [Function],
-                        "onSort": undefined,
+                        "onSort": [Function],
                         "rowLabeledBy": "simple-node",
-                        "sortBy": undefined,
+                        "sortBy": Object {},
                       },
                       "header": Object {
                         "formatters": Array [],
@@ -3480,9 +3790,9 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                         "onExpand": undefined,
                         "onRowEdit": undefined,
                         "onSelect": [Function],
-                        "onSort": undefined,
+                        "onSort": [Function],
                         "rowLabeledBy": "simple-node",
-                        "sortBy": undefined,
+                        "sortBy": Object {},
                       },
                       "header": Object {
                         "formatters": Array [],
@@ -3524,14 +3834,15 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                         "onExpand": undefined,
                         "onRowEdit": undefined,
                         "onSelect": [Function],
-                        "onSort": undefined,
+                        "onSort": [Function],
                         "rowLabeledBy": "simple-node",
-                        "sortBy": undefined,
+                        "sortBy": Object {},
                       },
                       "header": Object {
                         "formatters": Array [],
                         "label": "Status",
                         "transforms": Array [
+                          [Function],
                           [Function],
                           [Function],
                         ],
@@ -3568,14 +3879,15 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                         "onExpand": undefined,
                         "onRowEdit": undefined,
                         "onSelect": [Function],
-                        "onSort": undefined,
+                        "onSort": [Function],
                         "rowLabeledBy": "simple-node",
-                        "sortBy": undefined,
+                        "sortBy": Object {},
                       },
                       "header": Object {
                         "formatters": Array [],
                         "label": "Expiration time",
                         "transforms": Array [
+                          [Function],
                           [Function],
                           [Function],
                         ],
@@ -3612,14 +3924,15 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                         "onExpand": undefined,
                         "onRowEdit": undefined,
                         "onSelect": [Function],
-                        "onSort": undefined,
+                        "onSort": [Function],
                         "rowLabeledBy": "simple-node",
-                        "sortBy": undefined,
+                        "sortBy": Object {},
                       },
                       "header": Object {
                         "formatters": Array [],
                         "label": "Retries",
                         "transforms": Array [
+                          [Function],
                           [Function],
                           [Function],
                         ],
@@ -3656,14 +3969,15 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                         "onExpand": undefined,
                         "onRowEdit": undefined,
                         "onSelect": [Function],
-                        "onSort": undefined,
+                        "onSort": [Function],
                         "rowLabeledBy": "simple-node",
-                        "sortBy": undefined,
+                        "sortBy": Object {},
                       },
                       "header": Object {
                         "formatters": Array [],
                         "label": "Execution counter",
                         "transforms": Array [
+                          [Function],
                           [Function],
                           [Function],
                         ],
@@ -3700,14 +4014,15 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                         "onExpand": undefined,
                         "onRowEdit": undefined,
                         "onSelect": [Function],
-                        "onSort": undefined,
+                        "onSort": [Function],
                         "rowLabeledBy": "simple-node",
-                        "sortBy": undefined,
+                        "sortBy": Object {},
                       },
                       "header": Object {
                         "formatters": Array [],
                         "label": "Last update",
                         "transforms": Array [
+                          [Function],
                           [Function],
                           [Function],
                         ],
@@ -3745,9 +4060,9 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                         "onExpand": undefined,
                         "onRowEdit": undefined,
                         "onSelect": [Function],
-                        "onSort": undefined,
+                        "onSort": [Function],
                         "rowLabeledBy": "simple-node",
-                        "sortBy": undefined,
+                        "sortBy": Object {},
                       },
                       "header": Object {
                         "formatters": Array [],
@@ -5474,9 +5789,9 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                               "onExpand": undefined,
                               "onRowEdit": undefined,
                               "onSelect": [Function],
-                              "onSort": undefined,
+                              "onSort": [Function],
                               "rowLabeledBy": "simple-node",
-                              "sortBy": undefined,
+                              "sortBy": Object {},
                             },
                             "header": Object {
                               "formatters": Array [],
@@ -5518,9 +5833,9 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                               "onExpand": undefined,
                               "onRowEdit": undefined,
                               "onSelect": [Function],
-                              "onSort": undefined,
+                              "onSort": [Function],
                               "rowLabeledBy": "simple-node",
-                              "sortBy": undefined,
+                              "sortBy": Object {},
                             },
                             "header": Object {
                               "formatters": Array [],
@@ -5562,14 +5877,15 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                               "onExpand": undefined,
                               "onRowEdit": undefined,
                               "onSelect": [Function],
-                              "onSort": undefined,
+                              "onSort": [Function],
                               "rowLabeledBy": "simple-node",
-                              "sortBy": undefined,
+                              "sortBy": Object {},
                             },
                             "header": Object {
                               "formatters": Array [],
                               "label": "Status",
                               "transforms": Array [
+                                [Function],
                                 [Function],
                                 [Function],
                               ],
@@ -5606,14 +5922,15 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                               "onExpand": undefined,
                               "onRowEdit": undefined,
                               "onSelect": [Function],
-                              "onSort": undefined,
+                              "onSort": [Function],
                               "rowLabeledBy": "simple-node",
-                              "sortBy": undefined,
+                              "sortBy": Object {},
                             },
                             "header": Object {
                               "formatters": Array [],
                               "label": "Expiration time",
                               "transforms": Array [
+                                [Function],
                                 [Function],
                                 [Function],
                               ],
@@ -5650,14 +5967,15 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                               "onExpand": undefined,
                               "onRowEdit": undefined,
                               "onSelect": [Function],
-                              "onSort": undefined,
+                              "onSort": [Function],
                               "rowLabeledBy": "simple-node",
-                              "sortBy": undefined,
+                              "sortBy": Object {},
                             },
                             "header": Object {
                               "formatters": Array [],
                               "label": "Retries",
                               "transforms": Array [
+                                [Function],
                                 [Function],
                                 [Function],
                               ],
@@ -5694,14 +6012,15 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                               "onExpand": undefined,
                               "onRowEdit": undefined,
                               "onSelect": [Function],
-                              "onSort": undefined,
+                              "onSort": [Function],
                               "rowLabeledBy": "simple-node",
-                              "sortBy": undefined,
+                              "sortBy": Object {},
                             },
                             "header": Object {
                               "formatters": Array [],
                               "label": "Execution counter",
                               "transforms": Array [
+                                [Function],
                                 [Function],
                                 [Function],
                               ],
@@ -5738,14 +6057,15 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                               "onExpand": undefined,
                               "onRowEdit": undefined,
                               "onSelect": [Function],
-                              "onSort": undefined,
+                              "onSort": [Function],
                               "rowLabeledBy": "simple-node",
-                              "sortBy": undefined,
+                              "sortBy": Object {},
                             },
                             "header": Object {
                               "formatters": Array [],
                               "label": "Last update",
                               "transforms": Array [
+                                [Function],
                                 [Function],
                                 [Function],
                               ],
@@ -5783,9 +6103,9 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                               "onExpand": undefined,
                               "onRowEdit": undefined,
                               "onSelect": [Function],
-                              "onSort": undefined,
+                              "onSort": [Function],
                               "rowLabeledBy": "simple-node",
-                              "sortBy": undefined,
+                              "sortBy": Object {},
                             },
                             "header": Object {
                               "formatters": Array [],
@@ -6427,9 +6747,9 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                                         "onExpand": undefined,
                                         "onRowEdit": undefined,
                                         "onSelect": [Function],
-                                        "onSort": undefined,
+                                        "onSort": [Function],
                                         "rowLabeledBy": "simple-node",
-                                        "sortBy": undefined,
+                                        "sortBy": Object {},
                                       },
                                       "header": Object {
                                         "formatters": Array [],
@@ -6841,9 +7161,9 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                               "onExpand": undefined,
                               "onRowEdit": undefined,
                               "onSelect": [Function],
-                              "onSort": undefined,
+                              "onSort": [Function],
                               "rowLabeledBy": "simple-node",
-                              "sortBy": undefined,
+                              "sortBy": Object {},
                             },
                             "header": Object {
                               "formatters": Array [],
@@ -6885,9 +7205,9 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                               "onExpand": undefined,
                               "onRowEdit": undefined,
                               "onSelect": [Function],
-                              "onSort": undefined,
+                              "onSort": [Function],
                               "rowLabeledBy": "simple-node",
-                              "sortBy": undefined,
+                              "sortBy": Object {},
                             },
                             "header": Object {
                               "formatters": Array [],
@@ -6929,14 +7249,15 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                               "onExpand": undefined,
                               "onRowEdit": undefined,
                               "onSelect": [Function],
-                              "onSort": undefined,
+                              "onSort": [Function],
                               "rowLabeledBy": "simple-node",
-                              "sortBy": undefined,
+                              "sortBy": Object {},
                             },
                             "header": Object {
                               "formatters": Array [],
                               "label": "Status",
                               "transforms": Array [
+                                [Function],
                                 [Function],
                                 [Function],
                               ],
@@ -6973,14 +7294,15 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                               "onExpand": undefined,
                               "onRowEdit": undefined,
                               "onSelect": [Function],
-                              "onSort": undefined,
+                              "onSort": [Function],
                               "rowLabeledBy": "simple-node",
-                              "sortBy": undefined,
+                              "sortBy": Object {},
                             },
                             "header": Object {
                               "formatters": Array [],
                               "label": "Expiration time",
                               "transforms": Array [
+                                [Function],
                                 [Function],
                                 [Function],
                               ],
@@ -7017,14 +7339,15 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                               "onExpand": undefined,
                               "onRowEdit": undefined,
                               "onSelect": [Function],
-                              "onSort": undefined,
+                              "onSort": [Function],
                               "rowLabeledBy": "simple-node",
-                              "sortBy": undefined,
+                              "sortBy": Object {},
                             },
                             "header": Object {
                               "formatters": Array [],
                               "label": "Retries",
                               "transforms": Array [
+                                [Function],
                                 [Function],
                                 [Function],
                               ],
@@ -7061,14 +7384,15 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                               "onExpand": undefined,
                               "onRowEdit": undefined,
                               "onSelect": [Function],
-                              "onSort": undefined,
+                              "onSort": [Function],
                               "rowLabeledBy": "simple-node",
-                              "sortBy": undefined,
+                              "sortBy": Object {},
                             },
                             "header": Object {
                               "formatters": Array [],
                               "label": "Execution counter",
                               "transforms": Array [
+                                [Function],
                                 [Function],
                                 [Function],
                               ],
@@ -7105,14 +7429,15 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                               "onExpand": undefined,
                               "onRowEdit": undefined,
                               "onSelect": [Function],
-                              "onSort": undefined,
+                              "onSort": [Function],
                               "rowLabeledBy": "simple-node",
-                              "sortBy": undefined,
+                              "sortBy": Object {},
                             },
                             "header": Object {
                               "formatters": Array [],
                               "label": "Last update",
                               "transforms": Array [
+                                [Function],
                                 [Function],
                                 [Function],
                               ],
@@ -7150,9 +7475,9 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                               "onExpand": undefined,
                               "onRowEdit": undefined,
                               "onSelect": [Function],
-                              "onSort": undefined,
+                              "onSort": [Function],
                               "rowLabeledBy": "simple-node",
-                              "sortBy": undefined,
+                              "sortBy": Object {},
                             },
                             "header": Object {
                               "formatters": Array [],
@@ -7906,9 +8231,9 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                                         "onExpand": undefined,
                                         "onRowEdit": undefined,
                                         "onSelect": [Function],
-                                        "onSort": undefined,
+                                        "onSort": [Function],
                                         "rowLabeledBy": "simple-node",
-                                        "sortBy": undefined,
+                                        "sortBy": Object {},
                                       },
                                       "header": Object {
                                         "formatters": Array [],
@@ -8400,9 +8725,9 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                               "onExpand": undefined,
                               "onRowEdit": undefined,
                               "onSelect": [Function],
-                              "onSort": undefined,
+                              "onSort": [Function],
                               "rowLabeledBy": "simple-node",
-                              "sortBy": undefined,
+                              "sortBy": Object {},
                             },
                             "header": Object {
                               "formatters": Array [],
@@ -8444,9 +8769,9 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                               "onExpand": undefined,
                               "onRowEdit": undefined,
                               "onSelect": [Function],
-                              "onSort": undefined,
+                              "onSort": [Function],
                               "rowLabeledBy": "simple-node",
-                              "sortBy": undefined,
+                              "sortBy": Object {},
                             },
                             "header": Object {
                               "formatters": Array [],
@@ -8488,14 +8813,15 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                               "onExpand": undefined,
                               "onRowEdit": undefined,
                               "onSelect": [Function],
-                              "onSort": undefined,
+                              "onSort": [Function],
                               "rowLabeledBy": "simple-node",
-                              "sortBy": undefined,
+                              "sortBy": Object {},
                             },
                             "header": Object {
                               "formatters": Array [],
                               "label": "Status",
                               "transforms": Array [
+                                [Function],
                                 [Function],
                                 [Function],
                               ],
@@ -8532,14 +8858,15 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                               "onExpand": undefined,
                               "onRowEdit": undefined,
                               "onSelect": [Function],
-                              "onSort": undefined,
+                              "onSort": [Function],
                               "rowLabeledBy": "simple-node",
-                              "sortBy": undefined,
+                              "sortBy": Object {},
                             },
                             "header": Object {
                               "formatters": Array [],
                               "label": "Expiration time",
                               "transforms": Array [
+                                [Function],
                                 [Function],
                                 [Function],
                               ],
@@ -8576,14 +8903,15 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                               "onExpand": undefined,
                               "onRowEdit": undefined,
                               "onSelect": [Function],
-                              "onSort": undefined,
+                              "onSort": [Function],
                               "rowLabeledBy": "simple-node",
-                              "sortBy": undefined,
+                              "sortBy": Object {},
                             },
                             "header": Object {
                               "formatters": Array [],
                               "label": "Retries",
                               "transforms": Array [
+                                [Function],
                                 [Function],
                                 [Function],
                               ],
@@ -8620,14 +8948,15 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                               "onExpand": undefined,
                               "onRowEdit": undefined,
                               "onSelect": [Function],
-                              "onSort": undefined,
+                              "onSort": [Function],
                               "rowLabeledBy": "simple-node",
-                              "sortBy": undefined,
+                              "sortBy": Object {},
                             },
                             "header": Object {
                               "formatters": Array [],
                               "label": "Execution counter",
                               "transforms": Array [
+                                [Function],
                                 [Function],
                                 [Function],
                               ],
@@ -8664,14 +8993,15 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                               "onExpand": undefined,
                               "onRowEdit": undefined,
                               "onSelect": [Function],
-                              "onSort": undefined,
+                              "onSort": [Function],
                               "rowLabeledBy": "simple-node",
-                              "sortBy": undefined,
+                              "sortBy": Object {},
                             },
                             "header": Object {
                               "formatters": Array [],
                               "label": "Last update",
                               "transforms": Array [
+                                [Function],
                                 [Function],
                                 [Function],
                               ],
@@ -8709,9 +9039,9 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                               "onExpand": undefined,
                               "onRowEdit": undefined,
                               "onSelect": [Function],
-                              "onSort": undefined,
+                              "onSort": [Function],
                               "rowLabeledBy": "simple-node",
-                              "sortBy": undefined,
+                              "sortBy": Object {},
                             },
                             "header": Object {
                               "formatters": Array [],
@@ -9465,9 +9795,9 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                                         "onExpand": undefined,
                                         "onRowEdit": undefined,
                                         "onSelect": [Function],
-                                        "onSort": undefined,
+                                        "onSort": [Function],
                                         "rowLabeledBy": "simple-node",
-                                        "sortBy": undefined,
+                                        "sortBy": Object {},
                                       },
                                       "header": Object {
                                         "formatters": Array [],

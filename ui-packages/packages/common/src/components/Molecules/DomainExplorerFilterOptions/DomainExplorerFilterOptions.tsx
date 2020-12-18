@@ -17,7 +17,7 @@ import {
 import { GraphQL } from '../../../graphql/types';
 import useGetInputFieldsFromTypeQuery = GraphQL.useGetInputFieldsFromTypeQuery;
 import { QuestionCircleIcon } from '@patternfly/react-icons';
-import { set, removeDuplicates } from '../../../utils/Utils';
+import { constructObject, removeDuplicates } from '../../../utils/Utils';
 import '../../styles.css';
 import { OUIAProps, componentOuiaProps } from '../../../utils/OuiaUtils';
 
@@ -543,7 +543,7 @@ const DomainExplorerFilterOptions: React.FC<IOwnProps & OUIAProps> = ({
       }
       checkChipArray(chipSelections, chipText);
       const tempArray = inputArray.split(',');
-      set(obj, objKeys, tempArray);
+      constructObject(obj, objKeys, tempArray);
     } else {
       chipText = validateChip(parentString, selected, selectTypes, value);
       let chipSelections = '';
@@ -553,7 +553,7 @@ const DomainExplorerFilterOptions: React.FC<IOwnProps & OUIAProps> = ({
         chipSelections = selected;
       }
       checkChipArray(chipSelections, chipText);
-      set(obj, objKeys, value);
+      constructObject(obj, objKeys, value);
     }
     setFinalFilters(() => {
       if (Object.prototype.hasOwnProperty.call(finalFilters, typeParent)) {
