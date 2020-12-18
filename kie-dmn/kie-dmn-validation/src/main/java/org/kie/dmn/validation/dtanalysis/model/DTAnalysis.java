@@ -694,7 +694,7 @@ public class DTAnalysis {
         for (int r = 0; r < ddtaTable.getRule().size(); r++) { // is a cell equivalent to a Dash `-` in DMN decision table?
             DDTARule rule = ddtaTable.getRule().get(r);
             for (int c = 0; c < ddtaTable.getInputs().size(); c++) {
-                if (rule.getInputEntry().get(c).getIntervals().size() > 1) {
+                if (rule.getInputEntry().get(c).getIntervals().size() != 1) {
                     continue;
                 }
                 Interval int0 = rule.getInputEntry().get(c).getIntervals().get(0);
