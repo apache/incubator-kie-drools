@@ -35,7 +35,7 @@ import org.dmg.pmml.MiningFunction;
 import org.dmg.pmml.OpType;
 import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.regression.RegressionModel;
-import org.kie.memorycompiler.KieMemoryCompiler;
+import org.drools.reflective.classloader.ProjectClassLoader;
 import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.KiePMMLException;
@@ -53,6 +53,7 @@ import static org.kie.pmml.commons.Constants.MISSING_DEFAULT_CONSTRUCTOR;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
 import static org.kie.pmml.compiler.commons.factories.KiePMMLOutputFieldFactory.getOutputFields;
+import static org.kie.pmml.compiler.commons.utils.ClassloaderUtils.compileAndLoadClass;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFullClassName;
 import static org.kie.pmml.compiler.commons.utils.KiePMMLModelFactoryUtils.addTransformationsInClassOrInterfaceDeclaration;
@@ -73,12 +74,19 @@ public class KiePMMLRegressionModelFactory {
                                                                           final RegressionModel model,
                                                                           final ClassLoader classLoader) throws IOException, IllegalAccessException, InstantiationException {
         logger.trace("getKiePMMLRegressionModelClasses {} {}", dataDictionary, model);
+        if (!(classLoader instanceof ProjectClassLoader)) {
+            throw new IllegalStateException("Expected ProjectClassLoader, received " + classLoader.getClass().getName());
+        }
         String className = getSanitizedClassName(model.getModelName());
         String packageName = getSanitizedPackageName(model.getModelName());
         Map<String, String> sourcesMap = getKiePMMLRegressionModelSourcesMap(dataDictionary, transformationDictionary, model, packageName);
         String fullClassName = packageName + "." + className;
-        final Map<String, Class<?>> compiledClasses = KieMemoryCompiler.compile(sourcesMap, classLoader);
-        return (KiePMMLRegressionModel) compiledClasses.get(fullClassName).newInstance();
+        try {
+            Class<?> kiePMMLScorecardModelClass = compileAndLoadClass((ProjectClassLoader) classLoader, sourcesMap, fullClassName);
+            return (KiePMMLRegressionModel) kiePMMLScorecardModelClass.newInstance();
+        } catch (Exception e) {
+            throw new KiePMMLException(e);
+        }
     }
 
     public static Map<String, String> getKiePMMLRegressionModelSourcesMap(final DataDictionary dataDictionary,

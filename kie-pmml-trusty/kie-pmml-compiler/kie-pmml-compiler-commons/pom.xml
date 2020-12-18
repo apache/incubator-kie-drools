@@ -20,6 +20,15 @@
       <groupId>org.kie</groupId>
       <artifactId>kie-pmml-compiler-api</artifactId>
     </dependency>
+    <!-- DROOLS -->
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-core-reflective</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-memory-compiler</artifactId>
+    </dependency>
     <!-- EXTERNAL -->
     <dependency>
       <groupId>com.github.javaparser</groupId>
@@ -47,11 +56,11 @@
         </exclusion>
       </exclusions>
     </dependency>
-    <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>kie-memory-compiler</artifactId>
-      <scope>test</scope>
-    </dependency>
+<!--    <dependency>-->
+<!--      <groupId>org.kie</groupId>-->
+<!--      <artifactId>kie-memory-compiler</artifactId>-->
+<!--      <scope>test</scope>-->
+<!--    </dependency>-->
   </dependencies>
 
 </project>
