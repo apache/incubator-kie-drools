@@ -24,9 +24,10 @@ import java.time.Period;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.kie.dmn.api.core.DMNDecisionResult;
-import org.kie.kogito.dmn.rest.DMNResult;
+import org.kie.dmn.api.core.DMNResult;
 import org.kie.kogito.grafana.dmn.SupportedDecisionTypes;
 import org.kie.kogito.monitoring.core.common.system.metrics.dmnhandlers.BigDecimalHandler;
 import org.kie.kogito.monitoring.core.common.system.metrics.dmnhandlers.BooleanHandler;
@@ -68,17 +69,17 @@ public class DMNResultMetricsBuilder {
     }
 
     public static void generateMetrics(DMNResult dmnResult, String endpointName) {
-        if (dmnResult == null) {
-            LOGGER.warn("DMNResultMetricsBuilder can't register the metrics because the dmn result is null.");
-            return;
-        }
+        Optional<List<DMNDecisionResult>> optDecisionResults = Optional.ofNullable(dmnResult).map(DMNResult::getDecisionResults);
 
-        List<DMNDecisionResult> decisionResults = dmnResult.getDecisionResults();
-        for (DMNDecisionResult decision : decisionResults) {
-            Object result = decision.getResult();
-            if (result != null && SupportedDecisionTypes.isSupported(result.getClass())) {
-                handlers.get(result.getClass()).record(decision.getDecisionName(), endpointName, result);
+        if (optDecisionResults.isPresent()) {
+            for (DMNDecisionResult decision : optDecisionResults.get()) {
+                Object result = decision.getResult();
+                if (result != null && SupportedDecisionTypes.isSupported(result.getClass())) {
+                    handlers.get(result.getClass()).record(decision.getDecisionName(), endpointName, result);
+                }
             }
+        } else {
+            LOGGER.warn("DMNResultMetricsBuilder can't register the metrics because the dmn result is null.");
         }
     }
 }

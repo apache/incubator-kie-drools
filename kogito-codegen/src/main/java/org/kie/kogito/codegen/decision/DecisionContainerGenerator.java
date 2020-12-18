@@ -15,6 +15,8 @@
 
 package org.kie.kogito.codegen.decision;
 
+import java.util.List;
+
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.InitializerDeclaration;
@@ -29,8 +31,6 @@ import org.kie.kogito.codegen.TemplatedGenerator;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 import org.kie.kogito.codegen.io.CollectedResource;
 import org.kie.kogito.dmn.DmnExecutionIdSupplier;
-
-import java.util.List;
 
 import static org.kie.kogito.codegen.CodegenUtils.newObject;
 import static org.kie.kogito.codegen.decision.ReadResourceUtil.getReadResourceMethod;
@@ -92,6 +92,7 @@ public class DecisionContainerGenerator extends AbstractApplicationSection {
                         "Missing init() method"));
 
         setupExecIdSupplierVariable(initMethod);
+        setupDecisionModelTransformerVariable(initMethod);
 
         for (CollectedResource resource : resources) {
             MethodCallExpr getResAsStream = getReadResourceMethod(applicationClass, resource);
@@ -104,8 +105,15 @@ public class DecisionContainerGenerator extends AbstractApplicationSection {
 
     private void setupExecIdSupplierVariable(MethodCallExpr initMethod) {
         Expression execIdSupplier = addonsConfig.useTracing() ?
-                newObject(DmnExecutionIdSupplier.class):
+                newObject(DmnExecutionIdSupplier.class) :
                 new NullLiteralExpr();
         initMethod.addArgument(execIdSupplier);
+    }
+
+    private void setupDecisionModelTransformerVariable(MethodCallExpr initMethod) {
+        Expression decisionModelTransformerExpr = addonsConfig.useMonitoring() ?
+                newObject("org.kie.kogito.monitoring.core.common.decision.MonitoredDecisionModelTransformer") :
+                new NullLiteralExpr();
+        initMethod.addArgument(decisionModelTransformerExpr);
     }
 }

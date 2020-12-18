@@ -14,41 +14,49 @@
  */
 package org.kie.kogito.dmn;
 
-import org.kie.api.runtime.KieRuntimeFactory;
-import org.kie.dmn.api.core.DMNRuntime;
-import org.kie.kogito.ExecutionIdSupplier;
-import org.kie.kogito.decision.DecisionConfig;
-import org.kie.kogito.decision.DecisionModels;
-
 import java.io.Reader;
 import java.util.function.Function;
+
+import org.kie.api.runtime.KieRuntimeFactory;
+import org.kie.dmn.api.core.DMNRuntime;
+import org.kie.kogito.Application;
+import org.kie.kogito.ExecutionIdSupplier;
+import org.kie.kogito.decision.DecisionConfig;
+import org.kie.kogito.decision.DecisionModel;
+import org.kie.kogito.decision.DecisionModels;
 
 public abstract class AbstractDecisionModels implements DecisionModels {
 
     private static final boolean CAN_PLATFORM_CLASSLOAD = org.kie.dmn.feel.util.ClassLoaderUtil.CAN_PLATFORM_CLASSLOAD;
     private static DMNRuntime dmnRuntime = null;
     private static ExecutionIdSupplier execIdSupplier = null;
+    private static Function<DecisionModel, DecisionModel> decisionModelTransformer = null;
 
     protected static void init(Function<String, KieRuntimeFactory> sKieRuntimeFactoryFunction,
                                ExecutionIdSupplier executionIdSupplier,
+                               Function<DecisionModel, DecisionModel> decisionModelTransformerInit,
                                Reader... readers) {
         dmnRuntime = DMNKogito.createGenericDMNRuntime(sKieRuntimeFactoryFunction, readers);
         execIdSupplier = executionIdSupplier;
+        decisionModelTransformer = decisionModelTransformerInit;
     }
 
-    public org.kie.kogito.decision.DecisionModel getDecisionModel(String namespace, String name) {
-        return new org.kie.kogito.dmn.DmnDecisionModel(dmnRuntime, namespace, name, execIdSupplier);
+    public DecisionModel getDecisionModel(String namespace, String name) {
+        DecisionModel model = new DmnDecisionModel(dmnRuntime, namespace, name, execIdSupplier);
+        return decisionModelTransformer == null
+                ? model
+                : decisionModelTransformer.apply(model);
     }
 
     public AbstractDecisionModels() {
         // needed by CDI
     }
 
-    public AbstractDecisionModels(org.kie.kogito.Application app) {
+    public AbstractDecisionModels(Application app) {
         initApplication(app);
     }
 
-    protected void initApplication(org.kie.kogito.Application app) {
+    protected void initApplication(Application app) {
         app.config().get(DecisionConfig.class).decisionEventListeners().listeners().forEach(dmnRuntime::addListener);
     }
 
@@ -65,5 +73,4 @@ public abstract class AbstractDecisionModels implements DecisionModels {
             throw new java.io.UncheckedIOException(e);
         }
     }
-
 }
