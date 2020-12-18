@@ -2,8 +2,8 @@ package org.kie.kogito.test;
 
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.kogito.conf.ConfigBean;
+import org.kie.kogito.event.CloudEventEmitter;
 import org.kie.kogito.event.impl.DefaultEventMarshaller;
-import org.kie.kogito.services.event.CloudEventEmitter;
 import org.kie.kogito.services.event.impl.AbstractMessageProducer;
 
 @javax.enterprise.context.ApplicationScoped()

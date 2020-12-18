@@ -20,7 +20,7 @@ import java.util.List;
 
 import org.kie.kogito.event.CloudEventMeta;
 import org.kie.kogito.event.Topic;
-import org.kie.kogito.services.event.TopicDiscovery;
+import org.kie.kogito.event.TopicDiscovery;
 
 /**
  * Default {@link TopicDiscovery} implementation for services with no eventing requirement

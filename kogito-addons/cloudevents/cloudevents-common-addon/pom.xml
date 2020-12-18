@@ -32,11 +32,7 @@
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-services</artifactId>
+      <artifactId>kogito-events-api</artifactId>
     </dependency>
   </dependencies>
 

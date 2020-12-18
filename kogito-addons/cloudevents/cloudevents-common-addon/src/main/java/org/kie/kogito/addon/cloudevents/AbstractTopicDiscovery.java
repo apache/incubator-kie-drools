@@ -23,7 +23,7 @@ import org.kie.kogito.event.CloudEventMeta;
 import org.kie.kogito.event.EventKind;
 import org.kie.kogito.event.KogitoEventStreams;
 import org.kie.kogito.event.Topic;
-import org.kie.kogito.services.event.TopicDiscovery;
+import org.kie.kogito.event.TopicDiscovery;
 
 /**
  * Base class for events Topic Discovery

@@ -9,7 +9,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.kie.kogito.event.CloudEventMeta;
-import org.kie.kogito.services.event.TopicDiscovery;
+import org.kie.kogito.event.TopicDiscovery;
 
 @Path("/messaging/topics")
 public class TopicsInformationResource {

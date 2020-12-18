@@ -12,33 +12,35 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *
  */
 
 package org.kie.kogito.addon.cloudevents.quarkus;
 
-import java.util.concurrent.CompletionStage;
+import java.util.function.Consumer;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.inject.Named;
 
-import org.eclipse.microprofile.reactive.messaging.Channel;
-import org.eclipse.microprofile.reactive.messaging.Emitter;
-import org.kie.kogito.event.CloudEventEmitter;
+import io.smallrye.mutiny.Multi;
+import org.kie.kogito.event.CloudEventReceiver;
 import org.kie.kogito.event.KogitoEventStreams;
+import org.reactivestreams.Publisher;
 
-/**
- * the quarkus implementation just delegates to a real emitter,
- * since smallrye reactive messaging handles different transports
- *
- */
 @ApplicationScoped
-public class QuarkusCloudEventEmitter implements CloudEventEmitter {
-    @Inject
-    @Channel(KogitoEventStreams.OUTGOING)
-    Emitter<String> emitter;
+public class QuarkusCloudEventReceiver implements CloudEventReceiver {
 
-    public CompletionStage<Void> emit(String e) {
-        return emitter.send(e);
+    @Inject
+    @Named(KogitoEventStreams.PUBLISHER)
+    Publisher<String> eventPublisher;
+
+    @Override
+    public void subscribe(Consumer<String> consumer) {
+        Multi.createFrom().publisher(eventPublisher).subscribe().with(consumer);
+    }
+
+    @Override
+    public Publisher<String> getEventPublisher() {
+        return eventPublisher;
     }
 }

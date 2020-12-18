@@ -35,6 +35,17 @@
       <artifactId>jackson-annotations</artifactId>
     </dependency>
 
+    <!--
+    This dependency is marked as optional because it is only needed if events are used.
+    All event-related addons and also user code can bring it back but in this way this module
+    by default has no transitive dependencies from kogito-events-api.
+    -->
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-events-api</artifactId>
+      <optional>true</optional>
+    </dependency>
+
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-dmn-api</artifactId>

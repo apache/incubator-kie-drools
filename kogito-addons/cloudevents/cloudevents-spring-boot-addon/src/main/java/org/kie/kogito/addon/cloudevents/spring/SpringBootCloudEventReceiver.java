@@ -12,36 +12,34 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *
  */
 
 package org.kie.kogito.addon.cloudevents.spring;
 
-import java.util.concurrent.CompletionStage;
+import java.util.function.Consumer;
 
-import org.kie.kogito.event.CloudEventEmitter;
+import org.kie.kogito.event.CloudEventReceiver;
 import org.kie.kogito.event.KogitoEventStreams;
+import org.reactivestreams.Publisher;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Flux;
 
-/**
- * Spring implementation delegating to kafka template
- */
 @Component
-public class SpringKafkaCloudEventEmitter implements CloudEventEmitter {
+public class SpringBootCloudEventReceiver implements CloudEventReceiver {
 
     @Autowired
-    org.springframework.kafka.core.KafkaTemplate<String, String> emitter;
-    @Value(value = "${spring.kafka.bootstrap-servers}")
-    String kafkaBootstrapAddress;
-    @Value(value = "${kogito.addon.cloudevents.kafka." + KogitoEventStreams.OUTGOING + ":" + KogitoEventStreams.OUTGOING + "}")
-    String kafkaTopicName;
+    @Qualifier(KogitoEventStreams.PUBLISHER)
+    Publisher<String> eventPublisher;
 
-    public CompletionStage<Void> emit(String e) {
-        return emitter.send(kafkaTopicName, e)
-                .completable()
-                .thenApply(r -> null); // discard return to comply with the signature
+    @Override
+    public void subscribe(Consumer<String> consumer) {
+        Flux.from(eventPublisher).subscribe(consumer);
     }
 
+    @Override
+    public Publisher<String> getEventPublisher() {
+        return eventPublisher;
+    }
 }
