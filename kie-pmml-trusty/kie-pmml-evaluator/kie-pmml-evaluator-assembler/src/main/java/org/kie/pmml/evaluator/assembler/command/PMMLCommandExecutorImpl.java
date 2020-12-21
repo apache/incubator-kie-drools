@@ -61,16 +61,6 @@ public class PMMLCommandExecutorImpl implements PMMLCommandExecutor {
         }
     }
 
-    private PMML4Result evaluate(final PMMLRequestData pmmlRequestData, final PMMLRuntime pmmlRuntime) {
-        String modelName = pmmlRequestData.getModelName();
-        final PMMLContext pmmlContext = new PMMLContextImpl(pmmlRequestData);
-        return pmmlRuntime.evaluate(modelName, pmmlContext);
-    }
-
-    private PMMLRuntime getPMMLRuntime(String pmmlFileName, String pmmlModelName, KieBase kieBase) {
-        return PMML_RUNTIME_FACTORY.getPMMLRuntimeFromFileNameModelNameAndKieBase(pmmlFileName, pmmlModelName, kieBase);
-    }
-
     /**
      * Return a <b>new</b> <code>PMMLRequestData</code> with the values of the original <code>PMMLRequestData</code> restored to their actual type.
      *
@@ -81,7 +71,7 @@ public class PMMLCommandExecutorImpl implements PMMLCommandExecutor {
      * @return
      */
     @SuppressWarnings("rawtype")
-    private PMMLRequestData getCleanedRequestData(PMMLRequestData source) {
+    protected PMMLRequestData getCleanedRequestData(PMMLRequestData source) {
         final PMMLRequestData toReturn = new PMMLRequestData();
         toReturn.setSource(source.getSource());
         toReturn.setCorrelationId(source.getCorrelationId());
@@ -93,5 +83,15 @@ public class PMMLCommandExecutorImpl implements PMMLCommandExecutor {
             toReturn.addRequestParam(toAdd);
         });
         return toReturn;
+    }
+
+    private PMML4Result evaluate(final PMMLRequestData pmmlRequestData, final PMMLRuntime pmmlRuntime) {
+        String modelName = pmmlRequestData.getModelName();
+        final PMMLContext pmmlContext = new PMMLContextImpl(pmmlRequestData);
+        return pmmlRuntime.evaluate(modelName, pmmlContext);
+    }
+
+    private PMMLRuntime getPMMLRuntime(String pmmlFileName, String pmmlModelName, KieBase kieBase) {
+        return PMML_RUNTIME_FACTORY.getPMMLRuntimeFromFileNameModelNameAndKieBase(pmmlFileName, pmmlModelName, kieBase);
     }
 }

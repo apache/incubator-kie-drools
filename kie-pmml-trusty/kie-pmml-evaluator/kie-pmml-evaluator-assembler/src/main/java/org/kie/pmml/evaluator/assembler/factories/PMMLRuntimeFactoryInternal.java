@@ -57,8 +57,9 @@ public class PMMLRuntimeFactoryInternal {
         return getPMMLRuntime(pmmlFile, kbuilderImpl);
     }
 
-    public static PMMLRuntime getPMMLRuntime(String pmmlFile, KieBase kieBase) {
-        return getPMMLRuntime(kieBase);
+    public static PMMLRuntime getPMMLRuntime(KieBase kieBase) {
+        final KieRuntimeFactory kieRuntimeFactory = KieRuntimeFactory.of(kieBase);
+        return kieRuntimeFactory.get(PMMLRuntime.class);
     }
 
     private static PMMLRuntime getPMMLRuntime(File pmmlFile, KnowledgeBuilderImpl kbuilderImpl) {
@@ -66,11 +67,6 @@ public class PMMLRuntimeFactoryInternal {
         new PMMLAssemblerService().addResource(kbuilderImpl, fileSystemResource, ResourceType.PMML, null);
         KieBase kieBase = createKieBase( kbuilderImpl );
         return getPMMLRuntime(kieBase);
-    }
-
-    private static PMMLRuntime getPMMLRuntime(KieBase kieBase) {
-        final KieRuntimeFactory kieRuntimeFactory = KieRuntimeFactory.of(kieBase);
-        return kieRuntimeFactory.get(PMMLRuntime.class);
     }
 
     private static KieBase createKieBase( KnowledgeBuilderImpl kbuilderImpl ) {

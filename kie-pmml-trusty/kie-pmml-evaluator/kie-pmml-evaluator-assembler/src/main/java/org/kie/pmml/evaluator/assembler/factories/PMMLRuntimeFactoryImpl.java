@@ -80,7 +80,7 @@ public class PMMLRuntimeFactoryImpl implements PMMLRuntimeFactory {
         KnowledgeBaseImpl kieBaseNew = (KnowledgeBaseImpl) KnowledgeBaseFactory.newKnowledgeBase(ruleBaseConfiguration);
         KiePackage kiePackage = getKiePackage(pmmlModelName, kieBase);
         kieBaseNew.addPackage(kiePackage);
-        return PMMLRuntimeFactoryInternal.getPMMLRuntime(pmmlFileName, kieBaseNew);
+        return PMMLRuntimeFactoryInternal.getPMMLRuntime(kieBaseNew);
     }
 
     private KiePackage getKiePackage(String pmmlModelName, KieBase kieBase) {
