@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.kie</groupId>
     <artifactId>kie-archetypes</artifactId>
-    <version>7.48.0-SNAPSHOT</version>
+    <version>7.49.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>kie-drools-archetype</artifactId>
