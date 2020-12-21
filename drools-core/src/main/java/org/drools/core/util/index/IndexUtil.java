@@ -19,19 +19,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.core.RuleBaseConfiguration;
+import org.drools.core.base.ValueType;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.NodeTypeEnums;
 import org.drools.core.reteoo.TupleMemory;
 import org.drools.core.rule.ContextEntry;
+import org.drools.core.rule.Declaration;
 import org.drools.core.rule.IndexableConstraint;
 import org.drools.core.spi.BetaNodeFieldConstraint;
 import org.drools.core.spi.Constraint;
+import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.util.AbstractHashTable.FieldIndex;
 import org.kie.internal.conf.IndexPrecedenceOption;
 
 public class IndexUtil {
 
-    private static final boolean USE_COMPARISON_INDEX = true;
+    // package private for test convenience
+    static boolean USE_COMPARISON_INDEX = true;
+    static boolean USE_COMPARISON_INDEX_JOIN = true;
 
     public static boolean compositeAllowed(BetaNodeFieldConstraint[] constraints, short betaNodeType) {
         // 1) If there is 1 or more unification restrictions it cannot be composite
@@ -64,8 +69,45 @@ public class IndexUtil {
         return constraint instanceof IndexableConstraint && ((IndexableConstraint)constraint).isIndexable(nodeType);
     }
 
-    private static boolean canHaveRangeIndex(short nodeType) {
-        return USE_COMPARISON_INDEX && ( nodeType == NodeTypeEnums.NotNode || nodeType == NodeTypeEnums.ExistsNode );
+    private static boolean canHaveRangeIndex(short nodeType, IndexableConstraint constraint) {
+        return canHaveRangeIndexForNodeType(nodeType) && areRangeIndexCompatibleOperands(constraint);
+    }
+
+    private static boolean canHaveRangeIndexForNodeType(short nodeType) {
+        if (USE_COMPARISON_INDEX_JOIN) {
+            return USE_COMPARISON_INDEX && (nodeType == NodeTypeEnums.NotNode || nodeType == NodeTypeEnums.ExistsNode || nodeType == NodeTypeEnums.JoinNode);
+        } else {
+            return USE_COMPARISON_INDEX && (nodeType == NodeTypeEnums.NotNode || nodeType == NodeTypeEnums.ExistsNode);
+        }
+    }
+
+    private static boolean areRangeIndexCompatibleOperands(IndexableConstraint constraint) {
+        InternalReadAccessor fieldExtractor = null;
+        Declaration indexingDeclaration = null;
+        try {
+            fieldExtractor = constraint.getFieldExtractor();
+            indexingDeclaration = constraint.getIndexingDeclaration();
+        } catch (UnsupportedOperationException uoe) {
+            return false;
+        }
+        if (fieldExtractor == null || indexingDeclaration == null) {
+            return false;
+        }
+
+        ValueType leftValueType = fieldExtractor.getValueType();
+        ValueType rightValueType = indexingDeclaration.getExtractor().getValueType();
+
+        if (leftValueType != null && rightValueType != null) {
+            if (leftValueType.isNumber() && rightValueType.isNumber()) {
+                return true; // Number vs Number
+            }
+            Class<?> leftClass = leftValueType.getClassType();
+            Class<?> rightClass = rightValueType.getClassType();
+            if (leftClass != null && rightClass != null && Comparable.class.isAssignableFrom(leftClass) && leftClass.equals(rightClass)) {
+                return true; // Same Comparable class
+            }
+        }
+        return false;
     }
 
     public static boolean isIndexableForNode(short nodeType, BetaNodeFieldConstraint constraint) {
@@ -74,7 +116,7 @@ public class IndexUtil {
         }
 
         ConstraintType constraintType = ((IndexableConstraint)constraint).getConstraintType();
-        return constraintType.isIndexableForNode(nodeType);
+        return constraintType.isIndexableForNode(nodeType, (IndexableConstraint)constraint);
     }
 
     public static boolean[] isIndexableForNode(IndexPrecedenceOption indexPrecedenceOption, short nodeType, int keyDepth, BetaNodeFieldConstraint[] constraints) {
@@ -93,7 +135,7 @@ public class IndexUtil {
             return indexable;
         }
 
-        if (!canHaveRangeIndex(nodeType)) {
+        if (!canHaveRangeIndexForNodeType(nodeType)) {
             return indexable;
         }
 
@@ -205,7 +247,7 @@ public class IndexUtil {
             return this.operator;
         }
 
-        public boolean isIndexableForNode(short nodeType) {
+        public boolean isIndexableForNode(short nodeType, IndexableConstraint constraint) {
             switch (this) {
                 case EQUAL:
                     return true;
@@ -213,7 +255,7 @@ public class IndexUtil {
                 case UNKNOWN:
                     return false;
                 default:
-                    return canHaveRangeIndex(nodeType);
+                    return canHaveRangeIndex(nodeType, constraint);
             }
         }
 
@@ -382,7 +424,7 @@ public class IndexUtil {
                         if (type == ConstraintType.EQUAL) {
                             constraintType = type;
                             return i;
-                        } else if (constraintType == ConstraintType.UNKNOWN && type.isIndexableForNode(nodeType)) {
+                        } else if (constraintType == ConstraintType.UNKNOWN && type.isIndexableForNode(nodeType, indexableConstraint)) {
                             constraintType = type;
                             indexedConstraintPos = i;
                         }
@@ -394,7 +436,7 @@ public class IndexUtil {
             private int determineTypeWithPatternOrder(short nodeType, BetaNodeFieldConstraint[] constraints) {
                 for (int i = 0; i < constraints.length; i++) {
                     ConstraintType type = ConstraintType.getType(constraints[i]);
-                    if ( type.isIndexableForNode(nodeType) ) {
+                    if ( type.isIndexableForNode(nodeType, (IndexableConstraint) constraints[i]) ) {
                         constraintType = type;
                         return i;
                     }

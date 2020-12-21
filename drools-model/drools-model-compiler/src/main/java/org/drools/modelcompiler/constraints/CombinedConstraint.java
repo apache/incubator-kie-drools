@@ -77,6 +77,11 @@ public class CombinedConstraint extends AbstractConstraint {
     }
 
     @Override
+    public Declaration getIndexingDeclaration() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public Interval getInterval() {
         throw new UnsupportedOperationException();
     }

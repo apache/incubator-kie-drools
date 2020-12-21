@@ -209,7 +209,7 @@ public class MVELConstraint extends MutableTypeConstraint implements IndexableCo
     }
 
     public boolean isIndexable(short nodeType) {
-        return getConstraintType().isIndexableForNode(nodeType);
+        return getConstraintType().isIndexableForNode(nodeType, this);
     }
 
     public IndexUtil.ConstraintType getConstraintType() {
@@ -383,6 +383,10 @@ public class MVELConstraint extends MutableTypeConstraint implements IndexableCo
 
     public InternalReadAccessor getFieldExtractor() {
         return extractor;
+    }
+
+    public Declaration getIndexingDeclaration() {
+        return indexingDeclaration;
     }
 
     public Declaration[] getRequiredDeclarations() {
