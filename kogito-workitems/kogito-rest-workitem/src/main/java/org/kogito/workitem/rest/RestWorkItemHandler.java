@@ -24,18 +24,14 @@ import java.util.Set;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
-import io.vertx.core.AsyncResult;
-import io.vertx.core.Handler;
-import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpMethod;
-import io.vertx.ext.web.client.HttpRequest;
-import io.vertx.ext.web.client.HttpResponse;
-import io.vertx.ext.web.client.WebClient;
+import io.vertx.mutiny.core.buffer.Buffer;
+import io.vertx.mutiny.ext.web.client.HttpRequest;
+import io.vertx.mutiny.ext.web.client.HttpResponse;
+import io.vertx.mutiny.ext.web.client.WebClient;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class RestWorkItemHandler implements WorkItemHandler {
 
@@ -49,8 +45,6 @@ public class RestWorkItemHandler implements WorkItemHandler {
     public static final String PASSWORD = "password";
     public static final String HOST = "host";
     public static final String PORT = "port";
-
-    private static final Logger logger = LoggerFactory.getLogger(RestWorkItemHandler.class);
 
     // package scoped to allow unit test
     static class RestUnaryOperator implements UnaryOperator<Object> {
@@ -96,28 +90,18 @@ public class RestWorkItemHandler implements WorkItemHandler {
         if (user != null && !user.trim().isEmpty() && password != null && !password.trim().isEmpty()) {
             request.basicAuthentication(user, password);
         }
-        // execute request
-        Handler<AsyncResult<HttpResponse<Buffer>>> handler = event -> {
-            if (event.failed()) {
-                logger.error("Rest invocation failed", event.cause());
-                manager.abortWorkItem(workItem.getId());
-            } else if (event.result().statusCode() >= 300) {
-                logger.error("Rest invocation returns invalid code {}", event.result().statusCode());
-                manager.abortWorkItem(workItem.getId());
-            } else {
-                manager.completeWorkItem(workItem.getId(), Collections.singletonMap(RESULT, resultHandler.apply(
-                        inputModel, event.result().bodyAsJsonObject())));
-            }
-        };
+        HttpResponse<Buffer> response;
         if (method == HttpMethod.POST || method == HttpMethod.PUT) {
             // if parameters is empty at this stage, assume post content is the whole input model
             // if not, build a map from parameters remaining
             Object body = parameters.isEmpty() ? inputModel : parameters.entrySet().stream().collect(Collectors.toMap(
                     Entry::getKey, e -> resolver.apply(e.getValue())));
-            request.sendJson(body, handler);
+            response = request.sendJsonAndAwait(body);
         } else {
-            request.send(handler);
+            response = request.sendAndAwait();
         }
+        manager.completeWorkItem(workItem.getId(), Collections.singletonMap(RESULT, resultHandler.apply(inputModel,
+                response.bodyAsJsonObject())));
     }
 
     @Override

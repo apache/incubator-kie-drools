@@ -75,8 +75,8 @@
     <version.taglist.plugin>2.4</version.taglist.plugin>
     <version.versions.plugin>2.1</version.versions.plugin>
     <version.jayway.jsonpath>2.4.0</version.jayway.jsonpath>
-    <version.vertx.web.client>3.9.4</version.vertx.web.client>
-
+    <version.io.smallrye.reactive.mutiny-vertx-web-client>1.2.1</version.io.smallrye.reactive.mutiny-vertx-web-client>
+    
     <!-- this version property is used in plugins but also in dependencies too -->
     <version.io.quarkus>1.10.3.Final</version.io.quarkus>
     <quarkus.logging.manager>org.jboss.logmanager.LogManager</quarkus.logging.manager>
@@ -386,13 +386,11 @@
         <artifactId>json-path-assert</artifactId>
         <version>${version.jayway.jsonpath}</version>
       </dependency>
-
       <dependency>
-        <groupId>io.vertx</groupId>
-        <artifactId>vertx-web-client</artifactId>
-        <version>${version.vertx.web.client}</version>
+        <groupId>io.smallrye.reactive</groupId>
+        <artifactId>smallrye-mutiny-vertx-web-client</artifactId>
+        <version>${version.io.smallrye.reactive.mutiny-vertx-web-client}</version>
       </dependency>
-
       <!-- http communication -->
       <dependency>
         <groupId>com.squareup.okhttp3</groupId>
