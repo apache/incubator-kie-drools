@@ -16,9 +16,9 @@
 
 package org.drools.core.common;
 
-import org.kie.api.runtime.ObjectFilter;
-
 import java.util.Iterator;
+
+import org.kie.api.runtime.ObjectFilter;
 
 public interface ObjectStore {
 
@@ -66,4 +66,11 @@ public interface ObjectStore {
 
     Iterator<InternalFactHandle> iterateNegFactHandles(ObjectFilter filter);
 
+    FactHandleClassStore getStoreForClass(Class<?> clazz);
+
+    boolean clearClassStore(Class<?> clazz);
+
+    default Iterator<InternalFactHandle> iterateFactHandles(Class<?> clazz) {
+        return getStoreForClass(clazz).iterator();
+    }
 }

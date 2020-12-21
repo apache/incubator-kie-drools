@@ -853,13 +853,7 @@ public class RuleNetworkEvaluator {
         for (RightTuple rightTuple = srcRightTuples.getUpdateFirst(); rightTuple != null; rightTuple = rightTuple.getStagedNext()) {
             if ( rightTuple.getMemory() != null ) {
                 rightTuple.setTempRightTupleMemory(rightTuple.getMemory());
-                rtm.remove(rightTuple);
-            }
-        }
-
-        for (RightTuple rightTuple = srcRightTuples.getUpdateFirst(); rightTuple != null; rightTuple = rightTuple.getStagedNext()) {
-            if ( rightTuple.getTempRightTupleMemory() != null ) {
-                rtm.add(rightTuple);
+                rtm.removeAdd(rightTuple);
                 doUpdatesReorderChildLeftTuple( rightTuple );
             }
         }

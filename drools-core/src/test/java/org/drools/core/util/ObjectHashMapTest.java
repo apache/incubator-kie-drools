@@ -16,7 +16,11 @@
 
 package org.drools.core.util;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.drools.core.common.DefaultFactHandle;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.util.ObjectHashMap.ObjectEntry;
 import org.junit.Test;
 import org.kie.api.KieBase;
@@ -24,12 +28,11 @@ import org.kie.api.KieBaseConfiguration;
 import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
-import org.drools.core.impl.KnowledgeBaseFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.fail;
 
 public class ObjectHashMapTest {
 
@@ -83,7 +86,7 @@ public class ObjectHashMapTest {
         KieBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
         KieSession ksession = kbase.newKieSession();
         
-        int length = 1 * 300 * 1000 ;
+        int length = 1 * 300;
         
         List<FactHandle> handles = new ArrayList<FactHandle>(1000);
         List<String> objects = new ArrayList<String>(1000);
@@ -102,7 +105,7 @@ public class ObjectHashMapTest {
             
             // now check with disconnected facthandle
             handle = DefaultFactHandle.createFromExternalFormat(((DefaultFactHandle)handle).toExternalForm());
-            assertEquals( s, ksession.getObject( handle ) );            
+            assertEquals( s, ksession.getObject( handle ) );
         }
         
         for ( int i = 0; i < length; i++) { 

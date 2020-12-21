@@ -1875,7 +1875,7 @@ public class TraitTest extends CommonTraitTest {
         FactHandle personHandle = ksession.getFactHandles( new ClassObjectFilter( Person.class ) ).iterator().next();
         InternalFactHandle h = ((InternalFactHandle) personHandle);
         ObjectTypeConfigurationRegistry reg = h.getEntryPoint(( InternalWorkingMemory ) ksession).getObjectTypeConfigurationRegistry();
-        ObjectTypeConf conf = reg.getObjectTypeConf( h.getEntryPointId(), ((InternalFactHandle) personHandle).getObject() );
+        ObjectTypeConf conf = reg.getOrCreateObjectTypeConf( h.getEntryPointId(), ((InternalFactHandle) personHandle).getObject() );
         assertTrue( conf.isTMSEnabled() );
 
         ksession.dispose();

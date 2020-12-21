@@ -97,9 +97,10 @@ public class DefeasibilityTest {
             System.setProperty("drools.negatable", "off");
         }
 
-        InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
+        KieBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        conf.setOption( EqualityBehaviorOption.EQUALITY );
+        InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase(conf);
         kBase.addPackages( kBuilder.getKnowledgePackages() );
-
 
         KieSessionConfiguration ksConf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         ((SessionConfiguration) ksConf).setBeliefSystemType( BeliefSystemType.DEFEASIBLE );
