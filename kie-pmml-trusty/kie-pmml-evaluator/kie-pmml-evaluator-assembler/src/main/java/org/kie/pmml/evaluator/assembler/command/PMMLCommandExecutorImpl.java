@@ -71,13 +71,22 @@ public class PMMLCommandExecutorImpl implements PMMLCommandExecutor {
         return PMML_RUNTIME_FACTORY.getPMMLRuntimeFromFileNameModelNameAndKieBase(pmmlFileName, pmmlModelName, kieBase);
     }
 
+    /**
+     * Return a <b>new</b> <code>PMMLRequestData</code> with the values of the original <code>PMMLRequestData</code> restored to their actual type.
+     *
+     * Needed because <code>JSONMarshallerPMMLParamInfo</code> convert all of them to <code>String</code>
+     *
+     * @see <a href="https://github.com/kiegroup/droolsjbpm-integration/blob/master/kie-server-parent/kie-server-api/src/main/java/org/kie/server/api/marshalling/json/JSONMarshallerPMMLParamInfo.java#L67">JSONMarshallerPMMLParamInfo.PMMLParamSerializer.serialize(ParameterInfo, JsonGenerator, SerializerProvider)</a>
+     * @param source
+     * @return
+     */
     @SuppressWarnings("rawtype")
-    private PMMLRequestData getCleanedRequestData(PMMLRequestData toClean) {
+    private PMMLRequestData getCleanedRequestData(PMMLRequestData source) {
         final PMMLRequestData toReturn = new PMMLRequestData();
-        toReturn.setSource(toClean.getSource());
-        toReturn.setCorrelationId(toClean.getCorrelationId());
-        toReturn.setModelName(toClean.getModelName());
-        toClean.getRequestParams().forEach(parameterInfo -> {
+        toReturn.setSource(source.getSource());
+        toReturn.setCorrelationId(source.getCorrelationId());
+        toReturn.setModelName(source.getModelName());
+        source.getRequestParams().forEach(parameterInfo -> {
             Object value = ConverterTypeUtil.convert(parameterInfo.getType(), parameterInfo.getValue());
             ParameterInfo<?> toAdd = new ParameterInfo(parameterInfo.getCorrelationId(), parameterInfo.getName(),
                                                        parameterInfo.getType(), value);
