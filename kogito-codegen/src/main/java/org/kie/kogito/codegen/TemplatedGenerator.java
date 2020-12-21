@@ -22,13 +22,17 @@ import javax.lang.model.SourceVersion;
 
 import com.github.javaparser.ParseProblemException;
 import com.github.javaparser.ast.CompilationUnit;
-import org.kie.kogito.codegen.di.CDIDependencyInjectionAnnotator;
-import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
-import org.kie.kogito.codegen.di.SpringDependencyInjectionAnnotator;
+import org.kie.kogito.codegen.context.JavaKogitoBuildContext;
+import org.kie.kogito.codegen.context.KogitoBuildContext;
+import org.kie.kogito.codegen.context.QuarkusKogitoBuildContext;
+import org.kie.kogito.codegen.context.SpringBootKogitoBuildContext;
 
 import static com.github.javaparser.StaticJavaParser.parse;
 
-public class TemplatedGenerator {
+/**
+ * Utility class to handle multi platform template generation
+ */
+public final class TemplatedGenerator {
 
     private final String packageName;
     private final String sourceFilePath;
@@ -37,10 +41,11 @@ public class TemplatedGenerator {
     private final String resourceSpring;
     private final String resourceDefault;
 
-    protected DependencyInjectionAnnotator annotator;
     private final String targetTypeName;
+    private final KogitoBuildContext buildContext;
 
     public TemplatedGenerator(
+            KogitoBuildContext buildContext,
             String packageName,
             String targetTypeName,
             String resourceCdi,
@@ -55,6 +60,7 @@ public class TemplatedGenerator {
                             "Package name \"{0}\" is not valid. It should be a valid Java package name.", packageName));
         }
 
+        this.buildContext = buildContext;
         this.packageName = packageName;
         this.targetTypeName = targetTypeName;
         String targetCanonicalName = this.packageName + "." + this.targetTypeName;
@@ -65,11 +71,13 @@ public class TemplatedGenerator {
     }
 
     public TemplatedGenerator(
+            KogitoBuildContext buildContext,
             String packageName,
             String targetTypeName,
             String resourceCdi,
             String resourceSpring) {
-        this(packageName,
+        this(buildContext,
+             packageName,
              targetTypeName,
              resourceCdi,
              resourceSpring,
@@ -86,15 +94,6 @@ public class TemplatedGenerator {
 
     public String typeName() {
         return targetTypeName;
-    }
-
-    protected String packageName() {
-        return this.packageName;
-    }
-
-    public TemplatedGenerator withDependencyInjection(DependencyInjectionAnnotator annotator) {
-        this.annotator = annotator;
-        return this;
     }
 
     public Optional<CompilationUnit> compilationUnit() {
@@ -114,19 +113,26 @@ public class TemplatedGenerator {
         }
     }
 
+    public CompilationUnit compilationUnitOrThrow(String errorMessage) {
+        return compilationUnit().orElseThrow(() -> new InvalidTemplateException(
+                typeName(),
+                templatePath(),
+                errorMessage));
+    }
+
+    public CompilationUnit compilationUnitOrThrow() {
+        return compilationUnitOrThrow("Missing template");
+    }
+
     private String selectResource() {
-        if (annotator == null) {
-            if (resourceDefault == null) {
-                return null;
-            } else {
-                return resourceDefault;
-            }
-        } else if (annotator instanceof CDIDependencyInjectionAnnotator) {
+        if (buildContext == null || buildContext instanceof JavaKogitoBuildContext) {
+            return resourceDefault;
+        } else if (buildContext instanceof QuarkusKogitoBuildContext) {
             return resourceCdi;
-        } else if (annotator instanceof SpringDependencyInjectionAnnotator) {
+        } else if (buildContext instanceof SpringBootKogitoBuildContext) {
             return resourceSpring;
         } else {
-            throw new IllegalArgumentException("Unknown annotator " + annotator);
+            throw new IllegalArgumentException("Unknown buildContext " + buildContext);
         }
     }
 }

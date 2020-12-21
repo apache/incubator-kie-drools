@@ -50,7 +50,8 @@ class PredictionContainerGeneratorTest {
 
     @BeforeAll
     public static void setup() {
-        predictionContainerGenerator = new PredictionModelsGenerator(ApplicationGenerator.DEFAULT_PACKAGE_NAME,
+        predictionContainerGenerator = new PredictionModelsGenerator(
+                null, ApplicationGenerator.DEFAULT_PACKAGE_NAME,
                 APP_CANONICAL_NAME,
                 PMML_RESOURCES);
         assertNotNull(predictionContainerGenerator);

@@ -28,7 +28,7 @@ import org.kie.kogito.codegen.AbstractApplicationSection;
 import org.kie.kogito.codegen.AddonsConfig;
 import org.kie.kogito.codegen.InvalidTemplateException;
 import org.kie.kogito.codegen.TemplatedGenerator;
-import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
+import org.kie.kogito.codegen.context.KogitoBuildContext;
 import org.kie.kogito.codegen.io.CollectedResource;
 import org.kie.kogito.dmn.DmnExecutionIdSupplier;
 
@@ -47,11 +47,12 @@ public class DecisionContainerGenerator extends AbstractApplicationSection {
     private AddonsConfig addonsConfig = AddonsConfig.DEFAULT;
     private final TemplatedGenerator templatedGenerator;
 
-    public DecisionContainerGenerator(String packageName, String applicationCanonicalName, List<CollectedResource> cResources) {
-        super(SECTION_CLASS_NAME);
+    public DecisionContainerGenerator(KogitoBuildContext buildContext, String packageName, String applicationCanonicalName, List<CollectedResource> cResources) {
+        super(buildContext, SECTION_CLASS_NAME);
         this.applicationCanonicalName = applicationCanonicalName;
         this.resources = cResources;
         this.templatedGenerator = new TemplatedGenerator(
+                buildContext,
                 packageName,
                 SECTION_CLASS_NAME,
                 RESOURCE_CDI,
@@ -64,18 +65,11 @@ public class DecisionContainerGenerator extends AbstractApplicationSection {
         return this;
     }
 
-    public DecisionContainerGenerator withDependencyInjection(DependencyInjectionAnnotator annotator) {
-        this.templatedGenerator.withDependencyInjection(annotator);
-        return this;
-    }
-
     @Override
     public CompilationUnit compilationUnit() {
-        CompilationUnit compilationUnit = templatedGenerator.compilationUnit()
-                .orElseThrow(() -> new InvalidTemplateException(
-                        SECTION_CLASS_NAME,
-                        templatedGenerator.templatePath(),
-                        "Invalid Template: No CompilationUnit"));
+        CompilationUnit compilationUnit = templatedGenerator.compilationUnitOrThrow("Invalid Template: No CompilationUnit");
+
+
         ClassOrInterfaceType applicationClass = StaticJavaParser.parseClassOrInterfaceType(applicationCanonicalName);
 
         final InitializerDeclaration staticDeclaration = compilationUnit

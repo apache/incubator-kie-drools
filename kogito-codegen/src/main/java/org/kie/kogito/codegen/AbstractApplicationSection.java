@@ -15,6 +15,8 @@
 
 package org.kie.kogito.codegen;
 
+import org.kie.kogito.codegen.context.KogitoBuildContext;
+
 /**
  * Base implementation for an {@link ApplicationSection}.
  * <p>
@@ -24,10 +26,12 @@ package org.kie.kogito.codegen;
  */
 public abstract class AbstractApplicationSection implements ApplicationSection {
 
+    protected final KogitoBuildContext buildContext;
     private final String sectionClassName;
 
-    public AbstractApplicationSection(String sectionClassName) {
+    public AbstractApplicationSection(KogitoBuildContext buildContext, String sectionClassName) {
         this.sectionClassName = sectionClassName;
+        this.buildContext = buildContext;
     }
 
     @Override

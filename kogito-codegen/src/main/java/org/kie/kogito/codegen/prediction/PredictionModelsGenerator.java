@@ -23,7 +23,7 @@ import org.kie.kogito.codegen.AbstractApplicationSection;
 import org.kie.kogito.codegen.AddonsConfig;
 import org.kie.kogito.codegen.InvalidTemplateException;
 import org.kie.kogito.codegen.TemplatedGenerator;
-import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
+import org.kie.kogito.codegen.context.KogitoBuildContext;
 
 import java.util.List;
 
@@ -39,12 +39,13 @@ public class PredictionModelsGenerator extends AbstractApplicationSection {
     protected AddonsConfig addonsConfig = AddonsConfig.DEFAULT;
     protected final TemplatedGenerator templatedGenerator;
 
-    public PredictionModelsGenerator(String packageName, String applicationCanonicalName, List<PMMLResource> resources) {
-        super(SECTION_CLASS_NAME);
+    public PredictionModelsGenerator(KogitoBuildContext buildContext, String packageName, String applicationCanonicalName, List<PMMLResource> resources) {
+        super(buildContext, SECTION_CLASS_NAME);
         this.applicationCanonicalName = applicationCanonicalName;
         this.resources = resources;
 
         this.templatedGenerator = new TemplatedGenerator(
+                buildContext,
                 packageName,
                 SECTION_CLASS_NAME,
                 RESOURCE_CDI,
@@ -57,18 +58,9 @@ public class PredictionModelsGenerator extends AbstractApplicationSection {
         return this;
     }
 
-    public PredictionModelsGenerator withDependencyInjection(DependencyInjectionAnnotator annotator) {
-        this.templatedGenerator.withDependencyInjection(annotator);
-        return this;
-    }
-
     @Override
     public CompilationUnit compilationUnit() {
-        CompilationUnit compilationUnit = templatedGenerator.compilationUnit()
-                .orElseThrow(() -> new InvalidTemplateException(
-                        SECTION_CLASS_NAME,
-                        templatedGenerator.templatePath(),
-                        "Invalid Template: No CompilationUnit"));
+        CompilationUnit compilationUnit = templatedGenerator.compilationUnitOrThrow("Invalid Template: No CompilationUnit");
         populateStaticKieRuntimeFactoryFunctionInit(compilationUnit);
         return compilationUnit;
     }

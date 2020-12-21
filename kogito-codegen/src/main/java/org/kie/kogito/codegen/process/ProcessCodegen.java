@@ -47,7 +47,7 @@ import org.kie.api.definition.process.WorkflowProcess;
 import org.kie.api.io.Resource;
 import org.kie.kogito.codegen.AbstractGenerator;
 import org.kie.kogito.codegen.ApplicationSection;
-import org.kie.kogito.codegen.ConfigGenerator;
+import org.kie.kogito.codegen.ApplicationConfigGenerator;
 import org.kie.kogito.codegen.GeneratedFile;
 import org.kie.kogito.codegen.GeneratedFile.Type;
 import org.kie.kogito.codegen.ResourceGeneratorFactory;
@@ -267,13 +267,13 @@ public class ProcessCodegen extends AbstractGenerator {
                     processIdToModelGenerator.get(execModelGen.getProcessId());
 
             ProcessGenerator p = new ProcessGenerator(
+                    context.getBuildContext(),
                     workFlowProcess,
                     execModelGen,
                     classPrefix,
                     modelClassGenerator.className(),
                     applicationCanonicalName()
             )
-                    .withDependencyInjection(annotator)
                     .withAddons(addonsConfig);
 
             ProcessInstanceGenerator pi = new ProcessInstanceGenerator(
@@ -290,7 +290,6 @@ public class ProcessCodegen extends AbstractGenerator {
                                             execModelGen.className(),
                                             applicationCanonicalName())
                     .map(r -> r
-                            .withDependencyInjection(annotator)
                             .withUserTasks(processIdToUserTaskModel.get(workFlowProcess.getId()))
                             .withSignals(metaData.getSignals())
                             .withTriggers(metaData.isStartable(), metaData.isDynamic()))
@@ -304,23 +303,21 @@ public class ProcessCodegen extends AbstractGenerator {
                     if (trigger.getType().equals(TriggerMetaData.TriggerType.ConsumeMessage)) {
 
                         MessageDataEventGenerator msgDataEventGenerator = new MessageDataEventGenerator(workFlowProcess,
-                                                                                                        trigger)
-                                .withDependencyInjection(annotator);
+                                                                                                        trigger);
                         mdegs.add(msgDataEventGenerator);
 
                         megs.add(new MessageConsumerGenerator(
+                                context.getBuildContext(),
                                 workFlowProcess,
                                 modelClassGenerator.className(),
                                 execModelGen.className(),
                                 applicationCanonicalName(),
                                 msgDataEventGenerator.className(),
-                                trigger)
-                                         .withDependencyInjection(annotator));
+                                trigger));
                     } else if (trigger.getType().equals(TriggerMetaData.TriggerType.ProduceMessage)) {
 
                         MessageDataEventGenerator msgDataEventGenerator = new MessageDataEventGenerator(workFlowProcess,
-                                                                                                        trigger)
-                                .withDependencyInjection(annotator);
+                                                                                                        trigger);
                         mdegs.add(msgDataEventGenerator);
 
                         // this is not cool, we should have a way to process addons
@@ -328,20 +325,20 @@ public class ProcessCodegen extends AbstractGenerator {
                         // see: https://issues.redhat.com/browse/KOGITO-1767
                         if (addonsConfig.useKnativeEventing()) {
                             mpgs.add(new CloudEventsMessageProducerGenerator(
+                                    context.getBuildContext(),
                                     workFlowProcess,
                                     modelClassGenerator.className(),
                                     execModelGen.className(),
                                     msgDataEventGenerator.className(),
-                                    trigger)
-                                             .withDependencyInjection(annotator));
+                                    trigger));
                         } else {
                             mpgs.add(new MessageProducerGenerator(
+                                    context.getBuildContext(),
                                     workFlowProcess,
                                     modelClassGenerator.className(),
                                     execModelGen.className(),
                                     msgDataEventGenerator.className(),
-                                    trigger)
-                                             .withDependencyInjection(annotator));
+                                    trigger));
                         }
                     }
                 }
@@ -414,12 +411,12 @@ public class ProcessCodegen extends AbstractGenerator {
         if (this.addonsConfig.useKnativeEventing()) {
             LOGGER.info("Knative Eventing addon enabled, generating CloudEvent HTTP listener");
             final CloudEventsResourceGenerator ceGenerator =
-                    new CloudEventsResourceGenerator(packageName, processExecutableModelGenerators, annotator);
+                    new CloudEventsResourceGenerator(context.getBuildContext(), packageName, processExecutableModelGenerators);
             storeFile(Type.REST, ceGenerator.generatedFilePath(), ceGenerator.generate());
         }
 
         final TopicsInformationResourceGenerator topicsGenerator =
-                new TopicsInformationResourceGenerator(packageName, processExecutableModelGenerators, annotator, addonsConfig);
+                new TopicsInformationResourceGenerator(context.getBuildContext(), packageName, processExecutableModelGenerators, addonsConfig);
         storeFile(Type.REST, topicsGenerator.generatedFilePath(), topicsGenerator.generate());
 
 
@@ -438,9 +435,9 @@ public class ProcessCodegen extends AbstractGenerator {
     }
 
     @Override
-    public void updateConfig(ConfigGenerator cfg) {
+    public void updateConfig(ApplicationConfigGenerator cfg) {
         if (!processes.isEmpty()) {
-            cfg.withProcessConfig(new ProcessConfigGenerator(packageName));
+            cfg.withProcessConfig(new ProcessConfigGenerator(context().getBuildContext(), packageName));
         }
     }
 
@@ -458,8 +455,7 @@ public class ProcessCodegen extends AbstractGenerator {
 
     @Override
     public ApplicationSection section() {
-        ProcessContainerGenerator moduleGenerator = new ProcessContainerGenerator(packageName);
-        moduleGenerator.withDependencyInjection(annotator);
+        ProcessContainerGenerator moduleGenerator = new ProcessContainerGenerator(context.getBuildContext(), packageName);
         processGenerators.forEach(moduleGenerator::addProcess);
         return moduleGenerator;
     }

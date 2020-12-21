@@ -19,10 +19,10 @@ package org.kie.kogito.codegen.tests.spring;
 import org.junit.jupiter.api.Disabled;
 import org.kie.kogito.codegen.tests.EmbeddedSubProcessTest;
 
-@Disabled
+@Disabled("KOGITO-4000")
 public class EmbeddedSubProcessSpringTest extends EmbeddedSubProcessTest {
 
     public EmbeddedSubProcessSpringTest() {
-        withSpringContext(true);
+        withSpringContext();
     }
 }

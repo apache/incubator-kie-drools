@@ -9,8 +9,7 @@ configure its global behavior.
 
     ```java
     ApplicationGenerator appGen =
-            new ApplicationGenerator(appPackageName, targetDirectory)
-                    .withDependencyInjection(...)
+            new ApplicationGenerator(context, appPackageName, targetDirectory)
                     .withAddons(...);
     ```
 
@@ -22,11 +21,11 @@ configure its global behavior.
 - Each `Generator` may come with its own specific configuration
 
     ```java
-    appGen.withGenerator(RuleCodegen.ofPath(ruleSourceDirectory))
+    appGen.setupGenerator(RuleCodegen.ofPath(ruleSourceDirectory))
             .withKModule(getKModuleModel())
             .withClassLoader(...);
     
-    appGen.withGenerator(ProcessCodegen.ofPath(processSourceDirectory))                    
+    appGen.setupGenerator(ProcessCodegen.ofPath(processSourceDirectory))                    
             .withAddons(...);
     ```
 

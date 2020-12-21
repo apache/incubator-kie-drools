@@ -20,9 +20,8 @@ import java.util.List;
 
 import com.github.javaparser.ast.CompilationUnit;
 import org.kie.kogito.codegen.AbstractApplicationSection;
-import org.kie.kogito.codegen.InvalidTemplateException;
 import org.kie.kogito.codegen.TemplatedGenerator;
-import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
+import org.kie.kogito.codegen.context.KogitoBuildContext;
 
 import com.github.javaparser.ast.body.BodyDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
@@ -44,13 +43,13 @@ public class RuleUnitContainerGenerator extends AbstractApplicationSection {
 
     private final List<RuleUnitGenerator> ruleUnits;
     private final TemplatedGenerator templatedGenerator;
-    private DependencyInjectionAnnotator annotator;
     private List<BodyDeclaration<?>> factoryMethods = new ArrayList<>();
 
-    public RuleUnitContainerGenerator(String packageName) {
-        super(SECTION_CLASS_NAME);
+    public RuleUnitContainerGenerator(KogitoBuildContext buildContext, String packageName) {
+        super(buildContext, SECTION_CLASS_NAME);
         this.ruleUnits = new ArrayList<>();
         this.templatedGenerator = new TemplatedGenerator(
+                buildContext,
                 packageName,
                 SECTION_CLASS_NAME,
                 RESOURCE_CDI,
@@ -86,28 +85,14 @@ public class RuleUnitContainerGenerator extends AbstractApplicationSection {
 
     @Override
     public CompilationUnit compilationUnit() {
-        CompilationUnit compilationUnit = templatedGenerator.compilationUnit()
-                .orElseThrow(() -> new InvalidTemplateException(
-                        SECTION_CLASS_NAME,
-                        templatedGenerator.templatePath(),
-                        "No CompilationUnit"));
+        CompilationUnit compilationUnit = templatedGenerator.compilationUnitOrThrow("No CompilationUnit");
 
-        if (annotator == null) {
+        if (!buildContext.hasDI()) {
             // only in a non DI context
             compilationUnit.findFirst(MethodDeclaration.class, m -> m.getNameAsString().equals("create"))
                     .ifPresent(m -> m.setBody(factoryByIdBody())); // ignore if missing
         }
 
         return compilationUnit;
-    }
-
-    public RuleUnitContainerGenerator withDependencyInjection(DependencyInjectionAnnotator annotator) {
-        this.annotator = annotator;
-        this.templatedGenerator.withDependencyInjection(annotator);
-        return this;
-    }
-
-    List<RuleUnitGenerator> getRuleUnits() {
-        return ruleUnits;
     }
 }

@@ -15,17 +15,16 @@
 
 package org.kie.kogito.codegen.rules.config;
 
-import org.kie.kogito.codegen.TemplatedGenerator;
+import org.kie.kogito.codegen.AbstractConfigGenerator;
+import org.kie.kogito.codegen.context.KogitoBuildContext;
 
-public class RuleConfigGenerator extends TemplatedGenerator {
+public class RuleConfigGenerator extends AbstractConfigGenerator {
 
-    private static final String RESOURCE_CDI = "/class-templates/config/CdiRuleConfigTemplate.java";
-    private static final String RESOURCE_SPRING = "/class-templates/config/SpringRuleConfigTemplate.java";
-
-    public RuleConfigGenerator(String packageName) {
-        super(packageName,
-              "RuleConfig",
-              RESOURCE_CDI,
-              RESOURCE_SPRING);
+    public RuleConfigGenerator(KogitoBuildContext buildContext, String packageName) {
+        super(buildContext,
+                packageName,
+                "RuleConfig",
+                "/class-templates/config/CdiRuleConfigTemplate.java",
+                "/class-templates/config/SpringRuleConfigTemplate.java");
     }
 }

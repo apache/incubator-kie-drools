@@ -26,8 +26,9 @@ import org.jbpm.compiler.canonical.TriggerMetaData;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.codegen.AddonsConfig;
 import org.kie.kogito.codegen.ApplicationGenerator;
-import org.kie.kogito.codegen.di.CDIDependencyInjectionAnnotator;
-import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
+import org.kie.kogito.codegen.context.JavaKogitoBuildContext;
+import org.kie.kogito.codegen.context.KogitoBuildContext;
+import org.kie.kogito.codegen.context.QuarkusKogitoBuildContext;
 import org.kie.kogito.codegen.process.ProcessGenerationUtils;
 import org.kie.kogito.event.EventKind;
 
@@ -103,15 +104,15 @@ class TopicsInformationResourceGeneratorTest {
     }
 
     private ClassOrInterfaceDeclaration generateAndParseClass(String bpmnFile, int expectedTriggers, boolean withInjection) {
-        DependencyInjectionAnnotator annotator = null;
+        KogitoBuildContext buildContext = new JavaKogitoBuildContext();
         if (withInjection) {
-            annotator = new CDIDependencyInjectionAnnotator();
+            buildContext = new QuarkusKogitoBuildContext(s -> true);
         }
         final TopicsInformationResourceGenerator generator =
                 new TopicsInformationResourceGenerator(
+                        buildContext,
                         ApplicationGenerator.DEFAULT_PACKAGE_NAME,
                         ProcessGenerationUtils.execModelFromProcessFile(bpmnFile),
-                        annotator,
                         AddonsConfig.DEFAULT.withCloudEvents(true));
         if (expectedTriggers > 0) {
             assertThat(generator.getTriggers()).isNotEmpty();

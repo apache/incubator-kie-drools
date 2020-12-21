@@ -30,11 +30,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.kie.kogito.codegen.context.JavaKogitoBuildContext;
 import org.kie.memorycompiler.CompilationResult;
 import org.kie.memorycompiler.JavaCompiler;
 import org.kie.memorycompiler.JavaCompilerFactory;
@@ -77,6 +77,8 @@ public class AbstractCodegenTest {
     private static final String TEST_RESOURCES = "src/test/resources";
 
     private static final Map<TYPE, Function<List<String>, Generator>> generatorTypeMap = new HashMap<>();
+
+    private KogitoBuildContext buildContext = new JavaKogitoBuildContext(this.getClass().getClassLoader());
 
     private static final String DUMMY_PROCESS_RUNTIME =
             "package org.drools.project.model;\n" +
@@ -143,10 +145,20 @@ public class AbstractCodegenTest {
                 .collect(Collectors.toList());
     }
 
-    private boolean withSpringContext;
 
-    public void withSpringContext(boolean withSpringContext){
-        this.withSpringContext = withSpringContext;
+    public void withSpringContext() {
+        this.buildContext = new SpringBootKogitoBuildContext(className -> true);
+        throw new UnsupportedOperationException("To be fixed KOGITO-4000");
+    }
+
+    public void withQuarkusContext() {
+        this.buildContext = new QuarkusKogitoBuildContext(className -> true);
+        throw new UnsupportedOperationException("To be fixed KOGITO-4000");
+    }
+
+    public void withJavaContext() {
+        this.buildContext = new JavaKogitoBuildContext(className -> true);
+        throw new UnsupportedOperationException("To be fixed KOGITO-4000");
     }
 
     protected Application generateCodeProcessesOnly(String... processes) throws Exception {
@@ -174,16 +186,10 @@ public class AbstractCodegenTest {
     protected Application generateCode(Map<TYPE, List<String>> resourcesTypeMap, String packageName) throws Exception {
         GeneratorContext context = GeneratorContext.ofResourcePath(new File(TEST_RESOURCES));
 
-        //Testing based on Quarkus as Default
-        context.withBuildContext(Optional.ofNullable(withSpringContext)
-                                         .filter(Boolean.TRUE::equals)
-                                         .<KogitoBuildContext>map(t -> new SpringBootKogitoBuildContext((className -> true)))
-                                         .orElse(new QuarkusKogitoBuildContext((className -> true))));
+        context.withBuildContext(buildContext);
 
         ApplicationGenerator appGen =
-                new ApplicationGenerator(packageName, new File("target/codegen-tests"))
-                        .withGeneratorContext(context)
-                        .withDependencyInjection(null);
+                new ApplicationGenerator(context, packageName, new File("target/codegen-tests"));
 
         // Hack just to avoid test breaking
         Set<TYPE> generatedTypes = new HashSet<>();
@@ -195,7 +201,7 @@ public class AbstractCodegenTest {
         }
         // Hack just to avoid test breaking
         if (generatedTypes.contains(TYPE.DECISION) && !generatedTypes.contains(TYPE.PREDICTION)) {
-            appGen.setupGenerator(generatorTypeMap.get(TYPE.PREDICTION).apply(Collections.EMPTY_LIST));
+            appGen.setupGenerator(generatorTypeMap.get(TYPE.PREDICTION).apply(Collections.emptyList()));
         }
 
         Collection<GeneratedFile> generatedFiles = appGen.generate();

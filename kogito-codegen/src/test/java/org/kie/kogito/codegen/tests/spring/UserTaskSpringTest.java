@@ -23,11 +23,11 @@ import org.junit.jupiter.api.Test;
 import org.kie.kogito.codegen.tests.UserTaskTest;
 import org.springframework.web.bind.annotation.PostMapping;
 
-@Disabled
+@Disabled("KOGITO-4000")
 public class UserTaskSpringTest extends UserTaskTest {
 
     public UserTaskSpringTest() {
-        withSpringContext(true);
+        withSpringContext();
     }
 
     private class Dummy {

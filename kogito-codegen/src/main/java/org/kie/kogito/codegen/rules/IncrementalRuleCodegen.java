@@ -55,10 +55,11 @@ import org.kie.internal.builder.DecisionTableConfiguration;
 import org.kie.internal.ruleunit.RuleUnitDescription;
 import org.kie.kogito.codegen.AbstractGenerator;
 import org.kie.kogito.codegen.ApplicationSection;
-import org.kie.kogito.codegen.ConfigGenerator;
+import org.kie.kogito.codegen.ApplicationConfigGenerator;
 import org.kie.kogito.codegen.DashboardGeneratedFileUtils;
 import org.kie.kogito.codegen.GeneratorContext;
 import org.kie.kogito.codegen.KogitoPackageSources;
+import org.kie.kogito.codegen.context.KogitoBuildContext;
 import org.kie.kogito.codegen.io.CollectedResource;
 import org.kie.kogito.codegen.rules.config.NamedRuleUnitConfig;
 import org.kie.kogito.codegen.rules.config.RuleConfigGenerator;
@@ -83,11 +84,11 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
     private static final Logger LOGGER = LoggerFactory.getLogger(IncrementalRuleCodegen.class);
 
     public static IncrementalRuleCodegen ofCollectedResources(Collection<CollectedResource> resources) {
-        List<Resource> dmnResources = resources.stream()
+        List<Resource> generatedRules = resources.stream()
                 .map(CollectedResource::resource)
                 .filter(r -> r.getResourceType() == ResourceType.DRL || r.getResourceType() == ResourceType.DTABLE || r.getResourceType() == ResourceType.PROPERTIES)
                 .collect(toList());
-        return ofResources(dmnResources);
+        return ofResources(generatedRules);
     }
 
     public static IncrementalRuleCodegen ofJavaResources(Collection<CollectedResource> resources) {
@@ -141,8 +142,7 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
 
     @Override
     public ApplicationSection section() {
-        RuleUnitContainerGenerator moduleGenerator = new RuleUnitContainerGenerator(packageName);
-        moduleGenerator.withDependencyInjection(annotator);
+        RuleUnitContainerGenerator moduleGenerator = new RuleUnitContainerGenerator(context.getBuildContext(), packageName);
         ruleUnitGenerators.forEach(moduleGenerator::addRuleUnit);
         return moduleGenerator;
     }
@@ -196,7 +196,7 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
         if (hasRuleUnits) {
             generateRuleUnits( errors, generatedFiles );
         } else {
-            if (annotator != null && !hotReloadMode) {
+            if (context.getBuildContext().hasDI() && !hotReloadMode) {
                 generateSessionUnits( generatedFiles );
             }
             generateProject( dummyReleaseId, modelsByUnit, generatedFiles );
@@ -253,8 +253,7 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
                 hasRuleUnits = true;
                 for (RuleUnitDescription ruleUnit : ruleUnits) {
                     String canonicalName = ruleUnit.getCanonicalName();
-                    RuleUnitGenerator ruSource = new RuleUnitGenerator(ruleUnit, pkgSources.getRulesFileName())
-                            .withDependencyInjection(annotator)
+                    RuleUnitGenerator ruSource = new RuleUnitGenerator(ruleUnit, pkgSources.getRulesFileName(), context.getBuildContext())
                             .withQueries(pkgSources.getQueriesInRuleUnit(canonicalName))
                             .withAddons(addonsConfig)
                             .mergeConfig(configs.get(canonicalName));
@@ -283,8 +282,9 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
                 modelSourceClass.generate()));
 
         ProjectSourceClass projectSourceClass = new ProjectSourceClass(modelSourceClass.getModelMethod());
-        if (annotator != null) {
-            projectSourceClass.withDependencyInjection("@" + annotator.applicationComponentType());
+        KogitoBuildContext buildContext = context.getBuildContext();
+        if (buildContext.hasDI()) {
+            projectSourceClass.withDependencyInjection("@" + buildContext.getDependencyInjectionAnnotator().applicationComponentType());
         }
 
         generatedFiles.add(new org.kie.kogito.codegen.GeneratedFile(
@@ -296,9 +296,10 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
     private void generateRuleUnits( List<DroolsError> errors, List<org.kie.kogito.codegen.GeneratedFile> generatedFiles ) {
         RuleUnitHelper ruleUnitHelper = new RuleUnitHelper();
 
-        if (annotator != null) {
+        if (context.getBuildContext().hasDI()) {
             generatedFiles.add( new org.kie.kogito.codegen.GeneratedFile( org.kie.kogito.codegen.GeneratedFile.Type.JSON_MAPPER,
-                    packageName.replace('.', '/') + "/KogitoObjectMapper.java", annotator.objectMapperInjectorSource(packageName) ) );
+                    packageName.replace('.', '/') + "/KogitoObjectMapper.java",
+                    context.getBuildContext().getDependencyInjectionAnnotator().objectMapperInjectorSource(packageName) ) );
         }
 
         for (RuleUnitGenerator ruleUnit : ruleUnitGenerators) {
@@ -325,7 +326,7 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
             return Collections.emptyList();
         }
 
-        if (annotator == null) {
+        if (!context.getBuildContext().hasDI()) {
             generatedFiles.add( new RuleUnitDTOSourceClass( ruleUnit.getRuleUnitDescription(), ruleUnitHelper ).generateFile( org.kie.kogito.codegen.GeneratedFile.Type.DTO) );
         }
 
@@ -365,10 +366,12 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
             for (String sessionName : kBaseModel.getKieSessionModels().keySet()) {
                 CompilationUnit cu = parse( getClass().getResourceAsStream( "/class-templates/SessionRuleUnitTemplate.java" ) );
                 ClassOrInterfaceDeclaration template = cu.findFirst( ClassOrInterfaceDeclaration.class ).get();
-                annotator.withNamedSingletonComponent(template, "$SessionName$");
+                context.getBuildContext().getDependencyInjectionAnnotator().withNamedSingletonComponent(template, "$SessionName$");
                 template.setName( "SessionRuleUnit_" + sessionName );
 
-                template.findAll( FieldDeclaration.class).stream().filter( fd -> fd.getVariable(0).getNameAsString().equals("runtimeBuilder")).forEach( fd -> annotator.withInjection(fd));
+                template.findAll( FieldDeclaration.class).stream()
+                        .filter( fd -> fd.getVariable(0).getNameAsString().equals("runtimeBuilder"))
+                        .forEach( fd -> context.getBuildContext().getDependencyInjectionAnnotator().withInjection(fd));
 
                 template.findAll( StringLiteralExpr.class ).forEach( s -> s.setString( s.getValue().replace( "$SessionName$", sessionName ) ) );
                 generatedFiles.add(new org.kie.kogito.codegen.GeneratedFile(
@@ -416,8 +419,8 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
     }
 
     @Override
-    public void updateConfig(ConfigGenerator cfg) {
-        cfg.withRuleConfig(new RuleConfigGenerator(packageName));
+    public void updateConfig(ApplicationConfigGenerator cfg) {
+        cfg.withRuleConfig(new RuleConfigGenerator(context().getBuildContext(), packageName));
     }
 
     public IncrementalRuleCodegen withKModule(KieModuleModel model) {

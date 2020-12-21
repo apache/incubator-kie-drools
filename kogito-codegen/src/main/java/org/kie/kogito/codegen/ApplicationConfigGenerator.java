@@ -15,9 +15,9 @@
 
 package org.kie.kogito.codegen;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Optional;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
@@ -26,33 +26,86 @@ import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import org.kie.kogito.Addons;
+import org.kie.kogito.codegen.context.KogitoBuildContext;
+import org.kie.kogito.codegen.decision.config.DecisionConfigGenerator;
+import org.kie.kogito.codegen.prediction.config.PredictionConfigGenerator;
+import org.kie.kogito.codegen.process.config.ProcessConfigGenerator;
+import org.kie.kogito.codegen.rules.config.RuleConfigGenerator;
 
+import static java.util.Arrays.asList;
+import static java.util.Optional.ofNullable;
 import static org.kie.kogito.codegen.CodegenUtils.newObject;
 
-public class ApplicationConfigGenerator extends TemplatedGenerator {
+public class ApplicationConfigGenerator {
 
     private static final String CLASS_NAME = "ApplicationConfig";
     private static final String RESOURCE_DEFAULT = "/class-templates/config/ApplicationConfigTemplate.java";
     private static final String RESOURCE_CDI = "/class-templates/config/CdiApplicationConfigTemplate.java";
     private static final String RESOURCE_SPRING = "/class-templates/config/SpringApplicationConfigTemplate.java";
 
+    private final TemplatedGenerator templatedGenerator;
+
     private Collection<String> addons = Collections.emptyList();
 
-    public ApplicationConfigGenerator(String packageName) {
-        super(packageName,
-              CLASS_NAME,
-              RESOURCE_CDI,
-              RESOURCE_SPRING,
-              RESOURCE_DEFAULT);
+    private ProcessConfigGenerator processConfig;
+    private RuleConfigGenerator ruleConfig;
+    private DecisionConfigGenerator decisionConfig;
+    private PredictionConfigGenerator predictionConfig;
+    private ConfigBeanGenerator configBean;
+
+    public ApplicationConfigGenerator(KogitoBuildContext buildContext, String packageName) {
+        this.templatedGenerator = new TemplatedGenerator(
+                buildContext,
+                packageName,
+                CLASS_NAME,
+                RESOURCE_CDI,
+                RESOURCE_SPRING,
+                RESOURCE_DEFAULT);
+
+        this.configBean = new ConfigBeanGenerator(buildContext, packageName);
     }
 
-    @Override
-    public Optional<CompilationUnit> compilationUnit() {
-        Optional<CompilationUnit> compilationUnit = super.compilationUnit();
-        compilationUnit
-                .flatMap(u -> u.findFirst(ClassOrInterfaceDeclaration.class))
+    public ApplicationConfigGenerator withProcessConfig(ProcessConfigGenerator cfg) {
+        this.processConfig = cfg;
+        return this;
+    }
+
+    public ApplicationConfigGenerator withRuleConfig(RuleConfigGenerator cfg) {
+        this.ruleConfig = cfg;
+        return this;
+    }
+
+    public ApplicationConfigGenerator withDecisionConfig(DecisionConfigGenerator cfg) {
+        this.decisionConfig = cfg;
+        return this;
+    }
+
+    public ApplicationConfigGenerator withPredictionConfig(PredictionConfigGenerator cfg) {
+        this.predictionConfig = cfg;
+        return this;
+    }
+
+    public Collection<GeneratedFile> generate() {
+        ArrayList<GeneratedFile> generatedFiles = new ArrayList<>();
+        generatedFiles.add(generateApplicationConfigDescriptor());
+
+        asList(processConfig, ruleConfig, predictionConfig, decisionConfig, configBean)
+                .forEach(configGenerator -> ofNullable(configGenerator)
+                        .flatMap(AbstractConfigGenerator::generate)
+                        .ifPresent(generatedFiles::add));
+
+        return generatedFiles;
+    }
+
+    private GeneratedFile generateApplicationConfigDescriptor() {
+        CompilationUnit compilationUnit = templatedGenerator.compilationUnitOrThrow();
+
+        compilationUnit.findFirst(ClassOrInterfaceDeclaration.class)
                 .ifPresent(this::replaceAddonPlaceHolder);
-        return compilationUnit;
+
+        return new GeneratedFile(GeneratedFile.Type.APPLICATION_CONFIG,
+                                 templatedGenerator.generatedFilePath(),
+                                 compilationUnit.toString());
     }
 
     private void replaceAddonPlaceHolder(ClassOrInterfaceDeclaration cls) {
@@ -60,15 +113,15 @@ public class ApplicationConfigGenerator extends TemplatedGenerator {
         NameExpr addonsPlaceHolder =
                 cls.findFirst(NameExpr.class, e -> e.getNameAsString().equals("$Addons$")).
                         orElseThrow(() -> new InvalidTemplateException(
-                                typeName(),
-                                templatePath(),
+                                templatedGenerator.typeName(),
+                                templatedGenerator.templatePath(),
                                 "Missing $Addons$ placeholder"));
 
         ObjectCreationExpr addonsList = generateAddonsList();
         addonsPlaceHolder.getParentNode()
                 .orElseThrow(() -> new InvalidTemplateException(
-                        typeName(),
-                        templatePath(),
+                        templatedGenerator.typeName(),
+                        templatedGenerator.templatePath(),
                         "Cannot replace $Addons$ placeholder"))
                 .replace(addonsPlaceHolder, addonsList);
     }
@@ -82,8 +135,7 @@ public class ApplicationConfigGenerator extends TemplatedGenerator {
         return newObject(Addons.class, asListOfAddons);
     }
 
-    public ApplicationConfigGenerator withAddons(Collection<String> addons) {
+    public void withAddons(Collection<String> addons) {
         this.addons = addons;
-        return this;
     }
 }

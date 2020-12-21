@@ -20,8 +20,8 @@ import java.util.List;
 import org.assertj.core.api.Assertions;
 import org.jbpm.compiler.canonical.TriggerMetaData;
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.codegen.di.CDIDependencyInjectionAnnotator;
-import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
+import org.kie.kogito.codegen.context.KogitoBuildContext;
+import org.kie.kogito.codegen.context.QuarkusKogitoBuildContext;
 import org.kie.kogito.codegen.process.MessageDataEventGenerator;
 import org.kie.kogito.codegen.process.MessageProducerGenerator;
 import org.kie.kogito.codegen.process.ProcessExecutableModelGenerator;
@@ -33,7 +33,7 @@ class CloudEventsMessageProducerGeneratorTest {
     void verifyKnativeAddonProcessing() {
         final List<ProcessExecutableModelGenerator> models =
                 ProcessGenerationUtils.execModelFromProcessFile("/messageevent/IntermediateThrowEventMessage.bpmn2");
-        final DependencyInjectionAnnotator annotator = new CDIDependencyInjectionAnnotator();
+        final KogitoBuildContext buildContext = new QuarkusKogitoBuildContext(s -> true);
         Assertions.assertThat(models).isNotEmpty();
         models.forEach(m -> {
             final TriggerMetaData metaData = m.generate().getTriggers()
@@ -42,10 +42,9 @@ class CloudEventsMessageProducerGeneratorTest {
                     .findFirst()
                     .orElseThrow(() -> new IllegalArgumentException("Process does not contains any message producers"));
             final MessageDataEventGenerator msgDataEventGenerator =
-                    new MessageDataEventGenerator(m.process(), metaData).withDependencyInjection(annotator);
+                    new MessageDataEventGenerator(m.process(), metaData);
             final MessageProducerGenerator gen =
-                    new CloudEventsMessageProducerGenerator(m.process(), "", "", msgDataEventGenerator.className(), metaData)
-                            .withDependencyInjection(annotator);
+                    new CloudEventsMessageProducerGenerator(buildContext, m.process(), "", "", msgDataEventGenerator.className(), metaData);
             final String code = gen.generate();
             Assertions.assertThat(code).isNotBlank();
             Assertions.assertThat(code).contains("decorator.get().decorate");

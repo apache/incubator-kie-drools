@@ -25,12 +25,9 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import org.jbpm.compiler.canonical.TriggerMetaData;
-import org.kie.kogito.codegen.ApplicationGenerator;
 import org.kie.kogito.codegen.BodyDeclarationComparator;
-import org.kie.kogito.codegen.InvalidTemplateException;
 import org.kie.kogito.codegen.TemplatedGenerator;
-import org.kie.kogito.codegen.di.CDIDependencyInjectionAnnotator;
-import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
+import org.kie.kogito.codegen.context.KogitoBuildContext;
 import org.kie.kogito.codegen.process.ProcessExecutableModelGenerator;
 
 public class CloudEventsResourceGenerator extends AbstractEventResourceGenerator {
@@ -39,16 +36,21 @@ public class CloudEventsResourceGenerator extends AbstractEventResourceGenerator
     private static final String CDI_TEMPLATE = "/class-templates/events/CloudEventsListenerResource.java";
     private static final String CLASS_NAME = "CloudEventListenerResource";
 
-    // even if we only support Quarkus for now, this will come in handy when we add SpringBoot support.
-    private final DependencyInjectionAnnotator annotator;
+    private final KogitoBuildContext buildContext;
     private final List<TriggerMetaData> triggers;
 
-    public CloudEventsResourceGenerator(final String packageName, final List<ProcessExecutableModelGenerator> generators, final DependencyInjectionAnnotator annotator) {
-        super(new TemplatedGenerator(packageName, CLASS_NAME, CDI_TEMPLATE,
-                                     null, CDI_TEMPLATE)
-                      .withDependencyInjection(annotator));
+    public CloudEventsResourceGenerator(final KogitoBuildContext buildContext,
+                                        final String packageName,
+                                        final List<ProcessExecutableModelGenerator> generators) {
+        super(new TemplatedGenerator(
+                buildContext,
+                packageName,
+                CLASS_NAME,
+                CDI_TEMPLATE,
+                null,
+                CDI_TEMPLATE));
+        this.buildContext = buildContext;
         this.triggers = this.filterTriggers(generators);
-        this.annotator = annotator;
     }
 
     /**
@@ -66,9 +68,7 @@ public class CloudEventsResourceGenerator extends AbstractEventResourceGenerator
      * @return
      */
     public String generate() {
-        final CompilationUnit clazz = generator.compilationUnit()
-                .orElseThrow(() -> new InvalidTemplateException(CLASS_NAME, generator.templatePath(),
-                                                                "Cannot generate CloudEvents REST Resource"));
+        final CompilationUnit clazz = generator.compilationUnitOrThrow("Cannot generate CloudEvents REST Resource");
         final ClassOrInterfaceDeclaration template = clazz
                 .findFirst(ClassOrInterfaceDeclaration.class)
                 .orElseThrow(() -> new NoSuchElementException("Compilation unit doesn't contain a class or interface declaration!"));
@@ -98,9 +98,11 @@ public class CloudEventsResourceGenerator extends AbstractEventResourceGenerator
     }
 
     private void addInjection(final ClassOrInterfaceDeclaration template) {
-        annotator.withApplicationComponent(template);
-        template.findAll(FieldDeclaration.class, fd -> fd.getVariables().get(0).getNameAsString().contains(EMITTER_PREFIX))
-                .forEach(annotator::withInjection);
+        if(buildContext.hasDI()) {
+            buildContext.getDependencyInjectionAnnotator().withApplicationComponent(template);
+            template.findAll(FieldDeclaration.class, fd -> fd.getVariables().get(0).getNameAsString().contains(EMITTER_PREFIX))
+                    .forEach(buildContext.getDependencyInjectionAnnotator()::withInjection);
+        }
     }
 
     String sanitizeEmitterName(String triggerName) {

@@ -24,7 +24,6 @@ import org.drools.core.util.StringUtils;
 import org.jbpm.compiler.canonical.TriggerMetaData;
 import org.kie.api.definition.process.WorkflowProcess;
 import org.kie.kogito.codegen.BodyDeclarationComparator;
-import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 
 import static com.github.javaparser.StaticJavaParser.parse;
 import static org.kie.kogito.codegen.CodegenUtils.interpolateTypes;
@@ -37,7 +36,6 @@ public class MessageDataEventGenerator {
     private final String resourceClazzName;
     private String processId;
     private final String processName;
-    private DependencyInjectionAnnotator annotator;
     
     private TriggerMetaData trigger;
     
@@ -54,11 +52,6 @@ public class MessageDataEventGenerator {
         this.relativePath = packageName.replace(".", "/") + "/" + resourceClazzName + ".java";
     }
 
-    public MessageDataEventGenerator withDependencyInjection(DependencyInjectionAnnotator annotator) {
-        this.annotator = annotator;
-        return this;
-    }
-
     public String className() {
         return resourceClazzName;
     }
@@ -66,11 +59,7 @@ public class MessageDataEventGenerator {
     public String generatedFilePath() {
         return relativePath;
     }
-    
-    protected boolean useInjection() {
-        return this.annotator != null;
-    }
-    
+
     public String generate() {
         CompilationUnit clazz = parse(
                 this.getClass().getResourceAsStream("/class-templates/MessageDataEventTemplate.java"));

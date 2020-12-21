@@ -15,17 +15,16 @@
 
 package org.kie.kogito.codegen.decision.config;
 
-import org.kie.kogito.codegen.TemplatedGenerator;
+import org.kie.kogito.codegen.AbstractConfigGenerator;
+import org.kie.kogito.codegen.context.KogitoBuildContext;
 
-public class DecisionConfigGenerator extends TemplatedGenerator {
+public class DecisionConfigGenerator extends AbstractConfigGenerator {
 
-    private static final String RESOURCE_CDI = "/class-templates/config/CdiDecisionConfigTemplate.java";
-    private static final String RESOURCE_SPRING = "/class-templates/config/SpringDecisionConfigTemplate.java";
-
-    public DecisionConfigGenerator(String packageName) {
-        super(packageName,
-              "DecisionConfig",
-              RESOURCE_CDI,
-              RESOURCE_SPRING);
+    public DecisionConfigGenerator(KogitoBuildContext buildContext, String packageName) {
+        super(buildContext,
+                packageName,
+                "DecisionConfig",
+                "/class-templates/config/CdiDecisionConfigTemplate.java",
+                "/class-templates/config/SpringDecisionConfigTemplate.java");
     }
 }

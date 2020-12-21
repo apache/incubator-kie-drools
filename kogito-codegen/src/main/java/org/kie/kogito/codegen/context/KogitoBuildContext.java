@@ -16,10 +16,28 @@
 package org.kie.kogito.codegen.context;
 
 import org.kie.kogito.codegen.KogitoCodeGenConstants;
+import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 
 public interface KogitoBuildContext {    
 
     boolean hasClassAvailable(String fqcn);
+
+    /**
+     * Return DependencyInjectionAnnotator if available or null
+     * @return
+     */
+    DependencyInjectionAnnotator getDependencyInjectionAnnotator();
+
+    /**
+     * Method to override default dependency injection annotator
+     * @param dependencyInjectionAnnotator
+     * @return
+     */
+    void setDependencyInjectionAnnotator(DependencyInjectionAnnotator dependencyInjectionAnnotator);
+
+    default boolean hasDI() {
+        return getDependencyInjectionAnnotator() != null;
+    }
     
     default boolean isValidationSupported() {
         return hasClassAvailable(KogitoCodeGenConstants.VALIDATION_CLASS);

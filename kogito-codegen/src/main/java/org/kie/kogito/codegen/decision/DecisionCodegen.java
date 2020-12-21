@@ -47,7 +47,7 @@ import org.kie.dmn.typesafe.DMNTypeSafePackageName;
 import org.kie.dmn.typesafe.DMNTypeSafeTypeGenerator;
 import org.kie.kogito.codegen.AbstractGenerator;
 import org.kie.kogito.codegen.ApplicationSection;
-import org.kie.kogito.codegen.ConfigGenerator;
+import org.kie.kogito.codegen.ApplicationConfigGenerator;
 import org.kie.kogito.codegen.DashboardGeneratedFileUtils;
 import org.kie.kogito.codegen.GeneratedFile;
 import org.kie.kogito.codegen.decision.config.DecisionConfigGenerator;
@@ -144,10 +144,10 @@ public class DecisionCodegen extends AbstractGenerator {
             if (stronglyTypedEnabled) {
                 generateStronglyTypedInput(model);
             }
-            DecisionRestResourceGenerator resourceGenerator = new DecisionRestResourceGenerator(model, applicationCanonicalName()).withDependencyInjection(annotator)
-                                                                                                                                  .withAddons(addonsConfig)
-                                                                                                                                  .withStronglyTyped(stronglyTypedEnabled)
-                                                                                                                                  .withOASResult(oasResult, isMPAnnotationsPresent(), isIOSwaggerOASv3AnnotationsPresent());
+            DecisionRestResourceGenerator resourceGenerator = new DecisionRestResourceGenerator(context.getBuildContext(), model, applicationCanonicalName())
+                    .withAddons(addonsConfig)
+                    .withStronglyTyped(stronglyTypedEnabled)
+                    .withOASResult(oasResult, isMPAnnotationsPresent(), isIOSwaggerOASv3AnnotationsPresent());
             rgs.add(resourceGenerator);
         }
 
@@ -178,10 +178,10 @@ public class DecisionCodegen extends AbstractGenerator {
     }
 
     private void generateAndStoreDecisionModelResourcesProvider() {
-        final DecisionModelResourcesProviderGenerator generator = new DecisionModelResourcesProviderGenerator(packageName,
+        final DecisionModelResourcesProviderGenerator generator = new DecisionModelResourcesProviderGenerator(context.getBuildContext(),
+                                                                                                              packageName,
                                                                                                               applicationCanonicalName(),
                                                                                                               resources)
-                .withDependencyInjection(annotator)
                 .withAddons(addonsConfig);
         storeFile(GeneratedFile.Type.CLASS, generator.generatedFilePath(), generator.generate());
     }
@@ -250,9 +250,9 @@ public class DecisionCodegen extends AbstractGenerator {
     }
 
     @Override
-    public void updateConfig(ConfigGenerator cfg) {
+    public void updateConfig(ApplicationConfigGenerator cfg) {
         if (!cResources.isEmpty()) {
-            cfg.withDecisionConfig(new DecisionConfigGenerator(packageName));
+            cfg.withDecisionConfig(new DecisionConfigGenerator(context().getBuildContext(), packageName));
         }
     }
 
@@ -266,8 +266,11 @@ public class DecisionCodegen extends AbstractGenerator {
 
     @Override
     public ApplicationSection section() {
-        DecisionContainerGenerator decisionContainerGenerator = new DecisionContainerGenerator(packageName, applicationCanonicalName(), this.cResources);
-        decisionContainerGenerator.withDependencyInjection(annotator);
+        DecisionContainerGenerator decisionContainerGenerator = new DecisionContainerGenerator(
+                context.getBuildContext(),
+                packageName,
+                applicationCanonicalName(),
+                this.cResources);
         decisionContainerGenerator.withAddons(addonsConfig);
         return decisionContainerGenerator;
     }

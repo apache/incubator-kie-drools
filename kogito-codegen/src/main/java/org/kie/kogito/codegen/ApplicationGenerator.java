@@ -29,9 +29,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import com.github.javaparser.ast.CompilationUnit;
 import org.drools.core.util.StringUtils;
-import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 import org.kie.kogito.codegen.metadata.Labeler;
 import org.kie.kogito.codegen.metadata.MetaDataWriter;
 import org.kie.kogito.codegen.metadata.PrometheusLabeler;
@@ -49,10 +47,8 @@ public class ApplicationGenerator {
     private final String packageName;
     private final File targetDirectory;
 
-    private DependencyInjectionAnnotator annotator;
-
     private final ApplicationContainerGenerator applicationMainGenerator;
-    private ConfigGenerator configGenerator;
+    private ApplicationConfigGenerator configGenerator;
     private List<Generator> generators = new ArrayList<>();
     private Map<Class, Labeler> labelers = new HashMap<>();
 
@@ -60,14 +56,14 @@ public class ApplicationGenerator {
     private ClassLoader classLoader;
     private AddonsConfig addonsConfig = AddonsConfig.DEFAULT;
 
-    public ApplicationGenerator(String packageName, File targetDirectory) {
-
+    public ApplicationGenerator(GeneratorContext context, String packageName, File targetDirectory) {
+        this.context = context;
         this.packageName = packageName;
         this.targetDirectory = targetDirectory;
         this.classLoader = Thread.currentThread().getContextClassLoader();
-        this.applicationMainGenerator = new ApplicationContainerGenerator(packageName);
+        this.applicationMainGenerator = new ApplicationContainerGenerator(context.getBuildContext(), packageName);
 
-        this.configGenerator = new ConfigGenerator(packageName);
+        this.configGenerator = new ApplicationConfigGenerator(context.getBuildContext(), packageName);
         this.configGenerator.withAddons(loadAddonList());
     }
 
@@ -77,18 +73,6 @@ public class ApplicationGenerator {
 
     private String getFilePath(String className) {
         return (this.packageName + "." + className).replace('.', '/') + ".java";
-    }
-
-    public ApplicationGenerator withDependencyInjection(DependencyInjectionAnnotator annotator) {
-        this.annotator = annotator;
-        this.applicationMainGenerator.withDependencyInjection(annotator);
-        this.configGenerator.withDependencyInjection(annotator);
-        return this;
-    }
-
-    public ApplicationGenerator withGeneratorContext(GeneratorContext context) {
-        this.context = context;
-        return this;
     }
 
     public ApplicationGenerator withAddons(AddonsConfig addonsConfig) {
@@ -130,10 +114,7 @@ public class ApplicationGenerator {
                 .collect(Collectors.toList());
 
         applicationMainGenerator.withSections(sections);
-        CompilationUnit compilationUnit = applicationMainGenerator.getCompilationUnitOrThrow();
-        return new GeneratedFile(GeneratedFile.Type.APPLICATION,
-                                 applicationMainGenerator.generatedFilePath(),
-                                 compilationUnit.toString());
+        return applicationMainGenerator.generate();
     }
 
     private List<GeneratedFile> generateApplicationSections() {
@@ -161,7 +142,6 @@ public class ApplicationGenerator {
     public <G extends Generator> G setupGenerator(G generator) {
         this.generators.add(generator);
         generator.setPackageName(packageName);
-        generator.setDependencyInjection(annotator);
         generator.setProjectDirectory(targetDirectory.getParentFile().toPath());
         generator.setContext(context);
         generator.setAddonsConfig(addonsConfig);
@@ -192,12 +172,13 @@ public class ApplicationGenerator {
 
     private void logGeneratedFiles(Collection<GeneratedFile> files) {
         if (LOGGER.isDebugEnabled()) {
+            String separator = "=====";
             for (GeneratedFile file : files) {
-                LOGGER.debug("=====");
-                LOGGER.debug(file.getType() + ": " + file.relativePath());
-                LOGGER.debug("=====");
+                LOGGER.debug(separator);
+                LOGGER.debug("{}: {}", file.getType(), file.relativePath());
+                LOGGER.debug(separator);
                 LOGGER.debug(new String(file.contents()));
-                LOGGER.debug("=====");
+                LOGGER.debug(separator);
             }
         }
     }

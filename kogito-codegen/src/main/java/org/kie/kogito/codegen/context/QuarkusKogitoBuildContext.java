@@ -15,18 +15,13 @@
 
 package org.kie.kogito.codegen.context;
 
+import org.kie.kogito.codegen.di.CDIDependencyInjectionAnnotator;
+
 import java.util.function.Predicate;
 
-public class QuarkusKogitoBuildContext implements KogitoBuildContext {
-
-    private Predicate<String> classAvailabilityResolver;
+public class QuarkusKogitoBuildContext extends AbstractKogitoBuildContext {
 
     public QuarkusKogitoBuildContext(Predicate<String> classAvailabilityResolver) {
-        this.classAvailabilityResolver = classAvailabilityResolver;
-    }
-
-    @Override
-    public boolean hasClassAvailable(String fqcn) {
-        return classAvailabilityResolver.test(fqcn);
+        super(classAvailabilityResolver, new CDIDependencyInjectionAnnotator());
     }
 }

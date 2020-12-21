@@ -19,10 +19,10 @@ package org.kie.kogito.codegen.tests.spring;
 import org.junit.jupiter.api.Disabled;
 import org.kie.kogito.codegen.tests.MessageIntermediateEventTest;
 
-@Disabled
+@Disabled("KOGITO-4000")
 public class MessageIntermediateEventSpringTest extends MessageIntermediateEventTest {
 
     public MessageIntermediateEventSpringTest() {
-        withSpringContext(true);
+        withSpringContext();
     }
 }

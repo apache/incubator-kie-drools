@@ -35,7 +35,6 @@ import org.kie.kogito.codegen.GeneratedFile;
 import org.kie.kogito.codegen.GeneratorContext;
 import org.kie.kogito.codegen.context.QuarkusKogitoBuildContext;
 import org.kie.kogito.codegen.data.Person;
-import org.kie.kogito.codegen.di.CDIDependencyInjectionAnnotator;
 
 import static com.github.javaparser.StaticJavaParser.parse;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -52,11 +51,16 @@ class MongoDBPersistenceGeneratorTest {
     @Test
     void test() {
         context.withBuildContext(new QuarkusKogitoBuildContext((className -> true)));
-        PersistenceGenerator persistenceGenerator = new PersistenceGenerator(targetDirectory.toFile(), Collections.singleton(Person.class), true, null, null, Arrays.asList("com.mongodb.client.MongoClient"), "mongodb");
+        PersistenceGenerator persistenceGenerator = new PersistenceGenerator(
+                targetDirectory.toFile(),
+                Collections.singleton(Person.class),
+                true,
+                null,
+                null,
+                Arrays.asList("com.mongodb.client.MongoClient"),
+                "mongodb");
         persistenceGenerator.setPackageName(this.getClass().getPackage().getName());
-        persistenceGenerator.setDependencyInjection(null);
         persistenceGenerator.setContext(context);
-        persistenceGenerator.setDependencyInjection(new CDIDependencyInjectionAnnotator());
         Collection<GeneratedFile> generatedFiles = persistenceGenerator.generate();
 
         Optional<GeneratedFile> generatedCLASSFile = generatedFiles.stream().filter(gf -> gf.getType() == GeneratedFile.Type.CLASS).findFirst();

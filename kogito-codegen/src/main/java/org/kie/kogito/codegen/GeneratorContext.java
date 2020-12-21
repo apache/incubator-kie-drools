@@ -19,9 +19,11 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
 
+import org.kie.kogito.codegen.context.JavaKogitoBuildContext;
 import org.kie.kogito.codegen.context.KogitoBuildContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +33,10 @@ public class GeneratorContext {
     private static final Logger LOGGER = LoggerFactory.getLogger(GeneratorContext.class);
 
     private static final String APPLICATION_PROPERTIES_FILE_NAME = "application.properties";
+
+    public static GeneratorContext emptyContext() {
+        return ofResourcePath().withBuildContext(new JavaKogitoBuildContext());
+    }
 
     public static GeneratorContext ofResourcePath(File... resourcePaths) {
         Properties applicationProperties = new Properties();
@@ -50,7 +56,7 @@ public class GeneratorContext {
         return new GeneratorContext(props);
     }
 
-    private KogitoBuildContext buildContext;
+    private KogitoBuildContext buildContext = new JavaKogitoBuildContext();
 
     private Properties applicationProperties = new Properties();
 
@@ -59,6 +65,7 @@ public class GeneratorContext {
     }
 
     public GeneratorContext withBuildContext(KogitoBuildContext buildContext) {
+        Objects.requireNonNull(buildContext, "KogitoBuildContext cannot be null");
         this.buildContext = buildContext;
         return this;
     }

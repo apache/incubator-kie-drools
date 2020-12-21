@@ -21,31 +21,38 @@ import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.ThisExpr;
+import org.kie.kogito.codegen.context.JavaKogitoBuildContext;
+import org.kie.kogito.codegen.context.KogitoBuildContext;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
-public class ApplicationContainerGenerator extends TemplatedGenerator {
+public class ApplicationContainerGenerator {
 
     public static final String APPLICATION_CLASS_NAME = "Application";
     private static final String RESOURCE_CDI = "/class-templates/CdiApplicationTemplate.java";
     private static final String RESOURCE_SPRING = "/class-templates/SpringApplicationTemplate.java";
     private static final String RESOURCE_DEFAULT = "/class-templates/ApplicationTemplate.java";
+    private final TemplatedGenerator templatedGenerator;
 
     private List<String> sections = new ArrayList<>();
+    private KogitoBuildContext buildContext;
 
-    public ApplicationContainerGenerator(String packageName) {
-        super(packageName,
-              APPLICATION_CLASS_NAME,
-              RESOURCE_CDI,
-              RESOURCE_SPRING,
-              RESOURCE_DEFAULT);
+    public ApplicationContainerGenerator(KogitoBuildContext buildContext, String packageName) {
+        this.templatedGenerator = new TemplatedGenerator(
+                buildContext,
+                packageName,
+                APPLICATION_CLASS_NAME,
+                RESOURCE_CDI,
+                RESOURCE_SPRING,
+                RESOURCE_DEFAULT);
+
+        this.buildContext = buildContext;
     }
 
     public ApplicationContainerGenerator withSections(List<String> sections) {
@@ -53,45 +60,37 @@ public class ApplicationContainerGenerator extends TemplatedGenerator {
         return this;
     }
 
-    public CompilationUnit getCompilationUnitOrThrow() {
-        return compilationUnit()
-                .orElseThrow(() -> new InvalidTemplateException(
-                        APPLICATION_CLASS_NAME,
-                        templatePath(),
-                        "Cannot find template for " + super.typeName()));
-    }
-
-    @Override
-    public Optional<CompilationUnit> compilationUnit() {
-        Optional<CompilationUnit> optionalCompilationUnit = super.compilationUnit();
-        CompilationUnit compilationUnit =
-                optionalCompilationUnit
-                        .orElseThrow(() -> new InvalidTemplateException(
-                                APPLICATION_CLASS_NAME,
-                                templatePath(),
-                                "Cannot find template for " + super.typeName()));
+    protected CompilationUnit getCompilationUnitOrThrow() {
+        CompilationUnit compilationUnit = templatedGenerator.compilationUnitOrThrow("Cannot find template for " + templatedGenerator.typeName());
 
         ClassOrInterfaceDeclaration cls = compilationUnit
                 .findFirst(ClassOrInterfaceDeclaration.class)
                 .orElseThrow(() -> new InvalidTemplateException(
                         APPLICATION_CLASS_NAME,
-                        templatePath(),
+                        templatedGenerator.templatePath(),
                         "Compilation unit doesn't contain a class or interface declaration!"));
 
         // ApplicationTemplate (no CDI/Spring) has placeholders to replace
-        if (annotator == null) {
+        if (buildContext == null || buildContext instanceof JavaKogitoBuildContext) {
             replacePlaceholder(getLoadEnginesMethod(cls), sections);
         }
 
         cls.getMembers().sort(new BodyDeclarationComparator());
-        return optionalCompilationUnit;
+
+        return compilationUnit;
+    }
+
+    public GeneratedFile generate() {
+        return new GeneratedFile(GeneratedFile.Type.APPLICATION,
+                templatedGenerator.generatedFilePath(),
+                getCompilationUnitOrThrow().toString());
     }
 
     private MethodCallExpr getLoadEnginesMethod(ClassOrInterfaceDeclaration cls) {
         return cls.findFirst(MethodCallExpr.class, mtd -> "loadEngines".equals(mtd.getNameAsString()))
                     .orElseThrow(() -> new InvalidTemplateException(
                             APPLICATION_CLASS_NAME,
-                            templatePath(),
+                            templatedGenerator.templatePath(),
                             "Impossible to find loadEngines invocation"));
     }
 

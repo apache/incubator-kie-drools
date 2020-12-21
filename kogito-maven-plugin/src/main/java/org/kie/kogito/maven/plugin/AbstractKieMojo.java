@@ -24,12 +24,10 @@ import java.util.Set;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.project.MavenProject;
+import org.kie.kogito.codegen.context.JavaKogitoBuildContext;
 import org.kie.kogito.codegen.context.KogitoBuildContext;
 import org.kie.kogito.codegen.context.QuarkusKogitoBuildContext;
 import org.kie.kogito.codegen.context.SpringBootKogitoBuildContext;
-import org.kie.kogito.codegen.di.CDIDependencyInjectionAnnotator;
-import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
-import org.kie.kogito.codegen.di.SpringDependencyInjectionAnnotator;
 
 public abstract class AbstractKieMojo extends AbstractMojo {
     
@@ -44,19 +42,11 @@ public abstract class AbstractKieMojo extends AbstractMojo {
         }
     }
 
-    protected DependencyInjectionAnnotator discoverDependencyInjectionAnnotator(MavenProject project) {
-        switch (discoverFramework(project)) {
-            case QUARKUS: return new CDIDependencyInjectionAnnotator();
-            case SPRING: return new SpringDependencyInjectionAnnotator();
-            default: return null;
-        }
-    }
-
     protected KogitoBuildContext discoverKogitoRuntimeContext(MavenProject project)  {
         switch (discoverFramework(project)) {
             case QUARKUS: return new QuarkusKogitoBuildContext(fqcn -> hasClassOnClasspath(project, fqcn));
             case SPRING: return new SpringBootKogitoBuildContext(fqcn -> hasClassOnClasspath(project, fqcn));
-            default: return null;
+            default: return new JavaKogitoBuildContext(fqcn -> hasClassOnClasspath(project, fqcn));
         }
     }
 

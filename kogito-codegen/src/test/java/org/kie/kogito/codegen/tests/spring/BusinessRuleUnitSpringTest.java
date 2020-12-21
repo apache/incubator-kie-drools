@@ -19,10 +19,10 @@ package org.kie.kogito.codegen.tests.spring;
 import org.junit.jupiter.api.Disabled;
 import org.kie.kogito.codegen.tests.BusinessRuleUnitTest;
 
-@Disabled
+@Disabled("KOGITO-4000")
 public class BusinessRuleUnitSpringTest extends BusinessRuleUnitTest {
 
     public BusinessRuleUnitSpringTest() {
-        withSpringContext(true);
+        withSpringContext();
     }
 }

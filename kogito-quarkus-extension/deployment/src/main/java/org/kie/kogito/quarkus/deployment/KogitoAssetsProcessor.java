@@ -76,8 +76,6 @@ import org.kie.kogito.codegen.GeneratorContext;
 import org.kie.kogito.codegen.JsonSchemaGenerator;
 import org.kie.kogito.codegen.context.QuarkusKogitoBuildContext;
 import org.kie.kogito.codegen.decision.DecisionCodegen;
-import org.kie.kogito.codegen.di.CDIDependencyInjectionAnnotator;
-import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 import org.kie.kogito.codegen.io.CollectedResource;
 import org.kie.kogito.codegen.prediction.PredictionCodegen;
 import org.kie.kogito.codegen.process.ProcessCodegen;
@@ -169,8 +167,6 @@ public class KogitoAssetsProcessor {
         boolean useCloudEvents = combinedIndexBuildItem.getIndex().getClassByName(quarkusCloudEvents) != null;
         boolean useProcessSVG = combinedIndexBuildItem.getIndex().getClassByName(quarkusSVGService) != null;
 
-        DependencyInjectionAnnotator dependencyInjectionAnnotator = new CDIDependencyInjectionAnnotator();
-
         AddonsConfig addonsConfig = new AddonsConfig()
                 .withPersistence(usePersistence)
                 .withMonitoring(useMonitoring)
@@ -188,11 +184,10 @@ public class KogitoAssetsProcessor {
 
         ApplicationGenerator appGen =
                 new ApplicationGenerator(
+                        context,
                         appPackageName,
                         new File(appPaths.getFirstProjectPath().toFile(), "target"))
-                        .withDependencyInjection(dependencyInjectionAnnotator)
-                        .withAddons(addonsConfig)
-                        .withGeneratorContext(context);
+                        .withAddons(addonsConfig);
 
         // configure each individual generator. Ordering is relevant.
 
@@ -413,7 +408,6 @@ public class KogitoAssetsProcessor {
                         jandexProtoGenerator,
                         parameters,
                         persistenceType);
-        persistenceGenerator.setDependencyInjection(new CDIDependencyInjectionAnnotator());
         persistenceGenerator.setPackageName(appPackageName);
         persistenceGenerator.setContext(context);
         return persistenceGenerator;

@@ -15,19 +15,13 @@
 
 package org.kie.kogito.codegen.context;
 
+import org.kie.kogito.codegen.di.SpringDependencyInjectionAnnotator;
+
 import java.util.function.Predicate;
 
-public class SpringBootKogitoBuildContext implements KogitoBuildContext {
+public class SpringBootKogitoBuildContext extends AbstractKogitoBuildContext {
     
-    private Predicate<String> classAvailabilityResolver;
-
     public SpringBootKogitoBuildContext(Predicate<String> classAvailabilityResolver) {
-        this.classAvailabilityResolver = classAvailabilityResolver;
+        super(classAvailabilityResolver, new SpringDependencyInjectionAnnotator());
     }
-
-    @Override
-    public boolean hasClassAvailable(String fqcn) {
-        return classAvailabilityResolver.test(fqcn);
-    }
-
 }

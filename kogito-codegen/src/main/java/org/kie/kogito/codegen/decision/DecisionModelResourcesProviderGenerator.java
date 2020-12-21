@@ -17,7 +17,6 @@ package org.kie.kogito.codegen.decision;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Objects;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
@@ -33,7 +32,7 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.kie.api.management.GAV;
 import org.kie.kogito.codegen.AddonsConfig;
-import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
+import org.kie.kogito.codegen.context.KogitoBuildContext;
 import org.kie.kogito.decision.DecisionModelType;
 import org.kie.kogito.dmn.DefaultDecisionModelResource;
 
@@ -45,24 +44,21 @@ public class DecisionModelResourcesProviderGenerator {
 
     private static final String TEMPLATE_JAVA = "/class-templates/DecisionModelResourcesProviderTemplate.java";
 
+    private final KogitoBuildContext buildContext;
     private final String packageName;
     private final String applicationCanonicalName;
     private final List<DMNResource> resources;
 
-    private DependencyInjectionAnnotator annotator;
     private AddonsConfig addonsConfig = AddonsConfig.DEFAULT;
 
-    public DecisionModelResourcesProviderGenerator(final String packageName,
+    public DecisionModelResourcesProviderGenerator(final KogitoBuildContext buildContext,
+                                                   final String packageName,
                                                    final String applicationCanonicalName,
                                                    final List<DMNResource> resources) {
+        this.buildContext = buildContext;
         this.packageName = packageName;
         this.applicationCanonicalName = applicationCanonicalName;
         this.resources = resources;
-    }
-
-    public DecisionModelResourcesProviderGenerator withDependencyInjection(final DependencyInjectionAnnotator annotator) {
-        this.annotator = annotator;
-        return this;
     }
 
     public DecisionModelResourcesProviderGenerator withAddons(final AddonsConfig addonsConfig) {
@@ -79,8 +75,8 @@ public class DecisionModelResourcesProviderGenerator {
                 .findFirst(ClassOrInterfaceDeclaration.class)
                 .orElseThrow(() -> new NoSuchElementException("Compilation unit doesn't contain a class or interface declaration!"));
 
-        if (Objects.nonNull(this.annotator)) {
-            annotator.withSingletonComponent(clazz);
+        if (buildContext.hasDI()) {
+            buildContext.getDependencyInjectionAnnotator().withSingletonComponent(clazz);
         }
 
         if (addonsConfig.useTracing()) {

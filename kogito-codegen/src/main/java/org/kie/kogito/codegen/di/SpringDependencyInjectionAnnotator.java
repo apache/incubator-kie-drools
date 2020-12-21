@@ -40,7 +40,6 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 
 import static com.github.javaparser.StaticJavaParser.parse;
 
-
 public class SpringDependencyInjectionAnnotator implements DependencyInjectionAnnotator {
 
     @Override

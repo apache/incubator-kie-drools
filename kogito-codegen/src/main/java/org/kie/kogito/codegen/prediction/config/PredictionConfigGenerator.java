@@ -15,34 +15,26 @@
 
 package org.kie.kogito.codegen.prediction.config;
 
+import com.github.javaparser.ast.body.BodyDeclaration;
+import org.kie.kogito.codegen.AbstractConfigGenerator;
+import org.kie.kogito.codegen.context.KogitoBuildContext;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import com.github.javaparser.ast.body.BodyDeclaration;
-import com.github.javaparser.ast.expr.ObjectCreationExpr;
-import org.kie.kogito.codegen.TemplatedGenerator;
-import org.kie.kogito.pmml.config.StaticPredictionConfig;
-
-public class PredictionConfigGenerator extends TemplatedGenerator {
+public class PredictionConfigGenerator extends AbstractConfigGenerator {
 
     private List<BodyDeclaration<?>> members = new ArrayList<>();
 
-    private static final String RESOURCE_CDI = "/class-templates/config/CdiPredictionConfigTemplate.java";
-    private static final String RESOURCE_SPRING = "/class-templates/config/SpringPredictionConfigTemplate.java";
-
-    public PredictionConfigGenerator(String packageName) {
-        super(packageName,
-              "PredictionConfig",
-              RESOURCE_CDI,
-              RESOURCE_SPRING);
-    }
-
-    public ObjectCreationExpr newInstance() {
-        return new ObjectCreationExpr().setType(StaticPredictionConfig.class.getCanonicalName());
+    public PredictionConfigGenerator(KogitoBuildContext buildContext, String packageName) {
+        super(buildContext,
+                packageName,
+                "PredictionConfig",
+                "/class-templates/config/CdiPredictionConfigTemplate.java",
+                "/class-templates/config/SpringPredictionConfigTemplate.java");
     }
 
     public List<BodyDeclaration<?>> members() {
-
         return members;
     }
 

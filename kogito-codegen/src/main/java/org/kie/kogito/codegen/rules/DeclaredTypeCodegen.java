@@ -42,7 +42,7 @@ import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.CompositeKnowledgeBuilder;
 import org.kie.kogito.codegen.AbstractGenerator;
 import org.kie.kogito.codegen.ApplicationSection;
-import org.kie.kogito.codegen.ConfigGenerator;
+import org.kie.kogito.codegen.ApplicationConfigGenerator;
 import org.kie.kogito.codegen.KogitoPackageSources;
 import org.kie.kogito.codegen.rules.config.RuleConfigGenerator;
 import org.slf4j.Logger;
@@ -159,8 +159,8 @@ public class DeclaredTypeCodegen extends AbstractGenerator {
     }
 
     @Override
-    public void updateConfig(ConfigGenerator cfg) {
-        cfg.withRuleConfig(new RuleConfigGenerator("defaultpkg"));
+    public void updateConfig(ApplicationConfigGenerator cfg) {
+        cfg.withRuleConfig(new RuleConfigGenerator(context().getBuildContext(), "defaultpkg"));
     }
 
     public DeclaredTypeCodegen withClassLoader(ClassLoader projectClassLoader) {

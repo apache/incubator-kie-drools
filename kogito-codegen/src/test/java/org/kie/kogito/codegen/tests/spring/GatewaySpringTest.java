@@ -19,10 +19,10 @@ package org.kie.kogito.codegen.tests.spring;
 import org.junit.jupiter.api.Disabled;
 import org.kie.kogito.codegen.tests.GatewayTest;
 
-@Disabled
+@Disabled("KOGITO-4000")
 public class GatewaySpringTest extends GatewayTest {
 
     public GatewaySpringTest() {
-        withSpringContext(true);
+        withSpringContext();
     }
 }

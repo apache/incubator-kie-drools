@@ -19,10 +19,10 @@ package org.kie.kogito.codegen.tests.spring;
 import org.junit.jupiter.api.Disabled;
 import org.kie.kogito.codegen.tests.SignalEventTest;
 
-@Disabled
+@Disabled("KOGITO-4000")
 public class SignalEventSpringTest extends SignalEventTest {
 
     public SignalEventSpringTest() {
-        withSpringContext(true);
+        withSpringContext();
     }
 }

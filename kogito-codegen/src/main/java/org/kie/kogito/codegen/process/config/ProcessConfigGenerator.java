@@ -15,17 +15,16 @@
 
 package org.kie.kogito.codegen.process.config;
 
-import org.kie.kogito.codegen.TemplatedGenerator;
+import org.kie.kogito.codegen.AbstractConfigGenerator;
+import org.kie.kogito.codegen.context.KogitoBuildContext;
 
-public class ProcessConfigGenerator extends TemplatedGenerator {
+public class ProcessConfigGenerator extends AbstractConfigGenerator {
 
-    private static final String RESOURCE_CDI = "/class-templates/config/CdiProcessConfigTemplate.java";
-    private static final String RESOURCE_SPRING = "/class-templates/config/SpringProcessConfigTemplate.java";
-
-    public ProcessConfigGenerator(String packageName) {
-        super(packageName,
-              "ProcessConfig",
-              RESOURCE_CDI,
-              RESOURCE_SPRING);
+    public ProcessConfigGenerator(KogitoBuildContext buildContext, String packageName) {
+        super(buildContext,
+                packageName,
+                "ProcessConfig",
+                "/class-templates/config/CdiProcessConfigTemplate.java",
+                "/class-templates/config/SpringProcessConfigTemplate.java");
     }
 }

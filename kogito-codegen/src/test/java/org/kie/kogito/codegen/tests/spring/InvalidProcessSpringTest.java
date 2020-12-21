@@ -19,10 +19,10 @@ package org.kie.kogito.codegen.tests.spring;
 import org.junit.jupiter.api.Disabled;
 import org.kie.kogito.codegen.tests.InvalidProcessTest;
 
-@Disabled
+@Disabled("KOGITO-4000")
 public class InvalidProcessSpringTest extends InvalidProcessTest {
 
     public InvalidProcessSpringTest() {
-        withSpringContext(true);
+        withSpringContext();
     }
 }

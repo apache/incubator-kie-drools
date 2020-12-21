@@ -33,20 +33,18 @@ import org.drools.core.util.StringUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.codegen.feel11.CodegenStringUtil;
+import org.kie.kogito.codegen.context.JavaKogitoBuildContext;
+import org.kie.kogito.codegen.context.KogitoBuildContext;
 import org.kie.kogito.codegen.di.CDIDependencyInjectionAnnotator;
-import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 import org.kie.pmml.commons.model.KiePMMLModel;
 
 import static com.github.javaparser.StaticJavaParser.parse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.kie.kogito.codegen.prediction.PMMLRestResourceGenerator.CDI_TEMPLATE;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
-import static org.mockito.Mockito.mock;
 
 class PMMLRestResourceGeneratorTest {
 
@@ -54,10 +52,12 @@ class PMMLRestResourceGeneratorTest {
     private final static KiePMMLModel KIE_PMML_MODEL = getKiePMMLModelInternal();
     private static PMMLRestResourceGenerator pmmlRestResourceGenerator;
     private static ClassOrInterfaceDeclaration template = getClassOrInterfaceDeclaration();
+    private static KogitoBuildContext buildContext;
 
     @BeforeAll
     public static void setup() {
-        pmmlRestResourceGenerator = new PMMLRestResourceGenerator(KIE_PMML_MODEL, APP_CANONICAL_NAME);
+        buildContext = new JavaKogitoBuildContext();
+        pmmlRestResourceGenerator = new PMMLRestResourceGenerator(buildContext, KIE_PMML_MODEL, APP_CANONICAL_NAME);
         assertNotNull(pmmlRestResourceGenerator);
     }
 
@@ -89,7 +89,8 @@ class PMMLRestResourceGeneratorTest {
 
     @Test
     void generateWithDependencyInjection() {
-        String retrieved = pmmlRestResourceGenerator.withDependencyInjection(new CDIDependencyInjectionAnnotator()).generate();
+        buildContext.setDependencyInjectionAnnotator(new CDIDependencyInjectionAnnotator());
+        String retrieved = pmmlRestResourceGenerator.generate();
         commonEvaluateGenerate(retrieved);
         String expected = "Application application;";
         assertTrue(retrieved.contains(expected));
@@ -97,7 +98,8 @@ class PMMLRestResourceGeneratorTest {
 
     @Test
     void generateWithoutDependencyInjection() {
-        String retrieved = pmmlRestResourceGenerator.withDependencyInjection(null).generate();
+        buildContext.setDependencyInjectionAnnotator(null);
+        String retrieved = pmmlRestResourceGenerator.generate();
         commonEvaluateGenerate(retrieved);
         String expected = String.format("Application application = new %s();", APP_CANONICAL_NAME);
         assertTrue(retrieved.contains(expected));
@@ -116,16 +118,6 @@ class PMMLRestResourceGeneratorTest {
     }
 
     @Test
-    void withDependencyInjection() {
-        assertNull(pmmlRestResourceGenerator.annotator);
-        DependencyInjectionAnnotator dependencyInjectionAnnotator = mock(DependencyInjectionAnnotator.class);
-        PMMLRestResourceGenerator retrieved =
-                pmmlRestResourceGenerator.withDependencyInjection(dependencyInjectionAnnotator);
-        assertEquals(pmmlRestResourceGenerator, retrieved);
-        assertEquals(dependencyInjectionAnnotator, pmmlRestResourceGenerator.annotator);
-    }
-
-    @Test
     void className() {
         String classPrefix = getSanitizedClassName(KIE_PMML_MODEL.getName());
         String expected = StringUtils.ucFirst(classPrefix) + "Resource";
@@ -139,14 +131,6 @@ class PMMLRestResourceGeneratorTest {
         String classPrefix = getSanitizedClassName(KIE_PMML_MODEL.getName());
         String expected = StringUtils.ucFirst(classPrefix) + "Resource.java";
         assertTrue(retrieved.endsWith(expected));
-    }
-
-    @Test
-    void useInjection() {
-        pmmlRestResourceGenerator.withDependencyInjection(null);
-        assertFalse(pmmlRestResourceGenerator.useInjection());
-        pmmlRestResourceGenerator.withDependencyInjection(mock(DependencyInjectionAnnotator.class));
-        assertTrue(pmmlRestResourceGenerator.useInjection());
     }
 
     @Test

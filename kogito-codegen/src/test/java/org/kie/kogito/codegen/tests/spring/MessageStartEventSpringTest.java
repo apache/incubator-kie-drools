@@ -19,10 +19,10 @@ package org.kie.kogito.codegen.tests.spring;
 import org.junit.jupiter.api.Disabled;
 import org.kie.kogito.codegen.tests.MessageStartEventTest;
 
-@Disabled
+@Disabled("KOGITO-4000")
 public class MessageStartEventSpringTest extends MessageStartEventTest {
 
     public MessageStartEventSpringTest() {
-        withSpringContext(true);
+        withSpringContext();
     }
 }

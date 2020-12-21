@@ -22,6 +22,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import org.kie.api.definition.process.WorkflowProcess;
+import org.kie.kogito.codegen.context.JavaKogitoBuildContext;
 import org.kie.kogito.codegen.context.KogitoBuildContext;
 import org.kie.kogito.codegen.context.QuarkusKogitoBuildContext;
 import org.kie.kogito.codegen.context.SpringBootKogitoBuildContext;
@@ -36,7 +37,8 @@ public class ResourceGeneratorFactory {
         SPRING(SpringBootKogitoBuildContext.class, false),
         QUARKUS(QuarkusKogitoBuildContext.class, false),
         SPRING_REACTIVE(SpringBootKogitoBuildContext.class, true),
-        QUARKUS_REACTIVE(QuarkusKogitoBuildContext.class, true);
+        QUARKUS_REACTIVE(QuarkusKogitoBuildContext.class, true),
+        JAVA(JavaKogitoBuildContext.class, false);
 
         Class<? extends KogitoBuildContext> buildContextClass;
         boolean reactive;
@@ -76,6 +78,7 @@ public class ResourceGeneratorFactory {
                                                                modelfqcn,
                                                                processfqcn,
                                                                appCanonicalName);
+                        case JAVA:
                         case QUARKUS:
                             return new ResourceGenerator(context,
                                                          process,

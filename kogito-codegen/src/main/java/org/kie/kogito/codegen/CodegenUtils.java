@@ -24,15 +24,11 @@ import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.Expression;
-import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.stmt.BlockStmt;
-import com.github.javaparser.ast.stmt.IfStmt;
-import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
-import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 
 public class CodegenUtils {
 
@@ -120,18 +116,4 @@ public class CodegenUtils {
     public static boolean isObjectMapperField(FieldDeclaration fd) {
         return fd.getElementType().asClassOrInterfaceType().getNameAsString().equals("ObjectMapper");
     }
-
-    public static MethodDeclaration extractOptionalInjection(String type, String fieldName, String defaultMethod, DependencyInjectionAnnotator annotator) {
-        BlockStmt body = new BlockStmt();
-        MethodDeclaration extractMethod = new MethodDeclaration()
-                .addModifier(Modifier.Keyword.PROTECTED)
-                .setName("extract_" + fieldName)
-                .setType(type)
-                .setBody(body);
-        Expression condition = annotator.optionalInstanceExists(fieldName);
-        IfStmt valueExists = new IfStmt(condition, new ReturnStmt(annotator.getOptionalInstance(fieldName)), new ReturnStmt(new NameExpr(defaultMethod)));
-        body.addStatement(valueExists);
-        return extractMethod;
-    }
-
 }

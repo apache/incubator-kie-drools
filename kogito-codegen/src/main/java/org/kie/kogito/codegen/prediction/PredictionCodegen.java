@@ -38,7 +38,7 @@ import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.CompositeKnowledgeBuilder;
 import org.kie.kogito.codegen.AbstractGenerator;
 import org.kie.kogito.codegen.ApplicationSection;
-import org.kie.kogito.codegen.ConfigGenerator;
+import org.kie.kogito.codegen.ApplicationConfigGenerator;
 import org.kie.kogito.codegen.GeneratedFile;
 import org.kie.kogito.codegen.KogitoPackageSources;
 import org.kie.kogito.codegen.io.CollectedResource;
@@ -96,16 +96,15 @@ public class PredictionCodegen extends AbstractGenerator {
     }
 
     @Override
-    public void updateConfig(ConfigGenerator cfg) {
+    public void updateConfig(ApplicationConfigGenerator cfg) {
         if (!resources.isEmpty()) {
-            cfg.withPredictionConfig(new PredictionConfigGenerator(packageName));
+            cfg.withPredictionConfig(new PredictionConfigGenerator(context().getBuildContext(), packageName));
         }
     }
 
     @Override
     public ApplicationSection section() {
-        PredictionModelsGenerator moduleGenerator = new PredictionModelsGenerator(packageName, applicationCanonicalName(), resources);
-        moduleGenerator.withDependencyInjection(annotator);
+        PredictionModelsGenerator moduleGenerator = new PredictionModelsGenerator(context.getBuildContext(), packageName, applicationCanonicalName(), resources);
         moduleGenerator.withAddons(addonsConfig);
         return moduleGenerator;
     }
@@ -155,9 +154,7 @@ public class PredictionCodegen extends AbstractGenerator {
                     batch.add( new DescrResource( packageDescr ), ResourceType.DESCR );
                 }
                 if (!(model instanceof KiePMMLFactoryModel)) {
-                PMMLRestResourceGenerator resourceGenerator = new PMMLRestResourceGenerator(model,
-                                                                                            applicationCanonicalName())
-                        .withDependencyInjection(annotator);
+                    PMMLRestResourceGenerator resourceGenerator = new PMMLRestResourceGenerator(context.getBuildContext(), model, applicationCanonicalName());
                     storeFile(GeneratedFile.Type.PMML, resourceGenerator.generatedFilePath(), resourceGenerator.generate());
             }
             if (model instanceof HasNestedModels) {

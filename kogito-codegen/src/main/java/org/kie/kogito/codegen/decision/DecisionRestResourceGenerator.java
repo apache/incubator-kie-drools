@@ -15,7 +15,10 @@
 
 package org.kie.kogito.codegen.decision;
 
+import java.io.UncheckedIOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.function.Supplier;
@@ -33,7 +36,6 @@ import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.NormalAnnotationExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.SimpleName;
-import com.github.javaparser.ast.expr.SingleMemberAnnotationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
@@ -50,16 +52,21 @@ import org.kie.dmn.openapi.model.DMNOASResult;
 import org.kie.kogito.codegen.AddonsConfig;
 import org.kie.kogito.codegen.BodyDeclarationComparator;
 import org.kie.kogito.codegen.CodegenUtils;
-import org.kie.kogito.codegen.InvalidTemplateException;
 import org.kie.kogito.codegen.TemplatedGenerator;
-import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
+import org.kie.kogito.codegen.context.KogitoBuildContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static com.github.javaparser.StaticJavaParser.parseStatement;
 
 public class DecisionRestResourceGenerator {
 
-    public static final String CDI_TEMPLATE = "/class-templates/DecisionRestResourceTemplate.java";
-    public static final String SPRING_TEMPLATE = "/class-templates/spring/SpringDecisionRestResourceTemplate.java";
+    private static final Logger LOGGER = LoggerFactory.getLogger(DecisionRestResourceGenerator.class);
+
+    private static final String CDI_TEMPLATE = "/class-templates/DecisionRestResourceTemplate.java";
+    private static final String SPRING_TEMPLATE = "/class-templates/spring/SpringDecisionRestResourceTemplate.java";
+
+    private final KogitoBuildContext buildContext;
     private final DMNModel dmnModel;
     private final String decisionName;
     private final String nameURL;
@@ -68,7 +75,6 @@ public class DecisionRestResourceGenerator {
     private final String relativePath;
     private final String resourceClazzName;
     private final String appCanonicalName;
-    private DependencyInjectionAnnotator annotator;
     private AddonsConfig addonsConfig = AddonsConfig.DEFAULT;
     private boolean isStronglyTyped = false;
     private DMNOASResult withOASResult;
@@ -78,23 +84,32 @@ public class DecisionRestResourceGenerator {
 
     private static final Supplier<RuntimeException> TEMPLATE_WAS_MODIFIED = () -> new RuntimeException("Template was modified!");
 
-    public DecisionRestResourceGenerator(DMNModel model, String appCanonicalName) {
+    public DecisionRestResourceGenerator(KogitoBuildContext buildContext, DMNModel model, String appCanonicalName) {
+        this.buildContext = buildContext;
         this.dmnModel = model;
         this.packageName = CodegenStringUtil.escapeIdentifier(model.getNamespace());
         this.decisionId = model.getDefinitions().getId();
         this.decisionName = CodegenStringUtil.escapeIdentifier(model.getName());
-        this.nameURL = URLEncoder.encode(model.getName()).replace("+", " ");
+        this.nameURL = encodeNameUrl(model.getName());
         this.appCanonicalName = appCanonicalName;
         String classPrefix = StringUtils.ucFirst(decisionName);
         this.resourceClazzName = classPrefix + "Resource";
         this.relativePath = packageName.replace(".", "/") + "/" + resourceClazzName + ".java";
-        generator = new TemplatedGenerator(packageName, "DecisionRestResource",CDI_TEMPLATE, SPRING_TEMPLATE, CDI_TEMPLATE);
+        generator = new TemplatedGenerator(buildContext, packageName, "DecisionRestResource",CDI_TEMPLATE, SPRING_TEMPLATE, CDI_TEMPLATE);
+    }
+
+    private String encodeNameUrl(String name) {
+        try {
+            return URLEncoder.encode(name, StandardCharsets.UTF_8.name())
+                    .replace("+", " ");
+        } catch (UnsupportedEncodingException e) {
+            LOGGER.warn("Error while encoding name URL " + e.toString(), e);
+            throw new UncheckedIOException(e);
+        }
     }
 
     public String generate() {
-        CompilationUnit clazz = generator.compilationUnit()
-                .orElseThrow(() -> new InvalidTemplateException(resourceClazzName, generator.templatePath(), "Cannot " +
-                        "generate Decision REST Resource"));
+        CompilationUnit clazz = generator.compilationUnitOrThrow("Cannot generate Decision REST Resource");
 
         ClassOrInterfaceDeclaration template = clazz
                 .findFirst(ClassOrInterfaceDeclaration.class)
@@ -111,9 +126,9 @@ public class DecisionRestResourceGenerator {
         modifyDmnMethodForStronglyTyped(template);
         chooseMethodForStronglyTyped(template);
 
-        if (useInjection()) {
+        if (buildContext.hasDI()) {
             template.findAll(FieldDeclaration.class,
-                             CodegenUtils::isApplicationField).forEach(fd -> annotator.withInjection(fd));
+                             CodegenUtils::isApplicationField).forEach(fd -> buildContext.getDependencyInjectionAnnotator().withInjection(fd));
         } else {
             template.findAll(FieldDeclaration.class,
                              CodegenUtils::isApplicationField).forEach(this::initializeApplicationField);
@@ -121,7 +136,10 @@ public class DecisionRestResourceGenerator {
 
         MethodDeclaration dmnMethod = template.findAll(MethodDeclaration.class, x -> x.getName().toString().equals("dmn")).get(0);
         processOASAnn(dmnMethod, null);
-        template.addMember(cloneForDMNResult(dmnMethod, "dmn_dmnresult", "dmnresult", "$dmnMethodUrl$"));
+
+        final String dmnMethodUrlPlaceholder = "$dmnMethodUrl$";
+
+        template.addMember(cloneForDMNResult(dmnMethod, "dmn_dmnresult", "dmnresult", dmnMethodUrlPlaceholder));
         for (DecisionService ds : dmnModel.getDefinitions().getDecisionService()) {
             if (ds.getAdditionalAttributes().keySet().stream().anyMatch(qn -> qn.getLocalPart().equals("dynamicDecisionService"))) {
                 continue;
@@ -139,7 +157,7 @@ public class DecisionRestResourceGenerator {
 
             //insert request path
             final String path = ds.getName();
-            interpolateRequestPath(path, "$dmnMethodUrl$", clonedMethod);
+            interpolateRequestPath(path, dmnMethodUrlPlaceholder, clonedMethod);
 
             ReturnStmt returnStmt = clonedMethod.findFirst(ReturnStmt.class).orElseThrow(TEMPLATE_WAS_MODIFIED);
             if (ds.getOutputDecision().size() == 1) {
@@ -158,7 +176,7 @@ public class DecisionRestResourceGenerator {
         }
 
         //set the root path for the dmnMethod itself
-        interpolateRequestPath("", "$dmnMethodUrl$", dmnMethod);
+        interpolateRequestPath("", dmnMethodUrlPlaceholder, dmnMethod);
 
         interpolateOutputType(template);
 
@@ -337,12 +355,6 @@ public class DecisionRestResourceGenerator {
         return this.dmnModel;
     }
 
-    public DecisionRestResourceGenerator withDependencyInjection(DependencyInjectionAnnotator annotator) {
-        this.annotator = annotator;
-        this.generator.withDependencyInjection(annotator);
-        return this;
-    }
-
     public DecisionRestResourceGenerator withAddons(AddonsConfig addonsConfig) {
         this.addonsConfig = addonsConfig;
         return this;
@@ -402,10 +414,6 @@ public class DecisionRestResourceGenerator {
 
     public String generatedFilePath() {
         return relativePath;
-    }
-
-    protected boolean useInjection() {
-        return this.annotator != null;
     }
 
     public DecisionRestResourceGenerator withStronglyTyped(boolean stronglyTyped) {
