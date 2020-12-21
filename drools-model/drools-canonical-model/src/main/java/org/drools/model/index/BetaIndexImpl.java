@@ -24,9 +24,16 @@ public class BetaIndexImpl<A, B, V> extends AbstractIndex<A, V> implements BetaI
 
     private final Function1<B, ?> rightOperandExtractor;
 
+    private final Class<?> rightReturnType;
+
     public BetaIndexImpl(Class<V> indexedClass, ConstraintType constraintType, int indexId, Function1<A, V> leftOperandExtractor, Function1<B, ?> rightOperandExtractor) {
-        super( indexedClass, constraintType, indexId, leftOperandExtractor );
+        this(indexedClass, constraintType, indexId, leftOperandExtractor, rightOperandExtractor, null);
+    }
+
+    public BetaIndexImpl(Class<V> indexedClass, ConstraintType constraintType, int indexId, Function1<A, V> leftOperandExtractor, Function1<B, ?> rightOperandExtractor, Class<?> rightReturnType) {
+        super(indexedClass, constraintType, indexId, leftOperandExtractor);
         this.rightOperandExtractor = rightOperandExtractor;
+        this.rightReturnType = rightReturnType;
     }
 
     @Override
@@ -40,10 +47,14 @@ public class BetaIndexImpl<A, B, V> extends AbstractIndex<A, V> implements BetaI
     }
 
     @Override
+    public Class<?> getRightReturnType() {
+        return rightReturnType;
+    }
+
+    @Override
     public String toString() {
         return "BetaIndex #" + getIndexId() + " (" + getConstraintType() + ", " +
                 "left: lambda " + System.identityHashCode(getLeftOperandExtractor()) + ", " +
                 "right: lambda " + System.identityHashCode(rightOperandExtractor) + ")";
     }
-
 }

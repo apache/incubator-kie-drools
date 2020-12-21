@@ -36,4 +36,6 @@ public interface IndexableConstraint extends Constraint {
     InternalReadAccessor getFieldExtractor();
 
     default void unsetUnification() { }
+
+    Declaration getIndexingDeclaration();
 }

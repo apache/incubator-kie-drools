@@ -70,7 +70,14 @@ public class LambdaConstraint extends AbstractConstraint {
                 indexingDeclaration = evaluator.getRequiredDeclarations()[0];
                 if ( indexingDeclaration.getExtractor() instanceof PatternExtractor ) {
                     indexingDeclaration = indexingDeclaration.clone();
-                    indexingDeclaration.setReadAccessor( new LambdaReadAccessor( index.getIndexId(), index.getIndexedClass(), (( BetaIndex ) index).getRightOperandExtractor() ) );
+                    org.drools.model.Index.ConstraintType constraintType = index.getConstraintType();
+                    Class<?> accessorFieldType;
+                    if (((BetaIndex) index).getRightReturnType() != null) {
+                        accessorFieldType = ((BetaIndex) index).getRightReturnType();
+                    } else {
+                        accessorFieldType = index.getIndexedClass();
+                    }
+                    indexingDeclaration.setReadAccessor( new LambdaReadAccessor( index.getIndexId(), accessorFieldType, (( BetaIndex ) index).getRightOperandExtractor() ) );
                 }
             }
         }
@@ -172,7 +179,7 @@ public class LambdaConstraint extends AbstractConstraint {
 
     @Override
     public boolean isIndexable( short nodeType ) {
-        return getConstraintType().isIndexableForNode(nodeType);
+        return getConstraintType().isIndexableForNode(nodeType, this);
     }
 
     @Override
@@ -212,6 +219,11 @@ public class LambdaConstraint extends AbstractConstraint {
     @Override
     public InternalReadAccessor getFieldExtractor() {
         return readAccessor;
+    }
+
+    @Override
+    public Declaration getIndexingDeclaration() {
+        return indexingDeclaration;
     }
 
     public static class LambdaContextEntry implements ContextEntry {

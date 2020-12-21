@@ -73,4 +73,10 @@ public class Cheese implements Serializable {
     public void setOldPrice(final int oldPrice) {
         this.oldPrice = oldPrice;
     }
+
+    @Override
+    public String toString() {
+        return "Cheese [type=" + type + ", price=" + price + ", oldPrice=" + oldPrice + "]";
+    }
+
 }
