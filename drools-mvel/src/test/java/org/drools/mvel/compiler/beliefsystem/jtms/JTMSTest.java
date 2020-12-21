@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.drools.mvel.compiler.Person;
 import org.drools.core.BeliefSystemType;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.beliefsystem.jtms.JTMSBeliefSetImpl;
@@ -31,8 +30,11 @@ import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.util.ObjectHashMap;
 import org.drools.core.util.ObjectHashMap.ObjectEntry;
+import org.drools.mvel.compiler.Person;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.api.KieBaseConfiguration;
+import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
@@ -43,9 +45,11 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.event.rule.RuleEventListener;
 import org.kie.internal.event.rule.RuleEventManager;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class JTMSTest {
 
@@ -64,7 +68,9 @@ public class JTMSTest {
             System.setProperty("drools.negatable", "off");
         }
 
-        InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase( );
+        KieBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        conf.setOption( EqualityBehaviorOption.EQUALITY );
+        InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase( conf );
         kBase.addPackages( kBuilder.getKnowledgePackages() );
 
         KieSessionConfiguration ksConf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();

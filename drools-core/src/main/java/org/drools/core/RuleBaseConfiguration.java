@@ -38,6 +38,7 @@ import org.kie.api.KieBaseConfiguration;
 import org.kie.api.conf.DeclarativeAgendaOption;
 import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.conf.EventProcessingOption;
+import org.kie.api.conf.KieBaseMutabilityOption;
 import org.kie.api.conf.KieBaseOption;
 import org.kie.api.conf.MBeansOption;
 import org.kie.api.conf.MultiValueKieBaseOption;
@@ -106,8 +107,7 @@ import static org.drools.core.util.MemoryUtil.hasPermGen;
  * drools.sessionClock = &lt;qualified class name&gt;
  * drools.mbeans = &lt;enabled|disabled&gt;
  * drools.classLoaderCacheEnabled = &lt;true|false&gt;
- * drools.phreakEnabled = &lt;true|false&gt;
- * drools.declarativeAgendaEnabled =  &lt;true|false&gt; 
+ * drools.declarativeAgendaEnabled =  &lt;true|false&gt;
  * drools.permgenThreshold = &lt;1...n&gt;
  * drools.jittingThreshold = &lt;1...n&gt;
  * </pre>
@@ -147,7 +147,7 @@ public class RuleBaseConfiguration
     private String          consequenceExceptionHandler;
     private String          ruleBaseUpdateHandler;
     private boolean         classLoaderCacheEnabled;
-    private boolean         phreakEnabled;
+    private boolean         mutabilityEnabled;
 
     private boolean declarativeAgenda;
 
@@ -211,10 +211,10 @@ public class RuleBaseConfiguration
         out.writeInt(maxThreads);
         out.writeObject(eventProcessingMode);
         out.writeBoolean(classLoaderCacheEnabled);
-        out.writeBoolean(phreakEnabled);
         out.writeBoolean(declarativeAgenda);
         out.writeObject(componentFactory);
         out.writeInt(sessionPoolSize);
+        out.writeBoolean(mutabilityEnabled);
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -244,10 +244,10 @@ public class RuleBaseConfiguration
         maxThreads = in.readInt();
         eventProcessingMode = (EventProcessingOption) in.readObject();
         classLoaderCacheEnabled = in.readBoolean();
-        phreakEnabled = in.readBoolean();
         declarativeAgenda = in.readBoolean();
         componentFactory = (KieComponentFactory) in.readObject();
         sessionPoolSize = in.readInt();
+        mutabilityEnabled = in.readBoolean();
     }
 
     /**
@@ -341,6 +341,8 @@ public class RuleBaseConfiguration
             setMBeansEnabled( MBeansOption.isEnabled(value));
         } else if ( name.equals( ClassLoaderCacheOption.PROPERTY_NAME ) ) {
             setClassLoaderCacheEnabled( StringUtils.isEmpty( value ) ? true : Boolean.valueOf(value));
+        } else if ( name.equals( KieBaseMutabilityOption.PROPERTY_NAME ) ) {
+            setMutabilityEnabled( StringUtils.isEmpty( value ) ? true : KieBaseMutabilityOption.determineMutability(value) == KieBaseMutabilityOption.ALLOWED );
         }
     }
 
@@ -396,6 +398,8 @@ public class RuleBaseConfiguration
             return isMBeansEnabled() ? "enabled" : "disabled";
         } else if ( name.equals( ClassLoaderCacheOption.PROPERTY_NAME ) ) {
             return Boolean.toString( isClassLoaderCacheEnabled() );
+        } else if ( name.equals( KieBaseMutabilityOption.PROPERTY_NAME ) ) {
+            return isMutabilityEnabled() ? "ALLOWED" : "DISABLED";
         }
 
         return null;
@@ -488,6 +492,9 @@ public class RuleBaseConfiguration
         
         setDeclarativeAgendaEnabled( Boolean.valueOf( this.chainedProperties.getProperty( DeclarativeAgendaOption.PROPERTY_NAME,
                                                                                           "false" ) ) );
+
+        setMutabilityEnabled( KieBaseMutabilityOption.determineMutability(
+                this.chainedProperties.getProperty( KieBaseMutabilityOption.PROPERTY_NAME, "ALLOWED" )) == KieBaseMutabilityOption.ALLOWED );
     }
 
     /**
@@ -908,6 +915,14 @@ public class RuleBaseConfiguration
         return this.mbeansEnabled;
     }
 
+    public void setMutabilityEnabled( boolean mutabilityEnabled ) {
+        this.mutabilityEnabled = mutabilityEnabled;
+    }
+
+    public boolean isMutabilityEnabled() {
+        return mutabilityEnabled;
+    }
+
     public static class AssertBehaviour
             implements
             Externalizable {
@@ -1151,6 +1166,8 @@ public class RuleBaseConfiguration
             return (T) (this.isClassLoaderCacheEnabled() ? ClassLoaderCacheOption.ENABLED : ClassLoaderCacheOption.DISABLED);
         } else if (DeclarativeAgendaOption.class.equals(option)) {
             return (T) (this.isDeclarativeAgenda() ? DeclarativeAgendaOption.ENABLED : DeclarativeAgendaOption.DISABLED);
+        } else if (KieBaseMutabilityOption.class.equals(option)) {
+            return (T) (this.isMutabilityEnabled() ? KieBaseMutabilityOption.ALLOWED : KieBaseMutabilityOption.DISABLED);
         }
         return null;
 
@@ -1201,6 +1218,8 @@ public class RuleBaseConfiguration
             setClassLoaderCacheEnabled( ( (ClassLoaderCacheOption) option ).isClassLoaderCacheEnabled());
         } else if (option instanceof DeclarativeAgendaOption) {
             setDeclarativeAgendaEnabled(((DeclarativeAgendaOption) option).isDeclarativeAgendaEnabled());
+        } else if (option instanceof KieBaseMutabilityOption) {
+            setMutabilityEnabled(((KieBaseMutabilityOption) option) == KieBaseMutabilityOption.ALLOWED);
         }
 
     }

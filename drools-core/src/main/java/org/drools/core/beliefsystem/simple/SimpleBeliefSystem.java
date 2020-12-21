@@ -167,7 +167,7 @@ public class SimpleBeliefSystem
         ObjectTypeConfigurationRegistry reg;
         ObjectTypeConf typeConf;
         reg = ep.getObjectTypeConfigurationRegistry();
-        typeConf = reg.getObjectTypeConf( ep.getEntryPoint(), fh.getObject() );
+        typeConf = reg.getOrCreateObjectTypeConf( ep.getEntryPoint(), fh.getObject() );
         return typeConf;
     }
 

@@ -92,7 +92,7 @@ public class BeliefSystemLogicalCallback extends PropagationEntry.AbstractPropag
             if ( fullyRetract ) {
                 nep.delete( this.handle, context.getRuleOrigin(), this.activation.getTuple().getTupleSink() );
             } else {
-                ObjectTypeConf typeConf = nep.getObjectTypeConfigurationRegistry().getObjectTypeConf( nep.getEntryPoint(), handle.getObject() );
+                ObjectTypeConf typeConf = nep.getObjectTypeConfigurationRegistry().getOrCreateObjectTypeConf( nep.getEntryPoint(), handle.getObject() );
                 nep.getEntryPointNode().retractObject( handle, context, typeConf, workingMemory );
             }
         }

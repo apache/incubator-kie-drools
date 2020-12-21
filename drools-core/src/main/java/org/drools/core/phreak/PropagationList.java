@@ -40,4 +40,6 @@ public interface PropagationList {
     void onEngineInactive();
 
     void dispose();
+
+    void setFiringUntilHalt( boolean firingUntilHalt );
 }

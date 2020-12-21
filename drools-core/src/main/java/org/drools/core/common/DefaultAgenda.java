@@ -1036,7 +1036,12 @@ public class DefaultAgenda
     }
 
     void internalFireUntilHalt( AgendaFilter agendaFilter, boolean isInternalFire ) {
-        fireLoop( agendaFilter, -1, RestHandler.FIRE_UNTIL_HALT, isInternalFire );
+        propagationList.setFiringUntilHalt( true );
+        try {
+            fireLoop( agendaFilter, -1, RestHandler.FIRE_UNTIL_HALT, isInternalFire );
+        } finally {
+            propagationList.setFiringUntilHalt( false );
+        }
     }
 
     @Override
