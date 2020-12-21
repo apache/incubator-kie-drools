@@ -64,6 +64,7 @@ import static org.drools.mvel.parser.Providers.resourceProvider;
  */
 public final class MvelParser {
     private final ParserConfiguration configuration;
+    private final boolean optionalSemicolon;
 
     private GeneratedMvelParser astParser = null;
     private static ParserConfiguration staticConfiguration = new ParserConfiguration();
@@ -89,8 +90,13 @@ public final class MvelParser {
      * Creating an instance will reduce setup time between parsing files.
      */
     public MvelParser(ParserConfiguration configuration) {
+        this(configuration, true /* default to optional semicolon */);
+    }
+
+    public MvelParser(ParserConfiguration configuration, boolean optionalSemicolon) {
         this.configuration = configuration;
         configuration.getPostProcessors().clear();
+        this.optionalSemicolon = optionalSemicolon;
     }
 
     /**
@@ -126,6 +132,7 @@ public final class MvelParser {
         }
         astParser.setTabSize(configuration.getTabSize());
         astParser.setStoreTokens(configuration.isStoreTokens());
+        astParser.setOptionalSemicolon(optionalSemicolon);
         return astParser;
     }
 

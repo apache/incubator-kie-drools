@@ -5,7 +5,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,7 +32,7 @@ import org.drools.mvel.parser.ast.expr.BigDecimalLiteralExpr;
 import org.drools.mvel.parser.ast.expr.DrlNameExpr;
 import org.drools.mvel.parser.ast.visitor.DrlGenericVisitor;
 import org.drools.mvelcompiler.ast.BigDecimalArithmeticExprT;
-import org.drools.mvelcompiler.ast.BigDecimalConstantExprT;
+import org.drools.mvelcompiler.ast.BigDecimalConvertedExprT;
 import org.drools.mvelcompiler.ast.BinaryTExpr;
 import org.drools.mvelcompiler.ast.CastExprT;
 import org.drools.mvelcompiler.ast.CharacterLiteralExpressionT;
@@ -210,10 +209,10 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
                                                      left, right);
             } else if (typeLeft != BigDecimal.class && typeRight == BigDecimal.class) { // convert left
                 return new BigDecimalArithmeticExprT(toBigDecimalMethod(operator),
-                                                     new BigDecimalConstantExprT(left), right);
+                                                     new BigDecimalConvertedExprT(left), right);
             } else if (typeLeft == BigDecimal.class && typeRight != BigDecimal.class) { // convert right
                 return new BigDecimalArithmeticExprT(toBigDecimalMethod(operator),
-                                                     left, new BigDecimalConstantExprT(right));
+                                                     left, new BigDecimalConvertedExprT(right));
             }
         }
 
@@ -295,7 +294,7 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
 
     @Override
     public TypedExpression visit(BigDecimalLiteralExpr n, Context arg) {
-        return new BigDecimalConstantExprT(new StringLiteralExpressionT(new StringLiteralExpr(n.getValue())));
+        return new BigDecimalConvertedExprT(new StringLiteralExpressionT(new StringLiteralExpr(n.getValue())));
     }
 
     private Class<?> resolveType(com.github.javaparser.ast.type.Type type) {

@@ -148,6 +148,7 @@ public class KnowledgeBaseImpl
     private transient Map<String, Class<?>> globals;
 
     private final transient Queue<DialectRuntimeRegistry> reloadPackageCompilationData = new ConcurrentLinkedQueue<>();
+    private final transient AtomicBoolean hasPackageCompilationData = new AtomicBoolean(false);
 
     private KieBaseEventSupport eventSupport = new KieBaseEventSupport(this);
 
@@ -1663,10 +1664,17 @@ public class KnowledgeBaseImpl
     }
 
     public void executeQueuedActions() {
-        DialectRuntimeRegistry registry;
-        while (( registry = reloadPackageCompilationData.poll() ) != null) {
-            registry.onBeforeExecute();
+        if (hasPackageCompilationData.compareAndSet( true, false )) {
+            DialectRuntimeRegistry registry;
+            while ((registry = reloadPackageCompilationData.poll()) != null) {
+                registry.onBeforeExecute();
+            }
         }
+    }
+
+    private void addReloadDialectDatas( DialectRuntimeRegistry registry ) {
+        this.reloadPackageCompilationData.offer( registry );
+        hasPackageCompilationData.set( true );
     }
 
     public RuleBasePartitionId createNewPartitionId() {
@@ -1687,10 +1695,6 @@ public class KnowledgeBaseImpl
         } finally {
             readUnlock();
         }
-    }
-
-    private void addReloadDialectDatas( DialectRuntimeRegistry registry ) {
-        this.reloadPackageCompilationData.offer( registry );
     }
 
     public ClassFieldAccessorCache getClassFieldAccessorCache() {

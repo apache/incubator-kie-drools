@@ -26,6 +26,7 @@ import org.drools.mvel.parser.ast.expr.DrlNameExpr;
 import org.drools.mvel.parser.ast.visitor.DrlGenericVisitor;
 import org.drools.mvelcompiler.ast.AssignExprT;
 import org.drools.mvelcompiler.ast.BigDecimalArithmeticExprT;
+import org.drools.mvelcompiler.ast.BigDecimalConvertedExprT;
 import org.drools.mvelcompiler.ast.BlockStmtT;
 import org.drools.mvelcompiler.ast.ExpressionStmtT;
 import org.drools.mvelcompiler.ast.FieldToAccessorTExpr;
@@ -192,7 +193,11 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, Void> {
                 .orElseThrow(() -> new MvelCompilerException("No getter found but setter is present for accessor: " + accessorName));
 
         FieldToAccessorTExpr getterExpression = new FieldToAccessorTExpr(fieldAccessScope, optGetter, emptyList());
-        BigDecimalArithmeticExprT bigDecimalArithmeticExprT = new BigDecimalArithmeticExprT(bigDecimalArithmeticMethod, getterExpression, rhsOrError());
+        TypedExpression argument = rhsOrError();
+        if(argument.getType().filter(t -> t != BigDecimal.class).isPresent()) {
+            argument = new BigDecimalConvertedExprT(argument);
+        }
+        BigDecimalArithmeticExprT bigDecimalArithmeticExprT = new BigDecimalArithmeticExprT(bigDecimalArithmeticMethod, getterExpression, argument);
         return new FieldToAccessorTExpr(fieldAccessScope, setter, singletonList(bigDecimalArithmeticExprT));
     }
 
