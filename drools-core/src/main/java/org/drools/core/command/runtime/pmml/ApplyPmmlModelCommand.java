@@ -174,7 +174,7 @@ public class ApplyPmmlModelCommand implements ExecutableCommand<PMML4Result>,
         RegistryContext registryContext = (RegistryContext) context;
         PMML4Result toReturn = PMMLCommandExecutorFactory.get().newPMMLCommandExecutor().execute(requestData, context);
         // Needed to update the ExecutionResultImpl and the Registry context,
-        // has done inside legacy implementation
+        // as done inside legacy implementation
         Optional<ExecutionResultImpl> execRes = Optional.ofNullable(registryContext.lookup(ExecutionResultImpl.class));
         registryContext.register(PMML4Result.class, toReturn);
         execRes.ifPresent(result -> result.setResult("results", toReturn));
