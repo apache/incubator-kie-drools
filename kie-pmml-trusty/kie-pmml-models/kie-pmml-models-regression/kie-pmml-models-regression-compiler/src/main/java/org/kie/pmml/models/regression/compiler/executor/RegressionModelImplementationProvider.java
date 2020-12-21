@@ -60,7 +60,7 @@ public class RegressionModelImplementationProvider implements ModelImplementatio
         logger.trace("getKiePMMLModel {} {} {}", dataDictionary, model, hasClassloader);
         validate(dataDictionary, model);
         try {
-            return KiePMMLRegressionModelFactory.getKiePMMLRegressionModelClasses(dataDictionary, transformationDictionary, model, hasClassloader.getClassLoader());
+            return KiePMMLRegressionModelFactory.getKiePMMLRegressionModelClasses(dataDictionary, transformationDictionary, model, hasClassloader);
         } catch (IOException | IllegalAccessException | InstantiationException e) {
             throw new KiePMMLException(e.getMessage(), e);
         }

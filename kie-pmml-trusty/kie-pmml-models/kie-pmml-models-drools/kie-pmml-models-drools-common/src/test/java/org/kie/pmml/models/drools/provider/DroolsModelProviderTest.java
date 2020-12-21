@@ -36,6 +36,7 @@ import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.HasClassLoader;
+import org.kie.pmml.compiler.commons.mocks.HasClassLoaderMock;
 import org.kie.pmml.compiler.testutils.TestUtils;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsAST;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsType;
@@ -129,7 +130,7 @@ public class DroolsModelProviderTest {
         droolsModelProvider.getKiePMMLModel(pmml.getDataDictionary(),
                                             pmml.getTransformationDictionary(),
                                             scorecard,
-                                            () -> null);
+                                            new HasClassLoaderMock());
     }
 
     @Test
@@ -166,7 +167,7 @@ public class DroolsModelProviderTest {
                                                        pmml.getDataDictionary(),
                                                        pmml.getTransformationDictionary(),
                                                        scorecard,
-                                                       () -> null);
+                                                       new HasClassLoaderMock());
     }
 
     @Test

@@ -13,27 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.models.drools.scorecard.evaluator;
+package org.kie.pmml.compiler.commons.mocks;
 
-import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.pmml.kie.dependencies.HasKnowledgeBuilder;
+import java.util.Map;
 
-public class HasKnowledgeBuilderMock implements HasKnowledgeBuilder {
+import org.kie.memorycompiler.KieMemoryCompiler;
+import org.kie.pmml.commons.model.HasClassLoader;
 
-    private final KnowledgeBuilderImpl knowledgeBuilder;
+public class HasClassLoaderMock implements HasClassLoader {
 
-    public HasKnowledgeBuilderMock(KnowledgeBuilderImpl knowledgeBuilder) {
-        this.knowledgeBuilder = knowledgeBuilder;
+    private final ClassLoader classLoader;
+
+    public HasClassLoaderMock() {
+        this.classLoader = Thread.currentThread().getContextClassLoader();
     }
 
     @Override
     public ClassLoader getClassLoader() {
-        return knowledgeBuilder.getRootClassLoader();
+        return classLoader;
     }
 
     @Override
-    public KnowledgeBuilder getKnowledgeBuilder() {
-        return knowledgeBuilder;
+    public Class<?> compileAndLoadClass(Map<String, String> sourcesMap, String fullClassName) {
+        Map<String, Class<?>> compiled = KieMemoryCompiler.compile(sourcesMap, classLoader);
+        return compiled.get(fullClassName);
     }
 }

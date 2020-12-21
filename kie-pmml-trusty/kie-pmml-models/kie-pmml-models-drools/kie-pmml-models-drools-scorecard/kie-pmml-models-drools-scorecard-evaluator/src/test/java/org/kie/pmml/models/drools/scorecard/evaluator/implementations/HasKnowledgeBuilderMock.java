@@ -13,32 +13,42 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.compiler.commons.utils;
+package org.kie.pmml.models.drools.scorecard.evaluator.implementations;
 
 import java.util.Map;
 
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.reflective.classloader.ProjectClassLoader;
+import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.kie.dependencies.HasKnowledgeBuilder;
 
-/**
- * Class meant to provide <i>helper</i> methods related to <code>ClassLoader</code>s
- */
-public class ClassloaderUtils {
+public class HasKnowledgeBuilderMock implements HasKnowledgeBuilder {
 
-    private ClassloaderUtils() {
-        // avoid instantiation
+    private final KnowledgeBuilderImpl knowledgeBuilder;
+
+    public HasKnowledgeBuilderMock(KnowledgeBuilderImpl knowledgeBuilder) {
+        this.knowledgeBuilder = knowledgeBuilder;
     }
 
-    /**
-     * This method compile the given sources and add them to given <code>ProjectClassLoader</code>
-     * Returns the <code>Class</code> with the given <b>fullClassName</b>
-     * @param projectClassLoader
-     * @param sourcesMap
-     * @param fullClassName
-     * @return
-     */
-    public static Class<?> compileAndLoadClass(ProjectClassLoader projectClassLoader, Map<String, String> sourcesMap, String fullClassName) {
+    @Override
+    public ClassLoader getClassLoader() {
+        return knowledgeBuilder.getRootClassLoader();
+    }
+
+    @Override
+    public KnowledgeBuilder getKnowledgeBuilder() {
+        return knowledgeBuilder;
+    }
+
+    @Override
+    public Class<?> compileAndLoadClass(Map<String, String> sourcesMap, String fullClassName) {
+        ClassLoader classLoader = getClassLoader();
+        if (!(classLoader instanceof ProjectClassLoader)) {
+            throw new IllegalStateException("Expected ProjectClassLoader, received " + classLoader.getClass().getName());
+        }
+        ProjectClassLoader projectClassLoader = (ProjectClassLoader) classLoader;
         final Map<String, byte[]> byteCode = KieMemoryCompiler.compileNoLoad(sourcesMap, projectClassLoader);
         byteCode.forEach(projectClassLoader::defineClass);
         try {
