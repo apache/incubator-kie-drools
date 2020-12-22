@@ -288,7 +288,7 @@ public class ProtobufMarshallerReaderContext extends ObjectInputStream implement
             handle = workingMemory.getFactHandleFactory().newFactHandle( _handle.getId(),
                     result,
                     _handle.getRecency(),
-                    workingMemory.getObjectTypeConfigurationRegistry().getObjectTypeConf( entryPointId,
+                    workingMemory.getObjectTypeConfigurationRegistry().getOrCreateObjectTypeConf( entryPointId,
                             result ),
                     workingMemory,
                     null ); // so far, result is not an event

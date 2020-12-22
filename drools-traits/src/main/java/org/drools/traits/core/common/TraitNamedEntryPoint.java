@@ -18,6 +18,7 @@ package org.drools.traits.core.common;
 
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.TraitHelper;
 import org.drools.core.common.ClassAwareObjectStore;
 import org.drools.core.common.InternalFactHandle;
@@ -59,7 +60,8 @@ public class TraitNamedEntryPoint extends NamedEntryPoint {
         this.lock = lock;
         this.handleFactory = this.wm.getFactHandleFactory();
         this.pctxFactory = kBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
-        this.objectStore = new ClassAwareObjectStore(this.kBase.getConfiguration(), this.lock);
+        boolean isEqualityBehaviour = RuleBaseConfiguration.AssertBehaviour.EQUALITY.equals(this.kBase.getConfiguration().getAssertBehaviour());
+        this.objectStore = new ClassAwareObjectStore(isEqualityBehaviour, this.lock);
         this.traitHelper = componentFactory.createTraitHelper(wm, this);
     }
 

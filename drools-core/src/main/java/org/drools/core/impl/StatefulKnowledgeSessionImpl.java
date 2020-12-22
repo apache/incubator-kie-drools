@@ -222,7 +222,8 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
     protected InternalFactHandle initialFactHandle;
 
-    protected PropagationContextFactory pctxFactory;
+    private PropagationContextFactory pctxFactory;
+    private FactHandleFactory factHandleFactory;
 
     protected SessionConfiguration config;
 
@@ -389,6 +390,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         registerReceiveNodes(kBase.getReceiveNodes());
 
         this.pctxFactory = kBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
+        this.factHandleFactory = this.kBase.getConfiguration().getComponentFactory().getFactHandleFactoryService();
 
         if (agenda == null) {
             this.agenda = kBase.getConfiguration().getComponentFactory().getAgendaFactory().createAgenda(kBase);
@@ -746,8 +748,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
     public InternalFactHandle initInitialFact(InternalKnowledgeBase kBase, InternalWorkingMemoryEntryPoint entryPoint, EntryPointId epId, MarshallerReaderContext context) {
         InitialFact initialFact = InitialFactImpl.getInstance();
-        InternalFactHandle handle = this.kBase.getConfiguration().getComponentFactory().getFactHandleFactoryService()
-                    .createDefaultFactHandle(0, initialFact, 0, entryPoint);
+        InternalFactHandle handle = getFactHandleFactory().createDefaultFactHandle(0, initialFact, 0, entryPoint);
 
         ObjectTypeNode otn = entryPoint.getEntryPointNode().getObjectTypeNodes().get( InitialFact_ObjectType );
         if (otn != null) {
@@ -1206,7 +1207,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     }
 
     public FactHandleFactory getFactHandleFactory() {
-        return this.kBase.getConfiguration().getComponentFactory().getFactHandleFactoryService();
+        return factHandleFactory;
     }
 
     public void setGlobal(final String identifier,

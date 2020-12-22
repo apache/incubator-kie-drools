@@ -63,6 +63,10 @@ public interface InternalWorkingMemory
 
     ObjectStore getObjectStore();
 
+    default FactHandleClassStore getStoreForClass(Class<?> clazz) {
+        return getObjectStore().getStoreForClass(clazz);
+    }
+
     void queueWorkingMemoryAction(final WorkingMemoryAction action);
 
     FactHandleFactory getFactHandleFactory();

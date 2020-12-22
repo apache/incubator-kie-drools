@@ -46,6 +46,10 @@ public class ObjectTypeConfigurationRegistry implements Serializable {
      * creates a new one if none is found in the cache
      */
     public ObjectTypeConf getObjectTypeConf(EntryPointId entrypoint, Object object) {
+        return this.typeConfMap.get( getKey( object ) );
+    }
+
+    public ObjectTypeConf getOrCreateObjectTypeConf(EntryPointId entrypoint, Object object) {
         return this.typeConfMap.computeIfAbsent( getKey( object ), k -> createObjectTypeConf( entrypoint, k, object ) );
     }
 
