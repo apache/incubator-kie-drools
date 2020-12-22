@@ -50,6 +50,7 @@ import org.drools.core.rule.AsyncReceive;
 import org.drools.core.rule.AsyncSend;
 import org.drools.core.rule.Behavior;
 import org.drools.core.rule.ConditionalBranch;
+import org.drools.core.rule.ConditionalElement;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.EvalCondition;
@@ -502,27 +503,7 @@ public class KiePackagesBuilder {
                         .addChild( conditionToElement( ctx, group, condition.getSubConditions().get(0) ) );
             }
             case FORALL: {
-                Condition innerCondition = condition.getSubConditions().get(0);
-                if (innerCondition instanceof PatternImpl) {
-                    return new GroupElement( GroupElement.Type.NOT )
-                            .addChild( conditionToElement( ctx, group, (( PatternImpl ) innerCondition).negate() ) );
-                }
-
-                Constraint selfJoinConstraint = getForallSelfJoin( innerCondition );
-                if (selfJoinConstraint != null) {
-                    PatternImpl forallPattern = (PatternImpl) innerCondition.getSubConditions().get(0);
-                    PatternImpl joinPattern = (PatternImpl) innerCondition.getSubConditions().get(1);
-                    joinPattern.getConstraint().getChildren().remove( selfJoinConstraint );
-                    forallPattern.addConstraint( joinPattern.negate().getConstraint().replaceVariable(joinPattern.getPatternVariable(), forallPattern.getPatternVariable()) );
-                    return new GroupElement( GroupElement.Type.NOT ).addChild( conditionToElement( ctx, group, forallPattern ) );
-                }
-
-                List<Pattern> remainingPatterns = new ArrayList<>();
-                Pattern basePattern = ( Pattern ) conditionToElement( ctx, group, innerCondition.getSubConditions().get( 0 ) );
-                for (int i = 1; i < innerCondition.getSubConditions().size(); i++) {
-                    remainingPatterns.add( ( Pattern ) conditionToElement( ctx, group, innerCondition.getSubConditions().get( i ) ) );
-                }
-                return new Forall(basePattern, remainingPatterns);
+                return buildForAll( ctx, group, condition );
             }
             case CONSEQUENCE:
                 if (condition instanceof NamedConsequenceImpl) {
@@ -533,6 +514,45 @@ public class KiePackagesBuilder {
                 }
         }
         throw new UnsupportedOperationException();
+    }
+
+    private ConditionalElement buildForAll( RuleContext ctx, GroupElement group, Condition condition ) {
+        Condition innerCondition = condition.getSubConditions().get(0);
+        if (innerCondition instanceof PatternImpl) {
+            return new GroupElement( GroupElement.Type.NOT )
+                    .addChild( conditionToElement( ctx, group, (( PatternImpl ) innerCondition).negate() ) );
+        }
+
+        Constraint selfJoinConstraint = getForallSelfJoin( innerCondition );
+        if (selfJoinConstraint != null) {
+            return buildSelfJoinForAll( ctx, group, innerCondition, selfJoinConstraint );
+        }
+
+        List<Pattern> remainingPatterns = new ArrayList<>();
+        Pattern basePattern = ( Pattern ) conditionToElement( ctx, group, innerCondition.getSubConditions().get( 0 ) );
+        for (int i = 1; i < innerCondition.getSubConditions().size(); i++) {
+            remainingPatterns.add( ( Pattern ) conditionToElement( ctx, group, innerCondition.getSubConditions().get( i ) ) );
+        }
+        return new Forall(basePattern, remainingPatterns);
+    }
+
+    private GroupElement buildSelfJoinForAll( RuleContext ctx, GroupElement group, Condition innerCondition, Constraint selfJoinConstraint ) {
+        // transforms a self join forall in the form
+        // forall( $t : Type( constraints1 ) Type( this == $t, constraints2 ) )
+        // into
+        // exists( Type( constraints1 ) ) and not( Type( constraints1, !constraints2 ) )
+
+        PatternImpl forallPattern = (PatternImpl) innerCondition.getSubConditions().get(0);
+        PatternImpl joinPattern = (PatternImpl) innerCondition.getSubConditions().get(1);
+
+        GroupElement transformedForall = new GroupElement( GroupElement.Type.AND );
+        transformedForall.addChild( new GroupElement( GroupElement.Type.EXISTS ).addChild( conditionToElement( ctx, group, forallPattern ) ) );
+
+        joinPattern.getConstraint().getChildren().remove( selfJoinConstraint );
+        forallPattern.addConstraint( joinPattern.negate().getConstraint().replaceVariable(joinPattern.getPatternVariable(), forallPattern.getPatternVariable()) );
+        transformedForall.addChild( new GroupElement( GroupElement.Type.NOT ).addChild( conditionToElement( ctx, group, forallPattern ) ) );
+
+        return transformedForall;
     }
 
     private RuleConditionElement buildAccumulate( RuleContext ctx, GroupElement group, AccumulatePattern accumulatePattern ) {
