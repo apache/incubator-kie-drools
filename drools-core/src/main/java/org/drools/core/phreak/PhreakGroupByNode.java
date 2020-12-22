@@ -14,27 +14,21 @@
 
 package org.drools.core.phreak;
 
-import java.util.List;
-
 import org.drools.core.common.GroupByFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.TupleSets;
 import org.drools.core.reteoo.AccumulateNode;
-import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
-import org.drools.core.reteoo.AccumulateNode.BaseAccumulation;
-import org.drools.core.reteoo.AccumulateNode.GroupByContext;
-import org.drools.core.reteoo.AccumulateNode.GroupByContext;
 import org.drools.core.reteoo.AccumulateNode.AccumulateContextEntry;
+import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
+import org.drools.core.reteoo.AccumulateNode.GroupByContext;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
-import org.drools.core.reteoo.RightTuple;
 import org.drools.core.rule.Accumulate;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.index.TupleList;
 
 public class PhreakGroupByNode extends PhreakAccumulateNode {
-
 
     @Override
     AccumulateNode.BaseAccumulation initAccumulationContext(AccumulateMemory am, InternalWorkingMemory wm, Accumulate accumulate, LeftTuple leftTuple) {
@@ -91,19 +85,6 @@ public class PhreakGroupByNode extends PhreakAccumulateNode {
             super.propagateDelete(trgLeftTuples, stagedLeftTuples, tupleList.getContext());
         }
     }
-
-
-//    void removeMatch(final AccumulateNode accNode,
-//                    final Accumulate accumulate,
-//                    final RightTuple rightTuple,
-//                    final LeftTuple match,
-//                    final InternalWorkingMemory wm,
-//                    final AccumulateMemory am,
-//                    final BaseAccumulation accctx,
-//                    final boolean reaccumulate) {
-//        GroupByContext groupByContext = (GroupByContext) accctx;
-//        super.removeMatch(accNode, accumulate, rightTuple, match, wm, am, accctx, reaccumulate);
-//    }
 
     void postAccumulate(AccumulateNode accNode, Object accctx, LeftTuple match) {
         GroupByContext context = (GroupByContext)accctx;

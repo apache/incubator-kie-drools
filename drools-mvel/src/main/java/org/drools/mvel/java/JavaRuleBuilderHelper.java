@@ -268,7 +268,6 @@ public final class JavaRuleBuilderHelper {
                                                               new MapVariableResolverFactory( vars ),
                                                               registry ) );
 
-        System.out.println(context.getInvokers().get(invokerClassName));
         context.addInvokerLookup( invokerClassName, invokerLookup );
         context.addDescrLookups( invokerClassName, descrLookup );
     }

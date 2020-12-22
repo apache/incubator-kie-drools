@@ -143,54 +143,6 @@ public class MatchTest {
     }
 
     @Test
-    public void testGetObjectsAccumulate() {
-        // DROOLS-1470
-        String str =
-                "import org.drools.mvel.compiler.Foo\n" +
-                "import org.drools.mvel.compiler.Bar\n" +
-                "global java.util.List list\n" +
-                "rule R when\n" +
-                "  $b : Bar(id == \"roadster\")\n" +
-                "  accumulate(\n" +
-                "    $f : Foo(bar == $b);\n" +
-                "    $t : count($f)\n" +
-                "  )\n" +
-                "then\n" +
-                "  list.addAll(((org.drools.core.spi.Activation)kcontext.getMatch()).getObjectsDeep());\n" +
-                "end\n";
-
-        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
-        KieSession ksession = kbase.newKieSession();
-
-        List<Object> list = new ArrayList<>();
-        ksession.setGlobal("list", list);
-
-        Bar roadsterType = new Bar("roadster");
-        ksession.insert(roadsterType);
-        Foo bmwZ4 = new Foo("BMW Z4", roadsterType);
-        ksession.insert(bmwZ4);
-        Foo lotusElise = new Foo("Lotus Elise", roadsterType);
-        ksession.insert(lotusElise);
-        Foo mazdaMx5 = new Foo("Mazda MX-5", roadsterType);
-        ksession.insert(mazdaMx5);
-
-        Bar miniVanType = new Bar("minivan");
-        ksession.insert(miniVanType);
-        Foo kieCarnival = new Foo("Kia Carnival", miniVanType);
-        ksession.insert(kieCarnival);
-        Foo renaultEspace = new Foo("Renault Espace", miniVanType);
-        ksession.insert(renaultEspace);
-
-        ksession.fireAllRules();
-        assertTrue(list.contains(roadsterType));
-        assertTrue(list.contains(bmwZ4));
-        assertTrue(list.contains(lotusElise));
-        assertTrue(list.contains(mazdaMx5));
-
-        ksession.dispose();
-    }
-
-    @Test
     public void testGetObjectsAccumulateWithNoMatchingFacts() {
         // DROOLS-1470
         String drl =
@@ -265,57 +217,6 @@ public class MatchTest {
     }
 
     @Test
-    public void testGetObjectsAccumulateWithNestedExists() {
-        // DROOLS-1474
-        String str =
-                "import org.drools.mvel.compiler.Foo\n" +
-                "import org.drools.mvel.compiler.Bar\n" +
-                "global java.util.List list\n" +
-                "rule R when\n" +
-                "  $b1 : Bar(id == \"roadster\")\n" +
-                "  accumulate(\n" +
-                "    $b2 : Bar(this != $b1) and exists Foo(bar == $b2);\n" +
-                "    $t : count($b2)\n" +
-                "  )\n" +
-                "then\n" +
-                "  list.addAll(((org.drools.core.spi.Activation)kcontext.getMatch()).getObjectsDeep());\n" +
-                "end\n";
-
-        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
-        KieSession ksession = kbase.newKieSession();
-
-        List<Object> list = new ArrayList<>();
-        ksession.setGlobal("list", list);
-
-        Bar roadsterType = new Bar("roadster");
-        ksession.insert(roadsterType);
-        Foo bmwZ4 = new Foo("BMW Z4", roadsterType);
-        ksession.insert(bmwZ4);
-        Foo lotusElise = new Foo("Lotus Elise", roadsterType);
-        ksession.insert(lotusElise);
-        Foo mazdaMx5 = new Foo("Mazda MX-5", roadsterType);
-        ksession.insert(mazdaMx5);
-
-        Bar miniVanType = new Bar("minivan");
-        ksession.insert(miniVanType);
-        Foo kiaCarnival = new Foo("Kia Carnival", miniVanType);
-        ksession.insert(kiaCarnival);
-        Foo renaultEspace = new Foo("Renault Espace", miniVanType);
-        ksession.insert(renaultEspace);
-
-        ksession.fireAllRules();
-        assertTrue(list.contains(roadsterType));
-        assertFalse(list.contains(bmwZ4));
-        assertFalse(list.contains(lotusElise));
-        assertFalse(list.contains(mazdaMx5));
-        assertTrue(list.contains(miniVanType));
-        assertTrue(list.contains(kiaCarnival));
-        assertTrue(list.contains(renaultEspace));
-
-        ksession.dispose();
-    }
-
-    @Test
     public void testObjectsDeepOnNestedAccumulate() {
         // DROOLS-1686
         String drl = "package testpkg;\n" +
@@ -346,7 +247,7 @@ public class MatchTest {
     }
 
     @Test
-    public void testObjectsDeepOnAccumulateNotSupportingReverse() {
+    public void testObjectsDeepOnAccumulateNotSupported() {
         // DROOLS-1687
         String rule = "package testpkg;\n" +
                       "import " + CloudComputer.class.getCanonicalName() + "\n;" +
@@ -378,7 +279,6 @@ public class MatchTest {
             kieSession.fireAllRules();
             fail("Using getObjectsDeep() on a rule using an accumulate function not supporting reverse must fail");
         } catch (Exception e) {
-            assertTrue(e.toString().contains( "max" ));
             assertTrue(e.toString().contains( "requiredCpuPowerTotal" ));
         }
     }

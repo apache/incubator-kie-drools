@@ -23,25 +23,19 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
 
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.WorkingMemory;
-import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.BetaConstraints;
-import org.drools.core.common.EqualityKey;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
-import org.drools.core.factmodel.traits.TraitTypeEnum;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.Accumulate;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.Declaration;
-import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.Accumulator;
@@ -510,76 +504,6 @@ public class AccumulateNode extends BetaNode {
         }
     }
 
-//    public static class AccumulateContext extends AccumulationContext implements Externalizable {
-//        private AccumulatePropagationContext accPropCtx = new AccumulatePropagationContext();
-//
-//        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-//            super.readExternal( in );
-//            accPropCtx = (AccumulatePropagationContext) in.readObject();
-//        }
-//
-//        public void writeExternal(ObjectOutput out) throws IOException {
-//            super.writeExternal( out );
-//            out.writeObject(accPropCtx);
-//        }
-//
-//        @Override
-//        public AccumulatePropagationContext () {
-//            return accPropCtx;
-//        }
-//    }
-
-//    public static class GroupByContext implements AccumulationContextEntry {
-//        private Map<Object, AccumulationContextEntry> accPropCtxMap = new HashMap<>();
-//
-//
-//        public AccumulationContextEntry getAccPropCtxEntry(Object key) {
-//            return accPropCtxMap.computeIfAbsent( key, k -> new AccumulationContextEntry() );
-//        }
-//
-//        public Collection<AccumulatePropagationContext> getAllAccPropCtxs() {
-//            return accPropCtxMap.values();
-//        }
-//    }
-
-//    public static class AccumulatePropagationContext implements Externalizable {
-//        private InternalFactHandle  resultFactHandle;
-//        private LeftTuple           resultLeftTuple;
-//        private boolean             propagated;
-//
-//        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-//            propagated = in.readBoolean();
-//        }
-//
-//        public void writeExternal(ObjectOutput out) throws IOException {
-//            out.writeBoolean(propagated);
-//        }
-//
-//        public InternalFactHandle getResultFactHandle() {
-//            return resultFactHandle;
-//        }
-//
-//        public void setResultFactHandle(InternalFactHandle resultFactHandle) {
-//            this.resultFactHandle = resultFactHandle;
-//        }
-//
-//        public LeftTuple getResultLeftTuple() {
-//            return resultLeftTuple;
-//        }
-//
-//        public void setResultLeftTuple(LeftTuple resultLeftTuple) {
-//            this.resultLeftTuple = resultLeftTuple;
-//        }
-//
-//        public boolean isPropagated() {
-//            return propagated;
-//        }
-//
-//        public void setPropagated( boolean propagated ) {
-//            this.propagated = propagated;
-//        }
-//    }
-
     public LeftTuple createLeftTuple(InternalFactHandle factHandle,
                                      boolean leftTupleMemoryEnabled) {
         return new FromNodeLeftTuple(factHandle, this, leftTupleMemoryEnabled);
@@ -650,201 +574,5 @@ public class AccumulateNode extends BetaNode {
             return true;
         }
         return false;
-    }
-
-    public static class HolderFactHandle implements InternalFactHandle {
-        private Object object;
-
-        public HolderFactHandle(Object object) {
-            this.object = object;
-        }
-
-        @Override public long getId() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override public long getRecency() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override public Object getObject() {
-            return object;
-        }
-
-        @Override public String getObjectClassName() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override public void setObject(Object object) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override public void setEqualityKey(EqualityKey key) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override public EqualityKey getEqualityKey() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override public void setRecency(long recency) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override public void invalidate() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override public boolean isValid() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override public int getIdentityHashCode() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override public int getObjectHashCode() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override public boolean isDisconnected() {
-            return false;
-        }
-
-        @Override public boolean isEvent() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override public boolean isTraitOrTraitable() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override public boolean isTraitable() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override public boolean isTraiting() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override public TraitTypeEnum getTraitType() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override public RightTuple getFirstRightTuple() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override public LeftTuple getFirstLeftTuple() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override public EntryPointId getEntryPointId() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override public WorkingMemoryEntryPoint getEntryPoint(InternalWorkingMemory wm) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override public InternalFactHandle clone() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override public String toExternalForm() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override public void disconnect() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override public void addFirstLeftTuple(LeftTuple leftTuple) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override public void addLastLeftTuple(LeftTuple leftTuple) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override public void removeLeftTuple(LeftTuple leftTuple) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override public void clearLeftTuples() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override public void clearRightTuples() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override public void addFirstRightTuple(RightTuple rightTuple) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override public void addLastRightTuple(RightTuple rightTuple) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override public void removeRightTuple(RightTuple rightTuple) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override public void addTupleInPosition(Tuple tuple) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override public boolean isNegated() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override public void setNegated(boolean negated) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override public <K> K as(Class<K> klass) throws ClassCastException {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override public boolean isExpired() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override public boolean isPendingRemoveFromStore() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override public void forEachRightTuple(Consumer<RightTuple> rightTupleConsumer) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override public void forEachLeftTuple(Consumer<LeftTuple> leftTupleConsumer) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override public RightTuple findFirstRightTuple(Predicate<RightTuple> rightTuplePredicate) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override public LeftTuple findFirstLeftTuple(Predicate<LeftTuple> lefttTuplePredicate) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override public void setFirstLeftTuple(LeftTuple firstLeftTuple) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override public LinkedTuples detachLinkedTuples() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override public LinkedTuples detachLinkedTuplesForPartition(int i) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override public LinkedTuples getLinkedTuples() {
-            throw new UnsupportedOperationException();
-        }
     }
 }
