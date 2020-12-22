@@ -33,7 +33,7 @@ class CloudEventsMessageProducerGeneratorTest {
     void verifyKnativeAddonProcessing() {
         final List<ProcessExecutableModelGenerator> models =
                 ProcessGenerationUtils.execModelFromProcessFile("/messageevent/IntermediateThrowEventMessage.bpmn2");
-        final KogitoBuildContext buildContext = new QuarkusKogitoBuildContext(s -> true);
+        final KogitoBuildContext context = QuarkusKogitoBuildContext.builder().build();
         Assertions.assertThat(models).isNotEmpty();
         models.forEach(m -> {
             final TriggerMetaData metaData = m.generate().getTriggers()
@@ -44,7 +44,7 @@ class CloudEventsMessageProducerGeneratorTest {
             final MessageDataEventGenerator msgDataEventGenerator =
                     new MessageDataEventGenerator(m.process(), metaData);
             final MessageProducerGenerator gen =
-                    new CloudEventsMessageProducerGenerator(buildContext, m.process(), "", "", msgDataEventGenerator.className(), metaData);
+                    new CloudEventsMessageProducerGenerator(context, m.process(), "", "", msgDataEventGenerator.className(), metaData);
             final String code = gen.generate();
             Assertions.assertThat(code).isNotBlank();
             Assertions.assertThat(code).contains("decorator.get().decorate");

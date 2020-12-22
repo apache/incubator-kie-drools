@@ -39,24 +39,24 @@ public class PMMLRestResourceGenerator {
     private static final String SPRING_TEMPLATE = "/class-templates/spring/SpringPMMLRestResourceTemplate.java";
 
     private final String nameURL;
-    final String packageName;
+    final String restPackageName;
     final String appCanonicalName;
     private final String resourceClazzName;
     private final String relativePath;
-    private final KogitoBuildContext buildContext;
+    private final KogitoBuildContext context;
     private final KiePMMLModel kiePMMLModel;
     private final TemplatedGenerator generator;
 
-    public PMMLRestResourceGenerator(KogitoBuildContext buildContext, KiePMMLModel model, String appCanonicalName) {
-        this.buildContext = buildContext;
+    public PMMLRestResourceGenerator(KogitoBuildContext context, KiePMMLModel model, String appCanonicalName) {
+        this.context = context;
         this.kiePMMLModel = model;
-        this.packageName = "org.kie.kogito." + CodegenStringUtil.escapeIdentifier(model.getClass().getPackage().getName());
+        this.restPackageName = "org.kie.kogito." + CodegenStringUtil.escapeIdentifier(model.getClass().getPackage().getName());
         String classPrefix = getSanitizedClassName(model.getName());
         this.nameURL = URLEncoder.encode(classPrefix).replaceAll("\\+", "%20");
         this.appCanonicalName = appCanonicalName;
         this.resourceClazzName = classPrefix + "Resource";
-        this.relativePath = packageName.replace(".", "/") + "/" + resourceClazzName + ".java";
-        this.generator = new TemplatedGenerator(buildContext, packageName, "DecisionRestResource",CDI_TEMPLATE, SPRING_TEMPLATE, CDI_TEMPLATE);
+        this.relativePath = restPackageName.replace(".", "/") + "/" + resourceClazzName + ".java";
+        this.generator = new TemplatedGenerator(context, restPackageName, "DecisionRestResource",CDI_TEMPLATE, SPRING_TEMPLATE, CDI_TEMPLATE);
     }
 
     public String generate() {
@@ -72,9 +72,9 @@ public class PMMLRestResourceGenerator {
         setPathValue(template);
         setPredictionModelName(template);
 
-        if (buildContext.hasDI()) {
+        if (context.hasDI()) {
             template.findAll(FieldDeclaration.class,
-                             CodegenUtils::isApplicationField).forEach(fd -> buildContext.getDependencyInjectionAnnotator().withInjection(fd));
+                             CodegenUtils::isApplicationField).forEach(fd -> context.getDependencyInjectionAnnotator().withInjection(fd));
         } else {
             template.findAll(FieldDeclaration.class,
                              CodegenUtils::isApplicationField).forEach(this::initializeApplicationField);

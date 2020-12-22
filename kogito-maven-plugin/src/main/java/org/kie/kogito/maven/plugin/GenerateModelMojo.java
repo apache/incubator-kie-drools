@@ -47,8 +47,8 @@ import org.kie.kogito.codegen.AddonsConfig;
 import org.kie.kogito.codegen.ApplicationGenerator;
 import org.kie.kogito.codegen.GeneratedFile;
 import org.kie.kogito.codegen.GeneratedFile.Type;
-import org.kie.kogito.codegen.GeneratorContext;
 import org.kie.kogito.codegen.DashboardGeneratedFileUtils;
+import org.kie.kogito.codegen.context.KogitoBuildContext;
 import org.kie.kogito.codegen.decision.DecisionCodegen;
 import org.kie.kogito.codegen.io.CollectedResource;
 import org.kie.kogito.codegen.prediction.PredictionCodegen;
@@ -232,49 +232,40 @@ public class GenerateModelMojo extends AbstractKieMojo {
 
         // safe guard to not generate application classes that would clash with interfaces
         if (appPackageName.equals(ApplicationGenerator.DEFAULT_GROUP_ID)) {
-            appPackageName = ApplicationGenerator.DEFAULT_PACKAGE_NAME;
+            appPackageName = KogitoBuildContext.DEFAULT_PACKAGE_NAME;
         }
 
-        boolean usePersistence = persistence || hasClassOnClasspath(project, "org.kie.kogito.persistence.KogitoProcessInstancesFactory");
-        boolean usePrometheusMonitoring = hasClassOnClasspath(project, "org.kie.kogito.monitoring.prometheus.common.rest.MetricsResource");
-        boolean useMonitoring = usePrometheusMonitoring || hasClassOnClasspath(project, "org.kie.kogito.monitoring.core.common.MonitoringRegistry");
-        boolean useTracing = hasClassOnClasspath(project, "org.kie.kogito.tracing.decision.DecisionTracingListener");
-        boolean useKnativeEventing = hasClassOnClasspath(project, "org.kie.kogito.events.knative.ce.extensions.KogitoProcessExtension");
-        boolean useCloudEvents = hasClassOnClasspath(project, "org.kie.kogito.addon.cloudevents.AbstractTopicDiscovery");
-
-        AddonsConfig addonsConfig = new AddonsConfig()
-                .withPersistence(usePersistence)
-                .withMonitoring(useMonitoring)
-                .withPrometheusMonitoring(usePrometheusMonitoring)
-                .withTracing(useTracing)
-                .withKnativeEventing(useKnativeEventing)
-                .withCloudEvents(useCloudEvents);
 
         ClassLoader projectClassLoader = MojoUtil.createProjectClassLoader(this.getClass().getClassLoader(),
                                                                            project,
                                                                            outputDirectory,
                                                                            null);
 
-        GeneratorContext context = GeneratorContext.ofResourcePath(kieSourcesDirectory);
-        context.withBuildContext(discoverKogitoRuntimeContext(project));
+        AddonsConfig addonsConfig = loadAddonsConfig(persistence, project);
+
+        KogitoBuildContext context = discoverKogitoRuntimeContext(project)
+                .withApplicationProperties(kieSourcesDirectory)
+                .withPackageName(appPackageName)
+                .withTargetDirectory(targetDirectory)
+                .withAddonsConfig(addonsConfig)
+                .build();
 
         ApplicationGenerator appGen =
-                new ApplicationGenerator(context, appPackageName, targetDirectory)
-                        .withAddons(addonsConfig)
+                new ApplicationGenerator(context)
                         .withClassLoader(projectClassLoader);
 
         // if unspecified, then default to checking for file type existence
         // if not null, the property has been overridden, and we should use the specified value
 
         if (generateProcesses()) {
-            appGen.setupGenerator(ProcessCodegen.ofCollectedResources(CollectedResource.fromDirectory(kieSourcesDirectory.toPath())))
+            appGen.setupGenerator(ProcessCodegen.ofCollectedResources(context, CollectedResource.fromDirectory(kieSourcesDirectory.toPath())))
                     .withClassLoader(projectClassLoader);
         }
 
         if (generateRules()) {
             boolean useRestServices = hasClassOnClasspath(project, "javax.ws.rs.Path")
                     || hasClassOnClasspath(project, "org.springframework.web.bind.annotation.RestController");
-            appGen.setupGenerator(IncrementalRuleCodegen.ofCollectedResources(CollectedResource.fromDirectory(kieSourcesDirectory.toPath())))
+            appGen.setupGenerator(IncrementalRuleCodegen.ofCollectedResources(context, CollectedResource.fromDirectory(kieSourcesDirectory.toPath())))
                     .withKModule(getKModuleModel())
                     .withClassLoader(projectClassLoader)
                     .withRestServices(useRestServices);
@@ -282,11 +273,11 @@ public class GenerateModelMojo extends AbstractKieMojo {
 
         boolean isJPMMLAvailable = hasClassOnClasspath(project, "org.kie.dmn.jpmml.DMNjPMMLInvocationEvaluator");
         if(generatePredictions()) {
-            appGen.setupGenerator(PredictionCodegen.ofCollectedResources(isJPMMLAvailable, CollectedResource.fromDirectory(kieSourcesDirectory.toPath())));
+            appGen.setupGenerator(PredictionCodegen.ofCollectedResources(context, isJPMMLAvailable, CollectedResource.fromDirectory(kieSourcesDirectory.toPath())));
         }
 
         if (generateDecisions()) {
-            appGen.setupGenerator(DecisionCodegen.ofCollectedResources(CollectedResource.fromDirectory(kieSourcesDirectory.toPath())))
+            appGen.setupGenerator(DecisionCodegen.ofCollectedResources(context, CollectedResource.fromDirectory(kieSourcesDirectory.toPath())))
                     .withClassLoader(projectClassLoader)
                     .withPCLResolverFn(x -> hasClassOnClasspath(project, x));
         }

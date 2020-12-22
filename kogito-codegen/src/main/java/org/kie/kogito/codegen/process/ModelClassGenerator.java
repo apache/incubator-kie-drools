@@ -19,17 +19,17 @@ import org.drools.core.util.StringUtils;
 import org.jbpm.compiler.canonical.ModelMetaData;
 import org.jbpm.compiler.canonical.ProcessToExecModelGenerator;
 import org.kie.api.definition.process.WorkflowProcess;
-import org.kie.kogito.codegen.GeneratorContext;
+import org.kie.kogito.codegen.context.KogitoBuildContext;
 
 public class ModelClassGenerator {
 
-    private final GeneratorContext context;
+    private final KogitoBuildContext context;
     private final WorkflowProcess workFlowProcess;
     private String modelFileName;
     private ModelMetaData modelMetaData;
     private String modelClassName;
 
-    public ModelClassGenerator(GeneratorContext context, WorkflowProcess workFlowProcess) {
+    public ModelClassGenerator(KogitoBuildContext context, WorkflowProcess workFlowProcess) {
         String pid = workFlowProcess.getId();
         String name = ProcessToExecModelGenerator.extractProcessId(pid);
         this.modelClassName = workFlowProcess.getPackageName() + "." +
@@ -44,7 +44,7 @@ public class ModelClassGenerator {
         modelMetaData = ProcessToExecModelGenerator.INSTANCE.generateModel(workFlowProcess);        
         modelFileName = modelMetaData.getModelClassName().replace('.', '/') + ".java";
         
-        modelMetaData.setSupportsValidation(context.getBuildContext().isValidationSupported());
+        modelMetaData.setSupportsValidation(context.isValidationSupported());
         
         return modelMetaData;
     }

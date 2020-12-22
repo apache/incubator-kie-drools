@@ -22,21 +22,23 @@ import java.util.function.Consumer;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.codegen.ApplicationGenerator;
 import org.kie.kogito.codegen.GeneratedFile;
-import org.kie.kogito.codegen.GeneratorContext;
+import org.kie.kogito.codegen.context.JavaKogitoBuildContext;
+import org.kie.kogito.codegen.context.KogitoBuildContext;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class DecisionValidationTest {
 
     private DecisionCodegen codeGenerator(String path, Consumer<Properties> codeGenContextProperties) throws Exception {
-        DecisionCodegen codeGenerator = DecisionCodegen.ofPath(Paths.get(path).toAbsolutePath());
         Properties props = new Properties();
         codeGenContextProperties.accept(props);
-        codeGenerator.setContext(GeneratorContext.ofProperties(props));
-        codeGenerator.setPackageName(ApplicationGenerator.DEFAULT_PACKAGE_NAME);
-        return codeGenerator;
+
+        KogitoBuildContext context = JavaKogitoBuildContext.builder()
+                .withApplicationProperties(props)
+                .build();
+
+        return DecisionCodegen.ofPath(context, Paths.get(path).toAbsolutePath());
     }
 
     @Test

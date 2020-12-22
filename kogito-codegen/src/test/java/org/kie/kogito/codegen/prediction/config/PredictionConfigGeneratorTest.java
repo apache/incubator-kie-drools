@@ -18,9 +18,9 @@ import java.util.List;
 import java.util.Optional;
 
 import com.github.javaparser.ast.body.BodyDeclaration;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.codegen.GeneratedFile;
+import org.kie.kogito.codegen.context.KogitoBuildContext;
 import org.kie.kogito.codegen.context.QuarkusKogitoBuildContext;
 import org.kie.kogito.codegen.context.SpringBootKogitoBuildContext;
 
@@ -34,7 +34,8 @@ class PredictionConfigGeneratorTest {
 
     @Test
     void compilationUnitWithCDI() {
-        PredictionConfigGenerator predictionConfigGenerator = new PredictionConfigGenerator(new QuarkusKogitoBuildContext(s -> false), PACKAGE_NAME);
+        KogitoBuildContext context = QuarkusKogitoBuildContext.builder().withPackageName(PACKAGE_NAME).build();
+        PredictionConfigGenerator predictionConfigGenerator = new PredictionConfigGenerator(context);
         Optional<GeneratedFile> retrievedOpt = predictionConfigGenerator.generate();
         assertNotNull(retrievedOpt);
         assertTrue(retrievedOpt.isPresent());
@@ -51,7 +52,8 @@ class PredictionConfigGeneratorTest {
 
     @Test
     void compilationUnitWithSpring() {
-        PredictionConfigGenerator predictionConfigGenerator = new PredictionConfigGenerator(new SpringBootKogitoBuildContext(s -> false), PACKAGE_NAME);
+        KogitoBuildContext context = SpringBootKogitoBuildContext.builder().withPackageName(PACKAGE_NAME).build();
+        PredictionConfigGenerator predictionConfigGenerator = new PredictionConfigGenerator(context);
         Optional<GeneratedFile> retrievedOpt = predictionConfigGenerator.generate();
         assertNotNull(retrievedOpt);
         assertTrue(retrievedOpt.isPresent());
@@ -68,7 +70,8 @@ class PredictionConfigGeneratorTest {
 
     @Test
     void members() {
-        PredictionConfigGenerator predictionConfigGenerator = new PredictionConfigGenerator(new QuarkusKogitoBuildContext(s -> false), PACKAGE_NAME);
+        KogitoBuildContext context = QuarkusKogitoBuildContext.builder().withPackageName(PACKAGE_NAME).build();
+        PredictionConfigGenerator predictionConfigGenerator = new PredictionConfigGenerator(context);
         List<BodyDeclaration<?>> retrieved = predictionConfigGenerator.members();
         assertNotNull(retrieved);
         assertTrue(retrieved.isEmpty());

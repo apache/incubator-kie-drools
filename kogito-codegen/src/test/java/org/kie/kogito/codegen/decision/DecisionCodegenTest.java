@@ -26,9 +26,9 @@ import com.github.javaparser.ast.CompilationUnit;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.codegen.AddonsConfig;
-import org.kie.kogito.codegen.ApplicationGenerator;
 import org.kie.kogito.codegen.GeneratedFile;
-import org.kie.kogito.codegen.GeneratorContext;
+import org.kie.kogito.codegen.context.JavaKogitoBuildContext;
+import org.kie.kogito.codegen.context.KogitoBuildContext;
 import org.kie.kogito.codegen.io.CollectedResource;
 import org.kie.kogito.grafana.JGrafana;
 
@@ -57,17 +57,24 @@ public class DecisionCodegenTest {
     }
 
     public DecisionCodegen getDecisionCodegen(String s) {
-        GeneratorContext context = stronglyTypedContext();
-        DecisionCodegen codeGenerator = DecisionCodegen.ofCollectedResources(CollectedResource.fromPaths(Paths.get(s).toAbsolutePath()));
-        codeGenerator.setContext(context);
-        codeGenerator.setPackageName(ApplicationGenerator.DEFAULT_PACKAGE_NAME);
-        return codeGenerator;
+        return getDecisionCodegen(s, AddonsConfig.DEFAULT);
     }
 
-    private GeneratorContext stronglyTypedContext() {
+    public DecisionCodegen getDecisionCodegen(String s, AddonsConfig addonsConfig) {
+        Properties applicationProperties = stronglyTypedContext();
+
+        KogitoBuildContext context = JavaKogitoBuildContext.builder()
+                .withApplicationProperties(applicationProperties)
+                .withAddonsConfig(addonsConfig)
+                .build();
+
+        return DecisionCodegen.ofCollectedResources(context, CollectedResource.fromPaths(Paths.get(s).toAbsolutePath()));
+    }
+
+    private Properties stronglyTypedContext() {
         Properties properties = new Properties();
         properties.put(DecisionCodegen.STRONGLY_TYPED_CONFIGURATION_KEY, Boolean.TRUE.toString());
-        return GeneratorContext.ofProperties(properties);
+        return properties;
     }
 
     private List<String> fileNames(List<GeneratedFile> generatedFiles) {
@@ -91,7 +98,7 @@ public class DecisionCodegenTest {
 
     @Test
     public void givenADMNModelWhenMonitoringIsActiveThenGrafanaDashboardsAreGenerated() throws Exception {
-        List<GeneratedFile> dashboards = generateTestDashboards(new AddonsConfig().withPrometheusMonitoring(true));
+        List<GeneratedFile> dashboards = generateTestDashboards(AddonsConfig.builder().withPrometheusMonitoring(true).build());
 
         JGrafana vacationOperationalDashboard = JGrafana.parse(new String(dashboards.stream().filter(x -> x.relativePath().contains("operational-dashboard-Vacations.json")).findFirst().get().contents()));
 
@@ -106,7 +113,7 @@ public class DecisionCodegenTest {
 
     @Test
     public void givenADMNModelWhenMonitoringAndTracingAreActiveThenTheGrafanaDashboardsContainsTheAuditUILink() throws Exception {
-        List<GeneratedFile> dashboards = generateTestDashboards(new AddonsConfig().withPrometheusMonitoring(true).withTracing(true));
+        List<GeneratedFile> dashboards = generateTestDashboards(AddonsConfig.builder().withPrometheusMonitoring(true).withTracing(true).build());
 
         JGrafana vacationOperationalDashboard = JGrafana.parse(new String(dashboards.stream().filter(x -> x.relativePath().contains("operational-dashboard-Vacations.json")).findFirst().get().contents()));
 
@@ -136,8 +143,7 @@ public class DecisionCodegenTest {
     }
 
     private List<GeneratedFile> generateTestDashboards(AddonsConfig addonsConfig) throws IOException {
-        DecisionCodegen codeGenerator = getDecisionCodegen("src/test/resources/decision/models/vacationDays");
-        codeGenerator.setAddonsConfig(addonsConfig);
+        DecisionCodegen codeGenerator = getDecisionCodegen("src/test/resources/decision/models/vacationDays", addonsConfig);
 
         List<GeneratedFile> generatedFiles = codeGenerator.generate();
 

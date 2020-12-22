@@ -16,14 +16,14 @@
 package org.kie.kogito.codegen.process;
 
 import org.kie.api.definition.process.WorkflowProcess;
-import org.kie.kogito.codegen.GeneratorContext;
+import org.kie.kogito.codegen.context.KogitoBuildContext;
 
 public class ReactiveResourceGenerator extends ResourceGenerator {
 
     private static final String REACTIVE_RESOURCE_TEMPLATE = "/class-templates/ReactiveRestResourceTemplate.java";
 
     public ReactiveResourceGenerator(
-            GeneratorContext context,
+            KogitoBuildContext context,
             WorkflowProcess process,
             String modelfqcn,
             String processfqcn,

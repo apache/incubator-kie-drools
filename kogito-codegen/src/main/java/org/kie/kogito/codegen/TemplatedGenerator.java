@@ -15,10 +15,8 @@
 
 package org.kie.kogito.codegen;
 
-import java.text.MessageFormat;
+import java.util.Objects;
 import java.util.Optional;
-
-import javax.lang.model.SourceVersion;
 
 import com.github.javaparser.ParseProblemException;
 import com.github.javaparser.ast.CompilationUnit;
@@ -42,26 +40,28 @@ public final class TemplatedGenerator {
     private final String resourceDefault;
 
     private final String targetTypeName;
-    private final KogitoBuildContext buildContext;
+    private final KogitoBuildContext context;
 
     public TemplatedGenerator(
-            KogitoBuildContext buildContext,
+            KogitoBuildContext context,
+            String targetTypeName,
+            String resourceCdi,
+            String resourceSpring,
+            String resourceDefault) {
+        this(context, context.getPackageName(), targetTypeName, resourceCdi, resourceSpring, resourceDefault);
+    }
+
+    public TemplatedGenerator(
+            KogitoBuildContext context,
             String packageName,
             String targetTypeName,
             String resourceCdi,
             String resourceSpring,
             String resourceDefault) {
-        if (packageName == null) {
-            throw new IllegalArgumentException("Package name cannot be undefined (null), please specify a package name!");
-        }
-        if (!SourceVersion.isName(packageName)) {
-            throw new IllegalArgumentException(
-                    MessageFormat.format(
-                            "Package name \"{0}\" is not valid. It should be a valid Java package name.", packageName));
-        }
 
-        this.buildContext = buildContext;
-        this.packageName = packageName;
+        Objects.requireNonNull(context, "context cannot be null");
+        this.context = context;
+        this.packageName = packageName == null ? context.getPackageName() : packageName;
         this.targetTypeName = targetTypeName;
         String targetCanonicalName = this.packageName + "." + this.targetTypeName;
         this.sourceFilePath = targetCanonicalName.replace('.', '/') + ".java";
@@ -71,13 +71,11 @@ public final class TemplatedGenerator {
     }
 
     public TemplatedGenerator(
-            KogitoBuildContext buildContext,
-            String packageName,
+            KogitoBuildContext context,
             String targetTypeName,
             String resourceCdi,
             String resourceSpring) {
-        this(buildContext,
-             packageName,
+        this(context,
              targetTypeName,
              resourceCdi,
              resourceSpring,
@@ -125,14 +123,14 @@ public final class TemplatedGenerator {
     }
 
     private String selectResource() {
-        if (buildContext == null || buildContext instanceof JavaKogitoBuildContext) {
+        if (context instanceof JavaKogitoBuildContext) {
             return resourceDefault;
-        } else if (buildContext instanceof QuarkusKogitoBuildContext) {
+        } else if (context instanceof QuarkusKogitoBuildContext) {
             return resourceCdi;
-        } else if (buildContext instanceof SpringBootKogitoBuildContext) {
+        } else if (context instanceof SpringBootKogitoBuildContext) {
             return resourceSpring;
         } else {
-            throw new IllegalArgumentException("Unknown buildContext " + buildContext);
+            throw new IllegalArgumentException("Unknown context " + context.getClass().getCanonicalName());
         }
     }
 }

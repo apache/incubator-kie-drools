@@ -20,7 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.kie.api.definition.process.WorkflowProcess;
-import org.kie.kogito.codegen.GeneratorContext;
+import org.kie.kogito.codegen.context.KogitoBuildContext;
 
 /**
  * REST resources generator based on Spring Web API {@linkplain https://docs.spring.io/spring/docs/current/spring
@@ -33,7 +33,7 @@ public class SpringResourceGenerator extends AbstractResourceGenerator {
     private static final String RESOURCE_TEMPLATE = "/class-templates/spring/SpringRestResourceTemplate.java";
 
     public SpringResourceGenerator(
-            GeneratorContext context,
+            KogitoBuildContext context,
             WorkflowProcess process,
             String modelfqcn,
             String processfqcn,

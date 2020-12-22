@@ -17,49 +17,29 @@ package org.kie.kogito.codegen;
 
 public class AddonsConfig {
 
-    public static final AddonsConfig DEFAULT = new AddonsConfig()
+    public static final AddonsConfig DEFAULT = builder()
             .withPersistence(false)
             .withTracing(false)
             .withMonitoring(false)
             .withPrometheusMonitoring(false)
             .withKnativeEventing(false)
-            .withCloudEvents(false);
+            .withCloudEvents(false)
+            .build();
 
-    private boolean usePersistence;
-    private boolean useTracing;
-    private boolean useMonitoring;
-    private boolean usePrometheusMonitoring;
-    private boolean useKnativeEventing;
-    private boolean useCloudEvents;
+    private final boolean usePersistence;
+    private final boolean useTracing;
+    private final boolean useMonitoring;
+    private final boolean usePrometheusMonitoring;
+    private final boolean useKnativeEventing;
+    private final boolean useCloudEvents;
 
-    public AddonsConfig withPersistence(boolean usePersistence) {
+    private AddonsConfig(boolean usePersistence, boolean useTracing, boolean useMonitoring, boolean usePrometheusMonitoring, boolean useKnativeEventing, boolean useCloudEvents) {
         this.usePersistence = usePersistence;
-        return this;
-    }
-
-    public AddonsConfig withTracing(boolean useTracing) {
         this.useTracing = useTracing;
-        return this;
-    }
-
-    public AddonsConfig withMonitoring(boolean useMonitoring) {
         this.useMonitoring = useMonitoring;
-        return this;
-    }
-
-    public AddonsConfig withPrometheusMonitoring(boolean usePrometheusMonitoring) {
         this.usePrometheusMonitoring = usePrometheusMonitoring;
-        return this;
-    }
-
-    public AddonsConfig withKnativeEventing(boolean useKnativeEventing) {
         this.useKnativeEventing = useKnativeEventing;
-        return this;
-    }
-
-    public AddonsConfig withCloudEvents(boolean useCloudEvents) {
         this.useCloudEvents = useCloudEvents;
-        return this;
     }
 
     public boolean usePersistence() {
@@ -84,5 +64,55 @@ public class AddonsConfig {
 
     public boolean useCloudEvents() {
         return useCloudEvents;
+    }
+
+    public static AddonsConfigBuilder builder() {
+        return new AddonsConfigBuilder();
+    }
+
+    public static class AddonsConfigBuilder {
+        private boolean usePersistence;
+        private boolean useTracing;
+        private boolean useMonitoring;
+        private boolean usePrometheusMonitoring;
+        private boolean useKnativeEventing;
+        private boolean useCloudEvents;
+
+        private AddonsConfigBuilder() {
+        }
+
+        public AddonsConfigBuilder withPersistence(boolean usePersistence) {
+            this.usePersistence = usePersistence;
+            return this;
+        }
+
+        public AddonsConfigBuilder withTracing(boolean useTracing) {
+            this.useTracing = useTracing;
+            return this;
+        }
+
+        public AddonsConfigBuilder withMonitoring(boolean useMonitoring) {
+            this.useMonitoring = useMonitoring;
+            return this;
+        }
+
+        public AddonsConfigBuilder withPrometheusMonitoring(boolean usePrometheusMonitoring) {
+            this.usePrometheusMonitoring = usePrometheusMonitoring;
+            return this;
+        }
+
+        public AddonsConfigBuilder withKnativeEventing(boolean useKnativeEventing) {
+            this.useKnativeEventing = useKnativeEventing;
+            return this;
+        }
+
+        public AddonsConfigBuilder withCloudEvents(boolean useCloudEvents) {
+            this.useCloudEvents = useCloudEvents;
+            return this;
+        }
+
+        public AddonsConfig build() {
+            return new AddonsConfig(usePersistence, useTracing, useMonitoring, usePrometheusMonitoring, useKnativeEventing, useCloudEvents);
+        }
     }
 }

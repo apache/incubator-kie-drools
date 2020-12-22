@@ -41,18 +41,17 @@ public class ApplicationContainerGenerator {
     private final TemplatedGenerator templatedGenerator;
 
     private List<String> sections = new ArrayList<>();
-    private KogitoBuildContext buildContext;
+    private KogitoBuildContext context;
 
-    public ApplicationContainerGenerator(KogitoBuildContext buildContext, String packageName) {
+    public ApplicationContainerGenerator(KogitoBuildContext context) {
         this.templatedGenerator = new TemplatedGenerator(
-                buildContext,
-                packageName,
+                context,
                 APPLICATION_CLASS_NAME,
                 RESOURCE_CDI,
                 RESOURCE_SPRING,
                 RESOURCE_DEFAULT);
 
-        this.buildContext = buildContext;
+        this.context = context;
     }
 
     public ApplicationContainerGenerator withSections(List<String> sections) {
@@ -71,7 +70,7 @@ public class ApplicationContainerGenerator {
                         "Compilation unit doesn't contain a class or interface declaration!"));
 
         // ApplicationTemplate (no CDI/Spring) has placeholders to replace
-        if (buildContext == null || buildContext instanceof JavaKogitoBuildContext) {
+        if (context instanceof JavaKogitoBuildContext) {
             replacePlaceholder(getLoadEnginesMethod(cls), sections);
         }
 

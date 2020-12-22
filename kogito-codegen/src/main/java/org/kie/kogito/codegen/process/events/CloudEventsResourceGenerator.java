@@ -36,20 +36,18 @@ public class CloudEventsResourceGenerator extends AbstractEventResourceGenerator
     private static final String CDI_TEMPLATE = "/class-templates/events/CloudEventsListenerResource.java";
     private static final String CLASS_NAME = "CloudEventListenerResource";
 
-    private final KogitoBuildContext buildContext;
+    private final KogitoBuildContext context;
     private final List<TriggerMetaData> triggers;
 
-    public CloudEventsResourceGenerator(final KogitoBuildContext buildContext,
-                                        final String packageName,
+    public CloudEventsResourceGenerator(final KogitoBuildContext context,
                                         final List<ProcessExecutableModelGenerator> generators) {
         super(new TemplatedGenerator(
-                buildContext,
-                packageName,
+                context,
                 CLASS_NAME,
                 CDI_TEMPLATE,
                 null,
                 CDI_TEMPLATE));
-        this.buildContext = buildContext;
+        this.context = context;
         this.triggers = this.filterTriggers(generators);
     }
 
@@ -98,10 +96,10 @@ public class CloudEventsResourceGenerator extends AbstractEventResourceGenerator
     }
 
     private void addInjection(final ClassOrInterfaceDeclaration template) {
-        if(buildContext.hasDI()) {
-            buildContext.getDependencyInjectionAnnotator().withApplicationComponent(template);
+        if(context.hasDI()) {
+            context.getDependencyInjectionAnnotator().withApplicationComponent(template);
             template.findAll(FieldDeclaration.class, fd -> fd.getVariables().get(0).getNameAsString().contains(EMITTER_PREFIX))
-                    .forEach(buildContext.getDependencyInjectionAnnotator()::withInjection);
+                    .forEach(context.getDependencyInjectionAnnotator()::withInjection);
         }
     }
 

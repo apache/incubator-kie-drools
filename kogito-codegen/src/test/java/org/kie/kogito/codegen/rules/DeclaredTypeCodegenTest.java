@@ -20,19 +20,23 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.codegen.GeneratedFile;
+import org.kie.kogito.codegen.context.JavaKogitoBuildContext;
+import org.kie.kogito.codegen.context.KogitoBuildContext;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 class DeclaredTypeCodegenTest {
 
     @Test
     void ofPath() {
+        KogitoBuildContext context = JavaKogitoBuildContext.builder()
+                .withPackageName("com.acme")
+                .build();
         DeclaredTypeCodegen incrementalRuleCodegen =
                 DeclaredTypeCodegen.ofFiles(
+                        context,
                         Collections.singleton(
                                 new File("src/test/resources/org/kie/kogito/codegen/declared/declared.drl")));
-        incrementalRuleCodegen.setPackageName("com.acme");
 
         List<GeneratedFile> generatedFiles = incrementalRuleCodegen.generate();
 

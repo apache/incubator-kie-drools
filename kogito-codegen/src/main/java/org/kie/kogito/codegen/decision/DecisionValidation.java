@@ -40,7 +40,7 @@ import org.kie.dmn.validation.DMNValidator;
 import org.kie.dmn.validation.DMNValidatorFactory;
 import org.kie.dmn.validation.dtanalysis.DMNDTAnalyser;
 import org.kie.dmn.validation.dtanalysis.model.DTAnalysis;
-import org.kie.kogito.codegen.GeneratorContext;
+import org.kie.kogito.codegen.context.KogitoBuildContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,7 +69,7 @@ public class DecisionValidation {
     /**
      * Performs VALIDATE_SCHEMA, VALIDATE_MODEL for XSD schema validation and Semantic validation with DRL rules as exec model
      */
-    static void dmnValidateResources(GeneratorContext context, Collection<Resource> resources) {
+    static void dmnValidateResources(KogitoBuildContext context, Collection<Resource> resources) {
         ValidationOption validateOption = fromContext(context);
         if (validateOption == ValidationOption.DISABLED) {
             LOG.info("DMN Validation was set to DISABLED, skipping VALIDATE_SCHEMA, VALIDATE_MODEL.");
@@ -99,7 +99,7 @@ public class DecisionValidation {
         return "";
     }
 
-    private static ValidationOption fromContext(GeneratorContext context) {
+    private static ValidationOption fromContext(KogitoBuildContext context) {
         if (context == null) {
             LOG.info("No GeneratorContext available, will assume {}=ENABLED", DecisionCodegen.VALIDATION_CONFIGURATION_KEY);
             return ValidationOption.ENABLED;
@@ -153,7 +153,7 @@ public class DecisionValidation {
     /**
      * Performs ANALYZE_DECISION_TABLE for DMN Decision Table (static) analysis
      */
-    static void dmnValidateDecisionTablesInModels(GeneratorContext context, Collection<DMNModel> dmnModels) {
+    static void dmnValidateDecisionTablesInModels(KogitoBuildContext context, Collection<DMNModel> dmnModels) {
         ValidationOption validateOption = fromContext(context);
         if (validateOption == ValidationOption.DISABLED) {
             LOG.info("DMN Validation was set to DISABLED, skipping Decision Table (static) analysis.");

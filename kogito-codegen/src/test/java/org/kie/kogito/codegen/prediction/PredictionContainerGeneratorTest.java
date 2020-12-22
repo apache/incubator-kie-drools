@@ -33,13 +33,11 @@ import java.util.stream.IntStream;
 import com.github.javaparser.ast.CompilationUnit;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.codegen.AddonsConfig;
-import org.kie.kogito.codegen.ApplicationGenerator;
+import org.kie.kogito.codegen.context.KogitoBuildContext;
 import org.kie.pmml.commons.model.KiePMMLModel;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class PredictionContainerGeneratorTest {
@@ -51,7 +49,7 @@ class PredictionContainerGeneratorTest {
     @BeforeAll
     public static void setup() {
         predictionContainerGenerator = new PredictionModelsGenerator(
-                null, ApplicationGenerator.DEFAULT_PACKAGE_NAME,
+                KogitoBuildContext.EMPTY_CONTEXT,
                 APP_CANONICAL_NAME,
                 PMML_RESOURCES);
         assertNotNull(predictionContainerGenerator);
@@ -61,15 +59,6 @@ class PredictionContainerGeneratorTest {
     void constructor() {
         assertEquals(APP_CANONICAL_NAME, predictionContainerGenerator.applicationCanonicalName);
         assertEquals(PMML_RESOURCES, predictionContainerGenerator.resources);
-    }
-
-    @Test
-    void withAddons() {
-        PredictionModelsGenerator retrieved = predictionContainerGenerator.withAddons(null);
-        assertEquals(retrieved, predictionContainerGenerator);
-        assertNull(predictionContainerGenerator.addonsConfig);
-        predictionContainerGenerator.withAddons(AddonsConfig.DEFAULT);
-        assertEquals(AddonsConfig.DEFAULT, predictionContainerGenerator.addonsConfig);
     }
 
     @Test

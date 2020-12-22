@@ -18,37 +18,40 @@ package org.kie.kogito.codegen;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.kie.kogito.codegen.AddonsConfig.DEFAULT;
+import static org.kie.kogito.codegen.AddonsConfig.builder;
 
 public class AddonsConfigTest {
 
     @Test
     public void allAddonsAreDisabledInDefaultConfiguration() {
-        AddonsConfig addonsConfig = AddonsConfig.DEFAULT;
+        AddonsConfig addonsConfig = DEFAULT;
         assertThat(addonsConfig.useMonitoring()).isFalse();
         assertThat(addonsConfig.useTracing()).isFalse();
         assertThat(addonsConfig.usePersistence()).isFalse();
+        assertThat(addonsConfig.useCloudEvents()).isFalse();
+        assertThat(addonsConfig.usePersistence()).isFalse();
+        assertThat(addonsConfig.useCloudEvents()).isFalse();
     }
 
     @Test
-    public void addonsAreProperlyActivated() {
-        AddonsConfig addonsConfig = new AddonsConfig();
+    public void addonsAreProperlyActivated() {;
+        assertThat(AddonsConfig.DEFAULT.useMonitoring()).isFalse();
+        assertThat(builder().withMonitoring(true).build().useMonitoring()).isTrue();
 
-        assertThat(addonsConfig.useMonitoring()).isFalse();
-        assertThat(addonsConfig.withMonitoring(true).useMonitoring()).isTrue();
+        assertThat(AddonsConfig.DEFAULT.usePrometheusMonitoring()).isFalse();
+        assertThat(builder().withPrometheusMonitoring(true).build().usePrometheusMonitoring()).isTrue();
 
-        assertThat(addonsConfig.usePrometheusMonitoring()).isFalse();
-        assertThat(addonsConfig.withPrometheusMonitoring(true).usePrometheusMonitoring()).isTrue();
+        assertThat(AddonsConfig.DEFAULT.useTracing()).isFalse();
+        assertThat(builder().withTracing(true).build().useTracing()).isTrue();
 
-        assertThat(addonsConfig.useTracing()).isFalse();
-        assertThat(addonsConfig.withTracing(true).useTracing()).isTrue();
+        assertThat(AddonsConfig.DEFAULT.usePersistence()).isFalse();
+        assertThat(builder().withPersistence(true).build().usePersistence()).isTrue();
 
-        assertThat(addonsConfig.usePersistence()).isFalse();
-        assertThat(addonsConfig.withPersistence(true).usePersistence()).isTrue();
+        assertThat(AddonsConfig.DEFAULT.useKnativeEventing()).isFalse();
+        assertThat(builder().withKnativeEventing(true).build().useKnativeEventing()).isTrue();
 
-        assertThat(addonsConfig.useKnativeEventing()).isFalse();
-        assertThat(addonsConfig.withKnativeEventing(true).useKnativeEventing()).isTrue();
-
-        assertThat(addonsConfig.useCloudEvents()).isFalse();
-        assertThat(addonsConfig.withCloudEvents(true).useCloudEvents()).isTrue();
+        assertThat(AddonsConfig.DEFAULT.useCloudEvents()).isFalse();
+        assertThat(builder().withCloudEvents(true).build().useCloudEvents()).isTrue();
     }
 }

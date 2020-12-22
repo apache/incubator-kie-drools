@@ -25,7 +25,6 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.kie.kogito.codegen.AbstractApplicationSection;
-import org.kie.kogito.codegen.AddonsConfig;
 import org.kie.kogito.codegen.InvalidTemplateException;
 import org.kie.kogito.codegen.TemplatedGenerator;
 import org.kie.kogito.codegen.context.KogitoBuildContext;
@@ -42,27 +41,20 @@ public class DecisionContainerGenerator extends AbstractApplicationSection {
     private static final String RESOURCE_SPRING = "/class-templates/spring/SpringDecisionContainerTemplate.java";
     private static final String SECTION_CLASS_NAME = "DecisionModels";
 
-    private String applicationCanonicalName;
+    private final String applicationCanonicalName;
     private final List<CollectedResource> resources;
-    private AddonsConfig addonsConfig = AddonsConfig.DEFAULT;
     private final TemplatedGenerator templatedGenerator;
 
-    public DecisionContainerGenerator(KogitoBuildContext buildContext, String packageName, String applicationCanonicalName, List<CollectedResource> cResources) {
-        super(buildContext, SECTION_CLASS_NAME);
+    public DecisionContainerGenerator(KogitoBuildContext context, String applicationCanonicalName, List<CollectedResource> cResources) {
+        super(context, SECTION_CLASS_NAME);
         this.applicationCanonicalName = applicationCanonicalName;
         this.resources = cResources;
         this.templatedGenerator = new TemplatedGenerator(
-                buildContext,
-                packageName,
+                context,
                 SECTION_CLASS_NAME,
                 RESOURCE_CDI,
                 RESOURCE_SPRING,
                 RESOURCE);
-    }
-
-    public DecisionContainerGenerator withAddons(AddonsConfig addonsConfig) {
-        this.addonsConfig = addonsConfig;
-        return this;
     }
 
     @Override
@@ -98,14 +90,14 @@ public class DecisionContainerGenerator extends AbstractApplicationSection {
     }
 
     private void setupExecIdSupplierVariable(MethodCallExpr initMethod) {
-        Expression execIdSupplier = addonsConfig.useTracing() ?
+        Expression execIdSupplier = context.getAddonsConfig().useTracing() ?
                 newObject(DmnExecutionIdSupplier.class) :
                 new NullLiteralExpr();
         initMethod.addArgument(execIdSupplier);
     }
 
     private void setupDecisionModelTransformerVariable(MethodCallExpr initMethod) {
-        Expression decisionModelTransformerExpr = addonsConfig.useMonitoring() ?
+        Expression decisionModelTransformerExpr = context.getAddonsConfig().useMonitoring() ?
                 newObject("org.kie.kogito.monitoring.core.common.decision.MonitoredDecisionModelTransformer") :
                 new NullLiteralExpr();
         initMethod.addArgument(decisionModelTransformerExpr);

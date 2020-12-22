@@ -25,6 +25,7 @@ import org.junit.jupiter.api.Test;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.kogito.codegen.GeneratedFile;
+import org.kie.kogito.codegen.context.KogitoBuildContext;
 
 public class BigRuleSetCodegenTest {
 
@@ -36,7 +37,7 @@ public class BigRuleSetCodegenTest {
 
         Collection<Resource> resources = generateResourcesToBeCompiled(2, 3);
 
-        IncrementalRuleCodegen incrementalRuleCodegen = IncrementalRuleCodegen.ofResources(resources);
+        IncrementalRuleCodegen incrementalRuleCodegen = IncrementalRuleCodegen.ofResources(KogitoBuildContext.EMPTY_CONTEXT, resources);
 
         List<GeneratedFile> generatedFiles = incrementalRuleCodegen.generate();
         System.out.println( generatedFiles.size() );

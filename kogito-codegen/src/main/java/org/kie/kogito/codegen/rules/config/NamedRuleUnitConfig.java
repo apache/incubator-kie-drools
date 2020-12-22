@@ -21,7 +21,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
-import org.kie.kogito.codegen.GeneratorContext;
+import org.kie.kogito.codegen.context.KogitoBuildContext;
 import org.kie.kogito.conf.ClockType;
 import org.kie.kogito.conf.EventProcessingType;
 import org.kie.kogito.rules.RuleUnitConfig;
@@ -33,7 +33,7 @@ public final class NamedRuleUnitConfig {
     private static String CONFIG_CLOCK_TYPE = CONFIG_PREFIX + "\"%s\".clock-type";
     private static String CONFIG_SESSIONS_POOL = CONFIG_PREFIX + "\"%s\".sessions-pool";
 
-    public static List<NamedRuleUnitConfig> fromContext(GeneratorContext context) {
+    public static List<NamedRuleUnitConfig> fromContext(KogitoBuildContext context) {
         HashSet<String> canonicalNames = new HashSet<>();
         for (String k : context.getApplicationProperties()) {
             if (k.startsWith(CONFIG_PREFIX)) {

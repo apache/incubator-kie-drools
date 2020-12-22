@@ -25,7 +25,6 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import org.jbpm.compiler.canonical.TriggerMetaData;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.codegen.AddonsConfig;
-import org.kie.kogito.codegen.ApplicationGenerator;
 import org.kie.kogito.codegen.context.JavaKogitoBuildContext;
 import org.kie.kogito.codegen.context.KogitoBuildContext;
 import org.kie.kogito.codegen.context.QuarkusKogitoBuildContext;
@@ -104,16 +103,16 @@ class TopicsInformationResourceGeneratorTest {
     }
 
     private ClassOrInterfaceDeclaration generateAndParseClass(String bpmnFile, int expectedTriggers, boolean withInjection) {
-        KogitoBuildContext buildContext = new JavaKogitoBuildContext();
-        if (withInjection) {
-            buildContext = new QuarkusKogitoBuildContext(s -> true);
-        }
+        KogitoBuildContext context = (withInjection ?
+                QuarkusKogitoBuildContext.builder() :
+                JavaKogitoBuildContext.builder())
+                .withAddonsConfig(AddonsConfig.builder().withCloudEvents(true).build())
+                .build();
+
         final TopicsInformationResourceGenerator generator =
                 new TopicsInformationResourceGenerator(
-                        buildContext,
-                        ApplicationGenerator.DEFAULT_PACKAGE_NAME,
-                        ProcessGenerationUtils.execModelFromProcessFile(bpmnFile),
-                        AddonsConfig.DEFAULT.withCloudEvents(true));
+                        context,
+                        ProcessGenerationUtils.execModelFromProcessFile(bpmnFile));
         if (expectedTriggers > 0) {
             assertThat(generator.getTriggers()).isNotEmpty();
             int triggersCount = 0;

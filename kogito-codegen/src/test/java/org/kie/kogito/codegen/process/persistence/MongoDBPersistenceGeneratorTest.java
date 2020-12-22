@@ -32,7 +32,7 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.codegen.GeneratedFile;
-import org.kie.kogito.codegen.GeneratorContext;
+import org.kie.kogito.codegen.context.KogitoBuildContext;
 import org.kie.kogito.codegen.context.QuarkusKogitoBuildContext;
 import org.kie.kogito.codegen.data.Person;
 
@@ -45,22 +45,21 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class MongoDBPersistenceGeneratorTest {
 
     private static final String TEST_RESOURCES = "src/test/resources";
-    GeneratorContext context = GeneratorContext.ofResourcePath(new File(TEST_RESOURCES));
-    final Path targetDirectory = Paths.get("target");
+    KogitoBuildContext context = QuarkusKogitoBuildContext.builder()
+            .withApplicationProperties(new File(TEST_RESOURCES))
+            .withPackageName(this.getClass().getPackage().getName())
+            .build();
 
     @Test
     void test() {
-        context.withBuildContext(new QuarkusKogitoBuildContext((className -> true)));
         PersistenceGenerator persistenceGenerator = new PersistenceGenerator(
-                targetDirectory.toFile(),
+                context,
                 Collections.singleton(Person.class),
                 true,
                 null,
                 null,
                 Arrays.asList("com.mongodb.client.MongoClient"),
                 "mongodb");
-        persistenceGenerator.setPackageName(this.getClass().getPackage().getName());
-        persistenceGenerator.setContext(context);
         Collection<GeneratedFile> generatedFiles = persistenceGenerator.generate();
 
         Optional<GeneratedFile> generatedCLASSFile = generatedFiles.stream().filter(gf -> gf.getType() == GeneratedFile.Type.CLASS).findFirst();

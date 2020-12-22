@@ -19,6 +19,7 @@ package org.kie.kogito.quarkus.deployment;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.FileSystems;
@@ -72,8 +73,8 @@ import org.kie.kogito.codegen.AddonsConfig;
 import org.kie.kogito.codegen.ApplicationGenerator;
 import org.kie.kogito.codegen.DashboardGeneratedFileUtils;
 import org.kie.kogito.codegen.GeneratedFile;
-import org.kie.kogito.codegen.GeneratorContext;
 import org.kie.kogito.codegen.JsonSchemaGenerator;
+import org.kie.kogito.codegen.context.KogitoBuildContext;
 import org.kie.kogito.codegen.context.QuarkusKogitoBuildContext;
 import org.kie.kogito.codegen.decision.DecisionCodegen;
 import org.kie.kogito.codegen.io.CollectedResource;
@@ -88,6 +89,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static java.util.stream.Collectors.toList;
+import static org.kie.kogito.codegen.context.KogitoBuildContext.Builder.merge;
 
 /**
  * Main class of the Kogito extension
@@ -156,51 +158,35 @@ public class KogitoAssetsProcessor {
 
         // scan and parse paths
         AppPaths appPaths = new AppPaths(root.getPaths());
-
-        // enable addons looking at available classes
-        boolean usePersistence = combinedIndexBuildItem.getIndex().getClassByName(persistenceFactoryClass) != null;
-        boolean usePrometheusMonitoring = combinedIndexBuildItem.getIndex().getClassByName(prometheusClass) != null;
-        boolean useMonitoring = usePrometheusMonitoring || combinedIndexBuildItem.getIndex().getClassByName(monitoringCoreClass) != null;
-        boolean useTracing = !combinedIndexBuildItem.getIndex().getAllKnownSubclasses(tracingClass).isEmpty();
-        boolean useKnativeEventing = combinedIndexBuildItem.getIndex().getClassByName(knativeEventingClass) != null;
-        boolean isJPMMLAvailable = combinedIndexBuildItem.getIndex().getClassByName(dmnJpmmlClass) != null;
-        boolean useCloudEvents = combinedIndexBuildItem.getIndex().getClassByName(quarkusCloudEvents) != null;
         boolean useProcessSVG = combinedIndexBuildItem.getIndex().getClassByName(quarkusSVGService) != null;
-
-        AddonsConfig addonsConfig = new AddonsConfig()
-                .withPersistence(usePersistence)
-                .withMonitoring(useMonitoring)
-                .withPrometheusMonitoring(usePrometheusMonitoring)
-                .withTracing(useTracing)
-                .withKnativeEventing(useKnativeEventing)
-                .withCloudEvents(useCloudEvents);
+        boolean isJPMMLAvailable = combinedIndexBuildItem.getIndex().getClassByName(dmnJpmmlClass) != null;
 
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        GeneratorContext context = generatorContext(appPaths, combinedIndexBuildItem.getIndex());
+
+        // enable addons looking at available classes
+        AddonsConfig addonsConfig = addonsConfig();
 
         Path[] paths = appPaths.getPath();
 
-        // configure the application generator
+        File targetDirectory = getOrCreateTargetDirectory(appPaths.getFirstProjectPath());
 
-        ApplicationGenerator appGen =
-                new ApplicationGenerator(
-                        context,
-                        appPackageName,
-                        new File(appPaths.getFirstProjectPath().toFile(), "target"))
-                        .withAddons(addonsConfig);
+        // configure the application generator
+        KogitoBuildContext context = kogitoBuildContext(appPaths, targetDirectory, addonsConfig);
+
+        ApplicationGenerator appGen = new ApplicationGenerator(context);
 
         // configure each individual generator. Ordering is relevant.
 
-        appGen.setupGenerator(ProcessCodegen.ofCollectedResources(CollectedResource.fromPaths(paths)))
+        appGen.setupGenerator(ProcessCodegen.ofCollectedResources(context, CollectedResource.fromPaths(paths)))
                 .withClassLoader(classLoader);
 
-        appGen.setupGenerator(IncrementalRuleCodegen.ofCollectedResources(CollectedResource.fromPaths(paths)))
+        appGen.setupGenerator(IncrementalRuleCodegen.ofCollectedResources(context, CollectedResource.fromPaths(paths)))
                 .withKModule(findKieModuleModel(appPaths))
                 .withClassLoader(classLoader);
 
-        appGen.setupGenerator(PredictionCodegen.ofCollectedResources(isJPMMLAvailable, CollectedResource.fromPaths(paths)));
+        appGen.setupGenerator(PredictionCodegen.ofCollectedResources(context, isJPMMLAvailable, CollectedResource.fromPaths(paths)));
 
-        appGen.setupGenerator(DecisionCodegen.ofCollectedResources(CollectedResource.fromPaths(paths)))
+        appGen.setupGenerator(DecisionCodegen.ofCollectedResources(context, CollectedResource.fromPaths(paths)))
                 .withClassLoader(classLoader);
 
         // real work occurs here: invoke the code-generation procedure
@@ -232,6 +218,7 @@ public class KogitoAssetsProcessor {
 
         // further processing
         Collection<GeneratedFile> persistenceGeneratedFiles = generatePersistenceInfo(
+                context,
                 appPaths,
                 index,
                 generatedBeans,
@@ -252,6 +239,58 @@ public class KogitoAssetsProcessor {
         if (useProcessSVG) {
             registerProcessSVG(appPaths, resource);
         }
+    }
+
+    private File getOrCreateTargetDirectory(Path firstProjectPath) {
+        Path targetDirectory = firstProjectPath.resolve("target");
+        if(!targetDirectory.toFile().exists()) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("Creating target directory {}", targetDirectory.toString());
+            }
+            try {
+                Files.createDirectories(targetDirectory);
+            } catch (IOException e) {
+                String message = "Error during creation of target directory " + targetDirectory.toString();
+                logger.error(message, e);
+                throw new UncheckedIOException(message, e);
+            }
+        }
+        return targetDirectory.toFile();
+    }
+
+    private AddonsConfig addonsConfig() {
+        boolean usePersistence = combinedIndexBuildItem.getIndex().getClassByName(persistenceFactoryClass) != null;
+        boolean usePrometheusMonitoring = combinedIndexBuildItem.getIndex().getClassByName(prometheusClass) != null;
+        boolean useMonitoring = usePrometheusMonitoring || combinedIndexBuildItem.getIndex().getClassByName(monitoringCoreClass) != null;
+        boolean useTracing = !combinedIndexBuildItem.getIndex().getAllKnownSubclasses(tracingClass).isEmpty();
+        boolean useKnativeEventing = combinedIndexBuildItem.getIndex().getClassByName(knativeEventingClass) != null;
+        boolean useCloudEvents = combinedIndexBuildItem.getIndex().getClassByName(quarkusCloudEvents) != null;
+
+        return AddonsConfig.builder()
+                .withPersistence(usePersistence)
+                .withMonitoring(useMonitoring)
+                .withPrometheusMonitoring(usePrometheusMonitoring)
+                .withTracing(useTracing)
+                .withKnativeEventing(useKnativeEventing)
+                .withCloudEvents(useCloudEvents)
+                .build();
+    }
+
+    private KogitoBuildContext kogitoBuildContext(AppPaths appPaths, File targetDirectory, AddonsConfig addonsConfig) {
+        return QuarkusKogitoBuildContext.builder()
+                .withApplicationProperties(appPaths.getResourceFiles())
+                .withPackageName(appPackageName)
+                .withClassAvailabilityResolver(this::classAvailabilityResolver)
+                .withAddonsConfig(addonsConfig)
+                .withTargetDirectory(targetDirectory)
+                .build();
+    }
+
+    private boolean classAvailabilityResolver(String className) {
+        IndexView index = combinedIndexBuildItem.getIndex();
+        DotName classDotName = DotName.createSimple(className);
+        return !index.getAnnotations(classDotName).isEmpty() ||
+                index.getClassByName(classDotName) != null;
     }
 
     private void dumpFilesToDisk(AppPaths appPaths, Collection<GeneratedFile> generatedFiles){
@@ -301,6 +340,7 @@ public class KogitoAssetsProcessor {
     }
 
     private Collection<GeneratedFile> generatePersistenceInfo(
+            KogitoBuildContext context,
             AppPaths appPaths,
             IndexView inputIndex,
             BuildProducer<GeneratedBeanBuildItem> generatedBeans,
@@ -322,7 +362,7 @@ public class KogitoAssetsProcessor {
                 }
             }
         }
-        GeneratorContext context = generatorContext(appPaths, index);
+
         String persistenceType = context.getApplicationProperty("kogito.persistence.type").orElse(PersistenceGenerator.DEFAULT_PERSISTENCE_TYPE);
         Collection<GeneratedFile> persistenceGeneratedFiles = getGeneratedPersistenceFiles(appPaths, index, usePersistence, parameters, context, persistenceType);
 
@@ -364,7 +404,7 @@ public class KogitoAssetsProcessor {
                                                                    IndexView index,
                                                                    boolean usePersistence,
                                                                    List<String> parameters,
-                                                                   GeneratorContext context,
+                                                                   KogitoBuildContext context,
                                                                    String persistenceType) {
         JandexProtoGenerator jandexProtoGenerator =
                 new JandexProtoGenerator(
@@ -395,22 +435,22 @@ public class KogitoAssetsProcessor {
     private PersistenceGenerator makePersistenceGenerator(
             boolean usePersistence,
             List<String> parameters,
-            GeneratorContext context,
+            KogitoBuildContext context,
             Collection<ClassInfo> modelClasses,
             JandexProtoGenerator jandexProtoGenerator,
             Path projectPath,
             String persistenceType) {
-        PersistenceGenerator persistenceGenerator =
-                new PersistenceGenerator(
-                        new File(projectPath.toFile(), "target"),
-                        modelClasses,
-                        usePersistence,
-                        jandexProtoGenerator,
-                        parameters,
-                        persistenceType);
-        persistenceGenerator.setPackageName(appPackageName);
-        persistenceGenerator.setContext(context);
-        return persistenceGenerator;
+
+        KogitoBuildContext.Builder localContext = merge(context, QuarkusKogitoBuildContext.builder());
+        localContext.withTargetDirectory(getOrCreateTargetDirectory(projectPath));
+
+        return new PersistenceGenerator(
+                localContext.build(),
+                modelClasses,
+                usePersistence,
+                jandexProtoGenerator,
+                parameters,
+                persistenceType);
     }
 
     private Collection<GeneratedFile> getJsonSchemaFiles(Path path, Index index) throws IOException {
@@ -612,15 +652,5 @@ public class KogitoAssetsProcessor {
         Path path = Paths.get(location, end);
         path.getParent().toFile().mkdirs();
         return path;
-    }
-
-    private GeneratorContext generatorContext(AppPaths appPaths, IndexView index) {
-        GeneratorContext context = GeneratorContext.ofResourcePath(appPaths.getResourceFiles());
-        context.withBuildContext(new QuarkusKogitoBuildContext(className -> {
-            DotName classDotName = DotName.createSimple(className);
-            return !index.getAnnotations(classDotName).isEmpty() || index.getClassByName(classDotName) != null;
-        }));
-
-        return context;
     }
 }

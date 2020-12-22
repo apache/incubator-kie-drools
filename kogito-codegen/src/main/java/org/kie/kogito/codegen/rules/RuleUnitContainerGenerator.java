@@ -45,12 +45,11 @@ public class RuleUnitContainerGenerator extends AbstractApplicationSection {
     private final TemplatedGenerator templatedGenerator;
     private List<BodyDeclaration<?>> factoryMethods = new ArrayList<>();
 
-    public RuleUnitContainerGenerator(KogitoBuildContext buildContext, String packageName) {
-        super(buildContext, SECTION_CLASS_NAME);
+    public RuleUnitContainerGenerator(KogitoBuildContext context) {
+        super(context, SECTION_CLASS_NAME);
         this.ruleUnits = new ArrayList<>();
         this.templatedGenerator = new TemplatedGenerator(
-                buildContext,
-                packageName,
+                context,
                 SECTION_CLASS_NAME,
                 RESOURCE_CDI,
                 RESOURCE_SPRING,
@@ -87,7 +86,7 @@ public class RuleUnitContainerGenerator extends AbstractApplicationSection {
     public CompilationUnit compilationUnit() {
         CompilationUnit compilationUnit = templatedGenerator.compilationUnitOrThrow("No CompilationUnit");
 
-        if (!buildContext.hasDI()) {
+        if (!context.hasDI()) {
             // only in a non DI context
             compilationUnit.findFirst(MethodDeclaration.class, m -> m.getNameAsString().equals("create"))
                     .ifPresent(m -> m.setBody(factoryByIdBody())); // ignore if missing

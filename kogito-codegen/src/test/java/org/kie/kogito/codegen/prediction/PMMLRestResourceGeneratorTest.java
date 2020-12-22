@@ -33,8 +33,8 @@ import org.drools.core.util.StringUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.codegen.feel11.CodegenStringUtil;
-import org.kie.kogito.codegen.context.JavaKogitoBuildContext;
 import org.kie.kogito.codegen.context.KogitoBuildContext;
+import org.kie.kogito.codegen.context.QuarkusKogitoBuildContext;
 import org.kie.kogito.codegen.di.CDIDependencyInjectionAnnotator;
 import org.kie.pmml.commons.model.KiePMMLModel;
 
@@ -52,12 +52,12 @@ class PMMLRestResourceGeneratorTest {
     private final static KiePMMLModel KIE_PMML_MODEL = getKiePMMLModelInternal();
     private static PMMLRestResourceGenerator pmmlRestResourceGenerator;
     private static ClassOrInterfaceDeclaration template = getClassOrInterfaceDeclaration();
-    private static KogitoBuildContext buildContext;
+    private static KogitoBuildContext context;
 
     @BeforeAll
     public static void setup() {
-        buildContext = new JavaKogitoBuildContext();
-        pmmlRestResourceGenerator = new PMMLRestResourceGenerator(buildContext, KIE_PMML_MODEL, APP_CANONICAL_NAME);
+        context = QuarkusKogitoBuildContext.builder().build();
+        pmmlRestResourceGenerator = new PMMLRestResourceGenerator(context, KIE_PMML_MODEL, APP_CANONICAL_NAME);
         assertNotNull(pmmlRestResourceGenerator);
     }
 
@@ -83,13 +83,13 @@ class PMMLRestResourceGeneratorTest {
 
     @Test
     void constructor() {
-        assertTrue(pmmlRestResourceGenerator.packageName.startsWith("org.kie.kogito"));
+        assertTrue(pmmlRestResourceGenerator.restPackageName.startsWith("org.kie.kogito"));
         assertEquals(APP_CANONICAL_NAME, pmmlRestResourceGenerator.appCanonicalName);
     }
 
     @Test
     void generateWithDependencyInjection() {
-        buildContext.setDependencyInjectionAnnotator(new CDIDependencyInjectionAnnotator());
+        context.setDependencyInjectionAnnotator(new CDIDependencyInjectionAnnotator());
         String retrieved = pmmlRestResourceGenerator.generate();
         commonEvaluateGenerate(retrieved);
         String expected = "Application application;";
@@ -98,7 +98,7 @@ class PMMLRestResourceGeneratorTest {
 
     @Test
     void generateWithoutDependencyInjection() {
-        buildContext.setDependencyInjectionAnnotator(null);
+        context.setDependencyInjectionAnnotator(null);
         String retrieved = pmmlRestResourceGenerator.generate();
         commonEvaluateGenerate(retrieved);
         String expected = String.format("Application application = new %s();", APP_CANONICAL_NAME);

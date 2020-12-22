@@ -18,9 +18,8 @@ import org.kie.kogito.codegen.context.KogitoBuildContext;
 
 public class ConfigBeanGenerator extends AbstractConfigGenerator {
 
-    public ConfigBeanGenerator(KogitoBuildContext buildContext, String packageName) {
-        super(buildContext,
-                packageName,
+    public ConfigBeanGenerator(KogitoBuildContext context) {
+        super(context,
                 "ConfigBean",
                 "/class-templates/config/CdiConfigBeanTemplate.java",
                 "/class-templates/config/SpringConfigBeanTemplate.java");

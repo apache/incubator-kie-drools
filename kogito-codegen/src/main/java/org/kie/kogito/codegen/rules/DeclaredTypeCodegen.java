@@ -44,6 +44,7 @@ import org.kie.kogito.codegen.AbstractGenerator;
 import org.kie.kogito.codegen.ApplicationSection;
 import org.kie.kogito.codegen.ApplicationConfigGenerator;
 import org.kie.kogito.codegen.KogitoPackageSources;
+import org.kie.kogito.codegen.context.KogitoBuildContext;
 import org.kie.kogito.codegen.rules.config.RuleConfigGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,22 +55,22 @@ public class DeclaredTypeCodegen extends AbstractGenerator {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DeclaredTypeCodegen.class);
 
-    public static DeclaredTypeCodegen ofPath(Path basePath) {
+    public static DeclaredTypeCodegen ofPath(KogitoBuildContext context, Path basePath) {
         try {
             Stream<File> files = Files.walk(basePath).map(Path::toFile);
             Set<Resource> resources = toResources(files);
-            return new DeclaredTypeCodegen(resources);
+            return new DeclaredTypeCodegen(context, resources);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
     }
 
-    public static DeclaredTypeCodegen ofFiles(Collection<File> files) {
-        return new DeclaredTypeCodegen(toResources(files.stream()));
+    public static DeclaredTypeCodegen ofFiles(KogitoBuildContext context, Collection<File> files) {
+        return new DeclaredTypeCodegen(context, toResources(files.stream()));
     }
 
-    public static DeclaredTypeCodegen ofResources(Collection<Resource> resources) {
-        return new DeclaredTypeCodegen(resources);
+    public static DeclaredTypeCodegen ofResources(KogitoBuildContext context, Collection<Resource> resources) {
+        return new DeclaredTypeCodegen(context, resources);
     }
 
     private static Set<Resource> toResources(Stream<File> files) {
@@ -95,7 +96,8 @@ public class DeclaredTypeCodegen extends AbstractGenerator {
      */
     private ClassLoader contextClassLoader;
 
-    private DeclaredTypeCodegen(Collection<Resource> resources) {
+    private DeclaredTypeCodegen(KogitoBuildContext context, Collection<Resource> resources) {
+        super(context);
         this.resources = resources;
         this.contextClassLoader = getClass().getClassLoader();
     }
@@ -160,7 +162,7 @@ public class DeclaredTypeCodegen extends AbstractGenerator {
 
     @Override
     public void updateConfig(ApplicationConfigGenerator cfg) {
-        cfg.withRuleConfig(new RuleConfigGenerator(context().getBuildContext(), "defaultpkg"));
+        cfg.withRuleConfig(new RuleConfigGenerator(context()));
     }
 
     public DeclaredTypeCodegen withClassLoader(ClassLoader projectClassLoader) {

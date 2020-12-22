@@ -81,8 +81,6 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-
-
 /**
  * ProcessGenerationTest iterates over all the process files in the project except the
  * ones listed in process-generation-test.skip.txt

@@ -34,8 +34,6 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.TypeParameter;
 import org.drools.modelcompiler.builder.QueryModel;
 import org.kie.internal.ruleunit.RuleUnitDescription;
-import org.kie.kogito.codegen.AddonsConfig;
-import org.kie.kogito.codegen.ApplicationGenerator;
 import org.kie.kogito.codegen.FileGenerator;
 import org.kie.kogito.codegen.context.KogitoBuildContext;
 import org.kie.kogito.conf.ClockType;
@@ -59,25 +57,22 @@ public class RuleUnitGenerator implements FileGenerator {
     private final String packageName;
     private final String typeName;
     private final String generatedSourceFile;
-    private KogitoBuildContext buildContext;
+    private KogitoBuildContext context;
     private final String generatedFilePath;
     private final String targetCanonicalName;
     private RuleUnitConfig config;
     private String targetTypeName;
     private Collection<QueryModel> queries;
-    private String applicationPackageName;
-    private AddonsConfig addonsConfig = AddonsConfig.DEFAULT;
 
-    public RuleUnitGenerator(RuleUnitDescription ruleUnit, String generatedSourceFile, KogitoBuildContext buildContext) {
+    public RuleUnitGenerator(RuleUnitDescription ruleUnit, String generatedSourceFile, KogitoBuildContext context) {
         this.ruleUnit = ruleUnit;
         this.packageName = ruleUnit.getPackageName();
         this.typeName = ruleUnit.getSimpleName();
         this.generatedSourceFile = generatedSourceFile;
-        this.buildContext = buildContext;
+        this.context = context;
         this.targetTypeName = typeName + "RuleUnit";
         this.targetCanonicalName = packageName + "." + targetTypeName;
         this.generatedFilePath = targetCanonicalName.replace('.', '/') + ".java";
-        this.applicationPackageName = ApplicationGenerator.DEFAULT_PACKAGE_NAME;
         // merge config from the descriptor with configs from application.conf
         // application.conf overrides any other config
         this.config = ruleUnit.getConfig();
@@ -96,7 +91,7 @@ public class RuleUnitGenerator implements FileGenerator {
     public List<QueryEndpointGenerator> queries() {
         return queries.stream()
                 .filter(query -> !query.hasParameters())
-                .map(query -> new QueryEndpointGenerator(ruleUnit, query, buildContext, addonsConfig))
+                .map(query -> new QueryEndpointGenerator(ruleUnit, query, context))
                 .collect(toList());
     }
 
@@ -159,10 +154,10 @@ public class RuleUnitGenerator implements FileGenerator {
                 .setModifiers(Modifier.Keyword.PUBLIC)
                 .getExtendedTypes().get(0).setTypeArguments(nodeList(new ClassOrInterfaceType(null, typeName)));
 
-        if (buildContext.hasDI()) {
-            buildContext.getDependencyInjectionAnnotator().withSingletonComponent(cls);
+        if (context.hasDI()) {
+            context.getDependencyInjectionAnnotator().withSingletonComponent(cls);
             cls.findFirst(ConstructorDeclaration.class, c -> !c.getParameters().isEmpty()) // non-empty constructor
-                    .ifPresent(buildContext.getDependencyInjectionAnnotator()::withInjection);
+                    .ifPresent(context.getDependencyInjectionAnnotator()::withInjection);
         }
 
         String ruleUnitInstanceFQCN = RuleUnitInstanceGenerator.qualifiedName(packageName, typeName);
@@ -170,7 +165,7 @@ public class RuleUnitGenerator implements FileGenerator {
         cls.findAll(ObjectCreationExpr.class, o -> o.getType().getNameAsString().equals("$InstanceName$"))
                 .forEach(o -> o.setType(ruleUnitInstanceFQCN));
         cls.findAll(ObjectCreationExpr.class, o -> o.getType().getNameAsString().equals("$Application$"))
-                .forEach(o -> o.setType(applicationPackageName + ".Application"));
+                .forEach(o -> o.setType(context.getPackageName() + ".Application"));
         cls.findAll(ObjectCreationExpr.class, o -> o.getType().getNameAsString().equals("$RuleModelName$"))
                 .forEach(o -> o.setType(packageName + "." + generatedSourceFile + "_" + typeName));
         cls.findAll(MethodDeclaration.class, m -> m.getType().asString().equals("$InstanceName$"))
@@ -221,18 +216,7 @@ public class RuleUnitGenerator implements FileGenerator {
         return this;
     }
 
-    public RuleUnitGenerator withAddons(AddonsConfig addonsConfig) {
-        this.addonsConfig = addonsConfig;
-        return this;
-    }
-
     public RuleUnitDescription getRuleUnitDescription() {
         return ruleUnit;
-    }
-
-    public void setApplicationPackageName(String packageName) {
-        if (packageName != null) {
-            this.applicationPackageName = packageName;
-        }
     }
 }

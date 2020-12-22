@@ -15,26 +15,30 @@
 
 package org.kie.kogito.codegen.context;
 
+import org.kie.kogito.codegen.AddonsConfig;
+
+import java.io.File;
+import java.util.Properties;
 import java.util.function.Predicate;
 
 public class JavaKogitoBuildContext extends AbstractKogitoBuildContext {
 
-    public JavaKogitoBuildContext() {
-        this(Thread.currentThread().getContextClassLoader());
+    protected JavaKogitoBuildContext(String packageName, Predicate<String> classAvailabilityResolver, File targetDirectory, AddonsConfig addonsConfig, Properties applicationProperties) {
+        super(packageName, classAvailabilityResolver, null, targetDirectory, addonsConfig, applicationProperties);
     }
 
-    public JavaKogitoBuildContext(final ClassLoader classLoader) {
-        this(className -> {
-            try {
-                classLoader.loadClass(className);
-                return true;
-            } catch (ClassNotFoundException e) {
-                return false;
-            }
-        });
+    public static Builder builder() {
+        return new JavaKogitoBuildContextBuilder();
     }
 
-    public JavaKogitoBuildContext(Predicate<String> classAvailabilityResolver) {
-        super(classAvailabilityResolver, null);
+    protected static class JavaKogitoBuildContextBuilder extends AbstractBuilder {
+
+        protected JavaKogitoBuildContextBuilder() {
+        }
+
+        @Override
+        public JavaKogitoBuildContext build() {
+            return new JavaKogitoBuildContext(packageName, classAvailabilityResolver, targetDirectory, addonsConfig, applicationProperties);
+        }
     }
 }

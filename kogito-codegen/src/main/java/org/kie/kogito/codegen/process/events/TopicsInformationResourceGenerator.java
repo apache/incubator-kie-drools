@@ -29,7 +29,6 @@ import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import org.jbpm.compiler.canonical.TriggerMetaData;
-import org.kie.kogito.codegen.AddonsConfig;
 import org.kie.kogito.codegen.BodyDeclarationComparator;
 import org.kie.kogito.codegen.TemplatedGenerator;
 import org.kie.kogito.codegen.context.KogitoBuildContext;
@@ -43,19 +42,15 @@ public class TopicsInformationResourceGenerator extends AbstractEventResourceGen
     private static final String SPRING_TEMPLATE = "/class-templates/events/SpringTopicsInformationResourceTemplate.java";
     private static final String CLASS_NAME = "TopicsInformationResource";
 
-    private final KogitoBuildContext buildContext;
+    private final KogitoBuildContext context;
     private final Map<String, List<TriggerMetaData>> triggers;
-    private final AddonsConfig addonsConfig;
 
-    public TopicsInformationResourceGenerator(final KogitoBuildContext buildContext,
-                                              final String packageName,
-                                              final List<ProcessExecutableModelGenerator> generators,
-                                              final AddonsConfig addonsConfig) {
-        super(new TemplatedGenerator(buildContext, packageName, CLASS_NAME,
+    public TopicsInformationResourceGenerator(final KogitoBuildContext context,
+                                              final List<ProcessExecutableModelGenerator> generators) {
+        super(new TemplatedGenerator(context, CLASS_NAME,
                                      CDI_TEMPLATE, SPRING_TEMPLATE, CDI_TEMPLATE));
-        this.buildContext = buildContext;
+        this.context = context;
         this.triggers = this.filterTriggers(generators);
-        this.addonsConfig = addonsConfig;
     }
 
     Map<String, List<TriggerMetaData>> getTriggers() {
@@ -71,10 +66,10 @@ public class TopicsInformationResourceGenerator extends AbstractEventResourceGen
         this.addEventsMeta(template);
 
         // in case we don't have the bean in the classpath, just ignore the injection that the generated class will use NoOp instead
-        if (buildContext.hasDI() && addonsConfig.useCloudEvents()) {
-            buildContext.getDependencyInjectionAnnotator().withApplicationComponent(template);
+        if (context.hasDI() && context.getAddonsConfig().useCloudEvents()) {
+            context.getDependencyInjectionAnnotator().withApplicationComponent(template);
             template.findAll(FieldDeclaration.class, fd -> fd.getVariables().get(0).getNameAsString().contains("discovery"))
-                    .forEach(buildContext.getDependencyInjectionAnnotator()::withInjection);
+                    .forEach(context.getDependencyInjectionAnnotator()::withInjection);
         } else {
             template.findFirst(MethodDeclaration.class, md -> md.getName().toString().equals("getTopics"))
                     .orElseThrow(() -> new NoSuchElementException("Compilation unit doesn't contain method getTopics!"))

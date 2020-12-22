@@ -84,7 +84,6 @@ public class PersistenceGenerator extends AbstractGenerator {
     private static final String SPRINGBOOT_PERSISTENCE_MONGODB_NAME_PROP = "spring.data.mongodb.database";
     private static final String OR_ELSE = "orElse";
 
-    private final File targetDirectory;
     private final Collection<?> modelClasses;
     private final boolean persistence;
     private final ProtoGenerator<?> protoGenerator;
@@ -97,12 +96,12 @@ public class PersistenceGenerator extends AbstractGenerator {
     private PersistenceProtoFilesLabeler persistenceProtoLabeler = new PersistenceProtoFilesLabeler();
     private PersistenceLabeler persistenceLabeler = new PersistenceLabeler();
 
-    public PersistenceGenerator(File targetDirectory, Collection<?> modelClasses, boolean persistence, ProtoGenerator<?> protoGenerator, List<String> parameters, String persistenceType) {
-        this(targetDirectory, modelClasses, persistence, protoGenerator, Thread.currentThread().getContextClassLoader(), parameters, persistenceType);
+    public PersistenceGenerator(KogitoBuildContext context, Collection<?> modelClasses, boolean persistence, ProtoGenerator<?> protoGenerator, List<String> parameters, String persistenceType) {
+        this(context, modelClasses, persistence, protoGenerator, Thread.currentThread().getContextClassLoader(), parameters, persistenceType);
     }
 
-    public PersistenceGenerator(File targetDirectory, Collection<?> modelClasses, boolean persistence, ProtoGenerator<?> protoGenerator, ClassLoader classLoader, List<String> parameters, String persistenceType) {
-        this.targetDirectory = targetDirectory;
+    public PersistenceGenerator(KogitoBuildContext context, Collection<?> modelClasses, boolean persistence, ProtoGenerator<?> protoGenerator, ClassLoader classLoader, List<String> parameters, String persistenceType) {
+        super(context);
         this.modelClasses = modelClasses;
         this.persistence = persistence;
         this.protoGenerator = protoGenerator;
@@ -135,9 +134,7 @@ public class PersistenceGenerator extends AbstractGenerator {
 
         }
 
-        if (targetDirectory.isDirectory()) {
-            MetaDataWriter.writeLabelsImageMetadata(targetDirectory, getLabels());
-        }
+        MetaDataWriter.writeLabelsImageMetadata(context().getTargetDirectory(), getLabels());
         return generatedFiles;
     }
 
@@ -148,6 +145,7 @@ public class PersistenceGenerator extends AbstractGenerator {
 
     @SuppressWarnings({"rawtypes", "unchecked"})
     protected void infinispanBasedPersistence(List<GeneratedFile> generatedFiles) {
+        File targetDirectory = context().getTargetDirectory();
         ProtoDataClassesResult protoDataClassesResult = protoGenerator.extractDataClasses((Collection) modelClasses, targetDirectory.toString());
         generatedFiles.addAll(protoDataClassesResult.getGeneratedFiles());
 
@@ -164,7 +162,7 @@ public class PersistenceGenerator extends AbstractGenerator {
         if (!protoFilePath.toFile().exists()) {
             try {
                 // generate proto file based on known data model
-                Proto proto = protoGenerator.generate(packageName, protoDataClassesResult.getDataModelClasses(), "import \"kogito-types.proto\";");
+                Proto proto = protoGenerator.generate(context().getPackageName(), protoDataClassesResult.getDataModelClasses(), "import \"kogito-types.proto\";");
                 protoFilePath = Paths.get(targetDirectory.toString(), "classes", "/persistence", KOGITO_APPLICATION_PROTO);
 
                 Files.createDirectories(protoFilePath.getParent());
@@ -188,15 +186,14 @@ public class PersistenceGenerator extends AbstractGenerator {
 
         ConstructorDeclaration constructor = createConstructorForClazz(persistenceProviderClazz);
 
-        KogitoBuildContext buildContext = context.getBuildContext();
-        if (buildContext.hasDI()) {
-            buildContext.getDependencyInjectionAnnotator().withApplicationComponent(persistenceProviderClazz);
-            buildContext.getDependencyInjectionAnnotator().withInjection(constructor);
+        if (context().hasDI()) {
+            context().getDependencyInjectionAnnotator().withApplicationComponent(persistenceProviderClazz);
+            context().getDependencyInjectionAnnotator().withInjection(constructor);
 
             FieldDeclaration templateNameField = new FieldDeclaration().addVariable(new VariableDeclarator()
                     .setType(new ClassOrInterfaceType(null, new SimpleName(Optional.class.getCanonicalName()), NodeList.nodeList(new ClassOrInterfaceType(null, String.class.getCanonicalName()))))
                     .setName(TEMPLATE_NAME));
-            buildContext.getDependencyInjectionAnnotator().withConfigInjection(templateNameField, "kogito.persistence.infinispan.template");
+            context().getDependencyInjectionAnnotator().withConfigInjection(templateNameField, "kogito.persistence.infinispan.template");
             // allow to inject template name for the cache
             BlockStmt templateMethodBody = new BlockStmt();
             templateMethodBody.addStatement(new ReturnStmt(new MethodCallExpr(new NameExpr(TEMPLATE_NAME), OR_ELSE).addArgument(new StringLiteralExpr(""))));
@@ -283,14 +280,13 @@ public class PersistenceGenerator extends AbstractGenerator {
         CompilationUnit compilationUnit = new CompilationUnit(KOGITO_PROCESS_INSTANCE_PACKAGE);
         compilationUnit.getTypes().add(persistenceProviderClazz);
 
-        KogitoBuildContext buildContext = context.getBuildContext();
-        if (buildContext.hasDI()) {
-            buildContext.getDependencyInjectionAnnotator().withApplicationComponent(persistenceProviderClazz);
+        if (context().hasDI()) {
+            context().getDependencyInjectionAnnotator().withApplicationComponent(persistenceProviderClazz);
 
             FieldDeclaration pathField = new FieldDeclaration().addVariable(new VariableDeclarator()
                     .setType(new ClassOrInterfaceType(null, new SimpleName(Optional.class.getCanonicalName()), NodeList.nodeList(new ClassOrInterfaceType(null, String.class.getCanonicalName()))))
                     .setName(PATH_NAME));
-            buildContext.getDependencyInjectionAnnotator().withConfigInjection(pathField, KOGITO_PERSISTENCE_FS_PATH_PROP);
+            context().getDependencyInjectionAnnotator().withConfigInjection(pathField, KOGITO_PERSISTENCE_FS_PATH_PROP);
             // allow to inject path for the file system storage
             BlockStmt pathMethodBody = new BlockStmt();
             pathMethodBody.addStatement(new ReturnStmt(new MethodCallExpr(new NameExpr(PATH_NAME), OR_ELSE).addArgument(new StringLiteralExpr("/tmp"))));
@@ -320,10 +316,9 @@ public class PersistenceGenerator extends AbstractGenerator {
 
         ConstructorDeclaration constructor = createConstructorForClazz(persistenceProviderClazz);
 
-        KogitoBuildContext buildContext = context.getBuildContext();
-        if (buildContext.hasDI()) {
-            buildContext.getDependencyInjectionAnnotator().withApplicationComponent(persistenceProviderClazz);
-            buildContext.getDependencyInjectionAnnotator().withInjection(constructor);
+        if (context().hasDI()) {
+            context().getDependencyInjectionAnnotator().withApplicationComponent(persistenceProviderClazz);
+            context().getDependencyInjectionAnnotator().withInjection(constructor);
 
             FieldDeclaration dbNameField = new FieldDeclaration().addVariable(new VariableDeclarator()
                                                                                                       .setType(new ClassOrInterfaceType(null, new SimpleName(Optional.class.getCanonicalName()), NodeList.nodeList(
@@ -331,10 +326,10 @@ public class PersistenceGenerator extends AbstractGenerator {
                                                                                                                                                                                                                                             String.class.getCanonicalName()))))
                                                                                                       .setName(MONGODB_DB_NAME));
             //injecting dbName from quarkus/springboot properties else default kogito
-            if (buildContext instanceof QuarkusKogitoBuildContext) {
-                buildContext.getDependencyInjectionAnnotator().withConfigInjection(dbNameField, QUARKUS_PERSISTENCE_MONGODB_NAME_PROP);
-            } else if (buildContext instanceof SpringBootKogitoBuildContext) {
-                buildContext.getDependencyInjectionAnnotator().withConfigInjection(dbNameField, SPRINGBOOT_PERSISTENCE_MONGODB_NAME_PROP);
+            if (context() instanceof QuarkusKogitoBuildContext) {
+                context().getDependencyInjectionAnnotator().withConfigInjection(dbNameField, QUARKUS_PERSISTENCE_MONGODB_NAME_PROP);
+            } else if (context() instanceof SpringBootKogitoBuildContext) {
+                context().getDependencyInjectionAnnotator().withConfigInjection(dbNameField, SPRINGBOOT_PERSISTENCE_MONGODB_NAME_PROP);
             }
 
             BlockStmt dbNameMethodBody = new BlockStmt();

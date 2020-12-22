@@ -21,7 +21,8 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.codegen.GeneratorContext;
+import org.kie.kogito.codegen.context.JavaKogitoBuildContext;
+import org.kie.kogito.codegen.context.KogitoBuildContext;
 import org.kie.kogito.conf.ClockType;
 import org.kie.kogito.conf.EventProcessingType;
 import org.kie.kogito.rules.RuleUnitConfig;
@@ -38,7 +39,9 @@ public class NamedRuleUnitConfigTest {
         properties.put("kogito.rules.\"my.rule.Unit\".clock-type", ClockType.REALTIME.name());
         properties.put("kogito.rules.\"my.rule.Unit\".sessions-pool", "10");
 
-        GeneratorContext context = GeneratorContext.ofProperties(properties);
+        KogitoBuildContext context = JavaKogitoBuildContext.builder()
+                .withApplicationProperties(properties)
+                .build();
 
         List<NamedRuleUnitConfig> namedRuleUnitConfigs = NamedRuleUnitConfig.fromContext(context);
         assertThat(namedRuleUnitConfigs).hasSize(1);
@@ -60,7 +63,10 @@ public class NamedRuleUnitConfigTest {
 
         properties.put("kogito.rules.\"my.rule.Unit2\".event-processing-type", EventProcessingType.STREAM.name());
 
-        GeneratorContext context = GeneratorContext.ofProperties(properties);
+        KogitoBuildContext context = JavaKogitoBuildContext.builder()
+                .withApplicationProperties(properties)
+                .build();
+
         List<NamedRuleUnitConfig> namedRuleUnitConfigs = NamedRuleUnitConfig.fromContext(context);
 
         assertThat(namedRuleUnitConfigs).hasSize(2);
@@ -89,7 +95,10 @@ public class NamedRuleUnitConfigTest {
         properties.put("kogito.rules.some.other.config", "ignore me");
 
         properties.put("kogito.rules.\"my.rule.Unit", EventProcessingType.CLOUD.name());
-        GeneratorContext context = GeneratorContext.ofProperties(properties);
+
+        KogitoBuildContext context = JavaKogitoBuildContext.builder()
+                .withApplicationProperties(properties)
+                .build();
         List<NamedRuleUnitConfig> namedRuleUnitConfigs = NamedRuleUnitConfig.fromContext(context);
 
         assertThat(namedRuleUnitConfigs).isEmpty();

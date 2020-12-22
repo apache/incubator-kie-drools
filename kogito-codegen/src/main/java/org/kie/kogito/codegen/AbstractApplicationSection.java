@@ -17,6 +17,8 @@ package org.kie.kogito.codegen;
 
 import org.kie.kogito.codegen.context.KogitoBuildContext;
 
+import java.util.Objects;
+
 /**
  * Base implementation for an {@link ApplicationSection}.
  * <p>
@@ -26,12 +28,13 @@ import org.kie.kogito.codegen.context.KogitoBuildContext;
  */
 public abstract class AbstractApplicationSection implements ApplicationSection {
 
-    protected final KogitoBuildContext buildContext;
+    protected final KogitoBuildContext context;
     private final String sectionClassName;
 
-    public AbstractApplicationSection(KogitoBuildContext buildContext, String sectionClassName) {
+    public AbstractApplicationSection(KogitoBuildContext context, String sectionClassName) {
+        Objects.requireNonNull(context, "context cannot be null");
         this.sectionClassName = sectionClassName;
-        this.buildContext = buildContext;
+        this.context = context;
     }
 
     @Override

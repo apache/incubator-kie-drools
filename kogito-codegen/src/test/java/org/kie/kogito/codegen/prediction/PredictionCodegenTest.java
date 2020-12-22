@@ -18,14 +18,12 @@ package org.kie.kogito.codegen.prediction;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.Properties;
 
 import com.github.javaparser.ast.CompilationUnit;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.codegen.AbstractCodegenTest;
-import org.kie.kogito.codegen.ApplicationGenerator;
 import org.kie.kogito.codegen.GeneratedFile;
-import org.kie.kogito.codegen.GeneratorContext;
+import org.kie.kogito.codegen.context.KogitoBuildContext;
 import org.kie.kogito.codegen.io.CollectedResource;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -39,13 +37,10 @@ public class PredictionCodegenTest extends AbstractCodegenTest {
 
     @Test
     public void generateAllFiles() {
-
-        GeneratorContext context = GeneratorContext.ofProperties(new Properties());
-
-        PredictionCodegen codeGenerator = PredictionCodegen.ofCollectedResources(false,
+        PredictionCodegen codeGenerator = PredictionCodegen.ofCollectedResources(
+                KogitoBuildContext.EMPTY_CONTEXT,
+                false,
                 CollectedResource.fromFiles(BASE_PATH, FULL_SOURCE.toFile()));
-        codeGenerator.setContext(context);
-        codeGenerator.setPackageName(ApplicationGenerator.DEFAULT_PACKAGE_NAME);
 
         List<GeneratedFile> generatedFiles = codeGenerator.generate();
         assertEquals(4, generatedFiles.size());

@@ -37,6 +37,11 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
+import org.kie.kogito.codegen.AddonsConfig;
+import org.kie.kogito.codegen.ApplicationGenerator;
+import org.kie.kogito.codegen.GeneratedFile;
+import org.kie.kogito.codegen.JsonSchemaGenerator;
+import org.kie.kogito.codegen.context.KogitoBuildContext;
 import org.kie.memorycompiler.CompilationResult;
 import org.kie.memorycompiler.JavaCompiler;
 import org.kie.memorycompiler.JavaCompilerFactory;
@@ -46,10 +51,6 @@ import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.jbpm.util.JsonSchemaUtil;
 import org.kie.kogito.Model;
 import org.kie.kogito.UserTask;
-import org.kie.kogito.codegen.ApplicationGenerator;
-import org.kie.kogito.codegen.GeneratedFile;
-import org.kie.kogito.codegen.GeneratorContext;
-import org.kie.kogito.codegen.JsonSchemaGenerator;
 import org.kie.kogito.codegen.process.persistence.PersistenceGenerator;
 import org.kie.kogito.codegen.process.persistence.proto.ReflectionProtoGenerator;
 import org.kie.kogito.process.ProcessInstancesFactory;
@@ -68,7 +69,9 @@ public class ProcessClassesMojo extends AbstractKieMojo {
 
     @Parameter(defaultValue = "${project}", readonly = true, required = true)
     protected MavenProject project;
-    
+
+    @Parameter(required = true, defaultValue = "${project.build.directory}")
+    private File targetDirectory;
     
     @Parameter(required = true, defaultValue = "${project.basedir}/src/main/resources")
     private File kieSourcesDirectory;
@@ -101,7 +104,7 @@ public class ProcessClassesMojo extends AbstractKieMojo {
 
                 // safe guard to not generate application classes that would clash with interfaces
                 if (appPackageName.equals(ApplicationGenerator.DEFAULT_GROUP_ID)) {
-                    appPackageName = ApplicationGenerator.DEFAULT_PACKAGE_NAME;
+                    appPackageName = KogitoBuildContext.DEFAULT_PACKAGE_NAME;
                 }
                 // collect constructor parameters so the generated class can create constructor with injection
                 List<String> parameters = new ArrayList<>();
@@ -114,13 +117,20 @@ public class ProcessClassesMojo extends AbstractKieMojo {
                     }
                 }
 
-                GeneratorContext context = GeneratorContext.ofResourcePath(kieSourcesDirectory);
-                context.withBuildContext(discoverKogitoRuntimeContext(project));
+
+                AddonsConfig addonsConfig = loadAddonsConfig(false, project);
+
+                KogitoBuildContext.Builder contextBuilder = discoverKogitoRuntimeContext(project)
+                        .withApplicationProperties(kieSourcesDirectory)
+                        .withPackageName(appPackageName)
+                        .withAddonsConfig(addonsConfig)
+                        .withTargetDirectory(targetDirectory);
+
+                KogitoBuildContext context = contextBuilder.build();
+
 
                 String persistenceType = context.getApplicationProperty("kogito.persistence.type").orElse(PersistenceGenerator.DEFAULT_PERSISTENCE_TYPE);
-                PersistenceGenerator persistenceGenerator = new PersistenceGenerator(new File(project.getBuild().getDirectory()), modelClasses, !classes.isEmpty(), new ReflectionProtoGenerator(), cl, parameters, persistenceType);
-                persistenceGenerator.setPackageName(appPackageName);
-                persistenceGenerator.setContext(context);
+                PersistenceGenerator persistenceGenerator = new PersistenceGenerator(context, modelClasses, !classes.isEmpty(), new ReflectionProtoGenerator(), cl, parameters, persistenceType);
                 Collection<GeneratedFile> generatedFiles = persistenceGenerator.generate();
                 generatedFiles = generatedFiles.stream().filter(x -> x.getType().equals(GeneratedFile.Type.CLASS)).collect(Collectors.toList());
 

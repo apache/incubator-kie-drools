@@ -36,12 +36,12 @@ import org.kie.kogito.codegen.ApplicationGenerator;
 import org.kie.kogito.codegen.GeneratedFile;
 import org.kie.kogito.codegen.GeneratedFile.Type;
 import org.kie.kogito.codegen.Generator;
-import org.kie.kogito.codegen.GeneratorContext;
+import org.kie.kogito.codegen.context.KogitoBuildContext;
 import org.kie.kogito.codegen.context.QuarkusKogitoBuildContext;
 
 public abstract class KogitoCompilationProvider extends JavaCompilationProvider {
 
-    protected static Map<Path, Path> classToSource = new HashMap<>();    
+    protected static Map<Path, Path> classToSource = new HashMap<>();
 
     private String appPackageName = System.getProperty("kogito.codegen.packageName", "org.kie.kogito.app");
 
@@ -51,23 +51,26 @@ public abstract class KogitoCompilationProvider extends JavaCompilationProvider 
     }
 
     @Override
-    public final void compile(Set<File> filesToCompile, Context context) {
+    public final void compile(Set<File> filesToCompile, Context quarkusContext) {
         // This classloader reads from the file system all the project dependencies, plus the quarkus output directory
         // containing all the latest class definitions of user's pojos, eventually recompiled also during the latest
         // hot reload round. It is also necessary to use a null as a parent classloader otherwise this classloader
         // could load the old definition of a class from the parent instead of getting the latest one from the output directory
-        final URLClassLoader cl = new URLClassLoader( getClasspathUrls( context ), null );
+        final URLClassLoader cl = new URLClassLoader( getClasspathUrls( quarkusContext ), null );
 
-        File outputDirectory = context.getOutputDirectory();
+        File outputDirectory = quarkusContext.getOutputDirectory();
         try {
-            GeneratorContext generationContext = GeneratorContext
-                    .ofResourcePath(context.getProjectDirectory().toPath().resolve("src/main/resources").toFile());
-            generationContext
-                    .withBuildContext(new QuarkusKogitoBuildContext(className -> hasClassOnClasspath(cl, className)));
+            KogitoBuildContext context = QuarkusKogitoBuildContext.builder()
+                    .withApplicationProperties(quarkusContext.getProjectDirectory().toPath().resolve("src/main/resources").toFile())
+                    .withPackageName(appPackageName)
+                    .withClassAvailabilityResolver(className -> hasClassOnClasspath(cl, className))
+                    .withTargetDirectory(outputDirectory)
+                    .build();
 
-            ApplicationGenerator appGen = new ApplicationGenerator(generationContext, appPackageName, outputDirectory);
 
-            addGenerator(appGen, filesToCompile, context, cl);
+            ApplicationGenerator appGen = new ApplicationGenerator(context);
+
+            addGenerator(appGen, context, filesToCompile, quarkusContext, cl);
 
             Collection<GeneratedFile> generatedFiles = appGen.generate();
 
@@ -81,7 +84,7 @@ public abstract class KogitoCompilationProvider extends JavaCompilationProvider 
                     }
                 }
             }
-            super.compile(generatedSourceFiles, context);
+            super.compile(generatedSourceFiles, quarkusContext);
         } catch (Exception e) {
             throw new KogitoCompilerException(e);
         } finally {
@@ -102,7 +105,11 @@ public abstract class KogitoCompilationProvider extends JavaCompilationProvider 
         return null;
     }
 
-    protected abstract Generator addGenerator(ApplicationGenerator appGen, Set<File> filesToCompile, Context context, ClassLoader cl)
+    protected abstract Generator addGenerator(ApplicationGenerator appGen,
+                                              KogitoBuildContext context,
+                                              Set<File> filesToCompile,
+                                              Context quarkusContext,
+                                              ClassLoader cl)
             throws IOException;
 
     static Path pathOf(String path, String relativePath) {

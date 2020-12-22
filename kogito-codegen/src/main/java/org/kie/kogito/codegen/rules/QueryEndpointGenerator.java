@@ -45,7 +45,6 @@ import com.github.javaparser.ast.type.Type;
 import org.drools.compiler.compiler.DroolsError;
 import org.drools.modelcompiler.builder.QueryModel;
 import org.kie.internal.ruleunit.RuleUnitDescription;
-import org.kie.kogito.codegen.AddonsConfig;
 import org.kie.kogito.codegen.BodyDeclarationComparator;
 import org.kie.kogito.codegen.FileGenerator;
 import org.kie.kogito.codegen.TemplatedGenerator;
@@ -65,30 +64,33 @@ public class QueryEndpointGenerator implements FileGenerator {
     private final QueryModel query;
 
     private final String name;
-    private final KogitoBuildContext buildContext;
+    private final KogitoBuildContext context;
     private final String endpointName;
     private final String queryClassName;
     private final String targetCanonicalName;
     private final String generatedFilePath;
-    private final AddonsConfig addonsConfig;
     private final TemplatedGenerator generator;
 
     public QueryEndpointGenerator(RuleUnitDescription ruleUnit,
                                   QueryModel query,
-                                  KogitoBuildContext buildContext,
-                                  AddonsConfig addonsConfig) {
+                                  KogitoBuildContext context) {
         this.ruleUnit = ruleUnit;
         this.query = query;
         this.name = toCamelCase(query.getName());
-        this.buildContext = buildContext;
+        this.context = context;
         this.endpointName = toKebabCase(name);
 
         this.queryClassName = ruleUnit.getSimpleName() + "Query" + name;
         this.targetCanonicalName = queryClassName + "Endpoint";
         this.generatedFilePath = (query.getNamespace() + "." + targetCanonicalName).replace('.', '/') + ".java";
-        this.addonsConfig = addonsConfig;
         this.generator =
-                new TemplatedGenerator(buildContext, query.getNamespace(), targetCanonicalName, RESOURCE_CDI, RESOURCE_SPRING, RESOURCE_DEFAULT);
+                new TemplatedGenerator(
+                        context,
+                        query.getNamespace(),
+                        targetCanonicalName,
+                        RESOURCE_CDI,
+                        RESOURCE_SPRING,
+                        RESOURCE_DEFAULT);
     }
 
     public QueryGenerator getQueryGenerator() {
@@ -171,7 +173,7 @@ public class QueryEndpointGenerator implements FileGenerator {
     }
 
     private void generateQueryMethods(CompilationUnit cu, ClassOrInterfaceDeclaration clazz, String returnType) {
-        boolean hasDI = buildContext.hasDI();
+        boolean hasDI = context.hasDI();
         MethodDeclaration queryMethod = clazz.getMethodsByName("executeQuery").get(0);
         queryMethod.getParameter(0).setType(ruleUnit.getCanonicalName() + (hasDI ? "" : "DTO"));
         setGeneric(queryMethod.getType(), returnType);
@@ -205,7 +207,7 @@ public class QueryEndpointGenerator implements FileGenerator {
                 .getStatement(1);
         returnMethodSingle.findAll(VariableDeclarator.class).forEach(decl -> decl.setType(toNonPrimitiveType(returnType)));
 
-        if (addonsConfig.useMonitoring()) {
+        if (context.getAddonsConfig().useMonitoring()) {
             addMonitoringToResource(cu, new MethodDeclaration[]{queryMethod, queryMethodSingle}, endpointName);
         }
     }

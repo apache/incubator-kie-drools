@@ -41,6 +41,7 @@ import org.kie.kogito.codegen.ApplicationSection;
 import org.kie.kogito.codegen.ApplicationConfigGenerator;
 import org.kie.kogito.codegen.GeneratedFile;
 import org.kie.kogito.codegen.KogitoPackageSources;
+import org.kie.kogito.codegen.context.KogitoBuildContext;
 import org.kie.kogito.codegen.io.CollectedResource;
 import org.kie.kogito.codegen.prediction.config.PredictionConfigGenerator;
 import org.kie.kogito.codegen.rules.RuleCodegenError;
@@ -61,25 +62,27 @@ public class PredictionCodegen extends AbstractGenerator {
     private final List<PMMLResource> resources;
     private final List<GeneratedFile> generatedFiles = new ArrayList<>();
 
-    public PredictionCodegen(List<PMMLResource> resources) {
+    public PredictionCodegen(KogitoBuildContext context, List<PMMLResource> resources) {
+        super(context);
         this.resources = resources;
     }
 
-    public static PredictionCodegen ofCollectedResources(boolean isJPMMLAvailable,
+    public static PredictionCodegen ofCollectedResources(KogitoBuildContext context,
+                                                         boolean isJPMMLAvailable,
                                                          Collection<CollectedResource> resources) {
         if (isJPMMLAvailable) {
             LOGGER.info("jpmml libraries available on classpath, skipping kogito-pmml parsing and compilation");
-            return ofPredictions(Collections.emptyList());
+            return ofPredictions(context, Collections.emptyList());
         }
         List<PMMLResource> pmmlResources = resources.stream()
                 .filter(r -> r.resource().getResourceType() == ResourceType.PMML)
                 .flatMap(r -> parsePredictions(r.basePath(), Collections.singletonList(r.resource())).stream())
                 .collect(toList());
-        return ofPredictions(pmmlResources);
+        return ofPredictions(context, pmmlResources);
     }
 
-    private static PredictionCodegen ofPredictions(List<PMMLResource> resources) {
-        return new PredictionCodegen(resources);
+    private static PredictionCodegen ofPredictions(KogitoBuildContext context, List<PMMLResource> resources) {
+        return new PredictionCodegen(context, resources);
     }
 
     private static List<PMMLResource> parsePredictions(Path path, List<Resource> resources) {
@@ -98,15 +101,13 @@ public class PredictionCodegen extends AbstractGenerator {
     @Override
     public void updateConfig(ApplicationConfigGenerator cfg) {
         if (!resources.isEmpty()) {
-            cfg.withPredictionConfig(new PredictionConfigGenerator(context().getBuildContext(), packageName));
+            cfg.withPredictionConfig(new PredictionConfigGenerator(context()));
         }
     }
 
     @Override
     public ApplicationSection section() {
-        PredictionModelsGenerator moduleGenerator = new PredictionModelsGenerator(context.getBuildContext(), packageName, applicationCanonicalName(), resources);
-        moduleGenerator.withAddons(addonsConfig);
-        return moduleGenerator;
+        return new PredictionModelsGenerator(context(), applicationCanonicalName(), resources);
     }
 
     public List<GeneratedFile> getGeneratedFiles() {
@@ -154,7 +155,7 @@ public class PredictionCodegen extends AbstractGenerator {
                     batch.add( new DescrResource( packageDescr ), ResourceType.DESCR );
                 }
                 if (!(model instanceof KiePMMLFactoryModel)) {
-                    PMMLRestResourceGenerator resourceGenerator = new PMMLRestResourceGenerator(context.getBuildContext(), model, applicationCanonicalName());
+                    PMMLRestResourceGenerator resourceGenerator = new PMMLRestResourceGenerator(context(), model, applicationCanonicalName());
                     storeFile(GeneratedFile.Type.PMML, resourceGenerator.generatedFilePath(), resourceGenerator.generate());
             }
             if (model instanceof HasNestedModels) {

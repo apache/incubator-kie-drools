@@ -40,29 +40,29 @@ public class ResourceGeneratorFactory {
         QUARKUS_REACTIVE(QuarkusKogitoBuildContext.class, true),
         JAVA(JavaKogitoBuildContext.class, false);
 
-        Class<? extends KogitoBuildContext> buildContextClass;
+        Class<? extends KogitoBuildContext> contextClass;
         boolean reactive;
 
-        GeneratorType(Class<? extends KogitoBuildContext> buildContextClass,
+        GeneratorType(Class<? extends KogitoBuildContext> contextClass,
                       boolean reactive) {
-            this.buildContextClass = buildContextClass;
+            this.contextClass = contextClass;
             this.reactive = reactive;
         }
 
-        public static Optional<GeneratorType> from(GeneratorContext context) {
+        public static Optional<GeneratorType> from(KogitoBuildContext context) {
             return Arrays.stream(GeneratorType.values())
                     .filter(v -> Objects.equals(v.reactive, isReactiveGenerator(context)))
-                    .filter(v -> v.buildContextClass.isInstance(context.getBuildContext()))
+                    .filter(v -> v.contextClass.isInstance(context))
                     .findFirst();
         }
 
-        static boolean isReactiveGenerator(GeneratorContext context) {
+        static boolean isReactiveGenerator(KogitoBuildContext context) {
             return "reactive".equals(context.getApplicationProperty(GeneratorConfig.KOGITO_REST_RESOURCE_TYPE_PROP)
                                              .orElse(""));
         }
     }
 
-    public Optional<AbstractResourceGenerator> create(GeneratorContext context,
+    public Optional<AbstractResourceGenerator> create(KogitoBuildContext context,
                                                       WorkflowProcess process,
                                                       String modelfqcn,
                                                       String processfqcn,

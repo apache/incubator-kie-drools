@@ -24,6 +24,7 @@ import java.util.Set;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.project.MavenProject;
+import org.kie.kogito.codegen.AddonsConfig;
 import org.kie.kogito.codegen.context.JavaKogitoBuildContext;
 import org.kie.kogito.codegen.context.KogitoBuildContext;
 import org.kie.kogito.codegen.context.QuarkusKogitoBuildContext;
@@ -42,11 +43,36 @@ public abstract class AbstractKieMojo extends AbstractMojo {
         }
     }
 
-    protected KogitoBuildContext discoverKogitoRuntimeContext(MavenProject project)  {
+    protected AddonsConfig loadAddonsConfig(boolean persistence, MavenProject project) {
+        boolean usePersistence = persistence || hasClassOnClasspath(project, "org.kie.kogito.persistence.KogitoProcessInstancesFactory");
+        boolean usePrometheusMonitoring = hasClassOnClasspath(project, "org.kie.kogito.monitoring.prometheus.common.rest.MetricsResource");
+        boolean useMonitoring = usePrometheusMonitoring || hasClassOnClasspath(project, "org.kie.kogito.monitoring.core.common.MonitoringRegistry");
+        boolean useTracing = hasClassOnClasspath(project, "org.kie.kogito.tracing.decision.DecisionTracingListener");
+        boolean useKnativeEventing = hasClassOnClasspath(project, "org.kie.kogito.events.knative.ce.extensions.KogitoProcessExtension");
+        boolean useCloudEvents = hasClassOnClasspath(project, "org.kie.kogito.addon.cloudevents.AbstractTopicDiscovery");
+
+        return AddonsConfig.builder()
+                .withPersistence(usePersistence)
+                .withMonitoring(useMonitoring)
+                .withPrometheusMonitoring(usePrometheusMonitoring)
+                .withTracing(useTracing)
+                .withKnativeEventing(useKnativeEventing)
+                .withCloudEvents(useCloudEvents)
+                .build();
+
+    }
+
+    protected KogitoBuildContext.Builder discoverKogitoRuntimeContext(MavenProject project) {
+        KogitoBuildContext.Builder builder = contextBuilder(project);
+        builder.withClassAvailabilityResolver(fqcn -> hasClassOnClasspath(project, fqcn));
+        return builder;
+    }
+
+    private KogitoBuildContext.Builder contextBuilder(MavenProject project)  {
         switch (discoverFramework(project)) {
-            case QUARKUS: return new QuarkusKogitoBuildContext(fqcn -> hasClassOnClasspath(project, fqcn));
-            case SPRING: return new SpringBootKogitoBuildContext(fqcn -> hasClassOnClasspath(project, fqcn));
-            default: return new JavaKogitoBuildContext(fqcn -> hasClassOnClasspath(project, fqcn));
+            case QUARKUS: return QuarkusKogitoBuildContext.builder();
+            case SPRING: return SpringBootKogitoBuildContext.builder();
+            default: return JavaKogitoBuildContext.builder();
         }
     }
 

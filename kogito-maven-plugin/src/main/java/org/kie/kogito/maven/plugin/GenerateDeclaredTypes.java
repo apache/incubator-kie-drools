@@ -33,9 +33,10 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
+import org.kie.kogito.codegen.AddonsConfig;
 import org.kie.kogito.codegen.ApplicationGenerator;
 import org.kie.kogito.codegen.GeneratedFile;
-import org.kie.kogito.codegen.GeneratorContext;
+import org.kie.kogito.codegen.context.KogitoBuildContext;
 import org.kie.kogito.codegen.rules.DeclaredTypeCodegen;
 import org.kie.kogito.maven.plugin.util.MojoUtil;
 
@@ -143,23 +144,30 @@ public class GenerateDeclaredTypes extends AbstractKieMojo {
         
         // safe guard to not generate application classes that would clash with interfaces
         if (appPackageName.equals(ApplicationGenerator.DEFAULT_GROUP_ID)) {
-            appPackageName = ApplicationGenerator.DEFAULT_PACKAGE_NAME;
+            appPackageName = KogitoBuildContext.DEFAULT_PACKAGE_NAME;
         }
 
         ClassLoader projectClassLoader = MojoUtil.createProjectClassLoader(this.getClass().getClassLoader(),
                                                                            project,
                                                                            outputDirectory,
                                                                            null);
-        
-        GeneratorContext context = GeneratorContext.ofResourcePath(kieSourcesDirectory);
-        context.withBuildContext(discoverKogitoRuntimeContext(project));
+
+
+        AddonsConfig addonsConfig = loadAddonsConfig(persistence, project);
+
+        KogitoBuildContext context = discoverKogitoRuntimeContext(project)
+                .withApplicationProperties(kieSourcesDirectory)
+                .withPackageName(appPackageName)
+                .withTargetDirectory(targetDirectory)
+                .withAddonsConfig(addonsConfig)
+                .build();
 
         ApplicationGenerator appGen =
-                new ApplicationGenerator(context, appPackageName, targetDirectory)
+                new ApplicationGenerator(context)
                         .withClassLoader(projectClassLoader);
 
         if (generateRuleUnits) {
-            appGen.setupGenerator(DeclaredTypeCodegen.ofPath(kieSourcesDirectory.toPath()))
+            appGen.setupGenerator(DeclaredTypeCodegen.ofPath(context, kieSourcesDirectory.toPath()))
                     .withClassLoader(projectClassLoader);
         }
         

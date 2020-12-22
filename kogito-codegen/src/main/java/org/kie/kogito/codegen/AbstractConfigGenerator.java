@@ -24,10 +24,9 @@ public class AbstractConfigGenerator {
 
     private final TemplatedGenerator templatedGenerator;
 
-    public AbstractConfigGenerator(KogitoBuildContext buildContext, String packageName, String targetTypeName, String resourceCdi, String resourceSpring) {
+    public AbstractConfigGenerator(KogitoBuildContext context, String targetTypeName, String resourceCdi, String resourceSpring) {
         this.templatedGenerator = new TemplatedGenerator(
-                buildContext,
-                packageName,
+                context,
                 targetTypeName,
                 resourceCdi,
                 resourceSpring);

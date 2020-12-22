@@ -35,7 +35,6 @@ import org.jbpm.compiler.canonical.UserTaskModelMetaData;
 import org.kie.api.definition.process.WorkflowProcess;
 import org.kie.kogito.codegen.BodyDeclarationComparator;
 import org.kie.kogito.codegen.CodegenUtils;
-import org.kie.kogito.codegen.GeneratorContext;
 import org.kie.kogito.codegen.context.KogitoBuildContext;
 
 import java.util.HashMap;
@@ -57,7 +56,7 @@ public abstract class AbstractResourceGenerator {
 
     private final String relativePath;
 
-    private final GeneratorContext context;
+    private final KogitoBuildContext context;
     private final String resourceClazzName;
     private final String processClazzName;
     private final String processName;
@@ -73,7 +72,7 @@ public abstract class AbstractResourceGenerator {
     private Map<String, String> signals;
 
     public AbstractResourceGenerator(
-            GeneratorContext context,
+            KogitoBuildContext context,
             WorkflowProcess process,
             String modelfqcn,
             String processfqcn,
@@ -223,14 +222,12 @@ public abstract class AbstractResourceGenerator {
         template.findAll(ClassOrInterfaceType.class).forEach(cls -> interpolateTypes(cls, typeInterpolations));
         template.findAll(MethodDeclaration.class).forEach(this::interpolateMethods);
 
-        KogitoBuildContext buildContext = context.getBuildContext();
-
-        if (buildContext.hasDI()) {
+        if (context.hasDI()) {
             template.findAll(FieldDeclaration.class,
-                    CodegenUtils::isProcessField).forEach(fd -> buildContext.getDependencyInjectionAnnotator().withNamedInjection(fd, processId));
+                    CodegenUtils::isProcessField).forEach(fd -> context.getDependencyInjectionAnnotator().withNamedInjection(fd, processId));
 
             template.findAll(FieldDeclaration.class,
-                    CodegenUtils::isApplicationField).forEach(fd -> buildContext.getDependencyInjectionAnnotator().withInjection(fd));
+                    CodegenUtils::isApplicationField).forEach(fd -> context.getDependencyInjectionAnnotator().withInjection(fd));
         } else {
             template.findAll(FieldDeclaration.class,
                     CodegenUtils::isProcessField).forEach(this::initializeProcessField);
@@ -245,8 +242,8 @@ public abstract class AbstractResourceGenerator {
             createResourceMethod.ifPresent(template::remove);
         }
 
-        if (buildContext.hasDI()) {
-            buildContext.getDependencyInjectionAnnotator().withApplicationComponent(template);
+        if (context.hasDI()) {
+            context.getDependencyInjectionAnnotator().withApplicationComponent(template);
         }
 
         enableValidation(template);
@@ -260,11 +257,10 @@ public abstract class AbstractResourceGenerator {
     public abstract String getUserTaskResourceTemplate();
 
     private void securityAnnotated(ClassOrInterfaceDeclaration template) {
-        KogitoBuildContext buildContext = context.getBuildContext();
-        if (buildContext.hasDI() && process.getMetaData().containsKey("securityRoles")) {
+        if (context.hasDI() && process.getMetaData().containsKey("securityRoles")) {
             String[] roles = ((String) process.getMetaData().get("securityRoles")).split(",");
             template.findAll(MethodDeclaration.class).stream().filter(this::requiresSecurity)
-                    .forEach(md -> buildContext.getDependencyInjectionAnnotator().withSecurityRoles(md, roles));
+                    .forEach(md -> context.getDependencyInjectionAnnotator().withSecurityRoles(md, roles));
         }
     }
 
@@ -278,7 +274,6 @@ public abstract class AbstractResourceGenerator {
 
     private void enableValidation(ClassOrInterfaceDeclaration template) {
         Optional.ofNullable(context)
-                .map(GeneratorContext::getBuildContext)
                 .filter(KogitoBuildContext::isValidationSupported)
                 .ifPresent(c -> template.findAll(Parameter.class)
                         .stream()

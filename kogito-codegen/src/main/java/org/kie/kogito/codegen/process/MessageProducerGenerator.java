@@ -38,27 +38,27 @@ public class MessageProducerGenerator {
 
     private final TemplatedGenerator generator;
 
-    private final String packageName;
+    private final String processPackageName;
     protected final String resourceClazzName;
     private final String processName;
     protected final String messageDataEventClassName;
-    protected final KogitoBuildContext buildContext;
+    protected final KogitoBuildContext context;
     protected WorkflowProcess process;
     private String processId;
 
     protected TriggerMetaData trigger;
 
     public MessageProducerGenerator(
-            KogitoBuildContext buildContext,
+            KogitoBuildContext context,
             WorkflowProcess process,
             String modelfqcn,
             String processfqcn,
             String messageDataEventClassName,
             TriggerMetaData trigger) {
-        this.buildContext = buildContext;
+        this.context = context;
         this.process = process;
         this.trigger = trigger;
-        this.packageName = process.getPackageName();
+        this.processPackageName = process.getPackageName();
         this.processId = process.getId();
         this.processName = processId.substring(processId.lastIndexOf('.') + 1);
         String classPrefix = StringUtils.ucFirst(processName);
@@ -66,8 +66,8 @@ public class MessageProducerGenerator {
         this.messageDataEventClassName = messageDataEventClassName;
 
         this.generator = new TemplatedGenerator(
-                buildContext,
-                packageName,
+                context,
+                processPackageName,
                 resourceClazzName,
                 RESOURCE_CDI,
                 RESOURCE_SPRING,

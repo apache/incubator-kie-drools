@@ -15,13 +15,31 @@
 
 package org.kie.kogito.codegen.context;
 
+import org.kie.kogito.codegen.AddonsConfig;
 import org.kie.kogito.codegen.di.CDIDependencyInjectionAnnotator;
 
+import java.io.File;
+import java.util.Properties;
 import java.util.function.Predicate;
 
 public class QuarkusKogitoBuildContext extends AbstractKogitoBuildContext {
 
-    public QuarkusKogitoBuildContext(Predicate<String> classAvailabilityResolver) {
-        super(classAvailabilityResolver, new CDIDependencyInjectionAnnotator());
+    protected QuarkusKogitoBuildContext(String packageName, Predicate<String> classAvailabilityResolver, File targetDirectory, AddonsConfig addonsConfig, Properties applicationProperties) {
+        super(packageName, classAvailabilityResolver, new CDIDependencyInjectionAnnotator(), targetDirectory, addonsConfig, applicationProperties);
+    }
+
+    public static Builder builder() {
+        return new QuarkusKogitoBuildContextBuilder();
+    }
+
+    protected static class QuarkusKogitoBuildContextBuilder extends AbstractBuilder {
+
+        protected QuarkusKogitoBuildContextBuilder() {
+        }
+
+        @Override
+        public QuarkusKogitoBuildContext build() {
+            return new QuarkusKogitoBuildContext(packageName, classAvailabilityResolver, targetDirectory, addonsConfig, applicationProperties);
+        }
     }
 }

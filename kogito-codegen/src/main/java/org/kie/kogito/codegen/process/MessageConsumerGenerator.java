@@ -45,9 +45,9 @@ public class MessageConsumerGenerator {
     private static final String OBJECT_MAPPER_CANONICAL_NAME = ObjectMapper.class.getCanonicalName();
     private final TemplatedGenerator generator;
 
-    private KogitoBuildContext buildContext;
+    private KogitoBuildContext context;
     private WorkflowProcess process;
-    private final String packageName;
+    private final String processPackageName;
     private final String resourceClazzName;
     private final String processClazzName;
     private String processId;
@@ -59,17 +59,17 @@ public class MessageConsumerGenerator {
     private TriggerMetaData trigger;
 
     public MessageConsumerGenerator(
-            KogitoBuildContext buildContext,
+            KogitoBuildContext context,
             WorkflowProcess process,
             String modelfqcn,
             String processfqcn,
             String appCanonicalName,
             String messageDataEventClassName,
             TriggerMetaData trigger) {
-        this.buildContext = buildContext;
+        this.context = context;
         this.process = process;
         this.trigger = trigger;
-        this.packageName = process.getPackageName();
+        this.processPackageName = process.getPackageName();
         this.processId = process.getId();
         this.processName = processId.substring(processId.lastIndexOf('.') + 1);
         String capitalizedProcessName = StringUtils.ucFirst(processName);
@@ -80,8 +80,8 @@ public class MessageConsumerGenerator {
         this.messageDataEventClassName = messageDataEventClassName;
 
         this.generator = new TemplatedGenerator(
-                buildContext,
-                packageName,
+                context,
+                processPackageName,
                 resourceClazzName,
                 RESOURCE_CDI,
                 RESOURCE_SPRING,
@@ -112,7 +112,7 @@ public class MessageConsumerGenerator {
         template.findAll(MethodCallExpr.class).forEach(this::interpolateStrings);
 
         // legacy: force initialize fields
-        if (!buildContext.hasDI()) {
+        if (!context.hasDI()) {
             template.findAll(FieldDeclaration.class,
                              fd -> isProcessField(fd)).forEach(fd -> initializeProcessField(fd));
             template.findAll(FieldDeclaration.class,

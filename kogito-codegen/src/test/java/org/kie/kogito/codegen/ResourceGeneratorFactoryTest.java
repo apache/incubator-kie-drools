@@ -18,11 +18,13 @@ package org.kie.kogito.codegen;
 
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.Properties;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.kie.api.definition.process.WorkflowProcess;
+import org.kie.kogito.codegen.context.KogitoBuildContext;
 import org.kie.kogito.codegen.context.QuarkusKogitoBuildContext;
 import org.kie.kogito.codegen.context.SpringBootKogitoBuildContext;
 import org.kie.kogito.codegen.process.AbstractResourceGenerator;
@@ -35,7 +37,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.lenient;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class ResourceGeneratorFactoryTest {
@@ -57,49 +58,60 @@ class ResourceGeneratorFactoryTest {
     }
 
     @Test
-    void testCreateQuarkus(@Mock GeneratorContext generatorContext) {
-        when(generatorContext.getBuildContext()).thenReturn(new QuarkusKogitoBuildContext(p -> true));
-        Optional<AbstractResourceGenerator> context = tested.create(generatorContext,
-                                                                    process,
-                                                                    MODEL_FQCN,
-                                                                    PROCESS_FQCN,
-                                                                    APP_CANONICAL_NAME);
-        assertThat(context.isPresent()).isTrue();
-        assertThat(context.get()).isExactlyInstanceOf(ResourceGenerator.class);
+    void testCreateQuarkus() {
+        KogitoBuildContext context = QuarkusKogitoBuildContext.builder().build();
+        Optional<AbstractResourceGenerator> optionalAbstractResourceGenerator =
+                tested.create(context,
+                        process,
+                        MODEL_FQCN,
+                        PROCESS_FQCN,
+                        APP_CANONICAL_NAME);
+        assertThat(optionalAbstractResourceGenerator.isPresent()).isTrue();
+        assertThat(optionalAbstractResourceGenerator.get()).isExactlyInstanceOf(ResourceGenerator.class);
     }
 
     @Test
-    void testCreateQuarkusReactive(@Mock GeneratorContext generatorContext) {
-        when(generatorContext.getApplicationProperty(GeneratorConfig.KOGITO_REST_RESOURCE_TYPE_PROP)).thenReturn(Optional.of("reactive"));
-        when(generatorContext.getBuildContext()).thenReturn(new QuarkusKogitoBuildContext(p -> true));
+    void testCreateQuarkusReactive() {
+        Properties properties = new Properties();
+        properties.put(GeneratorConfig.KOGITO_REST_RESOURCE_TYPE_PROP, "reactive");
 
-        Optional<AbstractResourceGenerator> context = tested.create(generatorContext,
-                                                                    process,
-                                                                    MODEL_FQCN,
-                                                                    PROCESS_FQCN,
-                                                                    APP_CANONICAL_NAME);
-        assertThat(context.isPresent()).isTrue();
-        assertThat(context.get()).isExactlyInstanceOf(ReactiveResourceGenerator.class);
+        KogitoBuildContext context = QuarkusKogitoBuildContext.builder()
+                .withApplicationProperties(properties)
+                .build();
+
+        Optional<AbstractResourceGenerator> optionalAbstractResourceGenerator =
+                tested.create(context,
+                        process,
+                        MODEL_FQCN,
+                        PROCESS_FQCN,
+                        APP_CANONICAL_NAME);
+        assertThat(optionalAbstractResourceGenerator.isPresent()).isTrue();
+        assertThat(optionalAbstractResourceGenerator.get()).isExactlyInstanceOf(ReactiveResourceGenerator.class);
     }
 
     @Test
-    void testCreateSpring(@Mock GeneratorContext generatorContext) {
-        when(generatorContext.getBuildContext()).thenReturn(new SpringBootKogitoBuildContext(p -> true));
-        Optional<AbstractResourceGenerator> context = tested.create(generatorContext,
-                                                                    process,
-                                                                    MODEL_FQCN,
-                                                                    PROCESS_FQCN,
-                                                                    APP_CANONICAL_NAME);
-        assertThat(context.isPresent()).isTrue();
-        assertThat(context.get()).isExactlyInstanceOf(SpringResourceGenerator.class);
+    void testCreateSpring() {
+        KogitoBuildContext context = SpringBootKogitoBuildContext.builder().build();
+        Optional<AbstractResourceGenerator> optionalAbstractResourceGenerator =
+                tested.create(context,
+                        process,
+                        MODEL_FQCN,
+                        PROCESS_FQCN,
+                        APP_CANONICAL_NAME);
+        assertThat(optionalAbstractResourceGenerator.isPresent()).isTrue();
+        assertThat(optionalAbstractResourceGenerator.get()).isExactlyInstanceOf(SpringResourceGenerator.class);
     }
 
     @Test
-    void testCreateSpringReactive(@Mock GeneratorContext generatorContext) {
-        when(generatorContext.getApplicationProperty(GeneratorConfig.KOGITO_REST_RESOURCE_TYPE_PROP)).thenReturn(Optional.of("reactive"));
-        when(generatorContext.getBuildContext()).thenReturn(new SpringBootKogitoBuildContext(p -> true));
+    void testCreateSpringReactive() {
+        Properties properties = new Properties();
+        properties.put(GeneratorConfig.KOGITO_REST_RESOURCE_TYPE_PROP, "reactive");
 
-        assertThrows(NoSuchElementException.class, () -> tested.create(generatorContext,
+        KogitoBuildContext context = SpringBootKogitoBuildContext.builder()
+                .withApplicationProperties(properties)
+                .build();
+
+        assertThrows(NoSuchElementException.class, () -> tested.create(context,
                                                                        process,
                                                                        MODEL_FQCN,
                                                                        PROCESS_FQCN,

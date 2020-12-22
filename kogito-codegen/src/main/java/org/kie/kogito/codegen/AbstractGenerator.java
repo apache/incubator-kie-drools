@@ -15,41 +15,30 @@
 
 package org.kie.kogito.codegen;
 
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
+import org.kie.kogito.codegen.context.KogitoBuildContext;
 import org.kie.kogito.codegen.metadata.DefaultLabeler;
 import org.kie.kogito.codegen.metadata.Labeler;
 
 public abstract class AbstractGenerator implements Generator {
 
-    protected Path projectDirectory;
-    protected GeneratorContext context = GeneratorContext.emptyContext();
-    protected String packageName = ApplicationGenerator.DEFAULT_PACKAGE_NAME;
-    protected AddonsConfig addonsConfig = AddonsConfig.DEFAULT;
-
     private final List<Labeler> labelers = new ArrayList<>();
     private final DefaultLabeler defaultLabeler = new DefaultLabeler();
+    private final KogitoBuildContext context;
 
-    protected AbstractGenerator() {
+    protected AbstractGenerator(KogitoBuildContext context) {
+        Objects.requireNonNull(context, "context cannot be null");
         this.labelers.add(defaultLabeler);
-    }
-
-    @Override
-    public void setProjectDirectory(Path projectDirectory) {
-        this.projectDirectory = projectDirectory;
-    }
-
-    @Override
-    public void setContext(GeneratorContext context) {
         this.context = context;
     }
 
     @Override
-    public GeneratorContext context() {
+    public KogitoBuildContext context() {
         return this.context;
     }
     
@@ -68,17 +57,7 @@ public abstract class AbstractGenerator implements Generator {
         return labels;
     }
 
-    @Override
-    public void setPackageName(String packageName) {
-        this.packageName = packageName;
-    }
-
-    @Override
-    public void setAddonsConfig(AddonsConfig addonsConfig) {
-        this.addonsConfig = addonsConfig;
-    }
-
     protected String applicationCanonicalName() {
-        return packageName + ".Application";
+        return context.getPackageName() + ".Application";
     }
 }

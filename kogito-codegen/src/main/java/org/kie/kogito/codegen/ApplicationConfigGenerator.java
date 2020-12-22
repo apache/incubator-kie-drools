@@ -53,16 +53,15 @@ public class ApplicationConfigGenerator {
     private PredictionConfigGenerator predictionConfig;
     private ConfigBeanGenerator configBean;
 
-    public ApplicationConfigGenerator(KogitoBuildContext buildContext, String packageName) {
+    public ApplicationConfigGenerator(KogitoBuildContext context) {
         this.templatedGenerator = new TemplatedGenerator(
-                buildContext,
-                packageName,
+                context,
                 CLASS_NAME,
                 RESOURCE_CDI,
                 RESOURCE_SPRING,
                 RESOURCE_DEFAULT);
 
-        this.configBean = new ConfigBeanGenerator(buildContext, packageName);
+        this.configBean = new ConfigBeanGenerator(context);
     }
 
     public ApplicationConfigGenerator withProcessConfig(ProcessConfigGenerator cfg) {

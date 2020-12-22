@@ -15,7 +15,6 @@
 
 package org.kie.kogito.codegen;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -30,6 +29,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.drools.core.util.StringUtils;
+import org.kie.kogito.codegen.context.KogitoBuildContext;
 import org.kie.kogito.codegen.metadata.Labeler;
 import org.kie.kogito.codegen.metadata.MetaDataWriter;
 import org.kie.kogito.codegen.metadata.PrometheusLabeler;
@@ -41,60 +41,48 @@ public class ApplicationGenerator {
     private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationGenerator.class);
 
     public static final String DEFAULT_GROUP_ID = "org.kie.kogito";
-    public static final String DEFAULT_PACKAGE_NAME = "org.kie.kogito.app";
     public static final String APPLICATION_CLASS_NAME = "Application";
-
-    private final String packageName;
-    private final File targetDirectory;
 
     private final ApplicationContainerGenerator applicationMainGenerator;
     private ApplicationConfigGenerator configGenerator;
     private List<Generator> generators = new ArrayList<>();
     private Map<Class, Labeler> labelers = new HashMap<>();
 
-    private GeneratorContext context;
+    private KogitoBuildContext context;
     private ClassLoader classLoader;
-    private AddonsConfig addonsConfig = AddonsConfig.DEFAULT;
 
-    public ApplicationGenerator(GeneratorContext context, String packageName, File targetDirectory) {
+    public ApplicationGenerator(KogitoBuildContext context) {
         this.context = context;
-        this.packageName = packageName;
-        this.targetDirectory = targetDirectory;
         this.classLoader = Thread.currentThread().getContextClassLoader();
-        this.applicationMainGenerator = new ApplicationContainerGenerator(context.getBuildContext(), packageName);
+        this.applicationMainGenerator = new ApplicationContainerGenerator(context);
 
-        this.configGenerator = new ApplicationConfigGenerator(context.getBuildContext(), packageName);
+        this.configGenerator = new ApplicationConfigGenerator(context);
         this.configGenerator.withAddons(loadAddonList());
+
+        if (context.getAddonsConfig().usePrometheusMonitoring()) {
+            this.labelers.put(PrometheusLabeler.class, new PrometheusLabeler());
+        }
     }
 
     public String targetCanonicalName() {
-        return this.packageName + "." + APPLICATION_CLASS_NAME;
+        return context.getPackageName() + "." + APPLICATION_CLASS_NAME;
     }
 
     private String getFilePath(String className) {
-        return (this.packageName + "." + className).replace('.', '/') + ".java";
-    }
-
-    public ApplicationGenerator withAddons(AddonsConfig addonsConfig) {
-        if (addonsConfig.usePrometheusMonitoring()) {
-            this.labelers.put(PrometheusLabeler.class, new PrometheusLabeler());
-        }
-        this.addonsConfig = addonsConfig;
-        return this;
+        return (context.getPackageName() + "." + className).replace('.', '/') + ".java";
     }
 
     public Collection<GeneratedFile> generate() {
         List<GeneratedFile> generatedFiles = generateComponents();
         generators.forEach(gen -> gen.updateConfig(configGenerator));
-        if (targetDirectory.isDirectory()) {
-            generators.forEach(gen -> MetaDataWriter.writeLabelsImageMetadata(targetDirectory, gen.getLabels()));
-        }
+        generators.forEach(gen -> MetaDataWriter.writeLabelsImageMetadata(context.getTargetDirectory(), gen.getLabels()));
+
         generatedFiles.add(generateApplicationDescriptor());
         generatedFiles.addAll(generateApplicationSections());
 
         generatedFiles.addAll(configGenerator.generate());
 
-        this.labelers.values().forEach(l -> MetaDataWriter.writeLabelsImageMetadata(targetDirectory, l.generateLabels()));
+        this.labelers.values().forEach(l -> MetaDataWriter.writeLabelsImageMetadata(context.getTargetDirectory(), l.generateLabels()));
         logGeneratedFiles(generatedFiles);
 
         return generatedFiles;
@@ -141,10 +129,6 @@ public class ApplicationGenerator {
      */
     public <G extends Generator> G setupGenerator(G generator) {
         this.generators.add(generator);
-        generator.setPackageName(packageName);
-        generator.setProjectDirectory(targetDirectory.getParentFile().toPath());
-        generator.setContext(context);
-        generator.setAddonsConfig(addonsConfig);
         return generator;
     }
 

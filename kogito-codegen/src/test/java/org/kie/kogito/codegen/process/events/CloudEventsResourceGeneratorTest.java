@@ -28,7 +28,6 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.codegen.context.KogitoBuildContext;
 import org.kie.kogito.codegen.context.QuarkusKogitoBuildContext;
-import org.kie.kogito.codegen.ApplicationGenerator;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -37,11 +36,11 @@ import static org.kie.kogito.codegen.process.events.CloudEventsResourceGenerator
 
 class CloudEventsResourceGeneratorTest {
 
-    private final KogitoBuildContext buildContext = new QuarkusKogitoBuildContext(s -> true);
+    private final KogitoBuildContext context = QuarkusKogitoBuildContext.builder().build();
 
     @Test
     void verifyBasicGenerationCase() {
-        final String sourceCode = new CloudEventsResourceGenerator(buildContext, ApplicationGenerator.DEFAULT_PACKAGE_NAME, Collections.emptyList()).generate();
+        final String sourceCode = new CloudEventsResourceGenerator(context, Collections.emptyList()).generate();
         assertNotNull(sourceCode);
         final CompilationUnit clazz = StaticJavaParser.parse(sourceCode);
         assertNotNull(clazz);
@@ -52,15 +51,14 @@ class CloudEventsResourceGeneratorTest {
 
     @Test
     void generatedFilePath() throws URISyntaxException {
-        final String filePath = new CloudEventsResourceGenerator(buildContext, ApplicationGenerator.DEFAULT_PACKAGE_NAME, Collections.emptyList()).generatedFilePath();
+        final String filePath = new CloudEventsResourceGenerator(context, Collections.emptyList()).generatedFilePath();
         assertThat(new URI(filePath).toString()).endsWith(".java");
     }
 
     @Test
     void verifyProcessWithIntermediateEvent() {
         final CloudEventsResourceGenerator generator = new CloudEventsResourceGenerator(
-                buildContext,
-                ApplicationGenerator.DEFAULT_PACKAGE_NAME,
+                context,
                 execModelFromProcessFile("/messageevent/IntermediateCatchEventMessage.bpmn2"));
         final String source = generator.generate();
         assertThat(source).isNotNull();
@@ -81,7 +79,7 @@ class CloudEventsResourceGeneratorTest {
 
     @Test
     void verifyEmitterVariableNameGen() {
-        final CloudEventsResourceGenerator generator = new CloudEventsResourceGenerator(buildContext, ApplicationGenerator.DEFAULT_PACKAGE_NAME, Collections.emptyList());
+        final CloudEventsResourceGenerator generator = new CloudEventsResourceGenerator(context, Collections.emptyList());
         final Map<String, String> tableTest = new HashMap<>();
         tableTest.put("http://github.com/me/myrepo", EMITTER_PREFIX + "httpgithubcommemyrepo");
         tableTest.put("$%@1234whatever123", EMITTER_PREFIX + "1234whatever123");

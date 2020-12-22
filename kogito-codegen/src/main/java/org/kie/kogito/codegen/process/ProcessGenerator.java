@@ -61,7 +61,6 @@ import org.kie.api.definition.process.Process;
 import org.kie.api.definition.process.WorkflowProcess;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.kogito.Model;
-import org.kie.kogito.codegen.AddonsConfig;
 import org.kie.kogito.codegen.BodyDeclarationComparator;
 import org.kie.kogito.codegen.context.KogitoBuildContext;
 import org.kie.kogito.process.ProcessInstancesFactory;
@@ -92,20 +91,19 @@ public class ProcessGenerator {
     private final String generatedFilePath;
     private final String completePath;
     private final String targetCanonicalName;
-    private final KogitoBuildContext buildContext;
+    private final KogitoBuildContext context;
     private final String appCanonicalName;
     private String targetTypeName;
-    private AddonsConfig addonsConfig = AddonsConfig.DEFAULT;
 
     private List<CompilationUnit> additionalClasses = new ArrayList<>();
 
-    public ProcessGenerator(KogitoBuildContext buildContext,
+    public ProcessGenerator(KogitoBuildContext context,
                             WorkflowProcess process,
                             ProcessExecutableModelGenerator processGenerator,
                             String typeName,
                             String modelTypeName,
                             String appCanonicalName) {
-        this.buildContext = buildContext;
+        this.context = context;
 
         this.appCanonicalName = appCanonicalName;
 
@@ -350,7 +348,7 @@ public class ProcessGenerator {
                 .addArgument(new NameExpr(APPLICATION))
                 .addArgument(handlersCollection);
 
-        if (addonsConfig.usePersistence()) {
+        if (context.getAddonsConfig().usePersistence()) {
             constructor.addParameter(ProcessInstancesFactory.class.getCanonicalName(), FACTORY);
             superMethod.addArgument(new NameExpr(FACTORY));
         }
@@ -359,10 +357,10 @@ public class ProcessGenerator {
                                     .addStatement(superMethod)
                                     .addStatement(new MethodCallExpr("activate")));
         
-        if (buildContext.hasDI()) {
-            buildContext.getDependencyInjectionAnnotator().withNamedApplicationComponent(cls, process.getId());
-            buildContext.getDependencyInjectionAnnotator().withEagerStartup(cls);
-            buildContext.getDependencyInjectionAnnotator().withInjection(constructor);
+        if (context.hasDI()) {
+            context.getDependencyInjectionAnnotator().withNamedApplicationComponent(cls, process.getId());
+            context.getDependencyInjectionAnnotator().withEagerStartup(cls);
+            context.getDependencyInjectionAnnotator().withInjection(constructor);
         }
 
         Map<String, CompilationUnit> handlers = processMetaData.getGeneratedHandlers();
@@ -371,7 +369,7 @@ public class ProcessGenerator {
             ConstructorDeclaration decl = getConstructorDeclaration()
                     .addParameter(appCanonicalName, APPLICATION)
                     .setBody(new BlockStmt().addStatement(initMethodCall));
-            if (addonsConfig.usePersistence()) {
+            if (context.getAddonsConfig().usePersistence()) {
                 initMethodCall.addArgument(new NameExpr(FACTORY));
                 decl.addParameter(ProcessInstancesFactory.class.getCanonicalName(), FACTORY);
             }
@@ -396,9 +394,9 @@ public class ProcessGenerator {
 
                 ClassOrInterfaceType clazzNameType = parseClassOrInterfaceType(clazzName);
                 Parameter parameter = new Parameter(clazzNameType, varName);
-                if (buildContext.hasDI()) {
-                    buildContext.getDependencyInjectionAnnotator().withApplicationComponent(handlerClazz);
-                    buildContext.getDependencyInjectionAnnotator()
+                if (context.hasDI()) {
+                    context.getDependencyInjectionAnnotator().withApplicationComponent(handlerClazz);
+                    context.getDependencyInjectionAnnotator()
                         .withInjection(
                                        handlerClazz
                                            .getConstructors()
@@ -455,10 +453,10 @@ public class ProcessGenerator {
 
                 String fieldName = "process" + subProcess.getKey();
                 ClassOrInterfaceType modelType = new ClassOrInterfaceType(null, new SimpleName(org.kie.kogito.process.Process.class.getCanonicalName()), NodeList.nodeList(new ClassOrInterfaceType(null, StringUtils.ucFirst(subProcess.getKey() + "Model"))));
-                if (buildContext.hasDI()) {
+                if (context.hasDI()) {
                     subprocessFieldDeclaration
                         .addVariable(new VariableDeclarator(modelType, fieldName));
-                    buildContext.getDependencyInjectionAnnotator().withInjection(subprocessFieldDeclaration);
+                    context.getDependencyInjectionAnnotator().withInjection(subprocessFieldDeclaration);
                 } else {
                     // app.get(org.kie.kogito.process.Processes.class).processById()
                     MethodCallExpr initSubProcessField = new MethodCallExpr(
@@ -487,8 +485,8 @@ public class ProcessGenerator {
                             .addVariable(new VariableDeclarator(new ClassOrInterfaceType(null, producerFieldType), producerFielName));
                     cls.addMember(producerFieldieldDeclaration);
                     
-                    if (buildContext.hasDI()) {
-                        buildContext.getDependencyInjectionAnnotator().withInjection(producerFieldieldDeclaration);
+                    if (context.hasDI()) {
+                        context.getDependencyInjectionAnnotator().withInjection(producerFieldieldDeclaration);
                     } else {
                         
                         AssignExpr assignExpr = new AssignExpr(
@@ -527,10 +525,5 @@ public class ProcessGenerator {
     
     public List<CompilationUnit> getAdditionalClasses() {
         return additionalClasses;
-    }
-    
-    public ProcessGenerator withAddons(AddonsConfig addonsConfig) {
-        this.addonsConfig = addonsConfig;
-        return this;
     }
 }

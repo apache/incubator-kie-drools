@@ -19,14 +19,14 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.kie.api.definition.process.WorkflowProcess;
-import org.kie.kogito.codegen.GeneratorContext;
+import org.kie.kogito.codegen.context.KogitoBuildContext;
 
 public class ResourceGenerator extends AbstractResourceGenerator {
 
     private static final String RESOURCE_TEMPLATE = "/class-templates/RestResourceTemplate.java";
 
     public ResourceGenerator(
-            GeneratorContext context,
+            KogitoBuildContext context,
             WorkflowProcess process,
             String modelfqcn,
             String processfqcn,

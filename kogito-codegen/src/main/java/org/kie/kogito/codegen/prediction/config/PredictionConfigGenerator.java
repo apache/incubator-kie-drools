@@ -26,9 +26,8 @@ public class PredictionConfigGenerator extends AbstractConfigGenerator {
 
     private List<BodyDeclaration<?>> members = new ArrayList<>();
 
-    public PredictionConfigGenerator(KogitoBuildContext buildContext, String packageName) {
-        super(buildContext,
-                packageName,
+    public PredictionConfigGenerator(KogitoBuildContext context) {
+        super(context,
                 "PredictionConfig",
                 "/class-templates/config/CdiPredictionConfigTemplate.java",
                 "/class-templates/config/SpringPredictionConfigTemplate.java");

@@ -18,14 +18,20 @@ package org.kie.kogito.codegen;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.codegen.context.JavaKogitoBuildContext;
+import org.kie.kogito.codegen.context.KogitoBuildContext;
 import org.kie.kogito.codegen.process.config.ProcessConfigGenerator;
 import org.mockito.Mockito;
 
 public class ApplicationConfigGeneratorTest {
 
+    KogitoBuildContext context = JavaKogitoBuildContext.builder()
+            .withPackageName("org.kie.kogito.test")
+            .build();
+
     @Test
     public void withProcessConfig() {
-        final ApplicationConfigGenerator generator = new ApplicationConfigGenerator(null, "org.kie.kogito.test");
+        final ApplicationConfigGenerator generator = new ApplicationConfigGenerator(context);
         final ProcessConfigGenerator processConfigGenerator = Mockito.mock(ProcessConfigGenerator.class);
         final ApplicationConfigGenerator returnedConfigGenerator = generator.withProcessConfig(processConfigGenerator);
         assertThat(returnedConfigGenerator)
@@ -35,7 +41,7 @@ public class ApplicationConfigGeneratorTest {
 
     @Test
     public void withProcessConfigNull() {
-        final ApplicationConfigGenerator generator = new ApplicationConfigGenerator(null, "org.kie.kogito.test");
+        final ApplicationConfigGenerator generator = new ApplicationConfigGenerator(context);
         final ApplicationConfigGenerator returnedConfigGenerator = generator.withProcessConfig(null);
         assertThat(returnedConfigGenerator)
                 .isNotNull()

@@ -50,7 +50,6 @@ public class ProcessContainerGenerator extends AbstractApplicationSection {
     private static final String RESOURCE_SPRING = "/class-templates/SpringProcessContainerTemplate.java";
     public static final String SECTION_CLASS_NAME = "Processes";
 
-    private final String packageName;
     private final List<ProcessGenerator> processes;
     private final List<BodyDeclaration<?>> factoryMethods;
 
@@ -58,15 +57,13 @@ public class ProcessContainerGenerator extends AbstractApplicationSection {
     private BlockStmt processesBody = new BlockStmt();
     private final TemplatedGenerator templatedGenerator;
 
-    public ProcessContainerGenerator(KogitoBuildContext buildContext, String packageName) {
-        super(buildContext, SECTION_CLASS_NAME);
-        this.packageName = packageName;
+    public ProcessContainerGenerator(KogitoBuildContext context) {
+        super(context, SECTION_CLASS_NAME);
         this.processes = new ArrayList<>();
         this.factoryMethods = new ArrayList<>();
 
         this.templatedGenerator = new TemplatedGenerator(
-                buildContext,
-                packageName,
+                context,
                 SECTION_CLASS_NAME,
                 RESOURCE_CDI,
                 RESOURCE_SPRING,
@@ -103,7 +100,7 @@ public class ProcessContainerGenerator extends AbstractApplicationSection {
 
     private void registerProcessesExplicitly(CompilationUnit compilationUnit) {
         // only for non-DI cases
-        if (!buildContext.hasDI()) {
+        if (!context.hasDI()) {
             setupProcessById(compilationUnit);
             setupProcessIds(compilationUnit);
         }
