@@ -16,6 +16,7 @@
 package org.jbpm.workflow.instance.node;
 
 import java.util.Collection;
+import java.util.Date;
 
 import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.workflow.core.node.BoundaryEventNode;
@@ -30,6 +31,9 @@ public class BoundaryEventNodeInstance extends EventNodeInstance {
 
     @Override
     public void signalEvent(String type, Object event) {
+        if(triggerTime == null) {
+            triggerTime = new Date();
+        }
         BoundaryEventNode boundaryNode = (BoundaryEventNode) getEventNode();
 
         String attachedTo = boundaryNode.getAttachedToNodeId();

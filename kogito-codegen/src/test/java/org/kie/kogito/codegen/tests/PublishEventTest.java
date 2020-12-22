@@ -146,7 +146,55 @@ public class PublishEventTest extends AbstractCodegenTest {
         assertThat(body.getVariables()).hasSize(1).containsKey("person");
         assertThat(body.getVariables().get("person")).isNotNull().hasFieldOrPropertyWithValue("adult", true); 
     }
-    
+
+    @Test
+    public void testCompensationProcess() throws Exception {
+        Map<TYPE, List<String>> resourcesTypeMap = new HashMap<>();
+        resourcesTypeMap.put(TYPE.PROCESS, Collections.singletonList("compensation/compensateAll.bpmn2"));
+        Application app = generateCode(resourcesTypeMap);
+        assertThat(app).isNotNull();
+        TestEventPublisher publisher = new TestEventPublisher();
+        app.unitOfWorkManager().eventManager().setService("http://myhost");
+        app.unitOfWorkManager().eventManager().addPublisher(publisher);
+
+        UnitOfWork uow = app.unitOfWorkManager().newUnitOfWork();
+        uow.start();
+
+        Process<? extends Model> p = app.get(Processes.class).processById("compensateAll");
+
+        ProcessInstance<?> processInstance = p.createInstance(p.createModel());
+        processInstance.start();
+
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
+        Model result = (Model)processInstance.variables();
+        assertThat(result.toMap()).hasSize(2).containsKeys("counter", "counter2");
+        uow.end();
+
+        List<DataEvent<?>> events = publisher.extract();
+        assertThat(events).isNotNull().hasSize(1);
+
+        DataEvent<?> event = events.get(0);
+        assertThat(event).isInstanceOf(ProcessInstanceDataEvent.class);
+        ProcessInstanceDataEvent processDataEvent = (ProcessInstanceDataEvent) event;
+        assertThat(processDataEvent.getKogitoProcessinstanceId()).isNotNull();
+        assertThat(processDataEvent.getKogitoParentProcessinstanceId()).isNull();
+        assertThat(processDataEvent.getKogitoRootProcessinstanceId()).isNull();
+        assertThat(processDataEvent.getKogitoProcessId()).isEqualTo("compensateAll");
+        assertThat(processDataEvent.getKogitoProcessinstanceState()).isEqualTo("2");
+        assertThat(processDataEvent.getSource()).isEqualTo("http://myhost/compensateAll");
+
+        ProcessInstanceEventBody body = assertProcessInstanceEvent(events.get(0), "compensateAll", "Compensate All", 2);
+
+        assertThat(body.getNodeInstances()).hasSize(9).extractingResultOf("getNodeType").contains("StartNode", "ActionNode", "BoundaryEventNode", "EndNode");
+
+        assertThat(body.getNodeInstances()).extractingResultOf("getTriggerTime").allMatch(v -> v != null);
+        assertThat(body.getNodeInstances()).extractingResultOf("getLeaveTime").allMatch(v -> v != null);
+
+        assertThat(body.getVariables())
+                .hasSize(2)
+                .containsEntry("counter", 2)
+                .containsEntry("counter2", 2);
+    }
     
     @Test
     public void testBasicUserTaskProcess() throws Exception {
