@@ -175,16 +175,22 @@ public class GroupByTest {
 
         Variable<String> var_$key = D.declarationOf(String.class);
         Variable<Person> var_$p = D.declarationOf(Person.class);
+        Variable<List> var_$list = D.declarationOf(List.class);
 
         Rule rule1 = D.rule("R1").build(
                 D.groupBy(
                         // Patterns
                         D.pattern(var_$p),
                         // Grouping Function
-                        var_$p, var_$key, person -> person.getName().substring(0, 1)),
+                        var_$p, var_$key, person -> person.getName().substring(0, 1)//,
+                        //D.accFunction(org.drools.core.base.accumulators.CollectListAccumulateFunction::new, var_$p).as(var_$list)
+                         ),
                 // Consequence
-                D.on(var_$key, var_results)
-                        .execute(($key, results) -> results.add($key))
+                D.on(var_$key,var_results)
+                        .execute(($key,results) -> {
+                            results.add($key);
+                            //System.out.println($key +  ": " + $list);
+                        })
         );
 
         Model model = new ModelImpl().addRule( rule1 ).addGlobal( var_results );

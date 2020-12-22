@@ -76,7 +76,7 @@ public class LeftTupleIterator
     public LeftTuple getFirstLeftTuple(LeftTupleSource source,
                                        LeftTupleSink sink,
                                        InternalWorkingMemory wm) {
-        if ( source instanceof AccumulateNode ) {
+        if ( source instanceof AccumulateNode ) { // TODO WHAT ABOUTGROUPBY ? (mdp)
             AccumulateMemory accmem = (AccumulateMemory) wm.getNodeMemory( (MemoryFactory) source );
             BetaMemory memory = accmem.getBetaMemory();
             
@@ -84,7 +84,7 @@ public class LeftTupleIterator
             Tuple leftTuple = BetaNode.getFirstTuple( memory.getLeftTupleMemory(), localIt );
             if( leftTuple != null ) {
                 AccumulateContext accctx = (AccumulateContext) leftTuple.getContextObject();
-                return accctx.getAccPropCtx().getResultLeftTuple();
+                return accctx.getResultLeftTuple();
             }
             return null;
         }

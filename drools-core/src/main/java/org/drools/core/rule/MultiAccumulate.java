@@ -23,6 +23,9 @@ import java.util.Arrays;
 
 import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.reteoo.AccumulateNode.AccumulateContextEntry;
+import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.RightTuple;
 import org.drools.core.spi.Accumulator;
 import org.drools.core.spi.MvelAccumulator;
 import org.drools.core.spi.Tuple;
@@ -70,7 +73,7 @@ public class MultiAccumulate extends Accumulate {
         return this.accumulators;
     }
 
-    public Serializable[] createContext() {
+    public Serializable[] createFunctionContext() {
         Serializable[] ctxs = new Serializable[this.accumulators.length];
         for ( int i = 0; i < ctxs.length; i++ ) {
             ctxs[i] = this.accumulators[i].createContext();
@@ -84,8 +87,9 @@ public class MultiAccumulate extends Accumulate {
                      final WorkingMemory workingMemory) {
         try {
             for ( int i = 0; i < this.accumulators.length; i++ ) {
+                Object[] functionContext = (Object[]) ((AccumulateContextEntry)context).getFunctionContext();
                 this.accumulators[i].init( ((Object[])workingMemoryContext)[i],
-                                           ((Object[])context)[i],
+                                           functionContext[i],
                                            leftTuple,
                                            this.requiredDeclarations,
                                            workingMemory );
@@ -103,8 +107,9 @@ public class MultiAccumulate extends Accumulate {
         try {
             Object[] values = new Object[accumulators.length];
             for ( int i = 0; i < this.accumulators.length; i++ ) {
+                Object[] functionContext = (Object[]) ((AccumulateContextEntry)context).getFunctionContext();
                 values[i] = this.accumulators[i].accumulate( ((Object[])workingMemoryContext)[i],
-                                                             ((Object[])context)[i],
+                                                             functionContext[i],
                                                              leftTuple,
                                                              handle,
                                                              this.requiredDeclarations,
@@ -121,13 +126,15 @@ public class MultiAccumulate extends Accumulate {
                         final Object context,
                         final Tuple leftTuple,
                         final InternalFactHandle handle,
-                        final Object value,
+                        final RightTuple rightParent,
+                        final LeftTuple match,
                         final WorkingMemory workingMemory) {
         try {
-            Object[] values = (Object[]) value;
+            Object[] values = (Object[]) match.getContextObject();
             for ( int i = 0; i < this.accumulators.length; i++ ) {
+                Object[] functionContext = (Object[]) ((AccumulateContextEntry)context).getFunctionContext();
                 this.accumulators[i].reverse( ((Object[])workingMemoryContext)[i],
-                                              ((Object[])context)[i],
+                                              functionContext[i],
                                               leftTuple,
                                               handle,
                                               values[i],
@@ -158,8 +165,9 @@ public class MultiAccumulate extends Accumulate {
         try {
             Object[] results = new Object[this.accumulators.length];
             for ( int i = 0; i < this.accumulators.length; i++ ) {
+                Object[] functionContext = (Object[]) ((AccumulateContextEntry)context).getFunctionContext();
                 results[i] = this.accumulators[i].getResult( ((Object[])workingMemoryContext)[i],
-                                                             ((Object[])context)[i],
+                                                             functionContext[i],
                                                              leftTuple,
                                                              this.requiredDeclarations,
                                                              workingMemory );

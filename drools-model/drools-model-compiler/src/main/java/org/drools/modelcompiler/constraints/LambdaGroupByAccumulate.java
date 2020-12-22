@@ -17,19 +17,29 @@ package org.drools.modelcompiler.constraints;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import org.drools.core.WorkingMemory;
+import org.drools.core.WorkingMemoryEntryPoint;
+import org.drools.core.common.EqualityKey;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.factmodel.traits.TraitTypeEnum;
+import org.drools.core.reteoo.AccumulateNode;
+import org.drools.core.reteoo.AccumulateNode.BaseAccumulation;
+import org.drools.core.reteoo.AccumulateNode.GroupByContext;
+import org.drools.core.reteoo.AccumulateNode.AccumulateContextEntry;
+import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.RightTuple;
 import org.drools.core.rule.Accumulate;
 import org.drools.core.rule.Declaration;
+import org.drools.core.rule.EntryPointId;
 import org.drools.core.spi.Accumulator;
 import org.drools.core.spi.Tuple;
+import org.drools.core.util.index.TupleList;
 import org.drools.model.functions.FunctionN;
+
 
 public class LambdaGroupByAccumulate extends Accumulate {
 
@@ -83,36 +93,61 @@ public class LambdaGroupByAccumulate extends Accumulate {
     }
 
     @Override
-    public Object createContext() {
-        return new GroupByContext(supportsReverse());
+    public Object createFunctionContext() {
+        throw new UnsupportedOperationException();
     }
 
     @Override
-    public void init( Object workingMemoryContext, Object context, Tuple leftTuple, WorkingMemory workingMemory ) {
-        (( GroupByContext ) context).init();
-        innerAccumulate.init( workingMemoryContext, innerAccumulate.createContext(), leftTuple, workingMemory );
+    public void init( Object workingMemoryContext, Object context,
+                      Tuple leftTuple, WorkingMemory workingMemory ) {
+        // do nothing here, it's done when the group is first created
     }
 
     @Override
-    public Object accumulate( Object workingMemoryContext, Object context, Tuple leftTuple, InternalFactHandle handle, WorkingMemory workingMemory ) {
-        Object key = getKey(leftTuple, handle, workingMemory);
-        Object value = null;
-        if (key != null) {
-            Object groupContext = (( GroupByContext ) context).loadContext( innerAccumulate, handle, key );
-            value = innerAccumulate.accumulate( workingMemoryContext, groupContext, leftTuple, handle, workingMemory );
+    public Object accumulate( Object workingMemoryContext, Object context,
+                              Tuple leftTuple, InternalFactHandle handle, WorkingMemory wm ) {
+        GroupByContext groupByContext = ( GroupByContext ) context;
+        Object key = getKey(leftTuple, handle, wm);
+        if (key==null) {
+            throw new IllegalStateException("Unable to find group for: " + leftTuple + " : " + handle);
         }
+
+        TupleList<AccumulateContextEntry> tupleList = groupByContext.getGroup(workingMemoryContext, innerAccumulate,
+                                                                              leftTuple, handle, key, wm);
+        groupByContext.moveToPropagateTupleList(tupleList);
+
+        Object value = innerAccumulate.accumulate( workingMemoryContext, tupleList.getContext(),
+                                                   leftTuple, handle, wm );
+
+        groupByContext.setLastTupleList(tupleList);
+
         return value;
     }
 
     @Override
-    public void reverse(Object workingMemoryContext, Object context, Tuple leftTuple, InternalFactHandle handle, Object value, WorkingMemory workingMemory) {
-        Object groupContext = (( GroupByContext ) context).loadContextForReverse( handle );
-        innerAccumulate.reverse(workingMemoryContext, groupContext, leftTuple, handle, value, workingMemory);
+    public void reverse(Object workingMemoryContext, Object context, Tuple leftTuple, InternalFactHandle handle,
+                        RightTuple rightParent, LeftTuple match, WorkingMemory workingMemory) {
+        TupleList<AccumulateContextEntry> memory = match.getMemory();
+        AccumulateContextEntry entry = memory.getContext();
+        innerAccumulate.reverse(workingMemoryContext, entry, leftTuple, handle, rightParent, match, workingMemory);
+
+        GroupByContext groupByContext = ( GroupByContext ) context;
+        groupByContext.moveToPropagateTupleList(match.getMemory());
+
+        memory.remove(match);
+        if ( memory.isEmpty()) {
+            groupByContext.removeGroup(entry.getKey());
+        }
     }
 
     @Override
     public Object getResult( Object workingMemoryContext, Object context, Tuple leftTuple, WorkingMemory workingMemory ) {
-        return (( GroupByContext ) context).result( innerAccumulate, workingMemoryContext, leftTuple, workingMemory );
+        AccumulateContextEntry entry = (AccumulateContextEntry) context;
+        if (!entry.getTupleList().isEmpty()) {
+            return innerAccumulate.getResult(workingMemoryContext, context, leftTuple, workingMemory);
+        } else {
+            return null;
+        }
     }
 
     @Override
@@ -145,67 +180,282 @@ public class LambdaGroupByAccumulate extends Accumulate {
         return true;
     }
 
-    private static class GroupByContext implements Serializable {
-        private final Map<Object, Object> contextsByGroup = new HashMap<>();
-        private final Map<Object, Object> changedGroups = new HashMap<>();
-        private final Map<Long, GroupInfo> reverseSupport;
+//    private static class GroupByContext implements Serializable {
+//        private RightTuple lastRightTuple;
+//
+//        private final Map<Object, RightTuple> contextsByGroup = new HashMap<>();
+////        private final Map<Object, Object> changedGroups = new HashMap<>();
+//        //private final Map<Long, GroupInfo> reverseSupport;
+//
+//        private GroupByContext(boolean supportsReverse) {
+//            //reverseSupport = supportsReverse ? new HashMap<>() : null;
+//        }
+//
+//        public RightTuple getLastRightTuple() {
+//            return lastRightTuple;
+//        }
+//
+//        public void setLastRightTuple(RightTuple lastRightTuple) {
+//            this.lastRightTuple = lastRightTuple;
+//        }
+//
+//        RightTuple loadContext(Accumulate innerAccumulate, InternalFactHandle handle, Object key) {
+//            RightTuple rightTuple = contextsByGroup.computeIfAbsent( key, k -> {
+//                HolderFactHandle holder = new HolderFactHandle(innerAccumulate.createFunctionContext());
+//                return new RightTupleImpl(holder);
+//            });
+//
+////            if (reverseSupport != null) {
+////                reverseSupport.put( handle.getId(), new GroupInfo( key, groupContext ) );
+////            }
+//
+////            changedGroups.put( key, groupContext );
+//            return rightTuple;
+//        }
+//
+//        Object loadContextForReverse(InternalFactHandle handle) {
+////            GroupInfo groupInfo = reverseSupport.remove( handle.getId() );
+////            changedGroups.put( groupInfo.key, groupInfo.context );
+////            return groupInfo.context;
+//            return null;
+//        }
+//
+//        public void init() {
+////            contextsByGroup.clear();
+////            changedGroups.clear();
+////            if (reverseSupport != null) {
+////                reverseSupport.clear();
+////            }
+//        }
+//
+//        public List<Object[]> result( Accumulate innerAccumulate, Object wmCtx, Tuple leftTuple, WorkingMemory wm ) {
+////            List<Object[]> results = new ArrayList<>( changedGroups.size() );
+////            for (Map.Entry<Object, Object> entry : changedGroups.entrySet()) {
+////                results.add( new Object[]{ entry.getKey(), isEmptyContext(entry.getValue()) ? null : innerAccumulate.getResult( wmCtx, entry.getValue(), leftTuple, wm ) } );
+////            }
+////            changedGroups.clear();
+////            return results;
+//            return null;
+//        }
+//
+//        private boolean isEmptyContext(Object ctx) {
+//            if (ctx instanceof LambdaAccumulator.LambdaAccContext) {
+//                return (( LambdaAccumulator.LambdaAccContext ) ctx).isEmpty();
+//            }
+//            if (ctx instanceof Object[]) {
+//                return isEmptyContext( (( Object[] ) ctx)[0] );
+//            }
+//            return false;
+//        }
+//    }
+//
+//    private static class GroupInfo {
+//        private final Object key;
+//        private final Object context;
+//
+//        private GroupInfo( Object key, Object context ) {
+//            this.key = key;
+//            this.context = context;
+//        }
+//    }
 
-        private GroupByContext(boolean supportsReverse) {
-            reverseSupport = supportsReverse ? new HashMap<>() : null;
+
+    public static class HolderFactHandle implements InternalFactHandle {
+        private Object object;
+
+        public HolderFactHandle(Object object) {
+            this.object = object;
         }
 
-        Object loadContext(Accumulate innerAccumulate, InternalFactHandle handle, Object key) {
-            Object groupContext = contextsByGroup.computeIfAbsent( key, k -> innerAccumulate.createContext() );
-            if (reverseSupport != null) {
-                reverseSupport.put( handle.getId(), new GroupInfo( key, groupContext ) );
-            }
-            changedGroups.put( key, groupContext );
-            return groupContext;
+        @Override public long getId() {
+            throw new UnsupportedOperationException();
         }
 
-        Object loadContextForReverse(InternalFactHandle handle) {
-            GroupInfo groupInfo = reverseSupport.remove( handle.getId() );
-            changedGroups.put( groupInfo.key, groupInfo.context );
-            return groupInfo.context;
+        @Override public long getRecency() {
+            throw new UnsupportedOperationException();
         }
 
-        public void init() {
-            contextsByGroup.clear();
-            changedGroups.clear();
-            if (reverseSupport != null) {
-                reverseSupport.clear();
-            }
+        @Override public Object getObject() {
+            return object;
         }
 
-        public List<Object[]> result( Accumulate innerAccumulate, Object wmCtx, Tuple leftTuple, WorkingMemory wm ) {
-            List<Object[]> results = new ArrayList<>( changedGroups.size() );
-            for (Map.Entry<Object, Object> entry : changedGroups.entrySet()) {
-                results.add( new Object[]{ entry.getKey(), isEmptyContext(entry.getValue()) ? null : innerAccumulate.getResult( wmCtx, entry.getValue(), leftTuple, wm ) } );
-            }
-            changedGroups.clear();
-            return results;
+        @Override public String getObjectClassName() {
+            throw new UnsupportedOperationException();
         }
 
-        private boolean isEmptyContext(Object ctx) {
-            if (ctx instanceof LambdaAccumulator.LambdaAccContext) {
-                return (( LambdaAccumulator.LambdaAccContext ) ctx).isEmpty();
-            }
-            if (ctx instanceof Object[]) {
-                return isEmptyContext( (( Object[] ) ctx)[0] );
-            }
+        @Override public void setObject(Object object) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public void setEqualityKey(EqualityKey key) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public EqualityKey getEqualityKey() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public void setRecency(long recency) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public void invalidate() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public boolean isValid() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public int getIdentityHashCode() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public int getObjectHashCode() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public boolean isDisconnected() {
             return false;
         }
-    }
 
-    private static class GroupInfo {
-        private final Object key;
-        private final Object context;
+        @Override public boolean isEvent() {
+            throw new UnsupportedOperationException();
+        }
 
-        private GroupInfo( Object key, Object context ) {
-            this.key = key;
-            this.context = context;
+        @Override public boolean isTraitOrTraitable() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public boolean isTraitable() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public boolean isTraiting() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public TraitTypeEnum getTraitType() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public RightTuple getFirstRightTuple() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public LeftTuple getFirstLeftTuple() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public EntryPointId getEntryPointId() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public WorkingMemoryEntryPoint getEntryPoint(InternalWorkingMemory wm) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public InternalFactHandle clone() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public String toExternalForm() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public void disconnect() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public void addFirstLeftTuple(LeftTuple leftTuple) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public void addLastLeftTuple(LeftTuple leftTuple) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public void removeLeftTuple(LeftTuple leftTuple) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public void clearLeftTuples() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public void clearRightTuples() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public void addFirstRightTuple(RightTuple rightTuple) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public void addLastRightTuple(RightTuple rightTuple) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public void removeRightTuple(RightTuple rightTuple) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public void addTupleInPosition(Tuple tuple) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public boolean isNegated() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public void setNegated(boolean negated) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public <K> K as(Class<K> klass) throws ClassCastException {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public boolean isExpired() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public boolean isPendingRemoveFromStore() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public void forEachRightTuple(Consumer<RightTuple> rightTupleConsumer) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public void forEachLeftTuple(Consumer<LeftTuple> leftTupleConsumer) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public RightTuple findFirstRightTuple(Predicate<RightTuple> rightTuplePredicate) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public LeftTuple findFirstLeftTuple(Predicate<LeftTuple> lefttTuplePredicate) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public void setFirstLeftTuple(LeftTuple firstLeftTuple) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public LinkedTuples detachLinkedTuples() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public LinkedTuples detachLinkedTuplesForPartition(int i) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public LinkedTuples getLinkedTuples() {
+            throw new UnsupportedOperationException();
         }
     }
+
 
 
 }

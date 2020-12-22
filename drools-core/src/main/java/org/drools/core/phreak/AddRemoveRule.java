@@ -875,7 +875,7 @@ public class AddRemoveRule {
                     Tuple        lt = BetaNode.getFirstTuple(bm.getLeftTupleMemory(), it);
                     for (; lt != null; lt = (LeftTuple) it.next(lt)) {
                         AccumulateContext accctx = (AccumulateContext) lt.getContextObject();
-                        visitChild(accctx.getAccPropCtx().getResultLeftTuple(), insert, wm, rule);
+                        visitChild(accctx.getResultLeftTuple(), insert, wm, rule);
                     }
                 } else if (NodeTypeEnums.ExistsNode == node.getType()) {
                     bm = (BetaMemory) wm.getNodeMemory((MemoryFactory) node);
@@ -1064,7 +1064,7 @@ public class AddRemoveRule {
             }
         } else {
             if (lt.getContextObject() instanceof AccumulateContext) {
-                LeftTuple resultLt = (( AccumulateContext ) lt.getContextObject()).getAccPropCtx().getResultLeftTuple();
+                LeftTuple resultLt = (( AccumulateContext ) lt.getContextObject()).getResultLeftTuple();
                 if (resultLt != null) {
                     iterateLeftTuple( resultLt, wm );
                 }

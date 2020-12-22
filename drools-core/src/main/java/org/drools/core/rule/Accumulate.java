@@ -27,6 +27,8 @@ import java.util.Map;
 
 import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.spi.Accumulator;
 import org.drools.core.spi.Tuple;
@@ -73,7 +75,7 @@ public abstract class Accumulate extends ConditionalElement
 
     public abstract Accumulator[] getAccumulators();
 
-    public abstract Object createContext();
+    public abstract Object createFunctionContext();
 
     /**
      * Executes the initialization block of code
@@ -99,7 +101,8 @@ public abstract class Accumulate extends ConditionalElement
                                  final Object context,
                                  final Tuple leftTuple,
                                  final InternalFactHandle handle,
-                                 final Object value,
+                                 final RightTuple rightParent,
+                                 final LeftTuple match,
                                  final WorkingMemory workingMemory);
 
     /**

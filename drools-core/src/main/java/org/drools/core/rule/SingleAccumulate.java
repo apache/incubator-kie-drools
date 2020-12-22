@@ -23,6 +23,9 @@ import java.util.Arrays;
 
 import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.reteoo.AccumulateNode.AccumulateContextEntry;
+import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.RightTuple;
 import org.drools.core.spi.Accumulator;
 import org.drools.core.spi.MvelAccumulator;
 import org.drools.core.spi.Tuple;
@@ -69,7 +72,7 @@ public class SingleAccumulate extends Accumulate {
         return new Accumulator[] { this.accumulator };
     }
 
-    public Serializable createContext() {
+    public Serializable createFunctionContext() {
         return this.accumulator.createContext();
     }
 
@@ -79,7 +82,7 @@ public class SingleAccumulate extends Accumulate {
                      final WorkingMemory workingMemory) {
         try {
             this.accumulator.init( workingMemoryContext,
-                                   context,
+                                   ((AccumulateContextEntry)context).getFunctionContext(),
                                    leftTuple,
                                    this.requiredDeclarations,
                                    workingMemory );
@@ -95,7 +98,7 @@ public class SingleAccumulate extends Accumulate {
                              final WorkingMemory workingMemory) {
         try {
             return this.accumulator.accumulate( workingMemoryContext,
-                                                 context,
+                                                ((AccumulateContextEntry)context).getFunctionContext(),
                                                  leftTuple,
                                                  handle,
                                                  this.requiredDeclarations,
@@ -110,14 +113,15 @@ public class SingleAccumulate extends Accumulate {
                         final Object context,
                         final Tuple leftTuple,
                         final InternalFactHandle handle,
-                        Object value,
+                        final RightTuple rightParent,
+                        final LeftTuple match,
                         final WorkingMemory workingMemory) {
         try {
             this.accumulator.reverse( workingMemoryContext,
-                                      context,
+                                      ((AccumulateContextEntry)context).getFunctionContext(),
                                       leftTuple,
                                       handle,
-                                      value,
+                                      match.getContextObject(),
                                       this.requiredDeclarations,
                                       getInnerDeclarationCache(),
                                       workingMemory );
@@ -137,7 +141,7 @@ public class SingleAccumulate extends Accumulate {
                             final WorkingMemory workingMemory) {
         try {
             return this.accumulator.getResult( workingMemoryContext,
-                                               context,
+                                               ((AccumulateContextEntry)context).getFunctionContext(),
                                                leftTuple,
                                                this.requiredDeclarations,
                                                workingMemory );

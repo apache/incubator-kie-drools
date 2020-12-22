@@ -16,35 +16,42 @@
 
 package org.drools.core.reteoo;
 
-import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import org.drools.core.RuleBaseConfiguration;
+import org.drools.core.WorkingMemory;
+import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.BetaConstraints;
+import org.drools.core.common.EqualityKey;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
+import org.drools.core.factmodel.traits.TraitTypeEnum;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.Accumulate;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.Declaration;
+import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.Accumulator;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.PropagationContext;
+import org.drools.core.spi.Tuple;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.drools.core.util.bitmask.BitMask;
+import org.drools.core.util.index.TupleList;
 
 /**
  * AccumulateNode
@@ -302,100 +309,24 @@ public class AccumulateNode extends BetaNode {
         }
     }
 
-    public static abstract class AccumulationContext implements ContextOwner, Externalizable {
-        private PropagationContext  propagationContext;
-        private Object context;
+    public interface BaseAccumulation {
+        PropagationContext getPropagationContext();
 
-        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-            context = in.readObject();
-            propagationContext = (PropagationContext) in.readObject();
-        }
-
-        public void writeExternal(ObjectOutput out) throws IOException {
-            out.writeObject(context);
-            out.writeObject(propagationContext);
-        }
-
-        public Object getContext() {
-            return context;
-        }
-
-        public void setContext( Object context ) {
-            this.context = context;
-        }
-
-        public <T> T getContext( Class<T> contextClass) {
-            if (contextClass.isInstance( context )) {
-                return (T) context;
-            }
-            return null;
-        }
-
-        public PropagationContext getPropagationContext() {
-            return propagationContext;
-        }
-
-        public void setPropagationContext(PropagationContext propagationContext) {
-            this.propagationContext = propagationContext;
-        }
-
-        public AccumulatePropagationContext getAccPropCtx() {
-            throw new UnsupportedOperationException();
-        }
+        void setPropagationContext(PropagationContext propagationContext);
     }
 
-    public static class AccumulateContext extends AccumulationContext implements Externalizable {
-        private AccumulatePropagationContext accPropCtx = new AccumulatePropagationContext();
 
-        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-            super.readExternal( in );
-            accPropCtx = (AccumulatePropagationContext) in.readObject();
-        }
+    public static class AccumulateContextEntry {
+        private Object             key;
+        private InternalFactHandle resultFactHandle;
+        private LeftTuple          resultLeftTuple;
+        private boolean            propagated;
+        private Object             functionContext;
+        private boolean            toPropagate;
+        private TupleList<AccumulateContextEntry> tupleList;
 
-        public void writeExternal(ObjectOutput out) throws IOException {
-            super.writeExternal( out );
-            out.writeObject(accPropCtx);
-        }
-
-        @Override
-        public AccumulatePropagationContext getAccPropCtx() {
-            return accPropCtx;
-        }
-    }
-
-    public static class GroupByContext extends AccumulationContext implements Externalizable {
-        private Map<Object, AccumulatePropagationContext> accPropCtxMap = new HashMap<>();
-
-        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-            super.readExternal( in );
-            accPropCtxMap = (Map<Object, AccumulatePropagationContext>) in.readObject();
-        }
-
-        public void writeExternal(ObjectOutput out) throws IOException {
-            super.writeExternal( out );
-            out.writeObject(accPropCtxMap);
-        }
-
-        public AccumulatePropagationContext getAccPropCtx(Object key) {
-            return accPropCtxMap.computeIfAbsent( key, k -> new AccumulatePropagationContext() );
-        }
-
-        public Collection<AccumulatePropagationContext> getAllAccPropCtxs() {
-            return accPropCtxMap.values();
-        }
-    }
-
-    public static class AccumulatePropagationContext implements Externalizable {
-        private InternalFactHandle  resultFactHandle;
-        private LeftTuple           resultLeftTuple;
-        private boolean             propagated;
-
-        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-            propagated = in.readBoolean();
-        }
-
-        public void writeExternal(ObjectOutput out) throws IOException {
-            out.writeBoolean(propagated);
+        public AccumulateContextEntry(Object key) {
+            this.key = key;
         }
 
         public InternalFactHandle getResultFactHandle() {
@@ -421,7 +352,233 @@ public class AccumulateNode extends BetaNode {
         public void setPropagated( boolean propagated ) {
             this.propagated = propagated;
         }
+
+        public boolean isToPropagate() {
+            return toPropagate;
+        }
+
+        public void setToPropagate(boolean toPropagate) {
+            this.toPropagate = toPropagate;
+        }
+
+        public Object getFunctionContext() {
+            return functionContext;
+        }
+
+        public void setFunctionContext(Object context) {
+            this.functionContext = context;
+        }
+
+        public Object getKey() {
+            return this.key;
+        }
+
+        public TupleList<AccumulateContextEntry> getTupleList() {
+            return tupleList;
+        }
+
+        public void setTupleList(TupleList<AccumulateContextEntry> tupleList) {
+            this.tupleList = tupleList;
+        }
     }
+
+    public static class AccumulateContext extends AccumulateContextEntry implements BaseAccumulation {
+        private PropagationContext  propagationContext;
+
+        public AccumulateContext() {
+            super(null);
+        }
+
+        public PropagationContext getPropagationContext() {
+            return propagationContext;
+        }
+
+        public void setPropagationContext(PropagationContext propagationContext) {
+            this.propagationContext = propagationContext;
+        }
+    }
+
+    public static class GroupByContext implements BaseAccumulation {
+        private PropagationContext                              propagationContext;
+        private Map<Object, TupleList<AccumulateContextEntry> > groupsMap = new HashMap<>();
+        private TupleList<AccumulateContextEntry>               lastTupleList;
+        private TupleList<AccumulateContextEntry>               tupleList;
+        private TupleList<AccumulateContextEntry>               toPropagateList;
+
+        public PropagationContext getPropagationContext() {
+            return propagationContext;
+        }
+
+        public void setPropagationContext(PropagationContext propagationContext) {
+            this.propagationContext = propagationContext;
+        }
+
+        public Map<Object, TupleList<AccumulateContextEntry>> getGroups() {
+            return groupsMap;
+        }
+
+        public TupleList<AccumulateContextEntry> getGroup(Object workingMemoryContext, Accumulate accumulate, Tuple leftTuple,
+                                                          InternalFactHandle handle, Object key, WorkingMemory wm) {
+            return groupsMap.computeIfAbsent(key, k -> {
+                AccumulateContextEntry entry = new AccumulateContextEntry(key);
+                TupleList<AccumulateContextEntry> tupleList = new TupleList<>(entry);
+                entry.setTupleList(tupleList);
+                addTupleList(tupleList);
+                Object functionContext = accumulate.createFunctionContext();
+                entry.setFunctionContext(functionContext);
+                accumulate.init( workingMemoryContext, entry, leftTuple, wm );
+
+                return tupleList;
+            });
+        }
+
+        public void removeGroup(Object key) {
+            groupsMap.remove(key);
+        }
+
+        public void addTupleList(TupleList<AccumulateContextEntry> list) {
+            // add to head of list
+            if (tupleList != null) {
+                tupleList.setPrevious(list);
+                list.setNext(tupleList);
+            }
+            tupleList = list;
+        }
+
+        public void moveToPropagateTupleList(TupleList<AccumulateContextEntry> list) {
+            if ( list.getContext().isToPropagate()) {
+                return;
+            }
+
+            TupleList next = list.getNext();
+            if (tupleList == list) {
+                // list is head
+                tupleList = next;
+                if (next != null) {
+                    next.setPrevious(null);
+                }
+            } else {
+                // list is mid or end
+                TupleList prev = list.getPrevious();
+                prev.setNext(next); // prev cannot be null here
+                if (next != null) {
+                    next.setPrevious(prev);
+                }
+            }
+
+            // add list to head
+            if (toPropagateList != null) {
+                toPropagateList.setPrevious(list);
+            }
+            list.setNext(toPropagateList);
+            list.setPrevious(null);
+            toPropagateList = list;
+
+            list.getContext().setToPropagate(true);
+        }
+
+        public void resetToPropagateTupleList(TupleList first, TupleList last) {
+            if (first == null) {
+                return;
+            }
+
+            if (tupleList == null) {
+                tupleList = toPropagateList;
+            } else {
+                last.setNext(tupleList);
+                tupleList.setPrevious(last);
+                tupleList = first;
+            }
+
+            toPropagateList = null;
+        }
+
+        public TupleList<AccumulateContextEntry> getTupleList() {
+            return tupleList;
+        }
+
+        public TupleList<AccumulateContextEntry> getToPropagateList() {
+            return toPropagateList;
+        }
+
+        public TupleList<AccumulateContextEntry> getLastTupleList() {
+            return lastTupleList;
+        }
+
+        public void setLastTupleList(TupleList<AccumulateContextEntry> lastTupleList) {
+            this.lastTupleList = lastTupleList;
+        }
+    }
+
+//    public static class AccumulateContext extends AccumulationContext implements Externalizable {
+//        private AccumulatePropagationContext accPropCtx = new AccumulatePropagationContext();
+//
+//        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+//            super.readExternal( in );
+//            accPropCtx = (AccumulatePropagationContext) in.readObject();
+//        }
+//
+//        public void writeExternal(ObjectOutput out) throws IOException {
+//            super.writeExternal( out );
+//            out.writeObject(accPropCtx);
+//        }
+//
+//        @Override
+//        public AccumulatePropagationContext () {
+//            return accPropCtx;
+//        }
+//    }
+
+//    public static class GroupByContext implements AccumulationContextEntry {
+//        private Map<Object, AccumulationContextEntry> accPropCtxMap = new HashMap<>();
+//
+//
+//        public AccumulationContextEntry getAccPropCtxEntry(Object key) {
+//            return accPropCtxMap.computeIfAbsent( key, k -> new AccumulationContextEntry() );
+//        }
+//
+//        public Collection<AccumulatePropagationContext> getAllAccPropCtxs() {
+//            return accPropCtxMap.values();
+//        }
+//    }
+
+//    public static class AccumulatePropagationContext implements Externalizable {
+//        private InternalFactHandle  resultFactHandle;
+//        private LeftTuple           resultLeftTuple;
+//        private boolean             propagated;
+//
+//        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+//            propagated = in.readBoolean();
+//        }
+//
+//        public void writeExternal(ObjectOutput out) throws IOException {
+//            out.writeBoolean(propagated);
+//        }
+//
+//        public InternalFactHandle getResultFactHandle() {
+//            return resultFactHandle;
+//        }
+//
+//        public void setResultFactHandle(InternalFactHandle resultFactHandle) {
+//            this.resultFactHandle = resultFactHandle;
+//        }
+//
+//        public LeftTuple getResultLeftTuple() {
+//            return resultLeftTuple;
+//        }
+//
+//        public void setResultLeftTuple(LeftTuple resultLeftTuple) {
+//            this.resultLeftTuple = resultLeftTuple;
+//        }
+//
+//        public boolean isPropagated() {
+//            return propagated;
+//        }
+//
+//        public void setPropagated( boolean propagated ) {
+//            this.propagated = propagated;
+//        }
+//    }
 
     public LeftTuple createLeftTuple(InternalFactHandle factHandle,
                                      boolean leftTupleMemoryEnabled) {
@@ -493,5 +650,201 @@ public class AccumulateNode extends BetaNode {
             return true;
         }
         return false;
+    }
+
+    public static class HolderFactHandle implements InternalFactHandle {
+        private Object object;
+
+        public HolderFactHandle(Object object) {
+            this.object = object;
+        }
+
+        @Override public long getId() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public long getRecency() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public Object getObject() {
+            return object;
+        }
+
+        @Override public String getObjectClassName() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public void setObject(Object object) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public void setEqualityKey(EqualityKey key) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public EqualityKey getEqualityKey() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public void setRecency(long recency) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public void invalidate() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public boolean isValid() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public int getIdentityHashCode() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public int getObjectHashCode() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public boolean isDisconnected() {
+            return false;
+        }
+
+        @Override public boolean isEvent() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public boolean isTraitOrTraitable() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public boolean isTraitable() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public boolean isTraiting() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public TraitTypeEnum getTraitType() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public RightTuple getFirstRightTuple() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public LeftTuple getFirstLeftTuple() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public EntryPointId getEntryPointId() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public WorkingMemoryEntryPoint getEntryPoint(InternalWorkingMemory wm) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public InternalFactHandle clone() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public String toExternalForm() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public void disconnect() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public void addFirstLeftTuple(LeftTuple leftTuple) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public void addLastLeftTuple(LeftTuple leftTuple) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public void removeLeftTuple(LeftTuple leftTuple) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public void clearLeftTuples() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public void clearRightTuples() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public void addFirstRightTuple(RightTuple rightTuple) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public void addLastRightTuple(RightTuple rightTuple) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public void removeRightTuple(RightTuple rightTuple) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public void addTupleInPosition(Tuple tuple) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public boolean isNegated() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public void setNegated(boolean negated) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public <K> K as(Class<K> klass) throws ClassCastException {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public boolean isExpired() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public boolean isPendingRemoveFromStore() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public void forEachRightTuple(Consumer<RightTuple> rightTupleConsumer) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public void forEachLeftTuple(Consumer<LeftTuple> leftTupleConsumer) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public RightTuple findFirstRightTuple(Predicate<RightTuple> rightTuplePredicate) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public LeftTuple findFirstLeftTuple(Predicate<LeftTuple> lefttTuplePredicate) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public void setFirstLeftTuple(LeftTuple firstLeftTuple) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public LinkedTuples detachLinkedTuples() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public LinkedTuples detachLinkedTuplesForPartition(int i) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override public LinkedTuples getLinkedTuples() {
+            throw new UnsupportedOperationException();
+        }
     }
 }
