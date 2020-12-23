@@ -578,7 +578,7 @@ public class KiePackagesBuilder {
         if (accumulatePattern.isCompositePatterns()) {
             CompositePatterns compositePatterns = (CompositePatterns) accumulatePattern.getCondition();
             GroupElement allSubConditions = new GroupElement(conditionToGroupElementType( compositePatterns.getType() ));
-            for(Condition c : compositePatterns.getSubConditions()) {
+            for (Condition c : compositePatterns.getSubConditions()) {
                 recursivelyAddConditions( ctx, group, allSubConditions, c);
             }
             source = allSubConditions;
@@ -615,11 +615,17 @@ public class KiePackagesBuilder {
 
     private void recursivelyAddConditions(RuleContext ctx, GroupElement group, GroupElement allSubConditions, Condition c) {
         if (c instanceof CompositePatterns) {
-            buildCompositePatterns(ctx, group, allSubConditions, c);
+            c.getSubConditions().forEach(sc -> recursivelyAddConditions(ctx, group, allSubConditions, sc));
         } else if (c instanceof ExistentialPatternImpl) {
-            buildExistentialPatternImpl(ctx, group, allSubConditions, c);
+            GroupElement existGroupElement = new GroupElement(conditionToGroupElementType( c.getType() ));
+            allSubConditions.addChild(existGroupElement);
+            recursivelyAddConditions(ctx, existGroupElement, existGroupElement, c.getSubConditions().iterator().next());
         } else if (c instanceof PatternImpl) {
-            allSubConditions.addChild(buildPattern(ctx, group, c));
+            if (ctx.getAccumulateSource( (( PatternImpl ) c).getPatternVariable() ) == null) {
+                allSubConditions.addChild( buildPattern( ctx, group, c ) );
+            }
+        } else if (c instanceof AccumulatePattern) {
+            allSubConditions.addChild(buildAccumulate( ctx, group, (AccumulatePattern) c ));
         }
     }
 
@@ -741,20 +747,6 @@ public class KiePackagesBuilder {
         }
     }
 
-    private void buildExistentialPatternImpl( RuleContext ctx, GroupElement group, GroupElement allSubConditions, Condition condition ) {
-        ExistentialPatternImpl existentialPattern = (ExistentialPatternImpl) condition;
-
-        GroupElement existGroupElement = new GroupElement(GroupElement.Type.EXISTS);
-        allSubConditions.addChild(existGroupElement);
-
-        recursivelyAddConditions(ctx, existGroupElement, existGroupElement, existentialPattern.getSubConditions().iterator().next());
-    }
-
-    private void buildCompositePatterns( RuleContext ctx, GroupElement group, GroupElement allSubConditions, Condition condition ) {
-        CompositePatterns compositePatterns = (CompositePatterns) condition;
-        compositePatterns.getSubConditions().forEach(sc ->  recursivelyAddConditions(ctx, group, allSubConditions, sc));
-    }
-
     private Accumulate buildAccumulate(RuleContext ctx, AccumulatePattern accPattern,
                                        RuleConditionElement source, Pattern pattern,
                                        List<String> usedVariableName, Collection<Binding> bindings) {
@@ -804,13 +796,11 @@ public class KiePackagesBuilder {
                 accumulators[i] = accumulator;
 
                 Declaration[] requiredDeclarations = getRequiredDeclarationsForAccumulate( ctx, source, accFunctions[i], binding, bindingEvaluator );
-                for (int j = 0; j < requiredDeclarations.length; j++) {
-                    requiredDeclarationList.add( requiredDeclarations[j] );
-                }
+                requiredDeclarationList.addAll( Arrays.asList( requiredDeclarations ) );
             }
 
             if (source instanceof Pattern) {
-                requiredDeclarationList.forEach( d -> (( Pattern ) source).addDeclaration( d ) );
+                requiredDeclarationList.forEach( (( Pattern ) source)::addDeclaration );
             }
             accumulate = new MultiAccumulate( source, new Declaration[0], accumulators );
         }
