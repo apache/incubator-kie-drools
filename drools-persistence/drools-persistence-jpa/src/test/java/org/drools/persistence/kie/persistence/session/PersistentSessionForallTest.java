@@ -128,7 +128,7 @@ public class PersistentSessionForallTest {
         TrackingAgendaEventListener listener = new TrackingAgendaEventListener();
         kieSession.addEventListener(listener);
 
-        Person owner = new Person("cat lady"); 
+        Person owner = new Person("dog lady");
         Pet dog = new Pet(Pet.PetType.dog, owner);
 
         kieSession.insert(dog);

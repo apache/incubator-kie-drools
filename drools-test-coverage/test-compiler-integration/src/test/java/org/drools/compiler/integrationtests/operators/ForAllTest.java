@@ -112,6 +112,12 @@ public class ForAllTest {
         check("name.length() < 6", "age >= 18, name.startsWith(\"M\")", 1, new Person("Mario", 45), new Person("Mark", 43), new Person("Daniele", 43));
     }
 
+    @Test
+    public void testNoFiring() {
+        // DROOLS-5915
+        check("", "age >= 18", 0);
+    }
+
     private void check(String constraints1, int expectedFires, Object... objs) {
         check( constraints1, null, expectedFires, objs );
     }
