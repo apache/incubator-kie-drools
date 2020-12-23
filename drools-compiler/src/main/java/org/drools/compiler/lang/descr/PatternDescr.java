@@ -257,7 +257,7 @@ public class PatternDescr extends AnnotatedBaseDescr
         this.xpathStartDeclaration = xpathStartDeclaration;
     }
 
-    public Object clone() {
+    public PatternDescr clone() {
         PatternDescr clone = new PatternDescr( this.objectType,
                                                this.identifier );
         clone.setQuery( this.query );
