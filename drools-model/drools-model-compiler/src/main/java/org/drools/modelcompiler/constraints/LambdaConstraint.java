@@ -90,7 +90,9 @@ public class LambdaConstraint extends AbstractConstraint {
     @Override
     public void replaceDeclaration(Declaration oldDecl, Declaration newDecl) {
         evaluator.replaceDeclaration( oldDecl, newDecl );
-        this.indexingDeclaration = newDecl;
+        if (indexingDeclaration == oldDecl) {
+            this.indexingDeclaration = newDecl;
+        }
     }
 
     @Override
