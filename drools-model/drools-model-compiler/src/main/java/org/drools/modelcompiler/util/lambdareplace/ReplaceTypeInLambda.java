@@ -29,6 +29,7 @@ import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.ACCUMULATE_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.PATTERN_CALL;
 import static org.drools.modelcompiler.builder.generator.expression.FlowExpressionBuilder.BIND_CALL;
 import static org.drools.modelcompiler.builder.generator.expression.FlowExpressionBuilder.EXPR_CALL;
@@ -40,6 +41,10 @@ public class ReplaceTypeInLambda {
     }
 
     public static void replaceTypeInExprLambda(String bindingId, Class accumulateFunctionResultType, Expression expression) {
+        if (expression instanceof MethodCallExpr && (( MethodCallExpr ) expression).getNameAsString().equals( ACCUMULATE_CALL )) {
+            return;
+        }
+
         expression.findAll(MethodCallExpr.class).forEach(mc -> {
             if (mc.getArguments().stream().anyMatch(a -> a.toString().equals(toVar(bindingId)))) {
                 List<LambdaExpr> allLambdas = new ArrayList<>();
@@ -68,7 +73,7 @@ public class ReplaceTypeInLambda {
 
             if (!a.getType().isUnknownType() &&
                     (a.getNameAsString().equals("_this") || a.getNameAsString().equals(bindingId))) {
-                a.setType(StaticJavaParser.parseClassOrInterfaceType(accumulateFunctionResultType.getCanonicalName()));
+                a.setType( StaticJavaParser.parseClassOrInterfaceType(accumulateFunctionResultType.getCanonicalName()));
             }
         }
     }
