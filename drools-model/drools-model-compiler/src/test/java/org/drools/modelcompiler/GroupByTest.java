@@ -1024,22 +1024,6 @@ public class GroupByTest {
                         })
         );
 
-//        Rule rule1 = D.rule("R1").build(
-//                D.groupBy(
-//                        D.pattern(var_$p).bind(var_$age, person -> person.getAge()),
-//                        var_$p, var_$key_1, person -> person.getName().substring(0, 3),
-//                        D.accFunction( IntegerSumAccumulateFunction::new, var_$age).as(var_$sumOfAges)),
-//                D.groupBy(
-//                        D.pattern(var_$g1).bind(var_$g1_value, group -> (Integer) group.getValue()),
-//                        var_$g1, var_$key_2, groupResult -> ((String)groupResult.getKey()).substring(0, 2),
-//                        D.accFunction( IntegerMaxAccumulateFunction::new, var_$g1_value).as(var_$maxOfValues)),
-//                D.on(var_$key_2, var_results, var_$maxOfValues)
-//                        .execute(($key, results, $maxOfValues) -> {
-//                            System.out.println($key + " -> " + $maxOfValues);
-//                            results.put($key, $maxOfValues);
-//                        })
-//        );
-
         Model model = new ModelImpl().addRule( rule1 ).addGlobal( var_results );
         KieSession ksession = KieBaseBuilder.createKieBaseFromModel( model ).newKieSession();
 
