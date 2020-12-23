@@ -54,8 +54,8 @@ This is one of the reasons why Local Search is very scalable.
 As shown above, Local Search solves the four queens problem by starting with the starting solution and make the following steps sequentially:
 
 . _B0 to B3_
-. _D0 to B2_
-. _A0 to B1_
+. _D0 to D2_
+. _A0 to A1_
 
 Turn on `debug` logging for the category `org.optaplanner` to show those steps in the log:
 
