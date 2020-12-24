@@ -258,3 +258,45 @@ and enabling auth:
 mvn clean compile quarkus:dev -Dquarkus.http.port=8380 -Dquarkus.profile=keycloak
 ```
 
+## Enabling Test User System
+
+Management Console and Task Console include a Test User System to be used only for testing purposes. It provides a set of
+predefined users, ability to switch users and ability to add new users (stored in-memory).
+
+It's possible to enable it by adding the parameter `kogito.test.user-system.enabled=true`, for example:
+
+```
+mvn clean compile quarkus:dev -Dquarkus.http.port=8380 -Dkogito.test.user-system.enabled=true
+```
+
+> _**NOTE**_: The Test User System won't be available when starting the application with `keycloak` profile.
+
+### Switching to a different user
+
+The Test User System provides a set of predefined users that can be used:
+
+|   User   |       Groups      |  
+|----------|-------------------|
+|   john   |     employees     |
+|   mary   |      managers     |
+|   poul   | interns, managers |
+
+Open the available users list by clicking on the top right **User Avatar**, then click on any of the
+users to switch to that user.
+
+![Showing available test users](./docs/testusersystem-menu.png "Showing available test users")
+
+### Adding new test users
+
+To register new users to the Test User System just click on the top right **User Avatar** and click **+ Add new User**
+to open the **New Test User** modal.
+
+![Showing available test users](./docs/testusersystem-menu-add.png "Showing available test users")
+
+When the **New Test User** form appears, fill the **User Id** field with the new user id and the **Groups** with a comma-separated
+list of groups you want the user to belong and press **Add** to proceed register the user. 
+
+![Add new test user modal](./docs/testusersystem-add-user.png "Add new test user modal")
+
+> _**NOTE**_: The users stored in Test User System are stored in-memory, refreshing the screen will restore the user system
+>to its original state. 

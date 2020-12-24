@@ -37,7 +37,12 @@ export interface UserContext {
    * Retrieves the user that is currently logged to the app.
    */
   getCurrentUser(): User;
+}
 
+/**
+ * Adds logout support to a UserContext
+ */
+export interface LogoutUserContext extends UserContext {
   /**
    * Logs out the current user
    */
@@ -53,3 +58,9 @@ export class DefaultUser implements User {
     this.groups = groups;
   }
 }
+
+export const ANONYMOUS_USER = new DefaultUser('', []);
+
+export const supportsLogout = (userContext: UserContext): boolean => {
+  return 'logout' in userContext;
+};

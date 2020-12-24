@@ -15,32 +15,43 @@
  */
 
 import * as Keycloak from '../../../../utils/KeycloakClient';
+import * as Utils from '../../../../utils/Utils';
 import * as KogitoAppContext from '../../../context/KogitoAppContext';
 import { TestUserContextImpl } from '../../TestUserContext';
+import { KeycloakUserContext } from '../../KeycloakUserContext';
 
 export const testIsAuthEnabledMock = jest.spyOn(Keycloak, 'isAuthEnabled');
 testIsAuthEnabledMock.mockReturnValue(true);
 
-const newContext = (): KogitoAppContext.AppContext => {
-  const testUserSystem = new TestUserContextImpl();
+export const testHandleLogoutMock = jest.spyOn(Keycloak, 'handleLogout');
+testHandleLogoutMock.mockImplementation(jest.fn());
 
-  return new KogitoAppContext.AppContextImpl(testUserSystem, {
-    mode: KogitoAppContext.EnvironmentMode.TEST
-  });
+export const testIsTestUserSystemEnabledMock = jest.spyOn(
+  Utils,
+  'isTestUserSystemEnabled'
+);
+testIsTestUserSystemEnabledMock.mockReturnValue(false);
+
+const newContext = (authEnabled: boolean): KogitoAppContext.AppContext => {
+  const testUserSystem = authEnabled
+    ? new KeycloakUserContext({
+        userName: 'jdoe',
+        roles: ['user', 'manager'],
+        token: 'token'
+      })
+    : new TestUserContextImpl();
+
+  return new KogitoAppContext.AppContextImpl(testUserSystem);
 };
 
-export let testKogitoAppContext: KogitoAppContext.AppContext = newContext();
+export let testKogitoAppContext: KogitoAppContext.AppContext = newContext(
+  false
+);
 
 jest
   .spyOn(KogitoAppContext, 'useKogitoAppContext')
   .mockImplementation(() => testKogitoAppContext);
 
-export const setTestKogitoAppContextModeToTest = (toggle: boolean) => {
-  testKogitoAppContext.environment.mode = toggle
-    ? KogitoAppContext.EnvironmentMode.TEST
-    : KogitoAppContext.EnvironmentMode.PROD;
-};
-
-export const resetTestKogitoAppContext = () => {
-  testKogitoAppContext = newContext();
+export const resetTestKogitoAppContext = (authEnabled: boolean) => {
+  testKogitoAppContext = newContext(authEnabled);
 };

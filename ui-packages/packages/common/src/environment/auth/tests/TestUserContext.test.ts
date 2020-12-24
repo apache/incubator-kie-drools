@@ -38,14 +38,4 @@ describe('TestUserSystemImpl tests', () => {
 
     expect(userSystem.getCurrentUser()).toStrictEqual(TEST_USERS[1]);
   });
-
-  it('Test logout', () => {
-    userSystem.su(TEST_USERS[1].id);
-
-    expect(userSystem.getCurrentUser()).toStrictEqual(TEST_USERS[1]);
-
-    userSystem.logout();
-
-    expect(userSystem.getCurrentUser()).toStrictEqual(TEST_USERS[0]);
-  });
 });

@@ -783,11 +783,11 @@ exports[`AddTestUser tests Cancel test 1`] = `
 </Form>
 `;
 
-exports[`AddTestUser tests Snapshot test in Prod mode 1`] = `null`;
+exports[`AddTestUser tests Snapshot test - TestUserSystem disabled 1`] = `null`;
 
-exports[`AddTestUser tests Snapshot test in Test mode - closed modal 1`] = `null`;
+exports[`AddTestUser tests Snapshot test - TestUserSystem enabled - closed modal 1`] = `null`;
 
-exports[`AddTestUser tests Snapshot test in Test mode 1`] = `
+exports[`AddTestUser tests Snapshot test - TestUserSystem enabled 1`] = `
 <Stack
   hasGutter={true}
 >

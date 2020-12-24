@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import { User, DefaultUser, UserContext } from './Auth';
+import { User, DefaultUser, LogoutUserContext } from './Auth';
 import { handleLogout, isAuthEnabled } from '../../utils/KeycloakClient';
 
-export class KeycloakUserContext implements UserContext {
+export class KeycloakUserContext implements LogoutUserContext {
   private readonly currentUser: User;
   private readonly token: string;
 

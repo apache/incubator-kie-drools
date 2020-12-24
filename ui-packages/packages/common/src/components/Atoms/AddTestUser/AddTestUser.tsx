@@ -34,11 +34,11 @@ import {
 } from '@patternfly/react-core';
 import {
   AppContext,
-  isContextInTestMode,
   useKogitoAppContext
 } from '../../../environment/context/KogitoAppContext';
 import { TestUserContext } from '../../../environment/auth/TestUserContext';
 import { TestUserManager } from '../../../environment/auth/TestUserManager';
+import { isTestUserSystemEnabled } from '../../../utils/Utils';
 
 interface IOwnProps {
   isOpen: boolean;
@@ -148,7 +148,7 @@ const AddTestUser: React.FC<IOwnProps & OUIAProps> = ({
     setLogin(true);
   };
 
-  if (!isOpen || !isContextInTestMode(context)) {
+  if (!isOpen || !isTestUserSystemEnabled()) {
     return null;
   }
 

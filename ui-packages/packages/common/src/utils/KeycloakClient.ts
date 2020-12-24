@@ -1,7 +1,9 @@
 import axios from 'axios';
-import { UserContext } from '../..';
+import { User, UserContext } from '../..';
 import { TestUserContextImpl } from '../environment/auth/TestUserContext';
 import { KeycloakUserContext } from '../environment/auth/KeycloakUserContext';
+import { isTestUserSystemEnabled } from './Utils';
+import { ANONYMOUS_USER } from '../environment/auth/Auth';
 
 export const isAuthEnabled = (): boolean => {
   // @ts-ignore
@@ -16,7 +18,7 @@ export const getLoadedSecurityContext = (): UserContext => {
         'Cannot load security context! Please reload screen and log in again.'
       );
     }
-    currentSecurityContext = new TestUserContextImpl();
+    currentSecurityContext = getNonAuthUserContext();
   }
   return currentSecurityContext;
 };
@@ -37,11 +39,22 @@ export const loadSecurityContext = async (onloadSuccess: () => void) => {
       });
     }
   } else {
-    currentSecurityContext = new TestUserContextImpl();
+    currentSecurityContext = getNonAuthUserContext();
     onloadSuccess();
   }
 };
 
+const getNonAuthUserContext = (): UserContext => {
+  if (isTestUserSystemEnabled()) {
+    return new TestUserContextImpl();
+  } else {
+    return {
+      getCurrentUser(): User {
+        return ANONYMOUS_USER;
+      }
+    };
+  }
+};
 export const getToken = (): string => {
   if (isAuthEnabled()) {
     const ctx = getLoadedSecurityContext() as KeycloakUserContext;

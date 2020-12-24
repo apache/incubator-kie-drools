@@ -21,7 +21,7 @@ import { getWrapper } from '../../../../utils/OuiaUtils';
 import AddTestUser from '../AddTestUser';
 import {
   resetTestKogitoAppContext,
-  setTestKogitoAppContextModeToTest,
+  testIsTestUserSystemEnabledMock,
   testKogitoAppContext
 } from '../../../../environment/auth/tests/utils/KogitoAppContextTestingUtils';
 import { TestUserContext } from '../../../../environment/auth/TestUserContext';
@@ -47,11 +47,12 @@ const findFormGroup = (wrapper, id: string) => {
 };
 
 describe('AddTestUser tests', () => {
-  afterEach(() => {
-    resetTestKogitoAppContext();
+  beforeEach(() => {
+    testIsTestUserSystemEnabledMock.mockReturnValue(true);
+    resetTestKogitoAppContext(false);
   });
 
-  it('Snapshot test in Test mode', () => {
+  it('Snapshot test - TestUserSystem enabled', () => {
     const wrapper = getWrapper(
       <AddTestUser isOpen={true} toggleModal={jest.fn()} />,
       'Stack'
@@ -63,7 +64,7 @@ describe('AddTestUser tests', () => {
     expect(wrapper.find(Form).exists()).toBeTruthy();
   });
 
-  it('Snapshot test in Test mode - closed modal', () => {
+  it('Snapshot test - TestUserSystem enabled - closed modal', () => {
     const wrapper = getWrapper(
       <AddTestUser isOpen={false} toggleModal={jest.fn()} />,
       'Stack'
@@ -75,8 +76,9 @@ describe('AddTestUser tests', () => {
     expect(wrapper.find(Form).exists()).toBeFalsy();
   });
 
-  it('Snapshot test in Prod mode', () => {
-    setTestKogitoAppContextModeToTest(false);
+  it('Snapshot test - TestUserSystem disabled', () => {
+    testIsTestUserSystemEnabledMock.mockReturnValue(false);
+
     const wrapper = getWrapper(
       <AddTestUser isOpen={true} toggleModal={jest.fn()} />,
       'Stack'

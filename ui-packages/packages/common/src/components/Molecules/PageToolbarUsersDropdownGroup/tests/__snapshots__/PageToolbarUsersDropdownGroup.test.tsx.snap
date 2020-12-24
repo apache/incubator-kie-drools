@@ -1,12 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`PageToolbarUsersDropdownGroup tests Test render in prod mode 1`] = `
+exports[`PageToolbarUsersDropdownGroup tests Test render TestUserSystem disabled 1`] = `
 <PageToolbarUsersDropdownGroup
   toggleAddUsersModal={[MockFunction]}
 />
 `;
 
-exports[`PageToolbarUsersDropdownGroup tests Test render in test mode - switch user 1`] = `
+exports[`PageToolbarUsersDropdownGroup tests Test render TestUserSystem enabled - switch user 1`] = `
 <PageToolbarUsersDropdownGroup
   toggleAddUsersModal={[MockFunction]}
 >
@@ -52,7 +52,7 @@ exports[`PageToolbarUsersDropdownGroup tests Test render in test mode - switch u
 </PageToolbarUsersDropdownGroup>
 `;
 
-exports[`PageToolbarUsersDropdownGroup tests Test render in test mode 1`] = `
+exports[`PageToolbarUsersDropdownGroup tests Test render TestUserSystem enabled 1`] = `
 <PageToolbarUsersDropdownGroup
   toggleAddUsersModal={[MockFunction]}
 >

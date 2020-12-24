@@ -20,30 +20,18 @@ import { User, UserContext } from '../auth/Auth';
 export interface AppContext {
   getCurrentUser(): User;
   readonly userContext: UserContext;
-  readonly environment: Environment;
 }
 
 export class AppContextImpl implements AppContext {
   public readonly userContext: UserContext;
-  public readonly environment: Environment;
 
-  constructor(userSystem: UserContext, environment: Environment) {
+  constructor(userSystem: UserContext) {
     this.userContext = userSystem;
-    this.environment = environment;
   }
 
   getCurrentUser(): User {
     return this.userContext.getCurrentUser();
   }
-}
-
-export enum EnvironmentMode {
-  TEST,
-  PROD
-}
-
-export interface Environment {
-  mode: EnvironmentMode;
 }
 
 const KogitoAppContext = React.createContext<AppContext>(null);
@@ -52,10 +40,3 @@ export default KogitoAppContext;
 
 export const useKogitoAppContext = () =>
   useContext<AppContext>(KogitoAppContext);
-
-export const isContextInTestMode = (context: AppContext): boolean => {
-  if (context && context.environment) {
-    return context.environment.mode === EnvironmentMode.TEST;
-  }
-  return false;
-};

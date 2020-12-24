@@ -17,10 +17,8 @@
 import React from 'react';
 
 import KogitoAppContext, {
-  AppContextImpl,
-  EnvironmentMode
+  AppContextImpl
 } from '../../../environment/context/KogitoAppContext';
-import { isAuthEnabled } from '../../../utils/KeycloakClient';
 import { UserContext } from '../../../environment/auth/Auth';
 
 interface IOwnProps {
@@ -32,13 +30,7 @@ const KogitoAppContextProvider: React.FC<IOwnProps> = ({
   children
 }) => {
   return (
-    <KogitoAppContext.Provider
-      value={
-        new AppContextImpl(userContext, {
-          mode: isAuthEnabled() ? EnvironmentMode.PROD : EnvironmentMode.TEST
-        })
-      }
-    >
+    <KogitoAppContext.Provider value={new AppContextImpl(userContext)}>
       {children}
     </KogitoAppContext.Provider>
   );

@@ -65,10 +65,6 @@ export class TestUserContextImpl implements TestUserContext {
     }
   }
 
-  public logout() {
-    this.su(TEST_USERS[0].id);
-  }
-
   getCurrentUser(): User {
     return this.currentUser;
   }

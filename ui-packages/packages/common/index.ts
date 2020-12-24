@@ -22,8 +22,6 @@ export * from './src/environment/auth/Auth';
 export {
   default as KogitoAppContext,
   AppContext,
-  Environment,
-  EnvironmentMode,
   useKogitoAppContext
 } from './src/environment/context/KogitoAppContext';
 export * from './src/utils/KeycloakClient';

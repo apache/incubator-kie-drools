@@ -46,6 +46,10 @@ public class VertxRouter {
     String authEnabled;
 
     @Inject
+    @ConfigProperty(name = "kogito.test.user-system.enabled", defaultValue = "false")
+    String testUserSystemEnabled;
+
+    @Inject
     Vertx vertx;
 
     private String resource;
@@ -56,7 +60,8 @@ public class VertxRouter {
                 .readFileBlocking("META-INF/resources/index.html")
                 .toString(UTF_8)
                 .replace("__DATA_INDEX_ENDPOINT__", "\"" + dataIndexHttpURL + "/graphql\"")
-                .replace("__KOGITO_AUTH_ENABLED__", authEnabled);
+                .replace("__KOGITO_AUTH_ENABLED__", authEnabled)
+                .replace("__KOGITO_TEST_USER_SYSTEM_ENABLED__", testUserSystemEnabled);
     }
 
     void setupRouter(@Observes Router router) {

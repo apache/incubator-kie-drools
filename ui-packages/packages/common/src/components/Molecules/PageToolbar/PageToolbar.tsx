@@ -32,11 +32,16 @@ import { componentOuiaProps, OUIAProps } from '../../../utils/OuiaUtils';
 import userImage from '../../../static/avatar.svg';
 import {
   AppContext,
-  isContextInTestMode,
   useKogitoAppContext
 } from '../../../environment/context/KogitoAppContext';
 import PageToolbarUsersDropdownGroup from '../PageToolbarUsersDropdownGroup/PageToolbarUsersDropdownGroup';
 import AddTestUser from '../../Atoms/AddTestUser/AddTestUser';
+import {
+  ANONYMOUS_USER,
+  LogoutUserContext,
+  supportsLogout
+} from '../../../environment/auth/Auth';
+import { isTestUserSystemEnabled } from '../../../utils/Utils';
 
 const PageToolbar: React.FunctionComponent<OUIAProps> = ({
   ouiaId,
@@ -48,7 +53,7 @@ const PageToolbar: React.FunctionComponent<OUIAProps> = ({
 
   const context: AppContext = useKogitoAppContext();
 
-  const testMode = isContextInTestMode(context);
+  const testUserSystemEnabled = isTestUserSystemEnabled();
 
   const handleAboutModalToggle = () => {
     setmodalToggle(!modalToggle);
@@ -67,14 +72,21 @@ const PageToolbar: React.FunctionComponent<OUIAProps> = ({
   };
 
   const getUserName = () => {
-    return context && context.getCurrentUser()
-      ? context.getCurrentUser().id
-      : 'Anonymous';
+    if (context) {
+      switch (context.getCurrentUser()) {
+        case ANONYMOUS_USER:
+          return 'Anonymous';
+        default:
+          return context.getCurrentUser().id;
+      }
+    }
+    return 'Anonymous';
   };
 
   const handleLogout = () => {
-    if (context.userContext) {
-      context.userContext.logout();
+    if (supportsLogout(context.userContext)) {
+      const logout: LogoutUserContext = context.userContext as LogoutUserContext;
+      logout.logout();
     }
   };
 
@@ -89,7 +101,7 @@ const PageToolbar: React.FunctionComponent<OUIAProps> = ({
     </DropdownItem>
   );
 
-  if (testMode) {
+  if (testUserSystemEnabled) {
     userDropdownItems.push(
       <DropdownSeparator key={userDropdownItems.length} />
     );
@@ -101,12 +113,16 @@ const PageToolbar: React.FunctionComponent<OUIAProps> = ({
     );
   }
 
-  userDropdownItems.push(<DropdownSeparator key={userDropdownItems.length} />);
-  userDropdownItems.push(
-    <DropdownItem key={userDropdownItems.length} onClick={handleLogout}>
-      Log out
-    </DropdownItem>
-  );
+  if (supportsLogout(context.userContext)) {
+    userDropdownItems.push(
+      <DropdownSeparator key={userDropdownItems.length} />
+    );
+    userDropdownItems.push(
+      <DropdownItem key={userDropdownItems.length} onClick={handleLogout}>
+        Log out
+      </DropdownItem>
+    );
+  }
 
   return (
     <React.Fragment>
@@ -115,7 +131,7 @@ const PageToolbar: React.FunctionComponent<OUIAProps> = ({
         handleModalToggleProp={handleAboutModalToggle}
       />
       <AddTestUser
-        isOpen={testMode && addUserToggle}
+        isOpen={testUserSystemEnabled && addUserToggle}
         toggleModal={handleAddUserModalToggle}
       />
       <Toolbar {...componentOuiaProps(ouiaId, 'page-toolbar', ouiaSafe)}>
