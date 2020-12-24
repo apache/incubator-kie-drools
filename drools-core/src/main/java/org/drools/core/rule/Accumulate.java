@@ -27,11 +27,14 @@ import java.util.Map;
 
 import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.reteoo.AccumulateNode;
+import org.drools.core.reteoo.AccumulateNode.GroupByContext;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.spi.Accumulator;
 import org.drools.core.spi.Tuple;
+import org.drools.core.util.index.TupleList;
 
 /**
  * A class to represent the Accumulate CE
@@ -46,7 +49,7 @@ public abstract class Accumulate extends ConditionalElement
     protected Declaration[]        requiredDeclarations;
     protected Declaration[]        innerDeclarationCache;
 
-    protected List<Accumulate>     cloned           = Collections.<Accumulate> emptyList();
+    protected List<Accumulate>     cloned           = Collections.emptyList();
 
     public Accumulate() { }
 
@@ -90,7 +93,7 @@ public abstract class Accumulate extends ConditionalElement
      */
     public abstract Object accumulate(final Object workingMemoryContext,
                                       final Object context,
-                                      final Tuple leftTuple,
+                                      final Tuple match,
                                       final InternalFactHandle handle,
                                       final WorkingMemory workingMemory);
 
@@ -122,7 +125,7 @@ public abstract class Accumulate extends ConditionalElement
 
     protected void registerClone(Accumulate clone) {
         if ( this.cloned == Collections.EMPTY_LIST ) {
-            this.cloned = new ArrayList<Accumulate>( 1 );
+            this.cloned = new ArrayList<>( 1 );
         }
         this.cloned.add( clone );
     }
@@ -197,4 +200,7 @@ public abstract class Accumulate extends ConditionalElement
     public boolean isGroupBy() {
         return false;
     }
+
+    public abstract Object accumulate(Object workingMemoryContext, LeftTuple match, InternalFactHandle childHandle,
+                                      GroupByContext groupByContext, TupleList<AccumulateNode.AccumulateContextEntry> tupleList, WorkingMemory wm);
 }

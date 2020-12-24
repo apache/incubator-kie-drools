@@ -23,6 +23,9 @@ import java.util.Arrays;
 
 import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.reteoo.AccumulateNode;
+import org.drools.core.reteoo.AccumulateNode.GroupByContext;
 import org.drools.core.reteoo.AccumulateNode.AccumulateContextEntry;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RightTuple;
@@ -30,6 +33,7 @@ import org.drools.core.spi.Accumulator;
 import org.drools.core.spi.MvelAccumulator;
 import org.drools.core.spi.Tuple;
 import org.drools.core.spi.Wireable;
+import org.drools.core.util.index.TupleList;
 import org.kie.internal.security.KiePolicyHelper;
 
 public class SingleAccumulate extends Accumulate {
@@ -93,20 +97,26 @@ public class SingleAccumulate extends Accumulate {
 
     public Object accumulate(final Object workingMemoryContext,
                              final Object context,
-                             final Tuple leftTuple,
+                             final Tuple match,
                              final InternalFactHandle handle,
                              final WorkingMemory workingMemory) {
         try {
             return this.accumulator.accumulate( workingMemoryContext,
                                                 ((AccumulateContextEntry)context).getFunctionContext(),
-                                                 leftTuple,
-                                                 handle,
-                                                 this.requiredDeclarations,
-                                                 getInnerDeclarationCache(),
-                                                 workingMemory );
+                                                match,
+                                                handle,
+                                                this.requiredDeclarations,
+                                                getInnerDeclarationCache(),
+                                                workingMemory );
         } catch ( final Exception e ) {
             throw new RuntimeException( e );
         }
+    }
+
+    @Override
+    public Object accumulate(Object workingMemoryContext, LeftTuple match, InternalFactHandle childHandle,
+                             GroupByContext groupByContext, TupleList<AccumulateContextEntry> tupleList, WorkingMemory wm) {
+        throw new UnsupportedOperationException("This should never be called, it's for LambdaGroupByAccumulate only.");
     }
 
     public void reverse(final Object workingMemoryContext,

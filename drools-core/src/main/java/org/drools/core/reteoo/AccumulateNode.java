@@ -317,6 +317,7 @@ public class AccumulateNode extends BetaNode {
         private boolean            propagated;
         private Object             functionContext;
         private boolean            toPropagate;
+        private Object             value;
         private TupleList<AccumulateContextEntry> tupleList;
 
         public AccumulateContextEntry(Object key) {
@@ -373,6 +374,14 @@ public class AccumulateNode extends BetaNode {
 
         public void setTupleList(TupleList<AccumulateContextEntry> tupleList) {
             this.tupleList = tupleList;
+        }
+
+        public Object getValue() {
+            return value;
+        }
+
+        public void setValue(Object value) {
+            this.value = value;
         }
     }
 
@@ -501,6 +510,19 @@ public class AccumulateNode extends BetaNode {
 
         public void setLastTupleList(TupleList<AccumulateContextEntry> lastTupleList) {
             this.lastTupleList = lastTupleList;
+        }
+
+        public void clear() {
+            for (TupleList<AccumulateContextEntry> list : groupsMap.values()) {
+                for ( Tuple tuple = list.getFirst(); list.getFirst() != null; tuple = list.getFirst()) {
+                    list.remove(tuple);
+                    tuple.setContextObject(null);
+                }
+            }
+            getGroups().clear();
+            tupleList = null;
+            toPropagateList = null;
+            lastTupleList = null;
         }
     }
 

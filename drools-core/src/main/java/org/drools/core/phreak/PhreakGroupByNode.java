@@ -24,6 +24,7 @@ import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.core.reteoo.AccumulateNode.GroupByContext;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
+import org.drools.core.reteoo.RightTuple;
 import org.drools.core.rule.Accumulate;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.index.TupleList;
@@ -59,7 +60,7 @@ public class PhreakGroupByNode extends PhreakAccumulateNode {
         accctx.setPropagationContext( null );
 
         GroupByContext groupByContext = (GroupByContext)accctx;
-        TupleList<AccumulateContextEntry> firstList = groupByContext.getToPropagateList();;
+        TupleList<AccumulateContextEntry> firstList = groupByContext.getToPropagateList();
         TupleList<AccumulateContextEntry> lastList = null;
 
         for (TupleList<AccumulateContextEntry> tupleList = firstList; tupleList != null; tupleList = tupleList.getNext()) {
@@ -79,9 +80,62 @@ public class PhreakGroupByNode extends PhreakAccumulateNode {
     }
 
     @Override
+    protected void reaccumulateForLeftTuple(final AccumulateNode accNode,
+                                            final Accumulate accumulate,
+                                            final LeftTuple leftTuple,
+                                            final RightTuple rightParent,
+                                            final LeftTuple match,
+                                            final InternalWorkingMemory wm,
+                                            final AccumulateMemory am,
+                                            final AccumulateNode.BaseAccumulation accctx,
+                                            final boolean reaccumulate) {
+        GroupByContext groupByContext = (GroupByContext) accctx;
+
+        if (match != null) {
+            // re-accumulate just for the sub group
+            TupleList<AccumulateContextEntry> tupleList = match.getMemory();
+            tupleList.remove(match);
+
+            if (reaccumulate) {
+                // re-init function context for the group
+                Object functionContext = accumulate.createFunctionContext();
+                tupleList.getContext().setFunctionContext(functionContext);
+
+                for (LeftTuple childMatch = (LeftTuple) tupleList.getFirst(); childMatch != null; childMatch = (LeftTuple) childMatch.getNext()) {
+                    RightTuple         rightTuple  = childMatch.getRightParent();
+                    InternalFactHandle childHandle = rightTuple.getFactHandle();
+                    LeftTuple          tuple       = leftTuple;
+                    if (accNode.isUnwrapRightObject()) {
+                        // if there is a subnetwork, handle must be unwrapped
+                        tuple = (LeftTuple) rightTuple;
+                        childHandle = rightTuple.getFactHandleForEvaluation();
+                    }
+
+                    Object value = accumulate.accumulate(am.workingMemoryContext, tuple, childHandle,
+                                                         groupByContext, tupleList, wm);
+
+                    match.setContextObject(value);
+                }
+            }
+        } else {
+            // re-accumulate all groups
+            groupByContext.clear();
+            super.reaccumulateForLeftTuple(accNode,
+                                     accumulate,
+                                     leftTuple,
+                                     null,
+                                     null,
+                                     wm,
+                                     am,
+                                     accctx,
+                                     true);
+        }
+    }
+
+    @Override
     protected void propagateDelete( TupleSets<LeftTuple> trgLeftTuples, TupleSets<LeftTuple> stagedLeftTuples, Object accctx ) {
         GroupByContext groupByContext = (GroupByContext)accctx;
-        for( TupleList<AccumulateContextEntry> tupleList : groupByContext.getGroups().values()) {
+        for ( TupleList<AccumulateContextEntry> tupleList : groupByContext.getGroups().values()) {
             super.propagateDelete(trgLeftTuples, stagedLeftTuples, tupleList.getContext());
         }
     }

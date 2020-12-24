@@ -313,8 +313,8 @@ public class PhreakAccumulateNode {
                                               LeftTuple leftTuple,
                                               final BaseAccumulation accctx,
                                               RightTuple rightTuple,
-                                              LeftTuple childLeftTuple) {
-        if (childLeftTuple == null) {
+                                              LeftTuple match) {
+        if (match == null) {
             // either we are indexed and changed buckets or
             // we had no children before, but there is a bucket to potentially match, so try as normal assert
             for (; rightTuple != null; rightTuple = (RightTuple) rightIt.next(rightTuple)) {
@@ -332,30 +332,30 @@ public class PhreakAccumulateNode {
             for (; rightTuple != null; rightTuple = (RightTuple) rightIt.next(rightTuple)) {
                 if (constraints.isAllowedCachedLeft(bm.getContext(),
                                                     rightTuple.getFactHandleForEvaluation())) {
-                    if (childLeftTuple == null || childLeftTuple.getRightParent() != rightTuple) {
+                    if (match == null || match.getRightParent() != rightTuple) {
                         // add a new match
                         addMatch(accNode, accumulate, leftTuple, rightTuple,
-                                 childLeftTuple, null, wm, am,
+                                 match, null, wm, am,
                                  accctx, true, true);
                     } else {
                         // we must re-add this to ensure deterministic iteration
-                        LeftTuple temp = childLeftTuple.getHandleNext();
-                        childLeftTuple.reAddRight();
-                        childLeftTuple = temp;
+                        LeftTuple temp = match.getHandleNext();
+                        match.reAddRight();
+                        match = temp;
                         isDirty = accumulate.hasRequiredDeclarations();
                     }
-                } else if (childLeftTuple != null && childLeftTuple.getRightParent() == rightTuple) {
-                    LeftTuple temp = childLeftTuple.getHandleNext();
+                } else if (match != null && match.getRightParent() == rightTuple) {
+                    LeftTuple temp = match.getHandleNext();
                     // remove the match
                     removeMatch(accNode,
                                 accumulate,
                                 rightTuple,
-                                childLeftTuple,
+                                match,
                                 wm,
                                 am,
                                 accctx,
                                 false);
-                    childLeftTuple = temp;
+                    match = temp;
                     // the next line means that when a match is removed from the current leftTuple
                     // and the accumulate does not support the reverse operation, then the whole
                     // result is dirty (since removeMatch above is not recalculating the total)
@@ -368,9 +368,12 @@ public class PhreakAccumulateNode {
                 reaccumulateForLeftTuple(accNode,
                                          accumulate,
                                          leftTuple,
+                                         null,
+                                         null,
                                          wm,
                                          am,
-                                         accctx);
+                                         accctx,
+                                         true);
             }
         }
     }
@@ -496,6 +499,7 @@ public class PhreakAccumulateNode {
 
                     LeftTuple temp = childLeftTuple.getRightParentNext();
                     final BaseAccumulation accctx = (BaseAccumulation) leftTuple.getContextObject();
+                    // FIXME This will be really slow, if it re-accumulates on the same LeftTuple (MDP)
                     // remove the match
                     removeMatch(accNode,
                                 accumulate,
@@ -573,6 +577,7 @@ public class PhreakAccumulateNode {
 
                         LeftTuple leftTuple = match.getLeftParent();
                         final BaseAccumulation accctx = (BaseAccumulation) leftTuple.getContextObject();
+                        // FIXME This will be really slow, if it re-accumulates on the same LeftTuple (MDP)
                         removeMatch(accNode, accumulate, rightTuple, match, wm, am, accctx, true);
 
                         if (leftTuple.getStagedType() == LeftTuple.NONE) {
@@ -746,9 +751,8 @@ public class PhreakAccumulateNode {
 
         // if there is a subnetwork, we need to unwrap the object from inside the tuple
         InternalFactHandle handle = rightTuple.getFactHandle();
-        LeftTuple tuple = leftParent;
         if (accNode.isUnwrapRightObject()) {
-            tuple = (LeftTuple) rightTuple;
+            leftParent = (LeftTuple) rightTuple;
             handle = rightTuple.getFactHandleForEvaluation();
         }
 
@@ -756,60 +760,69 @@ public class PhreakAccumulateNode {
             // just reverse this single match
             accumulate.reverse(am.workingMemoryContext,
                                accctx,
-                               tuple,
+                               leftParent,
                                handle,
                                rightParent,
                                match,
                                wm);
         } else {
             // otherwise need to recalculate all matches for the given leftTuple
-            if (reaccumulate) {
-                reaccumulateForLeftTuple(accNode,
-                                         accumulate,
-                                         leftParent,
-                                         wm,
-                                         am,
-                                         accctx);
-
-            }
+            reaccumulateForLeftTuple(accNode,
+                                     accumulate,
+                                     leftParent,
+                                     rightParent,
+                                     match,
+                                     wm,
+                                     am,
+                                     accctx,
+                                     reaccumulate);
         }
     }
 
 
-    private static void reaccumulateForLeftTuple(final AccumulateNode accNode,
-                                                 final Accumulate accumulate,
-                                                 final LeftTuple leftTuple,
-                                                 final InternalWorkingMemory wm,
-                                                 final AccumulateMemory am,
-                                                 final BaseAccumulation accctx) {
-        accumulate.init(am.workingMemoryContext,
-                        accctx,
-                        leftTuple,
-                        wm);
-        for (LeftTuple childMatch = leftTuple.getFirstChild(); childMatch != null; childMatch = childMatch.getHandleNext()) {
-            RightTuple rightTuple = childMatch.getRightParent();
-            InternalFactHandle childHandle = rightTuple.getFactHandle();
-            LeftTuple tuple = leftTuple;
-            if (accNode.isUnwrapRightObject()) {
-                // if there is a subnetwork, handle must be unwrapped
-                tuple = (LeftTuple) rightTuple;
-                childHandle = rightTuple.getFactHandleForEvaluation();
+    protected void reaccumulateForLeftTuple(final AccumulateNode accNode,
+                                            final Accumulate accumulate,
+                                            final LeftTuple leftParent,
+                                            final RightTuple unused1,
+                                            final LeftTuple unused2,
+                                            final InternalWorkingMemory wm,
+                                            final AccumulateMemory am,
+                                            final BaseAccumulation accctx,
+                                            final boolean reaccumulate) {
+        if (reaccumulate) {
+            accumulate.init(am.workingMemoryContext,
+                            accctx,
+                            leftParent,
+                            wm);
+            for (LeftTuple childMatch = leftParent.getFirstChild(); childMatch != null; childMatch = childMatch.getHandleNext()) {
+                RightTuple         rightTuple  = childMatch.getRightParent();
+                InternalFactHandle childHandle = rightTuple.getFactHandle();
+                LeftTuple          tuple       = leftParent;
+                if (accNode.isUnwrapRightObject()) {
+                    // if there is a subnetwork, handle must be unwrapped
+                    tuple = (LeftTuple) rightTuple;
+                    childHandle = rightTuple.getFactHandleForEvaluation();
+                }
+                Object value = accumulate.accumulate(am.workingMemoryContext,
+                                      accctx,
+                                      tuple,
+                                      childHandle,
+                                      wm);
+
+                postAccumulate(accNode, accctx, childMatch);
+
+                childMatch.setContextObject(value);
             }
-            accumulate.accumulate(am.workingMemoryContext,
-                                  accctx,
-                                  tuple,
-                                  childHandle,
-                                  wm);
         }
     }
 
     private void removePreviousMatchesForRightTuple(final AccumulateNode accNode,
-                                                           final Accumulate accumulate,
-                                                           final RightTuple rightTuple,
-                                                           final InternalWorkingMemory workingMemory,
-                                                           final AccumulateMemory memory,
-                                                           final LeftTuple firstChild,
-                                                           final TupleSets<LeftTuple> trgLeftTuples) {
+                                                    final Accumulate accumulate,
+                                                    final RightTuple rightTuple,
+                                                    final InternalWorkingMemory workingMemory,
+                                                    final AccumulateMemory memory,
+                                                    final LeftTuple firstChild,
+                                                    final TupleSets<LeftTuple> trgLeftTuples) {
         for (LeftTuple match = firstChild; match != null; ) {
             final LeftTuple next = match.getRightParentNext();
 
