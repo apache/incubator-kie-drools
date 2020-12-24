@@ -85,6 +85,30 @@ public class OrTest extends BaseModelTest {
     }
 
     @Test
+    public void testOrWithBetaIndexOffset() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                     "rule R when\n" +
+                     "  $e : Person(name == \"Edson\")\n" +
+                     "  $p : Person(name == \"Mark\") or\n" +
+                     "  ( $mark : Person(name == \"Mark\")\n" +
+                     "    and\n" +
+                     "    $p : Person(age == $mark.age) )\n" +
+                     "  $s: String(this == $p.name)\n" +
+                     "then\n" +
+                     "  System.out.println(\"Found: \" + $s);\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+
+        ksession.insert("Mario");
+        ksession.insert(new Person("Mark", 37));
+        ksession.insert(new Person("Edson", 35));
+        ksession.insert(new Person("Mario", 37));
+        assertEquals(1, ksession.fireAllRules());
+    }
+
+    @Test
     public void testOrConditional() {
         final String drl =
                 "import " + Employee.class.getCanonicalName() + ";" +
