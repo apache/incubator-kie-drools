@@ -92,6 +92,11 @@ public class LambdaConstraint extends AbstractConstraint {
         evaluator.replaceDeclaration( oldDecl, newDecl );
         if (indexingDeclaration == oldDecl) {
             this.indexingDeclaration = newDecl;
+        } else if (indexingDeclaration != null && indexingDeclaration.getIdentifier().equals(oldDecl.getIdentifier()) && indexingDeclaration.getPattern() == oldDecl.getPattern()) {
+            // indexingDeclaration was cloned from oldDecl
+            Declaration newIndexingDeclaration = newDecl.clone();
+            newIndexingDeclaration.setReadAccessor(indexingDeclaration.getExtractor());
+            indexingDeclaration = newIndexingDeclaration;
         }
     }
 
