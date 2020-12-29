@@ -733,14 +733,14 @@ public class PhreakAccumulateNode {
     /**
      * Removes a match between left and right tuple
      */
-    void removeMatch(final AccumulateNode accNode,
-                     final Accumulate accumulate,
-                     final RightTuple rightTuple,
-                     final LeftTuple match,
-                     final InternalWorkingMemory wm,
-                     final AccumulateMemory am,
-                     final BaseAccumulation accctx,
-                     final boolean reaccumulate) {
+    private void removeMatch(final AccumulateNode accNode,
+                             final Accumulate accumulate,
+                             final RightTuple rightTuple,
+                             final LeftTuple match,
+                             final InternalWorkingMemory wm,
+                             final AccumulateMemory am,
+                             final BaseAccumulation accctx,
+                             final boolean reaccumulate) {
         // save the matching tuple
         LeftTuple leftParent = match.getLeftParent();
         RightTuple rightParent = match.getRightParent();
@@ -751,8 +751,9 @@ public class PhreakAccumulateNode {
 
         // if there is a subnetwork, we need to unwrap the object from inside the tuple
         InternalFactHandle handle = rightTuple.getFactHandle();
+        LeftTuple tuple = leftParent;
         if (accNode.isUnwrapRightObject()) {
-            leftParent = (LeftTuple) rightTuple;
+            tuple = (LeftTuple) rightTuple;
             handle = rightTuple.getFactHandleForEvaluation();
         }
 
@@ -760,7 +761,7 @@ public class PhreakAccumulateNode {
             // just reverse this single match
             accumulate.reverse(am.workingMemoryContext,
                                accctx,
-                               leftParent,
+                               tuple,
                                handle,
                                rightParent,
                                match,
