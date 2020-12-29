@@ -37,16 +37,14 @@ public class LambdaGroupByAccumulate extends Accumulate {
     private Accumulate innerAccumulate;
     private Declaration[] groupingDeclarations;
     private FunctionN groupingFunction;
-    private boolean propagateAll;
 
     public LambdaGroupByAccumulate() { }
 
-    public LambdaGroupByAccumulate( Accumulate innerAccumulate, Declaration[] groupingDeclarations, FunctionN groupingFunction, boolean propagateAll ) {
+    public LambdaGroupByAccumulate( Accumulate innerAccumulate, Declaration[] groupingDeclarations, FunctionN groupingFunction ) {
         super(innerAccumulate.getSource(), innerAccumulate.getRequiredDeclarations());
         this.innerAccumulate = innerAccumulate;
         this.groupingDeclarations = groupingDeclarations;
         this.groupingFunction = groupingFunction;
-        this.propagateAll = propagateAll;
     }
 
     private Object getKey( Tuple tuple, InternalFactHandle handle, WorkingMemory workingMemory ) {
@@ -66,7 +64,6 @@ public class LambdaGroupByAccumulate extends Accumulate {
         this.innerAccumulate = (Accumulate) in.readObject();
         this.groupingDeclarations = (Declaration[]) in.readObject();
         this.groupingFunction = (FunctionN) in.readObject();
-        this.propagateAll = in.readBoolean();
     }
 
     @Override
@@ -75,7 +72,6 @@ public class LambdaGroupByAccumulate extends Accumulate {
         out.writeObject(innerAccumulate);
         out.writeObject(groupingDeclarations);
         out.writeObject(groupingFunction);
-        out.writeBoolean(propagateAll);
     }
 
     @Override
@@ -155,7 +151,7 @@ public class LambdaGroupByAccumulate extends Accumulate {
 
     @Override
     public Accumulate clone() {
-        return new LambdaGroupByAccumulate( innerAccumulate.clone(), groupingDeclarations, groupingFunction, propagateAll );
+        return new LambdaGroupByAccumulate( innerAccumulate.clone(), groupingDeclarations, groupingFunction );
     }
 
     @Override

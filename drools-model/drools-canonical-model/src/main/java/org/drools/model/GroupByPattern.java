@@ -18,17 +18,9 @@ import org.drools.model.functions.FunctionN;
 
 public interface GroupByPattern<T, K> extends AccumulatePattern<T> {
 
-    String getTopic();
-
     Variable[] getVars();
 
     Variable<K> getVarKey();
 
     FunctionN getGroupingFunction();
-
-    Pattern[] getGroupingPatterns();
-
-    default Object getKey(Object... objs) {
-        return getGroupingFunction().apply( objs );
-    }
 }
