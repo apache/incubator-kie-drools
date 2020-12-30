@@ -15,19 +15,18 @@
  */
 package org.drools.core.common;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.test.model.MockActivation;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.drools.core.impl.KnowledgeBaseFactory;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * <p>
@@ -76,7 +75,7 @@ public class LazyTMSEnablingTest {
 
         // Make sure the internals are fine.
         ObjectTypeConf typeConf = ksession.getObjectTypeConfigurationRegistry()
-                .getObjectTypeConf(ksession.getEntryPoint(), fact1);
+                .getOrCreateObjectTypeConf(ksession.getEntryPoint(), fact1);
 
         assertTrue("Should have enabled TMS", typeConf.isTMSEnabled());
 
@@ -95,10 +94,10 @@ public class LazyTMSEnablingTest {
         final Double doubleFact = 77.8;
 
         ObjectTypeConf stringTypeConf = ksession.getObjectTypeConfigurationRegistry()
-                .getObjectTypeConf(ksession.getEntryPoint(), stringFact1);
+                .getOrCreateObjectTypeConf(ksession.getEntryPoint(), stringFact1);
 
         ObjectTypeConf intTypeConf = ksession.getObjectTypeConfigurationRegistry()
-                .getObjectTypeConf(ksession.getEntryPoint(), intFact1);
+                .getOrCreateObjectTypeConf(ksession.getEntryPoint(), intFact1);
 
         ksession.insert(stringFact1);
         ksession.insert(anotherString);

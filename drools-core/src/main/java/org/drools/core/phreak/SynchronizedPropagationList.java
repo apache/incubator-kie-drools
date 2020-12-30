@@ -34,6 +34,8 @@ public class SynchronizedPropagationList implements PropagationList {
 
     private volatile boolean hasEntriesDeferringExpiration = false;
 
+    private volatile boolean firingUntilHalt = false;
+
     public SynchronizedPropagationList(InternalWorkingMemory workingMemory) {
         this.workingMemory = workingMemory;
     }
@@ -68,7 +70,9 @@ public class SynchronizedPropagationList implements PropagationList {
     synchronized void internalAddEntry( PropagationEntry entry ) {
         if ( head == null ) {
             head = entry;
-            notifyWaitOnRest();
+            if (firingUntilHalt) {
+                notifyWaitOnRest();
+            }
         } else {
             tail.setNext( entry );
         }
@@ -171,4 +175,8 @@ public class SynchronizedPropagationList implements PropagationList {
 
     @Override
     public void onEngineInactive() { }
+
+    public void setFiringUntilHalt( boolean firingUntilHalt ) {
+        this.firingUntilHalt = firingUntilHalt;
+    }
 }

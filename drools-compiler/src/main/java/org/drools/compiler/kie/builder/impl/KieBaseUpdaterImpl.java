@@ -21,7 +21,6 @@ import java.util.List;
 import org.drools.compiler.builder.InternalKnowledgeBuilder;
 import org.drools.compiler.compiler.PackageBuilderErrors;
 import org.drools.core.base.ClassObjectType;
-import org.drools.core.common.ClassAwareObjectStore;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.definitions.InternalKnowledgePackage;
@@ -219,8 +218,7 @@ public class KieBaseUpdaterImpl implements KieBaseUpdater {
         for (InternalWorkingMemory wm : ctx.kBase.getWorkingMemories()) {
             for (EntryPoint ep : wm.getEntryPoints()) {
                 InternalWorkingMemoryEntryPoint wmEp = (InternalWorkingMemoryEntryPoint) wm.getWorkingMemoryEntryPoint(ep.getEntryPointId() );
-                ClassAwareObjectStore store = ( (ClassAwareObjectStore) wmEp.getObjectStore() );
-                if ( store.clearClassStore( cls ) ) {
+                if ( wmEp.getObjectStore().clearClassStore( cls ) ) {
                     log.warn( "Class " + cls.getName() + " has been modified and therfore its old instances will no longer match" );
                 }
             }

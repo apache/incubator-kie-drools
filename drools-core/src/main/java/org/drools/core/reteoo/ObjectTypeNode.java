@@ -28,9 +28,9 @@ import org.drools.core.InitialFact;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.ValueType;
-import org.drools.core.common.ClassAwareObjectStore;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.DroolsObjectInputStream;
+import org.drools.core.common.FactHandleClassStore;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
@@ -636,7 +636,7 @@ public class ObjectTypeNode extends ObjectSource
 
 
     public static class ObjectTypeNodeMemory implements Memory {
-        private ClassAwareObjectStore.SingleClassStore store;
+        private FactHandleClassStore store;
         private Class<?> classType;
 
         ObjectTypeNodeMemory(Class<?> classType) {
@@ -645,7 +645,7 @@ public class ObjectTypeNode extends ObjectSource
 
         ObjectTypeNodeMemory(Class<?> classType, InternalWorkingMemory wm) {
             this(classType);
-            store = ((ClassAwareObjectStore) wm.getObjectStore()).getOrCreateClassStore(classType);
+            store = wm.getStoreForClass(classType);
         }
 
         @Override
@@ -654,7 +654,7 @@ public class ObjectTypeNode extends ObjectSource
         }
 
         public Iterator<InternalFactHandle> iterator() {
-            return store.factHandlesIterator(true);
+            return store.iterator();
         }
 
         @Override
