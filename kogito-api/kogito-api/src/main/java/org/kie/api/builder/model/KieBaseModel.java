@@ -23,6 +23,7 @@ import java.util.Set;
 import org.kie.api.conf.DeclarativeAgendaOption;
 import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.conf.EventProcessingOption;
+import org.kie.api.conf.KieBaseMutabilityOption;
 import org.kie.api.conf.SequentialOption;
 import org.kie.api.conf.SessionsPoolOption;
 
@@ -105,6 +106,17 @@ public interface KieBaseModel {
      * Default is EqualityBehaviorOption.IDENTITY
      */
     KieBaseModel setEqualsBehavior(EqualityBehaviorOption equalsBehaviour);
+
+    /**
+     * Returns the KieBaseMutabilityOption of this KieBaseModel
+     */
+    KieBaseMutabilityOption getMutability();
+
+    /**
+     * Sets the KieBaseMutabilityOption for this KieBaseModel.
+     * Default is KieBaseMutabilityOption.ALLOWED
+     */
+    KieBaseModel setMutability( KieBaseMutabilityOption mutability );
 
     /**
      * Returns the session pool configuration of this KieBaseModel

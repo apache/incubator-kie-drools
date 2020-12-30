@@ -232,6 +232,24 @@
           "package": "org.kie.api.pmml",
           "classSimpleName": "PMML4Result",
           "elementKind": "class",
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method org.kie.api.conf.KieBaseMutabilityOption org.kie.api.builder.model.KieBaseModel::getMutability()",
+          "package": "org.kie.api.builder.model",
+          "classSimpleName": "KieBaseModel",
+          "methodName": "getMutability",
+          "elementKind": "method",
+          "justification": "Allow to define that a KieBase is immutable for performance reasons"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method org.kie.api.builder.model.KieBaseModel org.kie.api.builder.model.KieBaseModel::setMutability(org.kie.api.conf.KieBaseMutabilityOption)",
+          "package": "org.kie.api.builder.model",
+          "classSimpleName": "KieBaseModel",
+          "methodName": "setMutability",
+          "elementKind": "method",
+          "justification": "Allow to define that a KieBase is immutable for performance reasons"
         }
       ]
     }
