@@ -18,14 +18,10 @@ package org.drools.core.reteoo;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.stream.Stream;
+import java.util.Collections;
 
-import org.drools.core.common.BaseNode;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.spi.PropagationContext;
-import org.kie.api.definition.rule.Rule;
-
-import static java.util.stream.Collectors.joining;
 
 public class FromNodeLeftTuple extends BaseLeftTuple {
     private static final long  serialVersionUID = 540l;
@@ -90,14 +86,17 @@ public class FromNodeLeftTuple extends BaseLeftTuple {
 
     @Override
     public Collection<Object> getAccumulatedObjects() {
-        if ( getContextObject() instanceof AccumulateNode.AccumulateContext ) {
-            String associatedRules = Stream.of( ((BaseNode)sink).getAssociatedRules() )
-                                           .map( Rule::getName ).collect( joining(", ", "[", "]") );
-            throw new UnsupportedOperationException( "Accumulate used in rule(s) " + associatedRules + " does not support discovery of accumulated objects" );
+        if (getFirstChild() == null) {
+            return Collections.emptyList();
         }
         Collection<Object> result = new ArrayList<>();
-        if (getFirstChild() != null && getFirstChild().getRightParent() instanceof SubnetworkTuple) {
-            LeftTuple leftParent = ( (SubnetworkTuple) getFirstChild().getRightParent() ).getLeftParent();
+        if ( getContextObject() instanceof AccumulateNode.AccumulateContext ) {
+            for (LeftTuple child = getFirstChild(); child != null; child = child.getHandleNext()) {
+                result.add(child.getContextObject());
+            }
+        }
+        if ( getFirstChild().getRightParent() instanceof SubnetworkTuple ) {
+            LeftTuple leftParent = (( SubnetworkTuple ) getFirstChild().getRightParent()).getLeftParent();
             result.addAll( leftParent.getAccumulatedObjects() );
         }
         return result;
