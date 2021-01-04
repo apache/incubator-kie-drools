@@ -30,6 +30,7 @@ import org.drools.modelcompiler.builder.generator.TypedExpression;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.builder.generator.drlxparse.ConstraintParser.isNumber;
+import static org.drools.modelcompiler.builder.generator.drlxparse.ConstraintParser.isObject;
 import static org.drools.modelcompiler.builder.generator.drlxparse.ConstraintParser.operatorToName;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.uncastExpr;
 
@@ -52,7 +53,7 @@ abstract class SpecialComparisonCase {
     abstract ConstraintParser.SpecialComparisonResult createCompareMethod(BinaryExpr.Operator operator);
 
     static SpecialComparisonCase specialComparisonFactory(TypedExpression left, TypedExpression right) {
-        if (isNumber(left) || isNumber(right)) {
+        if (isNumber(left) && !isObject(right) || isNumber(right) && !isObject(left)) { // Don't coerce Object yet. EvaluationUtil will handle it dynamically later
             Optional<Class<?>> leftCast = typeNeedsCast(left.getType());
             Optional<Class<?>> rightCast = typeNeedsCast(right.getType());
             if (leftCast.isPresent() || rightCast.isPresent()) {
