@@ -21,4 +21,24 @@ import java.io.Serializable;
 
 public interface FunctionN<R> extends Serializable {
     R apply(Object... objs);
+
+    class Impl<A, R> extends IntrospectableLambda implements FunctionN<R> {
+
+        private final FunctionN<R> function;
+
+        public Impl(String lambdaFingerprint, FunctionN<R> function) {
+            super(lambdaFingerprint);
+            this.function = function;
+        }
+
+        @Override
+        public R apply(Object... objs) {
+            return function.apply(objs);
+        }
+
+        @Override
+        public Object getLambda() {
+            throw new UnsupportedOperationException();
+        }
+    }
 }
