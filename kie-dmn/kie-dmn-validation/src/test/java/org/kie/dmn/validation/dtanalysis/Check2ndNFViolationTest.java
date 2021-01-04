@@ -24,10 +24,10 @@ import org.kie.dmn.api.core.DMNMessageType;
 import org.kie.dmn.validation.dtanalysis.model.Contraction;
 import org.kie.dmn.validation.dtanalysis.model.DTAnalysis;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.kie.dmn.validation.DMNValidator.Validation.ANALYZE_DECISION_TABLE;
 
@@ -56,6 +56,24 @@ public class Check2ndNFViolationTest extends AbstractDTAnalysisTest {
         DTAnalysis analysis = getAnalysis(validate, "_BA703D04-803A-44AA-8A31-F5EEDD4FD54E");
         assertThat(analysis.is2ndNFViolation(), is(true));
         assertThat(analysis.getContractionsViolating2ndNF(), hasSize(2));
+    }
+
+    @Test
+    public void testCheck2ndNFViolationWasADash() {
+        List<DMNMessage> validate = validator.validate(getReader("DT2ndNFWasADash.dmn"), ANALYZE_DECISION_TABLE);
+
+        DTAnalysis analysis = getAnalysis(validate, "_C40525EF-9735-410B-A070-E0336E108268");
+        assertThat(analysis.is2ndNFViolation(), is(true));
+        assertThat(analysis.getCellsViolating2ndNF(), hasSize(1));
+    }
+
+    @Test
+    public void testCheck2ndNFViolationWasADash2() {
+        List<DMNMessage> validate = validator.validate(getReader("DT2ndNFWasADash2.dmn"), ANALYZE_DECISION_TABLE);
+
+        DTAnalysis analysis = getAnalysis(validate, "_D3F1D5B8-642B-446D-9099-DE4CB978CB94");
+        assertThat(analysis.is2ndNFViolation(), is(true));
+        assertThat(analysis.getCellsViolating2ndNF(), hasSize(1));
     }
 
 }
