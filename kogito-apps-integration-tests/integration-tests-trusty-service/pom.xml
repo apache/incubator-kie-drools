@@ -44,29 +44,42 @@
     </dependencies>
   </dependencyManagement>
 
+  <dependencies>
+    <!-- ensure dependent modules were built, but not added in the classpath -->
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>explainability-service-messaging</artifactId>
+      <version>${project.version}</version>
+      <type>pom</type>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>trusty-service</artifactId>
+      <version>${project.version}</version>
+      <type>pom</type>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+  </dependencies>
+  
   <build>
     <pluginManagement>
       <plugins>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-failsafe-plugin</artifactId>
-          <dependencies>
-            <!-- ensure dependent modules were built, but not added in the classpath -->
-            <dependency>
-              <groupId>org.kie.kogito</groupId>
-              <artifactId>explainability-service-messaging</artifactId>
-              <version>${project.version}</version>
-              <classifier>runner</classifier>
-              <scope>runtime</scope>
-            </dependency>
-            <dependency>
-              <groupId>org.kie.kogito</groupId>
-              <artifactId>trusty-service</artifactId>
-              <version>${project.version}</version>
-              <classifier>runner</classifier>
-              <scope>runtime</scope>
-            </dependency>
-          </dependencies>
           <configuration>
             <systemPropertyVariables>
               <container.image.infinispan>${container.image.infinispan}</container.image.infinispan>
