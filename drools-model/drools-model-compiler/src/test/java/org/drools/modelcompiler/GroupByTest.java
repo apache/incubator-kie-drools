@@ -182,8 +182,7 @@ public class GroupByTest {
                         // Patterns
                         D.pattern(var_$p),
                         // Grouping Function
-                        var_$p, var_$key, person -> person.getName().substring(0, 1)//,
-                        //D.accFunction(org.drools.core.base.accumulators.CollectListAccumulateFunction::new, var_$p).as(var_$list)
+                        var_$p, var_$key, person -> person.getName().substring(0, 1)
                          ),
                 // Consequence
                 D.on(var_$key,var_results)
