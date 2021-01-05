@@ -217,7 +217,7 @@ public class CoercedExpression {
 
     private Expression coerceLiteralNumberExprToType(LiteralStringValueExpr expr, Class<?> type) {
         if (type == int.class || type == Integer.class) {
-            return new IntegerLiteralExpr( removeLeadingZero( expr.getValue() ) ) ;
+            return new IntegerLiteralExpr( stringToIntArgument( expr.getValue() ) ) ;
         }
         if (type == long.class || type == Long.class) {
             String value = expr.getValue();
@@ -229,8 +229,8 @@ public class CoercedExpression {
         throw new CoercedExpressionException(new InvalidExpressionErrorResult("Unknown literal: " + expr));
     }
 
-    private static String removeLeadingZero(String value) {
-        return value.length() > 1 && value.charAt( 0 ) == '0' && value.charAt( 1 ) != 'x' ? removeLeadingZero( value.substring( 1 ) ) : value;
+    private static String stringToIntArgument(String value) {
+        return value.startsWith( "0x" ) ? value : "" + Integer.valueOf( value );
     }
 
     private boolean isLongLiteral(String value) {
