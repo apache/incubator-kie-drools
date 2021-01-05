@@ -16,7 +16,6 @@
 
 package org.jbpm.process.instance;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -29,14 +28,11 @@ import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.event.KogitoProcessEventSupport;
 import org.drools.core.event.ProcessEventSupport;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.marshalling.impl.MarshallerReaderContext;
-import org.drools.core.marshalling.impl.MarshallerWriteContext;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.time.TimeUtils;
 import org.drools.core.time.TimerService;
 import org.drools.core.time.impl.CommandServiceTimerJobFactoryManager;
 import org.drools.core.time.impl.ThreadSafeTrackableTimeJobFactoryManager;
-import org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Action;
 import org.jbpm.process.core.event.EventFilter;
 import org.jbpm.process.core.event.EventTransformer;
 import org.jbpm.process.core.event.EventTypeFilter;
@@ -611,13 +607,6 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
             this.event = event;
         }
 
-        public SignalManagerSignalAction(MarshallerReaderContext context) throws IOException, ClassNotFoundException {
-            type = context.readUTF();
-            if (context.readBoolean()) {
-                event = context.readObject();
-            }
-        }
-
         public void execute(InternalWorkingMemory workingMemory) {
 
             signalEvent(type, event);
@@ -627,8 +616,5 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
             signalEvent(type, event);
         }
 
-        public Action serialize(MarshallerWriteContext context) throws IOException {
-            return null;
-        }
     }
 }

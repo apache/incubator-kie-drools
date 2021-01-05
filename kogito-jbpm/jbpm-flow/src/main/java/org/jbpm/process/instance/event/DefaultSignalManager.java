@@ -31,7 +31,6 @@ import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.marshalling.impl.MarshallerWriteContext;
 import org.drools.core.phreak.PropagationEntry;
-import org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Action;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.kie.api.runtime.process.EventListener;
 import org.kie.api.runtime.process.ProcessInstance;
@@ -157,10 +156,6 @@ public class DefaultSignalManager implements SignalManager {
 			}
 		}
 
-        public Action serialize(MarshallerWriteContext context) throws IOException {
-            // TODO Auto-generated method stub
-            return null;
-        }
 	}
 	
 	public static class SignalAction extends PropagationEntry.AbstractPropagationEntry implements WorkingMemoryAction {
@@ -211,11 +206,6 @@ public class DefaultSignalManager implements SignalManager {
 			}
 		}
 
-        public Action serialize(MarshallerWriteContext context) throws IOException {
-            // TODO Auto-generated method stub
-            return null;
-        }
-		
 	}
 
     @Override

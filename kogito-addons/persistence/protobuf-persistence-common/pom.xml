@@ -39,6 +39,10 @@
       <groupId>org.infinispan.protostream</groupId>
       <artifactId>protostream</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>process-serialization-protobuf</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>org.junit.jupiter</groupId>

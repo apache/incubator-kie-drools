@@ -270,7 +270,7 @@ public final class JBPMMessages {
     /**
      * <code>repeated .org.jbpm.marshalling.ProcessInstance.SwimlaneContextInstance swimlane_context = 6;</code>
      */
-    java.util.List<org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.SwimlaneContextInstance> 
+    java.util.List<org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.SwimlaneContextInstance>
         getSwimlaneContextList();
     /**
      * <code>repeated .org.jbpm.marshalling.ProcessInstance.SwimlaneContextInstance swimlane_context = 6;</code>
@@ -283,7 +283,7 @@ public final class JBPMMessages {
     /**
      * <code>repeated .org.jbpm.marshalling.ProcessInstance.SwimlaneContextInstance swimlane_context = 6;</code>
      */
-    java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.SwimlaneContextInstanceOrBuilder> 
+    java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.SwimlaneContextInstanceOrBuilder>
         getSwimlaneContextOrBuilderList();
     /**
      * <code>repeated .org.jbpm.marshalling.ProcessInstance.SwimlaneContextInstance swimlane_context = 6;</code>
@@ -294,7 +294,7 @@ public final class JBPMMessages {
     /**
      * <code>repeated .org.jbpm.marshalling.ProcessInstance.NodeInstance node_instance = 7;</code>
      */
-    java.util.List<org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstance> 
+    java.util.List<org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstance>
         getNodeInstanceList();
     /**
      * <code>repeated .org.jbpm.marshalling.ProcessInstance.NodeInstance node_instance = 7;</code>
@@ -307,7 +307,7 @@ public final class JBPMMessages {
     /**
      * <code>repeated .org.jbpm.marshalling.ProcessInstance.NodeInstance node_instance = 7;</code>
      */
-    java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceOrBuilder> 
+    java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceOrBuilder>
         getNodeInstanceOrBuilderList();
     /**
      * <code>repeated .org.jbpm.marshalling.ProcessInstance.NodeInstance node_instance = 7;</code>
@@ -318,7 +318,7 @@ public final class JBPMMessages {
     /**
      * <code>repeated .org.jbpm.marshalling.Variable variable = 8;</code>
      */
-    java.util.List<org.jbpm.marshalling.impl.JBPMMessages.Variable> 
+    java.util.List<org.jbpm.marshalling.impl.JBPMMessages.Variable>
         getVariableList();
     /**
      * <code>repeated .org.jbpm.marshalling.Variable variable = 8;</code>
@@ -331,7 +331,7 @@ public final class JBPMMessages {
     /**
      * <code>repeated .org.jbpm.marshalling.Variable variable = 8;</code>
      */
-    java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.VariableOrBuilder> 
+    java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.VariableOrBuilder>
         getVariableOrBuilderList();
     /**
      * <code>repeated .org.jbpm.marshalling.Variable variable = 8;</code>
@@ -342,7 +342,7 @@ public final class JBPMMessages {
     /**
      * <code>repeated .org.jbpm.marshalling.ProcessInstance.ExclusiveGroupInstance exclusive_group = 10;</code>
      */
-    java.util.List<org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.ExclusiveGroupInstance> 
+    java.util.List<org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.ExclusiveGroupInstance>
         getExclusiveGroupList();
     /**
      * <code>repeated .org.jbpm.marshalling.ProcessInstance.ExclusiveGroupInstance exclusive_group = 10;</code>
@@ -355,7 +355,7 @@ public final class JBPMMessages {
     /**
      * <code>repeated .org.jbpm.marshalling.ProcessInstance.ExclusiveGroupInstance exclusive_group = 10;</code>
      */
-    java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.ExclusiveGroupInstanceOrBuilder> 
+    java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.ExclusiveGroupInstanceOrBuilder>
         getExclusiveGroupOrBuilderList();
     /**
      * <code>repeated .org.jbpm.marshalling.ProcessInstance.ExclusiveGroupInstance exclusive_group = 10;</code>
@@ -385,7 +385,7 @@ public final class JBPMMessages {
     /**
      * <code>repeated .org.jbpm.marshalling.IterationLevel iterationLevels = 14;</code>
      */
-    java.util.List<org.jbpm.marshalling.impl.JBPMMessages.IterationLevel> 
+    java.util.List<org.jbpm.marshalling.impl.JBPMMessages.IterationLevel>
         getIterationLevelsList();
     /**
      * <code>repeated .org.jbpm.marshalling.IterationLevel iterationLevels = 14;</code>
@@ -398,7 +398,7 @@ public final class JBPMMessages {
     /**
      * <code>repeated .org.jbpm.marshalling.IterationLevel iterationLevels = 14;</code>
      */
-    java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.IterationLevelOrBuilder> 
+    java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.IterationLevelOrBuilder>
         getIterationLevelsOrBuilderList();
     /**
      * <code>repeated .org.jbpm.marshalling.IterationLevel iterationLevels = 14;</code>
@@ -660,7 +660,7 @@ public final class JBPMMessages {
         internalGetFieldAccessorTable() {
       return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.Builder.class);
+                  org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.Builder.class);
     }
 
     public static com.google.protobuf.Parser<ProcessInstance> PARSER =
@@ -994,7 +994,7 @@ public final class JBPMMessages {
           internalGetFieldAccessorTable() {
         return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_SwimlaneContextInstance_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.SwimlaneContextInstance.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.SwimlaneContextInstance.Builder.class);
+                    org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.SwimlaneContextInstance.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.SwimlaneContextInstance.Builder.class);
       }
 
       public static com.google.protobuf.Parser<SwimlaneContextInstance> PARSER =
@@ -1231,7 +1231,7 @@ public final class JBPMMessages {
             internalGetFieldAccessorTable() {
           return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_SwimlaneContextInstance_fieldAccessorTable
               .ensureFieldAccessorsInitialized(
-                  org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.SwimlaneContextInstance.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.SwimlaneContextInstance.Builder.class);
+                      org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.SwimlaneContextInstance.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.SwimlaneContextInstance.Builder.class);
         }
 
         // Construct using org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.SwimlaneContextInstance.newBuilder()
@@ -1723,7 +1723,7 @@ public final class JBPMMessages {
           internalGetFieldAccessorTable() {
         return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstance_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstance.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstance.Builder.class);
+                    org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstance.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstance.Builder.class);
       }
 
       public static com.google.protobuf.Parser<NodeInstance> PARSER =
@@ -2104,7 +2104,7 @@ public final class JBPMMessages {
             internalGetFieldAccessorTable() {
           return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstance_fieldAccessorTable
               .ensureFieldAccessorsInitialized(
-                  org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstance.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstance.Builder.class);
+                      org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstance.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstance.Builder.class);
         }
 
         // Construct using org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstance.newBuilder()
@@ -2494,7 +2494,7 @@ public final class JBPMMessages {
          * <code>optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent content = 4;</code>
          */
         private com.google.protobuf.SingleFieldBuilder<
-            org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContentOrBuilder> 
+            org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContentOrBuilder>
             getContentFieldBuilder() {
           if (contentBuilder_ == null) {
             contentBuilder_ = new com.google.protobuf.SingleFieldBuilder<
@@ -2830,7 +2830,7 @@ public final class JBPMMessages {
           internalGetFieldAccessorTable() {
         return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_ExclusiveGroupInstance_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.ExclusiveGroupInstance.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.ExclusiveGroupInstance.Builder.class);
+                    org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.ExclusiveGroupInstance.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.ExclusiveGroupInstance.Builder.class);
       }
 
       public static com.google.protobuf.Parser<ExclusiveGroupInstance> PARSER =
@@ -3008,7 +3008,7 @@ public final class JBPMMessages {
             internalGetFieldAccessorTable() {
           return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_ExclusiveGroupInstance_fieldAccessorTable
               .ensureFieldAccessorsInitialized(
-                  org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.ExclusiveGroupInstance.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.ExclusiveGroupInstance.Builder.class);
+                      org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.ExclusiveGroupInstance.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.ExclusiveGroupInstance.Builder.class);
         }
 
         // Construct using org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.ExclusiveGroupInstance.newBuilder()
@@ -3630,7 +3630,7 @@ public final class JBPMMessages {
           internalGetFieldAccessorTable() {
         return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Builder.class);
+                    org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Builder.class);
       }
 
       public static com.google.protobuf.Parser<NodeInstanceContent> PARSER =
@@ -3674,7 +3674,7 @@ public final class JBPMMessages {
         /**
          * <code>repeated .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry mapEntry = 2;</code>
          */
-        java.util.List<org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry> 
+        java.util.List<org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry>
             getMapEntryList();
         /**
          * <code>repeated .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry mapEntry = 2;</code>
@@ -3687,7 +3687,7 @@ public final class JBPMMessages {
         /**
          * <code>repeated .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry mapEntry = 2;</code>
          */
-        java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntryOrBuilder> 
+        java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntryOrBuilder>
             getMapEntryOrBuilderList();
         /**
          * <code>repeated .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry mapEntry = 2;</code>
@@ -3811,7 +3811,7 @@ public final class JBPMMessages {
             internalGetFieldAccessorTable() {
           return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_RuleSetNode_fieldAccessorTable
               .ensureFieldAccessorsInitialized(
-                  org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.Builder.class);
+                      org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.Builder.class);
         }
 
         public static com.google.protobuf.Parser<RuleSetNode> PARSER =
@@ -3946,7 +3946,7 @@ public final class JBPMMessages {
               internalGetFieldAccessorTable() {
             return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_RuleSetNode_TextMapEntry_fieldAccessorTable
                 .ensureFieldAccessorsInitialized(
-                    org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry.Builder.class);
+                        org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry.Builder.class);
           }
 
           public static com.google.protobuf.Parser<TextMapEntry> PARSER =
@@ -4183,7 +4183,7 @@ public final class JBPMMessages {
                 internalGetFieldAccessorTable() {
               return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_RuleSetNode_TextMapEntry_fieldAccessorTable
                   .ensureFieldAccessorsInitialized(
-                      org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry.Builder.class);
+                          org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry.Builder.class);
             }
 
             // Construct using org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry.newBuilder()
@@ -4503,7 +4503,7 @@ public final class JBPMMessages {
         /**
          * <code>repeated .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry mapEntry = 2;</code>
          */
-        public java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntryOrBuilder> 
+        public java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntryOrBuilder>
             getMapEntryOrBuilderList() {
           return mapEntry_;
         }
@@ -4716,7 +4716,7 @@ public final class JBPMMessages {
               internalGetFieldAccessorTable() {
             return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_RuleSetNode_fieldAccessorTable
                 .ensureFieldAccessorsInitialized(
-                    org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.Builder.class);
+                        org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.Builder.class);
           }
 
           // Construct using org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.newBuilder()
@@ -5168,7 +5168,7 @@ public final class JBPMMessages {
           /**
            * <code>repeated .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry mapEntry = 2;</code>
            */
-          public java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntryOrBuilder> 
+          public java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntryOrBuilder>
                getMapEntryOrBuilderList() {
             if (mapEntryBuilder_ != null) {
               return mapEntryBuilder_.getMessageOrBuilderList();
@@ -5181,7 +5181,7 @@ public final class JBPMMessages {
            */
           public org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry.Builder addMapEntryBuilder() {
             return getMapEntryFieldBuilder().addBuilder(
-                org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry.getDefaultInstance());
+                    org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry.getDefaultInstance());
           }
           /**
            * <code>repeated .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry mapEntry = 2;</code>
@@ -5189,17 +5189,17 @@ public final class JBPMMessages {
           public org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry.Builder addMapEntryBuilder(
               int index) {
             return getMapEntryFieldBuilder().addBuilder(
-                index, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry.getDefaultInstance());
+                    index, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry.getDefaultInstance());
           }
           /**
            * <code>repeated .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry mapEntry = 2;</code>
            */
-          public java.util.List<org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry.Builder> 
+          public java.util.List<org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry.Builder>
                getMapEntryBuilderList() {
             return getMapEntryFieldBuilder().getBuilderList();
           }
           private com.google.protobuf.RepeatedFieldBuilder<
-              org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntryOrBuilder> 
+              org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntryOrBuilder>
               getMapEntryFieldBuilder() {
             if (mapEntryBuilder_ == null) {
               mapEntryBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
@@ -5474,7 +5474,7 @@ public final class JBPMMessages {
             internalGetFieldAccessorTable() {
           return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_HumanTaskNode_fieldAccessorTable
               .ensureFieldAccessorsInitialized(
-                  org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.HumanTaskNode.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.HumanTaskNode.Builder.class);
+                      org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.HumanTaskNode.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.HumanTaskNode.Builder.class);
         }
 
         public static com.google.protobuf.Parser<HumanTaskNode> PARSER =
@@ -5782,7 +5782,7 @@ public final class JBPMMessages {
               internalGetFieldAccessorTable() {
             return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_HumanTaskNode_fieldAccessorTable
                 .ensureFieldAccessorsInitialized(
-                    org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.HumanTaskNode.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.HumanTaskNode.Builder.class);
+                        org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.HumanTaskNode.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.HumanTaskNode.Builder.class);
           }
 
           // Construct using org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.HumanTaskNode.newBuilder()
@@ -6281,7 +6281,7 @@ public final class JBPMMessages {
            * <code>optional .org.jbpm.marshalling.HumanTaskWorkItem workitem = 4;</code>
            */
           private com.google.protobuf.SingleFieldBuilder<
-              org.jbpm.marshalling.impl.JBPMMessages.HumanTaskWorkItem, org.jbpm.marshalling.impl.JBPMMessages.HumanTaskWorkItem.Builder, org.jbpm.marshalling.impl.JBPMMessages.HumanTaskWorkItemOrBuilder> 
+              org.jbpm.marshalling.impl.JBPMMessages.HumanTaskWorkItem, org.jbpm.marshalling.impl.JBPMMessages.HumanTaskWorkItem.Builder, org.jbpm.marshalling.impl.JBPMMessages.HumanTaskWorkItemOrBuilder>
               getWorkitemFieldBuilder() {
             if (workitemBuilder_ == null) {
               workitemBuilder_ = new com.google.protobuf.SingleFieldBuilder<
@@ -6479,7 +6479,7 @@ public final class JBPMMessages {
             internalGetFieldAccessorTable() {
           return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_WorkItemNode_fieldAccessorTable
               .ensureFieldAccessorsInitialized(
-                  org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.WorkItemNode.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.WorkItemNode.Builder.class);
+                      org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.WorkItemNode.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.WorkItemNode.Builder.class);
         }
 
         public static com.google.protobuf.Parser<WorkItemNode> PARSER =
@@ -6787,7 +6787,7 @@ public final class JBPMMessages {
               internalGetFieldAccessorTable() {
             return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_WorkItemNode_fieldAccessorTable
                 .ensureFieldAccessorsInitialized(
-                    org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.WorkItemNode.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.WorkItemNode.Builder.class);
+                        org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.WorkItemNode.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.WorkItemNode.Builder.class);
           }
 
           // Construct using org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.WorkItemNode.newBuilder()
@@ -7286,7 +7286,7 @@ public final class JBPMMessages {
            * <code>optional .org.jbpm.marshalling.WorkItem workitem = 4;</code>
            */
           private com.google.protobuf.SingleFieldBuilder<
-              org.jbpm.marshalling.impl.JBPMMessages.WorkItem, org.jbpm.marshalling.impl.JBPMMessages.WorkItem.Builder, org.jbpm.marshalling.impl.JBPMMessages.WorkItemOrBuilder> 
+              org.jbpm.marshalling.impl.JBPMMessages.WorkItem, org.jbpm.marshalling.impl.JBPMMessages.WorkItem.Builder, org.jbpm.marshalling.impl.JBPMMessages.WorkItemOrBuilder>
               getWorkitemFieldBuilder() {
             if (workitemBuilder_ == null) {
               workitemBuilder_ = new com.google.protobuf.SingleFieldBuilder<
@@ -7438,7 +7438,7 @@ public final class JBPMMessages {
             internalGetFieldAccessorTable() {
           return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_SubProcessNode_fieldAccessorTable
               .ensureFieldAccessorsInitialized(
-                  org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.SubProcessNode.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.SubProcessNode.Builder.class);
+                      org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.SubProcessNode.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.SubProcessNode.Builder.class);
         }
 
         public static com.google.protobuf.Parser<SubProcessNode> PARSER =
@@ -7667,7 +7667,7 @@ public final class JBPMMessages {
               internalGetFieldAccessorTable() {
             return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_SubProcessNode_fieldAccessorTable
                 .ensureFieldAccessorsInitialized(
-                    org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.SubProcessNode.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.SubProcessNode.Builder.class);
+                        org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.SubProcessNode.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.SubProcessNode.Builder.class);
           }
 
           // Construct using org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.SubProcessNode.newBuilder()
@@ -8077,7 +8077,7 @@ public final class JBPMMessages {
             internalGetFieldAccessorTable() {
           return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_MilestoneNode_fieldAccessorTable
               .ensureFieldAccessorsInitialized(
-                  org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.MilestoneNode.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.MilestoneNode.Builder.class);
+                      org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.MilestoneNode.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.MilestoneNode.Builder.class);
         }
 
         public static com.google.protobuf.Parser<MilestoneNode> PARSER =
@@ -8255,7 +8255,7 @@ public final class JBPMMessages {
               internalGetFieldAccessorTable() {
             return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_MilestoneNode_fieldAccessorTable
                 .ensureFieldAccessorsInitialized(
-                    org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.MilestoneNode.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.MilestoneNode.Builder.class);
+                        org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.MilestoneNode.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.MilestoneNode.Builder.class);
           }
 
           // Construct using org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.MilestoneNode.newBuilder()
@@ -8544,7 +8544,7 @@ public final class JBPMMessages {
             internalGetFieldAccessorTable() {
           return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_EventNode_fieldAccessorTable
               .ensureFieldAccessorsInitialized(
-                  org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.EventNode.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.EventNode.Builder.class);
+                      org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.EventNode.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.EventNode.Builder.class);
         }
 
         public static com.google.protobuf.Parser<EventNode> PARSER =
@@ -8680,7 +8680,7 @@ public final class JBPMMessages {
               internalGetFieldAccessorTable() {
             return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_EventNode_fieldAccessorTable
                 .ensureFieldAccessorsInitialized(
-                    org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.EventNode.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.EventNode.Builder.class);
+                        org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.EventNode.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.EventNode.Builder.class);
           }
 
           // Construct using org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.EventNode.newBuilder()
@@ -8878,7 +8878,7 @@ public final class JBPMMessages {
             internalGetFieldAccessorTable() {
           return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_TimerNode_fieldAccessorTable
               .ensureFieldAccessorsInitialized(
-                  org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.TimerNode.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.TimerNode.Builder.class);
+                      org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.TimerNode.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.TimerNode.Builder.class);
         }
 
         public static com.google.protobuf.Parser<TimerNode> PARSER =
@@ -9065,7 +9065,7 @@ public final class JBPMMessages {
               internalGetFieldAccessorTable() {
             return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_TimerNode_fieldAccessorTable
                 .ensureFieldAccessorsInitialized(
-                    org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.TimerNode.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.TimerNode.Builder.class);
+                        org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.TimerNode.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.TimerNode.Builder.class);
           }
 
           // Construct using org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.TimerNode.newBuilder()
@@ -9264,7 +9264,7 @@ public final class JBPMMessages {
         /**
          * <code>repeated .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.JoinNode.JoinTrigger trigger = 1;</code>
          */
-        java.util.List<org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.JoinNode.JoinTrigger> 
+        java.util.List<org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.JoinNode.JoinTrigger>
             getTriggerList();
         /**
          * <code>repeated .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.JoinNode.JoinTrigger trigger = 1;</code>
@@ -9277,7 +9277,7 @@ public final class JBPMMessages {
         /**
          * <code>repeated .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.JoinNode.JoinTrigger trigger = 1;</code>
          */
-        java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.JoinNode.JoinTriggerOrBuilder> 
+        java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.JoinNode.JoinTriggerOrBuilder>
             getTriggerOrBuilderList();
         /**
          * <code>repeated .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.JoinNode.JoinTrigger trigger = 1;</code>
@@ -9369,7 +9369,7 @@ public final class JBPMMessages {
             internalGetFieldAccessorTable() {
           return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_JoinNode_fieldAccessorTable
               .ensureFieldAccessorsInitialized(
-                  org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.JoinNode.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.JoinNode.Builder.class);
+                      org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.JoinNode.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.JoinNode.Builder.class);
         }
 
         public static com.google.protobuf.Parser<JoinNode> PARSER =
@@ -9492,7 +9492,7 @@ public final class JBPMMessages {
               internalGetFieldAccessorTable() {
             return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_JoinNode_JoinTrigger_fieldAccessorTable
                 .ensureFieldAccessorsInitialized(
-                    org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.JoinNode.JoinTrigger.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.JoinNode.JoinTrigger.Builder.class);
+                        org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.JoinNode.JoinTrigger.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.JoinNode.JoinTrigger.Builder.class);
           }
 
           public static com.google.protobuf.Parser<JoinTrigger> PARSER =
@@ -9675,7 +9675,7 @@ public final class JBPMMessages {
                 internalGetFieldAccessorTable() {
               return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_JoinNode_JoinTrigger_fieldAccessorTable
                   .ensureFieldAccessorsInitialized(
-                      org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.JoinNode.JoinTrigger.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.JoinNode.JoinTrigger.Builder.class);
+                          org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.JoinNode.JoinTrigger.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.JoinNode.JoinTrigger.Builder.class);
             }
 
             // Construct using org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.JoinNode.JoinTrigger.newBuilder()
@@ -9873,7 +9873,7 @@ public final class JBPMMessages {
         /**
          * <code>repeated .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.JoinNode.JoinTrigger trigger = 1;</code>
          */
-        public java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.JoinNode.JoinTriggerOrBuilder> 
+        public java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.JoinNode.JoinTriggerOrBuilder>
             getTriggerOrBuilderList() {
           return trigger_;
         }
@@ -10023,7 +10023,7 @@ public final class JBPMMessages {
               internalGetFieldAccessorTable() {
             return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_JoinNode_fieldAccessorTable
                 .ensureFieldAccessorsInitialized(
-                    org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.JoinNode.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.JoinNode.Builder.class);
+                        org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.JoinNode.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.JoinNode.Builder.class);
           }
 
           // Construct using org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.JoinNode.newBuilder()
@@ -10352,7 +10352,7 @@ public final class JBPMMessages {
           /**
            * <code>repeated .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.JoinNode.JoinTrigger trigger = 1;</code>
            */
-          public java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.JoinNode.JoinTriggerOrBuilder> 
+          public java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.JoinNode.JoinTriggerOrBuilder>
                getTriggerOrBuilderList() {
             if (triggerBuilder_ != null) {
               return triggerBuilder_.getMessageOrBuilderList();
@@ -10365,7 +10365,7 @@ public final class JBPMMessages {
            */
           public org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.JoinNode.JoinTrigger.Builder addTriggerBuilder() {
             return getTriggerFieldBuilder().addBuilder(
-                org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.JoinNode.JoinTrigger.getDefaultInstance());
+                    org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.JoinNode.JoinTrigger.getDefaultInstance());
           }
           /**
            * <code>repeated .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.JoinNode.JoinTrigger trigger = 1;</code>
@@ -10373,17 +10373,17 @@ public final class JBPMMessages {
           public org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.JoinNode.JoinTrigger.Builder addTriggerBuilder(
               int index) {
             return getTriggerFieldBuilder().addBuilder(
-                index, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.JoinNode.JoinTrigger.getDefaultInstance());
+                    index, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.JoinNode.JoinTrigger.getDefaultInstance());
           }
           /**
            * <code>repeated .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.JoinNode.JoinTrigger trigger = 1;</code>
            */
-          public java.util.List<org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.JoinNode.JoinTrigger.Builder> 
+          public java.util.List<org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.JoinNode.JoinTrigger.Builder>
                getTriggerBuilderList() {
             return getTriggerFieldBuilder().getBuilderList();
           }
           private com.google.protobuf.RepeatedFieldBuilder<
-              org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.JoinNode.JoinTrigger, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.JoinNode.JoinTrigger.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.JoinNode.JoinTriggerOrBuilder> 
+              org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.JoinNode.JoinTrigger, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.JoinNode.JoinTrigger.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.JoinNode.JoinTriggerOrBuilder>
               getTriggerFieldBuilder() {
             if (triggerBuilder_ == null) {
               triggerBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
@@ -10516,7 +10516,7 @@ public final class JBPMMessages {
             internalGetFieldAccessorTable() {
           return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_StateNode_fieldAccessorTable
               .ensureFieldAccessorsInitialized(
-                  org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.StateNode.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.StateNode.Builder.class);
+                      org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.StateNode.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.StateNode.Builder.class);
         }
 
         public static com.google.protobuf.Parser<StateNode> PARSER =
@@ -10694,7 +10694,7 @@ public final class JBPMMessages {
               internalGetFieldAccessorTable() {
             return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_StateNode_fieldAccessorTable
                 .ensureFieldAccessorsInitialized(
-                    org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.StateNode.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.StateNode.Builder.class);
+                        org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.StateNode.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.StateNode.Builder.class);
           }
 
           // Construct using org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.StateNode.newBuilder()
@@ -10933,7 +10933,7 @@ public final class JBPMMessages {
         /**
          * <code>repeated .org.jbpm.marshalling.Variable variable = 3;</code>
          */
-        java.util.List<org.jbpm.marshalling.impl.JBPMMessages.Variable> 
+        java.util.List<org.jbpm.marshalling.impl.JBPMMessages.Variable>
             getVariableList();
         /**
          * <code>repeated .org.jbpm.marshalling.Variable variable = 3;</code>
@@ -10946,7 +10946,7 @@ public final class JBPMMessages {
         /**
          * <code>repeated .org.jbpm.marshalling.Variable variable = 3;</code>
          */
-        java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.VariableOrBuilder> 
+        java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.VariableOrBuilder>
             getVariableOrBuilderList();
         /**
          * <code>repeated .org.jbpm.marshalling.Variable variable = 3;</code>
@@ -10957,7 +10957,7 @@ public final class JBPMMessages {
         /**
          * <code>repeated .org.jbpm.marshalling.ProcessInstance.NodeInstance node_instance = 4;</code>
          */
-        java.util.List<org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstance> 
+        java.util.List<org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstance>
             getNodeInstanceList();
         /**
          * <code>repeated .org.jbpm.marshalling.ProcessInstance.NodeInstance node_instance = 4;</code>
@@ -10970,7 +10970,7 @@ public final class JBPMMessages {
         /**
          * <code>repeated .org.jbpm.marshalling.ProcessInstance.NodeInstance node_instance = 4;</code>
          */
-        java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceOrBuilder> 
+        java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceOrBuilder>
             getNodeInstanceOrBuilderList();
         /**
          * <code>repeated .org.jbpm.marshalling.ProcessInstance.NodeInstance node_instance = 4;</code>
@@ -10981,7 +10981,7 @@ public final class JBPMMessages {
         /**
          * <code>repeated .org.jbpm.marshalling.ProcessInstance.ExclusiveGroupInstance exclusive_group = 5;</code>
          */
-        java.util.List<org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.ExclusiveGroupInstance> 
+        java.util.List<org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.ExclusiveGroupInstance>
             getExclusiveGroupList();
         /**
          * <code>repeated .org.jbpm.marshalling.ProcessInstance.ExclusiveGroupInstance exclusive_group = 5;</code>
@@ -10994,7 +10994,7 @@ public final class JBPMMessages {
         /**
          * <code>repeated .org.jbpm.marshalling.ProcessInstance.ExclusiveGroupInstance exclusive_group = 5;</code>
          */
-        java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.ExclusiveGroupInstanceOrBuilder> 
+        java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.ExclusiveGroupInstanceOrBuilder>
             getExclusiveGroupOrBuilderList();
         /**
          * <code>repeated .org.jbpm.marshalling.ProcessInstance.ExclusiveGroupInstance exclusive_group = 5;</code>
@@ -11005,7 +11005,7 @@ public final class JBPMMessages {
         /**
          * <code>repeated .org.jbpm.marshalling.IterationLevel iterationLevels = 6;</code>
          */
-        java.util.List<org.jbpm.marshalling.impl.JBPMMessages.IterationLevel> 
+        java.util.List<org.jbpm.marshalling.impl.JBPMMessages.IterationLevel>
             getIterationLevelsList();
         /**
          * <code>repeated .org.jbpm.marshalling.IterationLevel iterationLevels = 6;</code>
@@ -11018,7 +11018,7 @@ public final class JBPMMessages {
         /**
          * <code>repeated .org.jbpm.marshalling.IterationLevel iterationLevels = 6;</code>
          */
-        java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.IterationLevelOrBuilder> 
+        java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.IterationLevelOrBuilder>
             getIterationLevelsOrBuilderList();
         /**
          * <code>repeated .org.jbpm.marshalling.IterationLevel iterationLevels = 6;</code>
@@ -11155,7 +11155,7 @@ public final class JBPMMessages {
             internalGetFieldAccessorTable() {
           return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_CompositeContextNode_fieldAccessorTable
               .ensureFieldAccessorsInitialized(
-                  org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.CompositeContextNode.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.CompositeContextNode.Builder.class);
+                      org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.CompositeContextNode.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.CompositeContextNode.Builder.class);
         }
 
         public static com.google.protobuf.Parser<CompositeContextNode> PARSER =
@@ -11213,7 +11213,7 @@ public final class JBPMMessages {
         /**
          * <code>repeated .org.jbpm.marshalling.Variable variable = 3;</code>
          */
-        public java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.VariableOrBuilder> 
+        public java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.VariableOrBuilder>
             getVariableOrBuilderList() {
           return variable_;
         }
@@ -11248,7 +11248,7 @@ public final class JBPMMessages {
         /**
          * <code>repeated .org.jbpm.marshalling.ProcessInstance.NodeInstance node_instance = 4;</code>
          */
-        public java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceOrBuilder> 
+        public java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceOrBuilder>
             getNodeInstanceOrBuilderList() {
           return nodeInstance_;
         }
@@ -11283,7 +11283,7 @@ public final class JBPMMessages {
         /**
          * <code>repeated .org.jbpm.marshalling.ProcessInstance.ExclusiveGroupInstance exclusive_group = 5;</code>
          */
-        public java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.ExclusiveGroupInstanceOrBuilder> 
+        public java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.ExclusiveGroupInstanceOrBuilder>
             getExclusiveGroupOrBuilderList() {
           return exclusiveGroup_;
         }
@@ -11318,7 +11318,7 @@ public final class JBPMMessages {
         /**
          * <code>repeated .org.jbpm.marshalling.IterationLevel iterationLevels = 6;</code>
          */
-        public java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.IterationLevelOrBuilder> 
+        public java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.IterationLevelOrBuilder>
             getIterationLevelsOrBuilderList() {
           return iterationLevels_;
         }
@@ -11505,7 +11505,7 @@ public final class JBPMMessages {
               internalGetFieldAccessorTable() {
             return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_CompositeContextNode_fieldAccessorTable
                 .ensureFieldAccessorsInitialized(
-                    org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.CompositeContextNode.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.CompositeContextNode.Builder.class);
+                        org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.CompositeContextNode.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.CompositeContextNode.Builder.class);
           }
 
           // Construct using org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.CompositeContextNode.newBuilder()
@@ -12070,7 +12070,7 @@ public final class JBPMMessages {
           /**
            * <code>repeated .org.jbpm.marshalling.Variable variable = 3;</code>
            */
-          public java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.VariableOrBuilder> 
+          public java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.VariableOrBuilder>
                getVariableOrBuilderList() {
             if (variableBuilder_ != null) {
               return variableBuilder_.getMessageOrBuilderList();
@@ -12083,7 +12083,7 @@ public final class JBPMMessages {
            */
           public org.jbpm.marshalling.impl.JBPMMessages.Variable.Builder addVariableBuilder() {
             return getVariableFieldBuilder().addBuilder(
-                org.jbpm.marshalling.impl.JBPMMessages.Variable.getDefaultInstance());
+                    org.jbpm.marshalling.impl.JBPMMessages.Variable.getDefaultInstance());
           }
           /**
            * <code>repeated .org.jbpm.marshalling.Variable variable = 3;</code>
@@ -12091,17 +12091,17 @@ public final class JBPMMessages {
           public org.jbpm.marshalling.impl.JBPMMessages.Variable.Builder addVariableBuilder(
               int index) {
             return getVariableFieldBuilder().addBuilder(
-                index, org.jbpm.marshalling.impl.JBPMMessages.Variable.getDefaultInstance());
+                    index, org.jbpm.marshalling.impl.JBPMMessages.Variable.getDefaultInstance());
           }
           /**
            * <code>repeated .org.jbpm.marshalling.Variable variable = 3;</code>
            */
-          public java.util.List<org.jbpm.marshalling.impl.JBPMMessages.Variable.Builder> 
+          public java.util.List<org.jbpm.marshalling.impl.JBPMMessages.Variable.Builder>
                getVariableBuilderList() {
             return getVariableFieldBuilder().getBuilderList();
           }
           private com.google.protobuf.RepeatedFieldBuilder<
-              org.jbpm.marshalling.impl.JBPMMessages.Variable, org.jbpm.marshalling.impl.JBPMMessages.Variable.Builder, org.jbpm.marshalling.impl.JBPMMessages.VariableOrBuilder> 
+              org.jbpm.marshalling.impl.JBPMMessages.Variable, org.jbpm.marshalling.impl.JBPMMessages.Variable.Builder, org.jbpm.marshalling.impl.JBPMMessages.VariableOrBuilder>
               getVariableFieldBuilder() {
             if (variableBuilder_ == null) {
               variableBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
@@ -12310,7 +12310,7 @@ public final class JBPMMessages {
           /**
            * <code>repeated .org.jbpm.marshalling.ProcessInstance.NodeInstance node_instance = 4;</code>
            */
-          public java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceOrBuilder> 
+          public java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceOrBuilder>
                getNodeInstanceOrBuilderList() {
             if (nodeInstanceBuilder_ != null) {
               return nodeInstanceBuilder_.getMessageOrBuilderList();
@@ -12323,7 +12323,7 @@ public final class JBPMMessages {
            */
           public org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstance.Builder addNodeInstanceBuilder() {
             return getNodeInstanceFieldBuilder().addBuilder(
-                org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstance.getDefaultInstance());
+                    org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstance.getDefaultInstance());
           }
           /**
            * <code>repeated .org.jbpm.marshalling.ProcessInstance.NodeInstance node_instance = 4;</code>
@@ -12331,17 +12331,17 @@ public final class JBPMMessages {
           public org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstance.Builder addNodeInstanceBuilder(
               int index) {
             return getNodeInstanceFieldBuilder().addBuilder(
-                index, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstance.getDefaultInstance());
+                    index, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstance.getDefaultInstance());
           }
           /**
            * <code>repeated .org.jbpm.marshalling.ProcessInstance.NodeInstance node_instance = 4;</code>
            */
-          public java.util.List<org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstance.Builder> 
+          public java.util.List<org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstance.Builder>
                getNodeInstanceBuilderList() {
             return getNodeInstanceFieldBuilder().getBuilderList();
           }
           private com.google.protobuf.RepeatedFieldBuilder<
-              org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstance, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstance.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceOrBuilder> 
+              org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstance, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstance.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceOrBuilder>
               getNodeInstanceFieldBuilder() {
             if (nodeInstanceBuilder_ == null) {
               nodeInstanceBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
@@ -12550,7 +12550,7 @@ public final class JBPMMessages {
           /**
            * <code>repeated .org.jbpm.marshalling.ProcessInstance.ExclusiveGroupInstance exclusive_group = 5;</code>
            */
-          public java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.ExclusiveGroupInstanceOrBuilder> 
+          public java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.ExclusiveGroupInstanceOrBuilder>
                getExclusiveGroupOrBuilderList() {
             if (exclusiveGroupBuilder_ != null) {
               return exclusiveGroupBuilder_.getMessageOrBuilderList();
@@ -12563,7 +12563,7 @@ public final class JBPMMessages {
            */
           public org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.ExclusiveGroupInstance.Builder addExclusiveGroupBuilder() {
             return getExclusiveGroupFieldBuilder().addBuilder(
-                org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.ExclusiveGroupInstance.getDefaultInstance());
+                    org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.ExclusiveGroupInstance.getDefaultInstance());
           }
           /**
            * <code>repeated .org.jbpm.marshalling.ProcessInstance.ExclusiveGroupInstance exclusive_group = 5;</code>
@@ -12571,17 +12571,17 @@ public final class JBPMMessages {
           public org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.ExclusiveGroupInstance.Builder addExclusiveGroupBuilder(
               int index) {
             return getExclusiveGroupFieldBuilder().addBuilder(
-                index, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.ExclusiveGroupInstance.getDefaultInstance());
+                    index, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.ExclusiveGroupInstance.getDefaultInstance());
           }
           /**
            * <code>repeated .org.jbpm.marshalling.ProcessInstance.ExclusiveGroupInstance exclusive_group = 5;</code>
            */
-          public java.util.List<org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.ExclusiveGroupInstance.Builder> 
+          public java.util.List<org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.ExclusiveGroupInstance.Builder>
                getExclusiveGroupBuilderList() {
             return getExclusiveGroupFieldBuilder().getBuilderList();
           }
           private com.google.protobuf.RepeatedFieldBuilder<
-              org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.ExclusiveGroupInstance, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.ExclusiveGroupInstance.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.ExclusiveGroupInstanceOrBuilder> 
+              org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.ExclusiveGroupInstance, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.ExclusiveGroupInstance.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.ExclusiveGroupInstanceOrBuilder>
               getExclusiveGroupFieldBuilder() {
             if (exclusiveGroupBuilder_ == null) {
               exclusiveGroupBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
@@ -12790,7 +12790,7 @@ public final class JBPMMessages {
           /**
            * <code>repeated .org.jbpm.marshalling.IterationLevel iterationLevels = 6;</code>
            */
-          public java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.IterationLevelOrBuilder> 
+          public java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.IterationLevelOrBuilder>
                getIterationLevelsOrBuilderList() {
             if (iterationLevelsBuilder_ != null) {
               return iterationLevelsBuilder_.getMessageOrBuilderList();
@@ -12803,7 +12803,7 @@ public final class JBPMMessages {
            */
           public org.jbpm.marshalling.impl.JBPMMessages.IterationLevel.Builder addIterationLevelsBuilder() {
             return getIterationLevelsFieldBuilder().addBuilder(
-                org.jbpm.marshalling.impl.JBPMMessages.IterationLevel.getDefaultInstance());
+                    org.jbpm.marshalling.impl.JBPMMessages.IterationLevel.getDefaultInstance());
           }
           /**
            * <code>repeated .org.jbpm.marshalling.IterationLevel iterationLevels = 6;</code>
@@ -12811,17 +12811,17 @@ public final class JBPMMessages {
           public org.jbpm.marshalling.impl.JBPMMessages.IterationLevel.Builder addIterationLevelsBuilder(
               int index) {
             return getIterationLevelsFieldBuilder().addBuilder(
-                index, org.jbpm.marshalling.impl.JBPMMessages.IterationLevel.getDefaultInstance());
+                    index, org.jbpm.marshalling.impl.JBPMMessages.IterationLevel.getDefaultInstance());
           }
           /**
            * <code>repeated .org.jbpm.marshalling.IterationLevel iterationLevels = 6;</code>
            */
-          public java.util.List<org.jbpm.marshalling.impl.JBPMMessages.IterationLevel.Builder> 
+          public java.util.List<org.jbpm.marshalling.impl.JBPMMessages.IterationLevel.Builder>
                getIterationLevelsBuilderList() {
             return getIterationLevelsFieldBuilder().getBuilderList();
           }
           private com.google.protobuf.RepeatedFieldBuilder<
-              org.jbpm.marshalling.impl.JBPMMessages.IterationLevel, org.jbpm.marshalling.impl.JBPMMessages.IterationLevel.Builder, org.jbpm.marshalling.impl.JBPMMessages.IterationLevelOrBuilder> 
+              org.jbpm.marshalling.impl.JBPMMessages.IterationLevel, org.jbpm.marshalling.impl.JBPMMessages.IterationLevel.Builder, org.jbpm.marshalling.impl.JBPMMessages.IterationLevelOrBuilder>
               getIterationLevelsFieldBuilder() {
             if (iterationLevelsBuilder_ == null) {
               iterationLevelsBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
@@ -12853,7 +12853,7 @@ public final class JBPMMessages {
         /**
          * <code>repeated .org.jbpm.marshalling.ProcessInstance.NodeInstance node_instance = 1;</code>
          */
-        java.util.List<org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstance> 
+        java.util.List<org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstance>
             getNodeInstanceList();
         /**
          * <code>repeated .org.jbpm.marshalling.ProcessInstance.NodeInstance node_instance = 1;</code>
@@ -12866,7 +12866,7 @@ public final class JBPMMessages {
         /**
          * <code>repeated .org.jbpm.marshalling.ProcessInstance.NodeInstance node_instance = 1;</code>
          */
-        java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceOrBuilder> 
+        java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceOrBuilder>
             getNodeInstanceOrBuilderList();
         /**
          * <code>repeated .org.jbpm.marshalling.ProcessInstance.NodeInstance node_instance = 1;</code>
@@ -12877,7 +12877,7 @@ public final class JBPMMessages {
         /**
          * <code>repeated .org.jbpm.marshalling.Variable variable = 2;</code>
          */
-        java.util.List<org.jbpm.marshalling.impl.JBPMMessages.Variable> 
+        java.util.List<org.jbpm.marshalling.impl.JBPMMessages.Variable>
             getVariableList();
         /**
          * <code>repeated .org.jbpm.marshalling.Variable variable = 2;</code>
@@ -12890,7 +12890,7 @@ public final class JBPMMessages {
         /**
          * <code>repeated .org.jbpm.marshalling.Variable variable = 2;</code>
          */
-        java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.VariableOrBuilder> 
+        java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.VariableOrBuilder>
             getVariableOrBuilderList();
         /**
          * <code>repeated .org.jbpm.marshalling.Variable variable = 2;</code>
@@ -12901,7 +12901,7 @@ public final class JBPMMessages {
         /**
          * <code>repeated .org.jbpm.marshalling.IterationLevel iterationLevels = 3;</code>
          */
-        java.util.List<org.jbpm.marshalling.impl.JBPMMessages.IterationLevel> 
+        java.util.List<org.jbpm.marshalling.impl.JBPMMessages.IterationLevel>
             getIterationLevelsList();
         /**
          * <code>repeated .org.jbpm.marshalling.IterationLevel iterationLevels = 3;</code>
@@ -12914,7 +12914,7 @@ public final class JBPMMessages {
         /**
          * <code>repeated .org.jbpm.marshalling.IterationLevel iterationLevels = 3;</code>
          */
-        java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.IterationLevelOrBuilder> 
+        java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.IterationLevelOrBuilder>
             getIterationLevelsOrBuilderList();
         /**
          * <code>repeated .org.jbpm.marshalling.IterationLevel iterationLevels = 3;</code>
@@ -13028,7 +13028,7 @@ public final class JBPMMessages {
             internalGetFieldAccessorTable() {
           return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_ForEachNode_fieldAccessorTable
               .ensureFieldAccessorsInitialized(
-                  org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.ForEachNode.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.ForEachNode.Builder.class);
+                      org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.ForEachNode.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.ForEachNode.Builder.class);
         }
 
         public static com.google.protobuf.Parser<ForEachNode> PARSER =
@@ -13057,7 +13057,7 @@ public final class JBPMMessages {
         /**
          * <code>repeated .org.jbpm.marshalling.ProcessInstance.NodeInstance node_instance = 1;</code>
          */
-        public java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceOrBuilder> 
+        public java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceOrBuilder>
             getNodeInstanceOrBuilderList() {
           return nodeInstance_;
         }
@@ -13092,7 +13092,7 @@ public final class JBPMMessages {
         /**
          * <code>repeated .org.jbpm.marshalling.Variable variable = 2;</code>
          */
-        public java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.VariableOrBuilder> 
+        public java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.VariableOrBuilder>
             getVariableOrBuilderList() {
           return variable_;
         }
@@ -13127,7 +13127,7 @@ public final class JBPMMessages {
         /**
          * <code>repeated .org.jbpm.marshalling.IterationLevel iterationLevels = 3;</code>
          */
-        public java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.IterationLevelOrBuilder> 
+        public java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.IterationLevelOrBuilder>
             getIterationLevelsOrBuilderList() {
           return iterationLevels_;
         }
@@ -13293,7 +13293,7 @@ public final class JBPMMessages {
               internalGetFieldAccessorTable() {
             return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_ForEachNode_fieldAccessorTable
                 .ensureFieldAccessorsInitialized(
-                    org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.ForEachNode.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.ForEachNode.Builder.class);
+                        org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.ForEachNode.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.ForEachNode.Builder.class);
           }
 
           // Construct using org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.ForEachNode.newBuilder()
@@ -13706,7 +13706,7 @@ public final class JBPMMessages {
           /**
            * <code>repeated .org.jbpm.marshalling.ProcessInstance.NodeInstance node_instance = 1;</code>
            */
-          public java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceOrBuilder> 
+          public java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceOrBuilder>
                getNodeInstanceOrBuilderList() {
             if (nodeInstanceBuilder_ != null) {
               return nodeInstanceBuilder_.getMessageOrBuilderList();
@@ -13719,7 +13719,7 @@ public final class JBPMMessages {
            */
           public org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstance.Builder addNodeInstanceBuilder() {
             return getNodeInstanceFieldBuilder().addBuilder(
-                org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstance.getDefaultInstance());
+                    org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstance.getDefaultInstance());
           }
           /**
            * <code>repeated .org.jbpm.marshalling.ProcessInstance.NodeInstance node_instance = 1;</code>
@@ -13727,17 +13727,17 @@ public final class JBPMMessages {
           public org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstance.Builder addNodeInstanceBuilder(
               int index) {
             return getNodeInstanceFieldBuilder().addBuilder(
-                index, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstance.getDefaultInstance());
+                    index, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstance.getDefaultInstance());
           }
           /**
            * <code>repeated .org.jbpm.marshalling.ProcessInstance.NodeInstance node_instance = 1;</code>
            */
-          public java.util.List<org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstance.Builder> 
+          public java.util.List<org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstance.Builder>
                getNodeInstanceBuilderList() {
             return getNodeInstanceFieldBuilder().getBuilderList();
           }
           private com.google.protobuf.RepeatedFieldBuilder<
-              org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstance, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstance.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceOrBuilder> 
+              org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstance, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstance.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceOrBuilder>
               getNodeInstanceFieldBuilder() {
             if (nodeInstanceBuilder_ == null) {
               nodeInstanceBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
@@ -13946,7 +13946,7 @@ public final class JBPMMessages {
           /**
            * <code>repeated .org.jbpm.marshalling.Variable variable = 2;</code>
            */
-          public java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.VariableOrBuilder> 
+          public java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.VariableOrBuilder>
                getVariableOrBuilderList() {
             if (variableBuilder_ != null) {
               return variableBuilder_.getMessageOrBuilderList();
@@ -13959,7 +13959,7 @@ public final class JBPMMessages {
            */
           public org.jbpm.marshalling.impl.JBPMMessages.Variable.Builder addVariableBuilder() {
             return getVariableFieldBuilder().addBuilder(
-                org.jbpm.marshalling.impl.JBPMMessages.Variable.getDefaultInstance());
+                    org.jbpm.marshalling.impl.JBPMMessages.Variable.getDefaultInstance());
           }
           /**
            * <code>repeated .org.jbpm.marshalling.Variable variable = 2;</code>
@@ -13967,17 +13967,17 @@ public final class JBPMMessages {
           public org.jbpm.marshalling.impl.JBPMMessages.Variable.Builder addVariableBuilder(
               int index) {
             return getVariableFieldBuilder().addBuilder(
-                index, org.jbpm.marshalling.impl.JBPMMessages.Variable.getDefaultInstance());
+                    index, org.jbpm.marshalling.impl.JBPMMessages.Variable.getDefaultInstance());
           }
           /**
            * <code>repeated .org.jbpm.marshalling.Variable variable = 2;</code>
            */
-          public java.util.List<org.jbpm.marshalling.impl.JBPMMessages.Variable.Builder> 
+          public java.util.List<org.jbpm.marshalling.impl.JBPMMessages.Variable.Builder>
                getVariableBuilderList() {
             return getVariableFieldBuilder().getBuilderList();
           }
           private com.google.protobuf.RepeatedFieldBuilder<
-              org.jbpm.marshalling.impl.JBPMMessages.Variable, org.jbpm.marshalling.impl.JBPMMessages.Variable.Builder, org.jbpm.marshalling.impl.JBPMMessages.VariableOrBuilder> 
+              org.jbpm.marshalling.impl.JBPMMessages.Variable, org.jbpm.marshalling.impl.JBPMMessages.Variable.Builder, org.jbpm.marshalling.impl.JBPMMessages.VariableOrBuilder>
               getVariableFieldBuilder() {
             if (variableBuilder_ == null) {
               variableBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
@@ -14186,7 +14186,7 @@ public final class JBPMMessages {
           /**
            * <code>repeated .org.jbpm.marshalling.IterationLevel iterationLevels = 3;</code>
            */
-          public java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.IterationLevelOrBuilder> 
+          public java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.IterationLevelOrBuilder>
                getIterationLevelsOrBuilderList() {
             if (iterationLevelsBuilder_ != null) {
               return iterationLevelsBuilder_.getMessageOrBuilderList();
@@ -14199,7 +14199,7 @@ public final class JBPMMessages {
            */
           public org.jbpm.marshalling.impl.JBPMMessages.IterationLevel.Builder addIterationLevelsBuilder() {
             return getIterationLevelsFieldBuilder().addBuilder(
-                org.jbpm.marshalling.impl.JBPMMessages.IterationLevel.getDefaultInstance());
+                    org.jbpm.marshalling.impl.JBPMMessages.IterationLevel.getDefaultInstance());
           }
           /**
            * <code>repeated .org.jbpm.marshalling.IterationLevel iterationLevels = 3;</code>
@@ -14207,17 +14207,17 @@ public final class JBPMMessages {
           public org.jbpm.marshalling.impl.JBPMMessages.IterationLevel.Builder addIterationLevelsBuilder(
               int index) {
             return getIterationLevelsFieldBuilder().addBuilder(
-                index, org.jbpm.marshalling.impl.JBPMMessages.IterationLevel.getDefaultInstance());
+                    index, org.jbpm.marshalling.impl.JBPMMessages.IterationLevel.getDefaultInstance());
           }
           /**
            * <code>repeated .org.jbpm.marshalling.IterationLevel iterationLevels = 3;</code>
            */
-          public java.util.List<org.jbpm.marshalling.impl.JBPMMessages.IterationLevel.Builder> 
+          public java.util.List<org.jbpm.marshalling.impl.JBPMMessages.IterationLevel.Builder>
                getIterationLevelsBuilderList() {
             return getIterationLevelsFieldBuilder().getBuilderList();
           }
           private com.google.protobuf.RepeatedFieldBuilder<
-              org.jbpm.marshalling.impl.JBPMMessages.IterationLevel, org.jbpm.marshalling.impl.JBPMMessages.IterationLevel.Builder, org.jbpm.marshalling.impl.JBPMMessages.IterationLevelOrBuilder> 
+              org.jbpm.marshalling.impl.JBPMMessages.IterationLevel, org.jbpm.marshalling.impl.JBPMMessages.IterationLevel.Builder, org.jbpm.marshalling.impl.JBPMMessages.IterationLevelOrBuilder>
               getIterationLevelsFieldBuilder() {
             if (iterationLevelsBuilder_ == null) {
               iterationLevelsBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
@@ -14339,7 +14339,7 @@ public final class JBPMMessages {
             internalGetFieldAccessorTable() {
           return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_AsyncEventNode_fieldAccessorTable
               .ensureFieldAccessorsInitialized(
-                  org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNode.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNode.Builder.class);
+                      org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNode.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNode.Builder.class);
         }
 
         public static com.google.protobuf.Parser<AsyncEventNode> PARSER =
@@ -14526,7 +14526,7 @@ public final class JBPMMessages {
               internalGetFieldAccessorTable() {
             return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_AsyncEventNode_fieldAccessorTable
                 .ensureFieldAccessorsInitialized(
-                    org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNode.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNode.Builder.class);
+                        org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNode.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNode.Builder.class);
           }
 
           // Construct using org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNode.newBuilder()
@@ -15208,7 +15208,7 @@ public final class JBPMMessages {
             internalGetFieldAccessorTable() {
           return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_fieldAccessorTable
               .ensureFieldAccessorsInitialized(
-                  org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Builder.class);
+                      org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.Builder.class);
         }
 
         // Construct using org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.newBuilder()
@@ -15665,7 +15665,7 @@ public final class JBPMMessages {
          * <code>optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.RuleSetNode rule_set = 2;</code>
          */
         private com.google.protobuf.SingleFieldBuilder<
-            org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNodeOrBuilder> 
+            org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNodeOrBuilder>
             getRuleSetFieldBuilder() {
           if (ruleSetBuilder_ == null) {
             ruleSetBuilder_ = new com.google.protobuf.SingleFieldBuilder<
@@ -15781,7 +15781,7 @@ public final class JBPMMessages {
          * <code>optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.HumanTaskNode human_task = 3;</code>
          */
         private com.google.protobuf.SingleFieldBuilder<
-            org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.HumanTaskNode, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.HumanTaskNode.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.HumanTaskNodeOrBuilder> 
+            org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.HumanTaskNode, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.HumanTaskNode.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.HumanTaskNodeOrBuilder>
             getHumanTaskFieldBuilder() {
           if (humanTaskBuilder_ == null) {
             humanTaskBuilder_ = new com.google.protobuf.SingleFieldBuilder<
@@ -15897,7 +15897,7 @@ public final class JBPMMessages {
          * <code>optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.WorkItemNode work_item = 4;</code>
          */
         private com.google.protobuf.SingleFieldBuilder<
-            org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.WorkItemNode, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.WorkItemNode.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.WorkItemNodeOrBuilder> 
+            org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.WorkItemNode, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.WorkItemNode.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.WorkItemNodeOrBuilder>
             getWorkItemFieldBuilder() {
           if (workItemBuilder_ == null) {
             workItemBuilder_ = new com.google.protobuf.SingleFieldBuilder<
@@ -16013,7 +16013,7 @@ public final class JBPMMessages {
          * <code>optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.SubProcessNode sub_process = 5;</code>
          */
         private com.google.protobuf.SingleFieldBuilder<
-            org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.SubProcessNode, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.SubProcessNode.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.SubProcessNodeOrBuilder> 
+            org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.SubProcessNode, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.SubProcessNode.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.SubProcessNodeOrBuilder>
             getSubProcessFieldBuilder() {
           if (subProcessBuilder_ == null) {
             subProcessBuilder_ = new com.google.protobuf.SingleFieldBuilder<
@@ -16129,7 +16129,7 @@ public final class JBPMMessages {
          * <code>optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.MilestoneNode milestone = 6;</code>
          */
         private com.google.protobuf.SingleFieldBuilder<
-            org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.MilestoneNode, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.MilestoneNode.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.MilestoneNodeOrBuilder> 
+            org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.MilestoneNode, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.MilestoneNode.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.MilestoneNodeOrBuilder>
             getMilestoneFieldBuilder() {
           if (milestoneBuilder_ == null) {
             milestoneBuilder_ = new com.google.protobuf.SingleFieldBuilder<
@@ -16245,7 +16245,7 @@ public final class JBPMMessages {
          * <code>optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.EventNode event = 7;</code>
          */
         private com.google.protobuf.SingleFieldBuilder<
-            org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.EventNode, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.EventNode.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.EventNodeOrBuilder> 
+            org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.EventNode, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.EventNode.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.EventNodeOrBuilder>
             getEventFieldBuilder() {
           if (eventBuilder_ == null) {
             eventBuilder_ = new com.google.protobuf.SingleFieldBuilder<
@@ -16361,7 +16361,7 @@ public final class JBPMMessages {
          * <code>optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.TimerNode timer = 8;</code>
          */
         private com.google.protobuf.SingleFieldBuilder<
-            org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.TimerNode, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.TimerNode.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.TimerNodeOrBuilder> 
+            org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.TimerNode, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.TimerNode.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.TimerNodeOrBuilder>
             getTimerFieldBuilder() {
           if (timerBuilder_ == null) {
             timerBuilder_ = new com.google.protobuf.SingleFieldBuilder<
@@ -16477,7 +16477,7 @@ public final class JBPMMessages {
          * <code>optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.JoinNode join = 9;</code>
          */
         private com.google.protobuf.SingleFieldBuilder<
-            org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.JoinNode, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.JoinNode.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.JoinNodeOrBuilder> 
+            org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.JoinNode, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.JoinNode.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.JoinNodeOrBuilder>
             getJoinFieldBuilder() {
           if (joinBuilder_ == null) {
             joinBuilder_ = new com.google.protobuf.SingleFieldBuilder<
@@ -16593,7 +16593,7 @@ public final class JBPMMessages {
          * <code>optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.StateNode state = 10;</code>
          */
         private com.google.protobuf.SingleFieldBuilder<
-            org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.StateNode, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.StateNode.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.StateNodeOrBuilder> 
+            org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.StateNode, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.StateNode.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.StateNodeOrBuilder>
             getStateFieldBuilder() {
           if (stateBuilder_ == null) {
             stateBuilder_ = new com.google.protobuf.SingleFieldBuilder<
@@ -16709,7 +16709,7 @@ public final class JBPMMessages {
          * <code>optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.CompositeContextNode composite = 11;</code>
          */
         private com.google.protobuf.SingleFieldBuilder<
-            org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.CompositeContextNode, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.CompositeContextNode.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.CompositeContextNodeOrBuilder> 
+            org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.CompositeContextNode, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.CompositeContextNode.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.CompositeContextNodeOrBuilder>
             getCompositeFieldBuilder() {
           if (compositeBuilder_ == null) {
             compositeBuilder_ = new com.google.protobuf.SingleFieldBuilder<
@@ -16825,7 +16825,7 @@ public final class JBPMMessages {
          * <code>optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.ForEachNode for_each = 12;</code>
          */
         private com.google.protobuf.SingleFieldBuilder<
-            org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.ForEachNode, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.ForEachNode.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.ForEachNodeOrBuilder> 
+            org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.ForEachNode, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.ForEachNode.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.ForEachNodeOrBuilder>
             getForEachFieldBuilder() {
           if (forEachBuilder_ == null) {
             forEachBuilder_ = new com.google.protobuf.SingleFieldBuilder<
@@ -16941,7 +16941,7 @@ public final class JBPMMessages {
          * <code>optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.AsyncEventNode async_event = 13;</code>
          */
         private com.google.protobuf.SingleFieldBuilder<
-            org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNode, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNode.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNodeOrBuilder> 
+            org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNode, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNode.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNodeOrBuilder>
             getAsyncEventFieldBuilder() {
           if (asyncEventBuilder_ == null) {
             asyncEventBuilder_ = new com.google.protobuf.SingleFieldBuilder<
@@ -17655,7 +17655,7 @@ public final class JBPMMessages {
     /**
      * <code>repeated .org.jbpm.marshalling.ProcessInstance.SwimlaneContextInstance swimlane_context = 6;</code>
      */
-    public java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.SwimlaneContextInstanceOrBuilder> 
+    public java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.SwimlaneContextInstanceOrBuilder>
         getSwimlaneContextOrBuilderList() {
       return swimlaneContext_;
     }
@@ -17690,7 +17690,7 @@ public final class JBPMMessages {
     /**
      * <code>repeated .org.jbpm.marshalling.ProcessInstance.NodeInstance node_instance = 7;</code>
      */
-    public java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceOrBuilder> 
+    public java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceOrBuilder>
         getNodeInstanceOrBuilderList() {
       return nodeInstance_;
     }
@@ -17725,7 +17725,7 @@ public final class JBPMMessages {
     /**
      * <code>repeated .org.jbpm.marshalling.Variable variable = 8;</code>
      */
-    public java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.VariableOrBuilder> 
+    public java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.VariableOrBuilder>
         getVariableOrBuilderList() {
       return variable_;
     }
@@ -17760,7 +17760,7 @@ public final class JBPMMessages {
     /**
      * <code>repeated .org.jbpm.marshalling.ProcessInstance.ExclusiveGroupInstance exclusive_group = 10;</code>
      */
-    public java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.ExclusiveGroupInstanceOrBuilder> 
+    public java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.ExclusiveGroupInstanceOrBuilder>
         getExclusiveGroupOrBuilderList() {
       return exclusiveGroup_;
     }
@@ -17824,7 +17824,7 @@ public final class JBPMMessages {
     /**
      * <code>repeated .org.jbpm.marshalling.IterationLevel iterationLevels = 14;</code>
      */
-    public java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.IterationLevelOrBuilder> 
+    public java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.IterationLevelOrBuilder>
         getIterationLevelsOrBuilderList() {
       return iterationLevels_;
     }
@@ -18179,7 +18179,7 @@ public final class JBPMMessages {
           internalGetFieldAccessorTable() {
         return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.Builder.class);
+                    org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.Builder.class);
       }
 
       // Construct using org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.newBuilder()
@@ -20159,7 +20159,7 @@ public final class JBPMMessages {
       /**
        * <code>repeated .org.jbpm.marshalling.ProcessInstance.SwimlaneContextInstance swimlane_context = 6;</code>
        */
-      public java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.SwimlaneContextInstanceOrBuilder> 
+      public java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.SwimlaneContextInstanceOrBuilder>
            getSwimlaneContextOrBuilderList() {
         if (swimlaneContextBuilder_ != null) {
           return swimlaneContextBuilder_.getMessageOrBuilderList();
@@ -20172,7 +20172,7 @@ public final class JBPMMessages {
        */
       public org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.SwimlaneContextInstance.Builder addSwimlaneContextBuilder() {
         return getSwimlaneContextFieldBuilder().addBuilder(
-            org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.SwimlaneContextInstance.getDefaultInstance());
+                org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.SwimlaneContextInstance.getDefaultInstance());
       }
       /**
        * <code>repeated .org.jbpm.marshalling.ProcessInstance.SwimlaneContextInstance swimlane_context = 6;</code>
@@ -20180,17 +20180,17 @@ public final class JBPMMessages {
       public org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.SwimlaneContextInstance.Builder addSwimlaneContextBuilder(
           int index) {
         return getSwimlaneContextFieldBuilder().addBuilder(
-            index, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.SwimlaneContextInstance.getDefaultInstance());
+                index, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.SwimlaneContextInstance.getDefaultInstance());
       }
       /**
        * <code>repeated .org.jbpm.marshalling.ProcessInstance.SwimlaneContextInstance swimlane_context = 6;</code>
        */
-      public java.util.List<org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.SwimlaneContextInstance.Builder> 
+      public java.util.List<org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.SwimlaneContextInstance.Builder>
            getSwimlaneContextBuilderList() {
         return getSwimlaneContextFieldBuilder().getBuilderList();
       }
       private com.google.protobuf.RepeatedFieldBuilder<
-          org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.SwimlaneContextInstance, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.SwimlaneContextInstance.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.SwimlaneContextInstanceOrBuilder> 
+          org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.SwimlaneContextInstance, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.SwimlaneContextInstance.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.SwimlaneContextInstanceOrBuilder>
           getSwimlaneContextFieldBuilder() {
         if (swimlaneContextBuilder_ == null) {
           swimlaneContextBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
@@ -20399,7 +20399,7 @@ public final class JBPMMessages {
       /**
        * <code>repeated .org.jbpm.marshalling.ProcessInstance.NodeInstance node_instance = 7;</code>
        */
-      public java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceOrBuilder> 
+      public java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceOrBuilder>
            getNodeInstanceOrBuilderList() {
         if (nodeInstanceBuilder_ != null) {
           return nodeInstanceBuilder_.getMessageOrBuilderList();
@@ -20412,7 +20412,7 @@ public final class JBPMMessages {
        */
       public org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstance.Builder addNodeInstanceBuilder() {
         return getNodeInstanceFieldBuilder().addBuilder(
-            org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstance.getDefaultInstance());
+                org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstance.getDefaultInstance());
       }
       /**
        * <code>repeated .org.jbpm.marshalling.ProcessInstance.NodeInstance node_instance = 7;</code>
@@ -20420,17 +20420,17 @@ public final class JBPMMessages {
       public org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstance.Builder addNodeInstanceBuilder(
           int index) {
         return getNodeInstanceFieldBuilder().addBuilder(
-            index, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstance.getDefaultInstance());
+                index, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstance.getDefaultInstance());
       }
       /**
        * <code>repeated .org.jbpm.marshalling.ProcessInstance.NodeInstance node_instance = 7;</code>
        */
-      public java.util.List<org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstance.Builder> 
+      public java.util.List<org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstance.Builder>
            getNodeInstanceBuilderList() {
         return getNodeInstanceFieldBuilder().getBuilderList();
       }
       private com.google.protobuf.RepeatedFieldBuilder<
-          org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstance, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstance.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceOrBuilder> 
+          org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstance, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstance.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceOrBuilder>
           getNodeInstanceFieldBuilder() {
         if (nodeInstanceBuilder_ == null) {
           nodeInstanceBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
@@ -20639,7 +20639,7 @@ public final class JBPMMessages {
       /**
        * <code>repeated .org.jbpm.marshalling.Variable variable = 8;</code>
        */
-      public java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.VariableOrBuilder> 
+      public java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.VariableOrBuilder>
            getVariableOrBuilderList() {
         if (variableBuilder_ != null) {
           return variableBuilder_.getMessageOrBuilderList();
@@ -20652,7 +20652,7 @@ public final class JBPMMessages {
        */
       public org.jbpm.marshalling.impl.JBPMMessages.Variable.Builder addVariableBuilder() {
         return getVariableFieldBuilder().addBuilder(
-            org.jbpm.marshalling.impl.JBPMMessages.Variable.getDefaultInstance());
+                org.jbpm.marshalling.impl.JBPMMessages.Variable.getDefaultInstance());
       }
       /**
        * <code>repeated .org.jbpm.marshalling.Variable variable = 8;</code>
@@ -20660,17 +20660,17 @@ public final class JBPMMessages {
       public org.jbpm.marshalling.impl.JBPMMessages.Variable.Builder addVariableBuilder(
           int index) {
         return getVariableFieldBuilder().addBuilder(
-            index, org.jbpm.marshalling.impl.JBPMMessages.Variable.getDefaultInstance());
+                index, org.jbpm.marshalling.impl.JBPMMessages.Variable.getDefaultInstance());
       }
       /**
        * <code>repeated .org.jbpm.marshalling.Variable variable = 8;</code>
        */
-      public java.util.List<org.jbpm.marshalling.impl.JBPMMessages.Variable.Builder> 
+      public java.util.List<org.jbpm.marshalling.impl.JBPMMessages.Variable.Builder>
            getVariableBuilderList() {
         return getVariableFieldBuilder().getBuilderList();
       }
       private com.google.protobuf.RepeatedFieldBuilder<
-          org.jbpm.marshalling.impl.JBPMMessages.Variable, org.jbpm.marshalling.impl.JBPMMessages.Variable.Builder, org.jbpm.marshalling.impl.JBPMMessages.VariableOrBuilder> 
+          org.jbpm.marshalling.impl.JBPMMessages.Variable, org.jbpm.marshalling.impl.JBPMMessages.Variable.Builder, org.jbpm.marshalling.impl.JBPMMessages.VariableOrBuilder>
           getVariableFieldBuilder() {
         if (variableBuilder_ == null) {
           variableBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
@@ -20879,7 +20879,7 @@ public final class JBPMMessages {
       /**
        * <code>repeated .org.jbpm.marshalling.ProcessInstance.ExclusiveGroupInstance exclusive_group = 10;</code>
        */
-      public java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.ExclusiveGroupInstanceOrBuilder> 
+      public java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.ExclusiveGroupInstanceOrBuilder>
            getExclusiveGroupOrBuilderList() {
         if (exclusiveGroupBuilder_ != null) {
           return exclusiveGroupBuilder_.getMessageOrBuilderList();
@@ -20892,7 +20892,7 @@ public final class JBPMMessages {
        */
       public org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.ExclusiveGroupInstance.Builder addExclusiveGroupBuilder() {
         return getExclusiveGroupFieldBuilder().addBuilder(
-            org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.ExclusiveGroupInstance.getDefaultInstance());
+                org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.ExclusiveGroupInstance.getDefaultInstance());
       }
       /**
        * <code>repeated .org.jbpm.marshalling.ProcessInstance.ExclusiveGroupInstance exclusive_group = 10;</code>
@@ -20900,17 +20900,17 @@ public final class JBPMMessages {
       public org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.ExclusiveGroupInstance.Builder addExclusiveGroupBuilder(
           int index) {
         return getExclusiveGroupFieldBuilder().addBuilder(
-            index, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.ExclusiveGroupInstance.getDefaultInstance());
+                index, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.ExclusiveGroupInstance.getDefaultInstance());
       }
       /**
        * <code>repeated .org.jbpm.marshalling.ProcessInstance.ExclusiveGroupInstance exclusive_group = 10;</code>
        */
-      public java.util.List<org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.ExclusiveGroupInstance.Builder> 
+      public java.util.List<org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.ExclusiveGroupInstance.Builder>
            getExclusiveGroupBuilderList() {
         return getExclusiveGroupFieldBuilder().getBuilderList();
       }
       private com.google.protobuf.RepeatedFieldBuilder<
-          org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.ExclusiveGroupInstance, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.ExclusiveGroupInstance.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.ExclusiveGroupInstanceOrBuilder> 
+          org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.ExclusiveGroupInstance, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.ExclusiveGroupInstance.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.ExclusiveGroupInstanceOrBuilder>
           getExclusiveGroupFieldBuilder() {
         if (exclusiveGroupBuilder_ == null) {
           exclusiveGroupBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
@@ -21212,7 +21212,7 @@ public final class JBPMMessages {
       /**
        * <code>repeated .org.jbpm.marshalling.IterationLevel iterationLevels = 14;</code>
        */
-      public java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.IterationLevelOrBuilder> 
+      public java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.IterationLevelOrBuilder>
            getIterationLevelsOrBuilderList() {
         if (iterationLevelsBuilder_ != null) {
           return iterationLevelsBuilder_.getMessageOrBuilderList();
@@ -21225,7 +21225,7 @@ public final class JBPMMessages {
        */
       public org.jbpm.marshalling.impl.JBPMMessages.IterationLevel.Builder addIterationLevelsBuilder() {
         return getIterationLevelsFieldBuilder().addBuilder(
-            org.jbpm.marshalling.impl.JBPMMessages.IterationLevel.getDefaultInstance());
+                org.jbpm.marshalling.impl.JBPMMessages.IterationLevel.getDefaultInstance());
       }
       /**
        * <code>repeated .org.jbpm.marshalling.IterationLevel iterationLevels = 14;</code>
@@ -21233,17 +21233,17 @@ public final class JBPMMessages {
       public org.jbpm.marshalling.impl.JBPMMessages.IterationLevel.Builder addIterationLevelsBuilder(
           int index) {
         return getIterationLevelsFieldBuilder().addBuilder(
-            index, org.jbpm.marshalling.impl.JBPMMessages.IterationLevel.getDefaultInstance());
+                index, org.jbpm.marshalling.impl.JBPMMessages.IterationLevel.getDefaultInstance());
       }
       /**
        * <code>repeated .org.jbpm.marshalling.IterationLevel iterationLevels = 14;</code>
        */
-      public java.util.List<org.jbpm.marshalling.impl.JBPMMessages.IterationLevel.Builder> 
+      public java.util.List<org.jbpm.marshalling.impl.JBPMMessages.IterationLevel.Builder>
            getIterationLevelsBuilderList() {
         return getIterationLevelsFieldBuilder().getBuilderList();
       }
       private com.google.protobuf.RepeatedFieldBuilder<
-          org.jbpm.marshalling.impl.JBPMMessages.IterationLevel, org.jbpm.marshalling.impl.JBPMMessages.IterationLevel.Builder, org.jbpm.marshalling.impl.JBPMMessages.IterationLevelOrBuilder> 
+          org.jbpm.marshalling.impl.JBPMMessages.IterationLevel, org.jbpm.marshalling.impl.JBPMMessages.IterationLevel.Builder, org.jbpm.marshalling.impl.JBPMMessages.IterationLevelOrBuilder>
           getIterationLevelsFieldBuilder() {
         if (iterationLevelsBuilder_ == null) {
           iterationLevelsBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
@@ -21421,7 +21421,7 @@ public final class JBPMMessages {
         internalGetFieldAccessorTable() {
       return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_Variable_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              org.jbpm.marshalling.impl.JBPMMessages.Variable.class, org.jbpm.marshalling.impl.JBPMMessages.Variable.Builder.class);
+                  org.jbpm.marshalling.impl.JBPMMessages.Variable.class, org.jbpm.marshalling.impl.JBPMMessages.Variable.Builder.class);
     }
 
     public static com.google.protobuf.Parser<Variable> PARSER =
@@ -21712,7 +21712,7 @@ public final class JBPMMessages {
           internalGetFieldAccessorTable() {
         return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_Variable_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                org.jbpm.marshalling.impl.JBPMMessages.Variable.class, org.jbpm.marshalling.impl.JBPMMessages.Variable.Builder.class);
+                    org.jbpm.marshalling.impl.JBPMMessages.Variable.class, org.jbpm.marshalling.impl.JBPMMessages.Variable.Builder.class);
       }
 
       // Construct using org.jbpm.marshalling.impl.JBPMMessages.Variable.newBuilder()
@@ -22150,7 +22150,7 @@ public final class JBPMMessages {
     /**
      * <code>repeated .org.jbpm.marshalling.Variable variable = 5;</code>
      */
-    java.util.List<org.jbpm.marshalling.impl.JBPMMessages.Variable> 
+    java.util.List<org.jbpm.marshalling.impl.JBPMMessages.Variable>
         getVariableList();
     /**
      * <code>repeated .org.jbpm.marshalling.Variable variable = 5;</code>
@@ -22163,7 +22163,7 @@ public final class JBPMMessages {
     /**
      * <code>repeated .org.jbpm.marshalling.Variable variable = 5;</code>
      */
-    java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.VariableOrBuilder> 
+    java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.VariableOrBuilder>
         getVariableOrBuilderList();
     /**
      * <code>repeated .org.jbpm.marshalling.Variable variable = 5;</code>
@@ -22400,7 +22400,7 @@ public final class JBPMMessages {
         internalGetFieldAccessorTable() {
       return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_WorkItem_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              org.jbpm.marshalling.impl.JBPMMessages.WorkItem.class, org.jbpm.marshalling.impl.JBPMMessages.WorkItem.Builder.class);
+                  org.jbpm.marshalling.impl.JBPMMessages.WorkItem.class, org.jbpm.marshalling.impl.JBPMMessages.WorkItem.Builder.class);
     }
 
     public static com.google.protobuf.Parser<WorkItem> PARSER =
@@ -22571,7 +22571,7 @@ public final class JBPMMessages {
     /**
      * <code>repeated .org.jbpm.marshalling.Variable variable = 5;</code>
      */
-    public java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.VariableOrBuilder> 
+    public java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.VariableOrBuilder>
         getVariableOrBuilderList() {
       return variable_;
     }
@@ -23022,7 +23022,7 @@ public final class JBPMMessages {
           internalGetFieldAccessorTable() {
         return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_WorkItem_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                org.jbpm.marshalling.impl.JBPMMessages.WorkItem.class, org.jbpm.marshalling.impl.JBPMMessages.WorkItem.Builder.class);
+                    org.jbpm.marshalling.impl.JBPMMessages.WorkItem.class, org.jbpm.marshalling.impl.JBPMMessages.WorkItem.Builder.class);
       }
 
       // Construct using org.jbpm.marshalling.impl.JBPMMessages.WorkItem.newBuilder()
@@ -23726,7 +23726,7 @@ public final class JBPMMessages {
       /**
        * <code>repeated .org.jbpm.marshalling.Variable variable = 5;</code>
        */
-      public java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.VariableOrBuilder> 
+      public java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.VariableOrBuilder>
            getVariableOrBuilderList() {
         if (variableBuilder_ != null) {
           return variableBuilder_.getMessageOrBuilderList();
@@ -23739,7 +23739,7 @@ public final class JBPMMessages {
        */
       public org.jbpm.marshalling.impl.JBPMMessages.Variable.Builder addVariableBuilder() {
         return getVariableFieldBuilder().addBuilder(
-            org.jbpm.marshalling.impl.JBPMMessages.Variable.getDefaultInstance());
+                org.jbpm.marshalling.impl.JBPMMessages.Variable.getDefaultInstance());
       }
       /**
        * <code>repeated .org.jbpm.marshalling.Variable variable = 5;</code>
@@ -23747,17 +23747,17 @@ public final class JBPMMessages {
       public org.jbpm.marshalling.impl.JBPMMessages.Variable.Builder addVariableBuilder(
           int index) {
         return getVariableFieldBuilder().addBuilder(
-            index, org.jbpm.marshalling.impl.JBPMMessages.Variable.getDefaultInstance());
+                index, org.jbpm.marshalling.impl.JBPMMessages.Variable.getDefaultInstance());
       }
       /**
        * <code>repeated .org.jbpm.marshalling.Variable variable = 5;</code>
        */
-      public java.util.List<org.jbpm.marshalling.impl.JBPMMessages.Variable.Builder> 
+      public java.util.List<org.jbpm.marshalling.impl.JBPMMessages.Variable.Builder>
            getVariableBuilderList() {
         return getVariableFieldBuilder().getBuilderList();
       }
       private com.google.protobuf.RepeatedFieldBuilder<
-          org.jbpm.marshalling.impl.JBPMMessages.Variable, org.jbpm.marshalling.impl.JBPMMessages.Variable.Builder, org.jbpm.marshalling.impl.JBPMMessages.VariableOrBuilder> 
+          org.jbpm.marshalling.impl.JBPMMessages.Variable, org.jbpm.marshalling.impl.JBPMMessages.Variable.Builder, org.jbpm.marshalling.impl.JBPMMessages.VariableOrBuilder>
           getVariableFieldBuilder() {
         if (variableBuilder_ == null) {
           variableBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
@@ -24240,7 +24240,7 @@ public final class JBPMMessages {
     /**
      * <code>repeated .org.jbpm.marshalling.Variable variable = 5;</code>
      */
-    java.util.List<org.jbpm.marshalling.impl.JBPMMessages.Variable> 
+    java.util.List<org.jbpm.marshalling.impl.JBPMMessages.Variable>
         getVariableList();
     /**
      * <code>repeated .org.jbpm.marshalling.Variable variable = 5;</code>
@@ -24253,7 +24253,7 @@ public final class JBPMMessages {
     /**
      * <code>repeated .org.jbpm.marshalling.Variable variable = 5;</code>
      */
-    java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.VariableOrBuilder> 
+    java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.VariableOrBuilder>
         getVariableOrBuilderList();
     /**
      * <code>repeated .org.jbpm.marshalling.Variable variable = 5;</code>
@@ -24745,7 +24745,7 @@ public final class JBPMMessages {
         internalGetFieldAccessorTable() {
       return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_HumanTaskWorkItem_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              org.jbpm.marshalling.impl.JBPMMessages.HumanTaskWorkItem.class, org.jbpm.marshalling.impl.JBPMMessages.HumanTaskWorkItem.Builder.class);
+                  org.jbpm.marshalling.impl.JBPMMessages.HumanTaskWorkItem.class, org.jbpm.marshalling.impl.JBPMMessages.HumanTaskWorkItem.Builder.class);
     }
 
     public static com.google.protobuf.Parser<HumanTaskWorkItem> PARSER =
@@ -24916,7 +24916,7 @@ public final class JBPMMessages {
     /**
      * <code>repeated .org.jbpm.marshalling.Variable variable = 5;</code>
      */
-    public java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.VariableOrBuilder> 
+    public java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.VariableOrBuilder>
         getVariableOrBuilderList() {
       return variable_;
     }
@@ -25827,7 +25827,7 @@ public final class JBPMMessages {
           internalGetFieldAccessorTable() {
         return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_HumanTaskWorkItem_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                org.jbpm.marshalling.impl.JBPMMessages.HumanTaskWorkItem.class, org.jbpm.marshalling.impl.JBPMMessages.HumanTaskWorkItem.Builder.class);
+                    org.jbpm.marshalling.impl.JBPMMessages.HumanTaskWorkItem.class, org.jbpm.marshalling.impl.JBPMMessages.HumanTaskWorkItem.Builder.class);
       }
 
       // Construct using org.jbpm.marshalling.impl.JBPMMessages.HumanTaskWorkItem.newBuilder()
@@ -26671,7 +26671,7 @@ public final class JBPMMessages {
       /**
        * <code>repeated .org.jbpm.marshalling.Variable variable = 5;</code>
        */
-      public java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.VariableOrBuilder> 
+      public java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.VariableOrBuilder>
            getVariableOrBuilderList() {
         if (variableBuilder_ != null) {
           return variableBuilder_.getMessageOrBuilderList();
@@ -26684,7 +26684,7 @@ public final class JBPMMessages {
        */
       public org.jbpm.marshalling.impl.JBPMMessages.Variable.Builder addVariableBuilder() {
         return getVariableFieldBuilder().addBuilder(
-            org.jbpm.marshalling.impl.JBPMMessages.Variable.getDefaultInstance());
+                org.jbpm.marshalling.impl.JBPMMessages.Variable.getDefaultInstance());
       }
       /**
        * <code>repeated .org.jbpm.marshalling.Variable variable = 5;</code>
@@ -26692,17 +26692,17 @@ public final class JBPMMessages {
       public org.jbpm.marshalling.impl.JBPMMessages.Variable.Builder addVariableBuilder(
           int index) {
         return getVariableFieldBuilder().addBuilder(
-            index, org.jbpm.marshalling.impl.JBPMMessages.Variable.getDefaultInstance());
+                index, org.jbpm.marshalling.impl.JBPMMessages.Variable.getDefaultInstance());
       }
       /**
        * <code>repeated .org.jbpm.marshalling.Variable variable = 5;</code>
        */
-      public java.util.List<org.jbpm.marshalling.impl.JBPMMessages.Variable.Builder> 
+      public java.util.List<org.jbpm.marshalling.impl.JBPMMessages.Variable.Builder>
            getVariableBuilderList() {
         return getVariableFieldBuilder().getBuilderList();
       }
       private com.google.protobuf.RepeatedFieldBuilder<
-          org.jbpm.marshalling.impl.JBPMMessages.Variable, org.jbpm.marshalling.impl.JBPMMessages.Variable.Builder, org.jbpm.marshalling.impl.JBPMMessages.VariableOrBuilder> 
+          org.jbpm.marshalling.impl.JBPMMessages.Variable, org.jbpm.marshalling.impl.JBPMMessages.Variable.Builder, org.jbpm.marshalling.impl.JBPMMessages.VariableOrBuilder>
           getVariableFieldBuilder() {
         if (variableBuilder_ == null) {
           variableBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
@@ -28101,7 +28101,7 @@ public final class JBPMMessages {
         internalGetFieldAccessorTable() {
       return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessTimer_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              org.jbpm.marshalling.impl.JBPMMessages.ProcessTimer.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessTimer.Builder.class);
+                  org.jbpm.marshalling.impl.JBPMMessages.ProcessTimer.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessTimer.Builder.class);
     }
 
     public static com.google.protobuf.Parser<ProcessTimer> PARSER =
@@ -28348,7 +28348,7 @@ public final class JBPMMessages {
           internalGetFieldAccessorTable() {
         return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessTimer_TimerInstance_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                org.jbpm.marshalling.impl.JBPMMessages.ProcessTimer.TimerInstance.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessTimer.TimerInstance.Builder.class);
+                    org.jbpm.marshalling.impl.JBPMMessages.ProcessTimer.TimerInstance.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessTimer.TimerInstance.Builder.class);
       }
 
       public static com.google.protobuf.Parser<TimerInstance> PARSER =
@@ -28769,7 +28769,7 @@ public final class JBPMMessages {
             internalGetFieldAccessorTable() {
           return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessTimer_TimerInstance_fieldAccessorTable
               .ensureFieldAccessorsInitialized(
-                  org.jbpm.marshalling.impl.JBPMMessages.ProcessTimer.TimerInstance.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessTimer.TimerInstance.Builder.class);
+                      org.jbpm.marshalling.impl.JBPMMessages.ProcessTimer.TimerInstance.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessTimer.TimerInstance.Builder.class);
         }
 
         // Construct using org.jbpm.marshalling.impl.JBPMMessages.ProcessTimer.TimerInstance.newBuilder()
@@ -29553,7 +29553,7 @@ public final class JBPMMessages {
           internalGetFieldAccessorTable() {
         return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessTimer_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                org.jbpm.marshalling.impl.JBPMMessages.ProcessTimer.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessTimer.Builder.class);
+                    org.jbpm.marshalling.impl.JBPMMessages.ProcessTimer.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessTimer.Builder.class);
       }
 
       // Construct using org.jbpm.marshalling.impl.JBPMMessages.ProcessTimer.newBuilder()
@@ -29786,7 +29786,7 @@ public final class JBPMMessages {
        * <code>optional .org.jbpm.marshalling.ProcessTimer.TimerInstance timer = 1;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
-          org.jbpm.marshalling.impl.JBPMMessages.ProcessTimer.TimerInstance, org.jbpm.marshalling.impl.JBPMMessages.ProcessTimer.TimerInstance.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessTimer.TimerInstanceOrBuilder> 
+          org.jbpm.marshalling.impl.JBPMMessages.ProcessTimer.TimerInstance, org.jbpm.marshalling.impl.JBPMMessages.ProcessTimer.TimerInstance.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessTimer.TimerInstanceOrBuilder>
           getTimerFieldBuilder() {
         if (timerBuilder_ == null) {
           timerBuilder_ = new com.google.protobuf.SingleFieldBuilder<
@@ -30037,7 +30037,7 @@ public final class JBPMMessages {
         internalGetFieldAccessorTable() {
       return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_IterationLevel_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              org.jbpm.marshalling.impl.JBPMMessages.IterationLevel.class, org.jbpm.marshalling.impl.JBPMMessages.IterationLevel.Builder.class);
+                  org.jbpm.marshalling.impl.JBPMMessages.IterationLevel.class, org.jbpm.marshalling.impl.JBPMMessages.IterationLevel.Builder.class);
     }
 
     public static com.google.protobuf.Parser<IterationLevel> PARSER =
@@ -30247,7 +30247,7 @@ public final class JBPMMessages {
           internalGetFieldAccessorTable() {
         return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_IterationLevel_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                org.jbpm.marshalling.impl.JBPMMessages.IterationLevel.class, org.jbpm.marshalling.impl.JBPMMessages.IterationLevel.Builder.class);
+                    org.jbpm.marshalling.impl.JBPMMessages.IterationLevel.class, org.jbpm.marshalling.impl.JBPMMessages.IterationLevel.Builder.class);
       }
 
       // Construct using org.jbpm.marshalling.impl.JBPMMessages.IterationLevel.newBuilder()
@@ -30487,7 +30487,7 @@ public final class JBPMMessages {
     /**
      * <code>repeated .org.jbpm.marshalling.Variable variable = 1;</code>
      */
-    java.util.List<org.jbpm.marshalling.impl.JBPMMessages.Variable> 
+    java.util.List<org.jbpm.marshalling.impl.JBPMMessages.Variable>
         getVariableList();
     /**
      * <code>repeated .org.jbpm.marshalling.Variable variable = 1;</code>
@@ -30500,7 +30500,7 @@ public final class JBPMMessages {
     /**
      * <code>repeated .org.jbpm.marshalling.Variable variable = 1;</code>
      */
-    java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.VariableOrBuilder> 
+    java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.VariableOrBuilder>
         getVariableOrBuilderList();
     /**
      * <code>repeated .org.jbpm.marshalling.Variable variable = 1;</code>
@@ -30592,7 +30592,7 @@ public final class JBPMMessages {
         internalGetFieldAccessorTable() {
       return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_VariableContainer_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              org.jbpm.marshalling.impl.JBPMMessages.VariableContainer.class, org.jbpm.marshalling.impl.JBPMMessages.VariableContainer.Builder.class);
+                  org.jbpm.marshalling.impl.JBPMMessages.VariableContainer.class, org.jbpm.marshalling.impl.JBPMMessages.VariableContainer.Builder.class);
     }
 
     public static com.google.protobuf.Parser<VariableContainer> PARSER =
@@ -30621,7 +30621,7 @@ public final class JBPMMessages {
     /**
      * <code>repeated .org.jbpm.marshalling.Variable variable = 1;</code>
      */
-    public java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.VariableOrBuilder> 
+    public java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.VariableOrBuilder>
         getVariableOrBuilderList() {
       return variable_;
     }
@@ -30771,7 +30771,7 @@ public final class JBPMMessages {
           internalGetFieldAccessorTable() {
         return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_VariableContainer_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                org.jbpm.marshalling.impl.JBPMMessages.VariableContainer.class, org.jbpm.marshalling.impl.JBPMMessages.VariableContainer.Builder.class);
+                    org.jbpm.marshalling.impl.JBPMMessages.VariableContainer.class, org.jbpm.marshalling.impl.JBPMMessages.VariableContainer.Builder.class);
       }
 
       // Construct using org.jbpm.marshalling.impl.JBPMMessages.VariableContainer.newBuilder()
@@ -31100,7 +31100,7 @@ public final class JBPMMessages {
       /**
        * <code>repeated .org.jbpm.marshalling.Variable variable = 1;</code>
        */
-      public java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.VariableOrBuilder> 
+      public java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.VariableOrBuilder>
            getVariableOrBuilderList() {
         if (variableBuilder_ != null) {
           return variableBuilder_.getMessageOrBuilderList();
@@ -31113,7 +31113,7 @@ public final class JBPMMessages {
        */
       public org.jbpm.marshalling.impl.JBPMMessages.Variable.Builder addVariableBuilder() {
         return getVariableFieldBuilder().addBuilder(
-            org.jbpm.marshalling.impl.JBPMMessages.Variable.getDefaultInstance());
+                org.jbpm.marshalling.impl.JBPMMessages.Variable.getDefaultInstance());
       }
       /**
        * <code>repeated .org.jbpm.marshalling.Variable variable = 1;</code>
@@ -31121,17 +31121,17 @@ public final class JBPMMessages {
       public org.jbpm.marshalling.impl.JBPMMessages.Variable.Builder addVariableBuilder(
           int index) {
         return getVariableFieldBuilder().addBuilder(
-            index, org.jbpm.marshalling.impl.JBPMMessages.Variable.getDefaultInstance());
+                index, org.jbpm.marshalling.impl.JBPMMessages.Variable.getDefaultInstance());
       }
       /**
        * <code>repeated .org.jbpm.marshalling.Variable variable = 1;</code>
        */
-      public java.util.List<org.jbpm.marshalling.impl.JBPMMessages.Variable.Builder> 
+      public java.util.List<org.jbpm.marshalling.impl.JBPMMessages.Variable.Builder>
            getVariableBuilderList() {
         return getVariableFieldBuilder().getBuilderList();
       }
       private com.google.protobuf.RepeatedFieldBuilder<
-          org.jbpm.marshalling.impl.JBPMMessages.Variable, org.jbpm.marshalling.impl.JBPMMessages.Variable.Builder, org.jbpm.marshalling.impl.JBPMMessages.VariableOrBuilder> 
+          org.jbpm.marshalling.impl.JBPMMessages.Variable, org.jbpm.marshalling.impl.JBPMMessages.Variable.Builder, org.jbpm.marshalling.impl.JBPMMessages.VariableOrBuilder>
           getVariableFieldBuilder() {
         if (variableBuilder_ == null) {
           variableBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
@@ -31165,8 +31165,8 @@ public final class JBPMMessages {
       org.drools.serialization.protobuf.ProtobufMessages.ProcessData,
       java.util.List<org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance>> processInstance = com.google.protobuf.GeneratedMessage
           .newFileScopedGeneratedExtension(
-        org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.class,
-        org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.getDefaultInstance());
+                  org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.class,
+                  org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.getDefaultInstance());
   public static final int WORK_ITEM_FIELD_NUMBER = 11;
   /**
    * <code>extend .org.drools.serialization.protobuf.ProcessData { ... }</code>
@@ -31176,8 +31176,8 @@ public final class JBPMMessages {
       org.drools.serialization.protobuf.ProtobufMessages.ProcessData,
       java.util.List<org.jbpm.marshalling.impl.JBPMMessages.WorkItem>> workItem = com.google.protobuf.GeneratedMessage
           .newFileScopedGeneratedExtension(
-        org.jbpm.marshalling.impl.JBPMMessages.WorkItem.class,
-        org.jbpm.marshalling.impl.JBPMMessages.WorkItem.getDefaultInstance());
+                  org.jbpm.marshalling.impl.JBPMMessages.WorkItem.class,
+                  org.jbpm.marshalling.impl.JBPMMessages.WorkItem.getDefaultInstance());
   public static final int TIMER_ID_FIELD_NUMBER = 13;
   /**
    * <code>extend .org.drools.serialization.protobuf.ProcessData { ... }</code>
@@ -31198,8 +31198,8 @@ public final class JBPMMessages {
       org.drools.serialization.protobuf.ProtobufMessages.ProcessData,
       java.util.List<org.jbpm.marshalling.impl.JBPMMessages.ProcessTimer>> processTimer = com.google.protobuf.GeneratedMessage
           .newFileScopedGeneratedExtension(
-        org.jbpm.marshalling.impl.JBPMMessages.ProcessTimer.class,
-        org.jbpm.marshalling.impl.JBPMMessages.ProcessTimer.getDefaultInstance());
+                  org.jbpm.marshalling.impl.JBPMMessages.ProcessTimer.class,
+                  org.jbpm.marshalling.impl.JBPMMessages.ProcessTimer.getDefaultInstance());
   public static final int PROC_TIMER_FIELD_NUMBER = 100;
   /**
    * <code>extend .org.drools.serialization.protobuf.Timers.Timer { ... }</code>
@@ -31209,8 +31209,8 @@ public final class JBPMMessages {
       org.drools.serialization.protobuf.ProtobufMessages.Timers.Timer,
       org.jbpm.marshalling.impl.JBPMMessages.ProcessTimer> procTimer = com.google.protobuf.GeneratedMessage
           .newFileScopedGeneratedExtension(
-        org.jbpm.marshalling.impl.JBPMMessages.ProcessTimer.class,
-        org.jbpm.marshalling.impl.JBPMMessages.ProcessTimer.getDefaultInstance());
+                  org.jbpm.marshalling.impl.JBPMMessages.ProcessTimer.class,
+                  org.jbpm.marshalling.impl.JBPMMessages.ProcessTimer.getDefaultInstance());
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_org_jbpm_marshalling_ProcessInstance_descriptor;
   private static
