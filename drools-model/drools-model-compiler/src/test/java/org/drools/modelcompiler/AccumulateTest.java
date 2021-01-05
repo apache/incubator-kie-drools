@@ -2714,4 +2714,185 @@ public class AccumulateTest extends BaseModelTest {
 
     }
 
+    @Test
+    public void testInlineAccumulateWithAnd() {
+        // RHDM-1549
+        String str =
+                "import " + Car.class.getCanonicalName() + ";" +
+                        "import " + Order.class.getCanonicalName() + ";" +
+                        "import " + BigDecimal.class.getCanonicalName() + ";" +
+                        "global java.util.List result;\n" +
+                        "rule R when\n" +
+                        "        $total : BigDecimal() from accumulate( $car : Car( discontinued == true ) and Order( item == $car, $price : price ),\n" +
+                        "                                               init( BigDecimal total = BigDecimal.ZERO; ),\n" +
+                        "                                               action( total = total.add( $price ); ),\n" +
+                        "                                               reverse( total = total.subtract( $price ); ),\n" +
+                        "                                               result( total ) )\n" +
+                        "    then\n" +
+                        "        result.add($total);\n" +
+                        "end";
+
+        KieSession ksession = getKieSession( str );
+
+        List<BigDecimal> result = new ArrayList<>();
+        ksession.setGlobal("result", result);
+
+        Car a = new Car("A180");
+        a.setDiscontinued(false);
+        ksession.insert(a);
+
+        for (int i = 0; i < 10; i++) {
+            Order order = new Order(a, new BigDecimal(30000));
+            ksession.insert(order);
+        }
+
+        Car c = new Car("C180");
+        c.setDiscontinued(true);
+        ksession.insert(c);
+
+        for (int i = 0; i < 5; i++) {
+            Order order = new Order(c, new BigDecimal(45000));
+            ksession.insert(order);
+        }
+
+        ksession.fireAllRules();
+
+        assertEquals( 1, result.size() );
+        assertEquals( new BigDecimal( 225000 ), result.get(0) );
+
+        ksession.dispose();
+    }
+
+    @Test
+    public void testInlineMvelAccumulateWithAnd() {
+        // RHDM-1549
+        String str =
+                "import " + Car.class.getCanonicalName() + ";" +
+                "import " + Order.class.getCanonicalName() + ";" +
+                "import " + BigDecimal.class.getCanonicalName() + ";" +
+                "global java.util.List result;\n" +
+                "dialect \"mvel\"\n" +
+                "rule R when\n" +
+                "        $total : BigDecimal() from accumulate( $car : Car( discontinued == true ) and Order( item == $car, $price : price ),\n" +
+                "                                               init( BigDecimal total = BigDecimal.ZERO; ),\n" +
+                "                                               action( total += $price; ),\n" +
+                "                                               reverse( total -= $price; ),\n" +
+                "                                               result( total ) )\n" +
+                "    then\n" +
+                "        result.add($total);\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        List<BigDecimal> result = new ArrayList<>();
+        ksession.setGlobal("result", result);
+
+        Car a = new Car("A180");
+        a.setDiscontinued(false);
+        ksession.insert(a);
+
+        for (int i = 0; i < 10; i++) {
+            Order order = new Order(a, new BigDecimal(30000));
+            ksession.insert(order);
+        }
+
+        Car c = new Car("C180");
+        c.setDiscontinued(true);
+        ksession.insert(c);
+
+        for (int i = 0; i < 5; i++) {
+            Order order = new Order(c, new BigDecimal(45000));
+            ksession.insert(order);
+        }
+
+        ksession.fireAllRules();
+
+        assertEquals( 1, result.size() );
+        assertEquals( new BigDecimal( 225000 ), result.get(0) );
+
+        ksession.dispose();
+    }
+
+    public static class Car {
+        private String name = "";
+        private String variant = "";
+        private BigDecimal totalSales = BigDecimal.ZERO;
+        private boolean discontinued = false;
+
+        public Car() { }
+
+        public Car(String name) {
+            this.name = name;
+        }
+
+        public Car(String name, String variant) {
+            this.name = name;
+            this.variant = variant;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getVariant() {
+            return variant;
+        }
+
+        public void setVariant(String variant) {
+            this.variant = variant;
+        }
+
+        public BigDecimal getTotalSales() {
+            return totalSales;
+        }
+
+        public void setTotalSales(BigDecimal totalSales) {
+            this.totalSales = totalSales;
+        }
+
+        public boolean getDiscontinued() {
+            return discontinued;
+        }
+
+        public void setDiscontinued(boolean discontinued) {
+            this.discontinued = discontinued;
+        }
+
+        public String toString() {
+            return (name + " " + variant).trim();
+        }
+    }
+
+    public static class Order {
+        private Car item;
+        private BigDecimal price;
+
+        public Order() { }
+
+        public Order(Car item, BigDecimal price) {
+            this.item = item;
+            this.price = price;
+        }
+
+        public Car getItem() {
+            return item;
+        }
+
+        public void setItem(Car item) {
+            this.item = item;
+        }
+
+        public BigDecimal getPrice() {
+            return price;
+        }
+
+        public void setPrice(BigDecimal price) {
+            this.price = price;
+        }
+    }
+
 }

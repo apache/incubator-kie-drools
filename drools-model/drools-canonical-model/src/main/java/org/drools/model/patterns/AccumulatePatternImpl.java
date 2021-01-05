@@ -57,10 +57,17 @@ public class AccumulatePatternImpl<T> extends AbstractSinglePattern implements A
         }
 
         final Argument source = accumulateFunctions[0].getSource();
+        if (source == null) {
+            return null;
+        }
 
         for (Condition subCondition : condition.getSubConditions()) {
             if (subCondition instanceof PatternImpl) {
                 PatternImpl patternImpl = (PatternImpl) subCondition;
+
+                if ( source.equals( patternImpl.getPatternVariable() ) ) {
+                    return patternImpl;
+                }
 
                 boolean isSource =  patternImpl
                         .getBindings()
