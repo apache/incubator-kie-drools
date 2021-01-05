@@ -16,25 +16,23 @@
 package org.kie.kogito.codegen.process.persistence.proto;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 import org.kie.kogito.codegen.GeneratedFile;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class AbstractProtoGeneratorTest {
     @Test
-    void checkGeneratedProtoBufAndListing(@TempDir Path tmpTargetDir) throws IOException {
+    void checkGeneratedProtoBufAndListing() throws IOException {
         final ReflectionProtoGenerator generator = new ReflectionProtoGenerator();
         List<GeneratedFile> generatedFiles = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
             final Proto proto = new Proto("org.acme.test");
-            generatedFiles.add(generator.generateProtoFiles("protofile." + i, tmpTargetDir.toString(), proto));
+            generatedFiles.add(generator.generateProtoFiles("protofile." + i, proto));
         }
         generator.generateProtoListingFile(generatedFiles).ifPresent(generatedFiles::add);
 

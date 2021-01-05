@@ -26,7 +26,7 @@ public interface ProtoGenerator<T> {
 
     Proto generate(String messageComment, String fieldComment, String packageName, T dataModel, String... headers);
 
-    ProtoDataClassesResult<T> extractDataClasses(Collection<T> input, String targetDirectory);
+    ProtoDataClassesResult<T> extractDataClasses(Collection<T> input);
 
     default String applicabilityByType(String type) {
         if (type.equals("Collection")) {

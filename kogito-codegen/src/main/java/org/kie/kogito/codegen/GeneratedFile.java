@@ -16,6 +16,7 @@
 package org.kie.kogito.codegen;
 
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import java.util.Objects;
 
 public class GeneratedFile {
@@ -58,6 +59,14 @@ public class GeneratedFile {
     private final String relativePath;
     private final byte[] contents;
     private final Type type;
+
+    public GeneratedFile(Type type, Path relativePath, String contents) {
+        this(type, relativePath, contents.getBytes(StandardCharsets.UTF_8));
+    }
+
+    public GeneratedFile(Type type, Path relativePath, byte[] contents) {
+        this(type, relativePath.toString(), contents);
+    }
 
     public GeneratedFile(Type type, String relativePath, String contents) {
         this(type, relativePath, contents.getBytes(StandardCharsets.UTF_8));

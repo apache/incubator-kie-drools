@@ -15,19 +15,9 @@
 
 package org.kie.kogito.codegen;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Stream;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.TypeDeclaration;
@@ -38,8 +28,6 @@ import org.junit.jupiter.api.Test;
 import org.kie.kogito.codegen.context.JavaKogitoBuildContext;
 import org.kie.kogito.codegen.context.KogitoBuildContext;
 import org.kie.kogito.codegen.context.QuarkusKogitoBuildContext;
-import org.kie.kogito.codegen.metadata.MetaDataWriter;
-import org.kie.kogito.codegen.metadata.PrometheusLabeler;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -87,53 +75,12 @@ public class ApplicationGeneratorTest {
     }
 
     @Test
-    public void generateWithMonitoring() throws IOException {
-        context = JavaKogitoBuildContext.builder()
-                .withPackageName(PACKAGE_NAME)
-                .withAddonsConfig(AddonsConfig.builder().withPrometheusMonitoring(true).build())
-                .build();
-        final ApplicationGenerator appGenerator = new ApplicationGenerator(context);
-        appGenerator.generate();
-        assertImageMetadata(context.getTargetDirectory().toPath(), new PrometheusLabeler().generateLabels());
-    }
-
-    @Test
-    public void writeLabelsImageMetadata() throws IOException {
-        final Map<String, String> labels = new HashMap<>();
-        labels.put("testKey1", "testValue1");
-        labels.put("testKey2", "testValue2");
-        labels.put("testKey3", "testValue3");
-
-        MetaDataWriter.writeLabelsImageMetadata(context.getTargetDirectory(), labels);
-        assertImageMetadata(context.getTargetDirectory().toPath(), labels);
-    }
-
-    @Test
     public void applicationSectionReplace() {
         final ApplicationContainerGenerator appGenerator = new ApplicationContainerGenerator(context);
         assertApplicationPlaceholderReplace(appGenerator, 0);
 
         appGenerator.withSections(Arrays.asList("Processes", "DecisionModels"));
         assertApplicationPlaceholderReplace(appGenerator, 2);
-    }
-
-    private void assertImageMetadata(final Path directory, final Map<String, String> expectedLabels) throws IOException {
-        try (Stream<Path> stream = Files.walk(directory, 1)) {
-            final Optional<Path> generatedFile = stream
-                    .filter(file -> file.getFileName().toString().equals("image_metadata.json"))
-                    .findFirst();
-            assertThat(generatedFile).isPresent();
-
-            ObjectMapper mapper = new ObjectMapper();
-            final Map<String, List> elementsFromFile = mapper.readValue(generatedFile.get().toFile(),
-                                                                        new TypeReference<Map<String, List>>() {
-                                                                        });
-            assertThat(elementsFromFile).hasSize(1);
-            final List<Map<String, String>> listWithLabelsMap = elementsFromFile.entrySet().iterator().next().getValue();
-            assertThat(listWithLabelsMap).isNotNull();
-            assertThat(listWithLabelsMap).hasSize(1);
-            assertThat(listWithLabelsMap.get(0)).containsAllEntriesOf(expectedLabels);
-        }
     }
 
     private void assertCompilationUnit(final CompilationUnit compilationUnit, final boolean checkCDI) {
@@ -157,23 +104,6 @@ public class ApplicationGeneratorTest {
         }
 
         assertThat(mainAppClass.getMembers()).isNotNull();
-    }
-
-    private void assertGeneratedFiles(final Collection<GeneratedFile> generatedFiles,
-                                      final byte[] expectedApplicationContent,
-                                      final int expectedFilesCount) {
-        assertThat(generatedFiles).isNotNull();
-        assertThat(generatedFiles).hasSize(expectedFilesCount);
-
-        for (GeneratedFile generatedFile : generatedFiles) {
-            assertThat(generatedFile).isNotNull();
-            assertThat(generatedFile.getType()).isIn(GeneratedFile.Type.APPLICATION, GeneratedFile.Type.APPLICATION_CONFIG, GeneratedFile.Type.APPLICATION_SECTION, GeneratedFile.Type.RULE, GeneratedFile.Type.CLASS);
-            if (generatedFile.getType() == GeneratedFile.Type.APPLICATION) {
-                if (generatedFile.relativePath() == EXPECTED_APPLICATION_NAME.replace(".", "/") + ".java") {
-                    assertThat(generatedFile.contents()).isEqualTo(expectedApplicationContent);
-                }
-            }
-        }
     }
 
     private void assertApplicationPlaceholderReplace(ApplicationContainerGenerator appGenerator, long expectedParams) {

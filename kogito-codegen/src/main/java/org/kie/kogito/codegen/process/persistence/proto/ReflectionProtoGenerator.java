@@ -70,7 +70,8 @@ public class ReflectionProtoGenerator extends AbstractProtoGenerator<Class<?>> {
         }
     }
 
-    public ProtoDataClassesResult<Class<?>> extractDataClasses(Collection<Class<?>> input, String targetDirectory) {
+    @Override
+    public ProtoDataClassesResult<Class<?>> extractDataClasses(Collection<Class<?>> input) {
         Set<Class<?>> dataModelClasses = new HashSet<>();
         List<GeneratedFile> generatedFiles = new ArrayList<>();
         try {
@@ -87,7 +88,8 @@ public class ReflectionProtoGenerator extends AbstractProtoGenerator<Class<?>> {
                     dataModelClasses.add(propertyType);
                 }
 
-                generateModelClassProto(modelClazz, targetDirectory).ifPresent(generatedFiles::add);
+                generateModelClassProto(modelClazz)
+                        .ifPresent(generatedFiles::add);
             }
             this.generateProtoListingFile(generatedFiles).ifPresent(generatedFiles::add);
         } catch (Exception e) {
@@ -199,7 +201,7 @@ public class ReflectionProtoGenerator extends AbstractProtoGenerator<Class<?>> {
         pEnum.addField(field.getName(), ordinal);
     }
 
-    protected Optional<GeneratedFile> generateModelClassProto(Class<?> modelClazz, String targetDirectory) throws Exception {
+    protected Optional<GeneratedFile> generateModelClassProto(Class<?> modelClazz) {
 
         Generated generatedData = modelClazz.getAnnotation(Generated.class);
         if (generatedData != null) {
@@ -218,7 +220,7 @@ public class ReflectionProtoGenerator extends AbstractProtoGenerator<Class<?>> {
             ProtoMessage modelMessage = modelProto.getMessages().stream().filter(msg -> msg.getName().equals(generatedData.name())).findFirst().orElseThrow(() -> new IllegalStateException("Unable to find model message"));
             modelMessage.addField("optional", "org.kie.kogito.index.model.KogitoMetadata", "metadata").setComment(INDEX_COMMENT);
 
-            return Optional.of(generateProtoFiles(processId, targetDirectory, modelProto));
+            return Optional.of(generateProtoFiles(processId, modelProto));
         }
         return Optional.empty();
     }

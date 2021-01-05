@@ -18,8 +18,6 @@ package org.kie.kogito.codegen;
 import org.kie.kogito.codegen.context.KogitoBuildContext;
 
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
 
 /**
  * A code generator for a part of the platform, e.g. rules, processes, etc.
@@ -48,8 +46,4 @@ public interface Generator {
     void updateConfig(ApplicationConfigGenerator cfg);
 
     KogitoBuildContext context();
-    
-    default Map<String, String> getLabels() {
-        return Collections.emptyMap();
-    }
 }

@@ -15,23 +15,52 @@
 
 package org.kie.kogito.maven.plugin;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.kie.kogito.codegen.AddonsConfig;
+import org.kie.kogito.codegen.GeneratedFile;
 import org.kie.kogito.codegen.context.JavaKogitoBuildContext;
 import org.kie.kogito.codegen.context.KogitoBuildContext;
 import org.kie.kogito.codegen.context.QuarkusKogitoBuildContext;
 import org.kie.kogito.codegen.context.SpringBootKogitoBuildContext;
 
 public abstract class AbstractKieMojo extends AbstractMojo {
-    
+
+    @Parameter(required = true, defaultValue = "${project.build.directory}")
+    protected File targetDirectory;
+
+    @Parameter(required = true, defaultValue = "${project.basedir}")
+    protected File projectDir;
+
+    @Parameter
+    protected Map<String, String> properties;
+
+    @Parameter(required = true, defaultValue = "${project}")
+    protected MavenProject project;
+
+    @Parameter(required = true, defaultValue = "${project.build.outputDirectory}")
+    protected File outputDirectory;
+
+    @Parameter(defaultValue = "${project.build.directory}/generated-sources/kogito")
+    protected File generatedSources;
+
+    @Parameter(required = true, defaultValue = "${project.basedir}/src/main/resources")
+    protected File kieSourcesDirectory;
+
     protected void setSystemProperties(Map<String, String> properties) {
 
         if (properties != null) {
@@ -114,5 +143,41 @@ public abstract class AbstractKieMojo extends AbstractMojo {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    protected void writeGeneratedFile(GeneratedFile generatedFile) {
+        try {
+            Path targetPath = pathOf(generatedFile);
+            getLog().info("Generating: " + targetPath);
+            Files.write(
+                    targetPath,
+                    generatedFile.contents());
+        } catch (IOException e) {
+            String message = "Error while writing " + generatedFile.relativePath();
+            getLog().error(message, e);
+            throw new UncheckedIOException(message, e);
+        }
+    }
+
+    protected File getSourcesPath() {
+        return generatedSources;
+    }
+
+    private Path pathOf(GeneratedFile f) throws IOException {
+        File sourceFolder;
+        Path path;
+        if (f.getType() == GeneratedFile.Type.GENERATED_CP_RESOURCE) { // since kogito-maven-plugin is after maven-resource-plugin, need to manually place in the correct (CP) location
+            sourceFolder = outputDirectory;
+            path = Paths.get(sourceFolder.getPath(), f.relativePath());
+        } else if (f.getType().isCustomizable()) {
+            sourceFolder = getSourcesPath();
+            path = Paths.get(sourceFolder.getPath(), f.relativePath());
+        } else {
+            sourceFolder = generatedSources;
+            path = Paths.get(sourceFolder.getPath(), f.relativePath());
+        }
+
+        Files.createDirectories(path.getParent());
+        return path;
     }
 }

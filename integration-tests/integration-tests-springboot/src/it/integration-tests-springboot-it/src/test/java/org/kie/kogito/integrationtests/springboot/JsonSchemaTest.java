@@ -35,6 +35,10 @@ import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInC
 @ContextConfiguration(initializers = InfinispanSpringBootTestResource.Conditional.class)
 public class JsonSchemaTest extends BaseRestTest {
 
+    static {
+        RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
+    }
+
     @Test
     void testJsonSchema() {
         given()

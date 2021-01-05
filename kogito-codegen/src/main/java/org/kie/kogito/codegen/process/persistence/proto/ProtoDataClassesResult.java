@@ -20,19 +20,19 @@ import java.util.Collection;
 import org.kie.kogito.codegen.GeneratedFile;
 
 public class ProtoDataClassesResult<T> {
-    private Collection<T> dataModelClasses;
-    private Collection<GeneratedFile> generatedFiles;
+    private final Collection<T> dataModelClasses;
+    private final Collection<GeneratedFile> generatedFiles;
 
-    public ProtoDataClassesResult(Collection dataModelClasses, Collection<GeneratedFile> generatedFiles){
+    public ProtoDataClassesResult(Collection<T> dataModelClasses, Collection<GeneratedFile> generatedFiles){
         this.dataModelClasses = dataModelClasses;
         this.generatedFiles = generatedFiles;
     }
 
-    public Collection getDataModelClasses(){
+    public Collection<T> getDataModelClasses(){
         return this.dataModelClasses;
     }
 
-    public Collection<GeneratedFile> getGeneratedFiles(){
+    public Collection<GeneratedFile> getGeneratedFiles() {
         return this.generatedFiles;
     }
 }

@@ -16,6 +16,8 @@
 
 package org.kie.kogito.quarkus.deployment;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -194,34 +196,36 @@ public class JandexProtoGenerator extends AbstractProtoGenerator<ClassInfo> {
     }
 
     @Override
-    public ProtoDataClassesResult<ClassInfo> extractDataClasses(Collection<ClassInfo> input, String targetDirectory) {
+    public ProtoDataClassesResult<ClassInfo> extractDataClasses(Collection<ClassInfo> input) {
         List<GeneratedFile> generatedFiles = new ArrayList<>();
         Set<ClassInfo> dataModelClasses = new HashSet<>();
-        try {
-            for (ClassInfo modelClazz : input) {
 
-                for (FieldInfo pd : modelClazz.fields()) {
+        for (ClassInfo modelClazz : input) {
 
-                    if (pd.type().name().toString().startsWith("java.lang")
-                            || pd.type().name().toString().equals(Date.class.getCanonicalName())) {
-                        continue;
-                    }
+            for (FieldInfo pd : modelClazz.fields()) {
 
-                    dataModelClasses.add(index.getClassByName(pd.type().name()));
+                if (pd.type().name().toString().startsWith("java.lang")
+                        || pd.type().name().toString().equals(Date.class.getCanonicalName())) {
+                    continue;
                 }
 
-                generateModelClassProto(modelClazz, targetDirectory).ifPresent(generatedFiles::add);
+                dataModelClasses.add(index.getClassByName(pd.type().name()));
             }
 
+            generateModelClassProto(modelClazz)
+                    .ifPresent(generatedFiles::add);
+        }
+
+        try {
             this.generateProtoListingFile(generatedFiles).ifPresent(generatedFiles::add);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new UncheckedIOException("Error during proto listing file creation", e);
         }
 
         return new ProtoDataClassesResult<>(dataModelClasses, generatedFiles);
     }
 
-    protected Optional<GeneratedFile> generateModelClassProto(ClassInfo modelClazz, String targetDirectory) throws Exception {
+    protected Optional<GeneratedFile> generateModelClassProto(ClassInfo modelClazz) {
 
         String processId = getReferenceOfModel(modelClazz, "reference");
         String name = getReferenceOfModel(modelClazz, "name");
@@ -246,7 +250,7 @@ public class JandexProtoGenerator extends AbstractProtoGenerator<ClassInfo> {
             modelMessage.addField("optional", "org.kie.kogito.index.model.KogitoMetadata", "metadata")
                     .setComment(INDEX_COMMENT);
 
-            return Optional.of(generateProtoFiles(processId, targetDirectory, modelProto));
+            return Optional.of(generateProtoFiles(processId, modelProto));
         }
 
         return Optional.empty();

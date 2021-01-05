@@ -121,9 +121,9 @@ public class GeneratedFileWriter {
                 f.contents());
     }
 
-    private Path pathOf(Path location, String end) {
+    private Path pathOf(Path location, String end) throws IOException {
         Path path = location.resolve(end);
-        path.getParent().toFile().mkdirs();
+        Files.createDirectories(path.getParent());
         return path;
     }
 }

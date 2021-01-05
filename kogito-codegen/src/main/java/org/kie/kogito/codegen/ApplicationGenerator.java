@@ -22,17 +22,12 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.drools.core.util.StringUtils;
 import org.kie.kogito.codegen.context.KogitoBuildContext;
-import org.kie.kogito.codegen.metadata.Labeler;
-import org.kie.kogito.codegen.metadata.MetaDataWriter;
-import org.kie.kogito.codegen.metadata.PrometheusLabeler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,7 +41,6 @@ public class ApplicationGenerator {
     private final ApplicationContainerGenerator applicationMainGenerator;
     private ApplicationConfigGenerator configGenerator;
     private List<Generator> generators = new ArrayList<>();
-    private Map<Class, Labeler> labelers = new HashMap<>();
 
     private KogitoBuildContext context;
     private ClassLoader classLoader;
@@ -58,10 +52,6 @@ public class ApplicationGenerator {
 
         this.configGenerator = new ApplicationConfigGenerator(context);
         this.configGenerator.withAddons(loadAddonList());
-
-        if (context.getAddonsConfig().usePrometheusMonitoring()) {
-            this.labelers.put(PrometheusLabeler.class, new PrometheusLabeler());
-        }
     }
 
     public String targetCanonicalName() {
@@ -75,14 +65,12 @@ public class ApplicationGenerator {
     public Collection<GeneratedFile> generate() {
         List<GeneratedFile> generatedFiles = generateComponents();
         generators.forEach(gen -> gen.updateConfig(configGenerator));
-        generators.forEach(gen -> MetaDataWriter.writeLabelsImageMetadata(context.getTargetDirectory(), gen.getLabels()));
 
         generatedFiles.add(generateApplicationDescriptor());
         generatedFiles.addAll(generateApplicationSections());
 
         generatedFiles.addAll(configGenerator.generate());
 
-        this.labelers.values().forEach(l -> MetaDataWriter.writeLabelsImageMetadata(context.getTargetDirectory(), l.generateLabels()));
         logGeneratedFiles(generatedFiles);
 
         return generatedFiles;

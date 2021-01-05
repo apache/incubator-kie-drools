@@ -428,7 +428,6 @@ public class ProcessCodegen extends AbstractGenerator {
         for (ProcessExecutableModelGenerator processGenerator : processExecutableModelGenerators) {
             if (processGenerator.isPublic()) {
                 publicProcesses.add(processGenerator.extractedProcessId());
-                this.addLabel(processGenerator.label(), "process"); // add the label id of the process with value set to process as resource type
             }
         }
 

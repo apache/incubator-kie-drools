@@ -19,13 +19,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.comments.Comment;
 import com.github.javaparser.ast.stmt.BlockStmt;
-import org.kie.kogito.codegen.ApplicationGenerator;
 import org.kie.kogito.codegen.TemplatedGenerator;
-
-import static com.github.javaparser.StaticJavaParser.parse;
 
 abstract class AbstractEventResourceGenerator {
 

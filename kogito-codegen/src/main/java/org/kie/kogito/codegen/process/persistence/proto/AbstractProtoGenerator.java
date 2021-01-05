@@ -17,10 +17,6 @@
 package org.kie.kogito.codegen.process.persistence.proto;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -31,9 +27,8 @@ import org.kie.kogito.codegen.GeneratedFile;
 
 public abstract class AbstractProtoGenerator<T> implements ProtoGenerator<T> {
 
-    public static final String GENERATED_PROTO_RES_PATH = "META-INF/resources/persistence/protobuf/";
-    public static final String GENERATED_PROTO_PERSISTENCE_PATH = "/classes/persistence/";
-    public static final String LISTING_FILE = "list.json";
+    private static final String GENERATED_PROTO_RES_PATH = "META-INF/resources/persistence/protobuf/";
+    private static final String LISTING_FILE = "list.json";
 
     protected ObjectMapper mapper;
 
@@ -44,17 +39,11 @@ public abstract class AbstractProtoGenerator<T> implements ProtoGenerator<T> {
     /**
      * Generates the proto files from the given model.
      */
-    public final GeneratedFile generateProtoFiles(final String processId, final String targetDirectory, final Proto modelProto) throws IOException {
+    public final GeneratedFile generateProtoFiles(final String processId, final Proto modelProto) {
         String protoFileName = processId + ".proto";
-        GeneratedFile protoFile = new GeneratedFile(GeneratedFile.Type.GENERATED_CP_RESOURCE,
+        return new GeneratedFile(GeneratedFile.Type.GENERATED_CP_RESOURCE,
                                          GENERATED_PROTO_RES_PATH + protoFileName,
-                                         modelProto.toString().getBytes(StandardCharsets.UTF_8));
-
-        Path protoFilePath = Paths.get(targetDirectory, GENERATED_PROTO_PERSISTENCE_PATH + protoFileName);
-        Files.createDirectories(protoFilePath.getParent());
-        Files.write(protoFilePath, modelProto.toString().getBytes(StandardCharsets.UTF_8));
-
-        return protoFile;
+                                         modelProto.toString());
     }
 
     /**

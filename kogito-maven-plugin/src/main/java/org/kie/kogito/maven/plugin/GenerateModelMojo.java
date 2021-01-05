@@ -29,7 +29,6 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -39,14 +38,12 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.apache.maven.project.MavenProject;
 import org.drools.compiler.builder.impl.KogitoKieModuleModelImpl;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.kogito.codegen.AddonsConfig;
 import org.kie.kogito.codegen.ApplicationGenerator;
 import org.kie.kogito.codegen.GeneratedFile;
-import org.kie.kogito.codegen.GeneratedFile.Type;
 import org.kie.kogito.codegen.DashboardGeneratedFileUtils;
 import org.kie.kogito.codegen.context.KogitoBuildContext;
 import org.kie.kogito.codegen.decision.DecisionCodegen;
@@ -67,29 +64,8 @@ public class GenerateModelMojo extends AbstractKieMojo {
 
     public static final PathMatcher drlFileMatcher = FileSystems.getDefault().getPathMatcher("glob:**.drl");
 
-    @Parameter(required = true, defaultValue = "${project.build.directory}")
-    private File targetDirectory;
-
-    @Parameter(required = true, defaultValue = "${project.basedir}")
-    private File projectDir;
-
-    @Parameter(required = true, defaultValue = "${project.build.testSourceDirectory}")
-    private File testDir;
-
-    @Parameter
-    private Map<String, String> properties;
-
-    @Parameter(required = true, defaultValue = "${project}")
-    private MavenProject project;
-
-    @Parameter(required = true, defaultValue = "${project.build.outputDirectory}")
-    private File outputDirectory;
-
     @Parameter(property = "kogito.codegen.sources.directory", defaultValue = "${project.build.directory}/generated-sources/kogito")
-    private File customizableSources;
-
-    @Parameter(readonly = true, defaultValue = "${project.build.directory}/generated-sources/kogito")
-    private File generatedSources;
+    private File customizableSourcesPath;
 
     // due to a limitation of the injector, the following 2 params have to be Strings
     // otherwise we cannot get the default value to null
@@ -126,9 +102,6 @@ public class GenerateModelMojo extends AbstractKieMojo {
     @Parameter(property = "kogito.persistence.enabled", defaultValue = "false")
     private boolean persistence;
 
-    @Parameter(required = true, defaultValue = "${project.basedir}/src/main/resources")
-    private File kieSourcesDirectory;
-
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         try {
@@ -147,12 +120,13 @@ public class GenerateModelMojo extends AbstractKieMojo {
         return onDemand;
     }
 
-    protected File getCustomizableSources() {
-        return customizableSources;
+    @Override
+    protected File getSourcesPath() {
+        return customizableSourcesPath;
     }
 
     protected void addCompileSourceRoots() {
-        project.addCompileSourceRoot(getCustomizableSources().getPath());
+        project.addCompileSourceRoot(getSourcesPath().getPath());
         project.addCompileSourceRoot(generatedSources.getPath());
     }
 
@@ -298,30 +272,6 @@ public class GenerateModelMojo extends AbstractKieMojo {
             getLog().debug("kmodule.xml is missing. Returned the default value.");
             return new KogitoKieModuleModelImpl();
         }
-    }
-
-    private void writeGeneratedFile(GeneratedFile f) throws IOException {
-        Files.write(pathOf(f), f.contents());
-    }
-
-    private Path pathOf(GeneratedFile f) {
-        File sourceFolder;
-        Path path;
-        if (f.getType() == Type.GENERATED_CP_RESOURCE) { // since kogito-maven-plugin is after maven-resource-plugin, need to manually place in the correct (CP) location
-            sourceFolder = outputDirectory;
-            path = Paths.get(sourceFolder.getPath(), f.relativePath());
-            getLog().info("Generating: " + path);
-        } else if (f.getType().isCustomizable()) {
-            sourceFolder = getCustomizableSources();
-            path = Paths.get(sourceFolder.getPath(), f.relativePath());
-            getLog().info("Generating: " + path);
-        } else {
-            sourceFolder = generatedSources;
-            path = Paths.get(sourceFolder.getPath(), f.relativePath());
-        }
-
-        path.getParent().toFile().mkdirs();
-        return path;
     }
 
     private void deleteDrlFiles() throws MojoExecutionException {

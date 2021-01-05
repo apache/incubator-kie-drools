@@ -22,8 +22,6 @@ import org.jbpm.compiler.canonical.ProcessMetaData;
 import org.jbpm.compiler.canonical.ProcessToExecModelGenerator;
 import org.kie.api.definition.process.WorkflowProcess;
 
-import static org.kie.kogito.codegen.metadata.ImageMetaData.LABEL_PREFIX;
-
 public class ProcessExecutableModelGenerator {
 
     private final WorkflowProcess workFlowProcess;
@@ -48,10 +46,6 @@ public class ProcessExecutableModelGenerator {
         String processClazzName = processMetaData.getProcessClassName();
         processFilePath = processClazzName.replace('.', '/') + ".java";
         return processMetaData;
-    }
-
-    public String label() {
-        return LABEL_PREFIX + extractedProcessId();
     }
 
     public String description() {

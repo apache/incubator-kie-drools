@@ -47,7 +47,6 @@ import static com.github.javaparser.StaticJavaParser.parse;
 import static com.github.javaparser.StaticJavaParser.parseExpression;
 import static com.github.javaparser.ast.NodeList.nodeList;
 import static java.util.stream.Collectors.toList;
-import static org.kie.kogito.codegen.metadata.ImageMetaData.LABEL_PREFIX;
 
 public class RuleUnitGenerator implements FileGenerator {
 
@@ -110,10 +109,6 @@ public class RuleUnitGenerator implements FileGenerator {
 
     public String typeName() {
         return typeName;
-    }
-
-    public String label() {
-        return LABEL_PREFIX + typeName();
     }
 
     @Override

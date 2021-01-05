@@ -15,15 +15,12 @@
 
 package org.kie.kogito.codegen.process.persistence;
 
-import java.io.File;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 import com.github.javaparser.ast.CompilationUnit;
@@ -55,9 +52,6 @@ import org.kie.kogito.codegen.GeneratedFile;
 import org.kie.kogito.codegen.context.KogitoBuildContext;
 import org.kie.kogito.codegen.context.QuarkusKogitoBuildContext;
 import org.kie.kogito.codegen.context.SpringBootKogitoBuildContext;
-import org.kie.kogito.codegen.metadata.MetaDataWriter;
-import org.kie.kogito.codegen.metadata.PersistenceLabeler;
-import org.kie.kogito.codegen.metadata.PersistenceProtoFilesLabeler;
 import org.kie.kogito.codegen.process.persistence.proto.Proto;
 import org.kie.kogito.codegen.process.persistence.proto.ProtoDataClassesResult;
 import org.kie.kogito.codegen.process.persistence.proto.ProtoGenerator;
@@ -72,8 +66,7 @@ public class PersistenceGenerator extends AbstractGenerator {
     
     private static final String TEMPLATE_NAME = "templateName";
     private static final String PATH_NAME = "path";
-    
-    private static final String KOGITO_APPLICATION_PROTO = "kogito-application.proto";
+
     private static final String KOGITO_PERSISTENCE_FS_PATH_PROP = "kogito.persistence.filesystem.path";
     
     private static final String KOGITO_PROCESS_INSTANCE_FACTORY_PACKAGE= "org.kie.kogito.persistence.KogitoProcessInstancesFactory";
@@ -85,7 +78,6 @@ public class PersistenceGenerator extends AbstractGenerator {
     private static final String OR_ELSE = "orElse";
 
     private final Collection<?> modelClasses;
-    private final boolean persistence;
     private final ProtoGenerator<?> protoGenerator;
 
     private List<String> parameters;
@@ -93,25 +85,17 @@ public class PersistenceGenerator extends AbstractGenerator {
     private ClassLoader classLoader;
     private String persistenceType;
 
-    private PersistenceProtoFilesLabeler persistenceProtoLabeler = new PersistenceProtoFilesLabeler();
-    private PersistenceLabeler persistenceLabeler = new PersistenceLabeler();
-
-    public PersistenceGenerator(KogitoBuildContext context, Collection<?> modelClasses, boolean persistence, ProtoGenerator<?> protoGenerator, List<String> parameters, String persistenceType) {
-        this(context, modelClasses, persistence, protoGenerator, Thread.currentThread().getContextClassLoader(), parameters, persistenceType);
+    public PersistenceGenerator(KogitoBuildContext context, Collection<?> modelClasses, ProtoGenerator<?> protoGenerator, List<String> parameters, String persistenceType) {
+        this(context, modelClasses, protoGenerator, Thread.currentThread().getContextClassLoader(), parameters, persistenceType);
     }
 
-    public PersistenceGenerator(KogitoBuildContext context, Collection<?> modelClasses, boolean persistence, ProtoGenerator<?> protoGenerator, ClassLoader classLoader, List<String> parameters, String persistenceType) {
+    public PersistenceGenerator(KogitoBuildContext context, Collection<?> modelClasses, ProtoGenerator<?> protoGenerator, ClassLoader classLoader, List<String> parameters, String persistenceType) {
         super(context);
         this.modelClasses = modelClasses;
-        this.persistence = persistence;
         this.protoGenerator = protoGenerator;
         this.classLoader = classLoader;
         this.parameters = parameters;
         this.persistenceType = persistenceType;
-        if (this.persistence) {
-            this.addLabeler(persistenceProtoLabeler);
-            this.addLabeler(persistenceLabeler);
-        }
     }
 
     @Override
@@ -122,20 +106,20 @@ public class PersistenceGenerator extends AbstractGenerator {
 
     @Override
     public Collection<GeneratedFile> generate() {
-        List<GeneratedFile> generatedFiles = new ArrayList<>();
-        if (persistence) {
-            if (persistenceType.equals(INFINISPAN_PERSISTENCE_TYPE)) {
-                infinispanBasedPersistence(generatedFiles);
-            } else if (persistenceType.equals(FILESYSTEM_PERSISTENCE_TYPE)) {
-                fileSystemBasedPersistence(generatedFiles);
-            } else if (persistenceType.equals(MONGODB_PERSISTENCE_TYPE)) {
-                mongodbBasedPersistence(generatedFiles);
-            }
-
+        if(!context().getAddonsConfig().usePersistence()) {
+            return Collections.emptyList();
         }
 
-        MetaDataWriter.writeLabelsImageMetadata(context().getTargetDirectory(), getLabels());
-        return generatedFiles;
+        switch (persistenceType) {
+            case INFINISPAN_PERSISTENCE_TYPE:
+                return infinispanBasedPersistence();
+            case FILESYSTEM_PERSISTENCE_TYPE:
+                return fileSystemBasedPersistence();
+            case MONGODB_PERSISTENCE_TYPE:
+                return mongodbBasedPersistence();
+            default:
+                throw new IllegalArgumentException("Unknown persistenceType " + persistenceType);
+        }
     }
 
     @Override
@@ -144,38 +128,14 @@ public class PersistenceGenerator extends AbstractGenerator {
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
-    protected void infinispanBasedPersistence(List<GeneratedFile> generatedFiles) {
-        File targetDirectory = context().getTargetDirectory();
-        ProtoDataClassesResult protoDataClassesResult = protoGenerator.extractDataClasses((Collection) modelClasses, targetDirectory.toString());
-        generatedFiles.addAll(protoDataClassesResult.getGeneratedFiles());
+    protected Collection<GeneratedFile> infinispanBasedPersistence() {
 
-        Path protoFilePath = Paths.get(targetDirectory.getParent(), "src/main/resources", "/persistence", KOGITO_APPLICATION_PROTO);
-        File persistencePath = Paths.get(targetDirectory.getAbsolutePath(), "/classes/persistence").toFile();
+        ProtoDataClassesResult protoDataClassesResult = protoGenerator.extractDataClasses((Collection) modelClasses);
+        Collection<GeneratedFile> generatedFiles = new ArrayList<>(protoDataClassesResult.getGeneratedFiles());
 
-        if (persistencePath != null && persistencePath.isDirectory()) {
-            // only process proto files generated by the inner generator
-            for (final File protoFile : Objects.requireNonNull(persistencePath.listFiles((dir, name) ->
-                    !KOGITO_APPLICATION_PROTO.equalsIgnoreCase(name) && name.toLowerCase().endsWith(PersistenceProtoFilesLabeler.PROTO_FILE_EXT))))
-                this.persistenceProtoLabeler.processProto(protoFile);
-        }
+        Proto proto = protoGenerator.generate(context().getPackageName(), protoDataClassesResult.getDataModelClasses(), "import \"kogito-types.proto\";");
 
-        if (!protoFilePath.toFile().exists()) {
-            try {
-                // generate proto file based on known data model
-                Proto proto = protoGenerator.generate(context().getPackageName(), protoDataClassesResult.getDataModelClasses(), "import \"kogito-types.proto\";");
-                protoFilePath = Paths.get(targetDirectory.toString(), "classes", "/persistence", KOGITO_APPLICATION_PROTO);
-
-                Files.createDirectories(protoFilePath.getParent());
-                Files.write(protoFilePath, proto.toString().getBytes(StandardCharsets.UTF_8));
-            } catch (Exception e) {
-                throw new RuntimeException("Error during proto file generation/store", e);
-            }
-
-        }
-
-
-        ClassOrInterfaceDeclaration persistenceProviderClazz = new ClassOrInterfaceDeclaration()
-                .setName(KOGITO_PROCESS_INSTANCE_FACTORY_IMPL)
+        ClassOrInterfaceDeclaration persistenceProviderClazz = new ClassOrInterfaceDeclaration().setName(KOGITO_PROCESS_INSTANCE_FACTORY_IMPL)
                 .setModifiers(Modifier.Keyword.PUBLIC)
                 .addExtendedType(KOGITO_PROCESS_INSTANCE_FACTORY_PACKAGE);
 
@@ -208,70 +168,75 @@ public class PersistenceGenerator extends AbstractGenerator {
             persistenceProviderClazz.addMember(templateNameMethod);
         }
         List<String> variableMarshallers = new ArrayList<>();
-        // handler process variable marshallers
-        if (protoFilePath.toFile().exists()) {
-            MarshallerGenerator marshallerGenerator = new MarshallerGenerator(this.classLoader);
-            try {
-                String protoContent = new String(Files.readAllBytes(protoFilePath));
 
-                List<CompilationUnit> marshallers = marshallerGenerator.generate(protoContent);
+        MarshallerGenerator marshallerGenerator = new MarshallerGenerator(this.classLoader);
 
-                if (!marshallers.isEmpty()) {
+        String protoContent = proto.toString();
 
-                    for (CompilationUnit marshallerClazz : marshallers) {
-                        String packageName = marshallerClazz.getPackageDeclaration().map(pd -> pd.getName().toString()).orElse("");
-                        String clazzName = packageName + "." + marshallerClazz.findFirst(ClassOrInterfaceDeclaration.class).map(c -> c.getName().toString()).get();
-
-                        variableMarshallers.add(clazzName);
-
-                        generatedFiles.add(new GeneratedFile(GeneratedFile.Type.CLASS,
-                                clazzName.replace('.', '/') + ".java",
-                                marshallerClazz.toString().getBytes(StandardCharsets.UTF_8)));
-                    }
-                }
-
-                // handler process variable marshallers                                     
-                if (!variableMarshallers.isEmpty()) {
-
-                    MethodDeclaration protoMethod = new MethodDeclaration()
-                            .addModifier(Keyword.PUBLIC)
-                            .setName("proto")
-                            .setType(String.class)
-                            .setBody(new BlockStmt()
-                                    .addStatement(new ReturnStmt(new StringLiteralExpr().setString(protoContent))));
-
-                    persistenceProviderClazz.addMember(protoMethod);
-
-                    ClassOrInterfaceType listType = new ClassOrInterfaceType(null, List.class.getCanonicalName());
-                    BlockStmt marshallersMethodBody = new BlockStmt();
-                    VariableDeclarationExpr marshallerList = new VariableDeclarationExpr(new VariableDeclarator(listType, "list", new ObjectCreationExpr(null, new ClassOrInterfaceType(null, ArrayList.class.getCanonicalName()), NodeList.nodeList())));
-                    marshallersMethodBody.addStatement(marshallerList);
-
-                    for (String marshallerClazz : variableMarshallers) {
-
-                        MethodCallExpr addMarshallerMethod = new MethodCallExpr(new NameExpr("list"), "add").addArgument(new ObjectCreationExpr(null, new ClassOrInterfaceType(null, marshallerClazz), NodeList.nodeList()));
-                        marshallersMethodBody.addStatement(addMarshallerMethod);
-
-                    }
-
-                    marshallersMethodBody.addStatement(new ReturnStmt(new NameExpr("list")));
-
-                    MethodDeclaration marshallersMethod = new MethodDeclaration()
-                            .addModifier(Keyword.PUBLIC)
-                            .setName("marshallers")
-                            .setType(listType)
-                            .setBody(marshallersMethodBody);
-
-                    persistenceProviderClazz.addMember(marshallersMethod);
-                }
-            } catch (Exception e) {
-                throw new RuntimeException("Error when generating marshallers for defined variables", e);
-            }
-            generatePersistenceProviderClazz(generatedFiles, persistenceProviderClazz, compilationUnit);
+        List<CompilationUnit> marshallers;
+        try {
+            marshallers = marshallerGenerator.generate(protoContent);
+        } catch (IOException e) {
+            throw new UncheckedIOException("Impossible to obtain marshaller CompilationUnits", e);
         }
+        if (!marshallers.isEmpty()) {
+
+            for (CompilationUnit marshallerClazz : marshallers) {
+                String packageName = marshallerClazz.getPackageDeclaration().map(pd -> pd.getName().toString()).orElse("");
+                String clazzName = packageName + "." + marshallerClazz.findFirst(ClassOrInterfaceDeclaration.class).map(c -> c.getName().toString()).get();
+
+                variableMarshallers.add(clazzName);
+
+                generatedFiles.add(new GeneratedFile(GeneratedFile.Type.CLASS,
+                        clazzName.replace('.', '/') + ".java",
+                        marshallerClazz.toString()));
+            }
+        }
+
+        // handler process variable marshallers
+        if (!variableMarshallers.isEmpty()) {
+
+            MethodDeclaration protoMethod = new MethodDeclaration()
+                    .addModifier(Keyword.PUBLIC)
+                    .setName("proto")
+                    .setType(String.class)
+                    .setBody(new BlockStmt()
+                            .addStatement(new ReturnStmt(new StringLiteralExpr().setString(protoContent))));
+
+            persistenceProviderClazz.addMember(protoMethod);
+
+            ClassOrInterfaceType listType = new ClassOrInterfaceType(null, List.class.getCanonicalName());
+            BlockStmt marshallersMethodBody = new BlockStmt();
+            VariableDeclarationExpr marshallerList = new VariableDeclarationExpr(new VariableDeclarator(listType, "list", new ObjectCreationExpr(null, new ClassOrInterfaceType(null, ArrayList.class.getCanonicalName()), NodeList.nodeList())));
+            marshallersMethodBody.addStatement(marshallerList);
+
+            for (String marshallerClazz : variableMarshallers) {
+
+                MethodCallExpr addMarshallerMethod = new MethodCallExpr(new NameExpr("list"), "add").addArgument(new ObjectCreationExpr(null, new ClassOrInterfaceType(null, marshallerClazz), NodeList.nodeList()));
+                marshallersMethodBody.addStatement(addMarshallerMethod);
+
+            }
+
+            marshallersMethodBody.addStatement(new ReturnStmt(new NameExpr("list")));
+
+            MethodDeclaration marshallersMethod = new MethodDeclaration()
+                    .addModifier(Keyword.PUBLIC)
+                    .setName("marshallers")
+                    .setType(listType)
+                    .setBody(marshallersMethodBody);
+
+            persistenceProviderClazz.addMember(marshallersMethod);
+        }
+
+        generatePersistenceProviderClazz(persistenceProviderClazz, compilationUnit)
+                .ifPresent(generatedFiles::add);
+
+        return generatedFiles;
     }
 
-    protected void fileSystemBasedPersistence(List<GeneratedFile> generatedFiles) {
+    protected Collection<GeneratedFile> fileSystemBasedPersistence() {
+
+        Collection<GeneratedFile> generatedFiles = new ArrayList<>();
         ClassOrInterfaceDeclaration persistenceProviderClazz = new ClassOrInterfaceDeclaration()
                 .setName(KOGITO_PROCESS_INSTANCE_FACTORY_IMPL)
                 .setModifiers(Modifier.Keyword.PUBLIC)
@@ -301,10 +266,14 @@ public class PersistenceGenerator extends AbstractGenerator {
             persistenceProviderClazz.addMember(pathMethod);
         }
 
-        generatePersistenceProviderClazz(generatedFiles, persistenceProviderClazz, compilationUnit);
+        generatePersistenceProviderClazz(persistenceProviderClazz, compilationUnit)
+                .ifPresent(generatedFiles::add);
+
+        return generatedFiles;
     }
 
-    private void mongodbBasedPersistence(List<GeneratedFile> generatedFiles) {
+    private Collection<GeneratedFile> mongodbBasedPersistence() {
+        Collection<GeneratedFile> generatedFiles = new ArrayList<>();
         ClassOrInterfaceDeclaration persistenceProviderClazz = new ClassOrInterfaceDeclaration()
                                                                                                 .setName(KOGITO_PROCESS_INSTANCE_FACTORY_IMPL).setModifiers(Modifier.Keyword.PUBLIC)
                                                                                                 .addExtendedType(KOGITO_PROCESS_INSTANCE_FACTORY_PACKAGE);
@@ -344,7 +313,10 @@ public class PersistenceGenerator extends AbstractGenerator {
             persistenceProviderClazz.addMember(dbNameMethod);
 
         }
-        generatePersistenceProviderClazz(generatedFiles, persistenceProviderClazz, compilationUnit);
+        generatePersistenceProviderClazz(persistenceProviderClazz, compilationUnit)
+                .ifPresent(generatedFiles::add);
+
+        return generatedFiles;
     }
 
     private ConstructorDeclaration createConstructorForClazz(ClassOrInterfaceDeclaration persistenceProviderClazz) {
@@ -363,15 +335,15 @@ public class PersistenceGenerator extends AbstractGenerator {
         return constructor;
     }
 
-    private void generatePersistenceProviderClazz(List<GeneratedFile> generatedFiles, ClassOrInterfaceDeclaration persistenceProviderClazz, CompilationUnit compilationUnit) {
+    private Optional<GeneratedFile> generatePersistenceProviderClazz(ClassOrInterfaceDeclaration persistenceProviderClazz, CompilationUnit compilationUnit) {
         String pkgName = compilationUnit.getPackageDeclaration().map(pd -> pd.getName().toString()).orElse("");
         Optional<ClassOrInterfaceDeclaration> firstClazz = persistenceProviderClazz.findFirst(ClassOrInterfaceDeclaration.class);
         Optional<String> firstClazzName = firstClazz.map(c -> c.getName().toString());
+        persistenceProviderClazz.getMembers().sort(new BodyDeclarationComparator());
         if (firstClazzName.isPresent()) {
             String clazzName = pkgName + "." + firstClazzName.get();
-
-            generatedFiles.add(new GeneratedFile(GeneratedFile.Type.CLASS, clazzName.replace('.', '/') + ".java", compilationUnit.toString().getBytes(StandardCharsets.UTF_8)));
+            return Optional.of(new GeneratedFile(GeneratedFile.Type.CLASS, clazzName.replace('.', '/') + ".java", compilationUnit.toString()));
         }
-        persistenceProviderClazz.getMembers().sort(new BodyDeclarationComparator());
+        return Optional.empty();
     }
 }
