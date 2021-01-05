@@ -130,40 +130,44 @@ public class MultiAccumulate extends Accumulate {
         throw new UnsupportedOperationException("This should never be called, it's for LambdaGroupByAccumulate only.");
     }
 
-    public void reverse(final Object workingMemoryContext,
-                        final Object context,
-                        final Tuple leftTuple,
-                        final InternalFactHandle handle,
-                        final RightTuple rightParent,
-                        final LeftTuple match,
-                        final WorkingMemory workingMemory) {
+    @Override
+    public boolean tryReverse(final Object workingMemoryContext,
+                              final Object context,
+                              final Tuple leftTuple,
+                              final InternalFactHandle handle,
+                              final RightTuple rightParent,
+                              final LeftTuple match,
+                              final WorkingMemory workingMemory) {
         try {
             Object[] values = (Object[]) match.getContextObject();
             for ( int i = 0; i < this.accumulators.length; i++ ) {
                 Object[] functionContext = (Object[]) ((AccumulateContextEntry)context).getFunctionContext();
-                this.accumulators[i].reverse( ((Object[])workingMemoryContext)[i],
-                                              functionContext[i],
-                                              leftTuple,
-                                              handle,
-                                              values[i],
-                                              this.requiredDeclarations,
-                                              getInnerDeclarationCache(),
-                                              workingMemory );
+                boolean reversed = this.accumulators[i].tryReverse( ((Object[])workingMemoryContext)[i],
+                                                                    functionContext[i],
+                                                                    leftTuple,
+                                                                    handle,
+                                                                    values[i],
+                                                                    this.requiredDeclarations,
+                                                                    getInnerDeclarationCache(),
+                                                                    workingMemory );
+                if (!reversed) {
+                    return false;
+                }
             }
         } catch ( final Exception e ) {
             throw new RuntimeException( e );
         }
+
+        return true;
     }
 
     public boolean supportsReverse() {
-        boolean supports = true;
-        for( Accumulator acc : this.accumulators ) {
-            if( ! acc.supportsReverse() ) {
-                supports = false;
-                break;
+        for ( Accumulator acc : this.accumulators ) {
+            if ( ! acc.supportsReverse() ) {
+                return false;
             }
         }
-        return supports;
+        return true;
     }
 
     public Object[] getResult(final Object workingMemoryContext,
