@@ -15,5 +15,6 @@
   <modules>
     <module>monitoring-core</module>
     <module>monitoring-prometheus</module>
+    <module>monitoring-elastic</module>
   </modules>
 </project>
