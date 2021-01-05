@@ -159,7 +159,7 @@ public class Expressions {
 
     private static MethodCallExpr booleans(String op, Expression left, Expression right) {
         Expression l = coerceToBoolean(left);
-        Expression r = coerceToBoolean(right);
+        Expression r = supplierLambda(coerceToBoolean(right));
 
         return new MethodCallExpr(null, op, new NodeList<>(l, r));
     }
@@ -319,6 +319,12 @@ public class Expressions {
                         new Parameter(UNKNOWN_TYPE, FeelCtx.FEELCTX_N)),
                 new ExpressionStmt(expr),
                 true);
+    }
+
+    public static LambdaExpr supplierLambda(Expression expr) {
+        return new LambdaExpr(new NodeList<>(),
+                              new ExpressionStmt(expr),
+                              true);
     }
 
     public static NamedLambda namedUnaryLambda(Expression expr, String text) {

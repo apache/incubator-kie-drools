@@ -22,6 +22,7 @@ import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Supplier;
 
 import ch.obermuhlner.math.big.BigDecimalMath;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
@@ -267,9 +268,24 @@ public class CompiledFEELSemanticMappings {
     /**
      * FEEL spec Table 38
      * Delegates to {@link InfixOpNode} except evaluationcontext
+     * @deprecated does not support short-circuit of the operator
      */
+    @Deprecated
     public static Boolean and(Object left, Object right) {
         return (Boolean) InfixOpNode.and(left, right, null);
+    }
+
+    public static Boolean and(Boolean left, Supplier<Boolean> right) {
+        if (left != null) {
+            if (left.booleanValue()) {
+                return right.get();
+            } else {
+                return Boolean.FALSE; //left hand operand is false, we do not need to evaluate right side
+            }
+        } else {
+            Boolean rightAND = right.get();
+            return Boolean.FALSE.equals(rightAND) ? Boolean.FALSE : null;
+        }
     }
 
     public static Boolean and(boolean left, Object right) {
@@ -287,9 +303,24 @@ public class CompiledFEELSemanticMappings {
     /**
      * FEEL spec Table 38
      * Delegates to {@link InfixOpNode} except evaluationcontext
+     * @deprecated does not support short-circuit of the operator
      */
+    @Deprecated
     public static Boolean or(Object left, Object right) {
         return (Boolean) InfixOpNode.or(left, right, null);
+    }
+    
+    public static Boolean or(Boolean left, Supplier<Boolean> right) {
+        if (left != null) {
+            if (!left.booleanValue()) {
+                return right.get();
+            } else {
+                return Boolean.TRUE; //left hand operand is true, we do not need to evaluate right side
+            }
+        } else {
+            Boolean rightOR = right.get();
+            return Boolean.TRUE.equals(rightOR) ? Boolean.TRUE : null;
+        }
     }
 
     public static Boolean or(Object left, boolean right) {
