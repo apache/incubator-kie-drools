@@ -138,7 +138,7 @@
     <version.org.reflections>0.9.11</version.org.reflections>
     <version.org.slf4j>1.7.30</version.org.slf4j>
     <version.wiremock>2.27.2</version.wiremock>
-    <version.testcontainers>1.15.0</version.testcontainers>
+    <version.testcontainers>1.15.1</version.testcontainers>
     <version.resteasy.springboot>4.6.0.Final</version.resteasy.springboot>
     <version.springboot>2.3.1.RELEASE</version.springboot>
     <version.spring.kafka>2.5.2.RELEASE</version.spring.kafka>
