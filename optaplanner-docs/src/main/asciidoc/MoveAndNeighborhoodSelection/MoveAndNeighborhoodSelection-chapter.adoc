@@ -867,7 +867,7 @@ Otherwise, do something like this:
       <changeMoveSelector>
         <cacheType>PHASE</cacheType>
       </changeMoveSelector>
-      <swapMoveSelector/>
+      <swapMoveSelector>
         <cacheType>PHASE</cacheType>
       </swapMoveSelector>
       <pillarSwapMoveSelector/><!-- Does not support cacheType PHASE -->
