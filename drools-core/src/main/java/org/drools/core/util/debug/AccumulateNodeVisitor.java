@@ -16,6 +16,8 @@
 
 package org.drools.core.util.debug;
 
+import java.util.Stack;
+
 import org.drools.core.common.NetworkNode;
 import org.drools.core.reteoo.AccumulateNode;
 import org.drools.core.reteoo.AccumulateNode.AccumulateContext;
@@ -23,8 +25,6 @@ import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.spi.Tuple;
 import org.drools.core.util.FastIterator;
-
-import java.util.Stack;
 
 public class AccumulateNodeVisitor extends AbstractNetworkNodeVisitor {
     
@@ -53,7 +53,7 @@ public class AccumulateNodeVisitor extends AbstractNetworkNodeVisitor {
             int i = 0;
             for ( Tuple leftTuple = BetaNode.getFirstTuple( memory.getBetaMemory().getLeftTupleMemory(), it ); leftTuple != null; leftTuple = ( Tuple) it.next( leftTuple  )) {
                 AccumulateContext ctx = (AccumulateContext) leftTuple.getContextObject();
-                if ( ctx != null && ctx.result != null ) {
+                if ( ctx != null ) {
                     i++;
                 }
             }

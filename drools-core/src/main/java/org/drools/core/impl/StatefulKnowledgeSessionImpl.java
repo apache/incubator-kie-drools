@@ -2279,11 +2279,9 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         Declaration[] declarations = ((RuleTerminalNode) tuple.getTupleSink()).getAllDeclarations();
 
         for (int i = 0; i < declarations.length; i++) {
-            FactHandle handle = tuple.get(declarations[i]);
+            InternalFactHandle handle = tuple.get(declarations[i]);
             if (handle instanceof InternalFactHandle) {
-                result.put(declarations[i].getIdentifier(),
-                           declarations[i].getValue(this,
-                                                    ((InternalFactHandle) handle).getObject()));
+                result.put(declarations[i].getIdentifier(), declarations[i].getValue(this, handle));
             }
         }
         return result;

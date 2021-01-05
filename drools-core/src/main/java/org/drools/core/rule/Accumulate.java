@@ -16,12 +16,6 @@
 
 package org.drools.core.rule;
 
-import org.drools.core.WorkingMemory;
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.reteoo.RuleTerminalNode;
-import org.drools.core.spi.Accumulator;
-import org.drools.core.spi.Tuple;
-
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -30,6 +24,17 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+
+import org.drools.core.WorkingMemory;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.reteoo.AccumulateNode;
+import org.drools.core.reteoo.AccumulateNode.GroupByContext;
+import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.RightTuple;
+import org.drools.core.reteoo.RuleTerminalNode;
+import org.drools.core.spi.Accumulator;
+import org.drools.core.spi.Tuple;
+import org.drools.core.util.index.TupleList;
 
 /**
  * A class to represent the Accumulate CE
@@ -44,7 +49,7 @@ public abstract class Accumulate extends ConditionalElement
     protected Declaration[]        requiredDeclarations;
     protected Declaration[]        innerDeclarationCache;
 
-    protected List<Accumulate>     cloned           = Collections.<Accumulate> emptyList();
+    protected List<Accumulate>     cloned           = Collections.emptyList();
 
     public Accumulate() { }
 
@@ -73,7 +78,7 @@ public abstract class Accumulate extends ConditionalElement
 
     public abstract Accumulator[] getAccumulators();
 
-    public abstract Object createContext();
+    public abstract Object createFunctionContext();
 
     /**
      * Executes the initialization block of code
@@ -86,11 +91,11 @@ public abstract class Accumulate extends ConditionalElement
     /**
      * Executes the accumulate (action) code for the given fact handle
      */
-    public abstract void accumulate(final Object workingMemoryContext,
-                                    final Object context,
-                                    final Tuple leftTuple,
-                                    final InternalFactHandle handle,
-                                    final WorkingMemory workingMemory);
+    public abstract Object accumulate(final Object workingMemoryContext,
+                                      final Object context,
+                                      final Tuple match,
+                                      final InternalFactHandle handle,
+                                      final WorkingMemory workingMemory);
 
     /**
      * Executes the reverse (action) code for the given fact handle
@@ -99,6 +104,8 @@ public abstract class Accumulate extends ConditionalElement
                                  final Object context,
                                  final Tuple leftTuple,
                                  final InternalFactHandle handle,
+                                 final RightTuple rightParent,
+                                 final LeftTuple match,
                                  final WorkingMemory workingMemory);
 
     /**
@@ -118,7 +125,7 @@ public abstract class Accumulate extends ConditionalElement
 
     protected void registerClone(Accumulate clone) {
         if ( this.cloned == Collections.EMPTY_LIST ) {
-            this.cloned = new ArrayList<Accumulate>( 1 );
+            this.cloned = new ArrayList<>( 1 );
         }
         this.cloned.add( clone );
     }
@@ -164,7 +171,7 @@ public abstract class Accumulate extends ConditionalElement
         replaceAccumulatorDeclaration(declaration, resolved);
     }
 
-    protected abstract void replaceAccumulatorDeclaration(Declaration declaration,
+    public abstract void replaceAccumulatorDeclaration(Declaration declaration,
                                                           Declaration resolved);
     
     protected Declaration[] getInnerDeclarationCache() {
@@ -189,4 +196,11 @@ public abstract class Accumulate extends ConditionalElement
     public boolean requiresLeftActivation() {
         return true;
     }
+
+    public boolean isGroupBy() {
+        return false;
+    }
+
+    public abstract Object accumulate(Object workingMemoryContext, LeftTuple match, InternalFactHandle childHandle,
+                                      GroupByContext groupByContext, TupleList<AccumulateNode.AccumulateContextEntry> tupleList, WorkingMemory wm);
 }

@@ -361,7 +361,7 @@ public abstract class AbstractHashTable
             return left ?
                     ( requiresCoercion ?
                             extractor.getValueType().coerce( declaration.getExtractor().getValue( tuple.getObject( declaration ) ) ) :
-                            declaration.getValue( null, tuple.getObject( declaration ) ) ) :
+                            declaration.getValue( null, tuple ) ) :
                    extractor.getValue( null, tuple.getFactHandle().getObject() );
         }
     }

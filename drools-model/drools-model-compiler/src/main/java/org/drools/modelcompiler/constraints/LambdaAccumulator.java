@@ -82,12 +82,11 @@ public abstract class LambdaAccumulator implements Accumulator {
     }
 
     @Override
-    public void accumulate(Object workingMemoryContext, Object context, Tuple leftTuple, InternalFactHandle handle, Declaration[] declarations, Declaration[] innerDeclarations, WorkingMemory workingMemory) throws Exception {
+    public Object accumulate(Object workingMemoryContext, Object context, Tuple leftTuple, InternalFactHandle handle, Declaration[] declarations, Declaration[] innerDeclarations, WorkingMemory workingMemory) throws Exception {
         final Object accumulatedObject = getAccumulatedObject(declarations, innerDeclarations, handle, leftTuple, (InternalWorkingMemory) workingMemory);
-        if (supportsReverse()) {
-            (( LambdaAccContext ) context).reverseSupport.put(handle.getId(), accumulatedObject);
-        }
         accumulateFunction.accumulate( (( LambdaAccContext ) context).context, accumulatedObject);
+
+        return accumulatedObject;
     }
 
     protected abstract Object getAccumulatedObject( Declaration[] declarations, Declaration[] innerDeclarations, InternalFactHandle handle, Tuple tuple, InternalWorkingMemory wm );
@@ -98,8 +97,12 @@ public abstract class LambdaAccumulator implements Accumulator {
     }
 
     @Override
-    public void reverse(Object workingMemoryContext, Object context, Tuple leftTuple, InternalFactHandle handle, Declaration[] declarations, Declaration[] innerDeclarations, WorkingMemory workingMemory) throws Exception {
-        accumulateFunction.reverse( (( LambdaAccContext ) context).context, (( LambdaAccContext ) context).reverseSupport.remove(handle.getId()));
+    public void reverse(Object workingMemoryContext, Object context, Tuple leftTuple, InternalFactHandle handle, Object value,
+                        Declaration[] declarations, Declaration[] innerDeclarations, WorkingMemory workingMemory) throws Exception {
+        if (value == null) {
+            throw new IllegalStateException("Reversing a not existing accumulated object for fact " + handle);
+        }
+        accumulateFunction.reverse( (( LambdaAccContext ) context).context, value);
     }
 
     @Override
@@ -207,27 +210,25 @@ public abstract class LambdaAccumulator implements Accumulator {
         }
     }
 
-    private static class LambdaAccContext implements Externalizable {
+    static class LambdaAccContext implements Externalizable {
         private Serializable context;
-        private Map<Long, Object> reverseSupport;
 
         public LambdaAccContext() { }
 
         public LambdaAccContext( Serializable context, boolean supportReverse) {
             this.context = context;
-            if (supportReverse) {
-                reverseSupport = new HashMap<>();
-            }
+        }
+
+        public boolean isEmpty() {
+            return true; //reverseSupport != null && reverseSupport.isEmpty();
         }
 
         public void readExternal( ObjectInput in) throws IOException, ClassNotFoundException {
             context = (Externalizable) in.readObject();
-            reverseSupport = (Map<Long, Object>) in.readObject();
         }
 
         public void writeExternal( ObjectOutput out) throws IOException {
             out.writeObject( context );
-            out.writeObject( reverseSupport );
         }
 
         @Override

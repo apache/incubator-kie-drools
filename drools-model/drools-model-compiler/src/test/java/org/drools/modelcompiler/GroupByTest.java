@@ -14,9 +14,6 @@
 
 package org.drools.modelcompiler;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -29,7 +26,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.assertj.core.api.Assertions;
 import org.drools.core.base.accumulators.CountAccumulateFunction;
-import org.drools.core.reteoo.SubnetworkTuple;
+import org.drools.core.base.accumulators.IntegerMaxAccumulateFunction;
+import org.drools.core.base.accumulators.IntegerSumAccumulateFunction;
+import org.drools.core.common.GroupByFactHandle;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.model.DSL;
 import org.drools.model.Global;
 import org.drools.model.Index;
@@ -52,10 +53,13 @@ import org.drools.modelcompiler.util.EvaluationUtil;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.rule.AccumulateFunction;
 import org.kie.api.runtime.rule.FactHandle;
+import org.kie.api.runtime.rule.Match;
+import org.kie.internal.event.rule.RuleEventListener;
+import org.kie.internal.event.rule.RuleEventManager;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.drools.model.DSL.from;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
@@ -171,16 +175,21 @@ public class GroupByTest {
 
         Variable<String> var_$key = D.declarationOf(String.class);
         Variable<Person> var_$p = D.declarationOf(Person.class);
+        Variable<List> var_$list = D.declarationOf(List.class);
 
         Rule rule1 = D.rule("R1").build(
                 D.groupBy(
                         // Patterns
                         D.pattern(var_$p),
                         // Grouping Function
-                        var_$p, var_$key, person -> person.getName().substring(0, 1)),
+                        var_$p, var_$key, person -> person.getName().substring(0, 1)
+                         ),
                 // Consequence
-                D.on(var_$key, var_results)
-                        .execute(($key, results) -> results.add($key))
+                D.on(var_$key,var_results)
+                        .execute(($key,results) -> {
+                            results.add($key);
+                            //System.out.println($key +  ": " + $list);
+                        })
         );
 
         Model model = new ModelImpl().addRule( rule1 ).addGlobal( var_results );
@@ -238,7 +247,67 @@ public class GroupByTest {
                         D.accFunction(org.drools.core.base.accumulators.IntegerSumAccumulateFunction::new, var_$age).as(var_$sumOfAges)),
                 // Filter
                 D.pattern(var_$sumOfAges)
-                        .expr($sumOfAges -> EvaluationUtil.greaterThanNumbers($sumOfAges, 10)),
+                        .expr($sumOfAges -> EvaluationUtil.greaterThanNumbers($sumOfAges, 36)),
+                // Consequence
+                D.on(var_$key, var_results, var_$sumOfAges)
+                        .execute(($key, results, $sumOfAges) -> results.put($key, $sumOfAges))
+        );
+
+        Model model = new ModelImpl().addRule( rule1 ).addGlobal( var_results );
+        KieSession ksession = KieBaseBuilder.createKieBaseFromModel( model ).newKieSession();
+
+        Map results = new HashMap();
+        ksession.setGlobal( "results", results );
+
+        ksession.insert(new Person("Mark", 42));
+        ksession.insert(new Person("Edson", 38));
+        FactHandle meFH = ksession.insert(new Person("Mario", 45));
+        ksession.insert(new Person("Maciej", 39));
+        ksession.insert(new Person("Edoardo", 33));
+        FactHandle geoffreyFH = ksession.insert(new Person("Geoffrey", 35));
+        ksession.fireAllRules();
+
+        assertEquals( 2, results.size() );
+        assertEquals( 71, results.get("E") );
+        assertEquals( 126, results.get("M") );
+        results.clear();
+
+        ksession.delete( meFH );
+        ksession.fireAllRules();
+
+        assertEquals( 1, results.size() );
+        assertEquals( 81, results.get("M") );
+        results.clear();
+
+        ksession.update(geoffreyFH, new Person("Geoffrey", 40));
+        ksession.insert(new Person("Matteo", 38));
+        ksession.fireAllRules();
+
+        assertEquals( 2, results.size() );
+        assertEquals( 40, results.get("G") );
+        assertEquals( 119, results.get("M") );
+    }
+
+    @Test
+    public void testSumPersonAgeGroupByInitialWithBetaFilter() throws Exception {
+        Global<Map> var_results = D.globalOf(Map.class, "defaultpkg", "results");
+
+        Variable<String> var_$key = D.declarationOf(String.class);
+        Variable<Person> var_$p = D.declarationOf(Person.class);
+        Variable<Integer> var_$age = D.declarationOf(Integer.class);
+        Variable<Integer> var_$sumOfAges = D.declarationOf(Integer.class);
+
+        Rule rule1 = D.rule("R1").build(
+                D.groupBy(
+                        // Patterns
+                        D.pattern(var_$p).bind(var_$age, person -> person.getAge(), D.reactOn("age")),
+                        // Grouping Function
+                        var_$p, var_$key, person -> person.getName().substring(0, 1),
+                        // Accumulate Result (can be more than one)
+                        D.accFunction(org.drools.core.base.accumulators.IntegerSumAccumulateFunction::new, var_$age).as(var_$sumOfAges)),
+                // Filter
+                D.pattern(var_$sumOfAges)
+                        .expr(var_$key, ($sumOfAges, $key) -> EvaluationUtil.greaterThanNumbers($sumOfAges, $key.length())),
                 // Consequence
                 D.on(var_$key, var_results, var_$sumOfAges)
                         .execute(($key, results, $sumOfAges) -> results.put($key, $sumOfAges))
@@ -453,7 +522,7 @@ public class GroupByTest {
         Variable<String> existsVar = D.declarationOf(String.class);
         Variable<Integer> keyVar = D.declarationOf(Integer.class);
         Variable<Long> resultVar = D.declarationOf(Long.class);
-        Variable<Integer> mappedResultVar = D.declarationOf(Integer.class, D.from(resultVar, Long::intValue));
+        Variable<Integer> mappedResultVar = D.declarationOf(Integer.class, from(resultVar, Long::intValue));
 
         D.PatternDef<Integer> pattern = D.pattern(patternVar);
         D.PatternDef<String> exist = D.pattern(existsVar);
@@ -618,7 +687,7 @@ public class GroupByTest {
         Variable<Integer> var_$sumOfAges = D.declarationOf(Integer.class);
 
         // Define key1 with from
-        Variable<Object> var_$key1 = D.declarationOf( Object.class, D.from( var_$key, CompositeKey::getKey1 ) );
+        Variable<Object> var_$key1 = D.declarationOf( Object.class, from( var_$key, CompositeKey::getKey1 ) );
 
         Rule rule1 = D.rule("R1").build(
                 D.groupBy(
@@ -753,6 +822,277 @@ public class GroupByTest {
         ksession.insert(new Person("Edoardo", 33));
         ksession.fireAllRules();
 
-        assertThat(results).containsExactly(80, 75, 71);
+        assertThat(results).contains(80, 75, 71);
+    }
+
+    @Test
+    public void testFromAfterGroupBy() {
+        Global<Set> var_results = D.globalOf( Set.class, "defaultpkg", "results" );
+
+        Variable var_$p1 = D.declarationOf( Person.class );
+        Variable var_$key = D.declarationOf( String.class );
+        Variable var_$count = D.declarationOf( Long.class );
+        Variable var_$remapped1 = D.declarationOf( Object.class, from( var_$key ) );
+        Variable var_$remapped2 = D.declarationOf( Long.class, from( var_$count ) );
+
+        PatternDSL.PatternDef<Person> p1pattern = D.pattern( var_$p1 )
+                .expr( p -> (( Person ) p).getName() != null );
+
+        Rule rule1 = D.rule( "R1" ).build(
+                D.groupBy(
+                        p1pattern,
+                        var_$p1,
+                        var_$key,
+                        Person::getName,
+                        DSL.accFunction( CountAccumulateFunction::new, var_$p1 ).as( var_$count ) ),
+                D.pattern( var_$remapped1 ),
+                D.pattern( var_$remapped2 ),
+                D.on( var_$remapped1, var_$remapped2 )
+                        .execute( ( ctx, name, count ) -> {
+                            if ( !(name instanceof String) ) {
+                                throw new IllegalStateException( "Name not String, but " + name.getClass() );
+                            }
+                        } )
+        );
+
+        Model model = new ModelImpl().addRule( rule1 ).addGlobal( var_results );
+        KieSession ksession = KieBaseBuilder.createKieBaseFromModel( model ).newKieSession();
+
+        Set<Integer> results = new LinkedHashSet<>();
+        ksession.setGlobal( "results", results );
+
+        ksession.insert( new Person( "Mark", 42 ) );
+        ksession.insert( new Person( "Edson", 38 ) );
+        ksession.insert( new Person( "Edoardo", 33 ) );
+        int fireCount = ksession.fireAllRules();
+        assertThat( fireCount ).isGreaterThan( 0 );
+    }
+
+    @Test
+    public void testGroupByUpdatingKey() throws Exception {
+        Global<Map> var_results = D.globalOf(Map.class, "defaultpkg", "results");
+
+        Variable<String> var_$key = D.declarationOf(String.class);
+        Variable<Person> var_$p = D.declarationOf(Person.class);
+        Variable<Integer> var_$age = D.declarationOf(Integer.class);
+        Variable<Integer> var_$sumOfAges = D.declarationOf(Integer.class);
+        Variable<Long> var_$countOfPersons = D.declarationOf(Long.class);
+
+        Rule rule1 = D.rule("R1").build(
+                D.groupBy(
+                        // Patterns
+                        D.pattern(var_$p).bind(var_$age, person -> person.getAge(), D.reactOn("age")),
+                        // Grouping Function
+                        var_$p, var_$key, person -> person.getName().substring(0, 1),
+                        // Accumulate Result (can be more than one)
+                        D.accFunction(org.drools.core.base.accumulators.IntegerSumAccumulateFunction::new, var_$age).as(var_$sumOfAges),
+                        D.accFunction(org.drools.core.base.accumulators.CountAccumulateFunction::new).as(var_$countOfPersons)),
+                // Filter
+                D.pattern(var_$sumOfAges)
+                        .expr($sumOfAges -> EvaluationUtil.greaterThanNumbers($sumOfAges, 10)),
+                // Consequence
+                D.on(var_$key, var_results, var_$sumOfAges, var_$countOfPersons)
+                        .execute(($key, results, $sumOfAges, $countOfPersons) -> results.put($key, $sumOfAges + $countOfPersons.intValue()))
+        );
+
+        Model model = new ModelImpl().addRule( rule1 ).addGlobal( var_results );
+        KieSession ksession = KieBaseBuilder.createKieBaseFromModel( model ).newKieSession();
+
+        Map results = new HashMap();
+        ksession.setGlobal( "results", results );
+
+        Person me = new Person("Mario", 45);
+        FactHandle meFH = ksession.insert(me);
+
+        ksession.insert(new Person("Mark", 42));
+        ksession.insert(new Person("Edson", 38));
+        ksession.insert(new Person("Maciej", 39));
+        ksession.insert(new Person("Edoardo", 33));
+        ksession.fireAllRules();
+
+        assertEquals( 2, results.size() );
+        assertEquals( 73, results.get("E") );
+        assertEquals( 129, results.get("M") );
+        results.clear();
+
+        me.setName("EMario");
+        ksession.update(meFH, me);
+        ksession.fireAllRules();
+
+        assertEquals( 2, results.size() );
+        assertEquals( 119, results.get("E") );
+        assertEquals( 83, results.get("M") );
+    }
+
+    @Test
+    public void doesNotRemoveProperly() {
+        Global<Set> var_results = D.globalOf( Set.class, "defaultpkg", "results" );
+
+        Variable<Person> var_$p1 = D.declarationOf( Person.class );
+        Variable<Integer> var_$key = D.declarationOf( Integer.class );
+
+        PatternDSL.PatternDef<Person> p1pattern = D.pattern( var_$p1 )
+                .expr( p -> p.getName() != null );
+
+        Set<Integer> results = new LinkedHashSet<>();
+        Rule rule1 = D.rule( "R1" ).build(
+                D.groupBy(
+                        p1pattern,
+                        var_$p1,
+                        var_$key,
+                        Person::getAge),
+                D.on( var_$key )
+                        .execute( ( ctx, key ) -> {
+                            results.add(key);
+                        } )
+        );
+
+        Model model = new ModelImpl().addRule( rule1 ).addGlobal( var_results );
+        KieSession ksession = KieBaseBuilder.createKieBaseFromModel( model ).newKieSession();
+
+        (( RuleEventManager ) ksession).addEventListener( new RuleEventListener() {
+            @Override
+            public void onDeleteMatch( Match match) {
+                if (!match.getRule().getName().equals( "R1" )) {
+                    return;
+                }
+                RuleTerminalNodeLeftTuple tuple = (RuleTerminalNodeLeftTuple) match;
+                InternalFactHandle handle = tuple.getFactHandle();
+                if (handle instanceof GroupByFactHandle) {
+                    results.remove( (( GroupByFactHandle ) handle).getGroupKey() );
+                } else {
+                    GroupKey groupKey = (( GroupKey ) match.getObjects().get( 0 ));
+                    results.remove( groupKey.getKey() );
+                }
+            }
+
+            @Override
+            public void onUpdateMatch(Match match) {
+                onDeleteMatch(match);
+            }
+        });
+        ksession.setGlobal( "results", results );
+
+        ksession.insert( new Person( "Mark", 42 ) );
+        ksession.insert( new Person( "Edson", 38 ) );
+        int edoardoAge = 33;
+        FactHandle fh1 = ksession.insert( new Person( "Edoardo", edoardoAge ) );
+        FactHandle fh2 = ksession.insert( new Person( "Edoardo's clone", edoardoAge ) );
+        ksession.fireAllRules();
+        assertThat( results ).contains(edoardoAge);
+
+        // Remove first Edoardo. Nothing should happen, because age 33 is still present.
+        ksession.delete(fh1);
+        ksession.fireAllRules();
+        assertThat( results ).contains(edoardoAge);
+
+        // Remove Edoardo's clone. The group for age 33 should be undone.
+        ksession.delete(fh2);
+        ksession.fireAllRules();
+        assertThat( results ).doesNotContain(edoardoAge);
+    }
+
+    @Test
+    public void testTwoGroupBy() {
+        // DROOLS-5697
+        Global<Map> var_results = D.globalOf(Map.class, "defaultpkg", "results");
+
+        Variable<String> var_$key_1 = D.declarationOf(String.class);
+        Variable<Person> var_$p = D.declarationOf(Person.class);
+        Variable<Integer> var_$age = D.declarationOf(Integer.class);
+        Variable<Integer> var_$sumOfAges = D.declarationOf(Integer.class);
+        Variable<Group> var_$g1 = D.declarationOf(Group.class, "$g1", D.from(var_$key_1, var_$sumOfAges, ($k, $v) -> new Group($k, $v)));
+        Variable<Integer> var_$g1_value = D.declarationOf(Integer.class);
+        Variable<String> var_$key_2 = D.declarationOf(String.class);
+        Variable<Integer> var_$maxOfValues = D.declarationOf(Integer.class);
+
+        Rule rule1 = D.rule("R1").build(
+                D.groupBy(
+                        D.and(
+                                D.groupBy(
+                                        D.pattern(var_$p).bind(var_$age, person -> person.getAge()),
+                                        var_$p, var_$key_1, person -> person.getName().substring(0, 3),
+                                        D.accFunction( IntegerSumAccumulateFunction::new, var_$age).as(var_$sumOfAges)),
+                                D.pattern(var_$g1).bind(var_$g1_value, group -> (Integer) group.getValue()) ),
+                        var_$g1, var_$key_2, groupResult -> ((String)groupResult.getKey()).substring(0, 2),
+                        D.accFunction( IntegerMaxAccumulateFunction::new, var_$g1_value).as(var_$maxOfValues)),
+                D.on(var_$key_2, var_results, var_$maxOfValues)
+                        .execute(($key, results, $maxOfValues) -> {
+                            System.out.println($key + " -> " + $maxOfValues);
+                            results.put($key, $maxOfValues);
+                        })
+        );
+
+        Model model = new ModelImpl().addRule( rule1 ).addGlobal( var_results );
+        KieSession ksession = KieBaseBuilder.createKieBaseFromModel( model ).newKieSession();
+
+        Map results = new HashMap();
+        ksession.setGlobal( "results", results );
+
+        ksession.insert(new Person("Mark", 42));
+        ksession.insert(new Person("Edoardo", 33));
+        FactHandle meFH = ksession.insert(new Person("Mario", 45));
+        ksession.insert(new Person("Maciej", 39));
+        ksession.insert(new Person("Edson", 38));
+        FactHandle geoffreyFH = ksession.insert(new Person("Geoffrey", 35));
+        ksession.fireAllRules();
+        System.out.println("-----");
+
+        /*
+         * In the first groupBy:
+         *   Mark+Mario become "(Mar, 87)"
+         *   Maciej becomes "(Mac, 39)"
+         *   Geoffrey becomes "(Geo, 35)"
+         *   Edson becomes "(Eds, 38)"
+         *   Edoardo becomes "(Edo, 33)"
+         *
+         * Then in the second groupBy:
+         *   "(Mar, 87)" and "(Mac, 39)" become "(Ma, 87)"
+         *   "(Eds, 38)" and "(Edo, 33)" become "(Ed, 38)"
+         *   "(Geo, 35)" becomes "(Ge, 35)"
+         */
+
+        assertEquals( 3, results.size() );
+        assertEquals( 87, results.get("Ma") );
+        assertEquals( 38, results.get("Ed") );
+        assertEquals( 35, results.get("Ge") );
+        results.clear();
+
+        ksession.delete( meFH );
+        ksession.fireAllRules();
+        System.out.println("-----");
+
+        // No Mario anymore, so "(Mar, 42)" instead of "(Mar, 87)".
+        // Therefore "(Ma, 42)".
+        assertEquals( 1, results.size() );
+        assertEquals( 42, results.get("Ma") );
+        results.clear();
+
+        // "(Geo, 35)" is gone.
+        // "(Mat, 38)" is added, but Mark still wins, so "(Ma, 42)" stays.
+        ksession.delete(geoffreyFH);
+        ksession.insert(new Person("Matteo", 38));
+        ksession.fireAllRules();
+
+        assertEquals( 1, results.size() );
+        assertEquals( 42, results.get("Ma") );
+    }
+
+    public static class Group {
+        private final Object key;
+        private final Object value;
+
+        public Group( Object key, Object value ) {
+            this.key = key;
+            this.value = value;
+        }
+
+        public Object getKey() {
+            return key;
+        }
+
+        public Object getValue() {
+            return value;
+        }
     }
 }
