@@ -224,6 +224,7 @@ public class ValueSelectorConfig extends SelectorConfig<ValueSelectorConfig> {
                 inheritedConfig.getDowncastEntityClass());
         variableName = ConfigUtils.inheritOverwritableProperty(variableName, inheritedConfig.getVariableName());
         nearbySelectionConfig = ConfigUtils.inheritConfig(nearbySelectionConfig, inheritedConfig.getNearbySelectionConfig());
+        filterClass = ConfigUtils.inheritOverwritableProperty(filterClass, inheritedConfig.getFilterClass());
         cacheType = ConfigUtils.inheritOverwritableProperty(cacheType, inheritedConfig.getCacheType());
         selectionOrder = ConfigUtils.inheritOverwritableProperty(selectionOrder, inheritedConfig.getSelectionOrder());
         sorterManner = ConfigUtils.inheritOverwritableProperty(

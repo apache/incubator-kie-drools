@@ -61,7 +61,11 @@
   <exhaustiveSearch>
     <exhaustiveSearchType>BRANCH_AND_BOUND</exhaustiveSearchType>
     <nodeExplorationType>BREADTH_FIRST</nodeExplorationType>
-    <changeMoveSelector/>
+    <changeMoveSelector>
+      <valueSelector variableName="value">
+        <filterClass>org.optaplanner.core.config.solver.SolverConfigTest$DummyValueFilter</filterClass>
+      </valueSelector>
+    </changeMoveSelector>
   </exhaustiveSearch>
   <localSearch>
     <termination>
