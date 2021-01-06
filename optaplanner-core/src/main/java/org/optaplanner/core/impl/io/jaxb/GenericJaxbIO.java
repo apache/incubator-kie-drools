@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.Writer;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Deque;
@@ -119,6 +120,11 @@ public final class GenericJaxbIO<T> implements JaxbIO<T> {
 
     private Schema readSchemaResource(String schemaResource) {
         String nonNullSchemaResource = Objects.requireNonNull(schemaResource);
+        URL schemaResourceUrl = GenericJaxbIO.class.getResource(nonNullSchemaResource);
+        if (schemaResourceUrl == null) {
+            throw new IllegalArgumentException("The XML schema (" + nonNullSchemaResource + ") does not exist.\n"
+                    + "Maybe the JAXB maven plugin did not run?");
+        }
         SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
         try {
             schemaFactory.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
@@ -131,7 +137,7 @@ public final class GenericJaxbIO<T> implements JaxbIO<T> {
         }
 
         try {
-            return schemaFactory.newSchema(GenericJaxbIO.class.getResource(nonNullSchemaResource));
+            return schemaFactory.newSchema(schemaResourceUrl);
         } catch (SAXException saxException) {
             String errorMessage =
                     String.format("Failed to read an XML Schema resource (%s) to validate an XML for a root class (%s).",
