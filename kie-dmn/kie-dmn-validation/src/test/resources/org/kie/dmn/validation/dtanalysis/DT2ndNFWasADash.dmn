@@ -1,0 +1,127 @@
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://kiegroup.org/dmn/_B90592C8-942D-4BEA-93D6-B43EE327F892" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_D1DB2903-3C60-43F4-820C-7F91E5BDFDFE" name="DT2ndNFWasADash" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://kiegroup.org/dmn/_B90592C8-942D-4BEA-93D6-B43EE327F892">
+  <dmn:extensionElements/>
+  <dmn:inputData id="_12FA8D30-DAAD-41EC-84BD-E662800CC8DA" name="is under the influence">
+    <dmn:extensionElements/>
+    <dmn:variable id="_7C2A7EE0-16B5-4AAF-93E9-BC7E30F80959" name="is under the influence" typeRef="boolean"/>
+  </dmn:inputData>
+  <dmn:inputData id="_E80F3554-4E73-4105-A2A3-48D68516460C" name="has driving license">
+    <dmn:extensionElements/>
+    <dmn:variable id="_4351333E-8EDC-4403-B08B-8A771F4A8C64" name="has driving license" typeRef="boolean"/>
+  </dmn:inputData>
+  <dmn:decision id="_F90E9579-63DE-4217-808C-89D4BC9FD1B0" name="status">
+    <dmn:extensionElements/>
+    <dmn:variable id="_C8D8DE7D-2136-4C39-8EC9-863E7A53A7E1" name="status" typeRef="string"/>
+    <dmn:informationRequirement id="_84F74FA6-DA49-4A98-845F-DD0046FD03F2">
+      <dmn:requiredInput href="#_E80F3554-4E73-4105-A2A3-48D68516460C"/>
+    </dmn:informationRequirement>
+    <dmn:informationRequirement id="_DE925329-5EA3-433A-827C-849C9906FAC4">
+      <dmn:requiredInput href="#_12FA8D30-DAAD-41EC-84BD-E662800CC8DA"/>
+    </dmn:informationRequirement>
+    <dmn:decisionTable id="_C40525EF-9735-410B-A070-E0336E108268" hitPolicy="UNIQUE" preferredOrientation="Rule-as-Row">
+      <dmn:input id="_3748EA48-02D9-4444-A10B-FCCB015885F5">
+        <dmn:inputExpression id="_C6A1CFAA-3604-427F-9DBA-2AFE73FBC8DA" typeRef="boolean">
+          <dmn:text>is under the influence</dmn:text>
+        </dmn:inputExpression>
+      </dmn:input>
+      <dmn:input id="_5AB34681-4BCB-4A9B-AAED-A0F2350FBC6F">
+        <dmn:inputExpression id="_FE87E7DE-9B8C-48EA-9426-1A5587969A37" typeRef="boolean">
+          <dmn:text>has driving license</dmn:text>
+        </dmn:inputExpression>
+      </dmn:input>
+      <dmn:output id="_8E864B0E-52E3-4538-AED2-5CF84F6D1FAE"/>
+      <dmn:annotation name="annotation-1"/>
+      <dmn:rule id="_CFF58926-F9FA-4196-8882-5F751CFBA309">
+        <dmn:inputEntry id="_15390BC6-A3C1-4F1F-85DB-B0EBB3A97F6A">
+          <dmn:text>true</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_4A48FF07-02B0-462C-B580-C0AE566D60B2">
+          <dmn:text>true, false</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_6EB27090-9D0F-4D40-83A2-39580E439309">
+          <dmn:text>"shall not drive"</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text/>
+        </dmn:annotationEntry>
+      </dmn:rule>
+      <dmn:rule id="_B81AF562-97E5-4FD2-82D0-AD59249EE37D">
+        <dmn:inputEntry id="_60F517E8-59A9-4FCE-A32D-920AA0083BFD">
+          <dmn:text>false</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_61A0342F-1E81-43DE-87C0-CAD1925CFA4F">
+          <dmn:text>true</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_058DB00E-2F73-4473-A06D-890C4531F753">
+          <dmn:text>"might drive"</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text/>
+        </dmn:annotationEntry>
+      </dmn:rule>
+      <dmn:rule id="_839CD42B-694F-40F4-9590-FC265F82FE5C">
+        <dmn:inputEntry id="_212E5C31-F545-4090-A73F-64745ECD1A32">
+          <dmn:text>false</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_BDB12F6F-8A29-4CC5-80A7-DEC63539D3AB">
+          <dmn:text>false</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_B2C4786F-CDB9-4FEF-B16B-93EACD2B5836">
+          <dmn:text>"missing license"</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text/>
+        </dmn:annotationEntry>
+      </dmn:rule>
+    </dmn:decisionTable>
+  </dmn:decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_65EB1890-F5B7-41C9-BDEF-8EDA1F5E3B0C" name="DRG">
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_C40525EF-9735-410B-A070-E0336E108268">
+            <kie:width>50</kie:width>
+            <kie:width>151</kie:width>
+            <kie:width>133</kie:width>
+            <kie:width>229</kie:width>
+            <kie:width>100</kie:width>
+          </kie:ComponentWidths>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="dmnshape-drg-_12FA8D30-DAAD-41EC-84BD-E662800CC8DA" dmnElementRef="_12FA8D30-DAAD-41EC-84BD-E662800CC8DA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="328" y="189" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_E80F3554-4E73-4105-A2A3-48D68516460C" dmnElementRef="_E80F3554-4E73-4105-A2A3-48D68516460C" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="335" y="80" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_F90E9579-63DE-4217-808C-89D4BC9FD1B0" dmnElementRef="_F90E9579-63DE-4217-808C-89D4BC9FD1B0" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="515" y="80" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="dmnedge-drg-_84F74FA6-DA49-4A98-845F-DD0046FD03F2" dmnElementRef="_84F74FA6-DA49-4A98-845F-DD0046FD03F2">
+        <di:waypoint x="435" y="105"/>
+        <di:waypoint x="515" y="105"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-drg-_DE925329-5EA3-433A-827C-849C9906FAC4" dmnElementRef="_DE925329-5EA3-433A-827C-849C9906FAC4">
+        <di:waypoint x="378" y="214"/>
+        <di:waypoint x="565" y="105"/>
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>

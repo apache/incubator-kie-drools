@@ -32,6 +32,7 @@ import org.kie.api.builder.model.WorkItemHandlerModel;
 import org.kie.api.conf.DeclarativeAgendaOption;
 import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.conf.EventProcessingOption;
+import org.kie.api.conf.KieBaseMutabilityOption;
 import org.kie.api.conf.SequentialOption;
 import org.kie.api.conf.SessionsPoolOption;
 import org.kie.api.runtime.conf.BeliefSystemTypeOption;
@@ -57,6 +58,7 @@ public class KieModuleModelTest {
 
         KieBaseModel kieBaseModel1 = kproj.newKieBaseModel("KBase1")
                 .setEqualsBehavior( EqualityBehaviorOption.EQUALITY )
+                .setMutability( KieBaseMutabilityOption.DISABLED )
                 .setEventProcessingMode( EventProcessingOption.STREAM )
                 .setDeclarativeAgenda( DeclarativeAgendaOption.ENABLED )
                 .setSequential( SequentialOption.YES )
@@ -108,6 +110,7 @@ public class KieModuleModelTest {
         KieBaseModel kieBaseModelXML = kprojXml.getKieBaseModels().get("KBase1");
         assertSame(kprojXml, ((KieBaseModelImpl)kieBaseModelXML).getKModule());
         assertEquals(EqualityBehaviorOption.EQUALITY, kieBaseModelXML.getEqualsBehavior());
+        assertEquals(KieBaseMutabilityOption.DISABLED, kieBaseModelXML.getMutability());
         assertEquals(EventProcessingOption.STREAM, kieBaseModelXML.getEventProcessingMode());
         assertEquals(DeclarativeAgendaOption.ENABLED, kieBaseModelXML.getDeclarativeAgenda());
         assertEquals(SequentialOption.YES, kieBaseModelXML.getSequential());

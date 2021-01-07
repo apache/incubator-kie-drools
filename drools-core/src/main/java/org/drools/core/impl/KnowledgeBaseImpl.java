@@ -148,7 +148,6 @@ public class KnowledgeBaseImpl
     private transient Map<String, Class<?>> globals;
 
     private final transient Queue<DialectRuntimeRegistry> reloadPackageCompilationData = new ConcurrentLinkedQueue<>();
-    private final transient AtomicBoolean hasPackageCompilationData = new AtomicBoolean(false);
 
     private KieBaseEventSupport eventSupport = new KieBaseEventSupport(this);
 
@@ -191,6 +190,8 @@ public class KnowledgeBaseImpl
 
     private KieSessionsPool sessionPool;
 
+    private boolean mutable = true;
+
     public KnowledgeBaseImpl() { }
 
     public KnowledgeBaseImpl(final String id,
@@ -220,6 +221,8 @@ public class KnowledgeBaseImpl
         if (this.config.getSessionPoolSize() > 0) {
             sessionPool = newKieSessionsPool( this.config.getSessionPoolSize() );
         }
+
+        mutable = this.config.isMutabilityEnabled();
     }
 
     @Override
@@ -1664,7 +1667,7 @@ public class KnowledgeBaseImpl
     }
 
     public void executeQueuedActions() {
-        if (hasPackageCompilationData.compareAndSet( true, false )) {
+        if (mutable) {
             DialectRuntimeRegistry registry;
             while ((registry = reloadPackageCompilationData.poll()) != null) {
                 registry.onBeforeExecute();
@@ -1674,7 +1677,6 @@ public class KnowledgeBaseImpl
 
     private void addReloadDialectDatas( DialectRuntimeRegistry registry ) {
         this.reloadPackageCompilationData.offer( registry );
-        hasPackageCompilationData.set( true );
     }
 
     public RuleBasePartitionId createNewPartitionId() {

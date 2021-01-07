@@ -23,14 +23,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Stream;
 
 import org.assertj.core.api.Assertions;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.EntryPointNode;
+import org.drools.core.reteoo.FromNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.core.reteoo.Sink;
+import org.drools.core.rule.EntryPointId;
 import org.drools.testcoverage.common.model.Address;
 import org.drools.testcoverage.common.model.Cheese;
 import org.drools.testcoverage.common.model.Cheesery;
@@ -247,6 +251,16 @@ public class FromTest {
         final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("from-test",
                                                                          kieBaseTestConfiguration,
                                                                          drl);
+
+        EntryPointNode epn = (( InternalKnowledgeBase ) kbase).getRete().getEntryPointNode( EntryPointId.DEFAULT );
+        ObjectTypeNode otn = epn.getObjectTypeNodes().get( new ClassObjectType( Cheesery.class) );
+        Sink[] otnSinks = otn.getSinks();
+        assertEquals( 1, otnSinks.length );
+        LeftInputAdapterNode lia = (LeftInputAdapterNode) otnSinks[0];
+        Sink[] liaSinks = lia.getSinks();
+        // there must be only 1 shared from node
+        assertEquals( 1, Stream.of(liaSinks).filter( sink -> sink instanceof FromNode ).count() );
+
         final KieSession ksession = kbase.newKieSession();
         try {
             final List<?> output1 = new ArrayList<>();

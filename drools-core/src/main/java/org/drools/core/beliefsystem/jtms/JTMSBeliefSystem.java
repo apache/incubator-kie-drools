@@ -238,7 +238,7 @@ public class JTMSBeliefSystem<M extends JTMSMode<M>>
         ObjectTypeConfigurationRegistry reg;
         ObjectTypeConf typeConf;
         reg = ep.getObjectTypeConfigurationRegistry();
-        typeConf = reg.getObjectTypeConf( ep.getEntryPoint(), fh.getObject() );
+        typeConf = reg.getOrCreateObjectTypeConf( ep.getEntryPoint(), fh.getObject() );
         return typeConf;
     }
 

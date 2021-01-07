@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import org.drools.compiler.compiler.AnalysisResult;
@@ -69,6 +70,7 @@ import org.drools.core.time.TimerExpression;
 import org.drools.core.util.index.IndexUtil;
 import org.drools.mvel.asm.AsmUtil;
 import org.drools.mvel.builder.MVELAnalysisResult;
+import org.drools.mvel.builder.MVELBeanCreator;
 import org.drools.mvel.builder.MVELDialect;
 import org.drools.mvel.builder.MVELDialectConfiguration;
 import org.drools.mvel.expr.MVELCompilationUnit;
@@ -322,8 +324,8 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
     }
 
     public EvaluatorDefinition.Target getRightTarget( final InternalReadAccessor extractor ) {
-        return ( extractor.isSelfReference() && 
-                 !(Date.class.isAssignableFrom( extractor.getExtractToClass() ) || 
+        return ( extractor.isSelfReference() &&
+                 !(Date.class.isAssignableFrom( extractor.getExtractToClass() ) ||
                          Number.class.isAssignableFrom( extractor.getExtractToClass() ))) ? EvaluatorDefinition.Target.HANDLE : EvaluatorDefinition.Target.FACT;
     }
 
@@ -474,7 +476,29 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
             if (Number.class.isAssignableFrom(boxed1) && Number.class.isAssignableFrom(boxed2)) {
                 return true;
             }
+            if (areEqualityCompatibleEnums(boxed1, boxed2)) {
+                return true;
+            }
             return !Modifier.isFinal(c1.getModifiers()) && !Modifier.isFinal(c2.getModifiers());
+        }
+
+        protected boolean areEqualityCompatibleEnums(final Class<?> boxed1,
+                                                     final Class<?> boxed2) {
+            return boxed1.isEnum() && boxed2.isEnum() && boxed1.getName().equals(boxed2.getName())
+                    && equalEnumConstants(boxed1.getEnumConstants(), boxed2.getEnumConstants());
+        }
+
+        private boolean equalEnumConstants(final Object[] aa,
+                                           final Object[] bb) {
+            if (aa.length != bb.length) {
+                return false;
+            }
+            for (int i = 0; i < aa.length; i++) {
+                if (!Objects.equals(aa[i].getClass().getName(), bb[i].getClass().getName())) {
+                    return false;
+                }
+            }
+            return true;
         }
 
         @Override

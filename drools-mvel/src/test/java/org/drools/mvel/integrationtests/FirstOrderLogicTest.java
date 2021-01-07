@@ -487,6 +487,7 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
         final Person john = new Person( "John" );
         john.setStatus( qc.getState() );
         john.setAlive( false );
+        ksession.insert( john );
 
         ksession.fireAllRules();
 

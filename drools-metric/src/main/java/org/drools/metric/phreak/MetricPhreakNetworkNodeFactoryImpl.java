@@ -23,6 +23,7 @@ import org.drools.core.phreak.PhreakBranchNode;
 import org.drools.core.phreak.PhreakEvalNode;
 import org.drools.core.phreak.PhreakExistsNode;
 import org.drools.core.phreak.PhreakFromNode;
+import org.drools.core.phreak.PhreakGroupByNode;
 import org.drools.core.phreak.PhreakJoinNode;
 import org.drools.core.phreak.PhreakNetworkNodeFactory;
 import org.drools.core.phreak.PhreakNotNode;
@@ -95,6 +96,15 @@ public class MetricPhreakNetworkNodeFactoryImpl implements PhreakNetworkNodeFact
             return new PhreakAccumulateNodeMetric();
         } else {
             return new PhreakAccumulateNode();
+        }
+    }
+
+    @Override
+    public PhreakGroupByNode createPhreakGroupByNode() {
+        if (MetricLogUtils.getInstance().isEnabled()) {
+            return new PhreakGroupByNodeMetric();
+        } else {
+            return new PhreakGroupByNode();
         }
     }
 

@@ -16,15 +16,15 @@
 
 package org.drools.core.time.impl;
 
-import org.drools.core.time.Trigger;
-import org.kie.api.runtime.Calendars;
-
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+
+import org.drools.core.time.Trigger;
+import org.kie.api.runtime.Calendars;
 
 public class IntervalTrigger
     implements
@@ -217,15 +217,8 @@ public class IntervalTrigger
 
     private Date getTimeAfter() {
         this.repeatCount++;
-        
-        Date date;
-        if ( this.period != 0 ) {
-            // repeated fires for the given period
-            date = new Date( nextFireTime.getTime() + this.period );
-        } else {
-            date = null;
-        }
-        return date;
+        // repeated fires for the given period
+        return this.period != 0 && this.nextFireTime != null ? new Date( this.nextFireTime.getTime() + this.period ) : null;
     }
 
     public void readExternal(ObjectInput in) throws IOException,

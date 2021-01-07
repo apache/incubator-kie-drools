@@ -1,9 +1,7 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
- *
+ * Copyright (c) 2020. Red Hat, Inc. and/or its affiliates.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
  *
  *       http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -14,8 +12,10 @@
  * limitations under the License.
  */
 
-package org.drools.core.reteoo;
+package org.drools.core.common;
 
-public interface ContextOwner {
-    <T> T getContext(Class<T> contextClass);
+import java.util.Iterator;
+
+public interface FactHandleClassStore {
+    Iterator<InternalFactHandle> iterator();
 }
