@@ -12,3 +12,6 @@ nbproject
 
 # generated files
 dependency-reduced-pom.xml
+
+#CI
+!.ci

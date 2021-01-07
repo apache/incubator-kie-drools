@@ -25,7 +25,7 @@ public class ModifyCompilerTest implements CompilerTest {
     public void testModify() {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{  modify($p) { setCanDrink(true); } }",
-             "{ { ($p).setCanDrink(true); update($p); } }",
+             "{ { ($p).setCanDrink(true); } update($p); }",
              result -> assertThat(allUsedBindings(result), containsInAnyOrder("$p")));
     }
 
@@ -33,7 +33,7 @@ public class ModifyCompilerTest implements CompilerTest {
     public void testModifyWithLambda() {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{  modify($p) {  setCanDrinkLambda(() -> true); } }",
-             "{ { ($p).setCanDrinkLambda(() -> true); update($p); } }",
+             "{ { ($p).setCanDrinkLambda(() -> true); } update($p); }",
              result -> assertThat(allUsedBindings(result), containsInAnyOrder("$p")));
     }
 
@@ -52,8 +52,8 @@ public class ModifyCompilerTest implements CompilerTest {
                      "} else { " +
                          "{ " +
                          "  ($fact).setResult(\"FIRST\"); " +
-                         "  update($fact); " +
-                         "} " +
+                     "   } " +
+                     "  update($fact); " +
                      "} " +
                      "} ",
              result -> assertThat(allUsedBindings(result), containsInAnyOrder("$fact")));
@@ -61,10 +61,10 @@ public class ModifyCompilerTest implements CompilerTest {
 
     @Override
     public void test(Consumer<MvelCompilerContext> testFunction,
-                      String actualExpression,
+                      String inputExpression,
                       String expectedResult,
                       Consumer<ParsingResult> resultAssert) {
-        ParsingResult compiled = new ModifyCompiler().compile(actualExpression);
+        ParsingResult compiled = new ModifyCompiler().compile(inputExpression);
         assertThat(compiled.resultAsString(), equalToIgnoringWhiteSpace(expectedResult));
         resultAssert.accept(compiled);
     }

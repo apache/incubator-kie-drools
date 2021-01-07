@@ -1,0 +1,31 @@
+name: Kogito Build Chain Full Downstream
+
+on: [pull_request]
+
+jobs:
+  build-chain:
+    strategy:
+      matrix:
+        java-version: [11]
+      fail-fast: false
+    runs-on: ubuntu-latest
+    name: Maven Build
+    steps:
+      - name: Set up JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: ${{ matrix.java-version }}
+      - name: Cache Maven packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+      - name: Build Chain ${{ matrix.java-version }}
+        id: build-chain
+        uses: kiegroup/github-action-build-chain@v2.4
+        with:
+          definition-file: https://raw.githubusercontent.com/${GROUP}/drools/${BRANCH}/.ci/kogito-pull-request-config.yaml
+          starting-project: kiegroup/kogito-examples
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"

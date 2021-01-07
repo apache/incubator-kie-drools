@@ -76,7 +76,8 @@ public class KiePMMLScorecardModelFactoryTest {
         KiePMMLScorecardModel retrieved = KiePMMLScorecardModelFactory.getKiePMMLScorecardModel(pmml.getDataDictionary(),
                                                                                                 pmml.getTransformationDictionary(),
                                                                                                 scorecardModel,
-                                                                                                fieldTypeMap);
+                                                                                                fieldTypeMap,
+                                                                                                Thread.currentThread().getContextClassLoader());
         assertNotNull(retrieved);
         assertEquals(scorecardModel.getModelName(), retrieved.getName());
         assertEquals(TARGET_FIELD, retrieved.getTargetField());

@@ -1,8 +1,10 @@
 package org.drools.mvelcompiler;
 
+import java.util.List;
 import java.util.Map;
 
 import org.drools.Person;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
@@ -111,6 +113,52 @@ public class MvelCompilerTest implements CompilerTest {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{ $p.salary = $p.salary + 50000; }",
              "{ $p.setSalary($p.getSalary().add(new java.math.BigDecimal(50000))); }");
+    }
+
+    @Test
+    public void testSetterBigDecimalConstant() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ $p.salary = 50000; }",
+             "{ $p.setSalary(new java.math.BigDecimal(50000)); }");
+    }
+
+    @Test
+    public void testSetterBigDecimalConstantFromLong() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ $p.salary = 50000L; }",
+             "{ $p.setSalary(new java.math.BigDecimal(50000L)); }");
+    }
+
+    @Test
+    public void testSetterBigDecimalConstantModify() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ modify ( $p )  { salary = 50000 }; }",
+             "{ $p.setSalary(new java.math.BigDecimal(50000)); }",
+             result -> assertThat(allUsedBindings(result), containsInAnyOrder("$p")));
+    }
+
+    @Test
+    public void testSetterBigDecimalLiteralModify() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ modify ( $p )  { salary = 50000B }; }",
+             "{ $p.setSalary(new java.math.BigDecimal(\"50000\")); }",
+             result -> assertThat(allUsedBindings(result), containsInAnyOrder("$p")));
+    }
+
+    @Test
+    public void testDoNotConvertAdditionInStringConcatenation() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ " +
+                          "     list.add(\"before \" + $p + \", money = \" + $p.salary); " +
+                          "     modify ( $p )  { salary = 50000 };  " +
+                          "     list.add(\"after \" + $p + \", money = \" + $p.salary); " +
+                          "}",
+             "{\n " +
+                         "      list.add(\"before \" + $p + \", money = \" + $p.getSalary()); " +
+                         "      $p.setSalary(new java.math.BigDecimal(50000));" +
+                         "      list.add(\"after \" + $p + \", money = \" + $p.getSalary()); " +
+                         "}\n",
+             result -> assertThat(allUsedBindings(result), containsInAnyOrder("$p")));
     }
 
     @Test
@@ -301,10 +349,112 @@ public class MvelCompilerTest implements CompilerTest {
                      "    sum -= money;\n" +
                      "}",
              "{ " +
-                     "    java.math.BigDecimal sum = java.math.BigDecimal.valueOf(0);\n" +
-                     "    java.math.BigDecimal money = java.math.BigDecimal.valueOf(10);\n" +
+                     "    java.math.BigDecimal sum = new java.math.BigDecimal(0);\n" +
+                     "    java.math.BigDecimal money = new java.math.BigDecimal(10);\n" +
                      "    sum = sum.add(money);\n" +
                      "    sum = sum.subtract(money);\n" +
+                     "}");
+    }
+
+    @Test
+    public void testBigDecimalCompoundOperatorOnField() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ " +
+                     "    $p.salary += 50000B;\n" +
+                     "}",
+             "{ " +
+                     "    $p.setSalary($p.getSalary().add(new java.math.BigDecimal(\"50000\")));\n" +
+                     "}");
+    }
+
+    @Test
+    public void testBigDecimalCompoundOperatorWithOnField() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ " +
+                     "    $p.salary += $p.salary;\n" +
+                     "}",
+             "{ " +
+                     "    $p.setSalary($p.getSalary().add($p.getSalary()));\n" +
+                     "}");
+    }
+
+    @Test
+    public void testBigDecimalArithmetic() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ " +
+                     "    java.math.BigDecimal operation = $p.salary + $p.salary;\n" +
+                     "}",
+             "{ " +
+                     "    java.math.BigDecimal operation = $p.getSalary().add($p.getSalary());\n" +
+                     "}");
+    }
+
+    @Test
+    public void testBigDecimalArithmeticWithConversionLiteral() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ " +
+                     "    java.math.BigDecimal operation = $p.salary + 10B;\n" +
+                     "}",
+             "{ " +
+                     "    java.math.BigDecimal operation = $p.getSalary().add(new java.math.BigDecimal(\"10\"));\n" +
+                     "}");
+    }
+
+    @Test
+    public void testBigDecimalArithmeticWithConversionFromInteger() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ " +
+                     "    java.math.BigDecimal operation = $p.salary + 10;\n" +
+                     "}",
+             "{ " +
+                     "    java.math.BigDecimal operation = $p.getSalary().add(new java.math.BigDecimal(10));\n" +
+                     "}");
+    }
+
+    @Test
+    public void testBigDecimalPromotionAllFourOperations() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ " +
+                     "    BigDecimal result = 0B;" +
+                     "    result += 50000;\n" + // 50000
+                     "    result -= 10000;\n" + // 40000
+                     "    result /= 10;\n" + // 4000
+                     "    result *= 10;\n" + // 40000
+                     "    $p.salary = result;" +
+                     "}",
+             "{ " +
+                     "        java.math.BigDecimal result = new java.math.BigDecimal(\"0\");\n" +
+                     "        result = result.add(new java.math.BigDecimal(50000));\n" +
+                     "        result = result.subtract(new java.math.BigDecimal(10000));\n" +
+                     "        result = result.divide(new java.math.BigDecimal(10));\n" +
+                     "        result = result.multiply(new java.math.BigDecimal(10));\n" +
+                     "        $p.setSalary(result);\n" +
+                     "}");
+    }
+
+    @Test
+    public void testPromotionOfIntToBigDecimal() {
+        test("{ " +
+                     "    BigDecimal result = 0B;" +
+                     "    int anotherVariable = 20;" +
+                     "    result += anotherVariable;\n" + // 20
+                     "}",
+             "{ " +
+                     "        java.math.BigDecimal result = new java.math.BigDecimal(\"0\");\n" +
+                     "        int anotherVariable = 20;\n" +
+                     "        result = result.add(new java.math.BigDecimal(anotherVariable));\n" +
+                     "}");
+    }
+
+    @Test
+    public void testPromotionOfIntToBigDecimalOnField() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class), "{ " +
+                     "    int anotherVariable = 20;" +
+                     "    $p.salary += anotherVariable;" +
+                     "}",
+             "{ " +
+                     "        int anotherVariable = 20;\n" +
+                     "        $p.setSalary($p.getSalary().add(new java.math.BigDecimal(anotherVariable)));\n" +
                      "}");
     }
 
@@ -397,12 +547,12 @@ public class MvelCompilerTest implements CompilerTest {
                      "     }",
 
              "{ " +
-                             "org.drools.Person s1 = new Person(); " +
                              "org.drools.Person s0 = new Person(); " +
-                             "insertLogical(s0); " +
-                             "insertLogical(s1); " +
                              "s0.setAge(0); " +
+                             "insertLogical(s0); " +
+                             "org.drools.Person s1 = new Person(); " +
                              "s1.setAge(1); " +
+                             "insertLogical(s1); " +
                           "}");
     }
 
@@ -424,5 +574,55 @@ public class MvelCompilerTest implements CompilerTest {
                              "insert($newAddress); " +
                              "$person.setAddress($newAddress); " +
                           "}");
+    }
+
+    @Test
+    public void forIterationWithSubtype() {
+        test(ctx -> ctx.addDeclaration("$people", List.class),
+             "{" +
+                     "    for (Person p : $people ) {\n" +
+                     "        System.out.println(\"Person: \" + p);\n" +
+                     "    }\n" +
+                     "}",
+             "{\n" +
+                     "    for (Object _p : $people) {\n" +
+                     "        Person p = (Person) _p;\n" +
+                     "        {\n " +
+                     "              System.out.println(\"Person: \" + p);\n" +
+                     "        }\n" +
+                     "    }\n" +
+                     "}"
+        );
+    }
+
+    @Test
+    public void forIterationWithSubtypeNested() {
+        test(ctx -> {
+                 ctx.addDeclaration("$people", List.class);
+                 ctx.addDeclaration("$addresses", List.class);
+             },
+             "{" +
+                     "    for (Person p : $people ) {\n" +
+                     "       System.out.println(\"Simple statement\");\n" +
+                     "       for (Address a : $addresses ) {\n" +
+                     "           System.out.println(\"Person: \" + p + \" address: \" + a);\n" +
+                     "       }\n" +
+                     "    }\n" +
+                     "}",
+             "{\n" +
+                     "    for (Object _p : $people) {\n" +
+                     "        Person p = (Person) _p;\n" +
+                     "        {\n " +
+                     "           System.out.println(\"Simple statement\");\n" +
+                     "           for (Object _a : $addresses) {\n" +
+                     "               Address a = (Address) _a;\n" +
+                     "                   {\n " +
+                     "                       System.out.println(\"Person: \" + p + \" address: \" + a);\n" +
+                     "                }\n" +
+                     "            }\n" +
+                     "        }\n" +
+                     "    }\n" +
+                     "}"
+        );
     }
 }

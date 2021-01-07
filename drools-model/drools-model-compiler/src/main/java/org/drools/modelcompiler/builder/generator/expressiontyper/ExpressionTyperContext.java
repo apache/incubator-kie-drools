@@ -20,6 +20,7 @@ package org.drools.modelcompiler.builder.generator.expressiontyper;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import com.github.javaparser.ast.expr.Expression;
@@ -31,8 +32,11 @@ public class ExpressionTyperContext {
     private List<String> usedDeclarations = new ArrayList<>();
     private Set<String> reactOnProperties = new HashSet<>();
     private List<Expression> prefixExpresssions = new ArrayList<>();
+    private Expression originalExpression;
 
     private boolean registerPropertyReactivity = true;
+
+    private Optional<Expression> inlineCastExpression = Optional.empty();
 
     public void addUsedDeclarations(String name) {
         usedDeclarations.add(name);
@@ -62,5 +66,21 @@ public class ExpressionTyperContext {
 
     public boolean isRegisterPropertyReactivity() {
         return registerPropertyReactivity;
+    }
+
+    public Optional<Expression> getInlineCastExpression() {
+        return inlineCastExpression;
+    }
+
+    public void setInlineCastExpression(Optional<Expression> inlineCastExpression) {
+        this.inlineCastExpression = inlineCastExpression;
+    }
+
+    public Expression getOriginalExpression() {
+        return originalExpression;
+    }
+
+    public void setOriginalExpression(Expression originalExpression) {
+        this.originalExpression = originalExpression;
     }
 }

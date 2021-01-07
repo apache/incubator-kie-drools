@@ -18,6 +18,7 @@ package org.drools.mvel.compiler.compiler.xml.rules;
 import org.assertj.core.api.Assertions;
 import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.compiler.DroolsParserException;
+import org.drools.compiler.lang.api.DescrFactory;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.mvel.DrlDumper;
 import org.junit.Test;
@@ -204,5 +205,63 @@ public class DumperTest {
                 "end";
 
         checkRoundtrip( drl );
+    }
+
+    @Test
+    public void testAccumulateWithCustomImport() throws Exception  {
+        // DROOLS-5870
+        String drl =
+                "package org.example\n" +
+                "import org.drools.Adult\n" +
+                "import org.drools.Child\n" +
+                "import org.drools.Result\n" +
+                "import accumulate org.drools.TestFunction accfunc\n" +
+                "rule \"R\" when\n" +
+                "  accumulate( $c : Child( age < 10 ) and $a : Adult( name == $c.parent ), $parentAge : accfunc($a.getAge()) )\n" +
+                "then\n" +
+                "  insert(new Result($parentAge));\n" +
+                "end";
+
+        checkRoundtrip( drl );
+    }
+
+    @Test
+    public void testAccumulateWithoutConstraint() throws Exception {
+        // DROOLS-5872
+
+        String expectedDrl =
+                "package example \n" +
+                "\n" +
+                "import java.math.BigDecimal\n" +
+                "\n" +
+                "rule \"Test Rule\"\n" +
+                "when\n" +
+                "    accumulate(     \n" +
+                "    $target : example.RuleTest.Fact(  )  ,\n" +
+                "        $cnt : count(  ) \n" +
+                "         ) \n" +
+                "then\n" +
+                "System.out.println($cnt);\n" +
+                "\n" +
+                "end";
+
+        PackageDescr packageDescr = DescrFactory.newPackage().name("example")
+                .newImport().target("java.math.BigDecimal").end()
+                .newRule().name("Test Rule")
+                .lhs()
+                .accumulate()
+                .source().pattern().type("example.RuleTest.Fact").id("$target", false)
+                .end()
+                .end()
+                .function("count", "$cnt", false)
+                .end()
+                .end()
+                .rhs("System.out.println($cnt);")
+                .end()
+                .end().getDescr();
+
+        String drl = new DrlDumper().dump(packageDescr);
+
+        Assertions.assertThat( drl ).isEqualToIgnoringWhitespace( expectedDrl );
     }
 }

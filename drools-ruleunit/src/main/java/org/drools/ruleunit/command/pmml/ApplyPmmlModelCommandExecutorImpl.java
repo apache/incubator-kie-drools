@@ -136,7 +136,7 @@ public class ApplyPmmlModelCommandExecutorImpl implements ApplyPmmlModelCommandE
             throw new IllegalStateException("Availability of jPMML module disables ApplyPmmlModelCommand execution. ApplyPmmlModelCommand requires removal of JPMML libs from classpath");
         }
         if (requestData == null) {
-            throw new IllegalStateException("ApplyPmmlModelCommand requires request data (PMMLRequestData) to execute");
+            throw new IllegalStateException("ApplyPmmlModelCommandExecutorImpl requires request data (PMMLRequestData) to execute");
         }
         PMML4Result resultHolder = new PMML4Result(requestData.getCorrelationId());
         RegistryContext ctx = (RegistryContext) context;
@@ -211,12 +211,7 @@ public class ApplyPmmlModelCommandExecutorImpl implements ApplyPmmlModelCommandE
         return resultHolder;
     }
 
-    private boolean isjPMMLAvailableToClassLoader(ClassLoader classLoader) {
-        try {
-            classLoader.loadClass("org.kie.dmn.jpmml.DMNjPMMLInvocationEvaluator");
-            return true;
-        } catch (ClassNotFoundException e) {
-            return false;
-        }
+    protected boolean isjPMMLAvailableToClassLoader(ClassLoader classLoader) {
+        return org.kie.internal.pmml.PMMLImplementationsUtil.isjPMMLAvailableToClassLoader(classLoader);
     }
 }

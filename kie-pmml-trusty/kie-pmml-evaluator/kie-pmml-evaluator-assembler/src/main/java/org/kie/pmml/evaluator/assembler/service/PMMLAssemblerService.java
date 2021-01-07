@@ -36,9 +36,9 @@ import org.kie.pmml.evaluator.assembler.container.PMMLPackageImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.api.pmml.PMMLConstants.KIE_PMML_IMPLEMENTATION;
-import static org.kie.api.pmml.PMMLConstants.LEGACY;
 import static org.kie.api.pmml.PMMLConstants.NEW;
+import static org.kie.internal.pmml.PMMLImplementationsUtil.isjPMMLAvailableToClassLoader;
+import static org.kie.internal.pmml.PMMLImplementationsUtil.toEnable;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
 import static org.kie.pmml.evaluator.assembler.service.PMMLCompilerService.getKiePMMLModelsCompiledFromResource;
@@ -58,34 +58,6 @@ public class PMMLAssemblerService implements KieAssemblerService {
         return property.equals("true");
     }
 
-    private static boolean isOtherImplementationPresent() {
-        try {
-            Thread.currentThread().getContextClassLoader().loadClass("org.kie.pmml.assembler.PMMLAssemblerService");
-            return true;
-        } catch (NoClassDefFoundError | ClassNotFoundException e) {
-            return false;
-        }
-    }
-
-    private static boolean isToEnable() {
-        if (!isOtherImplementationPresent()) {
-            return true;
-        } else {
-            final String property = System.getProperty(KIE_PMML_IMPLEMENTATION.getName(), LEGACY.getName());
-            return property.equals(NEW.getName());
-        }
-    }
-
-    private static boolean isjPMMLAvailableToClassLoader(ClassLoader classLoader) {
-        try {
-            classLoader.loadClass("org.kie.dmn.jpmml.DMNjPMMLInvocationEvaluator");
-            logger.info("jpmml libraries available on classpath, skipping kie-pmml parsing and compilation");
-            return true;
-        } catch (ClassNotFoundException e) {
-            return false;
-        }
-    }
-
     /**
      * Returns an array where the first item is the <b>factory class</b> name and the second item is the <b>package</b> name,
      * built starting from the given <code>Resource</code>
@@ -103,7 +75,7 @@ public class PMMLAssemblerService implements KieAssemblerService {
 
     @Override
     public ResourceType getResourceType() {
-        return isToEnable() ? ResourceType.PMML : ResourceType.NOOP;
+        return NEW.equals(toEnable(Thread.currentThread().getContextClassLoader())) ? ResourceType.PMML : ResourceType.NOOP;
     }
 
     @Override
