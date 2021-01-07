@@ -1360,6 +1360,8 @@ Returns a number with the specified scale.
 |`number` in the range `[−6111..6176]`
 |===
 
+NOTE: This function is implemented to be consistent with the `FEEL:number` definition for _rounding toward the nearest neighbor with ties favoring the even neighbor_.
+
 .Examples
 [source,FEEL]
 ----
