@@ -28,7 +28,10 @@ import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
+import org.drools.core.reteoo.AccumulateNode;
+import org.drools.core.reteoo.FromNodeLeftTuple;
 import org.drools.core.reteoo.InitialFactImpl;
+import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleImpl;
 import org.drools.core.rule.Accumulate;
 import org.drools.mvel.MVELDialectRuntimeData;
@@ -88,21 +91,23 @@ public class MVELAccumulateBuilderTest {
         final InternalFactHandle f1 = (InternalFactHandle) ksession.insert( cheddar1 );
         final InternalFactHandle f2 = (InternalFactHandle) ksession.insert( cheddar2 );
         final LeftTupleImpl tuple = new LeftTupleImpl( f0,
-                                               sink,
-                                               true );
+                                                       sink,
+                                                       true );
+
 
         Object wmContext = acc.createWorkingMemoryContext();
-        Object accContext = acc.createContext();
+        AccumulateNode.AccumulateContext accContext = new AccumulateNode.AccumulateContext();
+        accContext.setFunctionContext(acc.createFunctionContext());
         acc.init( wmContext,
                   accContext,
                   tuple,
                   ksession );
 
-        acc.accumulate( wmContext,
-                        accContext,
-                        tuple,
-                        f1,
-                        ksession );
+        Object value1 = acc.accumulate( wmContext,
+                                        accContext,
+                                        tuple,
+                                        f1,
+                                        ksession );
         acc.accumulate( wmContext,
                         accContext,
                         tuple,
@@ -115,11 +120,15 @@ public class MVELAccumulateBuilderTest {
                                      tuple,
                                      ksession ) );
 
-        acc.reverse( wmContext,
-                     accContext,
-                     tuple,
-                     f1,
-                     ksession );
+        LeftTuple match = new FromNodeLeftTuple();
+        match.setContextObject(value1);
+        acc.reverse(wmContext,
+                    accContext,
+                    tuple,
+                    f1,
+                    null,
+                    match,
+                    ksession);
 
         assertEquals( new Integer( 8 ),
                       acc.getResult( wmContext,

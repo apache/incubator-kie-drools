@@ -34,6 +34,8 @@ public interface PhreakNetworkNodeFactory {
 
     PhreakAccumulateNode createPhreakAccumulateNode();
 
+    PhreakGroupByNode createPhreakGroupByNode();
+
     PhreakBranchNode createPhreakBranchNode();
 
     PhreakQueryNode createPhreakQueryNode();

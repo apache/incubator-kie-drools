@@ -90,7 +90,7 @@ public class LambdaConsequence implements Consequence {
                 if ( useDrools ) {
                     (( DroolsImpl ) facts[0]).registerFactHandle( fh );
                 }
-                facts[factsOffset++] = declaration.getValue( workingMemory, fh.getObject() );
+                facts[factsOffset++] = declaration.getValue( workingMemory, fh );
             } else {
                 facts[factsOffset++] = workingMemory.getGlobal( var.getName() );
             }
@@ -234,10 +234,9 @@ public class LambdaConsequence implements Consequence {
         private final int factsOffset;
         private final Declaration declaration;
         private final int declarationOffset;
-        private boolean useDrools;
 
+        private boolean useDrools;
         private int formerSupplierOffset;
-        private boolean first;
 
         private TupleFactSupplier( int offset, Declaration declaration, boolean useDrools ) {
             this.factsOffset = offset;
@@ -247,7 +246,6 @@ public class LambdaConsequence implements Consequence {
         }
 
         private void setFirst(boolean first) {
-            this.first = first;
             if (!first) {
                 // if this is not the first fact supplier and it's reading a value from the same fact handle of the former
                 // supplier (formerSupplierOffset==0) it is not necessary to register the same fact handle twice on the drools object
@@ -270,7 +268,7 @@ public class LambdaConsequence implements Consequence {
             if ( useDrools ) {
                 (( DroolsImpl ) facts[0]).registerFactHandle( fh );
             }
-            facts[factsOffset] = declaration.getValue( workingMemory, fh.getObject() );
+            facts[factsOffset] = declaration.getValue( workingMemory, fh );
         }
 
         @Override

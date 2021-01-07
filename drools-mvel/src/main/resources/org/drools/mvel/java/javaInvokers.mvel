@@ -192,7 +192,7 @@ public class @{invokerClassName} implements org.drools.core.spi.Accumulator, org
 
     }
 
-    public void accumulate(java.lang.Object workingMemoryContext,
+    public Object accumulate(java.lang.Object workingMemoryContext,
                            java.lang.Object context,
                            org.drools.core.spi.Tuple tuple,
                            org.drools.core.common.InternalFactHandle handle,
@@ -213,11 +213,10 @@ public class @{invokerClassName} implements org.drools.core.spi.Accumulator, org
             @code{ i0++ }
           @end{}
         @end{}
-        ((@{ruleClassName}.@{className})context).accumulate(
+        return ((@{ruleClassName}.@{className})context).accumulate(
             workingMemory,
             handle,
-            innerDeclarations,
-            handle.getObject()@if{declarations != empty},@end{}
+            innerDeclarations@if{declarations != empty},@end{}
             @foreach{declr : declarations} @{declr.identifier}@end{","}@if{globals != empty},@end{}
             @foreach{identifier: globals} @{identifier}@end{","}@if{innerDeclarations != empty},@end{}
             @foreach{declr : innerDeclarations} @{declr.identifier}@end{","});
@@ -227,6 +226,7 @@ public class @{invokerClassName} implements org.drools.core.spi.Accumulator, org
                            java.lang.Object context,
                            org.drools.core.spi.Tuple tuple,
                            org.drools.core.common.InternalFactHandle handle,
+                           java.lang.Object value,
                            org.drools.core.rule.Declaration[] declarations,
                            org.drools.core.rule.Declaration[] innerDeclarations,
                            org.drools.core.WorkingMemory workingMemory) throws Exception {
@@ -248,7 +248,7 @@ public class @{invokerClassName} implements org.drools.core.spi.Accumulator, org
         ((@{ruleClassName}.@{className})context).reverse(
             workingMemory,
             handle,
-            handle.getObject()@if{globals != empty},@end{}
+            value@if{globals != empty},@end{}
             @foreach{identifier : globals} @{identifier}@end{","});
     }
 
