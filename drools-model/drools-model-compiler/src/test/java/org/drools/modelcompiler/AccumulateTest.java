@@ -40,6 +40,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.IntStream;
 
 import org.assertj.core.api.Assertions;
+import org.drools.core.base.accumulators.IntegerMaxAccumulateFunction;
 import org.drools.model.functions.accumulate.GroupKey;
 import org.drools.modelcompiler.domain.Adult;
 import org.drools.modelcompiler.domain.Child;
@@ -2895,4 +2896,81 @@ public class AccumulateTest extends BaseModelTest {
         }
     }
 
+    @Test
+    public void testAccumulateOnPartiallyReversibleFunction() {
+        // DROOLS-5930
+        String str =
+                "import accumulate " + CountingIntegerMaxAccumulateFunction.class.getCanonicalName() + " countingMax;\n" +
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "global java.util.List result;\n" +
+                "rule R when\n" +
+                "  accumulate ( Person($age : age), $max : countingMax( $age ) )" +
+                "then\n" +
+                "  result.add($max);\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        CountingIntegerMaxAccumulateFunction accFunction = CountingIntegerMaxAccumulateFunction.INSTANCE;
+
+        List<Integer> result = new ArrayList<>();
+        ksession.setGlobal("result", result);
+
+        Person mario = new Person( "Mario", 46 );
+
+        FactHandle marioFH = ksession.insert( mario );
+        FactHandle markFH = ksession.insert( new Person( "Mark", 42 ) );
+        FactHandle lucaFH = ksession.insert( new Person( "Luca", 36 ) );
+
+        ksession.fireAllRules();
+        assertEquals(1, result.size());
+        assertEquals(46, result.get(0).intValue());
+        assertEquals(3, accFunction.getAccumulateCount());
+
+        result.clear();
+        accFunction.resetAccumulateCount();
+
+        // this shouldn't trigger any reaccumulate
+        ksession.delete( markFH );
+
+        ksession.fireAllRules();
+        assertEquals(1, result.size());
+        assertEquals(46, result.get(0).intValue());
+        assertEquals(0, accFunction.getAccumulateCount());
+
+        result.clear();
+        accFunction.resetAccumulateCount();
+
+        mario.setAge( 18 );
+        ksession.update( marioFH, mario );
+
+        ksession.fireAllRules();
+        assertEquals(1, result.size());
+        assertEquals(36, result.get(0).intValue());
+        assertEquals(2, accFunction.getAccumulateCount());
+    }
+
+    public static class CountingIntegerMaxAccumulateFunction extends IntegerMaxAccumulateFunction {
+        public static CountingIntegerMaxAccumulateFunction INSTANCE;
+
+        private int counter = 0;
+
+        public CountingIntegerMaxAccumulateFunction() {
+            INSTANCE = this;
+        }
+
+        @Override
+        public void accumulate( MaxData data, Object value ) {
+            super.accumulate( data, value );
+            counter++;
+        }
+
+        public int getAccumulateCount() {
+            return counter;
+        }
+
+        public void resetAccumulateCount() {
+            counter = 0;
+        }
+    }
 }

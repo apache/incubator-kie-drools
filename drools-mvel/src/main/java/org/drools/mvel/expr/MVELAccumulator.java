@@ -20,9 +20,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import org.drools.core.WorkingMemory;
@@ -33,8 +31,8 @@ import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.MvelAccumulator;
 import org.drools.core.spi.Tuple;
-import org.drools.mvel.MVELSafeHelper;
 import org.drools.mvel.MVELDialectRuntimeData;
+import org.drools.mvel.MVELSafeHelper;
 import org.drools.mvel.expr.MVELCompilationUnit.DroolsVarFactory;
 import org.mvel2.integration.VariableResolverFactory;
 
@@ -181,14 +179,19 @@ public class MVELAccumulator
         return shadow;
     }
 
-    public void reverse(Object workingMemoryContext,
-                        Object context,
-                        Tuple leftTuple,
-                        InternalFactHandle handle,
-                        Object value,
-                        Declaration[] declarations,
-                        Declaration[] innerDeclarations,
-                        WorkingMemory workingMemory) throws Exception {
+    public boolean tryReverse(Object workingMemoryContext,
+                              Object context,
+                              Tuple leftTuple,
+                              InternalFactHandle handle,
+                              Object value,
+                              Declaration[] declarations,
+                              Declaration[] innerDeclarations,
+                              WorkingMemory workingMemory) throws Exception {
+
+        if (!supportsReverse()) {
+            return false;
+        }
+
         Object[]  localVars = ((MVELAccumulatorContext) context).getVariables();
         MVELAccumulatorFactoryContext factoryContext = (MVELAccumulatorFactoryContext)workingMemoryContext;
         
@@ -205,7 +208,7 @@ public class MVELAccumulator
                 factory.getIndexedVariableResolver( df.getOtherVarsPos() + i ).setValue( localVars[i] );
             }
         }
-//        reverseUnit.updateFactory( null, null, handle.getObject(), (LeftTuple) leftTuple, localVars, (InternalWorkingMemory) workingMemory, workingMemory.getGlobalResolver(), factory  );
+
         MVELSafeHelper.getEvaluator().executeExpression( this.reverse,
                                 null,
                                 factory );
@@ -216,7 +219,9 @@ public class MVELAccumulator
             }
         }
         
-        ((MVELAccumulatorContext) context).setVariables( localVars );         
+        ((MVELAccumulatorContext) context).setVariables( localVars );
+
+        return true;
     }
 
     /* (non-Javadoc)

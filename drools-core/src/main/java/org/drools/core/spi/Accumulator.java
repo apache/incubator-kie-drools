@@ -103,14 +103,14 @@ public interface Accumulator
      * @param workingMemory
      * @throws Exception
      */
-    void reverse(Object workingMemoryContext,
-                 Object context,
-                 Tuple leftTuple,
-                 InternalFactHandle handle,
-                 Object value,
-                 Declaration[] declarations,
-                 Declaration[] innerDeclarations,
-                 WorkingMemory workingMemory) throws Exception;
+    boolean tryReverse(Object workingMemoryContext,
+                       Object context,
+                       Tuple leftTuple,
+                       InternalFactHandle handle,
+                       Object value,
+                       Declaration[] declarations,
+                       Declaration[] innerDeclarations,
+                       WorkingMemory workingMemory) throws Exception;
 
     /**
      * Gets the result of the accummulation
@@ -198,7 +198,7 @@ public interface Accumulator
             }, KiePolicyHelper.getAccessContext());
         }
 
-        public void reverse(final Object workingMemoryContext, 
+        public boolean tryReverse(final Object workingMemoryContext,
                 final Object context, 
                 final Tuple leftTuple, 
                 final InternalFactHandle handle,
@@ -206,12 +206,11 @@ public interface Accumulator
                 final Declaration[] declarations, 
                 final Declaration[] innerDeclarations, 
                 final WorkingMemory workingMemory) throws Exception {
-            AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
+            return AccessController.doPrivileged(new PrivilegedExceptionAction<Boolean>() {
                 @Override
-                public Object run() throws Exception {
-                    delegate.reverse(workingMemoryContext, context, leftTuple, handle, value,
+                public Boolean run() throws Exception {
+                    return delegate.tryReverse(workingMemoryContext, context, leftTuple, handle, value,
                                      declarations, innerDeclarations, workingMemory);
-                    return null;
                 }
             }, KiePolicyHelper.getAccessContext());
         }

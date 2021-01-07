@@ -23,10 +23,8 @@ import java.util.Arrays;
 
 import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.reteoo.AccumulateNode;
-import org.drools.core.reteoo.AccumulateNode.GroupByContext;
 import org.drools.core.reteoo.AccumulateNode.AccumulateContextEntry;
+import org.drools.core.reteoo.AccumulateNode.GroupByContext;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.spi.Accumulator;
@@ -119,22 +117,23 @@ public class SingleAccumulate extends Accumulate {
         throw new UnsupportedOperationException("This should never be called, it's for LambdaGroupByAccumulate only.");
     }
 
-    public void reverse(final Object workingMemoryContext,
-                        final Object context,
-                        final Tuple leftTuple,
-                        final InternalFactHandle handle,
-                        final RightTuple rightParent,
-                        final LeftTuple match,
-                        final WorkingMemory workingMemory) {
+    @Override
+    public boolean tryReverse(final Object workingMemoryContext,
+                              final Object context,
+                              final Tuple leftTuple,
+                              final InternalFactHandle handle,
+                              final RightTuple rightParent,
+                              final LeftTuple match,
+                              final WorkingMemory workingMemory) {
         try {
-            this.accumulator.reverse( workingMemoryContext,
-                                      ((AccumulateContextEntry)context).getFunctionContext(),
-                                      leftTuple,
-                                      handle,
-                                      match.getContextObject(),
-                                      this.requiredDeclarations,
-                                      getInnerDeclarationCache(),
-                                      workingMemory );
+            return this.accumulator.tryReverse( workingMemoryContext,
+                                                ((AccumulateContextEntry)context).getFunctionContext(),
+                                                leftTuple,
+                                                handle,
+                                                match.getContextObject(),
+                                                this.requiredDeclarations,
+                                                getInnerDeclarationCache(),
+                                                workingMemory );
         } catch ( final Exception e ) {
             throw new RuntimeException( e );
         }

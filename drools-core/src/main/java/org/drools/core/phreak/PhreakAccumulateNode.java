@@ -347,20 +347,14 @@ public class PhreakAccumulateNode {
                 } else if (match != null && match.getRightParent() == rightTuple) {
                     LeftTuple temp = match.getHandleNext();
                     // remove the match
-                    removeMatch(accNode,
-                                accumulate,
-                                rightTuple,
-                                match,
-                                wm,
-                                am,
-                                accctx,
-                                false);
+                    boolean reversed = removeMatch(accNode, accumulate, rightTuple, match,
+                                                   wm, am, accctx, false);
                     match = temp;
                     // the next line means that when a match is removed from the current leftTuple
                     // and the accumulate does not support the reverse operation, then the whole
                     // result is dirty (since removeMatch above is not recalculating the total)
                     // and we need to do this later
-                    isDirty = !accumulate.supportsReverse();
+                    isDirty = !reversed;
                 }
                 // else do nothing, was false before and false now.
             }
@@ -733,14 +727,14 @@ public class PhreakAccumulateNode {
     /**
      * Removes a match between left and right tuple
      */
-    private void removeMatch(final AccumulateNode accNode,
-                             final Accumulate accumulate,
-                             final RightTuple rightTuple,
-                             final LeftTuple match,
-                             final InternalWorkingMemory wm,
-                             final AccumulateMemory am,
-                             final BaseAccumulation accctx,
-                             final boolean reaccumulate) {
+    private boolean removeMatch(final AccumulateNode accNode,
+                                final Accumulate accumulate,
+                                final RightTuple rightTuple,
+                                final LeftTuple match,
+                                final InternalWorkingMemory wm,
+                                final AccumulateMemory am,
+                                final BaseAccumulation accctx,
+                                final boolean reaccumulate) {
         // save the matching tuple
         LeftTuple leftParent = match.getLeftParent();
         RightTuple rightParent = match.getRightParent();
@@ -757,16 +751,15 @@ public class PhreakAccumulateNode {
             handle = rightTuple.getFactHandleForEvaluation();
         }
 
-        if (accumulate.supportsReverse()) {
-            // just reverse this single match
-            accumulate.reverse(am.workingMemoryContext,
-                               accctx,
-                               tuple,
-                               handle,
-                               rightParent,
-                               match,
-                               wm);
-        } else {
+        // just reverse this single match
+        boolean reversed = accumulate.tryReverse(am.workingMemoryContext,
+                                                 accctx,
+                                                 tuple,
+                                                 handle,
+                                                 rightParent,
+                                                 match,
+                                                 wm);
+        if (!reversed) {
             // otherwise need to recalculate all matches for the given leftTuple
             reaccumulateForLeftTuple(accNode,
                                      accumulate,
@@ -778,6 +771,8 @@ public class PhreakAccumulateNode {
                                      accctx,
                                      reaccumulate);
         }
+
+        return reversed;
     }
 
 
