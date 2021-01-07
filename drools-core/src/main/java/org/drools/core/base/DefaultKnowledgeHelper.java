@@ -477,7 +477,7 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
     }
 
     public Object get(final Declaration declaration) {
-        return declaration.getValue( workingMemory, this.tuple.getObject( declaration ) );
+        return declaration.getValue( workingMemory, tuple );
     }
 
     public Declaration getDeclaration(final String identifier) {

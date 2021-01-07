@@ -70,7 +70,7 @@ public class AccumulateInlineVisitor {
                 final Optional<BaseDescr> bindingUsedInAccumulate =
                         (( AndDescr ) input).getDescrs()
                                 .stream()
-                                .filter( b -> allNamesInActionBlock.contains( (( PatternDescr ) b).getIdentifier() ) )
+                                .filter( b -> (( PatternDescr ) b).getAllBoundIdentifiers().containsAll( allNamesInActionBlock ) )
                                 .findFirst();
 
                 if ( bindingUsedInAccumulate.isPresent() ) {
@@ -80,6 +80,8 @@ public class AccumulateInlineVisitor {
                     } catch (UnsupportedInlineAccumulate e) {
                         new LegacyAccumulate( context, descr, basePattern, accumulateInline.getUsedExternalDeclarations() ).build();
                     }
+                } else {
+                    throw new UnsupportedOperationException( "I was expecting input to be of type PatternDescr. " + input );
                 }
             } else {
                 throw new UnsupportedOperationException( "I was expecting input to be of type PatternDescr. " + input );

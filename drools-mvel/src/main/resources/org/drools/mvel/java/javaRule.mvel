@@ -27,10 +27,6 @@ public static boolean @{methodName}(@foreach{declr : declarations} @{declr.typeN
 public static class @{className} implements java.io.Serializable {
 
     private static final long    serialVersionUID = 510l;
-
-    @if{supportsReverse == "true"}
-    private java.util.Map reverseMap = new java.util.HashMap<Integer, ReverseSnapshot>(); 
-    @end{}
     
     @foreach{type : attributesTypes, attr : attributes} private @{type} @{attr};
     @end{}    
@@ -44,31 +40,33 @@ public static class @{className} implements java.io.Serializable {
         @{initCode}
     }
     
-    public void accumulate(org.drools.core.WorkingMemory workingMemory,
+    public Object accumulate(org.drools.core.WorkingMemory workingMemory,
                            org.drools.core.common.InternalFactHandle handle,
-                           org.drools.core.rule.Declaration[] innerDeclarations,
-                           Object object @if{declarations != empty}, @end{}
+                           org.drools.core.rule.Declaration[] innerDeclarations@if{declarations != empty}, @end{}
                            @foreach{declr : declarations} @{declr.typeName} @{declr.identifier}@end{","}@if{globals != empty},@end{}
                            @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} @end{","}@if{innerDeclarations != empty},@end{}
                            @foreach{declr : innerDeclarations}@{declr.extractor.extractToClassName} @{declr.identifier}@end{","}
                            ) throws java.lang.Exception {
+
         @if{supportsReverse == "true"}
-        this.reverseMap.put( Long.valueOf( handle.getId() ),
-                             new ReverseSnapshot(
-                               @foreach{declr : declarations}@{declr.identifier}@end{","}@if{innerDeclarations != empty && declarations != empty},@end{}
-                               @foreach{declr : innerDeclarations}@{declr.identifier}@end{","}
-                              ) );
+        Object value = new ReverseSnapshot(
+                           @foreach{declr : declarations}@{declr.identifier}@end{","}@if{innerDeclarations != empty && declarations != empty},@end{}
+                           @foreach{declr : innerDeclarations}@{declr.identifier}@end{","});
+        @else{}
+        Object value = null;
         @end{}
         @{actionCode}
+
+        return value;
     }
     
     public void reverse(org.drools.core.WorkingMemory workingMemory,
                            org.drools.core.common.InternalFactHandle handle,
-                           Object object@if{globals != empty},@end{}
+                           Object value@if{globals != empty},@end{}
                            @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} @end{","}
                            ) throws java.lang.Exception {
         @if{supportsReverse == "true"}
-        ReverseSnapshot snapshot = (ReverseSnapshot) this.reverseMap.remove( Long.valueOf( handle.getId() ) );
+        ReverseSnapshot snapshot = (ReverseSnapshot) value;
         @foreach{declr : declarations}@{declr.typeName} @{declr.identifier} = snapshot.@{declr.identifier};@end{}
         @foreach{declr : innerDeclarations}@{declr.extractor.extractToClassName} @{declr.identifier} = snapshot.@{declr.identifier};@end{}
         @end{}

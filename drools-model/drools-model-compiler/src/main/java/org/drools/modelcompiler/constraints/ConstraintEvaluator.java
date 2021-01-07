@@ -231,12 +231,7 @@ public class ConstraintEvaluator {
         public abstract boolean evaluate(InternalFactHandle handle, Tuple tuple, InternalWorkingMemory workingMemory) throws Exception;
 
         protected Object getArgument( InternalFactHandle handle, InternalWorkingMemory workingMemory, Declaration declaration, Tuple tuple ) {
-            if (declaration == patternDeclaration) {
-                return handle.getObject();
-            } else {
-                Object object = tuple != null && declaration.getOffset() < tuple.size() ? tuple.getObject(declaration.getOffset()) : handle.getObject();
-                return declaration.getValue(workingMemory, object);
-            }
+            return declaration == patternDeclaration ? handle.getObject() : BindingEvaluator.getArgument( handle, workingMemory, declaration, tuple );
         }
 
         static class _1 extends InnerEvaluator {
@@ -261,7 +256,7 @@ public class ConstraintEvaluator {
             }
 
             private Object getSingleArg( InternalFactHandle handle, InternalWorkingMemory workingMemory ) {
-                return declaration.isInternalFact() ? declaration.getValue( workingMemory, handle.getObject() ) : handle.getObject();
+                return declaration.isInternalFact() ? declaration.getValue( workingMemory, handle ) : handle.getObject();
             }
         }
 

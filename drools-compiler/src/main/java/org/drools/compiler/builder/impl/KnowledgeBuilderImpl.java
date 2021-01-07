@@ -23,6 +23,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.io.UncheckedIOException;
 import java.lang.reflect.Array;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
@@ -1713,11 +1714,11 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
                                                       String className) {
         try {
             Class<? extends AccumulateFunction> clazz = (Class<? extends AccumulateFunction>) pkgRegistry.getTypeResolver().resolveType(className);
-            return clazz.newInstance();
+            return clazz.getConstructor().newInstance();
         } catch (ClassNotFoundException e) {
             throw new RuntimeException("Error loading accumulate function for identifier " + identifier + ". Class " + className + " not found",
                                        e);
-        } catch (InstantiationException e) {
+        } catch (InstantiationException | NoSuchMethodException | InvocationTargetException e) {
             throw new RuntimeException("Error loading accumulate function for identifier " + identifier + ". Instantiation failed for class " + className,
                                        e);
         } catch (IllegalAccessException e) {

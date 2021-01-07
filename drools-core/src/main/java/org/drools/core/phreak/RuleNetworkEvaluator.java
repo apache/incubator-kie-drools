@@ -84,13 +84,14 @@ public class RuleNetworkEvaluator {
     private static final PhreakNotNode          pNotNode    = PhreakNetworkNodeFactory.Factory.get().createPhreakNotNode();
     private static final PhreakExistsNode       pExistsNode = PhreakNetworkNodeFactory.Factory.get().createPhreakExistsNode();
     private static final PhreakAccumulateNode   pAccNode    = PhreakNetworkNodeFactory.Factory.get().createPhreakAccumulateNode();
+    private static final PhreakAccumulateNode   pGroupByNode = PhreakNetworkNodeFactory.Factory.get().createPhreakGroupByNode();
     private static final PhreakBranchNode       pBranchNode = PhreakNetworkNodeFactory.Factory.get().createPhreakBranchNode();
     private static final PhreakQueryNode        pQueryNode  = PhreakNetworkNodeFactory.Factory.get().createPhreakQueryNode();
     private static final PhreakTimerNode        pTimerNode  = PhreakNetworkNodeFactory.Factory.get().createPhreakTimerNode();
     private static final PhreakAsyncSendNode    pSendNode   = PhreakNetworkNodeFactory.Factory.get().createPhreakAsyncSendNode();
     private static final PhreakAsyncReceiveNode pReceiveNode = PhreakNetworkNodeFactory.Factory.get().createPhreakAsyncReceiveNode();
     private static final PhreakRuleTerminalNode pRtNode     = PhreakNetworkNodeFactory.Factory.get().createPhreakRuleTerminalNode();
-    private static PhreakQueryTerminalNode      pQtNode     = PhreakNetworkNodeFactory.Factory.get().createPhreakQueryTerminalNode();
+    private static final PhreakQueryTerminalNode pQtNode     = PhreakNetworkNodeFactory.Factory.get().createPhreakQueryTerminalNode();
 
     private static int cycle = 0;
 
@@ -580,8 +581,12 @@ public class RuleNetworkEvaluator {
                 break;
             }
             case NodeTypeEnums.AccumulateNode: {
-                pAccNode.doNode((AccumulateNode) node, sink, am, wm,
-                                srcTuples, trgTuples, stagedLeftTuples);
+                AccumulateNode accumulateNode = (AccumulateNode) node;
+                if (accumulateNode.getAccumulate().isGroupBy()) {
+                    pGroupByNode.doNode( accumulateNode, sink, am, wm, srcTuples, trgTuples, stagedLeftTuples );
+                } else {
+                    pAccNode.doNode( accumulateNode, sink, am, wm, srcTuples, trgTuples, stagedLeftTuples );
+                }
                 break;
             }
         }

@@ -23,10 +23,15 @@ import java.util.Arrays;
 
 import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.reteoo.AccumulateNode.AccumulateContextEntry;
+import org.drools.core.reteoo.AccumulateNode.GroupByContext;
+import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.RightTuple;
 import org.drools.core.spi.Accumulator;
 import org.drools.core.spi.MvelAccumulator;
 import org.drools.core.spi.Tuple;
 import org.drools.core.spi.Wireable;
+import org.drools.core.util.index.TupleList;
 import org.kie.internal.security.KiePolicyHelper;
 
 public class MultiAccumulate extends Accumulate {
@@ -70,7 +75,7 @@ public class MultiAccumulate extends Accumulate {
         return this.accumulators;
     }
 
-    public Serializable[] createContext() {
+    public Serializable[] createFunctionContext() {
         Serializable[] ctxs = new Serializable[this.accumulators.length];
         for ( int i = 0; i < ctxs.length; i++ ) {
             ctxs[i] = this.accumulators[i].createContext();
@@ -84,8 +89,9 @@ public class MultiAccumulate extends Accumulate {
                      final WorkingMemory workingMemory) {
         try {
             for ( int i = 0; i < this.accumulators.length; i++ ) {
+                Object[] functionContext = (Object[]) ((AccumulateContextEntry)context).getFunctionContext();
                 this.accumulators[i].init( ((Object[])workingMemoryContext)[i],
-                                           ((Object[])context)[i],
+                                           functionContext[i],
                                            leftTuple,
                                            this.requiredDeclarations,
                                            workingMemory );
@@ -95,55 +101,73 @@ public class MultiAccumulate extends Accumulate {
         }
     }
 
-    public void accumulate(final Object workingMemoryContext,
-                           final Object context,
-                           final Tuple leftTuple,
-                           final InternalFactHandle handle,
-                           final WorkingMemory workingMemory) {
+    public Object accumulate(final Object workingMemoryContext,
+                             final Object context,
+                             final Tuple match,
+                             final InternalFactHandle handle,
+                             final WorkingMemory workingMemory) {
         try {
+            Object[] values = new Object[accumulators.length];
             for ( int i = 0; i < this.accumulators.length; i++ ) {
-                this.accumulators[i].accumulate( ((Object[])workingMemoryContext)[i],
-                                                 ((Object[])context)[i],
-                                                 leftTuple,
-                                                 handle,
-                                                 this.requiredDeclarations,
-                                                 getInnerDeclarationCache(),
-                                                 workingMemory );
+                Object[] functionContext = (Object[]) ((AccumulateContextEntry)context).getFunctionContext();
+                values[i] = this.accumulators[i].accumulate( ((Object[])workingMemoryContext)[i],
+                                                             functionContext[i],
+                                                             match,
+                                                             handle,
+                                                             this.requiredDeclarations,
+                                                             getInnerDeclarationCache(),
+                                                             workingMemory );
             }
+            return values;
         } catch ( final Exception e ) {
             throw new RuntimeException( e );
         }
     }
 
-    public void reverse(final Object workingMemoryContext,
-                        final Object context,
-                        final Tuple leftTuple,
-                        final InternalFactHandle handle,
-                        final WorkingMemory workingMemory) {
+    @Override
+    public Object accumulate(Object workingMemoryContext, LeftTuple match, InternalFactHandle childHandle,
+                             GroupByContext groupByContext, TupleList<AccumulateContextEntry> tupleList, WorkingMemory wm) {
+        throw new UnsupportedOperationException("This should never be called, it's for LambdaGroupByAccumulate only.");
+    }
+
+    @Override
+    public boolean tryReverse(final Object workingMemoryContext,
+                              final Object context,
+                              final Tuple leftTuple,
+                              final InternalFactHandle handle,
+                              final RightTuple rightParent,
+                              final LeftTuple match,
+                              final WorkingMemory workingMemory) {
         try {
+            Object[] values = (Object[]) match.getContextObject();
             for ( int i = 0; i < this.accumulators.length; i++ ) {
-                this.accumulators[i].reverse( ((Object[])workingMemoryContext)[i],
-                                              ((Object[])context)[i],
-                                              leftTuple,
-                                              handle,
-                                              this.requiredDeclarations,
-                                              getInnerDeclarationCache(),
-                                              workingMemory );
+                Object[] functionContext = (Object[]) ((AccumulateContextEntry)context).getFunctionContext();
+                boolean reversed = this.accumulators[i].tryReverse( ((Object[])workingMemoryContext)[i],
+                                                                    functionContext[i],
+                                                                    leftTuple,
+                                                                    handle,
+                                                                    values[i],
+                                                                    this.requiredDeclarations,
+                                                                    getInnerDeclarationCache(),
+                                                                    workingMemory );
+                if (!reversed) {
+                    return false;
+                }
             }
         } catch ( final Exception e ) {
             throw new RuntimeException( e );
         }
+
+        return true;
     }
 
     public boolean supportsReverse() {
-        boolean supports = true;
-        for( Accumulator acc : this.accumulators ) {
-            if( ! acc.supportsReverse() ) {
-                supports = false;
-                break;
+        for ( Accumulator acc : this.accumulators ) {
+            if ( ! acc.supportsReverse() ) {
+                return false;
             }
         }
-        return supports;
+        return true;
     }
 
     public Object[] getResult(final Object workingMemoryContext,
@@ -153,8 +177,9 @@ public class MultiAccumulate extends Accumulate {
         try {
             Object[] results = new Object[this.accumulators.length];
             for ( int i = 0; i < this.accumulators.length; i++ ) {
+                Object[] functionContext = (Object[]) ((AccumulateContextEntry)context).getFunctionContext();
                 results[i] = this.accumulators[i].getResult( ((Object[])workingMemoryContext)[i],
-                                                             ((Object[])context)[i],
+                                                             functionContext[i],
                                                              leftTuple,
                                                              this.requiredDeclarations,
                                                              workingMemory );
@@ -165,7 +190,7 @@ public class MultiAccumulate extends Accumulate {
         }
     }
 
-    protected void replaceAccumulatorDeclaration(Declaration declaration, Declaration resolved) {
+    public void replaceAccumulatorDeclaration(Declaration declaration, Declaration resolved) {
         for (Accumulator accumulator : accumulators) {
             if ( accumulator instanceof MvelAccumulator ) {
                 ( (MvelAccumulator) accumulator ).replaceDeclaration( declaration, resolved );
