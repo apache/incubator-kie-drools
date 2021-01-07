@@ -17,6 +17,8 @@ module.exports = {
       KOGITO_DATAINDEX_HTTP_URL: 'http://localhost:4000/graphql',
       KOGITO_APP_VERSION: 'DEV',
       KOGITO_APP_NAME: 'Task Console',
+      KOGITO_TASK_STATES_LIST: 'Ready,Reserved,Completed,Aborted,Skipped',
+      KOGITO_TASK_ACTIVE_STATES_LIST: 'Ready,Reserved',
       TEST_USER_SYSTEM_ENABLED: false
     })
   ],
