@@ -85,7 +85,7 @@ public class CollectAccumulator
     /* (non-Javadoc)
      * @see org.kie.spi.Accumulator#accumulate(java.lang.Object, org.kie.spi.Tuple, org.kie.common.InternalFactHandle, org.kie.rule.Declaration[], org.kie.rule.Declaration[], org.kie.WorkingMemory)
      */
-    public void accumulate(Object workingMemoryContext,
+    public Object accumulate(Object workingMemoryContext,
                            Object context,
                            Tuple leftTuple,
                            InternalFactHandle handle,
@@ -94,17 +94,19 @@ public class CollectAccumulator
                            WorkingMemory workingMemory) throws Exception {
         Object value = this.unwrapHandle ? ((LeftTuple) handle.getObject()).getFactHandle().getObject() : handle.getObject();
         ((CollectContext) context).result.add( value );
+        return value;
     }
 
-    public void reverse(Object workingMemoryContext,
-                        Object context,
-                        Tuple leftTuple,
-                        InternalFactHandle handle,
-                        Declaration[] declarations,
-                        Declaration[] innerDeclarations,
-                        WorkingMemory workingMemory) throws Exception {
-        Object value = this.unwrapHandle ? ((LeftTuple) handle.getObject()).getFactHandle().getObject() : handle.getObject();
+    public boolean tryReverse(Object workingMemoryContext,
+                              Object context,
+                              Tuple leftTuple,
+                              InternalFactHandle handle,
+                              Object value,
+                              Declaration[] declarations,
+                              Declaration[] innerDeclarations,
+                              WorkingMemory workingMemory) throws Exception {
         ((CollectContext) context).result.remove( value );
+        return true;
     }
 
     /* (non-Javadoc)

@@ -22,8 +22,6 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalFactHandle;
@@ -79,9 +77,6 @@ public class JavaAccumulatorFunctionExecutor
     public Serializable createContext() {
         JavaAccumulatorFunctionContext context = new JavaAccumulatorFunctionContext();
         context.context = this.function.createContext();
-        if ( this.function.supportsReverse() ) {
-            context.reverseSupport = new HashMap<>();
-        }
         return context;
     }
 
@@ -99,7 +94,7 @@ public class JavaAccumulatorFunctionExecutor
     /* (non-Javadoc)
      * @see org.kie.spi.Accumulator#accumulate(java.lang.Object, org.kie.spi.Tuple, org.kie.common.InternalFactHandle, org.kie.rule.Declaration[], org.kie.rule.Declaration[], org.kie.WorkingMemory)
      */
-    public void accumulate(Object workingMemoryContext,
+    public Object accumulate(Object workingMemoryContext,
                            Object context,
                            Tuple leftTuple,
                            InternalFactHandle handle,
@@ -112,25 +107,21 @@ public class JavaAccumulatorFunctionExecutor
                                                        innerDeclarations,
                                                        workingMemory,
                                                        workingMemoryContext ).getValue();
-        if ( this.function.supportsReverse() ) {
-            ((JavaAccumulatorFunctionContext) context).reverseSupport.put( handle.getId(),
-                                                                           value );
-        }
         this.function.accumulate( ((JavaAccumulatorFunctionContext) context).context,
                                   value );
+
+        return value;
     }
 
-    public void reverse(Object workingMemoryContext,
-                        Object context,
-                        Tuple leftTuple,
-                        InternalFactHandle handle,
-                        Declaration[] declarations,
-                        Declaration[] innerDeclarations,
-                        WorkingMemory workingMemory) throws Exception {
-
-        final Object value = ((JavaAccumulatorFunctionContext) context).reverseSupport.remove(handle.getId());
-        this.function.reverse( ((JavaAccumulatorFunctionContext) context).context,
-                               value );
+    public boolean tryReverse(Object workingMemoryContext,
+                              Object context,
+                              Tuple leftTuple,
+                              InternalFactHandle handle,
+                              Object value,
+                              Declaration[] declarations,
+                              Declaration[] innerDeclarations,
+                              WorkingMemory workingMemory) throws Exception {
+        return this.function.tryReverse( ((JavaAccumulatorFunctionContext) context).context, value );
     }
 
     /* (non-Javadoc)
@@ -186,7 +177,6 @@ public class JavaAccumulatorFunctionExecutor
         implements
         Externalizable {
         public Serializable               context;
-        public Map<Long, Object>       reverseSupport;
 
         public JavaAccumulatorFunctionContext() {
         }
@@ -195,16 +185,14 @@ public class JavaAccumulatorFunctionExecutor
         public void readExternal(ObjectInput in) throws IOException,
                                                 ClassNotFoundException {
             context = (Externalizable) in.readObject();
-            reverseSupport = (Map<Long, Object>) in.readObject();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
             out.writeObject( context );
-            out.writeObject( reverseSupport );
         }
 
         public Collection<Object> getAccumulatedObjects() {
-            return reverseSupport == null ? null : reverseSupport.values();
+            throw new UnsupportedOperationException();
         }
 
         @Override

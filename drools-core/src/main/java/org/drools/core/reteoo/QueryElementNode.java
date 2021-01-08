@@ -300,8 +300,7 @@ public class QueryElementNode extends LeftTupleSource
             Declaration decl;
             for (int variable : this.variables) {
                 decl = decls[variable];
-                objects[variable] = decl.getValue(workingMemory,
-                                                  resultLeftTuple.get(decl).getObject());
+                objects[variable] = decl.getValue(workingMemory, resultLeftTuple);
             }
 
             QueryElementFactHandle resultHandle = createQueryResultHandle(leftTuple.findMostRecentPropagationContext(),
@@ -456,8 +455,7 @@ public class QueryElementNode extends LeftTupleSource
             Declaration decl;
             for (int variable : this.variables) {
                 decl = decls[variable];
-                objects[variable] = decl.getValue(workingMemory,
-                                                  resultLeftTuple.get(decl).getObject());
+                objects[variable] = decl.getValue(workingMemory, resultLeftTuple);
             }
 
             QueryElementFactHandle handle = (QueryElementFactHandle) rightTuple.getFactHandle();

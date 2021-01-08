@@ -37,6 +37,7 @@ public class MvelCompiler {
         preprocessPhase.removeEmptyStmt(mvelExpression);
 
         Set<String> allUsedBindings = new HashSet<>();
+
         List<String> modifyUsedBindings = mvelExpression.findAll(ModifyStatement.class)
                 .stream()
                 .flatMap(this::transformStatementWithPreprocessing)
@@ -61,11 +62,6 @@ public class MvelCompiler {
 
     private Stream<String> transformStatementWithPreprocessing(Statement s) {
         PreprocessPhase.PreprocessPhaseResult invoke = preprocessPhase.invoke(s);
-        s.getParentNode().ifPresent(p -> {
-            BlockStmt parentBlockStmt = (BlockStmt) p;
-            parentBlockStmt.getStatements().addAll(0, invoke.getNewObjectStatements());
-            parentBlockStmt.getStatements().addAll(invoke.getOtherStatements());
-        });
         s.remove();
         return invoke.getUsedBindings().stream();
     }
@@ -90,7 +86,7 @@ public class MvelCompiler {
             TypedExpression rhs = new RHSPhase(mvelCompilerContext).invoke(s);
             TypedExpression lhs = new LHSPhase(mvelCompilerContext, ofNullable(rhs)).invoke(s);
 
-            Optional<TypedExpression> postProcessedRHS = new ReProcessRHSPhase().invoke(rhs, lhs);
+            Optional<TypedExpression> postProcessedRHS = new ReProcessRHSPhase(mvelCompilerContext).invoke(rhs, lhs);
             TypedExpression postProcessedLHS = postProcessedRHS.map(ppr -> new LHSPhase(mvelCompilerContext, of(ppr)).invoke(s)).orElse(lhs);
 
             statements.add((Statement) postProcessedLHS.toJavaExpression());

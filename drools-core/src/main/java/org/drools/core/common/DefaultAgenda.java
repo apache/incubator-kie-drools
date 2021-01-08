@@ -990,8 +990,7 @@ public class DefaultAgenda
         for ( Declaration declaration : declarations.values() ) {
             if ( "processInstance".equals( declaration.getIdentifier() )
                     || "org.kie.api.runtime.process.WorkflowProcessInstance".equals(declaration.getTypeName())) {
-                Object value = declaration.getValue( workingMemory,
-                                                     activation.getTuple().get( declaration ).getObject() );
+                Object value = declaration.getValue( workingMemory, activation.getTuple() );
                 if ( value instanceof ProcessInstance ) {
                     return sameProcessInstance( processInstanceId, ( ProcessInstance ) value );
                 }
@@ -1036,7 +1035,12 @@ public class DefaultAgenda
     }
 
     void internalFireUntilHalt( AgendaFilter agendaFilter, boolean isInternalFire ) {
-        fireLoop( agendaFilter, -1, RestHandler.FIRE_UNTIL_HALT, isInternalFire );
+        propagationList.setFiringUntilHalt( true );
+        try {
+            fireLoop( agendaFilter, -1, RestHandler.FIRE_UNTIL_HALT, isInternalFire );
+        } finally {
+            propagationList.setFiringUntilHalt( false );
+        }
     }
 
     @Override

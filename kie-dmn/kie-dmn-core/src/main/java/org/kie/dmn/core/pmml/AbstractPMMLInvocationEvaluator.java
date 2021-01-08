@@ -20,7 +20,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.kie.api.io.Resource;
@@ -42,9 +41,7 @@ import org.kie.dmn.model.api.DMNElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.api.pmml.PMMLConstants.KIE_PMML_IMPLEMENTATION;
-import static org.kie.api.pmml.PMMLConstants.LEGACY;
-import static org.kie.api.pmml.PMMLConstants.NEW;
+import static org.kie.internal.pmml.PMMLImplementationsUtil.toEnable;
 
 public abstract class AbstractPMMLInvocationEvaluator implements DMNExpressionEvaluator {
 
@@ -136,7 +133,7 @@ public abstract class AbstractPMMLInvocationEvaluator implements DMNExpressionEv
             } catch (Throwable e) {
                 LOG.warn("Binding org.kie:kie-dmn-jpmml succeded but initialization failed, with:", e);
             }
-            AbstractPMMLInvocationEvaluator toReturn = getAbstractDMNKiePMMLInvocationEvaluator(model.getNamespace(), funcDef, pmmlResource, pmmlModel, pmmlInfo);
+            AbstractPMMLInvocationEvaluator toReturn = getAbstractDMNKiePMMLInvocationEvaluator(model.getNamespace(), funcDef, pmmlResource, pmmlModel, pmmlInfo, classLoader);
             if (toReturn != null) {
                 return toReturn;
             } else {
@@ -163,43 +160,23 @@ public abstract class AbstractPMMLInvocationEvaluator implements DMNExpressionEv
      * @param pmmlResource
      * @param pmmlModel
      * @param pmmlInfo
+     * @param classLoader
      * @return
      */
-    private static AbstractDMNKiePMMLInvocationEvaluator getAbstractDMNKiePMMLInvocationEvaluator(String nameSpace, DMNElement funcDef, Resource pmmlResource, String pmmlModel, PMMLInfo<?> pmmlInfo) {
-        Optional<PMMLConstants> requiredKiePMMLImplementation = getRequiredKiePMMLImplementation();
-        return requiredKiePMMLImplementation.map(pmmlConstants -> {
-            switch (pmmlConstants) {
+    private static AbstractDMNKiePMMLInvocationEvaluator getAbstractDMNKiePMMLInvocationEvaluator(String nameSpace,
+                                                                                                  DMNElement funcDef,
+                                                                                                  Resource pmmlResource,
+                                                                                                  String pmmlModel,
+                                                                                                  PMMLInfo<?> pmmlInfo,
+                                                                                                  ClassLoader classLoader) {
+        PMMLConstants pmmlConstants = toEnable(classLoader);
+        switch (pmmlConstants) {
                 case LEGACY:
                     return getDMNKiePMMLInvocationEvaluator(nameSpace, funcDef, pmmlResource, pmmlModel, pmmlInfo);
                 case NEW:
                     return getDMNKiePMMLTrustyInvocationEvaluator(nameSpace, funcDef, pmmlResource, pmmlModel, pmmlInfo);
                 default:
                     return null;
-            }
-        }).orElse(null);
-    }
-
-    /**
-     * Retrieve the <code>Optional</code> with required <b>KiePMML</b> implementation. It may return <code>Optional.empty()</code>
-     * because it is eventually expected by original code
-     * @see {@link DummyPMMLInvocationEvaluator}
-     * @return
-     */
-    private static Optional<PMMLConstants> getRequiredKiePMMLImplementation() {
-        final boolean legacyImplementationPresent = isLegacyImplementationPresent();
-        final boolean newImplementationPresent = isNewImplementationPresent();
-        if (legacyImplementationPresent && newImplementationPresent) {
-            if (isLegacyPMMLRequired()) {
-                return Optional.of(LEGACY);
-            } else {
-                return Optional.of(NEW);
-            }
-        } else if (legacyImplementationPresent) {
-            return Optional.of(LEGACY);
-        } else if (newImplementationPresent) {
-            return Optional.of(NEW);
-        } else {
-            return Optional.empty();
         }
     }
 
@@ -225,26 +202,4 @@ public abstract class AbstractPMMLInvocationEvaluator implements DMNExpressionEv
         return null;
     }
 
-    private static boolean isLegacyPMMLRequired() {
-        final String property = System.getProperty(KIE_PMML_IMPLEMENTATION.getName(), LEGACY.getName());
-        return property.equals(LEGACY.getName());
-    }
-
-    private static boolean isLegacyImplementationPresent() {
-        try {
-            Class.forName("org.kie.pmml.pmml_4_2.PMML4ExecutionHelper");
-            return true;
-        } catch (NoClassDefFoundError | ClassNotFoundException e) {
-            return false;
-        }
-    }
-
-    private static boolean isNewImplementationPresent() {
-        try {
-            Class.forName("org.kie.pmml.evaluator.api.executor.PMMLRuntimeInternal");
-            return true;
-        } catch (NoClassDefFoundError | ClassNotFoundException e) {
-            return false;
-        }
-    }
 }

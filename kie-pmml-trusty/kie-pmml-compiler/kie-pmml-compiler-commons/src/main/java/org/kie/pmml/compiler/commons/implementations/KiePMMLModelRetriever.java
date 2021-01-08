@@ -29,6 +29,7 @@ import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.models.MiningField;
 import org.kie.pmml.api.models.OutputField;
+import org.kie.pmml.commons.model.HasClassLoader;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.compiler.api.provider.ModelImplementationProvider;
 import org.kie.pmml.compiler.api.provider.ModelImplementationProviderFinder;
@@ -51,20 +52,20 @@ public class KiePMMLModelRetriever {
      * @param dataDictionary
      * @param transformationDictionary
      * @param model
-     * @param kBuilder Using <code>Object</code> to avoid coupling with drools
+     * @param hasClassloader Using <code>HasClassloader</code> to avoid coupling with drools
      * @return
      * @throws KiePMMLException if any <code>KiePMMLInternalException</code> has been thrown during execution
      */
     public static Optional<KiePMMLModel> getFromCommonDataAndTransformationDictionaryAndModel(final DataDictionary dataDictionary,
                                                                                               final TransformationDictionary transformationDictionary,
                                                                                               final Model model,
-                                                                                              final Object kBuilder) {
+                                                                                              final HasClassLoader hasClassloader) {
         logger.trace("getFromCommonDataAndTransformationDictionaryAndModel {}", model);
         final PMML_MODEL pmmlMODEL = PMML_MODEL.byName(model.getClass().getSimpleName());
         logger.debug("pmmlModelType {}", pmmlMODEL);
         return getModelImplementationProviderStream(model)
                 .map(implementation -> implementation.getKiePMMLModel(dataDictionary, transformationDictionary, model
-                        , kBuilder))
+                        , hasClassloader))
                 .map(kiePMMLModel -> getPopulatedWithPMMLModelFields(kiePMMLModel, model.getMiningSchema(), model.getOutput()))
                 .findFirst();
     }
@@ -76,7 +77,7 @@ public class KiePMMLModelRetriever {
      * @param dataDictionary
      * @param transformationDictionary
      * @param model
-     * @param kBuilder Using <code>Object</code> to avoid coupling with drools
+     * @param hasClassloader Using <code>HasClassloader</code> to avoid coupling with drools
      * @return
      * @throws KiePMMLException if any <code>KiePMMLInternalException</code> has been thrown during execution
      */
@@ -84,14 +85,14 @@ public class KiePMMLModelRetriever {
                                                                                                          final DataDictionary dataDictionary,
                                                                                                          final TransformationDictionary transformationDictionary,
                                                                                                          final Model model,
-                                                                                                         final Object kBuilder) {
+                                                                                                         final HasClassLoader hasClassloader) {
         logger.trace("getFromCommonDataAndTransformationDictionaryAndModelWithSources {}", model);
         final PMML_MODEL pmmlMODEL = PMML_MODEL.byName(model.getClass().getSimpleName());
         logger.debug("pmmlModelType {}", pmmlMODEL);
         return getModelImplementationProviderStream(model)
                 .map(implementation -> implementation.getKiePMMLModelWithSources(packageName, dataDictionary,
                                                                                  transformationDictionary, model,
-                                                                                 kBuilder)).findFirst();
+                                                                                 hasClassloader)).findFirst();
     }
 
     static KiePMMLModel getPopulatedWithPMMLModelFields(final KiePMMLModel toPopulate, final MiningSchema miningSchema,

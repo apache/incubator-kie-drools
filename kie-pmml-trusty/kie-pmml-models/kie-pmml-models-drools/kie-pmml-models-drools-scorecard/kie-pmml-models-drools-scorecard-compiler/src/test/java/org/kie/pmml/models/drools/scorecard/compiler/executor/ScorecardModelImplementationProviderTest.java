@@ -16,14 +16,18 @@
 package org.kie.pmml.models.drools.scorecard.compiler.executor;
 
 import java.io.FileInputStream;
+import java.io.Serializable;
 
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.scorecard.Scorecard;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.core.util.ClassUtils;
 import org.junit.Test;
-import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.pmml.api.enums.PMML_MODEL;
+import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLComponent;
+import org.kie.pmml.compiler.commons.mocks.ExternalizableMock;
 import org.kie.pmml.compiler.commons.utils.KiePMMLUtil;
+import org.kie.pmml.models.drools.commons.implementations.HasKnowledgeBuilderMock;
 import org.kie.pmml.models.drools.commons.model.KiePMMLDroolsModel;
 import org.kie.pmml.models.drools.scorecard.model.KiePMMLScorecardModel;
 import org.kie.test.util.filesystem.FileUtils;
@@ -35,7 +39,6 @@ import static org.junit.Assert.assertTrue;
 public class ScorecardModelImplementationProviderTest {
 
     private static final ScorecardModelImplementationProvider PROVIDER = new ScorecardModelImplementationProvider();
-    private final static KnowledgeBuilder KNOWLEDGE_BUILDER = new KnowledgeBuilderImpl();
     private static final String SOURCE_1 = "ScorecardSample.pmml";
 
     @Test
@@ -46,11 +49,13 @@ public class ScorecardModelImplementationProviderTest {
     @Test
     public void getKiePMMLModel() throws Exception {
         final PMML pmml = getPMML(SOURCE_1);
-        final KiePMMLScorecardModel kiePMMLModel = PROVIDER.getKiePMMLModel(pmml.getDataDictionary(),
+        KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
+        final KiePMMLScorecardModel retrieved = PROVIDER.getKiePMMLModel(pmml.getDataDictionary(),
                                                                             pmml.getTransformationDictionary(),
                                                                             (Scorecard) pmml.getModels().get(0),
-                                                                            KNOWLEDGE_BUILDER);
-        assertNotNull(kiePMMLModel);
+                                                                            new HasKnowledgeBuilderMock(knowledgeBuilder));
+        assertNotNull(retrieved);
+        commonVerifyIsDeepCloneable(retrieved);
     }
 
     @Test
@@ -61,8 +66,9 @@ public class ScorecardModelImplementationProviderTest {
                                                                                  pmml.getDataDictionary(),
                                                                                  pmml.getTransformationDictionary(),
                                                                                  (Scorecard) pmml.getModels().get(0),
-                                                                                 knowledgeBuilder);
+                                                                                 new HasKnowledgeBuilderMock(knowledgeBuilder));
         assertNotNull(retrieved);
+        commonVerifyIsDeepCloneable(retrieved);
     }
 
     private PMML getPMML(String source) throws Exception {
@@ -72,5 +78,12 @@ public class ScorecardModelImplementationProviderTest {
         assertEquals(1, toReturn.getModels().size());
         assertTrue(toReturn.getModels().get(0) instanceof Scorecard);
         return toReturn;
+    }
+
+    private void commonVerifyIsDeepCloneable(AbstractKiePMMLComponent toVerify) {
+        assertTrue(toVerify instanceof Serializable);
+        ExternalizableMock externalizableMock = new ExternalizableMock();
+        externalizableMock.setKiePMMLComponent(toVerify);
+        ClassUtils.deepClone(externalizableMock);
     }
 }

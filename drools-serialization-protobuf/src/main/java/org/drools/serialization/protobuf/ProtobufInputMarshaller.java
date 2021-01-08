@@ -491,7 +491,7 @@ public class ProtobufInputMarshaller {
                                              List<PropagationContext> pctxs) {
         Object object = handle.getObject();
         WorkingMemoryEntryPoint ep = handle.getEntryPoint(wm);
-        ObjectTypeConf typeConf = ep.getObjectTypeConfigurationRegistry().getObjectTypeConf( ep.getEntryPoint(), object );
+        ObjectTypeConf typeConf = ep.getObjectTypeConfigurationRegistry().getOrCreateObjectTypeConf( ep.getEntryPoint(), object );
 
         PropagationContextFactory pctxFactory = wm.getKnowledgeBase().getConfiguration().getComponentFactory().getPropagationContextFactory();
 
@@ -534,7 +534,7 @@ public class ProtobufInputMarshaller {
         } else {
             confEP = context.getWorkingMemory().getEntryPoint();
         }
-        ObjectTypeConf typeConf = context.getWorkingMemory().getObjectTypeConfigurationRegistry().getObjectTypeConf( confEP, object );
+        ObjectTypeConf typeConf = context.getWorkingMemory().getObjectTypeConfigurationRegistry().getOrCreateObjectTypeConf( confEP, object );
 
 
         InternalFactHandle handle = null;
@@ -595,7 +595,7 @@ public class ProtobufInputMarshaller {
             InternalFactHandle handle = (InternalFactHandle) context.getHandles().get( _key.getHandleId() );
 
             // ObjectTypeConf state is not marshalled, so it needs to be re-determined
-            ObjectTypeConf typeConf = context.getWorkingMemory().getObjectTypeConfigurationRegistry().getObjectTypeConf( handle.getEntryPointId(),
+            ObjectTypeConf typeConf = context.getWorkingMemory().getObjectTypeConfigurationRegistry().getOrCreateObjectTypeConf( handle.getEntryPointId(),
                                                                                                          handle.getObject() );
             if ( !typeConf.isTMSEnabled() && (!wasOTCSerialized || tmsEnabled.contains(typeConf.getTypeName()) ) ) {
                 typeConf.enableTMS();
@@ -663,7 +663,7 @@ public class ProtobufInputMarshaller {
                                                     (context.getKnowledgeBase() == null) ? null : context.getKnowledgeBase().getRootClassLoader() );
                     }
 
-                    ObjectTypeConf typeConf = context.getWorkingMemory().getObjectTypeConfigurationRegistry().getObjectTypeConf( handle.getEntryPointId(),
+                    ObjectTypeConf typeConf = context.getWorkingMemory().getObjectTypeConfigurationRegistry().getOrCreateObjectTypeConf( handle.getEntryPointId(),
                                                                                                                  handle.getObject() );
                     tms.readLogicalDependency( handle,
                                                object,

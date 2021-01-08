@@ -38,6 +38,11 @@ public class TypedExpressionResult {
         return typedExpression;
     }
 
+    public TypedExpression typedExpressionOrException() {
+        return typedExpression.orElseThrow(() -> new CannotTypeExpressionException(
+                String.format("Cannot type expression: %s", expressionTyperContext.getOriginalExpression())));
+    }
+
     public List<String> getUsedDeclarations() {
         return expressionTyperContext.getUsedDeclarations();
     }

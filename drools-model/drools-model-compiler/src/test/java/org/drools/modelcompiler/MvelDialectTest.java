@@ -17,18 +17,25 @@
 package org.drools.modelcompiler;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import org.assertj.core.api.Assertions;
 import org.drools.modelcompiler.domain.Address;
 import org.drools.modelcompiler.domain.Person;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.Results;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -435,7 +442,186 @@ public class MvelDialectTest extends BaseModelTest {
     }
 
     @Test
-    public void testBinaryOperationOnInteger() throws Exception {
+    public void testCompoundOperatorBigDecimalConstant() throws Exception {
+        // DROOLS-5894
+        String drl =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "import " + BigDecimal.class.getCanonicalName() + "\n" +
+                "dialect \"mvel\"\n" +
+                "rule R\n" +
+                "when\n" +
+                "    $p : Person( age >= 26 )\n" +
+                "then\n" +
+                "    BigDecimal result = 0B;" +
+                "    result += 50000B;\n" + // 50000
+                "    result -= 10000B;\n" + // 40000
+                "    result /= 10B;\n" + // 4000
+                "    result *= 10B;\n" + // 40000
+                "    $p.money = result;" +
+                "end";
+
+        KieSession ksession = getKieSession(drl);
+
+        Person john = new Person("John", 30);
+        john.setMoney( new BigDecimal( 70000 ) );
+
+        ksession.insert(john);
+        assertEquals(1, ksession.fireAllRules());
+        assertEquals(new BigDecimal( 40000 ), john.getMoney());
+    }
+
+    @Test
+    public void testCompoundOperatorBigDecimalConstantWithoutLiterals() {
+        // DROOLS-5894 // DROOLS-5901
+        String drl =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "import " + BigDecimal.class.getCanonicalName() + "\n" +
+                "dialect \"mvel\"\n" +
+                "rule R\n" +
+                "when\n" +
+                "    $p : Person( age >= 26 )\n" +
+                "then\n" +
+                "    BigDecimal result = 0B;" +
+                "    result += 50000;\n" + // 50000
+                "    result -= 10000;\n" + // 40000
+                "    result /= 10;\n" + // 4000
+                "    result *= 10;\n" + // 40000
+                "    result += result;\n" + // 80000
+                "    result /= result;\n" + // 1
+                "    result *= result;\n" + // 1
+                "    result -= result;\n" + // 0
+                "    int anotherVariable = 20;" +
+                "    result += anotherVariable;\n" + // 20
+                "    result /= anotherVariable;\n" + // 1
+                "    result *= anotherVariable;\n" + // 20
+                "    result -= anotherVariable;\n" + // 20
+                "    $p.money = result;" +
+                "end";
+
+        KieSession ksession = getKieSession(drl);
+
+        Person john = new Person("John", 30);
+        john.setMoney( new BigDecimal( 70000 ) );
+
+        ksession.insert(john);
+        assertEquals(1, ksession.fireAllRules());
+        assertEquals(new BigDecimal( 0 ), john.getMoney());
+    }
+
+    @Test
+    public void testArithmeticOperationsOnBigDecimal() {
+        String drl =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "import " + BigDecimal.class.getCanonicalName() + "\n" +
+                "dialect \"mvel\"\n" +
+                "rule R\n" +
+                "when\n" +
+                "    $p : Person( age >= 26 )\n" +
+                "then\n" +
+                "    BigDecimal operation = ($p.money + $p.otherBigDecimalField * 2) / 10;" +
+                "    $p.money = operation;\n" +
+                "end";
+
+        KieSession ksession = getKieSession(drl);
+
+        Person john = new Person("John", 30);
+        john.setMoney( new BigDecimal( 70000 ) );
+        john.setOtherBigDecimalField(new BigDecimal("10"));
+
+        ksession.insert(john);
+        assertEquals(1, ksession.fireAllRules());
+        assertEquals(new BigDecimal( 7002 ), john.getMoney());
+    }
+
+    @Test
+    public void testCompoundOperatorOnfield() throws Exception {
+
+        // DROOLS-5895
+        String drl =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "dialect \"mvel\"\n" +
+                "rule R\n" +
+                "when\n" +
+                "    $p : Person( age >= 26 )\n" +
+                "then\n" +
+                "    $p.money += $p.money;\n" +
+                "end";
+
+        KieSession ksession = getKieSession(drl);
+
+        Person john = new Person("John", 30);
+        john.setMoney( new BigDecimal( 70000 ) );
+
+        ksession.insert(john);
+        assertEquals(1, ksession.fireAllRules());
+        assertEquals(new BigDecimal( 140000 ), john.getMoney());
+    }
+
+    @Test
+    public void testModifyOnBigDecimal() {
+        // DROOLS-5889
+        String drl =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "global java.util.List list;\n" +
+                "dialect \"mvel\"\n" +
+                "rule R\n" +
+                "when\n" +
+                "    $p : Person( age >= 26 )\n" +
+                "then\n" +
+                "   list.add(\"before \" + $p + \", money = \" + $p.money);" +
+                "   modify($p) {" +
+                "       money = 30000;\n" +
+                "   } " +
+                "   list.add(\"after \" + $p + \", money = \" + $p.money);" +
+                "end";
+
+        KieSession ksession = getKieSession(drl);
+
+        ArrayList<String> logMessages = new ArrayList<>();
+        ksession.setGlobal("list", logMessages);
+
+        Person john = new Person("John", 30);
+        john.setMoney( new BigDecimal( 70000 ) );
+
+        ksession.insert(john);
+        assertEquals(1, ksession.fireAllRules());
+        assertEquals(new BigDecimal( 30000 ), john.getMoney());
+        assertThat(logMessages).containsExactly(
+                "before John, money = 70000",
+                "after John, money = 30000");
+    }
+
+    @Test
+    public void testModifyOnBigDecimalWithLiteral() {
+        // DROOLS-5891
+        String drl =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "dialect \"mvel\"\n" +
+                "rule R\n" +
+                "when\n" +
+                "    $p : Person( age >= 26 )\n" +
+                "then\n" +
+                "   modify($p) {" +
+                "       money = 1000.23B;\n" +
+                "   } " +
+                "end";
+
+        KieSession ksession = getKieSession(drl);
+
+        Person john = new Person("John", 30);
+        john.setMoney( new BigDecimal( 70000 ) );
+
+        Person leonardo = new Person("Leonardo", 4);
+        leonardo.setMoney( new BigDecimal( 500 ) );
+
+        ksession.insert(john);
+        assertEquals(1, ksession.fireAllRules());
+        assertEquals(new BigDecimal( "1000.23" ), john.getMoney());
+        assertEquals(new BigDecimal( 500 ), leonardo.getMoney());
+    }
+
+    @Test
+    public void testBinaryOperationOnInteger() {
         // RHDM-1421
         String drl =
                 "import " + Person.class.getCanonicalName() + "\n" +
@@ -458,7 +644,7 @@ public class MvelDialectTest extends BaseModelTest {
     }
 
     @Test
-    public void testSetOnInteger() throws Exception {
+    public void testSetOnInteger() {
         // RHDM-1421
         String drl =
                 "import " + Person.class.getCanonicalName() + "\n" +
@@ -478,5 +664,83 @@ public class MvelDialectTest extends BaseModelTest {
         ksession.insert(john);
         assertEquals(1, ksession.fireAllRules());
         assertEquals(50000, (int) john.getSalary());
+    }
+
+    @Test
+    public void testCollectSubtypeInConsequence() {
+        // DROOLS-5887
+        String drl =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "import " + ArrayList.class.getCanonicalName() + "\n" +
+                "global java.util.List names;\n" +
+                "dialect \"mvel\"\n" +
+                "rule \"use subtype\"\n" +
+                "when\n" +
+                "    $people : ArrayList() from collect ( Person() )\n" +
+                "then\n" +
+                "    for (Person p : $people ) {\n" +
+                "        names.add(p.getName());\n" +
+                "    }\n" +
+                "end";
+
+        KieSession ksession = getKieSession(drl);
+
+        List<String> names = new ArrayList<>();
+        ksession.setGlobal("names", names);
+
+        Person mario = new Person("Mario", 46);
+        Person luca = new Person("Luca", 36);
+        Person leonardo = new Person("Leonardo", 3);
+
+        Arrays.asList(mario, luca, leonardo).forEach(ksession::insert);
+
+        assertEquals(1, ksession.fireAllRules());
+        Assertions.assertThat(names).containsExactlyInAnyOrder("Mario", "Luca", "Leonardo");
+    }
+
+    @Test
+    public void testCollectSubtypeInConsequenceNested() {
+        // DROOLS-5887
+        String drl =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "import " + Address.class.getCanonicalName() + "\n" +
+                "import " + ArrayList.class.getCanonicalName() + "\n" +
+                "dialect \"mvel\"\n" +
+                "global java.util.List names;\n" +
+                "global java.util.Set  addresses;\n" +
+                "rule \"use subtypes in nested fors\"\n" +
+                "when\n" +
+                "    $people : ArrayList() from collect ( Person() )\n" +
+                "    $addresses : ArrayList() from collect ( Address() )\n" +
+                "then\n" +
+                "    for (Person p : $people ) {\n" +
+                "        names.add(p.getName());\n" +
+                "           for (Address a : $addresses ) {\n" +
+                "               addresses.add(a.getCity());\n" +
+                "       }\n" +
+                "    }\n" +
+                "end";
+
+        KieSession ksession = getKieSession(drl);
+
+        List<String> names = new ArrayList<>();
+        ksession.setGlobal("names", names);
+
+        Set<String> addresses = new HashSet<>();
+        ksession.setGlobal("addresses", addresses);
+
+
+        Person mario = new Person("Mario", 46);
+        Person luca = new Person("Luca", 36);
+        Person leonardo = new Person("Leonardo", 3);
+
+        Arrays.asList(mario, luca, leonardo).forEach(ksession::insert);
+
+        Address a = new Address("Milan");
+        ksession.insert(a);
+
+        assertEquals(1, ksession.fireAllRules());
+        Assertions.assertThat(names).containsExactlyInAnyOrder("Mario", "Luca", "Leonardo");
+        Assertions.assertThat(addresses).contains("Milan");
     }
 }

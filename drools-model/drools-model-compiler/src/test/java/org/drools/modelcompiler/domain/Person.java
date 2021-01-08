@@ -32,6 +32,7 @@ public class Person extends AbstractReactiveObject {
     private Integer salary;
 
     private BigDecimal money;
+    private BigDecimal otherBigDecimalField;
 
     private BigInteger ageInSeconds;
 
@@ -145,8 +146,9 @@ public class Person extends AbstractReactiveObject {
         return employed;
     }
 
-    public void setEmployed(Boolean employed) {
+    public Person setEmployed(Boolean employed) {
         this.employed = employed;
+        return this;
     }
 
     /**
@@ -164,6 +166,14 @@ public class Person extends AbstractReactiveObject {
     public Person setMoney(BigDecimal money) {
         this.money = money;
         return this;
+    }
+
+    public BigDecimal getOtherBigDecimalField() {
+        return otherBigDecimalField;
+    }
+
+    public void setOtherBigDecimalField(BigDecimal otherBigDecimalField) {
+        this.otherBigDecimalField = otherBigDecimalField;
     }
 
     public Integer getSalary() {

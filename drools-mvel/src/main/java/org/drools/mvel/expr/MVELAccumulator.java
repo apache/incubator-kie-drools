@@ -20,9 +20,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import org.drools.core.WorkingMemory;
@@ -33,8 +31,8 @@ import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.MvelAccumulator;
 import org.drools.core.spi.Tuple;
-import org.drools.mvel.MVELSafeHelper;
 import org.drools.mvel.MVELDialectRuntimeData;
+import org.drools.mvel.MVELSafeHelper;
 import org.drools.mvel.expr.MVELCompilationUnit.DroolsVarFactory;
 import org.mvel2.integration.VariableResolverFactory;
 
@@ -103,11 +101,7 @@ public class MVELAccumulator
      * @see org.kie.spi.Accumulator#createContext()
      */
     public Serializable createContext() {
-        Map<Long, Object[]> shadow = null;
-        if ( this.reverse != null ) {
-            shadow = new HashMap<>();
-        }
-        return new MVELAccumulatorContext( shadow );
+        return new MVELAccumulatorContext( );
     }
 
     /* (non-Javadoc)
@@ -148,7 +142,7 @@ public class MVELAccumulator
     /* (non-Javadoc)
      * @see org.kie.spi.Accumulator#accumulate(java.lang.Object, org.kie.spi.Tuple, org.kie.common.InternalFactHandle, org.kie.rule.Declaration[], org.kie.rule.Declaration[], org.kie.WorkingMemory)
      */
-    public void accumulate(Object workingMemoryContext,
+    public Object accumulate(Object workingMemoryContext,
                            Object context,
                            Tuple tuple,
                            InternalFactHandle handle,
@@ -161,16 +155,13 @@ public class MVELAccumulator
         actionUnit.updateFactory( handle, tuple, localVars, (InternalWorkingMemory) workingMemory, workingMemory.getGlobalResolver(), factory );
 
         DroolsVarFactory df = ( DroolsVarFactory ) factory.getNextFactory();
-        
+
+        Object[] shadow = null;
         if ( reverse != null ) {
-            Object[] shadow = new Object [df.getOtherVarsPos()];
+            shadow = new Object [df.getOtherVarsPos()];
             for ( int i = 0; i < df.getOtherVarsPos(); i++ ) {
                 shadow[i] = factory.getIndexedVariableResolver( i ).getValue();
-                
-                
             }
-            // SNAPSHOT variable values
-            ((MVELAccumulatorContext) context).getShadow().put( handle.getId(), shadow);
         }
         MVELSafeHelper.getEvaluator().executeExpression( this.action,
                                 null,
@@ -183,23 +174,31 @@ public class MVELAccumulator
             }
         }
         
-        ((MVELAccumulatorContext) context).setVariables( localVars );        
+        ((MVELAccumulatorContext) context).setVariables( localVars );
+
+        return shadow;
     }
 
-    public void reverse(Object workingMemoryContext,
-                        Object context,
-                        Tuple leftTuple,
-                        InternalFactHandle handle,
-                        Declaration[] declarations,
-                        Declaration[] innerDeclarations,
-                        WorkingMemory workingMemory) throws Exception {
+    public boolean tryReverse(Object workingMemoryContext,
+                              Object context,
+                              Tuple leftTuple,
+                              InternalFactHandle handle,
+                              Object value,
+                              Declaration[] declarations,
+                              Declaration[] innerDeclarations,
+                              WorkingMemory workingMemory) throws Exception {
+
+        if (!supportsReverse()) {
+            return false;
+        }
+
         Object[]  localVars = ((MVELAccumulatorContext) context).getVariables();
         MVELAccumulatorFactoryContext factoryContext = (MVELAccumulatorFactoryContext)workingMemoryContext;
         
         VariableResolverFactory factory = factoryContext.getActionFactory();
         DroolsVarFactory df = ( DroolsVarFactory ) factory.getNextFactory();
         
-        Object[] vars = ((MVELAccumulatorContext) context).getShadow().remove( handle.getId() );
+        Object[] vars = (Object[]) value;
         for ( int i = 0; i < df.getOtherVarsPos(); i++ ) {
             factory.getIndexedVariableResolver( i ).setValue(vars[i]);  
         }
@@ -209,11 +208,6 @@ public class MVELAccumulator
                 factory.getIndexedVariableResolver( df.getOtherVarsPos() + i ).setValue( localVars[i] );
             }
         }
-        
-
-//        reverseUnit.updateFactory( null, null, handle.getObject(), (LeftTuple) leftTuple, localVars, (InternalWorkingMemory) workingMemory, workingMemory.getGlobalResolver(), factory  );        
-        
-
 
         MVELSafeHelper.getEvaluator().executeExpression( this.reverse,
                                 null,
@@ -225,7 +219,9 @@ public class MVELAccumulator
             }
         }
         
-        ((MVELAccumulatorContext) context).setVariables( localVars );         
+        ((MVELAccumulatorContext) context).setVariables( localVars );
+
+        return true;
     }
 
     /* (non-Javadoc)
@@ -304,13 +300,11 @@ public class MVELAccumulator
         implements
         Serializable {
 
-        private static final long                      serialVersionUID = 510l;
+        private static final long serialVersionUID = 510l;
 
-        private Object[]               variables;
-        private Map<Long, Object[]> shadow;
+        private Object[]          variables;
 
-        public MVELAccumulatorContext(Map<Long, Object[]> shadow) {
-            this.shadow = shadow;
+        public MVELAccumulatorContext() {
         }
 
         public Object[] getVariables() {
@@ -320,16 +314,6 @@ public class MVELAccumulator
         public void setVariables(Object[] variables) {
             this.variables = variables;
         }
-
-        public Map<Long, Object[]> getShadow() {
-            return shadow;
-        }
-
-        public void setShadow(Map<Long,  Object[]> shadow) {
-            this.shadow = shadow;
-        }
-        
-        
     }
 
 }

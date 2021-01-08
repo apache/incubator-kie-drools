@@ -1153,6 +1153,49 @@ public class TimerAndCalendarTest {
     }
 
     @Test(timeout = 10000)
+    public void testIntervalTimerAfterEnd() {
+        // DROOLS-5908
+        final String drl = "package org.simple;\n" +
+                "global java.util.List list;\n" +
+                "\n" +
+                "declare Bean\n" +
+                "  delay   : long = 30000\n" +
+                "  period  : long = 10000\n" +
+                "end\n" +
+                "\n" +
+                "rule init \n" +
+                "when \n" +
+                "then \n" +
+                " insert( new Bean() );\n" +
+                "end \n" +
+                "\n" +
+                "rule xxx\n" +
+                "  salience ($d) \n" +
+                "  timer( expr: $d, $p; end=3-JAN-2010 )\n" +
+                "when\n" +
+                "  Bean( $d : delay, $p : period )\n" +
+                "then\n" +
+                "  list.add( \"fired\" );\n" +
+                "end";
+
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("timer-and-calendar-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
+        try {
+            final List list = new ArrayList();
+
+            final PseudoClockScheduler timeService = ksession.getSessionClock();
+            timeService.setStartupTime(DateUtils.parseDate("3-JAN-2010").getTime());
+
+            ksession.setGlobal("list", list);
+
+            ksession.fireAllRules();
+            assertEquals(0, list.size());
+        } finally {
+            ksession.dispose();
+        }
+    }
+
+    @Test(timeout = 10000)
     public void testIntervalTimerWithStringExpressions() {
         checkIntervalTimerWithStringExpressions(false, "3-JAN-2010");
     }

@@ -431,4 +431,34 @@ public class MvelOperatorsTest extends BaseModelTest {
         ksession.insert( new ListContainer( Collections.singletonList( 3 ) ) );
         assertEquals(1, ksession.fireAllRules());
     }
+
+    @Test
+    public void testNumericStringsWithLeadingZero() {
+        // DROOLS-5926
+        String str =
+                "rule R when\n" +
+                "    Integer(this == \"0800\")" +
+                "then\n" +
+                "end ";
+
+        KieSession ksession = getKieSession(str);
+
+        ksession.insert( 800 );
+        assertEquals(1, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testNumericHexadecimal() {
+        // DROOLS-5926
+        String str =
+                "rule R when\n" +
+                "    Integer(this == 0x800)" +
+                "then\n" +
+                "end ";
+
+        KieSession ksession = getKieSession(str);
+
+        ksession.insert( 2048 );
+        assertEquals(1, ksession.fireAllRules());
+    }
 }

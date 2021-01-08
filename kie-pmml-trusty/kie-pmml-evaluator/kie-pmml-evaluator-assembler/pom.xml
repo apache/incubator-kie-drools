@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.kie</groupId>
     <artifactId>kie-pmml-evaluator</artifactId>
-    <version>7.48.0-SNAPSHOT</version>
+    <version>7.49.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
@@ -22,7 +22,15 @@
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-evaluator-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
       <artifactId>kie-pmml-compiler-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-kie-internal</artifactId>
     </dependency>
     <!-- DROOLS -->
     <dependency>

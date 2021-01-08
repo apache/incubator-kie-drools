@@ -27,7 +27,6 @@ import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.locks.Lock;
 
-import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.factmodel.traits.CoreWrapper;
 import org.drools.core.util.HashTableIterator;
 import org.drools.core.util.JavaIteratorAdapter;
@@ -39,8 +38,8 @@ public class ClassAwareObjectStore implements Externalizable, ObjectStore {
 
     private Lock lock;
 
-    private Map<String, SingleClassStore> storesMap = new HashMap<String, SingleClassStore>();
-    private List<ConcreteClassStore> concreteStores = new CopyOnWriteArrayList<ConcreteClassStore>();
+    private Map<String, SingleClassStore> storesMap = new HashMap<>();
+    private List<ConcreteClassStore> concreteStores = new CopyOnWriteArrayList<>();
 
     private ObjectHashMap equalityMap;
 
@@ -50,13 +49,9 @@ public class ClassAwareObjectStore implements Externalizable, ObjectStore {
 
     public ClassAwareObjectStore() { }
 
-    public ClassAwareObjectStore(RuleBaseConfiguration conf, Lock lock) {
-        this(conf.getAssertBehaviour(), lock);
-    }
-
-    public ClassAwareObjectStore( RuleBaseConfiguration.AssertBehaviour assertBehaviour, Lock lock ) {
+    public ClassAwareObjectStore( boolean isEqualityBehaviour, Lock lock ) {
         this.lock = lock;
-        this.isEqualityBehaviour = RuleBaseConfiguration.AssertBehaviour.EQUALITY.equals(assertBehaviour);
+        this.isEqualityBehaviour = isEqualityBehaviour;
         if (isEqualityBehaviour) {
             this.equalityMap = new ObjectHashMap();
             this.equalityMap.setComparator( new EqualityAssertMapComparator() );
@@ -204,10 +199,6 @@ public class ClassAwareObjectStore implements Externalizable, ObjectStore {
         return new CompositeFactHandleIterator(concreteStores, true);
     }
 
-    public Iterator<InternalFactHandle> iterateFactHandles(Class<?> clazz) {
-        return getOrCreateClassStore(clazz).factHandlesIterator(true);
-    }
-
     @Override
     public Iterator<InternalFactHandle> iterateFactHandles(ObjectFilter filter) {
         if (filter instanceof ClassObjectFilter) {
@@ -232,6 +223,16 @@ public class ClassAwareObjectStore implements Externalizable, ObjectStore {
         return new CompositeFactHandleIterator(concreteStores, false, filter);
     }
 
+    @Override
+    public FactHandleClassStore getStoreForClass(Class<?> clazz) {
+        return getOrCreateClassStore(clazz);
+    }
+
+    @Override
+    public boolean clearClassStore(Class<?> clazz) {
+        return storesMap.remove( clazz.getName() ) != null;
+    }
+
     // /////////////////////
     // /// Internal Store
     // /////////////////////
@@ -245,16 +246,7 @@ public class ClassAwareObjectStore implements Externalizable, ObjectStore {
     }
 
     public SingleClassStore getOrCreateClassStore(Class<?> clazz) {
-        SingleClassStore store = storesMap.get(clazz.getName());
-        if (store == null) {
-            store = createClassStoreAndAddConcreteSubStores(clazz);
-            storesMap.put(clazz.getName(), store);
-        }
-        return store;
-    }
-
-    public boolean clearClassStore(Class<?> clazz) {
-        return storesMap.remove( clazz.getName() ) != null;
+        return storesMap.computeIfAbsent(clazz.getName(), c -> createClassStoreAndAddConcreteSubStores(clazz));
     }
 
     private ConcreteClassStore getOrCreateConcreteClassStore(Object object) {
@@ -294,7 +286,7 @@ public class ClassAwareObjectStore implements Externalizable, ObjectStore {
         return newStore;
     }
 
-    public interface SingleClassStore extends Externalizable {
+    public interface SingleClassStore extends Externalizable, FactHandleClassStore {
         Class<?> getStoredClass();
 
         void addConcreteStore(ConcreteClassStore store);
@@ -304,6 +296,10 @@ public class ClassAwareObjectStore implements Externalizable, ObjectStore {
 
         boolean isConcrete();
         ConcreteClassStore makeConcrete();
+
+        default Iterator<InternalFactHandle> iterator() {
+            return factHandlesIterator(true);
+        }
     }
 
     private abstract static class AbstractClassStore implements SingleClassStore {
