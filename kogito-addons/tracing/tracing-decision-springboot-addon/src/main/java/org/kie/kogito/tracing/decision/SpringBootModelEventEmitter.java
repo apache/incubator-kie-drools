@@ -33,7 +33,7 @@ public class SpringBootModelEventEmitter extends BaseModelEventEmitter {
     @Autowired
     public SpringBootModelEventEmitter(final DecisionModelResourcesProvider decisionModelResourcesProvider,
                                        final KafkaTemplate<String, String> template,
-                                       final @Value(value = "${kogito.addon.tracing.decision.kafka.topic.name:kogito-tracing-model}") String kafkaTopicName) {
+                                       final @Value(value = "${kogito.addon.tracing.model.kafka.topic.name:kogito-tracing-model}") String kafkaTopicName) {
         super(decisionModelResourcesProvider);
         this.template = template;
         this.kafkaTopicName = kafkaTopicName;
