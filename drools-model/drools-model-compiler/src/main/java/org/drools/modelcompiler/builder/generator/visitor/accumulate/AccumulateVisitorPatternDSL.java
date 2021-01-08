@@ -85,12 +85,28 @@ public class AccumulateVisitorPatternDSL extends AccumulateVisitor {
     }
 
     private void composeTwoBindings(String binding, MethodCallExpr newBindingExpression) {
-        context.findBindingExpression( binding ).ifPresent(oldBind -> {
+        context.findBindingExpression(binding).ifPresent(oldBind -> {
+
+            // compose newComposedBinding using oldBind and newBindingExpression. But still keep oldBind.
+
             LambdaExpr oldBindLambda = oldBind.findFirst(LambdaExpr.class).orElseThrow(RuntimeException::new);
             LambdaExpr newBindLambda = newBindingExpression.findFirst(LambdaExpr.class).orElseThrow(RuntimeException::new);
 
-            Expression newComposedLambda = LambdaUtil.appendNewLambdaToOld(oldBindLambda, newBindLambda);
-            oldBind.setArgument( 0, newBindingExpression.getArgument( 0 ) );
+            LambdaExpr tmpOldBindLambda = oldBindLambda.clone();
+            Expression newComposedLambda = LambdaUtil.appendNewLambdaToOld(tmpOldBindLambda, newBindLambda);
+
+            MethodCallExpr newComposedBinding = new MethodCallExpr(PatternExpressionBuilder.BIND_CALL, newBindingExpression.getArgument(0), newComposedLambda);
+            newComposedBinding.setScope(oldBind.getScope().orElseThrow(RuntimeException::new));
+
+            Optional<MethodCallExpr> optReactOn = oldBind.getArguments().stream()
+                                                         .filter(MethodCallExpr.class::isInstance)
+                                                         .map(MethodCallExpr.class::cast)
+                                                         .filter(exp -> exp.getName().asString().equals(PatternExpressionBuilder.REACT_ON_CALL))
+                                                         .findFirst();
+            if (optReactOn.isPresent()) {
+                newComposedBinding.addArgument(optReactOn.get().clone());
+            }
+            oldBind.setScope(newComposedBinding); // insert newComposedBinding at the first in the chain
         });
     }
 

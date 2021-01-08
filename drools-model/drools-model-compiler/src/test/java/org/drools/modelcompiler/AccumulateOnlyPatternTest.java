@@ -222,4 +222,104 @@ public class AccumulateOnlyPatternTest extends OnlyPatternTest {
         assertEquals("Mario", firstPair.getFirst());
         assertEquals("Mario", firstPair.getSecond());
     }
+
+    @Test
+    public void testVariableWithMethodCallInAccFunc() {
+        final String str = "package org.drools.mvel.compiler\n" +
+                           "import " + ControlFact.class.getCanonicalName() + ";" +
+                           "import " + Payment.class.getCanonicalName() + ";" +
+                           "rule r1\n" +
+                           "when\n" +
+                           "    Payment( $dueDate : dueDate)\n" +
+                           "    Number( longValue == $dueDate.getTime().getTime() ) from accumulate (" +
+                           "      ControlFact( $todaysDate : todaysDate )" +
+                           "      and\n" +
+                           "      Payment( $dueDate_acc : dueDate, eval($dueDate_acc.compareTo($todaysDate) <= 0) )\n" +
+                           "      ;max($dueDate_acc.getTime().getTime())\n" +
+                           "    )\n" +
+                           "then\n" +
+                           "end\n";
+
+        System.out.println(str);
+
+        KieSession ksession = getKieSession(str);
+
+        final Payment payment = new Payment();
+        payment.setDueDate(Calendar.getInstance());
+
+        final ControlFact controlFact = new ControlFact();
+        controlFact.setTodaysDate(Calendar.getInstance());
+
+        ksession.insert(controlFact);
+        ksession.insert(payment);
+        final int rules = ksession.fireAllRules();
+        assertEquals(1, rules);
+    }
+
+    @Test
+    public void testVariableWithMethodCallInAccFuncSimple() {
+        final String str = "package org.drools.mvel.compiler\n" +
+                           "import " + FactA.class.getCanonicalName() + ";" +
+                           "rule r1\n" +
+                           "when\n" +
+                           "    Number(  ) from accumulate (" +
+                           "      FactA( $valueA : value, $valueA > 0 )\n" +
+                           "      ;max($valueA.intValue())\n" +
+                           "    )\n" +
+                           "then\n" +
+                           "end\n";
+
+        System.out.println(str);
+
+        KieSession ksession = getKieSession(str);
+
+        final FactA factA = new FactA();
+        factA.setValue(1);
+
+        ksession.insert(factA);
+        final int rules = ksession.fireAllRules();
+        assertEquals(1, rules);
+    }
+
+    public static class ControlFact {
+
+        private Calendar todaysDate;
+
+        public Calendar getTodaysDate() {
+            return todaysDate;
+        }
+
+        public void setTodaysDate(Calendar todaysDate) {
+            this.todaysDate = todaysDate;
+        }
+
+    }
+
+    public static class Payment {
+
+        private Calendar dueDate;
+
+        public Calendar getDueDate() {
+            return dueDate;
+        }
+
+        public void setDueDate(Calendar dueDate) {
+            this.dueDate = dueDate;
+        }
+
+    }
+
+    public static class FactA {
+
+        private Integer value;
+
+        public Integer getValue() {
+            return value;
+        }
+
+        public void setValue(Integer value) {
+            this.value = value;
+        }
+
+    }
 }
