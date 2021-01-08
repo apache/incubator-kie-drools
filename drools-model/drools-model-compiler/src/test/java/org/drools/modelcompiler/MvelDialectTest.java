@@ -28,7 +28,6 @@ import java.util.Set;
 import org.assertj.core.api.Assertions;
 import org.drools.modelcompiler.domain.Address;
 import org.drools.modelcompiler.domain.Person;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.Results;
@@ -742,5 +741,29 @@ public class MvelDialectTest extends BaseModelTest {
         assertEquals(1, ksession.fireAllRules());
         Assertions.assertThat(names).containsExactlyInAnyOrder("Mario", "Luca", "Leonardo");
         Assertions.assertThat(addresses).contains("Milan");
+    }
+
+    @Test
+    public void testSetOnMvel() {
+        // RHDM-1550
+        String drl =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "dialect \"mvel\"\n" +
+                "rule \"use subtypes in nested fors\"\n" +
+                "when\n" +
+                "    $person: Person()\n" +
+                "then\n" +
+                "    $person.setNameAndAge( \"Mario\", 46\n" +
+                ");\n" +
+                "end";
+
+        KieSession ksession = getKieSession(drl);
+
+        Person mario = new Person();
+        ksession.insert( mario );
+
+        assertEquals(1, ksession.fireAllRules());
+        assertEquals("Mario", mario.getName());
+        assertEquals(46, mario.getAge());
     }
 }
