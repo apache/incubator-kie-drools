@@ -1,7 +1,9 @@
 package org.drools;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Person {
@@ -11,6 +13,7 @@ public class Person {
 
     private Person parent;
     private Address address;
+    private List<Address> addresses = new ArrayList<>();
     private Gender gender;
 
     public Person parentPublic;
@@ -88,5 +91,13 @@ public class Person {
 
     public void setAgeAsInteger( Integer ageAsInteger ) {
         this.ageAsInteger = ageAsInteger;
+    }
+
+    public List<Address> getAddresses() {
+        return addresses;
+    }
+
+    public void setAddresses(List<Address> addresses) {
+        this.addresses = addresses;
     }
 }

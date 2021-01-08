@@ -33,6 +33,7 @@ import org.kie.pmml.commons.model.HasSourcesMap;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.compiler.executor.PMMLCompiler;
 import org.kie.pmml.compiler.executor.PMMLCompilerImpl;
+import org.kie.pmml.evaluator.assembler.implementations.HasKnowledgeBuilderImpl;
 import org.kie.pmml.evaluator.assembler.factories.PMMLRuleMapperFactory;
 import org.kie.pmml.evaluator.assembler.factories.PMMLRuleMappersFactory;
 
@@ -93,7 +94,7 @@ public class PMMLCompilerService {
                                                                    () -> getCompiler(kbuilderImpl));
         try {
             return pmmlCompiler.getKiePMMLModels(resource.getInputStream(), getFileName(resource.getSourcePath()),
-                                                 kbuilderImpl);
+                                                 new HasKnowledgeBuilderImpl(kbuilderImpl));
         } catch (IOException e) {
             throw new ExternalException("ExternalException", e);
         }
@@ -115,7 +116,7 @@ public class PMMLCompilerService {
             final List<KiePMMLModel> toReturn = pmmlCompiler.getKiePMMLModelsWithSources(factoryClassName, packageName,
                                                                                          resource.getInputStream(),
                                                                                          getFileName(resource.getSourcePath()),
-                                                                                         kbuilderImpl);
+                                                                                         new HasKnowledgeBuilderImpl(kbuilderImpl));
             populateWithPMMLRuleMappers(toReturn, resource);
             return toReturn;
         } catch (IOException e) {

@@ -96,7 +96,22 @@ public class PatternDescr extends AnnotatedBaseDescr
     public String getIdentifier() {
         return this.identifier;
     }
-    
+
+    public List<String> getAllBoundIdentifiers() {
+        List<String> identifiers = new ArrayList<>();
+        if (this.identifier != null) {
+            identifiers.add( this.identifier );
+        }
+        for (BaseDescr descr : getDescrs()) {
+            String descrText = descr.getText();
+            int colonPos = descrText.indexOf( ':' );
+            if (colonPos > 0) {
+                identifiers.add(descrText.substring( 0, colonPos ).trim());
+            }
+        }
+        return identifiers;
+    }
+
     public boolean isQuery() {
         return query;
     }
@@ -257,7 +272,7 @@ public class PatternDescr extends AnnotatedBaseDescr
         this.xpathStartDeclaration = xpathStartDeclaration;
     }
 
-    public Object clone() {
+    public PatternDescr clone() {
         PatternDescr clone = new PatternDescr( this.objectType,
                                                this.identifier );
         clone.setQuery( this.query );

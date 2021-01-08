@@ -31,6 +31,7 @@ import static org.drools.scenariosimulation.backend.expression.BaseExpressionOpe
 import static org.drools.scenariosimulation.backend.expression.BaseExpressionOperator.values;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -40,7 +41,6 @@ public class BaseExpressionOperatorTest {
 
     @Test
     public void evaluateLiteralExpression() {
-
         Arrays.stream(values())
                 .filter(e -> !EQUALS.equals(e))
                 .forEach(operator -> {
@@ -50,11 +50,17 @@ public class BaseExpressionOperatorTest {
                             .hasMessageEndingWith(" operator cannot be used in a GIVEN clause");
                 });
 
-        assertEquals("Test", EQUALS.evaluateLiteralExpression(String.class.getCanonicalName(), "= Test", classLoader));
-        assertEquals("", EQUALS.evaluateLiteralExpression(String.class.getCanonicalName(), "= ", classLoader));
-        assertNull(EQUALS.evaluateLiteralExpression(String.class.getCanonicalName(), "null", classLoader));
-        assertNull(EQUALS.evaluateLiteralExpression(String.class.getCanonicalName(), "= null", classLoader));
-        assertNull(EQUALS.evaluateLiteralExpression(String.class.getCanonicalName(), null, classLoader));
+        assertEquals("Test", EQUALS.evaluateLiteralExpression(String.class.getName(), "= Test", classLoader));
+        assertEquals("", EQUALS.evaluateLiteralExpression(String.class.getName(), "= ", classLoader));
+        assertEquals(1, EQUALS.evaluateLiteralExpression(Integer.class.getName(), "= 1", classLoader));
+        assertNotEquals(1, EQUALS.evaluateLiteralExpression(Integer.class.getName(), "= 2", classLoader));
+        assertEquals(TestEnum.TEST_1, EQUALS.evaluateLiteralExpression(TestEnum.class.getName(), "= TEST_1", classLoader));
+        assertNotEquals(TestEnum.TEST_2, EQUALS.evaluateLiteralExpression(TestEnum.class.getName(), "= TEST_1", classLoader));
+        assertEquals(OuterClass.InnerEnum.INNER_1, EQUALS.evaluateLiteralExpression(OuterClass.InnerEnum.class.getName(), "= INNER_1", classLoader));
+        assertNotEquals(OuterClass.InnerEnum.INNER_2, EQUALS.evaluateLiteralExpression(OuterClass.InnerEnum.class.getName(), "= INNER_1", classLoader));
+        assertNull(EQUALS.evaluateLiteralExpression(String.class.getName(), "null", classLoader));
+        assertNull(EQUALS.evaluateLiteralExpression(String.class.getName(), "= null", classLoader));
+        assertNull(EQUALS.evaluateLiteralExpression(String.class.getName(), null, classLoader));
     }
 
     @Test
@@ -127,5 +133,17 @@ public class BaseExpressionOperatorTest {
         assertTrue(LIST_OF_CONDITION.eval("=1; ![2, 3]; <10", 1, int.class, classLoader));
 
         assertFalse(LIST_OF_CONDITION.eval(null, 1, int.class, classLoader));
+    }
+
+    private enum TestEnum {
+        TEST_1,
+        TEST_2
+    }
+
+    private static class OuterClass {
+        public enum InnerEnum {
+            INNER_1,
+            INNER_2
+        }
     }
 }

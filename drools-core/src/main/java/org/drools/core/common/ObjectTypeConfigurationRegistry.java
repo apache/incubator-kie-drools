@@ -16,6 +16,11 @@
 
 package org.drools.core.common;
 
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.facttemplates.Fact;
 import org.drools.core.impl.InternalKnowledgeBase;
@@ -25,15 +30,10 @@ import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.spi.Activation;
 
-import java.io.Serializable;
-import java.util.Collection;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-
 public class ObjectTypeConfigurationRegistry implements Serializable {
     private static final long serialVersionUID = 510l;
 
-    private final ConcurrentMap<Object, ObjectTypeConf> typeConfMap = new ConcurrentHashMap<Object, ObjectTypeConf>();
+    private final Map<Object, ObjectTypeConf> typeConfMap = new ConcurrentHashMap<>();
 
     private final InternalKnowledgeBase kBase;
 
@@ -45,38 +45,28 @@ public class ObjectTypeConfigurationRegistry implements Serializable {
      * Returns the ObjectTypeConfiguration object for the given object or
      * creates a new one if none is found in the cache
      */
-    public ObjectTypeConf getObjectTypeConf(EntryPointId entrypoint,
-                                            Object object) {
-        
-        // first see if it's a ClassObjectTypeConf        
-        Object key;
-        if (object instanceof Activation) {
-            key = ClassObjectType.Match_ObjectType.getClassType();
-        } else if (object instanceof Fact) {
-            key = ((Fact) object).getFactTemplate().getName();
-        } else {
-            key = object.getClass();
+    public ObjectTypeConf getObjectTypeConf(EntryPointId entrypoint, Object object) {
+        return this.typeConfMap.get( getKey( object ) );
+    }
+
+    public ObjectTypeConf getOrCreateObjectTypeConf(EntryPointId entrypoint, Object object) {
+        return this.typeConfMap.computeIfAbsent( getKey( object ), k -> createObjectTypeConf( entrypoint, k, object ) );
+    }
+
+    private Object getKey( Object object ) {
+        if ( object instanceof Activation) {
+            return ClassObjectType.Match_ObjectType.getClassType();
         }
-        ObjectTypeConf objectTypeConf = this.typeConfMap.get( key );
-        
-        // it doesn't exist, so create it.
-        if ( objectTypeConf == null ) {
-            if ( object instanceof Fact ) {
-                objectTypeConf = new FactTemplateTypeConf( entrypoint,
-                                                           ((Fact) object).getFactTemplate(),
-                                                           this.kBase );
-            } else {
-                objectTypeConf = new ClassObjectTypeConf( entrypoint,
-                                                          (Class<?>) key,
-                                                          this.kBase );
-            }
-            ObjectTypeConf existing = this.typeConfMap.putIfAbsent( key, objectTypeConf );
-            if ( existing != null ) {
-                // Raced, take the (now) existing.
-                objectTypeConf = existing;
-            }
+        if ( object instanceof Fact) {
+            return ((Fact) object).getFactTemplate().getName();
         }
-        return objectTypeConf;
+        return object.getClass();
+    }
+
+    private ObjectTypeConf createObjectTypeConf(EntryPointId entrypoint, Object key, Object object) {
+        return object instanceof Fact ?
+                new FactTemplateTypeConf( entrypoint, ((Fact) object).getFactTemplate(), this.kBase ) :
+                new ClassObjectTypeConf( entrypoint, (Class<?>) key, this.kBase );
     }
 
     public ObjectTypeConf getObjectTypeConfByClass(Class<?> cls) {

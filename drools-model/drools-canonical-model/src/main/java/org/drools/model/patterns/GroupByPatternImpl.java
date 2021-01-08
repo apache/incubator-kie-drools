@@ -14,41 +14,28 @@
 
 package org.drools.model.patterns;
 
-import java.util.UUID;
-
 import org.drools.model.Condition;
 import org.drools.model.GroupByPattern;
-import org.drools.model.Pattern;
 import org.drools.model.Variable;
 import org.drools.model.functions.FunctionN;
 import org.drools.model.functions.accumulate.AccumulateFunction;
 
 public class GroupByPatternImpl<T, K> extends AccumulatePatternImpl<T> implements GroupByPattern<T, K> {
 
-    private final String topic = UUID.randomUUID().toString();
-
     private final Variable[] vars;
     private final Variable<K> varKey;
     private final FunctionN groupingFunction;
-
-    private final Pattern[] groupingPatterns;
 
     public GroupByPatternImpl( Condition condition, Variable[] vars, Variable<K> varKey, FunctionN groupingFunction, AccumulateFunction... accumulateFunctions ) {
         super( condition, accumulateFunctions );
         this.vars = vars;
         this.varKey = varKey;
         this.groupingFunction = groupingFunction;
-        this.groupingPatterns = findGroupingPatterns(condition);
     }
 
     @Override
     public Condition.Type getType() {
         return Condition.Type.GROUP_BY;
-    }
-
-    @Override
-    public String getTopic() {
-        return topic;
     }
 
     @Override
@@ -64,32 +51,5 @@ public class GroupByPatternImpl<T, K> extends AccumulatePatternImpl<T> implement
     @Override
     public FunctionN getGroupingFunction() {
         return groupingFunction;
-    }
-
-    @Override
-    public Pattern[] getGroupingPatterns() {
-        return groupingPatterns;
-    }
-
-    private Pattern[] findGroupingPatterns( Condition condition) {
-        if (condition instanceof Pattern) {
-            return new Pattern[] { ( Pattern ) condition };
-        }
-
-        Pattern[] patterns = new Pattern[vars.length];
-
-        for (int i = 0; i < vars.length; i++) {
-            for (Condition subCondition : condition.getSubConditions()) {
-                if ( subCondition instanceof PatternImpl ) {
-                    PatternImpl patternImpl = ( PatternImpl ) subCondition;
-                    if (patternImpl.getPatternVariable() == vars[i]) {
-                        patterns[i] = patternImpl;
-                        break;
-                    }
-                }
-            }
-        }
-
-        return patterns;
     }
 }

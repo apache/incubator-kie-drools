@@ -32,6 +32,7 @@ import org.kie.dmn.api.core.DMNMessage.Severity;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.lang.ast.DashNode;
+import org.kie.dmn.feel.runtime.Range.RangeBoundary;
 import org.kie.dmn.model.api.DecisionTable;
 import org.kie.dmn.model.api.FunctionDefinition;
 import org.kie.dmn.model.api.HitPolicy;
@@ -57,6 +58,7 @@ public class DTAnalysis {
     private boolean c1stNFViolation = false;
     private Collection<Collection<Integer>> cOfDuplicateRules = Collections.emptyList();
     private Collection<Contraction> contractionsViolating2ndNF = new ArrayList<>();
+    private Collection<RuleColumnCoordinate> cellsViolating2ndNF = new ArrayList<>();
     private final DecisionTable sourceDT;
     private final Throwable error;
     private final DDTATable ddtaTable;
@@ -287,6 +289,15 @@ public class DTAnalysis {
                                                                        c.adjacentDimension,
                                                                        c.impactedRules()),
                                                  Msg.DTANALYSIS_2NDNFVIOLATION.getType(), c.impactedRules()));
+        }
+        for (RuleColumnCoordinate c : getCellsViolating2ndNF()) {
+            results.add(new DMNDTAnalysisMessage(this,
+                                                 Severity.WARN,
+                                                 MsgUtil.createMessage(Msg.DTANALYSIS_2NDNFVIOLATION_WAS_DASH,
+                                                                       c.feelText,
+                                                                       c.rule,
+                                                                       c.column),
+                                                 Msg.DTANALYSIS_2NDNFVIOLATION.getType(), Arrays.asList(c.rule)));
         }
         return results;
     }
@@ -671,7 +682,7 @@ public class DTAnalysis {
             LOG.debug("Violated already at 1st NF.");
             return;
         }
-        for (Contraction c : contractions) {
+        for (Contraction c : contractions) { // is a contraction resulting in a 2NF violation?
             if (c.dimensionAsContracted.size() == 1) {
                 Interval domainMinMax = ddtaTable.getInputs().get(c.adjacentDimension - 1).getDomainMinMax();
                 if (domainMinMax.equals(c.dimensionAsContracted.get(0))) {
@@ -680,16 +691,40 @@ public class DTAnalysis {
                 }
             }
         }
-
+        for (int r = 0; r < ddtaTable.getRule().size(); r++) { // is a cell equivalent to a Dash `-` in DMN decision table?
+            DDTARule rule = ddtaTable.getRule().get(r);
+            for (int c = 0; c < ddtaTable.getInputs().size(); c++) {
+                if (rule.getInputEntry().get(c).getIntervals().size() != 1) {
+                    continue;
+                }
+                Interval int0 = rule.getInputEntry().get(c).getIntervals().get(0);
+                if (!(rule.getInputEntry().get(c).getUts().get(0) instanceof DashNode) &&
+                    int0.getLowerBound().getBoundaryType() == RangeBoundary.CLOSED &&
+                    int0.getUpperBound().getBoundaryType() == RangeBoundary.CLOSED &&
+                    !int0.getLowerBound().getValue().equals(int0.getUpperBound().getValue())) { // a normalized closed-interval, but not a `-`: but is it equivalent to it?
+                    DDTAInputClause col = ddtaTable.getInputs().get(c);
+                    boolean includes = int0.includes(col.getDomainMinMax());
+                    if (includes) {
+                        RuleColumnCoordinate rc = new RuleColumnCoordinate(r + 1, c + 1, sourceDT.getRule().get(r).getInputEntry().get(c).getText());
+                        LOG.debug("compute2ndNFViolations() Cell: {} violates 2NF", rc);
+                        cellsViolating2ndNF.add(rc);
+                    }
+                }
+            }
+        }
         LOG.debug("compute2ndNFViolations() c2ndNFViolation result: {}", is2ndNFViolation());
     }
 
     public boolean is2ndNFViolation() {
-        return !contractionsViolating2ndNF.isEmpty();
+        return !contractionsViolating2ndNF.isEmpty() || !cellsViolating2ndNF.isEmpty();
     }
 
     public Collection<Contraction> getContractionsViolating2ndNF() {
         return Collections.unmodifiableCollection(contractionsViolating2ndNF);
+    }
+
+    public Collection<RuleColumnCoordinate> getCellsViolating2ndNF() {
+        return Collections.unmodifiableCollection(cellsViolating2ndNF);
     }
 
     public void computeHitPolicyRecommender() {

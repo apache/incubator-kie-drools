@@ -44,7 +44,10 @@ public class FEELConditionsAndLoopsTest extends BaseFEELTest {
                 {"count( for x in [1, 2, 3] return x+1 )", BigDecimal.valueOf( 3 ), null},
 
                 // quantified
-                {"if every x in [ 1, 2, 3 ] satisfies x < 5 then \"foo\" else \"bar\"", "foo", null}
+                {"if every x in [ 1, 2, 3 ] satisfies x < 5 then \"foo\" else \"bar\"", "foo", null},
+                // DROOLS-5927 short-circuit boolean ops
+                {"null != null and string length(null) > 0", Boolean.FALSE, null}, // expect short-circuit behaviour
+                {"null = null or string length(null) = 0", Boolean.TRUE, null}, // expect short-circuit behaviour
 
         };
         return addAdditionalParameters(cases, false);

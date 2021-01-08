@@ -27,19 +27,14 @@ public class ModifyCompiler {
         Set<String> usedBindings = new HashSet<>();
         mvelExpression.findAll(ModifyStatement.class)
                 .forEach(s -> {
+                    Optional<Node> parentNode = s.getParentNode();
                     PreprocessPhase.PreprocessPhaseResult invoke = preprocessPhase.invoke(s);
                     usedBindings.addAll(invoke.getUsedBindings());
-                    Optional<Node> parentNode = s.getParentNode();
                     parentNode.ifPresent(p -> {
-                        BlockStmt replacementBlock = new BlockStmt();
-                        replacementBlock.getStatements().addAll(invoke.getNewObjectStatements());
-                        replacementBlock.getStatements().addAll(invoke.getOtherStatements());
+                        BlockStmt parentBlock = (BlockStmt) p;
                         for (String modifiedFact : invoke.getUsedBindings()) {
-                            replacementBlock.addStatement(new MethodCallExpr(null, "update", nodeList(new NameExpr(modifiedFact))));
+                            parentBlock.addStatement(new MethodCallExpr(null, "update", nodeList(new NameExpr(modifiedFact))));
                         }
-                        BlockStmt p1 = (BlockStmt) p;
-                        int index = p1.getStatements().indexOf(s);
-                        p1.addStatement(index, replacementBlock);
                     });
                     s.remove();
                 });

@@ -15,6 +15,7 @@
  */
 package org.kie.pmml.commons.model.abstracts;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -32,7 +33,9 @@ import org.kie.pmml.commons.model.KiePMMLExtension;
  * For complex instantiation, concrete classes should extend the <b>Builder</b> defined in the current one
  *
  */
-public abstract class AbstractKiePMMLComponent {
+public abstract class AbstractKiePMMLComponent implements Serializable {
+
+    private static final long serialVersionUID = -130007459165854426L;
 
     protected final String name;
     protected final List<KiePMMLExtension> extensions;

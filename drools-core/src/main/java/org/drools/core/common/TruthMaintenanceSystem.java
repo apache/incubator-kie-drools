@@ -16,6 +16,8 @@
 
 package org.drools.core.common;
 
+import java.util.Iterator;
+
 import org.drools.core.RuleBaseConfiguration.AssertBehaviour;
 import org.drools.core.beliefsystem.BeliefSet;
 import org.drools.core.beliefsystem.BeliefSystem;
@@ -26,10 +28,8 @@ import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.ObjectHashMap;
-import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.internal.runtime.beliefs.Mode;
-
-import java.util.Iterator;
+import org.kie.api.runtime.rule.FactHandle;
 
 import static org.drools.core.common.ClassAwareObjectStore.getActualClass;
 
@@ -84,7 +84,7 @@ public class TruthMaintenanceSystem {
                                      Object tmsValue,
                                      RuleImpl rule,
                                      Activation activation) {
-        ObjectTypeConf typeConf = typeConfReg.getObjectTypeConf( ep.getEntryPoint(),  object );
+        ObjectTypeConf typeConf = typeConfReg.getOrCreateObjectTypeConf( ep.getEntryPoint(),  object );
         if ( !typeConf.isTMSEnabled()) {
             enableTMS(object, typeConf);
         }
@@ -161,7 +161,7 @@ public class TruthMaintenanceSystem {
                 key = fh.getEqualityKey();
                 if ( key == null ) {
                     // we use the FH's Object here, not the inserted object
-                    ObjectTypeConf typeC = this.typeConfReg.getObjectTypeConf( ep.getEntryPoint(), fh.getObject() );
+                    ObjectTypeConf typeC = this.typeConfReg.getOrCreateObjectTypeConf( ep.getEntryPoint(), fh.getObject() );
                     enableTMS( fh.getObject(), typeC );
                     key = fh.getEqualityKey();
                 }
@@ -260,7 +260,7 @@ public class TruthMaintenanceSystem {
      * @param conf the type's configuration.
      */
     private void enableTMS(Object object, ObjectTypeConf conf) {
-        Iterator<InternalFactHandle> it = ((ClassAwareObjectStore) ep.getObjectStore()).iterateFactHandles(getActualClass(object));
+        Iterator<InternalFactHandle> it = ep.getObjectStore().iterateFactHandles(getActualClass(object));
 
         while (it.hasNext()) {
             InternalFactHandle handle = it.next();

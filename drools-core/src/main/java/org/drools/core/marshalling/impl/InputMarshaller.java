@@ -95,7 +95,7 @@ public class InputMarshaller {
         } else {
             confEP = context.getWorkingMemory().getEntryPoint();
         }
-        ObjectTypeConf typeConf = context.getWorkingMemory().getObjectTypeConfigurationRegistry().getObjectTypeConf( confEP, object );
+        ObjectTypeConf typeConf = context.getWorkingMemory().getObjectTypeConfigurationRegistry().getOrCreateObjectTypeConf( confEP, object );
 
 
         InternalFactHandle handle = null;

@@ -21,7 +21,7 @@ public class AssignExprT implements TypedExpression {
 
     @Override
     public Optional<Type> getType() {
-        return Optional.empty();
+        return target.getType();
     }
 
     @Override

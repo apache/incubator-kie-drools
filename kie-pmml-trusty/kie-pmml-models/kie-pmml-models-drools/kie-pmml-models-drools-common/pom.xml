@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.kie</groupId>
     <artifactId>kie-pmml-models-drools</artifactId>
-    <version>7.47.0-SNAPSHOT</version>
+    <version>7.49.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
@@ -31,6 +31,10 @@
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-pmml-evaluator-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-kie-internal</artifactId>
     </dependency>
     <!-- DROOLS/KIE -->
     <dependency>

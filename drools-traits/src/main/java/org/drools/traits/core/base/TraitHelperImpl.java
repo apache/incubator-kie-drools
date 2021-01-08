@@ -464,9 +464,9 @@ public class TraitHelperImpl implements Externalizable,
             WorkingMemoryEntryPoint ep = h != null ? h.getEntryPoint(workingMemory) : ((StatefulKnowledgeSessionImpl)workingMemory).getEntryPoint( "DEFAULT" );
             ObjectTypeConfigurationRegistry reg = ep.getObjectTypeConfigurationRegistry();
 
-            ObjectTypeConf coreConf = reg.getObjectTypeConf( ep.getEntryPoint(), core );
+            ObjectTypeConf coreConf = reg.getOrCreateObjectTypeConf( ep.getEntryPoint(), core );
 
-            ObjectTypeConf innerConf = reg.getObjectTypeConf( ep.getEntryPoint(), inner );
+            ObjectTypeConf innerConf = reg.getOrCreateObjectTypeConf( ep.getEntryPoint(), inner );
             if ( coreConf.isTMSEnabled() ) {
                 innerConf.enableTMS();
             }

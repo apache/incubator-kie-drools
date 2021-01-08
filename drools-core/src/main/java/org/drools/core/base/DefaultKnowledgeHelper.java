@@ -294,7 +294,7 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
 
         InternalFactHandle handle = getFactHandleFromWM( object );
         NamedEntryPoint ep = (NamedEntryPoint) workingMemory.getEntryPoint( EntryPointId.DEFAULT.getEntryPointId() );
-        ObjectTypeConf otc = ep.getObjectTypeConfigurationRegistry().getObjectTypeConf( ep.getEntryPoint(), object );
+        ObjectTypeConf otc = ep.getObjectTypeConfigurationRegistry().getOrCreateObjectTypeConf( ep.getEntryPoint(), object );
 
         BeliefSystem beliefSystem;
         if ( value == null ) {
@@ -477,7 +477,7 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
     }
 
     public Object get(final Declaration declaration) {
-        return declaration.getValue( workingMemory, this.tuple.getObject( declaration ) );
+        return declaration.getValue( workingMemory, tuple );
     }
 
     public Declaration getDeclaration(final String identifier) {
