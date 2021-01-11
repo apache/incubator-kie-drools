@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.AssignExpr;
@@ -28,12 +29,11 @@ import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.conf.SessionsPoolOption;
 
-import static java.util.stream.Collectors.joining;
-
 import static com.github.javaparser.StaticJavaParser.parseExpression;
 import static com.github.javaparser.StaticJavaParser.parseStatement;
 import static com.github.javaparser.ast.Modifier.publicModifier;
 import static com.github.javaparser.ast.NodeList.nodeList;
+import static java.util.stream.Collectors.joining;
 import static org.drools.modelcompiler.util.StringUtil.toId;
 
 public class ModelSourceClass {
@@ -96,8 +96,8 @@ public class ModelSourceClass {
     private void addGetVersionMethod(StringBuilder sb) {
         sb.append(
                 "    @Override\n" +
-                "    public String getVersion() {\n" +
-                "        return \"" );
+                        "    public String getVersion() {\n" +
+                        "        return \"" );
         sb.append( Drools.getFullVersion() );
         sb.append(
                 "\";\n" +
@@ -105,44 +105,52 @@ public class ModelSourceClass {
                         "\n");
     }
 
-    private void addGetModelsMethod(StringBuilder sb) {
+    void addGetModelsMethod(StringBuilder sb) {
         sb.append(
                 "    @Override\n" +
-                "    public java.util.List<Model> getModels() {\n" +
-                "        return java.util.Arrays.asList(" );
-        sb.append( modelsByKBase.isEmpty() ? "" : modelsByKBase.values().stream().flatMap( List::stream ).distinct().collect( joining("(), new ", "new ", "()") ) );
+                        "    public java.util.List<Model> getModels() {\n" +
+                        "        return java.util.Arrays.asList(" );
+        String collected =  modelsByKBase.values().stream().flatMap( List::stream ).distinct()
+                .map(element -> "new " + element + "()")
+                .collect(Collectors.joining(","));
+        sb.append(collected);
         sb.append(
                 ");\n" +
-                "    }\n" +
-                "\n");
+                        "    }\n" +
+                        "\n");
     }
 
-    private void addGetModelForKieBaseMethod(StringBuilder sb) {
+    void addGetModelForKieBaseMethod(StringBuilder sb) {
         sb.append(
-                "    public java.util.List<Model> getModelsForKieBase(String kieBaseName) {\n" +
-                "        switch (kieBaseName) {\n"
-        );
-
-        for (String kBase : modelMethod.getKieBaseNames()) {
-            sb.append( "            case \"" + kBase + "\": " );
-            List<String> models = modelsByKBase.get(kBase);
-            sb.append( models != null ?
-                    "return java.util.Arrays.asList( " + models.stream().collect( joining("(), new ", "new ", "()") ) + " );\n" :
-                    "return getModels();\n" );
+                "    public java.util.List<Model> getModelsForKieBase(String kieBaseName) {\n");
+        if (!modelMethod.getKieBaseNames().isEmpty()) {
+            sb.append( "        switch (kieBaseName) {\n");
+            for (String kBase : modelMethod.getKieBaseNames()) {
+                sb.append("            case \"" + kBase + "\": ");
+                List<String> models = modelsByKBase.get(kBase);
+                String collected = null;
+                if (models != null) {
+                    collected = models.stream()
+                            .map(element -> "new " + element + "()")
+                            .collect(Collectors.joining(","));
+                }
+                sb.append(collected != null && !collected.isEmpty() ?
+                                  "return java.util.Arrays.asList( " + collected + " );\n" :
+                                  "return getModels();\n");
+            }
+            sb.append("        }\n");
         }
-
         sb.append(
-                "        }\n" +
                 "        throw new IllegalArgumentException(\"Unknown KieBase: \" + kieBaseName);\n" +
-                "    }\n" +
-                "\n" );
+                        "    }\n" +
+                        "\n" );
     }
 
     private void addGetReleaseIdMethod(StringBuilder sb) {
         sb.append(
                 "    @Override\n" +
-                "    public ReleaseId getReleaseId() {\n" +
-                "        return new ReleaseIdImpl(\"" );
+                        "    public ReleaseId getReleaseId() {\n" +
+                        "        return new ReleaseIdImpl(\"" );
         sb.append( releaseId.getGroupId() ).append( "\", \"" );
         sb.append( releaseId.getArtifactId() ).append( "\", \"" );
         sb.append( releaseId.getVersion() ).append( "\"" );
