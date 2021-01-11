@@ -28,6 +28,18 @@ import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 class DefaultScoreManagerTest {
 
     @Test
+    public void updateScore() {
+        SolverFactory<TestdataSolution> solverFactory =
+                SolverFactory.createFromXmlResource("org/optaplanner/core/api/solver/testdataSolverConfig.xml");
+        ScoreManager<TestdataSolution, ?> scoreManager = ScoreManager.create(solverFactory);
+        assertThat(scoreManager).isNotNull();
+        TestdataSolution solution = TestdataSolution.generateSolution();
+        assertThat(solution.getScore()).isNull();
+        scoreManager.updateScore(solution);
+        assertThat(solution.getScore()).isNotNull();
+    }
+
+    @Test
     public void explainScore() {
         SolverFactory<TestdataSolution> solverFactory =
                 SolverFactory.createFromXmlResource("org/optaplanner/core/api/solver/testdataSolverConfig.xml");
