@@ -16,7 +16,6 @@
 
 package org.drools.scenariosimulation.backend.runner;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -136,7 +135,7 @@ public class AbstractRunnerHelperTest {
         String collectionWrongValue = "value";
         String collectionValuePath = "Item(1)";
         List<String> collectionPath = Arrays.asList(collectionValuePath);
-        String collectionValueError = "Value \"" + collectionWrongValue + "\" of " + String.join(".", collectionPath) + " item is wrong.";
+        String collectionValueError = "Value <span class=error-message-wrong-value>\"" + collectionWrongValue + "\"</span> is wrong following path: <em>" + collectionValuePath + "</em>";
         String genericErrorMessage = "errorMessage";
 
         // case 1: succeed
@@ -159,7 +158,7 @@ public class AbstractRunnerHelperTest {
         assertEquals(collectionError, valueWrapper.getErrorMessage().get());
 
         // case 5: failed with wrong value (list)
-        when(expressionEvaluatorMock.evaluateUnaryExpression(any(), any(), any(Class.class))).thenReturn(ExpressionEvaluatorResult.ofFailed(collectionWrongValue, collectionPath));
+        when(expressionEvaluatorMock.evaluateUnaryExpression(any(), any(), any(Class.class))).thenReturn(ExpressionEvaluatorResult.ofFailed(collectionWrongValue, collectionValuePath));
         valueWrapper = abstractRunnerHelper.getResultWrapper(List.class.getCanonicalName(), new FactMappingValue(), expressionEvaluatorMock, expectedResultRaw, resultRaw, List.class);
         assertEquals(collectionValueError, valueWrapper.getErrorMessage().get());
 

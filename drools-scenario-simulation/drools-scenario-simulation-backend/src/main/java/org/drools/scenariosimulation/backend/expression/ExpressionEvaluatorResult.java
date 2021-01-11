@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,13 +21,13 @@ import java.util.Optional;
 
 /**
  * This DTO holds info related to an expression evaluation.
- * - successful: field represents status of involved evaluation (sucessful or failed);
+ * - successful: field represents status of involved evaluation (successful or failed);
  * - pathToWrongValue: a list which contains the steps to describe the wrong value. In case of nested object or collections,
  *                     can require multiple steps (eg. Author.books). In case of a list, conversion is to report the Item
  *                     number (eg. Author.books.Item(2).isAvailable)
  * - wrongValue: The actual wrong value
  * Instantiated objects can be accessed only to retrieve the success status and to generate an error message, if evaluation
- * failed, based on wrongVaue and its path.
+ * failed, based on wrongValue and its path.
  */
 public class ExpressionEvaluatorResult {
 
@@ -47,13 +47,14 @@ public class ExpressionEvaluatorResult {
         return new ExpressionEvaluatorResult(false);
     }
 
-    public static ExpressionEvaluatorResult ofFailed(String wrongValue, List<String> pathToWrongValue) {
-        return new ExpressionEvaluatorResult(false, wrongValue, pathToWrongValue);
+    public static ExpressionEvaluatorResult ofFailed(String wrongValue, String stepToWrongValue) {
+        return new ExpressionEvaluatorResult(false, wrongValue, stepToWrongValue);
     }
 
-    private ExpressionEvaluatorResult(boolean successful, String wrongValue, List<String> pathToWrongValue) {
+    private ExpressionEvaluatorResult(boolean successful, String wrongValue, String stepToWrongValue) {
         this.successful = successful;
-        this.pathToWrongValue = new ArrayList<>(pathToWrongValue);
+        this.pathToWrongValue = new ArrayList<>();
+        pathToWrongValue.add(stepToWrongValue);
         this.wrongValue = wrongValue;
     }
 
@@ -70,23 +71,38 @@ public class ExpressionEvaluatorResult {
     public Optional<String> getErrorMessage() {
         if (!successful && !pathToWrongValue.isEmpty()) {
             if (wrongValue != null) {
-                return Optional.ofNullable("Value \"" + wrongValue + "\" of " + String.join(".", pathToWrongValue) + " item is wrong.");
+                return Optional.ofNullable(generateHTMLMessageWithWrongValue());
             } else {
-                return Optional.ofNullable("Item " + String.join(".", pathToWrongValue) + " is undefined or not expected.");
+                return Optional.ofNullable(generateHTMLMessageWithoutWrongValue());
             }
         }
         return Optional.empty();
     }
 
-    public void addStepToPath(String path) {
-        pathToWrongValue.add(0, path);
+    public void addStepToPath(String step) {
+        pathToWrongValue.add(0, step);
     }
 
     public void addListItemStepToPath(int elementNumber) {
-        pathToWrongValue.add(0, "Item(" + elementNumber + ")");
+        pathToWrongValue.add(0, "Item " + elementNumber + " of the List");
+    }
+
+    public void addMapItemStepToPath(String key) {
+        pathToWrongValue.add(0, "Item \"" + key + "\" of the Map");
     }
 
     public void setWrongValue(String wrongValue) {
         this.wrongValue = wrongValue;
+    }
+
+    protected String generateHTMLMessageWithWrongValue() {
+        return "Value <span class=error-message-wrong-value>\"" + wrongValue + "\"</span>" +
+                " is wrong following path: " +
+                "<em>" + String.join("\n", pathToWrongValue) + "</em>";
+    }
+
+    protected String generateHTMLMessageWithoutWrongValue() {
+        return "Following path is wrong: " +
+                "<em>" + String.join("\n", pathToWrongValue) + "</em>";
     }
 }

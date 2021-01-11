@@ -17,7 +17,6 @@
 package org.drools.scenariosimulation.backend.expression;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -214,27 +213,30 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
             JsonNode jsonNode = element.getValue();
             Object fieldValue = extractFieldValue(resultRaw, key);
             Class<?> fieldClass = fieldValue != null ? fieldValue.getClass() : null;
+            ExpressionEvaluatorResult evaluatorResult = ExpressionEvaluatorResult.ofFailed();
 
             if (isSimpleTypeNode(jsonNode)) {
                 String nodeValue = getSimpleTypeNodeTextValue(jsonNode);
                 if (!internalUnaryEvaluation(nodeValue, fieldValue, fieldClass, true)) {
-                    return ExpressionEvaluatorResult.ofFailed(nodeValue, Arrays.asList(key));
+                    evaluatorResult.setWrongValue(nodeValue);
+                    evaluatorResult.addMapItemStepToPath(key);
+                    return evaluatorResult;
                 }
             } else if (jsonNode.isArray()) {
-                ExpressionEvaluatorResult verifiedArray = verifyList((ArrayNode) jsonNode, (List) fieldValue);
-                if (!verifiedArray.isSuccessful()) {
-                    verifiedArray.addStepToPath(key);
-                    return verifiedArray;
+                evaluatorResult = verifyList((ArrayNode) jsonNode, (List) fieldValue);
+                if (!evaluatorResult.isSuccessful()) {
+                    evaluatorResult.addStepToPath(key);
+                    return evaluatorResult;
                 }
             } else if (jsonNode.isObject()) {
-                ExpressionEvaluatorResult verifiedObject = verifyObject((ObjectNode) jsonNode, fieldValue);
-                if (!verifiedObject.isSuccessful()) {
-                    verifiedObject.addStepToPath(key);
-                    return verifiedObject;
+                evaluatorResult = verifyObject((ObjectNode) jsonNode, fieldValue);
+                if (!evaluatorResult.isSuccessful()) {
+                    evaluatorResult.addStepToPath(key);
+                    return evaluatorResult;
                 }
             } else {
                 if (!internalUnaryEvaluation(jsonNode.textValue(), fieldValue, fieldClass, true)) {
-                    return ExpressionEvaluatorResult.ofFailed(jsonNode.textValue(), Arrays.asList(key));
+                    return ExpressionEvaluatorResult.ofFailed(jsonNode.textValue(), key);
                 }
             }
         }
