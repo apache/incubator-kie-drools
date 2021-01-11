@@ -20,6 +20,7 @@ import java.util.Map;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.reflective.classloader.ProjectClassLoader;
 import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.memorycompiler.JavaConfiguration;
 import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.kie.dependencies.HasKnowledgeBuilder;
@@ -57,7 +58,7 @@ public class HasKnowledgeBuilderImpl implements HasKnowledgeBuilder {
             throw new IllegalStateException("Expected ProjectClassLoader, received " + classLoader.getClass().getName());
         }
         ProjectClassLoader projectClassLoader = (ProjectClassLoader) classLoader;
-        final Map<String, byte[]> byteCode = KieMemoryCompiler.compileNoLoad(sourcesMap, projectClassLoader);
+        final Map<String, byte[]> byteCode = KieMemoryCompiler.compileNoLoad(sourcesMap, projectClassLoader, JavaConfiguration.CompilerType.ECLIPSE);
         byteCode.forEach(projectClassLoader::defineClass);
         try {
             return projectClassLoader.loadClass(fullClassName);

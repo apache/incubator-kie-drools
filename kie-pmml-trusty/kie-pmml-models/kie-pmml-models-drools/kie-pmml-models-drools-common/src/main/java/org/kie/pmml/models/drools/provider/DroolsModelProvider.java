@@ -16,6 +16,9 @@
 package org.kie.pmml.models.drools.provider;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +29,7 @@ import org.dmg.pmml.LocalTransformations;
 import org.dmg.pmml.Model;
 import org.dmg.pmml.TransformationDictionary;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.compiler.lang.descr.CompositePackageDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.api.exceptions.KiePMMLException;
@@ -64,7 +68,9 @@ public abstract class DroolsModelProvider<T extends Model, E extends KiePMMLDroo
         KiePMMLDroolsAST kiePMMLDroolsAST = getKiePMMLDroolsASTCommon(dataDictionary, transformationDictionary, model, fieldTypeMap);
         E toReturn = getKiePMMLDroolsModel(dataDictionary, transformationDictionary, model, fieldTypeMap, hasClassloader);
         PackageDescr packageDescr = getPackageDescr(kiePMMLDroolsAST, toReturn.getKModulePackageName());
-        knowledgeBuilder.registerPackage(packageDescr);
+        // Needed to compile Rules from PackageDescr
+        CompositePackageDescr compositePackageDescr = new CompositePackageDescr(null, packageDescr);
+        knowledgeBuilder.buildPackages(Collections.singletonList(compositePackageDescr));
         return toReturn;
     }
 

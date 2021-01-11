@@ -20,6 +20,7 @@ import java.util.UUID;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.lang.descr.PackageDescr;
+import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.io.impl.DescrResource;
 import org.drools.core.io.impl.FileSystemResource;
@@ -31,6 +32,7 @@ import org.kie.api.runtime.KieRuntimeFactory;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.utils.KieHelper;
 import org.kie.pmml.api.runtime.PMMLRuntime;
+import org.kie.pmml.evaluator.api.container.PMMLPackage;
 import org.kie.pmml.evaluator.assembler.service.PMMLAssemblerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,8 +49,10 @@ public class PMMLRuntimeFactoryInternal {
     }
 
     public static PMMLRuntime getPMMLRuntime(final File pmmlFile) {
-        KnowledgeBuilderImpl kbuilderImpl = (KnowledgeBuilderImpl) KnowledgeBuilderFactory.newKnowledgeBuilder();
-        return getPMMLRuntime(pmmlFile, kbuilderImpl);
+        KieBase kieBase = createKieBase(pmmlFile);
+        return getPMMLRuntime(kieBase);
+//        KnowledgeBuilderImpl kbuilderImpl = (KnowledgeBuilderImpl) KnowledgeBuilderFactory.newKnowledgeBuilder();
+//        return getPMMLRuntime(pmmlFile, kbuilderImpl);
     }
 
     public static PMMLRuntime getPMMLRuntime(File pmmlFile, ReleaseId releaseId) {
@@ -65,21 +69,50 @@ public class PMMLRuntimeFactoryInternal {
     private static PMMLRuntime getPMMLRuntime(File pmmlFile, KnowledgeBuilderImpl kbuilderImpl) {
         FileSystemResource fileSystemResource = new FileSystemResource(pmmlFile);
         new PMMLAssemblerService().addResource(kbuilderImpl, fileSystemResource, ResourceType.PMML, null);
-        KieBase kieBase = createKieBase( kbuilderImpl );
+        KieBase kieBase = createKieBase(kbuilderImpl);
         return getPMMLRuntime(kieBase);
     }
 
-    private static KieBase createKieBase( KnowledgeBuilderImpl kbuilderImpl ) {
+    private static KieBase createKieBase(final File pmmlFile) {
         KieHelper kieHelper = new KieHelper();
-        kbuilderImpl.getPackageNames().stream().flatMap( name -> kbuilderImpl.getPackageDescrs( name ).stream() )
-                .forEach( pDescr -> kieHelper.addResource( createDescrResource(pDescr) ) );
-        KieBase kieBase = kieHelper.build( ExecutableModelProject.class );
-        (( InternalKnowledgeBase ) kieBase).addPackages( kbuilderImpl.getKnowledgePackages() );
+        FileSystemResource fileSystemResource = new FileSystemResource(pmmlFile);
+        kieHelper.addResource(fileSystemResource);
+        KieBase toReturn = kieHelper.build(ExecutableModelProject.class);
+        return toReturn;
+    }
+
+    private static KieBase createKieBase(KnowledgeBuilderImpl kbuilderImpl) {
+        KieHelper kieHelper = new KieHelper();
+        kbuilderImpl.getPackageNames().stream()
+                .flatMap(name -> kbuilderImpl.getPackageDescrs(name).stream())
+                .forEach(pDescr -> kieHelper.addResource(createDescrResource(pDescr)));
+        KieBase kieBase = kieHelper.build(ExecutableModelProject.class);
+        // Temporarily because all this path has to be removed
+        // Needed for non-drools models
+        kbuilderImpl.getKnowledgePackages().forEach(kBuilderPackage -> {
+            if (kieBase.getKiePackage(kBuilderPackage.getName()) == null) {
+                ((InternalKnowledgeBase) kieBase).addPackage(kBuilderPackage);
+            }
+        });
+        // Temporarily because all this path has to be removed
+        // Basically, get PMMLPackage from kbuilderImpl' InternalKnowledgePackages and put inside kieBase' ones
+        kieBase.getKiePackages()
+                .forEach(kiePackage -> {
+                    PMMLPackage pmmlPackage =
+                            (PMMLPackage) ((InternalKnowledgePackage) kiePackage).getResourceTypePackages().get(ResourceType.PMML);
+                    if (pmmlPackage == null) {
+                        InternalKnowledgePackage kBuilderPackage = kbuilderImpl.getPackage(kiePackage.getName());
+                        if (kBuilderPackage.getResourceTypePackages().get(ResourceType.PMML) != null) {
+                            ((InternalKnowledgePackage) kiePackage).getResourceTypePackages()
+                                    .put(ResourceType.PMML, kBuilderPackage.getResourceTypePackages().get(ResourceType.PMML));
+                        }
+                   }
+                });
         return kieBase;
     }
 
-    private static DescrResource createDescrResource( PackageDescr pDescr ) {
-        DescrResource resource = new DescrResource( pDescr );
+    private static DescrResource createDescrResource(PackageDescr pDescr) {
+        DescrResource resource = new DescrResource(pDescr);
         resource.setSourcePath("src/main/resources/file_" + UUID.randomUUID() + ".descr");
         return resource;
     }

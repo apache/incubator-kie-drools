@@ -46,7 +46,7 @@ public class CategoricalVariablesRegressionTest extends AbstractPMMLTest {
         this.y = y;
     }
 
-  @BeforeClass
+    @BeforeClass
     public static void setupClass() {
         pmmlRuntime = getPMMLRuntime(FILE_NAME);
     }

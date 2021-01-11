@@ -46,6 +46,10 @@
       <artifactId>drools-model-compiler</artifactId>
       <scope>compile</scope>
     </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-mvel</artifactId>
+    </dependency>
     <!-- EXTERNAL -->
     <dependency>
       <groupId>org.jpmml</groupId>
