@@ -222,7 +222,7 @@ public class @{invokerClassName} implements org.drools.core.spi.Accumulator, org
             @foreach{declr : innerDeclarations} @{declr.identifier}@end{","});
     }
 
-    public void reverse(java.lang.Object workingMemoryContext,
+    public boolean tryReverse(java.lang.Object workingMemoryContext,
                            java.lang.Object context,
                            org.drools.core.spi.Tuple tuple,
                            org.drools.core.common.InternalFactHandle handle,
@@ -230,6 +230,10 @@ public class @{invokerClassName} implements org.drools.core.spi.Accumulator, org
                            org.drools.core.rule.Declaration[] declarations,
                            org.drools.core.rule.Declaration[] innerDeclarations,
                            org.drools.core.WorkingMemory workingMemory) throws Exception {
+        if (!supportsReverse()) {
+            return false;
+        }
+
         @code{ i0 = 0 }@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) declarations[@{i0}].@{declr.nativeReadMethod.name}( (org.drools.core.common.InternalWorkingMemory) workingMemory, tuple.getObject( declarations[@{i0}] ) );
             @code{ i0++ }
         @end{}
@@ -250,6 +254,8 @@ public class @{invokerClassName} implements org.drools.core.spi.Accumulator, org
             handle,
             value@if{globals != empty},@end{}
             @foreach{identifier : globals} @{identifier}@end{","});
+
+        return true;
     }
 
     public Object getResult(java.lang.Object workingMemoryContext,

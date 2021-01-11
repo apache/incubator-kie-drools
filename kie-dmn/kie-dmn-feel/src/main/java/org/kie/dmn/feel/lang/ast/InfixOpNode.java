@@ -380,7 +380,9 @@ public class InfixOpNode
 
     /**
      * Implements the ternary logic AND operation
+     * @deprecated this variant do not allow short-circuit of the operator
      */
+    @Deprecated
     public static Object and(Object left, Object right, EvaluationContext ctx) {
         Boolean l = EvalHelper.getBooleanOrNull( left );
         Boolean r = EvalHelper.getBooleanOrNull( right );
@@ -395,7 +397,9 @@ public class InfixOpNode
 
     /**
      * Implements the ternary logic OR operation
+     * @deprecated this variant do not allow short-circuit of the operator
      */
+    @Deprecated
     public static Object or(Object left, Object right, EvaluationContext ctx) {
         Boolean l = EvalHelper.getBooleanOrNull( left );
         Boolean r = EvalHelper.getBooleanOrNull( right );

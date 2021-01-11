@@ -100,13 +100,13 @@ public abstract class Accumulate extends ConditionalElement
     /**
      * Executes the reverse (action) code for the given fact handle
      */
-    public abstract void reverse(final Object workingMemoryContext,
-                                 final Object context,
-                                 final Tuple leftTuple,
-                                 final InternalFactHandle handle,
-                                 final RightTuple rightParent,
-                                 final LeftTuple match,
-                                 final WorkingMemory workingMemory);
+    public abstract boolean tryReverse(final Object workingMemoryContext,
+                                       final Object context,
+                                       final Tuple leftTuple,
+                                       final InternalFactHandle handle,
+                                       final RightTuple rightParent,
+                                       final LeftTuple match,
+                                       final WorkingMemory workingMemory);
 
     /**
      * Gets the result of the accumulation

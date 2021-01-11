@@ -22,9 +22,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 import org.drools.core.WorkingMemory;
@@ -70,7 +68,7 @@ public abstract class LambdaAccumulator implements Accumulator {
     @Override
     public Serializable createContext() {
         try {
-            return new LambdaAccContext(accumulateFunction.createContext(), supportsReverse());
+            return new LambdaAccContext(accumulateFunction.createContext());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -97,12 +95,12 @@ public abstract class LambdaAccumulator implements Accumulator {
     }
 
     @Override
-    public void reverse(Object workingMemoryContext, Object context, Tuple leftTuple, InternalFactHandle handle, Object value,
-                        Declaration[] declarations, Declaration[] innerDeclarations, WorkingMemory workingMemory) throws Exception {
+    public boolean tryReverse(Object workingMemoryContext, Object context, Tuple leftTuple, InternalFactHandle handle, Object value,
+                              Declaration[] declarations, Declaration[] innerDeclarations, WorkingMemory workingMemory) throws Exception {
         if (value == null) {
             throw new IllegalStateException("Reversing a not existing accumulated object for fact " + handle);
         }
-        accumulateFunction.reverse( (( LambdaAccContext ) context).context, value);
+        return accumulateFunction.tryReverse( (( LambdaAccContext ) context).context, value);
     }
 
     @Override
@@ -215,12 +213,8 @@ public abstract class LambdaAccumulator implements Accumulator {
 
         public LambdaAccContext() { }
 
-        public LambdaAccContext( Serializable context, boolean supportReverse) {
+        public LambdaAccContext(Serializable context) {
             this.context = context;
-        }
-
-        public boolean isEmpty() {
-            return true; //reverseSupport != null && reverseSupport.isEmpty();
         }
 
         public void readExternal( ObjectInput in) throws IOException, ClassNotFoundException {

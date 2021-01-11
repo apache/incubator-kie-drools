@@ -122,13 +122,13 @@ public class MVELAccumulateBuilderTest {
 
         LeftTuple match = new FromNodeLeftTuple();
         match.setContextObject(value1);
-        acc.reverse(wmContext,
-                    accContext,
-                    tuple,
-                    f1,
-                    null,
-                    match,
-                    ksession);
+        acc.tryReverse(wmContext,
+                       accContext,
+                       tuple,
+                       f1,
+                       null,
+                       match,
+                       ksession);
 
         assertEquals( new Integer( 8 ),
                       acc.getResult( wmContext,
