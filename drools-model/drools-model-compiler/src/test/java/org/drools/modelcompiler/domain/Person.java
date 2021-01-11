@@ -92,6 +92,11 @@ public class Person extends AbstractReactiveObject {
         this.name = name;
     }
 
+    public void setNameAndAge(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
     public int getAge() {
         return age;
     }
