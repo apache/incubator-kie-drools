@@ -70,4 +70,12 @@ public interface AccumulateFunction<C extends Serializable> extends Externalizab
      */
     Class<?> getResultType();
 
+    default boolean tryReverse(C context,
+                               Object value) throws Exception {
+        if (supportsReverse()) {
+            reverse( context, value );
+            return true;
+        }
+        return false;
+    }
 }
