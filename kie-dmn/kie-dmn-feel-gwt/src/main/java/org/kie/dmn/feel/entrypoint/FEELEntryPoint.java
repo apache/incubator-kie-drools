@@ -16,7 +16,7 @@
 package org.kie.dmn.feel.entrypoint;
 
 import com.google.gwt.core.client.EntryPoint;
-import org.jresearch.threetenbp.gwt.client.Support;
+//import org.jresearch.threetenbp.gwt.client.Support;
 
 
 public class FEELEntryPoint
@@ -24,6 +24,6 @@ public class FEELEntryPoint
 
     @Override
     public void onModuleLoad() {
-        Support.init();
+//        Support.init();
     }
 }

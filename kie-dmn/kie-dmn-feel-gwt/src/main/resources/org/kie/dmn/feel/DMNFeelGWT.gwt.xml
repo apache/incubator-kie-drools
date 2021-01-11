@@ -23,7 +23,7 @@
 
   <inherits name="com.google.gwt.logging.Logging"/>
   <inherits name="org.antlr.v4.antlr4-runtime"/>
-  <inherits name="org.jresearch.threetenbp.gwt.module"/>
+<!--  <inherits name="org.jresearch.threetenbp.gwt.module"/>-->
   <inherits name="org.kie.dmn.feel.DMNFeel"/>
 
   <source path="entrypoint"/>
@@ -33,5 +33,7 @@
   <super-source path="marshaller"/>
   <super-source path="parser"/>
   <super-source path="runtime"/>
+
+  <super-source path="super"/>
 
 </module>

@@ -32,20 +32,20 @@
 <!--  </repositories>-->
 
   <dependencies>
-    <dependency>
-      <groupId>org.jresearch.gwt.time</groupId>
-      <artifactId>org.jresearch.gwt.time</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>org.jresearch.gwtproject.nio</groupId>
-          <artifactId>gwt-nio</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.jresearch.dominokit</groupId>
-          <artifactId>domino-slf4j-logger</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
+<!--    <dependency>-->
+<!--      <groupId>org.jresearch.gwt.time</groupId>-->
+<!--      <artifactId>org.jresearch.gwt.time</artifactId>-->
+<!--      <exclusions>-->
+<!--        <exclusion>-->
+<!--          <groupId>org.jresearch.gwtproject.nio</groupId>-->
+<!--          <artifactId>gwt-nio</artifactId>-->
+<!--        </exclusion>-->
+<!--        <exclusion>-->
+<!--          <groupId>org.jresearch.dominokit</groupId>-->
+<!--          <artifactId>domino-slf4j-logger</artifactId>-->
+<!--        </exclusion>-->
+<!--      </exclusions>-->
+<!--    </dependency>-->
 
     <dependency>
       <groupId>org.antlr</groupId>
