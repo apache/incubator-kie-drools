@@ -123,7 +123,7 @@ public final class GenericJaxbIO<T> implements JaxbIO<T> {
         URL schemaResourceUrl = GenericJaxbIO.class.getResource(nonNullSchemaResource);
         if (schemaResourceUrl == null) {
             throw new IllegalArgumentException("The XML schema (" + nonNullSchemaResource + ") does not exist.\n"
-                    + "Maybe the JAXB maven plugin did not run?");
+                    + "Maybe build the sources with Maven first?");
         }
         SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
         try {
