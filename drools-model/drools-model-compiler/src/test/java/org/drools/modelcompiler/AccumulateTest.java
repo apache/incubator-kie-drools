@@ -3092,4 +3092,223 @@ public class AccumulateTest extends BaseModelTest {
         assertEquals(1, result.size());
         assertEquals(Pair.create("Lukas", 35), result.get(0));
     }
+
+    @Test
+    public void testBindingOrderWithInlineAccumulate() {
+        // RHDM-1551
+        String str =
+                "import " + Aclass.class.getCanonicalName() + ";\n" +
+                "import " + Bclass.class.getCanonicalName() + ";\n" +
+                "import " + Cclass.class.getCanonicalName() + ";\n" +
+                "import " + Dclass.class.getCanonicalName() + ";\n" +
+                "global java.util.List result;\n" +
+                "import java.util.List\n" +
+                "import java.util.Set\n" +
+                "import java.util.Map\n" +
+                "import java.util.HashMap\n" +
+                "\n" +
+                "dialect \"java\"\n" +
+                "\n" +
+                "rule \"rule5a\"\n" +
+                "    when\n" +
+                "        $b : Bclass()\n" +
+                "        $c : Cclass()\n" +
+                "        $d : Dclass()\n" +
+                "        $eSet : Set() from accumulate( $a : Aclass(),\n" +
+                "                                       init( Map map = new HashMap(); ),\n" +
+                "                                       action( $a.method(map, $b, $c, $d); ),\n" +
+                "                                       result( map.keySet() ) )\n" +
+                "    then\n" +
+                "        result.add($eSet.iterator().next());" +
+                "end";
+
+        KieSession kSession = getKieSession( str );
+
+        List<String> result = new ArrayList<>();
+        kSession.setGlobal("result", result);
+
+        kSession.insert(new Aclass("A180"));
+        kSession.insert(new Bclass("B180"));
+        kSession.insert(new Cclass("C200"));
+        kSession.insert(new Dclass("D250"));
+
+        assertEquals( 1, kSession.fireAllRules() );
+        assertEquals( 1, result.size() );
+        assertEquals( "B180", result.get(0) );
+
+        kSession.dispose();
+    }
+
+    @Test
+    public void testBindingOrderWithInlineAccumulateAndLists() {
+        // RHDM-1551
+        String str =
+                "import " + Aclass.class.getCanonicalName() + ";\n" +
+                "import " + Bclass.class.getCanonicalName() + ";\n" +
+                "import " + Cclass.class.getCanonicalName() + ";\n" +
+                "import " + Dclass.class.getCanonicalName() + ";\n" +
+                "global java.util.List result;\n" +
+                "import java.util.List\n" +
+                "import java.util.Set\n" +
+                "import java.util.Map\n" +
+                "import java.util.HashMap\n" +
+                "\n" +
+                "dialect \"java\"\n" +
+                "\n" +
+                "rule \"rule5a\"\n" +
+                "    when\n" +
+                "        $bList : List() from collect( Bclass() )\n" +
+                "        $cList : List() from collect( Cclass() )\n" +
+                "        $dList : List() from collect( Dclass() )\n" +
+                "        $eSet : Set() from accumulate( $a : Aclass(),\n" +
+                "                                       init( Map map = new HashMap(); ),\n" +
+                "                                       action( $a.methodOnList(map, $bList, $cList, $dList); ),\n" +
+                "                                       result( map.keySet() ) )\n" +
+                "    then\n" +
+                "        result.add($eSet.iterator().next());" +
+                "end";
+
+        KieSession kSession = getKieSession( str );
+
+        List<String> result = new ArrayList<>();
+        kSession.setGlobal("result", result);
+
+        kSession.insert(new Aclass("A180"));
+        kSession.insert(new Bclass("B180"));
+        kSession.insert(new Cclass("C200"));
+        kSession.insert(new Dclass("D250"));
+
+        assertEquals( 1, kSession.fireAllRules() );
+        assertEquals( 1, result.size() );
+        assertEquals( "B180", result.get(0) );
+
+        kSession.dispose();
+    }
+
+    @Test
+    public void testBindingOrderWithInlineAccumulateAndListsAndFrom() {
+        // RHDM-1551
+        String str =
+                "import " + Aclass.class.getCanonicalName() + ";\n" +
+                "import " + Bclass.class.getCanonicalName() + ";\n" +
+                "import " + Cclass.class.getCanonicalName() + ";\n" +
+                "import " + Dclass.class.getCanonicalName() + ";\n" +
+                "global java.util.List result;\n" +
+                "import java.util.List\n" +
+                "import java.util.Set\n" +
+                "import java.util.Map\n" +
+                "import java.util.HashMap\n" +
+                "\n" +
+                "dialect \"java\"\n" +
+                "\n" +
+                "rule \"rule5a\"\n" +
+                "    when\n" +
+                "        $aList : List() from collect( Aclass() )\n" +
+                "        $bList : List() from collect( Bclass() )\n" +
+                "        $cList : List() from collect( Cclass() )\n" +
+                "        $dList : List() from collect( Dclass() )\n" +
+                "        $eSet : Set() from accumulate( $a : Aclass() from $aList,\n" +
+                "                                       init( Map map = new HashMap(); ),\n" +
+                "                                       action( $a.methodOnList(map, $bList, $cList, $dList); ),\n" +
+                "                                       result( map.keySet() ) )\n" +
+                "    then\n" +
+                "        result.add($eSet.iterator().next());" +
+                "end";
+
+        KieSession kSession = getKieSession( str );
+
+        List<String> result = new ArrayList<>();
+        kSession.setGlobal("result", result);
+
+        kSession.insert(new Aclass("A180"));
+        kSession.insert(new Bclass("B180"));
+        kSession.insert(new Cclass("C200"));
+        kSession.insert(new Dclass("D250"));
+
+        assertEquals( 1, kSession.fireAllRules() );
+        assertEquals( 1, result.size() );
+        assertEquals( "B180", result.get(0) );
+
+        kSession.dispose();
+    }
+
+    public static class Aclass {
+        private String name;
+
+        public Aclass() { }
+
+        public Aclass(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public void method(Map map, Bclass b, Cclass c, Dclass d) {
+            map.put(b.getName(), c.getName());
+        }
+
+        public void methodOnList(Map map, Collection<Bclass> bs, Collection<Cclass> cs, Collection<Dclass> ds) {
+            map.put( bs.iterator().next().getName(), cs.iterator().next().getName());
+        }
+    }
+
+    public static class Bclass {
+        private String name;
+
+        public Bclass() { }
+
+        public Bclass(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+    }
+
+    public static class Cclass {
+        private String name;
+
+        public Cclass() { }
+
+        public Cclass(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+    }
+
+    public static class Dclass {
+        private String name;
+
+        public Dclass() { }
+
+        public Dclass(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+    }
 }
