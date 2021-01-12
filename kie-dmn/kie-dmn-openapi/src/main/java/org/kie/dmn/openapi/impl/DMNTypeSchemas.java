@@ -102,12 +102,12 @@ public class DMNTypeSchemas {
         }
         Schema schema = refOrBuiltinSchema(baseType);
         if (t.getAllowedValues() != null && !t.getAllowedValues().isEmpty()) {
-        	schema.addExtension(DMNOASConstants.X_DMN_ALLOWED_VALUES, t.getAllowedValuesFEEL().stream().map(UnaryTest::toString).collect(Collectors.joining(", ")));
-        	if (DMNTypeUtils.getFEELBuiltInType(ancestor(t)) == BuiltInType.NUMBER) {
+            schema.addExtension(DMNOASConstants.X_DMN_ALLOWED_VALUES, t.getAllowedValuesFEEL().stream().map(UnaryTest::toString).collect(Collectors.joining(", ")));
+            if (DMNTypeUtils.getFEELBuiltInType(ancestor(t)) == BuiltInType.NUMBER) {
                 FEELSchemaEnum.parseNumberAllowedValuesIntoSchema(schema, t.getAllowedValues());
-        	} else {
-        		FEELSchemaEnum.parseAllowedValuesIntoSchema(schema, t.getAllowedValues());
-        	}
+            } else {
+                FEELSchemaEnum.parseAllowedValuesIntoSchema(schema, t.getAllowedValues());
+            }
         }
         schema = nestAsItemIfCollection(schema, t);
         schema.addExtension(DMNOASConstants.X_DMN_TYPE, getDMNTypeSchemaXDMNTYPEdescr(t));
