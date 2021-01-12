@@ -8,6 +8,7 @@ import java.time.chrono.Chronology;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalAdjuster;
+import java.time.temporal.TemporalAmount;
 import java.time.temporal.TemporalField;
 import java.time.temporal.TemporalUnit;
 
@@ -50,6 +51,30 @@ public final class LocalDate
     }
 
     public LocalDate minusDays(long daysToSubtract) {
+        return null;
+    }
+
+    public static LocalDate now() {
+        return null;
+    }
+
+    public LocalDate plus(TemporalAmount amountToAdd) {
+        return null;
+    }
+
+    public LocalDate minus(TemporalAmount amountToSubtract) {
+        return null;
+    }
+
+    public boolean isSupported(TemporalField field) {
+        return false;
+    }
+
+    public Temporal adjustInto(Temporal temporal) {
+        return null;
+    }
+
+    public static LocalDate of(int year, Month month, int dayOfMonth) {
         return null;
     }
 }
