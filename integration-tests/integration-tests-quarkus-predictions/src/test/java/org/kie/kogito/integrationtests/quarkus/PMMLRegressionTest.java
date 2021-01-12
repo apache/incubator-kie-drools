@@ -17,24 +17,19 @@ package org.kie.kogito.integrationtests.quarkus;
 
 import java.util.Map;
 
-import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-import org.hamcrest.core.IsNull;
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.testcontainers.quarkus.InfinispanQuarkusTestResource;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @QuarkusTest
-@QuarkusTestResource(InfinispanQuarkusTestResource.Conditional.class)
 class PMMLRegressionTest {
 
     static {
@@ -63,6 +58,7 @@ class PMMLRegressionTest {
                 .path("resultVariables");
         assertNotNull(resultVariables);
         assertTrue(resultVariables instanceof Map);
+        @SuppressWarnings({"unchecked", "rawtypes"})
         Map<String, Object> mappedResultVariables = (Map) resultVariables;
         assertTrue(mappedResultVariables.containsKey("fld4"));
         assertEquals(52.5f, mappedResultVariables.get("fld4"));

@@ -35,7 +35,7 @@ public class AbstractConfigGenerator {
     public Optional<GeneratedFile> generate() {
         Optional<CompilationUnit> compilationUnit = templatedGenerator.compilationUnit();
         return compilationUnit.map(cu ->
-                new GeneratedFile(GeneratedFile.Type.APPLICATION_CONFIG,
+                new GeneratedFile(ApplicationConfigGenerator.APPLICATION_CONFIG_TYPE,
                         templatedGenerator.generatedFilePath(),
                         cu.toString()));
     }

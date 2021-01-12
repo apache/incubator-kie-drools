@@ -34,13 +34,16 @@ import java.util.Set;
 import io.quarkus.deployment.dev.JavaCompilationProvider;
 import org.kie.kogito.codegen.ApplicationGenerator;
 import org.kie.kogito.codegen.GeneratedFile;
-import org.kie.kogito.codegen.GeneratedFile.Type;
+import org.kie.kogito.codegen.GeneratedFileType;
 import org.kie.kogito.codegen.Generator;
 import org.kie.kogito.codegen.context.KogitoBuildContext;
 import org.kie.kogito.codegen.context.QuarkusKogitoBuildContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class KogitoCompilationProvider extends JavaCompilationProvider {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(KogitoCompilationProvider.class);
     protected static Map<Path, Path> classToSource = new HashMap<>();
 
     private String appPackageName = System.getProperty("kogito.codegen.packageName", "org.kie.kogito.app");
@@ -77,10 +80,15 @@ public abstract class KogitoCompilationProvider extends JavaCompilationProvider 
             Set<File> generatedSourceFiles = new HashSet<>();
             for (GeneratedFile file : generatedFiles) {
                 Path path = pathOf(outputDirectory.getPath(), file.relativePath());
-                if (file.getType() != GeneratedFile.Type.APPLICATION && file.getType() != GeneratedFile.Type.APPLICATION_CONFIG) {
+                if (file.type().canHotReload()) {
                     Files.write(path, file.contents());
-                    if (file.getType() != Type.RESOURCE && file.getType() != Type.GENERATED_CP_RESOURCE) {
+                    if (file.category().equals(GeneratedFileType.Category.SOURCE)) {
                         generatedSourceFiles.add(path.toFile());
+                    }
+                }
+                else {
+                    if(LOGGER.isDebugEnabled()) {
+                        LOGGER.debug("Skipping file because cannot hot reload: " + file);
                     }
                 }
             }

@@ -16,13 +16,9 @@
 package org.kie.kogito.maven.plugin;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -37,6 +33,7 @@ import org.kie.kogito.codegen.context.JavaKogitoBuildContext;
 import org.kie.kogito.codegen.context.KogitoBuildContext;
 import org.kie.kogito.codegen.context.QuarkusKogitoBuildContext;
 import org.kie.kogito.codegen.context.SpringBootKogitoBuildContext;
+import org.kie.kogito.codegen.utils.GeneratedFileWriter;
 
 public abstract class AbstractKieMojo extends AbstractMojo {
 
@@ -57,6 +54,9 @@ public abstract class AbstractKieMojo extends AbstractMojo {
 
     @Parameter(defaultValue = "${project.build.directory}/generated-sources/kogito")
     protected File generatedSources;
+
+    @Parameter(defaultValue = "${project.build.directory}/generated-resources/kogito")
+    protected File generatedResources;
 
     @Parameter(required = true, defaultValue = "${project.basedir}/src/main/resources")
     protected File kieSourcesDirectory;
@@ -145,39 +145,21 @@ public abstract class AbstractKieMojo extends AbstractMojo {
         }
     }
 
+    protected void writeGeneratedFiles(Collection<GeneratedFile> generatedFiles) {
+        generatedFiles.forEach(this::writeGeneratedFile);
+    }
+
     protected void writeGeneratedFile(GeneratedFile generatedFile) {
-        try {
-            Path targetPath = pathOf(generatedFile);
-            getLog().info("Generating: " + targetPath);
-            Files.write(
-                    targetPath,
-                    generatedFile.contents());
-        } catch (IOException e) {
-            String message = "Error while writing " + generatedFile.relativePath();
-            getLog().error(message, e);
-            throw new UncheckedIOException(message, e);
-        }
+        GeneratedFileWriter writer = new GeneratedFileWriter(outputDirectory.toPath(),
+                generatedSources.toPath(),
+                generatedResources.toPath(),
+                getSourcesPath().toPath());
+
+        getLog().info("Generating: " + generatedFile.relativePath());
+        writer.write(generatedFile);
     }
 
     protected File getSourcesPath() {
         return generatedSources;
-    }
-
-    private Path pathOf(GeneratedFile f) throws IOException {
-        File sourceFolder;
-        Path path;
-        if (f.getType() == GeneratedFile.Type.GENERATED_CP_RESOURCE) { // since kogito-maven-plugin is after maven-resource-plugin, need to manually place in the correct (CP) location
-            sourceFolder = outputDirectory;
-            path = Paths.get(sourceFolder.getPath(), f.relativePath());
-        } else if (f.getType().isCustomizable()) {
-            sourceFolder = getSourcesPath();
-            path = Paths.get(sourceFolder.getPath(), f.relativePath());
-        } else {
-            sourceFolder = generatedSources;
-            path = Paths.get(sourceFolder.getPath(), f.relativePath());
-        }
-
-        Files.createDirectories(path.getParent());
-        return path;
     }
 }

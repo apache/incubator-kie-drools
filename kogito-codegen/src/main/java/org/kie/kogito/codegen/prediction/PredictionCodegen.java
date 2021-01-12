@@ -16,7 +16,6 @@
 package org.kie.kogito.codegen.prediction;
 
 import java.io.File;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -37,13 +36,15 @@ import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.CompositeKnowledgeBuilder;
 import org.kie.kogito.codegen.AbstractGenerator;
-import org.kie.kogito.codegen.ApplicationSection;
 import org.kie.kogito.codegen.ApplicationConfigGenerator;
+import org.kie.kogito.codegen.ApplicationSection;
 import org.kie.kogito.codegen.GeneratedFile;
+import org.kie.kogito.codegen.GeneratedFileType;
 import org.kie.kogito.codegen.KogitoPackageSources;
 import org.kie.kogito.codegen.context.KogitoBuildContext;
 import org.kie.kogito.codegen.io.CollectedResource;
 import org.kie.kogito.codegen.prediction.config.PredictionConfigGenerator;
+import org.kie.kogito.codegen.rules.IncrementalRuleCodegen;
 import org.kie.kogito.codegen.rules.RuleCodegenError;
 import org.kie.pmml.commons.model.HasNestedModels;
 import org.kie.pmml.commons.model.HasSourcesMap;
@@ -59,6 +60,7 @@ import static org.kie.pmml.evaluator.assembler.service.PMMLCompilerService.getKi
 public class PredictionCodegen extends AbstractGenerator {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PredictionCodegen.class);
+    private static final GeneratedFileType PMML_TYPE = GeneratedFileType.of("PMML", GeneratedFileType.Category.SOURCE);
     private final List<PMMLResource> resources;
     private final List<GeneratedFile> generatedFiles = new ArrayList<>();
 
@@ -110,10 +112,6 @@ public class PredictionCodegen extends AbstractGenerator {
         return new PredictionModelsGenerator(context(), applicationCanonicalName(), resources);
     }
 
-    public List<GeneratedFile> getGeneratedFiles() {
-        return generatedFiles;
-    }
-
     @Override
     public List<GeneratedFile> generate() {
         if (resources.isEmpty()) {
@@ -148,7 +146,7 @@ public class PredictionCodegen extends AbstractGenerator {
                 Map<String, String> sourceMap = ((HasSourcesMap) model).getSourcesMap();
                 for (Map.Entry<String, String> sourceMapEntry : sourceMap.entrySet()) {
                     String path = sourceMapEntry.getKey().replace('.', File.separatorChar) + ".java";
-                    storeFile(GeneratedFile.Type.PMML, path, sourceMapEntry.getValue());
+                    storeFile(PMML_TYPE, path, sourceMapEntry.getValue());
                 }
                 if (model instanceof KiePMMLDroolsModelWithSources) {
                     PackageDescr packageDescr = ((KiePMMLDroolsModelWithSources)model).getPackageDescr();
@@ -156,7 +154,7 @@ public class PredictionCodegen extends AbstractGenerator {
                 }
                 if (!(model instanceof KiePMMLFactoryModel)) {
                     PMMLRestResourceGenerator resourceGenerator = new PMMLRestResourceGenerator(context(), model, applicationCanonicalName());
-                    storeFile(GeneratedFile.Type.PMML, resourceGenerator.generatedFilePath(), resourceGenerator.generate());
+                    storeFile(PMML_TYPE, resourceGenerator.generatedFilePath(), resourceGenerator.generate());
             }
             if (model instanceof HasNestedModels) {
                 addModels(((HasNestedModels) model).getNestedModels(), resource, batch);
@@ -183,24 +181,35 @@ public class PredictionCodegen extends AbstractGenerator {
             throw new RuleCodegenError(modelBuilder.getErrors().getErrors());
         }
 
-        return generateModels(modelBuilder).stream().map(f -> new org.kie.kogito.codegen.GeneratedFile(
-                org.kie.kogito.codegen.GeneratedFile.Type.RULE,
-                f.getPath(), f.getData())).collect(toList());
+        return generateModels(modelBuilder);
     }
 
-    private List<org.drools.modelcompiler.builder.GeneratedFile> generateModels(ModelBuilderImpl<KogitoPackageSources> modelBuilder) {
-        List<org.drools.modelcompiler.builder.GeneratedFile> toReturn = new ArrayList<>();
+    private List<GeneratedFile> generateModels(ModelBuilderImpl<KogitoPackageSources> modelBuilder) {
+        List<GeneratedFile> modelFiles = new ArrayList<>();
+
+        List<org.drools.modelcompiler.builder.GeneratedFile> legacyModelFiles = new ArrayList<>();
         for (KogitoPackageSources pkgSources : modelBuilder.getPackageSources()) {
-            pkgSources.collectGeneratedFiles(toReturn);
+            pkgSources.collectGeneratedFiles(legacyModelFiles);
             org.drools.modelcompiler.builder.GeneratedFile reflectConfigSource = pkgSources.getReflectConfigSource();
             if (reflectConfigSource != null) {
-                toReturn.add(new org.drools.modelcompiler.builder.GeneratedFile(org.drools.modelcompiler.builder.GeneratedFile.Type.RULE, "../../classes/" + reflectConfigSource.getPath(), new String(reflectConfigSource.getData(), StandardCharsets.UTF_8)));
+                modelFiles.add(new GeneratedFile(GeneratedFileType.RESOURCE,
+                        reflectConfigSource.getPath(),
+                        reflectConfigSource.getData()));
             }
         }
-        return toReturn;
+
+        modelFiles.addAll(convertGeneratedRuleFile(legacyModelFiles));
+        return modelFiles;
     }
 
-    private void storeFile(GeneratedFile.Type type, String path, String source) {
+    private Collection<org.kie.kogito.codegen.GeneratedFile> convertGeneratedRuleFile(Collection<org.drools.modelcompiler.builder.GeneratedFile> legacyModelFiles) {
+        return legacyModelFiles.stream().map(f -> new org.kie.kogito.codegen.GeneratedFile(
+                IncrementalRuleCodegen.RULE_TYPE,
+                f.getPath(), f.getData()))
+                .collect(toList());
+    }
+
+    private void storeFile(GeneratedFileType type, String path, String source) {
         generatedFiles.add(new GeneratedFile(type, path, source));
     }
 }

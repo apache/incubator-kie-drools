@@ -38,6 +38,8 @@ public class ApplicationContainerGenerator {
     private static final String RESOURCE_CDI = "/class-templates/CdiApplicationTemplate.java";
     private static final String RESOURCE_SPRING = "/class-templates/SpringApplicationTemplate.java";
     private static final String RESOURCE_DEFAULT = "/class-templates/ApplicationTemplate.java";
+    private static final GeneratedFileType APPLICATION_TYPE = GeneratedFileType.of("APPLICATION", GeneratedFileType.Category.SOURCE);
+
     private final TemplatedGenerator templatedGenerator;
 
     private List<String> sections = new ArrayList<>();
@@ -80,7 +82,7 @@ public class ApplicationContainerGenerator {
     }
 
     public GeneratedFile generate() {
-        return new GeneratedFile(GeneratedFile.Type.APPLICATION,
+        return new GeneratedFile(APPLICATION_TYPE,
                 templatedGenerator.generatedFilePath(),
                 getCompilationUnitOrThrow().toString());
     }

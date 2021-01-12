@@ -23,7 +23,7 @@ public interface FileGenerator {
 
     String generate();
 
-    default GeneratedFile generateFile( GeneratedFile.Type fileType) {
+    default GeneratedFile generateFile( GeneratedFileType fileType) {
         return new GeneratedFile(fileType,
                                  generatedFilePath(),
                                  generate());

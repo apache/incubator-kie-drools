@@ -18,32 +18,31 @@ package org.kie.kogito.codegen.utils;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.codegen.GeneratedFile;
+import org.kie.kogito.codegen.GeneratedFileType;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import static org.kie.kogito.codegen.GeneratedFile.Type.CLASS;
-import static org.kie.kogito.codegen.GeneratedFile.Type.GENERATED_CP_RESOURCE;
-import static org.kie.kogito.codegen.GeneratedFile.Type.RESOURCE;
-
 class GeneratedFileValidationTest {
 
     @Test
     public void validateGeneratedFileTypes() {
         List<GeneratedFile> generatedFiles = Arrays.asList(
-                new GeneratedFile(CLASS, "myPath1", ""),
-                new GeneratedFile(RESOURCE, "myPath2", ""),
-                new GeneratedFile(GENERATED_CP_RESOURCE, "myPath3", "")
+                new GeneratedFile(GeneratedFileType.SOURCE, "myPath1", ""),
+                new GeneratedFile(GeneratedFileType.RESOURCE, "myPath2", ""),
+                new GeneratedFile(GeneratedFileType.COMPILED_CLASS, "myPath3", "")
         );
 
-        GeneratedFileValidation.validateGeneratedFileTypes(generatedFiles, Arrays.asList(CLASS, RESOURCE, GENERATED_CP_RESOURCE));
-        Set<GeneratedFile.Type> types = Collections.singleton(CLASS);
-        Assertions.assertThatThrownBy(() -> GeneratedFileValidation.validateGeneratedFileTypes(generatedFiles, types))
+        GeneratedFileValidation.validateGeneratedFileTypes(generatedFiles, Arrays.asList(
+                GeneratedFileType.Category.SOURCE,
+                GeneratedFileType.Category.RESOURCE,
+                GeneratedFileType.Category.COMPILED_CLASS));
+        Set<GeneratedFileType.Category> categories = Collections.singleton(GeneratedFileType.Category.SOURCE);
+        Assertions.assertThatThrownBy(() -> GeneratedFileValidation.validateGeneratedFileTypes(generatedFiles, categories))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessageContaining("myPath2")
                 .hasMessageContaining("myPath3");
     }
-
 }

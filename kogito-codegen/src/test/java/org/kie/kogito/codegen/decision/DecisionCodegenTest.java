@@ -26,6 +26,7 @@ import com.github.javaparser.ast.CompilationUnit;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.codegen.AddonsConfig;
+import org.kie.kogito.codegen.DashboardGeneratedFileUtils;
 import org.kie.kogito.codegen.GeneratedFile;
 import org.kie.kogito.codegen.context.JavaKogitoBuildContext;
 import org.kie.kogito.codegen.context.KogitoBuildContext;
@@ -147,13 +148,11 @@ public class DecisionCodegenTest {
 
         List<GeneratedFile> generatedFiles = codeGenerator.generate();
 
-        List<GeneratedFile> dashboards = generatedFiles.stream().filter(x -> x.getType() == GeneratedFile.Type.RESOURCE).collect(Collectors.toList());
+        List<GeneratedFile> dashboards = generatedFiles.stream()
+                .filter(x -> x.type().equals(DashboardGeneratedFileUtils.DASHBOARD_TYPE))
+                .collect(Collectors.toList());
 
         assertEquals(2, dashboards.size());
-
-        List<GeneratedFile> staticDashboards = generatedFiles.stream().filter(x -> x.getType() == GeneratedFile.Type.GENERATED_CP_RESOURCE && x.relativePath().contains("dashboard")).collect(Collectors.toList());
-
-        assertEquals(2, staticDashboards.size());
 
         return dashboards;
     }

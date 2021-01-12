@@ -41,8 +41,9 @@ import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.CompositeKnowledgeBuilder;
 import org.kie.kogito.codegen.AbstractGenerator;
-import org.kie.kogito.codegen.ApplicationSection;
 import org.kie.kogito.codegen.ApplicationConfigGenerator;
+import org.kie.kogito.codegen.ApplicationSection;
+import org.kie.kogito.codegen.GeneratedFileType;
 import org.kie.kogito.codegen.KogitoPackageSources;
 import org.kie.kogito.codegen.context.KogitoBuildContext;
 import org.kie.kogito.codegen.rules.config.RuleConfigGenerator;
@@ -54,6 +55,7 @@ import static java.util.stream.Collectors.toList;
 public class DeclaredTypeCodegen extends AbstractGenerator {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DeclaredTypeCodegen.class);
+    private static final GeneratedFileType DECLARED_TYPE_TYPE = GeneratedFileType.of("DECLARED_TYPE", GeneratedFileType.Category.SOURCE, true, true);
 
     public static DeclaredTypeCodegen ofPath(KogitoBuildContext context, Path basePath) {
         try {
@@ -107,6 +109,7 @@ public class DeclaredTypeCodegen extends AbstractGenerator {
         return null;
     }
 
+    @Override
     public List<org.kie.kogito.codegen.GeneratedFile> generate() {
         ReleaseIdImpl dummyReleaseId = new ReleaseIdImpl("dummy:dummy:0.0.0");
 
@@ -156,7 +159,7 @@ public class DeclaredTypeCodegen extends AbstractGenerator {
         return modelFiles.stream()
                 .filter(Objects::nonNull)
                 .map(f -> new org.kie.kogito.codegen.GeneratedFile(
-                        org.kie.kogito.codegen.GeneratedFile.Type.DECLARED_TYPE,
+                        DECLARED_TYPE_TYPE,
                         f.getPath(), f.getData())).collect(toList());
     }
 

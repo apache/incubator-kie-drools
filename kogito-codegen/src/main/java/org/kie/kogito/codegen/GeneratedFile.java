@@ -21,58 +21,23 @@ import java.util.Objects;
 
 public class GeneratedFile {
 
-    public enum Type {
-        APPLICATION( false ),
-        APPLICATION_SECTION( false ),
-        APPLICATION_CONFIG( false ),
-        PROCESS( false ),
-        PROCESS_INSTANCE( false ),
-        REST( true ),
-        JSON_MAPPER( false ),
-        RULE( false ),
-        DECLARED_TYPE( true ),
-        DTO( true ),
-        QUERY( true ),
-        MODEL( true ),
-        CLASS( false ),
-        MESSAGE_CONSUMER( false ),
-        MESSAGE_PRODUCER( false ),
-        RESOURCE(false),
-        /** Represent a cp resource automatically generated during codegen, so after generate-resources maven phase.
-         * For Quarkus it will be added to target/classes and subject of GeneratedResourceBuildItem and NativeImageResourceBuildItem
-         * When using the kogito-maven-plugin (and SB), it will be added to target/classes */
-        GENERATED_CP_RESOURCE(false),
-        JSON_SCHEMA(true),
-        PMML(false);
-
-        private final boolean customizable;
-
-        Type( boolean customizable ) {
-            this.customizable = customizable;
-        }
-
-        public boolean isCustomizable() {
-            return customizable;
-        }
-    }
-
     private final String relativePath;
     private final byte[] contents;
-    private final Type type;
+    private final GeneratedFileType type;
 
-    public GeneratedFile(Type type, Path relativePath, String contents) {
+    public GeneratedFile(GeneratedFileType type, Path relativePath, String contents) {
         this(type, relativePath, contents.getBytes(StandardCharsets.UTF_8));
     }
 
-    public GeneratedFile(Type type, Path relativePath, byte[] contents) {
+    public GeneratedFile(GeneratedFileType type, Path relativePath, byte[] contents) {
         this(type, relativePath.toString(), contents);
     }
 
-    public GeneratedFile(Type type, String relativePath, String contents) {
+    public GeneratedFile(GeneratedFileType type, String relativePath, String contents) {
         this(type, relativePath, contents.getBytes(StandardCharsets.UTF_8));
     }
 
-    public GeneratedFile(Type type, String relativePath, byte[] contents) {
+    public GeneratedFile(GeneratedFileType type, String relativePath, byte[] contents) {
         this.type = type;
         this.relativePath = relativePath;
         this.contents = contents;
@@ -86,8 +51,12 @@ public class GeneratedFile {
         return contents;
     }
 
-    public Type getType() {
+    public GeneratedFileType type() {
         return type;
+    }
+
+    public GeneratedFileType.Category category() {
+        return type.category();
     }
 
     @Override

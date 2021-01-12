@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.quarkus.deployment;
+package org.kie.kogito.codegen.utils;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -23,10 +23,11 @@ import java.nio.file.Path;
 import java.util.Collection;
 
 import org.kie.kogito.codegen.GeneratedFile;
+import org.kie.kogito.codegen.GeneratedFileType;
 
 /**
  * Writes {@link GeneratedFile} to the right directory, depending on its
- * {@link GeneratedFile.Type}
+ * {@link GeneratedFileType.Category}
  */
 public class GeneratedFileWriter {
 
@@ -90,20 +91,21 @@ public class GeneratedFileWriter {
 
     public void write(GeneratedFile f) throws UncheckedIOException {
         try {
-            GeneratedFile.Type type = f.getType();
-            switch (type) {
-                case RESOURCE:
-                    writeGeneratedFile(f, resourcePath);
-                    break;
-                case GENERATED_CP_RESOURCE:
+            GeneratedFileType.Category category = f.category();
+            switch (category) {
+                case RESOURCE: // since codegen happens after maven-resource-plugin (both in Quarkus and SB), need to manually place in the correct (CP) location
+                case COMPILED_CLASS:
                     writeGeneratedFile(f, classesDir);
                     break;
-                default:
-                    if (type.isCustomizable()) {
+                case SOURCE:
+                    if (f.type().isCustomizable()) {
                         writeGeneratedFile(f, scaffoldedSourcesDir);
                     } else {
                         writeGeneratedFile(f, sourcesDir);
                     }
+                    break;
+                default:
+                    throw new IllegalArgumentException("Unknown Category " + category.name());
             }
         } catch (IOException e) {
             throw new UncheckedIOException(e);

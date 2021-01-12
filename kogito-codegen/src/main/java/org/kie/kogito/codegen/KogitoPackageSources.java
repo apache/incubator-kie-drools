@@ -49,18 +49,9 @@ public class KogitoPackageSources extends PackageSources {
     private Map<String, Collection<QueryModel>> queries;
 
     public static KogitoPackageSources dumpSources( PackageModel pkgModel) {
-        KogitoPackageSources sources = new KogitoPackageSources();
+        KogitoPackageSources sources = dumpPojos(pkgModel);
 
-        List<String> pojoClasses = new ArrayList<>();
         PackageModelWriter packageModelWriter = new PackageModelWriter(pkgModel);
-        for (DeclaredTypeWriter declaredType : packageModelWriter.getDeclaredTypes()) {
-            sources.pojoSources.add(new GeneratedFile(declaredType.getName(), logSource( declaredType.getSource() )));
-            pojoClasses.add(declaredType.getClassName());
-        }
-
-        if (!pojoClasses.isEmpty()) {
-            sources.reflectConfigSource = new GeneratedFile("META-INF/native-image/" + pkgModel.getPathName() + "/reflect-config.json", reflectConfigSource(pojoClasses));
-        }
 
         RuleWriter rules = writeRules( pkgModel, sources, packageModelWriter );
         sources.rulesFileName = pkgModel.getRulesFileName();

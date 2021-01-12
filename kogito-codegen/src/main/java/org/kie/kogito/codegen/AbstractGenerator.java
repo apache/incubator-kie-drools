@@ -21,6 +21,9 @@ import org.kie.kogito.codegen.context.KogitoBuildContext;
 
 public abstract class AbstractGenerator implements Generator {
 
+    public static final GeneratedFileType REST_TYPE = GeneratedFileType.of("REST", GeneratedFileType.Category.SOURCE, true, true);
+    public static final GeneratedFileType MODEL_TYPE = GeneratedFileType.of("MODEL", GeneratedFileType.Category.SOURCE, true, true);
+
     private final KogitoBuildContext context;
 
     protected AbstractGenerator(KogitoBuildContext context) {

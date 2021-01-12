@@ -146,9 +146,7 @@ public class GenerateModelMojo extends AbstractKieMojo {
         Optional<GeneratedFile> dashboardsListFile = DashboardGeneratedFileUtils.list(generatedFiles);
         dashboardsListFile.ifPresent(generatedFiles::add);
 
-        for (GeneratedFile generatedFile : generatedFiles) {
-            writeGeneratedFile(generatedFile);
-        }
+        writeGeneratedFiles(generatedFiles);
 
         if (!keepSources) {
             deleteDrlFiles();

@@ -19,7 +19,6 @@ import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 import java.util.Set;
 
 import com.github.javaparser.ast.CompilationUnit;
@@ -34,8 +33,10 @@ import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import org.junit.jupiter.api.Test;
 import org.kie.api.io.ResourceType;
+import org.kie.kogito.codegen.AbstractGenerator;
 import org.kie.kogito.codegen.AddonsConfig;
 import org.kie.kogito.codegen.GeneratedFile;
+import org.kie.kogito.codegen.GeneratedFileType;
 import org.kie.kogito.codegen.context.KogitoBuildContext;
 import org.kie.kogito.codegen.context.QuarkusKogitoBuildContext;
 import org.kie.kogito.codegen.io.CollectedResource;
@@ -75,13 +76,17 @@ public class DecisionModelResourcesProviderGeneratorTest {
 
         // Align this FAI-215 test (#621) with unknown order of generated files (ie.: additional generated files might be present)
         //A Rest endpoint is always generated per model.
-        List<GeneratedFile> generatedRESTFiles = generatedFiles.stream().filter(gf -> gf.getType() == GeneratedFile.Type.REST).collect(toList());
+        List<GeneratedFile> generatedRESTFiles = generatedFiles.stream()
+                .filter(gf -> gf.type().equals(AbstractGenerator.REST_TYPE))
+                .collect(toList());
         assertFalse(generatedRESTFiles.isEmpty());
         assertEquals(numberOfModels, generatedRESTFiles.size());
 
-        Optional<GeneratedFile> generatedCLASSFile = generatedFiles.stream().filter(gf -> gf.getType() == GeneratedFile.Type.CLASS).findFirst();
-        assertTrue(generatedCLASSFile.isPresent());
-        GeneratedFile classFile = generatedCLASSFile.get();
+        List<GeneratedFile> generatedCLASSFile = generatedFiles.stream()
+                .filter(gf -> gf.type().equals(GeneratedFileType.SOURCE))
+                .collect(toList());
+        assertEquals(1, generatedCLASSFile.size());
+        GeneratedFile classFile = generatedCLASSFile.get(0);
         assertEquals("org/kie/kogito/app/DecisionModelResourcesProvider.java", classFile.relativePath());
 
         final CompilationUnit compilationUnit = parse(new ByteArrayInputStream(classFile.contents()));

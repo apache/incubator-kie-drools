@@ -33,7 +33,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.inject.Inject;
@@ -72,6 +71,7 @@ import org.kie.kogito.codegen.AddonsConfig;
 import org.kie.kogito.codegen.ApplicationGenerator;
 import org.kie.kogito.codegen.DashboardGeneratedFileUtils;
 import org.kie.kogito.codegen.GeneratedFile;
+import org.kie.kogito.codegen.GeneratedFileType;
 import org.kie.kogito.codegen.JsonSchemaGenerator;
 import org.kie.kogito.codegen.context.KogitoBuildContext;
 import org.kie.kogito.codegen.context.QuarkusKogitoBuildContext;
@@ -81,6 +81,7 @@ import org.kie.kogito.codegen.prediction.PredictionCodegen;
 import org.kie.kogito.codegen.process.ProcessCodegen;
 import org.kie.kogito.codegen.process.persistence.PersistenceGenerator;
 import org.kie.kogito.codegen.rules.IncrementalRuleCodegen;
+import org.kie.kogito.codegen.utils.GeneratedFileWriter;
 import org.kie.pmml.evaluator.core.executor.PMMLModelEvaluator;
 import org.kie.pmml.evaluator.core.executor.PMMLModelEvaluatorFinder;
 import org.kie.pmml.evaluator.core.executor.PMMLModelEvaluatorFinderImpl;
@@ -89,7 +90,6 @@ import org.slf4j.LoggerFactory;
 
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
-import static org.kie.kogito.codegen.GeneratedFile.Type.GENERATED_CP_RESOURCE;
 import static org.kie.kogito.codegen.context.KogitoBuildContext.Builder.merge;
 import static org.kie.kogito.codegen.utils.GeneratedFileValidation.validateGeneratedFileTypes;
 
@@ -228,13 +228,7 @@ public class KogitoAssetsProcessor {
                 reflectiveClass));
 
         // Json schema files
-        Collection<GeneratedFile> jsonSchemaFiles = generateJsonSchema(appPaths, index)
-                // FIXME workaround until KOGITO-2901 is solved: all generated resource that needs to be available
-                //  at runtime has to be GENERATED_CP_RESOURCE (so that are saved in the proper folder)
-                .stream()
-                .map(gf -> new GeneratedFile(GENERATED_CP_RESOURCE, gf.relativePath(), gf.contents()))
-                .collect(Collectors.toList());
-        generatedFiles.addAll(jsonSchemaFiles);
+        generatedFiles.addAll(generateJsonSchema(appPaths, index));
 
         // Write files to disk
         dumpFilesToDisk(appPaths, generatedFiles);
@@ -313,7 +307,7 @@ public class KogitoAssetsProcessor {
                                    BuildProducer<NativeImageResourceBuildItem> resource,
                                    BuildProducer<GeneratedResourceBuildItem> genResBI) {
         for (GeneratedFile f : generatedFiles) {
-            if (f.getType() == GeneratedFile.Type.GENERATED_CP_RESOURCE) {
+            if (f.category() == GeneratedFileType.Category.RESOURCE) {
                 genResBI.produce(new GeneratedResourceBuildItem(f.relativePath(), f.contents()));
                 resource.produce(new NativeImageResourceBuildItem(f.relativePath()));
             }
@@ -325,11 +319,9 @@ public class KogitoAssetsProcessor {
             Collection<GeneratedFile> generatedFiles,
             BuildProducer<GeneratedBeanBuildItem> generatedBeans) throws IOException {
 
-        // we are currently filtering on file extension,
-        // but we should tag GeneratedFile properly
         Collection<GeneratedFile> javaFiles =
                 generatedFiles.stream()
-                        .filter(f -> f.relativePath().endsWith(".java"))
+                        .filter(f -> f.category() == GeneratedFileType.Category.SOURCE)
                         .collect(toList());
 
         if (javaFiles.isEmpty()) {
@@ -373,10 +365,10 @@ public class KogitoAssetsProcessor {
         String persistenceType = context.getApplicationProperty("kogito.persistence.type").orElse(PersistenceGenerator.DEFAULT_PERSISTENCE_TYPE);
         Collection<GeneratedFile> persistenceGeneratedFiles = getGeneratedPersistenceFiles(appPaths, index, parameters, context, persistenceType);
 
-        validateGeneratedFileTypes(persistenceGeneratedFiles, asList(GeneratedFile.Type.CLASS, GeneratedFile.Type.GENERATED_CP_RESOURCE));
+        validateGeneratedFileTypes(persistenceGeneratedFiles, asList(GeneratedFileType.Category.SOURCE, GeneratedFileType.Category.RESOURCE));
 
-        Collection<GeneratedFile> persistenceClasses = persistenceGeneratedFiles.stream().filter(x -> x.getType().equals(GeneratedFile.Type.CLASS)).collect(toList());
-        Collection<GeneratedFile> persistenceProtoFiles = persistenceGeneratedFiles.stream().filter(x -> x.getType().equals(GeneratedFile.Type.GENERATED_CP_RESOURCE)).collect(toList());
+        Collection<GeneratedFile> persistenceClasses = persistenceGeneratedFiles.stream().filter(x -> x.category().equals(GeneratedFileType.Category.SOURCE)).collect(toList());
+        Collection<GeneratedFile> persistenceProtoFiles = persistenceGeneratedFiles.stream().filter(x -> x.category().equals(GeneratedFileType.Category.RESOURCE)).collect(toList());
 
         if (!persistenceClasses.isEmpty()) {
             InMemoryCompiler inMemoryCompiler = new InMemoryCompiler(appPaths.classesPaths,

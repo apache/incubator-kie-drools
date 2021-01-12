@@ -41,7 +41,6 @@ import com.github.victools.jsonschema.generator.SchemaVersion;
 import org.jbpm.util.JsonSchemaUtil;
 import org.kie.kogito.UserTask;
 import org.kie.kogito.UserTaskParam;
-import org.kie.kogito.codegen.GeneratedFile.Type;
 import org.kie.kogito.codegen.json.JsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,6 +49,7 @@ public class JsonSchemaGenerator {
 
     public static final Logger logger = LoggerFactory.getLogger(JsonSchemaGenerator.class);
     public static final SchemaVersion DEFAULT_SCHEMA_VERSION = SchemaVersion.DRAFT_7;
+    private static final GeneratedFileType JSON_SCHEMA_TYPE = GeneratedFileType.of("JSON_SCHEMA", GeneratedFileType.Category.RESOURCE, true, true);
 
     private final Map<String, List<Class<?>>> map;
     private final SchemaVersion schemaVersion;
@@ -165,7 +165,7 @@ public class JsonSchemaGenerator {
             }
             try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
                 writer.writeValue(outputStream, merged);
-                files.add(new GeneratedFile(Type.JSON_SCHEMA, pathFor(entry.getKey()), outputStream.toByteArray()));
+                files.add(new GeneratedFile(JSON_SCHEMA_TYPE, pathFor(entry.getKey()), outputStream.toByteArray()));
             }
         }
         return files;
