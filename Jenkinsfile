@@ -29,10 +29,10 @@ pipeline {
                     checkoutRepo("kogito-runtimes")
                     checkoutRepo("kogito-runtimes", "integration-tests")
                     checkoutRepo("kogito-apps")
+                    checkoutOptaplannerRepo()
                     checkoutRepo("kogito-examples")
                     checkoutRepo("kogito-examples", "kogito-examples-persistence")
                     checkoutRepo("kogito-examples", "kogito-examples-events")
-                    checkoutRepo("optaplanner")
                 }
             }
         }
@@ -104,6 +104,22 @@ pipeline {
 void checkoutRepo(String repo, String dirName=repo) {
     dir(dirName) {
         githubscm.checkoutIfExists(repo, changeAuthor, changeBranch, 'kiegroup', changeTarget, true)
+    }
+}
+
+void checkoutOptaplannerRepo() {
+    String targetBranch = changeTarget
+    String [] versionSplit = targetBranch.split("\\.")
+    if(versionSplit.length == 3 
+        && versionSplit[0].isNumber()
+        && versionSplit[1].isNumber()
+       && versionSplit[2] == 'x') {
+        targetBranch = "${Integer.parseInt(versionSplit[0]) + 7}.${versionSplit[1]}.x"
+    } else {
+        echo "Cannot parse changeTarget as release branch so going further with current value: ${changeTarget}"
+    }
+    dir('optaplanner') {
+        githubscm.checkoutIfExists('optaplanner', changeAuthor, changeBranch, 'kiegroup', targetBranch, true)
     }
 }
 
