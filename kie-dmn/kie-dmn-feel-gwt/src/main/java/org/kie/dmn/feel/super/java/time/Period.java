@@ -1,18 +1,25 @@
 
 package java.time;
 
+import java.io.DataInput;
+import java.io.IOException;
 import java.io.Serializable;
-import java.util.List;
-
 import java.time.chrono.ChronoPeriod;
 import java.time.chrono.IsoChronology;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAmount;
 import java.time.temporal.TemporalUnit;
+import java.util.List;
 
 public final class Period
         implements ChronoPeriod,
                    Serializable {
+
+    public static final Period ZERO = new Period(0, 0, 0);
+
+    private Period(int years, int months, int days) {
+
+    }
 
     public long get(final TemporalUnit unit) {
         return 0L;
@@ -123,6 +130,42 @@ public final class Period
     }
 
     public String toString() {
+        return null;
+    }
+
+    public static Period ofYears(int years) {
+        return null;
+    }
+
+    public static Period ofMonths(int months) {
+        return null;
+    }
+
+    public static Period ofWeeks(int weeks) {
+        return null;
+    }
+
+    public static Period ofDays(int days) {
+        return null;
+    }
+
+    public static Period of(int years, int months, int days) {
+        return null;
+    }
+
+    public static Period from(TemporalAmount amount) {
+        return null;
+    }
+
+    public static Period parse(CharSequence text) {
+        return null;
+    }
+
+    public static Period between(LocalDate startDateInclusive, LocalDate endDateExclusive) {
+        return null;
+    }
+
+    static Period readExternal(DataInput in) throws IOException {
         return null;
     }
 }
