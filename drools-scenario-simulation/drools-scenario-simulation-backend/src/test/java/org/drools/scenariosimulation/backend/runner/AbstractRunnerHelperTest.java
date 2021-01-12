@@ -134,8 +134,7 @@ public class AbstractRunnerHelperTest {
         String collectionError = "Impossible to find elements in the collection to satisfy the conditions.";
         String collectionWrongValue = "value";
         String collectionValuePath = "Item(1)";
-        List<String> collectionPath = Arrays.asList(collectionValuePath);
-        String collectionValueError = "Value <span class=error-message-wrong-value>\"" + collectionWrongValue + "\"</span> is wrong following path: <em>" + collectionValuePath + "</em>";
+        String collectionValueError = "Value \"" + collectionWrongValue + "\" is wrong inside:\n<em>Field \"Item(1)\"</em>";
         String genericErrorMessage = "errorMessage";
 
         // case 1: succeed

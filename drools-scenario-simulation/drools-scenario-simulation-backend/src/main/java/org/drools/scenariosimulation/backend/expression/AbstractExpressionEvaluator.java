@@ -225,13 +225,21 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
             } else if (jsonNode.isArray()) {
                 evaluatorResult = verifyList((ArrayNode) jsonNode, (List) fieldValue);
                 if (!evaluatorResult.isSuccessful()) {
-                    evaluatorResult.addStepToPath(key);
+                    if (resultRaw instanceof Map) {
+                        evaluatorResult.addMapItemStepToPath(key);
+                    } else {
+                        evaluatorResult.addFieldItemStepToPath(key);
+                    }
                     return evaluatorResult;
                 }
             } else if (jsonNode.isObject()) {
                 evaluatorResult = verifyObject((ObjectNode) jsonNode, fieldValue);
                 if (!evaluatorResult.isSuccessful()) {
-                    evaluatorResult.addStepToPath(key);
+                    if (resultRaw instanceof Map) {
+                        evaluatorResult.addMapItemStepToPath(key);
+                    } else {
+                        evaluatorResult.addFieldItemStepToPath(key);
+                    }
                     return evaluatorResult;
                 }
             } else {

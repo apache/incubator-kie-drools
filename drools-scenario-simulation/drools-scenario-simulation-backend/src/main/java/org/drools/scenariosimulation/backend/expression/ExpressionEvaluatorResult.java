@@ -32,8 +32,8 @@ import java.util.Optional;
 public class ExpressionEvaluatorResult {
 
     private boolean successful;
-    private List<String> pathToWrongValue;
     private String wrongValue;
+    private List<String> pathToWrongValue;
 
     public static ExpressionEvaluatorResult of(boolean successful) {
         return new ExpressionEvaluatorResult(successful);
@@ -47,14 +47,14 @@ public class ExpressionEvaluatorResult {
         return new ExpressionEvaluatorResult(false);
     }
 
-    public static ExpressionEvaluatorResult ofFailed(String wrongValue, String stepToWrongValue) {
-        return new ExpressionEvaluatorResult(false, wrongValue, stepToWrongValue);
+    public static ExpressionEvaluatorResult ofFailed(String wrongValue, String wrongValueField) {
+        return new ExpressionEvaluatorResult(false, wrongValue, wrongValueField);
     }
 
-    private ExpressionEvaluatorResult(boolean successful, String wrongValue, String stepToWrongValue) {
+    private ExpressionEvaluatorResult(boolean successful, String wrongValue, String wrongValueField) {
         this.successful = successful;
         this.pathToWrongValue = new ArrayList<>();
-        pathToWrongValue.add(stepToWrongValue);
+        this.addFieldItemStepToPath(wrongValueField);
         this.wrongValue = wrongValue;
     }
 
@@ -68,7 +68,23 @@ public class ExpressionEvaluatorResult {
         return successful;
     }
 
-    public Optional<String> getErrorMessage() {
+    public void addFieldItemStepToPath(String fieldName) {
+        pathToWrongValue.add(0, "Field \"" + fieldName+ "\"");
+    }
+
+    public void addListItemStepToPath(int elementNumber) {
+        pathToWrongValue.add(0, "List's item: " + elementNumber);
+    }
+
+    public void addMapItemStepToPath(String key) {
+        pathToWrongValue.add(0, "Map Item with \"" + key + "\" key");
+    }
+
+    public void setWrongValue(String wrongValue) {
+        this.wrongValue = wrongValue;
+    }
+
+    public Optional<String> generateHTMLErrorMessage() {
         if (!successful && !pathToWrongValue.isEmpty()) {
             if (wrongValue != null) {
                 return Optional.ofNullable(generateHTMLMessageWithWrongValue());
@@ -79,30 +95,14 @@ public class ExpressionEvaluatorResult {
         return Optional.empty();
     }
 
-    public void addStepToPath(String step) {
-        pathToWrongValue.add(0, step);
-    }
-
-    public void addListItemStepToPath(int elementNumber) {
-        pathToWrongValue.add(0, "Item " + elementNumber + " of the List");
-    }
-
-    public void addMapItemStepToPath(String key) {
-        pathToWrongValue.add(0, "Item \"" + key + "\" of the Map");
-    }
-
-    public void setWrongValue(String wrongValue) {
-        this.wrongValue = wrongValue;
-    }
-
     protected String generateHTMLMessageWithWrongValue() {
-        return "Value <span class=error-message-wrong-value>\"" + wrongValue + "\"</span>" +
-                " is wrong following path: " +
+        return "Value \"" + wrongValue + "\"" +
+                " is wrong inside:\n" +
                 "<em>" + String.join("\n", pathToWrongValue) + "</em>";
     }
 
     protected String generateHTMLMessageWithoutWrongValue() {
-        return "Following path is wrong: " +
+        return "Following path is wrong:\n" +
                 "<em>" + String.join("\n", pathToWrongValue) + "</em>";
     }
 }
