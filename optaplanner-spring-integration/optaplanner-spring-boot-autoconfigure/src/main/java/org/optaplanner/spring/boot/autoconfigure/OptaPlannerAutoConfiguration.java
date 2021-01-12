@@ -257,7 +257,7 @@ public class OptaPlannerAutoConfiguration implements BeanClassLoaderAware {
                     + IncrementalScoreCalculator.class.getSimpleName() + ".\n"
                     + "Neither was a property " + OptaPlannerProperties.SCORE_DRL_PROPERTY + " defined, nor a "
                     + OptaPlannerProperties.DEFAULT_CONSTRAINTS_DRL_URL + " resource found.\n"
-                    + "Maybe your @" + ConstraintProvider.class.getSimpleName() + " annotated class "
+                    + "Maybe your " + ConstraintProvider.class.getSimpleName() + " class "
                     + " is not in a subpackage of your @" + SpringBootApplication.class.getSimpleName()
                     + " annotated class's package.\n"
                     + "Maybe move your constraint provider class to your application class's (sub)package.");
