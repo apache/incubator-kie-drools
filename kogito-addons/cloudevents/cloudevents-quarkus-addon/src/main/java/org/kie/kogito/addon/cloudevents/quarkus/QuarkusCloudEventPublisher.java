@@ -24,6 +24,7 @@ import javax.inject.Named;
 import io.quarkus.runtime.Startup;
 import io.smallrye.mutiny.Multi;
 import org.eclipse.microprofile.reactive.messaging.Channel;
+import org.eclipse.microprofile.reactive.messaging.Message;
 import org.kie.kogito.event.KogitoEventStreams;
 import org.reactivestreams.Publisher;
 
@@ -35,13 +36,15 @@ import org.reactivestreams.Publisher;
 @ApplicationScoped
 public class QuarkusCloudEventPublisher {
     @Channel(KogitoEventStreams.INCOMING)
-    Multi<String> events;
+    Multi<Message<String>> events;
 
     @Produces
     @ApplicationScoped
     @Named(KogitoEventStreams.PUBLISHER)
     public Multi<String> makeMulti() {
-        return events.broadcast().toAllSubscribers();
-    }
-
+        return events
+                .invoke(Message::ack)
+                .map(Message::getPayload)
+                .broadcast().toAllSubscribers();
+    }    
 }
