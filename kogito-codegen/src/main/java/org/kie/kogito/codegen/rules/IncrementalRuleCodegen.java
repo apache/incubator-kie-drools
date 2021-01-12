@@ -177,10 +177,9 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
             throw new RuleCodegenError(modelBuilder.getErrors().getErrors());
         }
 
-        Map<String, String> unitsMap = new HashMap<>();
         Map<String, String> modelsByUnit = new HashMap<>();
 
-        List<GeneratedFile> generatedFiles = new ArrayList<>(generateModels(modelBuilder, unitsMap, modelsByUnit));
+        List<GeneratedFile> generatedFiles = new ArrayList<>(generateModels(modelBuilder, modelsByUnit));
 
         boolean hasRuleUnits = !ruleUnitGenerators.isEmpty();
 
@@ -229,7 +228,7 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
         return resources.stream().filter( r -> r.getSourcePath().equals( resource.getSourcePath() + ".properties" ) ).findFirst().orElse( null );
     }
 
-    private List<GeneratedFile> generateModels(ModelBuilderImpl<KogitoPackageSources> modelBuilder, Map<String, String> unitsMap, Map<String, String> modelsByUnit ) {
+    private List<GeneratedFile> generateModels(ModelBuilderImpl<KogitoPackageSources> modelBuilder, Map<String, String> modelsByUnit ) {
         List<GeneratedFile> modelFiles = new ArrayList<>();
         List<org.drools.modelcompiler.builder.GeneratedFile> legacyModelFiles = new ArrayList<>();
 
@@ -253,7 +252,6 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
                         .mergeConfig(configs.get(canonicalName));
 
                 ruleUnitGenerators.add(ruSource);
-                unitsMap.put(canonicalName, ruSource.targetCanonicalName());
                 // only Class<?> has config for now
                 addUnitConfToKieModule(ruleUnit);
             }
