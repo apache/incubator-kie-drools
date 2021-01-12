@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package java.time.temporal;
+package java.time.format;
 
-@FunctionalInterface
-public interface TemporalAdjuster {
-
-    Temporal adjustInto(Temporal temporal);
+public enum FormatStyle {
+    FULL,
+    LONG,
+    MEDIUM,
+    SHORT;
 }

@@ -5,9 +5,9 @@ import java.util.List;
 
 public interface TemporalAmount {
 
-    List<TemporalUnit> getUnits();
-
     long get(TemporalUnit unit);
+
+    List<TemporalUnit> getUnits();
 
     Temporal addTo(Temporal temporal);
 

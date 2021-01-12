@@ -20,28 +20,48 @@ import java.util.Locale;
 
 import java.time.format.TextStyle;
 import java.time.temporal.Temporal;
-import java.time.temporal.TemporalAccessor;
-import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalField;
 import java.time.temporal.TemporalQuery;
 import java.time.temporal.ValueRange;
 
-public interface Era extends TemporalAccessor,
-                             TemporalAdjuster {
+public enum IsoEra implements Era {
 
-    int getValue();
+    BCE,
+    CE;
 
-    boolean isSupported(final TemporalField field);
+    public static IsoEra of(int isoEra) {
+        return null;
+    }
 
-    ValueRange range(final TemporalField field);
+    public int getValue() {
+        return 0;
+    }
 
-    int get(final TemporalField field);
+    public boolean isSupported(final TemporalField field) {
+        return false;
+    }
 
-    long getLong(final TemporalField field);
+    public ValueRange range(final TemporalField field) {
+        return null;
+    }
 
-    <R> R query(final TemporalQuery<R> query);
+    public int get(final TemporalField field) {
+        return 0;
+    }
 
-    Temporal adjustInto(final Temporal temporal);
+    public long getLong(final TemporalField field) {
+        return 0;
+    }
 
-    String getDisplayName(final TextStyle style, final Locale locale);
+    public <R> R query(final TemporalQuery<R> query) {
+        return null;
+    }
+
+    public Temporal adjustInto(final Temporal temporal) {
+        return null;
+    }
+
+    public String getDisplayName(final TextStyle style, final Locale locale) {
+        return null;
+    }
 }

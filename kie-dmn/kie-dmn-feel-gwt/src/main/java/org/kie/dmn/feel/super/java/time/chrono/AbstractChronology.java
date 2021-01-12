@@ -16,10 +16,34 @@
 
 package java.time.chrono;
 
-import java.time.temporal.Temporal;
+import java.util.Map;
 
-public interface ChronoZonedDateTime<D extends ChronoLocalDate>
-        extends Temporal,
-                Comparable<ChronoZonedDateTime<?>> {
+import java.time.format.ResolverStyle;
+import java.time.temporal.TemporalField;
 
+public abstract class AbstractChronology implements Chronology {
+
+    protected AbstractChronology() {
+
+    }
+
+    public ChronoLocalDate resolveDate(final Map<TemporalField, Long> fieldValues, final ResolverStyle resolverStyle) {
+        return null;
+    }
+
+    public int compareTo(final Chronology other) {
+        return 0;
+    }
+
+    public boolean equals(final AbstractChronology obj) {
+        return true;
+    }
+
+    public int hashCode() {
+        return 0;
+    }
+
+    public String toString() {
+        return null;
+    }
 }

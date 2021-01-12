@@ -1,6 +1,9 @@
+
 package java.time.format;
 
 public enum ResolverStyle {
 
-    STRICT
+    STRICT,
+    SMART,
+    LENIENT;
 }

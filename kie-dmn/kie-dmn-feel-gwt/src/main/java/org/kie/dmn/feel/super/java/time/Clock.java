@@ -14,10 +14,19 @@
  * limitations under the License.
  */
 
-package java.time.temporal;
+package java.time;
 
-@FunctionalInterface
-public interface TemporalAdjuster {
+public abstract class Clock {
 
-    Temporal adjustInto(Temporal temporal);
+    public ZoneId getZone() {
+        return null;
+    }
+
+    public Clock withZone(final ZoneId zone) {
+        return null;
+    }
+
+    public Instant instant() {
+        return null;
+    }
 }
