@@ -46,20 +46,20 @@ public class FromOnlyExecModelTest {
     public void testFromSharingWithNativeImage() {
         try {
             NativeImageTestUtil.setNativeImage();
-            testFromSharingCommon(kieBaseTestConfiguration, new HashMap<String, String>());
+            testFromSharingCommon(kieBaseTestConfiguration, new HashMap<String, String>(), 2, 2);
         } finally {
             NativeImageTestUtil.unsetNativeImage();
         }
     }
 
     // This test that the node sharing isn't working without lambda externalisation
-    @Test(expected = AssertionError.class)
+    @Test
     public void testFromSharingWithNativeImageWithoutLambdaExternalisation() {
         try {
             NativeImageTestUtil.setNativeImage();
             HashMap<String, String> properties = new HashMap<>();
             properties.put("drools.externaliseCanonicalModelLambda", Boolean.FALSE.toString());
-            testFromSharingCommon(kieBaseTestConfiguration, properties);
+            testFromSharingCommon(kieBaseTestConfiguration, properties, 3, 1);
         } finally {
             NativeImageTestUtil.unsetNativeImage();
         }
