@@ -963,7 +963,7 @@ public class PatternBuilder
         subExpr = ConstraintUtil.inverseExpression(subDescr, subExpr, leftValue, rightValue, operator, pattern);
 
         ValueType valueType = getValueType(context, pattern, leftValue);
-        if (valueType != null && valueType.getSimpleType() == SimpleValueType.DATE) {
+        if (valueType != null && valueType.isDate()) {
             FieldValue fieldValue = ConstraintBuilder.get().getMvelFieldValue(context, valueType, rightValue);
             if (fieldValue != null) {
                 subExpr = subExpr.replace(rightValue, getNormalizeDate(valueType, fieldValue));

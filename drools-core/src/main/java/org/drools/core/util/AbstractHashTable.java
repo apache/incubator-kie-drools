@@ -23,7 +23,6 @@ import java.io.ObjectOutput;
 import java.util.Objects;
 
 import org.drools.core.rule.Declaration;
-import org.drools.core.rule.IndexEvaluator;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.ReadAccessor;
 import org.drools.core.spi.Tuple;
@@ -214,7 +213,7 @@ public abstract class AbstractHashTable
         return sbuilder.toString();
     }
 
-    public abstract static class AbstractObjectComparator implements ObjectComparator { 
+    public abstract static class AbstractObjectComparator implements ObjectComparator {
     }
 
     public static class InstanceEquals
@@ -292,28 +291,21 @@ public abstract class AbstractHashTable
         }
     }
 
-    public static class FieldIndex
-        implements
-        Externalizable {
+    public static class FieldIndex implements Externalizable {
 
         private static final long serialVersionUID = 510l;
 
         private InternalReadAccessor    extractor;
         private Declaration             declaration;
-        private IndexEvaluator          evaluator;
         private boolean                 requiresCoercion;
 
         public FieldIndex() {
 
         }
 
-        public FieldIndex(final InternalReadAccessor extractor,
-                          final Declaration declaration,
-                          final IndexEvaluator evaluator) {
-            super();
+        public FieldIndex(InternalReadAccessor extractor, Declaration declaration) {
             this.extractor = extractor;
             this.declaration = declaration;
-            this.evaluator = evaluator;
             this.requiresCoercion = isCoercionRequired( extractor, declaration );
         }
 
@@ -326,7 +318,6 @@ public abstract class AbstractHashTable
                                                 ClassNotFoundException {
             extractor = (InternalReadAccessor) in.readObject();
             declaration = (Declaration) in.readObject();
-            evaluator = (IndexEvaluator) in.readObject();
             requiresCoercion = isCoercionRequired( extractor, declaration );
         }
 
@@ -334,7 +325,6 @@ public abstract class AbstractHashTable
         public void writeExternal(ObjectOutput out) throws IOException {
             out.writeObject( extractor );
             out.writeObject( declaration );
-            out.writeObject( evaluator );
         }
 
         public Declaration getDeclaration() {
@@ -343,18 +333,6 @@ public abstract class AbstractHashTable
 
         public ReadAccessor getExtractor() {
             return this.extractor;
-        }
-
-        public IndexEvaluator getEvaluator() {
-            return this.evaluator;
-        }
-
-        public int hashCodeOf(Tuple tuple, boolean left) {
-            return left ?
-                    ( requiresCoercion ?
-                           Objects.hashCode( extractor.getValueType().coerce( declaration.getExtractor().getValue( tuple.getObject( declaration ) ) ) ) :
-                           declaration.getHashCode( null, tuple.getObject( declaration ) ) ) :
-                   extractor.getHashCode( null, tuple.getFactHandle().getObject() );
         }
 
         public Object indexedValueOf(Tuple tuple, boolean left) {
@@ -368,21 +346,10 @@ public abstract class AbstractHashTable
 
     public interface Index extends Externalizable {
         FieldIndex getFieldIndex(int index);
-
-        int hashCodeOf(Tuple tuple, boolean left);
-
-        boolean areEqual(Object object, Tuple tuple);
-
-        boolean areEqual(TupleList list, Tuple tuple2);
-
-        boolean areEqual(TupleList list, Object object2);
-
-        TupleList createEntry(Tuple tuple, int hashCode, boolean left);
+        HashEntry hashCodeOf(Tuple tuple, boolean left);
     }
 
-    public static class SingleIndex
-        implements
-        Index {
+    public static class SingleIndex implements Index {
 
         private static final long    serialVersionUID = 510l;
 
@@ -422,109 +389,54 @@ public abstract class AbstractHashTable
         }
 
         @Override
-        public int hashCodeOf(final Tuple tuple, boolean left) {
-            return rehash( PRIME * startResult + index.hashCodeOf( tuple, left ) );
-        }
-
-        @Override
-        public boolean areEqual(final Object right,
-                                final Tuple tuple) {
-            return this.index.evaluator.evaluate( null,
-                                                  this.index.declaration.getExtractor(),
-                                                  tuple.getObject( this.index.declaration ),
-                                                  this.index.extractor,
-                                                  right );
-        }
-
-        @Override
-        public boolean areEqual(final TupleList list,
-                                final Object object2) {
-            return this.index.evaluator.evaluate( null,
-                                                  ( (SingleIndexTupleList) list ).indexKey,
-                                                  this.index.extractor,
-                                                  object2 );
-        }
-
-        public boolean areEqual(final Tuple tuple1,
-                                final Tuple tuple2) {
-            return this.index.evaluator.evaluate( null,
-                                                  this.index.declaration.getExtractor(),
-                                                  tuple1.getObject( this.index.declaration ),
-                                                  this.index.declaration.getExtractor(),
-                                                  tuple2.getObject( this.index.declaration ) );
-        }
-
-        @Override
-        public boolean areEqual(final TupleList list,
-                                final Tuple tuple2) {
-            return this.index.evaluator.evaluate( null,
-                                                  ( (SingleIndexTupleList) list ).indexKey,
-                                                  this.index.declaration.getExtractor(),
-                                                  tuple2.getObject( this.index.declaration ) );
-        }
-
-        @Override
-        public TupleList createEntry(Tuple tuple, int hashCode, boolean left) {
-            return new SingleIndexTupleList( this, tuple, hashCode, left );
+        public HashEntry hashCodeOf(Tuple tuple, boolean left) {
+            return new SingleHashEntry( startResult, index.indexedValueOf( tuple, left ) );
         }
     }
 
-    public static class AbstractIndexTupleList extends TupleList {
-        private int hashCode;
+    public static class IndexTupleList extends TupleList {
+        private HashEntry hashEntry;
         private Index index;
 
-        public AbstractIndexTupleList( Index index, int hashCode ) {
+        public IndexTupleList( Index index, HashEntry hashEntry ) {
             this.index = index;
-            this.hashCode = hashCode;
+            this.hashEntry = hashEntry;
         }
 
         @Override
         public boolean equals(final Object object) {
-            if (!(object instanceof AbstractIndexTupleList)) {
+            if (!(object instanceof IndexTupleList)) {
                 return false;
             }
-            final AbstractIndexTupleList other = (AbstractIndexTupleList) object;
-            return this.hashCode == other.hashCode && this.index == other.index;
+            final IndexTupleList other = (IndexTupleList) object;
+            return this.hashEntry.hashCode() == other.hashEntry.hashCode() && this.index == other.index;
         }
 
         @Override
         public int hashCode() {
-            return this.hashCode;
+            return this.hashEntry.hashCode();
         }
 
         @Override
         protected void copyStateInto(TupleList other) {
             super.copyStateInto( other );
-            ( (AbstractIndexTupleList) other ).hashCode = hashCode;
-            ( (AbstractIndexTupleList) other ).index = index;
+            ( (IndexTupleList) other ).hashEntry = hashEntry;
+            ( (IndexTupleList) other ).index = index;
+        }
+
+        public HashEntry getHashEntry() {
+            return hashEntry;
         }
     }
 
-    public static class SingleIndexTupleList extends AbstractIndexTupleList {
-        private Object indexKey;
-
-        public SingleIndexTupleList( SingleIndex index, Tuple tuple, int hashCode, boolean left ) {
-            super( index, hashCode );
-            indexKey = index.index.indexedValueOf(tuple, left);
-        }
-
-        @Override
-        protected void copyStateInto(TupleList other) {
-            super.copyStateInto( other );
-            ( (SingleIndexTupleList) other ).indexKey = indexKey;
-        }
-    }
-
-    public static class DoubleCompositeIndex
-        implements
-        Index {
+    public static class DoubleCompositeIndex implements Index {
 
         private static final long serialVersionUID = 510l;
 
-        private FieldIndex        index0;
-        private FieldIndex        index1;
+        private FieldIndex index1;
+        private FieldIndex index2;
 
-        private int               startResult;
+        private int startResult;
 
         public DoubleCompositeIndex() {
 
@@ -534,22 +446,22 @@ public abstract class AbstractHashTable
                                     final int startResult) {
             this.startResult = startResult;
 
-            this.index0 = indexes[0];
-            this.index1 = indexes[1];
+            this.index1 = indexes[0];
+            this.index2 = indexes[1];
         }
 
         @Override
         public void readExternal(ObjectInput in) throws IOException,
                                                 ClassNotFoundException {
-            index0 = (FieldIndex) in.readObject();
             index1 = (FieldIndex) in.readObject();
+            index2 = (FieldIndex) in.readObject();
             startResult = in.readInt();
         }
 
         @Override
         public void writeExternal(ObjectOutput out) throws IOException {
-            out.writeObject( index0 );
             out.writeObject( index1 );
+            out.writeObject( index2 );
             out.writeInt( startResult );
         }
 
@@ -557,99 +469,27 @@ public abstract class AbstractHashTable
         public FieldIndex getFieldIndex(int index) {
             switch ( index ) {
                 case 0 :
-                    return index0;
-                case 1 :
                     return index1;
+                case 1 :
+                    return index2;
                 default :
                     throw new IllegalArgumentException( "IndexUtil position " + index + " does not exist" );
             }
         }
 
         @Override
-        public int hashCodeOf(Tuple tuple, boolean left) {
-            int hashCode = this.startResult;
-            hashCode = PRIME * hashCode + this.index0.hashCodeOf( tuple, left );
-            hashCode = PRIME * hashCode + this.index1.hashCodeOf( tuple, left );
-            return rehash( hashCode );
-        }
-
-        @Override
-        public boolean areEqual(final Object right,
-                                final Tuple tuple) {
-            return this.index0.evaluator.evaluate( null,
-                                                   this.index0.declaration.getExtractor(),
-                                                   tuple.getObject( this.index0.declaration ),
-                                                   this.index0.extractor,
-                                                   right )
-                   &&
-                   this.index1.evaluator.evaluate( null,
-                                                   this.index1.declaration.getExtractor(),
-                                                   tuple.getObject( this.index1.declaration ),
-                                                   this.index1.extractor,
-                                                   right );
-        }
-
-        @Override
-        public boolean areEqual(final TupleList list,
-                                final Tuple tuple2) {
-            return this.index0.evaluator.evaluate( null,
-                                                  ( (DoubleIndexTupleList) list ).indexKey0,
-                                                  this.index0.declaration.getExtractor(),
-                                                  tuple2.getObject( this.index0.declaration ) )
-                   &&
-                   this.index1.evaluator.evaluate( null,
-                                                   ( (DoubleIndexTupleList) list ).indexKey1,
-                                                   this.index1.declaration.getExtractor(),
-                                                   tuple2.getObject( this.index1.declaration ) );
-        }
-
-        @Override
-        public boolean areEqual(final TupleList list,
-                                final Object object2) {
-            return this.index0.evaluator.evaluate( null,
-                                                  ( (DoubleIndexTupleList) list ).indexKey0,
-                                                  this.index0.extractor,
-                                                  object2 )
-                   &&
-                   this.index1.evaluator.evaluate( null,
-                                                   ( (DoubleIndexTupleList) list ).indexKey1,
-                                                   this.index1.extractor,
-                                                   object2 );
-        }
-
-        @Override
-        public TupleList createEntry(Tuple tuple, int hashCode, boolean left) {
-            return new DoubleIndexTupleList( this, tuple, hashCode, left );
+        public HashEntry hashCodeOf(Tuple tuple, boolean left) {
+            return new DoubleHashEntry( startResult, index1.indexedValueOf( tuple, left ), index2.indexedValueOf( tuple, left ) );
         }
     }
 
-    public static class DoubleIndexTupleList extends AbstractIndexTupleList {
-        private Object indexKey0;
-        private Object indexKey1;
-
-        public DoubleIndexTupleList( DoubleCompositeIndex index, Tuple tuple, int hashCode, boolean left ) {
-            super( index, hashCode );
-            indexKey0 = index.index0.indexedValueOf(tuple, left);
-            indexKey1 = index.index1.indexedValueOf(tuple, left);
-        }
-
-        @Override
-        protected void copyStateInto(TupleList other) {
-            super.copyStateInto( other );
-            ( (DoubleIndexTupleList) other ).indexKey0 = indexKey0;
-            ( (DoubleIndexTupleList) other ).indexKey1 = indexKey1;
-        }
-    }
-
-    public static class TripleCompositeIndex
-        implements
-        Index {
+    public static class TripleCompositeIndex implements Index {
 
         private static final long serialVersionUID = 510l;
 
-        private FieldIndex        index0;
-        private FieldIndex        index1;
-        private FieldIndex        index2;
+        private FieldIndex index1;
+        private FieldIndex index2;
+        private FieldIndex index3;
 
         private int               startResult;
 
@@ -661,25 +501,25 @@ public abstract class AbstractHashTable
                                     final int startResult) {
             this.startResult = startResult;
 
-            this.index0 = indexes[0];
-            this.index1 = indexes[1];
-            this.index2 = indexes[2];
+            this.index1 = indexes[0];
+            this.index2 = indexes[1];
+            this.index3 = indexes[2];
         }
 
         @Override
         public void readExternal(ObjectInput in) throws IOException,
                                                 ClassNotFoundException {
-            index0 = (FieldIndex) in.readObject();
             index1 = (FieldIndex) in.readObject();
             index2 = (FieldIndex) in.readObject();
+            index3 = (FieldIndex) in.readObject();
             startResult = in.readInt();
         }
 
         @Override
         public void writeExternal(ObjectOutput out) throws IOException {
-            out.writeObject( index0 );
             out.writeObject( index1 );
             out.writeObject( index2 );
+            out.writeObject( index3 );
             out.writeInt( startResult );
         }
 
@@ -687,108 +527,19 @@ public abstract class AbstractHashTable
         public FieldIndex getFieldIndex(int index) {
             switch ( index ) {
                 case 0 :
-                    return index0;
-                case 1 :
                     return index1;
-                case 2 :
+                case 1 :
                     return index2;
+                case 2 :
+                    return index3;
                 default :
                     throw new IllegalArgumentException( "IndexUtil position " + index + " does not exist" );
             }
         }
 
         @Override
-        public int hashCodeOf(Tuple tuple, boolean left) {
-            int hashCode = this.startResult;
-            hashCode = PRIME * hashCode + this.index0.hashCodeOf( tuple, left );
-            hashCode = PRIME * hashCode + this.index1.hashCodeOf( tuple, left );
-            hashCode = PRIME * hashCode + this.index2.hashCodeOf( tuple, left );
-            return rehash( hashCode );
-        }
-
-        @Override
-        public boolean areEqual(final Object right,
-                                final Tuple tuple) {
-            return this.index0.evaluator.evaluate( null,
-                                                   this.index0.declaration.getExtractor(),
-                                                   tuple.getObject( this.index0.declaration ),
-                                                   this.index0.extractor,
-                                                   right )
-                   &&
-                   this.index1.evaluator.evaluate( null,
-                                                   this.index1.declaration.getExtractor(),
-                                                   tuple.getObject( this.index1.declaration ),
-                                                   this.index1.extractor,
-                                                   right )
-                   && this.index2.evaluator.evaluate( null,
-                                                      this.index2.declaration.getExtractor(),
-                                                      tuple.getObject( this.index2.declaration ),
-                                                      this.index2.extractor,
-                                                      right );
-        }
-
-        @Override
-        public boolean areEqual(final TupleList list,
-                                final Tuple tuple2) {
-            return this.index0.evaluator.evaluate( null,
-                                                   ( (TripleIndexTupleList) list ).indexKey0,
-                                                   this.index0.declaration.getExtractor(),
-                                                   tuple2.getObject( this.index0.declaration ) )
-                   &&
-                   this.index1.evaluator.evaluate( null,
-                                                   ( (TripleIndexTupleList) list ).indexKey1,
-                                                   this.index1.declaration.getExtractor(),
-                                                   tuple2.getObject( this.index1.declaration ) )
-                   &&
-                   this.index2.evaluator.evaluate( null,
-                                                   ( (TripleIndexTupleList) list ).indexKey2,
-                                                   this.index2.declaration.getExtractor(),
-                                                   tuple2.getObject( this.index2.declaration ) );
-        }
-
-        @Override
-        public boolean areEqual(final TupleList list,
-                                final Object object2) {
-            return this.index0.evaluator.evaluate( null,
-                                                   ( (TripleIndexTupleList) list ).indexKey0,
-                                                   this.index0.extractor,
-                                                   object2 )
-                   &&
-                   this.index1.evaluator.evaluate( null,
-                                                   ( (TripleIndexTupleList) list ).indexKey1,
-                                                   this.index1.extractor,
-                                                   object2 )
-                   &&
-                   this.index2.evaluator.evaluate( null,
-                                                   ( (TripleIndexTupleList) list ).indexKey2,
-                                                   this.index2.extractor,
-                                                   object2 );
-        }
-
-        @Override
-        public TupleList createEntry(Tuple tuple, int hashCode, boolean left) {
-            return new TripleIndexTupleList( this, tuple, hashCode, left );
-        }
-    }
-
-    public static class TripleIndexTupleList extends AbstractIndexTupleList {
-        private Object indexKey0;
-        private Object indexKey1;
-        private Object indexKey2;
-
-        public TripleIndexTupleList( TripleCompositeIndex index, Tuple tuple, int hashCode, boolean left ) {
-            super( index, hashCode );
-            indexKey0 = index.index0.indexedValueOf(tuple, left);
-            indexKey1 = index.index1.indexedValueOf(tuple, left);
-            indexKey2 = index.index2.indexedValueOf(tuple, left);
-        }
-
-        @Override
-        protected void copyStateInto(TupleList other) {
-            super.copyStateInto( other );
-            ( (TripleIndexTupleList) other ).indexKey0 = indexKey0;
-            ( (TripleIndexTupleList) other ).indexKey1 = indexKey1;
-            ( (TripleIndexTupleList) other ).indexKey2 = indexKey2;
+        public HashEntry hashCodeOf(Tuple tuple, boolean left) {
+            return new TripleHashEntry( startResult, index1.indexedValueOf( tuple, left ), index2.indexedValueOf( tuple, left ), index3.indexedValueOf( tuple, left ) );
         }
     }
 
@@ -798,5 +549,100 @@ public abstract class AbstractHashTable
         this.threshold = (int) (this.table.length * this.loadFactor);
         this.size = 0;
         this.iterator = null;
+    }
+
+    public interface HashEntry { }
+
+    public static class SingleHashEntry implements HashEntry {
+
+        private final int hashCode;
+        private final Object obj1;
+
+        public SingleHashEntry(int hashSeed, Object obj1) {
+            this.obj1 = obj1;
+            this.hashCode = rehash( PRIME * hashSeed + Objects.hashCode( obj1 ) );
+        }
+
+        @Override
+        public int hashCode() {
+            return hashCode;
+        }
+
+        @Override
+        public boolean equals( Object o ) {
+            if ( this == o ) return true;
+            if ( o == null || getClass() != o.getClass() ) return false;
+            SingleHashEntry that = ( SingleHashEntry ) o;
+            return hashCode == that.hashCode && Objects.equals( obj1, that.obj1 );
+        }
+    }
+
+    public static class DoubleHashEntry implements HashEntry {
+
+        private final int hashCode;
+        private final Object obj1;
+        private final Object obj2;
+
+        public DoubleHashEntry(int hashSeed, Object obj1, Object obj2) {
+            this.obj1 = obj1;
+            this.obj2 = obj2;
+            this.hashCode = hashCodeOf(hashSeed, obj1, obj2);
+        }
+
+        private int hashCodeOf(int hashSeed, Object obj1, Object obj2) {
+            int hashCode = hashSeed;
+            hashCode = PRIME * hashCode + Objects.hashCode( obj1 );
+            hashCode = PRIME * hashCode + Objects.hashCode( obj2 );
+            return rehash( hashCode );
+        }
+
+        @Override
+        public int hashCode() {
+            return hashCode;
+        }
+
+        @Override
+        public boolean equals( Object o ) {
+            if ( this == o ) return true;
+            if ( o == null || getClass() != o.getClass() ) return false;
+            DoubleHashEntry that = ( DoubleHashEntry ) o;
+            return hashCode == that.hashCode && Objects.equals( obj1, that.obj1 ) && Objects.equals( obj2, that.obj2 );
+        }
+    }
+
+    public static class TripleHashEntry implements HashEntry {
+
+        private final int hashCode;
+        private final Object obj1;
+        private final Object obj2;
+        private final Object obj3;
+
+        public TripleHashEntry(int hashSeed, Object obj1, Object obj2, Object obj3) {
+            this.obj1 = obj1;
+            this.obj2 = obj2;
+            this.obj3 = obj3;
+            this.hashCode = hashCodeOf(hashSeed, obj1, obj2, obj3);
+        }
+
+        private int hashCodeOf(int hashSeed, Object obj1, Object obj2, Object obj3) {
+            int hashCode = hashSeed;
+            hashCode = PRIME * hashCode + Objects.hashCode( obj1 );
+            hashCode = PRIME * hashCode + Objects.hashCode( obj2 );
+            hashCode = PRIME * hashCode + Objects.hashCode( obj3 );
+            return rehash( hashCode );
+        }
+
+        @Override
+        public int hashCode() {
+            return hashCode;
+        }
+
+        @Override
+        public boolean equals( Object o ) {
+            if ( this == o ) return true;
+            if ( o == null || getClass() != o.getClass() ) return false;
+            TripleHashEntry that = ( TripleHashEntry ) o;
+            return hashCode == that.hashCode && Objects.equals( obj1, that.obj1 ) && Objects.equals( obj2, that.obj2 ) && Objects.equals( obj3, that.obj3 );
+        }
     }
 }

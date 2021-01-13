@@ -66,7 +66,7 @@ public class VariableRestriction {
             return new BooleanVariableContextEntry( fieldExtractor,
                                                     declaration,
                                                     evaluator );
-        } else if ( coerced.isFloatNumber() ) {
+        } else if ( coerced.isDecimalNumber() ) {
             return new DoubleVariableContextEntry( fieldExtractor,
                                                    declaration,
                                                    evaluator );
