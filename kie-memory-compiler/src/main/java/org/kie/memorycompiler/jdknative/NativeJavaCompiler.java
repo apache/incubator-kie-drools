@@ -88,7 +88,7 @@ public class NativeJavaCompiler extends AbstractJavaCompiler {
         DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<JavaFileObject>();
         javax.tools.JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
         if (compiler == null) {
-            throw new KieMemoryCompilerException("Cannot find the System's Java compiler. Please use JDK instead of JRE");
+            throw new KieMemoryCompilerException("Cannot find the System's Java compiler. Please use JDK instead of JRE or add drools-ecj dependency to use in memory Eclipse compiler");
         }
 
         try (StandardJavaFileManager jFileManager = compiler.getStandardFileManager(diagnostics, null, null)) {
