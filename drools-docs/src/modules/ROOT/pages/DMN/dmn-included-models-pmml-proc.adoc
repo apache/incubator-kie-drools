@@ -48,6 +48,19 @@ To access the project `pom.xml` file in {CENTRAL}, you can select any existing a
 If you want to use the full PMML specification implementation with the Java Evaluator API for PMML (JPMML), use the alternative set of JPMML dependencies in your DMN project. If the JPMML dependencies and the standard `kie-pmml` dependency are both present, the `kie-pmml` dependency is disabled. For information about JPMML licensing terms, see https://openscoring.io/[Openscoring.io].
 
 ifdef::DM,PAM[]
+[IMPORTANT]
+====
+The legacy `kie-pmml` dependency is deprecated with {PRODUCT} 7.10.0 and will be replaced by `kie-pmml-trusty` dependency in a future {PRODUCT} release.
+====
+endif::[]
+ifdef::DROOLS,JBPM,OP[]
+[IMPORTANT]
+====
+The legacy `kie-pmml` dependency is deprecated with {PRODUCT} 7.48.0 and will be replaced by `kie-pmml-trusty` dependency in a future {PRODUCT} release.
+====
+endif::[]
+
+ifdef::DM,PAM[]
 [NOTE]
 ====
 Instead of specifying a {PRODUCT} `<version>` for individual dependencies, consider adding the {PRODUCT_BA} bill of materials (BOM) dependency to your project `pom.xml` file. The {PRODUCT_BA} BOM applies to both {PRODUCT_DM} and {PRODUCT_PAM}. When you add the BOM files, the correct versions of transitive dependencies from the provided Maven repositories are included in the project.
