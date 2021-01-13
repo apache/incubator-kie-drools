@@ -29,6 +29,7 @@ const TestWrapper = () => {
           chips={mockChips}
           setChips={setMockChips}
           setValues={setMockValues}
+          setOffset={jest.fn()}
         />
       </ToolbarContent>
     </Toolbar>
@@ -40,7 +41,8 @@ describe('Jobs management filters component tests', () => {
     setSelectedStatus: jest.fn(),
     chips: [GraphQL.JobStatus.Scheduled],
     setChips: jest.fn(),
-    setValues: jest.fn()
+    setValues: jest.fn(),
+    setOffset: jest.fn()
   };
   it('Snapshot with default props', () => {
     const wrapper = mount(

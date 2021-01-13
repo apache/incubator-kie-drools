@@ -6,6 +6,7 @@ import {
   KogitoEmptyState,
   KogitoEmptyStateType,
   KogitoSpinner,
+  LoadMore,
   ouiaPageTypeAndObjectId,
   OUIAProps,
   ServerErrors
@@ -80,11 +81,13 @@ interface IOperations {
 }
 
 const JobsManagementPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
+  const defaultPageSize: number = 10;
   const defaultOrderBy: GraphQL.JobOrderBy = {
     lastUpdate: GraphQL.OrderBy.Asc
   };
   const defaultSortBy: ISortBy = { index: 6, direction: 'asc' };
   const defaultStatus: GraphQL.JobStatus[] = [GraphQL.JobStatus.Scheduled];
+  const [initData, setInitData] = useState<GraphQL.GetJobsWithFiltersQuery>({});
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState<boolean>(false);
   const [isRescheduleModalOpen, setIsRescheduleModalOpen] = useState<boolean>(
     false
@@ -100,7 +103,12 @@ const JobsManagementPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
   const [values, setValues] = useState<GraphQL.JobStatus[]>(defaultStatus);
   const [orderBy, setOrderBy] = useState<GraphQL.JobOrderBy>(defaultOrderBy);
   const [sortBy, setSortBy] = useState<ISortBy>(defaultSortBy);
+  const [limit, setLimit] = useState<number>(defaultPageSize);
+  const [offset, setOffset] = useState<number>(0);
+  const [pageSize, setPageSize] = useState<number>(defaultPageSize);
+  const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false);
   const [isKebabOpen, setIsKebabOpen] = useState<boolean>(false);
+  const [displayTable, setDisplayTable] = useState<boolean>(false);
   const [selectedJobInstances, setSelectedJobInstances] = useState<
     GraphQL.Job[]
   >([]);
@@ -117,8 +125,14 @@ const JobsManagementPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
   const { loading, data, error, refetch } = GraphQL.useGetJobsWithFiltersQuery({
     fetchPolicy: 'network-only',
     notifyOnNetworkStatusChange: true,
-    variables: { values, orderBy }
+    variables: { values, orderBy, offset, limit: pageSize }
   });
+
+  const onGetMoreInstances = (initVal: number, _pageSize: number): void => {
+    setIsLoadingMore(true);
+    setOffset(initVal);
+    setPageSize(_pageSize);
+  };
 
   const jobOperations: IOperations = {
     CANCEL: {
@@ -170,6 +184,24 @@ const JobsManagementPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
     return ouiaPageTypeAndObjectId('jobs-management');
   });
 
+  useEffect(() => {
+    if (!loading && data && Object.keys(data).length > 0) {
+      setDisplayTable(false);
+      setLimit(data.Jobs.length);
+      if (offset > 0 && initData.Jobs.length > 0) {
+        setIsLoadingMore(false);
+        const tempData: GraphQL.GetJobsWithFiltersQuery = {
+          Jobs: initData.Jobs.concat(data.Jobs)
+        };
+        setInitData(tempData);
+        setDisplayTable(true);
+      } else {
+        setInitData(data);
+        setDisplayTable(true);
+      }
+    }
+  }, [loading]);
+
   const jobManagementButtonSelect = () => {
     setIsKebabOpen(!isKebabOpen);
   };
@@ -218,6 +250,7 @@ const JobsManagementPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
     setSelectedStatus(defaultStatus);
     setChips(defaultStatus);
     setValues(defaultStatus);
+    setOffset(0);
   };
 
   const dropdownItemsJobsManagementButtons = (): JSX.Element[] => {
@@ -273,6 +306,7 @@ const JobsManagementPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
             setValues={setValues}
             chips={chips}
             setChips={setChips}
+            setOffset={setOffset}
           />
           <ToolbarGroup>
             <ToolbarItem>
@@ -336,25 +370,27 @@ const JobsManagementPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
           </PageSection>
           <PageSection>
             {renderToolbar()}
-            {!loading ? (
+            {!loading || isLoadingMore ? (
               <Card>
                 <CardBody>
-                  <refetchContext.Provider value={refetch}>
-                    <JobsManagementTable
-                      data={data}
-                      handleDetailsToggle={handleDetailsToggle}
-                      handleRescheduleToggle={handleRescheduleToggle}
-                      handleCancelModalToggle={handleCancelModalToggle}
-                      setModalTitle={setModalTitle}
-                      setModalContent={setModalContent}
-                      setOrderBy={setOrderBy}
-                      setSelectedJob={setSelectedJob}
-                      setSortBy={setSortBy}
-                      selectedJobInstances={selectedJobInstances}
-                      setSelectedJobInstances={setSelectedJobInstances}
-                      sortBy={sortBy}
-                    />
-                  </refetchContext.Provider>
+                  {displayTable && (
+                    <refetchContext.Provider value={refetch}>
+                      <JobsManagementTable
+                        data={initData}
+                        handleDetailsToggle={handleDetailsToggle}
+                        handleRescheduleToggle={handleRescheduleToggle}
+                        handleCancelModalToggle={handleCancelModalToggle}
+                        setModalTitle={setModalTitle}
+                        setModalContent={setModalContent}
+                        setOrderBy={setOrderBy}
+                        setSelectedJob={setSelectedJob}
+                        setSortBy={setSortBy}
+                        selectedJobInstances={selectedJobInstances}
+                        setSelectedJobInstances={setSelectedJobInstances}
+                        sortBy={sortBy}
+                      />
+                    </refetchContext.Provider>
+                  )}
                   {chips.length === 0 && (
                     <KogitoEmptyState
                       type={KogitoEmptyStateType.Reset}
@@ -366,11 +402,15 @@ const JobsManagementPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
                 </CardBody>
               </Card>
             ) : (
-              <Card>
-                <Bullseye>
-                  <KogitoSpinner spinnerText="Loading jobs list..." />
-                </Bullseye>
-              </Card>
+              <>
+                {!isLoadingMore && (
+                  <Card>
+                    <Bullseye>
+                      <KogitoSpinner spinnerText="Loading jobs list..." />
+                    </Bullseye>
+                  </Card>
+                )}
+              </>
             )}
             {selectedJob && Object.keys(selectedJob).length > 0 && (
               <JobsPanelDetailsModal
@@ -404,6 +444,16 @@ const JobsManagementPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
               modalContent={modalContent}
               jobOperations={jobOperations[JobOperationType.CANCEL]}
             />
+            {(!loading || isLoadingMore) &&
+              (limit === pageSize || isLoadingMore) && (
+                <LoadMore
+                  offset={offset}
+                  setOffset={setOffset}
+                  getMoreItems={onGetMoreInstances}
+                  pageSize={pageSize}
+                  isLoadingMore={isLoadingMore}
+                />
+              )}
           </PageSection>
         </>
       ) : (

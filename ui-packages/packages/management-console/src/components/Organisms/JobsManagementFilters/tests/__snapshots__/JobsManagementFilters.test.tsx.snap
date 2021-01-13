@@ -34,6 +34,7 @@ exports[`Jobs management filters component tests Snapshot with default props 1`]
               ]
             }
             setChips={[MockFunction]}
+            setOffset={[MockFunction]}
             setSelectedStatus={[MockFunction]}
             setValues={[MockFunction]}
           >

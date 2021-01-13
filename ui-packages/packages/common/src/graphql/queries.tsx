@@ -345,8 +345,17 @@ const GET_JOBS_BY_PROC_INST_ID = gql`
 `;
 
 const GET_JOBS_WITH_FILTERS = gql`
-  query getJobsWithFilters($values: [JobStatus], $orderBy: JobOrderBy) {
-    Jobs(where: { status: { in: $values } }, orderBy: $orderBy) {
+  query getJobsWithFilters(
+    $values: [JobStatus]
+    $orderBy: JobOrderBy
+    $offset: Int
+    $limit: Int
+  ) {
+    Jobs(
+      where: { status: { in: $values } }
+      orderBy: $orderBy
+      pagination: { offset: $offset, limit: $limit }
+    ) {
       id
       processId
       processInstanceId

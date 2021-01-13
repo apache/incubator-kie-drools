@@ -188,6 +188,14 @@ const resolvers = {
             }
           });
         }
+        if (args['pagination']) {
+          return paginatedResult(
+            result,
+            args['pagination'].offset,
+            args['pagination'].limit
+          );
+        }
+        
         return result;
       }      
     }

@@ -256,6 +256,7 @@ const JobsManagementTable: React.FC<IOwnProps & OUIAProps> = ({
   };
 
   useEffect(() => {
+    setRows([]);
     tableContent();
   }, [data]);
 

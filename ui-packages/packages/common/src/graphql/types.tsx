@@ -1129,6 +1129,8 @@ export namespace GraphQL {
   export type GetJobsWithFiltersQueryVariables = Exact<{
     values?: Maybe<Array<Maybe<JobStatus>>>;
     orderBy?: Maybe<JobOrderBy>;
+    offset?: Maybe<Scalars['Int']>;
+    limit?: Maybe<Scalars['Int']>;
   }>;
 
   export type GetJobsWithFiltersQuery = { __typename?: 'Query' } & {
@@ -2083,8 +2085,17 @@ export namespace GraphQL {
     GetJobsByProcessInstanceIdQueryVariables
   >;
   export const GetJobsWithFiltersDocument = gql`
-    query getJobsWithFilters($values: [JobStatus], $orderBy: JobOrderBy) {
-      Jobs(where: { status: { in: $values } }, orderBy: $orderBy) {
+    query getJobsWithFilters(
+      $values: [JobStatus]
+      $orderBy: JobOrderBy
+      $offset: Int
+      $limit: Int
+    ) {
+      Jobs(
+        where: { status: { in: $values } }
+        orderBy: $orderBy
+        pagination: { offset: $offset, limit: $limit }
+      ) {
         id
         processId
         processInstanceId
@@ -2118,6 +2129,8 @@ export namespace GraphQL {
    *   variables: {
    *      values: // value for 'values'
    *      orderBy: // value for 'orderBy'
+   *      offset: // value for 'offset'
+   *      limit: // value for 'limit'
    *   },
    * });
    */

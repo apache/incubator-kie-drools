@@ -25,6 +25,7 @@ interface IOwnProps {
       | ((value: GraphQL.JobStatus[]) => GraphQL.JobStatus[])
       | GraphQL.JobStatus[]
   ) => void;
+  setOffset: (offSet: number) => void;
 }
 
 const JobsManagementFilters: React.FC<IOwnProps & OUIAProps> = ({
@@ -33,6 +34,7 @@ const JobsManagementFilters: React.FC<IOwnProps & OUIAProps> = ({
   chips,
   setChips,
   setValues,
+  setOffset,
   ouiaId,
   ouiaSafe
 }) => {
@@ -66,6 +68,7 @@ const JobsManagementFilters: React.FC<IOwnProps & OUIAProps> = ({
   };
 
   const onDelete = (type: string = '', id: string = ''): void => {
+    setOffset(0);
     setChips(prev => prev.filter(item => item !== id));
     setSelectedStatus(prev => prev.filter(item => item !== id));
     setValues(prev => prev.filter(item => item !== id));
