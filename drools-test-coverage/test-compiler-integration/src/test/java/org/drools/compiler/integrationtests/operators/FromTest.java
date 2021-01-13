@@ -99,21 +99,21 @@ public class FromTest {
 
     @Test
     public void testFromSharing() {
-        testFromSharingCommon(kieBaseTestConfiguration);
+        testFromSharingCommon(kieBaseTestConfiguration, new HashMap<>());
     }
 
-    public static void testFromSharingCommon(KieBaseTestConfiguration kieBaseTestConfiguration) {
+    public static void testFromSharingCommon(KieBaseTestConfiguration kieBaseTestConfiguration,
+                                             Map<String, String> configurationProperties) {
         // Keeping original test as non-property reactive by default, just allowed.
         final String drl = fromSharingRule();
 
         final ReleaseId releaseId1 = KieServices.get().newReleaseId("org.kie", "from-test", "1");
-        final Map<String, String> kieModuleConfigurationProperties = new HashMap<>();
-        kieModuleConfigurationProperties.put(PropertySpecificOption.PROPERTY_NAME, PropertySpecificOption.ALLOWED.toString());
+        configurationProperties.put(PropertySpecificOption.PROPERTY_NAME, PropertySpecificOption.ALLOWED.toString());
 
         final KieModule kieModule = KieUtil.getKieModuleFromDrls(releaseId1,
                                                                  kieBaseTestConfiguration,
                                                                  KieSessionTestConfiguration.STATEFUL_REALTIME,
-                                                                 kieModuleConfigurationProperties,
+                                                                 configurationProperties,
                                                                  drl);
         final KieContainer kieContainer = KieServices.get().newKieContainer(kieModule.getReleaseId());
         final KieBase kbase = kieContainer.getKieBase();

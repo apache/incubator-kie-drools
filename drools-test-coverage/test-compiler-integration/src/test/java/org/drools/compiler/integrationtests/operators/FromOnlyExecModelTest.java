@@ -17,6 +17,7 @@
 package org.drools.compiler.integrationtests.operators;
 
 import java.util.Collection;
+import java.util.HashMap;
 
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.NativeImageTestUtil;
@@ -45,7 +46,20 @@ public class FromOnlyExecModelTest {
     public void testFromSharingWithNativeImage() {
         try {
             NativeImageTestUtil.setNativeImage();
-            testFromSharingCommon(kieBaseTestConfiguration);
+            testFromSharingCommon(kieBaseTestConfiguration, new HashMap<String, String>());
+        } finally {
+            NativeImageTestUtil.unsetNativeImage();
+        }
+    }
+
+    // This test that the node sharing isn't working without lambda externalisation
+    @Test(expected = AssertionError.class)
+    public void testFromSharingWithNativeImageWithoutLambdaExternalisation() {
+        try {
+            NativeImageTestUtil.setNativeImage();
+            HashMap<String, String> properties = new HashMap<>();
+            properties.put("drools.externaliseCanonicalModelLambda", Boolean.FALSE.toString());
+            testFromSharingCommon(kieBaseTestConfiguration, properties);
         } finally {
             NativeImageTestUtil.unsetNativeImage();
         }
