@@ -1015,7 +1015,7 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
                 } else {
                     this.setHashCode( 0 );
                 }
-            } else if ( vtype.isFloatNumber() ) {
+            } else if ( vtype.isDecimalNumber() ) {
                 this.type = DOUBLE;
                 if ( !isNull ) {
                     this.dvalue = extractor.getDoubleValue( null,
@@ -1061,7 +1061,7 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
                 } else {
                     this.setHashCode( 0 );
                 }
-            } else if ( vtype.isFloatNumber() ) {
+            } else if ( vtype.isDecimalNumber() ) {
                 this.type = DOUBLE;
                 if ( !isNull ) {
                     this.dvalue = value.getDoubleValue();
@@ -1123,6 +1123,8 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
                         return ((Number) this.ovalue).longValue();
                     } else if ( this.ovalue instanceof String ) {
                         return Long.parseLong( (String) this.ovalue );
+                    } else if ( this.ovalue instanceof Character ) {
+                        return (long) (char) this.ovalue;
                     } else {
                         throw new ClassCastException( "Can't convert " + this.ovalue.getClass() + " to a long value." );
                     }

@@ -39,9 +39,10 @@ import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
 import org.drools.modelcompiler.builder.generator.drlxparse.MultipleDrlxParseSuccess;
 import org.drools.modelcompiler.builder.generator.drlxparse.SingleDrlxParseSuccess;
 
+import static java.util.Optional.of;
+
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static com.github.javaparser.StaticJavaParser.parseType;
-import static java.util.Optional.of;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.THIS_PLACEHOLDER;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ALPHA_INDEXED_BY_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.BETA_INDEXED_BY_CALL;
@@ -167,7 +168,7 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
             indexedByLeftOperandExtractor.setBody(new ExpressionStmt(typedExpression.getExpression()));
 
             MethodCallExpr indexedByDSL = new MethodCallExpr(null, drlxParseResult.isBetaNode() ? BETA_INDEXED_BY_CALL : ALPHA_INDEXED_BY_CALL);
-            indexedByDSL.addArgument(new ClassExpr(parseType(getIndexType(left, right ).getCanonicalName())));
+            indexedByDSL.addArgument(new ClassExpr(parseType(left.getRawClass().getCanonicalName())));
             indexedByDSL.addArgument(org.drools.model.Index.ConstraintType.class.getCanonicalName() + ".EQUAL");
             indexedByDSL.addArgument("-1");
             indexedByDSL.addArgument(indexedByLeftOperandExtractor);
@@ -196,7 +197,7 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
         indexedBy_leftOperandExtractor.setBody(new ExpressionStmt(leftContainsThis ? left.getExpression() : right.getExpression()));
 
         MethodCallExpr indexedByDSL = new MethodCallExpr(null, isBeta ? BETA_INDEXED_BY_CALL : ALPHA_INDEXED_BY_CALL);
-        indexedByDSL.addArgument(new ClassExpr(parseType(getIndexType(left, right ).getCanonicalName())));
+        indexedByDSL.addArgument(new ClassExpr(parseType(left.getRawClass().getCanonicalName())));
         indexedByDSL.addArgument( indexedBy_constraintType );
         indexedByDSL.addArgument( getIndexIdArgument( drlxParseResult, left ) );
         indexedByDSL.addArgument(indexedBy_leftOperandExtractor );
