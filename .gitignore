@@ -23,6 +23,7 @@ package-lock.json
 .classpath
 .project
 .settings
+.vscode
 
 # Cypress - runtime artifacts and undesired dirs
 **/cypress/screenshots

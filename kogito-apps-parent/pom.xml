@@ -99,6 +99,7 @@
     <module>explainability</module>
     <module>trusty</module>
     <module>task-assigning</module>
+    <module>jitexecutor</module>
     <module>apps-integration-tests</module>
   </modules>
 </project>
