@@ -1,0 +1,43 @@
+
+package java.text;
+
+public class FieldPosition {
+
+    public Format.Field getFieldAttribute() {
+        return null;
+    }
+
+    public int getField() {
+        return 0;
+    }
+
+    public int getBeginIndex() {
+        return 0;
+    }
+
+    public int getEndIndex() {
+        return 0;
+    }
+
+    public void setBeginIndex(final int bi) {
+    }
+
+    public void setEndIndex(final int ei) {
+    }
+
+    Format.FieldDelegate getFieldDelegate() {
+        return null;
+    }
+
+    public boolean equals(final Object obj) {
+        return true;
+    }
+
+    public int hashCode() {
+        return 0;
+    }
+
+    public String toString() {
+        return null;
+    }
+}

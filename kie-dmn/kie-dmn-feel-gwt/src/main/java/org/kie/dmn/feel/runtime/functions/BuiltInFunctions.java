@@ -87,7 +87,7 @@ public class BuiltInFunctions {
             DayOfWeekFunction.INSTANCE,
             DayOfYearFunction.INSTANCE,
             MonthOfYearFunction.INSTANCE,
-            WeekOfYearFunction.INSTANCE,
+//            WeekOfYearFunction.INSTANCE,
 
             IsFunction.INSTANCE,
     };
