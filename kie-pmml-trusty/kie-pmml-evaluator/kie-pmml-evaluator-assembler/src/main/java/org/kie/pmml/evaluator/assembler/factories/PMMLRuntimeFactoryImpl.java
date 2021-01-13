@@ -85,7 +85,7 @@ public class PMMLRuntimeFactoryImpl implements PMMLRuntimeFactory {
         RuleBaseConfiguration ruleBaseConfiguration =
                 new RuleBaseConfiguration(((InternalKnowledgeBase) kieBase).getRootClassLoader());
         KnowledgeBaseImpl kieBaseNew = (KnowledgeBaseImpl) KnowledgeBaseFactory.newKnowledgeBase(ruleBaseConfiguration);
-        KiePackage kiePackage = getKiePackage(pmmlModelName, kieBase);
+        KiePackage kiePackage = getKiePackageByModelName(pmmlModelName, kieBase);
         kieBaseNew.addPackage(kiePackage);
         List<KiePackage> nestedKiePackages = getNestedKiePackages((InternalKnowledgePackage) kiePackage, kieBase);
         if (!nestedKiePackages.isEmpty()) {
@@ -109,21 +109,32 @@ public class PMMLRuntimeFactoryImpl implements PMMLRuntimeFactory {
         kiePmmlModels.forEach(kiePmmlModel -> {
             if (kiePmmlModel instanceof HasNestedModels) {
                 List<KiePMMLModel> nestedModels = ((HasNestedModels) kiePmmlModel).getNestedModels();
-                nestedModels.forEach(nestedModel -> toPopulate.add(getKiePackage(nestedModel.getName(), kieBase)));
+                nestedModels.forEach(nestedModel -> toPopulate.add(getKiePackageByFullClassName(nestedModel.getClass().getName(), kieBase)));
                 populateNestedKiePackageList(nestedModels, toPopulate, kieBase);
             }
         });
     }
 
-    private KiePackage getKiePackage(String pmmlModelName, KieBase kieBase) {
+    private KiePackage getKiePackageByModelName(String modelName, KieBase kieBase) {
         return kieBase.getKiePackages().stream()
                 .filter(kpkg -> {
                     PMMLPackage pmmlPackage =
                             (PMMLPackage) ((InternalKnowledgePackage) kpkg).getResourceTypePackages().get(ResourceType.PMML);
-                    return pmmlPackage != null && pmmlPackage.getModelByName(pmmlModelName) != null;
+                    return pmmlPackage != null && pmmlPackage.getModelByName(modelName) != null;
                 })
                 .findFirst()
-                .orElseThrow(() -> new KiePMMLException("Failed to find model " + pmmlModelName));
+                .orElseThrow(() -> new KiePMMLException("Failed to find model " + modelName));
+    }
+
+    private KiePackage getKiePackageByFullClassName(String fullClassName, KieBase kieBase) {
+        return kieBase.getKiePackages().stream()
+                .filter(kpkg -> {
+                    PMMLPackage pmmlPackage =
+                            (PMMLPackage) ((InternalKnowledgePackage) kpkg).getResourceTypePackages().get(ResourceType.PMML);
+                    return pmmlPackage != null && pmmlPackage.getModelByFullClassName(fullClassName) != null;
+                })
+                .findFirst()
+                .orElseThrow(() -> new KiePMMLException("Failed to find model " + fullClassName));
     }
 
     /**
