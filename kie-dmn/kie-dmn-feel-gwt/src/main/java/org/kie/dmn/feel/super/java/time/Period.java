@@ -165,7 +165,7 @@ public final class Period
         return null;
     }
 
-    static Period readExternal(DataInput in) throws IOException {
+    static Period readExternal(Object in) throws IOException {
         return null;
     }
 }

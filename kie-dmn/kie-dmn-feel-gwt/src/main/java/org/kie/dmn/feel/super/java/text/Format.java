@@ -16,9 +16,7 @@ public abstract class Format implements Serializable,
         return "";
     }
 
-    public abstract StringBuffer format(Object obj,
-                                        StringBuffer toAppendTo,
-                                        FieldPosition pos);
+    public abstract StringBuffer format(Object obj, StringBuffer toAppendTo, Object pos);
 
     public AttributedCharacterIterator formatToCharacterIterator(Object obj) {
         return null;

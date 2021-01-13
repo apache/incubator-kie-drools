@@ -3,6 +3,18 @@ package java.text;
 
 public class FieldPosition {
 
+    public FieldPosition(int field) {
+
+    }
+
+    public FieldPosition(Format.Field attribute) {
+
+    }
+
+    public FieldPosition(Format.Field attribute, int fieldID) {
+
+    }
+
     public Format.Field getFieldAttribute() {
         return null;
     }
@@ -19,17 +31,17 @@ public class FieldPosition {
         return 0;
     }
 
-    public void setBeginIndex(final int bi) {
+    public void setBeginIndex(int bi) {
     }
 
-    public void setEndIndex(final int ei) {
+    public void setEndIndex(int ei) {
     }
 
     Format.FieldDelegate getFieldDelegate() {
         return null;
     }
 
-    public boolean equals(final Object obj) {
+    public boolean equals(FieldPosition obj) {
         return true;
     }
 
@@ -38,6 +50,27 @@ public class FieldPosition {
     }
 
     public String toString() {
-        return null;
+        return "";
+    }
+
+    private boolean matchesField(Format.Field attribute) {
+        return false;
+    }
+
+    private boolean matchesField(Format.Field attribute, int field) {
+        return true;
+    }
+
+    private class Delegate implements Format.FieldDelegate {
+
+        public void formatted(Format.Field attr, Object value, int start,
+                              int end, StringBuffer buffer) {
+
+        }
+
+        public void formatted(int fieldID, Format.Field attr, Object value,
+                              int start, int end, StringBuffer buffer) {
+
+        }
     }
 }
