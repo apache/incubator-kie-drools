@@ -16,6 +16,9 @@
 
 package org.optaplanner.examples.coachshuttlegathering.app;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.optaplanner.examples.coachshuttlegathering.domain.CoachShuttleGatheringSolution;
 import org.optaplanner.examples.coachshuttlegathering.persistence.CoachShuttleGatheringExporter;
 import org.optaplanner.examples.coachshuttlegathering.persistence.CoachShuttleGatheringImporter;
@@ -63,8 +66,10 @@ public class CoachShuttleGatheringApp extends CommonApp<CoachShuttleGatheringSol
     }
 
     @Override
-    protected AbstractSolutionExporter createSolutionExporter() {
-        return new CoachShuttleGatheringExporter();
+    protected Set<AbstractSolutionExporter> createSolutionExporters() {
+        Set<AbstractSolutionExporter> exporters = new HashSet<>(1);
+        exporters.add(new CoachShuttleGatheringExporter());
+        return exporters;
     }
 
 }

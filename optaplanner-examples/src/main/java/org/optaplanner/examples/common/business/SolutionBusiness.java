@@ -22,6 +22,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
 import javax.swing.SwingUtilities;
@@ -71,7 +72,7 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> {
     private SolutionFileIO<Solution_> solutionFileIO;
 
     private AbstractSolutionImporter<Solution_>[] importers;
-    private AbstractSolutionExporter<Solution_> exporter;
+    private Set<AbstractSolutionExporter> exporters;
 
     private File importDataDir;
     private File unsolvedDataDir;
@@ -126,8 +127,19 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> {
         this.importers = importers;
     }
 
-    public void setExporter(AbstractSolutionExporter<Solution_> exporter) {
-        this.exporter = exporter;
+    public void setExporters(Set<AbstractSolutionExporter> exporters) {
+        if (exporters == null) {
+            throw new IllegalArgumentException("Passed exporters must not be null");
+        }
+        this.exporters = exporters;
+    }
+
+    public void addExporter(AbstractSolutionExporter<Solution_> exporter) {
+        this.exporters.add(exporter);
+    }
+
+    public Set<AbstractSolutionExporter> getExporters() {
+        return this.exporters;
     }
 
     public boolean hasImporter() {
@@ -135,7 +147,7 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> {
     }
 
     public boolean hasExporter() {
-        return exporter != null;
+        return exporters != null && exporters.size() > 0;
     }
 
     public void updateDataDirs() {
@@ -179,10 +191,6 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> {
 
     public File getExportDataDir() {
         return exportDataDir;
-    }
-
-    public String getExportFileSuffix() {
-        return exporter.getOutputFileSuffix();
     }
 
     public void setSolver(SolverFactory<Solution_> solverFactory) {
@@ -304,7 +312,7 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> {
         logger.info("Saved: {}", file);
     }
 
-    public void exportSolution(File file) {
+    public void exportSolution(AbstractSolutionExporter<Solution_> exporter, File file) {
         Solution_ solution = guiScoreDirector.getWorkingSolution();
         exporter.writeSolution(solution, file);
     }

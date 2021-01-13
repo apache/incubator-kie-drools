@@ -16,6 +16,9 @@
 
 package org.optaplanner.examples.nurserostering.app;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.persistence.AbstractSolutionExporter;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
@@ -63,8 +66,10 @@ public class NurseRosteringApp extends CommonApp<NurseRoster> {
     }
 
     @Override
-    protected AbstractSolutionExporter createSolutionExporter() {
-        return new NurseRosteringExporter();
+    protected Set<AbstractSolutionExporter> createSolutionExporters() {
+        Set<AbstractSolutionExporter> exporters = new HashSet<>(1);
+        exporters.add(new NurseRosteringExporter());
+        return exporters;
     }
 
 }

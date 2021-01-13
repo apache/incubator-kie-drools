@@ -16,6 +16,9 @@
 
 package org.optaplanner.examples.curriculumcourse.app;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.persistence.AbstractSolutionExporter;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
@@ -64,8 +67,10 @@ public class CurriculumCourseApp extends CommonApp<CourseSchedule> {
     }
 
     @Override
-    protected AbstractSolutionExporter createSolutionExporter() {
-        return new CurriculumCourseExporter();
+    protected Set<AbstractSolutionExporter> createSolutionExporters() {
+        Set<AbstractSolutionExporter> exporters = new HashSet<>(1);
+        exporters.add(new CurriculumCourseExporter());
+        return exporters;
     }
 
 }

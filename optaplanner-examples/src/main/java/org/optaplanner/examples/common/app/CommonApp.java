@@ -18,6 +18,8 @@ package org.optaplanner.examples.common.app;
 
 import java.awt.Component;
 import java.io.File;
+import java.util.Collections;
+import java.util.Set;
 import java.util.function.BiConsumer;
 
 import javax.swing.WindowConstants;
@@ -129,7 +131,7 @@ public abstract class CommonApp<Solution_> extends LoggingMain {
         solutionBusiness.setDataDir(determineDataDir(dataDirName));
         solutionBusiness.setSolutionFileIO(createSolutionFileIO());
         solutionBusiness.setImporters(createSolutionImporters());
-        solutionBusiness.setExporter(createSolutionExporter());
+        solutionBusiness.setExporters(createSolutionExporters());
         solutionBusiness.updateDataDirs();
         return solutionBusiness;
     }
@@ -156,8 +158,8 @@ public abstract class CommonApp<Solution_> extends LoggingMain {
         return new AbstractSolutionImporter[0];
     }
 
-    protected AbstractSolutionExporter createSolutionExporter() {
-        return null;
+    protected Set<AbstractSolutionExporter> createSolutionExporters() {
+        return Collections.emptySet();
     }
 
     public interface ExtraAction<Solution_> {

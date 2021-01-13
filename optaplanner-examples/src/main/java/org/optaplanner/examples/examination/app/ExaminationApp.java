@@ -16,6 +16,9 @@
 
 package org.optaplanner.examples.examination.app;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.persistence.AbstractSolutionExporter;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
@@ -68,8 +71,10 @@ public class ExaminationApp extends CommonApp<Examination> {
     }
 
     @Override
-    protected AbstractSolutionExporter createSolutionExporter() {
-        return new ExaminationExporter();
+    protected Set<AbstractSolutionExporter> createSolutionExporters() {
+        Set<AbstractSolutionExporter> exporters = new HashSet<>(1);
+        exporters.add(new ExaminationExporter());
+        return exporters;
     }
 
 }

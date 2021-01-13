@@ -26,6 +26,8 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -60,6 +62,7 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.business.SolutionBusiness;
+import org.optaplanner.examples.common.persistence.AbstractSolutionExporter;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.swing.impl.TangoColorFactory;
 import org.slf4j.Logger;
@@ -566,34 +569,32 @@ public class SolverAndPersistenceFrame<Solution_> extends JFrame {
                 return;
             }
             fileChooser = new JFileChooser(solutionBusiness.getExportDataDir());
-            fileChooser.setFileFilter(new FileFilter() {
-                @Override
-                public boolean accept(File file) {
-                    return file.isDirectory() || file.getName().endsWith("." + solutionBusiness.getExportFileSuffix());
-                }
-
-                @Override
-                public String getDescription() {
-                    return "Export files (*." + solutionBusiness.getExportFileSuffix() + ")";
-                }
-            });
+            for (AbstractSolutionExporter exporter : solutionBusiness.getExporters()) {
+                fileChooser.addChoosableFileFilter(new ExporterFileFilter(exporter));
+            }
             fileChooser.setDialogTitle(NAME);
         }
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            fileChooser.setSelectedFile(new File(solutionBusiness.getExportDataDir(),
-                    FilenameUtils.getBaseName(solutionBusiness.getSolutionFileName())
-                            + "." + solutionBusiness.getExportFileSuffix()));
+            fileChooser.setAcceptAllFileFilterUsed(false);
+            fileChooser.addPropertyChangeListener(
+                    new FileNameSetter(fileChooser,
+                            solutionBusiness.getExportDataDir(),
+                            FilenameUtils.getBaseName(solutionBusiness.getSolutionFileName())));
             int approved = fileChooser.showSaveDialog(SolverAndPersistenceFrame.this);
             if (approved == JFileChooser.APPROVE_OPTION) {
                 setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                 try {
-                    solutionBusiness.exportSolution(fileChooser.getSelectedFile());
+                    AbstractSolutionExporter exporter = ((ExporterFileFilter) fileChooser.getFileFilter()).getExporter();
+                    File exportFile = fileChooser.getSelectedFile();
+                    solutionBusiness.exportSolution(exporter, exportFile);
                 } finally {
                     setCursor(Cursor.getDefaultCursor());
                 }
             }
+            // Reset file name
+            fileChooser.setSelectedFile(null);
         }
 
     }
@@ -738,4 +739,64 @@ public class SolverAndPersistenceFrame<Solution_> extends JFrame {
         }
     }
 
+    private class ExporterFileFilter extends FileFilter {
+        private AbstractSolutionExporter exporter;
+
+        public ExporterFileFilter(AbstractSolutionExporter exporter) {
+            this.exporter = exporter;
+        }
+
+        @Override
+        public boolean accept(File file) {
+            return file.isDirectory() || file.getName().endsWith("." + exporter.getOutputFileSuffix());
+        }
+
+        @Override
+        public String getDescription() {
+            return "Export files (*." + exporter.getOutputFileSuffix() + ")";
+        }
+
+        public AbstractSolutionExporter getExporter() {
+            return exporter;
+        }
+    }
+
+    // Does the creation of the file name + setting it in the file chooser
+    private class FileNameSetter implements PropertyChangeListener {
+
+        private JFileChooser fileChooser;
+        private File exportDataDir;
+        private String baseName;
+
+        public FileNameSetter(JFileChooser fileChooser, File exportDataDir, String baseName) {
+
+            this.fileChooser = fileChooser;
+            this.exportDataDir = exportDataDir;
+            this.baseName = baseName;
+
+            setFileName();
+        }
+
+        @Override
+        public void propertyChange(PropertyChangeEvent evt) {
+            String prop = evt.getPropertyName();
+
+            //If a file became selected, find out which one.
+            if (JFileChooser.SELECTED_FILE_CHANGED_PROPERTY.equals(prop)) {
+                File file = (File) evt.getNewValue();
+                if (file == null) {
+                    setFileName();
+                }
+            } else if (prop.equals(JFileChooser.FILE_FILTER_CHANGED_PROPERTY)) {
+                setFileName();
+            }
+        }
+
+        void setFileName() {
+            AbstractSolutionExporter exporter = ((ExporterFileFilter) fileChooser.getFileFilter()).getExporter();
+            fileChooser.setSelectedFile(
+                    new File(this.exportDataDir, this.baseName + "." + exporter.getOutputFileSuffix()));
+        }
+
+    }
 }
