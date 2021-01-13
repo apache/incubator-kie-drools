@@ -1,165 +1,164 @@
 
 package java.time.format;
 
+import java.time.ZoneId;
+import java.time.chrono.ChronoLocalDate;
+import java.time.temporal.TemporalField;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import java.time.ZoneId;
-import java.time.chrono.ChronoLocalDate;
-import java.time.temporal.TemporalField;
-
 public final class DateTimeFormatterBuilder {
 
     public DateTimeFormatterBuilder parseCaseSensitive() {
-        return null;
+        return this;
     }
 
     public DateTimeFormatterBuilder parseCaseInsensitive() {
-        return null;
+        return this;
     }
 
     public DateTimeFormatterBuilder parseStrict() {
-        return null;
+        return this;
     }
 
     public DateTimeFormatterBuilder parseLenient() {
-        return null;
+        return this;
     }
 
     public DateTimeFormatterBuilder parseDefaulting(final TemporalField field, final long value) {
-        return null;
+        return this;
     }
 
     public DateTimeFormatterBuilder appendValue(final TemporalField field) {
-        return null;
+        return this;
     }
 
     public DateTimeFormatterBuilder appendValue(final TemporalField field, final int width) {
-        return null;
+        return this;
     }
 
     public DateTimeFormatterBuilder appendValue(final TemporalField field, final int minWidth, final int maxWidth, final SignStyle signStyle) {
-        return null;
+        return this;
     }
 
     public DateTimeFormatterBuilder appendValueReduced(final TemporalField field, final int width, final int maxWidth, final int baseValue) {
-        return null;
+        return this;
     }
 
     public DateTimeFormatterBuilder appendValueReduced(final TemporalField field, final int width, final int maxWidth, final ChronoLocalDate baseDate) {
-        return null;
+        return this;
     }
 
     public DateTimeFormatterBuilder appendFraction(final TemporalField field, final int minWidth, final int maxWidth, final boolean decimalPoint) {
-        return null;
+        return this;
     }
 
     public DateTimeFormatterBuilder appendText(final TemporalField field) {
-        return null;
+        return this;
     }
 
     public DateTimeFormatterBuilder appendText(final TemporalField field, final TextStyle textStyle) {
-        return null;
+        return this;
     }
 
     public DateTimeFormatterBuilder appendText(final TemporalField field, final Map<Long, String> textLookup) {
-        return null;
+        return this;
     }
 
     public DateTimeFormatterBuilder appendInstant() {
-        return null;
+        return this;
     }
 
     public DateTimeFormatterBuilder appendInstant(final int fractionalDigits) {
-        return null;
+        return this;
     }
 
     public DateTimeFormatterBuilder appendOffsetId() {
-        return null;
+        return this;
     }
 
     public DateTimeFormatterBuilder appendOffset(final String pattern, final String noOffsetText) {
-        return null;
+        return this;
     }
 
     public DateTimeFormatterBuilder appendLocalizedOffset(final TextStyle style) {
-        return null;
+        return this;
     }
 
     public DateTimeFormatterBuilder appendZoneId() {
-        return null;
+        return this;
     }
 
     public DateTimeFormatterBuilder appendZoneRegionId() {
-        return null;
+        return this;
     }
 
     public DateTimeFormatterBuilder appendZoneOrOffsetId() {
-        return null;
+        return this;
     }
 
     public DateTimeFormatterBuilder appendZoneText(final TextStyle textStyle) {
-        return null;
+        return this;
     }
 
     public DateTimeFormatterBuilder appendZoneText(final TextStyle textStyle, final Set<ZoneId> preferredZones) {
-        return null;
+        return this;
     }
 
     public DateTimeFormatterBuilder appendChronologyId() {
-        return null;
+        return this;
     }
 
     public DateTimeFormatterBuilder appendChronologyText(final TextStyle textStyle) {
-        return null;
+        return this;
     }
 
     public DateTimeFormatterBuilder appendLocalized(final FormatStyle dateStyle, final FormatStyle timeStyle) {
-        return null;
+        return this;
     }
 
     public DateTimeFormatterBuilder appendLiteral(final char literal) {
-        return null;
+        return this;
     }
 
     public DateTimeFormatterBuilder appendLiteral(final String literal) {
-        return null;
+        return this;
     }
 
     public DateTimeFormatterBuilder append(final DateTimeFormatter formatter) {
-        return null;
+        return this;
     }
 
     public DateTimeFormatterBuilder appendOptional(final DateTimeFormatter formatter) {
-        return null;
+        return this;
     }
 
     public DateTimeFormatterBuilder appendPattern(final String pattern) {
-        return null;
+        return this;
     }
 
     public DateTimeFormatterBuilder padNext(final int padWidth) {
-        return null;
+        return this;
     }
 
     public DateTimeFormatterBuilder padNext(final int padWidth, final char padChar) {
-        return null;
+        return this;
     }
 
     public DateTimeFormatterBuilder optionalStart() {
-        return null;
+        return this;
     }
 
     public DateTimeFormatterBuilder optionalEnd() {
-        return null;
+        return this;
     }
 
     public DateTimeFormatter toFormatter() {
-        return null;
+        return new DateTimeFormatter();
     }
 
     public DateTimeFormatter toFormatter(final Locale locale) {
-        return null;
+        return new DateTimeFormatter();
     }
 }
