@@ -23,7 +23,7 @@ import org.kie.api.internal.utils.ServiceRegistry;
 
 public interface CoreComponentsBuilder {
 
-    boolean IS_NATIVE_IMAGE = System.getProperty("org.graalvm.nativeimage.imagecode") != null;
+    boolean IS_NATIVE_IMAGE = Boolean.parseBoolean(System.getProperty("org.graalvm.nativeimage.imagecode"));
 
     String NO_MVEL = "You're trying to compile a Drools asset without mvel. Please add the module org.drools:drools-mvel to your classpath.";
 

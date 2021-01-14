@@ -20,7 +20,7 @@ import java.util.Collection;
 import java.util.HashMap;
 
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
-import org.drools.testcoverage.common.util.NativeImageTestUtil;
+import org.drools.model.functions.NativeImageTestUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,7 +46,7 @@ public class FromOnlyExecModelTest {
     public void testFromSharingWithNativeImage() {
         try {
             NativeImageTestUtil.setNativeImage();
-            testFromSharingCommon(kieBaseTestConfiguration, new HashMap<String, String>(), 2, 2);
+            testFromSharingCommon(kieBaseTestConfiguration, new HashMap<>(), 2, 2);
         } finally {
             NativeImageTestUtil.unsetNativeImage();
         }
