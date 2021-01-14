@@ -27,10 +27,7 @@ public abstract class IntrospectableLambda implements Supplier<Object> {
     private String lambdaFingerprint;
 
     // Duplicated from CoreComponentsBuilder to avoid dependency on drools-core in drools-canonical-model
-    static boolean isNativeImage() {
-        String property = System.getProperty("org.graalvm.nativeimage.imagecode");
-        return Boolean.parseBoolean(property);
-    }
+    static boolean IS_NATIVE_IMAGE = System.getProperty("org.graalvm.nativeimage.imagecode") != null;
 
     public abstract Object getLambda();
 
@@ -58,7 +55,7 @@ public abstract class IntrospectableLambda implements Supplier<Object> {
         if(this.getLambda() instanceof HashedExpression) {
             logger.debug("The constraint supports org.drools.model.functions.HashedExpression, node sharing is enabled and compile-time fingerprint is used");
             return ((HashedExpression) this.getLambda()).getExpressionHash();
-        } else if(!isNativeImage()) {
+        } else if(!IS_NATIVE_IMAGE) {
             // LambdaIntrospector is not supported on native image (it uses MVEL and reflection)
             logger.debug("No HashedExpression provided, generating fingerprint using reflection via org.drools.mvel.asm.LambdaIntrospector, node sharing enabled");
             return LambdaPrinter.print(getLambda());
