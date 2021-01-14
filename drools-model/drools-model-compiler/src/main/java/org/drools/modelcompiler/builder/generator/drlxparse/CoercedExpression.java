@@ -99,6 +99,7 @@ public class CoercedExpression {
         if (leftIsPrimitive && canCoerceLiteralNumberExpr && rightExpression instanceof LiteralStringValueExpr) {
             final Expression coercedLiteralNumberExprToType = coerceLiteralNumberExprToType((LiteralStringValueExpr) right.getExpression(), leftClass);
             coercedRight = right.cloneWithNewExpression(coercedLiteralNumberExprToType);
+            coercedRight.setType( leftClass );
         } else if (shouldCoerceBToString(left, right)) {
             coercedRight = coerceToString(right);
         } else if (isNotBinaryExpression(right) && canBeNarrowed(leftClass, rightClass) && right.isNumberLiteral()) {
