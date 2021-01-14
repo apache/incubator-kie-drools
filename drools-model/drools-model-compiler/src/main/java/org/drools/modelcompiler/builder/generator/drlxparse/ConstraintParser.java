@@ -464,10 +464,10 @@ public class ConstraintParser {
         Expression rightExpr = right.uncastExpression();
 
         if (isLeftNumber) {
-            if ( right.getBoxedType().map( String.class::isAssignableFrom ).orElse( false ) ) {
+            if ( isString( right ) ) {
                 leftExpr = new BinaryExpr(new StringLiteralExpr(""), leftExpr, BinaryExpr.Operator.PLUS);
             }
-        } else if ( isRightNumber && left.getBoxedType().map( String.class::isAssignableFrom ).orElse( false ) ) {
+        } else if ( isRightNumber && isString( left ) ) {
             rightExpr = new BinaryExpr(new StringLiteralExpr(""), rightExpr, BinaryExpr.Operator.PLUS);
         }
 
@@ -479,8 +479,12 @@ public class ConstraintParser {
         return new SpecialComparisonResult(expression, left, right);
     }
 
+    private static Boolean isString( TypedExpression right ) {
+        return right.getBoxedType().map( String.class::isAssignableFrom ).orElse( false );
+    }
+
     static Boolean isNumber(TypedExpression left) {
-        return left.getBoxedType().map(ConstraintParser::isNumericType).orElse(false);
+        return left.getBoxedType().map(ConstraintParser::isNumericType).orElse( false );
     }
 
     private static SpecialComparisonResult handleSpecialComparisonCases(BinaryExpr.Operator operator, TypedExpression left, TypedExpression right) {
