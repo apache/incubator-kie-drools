@@ -41,6 +41,7 @@ public class RuleUnitPojoGenerator implements FileGenerator {
         this.ruleUnitHelper = ruleUnitHelper;
     }
 
+    @Override
     public String generate() {
         return JavaParserCompiler.toPojoSource(
                 ruleUnitDescription.getPackageName(),

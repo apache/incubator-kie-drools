@@ -15,7 +15,7 @@
 
 package org.kie.kogito.codegen.decision;
 
-import java.util.List;
+import java.util.Collection;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
@@ -42,10 +42,10 @@ public class DecisionContainerGenerator extends AbstractApplicationSection {
     private static final String SECTION_CLASS_NAME = "DecisionModels";
 
     private final String applicationCanonicalName;
-    private final List<CollectedResource> resources;
+    private final Collection<CollectedResource> resources;
     private final TemplatedGenerator templatedGenerator;
 
-    public DecisionContainerGenerator(KogitoBuildContext context, String applicationCanonicalName, List<CollectedResource> cResources) {
+    public DecisionContainerGenerator(KogitoBuildContext context, String applicationCanonicalName, Collection<CollectedResource> cResources) {
         super(context, SECTION_CLASS_NAME);
         this.applicationCanonicalName = applicationCanonicalName;
         this.resources = cResources;

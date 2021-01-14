@@ -24,7 +24,7 @@ import org.kie.kogito.codegen.InvalidTemplateException;
 import org.kie.kogito.codegen.TemplatedGenerator;
 import org.kie.kogito.codegen.context.KogitoBuildContext;
 
-import java.util.List;
+import java.util.Collection;
 
 public class PredictionModelsGenerator extends AbstractApplicationSection {
 
@@ -33,11 +33,11 @@ public class PredictionModelsGenerator extends AbstractApplicationSection {
     private static final String RESOURCE_SPRING = "/class-templates/spring/SpringPredictionModelsTemplate.java";
     private static final String SECTION_CLASS_NAME = "PredictionModels";
 
-    protected final List<PMMLResource> resources;
+    protected final Collection<PMMLResource> resources;
     protected final String applicationCanonicalName;
     protected final TemplatedGenerator templatedGenerator;
 
-    public PredictionModelsGenerator(KogitoBuildContext context, String applicationCanonicalName, List<PMMLResource> resources) {
+    public PredictionModelsGenerator(KogitoBuildContext context, String applicationCanonicalName, Collection<PMMLResource> resources) {
         super(context, SECTION_CLASS_NAME);
         this.applicationCanonicalName = applicationCanonicalName;
         this.resources = resources;

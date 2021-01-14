@@ -34,10 +34,17 @@ public class StaticApplication implements Application {
     public StaticApplication(
             Config config,
             KogitoEngine ... engines) {
-        this.config = config;
-        loadEngines(engines);
+        this(config, Arrays.asList(engines));
     }
 
+    protected StaticApplication(
+            Config config,
+            Iterable<KogitoEngine> engines) {
+        setConfig(config);
+        engines.forEach(this::loadEngine);
+    }
+
+    @Override
     public Config config() {
         return config;
     }
@@ -54,10 +61,6 @@ public class StaticApplication implements Application {
 
     protected void loadEngines(KogitoEngine ... engines) {
         Arrays.stream(engines).forEach(this::loadEngine);
-
-        if (config() != null && config().get(ProcessConfig.class) != null) {
-            unitOfWorkManager().eventManager().setAddons(config().addons());
-        }
     }
 
     protected void loadEngine(KogitoEngine engine) {
@@ -66,6 +69,15 @@ public class StaticApplication implements Application {
         }
     }
 
+    protected void setConfig(Config config) {
+        this.config = config;
+
+        if (config() != null && config().get(ProcessConfig.class) != null) {
+            unitOfWorkManager().eventManager().setAddons(config().addons());
+        }
+    }
+
+    @Override
     public UnitOfWorkManager unitOfWorkManager() {
         return config().get(ProcessConfig.class).unitOfWorkManager();
     }

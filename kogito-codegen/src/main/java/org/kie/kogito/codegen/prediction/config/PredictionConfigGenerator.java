@@ -15,26 +15,16 @@
 
 package org.kie.kogito.codegen.prediction.config;
 
-import com.github.javaparser.ast.body.BodyDeclaration;
 import org.kie.kogito.codegen.AbstractConfigGenerator;
 import org.kie.kogito.codegen.context.KogitoBuildContext;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class PredictionConfigGenerator extends AbstractConfigGenerator {
-
-    private List<BodyDeclaration<?>> members = new ArrayList<>();
 
     public PredictionConfigGenerator(KogitoBuildContext context) {
         super(context,
                 "PredictionConfig",
                 "/class-templates/config/CdiPredictionConfigTemplate.java",
-                "/class-templates/config/SpringPredictionConfigTemplate.java");
+                "/class-templates/config/SpringPredictionConfigTemplate.java",
+                "/class-templates/config/PredictionConfigTemplate.java");
     }
-
-    public List<BodyDeclaration<?>> members() {
-        return members;
-    }
-
 }

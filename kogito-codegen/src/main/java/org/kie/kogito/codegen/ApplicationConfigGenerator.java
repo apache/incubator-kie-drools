@@ -18,6 +18,7 @@ package org.kie.kogito.codegen;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.stream.Collectors;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
@@ -25,15 +26,10 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
+import com.github.javaparser.ast.stmt.ExplicitConstructorInvocationStmt;
 import org.kie.kogito.Addons;
 import org.kie.kogito.codegen.context.KogitoBuildContext;
-import org.kie.kogito.codegen.decision.config.DecisionConfigGenerator;
-import org.kie.kogito.codegen.prediction.config.PredictionConfigGenerator;
-import org.kie.kogito.codegen.process.config.ProcessConfigGenerator;
-import org.kie.kogito.codegen.rules.config.RuleConfigGenerator;
 
-import static java.util.Arrays.asList;
-import static java.util.Optional.ofNullable;
 import static org.kie.kogito.codegen.CodegenUtils.newObject;
 
 public class ApplicationConfigGenerator {
@@ -45,14 +41,11 @@ public class ApplicationConfigGenerator {
     private static final String RESOURCE_SPRING = "/class-templates/config/SpringApplicationConfigTemplate.java";
 
     private final TemplatedGenerator templatedGenerator;
+    private KogitoBuildContext context;
 
     private Collection<String> addons = Collections.emptyList();
 
-    private ProcessConfigGenerator processConfig;
-    private RuleConfigGenerator ruleConfig;
-    private DecisionConfigGenerator decisionConfig;
-    private PredictionConfigGenerator predictionConfig;
-    private ConfigBeanGenerator configBean;
+    private final Collection<ConfigGenerator> configGenerators = new ArrayList<>();
 
     public ApplicationConfigGenerator(KogitoBuildContext context) {
         this.templatedGenerator = new TemplatedGenerator(
@@ -61,47 +54,48 @@ public class ApplicationConfigGenerator {
                 RESOURCE_CDI,
                 RESOURCE_SPRING,
                 RESOURCE_DEFAULT);
+        this.context = context;
 
-        this.configBean = new ConfigBeanGenerator(context);
+        this.configGenerators.add(new ConfigBeanGenerator(context));
     }
 
-    public ApplicationConfigGenerator withProcessConfig(ProcessConfigGenerator cfg) {
-        this.processConfig = cfg;
-        return this;
-    }
-
-    public ApplicationConfigGenerator withRuleConfig(RuleConfigGenerator cfg) {
-        this.ruleConfig = cfg;
-        return this;
-    }
-
-    public ApplicationConfigGenerator withDecisionConfig(DecisionConfigGenerator cfg) {
-        this.decisionConfig = cfg;
-        return this;
-    }
-
-    public ApplicationConfigGenerator withPredictionConfig(PredictionConfigGenerator cfg) {
-        this.predictionConfig = cfg;
+    public ApplicationConfigGenerator withConfigGenerator(ConfigGenerator configGenerator) {
+        this.configGenerators.add(configGenerator);
         return this;
     }
 
     public Collection<GeneratedFile> generate() {
         ArrayList<GeneratedFile> generatedFiles = new ArrayList<>();
-        generatedFiles.add(generateApplicationConfigDescriptor());
 
-        asList(processConfig, ruleConfig, predictionConfig, decisionConfig, configBean)
-                .forEach(configGenerator -> ofNullable(configGenerator)
-                        .flatMap(AbstractConfigGenerator::generate)
-                        .ifPresent(generatedFiles::add));
+        configGenerators.forEach(configGenerator ->
+                generatedFiles.add(configGenerator.generate()));
+
+        Collection<String> configClassNames = configGenerators.stream()
+                .map(ConfigGenerator::configClassName)
+                .collect(Collectors.toList());
+
+        generatedFiles.add(generateApplicationConfigDescriptor(configClassNames));
 
         return generatedFiles;
     }
 
-    private GeneratedFile generateApplicationConfigDescriptor() {
+    private GeneratedFile generateApplicationConfigDescriptor(Collection<String> configClassNames) {
         CompilationUnit compilationUnit = templatedGenerator.compilationUnitOrThrow();
 
         compilationUnit.findFirst(ClassOrInterfaceDeclaration.class)
                 .ifPresent(this::replaceAddonPlaceHolder);
+
+        // Add explicit initialization when no DI
+        if(!context.hasDI()) {
+            ClassOrInterfaceDeclaration cls = compilationUnit
+                    .findFirst(ClassOrInterfaceDeclaration.class)
+                    .orElseThrow(() -> new InvalidTemplateException(
+                            CLASS_NAME,
+                            templatedGenerator.templatePath(),
+                            "Compilation unit doesn't contain a class or interface declaration!"));
+
+            initConfigs(getSuperStatement(cls), configClassNames);
+        }
 
         return new GeneratedFile(APPLICATION_CONFIG_TYPE,
                                  templatedGenerator.generatedFilePath(),
@@ -137,5 +131,28 @@ public class ApplicationConfigGenerator {
 
     public void withAddons(Collection<String> addons) {
         this.addons = addons;
+    }
+
+    private ExplicitConstructorInvocationStmt getSuperStatement(ClassOrInterfaceDeclaration cls) {
+        return cls.findFirst(ExplicitConstructorInvocationStmt.class)
+                .orElseThrow(() -> new InvalidTemplateException(
+                        CLASS_NAME,
+                        templatedGenerator.templatePath(),
+                        "Impossible to find super invocation"));
+    }
+
+    /**
+     * For each config it produces a new instance follow naming convention and add it to superInvocation
+     *       e.g. section: ProcessConfig
+     * produce:
+     *       e.g.: new ProcessConfig()
+     * @param superInvocation
+     * @param configClassNames
+     */
+    private void initConfigs(ExplicitConstructorInvocationStmt superInvocation, Collection<String> configClassNames) {
+        configClassNames.stream()
+                .map(config -> new ObjectCreationExpr()
+                        .setType(config))
+                .forEach(superInvocation::addArgument);
     }
 }

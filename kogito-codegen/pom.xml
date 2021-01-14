@@ -69,7 +69,7 @@
       <groupId>org.kie</groupId>
       <artifactId>kie-dmn-openapi</artifactId>
     </dependency>
-    <!-- Json schema generator -->  
+    <!-- Json schema generator -->
     <dependency>
       <groupId>com.github.victools</groupId>
       <artifactId>jsonschema-generator</artifactId>

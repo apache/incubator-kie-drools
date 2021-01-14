@@ -24,6 +24,7 @@ public class DecisionConfigGenerator extends AbstractConfigGenerator {
         super(context,
                 "DecisionConfig",
                 "/class-templates/config/CdiDecisionConfigTemplate.java",
-                "/class-templates/config/SpringDecisionConfigTemplate.java");
+                "/class-templates/config/SpringDecisionConfigTemplate.java",
+                "/class-templates/config/DecisionConfigTemplate.java");
     }
 }

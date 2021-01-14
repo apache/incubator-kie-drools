@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -41,7 +42,6 @@ import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.CompositeKnowledgeBuilder;
 import org.kie.kogito.codegen.AbstractGenerator;
-import org.kie.kogito.codegen.ApplicationConfigGenerator;
 import org.kie.kogito.codegen.ApplicationSection;
 import org.kie.kogito.codegen.GeneratedFileType;
 import org.kie.kogito.codegen.KogitoPackageSources;
@@ -99,14 +99,14 @@ public class DeclaredTypeCodegen extends AbstractGenerator {
     private ClassLoader contextClassLoader;
 
     private DeclaredTypeCodegen(KogitoBuildContext context, Collection<Resource> resources) {
-        super(context);
+        super(context, new RuleConfigGenerator(context));
         this.resources = resources;
         this.contextClassLoader = getClass().getClassLoader();
     }
 
     @Override
-    public ApplicationSection section() {
-        return null;
+    public Optional<ApplicationSection> section() {
+        return Optional.empty();
     }
 
     @Override
@@ -161,11 +161,6 @@ public class DeclaredTypeCodegen extends AbstractGenerator {
                 .map(f -> new org.kie.kogito.codegen.GeneratedFile(
                         DECLARED_TYPE_TYPE,
                         f.getPath(), f.getData())).collect(toList());
-    }
-
-    @Override
-    public void updateConfig(ApplicationConfigGenerator cfg) {
-        cfg.withRuleConfig(new RuleConfigGenerator(context()));
     }
 
     public DeclaredTypeCodegen withClassLoader(ClassLoader projectClassLoader) {

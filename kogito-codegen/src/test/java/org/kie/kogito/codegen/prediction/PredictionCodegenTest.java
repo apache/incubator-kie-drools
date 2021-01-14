@@ -18,16 +18,19 @@ package org.kie.kogito.codegen.prediction;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Optional;
 
 import com.github.javaparser.ast.CompilationUnit;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.codegen.AbstractCodegenTest;
+import org.kie.kogito.codegen.ApplicationSection;
 import org.kie.kogito.codegen.GeneratedFile;
 import org.kie.kogito.codegen.context.KogitoBuildContext;
 import org.kie.kogito.codegen.io.CollectedResource;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PredictionCodegenTest extends AbstractCodegenTest {
 
@@ -45,7 +48,9 @@ public class PredictionCodegenTest extends AbstractCodegenTest {
         List<GeneratedFile> generatedFiles = codeGenerator.generate();
         assertEquals(4, generatedFiles.size());
 
-        CompilationUnit compilationUnit = codeGenerator.section().compilationUnit();
+        Optional<ApplicationSection> optionalApplicationSection = codeGenerator.section();
+        assertTrue(optionalApplicationSection.isPresent());
+        CompilationUnit compilationUnit = optionalApplicationSection.get().compilationUnit();
         assertNotNull(compilationUnit);
     }
 

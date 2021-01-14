@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.drools.core.util.StringUtils;
@@ -40,8 +40,8 @@ public class ApplicationGenerator {
     private static final GeneratedFileType APPLICATION_SECTION_TYPE = GeneratedFileType.of("APPLICATION_SECTION", GeneratedFileType.Category.SOURCE);
 
     private final ApplicationContainerGenerator applicationMainGenerator;
-    private ApplicationConfigGenerator configGenerator;
-    private List<Generator> generators = new ArrayList<>();
+    private ApplicationConfigGenerator applicationConfigGenerator;
+    private Collection<Generator> generators = new ArrayList<>();
 
     private KogitoBuildContext context;
     private ClassLoader classLoader;
@@ -51,8 +51,8 @@ public class ApplicationGenerator {
         this.classLoader = Thread.currentThread().getContextClassLoader();
         this.applicationMainGenerator = new ApplicationContainerGenerator(context);
 
-        this.configGenerator = new ApplicationConfigGenerator(context);
-        this.configGenerator.withAddons(loadAddonList());
+        this.applicationConfigGenerator = new ApplicationConfigGenerator(context);
+        this.applicationConfigGenerator.withAddons(loadAddonList());
     }
 
     public String targetCanonicalName() {
@@ -65,12 +65,12 @@ public class ApplicationGenerator {
 
     public Collection<GeneratedFile> generate() {
         List<GeneratedFile> generatedFiles = generateComponents();
-        generators.forEach(gen -> gen.updateConfig(configGenerator));
+        generators.forEach(gen -> gen.updateConfig(applicationConfigGenerator));
 
         generatedFiles.add(generateApplicationDescriptor());
         generatedFiles.addAll(generateApplicationSections());
 
-        generatedFiles.addAll(configGenerator.generate());
+        generatedFiles.addAll(applicationConfigGenerator.generate());
 
         logGeneratedFiles(generatedFiles);
 
@@ -86,7 +86,8 @@ public class ApplicationGenerator {
     public GeneratedFile generateApplicationDescriptor() {
         List<String> sections = generators.stream()
                 .map(Generator::section)
-                .filter(Objects::nonNull)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
                 .map(ApplicationSection::sectionClassName)
                 .collect(Collectors.toList());
 
@@ -94,20 +95,15 @@ public class ApplicationGenerator {
         return applicationMainGenerator.generate();
     }
 
-    private List<GeneratedFile> generateApplicationSections() {
-        ArrayList<GeneratedFile> generatedFiles = new ArrayList<>();
-
-        for (Generator generator : generators) {
-            ApplicationSection section = generator.section();
-            if (section == null) {
-                continue;
-            }
-            generatedFiles.add(
-                    new GeneratedFile(APPLICATION_SECTION_TYPE,
-                                      getFilePath(section.sectionClassName()),
-                                      section.compilationUnit().toString()));
-        }
-        return generatedFiles;
+    private Collection<GeneratedFile> generateApplicationSections() {
+        return generators.stream()
+                .map(Generator::section)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .map(section -> new GeneratedFile(APPLICATION_SECTION_TYPE,
+                        getFilePath(section.sectionClassName()),
+                        section.compilationUnit().toString()))
+                .collect(Collectors.toList());
     }
 
     /**

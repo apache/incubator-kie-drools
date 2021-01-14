@@ -6,10 +6,6 @@ public class Application extends StaticApplication {
 
     public Application() {
         super(new ApplicationConfig());
-        loadEngines(
-                $Processes$,
-                $RuleUnits$,
-                $DecisionModels$,
-                $PredictionModels$);
+        loadEngines(/* additional values provided during codegen */);
     }
 }

@@ -12,17 +12,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.kie.kogito.codegen;
 
-import org.kie.kogito.codegen.context.KogitoBuildContext;
+public interface ConfigGenerator {
 
-public class ConfigBeanGenerator extends AbstractConfigGenerator {
+    String configClassName();
 
-    public ConfigBeanGenerator(KogitoBuildContext context) {
-        super(context,
-                "ConfigBean",
-                "/class-templates/config/CdiConfigBeanTemplate.java",
-                "/class-templates/config/SpringConfigBeanTemplate.java",
-                "/class-templates/config/ConfigBeanTemplate.java");
-    }
+    GeneratedFile generate();
 }

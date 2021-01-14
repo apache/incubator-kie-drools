@@ -33,7 +33,7 @@ public class ApplicationConfigGeneratorTest {
     public void withProcessConfig() {
         final ApplicationConfigGenerator generator = new ApplicationConfigGenerator(context);
         final ProcessConfigGenerator processConfigGenerator = Mockito.mock(ProcessConfigGenerator.class);
-        final ApplicationConfigGenerator returnedConfigGenerator = generator.withProcessConfig(processConfigGenerator);
+        final ApplicationConfigGenerator returnedConfigGenerator = generator.withConfigGenerator(processConfigGenerator);
         assertThat(returnedConfigGenerator)
                 .isNotNull()
                 .isSameAs(generator);
@@ -42,7 +42,7 @@ public class ApplicationConfigGeneratorTest {
     @Test
     public void withProcessConfigNull() {
         final ApplicationConfigGenerator generator = new ApplicationConfigGenerator(context);
-        final ApplicationConfigGenerator returnedConfigGenerator = generator.withProcessConfig(null);
+        final ApplicationConfigGenerator returnedConfigGenerator = generator.withConfigGenerator(null);
         assertThat(returnedConfigGenerator)
                 .isNotNull()
                 .isSameAs(generator);

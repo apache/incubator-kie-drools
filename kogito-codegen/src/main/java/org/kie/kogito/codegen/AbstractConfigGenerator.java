@@ -18,25 +18,31 @@ package org.kie.kogito.codegen;
 import com.github.javaparser.ast.CompilationUnit;
 import org.kie.kogito.codegen.context.KogitoBuildContext;
 
-import java.util.Optional;
-
-public class AbstractConfigGenerator {
+public abstract class AbstractConfigGenerator implements ConfigGenerator {
 
     private final TemplatedGenerator templatedGenerator;
+    private final String configClassName;
 
-    public AbstractConfigGenerator(KogitoBuildContext context, String targetTypeName, String resourceCdi, String resourceSpring) {
+    public AbstractConfigGenerator(KogitoBuildContext context, String targetTypeName, String resourceCdi, String resourceSpring, String resourceDefault) {
+        configClassName = targetTypeName;
         this.templatedGenerator = new TemplatedGenerator(
                 context,
                 targetTypeName,
                 resourceCdi,
-                resourceSpring);
+                resourceSpring,
+                resourceDefault);
     }
 
-    public Optional<GeneratedFile> generate() {
-        Optional<CompilationUnit> compilationUnit = templatedGenerator.compilationUnit();
-        return compilationUnit.map(cu ->
-                new GeneratedFile(ApplicationConfigGenerator.APPLICATION_CONFIG_TYPE,
+    @Override
+    public String configClassName() {
+        return configClassName;
+    }
+
+    @Override
+    public GeneratedFile generate() {
+        CompilationUnit compilationUnit = templatedGenerator.compilationUnitOrThrow();
+        return new GeneratedFile(ApplicationConfigGenerator.APPLICATION_CONFIG_TYPE,
                         templatedGenerator.generatedFilePath(),
-                        cu.toString()));
+                        compilationUnit.toString());
     }
 }

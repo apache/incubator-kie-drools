@@ -24,6 +24,7 @@ public class RuleConfigGenerator extends AbstractConfigGenerator {
         super(context,
                 "RuleConfig",
                 "/class-templates/config/CdiRuleConfigTemplate.java",
-                "/class-templates/config/SpringRuleConfigTemplate.java");
+                "/class-templates/config/SpringRuleConfigTemplate.java",
+                "/class-templates/config/RuleConfigTemplate.java");
     }
 }

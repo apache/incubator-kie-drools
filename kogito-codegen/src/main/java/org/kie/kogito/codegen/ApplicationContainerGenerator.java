@@ -17,20 +17,13 @@ package org.kie.kogito.codegen;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.ThisExpr;
-import org.kie.kogito.codegen.context.JavaKogitoBuildContext;
 import org.kie.kogito.codegen.context.KogitoBuildContext;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-
-import static java.util.function.Function.identity;
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toMap;
 
 public class ApplicationContainerGenerator {
 
@@ -71,9 +64,9 @@ public class ApplicationContainerGenerator {
                         templatedGenerator.templatePath(),
                         "Compilation unit doesn't contain a class or interface declaration!"));
 
-        // ApplicationTemplate (no CDI/Spring) has placeholders to replace
-        if (context instanceof JavaKogitoBuildContext) {
-            replacePlaceholder(getLoadEnginesMethod(cls), sections);
+        // Add explicit initialization when no DI
+        if (!context.hasDI()) {
+            initEngines(getLoadEnginesMethod(cls), sections);
         }
 
         cls.getMembers().sort(new BodyDeclarationComparator());
@@ -95,37 +88,19 @@ public class ApplicationContainerGenerator {
                             "Impossible to find loadEngines invocation"));
     }
 
-    private void replacePlaceholder(MethodCallExpr methodCallExpr, List<String> sections) {
-        // look for expressions that contain $ and replace them with an initializer
-        //      e.g.: $Processes$
-        // is replaced with:
-        //      e.g.: new Processes(this)
-        // or remove the parameter if section is not available
-
-        Map<String, Expression> replacementMap = sections.stream()
-                .collect(toMap(
-                        identity(),
-                        sectionClassName -> new ObjectCreationExpr()
-                                .setType(sectionClassName)
-                                .addArgument(new ThisExpr())
-                ));
-
-        List<Expression> toBeRemoved = methodCallExpr.getArguments().stream()
-                .filter(exp -> exp.toString().contains("$"))
-                .filter(argument -> !replace(argument, replacementMap))
-                .collect(toList());
-
-        // remove using parentNode.remove(node) instead of node.remove() to prevent ConcurrentModificationException
-        toBeRemoved.forEach(methodCallExpr::remove);
-    }
-
-    private boolean replace(Expression originalExpression, Map<String, Expression> expressionMap) {
-        for (Map.Entry<String, Expression> entry : expressionMap.entrySet()) {
-            if (originalExpression.toString().contains("$" + entry.getKey() + "$")) {
-                originalExpression.replace(entry.getValue());
-                return true;
-            }
-        }
-        return false;
+    /**
+     * For each section it produces a new instance follow naming convention and add it to methodCallExpr
+     *       e.g. section: Processes
+     * produce:
+     *       e.g.: new Processes(this)
+     * @param methodCallExpr
+     * @param sections
+     */
+    private void initEngines(MethodCallExpr methodCallExpr, List<String> sections) {
+        sections.stream()
+                .map(section -> new ObjectCreationExpr()
+                        .setType(section)
+                        .addArgument(new ThisExpr()))
+                .forEach(methodCallExpr::addArgument);
     }
 }

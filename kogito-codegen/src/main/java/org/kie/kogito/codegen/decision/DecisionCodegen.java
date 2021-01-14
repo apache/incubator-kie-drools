@@ -45,7 +45,6 @@ import org.kie.dmn.typesafe.DMNAllTypesIndex;
 import org.kie.dmn.typesafe.DMNTypeSafePackageName;
 import org.kie.dmn.typesafe.DMNTypeSafeTypeGenerator;
 import org.kie.kogito.codegen.AbstractGenerator;
-import org.kie.kogito.codegen.ApplicationConfigGenerator;
 import org.kie.kogito.codegen.ApplicationSection;
 import org.kie.kogito.codegen.DashboardGeneratedFileUtils;
 import org.kie.kogito.codegen.GeneratedFile;
@@ -88,7 +87,7 @@ public class DecisionCodegen extends AbstractGenerator {
     private PCLResolverFn pclResolverFn = this::trueIFFClassIsPresent;
 
     public DecisionCodegen(KogitoBuildContext context, List<CollectedResource> cResources) {
-        super(context);
+        super(context, new DecisionConfigGenerator(context));
         this.cResources = cResources;
     }
 
@@ -255,23 +254,16 @@ public class DecisionCodegen extends AbstractGenerator {
         generatedFiles.addAll(DashboardGeneratedFileUtils.domain(domainDashboard, resourceGenerator.getNameURL() + ".json"));
     }
 
-    @Override
-    public void updateConfig(ApplicationConfigGenerator cfg) {
-        if (!cResources.isEmpty()) {
-            cfg.withDecisionConfig(new DecisionConfigGenerator(context()));
-        }
-    }
-
     private void storeFile(GeneratedFileType type, String path, String source) {
         generatedFiles.add(new GeneratedFile(type, path, source));
     }
 
     @Override
-    public ApplicationSection section() {
-        return new DecisionContainerGenerator(
+    public Optional<ApplicationSection> section() {
+        return Optional.of(new DecisionContainerGenerator(
                 context(),
                 applicationCanonicalName(),
-                this.cResources);
+                this.cResources));
     }
 
     public DecisionCodegen withClassLoader(ClassLoader classLoader) {

@@ -24,6 +24,7 @@ public class ProcessConfigGenerator extends AbstractConfigGenerator {
         super(context,
                 "ProcessConfig",
                 "/class-templates/config/CdiProcessConfigTemplate.java",
-                "/class-templates/config/SpringProcessConfigTemplate.java");
+                "/class-templates/config/SpringProcessConfigTemplate.java",
+                "/class-templates/config/ProcessConfigTemplate.java");
     }
 }

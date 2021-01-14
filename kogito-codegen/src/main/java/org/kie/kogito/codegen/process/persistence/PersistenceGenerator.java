@@ -89,7 +89,7 @@ public class PersistenceGenerator extends AbstractGenerator {
     public PersistenceGenerator(KogitoBuildContext context, Collection<?> modelClasses, ProtoGenerator<?> protoGenerator, List<String> parameters, String persistenceType) {
         this(context, modelClasses, protoGenerator, Thread.currentThread().getContextClassLoader(), parameters, persistenceType);
     }
-
+    
     public PersistenceGenerator(KogitoBuildContext context, Collection<?> modelClasses, ProtoGenerator<?> protoGenerator, ClassLoader classLoader, List<String> parameters, String persistenceType) {
         super(context);
         this.modelClasses = modelClasses;
@@ -100,10 +100,9 @@ public class PersistenceGenerator extends AbstractGenerator {
     }
 
     @Override
-    public ApplicationSection section() {
-        return null;
+    public Optional<ApplicationSection> section() {
+        return Optional.empty();
     }
-
 
     @Override
     public Collection<GeneratedFile> generate() {
@@ -121,11 +120,6 @@ public class PersistenceGenerator extends AbstractGenerator {
             default:
                 throw new IllegalArgumentException("Unknown persistenceType " + persistenceType);
         }
-    }
-
-    @Override
-    public void updateConfig(ApplicationConfigGenerator cfg) {
-        // Persistence has no custom/additional config
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})

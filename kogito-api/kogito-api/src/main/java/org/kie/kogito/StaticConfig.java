@@ -26,8 +26,13 @@ public class StaticConfig implements Config {
 
     public StaticConfig(Addons addons,
                         KogitoConfig ... configs) {
+        this(addons, Arrays.asList(configs));
+    }
+
+    protected StaticConfig(Addons addons,
+                           Iterable<KogitoConfig> configs) {
         this.addons = addons;
-        Arrays.stream(configs).forEach(this::loadConfig);
+        configs.forEach(this::loadConfig);
     }
 
     @SuppressWarnings("unchecked")

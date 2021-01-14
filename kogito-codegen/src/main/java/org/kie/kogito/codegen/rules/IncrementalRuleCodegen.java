@@ -52,7 +52,6 @@ import org.kie.internal.builder.CompositeKnowledgeBuilder;
 import org.kie.internal.builder.DecisionTableConfiguration;
 import org.kie.internal.ruleunit.RuleUnitDescription;
 import org.kie.kogito.codegen.AbstractGenerator;
-import org.kie.kogito.codegen.ApplicationConfigGenerator;
 import org.kie.kogito.codegen.ApplicationSection;
 import org.kie.kogito.codegen.DashboardGeneratedFileUtils;
 import org.kie.kogito.codegen.GeneratedFile;
@@ -125,7 +124,7 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
 
 
     private IncrementalRuleCodegen(KogitoBuildContext context, Collection<Resource> resources) {
-        super(context);
+        super(context, new RuleConfigGenerator(context));
         this.resources = resources;
         this.kieModuleModel = new KieModuleModelImpl();
         setDefaultsforEmptyKieModule(kieModuleModel);
@@ -138,10 +137,10 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
     }
 
     @Override
-    public ApplicationSection section() {
+    public Optional<ApplicationSection> section() {
         RuleUnitContainerGenerator moduleGenerator = new RuleUnitContainerGenerator(context());
         ruleUnitGenerators.forEach(moduleGenerator::addRuleUnit);
-        return moduleGenerator;
+        return Optional.of(moduleGenerator);
     }
 
     @Override
@@ -414,11 +413,6 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
 
     private String ruleUnit2KieSessionName(String ruleUnit) {
         return ruleUnit.replace( '.', '$' )  + "KieSession";
-    }
-
-    @Override
-    public void updateConfig(ApplicationConfigGenerator cfg) {
-        cfg.withRuleConfig(new RuleConfigGenerator(context()));
     }
 
     public IncrementalRuleCodegen withKModule(KieModuleModel model) {

@@ -18,6 +18,7 @@ package org.kie.kogito.codegen;
 import org.kie.kogito.codegen.context.KogitoBuildContext;
 
 import java.util.Collection;
+import java.util.Optional;
 
 /**
  * A code generator for a part of the platform, e.g. rules, processes, etc.
@@ -29,7 +30,7 @@ public interface Generator {
      * e.g the processes() method with processes().createMyProcess() etc.
      *
      */
-    ApplicationSection section();
+    Optional<ApplicationSection> section();
 
     /**
      * Returns the collection of all the files that have been generated/compiled
