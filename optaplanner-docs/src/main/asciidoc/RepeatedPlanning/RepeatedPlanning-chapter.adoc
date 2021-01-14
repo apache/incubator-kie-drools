@@ -95,7 +95,7 @@ To implement this:
 . Add a score constraint on the new level (usually a medium constraint) to penalize the number of unassigned entities (or a weighted sum of them).
 
 
-[[overconstrainedPlanningWithVirutalValues]]
+[[overconstrainedPlanningWithVirtualValues]]
 === Overconstrained planning with virtual values
 
 In overconstrained planning it is often useful to know which resources are lacking.
