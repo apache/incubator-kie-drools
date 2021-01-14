@@ -37,7 +37,6 @@ import org.drools.mvel.expr.MVELCompilationUnit;
 import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.PlainIndexEvaluator;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.PropertySpecificUtil;
@@ -375,7 +374,7 @@ public class MVELConstraint extends MutableTypeConstraint implements IndexableCo
     public FieldIndex getFieldIndex() {
         // declaration's offset can be modified by the reteoo's PatternBuilder so modify the indexingDeclaration accordingly
         indexingDeclaration.getPattern().setOffset(declarations[0].getOffset());
-        return new FieldIndex(extractor, indexingDeclaration, PlainIndexEvaluator.INSTANCE);
+        return new FieldIndex(extractor, indexingDeclaration);
     }
 
     public InternalReadAccessor getFieldExtractor() {

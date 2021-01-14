@@ -25,7 +25,6 @@ import java.util.List;
 import org.drools.core.base.field.ObjectFieldImpl;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.PlainIndexEvaluator;
 import org.drools.core.reteoo.PropertySpecificUtil;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.Declaration;
@@ -207,7 +206,7 @@ public class LambdaConstraint extends AbstractConstraint {
 
     @Override
     public FieldIndex getFieldIndex() {
-        return new FieldIndex(readAccessor, indexingDeclaration, PlainIndexEvaluator.INSTANCE);
+        return new FieldIndex(readAccessor, indexingDeclaration);
     }
 
     @Override

@@ -16,12 +16,10 @@
 package org.drools.core.util.index;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.reteoo.BetaMemory;
-import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.NodeTypeEnums;
 import org.drools.core.reteoo.TupleMemory;
 import org.drools.core.rule.ContextEntry;
@@ -30,8 +28,6 @@ import org.drools.core.spi.BetaNodeFieldConstraint;
 import org.drools.core.spi.Constraint;
 import org.drools.core.util.AbstractHashTable.FieldIndex;
 import org.kie.internal.conf.IndexPrecedenceOption;
-
-import static org.drools.core.util.ClassUtils.getter2property;
 
 public class IndexUtil {
 
@@ -284,21 +280,6 @@ public class IndexUtil {
         public static ConstraintType getType(Constraint constraint) {
             return constraint instanceof IndexableConstraint ? ((IndexableConstraint)constraint).getConstraintType() : UNKNOWN;
         }
-    }
-
-    public static List<String> getIndexedProperties(BetaNode betaNode, RuleBaseConfiguration config) {
-        int keyDepth = config.getCompositeKeyDepth();
-        if (config.getCompositeKeyDepth() < 1) {
-            return Collections.emptyList();
-        }
-
-        Factory.IndexSpec indexSpec = new Factory.IndexSpec(config.getIndexPrecedenceOption(), keyDepth, betaNode.getType(), betaNode.getConstraints());
-        List<String> indexedProps = new ArrayList<>();
-        for (FieldIndex fieldIndex : indexSpec.indexes) {
-            indexedProps.add( getter2property(fieldIndex.getExtractor().getNativeReadMethodName()) );
-        }
-
-        return indexedProps;
     }
 
     public static class Factory {
