@@ -449,24 +449,42 @@ public class ConstraintParser {
     }
 
     private static SpecialComparisonResult getEqualityExpression(TypedExpression left, TypedExpression right, BinaryExpr.Operator operator ) {
-        if((isAnyOperandBigDecimal(left, right) || isAnyOperandBigInteger(left, right)) && !isAnyOperandNullLiteral( left, right )) {
+        if ((isAnyOperandBigDecimal(left, right) || isAnyOperandBigInteger(left, right)) && !isAnyOperandNullLiteral( left, right )) {
             return compareBigDecimal(operator, left, right);
         }
 
-        String equalsMethod = isNumber(left) && isNumber(right) ?
+        boolean isLeftNumber = isNumber(left);
+        boolean isRightNumber = isNumber(right);
+
+        String equalsMethod = isLeftNumber && isRightNumber ?
                 "org.drools.modelcompiler.util.EvaluationUtil.areNumbersNullSafeEquals" :
                 "org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals";
 
+        Expression leftExpr = left.uncastExpression();
+        Expression rightExpr = right.uncastExpression();
+
+        if (isLeftNumber) {
+            if ( isString( right ) ) {
+                leftExpr = new BinaryExpr(new StringLiteralExpr(""), leftExpr, BinaryExpr.Operator.PLUS);
+            }
+        } else if ( isRightNumber && isString( left ) ) {
+            rightExpr = new BinaryExpr(new StringLiteralExpr(""), rightExpr, BinaryExpr.Operator.PLUS);
+        }
+
         MethodCallExpr methodCallExpr = new MethodCallExpr( null, equalsMethod );
         // Avoid casts, by using an helper method we leverage autoboxing and equals
-        methodCallExpr.addArgument(left.uncastExpression());
-        methodCallExpr.addArgument(right.uncastExpression());
+        methodCallExpr.addArgument(leftExpr);
+        methodCallExpr.addArgument(rightExpr);
         Expression expression = operator == BinaryExpr.Operator.EQUALS ? methodCallExpr : new UnaryExpr(methodCallExpr, UnaryExpr.Operator.LOGICAL_COMPLEMENT);
         return new SpecialComparisonResult(expression, left, right);
     }
 
+    private static Boolean isString( TypedExpression right ) {
+        return right.getBoxedType().map( String.class::isAssignableFrom ).orElse( false );
+    }
+
     static Boolean isNumber(TypedExpression left) {
-        return left.getBoxedType().map(ConstraintParser::isNumericType).orElse(false);
+        return left.getBoxedType().map(ConstraintParser::isNumericType).orElse( false );
     }
 
     private static SpecialComparisonResult handleSpecialComparisonCases(BinaryExpr.Operator operator, TypedExpression left, TypedExpression right) {
