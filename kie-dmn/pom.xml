@@ -20,6 +20,7 @@
     <module>kie-dmn-api</module>
     <module>kie-dmn-model</module>
     <module>kie-dmn-feel</module>
+    <module>kie-dmn-feel-gwt-functions</module>
     <module>kie-dmn-feel-gwt</module>
     <module>kie-dmn-backend</module>
     <module>kie-dmn-core</module>

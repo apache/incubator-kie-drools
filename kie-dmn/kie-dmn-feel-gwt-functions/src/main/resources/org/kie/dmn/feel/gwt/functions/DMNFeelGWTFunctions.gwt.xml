@@ -19,26 +19,12 @@
 <!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.4.0//EN"
     "http://google-web-toolkit.googlecode.com/svn/tags/2.5.0/distro-source/core/src/gwt-module.dtd">
 <module>
-  <entry-point class="org.kie.dmn.feel.entrypoint.FEELEntryPoint"/>
 
-  <inherits name="com.google.gwt.logging.Logging"/>
-  <inherits name="org.antlr.v4.antlr4-runtime"/>
-  <inherits name="org.kie.dmn.feel.DMNFeel"/>
-
-  <source path="entrypoint"/>
+  <source path="api"/>
   <source path="client"/>
 
-  <super-source path="" includes="FEEL.java"/>
-  <super-source path="util"/>
-  <super-source path="lang"/>
-  <super-source path="marshaller"/>
-  <super-source path="parser"/>
-  <super-source path="runtime"/>
-
-  <super-source path="super"/>
-
-<!--  <generate-with class="org.kie.dmn.rebind.generator.FunctionProviderGenerator">-->
-<!--    <when-type-assignable class="org.kie.dmn.feel.gwt.functions.client.FEELFunctionProvider"/>-->
-<!--  </generate-with>-->
+  <generate-with class="org.kie.dmn.feel.gwt.functions.rebind.FunctionProviderGenerator">
+    <when-type-assignable class="org.kie.dmn.feel.gwt.functions.client.FEELFunctionProvider"/>
+  </generate-with>
 
 </module>

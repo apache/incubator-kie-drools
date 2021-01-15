@@ -10,9 +10,9 @@
     <version>7.49.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>kie-dmn-feel-gwt</artifactId>
+  <artifactId>kie-dmn-feel-gwt-functions</artifactId>
 
-  <name>KIE :: Decision Model Notation :: FEEL DMN GWT</name>
+  <name>KIE :: Decision Model Notation :: FEEL DMN GWT FUNCTIONS</name>
 
   <properties>
     <java.module.name>org.kie.dmn.feel</java.module.name>
@@ -22,21 +22,21 @@
 
   <dependencies>
 
-    <dependency>
-      <groupId>org.antlr</groupId>
-      <artifactId>antlr4gwt-runtime</artifactId>
-    </dependency>
+<!--    <dependency>-->
+<!--      <groupId>org.antlr</groupId>-->
+<!--      <artifactId>antlr4gwt-runtime</artifactId>-->
+<!--    </dependency>-->
     <!-- Internal dependencies -->
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-dmn-feel</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>kie-dmn-feel</artifactId>
-      <classifier>sources</classifier>
-    </dependency>
+<!--    <dependency>-->
+<!--      <groupId>org.kie</groupId>-->
+<!--      <artifactId>kie-dmn-feel</artifactId>-->
+<!--      <classifier>sources</classifier>-->
+<!--    </dependency>-->
 
     <!--  The feared GWT dependency in drools repository!!!!!! -->
     <dependency>
@@ -51,21 +51,27 @@
     </dependency>
 
     <dependency>
-      <groupId>javax.annotation</groupId>
-      <artifactId>javax.annotation-api</artifactId>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
       <scope>test</scope>
     </dependency>
 
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-simple</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>jcl-over-slf4j</artifactId>
-      <scope>test</scope>
-    </dependency>
+<!--    <dependency>-->
+<!--      <groupId>javax.annotation</groupId>-->
+<!--      <artifactId>javax.annotation-api</artifactId>-->
+<!--      <scope>test</scope>-->
+<!--    </dependency>-->
+
+<!--    <dependency>-->
+<!--      <groupId>org.slf4j</groupId>-->
+<!--      <artifactId>slf4j-simple</artifactId>-->
+<!--      <scope>test</scope>-->
+<!--    </dependency>-->
+<!--    <dependency>-->
+<!--      <groupId>org.slf4j</groupId>-->
+<!--      <artifactId>jcl-over-slf4j</artifactId>-->
+<!--      <scope>test</scope>-->
+<!--    </dependency>-->
   </dependencies>
 
   <build>
