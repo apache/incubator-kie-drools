@@ -1279,6 +1279,7 @@
         <!--suppress UnresolvedMavenProperty -->
         <sonar.login>${env.SONARCLOUD_TOKEN}</sonar.login>
         <sonar.java.source>${maven.compiler.release}</sonar.java.source>
+        <sonar.javascript.node.maxspace>4096</sonar.javascript.node.maxspace>
       </properties>
       <build>
         <plugins>
