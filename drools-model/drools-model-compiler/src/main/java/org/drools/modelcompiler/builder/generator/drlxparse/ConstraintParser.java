@@ -487,6 +487,10 @@ public class ConstraintParser {
         return left.getBoxedType().map(ConstraintParser::isNumericType).orElse( false );
     }
 
+    static Boolean isObject(TypedExpression te) {
+        return te.getRawClass().equals(Object.class);
+    }
+
     private static SpecialComparisonResult handleSpecialComparisonCases(BinaryExpr.Operator operator, TypedExpression left, TypedExpression right) {
         if ((isAnyOperandBigDecimal(left, right) || isAnyOperandBigInteger(left, right)) && (isComparisonOperator(operator))) {
             return compareBigDecimal(operator, left, right);

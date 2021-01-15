@@ -205,11 +205,12 @@ public class CoercedExpression {
     private static boolean shouldCoerceBToString(TypedExpression a, TypedExpression b) {
         boolean aIsString = a.getType() == String.class;
         boolean bIsNotString = b.getType() != String.class;
+        boolean bIsNotObject = b.getType() != Object.class; // Don't coerce Object yet. EvaluationUtil will handle it dynamically later
         boolean bIsNotMap = !(Map.class.isAssignableFrom(b.getRawClass()));
         boolean bIsNotNull = !(b.getExpression() instanceof NullLiteralExpr);
         boolean bIsNotSerializable = b.getType() != Serializable.class;
         boolean bExpressionExists = b.getExpression() != null;
-        return bExpressionExists && isNotBinaryExpression(b) && aIsString && (bIsNotString && bIsNotMap && bIsNotNull && bIsNotSerializable);
+        return bExpressionExists && isNotBinaryExpression(b) && aIsString && (bIsNotString && bIsNotMap && bIsNotNull && bIsNotSerializable && bIsNotObject);
     }
 
     private static boolean isNotBinaryExpression(TypedExpression e) {
