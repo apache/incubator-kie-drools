@@ -36,7 +36,7 @@ public class CoercedExpressionTest {
         final TypedExpression left = expr(THIS_PLACEHOLDER + ".doubleValue()", double.class);
         final TypedExpression right = expr("0", int.class);
         final CoercedExpression.CoercedExpressionResult coerce = new CoercedExpression(left, right, false).coerce();
-        assertEquals(expr("0d", int.class), coerce.getCoercedRight());
+        assertEquals(expr("0d", double.class), coerce.getCoercedRight());
     }
 
     @Test
@@ -62,7 +62,7 @@ public class CoercedExpressionTest {
         final TypedExpression right = expr("\"50\"", String.class);
         final CoercedExpression.CoercedExpressionResult coerce = new CoercedExpression(left, right, false).coerce();
         assertEquals(expr(THIS_PLACEHOLDER + ".getAge()", int.class), coerce.getCoercedLeft());
-        assertEquals(expr("50", String.class), coerce.getCoercedRight());
+        assertEquals(expr("50", int.class), coerce.getCoercedRight());
     }
 
     @Test
@@ -86,7 +86,7 @@ public class CoercedExpressionTest {
         final TypedExpression left = expr(THIS_PLACEHOLDER + ".getAge()", int.class);
         final TypedExpression right = expr("\"50\"", String.class);
         final CoercedExpression.CoercedExpressionResult coerce = new CoercedExpression(left, right, false).coerce();
-        assertEquals(expr("50", String.class), coerce.getCoercedRight());
+        assertEquals(expr("50", int.class), coerce.getCoercedRight());
     }
 
     @Test

@@ -23,7 +23,6 @@ import java.io.ObjectOutput;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.drools.core.base.SimpleValueType;
 import org.drools.core.base.ValueType;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.CompositeObjectSinkAdapter;
@@ -105,7 +104,7 @@ public class AlphaRangeIndex implements Externalizable {
             return field.getBooleanValue();
         } else if (valueType == ValueType.STRING_TYPE) {
             return (Comparable) field.getValue();
-        } else if (valueType.getSimpleType() == SimpleValueType.DATE) {
+        } else if (valueType.isDate()) {
             return (Comparable) field.getValue();
         } else if (valueType == ValueType.ARRAY_TYPE) {
             return (Comparable) field.getValue();

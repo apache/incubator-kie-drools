@@ -1,11 +1,9 @@
 /*
- * Copyright 2005 JBoss Inc
- *
+ * Copyright (c) 2021. Red Hat, Inc. and/or its affiliates.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,10 +14,11 @@
 
 package org.drools.model.view;
 
-import org.drools.model.Index;
-import org.drools.model.functions.Function1;
+import org.drools.model.Variable;
 
-public interface Expr2ViewItem<T, U> extends ExprNViewItem<T> {
+public class SelfPatternBiding<T> extends BindViewItem1<T> {
 
-    <V> Expr2ViewItem<T, U> indexedBy( Class<V> indexedClass, Index.ConstraintType constraintType, int indexId, Function1<T, V> leftOperandExtractor, Function1<U, ?> rightOperandExtractor );
+    public SelfPatternBiding( Variable<T> patternVariable ) {
+        super( patternVariable, x -> x, patternVariable, new String[0], new String[0] );
+    }
 }

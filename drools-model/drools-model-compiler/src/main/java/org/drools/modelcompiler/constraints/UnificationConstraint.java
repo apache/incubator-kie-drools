@@ -19,7 +19,6 @@ package org.drools.modelcompiler.constraints;
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.PlainIndexEvaluator;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.IndexableConstraint;
@@ -82,7 +81,7 @@ public class UnificationConstraint extends MutableTypeConstraint implements Inde
 
     @Override
     public FieldIndex getFieldIndex() {
-        return new FieldIndex(readAccessor, declaration, PlainIndexEvaluator.INSTANCE);
+        return new FieldIndex(readAccessor, declaration);
     }
 
     @Override
