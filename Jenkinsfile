@@ -70,31 +70,6 @@ pipeline {
                 }
             }
         }
-        stage('Build Examples') {
-            steps {
-                script {
-                    getMavenCommand('kogito-examples').run('clean install')
-                }
-            }
-        }
-        stage('Check Examples with persistence') {
-            steps {
-                script {
-                    getMavenCommand('kogito-examples-persistence')
-                        .withProfiles(['persistence'])
-                        .run('clean verify')
-                }
-            }
-        }
-        stage('Check Examples with events') {
-            steps {
-                script {
-                    getMavenCommand('kogito-examples-events')
-                        .withProfiles(['events'])
-                        .run('clean verify')
-                }
-            }
-        }
     }
     post {
         always {
