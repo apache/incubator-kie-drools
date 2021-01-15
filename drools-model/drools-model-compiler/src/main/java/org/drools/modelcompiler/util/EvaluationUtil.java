@@ -18,7 +18,10 @@ package org.drools.modelcompiler.util;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Optional;
+import java.util.function.BiPredicate;
 
+import org.drools.core.base.CoercionUtil;
 import org.drools.model.BitMask;
 import org.drools.model.bitmask.AllSetBitMask;
 import org.drools.model.bitmask.AllSetButLastBitMask;
@@ -59,6 +62,125 @@ public class EvaluationUtil {
 
     public static boolean lessOrEqual(Comparable c1, Comparable c2) {
         return c1 != null && c2 != null && c1.compareTo( c2 ) <= 0;
+    }
+
+    // We accept Object for compatibility with standard-drl mvel behavior. See DROOLS-5924
+    public static boolean greaterThan(Object o1, Comparable c2) {
+        if (!(o1 instanceof Comparable)) {
+            return false; // compatibility with standard-drl: MathProcessor.doOperationNonNumeric() returns false when the left operand is not Comparable
+        }
+        Comparable c1 = (Comparable)o1;
+        return coerceAndEvaluate(c1, c2, EvaluationUtil::greaterThanNumbers, EvaluationUtil::greaterThan);
+    }
+
+    public static boolean lessThan(Object o1, Comparable c2) {
+        if (!(o1 instanceof Comparable)) {
+            return false; // compatibility with standard-drl: MathProcessor.doOperationNonNumeric() returns false when the left operand is not Comparable
+        }
+        Comparable c1 = (Comparable)o1;
+        return coerceAndEvaluate(c1, c2, EvaluationUtil::lessThanNumbers, EvaluationUtil::lessThan);
+    }
+
+    public static boolean greaterOrEqual(Object o1, Comparable c2) {
+        if (!(o1 instanceof Comparable)) {
+            return false; // compatibility with standard-drl: MathProcessor.doOperationNonNumeric() returns false when the left operand is not Comparable
+        }
+        Comparable c1 = (Comparable)o1;
+        return coerceAndEvaluate(c1, c2, EvaluationUtil::greaterOrEqualNumbers, EvaluationUtil::greaterOrEqual);
+    }
+
+    public static boolean lessOrEqual(Object o1, Comparable c2) {
+        if (!(o1 instanceof Comparable)) {
+            return false; // compatibility with standard-drl: MathProcessor.doOperationNonNumeric() returns false when the left operand is not Comparable
+        }
+        Comparable c1 = (Comparable)o1;
+        return coerceAndEvaluate(c1, c2, EvaluationUtil::lessOrEqualNumbers, EvaluationUtil::lessOrEqual);
+    }
+
+    public static boolean greaterThan(Comparable c1, Object o2) {
+        if (!(o2 instanceof Comparable)) {
+            throw new ClassCastException(o2 + " is not Comparable"); // compatibility with standard-drl: MathProcessor.doOperationNonNumeric() throws ClassCastException when the right operand is not Comparable
+        }
+        Comparable c2 = (Comparable)o2;
+        return coerceAndEvaluate(c1, c2, EvaluationUtil::greaterThanNumbers, EvaluationUtil::greaterThan);
+    }
+
+    public static boolean lessThan(Comparable c1, Object o2) {
+        if (!(o2 instanceof Comparable)) {
+            throw new ClassCastException(o2 + " is not Comparable"); // compatibility with standard-drl: MathProcessor.doOperationNonNumeric() throws ClassCastException when the right operand is not Comparable
+        }
+        Comparable c2 = (Comparable)o2;
+        return coerceAndEvaluate(c1, c2, EvaluationUtil::lessThanNumbers, EvaluationUtil::lessThan);
+    }
+
+    public static boolean greaterOrEqual(Comparable c1, Object o2) {
+        if (!(o2 instanceof Comparable)) {
+            throw new ClassCastException(o2 + " is not Comparable"); // compatibility with standard-drl: MathProcessor.doOperationNonNumeric() throws ClassCastException when the right operand is not Comparable
+        }
+        Comparable c2 = (Comparable)o2;
+        return coerceAndEvaluate(c1, c2, EvaluationUtil::greaterOrEqualNumbers, EvaluationUtil::greaterOrEqual);
+    }
+
+    public static boolean lessOrEqual(Comparable c1, Object o2) {
+        if (!(o2 instanceof Comparable)) {
+            throw new ClassCastException(o2 + " is not Comparable"); // compatibility with standard-drl: MathProcessor.doOperationNonNumeric() throws ClassCastException when the right operand is not Comparable
+        }
+        Comparable c2 = (Comparable)o2;
+        return coerceAndEvaluate(c1, c2, EvaluationUtil::lessOrEqualNumbers, EvaluationUtil::lessOrEqual);
+    }
+
+    private static boolean coerceAndEvaluate(Comparable c1, Comparable c2, BiPredicate<Number, Number> numberPredicate, BiPredicate<Comparable, Comparable> plainPredicate) {
+        Optional<NumberPair> optNumberPair = getCoercedNumberPair(c1, c2);
+        if (optNumberPair.isPresent()) {
+            NumberPair numberPair = optNumberPair.get();
+            return numberPredicate.test(numberPair.getN1(), numberPair.getN2());
+        }
+        return plainPredicate.test(c1, c2);
+    }
+
+    private static Optional<NumberPair> getCoercedNumberPair(Comparable c1, Comparable c2) {
+        if (c1 instanceof Number && c2 instanceof Number) {
+            return Optional.of(new NumberPair((Number)c1, (Number)c2));
+        }
+
+        if (c1 instanceof Number && c2 instanceof String) {
+            try {
+                Number n2 = CoercionUtil.coerceToNumber((String) c2, c1.getClass());
+                return Optional.of(new NumberPair((Number)c1, n2));
+            } catch (RuntimeException e) {
+                return Optional.empty();
+            }
+        }
+
+        if (c1 instanceof String && c2 instanceof Number) {
+            try {
+                Number n1 = CoercionUtil.coerceToNumber((String) c1, c2.getClass());
+                return Optional.of(new NumberPair(n1, (Number)c2));
+            } catch (RuntimeException e) {
+                return Optional.empty();
+            }
+        }
+        return Optional.empty();
+    }
+
+    private static class NumberPair {
+
+        private Number n1;
+        private Number n2;
+
+        public NumberPair(Number n1, Number n2) {
+            this.n1 = n1;
+            this.n2 = n2;
+        }
+
+        public Number getN1() {
+            return n1;
+        }
+
+        public Number getN2() {
+            return n2;
+        }
+
     }
 
     public static boolean greaterThanNumbers(Number n1, Number n2) {

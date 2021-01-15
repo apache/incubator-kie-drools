@@ -467,4 +467,22 @@ public class TypeCoercionTest extends BaseModelTest {
 
         assertEquals( 1, ksession.fireAllRules() );
     }
+
+    @Test
+    public void testCoercionOnBoundVariable() {
+        // DROOLS-5945
+        String str =
+                "import " + ClassWithIntProperty.class.getCanonicalName() + ";\n" +
+                "\n" +
+                "rule \"test_rule_1\" when\n" +
+                "     ClassWithIntProperty( $target : \"3\", $testInt : testInt, $testInt != $target )\n" +
+                "then\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert( new ClassWithIntProperty( 3 ) );
+
+        assertEquals( 0, ksession.fireAllRules() );
+    }
 }
