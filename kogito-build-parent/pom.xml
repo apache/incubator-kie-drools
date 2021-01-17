@@ -77,7 +77,7 @@
     <version.jayway.jsonpath>2.4.0</version.jayway.jsonpath>
 
     <!-- this version property is used in plugins but also in dependencies too -->
-    <version.io.quarkus>1.11.0.Beta2</version.io.quarkus>
+    <version.io.quarkus>1.11.0.Final</version.io.quarkus>
     <quarkus.logging.manager>org.jboss.logmanager.LogManager</quarkus.logging.manager>
 
     <!-- dependencies versions -->
