@@ -160,6 +160,8 @@ exports[`FormRenderer test Render form with actions 1`] = `
   <AutoValidatedQuickPatternflyForm
     autosave={false}
     autosaveDelay={0}
+    data-ouia-component-type="form-renderer"
+    data-ouia-safe={true}
     disabled={false}
     error={null}
     label={true}
@@ -374,12 +376,16 @@ exports[`FormRenderer test Render form with actions 1`] = `
     validate="onChangeAfterSubmit"
   >
     <Form
+      data-ouia-component-type="form-renderer"
+      data-ouia-safe={true}
       key="reset-0"
       noValidate={true}
       onSubmit={[Function]}
     >
       <form
         className="pf-c-form"
+        data-ouia-component-type="form-renderer"
+        data-ouia-safe={true}
         noValidate={true}
         onSubmit={[Function]}
       >
@@ -3244,6 +3250,8 @@ exports[`FormRenderer test Render form without actions 1`] = `
   <AutoValidatedQuickPatternflyForm
     autosave={false}
     autosaveDelay={0}
+    data-ouia-component-type="form-renderer"
+    data-ouia-safe={true}
     disabled={true}
     error={null}
     label={true}
@@ -3458,12 +3466,16 @@ exports[`FormRenderer test Render form without actions 1`] = `
     validate="onChangeAfterSubmit"
   >
     <Form
+      data-ouia-component-type="form-renderer"
+      data-ouia-safe={true}
       key="reset-0"
       noValidate={true}
       onSubmit={[Function]}
     >
       <form
         className="pf-c-form"
+        data-ouia-component-type="form-renderer"
+        data-ouia-safe={true}
         noValidate={true}
         onSubmit={[Function]}
       >

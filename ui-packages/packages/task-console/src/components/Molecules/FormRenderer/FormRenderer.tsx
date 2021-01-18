@@ -22,6 +22,7 @@ import ModelConversionTool from '../../../util/uniforms/ModelConversionTool';
 import { DefaultFormValidator } from '../../../util/uniforms/FormValidator';
 import { IFormSubmitHandler } from '../../../util/uniforms/FormSubmitHandler/FormSubmitHandler';
 import { FormSchema } from '../../../util/uniforms/FormSchema';
+import { componentOuiaProps, OUIAProps } from '@kogito-apps/common';
 
 interface IOwnProps {
   formSchema: FormSchema;
@@ -30,11 +31,13 @@ interface IOwnProps {
   formSubmitHandler: IFormSubmitHandler;
 }
 
-const FormRenderer: React.FC<IOwnProps> = ({
+const FormRenderer: React.FC<IOwnProps & OUIAProps> = ({
   formSchema,
   model,
   readOnly,
-  formSubmitHandler
+  formSubmitHandler,
+  ouiaId,
+  ouiaSafe
 }) => {
   const validator = new DefaultFormValidator(formSchema);
 
@@ -58,6 +61,7 @@ const FormRenderer: React.FC<IOwnProps> = ({
       schema={bridge}
       showInlineError={true}
       onSubmit={formModel => formSubmitHandler.doSubmit(formModel)}
+      {...componentOuiaProps(ouiaId, 'form-renderer', ouiaSafe)}
     >
       <ErrorsField />
       <AutoFields />

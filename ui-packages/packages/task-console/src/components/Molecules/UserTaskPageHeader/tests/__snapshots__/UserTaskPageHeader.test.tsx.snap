@@ -3,10 +3,14 @@
 exports[`UserTaskPageHeader component tests Should render UserTaskPageHeader correctly 1`] = `
 <UserTaskPageHeader>
   <PageSection
+    data-ouia-component-type="user-task-page-header"
+    data-ouia-safe={true}
     variant="light"
   >
     <section
       className="pf-c-page__main-section pf-m-light"
+      data-ouia-component-type="user-task-page-header"
+      data-ouia-safe={true}
     >
       <PageTitle
         title="Task Inbox"
