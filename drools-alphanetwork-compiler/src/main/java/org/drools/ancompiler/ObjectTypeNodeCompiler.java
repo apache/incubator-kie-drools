@@ -101,7 +101,7 @@ public class ObjectTypeNodeCompiler {
         NodeCollectorHandler nodeCollectors = new NodeCollectorHandler();
         parser.accept(nodeCollectors);
 
-        PartitionedSwitch partitionedSwitch = new PartitionedSwitch(nodeCollectors.getNodes());
+        SetNodeReferenceHandler partitionedSwitch = new SetNodeReferenceHandler(nodeCollectors.getNodes());
         partitionedSwitch.emitCode(builder);
 
         // create assert method

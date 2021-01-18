@@ -125,10 +125,6 @@ public class NetworkHandlerAdaptor implements NetworkHandler {
         // do nothing
     }
 
-    protected void closeStatement(StringBuilder builder) {
-        builder.append("}").append(NEWLINE);
-    }
-
     protected void replaceNameExpr(Node expression, String from, String to) {
         expression.findAll(NameExpr.class, n -> from.equals(n.toString())).forEach(c -> c.replace(new NameExpr(to)));
     }
