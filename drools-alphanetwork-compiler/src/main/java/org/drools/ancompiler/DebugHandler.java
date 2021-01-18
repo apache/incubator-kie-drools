@@ -26,112 +26,113 @@ import org.drools.core.util.index.AlphaRangeIndex;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 public class DebugHandler extends NetworkHandlerAdaptor {
 
     private final Logger logger = LoggerFactory.getLogger(DebugHandler.class);
 
-    private String formatString(Object node) {
-        return String.format("%s", node);
+    private void printNode(Object node) {
+        if (logger.isDebugEnabled()) {
+            logger.debug(node.toString());
+        }
     }
 
     @Override
     public void startObjectTypeNode(ObjectTypeNode objectTypeNode) {
-        logger.debug(formatString(objectTypeNode));
+        printNode(objectTypeNode);
     }
 
     @Override
     public void startNonHashedAlphaNode(AlphaNode alphaNode) {
-        logger.debug(formatString(alphaNode));
+        printNode(alphaNode);
     }
 
     @Override
     public void endNonHashedAlphaNode(AlphaNode alphaNode) {
-        logger.debug(formatString(alphaNode));
+        printNode(alphaNode);
     }
 
     @Override
     public void startBetaNode(BetaNode betaNode) {
-        logger.debug(formatString(betaNode));
+        printNode(betaNode);
     }
 
     @Override
     public void endBetaNode(BetaNode betaNode) {
-        logger.debug(formatString(betaNode));
+        printNode(betaNode);
     }
 
     @Override
     public void startWindowNode(WindowNode windowNode) {
-        logger.debug(formatString(windowNode));
+        printNode(windowNode);
     }
 
     @Override
     public void endWindowNode(WindowNode windowNode) {
-        logger.debug(formatString(windowNode));
+        printNode(windowNode);
     }
 
     @Override
     public void startLeftInputAdapterNode(LeftInputAdapterNode leftInputAdapterNode) {
-        logger.debug(formatString(leftInputAdapterNode));
+        printNode(leftInputAdapterNode);
     }
 
     @Override
     public void endWindowNode(LeftInputAdapterNode leftInputAdapterNode) {
-        logger.debug(formatString(leftInputAdapterNode));
+        printNode(leftInputAdapterNode);
     }
 
     @Override
     public void startHashedAlphaNodes(IndexableConstraint hashedFieldReader) {
-        logger.debug(formatString(hashedFieldReader));
+        printNode(hashedFieldReader);
     }
 
     @Override
     public void endHashedAlphaNodes(IndexableConstraint hashedFieldReader) {
-        logger.debug(formatString(hashedFieldReader));
+        printNode(hashedFieldReader);
     }
 
     @Override
     public void startHashedAlphaNode(AlphaNode hashedAlpha, Object hashedValue) {
-        logger.debug(formatString(hashedAlpha));
+        printNode(hashedAlpha);
     }
 
     @Override
     public void endHashedAlphaNode(AlphaNode hashedAlpha, Object hashedValue) {
-        logger.debug(formatString(hashedAlpha));
+        printNode(hashedAlpha);
     }
 
     @Override
     public void endObjectTypeNode(ObjectTypeNode objectTypeNode) {
-        logger.debug(formatString(objectTypeNode));
+        printNode(objectTypeNode);
     }
 
     @Override
     public void nullCaseAlphaNodeStart(AlphaNode hashedAlpha) {
-        logger.debug(formatString(hashedAlpha));
+        printNode(hashedAlpha);
     }
 
     @Override
     public void nullCaseAlphaNodeEnd(AlphaNode hashedAlpha) {
-        logger.debug(formatString(hashedAlpha));
+        printNode(hashedAlpha);
     }
 
     @Override
     public void startRangeIndex(AlphaRangeIndex alphaRangeIndex) {
-        logger.debug(formatString(alphaRangeIndex));
+        printNode(alphaRangeIndex);
     }
 
     @Override
     public void endRangeIndex(AlphaRangeIndex alphaRangeIndex) {
-        logger.debug(formatString(alphaRangeIndex));
+        printNode(alphaRangeIndex);
     }
 
     @Override
     public void startRangeIndexedAlphaNode(AlphaNode alphaNode) {
-        logger.debug(formatString(alphaNode));
+        printNode(alphaNode);
     }
 
     @Override
     public void endRangeIndexedAlphaNode(AlphaNode alphaNode) {
-        logger.debug(formatString(alphaNode));
+        printNode(alphaNode);
     }
 }
