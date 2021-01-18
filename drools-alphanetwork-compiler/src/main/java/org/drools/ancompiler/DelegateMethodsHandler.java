@@ -68,7 +68,7 @@ public class DelegateMethodsHandler extends AbstractCompilerHandler {
     }
 
     @Override
-    public void startLeftInputAdapterNode(LeftInputAdapterNode leftInputAdapterNode) {
+    public void startLeftInputAdapterNode(Object parent, LeftInputAdapterNode leftInputAdapterNode) {
     }
 
     @Override

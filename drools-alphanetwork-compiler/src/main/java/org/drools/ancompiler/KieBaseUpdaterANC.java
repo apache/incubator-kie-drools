@@ -66,7 +66,7 @@ public class KieBaseUpdaterANC implements KieBaseUpdater {
             // as they are removed by ReteOOBuilder.removeTerminalNode after standard KieBaseUpdaterImpl
             compiledNetworkSourcesMap.values().forEach(c -> {
                 Class<?> aClass = compiledClasses.get(c.getName());
-                c.setCompiledNetwork(aClass);
+                c.createInstanceAndSet(aClass);
             });
         }
     }
@@ -84,7 +84,7 @@ public class KieBaseUpdaterANC implements KieBaseUpdater {
             } catch (ClassNotFoundException e) {
                 throw new CouldNotCreateAlphaNetworkCompilerException(e);
             }
-            kv.getValue().setCompiledNetwork(aClass);
+            kv.getValue().createInstanceAndSet(aClass);
         }
     }
 }

@@ -70,7 +70,7 @@ public interface NetworkHandler {
 
     void endWindowNode(WindowNode windowNode);
 
-    void startLeftInputAdapterNode(LeftInputAdapterNode leftInputAdapterNode);
+    void startLeftInputAdapterNode(Object parent, LeftInputAdapterNode leftInputAdapterNode);
 
     void endWindowNode(LeftInputAdapterNode leftInputAdapterNode);
 
