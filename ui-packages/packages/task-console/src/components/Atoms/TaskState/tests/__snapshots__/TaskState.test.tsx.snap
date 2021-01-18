@@ -35,7 +35,12 @@ exports[`TaskState Test show aborted task 1`] = `
     <MockedComponent />
   </BanIcon>
    
-  Aborted
+  <span
+    data-ouia-component-type="task-state"
+    data-ouia-safe={true}
+  >
+    Aborted
+  </span>
 </TaskState>
 `;
 
@@ -71,6 +76,8 @@ exports[`TaskState Test show aborted task in label 1`] = `
 >
   <Label
     color="red"
+    data-ouia-component-type="task-state"
+    data-ouia-safe={true}
     icon={
       <BanIcon
         className="pf-u-mr-sm"
@@ -79,6 +86,8 @@ exports[`TaskState Test show aborted task in label 1`] = `
   >
     <span
       className="pf-c-label pf-m-red"
+      data-ouia-component-type="task-state"
+      data-ouia-safe={true}
     >
       <span
         className="pf-c-label__content"
@@ -134,7 +143,12 @@ exports[`TaskState Test show active task 1`] = `
     <MockedComponent />
   </OnRunningIcon>
    
-  Ready
+  <span
+    data-ouia-component-type="task-state"
+    data-ouia-safe={true}
+  >
+    Ready
+  </span>
 </TaskState>
 `;
 
@@ -170,6 +184,8 @@ exports[`TaskState Test show active task in label 1`] = `
 >
   <Label
     color="blue"
+    data-ouia-component-type="task-state"
+    data-ouia-safe={true}
     icon={
       <OnRunningIcon
         className="pf-u-mr-sm"
@@ -178,6 +194,8 @@ exports[`TaskState Test show active task in label 1`] = `
   >
     <span
       className="pf-c-label pf-m-blue"
+      data-ouia-component-type="task-state"
+      data-ouia-safe={true}
     >
       <span
         className="pf-c-label__content"
@@ -234,7 +252,12 @@ exports[`TaskState Test show completed task 1`] = `
     <MockedComponent />
   </CheckCircleIcon>
    
-  Completed
+  <span
+    data-ouia-component-type="task-state"
+    data-ouia-safe={true}
+  >
+    Completed
+  </span>
 </TaskState>
 `;
 
@@ -270,6 +293,8 @@ exports[`TaskState Test show completed task in label 1`] = `
 >
   <Label
     color="green"
+    data-ouia-component-type="task-state"
+    data-ouia-safe={true}
     icon={
       <CheckCircleIcon
         className="pf-u-mr-sm"
@@ -279,6 +304,8 @@ exports[`TaskState Test show completed task in label 1`] = `
   >
     <span
       className="pf-c-label pf-m-green"
+      data-ouia-component-type="task-state"
+      data-ouia-safe={true}
     >
       <span
         className="pf-c-label__content"

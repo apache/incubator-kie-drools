@@ -16,7 +16,7 @@
 
 import React from 'react';
 
-import { GraphQL } from '@kogito-apps/common';
+import { componentOuiaProps, GraphQL, OUIAProps } from '@kogito-apps/common';
 import UserTaskInstance = GraphQL.UserTaskInstance;
 import { Label } from '@patternfly/react-core';
 import {
@@ -31,13 +31,22 @@ interface IOwnProps {
   variant?: TaskStateType;
 }
 
-const TaskState: React.FC<IOwnProps> = ({ task, variant }) => {
+const TaskState: React.FC<IOwnProps & OUIAProps> = ({
+  task,
+  variant,
+  ouiaId,
+  ouiaSafe
+}) => {
   const icon: JSX.Element = resolveTaskStateIcon(task);
 
   if (variant === TaskStateType.LABEL) {
     const color = resolveTaskStateLabelColor(task);
     return (
-      <Label color={color} icon={icon}>
+      <Label
+        color={color}
+        icon={icon}
+        {...componentOuiaProps(ouiaId, 'task-state', ouiaSafe)}
+      >
         {task.state}
       </Label>
     );
@@ -45,7 +54,10 @@ const TaskState: React.FC<IOwnProps> = ({ task, variant }) => {
 
   return (
     <React.Fragment>
-      {icon} {task.state}
+      {icon}{' '}
+      <span {...componentOuiaProps(ouiaId, 'task-state', ouiaSafe)}>
+        {task.state}
+      </span>
     </React.Fragment>
   );
 };

@@ -15,9 +15,14 @@ exports[`Form Footer test testing action click 1`] = `
     ]
   }
 >
-  <ActionGroup>
+  <ActionGroup
+    data-ouia-component-type="form-footer"
+    data-ouia-safe={true}
+  >
     <div
       className="pf-c-form__group pf-m-action"
+      data-ouia-component-type="form-footer"
+      data-ouia-safe={true}
     >
       <div
         className="pf-c-form__group-control"
@@ -91,9 +96,14 @@ exports[`Form Footer test testing showing actions 1`] = `
     ]
   }
 >
-  <ActionGroup>
+  <ActionGroup
+    data-ouia-component-type="form-footer"
+    data-ouia-safe={true}
+  >
     <div
       className="pf-c-form__group pf-m-action"
+      data-ouia-component-type="form-footer"
+      data-ouia-safe={true}
     >
       <div
         className="pf-c-form__group-control"

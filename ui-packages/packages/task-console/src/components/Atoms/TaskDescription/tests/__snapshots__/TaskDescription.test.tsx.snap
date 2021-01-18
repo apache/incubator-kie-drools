@@ -30,15 +30,21 @@ exports[`TaskDescription test Render task description with task des 1`] = `
   }
 >
   <Link
+    data-ouia-component-type="task-description"
+    data-ouia-safe={true}
     onClick={[Function]}
     to="/TaskDetails/45a73767-5da3-49bf-9c40-d533c3e77ef3"
   >
     <LinkAnchor
+      data-ouia-component-type="task-description"
+      data-ouia-safe={true}
       href="/TaskDetails/45a73767-5da3-49bf-9c40-d533c3e77ef3"
       navigate={[Function]}
       onClick={[Function]}
     >
       <a
+        data-ouia-component-type="task-description"
+        data-ouia-safe={true}
         href="/TaskDetails/45a73767-5da3-49bf-9c40-d533c3e77ef3"
         onClick={[Function]}
       >

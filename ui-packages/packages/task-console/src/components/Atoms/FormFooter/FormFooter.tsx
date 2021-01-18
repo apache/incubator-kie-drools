@@ -17,6 +17,7 @@
 import React from 'react';
 import { ActionGroup, Button } from '@patternfly/react-core';
 import { IFormAction } from '../../../util/uniforms/FormSubmitHandler/FormSubmitHandler';
+import { componentOuiaProps, OUIAProps } from '@kogito-apps/common';
 
 interface IOwnProps {
   actions?: IFormAction[];
@@ -29,7 +30,11 @@ interface FormButton {
   onClick: () => void;
 }
 
-const FormFooter: React.FC<IOwnProps> = ({ actions }) => {
+const FormFooter: React.FC<IOwnProps & OUIAProps> = ({
+  actions,
+  ouiaId,
+  ouiaSafe
+}) => {
   if (!actions || actions.length == 0) {
     return null;
   }
@@ -73,7 +78,7 @@ const FormFooter: React.FC<IOwnProps> = ({ actions }) => {
   });
 
   return (
-    <ActionGroup>
+    <ActionGroup {...componentOuiaProps(ouiaId, 'form-footer', ouiaSafe)}>
       {buttons.map(button => {
         return (
           <Button

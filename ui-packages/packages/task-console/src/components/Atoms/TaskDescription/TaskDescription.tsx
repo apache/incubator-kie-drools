@@ -15,7 +15,12 @@
  */
 
 import React from 'react';
-import { ItemDescriptor, GraphQL } from '@kogito-apps/common';
+import {
+  ItemDescriptor,
+  GraphQL,
+  OUIAProps,
+  componentOuiaProps
+} from '@kogito-apps/common';
 import { Link } from 'react-router-dom';
 import {
   ITaskConsoleContext,
@@ -27,13 +32,18 @@ interface IOwnProps {
   task: UserTaskInstance;
 }
 
-const TaskDescription: React.FC<IOwnProps> = ({ task }) => {
+const TaskDescription: React.FC<IOwnProps & OUIAProps> = ({
+  task,
+  ouiaId,
+  ouiaSafe
+}) => {
   const context: ITaskConsoleContext<UserTaskInstance> = useTaskConsoleContext();
 
   return (
     <Link
       to={'/TaskDetails/' + task.id}
       onClick={() => context.setActiveItem(task)}
+      {...componentOuiaProps(ouiaId, 'task-description', ouiaSafe)}
     >
       <div>
         <strong>
