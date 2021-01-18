@@ -24,52 +24,61 @@ import org.drools.core.util.StringUtils;
 import org.jbpm.compiler.canonical.TriggerMetaData;
 import org.kie.api.definition.process.WorkflowProcess;
 import org.kie.kogito.codegen.BodyDeclarationComparator;
+import org.kie.kogito.codegen.InvalidTemplateException;
+import org.kie.kogito.codegen.TemplatedGenerator;
+import org.kie.kogito.codegen.context.JavaKogitoBuildContext;
+import org.kie.kogito.codegen.context.KogitoBuildContext;
 
-import static com.github.javaparser.StaticJavaParser.parse;
 import static org.kie.kogito.codegen.CodegenUtils.interpolateTypes;
 
 public class MessageDataEventGenerator {
-    private final String relativePath;
 
-    private WorkflowProcess process;
-    private final String packageName;
+    private final KogitoBuildContext context;
+    private final WorkflowProcess process;
     private final String resourceClazzName;
-    private String processId;
+    private final String processId;
     private final String processName;
-    
-    private TriggerMetaData trigger;
+    private final TemplatedGenerator generator;
+    private final TriggerMetaData trigger;
     
     public MessageDataEventGenerator(
+            KogitoBuildContext context,
             WorkflowProcess process,
             TriggerMetaData trigger) {
+        this.context = context;
         this.process = process;
         this.trigger = trigger;
-        this.packageName = process.getPackageName();
+        String messageDataPackageName = process.getPackageName();
         this.processId = process.getId();
         this.processName = processId.substring(processId.lastIndexOf('.') + 1);
         String classPrefix = StringUtils.ucFirst(processName);
         this.resourceClazzName = classPrefix + "MessageDataEvent_" + trigger.getOwnerId();
-        this.relativePath = packageName.replace(".", "/") + "/" + resourceClazzName + ".java";
+        this.generator = TemplatedGenerator.builder()
+                .withPackageName(messageDataPackageName)
+                .withFallbackContext(JavaKogitoBuildContext.CONTEXT_NAME)
+                .withTargetTypeName(resourceClazzName)
+                .build(context, "MessageDataEvent");
     }
 
     public String className() {
-        return resourceClazzName;
+        return generator.targetTypeName();
     }
     
     public String generatedFilePath() {
-        return relativePath;
+        return generator.generatedFilePath();
     }
 
     public String generate() {
-        CompilationUnit clazz = parse(
-                this.getClass().getResourceAsStream("/class-templates/MessageDataEventTemplate.java"));
-        clazz.setPackageDeclaration(process.getPackageName());
+        CompilationUnit clazz = generator.compilationUnitOrThrow();
 
-        ClassOrInterfaceDeclaration template = clazz.findFirst(ClassOrInterfaceDeclaration.class).orElseThrow(() -> new IllegalStateException("Cannot find the class in MessageDataEventTemplate"));
+        ClassOrInterfaceDeclaration template = clazz.findFirst(ClassOrInterfaceDeclaration.class)
+                .orElseThrow(() -> new InvalidTemplateException(
+                        generator,
+                        "Cannot find the class in MessageDataEventTemplate"));
         template.setName(resourceClazzName);  
         
         template.findAll(ClassOrInterfaceType.class).forEach(cls -> interpolateTypes(cls, trigger.getDataType()));
-        template.findAll(ConstructorDeclaration.class).stream().forEach(cd -> cd.setName(resourceClazzName));
+        template.findAll(ConstructorDeclaration.class).forEach(cd -> cd.setName(resourceClazzName));
         template.findAll(StringLiteralExpr.class).stream().filter(s -> s.getValue().equals("$TypeName$")).forEach(s -> s.setString(resourceClazzName));
 
         template.getMembers().sort(new BodyDeclarationComparator());

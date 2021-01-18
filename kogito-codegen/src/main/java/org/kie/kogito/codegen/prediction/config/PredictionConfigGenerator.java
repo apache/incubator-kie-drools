@@ -21,10 +21,6 @@ import org.kie.kogito.codegen.context.KogitoBuildContext;
 public class PredictionConfigGenerator extends AbstractConfigGenerator {
 
     public PredictionConfigGenerator(KogitoBuildContext context) {
-        super(context,
-                "PredictionConfig",
-                "/class-templates/config/CdiPredictionConfigTemplate.java",
-                "/class-templates/config/SpringPredictionConfigTemplate.java",
-                "/class-templates/config/PredictionConfigTemplate.java");
+        super(context, "PredictionConfig");
     }
 }

@@ -39,49 +39,54 @@ import org.drools.modelcompiler.builder.QueryModel;
 import org.kie.internal.ruleunit.RuleUnitDescription;
 import org.kie.kogito.codegen.BodyDeclarationComparator;
 import org.kie.kogito.codegen.FileGenerator;
+import org.kie.kogito.codegen.TemplatedGenerator;
+import org.kie.kogito.codegen.context.JavaKogitoBuildContext;
+import org.kie.kogito.codegen.context.KogitoBuildContext;
 
-import static com.github.javaparser.StaticJavaParser.parse;
 import static org.drools.core.util.StringUtils.ucFirst;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.classToReferenceType;
+import static org.kie.kogito.codegen.rules.IncrementalRuleCodegen.TEMPLATE_RULE_FOLDER;
 import static org.kie.kogito.codegen.rules.QueryEndpointGenerator.setGeneric;
 
 public class QueryGenerator implements FileGenerator {
 
+    private final TemplatedGenerator generator;
     private final RuleUnitDescription ruleUnit;
     private final QueryModel query;
 
-    private final String name;
-    private final String targetCanonicalName;
-    private final String generatedFilePath;
+    private final String targetClassName;
 
-    public QueryGenerator( RuleUnitDescription ruleUnit, QueryModel query, String name ) {
+    public QueryGenerator(KogitoBuildContext context, RuleUnitDescription ruleUnit, QueryModel query, String name ) {
         this.ruleUnit = ruleUnit;
         this.query = query;
-        this.name = name;
 
-        this.targetCanonicalName = ruleUnit.getSimpleName() + "Query" + name;
-        this.generatedFilePath = (query.getNamespace() + "." + targetCanonicalName).replace('.', '/') + ".java";
+        this.targetClassName = ruleUnit.getSimpleName() + "Query" + name;
+        this.generator = TemplatedGenerator.builder()
+                .withPackageName(query.getNamespace())
+                .withFallbackContext(JavaKogitoBuildContext.CONTEXT_NAME)
+                .withTemplateBasePath(TEMPLATE_RULE_FOLDER)
+                .withTargetTypeName(targetClassName)
+                .build(context, "RuleUnitQuery");
+
     }
 
     public String getQueryClassName() {
-        return targetCanonicalName;
+        return generator.targetTypeName();
     }
 
     @Override
     public String generatedFilePath() {
-        return generatedFilePath;
+        return generator.generatedFilePath();
     }
 
     @Override
     public String generate() {
-        CompilationUnit cu = parse(
-                this.getClass().getResourceAsStream("/class-templates/rules/RuleUnitQueryTemplate.java"));
-        cu.setPackageDeclaration(query.getNamespace());
+        CompilationUnit cu = generator.compilationUnitOrThrow();
 
         ClassOrInterfaceDeclaration clazz = cu
                 .findFirst(ClassOrInterfaceDeclaration.class)
                 .orElseThrow(() -> new NoSuchElementException("Compilation unit doesn't contain a class or interface declaration!"));
-        clazz.setName(targetCanonicalName);
+        clazz.setName(targetClassName);
 
         cu.findAll(StringLiteralExpr.class).forEach(this::interpolateStrings);
 
@@ -100,7 +105,7 @@ public class QueryGenerator implements FileGenerator {
 
     private void generateConstructors(ClassOrInterfaceDeclaration clazz) {
         for (ConstructorDeclaration c : clazz.getConstructors()) {
-            c.setName(targetCanonicalName);
+            c.setName(targetClassName);
             if (!c.getParameters().isEmpty()) {
                 setGeneric(c.getParameter(0).getType(), ruleUnit);
             }
@@ -128,7 +133,7 @@ public class QueryGenerator implements FileGenerator {
             statement.findFirst(CastExpr.class).orElseThrow(() -> new NoSuchElementException("CastExpr not found in template.")).setType(returnType);
             statement.findFirst(StringLiteralExpr.class).orElseThrow(() -> new NoSuchElementException("StringLiteralExpr not found in template.")).setString(name);
         } else {
-            returnType = targetCanonicalName + ".Result";
+            returnType = targetClassName + ".Result";
             generateResultClass(clazz, toResultMethod);
         }
 

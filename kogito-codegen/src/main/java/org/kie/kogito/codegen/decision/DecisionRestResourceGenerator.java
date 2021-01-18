@@ -53,6 +53,7 @@ import org.kie.kogito.codegen.BodyDeclarationComparator;
 import org.kie.kogito.codegen.CodegenUtils;
 import org.kie.kogito.codegen.TemplatedGenerator;
 import org.kie.kogito.codegen.context.KogitoBuildContext;
+import org.kie.kogito.codegen.context.QuarkusKogitoBuildContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,9 +62,6 @@ import static com.github.javaparser.StaticJavaParser.parseStatement;
 public class DecisionRestResourceGenerator {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DecisionRestResourceGenerator.class);
-
-    private static final String CDI_TEMPLATE = "/class-templates/DecisionRestResourceTemplate.java";
-    private static final String SPRING_TEMPLATE = "/class-templates/spring/SpringDecisionRestResourceTemplate.java";
 
     private final KogitoBuildContext context;
     private final DMNModel dmnModel;
@@ -93,7 +91,10 @@ public class DecisionRestResourceGenerator {
         String classPrefix = StringUtils.ucFirst(decisionName);
         this.resourceClazzName = classPrefix + "Resource";
         this.relativePath = restPackageName.replace(".", "/") + "/" + resourceClazzName + ".java";
-        generator = new TemplatedGenerator(context, restPackageName, "DecisionRestResource",CDI_TEMPLATE, SPRING_TEMPLATE, CDI_TEMPLATE);
+        generator = TemplatedGenerator.builder()
+                .withPackageName(restPackageName)
+                .withFallbackContext(QuarkusKogitoBuildContext.CONTEXT_NAME)
+                .build(context, "DecisionRestResource");
     }
 
     private String encodeNameUrl(String name) {

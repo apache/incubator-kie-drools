@@ -29,14 +29,12 @@ import org.kie.kogito.codegen.BodyDeclarationComparator;
 import org.kie.kogito.codegen.CodegenUtils;
 import org.kie.kogito.codegen.TemplatedGenerator;
 import org.kie.kogito.codegen.context.KogitoBuildContext;
+import org.kie.kogito.codegen.context.QuarkusKogitoBuildContext;
 import org.kie.pmml.commons.model.KiePMMLModel;
 
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 
 public class PMMLRestResourceGenerator {
-
-    public static final String CDI_TEMPLATE = "/class-templates/PMMLRestResourceTemplate.java";
-    private static final String SPRING_TEMPLATE = "/class-templates/spring/SpringPMMLRestResourceTemplate.java";
 
     private final String nameURL;
     final String restPackageName;
@@ -56,7 +54,10 @@ public class PMMLRestResourceGenerator {
         this.appCanonicalName = appCanonicalName;
         this.resourceClazzName = classPrefix + "Resource";
         this.relativePath = restPackageName.replace(".", "/") + "/" + resourceClazzName + ".java";
-        this.generator = new TemplatedGenerator(context, restPackageName, "DecisionRestResource",CDI_TEMPLATE, SPRING_TEMPLATE, CDI_TEMPLATE);
+        this.generator = TemplatedGenerator.builder()
+                .withPackageName(restPackageName)
+                .withFallbackContext(QuarkusKogitoBuildContext.CONTEXT_NAME)
+                .build(context, "PMMLRestResource");
     }
 
     public String generate() {

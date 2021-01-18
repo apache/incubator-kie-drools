@@ -31,21 +31,22 @@ import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.kie.api.management.GAV;
+import org.kie.kogito.codegen.InvalidTemplateException;
+import org.kie.kogito.codegen.TemplatedGenerator;
+import org.kie.kogito.codegen.context.JavaKogitoBuildContext;
 import org.kie.kogito.codegen.context.KogitoBuildContext;
 import org.kie.kogito.decision.DecisionModelType;
 import org.kie.kogito.dmn.DefaultDecisionModelResource;
 
-import static com.github.javaparser.StaticJavaParser.parse;
 import static org.kie.kogito.codegen.CodegenUtils.newObject;
 import static org.kie.kogito.codegen.decision.ReadResourceUtil.getReadResourceMethod;
 
 public class DecisionModelResourcesProviderGenerator {
 
-    private static final String TEMPLATE_JAVA = "/class-templates/DecisionModelResourcesProviderTemplate.java";
-
     private final KogitoBuildContext context;
     private final String applicationCanonicalName;
     private final List<DMNResource> resources;
+    private final TemplatedGenerator generator;
 
     public DecisionModelResourcesProviderGenerator(final KogitoBuildContext context,
                                                    final String applicationCanonicalName,
@@ -53,12 +54,13 @@ public class DecisionModelResourcesProviderGenerator {
         this.context = context;
         this.applicationCanonicalName = applicationCanonicalName;
         this.resources = resources;
+        this.generator = TemplatedGenerator.builder()
+                .withFallbackContext(JavaKogitoBuildContext.CONTEXT_NAME)
+                .build(context, "DecisionModelResourcesProvider");
     }
 
     public String generate() {
-        final CompilationUnit compilationUnit =
-                parse(this.getClass().getResourceAsStream(TEMPLATE_JAVA))
-                        .setPackageDeclaration(context.getPackageName());
+        final CompilationUnit compilationUnit = generator.compilationUnitOrThrow();
 
         final ClassOrInterfaceDeclaration clazz = compilationUnit
                 .findFirst(ClassOrInterfaceDeclaration.class)
@@ -75,7 +77,7 @@ public class DecisionModelResourcesProviderGenerator {
     }
 
     public String generatedFilePath() {
-        return (context.getPackageName() + ".DecisionModelResourcesProvider").replace('.', '/') + ".java";
+        return generator.generatedFilePath();
     }
 
     private void setupResourcesVariable(final ClassOrInterfaceDeclaration typeDeclaration) {
@@ -83,7 +85,9 @@ public class DecisionModelResourcesProviderGenerator {
         final ClassOrInterfaceType applicationClass = StaticJavaParser.parseClassOrInterfaceType(applicationCanonicalName);
 
         if (getResourcesMethods.size() != 1) {
-            throw (new RuntimeException("A \"getResources()\" method was not found in " + TEMPLATE_JAVA));
+            throw new InvalidTemplateException(
+                    generator,
+                    "A \"getResources()\" method was not found");
         }
         final MethodDeclaration getResourcesMethod = getResourcesMethods.get(0);
         final BlockStmt body = getResourcesMethod.getBody().orElseThrow(() -> new RuntimeException("Can't find the body of the \"get()\" method."));

@@ -83,7 +83,7 @@ class KogitoBuildContextTest {
         }
 
         protected MockKogitoBuildContext(String packageName, Predicate<String> classAvailabilityResolver, DependencyInjectionAnnotator dependencyInjectionAnnotator, File targetDirectory, AddonsConfig addonsConfig, Properties applicationProperties) {
-            super(packageName, classAvailabilityResolver, dependencyInjectionAnnotator, targetDirectory, addonsConfig, applicationProperties);
+            super(packageName, classAvailabilityResolver, dependencyInjectionAnnotator, targetDirectory, addonsConfig, applicationProperties, "Mock");
         }
 
         public static class MockKogiotBuildContextBuilder extends AbstractKogitoBuildContext.AbstractBuilder {

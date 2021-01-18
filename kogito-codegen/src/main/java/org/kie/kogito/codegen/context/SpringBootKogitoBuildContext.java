@@ -24,8 +24,10 @@ import java.util.function.Predicate;
 
 public class SpringBootKogitoBuildContext extends AbstractKogitoBuildContext {
 
+    public static final String CONTEXT_NAME = "Spring";
+
     protected SpringBootKogitoBuildContext(String packageName, Predicate<String> classAvailabilityResolver, File targetDirectory, AddonsConfig addonsConfig, Properties applicationProperties) {
-        super(packageName, classAvailabilityResolver, new SpringDependencyInjectionAnnotator(), targetDirectory, addonsConfig, applicationProperties);
+        super(packageName, classAvailabilityResolver, new SpringDependencyInjectionAnnotator(), targetDirectory, addonsConfig, applicationProperties, CONTEXT_NAME);
     }
 
     public static Builder builder() {

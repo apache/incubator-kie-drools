@@ -45,7 +45,6 @@ import com.github.javaparser.ast.stmt.ExplicitConstructorInvocationStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.kie.kogito.codegen.AbstractGenerator;
-import org.kie.kogito.codegen.ApplicationConfigGenerator;
 import org.kie.kogito.codegen.ApplicationSection;
 import org.kie.kogito.codegen.BodyDeclarationComparator;
 import org.kie.kogito.codegen.GeneratedFile;
@@ -89,7 +88,8 @@ public class PersistenceGenerator extends AbstractGenerator {
     public PersistenceGenerator(KogitoBuildContext context, Collection<?> modelClasses, ProtoGenerator<?> protoGenerator, List<String> parameters, String persistenceType) {
         this(context, modelClasses, protoGenerator, Thread.currentThread().getContextClassLoader(), parameters, persistenceType);
     }
-    
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public PersistenceGenerator(KogitoBuildContext context, Collection<?> modelClasses, ProtoGenerator<?> protoGenerator, ClassLoader classLoader, List<String> parameters, String persistenceType) {
         super(context);
         this.modelClasses = modelClasses;
@@ -164,7 +164,7 @@ public class PersistenceGenerator extends AbstractGenerator {
         }
         List<String> variableMarshallers = new ArrayList<>();
 
-        MarshallerGenerator marshallerGenerator = new MarshallerGenerator(this.classLoader);
+        MarshallerGenerator marshallerGenerator = new MarshallerGenerator(context(), this.classLoader);
 
         String protoContent = proto.toString();
 

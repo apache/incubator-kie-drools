@@ -40,21 +40,24 @@ public abstract class AbstractKogitoBuildContext implements KogitoBuildContext {
     protected final File targetDirectory;
     protected final String packageName;
     protected final AddonsConfig addonsConfig;
+    protected final String contextName;
 
     protected DependencyInjectionAnnotator dependencyInjectionAnnotator;
 
     protected AbstractKogitoBuildContext(String packageName,
-                                      Predicate<String> classAvailabilityResolver,
-                                      DependencyInjectionAnnotator dependencyInjectionAnnotator,
-                                      File targetDirectory,
-                                      AddonsConfig addonsConfig,
-                                      Properties applicationProperties) {
+                                         Predicate<String> classAvailabilityResolver,
+                                         DependencyInjectionAnnotator dependencyInjectionAnnotator,
+                                         File targetDirectory,
+                                         AddonsConfig addonsConfig,
+                                         Properties applicationProperties,
+                                         String contextName) {
         this.packageName = packageName;
         this.classAvailabilityResolver = classAvailabilityResolver;
         this.dependencyInjectionAnnotator = dependencyInjectionAnnotator;
         this.targetDirectory = targetDirectory;
         this.addonsConfig = addonsConfig;
         this.applicationProperties = applicationProperties;
+        this.contextName = contextName;
     }
 
     @Override
@@ -95,6 +98,11 @@ public abstract class AbstractKogitoBuildContext implements KogitoBuildContext {
     @Override
     public AddonsConfig getAddonsConfig() {
         return addonsConfig;
+    }
+
+    @Override
+    public String name() {
+        return contextName;
     }
 
     protected static Properties load(File... resourcePaths) {

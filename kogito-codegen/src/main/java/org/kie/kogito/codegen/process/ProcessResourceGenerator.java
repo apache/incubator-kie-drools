@@ -35,7 +35,11 @@ import org.jbpm.compiler.canonical.UserTaskModelMetaData;
 import org.kie.api.definition.process.WorkflowProcess;
 import org.kie.kogito.codegen.BodyDeclarationComparator;
 import org.kie.kogito.codegen.CodegenUtils;
+import org.kie.kogito.codegen.GeneratorConfig;
+import org.kie.kogito.codegen.TemplatedGenerator;
 import org.kie.kogito.codegen.context.KogitoBuildContext;
+import org.kie.kogito.codegen.context.QuarkusKogitoBuildContext;
+import org.kie.kogito.codegen.context.SpringBootKogitoBuildContext;
 
 import java.util.HashMap;
 import java.util.List;
@@ -46,13 +50,17 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-import static com.github.javaparser.StaticJavaParser.parse;
 import static org.kie.kogito.codegen.CodegenUtils.interpolateTypes;
 
 /**
- * AbstractResourceGenerator
+ * ProcessResourceGenerator
  */
-public abstract class AbstractResourceGenerator {
+public class ProcessResourceGenerator {
+
+    private static final String REST_TEMPLATE_NAME = "RestResource";
+    private static final String REACTIVE_REST_TEMPLATE_NAME = "ReactiveRestResource";
+    private static final String REST_USER_TASK_TEMPLATE_NAME = "RestResourceUserTask";
+    private static final String REST_SIGNAL_TEMPLATE_NAME = "RestResourceSignal";
 
     private final String relativePath;
 
@@ -71,7 +79,7 @@ public abstract class AbstractResourceGenerator {
     private List<UserTaskModelMetaData> userTasks;
     private Map<String, String> signals;
 
-    public AbstractResourceGenerator(
+    public ProcessResourceGenerator(
             KogitoBuildContext context,
             WorkflowProcess process,
             String modelfqcn,
@@ -90,17 +98,17 @@ public abstract class AbstractResourceGenerator {
         this.processClazzName = processfqcn;
     }
 
-    public AbstractResourceGenerator withUserTasks(List<UserTaskModelMetaData> userTasks) {
+    public ProcessResourceGenerator withUserTasks(List<UserTaskModelMetaData> userTasks) {
         this.userTasks = userTasks;
         return this;
     }
 
-    public AbstractResourceGenerator withSignals(Map<String, String> signals) {
+    public ProcessResourceGenerator withSignals(Map<String, String> signals) {
         this.signals = signals;
         return this;
     }
 
-    public AbstractResourceGenerator withTriggers(boolean startable, boolean dynamic) {
+    public ProcessResourceGenerator withTriggers(boolean startable, boolean dynamic) {
         this.startable = startable;
         this.dynamic = dynamic;
         return this;
@@ -110,15 +118,25 @@ public abstract class AbstractResourceGenerator {
         return resourceClazzName;
     }
 
-    protected abstract String getResourceTemplate();
+    protected String getRestTemplateName() {
+        boolean isReactiveGenerator = "reactive".equals(context.getApplicationProperty(GeneratorConfig.KOGITO_REST_RESOURCE_TYPE_PROP)
+                .orElse(""));
+        boolean isQuarkus = context.name().equals(QuarkusKogitoBuildContext.CONTEXT_NAME);
 
-    public abstract List<String> getRestAnnotations();
+        return isQuarkus && isReactiveGenerator ? REACTIVE_REST_TEMPLATE_NAME : REST_TEMPLATE_NAME;
+    }
 
-    protected abstract String getSignalResponseType(String outputType);
+    protected String getSignalResponseType(String outputType) {
+        boolean isSpring = context.name().equals(SpringBootKogitoBuildContext.CONTEXT_NAME);
+
+        return isSpring ? "ResponseEntity<" + outputType + ">" : outputType;
+    }
 
     public String generate() {
-        CompilationUnit clazz = parse(
-                this.getClass().getResourceAsStream(getResourceTemplate()));
+        TemplatedGenerator.Builder templateBuilder = TemplatedGenerator.builder()
+                .withFallbackContext(QuarkusKogitoBuildContext.CONTEXT_NAME);
+        CompilationUnit clazz = templateBuilder.build(context, getRestTemplateName())
+                .compilationUnitOrThrow();
         clazz.setPackageDeclaration(process.getPackageName());
         clazz.addImport(modelfqcn);
 
@@ -132,8 +150,8 @@ public abstract class AbstractResourceGenerator {
         Optional.ofNullable(signals)
                 .ifPresent(signalsMap -> {
                     //using template class to the endpoints generation
-                    CompilationUnit signalClazz =
-                            parse(this.getClass().getResourceAsStream(getSignalResourceTemplate()));
+                    CompilationUnit signalClazz = templateBuilder.build(context, REST_SIGNAL_TEMPLATE_NAME)
+                            .compilationUnitOrThrow();
 
                     ClassOrInterfaceDeclaration signalTemplate = signalClazz
                             .findFirst(ClassOrInterfaceDeclaration.class)
@@ -185,8 +203,8 @@ public abstract class AbstractResourceGenerator {
 
         if (userTasks != null) {
 
-            CompilationUnit userTaskClazz =
-                    parse(this.getClass().getResourceAsStream(getUserTaskResourceTemplate()));
+            CompilationUnit userTaskClazz = templateBuilder.build(context, REST_USER_TASK_TEMPLATE_NAME)
+                    .compilationUnitOrThrow();
 
             ClassOrInterfaceDeclaration userTaskTemplate = userTaskClazz
                     .findFirst(ClassOrInterfaceDeclaration.class)
@@ -252,24 +270,12 @@ public abstract class AbstractResourceGenerator {
         return clazz.toString();
     }
 
-    protected abstract String getSignalResourceTemplate();
-
-    public abstract String getUserTaskResourceTemplate();
-
     private void securityAnnotated(ClassOrInterfaceDeclaration template) {
         if (context.hasDI() && process.getMetaData().containsKey("securityRoles")) {
             String[] roles = ((String) process.getMetaData().get("securityRoles")).split(",");
-            template.findAll(MethodDeclaration.class).stream().filter(this::requiresSecurity)
+            template.findAll(MethodDeclaration.class).stream().filter(context.getDependencyInjectionAnnotator()::isRestAnnotated)
                     .forEach(md -> context.getDependencyInjectionAnnotator().withSecurityRoles(md, roles));
         }
-    }
-
-    private boolean requiresSecurity(MethodDeclaration md) {
-        // applies to only rest annotated methods
-        return getRestAnnotations()
-                .stream()
-                .map(md::getAnnotationByName)
-                .anyMatch(Optional::isPresent);
     }
 
     private void enableValidation(ClassOrInterfaceDeclaration template) {

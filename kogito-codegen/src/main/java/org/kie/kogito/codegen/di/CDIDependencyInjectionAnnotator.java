@@ -16,7 +16,6 @@
 
 package org.kie.kogito.codegen.di;
 
-import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.BooleanLiteralExpr;
@@ -30,8 +29,8 @@ import com.github.javaparser.ast.expr.SingleMemberAnnotationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithAnnotations;
 
-import static com.github.javaparser.StaticJavaParser.parse;
-
+import java.util.Optional;
+import java.util.stream.Stream;
 
 public class CDIDependencyInjectionAnnotator implements DependencyInjectionAnnotator {
 
@@ -160,16 +159,15 @@ public class CDIDependencyInjectionAnnotator implements DependencyInjectionAnnot
     }
 
     @Override
-    public String objectMapperInjectorSource(String packageName) {
-        CompilationUnit clazz = parse(
-                this.getClass().getResourceAsStream("/class-templates/rules/KogitoQuarkusObjectMapper.java"));
-        clazz.setPackageDeclaration( packageName );
-        return clazz.toString();
-    }
-
-    @Override
     public <T extends NodeWithAnnotations<?>> T withEagerStartup(T node) {
         node.addAnnotation("io.quarkus.runtime.Startup");
         return node;
+    }
+
+    @Override
+    public <T extends NodeWithAnnotations<?>> boolean isRestAnnotated(T node) {
+        return Stream.of("POST", "GET", "PUT", "DELETE")
+                .map(node::getAnnotationByName)
+                .anyMatch(Optional::isPresent);
     }
 }

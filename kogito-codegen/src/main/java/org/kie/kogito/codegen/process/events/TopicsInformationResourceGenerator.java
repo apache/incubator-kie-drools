@@ -32,14 +32,13 @@ import org.jbpm.compiler.canonical.TriggerMetaData;
 import org.kie.kogito.codegen.BodyDeclarationComparator;
 import org.kie.kogito.codegen.TemplatedGenerator;
 import org.kie.kogito.codegen.context.KogitoBuildContext;
+import org.kie.kogito.codegen.context.QuarkusKogitoBuildContext;
 import org.kie.kogito.codegen.process.ProcessExecutableModelGenerator;
 import org.kie.kogito.event.EventKind;
 import org.kie.kogito.services.event.DataEventAttrBuilder;
 
 public class TopicsInformationResourceGenerator extends AbstractEventResourceGenerator {
 
-    private static final String CDI_TEMPLATE = "/class-templates/events/TopicsInformationResourceTemplate.java";
-    private static final String SPRING_TEMPLATE = "/class-templates/events/SpringTopicsInformationResourceTemplate.java";
     private static final String CLASS_NAME = "TopicsInformationResource";
 
     private final KogitoBuildContext context;
@@ -47,8 +46,10 @@ public class TopicsInformationResourceGenerator extends AbstractEventResourceGen
 
     public TopicsInformationResourceGenerator(final KogitoBuildContext context,
                                               final List<ProcessExecutableModelGenerator> generators) {
-        super(new TemplatedGenerator(context, CLASS_NAME,
-                                     CDI_TEMPLATE, SPRING_TEMPLATE, CDI_TEMPLATE));
+        super(TemplatedGenerator.builder()
+                .withTemplateBasePath(TEMPLATE_EVENT_FOLDER)
+                .withFallbackContext(QuarkusKogitoBuildContext.CONTEXT_NAME)
+                .build(context, CLASS_NAME));
         this.context = context;
         this.triggers = this.filterTriggers(generators);
     }

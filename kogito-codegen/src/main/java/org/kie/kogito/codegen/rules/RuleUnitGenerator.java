@@ -17,7 +17,6 @@ package org.kie.kogito.codegen.rules;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import com.github.javaparser.ast.CompilationUnit;
@@ -35,6 +34,9 @@ import com.github.javaparser.ast.type.TypeParameter;
 import org.drools.modelcompiler.builder.QueryModel;
 import org.kie.internal.ruleunit.RuleUnitDescription;
 import org.kie.kogito.codegen.FileGenerator;
+import org.kie.kogito.codegen.InvalidTemplateException;
+import org.kie.kogito.codegen.TemplatedGenerator;
+import org.kie.kogito.codegen.context.JavaKogitoBuildContext;
 import org.kie.kogito.codegen.context.KogitoBuildContext;
 import org.kie.kogito.conf.ClockType;
 import org.kie.kogito.conf.EventProcessingType;
@@ -43,38 +45,41 @@ import org.kie.kogito.rules.RuleUnitConfig;
 import org.kie.kogito.rules.units.GeneratedRuleUnitDescription;
 import org.kie.kogito.rules.units.impl.AbstractRuleUnit;
 
-import static com.github.javaparser.StaticJavaParser.parse;
 import static com.github.javaparser.StaticJavaParser.parseExpression;
 import static com.github.javaparser.ast.NodeList.nodeList;
 import static java.util.stream.Collectors.toList;
+import static org.kie.kogito.codegen.rules.IncrementalRuleCodegen.TEMPLATE_RULE_FOLDER;
 
 public class RuleUnitGenerator implements FileGenerator {
 
-    public static final String TEMPLATE = "/class-templates/rules/RuleUnitTemplate.java";
-
     private final RuleUnitDescription ruleUnit;
-    private final String packageName;
+    private final String ruleUnitPackageName;
     private final String typeName;
     private final String generatedSourceFile;
-    private KogitoBuildContext context;
-    private final String generatedFilePath;
+    private final TemplatedGenerator generator;
+    private final KogitoBuildContext context;
     private final String targetCanonicalName;
+    private final String targetTypeName;
     private RuleUnitConfig config;
-    private String targetTypeName;
     private Collection<QueryModel> queries;
 
-    public RuleUnitGenerator(RuleUnitDescription ruleUnit, String generatedSourceFile, KogitoBuildContext context) {
+    public RuleUnitGenerator(KogitoBuildContext context, RuleUnitDescription ruleUnit, String generatedSourceFile) {
         this.ruleUnit = ruleUnit;
-        this.packageName = ruleUnit.getPackageName();
+        this.ruleUnitPackageName = ruleUnit.getPackageName();
         this.typeName = ruleUnit.getSimpleName();
         this.generatedSourceFile = generatedSourceFile;
         this.context = context;
         this.targetTypeName = typeName + "RuleUnit";
-        this.targetCanonicalName = packageName + "." + targetTypeName;
-        this.generatedFilePath = targetCanonicalName.replace('.', '/') + ".java";
+        this.targetCanonicalName = ruleUnitPackageName + "." + targetTypeName;
         // merge config from the descriptor with configs from application.conf
         // application.conf overrides any other config
         this.config = ruleUnit.getConfig();
+        this.generator = TemplatedGenerator.builder()
+                .withPackageName(ruleUnitPackageName)
+                .withTemplateBasePath(TEMPLATE_RULE_FOLDER)
+                .withTargetTypeName(targetTypeName)
+                .withFallbackContext(JavaKogitoBuildContext.CONTEXT_NAME)
+                .build(context, "RuleUnit");
     }
 
     // override config for this rule unit with the given values
@@ -96,15 +101,11 @@ public class RuleUnitGenerator implements FileGenerator {
 
     @Override
     public String generatedFilePath() {
-        return generatedFilePath;
+        return generator.generatedFilePath();
     }
 
     public String targetCanonicalName() {
         return targetCanonicalName;
-    }
-
-    public String targetTypeName() {
-        return targetTypeName;
     }
 
     public String typeName() {
@@ -125,12 +126,13 @@ public class RuleUnitGenerator implements FileGenerator {
     }
 
     public CompilationUnit compilationUnit() {
-        CompilationUnit compilationUnit = parse(getClass().getResourceAsStream(TEMPLATE));
-        compilationUnit.setPackageDeclaration(packageName);
+        CompilationUnit compilationUnit = generator.compilationUnitOrThrow();
 
         classDeclaration(
                 compilationUnit.findFirst(ClassOrInterfaceDeclaration.class)
-                        .orElseThrow(() -> new NoSuchElementException("Compilation unit doesn't contain a class or interface declaration!")));
+                        .orElseThrow(() -> new InvalidTemplateException(
+                                generator,
+                                "Compilation unit doesn't contain a class or interface declaration!")));
         return compilationUnit;
     }
 
@@ -155,14 +157,14 @@ public class RuleUnitGenerator implements FileGenerator {
                     .ifPresent(context.getDependencyInjectionAnnotator()::withInjection);
         }
 
-        String ruleUnitInstanceFQCN = RuleUnitInstanceGenerator.qualifiedName(packageName, typeName);
+        String ruleUnitInstanceFQCN = RuleUnitInstanceGenerator.qualifiedName(ruleUnitPackageName, typeName);
         cls.findAll(ConstructorDeclaration.class).forEach(this::setClassName);
         cls.findAll(ObjectCreationExpr.class, o -> o.getType().getNameAsString().equals("$InstanceName$"))
                 .forEach(o -> o.setType(ruleUnitInstanceFQCN));
         cls.findAll(ObjectCreationExpr.class, o -> o.getType().getNameAsString().equals("$Application$"))
                 .forEach(o -> o.setType(context.getPackageName() + ".Application"));
         cls.findAll(ObjectCreationExpr.class, o -> o.getType().getNameAsString().equals("$RuleModelName$"))
-                .forEach(o -> o.setType(packageName + "." + generatedSourceFile + "_" + typeName));
+                .forEach(o -> o.setType(ruleUnitPackageName + "." + generatedSourceFile + "_" + typeName));
         cls.findAll(MethodDeclaration.class, m -> m.getType().asString().equals("$InstanceName$"))
                 .stream()
                 .map(m -> m.setType(ruleUnitInstanceFQCN))

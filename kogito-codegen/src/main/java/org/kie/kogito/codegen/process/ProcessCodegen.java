@@ -50,7 +50,6 @@ import org.kie.kogito.codegen.AbstractGenerator;
 import org.kie.kogito.codegen.ApplicationSection;
 import org.kie.kogito.codegen.GeneratedFile;
 import org.kie.kogito.codegen.GeneratedFileType;
-import org.kie.kogito.codegen.ResourceGeneratorFactory;
 import org.kie.kogito.codegen.context.KogitoBuildContext;
 import org.kie.kogito.codegen.io.CollectedResource;
 import org.kie.kogito.codegen.process.config.ProcessConfigGenerator;
@@ -95,7 +94,6 @@ public class ProcessCodegen extends AbstractGenerator {
     }
 
     private ClassLoader contextClassLoader;
-    private final ResourceGeneratorFactory resourceGeneratorFactory;
     private final List<ProcessGenerator> processGenerators = new ArrayList<>();
 
     public static ProcessCodegen ofCollectedResources(KogitoBuildContext context, Collection<CollectedResource> resources) {
@@ -181,8 +179,6 @@ public class ProcessCodegen extends AbstractGenerator {
         }
 
         contextClassLoader = Thread.currentThread().getContextClassLoader();
-
-        resourceGeneratorFactory = new ResourceGeneratorFactory();
     }
 
     public static String defaultWorkItemHandlerConfigClass(String packageName) {
@@ -207,7 +203,7 @@ public class ProcessCodegen extends AbstractGenerator {
         List<ProcessGenerator> ps = new ArrayList<>();
         List<ProcessInstanceGenerator> pis = new ArrayList<>();
         List<ProcessExecutableModelGenerator> processExecutableModelGenerators = new ArrayList<>();
-        List<AbstractResourceGenerator> rgs = new ArrayList<>(); // REST resources
+        List<ProcessResourceGenerator> rgs = new ArrayList<>(); // REST resources
         List<MessageDataEventGenerator> mdegs = new ArrayList<>(); // message data events
         List<MessageConsumerGenerator> megs = new ArrayList<>(); // message endpoints/consumers
         List<MessageProducerGenerator> mpgs = new ArrayList<>(); // message producers
@@ -285,16 +281,19 @@ public class ProcessCodegen extends AbstractGenerator {
             ProcessMetaData metaData = processIdToMetadata.get(workFlowProcess.getId());
 
             //Creating and adding the ResourceGenerator
-            resourceGeneratorFactory.create(context(),
-                                            workFlowProcess,
-                                            modelClassGenerator.className(),
-                                            execModelGen.className(),
-                                            applicationCanonicalName())
-                    .map(r -> r
-                            .withUserTasks(processIdToUserTaskModel.get(workFlowProcess.getId()))
-                            .withSignals(metaData.getSignals())
-                            .withTriggers(metaData.isStartable(), metaData.isDynamic()))
-                    .ifPresent(rgs::add);
+            ProcessResourceGenerator processResourceGenerator = new ProcessResourceGenerator(
+                    context(),
+                    workFlowProcess,
+                    modelClassGenerator.className(),
+                    execModelGen.className(),
+                    applicationCanonicalName());
+
+            processResourceGenerator
+                    .withUserTasks(processIdToUserTaskModel.get(workFlowProcess.getId()))
+                    .withSignals(metaData.getSignals())
+                    .withTriggers(metaData.isStartable(), metaData.isDynamic());
+
+            rgs.add(processResourceGenerator);
 
             if (metaData.getTriggers() != null) {
 
@@ -303,8 +302,8 @@ public class ProcessCodegen extends AbstractGenerator {
                     // generate message consumers for processes with message start events
                     if (trigger.getType().equals(TriggerMetaData.TriggerType.ConsumeMessage)) {
 
-                        MessageDataEventGenerator msgDataEventGenerator = new MessageDataEventGenerator(workFlowProcess,
-                                                                                                        trigger);
+                        MessageDataEventGenerator msgDataEventGenerator =
+                                new MessageDataEventGenerator(context(), workFlowProcess, trigger);
                         mdegs.add(msgDataEventGenerator);
 
                         megs.add(new MessageConsumerGenerator(
@@ -317,8 +316,8 @@ public class ProcessCodegen extends AbstractGenerator {
                                 trigger));
                     } else if (trigger.getType().equals(TriggerMetaData.TriggerType.ProduceMessage)) {
 
-                        MessageDataEventGenerator msgDataEventGenerator = new MessageDataEventGenerator(workFlowProcess,
-                                                                                                        trigger);
+                        MessageDataEventGenerator msgDataEventGenerator =
+                                new MessageDataEventGenerator(context(), workFlowProcess, trigger);
                         mdegs.add(msgDataEventGenerator);
 
                         // this is not cool, we should have a way to process addons
@@ -378,7 +377,7 @@ public class ProcessCodegen extends AbstractGenerator {
             }
         }
 
-        for (AbstractResourceGenerator resourceGenerator : rgs) {
+        for (ProcessResourceGenerator resourceGenerator : rgs) {
             storeFile(REST_TYPE, resourceGenerator.generatedFilePath(),
                       resourceGenerator.generate());
         }

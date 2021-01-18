@@ -26,6 +26,7 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import org.infinispan.protostream.EnumMarshaller;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.codegen.context.KogitoBuildContext;
 import org.kie.kogito.codegen.data.Answer;
 import org.kie.kogito.codegen.data.AnswerWitAnnotations;
 import org.kie.kogito.codegen.data.Person;
@@ -38,11 +39,11 @@ import org.kie.kogito.codegen.process.persistence.MarshallerGenerator;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class MarshallerGeneratorTest {
 
     private ProtoGenerator<Class<?>> generator = new ReflectionProtoGenerator();
+    private KogitoBuildContext context = KogitoBuildContext.EMPTY_CONTEXT;
     
     @Test
     void testPersonMarshallers() throws Exception {
@@ -51,7 +52,7 @@ class MarshallerGeneratorTest {
         assertThat(proto).isNotNull();        
         assertThat(proto.getMessages()).hasSize(1);
         
-        MarshallerGenerator marshallerGenerator = new MarshallerGenerator(this.getClass().getClassLoader());
+        MarshallerGenerator marshallerGenerator = new MarshallerGenerator(context, this.getClass().getClassLoader());
         
         List<CompilationUnit> classes = marshallerGenerator.generate(proto.toString());
         assertThat(classes).isNotNull();       
@@ -70,7 +71,7 @@ class MarshallerGeneratorTest {
 
         System.out.println(proto.getMessages());
 
-        MarshallerGenerator marshallerGenerator = new MarshallerGenerator(this.getClass().getClassLoader());
+        MarshallerGenerator marshallerGenerator = new MarshallerGenerator(context, this.getClass().getClassLoader());
 
         List<CompilationUnit> classes = marshallerGenerator.generate(proto.toString());
         assertThat(classes).isNotNull();
@@ -87,7 +88,7 @@ class MarshallerGeneratorTest {
         assertThat(proto).isNotNull();        
         assertThat(proto.getMessages()).hasSize(2);
         
-        MarshallerGenerator marshallerGenerator = new MarshallerGenerator(this.getClass().getClassLoader());
+        MarshallerGenerator marshallerGenerator = new MarshallerGenerator(context, this.getClass().getClassLoader());
         
         List<CompilationUnit> classes = marshallerGenerator.generate(proto.toString());
         assertThat(classes).isNotNull();       
@@ -108,7 +109,7 @@ class MarshallerGeneratorTest {
 
         System.out.println(proto.getMessages());
         
-        MarshallerGenerator marshallerGenerator = new MarshallerGenerator(this.getClass().getClassLoader());
+        MarshallerGenerator marshallerGenerator = new MarshallerGenerator(context, this.getClass().getClassLoader());
         
         List<CompilationUnit> classes = marshallerGenerator.generate(proto.toString());
         assertThat(classes).isNotNull();       
@@ -127,7 +128,7 @@ class MarshallerGeneratorTest {
             assertThat(proto).isNotNull();
             assertThat(proto.getMessages()).hasSize(1);
 
-            MarshallerGenerator marshallerGenerator = new MarshallerGenerator(this.getClass().getClassLoader());
+            MarshallerGenerator marshallerGenerator = new MarshallerGenerator(context, this.getClass().getClassLoader());
 
             List<CompilationUnit> classes = null;
             try {
@@ -158,7 +159,7 @@ class MarshallerGeneratorTest {
             assertThat(proto).isNotNull();
             assertThat(proto.getEnums()).hasSize(1);
 
-            MarshallerGenerator marshallerGenerator = new MarshallerGenerator(this.getClass().getClassLoader());
+            MarshallerGenerator marshallerGenerator = new MarshallerGenerator(context, this.getClass().getClassLoader());
 
             List<CompilationUnit> classes = null;
             try {

@@ -33,17 +33,16 @@ import org.drools.core.util.StringUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.codegen.feel11.CodegenStringUtil;
+import org.kie.kogito.codegen.TemplatedGenerator;
 import org.kie.kogito.codegen.context.KogitoBuildContext;
 import org.kie.kogito.codegen.context.QuarkusKogitoBuildContext;
 import org.kie.kogito.codegen.di.CDIDependencyInjectionAnnotator;
 import org.kie.pmml.commons.model.KiePMMLModel;
 
-import static com.github.javaparser.StaticJavaParser.parse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
-import static org.kie.kogito.codegen.prediction.PMMLRestResourceGenerator.CDI_TEMPLATE;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 
 class PMMLRestResourceGeneratorTest {
@@ -51,7 +50,7 @@ class PMMLRestResourceGeneratorTest {
     private final static String APP_CANONICAL_NAME = "APP_CANONICAL_NAME";
     private final static KiePMMLModel KIE_PMML_MODEL = getKiePMMLModelInternal();
     private static PMMLRestResourceGenerator pmmlRestResourceGenerator;
-    private static ClassOrInterfaceDeclaration template = getClassOrInterfaceDeclaration();
+    private static ClassOrInterfaceDeclaration template = getClassOrInterfaceDeclaration(QuarkusKogitoBuildContext.builder().build());
     private static KogitoBuildContext context;
 
     @BeforeAll
@@ -72,8 +71,11 @@ class PMMLRestResourceGeneratorTest {
         };
     }
 
-    private static ClassOrInterfaceDeclaration getClassOrInterfaceDeclaration() {
-        CompilationUnit clazz = parse(PMMLRestResourceGeneratorTest.class.getResourceAsStream(CDI_TEMPLATE));
+    private static ClassOrInterfaceDeclaration getClassOrInterfaceDeclaration(KogitoBuildContext context) {
+        CompilationUnit clazz = TemplatedGenerator.builder()
+                .build(context, "PMMLRestResource")
+                .compilationUnitOrThrow();
+
         clazz.setPackageDeclaration(CodegenStringUtil.escapeIdentifier("IDENTIFIER"));
         return clazz
                 .findFirst(ClassOrInterfaceDeclaration.class)

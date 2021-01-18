@@ -19,8 +19,8 @@ package org.kie.kogito.codegen.di;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Optional;
+import java.util.stream.Stream;
 
-import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.BooleanLiteralExpr;
@@ -37,8 +37,6 @@ import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.TypeExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithAnnotations;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
-
-import static com.github.javaparser.StaticJavaParser.parse;
 
 public class SpringDependencyInjectionAnnotator implements DependencyInjectionAnnotator {
 
@@ -154,14 +152,6 @@ public class SpringDependencyInjectionAnnotator implements DependencyInjectionAn
         return node;
     }
 
-    @Override
-    public String objectMapperInjectorSource(String packageName) {
-        CompilationUnit clazz = parse(
-                this.getClass().getResourceAsStream("/class-templates/rules/KogitoSpringObjectMapper.java"));
-        clazz.setPackageDeclaration( packageName );
-        return clazz.toString();
-    }
-
     /**
      * no-op, Spring beans are not lazy by default. 
      * @param node node to be annotated
@@ -170,5 +160,12 @@ public class SpringDependencyInjectionAnnotator implements DependencyInjectionAn
     @Override
     public <T extends NodeWithAnnotations<?>> T withEagerStartup(T node) {
         return node;
+    }
+
+    @Override
+    public <T extends NodeWithAnnotations<?>> boolean isRestAnnotated(T node) {
+        return Stream.of("PostMapping", "GetMapping", "PutMapping", "DeleteMapping")
+                .map(node::getAnnotationByName)
+                .anyMatch(Optional::isPresent);
     }
 }

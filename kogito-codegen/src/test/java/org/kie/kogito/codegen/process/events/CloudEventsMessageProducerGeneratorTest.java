@@ -42,7 +42,7 @@ class CloudEventsMessageProducerGeneratorTest {
                     .findFirst()
                     .orElseThrow(() -> new IllegalArgumentException("Process does not contains any message producers"));
             final MessageDataEventGenerator msgDataEventGenerator =
-                    new MessageDataEventGenerator(m.process(), metaData);
+                    new MessageDataEventGenerator(context, m.process(), metaData);
             final MessageProducerGenerator gen =
                     new CloudEventsMessageProducerGenerator(context, m.process(), "", "", msgDataEventGenerator.className(), metaData);
             final String code = gen.generate();

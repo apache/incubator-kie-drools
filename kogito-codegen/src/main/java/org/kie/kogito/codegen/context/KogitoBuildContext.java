@@ -72,6 +72,13 @@ public interface KogitoBuildContext {
 
     AddonsConfig getAddonsConfig();
 
+    /**
+     * Name of the context (e.g. Quarkus, Spring) used to identify a context and for template naming conventions
+     * (see {@link org.kie.kogito.codegen.TemplatedGenerator})
+     * @return
+     */
+    String name();
+
     interface Builder {
         Builder withPackageName(String packageName);
 

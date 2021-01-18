@@ -45,9 +45,6 @@ import static com.github.javaparser.ast.NodeList.nodeList;
 
 public class ProcessContainerGenerator extends AbstractApplicationSection {
 
-    private static final String RESOURCE = "/class-templates/ProcessContainerTemplate.java";
-    private static final String RESOURCE_CDI = "/class-templates/CdiProcessContainerTemplate.java";
-    private static final String RESOURCE_SPRING = "/class-templates/SpringProcessContainerTemplate.java";
     public static final String SECTION_CLASS_NAME = "Processes";
 
     private final List<ProcessGenerator> processes;
@@ -62,12 +59,9 @@ public class ProcessContainerGenerator extends AbstractApplicationSection {
         this.processes = new ArrayList<>();
         this.factoryMethods = new ArrayList<>();
 
-        this.templatedGenerator = new TemplatedGenerator(
-                context,
-                SECTION_CLASS_NAME,
-                RESOURCE_CDI,
-                RESOURCE_SPRING,
-                RESOURCE);
+        this.templatedGenerator = TemplatedGenerator.builder()
+                .withTargetTypeName(SECTION_CLASS_NAME)
+                .build(context, "ProcessContainer");
     }
 
     public void addProcess(ProcessGenerator p) {
@@ -113,8 +107,7 @@ public class ProcessContainerGenerator extends AbstractApplicationSection {
 
         compilationUnit.findFirst(MethodDeclaration.class, m -> m.getNameAsString().equals("processIds"))
                 .orElseThrow(() -> new InvalidTemplateException(
-                        SECTION_CLASS_NAME,
-                        templatedGenerator.templatePath(),
+                        templatedGenerator,
                         "Cannot find 'processIds' method body"))
                 .setBody(this.processesBody);
     }
@@ -124,8 +117,7 @@ public class ProcessContainerGenerator extends AbstractApplicationSection {
                 .addStatement(new ReturnStmt(new NullLiteralExpr()));
         compilationUnit.findFirst(MethodDeclaration.class, m -> m.getNameAsString().equals("processById"))
                 .orElseThrow(() -> new InvalidTemplateException(
-                        SECTION_CLASS_NAME,
-                        templatedGenerator.templatePath(),
+                        templatedGenerator,
                         "Cannot find 'processById' method body"))
                 .setBody(this.byProcessIdBody);
     }

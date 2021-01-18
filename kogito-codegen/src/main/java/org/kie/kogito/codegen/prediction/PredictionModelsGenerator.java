@@ -28,9 +28,6 @@ import java.util.Collection;
 
 public class PredictionModelsGenerator extends AbstractApplicationSection {
 
-    private static final String RESOURCE = "/class-templates/PredictionModelsTemplate.java";
-    private static final String RESOURCE_CDI = "/class-templates/CdiPredictionModelsTemplate.java";
-    private static final String RESOURCE_SPRING = "/class-templates/spring/SpringPredictionModelsTemplate.java";
     private static final String SECTION_CLASS_NAME = "PredictionModels";
 
     protected final Collection<PMMLResource> resources;
@@ -42,12 +39,7 @@ public class PredictionModelsGenerator extends AbstractApplicationSection {
         this.applicationCanonicalName = applicationCanonicalName;
         this.resources = resources;
 
-        this.templatedGenerator = new TemplatedGenerator(
-                context,
-                SECTION_CLASS_NAME,
-                RESOURCE_CDI,
-                RESOURCE_SPRING,
-                RESOURCE);
+        this.templatedGenerator = TemplatedGenerator.builder().build(context, SECTION_CLASS_NAME);
     }
 
     @Override
@@ -61,14 +53,12 @@ public class PredictionModelsGenerator extends AbstractApplicationSection {
         final InitializerDeclaration staticDeclaration = compilationUnit
                 .findFirst(InitializerDeclaration.class)
                 .orElseThrow(() -> new InvalidTemplateException(
-                        SECTION_CLASS_NAME,
-                        templatedGenerator.templatePath(),
+                        templatedGenerator,
                         "Missing static block"));
         final MethodCallExpr initMethod = staticDeclaration
                 .findFirst(MethodCallExpr.class, mtd -> "init".equals(mtd.getNameAsString()))
                 .orElseThrow(() -> new InvalidTemplateException(
-                        SECTION_CLASS_NAME,
-                        templatedGenerator.templatePath(),
+                        templatedGenerator,
                         "Missing init() method"));
 
         for (PMMLResource resource : resources) {

@@ -57,6 +57,8 @@ import org.kie.kogito.codegen.DashboardGeneratedFileUtils;
 import org.kie.kogito.codegen.GeneratedFile;
 import org.kie.kogito.codegen.GeneratedFileType;
 import org.kie.kogito.codegen.KogitoPackageSources;
+import org.kie.kogito.codegen.TemplatedGenerator;
+import org.kie.kogito.codegen.context.JavaKogitoBuildContext;
 import org.kie.kogito.codegen.context.KogitoBuildContext;
 import org.kie.kogito.codegen.io.CollectedResource;
 import org.kie.kogito.codegen.rules.config.NamedRuleUnitConfig;
@@ -72,7 +74,6 @@ import org.slf4j.LoggerFactory;
 
 import static java.util.stream.Collectors.toList;
 
-import static com.github.javaparser.StaticJavaParser.parse;
 import static org.drools.compiler.kie.builder.impl.AbstractKieModule.addDTableToCompiler;
 import static org.drools.compiler.kie.builder.impl.AbstractKieModule.loadResourceConfiguration;
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.setDefaultsforEmptyKieModule;
@@ -80,6 +81,7 @@ import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.setDefaultsfor
 public class IncrementalRuleCodegen extends AbstractGenerator {
 
     public static final GeneratedFileType RULE_TYPE = GeneratedFileType.of("RULE", GeneratedFileType.Category.SOURCE);
+    public static final String TEMPLATE_RULE_FOLDER = "/class-templates/rules/";
     private static final Logger LOGGER = LoggerFactory.getLogger(IncrementalRuleCodegen.class);
     private static final GeneratedFileType JSON_MAPPER_TYPE = GeneratedFileType.of("JSON_MAPPER", GeneratedFileType.Category.SOURCE);
     private static final GeneratedFileType QUERY_TYPE = GeneratedFileType.of("QUERY", GeneratedFileType.Category.SOURCE, true, true);
@@ -246,7 +248,7 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
             Collection<RuleUnitDescription> ruleUnits = pkgSources.getRuleUnits();
             for (RuleUnitDescription ruleUnit : ruleUnits) {
                 String canonicalName = ruleUnit.getCanonicalName();
-                RuleUnitGenerator ruSource = new RuleUnitGenerator(ruleUnit, pkgSources.getRulesFileName(), context())
+                RuleUnitGenerator ruSource = new RuleUnitGenerator(context(), ruleUnit, pkgSources.getRulesFileName())
                         .withQueries(pkgSources.getQueriesInRuleUnit(canonicalName))
                         .mergeConfig(configs.get(canonicalName));
 
@@ -295,9 +297,14 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
         RuleUnitHelper ruleUnitHelper = new RuleUnitHelper();
 
         if (context().hasDI()) {
+            TemplatedGenerator generator = TemplatedGenerator.builder()
+                    .withTemplateBasePath(TEMPLATE_RULE_FOLDER)
+                    .build(context(), "KogitoObjectMapper");
+
+
             generatedFiles.add( new GeneratedFile( JSON_MAPPER_TYPE,
-                    context().getPackageName().replace('.', '/') + "/KogitoObjectMapper.java",
-                    context().getDependencyInjectionAnnotator().objectMapperInjectorSource(context().getPackageName()) ) );
+                    generator.generatedFilePath(),
+                    generator.compilationUnitOrThrow().toString()) );
         }
 
         for (RuleUnitGenerator ruleUnit : ruleUnitGenerators) {
@@ -359,9 +366,13 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
     }
 
     private void generateSessionUnits( List<GeneratedFile> generatedFiles ) {
+        TemplatedGenerator generator = TemplatedGenerator.builder()
+                .withFallbackContext(JavaKogitoBuildContext.CONTEXT_NAME)
+                .withPackageName("org.drools.project.model")
+                .build(context(), "SessionRuleUnit");
         for (KieBaseModel kBaseModel : kieModuleModel.getKieBaseModels().values()) {
             for (String sessionName : kBaseModel.getKieSessionModels().keySet()) {
-                CompilationUnit cu = parse( getClass().getResourceAsStream( "/class-templates/SessionRuleUnitTemplate.java" ) );
+                CompilationUnit cu = generator.compilationUnitOrThrow();
                 ClassOrInterfaceDeclaration template = cu.findFirst( ClassOrInterfaceDeclaration.class ).get();
                 context().getDependencyInjectionAnnotator().withNamedSingletonComponent(template, "$SessionName$");
                 template.setName( "SessionRuleUnit_" + sessionName );

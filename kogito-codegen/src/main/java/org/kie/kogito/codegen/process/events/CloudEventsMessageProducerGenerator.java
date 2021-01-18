@@ -29,11 +29,10 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.jbpm.compiler.canonical.TriggerMetaData;
 import org.kie.api.definition.process.WorkflowProcess;
 import org.kie.kogito.codegen.BodyDeclarationComparator;
-import org.kie.kogito.codegen.TemplateInstantiationException;
+import org.kie.kogito.codegen.InvalidTemplateException;
 import org.kie.kogito.codegen.context.KogitoBuildContext;
 import org.kie.kogito.codegen.process.MessageProducerGenerator;
 
-import static com.github.javaparser.StaticJavaParser.parse;
 import static org.kie.kogito.codegen.CodegenUtils.interpolateTypes;
 
 /**
@@ -48,18 +47,15 @@ public class CloudEventsMessageProducerGenerator extends MessageProducerGenerato
                                                String processfqcn,
                                                String messageDataEventClassName,
                                                TriggerMetaData trigger) {
-        super(context, process, modelfqcn, processfqcn, messageDataEventClassName, trigger);
+        super(context, process, modelfqcn, processfqcn, messageDataEventClassName, trigger, "CloudEventsMessageProducer");
     }
 
     public String generate() {
-        CompilationUnit clazz = parse(
-                this.getClass().getResourceAsStream("/class-templates/events/CloudEventsMessageProducerTemplate.java"));
-        clazz.setPackageDeclaration(process.getPackageName());
+        CompilationUnit clazz = generator.compilationUnitOrThrow();
 
         ClassOrInterfaceDeclaration template = clazz.findFirst(ClassOrInterfaceDeclaration.class).
-                orElseThrow(() -> new TemplateInstantiationException(
-                        "CloudEventMessageProducer",
-                        "CloudEventsMessageProducerTemplate.java",
+                orElseThrow(() -> new InvalidTemplateException(
+                        generator,
                         "No class declaration found in template"));
         template.setName(resourceClazzName);
 

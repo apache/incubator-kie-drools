@@ -229,12 +229,18 @@ public interface DependencyInjectionAnnotator {
      */
     String emitterType(String dataType);
 
-    String objectMapperInjectorSource(String packageName);
-
     /**
      * Annotates given node with a initializing annotation e.g. Startup
      *
      * @param node node to be annotated
      */
     <T extends NodeWithAnnotations<?>> T withEagerStartup(T node);
+
+    /**
+     * Check if provided node has one of REST annotation
+     * @param node
+     * @param <T>
+     * @return
+     */
+    <T extends NodeWithAnnotations<?>> boolean isRestAnnotated(T node);
 }

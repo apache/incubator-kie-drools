@@ -33,7 +33,6 @@ import org.kie.kogito.codegen.process.ProcessExecutableModelGenerator;
 public class CloudEventsResourceGenerator extends AbstractEventResourceGenerator {
 
     static final String EMITTER_PREFIX = "emitter_";
-    private static final String CDI_TEMPLATE = "/class-templates/events/CloudEventsListenerResource.java";
     private static final String CLASS_NAME = "CloudEventListenerResource";
 
     private final KogitoBuildContext context;
@@ -41,12 +40,9 @@ public class CloudEventsResourceGenerator extends AbstractEventResourceGenerator
 
     public CloudEventsResourceGenerator(final KogitoBuildContext context,
                                         final List<ProcessExecutableModelGenerator> generators) {
-        super(new TemplatedGenerator(
-                context,
-                CLASS_NAME,
-                CDI_TEMPLATE,
-                null,
-                CDI_TEMPLATE));
+        super(TemplatedGenerator.builder()
+                .withTemplateBasePath(TEMPLATE_EVENT_FOLDER)
+                .build(context, CLASS_NAME));
         this.context = context;
         this.triggers = this.filterTriggers(generators);
     }

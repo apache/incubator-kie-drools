@@ -25,26 +25,20 @@ import org.kie.kogito.codegen.context.KogitoBuildContext;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.kie.kogito.codegen.ApplicationGenerator.APPLICATION_CLASS_NAME;
+
 public class ApplicationContainerGenerator {
 
-    public static final String APPLICATION_CLASS_NAME = "Application";
-    private static final String RESOURCE_CDI = "/class-templates/CdiApplicationTemplate.java";
-    private static final String RESOURCE_SPRING = "/class-templates/SpringApplicationTemplate.java";
-    private static final String RESOURCE_DEFAULT = "/class-templates/ApplicationTemplate.java";
     private static final GeneratedFileType APPLICATION_TYPE = GeneratedFileType.of("APPLICATION", GeneratedFileType.Category.SOURCE);
 
     private final TemplatedGenerator templatedGenerator;
+    private final KogitoBuildContext context;
 
     private List<String> sections = new ArrayList<>();
-    private KogitoBuildContext context;
 
     public ApplicationContainerGenerator(KogitoBuildContext context) {
-        this.templatedGenerator = new TemplatedGenerator(
-                context,
-                APPLICATION_CLASS_NAME,
-                RESOURCE_CDI,
-                RESOURCE_SPRING,
-                RESOURCE_DEFAULT);
+        this.templatedGenerator = TemplatedGenerator.builder()
+                .build(context, APPLICATION_CLASS_NAME);
 
         this.context = context;
     }
@@ -55,13 +49,12 @@ public class ApplicationContainerGenerator {
     }
 
     protected CompilationUnit getCompilationUnitOrThrow() {
-        CompilationUnit compilationUnit = templatedGenerator.compilationUnitOrThrow("Cannot find template for " + templatedGenerator.typeName());
+        CompilationUnit compilationUnit = templatedGenerator.compilationUnitOrThrow();
 
         ClassOrInterfaceDeclaration cls = compilationUnit
                 .findFirst(ClassOrInterfaceDeclaration.class)
                 .orElseThrow(() -> new InvalidTemplateException(
-                        APPLICATION_CLASS_NAME,
-                        templatedGenerator.templatePath(),
+                        templatedGenerator,
                         "Compilation unit doesn't contain a class or interface declaration!"));
 
         // Add explicit initialization when no DI
@@ -83,8 +76,7 @@ public class ApplicationContainerGenerator {
     private MethodCallExpr getLoadEnginesMethod(ClassOrInterfaceDeclaration cls) {
         return cls.findFirst(MethodCallExpr.class, mtd -> "loadEngines".equals(mtd.getNameAsString()))
                     .orElseThrow(() -> new InvalidTemplateException(
-                            APPLICATION_CLASS_NAME,
-                            templatedGenerator.templatePath(),
+                            templatedGenerator,
                             "Impossible to find loadEngines invocation"));
     }
 

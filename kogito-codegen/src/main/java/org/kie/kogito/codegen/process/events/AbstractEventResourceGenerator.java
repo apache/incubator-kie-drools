@@ -23,20 +23,17 @@ import com.github.javaparser.ast.comments.Comment;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import org.kie.kogito.codegen.TemplatedGenerator;
 
-abstract class AbstractEventResourceGenerator {
+public abstract class AbstractEventResourceGenerator {
 
+    public static final String TEMPLATE_EVENT_FOLDER = "/class-templates/events/";
     protected TemplatedGenerator generator;
 
     public AbstractEventResourceGenerator(TemplatedGenerator generator){
         this.generator = generator;
     }
 
-    protected final String getResourceTemplate(){
-        return generator.templatePath();
-    }
-
     protected final String getClassName(){
-        return generator.typeName();
+        return generator.targetTypeName();
     }
 
     public final String generatedFilePath() {
