@@ -70,9 +70,8 @@ public class InfinispanJobRepository extends BaseReactiveJobRepository implement
 
     @Override
     public CompletionStage<JobDetails> doSave(JobDetails job) {
-
         return runAsync(() -> cache.put(job.getId(), job))
-                .thenCompose(j -> get(job.getId()));
+                .thenApply(j -> job);
     }
 
     @Override
