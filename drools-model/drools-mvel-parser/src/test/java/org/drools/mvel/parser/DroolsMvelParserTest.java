@@ -912,11 +912,7 @@ public class DroolsMvelParserTest {
         String expr = "{ a() \nprint(1) }";
 
         assertEquals("There should be 2 statements",
-                     "{\n" +
-                             "    a();\n" +
-                             "    print(1);\n" +
-                             "}",
-                     printConstraint(MvelParser.parseBlock(expr)));
+                     2, MvelParser.parseBlock(expr).getStatements().size());
 
         MvelParser mvelParser = new MvelParser(new ParserConfiguration(), false);
         ParseResult<BlockStmt> r = mvelParser.parse(GeneratedMvelParser::BlockParseStart, new StringProvider(expr));
