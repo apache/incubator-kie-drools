@@ -62,20 +62,21 @@ public class SvgTspLineAndCircleExporter extends AbstractTxtSolutionExporter<Tsp
             Standstill standstill = solution.getDomicile();
             Location home = standstill.getLocation();
             while (standstill != null) {
-                bufferedWriter.write("  <line x1='" + (oldLat + offsetX) + "' y1='" + (oldLong + offsetY) + "' ");
+                bufferedWriter.write("  <line x1='" + (oldLat + offsetX) + "' y1='" + (height - (oldLong + offsetY)) + "' ");
                 Location location = standstill.getLocation();
-                bufferedWriter.write("x2='" + (location.getLatitude() + offsetX) + "' y2='"
-                        + (location.getLongitude() + offsetY) + "' />\n");
+                bufferedWriter.write("x2='" + (location.getLongitude() + offsetX) + "' y2='"
+                        + (height - (location.getLatitude() + offsetY)) + "' />\n");
                 bufferedWriter.write("    <circle r='3' ");
-                bufferedWriter.write("cx='" + (location.getLatitude() + offsetX) + "' cy='"
-                        + (location.getLongitude() + offsetY) + "' />\n");
-                oldLat = location.getLatitude();
-                oldLong = location.getLongitude();
+                bufferedWriter.write("cx='" + (location.getLongitude() + offsetX) + "' cy='"
+                        + (height - (location.getLatitude() + offsetY)) + "' />\n");
+                oldLat = location.getLongitude();
+                oldLong = location.getLatitude();
                 standstill = findNextVisit(standstill);
             }
-            bufferedWriter.write("  <line x1='" + (oldLat + offsetX) + "' y1='" + (oldLong + offsetY) + "' ");
+            bufferedWriter.write("  <line x1='" + (oldLat + offsetX) + "' y1='" + (height - (oldLong + offsetY)) + "' ");
             bufferedWriter
-                    .write("x2='" + (home.getLatitude() + offsetX) + "' y2='" + (home.getLongitude() + offsetY) + "' />n");
+                    .write("x2='" + (home.getLongitude() + offsetX) + "' y2='" + (height - (home.getLatitude() + offsetY))
+                            + "' />n");
             bufferedWriter.write("</g>\n");
             bufferedWriter.write("</svg>\n");
         }

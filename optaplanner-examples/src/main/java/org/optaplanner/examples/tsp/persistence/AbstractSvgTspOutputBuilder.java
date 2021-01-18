@@ -47,17 +47,17 @@ public abstract class AbstractSvgTspOutputBuilder extends AbstractTxtSolutionExp
         Standstill standstill = solution.getDomicile();
         while (standstill != null) {
             Location location = standstill.getLocation();
-            if (location.getLatitude() > width) {
-                width = location.getLatitude();
+            if (location.getLongitude() > width) {
+                width = location.getLongitude();
             }
-            if (location.getLongitude() > height) {
-                height = location.getLongitude();
+            if (location.getLatitude() > height) {
+                height = location.getLatitude();
             }
-            if (location.getLatitude() < offsetX) {
-                offsetX = location.getLatitude();
+            if (location.getLongitude() < offsetX) {
+                offsetX = location.getLongitude();
             }
-            if (location.getLongitude() < offsetY) {
-                offsetY = location.getLongitude();
+            if (location.getLatitude() < offsetY) {
+                offsetY = location.getLatitude();
             }
             standstill = findNextVisit(standstill);
         }

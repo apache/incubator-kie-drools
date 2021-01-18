@@ -54,21 +54,25 @@ public class SvgTspPathExporter extends AbstractTxtSolutionExporter<TspSolution>
 
             writeSvgHeader();
             bufferedWriter.write("<path style='stroke:#ff0000;stroke-width:1;fill:none'\n");
-            bufferedWriter.write("d='M 0,0\n");
+            bufferedWriter.write("d='\n");
             Standstill standstill = solution.getDomicile();
             Location home = standstill.getLocation();
+            // Move to starting point
+            bufferedWriter.write("M ");
+            bufferedWriter.write((home.getLongitude() + offsetX) + ",");
+            bufferedWriter.write((height - (home.getLatitude() + offsetY)) + "\n");
 
             while (standstill != null) {
                 bufferedWriter.write("L ");
                 Location location = standstill.getLocation();
-                bufferedWriter.write((location.getLatitude() + offsetX) + ",");
-                bufferedWriter.write((location.getLongitude() + offsetY) + "\n");
+                bufferedWriter.write((location.getLongitude() + offsetX) + ",");
+                bufferedWriter.write((height - (location.getLatitude() + offsetY)) + "\n");
                 standstill = findNextVisit(standstill);
             }
             // Now return home
             bufferedWriter.write("L ");
-            bufferedWriter.write((home.getLatitude() + offsetX) + ",");
-            bufferedWriter.write((home.getLongitude() + offsetY) + "\n");
+            bufferedWriter.write((home.getLongitude() + offsetX) + ",");
+            bufferedWriter.write((height - (home.getLatitude() + offsetY)) + "\n");
             bufferedWriter.write("'/>");
             bufferedWriter.write("</svg>\n");
         }
