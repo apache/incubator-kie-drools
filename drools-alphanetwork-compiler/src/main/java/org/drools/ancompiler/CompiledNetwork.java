@@ -151,7 +151,7 @@ public abstract class CompiledNetwork implements ObjectSinkPropagator {
         }
 
         @Override
-        public void startLeftInputAdapterNode(Object parent, LeftInputAdapterNode leftInputAdapterNode) {
+        public void startLeftInputAdapterNode(LeftInputAdapterNode leftInputAdapterNode) {
             setNetworkNodeReference(leftInputAdapterNode);
         }
 

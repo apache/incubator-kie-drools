@@ -129,7 +129,7 @@ public abstract class PropagatorCompilerHandler extends AbstractCompilerHandler 
     }
 
     @Override
-    public void startLeftInputAdapterNode(Object parent, LeftInputAdapterNode leftInputAdapterNode) {
+    public void startLeftInputAdapterNode(LeftInputAdapterNode leftInputAdapterNode) {
         getCurrentBlockStatement().addStatement(propagateMethod(leftInputAdapterNode));
     }
 

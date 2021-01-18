@@ -212,7 +212,7 @@ public class ObjectTypeNodeParser {
         } else if (sink.getType() == NodeTypeEnums.LeftInputAdapterNode) {
             LeftInputAdapterNode leftInputAdapterNode = (LeftInputAdapterNode) sink;
 
-            handler.startLeftInputAdapterNode(parent, leftInputAdapterNode);
+            handler.startLeftInputAdapterNode(leftInputAdapterNode);
             handler.endWindowNode(leftInputAdapterNode);
         } else if (sink.getType() == NodeTypeEnums.WindowNode) {
             WindowNode windowNode = (WindowNode) sink;

@@ -124,7 +124,7 @@ public class DeclarationsHandler extends AbstractCompilerHandler {
     }
 
     @Override
-    public void startLeftInputAdapterNode(Object parent, LeftInputAdapterNode leftInputAdapterNode) {
+    public void startLeftInputAdapterNode(LeftInputAdapterNode leftInputAdapterNode) {
         builder.append(getVariableDeclaration(leftInputAdapterNode)).append(NEWLINE);
     }
 

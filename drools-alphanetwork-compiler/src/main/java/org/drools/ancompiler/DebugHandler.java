@@ -71,7 +71,7 @@ public class DebugHandler extends NetworkHandlerAdaptor {
     }
 
     @Override
-    public void startLeftInputAdapterNode(Object parent, LeftInputAdapterNode leftInputAdapterNode) {
+    public void startLeftInputAdapterNode(LeftInputAdapterNode leftInputAdapterNode) {
         logger.debug(formatString(leftInputAdapterNode));
     }
 
