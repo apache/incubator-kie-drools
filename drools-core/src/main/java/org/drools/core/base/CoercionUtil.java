@@ -137,4 +137,30 @@ public class CoercionUtil {
         }
         throw new RuntimeException("Unable to coerce " + value + " into an Integer");
     }
+
+    public static Number coerceToNumber(String value, Class<?> toClass) {
+        Number ret = null;
+        if (value != null) {
+            if (toClass.equals(BigDecimal.class)) {
+                ret = MathUtils.getBigDecimal(value);
+            } else if (toClass.equals(BigInteger.class)) {
+                ret = MathUtils.getBigInteger(value);
+            } else if (toClass.equals(Double.class)) {
+                ret = Double.valueOf(value);
+            } else if (toClass.equals(Float.class)) {
+                ret = Float.valueOf(value);
+            } else if (toClass.equals(Long.class)) {
+                ret = Long.valueOf(value);
+            } else if (toClass.equals(Integer.class)) {
+                ret = Integer.valueOf(value);
+            } else if (toClass.equals(Short.class)) {
+                ret = Short.valueOf(value);
+            } else if (toClass.equals(Byte.class)) {
+                ret = Byte.valueOf(value);
+            } else {
+                throw new RuntimeException("Unable to coerce [" + value + "] from class " + value.getClass() + " to class " + toClass);
+            }
+        }
+        return ret;
+    }
 }
