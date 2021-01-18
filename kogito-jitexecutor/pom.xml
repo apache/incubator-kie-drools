@@ -13,7 +13,8 @@
   <packaging>pom</packaging>
 
   <modules>
-    <module>jitexecutor-dmnexecutor</module>
+    <module>jitexecutor-dmn</module>
+    <module>jitexecutor-runner</module>
   </modules>
 
 </project>
