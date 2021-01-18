@@ -95,16 +95,16 @@ public class ObjectTypeNodeParser {
         ObjectSinkPropagator propagator = objectTypeNode.getObjectSinkPropagator();
 
         handler.startObjectTypeNode(objectTypeNode);
-        traversePropagator(objectTypeNode, propagator, handler);
+        traversePropagator(propagator, handler);
         handler.endObjectTypeNode(objectTypeNode);
     }
 
-    private void traversePropagator(Object parent, ObjectSinkPropagator propagator, NetworkHandler handler) {
+    private void traversePropagator(ObjectSinkPropagator propagator, NetworkHandler handler) {
         if (propagator instanceof SingleObjectSinkAdapter) {
             // we know there is only a single child sink for this propagator
             ObjectSink sink = propagator.getSinks()[0];
 
-            traverseSink(parent, sink, handler);
+            traverseSink(sink, handler);
         } else if (propagator instanceof CompositeObjectSinkAdapter) {
             CompositeObjectSinkAdapter composite = (CompositeObjectSinkAdapter) propagator;
 
@@ -125,7 +125,7 @@ public class ObjectTypeNodeParser {
     private void traverseSinkList(ObjectSinkNodeList sinks, NetworkHandler handler) {
         if (sinks != null) {
             for (ObjectSinkNode sink = sinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode()) {
-                traverseSink(sinks, sink, handler);
+                traverseSink(sink, handler);
             }
         }
     }
@@ -133,7 +133,7 @@ public class ObjectTypeNodeParser {
     private void traverseSinkList(ObjectSink[] sinks, NetworkHandler handler) {
         if (sinks != null) {
             for (ObjectSink sink : sinks) {
-                traverseSink(sinks, sink, handler);
+                traverseSink(sink, handler);
             }
         }
     }
@@ -157,7 +157,7 @@ public class ObjectTypeNodeParser {
                 if (objectValue != null) {
                     handler.startHashedAlphaNode(alphaNode, objectValue);
                     // traverse the propagator for each alpha
-                    traversePropagator(alphaNode, alphaNode.getObjectSinkPropagator(), handler);
+                    traversePropagator(alphaNode.getObjectSinkPropagator(), handler);
                     handler.endHashedAlphaNode(alphaNode, hashKey.getObjectValue());
                 } else {
                     optionalNullAlphaNodeCase = alphaNode;
@@ -169,7 +169,7 @@ public class ObjectTypeNodeParser {
 
             if (optionalNullAlphaNodeCase != null) {
                 handler.nullCaseAlphaNodeStart(optionalNullAlphaNodeCase);
-                traversePropagator(optionalNullAlphaNodeCase, optionalNullAlphaNodeCase.getObjectSinkPropagator(), handler);
+                traversePropagator(optionalNullAlphaNodeCase.getObjectSinkPropagator(), handler);
                 handler.nullCaseAlphaNodeEnd(optionalNullAlphaNodeCase);
             }
         }
@@ -187,21 +187,20 @@ public class ObjectTypeNodeParser {
             Collection<AlphaNode> alphaNodes = alphaRangeIndex.getAllValues();
             for (AlphaNode alphaNode : alphaNodes) {
                 handler.startRangeIndexedAlphaNode(alphaNode);
-                traversePropagator(alphaNode, alphaNode.getObjectSinkPropagator(), handler);
+                traversePropagator(alphaNode.getObjectSinkPropagator(), handler);
                 handler.endRangeIndexedAlphaNode(alphaNode);
             }
             handler.endRangeIndex(alphaRangeIndex);
         }
     }
 
-    private void traverseSink(Object parent, ObjectSink sink, NetworkHandler handler) {
-        IndexableConstraint indexableConstraint = null;
+    private void traverseSink(ObjectSink sink, NetworkHandler handler) {
         if (sink.getType() == NodeTypeEnums.AlphaNode) {
             AlphaNode alphaNode = (AlphaNode) sink;
 
             handler.startNonHashedAlphaNode(alphaNode);
 
-            traversePropagator(alphaNode, alphaNode.getObjectSinkPropagator(), handler);
+            traversePropagator(alphaNode.getObjectSinkPropagator(), handler);
 
             handler.endNonHashedAlphaNode(alphaNode);
         } else if (NodeTypeEnums.isBetaNode( sink ) ) {
