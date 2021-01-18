@@ -66,6 +66,7 @@ import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.index.AlphaRangeIndex;
 
+import static com.github.javaparser.StaticJavaParser.parseExpression;
 import static com.github.javaparser.StaticJavaParser.parseStatement;
 import static com.github.javaparser.StaticJavaParser.parseType;
 import static com.github.javaparser.ast.NodeList.nodeList;
@@ -162,9 +163,7 @@ public abstract class PropagatorCompilerHandler extends AbstractCompilerHandler 
             String switchVariableName = "switchVar";
             ExpressionStmt switchVariable = localVariableWithCastInitializer(parseType(fieldType.getCanonicalName()),
                                                                              switchVariableName,
-                                                                             new MethodCallExpr(new NameExpr("readAccessor"),
-                                                                                                "getValue",
-                                                                                                nodeList(new NameExpr(LOCAL_FACT_VAR_NAME))));
+                                                                             parseExpression("readAccessor.getValue(fact)"));
 
             this.allStatements.addStatement(switchVariable);
             switchStmt = new SwitchStmt().setSelector(new NameExpr(switchVariableName));
@@ -182,12 +181,7 @@ public abstract class PropagatorCompilerHandler extends AbstractCompilerHandler 
 
             ExpressionStmt expressionStmt = localVariableWithCastInitializer(parseType("java.lang.Integer"),
                                                                              localVariableName,
-                                                                             new MethodCallExpr(new NameExpr(getVariableName()), "get", nodeList(
-                                                                                     new MethodCallExpr(
-                                                                                             new NameExpr("readAccessor"),
-                                                                                             "getValue",
-                                                                                             nodeList(new NameExpr(LOCAL_FACT_VAR_NAME))
-                                                                                     ))));
+                                                                             parseExpression("ToNodeId.get(readAccessor.getValue(fact))"));
 
             this.allStatements.addStatement(expressionStmt);
 
