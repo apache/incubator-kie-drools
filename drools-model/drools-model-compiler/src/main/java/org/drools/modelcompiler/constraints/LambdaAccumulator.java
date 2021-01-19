@@ -67,24 +67,19 @@ public abstract class LambdaAccumulator implements Accumulator {
 
     @Override
     public Serializable createContext() {
-        try {
-            return new LambdaAccContext(accumulateFunction.createContext());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        return new LambdaAccContext(accumulateFunction.createContext());
     }
 
     @Override
-    public void init(Object workingMemoryContext, Object context, Tuple leftTuple, Declaration[] declarations, WorkingMemory workingMemory) throws Exception {
-        accumulateFunction.init( (( LambdaAccContext ) context).context );
+    public Object init(Object workingMemoryContext, Object context, Tuple leftTuple, Declaration[] declarations, WorkingMemory workingMemory) {
+        (( LambdaAccContext ) context).context = accumulateFunction.initContext( (( LambdaAccContext ) context).context );
+        return context;
     }
 
     @Override
-    public Object accumulate(Object workingMemoryContext, Object context, Tuple leftTuple, InternalFactHandle handle, Declaration[] declarations, Declaration[] innerDeclarations, WorkingMemory workingMemory) throws Exception {
+    public Object accumulate(Object workingMemoryContext, Object context, Tuple leftTuple, InternalFactHandle handle, Declaration[] declarations, Declaration[] innerDeclarations, WorkingMemory workingMemory) {
         final Object accumulatedObject = getAccumulatedObject(declarations, innerDeclarations, handle, leftTuple, (InternalWorkingMemory) workingMemory);
-        accumulateFunction.accumulate( (( LambdaAccContext ) context).context, accumulatedObject);
-
-        return accumulatedObject;
+        return accumulateFunction.accumulateValue( (( LambdaAccContext ) context).context, accumulatedObject);
     }
 
     protected abstract Object getAccumulatedObject( Declaration[] declarations, Declaration[] innerDeclarations, InternalFactHandle handle, Tuple tuple, InternalWorkingMemory wm );
@@ -96,7 +91,7 @@ public abstract class LambdaAccumulator implements Accumulator {
 
     @Override
     public boolean tryReverse(Object workingMemoryContext, Object context, Tuple leftTuple, InternalFactHandle handle, Object value,
-                              Declaration[] declarations, Declaration[] innerDeclarations, WorkingMemory workingMemory) throws Exception {
+                              Declaration[] declarations, Declaration[] innerDeclarations, WorkingMemory workingMemory) {
         if (value == null) {
             throw new IllegalStateException("Reversing a not existing accumulated object for fact " + handle);
         }
@@ -104,8 +99,12 @@ public abstract class LambdaAccumulator implements Accumulator {
     }
 
     @Override
-    public Object getResult(Object workingMemoryContext, Object context, Tuple leftTuple, Declaration[] declarations, WorkingMemory workingMemory) throws Exception {
-        return accumulateFunction.getResult( (( LambdaAccContext ) context).context );
+    public Object getResult(Object workingMemoryContext, Object context, Tuple leftTuple, Declaration[] declarations, WorkingMemory workingMemory) {
+        try {
+            return accumulateFunction.getResult( (( LambdaAccContext ) context).context );
+        } catch (Exception e) {
+            throw new RuntimeException( e );
+        }
     }
 
     public static class BindingAcc extends LambdaAccumulator {

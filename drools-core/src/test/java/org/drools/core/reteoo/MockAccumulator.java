@@ -70,14 +70,15 @@ public class MockAccumulator
         return this;
     }
 
-    public void init(Object workingMemoryContext,
-                     Object context,
-                     Tuple leftTuple,
-                     Declaration[] declarations,
-                     WorkingMemory workingMemory) throws Exception {
+    public Object init(Object workingMemoryContext,
+                       Object context,
+                       Tuple leftTuple,
+                       Declaration[] declarations,
+                       WorkingMemory workingMemory) {
         this.leftTuple = leftTuple;
         this.matchingObjects = new ArrayList();
         this.workingMemory = workingMemory;
+        return context;
     }
 
     public Object accumulate(Object workingMemoryContext,
@@ -86,7 +87,7 @@ public class MockAccumulator
                            InternalFactHandle handle,
                            Declaration[] declarations,
                            Declaration[] innerDeclarations,
-                           WorkingMemory workingMemory) throws Exception {
+                           WorkingMemory workingMemory) {
         this.matchingObjects.add( handle.getObject() );
         return handle.getObject();
     }
@@ -95,7 +96,7 @@ public class MockAccumulator
                             Object context,
                             Tuple leftTuple,
                             Declaration[] declarations,
-                            WorkingMemory workingMemory) throws Exception {
+                            WorkingMemory workingMemory) {
         return this.matchingObjects;
     }
 
@@ -106,7 +107,7 @@ public class MockAccumulator
                               Object value,
                               Declaration[] declarations,
                               Declaration[] innerDeclarations,
-                              WorkingMemory workingMemory) throws Exception {
+                              WorkingMemory workingMemory) {
         return false;
     }
 

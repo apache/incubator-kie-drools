@@ -183,10 +183,9 @@ public class PhreakAccumulateNode {
 
     BaseAccumulation initAccumulationContext( AccumulateMemory am, InternalWorkingMemory wm, Accumulate accumulate, LeftTuple leftTuple ) {
         AccumulateContext accContext = new AccumulateContext();
-        leftTuple.setContextObject( accContext );
         Object functionContext = accumulate.createFunctionContext();
         accContext.setFunctionContext(functionContext);
-        accumulate.init( am.workingMemoryContext, accContext, leftTuple, wm );
+        leftTuple.setContextObject( accumulate.init( am.workingMemoryContext, accContext, leftTuple, wm ) );
         return accContext;
     }
 
@@ -786,10 +785,9 @@ public class PhreakAccumulateNode {
                                             final BaseAccumulation accctx,
                                             final boolean reaccumulate) {
         if (reaccumulate) {
-            accumulate.init(am.workingMemoryContext,
-                            accctx,
-                            leftParent,
-                            wm);
+            Object newContext = accumulate.init(am.workingMemoryContext, accctx, leftParent, wm);
+            leftParent.setContextObject( newContext );
+
             for (LeftTuple childMatch = leftParent.getFirstChild(); childMatch != null; childMatch = childMatch.getHandleNext()) {
                 RightTuple         rightTuple  = childMatch.getRightParent();
                 InternalFactHandle childHandle = rightTuple.getFactHandle();
@@ -799,14 +797,9 @@ public class PhreakAccumulateNode {
                     tuple = (LeftTuple) rightTuple;
                     childHandle = rightTuple.getFactHandleForEvaluation();
                 }
-                Object value = accumulate.accumulate(am.workingMemoryContext,
-                                      accctx,
-                                      tuple,
-                                      childHandle,
-                                      wm);
 
-                postAccumulate(accNode, accctx, childMatch);
-
+                Object value = accumulate.accumulate(am.workingMemoryContext, newContext, tuple, childHandle, wm);
+                postAccumulate(accNode, newContext, childMatch);
                 childMatch.setContextObject(value);
             }
         }
@@ -856,10 +849,7 @@ public class PhreakAccumulateNode {
 
         if (reInit) {
             // since there are no more matches, the following call will just re-initialize the accumulation
-            accumulate.init(memory.workingMemoryContext,
-                            accctx,
-                            leftTuple,
-                            workingMemory);
+            leftTuple.setContextObject( accumulate.init(memory.workingMemoryContext, accctx, leftTuple, workingMemory) );
         }
     }
 

@@ -89,34 +89,30 @@ public class MVELAccumulatorFunctionExecutor
     /* (non-Javadoc)
      * @see org.kie.spi.Accumulator#init(java.lang.Object, org.kie.spi.Tuple, org.kie.rule.Declaration[], org.kie.WorkingMemory)
      */
-    public void init(Object workingMemoryContext,
-                     Object context,
-                     Tuple leftTuple,
-                     Declaration[] declarations,
-                     WorkingMemory workingMemory) throws Exception {
-        this.function.init( ((MVELAccumulatorFunctionContext) context).context );
+    public Object init(Object workingMemoryContext,
+                       Object context,
+                       Tuple leftTuple,
+                       Declaration[] declarations,
+                       WorkingMemory workingMemory) {
+        ((MVELAccumulatorFunctionContext) context).context = this.function.initContext( ((MVELAccumulatorFunctionContext) context).context );
+        return context;
     }
 
     /* (non-Javadoc)
      * @see org.kie.spi.Accumulator#accumulate(java.lang.Object, org.kie.spi.Tuple, org.kie.common.InternalFactHandle, org.kie.rule.Declaration[], org.kie.rule.Declaration[], org.kie.WorkingMemory)
      */
     public Object accumulate(Object workingMemoryContext,
-                           Object context,
-                           Tuple tuple,
-                           InternalFactHandle handle,
-                           Declaration[] declarations,
-                           Declaration[] innerDeclarations,
-                           WorkingMemory workingMemory) throws Exception {
+                             Object context,
+                             Tuple tuple,
+                             InternalFactHandle handle,
+                             Declaration[] declarations,
+                             Declaration[] innerDeclarations,
+                             WorkingMemory workingMemory) {
         
         VariableResolverFactory factory = unit.getFactory( null, null, null, handle, tuple, null, (InternalWorkingMemory) workingMemory, workingMemory.getGlobalResolver()  );
         
-        final Object value = MVEL.executeExpression( this.expression,
-                                                     handle.getObject(),
-                                                     factory );
-        this.function.accumulate( ((MVELAccumulatorFunctionContext) context).context,
-                                  value );
-
-        return value;
+        final Object value = MVEL.executeExpression( this.expression, handle.getObject(), factory );
+        return this.function.accumulateValue( ((MVELAccumulatorFunctionContext) context).context, value );
     }
 
     public boolean tryReverse(Object workingMemoryContext,
@@ -126,7 +122,7 @@ public class MVELAccumulatorFunctionExecutor
                                     Object value,
                               Declaration[] declarations,
                               Declaration[] innerDeclarations,
-                              WorkingMemory workingMemory) throws Exception {
+                              WorkingMemory workingMemory) {
         return this.function.tryReverse( ((MVELAccumulatorFunctionContext) context).context, value );
     }
 
@@ -137,8 +133,12 @@ public class MVELAccumulatorFunctionExecutor
                             Object context,
                             Tuple leftTuple,
                             Declaration[] declarations,
-                            WorkingMemory workingMemory) throws Exception {
-        return this.function.getResult( ((MVELAccumulatorFunctionContext) context).context );
+                            WorkingMemory workingMemory) {
+        try {
+            return this.function.getResult( ((MVELAccumulatorFunctionContext) context).context );
+        } catch (Exception e) {
+            throw new RuntimeException( e );
+        }
     }
 
     public boolean supportsReverse() {
