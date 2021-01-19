@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,7 +45,6 @@ import org.optaplanner.examples.common.swingui.OpenBrowserAction;
 import org.optaplanner.examples.common.swingui.SolverAndPersistenceFrame;
 import org.optaplanner.examples.conferencescheduling.app.ConferenceSchedulingApp;
 import org.optaplanner.examples.curriculumcourse.app.CurriculumCourseApp;
-import org.optaplanner.examples.dinnerparty.app.DinnerPartyApp;
 import org.optaplanner.examples.examination.app.ExaminationApp;
 import org.optaplanner.examples.flightcrewscheduling.app.FlightCrewSchedulingApp;
 import org.optaplanner.examples.investment.app.InvestmentApp;
@@ -138,7 +137,6 @@ public class OptaPlannerExamplesApp extends JFrame {
         panel.add(createExampleButton(new MeetingSchedulingApp()));
         panel.add(createExampleButton(new TravelingTournamentApp()));
         panel.add(createExampleButton(new InvestmentApp()));
-        panel.add(createExampleButton(new DinnerPartyApp()));
 
         panel.add(createExampleButton(new TennisApp()));
         panel.add(createExampleButton(new FlightCrewSchedulingApp()));

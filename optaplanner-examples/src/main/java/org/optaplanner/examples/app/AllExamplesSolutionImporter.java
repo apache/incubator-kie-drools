@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ package org.optaplanner.examples.app;
 import org.optaplanner.examples.cloudbalancing.persistence.CloudBalancingGenerator;
 import org.optaplanner.examples.common.app.LoggingMain;
 import org.optaplanner.examples.curriculumcourse.persistence.CurriculumCourseImporter;
-import org.optaplanner.examples.dinnerparty.persistence.DinnerPartyImporter;
 import org.optaplanner.examples.examination.persistence.ExaminationImporter;
 import org.optaplanner.examples.machinereassignment.persistence.MachineReassignmentImporter;
 import org.optaplanner.examples.nqueens.persistence.NQueensGenerator;
@@ -40,7 +39,6 @@ public class AllExamplesSolutionImporter extends LoggingMain {
         NQueensGenerator.main(new String[0]);
         CloudBalancingGenerator.main(new String[0]);
         TspImporter.main(new String[0]);
-        DinnerPartyImporter.main(new String[0]);
         CurriculumCourseImporter.main(new String[0]);
         MachineReassignmentImporter.main(new String[0]);
         VehicleRoutingImporter.main(new String[0]);
