@@ -16,152 +16,48 @@
 
 package org.drools.ancompiler;
 
-import org.drools.core.reteoo.AlphaNode;
-import org.drools.core.reteoo.BetaNode;
-import org.drools.core.reteoo.LeftInputAdapterNode;
-import org.drools.core.reteoo.ObjectTypeNode;
-import org.drools.core.reteoo.WindowNode;
-import org.drools.core.rule.IndexableConstraint;
-import org.drools.core.util.index.AlphaRangeIndex;
+import com.github.javaparser.StaticJavaParser;
+import com.github.javaparser.ast.NodeList;
+import com.github.javaparser.ast.body.Parameter;
+import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.stmt.Statement;
+import org.drools.core.reteoo.Sink;
 
-public class ModifyHandler extends SwitchCompilerHandler {
+import static com.github.javaparser.ast.NodeList.nodeList;
 
-    private static final String ASSERT_METHOD_SIGNATURE = "public final void propagateModifyObject("
-            + FACT_HANDLE_PARAM_TYPE + " " + FACT_HANDLE_PARAM_NAME + ","
-            + MODIFY_PREVIOUS_TUPLE_NAME + " " + MODIFY_PREVIOUS_TUPLE_PARAM_NAME + ","
-            + PROP_CONTEXT_PARAM_TYPE + " " + PROP_CONTEXT_PARAM_NAME + ","
-            + WORKING_MEMORY_PARAM_TYPE + " " + WORKING_MEMORY_PARAM_NAME + "){";
+public class ModifyHandler extends PropagatorCompilerHandler {
 
-    /**
-     * This flag is used to instruct the AssertHandler to tell it to generate a local varible
-     * in the {@link org.kie.reteoo.compiled.CompiledNetwork#propagateAssertObject} for holding the value returned
-     * from the {@link org.kie.common.InternalFactHandle#getFactHandle()}.
-     *
-     * This is only needed if there is at least 1 set of hashed alpha nodes in the network
-     */
-    private final boolean alphaNetContainsHashedField;
-
-    private final String factClassName;
-
-    ModifyHandler(StringBuilder builder, String factClassName) {
-        this(builder, factClassName, false);
-    }
-
-    public ModifyHandler(StringBuilder builder, String factClassName, boolean alphaNetContainsHashedField) {
-        super(builder);
-        this.factClassName = factClassName;
-        this.alphaNetContainsHashedField = alphaNetContainsHashedField;
+    public ModifyHandler(String factClassName, boolean alphaNetContainsHashedField) {
+        super(alphaNetContainsHashedField, factClassName);
     }
 
     @Override
-    public void startObjectTypeNode(ObjectTypeNode objectTypeNode) {
-        builder.append(ASSERT_METHOD_SIGNATURE).append(NEWLINE);
-
-        // we only need to create a reference to the object, not handle, if there is a hashed alpha in the network
-        if (alphaNetContainsHashedField) {
-            // example of what this will look like
-            // ExampleFact fact = (ExampleFact) handle.getObject();
-            builder.append(factClassName).append(" ").append(LOCAL_FACT_VAR_NAME).
-                    append(" = (").append(factClassName).append(")").
-                    append(FACT_HANDLE_PARAM_NAME).append(".getObject();").
-                    append(NEWLINE);
-        }
+    protected Statement propagateMethod(Sink sink) {
+        Statement modifyStatement = StaticJavaParser.parseStatement("ALPHATERMINALNODE.modifyObject(handle, modifyPreviousTuples, context, wm);");
+        replaceNameExpr(modifyStatement, "ALPHATERMINALNODE", getVariableName(sink));
+        return modifyStatement;
     }
 
     @Override
-    public void startBetaNode(BetaNode betaNode) {
-        builder.append(getVariableName(betaNode)).append(".modifyObject(").
-                append(FACT_HANDLE_PARAM_NAME).append(",").
-                append(MODIFY_PREVIOUS_TUPLE_PARAM_NAME).append(",").
-                append(PROP_CONTEXT_PARAM_NAME).append(",").
-                append(WORKING_MEMORY_PARAM_NAME).append(");").append(NEWLINE);
+    protected NodeList<Parameter> methodParameters() {
+        return nodeList(new Parameter(factHandleType(), FACT_HANDLE_PARAM_NAME),
+                        new Parameter(modifyPreviousTuplesType(), MODIFY_PREVIOUS_TUPLE_PARAM_NAME),
+                        new Parameter(propagationContextType(), PROP_CONTEXT_PARAM_NAME),
+                        new Parameter(workingMemoryType(), WORKING_MEMORY_PARAM_NAME));
     }
 
     @Override
-    public void startWindowNode(WindowNode windowNode) {
-        builder.append(getVariableName(windowNode)).append(".modifyObject(").
-                append(FACT_HANDLE_PARAM_NAME).append(",").
-                append(MODIFY_PREVIOUS_TUPLE_PARAM_NAME).append(",").
-                append(PROP_CONTEXT_PARAM_NAME).append(",").
-                append(WORKING_MEMORY_PARAM_NAME).append(");").append(NEWLINE);
+    protected NodeList<Expression> arguments() {
+        return nodeList(new NameExpr(FACT_HANDLE_PARAM_NAME),
+                        new NameExpr(MODIFY_PREVIOUS_TUPLE_PARAM_NAME),
+                        new NameExpr(PROP_CONTEXT_PARAM_NAME),
+                        new NameExpr(WORKING_MEMORY_PARAM_NAME));
     }
 
-    @Override
-    public void startLeftInputAdapterNode(LeftInputAdapterNode leftInputAdapterNode) {
-        builder.append(getVariableName(leftInputAdapterNode)).append(".modifyObject(").
-                append(FACT_HANDLE_PARAM_NAME).append(",").
-                append(MODIFY_PREVIOUS_TUPLE_PARAM_NAME).append(",").
-                append(PROP_CONTEXT_PARAM_NAME).append(",").
-                append(WORKING_MEMORY_PARAM_NAME).append(");").append(NEWLINE);
-    }
 
     @Override
-    public void startNonHashedAlphaNode(AlphaNode alphaNode) {
-        builder.append("if ( ").append(getVariableName(alphaNode)).
-                append(".isAllowed(").append(FACT_HANDLE_PARAM_NAME).append(",").
-                append(WORKING_MEMORY_PARAM_NAME).
-                append(") ) {").append(NEWLINE);
-
-    }
-
-    @Override
-    public void endNonHashedAlphaNode(AlphaNode alphaNode) {
-        // close if statement
-        builder.append("}").append(NEWLINE);
-    }
-
-    @Override
-    public void startHashedAlphaNodes(IndexableConstraint indexableConstraint) {
-        generateSwitch(indexableConstraint);
-    }
-
-    @Override
-    public void startHashedAlphaNode(AlphaNode hashedAlpha, Object hashedValue) {
-        generateSwitchCase(hashedAlpha, hashedValue);
-    }
-
-    @Override
-    public void endHashedAlphaNode(AlphaNode hashedAlpha, Object hashedValue) {
-        builder.append("break;").append(NEWLINE);
-    }
-
-    @Override
-    public void endHashedAlphaNodes(IndexableConstraint hashedFieldReader) {
-        // close switch statement
-        builder.append("}").append(NEWLINE);
-        // and if statement for ensuring non-null
-        builder.append("}").append(NEWLINE);
-    }
-
-    @Override
-    public void endObjectTypeNode(ObjectTypeNode objectTypeNode) {
-        // close the assertObject method
-        builder.append("}").append(NEWLINE);
-    }
-
-    @Override
-    public void startRangeIndex(AlphaRangeIndex alphaRangeIndex) {
-        String rangeIndexVariableName = getRangeIndexVariableName(alphaRangeIndex, getMinIdFromRangeIndex(alphaRangeIndex));
-        String matchingResultVariableName = rangeIndexVariableName + "_result";
-        String matchingNodeVariableName = matchingResultVariableName + "_node";
-        builder.append("java.util.Collection<org.drools.core.reteoo.AlphaNode> " + matchingResultVariableName + " = " + rangeIndexVariableName + ".getMatchingAlphaNodes(" + FACT_HANDLE_PARAM_NAME + ".getObject());").append(NEWLINE);
-        builder.append("for (org.drools.core.reteoo.AlphaNode " + matchingNodeVariableName + " : " + matchingResultVariableName + ") {").append(NEWLINE);
-        builder.append("switch (" + matchingNodeVariableName + ".getId()) {").append(NEWLINE);
-    }
-
-    @Override
-    public void startRangeIndexedAlphaNode(AlphaNode alphaNode) {
-        builder.append("case " + alphaNode.getId() + ":").append(NEWLINE);
-    }
-
-    @Override
-    public void endRangeIndexedAlphaNode(AlphaNode alphaNode) {
-        builder.append("break;").append(NEWLINE);
-    }
-
-    @Override
-    public void endRangeIndex(AlphaRangeIndex alphaRangeIndex) {
-        builder.append("}").append(NEWLINE);
-        builder.append("}").append(NEWLINE);
+    protected String propagateMethodName() {
+        return "propagateModifyObject";
     }
 }
