@@ -27,7 +27,7 @@ public abstract class IntrospectableLambda implements Supplier<Object> {
     private String lambdaFingerprint;
 
     // Duplicated from CoreComponentsBuilder to avoid dependency on drools-core in drools-canonical-model
-    static Boolean IS_NATIVE_IMAGE = System.getProperty("org.graalvm.nativeimage.imagecode") != null;
+    static boolean IS_NATIVE_IMAGE = System.getProperty("org.graalvm.nativeimage.imagecode") != null;
 
     public abstract Object getLambda();
 
