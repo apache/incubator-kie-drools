@@ -43,7 +43,10 @@ import { buildTaskInboxWhereArgument } from '../../../util/QueryUtils';
 
 const UserTaskLoadingComponent = (
   <Bullseye>
-    <KogitoSpinner spinnerText="Loading user tasks..." />
+    <KogitoSpinner
+      spinnerText="Loading user tasks..."
+      ouiaId="task-inbox-loading-tasks"
+    />
   </Bullseye>
 );
 
@@ -221,6 +224,7 @@ const TaskInbox: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
           title="No status is selected"
           body="Try selecting at least one status to see results"
           onClick={resetFilters}
+          ouiaId="task-inbox-no-status"
         />
       ) : isTableDataLoaded ? (
         <DataTable

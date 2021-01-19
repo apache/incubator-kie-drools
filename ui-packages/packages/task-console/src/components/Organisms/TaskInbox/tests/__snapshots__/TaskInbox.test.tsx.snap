@@ -14,6 +14,7 @@ exports[`TaskInbox tests Test empty state 1`] = `
       LoadingComponent={
         <Bullseye>
           <KogitoSpinner
+            ouiaId="task-inbox-loading-tasks"
             spinnerText="Loading user tasks..."
           />
         </Bullseye>
@@ -213,6 +214,7 @@ exports[`TaskInbox tests Test load data with LoadMore 1`] = `
       LoadingComponent={
         <Bullseye>
           <KogitoSpinner
+            ouiaId="task-inbox-loading-tasks"
             spinnerText="Loading user tasks..."
           />
         </Bullseye>
@@ -972,6 +974,7 @@ exports[`TaskInbox tests Test load data with LoadMore 2`] = `
       LoadingComponent={
         <Bullseye>
           <KogitoSpinner
+            ouiaId="task-inbox-loading-tasks"
             spinnerText="Loading user tasks..."
           />
         </Bullseye>

@@ -34,6 +34,7 @@ import { TaskFormSubmitHandler } from '../../../util/uniforms/TaskFormSubmitHand
 import { FormSchema } from '../../../util/uniforms/FormSchema';
 import { getTaskSchemaEndPoint } from '../../../util/Utils';
 import UserTaskInstance = GraphQL.UserTaskInstance;
+import { OUIAProps } from '@kogito-apps/common';
 
 interface IOwnProps {
   userTaskInstance?: UserTaskInstance;
@@ -41,10 +42,12 @@ interface IOwnProps {
   onSubmitError: (message: string, details?: string) => void;
 }
 
-const TaskForm: React.FC<IOwnProps> = ({
+const TaskForm: React.FC<IOwnProps & OUIAProps> = ({
   userTaskInstance,
   onSubmitSuccess,
-  onSubmitError
+  onSubmitError,
+  ouiaId,
+  ouiaSafe
 }) => {
   // tslint:disable: no-floating-promises
   const context: ITaskConsoleContext<UserTaskInstance> = useTaskConsoleContext();
@@ -104,12 +107,20 @@ const TaskForm: React.FC<IOwnProps> = ({
       return (
         <KogitoSpinner
           spinnerText={'Loading form for task: ' + stateUserTask.name}
+          ouiaId={(ouiaId ? ouiaId : 'task-form') + '-spinner-loading'}
+          ouiaSafe={ouiaSafe}
         />
       );
     }
 
     if (isSubmitting) {
-      return <KogitoSpinner spinnerText={'Submitting form...'} />;
+      return (
+        <KogitoSpinner
+          spinnerText={'Submitting form...'}
+          ouiaId={(ouiaId ? ouiaId : 'task-form') + '-spinner-submitting'}
+          ouiaSafe={ouiaSafe}
+        />
+      );
     }
 
     if (taskFormSchema) {
@@ -166,6 +177,8 @@ const TaskForm: React.FC<IOwnProps> = ({
           model={formData}
           readOnly={submitted}
           formSubmitHandler={formSubmitHandler}
+          ouiaId={(ouiaId ? ouiaId : 'task-form') + '-form-renderer'}
+          ouiaSafe={ouiaSafe}
         />
       );
     }
@@ -176,6 +189,8 @@ const TaskForm: React.FC<IOwnProps> = ({
       type={KogitoEmptyStateType.Info}
       title="No form to show"
       body="Cannot find form"
+      ouiaId={(ouiaId ? ouiaId : 'task-form') + '-no-form'}
+      ouiaSafe={ouiaSafe}
     />
   );
 };

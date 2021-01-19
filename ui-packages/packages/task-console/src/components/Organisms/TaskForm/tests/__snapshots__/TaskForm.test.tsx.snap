@@ -314,6 +314,7 @@ exports[`TaskForm Test Test render completed task 1`] = `
         },
       }
     }
+    ouiaId="task-form-form-renderer"
     readOnly={false}
   />
 </TaskForm>
@@ -642,6 +643,7 @@ exports[`TaskForm Test Test rendering form 1`] = `
         },
       }
     }
+    ouiaId="task-form-form-renderer"
     readOnly={false}
   />
 </TaskForm>
@@ -946,6 +948,7 @@ exports[`TaskForm Test Test rendering form from task in context 1`] = `
         },
       }
     }
+    ouiaId="task-form-form-renderer"
     readOnly={false}
   />
 </TaskForm>
@@ -982,6 +985,7 @@ exports[`TaskForm Test Test rendering form with HTTP error 1`] = `
 >
   <KogitoEmptyState
     body="Cannot find form"
+    ouiaId="task-form-no-form"
     title="No form to show"
     type={3}
   >
@@ -1023,6 +1027,7 @@ exports[`TaskForm Test Test rendering form with JS error 1`] = `
 >
   <KogitoEmptyState
     body="Cannot find form"
+    ouiaId="task-form-no-form"
     title="No form to show"
     type={3}
   >
@@ -1356,6 +1361,7 @@ exports[`TaskForm Test Test submit error 1`] = `
         },
       }
     }
+    ouiaId="task-form-form-renderer"
     readOnly={false}
   />
 </TaskForm>
@@ -1707,6 +1713,7 @@ exports[`TaskForm Test Test submit error 2`] = `
         },
       }
     }
+    ouiaId="task-form-form-renderer"
     readOnly={false}
   />
 </TaskForm>
@@ -2037,6 +2044,7 @@ exports[`TaskForm Test Test submit success 1`] = `
         },
       }
     }
+    ouiaId="task-form-form-renderer"
     readOnly={false}
   />
 </TaskForm>
@@ -2381,6 +2389,7 @@ exports[`TaskForm Test Test submit success 2`] = `
         },
       }
     }
+    ouiaId="task-form-form-renderer"
     readOnly={true}
   />
 </TaskForm>
@@ -2711,6 +2720,7 @@ exports[`TaskForm Test Test successful callback 1`] = `
         },
       }
     }
+    ouiaId="task-form-form-renderer"
     readOnly={false}
   />
 </TaskForm>
@@ -3055,6 +3065,7 @@ exports[`TaskForm Test Test successful callback 2`] = `
         },
       }
     }
+    ouiaId="task-form-form-renderer"
     readOnly={true}
   />
 </TaskForm>
@@ -3385,6 +3396,7 @@ exports[`TaskForm Test Test unsuccessful callback 1`] = `
         },
       }
     }
+    ouiaId="task-form-form-renderer"
     readOnly={false}
   />
 </TaskForm>
@@ -3736,6 +3748,7 @@ exports[`TaskForm Test Test unsuccessful callback 2`] = `
         },
       }
     }
+    ouiaId="task-form-form-renderer"
     readOnly={false}
   />
 </TaskForm>
@@ -4066,6 +4079,7 @@ exports[`TaskForm Test Test unsuccessful callback with extra message 1`] = `
         },
       }
     }
+    ouiaId="task-form-form-renderer"
     readOnly={false}
   />
 </TaskForm>
@@ -4417,6 +4431,7 @@ exports[`TaskForm Test Test unsuccessful callback with extra message 2`] = `
         },
       }
     }
+    ouiaId="task-form-form-renderer"
     readOnly={false}
   />
 </TaskForm>

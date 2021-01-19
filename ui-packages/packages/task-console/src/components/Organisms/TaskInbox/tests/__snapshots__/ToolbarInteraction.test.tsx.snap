@@ -4,15 +4,18 @@ exports[`TaskInbox toolbar interaction tests show no filters selected state and 
 <Component
   body="Try selecting at least one status to see results"
   onClick={[Function]}
+  ouiaId="task-inbox-no-status"
   title="No status is selected"
   type={2}
 >
   <Bullseye
+    data-ouia-component-id="task-inbox-no-status"
     data-ouia-component-type="kogito-empty-state"
     data-ouia-safe={true}
   >
     <div
       className="pf-l-bullseye"
+      data-ouia-component-id="task-inbox-no-status"
       data-ouia-component-type="kogito-empty-state"
       data-ouia-safe={true}
     >
