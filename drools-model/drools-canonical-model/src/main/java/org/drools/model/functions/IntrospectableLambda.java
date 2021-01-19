@@ -60,8 +60,8 @@ public abstract class IntrospectableLambda implements Supplier<Object> {
             logger.debug("No HashedExpression provided, generating fingerprint using reflection via org.drools.mvel.asm.LambdaIntrospector, node sharing enabled");
             return LambdaPrinter.print(getLambda());
         } else {
-            logger.debug("No HashedExpression provided, using Object.class.toString(), node sharing might not work correctly");
-            return super.toString();
+            logger.warn("No HashedExpression provided with lambda, using System.identityHashCode as the lambda fingerprint, this will impact performances as node sharing won't work correctly");
+            return "HASHCODE-FINGEPRINT" + System.identityHashCode(this);
         }
     }
 
