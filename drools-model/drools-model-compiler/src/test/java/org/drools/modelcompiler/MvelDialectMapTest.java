@@ -47,12 +47,12 @@ public class MvelDialectMapTest extends BaseModelTest {
                 "    m: Person($i : itemsString[\"key1\"])" +
                 "\n" +
                 "  then\n" +
-                "   results.add($i);" +
+                "   results.add($i.length());" +
                 "end";
 
         KieSession ksession = getKieSession(drl);
 
-        List<String> results = new ArrayList<>();
+        List<Integer> results = new ArrayList<>();
         ksession.setGlobal("results", results);
 
         Person p = new Person("Luca");
@@ -63,7 +63,7 @@ public class MvelDialectMapTest extends BaseModelTest {
 
         assertEquals(1, ksession.fireAllRules());
 
-        assertThat(results).containsExactly("item1");
+        assertThat(results).containsExactly(5); // item1.length()
     }
 
   }
