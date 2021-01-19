@@ -69,8 +69,8 @@ In this case, we use the default <<optimizationAlgorithms,optimization algorithm
 ----
 +
 OptaPlanner should get a good result in seconds (and even in less than 15 milliseconds with
-<<realTimePlanning,real-time planning>>), but the more time it has, the better the result will be.
+<<realTimePlanning,real-time planning>>), but the more time it has, the better the results.
 Advanced use cases might use different <<termination,termination criteria>> than a hard time limit.
 +
-The default algorithms will already easily surpass human planners and most in-house implementations.
+The default algorithms already easily surpass human planners and most in-house implementations.
 Use the <<benchmarker,Benchmarker>> to <<powerTweaking,power tweak>> to get even better results.

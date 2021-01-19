@@ -8,7 +8,7 @@
 By default, the Cloud Balancing Hello World is configured to run for 120 seconds.
 
 
-It will execute the following code:
+It executes the following code:
 
 .CloudBalancingHelloWorld.java
 ====
@@ -40,9 +40,8 @@ public class CloudBalancingHelloWorld {
 
 The code example does the following:
 
-. Build the `Solver` based on a solver configuration (in this case <<solverConfigurationByXML,an XML file>>, `cloudBalancingSolverConfig.xml`, from the classpath).
-+
-Building the `Solver` is the most complicated part of this procedure. For more detail, see <<cloudBalancingSolverConfiguration, Solver Configuration>>.
+. Build the `Solver` based on a solver configuration
+which can come from <<solverConfigurationByXML,an XML file>> as classpath resource:
 +
 [source,java,options="nowrap"]
 ----
@@ -50,10 +49,24 @@ Building the `Solver` is the most complicated part of this procedure. For more d
                 "org/optaplanner/examples/cloudbalancing/solver/cloudBalancingSolverConfig.xml");
         Solver<CloudBalance> solver = solverFactory.buildSolver();
 ----
++
+Or to avoid XML, build it through <<solverConfigurationByJavaAPI,the programmatic API>> instead:
++
+[source,java,options="nowrap"]
+----
+        SolverFactory<CloudBalance> solverFactory = SolverFactory.create(new SolverConfig()
+                .withSolutionClass(CloudBalance.class)
+                .withEntityClasses(CloudProcess.class)
+                .withEasyScoreCalculatorClass(CloudBalancingEasyScoreCalculator.class)
+                .withTerminationSpentLimit(Duration.ofMinutes(2)));
+        Solver<CloudBalance> solver = solverFactory.buildSolver();
+----
++
+The solver configuration is explained in <<cloudBalancingSolverConfiguration, the next section>>.
 
 . Load the problem.
 +
-`CloudBalancingGenerator` generates a random problem: you will replace this with a class that loads a real problem, for example from a database.
+`CloudBalancingGenerator` generates a random problem: replace this with a class that loads a real problem, for example from a database.
 +
 [source,java,options="nowrap"]
 ----

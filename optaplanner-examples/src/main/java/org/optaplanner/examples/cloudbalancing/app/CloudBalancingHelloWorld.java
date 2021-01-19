@@ -16,12 +16,16 @@
 
 package org.optaplanner.examples.cloudbalancing.app;
 
+import java.time.Duration;
+
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
+import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.examples.cloudbalancing.domain.CloudBalance;
 import org.optaplanner.examples.cloudbalancing.domain.CloudComputer;
 import org.optaplanner.examples.cloudbalancing.domain.CloudProcess;
 import org.optaplanner.examples.cloudbalancing.optional.benchmark.CloudBalancingBenchmarkHelloWorld;
+import org.optaplanner.examples.cloudbalancing.optional.score.CloudBalancingConstraintProvider;
 import org.optaplanner.examples.cloudbalancing.persistence.CloudBalancingGenerator;
 
 /**
@@ -31,8 +35,11 @@ public class CloudBalancingHelloWorld {
 
     public static void main(String[] args) {
         // Build the Solver
-        SolverFactory<CloudBalance> solverFactory = SolverFactory.createFromXmlResource(
-                "org/optaplanner/examples/cloudbalancing/solver/cloudBalancingSolverConfig.xml");
+        SolverFactory<CloudBalance> solverFactory = SolverFactory.create(new SolverConfig()
+                .withSolutionClass(CloudBalance.class)
+                .withEntityClasses(CloudProcess.class)
+                .withConstraintProviderClass(CloudBalancingConstraintProvider.class)
+                .withTerminationSpentLimit(Duration.ofMinutes(2)));
         Solver<CloudBalance> solver = solverFactory.buildSolver();
 
         // Load a problem with 400 computers and 1200 processes

@@ -27,6 +27,7 @@ import java.io.StringWriter;
 import java.io.UncheckedIOException;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
@@ -130,6 +131,33 @@ class SolverConfigTest {
     }
 
     @Test
+    void withEasyScoreCalculatorClass() {
+        SolverConfig solverConfig = new SolverConfig();
+        assertThat(solverConfig.getScoreDirectorFactoryConfig()).isNull();
+        solverConfig.withEasyScoreCalculatorClass(DummyEasyScoreCalculator.class);
+        assertThat(solverConfig.getScoreDirectorFactoryConfig().getEasyScoreCalculatorClass())
+                .isEqualTo(DummyEasyScoreCalculator.class);
+    }
+
+    @Test
+    void withConstraintProviderClass() {
+        SolverConfig solverConfig = new SolverConfig();
+        assertThat(solverConfig.getScoreDirectorFactoryConfig()).isNull();
+        solverConfig.withConstraintProviderClass(DummyConstraintProvider.class);
+        assertThat(solverConfig.getScoreDirectorFactoryConfig().getConstraintProviderClass())
+                .isEqualTo(DummyConstraintProvider.class);
+    }
+
+    @Test
+    void withTerminationSpentLimit() {
+        SolverConfig solverConfig = new SolverConfig();
+        assertThat(solverConfig.getTerminationConfig()).isNull();
+        solverConfig.withTerminationSpentLimit(Duration.ofMinutes(2));
+        assertThat(solverConfig.getTerminationConfig().getSpentLimit())
+                .isEqualTo(Duration.ofMinutes(2));
+    }
+
+    @Test
     void inherit() {
         SolverConfig originalSolverConfig = readSolverConfig(TEST_SOLVER_CONFIG_WITHOUT_NAMESPACE);
         SolverConfig inheritedSolverConfig =
@@ -168,4 +196,5 @@ class SolverConfigTest {
 
     private abstract class DummyMoveListFactory implements MoveListFactory<TestdataSolution> {
     }
+
 }

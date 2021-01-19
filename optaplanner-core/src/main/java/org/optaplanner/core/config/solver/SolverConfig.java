@@ -27,6 +27,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ThreadFactory;
@@ -37,6 +38,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
+import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
+import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.AbstractConfig;
@@ -460,8 +463,50 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
         return this;
     }
 
+    /**
+     * As defined by {@link ScoreDirectorFactoryConfig#withEasyScoreCalculatorClass(Class)}, but returns this.
+     * 
+     * @param easyScoreCalculatorClass sometimes null
+     * @return this, never null
+     */
+    public SolverConfig withEasyScoreCalculatorClass(Class<? extends EasyScoreCalculator> easyScoreCalculatorClass) {
+        if (scoreDirectorFactoryConfig == null) {
+            scoreDirectorFactoryConfig = new ScoreDirectorFactoryConfig();
+        }
+        scoreDirectorFactoryConfig.setEasyScoreCalculatorClass(easyScoreCalculatorClass);
+        return this;
+    }
+
+    /**
+     * As defined by {@link ScoreDirectorFactoryConfig#withConstraintProviderClass(Class)}, but returns this.
+     * 
+     * @param constraintProviderClass sometimes null
+     * @return this, never null
+     */
+    public SolverConfig withConstraintProviderClass(Class<? extends ConstraintProvider> constraintProviderClass) {
+        if (scoreDirectorFactoryConfig == null) {
+            scoreDirectorFactoryConfig = new ScoreDirectorFactoryConfig();
+        }
+        scoreDirectorFactoryConfig.setConstraintProviderClass(constraintProviderClass);
+        return this;
+    }
+
     public SolverConfig withTerminationConfig(TerminationConfig terminationConfig) {
         this.terminationConfig = terminationConfig;
+        return this;
+    }
+
+    /**
+     * As defined by {@link TerminationConfig#withSpentLimit(Duration)}, but returns this.
+     * 
+     * @param spentLimit sometimes null
+     * @return this, never null
+     */
+    public SolverConfig withTerminationSpentLimit(Duration spentLimit) {
+        if (terminationConfig == null) {
+            terminationConfig = new TerminationConfig();
+        }
+        terminationConfig.setSpentLimit(spentLimit);
         return this;
     }
 
