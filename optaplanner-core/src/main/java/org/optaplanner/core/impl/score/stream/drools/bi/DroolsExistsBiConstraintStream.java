@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,21 +18,21 @@ package org.optaplanner.core.impl.score.stream.drools.bi;
 
 import org.optaplanner.core.api.score.stream.tri.TriJoiner;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
-import org.optaplanner.core.impl.score.stream.drools.common.nodes.BiConstraintGraphNode;
+import org.optaplanner.core.impl.score.stream.drools.common.BiLeftHandSide;
 
 public final class DroolsExistsBiConstraintStream<Solution_, A, B>
         extends DroolsAbstractBiConstraintStream<Solution_, A, B> {
 
-    private final BiConstraintGraphNode node;
+    private final BiLeftHandSide<A, B> leftHandSide;
     private final String streamName;
 
     public <C> DroolsExistsBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractBiConstraintStream<Solution_, A, B> parent, boolean shouldExist, Class<C> otherClass,
             TriJoiner<A, B, C>... joiners) {
         super(constraintFactory);
-        this.node = shouldExist
-                ? constraintFactory.getConstraintGraph().ifExists(parent.getConstraintGraphNode(), otherClass, joiners)
-                : constraintFactory.getConstraintGraph().ifNotExists(parent.getConstraintGraphNode(), otherClass, joiners);
+        this.leftHandSide = shouldExist
+                ? parent.getLeftHandSide().andExists(otherClass, joiners)
+                : parent.getLeftHandSide().andNotExists(otherClass, joiners);
         this.streamName = shouldExist ? "BiIfExists()" : "BiIfNotExists()";
     }
 
@@ -41,8 +41,8 @@ public final class DroolsExistsBiConstraintStream<Solution_, A, B>
     // ************************************************************************
 
     @Override
-    public BiConstraintGraphNode getConstraintGraphNode() {
-        return node;
+    public BiLeftHandSide<A, B> getLeftHandSide() {
+        return leftHandSide;
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,6 +35,7 @@ import org.drools.model.functions.accumulate.GroupKey;
 import org.drools.model.impl.ModelImpl;
 import org.drools.modelcompiler.builder.KieBaseBuilder;
 import org.kie.api.KieBase;
+import org.kie.api.conf.KieBaseMutabilityOption;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.event.rule.RuleEventManager;
@@ -48,7 +49,7 @@ import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.ConstraintSession;
 import org.optaplanner.core.impl.score.stream.ConstraintSessionFactory;
 import org.optaplanner.core.impl.score.stream.drools.common.FactTuple;
-import org.optaplanner.core.impl.score.stream.drools.common.rules.RuleAssembly;
+import org.optaplanner.core.impl.score.stream.drools.common.RuleAssembly;
 
 public final class DroolsConstraintSessionFactory<Solution_, Score_ extends Score<Score_>>
         implements ConstraintSessionFactory<Solution_, Score_> {
@@ -63,11 +64,11 @@ public final class DroolsConstraintSessionFactory<Solution_, Score_ extends Scor
     private Set<String> currentlyDisabledConstraintIdSet = null;
 
     public DroolsConstraintSessionFactory(SolutionDescriptor<Solution_> solutionDescriptor, Model model,
-            Map<org.drools.model.Rule, Class[]> modelRuleToExpectedTypesMap,
-            DroolsConstraint<Solution_>... constraints) {
+            Map<org.drools.model.Rule, Class<?>[]> modelRuleToExpectedTypesMap,
+            DroolsConstraint<Solution_>[] constraints) {
         this.solutionDescriptor = solutionDescriptor;
         this.originalModel = model;
-        this.originalKieBase = KieBaseBuilder.createKieBaseFromModel(model);
+        this.originalKieBase = buildKieBaseFromModel(model);
         this.currentKieBase = originalKieBase;
         this.compiledRuleToConstraintMap = Arrays.stream(constraints)
                 .collect(toMap(constraint -> currentKieBase.getRule(constraint.getConstraintPackage(),
@@ -85,6 +86,10 @@ public final class DroolsConstraintSessionFactory<Solution_, Score_ extends Scor
                     org.drools.model.Rule modelRule = constraintToModelRuleMap.get(constraint.getConstraintId());
                     return modelRuleToExpectedTypesMap.get(modelRule);
                 }));
+    }
+
+    private static KieBase buildKieBaseFromModel(Model model) {
+        return KieBaseBuilder.createKieBaseFromModel(model, KieBaseMutabilityOption.DISABLED);
     }
 
     /**
@@ -194,7 +199,7 @@ public final class DroolsConstraintSessionFactory<Solution_, Score_ extends Scor
                     DroolsConstraint<Solution_> constraint = compiledRuleToConstraintMap.get(rule);
                     Class[] expectedTypes = compiledRuleToExpectedTypesMap.get(rule);
                     return matchJustificationsToOutput(justificationList,
-                            constraint.getConsequence().getTerminalNode().getCardinality(), expectedTypes);
+                            constraint.getConsequence().getCardinality(), expectedTypes);
                 });
         // Determine which rules to enable based on the fact that their constraints carry weight.
         Score_ zeroScore = scoreDefinition.getZeroScore();
@@ -219,7 +224,7 @@ public final class DroolsConstraintSessionFactory<Solution_, Score_ extends Scor
                 }
                 model.addRule(modelRule);
             });
-            currentKieBase = KieBaseBuilder.createKieBaseFromModel(model);
+            currentKieBase = buildKieBaseFromModel(model);
             currentlyDisabledConstraintIdSet = disabledConstraintIdSet;
         }
         // Create the session itself.

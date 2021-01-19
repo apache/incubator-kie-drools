@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,14 +27,14 @@ import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsAbstractBiConstraintStream;
-import org.optaplanner.core.impl.score.stream.drools.common.nodes.QuadConstraintGraphNode;
+import org.optaplanner.core.impl.score.stream.drools.common.QuadLeftHandSide;
 import org.optaplanner.core.impl.score.stream.drools.tri.DroolsAbstractTriConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsAbstractUniConstraintStream;
 
 public final class DroolsGroupingQuadConstraintStream<Solution_, NewA, NewB, NewC, NewD>
         extends DroolsAbstractQuadConstraintStream<Solution_, NewA, NewB, NewC, NewD> {
 
-    private final QuadConstraintGraphNode node;
+    private final QuadLeftHandSide<NewA, NewB, NewC, NewD> leftHandSide;
 
     public <A, ResultContainerC, ResultContainerD> DroolsGroupingQuadConstraintStream(
             DroolsConstraintFactory<Solution_> constraintFactory,
@@ -42,8 +42,7 @@ public final class DroolsGroupingQuadConstraintStream<Solution_, NewA, NewB, New
             Function<A, NewB> groupKeyBMapping, UniConstraintCollector<A, ResultContainerC, NewC> collectorC,
             UniConstraintCollector<A, ResultContainerD, NewD> collectorD) {
         super(constraintFactory);
-        this.node = constraintFactory.getConstraintGraph().groupBy(parent.getConstraintGraphNode(), groupKeyAMapping,
-                groupKeyBMapping, collectorC, collectorD);
+        this.leftHandSide = parent.getLeftHandSide().andGroupBy(groupKeyAMapping, groupKeyBMapping, collectorC, collectorD);
     }
 
     public <A, B, ResultContainerC, ResultContainerD> DroolsGroupingQuadConstraintStream(
@@ -52,8 +51,7 @@ public final class DroolsGroupingQuadConstraintStream<Solution_, NewA, NewB, New
             BiFunction<A, B, NewB> groupKeyBMapping, BiConstraintCollector<A, B, ResultContainerC, NewC> collectorC,
             BiConstraintCollector<A, B, ResultContainerD, NewD> collectorD) {
         super(constraintFactory);
-        this.node = constraintFactory.getConstraintGraph().groupBy(parent.getConstraintGraphNode(), groupKeyAMapping,
-                groupKeyBMapping, collectorC, collectorD);
+        this.leftHandSide = parent.getLeftHandSide().andGroupBy(groupKeyAMapping, groupKeyBMapping, collectorC, collectorD);
     }
 
     public <A, B, C, ResultContainerC, ResultContainerD> DroolsGroupingQuadConstraintStream(
@@ -63,8 +61,7 @@ public final class DroolsGroupingQuadConstraintStream<Solution_, NewA, NewB, New
             TriConstraintCollector<A, B, C, ResultContainerC, NewC> collectorC,
             TriConstraintCollector<A, B, C, ResultContainerD, NewD> collectorD) {
         super(constraintFactory);
-        this.node = constraintFactory.getConstraintGraph().groupBy(parent.getConstraintGraphNode(), groupKeyAMapping,
-                groupKeyBMapping, collectorC, collectorD);
+        this.leftHandSide = parent.getLeftHandSide().andGroupBy(groupKeyAMapping, groupKeyBMapping, collectorC, collectorD);
     }
 
     public <A, B, C, D, ResultContainerC, ResultContainerD> DroolsGroupingQuadConstraintStream(
@@ -75,8 +72,7 @@ public final class DroolsGroupingQuadConstraintStream<Solution_, NewA, NewB, New
             QuadConstraintCollector<A, B, C, D, ResultContainerC, NewC> collectorC,
             QuadConstraintCollector<A, B, C, D, ResultContainerD, NewD> collectorD) {
         super(constraintFactory);
-        this.node = constraintFactory.getConstraintGraph().groupBy(parent.getConstraintGraphNode(), groupKeyAMapping,
-                groupKeyBMapping, collectorC, collectorD);
+        this.leftHandSide = parent.getLeftHandSide().andGroupBy(groupKeyAMapping, groupKeyBMapping, collectorC, collectorD);
     }
 
     // ************************************************************************
@@ -84,8 +80,8 @@ public final class DroolsGroupingQuadConstraintStream<Solution_, NewA, NewB, New
     // ************************************************************************
 
     @Override
-    public QuadConstraintGraphNode getConstraintGraphNode() {
-        return node;
+    public QuadLeftHandSide<NewA, NewB, NewC, NewD> getLeftHandSide() {
+        return leftHandSide;
     }
 
     // ************************************************************************

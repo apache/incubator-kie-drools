@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,17 +18,17 @@ package org.optaplanner.core.impl.score.stream.drools.tri;
 
 import org.optaplanner.core.api.function.TriPredicate;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
-import org.optaplanner.core.impl.score.stream.drools.common.nodes.TriConstraintGraphNode;
+import org.optaplanner.core.impl.score.stream.drools.common.TriLeftHandSide;
 
 public final class DroolsFilterTriConstraintStream<Solution_, A, B, C>
         extends DroolsAbstractTriConstraintStream<Solution_, A, B, C> {
 
-    private final TriConstraintGraphNode node;
+    private final TriLeftHandSide<A, B, C> leftHandSide;
 
     public DroolsFilterTriConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractTriConstraintStream<Solution_, A, B, C> parent, TriPredicate<A, B, C> triPredicate) {
         super(constraintFactory);
-        this.node = constraintFactory.getConstraintGraph().filter(parent.getConstraintGraphNode(), triPredicate);
+        this.leftHandSide = parent.getLeftHandSide().andFilter(triPredicate);
     }
 
     // ************************************************************************
@@ -36,8 +36,8 @@ public final class DroolsFilterTriConstraintStream<Solution_, A, B, C>
     // ************************************************************************
 
     @Override
-    public TriConstraintGraphNode getConstraintGraphNode() {
-        return node;
+    public TriLeftHandSide<A, B, C> getLeftHandSide() {
+        return leftHandSide;
     }
 
     @Override

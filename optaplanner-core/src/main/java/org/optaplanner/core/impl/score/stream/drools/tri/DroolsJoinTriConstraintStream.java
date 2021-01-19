@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,20 +19,19 @@ package org.optaplanner.core.impl.score.stream.drools.tri;
 import org.optaplanner.core.api.score.stream.tri.TriJoiner;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsAbstractBiConstraintStream;
-import org.optaplanner.core.impl.score.stream.drools.common.nodes.TriConstraintGraphNode;
+import org.optaplanner.core.impl.score.stream.drools.common.TriLeftHandSide;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsAbstractUniConstraintStream;
 
 public final class DroolsJoinTriConstraintStream<Solution_, A, B, C>
         extends DroolsAbstractTriConstraintStream<Solution_, A, B, C> {
 
-    private final TriConstraintGraphNode node;
+    private final TriLeftHandSide<A, B, C> leftHandSide;
 
     public DroolsJoinTriConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractBiConstraintStream<Solution_, A, B> parent,
-            DroolsAbstractUniConstraintStream<Solution_, C> otherStream, TriJoiner<A, B, C> triJoiner) {
+            DroolsAbstractUniConstraintStream<Solution_, C> otherStream, TriJoiner<A, B, C> joiner) {
         super(constraintFactory);
-        this.node = constraintFactory.getConstraintGraph().join(parent.getConstraintGraphNode(),
-                otherStream.getConstraintGraphNode(), triJoiner);
+        this.leftHandSide = parent.getLeftHandSide().andJoin(otherStream.getLeftHandSide(), joiner);
     }
 
     // ************************************************************************
@@ -40,8 +39,8 @@ public final class DroolsJoinTriConstraintStream<Solution_, A, B, C>
     // ************************************************************************
 
     @Override
-    public TriConstraintGraphNode getConstraintGraphNode() {
-        return node;
+    public TriLeftHandSide<A, B, C> getLeftHandSide() {
+        return leftHandSide;
     }
 
     // ************************************************************************

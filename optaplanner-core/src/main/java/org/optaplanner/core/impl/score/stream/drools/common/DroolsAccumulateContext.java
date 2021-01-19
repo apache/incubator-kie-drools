@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
  *
  * @param <ResultContainer_> The same type from {@link UniConstraintCollector} and its Bi, Tri, ... alternatives.
  */
-public final class DroolsAccumulateContext<ResultContainer_> implements Serializable {
+final class DroolsAccumulateContext<ResultContainer_> implements Serializable {
 
     private final ResultContainer_ container;
     private final Map<Object, Runnable> undoMap = new HashMap<>();

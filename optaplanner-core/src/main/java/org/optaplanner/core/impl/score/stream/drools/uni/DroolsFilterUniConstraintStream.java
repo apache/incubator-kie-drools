@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,17 +19,16 @@ package org.optaplanner.core.impl.score.stream.drools.uni;
 import java.util.function.Predicate;
 
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
-import org.optaplanner.core.impl.score.stream.drools.common.nodes.UniConstraintGraphChildNode;
-import org.optaplanner.core.impl.score.stream.drools.common.nodes.UniConstraintGraphNode;
+import org.optaplanner.core.impl.score.stream.drools.common.UniLeftHandSide;
 
 public final class DroolsFilterUniConstraintStream<Solution_, A> extends DroolsAbstractUniConstraintStream<Solution_, A> {
 
-    private final UniConstraintGraphChildNode node;
+    private final UniLeftHandSide<A> leftHandSide;
 
     public DroolsFilterUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractUniConstraintStream<Solution_, A> parent, Predicate<A> predicate) {
         super(constraintFactory);
-        this.node = constraintFactory.getConstraintGraph().filter(parent.getConstraintGraphNode(), predicate);
+        this.leftHandSide = parent.getLeftHandSide().andFilter(predicate);
     }
 
     // ************************************************************************
@@ -37,8 +36,8 @@ public final class DroolsFilterUniConstraintStream<Solution_, A> extends DroolsA
     // ************************************************************************
 
     @Override
-    public UniConstraintGraphNode getConstraintGraphNode() {
-        return node;
+    public UniLeftHandSide<A> getLeftHandSide() {
+        return leftHandSide;
     }
 
     @Override

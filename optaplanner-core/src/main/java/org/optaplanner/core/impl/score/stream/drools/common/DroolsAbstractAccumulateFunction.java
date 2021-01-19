@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ import java.io.ObjectOutput;
 
 import org.kie.api.runtime.rule.AccumulateFunction;
 
-public abstract class DroolsAbstractAccumulateFunction<ResultContainer_, InTuple, OutTuple>
+abstract class DroolsAbstractAccumulateFunction<ResultContainer_, InTuple, OutTuple>
         implements AccumulateFunction<DroolsAccumulateContext<ResultContainer_>> {
 
     @Override

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,10 +19,12 @@ package org.optaplanner.core.impl.score.stream.drools;
 import static org.drools.model.DSL.globalOf;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.drools.model.Global;
 import org.drools.model.Rule;
@@ -35,14 +37,14 @@ import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
 import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.ConstraintSessionFactory;
 import org.optaplanner.core.impl.score.stream.InnerConstraintFactory;
-import org.optaplanner.core.impl.score.stream.drools.common.ConstraintGraph;
+import org.optaplanner.core.impl.score.stream.drools.common.RuleAssembly;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsFromUniConstraintStream;
 
 public final class DroolsConstraintFactory<Solution_> extends InnerConstraintFactory<Solution_> {
 
     private final SolutionDescriptor<Solution_> solutionDescriptor;
     private final String defaultConstraintPackage;
-    private final ConstraintGraph constraintGraph = new ConstraintGraph();
+    private final DroolsVariableFactory variableFactory = new DroolsVariableFactoryImpl();
 
     public DroolsConstraintFactory(SolutionDescriptor<Solution_> solutionDescriptor) {
         this.solutionDescriptor = solutionDescriptor;
@@ -97,8 +99,9 @@ public final class DroolsConstraintFactory<Solution_> extends InnerConstraintFac
             droolsConstraintList.add(droolsConstraint);
         }
         DroolsConstraint<Solution_>[] constraintArray = droolsConstraintList.toArray(new DroolsConstraint[0]);
-        Map<Rule, Class[]> ruleToExpectedJustificationTypesMap =
-                constraintGraph.generateRule(scoreHolderGlobal, constraintArray);
+        Map<Rule, Class<?>[]> ruleToExpectedJustificationTypesMap = Arrays.stream(constraintArray)
+                .map(constraint -> constraint.getConsequence().assemble(scoreHolderGlobal, constraint))
+                .collect(Collectors.toMap(RuleAssembly::getRule, RuleAssembly::getExpectedJustificationTypes));
         ruleToExpectedJustificationTypesMap.keySet()
                 .forEach(model::addRule);
         return new DroolsConstraintSessionFactory<>(solutionDescriptor, model, ruleToExpectedJustificationTypesMap,
@@ -113,8 +116,8 @@ public final class DroolsConstraintFactory<Solution_> extends InnerConstraintFac
         return solutionDescriptor;
     }
 
-    public ConstraintGraph getConstraintGraph() {
-        return constraintGraph;
+    public DroolsVariableFactory getVariableFactory() {
+        return variableFactory;
     }
 
     @Override

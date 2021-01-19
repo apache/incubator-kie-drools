@@ -32,6 +32,7 @@ import org.drools.modelcompiler.ExecutableModelProject;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
+import org.kie.api.conf.KieBaseMutabilityOption;
 import org.kie.internal.builder.conf.PropertySpecificOption;
 import org.kie.internal.utils.KieHelper;
 import org.optaplanner.core.api.score.Score;
@@ -268,7 +269,7 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
         }
 
         try {
-            KieBase kieBase = kieHelper.build(ExecutableModelProject.class);
+            KieBase kieBase = kieHelper.build(ExecutableModelProject.class, KieBaseMutabilityOption.DISABLED);
             if (generateDroolsTestOnError) {
                 return new TestGenDroolsScoreDirectorFactory<>(solutionDescriptor, kieBase, config.getScoreDrlList(),
                         config.getScoreDrlFileList());

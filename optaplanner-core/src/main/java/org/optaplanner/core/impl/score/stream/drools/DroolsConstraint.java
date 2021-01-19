@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,16 +21,16 @@ import java.util.function.Function;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.score.stream.common.AbstractConstraint;
 import org.optaplanner.core.impl.score.stream.common.ScoreImpactType;
-import org.optaplanner.core.impl.score.stream.drools.common.consequences.ConstraintConsequence;
+import org.optaplanner.core.impl.score.stream.drools.common.AbstractConstraintConsequence;
 
 public class DroolsConstraint<Solution_> extends AbstractConstraint<Solution_, DroolsConstraintFactory<Solution_>> {
 
-    private final ConstraintConsequence consequence;
+    private final AbstractConstraintConsequence consequence;
 
     public DroolsConstraint(DroolsConstraintFactory<Solution_> constraintFactory, String constraintPackage,
             String constraintName, Function<Solution_, Score<?>> constraintWeightExtractor,
             ScoreImpactType scoreImpactType, boolean isConstraintWeightConfigurable,
-            ConstraintConsequence constraintConsequence) {
+            AbstractConstraintConsequence constraintConsequence) {
         super(constraintFactory, constraintPackage, constraintName, constraintWeightExtractor, scoreImpactType,
                 isConstraintWeightConfigurable);
         this.consequence = constraintConsequence;
@@ -40,7 +40,7 @@ public class DroolsConstraint<Solution_> extends AbstractConstraint<Solution_, D
     // Getters/setters
     // ************************************************************************
 
-    public ConstraintConsequence getConsequence() {
+    public AbstractConstraintConsequence getConsequence() {
         return consequence;
     }
 
