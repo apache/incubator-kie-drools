@@ -276,9 +276,22 @@ public class ExpressionTyper {
                         .getTypedExpression()
                         .orElseThrow(() -> new NoSuchElementException("TypedExpressionResult doesn't contain TypedExpression!"))
                         .getExpression();
-                return nameExpr.flatMap( te -> te.isArray() ?
-                        createArrayAccessExpression(indexExpr, te.getExpression()) :
-                        createMapAccessExpression(indexExpr, te.getExpression(), te.isList() ? getTypeArgument( te.getType(), 0 ) : Map.class) );
+                return nameExpr.flatMap( te -> {
+                    if (te.isArray()) {
+                        return createArrayAccessExpression(indexExpr, te.getExpression());
+                    }
+
+                    java.lang.reflect.Type type;
+                    if (te.isList()) {
+                        type = getTypeArgument(te.getType(), 0);
+                    } else if(te.isMap()) {
+                        type = getTypeArgument(te.getType(), 1);
+                    } else {
+                        type = Object.class;
+                    }
+                    return createMapAccessExpression(indexExpr, te.getExpression(),
+                                                     type);
+                });
             }
 
         } else if (drlxExpr instanceof InstanceOfExpr) {
@@ -473,6 +486,7 @@ public class ExpressionTyper {
                                 .orElseThrow(() -> new NoSuchElementException("ArrayAccessExpr doesn't contain TypedExpressionCursor!"));
                 typeCursor = typedExpr.typeCursor;
                 previous = typedExpr.expressionCursor;
+
 
             } else {
                 throw new UnsupportedOperationException();
