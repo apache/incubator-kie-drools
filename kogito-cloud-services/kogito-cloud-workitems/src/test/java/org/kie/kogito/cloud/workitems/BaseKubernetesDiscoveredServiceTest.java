@@ -71,7 +71,7 @@ public abstract class BaseKubernetesDiscoveredServiceTest {
      * Enables Istio in the test environment.
      */
     private void createsIstioIngressGateway() {
-        final ServiceResource<Service, ?> serviceResource =
+        final ServiceResource<Service> serviceResource =
                 this.server.getClient()
                            .inNamespace(KogitoKubeConfig.KNATIVE_ISTIO_NAMESPACE)
                            .services()

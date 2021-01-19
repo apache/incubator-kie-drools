@@ -106,7 +106,7 @@
     <version.net.java.dev.glazedlists>1.8.0</version.net.java.dev.glazedlists>
 
     <version.io.cloudevents>2.0.0-milestone3</version.io.cloudevents>
-    <version.io.fabric8.kubernetes-client>4.13.0</version.io.fabric8.kubernetes-client>
+    <version.io.fabric8.kubernetes-client>5.0.0</version.io.fabric8.kubernetes-client>
     <version.io.micrometer>1.6.1</version.io.micrometer>
     <version.io.restassured>4.3.0</version.io.restassured>
     <version.io.restassured.springboot>3.3.0</version.io.restassured.springboot>    <!-- Manually override to 3.3.0 because Spring boot uses rest-assured-common@3.3.0, otherwise error: The type io.restassured.common.mapper.TypeRef cannot be resolved. It is indirectly referenced from required .class files -->

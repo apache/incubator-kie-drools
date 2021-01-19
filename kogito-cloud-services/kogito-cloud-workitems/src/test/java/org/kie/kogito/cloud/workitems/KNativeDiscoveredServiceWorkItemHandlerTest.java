@@ -31,7 +31,7 @@ public class KNativeDiscoveredServiceWorkItemHandlerTest extends BaseKubernetesD
 
     @Test
     public void whenExistsAServiceWithKNative() {
-        final RecreateFromServerGettable<KubernetesList, KubernetesList, ?> serviceResource =
+        final RecreateFromServerGettable<KubernetesList> serviceResource =
                 this.getClient().lists().load(this.getClass().getResource("/mock/responses/ocp4.x/knative/serving.knative.dev-services.json"));
         this.getClient().lists().create(serviceResource.get());
 

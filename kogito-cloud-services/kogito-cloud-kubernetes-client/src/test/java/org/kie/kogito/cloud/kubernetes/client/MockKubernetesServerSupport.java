@@ -96,7 +96,7 @@ public abstract class MockKubernetesServerSupport {
      * @param mockJsonResponse
      */
     protected void createMockService(final InputStream mockJsonResponse, final String namespace) {
-        final ServiceResource<Service, ?> serviceResource = this.server.getClient().inNamespace(namespace).services().load(mockJsonResponse);
+        final ServiceResource<Service> serviceResource = this.server.getClient().inNamespace(namespace).services().load(mockJsonResponse);
         this.server.getClient().inNamespace(namespace).services().create(serviceResource.get());
     }
 
@@ -107,7 +107,7 @@ public abstract class MockKubernetesServerSupport {
      * @param namespace
      */
     protected void createMockServices(final InputStream mockJsonResponse, final String namespace) {
-        final RecreateFromServerGettable<KubernetesList, KubernetesList, ?> serviceResource = this.server.getClient().inNamespace(namespace).lists().load(mockJsonResponse);
+        final RecreateFromServerGettable<KubernetesList> serviceResource = this.server.getClient().inNamespace(namespace).lists().load(mockJsonResponse);
         this.server.getClient().inNamespace(namespace).lists().create(serviceResource.get());
     }
 
