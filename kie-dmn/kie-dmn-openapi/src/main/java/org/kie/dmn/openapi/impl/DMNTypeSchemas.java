@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.eclipse.microprofile.openapi.OASFactory;
 import org.eclipse.microprofile.openapi.models.media.Schema;
@@ -31,6 +32,8 @@ import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.core.impl.BaseDMNTypeImpl;
 import org.kie.dmn.core.impl.CompositeTypeImpl;
 import org.kie.dmn.core.impl.SimpleTypeImpl;
+import org.kie.dmn.feel.lang.types.BuiltInType;
+import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.openapi.NamingPolicy;
 import org.kie.dmn.openapi.model.DMNModelIOSets;
 import org.kie.dmn.openapi.model.DMNModelIOSets.DSIOSets;
@@ -99,7 +102,12 @@ public class DMNTypeSchemas {
         }
         Schema schema = refOrBuiltinSchema(baseType);
         if (t.getAllowedValues() != null && !t.getAllowedValues().isEmpty()) {
-            FEELSchemaEnum.parseAllowedValuesIntoSchema(schema, t.getAllowedValues());
+            schema.addExtension(DMNOASConstants.X_DMN_ALLOWED_VALUES, t.getAllowedValuesFEEL().stream().map(UnaryTest::toString).collect(Collectors.joining(", ")));
+            if (DMNTypeUtils.getFEELBuiltInType(ancestor(t)) == BuiltInType.NUMBER) {
+                FEELSchemaEnum.parseNumberAllowedValuesIntoSchema(schema, t.getAllowedValues());
+            } else {
+                FEELSchemaEnum.parseAllowedValuesIntoSchema(schema, t.getAllowedValues());
+            }
         }
         schema = nestAsItemIfCollection(schema, t);
         schema.addExtension(DMNOASConstants.X_DMN_TYPE, getDMNTypeSchemaXDMNTYPEdescr(t));
@@ -131,6 +139,14 @@ public class DMNTypeSchemas {
         } else {
             return original;
         }
+    }
+    
+    private static DMNType ancestor(DMNType type) {
+    	 DMNType baseType = type.getBaseType();
+    	 while (baseType.getBaseType() != null) {
+    		 baseType = baseType.getBaseType();
+    	 }
+    	 return baseType;
     }
 
     private String getDMNTypeSchemaXDMNTYPEdescr(DMNType t) {
