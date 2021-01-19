@@ -34,7 +34,7 @@ public class MvelDialectMapTest extends BaseModelTest {
 
 
     @Test
-    public void testMVELMapSyntax() {
+    public void testMapAccessorWithBind() {
         final String drl = "" +
                 "import java.util.*;\n" +
                 "import " + Person.class.getCanonicalName() + ";\n" +
@@ -64,6 +64,41 @@ public class MvelDialectMapTest extends BaseModelTest {
         assertEquals(1, ksession.fireAllRules());
 
         assertThat(results).containsExactly(5); // item1.length()
+    }
+
+    @Test
+    public void testMapAccessorWithBindFieldAccessor() {
+        final String drl = "" +
+                "import java.util.*;\n" +
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "global java.util.List results;\n" +
+                "\n" +
+                "dialect \"mvel\"\n" +
+                "\n" +
+                "rule \"rule1\"\n" +
+                "  when\n" +
+                "    m: Person($childName : childrenMap[\"Leonardo\"].name)" +
+                "\n" +
+                "  then\n" +
+                "   results.add($childName.length());" +
+                "end";
+
+        KieSession ksession = getKieSession(drl);
+
+        List<Integer> results = new ArrayList<>();
+        ksession.setGlobal("results", results);
+
+        Person luca = new Person("Luca");
+        Person leonardo = new Person("Leonardo").setAge(3);
+        Person andrea = new Person("Andrea").setAge(0);
+        luca.getChildrenMap().put(leonardo.getName(), leonardo);
+        luca.getChildrenMap().put(andrea.getName(), andrea);
+
+        ksession.insert(luca);
+
+        assertEquals(1, ksession.fireAllRules());
+
+        assertThat(results).containsExactly(8); // Leonardo.length()
     }
 
   }
