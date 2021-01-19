@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,6 +52,8 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
 
     protected final SolverScope<Solution_> solverScope;
 
+    private final String moveThreadCountDescription;
+
     // ************************************************************************
     // Constructors and simple getters/setters
     // ************************************************************************
@@ -59,12 +61,13 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
     public DefaultSolver(EnvironmentMode environmentMode, RandomFactory randomFactory,
             BestSolutionRecaller<Solution_> bestSolutionRecaller,
             BasicPlumbingTermination<Solution_> basicPlumbingTermination, Termination<Solution_> termination,
-            List<Phase<Solution_>> phaseList, SolverScope<Solution_> solverScope) {
+            List<Phase<Solution_>> phaseList, SolverScope<Solution_> solverScope, String moveThreadCountDescription) {
         super(bestSolutionRecaller, termination, phaseList);
         this.environmentMode = environmentMode;
         this.randomFactory = randomFactory;
         this.basicPlumbingTermination = basicPlumbingTermination;
         this.solverScope = solverScope;
+        this.moveThreadCountDescription = moveThreadCountDescription;
     }
 
     public EnvironmentMode getEnvironmentMode() {
@@ -179,11 +182,13 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
         super.solvingStarted(solverScope);
         int startingSolverCount = solverScope.getStartingSolverCount() + 1;
         solverScope.setStartingSolverCount(startingSolverCount);
-        logger.info("Solving {}: time spent ({}), best score ({}), environment mode ({}), random ({}).",
+        logger.info("Solving {}: time spent ({}), best score ({}), environment mode ({}), "
+                + "move thread count ({}), random ({}).",
                 (startingSolverCount == 1 ? "started" : "restarted"),
                 solverScope.calculateTimeMillisSpentUpToNow(),
                 solverScope.getBestScore(),
                 environmentMode.name(),
+                moveThreadCountDescription,
                 (randomFactory != null ? randomFactory : "not fixed"));
     }
 
@@ -196,13 +201,14 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
     public void outerSolvingEnded(SolverScope<Solution_> solverScope) {
         // Must be kept open for doProblemFactChange
         solverScope.getScoreDirector().close();
-        logger.info("Solving ended: time spent ({}), best score ({}), score calculation speed ({}/sec),"
-                + " phase total ({}), environment mode ({}).",
+        logger.info("Solving ended: time spent ({}), best score ({}), score calculation speed ({}/sec), "
+                + "phase total ({}), environment mode ({}), move thread count ({}).",
                 solverScope.getTimeMillisSpent(),
                 solverScope.getBestScore(),
                 solverScope.getScoreCalculationSpeed(),
                 phaseList.size(),
-                environmentMode.name());
+                environmentMode.name(),
+                moveThreadCountDescription);
         solving.set(false);
     }
 
