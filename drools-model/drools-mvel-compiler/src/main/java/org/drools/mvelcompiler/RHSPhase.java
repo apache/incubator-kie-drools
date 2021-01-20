@@ -92,7 +92,7 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
         this.mvelCompilerContext = mvelCompilerContext;
     }
 
-    public TypedExpression invoke(Statement statement) {
+    public TypedExpression invoke(Node statement) {
         Context ctx = new Context(null);
 
         return statement.accept(this, ctx);
