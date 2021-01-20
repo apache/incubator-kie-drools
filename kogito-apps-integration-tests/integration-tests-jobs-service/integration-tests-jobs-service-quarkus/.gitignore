@@ -1,1 +1,1 @@
-src/main/resources/kogito/**
+src/main/resources/**/*.bpmn

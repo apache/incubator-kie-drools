@@ -76,7 +76,7 @@
               <goal>copy-resources</goal>
             </goals>
             <configuration>
-              <outputDirectory>src/main/resources/kogito/</outputDirectory>
+              <outputDirectory>${project.basedir}/src/main/resources</outputDirectory>
               <resources>
                 <resource>
                   <directory>${project.parent.basedir}/integration-tests-jobs-service-common/src/main/resources</directory>

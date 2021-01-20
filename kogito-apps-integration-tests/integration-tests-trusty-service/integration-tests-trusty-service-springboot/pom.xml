@@ -80,10 +80,6 @@
         <artifactId>kogito-maven-plugin</artifactId>
         <version>${project.version}</version>
         <extensions>true</extensions>
-        <configuration>
-          <!-- this is necessary to scan the .bpmn files from external resources, that are not on src/main/resources -->
-          <kieSourcesDirectory>${project.basedir}/target/classes</kieSourcesDirectory>
-        </configuration>
       </plugin>
 
       <plugin>

@@ -66,7 +66,7 @@
               <goal>copy-resources</goal>
             </goals>
             <configuration>
-              <outputDirectory>${project.build.outputDirectory}</outputDirectory>
+              <outputDirectory>${project.basedir}/src/main/resources</outputDirectory>
               <resources>
                 <resource>
                   <directory>${project.parent.basedir}/integration-tests-jobs-service-common/src/main/resources</directory>
@@ -97,10 +97,6 @@
         <artifactId>kogito-maven-plugin</artifactId>
         <version>${project.version}</version>
         <extensions>true</extensions>
-        <configuration>
-          <!-- this is necessary to scan the .bpmn files from external resources, that are not on src/main/resources -->
-          <kieSourcesDirectory>${project.basedir}/target/classes</kieSourcesDirectory>
-        </configuration>
       </plugin>
     </plugins>
   </build>

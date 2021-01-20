@@ -1,1 +1,1 @@
-src/main/resources/*.dmn
+src/main/resources/**/*.dmn
