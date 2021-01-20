@@ -40,6 +40,7 @@ import static org.kie.pmml.compiler.commons.utils.KiePMMLUtil.SEGMENTID_TEMPLATE
 public abstract class AbstractKiePMMLFactoryTest {
 
     protected static final String SOURCE_MIXED = "MiningModel_Mixed.pmml";
+    protected static final String PACKAGE_NAME = "packagename";
     protected static DataDictionary DATA_DICTIONARY;
     protected static TransformationDictionary TRANSFORMATION_DICTIONARY;
     protected static MiningModel MINING_MODEL;

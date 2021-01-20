@@ -40,6 +40,7 @@ public class ScorecardModelImplementationProviderTest {
 
     private static final ScorecardModelImplementationProvider PROVIDER = new ScorecardModelImplementationProvider();
     private static final String SOURCE_1 = "ScorecardSample.pmml";
+    private static final String PACKAGE_NAME = "PACKAGE_NAME";
 
     @Test
     public void getPMMLModelType() {
@@ -50,7 +51,8 @@ public class ScorecardModelImplementationProviderTest {
     public void getKiePMMLModel() throws Exception {
         final PMML pmml = getPMML(SOURCE_1);
         KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
-        final KiePMMLScorecardModel retrieved = PROVIDER.getKiePMMLModel(pmml.getDataDictionary(),
+        final KiePMMLScorecardModel retrieved = PROVIDER.getKiePMMLModel(PACKAGE_NAME,
+                                                                         pmml.getDataDictionary(),
                                                                             pmml.getTransformationDictionary(),
                                                                             (Scorecard) pmml.getModels().get(0),
                                                                             new HasKnowledgeBuilderMock(knowledgeBuilder));

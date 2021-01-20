@@ -53,6 +53,7 @@ public class RegressionModelImplementationProviderTest {
     private static final String SOURCE_1 = "LinearRegressionSample.pmml";
     private static final String SOURCE_2 = "test_regression.pmml";
     private static final String SOURCE_3 = "test_regression_clax.pmml";
+    private static final String PACKAGE_NAME = "packagename";
     private static final List<RegressionModel.NormalizationMethod> VALID_NORMALIZATION_METHODS = Arrays.asList(NONE,
                                                                                                              SOFTMAX,
                                                                                                              LOGIT,
@@ -73,7 +74,8 @@ public class RegressionModelImplementationProviderTest {
         assertNotNull(pmml);
         assertEquals(1, pmml.getModels().size());
         assertTrue(pmml.getModels().get(0) instanceof RegressionModel);
-        final KiePMMLRegressionModel retrieved = PROVIDER.getKiePMMLModel(pmml.getDataDictionary(),
+        final KiePMMLRegressionModel retrieved = PROVIDER.getKiePMMLModel(PACKAGE_NAME,
+                                                                          pmml.getDataDictionary(),
                                                                           pmml.getTransformationDictionary(),
                                                                           (RegressionModel) pmml.getModels().get(0),
                                                                           new HasClassLoaderMock());

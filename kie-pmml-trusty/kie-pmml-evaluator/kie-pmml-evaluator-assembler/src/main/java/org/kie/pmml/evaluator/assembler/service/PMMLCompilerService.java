@@ -97,7 +97,10 @@ public class PMMLCompilerService {
         PMMLCompiler pmmlCompiler = kbuilderImpl.getCachedOrCreate(PMML_COMPILER_CACHE_KEY,
                                                                    PMMLCompilerService::getCompiler);
         try {
-            return pmmlCompiler.getKiePMMLModels(resource.getInputStream(),
+            String[] classNamePackageName = getFactoryClassNamePackageName(resource);
+            String factoryClassName = classNamePackageName[0];
+            String packageName = classNamePackageName[1];
+            return pmmlCompiler.getKiePMMLModels(packageName, resource.getInputStream(),
                                                  getFileName(resource.getSourcePath()),
                                                  new HasKnowledgeBuilderImpl(kbuilderImpl));
         } catch (IOException e) {

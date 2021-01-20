@@ -78,6 +78,7 @@ public class KiePMMLScorecardModelFactoryTest {
                                                                                                 pmml.getTransformationDictionary(),
                                                                                                 scorecardModel,
                                                                                                 fieldTypeMap,
+                                                                                                PACKAGE_NAME,
                                                                                                 new HasClassLoaderMock());
         assertNotNull(retrieved);
         assertEquals(scorecardModel.getModelName(), retrieved.getName());

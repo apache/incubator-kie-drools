@@ -48,11 +48,11 @@ public class PMMLCompilerImpl implements PMMLCompiler {
     private static final Logger logger = LoggerFactory.getLogger(PMMLCompilerImpl.class.getName());
 
     @Override
-    public List<KiePMMLModel> getKiePMMLModels(final InputStream inputStream, final String fileName, final HasClassLoader hasClassloader) {
-        logger.trace("getModels {} {}", inputStream, hasClassloader);
+    public List<KiePMMLModel> getKiePMMLModels(final String packageName, final InputStream inputStream, final String fileName, final HasClassLoader hasClassloader) {
+        logger.trace("getModels {} {} {}", packageName, inputStream, hasClassloader);
         try {
             PMML commonPMMLModel = KiePMMLUtil.load(inputStream, fileName);
-            return getModels(commonPMMLModel, hasClassloader);
+            return getModels(packageName, commonPMMLModel, hasClassloader);
         } catch (KiePMMLInternalException e) {
             throw new KiePMMLException("KiePMMLInternalException", e);
         } catch (KiePMMLException e) {
@@ -104,17 +104,18 @@ public class PMMLCompilerImpl implements PMMLCompiler {
 
     /**
      * Read the given <code>PMML</code> to returns a <code>List&lt;KiePMMLModel&gt;</code>
+     * @param packageName the package into which put all the generated classes out of the given <code>PMML</code>
      * @param pmml
      * @param hasClassloader Using <code>HasClassloader</code> to avoid coupling with drools
      * @return
      * @throws KiePMMLException if any <code>KiePMMLInternalException</code> has been thrown during execution
      */
-    private List<KiePMMLModel> getModels(final PMML pmml, final HasClassLoader hasClassloader) {
+    private List<KiePMMLModel> getModels(final String packageName, final PMML pmml, final HasClassLoader hasClassloader) {
         logger.trace("getModels {}", pmml);
         return pmml
                 .getModels()
                 .stream()
-                .map(model -> getFromCommonDataAndTransformationDictionaryAndModel(pmml.getDataDictionary(), pmml.getTransformationDictionary(), model, hasClassloader))
+                .map(model -> getFromCommonDataAndTransformationDictionaryAndModel(packageName, pmml.getDataDictionary(), pmml.getTransformationDictionary(), model, hasClassloader))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .collect(Collectors.toList());

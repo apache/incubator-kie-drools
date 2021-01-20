@@ -48,9 +48,15 @@ public class ScorecardModelImplementationProvider extends DroolsModelProvider<Sc
                                                        final TransformationDictionary transformationDictionary,
                                                        final Scorecard model,
                                                        final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap,
+                                                       final String packageName,
                                                        final HasClassLoader hasClassLoader) {
         try {
-            return KiePMMLScorecardModelFactory.getKiePMMLScorecardModel(dataDictionary, transformationDictionary, model, fieldTypeMap, hasClassLoader);
+            return KiePMMLScorecardModelFactory.getKiePMMLScorecardModel(dataDictionary,
+                                                                         transformationDictionary,
+                                                                         model,
+                                                                         fieldTypeMap,
+                                                                         packageName,
+                                                                         hasClassLoader);
         } catch (IllegalAccessException | InstantiationException e) {
             throw new KiePMMLException(e.getMessage(), e);
         }

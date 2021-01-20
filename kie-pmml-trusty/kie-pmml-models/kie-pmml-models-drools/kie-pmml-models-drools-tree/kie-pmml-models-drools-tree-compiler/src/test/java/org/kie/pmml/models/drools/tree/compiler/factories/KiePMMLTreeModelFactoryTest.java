@@ -79,6 +79,7 @@ public class KiePMMLTreeModelFactoryTest {
                                                                                  pmml.getTransformationDictionary(),
                                                                                  treeModel,
                                                                                  fieldTypeMap,
+                                                                                 PACKAGE_NAME,
                                                                                  new HasClassLoaderMock());
         assertNotNull(retrieved);
         assertEquals(treeModel.getModelName(), retrieved.getName());

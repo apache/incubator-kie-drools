@@ -71,10 +71,10 @@ public class KiePMMLRegressionModelFactory {
     public static KiePMMLRegressionModel getKiePMMLRegressionModelClasses(final DataDictionary dataDictionary,
                                                                           final TransformationDictionary transformationDictionary,
                                                                           final RegressionModel model,
+                                                                          final String packageName,
                                                                           final HasClassLoader hasClassLoader) throws IOException, IllegalAccessException, InstantiationException {
         logger.trace("getKiePMMLRegressionModelClasses {} {}", dataDictionary, model);
         String className = getSanitizedClassName(model.getModelName());
-        String packageName = getSanitizedPackageName(model.getModelName());
         Map<String, String> sourcesMap = getKiePMMLRegressionModelSourcesMap(dataDictionary, transformationDictionary, model, packageName);
         String fullClassName = packageName + "." + className;
         try {

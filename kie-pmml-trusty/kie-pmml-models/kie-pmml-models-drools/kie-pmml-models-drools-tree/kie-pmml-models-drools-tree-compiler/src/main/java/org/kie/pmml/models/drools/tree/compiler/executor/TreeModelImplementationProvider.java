@@ -48,9 +48,15 @@ public class TreeModelImplementationProvider extends DroolsModelProvider<TreeMod
                                                   final TransformationDictionary transformationDictionary,
                                                   final TreeModel model,
                                                   final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap,
+                                                  final String packageName,
                                                   final HasClassLoader hasClassLoader) {
         try {
-            return KiePMMLTreeModelFactory.getKiePMMLTreeModel(dataDictionary, transformationDictionary, model, fieldTypeMap, hasClassLoader);
+            return KiePMMLTreeModelFactory.getKiePMMLTreeModel(dataDictionary,
+                                                               transformationDictionary,
+                                                               model,
+                                                               fieldTypeMap,
+                                                               packageName,
+                                                               hasClassLoader);
         } catch (IllegalAccessException | InstantiationException e) {
             throw new KiePMMLException(e.getMessage(), e);
         }

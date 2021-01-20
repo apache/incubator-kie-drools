@@ -40,8 +40,8 @@
       </Segment>
       <Segment id="2">
         <CompoundPredicate booleanOperator="and">
-          <SimplePredicate field="input1" operator="greaterThan" value="10"></SimplePredicate>
-          <SimplePredicate field="input1" operator="lessThan" value="25"></SimplePredicate>
+          <SimplePredicate field="input1" operator="greaterThan" value="10" />
+          <SimplePredicate field="input1" operator="lessThan" value="25" />
         </CompoundPredicate>
         <TreeModel functionName="classification" noTrueChildStrategy="returnLastPrediction">
           <MiningSchema>

@@ -57,6 +57,7 @@ public class PMMLScorecardModelEvaluatorTest {
     private static final String SOURCE_1 = "ScorecardSample.pmml";
     private static final Logger logger = LoggerFactory.getLogger(PMMLScorecardModelEvaluatorTest.class);
     private static final String modelName = "Sample Score";
+    private static final String PACKAGE_NAME = "PACKAGE_NAME";
     private static final ReleaseId RELEASE_ID = new ReleaseIdImpl("org", "test", "1.0.0");
     private static final ScorecardModelImplementationProvider provider = new ScorecardModelImplementationProvider();
     private static KieBase kieBase;
@@ -90,7 +91,11 @@ public class PMMLScorecardModelEvaluatorTest {
         assertEquals(1, pmml.getModels().size());
         assertTrue(pmml.getModels().get(0) instanceof Scorecard);
         KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
-        kiePMMLModel = provider.getKiePMMLModel(pmml.getDataDictionary(), pmml.getTransformationDictionary(), (Scorecard) pmml.getModels().get(0), new HasKnowledgeBuilderMock(knowledgeBuilder));
+        kiePMMLModel = provider.getKiePMMLModel(PACKAGE_NAME,
+                                                pmml.getDataDictionary(),
+                                                pmml.getTransformationDictionary(),
+                                                (Scorecard) pmml.getModels().get(0),
+                                                new HasKnowledgeBuilderMock(knowledgeBuilder));
         kieBase = new KieHelper()
                 .addContent(knowledgeBuilder.getPackageDescrs(kiePMMLModel.getKModulePackageName()).get(0))
                 .setReleaseId(RELEASE_ID)

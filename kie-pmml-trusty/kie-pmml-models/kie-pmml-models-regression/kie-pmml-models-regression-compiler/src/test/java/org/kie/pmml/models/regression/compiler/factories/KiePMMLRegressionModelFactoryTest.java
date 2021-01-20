@@ -141,6 +141,7 @@ public class KiePMMLRegressionModelFactoryTest {
         KiePMMLRegressionModel retrieved = KiePMMLRegressionModelFactory.getKiePMMLRegressionModelClasses(dataDictionary,
                                                                                                           transformationDictionary,
                                                                                                           regressionModel,
+                                                                                                          PACKAGE_NAME,
                                                                                                           new HasClassLoaderMock());
         assertNotNull(retrieved);
         assertEquals(regressionModel.getModelName(), retrieved.getName());

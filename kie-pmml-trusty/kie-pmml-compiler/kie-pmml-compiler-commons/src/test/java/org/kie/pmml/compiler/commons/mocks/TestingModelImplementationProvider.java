@@ -54,7 +54,8 @@ public class TestingModelImplementationProvider implements ModelImplementationPr
     }
 
     @Override
-    public KiePMMLTestModel getKiePMMLModel(final DataDictionary dataDictionary,
+    public KiePMMLTestModel getKiePMMLModel(final String packageName,
+                                            final DataDictionary dataDictionary,
                                             final TransformationDictionary transformationDictionary,
                                             final TestModel model,
                                             final HasClassLoader hasClassLoader) {
