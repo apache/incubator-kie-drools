@@ -85,9 +85,10 @@ public class LambdaGroupByAccumulate extends Accumulate {
     }
 
     @Override
-    public void init( Object workingMemoryContext, Object context,
+    public Object init( Object workingMemoryContext, Object context,
                       Tuple leftTuple, WorkingMemory workingMemory ) {
         // do nothing here, it's done when the group is first created
+        return context;
     }
 
     @Override
@@ -141,11 +142,7 @@ public class LambdaGroupByAccumulate extends Accumulate {
     @Override
     public Object getResult( Object workingMemoryContext, Object context, Tuple leftTuple, WorkingMemory workingMemory ) {
         AccumulateContextEntry entry = (AccumulateContextEntry) context;
-        if (!entry.getTupleList().isEmpty()) {
-            return innerAccumulate.getResult(workingMemoryContext, context, leftTuple, workingMemory);
-        } else {
-            return null;
-        }
+        return entry.getTupleList().isEmpty() ? null : innerAccumulate.getResult(workingMemoryContext, context, leftTuple, workingMemory);
     }
 
     @Override
