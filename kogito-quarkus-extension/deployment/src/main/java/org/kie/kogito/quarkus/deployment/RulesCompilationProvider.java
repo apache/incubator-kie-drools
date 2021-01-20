@@ -18,11 +18,12 @@ package org.kie.kogito.quarkus.deployment;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
-import org.kie.kogito.codegen.ApplicationGenerator;
 import org.kie.kogito.codegen.Generator;
 import org.kie.kogito.codegen.context.KogitoBuildContext;
 import org.kie.kogito.codegen.io.CollectedResource;
@@ -30,20 +31,20 @@ import org.kie.kogito.codegen.rules.IncrementalRuleCodegen;
 
 public class RulesCompilationProvider extends KogitoCompilationProvider {
 
+    private static final Set<String> MANAGED_EXTENSIONS = Collections.unmodifiableSet( new HashSet<>( Arrays.asList( ".drl", ".xls", ".xlsx", ".csv" ) ) );
+
     @Override
     public Set<String> handledExtensions() {
-        return Collections.singleton(".drl");
+        return MANAGED_EXTENSIONS;
     }
 
     @Override
-    protected Generator addGenerator(ApplicationGenerator appGen, KogitoBuildContext context, Set<File> filesToCompile, Context quarkusContext, ClassLoader cl) {
+    protected Generator getGenerator(KogitoBuildContext context, Set<File> filesToCompile, Context quarkusContext) {
         Path resources = quarkusContext.getProjectDirectory().toPath().resolve("src").resolve("main").resolve("resources");
         Collection<File> files = PackageWalker.getAllSiblings(filesToCompile);
-        return appGen.setupGenerator(
-                IncrementalRuleCodegen.ofCollectedResources(
+        return IncrementalRuleCodegen.ofCollectedResources(
                         context,
-                        CollectedResource.fromFiles(resources, files.toArray(new File[0]))))
-                .withClassLoader(cl)
+                        CollectedResource.fromFiles(resources, files.toArray(new File[0])))
                 .withHotReloadMode();
     }
 

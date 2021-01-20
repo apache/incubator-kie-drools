@@ -25,20 +25,21 @@ import java.util.Set;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
-import org.kie.kogito.codegen.AddonsConfig;
 import org.kie.kogito.codegen.GeneratedFile;
+import org.kie.kogito.codegen.Generator;
 import org.kie.kogito.codegen.context.JavaKogitoBuildContext;
 import org.kie.kogito.codegen.context.KogitoBuildContext;
 import org.kie.kogito.codegen.context.QuarkusKogitoBuildContext;
 import org.kie.kogito.codegen.context.SpringBootKogitoBuildContext;
+import org.kie.kogito.codegen.utils.AddonsConfigDiscovery;
+import org.kie.kogito.codegen.utils.AppPaths;
 import org.kie.kogito.codegen.utils.GeneratedFileWriter;
+import org.kie.kogito.maven.plugin.util.MojoUtil;
 
 public abstract class AbstractKieMojo extends AbstractMojo {
-
-    @Parameter(required = true, defaultValue = "${project.build.directory}")
-    protected File targetDirectory;
 
     @Parameter(required = true, defaultValue = "${project.basedir}")
     protected File projectDir;
@@ -58,8 +59,20 @@ public abstract class AbstractKieMojo extends AbstractMojo {
     @Parameter(defaultValue = "${project.build.directory}/generated-resources/kogito")
     protected File generatedResources;
 
-    @Parameter(required = true, defaultValue = "${project.basedir}/src/main/resources")
-    protected File kieSourcesDirectory;
+    @Parameter(property = "kogito.codegen.persistence", defaultValue = "true")
+    protected boolean persistence;
+
+    @Parameter(property = "kogito.codegen.rules", defaultValue = "true")
+    protected String generateRules;
+
+    @Parameter(property = "kogito.codegen.processes", defaultValue = "true")
+    protected String generateProcesses;
+
+    @Parameter(property = "kogito.codegen.decisions", defaultValue = "true")
+    protected String generateDecisions;
+
+    @Parameter(property = "kogito.codegen.predictions", defaultValue = "true")
+    protected String generatePredictions;
 
     protected void setSystemProperties(Map<String, String> properties) {
 
@@ -72,33 +85,42 @@ public abstract class AbstractKieMojo extends AbstractMojo {
         }
     }
 
-    protected AddonsConfig loadAddonsConfig(boolean persistence, MavenProject project) {
-        boolean usePersistence = persistence || hasClassOnClasspath(project, "org.kie.kogito.persistence.KogitoProcessInstancesFactory");
-        boolean usePrometheusMonitoring = hasClassOnClasspath(project, "org.kie.kogito.monitoring.prometheus.common.rest.MetricsResource");
-        boolean useMonitoring = usePrometheusMonitoring || hasClassOnClasspath(project, "org.kie.kogito.monitoring.core.common.MonitoringRegistry");
-        boolean useTracing = hasClassOnClasspath(project, "org.kie.kogito.tracing.decision.DecisionTracingListener");
-        boolean useKnativeEventing = hasClassOnClasspath(project, "org.kie.kogito.events.knative.ce.extensions.KogitoProcessExtension");
-        boolean useCloudEvents = hasClassOnClasspath(project, "org.kie.kogito.addon.cloudevents.AbstractTopicDiscovery");
-
-        return AddonsConfig.builder()
-                .withPersistence(usePersistence)
-                .withMonitoring(useMonitoring)
-                .withPrometheusMonitoring(usePrometheusMonitoring)
-                .withTracing(useTracing)
-                .withKnativeEventing(useKnativeEventing)
-                .withCloudEvents(useCloudEvents)
+    protected KogitoBuildContext discoverKogitoRuntimeContext(ClassLoader classLoader) {
+        AppPaths appPaths = AppPaths.fromProjectDir(projectDir.toPath());
+        KogitoBuildContext context = contextBuilder()
+                .withClassAvailabilityResolver(this::hasClassOnClasspath)
+                .withApplicationProperties(appPaths.getResourceFiles())
+                .withPackageName(appPackageName())
+                .withAddonsConfig(AddonsConfigDiscovery.discover(this::hasClassOnClasspath))
+                .withClassLoader(classLoader)
+                .withAppPaths(appPaths)
                 .build();
 
+        additionalProperties(context);
+        return context;
     }
 
-    protected KogitoBuildContext.Builder discoverKogitoRuntimeContext(MavenProject project) {
-        KogitoBuildContext.Builder builder = contextBuilder(project);
-        builder.withClassAvailabilityResolver(fqcn -> hasClassOnClasspath(project, fqcn));
-        return builder;
+    private void additionalProperties(KogitoBuildContext context) {
+        context.setApplicationProperty(Generator.CONFIG_PREFIX + "rules", generateRules);
+        context.setApplicationProperty(Generator.CONFIG_PREFIX + "processes", generateProcesses);
+        context.setApplicationProperty(Generator.CONFIG_PREFIX + "predictions", generatePredictions);
+        context.setApplicationProperty(Generator.CONFIG_PREFIX + "decisions", generateDecisions);
+        context.setApplicationProperty(Generator.CONFIG_PREFIX + "persistence", persistence);
     }
 
-    private KogitoBuildContext.Builder contextBuilder(MavenProject project)  {
-        switch (discoverFramework(project)) {
+    protected ClassLoader projectClassLoader() throws MojoExecutionException {
+        return MojoUtil.createProjectClassLoader(this.getClass().getClassLoader(),
+                project,
+                outputDirectory,
+                null);
+    }
+
+    protected String appPackageName() {
+        return KogitoBuildContext.DEFAULT_PACKAGE_NAME;
+    }
+
+    private KogitoBuildContext.Builder contextBuilder()  {
+        switch (discoverFramework()) {
             case QUARKUS: return QuarkusKogitoBuildContext.builder();
             case SPRING: return SpringBootKogitoBuildContext.builder();
             default: return JavaKogitoBuildContext.builder();
@@ -107,23 +129,23 @@ public abstract class AbstractKieMojo extends AbstractMojo {
 
     private enum Framework { QUARKUS, SPRING, NONE }
 
-    private Framework discoverFramework(MavenProject project) {
-        if ( hasDependency( project, "quarkus" ) ) {
+    private Framework discoverFramework() {
+        if ( hasDependency( "quarkus" ) ) {
             return Framework.QUARKUS;
         }
 
-        if ( hasDependency( project, "spring" ) ) {
+        if ( hasDependency( "spring" ) ) {
             return Framework.SPRING;
         }
 
         return Framework.NONE;
     }
 
-    private boolean hasDependency( MavenProject project, String dependency ) {
+    private boolean hasDependency( String dependency ) {
         return project.getDependencies().stream().anyMatch( d -> d.getArtifactId().contains( dependency ) );
     }
 
-    protected boolean hasClassOnClasspath(MavenProject project, String className) {
+    private boolean hasClassOnClasspath(String className) {
         try {
             Set<Artifact> elements = project.getArtifacts();
             URL[] urls = new URL[elements.size()];

@@ -17,32 +17,59 @@
 package org.kie.kogito.codegen.process.persistence.proto;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kie.kogito.codegen.GeneratedFile;
-import org.kie.kogito.codegen.GeneratedFileType;
 
-public abstract class AbstractProtoGenerator<T> implements ProtoGenerator<T> {
+public abstract class AbstractProtoGenerator<T> implements ProtoGenerator {
 
     private static final String GENERATED_PROTO_RES_PATH = "META-INF/resources/persistence/protobuf/";
     private static final String LISTING_FILE = "list.json";
 
-    protected ObjectMapper mapper;
+    protected final ObjectMapper mapper;
+    protected final Collection<T> modelClasses;
+    protected final Collection<T> dataClasses;
+    protected final T persistenceClass;
 
-    public AbstractProtoGenerator() {
-        mapper = new ObjectMapper();
+    protected AbstractProtoGenerator(T persistenceClass, Collection<T> rawModelClasses, Collection<T> rawDataClasses) {
+        this.modelClasses = rawModelClasses == null ? Collections.emptyList() : rawModelClasses;
+        this.dataClasses = rawDataClasses == null ? Collections.emptyList() : rawDataClasses;
+        this.persistenceClass = persistenceClass;
+        this.mapper = new ObjectMapper();
+    }
+
+    @Override
+    public Collection<GeneratedFile> generateProtoFiles() {
+        List<GeneratedFile> generatedFiles = new ArrayList<>();
+
+        modelClasses.stream()
+                .map(this::generateModelClassProto)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .forEach(generatedFiles::add);
+
+        try {
+            this.generateProtoListingFile(generatedFiles).ifPresent(generatedFiles::add);
+        } catch (IOException e) {
+            throw new UncheckedIOException("Error during proto listing file creation", e);
+        }
+
+        return generatedFiles;
     }
 
     /**
      * Generates the proto files from the given model.
      */
-    public final GeneratedFile generateProtoFiles(final String processId, final Proto modelProto) {
+    protected final GeneratedFile generateProtoFiles(final String processId, final Proto modelProto) {
         String protoFileName = processId + ".proto";
-        return new GeneratedFile(GeneratedFileType.RESOURCE,
+        return new GeneratedFile(PROTO_TYPE,
                                  GENERATED_PROTO_RES_PATH + protoFileName,
                                  modelProto.toString());
     }
@@ -54,17 +81,52 @@ public abstract class AbstractProtoGenerator<T> implements ProtoGenerator<T> {
      * @param generatedFiles  The list of generated files.
      * @throws IOException if something wrong occurs during I/O
      */
-    public final Optional<GeneratedFile> generateProtoListingFile(Collection<GeneratedFile> generatedFiles) throws IOException {
+    protected final Optional<GeneratedFile> generateProtoListingFile(Collection<GeneratedFile> generatedFiles) throws IOException {
         List<String> fileNames = generatedFiles.stream()
                 .filter(x -> x.relativePath().contains(GENERATED_PROTO_RES_PATH))
                 .map(x -> x.relativePath().substring(x.relativePath().lastIndexOf("/") + 1))
                 .collect(Collectors.toList());
 
         if (!fileNames.isEmpty()) {
-            return Optional.of(new GeneratedFile(GeneratedFileType.RESOURCE,
+            return Optional.of(new GeneratedFile(PROTO_TYPE,
                                                  GENERATED_PROTO_RES_PATH + LISTING_FILE,
                                                  mapper.writeValueAsString(fileNames)));
         }
         return Optional.empty();
+    }
+
+    public Collection<T> getModelClasses() {
+        return Collections.unmodifiableCollection(modelClasses);
+    }
+
+    public Collection<T> getDataClasses() {
+        return Collections.unmodifiableCollection(dataClasses);
+    }
+
+    public T getPersistenceClass() {
+        return persistenceClass;
+    }
+
+    protected abstract Proto generate(String messageComment, String fieldComment, String packageName, T dataModel, String... headers);
+
+    protected abstract Optional<GeneratedFile> generateModelClassProto(T modelClazz);
+
+    protected abstract static class AbstractProtoGeneratorBuilder<E, T extends ProtoGenerator> implements Builder<E, T> {
+        protected E persistenceClass;
+        protected Collection<E> dataClasses;
+
+        protected abstract Collection<E> extractDataClasses(Collection<E> modelClasses);
+
+        @Override
+        public Builder<E, T> withPersistenceClass(E persistenceClass) {
+            this.persistenceClass = persistenceClass;
+            return this;
+        }
+
+        @Override
+        public Builder<E, T> withDataClasses(Collection<E> dataClasses) {
+            this.dataClasses = dataClasses;
+            return this;
+        }
     }
 }

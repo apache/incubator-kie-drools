@@ -21,6 +21,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Optional;
@@ -44,11 +45,9 @@ public class ApplicationGenerator {
     private Collection<Generator> generators = new ArrayList<>();
 
     private KogitoBuildContext context;
-    private ClassLoader classLoader;
 
     public ApplicationGenerator(KogitoBuildContext context) {
         this.context = context;
-        this.classLoader = Thread.currentThread().getContextClassLoader();
         this.applicationMainGenerator = new ApplicationContainerGenerator(context);
 
         this.applicationConfigGenerator = new ApplicationConfigGenerator(context);
@@ -71,6 +70,8 @@ public class ApplicationGenerator {
         generatedFiles.addAll(generateApplicationSections());
 
         generatedFiles.addAll(applicationConfigGenerator.generate());
+
+        DashboardGeneratedFileUtils.list(generatedFiles).ifPresent(generatedFiles::add);
 
         logGeneratedFiles(generatedFiles);
 
@@ -107,25 +108,30 @@ public class ApplicationGenerator {
     }
 
     /**
-     * Method to wire Generator with ApplicationGenerator and initialize it with common parameters
+     * Method to wire Generator with ApplicationGenerator if enabled
      * @param generator
      * @param <G>
      * @return
      */
-    public <G extends Generator> G setupGenerator(G generator) {
+    public <G extends Generator> Optional<G> registerGeneratorIfEnabled(G generator) {
+        if (!generator.isEnabled()) {
+            if (LOGGER.isInfoEnabled()) {
+                LOGGER.info("Skipping generator '{}' because disabled", generator.name());
+            }
+            return Optional.empty();
+        }
         this.generators.add(generator);
-        return generator;
+        return Optional.of(generator);
     }
 
-    public ApplicationGenerator withClassLoader(ClassLoader classLoader) {
-        this.classLoader = classLoader;
-        return this;
+    protected Collection<Generator> getGenerators() {
+        return Collections.unmodifiableCollection(generators);
     }
 
-    private Collection<String> loadAddonList() {
+    protected Collection<String> loadAddonList() {
         ArrayList<String> addons = new ArrayList<>();
         try {
-            Enumeration<URL> urls = classLoader.getResources("META-INF/kogito.addon");
+            Enumeration<URL> urls = context.getClassLoader().getResources("META-INF/kogito.addon");
             while (urls.hasMoreElements()) {
                 URL url = urls.nextElement();
                 try (InputStream urlStream = url.openStream(); InputStreamReader isr = new InputStreamReader(urlStream)) {

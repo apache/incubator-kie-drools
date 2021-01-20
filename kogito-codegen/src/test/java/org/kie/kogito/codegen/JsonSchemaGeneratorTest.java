@@ -110,32 +110,6 @@ public class JsonSchemaGeneratorTest {
     }
 
     @Test
-    public void testSimpleSchemaGenerator() throws IOException {
-        Collection<GeneratedFile> files =
-                new JsonSchemaGenerator.SimpleBuilder(Thread.currentThread().getContextClassLoader())
-                        .addSchemaName(PersonInputParams.class.getName(), "org.jbpm.test", "test")
-                        .addSchemaName(PersonOutputParams.class.getName(), "org.jbpm.test", "test")
-                        .build()
-                        .generate();
-
-        assertEquals(1, files.size());
-        GeneratedFile file = files.iterator().next();
-        assertSchema("org#jbpm#test_test.json", file, SchemaVersion.DRAFT_7);
-
-        Collection<GeneratedFile> filesFromClasses =
-                new JsonSchemaGenerator.ClassBuilder(
-                        Stream.of(PersonInputParams.class, PersonOutputParams.class, IgnoredClass.class))
-                        .build().generate();
-        assertEquals(1, filesFromClasses.size());
-        GeneratedFile fileFromClasses = filesFromClasses.iterator().next();
-
-        assertEquals(fileFromClasses.relativePath(), file.relativePath(),
-                     "must have the same path of a class-based generator");
-        assertArrayEquals(fileFromClasses.contents(), file.contents(),
-                     "must have the same contents of a class-based generator");
-    }
-
-    @Test
     public void testJsonSchemaGenerator() throws IOException {
         Collection<GeneratedFile> files =
                 new JsonSchemaGenerator.ClassBuilder(

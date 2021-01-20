@@ -19,7 +19,6 @@ package org.kie.kogito.quarkus.deployment;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 
 import io.quarkus.bootstrap.model.AppDependency;
 import org.kie.memorycompiler.CompilationResult;
@@ -46,8 +45,8 @@ public class InMemoryCompiler {
     private final MemoryFileSystem trgMfs = new MemoryFileSystem();
 
     InMemoryCompiler(
-            List<Path> classesPaths,
-            List<AppDependency> userDependencies) {
+            Collection<Path> classesPaths,
+            Collection<AppDependency> userDependencies) {
         javaCompiler = JavaParserCompiler.getCompiler();
         compilerSettings = javaCompiler.createDefaultSettings();
         compilerSettings.addOption("-proc:none"); // force disable annotation processing

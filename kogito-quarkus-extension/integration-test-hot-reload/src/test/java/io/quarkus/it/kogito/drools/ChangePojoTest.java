@@ -21,6 +21,7 @@ import java.util.Map;
 
 import io.quarkus.it.kogito.drools.newunit.Person;
 import io.quarkus.test.QuarkusDevModeTest;
+import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
@@ -33,9 +34,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ChangePojoTest {
 
+    static {
+        RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
+    }
+
     private static final String PACKAGE = "io.quarkus.it.kogito.drools";
     private static final String RESOURCE_FILE = PACKAGE.replace( '.', '/' ) + "/adult.drl";
-    private static final String POJO_FILE = PACKAGE.replace( '.', '/' ) + "/Person.java";
     private static final String HTTP_TEST_PORT = "65535";
 
     @RegisterExtension
@@ -45,12 +49,12 @@ public class ChangePojoTest {
                     .addAsResource("drl1.txt", RESOURCE_FILE));
 
     @Test
-    public void test1Change() throws InterruptedException {
+    public void test1Change() {
         doTest(true);
     }
 
     @Test
-    public void test2Changes() throws InterruptedException {
+    public void test2Changes() {
         doTest(false);
     }
 

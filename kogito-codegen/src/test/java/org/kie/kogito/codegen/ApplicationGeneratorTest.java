@@ -16,6 +16,8 @@
 package org.kie.kogito.codegen;
 
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Optional;
 
 import com.github.javaparser.ast.CompilationUnit;
@@ -83,6 +85,20 @@ public class ApplicationGeneratorTest {
         assertApplicationPlaceholderReplace(appGenerator, 2);
     }
 
+    @Test
+    public void registerGeneratorIfEnabled() {
+        final ApplicationGenerator appGenerator = new ApplicationGenerator(context);
+        final MockGenerator disabledGenerator = new MockGenerator(context, false);
+        final MockGenerator enabledGenerator = new MockGenerator(context, true);
+        assertThat(appGenerator.registerGeneratorIfEnabled(disabledGenerator))
+                .isEmpty();
+        assertThat(appGenerator.getGenerators()).isEmpty();
+
+        assertThat(appGenerator.registerGeneratorIfEnabled(enabledGenerator))
+                .isNotEmpty();
+        assertThat(appGenerator.getGenerators()).hasSize(1);
+    }
+
     private void assertCompilationUnit(final CompilationUnit compilationUnit, final boolean checkCDI) {
         assertThat(compilationUnit).isNotNull();
 
@@ -123,5 +139,30 @@ public class ApplicationGeneratorTest {
         assertThat(numberOfNull).isZero();
 
         assertThat(expressions.get().size()).isEqualTo(expectedParams);
+    }
+
+    static class MockGenerator extends AbstractGenerator {
+
+        private boolean enabled;
+
+        protected MockGenerator(KogitoBuildContext context, boolean enabled) {
+            super(context, "mockGenerator");
+            this.enabled = enabled;
+        }
+
+        @Override
+        public Optional<ApplicationSection> section() {
+            return Optional.empty();
+        }
+
+        @Override
+        public Collection<GeneratedFile> generate() {
+            return Collections.emptyList();
+        }
+
+        @Override
+        public boolean isEnabled() {
+            return enabled;
+        }
     }
 }

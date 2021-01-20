@@ -33,7 +33,7 @@ import java.util.stream.IntStream;
 import com.github.javaparser.ast.CompilationUnit;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.codegen.context.KogitoBuildContext;
+import org.kie.kogito.codegen.context.JavaKogitoBuildContext;
 import org.kie.pmml.commons.model.KiePMMLModel;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -49,7 +49,7 @@ class PredictionContainerGeneratorTest {
     @BeforeAll
     public static void setup() {
         predictionContainerGenerator = new PredictionModelsGenerator(
-                KogitoBuildContext.EMPTY_CONTEXT,
+                JavaKogitoBuildContext.builder().build(),
                 APP_CANONICAL_NAME,
                 PMML_RESOURCES);
         assertNotNull(predictionContainerGenerator);

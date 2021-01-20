@@ -17,11 +17,9 @@ package org.kie.kogito.codegen.context;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.codegen.AddonsConfig;
-import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
+import org.kie.kogito.codegen.ApplicationGenerator;
 
-import java.io.File;
 import java.util.Properties;
-import java.util.function.Predicate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -42,38 +40,50 @@ class KogitoBuildContextTest {
                 .isInstanceOf(NullPointerException.class);
         assertThatThrownBy(() -> builder.withPackageName("i.am.an-invalid.package-name.sorry"))
                 .isInstanceOf(IllegalArgumentException.class);
+        KogitoBuildContext context = builder.withPackageName(ApplicationGenerator.DEFAULT_GROUP_ID).build();
+        assertThat(context.getPackageName())
+                .isNotEqualTo(ApplicationGenerator.DEFAULT_GROUP_ID);
     }
 
     @Test
     public void applicationPropertiesValidation() {
         assertThat(builder.build().getApplicationProperties()).isNotNull();
         assertThatThrownBy(() -> builder.withApplicationProperties((Properties) null))
-                .isInstanceOf(NullPointerException.class);
+                .isInstanceOf(NullPointerException.class)
+                .hasMessageContaining("applicationProperties");
     }
 
     @Test
     public void withAddonsConfig() {
-        assertThat(builder.build().getAddonsConfig()).isEqualTo(AddonsConfig.DEFAULT);
-        assertThatThrownBy(() -> builder.withAddonsConfig(null))
-                .isInstanceOf(NullPointerException.class);
+        assertThat(builder.build().getAddonsConfig())
+                .isNotNull()
+                .isNotEqualTo(AddonsConfig.DEFAULT);
+        assertThat(builder
+                .withAddonsConfig(AddonsConfig.DEFAULT)
+                .build().getAddonsConfig())
+                    .isEqualTo(AddonsConfig.DEFAULT);
     }
 
     @Test
     public void withClassAvailabilityResolver() {
         assertThatThrownBy(() -> builder.withClassAvailabilityResolver(null))
-                .isInstanceOf(NullPointerException.class);
+                .isInstanceOf(NullPointerException.class)
+                .hasMessageContaining("classAvailabilityResolver");
     }
 
     @Test
-    public void withTargetDirectory() {
-        File testFile = new File("");
-        assertThat(builder.build().getTargetDirectory())
-                .isNotNull()
-                .isDirectory();
-        assertThatThrownBy(() -> builder.withTargetDirectory(null))
-                .isInstanceOf(NullPointerException.class);
-        assertThatThrownBy(() -> builder.withTargetDirectory(testFile))
-                .isInstanceOf(IllegalArgumentException.class);
+    public void withClassLoader() {
+        assertThatThrownBy(() -> builder.withClassLoader(null))
+                .isInstanceOf(NullPointerException.class)
+                .hasMessageContaining("classLoader");
+    }
+
+    @Test
+    public void withAppPaths() {
+        assertThat(builder.build().getAppPaths()).isNotNull();
+        assertThatThrownBy(() -> builder.withAppPaths(null))
+                .isInstanceOf(NullPointerException.class)
+                .hasMessageContaining("appPaths");
     }
 
     static class MockKogitoBuildContext extends AbstractKogitoBuildContext {
@@ -82,8 +92,13 @@ class KogitoBuildContextTest {
             return new MockKogiotBuildContextBuilder();
         }
 
-        protected MockKogitoBuildContext(String packageName, Predicate<String> classAvailabilityResolver, DependencyInjectionAnnotator dependencyInjectionAnnotator, File targetDirectory, AddonsConfig addonsConfig, Properties applicationProperties) {
-            super(packageName, classAvailabilityResolver, dependencyInjectionAnnotator, targetDirectory, addonsConfig, applicationProperties, "Mock");
+        protected MockKogitoBuildContext(MockKogiotBuildContextBuilder builder) {
+            super(builder, null, "Mock");
+        }
+
+        @Override
+        public boolean hasREST() {
+            return true;
         }
 
         public static class MockKogiotBuildContextBuilder extends AbstractKogitoBuildContext.AbstractBuilder {
@@ -93,7 +108,7 @@ class KogitoBuildContextTest {
 
             @Override
             public KogitoBuildContext build() {
-                return new MockKogitoBuildContext(packageName, classAvailabilityResolver, null, targetDirectory, addonsConfig, applicationProperties);
+                return new MockKogitoBuildContext(this);
             }
         }
     }

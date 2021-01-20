@@ -16,7 +16,10 @@
 package org.kie.kogito.codegen.context;
 
 import org.kie.kogito.codegen.AddonsConfig;
+import org.kie.kogito.codegen.ApplicationGenerator;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
+import org.kie.kogito.codegen.utils.AddonsConfigDiscovery;
+import org.kie.kogito.codegen.utils.AppPaths;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,26 +40,24 @@ public abstract class AbstractKogitoBuildContext implements KogitoBuildContext {
 
     protected final Predicate<String> classAvailabilityResolver;
     protected final Properties applicationProperties;
-    protected final File targetDirectory;
     protected final String packageName;
     protected final AddonsConfig addonsConfig;
+    protected final ClassLoader classLoader;
+    protected final AppPaths appPaths;
     protected final String contextName;
 
     protected DependencyInjectionAnnotator dependencyInjectionAnnotator;
 
-    protected AbstractKogitoBuildContext(String packageName,
-                                         Predicate<String> classAvailabilityResolver,
+    protected AbstractKogitoBuildContext(AbstractBuilder builder,
                                          DependencyInjectionAnnotator dependencyInjectionAnnotator,
-                                         File targetDirectory,
-                                         AddonsConfig addonsConfig,
-                                         Properties applicationProperties,
                                          String contextName) {
-        this.packageName = packageName;
-        this.classAvailabilityResolver = classAvailabilityResolver;
+        this.packageName = builder.packageName;
+        this.classAvailabilityResolver = builder.classAvailabilityResolver;
         this.dependencyInjectionAnnotator = dependencyInjectionAnnotator;
-        this.targetDirectory = targetDirectory;
-        this.addonsConfig = addonsConfig;
-        this.applicationProperties = applicationProperties;
+        this.applicationProperties = builder.applicationProperties;
+        this.addonsConfig = builder.addonsConfig != null ? builder.addonsConfig : AddonsConfigDiscovery.discover(this);
+        this.classLoader = builder.classLoader;
+        this.appPaths = builder.appPaths;
         this.contextName = contextName;
     }
 
@@ -86,8 +87,8 @@ public abstract class AbstractKogitoBuildContext implements KogitoBuildContext {
     }
 
     @Override
-    public File getTargetDirectory() {
-        return targetDirectory;
+    public void setApplicationProperty(String key, Object value) {
+        applicationProperties.put(key, value);
     }
 
     @Override
@@ -103,6 +104,16 @@ public abstract class AbstractKogitoBuildContext implements KogitoBuildContext {
     @Override
     public String name() {
         return contextName;
+    }
+
+    @Override
+    public ClassLoader getClassLoader() {
+        return classLoader;
+    }
+
+    @Override
+    public AppPaths getAppPaths() {
+        return appPaths;
     }
 
     protected static Properties load(File... resourcePaths) {
@@ -123,9 +134,10 @@ public abstract class AbstractKogitoBuildContext implements KogitoBuildContext {
 
         protected String packageName = DEFAULT_PACKAGE_NAME;
         protected Properties applicationProperties = new Properties();
-        protected AddonsConfig addonsConfig = AddonsConfig.DEFAULT;
+        protected AddonsConfig addonsConfig;
         protected Predicate<String> classAvailabilityResolver = this::hasClass;
-        protected File targetDirectory = new File("target");
+        protected ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        protected AppPaths appPaths = AppPaths.fromProjectDir(new File(".").toPath());
 
         protected AbstractBuilder() {
         }
@@ -138,7 +150,14 @@ public abstract class AbstractKogitoBuildContext implements KogitoBuildContext {
                         MessageFormat.format(
                                 "Package name \"{0}\" is not valid. It should be a valid Java package name.", packageName));
             }
-            this.packageName = packageName;
+
+            // safe guard to not generate application classes that would clash with interfaces
+            if (!packageName.equals(ApplicationGenerator.DEFAULT_GROUP_ID)) {
+                this.packageName = packageName;
+            }
+            else {
+                LOGGER.warn("Skipping the package provided because invalid: '{}' (current value '{}')", packageName, this.packageName);
+            }
             return this;
         }
 
@@ -157,7 +176,6 @@ public abstract class AbstractKogitoBuildContext implements KogitoBuildContext {
 
         @Override
         public Builder withAddonsConfig(AddonsConfig addonsConfig) {
-            Objects.requireNonNull(addonsConfig, "addonsConfig cannot be null");
             this.addonsConfig = addonsConfig;
             return this;
         }
@@ -170,18 +188,22 @@ public abstract class AbstractKogitoBuildContext implements KogitoBuildContext {
         }
 
         @Override
-        public Builder withTargetDirectory(File targetDirectory) {
-            Objects.requireNonNull(targetDirectory, "targetDirectory cannot be null");
-            if (!targetDirectory.isDirectory()) {
-                throw new IllegalArgumentException("targetDirectory must exist and be a directory");
-            }
-            this.targetDirectory = targetDirectory;
+        public Builder withClassLoader(ClassLoader classLoader) {
+            Objects.requireNonNull(classLoader, "classLoader cannot be null");
+            this.classLoader = classLoader;
+            return this;
+        }
+
+        @Override
+        public Builder withAppPaths(AppPaths appPaths) {
+            Objects.requireNonNull(appPaths, "appPaths cannot be null");
+            this.appPaths = appPaths;
             return this;
         }
 
         private boolean hasClass(String className) {
             try {
-                Thread.currentThread().getContextClassLoader().loadClass(className);
+                this.classLoader.loadClass(className);
                 return true;
             } catch (ClassNotFoundException ex) {
                 return false;

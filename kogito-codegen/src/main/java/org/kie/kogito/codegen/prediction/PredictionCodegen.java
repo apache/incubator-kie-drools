@@ -61,18 +61,18 @@ public class PredictionCodegen extends AbstractGenerator {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PredictionCodegen.class);
     private static final GeneratedFileType PMML_TYPE = GeneratedFileType.of("PMML", GeneratedFileType.Category.SOURCE);
+    public static final String DMN_JPMML_CLASS =  "org.kie.dmn.jpmml.DMNjPMMLInvocationEvaluator";
     private final List<PMMLResource> resources;
     private final List<GeneratedFile> generatedFiles = new ArrayList<>();
 
     public PredictionCodegen(KogitoBuildContext context, List<PMMLResource> resources) {
-        super(context, new PredictionConfigGenerator(context));
+        super(context, "predictions", new PredictionConfigGenerator(context));
         this.resources = resources;
     }
 
     public static PredictionCodegen ofCollectedResources(KogitoBuildContext context,
-                                                         boolean isJPMMLAvailable,
                                                          Collection<CollectedResource> resources) {
-        if (isJPMMLAvailable) {
+        if (context.hasClassAvailable(DMN_JPMML_CLASS)) {
             LOGGER.info("jpmml libraries available on classpath, skipping kogito-pmml parsing and compilation");
             return ofPredictions(context, Collections.emptyList());
         }

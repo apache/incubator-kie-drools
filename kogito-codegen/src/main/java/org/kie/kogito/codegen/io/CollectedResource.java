@@ -35,6 +35,8 @@ import org.drools.core.io.impl.FileSystemResource;
 import org.drools.core.io.internal.InternalResource;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.drools.core.util.IoUtils.readBytesFromInputStream;
 import static org.kie.api.io.ResourceType.determineResourceType;
@@ -43,6 +45,8 @@ import static org.kie.api.io.ResourceType.determineResourceType;
  * A (Path basePath, Resource resource) pair
  */
 public class CollectedResource {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(CollectedResource.class);
 
     /**
      * Returns a collection of CollectedResource from the given paths.
@@ -58,6 +62,8 @@ public class CollectedResource {
             } else if (path.getFileName().toString().endsWith(".jar") || path.getFileName().toString().endsWith(".jar.original")) {
                 Collection<CollectedResource> res = fromJarFile(path);
                 resources.addAll(res);
+            } else if (!path.toFile().exists()) {
+                LOGGER.debug("Skipping '{}' because doesn't exist", path);
             } else {
                 throw new IllegalArgumentException("Expected directory or archive, file given: " + path);
             }

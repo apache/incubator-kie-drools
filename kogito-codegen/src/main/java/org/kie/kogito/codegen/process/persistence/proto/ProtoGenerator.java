@@ -15,18 +15,26 @@
 
 package org.kie.kogito.codegen.process.persistence.proto;
 
+import org.kie.kogito.codegen.GeneratedFile;
+import org.kie.kogito.codegen.GeneratedFileType;
+
 import java.util.Collection;
 import java.util.Date;
 
-public interface ProtoGenerator<T> {
+public interface ProtoGenerator {
 
+    GeneratedFileType PROTO_TYPE = GeneratedFileType.of("PROTO", GeneratedFileType.Category.RESOURCE);
     String INDEX_COMMENT = "@Field(store = Store.YES) @SortableField";
 
-    Proto generate(String packageName, Collection<T> dataModel, String... headers);
+    Proto protoOfDataClasses(String packageName, String... headers);
 
-    Proto generate(String messageComment, String fieldComment, String packageName, T dataModel, String... headers);
+    Collection<GeneratedFile> generateProtoFiles();
 
-    ProtoDataClassesResult<T> extractDataClasses(Collection<T> input);
+    /**
+     * Returns params of first constructor of persistence class
+     * @return
+     */
+    Collection<String> getPersistenceClassParams();
 
     default String applicabilityByType(String type) {
         if (type.equals("Collection")) {
@@ -55,5 +63,14 @@ public interface ProtoGenerator<T> {
         }
 
         return null;
+    }
+
+    interface Builder<E, T extends ProtoGenerator> {
+
+        Builder<E, T> withPersistenceClass(E persistenceClass);
+
+        Builder<E, T> withDataClasses(Collection<E> dataClasses);
+
+        T build(Collection<E> dataClasses);
     }
 }

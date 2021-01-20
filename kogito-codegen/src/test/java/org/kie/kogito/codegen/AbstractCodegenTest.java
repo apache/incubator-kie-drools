@@ -56,7 +56,7 @@ public class AbstractCodegenTest {
     /**
      * Order matters here because inside {@link AbstractCodegenTest#generateCode(Map)} it is the order used to invoke
      *
-     * {@link ApplicationGenerator#setupGenerator(Generator) }
+     * {@link ApplicationGenerator#registerGeneratorIfEnabled(Generator) }
      */
     protected enum TYPE {
         PROCESS,
@@ -120,7 +120,7 @@ public class AbstractCodegenTest {
         generatorTypeMap.put(TYPE.DECISION, (context, strings) -> DecisionCodegen.ofCollectedResources(context, toCollectedResources(TEST_RESOURCES, strings)));
 
         generatorTypeMap.put(TYPE.JAVA, (context, strings) -> IncrementalRuleCodegen.ofJavaResources(context, toCollectedResources(TEST_JAVA, strings)));
-        generatorTypeMap.put(TYPE.PREDICTION, (context, strings) -> PredictionCodegen.ofCollectedResources(context, false, toCollectedResources(TEST_RESOURCES, strings)));
+        generatorTypeMap.put(TYPE.PREDICTION, (context, strings) -> PredictionCodegen.ofCollectedResources(context, toCollectedResources(TEST_RESOURCES, strings)));
     }
 
     private static Collection<CollectedResource> toCollectedResources(String basePath, List<String> strings) {
@@ -178,7 +178,6 @@ public class AbstractCodegenTest {
         KogitoBuildContext context = JavaKogitoBuildContext.builder()
                 .withApplicationProperties(new File(TEST_RESOURCES))
                 .withPackageName(packageName)
-                .withClassAvailabilityResolver(className -> true)
                 .withAddonsConfig(addonsConfig)
                 .build();
 
@@ -187,7 +186,7 @@ public class AbstractCodegenTest {
 
         for (TYPE type :  TYPE.values()) {
             if (resourcesTypeMap.containsKey(type) && !resourcesTypeMap.get(type).isEmpty()) {
-                appGen.setupGenerator(generatorTypeMap.get(type).apply(context, resourcesTypeMap.get(type)));
+                appGen.registerGeneratorIfEnabled(generatorTypeMap.get(type).apply(context, resourcesTypeMap.get(type)));
             }
         }
 

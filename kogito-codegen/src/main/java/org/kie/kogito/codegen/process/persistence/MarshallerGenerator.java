@@ -69,12 +69,11 @@ public class MarshallerGenerator {
     public static final String TEMPLATE_PERSISTENCE_FOLDER = "/class-templates/persistence/";
     private static final String JAVA_PACKAGE_OPTION = "java_package";
     private static final String STATE_PARAM = "state";
-    private final KogitoBuildContext context;
-    private final ClassLoader classLoader;
 
-    public MarshallerGenerator(KogitoBuildContext context, ClassLoader classLoader) {
+    private final KogitoBuildContext context;
+
+    public MarshallerGenerator(KogitoBuildContext context) {
         this.context = context;
-        this.classLoader = classLoader;
     }
 
     public List<CompilationUnit> generateFromClasspath(String protoFile) throws IOException {
@@ -97,7 +96,7 @@ public class MarshallerGenerator {
         CompilationUnit parsedClazzFile = generator.compilationUnitOrThrow();
 
         SerializationContext serializationContext = new SerializationContextImpl(Configuration.builder().build());
-        serializationContext.registerProtoFiles(FileDescriptorSource.fromResources(classLoader, "kogito-types.proto"));
+        serializationContext.registerProtoFiles(FileDescriptorSource.fromResources(context.getClassLoader(), "kogito-types.proto"));
         serializationContext.registerProtoFiles(proto);
 
         Map<String, FileDescriptor> descriptors = serializationContext.getFileDescriptors();

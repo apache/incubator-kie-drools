@@ -15,19 +15,19 @@
 
 package org.kie.kogito.codegen.context;
 
-import org.kie.kogito.codegen.AddonsConfig;
 import org.kie.kogito.codegen.di.CDIDependencyInjectionAnnotator;
-
-import java.io.File;
-import java.util.Properties;
-import java.util.function.Predicate;
 
 public class QuarkusKogitoBuildContext extends AbstractKogitoBuildContext {
 
     public static final String CONTEXT_NAME = "Quarkus";
 
-    protected QuarkusKogitoBuildContext(String packageName, Predicate<String> classAvailabilityResolver, File targetDirectory, AddonsConfig addonsConfig, Properties applicationProperties) {
-        super(packageName, classAvailabilityResolver, new CDIDependencyInjectionAnnotator(), targetDirectory, addonsConfig, applicationProperties, CONTEXT_NAME);
+    protected QuarkusKogitoBuildContext(QuarkusKogitoBuildContextBuilder builder) {
+        super(builder, new CDIDependencyInjectionAnnotator(), CONTEXT_NAME);
+    }
+
+    @Override
+    public boolean hasREST() {
+        return hasClassAvailable("javax.ws.rs.Path");
     }
 
     public static Builder builder() {
@@ -41,7 +41,7 @@ public class QuarkusKogitoBuildContext extends AbstractKogitoBuildContext {
 
         @Override
         public QuarkusKogitoBuildContext build() {
-            return new QuarkusKogitoBuildContext(packageName, classAvailabilityResolver, targetDirectory, addonsConfig, applicationProperties);
+            return new QuarkusKogitoBuildContext(this);
         }
     }
 }

@@ -40,13 +40,13 @@ public class HotReloadTest {
     private static final String RESOURCE_FILE = PACKAGE_FOLDER + "/text-process.bpmn";
     private static final String HTTP_TEST_PORT = "65535";
 
+    private static final String PROCESS_NAME = "text_process";
+
     @RegisterExtension
     final static QuarkusDevModeTest test = new QuarkusDevModeTest()
         .setArchiveProducer(
             () -> ShrinkWrap
                 .create(JavaArchive.class)
-                .addAsResource("orders.txt", PACKAGE_FOLDER + "/orders.bpmn")
-                .addAsResource("orderItems.txt", PACKAGE_FOLDER + "/orderItems.bpmn")
                 .addClass(CalculationService.class)
                 .addClass(Order.class)
                 .addAsResource("text-process.txt", RESOURCE_FILE)
@@ -65,7 +65,7 @@ public class HotReloadTest {
                     .accept(ContentType.JSON)
                     .body(payload)
                 .when()
-                    .post("/text_process")
+                    .post("/" + PROCESS_NAME)
                 .then()
                     .statusCode(201)
                     .header("Location", notNullValue())
@@ -77,7 +77,7 @@ public class HotReloadTest {
                     .baseUri("http://localhost:" + HTTP_TEST_PORT)
                     .accept(ContentType.JSON)
                 .when()
-                    .get("/text_process/{id}", id)
+                    .get("/" + PROCESS_NAME + "/{id}", id)
                 .then()
                     .statusCode(200)
                 .extract()
@@ -94,7 +94,7 @@ public class HotReloadTest {
                     .accept(ContentType.JSON)
                     .body(payload)
                 .when()
-                    .post("/text_process")
+                    .post("/" + PROCESS_NAME)
                 .then()
                     .statusCode(201)
                     .body("id", notNullValue())
@@ -106,7 +106,7 @@ public class HotReloadTest {
                     .baseUri("http://localhost:" + HTTP_TEST_PORT)
                     .accept(ContentType.JSON)
                 .when()
-                    .get("/text_process/{id}", id)
+                    .get("/" + PROCESS_NAME + "/{id}", id)
                 .then()
                     .statusCode(200)
                 .extract()
@@ -114,6 +114,70 @@ public class HotReloadTest {
 
         assertEquals(2, result.size());
         assertEquals("hello", result.get("mytext"));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testRenameProcess() {
+
+        String payload = "{\"mytext\": \"HeLlO\"}";
+
+        String id =
+                given()
+                        .baseUri("http://localhost:" + HTTP_TEST_PORT)
+                        .contentType(ContentType.JSON)
+                        .accept(ContentType.JSON)
+                        .body(payload)
+                        .when()
+                        .post("/" + PROCESS_NAME)
+                        .then()
+                        .statusCode(201)
+                        .header("Location", notNullValue())
+                        .body("id", notNullValue())
+                        .extract()
+                        .path("id");
+
+        Map<String, String> result = given()
+                .baseUri("http://localhost:" + HTTP_TEST_PORT)
+                .accept(ContentType.JSON)
+                .when()
+                .get("/" + PROCESS_NAME + "/{id}", id)
+                .then()
+                .statusCode(200)
+                .extract()
+                .as(Map.class);
+
+        assertEquals(2, result.size());
+        assertEquals("HELLO", result.get("mytext"));
+
+        test.modifyResourceFile(RESOURCE_FILE, s -> s.replaceAll(PROCESS_NAME, "new_" + PROCESS_NAME));
+
+        id = given()
+                .baseUri("http://localhost:" + HTTP_TEST_PORT)
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .body(payload)
+                .when()
+                .post("/new_" + PROCESS_NAME)
+                .then()
+                .statusCode(201)
+                .body("id", notNullValue())
+                .header("Location", notNullValue())
+                .extract()
+                .path("id");
+
+        result = given()
+                .baseUri("http://localhost:" + HTTP_TEST_PORT)
+                .accept(ContentType.JSON)
+                .when()
+                .get("/new_" + PROCESS_NAME + "/{id}", id)
+                .then()
+                .statusCode(200)
+                .extract()
+                .as(Map.class);
+
+        assertEquals(2, result.size());
+        assertEquals("HELLO", result.get("mytext"));
     }
 
 }

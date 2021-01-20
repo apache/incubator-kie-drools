@@ -15,12 +15,15 @@
 
 package org.kie.kogito.codegen.process.persistence.proto;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.codegen.data.Address;
 import org.kie.kogito.codegen.data.Answer;
 import org.kie.kogito.codegen.data.AnswerWitAnnotations;
+import org.kie.kogito.codegen.data.GeneratedPOJO;
 import org.kie.kogito.codegen.data.Person;
 import org.kie.kogito.codegen.data.PersonVarInfo;
 import org.kie.kogito.codegen.data.PersonWithAddress;
@@ -33,12 +36,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class ReflectionProtoGeneratorTest {
 
-    private ProtoGenerator<Class<?>> generator = new ReflectionProtoGenerator();
-
     @Test
     void testPersonProtoFile() {
+        ReflectionProtoGenerator generator = ReflectionProtoGenerator.builder()
+                .withDataClasses(Collections.singleton(Person.class))
+                .build(null);
 
-        Proto proto = generator.generate("org.kie.kogito.test", Collections.singleton(Person.class));
+        Proto proto = generator.protoOfDataClasses("org.kie.kogito.test");
         assertThat(proto).isNotNull();
 
         assertThat(proto.getPackageName()).isEqualTo("org.kie.kogito.test");
@@ -72,8 +76,11 @@ class ReflectionProtoGeneratorTest {
 
     @Test
     void testPersonWithAddressProtoFile() {
+        ReflectionProtoGenerator generator = ReflectionProtoGenerator.builder()
+                .withDataClasses(Collections.singleton(PersonWithAddress.class))
+                .build(null);
 
-        Proto proto = generator.generate("org.kie.kogito.test", Collections.singleton(PersonWithAddress.class));
+        Proto proto = generator.protoOfDataClasses("org.kie.kogito.test");
         assertThat(proto).isNotNull();
 
         assertThat(proto.getPackageName()).isEqualTo("org.kie.kogito.test");
@@ -143,8 +150,11 @@ class ReflectionProtoGeneratorTest {
 
     @Test
     void testPersonWithListProtoFile() {
+        ReflectionProtoGenerator generator = ReflectionProtoGenerator.builder()
+                .withDataClasses(Collections.singleton(PersonWithList.class))
+                .build(null);
 
-        Proto proto = generator.generate("org.kie.kogito.test", Collections.singleton(PersonWithList.class));
+        Proto proto = generator.protoOfDataClasses("org.kie.kogito.test");
         assertThat(proto).isNotNull();
 
         assertThat(proto.getPackageName()).isEqualTo("org.kie.kogito.test");
@@ -202,8 +212,11 @@ class ReflectionProtoGeneratorTest {
 
     @Test
     void testPersonWithAddressesProtoFile() {
+        ReflectionProtoGenerator generator = ReflectionProtoGenerator.builder()
+                .withDataClasses(Collections.singleton(PersonWithAddresses.class))
+                .build(null);
 
-        Proto proto = generator.generate("org.kie.kogito.test", Collections.singleton(PersonWithAddresses.class));
+        Proto proto = generator.protoOfDataClasses("org.kie.kogito.test");
         assertThat(proto).isNotNull();
 
         assertThat(proto.getPackageName()).isEqualTo("org.kie.kogito.test");
@@ -273,6 +286,8 @@ class ReflectionProtoGeneratorTest {
 
     @Test
     void testPersonAsModelProtoFile() {
+        ReflectionProtoGenerator generator = ReflectionProtoGenerator.builder()
+                .build(Collections.emptyList());
 
         Proto proto = generator.generate("@Indexed", ProtoGenerator.INDEX_COMMENT, "org.kie.kogito.test.persons", Person.class);
         assertThat(proto).isNotNull();
@@ -312,6 +327,8 @@ class ReflectionProtoGeneratorTest {
 
     @Test
     void testPersonWithVariableInfoAsModelProtoFile() {
+        ReflectionProtoGenerator generator = ReflectionProtoGenerator.builder()
+                .build(Collections.emptyList());
 
         Proto proto = generator.generate("@Indexed", ProtoGenerator.INDEX_COMMENT, "org.kie.kogito.test.persons", PersonVarInfo.class);
         assertThat(proto).isNotNull();
@@ -351,8 +368,11 @@ class ReflectionProtoGeneratorTest {
 
     @Test
     void testAnswerProtoFile() {
+        ReflectionProtoGenerator generator = ReflectionProtoGenerator.builder()
+                .withDataClasses(Collections.singleton(Answer.class))
+                .build(null);
 
-        Proto proto = generator.generate("org.kie.kogito.test.persons", Collections.singleton(Answer.class));
+        Proto proto = generator.protoOfDataClasses("org.kie.kogito.test.persons");
         assertThat(proto).isNotNull();
 
         assertThat(proto.getPackageName()).isEqualTo("org.kie.kogito.test.persons");
@@ -374,8 +394,11 @@ class ReflectionProtoGeneratorTest {
 
     @Test
     void testAnswerWithAnnotationsProtoFile() {
+        ReflectionProtoGenerator generator = ReflectionProtoGenerator.builder()
+                .withDataClasses(Collections.singleton(AnswerWitAnnotations.class))
+                .build(null);
 
-        Proto proto = generator.generate("org.kie.kogito.test.persons", Collections.singleton(AnswerWitAnnotations.class));
+        Proto proto = generator.protoOfDataClasses("org.kie.kogito.test.persons");
         assertThat(proto).isNotNull();
 
         assertThat(proto.getPackageName()).isEqualTo("org.kie.kogito.test.persons");
@@ -397,6 +420,9 @@ class ReflectionProtoGeneratorTest {
 
     @Test
     void testAnswerWithVariableInfoProtoFile() {
+        ReflectionProtoGenerator generator = ReflectionProtoGenerator.builder()
+                .withDataClasses(Collections.emptyList())
+                .build(null);
 
         Proto proto = generator.generate("@Indexed", ProtoGenerator.INDEX_COMMENT, "org.kie.kogito.test.persons", Answer.class);
         assertThat(proto).isNotNull();
@@ -421,8 +447,11 @@ class ReflectionProtoGeneratorTest {
 
     @Test
     void testQuestionWithEnumProtoFile() {
+        ReflectionProtoGenerator generator = ReflectionProtoGenerator.builder()
+                .withDataClasses(Collections.singleton(Question.class))
+                .build(null);
 
-        Proto proto = generator.generate("org.kie.kogito.test.persons", Collections.singleton(Question.class));
+        Proto proto = generator.protoOfDataClasses("org.kie.kogito.test.persons");
         assertThat(proto).isNotNull();
 
         assertThat(proto.getPackageName()).isEqualTo("org.kie.kogito.test.persons");
@@ -450,8 +479,11 @@ class ReflectionProtoGeneratorTest {
 
     @Test
     void testQuestionWithAnnotatedEnumProtoFile() {
+        ReflectionProtoGenerator generator = ReflectionProtoGenerator.builder()
+                .withDataClasses(Collections.singleton(QuestionWithAnnotatedEnum.class))
+                .build(null);
 
-        Proto proto = generator.generate("org.kie.kogito.test.persons", Collections.singleton(QuestionWithAnnotatedEnum.class));
+        Proto proto = generator.protoOfDataClasses("org.kie.kogito.test.persons");
         assertThat(proto).isNotNull();
 
         assertThat(proto.getPackageName()).isEqualTo("org.kie.kogito.test.persons");
@@ -475,5 +507,96 @@ class ReflectionProtoGeneratorTest {
         assertThat(field.getName()).isEqualTo("question");
         assertThat(field.getType()).isEqualTo("string");
         assertThat(field.getApplicability()).isEqualTo("optional");
+    }
+
+    @Test
+    void builderTest() {
+        // empty
+        ReflectionProtoGenerator emptyGenerator = ReflectionProtoGenerator.builder().build(null);
+        assertThat(emptyGenerator.getPersistenceClass()).isNull();
+        assertThat(emptyGenerator.getDataClasses())
+                .isNotNull()
+                .isEmpty();
+        assertThat(emptyGenerator.getModelClasses())
+                .isNotNull()
+                .isEmpty();
+
+        // persistence class
+        ReflectionProtoGenerator persistenceClassGenerator = ReflectionProtoGenerator.builder()
+                .withPersistenceClass(Person.class)
+                .build(null);
+        assertThat(persistenceClassGenerator.getPersistenceClass()).isEqualTo(Person.class);
+        assertThat(persistenceClassGenerator.getDataClasses())
+                .isNotNull()
+                .isEmpty();
+        assertThat(persistenceClassGenerator.getModelClasses())
+                .isNotNull()
+                .isEmpty();
+
+        // explicit data class
+        ReflectionProtoGenerator dataClassGenerator = ReflectionProtoGenerator.builder()
+                .withDataClasses(Collections.singleton(Person.class))
+                .build(null);
+        assertThat(dataClassGenerator.getPersistenceClass()).isNull();
+        assertThat(dataClassGenerator.getDataClasses())
+                .isNotNull()
+                .hasSize(1);
+        assertThat(dataClassGenerator.getModelClasses())
+                .isNotNull()
+                .isEmpty();
+
+        // retrieve data classes
+        ReflectionProtoGenerator modelClassGenerator = ReflectionProtoGenerator.builder()
+                .build(Collections.singleton(GeneratedPOJO.class));
+        assertThat(modelClassGenerator.getPersistenceClass()).isNull();
+        assertThat(modelClassGenerator.getDataClasses())
+                .isNotNull()
+                .hasSize(1);
+        assertThat(modelClassGenerator.getModelClasses())
+                .isNotNull()
+                .hasSize(1);
+
+        // explicit data classes win
+        ReflectionProtoGenerator dataClassAndModelClassGenerator = ReflectionProtoGenerator.builder()
+                .withDataClasses(Arrays.asList(Person.class, Address.class))
+                .build(Collections.singleton(GeneratedPOJO.class));
+        assertThat(dataClassAndModelClassGenerator.getPersistenceClass()).isNull();
+        assertThat(dataClassAndModelClassGenerator.getDataClasses())
+                .isNotNull()
+                .hasSize(2);
+        assertThat(dataClassAndModelClassGenerator.getModelClasses())
+                .isNotNull()
+                .hasSize(1);
+    }
+
+    @Test
+    void persistenceClassParams() {
+        ReflectionProtoGenerator noPersistenceClassGenerator = ReflectionProtoGenerator.builder()
+                .withPersistenceClass(null)
+                .build(null);
+        assertThat(noPersistenceClassGenerator.getPersistenceClassParams()).isEmpty();
+
+        ReflectionProtoGenerator emptyGenerator = ReflectionProtoGenerator.builder()
+                .withPersistenceClass(EmptyConstructor.class)
+                .build(null);
+        assertThat(emptyGenerator.getPersistenceClassParams()).isEmpty();
+
+        ReflectionProtoGenerator notEmptyGenerator = ReflectionProtoGenerator.builder()
+                .withPersistenceClass(NotEmptyConstructor.class)
+                .build(null);
+        assertThat(notEmptyGenerator.getPersistenceClassParams())
+                .isNotEmpty()
+                .hasSize(2)
+                .isEqualTo(Arrays.asList(String.class.getCanonicalName(), int.class.getCanonicalName()));
+    }
+
+    private static class EmptyConstructor {
+        public EmptyConstructor() {
+        }
+    }
+
+    private static class NotEmptyConstructor {
+        public NotEmptyConstructor(String param1, int param2) {
+        }
     }
 }

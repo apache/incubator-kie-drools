@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -53,44 +52,6 @@ public class JsonSchemaGenerator {
 
     private final Map<String, List<Class<?>>> map;
     private final SchemaVersion schemaVersion;
-
-    public static class SimpleBuilder {
-
-        private final Map<String, List<Class<?>>> taskClassesById = new HashMap<>();
-        private ClassLoader loader ;
-        private SchemaVersion schemaVersion = SchemaVersion.DRAFT_7;
-
-        public SimpleBuilder(ClassLoader cl) {
-            this.loader = cl;
-        }
-
-        public SimpleBuilder() {
-            this(Thread.currentThread().getContextClassLoader());
-        }
-
-        public SimpleBuilder withSchemaVersion(String schemaVersion) {
-            this.schemaVersion = schemaVersion == null?
-                    DEFAULT_SCHEMA_VERSION :
-                    SchemaVersion.valueOf(schemaVersion.trim().toUpperCase());
-            return this;
-        }
-
-        public SimpleBuilder addSchemaName(String taskClass, String processId, String userTask) {
-            String jsonSchemaName = JsonSchemaUtil.getJsonSchemaName(processId, userTask);
-            try {
-                Class<?> cls = loader.loadClass(taskClass);
-                taskClassesById.computeIfAbsent(
-                        jsonSchemaName, e -> new ArrayList<>()).add(cls);
-            } catch (ClassNotFoundException e) {
-                throw new IllegalArgumentException(e);
-            }
-            return this;
-        }
-
-        public JsonSchemaGenerator build() {
-            return new JsonSchemaGenerator(taskClassesById, schemaVersion);
-        }
-    }
 
     public static class ClassBuilder {
 

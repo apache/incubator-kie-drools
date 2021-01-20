@@ -70,6 +70,18 @@ public class AddonsConfig {
         return new AddonsConfigBuilder();
     }
 
+    @Override
+    public String toString() {
+        return "AddonsConfig{" +
+                "usePersistence=" + usePersistence +
+                ", useTracing=" + useTracing +
+                ", useMonitoring=" + useMonitoring +
+                ", usePrometheusMonitoring=" + usePrometheusMonitoring +
+                ", useKnativeEventing=" + useKnativeEventing +
+                ", useCloudEvents=" + useCloudEvents +
+                '}';
+    }
+
     public static class AddonsConfigBuilder {
         private boolean usePersistence;
         private boolean useTracing;

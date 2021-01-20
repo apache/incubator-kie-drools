@@ -93,7 +93,6 @@ public class ProcessCodegen extends AbstractGenerator {
         SUPPORTED_SW_EXTENSIONS = Collections.unmodifiableMap(extMap);
     }
 
-    private ClassLoader contextClassLoader;
     private final List<ProcessGenerator> processGenerators = new ArrayList<>();
 
     public static ProcessCodegen ofCollectedResources(KogitoBuildContext context, Collection<CollectedResource> resources) {
@@ -168,8 +167,8 @@ public class ProcessCodegen extends AbstractGenerator {
     private final Map<String, WorkflowProcess> processes;
     private final Set<GeneratedFile> generatedFiles = new HashSet<>();
 
-    public ProcessCodegen(KogitoBuildContext context, Collection<Process> processes) {
-        super(context, new ProcessConfigGenerator(context));
+    public ProcessCodegen(KogitoBuildContext context, Collection<? extends Process> processes) {
+        super(context, "processes", new ProcessConfigGenerator(context));
         this.processes = new HashMap<>();
         for (Process process : processes) {
             if (this.processes.containsKey(process.getId())) {
@@ -177,8 +176,6 @@ public class ProcessCodegen extends AbstractGenerator {
             }
             this.processes.put(process.getId(), (WorkflowProcess) process);
         }
-
-        contextClassLoader = Thread.currentThread().getContextClassLoader();
     }
 
     public static String defaultWorkItemHandlerConfigClass(String packageName) {
@@ -187,11 +184,6 @@ public class ProcessCodegen extends AbstractGenerator {
 
     public static String defaultProcessListenerConfigClass(String packageName) {
         return packageName + ".ProcessEventListenerConfig";
-    }
-
-    public ProcessCodegen withClassLoader(ClassLoader projectClassLoader) {
-        this.contextClassLoader = projectClassLoader;
-        return this;
     }
 
     @Override
@@ -236,7 +228,7 @@ public class ProcessCodegen extends AbstractGenerator {
         // then we can instantiate the exec model generator
         // with the data classes that we have already resolved
         ProcessToExecModelGenerator execModelGenerator =
-                new ProcessToExecModelGenerator(contextClassLoader);
+                new ProcessToExecModelGenerator(context().getClassLoader());
 
         // collect all process descriptors (exec model)
         for (WorkflowProcess workFlowProcess : processes.values()) {

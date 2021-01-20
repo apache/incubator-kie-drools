@@ -17,7 +17,6 @@ package org.kie.kogito.maven.plugin;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
@@ -26,6 +25,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -33,12 +33,11 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.kie.kogito.codegen.AddonsConfig;
-import org.kie.kogito.codegen.ApplicationGenerator;
 import org.kie.kogito.codegen.GeneratedFile;
 import org.kie.kogito.codegen.GeneratedFileType;
 import org.kie.kogito.codegen.JsonSchemaGenerator;
 import org.kie.kogito.codegen.context.KogitoBuildContext;
+import org.kie.kogito.codegen.process.persistence.PersistenceGenerator;
 import org.kie.memorycompiler.CompilationResult;
 import org.kie.memorycompiler.JavaCompiler;
 import org.kie.memorycompiler.JavaCompilerFactory;
@@ -47,7 +46,6 @@ import org.kie.memorycompiler.JavaConfiguration;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.kie.kogito.Model;
 import org.kie.kogito.UserTask;
-import org.kie.kogito.codegen.process.persistence.PersistenceGenerator;
 import org.kie.kogito.codegen.process.persistence.proto.ReflectionProtoGenerator;
 import org.kie.kogito.process.ProcessInstancesFactory;
 import org.reflections.Reflections;
@@ -87,39 +85,21 @@ public class ProcessClassesMojo extends AbstractKieMojo {
                 builder.addClassLoader(cl);
 
                 Reflections reflections = new Reflections(builder);
-                Set<Class<? extends Model>> modelClasses = reflections.getSubTypesOf(Model.class);
+                @SuppressWarnings({"rawtype", "unchecked"})
+                Set<Class<?>> modelClasses = (Set) reflections.getSubTypesOf(Model.class);
 
-                String appPackageName = project.getGroupId();
-
-                // safe guard to not generate application classes that would clash with interfaces
-                if (appPackageName.equals(ApplicationGenerator.DEFAULT_GROUP_ID)) {
-                    appPackageName = KogitoBuildContext.DEFAULT_PACKAGE_NAME;
-                }
                 // collect constructor parameters so the generated class can create constructor with injection
-                List<String> parameters = new ArrayList<>();
                 Set<Class<? extends ProcessInstancesFactory>> classes = reflections.getSubTypesOf(ProcessInstancesFactory.class);
-                if (!classes.isEmpty()) {
+                Class<?> persistenceClass = classes.isEmpty() ? null : classes.iterator().next();
+                ReflectionProtoGenerator protoGenerator = ReflectionProtoGenerator.builder()
+                        .withPersistenceClass(persistenceClass)
+                        .build(modelClasses);
 
-                    Class<? extends ProcessInstancesFactory> c = classes.iterator().next();
-                    for (Type t : c.getConstructors()[0].getGenericParameterTypes()) {
-                        parameters.add(t.getTypeName());
-                    }
-                }
 
-                AddonsConfig addonsConfig = loadAddonsConfig(false, project);
-
-                KogitoBuildContext.Builder contextBuilder = discoverKogitoRuntimeContext(project)
-                        .withApplicationProperties(kieSourcesDirectory)
-                        .withPackageName(appPackageName)
-                        .withAddonsConfig(addonsConfig)
-                        .withTargetDirectory(targetDirectory);
-
-                KogitoBuildContext context = contextBuilder.build();
-
-                String persistenceType = context.getApplicationProperty("kogito.persistence.type").orElse(PersistenceGenerator.DEFAULT_PERSISTENCE_TYPE);
+                KogitoBuildContext context = discoverKogitoRuntimeContext(cl);
 
                 // Generate persistence files
-                PersistenceGenerator persistenceGenerator = new PersistenceGenerator(context, modelClasses, new ReflectionProtoGenerator(), cl, parameters, persistenceType);
+                PersistenceGenerator persistenceGenerator = new PersistenceGenerator(context, protoGenerator);
                 Collection<GeneratedFile> persistenceFiles = persistenceGenerator.generate();
 
                 validateGeneratedFileTypes(persistenceFiles, asList(GeneratedFileType.Category.SOURCE, GeneratedFileType.Category.RESOURCE));
@@ -134,7 +114,8 @@ public class ProcessClassesMojo extends AbstractKieMojo {
                 generatedResources.forEach(this::writeGeneratedFile);
 
                 // Json schema generation
-                generateJsonSchema(reflections).forEach(this::writeGeneratedFile);
+                Stream<Class<?>> classStream = reflections.getTypesAnnotatedWith(UserTask.class).stream();
+                generateJsonSchema(classStream).forEach(this::writeGeneratedFile);
 
             }
         } catch (Exception e) {
@@ -168,8 +149,8 @@ public class ProcessClassesMojo extends AbstractKieMojo {
         }
     }
 
-    private Collection<GeneratedFile> generateJsonSchema(Reflections reflections) throws IOException {
-        return new JsonSchemaGenerator.ClassBuilder(reflections.getTypesAnnotatedWith(UserTask.class).stream())
+    private Collection<GeneratedFile> generateJsonSchema(Stream<Class<?>> classes) throws IOException {
+        return new JsonSchemaGenerator.ClassBuilder(classes)
                 .withGenSchemaPredicate(x -> true)
                 .withSchemaVersion(schemaVersion).build()
                 .generate();

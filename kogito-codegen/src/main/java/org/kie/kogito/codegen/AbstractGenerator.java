@@ -26,13 +26,15 @@ public abstract class AbstractGenerator implements Generator {
 
     private final ConfigGenerator configGenerator;
     private final KogitoBuildContext context;
+    private final String name;
 
-    protected AbstractGenerator(KogitoBuildContext context) {
-        this(context, null);
+    protected AbstractGenerator(KogitoBuildContext context, String name) {
+        this(context, name, null);
     }
 
-    protected AbstractGenerator(KogitoBuildContext context, ConfigGenerator configGenerator) {
+    protected AbstractGenerator(KogitoBuildContext context, String name, ConfigGenerator configGenerator) {
         Objects.requireNonNull(context, "context cannot be null");
+        this.name = name;
         this.context = context;
         this.configGenerator = configGenerator;
     }
@@ -40,6 +42,11 @@ public abstract class AbstractGenerator implements Generator {
     @Override
     public KogitoBuildContext context() {
         return this.context;
+    }
+
+    @Override
+    public String name() {
+        return name;
     }
 
     protected String applicationCanonicalName() {

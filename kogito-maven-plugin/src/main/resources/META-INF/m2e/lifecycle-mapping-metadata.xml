@@ -4,7 +4,6 @@
     <pluginExecution>
       <pluginExecutionFilter>
         <goals>
-          <goal>generateDeclaredTypes</goal>
           <goal>generateModel</goal>
           <goal>process-model-classes</goal>
         </goals>

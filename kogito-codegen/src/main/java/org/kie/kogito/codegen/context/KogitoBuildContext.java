@@ -18,9 +18,9 @@ package org.kie.kogito.codegen.context;
 import org.kie.kogito.codegen.AddonsConfig;
 import org.kie.kogito.codegen.KogitoCodeGenConstants;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
+import org.kie.kogito.codegen.utils.AppPaths;
 
 import java.io.File;
-import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.Properties;
@@ -30,8 +30,6 @@ public interface KogitoBuildContext {
 
     String APPLICATION_PROPERTIES_FILE_NAME = "application.properties";
     String DEFAULT_PACKAGE_NAME = "org.kie.kogito.app";
-    KogitoBuildContext EMPTY_CONTEXT = JavaKogitoBuildContext.builder()
-            .build();
 
     boolean hasClassAvailable(String fqcn);
 
@@ -54,6 +52,8 @@ public interface KogitoBuildContext {
         return getDependencyInjectionAnnotator() != null;
     }
 
+    boolean hasREST();
+
     default boolean isValidationSupported() {
         return hasClassAvailable(KogitoCodeGenConstants.VALIDATION_CLASS);
     }
@@ -62,15 +62,15 @@ public interface KogitoBuildContext {
 
     Collection<String> getApplicationProperties();
 
-    default Path getProjectDirectory() {
-        return getTargetDirectory().getParentFile().toPath();
-    }
-
-    File getTargetDirectory();
+    void setApplicationProperty(String key, Object value);
 
     String getPackageName();
 
     AddonsConfig getAddonsConfig();
+
+    ClassLoader getClassLoader();
+
+    AppPaths getAppPaths();
 
     /**
      * Name of the context (e.g. Quarkus, Spring) used to identify a context and for template naming conventions
@@ -90,22 +90,10 @@ public interface KogitoBuildContext {
 
         Builder withClassAvailabilityResolver(Predicate<String> classAvailabilityResolver);
 
-        Builder withTargetDirectory(File targetDirectory);
+        Builder withClassLoader(ClassLoader classLoader);
+
+        Builder withAppPaths(AppPaths appPaths);
 
         KogitoBuildContext build();
-
-        @SuppressWarnings("unchecked")
-        static <T extends Builder> T merge(KogitoBuildContext original, T target) {
-            Properties newProperties = new Properties();
-            original.getApplicationProperties().forEach(prop -> newProperties.put(prop, original.getApplicationProperty(prop)));
-
-            return (T) target.withPackageName(original.getPackageName())
-                    .withApplicationProperties(newProperties)
-                    .withAddonsConfig(original.getAddonsConfig())
-                    .withTargetDirectory(original.getTargetDirectory())
-                    .withClassAvailabilityResolver(original::hasClassAvailable);
-        }
-
-
     }
 }

@@ -18,9 +18,12 @@ package org.kie.kogito.codegen.decision;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import com.github.javaparser.ast.CompilationUnit;
@@ -38,6 +41,7 @@ import org.kie.kogito.grafana.JGrafana;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.kie.kogito.codegen.KogitoBuildContextTestUtils.mockClassAvailabilityResolver;
 
 public class DecisionCodegenTest {
 
@@ -66,20 +70,22 @@ public class DecisionCodegenTest {
     }
 
     public DecisionCodegen getDecisionCodegen(String s, AddonsConfig addonsConfig) {
-        Properties applicationProperties = stronglyTypedContext();
+        KogitoBuildContext.Builder contextBuilder = JavaKogitoBuildContext.builder()
+                .withAddonsConfig(addonsConfig);
 
-        KogitoBuildContext context = JavaKogitoBuildContext.builder()
-                .withApplicationProperties(applicationProperties)
-                .withAddonsConfig(addonsConfig)
-                .build();
+        return getDecisionCodegen(s, contextBuilder);
+    }
 
+    public DecisionCodegen getDecisionCodegen(String s, KogitoBuildContext.Builder contextBuilder) {
+        KogitoBuildContext context = stronglyTypedContext(contextBuilder).build();
         return DecisionCodegen.ofCollectedResources(context, CollectedResource.fromPaths(Paths.get(s).toAbsolutePath()));
     }
 
-    private Properties stronglyTypedContext() {
+    private KogitoBuildContext.Builder stronglyTypedContext(KogitoBuildContext.Builder builder) {
         Properties properties = new Properties();
         properties.put(DecisionCodegen.STRONGLY_TYPED_CONFIGURATION_KEY, Boolean.TRUE.toString());
-        return properties;
+        builder.withApplicationProperties(properties);
+        return builder;
     }
 
     private List<String> fileNames(List<GeneratedFile> generatedFiles) {
@@ -167,13 +173,10 @@ public class DecisionCodegenTest {
 
     @Test
     public void testNSEW_positive() throws Exception {
+        KogitoBuildContext.Builder contextBuilder = JavaKogitoBuildContext.builder()
+                .withClassAvailabilityResolver(mockClassAvailabilityResolver(Collections.singleton("org.eclipse.microprofile.openapi.models.OpenAPI"), Collections.emptyList()));
         // This test is meant to check that IFF Eclipse MP OpenAPI annotations are available on Build/CP of Kogito application, annotation is used with codegen
-        DecisionCodegen codeGenerator = getDecisionCodegen("src/test/resources/decision-NSEW");
-        codeGenerator.withClassLoader(new ClassLoader() {
-            public Class<?> loadClass(String name) throws ClassNotFoundException {
-                return Object.class;
-            }
-        });
+        DecisionCodegen codeGenerator = getDecisionCodegen("src/test/resources/decision-NSEW", contextBuilder);
 
         List<GeneratedFile> generatedFiles = codeGenerator.generate();
         assertThat(generatedFiles).anyMatch(x -> x.relativePath().endsWith("InputSet.java"));
@@ -183,7 +186,9 @@ public class DecisionCodegenTest {
 
     @Test
     public void testNSEW_negative() throws Exception {
-        DecisionCodegen codeGenerator = getDecisionCodegen("src/test/resources/decision-NSEW");
+        KogitoBuildContext.Builder contextBuilder = JavaKogitoBuildContext.builder()
+                .withClassAvailabilityResolver(mockClassAvailabilityResolver(Collections.emptyList(), Collections.singleton("org.eclipse.microprofile.openapi.models.OpenAPI")));
+        DecisionCodegen codeGenerator = getDecisionCodegen("src/test/resources/decision-NSEW", contextBuilder);
 
         List<GeneratedFile> generatedFiles = codeGenerator.generate();
         assertThat(generatedFiles).anyMatch(x -> x.relativePath().endsWith("InputSet.java"));

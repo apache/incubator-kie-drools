@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -36,13 +35,20 @@ import org.infinispan.protostream.annotations.ProtoEnumValue;
 import org.kie.internal.kogito.codegen.Generated;
 import org.kie.internal.kogito.codegen.VariableInfo;
 import org.kie.kogito.codegen.GeneratedFile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ReflectionProtoGenerator extends AbstractProtoGenerator<Class<?>> {
 
-    public Proto generate(String packageName, Collection<Class<?>> dataModel, String... headers) {
+    private ReflectionProtoGenerator(Class<?> persistenceClass, Collection<Class<?>> modelClasses, Collection<Class<?>> dataClasses) {
+        super(persistenceClass, modelClasses, dataClasses);
+    }
+
+    @Override
+    public Proto protoOfDataClasses(String packageName, String... headers) {
         try {
             Proto proto = new Proto(packageName, headers);
-            for (Class<?> clazz : dataModel) {
+            for (Class<?> clazz : dataClasses) {
                 if (clazz.isEnum()) {
                     enumFromClass(proto, clazz, null);
                 } else {
@@ -71,32 +77,14 @@ public class ReflectionProtoGenerator extends AbstractProtoGenerator<Class<?>> {
     }
 
     @Override
-    public ProtoDataClassesResult<Class<?>> extractDataClasses(Collection<Class<?>> input) {
-        Set<Class<?>> dataModelClasses = new HashSet<>();
-        List<GeneratedFile> generatedFiles = new ArrayList<>();
-        try {
-            for (Class<?> modelClazz : input) {
-
-                BeanInfo beanInfo = Introspector.getBeanInfo(modelClazz);
-                for (PropertyDescriptor pd : beanInfo.getPropertyDescriptors()) {
-                    Class<?> propertyType = pd.getPropertyType();
-                    if (propertyType.getCanonicalName().startsWith("java.lang")
-                            || propertyType.getCanonicalName().equals(Date.class.getCanonicalName())) {
-                        continue;
-                    }
-
-                    dataModelClasses.add(propertyType);
-                }
-
-                generateModelClassProto(modelClazz)
-                        .ifPresent(generatedFiles::add);
+    public Collection<String> getPersistenceClassParams() {
+        Collection<String> parameters = new ArrayList<>();
+        if (persistenceClass != null) {
+            for (Type t : persistenceClass.getConstructors()[0].getGenericParameterTypes()) {
+                parameters.add(t.getTypeName());
             }
-            this.generateProtoListingFile(generatedFiles).ifPresent(generatedFiles::add);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
         }
-
-        return new ProtoDataClassesResult<>(dataModelClasses, generatedFiles);
+        return parameters;
     }
 
     protected ProtoMessage messageFromClass(Proto proto, Class<?> clazz, String packageName, String messageComment, String fieldComment) throws Exception {
@@ -201,6 +189,7 @@ public class ReflectionProtoGenerator extends AbstractProtoGenerator<Class<?>> {
         pEnum.addField(field.getName(), ordinal);
     }
 
+    @Override
     protected Optional<GeneratedFile> generateModelClassProto(Class<?> modelClazz) {
 
         Generated generatedData = modelClazz.getAnnotation(Generated.class);
@@ -223,5 +212,49 @@ public class ReflectionProtoGenerator extends AbstractProtoGenerator<Class<?>> {
             return Optional.of(generateProtoFiles(processId, modelProto));
         }
         return Optional.empty();
+    }
+
+    public static Builder<Class<?>, ReflectionProtoGenerator> builder() {
+        return new ReflectionProtoGeneratorBuilder();
+    }
+
+    private static class ReflectionProtoGeneratorBuilder extends AbstractProtoGeneratorBuilder<Class<?>, ReflectionProtoGenerator> {
+
+        private static final Logger LOGGER = LoggerFactory.getLogger(ReflectionProtoGeneratorBuilder.class);
+
+        private ReflectionProtoGeneratorBuilder() {
+        }
+
+        @Override
+        protected Collection<Class<?>> extractDataClasses(Collection<Class<?>> modelClasses) {
+            if(dataClasses != null || modelClasses == null) {
+                LOGGER.info("Using provided dataClasses instead of extracting from modelClasses");
+                return dataClasses;
+            }
+            Set<Class<?>> dataModelClasses = new HashSet<>();
+            try {
+                for (Class<?> modelClazz : modelClasses) {
+
+                    BeanInfo beanInfo = Introspector.getBeanInfo(modelClazz);
+                    for (PropertyDescriptor pd : beanInfo.getPropertyDescriptors()) {
+                        Class<?> propertyType = pd.getPropertyType();
+                        if (propertyType.getCanonicalName().startsWith("java.lang")
+                                || propertyType.getCanonicalName().equals(Date.class.getCanonicalName())) {
+                            continue;
+                        }
+
+                        dataModelClasses.add(propertyType);
+                    }
+                }
+                return dataModelClasses;
+            } catch (IntrospectionException e) {
+                throw new IllegalStateException("Error during bean introspection", e);
+            }
+        }
+
+        @Override
+        public ReflectionProtoGenerator build(Collection<Class<?>> modelClasses) {
+            return new ReflectionProtoGenerator(persistenceClass, modelClasses, extractDataClasses(modelClasses));
+        }
     }
 }
