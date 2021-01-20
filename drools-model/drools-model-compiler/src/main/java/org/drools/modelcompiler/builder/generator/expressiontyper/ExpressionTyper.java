@@ -276,22 +276,7 @@ public class ExpressionTyper {
                         .getTypedExpression()
                         .orElseThrow(() -> new NoSuchElementException("TypedExpressionResult doesn't contain TypedExpression!"))
                         .getExpression();
-                return nameExpr.flatMap( te -> {
-                    if (te.isArray()) {
-                        return createArrayAccessExpression(indexExpr, te.getExpression());
-                    }
-
-                    java.lang.reflect.Type type;
-                    if (te.isList()) {
-                        type = getTypeArgument(te.getType(), 0);
-                    } else if(te.isMap()) {
-                        type = getTypeArgument(te.getType(), 1);
-                    } else {
-                        type = Object.class;
-                    }
-                    return createMapAccessExpression(indexExpr, te.getExpression(),
-                                                     type);
-                });
+                return nameExpr.flatMap( te -> transformToArrayOrMapExpressionWithType(indexExpr, te));
             }
 
         } else if (drlxExpr instanceof InstanceOfExpr) {
@@ -316,6 +301,22 @@ public class ExpressionTyper {
         }
 
         throw new UnsupportedOperationException();
+    }
+
+    private Optional<TypedExpression> transformToArrayOrMapExpressionWithType(Expression indexExpr, TypedExpression te) {
+        if (te.isArray()) {
+            return createArrayAccessExpression(indexExpr, te.getExpression());
+        }
+
+        java.lang.reflect.Type type;
+        if (te.isList()) {
+            type = getTypeArgument(te.getType(), 0);
+        } else if(te.isMap()) {
+            type = getTypeArgument(te.getType(), 1);
+        } else {
+            type = Object.class;
+        }
+        return createMapAccessExpression(indexExpr, te.getExpression(), type);
     }
 
     private boolean isEval(String nameAsString, Optional<Expression> scope, NodeList<Expression> arguments) {
