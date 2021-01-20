@@ -132,16 +132,18 @@ public class Person extends AbstractReactiveObject {
         return likes;
     }
 
-    public void setLikes( String likes ) {
+    public Person setLikes(String likes ) {
         this.likes = likes;
+        return this;
     }
 
     public Boolean getEmployed() {
         return employed;
     }
 
-    public void setEmployed(Boolean employed) {
+    public Person setEmployed(Boolean employed) {
         this.employed = employed;
+        return this;
     }
 
     /**
@@ -219,4 +221,6 @@ public class Person extends AbstractReactiveObject {
         result = 31 * result + age;
         return result;
     }
+
+
 }

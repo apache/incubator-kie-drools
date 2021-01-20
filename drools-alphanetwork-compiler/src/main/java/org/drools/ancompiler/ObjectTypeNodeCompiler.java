@@ -74,6 +74,18 @@ public class ObjectTypeNodeCompiler {
 
         ObjectTypeNodeParser parser = new ObjectTypeNodeParser(objectTypeNode);
 
+        // debug rete
+        logger.debug("Compiling Alpha Network: ");
+        DebugHandler debugHandler = new DebugHandler();
+        parser.accept(debugHandler);
+
+        // After the first parsing we decide whether to traverse hashedAlphaNodes or not
+
+        if(parser.getIndexableConstraints().size() > 1) {
+            logger.warn("Alpha Network Compiler with multiple Indexable Constraints is not supported, reverting to non hashed-ANC. This might be slower ");
+            parser.setTraverseHashedAlphaNodes(false);
+        }
+
         // create declarations
         DeclarationsHandler declarations = new DeclarationsHandler(builder);
         parser.accept(declarations);
@@ -86,15 +98,20 @@ public class ObjectTypeNodeCompiler {
         createConstructor(hashedAlphaDeclarations, rangeIndexDeclarationMap);
 
         // create set node method
-        SetNodeReferenceHandler setNode = new SetNodeReferenceHandler(builder);
-        parser.accept(setNode);
+        NodeCollectorHandler nodeCollectors = new NodeCollectorHandler();
+        parser.accept(nodeCollectors);
+
+        SetNodeReferenceHandler partitionedSwitch = new SetNodeReferenceHandler(nodeCollectors.getNodes());
+        partitionedSwitch.emitCode(builder);
 
         // create assert method
-        AssertHandler assertHandler = new AssertHandler(builder, className, !hashedAlphaDeclarations.isEmpty());
+        AssertHandler assertHandler = new AssertHandler(className, !hashedAlphaDeclarations.isEmpty());
         parser.accept(assertHandler);
+        builder.append(assertHandler.emitCode());
 
-        ModifyHandler modifyHandler = new ModifyHandler(builder, className, !hashedAlphaDeclarations.isEmpty());
+        ModifyHandler modifyHandler = new ModifyHandler(className, !hashedAlphaDeclarations.isEmpty());
         parser.accept(modifyHandler);
+        builder.append(modifyHandler.emitCode());
 
         DelegateMethodsHandler delegateMethodsHandler = new DelegateMethodsHandler(builder);
         parser.accept(delegateMethodsHandler);
