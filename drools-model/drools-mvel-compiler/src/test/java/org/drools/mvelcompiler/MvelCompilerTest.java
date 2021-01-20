@@ -149,8 +149,8 @@ public class MvelCompilerTest implements CompilerTest {
     @Test
     public void testBigDecimalModulo() {
         test(ctx -> ctx.addDeclaration("$b1", BigDecimal.class),
-             "{ BigDecimal result = $b1 % 2; }",
-             "{ BigDecimal result = $b1.remainder(BigDecimal.valueOf(2)); }");
+             "{ java.math.BigDecimal result = $b1 % 2; }",
+             "{ java.math.BigDecimal result = $b1.remainder(new java.math.BigDecimal(2)); }");
     }
 
     @Test
@@ -166,8 +166,8 @@ public class MvelCompilerTest implements CompilerTest {
                  ctx.addDeclaration("$b1", BigDecimal.class);
                  ctx.addDeclaration("$b2", BigDecimal.class);
              },
-             "{ BigDecimal result = $b1 % $b2; }",
-             "{ BigDecimal result = $b1.remainder($b2); }");
+             "{ java.math.BigDecimal result = $b1 % $b2; }",
+             "{ java.math.BigDecimal result = $b1.remainder($b2); }");
     }
 
     @Test

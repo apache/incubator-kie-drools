@@ -199,7 +199,8 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
         boolean isArithmeticOperator = asList(BinaryExpr.Operator.PLUS,
                                               BinaryExpr.Operator.DIVIDE,
                                               BinaryExpr.Operator.MINUS,
-                                              BinaryExpr.Operator.MULTIPLY
+                                              BinaryExpr.Operator.MULTIPLY,
+                                              BinaryExpr.Operator.REMAINDER
                                               ).contains(operator);
         boolean isStringConcatenation = typeLeft == String.class || typeRight == String.class;
         if (isArithmeticOperator && !isStringConcatenation) {
