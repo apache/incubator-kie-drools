@@ -28,6 +28,7 @@ public class AssemblerTest {
         KnowledgeBuilderResults results = kBuilder.getResults(ResultSeverity.INFO);
         assertEquals(2, results.size());
         Object[] objects = results.toArray();
+        assertEquals(kBuilder.getPackageDescrs("FAKEpkg").size(), 1);
         assertEquals(TestAssembler.BEFORE_RULES, objects[0]);
         assertEquals(TestAssembler.AFTER_RULES, objects[1]);
     }
