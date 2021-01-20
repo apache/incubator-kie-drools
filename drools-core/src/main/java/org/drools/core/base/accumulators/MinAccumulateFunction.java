@@ -71,7 +71,7 @@ public class MinAccumulateFunction extends AbstractAccumulateFunction<MinAccumul
     }
 
     @Override
-    public boolean tryReverse( MinData data, Object value ) throws Exception {
+    public boolean tryReverse( MinData data, Object value ) {
         if (value != null) {
             return data.min.compareTo( value ) < 0;
         }
