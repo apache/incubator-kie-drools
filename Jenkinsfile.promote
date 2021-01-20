@@ -15,7 +15,7 @@ pipeline {
         maven 'kie-maven-3.6.2'
         jdk 'kie-jdk11'
     }
-    
+
     options {
         buildDiscarder logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '10')
         timeout(time: 360, unit: 'MINUTES')
@@ -23,14 +23,14 @@ pipeline {
 
     parameters {
         string(name: 'DISPLAY_NAME', defaultValue: '', description: 'Setup a specific build display name')
-        
+
         // Deploy job url to retrieve deployment.properties
         string(name: 'DEPLOY_BUILD_URL', defaultValue: '', description: 'URL to jenkins deploy build to retrieve the `deployment.properties` file. If base parameters are defined, they will override the `deployment.properties` information')
-        
+
         // Git information which can override `deployment.properties`
         string(name: 'BUILD_BRANCH_NAME', defaultValue: '', description: 'Override `deployment.properties`. Which branch to build? Set if you are not on a multibranch pipeline.')
         string(name: 'GIT_AUTHOR', defaultValue: '', description: 'Override `deployment.properties`. Which Git author repository ?')
-        
+
         // Build&Deploy information for next snapshots
         string(name: 'MAVEN_SETTINGS_CONFIG_FILE_ID', defaultValue: 'kogito_release_settings', description: 'Maven settings configfile to use in pipeline for Maven commands')
         string(name: 'MAVEN_DEPENDENCIES_REPOSITORY', defaultValue: '', description: 'Maven repository where to find dependencies if those are not in the default Jboss repository.')
@@ -39,6 +39,7 @@ pipeline {
         // Release information which can override `deployment.properties`
         booleanParam(name: 'RELEASE', defaultValue: false, description: 'Override `deployment.properties`. Is this build for a release?')
         string(name: 'PROJECT_VERSION', defaultValue: '', description: 'Override `deployment.properties`. Optional if not RELEASE. If RELEASE, cannot be empty.')
+        string(name: 'OPTAPLANNER_VERSION', defaultValue: '', description: 'Override `deployment.properties`. Optional if not RELEASE. If RELEASE, cannot be empty.')
         string(name: 'STAGING_REPO_URL', defaultValue: '', description: 'Override `deployment.properties`.')
         string(name: 'GIT_TAG', defaultValue: '', description: 'Git tag to set, if different from PROJECT_VERSION')
 
@@ -54,7 +55,7 @@ pipeline {
         PROPERTIES_FILE_NAME = 'deployment.properties'
 
         BOT_BRANCH_HASH = "${util.generateHash(10)}"
-        
+
         GITHUB_CLI_VERSION = '0.11.1'
     }
 
@@ -63,7 +64,7 @@ pipeline {
             steps {
                 script {
                     cleanWs()
-                    
+
                     if (params.DISPLAY_NAME != '') {
                         currentBuild.displayName = params.DISPLAY_NAME
                     }
@@ -72,6 +73,7 @@ pipeline {
 
                     if (isRelease()) {
                         assert getProjectVersion() != ''
+                        assert getOptaPlannerVersion() != ''
                     }
 
                     installGithubCLI()
@@ -82,7 +84,7 @@ pipeline {
             when {
                 expression { return isRelease() }
             }
-            steps{
+            steps {
                 script {
                     dir('kogito-apps') {
                         checkoutRepo('kogito-apps')
@@ -92,7 +94,7 @@ pipeline {
                 }
             }
         }
-        stage('Set apps next snapshot version'){
+        stage('Set apps next snapshot version') {
             when {
                 expression { return isRelease() }
             }
@@ -102,6 +104,7 @@ pipeline {
                         prepareForPR('kogito-apps')
 
                         maven.mvnVersionsUpdateParentAndChildModules(getMavenCommand(), getSnapshotVersion(), true)
+                        maven.mvnSetVersionProperty(getMavenCommand(), 'version.org.optaplanner', util.getNextVersion(getOptaPlannerVersion(), 'micro'))
 
                         commitAndCreatePR('kogito-apps')
                     }
@@ -126,32 +129,32 @@ pipeline {
 // Deployment properties
 //////////////////////////////////////////////////////////////////////////////
 
-void readDeployProperties(){
+void readDeployProperties() {
     String deployUrl = params.DEPLOY_BUILD_URL
-    if (deployUrl != ''){
-        if(!deployUrl.endsWith('/')){
+    if (deployUrl != '') {
+        if (!deployUrl.endsWith('/')) {
             deployUrl += '/'
         }
         sh "wget ${deployUrl}artifact/${PROPERTIES_FILE_NAME} -O ${PROPERTIES_FILE_NAME}"
         deployProperties = readProperties file: PROPERTIES_FILE_NAME
         // echo all properties
-        echo deployProperties.collect{ entry -> "${entry.key}=${entry.value}" }.join('\n')
+        echo deployProperties.collect { entry -> "${entry.key}=${entry.value}" }.join('\n')
     }
 }
 
-boolean hasDeployProperty(String key){
+boolean hasDeployProperty(String key) {
     return deployProperties[key] != null
 }
 
-String getDeployProperty(String key){
-    if(hasDeployProperty(key)){
+String getDeployProperty(String key) {
+    if (hasDeployProperty(key)) {
         return deployProperties[key]
     }
     return ''
 }
 
-String getParamOrDeployProperty(String paramKey, String deployPropertyKey){
-    if (params[paramKey] != ''){
+String getParamOrDeployProperty(String paramKey, String deployPropertyKey) {
+    if (params[paramKey] != '') {
         return params[paramKey]
     }
     return getDeployProperty(deployPropertyKey)
@@ -167,6 +170,10 @@ boolean isRelease() {
 
 String getProjectVersion() {
     return getParamOrDeployProperty('PROJECT_VERSION', 'project.version')
+}
+
+String getOptaPlannerVersion() {
+    return getParamOrDeployProperty('OPTAPLANNER_VERSION', 'optaplanner.version')
 }
 
 String getSnapshotVersion() {
@@ -185,27 +192,27 @@ String getGitAuthor() {
     return getParamOrDeployProperty('GIT_AUTHOR', 'git.author')
 }
 
-String getGitAuthorCredsID(){
+String getGitAuthorCredsID() {
     return params.AUTHOR_CREDS_ID
 }
 
-String getBotAuthorCredsID(){
+String getBotAuthorCredsID() {
     return params.BOT_CREDENTIALS_ID
 }
 
-String getDeployPrLink(String repo){
+String getDeployPrLink(String repo) {
     return getDeployProperty("${repo}.pr.link")
 }
 
-String getPipelinePrLink(String repo){
+String getPipelinePrLink(String repo) {
     return pipelineProperties["${repo}.pr.link"]
 }
 
-void setPipelinePrLink(String repo, String value){
+void setPipelinePrLink(String repo, String value) {
     pipelineProperties["${repo}.pr.link"] = value
 }
 
-String getSnapshotBranch(){
+String getSnapshotBranch() {
     return "${getSnapshotVersion().toLowerCase()}-${env.BOT_BRANCH_HASH}"
 }
 
@@ -243,7 +250,7 @@ void prepareForPR(String repo) {
 void commitAndCreatePR(String repo) {
     def commitMsg = "[${getBuildBranch()}] Update snapshot version to ${getSnapshotVersion()}"
     def prBody = "Generated by build ${BUILD_TAG}: ${BUILD_URL}.\nPlease do not merge, it will be merged automatically after testing."
-    
+
     githubscm.commitChanges(commitMsg, { githubscm.findAndStageNotIgnoredFiles('pom.xml') })
     githubscm.pushObject('origin', getSnapshotBranch(), getBotAuthorCredsID())
     setPipelinePrLink(repo, githubscm.createPR(commitMsg, prBody, getBuildBranch(), getBotAuthorCredsID()))
@@ -267,9 +274,9 @@ MavenCommand getMavenCommand() {
     return mvnCmd
 }
 
-void runMavenDeploy(MavenCommand mvnCmd){
+void runMavenDeploy(MavenCommand mvnCmd) {
     mvnCmd = mvnCmd.clone()
-    if(params.MAVEN_DEPLOY_REPOSITORY){
+    if (params.MAVEN_DEPLOY_REPOSITORY) {
         mvnCmd.withDeployRepository(params.MAVEN_DEPLOY_REPOSITORY)
     }
     mvnCmd.skipTests(true).run('clean deploy')

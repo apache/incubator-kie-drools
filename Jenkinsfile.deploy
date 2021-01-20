@@ -15,7 +15,7 @@ pipeline {
         maven 'kie-maven-3.6.2'
         jdk 'kie-jdk11'
     }
-    
+
     options {
         buildDiscarder logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '10')
         timeout(time: 360, unit: 'MINUTES')
@@ -23,7 +23,7 @@ pipeline {
 
     parameters {
         string(name: 'DISPLAY_NAME', defaultValue: '', description: 'Setup a specific build display name')
-        
+
         // Git information
         string(name: 'BUILD_BRANCH_NAME', defaultValue: 'master', description: 'Which branch to build? Set if you are not on a multibranch pipeline.')
         string(name: 'GIT_AUTHOR', defaultValue: 'kiegroup', description: 'Which Git author repository ?')
@@ -39,7 +39,8 @@ pipeline {
         // Release information
         booleanParam(name: 'RELEASE', defaultValue: false, description: 'Is this build for a release?')
         string(name: 'PROJECT_VERSION', defaultValue: '', description: 'Optional if not RELEASE. If RELEASE, cannot be empty.')
-        
+        string(name: 'OPTAPLANNER_VERSION', defaultValue: '', description: 'Optional if not RELEASE. If RELEASE, cannot be empty.')
+
         // Nexus staging default parameters
         string(name: 'NEXUS_RELEASE_URL', defaultValue: 'https://repository.jboss.org/nexus', description: 'Nexus URL for release staging')
         string(name: 'NEXUS_RELEASE_REPOSITORY_ID', defaultValue: 'jboss-releases-repository', description: 'Nexus Release repository ID for staging')
@@ -57,7 +58,7 @@ pipeline {
         BOT_BRANCH_HASH = "${util.generateHash(10)}"
 
         // Maven configuration
-        MAVEN_DEPLOY_LOCAL_DIR="${WORKSPACE}/maven_deploy_dir"
+        MAVEN_DEPLOY_LOCAL_DIR = "${WORKSPACE}/maven_deploy_dir"
     }
 
     stages {
@@ -65,13 +66,14 @@ pipeline {
             steps {
                 script {
                     cleanWs()
-                    
+
                     if (params.DISPLAY_NAME != '') {
                         currentBuild.displayName = params.DISPLAY_NAME
                     }
 
                     if (isRelease()) {
                         assert getProjectVersion() != ''
+                        assert getOptaPlannerVersion() != ''
                     }
 
                     checkoutRepo('kogito-apps')
@@ -84,13 +86,13 @@ pipeline {
                         setDeployPropertyIfNeeded('git.author', getGitAuthor())
                         setDeployPropertyIfNeeded('project.version', getProjectVersion())
                         setDeployPropertyIfNeeded('release', isRelease())
-
+                        setDeployPropertyIfNeeded('optaplanner.version', getOptaPlannerVersion())
                     }
                 }
             }
         }
 
-        stage('Prepare for PR'){
+        stage('Prepare for PR') {
             when {
                 expression { return isRelease() }
             }
@@ -98,13 +100,15 @@ pipeline {
                 prepareForPR('kogito-apps')
             }
         }
-        stage('Update project version'){
+        stage('Update project version') {
             when {
                 expression { return getProjectVersion() != '' }
             }
             steps {
                 script {
                     maven.mvnVersionsUpdateParentAndChildModules(getMavenCommand(), getProjectVersion(), true)
+                    // Update Optaplanner version
+                    maven.mvnSetVersionProperty(getMavenCommand(), 'version.org.optaplanner', getOptaPlannerVersion())
                 }
             }
         }
@@ -123,17 +127,17 @@ pipeline {
         stage('Deploy artifacts') {
             steps {
                 script {
-                    if(!isRelease() || params.MAVEN_DEPLOY_REPOSITORY){
+                    if (!isRelease() || params.MAVEN_DEPLOY_REPOSITORY) {
                         runMavenDeploy(getMavenCommand())
                     } else {
-                         // Deploy locally and then to staging
+                        // Deploy locally and then to staging
                         runMavenDeployLocally(getMavenCommand())
                         runMavenStage(getMavenCommand())
                     }
                 }
             }
         }
-        stage('Create PR'){
+        stage('Create PR') {
             when {
                 expression { return isRelease() }
             }
@@ -155,7 +159,7 @@ pipeline {
     post {
         always {
             script {
-                def propertiesStr = deployProperties.collect{ entry ->  "${entry.key}=${entry.value}" }.join("\n")
+                def propertiesStr = deployProperties.collect { entry ->  "${entry.key}=${entry.value}" }.join('\n')
                 writeFile(text: propertiesStr, file: 'deployment.properties')
                 archiveArtifacts(artifacts: 'deployment.properties')
             }
@@ -164,7 +168,7 @@ pipeline {
     }
 }
 
-void saveReports(boolean allowEmpty=false){
+void saveReports(boolean allowEmpty=false) {
     junit testResults: '**/target/surefire-reports/**/*.xml, **/target/failsafe-reports/**/*.xml', allowEmptyResults: allowEmpty
 }
 
@@ -196,37 +200,41 @@ boolean isRelease() {
     return params.RELEASE
 }
 
-String getGitAuthor(){
+String getGitAuthor() {
     return params.GIT_AUTHOR
 }
 
-String getBuildBranch(){
+String getBuildBranch() {
     return params.BUILD_BRANCH_NAME
 }
 
-String getProjectVersion(){
+String getProjectVersion() {
     return params.PROJECT_VERSION
 }
 
-String getBotBranch(){
+String getOptaPlannerVersion() {
+    return params.OPTAPLANNER_VERSION
+}
+
+String getBotBranch() {
     return "${getProjectVersion()}-${env.BOT_BRANCH_HASH}"
 }
 
-String getBotAuthor(){
+String getBotAuthor() {
     return params.GIT_AUTHOR_BOT
 }
 
-String getBotAuthorCredsID(){
+String getBotAuthorCredsID() {
     return params.BOT_CREDENTIALS_ID
 }
 
-void setDeployPropertyIfNeeded(String key, def value){
-    if (value != null && value != ''){
+void setDeployPropertyIfNeeded(String key, def value) {
+    if (value != null && value != '') {
         deployProperties[key] = value
     }
 }
 
-MavenCommand getMavenCommand(String directory = 'kogito-apps'){
+MavenCommand getMavenCommand(String directory = 'kogito-apps') {
     MavenCommand mvnCmd = new MavenCommand(this, ['-fae'])
                 .withSettingsXmlId(params.MAVEN_SETTINGS_CONFIG_FILE_ID)
                 .inDirectory(directory)
@@ -237,10 +245,10 @@ MavenCommand getMavenCommand(String directory = 'kogito-apps'){
     return mvnCmd
 }
 
-void runMavenDeploy(MavenCommand mvnCmd){
+void runMavenDeploy(MavenCommand mvnCmd) {
     mvnCmd = mvnCmd.clone()
 
-    if(params.MAVEN_DEPLOY_REPOSITORY){
+    if (params.MAVEN_DEPLOY_REPOSITORY) {
         mvnCmd.withDeployRepository(params.MAVEN_DEPLOY_REPOSITORY)
     }
 
@@ -266,6 +274,6 @@ MavenStagingHelper getStagingHelper(MavenCommand mvnCmd) {
                 .withNexusReleaseRepositoryId(params.NEXUS_RELEASE_REPOSITORY_ID)
 }
 
-String getLocalDeploymentFolder(){
+String getLocalDeploymentFolder() {
     return "${env.MAVEN_DEPLOY_LOCAL_DIR}/kogito-apps"
-} 
+}
