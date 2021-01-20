@@ -155,9 +155,8 @@ public class MvelCompilerTest implements CompilerTest {
 
     @Test
     public void testBigDecimalModuloPromotion() {
-        test(ctx -> ctx.addDeclaration("$b1", Integer.class),
-             "{ BigDecimal result = 12 % 10; }",
-             "{ java.math.BigDecimal result = java.math.BigDecimal.valueOf(12 % 10); }");
+        test("{ BigDecimal result = 12 % 10; }",
+             "{ java.math.BigDecimal result = new java.math.BigDecimal(12 % 10); }");
     }
 
     @Test
