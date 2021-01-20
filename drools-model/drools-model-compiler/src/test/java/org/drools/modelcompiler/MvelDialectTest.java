@@ -441,7 +441,38 @@ public class MvelDialectTest extends BaseModelTest {
     }
 
     @Test
-    public void testBigDecimalModulo() throws Exception {
+    public void testBigDecimalModuloConsequence() {
+        // DROOLS-5959
+        String drl =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "import " + BigDecimal.class.getCanonicalName() + "\n" +
+                "global java.util.List results;\n" +
+                "dialect \"mvel\"\n" +
+                "rule R\n" +
+                "when\n" +
+                "    $p : Person($m : money)\n" +
+                "then\n" +
+                "    results.add($m % 70);\n" +
+                "    BigDecimal moduloPromotedToBigDecimal = 12 % 10; "+
+                "    results.add(moduloPromotedToBigDecimal);\n" +
+                "end";
+
+        KieSession ksession = getKieSession(drl);
+
+        List<BigDecimal> results = new ArrayList<>();
+        ksession.setGlobal("results", results);
+
+        Person john = new Person("John", 30);
+        john.setMoney( new BigDecimal( 71 ) );
+
+        ksession.insert(john);
+
+        assertEquals(1, ksession.fireAllRules());
+        assertThat(results).containsExactly(BigDecimal.valueOf(1), BigDecimal.valueOf(2));
+    }
+
+    @Test
+    public void testBigDecimalModulo() {
         // DROOLS-5959
         String drl =
                 "import " + Person.class.getCanonicalName() + "\n" +
@@ -473,7 +504,7 @@ public class MvelDialectTest extends BaseModelTest {
     }
 
     @Test
-    public void testBigDecimalModuloBetweenFields() throws Exception {
+    public void testBigDecimalModuloBetweenFields() {
         // DROOLS-5959
         String drl =
                 "import " + Person.class.getCanonicalName() + "\n" +
