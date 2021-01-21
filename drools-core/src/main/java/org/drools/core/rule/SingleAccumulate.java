@@ -78,19 +78,17 @@ public class SingleAccumulate extends Accumulate {
         return this.accumulator.createContext();
     }
 
-    public void init(final Object workingMemoryContext,
-                     final Object context,
-                     final Tuple leftTuple,
-                     final WorkingMemory workingMemory) {
-        try {
-            this.accumulator.init( workingMemoryContext,
-                                   ((AccumulateContextEntry)context).getFunctionContext(),
+    public Object init(final Object workingMemoryContext,
+                       final Object context,
+                       final Tuple leftTuple,
+                       final WorkingMemory workingMemory) {
+        AccumulateContextEntry accCtx = (AccumulateContextEntry)context;
+        accCtx.setFunctionContext( this.accumulator.init( workingMemoryContext,
+                                   accCtx.getFunctionContext(),
                                    leftTuple,
                                    this.requiredDeclarations,
-                                   workingMemory );
-        } catch ( final Exception e ) {
-            throw new RuntimeException( e );
-         }
+                                   workingMemory ) );
+        return context;
     }
 
     public Object accumulate(final Object workingMemoryContext,
@@ -98,17 +96,13 @@ public class SingleAccumulate extends Accumulate {
                              final Tuple match,
                              final InternalFactHandle handle,
                              final WorkingMemory workingMemory) {
-        try {
-            return this.accumulator.accumulate( workingMemoryContext,
-                                                ((AccumulateContextEntry)context).getFunctionContext(),
-                                                match,
-                                                handle,
-                                                this.requiredDeclarations,
-                                                getInnerDeclarationCache(),
-                                                workingMemory );
-        } catch ( final Exception e ) {
-            throw new RuntimeException( e );
-        }
+        return this.accumulator.accumulate( workingMemoryContext,
+                                            ((AccumulateContextEntry)context).getFunctionContext(),
+                                            match,
+                                            handle,
+                                            this.requiredDeclarations,
+                                            getInnerDeclarationCache(),
+                                            workingMemory );
     }
 
     @Override
@@ -125,18 +119,14 @@ public class SingleAccumulate extends Accumulate {
                               final RightTuple rightParent,
                               final LeftTuple match,
                               final WorkingMemory workingMemory) {
-        try {
-            return this.accumulator.tryReverse( workingMemoryContext,
-                                                ((AccumulateContextEntry)context).getFunctionContext(),
-                                                leftTuple,
-                                                handle,
-                                                match.getContextObject(),
-                                                this.requiredDeclarations,
-                                                getInnerDeclarationCache(),
-                                                workingMemory );
-        } catch ( final Exception e ) {
-            throw new RuntimeException( e );
-        }
+        return this.accumulator.tryReverse( workingMemoryContext,
+                                            ((AccumulateContextEntry)context).getFunctionContext(),
+                                            leftTuple,
+                                            handle,
+                                            match.getContextObject(),
+                                            this.requiredDeclarations,
+                                            getInnerDeclarationCache(),
+                                            workingMemory );
     }
 
     public boolean supportsReverse() {
@@ -148,15 +138,11 @@ public class SingleAccumulate extends Accumulate {
                             final Object context,
                             final Tuple leftTuple,
                             final WorkingMemory workingMemory) {
-        try {
-            return this.accumulator.getResult( workingMemoryContext,
-                                               ((AccumulateContextEntry)context).getFunctionContext(),
-                                               leftTuple,
-                                               this.requiredDeclarations,
-                                               workingMemory );
-        } catch ( final Exception e ) {
-            throw new RuntimeException( e );
-        }
+        return this.accumulator.getResult( workingMemoryContext,
+                                           ((AccumulateContextEntry)context).getFunctionContext(),
+                                           leftTuple,
+                                           this.requiredDeclarations,
+                                           workingMemory );
     }
 
     public SingleAccumulate clone() {
@@ -216,8 +202,9 @@ public class SingleAccumulate extends Accumulate {
         if ( !Arrays.equals( requiredDeclarations, other.requiredDeclarations ) ) return false;
         if ( !Arrays.equals( innerDeclarationCache, other.innerDeclarationCache ) ) return false;
         if ( source == null ) {
-            if ( other.source != null ) return false;
-        } else if ( !source.equals( other.source ) ) return false;
-        return true;
+            return other.source == null;
+        } else {
+            return source.equals( other.source );
+        }
     }
 }

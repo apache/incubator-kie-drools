@@ -107,11 +107,11 @@ public class MVELAccumulator
     /* (non-Javadoc)
      * @see org.kie.spi.Accumulator#init(java.lang.Object, org.kie.spi.Tuple, org.kie.rule.Declaration[], org.kie.WorkingMemory)
      */
-    public void init(Object workingMemoryContext,
-                     Object context,
-                     Tuple tuple,
-                     Declaration[] declarations,
-                     WorkingMemory workingMemory) throws Exception {
+    public Object init(Object workingMemoryContext,
+                       Object context,
+                       Tuple tuple,
+                       Declaration[] declarations,
+                       WorkingMemory workingMemory) {
         Object[] localVars = new Object[initUnit.getOtherIdentifiers().length];
         
         MVELAccumulatorFactoryContext factoryContext = (MVELAccumulatorFactoryContext)workingMemoryContext;
@@ -137,6 +137,7 @@ public class MVELAccumulator
         }
         
         ((MVELAccumulatorContext) context).setVariables( localVars );
+        return context;
     }
 
     /* (non-Javadoc)
@@ -148,7 +149,7 @@ public class MVELAccumulator
                            InternalFactHandle handle,
                            Declaration[] declarations,
                            Declaration[] innerDeclarations,
-                           WorkingMemory workingMemory) throws Exception {
+                           WorkingMemory workingMemory) {
         Object[]  localVars = ((MVELAccumulatorContext) context).getVariables();
         MVELAccumulatorFactoryContext factoryContext = (MVELAccumulatorFactoryContext)workingMemoryContext;
         VariableResolverFactory factory = factoryContext.getActionFactory();
@@ -186,7 +187,7 @@ public class MVELAccumulator
                               Object value,
                               Declaration[] declarations,
                               Declaration[] innerDeclarations,
-                              WorkingMemory workingMemory) throws Exception {
+                              WorkingMemory workingMemory) {
 
         if (!supportsReverse()) {
             return false;
@@ -231,7 +232,7 @@ public class MVELAccumulator
                             Object context,
                             Tuple tuple,
                             Declaration[] declarations,
-                            WorkingMemory workingMemory) throws Exception {
+                            WorkingMemory workingMemory) {
         Object[]  localVars = ((MVELAccumulatorContext) context).getVariables();
         
         MVELAccumulatorFactoryContext factoryContext = (MVELAccumulatorFactoryContext)workingMemoryContext;

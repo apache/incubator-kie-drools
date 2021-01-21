@@ -70,7 +70,7 @@ public class NumericMinAccumulateFunction extends AbstractAccumulateFunction<Num
     }
 
     @Override
-    public boolean tryReverse( MinData data, Object value ) throws Exception {
+    public boolean tryReverse( MinData data, Object value ) {
         if (value != null) {
             Number number = (Number)value;
             return data.min.doubleValue() < number.doubleValue();
