@@ -1,0 +1,72 @@
+/*
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.optaplanner.quarkus;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+
+import javax.inject.Inject;
+
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
+import org.optaplanner.core.api.score.ScoreManager;
+import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.api.solver.SolverFactory;
+import org.optaplanner.core.api.solver.SolverManager;
+import org.optaplanner.quarkus.testdata.invalid.inverserelation.constraints.TestdataInvalidQuarkusConstraintProvider;
+import org.optaplanner.quarkus.testdata.invalid.inverserelation.domain.TestdataInvalidInverseRelationEntity;
+import org.optaplanner.quarkus.testdata.invalid.inverserelation.domain.TestdataInvalidInverseRelationSolution;
+import org.optaplanner.quarkus.testdata.invalid.inverserelation.domain.TestdataInvalidInverseRelationValue;
+
+import io.quarkus.test.QuarkusUnitTest;
+
+public class OptaPlannerProcessorInvalidTest {
+
+    @RegisterExtension
+    static final QuarkusUnitTest config = new QuarkusUnitTest()
+            .overrideConfigKey("quarkus.optaplanner.solver.termination.best-score-limit", "0")
+            .setArchiveProducer(() -> ShrinkWrap.create(JavaArchive.class)
+                    .addClasses(TestdataInvalidInverseRelationSolution.class,
+                            TestdataInvalidInverseRelationEntity.class,
+                            TestdataInvalidInverseRelationValue.class,
+                            TestdataInvalidQuarkusConstraintProvider.class))
+            .assertException(exception -> {
+                assertEquals(IllegalStateException.class, exception.getClass());
+                assertEquals("The field (entityList) with a @InverseRelationShadowVariable annotation is in a" +
+                        " class (org.optaplanner.quarkus.testdata.invalid.inverserelation.domain.TestdataInvalidInverseRelationValue)"
+                        +
+                        " that does not have a @PlanningEntityannotation.\n" +
+                        "Maybe add a @PlanningEntity annotation to " +
+                        "(org.optaplanner.quarkus.testdata.invalid.inverserelation.domain.TestdataInvalidInverseRelationValue)?",
+                        exception.getMessage());
+            });
+
+    @Inject
+    SolverFactory<TestdataInvalidInverseRelationSolution> solverFactory;
+    @Inject
+    SolverManager<TestdataInvalidInverseRelationSolution, Long> solverManager;
+    @Inject
+    ScoreManager<TestdataInvalidInverseRelationSolution, SimpleScore> scoreManager;
+
+    @Test
+    public void solve() {
+        fail("Build should fail");
+    }
+
+}

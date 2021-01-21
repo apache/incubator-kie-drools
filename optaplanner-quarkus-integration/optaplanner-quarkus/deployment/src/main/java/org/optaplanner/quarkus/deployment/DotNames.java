@@ -68,6 +68,15 @@ public final class DotNames {
     static final DotName CUSTOM_SHADOW_VARIABLE = DotName.createSimple(CustomShadowVariable.class.getName());
     static final DotName INVERSE_RELATION_SHADOW_VARIABLE = DotName.createSimple(InverseRelationShadowVariable.class.getName());
 
+    static final DotName[] PLANNING_ENTITY_FIELD_ANNOTATIONS = {
+            PLANNING_PIN,
+            PLANNING_ID,
+            PLANNING_VARIABLE,
+            ANCHOR_SHADOW_VARIABLE,
+            CUSTOM_SHADOW_VARIABLE,
+            INVERSE_RELATION_SHADOW_VARIABLE,
+    };
+
     static final DotName[] GIZMO_MEMBER_ACCESSOR_ANNOTATIONS = {
             PLANNING_ENTITY_COLLECTION_PROPERTY,
             PLANNING_ENTITY_PROPERTY,

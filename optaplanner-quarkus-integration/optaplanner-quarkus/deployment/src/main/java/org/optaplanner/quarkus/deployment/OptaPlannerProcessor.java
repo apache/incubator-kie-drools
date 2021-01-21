@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -147,6 +148,7 @@ class OptaPlannerProcessor {
         }
 
         applySolverProperties(recorderContext, indexView, solverConfig);
+        assertNoMemberAnnotationWithoutClassAnnotation(indexView);
 
         if (solverConfig.getSolutionClass() != null) {
             Type jandexType = Type.create(DotName.createSimple(solverConfig.getSolutionClass().getName()), Type.Kind.CLASS);
@@ -250,6 +252,47 @@ class OptaPlannerProcessor {
         return targetList.stream()
                 .map(target -> (Class<?>) convertClassInfoToClass(target.asClass()))
                 .collect(Collectors.toList());
+    }
+
+    private void assertNoMemberAnnotationWithoutClassAnnotation(IndexView indexView) {
+        Collection<AnnotationInstance> optaplannerFieldAnnotations = new HashSet<>();
+
+        for (DotName annotationName : DotNames.PLANNING_ENTITY_FIELD_ANNOTATIONS) {
+            optaplannerFieldAnnotations.addAll(indexView.getAnnotations(annotationName));
+        }
+
+        for (AnnotationInstance annotationInstance : optaplannerFieldAnnotations) {
+            AnnotationTarget annotationTarget = annotationInstance.target();
+            ClassInfo declaringClass;
+            String prefix;
+            switch (annotationTarget.kind()) {
+                case FIELD:
+                    prefix = "The field (" + annotationTarget.asField().name() + ") ";
+                    declaringClass = annotationTarget.asField().declaringClass();
+                    break;
+                case METHOD:
+                    prefix = "The method (" + annotationTarget.asMethod().name() + ") ";
+                    declaringClass = annotationTarget.asMethod().declaringClass();
+                    break;
+                default:
+                    throw new IllegalStateException(
+                            "Member annotation @" + annotationInstance.name().withoutPackagePrefix() + " is on ("
+                                    + annotationTarget +
+                                    "), which is an invalid target type (" + annotationTarget.kind() +
+                                    ") for @" + annotationInstance.name().withoutPackagePrefix() + ".");
+            }
+
+            if (!declaringClass.annotations().containsKey(DotNames.PLANNING_ENTITY)) {
+                throw new IllegalStateException(prefix + "with a @" +
+                        annotationInstance.name().withoutPackagePrefix() +
+                        " annotation is in a class (" + declaringClass.name().toString()
+                        + ") that does not have a @" + PlanningEntity.class.getSimpleName() +
+                        "annotation.\n" +
+                        "Maybe add a @" + PlanningEntity.class.getSimpleName() +
+                        " annotation to (" +
+                        declaringClass.name().toString() + ")?");
+            }
+        }
     }
 
     protected void applyScoreDirectorFactoryProperties(IndexView indexView, SolverConfig solverConfig) {
