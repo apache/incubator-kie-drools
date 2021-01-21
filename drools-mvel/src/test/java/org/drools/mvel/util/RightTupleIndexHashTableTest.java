@@ -23,7 +23,6 @@ import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.PlainIndexEvaluator;
 import org.drools.core.reteoo.LeftTupleImpl;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.RightTupleImpl;
@@ -67,8 +66,7 @@ public class RightTupleIndexHashTableTest {
                                                          pattern );
 
         final FieldIndex fieldIndex = new FieldIndex( extractor,
-                                                      declaration,
-                                                      PlainIndexEvaluator.INSTANCE );
+                                                      declaration );
 
         final TupleIndexHashTable map = new TupleIndexHashTable( new FieldIndex[]{fieldIndex}, false );
 
@@ -122,8 +120,7 @@ public class RightTupleIndexHashTableTest {
                                                          pattern );
 
         final FieldIndex fieldIndex = new FieldIndex( extractor,
-                                                      declaration,
-                                                      PlainIndexEvaluator.INSTANCE );
+                                                      declaration );
 
         final TupleIndexHashTable map = new TupleIndexHashTable( new FieldIndex[]{fieldIndex}, false );
 
@@ -185,8 +182,7 @@ public class RightTupleIndexHashTableTest {
                                                          pattern );
 
         final FieldIndex fieldIndex = new FieldIndex( extractor,
-                                                      declaration,
-                                                      PlainIndexEvaluator.INSTANCE );
+                                                      declaration );
 
         final TupleIndexHashTable map = new TupleIndexHashTable( new FieldIndex[]{fieldIndex}, false );
 
@@ -247,8 +243,7 @@ public class RightTupleIndexHashTableTest {
                                                          pattern );
 
         final FieldIndex fieldIndex = new FieldIndex( extractor,
-                                                      declaration,
-                                                      PlainIndexEvaluator.INSTANCE );
+                                                      declaration );
 
         final TupleIndexHashTable map = new TupleIndexHashTable( new FieldIndex[]{fieldIndex}, false );
 
@@ -306,8 +301,7 @@ public class RightTupleIndexHashTableTest {
                                                          pattern );
 
         final FieldIndex fieldIndex = new FieldIndex( extractor,
-                                                      declaration,
-                                                      PlainIndexEvaluator.INSTANCE );
+                                                      declaration );
 
         final TupleIndexHashTable map = new TupleIndexHashTable( new FieldIndex[]{fieldIndex}, false );
 
@@ -379,8 +373,7 @@ public class RightTupleIndexHashTableTest {
                                                          pattern );
 
         final FieldIndex fieldIndex = new FieldIndex( extractor,
-                                                      declaration,
-                                                      PlainIndexEvaluator.INSTANCE );
+                                                      declaration );
 
         final TupleIndexHashTable map = new TupleIndexHashTable( 16, 0.75f, new FieldIndex[]{fieldIndex}, false );
 
@@ -604,8 +597,7 @@ public class RightTupleIndexHashTableTest {
                                                          pattern );
 
         final FieldIndex fieldIndex = new FieldIndex( extractor,
-                                                      declaration,
-                                                      PlainIndexEvaluator.INSTANCE );
+                                                      declaration );
 
         final TupleIndexHashTable map = new TupleIndexHashTable( new FieldIndex[]{fieldIndex}, false );
 

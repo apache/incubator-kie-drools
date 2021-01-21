@@ -348,4 +348,123 @@ public class TypeCoercionTest extends BaseModelTest {
         }
     }
 
+    public static class ClassWithIntProperty{
+        private final int testInt;
+
+        public ClassWithIntProperty( int testInt ) {
+            this.testInt = testInt;
+        }
+
+        public int getTestInt() {
+            return testInt;
+        }
+    }
+
+    public static class ClassWithStringProperty{
+        private final String testString;
+
+        public ClassWithStringProperty( String testString ) {
+            this.testString = testString;
+        }
+
+        public String getTestString() {
+            return testString;
+        }
+    }
+
+    public static class ClassWithShortProperty {
+        private final Short testShort;
+
+        public ClassWithShortProperty( Short testShort ) {
+            this.testShort = testShort;
+        }
+
+        public Short getTestShort() {
+            return testShort;
+        }
+    }
+
+    @Test
+    public void testStringToIntCoercion() {
+        // DROOLS-5939
+        String str =
+                "import " + ClassWithIntProperty.class.getCanonicalName() + ";\n" +
+                "import " + ClassWithStringProperty.class.getCanonicalName() + ";\n" +
+                "\n" +
+                "rule \"test_rule_2\" when\n" +
+                "     ClassWithStringProperty( $testString: testString )\n" +
+                "     ClassWithIntProperty( testInt == $testString )\n" +
+                "then\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert( new ClassWithIntProperty( 10 ) );
+        ksession.insert( new ClassWithStringProperty( "10" ) );
+
+        assertEquals( 1, ksession.fireAllRules() );
+    }
+
+    @Test
+    public void testIntToStringCoercion() {
+        // DROOLS-5939
+        String str =
+                "import " + ClassWithIntProperty.class.getCanonicalName() + ";\n" +
+                "import " + ClassWithStringProperty.class.getCanonicalName() + ";\n" +
+                "\n" +
+                "rule \"test_rule_2\" when\n" +
+                "     ClassWithIntProperty( $testInt : testInt )\n" +
+                "     ClassWithStringProperty( testString == $testInt )\n" +
+                "then\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert( new ClassWithIntProperty( 10 ) );
+        ksession.insert( new ClassWithStringProperty( "10" ) );
+
+        assertEquals( 1, ksession.fireAllRules() );
+    }
+
+    @Test
+    public void testShortToIntCoercion() {
+        // DROOLS-5939
+        String str =
+                "import " + ClassWithShortProperty.class.getCanonicalName() + ";\n" +
+                "import " + ClassWithIntProperty.class.getCanonicalName() + ";\n" +
+                "\n" +
+                "rule \"test_rule_1\" when\n" +
+                "     ClassWithShortProperty( $testShort: testShort )\n" +
+                "     ClassWithIntProperty( testInt == $testShort )\n" +
+                "then\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert( new ClassWithShortProperty( (short)10 ) );
+        ksession.insert( new ClassWithIntProperty( 10 ) );
+
+        assertEquals( 1, ksession.fireAllRules() );
+    }
+
+    @Test
+    public void testIntToShortCoercion() {
+        // DROOLS-5939
+        String str =
+                "import " + ClassWithShortProperty.class.getCanonicalName() + ";\n" +
+                "import " + ClassWithIntProperty.class.getCanonicalName() + ";\n" +
+                "\n" +
+                "rule \"test_rule_1\" when\n" +
+                "     ClassWithIntProperty( $testShort : testInt )\n" +
+                "     ClassWithShortProperty( testShort == $testShort )\n" +
+                "then\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert( new ClassWithShortProperty( (short)10 ) );
+        ksession.insert( new ClassWithIntProperty( 10 ) );
+
+        assertEquals( 1, ksession.fireAllRules() );
+    }
 }

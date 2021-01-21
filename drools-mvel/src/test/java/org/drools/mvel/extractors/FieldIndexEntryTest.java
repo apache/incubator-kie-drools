@@ -19,7 +19,6 @@ import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.base.ClassFieldReader;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.PlainIndexEvaluator;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.RightTupleImpl;
 import org.drools.core.rule.Declaration;
@@ -52,18 +51,15 @@ public class FieldIndexEntryTest {
                                                                   "type" );
 
         final FieldIndex fieldIndex = new FieldIndex( extractor,
-                                                      new Declaration("id", extractor, null) ,
-                                                      PlainIndexEvaluator.INSTANCE );
+                                                      new Declaration("id", extractor, null) );
         final SingleIndex singleIndex = new SingleIndex( new FieldIndex[]{fieldIndex},
                                                          1 );
 
         Tuple tuple = new RightTupleImpl( new DefaultFactHandle( 1, new Cheese("stilton", 10) ) );
-        final TupleList index = new AbstractHashTable.SingleIndexTupleList( singleIndex, tuple, "stilton".hashCode(), false );
+        final TupleList index = new AbstractHashTable.IndexTupleList( singleIndex, new AbstractHashTable.SingleHashEntry("stilton".hashCode(), "stilton") );
 
         // Test initial construction
         assertNull( index.getFirst() );
-        assertEquals( "stilton".hashCode(),
-                      index.hashCode() );
 
         final Cheese stilton1 = new Cheese( "stilton",
                                             35 );
@@ -96,13 +92,12 @@ public class FieldIndexEntryTest {
         final ClassFieldReader extractor = store.getReader( Cheese.class,
                                                                   "type" );
         final FieldIndex fieldIndex = new FieldIndex( extractor,
-                                                      new Declaration("id", extractor, null) ,
-                                                      PlainIndexEvaluator.INSTANCE );
+                                                      new Declaration("id", extractor, null) );
         final SingleIndex singleIndex = new SingleIndex( new FieldIndex[]{fieldIndex},
                                                          1 );
 
         Tuple tuple = new RightTupleImpl( new DefaultFactHandle( 1, new Cheese("stilton", 10) ) );
-        final TupleList index = new AbstractHashTable.SingleIndexTupleList( singleIndex, tuple, "stilton".hashCode(), false );
+        final TupleList index = new AbstractHashTable.IndexTupleList( singleIndex, new AbstractHashTable.SingleHashEntry("stilton".hashCode(), "stilton") );
 
         final Cheese stilton1 = new Cheese( "stilton",
                                             35 );
@@ -151,13 +146,12 @@ public class FieldIndexEntryTest {
         final ClassFieldReader extractor = store.getReader( Cheese.class,
                                                                   "type" );
         final FieldIndex fieldIndex = new FieldIndex( extractor,
-                                                      new Declaration("id", extractor, null) ,
-                                                      PlainIndexEvaluator.INSTANCE );
+                                                      new Declaration("id", extractor, null) );
         final SingleIndex singleIndex = new SingleIndex( new FieldIndex[]{fieldIndex},
                                                          1 );
 
         Tuple tuple = new RightTupleImpl( new DefaultFactHandle( 1, new Cheese("stilton", 10) ) );
-        final TupleList index = new AbstractHashTable.SingleIndexTupleList( singleIndex, tuple, "stilton".hashCode(), false );
+        final TupleList index = new AbstractHashTable.IndexTupleList( singleIndex, new AbstractHashTable.SingleHashEntry("stilton".hashCode(), "stilton") );
 
         final Cheese stilton1 = new Cheese( "stilton",
                                             35 );

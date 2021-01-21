@@ -209,7 +209,7 @@ public class FlowExpressionBuilder extends AbstractExpressionBuilder {
             indexedByLeftOperandExtractor.setBody(new ExpressionStmt(typedExpression.getExpression()));
 
             MethodCallExpr indexedByDSL = new MethodCallExpr(exprDSL, INDEXED_BY_CALL);
-            indexedByDSL.addArgument(new ClassExpr(parseType(getIndexType(left, right ).getCanonicalName())));
+            indexedByDSL.addArgument(new ClassExpr(parseType(left.getRawClass().getCanonicalName())));
             indexedByDSL.addArgument(org.drools.model.Index.ConstraintType.class.getCanonicalName() + ".EQUAL");
             indexedByDSL.addArgument("-1");
             indexedByDSL.addArgument(indexedByLeftOperandExtractor);
@@ -238,7 +238,7 @@ public class FlowExpressionBuilder extends AbstractExpressionBuilder {
         indexedByLeftOperandExtractor.setBody(new ExpressionStmt(typedExpression.getExpression()) );
 
         MethodCallExpr indexedByDSL = new MethodCallExpr(exprDSL, INDEXED_BY_CALL);
-        indexedByDSL.addArgument(new ClassExpr(parseType(getIndexType(left, right ).getCanonicalName())));
+        indexedByDSL.addArgument(new ClassExpr(parseType(left.getRawClass().getCanonicalName())));
         indexedByDSL.addArgument( indexedByConstraintType );
         indexedByDSL.addArgument( getIndexIdArgument( drlxParseResult, left ) );
         indexedByDSL.addArgument( indexedByLeftOperandExtractor );
