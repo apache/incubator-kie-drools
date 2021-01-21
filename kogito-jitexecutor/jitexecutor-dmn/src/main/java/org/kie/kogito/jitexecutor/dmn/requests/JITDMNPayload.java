@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.jitexecutor.dmn;
+package org.kie.kogito.jitexecutor.dmn.requests;
 
 import java.util.Map;
 
 public class JITDMNPayload {
+
     private String model;
     private Map<String, Object> context;
-    
+
     public JITDMNPayload() {
     }
 
@@ -29,17 +30,17 @@ public class JITDMNPayload {
         this.model = model;
         this.context = context;
     }
-    
+
     public String getModel() {
         return model;
     }
 
-    public Map<String, Object> getContext() {
-        return context;
-    }
-
     public void setModel(String model) {
         this.model = model;
+    }
+
+    public Map<String, Object> getContext() {
+        return context;
     }
 
     public void setContext(Map<String, Object> context) {

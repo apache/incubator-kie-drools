@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.jitexecutor.dmn;
+package org.kie.kogito.jitexecutor.dmn.api;
 
 import java.io.StringReader;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.Map;
 
 import javax.ws.rs.Consumes;
@@ -25,10 +25,10 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
+import io.smallrye.openapi.runtime.io.schema.SchemaWriter;
 import org.eclipse.microprofile.openapi.OASFactory;
 import org.eclipse.microprofile.openapi.models.OpenAPI;
 import org.eclipse.microprofile.openapi.models.media.Schema;
@@ -42,23 +42,27 @@ import org.kie.dmn.openapi.DMNOASGeneratorFactory;
 import org.kie.dmn.openapi.model.DMNOASResult;
 import org.kie.internal.io.ResourceFactory;
 
-import io.smallrye.openapi.runtime.io.schema.SchemaWriter;
-
 @Path("jitdmn/schema")
 public class SchemaResource {
 
     // trick for resolver/implementation for NI
     static final OpenAPI x = OASFactory.createObject(OpenAPI.class);
 
+    private static DMNModel modelFromXML(String modelXML) {
+        Resource modelResource = ResourceFactory.newReaderResource(new StringReader(modelXML), "UTF-8");
+        DMNRuntime dmnRuntime = DMNRuntimeBuilder.fromDefaults().buildConfiguration().fromResources(Collections.singletonList(modelResource)).getOrElseThrow(RuntimeException::new);
+        return dmnRuntime.getModels().get(0);
+    }
+
     @POST
     @Consumes(MediaType.APPLICATION_XML)
     @Produces(MediaType.APPLICATION_JSON)
-    public String schema(String payload) throws Exception {
+    public Response schema(String payload) {
         DMNModel dmnModel = modelFromXML(payload);
 
-        DMNOASResult oasResult = DMNOASGeneratorFactory.generator(Arrays.asList(dmnModel)).build();
+        DMNOASResult oasResult = DMNOASGeneratorFactory.generator(Collections.singletonList(dmnModel)).build();
         ObjectNode jsNode = oasResult.getJsonSchemaNode();
-        
+
         DMNType is = oasResult.lookupIOSetsByModel(dmnModel).getInputSet();
         String isRef = oasResult.getNamingPolicy().getRef(is);
         Schema schema = OASFactory.createObject(Schema.class).type(SchemaType.OBJECT);
@@ -70,33 +74,24 @@ public class SchemaResource {
         }
         jsNode.put("type", "object");
         jsNode.putArray("required").add("context").add("model");
-        
-        String jsonContent = new ObjectMapper().writeValueAsString(jsNode);
-        return jsonContent;
-    }
 
-    private static DMNModel modelFromXML(String modelXML) {
-        Resource modelResource = ResourceFactory.newReaderResource(new StringReader(modelXML), "UTF-8");
-        DMNRuntime dmnRuntime = DMNRuntimeBuilder.fromDefaults().buildConfiguration().fromResources(Arrays.asList(modelResource)).getOrElseThrow(RuntimeException::new);
-        DMNModel dmnModel = dmnRuntime.getModels().get(0);
-        return dmnModel;
+        return Response.ok(jsNode).build();
     }
 
     @POST
     @Consumes(MediaType.APPLICATION_XML)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("form")
-    public String form(String payload) throws Exception {
+    public Response form(String payload) {
         DMNModel dmnModel = modelFromXML(payload);
 
-        DMNOASResult oasResult = DMNOASGeneratorFactory.generator(Arrays.asList(dmnModel)).build();
+        DMNOASResult oasResult = DMNOASGeneratorFactory.generator(Collections.singletonList(dmnModel)).build();
         ObjectNode jsNode = oasResult.getJsonSchemaNode();
-        
+
         DMNType is = oasResult.lookupIOSetsByModel(dmnModel).getInputSet();
         String isRef = oasResult.getNamingPolicy().getRef(is);
         jsNode.put("$ref", isRef);
-        
-        String jsonContent = new ObjectMapper().writeValueAsString(jsNode);
-        return jsonContent;
+
+        return Response.ok(jsNode).build();
     }
 }

@@ -14,51 +14,49 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.jitexecutor.dmn;
+package org.kie.kogito.jitexecutor.dmn.api;
 
-import java.io.StringReader;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import org.kie.api.io.Resource;
-import org.kie.dmn.api.core.DMNContext;
-import org.kie.dmn.api.core.DMNModel;
-import org.kie.dmn.api.core.DMNResult;
-import org.kie.dmn.api.core.DMNRuntime;
-import org.kie.dmn.core.internal.utils.DMNRuntimeBuilder;
-import org.kie.dmn.core.internal.utils.DynamicDMNContextBuilder;
 import org.kie.dmn.core.internal.utils.MarshallingStubUtils;
-import org.kie.internal.io.ResourceFactory;
+import org.kie.kogito.dmn.rest.DMNResult;
+import org.kie.kogito.jitexecutor.dmn.JITDMNService;
+import org.kie.kogito.jitexecutor.dmn.requests.JITDMNPayload;
 
 @Path("/jitdmn")
 public class JITDMNResource {
 
+    @Inject
+    JITDMNService jitdmnService;
+
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public String jitdmn(JITDMNPayload payload) throws Exception {
-        String modelXML = payload.getModel();
-        Resource modelResource = ResourceFactory.newReaderResource(new StringReader(modelXML), "UTF-8");
-        DMNRuntime dmnRuntime = DMNRuntimeBuilder.fromDefaults().buildConfiguration()
-                .fromResources(Arrays.asList(modelResource)).getOrElseThrow(RuntimeException::new);
-        DMNModel dmnModel = dmnRuntime.getModels().get(0);
-        DMNContext dmnContext = new DynamicDMNContextBuilder(dmnRuntime.newContext(), dmnModel).populateContextWith(payload.getContext());
-        DMNResult evaluateAll = dmnRuntime.evaluateAll(dmnModel, dmnContext);
+    public Response jitdmn(JITDMNPayload payload) {
+        DMNResult evaluateAll = jitdmnService.evaluateModel(payload.getModel(), payload.getContext());
         Map<String, Object> restResulk = new HashMap<>();
         for (Entry<String, Object> kv : evaluateAll.getContext().getAll().entrySet()) {
             restResulk.put(kv.getKey(), MarshallingStubUtils.stubDMNResult(kv.getValue(), String::valueOf));
         }
-        String result = new ObjectMapper().writeValueAsString(restResulk);
-        return result;
+        return Response.ok(restResulk).build();
+    }
+
+    @POST
+    @Path("/dmnresult")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response jitdmnResult(JITDMNPayload payload) {
+        DMNResult dmnResult = jitdmnService.evaluateModel(payload.getModel(), payload.getContext());
+        return Response.ok(dmnResult).build();
     }
 }

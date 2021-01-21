@@ -17,7 +17,7 @@
 package org.kie.kogito.jitexecutor.runner;
 
 import io.quarkus.test.junit.NativeImageTest;
-import org.kie.kogito.jitexecutor.dmn.JITDMNResourceTest;
+import org.kie.kogito.jitexecutor.dmn.api.JITDMNResourceTest;
 
 @NativeImageTest
 public class NativeJITDMNResourceIT extends JITDMNResourceTest {

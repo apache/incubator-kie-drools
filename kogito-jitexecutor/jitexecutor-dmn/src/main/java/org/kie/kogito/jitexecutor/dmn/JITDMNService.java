@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.jitexecutor.runner;
+package org.kie.kogito.jitexecutor.dmn;
 
-import io.quarkus.test.junit.NativeImageTest;
-import org.kie.kogito.jitexecutor.dmn.api.SchemaResourceTest;
+import java.util.Map;
 
-@NativeImageTest
-public class NativeSchemaResourceIT extends SchemaResourceTest {
-    // Execute the same tests but in native mode.
+import org.kie.kogito.dmn.rest.DMNResult;
+
+public interface JITDMNService {
+
+    DMNResult evaluateModel(String modelXML, Map<String, Object> context);
 }
