@@ -1,6 +1,9 @@
-package org.drools.compiler.builder.impl;
+package org.drools.modelcompiler.assembler;
 
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.BaseKnowledgeBuilderResultImpl;
+import org.drools.compiler.compiler.DroolsError;
+import org.drools.compiler.lang.descr.FunctionDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.kie.api.internal.assembler.KieAssemblerService;
 import org.kie.api.io.Resource;
@@ -20,27 +23,32 @@ public class TestAssembler implements KieAssemblerService {
     @Override
     public void addResourceAsPackageDescr(Object kbuilder, Resource resource, ResourceType type, ResourceConfiguration configuration) throws Exception {
         KnowledgeBuilderImpl kb = (KnowledgeBuilderImpl) kbuilder;
-        kb.registerPackage(new PackageDescr("FAKEpkg"));
+
         kb.addBuilderResult(BEFORE_RULES);
+
     }
 
     @Override
     public void addResource(Object kbuilder, Resource resource, ResourceType type, ResourceConfiguration configuration) throws Exception {
         KnowledgeBuilderImpl kb = (KnowledgeBuilderImpl) kbuilder;
+        PackageDescr fakEpkg = new PackageDescr("FAKEpkg");
+        fakEpkg.addFunction(new FunctionDescr("INVALID", "INVALID"));
+        kb.addPackage(fakEpkg);
+
         kb.addBuilderResult(AFTER_RULES);
 
     }
 
-    public static final KnowledgeBuilderResult AFTER_RULES = new BaseKnowledgeBuilderResultImpl(null) {
+    public static final KnowledgeBuilderResult AFTER_RULES = new DroolsError(null) {
 
         @Override
         public ResultSeverity getSeverity() {
-            return ResultSeverity.INFO;
+            return ResultSeverity.WARNING;
         }
 
         @Override
         public String getMessage() {
-            return null;
+            return "AFTER_RULES";
         }
 
         @Override
@@ -50,16 +58,16 @@ public class TestAssembler implements KieAssemblerService {
 
     };
 
-    public static final KnowledgeBuilderResult BEFORE_RULES = new BaseKnowledgeBuilderResultImpl(null) {
+    public static final KnowledgeBuilderResult BEFORE_RULES = new DroolsError(null) {
 
         @Override
         public ResultSeverity getSeverity() {
-            return ResultSeverity.INFO;
+            return ResultSeverity.WARNING;
         }
 
         @Override
         public String getMessage() {
-            return null;
+            return "BEFORE_RULES";
         }
 
         @Override
