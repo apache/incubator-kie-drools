@@ -1,5 +1,7 @@
 @Library('jenkins-pipeline-shared-libraries')_
 
+import org.kie.jenkins.MavenCommand
+
 changeAuthor = env.ghprbPullAuthorLogin ?: CHANGE_AUTHOR
 changeBranch = env.ghprbSourceBranch ?: CHANGE_BRANCH
 changeTarget = env.ghprbTargetBranch ?: CHANGE_TARGET
@@ -26,54 +28,82 @@ pipeline {
                 script {
                     mailer.buildLogScriptPR()
 
-                    checkoutRepo("kogito-runtimes")
-                    checkoutRepo("kogito-runtimes", "integration-tests")
-                    checkoutRepo("kogito-apps")
+                    checkoutRepo('kogito-runtimes')
+                    checkoutRepo('kogito-runtimes', 'integration-tests')
                     checkoutOptaplannerRepo()
-                    checkoutRepo("kogito-examples")
-                    checkoutRepo("kogito-examples", "kogito-examples-persistence")
-                    checkoutRepo("kogito-examples", "kogito-examples-events")
+                    checkoutRepo('kogito-apps')
+                    checkoutRepo('kogito-examples')
+                    checkoutRepo('kogito-examples', 'kogito-examples-persistence')
+                    checkoutRepo('kogito-examples', 'kogito-examples-events')
                 }
             }
         }
-        stage('Build kogito-runtimes') {
+        stage('Build Runtimes') {
             steps {
-                mavenCleanInstall("kogito-runtimes", false, ["run-code-coverage"])
-                runMaven("validate", "kogito-runtimes", false, ["sonarcloud-analysis"], "-e -nsu")
+                script {
+                    getMavenCommand('kogito-runtimes')
+                        .withProfiles(['run-code-coverage'])
+                        .run('clean install')
+                    
+                    getMavenCommand('kogito-runtimes')
+                        .withOptions(['-e', '-nsu'])
+                        .withProfiles(['sonarcloud-analysis'])
+                        .run('validate')
+                }
             }
         }
-        stage('Build integration-tests with persistence') {
+        stage('Check Runtimes integration-tests with persistence') {
             steps {
-                mavenCleanInstall("integration-tests", false, ["persistence"])
-            }
-        }
-        stage('Build kogito-apps') {
-            steps {
-                mavenCleanInstall("kogito-apps")
+                script {
+                    getMavenCommand('integration-tests')
+                        .withProfiles(['persistence'])
+                        .run('clean verify')
+                }
             }
         }
         stage('Build OptaPlanner') {
             steps {
                 script {
                     // Skip unnecessary plugins to save time.
-                    String args = "-Denforcer.skip -Dformatter.skip -Dimpsort.skip -Drevapi.skip"
-                    mavenCleanInstall("optaplanner", false, [], args)
+                    getMavenCommand('optaplanner')
+                        .withProperty('enforcer.skip')
+                        .withProperty('formatter.skip')
+                        .withProperty('impsort.skip')
+                        .withProperty('revapi.skip')
+                        .run('clean install')
                 }
             }
         }
-        stage('Build kogito-examples') {
+        stage('Build Apps') {
             steps {
-                mavenCleanInstall("kogito-examples")
+                script {
+                    getMavenCommand('kogito-apps').run('clean install')
+                }
             }
         }
-        stage('Build kogito-examples with persistence') {
+        stage('Build Examples') {
             steps {
-                mavenCleanInstall("kogito-examples-persistence", false, ["persistence"])
+                script {
+                    getMavenCommand('kogito-examples').run('clean install')
+                }
             }
         }
-        stage('Build kogito-examples with events') {
+        stage('Check Examples with persistence') {
             steps {
-                mavenCleanInstall("kogito-examples-events", false, ["events"])
+                script {
+                    getMavenCommand('kogito-examples-persistence')
+                        .withProfiles(['persistence'])
+                        .run('clean verify')
+                }
+            }
+        }
+        stage('Check Examples with events') {
+            steps {
+                script {
+                    getMavenCommand('kogito-examples-events')
+                        .withProfiles(['events'])
+                        .run('clean verify')
+                }
             }
         }
     }
@@ -123,19 +153,8 @@ void checkoutOptaplannerRepo() {
     }
 }
 
-void mavenCleanInstall(String directory, boolean skipTests = false, List profiles = [], String extraArgs = "") {
-    runMaven("clean install", directory, skipTests, profiles, extraArgs)
-}
-
-void runMaven(String command, String directory, boolean skipTests = false, List profiles = [], String extraArgs = "") {
-    mvnCmd = command
-    if(profiles.size() > 0){
-        mvnCmd += " -P${profiles.join(',')}"
-    }
-    if(extraArgs != ""){
-        mvnCmd += " ${extraArgs}"
-    }
-    dir(directory) {
-        maven.runMavenWithSubmarineSettings(mvnCmd, skipTests)
-    }
+MavenCommand getMavenCommand(String directory){
+    return new MavenCommand(this, ['-fae'])
+                .withSettingsXmlId('kogito_release_settings')
+                .inDirectory(directory)
 }

@@ -1,5 +1,7 @@
 @Library('jenkins-pipeline-shared-libraries')_
 
+import org.kie.jenkins.MavenCommand
+
 pipeline {
     agent {
         label 'kie-rhel7 && kie-mem16g'
@@ -21,17 +23,22 @@ pipeline {
         MAVEN_OPTS = '-Xms1024m -Xmx4g'
     }
     stages {
-        stage('Build kogito-runtimes') {
+        stage('Build') {
             steps {
                 script {
-                    maven.runMavenWithSubmarineSettings('clean install -Prun-code-coverage', false)
+                    getMavenCommand()
+                        .withProfiles(['run-code-coverage'])
+                        .run('clean install')
                 }
             }
         }
-        stage('Analyze kogito-runtimes') {
+        stage('Analyze') {
             steps {
                 script {
-                    maven.runMavenWithSubmarineSettings('-e -nsu validate -Psonarcloud-analysis', false)
+                    getMavenCommand()
+                        .withOptions(['-e', '-nsu'])
+                        .withProfiles(['sonarcloud-analysis'])
+                        .run('validate')
                 }
             }
         }
@@ -48,4 +55,9 @@ pipeline {
             cleanWs()
         }
     }
+}
+
+MavenCommand getMavenCommand(){
+    return new MavenCommand(this, ['-fae'])
+                .withSettingsXmlId('kogito_release_settings')
 }

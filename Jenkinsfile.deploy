@@ -118,6 +118,22 @@ pipeline {
                 }
             }
         }
+        stage('Check integration tests with persistence') {
+            steps {
+                script {
+                    sh 'cp -r kogito-runtimes integration-tests'
+
+                    getMavenCommand('integration-tests')
+                        .withProfiles(['persistence'])
+                        .run('clean verify')
+                }
+            }
+            post {
+                always {
+                    saveReports(params.SKIP_TESTS)
+                }
+            }
+        }
         stage('Deploy artifacts') {
             steps {
                 script {
@@ -227,10 +243,10 @@ void setDeployPropertyIfNeeded(String key, def value){
     }
 }
 
-MavenCommand getMavenCommand(){
+MavenCommand getMavenCommand(String dir = 'kogito-runtimes'){
     return new MavenCommand(this, ['-fae'])
                 .withSettingsXmlId(params.MAVEN_SETTINGS_CONFIG_FILE_ID)
-                .inDirectory('kogito-runtimes')
+                .inDirectory(dir)
                 .withProperty('full')
 }
 

@@ -1,5 +1,7 @@
 @Library('jenkins-pipeline-shared-libraries')_
 
+import org.kie.jenkins.MavenCommand
+
 pipeline {
     agent {
         label 'kie-rhel7 && kie-mem16g'
@@ -22,47 +24,42 @@ pipeline {
         stage('Initialize') {
             steps {
                 script {
-                    mailer.buildLogScriptPR()
-
-                    checkoutRepo("kogito-runtimes")
-                    checkoutRepo("kogito-apps")
-                    checkoutRepo("kogito-examples")
+                    checkoutRepo('kogito-runtimes')
+                    checkoutOptaplannerRepo()
+                    checkoutRepo('kogito-apps')
+                    checkoutRepo('kogito-examples')
                 }
             }
         }
         stage('Build kogito-runtimes') {
             steps {
                 script {
-                    mavenCleanInstallNative("kogito-runtimes")
+                    getNativeMavenCommand('kogito-runtimes')
+                        .run('clean install')
                 }
             }
-            post {
-                always {
-                    saveReports()
+        }
+        stage('Build optaplanner') {
+            steps {
+                script {
+                    getNativeMavenCommand('optaplanner')
+                        .run('clean install')
                 }
             }
         }
         stage('Build kogito-apps') {
             steps {
                 script {
-                    mavenCleanInstall("kogito-apps")
-                }
-            }
-            post {
-                always {
-                    saveReports()
+                    getMavenCommand('kogito-apps')
+                        .run('clean install')
                 }
             }
         }
         stage('Build kogito-examples') {
             steps {
                 script {
-                    mavenCleanInstallNative("kogito-examples")
-                }
-            }
-            post {
-                always {
-                    saveReports()
+                    getNativeMavenCommand('kogito-examples')
+                        .run('clean install')
                 }
             }
         }
@@ -72,7 +69,7 @@ pipeline {
             sendNotification()
         }
         always {
-            junit '**/target/surefire-reports/**/*.xml'
+            junit '**/target/surefire-reports/**/*.xml, **/target/failsafe-reports/**/*.xml'
             cleanWs()
         }
     }
@@ -84,22 +81,37 @@ void sendNotification(){
              to: env.KOGITO_CI_EMAIL_TO
 }
 
-void saveReports(boolean allowEmpty=false){
-    junit testResults: '**/target/surefire-reports/**/*.xml, **/target/failsafe-reports/**/*.xml', allowEmptyResults: allowEmpty
-}
-
 void checkoutRepo(String repoName, String dirName=repoName) {
     dir(dirName) {
-        checkout(githubscm.resolveRepository(repoName, "kiegroup", env.BRANCH_NAME, false))
+        checkout(githubscm.resolveRepository(repoName, 'kiegroup', env.BRANCH_NAME, false))
     }
 }
 
-void mavenCleanInstallNative(String dirName) {
-    mavenCleanInstall(dirName, "-Pnative -Dquarkus.native.container-build=true -Dquarkus.native.container-runtime=docker")
+void checkoutOptaplannerRepo() {
+    String targetBranch = env.BRANCH_NAME
+    String [] versionSplit = targetBranch.split("\\.")
+    if(versionSplit.length == 3 
+        && versionSplit[0].isNumber()
+        && versionSplit[1].isNumber()
+       && versionSplit[2] == 'x') {
+        targetBranch = "${Integer.parseInt(versionSplit[0]) + 7}.${versionSplit[1]}.x"
+    } else {
+        echo "Cannot parse branch as release branch so going further with current value: ${targetBranch}"
+    }
+    dir('optaplanner') {
+        checkout(githubscm.resolveRepository('optaplanner', 'kiegroup', targetBranch, false))
+    }
 }
 
-void mavenCleanInstall(String dirName, String extraArgs = ""){
-    dir(dirName){
-        maven.runMavenWithSubmarineSettings("clean install ${extraArgs}", false)
-    }
+MavenCommand getMavenCommand(String directory){
+    return new MavenCommand(this, ['-fae'])
+                .withSettingsXmlId('kogito_release_settings')
+                .inDirectory(directory)
+}
+
+MavenCommand getNativeMavenCommand(String directory){
+    return getMavenCommand(directory)
+                .withProfiles(['native'])
+                .withProperty('quarkus.native.container-build', true)
+                .withProperty('quarkus.native.container-runtime', 'docker')
 }

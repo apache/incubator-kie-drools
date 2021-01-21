@@ -1,5 +1,7 @@
 @Library('jenkins-pipeline-shared-libraries')_
 
+import org.kie.jenkins.MavenCommand
+
 pipeline {
     agent {
         label 'kie-rhel7 && kie-mem16g'
@@ -20,54 +22,141 @@ pipeline {
         timeout(time: 360, unit: 'MINUTES')
     }
     stages {
+        stage('Initialize') {
+            steps {
+                script {
+                    checkoutQuarkusRepo()
+                    checkoutRepo('kogito-runtimes')
+                    checkoutRepo('kogito-runtimes', 'integration-tests')
+                    checkoutOptaplannerRepo()
+                    checkoutRepo('kogito-apps')
+                    checkoutRepo('kogito-examples')
+                    checkoutRepo('kogito-examples', 'kogito-examples-persistence')
+                    checkoutRepo('kogito-examples', 'kogito-examples-events')
+                }
+            }
+        }
         stage('Build quarkus') {
             steps {
-                checkout([$class: 'GitSCM', branches: [[name: 'master']], browser: [$class: 'GithubWeb', repoUrl: 'git@github.com:quarkusio/quarkus.git'], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'quarkus']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'kie-ci-user-key', url: 'git@github.com:quarkusio/quarkus.git']]])
-                dir("quarkus") {
-                    script {
-                        maven.runMavenWithSubmarineSettings('clean install -Dquickly', true)
-                    }
+                script {
+                    getMavenCommand('quarkus', false)
+                        .withProperty('quickly')
+                        .run('clean install')
                 }
             }
         }
         stage('Build kogito-runtimes') {
             steps {
                 script {
-                    maven.runMavenWithSubmarineSettings('clean install -Dversion.io.quarkus=999-SNAPSHOT', false)
+                    getMavenCommand('kogito-runtimes')
+                        .run('clean install')
+                }
+            }
+        }
+        stage('Check Runtimes integration-tests with persistence') {
+            steps {
+                script {
+                    getMavenCommand('integration-tests')
+                        .withProfiles(['persistence'])
+                        .run('clean verify')
+                }
+            }
+        }
+        stage('Build optaplanner') {
+            steps {
+                script {
+                    getMavenCommand('optaplanner')
+                        .run('clean install')
                 }
             }
         }
         stage('Build kogito-apps') {
             steps {
-                checkout([$class: 'GitSCM', branches: [[name: env.BRANCH_NAME]], browser: [$class: 'GithubWeb', repoUrl: 'git@github.com:kiegroup/kogito-apps.git'], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'kogito-apps']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'kie-ci-user-key', url: 'git@github.com:kiegroup/kogito-apps.git']]])
-                dir("kogito-apps") {
-                    script {
-                      maven.runMavenWithSubmarineSettings('clean install', false)
-                    }
+                script {
+                    getMavenCommand('kogito-apps')
+                        .run('clean install')
                 }
             }
         }
         stage('Build kogito-examples') {
             steps {
-                checkout([$class: 'GitSCM', branches: [[name: env.BRANCH_NAME]], browser: [$class: 'GithubWeb', repoUrl: 'git@github.com:kiegroup/kogito-examples.git'], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'kogito-examples']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'kie-ci-user-key', url: 'git@github.com:kiegroup/kogito-examples.git']]])
-                dir("kogito-examples") {
-                    script {
-                         maven.runMavenWithSubmarineSettings('clean install -Dversion.io.quarkus=999-SNAPSHOT', false)
-                    }
+                script {
+                    getMavenCommand('kogito-examples')
+                        .run('clean install')
+                }
+            }
+        }
+        stage('Build kogito-examples with persistence') {
+            steps {
+                script {
+                    getMavenCommand('kogito-examples-persistence')
+                            .withProfiles(['persistence'])
+                            .run('clean verify')
+                }
+            }
+        }
+        stage('Build kogito-examples with events') {
+            steps {
+                script {
+                    getMavenCommand('kogito-examples-events')
+                            .withProfiles(['events'])
+                            .run('clean verify')
                 }
             }
         }
     }
     post {
         unsuccessful {
-            emailext body: 'Kogito daily Quarkus master #${BUILD_NUMBER} was: ' + "${currentBuild.currentResult}" +  '\n' +
-                     'Please look here: ${BUILD_URL} ',
-                     subject: "[${env.BRANCH_NAME}][d] Runtimes Quarkus snapshot",
-                     to: env.KOGITO_CI_EMAIL_TO
+            sendNotification()
         }
         always {
             junit '**/target/surefire-reports/**/*.xml, **/target/failsafe-reports/**/*.xml'
             cleanWs()
         }
     }
+}
+
+void sendNotification(){
+    emailext body: 'Kogito daily Quarkus master #${BUILD_NUMBER} was: ' + "${currentBuild.currentResult}" +  '\n' +
+            'Please look here: ${BUILD_URL} ',
+            subject: "[${env.BRANCH_NAME}][d] Runtimes Quarkus snapshot",
+            to: env.KOGITO_CI_EMAIL_TO
+}
+
+void checkoutRepo(String repoName, String dirName=repoName) {
+    dir(dirName) {
+        checkout(githubscm.resolveRepository(repoName, 'kiegroup', env.BRANCH_NAME, false))
+    }
+}
+
+void checkoutQuarkusRepo() {
+    dir('quarkus') {
+        checkout(githubscm.resolveRepository('quarkus', 'quarkusio', 'master', false))
+    }
+}
+
+void checkoutOptaplannerRepo() {
+    String targetBranch = env.BRANCH_NAME
+    String [] versionSplit = targetBranch.split("\\.")
+    if(versionSplit.length == 3 
+        && versionSplit[0].isNumber()
+        && versionSplit[1].isNumber()
+       && versionSplit[2] == 'x') {
+        targetBranch = "${Integer.parseInt(versionSplit[0]) + 7}.${versionSplit[1]}.x"
+    } else {
+        echo "Cannot parse branch as release branch so going further with current value: ${targetBranch}"
+    }
+    dir('optaplanner') {
+        checkout(githubscm.resolveRepository('optaplanner', 'kiegroup', targetBranch, false))
+    }
+}
+
+MavenCommand getMavenCommand(String directory, boolean addQuarkusVersion=true){
+    def mvnCmd = new MavenCommand(this, ['-fae'])
+                .withSettingsXmlId('kogito_release_settings')
+                .inDirectory(directory)
+    if(addQuarkusVersion){
+        mvnCmd.withProperty('version.io.quarkus', '999-SNAPSHOT')
+    }
+    return mvnCmd
 }
