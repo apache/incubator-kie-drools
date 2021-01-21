@@ -25,13 +25,9 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.drools.core.KogitoWorkItemHandlerNotFoundException;
 import org.drools.core.event.KogitoProcessEventSupport;
 import org.drools.core.event.ProcessEventSupport;
-import org.drools.core.process.instance.KogitoWorkItem;
-import org.drools.core.process.instance.KogitoWorkItemManager;
 import org.drools.core.process.instance.WorkItem;
-import org.drools.core.process.instance.impl.KogitoWorkItemImpl;
 import org.jbpm.process.instance.impl.workitem.Abort;
 import org.jbpm.process.instance.impl.workitem.Active;
 import org.jbpm.process.instance.impl.workitem.Complete;
@@ -42,6 +38,10 @@ import org.kie.internal.runtime.Closeable;
 import org.kie.kogito.process.workitem.NotAuthorizedException;
 import org.kie.kogito.process.workitem.Policy;
 import org.kie.kogito.process.workitem.Transition;
+import org.kie.kogito.process.workitems.KogitoWorkItem;
+import org.kie.kogito.process.workitems.KogitoWorkItemHandlerNotFoundException;
+import org.kie.kogito.process.workitems.KogitoWorkItemManager;
+import org.kie.kogito.process.workitems.impl.KogitoWorkItemImpl;
 import org.kie.kogito.signal.SignalManager;
 
 import static org.jbpm.process.instance.impl.workitem.Abort.ID;

@@ -57,6 +57,7 @@
     <version.license.plugin>1.8.0</version.license.plugin>
     <version.archetype.plugin>3.0.1</version.archetype.plugin>
     <version.enforcer.plugin>3.0.0-M2</version.enforcer.plugin>
+    <version.de.skuzzle.enforcer>1.1.0</version.de.skuzzle.enforcer>
     <version.maven>3.6.2</version.maven>
     <version.maven.plugin>3.4</version.maven.plugin>
     <version.native2ascii.plugin>1.0-beta-1</version.native2ascii.plugin>

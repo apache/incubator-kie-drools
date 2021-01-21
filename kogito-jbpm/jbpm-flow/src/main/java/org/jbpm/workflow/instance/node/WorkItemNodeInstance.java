@@ -29,9 +29,6 @@ import java.util.Set;
 import java.util.regex.Matcher;
 
 import org.drools.core.WorkItemHandlerNotFoundException;
-import org.drools.core.process.instance.KogitoWorkItem;
-import org.drools.core.process.instance.KogitoWorkItemManager;
-import org.drools.core.process.instance.impl.KogitoWorkItemImpl;
 import org.drools.core.spi.KogitoProcessContext;
 import org.jbpm.process.core.Context;
 import org.jbpm.process.core.ContextContainer;
@@ -73,7 +70,9 @@ import org.kie.kogito.process.GroupedNamedDataType;
 import org.kie.kogito.process.IOEventDescription;
 import org.kie.kogito.process.NamedDataType;
 import org.kie.kogito.process.workitem.WorkItemExecutionError;
-import org.mvel2.MVEL;
+import org.kie.kogito.process.workitems.KogitoWorkItem;
+import org.kie.kogito.process.workitems.KogitoWorkItemManager;
+import org.kie.kogito.process.workitems.impl.KogitoWorkItemImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

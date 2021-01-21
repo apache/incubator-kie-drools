@@ -25,8 +25,6 @@ import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.core.event.ProcessEventSupport;
 import org.drools.core.impl.KogitoStatefulKnowledgeSessionImpl;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
-import org.drools.core.process.instance.KogitoWorkItemManager;
-import org.drools.core.process.instance.impl.KogitoWorkItemImpl;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.process.instance.impl.ProcessInstanceImpl;
@@ -50,6 +48,8 @@ import org.kie.internal.command.RegistryContext;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.process.CorrelationKeyFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.kogito.process.workitems.KogitoWorkItemManager;
+import org.kie.kogito.process.workitems.impl.KogitoWorkItemImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

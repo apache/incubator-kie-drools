@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.kie.kogito</groupId>
+    <artifactId>jbpm</artifactId>
+    <version>2.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>process-workitems</artifactId>
+  <packaging>jar</packaging>
+
+  <name>Kogito :: Process :: WorkItems</name>
+  <description>Kogito WorkItems</description>
+
+  <properties>
+    <java.module.name>org.kie.kogito.process.workitems</java.module.name>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-internal</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>drools-core</artifactId>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <dependencies>
+          <dependency>
+            <groupId>de.skuzzle.enforcer</groupId>
+            <artifactId>restrict-imports-enforcer-rule</artifactId>
+            <version>${version.de.skuzzle.enforcer}</version>
+          </dependency>
+        </dependencies>
+        <executions>
+          <execution>
+            <id>check-kie7-restricted-imports</id>
+            <phase>process-sources</phase>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <restrictImports implementation="de.skuzzle.enforcer.restrictimports.rule.RestrictImports">
+                  <reason>Avoid KIEv7 API in process implementation</reason>
+                  <bannedImports>
+                    <bannedImport>org.kie.api.**</bannedImport>
+                  </bannedImports>
+                  <allowedImports>
+                    <!-- we always allow process.* as these will be movable to internal -->
+                    <allowedImport>org.kie.api.runtime.process.*</allowedImport>
+                  </allowedImports>
+                </restrictImports>
+                <restrictImports implementation="de.skuzzle.enforcer.restrictimports.rule.RestrictImports">
+                  <reason>Avoid Drools API in process implementation</reason>
+                  <bannedImports>
+                    <bannedImport>org.drools.**</bannedImport>
+                  </bannedImports>
+                  <allowedImports>
+                    <!-- WorkItem is allowed due to Set<WorkItem> (not covariant)
+                         in org.drools.core.process.instance.WorkItemManager -->
+                    <allowedImport>org.drools.core.process.instance.WorkItem</allowedImport>
+                  </allowedImports>
+                </restrictImports>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>

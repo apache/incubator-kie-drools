@@ -19,13 +19,16 @@ package org.jbpm.bpmn2.objects;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.core.process.instance.KogitoWorkItem;
-import org.drools.core.process.instance.KogitoWorkItemManager;
 import org.jbpm.process.instance.impl.humantask.HumanTaskWorkItemImpl;
 import org.jbpm.process.instance.impl.workitem.Active;
 import org.jbpm.process.instance.impl.workitem.Complete;
-import org.kie.api.runtime.process.*;
+import org.kie.api.runtime.process.HumanTaskWorkItem;
+import org.kie.api.runtime.process.WorkItem;
+import org.kie.api.runtime.process.WorkItemHandler;
+import org.kie.api.runtime.process.WorkItemManager;
 import org.kie.kogito.process.workitem.Transition;
+import org.kie.kogito.process.workitems.KogitoWorkItem;
+import org.kie.kogito.process.workitems.KogitoWorkItemManager;
 
 public class TestWorkItemHandler implements WorkItemHandler {
 

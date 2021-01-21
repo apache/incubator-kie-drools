@@ -26,6 +26,7 @@
     <module>jbpm-bpmn2</module>
     <module>jbpm-serverless-workflow</module>
     <module>process-serialization-protobuf</module>
+    <module>process-workitems</module>
   </modules>
 
 </project>

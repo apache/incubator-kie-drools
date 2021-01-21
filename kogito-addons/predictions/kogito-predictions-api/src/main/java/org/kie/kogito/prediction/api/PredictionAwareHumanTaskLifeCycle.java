@@ -18,7 +18,6 @@ package org.kie.kogito.prediction.api;
 import java.util.Map;
 import java.util.Objects;
 
-import org.drools.core.process.instance.KogitoWorkItemManager;
 import org.jbpm.process.instance.impl.humantask.BaseHumanTaskLifeCycle;
 import org.jbpm.process.instance.impl.humantask.HumanTaskWorkItemImpl;
 import org.jbpm.process.instance.impl.workitem.Active;
@@ -28,6 +27,7 @@ import org.kie.api.runtime.process.WorkItemManager;
 import org.kie.kogito.process.workitem.InvalidLifeCyclePhaseException;
 import org.kie.kogito.process.workitem.LifeCyclePhase;
 import org.kie.kogito.process.workitem.Transition;
+import org.kie.kogito.process.workitems.KogitoWorkItemManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

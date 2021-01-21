@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package org.drools.core.process.instance.impl;
+package org.kie.kogito.process.workitems.impl;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -21,9 +21,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.drools.core.process.instance.KogitoWorkItem;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.kogito.process.workitems.KogitoWorkItem;
 
 public class KogitoWorkItemImpl implements KogitoWorkItem, Serializable {
 
@@ -68,7 +68,6 @@ public class KogitoWorkItemImpl implements KogitoWorkItem, Serializable {
         this.state = state;
     }
 
-    @Override
     public void setProcessInstanceId( long processInstanceId ) {
         throw new UnsupportedOperationException();
     }
@@ -127,7 +126,6 @@ public class KogitoWorkItemImpl implements KogitoWorkItem, Serializable {
         this.deploymentId = deploymentId;
     }
 
-    @Override
     public void setNodeInstanceId( long deploymentId ) {
         throw new UnsupportedOperationException();
     }

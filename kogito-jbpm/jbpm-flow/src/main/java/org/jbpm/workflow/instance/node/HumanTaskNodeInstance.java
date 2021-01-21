@@ -18,7 +18,7 @@ package org.jbpm.workflow.instance.node;
 
 import java.util.Set;
 
-import org.drools.core.process.instance.KogitoWorkItem;
+import org.kie.kogito.process.workitems.KogitoWorkItem;
 import org.jbpm.process.core.context.swimlane.SwimlaneContext;
 import org.jbpm.process.instance.context.swimlane.SwimlaneContextInstance;
 import org.jbpm.process.instance.impl.humantask.HumanTaskWorkItemImpl;

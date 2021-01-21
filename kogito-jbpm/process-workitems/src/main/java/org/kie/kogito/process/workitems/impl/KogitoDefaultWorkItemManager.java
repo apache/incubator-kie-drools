@@ -13,11 +13,9 @@
  * limitations under the License.
  */
 
-package org.drools.core.process.instance.impl;
+package org.kie.kogito.process.workitems.impl;
 
-import java.io.Externalizable;
 import java.io.IOException;
-import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -26,41 +24,29 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.drools.core.KogitoWorkItemHandlerNotFoundException;
-import org.drools.core.common.InternalKnowledgeRuntime;
-import org.drools.core.process.instance.KogitoWorkItem;
-import org.drools.core.process.instance.KogitoWorkItemManager;
 import org.drools.core.process.instance.WorkItem;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.runtime.process.ProcessRuntime;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.internal.runtime.Closeable;
 import org.kie.kogito.process.workitem.Policy;
+import org.kie.kogito.process.workitems.KogitoWorkItem;
+import org.kie.kogito.process.workitems.KogitoWorkItemHandlerNotFoundException;
+import org.kie.kogito.process.workitems.KogitoWorkItemManager;
 
 import static org.kie.api.runtime.process.WorkItem.ABORTED;
 import static org.kie.api.runtime.process.WorkItem.COMPLETED;
 
-public class KogitoDefaultWorkItemManager implements KogitoWorkItemManager, Externalizable {
+public class KogitoDefaultWorkItemManager implements KogitoWorkItemManager {
 
     private Map<String, KogitoWorkItem> workItems = new ConcurrentHashMap<>();
-    private InternalKnowledgeRuntime kruntime;
+    private ProcessRuntime kruntime;
     private Map<String, WorkItemHandler> workItemHandlers = new HashMap<>();
 
-    public KogitoDefaultWorkItemManager( InternalKnowledgeRuntime kruntime) {
+    public KogitoDefaultWorkItemManager( ProcessRuntime kruntime) {
         this.kruntime = kruntime;
     }
 
-    /**
-     * Do not use this constructor. It should be used just by deserialization.
-     */
-    public KogitoDefaultWorkItemManager() {
-    }
-
-    @SuppressWarnings("unchecked")
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        workItems = (Map<String, KogitoWorkItem>) in.readObject();
-        kruntime = (InternalKnowledgeRuntime) in.readObject();
-        workItemHandlers = (Map<String, WorkItemHandler>) in.readObject();
-    }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject(workItems);
@@ -162,7 +148,6 @@ public class KogitoDefaultWorkItemManager implements KogitoWorkItemManager, Exte
         return new HashSet<>(workItems.values());
     }
 
-    @Override
     public WorkItem getWorkItem( long id ) {
         throw new UnsupportedOperationException( "org.drools.core.process.instance.impl.KogitoDefaultWorkItemManager.getWorkItem -> TODO" );
 
@@ -180,7 +165,6 @@ public class KogitoDefaultWorkItemManager implements KogitoWorkItemManager, Exte
         this.kruntime.signalEvent(type, event, processInstanceId);
     }
 
-    @Override
     public void dispose() {
         if (workItemHandlers != null) {
             for (Map.Entry<String, WorkItemHandler> handlerEntry : workItemHandlers.entrySet()) {
@@ -191,13 +175,11 @@ public class KogitoDefaultWorkItemManager implements KogitoWorkItemManager, Exte
         }
     }
 
-    @Override
     public void retryWorkItem( Long workItemID, Map<String, Object> params ) {
         throw new UnsupportedOperationException( "org.drools.core.process.instance.impl.KogitoDefaultWorkItemManager.retryWorkItem -> TODO" );
 
     }
 
-    @Override
     public void retryWorkItem( String workItemID, Map<String, Object> params ) {
        if (params==null || params.isEmpty()) {
            retryWorkItem(workItemID);

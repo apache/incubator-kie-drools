@@ -32,9 +32,6 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.marshalling.impl.MarshallerWriteContext;
 import org.drools.core.marshalling.impl.ProcessMarshaller;
-import org.drools.core.process.instance.KogitoWorkItem;
-import org.drools.core.process.instance.KogitoWorkItemManager;
-import org.drools.core.process.instance.impl.KogitoWorkItemImpl;
 import org.drools.serialization.protobuf.PersisterHelper;
 import org.drools.serialization.protobuf.ProtobufMessages;
 import org.drools.serialization.protobuf.ProtobufMessages.Header;
@@ -44,6 +41,9 @@ import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItem;
+import org.kie.kogito.process.workitems.KogitoWorkItem;
+import org.kie.kogito.process.workitems.KogitoWorkItemManager;
+import org.kie.kogito.process.workitems.impl.KogitoWorkItemImpl;
 
 public class ProtobufProcessMarshaller
         implements
@@ -79,7 +79,7 @@ public class ProtobufProcessMarshaller
     public void writeWorkItems(MarshallerWriteContext context) throws IOException {
         ProtobufMessages.ProcessData.Builder _pdata = (ProtobufMessages.ProcessData.Builder) context.getParameterObject();
 
-        List<WorkItem> workItems = new ArrayList<WorkItem>( (( KogitoWorkItemManager ) context.getWorkingMemory().getWorkItemManager()).getWorkItems() );
+        List<WorkItem> workItems = new ArrayList<WorkItem>( ((KogitoWorkItemManager) context.getWorkingMemory().getWorkItemManager()).getWorkItems() );
         Collections.sort( workItems,
                           new Comparator<WorkItem>() {
                               public int compare(WorkItem o1,
@@ -130,7 +130,7 @@ public class ProtobufProcessMarshaller
                 .setName( workItem.getName() )
                 .setState( workItem.getState() );
 
-        if (workItem instanceof KogitoWorkItem ) {
+        if (workItem instanceof KogitoWorkItem) {
         	if ((( KogitoWorkItem )workItem).getDeploymentId() != null){
         	_workItem.setDeploymentId((( KogitoWorkItem )workItem).getDeploymentId());
         	}

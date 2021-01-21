@@ -42,7 +42,6 @@ import org.drools.core.event.RuleRuntimeEventSupport;
 import org.drools.core.impl.EnvironmentImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.phreak.PropagationEntry;
-import org.drools.core.process.instance.impl.KogitoDefaultWorkItemManager;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.EntryPointId;
@@ -75,6 +74,7 @@ import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.ViewChangedEventListener;
 import org.kie.api.time.SessionClock;
 import org.kie.kogito.jobs.JobsService;
+import org.kie.kogito.process.workitems.impl.KogitoDefaultWorkItemManager;
 
 /**
  * A severely limited implementation of the WorkingMemory interface.

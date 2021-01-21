@@ -50,6 +50,7 @@ import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.kogito.process.workitems.KogitoWorkItemHandlerNotFoundException;
 import org.slf4j.LoggerFactory;
 
 public class WorkItemTest extends AbstractBaseTest {
@@ -112,7 +113,7 @@ public class WorkItemTest extends AbstractBaseTest {
         try {
             ksession.abortProcessInstance( processInstanceId );
             fail( "should fail if WorkItemHandler for" + workName + "is not registered" );
-        } catch ( WorkItemHandlerNotFoundException wihnfe ) {
+        } catch ( KogitoWorkItemHandlerNotFoundException wihnfe ) {
 
         }
 

@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package org.drools.core.process.instance;
+package org.kie.kogito.process.workitems;
 
 import java.util.Date;
 

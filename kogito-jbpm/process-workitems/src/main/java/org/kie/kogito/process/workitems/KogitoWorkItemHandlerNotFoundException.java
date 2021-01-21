@@ -13,24 +13,23 @@
  * limitations under the License.
  */
 
-package org.drools.core.process.instance;
+package org.kie.kogito.process.workitems;
 
-import java.util.Map;
+public class KogitoWorkItemHandlerNotFoundException extends RuntimeException {
 
-public interface KogitoWorkItemManager extends WorkItemManager {
+    private String workItemName;
 
-    void internalExecuteWorkItem( KogitoWorkItem workItem);
+    public KogitoWorkItemHandlerNotFoundException(String workItemName) {
+        super("Could not find work item handler for " + workItemName);
+        this.workItemName = workItemName;
+    }
 
-    void internalAddWorkItem( KogitoWorkItem workItem);
+    public String getWorkItemName() {
+        return workItemName;
+    }
 
-    void internalAbortWorkItem(String id);
-    
-    void internalCompleteWorkItem( KogitoWorkItem workItem);
-    
-    KogitoWorkItem getWorkItem( String id);
-
-    public void signalEvent(String type, Object event, String processInstanceId);
-
-    void retryWorkItem( String workItemID, Map<String, Object> params ) ;
+    public void setWorkName(String workName) {
+        this.workItemName = workName;
+    }
 
 }

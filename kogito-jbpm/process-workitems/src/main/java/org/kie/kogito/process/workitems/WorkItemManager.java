@@ -1,8 +1,9 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -13,11 +14,8 @@
  * limitations under the License.
  */
 
-package org.drools.core;
+package org.kie.kogito.process.workitems;
 
-public class KogitoWorkItemHandlerNotFoundException extends WorkItemHandlerNotFoundException {
+public interface WorkItemManager extends org.drools.core.process.instance.WorkItemManager {
 
-    public KogitoWorkItemHandlerNotFoundException(String workItemName) {
-        super("Could not find work item handler for " + workItemName, workItemName);
-    }
 }

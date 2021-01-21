@@ -19,12 +19,12 @@ package org.jbpm.bpmn2.handler;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.core.process.instance.KogitoWorkItem;
-import org.drools.core.process.instance.KogitoWorkItemManager;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
+import org.kie.kogito.process.workitems.KogitoWorkItem;
+import org.kie.kogito.process.workitems.KogitoWorkItemManager;
 
 /**
  * This class will wrap a {@link WorkItemHandler} instance so that an event (signal, error or other) can be sent to the process 

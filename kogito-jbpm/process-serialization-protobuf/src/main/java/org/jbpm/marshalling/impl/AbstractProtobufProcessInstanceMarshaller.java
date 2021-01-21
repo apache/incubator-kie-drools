@@ -33,8 +33,6 @@ import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.marshalling.impl.MarshallerWriteContext;
 import org.drools.serialization.protobuf.ProtobufMessages.Header;
-import org.drools.core.process.instance.KogitoWorkItem;
-import org.drools.core.process.instance.impl.KogitoWorkItemImpl;
 import org.drools.serialization.protobuf.PersisterHelper;
 import org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent;
 import org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry;
@@ -72,6 +70,8 @@ import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.api.runtime.rule.FactHandle;
+import org.kie.kogito.process.workitems.KogitoWorkItem;
+import org.kie.kogito.process.workitems.impl.KogitoWorkItemImpl;
 
 /**
  * Default implementation of a process instance marshaller.

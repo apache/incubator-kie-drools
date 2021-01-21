@@ -26,7 +26,6 @@ import java.util.Map;
 import javax.script.ScriptEngineManager;
 import org.assertj.core.api.Assumptions;
 import org.drools.compiler.rule.builder.PackageBuildContext;
-import org.drools.core.process.instance.KogitoWorkItem;
 import org.jbpm.bpmn2.handler.ReceiveTaskHandler;
 import org.jbpm.bpmn2.handler.SendTaskHandler;
 import org.jbpm.bpmn2.handler.ServiceTaskHandler;
@@ -89,6 +88,7 @@ import org.kie.api.runtime.process.WorkItemManager;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.internal.command.RegistryContext;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.kogito.process.workitems.KogitoWorkItem;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;

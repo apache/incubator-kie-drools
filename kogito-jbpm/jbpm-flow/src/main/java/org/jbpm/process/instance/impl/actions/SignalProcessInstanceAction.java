@@ -18,12 +18,12 @@ package org.jbpm.process.instance.impl.actions;
 import java.io.Serializable;
 import java.util.function.Function;
 
-import org.drools.core.process.instance.KogitoWorkItemManager;
-import org.drools.core.process.instance.impl.KogitoWorkItemImpl;
 import org.jbpm.process.instance.impl.Action;
 import org.jbpm.process.instance.impl.util.VariableUtil;
 import org.jbpm.workflow.core.node.Transformation;
 import org.kie.api.runtime.process.ProcessContext;
+import org.kie.kogito.process.workitems.KogitoWorkItemManager;
+import org.kie.kogito.process.workitems.impl.KogitoWorkItemImpl;
 
 public class SignalProcessInstanceAction implements Action, Serializable {
 
