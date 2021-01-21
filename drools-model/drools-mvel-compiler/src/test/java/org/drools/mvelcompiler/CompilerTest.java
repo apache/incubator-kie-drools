@@ -34,7 +34,7 @@ interface CompilerTest {
         TypeResolver typeResolver = new ClassTypeResolver(imports, this.getClass().getClassLoader());
         MvelCompilerContext mvelCompilerContext = new MvelCompilerContext(typeResolver);
         testFunction.accept(mvelCompilerContext);
-        CompiledBlockResult compiled = new MvelCompiler(mvelCompilerContext).compile(inputExpression);
+        CompiledBlockResult compiled = new MvelCompiler(mvelCompilerContext).compileStatement(inputExpression);
         verifyBodyWithBetterDiff(expectedResult, compiled.resultAsString());
         resultAssert.accept(compiled);
     }

@@ -191,7 +191,7 @@ public class Consequence {
 
         CompiledBlockResult compile;
         try {
-            compile = new MvelCompiler(mvelCompilerContext).compile(mvelBlock);
+            compile = new MvelCompiler(mvelCompilerContext).compileStatement(mvelBlock);
         } catch (MvelCompilerException e) {
             context.addCompilationError(new CompilationProblemErrorResult(new MvelCompilationError(e)) );
             return null;

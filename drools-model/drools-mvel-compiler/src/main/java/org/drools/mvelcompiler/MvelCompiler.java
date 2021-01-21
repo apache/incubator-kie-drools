@@ -19,7 +19,6 @@ import org.drools.mvel.parser.ast.expr.WithStatement;
 import org.drools.mvelcompiler.ast.TypedExpression;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
 
-import static java.util.Collections.singletonList;
 import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
@@ -35,12 +34,12 @@ public class MvelCompiler {
 
     public CompiledExpressionResult compileExpression(String mvelExpressionString) {
         Expression parsedExpression = MvelParser.parseExpression(mvelExpressionString);
-        Node compiled = compile(parsedExpression);
+        Node compiled = compileExpression(parsedExpression);
 
         return new CompiledExpressionResult((Expression) compiled);
     }
 
-    public CompiledBlockResult compile(String mvelBlock) {
+    public CompiledBlockResult compileStatement(String mvelBlock) {
 
         BlockStmt mvelExpression = MvelParser.parseBlock(mvelBlock);
 
@@ -93,11 +92,11 @@ public class MvelCompiler {
             statements.add(new IfStmt(ifStmt.getCondition(), new BlockStmt(thenStmts), new BlockStmt(elseStmts)));
 
         } else {
-            statements.add((Statement) compile(s));
+            statements.add((Statement) compileStatement(s));
         }
     }
 
-    private Node compile(Node n) {
+    private Node compileStatement(Node n) {
         TypedExpression rhs = new RHSPhase(mvelCompilerContext).invoke(n);
         TypedExpression lhs = new LHSPhase(mvelCompilerContext, ofNullable(rhs)).invoke(n);
 
@@ -105,5 +104,11 @@ public class MvelCompiler {
         TypedExpression postProcessedLHS = postProcessedRHS.map(ppr -> new LHSPhase(mvelCompilerContext, of(ppr)).invoke(n)).orElse(lhs);
 
         return postProcessedLHS.toJavaExpression();
+    }
+
+    // Avoid processing the LHS as it's not present while compiling an expression
+    private Node compileExpression(Node n) {
+        TypedExpression rhs = new RHSPhase(mvelCompilerContext).invoke(n);
+        return rhs.toJavaExpression();
     }
 }

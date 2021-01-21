@@ -560,9 +560,15 @@ public class ConstraintParser {
         MethodCallExpr toBigDecimalMethod = new MethodCallExpr( null, "org.drools.modelcompiler.util.EvaluationUtil.toBigDecimal" );
         Expression arg = typedExpression.getExpression();
 
-        MvelCompiler mvelCompiler = createMvelCompiler(context.getTypeResolver(), context.getAllDeclarations());
+        List<DeclarationSpec> allDeclarations = new ArrayList<>();
+        allDeclarations.addAll(context.getAllDeclarations());
+        typedExpression.getOriginalPatternType().ifPresent(pt -> allDeclarations.add(new DeclarationSpec(THIS_PLACEHOLDER, pt)));
+
+        MvelCompiler mvelCompiler = createMvelCompiler(context.getTypeResolver(), allDeclarations);
 
         CompiledExpressionResult compiledBlockResult = mvelCompiler.compileExpression(arg.toString());
+
+        arg = compiledBlockResult.getExpression();
 
         if(arg.isEnclosedExpr()) {
             arg = arg.asEnclosedExpr().getInner();

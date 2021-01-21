@@ -170,7 +170,7 @@ public class AccumulateInline {
         if ( sourceDescr instanceof FromDescr ) {
             DeclarativeInvokerDescr invokerDescr = (( FromDescr ) sourceDescr).getDataSource();
             String mvelBlock = addCurlyBracesToBlock( addSemicolon( invokerDescr.getText() ) );
-            CompiledBlockResult fromCodeCompilationResult = mvelCompiler.compile(mvelBlock );
+            CompiledBlockResult fromCodeCompilationResult = mvelCompiler.compileStatement(mvelBlock );
             BlockStmt fromBlock = fromCodeCompilationResult.statementResults();
             for (Statement stmt : fromBlock.getStatements()) {
                 stmt.findAll(NameExpr.class).stream().map(Node::toString).filter(context::hasDeclaration).forEach(usedExternalDeclarations::add);
@@ -181,7 +181,7 @@ public class AccumulateInline {
     private void parseInitBlock() {
         MethodDeclaration initMethod = getMethodFromTemplateClass("init");
         String mvelBlock = addCurlyBracesToBlock(addSemicolon(accumulateDescr.getInitCode()));
-        CompiledBlockResult initCodeCompilationResult = mvelCompiler.compile(mvelBlock);
+        CompiledBlockResult initCodeCompilationResult = mvelCompiler.compileStatement(mvelBlock);
         BlockStmt initBlock = initCodeCompilationResult.statementResults();
 
         for (Statement stmt : initBlock.getStatements()) {
@@ -229,7 +229,7 @@ public class AccumulateInline {
             throw new MissingSemicolonInlineAccumulateException("action");
         }
 
-        CompiledBlockResult actionBlockCompilationResult = mvelCompiler.compile(addCurlyBracesToBlock(actionCode));
+        CompiledBlockResult actionBlockCompilationResult = mvelCompiler.compileStatement(addCurlyBracesToBlock(actionCode));
 
         BlockStmt actionBlock = actionBlockCompilationResult.statementResults();
 
@@ -254,7 +254,7 @@ public class AccumulateInline {
 
     private void parseReverseBlock(Set<String> externalDeclarations, Collection<String> allNamesInActionBlock) {
         String reverseCode = accumulateDescr.getReverseCode();
-        CompiledBlockResult reverseBlockCompilationResult = mvelCompiler.compile(addCurlyBracesToBlock(reverseCode));
+        CompiledBlockResult reverseBlockCompilationResult = mvelCompiler.compileStatement(addCurlyBracesToBlock(reverseCode));
 
         BlockStmt reverseBlock = reverseBlockCompilationResult.statementResults();
 
