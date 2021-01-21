@@ -90,7 +90,7 @@ curl -H "accept: application/json" -H "content-type: application/json"
 curl -H "accept: application/xml" -H "content-type: application/xml"
 ----
 
-. (Optional) Query the container for a list of deployed decision models:
+. Optional: Query the container for a list of deployed decision models:
 +
 --
 *[GET]* `server/containers/{containerId}/dmn`
