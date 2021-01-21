@@ -35,6 +35,7 @@ pipeline {
 
         // Deploy information
         string(name: 'MAVEN_DEPLOY_REPOSITORY', defaultValue: '', description: 'Specify a Maven repository to deploy the artifacts.')
+        string(name: 'MAVEN_REPO_CREDS_ID', defaultValue: '', description: 'Credentials for Maven repository to deploy the artifacts.')
 
         // Release information
         booleanParam(name: 'RELEASE', defaultValue: false, description: 'Is this build for a release?')
@@ -53,6 +54,8 @@ pipeline {
     }
 
     environment {
+        REPO_NAME = 'kogito-apps'
+
         MAVEN_OPTS = '-Xms1024m -Xmx4g'
 
         BOT_BRANCH_HASH = "${util.generateHash(10)}"
@@ -76,7 +79,7 @@ pipeline {
                         assert getOptaPlannerVersion() != ''
                     }
 
-                    checkoutRepo('kogito-apps')
+                    checkoutRepo(getRepoName())
                 }
             }
             post {
@@ -97,7 +100,7 @@ pipeline {
                 expression { return isRelease() }
             }
             steps {
-                prepareForPR('kogito-apps')
+                prepareForPR(getRepoName())
             }
         }
         stage('Update project version') {
@@ -127,7 +130,11 @@ pipeline {
         stage('Deploy artifacts') {
             steps {
                 script {
-                    if (!isRelease() || params.MAVEN_DEPLOY_REPOSITORY) {
+                    if (params.MAVEN_DEPLOY_REPOSITORY && params.MAVEN_REPO_CREDS_ID) {
+                        // Deploy to specific repository with credentials
+                        runMavenDeployLocally(getMavenCommand())
+                        maven.uploadLocalArtifacts(params.MAVEN_REPO_CREDS_ID, getLocalDeploymentFolder(), getMavenRepoZipUrl())
+                    } else if(!isRelease() || params.MAVEN_DEPLOY_REPOSITORY) {
                         runMavenDeploy(getMavenCommand())
                     } else {
                         // Deploy locally and then to staging
@@ -142,15 +149,15 @@ pipeline {
                 expression { return isRelease() }
             }
             steps {
-                commitAndCreatePR('kogito-apps')
+                commitAndCreatePR(getRepoName())
             }
             post {
                 success {
                     script {
-                        setDeployPropertyIfNeeded('kogito-apps.pr.source.uri', "https://github.com/${getBotAuthor()}/kogito-apps")
-                        setDeployPropertyIfNeeded('kogito-apps.pr.source.ref', getBotBranch())
-                        setDeployPropertyIfNeeded('kogito-apps.pr.target.uri', "https://github.com/${getGitAuthor()}/kogito-apps")
-                        setDeployPropertyIfNeeded('kogito-apps.pr.target.ref', getBuildBranch())
+                        setDeployPropertyIfNeeded("${getRepoName()}.pr.source.uri", "https://github.com/${getBotAuthor()}/${getRepoName()}")
+                        setDeployPropertyIfNeeded("${getRepoName()}.pr.source.ref", getBotBranch())
+                        setDeployPropertyIfNeeded("${getRepoName()}.pr.target.uri", "https://github.com/${getGitAuthor()}/${getRepoName()}")
+                        setDeployPropertyIfNeeded("${getRepoName()}.pr.target.ref", getBuildBranch())
                     }
                 }
             }
@@ -200,7 +207,11 @@ boolean isRelease() {
     return params.RELEASE
 }
 
-String getGitAuthor() {
+String getRepoName(){
+    return env.REPO_NAME
+}
+
+String getGitAuthor(){
     return params.GIT_AUTHOR
 }
 
@@ -234,10 +245,10 @@ void setDeployPropertyIfNeeded(String key, def value) {
     }
 }
 
-MavenCommand getMavenCommand(String directory = 'kogito-apps') {
+MavenCommand getMavenCommand(){
     MavenCommand mvnCmd = new MavenCommand(this, ['-fae'])
                 .withSettingsXmlId(params.MAVEN_SETTINGS_CONFIG_FILE_ID)
-                .inDirectory(directory)
+                .inDirectory(getRepoName())
                 .withProperty('full')
     if (params.MAVEN_DEPENDENCIES_REPOSITORY) {
         mvnCmd.withDependencyRepositoryInSettings('deps-repo', params.MAVEN_DEPENDENCIES_REPOSITORY)
@@ -274,6 +285,10 @@ MavenStagingHelper getStagingHelper(MavenCommand mvnCmd) {
                 .withNexusReleaseRepositoryId(params.NEXUS_RELEASE_REPOSITORY_ID)
 }
 
-String getLocalDeploymentFolder() {
-    return "${env.MAVEN_DEPLOY_LOCAL_DIR}/kogito-apps"
+String getLocalDeploymentFolder(){
+    return "${env.MAVEN_DEPLOY_LOCAL_DIR}/${getRepoName()}"
+} 
+
+String getMavenRepoZipUrl() {
+     return "${params.MAVEN_DEPLOY_REPOSITORY.replaceAll('/content/', '/service/local/').replaceFirst('/*$', '')}/content-compressed"
 }
