@@ -68,9 +68,8 @@
             </additionalClasspathElements>
             <arguments>
               <argument>-Xms256m</argument>
-              <!-- Most examples run (potentially slower) with max heap of 128 MB (so -Xmx128m), but 1 example's dataset requires 1.5 GB -->
-              <argument>-Xmx1536m</argument>
-              <argument>-server</argument>
+              <!-- Most examples run (potentially slower) with max heap of 128 MB (so -Xmx128m), but 1 example's dataset requires 2 GB -->
+              <argument>-Xmx2g</argument>
             </arguments>
           </configuration>
         </plugin>

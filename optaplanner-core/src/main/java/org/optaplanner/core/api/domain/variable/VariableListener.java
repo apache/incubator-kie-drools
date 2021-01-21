@@ -35,7 +35,7 @@ import org.optaplanner.core.api.score.director.ScoreDirector;
  * ({@link #resetWorkingSolution(ScoreDirector)}, {@link #close()}).
  *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
- * @param <Entity_> @{@link PlanningEntity} on which the variable is declared
+ * @param <Entity_> @{@link PlanningEntity} on which the source variable is declared
  */
 public interface VariableListener<Solution_, Entity_> extends Closeable {
 
