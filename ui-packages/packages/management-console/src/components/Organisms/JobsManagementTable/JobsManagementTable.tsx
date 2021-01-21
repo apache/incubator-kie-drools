@@ -93,9 +93,9 @@ const JobsManagementTable: React.FC<IOwnProps & OUIAProps> = ({
 
   const refetch = React.useContext(refetchContext);
 
-  const handleCancelAction = (id): void => {
+  const handleCancelAction = async (id): Promise<void> => {
     const job = data.Jobs.find(job => job.id === id);
-    jobCancel(job, setModalTitle, setModalContent, refetch);
+    await jobCancel(job, setModalTitle, setModalContent, refetch);
     handleCancelModalToggle();
   };
 

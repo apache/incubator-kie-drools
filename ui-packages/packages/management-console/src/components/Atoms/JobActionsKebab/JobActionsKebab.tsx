@@ -54,8 +54,8 @@ const JobActionsKebab: React.FC<IOwnProps & OUIAProps> = ({
 
   const refetch = React.useContext(refetchContext);
 
-  const handleCancelAction = (): void => {
-    jobCancel(job, setModalTitle, setModalContent, refetch);
+  const handleCancelAction = async (): Promise<void> => {
+    await jobCancel(job, setModalTitle, setModalContent, refetch);
     handleCancelModalToggle();
   };
 

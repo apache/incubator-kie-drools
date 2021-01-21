@@ -120,8 +120,13 @@ const ProcessDetailsTimeline: React.FC<IOwnProps & OUIAProps> = ({
     handleRescheduleToggle();
   };
 
-  const handleCancelAction = (job: GraphQL.Job): void => {
-    jobCancel(job, setCancelModalTitle, setModalContent, jobsResponse.refetch);
+  const handleCancelAction = async (job: GraphQL.Job): Promise<void> => {
+    await jobCancel(
+      job,
+      setCancelModalTitle,
+      setModalContent,
+      jobsResponse.refetch
+    );
     handleCancelModalToggle();
   };
 
