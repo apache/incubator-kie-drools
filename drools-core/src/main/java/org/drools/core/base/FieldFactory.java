@@ -117,7 +117,7 @@ public class FieldFactory implements FieldDataFactory, Serializable {
             }
         }  else if ( valueType == ValueType.STRING_TYPE ) {
             field = new ObjectFieldImpl( value.toString() );
-        } else if ( valueType.getSimpleType() == SimpleValueType.DATE ) {
+        } else if ( valueType.isDate() ) {
             //MN: I think its fine like this, seems to work !
             if( value instanceof String ) {
                 Date date = DateUtils.parseDate( (String) value );

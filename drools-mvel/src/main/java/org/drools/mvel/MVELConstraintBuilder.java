@@ -47,7 +47,6 @@ import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.base.EvaluatorWrapper;
-import org.drools.core.base.SimpleValueType;
 import org.drools.core.base.ValueType;
 import org.drools.core.base.evaluators.EvaluatorDefinition;
 import org.drools.core.base.evaluators.Operator;
@@ -274,7 +273,7 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
                                                            String rightValue,
                                                            boolean negated,
                                                            LiteralRestrictionDescr restrictionDescr) {
-        if (vtype.getSimpleType() == SimpleValueType.DATE) {
+        if (vtype.isDate()) {
             String normalized = leftValue + " " + operator + getNormalizeDate( vtype, field );
             if (!negated) {
                 return normalized;

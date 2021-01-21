@@ -1143,7 +1143,7 @@ public class TemporalEvaluatorFactoryTest {
                 context.right = ((Boolean) row[0]).booleanValue();
             }
             return context;
-        } else if ( coerced.isFloatNumber() ) {
+        } else if ( coerced.isDecimalNumber() ) {
             final DoubleVariableContextEntry context = new DoubleVariableContextEntry( extractor,
                                                                                        declaration,
                                                                                        evaluator );

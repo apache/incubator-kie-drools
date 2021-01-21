@@ -200,7 +200,19 @@ public class ExecModelLambdaPostProcessor {
         }
 
         String returnType = getType(argument).asString();
-        extractLambdaFromMethodCall(methodCallExpr, (i) -> new MaterializedLambdaExtractor(packageName, ruleClassName, returnType));
+        Optional<String> exprId = methodCallExpr.findFirst(StringLiteralExpr.class).map(LiteralStringValueExpr::getValue);
+
+        boolean first = true;
+        for (Expression expr : methodCallExpr.getArguments()) {
+            if (expr.isLambdaExpr()) {
+                if (first) {
+                    replaceLambda( expr.asLambdaExpr(), ( i ) -> new MaterializedLambdaExtractor( packageName, ruleClassName, returnType ), exprId );
+                    first = false;
+                } else {
+                    replaceLambda( expr.asLambdaExpr(), ( i ) -> new MaterializedLambdaExtractor( packageName, ruleClassName, "java.lang.Object" ), exprId );
+                }
+            }
+        }
     }
 
     private void convertBindCall(MethodCallExpr methodCallExpr) {
