@@ -72,7 +72,7 @@ public class LambdaConstraint extends AbstractConstraint {
                     indexingDeclaration = indexingDeclaration.clone();
                     org.drools.model.Index.ConstraintType constraintType = index.getConstraintType();
                     Class<?> accessorFieldType;
-                    if (((BetaIndex) index).getRightReturnType() != null) {
+                    if (constraintType.isComparison() && ((BetaIndex) index).getRightReturnType() != null) {
                         accessorFieldType = ((BetaIndex) index).getRightReturnType();
                     } else {
                         accessorFieldType = index.getIndexedClass();
