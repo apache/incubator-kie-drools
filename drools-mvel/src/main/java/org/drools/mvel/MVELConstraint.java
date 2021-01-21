@@ -23,6 +23,7 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -119,7 +120,7 @@ public class MVELConstraint extends MutableTypeConstraint implements IndexableCo
                           FieldValue fieldValue,
                           InternalReadAccessor extractor,
                           EvaluatorWrapper[] operators) {
-        this.packageNames = new HashSet<String>() {{
+        this.packageNames = new LinkedHashSet<String>() {{
             add(packageName);
         }};
         this.expression = expression;
@@ -137,7 +138,7 @@ public class MVELConstraint extends MutableTypeConstraint implements IndexableCo
                           EvaluatorWrapper[] operators,
                           MVELCompilationUnit compilationUnit,
                           boolean isDynamic) {
-        this.packageNames = new HashSet<String>() {{
+        this.packageNames = new LinkedHashSet<String>() {{
             add(packageName);
         }};
         this.expression = expression;
@@ -156,7 +157,7 @@ public class MVELConstraint extends MutableTypeConstraint implements IndexableCo
                           Declaration indexingDeclaration,
                           InternalReadAccessor extractor,
                           boolean isUnification) {
-        this.packageNames = new HashSet<String>(packageNames);
+        this.packageNames = new LinkedHashSet<String>(packageNames);
         this.expression = expression;
         this.compilationUnit = compilationUnit;
         this.constraintType = indexingDeclaration != null ? constraintType : IndexUtil.ConstraintType.UNKNOWN;
