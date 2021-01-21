@@ -19,6 +19,7 @@ package org.optaplanner.core.impl.score.stream.drools;
 import static org.drools.model.DSL.declarationOf;
 import static org.drools.model.DSL.from;
 
+import java.util.Collections;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Function;
 
@@ -43,12 +44,32 @@ final class DroolsVariableFactoryImpl implements DroolsVariableFactory {
 
     @Override
     public <X> Variable<X> createVariable(String baseName, Variable<X> source) {
-        return declarationOf(source.getType(), generateUniqueId(baseName), from(source));
+        return declarationOf(source.getType(), generateUniqueId(baseName),
+                from(source, x -> sanitize(x)));
+    }
+
+    /**
+     * When using {@link org.drools.model.DSL#from(Variable)}, Drools has two behaviors.
+     * If the variable is a simple object, it returns that.
+     * If the variable is a {@link Iterable}, it will iterate over its elements and return them individually.
+     * The second behavior is not acceptable for CS-D, and therefore we apply this workaround.
+     * 
+     * @param value the value to protect against iterative from(...)
+     * @return never null
+     */
+    private static Object sanitize(Object value) {
+        if (value instanceof Iterable) {
+            return Collections.singleton(value);
+        }
+        return value;
     }
 
     @Override
     public <In, Out> Variable<Out> createVariable(String baseName, Variable<In> source, Function<In, Out> extractor) {
-        return (Variable<Out>) declarationOf(Object.class, generateUniqueId(baseName), from(source, extractor::apply));
+        return (Variable<Out>) declarationOf(Object.class, generateUniqueId(baseName), from(source, x -> {
+            Out extracted = extractor.apply(x);
+            return sanitize(extracted);
+        }));
     }
 
 }

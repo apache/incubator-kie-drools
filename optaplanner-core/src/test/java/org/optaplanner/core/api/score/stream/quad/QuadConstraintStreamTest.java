@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ import static org.optaplanner.core.api.score.stream.Joiners.filtering;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.Objects;
 
 import org.junit.jupiter.api.Disabled;
@@ -34,6 +35,7 @@ import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalS
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 import org.optaplanner.core.api.score.stream.AbstractConstraintStreamTest;
 import org.optaplanner.core.api.score.stream.Constraint;
+import org.optaplanner.core.api.score.stream.ConstraintCollectors;
 import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.stream.ConstraintStreamScoreDirectorFactory;
@@ -465,7 +467,7 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
     // ************************************************************************
 
     @TestTemplate
-    public void groupBy_0Mapping1Collector() {
+    public void groupBy_0Mapping1Collector_count() {
         assumeDrools();
         /*
          * E1 has G1 and V1
@@ -496,6 +498,24 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
         scoreDirector.afterEntityRemoved(entity);
         assertScore(scoreDirector,
                 assertMatchWithScore(-2, 2)); // E2 G2 V2 E2, E3 G1 V1 E3
+    }
+
+    @TestTemplate
+    public void groupBy_0Mapping1Collector_toSet() {
+        assumeDrools();
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 4);
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector((factory) -> {
+            return factory.fromUniquePair(TestdataLavishEntity.class)
+                    .join(TestdataLavishEntityGroup.class)
+                    .filter((a, b, c) -> Objects.equals(a.getEntityGroup(), c) || Objects.equals(b.getEntityGroup(), c))
+                    .join(TestdataLavishEntityGroup.class)
+                    .filter((a, b, c, d) -> !Objects.equals(c, d))
+                    .groupBy(ConstraintCollectors.toSet((a, b, c, d) -> c))
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
+        });
+
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector, assertMatchWithScore(-1, new LinkedHashSet<>(solution.getEntityGroupList())));
     }
 
     @TestTemplate
@@ -554,6 +574,26 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
         assertScore(scoreDirector,
                 assertMatchWithScore(-1, value2, 1),
                 assertMatchWithScore(-1, value1, 1));
+    }
+
+    @TestTemplate
+    public void groupBy_1Mapping1Collector_toSet() {
+        assumeDrools();
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 2);
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector((factory) -> {
+            return factory.fromUniquePair(TestdataLavishEntity.class)
+                    .join(TestdataLavishEntityGroup.class)
+                    .filter((a, b, c) -> Objects.equals(a.getEntityGroup(), c) || Objects.equals(b.getEntityGroup(), c))
+                    .join(TestdataLavishEntityGroup.class)
+                    .filter((a, b, c, d) -> !Objects.equals(c, d))
+                    .groupBy((a, b, c, d) -> a.getEntityGroup(), ConstraintCollectors.toSet((a, b, c, d) -> c))
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
+        });
+
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector,
+                assertMatchWithScore(-1, solution.getEntityGroupList().get(0),
+                        new LinkedHashSet<>(solution.getEntityGroupList().subList(0, 2))));
     }
 
     @TestTemplate
