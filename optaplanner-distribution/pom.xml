@@ -47,6 +47,16 @@
               </dependencySourceIncludes>
               <additionalDependencies>
                 <additionalDependency>
+                  <groupId>io.quarkus.gizmo</groupId>
+                  <artifactId>gizmo</artifactId>
+                  <version>${version.io.quarkus.gizmo}</version>
+                </additionalDependency>
+                <additionalDependency>
+                  <groupId>org.jboss</groupId>
+                  <artifactId>jandex</artifactId>
+                  <version>${version.org.jboss.jandex}</version>
+                </additionalDependency>
+                <additionalDependency>
                   <groupId>org.hibernate</groupId>
                   <artifactId>hibernate-core</artifactId>
                   <version>${version.org.hibernate}</version>

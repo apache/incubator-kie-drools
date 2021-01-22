@@ -16,6 +16,7 @@
 
 package org.optaplanner.spring.boot.autoconfigure;
 
+import org.optaplanner.core.api.domain.common.DomainAccessType;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
@@ -26,6 +27,15 @@ public class SolverProperties {
      * Defaults to "REPRODUCIBLE".
      */
     private EnvironmentMode environmentMode;
+
+    /**
+     * Determines how Domain Accessors are created. Defaults
+     * to {@link DomainAccessType#REFLECTION}. To use {@link DomainAccessType#GIZMO}, io.quarkus.gizmo:gizmo
+     * MUST be in your classpath, and all OptaPlanner annotations
+     * must be on public members.
+     */
+    private DomainAccessType domainAccessType;
+
     /**
      * Enable daemon mode. In daemon mode, non-early termination pauses the solver instead of stopping it,
      * until the next problem fact change arrives. This is often useful for real-time planning.
@@ -52,6 +62,14 @@ public class SolverProperties {
 
     public void setEnvironmentMode(EnvironmentMode environmentMode) {
         this.environmentMode = environmentMode;
+    }
+
+    public DomainAccessType getDomainAccessType() {
+        return domainAccessType;
+    }
+
+    public void setDomainAccessType(DomainAccessType domainAccessType) {
+        this.domainAccessType = domainAccessType;
     }
 
     public Boolean getDaemon() {

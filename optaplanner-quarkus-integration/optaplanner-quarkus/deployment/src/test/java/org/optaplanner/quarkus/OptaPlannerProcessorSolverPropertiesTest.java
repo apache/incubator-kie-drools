@@ -27,6 +27,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
+import org.optaplanner.core.api.domain.common.DomainAccessType;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.solver.EnvironmentMode;
@@ -47,6 +48,7 @@ public class OptaPlannerProcessorSolverPropertiesTest {
             .overrideConfigKey("quarkus.optaplanner.solver.termination.spent-limit", "4h")
             .overrideConfigKey("quarkus.optaplanner.solver.termination.unimproved-spent-limit", "5h")
             .overrideConfigKey("quarkus.optaplanner.solver.termination.best-score-limit", "0")
+            .overrideConfigKey("quarkus.optaplanner.solver.domain-access-type", "REFLECTION")
             .setArchiveProducer(() -> ShrinkWrap.create(JavaArchive.class)
                     .addClasses(TestdataQuarkusEntity.class, TestdataQuarkusSolution.class,
                             TestdataQuarkusConstraintProvider.class));
@@ -60,6 +62,7 @@ public class OptaPlannerProcessorSolverPropertiesTest {
     public void solverProperties() {
         assertEquals(EnvironmentMode.FULL_ASSERT, solverConfig.getEnvironmentMode());
         assertEquals("2", solverConfig.getMoveThreadCount());
+        assertEquals(DomainAccessType.REFLECTION, solverConfig.getDomainAccessType());
 
         assertNotNull(solverFactory);
     }

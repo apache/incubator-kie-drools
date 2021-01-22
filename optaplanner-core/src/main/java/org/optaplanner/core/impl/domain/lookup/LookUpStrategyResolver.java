@@ -36,6 +36,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import org.optaplanner.core.api.domain.common.DomainAccessType;
 import org.optaplanner.core.api.domain.lookup.LookUpStrategyType;
 import org.optaplanner.core.api.domain.lookup.PlanningId;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
@@ -48,11 +49,13 @@ import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 public class LookUpStrategyResolver {
 
     private final LookUpStrategyType lookUpStrategyType;
+    private final DomainAccessType domainAccessType;
 
     private final ConcurrentMap<Class<?>, LookUpStrategy> decisionCache = new ConcurrentHashMap<>();
 
-    public LookUpStrategyResolver(LookUpStrategyType lookUpStrategyType) {
+    public LookUpStrategyResolver(DomainAccessType domainAccessType, LookUpStrategyType lookUpStrategyType) {
         this.lookUpStrategyType = lookUpStrategyType;
+        this.domainAccessType = domainAccessType;
         decisionCache.put(Boolean.class, new ImmutableLookUpStrategy());
         decisionCache.put(Byte.class, new ImmutableLookUpStrategy());
         decisionCache.put(Short.class, new ImmutableLookUpStrategy());
@@ -95,13 +98,13 @@ public class LookUpStrategyResolver {
             }
             switch (lookUpStrategyType) {
                 case PLANNING_ID_OR_NONE:
-                    MemberAccessor memberAccessor1 = ConfigUtils.findPlanningIdMemberAccessor(objectClass);
+                    MemberAccessor memberAccessor1 = ConfigUtils.findPlanningIdMemberAccessor(objectClass, domainAccessType);
                     if (memberAccessor1 == null) {
                         return new NoneLookUpStrategy();
                     }
                     return new PlanningIdLookUpStrategy(memberAccessor1);
                 case PLANNING_ID_OR_FAIL_FAST:
-                    MemberAccessor memberAccessor2 = ConfigUtils.findPlanningIdMemberAccessor(objectClass);
+                    MemberAccessor memberAccessor2 = ConfigUtils.findPlanningIdMemberAccessor(objectClass, domainAccessType);
                     if (memberAccessor2 == null) {
                         throw new IllegalArgumentException("The class (" + objectClass
                                 + ") does not have a " + PlanningId.class.getSimpleName() + " annotation,"

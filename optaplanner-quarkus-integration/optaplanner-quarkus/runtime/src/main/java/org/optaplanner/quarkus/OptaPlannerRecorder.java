@@ -20,6 +20,7 @@ import java.util.function.Supplier;
 
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.SolverManagerConfig;
+import org.optaplanner.quarkus.gizmo.OptaPlannerGizmoInfo;
 
 import io.quarkus.runtime.annotations.Recorder;
 
@@ -42,6 +43,10 @@ public class OptaPlannerRecorder {
                 return solverManagerConfig;
             }
         };
+    }
+
+    public Supplier<OptaPlannerGizmoInfo> optaPlannerGizmoInfoSupplier(final OptaPlannerGizmoInfo optaPlannerGizmoInfo) {
+        return () -> optaPlannerGizmoInfo;
     }
 
 }

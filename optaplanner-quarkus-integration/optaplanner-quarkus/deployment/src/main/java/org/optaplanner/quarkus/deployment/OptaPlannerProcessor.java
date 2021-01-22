@@ -18,10 +18,17 @@ package org.optaplanner.quarkus.deployment;
 
 import static io.quarkus.deployment.annotations.ExecutionTime.STATIC_INIT;
 
+import java.io.IOException;
+import java.lang.reflect.AnnotatedElement;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -31,9 +38,12 @@ import org.jboss.jandex.AnnotationInstance;
 import org.jboss.jandex.AnnotationTarget;
 import org.jboss.jandex.ClassInfo;
 import org.jboss.jandex.DotName;
+import org.jboss.jandex.FieldInfo;
 import org.jboss.jandex.IndexView;
+import org.jboss.jandex.MethodInfo;
 import org.jboss.jandex.Type;
 import org.jboss.logging.Logger;
+import org.optaplanner.core.api.domain.common.DomainAccessType;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
@@ -43,20 +53,27 @@ import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.SolverManagerConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
+import org.optaplanner.core.impl.domain.common.accessor.gizmo.GizmoMemberAccessorFactory;
 import org.optaplanner.quarkus.OptaPlannerBeanProvider;
 import org.optaplanner.quarkus.OptaPlannerRecorder;
+import org.optaplanner.quarkus.gizmo.OptaPlannerGizmoInfo;
 
 import io.quarkus.arc.deployment.AdditionalBeanBuildItem;
 import io.quarkus.arc.deployment.SyntheticBeanBuildItem;
+import io.quarkus.deployment.GeneratedClassGizmoAdaptor;
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.annotations.Record;
+import io.quarkus.deployment.builditem.BytecodeTransformerBuildItem;
 import io.quarkus.deployment.builditem.CombinedIndexBuildItem;
 import io.quarkus.deployment.builditem.FeatureBuildItem;
+import io.quarkus.deployment.builditem.GeneratedClassBuildItem;
 import io.quarkus.deployment.builditem.HotDeploymentWatchedFileBuildItem;
+import io.quarkus.deployment.builditem.IndexDependencyBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.ReflectiveClassBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.ReflectiveHierarchyBuildItem;
 import io.quarkus.deployment.recording.RecorderContext;
+import io.quarkus.gizmo.ClassOutput;
 import io.quarkus.runtime.configuration.ConfigurationException;
 
 class OptaPlannerProcessor {
@@ -85,13 +102,21 @@ class OptaPlannerProcessor {
     }
 
     @BuildStep
+    IndexDependencyBuildItem indexDependencyBuildItem() {
+        // Add @PlanningEntity and other annotations in the Jandex index for Gizmo
+        return new IndexDependencyBuildItem("org.optaplanner", "optaplanner-core");
+    }
+
+    @BuildStep
     @Record(STATIC_INIT)
     void recordAndRegisterBeans(OptaPlannerRecorder recorder, RecorderContext recorderContext,
             CombinedIndexBuildItem combinedIndex,
             BuildProducer<ReflectiveHierarchyBuildItem> reflectiveHierarchyClass,
             BuildProducer<ReflectiveClassBuildItem> reflectiveClass,
             BuildProducer<SyntheticBeanBuildItem> syntheticBeanBuildItemBuildProducer,
-            BuildProducer<AdditionalBeanBuildItem> additionalBeans) {
+            BuildProducer<AdditionalBeanBuildItem> additionalBeans,
+            BuildProducer<GeneratedClassBuildItem> generatedClasses,
+            BuildProducer<BytecodeTransformerBuildItem> transformers) {
         IndexView indexView = combinedIndex.getIndex();
 
         // Only skip this extension if everything is missing. Otherwise, if some parts are missing, fail fast later.
@@ -131,6 +156,9 @@ class OptaPlannerProcessor {
                                     || dotName.toString().startsWith("org.optaplanner"))
                     .build());
         }
+
+        OptaPlannerGizmoInfo gizmoInfo = generateDomainAccessors(solverConfig, indexView, generatedClasses, transformers);
+
         List<Class<?>> reflectiveClassList = new ArrayList<>(5);
         ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = solverConfig.getScoreDirectorFactoryConfig();
         if (scoreDirectorFactoryConfig != null) {
@@ -160,6 +188,12 @@ class OptaPlannerProcessor {
                 .scope(Singleton.class)
                 .defaultBean()
                 .supplier(recorder.solverManagerConfig(solverManagerConfig)).done());
+
+        syntheticBeanBuildItemBuildProducer.produce(SyntheticBeanBuildItem.configure(OptaPlannerGizmoInfo.class)
+                .scope(Singleton.class)
+                .defaultBean()
+                .supplier(recorder.optaPlannerGizmoInfoSupplier(gizmoInfo)).done());
+
         additionalBeans.produce(new AdditionalBeanBuildItem(OptaPlannerBeanProvider.class));
     }
 
@@ -174,6 +208,10 @@ class OptaPlannerProcessor {
         applyScoreDirectorFactoryProperties(indexView, solverConfig);
         optaPlannerBuildTimeConfig.solver.environmentMode.ifPresent(solverConfig::setEnvironmentMode);
         optaPlannerBuildTimeConfig.solver.moveThreadCount.ifPresent(solverConfig::setMoveThreadCount);
+        optaPlannerBuildTimeConfig.solver.domainAccessType.ifPresent(solverConfig::setDomainAccessType);
+        if (solverConfig.getDomainAccessType() == null) {
+            solverConfig.setDomainAccessType(DomainAccessType.GIZMO);
+        }
         applyTerminationProperties(solverConfig);
     }
 
@@ -341,6 +379,80 @@ class OptaPlannerProcessor {
             throw new IllegalStateException("The class (" + className
                     + ") cannot be created during deployment.", e);
         }
+    }
+
+    private OptaPlannerGizmoInfo generateDomainAccessors(SolverConfig solverConfig, IndexView indexView,
+            BuildProducer<GeneratedClassBuildItem> generatedClasses,
+            BuildProducer<BytecodeTransformerBuildItem> transformers) {
+        if (solverConfig.getDomainAccessType() != DomainAccessType.GIZMO) {
+            return new OptaPlannerGizmoInfo(Collections.emptyMap(), Collections.emptyMap());
+        }
+
+        Collection<AnnotationInstance> membersToGeneratedAccessorsFor = new ArrayList<>();
+
+        ClassOutput classOutput = new GeneratedClassGizmoAdaptor(generatedClasses, true);
+        ClassOutput debuggableClassOutput = (className, bytes) -> {
+            final String DEBUG_CLASSES_DIR = "target/optaplanner-generated-classes";
+            if (DEBUG_CLASSES_DIR != null) {
+                Path pathToFile = Paths.get(DEBUG_CLASSES_DIR, className.replace('.', '/') + ".class");
+                try {
+                    Files.createDirectories(pathToFile.getParent());
+                    Files.write(pathToFile, bytes);
+                } catch (IOException e) {
+                    throw new IllegalStateException("Failed to write generated class to file (" + pathToFile + ").", e);
+                }
+            }
+            classOutput.write(className, bytes);
+        };
+
+        Map<String, java.lang.reflect.Type> gizmoMemberAccessorNameToGenericType = new HashMap<>();
+        Map<String, AnnotatedElement> gizmoMemberAccessorNameToAnnotatedElement = new HashMap<>();
+
+        // Use an empty map for MemberAccessors; generating the bytecode does not create instances
+        // as the generated classes are not yet in the class loader.
+        GizmoMemberAccessorFactory.usePregeneratedMaps(new HashMap<>(),
+                gizmoMemberAccessorNameToGenericType,
+                gizmoMemberAccessorNameToAnnotatedElement);
+        for (DotName dotName : DotNames.GIZMO_MEMBER_ACCESSOR_ANNOTATIONS) {
+            membersToGeneratedAccessorsFor.addAll(indexView.getAnnotations(dotName));
+        }
+        for (AnnotationInstance annotatedMember : membersToGeneratedAccessorsFor) {
+            switch (annotatedMember.target().kind()) {
+                case FIELD: {
+                    FieldInfo fieldInfo = annotatedMember.target().asField();
+                    ClassInfo classInfo = fieldInfo.declaringClass();
+                    try {
+                        GizmoMemberAccessorEntityEnhancer.generateFieldAccessor(annotatedMember, indexView,
+                                debuggableClassOutput,
+                                classInfo, fieldInfo, transformers);
+                    } catch (ClassNotFoundException e) {
+                        throw new IllegalStateException("Fail to generate member accessor for field (" +
+                                fieldInfo.name() + ") of class " +
+                                classInfo.name().toString() + ".", e);
+                    }
+                    break;
+                }
+                case METHOD: {
+                    MethodInfo methodInfo = annotatedMember.target().asMethod();
+                    ClassInfo classInfo = methodInfo.declaringClass();
+                    try {
+                        GizmoMemberAccessorEntityEnhancer.generateMethodAccessor(annotatedMember, indexView,
+                                debuggableClassOutput,
+                                classInfo, methodInfo, transformers);
+                    } catch (ClassNotFoundException e) {
+                        throw new IllegalStateException("Fail to generate member accessor for method (" +
+                                methodInfo.name() + ") of class " +
+                                classInfo.name().toString() + ".", e);
+                    }
+                    break;
+                }
+                default: {
+                    throw new IllegalStateException("The member (" + annotatedMember + ") is not on a field or method.");
+                }
+            }
+        }
+        return new OptaPlannerGizmoInfo(gizmoMemberAccessorNameToGenericType,
+                gizmoMemberAccessorNameToAnnotatedElement);
     }
 
 }

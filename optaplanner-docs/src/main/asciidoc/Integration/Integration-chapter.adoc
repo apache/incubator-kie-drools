@@ -509,6 +509,10 @@ Defaults to `false`.
 Defaults to `NONE`. \
 See <<multithreadedIncrementalSolving,multithreaded incremental solving>>.
 
+:property_optaplanner_solver_domain-access-type: How OptaPlanner should access the domain model. See \
+<<domainAccess,the domain access section>> for more details. \
+Defaults to `REFLECTION`.
+
 :property_optaplanner_solver_termination_spent-limit: How long the solver can run. \
 For example: `30s` is 30 seconds. `5m` is 5 minutes. `2h` is 2 hours. `1d` is 1 day.
 
@@ -546,6 +550,8 @@ quarkus.optaplanner.solver.daemon::
 {property_optaplanner_solver_daemon}
 quarkus.optaplanner.solver.move-thread-count::
 {property_optaplanner_solver_move-thread-count}
+quarkus.optaplanner.solver.domain-access-type::
+{property_optaplanner_solver_domain-access-type}
 quarkus.optaplanner.solver.termination.spent-limit::
 {property_optaplanner_solver_termination_spent-limit}
 quarkus.optaplanner.solver.termination.unimproved-spent-limit::
@@ -579,6 +585,8 @@ optaplanner.solver.daemon::
 {property_optaplanner_solver_daemon}
 optaplanner.solver.move-thread-count::
 {property_optaplanner_solver_move-thread-count}
+optaplanner.solver.domain-access-type::
+{property_optaplanner_solver_domain-access-type}
 optaplanner.solver.termination.spent-limit::
 {property_optaplanner_solver_termination_spent-limit}
 optaplanner.solver.termination.unimproved-spent-limit::

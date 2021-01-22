@@ -28,6 +28,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
+import org.optaplanner.core.api.domain.common.DomainAccessType;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.quarkus.testdata.normal.constraints.TestdataQuarkusConstraintProvider;
@@ -53,6 +54,7 @@ public class OptaPlannerProcessorXMLNoneTest {
     public void solverConfigXml_default() {
         assertNotNull(solverConfig);
         assertEquals(TestdataQuarkusSolution.class, solverConfig.getSolutionClass());
+        assertEquals(DomainAccessType.GIZMO, solverConfig.getDomainAccessType());
         assertEquals(Collections.singletonList(TestdataQuarkusEntity.class), solverConfig.getEntityClassList());
         assertEquals(TestdataQuarkusConstraintProvider.class,
                 solverConfig.getScoreDirectorFactoryConfig().getConstraintProviderClass());

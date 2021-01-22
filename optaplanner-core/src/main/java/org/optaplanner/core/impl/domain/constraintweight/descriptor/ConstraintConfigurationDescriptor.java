@@ -78,7 +78,8 @@ public class ConstraintConfigurationDescriptor<Solution_> {
     // Lifecycle methods
     // ************************************************************************
 
-    public void processAnnotations(DescriptorPolicy descriptorPolicy, ScoreDefinition scoreDefinition) {
+    public void processAnnotations(DescriptorPolicy descriptorPolicy,
+            ScoreDefinition scoreDefinition) {
         processPackAnnotation(descriptorPolicy);
         ArrayList<Method> potentiallyOverwritingMethodList = new ArrayList<>();
         // Iterate inherited members too (unlike for EntityDescriptor where each one is declared)
@@ -126,8 +127,8 @@ public class ConstraintConfigurationDescriptor<Solution_> {
     private void processParameterAnnotation(DescriptorPolicy descriptorPolicy, Member member,
             ScoreDefinition scoreDefinition) {
         if (((AnnotatedElement) member).isAnnotationPresent(ConstraintWeight.class)) {
-            MemberAccessor memberAccessor = MemberAccessorFactory.buildMemberAccessor(
-                    member, FIELD_OR_READ_METHOD, ConstraintWeight.class);
+            MemberAccessor memberAccessor = MemberAccessorFactory.buildMemberAccessor(member, FIELD_OR_READ_METHOD,
+                    ConstraintWeight.class, descriptorPolicy.getDomainAccessType());
             if (constraintWeightDescriptorMap.containsKey(memberAccessor.getName())) {
                 MemberAccessor duplicate = constraintWeightDescriptorMap.get(memberAccessor.getName()).getMemberAccessor();
                 throw new IllegalStateException("The constraintConfigurationClass (" + constraintConfigurationClass

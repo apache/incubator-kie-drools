@@ -18,6 +18,7 @@ package org.optaplanner.quarkus.deployment;
 
 import java.util.Optional;
 
+import org.optaplanner.core.api.domain.common.DomainAccessType;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
@@ -37,6 +38,14 @@ public class SolverBuildTimeConfig {
      */
     @ConfigItem
     Optional<EnvironmentMode> environmentMode;
+
+    /**
+     * Determines how member accessors are created. Defaults to
+     * {@link DomainAccessType#GIZMO}.
+     */
+    @ConfigItem
+    Optional<DomainAccessType> domainAccessType;
+
     /**
      * Enable multithreaded solving for a single problem, which increases CPU consumption.
      * Defaults to {@value SolverConfig#MOVE_THREAD_COUNT_NONE}.

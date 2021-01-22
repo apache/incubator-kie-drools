@@ -17,6 +17,7 @@
 package org.optaplanner.spring.boot.autoconfigure;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -26,7 +27,9 @@ import java.util.Collections;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.optaplanner.core.api.domain.common.DomainAccessType;
 import org.optaplanner.core.api.score.ScoreManager;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.solver.SolverFactory;
@@ -42,6 +45,7 @@ import org.optaplanner.spring.boot.autoconfigure.chained.constraints.TestdataCha
 import org.optaplanner.spring.boot.autoconfigure.chained.domain.TestdataChainedSpringEntity;
 import org.optaplanner.spring.boot.autoconfigure.chained.domain.TestdataChainedSpringObject;
 import org.optaplanner.spring.boot.autoconfigure.chained.domain.TestdataChainedSpringSolution;
+import org.optaplanner.spring.boot.autoconfigure.gizmo.GizmoSpringTestConfiguration;
 import org.optaplanner.spring.boot.autoconfigure.normal.NoConstraintsSpringTestConfiguration;
 import org.optaplanner.spring.boot.autoconfigure.normal.NormalSpringTestConfiguration;
 import org.optaplanner.spring.boot.autoconfigure.normal.constraints.TestdataSpringConstraintProvider;
@@ -57,7 +61,9 @@ public class OptaPlannerAutoConfigurationTest {
     private final ApplicationContextRunner contextRunner;
     private final ApplicationContextRunner noConstraintsContextRunner;
     private final ApplicationContextRunner chainedContextRunner;
+    private final ApplicationContextRunner gizmoContextRunner;
     private final FilteredClassLoader allDefaultsFilteredClassLoader;
+    private final FilteredClassLoader noGizmoFilteredClassLoader;
     private final FilteredClassLoader defaultConstraintsDrlFilteredClassLoader;
 
     public OptaPlannerAutoConfigurationTest() {
@@ -67,6 +73,9 @@ public class OptaPlannerAutoConfigurationTest {
         noConstraintsContextRunner = new ApplicationContextRunner()
                 .withConfiguration(AutoConfigurations.of(OptaPlannerAutoConfiguration.class))
                 .withUserConfiguration(NoConstraintsSpringTestConfiguration.class);
+        gizmoContextRunner = new ApplicationContextRunner()
+                .withConfiguration(AutoConfigurations.of(OptaPlannerAutoConfiguration.class))
+                .withUserConfiguration(GizmoSpringTestConfiguration.class);
         chainedContextRunner = new ApplicationContextRunner()
                 .withConfiguration(AutoConfigurations.of(OptaPlannerAutoConfiguration.class))
                 .withUserConfiguration(ChainedSpringTestConfiguration.class);
@@ -75,6 +84,11 @@ public class OptaPlannerAutoConfigurationTest {
                         new ClassPathResource(OptaPlannerProperties.DEFAULT_CONSTRAINTS_DRL_URL));
         defaultConstraintsDrlFilteredClassLoader =
                 new FilteredClassLoader(new ClassPathResource(OptaPlannerProperties.DEFAULT_CONSTRAINTS_DRL_URL));
+        noGizmoFilteredClassLoader = new FilteredClassLoader(FilteredClassLoader.PackageFilter.of("io.quarkus.gizmo"),
+                FilteredClassLoader.ClassPathResourceFilter.of(
+                        new ClassPathResource(OptaPlannerProperties.DEFAULT_SOLVER_CONFIG_URL)),
+                FilteredClassLoader.ClassPathResourceFilter.of(
+                        new ClassPathResource(OptaPlannerProperties.DEFAULT_CONSTRAINTS_DRL_URL)));
     }
 
     @Test
@@ -147,6 +161,13 @@ public class OptaPlannerAutoConfigurationTest {
                 .run(context -> {
                     SolverConfig solverConfig = context.getBean(SolverConfig.class);
                     assertThat(solverConfig.getEnvironmentMode()).isEqualTo(EnvironmentMode.FULL_ASSERT);
+                    assertThat(context.getBean(SolverFactory.class)).isNotNull();
+                });
+        gizmoContextRunner
+                .withPropertyValues("optaplanner.solver.domain-access-type=GIZMO")
+                .run(context -> {
+                    SolverConfig solverConfig = context.getBean(SolverConfig.class);
+                    assertThat(solverConfig.getDomainAccessType()).isEqualTo(DomainAccessType.GIZMO);
                     assertThat(context.getBean(SolverFactory.class)).isNotNull();
                 });
         contextRunner
@@ -335,6 +356,25 @@ public class OptaPlannerAutoConfigurationTest {
         autoConfiguration.applyScoreDirectorFactoryProperties(solverConfig);
         assertThat(scoreDirectorFactoryConfig.getScoreDrlList())
                 .containsExactly(OptaPlannerProperties.DEFAULT_CONSTRAINTS_DRL_URL);
+    }
+
+    @Test
+    @Disabled("Test works when run by itself, but errors when run in suite;" +
+            " it appears it still find the class when run in a suite, but not alone.")
+    void gizmo_throws_if_gizmo_not_present() {
+        assertThatCode(() -> {
+            gizmoContextRunner
+                    .withClassLoader(noGizmoFilteredClassLoader)
+                    .withPropertyValues(
+                            "optaplanner.solver-config-xml=org/optaplanner/spring/boot/autoconfigure/gizmoSpringBootSolverConfig.xml")
+                    .run(context -> {
+                        context.getBean(SolverFactory.class);
+                    });
+        })
+                .hasRootCauseMessage("When using the domainAccessType (" +
+                        DomainAccessType.GIZMO +
+                        ") the classpath or modulepath must contain io.quarkus.gizmo:gizmo.\n" +
+                        "Maybe add a dependency to io.quarkus.gizmo:gizmo.");
     }
 
     private OptaPlannerAutoConfiguration mockAutoConfiguration() {

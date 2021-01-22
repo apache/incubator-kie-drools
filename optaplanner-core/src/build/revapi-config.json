@@ -10004,6 +10004,28 @@
           "methodName": "variableListenerClass",
           "elementKind": "method",
           "justification": "VariableListener becomes public API."
+        },
+        {
+          "code": "java.annotation.added",
+          "old": "class org.optaplanner.core.config.solver.SolverConfig",
+          "new": "class org.optaplanner.core.config.solver.SolverConfig",
+          "annotationType": "javax.xml.bind.annotation.XmlType",
+          "annotation": "@javax.xml.bind.annotation.XmlType(name = \"solverConfig\", propOrder = {\"environmentMode\", \"daemon\", \"randomType\", \"randomSeed\", \"randomFactoryClass\", \"moveThreadCount\", \"moveThreadBufferSize\", \"threadFactoryClass\", \"solutionClass\", \"domainAccessType\", \"entityClassList\", \"scoreDirectorFactoryConfig\", \"terminationConfig\", \"phaseConfigList\"})",
+          "package": "org.optaplanner.core.config.solver",
+          "classSimpleName": "SolverConfig",
+          "elementKind": "class",
+          "justification": "There is now multiple ways to generate MemberAccessors: Reflection (the original way), which is slow and always works, and Gizmo (the new way), which is faster but requires the fields/methods with annotations to be public or to be run in Quarkus (Quarkus allows augmenting the class with additional methods). This property allows specifying how MemberAccessors should be generated (defaults to Reflection if not in Quarkus, to Gizmo if in Quarkus)."
+        },
+        {
+          "code": "java.annotation.added",
+          "old": "class org.optaplanner.core.config.solver.SolverConfig",
+          "new": "class org.optaplanner.core.config.solver.SolverConfig",
+          "annotationType": "javax.xml.bind.annotation.XmlType",
+          "annotation": "@javax.xml.bind.annotation.XmlType(name = \"solverConfig\", propOrder = {\"environmentMode\", \"daemon\", \"randomType\", \"randomSeed\", \"randomFactoryClass\", \"moveThreadCount\", \"moveThreadBufferSize\", \"threadFactoryClass\", \"solutionClass\", \"entityClassList\", \"domainAccessType\", \"scoreDirectorFactoryConfig\", \"terminationConfig\", \"phaseConfigList\"})",
+          "package": "org.optaplanner.core.config.solver",
+          "classSimpleName": "SolverConfig",
+          "elementKind": "class",
+          "justification": "domainAccessType less important than entityClassList, so it should be after entityClassList."
         }
       ]
     }

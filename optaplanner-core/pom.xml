@@ -54,6 +54,14 @@
       <artifactId>drools-core-dynamic</artifactId>
       <scope>runtime</scope>
     </dependency>
+
+    <!-- Gizmo dependencies -->
+    <dependency>
+      <groupId>io.quarkus.gizmo</groupId>
+      <artifactId>gizmo</artifactId>
+      <optional>true</optional>
+    </dependency>
+
     <!-- External dependencies -->
     <!-- Common utils -->
     <dependency>

@@ -164,6 +164,31 @@ This is https://issues.redhat.com/browse/PLANNER-151[not yet supported].
 
 This manual focuses on the first manner, but every feature supports all three manners, even if it's not explicitly mentioned.
 
+[[domainAccess]]
+=== Domain access
+
+OptaPlanner by default accesses your domain using reflection, which
+will always work, but is slow compared to direct access. Alternatively, you can configure OptaPlanner to access your domain
+using Gizmo, which will generate bytecode that directly access the
+fields/methods of your domain without reflection. However, it comes with some restrictions:
+
+* The planning annotations can only be on public fields and
+  public getters.
+* io.quarkus.gizmo:gizmo must be on the classpath.
+
+These restrictions do not apply when using OptaPlanner with Quarkus,
+where Gizmo is the default domain access type.
+
+To use Gizmo outside of Quarkus, set the `domainAccessType` in the
+Solver Configuration:
+
+[source,xml,options="nowrap"]
+----
+  <solver>
+    <domainAccessType>GIZMO</domainAccessType>
+  </solver>
+----
+
 [[customPropertiesConfiguration]]
 === Custom properties configuration
 

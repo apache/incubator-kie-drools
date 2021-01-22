@@ -1,0 +1,9 @@
+<solver>
+  <domainAccessType>GIZMO</domainAccessType>
+  <scoreDirectorFactory>
+      <constraintProviderClass>org.optaplanner.spring.boot.autoconfigure.gizmo.constraints.TestdataGizmoConstraintProvider</constraintProviderClass>
+  </scoreDirectorFactory>
+  <termination>
+    <minutesSpentLimit>3</minutesSpentLimit>
+  </termination>
+</solver>

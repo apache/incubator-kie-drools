@@ -16,6 +16,10 @@
 
 package org.optaplanner.quarkus;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.enterprise.inject.Produces;
 import javax.inject.Singleton;
 
@@ -36,6 +40,9 @@ import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.api.solver.SolverManager;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.SolverManagerConfig;
+import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
+import org.optaplanner.core.impl.domain.common.accessor.gizmo.GizmoMemberAccessorFactory;
+import org.optaplanner.quarkus.gizmo.OptaPlannerGizmoInfo;
 
 import io.quarkus.arc.DefaultBean;
 
@@ -44,7 +51,24 @@ public class OptaPlannerBeanProvider {
     @DefaultBean
     @Singleton
     @Produces
-    <Solution_> SolverFactory<Solution_> solverFactory(SolverConfig solverConfig) {
+    <Solution_> SolverFactory<Solution_> solverFactory(OptaPlannerGizmoInfo gizmoInfo, SolverConfig solverConfig) {
+        Map<String, MemberAccessor> memberAccessorMap = new HashMap<>();
+        for (String classBytecodeName : gizmoInfo.getGizmoMemberAccessorNameToGenericType().keySet()) {
+            String className = classBytecodeName.replace('/', '.');
+            try {
+                MemberAccessor memberAccessor =
+                        (MemberAccessor) Class.forName(className, true, Thread.currentThread().getContextClassLoader())
+                                .getConstructor().newInstance();
+                memberAccessorMap.put(className, memberAccessor);
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException | ClassNotFoundException
+                    | NoSuchMethodException e) {
+                throw new IllegalStateException("Fail to create instance of MemberAccessor (" + className + ").", e);
+            }
+
+        }
+        GizmoMemberAccessorFactory.usePregeneratedMaps(memberAccessorMap,
+                gizmoInfo.getGizmoMemberAccessorNameToGenericType(),
+                gizmoInfo.getGizmoMemberAccessorNameToAnnotatedElement());
         return SolverFactory.create(solverConfig);
     }
 

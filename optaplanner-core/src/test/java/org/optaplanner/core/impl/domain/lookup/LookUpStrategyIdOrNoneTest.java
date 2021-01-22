@@ -23,6 +23,7 @@ import java.util.Collections;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.optaplanner.core.api.domain.common.DomainAccessType;
 import org.optaplanner.core.api.domain.lookup.LookUpStrategyType;
 import org.optaplanner.core.api.domain.lookup.PlanningId;
 import org.optaplanner.core.impl.testdata.domain.clone.lookup.TestdataObjectIntegerId;
@@ -37,7 +38,8 @@ public class LookUpStrategyIdOrNoneTest {
 
     @BeforeEach
     public void setUpLookUpManager() {
-        lookUpManager = new LookUpManager(new LookUpStrategyResolver(LookUpStrategyType.PLANNING_ID_OR_NONE));
+        lookUpManager = new LookUpManager(
+                new LookUpStrategyResolver(DomainAccessType.REFLECTION, LookUpStrategyType.PLANNING_ID_OR_NONE));
         lookUpManager.resetWorkingObjects(Collections.emptyList());
     }
 

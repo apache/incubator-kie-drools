@@ -33,6 +33,11 @@
       <artifactId>optaplanner-persistence-jackson</artifactId>
       <optional>true</optional>
     </dependency>
+    <dependency>
+      <groupId>io.quarkus.gizmo</groupId>
+      <artifactId>gizmo</artifactId>
+      <scope>test</scope>
+    </dependency>
 
     <!-- External dependencies -->
     <dependency>

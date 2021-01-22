@@ -147,6 +147,9 @@ public class OptaPlannerAutoConfiguration implements BeanClassLoaderAware {
             if (solverProperties.getEnvironmentMode() != null) {
                 solverConfig.setEnvironmentMode(solverProperties.getEnvironmentMode());
             }
+            if (solverProperties.getDomainAccessType() != null) {
+                solverConfig.setDomainAccessType(solverProperties.getDomainAccessType());
+            }
             if (solverProperties.getDaemon() != null) {
                 solverConfig.setDaemon(solverProperties.getDaemon());
             }

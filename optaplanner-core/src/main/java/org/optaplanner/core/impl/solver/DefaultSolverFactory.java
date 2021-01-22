@@ -132,7 +132,8 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
                     solverConfig.getEntityClassList() + "). If you're using the Quarkus extension or Spring Boot starter, " +
                     "it should have been filled in already.");
         }
-        return SolutionDescriptor.buildSolutionDescriptor((Class<Solution_>) solverConfig.getSolutionClass(),
+        return SolutionDescriptor.buildSolutionDescriptor(solverConfig.determineDomainAccessType(),
+                (Class<Solution_>) solverConfig.getSolutionClass(),
                 solverConfig.getEntityClassList());
     }
 

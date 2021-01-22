@@ -56,7 +56,8 @@ public abstract class InnerConstraintFactory<Solution_> implements ConstraintFac
 
     @Override
     public <A> BiConstraintStream<A, A> fromUniquePair(Class<A> fromClass, BiJoiner<A, A> joiner) {
-        MemberAccessor planningIdMemberAccessor = ConfigUtils.findPlanningIdMemberAccessor(fromClass);
+        MemberAccessor planningIdMemberAccessor =
+                ConfigUtils.findPlanningIdMemberAccessor(fromClass, getSolutionDescriptor().getDomainAccessType());
         if (planningIdMemberAccessor == null) {
             throw new IllegalArgumentException("The fromClass (" + fromClass + ") has no member with a @"
                     + PlanningId.class.getSimpleName() + " annotation,"

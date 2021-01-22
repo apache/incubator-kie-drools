@@ -22,8 +22,10 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
+import org.optaplanner.core.api.domain.common.DomainAccessType;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
+import org.optaplanner.core.impl.domain.common.accessor.gizmo.GizmoMemberAccessorFactory;
 
 public class MemberAccessorFactory {
 
@@ -32,7 +34,12 @@ public class MemberAccessorFactory {
             SolverFactory.class.getSimpleName() + ".create...() method call.";
 
     public static MemberAccessor buildMemberAccessor(Member member, MemberAccessorType memberAccessorType,
-            Class<? extends Annotation> annotationClass) {
+            Class<? extends Annotation> annotationClass,
+            DomainAccessType domainAccessType) {
+        if (domainAccessType == DomainAccessType.GIZMO) {
+            return GizmoMemberAccessorFactory.buildGizmoMemberAccessor(member, annotationClass);
+        }
+
         if (member instanceof Field) {
             Field field = (Field) member;
             return new ReflectionFieldMemberAccessor(field);

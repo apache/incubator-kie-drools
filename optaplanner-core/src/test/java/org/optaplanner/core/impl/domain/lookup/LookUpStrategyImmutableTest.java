@@ -43,6 +43,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.optaplanner.core.api.domain.common.DomainAccessType;
 import org.optaplanner.core.api.domain.lookup.LookUpStrategyType;
 
 public class LookUpStrategyImmutableTest {
@@ -84,7 +85,8 @@ public class LookUpStrategyImmutableTest {
 
     @BeforeEach
     public void setUpLookUpManager() {
-        lookUpManager = new LookUpManager(new LookUpStrategyResolver(LookUpStrategyType.PLANNING_ID_OR_NONE));
+        lookUpManager = new LookUpManager(
+                new LookUpStrategyResolver(DomainAccessType.REFLECTION, LookUpStrategyType.PLANNING_ID_OR_NONE));
         lookUpManager.resetWorkingObjects(Collections.emptyList());
     }
 

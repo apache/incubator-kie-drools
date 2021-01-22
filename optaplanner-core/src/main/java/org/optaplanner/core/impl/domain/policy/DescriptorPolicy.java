@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.optaplanner.core.api.domain.common.DomainAccessType;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 
@@ -30,6 +31,7 @@ public class DescriptorPolicy {
 
     private Map<String, MemberAccessor> fromSolutionValueRangeProviderMap = new LinkedHashMap<>();
     private Map<String, MemberAccessor> fromEntityValueRangeProviderMap = new LinkedHashMap<>();
+    private DomainAccessType domainAccessType = DomainAccessType.REFLECTION;
 
     public void addFromSolutionValueRangeProvider(MemberAccessor memberAccessor) {
         String id = extractValueRangeProviderId(memberAccessor);
@@ -51,6 +53,14 @@ public class DescriptorPolicy {
 
     public boolean hasFromEntityValueRangeProvider(String id) {
         return fromEntityValueRangeProviderMap.containsKey(id);
+    }
+
+    public DomainAccessType getDomainAccessType() {
+        return domainAccessType;
+    }
+
+    public void setDomainAccessType(DomainAccessType domainAccessType) {
+        this.domainAccessType = domainAccessType;
     }
 
     public MemberAccessor getFromEntityValueRangeProvider(String id) {

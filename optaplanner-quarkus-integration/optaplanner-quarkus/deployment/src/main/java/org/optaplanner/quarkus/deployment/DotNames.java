@@ -17,8 +17,23 @@
 package org.optaplanner.quarkus.deployment;
 
 import org.jboss.jandex.DotName;
+import org.optaplanner.core.api.domain.constraintweight.ConstraintConfigurationProvider;
+import org.optaplanner.core.api.domain.constraintweight.ConstraintWeight;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
+import org.optaplanner.core.api.domain.entity.PlanningPin;
+import org.optaplanner.core.api.domain.lookup.PlanningId;
+import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningEntityProperty;
+import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.domain.solution.ProblemFactCollectionProperty;
+import org.optaplanner.core.api.domain.solution.ProblemFactProperty;
+import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
+import org.optaplanner.core.api.domain.variable.AnchorShadowVariable;
+import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
+import org.optaplanner.core.api.domain.variable.InverseRelationShadowVariable;
+import org.optaplanner.core.api.domain.variable.PlanningVariable;
+import org.optaplanner.core.api.domain.variable.PlanningVariableReference;
 import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
 import org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
@@ -26,11 +41,50 @@ import org.optaplanner.core.api.score.stream.ConstraintProvider;
 public final class DotNames {
 
     static final DotName PLANNING_SOLUTION = DotName.createSimple(PlanningSolution.class.getName());
-    static final DotName PLANNING_ENTITY = DotName.createSimple(PlanningEntity.class.getName());
+    static final DotName PLANNING_ENTITY_COLLECTION_PROPERTY =
+            DotName.createSimple(PlanningEntityCollectionProperty.class.getName());
+    static final DotName PLANNING_ENTITY_PROPERTY = DotName.createSimple(PlanningEntityProperty.class.getName());
+    static final DotName PLANNING_SCORE = DotName.createSimple(PlanningScore.class.getName());
+    static final DotName PROBLEM_FACT_COLLECTION_PROPERTY = DotName.createSimple(ProblemFactCollectionProperty.class.getName());
+    static final DotName PROBLEM_FACT_PROPERTY = DotName.createSimple(ProblemFactProperty.class.getName());
+
     static final DotName EASY_SCORE_CALCULATOR = DotName.createSimple(EasyScoreCalculator.class.getName());
     static final DotName CONSTRAINT_PROVIDER = DotName.createSimple(ConstraintProvider.class.getName());
     static final DotName INCREMENTAL_SCORE_CALCULATOR =
             DotName.createSimple(IncrementalScoreCalculator.class.getName());
+    static final DotName CONSTRAINT_CONFIGURATION_PROVIDER =
+            DotName.createSimple(ConstraintConfigurationProvider.class.getName());
+    static final DotName CONSTRAINT_WEIGHT = DotName.createSimple(ConstraintWeight.class.getName());
+
+    static final DotName PLANNING_ENTITY = DotName.createSimple(PlanningEntity.class.getName());
+    static final DotName PLANNING_PIN = DotName.createSimple(PlanningPin.class.getName());
+    static final DotName PLANNING_ID = DotName.createSimple(PlanningId.class.getName());
+
+    static final DotName PLANNING_VARIABLE = DotName.createSimple(PlanningVariable.class.getName());
+    static final DotName VALUE_RANGE_PROVIDER = DotName.createSimple(ValueRangeProvider.class.getName());
+    static final DotName PLANNING_VARIABLE_REFERENCE = DotName.createSimple(PlanningVariableReference.class.getName());
+
+    static final DotName ANCHOR_SHADOW_VARIABLE = DotName.createSimple(AnchorShadowVariable.class.getName());
+    static final DotName CUSTOM_SHADOW_VARIABLE = DotName.createSimple(CustomShadowVariable.class.getName());
+    static final DotName INVERSE_RELATION_SHADOW_VARIABLE = DotName.createSimple(InverseRelationShadowVariable.class.getName());
+
+    static final DotName[] GIZMO_MEMBER_ACCESSOR_ANNOTATIONS = {
+            PLANNING_ENTITY_COLLECTION_PROPERTY,
+            PLANNING_ENTITY_PROPERTY,
+            PLANNING_SCORE,
+            PROBLEM_FACT_COLLECTION_PROPERTY,
+            PROBLEM_FACT_PROPERTY,
+            CONSTRAINT_CONFIGURATION_PROVIDER,
+            CONSTRAINT_WEIGHT,
+            PLANNING_PIN,
+            PLANNING_ID,
+            PLANNING_VARIABLE,
+            PLANNING_VARIABLE_REFERENCE,
+            VALUE_RANGE_PROVIDER,
+            ANCHOR_SHADOW_VARIABLE,
+            CUSTOM_SHADOW_VARIABLE,
+            INVERSE_RELATION_SHADOW_VARIABLE,
+    };
 
     private DotNames() {
     }

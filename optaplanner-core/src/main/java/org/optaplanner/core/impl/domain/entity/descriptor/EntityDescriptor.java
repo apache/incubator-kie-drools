@@ -205,16 +205,18 @@ public class EntityDescriptor<Solution_> {
         }
     }
 
-    private void processValueRangeProviderAnnotation(DescriptorPolicy descriptorPolicy, Member member) {
+    private void processValueRangeProviderAnnotation(DescriptorPolicy descriptorPolicy,
+            Member member) {
         if (((AnnotatedElement) member).isAnnotationPresent(ValueRangeProvider.class)) {
-            MemberAccessor memberAccessor = MemberAccessorFactory.buildMemberAccessor(
-                    member, FIELD_OR_READ_METHOD, ValueRangeProvider.class);
+            MemberAccessor memberAccessor = MemberAccessorFactory.buildMemberAccessor(member, FIELD_OR_READ_METHOD,
+                    ValueRangeProvider.class, descriptorPolicy.getDomainAccessType());
             descriptorPolicy.addFromEntityValueRangeProvider(
                     memberAccessor);
         }
     }
 
-    private void processPlanningVariableAnnotation(DescriptorPolicy descriptorPolicy, Member member) {
+    private void processPlanningVariableAnnotation(DescriptorPolicy descriptorPolicy,
+            Member member) {
         Class<? extends Annotation> variableAnnotationClass = ConfigUtils.extractAnnotationClass(
                 member, VARIABLE_ANNOTATION_CLASSES);
         if (variableAnnotationClass != null) {
@@ -224,8 +226,8 @@ public class EntityDescriptor<Solution_> {
             } else {
                 memberAccessorType = FIELD_OR_GETTER_METHOD_WITH_SETTER;
             }
-            MemberAccessor memberAccessor = MemberAccessorFactory.buildMemberAccessor(
-                    member, memberAccessorType, variableAnnotationClass);
+            MemberAccessor memberAccessor = MemberAccessorFactory.buildMemberAccessor(member, memberAccessorType,
+                    variableAnnotationClass, descriptorPolicy.getDomainAccessType());
             registerVariableAccessor(descriptorPolicy, variableAnnotationClass, memberAccessor);
         }
     }
@@ -267,10 +269,11 @@ public class EntityDescriptor<Solution_> {
         }
     }
 
-    private void processPlanningPinAnnotation(DescriptorPolicy descriptorPolicy, Member member) {
+    private void processPlanningPinAnnotation(DescriptorPolicy descriptorPolicy,
+            Member member) {
         if (((AnnotatedElement) member).isAnnotationPresent(PlanningPin.class)) {
-            MemberAccessor memberAccessor = MemberAccessorFactory.buildMemberAccessor(
-                    member, FIELD_OR_READ_METHOD, PlanningPin.class);
+            MemberAccessor memberAccessor = MemberAccessorFactory.buildMemberAccessor(member, FIELD_OR_READ_METHOD,
+                    PlanningPin.class, descriptorPolicy.getDomainAccessType());
             Class<?> type = memberAccessor.getType();
             if (!Boolean.TYPE.isAssignableFrom(type) && !Boolean.class.isAssignableFrom(type)) {
                 throw new IllegalStateException("The entityClass (" + entityClass

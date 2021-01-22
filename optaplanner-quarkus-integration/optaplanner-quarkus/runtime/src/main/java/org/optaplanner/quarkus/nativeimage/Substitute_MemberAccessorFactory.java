@@ -21,12 +21,14 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 
+import org.optaplanner.core.api.domain.common.DomainAccessType;
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory;
 import org.optaplanner.core.impl.domain.common.accessor.ReflectionBeanPropertyMemberAccessor;
 import org.optaplanner.core.impl.domain.common.accessor.ReflectionFieldMemberAccessor;
 import org.optaplanner.core.impl.domain.common.accessor.ReflectionMethodMemberAccessor;
+import org.optaplanner.core.impl.domain.common.accessor.gizmo.GizmoMemberAccessorImplementor;
 
 import com.oracle.svm.core.annotate.Substitute;
 import com.oracle.svm.core.annotate.TargetClass;
@@ -36,7 +38,21 @@ public final class Substitute_MemberAccessorFactory {
 
     @Substitute
     public static MemberAccessor buildMemberAccessor(Member member, MemberAccessorFactory.MemberAccessorType memberAccessorType,
-            Class<? extends Annotation> annotationClass) {
+            Class<? extends Annotation> annotationClass,
+            DomainAccessType domainAccessType) {
+        if (domainAccessType == DomainAccessType.GIZMO) {
+            try {
+                // Check if Gizmo on the classpath by verifying we can access one of its classes
+                Class.forName("io.quarkus.gizmo.ClassCreator", false,
+                        Thread.currentThread().getContextClassLoader());
+            } catch (ClassNotFoundException e) {
+                throw new IllegalStateException("When using the domainAccessType (" +
+                        domainAccessType +
+                        ") the classpath or modulepath must contain io.quarkus.gizmo:gizmo.\n" +
+                        "Maybe add a dependency to io.quarkus.gizmo:gizmo.");
+            }
+            return GizmoMemberAccessorImplementor.createAccessorFor(member, annotationClass);
+        }
         if (member instanceof Field) {
             Field field = (Field) member;
             return new ReflectionFieldMemberAccessor(field);

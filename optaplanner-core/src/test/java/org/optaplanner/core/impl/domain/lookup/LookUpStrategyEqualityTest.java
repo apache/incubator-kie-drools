@@ -23,6 +23,7 @@ import java.util.Collections;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.optaplanner.core.api.domain.common.DomainAccessType;
 import org.optaplanner.core.api.domain.lookup.LookUpStrategyType;
 import org.optaplanner.core.impl.testdata.domain.clone.lookup.TestdataObjectEquals;
 import org.optaplanner.core.impl.testdata.domain.clone.lookup.TestdataObjectEqualsNoHashCode;
@@ -35,7 +36,7 @@ public class LookUpStrategyEqualityTest {
 
     @BeforeEach
     public void setUpLookUpManager() {
-        lookUpManager = new LookUpManager(new LookUpStrategyResolver(LookUpStrategyType.EQUALITY));
+        lookUpManager = new LookUpManager(new LookUpStrategyResolver(DomainAccessType.REFLECTION, LookUpStrategyType.EQUALITY));
         lookUpManager.resetWorkingObjects(Collections.emptyList());
     }
 
