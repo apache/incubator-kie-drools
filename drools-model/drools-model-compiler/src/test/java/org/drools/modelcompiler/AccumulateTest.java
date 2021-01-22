@@ -39,6 +39,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.IntStream;
 
+import org.apache.commons.math3.util.Pair;
 import org.assertj.core.api.Assertions;
 import org.drools.model.functions.accumulate.GroupKey;
 import org.drools.modelcompiler.domain.Adult;
@@ -3112,5 +3113,191 @@ public class AccumulateTest extends BaseModelTest {
         public void setName(String name) {
             this.name = name;
         }
+    }
+
+    @Test
+    public void testMultiAccumulate() {
+        // RHDM-1572
+        String str =
+                "global java.util.List result;\n" +
+                "rule R when\n" +
+                "    accumulate ( $s : String( $name : toString, $length : length );\n" +
+                "                 $count : count($name),\n" +
+                "                 $sum : sum($length),\n" +
+                "                 $list : collectList($s) )\n" +
+                "    then\n" +
+                "        result.add($count);\n" +
+                "        result.add($sum);\n" +
+                "        result.addAll($list);\n" +
+                "end";
+
+        KieSession kSession = getKieSession( str );
+
+        List<Object> result = new ArrayList<>();
+        kSession.setGlobal( "result", result );
+
+        kSession.insert( "test" );
+        kSession.insert( "mytest" );
+        kSession.insert( "anothertest" );
+
+        assertEquals( 1, kSession.fireAllRules() );
+        assertEquals( 5, result.size() );
+        assertEquals( 3L, result.get( 0 ) );
+        assertEquals( 21, result.get( 1 ) );
+        assertTrue( result.contains( "test" ) );
+        assertTrue( result.contains( "mytest" ) );
+        assertTrue( result.contains( "anothertest" ) );
+
+        kSession.dispose();
+    }
+
+    @Test
+    public void testAccumulateWithExists() {
+        // RHDM-1571
+        String str =
+                "import " + Car.class.getCanonicalName() + ";" +
+                "import " + Aclass.class.getCanonicalName() + ";" +
+                "global java.util.List result;\n" +
+                "rule R when\n" +
+                "        $list : List() from accumulate ( $car : Car( $name : name )\n" +
+                "                                         and exists Aclass( name == $name );\n" +
+                "                                         collectList($car) )\n" +
+                "    then\n" +
+                "        result.addAll($list);\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        List<Car> result = new ArrayList<>();
+        ksession.setGlobal( "result", result );
+
+        ksession.insert(new Car("A180"));
+        ksession.insert(new Aclass("A180"));
+        ksession.insert(new Aclass("A180"));
+        ksession.insert(new Aclass("A180"));
+
+        assertEquals( 1, ksession.fireAllRules() );
+        assertEquals( 1, result.size() );
+        assertEquals( "A180", result.get(0).getName() );
+
+        ksession.dispose();
+    }
+
+    @Test
+    public void testOneAccumulateOnPattern() {
+        // DROOLS-5938
+        String str =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "import " + Collection.class.getCanonicalName() + ";\n" +
+                "global java.util.List result;\n" +
+                "rule R when\n" +
+                "  $acc1 : Collection() from accumulate( \n" +
+                "    $p : Person( ), collectSet( $p ) ) \n" +
+                "then\n" +
+                "  result.add($acc1.iterator().next());" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        List<Integer> result = new ArrayList<>();
+        ksession.setGlobal("result", result);
+
+        Person lukas = new Person("Lukas", 35);
+        ksession.insert(lukas);
+        ksession.fireAllRules();
+
+        System.out.println(result);
+
+        assertEquals(1, result.size());
+        assertEquals(lukas, result.get(0));
+    }
+
+    @Test
+    public void testOneAccumulateOnPatternWithVarBinding() {
+        // DROOLS-5938
+        String str =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "import " + Collection.class.getCanonicalName() + ";\n" +
+                "global java.util.List result;\n" +
+                "rule R when\n" +
+                "  $acc1 : Collection() from accumulate( \n" +
+                "    $p : Person( $name : name ), collectSet( $p ) ) \n" +
+                "then\n" +
+                "  result.add($acc1.iterator().next());" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        List<Integer> result = new ArrayList<>();
+        ksession.setGlobal("result", result);
+
+        Person lukas = new Person("Lukas", 35);
+        ksession.insert(lukas);
+        ksession.fireAllRules();
+
+        System.out.println(result);
+
+        assertEquals(1, result.size());
+        assertEquals(lukas, result.get(0));
+    }
+
+    @Test
+    public void testTwoAccumulatesOnPattern() {
+        // DROOLS-5938
+        String str =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                        "import " + Pair.class.getCanonicalName() + ";\n" +
+                        "import " + Collection.class.getCanonicalName() + ";\n" +
+                        "global java.util.List result;\n" +
+                        "rule R when\n" +
+                        "  $acc1 : Collection() from accumulate( \n" +
+                        "    Person( $pair1 : Pair.create(name, age) ), collectSet( $pair1 ) ) \n" +
+                        "  $acc2 : Collection() from accumulate( \n" +
+                        "    $pair2 : Pair( ) from $acc1, collectSet( $pair2 ) )\n" +
+                        "then\n" +
+                        "  result.add($acc2.iterator().next());" +
+                        "end";
+
+        KieSession ksession = getKieSession( str );
+
+        List<Pair> result = new ArrayList<>();
+        ksession.setGlobal("result", result);
+
+        ksession.insert(new Person("Lukas", 35));
+        ksession.fireAllRules();
+
+        assertEquals(1, result.size());
+        assertEquals(Pair.create("Lukas", 35), result.get(0));
+    }
+
+    @Test
+    public void testTwoAccumulatesOnPatternWithVarBinding() {
+        // DROOLS-5938
+        String str =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "import " + Pair.class.getCanonicalName() + ";\n" +
+                "import " + Collection.class.getCanonicalName() + ";\n" +
+                "global java.util.List result;\n" +
+                "rule R when\n" +
+                "  $acc1 : Collection() from accumulate( \n" +
+                "    Person( $pair1 : Pair.create(name, age) ), collectSet( $pair1 ) ) \n" +
+                "  $acc2 : Collection() from accumulate( \n" +
+                "    $pair2 : Pair( $k : key ) from $acc1, collectSet( $pair2 ) )\n" +
+                "then\n" +
+                "  result.add($acc2.iterator().next());" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        List<Integer> result = new ArrayList<>();
+        ksession.setGlobal("result", result);
+
+        ksession.insert(new Person("Lukas", 35));
+        ksession.fireAllRules();
+
+        System.out.println(result);
+
+        assertEquals(1, result.size());
+        assertEquals(Pair.create("Lukas", 35), result.get(0));
     }
 }

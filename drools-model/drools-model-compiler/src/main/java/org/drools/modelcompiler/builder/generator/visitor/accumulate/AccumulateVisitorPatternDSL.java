@@ -113,7 +113,10 @@ public class AccumulateVisitorPatternDSL extends AccumulateVisitor {
     private void addBindAsLastChainCall(MethodCallExpr newBindingExpression, MethodCallExpr pattern) {
         final Optional<Node> optParent = pattern.getParentNode();
         newBindingExpression.setScope(pattern);
-        optParent.ifPresent(parent -> parent.replace(pattern, newBindingExpression));
+        optParent.ifPresent(parent -> {
+            parent.replace(pattern, newBindingExpression);
+            pattern.setParentNode( newBindingExpression );
+        });
     }
 
     private MethodCallExpr replaceBindingWithPatternBinding(MethodCallExpr bindExpression, MethodCallExpr lastPattern) {
