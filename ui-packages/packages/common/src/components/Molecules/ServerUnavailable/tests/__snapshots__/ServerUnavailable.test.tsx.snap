@@ -15,10 +15,6 @@ exports[`ServerUnavailable component tests snapshot testing  1`] = `
               >
                 <PageToolbar />
               </Context.Provider>
-              <Avatar
-                alt="Kogito Logo"
-                src="avatar.svg"
-              />
             </PageHeaderTools>
           }
           isNavOpen={true}
