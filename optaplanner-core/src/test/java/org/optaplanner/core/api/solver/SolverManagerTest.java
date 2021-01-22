@@ -59,6 +59,17 @@ import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 public class SolverManagerTest {
 
     @Test
+    public void create() {
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class);
+        SolverManager.create(solverConfig).close();
+        SolverManagerConfig solverManagerConfig = new SolverManagerConfig();
+        SolverManager.create(solverConfig, solverManagerConfig).close();
+        SolverFactory<TestdataSolution> solverFactory = SolverFactory.create(solverConfig);
+        SolverManager.create(solverFactory).close();
+        SolverManager.create(solverFactory, solverManagerConfig).close();
+    }
+
+    @Test
     @Timeout(60)
     public void solveBatch_2InParallel() throws ExecutionException, InterruptedException {
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class)
@@ -73,6 +84,7 @@ public class SolverManagerTest {
 
         assertSolutionInitialized(solverJob1.getFinalBestSolution());
         assertSolutionInitialized(solverJob2.getFinalBestSolution());
+        solverManager.close();
     }
 
     private CustomPhaseConfig createPhaseWithConcurrentSolvingStart(int barrierPartiesCount) {
@@ -132,6 +144,7 @@ public class SolverManagerTest {
         assertThat(solverJob1.getSolverStatus()).isEqualTo(NOT_SOLVING);
         assertThat(solverManager.getSolverStatus(2L)).isEqualTo(NOT_SOLVING);
         assertThat(solverJob2.getSolverStatus()).isEqualTo(NOT_SOLVING);
+        solverManager.close();
     }
 
     @Test
@@ -155,6 +168,7 @@ public class SolverManagerTest {
         assertThat(exceptionCount.get()).isEqualTo(1);
         assertThat(solverManager.getSolverStatus(1L)).isEqualTo(NOT_SOLVING);
         assertThat(solverJob1.getSolverStatus()).isEqualTo(NOT_SOLVING);
+        solverManager.close();
     }
 
     @Test
@@ -177,6 +191,7 @@ public class SolverManagerTest {
         assertThat(exceptionCount.get()).isEqualTo(1);
         assertThat(solverManager.getSolverStatus(1L)).isEqualTo(NOT_SOLVING);
         assertThat(solverJob1.getSolverStatus()).isEqualTo(NOT_SOLVING);
+        solverManager.close();
     }
 
     @Test
@@ -196,6 +211,7 @@ public class SolverManagerTest {
         SolverJob<TestdataSolution, Long> solverJob = solverManager.solve(1L, problemFinder, finalBestSolutionConsumer,
                 exceptionHandler);
         solverJob.getFinalBestSolution();
+        solverManager.close();
     }
 
     @Disabled("Skip ahead not yet supported")
@@ -267,6 +283,7 @@ public class SolverManagerTest {
         assertThat(bestSolutionCount).hasValueLessThan(4);
         assertThat(finalBestSolutionCount).hasValue(1);
         assertThat(exceptionCount).hasValue(0);
+        solverManager.close();
     }
 
     @Test
@@ -327,6 +344,7 @@ public class SolverManagerTest {
         solverManager.terminateEarly(3L);
         assertThat(solverManager.getSolverStatus(3L)).isEqualTo(NOT_SOLVING);
         assertThat(solverJob3.getSolverStatus()).isEqualTo(NOT_SOLVING);
+        solverManager.close();
     }
 
     /**
@@ -353,6 +371,7 @@ public class SolverManagerTest {
         }
 
         assertInitializedJobs(jobs);
+        solverManager.close();
     }
 
     private void assertInitializedJobs(List<SolverJob<TestdataSolution, Integer>> jobs)
@@ -371,6 +390,7 @@ public class SolverManagerTest {
 
         SolverManager<TestdataSolution, Integer> solverManager = createSolverManagerTestableByDifferentConsumers();
         assertDifferentSolveMethods(problemCount, solverManager);
+        solverManager.close();
     }
 
     private SolverManager<TestdataSolution, Integer> createSolverManagerTestableByDifferentConsumers() {
@@ -494,5 +514,7 @@ public class SolverManagerTest {
         solverManager.solve(1L, PlannerTestUtils.generateTestdataSolution("s1"));
         assertThatThrownBy(() -> solverManager.solve(1L, PlannerTestUtils.generateTestdataSolution("s1")))
                 .isInstanceOf(IllegalStateException.class).hasMessageContaining("already solving");
+        solverManager.close();
     }
+
 }

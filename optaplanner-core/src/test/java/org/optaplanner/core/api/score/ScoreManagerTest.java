@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +14,16 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score;
+package org.optaplanner.core.api.score;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import org.junit.jupiter.api.Test;
-import org.optaplanner.core.api.score.ScoreExplanation;
-import org.optaplanner.core.api.score.ScoreManager;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
-class DefaultScoreManagerTest {
+class ScoreManagerTest {
 
     @Test
     public void updateScore() {

@@ -52,6 +52,22 @@ public interface SolverManager<Solution_, ProblemId_> extends AutoCloseable {
     // ************************************************************************
 
     /**
+     * Use a {@link SolverConfig} to build a {@link SolverManager}.
+     * <p>
+     * When using {@link ScoreManager} too, use {@link #create(SolverFactory)} instead
+     * so they reuse the same {@link SolverFactory} instance.
+     *
+     * @param solverConfig never null
+     * @return never null
+     * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+     * @param <ProblemId_> the ID type of a submitted problem, such as {@link Long} or {@link UUID}
+     */
+    static <Solution_, ProblemId_> SolverManager<Solution_, ProblemId_> create(
+            SolverConfig solverConfig) {
+        return create(solverConfig, new SolverManagerConfig());
+    }
+
+    /**
      * Use a {@link SolverConfig} and a {@link SolverManagerConfig} to build a {@link SolverManager}.
      * <p>
      * When using {@link ScoreManager} too, use {@link #create(SolverFactory, SolverManagerConfig)} instead
@@ -66,6 +82,19 @@ public interface SolverManager<Solution_, ProblemId_> extends AutoCloseable {
     static <Solution_, ProblemId_> SolverManager<Solution_, ProblemId_> create(
             SolverConfig solverConfig, SolverManagerConfig solverManagerConfig) {
         return create(SolverFactory.create(solverConfig), solverManagerConfig);
+    }
+
+    /**
+     * Use a {@link SolverFactory} to build a {@link SolverManager}.
+     *
+     * @param solverFactory never null
+     * @return never null
+     * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+     * @param <ProblemId_> the ID type of a submitted problem, such as {@link Long} or {@link UUID}
+     */
+    static <Solution_, ProblemId_> SolverManager<Solution_, ProblemId_> create(
+            SolverFactory<Solution_> solverFactory) {
+        return create(solverFactory, new SolverManagerConfig());
     }
 
     /**

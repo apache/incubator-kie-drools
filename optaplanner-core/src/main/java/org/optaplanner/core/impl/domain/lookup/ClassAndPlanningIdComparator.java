@@ -29,6 +29,7 @@ public class ClassAndPlanningIdComparator implements Comparator<Object> {
 
     private boolean failFastIfNoPlanningId;
     private DomainAccessType domainAccessType;
+    private Map<Class, MemberAccessor> decisionCache = new HashMap<>();
 
     public ClassAndPlanningIdComparator() {
         // TODO This will break Quarkus once we don't open up the domain hierarchy for reflection any more
@@ -44,8 +45,6 @@ public class ClassAndPlanningIdComparator implements Comparator<Object> {
         this.domainAccessType = domainAccessType;
         this.failFastIfNoPlanningId = failFastIfNoPlanningId;
     }
-
-    private Map<Class, MemberAccessor> decisionCache = new HashMap<>();
 
     @Override
     public int compare(Object a, Object b) {
