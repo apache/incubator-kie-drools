@@ -75,25 +75,27 @@ class PrequalificationDmnLimeExplainerTest {
         PredictionProvider model = new DecisionModelWrapper(decisionModel);
 
         Random random = new Random();
-        random.setSeed(4);
-        LimeConfig limeConfig = new LimeConfig().withSamples(3000)
-                .withPerturbationContext(new PerturbationContext(random, 3));
-        LimeExplainer limeExplainer = new LimeExplainer(limeConfig);
+        for (int i = 0; i < 5; i++) {
+            random.setSeed(i);
+            LimeConfig limeConfig = new LimeConfig().withSamples(3000)
+                    .withPerturbationContext(new PerturbationContext(random, 3));
+            LimeExplainer limeExplainer = new LimeExplainer(limeConfig);
 
-        List<PredictionOutput> predictionOutputs = model.predictAsync(List.of(predictionInput))
-                .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
-        Prediction prediction = new Prediction(predictionInput, predictionOutputs.get(0));
-        Map<String, Saliency> saliencyMap = limeExplainer.explainAsync(prediction, model)
-                .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
-        for (Saliency saliency : saliencyMap.values()) {
-            assertNotNull(saliency);
-            List<FeatureImportance> topFeatures = saliency.getTopFeatures(2);
-            if (!topFeatures.isEmpty()) {
-                assertThat(ExplainabilityMetrics.impactScore(model, prediction, topFeatures)).isPositive();
+            List<PredictionOutput> predictionOutputs = model.predictAsync(List.of(predictionInput))
+                    .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
+            Prediction prediction = new Prediction(predictionInput, predictionOutputs.get(0));
+            Map<String, Saliency> saliencyMap = limeExplainer.explainAsync(prediction, model)
+                    .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
+            for (Saliency saliency : saliencyMap.values()) {
+                assertNotNull(saliency);
+                List<FeatureImportance> topFeatures = saliency.getTopFeatures(2);
+                if (!topFeatures.isEmpty()) {
+                    assertThat(ExplainabilityMetrics.impactScore(model, prediction, topFeatures)).isPositive();
+                }
             }
-        }
 
-        assertDoesNotThrow(() -> ValidationUtils.validateLocalSaliencyStability(model, prediction, limeExplainer, 1,
-                                                                                0.5, 0.5));
+            assertDoesNotThrow(() -> ValidationUtils.validateLocalSaliencyStability(model, prediction, limeExplainer, 1,
+                    0.5, 0.5));
+        }
     }
 }

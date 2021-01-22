@@ -83,23 +83,25 @@ class FraudScoringDmnLimeExplainerTest {
                 .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
         Prediction prediction = new Prediction(predictionInput, predictionOutputs.get(0));
         Random random = new Random();
-        random.setSeed(4);
-        LimeConfig limeConfig = new LimeConfig()
-                .withSamples(300)
-                .withPerturbationContext(new PerturbationContext(random, 5));
-        LimeExplainer limeExplainer = new LimeExplainer(limeConfig);
-        Map<String, Saliency> saliencyMap = limeExplainer.explainAsync(prediction, model)
-                .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
-        for (Saliency saliency : saliencyMap.values()) {
-            assertNotNull(saliency);
-            List<FeatureImportance> topFeatures = saliency.getTopFeatures(4);
-            double topScore = Math.abs(topFeatures.stream().map(FeatureImportance::getScore).findFirst().orElse(0d));
-            if (!topFeatures.isEmpty() && topScore > 0) {
-                double v = ExplainabilityMetrics.impactScore(model, prediction, topFeatures);
-                assertThat(v).isPositive(); // checks the drop of important features triggers a flipped prediction (or a significant drop in the output score).
+        for (int i = 0; i < 5; i++) {
+            random.setSeed(i);
+            LimeConfig limeConfig = new LimeConfig()
+                    .withSamples(300)
+                    .withPerturbationContext(new PerturbationContext(random, 1));
+            LimeExplainer limeExplainer = new LimeExplainer(limeConfig);
+            Map<String, Saliency> saliencyMap = limeExplainer.explainAsync(prediction, model)
+                    .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
+            for (Saliency saliency : saliencyMap.values()) {
+                assertNotNull(saliency);
+                List<FeatureImportance> topFeatures = saliency.getTopFeatures(4);
+                double topScore = Math.abs(topFeatures.stream().map(FeatureImportance::getScore).findFirst().orElse(0d));
+                if (!topFeatures.isEmpty() && topScore > 0) {
+                    double v = ExplainabilityMetrics.impactScore(model, prediction, topFeatures);
+                    assertThat(v).isPositive(); // checks the drop of important features triggers a flipped prediction (or a significant drop in the output score).
+                }
             }
+            assertDoesNotThrow(() -> ValidationUtils.validateLocalSaliencyStability(model, prediction, limeExplainer, 1,
+                    0.4, 0.4)); // set to 0.4 since "Last Transaction" is inherently unstable output
         }
-        assertDoesNotThrow(() -> ValidationUtils.validateLocalSaliencyStability(model, prediction, limeExplainer, 1,
-                                                                                0.5, 0.5));
     }
 }
