@@ -42,8 +42,8 @@ import org.kie.dmn.api.core.ast.InputDataNode;
 import org.kie.dmn.core.ast.DMNBaseNode;
 import org.kie.dmn.core.ast.DecisionServiceNodeImpl;
 import org.kie.dmn.feel.util.Pair;
+import org.kie.kogito.cloudevents.CloudEventUtils;
 import org.kie.kogito.conf.ConfigBean;
-import org.kie.kogito.tracing.decision.event.CloudEventUtils;
 import org.kie.kogito.tracing.decision.event.EventUtils;
 import org.kie.kogito.tracing.decision.event.evaluate.EvaluateDecisionResult;
 import org.kie.kogito.tracing.decision.event.evaluate.EvaluateEvent;
@@ -67,8 +67,6 @@ import static org.kie.kogito.tracing.decision.event.evaluate.EvaluateEventType.B
 public class DefaultAggregator implements Aggregator {
 
     private static final Logger LOG = LoggerFactory.getLogger(DefaultAggregator.class);
-    private static final String UNKNOWN_SOURCE_URI_STRING = CloudEventUtils.urlEncodedStringFrom("__UNKNOWN_SOURCE__")
-            .orElseThrow(IllegalStateException::new);
 
     private static final String EXPRESSION_ID_KEY = "expressionId";
     private static final String MATCHES_KEY = "matches";
@@ -135,25 +133,16 @@ public class DefaultAggregator implements Aggregator {
     }
 
     private static URI buildSource(String serviceUrl, EvaluateEvent event) {
-        String modelChunk = Optional.ofNullable(event)
+        String decisionModelName = Optional.ofNullable(event)
                 .map(EvaluateEvent::getModelName)
-                .flatMap(CloudEventUtils::urlEncodedStringFrom)
                 .orElse(null);
 
-        String decisionChunk = Optional.ofNullable(event)
+        String decisionServiceName = Optional.ofNullable(event)
                 .filter(e -> e.getType() == BEFORE_EVALUATE_DECISION_SERVICE || e.getType() == AFTER_EVALUATE_DECISION_SERVICE)
                 .map(EvaluateEvent::getNodeName)
-                .flatMap(CloudEventUtils::urlEncodedStringFrom)
                 .orElse(null);
 
-        String fullUrl = Stream.of(serviceUrl, modelChunk, decisionChunk)
-                .filter(s -> s != null && !s.isEmpty())
-                .collect(Collectors.joining("/"));
-
-        return URI.create(Optional.of(fullUrl)
-                .filter(s -> !s.isEmpty())
-                .orElse(UNKNOWN_SOURCE_URI_STRING)
-        );
+        return CloudEventUtils.buildDecisionSource(serviceUrl, decisionModelName, decisionServiceName);
     }
 
     private static List<TraceInputValue> buildTraceInputValues(DMNModel model, EvaluateEvent firstEvent) {

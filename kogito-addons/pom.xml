@@ -14,8 +14,8 @@
   <description>Various Add-Ons to the runtimes modules (administration, monitoring, etc)</description>
   <modules>
     <module>persistence</module>
-    <module>events</module>
     <module>cloudevents</module>
+    <module>events</module>
     <module>jobs</module>
     <module>predictions</module>
     <module>process-management</module>

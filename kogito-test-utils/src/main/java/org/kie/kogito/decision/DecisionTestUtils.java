@@ -14,19 +14,15 @@
  *  limitations under the License.
  */
 
-package org.kie.kogito.tracing.decision;
+package org.kie.kogito.decision;
 
-import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.kogito.dmn.DMNKogito;
-import org.kie.kogito.tracing.decision.event.evaluate.EvaluateEvent;
 
 public class DecisionTestUtils {
 
@@ -44,12 +40,20 @@ public class DecisionTestUtils {
     public static final String DECISION_SERVICE_DECISION_ID = "_4055D956-1C47-479C-B3F4-BAEB61F1C929";
 
     public static final String EVALUATE_ALL_EXECUTION_ID = "4ac4c69f-4925-4221-b67e-4b14ce47bef8";
-    public static final String EVALUATE_ALL_JSON_RESOURCE = "/Traffic Violation_EvaluateEvents_evaluateAll.json";
     public static final String EVALUATE_DECISION_SERVICE_EXECUTION_ID = "77408667-f218-40b0-a355-1bab047a3e9e";
-    public static final String EVALUATE_DECISION_SERVICE_JSON_RESOURCE = "/Traffic Violation_EvaluateEvents_evaluateDecisionService.json";
 
-    private static final TypeReference<List<EvaluateEvent>> EVALUATE_EVENT_LIST_TYPE = new TypeReference<List<EvaluateEvent>>() {
-    };
+    private static final String DRIVER_KEY = "Driver";
+    private static final String DRIVER_AGE_KEY = "Age";
+    private static final int DRIVER_AGE_VALUE_25 = 25;
+    private static final String DRIVER_POINTS_KEY = "Points";
+    private static final int DRIVER_POINTS_VALUE_10 = 10;
+
+    private static final String VIOLATION_KEY = "Violation";
+    private static final String VIOLATION_TYPE_KEY = "Type";
+    private static final String VIOLATION_TYPE_VALUE_SPEED = "speed";
+    private static final String VIOLATION_ACTUAL_SPEED_KEY = "Actual Speed";
+    private static final String VIOLATION_SPEED_LIMIT_KEY = "Speed Limit";
+    private static final int VIOLATION_SPEED_LIMIT_VALUE_100 = 100;
 
     public static DMNRuntime createDMNRuntime() {
         return DMNKogito.createGenericDMNRuntime(new java.io.InputStreamReader(
@@ -62,55 +66,53 @@ public class DecisionTestUtils {
     }
 
     public static Map<String, Object> getEvaluateAllContext() {
-        return new HashMap<String, Object>() {{
-            put("Driver", getDriver(25, 10));
-            put("Violation", getViolation("speed", 115, 100));
-        }};
+        HashMap<String, Object> map = new HashMap<>();
+        map.put(DRIVER_KEY, getDriver(DRIVER_AGE_VALUE_25, DRIVER_POINTS_VALUE_10));
+        map.put(VIOLATION_KEY, getViolation(VIOLATION_TYPE_VALUE_SPEED, 115, VIOLATION_SPEED_LIMIT_VALUE_100));
+        return map;
     }
 
     public static Map<String, Object> getEvaluateAllContextForWarning() {
-        return new HashMap<String, Object>() {{
-            put("Driver", getDriver(25, 10));
-            put("Violation", getViolation("speed", 95, 100));
-        }};
+        HashMap<String, Object> map = new HashMap<>();
+        map.put(DRIVER_KEY, getDriver(DRIVER_AGE_VALUE_25, DRIVER_POINTS_VALUE_10));
+        map.put(VIOLATION_KEY, getViolation(VIOLATION_TYPE_VALUE_SPEED, 95, VIOLATION_SPEED_LIMIT_VALUE_100));
+        return map;
     }
 
     public static Map<String, Object> getEvaluateAllContextForError() {
-        return new HashMap<String, Object>() {{
-            put("Violation", getViolation("speed", 115, 100));
-        }};
+        HashMap<String, Object> map = new HashMap<>();
+        map.put(VIOLATION_KEY, getViolation(VIOLATION_TYPE_VALUE_SPEED, 115, VIOLATION_SPEED_LIMIT_VALUE_100));
+        return map;
     }
 
     public static Map<String, Object> getEvaluateDecisionServiceContext() {
-        return new HashMap<String, Object>() {{
-            put("Violation", getViolation("speed", 115, 100));
-        }};
+        HashMap<String, Object> map = new HashMap<>();
+        map.put(VIOLATION_KEY, getViolation(VIOLATION_TYPE_VALUE_SPEED, 125, VIOLATION_SPEED_LIMIT_VALUE_100));
+        return map;
     }
 
     public static Map<String, Object> getEvaluateDecisionServiceContextForWarning() {
-        return new HashMap<String, Object>() {{
-            put("Violation", getViolation("speed", 95, 100));
-        }};
+        HashMap<String, Object> map = new HashMap<>();
+        map.put(VIOLATION_KEY, getViolation(VIOLATION_TYPE_VALUE_SPEED, 95, VIOLATION_SPEED_LIMIT_VALUE_100));
+        return map;
     }
 
     public static Map<String, Object> getDriver(int age, int points) {
-        return new HashMap<String, Object>() {{
-            put("Age", age);
-            put("Points", points);
-        }};
+        HashMap<String, Object> map = new HashMap<>();
+        map.put(DRIVER_AGE_KEY, age);
+        map.put(DRIVER_POINTS_KEY, points);
+        return map;
     }
 
     public static Map<String, Object> getViolation(String type, int actualSpeed, int speedLimit) {
-        return new HashMap<String, Object>() {{
-            put("Type", type);
-            put("Actual Speed", actualSpeed);
-            put("Speed Limit", speedLimit);
-        }};
+        HashMap<String, Object> map = new HashMap<>();
+        map.put(VIOLATION_TYPE_KEY, type);
+        map.put(VIOLATION_ACTUAL_SPEED_KEY, actualSpeed);
+        map.put(VIOLATION_SPEED_LIMIT_KEY, speedLimit);
+        return map;
     }
 
-    public static List<EvaluateEvent> readEvaluateEventsFromJsonResource(String resourceName) throws IOException {
-        return MAPPER.readValue(DecisionTestUtils.class.getResourceAsStream(resourceName),
-                EVALUATE_EVENT_LIST_TYPE
-        );
+    private DecisionTestUtils() {
+        throw new IllegalStateException("Utility class");
     }
 }

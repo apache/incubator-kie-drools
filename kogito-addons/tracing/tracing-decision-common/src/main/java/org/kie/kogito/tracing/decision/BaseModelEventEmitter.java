@@ -16,7 +16,7 @@
 package org.kie.kogito.tracing.decision;
 
 import org.kie.internal.decision.DecisionModelResourcesProvider;
-import org.kie.kogito.tracing.decision.event.CloudEventUtils;
+import org.kie.kogito.cloudevents.CloudEventUtils;
 import org.kie.kogito.tracing.decision.event.model.ModelEvent;
 
 public abstract class BaseModelEventEmitter implements EventEmitter {

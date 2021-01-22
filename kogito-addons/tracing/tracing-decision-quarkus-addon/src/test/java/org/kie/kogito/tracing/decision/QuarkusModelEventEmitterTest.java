@@ -25,8 +25,8 @@ import org.junit.jupiter.api.Test;
 import org.kie.api.management.GAV;
 import org.kie.internal.decision.DecisionModelResource;
 import org.kie.internal.decision.DecisionModelResourcesProvider;
+import org.kie.kogito.cloudevents.CloudEventUtils;
 import org.kie.kogito.decision.DecisionModelType;
-import org.kie.kogito.tracing.decision.event.CloudEventUtils;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;

@@ -26,10 +26,10 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import org.kie.dmn.api.core.DMNModel;
+import org.kie.kogito.cloudevents.CloudEventUtils;
 import org.kie.kogito.conf.ConfigBean;
 import org.kie.kogito.tracing.decision.aggregator.Aggregator;
 import org.kie.kogito.tracing.decision.aggregator.DefaultAggregator;
-import org.kie.kogito.tracing.decision.event.CloudEventUtils;
 import org.kie.kogito.tracing.decision.event.evaluate.EvaluateEvent;
 import org.kie.kogito.tracing.decision.terminationdetector.CounterTerminationDetector;
 import org.kie.kogito.tracing.decision.terminationdetector.TerminationDetector;

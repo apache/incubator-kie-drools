@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>events</artifactId>
+    <groupId>org.kie.kogito</groupId>
+    <version>2.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>kogito-event-driven-decisions</artifactId>
+  <packaging>pom</packaging>
+  <name>Kogito :: Add-Ons :: Events :: Event-Driven Decisions</name>
+  <description>Trigger evaluation of decision models via events</description>
+
+  <modules>
+    <module>kogito-event-driven-decisions-common</module>
+    <module>kogito-event-driven-decisions-quarkus-addon</module>
+    <module>kogito-event-driven-decisions-springboot-addon</module>
+  </modules>
+
+</project>
