@@ -17,6 +17,7 @@ package org.kie.internal.pmml;
 
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
+import org.kie.api.runtime.Context;
 
 public interface PMMLCommandExecutor {
 
@@ -26,5 +27,5 @@ public interface PMMLCommandExecutor {
      * and the model name
      * @return
      */
-    PMML4Result execute(PMMLRequestData pmmlRequestData);
+    PMML4Result execute(final PMMLRequestData pmmlRequestData, final Context context);
 }
