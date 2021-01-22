@@ -64,7 +64,13 @@ public class HasKnowledgeBuilderImplTest {
     public void compileAndLoadClassMultipleTimes() {
         Map<String, String> sourcesMap = new HashMap<>();
         sourcesMap.put(CLASS_SOURCE_NAME, CLASS_SOURCE);
-        IntStream.range(0,3).forEach(value -> hasKnowledgeBuilder.compileAndLoadClass(sourcesMap, CLASS_SOURCE_NAME));
+        IntStream.range(0,3).forEach(value -> {
+            try {
+                hasKnowledgeBuilder.compileAndLoadClass(sourcesMap, CLASS_SOURCE_NAME);
+            } catch (Throwable t) {
+                fail(t.getMessage());
+            }
+        });
     }
 
 }

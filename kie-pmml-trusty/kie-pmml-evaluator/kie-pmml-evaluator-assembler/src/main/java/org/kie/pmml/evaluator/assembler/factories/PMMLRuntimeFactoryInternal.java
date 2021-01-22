@@ -51,8 +51,6 @@ public class PMMLRuntimeFactoryInternal {
     public static PMMLRuntime getPMMLRuntime(final File pmmlFile) {
         KieBase kieBase = createKieBase(pmmlFile);
         return getPMMLRuntime(kieBase);
-//        KnowledgeBuilderImpl kbuilderImpl = (KnowledgeBuilderImpl) KnowledgeBuilderFactory.newKnowledgeBuilder();
-//        return getPMMLRuntime(pmmlFile, kbuilderImpl);
     }
 
     public static PMMLRuntime getPMMLRuntime(File pmmlFile, ReleaseId releaseId) {
@@ -77,8 +75,7 @@ public class PMMLRuntimeFactoryInternal {
         KieHelper kieHelper = new KieHelper();
         FileSystemResource fileSystemResource = new FileSystemResource(pmmlFile);
         kieHelper.addResource(fileSystemResource);
-        KieBase toReturn = kieHelper.build(ExecutableModelProject.class);
-        return toReturn;
+        return kieHelper.build(ExecutableModelProject.class);
     }
 
     private static KieBase createKieBase(KnowledgeBuilderImpl kbuilderImpl) {

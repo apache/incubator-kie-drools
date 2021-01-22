@@ -36,8 +36,6 @@ import org.kie.pmml.compiler.executor.PMMLCompilerImpl;
 import org.kie.pmml.evaluator.assembler.factories.PMMLRuleMapperFactory;
 import org.kie.pmml.evaluator.assembler.factories.PMMLRuleMappersFactory;
 import org.kie.pmml.evaluator.assembler.implementations.HasKnowledgeBuilderImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static org.kie.pmml.evaluator.assembler.factories.PMMLRuleMapperFactory.KIE_PMML_RULE_MAPPER_CLASS_NAME;
 import static org.kie.pmml.evaluator.assembler.factories.PMMLRuleMappersFactory.KIE_PMML_RULE_MAPPERS_CLASS_NAME;
@@ -48,8 +46,6 @@ import static org.kie.pmml.evaluator.assembler.service.PMMLAssemblerService.getF
  * Class meant to <b>compile</b> resources
  */
 public class PMMLCompilerService {
-
-    private static final Logger logger = LoggerFactory.getLogger(PMMLCompilerService.class);
 
     static final String RULES_FILE_NAME = "Rules";
 
@@ -97,9 +93,7 @@ public class PMMLCompilerService {
         PMMLCompiler pmmlCompiler = kbuilderImpl.getCachedOrCreate(PMML_COMPILER_CACHE_KEY,
                                                                    PMMLCompilerService::getCompiler);
         try {
-            String[] classNamePackageName = getFactoryClassNamePackageName(resource);
-            String factoryClassName = classNamePackageName[0];
-            String packageName = classNamePackageName[1];
+            String packageName = getFactoryClassNamePackageName(resource)[1];
             return pmmlCompiler.getKiePMMLModels(packageName, resource.getInputStream(),
                                                  getFileName(resource.getSourcePath()),
                                                  new HasKnowledgeBuilderImpl(kbuilderImpl));
