@@ -43,5 +43,10 @@ public class SpringBootKogitoBuildContext extends AbstractKogitoBuildContext {
         public SpringBootKogitoBuildContext build() {
             return new SpringBootKogitoBuildContext(this);
         }
+
+        @Override
+        public String toString() {
+            return "SpringBoot";
+        }
     }
 }

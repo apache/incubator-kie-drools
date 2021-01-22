@@ -15,25 +15,27 @@
  */
 package org.kie.kogito.monitoring.core.springboot;
 
-import javax.ws.rs.container.DynamicFeature;
-import javax.ws.rs.container.ResourceInfo;
-import javax.ws.rs.core.FeatureContext;
-import javax.ws.rs.ext.Provider;
-
 import org.kie.kogito.monitoring.core.common.Constants;
-import org.kie.kogito.monitoring.core.common.system.interceptor.MetricsInterceptor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-@Provider
-public class SpringbootMetricsFilterRegister implements DynamicFeature {
+@Configuration
+public class SpringbootMetricsFilterRegister implements WebMvcConfigurer {
 
     @Value(value = "${" + Constants.HTTP_INTERCEPTOR_USE_DEFAULT + ":true}")
     boolean httpInterceptorUseDefault;
 
     @Override
-    public void configure(ResourceInfo resourceInfo, FeatureContext context) {
-        if (httpInterceptorUseDefault) {
-            context.register(new MetricsInterceptor());
+    public void addInterceptors(InterceptorRegistry registry) {
+        if(httpInterceptorUseDefault) {
+            registry.addInterceptor(new SpringbootMetricsInterceptor());
         }
+    }
+
+    // for testing purpose
+    void setHttpInterceptorUseDefault(boolean httpInterceptorUseDefault) {
+        this.httpInterceptorUseDefault = httpInterceptorUseDefault;
     }
 }

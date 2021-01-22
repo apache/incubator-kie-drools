@@ -182,9 +182,7 @@ public class DecisionRestResourceGenerator {
 
         if (context.getAddonsConfig().useMonitoring()) {
             addMonitoringImports(clazz);
-            ClassOrInterfaceDeclaration exceptionClazz = clazz.findFirst(ClassOrInterfaceDeclaration.class, x -> "DMNEvaluationErrorExceptionMapper".equals(x.getNameAsString()))
-                    .orElseThrow(() -> new NoSuchElementException("Could not find DMNEvaluationErrorExceptionMapper, template has changed."));
-            addExceptionMetricsLogging(exceptionClazz, nameURL);
+            addExceptionMetricsLogging(clazz, nameURL);
             addMonitoringToMethod(dmnMethod, nameURL);
         }
 
@@ -359,8 +357,8 @@ public class DecisionRestResourceGenerator {
         return resourceClazzName;
     }
 
-    private void addExceptionMetricsLogging(ClassOrInterfaceDeclaration template, String nameURL) {
-        MethodDeclaration method = template.findFirst(MethodDeclaration.class, x -> "toResponse".equals(x.getNameAsString()))
+    private void addExceptionMetricsLogging(CompilationUnit clazz, String nameURL) {
+        MethodDeclaration method = clazz.findFirst(MethodDeclaration.class, x -> "toResponse".equals(x.getNameAsString()))
                 .orElseThrow(() -> new NoSuchElementException("Method toResponse not found, template has changed."));
 
         BlockStmt body = method.getBody().orElseThrow(() -> new NoSuchElementException("This method should be invoked only with concrete classes and not with abstract methods or interfaces."));

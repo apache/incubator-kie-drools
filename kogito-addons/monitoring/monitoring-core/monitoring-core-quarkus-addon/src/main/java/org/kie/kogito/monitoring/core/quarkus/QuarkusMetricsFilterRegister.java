@@ -22,7 +22,6 @@ import javax.ws.rs.ext.Provider;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.kie.kogito.monitoring.core.common.Constants;
-import org.kie.kogito.monitoring.core.common.system.interceptor.MetricsInterceptor;
 
 @Provider
 public class QuarkusMetricsFilterRegister implements DynamicFeature {
@@ -33,7 +32,12 @@ public class QuarkusMetricsFilterRegister implements DynamicFeature {
     @Override
     public void configure(ResourceInfo resourceInfo, FeatureContext context) {
         if (httpInterceptorUseDefault) {
-            context.register(new MetricsInterceptor());
+            context.register(new QuarkusMetricsInterceptor());
         }
+    }
+
+    // for testing purpose
+    void setHttpInterceptorUseDefault(boolean httpInterceptorUseDefault) {
+        this.httpInterceptorUseDefault = httpInterceptorUseDefault;
     }
 }

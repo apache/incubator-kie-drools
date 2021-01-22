@@ -43,5 +43,10 @@ public class QuarkusKogitoBuildContext extends AbstractKogitoBuildContext {
         public QuarkusKogitoBuildContext build() {
             return new QuarkusKogitoBuildContext(this);
         }
+
+        @Override
+        public String toString() {
+            return "Quarkus";
+        }
     }
 }

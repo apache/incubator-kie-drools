@@ -15,25 +15,29 @@
 
 package org.kie.kogito.monitoring.core.common.system.interceptor;
 
-import java.util.List;
-
-import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.container.ContainerResponseContext;
-import javax.ws.rs.container.ContainerResponseFilter;
-
 import org.kie.kogito.monitoring.core.common.system.metrics.SystemMetricsCollector;
 
-public class MetricsInterceptor implements ContainerResponseFilter {
+public class MetricsInterceptor {
 
-    @Override
-    public void filter(ContainerRequestContext requestContext,
-                       ContainerResponseContext responseContext) {
-        List<String> matchedUris = requestContext.getUriInfo().getMatchedURIs();
-        if (!matchedUris.isEmpty()) {
-            SystemMetricsCollector.registerStatusCodeRequest(matchedUris.get(0), String.valueOf(responseContext.getStatusInfo().getStatusCode()));
+    private MetricsInterceptor() {
+        // utility class
+    }
+
+    public static void filter(String matchedUrl, int statusCode) {
+        String stringStatusCode = String.valueOf(statusCode);
+        if (statusCode != 404) {
+            String cleanUrl = cleanUrl(matchedUrl);
+            SystemMetricsCollector.registerStatusCodeRequest(cleanUrl, stringStatusCode);
         } else // Log the number of requests that did not match any Uri -> 404 not found.
         {
-            SystemMetricsCollector.registerStatusCodeRequest("NOT FOUND", String.valueOf(responseContext.getStatusInfo().getStatusCode()));
+            SystemMetricsCollector.registerStatusCodeRequest("NOT FOUND", stringStatusCode);
         }
+    }
+
+    private static String cleanUrl(String matchedUrl) {
+        if(matchedUrl != null && matchedUrl.startsWith("/")) {
+            return matchedUrl.substring(1);
+        }
+        return matchedUrl;
     }
 }

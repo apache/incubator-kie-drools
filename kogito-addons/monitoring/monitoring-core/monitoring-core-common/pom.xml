@@ -35,12 +35,6 @@
       <artifactId>micrometer-core</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>org.jboss.spec.javax.ws.rs</groupId>
-      <artifactId>jboss-jaxrs-api_2.1_spec</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
     <!-- test dependencies -->
     <dependency>
       <groupId>org.junit.jupiter</groupId>
