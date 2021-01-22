@@ -56,6 +56,7 @@ import org.drools.core.util.StringUtils;
 import org.drools.reflective.classloader.ProjectClassLoader;
 import org.kie.internal.concurrent.ExecutorProviderFactory;
 import org.kie.internal.utils.FastClassLoader;
+import org.kie.memorycompiler.WritableClassLoader;
 
 import static org.drools.core.util.ClassUtils.convertClassToResourcePath;
 import static org.drools.core.util.ClassUtils.convertResourceToClassName;
@@ -546,7 +547,7 @@ public class JavaDialectRuntimeData
     /**
      * This is an Internal Drools Class
      */
-    public static class PackageClassLoader extends ClassLoader implements FastClassLoader {
+    public static class PackageClassLoader extends ClassLoader implements FastClassLoader, WritableClassLoader {
 
         private final ConcurrentHashMap<String, Object> parallelLockMap = new ConcurrentHashMap<String, Object>();
 
@@ -614,11 +615,7 @@ public class JavaDialectRuntimeData
                 }
             }
 
-            Class<?> cls = defineClass( name,
-                                        clazzBytes,
-                                        0,
-                                        clazzBytes.length,
-                                        PROTECTION_DOMAIN );
+            Class<?> cls = writeClass( name, clazzBytes );
             resolveClass( cls );
             return cls;
         }
@@ -644,6 +641,11 @@ public class JavaDialectRuntimeData
 
         private void releaseLockObject(String className) {
             parallelLockMap.remove( className );
+        }
+
+        @Override
+        public Class<?> writeClass( String name, byte[] bytecode ) {
+            return defineClass( name, bytecode, 0, bytecode.length, PROTECTION_DOMAIN );
         }
     }
 }

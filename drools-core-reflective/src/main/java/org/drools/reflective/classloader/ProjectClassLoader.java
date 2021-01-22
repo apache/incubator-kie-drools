@@ -31,13 +31,14 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
 
-import org.kie.memorycompiler.StoreClassLoader;
 import org.drools.reflective.ComponentsFactory;
 import org.drools.reflective.ResourceProvider;
 import org.drools.reflective.util.ClassUtils;
 import org.kie.internal.utils.KieTypeResolver;
+import org.kie.memorycompiler.StoreClassLoader;
+import org.kie.memorycompiler.WritableClassLoader;
 
-public abstract class ProjectClassLoader extends ClassLoader implements KieTypeResolver, StoreClassLoader {
+public abstract class ProjectClassLoader extends ClassLoader implements KieTypeResolver, StoreClassLoader, WritableClassLoader {
 
     private static final boolean CACHE_NON_EXISTING_CLASSES = true;
     private static final ClassNotFoundException dummyCFNE = CACHE_NON_EXISTING_CLASSES ?
@@ -189,6 +190,11 @@ public abstract class ProjectClassLoader extends ClassLoader implements KieTypeR
         definedTypes.put(name, new ClassBytecode(clazz, bytecode));
         loadedClasses.put(name, clazz);
         return clazz;
+    }
+
+    @Override
+    public Class<?> writeClass( String name, byte[] bytecode ) {
+        return defineClass( name, bytecode, 0, bytecode.length );
     }
 
     public Class<?> defineClass(String name, byte[] bytecode) {
