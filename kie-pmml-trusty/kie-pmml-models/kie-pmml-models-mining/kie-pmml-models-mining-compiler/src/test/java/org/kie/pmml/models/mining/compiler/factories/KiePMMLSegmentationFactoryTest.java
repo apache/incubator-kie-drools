@@ -48,6 +48,7 @@ public class KiePMMLSegmentationFactoryTest extends AbstractKiePMMLFactoryTest {
                                                                                          TRANSFORMATION_DICTIONARY,
                                                                                          MINING_MODEL.getSegmentation(),
                                                                                          segmentationName,
+                                                                                         PACKAGE_NAME,
                                                                                          new HasKnowledgeBuilderMock(KNOWLEDGE_BUILDER));
         assertNotNull(retrieved);
         assertEquals(segmentationName, retrieved.getName());
@@ -56,9 +57,8 @@ public class KiePMMLSegmentationFactoryTest extends AbstractKiePMMLFactoryTest {
     @Test
     public void getSegmentationSourcesMap() {
         final String segmentationName = "SEGMENTATION_NAME";
-        final String packageName = "packagename";
         final List<KiePMMLModel> nestedModels = new ArrayList<>();
-        final Map<String, String> retrieved = KiePMMLSegmentationFactory.getSegmentationSourcesMap(packageName,
+        final Map<String, String> retrieved = KiePMMLSegmentationFactory.getSegmentationSourcesMap(PACKAGE_NAME,
                                                                                                    DATA_DICTIONARY,
                                                                                                    TRANSFORMATION_DICTIONARY,
                                                                                                    MINING_MODEL.getSegmentation(),

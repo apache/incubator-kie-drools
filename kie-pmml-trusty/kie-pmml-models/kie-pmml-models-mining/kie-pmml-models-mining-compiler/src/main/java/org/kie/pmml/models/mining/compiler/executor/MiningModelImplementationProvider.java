@@ -46,14 +46,15 @@ public class MiningModelImplementationProvider implements ModelImplementationPro
     }
 
     @Override
-    public KiePMMLMiningModel getKiePMMLModel(final DataDictionary dataDictionary,
+    public KiePMMLMiningModel getKiePMMLModel(final String packageName,
+                                              final DataDictionary dataDictionary,
                                               final TransformationDictionary transformationDictionary,
                                               final MiningModel model,
                                               final HasClassLoader hasClassloader) {
         if (!(hasClassloader instanceof HasKnowledgeBuilder)) {
             throw new KiePMMLException(String.format("Expecting HasKnowledgeBuilder, received %s", hasClassloader.getClass().getName()));
         }
-        return getKiePMMLMiningModel(dataDictionary, transformationDictionary, model, hasClassloader);
+        return getKiePMMLMiningModel(dataDictionary, transformationDictionary, model, packageName, hasClassloader);
     }
 
     @Override

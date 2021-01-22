@@ -23,12 +23,12 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import org.kie.pmml.api.enums.MINING_FUNCTION;
+import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.models.MiningField;
 import org.kie.pmml.api.models.OutputField;
 import org.kie.pmml.api.models.PMMLModel;
 import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLComponent;
-import org.kie.pmml.api.enums.MINING_FUNCTION;
-import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 
 /**
@@ -45,6 +45,7 @@ public abstract class KiePMMLModel extends AbstractKiePMMLComponent implements P
     protected Map<String, Function<List<KiePMMLNameValue>, Object>> localTransformationsMap = new HashMap<>();
     protected List<MiningField> miningFields = new ArrayList<>();
     protected List<OutputField> outputFields = new ArrayList<>();
+    protected List<KiePMMLOutputField> kiePMMLOutputFields = new ArrayList<>();
 
     protected KiePMMLModel(String name, List<KiePMMLExtension> extensions) {
         super(name, extensions);
@@ -86,7 +87,7 @@ public abstract class KiePMMLModel extends AbstractKiePMMLComponent implements P
      * @return
      */
     public String getKModulePackageName() {
-        String className  = this.getClass().getCanonicalName();
+        String className = this.getClass().getCanonicalName();
         return className.substring(0, className.lastIndexOf('.'));
     }
 
@@ -109,15 +110,13 @@ public abstract class KiePMMLModel extends AbstractKiePMMLComponent implements P
     }
 
     /**
-     * @param knowledgeBase the knowledgeBase we are working on. Add as <code>Object</code> to avoid direct dependency. It is needed only by <b>Drools-dependent</b>
+     * @param knowledgeBase the knowledgeBase we are working on. Add as <code>Object</code> to avoid direct
+     * dependency. It is needed only by <b>Drools-dependent</b>
      * models, so it may be <b>ignored</b> by others
      * @param requestData
      * @return
      */
     public abstract Object evaluate(final Object knowledgeBase, final Map<String, Object> requestData);
-
-
-
 
     public abstract static class Builder<T extends KiePMMLModel> extends AbstractKiePMMLComponent.Builder<T> {
 

@@ -17,12 +17,13 @@ package org.drools.ruleunit.command.pmml.mock;
 
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
+import org.kie.api.runtime.Context;
 import org.kie.internal.pmml.PMMLCommandExecutor;
 
 public class PMMLCommandExecutorMock implements PMMLCommandExecutor {
 
     @Override
-    public PMML4Result execute(PMMLRequestData pmmlRequestData) {
+    public PMML4Result execute(PMMLRequestData pmmlRequestData, Context context) {
         final PMML4Result toReturn = new PMML4Result();
         toReturn.setResultCode("PMMLCommandExecutorTest");
         return toReturn;

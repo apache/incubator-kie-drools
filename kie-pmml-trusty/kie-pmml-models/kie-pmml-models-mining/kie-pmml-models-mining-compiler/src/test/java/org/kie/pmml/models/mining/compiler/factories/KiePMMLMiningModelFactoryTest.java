@@ -56,6 +56,7 @@ public class KiePMMLMiningModelFactoryTest extends AbstractKiePMMLFactoryTest {
 
     private static final String TEMPLATE_SOURCE = "Template.tmpl";
     private static final String TEMPLATE_CLASS_NAME = "Template";
+    private static final String PACKAGE_NAME = "PACKAGE_NAME";
 
     private static CompilationUnit COMPILATION_UNIT;
     private static ClassOrInterfaceDeclaration MODEL_TEMPLATE;
@@ -72,6 +73,7 @@ public class KiePMMLMiningModelFactoryTest extends AbstractKiePMMLFactoryTest {
         final KiePMMLMiningModel retrieved = KiePMMLMiningModelFactory.getKiePMMLMiningModel(DATA_DICTIONARY,
                                                                                              TRANSFORMATION_DICTIONARY,
                                                                                              MINING_MODEL,
+                                                                                             PACKAGE_NAME,
                                                                                              new HasKnowledgeBuilderMock(KNOWLEDGE_BUILDER));
         assertNotNull(retrieved);
         assertEquals(MINING_MODEL.getAlgorithmName(), retrieved.getAlgorithmName());

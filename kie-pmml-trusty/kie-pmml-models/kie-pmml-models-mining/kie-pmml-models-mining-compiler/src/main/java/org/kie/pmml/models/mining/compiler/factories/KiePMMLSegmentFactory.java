@@ -70,24 +70,31 @@ public class KiePMMLSegmentFactory {
     private KiePMMLSegmentFactory() {
     }
 
-    public static List<KiePMMLSegment> getSegments(final DataDictionary dataDictionary,
+    public static List<KiePMMLSegment> getSegments(final String parentPackageName,
+                                                   final DataDictionary dataDictionary,
                                                    final TransformationDictionary transformationDictionary,
                                                    final List<Segment> segments,
                                                    final HasClassLoader hasClassloader) {
         logger.debug(GET_SEGMENTS, segments);
-        return segments.stream().map(segment -> getSegment(dataDictionary, transformationDictionary, segment,
+        return segments.stream().map(segment -> getSegment(parentPackageName,
+                                                           dataDictionary,
+                                                           transformationDictionary,
+                                                           segment,
                                                            hasClassloader)).collect(Collectors.toList());
     }
 
-    public static KiePMMLSegment getSegment(final DataDictionary dataDictionary,
+    public static KiePMMLSegment getSegment(final String parentPackageName,
+                                            final DataDictionary dataDictionary,
                                             final TransformationDictionary transformationDictionary,
                                             final Segment segment,
                                             final HasClassLoader hasClassloader) {
         logger.debug(GET_SEGMENT, segment);
+        final String packageName = getSanitizedPackageName(parentPackageName + "." + segment.getId());
         return KiePMMLSegment.builder(segment.getId(),
                                       getKiePMMLExtensions(segment.getExtensions()),
                                       getPredicate(segment.getPredicate(), dataDictionary),
-                                      getFromCommonDataAndTransformationDictionaryAndModel(dataDictionary,
+                                      getFromCommonDataAndTransformationDictionaryAndModel(packageName,
+                                                                                           dataDictionary,
                                                                                            transformationDictionary,
                                                                                            segment.getModel(),
                                                                                            hasClassloader).orElseThrow(() -> new KiePMMLException("Failed to get the KiePMMLModel for segment " + segment.getModel().getModelName())))

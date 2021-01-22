@@ -21,8 +21,8 @@ import java.util.Map;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.tree.TreeModel;
-import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.enums.PMML_MODEL;
+import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.HasClassLoader;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsAST;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsType;
@@ -48,9 +48,15 @@ public class TreeModelImplementationProvider extends DroolsModelProvider<TreeMod
                                                   final TransformationDictionary transformationDictionary,
                                                   final TreeModel model,
                                                   final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap,
+                                                  final String packageName,
                                                   final HasClassLoader hasClassLoader) {
         try {
-            return KiePMMLTreeModelFactory.getKiePMMLTreeModel(dataDictionary, transformationDictionary, model, fieldTypeMap, hasClassLoader.getClassLoader());
+            return KiePMMLTreeModelFactory.getKiePMMLTreeModel(dataDictionary,
+                                                               transformationDictionary,
+                                                               model,
+                                                               fieldTypeMap,
+                                                               packageName,
+                                                               hasClassLoader);
         } catch (IllegalAccessException | InstantiationException e) {
             throw new KiePMMLException(e.getMessage(), e);
         }

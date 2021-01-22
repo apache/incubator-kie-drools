@@ -17,6 +17,7 @@ package org.kie.pmml.api;
 
 import java.io.File;
 
+import org.kie.api.KieBase;
 import org.kie.pmml.api.runtime.PMMLRuntime;
 
 public interface PMMLRuntimeFactory {
@@ -65,5 +66,18 @@ public interface PMMLRuntimeFactory {
      * @return
      */
     PMMLRuntime getPMMLRuntimeFromKieContainerByDefaultKieBase(String pmmlFileName, String gav);
+
+    /**
+     * Retrieve a <code>PMMLRuntime</code> bound to the <code>org.dmg.pmml.PMMLModel</code>
+     * with the given <b>pmmlModelName</b> that should be present in the <code><File</code>
+     * with the given <b>pmmlFileName</b>.
+     * Such file will be looked for in the given <code>KieBase</code>
+     *
+     * @param pmmlFileName
+     * @param pmmlModelName
+     * @param kieBase
+     * @return
+     */
+    PMMLRuntime getPMMLRuntimeFromFileNameModelNameAndKieBase(String pmmlFileName, String pmmlModelName, KieBase kieBase);
 
 }

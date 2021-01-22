@@ -27,6 +27,7 @@ import org.junit.Test;
 import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.compiler.commons.mocks.HasClassLoaderMock;
 import org.kie.pmml.compiler.testutils.TestUtils;
 import org.kie.pmml.models.regression.model.KiePMMLRegressionModel;
 import org.kie.pmml.models.regression.model.KiePMMLRegressionModelWithSources;
@@ -52,6 +53,7 @@ public class RegressionModelImplementationProviderTest {
     private static final String SOURCE_1 = "LinearRegressionSample.pmml";
     private static final String SOURCE_2 = "test_regression.pmml";
     private static final String SOURCE_3 = "test_regression_clax.pmml";
+    private static final String PACKAGE_NAME = "packagename";
     private static final List<RegressionModel.NormalizationMethod> VALID_NORMALIZATION_METHODS = Arrays.asList(NONE,
                                                                                                              SOFTMAX,
                                                                                                              LOGIT,
@@ -72,10 +74,11 @@ public class RegressionModelImplementationProviderTest {
         assertNotNull(pmml);
         assertEquals(1, pmml.getModels().size());
         assertTrue(pmml.getModels().get(0) instanceof RegressionModel);
-        final KiePMMLRegressionModel retrieved = PROVIDER.getKiePMMLModel(pmml.getDataDictionary(),
+        final KiePMMLRegressionModel retrieved = PROVIDER.getKiePMMLModel(PACKAGE_NAME,
+                                                                          pmml.getDataDictionary(),
                                                                           pmml.getTransformationDictionary(),
                                                                           (RegressionModel) pmml.getModels().get(0),
-                                                                          () -> Thread.currentThread().getContextClassLoader());
+                                                                          new HasClassLoaderMock());
         assertNotNull(retrieved);
         assertTrue(retrieved instanceof Serializable);
     }
@@ -91,7 +94,7 @@ public class RegressionModelImplementationProviderTest {
                 packageName,
                 pmml.getDataDictionary(),
                 pmml.getTransformationDictionary(),
-                (RegressionModel) pmml.getModels().get(0), () -> null);
+                (RegressionModel) pmml.getModels().get(0), new HasClassLoaderMock());
         assertNotNull(retrieved);
         assertTrue(retrieved instanceof KiePMMLRegressionModelWithSources);
         KiePMMLRegressionModelWithSources retrievedWithSources = (KiePMMLRegressionModelWithSources) retrieved;

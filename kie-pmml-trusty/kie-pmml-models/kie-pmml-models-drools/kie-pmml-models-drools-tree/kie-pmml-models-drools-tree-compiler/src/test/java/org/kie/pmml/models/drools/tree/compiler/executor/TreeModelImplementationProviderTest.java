@@ -40,6 +40,7 @@ public class TreeModelImplementationProviderTest {
 
     private static final TreeModelImplementationProvider PROVIDER = new TreeModelImplementationProvider();
     private static final String SOURCE_1 = "TreeSample.pmml";
+    private static final String PACKAGE_NAME = "PACKAGE_NAME";
 
     @Test
     public void getPMMLModelType() {
@@ -50,10 +51,11 @@ public class TreeModelImplementationProviderTest {
     public void getKiePMMLModel() throws Exception {
         final PMML pmml = getPMML(SOURCE_1);
         KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
-        final KiePMMLTreeModel retrieved = PROVIDER.getKiePMMLModel(pmml.getDataDictionary(),
-                                                                       pmml.getTransformationDictionary(),
-                                                                       (TreeModel) pmml.getModels().get(0),
-                                                                       new HasKnowledgeBuilderMock(knowledgeBuilder));
+        final KiePMMLTreeModel retrieved = PROVIDER.getKiePMMLModel(PACKAGE_NAME,
+                                                                    pmml.getDataDictionary(),
+                                                                    pmml.getTransformationDictionary(),
+                                                                    (TreeModel) pmml.getModels().get(0),
+                                                                    new HasKnowledgeBuilderMock(knowledgeBuilder));
         assertNotNull(retrieved);
         commonVerifyIsDeepCloneable(retrieved);
     }

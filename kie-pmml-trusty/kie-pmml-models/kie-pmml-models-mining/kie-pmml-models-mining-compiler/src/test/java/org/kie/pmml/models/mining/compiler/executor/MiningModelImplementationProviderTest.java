@@ -53,6 +53,7 @@ public class MiningModelImplementationProviderTest {
     private static final String SOURCE_MIXED = "MiningModel_Mixed.pmml";
     private static final String SOURCE_NO_SEGMENT_ID = "MiningModel_NoSegmentId.pmml";
     private static final String SOURCE_SEGMENT_ID = "MiningModel_SegmentId.pmml";
+    private static final String PACKAGE_NAME = "PACKAGE_NAME";
 
     @Test
     public void getPMMLModelType() {
@@ -123,7 +124,8 @@ public class MiningModelImplementationProviderTest {
     private void commonGetKiePMMLModel(String source) throws Exception {
         final PMML pmml = getPMML(source);
         final KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
-        final KiePMMLMiningModel retrieved = PROVIDER.getKiePMMLModel(pmml.getDataDictionary(),
+        final KiePMMLMiningModel retrieved = PROVIDER.getKiePMMLModel(PACKAGE_NAME,
+                                                                      pmml.getDataDictionary(),
                                                                       pmml.getTransformationDictionary(),
                                                                       (MiningModel) pmml.getModels().get(0),
                                                                       new HasKnowledgeBuilderMock(knowledgeBuilder));

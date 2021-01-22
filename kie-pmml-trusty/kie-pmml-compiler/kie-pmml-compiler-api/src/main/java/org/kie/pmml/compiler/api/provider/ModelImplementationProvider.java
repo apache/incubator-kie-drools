@@ -31,7 +31,9 @@ public interface ModelImplementationProvider<T extends Model, E extends KiePMMLM
     PMML_MODEL getPMMLModelType();
 
     /**
+     * Method to be called for a <b>runtime</b> compilation
      *
+     * @param packageName the package into which put all the generated classes out of the given <code>Model</code>
      * @param dataDictionary
      * @param transformationDictionary
      * @param model
@@ -39,7 +41,7 @@ public interface ModelImplementationProvider<T extends Model, E extends KiePMMLM
      * @return
      * @throws KiePMMLInternalException
      */
-    E getKiePMMLModel(final DataDictionary dataDictionary, final TransformationDictionary transformationDictionary, final T model, final HasClassLoader hasClassloader);
+    E getKiePMMLModel(final String packageName, final DataDictionary dataDictionary, final TransformationDictionary transformationDictionary, final T model, final HasClassLoader hasClassloader);
 
     /**
      * Method to be called following a <b>kie-maven-plugin</b> invocation
