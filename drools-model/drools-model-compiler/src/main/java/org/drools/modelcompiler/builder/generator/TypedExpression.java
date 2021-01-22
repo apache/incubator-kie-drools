@@ -30,6 +30,7 @@ import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
 
 public class TypedExpression {
 
+    private Class<?> originalPatternType;
     private Expression expression;
     protected Type type;
     protected String fieldName;
@@ -147,6 +148,14 @@ public class TypedExpression {
         cloned.left = left;
         return cloned;
 
+    }
+
+    public Optional<Class<?>> getOriginalPatternType() {
+        return Optional.ofNullable(originalPatternType);
+    }
+
+    public void setOriginalPatternType(Class<?> originalPatternType) {
+        this.originalPatternType = originalPatternType;
     }
 
     @Override
