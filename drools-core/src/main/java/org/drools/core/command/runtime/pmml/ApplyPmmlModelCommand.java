@@ -33,7 +33,6 @@ import org.kie.api.command.ExecutableCommand;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLConstants;
 import org.kie.api.pmml.PMMLRequestData;
-import org.kie.api.pmml.ParameterInfo;
 import org.kie.api.runtime.Context;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.command.RegistryContext;
