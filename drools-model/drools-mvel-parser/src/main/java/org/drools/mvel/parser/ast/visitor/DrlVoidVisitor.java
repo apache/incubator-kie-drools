@@ -651,13 +651,13 @@ public interface DrlVoidVisitor<A> extends VoidVisitor<A> {
 
     }
 
-    default void visit(MapCreationLiteralExpression n, A arg) { };
+    default void visit(MapCreationLiteralExpression n, A arg) { }
 
-    default void visit(MapCreationLiteralExpressionKeyValuePair n, A arg) { };
+    default void visit(MapCreationLiteralExpressionKeyValuePair n, A arg) { }
 
-    default void visit(ListCreationLiteralExpression n, A arg) { };
+    default void visit(ListCreationLiteralExpression n, A arg) { }
 
-    default void visit(ListCreationLiteralExpressionElement n, A arg) { };
+    default void visit(ListCreationLiteralExpressionElement n, A arg) { }
 
-    default void visit(WithStatement withStatement, A arg) { };
+    default void visit(WithStatement withStatement, A arg) { }
 }
