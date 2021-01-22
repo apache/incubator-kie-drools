@@ -3311,4 +3311,40 @@ public class AccumulateTest extends BaseModelTest {
             this.name = name;
         }
     }
+
+    @Test
+    public void testMultiAccumulate() {
+        // RHDM-1572
+        String str =
+                "global java.util.List result;\n" +
+                "rule R when\n" +
+                "    accumulate ( $s : String( $name : toString, $length : length );\n" +
+                "                 $count : count($name),\n" +
+                "                 $sum : sum($length),\n" +
+                "                 $list : collectList($s) )\n" +
+                "    then\n" +
+                "        result.add($count);\n" +
+                "        result.add($sum);\n" +
+                "        result.addAll($list);\n" +
+                "end";
+
+        KieSession kSession = getKieSession( str );
+
+        List<Object> result = new ArrayList<>();
+        kSession.setGlobal("result", result);
+
+        kSession.insert("test");
+        kSession.insert("mytest");
+        kSession.insert("anothertest");
+
+        assertEquals( 1, kSession.fireAllRules() );
+        assertEquals( 5, result.size() );
+        assertEquals( 3L, result.get(0) );
+        assertEquals( 21, result.get(1) );
+        assertTrue( result.contains( "test" ) );
+        assertTrue( result.contains( "mytest" ) );
+        assertTrue( result.contains( "anothertest" ) );
+
+        kSession.dispose();
+    }
 }
