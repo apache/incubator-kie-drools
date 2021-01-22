@@ -20,16 +20,15 @@
     "dev:server": "nodemon ./server/app.js",
     "dev": "concurrently 'yarn  start' 'yarn run dev:server'",
     "dev-remote-dataindex": "yarn start --define process.env.KOGITO_DATAINDEX_HTTP_URL='\"http://localhost:8180/graphql\"'",
-    "lint": "eslint './src/**/*.ts{,x}'",
-    "format": "prettier --config ../../.prettierrc --check --write './src/**/*.{tsx,ts,js}'",
+    "lint": "eslint './{src,cypress}/**/*.ts{,x}'",
+    "format": "prettier --config ../../.prettierrc --check --write './{src,cypress}/**/*.{tsx,ts,js}'",
     "build:bundle-profile": "webpack --config webpack.prod.js --profile --json > stats.json",
     "bundle-profile:analyze": "yarn build:bundle-profile && webpack-bundle-analyzer ./stats.json",
     "clean": "rimraf dist",
     "codegen": "graphql-codegen",
     "cypress:run": "cypress run",
-    "cypress:run-with-dev-server": "start-server-and-test 'yarn dev' 9000 'yarn cypress:run'",
     "cypress:open": "cypress open",
-    "cypress:open-with-dev-server": "start-server-and-test 'yarn dev' 9000 'yarn cypress:open'"
+    "test:it": "start-server-and-test 'yarn dev' 9000 'yarn cypress:run'"
   },
   "dependencies": {
     "@kogito-apps/common": "1.0.0",

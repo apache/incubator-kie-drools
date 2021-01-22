@@ -4,6 +4,9 @@ exports[`ProcessListTableItems component tests snapshot tests for no child insta
 <DataListContent
   aria-label="Primary Content Details"
   className="kogito-management-console__embedded-list pf-m-compact"
+  data-ouia-component-id="processInstanceData.id"
+  data-ouia-component-type="process-list-table-item-expand"
+  data-ouia-safe={true}
   id="kie-datalist-expand-8035b580-6ae4-4aa8-9ec0-e18e19809e0b1"
   isHidden={false}
   key=".1"
@@ -12,6 +15,9 @@ exports[`ProcessListTableItems component tests snapshot tests for no child insta
   <section
     aria-label="Primary Content Details"
     className="pf-c-data-list__expandable-content kogito-management-console__embedded-list pf-m-compact"
+    data-ouia-component-id="processInstanceData.id"
+    data-ouia-component-type="process-list-table-item-expand"
+    data-ouia-safe={true}
     hidden={false}
     id="kie-datalist-expand-8035b580-6ae4-4aa8-9ec0-e18e19809e0b1"
   >
@@ -268,6 +274,8 @@ exports[`ProcessListTableItems component tests snapshot tests with disabled popu
       isDisabled={true}
     />
   }
+  data-ouia-component-type="datalist-checkbox-popup"
+  data-ouia-safe={true}
   key=".1"
   processInstanceData={
     Object {

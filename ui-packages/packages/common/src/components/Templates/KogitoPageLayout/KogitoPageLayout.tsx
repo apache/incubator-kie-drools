@@ -3,8 +3,7 @@ import {
   PageSidebar,
   PageHeader,
   Brand,
-  PageHeaderTools,
-  OUIAProps
+  PageHeaderTools
 } from '@patternfly/react-core';
 import React, { useState, useEffect } from 'react';
 import PageToolbar from '../../Molecules/PageToolbar/PageToolbar';
@@ -22,8 +21,7 @@ interface IOwnProps {
   BrandClick: () => void;
 }
 
-const KogitoPageLayout: React.FC<IOwnProps & OUIAProps> = ({
-  ouiaId,
+const KogitoPageLayout: React.FC<IOwnProps> = ({
   children,
   BrandSrc,
   PageNav,

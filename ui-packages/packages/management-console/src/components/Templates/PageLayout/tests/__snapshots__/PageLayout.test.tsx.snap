@@ -50,6 +50,7 @@ exports[`PageLayout tests snapshot testing 1`] = `
         aria-label="Nav"
         onSelect={[Function]}
         onToggle={[Function]}
+        ouiaId="navigation-list"
         ouiaSafe={true}
         theme="dark"
       >

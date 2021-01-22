@@ -205,7 +205,7 @@ const ProcessListPage: React.FC<OUIAProps &
   }
   return (
     <React.Fragment>
-      <div {...componentOuiaProps(ouiaId, 'ProcessListPage', ouiaSafe)}>
+      <div {...componentOuiaProps(ouiaId, 'process-list-page', ouiaSafe)}>
         <PageSection variant="light">
           <PageTitle title="Process Instances" />
           <Breadcrumb>

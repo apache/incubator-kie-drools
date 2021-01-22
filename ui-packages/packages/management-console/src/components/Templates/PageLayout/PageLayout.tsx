@@ -27,7 +27,7 @@ const PageLayout: React.FC<IOwnProps & OUIAProps> = ({ ...props }) => {
   const { pathname } = props.location;
 
   const PageNav = (
-    <Nav aria-label="Nav" theme="dark">
+    <Nav aria-label="Nav" theme="dark" ouiaId="navigation-list">
       <NavList>
         <NavItem isActive={pathname === '/ProcessInstances'}>
           <Link

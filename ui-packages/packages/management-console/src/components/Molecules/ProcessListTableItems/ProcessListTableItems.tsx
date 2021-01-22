@@ -350,6 +350,7 @@ const ProcessListTableItems: React.FC<IOwnProps & OUIAProps> = ({
               isExpanded={expanded.includes('kie-datalist-toggle')}
               id={'kie-datalist-toggle-' + processInstanceData.id}
               aria-controls="kie-datalist-expand"
+              {...componentOuiaProps(undefined, 'datalist-expand-toggle', true)}
             />
           )}
           {processInstanceData.addons.includes('process-management') &&
@@ -361,6 +362,7 @@ const ProcessListTableItems: React.FC<IOwnProps & OUIAProps> = ({
               onChange={() => {
                 onCheckBoxClick();
               }}
+              {...componentOuiaProps(undefined, 'datalist-checkbox', true)}
             />
           ) : (
             <DisablePopup
@@ -373,6 +375,11 @@ const ProcessListTableItems: React.FC<IOwnProps & OUIAProps> = ({
                   isDisabled={true}
                 />
               }
+              {...componentOuiaProps(
+                undefined,
+                'datalist-checkbox-popup',
+                true
+              )}
             />
           )}
           <DataListItemCells
@@ -380,6 +387,7 @@ const ProcessListTableItems: React.FC<IOwnProps & OUIAProps> = ({
               <DataListCell
                 key={1}
                 id={'kie-datalist-item-' + processInstanceData.id}
+                {...componentOuiaProps('endpoint', 'datalist-cell', true)}
               >
                 <Link
                   to={{
@@ -402,7 +410,10 @@ const ProcessListTableItems: React.FC<IOwnProps & OUIAProps> = ({
                   isLinkShown={false}
                 />
               </DataListCell>,
-              <DataListCell key={4}>
+              <DataListCell
+                key={4}
+                {...componentOuiaProps('status', 'datalist-cell', true)}
+              >
                 {processInstanceData.state === 'ERROR' ? (
                   <ErrorPopover
                     processInstanceData={processInstanceData}
@@ -413,7 +424,10 @@ const ProcessListTableItems: React.FC<IOwnProps & OUIAProps> = ({
                   ProcessInstanceIconCreator(processInstanceData.state)
                 )}
               </DataListCell>,
-              <DataListCell key={2}>
+              <DataListCell
+                key={2}
+                {...componentOuiaProps('created', 'datalist-cell', true)}
+              >
                 {processInstanceData.start ? (
                   <Moment fromNow>
                     {new Date(`${processInstanceData.start}`)}
@@ -422,7 +436,10 @@ const ProcessListTableItems: React.FC<IOwnProps & OUIAProps> = ({
                   ''
                 )}
               </DataListCell>,
-              <DataListCell key={3}>
+              <DataListCell
+                key={3}
+                {...componentOuiaProps('updated', 'datalist-cell', true)}
+              >
                 {processInstanceData.lastUpdate ? (
                   <span>
                     {' '}
@@ -441,6 +458,7 @@ const ProcessListTableItems: React.FC<IOwnProps & OUIAProps> = ({
             aria-labelledby="kie-datalist-item kie-datalist-action"
             id="kie-datalist-action"
             aria-label="Actions"
+            {...componentOuiaProps(undefined, 'datalist-action', true)}
           >
             {processInstanceData.state === 'ERROR' ||
             processInstanceData.state === 'ACTIVE' ||
@@ -475,6 +493,11 @@ const ProcessListTableItems: React.FC<IOwnProps & OUIAProps> = ({
           id={'kie-datalist-expand-' + processInstanceData.id}
           isHidden={!expanded.includes('kie-datalist-toggle')}
           className="kogito-management-console__embedded-list pf-m-compact"
+          {...componentOuiaProps(
+            'processInstanceData.id',
+            'process-list-table-item-expand',
+            isLoaded && !loading && !loadingInitData
+          )}
         >
           {isLoaded &&
             !loading &&
