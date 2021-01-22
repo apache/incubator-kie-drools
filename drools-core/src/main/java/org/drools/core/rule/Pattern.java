@@ -65,7 +65,7 @@ public class Pattern
     private int                      index;
     private PatternSource            source;
     private List<Behavior>           behaviors;
-    private Collection<String>       listenedProperties;
+    private Collection<String>       listenedProperties = new HashSet<>();
     private boolean                  hasNegativeConstraint;
 
     private transient XpathBackReference backRefDeclarations;
@@ -222,7 +222,7 @@ public class Pattern
                                            this.objectType,
                                            identifier,
                                            this.declaration != null && this.declaration.isInternalFact());
-        clone.setListenedProperties( getListenedProperties() );
+        clone.listenedProperties = listenedProperties;
         if ( this.getSource() != null ) {
             clone.setSource( (PatternSource) this.getSource().clone() );
             if ( source instanceof From ) {
@@ -515,8 +515,18 @@ public class Pattern
         return listenedProperties;
     }
 
-    public void setListenedProperties(Collection<String> listenedProperties) {
-        this.listenedProperties = listenedProperties;
+    public void addBoundProperty(String boundProperty) {
+        if ( !listenedProperties.contains( "!*" ) ) {
+            this.listenedProperties.add( boundProperty );
+        }
+    }
+
+    public void addWatchedProperty(String watchedProperty) {
+        this.listenedProperties.add( watchedProperty );
+    }
+
+    public void addWatchedProperties(Collection<String> watchedProperties) {
+        this.listenedProperties.addAll( watchedProperties );
     }
 
     public List<String> getAccessibleProperties(InternalKnowledgeBase kBase) {

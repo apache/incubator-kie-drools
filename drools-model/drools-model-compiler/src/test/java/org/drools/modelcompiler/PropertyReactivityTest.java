@@ -1087,4 +1087,88 @@ public class PropertyReactivityTest extends BaseModelTest {
         ksession.insert(fact);
         assertEquals( 3, ksession.fireAllRules(3) );
     }
+
+    @Test
+    public void testUnwatch() {
+        // RHDM-1553
+        final String str =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "\n" +
+                "rule R when\n" +
+                "    $p : Person( age < 50 ) @watch(!*)\n" +
+                "then\n" +
+                "    modify($p) { setAge( $p.getAge() + 1 ) };\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+
+        Person p = new Person("Mario", 40);
+        ksession.insert( p );
+        ksession.fireAllRules(3);
+
+        assertEquals(41, p.getAge());
+    }
+
+    @Test
+    public void testUnwatchWithFieldBinding() {
+        // RHDM-1553
+        final String str =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "\n" +
+                "rule R when\n" +
+                "    $p : Person( $age : age < 50 ) @watch(!*)\n" +
+                "then\n" +
+                "    modify($p) { setAge( $age + 1 ) };\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+
+        Person p = new Person("Mario", 40);
+        ksession.insert( p );
+        ksession.fireAllRules(3);
+
+        assertEquals(41, p.getAge());
+    }
+
+    @Test
+    public void testUnwatchWithFieldBindingAndMvel() {
+        // RHDM-1553
+        final String str =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "\n" +
+                "rule R dialect \"mvel\" when\n" +
+                "    $p : Person( $age : age < 50 ) @watch(!*)\n" +
+                "then\n" +
+                "    modify($p) { age = $age + 1 };\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+
+        Person p = new Person("Mario", 40);
+        ksession.insert( p );
+        ksession.fireAllRules(3);
+
+        assertEquals(41, p.getAge());
+    }
+
+    @Test
+    public void testUnwatchWithWatchedField() {
+        // RHDM-1553
+        final String str =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "\n" +
+                "rule R when\n" +
+                "    $p : Person( name == \"Mario\" ) @watch(!*, age)\n" +
+                "then\n" +
+                "    modify($p) { setAge( $p.getAge() + 1 ) };\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+
+        Person p = new Person("Mario", 40);
+        ksession.insert( p );
+        ksession.fireAllRules(3);
+
+        assertEquals(43, p.getAge());
+    }
 }

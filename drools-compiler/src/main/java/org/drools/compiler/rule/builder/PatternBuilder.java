@@ -63,7 +63,6 @@ import org.drools.core.addon.TypeResolver;
 import org.drools.core.base.ClassFieldReader;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.EvaluatorWrapper;
-import org.drools.core.base.SimpleValueType;
 import org.drools.core.base.ValueType;
 import org.drools.core.base.evaluators.EvaluatorDefinition.Target;
 import org.drools.core.definitions.InternalKnowledgePackage;
@@ -531,7 +530,7 @@ public class PatternBuilder
             }
         }
 
-        pattern.setListenedProperties(listenedProperties);
+        pattern.addWatchedProperties(listenedProperties);
     }
 
     protected List<String> getSettableProperties(RuleBuildContext context, PatternDescr patternDescr, Pattern pattern) {
@@ -1360,12 +1359,7 @@ public class PatternBuilder
 
     private void addFieldToPatternWatchlist(Pattern pattern, TypeDeclaration typeDeclaration, String fieldName) {
         if (typeDeclaration.getAccessibleProperties().contains(fieldName)) {
-            Collection<String> watchlist = pattern.getListenedProperties();
-            if (watchlist == null) {
-                watchlist = new HashSet<>();
-                pattern.setListenedProperties(watchlist);
-            }
-            watchlist.add(fieldName);
+            pattern.addBoundProperty( fieldName );
         }
     }
 

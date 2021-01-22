@@ -21,7 +21,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -684,6 +683,7 @@ public class KiePackagesBuilder {
     private Pattern buildPattern(RuleContext ctx, GroupElement group, Condition condition) {
         org.drools.model.Pattern<?> modelPattern = (org.drools.model.Pattern) condition;
         Pattern pattern = addPatternForVariable( ctx, group, modelPattern.getPatternVariable(), condition.getType() );
+        Arrays.stream( modelPattern.getWatchedProps() ).forEach( pattern::addWatchedProperty );
 
         for (Binding binding : modelPattern.getBindings()) {
             Declaration declaration = new Declaration(binding.getBoundVariable().getName(),
@@ -692,7 +692,7 @@ public class KiePackagesBuilder {
                                                       true);
             pattern.addDeclaration( declaration );
             if (binding.getReactOn() != null) {
-                addFieldsToPatternWatchlist( pattern, binding.getReactOn() );
+                Arrays.stream( binding.getReactOn() ).forEach( pattern::addBoundProperty );
             }
             ctx.addInnerDeclaration(binding.getBoundVariable(), declaration);
         }
@@ -703,21 +703,17 @@ public class KiePackagesBuilder {
         }
 
         addConstraintsToPattern( ctx, pattern, modelPattern.getConstraint() );
-        addFieldsToPatternWatchlist( pattern, modelPattern.getWatchedProps() );
-        addReactiveMasksToPattern( pattern, modelPattern );
-
+        addReactiveMasksToPattern( pattern, modelPattern.getPatternClassMetadata() );
         return pattern;
     }
 
-    private void addReactiveMasksToPattern( Pattern pattern, org.drools.model.Pattern<?> modelPattern ) {
-        if (pattern.getListenedProperties() != null) {
-            DomainClassMetadata patternMetadata = modelPattern.getPatternClassMetadata();
-            if (patternMetadata != null) {
-                String[] listenedProperties = pattern.getListenedProperties().toArray( new String[pattern.getListenedProperties().size()] );
-                pattern.setPositiveWatchMask( adaptBitMask( calculatePatternMask( patternMetadata, true, listenedProperties ) ) );
-                pattern.setNegativeWatchMask( adaptBitMask( calculatePatternMask( patternMetadata, false, listenedProperties ) ) );
-
-            }
+    // this method sets the property reactive masks on the pattern and it's strictly necessary for native compilation
+    // before changing this check DroolsTestIT in kogito-quarkus-integration-test-legacy module
+    private void addReactiveMasksToPattern( Pattern pattern, DomainClassMetadata patternMetadata ) {
+        if (pattern.getListenedProperties() != null && patternMetadata != null) {
+            String[] listenedProperties = pattern.getListenedProperties().toArray( new String[pattern.getListenedProperties().size()] );
+            pattern.setPositiveWatchMask( adaptBitMask( calculatePatternMask( patternMetadata, true, listenedProperties ) ) );
+            pattern.setNegativeWatchMask( adaptBitMask( calculatePatternMask( patternMetadata, false, listenedProperties ) ) );
         }
     }
 
@@ -1052,17 +1048,6 @@ public class KiePackagesBuilder {
             }
         }
         return unificationDeclaration;
-    }
-
-    private void addFieldsToPatternWatchlist( Pattern pattern, String... fields ) {
-        if (fields != null && fields.length > 0) {
-            Collection<String> watchlist = pattern.getListenedProperties();
-            if ( watchlist == null ) {
-                watchlist = new HashSet<>( );
-                pattern.setListenedProperties( watchlist );
-            }
-            watchlist.addAll( Arrays.asList( fields ) );
-        }
     }
 
     Collection<InternalKnowledgePackage> getKiePackages() {
