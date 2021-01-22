@@ -18,6 +18,7 @@ package org.drools.modelcompiler.builder.generator;
 
 import java.lang.reflect.Type;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -99,6 +100,10 @@ public class TypedExpression {
 
     public boolean isList() {
         return type != null && toRawClass(type).isAssignableFrom( List.class );
+    }
+
+    public boolean isMap() {
+        return type != null && toRawClass(type).isAssignableFrom( Map.class );
     }
 
     public TypedExpression setStatic(Boolean aStatic) {

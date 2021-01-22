@@ -134,11 +134,11 @@ public class ExpressionTyperTest {
 
     @Test
     public void arrayAccessExpr() {
-        final TypedExpression expected = typedResult(THIS_PLACEHOLDER + ".getItems().get(1)", Map.class);
+        final TypedExpression expected = typedResult(THIS_PLACEHOLDER + ".getItems().get(1)", Integer.class);
         final TypedExpression actual = toTypedExpression("items[1]", Person.class);
         assertEquals(expected, actual);
 
-        final TypedExpression expected2 = typedResult(THIS_PLACEHOLDER + ".getItems().get(((Integer)1))", Map.class);
+        final TypedExpression expected2 = typedResult(THIS_PLACEHOLDER + ".getItems().get(((Integer)1))", Integer.class);
         final TypedExpression actual2 = toTypedExpression("items[(Integer)1]", Person.class);
         assertEquals(expected2, actual2);
     }

@@ -126,7 +126,7 @@ public class ActionCallMethodBuilder {
 
         for (int i = 0; i < line.length(); i++) {
 
-            if (line.charAt(i) == '"') {
+            if (isActualQuote(line, i)) {
                 quoteOpen = !quoteOpen;
             }
 
@@ -143,6 +143,11 @@ public class ActionCallMethodBuilder {
         }
 
         return result.toArray(new String[result.size()]);
+    }
+
+    private boolean isActualQuote(final String line, final int i) {
+        final boolean isEscaped = (i > 0 && line.charAt(i - 1) == '\\');
+        return !isEscaped && line.charAt(i) == '"';
     }
 
     private List<ActionFieldFunction> getActionFieldFunctions() {
@@ -325,35 +330,35 @@ public class ActionCallMethodBuilder {
                 }
             } else if (DataType.TYPE_NUMERIC_DOUBLE.equals(methodParamDataType)) {
                 try {
-                     Double.parseDouble(paramValue);
+                    Double.parseDouble(paramValue);
                     return methodParamDataType;
                 } catch (NumberFormatException e) {
                     return null;
                 }
             } else if (DataType.TYPE_NUMERIC_FLOAT.equals(methodParamDataType)) {
                 try {
-                     Float.parseFloat(paramValue);
+                    Float.parseFloat(paramValue);
                     return methodParamDataType;
                 } catch (NumberFormatException e) {
                     return null;
                 }
             } else if (DataType.TYPE_NUMERIC_INTEGER.equals(methodParamDataType)) {
                 try {
-                     Integer.parseInt(paramValue);
+                    Integer.parseInt(paramValue);
                     return methodParamDataType;
                 } catch (NumberFormatException e) {
                     return null;
                 }
             } else if (DataType.TYPE_NUMERIC_LONG.equals(methodParamDataType)) {
                 try {
-                     Long.parseLong(paramValue);
+                    Long.parseLong(paramValue);
                     return methodParamDataType;
                 } catch (NumberFormatException e) {
                     return null;
                 }
             } else if (DataType.TYPE_NUMERIC_SHORT.equals(methodParamDataType)) {
                 try {
-                     Short.parseShort(paramValue);
+                    Short.parseShort(paramValue);
                     return methodParamDataType;
                 } catch (NumberFormatException e) {
                     return null;
