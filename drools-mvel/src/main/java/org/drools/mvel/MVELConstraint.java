@@ -120,9 +120,8 @@ public class MVELConstraint extends MutableTypeConstraint implements IndexableCo
                           FieldValue fieldValue,
                           InternalReadAccessor extractor,
                           EvaluatorWrapper[] operators) {
-        this.packageNames = new LinkedHashSet<String>() {{
-            add(packageName);
-        }};
+        this.packageNames = new LinkedHashSet<>();
+        this.packageNames.add(packageName);
         this.expression = expression;
         this.compilationUnit = compilationUnit;
         this.constraintType = constraintType;
@@ -138,9 +137,8 @@ public class MVELConstraint extends MutableTypeConstraint implements IndexableCo
                           EvaluatorWrapper[] operators,
                           MVELCompilationUnit compilationUnit,
                           boolean isDynamic) {
-        this.packageNames = new LinkedHashSet<String>() {{
-            add(packageName);
-        }};
+        this.packageNames = new LinkedHashSet<>();
+        this.packageNames.add(packageName);
         this.expression = expression;
         this.declarations = declarations == null ? EMPTY_DECLARATIONS : declarations;
         this.operators = operators == null ? EMPTY_OPERATORS : operators;
@@ -157,7 +155,7 @@ public class MVELConstraint extends MutableTypeConstraint implements IndexableCo
                           Declaration indexingDeclaration,
                           InternalReadAccessor extractor,
                           boolean isUnification) {
-        this.packageNames = new LinkedHashSet<String>(packageNames);
+        this.packageNames = new LinkedHashSet<>(packageNames);
         this.expression = expression;
         this.compilationUnit = compilationUnit;
         this.constraintType = indexingDeclaration != null ? constraintType : IndexUtil.ConstraintType.UNKNOWN;
