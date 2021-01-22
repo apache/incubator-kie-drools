@@ -1680,6 +1680,9 @@ Expression UnaryExpression():
 	|
       LOOKAHEAD(MapCreationLiteralExpression())
         ret = MapCreationLiteralExpression()
+    |
+      LOOKAHEAD(ListCreationLiteralExpression())
+        ret = ListCreationLiteralExpression()
   )
   { return ret; }
 }
@@ -3177,6 +3180,47 @@ Expression MapCreationLiteralExpressionKeyValuePair():
     )
 }
 
+Expression ListCreationLiteralExpression():
+{
+    JavaToken begin = null;
+    Expression first = null;
+    Expression other = null;
+    NodeList<Expression> all = emptyList();
+}
+{
+    (
+        (
+            <LBRACKET>
+            (first = ListCreationLiteralExpressionElement() { begin=token(); all.add(first); })*
+            (
+                          <COMMA>
+                          other = ListCreationLiteralExpressionElement() { all.add(other); }
+            )*
+            <RBRACKET>
+            {
+                begin = token();
+                return new ListCreationLiteralExpression(range(begin, token()), all);
+            }
+
+        )
+    )
+}
+
+Expression ListCreationLiteralExpressionElement():
+{
+        JavaToken begin;
+        Expression key = null;
+        Expression value = null;
+}
+{
+    (
+        value = PrimaryPrefix()
+        {
+            begin = token();
+            return new ListCreationLiteralExpressionElement(range(begin, token()), value);
+        }
+    )
+}
 
 Expression PointFreeExpr():
 {

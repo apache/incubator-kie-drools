@@ -120,6 +120,8 @@ import org.drools.mvel.parser.ast.expr.DrlxExpression;
 import org.drools.mvel.parser.ast.expr.HalfBinaryExpr;
 import org.drools.mvel.parser.ast.expr.HalfPointFreeExpr;
 import org.drools.mvel.parser.ast.expr.InlineCastExpr;
+import org.drools.mvel.parser.ast.expr.ListCreationLiteralExpression;
+import org.drools.mvel.parser.ast.expr.ListCreationLiteralExpressionElement;
 import org.drools.mvel.parser.ast.expr.ModifyStatement;
 import org.drools.mvel.parser.ast.expr.MapCreationLiteralExpression;
 import org.drools.mvel.parser.ast.expr.MapCreationLiteralExpressionKeyValuePair;
@@ -653,6 +655,10 @@ public interface DrlGenericVisitor<R, A> extends GenericVisitor<R,A> {
     default R visit(MapCreationLiteralExpression n, A arg) { return null; };
 
     default R visit(MapCreationLiteralExpressionKeyValuePair n, A arg) { return null; };
+
+    default R visit(ListCreationLiteralExpression n, A arg) { return null; };
+
+    default R visit(ListCreationLiteralExpressionElement n, A arg) { return null; };
 
     default R visit(WithStatement withStatement, A arg) { return null; };
 }

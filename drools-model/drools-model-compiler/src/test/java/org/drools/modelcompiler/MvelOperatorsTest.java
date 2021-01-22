@@ -19,6 +19,7 @@ package org.drools.modelcompiler;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.assertj.core.api.Assertions;
 import org.drools.modelcompiler.domain.Person;
@@ -460,5 +461,49 @@ public class MvelOperatorsTest extends BaseModelTest {
 
         ksession.insert( 2048 );
         assertEquals(1, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testListLiteralCreation() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "global java.util.List result;" +
+                "rule R when\n" +
+                "    Person( $myList : [\"aaa\", \"bbb\", \"ccc\"] )" +
+                "then\n" +
+                "    result.add($myList);" +
+                "end ";
+
+        KieSession ksession = getKieSession(str);
+        List<Object> result = new ArrayList<>();
+        ksession.setGlobal("result", result);
+        ksession.insert( new Person() );
+        ksession.fireAllRules();
+
+        Object obj = result.get(0);
+        assertTrue(obj instanceof List);
+        Assertions.assertThat((List)obj).containsExactlyInAnyOrder("aaa", "bbb", "ccc");
+    }
+
+    @Test
+    public void testMapLiteralCreation() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                     "global java.util.List result;" +
+                     "rule R when\n" +
+                     "    Person( $myMap : [\"key\" : \"value\"] )" +
+                     "then\n" +
+                     "    result.add($myMap);" +
+                     "end ";
+
+        KieSession ksession = getKieSession(str);
+        List<Object> result = new ArrayList<>();
+        ksession.setGlobal("result", result);
+        ksession.insert(new Person());
+        ksession.fireAllRules();
+
+        Object obj = result.get(0);
+        assertTrue(obj instanceof Map);
+        assertEquals("value", ((Map) obj).get("key"));
     }
 }
