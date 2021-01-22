@@ -31,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @QuarkusTest
 public class StaticContentTest {
 
-    @TestHTTPResource("index.html")
+    @TestHTTPResource
     URL url;
 
     private static String readStream(InputStream in) throws IOException {

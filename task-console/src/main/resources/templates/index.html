@@ -1,0 +1,38 @@
+<!--
+  ~ Copyright 2020 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <title>Kogito - Task Console</title>
+    <meta id="appName" name="application-name" content="Patternfly Seed" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="/favicon.ico" type="image/ico" />
+  </head>
+  <script>
+    window.DATA_INDEX_ENDPOINT = '{config:property('kogito.dataindex.http.url') or 'http://localhost:8180'}/graphql';
+    window.KOGITO_AUTH_ENABLED = {config:property('quarkus.oidc.tenant-enabled') or false};
+    window.KOGITO_TASK_STATES_LIST = '{config:property('kogito.task.states.list') or 'Ready,Reserved,Completed,Aborted,Skipped'}';
+    window.KOGITO_TASK_ACTIVE_STATES_LIST = '{config:property('kogito.task.active.states.list') or 'Ready,Reserved'}';
+    window.TEST_USER_SYSTEM_ENABLED = {config:property('kogito.test.user-system.enabled') or false};
+  </script>
+  <body class="pf-m-redhat-font">
+    <noscript>Enabling JavaScript is required to run this app.</noscript>
+    <div id="root" style="height: 100%;"></div>
+    <script type="text/javascript" src="/app.bundle.js"></script>
+  </body>
+</html>

@@ -53,6 +53,10 @@
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-qute</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
       <artifactId>quarkus-junit5</artifactId>
       <scope>test</scope>
     </dependency>
@@ -107,6 +111,9 @@
               <resources>
                 <resource>
                   <directory>${path.to.frontend.app}/dist</directory>
+                  <excludes>
+                    <exclude>index.html</exclude>
+                  </excludes>
                   <filtering>false</filtering>
                 </resource>
               </resources>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <title>Kogito - Management Console</title>
+    <meta id="appName" name="application-name" content="Patternfly Seed" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="/favicon.ico" type="image/ico" />
+  </head>
+  <script>
+    window.DATA_INDEX_ENDPOINT = '{config:property('kogito.dataindex.http.url') or 'http://localhost:8180'}/graphql';
+    window.KOGITO_AUTH_ENABLED = {config:property('quarkus.oidc.tenant-enabled') or false};
+    window.TEST_USER_SYSTEM_ENABLED = {config:property('kogito.test.user-system.enabled') or false};
+  </script>
+  <body class="pf-m-redhat-font">
+    <noscript>Enabling JavaScript is required to run this app.</noscript>
+    <div id="root" style="height: 100%;"></div>
+    <script type="text/javascript" src="/app.bundle.js"></script>
+  </body>
+</html>
