@@ -148,6 +148,7 @@ public class ExpressionTyper {
             logger.debug( "Typed expression Input: drlxExpr = {} , patternType = {} ,declarations = {}", printConstraint(drlxExpr), patternType, context.getUsedDeclarations() );
         }
         final Optional<TypedExpression> typedExpression = toTypedExpressionRec(drlxExpr);
+        typedExpression.ifPresent(t -> t.setOriginalPatternType(patternType));
         final TypedExpressionResult typedExpressionResult = new TypedExpressionResult(typedExpression, context);
         if (logger.isDebugEnabled()) {
             logger.debug( "Typed expression Output: {}", typedExpressionResult );

@@ -441,6 +441,101 @@ public class MvelDialectTest extends BaseModelTest {
     }
 
     @Test
+    public void testBigDecimalModuloConsequence() {
+        // DROOLS-5959
+        String drl =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "import " + BigDecimal.class.getCanonicalName() + "\n" +
+                "global java.util.List results;\n" +
+                "dialect \"mvel\"\n" +
+                "rule R\n" +
+                "when\n" +
+                "    $p : Person($m : money)\n" +
+                "then\n" +
+                "    results.add($m % 70);\n" +
+                "    BigDecimal moduloPromotedToBigDecimal = 12 % 10; "+
+                "    results.add(moduloPromotedToBigDecimal);\n" +
+                "end";
+
+        KieSession ksession = getKieSession(drl);
+
+        List<BigDecimal> results = new ArrayList<>();
+        ksession.setGlobal("results", results);
+
+        Person john = new Person("John", 30);
+        john.setMoney( new BigDecimal( 71 ) );
+
+        ksession.insert(john);
+
+        assertEquals(1, ksession.fireAllRules());
+        assertThat(results).containsExactly(BigDecimal.valueOf(1), BigDecimal.valueOf(2));
+    }
+
+    @Test
+    public void testBigDecimalModulo() {
+        // DROOLS-5959
+        String drl =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "global java.util.List results;\n" +
+                "dialect \"mvel\"\n" +
+                "rule R\n" +
+                "when\n" +
+                "    $p : Person($m : money % 2 == 0 )\n" +
+                "then\n" +
+                "    results.add($m);\n" +
+                "end";
+
+        KieSession ksession = getKieSession(drl);
+
+        List<BigDecimal> results = new ArrayList<>();
+        ksession.setGlobal("results", results);
+
+        Person john = new Person("John", 30);
+        john.setMoney( new BigDecimal( 70000 ) );
+
+        Person mark = new Person("Mark", 40);
+        mark.setMoney( new BigDecimal( 70001 ) );
+
+        ksession.insert(john);
+        ksession.insert(mark);
+
+        assertEquals(1, ksession.fireAllRules());
+        assertEquals(new BigDecimal( 70000 ), results.iterator().next());
+    }
+
+    @Test
+    public void testBigDecimalModuloBetweenFields() {
+        // DROOLS-5959
+        String drl =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "global java.util.List results;\n" +
+                "dialect \"mvel\"\n" +
+                "rule R\n" +
+                "when\n" +
+                "    $p : Person($m : money % age == 20 )\n" +
+                "then\n" +
+                "    results.add($m);\n" +
+                "end";
+
+        KieSession ksession = getKieSession(drl);
+
+        List<BigDecimal> results = new ArrayList<>();
+        ksession.setGlobal("results", results);
+
+        Person john = new Person("John", 30);
+        john.setMoney( new BigDecimal( 90 ) );
+
+        Person mark = new Person("Mark", 30);
+        mark.setMoney( new BigDecimal( 80 ) );
+
+        ksession.insert(john);
+        ksession.insert(mark);
+
+        assertEquals(1, ksession.fireAllRules());
+        assertEquals(new BigDecimal( 80 ), results.iterator().next());
+    }
+
+    @Test
     public void testCompoundOperatorBigDecimalConstant() throws Exception {
         // DROOLS-5894
         String drl =

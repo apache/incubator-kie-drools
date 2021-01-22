@@ -10,12 +10,12 @@ import com.github.javaparser.ast.stmt.Statement;
 
 import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
 
-public class ParsingResult {
+public class CompiledBlockResult {
 
     private List<Statement> statements;
     private Set<String> usedBindings = new HashSet<>();
 
-    public ParsingResult(List<Statement> statements) {
+    public CompiledBlockResult(List<Statement> statements) {
         this.statements = statements;
     }
 
@@ -27,7 +27,7 @@ public class ParsingResult {
         return new BlockStmt(NodeList.nodeList(statements));
     }
 
-    public ParsingResult setUsedBindings(Set<String> usedBindings) {
+    public CompiledBlockResult setUsedBindings(Set<String> usedBindings) {
         this.usedBindings = usedBindings;
         return this;
     }
