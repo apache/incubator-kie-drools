@@ -119,6 +119,7 @@ import org.drools.model.patterns.EvalImpl;
 import org.drools.model.patterns.ExistentialPatternImpl;
 import org.drools.model.patterns.PatternImpl;
 import org.drools.model.patterns.QueryCallPattern;
+import org.drools.model.view.SelfPatternBiding;
 import org.drools.modelcompiler.attributes.LambdaEnabled;
 import org.drools.modelcompiler.attributes.LambdaSalience;
 import org.drools.modelcompiler.builder.GroupByBuilder;
@@ -565,7 +566,13 @@ public class KiePackagesBuilder {
             source = buildPattern( ctx, group, accumulatePattern );
         }
 
-        pattern.setSource(buildAccumulate( ctx, accumulatePattern, source, pattern, new ArrayList<>(usedVariableName), sourcePattern != null ? sourcePattern.getBindings() : Collections.emptyList()) );
+        Collection<Binding> bindings = new ArrayList<>();
+        if (sourcePattern != null) {
+            bindings.addAll( sourcePattern.getBindings() );
+            bindings.add( new SelfPatternBiding<>( sourcePattern.getPatternVariable() ) );
+        }
+
+        pattern.setSource(buildAccumulate( ctx, accumulatePattern, source, pattern, new ArrayList<>(usedVariableName), bindings ));
 
         if (source instanceof Pattern) {
             for (Variable v : accumulatePattern.getBoundVariables()) {
@@ -594,11 +601,18 @@ public class KiePackagesBuilder {
 
     private void recursivelyAddConditions(RuleContext ctx, GroupElement group, GroupElement allSubConditions, Condition c) {
         if (c instanceof CompositePatterns) {
-            buildCompositePatterns(ctx, group, allSubConditions, c);
+            c.getSubConditions().forEach(sc -> recursivelyAddConditions(ctx, group, allSubConditions, sc));
         } else if (c instanceof ExistentialPatternImpl) {
-            buildExistentialPatternImpl(ctx, group, allSubConditions, c);
+            GroupElement existGroupElement = new GroupElement(conditionToGroupElementType( c.getType() ));
+            allSubConditions.addChild(existGroupElement);
+            recursivelyAddConditions(ctx, existGroupElement, existGroupElement, c.getSubConditions().iterator().next());
         } else if (c instanceof PatternImpl) {
-            allSubConditions.addChild(buildPattern(ctx, group, c));
+            org.drools.model.Pattern pattern = (org.drools.model.Pattern<?>) c;
+            if (ctx.getAccumulateSource( pattern.getPatternVariable() ) == null) {
+                allSubConditions.addChild( buildPattern( ctx, group, pattern ) );
+            }
+        } else if (c instanceof AccumulatePattern) {
+            allSubConditions.addChild(buildAccumulate( ctx, group, (AccumulatePattern) c ));
         }
     }
 
@@ -717,20 +731,6 @@ public class KiePackagesBuilder {
         }
     }
 
-    private void buildExistentialPatternImpl( RuleContext ctx, GroupElement group, GroupElement allSubConditions, Condition condition ) {
-        ExistentialPatternImpl existentialPattern = (ExistentialPatternImpl) condition;
-
-        GroupElement existGroupElement = new GroupElement(GroupElement.Type.EXISTS);
-        allSubConditions.addChild(existGroupElement);
-
-        recursivelyAddConditions(ctx, existGroupElement, existGroupElement, existentialPattern.getSubConditions().iterator().next());
-    }
-
-    private void buildCompositePatterns( RuleContext ctx, GroupElement group, GroupElement allSubConditions, Condition condition ) {
-        CompositePatterns compositePatterns = (CompositePatterns) condition;
-        compositePatterns.getSubConditions().forEach(sc ->  recursivelyAddConditions(ctx, group, allSubConditions, sc));
-    }
-
     private Accumulate buildAccumulate(RuleContext ctx, AccumulatePattern accPattern,
                                        RuleConditionElement source, Pattern pattern,
                                        List<String> usedVariableName, Collection<Binding> bindings) {
@@ -799,8 +799,7 @@ public class KiePackagesBuilder {
     }
 
     private Binding findBindingForAccumulate( Collection<Binding> bindings, AccumulateFunction accFunction ) {
-        return bindings.stream().filter( b -> b.getBoundVariable() == accFunction.getSource() ).findFirst()
-                .orElse( bindings.isEmpty() ? null : bindings.iterator().next() );
+        return bindings.stream().filter( b -> b.getBoundVariable() == accFunction.getSource() ).findFirst().orElse( null );
     }
 
     private Declaration[] getRequiredDeclarationsForAccumulate( RuleContext ctx, RuleConditionElement source, AccumulateFunction accFunction, Binding binding, BindingEvaluator bindingEvaluator ) {

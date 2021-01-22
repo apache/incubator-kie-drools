@@ -24,18 +24,22 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.apache.commons.math3.util.Pair;
 import org.assertj.core.api.Assertions;
 import org.drools.core.ClockType;
+import org.drools.core.base.accumulators.CollectSetAccumulateFunction;
 import org.drools.core.rule.QueryImpl;
 import org.drools.model.DSL;
 import org.drools.model.Global;
 import org.drools.model.Index;
 import org.drools.model.Model;
+import org.drools.model.PatternDSL;
 import org.drools.model.Query;
 import org.drools.model.Query2Def;
 import org.drools.model.Rule;
 import org.drools.model.Variable;
 import org.drools.model.impl.ModelImpl;
+import org.drools.model.view.ViewItem;
 import org.drools.modelcompiler.builder.KieBaseBuilder;
 import org.drools.modelcompiler.domain.Adult;
 import org.drools.modelcompiler.domain.Child;
@@ -906,5 +910,39 @@ public class PatternDSLTest {
         ksession.insert( new StockTick( "ACME" ) );
 
         assertEquals( 0, ksession.fireAllRules() );
+    }
+
+    @Test
+    public void testTwoAccumulatesWithVarBindingModel() {
+        Variable<Person> a = PatternDSL.declarationOf(Person.class);
+        Variable<Pair> accSource = PatternDSL.declarationOf(Pair.class);
+        Variable<Collection> accResult = PatternDSL.declarationOf(Collection.class);
+        Variable<Collection> accResult2 = PatternDSL.declarationOf(Collection.class);
+        Variable<Pair> wrapped = PatternDSL.declarationOf(Pair.class, PatternDSL.from(accResult));
+        Variable<Object> unwrapped1 = PatternDSL.declarationOf(Object.class);
+
+        PatternDSL.PatternDef aPattern = PatternDSL.pattern(a)
+                .bind(accSource, v -> Pair.create(v.getName(), v.getAge()));
+        ViewItem accumulate = PatternDSL.accumulate(aPattern, DSL.accFunction( CollectSetAccumulateFunction::new, accSource).as(accResult));
+
+        PatternDSL.PatternDef secondPattern = PatternDSL.pattern(accResult);
+        PatternDSL.PatternDef thirdPattern = PatternDSL.pattern(wrapped)
+                .bind(unwrapped1, Pair::getKey); // If binding removed, test will pass.
+        ViewItem accumulate2 = PatternDSL.accumulate(PatternDSL.and(secondPattern, thirdPattern),
+                DSL.accFunction(CollectSetAccumulateFunction::new, wrapped).as(accResult2));
+        Rule rule = PatternDSL.rule("R")
+                .build(accumulate, accumulate2, PatternDSL.on(accResult2).execute(obj -> {
+                    boolean works = obj.contains(Pair.create("Lukas", 35));
+                    if (!works) {
+                        throw new IllegalStateException("Why is " + obj + " not Set<" + Pair.class + ">?");
+                    }
+                }));
+
+        Model model = new ModelImpl().addRule(rule);
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel(model);
+        KieSession session = kieBase.newKieSession();
+
+        session.insert(new Person("Lukas", 35));
+        session.fireAllRules();
     }
 }
