@@ -92,6 +92,7 @@ import org.drools.mvel.parser.ast.expr.BigIntegerLiteralExpr;
 import org.drools.mvel.parser.ast.expr.DrlNameExpr;
 import org.drools.mvel.parser.ast.expr.DrlxExpression;
 import org.drools.mvel.parser.ast.expr.HalfBinaryExpr;
+import org.drools.mvel.parser.ast.expr.ListCreationLiteralExpression;
 import org.drools.mvel.parser.ast.expr.MapCreationLiteralExpression;
 import org.drools.mvel.parser.printer.PrintUtil;
 import org.drools.mvelcompiler.MvelCompiler;
@@ -201,6 +202,10 @@ public class DrlxParseUtil {
 
         if (expr instanceof MapCreationLiteralExpression) {
             return Map.class;
+        }
+
+        if (expr instanceof ListCreationLiteralExpression) {
+            return List.class;
         }
 
         if (expr instanceof NameExpr) {

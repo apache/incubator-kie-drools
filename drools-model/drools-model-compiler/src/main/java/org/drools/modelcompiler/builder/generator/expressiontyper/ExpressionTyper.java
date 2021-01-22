@@ -22,6 +22,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.TypeVariable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -77,6 +78,8 @@ import org.drools.mvel.parser.ast.expr.DrlNameExpr;
 import org.drools.mvel.parser.ast.expr.HalfBinaryExpr;
 import org.drools.mvel.parser.ast.expr.HalfPointFreeExpr;
 import org.drools.mvel.parser.ast.expr.InlineCastExpr;
+import org.drools.mvel.parser.ast.expr.ListCreationLiteralExpression;
+import org.drools.mvel.parser.ast.expr.ListCreationLiteralExpressionElement;
 import org.drools.mvel.parser.ast.expr.MapCreationLiteralExpression;
 import org.drools.mvel.parser.ast.expr.MapCreationLiteralExpressionKeyValuePair;
 import org.drools.mvel.parser.ast.expr.NullSafeFieldAccessExpr;
@@ -219,7 +222,7 @@ public class ExpressionTyper {
         } else if (drlxExpr instanceof NameExpr) {
             return nameExpr(((NameExpr)drlxExpr).getNameAsString(), typeCursor);
         } else if (drlxExpr instanceof FieldAccessExpr || drlxExpr instanceof MethodCallExpr || drlxExpr instanceof ObjectCreationExpr
-                || drlxExpr instanceof NullSafeFieldAccessExpr || drlxExpr instanceof  NullSafeMethodCallExpr) {
+                || drlxExpr instanceof NullSafeFieldAccessExpr || drlxExpr instanceof  NullSafeMethodCallExpr || drlxExpr instanceof MapCreationLiteralExpression || drlxExpr instanceof ListCreationLiteralExpression) {
             return toTypedExpressionFromMethodCallOrField(drlxExpr).getTypedExpression();
         } else if (drlxExpr instanceof PointFreeExpr) {
 
@@ -646,6 +649,8 @@ public class ExpressionTyper {
 
         } else if (firstNode instanceof MapCreationLiteralExpression) {
             result = mapCreationLiteral((MapCreationLiteralExpression) firstNode, originalTypeCursor);
+        } else if (firstNode instanceof ListCreationLiteralExpression) {
+            result = listCreationLiteral((ListCreationLiteralExpression) firstNode, originalTypeCursor);
         } else {
             result = of(new TypedExpressionCursor( (Expression)firstNode, getExpressionType( ruleContext, ruleContext.getTypeResolver(), (Expression)firstNode, context.getUsedDeclarations() ) ));
         }
@@ -832,8 +837,8 @@ public class ExpressionTyper {
         for(Expression e : mapCreationLiteralExpression.getExpressions()) {
             MapCreationLiteralExpressionKeyValuePair expr = (MapCreationLiteralExpressionKeyValuePair)e;
 
-            Expression key = mapCreationLiteralNameExpr(originalTypeCursor, expr.getKey());
-            Expression value = mapCreationLiteralNameExpr(originalTypeCursor, expr.getValue());
+            Expression key = resolveCreationLiteralNameExpr(originalTypeCursor, expr.getKey());
+            Expression value = resolveCreationLiteralNameExpr(originalTypeCursor, expr.getValue());
 
             initializationStmt.addStatement(new MethodCallExpr(null, "put", nodeList(key, value)));
         }
@@ -841,7 +846,7 @@ public class ExpressionTyper {
         return of(new TypedExpressionCursor(newHashMapExpr, HashMap.class));
     }
 
-    private Expression mapCreationLiteralNameExpr(java.lang.reflect.Type originalTypeCursor, Expression expression) {
+    private Expression resolveCreationLiteralNameExpr(java.lang.reflect.Type originalTypeCursor, Expression expression) {
         Expression result = expression;
         if (result instanceof DrlNameExpr) {
             TypedExpressionCursor typedExpressionCursor = drlNameExpr(null, (DrlNameExpr) result, false, originalTypeCursor)
@@ -849,6 +854,25 @@ public class ExpressionTyper {
             result = typedExpressionCursor.expressionCursor;
         }
         return result;
+    }
+
+    private Optional<TypedExpressionCursor> listCreationLiteral(ListCreationLiteralExpression listCreationLiteralExpression, java.lang.reflect.Type originalTypeCursor) {
+        ClassOrInterfaceType arrayListType = (ClassOrInterfaceType) parseType(ArrayList.class.getCanonicalName());
+
+        BlockStmt initializationStmt = new BlockStmt();
+
+        InitializerDeclaration body = new InitializerDeclaration(false, initializationStmt);
+        ObjectCreationExpr newArrayListExpr = new ObjectCreationExpr(null, arrayListType, nodeList(), nodeList(), nodeList(body));
+
+        for(Expression e : listCreationLiteralExpression.getExpressions()) {
+            ListCreationLiteralExpressionElement expr = (ListCreationLiteralExpressionElement)e;
+
+            Expression value = resolveCreationLiteralNameExpr(originalTypeCursor, expr.getValue());
+
+            initializationStmt.addStatement(new MethodCallExpr(null, "add", nodeList(value)));
+        }
+
+        return of(new TypedExpressionCursor(newArrayListExpr, ArrayList.class));
     }
 
     private Optional<TypedExpressionCursor> arrayAccessExpr(ArrayAccessExpr arrayAccessExpr, java.lang.reflect.Type originalTypeCursor, Expression scope) {
