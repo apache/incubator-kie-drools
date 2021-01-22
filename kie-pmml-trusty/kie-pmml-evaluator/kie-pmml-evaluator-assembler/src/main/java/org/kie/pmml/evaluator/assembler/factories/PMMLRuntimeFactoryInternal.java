@@ -34,15 +34,11 @@ import org.kie.internal.utils.KieHelper;
 import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.evaluator.api.container.PMMLPackage;
 import org.kie.pmml.evaluator.assembler.service.PMMLAssemblerService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * <b>Factory</b> class to hide implementation details to end user
  */
 public class PMMLRuntimeFactoryInternal {
-
-    private static final Logger logger = LoggerFactory.getLogger(PMMLRuntimeFactoryInternal.class);
 
     private PMMLRuntimeFactoryInternal() {
         // Avoid instantiation
@@ -64,21 +60,14 @@ public class PMMLRuntimeFactoryInternal {
         return kieRuntimeFactory.get(PMMLRuntime.class);
     }
 
-    private static PMMLRuntime getPMMLRuntime(File pmmlFile, KnowledgeBuilderImpl kbuilderImpl) {
-        FileSystemResource fileSystemResource = new FileSystemResource(pmmlFile);
-        new PMMLAssemblerService().addResource(kbuilderImpl, fileSystemResource, ResourceType.PMML, null);
-        KieBase kieBase = createKieBase(kbuilderImpl);
-        return getPMMLRuntime(kieBase);
-    }
-
-    private static KieBase createKieBase(final File pmmlFile) {
+    protected static KieBase createKieBase(final File pmmlFile) {
         KieHelper kieHelper = new KieHelper();
         FileSystemResource fileSystemResource = new FileSystemResource(pmmlFile);
         kieHelper.addResource(fileSystemResource);
         return kieHelper.build(ExecutableModelProject.class);
     }
 
-    private static KieBase createKieBase(KnowledgeBuilderImpl kbuilderImpl) {
+    protected static KieBase createKieBase(KnowledgeBuilderImpl kbuilderImpl) {
         KieHelper kieHelper = new KieHelper();
         kbuilderImpl.getPackageNames().stream()
                 .flatMap(name -> kbuilderImpl.getPackageDescrs(name).stream())
@@ -103,14 +92,22 @@ public class PMMLRuntimeFactoryInternal {
                             ((InternalKnowledgePackage) kiePackage).getResourceTypePackages()
                                     .put(ResourceType.PMML, kBuilderPackage.getResourceTypePackages().get(ResourceType.PMML));
                         }
-                   }
+                    }
                 });
         return kieBase;
     }
 
-    private static DescrResource createDescrResource(PackageDescr pDescr) {
+    protected static PMMLRuntime getPMMLRuntime(File pmmlFile, KnowledgeBuilderImpl kbuilderImpl) {
+        FileSystemResource fileSystemResource = new FileSystemResource(pmmlFile);
+        new PMMLAssemblerService().addResource(kbuilderImpl, fileSystemResource, ResourceType.PMML, null);
+        KieBase kieBase = createKieBase(kbuilderImpl);
+        return getPMMLRuntime(kieBase);
+    }
+
+    protected static DescrResource createDescrResource(PackageDescr pDescr) {
         DescrResource resource = new DescrResource(pDescr);
         resource.setSourcePath("src/main/resources/file_" + UUID.randomUUID() + ".descr");
         return resource;
     }
+
 }
