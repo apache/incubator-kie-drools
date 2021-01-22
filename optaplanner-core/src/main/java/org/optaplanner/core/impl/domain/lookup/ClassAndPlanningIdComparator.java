@@ -27,8 +27,8 @@ import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 
 public class ClassAndPlanningIdComparator implements Comparator<Object> {
 
-    private boolean failFastIfNoPlanningId;
     private DomainAccessType domainAccessType;
+    private boolean failFastIfNoPlanningId;
     private Map<Class, MemberAccessor> decisionCache = new HashMap<>();
 
     public ClassAndPlanningIdComparator() {

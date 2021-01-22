@@ -40,8 +40,8 @@ public class SolverBuildTimeConfig {
     Optional<EnvironmentMode> environmentMode;
 
     /**
-     * Determines how member accessors are created. Defaults to
-     * {@link DomainAccessType#GIZMO}.
+     * Determines how to access the fields and methods of domain classes.
+     * Defaults to {@link DomainAccessType#GIZMO}.
      */
     @ConfigItem
     Optional<DomainAccessType> domainAccessType;

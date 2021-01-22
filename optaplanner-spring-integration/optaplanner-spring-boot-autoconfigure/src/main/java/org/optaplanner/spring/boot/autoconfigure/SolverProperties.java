@@ -29,10 +29,11 @@ public class SolverProperties {
     private EnvironmentMode environmentMode;
 
     /**
-     * Determines how Domain Accessors are created. Defaults
-     * to {@link DomainAccessType#REFLECTION}. To use {@link DomainAccessType#GIZMO}, io.quarkus.gizmo:gizmo
-     * MUST be in your classpath, and all OptaPlanner annotations
-     * must be on public members.
+     * Determines how to access the fields and methods of domain classes.
+     * Defaults to {@link DomainAccessType#REFLECTION}.
+     * <p>
+     * To use {@link DomainAccessType#GIZMO}, {@code io.quarkus.gizmo:gizmo} must be in your classpath,
+     * and all planning annotations must be on public members.
      */
     private DomainAccessType domainAccessType;
 
