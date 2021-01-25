@@ -36,6 +36,7 @@ pipeline {
 
         // Build&test information
         string(name: 'MAVEN_DEPENDENCIES_REPOSITORY', defaultValue: '', description: 'Maven repository where to find dependencies if those are not in the default JBoss repository.')
+        string(name: 'MAVEN_REPO_CREDS_ID', defaultValue: '', description: 'Credentials for Maven repository to deploy the artifacts.')
         booleanParam(name: 'SKIP_TESTS', defaultValue: false, description: 'Skip tests')
         string(name: 'MAVEN_SETTINGS_CONFIG_FILE_ID', defaultValue: 'kogito_release_settings', description: 'Maven settings configfile to use in pipeline for Maven commands')
 
@@ -56,6 +57,9 @@ pipeline {
         // Bot author information. Set as params for easy testing.
         string(name: 'GIT_AUTHOR_BOT', defaultValue: 'bsig-gh-bot', description: 'From which author should the PR be created ?')
         string(name: 'BOT_CREDENTIALS_ID', defaultValue: 'bsig-gh-bot', description: 'Credentials for PR creation')
+
+        // PR parameter to be filled out for PR checks
+        string(name: 'PR_TARGET_BRANCH', defaultValue: '', description: 'What is the target branch of the PR?')
     }
 
     environment {
@@ -99,10 +103,10 @@ pipeline {
 
         stage('Clone repositories') {
             steps {
-                checkoutRepo(optaplannerRepository, getBuildBranch())
-                checkoutRepo(quickstartsRepository, getQuickStartsBranch())
-                checkoutRepo(vehicleRoutingRepository, getBuildBranch())
-                checkoutRepo(employeeRosteringRepository, getBuildBranch())
+                checkoutRepo(optaplannerRepository)
+                checkoutQuickstarts()
+                checkoutRepo(vehicleRoutingRepository)
+                checkoutRepo(employeeRosteringRepository)
             }
         }
 
@@ -248,11 +252,31 @@ void saveReports(boolean allowEmpty=false){
     junit testResults: '**/target/surefire-reports/**/*.xml, **/target/failsafe-reports/**/*.xml', allowEmptyResults: allowEmpty
 }
 
-void checkoutRepo(String repo, String branch, String dirName=repo) {
+void checkoutRepo(String repo, String dirName=repo) {
     dir(dirName) {
         deleteDir()
-        checkout(githubscm.resolveRepository(repo, getGitAuthor(), branch, false))
+        if (params.PR_TARGET_BRANCH) {
+            githubscm.checkoutIfExists(repo, getGitAuthor(), getBuildBranch(), 'kiegroup', getFallbackBranch(repo), true)
+        } else {
+            checkout(githubscm.resolveRepository(repo, getGitAuthor(), getBuildBranch(), false))
+        }
     }
+}
+
+void checkoutQuickstarts(String dirName=quickstartsRepository) {
+    dir(dirName) {
+        deleteDir()
+        if (params.PR_TARGET_BRANCH) {
+            githubscm.checkoutIfExists(quickstartsRepository, getGitAuthor(), getQuickStartsBranch(), 'kiegroup', getQuickStartsBranch(), true)
+        } else {
+            checkout(githubscm.resolveRepository(quickstartsRepository, getGitAuthor(), getQuickStartsBranch(), false))
+        }
+    }
+}
+
+String getFallbackBranch(String repo) {
+    def repositoryScm = githubscm.getRepositoryScm(repo, 'kiegroup', params.PR_TARGET_BRANCH)
+    return repositoryScm ? params.PR_TARGET_BRANCH : 'master'
 }
 
 void prepareForPR(String repo) {
@@ -289,7 +313,6 @@ MavenCommand getMavenDefaultCommand(){
     return mvnCmd
 }
 
-
 MavenCommand getOptaplannerMavenCommand(){
     return getMavenDefaultCommand().inDirectory(optaplannerRepository).withProperty('full')
 }
@@ -317,7 +340,11 @@ void mavenCleanInstallOptaPlannerParents() {
 }
 
 void deployMavenArtifacts(MavenCommand mvnCmd, String localDeployId){
-    if(!isRelease() || params.MAVEN_DEPLOY_REPOSITORY){
+    if (params.MAVEN_DEPLOY_REPOSITORY && params.MAVEN_REPO_CREDS_ID) {
+        // Deploy to specific repository with credentials
+        runMavenDeployLocally(mvnCmd, localDeployId)
+        maven.uploadLocalArtifacts(params.MAVEN_REPO_CREDS_ID, getLocalDeploymentFolder(localDeployId), getMavenRepoZipUrl())
+    } else if(!isRelease() || params.MAVEN_DEPLOY_REPOSITORY){
         // Normal deploy
         runMavenDeploy(mvnCmd)
     } else {
@@ -335,6 +362,10 @@ void runMavenDeploy(MavenCommand mvnCmd) {
     }
 
     mvnCmd.skipTests(true).run('clean deploy')
+}
+
+String getMavenRepoZipUrl() {
+     return "${params.MAVEN_DEPLOY_REPOSITORY.replaceAll('/content/', '/service/local/').replaceFirst('/*$', '')}/content-compressed"
 }
 
 void runMavenDeployLocally(MavenCommand mvnCmd, String localDeployId) {
