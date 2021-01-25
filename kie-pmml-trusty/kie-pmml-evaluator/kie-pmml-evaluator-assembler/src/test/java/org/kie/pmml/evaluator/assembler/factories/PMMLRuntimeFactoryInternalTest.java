@@ -17,21 +17,30 @@
 package org.kie.pmml.evaluator.assembler.factories;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
+import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.io.impl.DescrResource;
+import org.drools.modelcompiler.ExecutableModelProject;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.builder.ReleaseId;
+import org.kie.api.definition.KiePackage;
 import org.kie.api.internal.io.ResourceTypePackage;
 import org.kie.api.io.ResourceType;
+import org.kie.internal.utils.KieHelper;
+import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.runtime.PMMLRuntime;
+import org.kie.pmml.commons.model.HasNestedModels;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.evaluator.api.container.PMMLPackage;
 import org.kie.pmml.evaluator.assembler.container.PMMLPackageImpl;
@@ -119,9 +128,112 @@ public class PMMLRuntimeFactoryInternalTest {
         assertTrue(retrievedSourcePath.endsWith(".descr"));
     }
 
+    @Test
+    public void populateNestedKiePackageList() {
+        // Setup kiebase
+        KiePMMLModel kiePMMLModel = getKiePMMLModelWithNested("FAKE");
+        KnowledgePackageImpl pmmlKnowledgePackage = getKnowledgePackageWithPMMLResourceType(kiePMMLModel);
+        List<KiePackage> kiePackages =  ((HasNestedModels)kiePMMLModel)
+                .getNestedModels()
+                .stream()
+                .map(this::getKnowledgePackageWithPMMLResourceType)
+                .collect(Collectors.toList());
+        KnowledgeBaseImpl kieBase = (KnowledgeBaseImpl) new KieHelper().build(ExecutableModelProject.class);
+        kieBase.addPackage(pmmlKnowledgePackage);
+        kieBase.addPackages(kiePackages);
+        // Actual test
+        final List<KiePackage> toPopulate = new ArrayList<>();
+        PMMLRuntimeFactoryInternal
+                .populateNestedKiePackageList(Collections.singleton(kiePMMLModel),
+                                              toPopulate,
+                                              kieBase);
+        assertFalse(toPopulate.isEmpty());
+        assertEquals(kiePackages.size(), toPopulate.size());
+    }
+
+    @Test
+    public void getKiePackageByFullClassNamePresent() {
+        // Setup kiebase
+        KiePMMLModel kiePMMLModel = new KiePMMLModelA("FAKE");
+        KnowledgePackageImpl pmmlKnowledgePackage = getKnowledgePackageWithPMMLResourceType(kiePMMLModel);
+        KnowledgeBaseImpl kieBase = (KnowledgeBaseImpl) new KieHelper().build(ExecutableModelProject.class);
+        kieBase.addPackage(pmmlKnowledgePackage);
+        // Actual test
+        assertNotNull(PMMLRuntimeFactoryInternal.getKiePackageByFullClassName(kiePMMLModel.getClass().getName(), kieBase));
+    }
+
+    @Test(expected = KiePMMLException.class)
+    public void getKiePackageByFullClassNameNotPresent() {
+        // Setup kiebase
+        KnowledgePackageImpl pmmlKnowledgePackage = getKnowledgePackageWithPMMLResourceType(new KiePMMLModelA("FAKE"));
+        KnowledgeBaseImpl kieBase = (KnowledgeBaseImpl) new KieHelper().build(ExecutableModelProject.class);
+        kieBase.addPackage(pmmlKnowledgePackage);
+        // Actual test
+        PMMLRuntimeFactoryInternal.getKiePackageByFullClassName(KiePMMLModel.class.getName(), kieBase);
+    }
+
     private void commonValidatePMMLRuntime(PMMLRuntime toValidate) {
         assertNotNull(toValidate);
         assertTrue(toValidate instanceof PMMLRuntimeInternalImpl);
         assertNotNull(((PMMLRuntimeInternalImpl)toValidate).getKnowledgeBase());
+    }
+
+    private KnowledgePackageImpl getKnowledgePackageWithPMMLResourceType(KiePMMLModel kiePMMLModel) {
+        PMMLPackage pmmlPkg = new PMMLPackageImpl();
+        pmmlPkg.addAll(Collections.singleton(kiePMMLModel));
+        KnowledgePackageImpl pmmlKnowledgePackage = new KnowledgePackageImpl(kiePMMLModel.getKModulePackageName());
+        pmmlKnowledgePackage.getResourceTypePackages().put(ResourceType.PMML, pmmlPkg);
+        return pmmlKnowledgePackage;
+    }
+
+    private KiePMMLModel getKiePMMLModelWithNested(String modelName) {
+        List<KiePMMLModel> kiePmmlModels = new ArrayList<>();
+        kiePmmlModels.add(new KiePMMLModelA("FAKE-A"));
+        kiePmmlModels.add(new KiePMMLModelB("FAKE-B"));
+        return new KiePMMLModelWithNested(modelName, kiePmmlModels);
+    }
+
+    private class KiePMMLModelA extends KiePMMLModel {
+
+        public KiePMMLModelA(String name) {
+            super(name, Collections.emptyList());
+        }
+
+        @Override
+        public Object evaluate(Object knowledgeBase, Map<String, Object> requestData) {
+            return null;
+        }
+    }
+
+    private class KiePMMLModelB extends KiePMMLModel {
+
+        public KiePMMLModelB(String name) {
+            super(name, Collections.emptyList());
+        }
+
+        @Override
+        public Object evaluate(Object knowledgeBase, Map<String, Object> requestData) {
+            return null;
+        }
+    }
+
+    private class KiePMMLModelWithNested extends KiePMMLModel implements HasNestedModels {
+
+        private final List<KiePMMLModel> nestedModels;
+
+        public KiePMMLModelWithNested(String modelName, List<KiePMMLModel> nestedModels) {
+            super(modelName, Collections.emptyList());
+            this.nestedModels = nestedModels;
+        }
+
+        @Override
+        public List<KiePMMLModel> getNestedModels() {
+            return nestedModels;
+        }
+
+        @Override
+        public Object evaluate(Object knowledgeBase, Map<String, Object> requestData) {
+            return null;
+        }
     }
 }
