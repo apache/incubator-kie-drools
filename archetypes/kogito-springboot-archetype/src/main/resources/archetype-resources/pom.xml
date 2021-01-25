@@ -31,6 +31,12 @@
       <artifactId>kogito-springboot-starter</artifactId>
       <version>${kogito.version}</version>
     </dependency>
+    
+    <dependency>
+      <groupId>org.springdoc</groupId>
+      <artifactId>springdoc-openapi-ui</artifactId>
+      <version>${version.org.springdoc}</version>
+    </dependency>
 
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -56,34 +62,6 @@
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <groupId>io.openapitools.swagger</groupId>
-        <artifactId>swagger-maven-plugin</artifactId>
-        <version>${version.swagger.plugin}</version>
-        <configuration>
-          <resourcePackages>
-            <resourcePackage>\${groupId}</resourcePackage>
-          </resourcePackages>
-          <outputDirectory>\${basedir}/target/classes/static/</outputDirectory>
-          <outputFilename>openapi</outputFilename>
-          <outputFormats>JSON,YAML</outputFormats>
-          <prettyPrint>true</prettyPrint>
-          <swaggerConfig>
-            <info>
-              <title>${project.description}</title>
-              <version>${project.version}</version>
-            </info>
-          </swaggerConfig>
-        </configuration>
-        <executions>
-          <execution>
-            <phase>compile</phase>
-            <goals>
-              <goal>generate</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
     </plugins>
   </build>

@@ -72,7 +72,6 @@
     <version.source.plugin>3.0.1</version.source.plugin>
     <version.surefire.plugin>2.22.2</version.surefire.plugin> <!-- minimum required by JUnit 5 -->
     <version.surefire.report.plugin>2.6</version.surefire.report.plugin>
-    <version.swagger.plugin>2.1.0</version.swagger.plugin>
     <version.taglist.plugin>2.4</version.taglist.plugin>
     <version.versions.plugin>2.8.1</version.versions.plugin>
     <version.jayway.jsonpath>2.4.0</version.jayway.jsonpath>
@@ -138,6 +137,7 @@
     <version.org.reactivestreams>1.0.3</version.org.reactivestreams>
     <version.org.reflections>0.9.11</version.org.reflections>
     <version.org.slf4j>1.7.30</version.org.slf4j>
+    <version.org.springdoc>1.5.2</version.org.springdoc>
     <version.wiremock>2.27.2</version.wiremock>
     <version.testcontainers>1.15.1</version.testcontainers>
     <version.resteasy.springboot>4.6.0.Final</version.resteasy.springboot>
@@ -261,6 +261,12 @@
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-nop</artifactId>
         <version>${version.org.slf4j}</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>org.springdoc</groupId>
+        <artifactId>springdoc-openapi-ui</artifactId>
+        <version>${version.org.springdoc}</version>
       </dependency>
 
       <dependency>
@@ -1121,11 +1127,6 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-plugin-plugin</artifactId>
           <version>${version.plugin.plugin}</version>
-        </plugin>
-        <plugin>
-          <groupId>io.openapitools.swagger</groupId>
-          <artifactId>swagger-maven-plugin</artifactId>
-          <version>${version.swagger.plugin}</version>
         </plugin>
         <plugin>
           <groupId>org.jboss.jandex</groupId>
