@@ -16,11 +16,10 @@
 
 package org.drools.scenariosimulation.backend.runner;
 
-import java.util.HashMap;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.scenariosimulation.api.model.ExpressionElement;
 import org.drools.scenariosimulation.api.model.ExpressionIdentifier;
 import org.drools.scenariosimulation.api.model.FactIdentifier;
 import org.drools.scenariosimulation.api.model.FactMapping;
@@ -31,7 +30,6 @@ import org.drools.scenariosimulation.api.model.ScesimModelDescriptor;
 import org.drools.scenariosimulation.api.model.Settings;
 import org.drools.scenariosimulation.backend.expression.ExpressionEvaluator;
 import org.drools.scenariosimulation.backend.expression.ExpressionEvaluatorFactory;
-import org.drools.scenariosimulation.backend.fluent.DMNScenarioExecutableBuilder;
 import org.drools.scenariosimulation.backend.fluent.PMMLScenarioExecutableBuilder;
 import org.drools.scenariosimulation.backend.runner.model.InstanceGiven;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioExpect;
@@ -41,12 +39,10 @@ import org.drools.scenariosimulation.backend.runner.model.ScenarioRunnerData;
 import org.drools.scenariosimulation.backend.runner.model.ValueWrapper;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.runtime.KieContainer;
-import org.kie.dmn.api.core.DMNDecisionResult;
-import org.kie.dmn.api.core.DMNResult;
+import org.kie.pmml.api.enums.ResultCode;
 import org.kie.pmml.api.models.PMMLModel;
 
 import static org.drools.scenariosimulation.backend.runner.model.ValueWrapper.errorWithMessage;
-import static org.kie.dmn.api.core.DMNDecisionResult.DecisionEvaluationStatus.SUCCEEDED;
 
 public class PMMLScenarioRunnerHelper extends AbstractRunnerHelper {
 
@@ -57,7 +53,7 @@ public class PMMLScenarioRunnerHelper extends AbstractRunnerHelper {
                                                   ScesimModelDescriptor scesimModelDescriptor,
                                                   Settings settings) {
         if (!ScenarioSimulationModel.Type.PMML.equals(settings.getType())) {
-            throw new ScenarioException("Impossible to run a not-PMML simulation with DMN runner");
+            throw new ScenarioException("Impossible to run a not-PMML simulation with PMML runner");
         }
         PMMLScenarioExecutableBuilder executableBuilder = createBuilderWrapper(kieContainer, settings.getPmmlFilePath(), settings.getPmmlModelName());
 
@@ -80,25 +76,10 @@ public class PMMLScenarioRunnerHelper extends AbstractRunnerHelper {
         PMML4Result pmml4Result = (PMML4Result) requestContext.get(PMMLScenarioExecutableBuilder.PMML_RESULT);
 
         ScenarioResultMetadata scenarioResultMetadata = new ScenarioResultMetadata(scenarioWithIndex);
-//        for (DecisionNode decision : pmmlModel.getDecisions()) {
-//            scenarioResultMetadata.addAvailable(decision.getName());
-//        }
-//        final AtomicInteger counter = new AtomicInteger(0);
-//        for (DMNDecisionResult decisionResult : pmml4Result.getDecisionResults()) {
-//            if (SUCCEEDED.equals(decisionResult.getEvaluationStatus())) {
-//                scenarioResultMetadata.addExecuted(decisionResult.getDecisionName());
-//            }
-//            if (decisionResult.getMessages().isEmpty()) {
-//                scenarioResultMetadata.addAuditMessage(counter.addAndGet(1),
-//                                                       decisionResult.getDecisionName(),
-//                                                       decisionResult.getEvaluationStatus().name());
-//            } else {
-//                decisionResult.getMessages().forEach(dmnMessage -> scenarioResultMetadata.addAuditMessage(counter.addAndGet(1),
-//                                                                                                          decisionResult.getDecisionName(),
-//                                                                                                          decisionResult.getEvaluationStatus().name(),
-//                                                                                                          dmnMessage.getLevel().name() + ": " + dmnMessage.getText()));
-//            }
-//        }
+        if (ResultCode.OK.getName().equals(pmml4Result.getResultCode())) {
+            pmml4Result.getResultVariables().keySet().forEach(scenarioResultMetadata::addAvailable);
+            scenarioResultMetadata.addExecuted(pmmlModel.getName());
+        }
         return scenarioResultMetadata;
     }
 
@@ -107,16 +88,14 @@ public class PMMLScenarioRunnerHelper extends AbstractRunnerHelper {
                                     ScenarioRunnerData scenarioRunnerData,
                                     ExpressionEvaluatorFactory expressionEvaluatorFactory,
                                     Map<String, Object> requestContext) {
-        DMNResult dmnResult = (DMNResult) requestContext.get(DMNScenarioExecutableBuilder.DMN_RESULT);
+        PMML4Result pmml4Result = (PMML4Result) requestContext.get(PMMLScenarioExecutableBuilder.PMML_RESULT);
 
         for (ScenarioExpect output : scenarioRunnerData.getExpects()) {
             FactIdentifier factIdentifier = output.getFactIdentifier();
-            String decisionName = factIdentifier.getName();
-            DMNDecisionResult decisionResult = dmnResult.getDecisionResultByName(decisionName);
-            if (decisionResult == null) {
-                throw new ScenarioException("DMN execution has not generated a decision result with name " + decisionName);
+            String requestedField = factIdentifier.getName();
+            if (!pmml4Result.getResultVariables().containsKey(requestedField)) {
+                throw new ScenarioException("PMML execution has not generated a result with name " + requestedField);
             }
-
             for (FactMappingValue expectedResult : output.getExpectedResult()) {
                 ExpressionIdentifier expressionIdentifier = expectedResult.getExpressionIdentifier();
 
@@ -126,7 +105,7 @@ public class PMMLScenarioRunnerHelper extends AbstractRunnerHelper {
                 ExpressionEvaluator expressionEvaluator = expressionEvaluatorFactory.getOrCreate(expectedResult);
 
                 ScenarioResult scenarioResult = fillResult(expectedResult,
-                                                           () -> getSingleFactValueResult(factMapping, expectedResult, decisionResult, expressionEvaluator),
+                                                           () -> getSingleFactValueResult(factMapping, expectedResult, pmml4Result.getResultVariables().get(requestedField), expressionEvaluator),
                                                            expressionEvaluator);
 
                 scenarioRunnerData.addResult(scenarioResult);
@@ -137,32 +116,14 @@ public class PMMLScenarioRunnerHelper extends AbstractRunnerHelper {
     @SuppressWarnings("unchecked")
     protected ValueWrapper getSingleFactValueResult(FactMapping factMapping,
                                                     FactMappingValue expectedResult,
-                                                    DMNDecisionResult decisionResult,
+                                                    Object resultRaw,
                                                     ExpressionEvaluator expressionEvaluator) {
-        Object resultRaw = decisionResult.getResult();
-        final DMNDecisionResult.DecisionEvaluationStatus evaluationStatus = decisionResult.getEvaluationStatus();
-        if (!SUCCEEDED.equals(evaluationStatus)) {
-            return errorWithMessage("The decision " +
-                                                             decisionResult.getDecisionName() +
-                                                             " has not been successfully evaluated: " +
-                                                             evaluationStatus);
+        if (resultRaw == null) {
+            return errorWithMessage("The prediction " +
+                                            factMapping.getFactAlias() +
+                                            " has not been successfully evaluated.");
         }
-
-        List<ExpressionElement> elementsWithoutClass = factMapping.getExpressionElementsWithoutClass();
-
-        // DMN engine doesn't generate the whole object when no entry of the decision table match
-        if (resultRaw != null) {
-            for (ExpressionElement expressionElement : elementsWithoutClass) {
-                if (!(resultRaw instanceof Map)) {
-                    throw new ScenarioException("Wrong resultRaw structure because it is not a complex type as expected");
-                }
-                Map<String, Object> result = (Map<String, Object>) resultRaw;
-                resultRaw = result.get(expressionElement.getStep());
-            }
-        }
-
-        Class<?> resultClass = resultRaw != null ? resultRaw.getClass() : null;
-
+        Class<?> resultClass = resultRaw.getClass();
         Object expectedResultRaw = expectedResult.getRawValue();
         return getResultWrapper(factMapping.getClassName(),
                                 expectedResult,
@@ -176,28 +137,11 @@ public class PMMLScenarioRunnerHelper extends AbstractRunnerHelper {
     @Override
     protected Object createObject(ValueWrapper<Object> initialInstance, String className, Map<List<String>, Object> params, ClassLoader classLoader) {
         // simple types
-        if (initialInstance.isValid() && !(initialInstance.getValue() instanceof Map)) {
+        if (initialInstance.isValid() && !(initialInstance.getValue() instanceof Map && !(initialInstance.getValue() instanceof Collection))) {
             return initialInstance.getValue();
+        } else {
+            throw new ScenarioException("Only simple types allowed for PMML");
         }
-        Map<String, Object> toReturn = (Map<String, Object>) initialInstance.orElseGet(HashMap::new);
-        for (Map.Entry<List<String>, Object> listObjectEntry : params.entrySet()) {
-
-            // direct mapping already considered
-            if (listObjectEntry.getKey().isEmpty()) {
-                continue;
-            }
-
-            List<String> allSteps = listObjectEntry.getKey();
-            List<String> steps = allSteps.subList(0, allSteps.size() - 1);
-            String lastStep = allSteps.get(allSteps.size() - 1);
-
-            Map<String, Object> targetMap = toReturn;
-            for (String step : steps) {
-                targetMap = (Map<String, Object>) targetMap.computeIfAbsent(step, k -> new HashMap<>());
-            }
-            targetMap.put(lastStep, listObjectEntry.getValue());
-        }
-        return toReturn;
     }
 
     protected PMMLScenarioExecutableBuilder createBuilderWrapper(KieContainer kieContainer, String pmmlFilePath, String pmmlModelName) {
