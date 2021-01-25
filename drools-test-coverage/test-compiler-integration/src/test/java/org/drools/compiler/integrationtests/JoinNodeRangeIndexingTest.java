@@ -45,6 +45,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
+import org.kie.api.builder.KieModule;
+import org.kie.api.conf.BetaRangeIndexOption;
 import org.kie.api.runtime.KieSession;
 
 import static org.junit.Assert.assertEquals;
@@ -65,6 +67,11 @@ public class JoinNodeRangeIndexingTest {
         return TestParametersUtil.getKieBaseCloudConfigurations(true);
     }
 
+    private KieBase getKieBaseWithRangeIndexOption(String drl) {
+        KieModule kieModule = KieUtil.getKieModuleFromDrls("indexing-test", kieBaseTestConfiguration, drl);
+        return KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, BetaRangeIndexOption.ENABLED);
+    }
+
     @Test
     public void testRangeIndexForJoin() {
         final String drl = "import " + Person.class.getCanonicalName() + ";\n" +
@@ -76,7 +83,7 @@ public class JoinNodeRangeIndexingTest {
                            "then\n" +
                            "end\n";
 
-        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("indexing-test", kieBaseTestConfiguration, drl);
+        final KieBase kbase = getKieBaseWithRangeIndexOption(drl);
 
         assertIndexedTrue(kbase, Person.class);
 
@@ -138,7 +145,7 @@ public class JoinNodeRangeIndexingTest {
 
         // Integer is coerced to BigDecimal
 
-        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("indexing-test", kieBaseTestConfiguration, drl);
+        final KieBase kbase = getKieBaseWithRangeIndexOption(drl);
 
         assertIndexedTrue(kbase, Primitives.class);
 
@@ -181,7 +188,7 @@ public class JoinNodeRangeIndexingTest {
 
         // BigDecimal is coerced to Integer
 
-        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("indexing-test", kieBaseTestConfiguration, drl);
+        final KieBase kbase = getKieBaseWithRangeIndexOption(drl);
 
         assertIndexedTrue(kbase, Primitives.class);
 
@@ -226,7 +233,7 @@ public class JoinNodeRangeIndexingTest {
 
         // Integer is coerced to String (thus, String comparison)
 
-        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("indexing-test", kieBaseTestConfiguration, drl);
+        final KieBase kbase = getKieBaseWithRangeIndexOption(drl);
 
         // We don't index this case
         assertIndexedFalse(kbase, Cheese.class);
@@ -274,7 +281,7 @@ public class JoinNodeRangeIndexingTest {
 
         // String is coerced to Integer (thus, Number comparison)
 
-        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("indexing-test", kieBaseTestConfiguration, drl);
+        final KieBase kbase = getKieBaseWithRangeIndexOption(drl);
 
         // We don't index this case
         assertIndexedFalse(kbase, MapHolder.class);
@@ -333,7 +340,7 @@ public class JoinNodeRangeIndexingTest {
 
         // Actually, [age > minAge] becomes an AlphaNode and doesn't use index.
 
-        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("indexing-test", kieBaseTestConfiguration, drl);
+        final KieBase kbase = getKieBaseWithRangeIndexOption(drl);
         final KieSession ksession = kbase.newKieSession();
 
         try {
@@ -382,7 +389,7 @@ public class JoinNodeRangeIndexingTest {
                            "   delete($pet);\n" +
                            "end\n";
 
-        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("indexing-test", kieBaseTestConfiguration, drl);
+        final KieBase kbase = getKieBaseWithRangeIndexOption(drl);
 
         assertIndexedTrue(kbase, Person.class);
 
@@ -430,7 +437,7 @@ public class JoinNodeRangeIndexingTest {
                            "then\n" +
                            "end\n";
 
-        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("indexing-test", kieBaseTestConfiguration, drl);
+        final KieBase kbase = getKieBaseWithRangeIndexOption(drl);
 
         assertIndexedTrue(kbase, Person.class);
 
@@ -456,7 +463,7 @@ public class JoinNodeRangeIndexingTest {
                            "then\n" +
                            "end\n";
 
-        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("indexing-test", kieBaseTestConfiguration, drl);
+        final KieBase kbase = getKieBaseWithRangeIndexOption(drl);
 
         assertIndexedTrue(kbase, IntegerHolder.class);
 
@@ -498,7 +505,7 @@ public class JoinNodeRangeIndexingTest {
                            "   result.add( $person.getName() + \" > \" + $pet.getName() );\n" +
                            "end\n";
 
-        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("indexing-test", kieBaseTestConfiguration, drl);
+        final KieBase kbase = getKieBaseWithRangeIndexOption(drl);
 
         assertIndexedTrue(kbase, Person.class);
 

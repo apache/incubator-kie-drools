@@ -36,6 +36,7 @@ import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.builder.model.RuleTemplateModel;
+import org.kie.api.conf.BetaRangeIndexOption;
 import org.kie.api.conf.DeclarativeAgendaOption;
 import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.conf.EventProcessingOption;
@@ -64,6 +65,8 @@ public class KieBaseModelImpl
     private EventProcessingOption        eventProcessingMode = EventProcessingOption.CLOUD;
 
     private DeclarativeAgendaOption      declarativeAgenda = DeclarativeAgendaOption.DISABLED;
+
+    private BetaRangeIndexOption         betaRangeIndexOption = BetaRangeIndexOption.DISABLED;
 
     private SequentialOption             sequential = SequentialOption.NO;
 
@@ -276,6 +279,17 @@ public class KieBaseModelImpl
 
     public KieBaseModel setDeclarativeAgenda(DeclarativeAgendaOption declarativeAgenda) {
         this.declarativeAgenda = declarativeAgenda;
+        return this;
+    }
+
+    @Override
+    public BetaRangeIndexOption getBetaRangeIndexOption() {
+        return betaRangeIndexOption;
+    }
+
+    @Override
+    public KieBaseModel setBetaRangeIndexOption(BetaRangeIndexOption betaRangeIndexOption) {
+        this.betaRangeIndexOption = betaRangeIndexOption;
         return this;
     }
 

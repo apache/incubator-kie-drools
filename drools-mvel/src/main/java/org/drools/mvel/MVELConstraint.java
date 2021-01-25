@@ -30,6 +30,7 @@ import java.util.Set;
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.ClassFieldReader;
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.base.EvaluatorWrapper;
@@ -208,8 +209,8 @@ public class MVELConstraint extends MutableTypeConstraint implements IndexableCo
         isUnification = false;
     }
 
-    public boolean isIndexable(short nodeType) {
-        return getConstraintType().isIndexableForNode(nodeType, this);
+    public boolean isIndexable(short nodeType, RuleBaseConfiguration config) {
+        return getConstraintType().isIndexableForNode(nodeType, this, config);
     }
 
     public IndexUtil.ConstraintType getConstraintType() {

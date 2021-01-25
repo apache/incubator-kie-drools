@@ -38,13 +38,13 @@ public class IndexUtil {
     static boolean USE_COMPARISON_INDEX = true;
     static boolean USE_COMPARISON_INDEX_JOIN = true;
 
-    public static boolean compositeAllowed(BetaNodeFieldConstraint[] constraints, short betaNodeType) {
+    public static boolean compositeAllowed(BetaNodeFieldConstraint[] constraints, short betaNodeType, RuleBaseConfiguration config) {
         // 1) If there is 1 or more unification restrictions it cannot be composite
         // 2) Ensures any non unification restrictions are first
         int firstUnification = -1;
         int firstNonUnification = -1;
         for ( int i = 0, length = constraints.length; i < length; i++ ) {
-            if ( isIndexable(constraints[i], betaNodeType) ) {
+            if ( isIndexable(constraints[i], betaNodeType, config) ) {
                 final boolean isUnification = ((IndexableConstraint) constraints[i]).isUnification();
                 if ( isUnification && firstUnification == -1 ) {
                     firstUnification = i;
@@ -65,16 +65,16 @@ public class IndexUtil {
         return (firstUnification == -1);
     }
 
-    public static boolean isIndexable(BetaNodeFieldConstraint constraint, short nodeType) {
-        return constraint instanceof IndexableConstraint && ((IndexableConstraint)constraint).isIndexable(nodeType);
+    public static boolean isIndexable(BetaNodeFieldConstraint constraint, short nodeType, RuleBaseConfiguration config) {
+        return constraint instanceof IndexableConstraint && ((IndexableConstraint)constraint).isIndexable(nodeType, config);
     }
 
-    private static boolean canHaveRangeIndex(short nodeType, IndexableConstraint constraint) {
-        return canHaveRangeIndexForNodeType(nodeType) && areRangeIndexCompatibleOperands(constraint);
+    private static boolean canHaveRangeIndex(short nodeType, IndexableConstraint constraint, RuleBaseConfiguration config) {
+        return canHaveRangeIndexForNodeType(nodeType, config) && areRangeIndexCompatibleOperands(constraint);
     }
 
-    private static boolean canHaveRangeIndexForNodeType(short nodeType) {
-        if (USE_COMPARISON_INDEX_JOIN) {
+    private static boolean canHaveRangeIndexForNodeType(short nodeType, RuleBaseConfiguration config) {
+        if (USE_COMPARISON_INDEX_JOIN && config.isBetaNodeRangeIndexEnabled()) {
             return USE_COMPARISON_INDEX && (nodeType == NodeTypeEnums.NotNode || nodeType == NodeTypeEnums.ExistsNode || nodeType == NodeTypeEnums.JoinNode);
         } else {
             return USE_COMPARISON_INDEX && (nodeType == NodeTypeEnums.NotNode || nodeType == NodeTypeEnums.ExistsNode);
@@ -110,37 +110,37 @@ public class IndexUtil {
         return false;
     }
 
-    public static boolean isIndexableForNode(short nodeType, BetaNodeFieldConstraint constraint) {
+    public static boolean isIndexableForNode(short nodeType, BetaNodeFieldConstraint constraint, RuleBaseConfiguration config) {
         if ( !(constraint instanceof IndexableConstraint) ) {
             return false;
         }
 
         ConstraintType constraintType = ((IndexableConstraint)constraint).getConstraintType();
-        return constraintType.isIndexableForNode(nodeType, (IndexableConstraint)constraint);
+        return constraintType.isIndexableForNode(nodeType, (IndexableConstraint)constraint, config);
     }
 
-    public static boolean[] isIndexableForNode(IndexPrecedenceOption indexPrecedenceOption, short nodeType, int keyDepth, BetaNodeFieldConstraint[] constraints) {
+    public static boolean[] isIndexableForNode(IndexPrecedenceOption indexPrecedenceOption, short nodeType, int keyDepth, BetaNodeFieldConstraint[] constraints, RuleBaseConfiguration config) {
         if (keyDepth < 1) {
             return new boolean[constraints.length];
         }
 
         return indexPrecedenceOption == IndexPrecedenceOption.EQUALITY_PRIORITY ?
-                findIndexableWithEqualityPriority(nodeType, keyDepth, constraints) :
-                findIndexableWithPatternOrder(nodeType, keyDepth, constraints);
+                findIndexableWithEqualityPriority(nodeType, keyDepth, constraints, config) :
+                findIndexableWithPatternOrder(nodeType, keyDepth, constraints, config);
     }
 
-    private static boolean[] findIndexableWithEqualityPriority(short nodeType, int keyDepth, BetaNodeFieldConstraint[] constraints) {
+    private static boolean[] findIndexableWithEqualityPriority(short nodeType, int keyDepth, BetaNodeFieldConstraint[] constraints, RuleBaseConfiguration config) {
         boolean[] indexable = new boolean[constraints.length];
         if (hasEqualIndexable(keyDepth, indexable, constraints)) {
             return indexable;
         }
 
-        if (!canHaveRangeIndexForNodeType(nodeType)) {
+        if (!canHaveRangeIndexForNodeType(nodeType, config)) {
             return indexable;
         }
 
         for (int i = 0; i < constraints.length; i++) {
-            if (isIndexable(constraints[i], nodeType)) {
+            if (isIndexable(constraints[i], nodeType, config)) {
                 sortRangeIndexable(constraints, indexable, i);
                 break;
             }
@@ -149,10 +149,10 @@ public class IndexUtil {
         return indexable;
     }
 
-    private static boolean[] findIndexableWithPatternOrder(short nodeType, int keyDepth, BetaNodeFieldConstraint[] constraints) {
+    private static boolean[] findIndexableWithPatternOrder(short nodeType, int keyDepth, BetaNodeFieldConstraint[] constraints, RuleBaseConfiguration config) {
         boolean[] indexable = new boolean[constraints.length];
         for (int i = 0; i < constraints.length; i++) {
-            if (isIndexable(constraints[i], nodeType)) {
+            if (isIndexable(constraints[i], nodeType, config)) {
                 if (isEqualIndexable(constraints[i])) {
                     sortEqualIndexable(keyDepth, indexable, constraints, i);
                 } else {
@@ -247,7 +247,7 @@ public class IndexUtil {
             return this.operator;
         }
 
-        public boolean isIndexableForNode(short nodeType, IndexableConstraint constraint) {
+        public boolean isIndexableForNode(short nodeType, IndexableConstraint constraint, RuleBaseConfiguration config) {
             switch (this) {
                 case EQUAL:
                     return true;
@@ -255,7 +255,7 @@ public class IndexUtil {
                 case UNKNOWN:
                     return false;
                 default:
-                    return canHaveRangeIndex(nodeType, constraint);
+                    return canHaveRangeIndex(nodeType, constraint, config);
             }
         }
 
@@ -326,7 +326,6 @@ public class IndexUtil {
 
     public static class Factory {
         public static BetaMemory createBetaMemory(RuleBaseConfiguration config, short nodeType, BetaNodeFieldConstraint... constraints) {
-            int keyDepth = config.getCompositeKeyDepth();
             if (config.getCompositeKeyDepth() < 1) {
                 return new BetaMemory( config.isSequential() ? null : new TupleList(),
                                        new TupleList(),
@@ -334,7 +333,7 @@ public class IndexUtil {
                                        nodeType );
             }
 
-            IndexSpec indexSpec = new IndexSpec(config.getIndexPrecedenceOption(), keyDepth, nodeType, constraints);
+            IndexSpec indexSpec = new IndexSpec(nodeType, constraints, config);
             return new BetaMemory( createLeftMemory(config, indexSpec),
                                    createRightMemory(config, indexSpec),
                                    createContext(constraints),
@@ -388,14 +387,16 @@ public class IndexUtil {
             private ConstraintType constraintType = ConstraintType.UNKNOWN;
             private FieldIndex[] indexes;
 
-            private IndexSpec(IndexPrecedenceOption indexPrecedenceOption, int keyDepth, short nodeType, BetaNodeFieldConstraint[] constraints) {
-                init(indexPrecedenceOption, keyDepth, nodeType, constraints);
+            private IndexSpec(short nodeType, BetaNodeFieldConstraint[] constraints, RuleBaseConfiguration config) {
+                init(nodeType, constraints, config);
             }
 
-            private void init(IndexPrecedenceOption indexPrecedenceOption, int keyDepth, short nodeType, BetaNodeFieldConstraint[] constraints) {
+            private void init(short nodeType, BetaNodeFieldConstraint[] constraints, RuleBaseConfiguration config) {
+                int keyDepth = config.getCompositeKeyDepth();
+                IndexPrecedenceOption indexPrecedenceOption = config.getIndexPrecedenceOption();
                 int firstIndexableConstraint = indexPrecedenceOption == IndexPrecedenceOption.EQUALITY_PRIORITY ?
-                        determineTypeWithEqualityPriority(nodeType, constraints) :
-                        determineTypeWithPatternOrder(nodeType, constraints);
+                        determineTypeWithEqualityPriority(nodeType, constraints, config) :
+                        determineTypeWithPatternOrder(nodeType, constraints, config);
 
                 if (constraintType == ConstraintType.EQUAL) {
                     List<FieldIndex> indexList = new ArrayList<>();
@@ -415,7 +416,7 @@ public class IndexUtil {
                 }
             }
 
-            private int determineTypeWithEqualityPriority(short nodeType, BetaNodeFieldConstraint[] constraints) {
+            private int determineTypeWithEqualityPriority(short nodeType, BetaNodeFieldConstraint[] constraints, RuleBaseConfiguration config) {
                 int indexedConstraintPos = 0;
                 for (int i = 0; i < constraints.length; i++) {
                     if (constraints[i] instanceof IndexableConstraint) {
@@ -424,7 +425,7 @@ public class IndexUtil {
                         if (type == ConstraintType.EQUAL) {
                             constraintType = type;
                             return i;
-                        } else if (constraintType == ConstraintType.UNKNOWN && type.isIndexableForNode(nodeType, indexableConstraint)) {
+                        } else if (constraintType == ConstraintType.UNKNOWN && type.isIndexableForNode(nodeType, indexableConstraint, config)) {
                             constraintType = type;
                             indexedConstraintPos = i;
                         }
@@ -433,10 +434,10 @@ public class IndexUtil {
                 return indexedConstraintPos;
             }
 
-            private int determineTypeWithPatternOrder(short nodeType, BetaNodeFieldConstraint[] constraints) {
+            private int determineTypeWithPatternOrder(short nodeType, BetaNodeFieldConstraint[] constraints, RuleBaseConfiguration config) {
                 for (int i = 0; i < constraints.length; i++) {
                     ConstraintType type = ConstraintType.getType(constraints[i]);
-                    if ( type.isIndexableForNode(nodeType, (IndexableConstraint) constraints[i]) ) {
+                    if ( type.isIndexableForNode(nodeType, (IndexableConstraint) constraints[i], config) ) {
                         constraintType = type;
                         return i;
                     }

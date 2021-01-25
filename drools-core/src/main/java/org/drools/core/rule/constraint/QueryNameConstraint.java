@@ -15,6 +15,7 @@
 
 package org.drools.core.rule.constraint;
 
+import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.base.field.ObjectFieldImpl;
 import org.drools.core.common.InternalFactHandle;
@@ -59,7 +60,7 @@ public class QueryNameConstraint implements
         return false;
     }
 
-    public boolean isIndexable(short nodeType) {
+    public boolean isIndexable(short nodeType, RuleBaseConfiguration config) {
         return true;
     }
 

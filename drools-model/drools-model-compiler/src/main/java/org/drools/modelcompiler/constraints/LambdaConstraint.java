@@ -22,6 +22,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.List;
 
+import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.field.ObjectFieldImpl;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
@@ -178,8 +179,8 @@ public class LambdaConstraint extends AbstractConstraint {
     }
 
     @Override
-    public boolean isIndexable( short nodeType ) {
-        return getConstraintType().isIndexableForNode(nodeType, this);
+    public boolean isIndexable( short nodeType, RuleBaseConfiguration config ) {
+        return getConstraintType().isIndexableForNode(nodeType, this, config);
     }
 
     @Override
