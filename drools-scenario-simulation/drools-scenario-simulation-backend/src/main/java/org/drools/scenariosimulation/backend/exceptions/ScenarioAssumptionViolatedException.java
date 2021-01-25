@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.scenariosimulation.backend.runner;
+package org.drools.scenariosimulation.backend.exceptions;
 
 import org.drools.scenariosimulation.api.model.Scenario;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioResult;
