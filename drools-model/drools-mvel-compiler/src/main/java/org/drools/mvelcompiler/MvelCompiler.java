@@ -7,7 +7,9 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
+import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.IfStmt;
 import com.github.javaparser.ast.stmt.Statement;
@@ -30,7 +32,14 @@ public class MvelCompiler {
         this.mvelCompilerContext = mvelCompilerContext;
     }
 
-    public ParsingResult compile(String mvelBlock) {
+    public CompiledExpressionResult compileExpression(String mvelExpressionString) {
+        Expression parsedExpression = MvelParser.parseExpression(mvelExpressionString);
+        Node compiled = compileExpression(parsedExpression);
+
+        return new CompiledExpressionResult((Expression) compiled);
+    }
+
+    public CompiledBlockResult compileStatement(String mvelBlock) {
 
         BlockStmt mvelExpression = MvelParser.parseBlock(mvelBlock);
 
@@ -56,7 +65,7 @@ public class MvelCompiler {
             processWithMvelCompiler(statements, s);
         }
 
-        return new ParsingResult(statements)
+        return new CompiledBlockResult(statements)
                 .setUsedBindings(allUsedBindings);
     }
 
@@ -83,13 +92,23 @@ public class MvelCompiler {
             statements.add(new IfStmt(ifStmt.getCondition(), new BlockStmt(thenStmts), new BlockStmt(elseStmts)));
 
         } else {
-            TypedExpression rhs = new RHSPhase(mvelCompilerContext).invoke(s);
-            TypedExpression lhs = new LHSPhase(mvelCompilerContext, ofNullable(rhs)).invoke(s);
-
-            Optional<TypedExpression> postProcessedRHS = new ReProcessRHSPhase(mvelCompilerContext).invoke(rhs, lhs);
-            TypedExpression postProcessedLHS = postProcessedRHS.map(ppr -> new LHSPhase(mvelCompilerContext, of(ppr)).invoke(s)).orElse(lhs);
-
-            statements.add((Statement) postProcessedLHS.toJavaExpression());
+            statements.add((Statement) compileStatement(s));
         }
+    }
+
+    private Node compileStatement(Node n) {
+        TypedExpression rhs = new RHSPhase(mvelCompilerContext).invoke(n);
+        TypedExpression lhs = new LHSPhase(mvelCompilerContext, ofNullable(rhs)).invoke(n);
+
+        Optional<TypedExpression> postProcessedRHS = new ReProcessRHSPhase(mvelCompilerContext).invoke(rhs, lhs);
+        TypedExpression postProcessedLHS = postProcessedRHS.map(ppr -> new LHSPhase(mvelCompilerContext, of(ppr)).invoke(n)).orElse(lhs);
+
+        return postProcessedLHS.toJavaExpression();
+    }
+
+    // Avoid processing the LHS as it's not present while compiling an expression
+    private Node compileExpression(Node n) {
+        TypedExpression rhs = new RHSPhase(mvelCompilerContext).invoke(n);
+        return rhs.toJavaExpression();
     }
 }

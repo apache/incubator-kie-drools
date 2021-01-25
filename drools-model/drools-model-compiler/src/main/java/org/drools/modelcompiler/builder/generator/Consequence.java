@@ -59,7 +59,7 @@ import org.drools.modelcompiler.consequence.DroolsImpl;
 import org.drools.mvelcompiler.ModifyCompiler;
 import org.drools.mvelcompiler.MvelCompiler;
 import org.drools.mvelcompiler.MvelCompilerException;
-import org.drools.mvelcompiler.ParsingResult;
+import org.drools.mvelcompiler.CompiledBlockResult;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
 
 import static java.util.stream.Collectors.toSet;
@@ -189,9 +189,9 @@ public class Consequence {
             mvelCompilerContext.addDeclaration(d.getBindingId(), clazz);
         }
 
-        ParsingResult compile;
+        CompiledBlockResult compile;
         try {
-            compile = new MvelCompiler(mvelCompilerContext).compile(mvelBlock);
+            compile = new MvelCompiler(mvelCompilerContext).compileStatement(mvelBlock);
         } catch (MvelCompilerException e) {
             context.addCompilationError(new CompilationProblemErrorResult(new MvelCompilationError(e)) );
             return null;
@@ -308,7 +308,7 @@ public class Consequence {
         }
 
         ModifyCompiler modifyCompiler = new ModifyCompiler();
-        ParsingResult compile = modifyCompiler.compile(addCurlyBracesToBlock(consequence));
+        CompiledBlockResult compile = modifyCompiler.compile(addCurlyBracesToBlock(consequence));
 
         return printConstraint(compile.statementResults());
     }

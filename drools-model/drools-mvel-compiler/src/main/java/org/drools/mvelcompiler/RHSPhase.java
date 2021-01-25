@@ -92,7 +92,7 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
         this.mvelCompilerContext = mvelCompilerContext;
     }
 
-    public TypedExpression invoke(Statement statement) {
+    public TypedExpression invoke(Node statement) {
         Context ctx = new Context(null);
 
         return statement.accept(this, ctx);
@@ -199,7 +199,8 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
         boolean isArithmeticOperator = asList(BinaryExpr.Operator.PLUS,
                                               BinaryExpr.Operator.DIVIDE,
                                               BinaryExpr.Operator.MINUS,
-                                              BinaryExpr.Operator.MULTIPLY
+                                              BinaryExpr.Operator.MULTIPLY,
+                                              BinaryExpr.Operator.REMAINDER
                                               ).contains(operator);
         boolean isStringConcatenation = typeLeft == String.class || typeRight == String.class;
         if (isArithmeticOperator && !isStringConcatenation) {
