@@ -19,7 +19,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -32,8 +31,8 @@ import java.util.Set;
 import org.drools.core.addon.TypeResolver;
 import org.drools.core.factmodel.ClassBuilderFactory;
 import org.drools.core.util.ClassUtils;
-import org.drools.core.util.Drools;
 import org.drools.reflective.util.ByteArrayClassLoader;
+import org.kie.memorycompiler.WritableClassLoader;
 import org.mvel2.asm.ClassWriter;
 import org.mvel2.asm.MethodVisitor;
 import org.mvel2.asm.Type;
@@ -96,7 +95,7 @@ public class ClassGenerator {
 
     private final String className;
     private final TypeResolver typeResolver;
-    private final ClassLoader classLoader;
+    private final WritableClassLoader writableClassLoader;
 
     private int access = ACC_PUBLIC + ACC_SUPER;
     private String signature;
@@ -112,25 +111,6 @@ public class ClassGenerator {
     private byte[] bytecode;
     private Class<?> clazz;
 
-    private static class DefineMethodInitializer {
-
-        private static final Method defineClassMethod = createDefineMethod();
-
-        private static Method createDefineMethod() {
-            if (Drools.isNativeImage()) {
-                return null;
-            }
-
-            try {
-                Method defineClassMethod = ClassLoader.class.getDeclaredMethod("defineClass", String.class, byte[].class, int.class, int.class);
-                defineClassMethod.setAccessible(true);
-                return defineClassMethod;
-            } catch (NoSuchMethodException e) {
-                throw new RuntimeException(e);
-            }
-        }
-    }
-
     public ClassGenerator(String className, ClassLoader classLoader) {
         this(className, classLoader, null);
     }
@@ -138,8 +118,8 @@ public class ClassGenerator {
     public ClassGenerator(String className, ClassLoader classLoader, TypeResolver typeResolver) {
         this.className = className;
         this.classDescriptor = className.replace('.', '/');
-        this.classLoader = classLoader;
-        this.typeResolver = typeResolver == null ? new InternalTypeResolver(this.classLoader) : typeResolver;
+        this.writableClassLoader = WritableClassLoader.asWritableClassLoader( classLoader );
+        this.typeResolver = typeResolver == null ? new InternalTypeResolver(classLoader) : typeResolver;
     }
 
     private interface ClassPartDescr {
@@ -149,7 +129,7 @@ public class ClassGenerator {
 
     public byte[] generateBytecode() {
         if (bytecode == null) {
-            ClassWriter cw = createClassWriter(classLoader, access, getClassDescriptor(), signature, getSuperClassDescriptor(), toInteralNames(interfaces));
+            ClassWriter cw = createClassWriter(writableClassLoader.asClassLoader(), access, getClassDescriptor(), signature, getSuperClassDescriptor(), toInteralNames(interfaces));
             for (int i = 0; i < classParts.size(); i++) { // don't use iterator to allow method visits to add more class fields and methods
                 classParts.get(i).write(this, cw);
             }
@@ -170,14 +150,10 @@ public class ClassGenerator {
             byte[] bytecode = generateBytecode();
             if (ClassUtils.isAndroid()) {
                 ByteArrayClassLoader cl = (ByteArrayClassLoader)
-                        ClassUtils.instantiateObject("org.drools.android.MultiDexClassLoader", null, classLoader);
+                        ClassUtils.instantiateObject("org.drools.android.MultiDexClassLoader", null, writableClassLoader.asClassLoader());
                 clazz = cl.defineClass(className, bytecode, null);
             } else {
-                try {
-                    clazz = (Class<?>) DefineMethodInitializer.defineClassMethod.invoke(classLoader, className, bytecode, 0, bytecode.length);
-                } catch (IllegalAccessException | InvocationTargetException e) {
-                    throw new RuntimeException( e );
-                }
+                clazz = writableClassLoader.writeClass( className, bytecode );
             }
         }
         return clazz;

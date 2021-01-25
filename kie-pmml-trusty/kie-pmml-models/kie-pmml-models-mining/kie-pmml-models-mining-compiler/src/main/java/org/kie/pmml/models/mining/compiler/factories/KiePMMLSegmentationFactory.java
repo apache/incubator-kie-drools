@@ -71,12 +71,17 @@ public class KiePMMLSegmentationFactory {
                                                       final TransformationDictionary transformationDictionary,
                                                       final Segmentation segmentation,
                                                       final String segmentationName,
+                                                      final String parentPackageName,
                                                       final HasClassLoader hasClassloader) {
         logger.debug("getSegmentation {}", segmentation);
+        final String packageName = getSanitizedPackageName(parentPackageName + "." + segmentationName);
         return KiePMMLSegmentation.builder(segmentationName,
                                            getKiePMMLExtensions(segmentation.getExtensions()),
                                            MULTIPLE_MODEL_METHOD.byName(segmentation.getMultipleModelMethod().value()))
-                .withSegments(getSegments(dataDictionary, transformationDictionary, segmentation.getSegments(),
+                .withSegments(getSegments(packageName,
+                                          dataDictionary,
+                                          transformationDictionary,
+                                          segmentation.getSegments(),
                                           hasClassloader))
                 .build();
     }
@@ -129,7 +134,7 @@ public class KiePMMLSegmentationFactory {
         final BlockStmt body = constructorDeclaration.getBody();
         final ExplicitConstructorInvocationStmt superStatement =
                 CommonCodegenUtils.getExplicitConstructorInvocationStmt(body)
-                .orElseThrow(() -> new KiePMMLException(String.format(MISSING_CONSTRUCTOR_IN_BODY, body)));
+                        .orElseThrow(() -> new KiePMMLException(String.format(MISSING_CONSTRUCTOR_IN_BODY, body)));
         CommonCodegenUtils.setExplicitConstructorInvocationArgument(superStatement, "multipleModelMethod",
                                                                     multipleModelMethod.getClass().getCanonicalName() + "." + multipleModelMethod.name());
         final List<AssignExpr> assignExprs = body.findAll(AssignExpr.class);

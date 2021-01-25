@@ -59,6 +59,7 @@ import org.kie.memorycompiler.CompilationResult;
 import org.kie.memorycompiler.JavaCompilerSettings;
 import org.kie.memorycompiler.KieMemoryCompilerException;
 import org.kie.memorycompiler.StoreClassLoader;
+import org.kie.memorycompiler.WritableClassLoader;
 import org.kie.memorycompiler.resources.ResourceReader;
 import org.kie.memorycompiler.resources.ResourceStore;
 
@@ -66,17 +67,6 @@ public class NativeJavaCompiler extends AbstractJavaCompiler {
 
     public JavaCompilerSettings createDefaultSettings() {
         return new JavaCompilerSettings();
-    }
-
-    private static class InternalClassLoader extends ClassLoader {
-
-        InternalClassLoader(ClassLoader classLoader) {
-            super(classLoader);
-        }
-
-        Class<?> defineClass(String name, byte[] b) {
-            return defineClass(name, b, 0, b.length);
-        }
     }
 
     @Override

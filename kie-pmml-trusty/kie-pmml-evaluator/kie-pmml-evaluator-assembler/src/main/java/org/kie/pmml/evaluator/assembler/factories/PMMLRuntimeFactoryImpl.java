@@ -18,16 +18,32 @@ package org.kie.pmml.evaluator.assembler.factories;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieContainerImpl;
 import org.drools.compiler.kproject.ReleaseIdImpl;
+import org.drools.core.RuleBaseConfiguration;
+import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
+import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.io.internal.InternalResource;
+import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
+import org.kie.api.definition.KiePackage;
+import org.kie.api.io.ResourceType;
 import org.kie.pmml.api.PMMLRuntimeFactory;
 import org.kie.pmml.api.exceptions.ExternalException;
+import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.runtime.PMMLRuntime;
+import org.kie.pmml.commons.model.HasNestedModels;
+import org.kie.pmml.commons.model.KiePMMLModel;
+import org.kie.pmml.evaluator.api.container.PMMLPackage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,7 +52,7 @@ import static org.apache.commons.io.FileUtils.getFile;
 public class PMMLRuntimeFactoryImpl implements PMMLRuntimeFactory {
 
     private static final Logger logger = LoggerFactory.getLogger(PMMLRuntimeFactoryImpl.class);
-    private static  final KieServices KIE_SERVICES = KieServices.get();
+    private static final KieServices KIE_SERVICES = KieServices.get();
 
     @Override
     public PMMLRuntime getPMMLRuntimeFromFile(File pmmlFile) {
@@ -50,7 +66,7 @@ public class PMMLRuntimeFactoryImpl implements PMMLRuntimeFactory {
     }
 
     @Override
-    public PMMLRuntime getPMMLRuntimeFromKieContainerByKieBase( String kieBase, String pmmlFileName, String gav) {
+    public PMMLRuntime getPMMLRuntimeFromKieContainerByKieBase(String kieBase, String pmmlFileName, String gav) {
         ReleaseId releaseId = new ReleaseIdImpl(gav);
         File pmmlFile = getPMMLFileFromKieContainerByKieBase(pmmlFileName, kieBase, releaseId);
         return PMMLRuntimeFactoryInternal.getPMMLRuntime(pmmlFile, releaseId);
@@ -63,10 +79,67 @@ public class PMMLRuntimeFactoryImpl implements PMMLRuntimeFactory {
         return PMMLRuntimeFactoryInternal.getPMMLRuntime(pmmlFile, releaseId);
     }
 
+    @Override
+    public PMMLRuntime getPMMLRuntimeFromFileNameModelNameAndKieBase(String pmmlFileName, String pmmlModelName,
+                                                                     KieBase kieBase) {
+        RuleBaseConfiguration ruleBaseConfiguration =
+                new RuleBaseConfiguration(((InternalKnowledgeBase) kieBase).getRootClassLoader());
+        KnowledgeBaseImpl kieBaseNew = (KnowledgeBaseImpl) KnowledgeBaseFactory.newKnowledgeBase(ruleBaseConfiguration);
+        KiePackage kiePackage = getKiePackageByModelName(pmmlModelName, kieBase);
+        kieBaseNew.addPackage(kiePackage);
+        List<KiePackage> nestedKiePackages = getNestedKiePackages((InternalKnowledgePackage) kiePackage, kieBase);
+        if (!nestedKiePackages.isEmpty()) {
+            kieBaseNew.addPackages(nestedKiePackages);
+        }
+        ((InternalKnowledgePackage) kiePackage).getResourceTypePackages().get(ResourceType.PMML);
+        return PMMLRuntimeFactoryInternal.getPMMLRuntime(kieBaseNew);
+    }
+
+    private List<KiePackage> getNestedKiePackages(final InternalKnowledgePackage kiePackage, final KieBase kieBase) {
+        PMMLPackage pmmlPackage = (PMMLPackage) kiePackage.getResourceTypePackages().get(ResourceType.PMML);
+        final Map<String, KiePMMLModel> kiePmmlModels = pmmlPackage.getAllModels();
+        final List<KiePackage> toReturn = new ArrayList<>();
+        populateNestedKiePackageList(kiePmmlModels.values(), toReturn, kieBase);
+        return toReturn;
+    }
+
+    private void populateNestedKiePackageList(final Collection<KiePMMLModel> kiePmmlModels,
+                                              final List<KiePackage> toPopulate,
+                                              final KieBase kieBase) {
+        kiePmmlModels.forEach(kiePmmlModel -> {
+            if (kiePmmlModel instanceof HasNestedModels) {
+                List<KiePMMLModel> nestedModels = ((HasNestedModels) kiePmmlModel).getNestedModels();
+                nestedModels.forEach(nestedModel -> toPopulate.add(getKiePackageByFullClassName(nestedModel.getClass().getName(), kieBase)));
+                populateNestedKiePackageList(nestedModels, toPopulate, kieBase);
+            }
+        });
+    }
+
+    private KiePackage getKiePackageByModelName(String modelName, KieBase kieBase) {
+        return kieBase.getKiePackages().stream()
+                .filter(kpkg -> {
+                    PMMLPackage pmmlPackage =
+                            (PMMLPackage) ((InternalKnowledgePackage) kpkg).getResourceTypePackages().get(ResourceType.PMML);
+                    return pmmlPackage != null && pmmlPackage.getModelByName(modelName) != null;
+                })
+                .findFirst()
+                .orElseThrow(() -> new KiePMMLException("Failed to find model " + modelName));
+    }
+
+    private KiePackage getKiePackageByFullClassName(String fullClassName, KieBase kieBase) {
+        return kieBase.getKiePackages().stream()
+                .filter(kpkg -> {
+                    PMMLPackage pmmlPackage =
+                            (PMMLPackage) ((InternalKnowledgePackage) kpkg).getResourceTypePackages().get(ResourceType.PMML);
+                    return pmmlPackage != null && pmmlPackage.getModelByFullClassName(fullClassName) != null;
+                })
+                .findFirst()
+                .orElseThrow(() -> new KiePMMLException("Failed to find model " + fullClassName));
+    }
+
     /**
      * Load a <code>File</code> with the given <b>pmmlFileName</b> from the
      * current <code>Classloader</code>
-     *
      * @param pmmlFileName
      * @return
      */
@@ -77,20 +150,20 @@ public class PMMLRuntimeFactoryImpl implements PMMLRuntimeFactory {
     /**
      * Load a <code>File</code> with the given <b>pmmlFileName</b> from the <code>kjar</code> contained in the
      * <code>KieContainer</code> with the given <code>ReleaseId</code>
-     *
      * @param pmmlFileName
      * @param kieBase the name of the Kiebase configured inside the <b>kmodule.xml</b> of the loaded <b>kjar</b>
      * @param releaseId
      * @return
      */
-    private File getPMMLFileFromKieContainerByKieBase(final String pmmlFileName, final String kieBase, final ReleaseId releaseId) {
+    private File getPMMLFileFromKieContainerByKieBase(final String pmmlFileName, final String kieBase,
+                                                      final ReleaseId releaseId) {
         KieContainerImpl kieContainer = (KieContainerImpl) KIE_SERVICES.newKieContainer(releaseId);
         InternalResource internalResource = ((InternalKieModule) (kieContainer)
                 .getKieModuleForKBase(kieBase))
                 .getResource(pmmlFileName);
-        try(InputStream inputStream = internalResource.getInputStream()) {
+        try (InputStream inputStream = internalResource.getInputStream()) {
             return getPMMLFile(pmmlFileName, inputStream);
-        } catch(Exception e) {
+        } catch (Exception e) {
             throw new ExternalException(e);
         }
     }
@@ -99,7 +172,6 @@ public class PMMLRuntimeFactoryImpl implements PMMLRuntimeFactory {
      * Load a <code>File</code> with the given <b>pmmlFileName</b> from the <code>kjar</code> contained in the
      * <code>KieContainer</code> with the given <code>ReleaseId</code>
      * It will use the <b>default</b> Kiebase defined inside the <b>kmodule.xml</b> of the loaded <b>kjar</b>
-     *
      * @param pmmlFileName
      * @param releaseId
      * @return
@@ -113,14 +185,13 @@ public class PMMLRuntimeFactoryImpl implements PMMLRuntimeFactory {
     /**
      * Load a <code>File</code> with the given <b>fullFileName</b> from the given
      * <code>InputStream</code>
-     *
      * @param fileName <b>full path</b> of file to load
      * @param inputStream
      * @return
      */
     private File getPMMLFile(String fileName, InputStream inputStream) {
         FileOutputStream outputStream = null;
-        try  {
+        try {
             File toReturn = File.createTempFile(fileName, null);
             outputStream = new FileOutputStream(toReturn);
             byte[] byteArray = new byte[1024];
@@ -129,7 +200,7 @@ public class PMMLRuntimeFactoryImpl implements PMMLRuntimeFactory {
                 outputStream.write(byteArray, 0, i);
             }
             return toReturn;
-        } catch(Exception e) {
+        } catch (Exception e) {
             throw new ExternalException(e);
         } finally {
             try {
@@ -140,6 +211,5 @@ public class PMMLRuntimeFactoryImpl implements PMMLRuntimeFactory {
                 logger.warn("Failed to close outputStream", e);
             }
         }
-
     }
 }

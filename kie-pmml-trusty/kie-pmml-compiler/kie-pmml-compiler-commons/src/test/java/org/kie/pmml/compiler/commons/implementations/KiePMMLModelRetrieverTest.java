@@ -47,20 +47,26 @@ public class KiePMMLModelRetrieverTest {
     @Test
     public void getFromCommonDataAndTransformationDictionaryAndModelWithProvider() throws Exception {
         pmmlModel = KiePMMLUtil.load(getFileInputStream(MULTIPLE_TARGETS_SOURCE), MULTIPLE_TARGETS_SOURCE);
-        final Optional<KiePMMLModel> retrieved = getFromCommonDataAndTransformationDictionaryAndModel(pmmlModel.getDataDictionary(), pmmlModel.getTransformationDictionary(), pmmlModel.getModels().get(0), null);
+        final Optional<KiePMMLModel> retrieved = getFromCommonDataAndTransformationDictionaryAndModel(PACKAGE_NAME,
+                                                                                                      pmmlModel.getDataDictionary(),
+                                                                                                      pmmlModel.getTransformationDictionary(),
+                                                                                                      pmmlModel.getModels().get(0), null);
         assertNotNull(retrieved);
     }
 
     @Test
     public void getFromCommonDataAndTransformationDictionaryAndModelWithoutProvider() throws Exception {
         pmmlModel = KiePMMLUtil.load(getFileInputStream(ONE_MINING_TARGET_SOURCE), ONE_MINING_TARGET_SOURCE);
-        final Optional<KiePMMLModel> retrieved = getFromCommonDataAndTransformationDictionaryAndModel(pmmlModel.getDataDictionary(), pmmlModel.getTransformationDictionary(), pmmlModel.getModels().get(0), null);
+        final Optional<KiePMMLModel> retrieved = getFromCommonDataAndTransformationDictionaryAndModel(PACKAGE_NAME,
+                                                                                                      pmmlModel.getDataDictionary(),
+                                                                                                      pmmlModel.getTransformationDictionary(),
+                                                                                                      pmmlModel.getModels().get(0), null);
         assertNotNull(retrieved);
         assertFalse(retrieved.isPresent());
     }
 
     @Test
-    public void getFromCommonDataAndTransformationDictionaryAndModelWithSourcesWithProvider() throws Exception {
+    public void getFromCommonDataAndTransformationDictionaryAndModelWithSourcesWithProvider() {
         pmmlModel = getPMMLWithRandomTestModel();
         final Optional<KiePMMLModel> retrieved = getFromCommonDataAndTransformationDictionaryAndModelWithSources(PACKAGE_NAME, pmmlModel.getDataDictionary(), pmmlModel.getTransformationDictionary(), pmmlModel.getModels().get(0), null);
         assertNotNull(retrieved);

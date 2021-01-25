@@ -15,11 +15,22 @@
  */
 package org.kie.pmml.commons.model;
 
+import java.util.Map;
+
 /**
  * Interface used to define if a given <code>Object</code> may provide a <b>context</b> <code>ClassLoader</code>
  */
 public interface HasClassLoader {
 
     ClassLoader getClassLoader();
+
+    /**
+     * Compile the given sources and add them to given <code>Classloader</code> of the current instance.
+     * Returns the <code>Class</code> with the given <b>fullClassName</b>
+     * @param sourcesMap
+     * @param fullClassName
+     * @return
+     */
+    Class<?> compileAndLoadClass(Map<String, String> sourcesMap, String fullClassName);
 
 }

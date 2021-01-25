@@ -15,10 +15,6 @@
   <description>PMML Regression Compiler</description>
 
   <dependencies>
-    <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>kie-memory-compiler</artifactId>
-    </dependency>
     <!-- PMML -->
     <dependency>
       <groupId>org.kie</groupId>
@@ -56,6 +52,11 @@
           <artifactId>logback-core</artifactId>
         </exclusion>
       </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-memory-compiler</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 

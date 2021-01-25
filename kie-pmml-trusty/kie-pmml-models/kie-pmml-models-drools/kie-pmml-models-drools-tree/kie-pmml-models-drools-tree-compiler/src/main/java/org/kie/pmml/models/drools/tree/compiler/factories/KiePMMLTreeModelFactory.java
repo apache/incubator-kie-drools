@@ -28,9 +28,9 @@ import com.github.javaparser.ast.stmt.ExplicitConstructorInvocationStmt;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.tree.TreeModel;
-import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
+import org.kie.pmml.commons.model.HasClassLoader;
 import org.kie.pmml.compiler.commons.utils.CommonCodegenUtils;
 import org.kie.pmml.compiler.commons.utils.ModelUtils;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsAST;
@@ -46,7 +46,6 @@ import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
 import static org.kie.pmml.compiler.commons.utils.KiePMMLModelFactoryUtils.addTransformationsInClassOrInterfaceDeclaration;
-import static org.kie.pmml.compiler.commons.utils.KiePMMLModelFactoryUtils.setConstructorSuperNameInvocation;
 import static org.kie.pmml.compiler.commons.utils.KiePMMLModelFactoryUtils.setKiePMMLModelConstructor;
 import static org.kie.pmml.models.drools.utils.KiePMMLDroolsModelFactoryUtils.getKiePMMLModelCompilationUnit;
 
@@ -68,14 +67,18 @@ public class KiePMMLTreeModelFactory {
                                                        final TransformationDictionary transformationDictionary,
                                                        final TreeModel model,
                                                        final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap,
-                                                       final ClassLoader classLoader) throws IllegalAccessException, InstantiationException {
-        logger.trace("getKiePMMLTreeModel {}", model);
+                                                       final String packageName,
+                                                       final HasClassLoader hasClassLoader) throws IllegalAccessException, InstantiationException {
+        logger.trace("getKiePMMLTreeModel {} {}", packageName, model);
         String className = getSanitizedClassName(model.getModelName());
-        String packageName = getSanitizedPackageName(className);
         Map<String, String> sourcesMap = getKiePMMLTreeModelSourcesMap(dataDictionary, transformationDictionary, model, fieldTypeMap, packageName);
         String fullClassName = packageName + "." + className;
-        final Map<String, Class<?>> compiledClasses = KieMemoryCompiler.compile(sourcesMap, classLoader);
-        return (KiePMMLTreeModel) compiledClasses.get(fullClassName).newInstance();
+        try {
+            Class<?> kiePMMLScorecardModelClass = hasClassLoader.compileAndLoadClass(sourcesMap, fullClassName);
+            return (KiePMMLTreeModel) kiePMMLScorecardModelClass.newInstance();
+        } catch (Exception e) {
+            throw new KiePMMLException(e);
+        }
     }
 
     public static Map<String, String> getKiePMMLTreeModelSourcesMap(final DataDictionary dataDictionary,

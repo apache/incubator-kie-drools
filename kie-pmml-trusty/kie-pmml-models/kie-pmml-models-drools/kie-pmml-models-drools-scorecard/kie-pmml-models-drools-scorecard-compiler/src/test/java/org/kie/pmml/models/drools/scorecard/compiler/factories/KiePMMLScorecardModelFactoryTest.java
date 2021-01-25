@@ -32,6 +32,7 @@ import org.dmg.pmml.PMML;
 import org.dmg.pmml.scorecard.Scorecard;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.kie.pmml.compiler.commons.mocks.HasClassLoaderMock;
 import org.kie.pmml.compiler.testutils.TestUtils;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsAST;
 import org.kie.pmml.models.drools.scorecard.model.KiePMMLScorecardModel;
@@ -77,7 +78,8 @@ public class KiePMMLScorecardModelFactoryTest {
                                                                                                 pmml.getTransformationDictionary(),
                                                                                                 scorecardModel,
                                                                                                 fieldTypeMap,
-                                                                                                Thread.currentThread().getContextClassLoader());
+                                                                                                PACKAGE_NAME,
+                                                                                                new HasClassLoaderMock());
         assertNotNull(retrieved);
         assertEquals(scorecardModel.getModelName(), retrieved.getName());
         assertEquals(TARGET_FIELD, retrieved.getTargetField());

@@ -98,34 +98,45 @@ public class DMNKiePMMLTrustyInvocationEvaluator extends AbstractDMNKiePMMLInvoc
                 toPopulate.put(name, EvalHelper.coerceNumber(r));
             } catch (Throwable e) {
                 MsgUtil.reportMessage(LOG,
-                        DMNMessage.Severity.WARN,
-                        node,
-                        ((DMNResultImpl) dmnr),
-                        e,
-                        null,
-                        Msg.INVALID_NAME,
-                        name,
-                        e.getMessage());
+                                      DMNMessage.Severity.WARN,
+                                      node,
+                                      ((DMNResultImpl) dmnr),
+                                      e,
+                                      null,
+                                      Msg.INVALID_NAME,
+                                      name,
+                                      e.getMessage());
                 toPopulate.put(name, null);
             }
         }
     }
 
     /**
-     *
      * @param eventManager
      * @return
      */
-    private PMMLRuntime getPMMLRuntime( DMNRuntimeEventManager eventManager) {
+    private PMMLRuntime getPMMLRuntime(DMNRuntimeEventManager eventManager) {
         DMNRuntimeImpl dmnRuntime = (DMNRuntimeImpl) eventManager.getRuntime();
         final DMNRuntimeKB runtimeKB = dmnRuntime.getRuntimeKB();
-        if (runtimeKB instanceof DMNRuntimeKBWrappingIKB ) { // We are in drools
-            final File pmmlFile = getPMMLFile();
-            return PMML_RUNTIME_FACTORY.getPMMLRuntimeFromFile(pmmlFile);
+        if (runtimeKB instanceof DMNRuntimeKBWrappingIKB) { // We are in drools
+            return getPMMLRuntimeFromDMNRuntimeKBWrappingIKB((DMNRuntimeKBWrappingIKB)runtimeKB);
         } else { // we are in kogito
             KieRuntimeFactory kieFactory = dmnRuntime.getKieRuntimeFactory(model);
             return kieFactory.get(PMMLRuntime.class);
         }
+    }
+
+    private PMMLRuntime getPMMLRuntimeFromDMNRuntimeKBWrappingIKB(DMNRuntimeKBWrappingIKB runtimeKB) {
+        String pmmlFilePath = documentResource.getSourcePath();
+        String pmmlFileName = pmmlFilePath.contains("/") ? pmmlFilePath.substring(pmmlFilePath.lastIndexOf('/')+1) : pmmlFilePath;
+        PMMLRuntime toReturn = PMML_RUNTIME_FACTORY.getPMMLRuntimeFromFileNameModelNameAndKieBase(pmmlFileName,
+                                                                                                  model,
+                                                                                                  runtimeKB.getInternalKnowledgeBase());
+        if (!toReturn.getPMMLModel(model).isPresent()) {
+            File pmmlFile = getPMMLFile();
+            toReturn = PMML_RUNTIME_FACTORY.getPMMLRuntimeFromFile(pmmlFile);
+        }
+        return toReturn;
     }
 
     private PMMLContext getPMMLPMMLContext(String correlationId, String modelName, DMNResult dmnr) {
@@ -139,9 +150,9 @@ public class DMNKiePMMLTrustyInvocationEvaluator extends AbstractDMNKiePMMLInvoc
     }
 
     private File getPMMLFile() {
-        try(InputStream inputStream = documentResource.getInputStream()) {
+        try (InputStream inputStream = documentResource.getInputStream()) {
             return getPMMLFile(model, inputStream);
-        } catch(Exception e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
@@ -149,14 +160,13 @@ public class DMNKiePMMLTrustyInvocationEvaluator extends AbstractDMNKiePMMLInvoc
     /**
      * Load a <code>File</code> with the given <b>fullFileName</b> from the given
      * <code>InputStream</code>
-     *
      * @param fileName <b>full path</b> of file to load
      * @param inputStream
      * @return
      */
     private File getPMMLFile(String fileName, InputStream inputStream) {
         FileOutputStream outputStream = null;
-        try  {
+        try {
             File toReturn = File.createTempFile(fileName, null);
             outputStream = new FileOutputStream(toReturn);
             byte[] byteArray = new byte[1024];
@@ -165,7 +175,7 @@ public class DMNKiePMMLTrustyInvocationEvaluator extends AbstractDMNKiePMMLInvoc
                 outputStream.write(byteArray, 0, i);
             }
             return toReturn;
-        } catch(Exception e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {
             try {

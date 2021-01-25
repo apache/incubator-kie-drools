@@ -17,6 +17,7 @@ package org.drools.core.command.runtime.pmml;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -27,6 +28,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.drools.core.command.IdentifiableResult;
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLConstants;
@@ -137,7 +139,7 @@ public class ApplyPmmlModelCommand implements ExecutableCommand<PMML4Result>,
         final PMMLConstants toInvoke = getToInvoke(context);
         switch (toInvoke) {
             case NEW:
-                return executePMMLTrusty();
+                return executePMMLTrusty(context);
             case LEGACY:
                 return executePMMLLegacy(context);
             default:
@@ -167,7 +169,14 @@ public class ApplyPmmlModelCommand implements ExecutableCommand<PMML4Result>,
                                                                                          packageName, isMining());
     }
 
-    protected PMML4Result executePMMLTrusty() {
-        return PMMLCommandExecutorFactory.get().newPMMLCommandExecutor().execute(requestData);
+    protected PMML4Result executePMMLTrusty(Context context) {
+        RegistryContext registryContext = (RegistryContext) context;
+        PMML4Result toReturn = PMMLCommandExecutorFactory.get().newPMMLCommandExecutor().execute(requestData, context);
+        // Needed to update the ExecutionResultImpl and the Registry context,
+        // as done inside legacy implementation
+        Optional<ExecutionResultImpl> execRes = Optional.ofNullable(registryContext.lookup(ExecutionResultImpl.class));
+        registryContext.register(PMML4Result.class, toReturn);
+        execRes.ifPresent(result -> result.setResult("results", toReturn));
+        return toReturn;
     }
 }
