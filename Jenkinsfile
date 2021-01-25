@@ -25,7 +25,7 @@ pipeline {
                 script {
                     mailer.buildLogScriptPR()
 
-                    checkoutRepo('kogito-runtimes')
+                    checkoutRuntimesRepo()
                     checkoutRepo('optaplanner')
                     String quickstartsRepo = 'optaplanner-quickstarts'
                     dir(quickstartsRepo) {
@@ -86,6 +86,22 @@ pipeline {
 void checkoutRepo(String repo, String dirName=repo) {
     dir(dirName) {
         githubscm.checkoutIfExists(repo, changeAuthor, changeBranch, 'kiegroup', changeTarget, true)
+    }
+}
+
+void checkoutRuntimesRepo() {
+    String targetBranch = changeTarget
+    String [] versionSplit = targetBranch.split("\\.")
+    if(versionSplit.length == 3 
+        && versionSplit[0].isNumber()
+        && versionSplit[1].isNumber()
+       && versionSplit[2] == 'x') {
+        targetBranch = "${Integer.parseInt(versionSplit[0]) - 7}.${versionSplit[1]}.x"
+    } else {
+        echo "Cannot parse changeTarget as release branch so going further with current value: ${changeTarget}"
+    }
+    dir('kogito-runtimes') {
+        githubscm.checkoutIfExists('kogito-runtimes', changeAuthor, changeBranch, 'kiegroup', targetBranch, true)
     }
 }
 
