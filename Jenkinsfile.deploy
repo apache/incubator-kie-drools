@@ -254,10 +254,11 @@ void setDeployPropertyIfNeeded(String key, def value){
     }
 }
 
-MavenCommand getMavenCommand(){
+MavenCommand getMavenCommand(String directory = ''){
+    directory = directory ?: getRepoName()
     return new MavenCommand(this, ['-fae'])
                 .withSettingsXmlId(params.MAVEN_SETTINGS_CONFIG_FILE_ID)
-                .inDirectory(getRepoName())
+                .inDirectory(directory)
                 .withProperty('full')
 }
 
