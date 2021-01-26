@@ -111,7 +111,7 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
             kBuilder.buildPackagesWithoutRules(packages);
         }
         buildProcesses();
-        buildOthers();
+        buildAssemblersAfterRules();
         kBuilder.postBuild();
         resourcesByType.clear();
         if (buildException != null) {
@@ -156,7 +156,7 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
         }
     }
 
-    private void buildOthers() {
+    private void buildAssemblersAfterRules() {
         try {
             for (Map.Entry<ResourceType, List<ResourceDescr>> entry : resourcesByType.entrySet()) {
                 List<ResourceWithConfiguration> rds = entry.getValue().stream().map(CompositeKnowledgeBuilderImpl::descrToResourceWithConfiguration).collect(Collectors.toList());
