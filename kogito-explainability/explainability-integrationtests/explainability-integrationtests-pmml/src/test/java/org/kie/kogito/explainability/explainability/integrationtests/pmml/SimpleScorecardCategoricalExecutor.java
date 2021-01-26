@@ -23,11 +23,10 @@ import org.kie.pmml.api.runtime.PMMLRuntime;
 
 public class SimpleScorecardCategoricalExecutor extends AbstractPMMLExecutor {
 
-    private static final String MODEL_NAME = "SimpleScorecardCategorical";
     public static final String TARGET_FIELD = "Score";
     public static final String REASON_CODE1_FIELD = "Reason Code 1";
     public static final String REASON_CODE2_FIELD = "Reason Code 2";
-
+    private static final String MODEL_NAME = "SimpleScorecardCategorical";
     private String input1;
     private String input2;
 

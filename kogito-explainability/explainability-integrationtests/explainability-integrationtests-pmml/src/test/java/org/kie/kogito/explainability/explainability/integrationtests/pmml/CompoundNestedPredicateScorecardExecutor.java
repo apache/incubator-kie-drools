@@ -23,11 +23,10 @@ import org.kie.pmml.api.runtime.PMMLRuntime;
 
 public class CompoundNestedPredicateScorecardExecutor extends AbstractPMMLExecutor {
 
-    private static final String MODEL_NAME = "CompoundNestedPredicateScorecard";
     public static final String TARGET_FIELD = "Score";
     public static final String REASON_CODE1_FIELD = "Reason Code 1";
     public static final String REASON_CODE2_FIELD = "Reason Code 2";
-
+    private static final String MODEL_NAME = "CompoundNestedPredicateScorecard";
     private final double input1;
     private final String input2;
 

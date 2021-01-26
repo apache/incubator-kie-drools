@@ -46,5 +46,4 @@ public class LogisticRegressionIrisDataExecutor extends AbstractPMMLExecutor {
         inputData.put("Petal.Width", petalWidth);
         return evaluate(pmmlRuntime, inputData, MODEL_NAME);
     }
-
 }

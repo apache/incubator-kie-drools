@@ -15,6 +15,14 @@
  */
 package org.kie.kogito.explainability.explainability.integrationtests.pmml;
 
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.api.pmml.PMML4Result;
@@ -36,25 +44,17 @@ import org.kie.kogito.explainability.utils.ExplainabilityMetrics;
 import org.kie.kogito.explainability.utils.ValidationUtils;
 import org.kie.pmml.api.runtime.PMMLRuntime;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.kie.pmml.evaluator.assembler.factories.PMMLRuntimeFactoryInternal.getPMMLRuntime;
-import static org.kie.test.util.filesystem.FileUtils.getFile;
 
 class PmmlScorecardCategoricalLimeExplainerTest {
 
     private static PMMLRuntime scorecardCategoricalRuntime;
 
     @BeforeAll
-    static void setUpBefore() {
-        scorecardCategoricalRuntime = getPMMLRuntime(getFile("SimpleScorecardCategorical.pmml"));
+    static void setUpBefore() throws URISyntaxException {
+        scorecardCategoricalRuntime = getPMMLRuntime(ResourceReaderUtils.getResourceAsFile("simplescorecardcategorical/SimpleScorecardCategorical.pmml"));
         Config.INSTANCE.setAsyncTimeout(5000);
         Config.INSTANCE.setAsyncTimeUnit(TimeUnit.MILLISECONDS);
     }
@@ -107,6 +107,6 @@ class PmmlScorecardCategoricalLimeExplainerTest {
             assertThat(v).isGreaterThan(0d);
         }
         assertDoesNotThrow(() -> ValidationUtils.validateLocalSaliencyStability(model, prediction, limeExplainer, 1,
-                0.5, 0.5));
+                                                                                0.5, 0.5));
     }
 }
