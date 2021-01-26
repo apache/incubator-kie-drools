@@ -68,6 +68,9 @@ public abstract class AbstractScenarioRunner extends Runner {
     }
 
     public static ScenarioRunnerProvider getSpecificRunnerProvider(Type type) {
+        if (type == null) {
+            throw new IllegalArgumentException("Impossible to run simulation of 'null' type");
+        }
         switch (type) {
             case RULE:
                 return RuleScenarioRunner::new;
