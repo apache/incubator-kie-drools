@@ -21,7 +21,7 @@ public class TestAssembler implements KieAssemblerService {
     }
 
     @Override
-    public void addResourceAsPackageDescr(Object kbuilder, Resource resource, ResourceType type, ResourceConfiguration configuration) throws Exception {
+    public void addResourceBeforeRules(Object kbuilder, Resource resource, ResourceType type, ResourceConfiguration configuration) throws Exception {
         KnowledgeBuilderImpl kb = (KnowledgeBuilderImpl) kbuilder;
 
         kb.addBuilderResult(BEFORE_RULES);
