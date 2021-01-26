@@ -104,6 +104,7 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
         kBuilder.registerBuildResources(getResources());
         buildResources();
         Collection<CompositePackageDescr> packages = buildPackageDescr();
+        buildAssemblerResourcesBeforeRules();
         if(buildRules) {
             kBuilder.buildPackages(packages);
         } else {
@@ -190,12 +191,10 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
         buildResource(packages, ResourceType.GDST, ResourceToPkgDescrMapper.GUIDED_DTABLE_TO_PKG_DESCR);
         this.resourcesByType.remove(ResourceType.DRT); // drt is a template for dtables but doesn't have to be built on its own
 
-        buildResourcesFromAssemblers();
-
         return packages.values();
     }
 
-    private void buildResourcesFromAssemblers() {
+    private void buildAssemblerResourcesBeforeRules() {
         KieAssemblers assemblers = ServiceRegistry.getService(KieAssemblers.class);
         try {
             for (Map.Entry<ResourceType, List<ResourceDescr>> resourceTypeListEntry : resourcesByType.entrySet()) {
