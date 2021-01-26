@@ -69,15 +69,7 @@
           <groupId>org.drools</groupId>
           <artifactId>drools-ruleunit</artifactId>
         </exclusion>
-        <!-- NEEDED FOR PMML+SPRINGBOOT -->
-        <!--   DO NOT EXCLUDE!!!! -->
-<!--        <exclusion>-->
-<!--          <groupId>org.glassfish.jaxb</groupId>-->
-<!--          <artifactId>jaxb-runtime</artifactId>-->
-<!--        </exclusion>-->
       </exclusions>
     </dependency>
   </dependencies>
-
-
 </project>
