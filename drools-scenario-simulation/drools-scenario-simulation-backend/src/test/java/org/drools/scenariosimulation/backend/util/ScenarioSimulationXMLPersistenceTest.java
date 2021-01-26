@@ -349,6 +349,14 @@ public class ScenarioSimulationXMLPersistenceTest {
         commonCheckSimulation(retrieved);
     }
 
+    @Test
+    public void unmarshalPMML() throws Exception {
+        String toUnmarshal = getFileContent("scesim-pmml.scesim");
+        final ScenarioSimulationModel retrieved = ScenarioSimulationXMLPersistence.getInstance().unmarshal(toUnmarshal);
+        assertEquals(ScenarioSimulationModel.Type.PMML, retrieved.getSettings().getType());
+        commonCheckSimulation(retrieved);
+    }
+
     /**
      * Verify the given <code>Map</code> has one single entry, whose <code>List</code> value also has a single children.
      * If <b>expectedTextContent</b> is given, it also check the children text content match

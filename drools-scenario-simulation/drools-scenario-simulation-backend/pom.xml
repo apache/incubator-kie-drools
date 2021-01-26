@@ -81,18 +81,18 @@
       <groupId>org.kie</groupId>
       <artifactId>kie-pmml-dependencies</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>kie-pmml-evaluator-core</artifactId>
-    </dependency>
 
     <!-- Test dependencies -->
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-test-util</artifactId>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
       <scope>test</scope>
     </dependency>
-
 
   </dependencies>
 

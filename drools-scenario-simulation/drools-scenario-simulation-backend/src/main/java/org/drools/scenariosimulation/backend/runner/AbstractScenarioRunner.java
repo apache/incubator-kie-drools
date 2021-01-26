@@ -68,12 +68,15 @@ public abstract class AbstractScenarioRunner extends Runner {
     }
 
     public static ScenarioRunnerProvider getSpecificRunnerProvider(Type type) {
-        if (Type.RULE.equals(type)) {
-            return RuleScenarioRunner::new;
-        } else if (Type.DMN.equals(type)) {
-            return DMNScenarioRunner::new;
-        } else {
-            throw new IllegalArgumentException("Impossible to run simulation of type " + type);
+        switch (type) {
+            case RULE:
+                return RuleScenarioRunner::new;
+            case DMN:
+                return DMNScenarioRunner::new;
+            case PMML:
+                return PMMLScenarioRunner::new;
+            default:
+                throw new IllegalArgumentException("Impossible to run simulation of type " + type);
         }
     }
 
