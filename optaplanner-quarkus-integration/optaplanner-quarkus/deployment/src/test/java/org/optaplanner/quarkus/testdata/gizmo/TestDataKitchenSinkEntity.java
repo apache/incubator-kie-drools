@@ -6,7 +6,9 @@ import java.util.List;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.entity.PlanningPin;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
+import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
+import org.optaplanner.core.api.domain.variable.PlanningVariableReference;
 
 /*
  *  Should have one of every annotation, even annotations that
@@ -17,6 +19,14 @@ import org.optaplanner.core.api.domain.variable.PlanningVariable;
 public class TestDataKitchenSinkEntity {
 
     private Integer intVariable;
+
+    @CustomShadowVariable(
+            variableListenerClass = DummyVariableListener.class,
+            sources = {
+                    @PlanningVariableReference(entityClass = TestDataKitchenSinkEntity.class,
+                            variableName = "stringVariable")
+            })
+    private String myShadow;
 
     @PlanningVariable(valueRangeProviderRefs = { "names" })
     private String stringVariable;

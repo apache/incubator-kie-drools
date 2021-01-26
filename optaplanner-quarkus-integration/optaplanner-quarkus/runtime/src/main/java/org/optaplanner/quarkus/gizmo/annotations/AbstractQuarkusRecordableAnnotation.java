@@ -37,7 +37,8 @@ public abstract class AbstractQuarkusRecordableAnnotation implements Annotation 
     @SuppressWarnings("unchecked")
     public <T> T getParameter(String parameterName, Class<T> type) {
         Object value = map.get(parameterName);
-        if (!type.isArray() || type.isInstance(value)) {
+
+        if (!type.isArray() || Array.getLength(value) != 0) {
             return (T) value;
         } else {
             // must be the case of having an empty array

@@ -17,9 +17,12 @@
 package org.optaplanner.quarkus.gizmo.annotations;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.jboss.jandex.AnnotationInstance;
 import org.jboss.jandex.AnnotationValue;
@@ -117,9 +120,16 @@ public class QuarkusRecordableAnnotations {
                                 .map(v -> findClass(annotationInstance, v))
                                 .toArray(Class[]::new);
                     case NESTED:
-                        return Arrays.stream(value.asNestedArray())
+                        List<Annotation> annotationList = Arrays.stream(value.asNestedArray())
                                 .map(v -> getQuarkusRecorderFriendlyAnnotation(v, indexView))
-                                .toArray(Annotation[]::new);
+                                .collect(Collectors.toList());
+                        // list has at least one element, otherwise it be type UNKNOWN
+                        Class<?> annotationType = annotationList.get(0).annotationType();
+                        Object out = Array.newInstance(annotationType, annotationList.size());
+                        for (int i = 0; i < annotationList.size(); i++) {
+                            Array.set(out, i, annotationList.get(i));
+                        }
+                        return out;
                     case UNKNOWN:
                         // Note: If an array is empty, it is unknown, but
                         // Jandex doesn't provide a way to check array length
@@ -154,10 +164,10 @@ public class QuarkusRecordableAnnotations {
 
     private static Class<?> findClass(AnnotationInstance annotationInstance, Type type) {
         try {
-            return Class.forName(type.toString(), false,
+            return Class.forName(type.name().toString(), false,
                     Thread.currentThread().getContextClassLoader());
         } catch (ClassNotFoundException e) {
-            throw new IllegalStateException("Could not find class (" + type.toString() +
+            throw new IllegalStateException("Could not find class (" + type.name().toString() +
                     ") referenced by annotation (" +
                     annotationInstance.toString() +
                     "). Maybe check your classpath?", e);

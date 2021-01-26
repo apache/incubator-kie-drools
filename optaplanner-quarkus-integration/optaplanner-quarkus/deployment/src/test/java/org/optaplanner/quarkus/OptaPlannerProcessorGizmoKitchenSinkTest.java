@@ -37,6 +37,7 @@ import org.optaplanner.core.api.solver.SolverJob;
 import org.optaplanner.core.api.solver.SolverManager;
 import org.optaplanner.core.impl.solver.DefaultSolverManager;
 import org.optaplanner.quarkus.testdata.gizmo.DummyConstraintProvider;
+import org.optaplanner.quarkus.testdata.gizmo.DummyVariableListener;
 import org.optaplanner.quarkus.testdata.gizmo.TestDataKitchenSinkEntity;
 import org.optaplanner.quarkus.testdata.gizmo.TestDataKitchenSinkSolution;
 
@@ -50,7 +51,8 @@ public class OptaPlannerProcessorGizmoKitchenSinkTest {
             .setArchiveProducer(() -> ShrinkWrap.create(JavaArchive.class)
                     .addClasses(TestDataKitchenSinkEntity.class,
                             TestDataKitchenSinkSolution.class,
-                            DummyConstraintProvider.class));
+                            DummyConstraintProvider.class,
+                            DummyVariableListener.class));
 
     @Inject
     SolverFactory<TestDataKitchenSinkSolution> solverFactory;
