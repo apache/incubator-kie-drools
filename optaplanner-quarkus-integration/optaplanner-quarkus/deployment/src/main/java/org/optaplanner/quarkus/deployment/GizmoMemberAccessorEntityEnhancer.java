@@ -33,6 +33,9 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Named;
+
 import org.jboss.jandex.AnnotationInstance;
 import org.jboss.jandex.ClassInfo;
 import org.jboss.jandex.FieldInfo;
@@ -117,6 +120,9 @@ public class GizmoMemberAccessorEntityEnhancer {
                 .classOutput(classOutput)
                 .build();
 
+        classCreator.addAnnotation(ApplicationScoped.class);
+        classCreator.addAnnotation(Named.class).addValue("value", generatedClassName);
+
         GizmoMemberDescriptor member;
         Class<?> declaringClass = Class.forName(fieldInfo.declaringClass().name().toString(), false,
                 Thread.currentThread().getContextClassLoader());
@@ -197,6 +203,9 @@ public class GizmoMemberAccessorEntityEnhancer {
                 .interfaces(MemberAccessor.class)
                 .classOutput(classOutput)
                 .build();
+
+        classCreator.addAnnotation(ApplicationScoped.class);
+        classCreator.addAnnotation(Named.class).addValue("value", generatedClassName);
 
         GizmoMemberDescriptor member;
         String name = getMemberName(methodInfo);

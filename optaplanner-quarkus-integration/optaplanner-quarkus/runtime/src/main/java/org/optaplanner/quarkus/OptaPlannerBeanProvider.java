@@ -16,11 +16,12 @@
 
 package org.optaplanner.quarkus;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Produces;
+import javax.enterprise.inject.literal.NamedLiteral;
 import javax.inject.Singleton;
 
 import org.optaplanner.core.api.score.ScoreManager;
@@ -51,20 +52,14 @@ public class OptaPlannerBeanProvider {
     @DefaultBean
     @Singleton
     @Produces
-    <Solution_> SolverFactory<Solution_> solverFactory(OptaPlannerGizmoInfo gizmoInfo, SolverConfig solverConfig) {
+    <Solution_> SolverFactory<Solution_> solverFactory(OptaPlannerGizmoInfo gizmoInfo, SolverConfig solverConfig,
+            Instance<MemberAccessor> memberAccessors) {
         Map<String, MemberAccessor> memberAccessorMap = new HashMap<>();
         for (String classBytecodeName : gizmoInfo.getGizmoMemberAccessorNameToGenericType().keySet()) {
             String className = classBytecodeName.replace('/', '.');
-            try {
-                MemberAccessor memberAccessor =
-                        (MemberAccessor) Class.forName(className, true, Thread.currentThread().getContextClassLoader())
-                                .getConstructor().newInstance();
-                memberAccessorMap.put(className, memberAccessor);
-            } catch (InstantiationException | IllegalAccessException | InvocationTargetException | ClassNotFoundException
-                    | NoSuchMethodException e) {
-                throw new IllegalStateException("Fail to create instance of MemberAccessor (" + className + ").", e);
-            }
-
+            memberAccessors.select(NamedLiteral.of(className)).get();
+            memberAccessorMap.put(className,
+                    memberAccessors.select(NamedLiteral.of(className)).get());
         }
         GizmoMemberAccessorFactory.usePregeneratedMaps(memberAccessorMap,
                 gizmoInfo.getGizmoMemberAccessorNameToGenericType(),
