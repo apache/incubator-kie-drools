@@ -202,7 +202,7 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
                 ResourceType type = resourceTypeListEntry.getKey();
                 List<ResourceDescr> descrs = resourceTypeListEntry.getValue();
                 for (ResourceDescr descr : descrs) {
-                    assemblers.addResourceAsPackageDescr(this.kBuilder, descr.resource, type, descr.configuration);
+                    assemblers.addResourceBeforeRules(this.kBuilder, descr.resource, type, descr.configuration);
                 }
             }
         } catch (RuntimeException e) {
