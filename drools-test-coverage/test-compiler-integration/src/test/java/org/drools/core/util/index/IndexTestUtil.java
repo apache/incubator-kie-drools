@@ -19,10 +19,12 @@ package org.drools.core.util.index;
 public class IndexTestUtil {
 
     public static void enableRangeIndexForJoin() {
+        // In order to enable range index for Join, you also need to set BetaRangeIndexOption ENABLED
         IndexUtil.USE_COMPARISON_INDEX_JOIN = true;
     }
 
     public static void disableRangeIndexForJoin() {
+        // If you set this flag 'false', range index for Join is disabled even if you set BetaRangeIndexOption ENABLED
         IndexUtil.USE_COMPARISON_INDEX_JOIN = false;
     }
 }
