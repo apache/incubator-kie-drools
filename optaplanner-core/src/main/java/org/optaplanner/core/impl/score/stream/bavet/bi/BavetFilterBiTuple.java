@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,16 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.bi;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.optaplanner.core.impl.score.stream.bavet.common.BavetAbstractTuple;
+
 public final class BavetFilterBiTuple<A, B> extends BavetAbstractBiTuple<A, B> {
 
     private final BavetFilterBiNode<A, B> node;
     private final BavetAbstractBiTuple<A, B> parentTuple;
+    private final List<BavetAbstractTuple> childTupleList = new ArrayList<>(1);
 
     public BavetFilterBiTuple(BavetFilterBiNode<A, B> node, BavetAbstractBiTuple<A, B> parentTuple) {
         this.node = node;
@@ -38,6 +44,11 @@ public final class BavetFilterBiTuple<A, B> extends BavetAbstractBiTuple<A, B> {
     @Override
     public BavetFilterBiNode<A, B> getNode() {
         return node;
+    }
+
+    @Override
+    public List<BavetAbstractTuple> getChildTupleList() {
+        return childTupleList;
     }
 
     @Override

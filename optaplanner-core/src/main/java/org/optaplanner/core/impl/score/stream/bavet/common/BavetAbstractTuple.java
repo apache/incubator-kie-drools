@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,11 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.common;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public abstract class BavetAbstractTuple implements BavetTuple {
 
     protected BavetTupleState state = BavetTupleState.NEW;
-    protected final List<BavetAbstractTuple> childTupleList = new ArrayList<>(); // TODO initial capacity
 
     public boolean isDirty() {
         return state.isDirty();
@@ -51,8 +49,6 @@ public abstract class BavetAbstractTuple implements BavetTuple {
         this.state = state;
     }
 
-    public final List<BavetAbstractTuple> getChildTupleList() {
-        return childTupleList;
-    }
+    public abstract List<BavetAbstractTuple> getChildTupleList();
 
 }

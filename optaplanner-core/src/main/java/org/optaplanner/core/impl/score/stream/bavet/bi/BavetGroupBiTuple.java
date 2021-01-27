@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,11 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.bi;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Function;
 
+import org.optaplanner.core.impl.score.stream.bavet.common.BavetAbstractTuple;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetGroupTuple;
 
 public final class BavetGroupBiTuple<GroupKey_, ResultContainer_, Result_> extends BavetAbstractBiTuple<GroupKey_, Result_>
@@ -29,6 +32,7 @@ public final class BavetGroupBiTuple<GroupKey_, ResultContainer_, Result_> exten
     private int parentCount;
     private ResultContainer_ resultContainer;
     private Result_ result;
+    private final List<BavetAbstractTuple> childTupleList = new ArrayList<>(1);
 
     public BavetGroupBiTuple(BavetGroupBiNode<GroupKey_, ResultContainer_, Result_> node,
             GroupKey_ groupKey, ResultContainer_ resultContainer) {
@@ -73,6 +77,11 @@ public final class BavetGroupBiTuple<GroupKey_, ResultContainer_, Result_> exten
     @Override
     public BavetGroupBiNode<GroupKey_, ResultContainer_, Result_> getNode() {
         return node;
+    }
+
+    @Override
+    public List<BavetAbstractTuple> getChildTupleList() {
+        return childTupleList;
     }
 
     @Override

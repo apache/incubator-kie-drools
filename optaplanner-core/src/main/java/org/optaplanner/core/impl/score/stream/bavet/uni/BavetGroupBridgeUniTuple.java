@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,10 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.uni;
 
+import java.util.List;
+
 import org.optaplanner.core.impl.score.stream.bavet.bi.BavetGroupBiTuple;
+import org.optaplanner.core.impl.score.stream.bavet.common.BavetAbstractTuple;
 
 public final class BavetGroupBridgeUniTuple<A, NewA, ResultContainer_, NewB> extends BavetAbstractUniTuple<A> {
 
@@ -44,6 +47,11 @@ public final class BavetGroupBridgeUniTuple<A, NewA, ResultContainer_, NewB> ext
     @Override
     public BavetGroupBridgeUniNode<A, NewA, ResultContainer_, NewB> getNode() {
         return node;
+    }
+
+    @Override
+    public List<BavetAbstractTuple> getChildTupleList() {
+        throw new IllegalStateException("Impossible state: group bridges only have 1 child tuple.");
     }
 
     @Override

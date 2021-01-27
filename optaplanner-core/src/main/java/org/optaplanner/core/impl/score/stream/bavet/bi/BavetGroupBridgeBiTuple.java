@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,11 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.bi;
 
-public class BavetGroupBridgeBiTuple<A, B, NewA, ResultContainer_, NewB> extends BavetAbstractBiTuple<A, B> {
+import java.util.List;
+
+import org.optaplanner.core.impl.score.stream.bavet.common.BavetAbstractTuple;
+
+public final class BavetGroupBridgeBiTuple<A, B, NewA, ResultContainer_, NewB> extends BavetAbstractBiTuple<A, B> {
 
     private final BavetGroupBridgeBiNode<A, B, NewA, ResultContainer_, NewB> node;
     private final BavetAbstractBiTuple<A, B> parentTuple;
@@ -42,6 +46,11 @@ public class BavetGroupBridgeBiTuple<A, B, NewA, ResultContainer_, NewB> extends
     @Override
     public BavetGroupBridgeBiNode<A, B, NewA, ResultContainer_, NewB> getNode() {
         return node;
+    }
+
+    @Override
+    public List<BavetAbstractTuple> getChildTupleList() {
+        throw new IllegalStateException("Impossible state: group bridges only have 1 child tuple.");
     }
 
     @Override

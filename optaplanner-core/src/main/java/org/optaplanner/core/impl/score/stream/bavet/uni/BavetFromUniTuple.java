@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,19 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.uni;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.optaplanner.core.impl.score.stream.bavet.common.BavetAbstractTuple;
+
 public final class BavetFromUniTuple<A> extends BavetAbstractUniTuple<A> {
 
     private final BavetFromUniNode<A> node;
     private final A factA;
+    private final List<BavetAbstractTuple> childTupleList;
 
     public BavetFromUniTuple(BavetFromUniNode<A> node, A factA, int childTupleListSize) {
+        this.childTupleList = new ArrayList<>(childTupleListSize);
         this.node = node;
         this.factA = factA;
     }
@@ -38,6 +45,11 @@ public final class BavetFromUniTuple<A> extends BavetAbstractUniTuple<A> {
     @Override
     public BavetFromUniNode<A> getNode() {
         return node;
+    }
+
+    @Override
+    public List<BavetAbstractTuple> getChildTupleList() {
+        return childTupleList;
     }
 
     @Override
