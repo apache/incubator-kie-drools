@@ -200,7 +200,7 @@ public class DecisionRestResourceGenerator {
             inputRef = withOASResult.getNamingPolicy().getRef(identifyInputSet);
             outputRef = withOASResult.getNamingPolicy().getRef(identifyOutputSet);
         }
-        final String DMN_DEFINITIONS_JSON = "dmnDefinitions.json";
+        final String DMN_DEFINITIONS_JSON = "/dmnDefinitions.json";
         // MP / Quarkus
         processAnnForRef(dmnMethod,
                          "org.eclipse.microprofile.openapi.annotations.parameters.RequestBody",

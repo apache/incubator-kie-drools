@@ -113,6 +113,7 @@
     <version.io.smallrye.reactive>2.6.1</version.io.smallrye.reactive>
     <version.io.smallrye.reactive.mutiny-vertx-web-client>1.3.0</version.io.smallrye.reactive.mutiny-vertx-web-client>
     <version.io.swagger.core.v3>2.0.6</version.io.swagger.core.v3>
+    <version.io.swagger.parser.v3>2.0.24</version.io.swagger.parser.v3>
 
     <version.org.antlr>3.5.2</version.org.antlr>
     <version.org.antlr4>4.8</version.org.antlr4>
@@ -659,6 +660,11 @@
         <groupId>io.swagger.core.v3</groupId>
         <artifactId>swagger-annotations</artifactId>
         <version>${version.io.swagger.core.v3}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.swagger.parser.v3</groupId>
+        <artifactId>swagger-parser</artifactId>
+        <version>${version.io.swagger.parser.v3}</version>
       </dependency>
 
       <dependency>

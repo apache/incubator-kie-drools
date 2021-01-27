@@ -16,7 +16,14 @@
 
 package org.kie.kogito.integrationtests.springboot;
 
+import java.util.List;
+
 import io.restassured.RestAssured;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.PathItem;
+import io.swagger.v3.parser.OpenAPIV3Parser;
+import io.swagger.v3.parser.core.models.ParseOptions;
+import io.swagger.v3.parser.core.models.SwaggerParseResult;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.kie.kogito.testcontainers.springboot.InfinispanSpringBootTestResource;
@@ -24,7 +31,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import static io.restassured.RestAssured.given;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.aMapWithSize;
 import static org.hamcrest.Matchers.greaterThan;
 
@@ -35,6 +42,27 @@ class OASTest extends BaseRestTest {
 
     static {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
+    }
+
+    @Test
+    public void testOASisValid() {
+        String url = RestAssured.baseURI + ":" + RestAssured.port + "/v3/api-docs"; // default location from org.springdoc:springdoc-openapi-ui as used in archetype
+        ParseOptions parseOptions = new ParseOptions();
+        parseOptions.setResolve(true);
+        SwaggerParseResult result = new OpenAPIV3Parser().readLocation(url, null, parseOptions);
+
+        List<String> messages = result.getMessages();
+        messages.removeIf(m -> m.endsWith("parameters.[group].schemas.default is not of type `array`")); // KOGITO-4268
+        assertThat(messages).isEmpty();
+
+        OpenAPI openAPI = result.getOpenAPI();
+        PathItem p1 = openAPI.getPaths().get("/basicAdd");
+        assertThat(p1).isNotNull();
+        assertThat(p1.getGet()).isNotNull();
+        assertThat(p1.getPost()).isNotNull();
+        PathItem p2 = openAPI.getPaths().get("/basicAdd/dmnresult");
+        assertThat(p2).isNotNull();
+        assertThat(p2.getPost()).isNotNull(); // only POST for ../dmnresult expected.
     }
 
     @Test
