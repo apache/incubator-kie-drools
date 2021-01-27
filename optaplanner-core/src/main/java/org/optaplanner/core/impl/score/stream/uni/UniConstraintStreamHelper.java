@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,18 +35,18 @@ public final class UniConstraintStreamHelper<A, B>
     }
 
     @Override
-    protected BiConstraintStream<A, B> doJoin(Class<B> otherClass) {
-        return stream.join(otherClass);
+    protected BiConstraintStream<A, B> doJoin(UniConstraintStream<B> otherStream) {
+        return stream.join(otherStream);
     }
 
     @Override
-    protected BiConstraintStream<A, B> doJoin(Class<B> otherClass, BiJoiner<A, B> joiner) {
-        return stream.join(otherClass, joiner);
+    protected BiConstraintStream<A, B> doJoin(UniConstraintStream<B> otherStream, BiJoiner<A, B> joiner) {
+        return stream.join(otherStream, joiner);
     }
 
     @Override
-    protected BiConstraintStream<A, B> doJoin(Class<B> otherClass, BiJoiner<A, B>... joiners) {
-        return stream.join(otherClass, joiners);
+    protected BiConstraintStream<A, B> doJoin(UniConstraintStream<B> otherStream, BiJoiner<A, B>... joiners) {
+        return stream.join(otherStream, joiners);
     }
 
     @Override
@@ -73,4 +73,5 @@ public final class UniConstraintStreamHelper<A, B>
     protected BiPredicate<A, B> mergePredicates(BiPredicate<A, B> predicate1, BiPredicate<A, B> predicate2) {
         return predicate1.and(predicate2);
     }
+
 }

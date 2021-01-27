@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -105,6 +105,72 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
     <C> TriConstraintStream<A, B, C> join(UniConstraintStream<C> otherStream, TriJoiner<A, B, C> joiner);
 
     /**
+     * As defined by {@link #join(Class, TriJoiner)}.
+     *
+     * @param otherStream never null
+     * @param joiner1 never null
+     * @param joiner2 never null
+     * @param <C> the type of the third matched fact
+     * @return never null, a stream that matches every combination of [A, B] and C for which all the
+     *         {@link TriJoiner joiners} are true
+     */
+    default <C> TriConstraintStream<A, B, C> join(UniConstraintStream<C> otherStream, TriJoiner<A, B, C> joiner1,
+            TriJoiner<A, B, C> joiner2) {
+        return join(otherStream, new TriJoiner[] { joiner1, joiner2 });
+    }
+
+    /**
+     * As defined by {@link #join(Class, TriJoiner)}.
+     *
+     * @param otherStream never null
+     * @param joiner1 never null
+     * @param joiner2 never null
+     * @param joiner3 never null
+     * @param <C> the type of the third matched fact
+     * @return never null, a stream that matches every combination of [A, B] and C for which all the
+     *         {@link TriJoiner joiners} are true
+     */
+    default <C> TriConstraintStream<A, B, C> join(UniConstraintStream<C> otherStream, TriJoiner<A, B, C> joiner1,
+            TriJoiner<A, B, C> joiner2, TriJoiner<A, B, C> joiner3) {
+        return join(otherStream, new TriJoiner[] { joiner1, joiner2, joiner3 });
+    }
+
+    /**
+     * As defined by {@link #join(Class, TriJoiner)}.
+     *
+     * @param otherStream never null
+     * @param joiner1 never null
+     * @param joiner2 never null
+     * @param joiner3 never null
+     * @param joiner4 never null
+     * @param <C> the type of the third matched fact
+     * @return never null, a stream that matches every combination of [A, B] and C for which all the
+     *         {@link TriJoiner joiners} are true
+     */
+    default <C> TriConstraintStream<A, B, C> join(UniConstraintStream<C> otherStream, TriJoiner<A, B, C> joiner1,
+            TriJoiner<A, B, C> joiner2, TriJoiner<A, B, C> joiner3, TriJoiner<A, B, C> joiner4) {
+        return join(otherStream, new TriJoiner[] { joiner1, joiner2, joiner3, joiner4 });
+    }
+
+    /**
+     * As defined by {@link #join(Class, TriJoiner)}.
+     * <p>
+     * This method causes <i>Unchecked generics array creation for varargs parameter</i> warnings,
+     * but we can't fix it with a {@link SafeVarargs} annotation because it's an interface method.
+     * Therefore, there are overloaded methods with up to 4 {@link BiJoiner} parameters.
+     *
+     * @param otherStream never null
+     * @param joiners never null
+     * @param <C> the type of the third matched fact
+     * @return never null, a stream that matches every combination of [A, B] and C for which all the
+     *         {@link TriJoiner joiners} are true
+     */
+    default <C> TriConstraintStream<A, B, C> join(UniConstraintStream<C> otherStream, TriJoiner<A, B, C>... joiners) {
+        BiConstraintStreamHelper<A, B, C> helper = new BiConstraintStreamHelper<>(this);
+        return helper.join(otherStream, joiners);
+    }
+
+    /**
      * Create a new {@link TriConstraintStream} for every combination of [A, B] and C.
      * <p>
      * Important: {@link TriConstraintStream#filter(TriPredicate)} Filtering} this is slower and less scalable
@@ -157,7 +223,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      */
     default <C> TriConstraintStream<A, B, C> join(Class<C> otherClass, TriJoiner<A, B, C> joiner1,
             TriJoiner<A, B, C> joiner2) {
-        return join(otherClass, new TriJoiner[] { joiner1, joiner2 });
+        return join(getConstraintFactory().from(otherClass), joiner1, joiner2);
     }
 
     /**
@@ -173,7 +239,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      */
     default <C> TriConstraintStream<A, B, C> join(Class<C> otherClass, TriJoiner<A, B, C> joiner1,
             TriJoiner<A, B, C> joiner2, TriJoiner<A, B, C> joiner3) {
-        return join(otherClass, new TriJoiner[] { joiner1, joiner2, joiner3 });
+        return join(getConstraintFactory().from(otherClass), joiner1, joiner2, joiner3);
     }
 
     /**
@@ -190,7 +256,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      */
     default <C> TriConstraintStream<A, B, C> join(Class<C> otherClass, TriJoiner<A, B, C> joiner1,
             TriJoiner<A, B, C> joiner2, TriJoiner<A, B, C> joiner3, TriJoiner<A, B, C> joiner4) {
-        return join(otherClass, new TriJoiner[] { joiner1, joiner2, joiner3, joiner4 });
+        return join(getConstraintFactory().from(otherClass), joiner1, joiner2, joiner3, joiner4);
     }
 
     /**
@@ -207,8 +273,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      *         {@link TriJoiner joiners} are true
      */
     default <C> TriConstraintStream<A, B, C> join(Class<C> otherClass, TriJoiner<A, B, C>... joiners) {
-        BiConstraintStreamHelper<A, B, C> helper = new BiConstraintStreamHelper<>(this);
-        return helper.join(otherClass, joiners);
+        return join(getConstraintFactory().from(otherClass), joiners);
     }
 
     // ************************************************************************

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,13 +18,15 @@ package org.optaplanner.core.impl.score.stream.common;
 
 import java.util.Arrays;
 
+import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
+
 public abstract class AbstractConstraintStreamHelper<Right, JoinedStream, Joiner, Predicate> {
 
-    protected abstract JoinedStream doJoin(Class<Right> otherClass);
+    protected abstract JoinedStream doJoin(UniConstraintStream<Right> otherStream);
 
-    protected abstract JoinedStream doJoin(Class<Right> otherClass, Joiner joiner);
+    protected abstract JoinedStream doJoin(UniConstraintStream<Right> otherStream, Joiner joiner);
 
-    protected abstract JoinedStream doJoin(Class<Right> otherClass, Joiner... joiners);
+    protected abstract JoinedStream doJoin(UniConstraintStream<Right> otherStream, Joiner... joiners);
 
     protected abstract JoinedStream filter(JoinedStream stream, Predicate predicate);
 
@@ -36,7 +38,15 @@ public abstract class AbstractConstraintStreamHelper<Right, JoinedStream, Joiner
 
     protected abstract Predicate mergePredicates(Predicate predicate1, Predicate predicate2);
 
-    public final JoinedStream join(Class<Right> otherClass, Joiner... joiners) {
+    /**
+     * Converts a set of joiners into a single composite joiner, optionally followed by some filters.
+     * Ensures that the joiners are properly ordered filters-last.
+     *
+     * @param otherStream never null
+     * @param joiners never null
+     * @return never null, stream with all the joiners applied
+     */
+    public final JoinedStream join(UniConstraintStream<Right> otherStream, Joiner... joiners) {
         int joinerCount = joiners.length;
         int indexOfFirstFilter = -1;
         // Make sure all indexing joiners, if any, come before filtering joiners. This is necessary for performance.
@@ -57,11 +67,11 @@ public abstract class AbstractConstraintStreamHelper<Right, JoinedStream, Joiner
         }
         if (indexOfFirstFilter < 0) { // Only found indexing joiners.
             Joiner mergedJoiners = mergeJoiners(joiners);
-            return doJoin(otherClass, mergedJoiners);
+            return doJoin(otherStream, mergedJoiners);
         }
         // Assemble the join stream that may be followed by filter stream.
-        JoinedStream joined = indexOfFirstFilter == 0 ? doJoin(otherClass)
-                : doJoin(otherClass, Arrays.copyOf(joiners, indexOfFirstFilter));
+        JoinedStream joined = indexOfFirstFilter == 0 ? doJoin(otherStream)
+                : doJoin(otherStream, Arrays.copyOf(joiners, indexOfFirstFilter));
         int filterCount = joinerCount - indexOfFirstFilter;
         if (filterCount == 0) { // No filters, return the original join stream.
             return joined;

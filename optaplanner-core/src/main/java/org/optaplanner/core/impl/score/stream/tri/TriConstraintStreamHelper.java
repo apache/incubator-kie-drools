@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import org.optaplanner.core.api.function.QuadPredicate;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintStream;
 import org.optaplanner.core.api.score.stream.quad.QuadJoiner;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
+import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 import org.optaplanner.core.impl.score.stream.common.AbstractConstraintStreamHelper;
 import org.optaplanner.core.impl.score.stream.quad.AbstractQuadJoiner;
 import org.optaplanner.core.impl.score.stream.quad.FilteringQuadJoiner;
@@ -35,18 +36,18 @@ public final class TriConstraintStreamHelper<A, B, C, D>
     }
 
     @Override
-    protected QuadConstraintStream<A, B, C, D> doJoin(Class<D> otherClass) {
-        return stream.join(otherClass);
+    protected QuadConstraintStream<A, B, C, D> doJoin(UniConstraintStream<D> otherStream) {
+        return stream.join(otherStream);
     }
 
     @Override
-    protected QuadConstraintStream<A, B, C, D> doJoin(Class<D> otherClass, QuadJoiner<A, B, C, D> joiner) {
-        return stream.join(otherClass, joiner);
+    protected QuadConstraintStream<A, B, C, D> doJoin(UniConstraintStream<D> otherStream, QuadJoiner<A, B, C, D> joiner) {
+        return stream.join(otherStream, joiner);
     }
 
     @Override
-    protected QuadConstraintStream<A, B, C, D> doJoin(Class<D> otherClass, QuadJoiner<A, B, C, D>... joiners) {
-        return stream.join(otherClass, joiners);
+    protected QuadConstraintStream<A, B, C, D> doJoin(UniConstraintStream<D> otherStream, QuadJoiner<A, B, C, D>... joiners) {
+        return stream.join(otherStream, joiners);
     }
 
     @Override
@@ -75,4 +76,5 @@ public final class TriConstraintStreamHelper<A, B, C, D>
             QuadPredicate<A, B, C, D> predicate2) {
         return predicate1.and(predicate2);
     }
+
 }

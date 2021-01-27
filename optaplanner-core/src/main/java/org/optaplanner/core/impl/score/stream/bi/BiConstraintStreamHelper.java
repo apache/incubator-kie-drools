@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import org.optaplanner.core.api.function.TriPredicate;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
 import org.optaplanner.core.api.score.stream.tri.TriJoiner;
+import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 import org.optaplanner.core.impl.score.stream.common.AbstractConstraintStreamHelper;
 import org.optaplanner.core.impl.score.stream.tri.AbstractTriJoiner;
 import org.optaplanner.core.impl.score.stream.tri.FilteringTriJoiner;
@@ -34,18 +35,18 @@ public final class BiConstraintStreamHelper<A, B, C>
     }
 
     @Override
-    protected TriConstraintStream<A, B, C> doJoin(Class<C> otherClass) {
-        return stream.join(otherClass);
+    protected TriConstraintStream<A, B, C> doJoin(UniConstraintStream<C> otherStream) {
+        return stream.join(otherStream);
     }
 
     @Override
-    protected TriConstraintStream<A, B, C> doJoin(Class<C> otherClass, TriJoiner<A, B, C> joiner) {
-        return stream.join(otherClass, joiner);
+    protected TriConstraintStream<A, B, C> doJoin(UniConstraintStream<C> otherStream, TriJoiner<A, B, C> joiner) {
+        return stream.join(otherStream, joiner);
     }
 
     @Override
-    protected TriConstraintStream<A, B, C> doJoin(Class<C> otherClass, TriJoiner<A, B, C>... joiners) {
-        return stream.join(otherClass, joiners);
+    protected TriConstraintStream<A, B, C> doJoin(UniConstraintStream<C> otherStream, TriJoiner<A, B, C>... joiners) {
+        return stream.join(otherStream, joiners);
     }
 
     @Override
@@ -74,4 +75,5 @@ public final class BiConstraintStreamHelper<A, B, C>
             TriPredicate<A, B, C> predicate2) {
         return predicate1.and(predicate2);
     }
+
 }
