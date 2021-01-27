@@ -764,7 +764,7 @@ Example JSON response:
                 "Speed Limit": 100,
                 "Actual Speed": 135
               },
-              "Should Driver be Suspended?": "YES",
+              "Should Driver be Suspended?": "Yes",
                 "Driver": {
                   "Points": 15
                 },
@@ -778,7 +778,7 @@ Example JSON response:
               "messages": [],
               "decision-id": "_E1AF5AC2-E259-455C-96E4-596E30D3BC86",
               "decision-name": "Should the Driver be Suspended?",
-              "result": "YES",
+              "result": "Yes",
               "status": "SUCCEEDED"
             },
           "_D7F02CE0-AF50-4505-AB80-C7D6DE257920": {
