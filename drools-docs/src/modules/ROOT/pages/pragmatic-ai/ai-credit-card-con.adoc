@@ -35,7 +35,7 @@ To help with this decisioning, Fortress Bank used {CENTRAL} to create the *Credi
 image:ai/casefile.png[]
 
 .Process variables
-When Joe reported the dispute, an instance of the *fraudDispute* process was created with case ID `FR-00000004`.  The *Process Variables* tab contains several variables and values specific to Joe's account, including `CaseID`, `caseFile_cardholderRIskRating` (the creditcard holder risk rating), and `caseFile_disputeRiskRating` (the risk rating of this dispute):
+When Joe reported the dispute, an instance of the *fraudDispute* process was created with case ID `FR-00000004`.  The *Process Variables* tab contains several variables and values specific to Joe's account, including `CaseID`, `caseFile_cardholderRiskRating` (the credit card holder risk rating), and `caseFile_disputeRiskRating` (the risk rating of this dispute):
 
 image:ai/process-variables-3.png[]
 
@@ -48,7 +48,7 @@ image:ai/bpmn.png[]
 
 The *Decision Task* task contains the rules that determine whether the dispute will be automatically charged back to Joe's account (*Milestone 1*) or whether more investigation is required (*Milestone 2*) based on the values of the `caseFile_cardholderRiskRating` and the `caseFile_disputeRiskRating` variables. If Joe's dispute matches the criteria for automatic approval, *Milestone 1* is followed and the disputed amount is charged back to his account. This sub-process is very lean and efficient. If Joe's dispute requires manual evaluation, the sub-process in *Milestone 2* is started, which will require some human actor involvement and will take more resources to process.
 
-In this case, the Decision Task task decided to process Joe's dispute automatically so it followed *Milestone 1: Automatic Chargeback*.
+In this case, the *Decision Task* task decided to process Joe's dispute automatically so it followed *Milestone 1: Automatic Chargeback*.
 
 .DMN model
 The following simplified DMN model shows the decision process that is part of the *fraudDispute* *Decision Task* task:
@@ -58,7 +58,7 @@ image:ai/simple-dmn.png[]
 
 The input variables are *Age* (cardholder age), *Incident Count* (the number of previous disputes for this cardholder), *Cardholder Status* (standard, silver, gold, platinum), and *Fraud Amount*.
 
-{PRODUCT} uses input variables in decision tables to support digital decisioning. The decision tables are created by human business analysts. The analyst creates a draft business requirement analysis document or spreadsheet that stakeholders review and approve. The project designer then uses the {CENTRAL} DMN editor to transfer the data in the analysis document to the DMN model. The Fortress Bank *Credit Card Dispute* process has two decision tables, the *Cardholder Risk Rating* table and the *Dispute Risk Rating* table. The *Cardholder Risk Rating* table contains three input variables:  *Incident Count*, *Cardholder Status*, and *Age*. The *Dispute Risk Rating* table contains the *Cardholder Status* input variable. It calculates the risk of the dispute based on the cardholder status and the amount of the dispute.
+{PRODUCT} uses input variables in decision tables to support digital decisioning. The decision tables are created by human business analysts. The analyst creates a draft business requirement analysis document or spreadsheet that stakeholders review and approve. The project designer then uses the {CENTRAL} DMN editor to transfer the data in the analysis document to the DMN model. The Fortress Bank *Credit Card Dispute* process has two decision tables, the *Cardholder Risk Rating* table and the *Dispute Risk Rating* table. The *Cardholder Risk Rating* table contains three input variables:  *Incident Count*, *Cardholder Status*, and *Age*. The *Dispute Risk Rating* table contains the *Cardholder Status* input variable. The table calculates the risk of the dispute based on the cardholder status and the amount of the dispute.
 
 image:ai/riskrating.png[]
 
@@ -100,7 +100,7 @@ Michelle now returns to the *fraudDispute* BPMN model and updates the model with
 
 .Increased score precision
 In this new scenario where Michelle has redeployed the Fortress Bank project with PMML models, we can see what happens when Joe logs in to his Fortress Bank account and reports the same transaction as incorrect. In {CENTRAL}, Michelle navigates to the *Process Instances* window and she sees Joe's new dispute instance.
-In the *Process Variables* tab, Michelle reviews the values of *cardHolderRiskRating* and the *disputeRiskRating*. They have changed because the model is now using the PMML files. This give a much more precise prediction of risk by making use of machine learning models based on historical data. At the same time, the policy of the bank is still enforced by the DMN decision model: the risk predictor is below a specified threshold which allows for this dispute to be processed automatically.
+In the *Process Variables* tab, Michelle reviews the values of *cardHolderRiskRating* and the *disputeRiskRating*. They have changed because the model is now using the PMML files. This provides a much more precise prediction of risk by making use of machine learning models based on historical data. At the same time, the policy of the bank is still enforced by the DMN decision model: the risk predictor is below a specified threshold which allows for this dispute to be processed automatically.
 
 image:ai/process-variables-pmml.png[]
 

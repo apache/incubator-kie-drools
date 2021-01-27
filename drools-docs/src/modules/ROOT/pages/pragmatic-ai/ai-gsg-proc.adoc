@@ -45,7 +45,7 @@ image:ai/dmn-asset.png[]
 .. Click *Add Asset*.
 .. Click *DMN* in the asset library.
 
-.. In the *Create new DMN* dialog, enter enter `Dispute Transaction Check` in the *Name* box, select *com* from the *Package* menu, and click *OK*.
+.. In the *Create new DMN* dialog, enter `Dispute Transaction Check` in the *Name* box, select *com* from the *Package* menu, and click *OK*.
 +
 The DMN editor opens with the *Dispute Transaction Check* DMN model.
 . Create the *tTransaction* custom data type:
