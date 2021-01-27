@@ -2,7 +2,7 @@
 
 exports[`JobsBulkLists component tests snapshot testing multi-cancel with canceled and skipped jobs  1`] = `
 <div
-  data-ouia-component-type="jobs-list-bulk-instances"
+  data-ouia-component-type="bulk-list"
   data-ouia-safe={true}
 >
   <TextContent>
@@ -19,12 +19,14 @@ exports[`JobsBulkLists component tests snapshot testing multi-cancel with cancel
           <ItemDescriptor
             itemDescription={
               Object {
+                "description": "TT111",
                 "id": "eff4ee-11qw23-6675-pokau97-qwedjut45a0fa_0",
                 "name": "travels",
               }
             }
           />
         </strong>
+         
       </TextListItem>
     </TextList>
   </TextContent>
@@ -46,7 +48,7 @@ exports[`JobsBulkLists component tests snapshot testing multi-cancel with cancel
       component="h2"
     >
       <span>
-        Ignored Jobs:
+        Ignored jobs:
       </span>
     </Text>
     <Text
@@ -65,12 +67,14 @@ exports[`JobsBulkLists component tests snapshot testing multi-cancel with cancel
           <ItemDescriptor
             itemDescription={
               Object {
+                "description": "T@123",
                 "id": "2234dde-npce1-2908-b3131-6123c675a0fa_0",
-                "name": "travels",
+                "name": "travels1",
               }
             }
           />
         </strong>
+         
       </TextListItem>
     </TextList>
   </TextContent>
@@ -79,7 +83,7 @@ exports[`JobsBulkLists component tests snapshot testing multi-cancel with cancel
 
 exports[`JobsBulkLists component tests snapshot testing multi-cancel with no canceled jobs and only skipped jobs 1`] = `
 <div
-  data-ouia-component-type="jobs-list-bulk-instances"
+  data-ouia-component-type="bulk-list"
   data-ouia-safe={true}
 >
   <TextContent>
@@ -98,7 +102,7 @@ exports[`JobsBulkLists component tests snapshot testing multi-cancel with no can
       component="h2"
     >
       <span>
-        Ignored Jobs:
+        Ignored jobs:
       </span>
     </Text>
     <Text
@@ -117,12 +121,14 @@ exports[`JobsBulkLists component tests snapshot testing multi-cancel with no can
           <ItemDescriptor
             itemDescription={
               Object {
+                "description": "TT111",
                 "id": "2234dde-npce1-2908-b3131-6123c675a0fa_0",
-                "name": "travels",
+                "name": "travels1",
               }
             }
           />
         </strong>
+         
       </TextListItem>
     </TextList>
   </TextContent>
@@ -131,7 +137,7 @@ exports[`JobsBulkLists component tests snapshot testing multi-cancel with no can
 
 exports[`JobsBulkLists component tests snapshot testing multi-cancel with no skipped jobs 1`] = `
 <div
-  data-ouia-component-type="jobs-list-bulk-instances"
+  data-ouia-component-type="bulk-list"
   data-ouia-safe={true}
 >
   <TextContent>
@@ -148,12 +154,14 @@ exports[`JobsBulkLists component tests snapshot testing multi-cancel with no ski
           <ItemDescriptor
             itemDescription={
               Object {
+                "description": "TT111",
                 "id": "eff4ee-11qw23-6675-pokau97-qwedjut45a0fa_0",
                 "name": "travels",
               }
             }
           />
         </strong>
+         
       </TextListItem>
     </TextList>
   </TextContent>
@@ -169,20 +177,25 @@ exports[`JobsBulkLists component tests snapshot testing multi-cancel with no ski
     </Text>
     <TextList>
       <TextListItem
-        key="ceb1234-6ae4-deb444-9ec0-neb9809e0b"
+        key="T3113e-vbg43-2234-lo89-cpmw3214ra0fa_0"
       >
         <strong>
           <ItemDescriptor
             itemDescription={
               Object {
+                "description": "T4433",
+                "errorMessage": "404 error",
                 "id": "T3113e-vbg43-2234-lo89-cpmw3214ra0fa_0",
-                "name": "travels",
+                "name": "travels1",
               }
             }
           />
         </strong>
          
-        -
+        <span>
+           - 
+          404 error
+        </span>
       </TextListItem>
     </TextList>
   </TextContent>

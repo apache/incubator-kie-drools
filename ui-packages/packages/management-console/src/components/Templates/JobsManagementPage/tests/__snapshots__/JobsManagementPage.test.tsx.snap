@@ -132,6 +132,7 @@ exports[`Jobs management page tests snapshot test with mock data 1`] = `
                     }
                     setChips={[Function]}
                     setOffset={[Function]}
+                    setSelectedJobInstances={[Function]}
                     setSelectedStatus={[Function]}
                     setValues={[Function]}
                   />
@@ -748,7 +749,9 @@ exports[`Jobs management page tests snapshot test with mock data 1`] = `
                   handleCancelModalToggle={[Function]}
                   handleDetailsToggle={[Function]}
                   handleRescheduleToggle={[Function]}
+                  isActionPerformed={false}
                   selectedJobInstances={Array []}
+                  setIsActionPerformed={[Function]}
                   setModalContent={[Function]}
                   setModalTitle={[Function]}
                   setOrderBy={[Function]}
@@ -887,15 +890,16 @@ exports[`Jobs management page tests snapshot test with mock data 1`] = `
               },
               "messages": Object {
                 "ignoredMessage": "These jobs were ignored because they were already canceled or executed.",
-                "noJobsMessage": "No jobs were canceled",
+                "noItemsMessage": "No jobs were canceled",
                 "successMessage": "Canceled jobs: ",
                 "warningMessage": "Note: The job status has been updated. The list may appear inconsistent until you refresh any applied filters.",
               },
               "results": Object {
-                "failedJobs": Object {},
-                "ignoredJobs": Object {},
-                "successJobs": Object {},
+                "failedItems": Array [],
+                "ignoredItems": Array [],
+                "successItems": Array [],
               },
+              "type": "job",
             }
           }
           modalContent=""

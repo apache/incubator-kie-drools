@@ -38,47 +38,19 @@ import JobsManagementFiters from '../../Organisms/JobsManagementFilters/JobsMana
 import JobsPanelDetailsModal from '../../Atoms/JobsPanelDetailsModal/JobsPanelDetailsModal';
 import JobsRescheduleModal from '../../Atoms/JobsRescheduleModal/JobsRescheduleModal';
 import { refetchContext } from '../../contexts';
-import { setTitle, performMultipleCancel } from '../../../utils/Utils';
+import {
+  setTitle,
+  performMultipleCancel,
+  formatForBulkListJob
+} from '../../../utils/Utils';
 import JobsCancelModal from '../../Atoms/JobsCancelModal/JobsCancelModal';
 import { SyncIcon } from '@patternfly/react-icons';
-
-enum JobOperationType {
-  CANCEL = 'CANCEL'
-}
-
-export interface JobsBulkList {
-  [key: string]: GraphQL.Job;
-}
-
-interface IJobOperationResult {
-  successJobs: JobsBulkList;
-  failedJobs: JobsBulkList;
-  ignoredJobs: JobsBulkList;
-}
-interface IJobOperationMessages {
-  successMessage: string;
-  warningMessage?: string;
-  ignoredMessage: string;
-  noJobsMessage: string;
-}
-
-interface IJobOperationFunctions {
-  perform: () => void;
-}
-
-interface IJobOperationResults {
-  [key: string]: IJobOperationResult;
-}
-
-export interface IJobOperation {
-  results: IJobOperationResult;
-  messages: IJobOperationMessages;
-  functions: IJobOperationFunctions;
-}
-
-interface IOperations {
-  [key: string]: IJobOperation;
-}
+import {
+  BulkListType,
+  IOperationResults,
+  IOperations,
+  OperationType
+} from '../../Atoms/BulkList/BulkList';
 
 const JobsManagementPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
   const defaultPageSize: number = 10;
@@ -109,16 +81,17 @@ const JobsManagementPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
   const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false);
   const [isKebabOpen, setIsKebabOpen] = useState<boolean>(false);
   const [displayTable, setDisplayTable] = useState<boolean>(false);
+  const [isActionPerformed, setIsActionPerformed] = useState(false);
   const [selectedJobInstances, setSelectedJobInstances] = useState<
     GraphQL.Job[]
   >([]);
   const [jobOperationResults, setJobOperationResults] = useState<
-    IJobOperationResults
+    IOperationResults
   >({
     CANCEL: {
-      successJobs: {},
-      failedJobs: {},
-      ignoredJobs: {}
+      successItems: [],
+      failedItems: [],
+      ignoredItems: []
     }
   });
 
@@ -136,10 +109,11 @@ const JobsManagementPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
 
   const jobOperations: IOperations = {
     CANCEL: {
-      results: jobOperationResults[JobOperationType.CANCEL],
+      type: BulkListType.JOB,
+      results: jobOperationResults[OperationType.CANCEL],
       messages: {
         successMessage: 'Canceled jobs: ',
-        noJobsMessage: 'No jobs were canceled',
+        noItemsMessage: 'No jobs were canceled',
         warningMessage:
           'Note: The job status has been updated. The list may appear inconsistent until you refresh any applied filters.',
         ignoredMessage:
@@ -147,29 +121,30 @@ const JobsManagementPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
       },
       functions: {
         perform: async () => {
-          const ignoredJobs = {};
-          const remainingJobs = selectedJobInstances.filter(job => {
+          setIsActionPerformed(true);
+          const ignoredJobs = [];
+          const remainingInstances = selectedJobInstances.filter(job => {
             if (
               job.status === GraphQL.JobStatus.Canceled ||
               job.status === GraphQL.JobStatus.Executed
             ) {
-              ignoredJobs[job.id] = job;
+              ignoredJobs.push(job);
             } else {
               return true;
             }
           });
           await performMultipleCancel(
-            remainingJobs,
-            (successJobs, failedJobs) => {
+            remainingInstances,
+            (successJobs: GraphQL.Job[], failedJobs: GraphQL.Job[]) => {
               setModalTitle(setTitle('success', 'Job Cancel'));
               setModalContent('');
               setJobOperationResults({
                 ...jobOperationResults,
-                [JobOperationType.CANCEL]: {
-                  ...jobOperationResults[JobOperationType.CANCEL],
-                  successJobs,
-                  failedJobs,
-                  ignoredJobs
+                [OperationType.CANCEL]: {
+                  ...jobOperationResults[OperationType.CANCEL],
+                  successItems: formatForBulkListJob(successJobs),
+                  failedItems: formatForBulkListJob(failedJobs),
+                  ignoredItems: formatForBulkListJob(ignoredJobs)
                 }
               });
               handleCancelModalToggle();
@@ -247,6 +222,7 @@ const JobsManagementPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
   };
 
   const onReset = (): void => {
+    setSelectedJobInstances([]);
     setSelectedStatus(defaultStatus);
     setChips(defaultStatus);
     setValues(defaultStatus);
@@ -257,7 +233,7 @@ const JobsManagementPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
     return [
       <DropdownItem
         key="cancel"
-        onClick={jobOperations[JobOperationType.CANCEL].functions.perform}
+        onClick={jobOperations[OperationType.CANCEL].functions.perform}
         isDisabled={selectedJobInstances.length === 0}
       >
         Cancel selected
@@ -271,7 +247,7 @@ const JobsManagementPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
         <OverflowMenuItem>
           <Button
             variant="secondary"
-            onClick={jobOperations[JobOperationType.CANCEL].functions.perform}
+            onClick={jobOperations[OperationType.CANCEL].functions.perform}
             isDisabled={selectedJobInstances.length === 0}
           >
             Cancel selected
@@ -296,7 +272,10 @@ const JobsManagementPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
         id="data-toolbar-with-chip-groups"
         className="pf-m-toggle-group-container"
         collapseListedFiltersBreakpoint="md"
-        clearAllFilters={onReset}
+        clearAllFilters={() => {
+          onReset();
+          setSelectedJobInstances([]);
+        }}
         clearFiltersButtonText="Reset to default"
       >
         <ToolbarContent>
@@ -307,6 +286,7 @@ const JobsManagementPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
             chips={chips}
             setChips={setChips}
             setOffset={setOffset}
+            setSelectedJobInstances={setSelectedJobInstances}
           />
           <ToolbarGroup>
             <ToolbarItem>
@@ -314,6 +294,7 @@ const JobsManagementPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
                 variant="plain"
                 onClick={() => {
                   onRefresh();
+                  setSelectedJobInstances([]);
                 }}
                 id="refresh-button"
                 ouiaId="refresh-button"
@@ -388,6 +369,8 @@ const JobsManagementPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
                         selectedJobInstances={selectedJobInstances}
                         setSelectedJobInstances={setSelectedJobInstances}
                         sortBy={sortBy}
+                        setIsActionPerformed={setIsActionPerformed}
+                        isActionPerformed={isActionPerformed}
                       />
                     </refetchContext.Provider>
                   )}
@@ -442,7 +425,7 @@ const JobsManagementPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
               handleModalToggle={handleCancelModalToggle}
               modalTitle={modalTitle}
               modalContent={modalContent}
-              jobOperations={jobOperations[JobOperationType.CANCEL]}
+              jobOperations={jobOperations[OperationType.CANCEL]}
             />
             {(!loading || isLoadingMore) &&
               (limit === pageSize || isLoadingMore) && (

@@ -13,6 +13,7 @@ const TestWrapper = () => {
     GraphQL.JobStatus.Scheduled
   ]);
   const [, setMockValues] = React.useState([GraphQL.JobStatus.Scheduled]);
+  const [, setMockSelectedJobInstances] = React.useState([]);
 
   return (
     <Toolbar
@@ -30,6 +31,7 @@ const TestWrapper = () => {
           setChips={setMockChips}
           setValues={setMockValues}
           setOffset={jest.fn()}
+          setSelectedJobInstances={setMockSelectedJobInstances}
         />
       </ToolbarContent>
     </Toolbar>
@@ -42,7 +44,8 @@ describe('Jobs management filters component tests', () => {
     chips: [GraphQL.JobStatus.Scheduled],
     setChips: jest.fn(),
     setValues: jest.fn(),
-    setOffset: jest.fn()
+    setOffset: jest.fn(),
+    setSelectedJobInstances: jest.fn()
   };
   it('Snapshot with default props', () => {
     const wrapper = mount(

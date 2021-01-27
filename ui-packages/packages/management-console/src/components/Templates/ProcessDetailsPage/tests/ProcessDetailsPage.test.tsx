@@ -18,7 +18,7 @@ import InlineSVG from 'react-inlinesvg';
 // tslint:disable: no-string-literal
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 jest.mock('../../../Atoms/ProcessListModal/ProcessListModal');
-jest.mock('../../../Atoms/ProcessListBulkInstances/ProcessListBulkInstances');
+jest.mock('../../../Atoms/BulkList/BulkList');
 jest.mock('../../../Organisms/ProcessDetails/ProcessDetails');
 jest.mock(
   '../../../Organisms/ProcessDetailsProcessDiagram/ProcessDetailsProcessDiagram'

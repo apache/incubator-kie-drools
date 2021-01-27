@@ -189,7 +189,7 @@ const props = {
   setFilters: jest.fn(),
   setInitData: jest.fn(),
   setSelectedInstances: jest.fn(),
-  selectedInstances: {},
+  selectedInstances: [],
   initData,
   setOffset: jest.fn(),
   getProcessInstances: jest.fn(),
@@ -468,13 +468,11 @@ describe('ProcessListToolbar component tests', () => {
   describe('multi Abort click tests', () => {
     const handleMultiAbortSpyOn = jest.spyOn(Utils, 'performMultipleAction');
     it('multi abort click success', async () => {
-      props.selectedInstances = {
-        '8035b580-6ae4-4aa8-9ec0-e18e19809e0b': initData.ProcessInstances[0],
-        'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e':
-          initData.ProcessInstances[0].childDataList[0],
-        'ceebdeb-b975-46e2-a9a0-6a86bf7ac21e':
-          initData.ProcessInstances[0].childDataList[1]
-      };
+      props.selectedInstances = [
+        initData.ProcessInstances[0],
+        initData.ProcessInstances[0].childDataList[0],
+        initData.ProcessInstances[0].childDataList[1]
+      ];
       mockedAxios.delete.mockResolvedValue({});
       let wrapper = getWrapper(
         <ProcessListToolbar {...props} />,
@@ -501,13 +499,11 @@ describe('ProcessListToolbar component tests', () => {
       expect(handleMultiAbortSpyOn).toHaveBeenCalled();
     });
     it('multi abort click fail', async () => {
-      props.selectedInstances = {
-        '8035b580-6ae4-4aa8-9ec0-e18e19809e0b': initData.ProcessInstances[0],
-        'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e':
-          initData.ProcessInstances[0].childDataList[0],
-        'ceebdeb-b975-46e2-a9a0-6a86bf7ac21e':
-          initData.ProcessInstances[0].childDataList[1]
-      };
+      props.selectedInstances = [
+        initData.ProcessInstances[0],
+        initData.ProcessInstances[0].childDataList[0],
+        initData.ProcessInstances[0].childDataList[1]
+      ];
       mockedAxios.delete.mockRejectedValue({});
       let wrapper = getWrapper(
         <ProcessListToolbar {...props} />,
@@ -538,13 +534,11 @@ describe('ProcessListToolbar component tests', () => {
   describe('multi Skip click tests', () => {
     const handleMultiSkipSpyOn = jest.spyOn(Utils, 'performMultipleAction');
     it('multi skip click success', async () => {
-      props.selectedInstances = {
-        '8035b580-6ae4-4aa8-9ec0-e18e19809e0b': initData.ProcessInstances[0],
-        'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e':
-          initData.ProcessInstances[0].childDataList[0],
-        'ceebdeb-b975-46e2-a9a0-6a86bf7ac21e':
-          initData.ProcessInstances[0].childDataList[1]
-      };
+      props.selectedInstances = [
+        initData.ProcessInstances[0],
+        initData.ProcessInstances[0].childDataList[0],
+        initData.ProcessInstances[0].childDataList[1]
+      ];
       mockedAxios.post.mockResolvedValue({});
       let wrapper = getWrapper(
         <ProcessListToolbar {...props} />,
@@ -571,13 +565,11 @@ describe('ProcessListToolbar component tests', () => {
       expect(handleMultiSkipSpyOn).toHaveBeenCalled();
     });
     it('multi skip click fail', async () => {
-      props.selectedInstances = {
-        '8035b580-6ae4-4aa8-9ec0-e18e19809e0b': initData.ProcessInstances[0],
-        'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e':
-          initData.ProcessInstances[0].childDataList[0],
-        'ceebdeb-b975-46e2-a9a0-6a86bf7ac21e':
-          initData.ProcessInstances[0].childDataList[1]
-      };
+      props.selectedInstances = [
+        initData.ProcessInstances[0],
+        initData.ProcessInstances[0].childDataList[0],
+        initData.ProcessInstances[0].childDataList[1]
+      ];
       mockedAxios.post.mockRejectedValue({});
       let wrapper = getWrapper(
         <ProcessListToolbar {...props} />,
@@ -608,13 +600,11 @@ describe('ProcessListToolbar component tests', () => {
   describe('multi Retry click tests', () => {
     const handleMultiRetrySpyOn = jest.spyOn(Utils, 'performMultipleAction');
     it('multi retry click success', async () => {
-      props.selectedInstances = {
-        '8035b580-6ae4-4aa8-9ec0-e18e19809e0b': initData.ProcessInstances[0],
-        'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e':
-          initData.ProcessInstances[0].childDataList[0],
-        'ceebdeb-b975-46e2-a9a0-6a86bf7ac21e':
-          initData.ProcessInstances[0].childDataList[1]
-      };
+      props.selectedInstances = [
+        initData.ProcessInstances[0],
+        initData.ProcessInstances[0].childDataList[0],
+        initData.ProcessInstances[0].childDataList[1]
+      ];
       mockedAxios.post.mockResolvedValue({});
       let wrapper = getWrapper(
         <ProcessListToolbar {...props} />,
@@ -641,13 +631,11 @@ describe('ProcessListToolbar component tests', () => {
       expect(handleMultiRetrySpyOn).toHaveBeenCalled();
     });
     it('multi retry click fail', async () => {
-      props.selectedInstances = {
-        '8035b580-6ae4-4aa8-9ec0-e18e19809e0b': initData.ProcessInstances[0],
-        'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e':
-          initData.ProcessInstances[0].childDataList[0],
-        'ceebdeb-b975-46e2-a9a0-6a86bf7ac21e':
-          initData.ProcessInstances[0].childDataList[1]
-      };
+      props.selectedInstances = [
+        initData.ProcessInstances[0],
+        initData.ProcessInstances[0].childDataList[0],
+        initData.ProcessInstances[0].childDataList[1]
+      ];
       mockedAxios.post.mockRejectedValue({});
       let wrapper = getWrapper(
         <ProcessListToolbar {...props} />,

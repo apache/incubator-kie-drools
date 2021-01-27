@@ -1,8 +1,7 @@
 import React from 'react';
 import { Modal, Button, TextContent, Text } from '@patternfly/react-core';
-import ProcessListBulkInstances from '../ProcessListBulkInstances/ProcessListBulkInstances';
-import { IOperation } from '../../Molecules/ProcessListToolbar/ProcessListToolbar';
 import { OUIAProps, componentOuiaProps } from '@kogito-apps/common';
+import BulkList, { IOperation } from '../BulkList/BulkList';
 interface IOwnProps {
   modalTitle: JSX.Element;
   modalContent?: string;
@@ -63,7 +62,7 @@ const ProcessListModal: React.FC<IOwnProps & OUIAProps> = ({
       {...componentOuiaProps(ouiaId, 'process-list-modal', ouiaSafe)}
     >
       {operationResult !== undefined && (
-        <ProcessListBulkInstances operationResult={operationResult} />
+        <BulkList operationResult={operationResult} />
       )}
       <TextContent>
         <Text>{createBoldText(modalContent, processName)}</Text>

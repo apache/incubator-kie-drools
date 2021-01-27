@@ -8,7 +8,6 @@ import { act } from 'react-dom/test-utils';
 import * as H from 'history';
 import { match } from 'react-router';
 jest.mock('../../../Organisms/ProcessListTable/ProcessListTable');
-jest.mock('../../../Atoms/ProcessListBulkInstances/ProcessListBulkInstances');
 jest.mock('../../../Atoms/ProcessListModal/ProcessListModal');
 const MockedComponent = (): React.ReactElement => {
   return <></>;

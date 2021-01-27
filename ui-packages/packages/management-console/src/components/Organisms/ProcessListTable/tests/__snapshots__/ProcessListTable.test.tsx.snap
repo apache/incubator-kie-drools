@@ -76,7 +76,7 @@ exports[`ProcessListTable component tests Snapshot testing initial empty data 1`
   isLoading={false}
   isLoadingMore={true}
   pageSize={10}
-  selectedInstances={Object {}}
+  selectedInstances={Array []}
   selectedNumber={0}
   setFilteredData={[MockFunction]}
   setInitData={
@@ -168,10 +168,10 @@ exports[`ProcessListTable component tests Snapshot testing initial empty data 1`
     [MockFunction] {
       "calls": Array [
         Array [
-          Object {},
+          Array [],
         ],
         Array [
-          Object {},
+          Array [],
         ],
       ],
       "results": Array [
@@ -287,7 +287,7 @@ exports[`ProcessListTable component tests Snapshot testing with no data 1`] = `
   isLoading={false}
   isLoadingMore={false}
   pageSize={10}
-  selectedInstances={Object {}}
+  selectedInstances={Array []}
   selectedNumber={0}
   setFilteredData={[MockFunction]}
   setInitData={
@@ -357,10 +357,10 @@ exports[`ProcessListTable component tests Snapshot testing with no data 1`] = `
     [MockFunction] {
       "calls": Array [
         Array [
-          Object {},
+          Array [],
         ],
         Array [
-          Object {},
+          Array [],
         ],
       ],
       "results": Array [
@@ -523,7 +523,7 @@ exports[`ProcessListTable component tests Snapshot testing with success data 1`]
   isLoading={false}
   isLoadingMore={false}
   pageSize={10}
-  selectedInstances={Object {}}
+  selectedInstances={Array []}
   selectedNumber={0}
   setFilteredData={[MockFunction]}
   setInitData={
@@ -615,10 +615,10 @@ exports[`ProcessListTable component tests Snapshot testing with success data 1`]
     [MockFunction] {
       "calls": Array [
         Array [
-          Object {},
+          Array [],
         ],
         Array [
-          Object {},
+          Array [],
         ],
       ],
       "results": Array [
@@ -758,7 +758,7 @@ exports[`ProcessListTable component tests Snapshot testing with success data 1`]
             "variables": "{\\"flight\\":{\\"flightNumber\\":\\"MX555\\",\\"seat\\":null,\\"gate\\":null,\\"departure\\":\\"2020-05-08T03:30:00.000+05:30\\",\\"arrival\\":\\"2020-05-09T03:30:00.000+05:30\\"},\\"hotel\\":{\\"name\\":\\"Perfect hotel\\",\\"address\\":{\\"street\\":\\"street\\",\\"city\\":\\"Bengaluru\\",\\"zipCode\\":\\"12345\\",\\"country\\":\\"India\\"},\\"phone\\":\\"09876543\\",\\"bookingNumber\\":\\"XX-012345\\",\\"room\\":null},\\"trip\\":{\\"city\\":\\"Bengaluru\\",\\"country\\":\\"India\\",\\"begin\\":\\"2020-05-08T03:30:00.000+05:30\\",\\"end\\":\\"2020-05-09T03:30:00.000+05:30\\",\\"visaRequired\\":false},\\"traveller\\":{\\"firstName\\":\\"Ajay\\",\\"lastName\\":\\"Jaganathan\\",\\"email\\":\\"ajaganat@redhat.com\\",\\"nationality\\":\\"Polish\\",\\"address\\":{\\"street\\":\\"Bangalore\\",\\"city\\":\\"Bangalore\\",\\"zipCode\\":\\"560093\\",\\"country\\":\\"Poland\\"}}}",
           }
         }
-        selectedInstances={Object {}}
+        selectedInstances={Array []}
         selectedNumber={0}
         setInitData={
           [MockFunction] {
@@ -811,10 +811,10 @@ exports[`ProcessListTable component tests Snapshot testing with success data 1`]
           [MockFunction] {
             "calls": Array [
               Array [
-                Object {},
+                Array [],
               ],
               Array [
-                Object {},
+                Array [],
               ],
             ],
             "results": Array [
@@ -956,7 +956,7 @@ exports[`ProcessListTable component tests Snapshot testing with success data(wit
   isLoading={false}
   isLoadingMore={false}
   pageSize={10}
-  selectedInstances={Object {}}
+  selectedInstances={Array []}
   selectedNumber={0}
   setFilteredData={[MockFunction]}
   setInitData={
@@ -1048,10 +1048,10 @@ exports[`ProcessListTable component tests Snapshot testing with success data(wit
     [MockFunction] {
       "calls": Array [
         Array [
-          Object {},
+          Array [],
         ],
         Array [
-          Object {},
+          Array [],
         ],
       ],
       "results": Array [
@@ -1193,7 +1193,7 @@ exports[`ProcessListTable component tests Snapshot testing with success data(wit
             "variables": "{\\"flight\\":{\\"flightNumber\\":\\"MX555\\",\\"seat\\":null,\\"gate\\":null,\\"departure\\":\\"2020-05-08T03:30:00.000+05:30\\",\\"arrival\\":\\"2020-05-09T03:30:00.000+05:30\\"},\\"hotel\\":{\\"name\\":\\"Perfect hotel\\",\\"address\\":{\\"street\\":\\"street\\",\\"city\\":\\"Bengaluru\\",\\"zipCode\\":\\"12345\\",\\"country\\":\\"India\\"},\\"phone\\":\\"09876543\\",\\"bookingNumber\\":\\"XX-012345\\",\\"room\\":null},\\"trip\\":{\\"city\\":\\"Bengaluru\\",\\"country\\":\\"India\\",\\"begin\\":\\"2020-05-08T03:30:00.000+05:30\\",\\"end\\":\\"2020-05-09T03:30:00.000+05:30\\",\\"visaRequired\\":false},\\"traveller\\":{\\"firstName\\":\\"Ajay\\",\\"lastName\\":\\"Jaganathan\\",\\"email\\":\\"ajaganat@redhat.com\\",\\"nationality\\":\\"Polish\\",\\"address\\":{\\"street\\":\\"Bangalore\\",\\"city\\":\\"Bangalore\\",\\"zipCode\\":\\"560093\\",\\"country\\":\\"Poland\\"}}}",
           }
         }
-        selectedInstances={Object {}}
+        selectedInstances={Array []}
         selectedNumber={0}
         setInitData={
           [MockFunction] {
@@ -1246,10 +1246,10 @@ exports[`ProcessListTable component tests Snapshot testing with success data(wit
           [MockFunction] {
             "calls": Array [
               Array [
-                Object {},
+                Array [],
               ],
               Array [
-                Object {},
+                Array [],
               ],
             ],
             "results": Array [
@@ -1347,7 +1347,7 @@ exports[`ProcessListTable component tests Snapshot testing with wrong query para
   isLoading={false}
   isLoadingMore={false}
   pageSize={10}
-  selectedInstances={Object {}}
+  selectedInstances={Array []}
   selectedNumber={0}
   setFilteredData={[MockFunction]}
   setInitData={
@@ -1438,13 +1438,13 @@ exports[`ProcessListTable component tests Snapshot testing with wrong query para
     [MockFunction] {
       "calls": Array [
         Array [
-          Object {},
+          Array [],
         ],
         Array [
-          Object {},
+          Array [],
         ],
         Array [
-          Object {},
+          Array [],
         ],
       ],
       "results": Array [

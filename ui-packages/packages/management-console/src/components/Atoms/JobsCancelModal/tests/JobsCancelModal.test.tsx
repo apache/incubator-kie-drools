@@ -2,7 +2,7 @@ import React from 'react';
 import { setTitle } from '../../../../utils/Utils';
 import JobsCancelModal from '../JobsCancelModal';
 import { shallow } from 'enzyme';
-jest.mock('../../ProcessListBulkInstances/ProcessListBulkInstances');
+jest.mock('../../BulkList/BulkList');
 
 const jobOperation = {
   CANCEL: {

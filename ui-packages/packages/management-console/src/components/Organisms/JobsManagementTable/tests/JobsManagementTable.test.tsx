@@ -100,7 +100,9 @@ describe('Jobs management table component tests', () => {
     selectedJobInstances: [],
     setSelectedJobInstances: jest.fn(),
     sortBy: {},
-    setSortBy: jest.fn()
+    setSortBy: jest.fn(),
+    isActionPerformed: true,
+    setIsActionPerformed: jest.fn()
   };
   it('Snapshot with default props', async () => {
     const wrapper = await getWrapperAsync(

@@ -40,7 +40,6 @@ import {
   ProcessInstanceIconCreator
 } from '../../../utils/Utils';
 import ProcessInstance = GraphQL.ProcessInstance;
-import { ProcessInstanceBulkList } from '../ProcessListToolbar/ProcessListToolbar';
 
 type filterType = {
   status: GraphQL.ProcessInstanceState[];
@@ -53,8 +52,8 @@ interface IOwnProps {
   initData: any;
   setInitData: (any) => void;
   loadingInitData: boolean;
-  selectedInstances: ProcessInstanceBulkList;
-  setSelectedInstances: (selectedInstances: ProcessInstanceBulkList) => void;
+  selectedInstances: GraphQL.ProcessInstance[];
+  setSelectedInstances: (selectedInstances: GraphQL.ProcessInstance[]) => void;
   setIsAllChecked: (isAllChecked: boolean) => void;
   setSelectedNumber: (selectedNumber: number) => void;
   selectedNumber: number;
@@ -200,19 +199,22 @@ const ProcessListTableItems: React.FC<IOwnProps & OUIAProps> = ({
 
   const onCheckBoxClick = () => {
     const copyOfInitData = { ...initData };
-    let copyOfSelectedInstances = { ...selectedInstances };
+    let copyOfSelectedInstances = [...selectedInstances];
     copyOfInitData.ProcessInstances.map(instanceData => {
       if (instanceData.id === processInstanceData.id) {
         if (instanceData.isChecked) {
-          if (selectedInstances[instanceData.id] !== undefined) {
-            delete copyOfSelectedInstances[instanceData.id];
+          const parentInstance = selectedInstances.find(
+            instance => instance.id === instanceData.id
+          );
+          if (parentInstance !== undefined) {
+            copyOfSelectedInstances = copyOfSelectedInstances.filter(
+              instance => instance.id !== parentInstance.id
+            );
             setSelectedNumber(selectedNumber > 0 && selectedNumber - 1);
           }
           instanceData.isChecked = false;
         } else {
-          const tempObj = {};
-          tempObj[instanceData.id] = instanceData;
-          copyOfSelectedInstances = { ...copyOfSelectedInstances, ...tempObj };
+          copyOfSelectedInstances = [...copyOfSelectedInstances, instanceData];
           instanceData.isChecked = true;
           setSelectedNumber(selectedNumber + 1);
         }
@@ -221,18 +223,18 @@ const ProcessListTableItems: React.FC<IOwnProps & OUIAProps> = ({
         instanceData.childDataList.map(child => {
           if (child.id === processInstanceData.id) {
             if (child.isChecked) {
-              if (copyOfSelectedInstances[child.id] !== undefined) {
-                delete copyOfSelectedInstances[child.id];
+              const childInstance = copyOfSelectedInstances.find(
+                childInstance => childInstance.id === child.id
+              );
+              if (childInstance !== undefined) {
+                copyOfSelectedInstances = copyOfSelectedInstances.filter(
+                  instance => instance.id !== childInstance.id
+                );
                 setSelectedNumber(selectedNumber > 0 && selectedNumber - 1);
               }
               child.isChecked = false;
             } else {
-              const tempObj = {};
-              tempObj[child.id] = child;
-              copyOfSelectedInstances = {
-                ...copyOfSelectedInstances,
-                ...tempObj
-              };
+              copyOfSelectedInstances = [...copyOfSelectedInstances, child];
               setSelectedNumber(selectedNumber + 1);
               child.isChecked = true;
             }

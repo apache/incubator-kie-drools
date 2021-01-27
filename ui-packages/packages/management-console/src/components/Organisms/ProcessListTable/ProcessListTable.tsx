@@ -14,7 +14,6 @@ import ProcessListTableItems from '../../Molecules/ProcessListTableItems/Process
 import '@patternfly/patternfly/patternfly-addons.css';
 import './ProcessListTable.css';
 import ProcessInstanceState = GraphQL.ProcessInstanceState;
-import { ProcessInstanceBulkList } from '../../Molecules/ProcessListToolbar/ProcessListToolbar';
 
 type filterType = {
   status: GraphQL.ProcessInstanceState[];
@@ -26,8 +25,8 @@ interface IOwnProps {
   initData: any;
   isLoading: boolean;
   setIsError: (isError: boolean) => void;
-  selectedInstances: ProcessInstanceBulkList;
-  setSelectedInstances: (selectedInstances: ProcessInstanceBulkList) => void;
+  selectedInstances: GraphQL.ProcessInstance[];
+  setSelectedInstances: (selectedInstances: GraphQL.ProcessInstance[]) => void;
   pageSize: number;
   filters: filterType;
   setIsAllChecked: (isAllChecked: boolean) => void;
@@ -82,7 +81,7 @@ const ProcessListTable: React.FC<IOwnProps & OUIAProps> = ({
 
   useEffect(() => {
     setIsError(false);
-    setSelectedInstances({});
+    setSelectedInstances([]);
     if (!loading && data !== undefined) {
       data.ProcessInstances.forEach(
         (

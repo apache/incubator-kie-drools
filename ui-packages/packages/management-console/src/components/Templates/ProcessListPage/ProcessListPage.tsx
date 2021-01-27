@@ -64,7 +64,9 @@ const ProcessListPage: React.FC<OUIAProps &
   const [statusArray, setStatusArray] = useState<
     GraphQL.ProcessInstanceState[]
   >(filters.status);
-  const [selectedInstances, setSelectedInstances] = useState({});
+  const [selectedInstances, setSelectedInstances] = useState<
+    GraphQL.ProcessInstance[]
+  >([]);
   const [searchWord, setSearchWord] = useState<string>('');
   const [selectedNumber, setSelectedNumber] = useState<number>(0);
   const [isAllChecked, setIsAllChecked] = useState<boolean>(false);
@@ -133,7 +135,7 @@ const ProcessListPage: React.FC<OUIAProps &
     setIsLoading(true);
     setIsLoadingMore(false);
     setIsError(false);
-    setSelectedInstances({});
+    setSelectedInstances([]);
     setIsAllChecked(false);
     setSelectedNumber(0);
     setInitData({});
@@ -160,7 +162,7 @@ const ProcessListPage: React.FC<OUIAProps &
   };
 
   useEffect(() => {
-    setSelectedInstances({});
+    setSelectedInstances([]);
     if (isLoadingMore === undefined || !isLoadingMore) {
       setIsLoading(loading);
     }

@@ -406,7 +406,7 @@ const props1 = {
   initData: initData1,
   setInitData: jest.fn(),
   setSelectedInstances: jest.fn(),
-  selectedInstances: {},
+  selectedInstances: [],
   loadingInitData: false,
   setIsAllChecked: jest.fn(),
   selectedNumber: 0,
@@ -454,13 +454,17 @@ const props2 = {
   initData: initData1,
   setInitData: jest.fn(),
   setSelectedInstances: jest.fn(),
-  selectedInstances: {
-    '8035b580-6ae4-4aa8-9ec0-e18e19809e0b': {
+  selectedInstances: [
+    {
       id: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b',
       state: ProcessInstanceState.Active,
-      processId: 'travels'
+      processId: 'travels',
+      endpoint: null,
+      nodes: [],
+      start: '2019-10-22T04:43:01.143Z',
+      lastUpdate: '2019-10-22T04:43:01.143Z'
     }
-  },
+  ],
   loadingInitData: false,
   setIsAllChecked: jest.fn(),
   selectedNumber: 0,
@@ -508,13 +512,17 @@ const props3 = {
   initData: initData2,
   setInitData: jest.fn(),
   setSelectedInstances: jest.fn(),
-  selectedInstances: {
-    '8035b580-6ae4-4aa8-9ec0-e18e19809e0b1': {
+  selectedInstances: [
+    {
       id: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b1',
       state: ProcessInstanceState.Active,
-      processId: 'travels'
+      processId: 'travels',
+      endpoint: null,
+      nodes: [],
+      start: '2019-10-22T04:43:01.143Z',
+      lastUpdate: '2019-10-22T04:43:01.143Z'
     }
-  },
+  ],
   loadingInitData: false,
   setIsAllChecked: jest.fn(),
   selectedNumber: 1,
@@ -562,13 +570,17 @@ const props4 = {
   initData: initData2,
   setInitData: jest.fn(),
   setSelectedInstances: jest.fn(),
-  selectedInstances: {
-    '8035b580-6ae4-4aa8-9ec0-e18e19809e0b1': {
+  selectedInstances: [
+    {
       id: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b1',
       state: ProcessInstanceState.Active,
-      processId: 'travels'
+      processId: 'travels',
+      endpoint: null,
+      nodes: [],
+      start: '2019-10-22T04:43:01.143Z',
+      lastUpdate: '2019-10-22T04:43:01.143Z'
     }
-  },
+  ],
   loadingInitData: false,
   setIsAllChecked: jest.fn(),
   selectedNumber: 1,
@@ -615,13 +627,17 @@ const props5 = {
   initData: initData3,
   setInitData: jest.fn(),
   setSelectedInstances: jest.fn(),
-  selectedInstances: {
-    'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e': {
+  selectedInstances: [
+    {
       id: 'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e',
       state: ProcessInstanceState.Active,
-      processId: 'travels'
+      processId: 'travels',
+      endpoint: null,
+      nodes: [],
+      start: '2019-10-22T04:43:01.143Z',
+      lastUpdate: '2019-10-22T04:43:01.143Z'
     }
-  },
+  ],
   loadingInitData: false,
   setIsAllChecked: jest.fn(),
   selectedNumber: 1,
@@ -669,13 +685,17 @@ const props6 = {
   initData: initData4,
   setInitData: jest.fn(),
   setSelectedInstances: jest.fn(),
-  selectedInstances: {
-    'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e': {
+  selectedInstances: [
+    {
       id: 'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e',
       state: ProcessInstanceState.Active,
-      processId: 'travels'
+      processId: 'travels',
+      endpoint: null,
+      nodes: [],
+      start: '2019-10-22T04:43:01.143Z',
+      lastUpdate: '2019-10-22T04:43:01.143Z'
     }
-  },
+  ],
   loadingInitData: false,
   setIsAllChecked: jest.fn(),
   selectedNumber: 1,
@@ -723,13 +743,17 @@ const props7 = {
   initData: initData5,
   setInitData: jest.fn(),
   setSelectedInstances: jest.fn(),
-  selectedInstances: {
-    'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e': {
+  selectedInstances: [
+    {
       id: 'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e',
       state: ProcessInstanceState.Active,
-      processId: 'travels'
+      processId: 'travels',
+      endpoint: null,
+      nodes: [],
+      start: '2019-10-22T04:43:01.143Z',
+      lastUpdate: '2019-10-22T04:43:01.143Z'
     }
-  },
+  ],
   loadingInitData: false,
   setIsAllChecked: jest.fn(),
   selectedNumber: 1,

@@ -26,6 +26,7 @@ interface IOwnProps {
       | GraphQL.JobStatus[]
   ) => void;
   setOffset: (offSet: number) => void;
+  setSelectedJobInstances: (selectedJobInstnaces: GraphQL.Job[]) => void;
 }
 
 const JobsManagementFilters: React.FC<IOwnProps & OUIAProps> = ({
@@ -35,11 +36,11 @@ const JobsManagementFilters: React.FC<IOwnProps & OUIAProps> = ({
   setChips,
   setValues,
   setOffset,
+  setSelectedJobInstances,
   ouiaId,
   ouiaSafe
 }) => {
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
-
   const statusMenuItems: JSX.Element[] = [
     <SelectOption key="CANCELED" value="CANCELED" />,
     <SelectOption key="ERROR" value="ERROR" />,
@@ -65,10 +66,12 @@ const JobsManagementFilters: React.FC<IOwnProps & OUIAProps> = ({
   const onApplyFilter = (): void => {
     setChips(selectedStatus);
     setValues(selectedStatus);
+    setSelectedJobInstances([]);
   };
 
   const onDelete = (type: string = '', id: string = ''): void => {
     setOffset(0);
+    setSelectedJobInstances([]);
     setChips(prev => prev.filter(item => item !== id));
     setSelectedStatus(prev => prev.filter(item => item !== id));
     setValues(prev => prev.filter(item => item !== id));

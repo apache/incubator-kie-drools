@@ -62,12 +62,28 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
   handleCancelModalToggle={[MockFunction]}
   handleDetailsToggle={[MockFunction]}
   handleRescheduleToggle={[MockFunction]}
+  isActionPerformed={true}
   selectedJobInstances={Array []}
+  setIsActionPerformed={[MockFunction]}
   setModalContent={[MockFunction]}
   setModalTitle={[MockFunction]}
   setOrderBy={[MockFunction]}
   setSelectedJob={[MockFunction]}
-  setSelectedJobInstances={[MockFunction]}
+  setSelectedJobInstances={
+    [MockFunction] {
+      "calls": Array [
+        Array [
+          Array [],
+        ],
+      ],
+      "results": Array [
+        Object {
+          "type": "return",
+          "value": undefined,
+        },
+      ],
+    }
+  }
   setSortBy={[MockFunction]}
   sortBy={Object {}}
 >
