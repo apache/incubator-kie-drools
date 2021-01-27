@@ -982,17 +982,24 @@ public class GuidedDTDRLPersistence {
         //expansion and contraction of decision table columns.... this might have to go.
         if (no(c.getOperator())) {
 
-            String[] a = cell.split("\\s");
-            if (a.length > 1) {
-                //Operator might be 1 part (e.g. "==") or two parts (e.g. "not in")
-                StringBuilder operator = new StringBuilder(a[0]);
-                for (int i = 1; i < a.length - 1; i++) {
-                    operator.append(a[i]);
-                }
-                sfc.setOperator(operator.toString());
-                sfc.setValue(a[a.length - 1]);
+            int quotesIndex = cell.indexOf('"');
+            if (quotesIndex > 0) {
+                // DROOLS-5883
+                sfc.setOperator(cell.substring(0, quotesIndex).trim());
+                sfc.setValue(cell.substring(quotesIndex));
             } else {
-                sfc.setValue(cell);
+                String[] a = cell.split("\\s");
+                if (a.length > 1) {
+                    //Operator might be 1 part (e.g. "==") or two parts (e.g. "not in")
+                    StringBuilder operator = new StringBuilder(a[0]);
+                    for (int i = 1; i < a.length - 1; i++) {
+                        operator.append(a[i]);
+                    }
+                    sfc.setOperator(operator.toString());
+                    sfc.setValue(a[a.length - 1]);
+                } else {
+                    sfc.setValue(cell);
+                }
             }
         } else {
 
