@@ -70,7 +70,6 @@ public final class DotNames {
 
     static final DotName[] PLANNING_ENTITY_FIELD_ANNOTATIONS = {
             PLANNING_PIN,
-            PLANNING_ID,
             PLANNING_VARIABLE,
             ANCHOR_SHADOW_VARIABLE,
             CUSTOM_SHADOW_VARIABLE,

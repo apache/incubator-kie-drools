@@ -285,12 +285,11 @@ class OptaPlannerProcessor {
             if (!declaringClass.annotations().containsKey(DotNames.PLANNING_ENTITY)) {
                 throw new IllegalStateException(prefix + "with a @" +
                         annotationInstance.name().withoutPackagePrefix() +
-                        " annotation is in a class (" + declaringClass.name().toString()
+                        " annotation is in a class (" + declaringClass.name()
                         + ") that does not have a @" + PlanningEntity.class.getSimpleName() +
-                        "annotation.\n" +
+                        " annotation.\n" +
                         "Maybe add a @" + PlanningEntity.class.getSimpleName() +
-                        " annotation to (" +
-                        declaringClass.name().toString() + ")?");
+                        " annotation on the class (" + declaringClass.name() + ").");
             }
         }
     }
@@ -472,9 +471,8 @@ class OptaPlannerProcessor {
                                     debuggableClassOutput,
                                     classInfo, fieldInfo, transformers);
                         } catch (ClassNotFoundException e) {
-                            throw new IllegalStateException("Fail to generate member accessor for field (" +
-                                    fieldInfo.name() + ") of class " +
-                                    classInfo.name().toString() + ".", e);
+                            throw new IllegalStateException("Failed to generate member accessor for the field (" +
+                                    fieldInfo.name() + ") of the class (" + classInfo.name() + ").", e);
                         }
                     }
                     break;
@@ -489,9 +487,9 @@ class OptaPlannerProcessor {
                                     debuggableClassOutput,
                                     classInfo, methodInfo, transformers);
                         } catch (ClassNotFoundException e) {
-                            throw new IllegalStateException("Fail to generate member accessor for method (" +
-                                    methodInfo.name() + ") of class " +
-                                    classInfo.name().toString() + ".", e);
+                            throw new IllegalStateException("Failed to generate member accessor for the method (" +
+                                    methodInfo.name() + ") of the class (" +
+                                    classInfo.name() + ").", e);
                         }
                     }
                     break;

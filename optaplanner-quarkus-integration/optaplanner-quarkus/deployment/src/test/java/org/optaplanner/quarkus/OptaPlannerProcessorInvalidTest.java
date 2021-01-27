@@ -48,12 +48,11 @@ public class OptaPlannerProcessorInvalidTest {
                             TestdataInvalidQuarkusConstraintProvider.class))
             .assertException(exception -> {
                 assertEquals(IllegalStateException.class, exception.getClass());
-                assertEquals("The field (entityList) with a @InverseRelationShadowVariable annotation is in a" +
-                        " class (org.optaplanner.quarkus.testdata.invalid.inverserelation.domain.TestdataInvalidInverseRelationValue)"
+                assertEquals("The field (entityList) with a @InverseRelationShadowVariable annotation is" +
+                        " in a class (org.optaplanner.quarkus.testdata.invalid.inverserelation.domain.TestdataInvalidInverseRelationValue)"
                         +
-                        " that does not have a @PlanningEntityannotation.\n" +
-                        "Maybe add a @PlanningEntity annotation to " +
-                        "(org.optaplanner.quarkus.testdata.invalid.inverserelation.domain.TestdataInvalidInverseRelationValue)?",
+                        " that does not have a @PlanningEntity annotation.\n" +
+                        "Maybe add a @PlanningEntity annotation on the class (org.optaplanner.quarkus.testdata.invalid.inverserelation.domain.TestdataInvalidInverseRelationValue).",
                         exception.getMessage());
             });
 
