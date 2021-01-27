@@ -127,7 +127,7 @@ class SolverConfigTest {
         assertThatExceptionOfType(OptaPlannerXmlSerializationException.class)
                 .isThrownBy(() -> solverConfigIO.read(stringReader))
                 .withMessageContaining("Invalid content was found")
-                .withMessageContaining("variableName");
+                .withMessageContaining("Node: variableName");
     }
 
     @Test

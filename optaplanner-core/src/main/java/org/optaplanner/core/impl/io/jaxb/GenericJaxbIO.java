@@ -37,7 +37,6 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
-import javax.xml.bind.ValidationEvent;
 import javax.xml.bind.util.ValidationEventCollector;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -173,7 +172,9 @@ public final class GenericJaxbIO<T> implements JaxbIO<T> {
                 String errorMessage =
                         String.format("XML validation failed for a root element class (%s).", rootClass.getName());
                 String validationErrors = Stream.of(validationEventCollector.getEvents())
-                        .map(ValidationEvent::getMessage)
+                        .map(validationEvent -> validationEvent.getMessage()
+                                + "\nNode: "
+                                + validationEvent.getLocator().getNode().getNodeName())
                         .collect(Collectors.joining("\n"));
                 String errorMessageWithValidationEvents = errorMessage + "\n" + validationErrors;
                 throw new OptaPlannerXmlSerializationException(errorMessageWithValidationEvents, jaxbException);
