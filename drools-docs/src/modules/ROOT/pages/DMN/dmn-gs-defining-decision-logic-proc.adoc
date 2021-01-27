@@ -3,10 +3,10 @@
 
 To calculate the fine and to decide whether the driver is to be suspended or not, you can define the traffic violations DMN decision logic using a DMN decision table and context boxed expression.
 
-.Fine decision table
+.Fine expression
 image::dmn/dmn-gs-fine-decision-table.png[]
 
-.Should the driver be suspended?
+.Should the driver be suspended expression
 image::dmn/dmn-gs-context-table.png[]
 
 .Prerequisites
@@ -25,12 +25,9 @@ image::dmn/decision_node_edit.png[]
 .Select Decisiong Table logic type
 image::dmn/select_logic_type.png[]
 
-. For the *Violation.Date*, *Violation.Code*, and *Violation.Speed Limit* parameter fields, right-click and select *Delete* for each field.
-. Click the *Violation.Actual Speed* column header and enter the expression `Violation.Actual Speed - Violation.Speed Limit` in the *Name* field.
-. Right-click the *Fine* parameter field and select either `Insert left` or `Insert right`.
-. Click the *output-2* column sub-header, enter `Amount` in the *Name* field, and select `number` from the *Data Type* drop-down menu.
-. Similarly, click the *output-1* column sub-header, enter `Points` in the *Name* field, and select `number` from the *Data Type* field.
-. Next, enter the following values in the first row of the decision table:
+. For the *Violation.Date*, *Violation.Code*, and *Violation.Speed Limit* columns, right-click and select *Delete* for each field.
+. Click the *Violation.Actual Speed* column header and enter the expression `Violation.Actual Speed - Violation.Speed Limit` in the *Expression* field."
+. Enter the following values in the first row of the decision table:
 * *Violation.Type*: `"speed"`
 * *Violation.Actual Speed - Violation.Speed Limit*: `[10..30)`
 * *Amount*: `500`

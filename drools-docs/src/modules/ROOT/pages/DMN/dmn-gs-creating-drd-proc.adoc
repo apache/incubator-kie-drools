@@ -21,8 +21,8 @@ image::dmn/dmn-traffic-violations-drd.png[]
 .DMN Input Data nodes
 image::dmn/library_objects.png[]
 
-. In the upper-right corner, click the *Properties* image:getting-started/diagram_properties.png[] icon.
-. Double-click each input node, and in the *Name* field, rename one to `Driver` and the other to `Violation`.
+. In the upper-right corner, click the image:getting-started/diagram_properties.png[] icon.
+. Double-click the input nodes and rename one to `Driver` and the other to `Violation`.
 . Drag a *DMN Decision* decision node onto the canvas.
 . Double-click the decision node and rename it to `Fine`.
 . Click the *Violation* input node, select the *Create DMN Information Requirement* icon and click the `Fine` decision node to link the two nodes.
