@@ -21,7 +21,7 @@ interface CompilerTest {
     default void test(Consumer<MvelCompilerContext> testFunction,
                       String inputExpression,
                       String expectedResult,
-                      Consumer<ParsingResult> resultAssert) {
+                      Consumer<CompiledBlockResult> resultAssert) {
         Set<String> imports = new HashSet<>();
         imports.add("java.util.List");
         imports.add("java.util.ArrayList");
@@ -34,7 +34,7 @@ interface CompilerTest {
         TypeResolver typeResolver = new ClassTypeResolver(imports, this.getClass().getClassLoader());
         MvelCompilerContext mvelCompilerContext = new MvelCompilerContext(typeResolver);
         testFunction.accept(mvelCompilerContext);
-        ParsingResult compiled = new MvelCompiler(mvelCompilerContext).compile(inputExpression);
+        CompiledBlockResult compiled = new MvelCompiler(mvelCompilerContext).compileStatement(inputExpression);
         verifyBodyWithBetterDiff(expectedResult, compiled.resultAsString());
         resultAssert.accept(compiled);
     }
@@ -49,7 +49,7 @@ interface CompilerTest {
 
     default void test(String inputExpression,
                       String expectedResult,
-                      Consumer<ParsingResult> resultAssert) {
+                      Consumer<CompiledBlockResult> resultAssert) {
         test(id -> {
         }, inputExpression, expectedResult, resultAssert);
     }
@@ -68,7 +68,7 @@ interface CompilerTest {
         });
     }
 
-    default Collection<String> allUsedBindings(ParsingResult result) {
+    default Collection<String> allUsedBindings(CompiledBlockResult result) {
         return new ArrayList<>(result.getUsedBindings());
     }
 }

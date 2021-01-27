@@ -136,8 +136,8 @@ public class ApplyPmmlModelCommandTest {
         }
 
         @Override
-        protected PMML4Result executePMMLTrusty() {
-            PMML4Result toReturn = super.executePMMLTrusty();
+        protected PMML4Result executePMMLTrusty(Context context) {
+            PMML4Result toReturn = super.executePMMLTrusty(context);
             toReturn.addResultVariable("TYPE", "TRUSTY");
             return toReturn;
         }

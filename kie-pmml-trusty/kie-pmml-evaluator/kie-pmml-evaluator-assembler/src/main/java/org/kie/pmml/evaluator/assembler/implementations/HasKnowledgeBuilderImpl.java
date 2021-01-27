@@ -15,8 +15,14 @@
  */
 package org.kie.pmml.evaluator.assembler.implementations;
 
+import java.util.Map;
+
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.reflective.classloader.ProjectClassLoader;
 import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.memorycompiler.JavaConfiguration;
+import org.kie.memorycompiler.KieMemoryCompiler;
+import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.kie.dependencies.HasKnowledgeBuilder;
 
 public class HasKnowledgeBuilderImpl implements HasKnowledgeBuilder {
@@ -35,5 +41,29 @@ public class HasKnowledgeBuilderImpl implements HasKnowledgeBuilder {
     @Override
     public KnowledgeBuilder getKnowledgeBuilder() {
         return knowledgeBuilder;
+    }
+
+
+    /**
+     * Compile the given sources and add them to given <code>Classloader</code> of the current instance.
+     * Returns the <code>Class</code> with the given <b>fullClassName</b>
+     * @param sourcesMap
+     * @param fullClassName
+     * @return
+     */
+    @Override
+    public Class<?> compileAndLoadClass(Map<String, String> sourcesMap, String fullClassName) {
+        ClassLoader classLoader = getClassLoader();
+        if (!(classLoader instanceof ProjectClassLoader)) {
+            throw new IllegalStateException("Expected ProjectClassLoader, received " + classLoader.getClass().getName());
+        }
+        ProjectClassLoader projectClassLoader = (ProjectClassLoader) classLoader;
+        final Map<String, byte[]> byteCode = KieMemoryCompiler.compileNoLoad(sourcesMap, projectClassLoader, JavaConfiguration.CompilerType.ECLIPSE);
+        byteCode.forEach(projectClassLoader::defineClass);
+        try {
+            return projectClassLoader.loadClass(fullClassName);
+        } catch (Exception e) {
+            throw new KiePMMLException(e);
+        }
     }
 }

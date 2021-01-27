@@ -1203,6 +1203,39 @@ public class RuleModelDRLPersistenceUnmarshallingTest extends BaseRuleModelTest 
     }
 
     @Test
+    public void testDotInStringWithEscapedQuotes() {
+        String drl = "import java.lang.Number;\n"
+                + "import java.util.ArrayList;\n"
+                + "rule rule1\n"
+                + "when\n"
+                + "a : ArrayList( )\n"
+                + "bar : Number( )\n"
+                + "foo : Number( )\n"
+                + "then\n"
+                + "a.add( \"\\\"foo, bar\\\"\" );\n"
+                + "end";
+
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal(drl,
+                                                                          Collections.emptyList(),
+                                                                          dmo);
+        assertNotNull(m);
+        assertEquals(1,
+                     m.rhs.length);
+        assertTrue(m.rhs[0] instanceof ActionCallMethod);
+        ActionCallMethod actionCallMethod = (ActionCallMethod) m.rhs[0];
+        assertEquals("add",
+                     actionCallMethod.getMethodName());
+        assertEquals("a",
+                     actionCallMethod.getVariable());
+        assertEquals(1,
+                     actionCallMethod.getFieldValues().length);
+        assertEquals("add",
+                     actionCallMethod.getFieldValues()[0].getField());
+        assertEquals("\\\"foo, bar\\\"",
+                     actionCallMethod.getFieldValues()[0].getValue());
+    }
+
+    @Test
     public void testDotInStringComplex() {
         String drl = "import java.lang.Number;\n"
                 + "import java.util.ArrayList;\n"

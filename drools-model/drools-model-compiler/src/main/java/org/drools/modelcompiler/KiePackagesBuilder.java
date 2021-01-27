@@ -21,7 +21,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -83,7 +82,6 @@ import org.drools.model.Binding;
 import org.drools.model.Condition;
 import org.drools.model.Consequence;
 import org.drools.model.Constraint;
-import org.drools.model.DomainClassMetadata;
 import org.drools.model.DynamicValueSupplier;
 import org.drools.model.EntryPoint;
 import org.drools.model.From;
@@ -158,11 +156,9 @@ import static org.drools.core.rule.Pattern.getReadAcessor;
 import static org.drools.core.util.Drools.hasMvel;
 import static org.drools.model.FlowDSL.declarationOf;
 import static org.drools.model.FlowDSL.entryPoint;
-import static org.drools.model.bitmask.BitMaskUtil.calculatePatternMask;
 import static org.drools.model.functions.FunctionUtils.toFunctionN;
 import static org.drools.model.impl.NamesGenerator.generateName;
 import static org.drools.modelcompiler.facttemplate.FactFactory.prototypeToFactTemplate;
-import static org.drools.modelcompiler.util.EvaluationUtil.adaptBitMask;
 import static org.drools.modelcompiler.util.TypeDeclarationUtil.createTypeDeclaration;
 import static org.kie.internal.ruleunit.RuleUnitUtil.isLegacyRuleUnit;
 
@@ -716,6 +712,7 @@ public class KiePackagesBuilder {
     private Pattern buildPattern(RuleContext ctx, GroupElement group, Condition condition) {
         org.drools.model.Pattern<?> modelPattern = (org.drools.model.Pattern) condition;
         Pattern pattern = addPatternForVariable( ctx, group, modelPattern.getPatternVariable(), condition.getType() );
+        Arrays.stream( modelPattern.getWatchedProps() ).forEach( pattern::addWatchedProperty );
 
         for (Binding binding : modelPattern.getBindings()) {
             Declaration declaration = new Declaration(binding.getBoundVariable().getName(),
@@ -724,7 +721,7 @@ public class KiePackagesBuilder {
                                                       true);
             pattern.addDeclaration( declaration );
             if (binding.getReactOn() != null) {
-                addFieldsToPatternWatchlist( pattern, binding.getReactOn() );
+                Arrays.stream( binding.getReactOn() ).forEach( pattern::addBoundProperty );
             }
             ctx.addDeclaration(binding.getBoundVariable(), declaration);
         }
@@ -735,22 +732,7 @@ public class KiePackagesBuilder {
         }
 
         addConstraintsToPattern( ctx, pattern, modelPattern.getConstraint() );
-        addFieldsToPatternWatchlist( pattern, modelPattern.getWatchedProps() );
-        addReactiveMasksToPattern( pattern, modelPattern );
-
         return pattern;
-    }
-
-    private void addReactiveMasksToPattern( Pattern pattern, org.drools.model.Pattern<?> modelPattern ) {
-        if (pattern.getListenedProperties() != null) {
-            DomainClassMetadata patternMetadata = modelPattern.getPatternClassMetadata();
-            if (patternMetadata != null) {
-                String[] listenedProperties = pattern.getListenedProperties().toArray( new String[pattern.getListenedProperties().size()] );
-                pattern.setPositiveWatchMask( adaptBitMask( calculatePatternMask( patternMetadata, true, listenedProperties ) ) );
-                pattern.setNegativeWatchMask( adaptBitMask( calculatePatternMask( patternMetadata, false, listenedProperties ) ) );
-
-            }
-        }
     }
 
     private Accumulate buildAccumulate(RuleContext ctx, AccumulatePattern accPattern,
@@ -1088,17 +1070,6 @@ public class KiePackagesBuilder {
             }
         }
         return unificationDeclaration;
-    }
-
-    private void addFieldsToPatternWatchlist( Pattern pattern, String... fields ) {
-        if (fields != null && fields.length > 0) {
-            Collection<String> watchlist = pattern.getListenedProperties();
-            if ( watchlist == null ) {
-                watchlist = new HashSet<>( );
-                pattern.setListenedProperties( watchlist );
-            }
-            watchlist.addAll( Arrays.asList( fields ) );
-        }
     }
 
     Collection<InternalKnowledgePackage> getKiePackages() {

@@ -16,6 +16,9 @@
 package org.kie.pmml.models.drools.provider;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +29,7 @@ import org.dmg.pmml.LocalTransformations;
 import org.dmg.pmml.Model;
 import org.dmg.pmml.TransformationDictionary;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.compiler.lang.descr.CompositePackageDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.api.exceptions.KiePMMLException;
@@ -53,8 +57,8 @@ public abstract class DroolsModelProvider<T extends Model, E extends KiePMMLDroo
     private static final Logger logger = LoggerFactory.getLogger(DroolsModelProvider.class.getName());
 
     @Override
-    public E getKiePMMLModel(final DataDictionary dataDictionary, final TransformationDictionary transformationDictionary, final T model, final HasClassLoader hasClassloader) {
-        logger.trace("getKiePMMLModel {} {} {}", dataDictionary, transformationDictionary, model);
+    public E getKiePMMLModel(final String packageName, final DataDictionary dataDictionary, final TransformationDictionary transformationDictionary, final T model, final HasClassLoader hasClassloader) {
+        logger.trace("getKiePMMLModel {} {} {} {}", packageName, dataDictionary, transformationDictionary, model);
         if (!(hasClassloader instanceof HasKnowledgeBuilder)) {
             throw new KiePMMLException(String.format("Expecting HasKnowledgeBuilder, received %s", hasClassloader.getClass().getName()));
         }
@@ -62,9 +66,11 @@ public abstract class DroolsModelProvider<T extends Model, E extends KiePMMLDroo
         KnowledgeBuilderImpl knowledgeBuilder = (KnowledgeBuilderImpl) hasKnowledgeBuilder.getKnowledgeBuilder();
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
         KiePMMLDroolsAST kiePMMLDroolsAST = getKiePMMLDroolsASTCommon(dataDictionary, transformationDictionary, model, fieldTypeMap);
-        E toReturn = getKiePMMLDroolsModel(dataDictionary, transformationDictionary, model, fieldTypeMap, hasClassloader);
+        E toReturn = getKiePMMLDroolsModel(dataDictionary, transformationDictionary, model, fieldTypeMap, packageName, hasClassloader);
         PackageDescr packageDescr = getPackageDescr(kiePMMLDroolsAST, toReturn.getKModulePackageName());
-        knowledgeBuilder.registerPackage(packageDescr);
+        // Needed to compile Rules from PackageDescr
+        CompositePackageDescr compositePackageDescr = new CompositePackageDescr(null, packageDescr);
+        knowledgeBuilder.buildPackages(Collections.singletonList(compositePackageDescr));
         return toReturn;
     }
 
@@ -99,6 +105,7 @@ public abstract class DroolsModelProvider<T extends Model, E extends KiePMMLDroo
                                             final TransformationDictionary transformationDictionary,
                                             final T model,
                                             final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap,
+                                            final String packageName,
                                             final HasClassLoader hasClassLoader);
 
     public abstract KiePMMLDroolsAST getKiePMMLDroolsAST(final DataDictionary dataDictionary,

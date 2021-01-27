@@ -20,6 +20,7 @@
       <groupId>org.kie</groupId>
       <artifactId>kie-pmml-compiler-api</artifactId>
     </dependency>
+    <!-- DROOLS -->
     <!-- EXTERNAL -->
     <dependency>
       <groupId>com.github.javaparser</groupId>

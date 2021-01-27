@@ -28,6 +28,7 @@ import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.mining.MiningModel;
 import org.dmg.pmml.mining.Segment;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.junit.Before;
 import org.kie.pmml.compiler.commons.utils.KiePMMLUtil;
 import org.kie.test.util.filesystem.FileUtils;
 import org.xml.sax.SAXException;
@@ -39,10 +40,11 @@ import static org.kie.pmml.compiler.commons.utils.KiePMMLUtil.SEGMENTID_TEMPLATE
 public abstract class AbstractKiePMMLFactoryTest {
 
     protected static final String SOURCE_MIXED = "MiningModel_Mixed.pmml";
-    protected static final KnowledgeBuilderImpl KNOWLEDGE_BUILDER = new KnowledgeBuilderImpl();
+    protected static final String PACKAGE_NAME = "packagename";
     protected static DataDictionary DATA_DICTIONARY;
     protected static TransformationDictionary TRANSFORMATION_DICTIONARY;
     protected static MiningModel MINING_MODEL;
+    protected static KnowledgeBuilderImpl KNOWLEDGE_BUILDER;
 
     protected static void innerSetup() throws JAXBException, SAXException, IOException {
         FileInputStream fis = FileUtils.getFileInputStream(SOURCE_MIXED);
@@ -57,6 +59,10 @@ public abstract class AbstractKiePMMLFactoryTest {
         populateMissingIds(MINING_MODEL);
     }
 
+    @Before
+    public void init() {
+        KNOWLEDGE_BUILDER = new KnowledgeBuilderImpl();
+    }
 
     /**
      * Recursively populate <code>Segment</code>s with auto generated id

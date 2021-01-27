@@ -92,8 +92,11 @@ import org.drools.mvel.parser.ast.expr.BigIntegerLiteralExpr;
 import org.drools.mvel.parser.ast.expr.DrlNameExpr;
 import org.drools.mvel.parser.ast.expr.DrlxExpression;
 import org.drools.mvel.parser.ast.expr.HalfBinaryExpr;
+import org.drools.mvel.parser.ast.expr.ListCreationLiteralExpression;
 import org.drools.mvel.parser.ast.expr.MapCreationLiteralExpression;
 import org.drools.mvel.parser.printer.PrintUtil;
+import org.drools.mvelcompiler.MvelCompiler;
+import org.drools.mvelcompiler.context.MvelCompilerContext;
 
 import static com.github.javaparser.StaticJavaParser.parseType;
 import static java.util.Optional.empty;
@@ -199,6 +202,10 @@ public class DrlxParseUtil {
 
         if (expr instanceof MapCreationLiteralExpression) {
             return Map.class;
+        }
+
+        if (expr instanceof ListCreationLiteralExpression) {
+            return List.class;
         }
 
         if (expr instanceof NameExpr) {
@@ -809,6 +816,16 @@ public class DrlxParseUtil {
         } else {
             return expression;
         }
+    }
+
+    public static MvelCompiler createMvelCompiler(TypeResolver typeResolver, Collection<DeclarationSpec> declarations) {
+        MvelCompilerContext mvelCompilerContext = new MvelCompilerContext(typeResolver);
+
+        for (DeclarationSpec ds : declarations) {
+            mvelCompilerContext.addDeclaration(ds.getBindingId(), ds.getDeclarationClass());
+        }
+
+        return new MvelCompiler(mvelCompilerContext);
     }
 
     private DrlxParseUtil() {

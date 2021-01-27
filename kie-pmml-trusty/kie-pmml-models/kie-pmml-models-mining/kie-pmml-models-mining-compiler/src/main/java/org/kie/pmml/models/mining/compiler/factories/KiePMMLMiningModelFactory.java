@@ -32,7 +32,6 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.mining.MiningModel;
-import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.KiePMMLException;
@@ -77,6 +76,7 @@ public class KiePMMLMiningModelFactory {
     public static KiePMMLMiningModel getKiePMMLMiningModel(final DataDictionary dataDictionary,
                                                            final TransformationDictionary transformationDictionary,
                                                            final MiningModel model,
+                                                           final String packageName,
                                                            final HasClassLoader hasClassloader) {
         logger.debug("getKiePMMLMiningModel {}", model);
         String name = model.getModelName();
@@ -89,6 +89,7 @@ public class KiePMMLMiningModelFactory {
                                                   transformationDictionary,
                                                   model.getSegmentation(),
                                                   String.format(SEGMENTATIONNAME_TEMPLATE, model.getModelName()),
+                                                  packageName,
                                                   hasClassloader))
                 .withTargetField(targetFieldName.orElse(null))
                 .build();

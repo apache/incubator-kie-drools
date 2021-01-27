@@ -38,10 +38,6 @@
             <artifactId>drools-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.kie</groupId>
-            <artifactId>kie-memory-compiler</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.eclipse.jdt</groupId>
             <artifactId>ecj</artifactId>
         </dependency>

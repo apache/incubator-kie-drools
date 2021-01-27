@@ -40,6 +40,8 @@ import org.drools.mvel.parser.ast.expr.DrlxExpression;
 import org.drools.mvel.parser.ast.expr.HalfBinaryExpr;
 import org.drools.mvel.parser.ast.expr.HalfPointFreeExpr;
 import org.drools.mvel.parser.ast.expr.InlineCastExpr;
+import org.drools.mvel.parser.ast.expr.ListCreationLiteralExpression;
+import org.drools.mvel.parser.ast.expr.ListCreationLiteralExpressionElement;
 import org.drools.mvel.parser.ast.expr.MapCreationLiteralExpression;
 import org.drools.mvel.parser.ast.expr.MapCreationLiteralExpressionKeyValuePair;
 import org.drools.mvel.parser.ast.expr.ModifyStatement;
@@ -402,6 +404,25 @@ public class ConstraintPrintVisitor extends PrettyPrintVisitor implements DrlVoi
     public void visit(MapCreationLiteralExpressionKeyValuePair n, Void arg) {
         n.getKey().accept(this, arg);
         printer.print(" : ");
+        n.getValue().accept(this, arg);
+    }
+
+    @Override
+    public void visit(ListCreationLiteralExpression n, Void arg) {
+        printer.print("[");
+
+        Iterator<Expression> expressions = n.getExpressions().iterator();
+        while(expressions.hasNext()) {
+            expressions.next().accept(this, arg);
+            if(expressions.hasNext()) {
+                printer.print(", ");
+            }
+        }
+        printer.print("]");
+    }
+
+    @Override
+    public void visit(ListCreationLiteralExpressionElement n, Void arg) {
         n.getValue().accept(this, arg);
     }
 }
