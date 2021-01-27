@@ -24,6 +24,9 @@ import javax.inject.Inject;
 
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
+import org.eclipse.microprofile.reactive.messaging.Message;
+import org.kie.kogito.addon.cloudevents.quarkus.decorators.MessageDecorator;
+import org.kie.kogito.addon.cloudevents.quarkus.decorators.MessageDecoratorFactory;
 import org.kie.kogito.event.CloudEventEmitter;
 import org.kie.kogito.event.KogitoEventStreams;
 
@@ -38,7 +41,15 @@ public class QuarkusCloudEventEmitter implements CloudEventEmitter {
     @Channel(KogitoEventStreams.OUTGOING)
     Emitter<String> emitter;
 
+    final MessageDecorator messageDecorator;
+
+    public QuarkusCloudEventEmitter() {
+        this.messageDecorator = MessageDecoratorFactory.newInstance();
+    }
+
     public CompletionStage<Void> emit(String e) {
-        return emitter.send(e);
+        final Message<String> message = this.messageDecorator.decorate(e);
+        emitter.send(message);
+        return message.getAck().get();
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,12 +12,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.events.knative.ce.decorators;
-
-import java.util.Optional;
+package org.kie.kogito.addon.cloudevents.quarkus.decorators;
 
 /**
- * Decorator Factory
+ * Provides a {@link MessageDecorator} instance
  */
 public final class MessageDecoratorFactory {
 
@@ -29,15 +27,14 @@ public final class MessageDecoratorFactory {
     /**
      * Builds a new {@link MessageDecorator} depending on the implementation being presented in the classpath.
      *
-     * @return an {@link Optional} instance of {@link MessageDecorator}
+     * @return an instance of {@link MessageDecorator}
      */
-    public static Optional<MessageDecorator> newInstance() {
+    public static MessageDecorator newInstance() {
         try {
             Class.forName(SMALLRYE_HTTP_METADATA_CLASS, false, MessageDecoratorFactory.class.getClassLoader());
-            return Optional.of(new CloudEventHttpOutgoingDecorator());
+            return new CloudEventHttpOutgoingDecorator();
         } catch (ClassNotFoundException e) {
-            return Optional.empty();
+            return new NoOpMessageDecorator();
         }
     }
-
 }

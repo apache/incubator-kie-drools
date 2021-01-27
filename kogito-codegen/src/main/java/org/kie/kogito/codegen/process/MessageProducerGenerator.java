@@ -78,8 +78,6 @@ public class MessageProducerGenerator {
         this.generator = TemplatedGenerator.builder()
                 .withTargetTypeName(resourceClazzName)
                 .withPackageName(processPackageName)
-                // NOTE this fallback is only necessary because of deprecated CloudEventsMessageProducerGenerator subclass
-                .withFallbackContext(JavaKogitoBuildContext.CONTEXT_NAME)
                 .build(context, templateName);
     }
 

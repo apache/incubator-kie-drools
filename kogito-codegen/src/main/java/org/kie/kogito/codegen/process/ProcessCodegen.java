@@ -53,7 +53,6 @@ import org.kie.kogito.codegen.GeneratedFileType;
 import org.kie.kogito.codegen.context.KogitoBuildContext;
 import org.kie.kogito.codegen.io.CollectedResource;
 import org.kie.kogito.codegen.process.config.ProcessConfigGenerator;
-import org.kie.kogito.codegen.process.events.CloudEventsMessageProducerGenerator;
 import org.kie.kogito.codegen.process.events.CloudEventsResourceGenerator;
 import org.kie.kogito.codegen.process.events.TopicsInformationResourceGenerator;
 import org.kie.kogito.rules.units.UndefinedGeneratedRuleUnitVariable;
@@ -311,27 +310,13 @@ public class ProcessCodegen extends AbstractGenerator {
                         MessageDataEventGenerator msgDataEventGenerator =
                                 new MessageDataEventGenerator(context(), workFlowProcess, trigger);
                         mdegs.add(msgDataEventGenerator);
-
-                        // this is not cool, we should have a way to process addons
-                        // generators without adding conditions to the main generators
-                        // see: https://issues.redhat.com/browse/KOGITO-1767
-                        if (context().getAddonsConfig().useKnativeEventing()) {
-                            mpgs.add(new CloudEventsMessageProducerGenerator(
-                                    context(),
-                                    workFlowProcess,
-                                    modelClassGenerator.className(),
-                                    execModelGen.className(),
-                                    msgDataEventGenerator.className(),
-                                    trigger));
-                        } else {
-                            mpgs.add(new MessageProducerGenerator(
-                                    context(),
-                                    workFlowProcess,
-                                    modelClassGenerator.className(),
-                                    execModelGen.className(),
-                                    msgDataEventGenerator.className(),
-                                    trigger));
-                        }
+                        mpgs.add(new MessageProducerGenerator(
+                                context(),
+                                workFlowProcess,
+                                modelClassGenerator.className(),
+                                execModelGen.className(),
+                                msgDataEventGenerator.className(),
+                                trigger));
                     }
                 }
             }
