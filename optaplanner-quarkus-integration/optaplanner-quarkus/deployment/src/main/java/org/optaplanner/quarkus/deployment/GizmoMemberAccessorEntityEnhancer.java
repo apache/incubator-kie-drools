@@ -26,15 +26,15 @@ import static org.objectweb.asm.Opcodes.PUTFIELD;
 import static org.objectweb.asm.Opcodes.RETURN;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Modifier;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Named;
 
 import org.jboss.jandex.AnnotationInstance;
 import org.jboss.jandex.ClassInfo;
@@ -45,10 +45,10 @@ import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
+import org.optaplanner.core.impl.domain.common.accessor.gizmo.GizmoMemberAccessorFactory;
 import org.optaplanner.core.impl.domain.common.accessor.gizmo.GizmoMemberAccessorImplementor;
 import org.optaplanner.core.impl.domain.common.accessor.gizmo.GizmoMemberDescriptor;
-import org.optaplanner.quarkus.gizmo.annotations.QuarkusRecordableAnnotatedElement;
-import org.optaplanner.quarkus.gizmo.types.QuarkusRecordableTypes;
+import org.optaplanner.quarkus.gizmo.OptaPlannerGizmoInitializer;
 
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.builditem.BytecodeTransformerBuildItem;
@@ -57,7 +57,9 @@ import io.quarkus.gizmo.ClassOutput;
 import io.quarkus.gizmo.DescriptorUtils;
 import io.quarkus.gizmo.FieldDescriptor;
 import io.quarkus.gizmo.Gizmo;
+import io.quarkus.gizmo.MethodCreator;
 import io.quarkus.gizmo.MethodDescriptor;
+import io.quarkus.gizmo.ResultHandle;
 
 public class GizmoMemberAccessorEntityEnhancer {
 
@@ -120,20 +122,14 @@ public class GizmoMemberAccessorEntityEnhancer {
                 .classOutput(classOutput)
                 .build();
 
-        classCreator.addAnnotation(ApplicationScoped.class);
-        classCreator.addAnnotation(Named.class).addValue("value", generatedClassName);
-
         GizmoMemberDescriptor member;
         Class<?> declaringClass = Class.forName(fieldInfo.declaringClass().name().toString(), false,
                 Thread.currentThread().getContextClassLoader());
         FieldDescriptor memberDescriptor = FieldDescriptor.of(fieldInfo);
         String name = fieldInfo.name();
-        AnnotatedElement annotatedElement = new QuarkusRecordableAnnotatedElement(fieldInfo, indexView);
-        java.lang.reflect.Type type = QuarkusRecordableTypes.getQuarkusRecorderFriendlyType(fieldInfo.type(), indexView);
 
         if (Modifier.isPublic(fieldInfo.flags())) {
-            member = new GizmoMemberDescriptor(name, memberDescriptor, declaringClass,
-                    annotatedElement, type);
+            member = new GizmoMemberDescriptor(name, memberDescriptor, memberDescriptor, declaringClass);
         } else {
             addVirtualFieldGetter(classInfo, fieldInfo, transformers);
             String methodName = getVirtualGetterName(fieldInfo.name());
@@ -144,8 +140,7 @@ public class GizmoMemberAccessorEntityEnhancer {
                     getVirtualSetterName(fieldInfo.name()),
                     "void",
                     fieldInfo.type().name().toString());
-            member = new GizmoMemberDescriptor(name, getterDescriptor, declaringClass,
-                    annotatedElement, type, setterDescriptor);
+            member = new GizmoMemberDescriptor(name, getterDescriptor, memberDescriptor, declaringClass, setterDescriptor);
         }
         GizmoMemberAccessorImplementor.defineAccessorFor(classCreator, member,
                 (Class<? extends Annotation>) Class.forName(annotationInstance.name().toString(), false,
@@ -204,9 +199,6 @@ public class GizmoMemberAccessorEntityEnhancer {
                 .classOutput(classOutput)
                 .build();
 
-        classCreator.addAnnotation(ApplicationScoped.class);
-        classCreator.addAnnotation(Named.class).addValue("value", generatedClassName);
-
         GizmoMemberDescriptor member;
         String name = getMemberName(methodInfo);
         Optional<MethodDescriptor> setterDescriptor = getSetterDescriptor(classInfo, methodInfo, name);
@@ -214,19 +206,17 @@ public class GizmoMemberAccessorEntityEnhancer {
         Class<?> declaringClass = Class.forName(methodInfo.declaringClass().name().toString(), false,
                 Thread.currentThread().getContextClassLoader());
         MethodDescriptor memberDescriptor = MethodDescriptor.of(methodInfo);
-        AnnotatedElement annotatedElement = new QuarkusRecordableAnnotatedElement(methodInfo, indexView);
-        java.lang.reflect.Type type = QuarkusRecordableTypes.getQuarkusRecorderFriendlyType(methodInfo.returnType(), indexView);
 
         if (Modifier.isPublic(methodInfo.flags())) {
-            member = new GizmoMemberDescriptor(name, memberDescriptor, declaringClass,
-                    annotatedElement, type, setterDescriptor.orElse(null));
+            member = new GizmoMemberDescriptor(name, memberDescriptor, memberDescriptor, declaringClass,
+                    setterDescriptor.orElse(null));
         } else {
             setterDescriptor = addVirtualMethodGetter(classInfo, methodInfo, name, setterDescriptor, transformers);
             String methodName = getVirtualGetterName(name);
             MethodDescriptor newMethodDescriptor =
-                    MethodDescriptor.ofMethod(declaringClass, methodName, getTypeDescriptor(type));
-            member = new GizmoMemberDescriptor(name, newMethodDescriptor, declaringClass,
-                    annotatedElement, type, setterDescriptor.orElse(null));
+                    MethodDescriptor.ofMethod(declaringClass, methodName, memberDescriptor.getReturnType());
+            member = new GizmoMemberDescriptor(name, newMethodDescriptor, memberDescriptor, declaringClass,
+                    setterDescriptor.orElse(null));
         }
         GizmoMemberAccessorImplementor.defineAccessorFor(classCreator, member,
                 (Class<? extends Annotation>) Class.forName(annotationInstance.name().toString(), false,
@@ -245,6 +235,37 @@ public class GizmoMemberAccessorEntityEnhancer {
         } else {
             return Type.getDescriptor(Class.forName(typeName));
         }
+    }
+
+    public static String generateGizmoInitializer(ClassOutput classOutput, Set<String> generatedClassNames) {
+        String generatedClassName = OptaPlannerGizmoInitializer.class.getName() + "$Implementation";
+        ClassCreator classCreator = ClassCreator
+                .builder()
+                .className(generatedClassName)
+                .interfaces(OptaPlannerGizmoInitializer.class)
+                .classOutput(classOutput)
+                .build();
+
+        classCreator.addAnnotation(ApplicationScoped.class);
+        MethodCreator methodCreator = classCreator.getMethodCreator(MethodDescriptor.ofMethod(OptaPlannerGizmoInitializer.class,
+                "setup", void.class));
+        ResultHandle memberAccessorMap = methodCreator.newInstance(MethodDescriptor.ofConstructor(HashMap.class));
+        for (String generatedMemberAccessor : generatedClassNames) {
+            ResultHandle generatedMemberAccessorResultHandle = methodCreator.load(generatedMemberAccessor);
+            ResultHandle memberAccessorInstance =
+                    methodCreator.newInstance(MethodDescriptor.ofConstructor(generatedMemberAccessor));
+            methodCreator.invokeInterfaceMethod(
+                    MethodDescriptor.ofMethod(Map.class, "put", Object.class, Object.class, Object.class),
+                    memberAccessorMap, generatedMemberAccessorResultHandle, memberAccessorInstance);
+        }
+        methodCreator.invokeStaticMethod(
+                MethodDescriptor.ofMethod(GizmoMemberAccessorFactory.class, "usePregeneratedMemberAccessorMap",
+                        void.class, Map.class),
+                memberAccessorMap);
+        methodCreator.returnValue(null);
+
+        classCreator.close();
+        return generatedClassName;
     }
 
     private static class OptaPlannerFieldEnhancingClassVisitor extends ClassVisitor {

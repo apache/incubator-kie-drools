@@ -15,18 +15,17 @@
  */
 package org.optaplanner.core.impl.domain.common.accessor.gizmo;
 
-import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.lang.reflect.Type;
 import java.util.Optional;
 import java.util.function.Consumer;
 
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
 
 import io.quarkus.gizmo.BytecodeCreator;
+import io.quarkus.gizmo.DescriptorUtils;
 import io.quarkus.gizmo.FieldDescriptor;
 import io.quarkus.gizmo.MethodDescriptor;
 import io.quarkus.gizmo.ResultHandle;
@@ -44,10 +43,18 @@ public class GizmoMemberDescriptor {
     String name;
 
     /**
-     * If the member is a field, the FieldDescriptor of the member
-     * If the member is a method, the MethodDescriptor of the member
+     * If the member is a field, the FieldDescriptor of the member accessor
+     * If the member is a method, the MethodDescriptor of the member accessor
      */
     Object memberDescriptor;
+
+    /**
+     * If the member is a field, the FieldDescriptor of the member
+     * If the member is a method, the MethodDescriptor of the member
+     *
+     * Should only be used for metadata (i.e. Generic Type and Annotated Element).
+     */
+    Object metadataDescriptor;
 
     /**
      * If the member is a normal member, the class that declared it
@@ -56,19 +63,9 @@ public class GizmoMemberDescriptor {
     Class<?> declaringClass;
 
     /**
-     * The member as an AnnotatedElement
-     */
-    AnnotatedElement annotatedElement;
-
-    /**
      * The MethodDescriptor of the corresponding setter. Is empty if not present.
      */
     Optional<MethodDescriptor> setter;
-
-    /**
-     * The generic type of the member
-     */
-    Type type;
 
     public GizmoMemberDescriptor(Member member) {
         declaringClass = member.getDeclaringClass();
@@ -81,47 +78,42 @@ public class GizmoMemberDescriptor {
         if (member instanceof Field) {
             memberDescriptor = FieldDescriptor.of((Field) member);
             name = member.getName();
-            annotatedElement = (Field) member;
-            type = ((Field) member).getGenericType();
             setter = lookupSetter(memberDescriptor, declaringClass, name);
         } else if (member instanceof Method) {
             memberDescriptor = MethodDescriptor.ofMethod((Method) member);
-            annotatedElement = (Method) member;
             if (ReflectionHelper.isGetterMethod((Method) member)) {
                 name = ReflectionHelper.getGetterPropertyName(member);
             } else {
                 name = member.getName();
             }
-            type = ((Method) member).getGenericReturnType();
             setter = lookupSetter(memberDescriptor, declaringClass, name);
         } else {
             throw new IllegalArgumentException(member + " is not a Method or a Field.");
         }
+
+        metadataDescriptor = memberDescriptor;
     }
 
     // For Quarkus
     // (Cannot move to Quarkus module; get runtime
     //  exception since objects created here use classes
     //  from another ClassLoader).
-    public GizmoMemberDescriptor(String name, Object memberDescriptor, Class<?> declaringClass,
-            AnnotatedElement annotatedElement, Type type) {
-        this(name, memberDescriptor, declaringClass, annotatedElement, type,
+    public GizmoMemberDescriptor(String name, Object memberDescriptor, Object metadataDescriptor, Class<?> declaringClass) {
+        this(name, memberDescriptor, metadataDescriptor, declaringClass,
                 lookupSetter(memberDescriptor, declaringClass, name).orElse(null));
     }
 
-    public GizmoMemberDescriptor(String name, Object memberDescriptor, Class<?> declaringClass,
-            AnnotatedElement annotatedElement, Type type,
+    public GizmoMemberDescriptor(String name, Object memberDescriptor, Object metadataDescriptor, Class<?> declaringClass,
             MethodDescriptor setterDescriptor) {
         this.name = name;
         this.memberDescriptor = memberDescriptor;
+        this.metadataDescriptor = metadataDescriptor;
         this.declaringClass = declaringClass;
-        this.annotatedElement = annotatedElement;
-        this.type = type;
         setter = Optional.ofNullable(setterDescriptor);
     }
 
     /**
-     * If the member is a field, pass the member's field descriptor to the
+     * If the member accessor is a field, pass the member's field descriptor to the
      * provided consumer. Otherwise, do nothing. Returns self for chaining.
      *
      * @param fieldDescriptorConsumer What to do if the member a field.
@@ -135,7 +127,7 @@ public class GizmoMemberDescriptor {
     }
 
     /**
-     * If the member is a method, pass the member's method descriptor to the
+     * If the member accessor is a method, pass the member's method descriptor to the
      * provided consumer. Otherwise, do nothing. Returns self for chaining.
      *
      * @param methodDescriptorConsumer What to do if the member a method.
@@ -144,6 +136,34 @@ public class GizmoMemberDescriptor {
     public GizmoMemberDescriptor whenIsMethod(Consumer<MethodDescriptor> methodDescriptorConsumer) {
         if (memberDescriptor instanceof MethodDescriptor) {
             methodDescriptorConsumer.accept((MethodDescriptor) memberDescriptor);
+        }
+        return this;
+    }
+
+    /**
+     * If the member metadata is on a field, pass the member's field descriptor to the
+     * provided consumer. Otherwise, do nothing. Returns self for chaining.
+     *
+     * @param fieldDescriptorConsumer What to do if the member a field.
+     * @return this
+     */
+    public GizmoMemberDescriptor whenMetadataIsOnField(Consumer<FieldDescriptor> fieldDescriptorConsumer) {
+        if (metadataDescriptor instanceof FieldDescriptor) {
+            fieldDescriptorConsumer.accept((FieldDescriptor) metadataDescriptor);
+        }
+        return this;
+    }
+
+    /**
+     * If the member metadata is on a method, pass the member's method descriptor to the
+     * provided consumer. Otherwise, do nothing. Returns self for chaining.
+     *
+     * @param methodDescriptorConsumer What to do if the member a method.
+     * @return this
+     */
+    public GizmoMemberDescriptor whenMetadataIsOnMethod(Consumer<MethodDescriptor> methodDescriptorConsumer) {
+        if (metadataDescriptor instanceof MethodDescriptor) {
+            methodDescriptorConsumer.accept((MethodDescriptor) metadataDescriptor);
         }
         return this;
     }
@@ -210,7 +230,41 @@ public class GizmoMemberDescriptor {
      * The name does not include generic infomation.
      */
     public String getTypeName() {
-        String typeName = type.getTypeName();
+        String[] holder = new String[1];
+        whenMetadataIsOnField(fd -> {
+            holder[0] = fd.getType();
+        });
+
+        whenMetadataIsOnMethod(md -> {
+            holder[0] = md.getReturnType();
+        });
+
+        if (DescriptorUtils.isPrimitive(holder[0])) {
+            switch (holder[0]) {
+                case "I":
+                    return int.class.getName();
+                case "B":
+                    return byte.class.getName();
+                case "C":
+                    return char.class.getName();
+                case "J":
+                    return long.class.getName();
+                case "F":
+                    return float.class.getName();
+                case "S":
+                    return short.class.getName();
+                case "D":
+                    return double.class.getName();
+                case "Z":
+                    return boolean.class.getName();
+                case "V":
+                    return void.class.getName();
+                default:
+                    throw new IllegalStateException("Unknown primitive type (" + holder[0] + ").");
+            }
+        }
+
+        String typeName = DescriptorUtils.getTypeStringFromDescriptorFormat(holder[0]).replace('/', '.');
         int genericStart = typeName.indexOf('<');
         boolean isGeneric = genericStart != -1;
         if (isGeneric) {
@@ -219,14 +273,6 @@ public class GizmoMemberDescriptor {
         } else {
             return typeName;
         }
-    }
-
-    public Type getType() {
-        return type;
-    }
-
-    public AnnotatedElement getAnnotatedElement() {
-        return annotatedElement;
     }
 
     @Override

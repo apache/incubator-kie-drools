@@ -3,8 +3,6 @@ package org.optaplanner.core.impl.domain.common.accessor.gizmo;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.function.Consumer;
 
@@ -86,18 +84,6 @@ public class GizmoMemberDescriptorTest {
     }
 
     @Test
-    public void testMemberDescriptorAnnotatedElementIsCorrect() throws Exception {
-        Field field = GizmoTestdataEntity.class.getField("value");
-        Method method = GizmoTestdataEntity.class.getMethod("getId");
-
-        GizmoMemberDescriptor fieldMemberDescriptor = new GizmoMemberDescriptor(field);
-        assertThat(fieldMemberDescriptor.getAnnotatedElement()).isEqualTo(field);
-
-        GizmoMemberDescriptor methodMemberDescriptor = new GizmoMemberDescriptor(method);
-        assertThat(methodMemberDescriptor.getAnnotatedElement()).isEqualTo(method);
-    }
-
-    @Test
     public void testMemberDescriptorSetterIsCorrect() throws Exception {
         GizmoMemberDescriptor fieldMemberDescriptor = new GizmoMemberDescriptor(GizmoTestdataEntity.class.getField("value"));
         assertThat(fieldMemberDescriptor.getSetter()).isEmpty();
@@ -128,21 +114,6 @@ public class GizmoMemberDescriptorTest {
         GizmoMemberDescriptor genericFieldMemberDescriptor =
                 new GizmoMemberDescriptor(GizmoTestdataEntity.class.getField("genericField"));
         assertThat(genericFieldMemberDescriptor.getTypeName()).isEqualTo(Collection.class.getName());
-    }
-
-    @Test
-    public void testMemberDescriptorTypeIsCorrect() throws Exception {
-        GizmoMemberDescriptor fieldMemberDescriptor = new GizmoMemberDescriptor(GizmoTestdataEntity.class.getField("value"));
-        assertThat(fieldMemberDescriptor.getType()).isEqualTo(TestdataValue.class);
-
-        GizmoMemberDescriptor getterMethodMemberDescriptor =
-                new GizmoMemberDescriptor(GizmoTestdataEntity.class.getMethod("getId"));
-        assertThat(getterMethodMemberDescriptor.getType()).isEqualTo(String.class);
-
-        GizmoMemberDescriptor genericFieldMemberDescriptor =
-                new GizmoMemberDescriptor(GizmoTestdataEntity.class.getField("genericField"));
-        assertThat(genericFieldMemberDescriptor.getType())
-                .isEqualTo(GizmoTestdataEntity.class.getField("genericField").getGenericType());
     }
 
 }

@@ -17,8 +17,11 @@ package org.optaplanner.core.impl.domain.common.accessor.gizmo;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -29,9 +32,11 @@ import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 
 import io.quarkus.gizmo.ClassCreator;
 import io.quarkus.gizmo.ClassOutput;
+import io.quarkus.gizmo.FieldDescriptor;
 import io.quarkus.gizmo.MethodCreator;
 import io.quarkus.gizmo.MethodDescriptor;
 import io.quarkus.gizmo.ResultHandle;
+import io.quarkus.gizmo.TryBlock;
 
 /**
  * Generates the bytecode for the MemberAccessor of a particular Member
@@ -69,6 +74,9 @@ public class GizmoMemberAccessorImplementor {
         }
     };
 
+    final static String GENERIC_TYPE_FIELD = "genericType";
+    final static String ANNOTATED_ELEMENT_FIELD = "annotatedElement";
+
     /**
      * Generates the constructor and implementations of MemberAccessor
      * methods for the given MemberDescriptor using the given ClassCreator
@@ -80,6 +88,11 @@ public class GizmoMemberAccessorImplementor {
      */
     public static void defineAccessorFor(ClassCreator classCreator, GizmoMemberDescriptor member,
             Class<? extends Annotation> annotationClass) {
+        classCreator.getFieldCreator("genericType", Type.class)
+                .setModifiers(Modifier.FINAL);
+        classCreator.getFieldCreator("annotatedElement", AnnotatedElement.class)
+                .setModifiers(Modifier.FINAL);
+
         GizmoMemberInfo memberInfo = new GizmoMemberInfo(member, annotationClass);
         // ************************************************************************
         // MemberAccessor methods
@@ -97,7 +110,6 @@ public class GizmoMemberAccessorImplementor {
         // ************************************************************************
         // AnnotatedElement methods
         // ************************************************************************
-        createAnnotatedElement(classCreator, memberInfo);
 
         createIsAnnotationPresent(classCreator, memberInfo);
         createGetAnnotation(classCreator, memberInfo);
@@ -174,6 +186,47 @@ public class GizmoMemberAccessorImplementor {
 
         // Invoke Object's constructor
         methodCreator.invokeSpecialMethod(MethodDescriptor.ofConstructor(Object.class), thisObj);
+
+        ResultHandle declaringClass = methodCreator.loadClass(memberInfo.getDescriptor().getDeclaringClassName());
+        memberInfo.getDescriptor().whenMetadataIsOnField(fd -> {
+            TryBlock tryBlock = methodCreator.tryBlock();
+            ResultHandle name = tryBlock.load(fd.getName());
+            ResultHandle field = tryBlock.invokeVirtualMethod(MethodDescriptor.ofMethod(Class.class, "getDeclaredField",
+                    Field.class, String.class),
+                    declaringClass, name);
+            ResultHandle type =
+                    tryBlock.invokeVirtualMethod(MethodDescriptor.ofMethod(Field.class, "getGenericType", Type.class),
+                            field);
+            tryBlock.writeInstanceField(FieldDescriptor.of(classCreator.getClassName(), GENERIC_TYPE_FIELD, Type.class),
+                    thisObj, type);
+            tryBlock.writeInstanceField(
+                    FieldDescriptor.of(classCreator.getClassName(), ANNOTATED_ELEMENT_FIELD, AnnotatedElement.class),
+                    thisObj, field);
+
+            tryBlock.addCatch(NoSuchFieldException.class).throwException(IllegalStateException.class, "Unable to find field (" +
+                    fd.getName() + ") in class (" + fd.getDeclaringClass() + ").");
+        });
+
+        memberInfo.getDescriptor().whenMetadataIsOnMethod(md -> {
+            TryBlock tryBlock = methodCreator.tryBlock();
+            ResultHandle name = tryBlock.load(md.getName());
+            ResultHandle method = tryBlock.invokeVirtualMethod(MethodDescriptor.ofMethod(Class.class, "getDeclaredMethod",
+                    Method.class, String.class, Class[].class),
+                    declaringClass, name,
+                    tryBlock.newArray(Class.class, 0));
+            ResultHandle type =
+                    tryBlock.invokeVirtualMethod(MethodDescriptor.ofMethod(Method.class, "getGenericReturnType", Type.class),
+                            method);
+            tryBlock.writeInstanceField(FieldDescriptor.of(classCreator.getClassName(), GENERIC_TYPE_FIELD, Type.class),
+                    thisObj, type);
+            tryBlock.writeInstanceField(
+                    FieldDescriptor.of(classCreator.getClassName(), ANNOTATED_ELEMENT_FIELD, AnnotatedElement.class),
+                    thisObj, method);
+
+            tryBlock.addCatch(NoSuchMethodException.class).throwException(IllegalStateException.class,
+                    "Unable to find method (" +
+                            md.getName() + ") in class (" + md.getDeclaringClass() + ").");
+        });
 
         // Return this (it a constructor)
         methodCreator.returnValue(thisObj);
@@ -286,22 +339,11 @@ public class GizmoMemberAccessorImplementor {
      */
     private static void createGetGenericType(ClassCreator classCreator, GizmoMemberInfo memberInfo) {
         MethodCreator methodCreator = getMethodCreator(classCreator, "getGenericType");
-        String gizmoMemberAccessorName = classCreator.getClassName();
+        ResultHandle thisObj = methodCreator.getThis();
 
-        // Put the member generic type in the map
-        GizmoMemberAccessorFactory.gizmoMemberAccessorNameToGenericType.put(gizmoMemberAccessorName,
-                memberInfo.getDescriptor().getType());
-
-        ResultHandle gizmoMemberAccessorNameResult = methodCreator.load(gizmoMemberAccessorName);
-
-        // Use getGenericTypeFor to receive the generic type that
-        // was put in the map
-        ResultHandle out = methodCreator.invokeStaticMethod(
-                MethodDescriptor.ofMethod(GizmoMemberAccessorFactory.class,
-                        "getGenericTypeFor",
-                        Type.class,
-                        String.class),
-                gizmoMemberAccessorNameResult);
+        ResultHandle out =
+                methodCreator.readInstanceField(FieldDescriptor.of(classCreator.getClassName(), GENERIC_TYPE_FIELD, Type.class),
+                        thisObj);
         methodCreator.returnValue(out);
     }
 
@@ -459,17 +501,6 @@ public class GizmoMemberAccessorImplementor {
         }
     }
 
-    private static void createAnnotatedElement(ClassCreator classCreator, GizmoMemberInfo memberInfo) {
-        String gizmoMemberAccessorName = classCreator.getClassName();
-        AnnotatedElement annotatedElement = memberInfo.getDescriptor().getAnnotatedElement();
-        GizmoMemberAccessorFactory.gizmoMemberAccessorNameToAnnotatedElement.put(gizmoMemberAccessorName, annotatedElement);
-    }
-
-    private static MethodDescriptor getAnnotatedElementGetter() {
-        return MethodDescriptor.ofMethod(GizmoMemberAccessorFactory.class, "getAnnotatedElementFor",
-                AnnotatedElement.class, String.class);
-    }
-
     // These methods all delegate to an AnnotatedElement we store in
     // gizmoMemberAccessorNameToAnnotatedElement
 
@@ -489,10 +520,11 @@ public class GizmoMemberAccessorImplementor {
     private static void createIsAnnotationPresent(ClassCreator classCreator, GizmoMemberInfo memberInfo) {
         MethodCreator methodCreator = getAnnotationMethodCreator(classCreator, "isAnnotationPresent",
                 Class.class);
-        String gizmoMemberAccessorName = classCreator.getClassName();
-        ResultHandle gizmoMemberAccessorNameResult = methodCreator.load(gizmoMemberAccessorName);
-        ResultHandle annotatedElement = methodCreator.invokeStaticMethod(getAnnotatedElementGetter(),
-                gizmoMemberAccessorNameResult);
+        ResultHandle thisObj = methodCreator.getThis();
+
+        ResultHandle annotatedElement = methodCreator.readInstanceField(
+                FieldDescriptor.of(classCreator.getClassName(), ANNOTATED_ELEMENT_FIELD, AnnotatedElement.class),
+                thisObj);
         ResultHandle query = methodCreator.getMethodParam(0);
         ResultHandle out = methodCreator.invokeInterfaceMethod(getAnnotationMethod("isAnnotationPresent", Class.class),
                 annotatedElement, query);
@@ -513,10 +545,11 @@ public class GizmoMemberAccessorImplementor {
     private static void createGetAnnotation(ClassCreator classCreator, GizmoMemberInfo memberInfo) {
         MethodCreator methodCreator = getAnnotationMethodCreator(classCreator, "getAnnotation",
                 Class.class);
-        String gizmoMemberAccessorName = classCreator.getClassName();
-        ResultHandle gizmoMemberAccessorNameResult = methodCreator.load(gizmoMemberAccessorName);
-        ResultHandle annotatedElement = methodCreator.invokeStaticMethod(getAnnotatedElementGetter(),
-                gizmoMemberAccessorNameResult);
+        ResultHandle thisObj = methodCreator.getThis();
+
+        ResultHandle annotatedElement = methodCreator.readInstanceField(
+                FieldDescriptor.of(classCreator.getClassName(), ANNOTATED_ELEMENT_FIELD, AnnotatedElement.class),
+                thisObj);
         ResultHandle query = methodCreator.getMethodParam(0);
         ResultHandle out = methodCreator.invokeInterfaceMethod(getAnnotationMethod("getAnnotation", Class.class),
                 annotatedElement, query);
@@ -536,10 +569,11 @@ public class GizmoMemberAccessorImplementor {
      */
     private static void createGetAnnotations(ClassCreator classCreator, GizmoMemberInfo memberInfo) {
         MethodCreator methodCreator = getAnnotationMethodCreator(classCreator, "getAnnotations");
-        String gizmoMemberAccessorName = classCreator.getClassName();
-        ResultHandle gizmoMemberAccessorNameResult = methodCreator.load(gizmoMemberAccessorName);
-        ResultHandle annotatedElement = methodCreator.invokeStaticMethod(getAnnotatedElementGetter(),
-                gizmoMemberAccessorNameResult);
+        ResultHandle thisObj = methodCreator.getThis();
+
+        ResultHandle annotatedElement = methodCreator.readInstanceField(
+                FieldDescriptor.of(classCreator.getClassName(), ANNOTATED_ELEMENT_FIELD, AnnotatedElement.class),
+                thisObj);
         ResultHandle out = methodCreator.invokeInterfaceMethod(getAnnotationMethod("getAnnotations"),
                 annotatedElement);
         methodCreator.returnValue(out);
@@ -558,10 +592,11 @@ public class GizmoMemberAccessorImplementor {
      */
     private static void createGetDeclaredAnnotations(ClassCreator classCreator, GizmoMemberInfo memberInfo) {
         MethodCreator methodCreator = getAnnotationMethodCreator(classCreator, "getDeclaredAnnotations");
-        String gizmoMemberAccessorName = classCreator.getClassName();
-        ResultHandle gizmoMemberAccessorNameResult = methodCreator.load(gizmoMemberAccessorName);
-        ResultHandle annotatedElement = methodCreator.invokeStaticMethod(getAnnotatedElementGetter(),
-                gizmoMemberAccessorNameResult);
+        ResultHandle thisObj = methodCreator.getThis();
+
+        ResultHandle annotatedElement = methodCreator.readInstanceField(
+                FieldDescriptor.of(classCreator.getClassName(), ANNOTATED_ELEMENT_FIELD, AnnotatedElement.class),
+                thisObj);
         ResultHandle out = methodCreator.invokeInterfaceMethod(getAnnotationMethod("getDeclaredAnnotations"),
                 annotatedElement);
         methodCreator.returnValue(out);

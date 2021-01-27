@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
+import java.util.HashMap;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,6 +26,7 @@ public class GizmoMemberAccessorFactoryTest {
 
     @BeforeEach
     public void setup() {
+        GizmoMemberAccessorFactory.usePregeneratedMemberAccessorMap(new HashMap<>());
         Thread.currentThread().setContextClassLoader(contextClassLoader);
     }
 

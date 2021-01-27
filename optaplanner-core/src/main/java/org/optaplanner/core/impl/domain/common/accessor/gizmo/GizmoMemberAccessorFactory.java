@@ -16,38 +16,16 @@
 package org.optaplanner.core.impl.domain.common.accessor.gizmo;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Member;
-import java.lang.reflect.Type;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.optaplanner.core.api.domain.common.DomainAccessType;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 
 public class GizmoMemberAccessorFactory {
     // GizmoMemberAccessors are stateless, and thus can be safely reused across multiple instances
-    private static Map<String, MemberAccessor> memberAccessorMap = new ConcurrentHashMap<>();
-
-    // These fields and methods are here instead of GizmoMemberAccessorImplementor since
-    // any calls to GizmoMemberAccessorImplementor will try to load Gizmo,
-    // which is bad if Gizmo not on the classpath (which is the case for
-    // Quarkus, where Gizmo is only on the build path)
-
-    /**
-     * Stores the generic type of a member (required
-     * as we cannot hard code a non-primitive object
-     * instance in Gizmo code); will be accessed
-     * from generated Gizmo code via getGenericTypeFor
-     */
-    static Map<String, Type> gizmoMemberAccessorNameToGenericType = new ConcurrentHashMap<>();
-    /**
-     * Stores the annotated element of a member (required
-     * as we cannot hard code a non-primitive object
-     * instance in Gizmo code); will be accessed
-     * from generated Gizmo code via getAnnotatedElementFor
-     */
-    static Map<String, AnnotatedElement> gizmoMemberAccessorNameToAnnotatedElement = new ConcurrentHashMap<>();
+    private static Map<String, MemberAccessor> memberAccessorMap = new HashMap<>();
 
     /**
      * Returns the generated class name for a given member.
@@ -62,45 +40,13 @@ public class GizmoMemberAccessorFactory {
                 + member.getDeclaringClass().getSimpleName() + "$__" + member.getName();
     }
 
-    /**
-     * Returns the Generic Type that a particular
-     * MemberAccessor should return. Used in generated
-     * Gizmo code.
-     *
-     * @param gizmoMemberAccessorName The MemberAccessor that is being queried
-     * @return The generic type gizmoMemberAccessorName should return
-     *         in MemberAccessor.getGenericType
-     */
-    public static Type getGenericTypeFor(String gizmoMemberAccessorName) {
-        return gizmoMemberAccessorNameToGenericType.get(gizmoMemberAccessorName);
-    }
-
-    /**
-     * Returns the AnnotatedElement that a particular
-     * MemberAccessor should return. Used in generated
-     * Gizmo code.
-     *
-     * @param gizmoMemberAccessorName The MemberAccessor that is being queried
-     * @return The AnnotatedElement gizmoMemberAccessorName should return
-     *         in MemberAccessor.getAnnotatedElement
-     */
-    public static AnnotatedElement getAnnotatedElementFor(String gizmoMemberAccessorName) {
-        return gizmoMemberAccessorNameToAnnotatedElement.get(gizmoMemberAccessorName);
-    }
-
-    public static void usePregeneratedMaps(Map<String, MemberAccessor> memberAccessorMap,
-            Map<String, Type> gizmoMemberAccessorNameToGenericType,
-            Map<String, AnnotatedElement> gizmoMemberAccessorNameToAnnotatedElement) {
+    public static void usePregeneratedMemberAccessorMap(Map<String, MemberAccessor> memberAccessorMap) {
         GizmoMemberAccessorFactory.memberAccessorMap = memberAccessorMap;
-        GizmoMemberAccessorFactory.gizmoMemberAccessorNameToGenericType = gizmoMemberAccessorNameToGenericType;
-        GizmoMemberAccessorFactory.gizmoMemberAccessorNameToAnnotatedElement = gizmoMemberAccessorNameToAnnotatedElement;
     }
 
     public static MemberAccessor buildGizmoMemberAccessor(Member member, Class<? extends Annotation> annotationClass) {
         String gizmoMemberAccessorClassName = getGeneratedClassName(member);
-        if (memberAccessorMap.containsKey(gizmoMemberAccessorClassName)) {
-            return memberAccessorMap.get(gizmoMemberAccessorClassName);
-        } else {
+        return memberAccessorMap.computeIfAbsent(gizmoMemberAccessorClassName, key -> {
             try {
                 // Check if Gizmo on the classpath by verifying we can access one of its classes
                 Class.forName("io.quarkus.gizmo.ClassCreator", false,
@@ -112,9 +58,8 @@ public class GizmoMemberAccessorFactory {
                         "Maybe add a dependency to io.quarkus.gizmo:gizmo.");
             }
             MemberAccessor accessor = GizmoMemberAccessorImplementor.createAccessorFor(member, annotationClass);
-            memberAccessorMap.put(gizmoMemberAccessorClassName, accessor);
             return accessor;
-        }
+        });
     }
 
     private GizmoMemberAccessorFactory() {
