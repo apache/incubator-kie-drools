@@ -175,6 +175,15 @@ public class ModelToGraphConverter {
         Object value = constraint.getValue();
         Object modifiedValue = modifiedProperty.getValue();
 
+        if (modifiedValue == null || value == null) {
+            return Link.Type.UNKNOWN;
+        }
+
+        if (value instanceof Number && modifiedValue instanceof Number) {
+            value = ((Number) value).doubleValue();
+            modifiedValue = ((Number) modifiedValue).doubleValue();
+        }
+
         switch (constraint.getType()) {
             case EQUAL:
                 if (modifiedValue.equals(value)) {

@@ -23,9 +23,16 @@ import org.drools.impact.analysis.model.Rule;
 
 public class Node {
 
+    public enum Status {
+        NONE,
+        CHANGED,
+        IMPACTED
+    }
+
     private String packageName;
     private String ruleName;
     private Rule rule;
+    protected Status status;
 
     private Set<Link> incomingLinks;
     private Set<Link> outgoingLinks;
@@ -36,6 +43,18 @@ public class Node {
         this.rule = rule;
         incomingLinks = new HashSet<>();
         outgoingLinks = new HashSet<>();
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    public String getId() {
+        return getFqdn();
     }
 
     public String getFqdn() {
