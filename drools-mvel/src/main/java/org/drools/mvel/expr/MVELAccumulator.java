@@ -100,7 +100,7 @@ public class MVELAccumulator
     /* (non-Javadoc)
      * @see org.kie.spi.Accumulator#createContext()
      */
-    public Serializable createContext() {
+    public Object createContext() {
         return new MVELAccumulatorContext( );
     }
 

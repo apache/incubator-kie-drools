@@ -75,8 +75,8 @@ public class MultiAccumulate extends Accumulate {
         return this.accumulators;
     }
 
-    public Serializable[] createFunctionContext() {
-        Serializable[] ctxs = new Serializable[this.accumulators.length];
+    public Object[] createFunctionContext() {
+        Object[] ctxs = new Object[this.accumulators.length];
         for ( int i = 0; i < ctxs.length; i++ ) {
             ctxs[i] = this.accumulators[i].createContext();
         }
@@ -84,18 +84,20 @@ public class MultiAccumulate extends Accumulate {
     }
 
     public Object init(final Object workingMemoryContext,
-                       final Object context,
+                       final Object accContext,
+                       Object funcContext,
                        final Tuple leftTuple,
                        final WorkingMemory workingMemory) {
+        Object[] functionContext = (Object[]) funcContext;
+
         for ( int i = 0; i < this.accumulators.length; i++ ) {
-            Object[] functionContext = (Object[]) ((AccumulateContextEntry)context).getFunctionContext();
             functionContext[i] = this.accumulators[i].init( ((Object[])workingMemoryContext)[i],
                                                             functionContext[i],
                                                             leftTuple,
                                                             this.requiredDeclarations,
                                                             workingMemory );
         }
-        return context;
+        return funcContext;
     }
 
     public Object accumulate(final Object workingMemoryContext,

@@ -14,6 +14,10 @@
 
 package org.drools.modelcompiler;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -23,14 +27,20 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.ToIntBiFunction;
+import java.util.function.ToIntFunction;
 
 import org.assertj.core.api.Assertions;
+import org.drools.core.WorkingMemory;
 import org.drools.core.base.accumulators.CountAccumulateFunction;
 import org.drools.core.base.accumulators.IntegerMaxAccumulateFunction;
 import org.drools.core.base.accumulators.IntegerSumAccumulateFunction;
 import org.drools.core.common.GroupByFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
+import org.drools.core.rule.Declaration;
+import org.drools.core.spi.Accumulator;
+import org.drools.core.spi.Tuple;
 import org.drools.model.DSL;
 import org.drools.model.Global;
 import org.drools.model.Index;
@@ -64,6 +74,119 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 public class GroupByTest {
+
+    @Test
+    public void providedInstance() throws Exception {
+        Global<Map> var_results = D.globalOf(Map.class, "defaultpkg", "results");
+
+        Variable<String> var_$key = D.declarationOf(String.class);
+        Variable<Person> var_$p = D.declarationOf(Person.class);
+        Variable<Integer> var_$sumOfAges = D.declarationOf(Integer.class);
+
+        Rule rule1 = D.rule("R1").build(
+              D.groupBy(
+                    // Patterns
+                    D.pattern(var_$p).watch("age"),
+                    // Grouping Function
+                    var_$p, var_$key, person -> person.getName().substring(0, 1),
+                    // Accumulate Result (can be more than one)
+                    D.accFunction(() -> sumA(Person::getAge)).as(var_$sumOfAges)),
+              // FilterIntegerSumAccumulateFunction
+              D.pattern(var_$sumOfAges)
+               .expr($sumOfAges -> EvaluationUtil.greaterThanNumbers($sumOfAges, 36)),
+              // Consequence
+              D.on(var_$key, var_results, var_$sumOfAges)
+               .execute(($key, results, $sumOfAges) -> results.put($key, $sumOfAges))
+                                       );
+
+        Model model = new ModelImpl().addRule( rule1 ).addGlobal( var_results );
+        KieSession ksession = KieBaseBuilder.createKieBaseFromModel( model ).newKieSession();
+
+        Map results = new HashMap();
+        ksession.setGlobal( "results", results );
+
+        ksession.insert(new Person("Mark", 42));
+        ksession.insert(new Person("Edson", 38));
+        FactHandle meFH = ksession.insert(new Person("Mario", 45));
+        ksession.insert(new Person("Maciej", 39));
+        ksession.insert(new Person("Edoardo", 33));
+        FactHandle geoffreyFH = ksession.insert(new Person("Geoffrey", 35));
+        ksession.fireAllRules();
+
+        assertEquals( 2, results.size() );
+        assertEquals( 71, results.get("E") );
+        assertEquals( 126, results.get("M") );
+        results.clear();
+
+        ksession.delete( meFH );
+        ksession.fireAllRules();
+
+        assertEquals( 1, results.size() );
+        assertEquals( 81, results.get("M") );
+        results.clear();
+
+        ksession.update(geoffreyFH, new Person("Geoffrey", 40));
+        ksession.insert(new Person("Matteo", 38));
+        ksession.fireAllRules();
+
+        assertEquals( 2, results.size() );
+        assertEquals( 40, results.get("G") );
+        assertEquals( 119, results.get("M") );
+    }
+
+    public static <A> SumAccumulator sumA(ToIntFunction<? super A> func) {
+        return new SumAccumulator(func);
+    }
+
+    public static class SumAccumulator<C> implements Accumulator { //extends AbstractAccumulateFunction<C> {
+        //UniConstraintCollector<A, ResultContainer_, Result_> collector;
+        private ToIntFunction func;
+
+        public <A> SumAccumulator(ToIntFunction<? super A> func) {
+            this.func = func;
+        }
+
+        @Override public Object createWorkingMemoryContext() {
+            return null;
+        }
+
+        @Override public Object createContext() {
+            return new int[1];
+        }
+
+        @Override public Object init(Object workingMemoryContext, Object context, Tuple leftTuple, Declaration[] declarations, WorkingMemory workingMemory) {
+            ((int[])context)[0] = 0;
+            return context;
+        }
+
+        @Override public Object accumulate(Object workingMemoryContext, Object context, Tuple leftTuple, InternalFactHandle handle, Declaration[] declarations, Declaration[] innerDeclarations, WorkingMemory workingMemory) {
+            int[] ctx = (int[]) context;
+
+            int v = func.applyAsInt(handle.getObject());
+            ctx[0] += v;
+
+            Runnable undo = () -> ctx[0] -= v;
+
+            return undo;
+        }
+
+        @Override public boolean supportsReverse() {
+            return true;
+        }
+
+        @Override public boolean tryReverse(Object workingMemoryContext, Object context, Tuple leftTuple, InternalFactHandle handle, Object value, Declaration[] declarations, Declaration[] innerDeclarations, WorkingMemory workingMemory) {
+            if (value!=null) {
+                ((Runnable) value).run();
+            }
+            return true;
+        }
+
+        @Override public Object getResult(Object workingMemoryContext, Object context, Tuple leftTuple, Declaration[] declarations, WorkingMemory workingMemory) {
+            int[] ctx = (int[]) context;
+            return ctx[0];
+        }
+    }
+
 
     @Test
     public void testSumPersonAgeGroupByInitialWithAcc() throws Exception {
