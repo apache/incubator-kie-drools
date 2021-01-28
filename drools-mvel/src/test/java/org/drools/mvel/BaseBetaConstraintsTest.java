@@ -85,7 +85,7 @@ public abstract class BaseBetaConstraintsTest {
             throw new RuntimeException( "could not invoke constructor for " + cls.getName() );
         }
 
-        betaConstraints.initIndexes(depth, betaNodeType);
+        betaConstraints.initIndexes(depth, betaNodeType, config);
 
         //BetaConstraints betaConstraints = new DefaultBetaConstraints(constraints, config );
 
@@ -95,7 +95,7 @@ public abstract class BaseBetaConstraintsTest {
 
         // get indexed positions
         for ( int i = 0; i < constraints.length && list.size() < depth; i++ ) {
-            if ( ((IndexableConstraint)constraints[i]).isIndexable(betaNodeType) ) {
+            if ( ((IndexableConstraint)constraints[i]).isIndexable(betaNodeType, config) ) {
                 list.add( i );
             }
         }

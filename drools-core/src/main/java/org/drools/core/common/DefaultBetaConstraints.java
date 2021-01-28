@@ -97,18 +97,18 @@ public class DefaultBetaConstraints
             indexed = 0;
         } else {
             int depth = config.getCompositeKeyDepth();
-            if ( !compositeAllowed( constraints, betaNodeType ) ) {
+            if ( !compositeAllowed( constraints, betaNodeType, config ) ) {
                 // UnificationRestrictions cannot be allowed in composite indexes
                 // We also ensure that if there is a mixture that standard restriction is first
                 depth = 1;
             }
-            initIndexes( depth, betaNodeType );
+            initIndexes( depth, betaNodeType, config );
         }
     }
 
-    public void initIndexes(int depth, short betaNodeType) {
+    public void initIndexes(int depth, short betaNodeType, RuleBaseConfiguration config) {
         indexed = 0;
-        boolean[] indexable = isIndexableForNode(indexPrecedenceOption, betaNodeType, depth, constraints);
+        boolean[] indexable = isIndexableForNode(indexPrecedenceOption, betaNodeType, depth, constraints, config);
         for (boolean i : indexable) {
             if (i) {
                 indexed++;

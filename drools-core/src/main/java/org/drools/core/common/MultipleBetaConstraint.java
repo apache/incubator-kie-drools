@@ -74,17 +74,17 @@ public abstract class MultipleBetaConstraint implements BetaConstraints {
             indexed = new boolean[constraints.length];
         } else {
             int depth = config.getCompositeKeyDepth();
-            if ( !compositeAllowed( constraints, betaNodeType ) ) {
+            if ( !compositeAllowed( constraints, betaNodeType, config ) ) {
                 // UnificationRestrictions cannot be allowed in composite indexes
                 // We also ensure that if there is a mixture that standard restriction is first
                 depth = 1;
             }
-            initIndexes( depth, betaNodeType );
+            initIndexes( depth, betaNodeType, config );
         }
     }
 
-    public final void initIndexes(int depth, short betaNodeType) {
-        indexed = isIndexableForNode(indexPrecedenceOption, betaNodeType, depth, constraints);
+    public final void initIndexes(int depth, short betaNodeType, RuleBaseConfiguration config) {
+        indexed = isIndexableForNode(indexPrecedenceOption, betaNodeType, depth, constraints, config);
     }
 
     public final boolean isIndexed() {
