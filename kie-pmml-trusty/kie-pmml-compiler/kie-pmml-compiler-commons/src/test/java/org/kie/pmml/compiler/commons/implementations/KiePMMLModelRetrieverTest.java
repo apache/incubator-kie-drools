@@ -18,6 +18,8 @@ package org.kie.pmml.compiler.commons.implementations;
 
 import java.util.Optional;
 
+import org.dmg.pmml.DataDictionary;
+import org.dmg.pmml.DataField;
 import org.dmg.pmml.MiningSchema;
 import org.dmg.pmml.Output;
 import org.dmg.pmml.PMML;
@@ -32,7 +34,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.compiler.commons.implementations.KiePMMLModelRetriever.getFromCommonDataAndTransformationDictionaryAndModel;
 import static org.kie.pmml.compiler.commons.implementations.KiePMMLModelRetriever.getFromCommonDataAndTransformationDictionaryAndModelWithSources;
+import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getDataField;
 import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getPMMLWithRandomTestModel;
+import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getRandomDataType;
 import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getRandomMiningSchema;
 import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getRandomOutput;
 import static org.kie.test.util.filesystem.FileUtils.getFileInputStream;
@@ -86,20 +90,25 @@ public class KiePMMLModelRetrieverTest {
         assertTrue(toPopulate.getMiningFields().isEmpty());
         assertTrue(toPopulate.getOutputFields().isEmpty());
         final MiningSchema miningSchema = getRandomMiningSchema();
+        DataDictionary dataDictionary = new DataDictionary();
+        dataDictionary.addDataFields(miningSchema.getMiningFields().stream()
+                                             .map(miningField -> getDataField(miningField.getName().getValue(),
+                                                                              miningField.getOpType(),
+                                                                              getRandomDataType())).toArray(DataField[]::new));
         final Output output = getRandomOutput();
-        KiePMMLTestModel populated = (KiePMMLTestModel) KiePMMLModelRetriever.getPopulatedWithPMMLModelFields(toPopulate, miningSchema, output);
+        KiePMMLTestModel populated = (KiePMMLTestModel) KiePMMLModelRetriever.getPopulatedWithPMMLModelFields(toPopulate, dataDictionary, miningSchema, output);
         assertEquals(miningSchema.getMiningFields().size(), populated.getMiningFields().size());
         assertEquals(output.getOutputFields().size(), populated.getOutputFields().size());
         toPopulate = new KiePMMLTestModel();
-        populated = (KiePMMLTestModel) KiePMMLModelRetriever.getPopulatedWithPMMLModelFields(toPopulate, miningSchema, null);
+        populated = (KiePMMLTestModel) KiePMMLModelRetriever.getPopulatedWithPMMLModelFields(toPopulate, dataDictionary, miningSchema, null);
         assertEquals(miningSchema.getMiningFields().size(), populated.getMiningFields().size());
         assertTrue(populated.getOutputFields().isEmpty());
         toPopulate = new KiePMMLTestModel();
-        populated = (KiePMMLTestModel) KiePMMLModelRetriever.getPopulatedWithPMMLModelFields(toPopulate, null, output);
+        populated = (KiePMMLTestModel) KiePMMLModelRetriever.getPopulatedWithPMMLModelFields(toPopulate, dataDictionary, null, output);
         assertTrue(populated.getMiningFields().isEmpty());
         assertEquals(output.getOutputFields().size(), populated.getOutputFields().size());
         toPopulate = new KiePMMLTestModel();
-        populated = (KiePMMLTestModel) KiePMMLModelRetriever.getPopulatedWithPMMLModelFields(toPopulate, null, null);
+        populated = (KiePMMLTestModel) KiePMMLModelRetriever.getPopulatedWithPMMLModelFields(toPopulate, dataDictionary, null, null);
         assertTrue(populated.getMiningFields().isEmpty());
         assertTrue(populated.getOutputFields().isEmpty());
     }

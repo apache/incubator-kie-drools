@@ -187,7 +187,11 @@ public class KiePMMLModelFactoryUtils {
                     Expression opType = oPT != null ?
                             new NameExpr(oPT.getClass().getName() + "." + oPT.name())
                             : new NullLiteralExpr();
-                    toReturn.setArguments(NodeList.nodeList(name, usageType, opType));
+                    DATA_TYPE dtT = miningField.getDataType();
+                    Expression dataType = dtT != null ?
+                            new NameExpr(dtT.getClass().getName() + "." + dtT.name())
+                            : new NullLiteralExpr();
+                    toReturn.setArguments(NodeList.nodeList(name, usageType, opType, dataType));
                     return toReturn;
                 })
                 .collect(Collectors.toList());

@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.MiningField;
 import org.dmg.pmml.OpType;
@@ -35,6 +36,7 @@ import org.kie.pmml.api.enums.RESULT_FEATURE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getDataField;
 import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getDataTypes;
 import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getMiningField;
 import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getParameterFields;
@@ -70,13 +72,15 @@ public class ModelUtilsTest {
         final String fieldName =  "fieldName";
         final MiningField.UsageType usageType = MiningField.UsageType.ACTIVE;
         final MiningField toConvert = getMiningField(fieldName, usageType);
-        org.kie.pmml.api.models.MiningField retrieved = ModelUtils.convertToKieMiningField(toConvert);
+        final DataField dataField = getDataField(fieldName, OpType.CATEGORICAL, DataType.STRING);
+        org.kie.pmml.api.models.MiningField retrieved = ModelUtils.convertToKieMiningField(toConvert, dataField);
         assertNotNull(retrieved);
         assertEquals(fieldName, retrieved.getName());
         assertEquals(FIELD_USAGE_TYPE.ACTIVE, retrieved.getUsageType());
+        assertEquals(DATA_TYPE.STRING, retrieved.getDataType());
         assertNull(retrieved.getOpType());
         toConvert.setOpType(OpType.CATEGORICAL);
-        retrieved = ModelUtils.convertToKieMiningField(toConvert);
+        retrieved = ModelUtils.convertToKieMiningField(toConvert, dataField);
         assertEquals(OP_TYPE.CATEGORICAL, retrieved.getOpType());
     }
 

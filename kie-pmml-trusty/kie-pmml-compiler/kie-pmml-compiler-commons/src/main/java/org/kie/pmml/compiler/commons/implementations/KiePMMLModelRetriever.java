@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.dmg.pmml.DataDictionary;
+import org.dmg.pmml.DataField;
 import org.dmg.pmml.MiningSchema;
 import org.dmg.pmml.Model;
 import org.dmg.pmml.Output;
@@ -36,6 +37,8 @@ import org.kie.pmml.compiler.api.provider.ModelImplementationProviderFinder;
 import org.kie.pmml.compiler.commons.utils.ModelUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.kie.pmml.compiler.commons.utils.ModelUtils.convertToKieMiningField;
 
 public class KiePMMLModelRetriever {
 
@@ -71,7 +74,7 @@ public class KiePMMLModelRetriever {
                                                                       transformationDictionary,
                                                                       model,
                                                                       hasClassloader))
-                .map(kiePMMLModel -> getPopulatedWithPMMLModelFields(kiePMMLModel, model.getMiningSchema(), model.getOutput()))
+                .map(kiePMMLModel -> getPopulatedWithPMMLModelFields(kiePMMLModel,  dataDictionary, model.getMiningSchema(), model.getOutput()))
                 .findFirst();
     }
 
@@ -99,15 +102,25 @@ public class KiePMMLModelRetriever {
                                                                                  dataDictionary,
                                                                                  transformationDictionary,
                                                                                  model,
-                                                                                 hasClassloader)).findFirst();
+                                                                                 hasClassloader))
+                .map(kiePMMLModel -> getPopulatedWithPMMLModelFields(kiePMMLModel,  dataDictionary, model.getMiningSchema(), model.getOutput()))
+                .findFirst();
     }
 
-    static KiePMMLModel getPopulatedWithPMMLModelFields(final KiePMMLModel toPopulate, final MiningSchema miningSchema,
+    static KiePMMLModel getPopulatedWithPMMLModelFields(final KiePMMLModel toPopulate,
+                                                        final DataDictionary dataDictionary,
+                                                        final MiningSchema miningSchema,
                                                         final Output output) {
         if (miningSchema != null) {
             final List<MiningField> miningFields = miningSchema.getMiningFields()
                     .stream()
-                    .map(ModelUtils::convertToKieMiningField)
+                    .map(miningField -> {
+                        DataField dataField =  dataDictionary.getDataFields().stream()
+                                .filter(df -> df.getName().equals(miningField.getName()))
+                                .findFirst()
+                                .orElseThrow(() -> new KiePMMLException("Cannot find " + miningField.getName() + " in DataDictionary"));
+                        return convertToKieMiningField(miningField, dataField);
+                    })
                     .collect(Collectors.toList());
             toPopulate.setMiningFields(miningFields);
         }

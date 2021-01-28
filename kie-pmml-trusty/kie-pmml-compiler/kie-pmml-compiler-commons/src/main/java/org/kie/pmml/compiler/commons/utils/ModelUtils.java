@@ -25,6 +25,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.dmg.pmml.DataDictionary;
+import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.MiningField;
 import org.dmg.pmml.MiningSchema;
@@ -37,6 +38,7 @@ import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.api.enums.FIELD_USAGE_TYPE;
 import org.kie.pmml.api.enums.OP_TYPE;
 import org.kie.pmml.api.enums.RESULT_FEATURE;
+import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameOpType;
 
@@ -178,31 +180,41 @@ public class ModelUtils {
     /**
      * Return a <code>List&lt;org.kie.pmml.api.models.MiningField&glt;</code> out of a <code>org.dmg.pmml.MiningSchema</code> one
      * @param toConvert
+     * @param dataDictionary
      * @return
      */
-    public static List<org.kie.pmml.api.models.MiningField> convertToKieMiningFieldList(final MiningSchema toConvert) {
+    public static List<org.kie.pmml.api.models.MiningField> convertToKieMiningFieldList(final MiningSchema toConvert, final DataDictionary dataDictionary) {
         if (toConvert == null) {
             return Collections.emptyList();
         }
         return toConvert.getMiningFields()
                 .stream()
-                .map(ModelUtils::convertToKieMiningField)
+                .map(miningField -> {
+                    DataField dataField =  dataDictionary.getDataFields().stream()
+                            .filter(df -> df.getName().equals(miningField.getName()))
+                            .findFirst()
+                            .orElseThrow(() -> new KiePMMLException("Cannot find " + miningField.getName() + " in DataDictionary"));
+                    return convertToKieMiningField(miningField, dataField);
+                })
                 .collect(Collectors.toList());
     }
 
     /**
      * Return a <code>org.kie.pmml.api.models.MiningField</code> out of a <code>org.dmg.pmml.MiningField</code> one
      * @param toConvert
+     * @param dataField
      * @return
      */
-    public static org.kie.pmml.api.models.MiningField convertToKieMiningField(final MiningField toConvert) {
+    public static org.kie.pmml.api.models.MiningField convertToKieMiningField(final MiningField toConvert, final DataField dataField) {
         final String name = toConvert.getName() != null ? toConvert.getName().getValue() : null;
         final FIELD_USAGE_TYPE fieldUsageType = toConvert.getUsageType() != null ?
                 FIELD_USAGE_TYPE.byName(toConvert.getUsageType().value()) : null;
         final OP_TYPE opType = toConvert.getOpType() != null ? OP_TYPE.byName(toConvert.getOpType().value()) : null;
+        final DATA_TYPE dataType = dataField.getDataType() != null ? DATA_TYPE.byName(dataField.getDataType().value()) : null;
         return new org.kie.pmml.api.models.MiningField(name,
                                                        fieldUsageType,
-                                                       opType);
+                                                       opType,
+                                                       dataType);
     }
 
     /**
