@@ -36,6 +36,7 @@ import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.builder.model.RuleTemplateModel;
+import org.kie.api.conf.BetaRangeIndexOption;
 import org.kie.api.conf.DeclarativeAgendaOption;
 import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.conf.EventProcessingOption;
@@ -68,6 +69,8 @@ public class KieBaseModelImpl
     private SequentialOption             sequential = SequentialOption.NO;
 
     private SessionsPoolOption sessionsPool = SessionsPoolOption.NO;
+
+    private BetaRangeIndexOption         betaRangeIndexOption = BetaRangeIndexOption.DISABLED;
 
     private Map<String, KieSessionModel> kSessions = new HashMap<String, KieSessionModel>();
 
@@ -280,6 +283,17 @@ public class KieBaseModelImpl
     }
 
     @Override
+    public BetaRangeIndexOption getBetaRangeIndexOption() {
+        return betaRangeIndexOption;
+    }
+
+    @Override
+    public KieBaseModel setBetaRangeIndexOption(BetaRangeIndexOption betaRangeIndexOption) {
+        this.betaRangeIndexOption = betaRangeIndexOption;
+        return this;
+    }
+
+    @Override
     public SequentialOption getSequential() {
         return sequential;
     }
@@ -367,6 +381,9 @@ public class KieBaseModelImpl
             if ( kBase.getSessionsPool() != null ) {
                 writer.addAttribute( "sessionsPool", "" + kBase.getSessionsPool().getSize() );
             }
+            if ( kBase.getBetaRangeIndexOption() != null ) {
+                writer.addAttribute( "betaRangeIndex", kBase.getBetaRangeIndexOption().toString().toLowerCase() );
+            }
 
             if ( kBase.getScope() != null ) {
                 writer.addAttribute( "scope", kBase.getScope() );
@@ -446,6 +463,11 @@ public class KieBaseModelImpl
             String sessionsPool = reader.getAttribute( "sessionsPool" );
             if ( sessionsPool != null ) {
                 kBase.setSessionsPool( SessionsPoolOption.get( Integer.parseInt( sessionsPool ) ) );
+            }
+
+            String betaRangeIndex = reader.getAttribute( "betaRangeIndex" );
+            if ( betaRangeIndex != null ) {
+                kBase.setBetaRangeIndexOption( BetaRangeIndexOption.determineBetaRangeIndex( betaRangeIndex ) );
             }
 
             String scope = reader.getAttribute( "scope" );

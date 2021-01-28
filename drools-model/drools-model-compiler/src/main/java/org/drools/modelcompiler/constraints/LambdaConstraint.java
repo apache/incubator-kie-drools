@@ -22,6 +22,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.List;
 
+import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.field.ObjectFieldImpl;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
@@ -70,7 +71,14 @@ public class LambdaConstraint extends AbstractConstraint {
                 indexingDeclaration = evaluator.getRequiredDeclarations()[0];
                 if ( indexingDeclaration.getExtractor() instanceof PatternExtractor ) {
                     indexingDeclaration = indexingDeclaration.clone();
-                    indexingDeclaration.setReadAccessor( new LambdaReadAccessor( index.getIndexId(), index.getIndexedClass(), (( BetaIndex ) index).getRightOperandExtractor() ) );
+                    org.drools.model.Index.ConstraintType constraintType = index.getConstraintType();
+                    Class<?> accessorFieldType;
+                    if (constraintType.isComparison() && ((BetaIndex) index).getRightReturnType() != null) {
+                        accessorFieldType = ((BetaIndex) index).getRightReturnType();
+                    } else {
+                        accessorFieldType = index.getIndexedClass();
+                    }
+                    indexingDeclaration.setReadAccessor( new LambdaReadAccessor( index.getIndexId(), accessorFieldType, (( BetaIndex ) index).getRightOperandExtractor() ) );
                 }
             }
         }
@@ -171,8 +179,8 @@ public class LambdaConstraint extends AbstractConstraint {
     }
 
     @Override
-    public boolean isIndexable( short nodeType ) {
-        return getConstraintType().isIndexableForNode(nodeType);
+    public boolean isIndexable( short nodeType, RuleBaseConfiguration config ) {
+        return getConstraintType().isIndexableForNode(nodeType, this, config);
     }
 
     @Override
@@ -212,6 +220,11 @@ public class LambdaConstraint extends AbstractConstraint {
     @Override
     public InternalReadAccessor getFieldExtractor() {
         return readAccessor;
+    }
+
+    @Override
+    public Declaration getIndexingDeclaration() {
+        return indexingDeclaration;
     }
 
     public static class LambdaContextEntry implements ContextEntry {

@@ -216,7 +216,7 @@ public class TupleRBTree<K extends Comparable< ? super K>> {
         }
 
         if ( lowerNearest.key.compareTo( upperNearest.key  ) > 0 ) {
-            upperNearest = lowerNearest;
+            return FastIterator.EMPTY;
         }
 
         return new RangeFastIterator( lowerNearest, upperNearest );

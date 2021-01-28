@@ -82,6 +82,18 @@ public interface Index<A, V> {
                     return this;
             }
         }
+
+        public boolean isComparison() {
+            return isAscending() || isDescending();
+        }
+
+        public boolean isAscending() {
+            return this == GREATER_THAN || this == GREATER_OR_EQUAL;
+        }
+
+        public boolean isDescending() {
+            return this == LESS_THAN || this == LESS_OR_EQUAL;
+        }
     }
 
     IndexType getIndexType();

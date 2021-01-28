@@ -29,6 +29,7 @@ import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.builder.model.KieSessionModel.KieSessionType;
 import org.kie.api.builder.model.ListenerModel;
 import org.kie.api.builder.model.WorkItemHandlerModel;
+import org.kie.api.conf.BetaRangeIndexOption;
 import org.kie.api.conf.DeclarativeAgendaOption;
 import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.conf.EventProcessingOption;
@@ -63,6 +64,7 @@ public class KieModuleModelTest {
                 .setDeclarativeAgenda( DeclarativeAgendaOption.ENABLED )
                 .setSequential( SequentialOption.YES )
                 .setSessionsPool( SessionsPoolOption.get(3) )
+                .setBetaRangeIndexOption(BetaRangeIndexOption.ENABLED)
                 .addInclude("OtherKBase")
                 .addPackage("org.kie.pkg1")
                 .addPackage("org.kie.pkg2");
@@ -115,6 +117,7 @@ public class KieModuleModelTest {
         assertEquals(DeclarativeAgendaOption.ENABLED, kieBaseModelXML.getDeclarativeAgenda());
         assertEquals(SequentialOption.YES, kieBaseModelXML.getSequential());
         assertEquals(SessionsPoolOption.get(3), kieBaseModelXML.getSessionsPool());
+        assertEquals(BetaRangeIndexOption.ENABLED, kieBaseModelXML.getBetaRangeIndexOption());
         assertFalse(kieBaseModelXML.isDefault());
         assertEquals("org.kie.pkg1", kieBaseModelXML.getPackages().get(0));
         assertEquals("org.kie.pkg2", kieBaseModelXML.getPackages().get(1));
