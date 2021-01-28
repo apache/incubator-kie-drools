@@ -34,6 +34,7 @@ import org.dmg.pmml.PMML;
 import org.dmg.pmml.tree.TreeModel;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.kie.pmml.compiler.commons.mocks.HasClassLoaderMock;
 import org.kie.pmml.compiler.testutils.TestUtils;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsAST;
 import org.kie.pmml.models.drools.tree.model.KiePMMLTreeModel;
@@ -78,7 +79,8 @@ public class KiePMMLTreeModelFactoryTest {
                                                                                  pmml.getTransformationDictionary(),
                                                                                  treeModel,
                                                                                  fieldTypeMap,
-                                                                                 Thread.currentThread().getContextClassLoader());
+                                                                                 PACKAGE_NAME,
+                                                                                 new HasClassLoaderMock());
         assertNotNull(retrieved);
         assertEquals(treeModel.getModelName(), retrieved.getName());
         assertEquals(TARGET_FIELD, retrieved.getTargetField());

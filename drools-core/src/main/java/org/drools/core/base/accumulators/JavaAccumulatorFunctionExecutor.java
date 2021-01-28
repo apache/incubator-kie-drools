@@ -83,12 +83,13 @@ public class JavaAccumulatorFunctionExecutor
     /* (non-Javadoc)
      * @see org.kie.spi.Accumulator#init(java.lang.Object, org.kie.spi.Tuple, org.kie.rule.Declaration[], org.kie.WorkingMemory)
      */
-    public void init(Object workingMemoryContext,
+    public Object init(Object workingMemoryContext,
                      Object context,
                      Tuple leftTuple,
                      Declaration[] declarations,
-                     WorkingMemory workingMemory) throws Exception {
-        this.function.init( ((JavaAccumulatorFunctionContext) context).context );
+                     WorkingMemory workingMemory) {
+        ((JavaAccumulatorFunctionContext) context).context = this.function.initContext( ((JavaAccumulatorFunctionContext) context).context );
+        return context;
     }
 
     /* (non-Javadoc)
@@ -100,17 +101,18 @@ public class JavaAccumulatorFunctionExecutor
                            InternalFactHandle handle,
                            Declaration[] declarations,
                            Declaration[] innerDeclarations,
-                           WorkingMemory workingMemory) throws Exception {
-        final Object value = this.expression.evaluate( handle,
-                                                       leftTuple,
-                                                       declarations,
-                                                       innerDeclarations,
-                                                       workingMemory,
-                                                       workingMemoryContext ).getValue();
-        this.function.accumulate( ((JavaAccumulatorFunctionContext) context).context,
-                                  value );
-
-        return value;
+                           WorkingMemory workingMemory) {
+        try {
+            Object value = this.expression.evaluate( handle,
+                                                     leftTuple,
+                                                     declarations,
+                                                     innerDeclarations,
+                                                     workingMemory,
+                                                     workingMemoryContext ).getValue();
+            return this.function.accumulateValue( ((JavaAccumulatorFunctionContext) context).context, value );
+        } catch (Exception e) {
+            throw new RuntimeException( e );
+        }
     }
 
     public boolean tryReverse(Object workingMemoryContext,
@@ -120,7 +122,7 @@ public class JavaAccumulatorFunctionExecutor
                               Object value,
                               Declaration[] declarations,
                               Declaration[] innerDeclarations,
-                              WorkingMemory workingMemory) throws Exception {
+                              WorkingMemory workingMemory) {
         return this.function.tryReverse( ((JavaAccumulatorFunctionContext) context).context, value );
     }
 
@@ -131,8 +133,12 @@ public class JavaAccumulatorFunctionExecutor
                             Object context,
                             Tuple leftTuple,
                             Declaration[] declarations,
-                            WorkingMemory workingMemory) throws Exception {
-        return this.function.getResult( ((JavaAccumulatorFunctionContext) context).context );
+                            WorkingMemory workingMemory) {
+        try {
+            return this.function.getResult( ((JavaAccumulatorFunctionContext) context).context );
+        } catch (Exception e) {
+            throw new RuntimeException( e );
+        }
     }
 
     public boolean supportsReverse() {

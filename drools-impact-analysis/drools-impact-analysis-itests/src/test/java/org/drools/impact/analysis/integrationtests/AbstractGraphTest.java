@@ -39,7 +39,11 @@ public class AbstractGraphTest {
     }
 
     protected void generatePng(Graph graph) {
-        GraphImageGenerator generator = new GraphImageGenerator(getTestMethodName());
+        generatePng(graph, "");
+    }
+
+    protected void generatePng(Graph graph, String suffix) {
+        GraphImageGenerator generator = new GraphImageGenerator(getTestMethodName() + suffix);
         generator.generatePng(graph);
     }
 

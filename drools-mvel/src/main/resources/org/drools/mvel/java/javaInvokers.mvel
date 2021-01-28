@@ -175,21 +175,26 @@ public class @{invokerClassName} implements org.drools.core.spi.Accumulator, org
         return new @{ruleClassName}.@{className}();
     }
 
-    public void init(java.lang.Object workingMemoryContext,
+    public Object init(java.lang.Object workingMemoryContext,
                      java.lang.Object context,
                      org.drools.core.spi.Tuple tuple,
                      org.drools.core.rule.Declaration[] declarations,
-                     org.drools.core.WorkingMemory workingMemory) throws Exception {
+                     org.drools.core.WorkingMemory workingMemory) {
         @code{i0=0}@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) declarations[@{i0}].getValue( (org.drools.core.common.InternalWorkingMemory) workingMemory, tuple );
             @code{i0++}
         @end{}
         @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" );
         @end{}
 
-        ((@{ruleClassName}.@{className})context).init(
-            @foreach{declr : declarations} @{declr.identifier}@end{","}@if{globals != empty && declarations != empty},@end{}
-            @foreach{identifier : globals} @{identifier}@end{","} );
+        try {
+            ((@{ruleClassName}.@{className})context).init(
+                @foreach{declr : declarations} @{declr.identifier}@end{","}@if{globals != empty && declarations != empty},@end{}
+                @foreach{identifier : globals} @{identifier}@end{","} );
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
+        return context;
     }
 
     public Object accumulate(java.lang.Object workingMemoryContext,
@@ -198,7 +203,7 @@ public class @{invokerClassName} implements org.drools.core.spi.Accumulator, org
                            org.drools.core.common.InternalFactHandle handle,
                            org.drools.core.rule.Declaration[] declarations,
                            org.drools.core.rule.Declaration[] innerDeclarations,
-                           org.drools.core.WorkingMemory workingMemory) throws Exception {
+                           org.drools.core.WorkingMemory workingMemory) {
         @code{ i0 = 0 }@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) declarations[@{i0}].getValue( (org.drools.core.common.InternalWorkingMemory) workingMemory, tuple );
             @code{ i0++ }
         @end{}
@@ -213,13 +218,18 @@ public class @{invokerClassName} implements org.drools.core.spi.Accumulator, org
             @code{ i0++ }
           @end{}
         @end{}
-        return ((@{ruleClassName}.@{className})context).accumulate(
-            workingMemory,
-            handle,
-            innerDeclarations@if{declarations != empty},@end{}
-            @foreach{declr : declarations} @{declr.identifier}@end{","}@if{globals != empty},@end{}
-            @foreach{identifier: globals} @{identifier}@end{","}@if{innerDeclarations != empty},@end{}
-            @foreach{declr : innerDeclarations} @{declr.identifier}@end{","});
+
+        try {
+            return ((@{ruleClassName}.@{className})context).accumulate(
+                workingMemory,
+                handle,
+                innerDeclarations@if{declarations != empty},@end{}
+                @foreach{declr : declarations} @{declr.identifier}@end{","}@if{globals != empty},@end{}
+                @foreach{identifier: globals} @{identifier}@end{","}@if{innerDeclarations != empty},@end{}
+                @foreach{declr : innerDeclarations} @{declr.identifier}@end{","});
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public boolean tryReverse(java.lang.Object workingMemoryContext,
@@ -229,7 +239,7 @@ public class @{invokerClassName} implements org.drools.core.spi.Accumulator, org
                            java.lang.Object value,
                            org.drools.core.rule.Declaration[] declarations,
                            org.drools.core.rule.Declaration[] innerDeclarations,
-                           org.drools.core.WorkingMemory workingMemory) throws Exception {
+                           org.drools.core.WorkingMemory workingMemory) {
         if (!supportsReverse()) {
             return false;
         }
@@ -249,11 +259,15 @@ public class @{invokerClassName} implements org.drools.core.spi.Accumulator, org
           @end{}
         @end{}
 
-        ((@{ruleClassName}.@{className})context).reverse(
-            workingMemory,
-            handle,
-            value@if{globals != empty},@end{}
-            @foreach{identifier : globals} @{identifier}@end{","});
+        try {
+            ((@{ruleClassName}.@{className})context).reverse(
+                workingMemory,
+                handle,
+                value@if{globals != empty},@end{}
+                @foreach{identifier : globals} @{identifier}@end{","});
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
         return true;
     }
@@ -262,16 +276,20 @@ public class @{invokerClassName} implements org.drools.core.spi.Accumulator, org
                             java.lang.Object context,
                             org.drools.core.spi.Tuple tuple,
                             org.drools.core.rule.Declaration[] declarations,
-                            org.drools.core.WorkingMemory workingMemory) throws Exception {
+                            org.drools.core.WorkingMemory workingMemory) {
         @code{ i0 = 0 }@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) declarations[@{i0}].getValue( (org.drools.core.common.InternalWorkingMemory) workingMemory, tuple );
             @code{ i0++ }
         @end{}
         @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" );
         @end{}
 
-        return ((@{ruleClassName}.@{className})context).getResult(
-            @foreach{declr : declarations} @{declr.identifier}@end{","}@if{globals != empty && declarations != empty},@end{}
-            @foreach{identifier : globals} @{identifier}@end{","} );
+        try {
+            return ((@{ruleClassName}.@{className})context).getResult(
+                @foreach{declr : declarations} @{declr.identifier}@end{","}@if{globals != empty && declarations != empty},@end{}
+                @foreach{identifier : globals} @{identifier}@end{","} );
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public boolean supportsReverse() {

@@ -28,6 +28,7 @@ import org.kie.pmml.api.enums.RESULT_FEATURE;
  */
 public class KiePMMLOutputField extends AbstractKiePMMLComponent {
 
+    private static final long serialVersionUID = 2408750585433339543L;
     private RESULT_FEATURE resultFeature = RESULT_FEATURE.PREDICTED_VALUE;
     private String targetField = null;
     private Integer rank;

@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 
 import javax.xml.bind.JAXBException;
 
@@ -68,7 +67,8 @@ public class KiePMMLSegmentFactoryTest extends AbstractKiePMMLFactoryTest {
     @Test
     public void getSegments() {
         final List<Segment> segments = MINING_MODEL.getSegmentation().getSegments();
-        final List<KiePMMLSegment> retrieved = KiePMMLSegmentFactory.getSegments(DATA_DICTIONARY,
+        final List<KiePMMLSegment> retrieved = KiePMMLSegmentFactory.getSegments(PACKAGE_NAME,
+                                                                                 DATA_DICTIONARY,
                                                                                  TRANSFORMATION_DICTIONARY,
                                                                                  segments,
                                                                                  new HasKnowledgeBuilderMock(KNOWLEDGE_BUILDER));
@@ -82,7 +82,8 @@ public class KiePMMLSegmentFactoryTest extends AbstractKiePMMLFactoryTest {
     @Test
     public void getSegment() {
         final Segment segment = MINING_MODEL.getSegmentation().getSegments().get(0);
-        final KiePMMLSegment retrieved = KiePMMLSegmentFactory.getSegment(DATA_DICTIONARY,
+        final KiePMMLSegment retrieved = KiePMMLSegmentFactory.getSegment(PACKAGE_NAME,
+                                                                          DATA_DICTIONARY,
                                                                           TRANSFORMATION_DICTIONARY,
                                                                           segment,
                                                                           new HasKnowledgeBuilderMock(KNOWLEDGE_BUILDER));
@@ -92,10 +93,9 @@ public class KiePMMLSegmentFactoryTest extends AbstractKiePMMLFactoryTest {
     @Test
     public void getSegmentsSourcesMap() {
         final List<Segment> segments = MINING_MODEL.getSegmentation().getSegments();
-        final String packageName = "packagename";
         final List<KiePMMLModel> nestedModels = new ArrayList<>();
         final Map<String, String> retrieved = KiePMMLSegmentFactory.getSegmentsSourcesMap(
-                packageName,
+                PACKAGE_NAME,
                 DATA_DICTIONARY,
                 TRANSFORMATION_DICTIONARY,
                 segments,
@@ -111,9 +111,8 @@ public class KiePMMLSegmentFactoryTest extends AbstractKiePMMLFactoryTest {
     @Test
     public void getSegmentSourcesMap() {
         final Segment segment = MINING_MODEL.getSegmentation().getSegments().get(0);
-        final String packageName = "packagename";
         final List<KiePMMLModel> nestedModels = new ArrayList<>();
-        final Map<String, String> retrieved = KiePMMLSegmentFactory.getSegmentSourcesMap(packageName,
+        final Map<String, String> retrieved = KiePMMLSegmentFactory.getSegmentSourcesMap(PACKAGE_NAME,
                                                                                          DATA_DICTIONARY,
                                                                                          TRANSFORMATION_DICTIONARY,
                                                                                          segment,
@@ -126,12 +125,11 @@ public class KiePMMLSegmentFactoryTest extends AbstractKiePMMLFactoryTest {
     @Test
     public void getSegmentSourcesMapHasSourcesWithKiePMMLModelClass() {
         final Segment segment = MINING_MODEL.getSegmentation().getSegments().get(0);
-        final String packageName = "packagename";
         final String regressionModelName = "CategoricalVariablesRegression";
-        final String kiePMMLModelClass = packageName + "." + regressionModelName;
+        final String kiePMMLModelClass = PACKAGE_NAME + "." + regressionModelName;
         final Map<String, String> sourcesMap = new HashMap<>();
         sourcesMap.put(kiePMMLModelClass, String.format("public class %s {}", regressionModelName));
-        final Map<String, String> retrieved = KiePMMLSegmentFactory.getSegmentSourcesMap(packageName,
+        final Map<String, String> retrieved = KiePMMLSegmentFactory.getSegmentSourcesMap(PACKAGE_NAME,
                                                                                          DATA_DICTIONARY,
                                                                                          segment);
         commonEvaluateMap(retrieved, segment);

@@ -74,7 +74,7 @@ public class LongMaxAccumulateFunction extends AbstractAccumulateFunction<LongMa
     }
 
     @Override
-    public boolean tryReverse( MaxData data, Object value ) throws Exception {
+    public boolean tryReverse( MaxData data, Object value ) {
         if (value != null) {
             Long number = (Long)value;
             return data.max > number;

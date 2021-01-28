@@ -13,10 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.models.drools.scorecard.evaluator;
+package org.kie.pmml.models.drools.scorecard.evaluator.implementations;
+
+import java.util.Map;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.reflective.classloader.ProjectClassLoader;
 import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.memorycompiler.KieMemoryCompiler;
+import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.kie.dependencies.HasKnowledgeBuilder;
 
 public class HasKnowledgeBuilderMock implements HasKnowledgeBuilder {
@@ -35,5 +40,21 @@ public class HasKnowledgeBuilderMock implements HasKnowledgeBuilder {
     @Override
     public KnowledgeBuilder getKnowledgeBuilder() {
         return knowledgeBuilder;
+    }
+
+    @Override
+    public Class<?> compileAndLoadClass(Map<String, String> sourcesMap, String fullClassName) {
+        ClassLoader classLoader = getClassLoader();
+        if (!(classLoader instanceof ProjectClassLoader)) {
+            throw new IllegalStateException("Expected ProjectClassLoader, received " + classLoader.getClass().getName());
+        }
+        ProjectClassLoader projectClassLoader = (ProjectClassLoader) classLoader;
+        final Map<String, byte[]> byteCode = KieMemoryCompiler.compileNoLoad(sourcesMap, projectClassLoader);
+        byteCode.forEach(projectClassLoader::defineClass);
+        try {
+            return projectClassLoader.loadClass(fullClassName);
+        } catch (Exception e) {
+            throw new KiePMMLException(e);
+        }
     }
 }

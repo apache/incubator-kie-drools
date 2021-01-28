@@ -49,6 +49,7 @@ public class KiePMMLModelRetriever {
     /**
      * Read the given <code>DataDictionary</code> and <code>Model</code>> to return an <code>Optional&lt;
      * KiePMMLModel&gt;</code>
+     * @param packageName the package into which put all the generated classes out of the given <code>Model</code>
      * @param dataDictionary
      * @param transformationDictionary
      * @param model
@@ -56,7 +57,8 @@ public class KiePMMLModelRetriever {
      * @return
      * @throws KiePMMLException if any <code>KiePMMLInternalException</code> has been thrown during execution
      */
-    public static Optional<KiePMMLModel> getFromCommonDataAndTransformationDictionaryAndModel(final DataDictionary dataDictionary,
+    public static Optional<KiePMMLModel> getFromCommonDataAndTransformationDictionaryAndModel(final String packageName,
+                                                                                              final DataDictionary dataDictionary,
                                                                                               final TransformationDictionary transformationDictionary,
                                                                                               final Model model,
                                                                                               final HasClassLoader hasClassloader) {
@@ -64,8 +66,11 @@ public class KiePMMLModelRetriever {
         final PMML_MODEL pmmlMODEL = PMML_MODEL.byName(model.getClass().getSimpleName());
         logger.debug("pmmlModelType {}", pmmlMODEL);
         return getModelImplementationProviderStream(model)
-                .map(implementation -> implementation.getKiePMMLModel(dataDictionary, transformationDictionary, model
-                        , hasClassloader))
+                .map(implementation -> implementation.getKiePMMLModel(packageName,
+                                                                      dataDictionary,
+                                                                      transformationDictionary,
+                                                                      model,
+                                                                      hasClassloader))
                 .map(kiePMMLModel -> getPopulatedWithPMMLModelFields(kiePMMLModel, model.getMiningSchema(), model.getOutput()))
                 .findFirst();
     }
@@ -73,7 +78,7 @@ public class KiePMMLModelRetriever {
     /**
      * Read the given <code>DataDictionary</code> and <code>Model</code>> to return an <code>Optional&lt;
      * KiePMMLModel&gt;</code>
-     * @param packageName the package into which put all the generated classes out of the given <code>InputStream</code>
+     * @param packageName the package into which put all the generated classes out of the given <code>Model</code>
      * @param dataDictionary
      * @param transformationDictionary
      * @param model
@@ -90,8 +95,10 @@ public class KiePMMLModelRetriever {
         final PMML_MODEL pmmlMODEL = PMML_MODEL.byName(model.getClass().getSimpleName());
         logger.debug("pmmlModelType {}", pmmlMODEL);
         return getModelImplementationProviderStream(model)
-                .map(implementation -> implementation.getKiePMMLModelWithSources(packageName, dataDictionary,
-                                                                                 transformationDictionary, model,
+                .map(implementation -> implementation.getKiePMMLModelWithSources(packageName,
+                                                                                 dataDictionary,
+                                                                                 transformationDictionary,
+                                                                                 model,
                                                                                  hasClassloader)).findFirst();
     }
 

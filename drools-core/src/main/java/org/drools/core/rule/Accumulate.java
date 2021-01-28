@@ -83,10 +83,10 @@ public abstract class Accumulate extends ConditionalElement
     /**
      * Executes the initialization block of code
      */
-    public abstract void init(final Object workingMemoryContext,
-                              final Object context,
-                              final Tuple leftTuple,
-                              final WorkingMemory workingMemory);
+    public abstract Object init(final Object workingMemoryContext,
+                                final Object context,
+                                final Tuple leftTuple,
+                                final WorkingMemory workingMemory);
 
     /**
      * Executes the accumulate (action) code for the given fact handle

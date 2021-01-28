@@ -43,6 +43,9 @@
       <MiningField name="residenceState" usageType="active" invalidValueTreatment="asMissing"/>
       <MiningField name="validLicense" usageType="active" invalidValueTreatment="asMissing"/>
     </MiningSchema>
+    <Output>
+      <OutputField name="Out_categoricalResult" targetField="categoricalResult" dataType="double" />
+    </Output>
     <Segmentation multipleModelMethod="average">
       <Segment>
         <True/>

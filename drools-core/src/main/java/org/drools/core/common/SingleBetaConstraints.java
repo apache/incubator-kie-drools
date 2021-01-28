@@ -74,12 +74,12 @@ public class SingleBetaConstraints
         if ((disableIndex) || (!config.isIndexLeftBetaMemory() && !config.isIndexRightBetaMemory())) {
             this.indexed = false;
         } else {
-            initIndexes(config.getCompositeKeyDepth(), betaNodeType);
+            initIndexes(config.getCompositeKeyDepth(), betaNodeType, config);
         }
     }
 
-    public void initIndexes(int depth, short betaNodeType) {
-        indexed = depth >= 1 && IndexUtil.isIndexableForNode(betaNodeType, constraint);
+    public void initIndexes(int depth, short betaNodeType, RuleBaseConfiguration config) {
+        indexed = depth >= 1 && IndexUtil.isIndexableForNode(betaNodeType, constraint, config);
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {

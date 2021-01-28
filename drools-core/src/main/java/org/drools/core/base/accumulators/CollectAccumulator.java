@@ -74,24 +74,25 @@ public class CollectAccumulator
     /* (non-Javadoc)
      * @see org.kie.spi.Accumulator#init(java.lang.Object, org.kie.spi.Tuple, org.kie.rule.Declaration[], org.kie.WorkingMemory)
      */
-    public void init(Object workingMemoryContext,
-                     Object context,
-                     Tuple leftTuple,
-                     Declaration[] declarations,
-                     WorkingMemory workingMemory) throws Exception {
+    public Object init(Object workingMemoryContext,
+                       Object context,
+                       Tuple leftTuple,
+                       Declaration[] declarations,
+                       WorkingMemory workingMemory) {
         ((CollectContext) context).result = this.collect.instantiateResultObject( (InternalWorkingMemory) workingMemory );
+        return context;
     }
 
     /* (non-Javadoc)
      * @see org.kie.spi.Accumulator#accumulate(java.lang.Object, org.kie.spi.Tuple, org.kie.common.InternalFactHandle, org.kie.rule.Declaration[], org.kie.rule.Declaration[], org.kie.WorkingMemory)
      */
     public Object accumulate(Object workingMemoryContext,
-                           Object context,
-                           Tuple leftTuple,
-                           InternalFactHandle handle,
-                           Declaration[] declarations,
-                           Declaration[] innerDeclarations,
-                           WorkingMemory workingMemory) throws Exception {
+                             Object context,
+                             Tuple leftTuple,
+                             InternalFactHandle handle,
+                             Declaration[] declarations,
+                             Declaration[] innerDeclarations,
+                             WorkingMemory workingMemory) {
         Object value = this.unwrapHandle ? ((LeftTuple) handle.getObject()).getFactHandle().getObject() : handle.getObject();
         ((CollectContext) context).result.add( value );
         return value;
@@ -104,7 +105,7 @@ public class CollectAccumulator
                               Object value,
                               Declaration[] declarations,
                               Declaration[] innerDeclarations,
-                              WorkingMemory workingMemory) throws Exception {
+                              WorkingMemory workingMemory) {
         ((CollectContext) context).result.remove( value );
         return true;
     }
@@ -116,7 +117,7 @@ public class CollectAccumulator
                             Object context,
                             Tuple leftTuple,
                             Declaration[] declarations,
-                            WorkingMemory workingMemory) throws Exception {
+                            WorkingMemory workingMemory) {
         return ((CollectContext) context).result;
     }
 

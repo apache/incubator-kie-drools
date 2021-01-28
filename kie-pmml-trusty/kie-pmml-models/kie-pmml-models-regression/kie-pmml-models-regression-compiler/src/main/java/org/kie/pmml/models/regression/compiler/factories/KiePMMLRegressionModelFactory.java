@@ -35,11 +35,11 @@ import org.dmg.pmml.MiningFunction;
 import org.dmg.pmml.OpType;
 import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.regression.RegressionModel;
-import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
+import org.kie.pmml.commons.model.HasClassLoader;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.compiler.commons.utils.CommonCodegenUtils;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
@@ -71,14 +71,18 @@ public class KiePMMLRegressionModelFactory {
     public static KiePMMLRegressionModel getKiePMMLRegressionModelClasses(final DataDictionary dataDictionary,
                                                                           final TransformationDictionary transformationDictionary,
                                                                           final RegressionModel model,
-                                                                          final ClassLoader classLoader) throws IOException, IllegalAccessException, InstantiationException {
+                                                                          final String packageName,
+                                                                          final HasClassLoader hasClassLoader) throws IOException, IllegalAccessException, InstantiationException {
         logger.trace("getKiePMMLRegressionModelClasses {} {}", dataDictionary, model);
         String className = getSanitizedClassName(model.getModelName());
-        String packageName = getSanitizedPackageName(model.getModelName());
         Map<String, String> sourcesMap = getKiePMMLRegressionModelSourcesMap(dataDictionary, transformationDictionary, model, packageName);
         String fullClassName = packageName + "." + className;
-        final Map<String, Class<?>> compiledClasses = KieMemoryCompiler.compile(sourcesMap, classLoader);
-        return (KiePMMLRegressionModel) compiledClasses.get(fullClassName).newInstance();
+        try {
+            Class<?> kiePMMLScorecardModelClass = hasClassLoader.compileAndLoadClass(sourcesMap, fullClassName);
+            return (KiePMMLRegressionModel) kiePMMLScorecardModelClass.newInstance();
+        } catch (Exception e) {
+            throw new KiePMMLException(e);
+        }
     }
 
     public static Map<String, String> getKiePMMLRegressionModelSourcesMap(final DataDictionary dataDictionary,

@@ -55,6 +55,7 @@ import org.junit.Test;
 import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.api.enums.OP_TYPE;
 import org.kie.pmml.api.enums.PMML_MODEL;
+import org.kie.pmml.compiler.commons.mocks.HasClassLoaderMock;
 import org.kie.pmml.models.regression.model.KiePMMLRegressionClassificationTable;
 import org.kie.pmml.models.regression.model.KiePMMLRegressionModel;
 import org.kie.pmml.models.regression.model.KiePMMLRegressionTable;
@@ -140,7 +141,8 @@ public class KiePMMLRegressionModelFactoryTest {
         KiePMMLRegressionModel retrieved = KiePMMLRegressionModelFactory.getKiePMMLRegressionModelClasses(dataDictionary,
                                                                                                           transformationDictionary,
                                                                                                           regressionModel,
-                                                                                                          Thread.currentThread().getContextClassLoader());
+                                                                                                          PACKAGE_NAME,
+                                                                                                          new HasClassLoaderMock());
         assertNotNull(retrieved);
         assertEquals(regressionModel.getModelName(), retrieved.getName());
         assertEquals(MINING_FUNCTION.byName(regressionModel.getMiningFunction().value()), retrieved.getMiningFunction());

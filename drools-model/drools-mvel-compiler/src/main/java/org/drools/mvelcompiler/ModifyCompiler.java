@@ -18,7 +18,7 @@ public class ModifyCompiler {
 
     private static final PreprocessPhase preprocessPhase = new PreprocessPhase(true);
 
-    public ParsingResult compile(String mvelBlock) {
+    public CompiledBlockResult compile(String mvelBlock) {
 
         BlockStmt mvelExpression = MvelParser.parseBlock(mvelBlock);
 
@@ -39,6 +39,6 @@ public class ModifyCompiler {
                     s.remove();
                 });
 
-        return new ParsingResult(mvelExpression.getStatements()).setUsedBindings(usedBindings);
+        return new CompiledBlockResult(mvelExpression.getStatements()).setUsedBindings(usedBindings);
     }
 }

@@ -21,6 +21,7 @@ import org.junit.Test;
 import java.util.Random;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
 public class LeftTupleRBTreeTest {
@@ -48,5 +49,49 @@ public class LeftTupleRBTreeTest {
         }
 
         assertEquals(ITEMS, i);
+    }
+
+    @Test
+    public void testRange() {
+        // TupleRBTree.range() is not actually used by TupleIndexRBTree but fixing it to avoid future trouble
+        TupleRBTree<Integer> tree = new TupleRBTree<Integer>();
+        tree.insert(10);
+        tree.insert(20);
+        tree.insert(25);
+        tree.insert(15);
+        tree.insert(5);
+
+        FastIterator fastIterator = tree.range(2, true, 15, false);
+        Node<Integer> node = (Node<Integer>) fastIterator.next(null);
+        assertEquals(5, (int) node.key);
+        node = (Node<Integer>) fastIterator.next(node);
+        assertEquals(10, (int) node.key);
+        node = (Node<Integer>) fastIterator.next(node);
+        assertNull(node);
+
+        fastIterator = tree.range(2, true, 5, false);
+        node = (Node<Integer>) fastIterator.next(null);
+        assertNull(node);
+
+        fastIterator = tree.range(25, false, 35, true);
+        node = (Node<Integer>) fastIterator.next(null);
+        assertNull(node);
+
+        fastIterator = tree.range(6, false, 9, false);
+        node = (Node<Integer>) fastIterator.next(null);
+        assertNull(node);
+
+        fastIterator = tree.range(5, false, 35, false);
+        node = (Node<Integer>) fastIterator.next(null);
+        assertEquals(10, (int) node.key);
+        node = (Node<Integer>) fastIterator.next(node);
+        assertEquals(15, (int) node.key);
+        node = (Node<Integer>) fastIterator.next(node);
+        assertEquals(20, (int) node.key);
+        node = (Node<Integer>) fastIterator.next(node);
+        assertEquals(25, (int) node.key);
+        node = (Node<Integer>) fastIterator.next(node);
+        assertNull(node);
+
     }
 }

@@ -77,12 +77,12 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, Void> {
         this.rhs = rhs;
     }
 
-    public TypedExpression invoke(Statement statement) {
-        logPhase("LHS phase on: {}", statement);
+    public TypedExpression invoke(Node n) {
+        logPhase("LHS phase on: {}", n);
 
-        TypedExpression typedExpression = statement.accept(this, null);
+        TypedExpression typedExpression = n.accept(this, null);
         if (typedExpression == null) {
-            throw new MvelCompilerException("Type check of " + printConstraint(statement) + " failed.");
+            throw new MvelCompilerException("Type check of " + printConstraint(n) + " failed.");
         }
         logger.debug("LHS phase completed");
         return typedExpression;

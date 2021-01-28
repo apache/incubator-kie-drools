@@ -56,7 +56,7 @@
       </Segment>
       <Segment id="4">
         <True/>
-        <RegressionModel modelName="segment3Model" functionName="regression">
+        <RegressionModel modelName="segment4Model" functionName="regression">
           <MiningSchema>
             <MiningField name="result" usageType="target" invalidValueTreatment="returnInvalid"/>
             <MiningField name="x" usageType="active" invalidValueTreatment="returnInvalid"/>

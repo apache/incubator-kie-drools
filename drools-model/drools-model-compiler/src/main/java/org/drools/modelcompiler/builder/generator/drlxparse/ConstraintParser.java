@@ -62,6 +62,9 @@ import org.drools.mvel.parser.ast.expr.HalfBinaryExpr;
 import org.drools.mvel.parser.ast.expr.HalfPointFreeExpr;
 import org.drools.mvel.parser.ast.expr.OOPathExpr;
 import org.drools.mvel.parser.ast.expr.PointFreeExpr;
+import org.drools.mvelcompiler.CompiledExpressionResult;
+import org.drools.mvelcompiler.MvelCompiler;
+import org.drools.mvelcompiler.CompiledBlockResult;
 
 import static com.github.javaparser.ast.expr.BinaryExpr.Operator.EQUALS;
 import static com.github.javaparser.ast.expr.BinaryExpr.Operator.GREATER;
@@ -71,6 +74,7 @@ import static com.github.javaparser.ast.expr.BinaryExpr.Operator.LESS_EQUALS;
 import static com.github.javaparser.ast.expr.BinaryExpr.Operator.NOT_EQUALS;
 import static org.drools.core.util.StringUtils.lcFirstForBean;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.THIS_PLACEHOLDER;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.createMvelCompiler;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getLiteralExpressionType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.builder.generator.drlxparse.SpecialComparisonCase.specialComparisonFactory;
@@ -448,7 +452,7 @@ public class ConstraintParser {
         return printConstraint(expr);
     }
 
-    private static SpecialComparisonResult getEqualityExpression(TypedExpression left, TypedExpression right, BinaryExpr.Operator operator ) {
+    private SpecialComparisonResult getEqualityExpression(TypedExpression left, TypedExpression right, BinaryExpr.Operator operator ) {
         if ((isAnyOperandBigDecimal(left, right) || isAnyOperandBigInteger(left, right)) && !isAnyOperandNullLiteral( left, right )) {
             return compareBigDecimal(operator, left, right);
         }
@@ -491,7 +495,7 @@ public class ConstraintParser {
         return te.getRawClass().equals(Object.class);
     }
 
-    private static SpecialComparisonResult handleSpecialComparisonCases(BinaryExpr.Operator operator, TypedExpression left, TypedExpression right) {
+    private SpecialComparisonResult handleSpecialComparisonCases(BinaryExpr.Operator operator, TypedExpression left, TypedExpression right) {
         if ((isAnyOperandBigDecimal(left, right) || isAnyOperandBigInteger(left, right)) && (isComparisonOperator(operator))) {
             return compareBigDecimal(operator, left, right);
         }
@@ -544,7 +548,7 @@ public class ConstraintParser {
         return left.getExpression() instanceof NullLiteralExpr || right.getExpression() instanceof NullLiteralExpr;
     }
 
-    private static SpecialComparisonResult compareBigDecimal(BinaryExpr.Operator operator, TypedExpression left, TypedExpression right) {
+    private SpecialComparisonResult compareBigDecimal(BinaryExpr.Operator operator, TypedExpression left, TypedExpression right) {
         String methodName = "org.drools.modelcompiler.util.EvaluationUtil." + operatorToName(operator);
         MethodCallExpr compareMethod = new MethodCallExpr( null, methodName );
         compareMethod.addArgument( toBigDecimalExpression( left ) );
@@ -552,9 +556,20 @@ public class ConstraintParser {
         return new SpecialComparisonResult(compareMethod, left, right);
     }
 
-    private static Expression toBigDecimalExpression( TypedExpression typedExpression ) {
+    private Expression toBigDecimalExpression( TypedExpression typedExpression) {
         MethodCallExpr toBigDecimalMethod = new MethodCallExpr( null, "org.drools.modelcompiler.util.EvaluationUtil.toBigDecimal" );
         Expression arg = typedExpression.getExpression();
+
+        List<DeclarationSpec> allDeclarations = new ArrayList<>();
+        allDeclarations.addAll(context.getAllDeclarations());
+        typedExpression.getOriginalPatternType().ifPresent(pt -> allDeclarations.add(new DeclarationSpec(THIS_PLACEHOLDER, pt)));
+
+        MvelCompiler mvelCompiler = createMvelCompiler(context.getTypeResolver(), allDeclarations);
+
+        CompiledExpressionResult compiledBlockResult = mvelCompiler.compileExpression(arg.toString());
+
+        arg = compiledBlockResult.getExpression();
+
         if(arg.isEnclosedExpr()) {
             arg = arg.asEnclosedExpr().getInner();
         }

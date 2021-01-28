@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package org.drools.testcoverage.common.util;
+package org.drools.core.util.index;
 
-public class NativeImageTestUtil {
-    // Used only for test purposed, do not call this as it simulates the code path for native image
-    public static void setNativeImage() {
-        System.setProperty("org.graalvm.nativeimage.imagecode", "true");
+public class IndexTestUtil {
+
+    public static void enableRangeIndexForJoin() {
+        // In order to enable range index for Join, you also need to set BetaRangeIndexOption ENABLED
+        IndexUtil.USE_COMPARISON_INDEX_JOIN = true;
     }
 
-    // Used only for test purposed, do not call this as it simulates the code path for native image
-    public static void unsetNativeImage() {
-        System.clearProperty("org.graalvm.nativeimage.imagecode");
+    public static void disableRangeIndexForJoin() {
+        // If you set this flag 'false', range index for Join is disabled even if you set BetaRangeIndexOption ENABLED
+        IndexUtil.USE_COMPARISON_INDEX_JOIN = false;
     }
-
 }

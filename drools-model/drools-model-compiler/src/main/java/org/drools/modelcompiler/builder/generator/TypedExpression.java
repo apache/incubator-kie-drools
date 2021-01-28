@@ -18,6 +18,7 @@ package org.drools.modelcompiler.builder.generator;
 
 import java.lang.reflect.Type;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -30,6 +31,7 @@ import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
 
 public class TypedExpression {
 
+    private Class<?> originalPatternType;
     private Expression expression;
     protected Type type;
     protected String fieldName;
@@ -101,6 +103,10 @@ public class TypedExpression {
         return type != null && toRawClass(type).isAssignableFrom( List.class );
     }
 
+    public boolean isMap() {
+        return type != null && toRawClass(type).isAssignableFrom( Map.class );
+    }
+
     public TypedExpression setStatic(Boolean aStatic) {
         staticExpr = aStatic;
         return this;
@@ -147,6 +153,14 @@ public class TypedExpression {
         cloned.left = left;
         return cloned;
 
+    }
+
+    public Optional<Class<?>> getOriginalPatternType() {
+        return Optional.ofNullable(originalPatternType);
+    }
+
+    public void setOriginalPatternType(Class<?> originalPatternType) {
+        this.originalPatternType = originalPatternType;
     }
 
     @Override

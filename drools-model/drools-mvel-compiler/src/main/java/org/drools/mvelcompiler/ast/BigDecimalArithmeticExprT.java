@@ -29,6 +29,8 @@ public class BigDecimalArithmeticExprT implements TypedExpression {
                 return "multiply";
             case DIVIDE: // /
                 return "divide";
+            case REMAINDER: // %
+                return "remainder";
         }
         throw new RuntimeException("Unknown operator");
     }

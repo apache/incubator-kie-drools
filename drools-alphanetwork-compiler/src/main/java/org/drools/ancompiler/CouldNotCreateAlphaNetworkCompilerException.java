@@ -20,4 +20,8 @@ public class CouldNotCreateAlphaNetworkCompilerException extends RuntimeExceptio
     public CouldNotCreateAlphaNetworkCompilerException(Exception e) {
         super("Cannot create Compiled Alpha Network", e);
     }
+
+    public CouldNotCreateAlphaNetworkCompilerException(String message) {
+        super(message);
+    }
 }
