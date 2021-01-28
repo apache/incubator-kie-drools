@@ -4,20 +4,22 @@
   "functions": [
     {
       "name": "helloWorld",
-      "type": "script"
+      "metadata": {
+        "type": "script"
+      }
     },
     {
       "name": "goodbyeWorld",
-      "type": "script"
+      "metadata": {
+        "type": "script"
+      }
     }
   ],
   "states":[
     {
       "name":"HelloWorld",
       "type":"operation",
-      "start": {
-        "kind": "default"
-      },
+      "start": true,
       "actionMode":"sequential",
       "actions":[
         {
@@ -38,7 +40,7 @@
         }
       ],
       "end": {
-        "kind": "terminate"
+        "terminate": "true"
       }
     }
   ]

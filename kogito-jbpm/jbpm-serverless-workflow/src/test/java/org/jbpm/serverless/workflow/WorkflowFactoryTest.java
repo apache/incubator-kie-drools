@@ -15,22 +15,33 @@
 
 package org.jbpm.serverless.workflow;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import org.jbpm.process.core.Work;
-import org.jbpm.ruleflow.core.Metadata;
-import org.jbpm.ruleflow.core.RuleFlowProcess;
-import org.jbpm.serverless.workflow.api.end.End;
-import org.jbpm.serverless.workflow.api.events.EventDefinition;
-import org.jbpm.serverless.workflow.api.functions.FunctionDefinition;
-import org.jbpm.serverless.workflow.api.produce.ProduceEvent;
-import org.jbpm.workflow.core.impl.ConstraintImpl;
-import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
-import org.jbpm.workflow.core.node.*;
-import org.junit.jupiter.api.Test;
-
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import io.serverlessworkflow.api.end.End;
+import io.serverlessworkflow.api.events.EventDefinition;
+import io.serverlessworkflow.api.functions.FunctionDefinition;
+import io.serverlessworkflow.api.produce.ProduceEvent;
+import org.jbpm.process.core.Work;
+import org.jbpm.ruleflow.core.Metadata;
+import org.jbpm.ruleflow.core.RuleFlowProcess;
+import org.jbpm.workflow.core.impl.ConstraintImpl;
+import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
+import org.jbpm.workflow.core.node.ActionNode;
+import org.jbpm.workflow.core.node.CompositeContextNode;
+import org.jbpm.workflow.core.node.EndNode;
+import org.jbpm.workflow.core.node.EventNode;
+import org.jbpm.workflow.core.node.HumanTaskNode;
+import org.jbpm.workflow.core.node.Join;
+import org.jbpm.workflow.core.node.RuleSetNode;
+import org.jbpm.workflow.core.node.Split;
+import org.jbpm.workflow.core.node.StartNode;
+import org.jbpm.workflow.core.node.SubProcessNode;
+import org.jbpm.workflow.core.node.TimerNode;
+import org.jbpm.workflow.core.node.WorkItemNode;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -90,7 +101,7 @@ public class WorkflowFactoryTest extends BaseServerlessTest {
     public void testMessageEndNode() {
         TestNodeContainer nodeContainer = new TestNodeContainer();
 
-        End endDef = new End().withKind(End.Kind.EVENT).withProduceEvents(
+        End endDef = new End().withProduceEvents(
                 Arrays.asList(
                         new ProduceEvent().withEventRef("sampleEvent").withData("sampleData"))
         );
@@ -170,12 +181,13 @@ public class WorkflowFactoryTest extends BaseServerlessTest {
     @Test
     public void testServiceNode() {
         TestNodeContainer nodeContainer = new TestNodeContainer();
-        FunctionDefinition function = new FunctionDefinition().withName("testFunction").withType("testType")
-                .withResource("testResource").withMetadata(
+        FunctionDefinition function = new FunctionDefinition().withName("testFunction")
+                .withOperation("testResource").withMetadata(
                         new HashMap<String, String>() {{
                             put("interface", "testInterface");
                             put("operation", "testOperation");
                             put("implementation", "testImplementation");
+                            put("type", "testType");
                         }}
                 );
         WorkItemNode workItemNode = testFactory.serviceNode(1L, "testService", function, nodeContainer);
@@ -295,7 +307,6 @@ public class WorkflowFactoryTest extends BaseServerlessTest {
 
         assertThat(process.getVariableScope().getVariables()).isNotNull();
         assertThat(process.getVariableScope().getVariables().size()).isEqualTo(1);
-
     }
 
     @Test
@@ -379,7 +390,6 @@ public class WorkflowFactoryTest extends BaseServerlessTest {
         assertThat(actionNode.getMetaData(Metadata.MAPPING_VARIABLE)).isEqualTo("workflowdata");
         assertThat(actionNode.getMetaData(Metadata.TRIGGER_REF)).isEqualTo("testSource");
         assertThat(actionNode.getMetaData(Metadata.MESSAGE_TYPE)).isEqualTo("com.fasterxml.jackson.databind.JsonNode");
-
     }
 
     @Test
@@ -399,33 +409,4 @@ public class WorkflowFactoryTest extends BaseServerlessTest {
         assertThat(eventNode.getMetaData(Metadata.TRIGGER_REF)).isEqualTo(eventDefinition.getSource());
         assertThat(eventNode.getMetaData(Metadata.MESSAGE_TYPE)).isEqualTo("com.fasterxml.jackson.databind.JsonNode");
     }
-
-    @Test
-    public void testCamelRouteServiceNode() {
-        TestNodeContainer nodeContainer = new TestNodeContainer();
-        FunctionDefinition function = new FunctionDefinition().withName("testFunction").withType("testType")
-                .withResource("testResource").withMetadata(
-                        new HashMap<String, String>() {{
-                            put("endpoint", "direct:testendpoint");
-                        }}
-                );
-        WorkItemNode workItemNode = testFactory.camelRouteServiceNode(1L, "testService", function, nodeContainer);
-        assertThat(workItemNode).isNotNull();
-        assertThat(workItemNode.getName()).isEqualTo("testService");
-        assertThat(workItemNode.getMetaData().get("Type")).isEqualTo("Service Task");
-        assertThat(workItemNode.getWork()).isNotNull();
-
-        Work work = workItemNode.getWork();
-        assertThat(work.getName()).isEqualTo("org.apache.camel.ProducerTemplate.requestBody");
-        assertThat(work.getParameter("endpoint")).isEqualTo("direct:testendpoint");
-        assertThat(work.getParameter("Interface")).isEqualTo("org.apache.camel.ProducerTemplate");
-        assertThat(work.getParameter("Operation")).isEqualTo("requestBody");
-        assertThat(work.getParameter("interfaceImplementationRef")).isEqualTo("org.apache.camel.ProducerTemplate");
-
-        assertThat(workItemNode.getInMappings()).isNotNull();
-        assertThat(workItemNode.getInMappings()).hasSize(1);
-        assertThat(workItemNode.getOutMappings()).isNotNull();
-        assertThat(workItemNode.getOutMappings()).hasSize(1);
-    }
-
 }

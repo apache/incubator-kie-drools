@@ -3,16 +3,18 @@ id: function
 name: test-wf
 functions:
   - name: helloOne
-    type: script
+    metadata:
+      type: script
   - name: helloTwo
-    type: script
+    metadata:
+      type: script
   - name: helloThree
-    type: script
+    metadata:
+      type: script
 states:
   - name: HelloWorld
     type: operation
-    start:
-      kind: default
+    start: true
     actionMode: sequential
     actions:
       - functionRef:
@@ -43,4 +45,4 @@ states:
           parameters:
             script: System.out.println("Third Serverless Workflow World");
     end:
-      kind: terminate
+      terminate: true

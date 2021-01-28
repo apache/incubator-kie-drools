@@ -5,9 +5,8 @@ version: '1.0'
 states:
   - name: SimpleInject
     type: inject
-    start:
-      kind: default
+    start: true
     data:
       name: john
     end:
-      kind: terminate
+      terminate: true

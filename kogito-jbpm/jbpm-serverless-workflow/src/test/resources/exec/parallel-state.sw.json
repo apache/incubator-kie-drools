@@ -6,9 +6,7 @@
     {
       "name":"ExecInParallel",
       "type":"parallel",
-      "start": {
-        "kind": "default"
-      },
+      "start": true,
       "branches": [
         {
           "name": "branch1",
@@ -19,9 +17,7 @@
           "workflowId": "branch2abc"
         }
       ],
-      "end": {
-        "kind": "default"
-      }
+      "end": true
     }
   ]
 }

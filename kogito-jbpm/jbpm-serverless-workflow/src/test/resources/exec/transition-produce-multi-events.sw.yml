@@ -16,14 +16,15 @@ events:
     type: kafka
 functions:
   - name: helloOne
-    type: script
+    metadata:
+      type: script
   - name: helloTwo
-    type: script
+    metadata:
+      type: script
 states:
   - name: HelloWorld
     type: operation
-    start:
-      kind: default
+    start: true
     actionMode: sequential
     actions:
       - functionRef:
@@ -46,4 +47,4 @@ states:
           parameters:
             script: ''
     end:
-      kind: terminate
+      terminate: true

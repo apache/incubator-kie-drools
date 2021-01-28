@@ -15,18 +15,30 @@
 
 package org.jbpm.serverless.workflow;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import io.serverlessworkflow.api.Workflow;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
-import org.jbpm.serverless.workflow.api.Workflow;
 import org.jbpm.serverless.workflow.utils.WorkflowTestUtils;
 import org.jbpm.workflow.core.Constraint;
-import org.jbpm.workflow.core.node.*;
+import org.jbpm.workflow.core.node.ActionNode;
+import org.jbpm.workflow.core.node.CompositeContextNode;
+import org.jbpm.workflow.core.node.EndNode;
+import org.jbpm.workflow.core.node.EventNode;
+import org.jbpm.workflow.core.node.Join;
+import org.jbpm.workflow.core.node.Split;
+import org.jbpm.workflow.core.node.StartNode;
+import org.jbpm.workflow.core.node.SubProcessNode;
+import org.jbpm.workflow.core.node.TimerNode;
+import org.jbpm.workflow.core.node.WorkItemNode;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.kie.api.definition.process.Node;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ServerlessWorkflowParsingTest extends BaseServerlessTest {
 
@@ -147,7 +159,6 @@ public class ServerlessWorkflowParsingTest extends BaseServerlessTest {
         assertEquals("org.something.other.TestService", workItemNode.getWork().getParameter("interfaceImplementationRef"));
         assertEquals("get", workItemNode.getWork().getParameter("operationImplementationRef"));
         assertEquals("Java", workItemNode.getWork().getParameter("implementation"));
-
     }
 
     @ParameterizedTest
@@ -203,7 +214,6 @@ public class ServerlessWorkflowParsingTest extends BaseServerlessTest {
         assertTrue(node instanceof ActionNode);
         node = compositeNode.getNodes()[2];
         assertTrue(node instanceof EndNode);
-
     }
 
     @ParameterizedTest
@@ -240,7 +250,6 @@ public class ServerlessWorkflowParsingTest extends BaseServerlessTest {
         assertTrue(node instanceof ActionNode);
         node = compositeNode.getNodes()[2];
         assertTrue(node instanceof EndNode);
-
     }
 
     @ParameterizedTest
@@ -463,109 +472,6 @@ public class ServerlessWorkflowParsingTest extends BaseServerlessTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"/exec/single-decision-operation.sw.json", "/exec/single-decision-operation.sw.yml"})
-    public void testSingleDecisionService(String workflowLocation) throws Exception {
-        RuleFlowProcess process = (RuleFlowProcess) getWorkflowParser(workflowLocation).parseWorkFlow(classpathResourceReader(workflowLocation));
-        assertEquals("singledecisionworkflow", process.getId());
-        assertEquals("Single Decision Workflow", process.getName());
-        assertEquals("1.0", process.getVersion());
-        assertEquals("org.kie.kogito.serverless", process.getPackageName());
-        assertEquals(RuleFlowProcess.PUBLIC_VISIBILITY, process.getVisibility());
-
-        assertEquals(3, process.getNodes().length);
-        Node node = process.getNodes()[0];
-        assertTrue(node instanceof StartNode);
-        node = process.getNodes()[2];
-        assertTrue(node instanceof CompositeContextNode);
-        node = process.getNodes()[1];
-        assertTrue(node instanceof EndNode);
-
-        // now check the composite one to see what nodes it has
-        CompositeContextNode compositeNode = (CompositeContextNode) process.getNodes()[2];
-
-        assertEquals(3, compositeNode.getNodes().length);
-
-        node = compositeNode.getNodes()[0];
-        assertTrue(node instanceof StartNode);
-        node = compositeNode.getNodes()[1];
-        assertTrue(node instanceof HumanTaskNode);
-        node = compositeNode.getNodes()[2];
-        assertTrue(node instanceof EndNode);
-
-        assertNotNull(process.getVariableScope().getVariables());
-        assertEquals(2, process.getVariableScope().getVariables().size());
-
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {"/exec/multi-decision-operation.sw.json", "/exec/multi-decision-operation.sw.yml"})
-    public void testMultiDecisionService(String workflowLocation) throws Exception {
-        RuleFlowProcess process = (RuleFlowProcess) getWorkflowParser(workflowLocation).parseWorkFlow(classpathResourceReader(workflowLocation));
-        assertEquals("multidecisionworkflow", process.getId());
-        assertEquals("Multi Decision Workflow", process.getName());
-        assertEquals("1.0", process.getVersion());
-        assertEquals("org.kie.kogito.serverless", process.getPackageName());
-        assertEquals(RuleFlowProcess.PUBLIC_VISIBILITY, process.getVisibility());
-
-        assertEquals(3, process.getNodes().length);
-        Node node = process.getNodes()[0];
-        assertTrue(node instanceof StartNode);
-        node = process.getNodes()[2];
-        assertTrue(node instanceof CompositeContextNode);
-        node = process.getNodes()[1];
-        assertTrue(node instanceof EndNode);
-
-        // now check the composite one to see what nodes it has
-        CompositeContextNode compositeNode = (CompositeContextNode) process.getNodes()[2];
-
-        assertEquals(4, compositeNode.getNodes().length);
-
-        node = compositeNode.getNodes()[0];
-        assertTrue(node instanceof StartNode);
-        node = compositeNode.getNodes()[1];
-        assertTrue(node instanceof HumanTaskNode);
-        node = compositeNode.getNodes()[2];
-        assertTrue(node instanceof HumanTaskNode);
-        node = compositeNode.getNodes()[3];
-        assertTrue(node instanceof EndNode);
-
-        assertNotNull(process.getVariableScope().getVariables());
-        assertEquals(3, process.getVariableScope().getVariables().size());
-
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {"/exec/rule-operation.sw.json", "/exec/rule-operation.sw.yml"})
-    public void testRuleSetService(String workflowLocation) throws Exception {
-        RuleFlowProcess process = (RuleFlowProcess) getWorkflowParser(workflowLocation).parseWorkFlow(classpathResourceReader(workflowLocation));
-        assertEquals("ruleunitworkflow", process.getId());
-        assertEquals("Rule Unit Workflow", process.getName());
-        assertEquals("1.0", process.getVersion());
-        assertEquals("org.kie.kogito.serverless", process.getPackageName());
-        assertEquals(RuleFlowProcess.PUBLIC_VISIBILITY, process.getVisibility());
-
-        assertEquals(3, process.getNodes().length);
-        Node node = process.getNodes()[0];
-        assertTrue(node instanceof StartNode);
-        node = process.getNodes()[2];
-        assertTrue(node instanceof CompositeContextNode);
-        node = process.getNodes()[1];
-        assertTrue(node instanceof EndNode);
-
-        // now check the composite one to see what nodes it has
-        CompositeContextNode compositeNode = (CompositeContextNode) process.getNodes()[2];
-
-        assertEquals(3, compositeNode.getNodes().length);
-
-        node = compositeNode.getNodes()[0];
-        assertTrue(node instanceof StartNode);
-        node = compositeNode.getNodes()[1];
-        assertTrue(node instanceof RuleSetNode);
-        node = compositeNode.getNodes()[2];
-        assertTrue(node instanceof EndNode);
-    }
-
-    @ParameterizedTest
     @ValueSource(strings = {"/exec/transition-produce-event.sw.json", "/exec/transition-produce-event.sw.yml"})
     public void testProduceEventOnTransition(String workflowLocation) throws Exception {
         RuleFlowProcess process = (RuleFlowProcess) getWorkflowParser(workflowLocation).parseWorkFlow(classpathResourceReader(workflowLocation));
@@ -593,7 +499,6 @@ public class ServerlessWorkflowParsingTest extends BaseServerlessTest {
         assertEquals("workflowdata", actionNode.getMetaData("MappingVariable"));
         assertEquals("testtopic", actionNode.getMetaData("TriggerRef"));
         assertEquals("com.fasterxml.jackson.databind.JsonNode", actionNode.getMetaData("MessageType"));
-
     }
 
     @ParameterizedTest
@@ -637,53 +542,9 @@ public class ServerlessWorkflowParsingTest extends BaseServerlessTest {
         assertEquals("visaApprovedEvent", firstEventNode.getName());
         assertEquals("workflowdata", firstEventNode.getVariableName());
 
-
         EventNode secondEventNode = (EventNode) process.getNodes()[9];
         assertEquals("visaDeniedEvent", secondEventNode.getName());
         assertEquals("workflowdata", secondEventNode.getVariableName());
-
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {"/exec/integration-operation.sw.json", "/exec/integration-operation.sw.yml"})
-    public void testSingleIntegrationOperationWorkflow(String workflowLocation) throws Exception {
-        RuleFlowProcess process = (RuleFlowProcess) getWorkflowParser(workflowLocation).parseWorkFlow(classpathResourceReader(workflowLocation));
-        assertEquals("integrationfunctionworkflow", process.getId());
-        assertEquals("Integration Function Workflow", process.getName());
-        assertEquals("1.0", process.getVersion());
-        assertEquals("org.kie.kogito.serverless", process.getPackageName());
-        assertEquals(RuleFlowProcess.PUBLIC_VISIBILITY, process.getVisibility());
-
-        assertEquals(3, process.getNodes().length);
-
-        Node node = process.getNodes()[0];
-        assertTrue(node instanceof StartNode);
-        node = process.getNodes()[2];
-        assertTrue(node instanceof CompositeContextNode);
-        node = process.getNodes()[1];
-        assertTrue(node instanceof EndNode);
-
-        // now check the composite one to see what nodes it has
-        CompositeContextNode compositeNode = (CompositeContextNode) process.getNodes()[2];
-
-        assertEquals(3, compositeNode.getNodes().length);
-
-        node = compositeNode.getNodes()[0];
-        assertTrue(node instanceof StartNode);
-        node = compositeNode.getNodes()[1];
-        assertTrue(node instanceof WorkItemNode);
-        node = compositeNode.getNodes()[2];
-        assertTrue(node instanceof EndNode);
-
-        WorkItemNode workItemNode = (WorkItemNode) compositeNode.getNodes()[1];
-        assertEquals("integrationfunction", workItemNode.getName());
-        assertEquals("org.apache.camel.ProducerTemplate.requestBody", workItemNode.getWork().getName());
-        assertEquals("direct:testroutename", workItemNode.getWork().getParameter("endpoint"));
-        assertEquals("org.apache.camel.ProducerTemplate", workItemNode.getWork().getParameter("Interface"));
-        assertEquals("requestBody", workItemNode.getWork().getParameter("Operation"));
-        assertEquals("org.apache.camel.ProducerTemplate", workItemNode.getWork().getParameter("interfaceImplementationRef"));
-        assertEquals("Java", workItemNode.getWork().getParameter("implementation"));
-
     }
 
     @ParameterizedTest
@@ -767,7 +628,6 @@ public class ServerlessWorkflowParsingTest extends BaseServerlessTest {
 
         ActionNode actionNode4 = (ActionNode) process.getNodes()[7];
         assertEquals("TestKafkaEvent4", actionNode4.getName());
-
     }
 
     @ParameterizedTest
@@ -796,25 +656,8 @@ public class ServerlessWorkflowParsingTest extends BaseServerlessTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"/examples/applicantrequest.sw.json", "/examples/applicantrequest.sw.yml",
-            "/examples/carauctionbids.sw.json", "/examples/carauctionbids.sw.yml",
-            "/examples/creditcheck.sw.json", "/examples/creditcheck.sw.yml",
-            "/examples/eventbasedgreeting.sw.json", "/examples/eventbasedgreeting.sw.yml",
-            "/examples/finalizecollegeapplication.sw.json", "/examples/finalizecollegeapplication.sw.yml",
-            "/examples/greeting.sw.json", "/examples/greeting.sw.yml",
-            "/examples/helloworld.sw.json", "/examples/helloworld.sw.yml",
-            "/examples/jobmonitoring.sw.json", "/examples/jobmonitoring.sw.yml",
-            "/examples/monitorpatient.sw.json", "/examples/monitorpatient.sw.yml",
-            "/examples/parallel.sw.json", "/examples/parallel.sw.yml",
-            "/examples/provisionorder.sw.json", "/examples/provisionorder.sw.yml",
-            "/examples/sendcloudevent.sw.json", "/examples/sendcloudevent.sw.yml",
-            "/examples/solvemathproblems.sw.json", "/examples/solvemathproblems.sw.yml",
-            "/examples/foreachstatewithactions.sw.json", "/examples/foreachstatewithactions.sw.yml",
-            "/examples/periodicinboxcheck.sw.json", "/examples/periodicinboxcheck.sw.yml",
-            "/examples/vetappointmentservice.sw.json", "/examples/vetappointmentservice.sw.yml",
-            "/examples/eventbasedtransition.sw.json", "/examples/eventbasedtransition.sw.yml"
-    })
-    public void testSpecExamplesParsing(String workflowLocation) throws Exception {
+    @ValueSource(strings = {"/examples/applicantworkflow.sw.json"})
+    public void testSpecExamplesParsing(String workflowLocation) throws JsonProcessingException {
         Workflow workflow = Workflow.fromSource(WorkflowTestUtils.readWorkflowFile(workflowLocation));
 
         assertNotNull(workflow);
@@ -822,6 +665,9 @@ public class ServerlessWorkflowParsingTest extends BaseServerlessTest {
         assertNotNull(workflow.getName());
         assertNotNull(workflow.getStates());
         assertTrue(workflow.getStates().size() > 0);
-    }
 
+        RuleFlowProcess process = (RuleFlowProcess) getWorkflowParser(workflowLocation).parseWorkFlow(classpathResourceReader(workflowLocation));
+        assertNotNull(process);
+        assertNotNull(process.getId());
+    }
 }

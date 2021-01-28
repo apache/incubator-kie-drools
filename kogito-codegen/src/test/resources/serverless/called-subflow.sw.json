@@ -6,14 +6,12 @@
     {
       "name":"InjectTestData",
       "type":"inject",
-      "start": {
-        "kind": "default"
-      },
+      "start": true,
       "data": {
         "childData" : "childTestData"
       },
       "end": {
-        "kind": "terminate"
+        "terminate": "true"
       }
     }
   ]

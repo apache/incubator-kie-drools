@@ -6,9 +6,7 @@
     {
       "name": "AddFiles",
       "type": "inject",
-      "start": {
-        "kind": "default"
-      },
+      "start": true,
       "data": {
         "files": [
           {
@@ -45,15 +43,11 @@
       "dataConditions": [
         {
           "condition": "{{ $.files[?(@.file  == 'frontend')] }}",
-          "end": {
-            "kind": "default"
-          }
+          "end": true
         },
         {
           "condition": "{{ $.files[?(@.file  == 'frontend')] }}",
-          "end": {
-            "kind": "default"
-          }
+          "end": true
         }
       ]
     }

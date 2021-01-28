@@ -15,8 +15,7 @@ events:
 states:
   - name: AddRandomInfo
     type: inject
-    start:
-      kind: default
+    start: true
     data:
       name: john
       age: '20'
@@ -37,11 +36,9 @@ states:
     type: inject
     data:
       decision: Approved
-    end:
-      kind: default
+    end: true
   - name: DeniedVisa
     type: inject
     data:
       decision: Denied
-    end:
-      kind: default
+    end: true

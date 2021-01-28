@@ -6,9 +6,7 @@
     {
       "name": "AddInfo",
       "type": "inject",
-      "start": {
-        "kind": "default"
-      },
+      "start": true,
       "data": {
         "name": "john",
         "age": "20"
@@ -46,9 +44,7 @@
       "data": {
         "decision": "Approve"
       },
-      "end": {
-        "kind": "default"
-      }
+      "end": true
     },
     {
       "name": "Deny",
@@ -56,9 +52,7 @@
       "data": {
         "decision": "Denied"
       },
-      "end": {
-        "kind": "default"
-      }
+      "end": true
     }
   ]
 }

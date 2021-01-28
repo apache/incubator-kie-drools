@@ -5,10 +5,10 @@
   "functions": [
     {
       "name": "helloWorld",
-      "type": "service",
       "metadata": {
         "interface": "org.something.other.TestService",
-        "operation": "get"
+        "operation": "get",
+        "type": "service"
       }
     }
   ],
@@ -16,9 +16,7 @@
     {
       "name":"HelloWorld",
       "type":"operation",
-      "start": {
-        "kind": "default"
-      },
+      "start": true,
       "actionMode":"sequential",
       "actions":[
         {
@@ -28,7 +26,7 @@
         }
       ],
       "end": {
-        "kind": "terminate"
+        "terminate": "true"
       }
     }
   ]

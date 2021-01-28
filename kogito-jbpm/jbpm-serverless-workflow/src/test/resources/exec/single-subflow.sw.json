@@ -6,13 +6,11 @@
     {
       "name":"SimpleSubFlow",
       "type":"subflow",
-      "start": {
-        "kind": "default"
-      },
+      "start": true,
       "workflowId": "abc",
       "waitForCompletion":true,
       "end": {
-        "kind": "terminate"
+        "terminate": "true"
       }
     }
   ]

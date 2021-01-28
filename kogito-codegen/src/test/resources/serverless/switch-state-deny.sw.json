@@ -6,9 +6,7 @@
     {
       "name":"AddInfo",
       "type":"inject",
-      "start": {
-        "kind": "default"
-      },
+      "start": true,
       "data": {
         "people": [
           {
@@ -50,9 +48,7 @@
       "data": {
         "decision": "Approved"
       },
-      "end": {
-        "kind": "default"
-      }
+      "end": true
     },
     {
       "name":"Deny",
@@ -60,9 +56,7 @@
       "data": {
         "decision": "Denied"
       },
-      "end": {
-        "kind": "default"
-      }
+      "end": true
     }
   ]
 }

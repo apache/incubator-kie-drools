@@ -16,23 +16,25 @@ package org.jbpm.serverless.workflow.parser.util;
 
 import java.io.Reader;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.serverlessworkflow.api.Workflow;
+import io.serverlessworkflow.api.branches.Branch;
+import io.serverlessworkflow.api.events.EventDefinition;
+import io.serverlessworkflow.api.functions.FunctionDefinition;
+import io.serverlessworkflow.api.interfaces.State;
+import io.serverlessworkflow.api.mapper.BaseObjectMapper;
+import io.serverlessworkflow.api.mapper.JsonObjectMapper;
+import io.serverlessworkflow.api.mapper.YamlObjectMapper;
+import io.serverlessworkflow.api.states.DefaultState;
+import io.serverlessworkflow.api.states.ParallelState;
 import org.drools.core.util.StringUtils;
-import org.jbpm.serverless.workflow.api.Workflow;
-import org.jbpm.serverless.workflow.api.branches.Branch;
-import org.jbpm.serverless.workflow.api.events.EventDefinition;
-import org.jbpm.serverless.workflow.api.functions.FunctionDefinition;
-import org.jbpm.serverless.workflow.api.interfaces.State;
-import org.jbpm.serverless.workflow.api.mapper.BaseObjectMapper;
-import org.jbpm.serverless.workflow.api.mapper.JsonObjectMapper;
-import org.jbpm.serverless.workflow.api.mapper.YamlObjectMapper;
-import org.jbpm.serverless.workflow.api.states.DefaultState;
-import org.jbpm.serverless.workflow.api.states.ParallelState;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,7 +77,7 @@ public class ServerlessWorkflowUtils {
     public static State getWorkflowStartState(Workflow workflow) {
         return workflow.getStates().stream()
                 .filter(ws -> ws.getStart() != null)
-                .findFirst().get();
+                .findFirst().orElseThrow(() -> new IllegalArgumentException("Workflow does not have a Start state"));
     }
 
     public static List<State> getStatesByType(Workflow workflow, DefaultState.Type type) {
@@ -129,9 +131,9 @@ public class ServerlessWorkflowUtils {
     }
 
     public static EventDefinition getWorkflowEventFor(Workflow workflow, String eventName) {
-        return workflow.getEvents().stream()
+        return workflow.getEvents().getEventDefs().stream()
                 .filter(wt -> wt.getName().equals(eventName))
-                .findFirst().get();
+                .findFirst().orElseThrow(() -> new NoSuchElementException("No event for " + eventName));
     }
 
 
@@ -174,18 +176,14 @@ public class ServerlessWorkflowUtils {
     }
 
     public static String getJsonPathScript(String script) {
-
-        if (script.indexOf("$") >= 0) {
-
+        if (script.contains("$")) {
             String replacement = "jsonNode = com.jayway.jsonpath.JsonPath.using(jsonPathConfig)" +
                     ".parse(((com.fasterxml.jackson.databind.JsonNode)kcontext.getVariable(\"workflowdata\")))" +
                     ".read(\"@@.$1\", com.fasterxml.jackson.databind.JsonNode.class); toPrint+= jsonNode.isTextual() ? jsonNode.asText() : jsonNode;";
             script = script.replaceAll("\\$.([A-Za-z]+)", replacement);
             script = script.replaceAll("@@", Matcher.quoteReplacement("$"));
-            return script;
-        } else {
-            return script;
         }
+        return script;
     }
 
     public static String getInjectScript(JsonNode toInjectNode) {

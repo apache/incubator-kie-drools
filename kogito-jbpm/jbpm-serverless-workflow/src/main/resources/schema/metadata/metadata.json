@@ -1,5 +1,0 @@
-{
-  "type": "object",
-  "description": "Metadata",
-  "existingJavaType": "java.util.Map<String, String>"
-}

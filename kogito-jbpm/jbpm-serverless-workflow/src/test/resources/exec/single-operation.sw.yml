@@ -4,12 +4,12 @@ name: test-wf
 version: '1.0'
 functions:
   - name: helloWorld
-    type: script
+    metadata:
+      type: script
 states:
   - name: HelloWorld
     type: operation
-    start:
-      kind: default
+    start: true
     actionMode: sequential
     actions:
       - functionRef:
@@ -17,4 +17,4 @@ states:
           parameters:
             script: System.out.println("Hello Serverless Workflow World");
     end:
-      kind: terminate
+      terminate: true

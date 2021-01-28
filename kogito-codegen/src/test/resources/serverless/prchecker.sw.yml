@@ -5,8 +5,7 @@ version: '1.0'
 states:
   - name: AddFiles
     type: inject
-    start:
-      kind: default
+    start: true
     data:
       files:
         - file: frontend
@@ -26,8 +25,6 @@ states:
     type: switch
     dataConditions:
       - condition: "{{ $.files[?(@.file  == 'frontend')] }}"
-        end:
-          kind: default
+        end: true
       - condition: "{{ $.files[?(@.file  == 'frontend')] }}"
-        end:
-          kind: default
+        end: true

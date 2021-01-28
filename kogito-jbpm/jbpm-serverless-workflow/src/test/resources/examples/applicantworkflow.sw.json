@@ -1,0 +1,79 @@
+{
+  "id": "applicantworkflow",
+  "name": "Applicant Workflow",
+  "version": "1.0",
+  "events": [
+    {
+      "name": "NewApplicantEvent",
+      "source": "applicants",
+      "type": "kafka"
+    },
+    {
+      "name": "ApplicantDecisionEvent",
+      "source": "decisions",
+      "type": "kafka"
+    }
+  ],
+  "states": [
+    {
+      "name": "HandleNewApplicant",
+      "type": "event",
+      "start": true,
+      "onEvents": [
+        {
+          "eventRefs": ["NewApplicantEvent"],
+          "actions": []
+        }
+      ],
+      "transition": {
+        "nextState": "VerifyNewApplicant"
+      }
+    },
+    {
+      "name": "VerifyNewApplicant",
+      "type": "switch",
+      "dataConditions": [
+        {
+          "condition": "{{ $.[?(@.salary >= 3000)] }}",
+          "transition": {
+            "nextState": "HandleApproved"
+          }
+        },
+        {
+          "condition": "{{ $.[?(@.salary < 3000)] }}",
+          "transition": {
+            "nextState": "HandleDenied"
+          }
+        }
+      ]
+    },
+    {
+      "name": "HandleApproved",
+      "type": "inject",
+      "data": {
+        "decision": "Approved"
+      },
+      "end": {
+        "produceEvents": [
+          {
+            "eventRef": "ApplicantDecisionEvent"
+          }
+        ]
+      }
+    },
+    {
+      "name": "HandleDenied",
+      "type": "inject",
+      "data": {
+        "decision": "Denied"
+      },
+      "end": {
+        "produceEvents": [
+          {
+            "eventRef": "ApplicantDecisionEvent"
+          }
+        ]
+      }
+    }
+  ]
+}

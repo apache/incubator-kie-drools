@@ -1,15 +1,12 @@
 {
-  "id": "singleinject",
+  "id": "noactions",
   "name": "test-wf",
   "version": "1.0",
   "states":[
     {
-      "name":"SimpleInject",
-      "type":"inject",
+      "name":"HelloWorld",
+      "type":"operation",
       "start": true,
-      "data": {
-        "name": "john"
-      },
       "end": {
         "terminate": "true"
       }

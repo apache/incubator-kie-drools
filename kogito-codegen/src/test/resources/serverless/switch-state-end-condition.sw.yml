@@ -5,8 +5,7 @@ version: '1.0'
 states:
   - name: AddInfo
     type: inject
-    start:
-      kind: default
+    start: true
     data:
       name: john
       age: '20'
@@ -16,11 +15,8 @@ states:
     type: switch
     dataConditions:
       - condition: "{{ $.[?(@.age  >= 18)] }}"
-        end:
-          kind: default
+        end: true
       - condition: "{{ $.[?(@.age  < 18)] }}"
-        end:
-          kind: default
+        end: true
     default:
-      end:
-        kind: default
+      end: true

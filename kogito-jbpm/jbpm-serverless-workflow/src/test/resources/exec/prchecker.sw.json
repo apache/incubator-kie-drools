@@ -5,26 +5,26 @@
   "functions": [
     {
       "name": "AddLabels",
-      "type": "service",
       "metadata": {
         "interface": "org.kogito.examples.sw.github.workflow.GithubService",
-        "operation": "addLabels"
+        "operation": "addLabels",
+        "type": "service"
       }
     },
     {
       "name": "AddReviewers",
-      "type": "service",
       "metadata": {
         "interface": "org.kogito.examples.sw.github.workflow.GithubService",
-        "operation": "addReviewers"
+        "operation": "addReviewers",
+        "type": "service"
       }
     },
     {
       "name": "FetchPRFiles",
-      "type": "service",
       "metadata": {
         "interface": "org.kogito.examples.sw.github.workflow.GithubService",
-        "operation": "fetchPRFiles"
+        "operation": "fetchPRFiles",
+        "type": "service"
       }
     }
   ],
@@ -64,9 +64,7 @@
     {
       "name": "HandleOpenPR",
       "type": "event",
-      "start": {
-        "kind": "default"
-      },
+      "start": true,
       "onEvents": [
         {
           "eventRefs": [
@@ -126,7 +124,6 @@
         {
           "condition": "{{ $.[?(@.file  == 'frontend')] }}",
           "end": {
-            "kind": "event",
             "produceEvents": [
               {
                 "eventRef": "FrontendNewChange"
@@ -140,7 +137,6 @@
         {
           "condition": "{{ $.[?(@.file  != 'frontend')] }}",
           "end": {
-            "kind": "event",
             "produceEvents": [
               {
                 "eventRef": "PRChecked"

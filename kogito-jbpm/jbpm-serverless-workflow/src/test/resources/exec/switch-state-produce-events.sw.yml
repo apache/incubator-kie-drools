@@ -18,8 +18,7 @@ events:
 states:
   - name: AddInfo
     type: inject
-    start:
-      kind: default
+    start: true
     data:
       name: john
       age: '20'
@@ -51,11 +50,9 @@ states:
     type: inject
     data:
       decision: Approve
-    end:
-      kind: default
+    end: true
   - name: Deny
     type: inject
     data:
       decision: Denied
-    end:
-      kind: default
+    end: true

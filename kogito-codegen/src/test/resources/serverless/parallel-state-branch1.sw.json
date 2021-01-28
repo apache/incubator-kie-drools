@@ -6,14 +6,12 @@
     {
       "name":"InjectTestData1",
       "type":"inject",
-      "start": {
-        "kind": "default"
-      },
+      "start": true,
       "data": {
         "branch1data" : "testBranch1Data"
       },
       "end": {
-        "kind": "terminate"
+        "terminate": "true"
       }
     }
   ]

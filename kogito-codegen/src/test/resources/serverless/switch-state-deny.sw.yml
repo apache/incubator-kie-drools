@@ -5,8 +5,7 @@ version: '1.0'
 states:
   - name: AddInfo
     type: inject
-    start:
-      kind: default
+    start: true
     data:
       people:
         - name: john
@@ -29,11 +28,9 @@ states:
     type: inject
     data:
       decision: Approved
-    end:
-      kind: default
+    end: true
   - name: Deny
     type: inject
     data:
       decision: Denied
-    end:
-      kind: default
+    end: true

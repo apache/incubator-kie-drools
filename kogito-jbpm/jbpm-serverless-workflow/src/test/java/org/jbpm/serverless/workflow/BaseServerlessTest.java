@@ -15,41 +15,50 @@
 
 package org.jbpm.serverless.workflow;
 
-import org.jbpm.serverless.workflow.api.Workflow;
-import org.jbpm.serverless.workflow.api.end.End;
-import org.jbpm.serverless.workflow.api.events.EventDefinition;
-import org.jbpm.serverless.workflow.api.start.Start;
-import org.jbpm.serverless.workflow.api.states.DefaultState;
-import org.jbpm.serverless.workflow.api.states.InjectState;
-import org.jbpm.serverless.workflow.parser.ServerlessWorkflowParser;
-import org.jbpm.serverless.workflow.parser.core.ServerlessWorkflowFactory;
-import org.jbpm.serverless.workflow.parser.util.WorkflowAppContext;
-
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Properties;
+
+import io.serverlessworkflow.api.Workflow;
+import io.serverlessworkflow.api.end.End;
+import io.serverlessworkflow.api.events.EventDefinition;
+import io.serverlessworkflow.api.start.Start;
+import io.serverlessworkflow.api.states.DefaultState;
+import io.serverlessworkflow.api.states.InjectState;
+import io.serverlessworkflow.api.workflow.Events;
+import org.jbpm.serverless.workflow.parser.ServerlessWorkflowParser;
+import org.jbpm.serverless.workflow.parser.core.ServerlessWorkflowFactory;
+import org.jbpm.serverless.workflow.parser.util.WorkflowAppContext;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 
 public abstract class BaseServerlessTest {
 
+    protected static final Workflow singleInjectStateWorkflow = new Workflow().withStates(singletonList(
+            new InjectState().withName("relayState").withType(DefaultState.Type.INJECT).withStart(new Start())
+                    .withEnd(new End())
+    ));
+    protected static final Workflow multiInjectStateWorkflow = new Workflow().withStates(asList(
+            new InjectState().withName("relayState").withType(DefaultState.Type.INJECT).withStart(new Start())
+                    .withEnd(new End()),
+            new InjectState().withName("relayState2").withType(DefaultState.Type.INJECT).withEnd(new End())
+    ));
+    protected static final Workflow eventDefOnlyWorkflow = new Workflow().withEvents(
+            new Events(singletonList(new EventDefinition().withName("sampleEvent").withSource("sampleSource").withType("sampleType")))
+    );
     protected static ServerlessWorkflowFactory testFactory = new ServerlessWorkflowFactory(WorkflowAppContext.ofProperties(testWorkflowProperties()));
 
-    protected static final Workflow singleInjectStateWorkflow = new Workflow().withStates(singletonList(
-            new InjectState().withName("relayState").withType(DefaultState.Type.INJECT).withStart(new Start().withKind(Start.Kind.DEFAULT))
-                    .withEnd(new End(End.Kind.DEFAULT))
-    ));
+    protected static Properties testWorkflowProperties() {
+        Properties properties = new Properties();
+        properties.put("kogito.sw.functions.testfunction1.testprop1", "testprop1val");
+        properties.put("kogito.sw.functions.testfunction1.testprop2", "testprop2val");
+        properties.put("kogito.sw.functions.testfunction2.testprop1", "testprop1val");
+        properties.put("kogito.sw.functions.testfunction2.testprop2", "testprop2val");
+        properties.put("kogito.sw.functions.testfunction3.ruleflowgroup", "testruleflowgroup");
 
-    protected static final Workflow multiInjectStateWorkflow = new Workflow().withStates(asList(
-            new InjectState().withName("relayState").withType(DefaultState.Type.INJECT).withStart(new Start().withKind(Start.Kind.DEFAULT))
-                    .withEnd(new End(End.Kind.DEFAULT)),
-            new InjectState().withName("relayState2").withType(DefaultState.Type.INJECT).withEnd(new End(End.Kind.DEFAULT))
-    ));
-
-    protected static final Workflow eventDefOnlyWorkflow = new Workflow().withEvents(singletonList(
-            new EventDefinition().withName("sampleEvent").withSource("sampleSource").withType("sampleType")
-    ));
+        return properties;
+    }
 
     protected ServerlessWorkflowParser getWorkflowParser(String workflowLocation) {
         ServerlessWorkflowParser parser;
@@ -63,16 +72,5 @@ public abstract class BaseServerlessTest {
 
     protected Reader classpathResourceReader(String location) {
         return new InputStreamReader(this.getClass().getResourceAsStream(location));
-    }
-
-    protected static Properties testWorkflowProperties() {
-        Properties properties = new Properties();
-        properties.put("kogito.sw.functions.testfunction1.testprop1", "testprop1val");
-        properties.put("kogito.sw.functions.testfunction1.testprop2", "testprop2val");
-        properties.put("kogito.sw.functions.testfunction2.testprop1", "testprop1val");
-        properties.put("kogito.sw.functions.testfunction2.testprop2", "testprop2val");
-        properties.put("kogito.sw.functions.testfunction3.ruleflowgroup", "testruleflowgroup");
-
-        return properties;
     }
 }

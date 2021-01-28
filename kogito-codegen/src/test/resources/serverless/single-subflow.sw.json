@@ -6,9 +6,7 @@
     {
       "name":"InjectTestData",
       "type":"inject",
-      "start": {
-        "kind": "default"
-      },
+      "start": true,
       "data": {
         "parentData" : "parentTestData"
       },
@@ -22,7 +20,7 @@
       "workflowId": "calledsubflow",
       "waitForCompletion":true,
       "end": {
-        "kind": "terminate"
+        "terminate": "true"
       }
     }
   ]
