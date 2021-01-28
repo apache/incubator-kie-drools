@@ -32,6 +32,7 @@
     <version.com.thoughtworks.xstream>1.4.15</version.com.thoughtworks.xstream>
     <version.io.quarkus>1.11.0.Final</version.io.quarkus>
     <version.io.quarkus.gizmo>1.0.6.Final</version.io.quarkus.gizmo>
+    <version.org.ow2.asm>9.0</version.org.ow2.asm>
     <version.jakarta.json.bind>1.0.2</version.jakarta.json.bind>
     <version.jakarta.xml.bind>2.3.3</version.jakarta.xml.bind>
     <version.org.apache.commons.lang3>3.9</version.org.apache.commons.lang3>
@@ -317,6 +318,11 @@
         <groupId>org.mockito</groupId>
         <artifactId>mockito-core</artifactId>
         <version>${version.org.mockito}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.ow2.asm</groupId>
+        <artifactId>asm</artifactId>
+        <version>${version.org.ow2.asm}</version>
       </dependency>
       <dependency>
         <groupId>org.postgresql</groupId>

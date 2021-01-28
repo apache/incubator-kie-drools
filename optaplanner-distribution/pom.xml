@@ -52,6 +52,11 @@
                   <version>${version.io.quarkus.gizmo}</version>
                 </additionalDependency>
                 <additionalDependency>
+                  <groupId>org.ow2.asm</groupId>
+                  <artifactId>asm</artifactId>
+                  <version>${version.org.ow2.asm}</version>
+                </additionalDependency>
+                <additionalDependency>
                   <groupId>org.jboss</groupId>
                   <artifactId>jandex</artifactId>
                   <version>${version.org.jboss.jandex}</version>
