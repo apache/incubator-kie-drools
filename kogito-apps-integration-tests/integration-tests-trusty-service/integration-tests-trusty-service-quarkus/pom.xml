@@ -48,6 +48,11 @@
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-container-image-jib</artifactId>
     </dependency>
+    <dependency>
+      <groupId>com.google.cloud.tools</groupId>
+      <artifactId>jib-core</artifactId>
+      <version>${version.apps.jib-core}</version>
+    </dependency>
 
     <dependency>
       <groupId>org.junit.jupiter</groupId>
@@ -57,6 +62,12 @@
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>integration-tests-trusty-service-common</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.logging</groupId>
+      <artifactId>commons-logging-jboss-logging</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>

@@ -63,6 +63,11 @@
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-container-image-jib</artifactId>
     </dependency>
+    <dependency>
+      <groupId>com.google.cloud.tools</groupId>
+      <artifactId>jib-core</artifactId>
+      <version>${version.apps.jib-core}</version>
+    </dependency>
 
     <!-- Messaging Streams -->
     <dependency>
