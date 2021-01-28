@@ -40,7 +40,7 @@ import org.kie.dmn.validation.DMNValidator;
 import org.kie.dmn.validation.DMNValidatorFactory;
 import org.kie.dmn.validation.dtanalysis.DMNDTAnalyser;
 import org.kie.dmn.validation.dtanalysis.model.DTAnalysis;
-import org.kie.kogito.codegen.context.KogitoBuildContext;
+import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

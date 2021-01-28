@@ -21,7 +21,7 @@ import java.util.stream.Stream;
 
 import com.github.javaparser.ast.comments.Comment;
 import com.github.javaparser.ast.stmt.BlockStmt;
-import org.kie.kogito.codegen.TemplatedGenerator;
+import org.kie.kogito.codegen.api.template.TemplatedGenerator;
 
 public abstract class AbstractEventResourceGenerator {
 

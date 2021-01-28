@@ -28,15 +28,15 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
-import org.kie.kogito.codegen.GeneratedFile;
-import org.kie.kogito.codegen.Generator;
-import org.kie.kogito.codegen.context.JavaKogitoBuildContext;
-import org.kie.kogito.codegen.context.KogitoBuildContext;
-import org.kie.kogito.codegen.context.QuarkusKogitoBuildContext;
-import org.kie.kogito.codegen.context.SpringBootKogitoBuildContext;
-import org.kie.kogito.codegen.utils.AddonsConfigDiscovery;
-import org.kie.kogito.codegen.utils.AppPaths;
-import org.kie.kogito.codegen.utils.GeneratedFileWriter;
+import org.kie.kogito.codegen.api.GeneratedFile;
+import org.kie.kogito.codegen.api.Generator;
+import org.kie.kogito.codegen.core.context.JavaKogitoBuildContext;
+import org.kie.kogito.codegen.api.context.KogitoBuildContext;
+import org.kie.kogito.codegen.core.context.QuarkusKogitoBuildContext;
+import org.kie.kogito.codegen.core.context.SpringBootKogitoBuildContext;
+import org.kie.kogito.codegen.core.utils.AddonsConfigDiscovery;
+import org.kie.kogito.codegen.api.utils.AppPaths;
+import org.kie.kogito.codegen.core.utils.GeneratedFileWriter;
 import org.kie.kogito.maven.plugin.util.MojoUtil;
 
 public abstract class AbstractKieMojo extends AbstractMojo {

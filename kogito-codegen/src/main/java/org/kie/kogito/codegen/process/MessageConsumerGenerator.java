@@ -27,15 +27,15 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.core.util.StringUtils;
 import org.jbpm.compiler.canonical.TriggerMetaData;
 import org.kie.api.definition.process.WorkflowProcess;
-import org.kie.kogito.codegen.BodyDeclarationComparator;
-import org.kie.kogito.codegen.InvalidTemplateException;
-import org.kie.kogito.codegen.TemplatedGenerator;
-import org.kie.kogito.codegen.context.KogitoBuildContext;
+import org.kie.kogito.codegen.core.BodyDeclarationComparator;
+import org.kie.kogito.codegen.api.template.InvalidTemplateException;
+import org.kie.kogito.codegen.api.template.TemplatedGenerator;
+import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 
-import static org.kie.kogito.codegen.CodegenUtils.interpolateTypes;
-import static org.kie.kogito.codegen.CodegenUtils.isApplicationField;
-import static org.kie.kogito.codegen.CodegenUtils.isObjectMapperField;
-import static org.kie.kogito.codegen.CodegenUtils.isProcessField;
+import static org.kie.kogito.codegen.core.CodegenUtils.interpolateTypes;
+import static org.kie.kogito.codegen.core.CodegenUtils.isApplicationField;
+import static org.kie.kogito.codegen.core.CodegenUtils.isObjectMapperField;
+import static org.kie.kogito.codegen.core.CodegenUtils.isProcessField;
 
 public class MessageConsumerGenerator {
 

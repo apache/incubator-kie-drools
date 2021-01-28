@@ -34,7 +34,7 @@ import java.util.stream.Stream;
 import org.infinispan.protostream.annotations.ProtoEnumValue;
 import org.kie.internal.kogito.codegen.Generated;
 import org.kie.internal.kogito.codegen.VariableInfo;
-import org.kie.kogito.codegen.GeneratedFile;
+import org.kie.kogito.codegen.api.GeneratedFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

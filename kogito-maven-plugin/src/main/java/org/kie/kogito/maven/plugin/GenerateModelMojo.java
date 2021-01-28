@@ -31,9 +31,9 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.kie.kogito.codegen.ApplicationGenerator;
-import org.kie.kogito.codegen.GeneratedFile;
-import org.kie.kogito.codegen.utils.ApplicationGeneratorDiscovery;
+import org.kie.kogito.codegen.core.ApplicationGenerator;
+import org.kie.kogito.codegen.api.GeneratedFile;
+import org.kie.kogito.codegen.core.utils.ApplicationGeneratorDiscovery;
 
 @Mojo(name = "generateModel",
         requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME,

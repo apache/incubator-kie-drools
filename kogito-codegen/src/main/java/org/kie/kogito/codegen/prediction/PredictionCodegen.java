@@ -36,13 +36,13 @@ import org.drools.modelcompiler.builder.ModelBuilderImpl;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.CompositeKnowledgeBuilder;
-import org.kie.kogito.codegen.AbstractGenerator;
-import org.kie.kogito.codegen.ApplicationSection;
-import org.kie.kogito.codegen.GeneratedFile;
-import org.kie.kogito.codegen.GeneratedFileType;
+import org.kie.kogito.codegen.core.AbstractGenerator;
+import org.kie.kogito.codegen.api.ApplicationSection;
+import org.kie.kogito.codegen.api.GeneratedFile;
+import org.kie.kogito.codegen.api.GeneratedFileType;
 import org.kie.kogito.codegen.KogitoPackageSources;
-import org.kie.kogito.codegen.context.KogitoBuildContext;
-import org.kie.kogito.codegen.io.CollectedResource;
+import org.kie.kogito.codegen.api.context.KogitoBuildContext;
+import org.kie.kogito.codegen.api.io.CollectedResource;
 import org.kie.kogito.codegen.prediction.config.PredictionConfigGenerator;
 import org.kie.kogito.codegen.rules.IncrementalRuleCodegen;
 import org.kie.kogito.codegen.rules.RuleCodegenError;
@@ -195,8 +195,8 @@ public class PredictionCodegen extends AbstractGenerator {
         return modelFiles;
     }
 
-    private Collection<org.kie.kogito.codegen.GeneratedFile> convertGeneratedRuleFile(Collection<org.drools.modelcompiler.builder.GeneratedFile> legacyModelFiles) {
-        return legacyModelFiles.stream().map(f -> new org.kie.kogito.codegen.GeneratedFile(
+    private Collection<GeneratedFile> convertGeneratedRuleFile(Collection<org.drools.modelcompiler.builder.GeneratedFile> legacyModelFiles) {
+        return legacyModelFiles.stream().map(f -> new GeneratedFile(
                 IncrementalRuleCodegen.RULE_TYPE,
                 f.getPath(), f.getData()))
                 .collect(toList());
@@ -204,5 +204,10 @@ public class PredictionCodegen extends AbstractGenerator {
 
     private void storeFile(GeneratedFileType type, String path, String source) {
         generatedFiles.add(new GeneratedFile(type, path, source));
+    }
+
+    @Override
+    public int priority() {
+        return 40;
     }
 }

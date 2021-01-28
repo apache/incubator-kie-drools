@@ -27,7 +27,7 @@ import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.core.util.IoUtils;
-import org.kie.kogito.codegen.io.CollectedResource;
+import org.kie.kogito.codegen.api.io.CollectedResource;
 
 class ReadResourceUtil {
 

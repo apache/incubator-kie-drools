@@ -32,12 +32,12 @@ import java.util.Map;
 import java.util.Set;
 
 import io.quarkus.deployment.dev.JavaCompilationProvider;
-import org.kie.kogito.codegen.ApplicationGenerator;
-import org.kie.kogito.codegen.GeneratedFile;
-import org.kie.kogito.codegen.GeneratedFileType;
-import org.kie.kogito.codegen.Generator;
-import org.kie.kogito.codegen.context.KogitoBuildContext;
-import org.kie.kogito.codegen.utils.AppPaths;
+import org.kie.kogito.codegen.core.ApplicationGenerator;
+import org.kie.kogito.codegen.api.GeneratedFile;
+import org.kie.kogito.codegen.api.GeneratedFileType;
+import org.kie.kogito.codegen.api.Generator;
+import org.kie.kogito.codegen.api.context.KogitoBuildContext;
+import org.kie.kogito.codegen.api.utils.AppPaths;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -26,12 +26,11 @@ import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.modelcompiler.builder.JavaParserCompiler;
 import org.kie.internal.ruleunit.RuleUnitVariable;
-import org.kie.kogito.codegen.FileGenerator;
 import org.kie.kogito.rules.DataStore;
 import org.kie.kogito.rules.RuleUnitData;
 import org.kie.kogito.rules.units.GeneratedRuleUnitDescription;
 
-public class RuleUnitPojoGenerator implements FileGenerator {
+public class RuleUnitPojoGenerator implements RuleFileGenerator {
 
     private final GeneratedRuleUnitDescription ruleUnitDescription;
     private final RuleUnitHelper ruleUnitHelper;

@@ -33,13 +33,13 @@ import com.github.javaparser.ast.type.Type;
 import org.drools.core.util.StringUtils;
 import org.jbpm.compiler.canonical.UserTaskModelMetaData;
 import org.kie.api.definition.process.WorkflowProcess;
-import org.kie.kogito.codegen.BodyDeclarationComparator;
-import org.kie.kogito.codegen.CodegenUtils;
-import org.kie.kogito.codegen.GeneratorConfig;
-import org.kie.kogito.codegen.TemplatedGenerator;
-import org.kie.kogito.codegen.context.KogitoBuildContext;
-import org.kie.kogito.codegen.context.QuarkusKogitoBuildContext;
-import org.kie.kogito.codegen.context.SpringBootKogitoBuildContext;
+import org.kie.kogito.codegen.core.BodyDeclarationComparator;
+import org.kie.kogito.codegen.core.CodegenUtils;
+import org.kie.kogito.codegen.core.GeneratorConfig;
+import org.kie.kogito.codegen.api.template.TemplatedGenerator;
+import org.kie.kogito.codegen.api.context.KogitoBuildContext;
+import org.kie.kogito.codegen.core.context.QuarkusKogitoBuildContext;
+import org.kie.kogito.codegen.core.context.SpringBootKogitoBuildContext;
 
 import java.util.HashMap;
 import java.util.List;
@@ -50,7 +50,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-import static org.kie.kogito.codegen.CodegenUtils.interpolateTypes;
+import static org.kie.kogito.codegen.core.CodegenUtils.interpolateTypes;
 
 /**
  * ProcessResourceGenerator

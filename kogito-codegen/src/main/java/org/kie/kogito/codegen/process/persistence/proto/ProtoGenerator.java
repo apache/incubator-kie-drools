@@ -15,8 +15,8 @@
 
 package org.kie.kogito.codegen.process.persistence.proto;
 
-import org.kie.kogito.codegen.GeneratedFile;
-import org.kie.kogito.codegen.GeneratedFileType;
+import org.kie.kogito.codegen.api.GeneratedFile;
+import org.kie.kogito.codegen.api.GeneratedFileType;
 
 import java.util.Collection;
 import java.util.Date;

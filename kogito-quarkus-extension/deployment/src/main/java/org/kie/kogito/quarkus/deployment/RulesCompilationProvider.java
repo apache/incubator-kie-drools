@@ -24,9 +24,9 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.kie.kogito.codegen.Generator;
-import org.kie.kogito.codegen.context.KogitoBuildContext;
-import org.kie.kogito.codegen.io.CollectedResource;
+import org.kie.kogito.codegen.api.Generator;
+import org.kie.kogito.codegen.api.context.KogitoBuildContext;
+import org.kie.kogito.codegen.core.io.CollectedResourceProducer;
 import org.kie.kogito.codegen.rules.IncrementalRuleCodegen;
 
 public class RulesCompilationProvider extends KogitoCompilationProvider {
@@ -44,7 +44,7 @@ public class RulesCompilationProvider extends KogitoCompilationProvider {
         Collection<File> files = PackageWalker.getAllSiblings(filesToCompile);
         return IncrementalRuleCodegen.ofCollectedResources(
                         context,
-                        CollectedResource.fromFiles(resources, files.toArray(new File[0])))
+                        CollectedResourceProducer.fromFiles(resources, files.toArray(new File[0])))
                 .withHotReloadMode();
     }
 

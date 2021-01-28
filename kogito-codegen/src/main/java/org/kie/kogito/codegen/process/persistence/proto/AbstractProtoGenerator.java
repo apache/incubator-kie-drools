@@ -26,7 +26,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.kie.kogito.codegen.GeneratedFile;
+import org.kie.kogito.codegen.api.GeneratedFile;
 
 public abstract class AbstractProtoGenerator<T> implements ProtoGenerator {
 

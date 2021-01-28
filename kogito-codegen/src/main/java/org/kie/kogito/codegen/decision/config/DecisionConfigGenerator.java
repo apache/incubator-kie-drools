@@ -15,8 +15,8 @@
 
 package org.kie.kogito.codegen.decision.config;
 
-import org.kie.kogito.codegen.AbstractConfigGenerator;
-import org.kie.kogito.codegen.context.KogitoBuildContext;
+import org.kie.kogito.codegen.core.AbstractConfigGenerator;
+import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 
 public class DecisionConfigGenerator extends AbstractConfigGenerator {
 

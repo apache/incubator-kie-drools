@@ -37,15 +37,14 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.ruleunit.RuleUnitDescription;
 import org.kie.internal.ruleunit.RuleUnitVariable;
-import org.kie.kogito.codegen.BodyDeclarationComparator;
-import org.kie.kogito.codegen.FileGenerator;
+import org.kie.kogito.codegen.core.BodyDeclarationComparator;
 import org.kie.kogito.conf.DefaultEntryPoint;
 import org.kie.kogito.conf.EntryPoint;
 import org.kie.kogito.rules.DataSource;
 import org.kie.kogito.rules.units.AbstractRuleUnitInstance;
 import org.kie.kogito.rules.units.EntryPointDataProcessor;
 
-public class RuleUnitInstanceGenerator implements FileGenerator {
+public class RuleUnitInstanceGenerator implements RuleFileGenerator {
 
     private final String targetTypeName;
     private final String targetCanonicalName;

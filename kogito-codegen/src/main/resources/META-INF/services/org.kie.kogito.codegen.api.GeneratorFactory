@@ -1,0 +1,4 @@
+org.kie.kogito.codegen.process.ProcessCodegenFactory
+org.kie.kogito.codegen.rules.IncrementalRuleCodegenFactory
+org.kie.kogito.codegen.decision.DecisionCodegenFactory
+org.kie.kogito.codegen.prediction.PredictionCodegenFactory

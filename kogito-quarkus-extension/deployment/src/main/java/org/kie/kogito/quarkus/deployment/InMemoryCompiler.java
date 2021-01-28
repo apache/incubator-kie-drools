@@ -27,7 +27,7 @@ import org.kie.memorycompiler.JavaCompilerSettings;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.modelcompiler.builder.JavaParserCompiler;
 import org.kie.memorycompiler.CompilationProblem;
-import org.kie.kogito.codegen.GeneratedFile;
+import org.kie.kogito.codegen.api.GeneratedFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

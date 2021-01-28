@@ -21,10 +21,10 @@ import java.nio.file.Path;
 import java.util.Collections;
 import java.util.Set;
 
-import org.kie.kogito.codegen.Generator;
-import org.kie.kogito.codegen.context.KogitoBuildContext;
+import org.kie.kogito.codegen.api.Generator;
+import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.decision.DecisionCodegen;
-import org.kie.kogito.codegen.io.CollectedResource;
+import org.kie.kogito.codegen.core.io.CollectedResourceProducer;
 
 public class DMNCompilationProvider extends KogitoCompilationProvider {
 
@@ -38,6 +38,6 @@ public class DMNCompilationProvider extends KogitoCompilationProvider {
         Path path = quarkusContext.getProjectDirectory().toPath().resolve("src").resolve("main").resolve("resources");
         return DecisionCodegen.ofCollectedResources(
                 context,
-                CollectedResource.fromDirectory(path));
+                CollectedResourceProducer.fromDirectory(path));
     }
 }

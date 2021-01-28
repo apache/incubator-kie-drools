@@ -30,6 +30,7 @@ import org.jbpm.util.JsonSchemaUtil;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.UserTask;
 import org.kie.kogito.UserTaskParam;
+import org.kie.kogito.codegen.api.GeneratedFile;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;

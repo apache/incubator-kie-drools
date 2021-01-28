@@ -23,10 +23,10 @@ import java.util.Optional;
 import com.github.javaparser.ast.CompilationUnit;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.codegen.AbstractCodegenTest;
-import org.kie.kogito.codegen.ApplicationSection;
-import org.kie.kogito.codegen.GeneratedFile;
-import org.kie.kogito.codegen.context.JavaKogitoBuildContext;
-import org.kie.kogito.codegen.io.CollectedResource;
+import org.kie.kogito.codegen.api.ApplicationSection;
+import org.kie.kogito.codegen.api.GeneratedFile;
+import org.kie.kogito.codegen.core.context.JavaKogitoBuildContext;
+import org.kie.kogito.codegen.core.io.CollectedResourceProducer;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -42,7 +42,7 @@ public class PredictionCodegenTest extends AbstractCodegenTest {
     public void generateAllFiles() {
         PredictionCodegen codeGenerator = PredictionCodegen.ofCollectedResources(
                 JavaKogitoBuildContext.builder().build(),
-                CollectedResource.fromFiles(BASE_PATH, FULL_SOURCE.toFile()));
+                CollectedResourceProducer.fromFiles(BASE_PATH, FULL_SOURCE.toFile()));
 
         List<GeneratedFile> generatedFiles = codeGenerator.generate();
         assertEquals(4, generatedFiles.size());

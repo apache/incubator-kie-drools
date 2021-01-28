@@ -40,6 +40,8 @@ import com.github.victools.jsonschema.generator.SchemaVersion;
 import org.jbpm.util.JsonSchemaUtil;
 import org.kie.kogito.UserTask;
 import org.kie.kogito.UserTaskParam;
+import org.kie.kogito.codegen.api.GeneratedFile;
+import org.kie.kogito.codegen.api.GeneratedFileType;
 import org.kie.kogito.codegen.json.JsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

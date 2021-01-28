@@ -33,13 +33,14 @@ import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import org.junit.jupiter.api.Test;
 import org.kie.api.io.ResourceType;
-import org.kie.kogito.codegen.AbstractGenerator;
-import org.kie.kogito.codegen.AddonsConfig;
-import org.kie.kogito.codegen.GeneratedFile;
-import org.kie.kogito.codegen.GeneratedFileType;
-import org.kie.kogito.codegen.context.KogitoBuildContext;
-import org.kie.kogito.codegen.context.QuarkusKogitoBuildContext;
-import org.kie.kogito.codegen.io.CollectedResource;
+import org.kie.kogito.codegen.core.AbstractGenerator;
+import org.kie.kogito.codegen.api.AddonsConfig;
+import org.kie.kogito.codegen.api.GeneratedFile;
+import org.kie.kogito.codegen.api.GeneratedFileType;
+import org.kie.kogito.codegen.api.context.KogitoBuildContext;
+import org.kie.kogito.codegen.core.context.QuarkusKogitoBuildContext;
+import org.kie.kogito.codegen.api.io.CollectedResource;
+import org.kie.kogito.codegen.core.io.CollectedResourceProducer;
 
 import static com.github.javaparser.StaticJavaParser.parse;
 import static java.util.stream.Collectors.toList;
@@ -59,7 +60,7 @@ public class DecisionModelResourcesProviderGeneratorTest {
                 .withAddonsConfig(AddonsConfig.builder().withTracing(true).build())
                 .build();
 
-        final Collection<CollectedResource> collectedResources = CollectedResource.fromPaths(
+        final Collection<CollectedResource> collectedResources = CollectedResourceProducer.fromPaths(
                 Paths.get("src/test/resources/decision/models/vacationDays").toAbsolutePath(),
                 Paths.get("src/test/resources/decision/models/vacationDaysAlt").toAbsolutePath()
         );

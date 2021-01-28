@@ -44,14 +44,15 @@ import org.kie.dmn.openapi.model.DMNOASResult;
 import org.kie.dmn.typesafe.DMNAllTypesIndex;
 import org.kie.dmn.typesafe.DMNTypeSafePackageName;
 import org.kie.dmn.typesafe.DMNTypeSafeTypeGenerator;
-import org.kie.kogito.codegen.AbstractGenerator;
-import org.kie.kogito.codegen.ApplicationSection;
-import org.kie.kogito.codegen.DashboardGeneratedFileUtils;
-import org.kie.kogito.codegen.GeneratedFile;
-import org.kie.kogito.codegen.GeneratedFileType;
-import org.kie.kogito.codegen.context.KogitoBuildContext;
+import org.kie.kogito.codegen.core.AbstractGenerator;
+import org.kie.kogito.codegen.api.ApplicationSection;
+import org.kie.kogito.codegen.core.DashboardGeneratedFileUtils;
+import org.kie.kogito.codegen.api.GeneratedFile;
+import org.kie.kogito.codegen.api.GeneratedFileType;
+import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.decision.config.DecisionConfigGenerator;
-import org.kie.kogito.codegen.io.CollectedResource;
+import org.kie.kogito.codegen.api.io.CollectedResource;
+import org.kie.kogito.codegen.core.io.CollectedResourceProducer;
 import org.kie.kogito.grafana.GrafanaConfigurationWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,7 +75,7 @@ public class DecisionCodegen extends AbstractGenerator {
     }
 
     public static DecisionCodegen ofPath(KogitoBuildContext context, Path... paths) {
-        return ofCollectedResources(context, CollectedResource.fromPaths(paths));
+        return ofCollectedResources(context, CollectedResourceProducer.fromPaths(paths));
     }
 
     private static final String operationalDashboardDmnTemplate = "/grafana-dashboard-template/operational-dashboard-template.json";
@@ -248,5 +249,10 @@ public class DecisionCodegen extends AbstractGenerator {
                 context(),
                 applicationCanonicalName(),
                 this.cResources));
+    }
+
+    @Override
+    public int priority() {
+        return 30;
     }
 }

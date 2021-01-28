@@ -18,7 +18,7 @@ package org.kie.kogito.codegen.decision;
 import java.nio.file.Path;
 
 import org.kie.dmn.api.core.DMNModel;
-import org.kie.kogito.codegen.io.CollectedResource;
+import org.kie.kogito.codegen.api.io.CollectedResource;
 
 /**
  * A (DMNModel, CollectedResource) pair

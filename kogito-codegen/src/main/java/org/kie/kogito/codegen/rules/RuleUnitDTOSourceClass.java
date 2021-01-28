@@ -27,10 +27,9 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
 import org.kie.internal.ruleunit.RuleUnitDescription;
 import org.kie.internal.ruleunit.RuleUnitVariable;
-import org.kie.kogito.codegen.FileGenerator;
 import org.kie.kogito.rules.SingletonStore;
 
-public class RuleUnitDTOSourceClass implements FileGenerator {
+public class RuleUnitDTOSourceClass implements RuleFileGenerator {
 
     private final RuleUnitDescription ruleUnit;
 
