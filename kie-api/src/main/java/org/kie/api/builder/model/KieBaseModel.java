@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.kie.api.conf.BetaRangeIndexOption;
 import org.kie.api.conf.DeclarativeAgendaOption;
 import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.conf.EventProcessingOption;
@@ -150,6 +151,17 @@ public interface KieBaseModel {
      * Default is DeclarativeAgendaOption.DISABLED
      */
     KieBaseModel setDeclarativeAgenda(DeclarativeAgendaOption declarativeAgenda);
+
+    /**
+     * Returns the BetaRangeIndexOption of this KieBaseModel
+     */
+    BetaRangeIndexOption getBetaRangeIndexOption();
+
+    /**
+     * Sets the BetaRangeIndexOption for this KieBaseModel
+     * Default is BetaRangeIndexOption.DISABLED
+     */
+    KieBaseModel setBetaRangeIndexOption(BetaRangeIndexOption betaRangeIndexOption);
 
     /**
      * Returns the SequentialOption of this KieBaseModel
