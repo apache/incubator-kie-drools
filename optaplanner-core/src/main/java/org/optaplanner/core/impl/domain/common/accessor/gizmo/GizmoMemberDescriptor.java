@@ -22,10 +22,10 @@ import java.lang.reflect.Modifier;
 import java.util.Optional;
 import java.util.function.Consumer;
 
+import org.objectweb.asm.Type;
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
 
 import io.quarkus.gizmo.BytecodeCreator;
-import io.quarkus.gizmo.DescriptorUtils;
 import io.quarkus.gizmo.FieldDescriptor;
 import io.quarkus.gizmo.MethodDescriptor;
 import io.quarkus.gizmo.ResultHandle;
@@ -239,40 +239,7 @@ public class GizmoMemberDescriptor {
             holder[0] = md.getReturnType();
         });
 
-        if (DescriptorUtils.isPrimitive(holder[0])) {
-            switch (holder[0]) {
-                case "I":
-                    return int.class.getName();
-                case "B":
-                    return byte.class.getName();
-                case "C":
-                    return char.class.getName();
-                case "J":
-                    return long.class.getName();
-                case "F":
-                    return float.class.getName();
-                case "S":
-                    return short.class.getName();
-                case "D":
-                    return double.class.getName();
-                case "Z":
-                    return boolean.class.getName();
-                case "V":
-                    return void.class.getName();
-                default:
-                    throw new IllegalStateException("Unknown primitive type (" + holder[0] + ").");
-            }
-        }
-
-        String typeName = DescriptorUtils.getTypeStringFromDescriptorFormat(holder[0]).replace('/', '.');
-        int genericStart = typeName.indexOf('<');
-        boolean isGeneric = genericStart != -1;
-        if (isGeneric) {
-            int genericEnd = typeName.lastIndexOf('>');
-            return typeName.substring(0, genericStart) + typeName.substring(genericEnd + 1);
-        } else {
-            return typeName;
-        }
+        return Type.getType(holder[0]).getClassName();
     }
 
     @Override

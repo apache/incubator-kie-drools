@@ -138,17 +138,16 @@ public class GizmoMemberAccessorImplementor {
         ClassOutput classOutput = (path, byteCode) -> {
             classBytecodeHolder[0] = byteCode;
         };
-        ClassCreator classCreator = ClassCreator.builder()
+        try (ClassCreator classCreator = ClassCreator.builder()
                 .className(className)
                 .interfaces(MemberAccessor.class)
                 .superClass(Object.class)
                 .classOutput(classOutput)
-                .build();
+                .build()) {
 
-        GizmoMemberDescriptor memberDescriptor = new GizmoMemberDescriptor(member);
-        defineAccessorFor(classCreator, memberDescriptor, annotationClass);
-
-        classCreator.close();
+            GizmoMemberDescriptor memberDescriptor = new GizmoMemberDescriptor(member);
+            defineAccessorFor(classCreator, memberDescriptor, annotationClass);
+        }
         byte[] classBytecode = classBytecodeHolder[0];
 
         classNameToBytecode.put(className, classBytecode);

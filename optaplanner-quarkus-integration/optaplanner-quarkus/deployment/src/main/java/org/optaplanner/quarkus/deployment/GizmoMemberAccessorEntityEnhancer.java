@@ -115,37 +115,37 @@ public class GizmoMemberAccessorEntityEnhancer {
             FieldInfo fieldInfo, BuildProducer<BytecodeTransformerBuildItem> transformers) throws ClassNotFoundException {
         String generatedClassName = classInfo.name().prefix().toString() + ".$optaplanner$__"
                 + classInfo.name().withoutPackagePrefix() + "$__" + fieldInfo.name();
-        ClassCreator classCreator = ClassCreator
+        try (ClassCreator classCreator = ClassCreator
                 .builder()
                 .className(generatedClassName)
                 .interfaces(MemberAccessor.class)
                 .classOutput(classOutput)
-                .build();
+                .build()) {
 
-        GizmoMemberDescriptor member;
-        Class<?> declaringClass = Class.forName(fieldInfo.declaringClass().name().toString(), false,
-                Thread.currentThread().getContextClassLoader());
-        FieldDescriptor memberDescriptor = FieldDescriptor.of(fieldInfo);
-        String name = fieldInfo.name();
+            GizmoMemberDescriptor member;
+            Class<?> declaringClass = Class.forName(fieldInfo.declaringClass().name().toString(), false,
+                    Thread.currentThread().getContextClassLoader());
+            FieldDescriptor memberDescriptor = FieldDescriptor.of(fieldInfo);
+            String name = fieldInfo.name();
 
-        if (Modifier.isPublic(fieldInfo.flags())) {
-            member = new GizmoMemberDescriptor(name, memberDescriptor, memberDescriptor, declaringClass);
-        } else {
-            addVirtualFieldGetter(classInfo, fieldInfo, transformers);
-            String methodName = getVirtualGetterName(fieldInfo.name());
-            MethodDescriptor getterDescriptor = MethodDescriptor.ofMethod(fieldInfo.declaringClass().name().toString(),
-                    methodName,
-                    fieldInfo.type().name().toString());
-            MethodDescriptor setterDescriptor = MethodDescriptor.ofMethod(fieldInfo.declaringClass().name().toString(),
-                    getVirtualSetterName(fieldInfo.name()),
-                    "void",
-                    fieldInfo.type().name().toString());
-            member = new GizmoMemberDescriptor(name, getterDescriptor, memberDescriptor, declaringClass, setterDescriptor);
+            if (Modifier.isPublic(fieldInfo.flags())) {
+                member = new GizmoMemberDescriptor(name, memberDescriptor, memberDescriptor, declaringClass);
+            } else {
+                addVirtualFieldGetter(classInfo, fieldInfo, transformers);
+                String methodName = getVirtualGetterName(fieldInfo.name());
+                MethodDescriptor getterDescriptor = MethodDescriptor.ofMethod(fieldInfo.declaringClass().name().toString(),
+                        methodName,
+                        fieldInfo.type().name().toString());
+                MethodDescriptor setterDescriptor = MethodDescriptor.ofMethod(fieldInfo.declaringClass().name().toString(),
+                        getVirtualSetterName(fieldInfo.name()),
+                        "void",
+                        fieldInfo.type().name().toString());
+                member = new GizmoMemberDescriptor(name, getterDescriptor, memberDescriptor, declaringClass, setterDescriptor);
+            }
+            GizmoMemberAccessorImplementor.defineAccessorFor(classCreator, member,
+                    (Class<? extends Annotation>) Class.forName(annotationInstance.name().toString(), false,
+                            Thread.currentThread().getContextClassLoader()));
         }
-        GizmoMemberAccessorImplementor.defineAccessorFor(classCreator, member,
-                (Class<? extends Annotation>) Class.forName(annotationInstance.name().toString(), false,
-                        Thread.currentThread().getContextClassLoader()));
-        classCreator.close();
         return generatedClassName;
     }
 
@@ -192,79 +192,67 @@ public class GizmoMemberAccessorEntityEnhancer {
             MethodInfo methodInfo, BuildProducer<BytecodeTransformerBuildItem> transformers) throws ClassNotFoundException {
         String generatedClassName = classInfo.name().prefix().toString() + ".$optaplanner$__"
                 + classInfo.name().withoutPackagePrefix() + "$__" + methodInfo.name();
-        ClassCreator classCreator = ClassCreator
+        try (ClassCreator classCreator = ClassCreator
                 .builder()
                 .className(generatedClassName)
                 .interfaces(MemberAccessor.class)
                 .classOutput(classOutput)
-                .build();
+                .build()) {
 
-        GizmoMemberDescriptor member;
-        String name = getMemberName(methodInfo);
-        Optional<MethodDescriptor> setterDescriptor = getSetterDescriptor(classInfo, methodInfo, name);
+            GizmoMemberDescriptor member;
+            String name = getMemberName(methodInfo);
+            Optional<MethodDescriptor> setterDescriptor = getSetterDescriptor(classInfo, methodInfo, name);
 
-        Class<?> declaringClass = Class.forName(methodInfo.declaringClass().name().toString(), false,
-                Thread.currentThread().getContextClassLoader());
-        MethodDescriptor memberDescriptor = MethodDescriptor.of(methodInfo);
+            Class<?> declaringClass = Class.forName(methodInfo.declaringClass().name().toString(), false,
+                    Thread.currentThread().getContextClassLoader());
+            MethodDescriptor memberDescriptor = MethodDescriptor.of(methodInfo);
 
-        if (Modifier.isPublic(methodInfo.flags())) {
-            member = new GizmoMemberDescriptor(name, memberDescriptor, memberDescriptor, declaringClass,
-                    setterDescriptor.orElse(null));
-        } else {
-            setterDescriptor = addVirtualMethodGetter(classInfo, methodInfo, name, setterDescriptor, transformers);
-            String methodName = getVirtualGetterName(name);
-            MethodDescriptor newMethodDescriptor =
-                    MethodDescriptor.ofMethod(declaringClass, methodName, memberDescriptor.getReturnType());
-            member = new GizmoMemberDescriptor(name, newMethodDescriptor, memberDescriptor, declaringClass,
-                    setterDescriptor.orElse(null));
+            if (Modifier.isPublic(methodInfo.flags())) {
+                member = new GizmoMemberDescriptor(name, memberDescriptor, memberDescriptor, declaringClass,
+                        setterDescriptor.orElse(null));
+            } else {
+                setterDescriptor = addVirtualMethodGetter(classInfo, methodInfo, name, setterDescriptor, transformers);
+                String methodName = getVirtualGetterName(name);
+                MethodDescriptor newMethodDescriptor =
+                        MethodDescriptor.ofMethod(declaringClass, methodName, memberDescriptor.getReturnType());
+                member = new GizmoMemberDescriptor(name, newMethodDescriptor, memberDescriptor, declaringClass,
+                        setterDescriptor.orElse(null));
+            }
+            GizmoMemberAccessorImplementor.defineAccessorFor(classCreator, member,
+                    (Class<? extends Annotation>) Class.forName(annotationInstance.name().toString(), false,
+                            Thread.currentThread().getContextClassLoader()));
         }
-        GizmoMemberAccessorImplementor.defineAccessorFor(classCreator, member,
-                (Class<? extends Annotation>) Class.forName(annotationInstance.name().toString(), false,
-                        Thread.currentThread().getContextClassLoader()));
-        classCreator.close();
         return generatedClassName;
-    }
-
-    private static String getTypeDescriptor(java.lang.reflect.Type type) throws ClassNotFoundException {
-        String typeName = type.getTypeName();
-        int genericStart = typeName.indexOf('<');
-        boolean isGeneric = genericStart != -1;
-        if (isGeneric) {
-            int genericEnd = typeName.lastIndexOf('>');
-            return Type.getDescriptor(Class.forName(typeName.substring(0, genericStart) + typeName.substring(genericEnd + 1)));
-        } else {
-            return Type.getDescriptor(Class.forName(typeName));
-        }
     }
 
     public static String generateGizmoInitializer(ClassOutput classOutput, Set<String> generatedClassNames) {
         String generatedClassName = OptaPlannerGizmoInitializer.class.getName() + "$Implementation";
-        ClassCreator classCreator = ClassCreator
+        try (ClassCreator classCreator = ClassCreator
                 .builder()
                 .className(generatedClassName)
                 .interfaces(OptaPlannerGizmoInitializer.class)
                 .classOutput(classOutput)
-                .build();
+                .build()) {
 
-        classCreator.addAnnotation(ApplicationScoped.class);
-        MethodCreator methodCreator = classCreator.getMethodCreator(MethodDescriptor.ofMethod(OptaPlannerGizmoInitializer.class,
-                "setup", void.class));
-        ResultHandle memberAccessorMap = methodCreator.newInstance(MethodDescriptor.ofConstructor(HashMap.class));
-        for (String generatedMemberAccessor : generatedClassNames) {
-            ResultHandle generatedMemberAccessorResultHandle = methodCreator.load(generatedMemberAccessor);
-            ResultHandle memberAccessorInstance =
-                    methodCreator.newInstance(MethodDescriptor.ofConstructor(generatedMemberAccessor));
-            methodCreator.invokeInterfaceMethod(
-                    MethodDescriptor.ofMethod(Map.class, "put", Object.class, Object.class, Object.class),
-                    memberAccessorMap, generatedMemberAccessorResultHandle, memberAccessorInstance);
+            classCreator.addAnnotation(ApplicationScoped.class);
+            MethodCreator methodCreator =
+                    classCreator.getMethodCreator(MethodDescriptor.ofMethod(OptaPlannerGizmoInitializer.class,
+                            "setup", void.class));
+            ResultHandle memberAccessorMap = methodCreator.newInstance(MethodDescriptor.ofConstructor(HashMap.class));
+            for (String generatedMemberAccessor : generatedClassNames) {
+                ResultHandle generatedMemberAccessorResultHandle = methodCreator.load(generatedMemberAccessor);
+                ResultHandle memberAccessorInstance =
+                        methodCreator.newInstance(MethodDescriptor.ofConstructor(generatedMemberAccessor));
+                methodCreator.invokeInterfaceMethod(
+                        MethodDescriptor.ofMethod(Map.class, "put", Object.class, Object.class, Object.class),
+                        memberAccessorMap, generatedMemberAccessorResultHandle, memberAccessorInstance);
+            }
+            methodCreator.invokeStaticMethod(
+                    MethodDescriptor.ofMethod(GizmoMemberAccessorFactory.class, "usePregeneratedMemberAccessorMap",
+                            void.class, Map.class),
+                    memberAccessorMap);
+            methodCreator.returnValue(null);
         }
-        methodCreator.invokeStaticMethod(
-                MethodDescriptor.ofMethod(GizmoMemberAccessorFactory.class, "usePregeneratedMemberAccessorMap",
-                        void.class, Map.class),
-                memberAccessorMap);
-        methodCreator.returnValue(null);
-
-        classCreator.close();
         return generatedClassName;
     }
 
