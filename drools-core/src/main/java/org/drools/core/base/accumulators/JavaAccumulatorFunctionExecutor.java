@@ -74,10 +74,8 @@ public class JavaAccumulatorFunctionExecutor
     /* (non-Javadoc)
      * @see org.kie.spi.Accumulator#createContext()
      */
-    public Serializable createContext() {
-        JavaAccumulatorFunctionContext context = new JavaAccumulatorFunctionContext();
-        context.context = this.function.createContext();
-        return context;
+    public Object createContext() {
+        return this.function.createContext();
     }
 
     /* (non-Javadoc)
@@ -88,8 +86,7 @@ public class JavaAccumulatorFunctionExecutor
                      Tuple leftTuple,
                      Declaration[] declarations,
                      WorkingMemory workingMemory) {
-        ((JavaAccumulatorFunctionContext) context).context = this.function.initContext( ((JavaAccumulatorFunctionContext) context).context );
-        return context;
+        return this.function.initContext( (Serializable) context );
     }
 
     /* (non-Javadoc)
@@ -109,7 +106,7 @@ public class JavaAccumulatorFunctionExecutor
                                                      innerDeclarations,
                                                      workingMemory,
                                                      workingMemoryContext ).getValue();
-            return this.function.accumulateValue( ((JavaAccumulatorFunctionContext) context).context, value );
+            return this.function.accumulateValue( (Serializable) context, value );
         } catch (Exception e) {
             throw new RuntimeException( e );
         }
@@ -123,7 +120,7 @@ public class JavaAccumulatorFunctionExecutor
                               Declaration[] declarations,
                               Declaration[] innerDeclarations,
                               WorkingMemory workingMemory) {
-        return this.function.tryReverse( ((JavaAccumulatorFunctionContext) context).context, value );
+        return this.function.tryReverse( (Serializable) context, value );
     }
 
     /* (non-Javadoc)
@@ -135,7 +132,7 @@ public class JavaAccumulatorFunctionExecutor
                             Declaration[] declarations,
                             WorkingMemory workingMemory) {
         try {
-            return this.function.getResult( ((JavaAccumulatorFunctionContext) context).context );
+            return this.function.getResult( (Serializable) context );
         } catch (Exception e) {
             throw new RuntimeException( e );
         }
@@ -177,33 +174,5 @@ public class JavaAccumulatorFunctionExecutor
         int result = expression.hashCode();
         result = 31 * result + function.hashCode();
         return result;
-    }
-
-    public static class JavaAccumulatorFunctionContext
-        implements
-        Externalizable {
-        public Serializable               context;
-
-        public JavaAccumulatorFunctionContext() {
-        }
-
-        @SuppressWarnings("unchecked")
-        public void readExternal(ObjectInput in) throws IOException,
-                                                ClassNotFoundException {
-            context = (Externalizable) in.readObject();
-        }
-
-        public void writeExternal(ObjectOutput out) throws IOException {
-            out.writeObject( context );
-        }
-
-        public Collection<Object> getAccumulatedObjects() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public String toString() {
-            return context.toString();
-        }
     }
 }

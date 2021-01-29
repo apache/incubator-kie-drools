@@ -97,11 +97,10 @@ public class MVELAccumulateBuilderTest {
 
         Object wmContext = acc.createWorkingMemoryContext();
         AccumulateNode.AccumulateContext accContext = new AccumulateNode.AccumulateContext();
-        accContext.setFunctionContext(acc.createFunctionContext());
-        acc.init( wmContext,
-                  accContext,
-                  tuple,
-                  ksession );
+        Object funcContext = acc.createFunctionContext();
+
+        funcContext = acc.init(wmContext, accContext, funcContext, tuple, ksession);
+        accContext.setFunctionContext(funcContext);
 
         Object value1 = acc.accumulate( wmContext,
                                         accContext,
