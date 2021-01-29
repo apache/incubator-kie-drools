@@ -664,15 +664,29 @@ describe('uitility function testing', () => {
       mockedAxios.get.mockResolvedValue({
         data: mockTriggerableNodes
       });
-      const result = await getTriggerableNodes(processInstance);
-      expect(result).toStrictEqual(mockTriggerableNodes);
+      const successCallback = jest.fn();
+      const failureCallback = jest.fn();
+      await getTriggerableNodes(
+        processInstance,
+        successCallback,
+        failureCallback
+      );
+      expect(successCallback).toHaveBeenCalled();
+      expect(successCallback.mock.calls[0][0]).toStrictEqual(
+        mockTriggerableNodes
+      );
     });
     it('fails to retrieve the list of nodes', async () => {
-      mockedAxios.get.mockResolvedValue({
-        data: []
-      });
-      const result = await getTriggerableNodes(processInstance);
-      expect(result).toStrictEqual([]);
+      mockedAxios.get.mockRejectedValue({ message: '403 error' });
+      const successCallback = jest.fn();
+      const failureCallback = jest.fn();
+      await getTriggerableNodes(
+        processInstance,
+        successCallback,
+        failureCallback
+      );
+      expect(failureCallback).toHaveBeenCalled();
+      expect(failureCallback.mock.calls[0][0]).toEqual('403 error');
     });
   });
 

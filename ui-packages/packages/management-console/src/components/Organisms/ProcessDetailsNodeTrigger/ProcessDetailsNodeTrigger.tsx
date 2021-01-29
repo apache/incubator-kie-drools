@@ -17,7 +17,6 @@ import {
 } from '@patternfly/react-core';
 import React, { useState, useEffect } from 'react';
 import { CaretDownIcon } from '@patternfly/react-icons';
-import ProcessListModal from '../../Atoms/ProcessListModal/ProcessListModal';
 import {
   setTitle,
   handleNodeTrigger,
@@ -26,6 +25,7 @@ import {
 } from '../../../utils/Utils';
 import { GraphQL, OUIAProps, componentOuiaProps } from '@kogito-apps/common';
 import './ProcessDetailsNodeTrigger.css';
+import ProcessDetailsErrorModal from '../../Atoms/ProcessDetailsErrorModal/ProcessDetailsErrorModal';
 
 interface IOwnProps {
   processInstanceData: Pick<
@@ -45,12 +45,25 @@ const ProcessDetailsNodeTrigger: React.FC<IOwnProps & OUIAProps> = ({
   const [modalTitle, setModalTitle] = useState<string>('');
   const [titleType, setTitleType] = useState<string>('');
   const [modalContent, setModalContent] = useState<string>('');
-  const [nodes, setNodes] = useState([]);
+  const [isError, setIsError] = useState<boolean>(false);
+  const [nodes, setNodes] = useState<TriggerableNode[]>([]);
   /* tslint:disable:no-floating-promises */
   useEffect(() => {
     (async () => {
-      const nodesArray = await getTriggerableNodes(processInstanceData);
-      setNodes(nodesArray);
+      await getTriggerableNodes(
+        processInstanceData,
+        (resultNodes: TriggerableNode[]) => {
+          setIsError(false);
+          setNodes(resultNodes);
+        },
+        (error: string) => {
+          setIsError(true);
+          setModalTitle('Node trigger Error');
+          setModalContent(`Retrieval of nodes failed with error: ${error}`);
+          setTitleType('failure');
+          handleModalToggle();
+        }
+      );
     })();
   }, []);
 
@@ -112,109 +125,131 @@ const ProcessDetailsNodeTrigger: React.FC<IOwnProps & OUIAProps> = ({
     handleModalToggle();
   };
 
+  const errorModalAction: JSX.Element[] = [
+    <Button
+      key="confirm-selection"
+      variant="primary"
+      onClick={handleModalToggle}
+    >
+      OK
+    </Button>
+  ];
   return (
-    <Card {...componentOuiaProps(ouiaId, 'node-trigger', ouiaSafe)}>
-      <ProcessListModal
-        isModalOpen={isModalOpen}
-        handleModalToggle={handleModalToggle}
-        modalTitle={setTitle(titleType, modalTitle)}
-        modalContent={modalContent}
-        processName={selectedNode && selectedNode.name}
+    <>
+      <ProcessDetailsErrorModal
+        errorString={modalContent}
+        errorModalOpen={isModalOpen}
+        errorModalAction={errorModalAction}
+        handleErrorModal={handleModalToggle}
+        label="Node Trigger Error"
+        title={setTitle(titleType, modalTitle)}
       />
-      <CardHeader>
-        <Title headingLevel="h3" size="xl">
-          Node Trigger
-        </Title>
-      </CardHeader>
-      <CardHeader>
-        <div>
-          Select a node from the process nodes list and click Trigger to launch
-          it manually.
-        </div>
-      </CardHeader>
-      <CardBody>
-        <div>
-          <Dropdown
-            direction="up"
-            onSelect={onSelect}
-            toggle={
-              <DropdownToggle
-                id="toggle-id"
-                onToggle={onToggle}
-                toggleIndicator={CaretDownIcon}
-              >
-                {selectedNode ? selectedNode.name : 'select a node'}
-              </DropdownToggle>
-            }
-            isOpen={isOpen}
-            dropdownItems={createNodeDropDown()}
-          />
-        </div>
-        {selectedNode && (
-          <>
-            <div className="pf-u-mt-md">
-              <Flex direction={{ default: 'column' }}>
-                <FlexItem>
-                  <TextContent>
-                    {' '}
-                    <Split hasGutter>
-                      <SplitItem>
-                        <Text component={TextVariants.h6}>Node name : </Text>
-                      </SplitItem>
-                      <SplitItem>
-                        <Text component={TextVariants.p}>
-                          {selectedNode.name}
-                        </Text>
-                      </SplitItem>
-                    </Split>
-                  </TextContent>
-                </FlexItem>
-                <FlexItem>
-                  <TextContent>
-                    {' '}
-                    <Split hasGutter>
-                      <SplitItem>
-                        <Text component={TextVariants.h6}>Node type : </Text>
-                      </SplitItem>
-                      <SplitItem>
-                        <Text component={TextVariants.p}>
-                          {selectedNode.type}
-                        </Text>
-                      </SplitItem>
-                    </Split>
-                  </TextContent>
-                </FlexItem>
-                <FlexItem>
-                  <TextContent>
-                    {' '}
-                    <Split hasGutter>
-                      <SplitItem>
-                        <Text component={TextVariants.h6}>Node id : </Text>
-                      </SplitItem>
-                      <SplitItem>
-                        <Text component={TextVariants.p}>
-                          {selectedNode.id}
-                        </Text>
-                      </SplitItem>
-                    </Split>
-                  </TextContent>
-                </FlexItem>
-              </Flex>
+      {!isError ? (
+        <Card {...componentOuiaProps(ouiaId, 'node-trigger', ouiaSafe)}>
+          <CardHeader>
+            <Title headingLevel="h3" size="xl">
+              Node Trigger
+            </Title>
+          </CardHeader>
+          <CardHeader>
+            <div>
+              Select a node from the process nodes list and click Trigger to
+              launch it manually.
             </div>
-          </>
-        )}
-        <div className="pf-u-mt-md">
-          <Button
-            variant="secondary"
-            onClick={onTriggerClick}
-            id="trigger"
-            isDisabled={!selectedNode}
-          >
-            Trigger
-          </Button>
-        </div>
-      </CardBody>
-    </Card>
+          </CardHeader>
+          <CardBody>
+            <div>
+              <Dropdown
+                direction="up"
+                onSelect={onSelect}
+                toggle={
+                  <DropdownToggle
+                    id="toggle-id"
+                    onToggle={onToggle}
+                    toggleIndicator={CaretDownIcon}
+                  >
+                    {selectedNode ? selectedNode.name : 'select a node'}
+                  </DropdownToggle>
+                }
+                isOpen={isOpen}
+                dropdownItems={createNodeDropDown()}
+              />
+            </div>
+            {selectedNode && (
+              <>
+                <div className="pf-u-mt-md">
+                  <Flex direction={{ default: 'column' }}>
+                    <FlexItem>
+                      <TextContent>
+                        {' '}
+                        <Split hasGutter>
+                          <SplitItem>
+                            <Text component={TextVariants.h6}>
+                              {'Node name : '}
+                            </Text>
+                          </SplitItem>
+                          <SplitItem>
+                            <Text component={TextVariants.p}>
+                              {selectedNode.name}
+                            </Text>
+                          </SplitItem>
+                        </Split>
+                      </TextContent>
+                    </FlexItem>
+                    <FlexItem>
+                      <TextContent>
+                        {' '}
+                        <Split hasGutter>
+                          <SplitItem>
+                            <Text component={TextVariants.h6}>
+                              {'Node type : '}
+                            </Text>
+                          </SplitItem>
+                          <SplitItem>
+                            <Text component={TextVariants.p}>
+                              {selectedNode.type}
+                            </Text>
+                          </SplitItem>
+                        </Split>
+                      </TextContent>
+                    </FlexItem>
+                    <FlexItem>
+                      <TextContent>
+                        {' '}
+                        <Split hasGutter>
+                          <SplitItem>
+                            <Text component={TextVariants.h6}>
+                              {'Node id : '}
+                            </Text>
+                          </SplitItem>
+                          <SplitItem>
+                            <Text component={TextVariants.p}>
+                              {selectedNode.id}
+                            </Text>
+                          </SplitItem>
+                        </Split>
+                      </TextContent>
+                    </FlexItem>
+                  </Flex>
+                </div>
+              </>
+            )}
+            <div className="pf-u-mt-md">
+              <Button
+                variant="secondary"
+                onClick={onTriggerClick}
+                id="trigger"
+                isDisabled={!selectedNode}
+              >
+                Trigger
+              </Button>
+            </div>
+          </CardBody>
+        </Card>
+      ) : (
+        <></>
+      )}
+    </>
   );
 };
 

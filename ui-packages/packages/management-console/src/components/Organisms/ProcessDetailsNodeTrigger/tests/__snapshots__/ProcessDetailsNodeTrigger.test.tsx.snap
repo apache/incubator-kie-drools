@@ -1,11 +1,22 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Process details node trigger component tests Node trigger failure tests 1`] = `
-<ProcessListModal
-  handleModalToggle={[Function]}
-  isModalOpen={true}
-  modalContent="The node Book trigger failed. ErrorMessage : \\"403 error\\""
-  modalTitle={
+<ProcessDetailsErrorModal
+  errorModalAction={
+    Array [
+      <Button
+        onClick={[Function]}
+        variant="primary"
+      >
+        OK
+      </Button>,
+    ]
+  }
+  errorModalOpen={true}
+  errorString="The node Book trigger failed. ErrorMessage : \\"403 error\\""
+  handleErrorModal={[Function]}
+  label="Node Trigger Error"
+  title={
     <Title
       headingLevel="h1"
       size="2xl"
@@ -21,7 +32,6 @@ exports[`Process details node trigger component tests Node trigger failure tests
       </span>
     </Title>
   }
-  processName="Book"
 >
   <Modal
     actions={
@@ -55,11 +65,11 @@ exports[`Process details node trigger component tests Node trigger failure tests
             >
               <div
                 aria-describedby="pf-modal-part-4"
-                aria-label="process list modal"
-                aria-labelledby="pf-modal-part-2 process list modal"
+                aria-label="Node Trigger Error"
+                aria-labelledby="pf-modal-part-2 Node Trigger Error"
                 aria-modal="true"
                 class="pf-c-modal-box pf-m-sm"
-                data-ouia-component-id="40"
+                data-ouia-component-id="39"
                 data-ouia-component-type="PF4/ModalContent"
                 data-ouia-safe="true"
                 id="pf-modal-part-2"
@@ -69,7 +79,7 @@ exports[`Process details node trigger component tests Node trigger failure tests
                   aria-disabled="false"
                   aria-label="Close"
                   class="pf-c-button pf-m-plain"
-                  data-ouia-component-id="41"
+                  data-ouia-component-id="40"
                   data-ouia-component-type="PF4/Button"
                   data-ouia-safe="true"
                   type="button"
@@ -117,25 +127,23 @@ exports[`Process details node trigger component tests Node trigger failure tests
                 </header>
                 <div
                   class="pf-c-modal-box__body"
-                  data-ouia-component-type="process-list-modal"
+                  data-ouia-component-type="process-details-error-modal"
                   data-ouia-safe="true"
                   id="pf-modal-part-4"
                 >
                   <div
-                    class="pf-c-content"
+                    class="pf-c-modal-box__body"
                   >
-                    <p
-                      class=""
-                      data-pf-content="true"
+                    <div
+                      class="pf-c-content"
                     >
-                      <span>
-                        The node 
-                        <b>
-                          Book
-                        </b>
-                         was triggered successfully
-                      </span>
-                    </p>
+                      <p
+                        class=""
+                        data-pf-content="true"
+                      >
+                        The node Book was triggered successfully
+                      </p>
+                    </div>
                   </div>
                 </div>
                 <footer
@@ -144,7 +152,7 @@ exports[`Process details node trigger component tests Node trigger failure tests
                   <button
                     aria-disabled="false"
                     class="pf-c-button pf-m-primary"
-                    data-ouia-component-id="42"
+                    data-ouia-component-id="41"
                     data-ouia-component-type="PF4/Button"
                     data-ouia-safe="true"
                     type="button"
@@ -165,11 +173,11 @@ exports[`Process details node trigger component tests Node trigger failure tests
             >
               <div
                 aria-describedby="pf-modal-part-5"
-                aria-label="process list modal"
-                aria-labelledby="pf-modal-part-3 process list modal"
+                aria-label="Node Trigger Error"
+                aria-labelledby="pf-modal-part-3 Node Trigger Error"
                 aria-modal="true"
                 class="pf-c-modal-box pf-m-sm"
-                data-ouia-component-id="67"
+                data-ouia-component-id="66"
                 data-ouia-component-type="PF4/ModalContent"
                 data-ouia-safe="true"
                 id="pf-modal-part-3"
@@ -179,7 +187,7 @@ exports[`Process details node trigger component tests Node trigger failure tests
                   aria-disabled="false"
                   aria-label="Close"
                   class="pf-c-button pf-m-plain"
-                  data-ouia-component-id="68"
+                  data-ouia-component-id="67"
                   data-ouia-component-type="PF4/Button"
                   data-ouia-safe="true"
                   type="button"
@@ -227,25 +235,23 @@ exports[`Process details node trigger component tests Node trigger failure tests
                 </header>
                 <div
                   class="pf-c-modal-box__body"
-                  data-ouia-component-type="process-list-modal"
+                  data-ouia-component-type="process-details-error-modal"
                   data-ouia-safe="true"
                   id="pf-modal-part-5"
                 >
                   <div
-                    class="pf-c-content"
+                    class="pf-c-modal-box__body"
                   >
-                    <p
-                      class=""
-                      data-pf-content="true"
+                    <div
+                      class="pf-c-content"
                     >
-                      <span>
-                        The node 
-                        <b>
-                          Book
-                        </b>
-                         trigger failed. ErrorMessage : "403 error"
-                      </span>
-                    </p>
+                      <p
+                        class=""
+                        data-pf-content="true"
+                      >
+                        The node Book trigger failed. ErrorMessage : "403 error"
+                      </p>
+                    </div>
                   </div>
                 </div>
                 <footer
@@ -254,7 +260,7 @@ exports[`Process details node trigger component tests Node trigger failure tests
                   <button
                     aria-disabled="false"
                     class="pf-c-button pf-m-primary"
-                    data-ouia-component-id="69"
+                    data-ouia-component-id="68"
                     data-ouia-component-type="PF4/Button"
                     data-ouia-safe="true"
                     type="button"
@@ -269,10 +275,10 @@ exports[`Process details node trigger component tests Node trigger failure tests
       </body>
     }
     aria-describedby=""
-    aria-label="process list modal"
-    aria-labelledby="process list modal"
+    aria-label="Node Trigger Error"
+    aria-labelledby="Node Trigger Error"
     className=""
-    data-ouia-component-type="process-list-modal"
+    data-ouia-component-type="process-details-error-modal"
     data-ouia-safe={true}
     hasNoBodyWrapper={false}
     header={
@@ -309,11 +315,11 @@ exports[`Process details node trigger component tests Node trigger failure tests
             >
               <div
                 aria-describedby="pf-modal-part-5"
-                aria-label="process list modal"
-                aria-labelledby="pf-modal-part-3 process list modal"
+                aria-label="Node Trigger Error"
+                aria-labelledby="pf-modal-part-3 Node Trigger Error"
                 aria-modal="true"
                 class="pf-c-modal-box pf-m-sm"
-                data-ouia-component-id="67"
+                data-ouia-component-id="66"
                 data-ouia-component-type="PF4/ModalContent"
                 data-ouia-safe="true"
                 id="pf-modal-part-3"
@@ -323,7 +329,7 @@ exports[`Process details node trigger component tests Node trigger failure tests
                   aria-disabled="false"
                   aria-label="Close"
                   class="pf-c-button pf-m-plain"
-                  data-ouia-component-id="68"
+                  data-ouia-component-id="67"
                   data-ouia-component-type="PF4/Button"
                   data-ouia-safe="true"
                   type="button"
@@ -371,25 +377,23 @@ exports[`Process details node trigger component tests Node trigger failure tests
                 </header>
                 <div
                   class="pf-c-modal-box__body"
-                  data-ouia-component-type="process-list-modal"
+                  data-ouia-component-type="process-details-error-modal"
                   data-ouia-safe="true"
                   id="pf-modal-part-5"
                 >
                   <div
-                    class="pf-c-content"
+                    class="pf-c-modal-box__body"
                   >
-                    <p
-                      class=""
-                      data-pf-content="true"
+                    <div
+                      class="pf-c-content"
                     >
-                      <span>
-                        The node 
-                        <b>
-                          Book
-                        </b>
-                         trigger failed. ErrorMessage : "403 error"
-                      </span>
-                    </p>
+                      <p
+                        class=""
+                        data-pf-content="true"
+                      >
+                        The node Book trigger failed. ErrorMessage : "403 error"
+                      </p>
+                    </div>
                   </div>
                 </div>
                 <footer
@@ -398,7 +402,7 @@ exports[`Process details node trigger component tests Node trigger failure tests
                   <button
                     aria-disabled="false"
                     class="pf-c-button pf-m-primary"
-                    data-ouia-component-id="69"
+                    data-ouia-component-id="68"
                     data-ouia-component-type="PF4/Button"
                     data-ouia-safe="true"
                     type="button"
@@ -424,11 +428,11 @@ exports[`Process details node trigger component tests Node trigger failure tests
           ]
         }
         aria-describedby=""
-        aria-label="process list modal"
-        aria-labelledby="process list modal"
+        aria-label="Node Trigger Error"
+        aria-labelledby="Node Trigger Error"
         boxId="pf-modal-part-3"
         className=""
-        data-ouia-component-type="process-list-modal"
+        data-ouia-component-type="process-details-error-modal"
         data-ouia-safe={true}
         descriptorId="pf-modal-part-5"
         hasNoBodyWrapper={false}
@@ -475,10 +479,10 @@ exports[`Process details node trigger component tests Node trigger failure tests
               >
                 <ModalBox
                   aria-describedby="pf-modal-part-5"
-                  aria-label="process list modal"
-                  aria-labelledby="pf-modal-part-3 process list modal"
+                  aria-label="Node Trigger Error"
+                  aria-labelledby="pf-modal-part-3 Node Trigger Error"
                   className=""
-                  data-ouia-component-id={67}
+                  data-ouia-component-id={66}
                   data-ouia-component-type="PF4/ModalContent"
                   data-ouia-safe={true}
                   id="pf-modal-part-3"
@@ -487,11 +491,11 @@ exports[`Process details node trigger component tests Node trigger failure tests
                 >
                   <div
                     aria-describedby="pf-modal-part-5"
-                    aria-label="process list modal"
-                    aria-labelledby="pf-modal-part-3 process list modal"
+                    aria-label="Node Trigger Error"
+                    aria-labelledby="pf-modal-part-3 Node Trigger Error"
                     aria-modal="true"
                     className="pf-c-modal-box pf-m-sm"
-                    data-ouia-component-id={67}
+                    data-ouia-component-id={66}
                     data-ouia-component-type="PF4/ModalContent"
                     data-ouia-safe={true}
                     id="pf-modal-part-3"
@@ -511,7 +515,7 @@ exports[`Process details node trigger component tests Node trigger failure tests
                           aria-disabled={false}
                           aria-label="Close"
                           className="pf-c-button pf-m-plain"
-                          data-ouia-component-id={68}
+                          data-ouia-component-id={67}
                           data-ouia-component-type="PF4/Button"
                           data-ouia-safe={true}
                           disabled={false}
@@ -592,36 +596,36 @@ exports[`Process details node trigger component tests Node trigger failure tests
                       </header>
                     </ModalBoxHeader>
                     <ModalBoxBody
-                      data-ouia-component-type="process-list-modal"
+                      data-ouia-component-type="process-details-error-modal"
                       data-ouia-safe={true}
                       id="pf-modal-part-5"
                     >
                       <div
                         className="pf-c-modal-box__body"
-                        data-ouia-component-type="process-list-modal"
+                        data-ouia-component-type="process-details-error-modal"
                         data-ouia-safe={true}
                         id="pf-modal-part-5"
                       >
-                        <TextContent>
+                        <ModalBoxBody>
                           <div
-                            className="pf-c-content"
+                            className="pf-c-modal-box__body"
                           >
-                            <Text>
-                              <p
-                                className=""
-                                data-pf-content={true}
+                            <TextContent>
+                              <div
+                                className="pf-c-content"
                               >
-                                <span>
-                                  The node 
-                                  <b>
-                                    Book
-                                  </b>
-                                   trigger failed. ErrorMessage : "403 error"
-                                </span>
-                              </p>
-                            </Text>
+                                <Text>
+                                  <p
+                                    className=""
+                                    data-pf-content={true}
+                                  >
+                                    The node Book trigger failed. ErrorMessage : "403 error"
+                                  </p>
+                                </Text>
+                              </div>
+                            </TextContent>
                           </div>
-                        </TextContent>
+                        </ModalBoxBody>
                       </div>
                     </ModalBoxBody>
                     <ModalBoxFooter>
@@ -637,7 +641,7 @@ exports[`Process details node trigger component tests Node trigger failure tests
                             aria-disabled={false}
                             aria-label={null}
                             className="pf-c-button pf-m-primary"
-                            data-ouia-component-id={69}
+                            data-ouia-component-id={68}
                             data-ouia-component-type="PF4/Button"
                             data-ouia-safe={true}
                             disabled={false}
@@ -658,15 +662,26 @@ exports[`Process details node trigger component tests Node trigger failure tests
       </ModalContent>
     </Portal>
   </Modal>
-</ProcessListModal>
+</ProcessDetailsErrorModal>
 `;
 
 exports[`Process details node trigger component tests Node trigger success tests 1`] = `
-<ProcessListModal
-  handleModalToggle={[Function]}
-  isModalOpen={true}
-  modalContent="The node Book was triggered successfully"
-  modalTitle={
+<ProcessDetailsErrorModal
+  errorModalAction={
+    Array [
+      <Button
+        onClick={[Function]}
+        variant="primary"
+      >
+        OK
+      </Button>,
+    ]
+  }
+  errorModalOpen={true}
+  errorString="The node Book was triggered successfully"
+  handleErrorModal={[Function]}
+  label="Node Trigger Error"
+  title={
     <Title
       headingLevel="h1"
       size="2xl"
@@ -682,7 +697,6 @@ exports[`Process details node trigger component tests Node trigger success tests
       </span>
     </Title>
   }
-  processName="Book"
 >
   <Modal
     actions={
@@ -714,11 +728,11 @@ exports[`Process details node trigger component tests Node trigger success tests
             >
               <div
                 aria-describedby="pf-modal-part-4"
-                aria-label="process list modal"
-                aria-labelledby="pf-modal-part-2 process list modal"
+                aria-label="Node Trigger Error"
+                aria-labelledby="pf-modal-part-2 Node Trigger Error"
                 aria-modal="true"
                 class="pf-c-modal-box pf-m-sm"
-                data-ouia-component-id="40"
+                data-ouia-component-id="39"
                 data-ouia-component-type="PF4/ModalContent"
                 data-ouia-safe="true"
                 id="pf-modal-part-2"
@@ -728,7 +742,7 @@ exports[`Process details node trigger component tests Node trigger success tests
                   aria-disabled="false"
                   aria-label="Close"
                   class="pf-c-button pf-m-plain"
-                  data-ouia-component-id="41"
+                  data-ouia-component-id="40"
                   data-ouia-component-type="PF4/Button"
                   data-ouia-safe="true"
                   type="button"
@@ -776,25 +790,23 @@ exports[`Process details node trigger component tests Node trigger success tests
                 </header>
                 <div
                   class="pf-c-modal-box__body"
-                  data-ouia-component-type="process-list-modal"
+                  data-ouia-component-type="process-details-error-modal"
                   data-ouia-safe="true"
                   id="pf-modal-part-4"
                 >
                   <div
-                    class="pf-c-content"
+                    class="pf-c-modal-box__body"
                   >
-                    <p
-                      class=""
-                      data-pf-content="true"
+                    <div
+                      class="pf-c-content"
                     >
-                      <span>
-                        The node 
-                        <b>
-                          Book
-                        </b>
-                         was triggered successfully
-                      </span>
-                    </p>
+                      <p
+                        class=""
+                        data-pf-content="true"
+                      >
+                        The node Book was triggered successfully
+                      </p>
+                    </div>
                   </div>
                 </div>
                 <footer
@@ -803,7 +815,7 @@ exports[`Process details node trigger component tests Node trigger success tests
                   <button
                     aria-disabled="false"
                     class="pf-c-button pf-m-primary"
-                    data-ouia-component-id="42"
+                    data-ouia-component-id="41"
                     data-ouia-component-type="PF4/Button"
                     data-ouia-safe="true"
                     type="button"
@@ -818,10 +830,10 @@ exports[`Process details node trigger component tests Node trigger success tests
       </body>
     }
     aria-describedby=""
-    aria-label="process list modal"
-    aria-labelledby="process list modal"
+    aria-label="Node Trigger Error"
+    aria-labelledby="Node Trigger Error"
     className=""
-    data-ouia-component-type="process-list-modal"
+    data-ouia-component-type="process-details-error-modal"
     data-ouia-safe={true}
     hasNoBodyWrapper={false}
     header={
@@ -858,11 +870,11 @@ exports[`Process details node trigger component tests Node trigger success tests
             >
               <div
                 aria-describedby="pf-modal-part-4"
-                aria-label="process list modal"
-                aria-labelledby="pf-modal-part-2 process list modal"
+                aria-label="Node Trigger Error"
+                aria-labelledby="pf-modal-part-2 Node Trigger Error"
                 aria-modal="true"
                 class="pf-c-modal-box pf-m-sm"
-                data-ouia-component-id="40"
+                data-ouia-component-id="39"
                 data-ouia-component-type="PF4/ModalContent"
                 data-ouia-safe="true"
                 id="pf-modal-part-2"
@@ -872,7 +884,7 @@ exports[`Process details node trigger component tests Node trigger success tests
                   aria-disabled="false"
                   aria-label="Close"
                   class="pf-c-button pf-m-plain"
-                  data-ouia-component-id="41"
+                  data-ouia-component-id="40"
                   data-ouia-component-type="PF4/Button"
                   data-ouia-safe="true"
                   type="button"
@@ -920,25 +932,23 @@ exports[`Process details node trigger component tests Node trigger success tests
                 </header>
                 <div
                   class="pf-c-modal-box__body"
-                  data-ouia-component-type="process-list-modal"
+                  data-ouia-component-type="process-details-error-modal"
                   data-ouia-safe="true"
                   id="pf-modal-part-4"
                 >
                   <div
-                    class="pf-c-content"
+                    class="pf-c-modal-box__body"
                   >
-                    <p
-                      class=""
-                      data-pf-content="true"
+                    <div
+                      class="pf-c-content"
                     >
-                      <span>
-                        The node 
-                        <b>
-                          Book
-                        </b>
-                         was triggered successfully
-                      </span>
-                    </p>
+                      <p
+                        class=""
+                        data-pf-content="true"
+                      >
+                        The node Book was triggered successfully
+                      </p>
+                    </div>
                   </div>
                 </div>
                 <footer
@@ -947,7 +957,7 @@ exports[`Process details node trigger component tests Node trigger success tests
                   <button
                     aria-disabled="false"
                     class="pf-c-button pf-m-primary"
-                    data-ouia-component-id="42"
+                    data-ouia-component-id="41"
                     data-ouia-component-type="PF4/Button"
                     data-ouia-safe="true"
                     type="button"
@@ -973,11 +983,11 @@ exports[`Process details node trigger component tests Node trigger success tests
           ]
         }
         aria-describedby=""
-        aria-label="process list modal"
-        aria-labelledby="process list modal"
+        aria-label="Node Trigger Error"
+        aria-labelledby="Node Trigger Error"
         boxId="pf-modal-part-2"
         className=""
-        data-ouia-component-type="process-list-modal"
+        data-ouia-component-type="process-details-error-modal"
         data-ouia-safe={true}
         descriptorId="pf-modal-part-4"
         hasNoBodyWrapper={false}
@@ -1024,10 +1034,10 @@ exports[`Process details node trigger component tests Node trigger success tests
               >
                 <ModalBox
                   aria-describedby="pf-modal-part-4"
-                  aria-label="process list modal"
-                  aria-labelledby="pf-modal-part-2 process list modal"
+                  aria-label="Node Trigger Error"
+                  aria-labelledby="pf-modal-part-2 Node Trigger Error"
                   className=""
-                  data-ouia-component-id={40}
+                  data-ouia-component-id={39}
                   data-ouia-component-type="PF4/ModalContent"
                   data-ouia-safe={true}
                   id="pf-modal-part-2"
@@ -1036,11 +1046,11 @@ exports[`Process details node trigger component tests Node trigger success tests
                 >
                   <div
                     aria-describedby="pf-modal-part-4"
-                    aria-label="process list modal"
-                    aria-labelledby="pf-modal-part-2 process list modal"
+                    aria-label="Node Trigger Error"
+                    aria-labelledby="pf-modal-part-2 Node Trigger Error"
                     aria-modal="true"
                     className="pf-c-modal-box pf-m-sm"
-                    data-ouia-component-id={40}
+                    data-ouia-component-id={39}
                     data-ouia-component-type="PF4/ModalContent"
                     data-ouia-safe={true}
                     id="pf-modal-part-2"
@@ -1060,7 +1070,7 @@ exports[`Process details node trigger component tests Node trigger success tests
                           aria-disabled={false}
                           aria-label="Close"
                           className="pf-c-button pf-m-plain"
-                          data-ouia-component-id={41}
+                          data-ouia-component-id={40}
                           data-ouia-component-type="PF4/Button"
                           data-ouia-safe={true}
                           disabled={false}
@@ -1141,36 +1151,36 @@ exports[`Process details node trigger component tests Node trigger success tests
                       </header>
                     </ModalBoxHeader>
                     <ModalBoxBody
-                      data-ouia-component-type="process-list-modal"
+                      data-ouia-component-type="process-details-error-modal"
                       data-ouia-safe={true}
                       id="pf-modal-part-4"
                     >
                       <div
                         className="pf-c-modal-box__body"
-                        data-ouia-component-type="process-list-modal"
+                        data-ouia-component-type="process-details-error-modal"
                         data-ouia-safe={true}
                         id="pf-modal-part-4"
                       >
-                        <TextContent>
+                        <ModalBoxBody>
                           <div
-                            className="pf-c-content"
+                            className="pf-c-modal-box__body"
                           >
-                            <Text>
-                              <p
-                                className=""
-                                data-pf-content={true}
+                            <TextContent>
+                              <div
+                                className="pf-c-content"
                               >
-                                <span>
-                                  The node 
-                                  <b>
-                                    Book
-                                  </b>
-                                   was triggered successfully
-                                </span>
-                              </p>
-                            </Text>
+                                <Text>
+                                  <p
+                                    className=""
+                                    data-pf-content={true}
+                                  >
+                                    The node Book was triggered successfully
+                                  </p>
+                                </Text>
+                              </div>
+                            </TextContent>
                           </div>
-                        </TextContent>
+                        </ModalBoxBody>
                       </div>
                     </ModalBoxBody>
                     <ModalBoxFooter>
@@ -1186,7 +1196,7 @@ exports[`Process details node trigger component tests Node trigger success tests
                             aria-disabled={false}
                             aria-label={null}
                             className="pf-c-button pf-m-primary"
-                            data-ouia-component-id={42}
+                            data-ouia-component-id={41}
                             data-ouia-component-type="PF4/Button"
                             data-ouia-safe={true}
                             disabled={false}
@@ -1207,7 +1217,782 @@ exports[`Process details node trigger component tests Node trigger success tests
       </ModalContent>
     </Portal>
   </Modal>
-</ProcessListModal>
+</ProcessDetailsErrorModal>
+`;
+
+exports[`Process details node trigger component tests failed to retrieve nodes 1`] = `
+<ProcessDetailsErrorModal
+  errorModalAction={
+    Array [
+      <Button
+        onClick={[Function]}
+        variant="primary"
+      >
+        OK
+      </Button>,
+    ]
+  }
+  errorModalOpen={true}
+  errorString="Retrieval of nodes failed with error: 404 error"
+  handleErrorModal={[Function]}
+  label="Node Trigger Error"
+  title={
+    <Title
+      headingLevel="h1"
+      size="2xl"
+    >
+      <InfoCircleIcon
+        className="pf-u-mr-sm"
+        color="var(--pf-global--danger-color--100)"
+        noVerticalAlign={false}
+        size="sm"
+      />
+      <span>
+        Node trigger Error
+      </span>
+    </Title>
+  }
+>
+  <Modal
+    actions={
+      Array [
+        <Button
+          onClick={[Function]}
+          variant="primary"
+        >
+          OK
+        </Button>,
+      ]
+    }
+    appendTo={
+      <body
+        class="pf-c-backdrop__open"
+      >
+        <div
+          aria-hidden="true"
+        />
+        <div
+          aria-hidden="true"
+        />
+        <div
+          aria-hidden="true"
+        >
+          <div
+            class="pf-c-backdrop"
+          >
+            <div
+              class="pf-l-bullseye"
+            >
+              <div
+                aria-describedby="pf-modal-part-4"
+                aria-label="Node Trigger Error"
+                aria-labelledby="pf-modal-part-2 Node Trigger Error"
+                aria-modal="true"
+                class="pf-c-modal-box pf-m-sm"
+                data-ouia-component-id="39"
+                data-ouia-component-type="PF4/ModalContent"
+                data-ouia-safe="true"
+                id="pf-modal-part-2"
+                role="dialog"
+              >
+                <button
+                  aria-disabled="false"
+                  aria-label="Close"
+                  class="pf-c-button pf-m-plain"
+                  data-ouia-component-id="40"
+                  data-ouia-component-type="PF4/Button"
+                  data-ouia-safe="true"
+                  type="button"
+                >
+                  <svg
+                    aria-hidden="true"
+                    fill="currentColor"
+                    height="1em"
+                    role="img"
+                    style="vertical-align: -0.125em;"
+                    viewBox="0 0 352 512"
+                    width="1em"
+                  >
+                    <path
+                      d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
+                      transform=""
+                    />
+                  </svg>
+                </button>
+                <header
+                  class="pf-c-modal-box__header"
+                >
+                  <h1
+                    class="pf-c-title pf-m-2xl"
+                  >
+                    <svg
+                      aria-hidden="true"
+                      class="pf-u-mr-sm"
+                      fill="var(--pf-global--info-color--100)"
+                      height="1em"
+                      role="img"
+                      style="vertical-align: -0.125em;"
+                      viewBox="0 0 512 512"
+                      width="1em"
+                    >
+                      <path
+                        d="M256 8C119.043 8 8 119.083 8 256c0 136.997 111.043 248 248 248s248-111.003 248-248C504 119.083 392.957 8 256 8zm0 110c23.196 0 42 18.804 42 42s-18.804 42-42 42-42-18.804-42-42 18.804-42 42-42zm56 254c0 6.627-5.373 12-12 12h-88c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h12v-64h-12c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h64c6.627 0 12 5.373 12 12v100h12c6.627 0 12 5.373 12 12v24z"
+                        transform=""
+                      />
+                    </svg>
+                    <span>
+                      Node trigger process
+                    </span>
+                  </h1>
+                </header>
+                <div
+                  class="pf-c-modal-box__body"
+                  data-ouia-component-type="process-details-error-modal"
+                  data-ouia-safe="true"
+                  id="pf-modal-part-4"
+                >
+                  <div
+                    class="pf-c-modal-box__body"
+                  >
+                    <div
+                      class="pf-c-content"
+                    >
+                      <p
+                        class=""
+                        data-pf-content="true"
+                      >
+                        The node Book was triggered successfully
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <footer
+                  class="pf-c-modal-box__footer"
+                >
+                  <button
+                    aria-disabled="false"
+                    class="pf-c-button pf-m-primary"
+                    data-ouia-component-id="41"
+                    data-ouia-component-type="PF4/Button"
+                    data-ouia-safe="true"
+                    type="button"
+                  >
+                    OK
+                  </button>
+                </footer>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          aria-hidden="true"
+        >
+          <div
+            class="pf-c-backdrop"
+          >
+            <div
+              class="pf-l-bullseye"
+            >
+              <div
+                aria-describedby="pf-modal-part-5"
+                aria-label="Node Trigger Error"
+                aria-labelledby="pf-modal-part-3 Node Trigger Error"
+                aria-modal="true"
+                class="pf-c-modal-box pf-m-sm"
+                data-ouia-component-id="66"
+                data-ouia-component-type="PF4/ModalContent"
+                data-ouia-safe="true"
+                id="pf-modal-part-3"
+                role="dialog"
+              >
+                <button
+                  aria-disabled="false"
+                  aria-label="Close"
+                  class="pf-c-button pf-m-plain"
+                  data-ouia-component-id="67"
+                  data-ouia-component-type="PF4/Button"
+                  data-ouia-safe="true"
+                  type="button"
+                >
+                  <svg
+                    aria-hidden="true"
+                    fill="currentColor"
+                    height="1em"
+                    role="img"
+                    style="vertical-align: -0.125em;"
+                    viewBox="0 0 352 512"
+                    width="1em"
+                  >
+                    <path
+                      d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
+                      transform=""
+                    />
+                  </svg>
+                </button>
+                <header
+                  class="pf-c-modal-box__header"
+                >
+                  <h1
+                    class="pf-c-title pf-m-2xl"
+                  >
+                    <svg
+                      aria-hidden="true"
+                      class="pf-u-mr-sm"
+                      fill="var(--pf-global--danger-color--100)"
+                      height="1em"
+                      role="img"
+                      style="vertical-align: -0.125em;"
+                      viewBox="0 0 512 512"
+                      width="1em"
+                    >
+                      <path
+                        d="M256 8C119.043 8 8 119.083 8 256c0 136.997 111.043 248 248 248s248-111.003 248-248C504 119.083 392.957 8 256 8zm0 110c23.196 0 42 18.804 42 42s-18.804 42-42 42-42-18.804-42-42 18.804-42 42-42zm56 254c0 6.627-5.373 12-12 12h-88c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h12v-64h-12c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h64c6.627 0 12 5.373 12 12v100h12c6.627 0 12 5.373 12 12v24z"
+                        transform=""
+                      />
+                    </svg>
+                    <span>
+                      Node trigger process
+                    </span>
+                  </h1>
+                </header>
+                <div
+                  class="pf-c-modal-box__body"
+                  data-ouia-component-type="process-details-error-modal"
+                  data-ouia-safe="true"
+                  id="pf-modal-part-5"
+                >
+                  <div
+                    class="pf-c-modal-box__body"
+                  >
+                    <div
+                      class="pf-c-content"
+                    >
+                      <p
+                        class=""
+                        data-pf-content="true"
+                      >
+                        The node Book trigger failed. ErrorMessage : "403 error"
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <footer
+                  class="pf-c-modal-box__footer"
+                >
+                  <button
+                    aria-disabled="false"
+                    class="pf-c-button pf-m-primary"
+                    data-ouia-component-id="68"
+                    data-ouia-component-type="PF4/Button"
+                    data-ouia-safe="true"
+                    type="button"
+                  >
+                    OK
+                  </button>
+                </footer>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div
+            class="pf-c-backdrop"
+          >
+            <div
+              class="pf-l-bullseye"
+            >
+              <div
+                aria-describedby="pf-modal-part-6"
+                aria-label="Node Trigger Error"
+                aria-labelledby="pf-modal-part-4 Node Trigger Error"
+                aria-modal="true"
+                class="pf-c-modal-box pf-m-sm"
+                data-ouia-component-id="75"
+                data-ouia-component-type="PF4/ModalContent"
+                data-ouia-safe="true"
+                id="pf-modal-part-4"
+                role="dialog"
+              >
+                <button
+                  aria-disabled="false"
+                  aria-label="Close"
+                  class="pf-c-button pf-m-plain"
+                  data-ouia-component-id="76"
+                  data-ouia-component-type="PF4/Button"
+                  data-ouia-safe="true"
+                  type="button"
+                >
+                  <svg
+                    aria-hidden="true"
+                    fill="currentColor"
+                    height="1em"
+                    role="img"
+                    style="vertical-align: -0.125em;"
+                    viewBox="0 0 352 512"
+                    width="1em"
+                  >
+                    <path
+                      d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
+                      transform=""
+                    />
+                  </svg>
+                </button>
+                <header
+                  class="pf-c-modal-box__header"
+                >
+                  <h1
+                    class="pf-c-title pf-m-2xl"
+                  >
+                    <svg
+                      aria-hidden="true"
+                      class="pf-u-mr-sm"
+                      fill="var(--pf-global--danger-color--100)"
+                      height="1em"
+                      role="img"
+                      style="vertical-align: -0.125em;"
+                      viewBox="0 0 512 512"
+                      width="1em"
+                    >
+                      <path
+                        d="M256 8C119.043 8 8 119.083 8 256c0 136.997 111.043 248 248 248s248-111.003 248-248C504 119.083 392.957 8 256 8zm0 110c23.196 0 42 18.804 42 42s-18.804 42-42 42-42-18.804-42-42 18.804-42 42-42zm56 254c0 6.627-5.373 12-12 12h-88c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h12v-64h-12c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h64c6.627 0 12 5.373 12 12v100h12c6.627 0 12 5.373 12 12v24z"
+                        transform=""
+                      />
+                    </svg>
+                    <span>
+                      Node trigger Error
+                    </span>
+                  </h1>
+                </header>
+                <div
+                  class="pf-c-modal-box__body"
+                  data-ouia-component-type="process-details-error-modal"
+                  data-ouia-safe="true"
+                  id="pf-modal-part-6"
+                >
+                  <div
+                    class="pf-c-modal-box__body"
+                  >
+                    <div
+                      class="pf-c-content"
+                    >
+                      <p
+                        class=""
+                        data-pf-content="true"
+                      >
+                        Retrieval of nodes failed with error: 404 error
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <footer
+                  class="pf-c-modal-box__footer"
+                >
+                  <button
+                    aria-disabled="false"
+                    class="pf-c-button pf-m-primary"
+                    data-ouia-component-id="77"
+                    data-ouia-component-type="PF4/Button"
+                    data-ouia-safe="true"
+                    type="button"
+                  >
+                    OK
+                  </button>
+                </footer>
+              </div>
+            </div>
+          </div>
+        </div>
+      </body>
+    }
+    aria-describedby=""
+    aria-label="Node Trigger Error"
+    aria-labelledby="Node Trigger Error"
+    className=""
+    data-ouia-component-type="process-details-error-modal"
+    data-ouia-safe={true}
+    hasNoBodyWrapper={false}
+    header={
+      <Title
+        headingLevel="h1"
+        size="2xl"
+      >
+        <InfoCircleIcon
+          className="pf-u-mr-sm"
+          color="var(--pf-global--danger-color--100)"
+          noVerticalAlign={false}
+          size="sm"
+        />
+        <span>
+          Node trigger Error
+        </span>
+      </Title>
+    }
+    isOpen={true}
+    onClose={[Function]}
+    ouiaSafe={true}
+    showClose={true}
+    title=""
+    variant="small"
+  >
+    <Portal
+      containerInfo={
+        <div>
+          <div
+            class="pf-c-backdrop"
+          >
+            <div
+              class="pf-l-bullseye"
+            >
+              <div
+                aria-describedby="pf-modal-part-6"
+                aria-label="Node Trigger Error"
+                aria-labelledby="pf-modal-part-4 Node Trigger Error"
+                aria-modal="true"
+                class="pf-c-modal-box pf-m-sm"
+                data-ouia-component-id="75"
+                data-ouia-component-type="PF4/ModalContent"
+                data-ouia-safe="true"
+                id="pf-modal-part-4"
+                role="dialog"
+              >
+                <button
+                  aria-disabled="false"
+                  aria-label="Close"
+                  class="pf-c-button pf-m-plain"
+                  data-ouia-component-id="76"
+                  data-ouia-component-type="PF4/Button"
+                  data-ouia-safe="true"
+                  type="button"
+                >
+                  <svg
+                    aria-hidden="true"
+                    fill="currentColor"
+                    height="1em"
+                    role="img"
+                    style="vertical-align: -0.125em;"
+                    viewBox="0 0 352 512"
+                    width="1em"
+                  >
+                    <path
+                      d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
+                      transform=""
+                    />
+                  </svg>
+                </button>
+                <header
+                  class="pf-c-modal-box__header"
+                >
+                  <h1
+                    class="pf-c-title pf-m-2xl"
+                  >
+                    <svg
+                      aria-hidden="true"
+                      class="pf-u-mr-sm"
+                      fill="var(--pf-global--danger-color--100)"
+                      height="1em"
+                      role="img"
+                      style="vertical-align: -0.125em;"
+                      viewBox="0 0 512 512"
+                      width="1em"
+                    >
+                      <path
+                        d="M256 8C119.043 8 8 119.083 8 256c0 136.997 111.043 248 248 248s248-111.003 248-248C504 119.083 392.957 8 256 8zm0 110c23.196 0 42 18.804 42 42s-18.804 42-42 42-42-18.804-42-42 18.804-42 42-42zm56 254c0 6.627-5.373 12-12 12h-88c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h12v-64h-12c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h64c6.627 0 12 5.373 12 12v100h12c6.627 0 12 5.373 12 12v24z"
+                        transform=""
+                      />
+                    </svg>
+                    <span>
+                      Node trigger Error
+                    </span>
+                  </h1>
+                </header>
+                <div
+                  class="pf-c-modal-box__body"
+                  data-ouia-component-type="process-details-error-modal"
+                  data-ouia-safe="true"
+                  id="pf-modal-part-6"
+                >
+                  <div
+                    class="pf-c-modal-box__body"
+                  >
+                    <div
+                      class="pf-c-content"
+                    >
+                      <p
+                        class=""
+                        data-pf-content="true"
+                      >
+                        Retrieval of nodes failed with error: 404 error
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <footer
+                  class="pf-c-modal-box__footer"
+                >
+                  <button
+                    aria-disabled="false"
+                    class="pf-c-button pf-m-primary"
+                    data-ouia-component-id="77"
+                    data-ouia-component-type="PF4/Button"
+                    data-ouia-safe="true"
+                    type="button"
+                  >
+                    OK
+                  </button>
+                </footer>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+    >
+      <ModalContent
+        actions={
+          Array [
+            <Button
+              onClick={[Function]}
+              variant="primary"
+            >
+              OK
+            </Button>,
+          ]
+        }
+        aria-describedby=""
+        aria-label="Node Trigger Error"
+        aria-labelledby="Node Trigger Error"
+        boxId="pf-modal-part-4"
+        className=""
+        data-ouia-component-type="process-details-error-modal"
+        data-ouia-safe={true}
+        descriptorId="pf-modal-part-6"
+        hasNoBodyWrapper={false}
+        header={
+          <Title
+            headingLevel="h1"
+            size="2xl"
+          >
+            <InfoCircleIcon
+              className="pf-u-mr-sm"
+              color="var(--pf-global--danger-color--100)"
+              noVerticalAlign={false}
+              size="sm"
+            />
+            <span>
+              Node trigger Error
+            </span>
+          </Title>
+        }
+        isOpen={true}
+        labelId="pf-modal-part-5"
+        onClose={[Function]}
+        ouiaSafe={true}
+        showClose={true}
+        title=""
+        variant="small"
+      >
+        <Backdrop>
+          <div
+            className="pf-c-backdrop"
+          >
+            <FocusTrap
+              active={true}
+              className="pf-l-bullseye"
+              focusTrapOptions={
+                Object {
+                  "clickOutsideDeactivates": true,
+                }
+              }
+              paused={false}
+            >
+              <div
+                className="pf-l-bullseye"
+              >
+                <ModalBox
+                  aria-describedby="pf-modal-part-6"
+                  aria-label="Node Trigger Error"
+                  aria-labelledby="pf-modal-part-4 Node Trigger Error"
+                  className=""
+                  data-ouia-component-id={75}
+                  data-ouia-component-type="PF4/ModalContent"
+                  data-ouia-safe={true}
+                  id="pf-modal-part-4"
+                  style={Object {}}
+                  variant="small"
+                >
+                  <div
+                    aria-describedby="pf-modal-part-6"
+                    aria-label="Node Trigger Error"
+                    aria-labelledby="pf-modal-part-4 Node Trigger Error"
+                    aria-modal="true"
+                    className="pf-c-modal-box pf-m-sm"
+                    data-ouia-component-id={75}
+                    data-ouia-component-type="PF4/ModalContent"
+                    data-ouia-safe={true}
+                    id="pf-modal-part-4"
+                    role="dialog"
+                    style={Object {}}
+                  >
+                    <ModalBoxCloseButton
+                      onClose={[Function]}
+                    >
+                      <Button
+                        aria-label="Close"
+                        className=""
+                        onClick={[Function]}
+                        variant="plain"
+                      >
+                        <button
+                          aria-disabled={false}
+                          aria-label="Close"
+                          className="pf-c-button pf-m-plain"
+                          data-ouia-component-id={76}
+                          data-ouia-component-type="PF4/Button"
+                          data-ouia-safe={true}
+                          disabled={false}
+                          onClick={[Function]}
+                          type="button"
+                        >
+                          <TimesIcon
+                            color="currentColor"
+                            noVerticalAlign={false}
+                            size="sm"
+                          >
+                            <svg
+                              aria-hidden={true}
+                              aria-labelledby={null}
+                              fill="currentColor"
+                              height="1em"
+                              role="img"
+                              style={
+                                Object {
+                                  "verticalAlign": "-0.125em",
+                                }
+                              }
+                              viewBox="0 0 352 512"
+                              width="1em"
+                            >
+                              <path
+                                d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
+                                transform=""
+                              />
+                            </svg>
+                          </TimesIcon>
+                        </button>
+                      </Button>
+                    </ModalBoxCloseButton>
+                    <ModalBoxHeader>
+                      <header
+                        className="pf-c-modal-box__header"
+                      >
+                        <Title
+                          headingLevel="h1"
+                          size="2xl"
+                        >
+                          <h1
+                            className="pf-c-title pf-m-2xl"
+                          >
+                            <InfoCircleIcon
+                              className="pf-u-mr-sm"
+                              color="var(--pf-global--danger-color--100)"
+                              noVerticalAlign={false}
+                              size="sm"
+                            >
+                              <svg
+                                aria-hidden={true}
+                                aria-labelledby={null}
+                                className="pf-u-mr-sm"
+                                fill="var(--pf-global--danger-color--100)"
+                                height="1em"
+                                role="img"
+                                style={
+                                  Object {
+                                    "verticalAlign": "-0.125em",
+                                  }
+                                }
+                                viewBox="0 0 512 512"
+                                width="1em"
+                              >
+                                <path
+                                  d="M256 8C119.043 8 8 119.083 8 256c0 136.997 111.043 248 248 248s248-111.003 248-248C504 119.083 392.957 8 256 8zm0 110c23.196 0 42 18.804 42 42s-18.804 42-42 42-42-18.804-42-42 18.804-42 42-42zm56 254c0 6.627-5.373 12-12 12h-88c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h12v-64h-12c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h64c6.627 0 12 5.373 12 12v100h12c6.627 0 12 5.373 12 12v24z"
+                                  transform=""
+                                />
+                              </svg>
+                            </InfoCircleIcon>
+                            <span>
+                              Node trigger Error
+                            </span>
+                          </h1>
+                        </Title>
+                      </header>
+                    </ModalBoxHeader>
+                    <ModalBoxBody
+                      data-ouia-component-type="process-details-error-modal"
+                      data-ouia-safe={true}
+                      id="pf-modal-part-6"
+                    >
+                      <div
+                        className="pf-c-modal-box__body"
+                        data-ouia-component-type="process-details-error-modal"
+                        data-ouia-safe={true}
+                        id="pf-modal-part-6"
+                      >
+                        <ModalBoxBody>
+                          <div
+                            className="pf-c-modal-box__body"
+                          >
+                            <TextContent>
+                              <div
+                                className="pf-c-content"
+                              >
+                                <Text>
+                                  <p
+                                    className=""
+                                    data-pf-content={true}
+                                  >
+                                    Retrieval of nodes failed with error: 404 error
+                                  </p>
+                                </Text>
+                              </div>
+                            </TextContent>
+                          </div>
+                        </ModalBoxBody>
+                      </div>
+                    </ModalBoxBody>
+                    <ModalBoxFooter>
+                      <footer
+                        className="pf-c-modal-box__footer"
+                      >
+                        <Button
+                          key="confirm-selection"
+                          onClick={[Function]}
+                          variant="primary"
+                        >
+                          <button
+                            aria-disabled={false}
+                            aria-label={null}
+                            className="pf-c-button pf-m-primary"
+                            data-ouia-component-id={77}
+                            data-ouia-component-type="PF4/Button"
+                            data-ouia-safe={true}
+                            disabled={false}
+                            onClick={[Function]}
+                            type="button"
+                          >
+                            OK
+                          </button>
+                        </Button>
+                      </footer>
+                    </ModalBoxFooter>
+                  </div>
+                </ModalBox>
+              </div>
+            </FocusTrap>
+          </div>
+        </Backdrop>
+      </ModalContent>
+    </Portal>
+  </Modal>
+</ProcessDetailsErrorModal>
 `;
 
 exports[`Process details node trigger component tests select a node test  1`] = `
@@ -1220,33 +2005,77 @@ exports[`Process details node trigger component tests select a node test  1`] = 
     }
   }
 >
-  <Card
-    data-ouia-component-type="node-trigger"
-    data-ouia-safe={true}
-  >
-    <article
-      className="pf-c-card"
-      data-ouia-component-id={15}
-      data-ouia-component-type="PF4/Card"
-      data-ouia-safe={true}
-    >
-      <ProcessListModal
-        handleModalToggle={[Function]}
-        isModalOpen={false}
-        modalContent=""
-        modalTitle={
-          <Title
-            headingLevel="h1"
-            size="2xl"
-          >
-            <span>
-              
-            </span>
-          </Title>
-        }
-        processName="Book"
+  <ProcessDetailsErrorModal
+    errorModalAction={
+      Array [
+        <Button
+          onClick={[Function]}
+          variant="primary"
+        >
+          OK
+        </Button>,
+      ]
+    }
+    errorModalOpen={false}
+    errorString=""
+    handleErrorModal={[Function]}
+    label="Node Trigger Error"
+    title={
+      <Title
+        headingLevel="h1"
+        size="2xl"
       >
-        <Modal
+        <span>
+          
+        </span>
+      </Title>
+    }
+  >
+    <Modal
+      actions={
+        Array [
+          <Button
+            onClick={[Function]}
+            variant="primary"
+          >
+            OK
+          </Button>,
+        ]
+      }
+      appendTo={
+        <body>
+          <div />
+          <div />
+        </body>
+      }
+      aria-describedby=""
+      aria-label="Node Trigger Error"
+      aria-labelledby="Node Trigger Error"
+      className=""
+      data-ouia-component-type="process-details-error-modal"
+      data-ouia-safe={true}
+      hasNoBodyWrapper={false}
+      header={
+        <Title
+          headingLevel="h1"
+          size="2xl"
+        >
+          <span>
+            
+          </span>
+        </Title>
+      }
+      isOpen={false}
+      onClose={[Function]}
+      ouiaSafe={true}
+      showClose={true}
+      title=""
+      variant="small"
+    >
+      <Portal
+        containerInfo={<div />}
+      >
+        <ModalContent
           actions={
             Array [
               <Button
@@ -1257,18 +2086,14 @@ exports[`Process details node trigger component tests select a node test  1`] = 
               </Button>,
             ]
           }
-          appendTo={
-            <body>
-              <div />
-              <div />
-            </body>
-          }
           aria-describedby=""
-          aria-label="process list modal"
-          aria-labelledby="process list modal"
+          aria-label="Node Trigger Error"
+          aria-labelledby="Node Trigger Error"
+          boxId="pf-modal-part-1"
           className=""
-          data-ouia-component-type="process-list-modal"
+          data-ouia-component-type="process-details-error-modal"
           data-ouia-safe={true}
+          descriptorId="pf-modal-part-3"
           hasNoBodyWrapper={false}
           header={
             <Title
@@ -1281,56 +2106,26 @@ exports[`Process details node trigger component tests select a node test  1`] = 
             </Title>
           }
           isOpen={false}
+          labelId="pf-modal-part-2"
           onClose={[Function]}
           ouiaSafe={true}
           showClose={true}
           title=""
           variant="small"
-        >
-          <Portal
-            containerInfo={<div />}
-          >
-            <ModalContent
-              actions={
-                Array [
-                  <Button
-                    onClick={[Function]}
-                    variant="primary"
-                  >
-                    OK
-                  </Button>,
-                ]
-              }
-              aria-describedby=""
-              aria-label="process list modal"
-              aria-labelledby="process list modal"
-              boxId="pf-modal-part-1"
-              className=""
-              data-ouia-component-type="process-list-modal"
-              data-ouia-safe={true}
-              descriptorId="pf-modal-part-3"
-              hasNoBodyWrapper={false}
-              header={
-                <Title
-                  headingLevel="h1"
-                  size="2xl"
-                >
-                  <span>
-                    
-                  </span>
-                </Title>
-              }
-              isOpen={false}
-              labelId="pf-modal-part-2"
-              onClose={[Function]}
-              ouiaSafe={true}
-              showClose={true}
-              title=""
-              variant="small"
-            />
-          </Portal>
-        </Modal>
-      </ProcessListModal>
+        />
+      </Portal>
+    </Modal>
+  </ProcessDetailsErrorModal>
+  <Card
+    data-ouia-component-type="node-trigger"
+    data-ouia-safe={true}
+  >
+    <article
+      className="pf-c-card"
+      data-ouia-component-id={15}
+      data-ouia-component-type="PF4/Card"
+      data-ouia-safe={true}
+    >
       <CardHeader>
         <div
           className="pf-c-card__header"
@@ -1817,33 +2612,76 @@ exports[`Process details node trigger component tests snapshot testing with none
     }
   }
 >
-  <Card
-    data-ouia-component-type="node-trigger"
-    data-ouia-safe={true}
-  >
-    <article
-      className="pf-c-card"
-      data-ouia-component-id={3}
-      data-ouia-component-type="PF4/Card"
-      data-ouia-safe={true}
-    >
-      <ProcessListModal
-        handleModalToggle={[Function]}
-        isModalOpen={false}
-        modalContent=""
-        modalTitle={
-          <Title
-            headingLevel="h1"
-            size="2xl"
-          >
-            <span>
-              
-            </span>
-          </Title>
-        }
-        processName={null}
+  <ProcessDetailsErrorModal
+    errorModalAction={
+      Array [
+        <Button
+          onClick={[Function]}
+          variant="primary"
+        >
+          OK
+        </Button>,
+      ]
+    }
+    errorModalOpen={false}
+    errorString=""
+    handleErrorModal={[Function]}
+    label="Node Trigger Error"
+    title={
+      <Title
+        headingLevel="h1"
+        size="2xl"
       >
-        <Modal
+        <span>
+          
+        </span>
+      </Title>
+    }
+  >
+    <Modal
+      actions={
+        Array [
+          <Button
+            onClick={[Function]}
+            variant="primary"
+          >
+            OK
+          </Button>,
+        ]
+      }
+      appendTo={
+        <body>
+          <div />
+        </body>
+      }
+      aria-describedby=""
+      aria-label="Node Trigger Error"
+      aria-labelledby="Node Trigger Error"
+      className=""
+      data-ouia-component-type="process-details-error-modal"
+      data-ouia-safe={true}
+      hasNoBodyWrapper={false}
+      header={
+        <Title
+          headingLevel="h1"
+          size="2xl"
+        >
+          <span>
+            
+          </span>
+        </Title>
+      }
+      isOpen={false}
+      onClose={[Function]}
+      ouiaSafe={true}
+      showClose={true}
+      title=""
+      variant="small"
+    >
+      <Portal
+        containerInfo={<div />}
+      >
+        <ModalContent
           actions={
             Array [
               <Button
@@ -1854,17 +2692,14 @@ exports[`Process details node trigger component tests snapshot testing with none
               </Button>,
             ]
           }
-          appendTo={
-            <body>
-              <div />
-            </body>
-          }
           aria-describedby=""
-          aria-label="process list modal"
-          aria-labelledby="process list modal"
+          aria-label="Node Trigger Error"
+          aria-labelledby="Node Trigger Error"
+          boxId="pf-modal-part-0"
           className=""
-          data-ouia-component-type="process-list-modal"
+          data-ouia-component-type="process-details-error-modal"
           data-ouia-safe={true}
+          descriptorId="pf-modal-part-2"
           hasNoBodyWrapper={false}
           header={
             <Title
@@ -1877,56 +2712,26 @@ exports[`Process details node trigger component tests snapshot testing with none
             </Title>
           }
           isOpen={false}
+          labelId="pf-modal-part-1"
           onClose={[Function]}
           ouiaSafe={true}
           showClose={true}
           title=""
           variant="small"
-        >
-          <Portal
-            containerInfo={<div />}
-          >
-            <ModalContent
-              actions={
-                Array [
-                  <Button
-                    onClick={[Function]}
-                    variant="primary"
-                  >
-                    OK
-                  </Button>,
-                ]
-              }
-              aria-describedby=""
-              aria-label="process list modal"
-              aria-labelledby="process list modal"
-              boxId="pf-modal-part-0"
-              className=""
-              data-ouia-component-type="process-list-modal"
-              data-ouia-safe={true}
-              descriptorId="pf-modal-part-2"
-              hasNoBodyWrapper={false}
-              header={
-                <Title
-                  headingLevel="h1"
-                  size="2xl"
-                >
-                  <span>
-                    
-                  </span>
-                </Title>
-              }
-              isOpen={false}
-              labelId="pf-modal-part-1"
-              onClose={[Function]}
-              ouiaSafe={true}
-              showClose={true}
-              title=""
-              variant="small"
-            />
-          </Portal>
-        </Modal>
-      </ProcessListModal>
+        />
+      </Portal>
+    </Modal>
+  </ProcessDetailsErrorModal>
+  <Card
+    data-ouia-component-type="node-trigger"
+    data-ouia-safe={true}
+  >
+    <article
+      className="pf-c-card"
+      data-ouia-component-id={3}
+      data-ouia-component-type="PF4/Card"
+      data-ouia-safe={true}
+    >
       <CardHeader>
         <div
           className="pf-c-card__header"

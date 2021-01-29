@@ -382,15 +382,17 @@ export const handleNodeTrigger = async (
 };
 
 export const getTriggerableNodes = async (
-  processInstance: Pick<GraphQL.ProcessInstance, 'processId' | 'serviceUrl'>
-): Promise<TriggerableNode[]> => {
+  processInstance: Pick<GraphQL.ProcessInstance, 'processId' | 'serviceUrl'>,
+  successCallback: (resultNodes: TriggerableNode[]) => void,
+  failureCallback: (errorMessage: string) => void
+): Promise<void> => {
   try {
     const result = await axios.get(
       `${processInstance.serviceUrl}/management/processes/${processInstance.processId}/nodes`
     );
-    return result.data;
+    successCallback(result.data);
   } catch (error) {
-    return [];
+    failureCallback(error.message);
   }
 };
 
