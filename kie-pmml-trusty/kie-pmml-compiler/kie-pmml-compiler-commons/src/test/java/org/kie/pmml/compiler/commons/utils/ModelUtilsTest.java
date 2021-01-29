@@ -87,7 +87,7 @@ public class ModelUtilsTest {
     @Test
     public void convertToKieOutputField() {
         final OutputField toConvert = getRandomOutputField();
-        org.kie.pmml.api.models.OutputField retrieved = ModelUtils.convertToKieOutputField(toConvert);
+        org.kie.pmml.api.models.OutputField retrieved = ModelUtils.convertToKieOutputField(toConvert, null);
         assertNotNull(retrieved);
         assertEquals(toConvert.getName().getValue() , retrieved.getName());
         OP_TYPE expectedOpType = OP_TYPE.byName(toConvert.getOpType().value());
@@ -99,7 +99,7 @@ public class ModelUtilsTest {
         assertEquals(expectedResultFeature, retrieved.getResultFeature());
         toConvert.setOpType(null);
         toConvert.setTargetField(null);
-        retrieved = ModelUtils.convertToKieOutputField(toConvert);
+        retrieved = ModelUtils.convertToKieOutputField(toConvert, null);
         assertNull(retrieved.getOpType());
         assertNull(retrieved.getTargetField());
     }

@@ -127,7 +127,13 @@ public class KiePMMLModelRetriever {
         if (output != null) {
             final List<OutputField> outputFields = output.getOutputFields()
                     .stream()
-                    .map(ModelUtils::convertToKieOutputField)
+                    .map(outputField -> {
+                        DataField dataField = dataDictionary.getDataFields().stream()
+                                .filter(df -> df.getName().equals(outputField.getTargetField()))
+                                .findFirst()
+                                .orElse(null);
+                        return ModelUtils.convertToKieOutputField(outputField, dataField);
+                    })
                     .collect(Collectors.toList());
             toPopulate.setOutputFields(outputFields);
         }

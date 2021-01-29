@@ -205,6 +205,21 @@ public class CommonCodegenUtilsTest {
     }
 
     @Test
+    public void createArraysAsListFromList() {
+        List<String> source = IntStream.range(0, 3)
+                .mapToObj(i -> "Element" + i)
+                .collect(Collectors.toList());
+        ExpressionStmt retrieved = CommonCodegenUtils.createArraysAsListFromList(source);
+        assertNotNull(retrieved);
+        String arguments = source.stream()
+                .map(string -> "\"" + string + "\"")
+                .collect(Collectors.joining(", "));
+        String expected = String.format("java.util.Arrays.asList(%s);", arguments);
+        String retrievedString = retrieved.toString();
+        assertEquals(expected, retrievedString);
+    }
+
+    @Test
     public void getParamMethodDeclaration() {
         String methodName = "METHOD_NAME";
         final Map<String, ClassOrInterfaceType> parameterNameTypeMap = new HashMap<>();

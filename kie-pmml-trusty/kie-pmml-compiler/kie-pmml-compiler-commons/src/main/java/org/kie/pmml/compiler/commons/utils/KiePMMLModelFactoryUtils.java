@@ -50,6 +50,7 @@ import static org.kie.pmml.commons.Constants.MISSING_CONSTRUCTOR_IN_BODY;
 import static org.kie.pmml.commons.Constants.MISSING_DEFAULT_CONSTRUCTOR;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.addListPopulation;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.addMapPopulation;
+import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.createArraysAsListFromList;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.populateMethodDeclarations;
 import static org.kie.pmml.compiler.commons.utils.DefineFunctionUtils.getDefineFunctionsMethodMap;
 import static org.kie.pmml.compiler.commons.utils.DerivedFieldFunctionUtils.getDerivedFieldsMethodMap;
@@ -194,13 +195,13 @@ public class KiePMMLModelFactoryUtils {
                     Expression missingValueReplacement = miningField.getMissingValueReplacement() != null ?
                             new StringLiteralExpr(miningField.getMissingValueReplacement())
                             : new NullLiteralExpr();
-                    toReturn.setArguments(NodeList.nodeList(name, usageType, opType, dataType, missingValueReplacement));
-//                    Expression allowedValues = miningField.getAllowedValues() != null ?
-//                            new StringLiteralExpr(miningField.getAllowedValues())
-//                            : new NullLiteralExpr();
-
-
-
+                    Expression allowedValues = miningField.getAllowedValues() != null ?
+                            CommonCodegenUtils.createArraysAsListFromList(miningField.getAllowedValues()).getExpression()
+                            : new NullLiteralExpr();
+                    Expression intervals = miningField.getIntervals() != null ?
+                            CommonCodegenUtils.createArraysAsListFromList(miningField.getIntervals()).getExpression()
+                            : new NullLiteralExpr();
+                    toReturn.setArguments(NodeList.nodeList(name, usageType, opType, dataType, missingValueReplacement, allowedValues, intervals));
                     return toReturn;
                 })
                 .collect(Collectors.toList());
@@ -234,7 +235,10 @@ public class KiePMMLModelFactoryUtils {
                     Expression resultFeature = rsltF != null ?
                             new NameExpr(rsltF.getClass().getName() + "." + rsltF.name())
                             : new NullLiteralExpr();
-                    toReturn.setArguments(NodeList.nodeList(name, opType, dataType, targetField, resultFeature));
+                    Expression allowedValues = outputField.getAllowedValues() != null ?
+                            CommonCodegenUtils.createArraysAsListFromList(outputField.getAllowedValues()).getExpression()
+                            : new NullLiteralExpr();
+                    toReturn.setArguments(NodeList.nodeList(name, opType, dataType, targetField, resultFeature, allowedValues));
                     return toReturn;
                 })
                 .collect(Collectors.toList());

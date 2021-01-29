@@ -241,22 +241,31 @@ public class ModelUtils {
      * @param toConvert
      * @return
      */
-    public static List<org.kie.pmml.api.models.OutputField> convertToKieOutputFieldList(final Output toConvert) {
+    public static List<org.kie.pmml.api.models.OutputField> convertToKieOutputFieldList(final Output toConvert,
+                                                                                        final DataDictionary dataDictionary) {
         if (toConvert == null) {
             return Collections.emptyList();
         }
         return toConvert.getOutputFields()
                 .stream()
-                .map(ModelUtils::convertToKieOutputField)
+                .map(outputField -> {
+                    DataField dataField = dataDictionary.getDataFields().stream()
+                            .filter(df -> df.getName().equals(outputField.getTargetField()))
+                            .findFirst()
+                            .orElse(null);
+                    return convertToKieOutputField(outputField, dataField);
+                })
                 .collect(Collectors.toList());
     }
 
     /**
      * Return a <code>org.kie.pmml.api.models.OutputField</code> out of a <code>org.dmg.pmml.OutputField</code> one
      * @param toConvert
+     * @param dataField
      * @return
      */
-    public static org.kie.pmml.api.models.OutputField convertToKieOutputField(final OutputField toConvert) {
+    public static org.kie.pmml.api.models.OutputField convertToKieOutputField(final OutputField toConvert,
+                                                                              final DataField dataField) {
         final String name = toConvert.getName() != null ? toConvert.getName().getValue() : null;
         final OP_TYPE opType = toConvert.getOpType() != null ? OP_TYPE.byName(toConvert.getOpType().value()) : null;
         final DATA_TYPE dataType = toConvert.getDataType() != null ?
@@ -264,11 +273,13 @@ public class ModelUtils {
         final String targetField = toConvert.getTargetField() != null ? toConvert.getTargetField().getValue() : null;
         final RESULT_FEATURE resultFeature = toConvert.getResultFeature() != null ?
                 RESULT_FEATURE.byName(toConvert.getResultFeature().value()) : null;
+        final List<String> allowedValues = dataField != null ? convertDataFieldValues(dataField.getValues()) : null;
         return new org.kie.pmml.api.models.OutputField(name,
                                                        opType,
                                                        dataType,
                                                        targetField,
-                                                       resultFeature);
+                                                       resultFeature,
+                                                       allowedValues);
     }
 
     /**

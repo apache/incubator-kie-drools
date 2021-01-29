@@ -145,7 +145,7 @@ public class KiePMMLMiningModelFactory {
         final List<org.kie.pmml.api.models.MiningField> miningFields =
                 ModelUtils.convertToKieMiningFieldList(miningModel.getMiningSchema(), dataDictionary);
         final List<org.kie.pmml.api.models.OutputField> outputFields =
-                ModelUtils.convertToKieOutputFieldList(miningModel.getOutput());
+                ModelUtils.convertToKieOutputFieldList(miningModel.getOutput(), dataDictionary);
         setKiePMMLModelConstructor(getSanitizedClassName(miningModel.getModelName()), constructorDeclaration,
                                    miningModel.getModelName(), miningFields, outputFields);
         Expression miningFunctionExpression;

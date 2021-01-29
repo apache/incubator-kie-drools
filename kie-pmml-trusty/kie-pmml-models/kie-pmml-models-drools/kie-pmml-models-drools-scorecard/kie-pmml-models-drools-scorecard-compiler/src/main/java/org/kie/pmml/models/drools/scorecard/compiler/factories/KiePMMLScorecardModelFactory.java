@@ -115,7 +115,7 @@ public class KiePMMLScorecardModelFactory {
                                final ConstructorDeclaration constructorDeclaration,
                                final SimpleName modelName) {
         final List<org.kie.pmml.api.models.MiningField> miningFields = ModelUtils.convertToKieMiningFieldList(scorecard.getMiningSchema(), dataDictionary);
-        final List<org.kie.pmml.api.models.OutputField> outputFields = ModelUtils.convertToKieOutputFieldList(scorecard.getOutput());
+        final List<org.kie.pmml.api.models.OutputField> outputFields = ModelUtils.convertToKieOutputFieldList(scorecard.getOutput(), dataDictionary);
         setKiePMMLModelConstructor(modelName.asString(), constructorDeclaration, scorecard.getModelName(), miningFields, outputFields);
     }
 }

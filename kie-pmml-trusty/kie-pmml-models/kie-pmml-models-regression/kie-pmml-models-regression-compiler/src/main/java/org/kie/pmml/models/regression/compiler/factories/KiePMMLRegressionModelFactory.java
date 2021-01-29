@@ -148,7 +148,7 @@ public class KiePMMLRegressionModelFactory {
                                final ConstructorDeclaration constructorDeclaration,
                                final String targetField) {
         final List<org.kie.pmml.api.models.MiningField> miningFields = ModelUtils.convertToKieMiningFieldList(regressionModel.getMiningSchema(), dataDictionary);
-        final List<org.kie.pmml.api.models.OutputField> outputFields = ModelUtils.convertToKieOutputFieldList(regressionModel.getOutput());
+        final List<org.kie.pmml.api.models.OutputField> outputFields = ModelUtils.convertToKieOutputFieldList(regressionModel.getOutput(), dataDictionary);
         setKiePMMLModelConstructor( getSanitizedClassName(regressionModel.getModelName()), constructorDeclaration, regressionModel.getModelName(), miningFields, outputFields);
 
         MINING_FUNCTION miningFunction = MINING_FUNCTION.byName(regressionModel.getMiningFunction().value());

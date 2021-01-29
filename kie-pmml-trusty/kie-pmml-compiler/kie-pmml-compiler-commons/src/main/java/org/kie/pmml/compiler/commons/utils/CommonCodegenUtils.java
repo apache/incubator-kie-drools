@@ -15,6 +15,7 @@
  */
 package org.kie.pmml.compiler.commons.utils;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -36,6 +37,7 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.MethodReferenceExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
+import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.ThisExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
@@ -208,8 +210,22 @@ public class CommonCodegenUtils {
         });
     }
 
-    public static ObjectCreationExpr createArraysOfFromList(List<String> source) {
-        ObjectCreationExpr toReturn = new ObjectCreationExpr();
+    /**
+     * Create <b>Arrays.asList(String... a)</b> <code>ExpressionStmt</code>
+     *
+     * @param source
+     * @return
+     */
+    public static ExpressionStmt createArraysAsListFromList(List<String> source) {
+        ExpressionStmt toReturn = new ExpressionStmt();
+        MethodCallExpr arraysCallExpression = new MethodCallExpr();
+        SimpleName arraysName = new SimpleName(Arrays.class.getName());
+        arraysCallExpression.setScope(new NameExpr(arraysName));
+        arraysCallExpression.setName(new SimpleName("asList"));
+        NodeList<Expression> arguments = new NodeList<>();
+        source.forEach(value -> arguments.add(new StringLiteralExpr(value)));
+        arraysCallExpression.setArguments(arguments);
+        toReturn.setExpression(arraysCallExpression);
         return toReturn;
     }
 
