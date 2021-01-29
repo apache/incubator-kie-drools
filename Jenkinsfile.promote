@@ -9,6 +9,7 @@ pipelineProperties = [:]
 String optaplannerRepository = 'optaplanner'
 String vehicleRoutingRepository = 'optaweb-vehicle-routing'
 String employeeRosteringRepository = 'optaweb-employee-rostering'
+String quickstartsRepository = 'optaplanner-quickstarts'
 
 pipeline {
     agent {
@@ -19,7 +20,7 @@ pipeline {
         maven 'kie-maven-3.6.2'
         jdk 'kie-jdk11'
     }
-    
+
     options {
         buildDiscarder logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '10')
         timeout(time: 120, unit: 'MINUTES')
@@ -27,10 +28,10 @@ pipeline {
 
     parameters {
         string(name: 'DISPLAY_NAME', defaultValue: '', description: 'Setup a specific build display name')
-        
+
         // Deploy job url to retrieve deployment.properties
         string(name: 'DEPLOY_BUILD_URL', defaultValue: '', description: 'URL to jenkins deploy build to retrieve the `deployment.properties` file. If base parameters are defined, they will override the `deployment.properties` information')
-        
+
         // Git information which can override `deployment.properties`
         string(name: 'BUILD_BRANCH_NAME', defaultValue: '', description: 'Override `deployment.properties`. Which branch to build? Set if you are not on a multibranch pipeline.')
         string(name: 'GIT_AUTHOR', defaultValue: '', description: 'Override `deployment.properties`. Which Git author repository ?')
@@ -39,7 +40,7 @@ pipeline {
         string(name: 'MAVEN_SETTINGS_CONFIG_FILE_ID', defaultValue: 'kogito_release_settings', description: 'Maven settings configfile to use in pipeline for Maven commands')
         string(name: 'MAVEN_DEPENDENCIES_REPOSITORY', defaultValue: '', description: 'Maven repository where to find dependencies if those are not in the default Jboss repository.')
         string(name: 'MAVEN_DEPLOY_REPOSITORY', defaultValue: '', description: 'Specify a Maven repository to deploy the artifacts.')
-        
+
         // Release information which can override `deployment.properties`
         booleanParam(name: 'RELEASE', defaultValue: false, description: 'Override `deployment.properties`. Is this build for a release?')
 
@@ -68,7 +69,7 @@ pipeline {
             steps {
                 script {
                     cleanWs()
-                    
+
                     if (params.DISPLAY_NAME != '') {
                         currentBuild.displayName = params.DISPLAY_NAME
                     }
@@ -125,6 +126,23 @@ pipeline {
                         checkoutRepo(employeeRosteringRepository)
                         mergeAndPush(getDeployPrLink(employeeRosteringRepository))
                         tagLatest()
+                    }
+                }
+            }
+        }
+
+        stage('Merge Quickstarts PR, tag and reset the stable branch') {
+            when {
+                expression { return isRelease() }
+            }
+            steps{
+                script {
+                    dir(quickstartsRepository) {
+                        checkoutRepo(quickstartsRepository)
+                        mergeAndPush(getDeployPrLink(quickstartsRepository))
+                        tagLatest()
+
+                        updateAndResetBranch(quickstartsRepository,'stable')
                     }
                 }
             }
@@ -232,7 +250,7 @@ pipeline {
                     dir("$vehicleRoutingRepository-bot") {
                         prepareForPR(vehicleRoutingRepository)
                         maven.mvnVersionsUpdateParentAndChildModules(nextMicroSnapshotVersion, true)
-                        
+
                         String prLink = commitAndCreatePR("[${getBuildBranch()}] Update snapshot version to ${nextMicroSnapshotVersion}")
                         setPipelinePrLink(vehicleRoutingRepository, prLink)
                     }
@@ -255,7 +273,7 @@ pipeline {
                     dir("$employeeRosteringRepository-bot") {
                         prepareForPR(employeeRosteringRepository)
                         maven.mvnVersionsUpdateParentAndChildModules(nextMicroSnapshotVersion, true)
-                        
+
                         String prLink = commitAndCreatePR("[${getBuildBranch()}] Update snapshot version to ${nextMicroSnapshotVersion}")
                         setPipelinePrLink(employeeRosteringRepository, prLink)
                     }
@@ -263,6 +281,29 @@ pipeline {
                         sh "git checkout ${getBuildBranch()}"
                         mergeAndPush(getPipelinePrLink(employeeRosteringRepository))
                         runMavenDeploy(getMavenCommand())
+                    }
+                }
+            }
+        }
+
+        stage('Set Quickstarts next snapshot version') {
+            when {
+                expression { return isRelease() }
+            }
+            steps {
+                script {
+                    String nextMicroSnapshotVersion = getNextMicroSnapshotVersion(getProjectVersion())
+                    String botQuickstartsRepository = "${quickstartsRepository}-bot"
+                    dir(botQuickstartsRepository) {
+                        prepareForPR(quickstartsRepository)
+                        updateQuickstartsVersions(nextMicroSnapshotVersion)
+
+                        String prLink = commitAndCreatePR(("[${getBuildBranch()}] Update snapshot version to ${nextMicroSnapshotVersion}"));
+                        setPipelinePrLink(quickstartsRepository, prLink)
+                    }
+                    dir(quickstartsRepository) {
+                        sh "git checkout ${getBuildBranch()}"
+                        mergeAndPush(getPipelinePrLink(quickstartsRepository))
                     }
                 }
             }
@@ -415,14 +456,17 @@ void prepareForPR(String repo) {
 
 String commitAndCreatePR(String commitMsg, Closure precommit, String localBranch, String targetBranch) {
     def prBody = "Generated by build ${BUILD_TAG}: ${BUILD_URL}"
-    
+
     githubscm.commitChanges(commitMsg, precommit)
     githubscm.pushObject('origin', localBranch, getBotAuthorCredsID())
     return githubscm.createPR(commitMsg, prBody, targetBranch, getBotAuthorCredsID())
 }
 
 String commitAndCreatePR(String commitMsg) {
-    return commitAndCreatePR(commitMsg, { githubscm.findAndStageNotIgnoredFiles('pom.xml') }, getSnapshotBranch(), getBuildBranch())
+    return commitAndCreatePR(commitMsg, {
+        githubscm.findAndStageNotIgnoredFiles('pom.xml')
+        githubscm.findAndStageNotIgnoredFiles('build.gradle')
+    }, getSnapshotBranch(), getBuildBranch())
 }
 
 String createWebsitePrBranch(String websiteRepository) {
@@ -469,4 +513,127 @@ void runMavenDeploy(MavenCommand mvnCmd) {
         mvnCmd.withDeployRepository(params.MAVEN_DEPLOY_REPOSITORY)
     }
     mvnCmd.skipTests(true).run('clean deploy')
+}
+
+def updateAndResetBranch(String repo, String branchToReset) {
+    githubscm.createBranch(branchToReset)
+
+    removeJbossNexusFromMavenAndGradle()
+
+    githubscm.commitChanges("[${getBuildBranch()}] Update ${branchToReset} to ${getProjectVersion()}", {
+        githubscm.findAndStageNotIgnoredFiles('pom.xml')
+        githubscm.findAndStageNotIgnoredFiles('build.gradle')
+    })
+    forcePushProtectedBranch(repo, branchToReset)
+}
+
+void removeJbossNexusFromMavenAndGradle() {
+    sh "sed -i \':a;N;\$!ba;s/\\n *<repositories>.*<\\/repositories>//g\' */pom.xml"
+    sh "sed -i \':a;N;\$!ba;s/\\n *<repositories>.*<\\/repositories>//g\' pom.xml"
+    sh "sed -i \':a;N;\$!ba;s/\\n *\\/\\/ To get snapshots during development[^{}]*maven {[^{}]*mavenContent " +
+            "{[^{}]*snapshotsOnly[^{}]*}[^{}]*}//g\' */build.gradle"
+
+    assert !sh (script:
+            'grep -Rn "repository.jboss.org" --include={pom.xml,build.gradle} | ' +
+            'cat', returnStdout: true)
+}
+
+String getGhCredsID() {
+    return params.GITHUB_TOKEN_CREDS_ID;
+}
+
+//maps git branch protection response json into update request body to rewrite branch protection
+String getProtectionMapScript() {
+    return "if .restrictions == null then . + {\"restrictions_used\":null}  " + //upd user set restrictions if not empty
+            "else . + {\"restrictions_used\":{\"users\":[.restrictions.users[].login], \"team\":[.restrictions.users[].slug]}} end |" +
+            " {" +
+                "\"required_status_checks\": .required_status_checks," +
+                "\"required_pull_request_reviews\": " +
+                    "{" +
+                        "\"dismiss_stale_reviews\":(.required_pull_request_reviews.dismiss_stale_reviews//false), " +
+                        "\"require_code_owner_reviews\":(.required_pull_request_reviews.require_code_owner_reviews//false)" +
+                    "}, " +
+                "\"enforce_admins\":(.enforce_admins.enabled)," +
+                " \"restrictions\":.restrictions_used" +
+            "}";
+}
+
+def enableForcePushes(String repo, String protectedBranch) {
+    setAllowForcePushes(repo, protectedBranch, "true");
+}
+
+def disableForcePushes(String repo, String protectedBranch) {
+    setAllowForcePushes(repo, protectedBranch, "false");
+}
+
+def setAllowForcePushes(String repo, String protectedBranch, String enabled, String ghPath = "../gh") {
+    assertGithubCLI(ghPath)
+    //Use separate admin token credentials
+    withCredentials([string(credentialsId: getGhCredsID(), variable: 'GITHUB_TOKEN')]) {
+        //get current branch protection and remove allow force push
+        sh "${ghPath} api 'repos/${getGitAuthor()}/${repo}/branches/${protectedBranch}/protection' | " +
+           "jq 'del(.allow_force_pushes)' > protectionBefore.json";
+
+        //create new json based on current protection mapped as parameters
+        sh "jq \"${getProtectionMapScript()}\" protectionBefore.json | " +
+           "jq \". + {\"allow_force_pushes\":${enabled}}\" > protectionParameters.json";
+
+        //update protection on git
+        def allowForcePushEnabled = sh(script:
+                "${ghPath} api -XPUT 'repos/${getGitAuthor()}/${repo}/branches/${protectedBranch}/protection' " +
+                        "--input protectionParameters.json |" +
+                        " jq '.allow_force_pushes.enabled'", returnStdout: true).trim();
+        assert allowForcePushEnabled == enabled
+
+        //check that protection didn't changed except for allow_force_pushes
+        sh "${ghPath} api 'repos/${getGitAuthor()}/${repo}/branches/${protectedBranch}/protection' | " +
+                "jq 'del(.allow_force_pushes)' > protectionAfter.json";
+        def differences = sh (script: "diff protectionBefore.json protectionAfter.json | cat", returnStdout: true)
+        if (differences) {
+            error "Protection settings lost"+
+                    "\nBefore: "+
+                    "\n${readFile 'protectionBefore.json'} " +
+                    "\nAfter: "+
+                    "\n${readFile 'protectionAfter.json'} " +
+                    "\nDifferences: " +
+                    "\n${differences} " +
+                    "\nProtection parameters: " +
+                    "\n${readFile 'protectionParameters.json'} " +
+                    "Please rollback to Before state and update getProtectionMapScript"
+        }
+        //cleanup workspace
+        sh "rm -f protectionParameters.json protectionBefore.json protectionAfter.json"
+    }
+}
+
+def forcePushProtectedBranch(String repo, String protectedBranch) {
+    enableForcePushes(repo, protectedBranch)
+    withCredentials([usernamePassword(credentialsId: getGitAuthorCredsID(), usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD')]) {
+        sh """
+        git config --local credential.helper \"!f() { echo username=\\$GIT_USERNAME; echo password=\\$GIT_PASSWORD; }; f\"
+        git push origin ${protectedBranch} --force
+        """
+    }
+    disableForcePushes(repo, protectedBranch)
+}
+
+void gradleVersionsUpdate(String newVersion) {
+    sh "sed -i -E 's/def optaplannerVersion = \"[^\"\\s]+\"/def optaplannerVersion = \"${newVersion}\"/' */build.gradle"
+}
+
+void updateQuickstartsVersions(String newVersion) {
+    maven.mvnSetVersionProperty("version.org.optaplanner", newVersion)
+    maven.mvnVersionsUpdateParentAndChildModules(newVersion, true)
+    gradleVersionsUpdate(newVersion)
+
+    assert !sh(script:
+            "grep -Rn \"${getProjectVersion()}\" --include={pom.xml,build.gradle} | " +
+             "cat", returnStdout: true)
+}
+
+void assertGithubCLI(String ghPath) {
+    if (fileExists(ghPath))
+        echo "[INFO] gh found at $ghPath"
+    else
+        error "gh not found at $ghPath"
 }
