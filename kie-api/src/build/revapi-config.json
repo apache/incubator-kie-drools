@@ -133,7 +133,16 @@
                 "methodName": "setBetaRangeIndexOption",
                 "elementKind": "method",
                 "justification": "Allow to use range index for JoinNode"
-              }
+              },
+              {
+                "code": "java.method.addedToInterface",
+                "new": "method void org.kie.api.internal.assembler.KieAssemblers::addResourceBeforeRules(java.lang.Object, org.kie.api.io.Resource, org.kie.api.io.ResourceType, org.kie.api.io.ResourceConfiguration) throws java.lang.Exception",
+                "package": "org.kie.api.internal.assembler",
+                "classSimpleName": "KieAssemblers",
+                "methodName": "addResourceBeforeRules",
+                "elementKind": "method",
+                "justification": "Add AssemblerService method running before rules compilation"
+              } 
             ]
         }
     }

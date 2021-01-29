@@ -38,6 +38,11 @@ public class MockAssemblersImpl implements KieAssemblers,
     }
 
     @Override
+    public void addResourceBeforeRules(Object knowledgeBuilder, Resource resource, ResourceType type, ResourceConfiguration configuration) throws Exception {
+
+    }
+
+    @Override
     public void addResource(Object knowledgeBuilder, Resource resource, ResourceType type, ResourceConfiguration configuration) throws Exception {
 
     }
