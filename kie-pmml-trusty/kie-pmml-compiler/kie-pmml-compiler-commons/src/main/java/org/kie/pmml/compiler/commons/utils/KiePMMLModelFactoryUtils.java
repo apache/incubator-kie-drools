@@ -191,7 +191,16 @@ public class KiePMMLModelFactoryUtils {
                     Expression dataType = dtT != null ?
                             new NameExpr(dtT.getClass().getName() + "." + dtT.name())
                             : new NullLiteralExpr();
-                    toReturn.setArguments(NodeList.nodeList(name, usageType, opType, dataType));
+                    Expression missingValueReplacement = miningField.getMissingValueReplacement() != null ?
+                            new StringLiteralExpr(miningField.getMissingValueReplacement())
+                            : new NullLiteralExpr();
+                    toReturn.setArguments(NodeList.nodeList(name, usageType, opType, dataType, missingValueReplacement));
+//                    Expression allowedValues = miningField.getAllowedValues() != null ?
+//                            new StringLiteralExpr(miningField.getAllowedValues())
+//                            : new NullLiteralExpr();
+
+
+
                     return toReturn;
                 })
                 .collect(Collectors.toList());

@@ -208,6 +208,11 @@ public class CommonCodegenUtils {
         });
     }
 
+    public static ObjectCreationExpr createArraysOfFromList(List<String> source) {
+        ObjectCreationExpr toReturn = new ObjectCreationExpr();
+        return toReturn;
+    }
+
     /**
      * Returns
      * <pre>
