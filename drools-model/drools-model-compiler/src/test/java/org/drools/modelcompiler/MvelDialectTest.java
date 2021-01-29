@@ -903,4 +903,26 @@ public class MvelDialectTest extends BaseModelTest {
         assertEquals(1, ksession.fireAllRules());
         assertEquals(new BigDecimal( 0 ), john.getMoney());
     }
+
+    @Test
+    public void testKcontext() {
+        String str =
+                "global java.util.List result;" +
+                     "rule R\n" +
+                     "dialect \"mvel\"\n" +
+                     "when\n" +
+                     "  Integer()\n" +
+                     "then\n" +
+                     "  result.add(kcontext.getRule().getName());\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+        List<String> result = new ArrayList<>();
+        ksession.setGlobal("result", result);
+
+        ksession.insert(47);
+        ksession.fireAllRules();
+
+        assertTrue(result.contains("R"));
+    }
 }
