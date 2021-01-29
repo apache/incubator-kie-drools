@@ -3211,14 +3211,13 @@ public class RuleModelDRLPersistenceImpl
                     }
                 } else {
 
-                    final StringBuilder sb = new StringBuilder();
+                    final StringBuilder drl = new StringBuilder();
                     for (final String setter : entry.getValue()) {
-                        sb.append(setter).append("\n");
+                        drl.append(setter).append("\n");
                     }
-                    final String drl = sb.toString();
 
                     final FreeFormLine action = new FreeFormLine();
-                    action.setText(drl);
+                    action.setText(drl.toString());
                     m.addRhsItem(action,
                                  setStatementsPosition.get(entry.getKey()));
                 }

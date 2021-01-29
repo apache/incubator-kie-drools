@@ -16,6 +16,7 @@
 package org.drools.workbench.models.guided.dtable.backend.util;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -322,7 +323,6 @@ public class GuidedDTBRDRLPersistence extends RuleModelDRLPersistenceImpl {
         @Override
         public void visitActionCallMethod(final ActionCallMethod action) {
 
-            // Clony clonies
             final ActionCallMethod clone = new ActionCallMethod();
             clone.setState(action.getState());
             clone.setVariable(action.getVariable());
@@ -341,7 +341,11 @@ public class GuidedDTBRDRLPersistence extends RuleModelDRLPersistenceImpl {
                     afvClone.setType(fieldValue.getType());
                     String value = fieldValue.getValue();
                     String templateKeyValue = rowDataProvider.getTemplateKeyValue(value);
-                    afvClone.setValue(templateKeyValue);
+                    if (Objects.equals("", templateKeyValue)) {
+                        afvClone.setValue(value);
+                    } else {
+                        afvClone.setValue(templateKeyValue);
+                    }
 
                     clone.getFieldValues()[i] = afvClone;
                 }
