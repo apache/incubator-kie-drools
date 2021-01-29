@@ -211,6 +211,7 @@ public class ModelUtils {
                 FIELD_USAGE_TYPE.byName(toConvert.getUsageType().value()) : null;
         final OP_TYPE opType = toConvert.getOpType() != null ? OP_TYPE.byName(toConvert.getOpType().value()) : null;
         final DATA_TYPE dataType = dataField.getDataType() != null ? DATA_TYPE.byName(dataField.getDataType().value()) : null;
+
         return new org.kie.pmml.api.models.MiningField(name,
                                                        fieldUsageType,
                                                        opType,
