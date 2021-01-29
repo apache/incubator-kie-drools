@@ -50,7 +50,7 @@ pipeline {
         stage('Build kogito-apps') {
             steps {
                 script {
-                    getMavenCommand('kogito-apps')
+                    getNativeMavenCommand('kogito-apps')
                         .run('clean install')
                 }
             }
