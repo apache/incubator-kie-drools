@@ -136,7 +136,6 @@
           <plugin>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-maven-plugin</artifactId>
-            <version>${version.io.quarkus}</version>
             <executions>
               <execution>
                 <goals>
@@ -156,7 +155,10 @@
                   <goal>integration-test</goal>
                   <goal>verify</goal>
                 </goals>
-                <configuration>
+                <configuration combine.self="override">
+                  <includes>
+                    <include>**/Native*IT.java</include>
+                  </includes>
                   <systemProperties>
                     <native.image.path>${project.build.directory}/${project.build.finalName}-runner</native.image.path>
                   </systemProperties>

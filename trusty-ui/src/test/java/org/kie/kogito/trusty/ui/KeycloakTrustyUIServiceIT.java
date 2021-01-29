@@ -1,4 +1,4 @@
-package org.kie.kogito;
+package org.kie.kogito.trusty.ui;
 
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;

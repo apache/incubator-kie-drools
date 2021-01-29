@@ -78,19 +78,15 @@
           <plugin>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-maven-plugin</artifactId>
-            <configuration>
-              <uberJar>false</uberJar>
-            </configuration>
             <executions>
               <execution>
                 <goals>
-                  <goal>build</goal>
+                  <goal>native-image</goal>
                 </goals>
               </execution>
             </executions>
           </plugin>
           <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-failsafe-plugin</artifactId>
             <executions>
               <execution>
@@ -98,20 +94,19 @@
                   <goal>integration-test</goal>
                   <goal>verify</goal>
                 </goals>
-                <configuration>
-                  <systemPropertyVariables>
+                <configuration combine.self="override">
+                  <includes>
+                    <include>**/Native*IT.java</include>
+                  </includes>
+                  <systemProperties>
                     <native.image.path>${project.build.directory}/${project.build.finalName}-runner</native.image.path>
-                  </systemPropertyVariables>
+                  </systemProperties>
                 </configuration>
               </execution>
             </executions>
           </plugin>
         </plugins>
       </build>
-      <properties>
-        <quarkus.package.type>native</quarkus.package.type>
-      </properties>
     </profile>
   </profiles>
-
 </project>

@@ -17,9 +17,10 @@
 package org.kie.kogito.index.service;
 
 import io.quarkus.test.junit.NativeImageTest;
+import org.junit.jupiter.api.Disabled;
 
 @NativeImageTest
-class InfinispanNativeIndexingServiceIT extends InfinispanIndexingServiceIT {
-
+@Disabled("https://issues.redhat.com/browse/KOGITO-4311 - Injection of beans into a test class using @Inject is not supported in native image tests")
+class NativeInfinispanIndexingServiceIT extends InfinispanIndexingServiceIT {
     // Execute the same tests but in native mode.
 }

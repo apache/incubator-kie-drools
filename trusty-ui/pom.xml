@@ -183,16 +183,13 @@
           <plugin>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-maven-plugin</artifactId>
-            <configuration>
-              <uberJar>true</uberJar>
-            </configuration>
             <executions>
               <execution>
                 <goals>
                   <goal>native-image</goal>
                 </goals>
                 <configuration>
-                  <additionalBuildArgs>--allow-incomplete-classpath</additionalBuildArgs>
+                  <enableHttpUrlHandler>true</enableHttpUrlHandler>
                 </configuration>
               </execution>
             </executions>
@@ -205,7 +202,13 @@
                   <goal>integration-test</goal>
                   <goal>verify</goal>
                 </goals>
-                <configuration>
+                <configuration combine.self="override">
+                  <includes>
+                    <include>**/Native*IT.java</include>
+                  </includes>
+                  <excludes>
+                    <exclude>**/Keycloak*IT.java</exclude>
+                  </excludes>
                   <systemProperties>
                     <native.image.path>${project.build.directory}/${project.build.finalName}-runner</native.image.path>
                   </systemProperties>

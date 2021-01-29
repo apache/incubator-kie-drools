@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.kie.kogito;
+package org.kie.kogito.trusty.ui;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -24,14 +24,17 @@ import java.nio.charset.StandardCharsets;
 
 import io.quarkus.test.common.http.TestHTTPResource;
 import io.quarkus.test.junit.QuarkusTest;
+import io.restassured.http.ContentType;
+import io.vertx.core.http.HttpHeaders;
 import org.junit.jupiter.api.Test;
 
+import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @QuarkusTest
 public class StaticContentTest {
 
-    @TestHTTPResource
+    @TestHTTPResource("index.html")
     URL url;
 
     private static String readStream(InputStream in) throws IOException {
@@ -48,7 +51,26 @@ public class StaticContentTest {
     public void testIndexHtml() throws Exception {
         try (InputStream in = url.openStream()) {
             String contents = readStream(in);
-            assertTrue(contents.contains("<title>Kogito - Management Console</title>"));
+            assertTrue(contents.contains("<title>Kogito - TrustyAI</title>"));
         }
+    }
+
+    @Test
+    public void testHeaders() {
+        given().contentType(ContentType.JSON).when().get("/").then()
+                .statusCode(200)
+                .header(HttpHeaders.CACHE_CONTROL.toString(), "no-cache")
+                .header(HttpHeaders.CONTENT_TYPE.toString(), "text/html;charset=utf8");
+    }
+    
+    @Test
+    public void testHandlePath() {
+        given().when().get("/audit")
+                .then()
+                .statusCode(200);
+
+        given().when().get("/audit/decision/9cf2179f-4fed-4793-b674-a19c45e6cbff/outcomes")
+                .then()
+                .statusCode(200);
     }
 }
