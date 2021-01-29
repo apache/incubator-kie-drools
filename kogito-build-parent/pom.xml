@@ -73,7 +73,9 @@
     <version.surefire.plugin>2.22.2</version.surefire.plugin> <!-- minimum required by JUnit 5 -->
     <version.surefire.report.plugin>2.6</version.surefire.report.plugin>
     <version.taglist.plugin>2.4</version.taglist.plugin>
-    <version.versions.plugin>2.8.1</version.versions.plugin>
+    <!-- Versions plugin should stay on version 2.5 
+      until https://github.com/mojohaus/versions-maven-plugin/issues/312 is fixed -->
+    <version.versions.plugin>2.5</version.versions.plugin>
     <version.jayway.jsonpath>2.4.0</version.jayway.jsonpath>
 
     <!-- this version property is used in plugins but also in dependencies too -->
