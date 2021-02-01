@@ -4806,4 +4806,51 @@ public class IncrementalCompilationTest {
         kc.updateToVersion(releaseId3);
         ksession = kc.newKieSession();
     }
+
+    @Test
+    public void testUnlinkedPathUpdate() throws Exception {
+        // DROOLS-5982
+        final String drl1 =
+                "rule R1 when\n" +
+                "  Boolean()\n" +
+                "  String()\n" +
+                "then\n" +
+                "end\n";
+
+        final String drl2a =
+                "rule R2 when\n" +
+                "  Boolean()\n" +
+                "  Integer()\n" +
+                "then\n" +
+                "  System.out.println(\"before update\");\n" +
+                "end\n";
+
+        final String drl2b =
+                "rule R2 when\n" +
+                "  Boolean()\n" +
+                "  Integer()\n" +
+                "then\n" +
+                "  System.out.println(\"after update\");\n" +
+                "end\n";
+
+        final KieServices ks = KieServices.Factory.get();
+
+        final ReleaseId releaseId1 = ks.newReleaseId("org.kie", "test-upgrade", "1.0.0");
+        KieUtil.getKieModuleFromDrls(releaseId1, kieBaseTestConfiguration, drl1, drl2a);
+
+        final KieContainer kc = ks.newKieContainer(releaseId1);
+        KieSession ksession = kc.newKieSession();
+
+        ksession.insert("A string");
+        ksession.insert(12);
+        assertEquals(0, ksession.fireAllRules());
+
+        final ReleaseId releaseId2 = ks.newReleaseId("org.kie", "test-upgrade", "1.1.0");
+        KieUtil.getKieModuleFromDrls(releaseId2, kieBaseTestConfiguration, drl1, drl2b);
+
+        kc.updateToVersion(releaseId2);
+
+        ksession.insert(true);
+        assertEquals(2, ksession.fireAllRules());
+    }
 }
