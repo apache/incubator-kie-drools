@@ -313,22 +313,31 @@ public class AddRemoveRule {
             SegmentMemory sm1 = smems[smemIndex];
             SegmentMemory sm2 = prevSmems[prevSmemIndex];
 
-            if (sm1 != null && sm2 == null) {
-                sm2 = SegmentUtilities.createChildSegment(wm,node);
-                prevSmems[prevSmemIndex] = sm2;
-                sm1.add(sm2);
-            } else if (sm1 == null && sm2 != null) {
-                sm1 = SegmentUtilities.createChildSegment(wm, parentNode);
-                smems[smemIndex] = sm1;
-                sm1.add(sm2);
-            }
+            if (sm1 != null || sm2 != null) {
+                // Temporarily remove the terminal node of the rule to be removed from the rete network to avoid that
+                // its path memory could be added to an existing segment memory during the merge of 2 segments
+                LeftTupleSource removedTerminalSource = tn.getLeftTupleSource();
+                removedTerminalSource.removeTupleSink( tn );
 
-            if (sm1 != null && sm2 != null) {
+                if (sm1 == null) {
+                    sm1 = SegmentUtilities.createChildSegment(wm, parentNode);
+                    smems[smemIndex] = sm1;
+                    sm1.add(sm2);
+                } else if (sm2 == null) {
+                    sm2 = SegmentUtilities.createChildSegment(wm, node);
+                    prevSmems[prevSmemIndex] = sm2;
+                    sm1.add(sm2);
+                }
+
                 mergeSegment(sm1, sm2);
                 smemsToNotify.add(sm1);
                 sm1.unlinkSegment(wm);
                 sm2.unlinkSegment(wm);
                 visited.add(node);
+
+                // Add back the the terminal node of the rule to be removed into the rete network to permit the network
+                // traversal up from it and the removal of all the nodes exclusively belonging to the removed rule
+                removedTerminalSource.addTupleSink( tn );
             }
         }
 
