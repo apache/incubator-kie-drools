@@ -66,7 +66,7 @@ public class MockAccumulator
         return this.workingMemory;
     }
 
-    public Serializable createContext() {
+    public Object createContext() {
         return this;
     }
 

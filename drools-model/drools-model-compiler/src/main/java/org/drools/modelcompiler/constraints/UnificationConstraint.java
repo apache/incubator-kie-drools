@@ -16,6 +16,7 @@
 
 package org.drools.modelcompiler.constraints;
 
+import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
@@ -65,7 +66,7 @@ public class UnificationConstraint extends MutableTypeConstraint implements Inde
     }
 
     @Override
-    public boolean isIndexable( short nodeType ) {
+    public boolean isIndexable( short nodeType, RuleBaseConfiguration config ) {
         return true;
     }
 
@@ -87,6 +88,11 @@ public class UnificationConstraint extends MutableTypeConstraint implements Inde
     @Override
     public InternalReadAccessor getFieldExtractor() {
         return readAccessor;
+    }
+
+    @Override
+    public Declaration getIndexingDeclaration() {
+        return declaration;
     }
 
     @Override

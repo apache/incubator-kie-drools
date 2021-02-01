@@ -85,10 +85,10 @@ public class LambdaGroupByAccumulate extends Accumulate {
     }
 
     @Override
-    public Object init( Object workingMemoryContext, Object context,
-                      Tuple leftTuple, WorkingMemory workingMemory ) {
+    public Object init(Object workingMemoryContext, Object accContext,
+                       Object funcContext, Tuple leftTuple, WorkingMemory workingMemory) {
         // do nothing here, it's done when the group is first created
-        return context;
+        return funcContext;
     }
 
     @Override

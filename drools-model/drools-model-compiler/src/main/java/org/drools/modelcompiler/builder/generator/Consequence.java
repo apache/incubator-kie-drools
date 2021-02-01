@@ -38,6 +38,7 @@ import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.ArrayAccessExpr;
 import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.CastExpr;
+import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
@@ -125,12 +126,10 @@ public class Consequence {
         BlockStmt ruleConsequence = null;
 
         if (context.getRuleDialect() == RuleContext.RuleDialect.JAVA) {
+            // for MVEL, it will be done in createExecuteCallMvel()
             ruleConsequence = rewriteConsequence( consequenceString );
             if ( ruleConsequence != null ) {
-                ruleConsequence.findAll( Expression.class )
-                        .stream()
-                        .filter( s -> isNameExprWithName( s, "kcontext" ) )
-                        .forEach( n -> n.replace( new CastExpr( toClassOrInterfaceType( org.kie.api.runtime.rule.RuleContext.class ), new NameExpr( "drools" ) ) ) );
+                replaceKcontext(ruleConsequence);
                 rewriteChannels(ruleConsequence);
             } else {
                 return null;
@@ -160,6 +159,13 @@ public class Consequence {
         }
 
         throw new IllegalArgumentException("Unknown rule dialect " + context.getRuleDialect() + "!");
+    }
+
+    private void replaceKcontext(BlockStmt ruleConsequence) {
+        ruleConsequence.findAll( Expression.class )
+                .stream()
+                .filter( s -> isNameExprWithName( s, "kcontext" ) )
+                .forEach( n -> n.replace( new EnclosedExpr(new CastExpr( toClassOrInterfaceType( org.kie.api.runtime.rule.RuleContext.class ), new NameExpr( "drools" ) ) ) ) );
     }
 
     private void rewriteReassignedDeclrations( BlockStmt ruleConsequence, Set<String> usedDeclarationInRHS ) {
@@ -196,6 +202,9 @@ public class Consequence {
             context.addCompilationError(new CompilationProblemErrorResult(new MvelCompilationError(e)) );
             return null;
         }
+
+        replaceKcontext(compile.statementResults());
+        rewriteChannels(compile.statementResults());
 
         return executeCall(ruleVariablesBlock,
                                   compile.statementResults(),

@@ -22,9 +22,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
+import org.kie.api.conf.BetaRangeIndexOption;
 import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.conf.RemoveIdentitiesOption;
+import org.kie.api.conf.SequentialOption;
 import org.kie.api.runtime.rule.ConsequenceExceptionHandler;
 import org.kie.internal.conf.AlphaRangeIndexThresholdOption;
 import org.kie.internal.conf.AlphaThresholdOption;
@@ -37,7 +39,6 @@ import org.kie.internal.conf.MaxThreadsOption;
 import org.kie.internal.conf.MultithreadEvaluationOption;
 import org.kie.internal.conf.PermGenThresholdOption;
 import org.kie.internal.conf.SequentialAgendaOption;
-import org.kie.api.conf.SequentialOption;
 import org.kie.internal.conf.ShareAlphaNodesOption;
 import org.kie.internal.conf.ShareBetaNodesOption;
 
@@ -328,6 +329,30 @@ public class KnowledgeBaseConfigurationTest {
         // checking the string based getProperty() method
         assertEquals( String.valueOf(AlphaRangeIndexThresholdOption.DEFAULT_VALUE),
                       config.getProperty( AlphaRangeIndexThresholdOption.PROPERTY_NAME ) );
+    }
+
+    @Test
+    public void testBetaRangeIndexenabledConfiguration() {
+        // setting the option using the enum
+        config.setOption( BetaRangeIndexOption.ENABLED );
+
+        // checking the type safe getOption() method
+        assertEquals( BetaRangeIndexOption.ENABLED,
+                      config.getOption( BetaRangeIndexOption.class ) );
+        // checking the string based getProperty() method
+        assertEquals( "true",
+                      config.getProperty( BetaRangeIndexOption.PROPERTY_NAME ) );
+
+        // setting the options using the string based setProperty() method
+        config.setProperty( BetaRangeIndexOption.PROPERTY_NAME,
+                            "false" );
+
+        // checking the type safe getOption() method
+        assertEquals( BetaRangeIndexOption.DISABLED,
+                      config.getOption( BetaRangeIndexOption.class ) );
+        // checking the string based getProperty() method
+        assertEquals( "false",
+                      config.getProperty( BetaRangeIndexOption.PROPERTY_NAME ) );
     }
 
     @Test

@@ -335,6 +335,10 @@ public abstract class AbstractHashTable
             return this.extractor;
         }
 
+        public boolean requiresCoercion() {
+            return requiresCoercion;
+        }
+
         public Object indexedValueOf(Tuple tuple, boolean left) {
             return left ?
                     ( requiresCoercion ?

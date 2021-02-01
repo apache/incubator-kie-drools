@@ -1664,7 +1664,7 @@ public class AccumulateTest {
         }
     }
 
-    @Test(timeout = 10000)
+    @Test //(timeout = 10000)
     public void testAccumulateWithPreviouslyBoundVariables() {
 
         final String drl = "package org.drools.compiler\n" +

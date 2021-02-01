@@ -80,10 +80,8 @@ public class MVELAccumulatorFunctionExecutor
     /* (non-Javadoc)
      * @see org.kie.spi.Accumulator#createContext()
      */
-    public Serializable createContext() {
-        MVELAccumulatorFunctionContext context = new MVELAccumulatorFunctionContext();
-        context.context = this.function.createContext();
-        return context;
+    public Object createContext() {
+        return this.function.createContext();
     }
 
     /* (non-Javadoc)
@@ -94,8 +92,7 @@ public class MVELAccumulatorFunctionExecutor
                        Tuple leftTuple,
                        Declaration[] declarations,
                        WorkingMemory workingMemory) {
-        ((MVELAccumulatorFunctionContext) context).context = this.function.initContext( ((MVELAccumulatorFunctionContext) context).context );
-        return context;
+        return this.function.initContext( (Serializable) context );
     }
 
     /* (non-Javadoc)
@@ -112,7 +109,7 @@ public class MVELAccumulatorFunctionExecutor
         VariableResolverFactory factory = unit.getFactory( null, null, null, handle, tuple, null, (InternalWorkingMemory) workingMemory, workingMemory.getGlobalResolver()  );
         
         final Object value = MVEL.executeExpression( this.expression, handle.getObject(), factory );
-        return this.function.accumulateValue( ((MVELAccumulatorFunctionContext) context).context, value );
+        return this.function.accumulateValue( (Serializable) context, value );
     }
 
     public boolean tryReverse(Object workingMemoryContext,
@@ -123,7 +120,7 @@ public class MVELAccumulatorFunctionExecutor
                               Declaration[] declarations,
                               Declaration[] innerDeclarations,
                               WorkingMemory workingMemory) {
-        return this.function.tryReverse( ((MVELAccumulatorFunctionContext) context).context, value );
+        return this.function.tryReverse( (Serializable) context, value );
     }
 
     /* (non-Javadoc)
@@ -135,7 +132,7 @@ public class MVELAccumulatorFunctionExecutor
                             Declaration[] declarations,
                             WorkingMemory workingMemory) {
         try {
-            return this.function.getResult( ((MVELAccumulatorFunctionContext) context).context );
+            return this.function.getResult( (Serializable) context);
         } catch (Exception e) {
             throw new RuntimeException( e );
         }
@@ -157,25 +154,6 @@ public class MVELAccumulatorFunctionExecutor
     @Override
     public void replaceDeclaration( Declaration declaration, Declaration resolved ) {
         unit.replaceDeclaration( declaration, resolved );
-    }
-
-    private static class MVELAccumulatorFunctionContext
-        implements
-        Externalizable {
-        public Serializable               context;
-
-        public MVELAccumulatorFunctionContext() {
-        }
-
-        @SuppressWarnings("unchecked")
-        public void readExternal(ObjectInput in) throws IOException,
-                                                ClassNotFoundException {
-            context = (Serializable) in.readObject();
-        }
-
-        public void writeExternal(ObjectOutput out) throws IOException {
-            out.writeObject( context );
-        }
     }
 
 }

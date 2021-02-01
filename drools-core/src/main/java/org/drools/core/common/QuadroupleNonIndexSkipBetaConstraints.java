@@ -65,8 +65,8 @@ public class QuadroupleNonIndexSkipBetaConstraints
         constraints.init(context, betaNodeType);
     }
 
-    public void initIndexes(int depth, short betaNodeType) {
-        constraints.initIndexes(depth, betaNodeType);
+    public void initIndexes(int depth, short betaNodeType, RuleBaseConfiguration config) {
+        constraints.initIndexes(depth, betaNodeType, config);
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {

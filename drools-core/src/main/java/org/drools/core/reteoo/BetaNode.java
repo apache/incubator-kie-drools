@@ -249,7 +249,7 @@ public abstract class BetaNode extends LeftTupleSource
         BetaNodeFieldConstraint[] betaCconstraints = this.constraints.getConstraints();
         if ( betaCconstraints.length > 0 ) {
             BetaNodeFieldConstraint c = betaCconstraints[0];
-            if ( IndexUtil.isIndexable(c, getType()) && ((IndexableConstraint) c).isUnification() ) {
+            if ( IndexUtil.isIndexable(c, getType(), RuleBaseConfiguration.getDefaultInstance()) && ((IndexableConstraint) c).isUnification() ) {
                 setConstraints( this.constraints.getOriginalConstraint() );
             }
         }
@@ -272,7 +272,7 @@ public abstract class BetaNode extends LeftTupleSource
         BetaNodeFieldConstraint[] betaCconstraints = this.constraints.getConstraints();
         if ( betaCconstraints.length > 0 ) {
             BetaNodeFieldConstraint c = betaCconstraints[0];
-            if ( IndexUtil.isIndexable(c, getType()) && ((IndexableConstraint) c).isUnification() ) {
+            if ( IndexUtil.isIndexable(c, getType(), RuleBaseConfiguration.getDefaultInstance()) && ((IndexableConstraint) c).isUnification() ) {
                 if ( this.constraints instanceof SingleBetaConstraints ) {
                     setConstraints( new SingleNonIndexSkipBetaConstraints( (SingleBetaConstraints) this.constraints ) );
                 } else if ( this.constraints instanceof DoubleBetaConstraints ) {
