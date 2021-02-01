@@ -231,7 +231,7 @@
           "annotation": "@com.thoughtworks.xstream.annotations.XStreamAlias(\"PMML4Result\")",
           "package": "org.kie.api.pmml",
           "classSimpleName": "PMML4Result",
-          "elementKind": "class",
+          "elementKind": "class"
         },
         {
           "code": "java.method.addedToInterface",
@@ -250,6 +250,24 @@
           "methodName": "setMutability",
           "elementKind": "method",
           "justification": "Allow to define that a KieBase is immutable for performance reasons"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method org.kie.api.conf.BetaRangeIndexOption org.kie.api.builder.model.KieBaseModel::getBetaRangeIndexOption()",
+          "package": "org.kie.api.builder.model",
+          "classSimpleName": "KieBaseModel",
+          "methodName": "getBetaRangeIndexOption",
+          "elementKind": "method",
+          "justification": "Allow to use range index for JoinNode"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method org.kie.api.builder.model.KieBaseModel org.kie.api.builder.model.KieBaseModel::setBetaRangeIndexOption(org.kie.api.conf.BetaRangeIndexOption)",
+          "package": "org.kie.api.builder.model",
+          "classSimpleName": "KieBaseModel",
+          "methodName": "setBetaRangeIndexOption",
+          "elementKind": "method",
+          "justification": "Allow to use range index for JoinNode"
         }
       ]
     }

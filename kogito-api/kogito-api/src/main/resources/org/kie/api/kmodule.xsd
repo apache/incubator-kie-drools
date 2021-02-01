@@ -67,6 +67,7 @@
       <xsd:attribute name="eventProcessingMode" type="eventModeEnum"/>
       <xsd:attribute name="declarativeAgenda" type="declarativeAgendaEnum"/>
       <xsd:attribute name="sessionsPool" type="xsd:int"/>
+      <xsd:attribute name="betaRangeIndex" type="betaRangeIndexEnum"/>
     </xsd:complexType>
   </xsd:element>
 
@@ -237,6 +238,15 @@
       <xsd:enumeration value="simple"/>
       <xsd:enumeration value="jtms"/>
       <xsd:enumeration value="defeasible"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="betaRangeIndexEnum">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="enabled"/>
+      <xsd:enumeration value="disabled"/>
+      <xsd:enumeration value="true"/>
+      <xsd:enumeration value="false"/>
     </xsd:restriction>
   </xsd:simpleType>
 
