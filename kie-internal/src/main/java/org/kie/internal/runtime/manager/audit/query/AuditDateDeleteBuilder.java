@@ -29,7 +29,7 @@ public interface AuditDateDeleteBuilder<T> extends AuditDeleteBuilder<T> {
      * @param date one or more dates
      * @return The current query builder instance
      */
-    public T date(Date... date);
+    T date(Date... date);
 
     /**
      * Specify the begin of a date range to be used as a criteria on the date field.
@@ -37,7 +37,7 @@ public interface AuditDateDeleteBuilder<T> extends AuditDeleteBuilder<T> {
      * @param rangeStart the start (early end) of the date range
      * @return The current query builder instance
      */
-    public T dateRangeStart(Date rangeStart);
+    T dateRangeStart(Date rangeStart);
 
     /**
      * Specify the end of a date range to be used as a criteria on the date field.
@@ -45,5 +45,5 @@ public interface AuditDateDeleteBuilder<T> extends AuditDeleteBuilder<T> {
      * @param rangeEnd the end (later end) of the date range
      * @return The current query builder instance
      */
-    public T dateRangeEnd(Date rangeEnd);;
+    T dateRangeEnd(Date rangeEnd);
 }

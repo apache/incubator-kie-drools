@@ -56,6 +56,13 @@ public interface AuditDeleteBuilder<T> extends ParametrizedQueryBuilder<T> {
     T logBelongsToProcessInDeployment(String deploymentId);
 
     /**
+     * Specify the number of records to be included per transaction.
+     * @param numRecords number of records (0 means all records will be processed into one single transaction)
+     * @return The current query builder instance
+     */
+    T recordsPerTransaction(int numRecords);
+
+    /**
      * Create the {@link ParametrizedUpdate} instance that can be used
      * to execute an update or delete of the entities that this builder is for.
      * </p>
