@@ -16,8 +16,6 @@
 
 package org.jbpm.bpmn2.xml;
 
-import static org.jbpm.bpmn2.xml.ProcessHandler.createJavaAction;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +27,7 @@ import org.jbpm.bpmn2.core.Message;
 import org.jbpm.compiler.xml.ProcessBuildData;
 import org.jbpm.process.instance.impl.actions.HandleMessageAction;
 import org.jbpm.process.instance.impl.actions.SignalProcessInstanceAction;
+import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
@@ -42,19 +41,24 @@ import org.w3c.dom.Text;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
+import static org.jbpm.bpmn2.xml.ProcessHandler.createJavaAction;
+
 public class EndEventHandler extends AbstractNodeHandler {
 
+    @Override
     protected Node createNode(Attributes attrs) {
         EndNode node = new EndNode();
         node.setTerminate(false);
         return node;
     }
 
+    @Override
     @SuppressWarnings("unchecked")
 	public Class generateNodeFor() {
         return EndNode.class;
     }
 
+    @Override
     public Object end(final String uri, final String localName,
             final ExtensibleXmlParser parser) throws SAXException {
         final Element element = parser.endElementBuilder();
@@ -146,9 +150,9 @@ public class EndEventHandler extends AbstractNodeHandler {
 
                 signalName = checkSignalAndConvertToRealSignalNam(parser, signalName);
 
-                endNode.setMetaData("EventType", "signal");
-                endNode.setMetaData("Ref", signalName);
-                endNode.setMetaData("Variable", variable);
+                endNode.setMetaData(Metadata.EVENT_TYPE, "signal");
+                endNode.setMetaData(Metadata.REF, signalName);
+                endNode.setMetaData(Metadata.VARIABLE, variable);
 
                 // check if signal should be send async
                 if (dataInputs.containsValue("async")) {
@@ -186,9 +190,9 @@ public class EndEventHandler extends AbstractNodeHandler {
                     throw new IllegalArgumentException("Could not find message " + messageRef);
                 }
                 String variable = (String) endNode.getMetaData("MappingVariable");
-                endNode.setMetaData("MessageType", message.getType());
-                endNode.setMetaData("TriggerType", "ProduceMessage");
-                endNode.setMetaData("TriggerRef", message.getName());
+                endNode.setMetaData(Metadata.MESSAGE_TYPE, message.getType());
+                endNode.setMetaData(Metadata.TRIGGER_TYPE, "ProduceMessage");
+                endNode.setMetaData(Metadata.TRIGGER_REF, message.getName());
                 List<DroolsAction> actions = new ArrayList<DroolsAction>();
                 
                 DroolsConsequenceAction action = createJavaAction(new HandleMessageAction(message.getType(), variable));
@@ -315,6 +319,7 @@ public class EndEventHandler extends AbstractNodeHandler {
         faultNode.setFaultVariable(faultVariable);
     }
 
+    @Override
     public void writeNode(Node node, StringBuilder xmlDump, int metaDataType) {
         throw new IllegalArgumentException("Writing out should be handled by specific handlers");
     }

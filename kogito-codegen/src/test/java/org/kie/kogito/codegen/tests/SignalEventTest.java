@@ -15,8 +15,6 @@
 
 package org.kie.kogito.codegen.tests;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -24,19 +22,62 @@ import java.util.Map;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
+import org.kie.api.event.process.ProcessEventListener;
+import org.kie.api.event.process.SignalEvent;
 import org.kie.kogito.Application;
 import org.kie.kogito.Model;
 import org.kie.kogito.codegen.AbstractCodegenTest;
 import org.kie.kogito.process.EventDescription;
 import org.kie.kogito.process.GroupedNamedDataType;
 import org.kie.kogito.process.Process;
+import org.kie.kogito.process.ProcessConfig;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.Processes;
 import org.kie.kogito.process.WorkItem;
 import org.kie.kogito.process.impl.Sig;
 import org.kie.kogito.uow.UnitOfWork;
+import org.mockito.ArgumentCaptor;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 public class SignalEventTest extends AbstractCodegenTest {
+    
+    @Test
+    public void testIntermediateThrowSignal() throws Exception {
+        Application app = generateCode(Collections.singletonMap(TYPE.PROCESS, Collections.singletonList("signalevent/IntermediateThrowEventSignal.bpmn2")));
+        ProcessEventListener listener = mock(ProcessEventListener.class);
+        app.config().get(ProcessConfig.class).processEventListeners().listeners().add(listener);    
+        assertThat(app).isNotNull();
+        Process<? extends Model> p = app.get(Processes.class).processById("SignalIntermediateEvent");
+        Model m = p.createModel();
+        m.update(Collections.singletonMap("x", "Javierito"));
+        ProcessInstance<?> processInstance = p.createInstance(m);
+        processInstance.start();
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
+        ArgumentCaptor<SignalEvent> signalEvent = ArgumentCaptor.forClass(SignalEvent.class);
+        verify(listener).onSignal(signalEvent.capture());
+        assertThat(signalEvent.getValue().getSignalName()).isEqualTo("MySignal");
+        assertThat(signalEvent.getValue().getSignal()).isEqualTo("Javierito");
+        
+    }
+    
+    @Test
+    public void testIntermediateEndSignal() throws Exception {
+        Application app = generateCode(Collections.singletonMap(TYPE.PROCESS, Collections.singletonList("signalevent/EndEventSignalWithData.bpmn2")));
+        ProcessEventListener listener = mock(ProcessEventListener.class);
+        app.config().get(ProcessConfig.class).processEventListeners().listeners().add(listener);    
+        assertThat(app).isNotNull();
+        Process<? extends Model> p = app.get(Processes.class).processById("src.simpleEndSignal");
+        ProcessInstance<?> processInstance = p.createInstance(p.createModel());
+        processInstance.start();
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
+        ArgumentCaptor<SignalEvent> signalEvent = ArgumentCaptor.forClass(SignalEvent.class);
+        verify(listener).onSignal(signalEvent.capture());
+        assertThat(signalEvent.getValue().getSignalName()).isEqualTo("Signal1");
+        assertThat(signalEvent.getValue().getSignal()).isEqualTo("\"Some value\"");
+    }
     
     @Test
     public void testIntermediateSignalEventWithData() throws Exception {

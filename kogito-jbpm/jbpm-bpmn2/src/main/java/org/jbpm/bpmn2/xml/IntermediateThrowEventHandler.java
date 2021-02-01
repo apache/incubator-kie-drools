@@ -16,8 +16,6 @@
 
 package org.jbpm.bpmn2.xml;
 
-import static org.jbpm.bpmn2.xml.ProcessHandler.createJavaAction;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +30,7 @@ import org.jbpm.process.core.impl.DataTransformerRegistry;
 import org.jbpm.process.instance.impl.actions.HandleEscalationAction;
 import org.jbpm.process.instance.impl.actions.HandleMessageAction;
 import org.jbpm.process.instance.impl.actions.SignalProcessInstanceAction;
+import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
@@ -48,6 +47,8 @@ import org.w3c.dom.Text;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
+import static org.jbpm.bpmn2.xml.ProcessHandler.createJavaAction;
+
 public class IntermediateThrowEventHandler extends AbstractNodeHandler {
 
 	private DataTransformerRegistry transformerRegistry = DataTransformerRegistry.get();
@@ -59,16 +60,19 @@ public class IntermediateThrowEventHandler extends AbstractNodeHandler {
 	private static final String MAPPING_VARIABLE_KEY = "MappingVariable";
 	private static final String TRANSFORMATION_KEY = "Transformation";
 
-	protected Node createNode(Attributes attrs) {
+	@Override
+    protected Node createNode(Attributes attrs) {
 		return new ActionNode();
 	}
 
-	@SuppressWarnings("unchecked")
+	@Override
+    @SuppressWarnings("unchecked")
 	public Class generateNodeFor() {
 		return Node.class;
 	}
 
-	public Object end(final String uri, final String localName,
+	@Override
+    public Object end(final String uri, final String localName,
 			final ExtensibleXmlParser parser) throws SAXException {
 		final Element element = parser.endElementBuilder();
 		ActionNode node = (ActionNode) parser.getCurrent();
@@ -206,9 +210,9 @@ public class IntermediateThrowEventHandler extends AbstractNodeHandler {
 
 				signalName = checkSignalAndConvertToRealSignalNam(parser, signalName);
 
-                actionNode.setMetaData("EventType", "signal");
-                actionNode.setMetaData("Ref", signalName);
-                actionNode.setMetaData("Variable", variable);
+                actionNode.setMetaData(Metadata.EVENT_TYPE, "signal");
+                actionNode.setMetaData(Metadata.REF, signalName);
+                actionNode.setMetaData(Metadata.VARIABLE, variable);
 
 				// check if signal should be send async
                 if (dataInputs.containsValue("async")) {
@@ -254,9 +258,9 @@ public class IntermediateThrowEventHandler extends AbstractNodeHandler {
                 if (v != null) {
                     variable = (String) v.getMetaData(variable);
                 }
-                actionNode.setMetaData("MessageType", message.getType());
-                actionNode.setMetaData("TriggerType", "ProduceMessage");
-                actionNode.setMetaData("TriggerRef", message.getName());
+                actionNode.setMetaData(Metadata.MESSAGE_TYPE, message.getType());
+                actionNode.setMetaData(Metadata.TRIGGER_TYPE, "ProduceMessage");
+                actionNode.setMetaData(Metadata.TRIGGER_REF, message.getName());
 
                 DroolsConsequenceAction action = createJavaAction(new HandleMessageAction(message.getType(), variable, (Transformation) actionNode.getMetaData().get(TRANSFORMATION_KEY)));
                 actionNode.setAction(action);			
@@ -366,7 +370,8 @@ public class IntermediateThrowEventHandler extends AbstractNodeHandler {
         }
 	}
 
-	public void writeNode(Node node, StringBuilder xmlDump, int metaDataType) {
+	@Override
+    public void writeNode(Node node, StringBuilder xmlDump, int metaDataType) {
 		throw new IllegalArgumentException(
 				"Writing out should be handled by action node handler");
 	}

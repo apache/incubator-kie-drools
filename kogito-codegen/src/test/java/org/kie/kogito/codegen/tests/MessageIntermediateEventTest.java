@@ -15,44 +15,65 @@
 
 package org.kie.kogito.codegen.tests;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
+import org.kie.api.event.process.MessageEvent;
+import org.kie.api.event.process.ProcessEventListener;
 import org.kie.kogito.Application;
 import org.kie.kogito.Model;
 import org.kie.kogito.codegen.AbstractCodegenTest;
 import org.kie.kogito.codegen.process.ProcessCodegenException;
 import org.kie.kogito.process.Process;
+import org.kie.kogito.process.ProcessConfig;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.Processes;
 import org.kie.kogito.process.impl.Sig;
+import org.mockito.ArgumentCaptor;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 public class MessageIntermediateEventTest extends AbstractCodegenTest {
-    
+
+    @Test
+    public void testMessageEndEventProcess() throws Exception {
+        Application app = generateCodeProcessesOnly("messageevent/MessageEndEvent.bpmn2");
+        ProcessEventListener listener = mock(ProcessEventListener.class);
+        app.config().get(ProcessConfig.class).processEventListeners().listeners().add(listener);
+        Process<? extends Model> p = app.get(Processes.class).processById("MessageEndEvent");
+        Model m = p.createModel();
+        m.update(Collections.singletonMap("x", "Javierito"));
+        ProcessInstance<?> processInstance = p.createInstance(m);
+        processInstance.start();
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
+        ArgumentCaptor<MessageEvent> messageEvent = ArgumentCaptor.forClass(MessageEvent.class);
+        verify(listener).onMessage(messageEvent.capture());
+        assertThat(messageEvent.getValue().getMessageName()).isEqualTo("_2_Message");
+        assertThat(messageEvent.getValue().getMessage()).isEqualTo("Javierito");
+    }
+
     @Test
     public void testMessageThrowEventProcess() throws Exception {
-        
-        Application app = generateCodeProcessesOnly("messageevent/IntermediateThrowEventMessage.bpmn2");        
-        assertThat(app).isNotNull();
-                
+        Application app = generateCodeProcessesOnly("messageevent/IntermediateThrowEventMessage.bpmn2");
+        ProcessEventListener listener = mock(ProcessEventListener.class);
+        app.config().get(ProcessConfig.class).processEventListeners().listeners().add(listener);
         Process<? extends Model> p = app.get(Processes.class).processById("MessageIntermediateEvent");
-        
         Model m = p.createModel();
-        Map<String, Object> parameters = new HashMap<>();        
-        m.fromMap(parameters);
-        
+        m.update(Collections.singletonMap("customerId", "Javierito"));
         ProcessInstance<?> processInstance = p.createInstance(m);
-        processInstance.start();        
-        
+        processInstance.start();
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
-        Model result = (Model)processInstance.variables();
-        assertThat(result.toMap()).hasSize(1).containsKeys("customerId");        
+        ArgumentCaptor<MessageEvent> messageEvent = ArgumentCaptor.forClass(MessageEvent.class);
+        verify(listener).onMessage(messageEvent.capture());
+        assertThat(messageEvent.getValue().getMessageName()).isEqualTo("customers");
+        assertThat(messageEvent.getValue().getMessage()).isEqualTo("Javierito");
     }
-    
+
     @Test
     public void testMessageCatchEventProcess() throws Exception {
         

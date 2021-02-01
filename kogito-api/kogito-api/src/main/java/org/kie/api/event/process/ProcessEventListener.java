@@ -114,5 +114,16 @@ public interface ProcessEventListener
      * @param event
      */
     default void afterWorkItemTransition(ProcessWorkItemTransitionEvent event) {};
+    
+    /**
+     * This listener method is invoked when a signal is sent
+     * @param event
+     */
+    default void onSignal(SignalEvent event) {}
 
+    /**
+     * This listener method is invoked when a message is sent
+     * @param event
+     */
+    default void onMessage(MessageEvent event) {}
 }

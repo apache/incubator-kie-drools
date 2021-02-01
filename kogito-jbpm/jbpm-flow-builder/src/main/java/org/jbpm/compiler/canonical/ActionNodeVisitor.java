@@ -34,7 +34,12 @@ import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 import org.jbpm.workflow.core.node.ActionNode;
 
+import static org.jbpm.ruleflow.core.Metadata.CUSTOM_SCOPE;
+import static org.jbpm.ruleflow.core.Metadata.EVENT_TYPE;
+import static org.jbpm.ruleflow.core.Metadata.EVENT_TYPE_SIGNAL;
+import static org.jbpm.ruleflow.core.Metadata.REF;
 import static org.jbpm.ruleflow.core.Metadata.TRIGGER_REF;
+import static org.jbpm.ruleflow.core.Metadata.VARIABLE;
 import static org.jbpm.ruleflow.core.factory.ActionNodeFactory.METHOD_ACTION;
 
 public class ActionNodeVisitor extends AbstractNodeVisitor<ActionNode> {
@@ -62,6 +67,9 @@ public class ActionNodeVisitor extends AbstractNodeVisitor<ActionNode> {
         } else if (node.getMetaData(TRIGGER_REF) != null) { // if there is trigger defined on end event create TriggerMetaData for it
             LambdaExpr lambda = TriggerMetaData.buildLambdaExpr(node, metadata);
             body.addStatement(getFactoryMethod(getNodeId(node), METHOD_ACTION, lambda));
+        } else if (node.getMetaData(REF) != null && EVENT_TYPE_SIGNAL.equals(node.getMetaData(EVENT_TYPE))) {
+            body.addStatement(getFactoryMethod(getNodeId(node), METHOD_ACTION, TriggerMetaData.buildAction((String)node.getMetaData(REF),
+                (String)node.getMetaData(VARIABLE), (String) node.getMetaData(CUSTOM_SCOPE))));
         } else {
             String consequence = getActionConsequence(node.getAction());
             if (consequence == null || consequence.trim().isEmpty()) {

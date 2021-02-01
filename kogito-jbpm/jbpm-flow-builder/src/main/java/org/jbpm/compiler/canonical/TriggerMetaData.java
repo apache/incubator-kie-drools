@@ -17,19 +17,31 @@ package org.jbpm.compiler.canonical;
 
 import java.util.Map;
 
+import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.Parameter;
+import com.github.javaparser.ast.expr.AssignExpr;
+import com.github.javaparser.ast.expr.AssignExpr.Operator;
 import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.NullLiteralExpr;
+import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
+import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
+import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.type.UnknownType;
+import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.util.StringUtils;
+import org.jbpm.process.instance.InternalProcessRuntime;
+import org.jbpm.process.instance.impl.actions.SignalProcessInstanceAction;
 import org.jbpm.ruleflow.core.Metadata;
 import org.kie.api.definition.process.Node;
+import org.kie.api.runtime.process.ProcessInstance;
 
+import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static org.jbpm.compiler.canonical.AbstractVisitor.KCONTEXT_VAR;
 import static org.jbpm.ruleflow.core.Metadata.MAPPING_VARIABLE;
 import static org.jbpm.ruleflow.core.Metadata.MESSAGE_TYPE;
@@ -122,30 +134,75 @@ public class TriggerMetaData {
     public String toString() {
         return "TriggerMetaData [name=" + name + ", type=" + type + ", dataType=" + dataType + ", modelRef=" + modelRef + "]";
     }
+    
+    public static ObjectCreationExpr buildAction(String signalName, String variable, String scope) {
+        return new ObjectCreationExpr(null,
+                parseClassOrInterfaceType(SignalProcessInstanceAction.class.getCanonicalName()),
+                new NodeList<>(new StringLiteralExpr(signalName), variable != null ? new StringLiteralExpr(variable.replace("\"", "\\\"")) : new CastExpr(
+                        parseClassOrInterfaceType(String.class.getCanonicalName()), new NullLiteralExpr()),
+                        scope != null ? new StringLiteralExpr(scope) : new CastExpr(
+                                parseClassOrInterfaceType(String.class.getCanonicalName()), new NullLiteralExpr())));
+    }
 
     public static LambdaExpr buildLambdaExpr(Node node, ProcessMetaData metadata) {
         Map<String, Object> nodeMetaData = node.getMetaData();
+        String messageName = (String) nodeMetaData.get(TRIGGER_REF);
         TriggerMetaData triggerMetaData = new TriggerMetaData(
-                (String) nodeMetaData.get(TRIGGER_REF),
+                messageName,
                 (String) nodeMetaData.get(TRIGGER_TYPE),
                 (String) nodeMetaData.get(MESSAGE_TYPE),
                 (String) nodeMetaData.get(MAPPING_VARIABLE),
                 String.valueOf(node.getId()))
                 .validate();
         metadata.addTrigger(triggerMetaData);
-
-        // and add trigger action
+        NameExpr kExpr = new NameExpr(KCONTEXT_VAR); 
+        
         BlockStmt actionBody = new BlockStmt();
-        CastExpr variable = new CastExpr(
-                new ClassOrInterfaceType(null, triggerMetaData.getDataType()),
-                new MethodCallExpr(new NameExpr(KCONTEXT_VAR), "getVariable")
-                        .addArgument(new StringLiteralExpr(triggerMetaData.getModelRef())));
-        MethodCallExpr producerMethodCall = new MethodCallExpr(new NameExpr("producer_" + node.getId()), "produce").addArgument(new MethodCallExpr(new NameExpr("kcontext"), "getProcessInstance")).addArgument(variable);
+        final String objectName = "object";
+        final String runtimeName = "runtime";
+        final String processName = "process";
+        final String piName = "pi";
+        NameExpr object = new NameExpr(objectName);
+        NameExpr runtime = new NameExpr(runtimeName);
+        NameExpr pi = new NameExpr(piName);
+        Type objectType = new ClassOrInterfaceType(null, triggerMetaData.getDataType());
+        Type processRuntime =  parseClassOrInterfaceType(InternalProcessRuntime.class.getCanonicalName());
+        Type kieRuntime =  parseClassOrInterfaceType(InternalKnowledgeRuntime.class.getCanonicalName());
+        Type processInstance = parseClassOrInterfaceType(ProcessInstance.class.getCanonicalName());
+        AssignExpr objectExpr = new AssignExpr(
+                new VariableDeclarationExpr(objectType, objectName),
+                new CastExpr(objectType, new MethodCallExpr(kExpr, "getVariable").addArgument(new StringLiteralExpr(
+                        triggerMetaData.getModelRef()))),
+                Operator.ASSIGN);
+        AssignExpr runtimeExpr = new AssignExpr(
+                new VariableDeclarationExpr(kieRuntime, runtimeName),
+                new CastExpr(kieRuntime, new MethodCallExpr(kExpr, "getKieRuntime")),
+                Operator.ASSIGN);
+        AssignExpr processExpr = new AssignExpr(
+                new VariableDeclarationExpr(processRuntime, processName),
+                new CastExpr(processRuntime, new MethodCallExpr(runtime, "getProcessRuntime")),
+                Operator.ASSIGN);
+        AssignExpr processInstanceAssignment = new AssignExpr(
+                new VariableDeclarationExpr(processInstance, piName),
+                new MethodCallExpr(new NameExpr("kcontext"), "getProcessInstance"),
+                Operator.ASSIGN);
+        // add onMessage listener call
+        MethodCallExpr listenerMethodCall = new MethodCallExpr(
+                new MethodCallExpr(new NameExpr (processName), "getProcessEventSupport"), "fireOnMessage")
+                        .addArgument(pi)
+                        .addArgument(new MethodCallExpr(kExpr, "getNodeInstance"))
+                        .addArgument(runtime)
+                        .addArgument(new StringLiteralExpr(messageName)).addArgument(object);
+        // add producer call
+        MethodCallExpr producerMethodCall = new MethodCallExpr(new NameExpr("producer_" + node.getId()), "produce")
+                .addArgument(pi).addArgument(object);
+        actionBody.addStatement(objectExpr);
+        actionBody.addStatement(runtimeExpr);
+        actionBody.addStatement(processInstanceAssignment);
+        actionBody.addStatement(processExpr);
+        actionBody.addStatement(listenerMethodCall);
         actionBody.addStatement(producerMethodCall);
-        return new LambdaExpr(
-                new Parameter(new UnknownType(), KCONTEXT_VAR), // (kcontext) ->
-                actionBody
-        );
+        return new LambdaExpr(new Parameter(new UnknownType(), KCONTEXT_VAR), actionBody);
     }
 
     public static LambdaExpr buildCompensationLambdaExpr(String compensationRef) {
