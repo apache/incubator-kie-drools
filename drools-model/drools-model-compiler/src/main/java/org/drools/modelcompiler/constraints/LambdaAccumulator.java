@@ -17,10 +17,6 @@
 
 package org.drools.modelcompiler.constraints;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
@@ -66,20 +62,20 @@ public abstract class LambdaAccumulator implements Accumulator {
     }
 
     @Override
-    public Serializable createContext() {
-        return new LambdaAccContext(accumulateFunction.createContext());
+    public Object createContext() {
+        return accumulateFunction.createContext();
     }
 
     @Override
     public Object init(Object workingMemoryContext, Object context, Tuple leftTuple, Declaration[] declarations, WorkingMemory workingMemory) {
-        (( LambdaAccContext ) context).context = accumulateFunction.initContext( (( LambdaAccContext ) context).context );
+        context = accumulateFunction.initContext( (Serializable) context );
         return context;
     }
 
     @Override
     public Object accumulate(Object workingMemoryContext, Object context, Tuple leftTuple, InternalFactHandle handle, Declaration[] declarations, Declaration[] innerDeclarations, WorkingMemory workingMemory) {
         final Object accumulatedObject = getAccumulatedObject(declarations, innerDeclarations, handle, leftTuple, (InternalWorkingMemory) workingMemory);
-        return accumulateFunction.accumulateValue( (( LambdaAccContext ) context).context, accumulatedObject);
+        return accumulateFunction.accumulateValue( (Serializable) context, accumulatedObject);
     }
 
     protected abstract Object getAccumulatedObject( Declaration[] declarations, Declaration[] innerDeclarations, InternalFactHandle handle, Tuple tuple, InternalWorkingMemory wm );
@@ -95,13 +91,13 @@ public abstract class LambdaAccumulator implements Accumulator {
         if (value == null) {
             throw new IllegalStateException("Reversing a not existing accumulated object for fact " + handle);
         }
-        return accumulateFunction.tryReverse( (( LambdaAccContext ) context).context, value);
+        return accumulateFunction.tryReverse( (Serializable) context, value);
     }
 
     @Override
     public Object getResult(Object workingMemoryContext, Object context, Tuple leftTuple, Declaration[] declarations, WorkingMemory workingMemory) {
         try {
-            return accumulateFunction.getResult( (( LambdaAccContext ) context).context );
+            return accumulateFunction.getResult( (Serializable) context );
         } catch (Exception e) {
             throw new RuntimeException( e );
         }
@@ -207,26 +203,4 @@ public abstract class LambdaAccumulator implements Accumulator {
         }
     }
 
-    static class LambdaAccContext implements Externalizable {
-        private Serializable context;
-
-        public LambdaAccContext() { }
-
-        public LambdaAccContext(Serializable context) {
-            this.context = context;
-        }
-
-        public void readExternal( ObjectInput in) throws IOException, ClassNotFoundException {
-            context = (Externalizable) in.readObject();
-        }
-
-        public void writeExternal( ObjectOutput out) throws IOException {
-            out.writeObject( context );
-        }
-
-        @Override
-        public String toString() {
-            return context.toString();
-        }
-    }
 }

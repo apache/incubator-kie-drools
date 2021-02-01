@@ -52,7 +52,7 @@ public interface Accumulator
      * 
      * @return
      */
-    Serializable createContext();
+    Object createContext();
 
     /**
      * Executes the initialization block of code
@@ -150,10 +150,10 @@ public interface Accumulator
             }, KiePolicyHelper.getAccessContext());
         }
 
-        public Serializable createContext() {
-            return AccessController.doPrivileged(new PrivilegedAction<Serializable>() {
+        public Object createContext() {
+            return AccessController.doPrivileged(new PrivilegedAction<Object>() {
                 @Override
-                public Serializable run() {
+                public Object run() {
                     return delegate.createContext();
                 }
             }, KiePolicyHelper.getAccessContext());
