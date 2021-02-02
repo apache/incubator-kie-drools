@@ -598,7 +598,21 @@ public class DMNEvaluatorCompiler {
                 QName resolvedInputExpressionTypeRef = DMNCompilerImpl.getNamespaceAndName(ic.getInputExpression(), model.getImportAliasesForNS(), inputExpressionTypeRef, model.getNamespace());
                 BaseDMNTypeImpl typeRef = (BaseDMNTypeImpl) model.getTypeRegistry().resolveType(resolvedInputExpressionTypeRef.getNamespaceURI(), resolvedInputExpressionTypeRef.getLocalPart());
                 inputType = typeRef;
-                inputValues = typeRef.getAllowedValuesFEEL();
+                if (inputType == null) {
+                    MsgUtil.reportMessage(logger,
+                                          DMNMessage.Severity.ERROR,
+                                          dt,
+                                          model,
+                                          null,
+                                          null,
+                                          Msg.WRONG_TYPEREF_FOR_COLUMN,
+                                          index,
+                                          inputExpressionText,
+                                          inputExpressionTypeRef);
+                    inputType = model.getTypeRegistry().unknown();
+                } else {
+                    inputValues = typeRef.getAllowedValuesFEEL();
+                }
             }
             CompiledExpression compiledInput = ctx.getFeelHelper().compileFeelExpression(
                     ctx,
