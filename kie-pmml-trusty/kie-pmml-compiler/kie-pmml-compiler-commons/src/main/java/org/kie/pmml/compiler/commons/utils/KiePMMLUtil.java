@@ -76,7 +76,8 @@ public class KiePMMLUtil {
             if (model.getOutput() != null &&
                     model.getOutput().getOutputFields() != null) {
                 populateMissingOutputFieldDataType(model.getOutput().getOutputFields(),
-                                                   model.getMiningSchema().getMiningFields(), dataFields);
+                                                   model.getMiningSchema().getMiningFields(),
+                                                   dataFields);
             }
         }
         return toReturn;
@@ -141,14 +142,14 @@ public class KiePMMLUtil {
 
     /**
      * Method to populate the <b>dataType</b> property of <code>OutputField</code>s.
-     * Such property was optional in 4.2.1 spec
+     * Such property was optional until 4.4.1 spec
      * @param toPopulate
      * @param miningFields
      * @param dataFields
      */
     static void populateMissingOutputFieldDataType(List<OutputField> toPopulate, List<MiningField> miningFields,
                                                    List<DataField> dataFields) {
-        // partial implementation to fix the missing DataType inside OutputField, that were was in 4.2.1 spec
+        // partial implementation to fix missing "dataType" inside OutputField; "dataType" became mandatory only in 4.4.1 version
         List<MiningField> targetFields = miningFields.stream()
                 .filter(miningField -> MiningField.UsageType.PREDICTED.equals(miningField.getUsageType()) ||
                         MiningField.UsageType.TARGET.equals(miningField.getUsageType()))
@@ -161,16 +162,16 @@ public class KiePMMLUtil {
                         referencedField = targetFields.stream()
                                 .filter(targetField -> outputField.getTargetField().equals(targetField.getName()))
                                 .findFirst()
-                                .orElseThrow(() -> new KiePMMLException("Find to find a target field for OutputField "
+                                .orElseThrow(() -> new KiePMMLException("Failed to find a target field for OutputField "
                                                                                 + outputField.getName().getValue()));
                     }
                     if (referencedField == null && (outputField.getResultFeature() == null || outputField.getResultFeature().equals(ResultFeature.PREDICTED_VALUE))) { // default predictedValue
                         referencedField = targetFields.stream()
-                                .findFirst()
-                                .orElse(null); //
+                                .findFirst() // To be fixed with DROOLS-5992: there could be more then one "target" field
+                                .orElse(null); // It is allowed to not have any "target" field inside MiningSchema
                     }
                     if (referencedField == null && ResultFeature.PROBABILITY.equals(outputField.getResultFeature())) {
-                        outputField.setDataType(DataType.DOUBLE);
+                        outputField.setDataType(DataType.DOUBLE); // we set the "dataType" to "double" because outputField is a "probability", we may return
                         return;
                     }
                     if (referencedField != null) {
@@ -178,7 +179,7 @@ public class KiePMMLUtil {
                         DataField dataField = dataFields.stream()
                                 .filter(df -> df.getName().equals(targetFieldName))
                                 .findFirst()
-                                .orElseThrow(() -> new KiePMMLException("Find to find a DataField field for " +
+                                .orElseThrow(() -> new KiePMMLException("Failed to find a DataField field for " +
                                                                                 "MiningField " + targetFieldName.toString()));
                         outputField.setDataType(dataField.getDataType());
                     }

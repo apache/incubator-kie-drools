@@ -112,30 +112,12 @@ public class KiePMMLModelRetriever {
                                                         final MiningSchema miningSchema,
                                                         final Output output) {
         if (miningSchema != null) {
-            final List<MiningField> miningFields = miningSchema.getMiningFields()
-                    .stream()
-                    .map(miningField -> {
-                        DataField dataField =  dataDictionary.getDataFields().stream()
-                                .filter(df -> df.getName().equals(miningField.getName()))
-                                .findFirst()
-                                .orElseThrow(() -> new KiePMMLException("Cannot find " + miningField.getName() + " in DataDictionary"));
-                        return convertToKieMiningField(miningField, dataField);
-                    })
-                    .collect(Collectors.toList());
-            toPopulate.setMiningFields(miningFields);
+            final List<org.kie.pmml.api.models.MiningField> converted = ModelUtils.convertToKieMiningFieldList(miningSchema, dataDictionary);
+            toPopulate.setMiningFields(converted);
         }
         if (output != null) {
-            final List<OutputField> outputFields = output.getOutputFields()
-                    .stream()
-                    .map(outputField -> {
-                        DataField dataField = dataDictionary.getDataFields().stream()
-                                .filter(df -> df.getName().equals(outputField.getTargetField()))
-                                .findFirst()
-                                .orElse(null);
-                        return ModelUtils.convertToKieOutputField(outputField, dataField);
-                    })
-                    .collect(Collectors.toList());
-            toPopulate.setOutputFields(outputFields);
+            final List<org.kie.pmml.api.models.OutputField> converted = ModelUtils.convertToKieOutputFieldList(output, dataDictionary);
+            toPopulate.setOutputFields(converted);
         }
         return toPopulate;
     }

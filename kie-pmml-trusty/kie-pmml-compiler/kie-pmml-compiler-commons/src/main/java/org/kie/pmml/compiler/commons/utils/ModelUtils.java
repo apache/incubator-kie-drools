@@ -252,7 +252,7 @@ public class ModelUtils {
                     DataField dataField = dataDictionary.getDataFields().stream()
                             .filter(df -> df.getName().equals(outputField.getTargetField()))
                             .findFirst()
-                            .orElse(null);
+                            .orElse(null); // expected to be null because OutputField.targetField is not mandatory
                     return convertToKieOutputField(outputField, dataField);
                 })
                 .collect(Collectors.toList());
@@ -261,15 +261,16 @@ public class ModelUtils {
     /**
      * Return a <code>org.kie.pmml.api.models.OutputField</code> out of a <code>org.dmg.pmml.OutputField</code> one
      * @param toConvert
-     * @param dataField
+     * @param dataField - this may be <code>null</code>
      * @return
      */
     public static org.kie.pmml.api.models.OutputField convertToKieOutputField(final OutputField toConvert,
                                                                               final DataField dataField) {
         final String name = toConvert.getName() != null ? toConvert.getName().getValue() : null;
         final OP_TYPE opType = toConvert.getOpType() != null ? OP_TYPE.byName(toConvert.getOpType().value()) : null;
+        final DATA_TYPE dataFieldDataType = dataField != null ? DATA_TYPE.byName(dataField.getDataType().value()) : null;
         final DATA_TYPE dataType = toConvert.getDataType() != null ?
-                DATA_TYPE.byName(toConvert.getDataType().value()) : null;
+                DATA_TYPE.byName(toConvert.getDataType().value()) : dataFieldDataType;
         final String targetField = toConvert.getTargetField() != null ? toConvert.getTargetField().getValue() : null;
         final RESULT_FEATURE resultFeature = toConvert.getResultFeature() != null ?
                 RESULT_FEATURE.byName(toConvert.getResultFeature().value()) : null;
