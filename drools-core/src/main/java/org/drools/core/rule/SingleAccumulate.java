@@ -74,21 +74,18 @@ public class SingleAccumulate extends Accumulate {
         return new Accumulator[] { this.accumulator };
     }
 
-    public Serializable createFunctionContext() {
+    public Object createFunctionContext() {
         return this.accumulator.createContext();
     }
 
     public Object init(final Object workingMemoryContext,
-                       final Object context,
-                       final Tuple leftTuple,
+                       final Object accContext,
+                       final Object funcContext, final Tuple leftTuple,
                        final WorkingMemory workingMemory) {
-        AccumulateContextEntry accCtx = (AccumulateContextEntry)context;
-        accCtx.setFunctionContext( this.accumulator.init( workingMemoryContext,
-                                   accCtx.getFunctionContext(),
-                                   leftTuple,
-                                   this.requiredDeclarations,
-                                   workingMemory ) );
-        return context;
+        Object returned = this.accumulator.init( workingMemoryContext,
+                                                 funcContext, leftTuple,
+                                                 this.requiredDeclarations, workingMemory );
+        return returned;
     }
 
     public Object accumulate(final Object workingMemoryContext,
