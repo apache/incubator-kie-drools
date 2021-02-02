@@ -96,7 +96,7 @@ public class ExpressionEvaluatorResult {
     }
 
     protected String generateHTMLMessageWithWrongValue() {
-        return "Value \"" + wrongValue + "\"" +
+        return "Value <strong>\"" + wrongValue + "\"</strong>" +
                 " is wrong inside:\n" +
                 "<em>" + String.join("\n", pathToWrongValue) + "</em>";
     }
