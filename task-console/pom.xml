@@ -72,10 +72,6 @@
       <plugin>
         <groupId>io.quarkus</groupId>
         <artifactId>quarkus-maven-plugin</artifactId>
-        <configuration>
-          <uberJar>true</uberJar>
-          <skipOriginalJarRename>true</skipOriginalJarRename>
-        </configuration>
         <executions>
           <execution>
             <goals>

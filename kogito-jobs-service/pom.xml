@@ -166,10 +166,6 @@
         <groupId>io.quarkus</groupId>
         <artifactId>quarkus-maven-plugin</artifactId>
         <version>${version.io.quarkus}</version>
-        <configuration>
-          <uberJar>true</uberJar>
-          <skipOriginalJarRename>true</skipOriginalJarRename>
-        </configuration>
         <executions>
           <execution>
             <goals>
