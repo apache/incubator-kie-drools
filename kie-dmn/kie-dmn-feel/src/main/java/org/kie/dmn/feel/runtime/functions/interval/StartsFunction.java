@@ -33,19 +33,19 @@ public class StartsFunction
         super( "starts" );
     }
 
-    public FEELFnResult<Boolean> invoke(@ParameterName( "value" ) Comparable value, @ParameterName( "range" ) Range range) {
-        if ( value == null ) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "value", "cannot be null"));
+    public FEELFnResult<Boolean> invoke(@ParameterName( "point" ) Comparable point, @ParameterName( "range" ) Range range) {
+        if ( point == null ) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "point", "cannot be null"));
         }
         if ( range == null ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "range", "cannot be null"));
         }
         try {
-            boolean result = ( range.getLowBoundary() == Range.RangeBoundary.CLOSED && value.compareTo( range.getLowEndPoint() ) == 0 );
+            boolean result = ( range.getLowBoundary() == Range.RangeBoundary.CLOSED && point.compareTo( range.getLowEndPoint() ) == 0 );
             return FEELFnResult.ofResult( result );
         } catch( Exception e ) {
-            // values are not comparable
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "value", "cannot be compared to range"));
+            // points are not comparable
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "point", "cannot be compared to range"));
         }
     }
 
@@ -65,7 +65,7 @@ public class StartsFunction
                                 range2.getHighBoundary() == RangeBoundary.CLOSED)));
             return FEELFnResult.ofResult( result );
         } catch( Exception e ) {
-            // values are not comparable
+            // points are not comparable
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "range1", "cannot be compared to range2"));
         }
     }
