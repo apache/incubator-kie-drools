@@ -17,19 +17,15 @@ package org.kie.pmml.compiler.commons.implementations;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.dmg.pmml.DataDictionary;
-import org.dmg.pmml.DataField;
 import org.dmg.pmml.MiningSchema;
 import org.dmg.pmml.Model;
 import org.dmg.pmml.Output;
 import org.dmg.pmml.TransformationDictionary;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.KiePMMLException;
-import org.kie.pmml.api.models.MiningField;
-import org.kie.pmml.api.models.OutputField;
 import org.kie.pmml.commons.model.HasClassLoader;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.compiler.api.provider.ModelImplementationProvider;
@@ -37,8 +33,6 @@ import org.kie.pmml.compiler.api.provider.ModelImplementationProviderFinder;
 import org.kie.pmml.compiler.commons.utils.ModelUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.kie.pmml.compiler.commons.utils.ModelUtils.convertToKieMiningField;
 
 public class KiePMMLModelRetriever {
 
