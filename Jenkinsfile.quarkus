@@ -7,6 +7,8 @@ pipeline {
         label 'kie-rhel7 && kie-mem16g'
     }
     environment {
+        // QUARKUS_BRANCH should be defined directly into the job environemtn
+
         KOGITO_CI_EMAIL_TO = credentials('KOGITO_CI_EMAIL_TO')
         MAVEN_OPTS = '-Xms1024m -Xmx4g'
     }
@@ -131,7 +133,7 @@ void checkoutRepo(String repoName, String dirName=repoName) {
 
 void checkoutQuarkusRepo() {
     dir('quarkus') {
-        checkout(githubscm.resolveRepository('quarkus', 'quarkusio', 'master', false))
+        checkout(githubscm.resolveRepository('quarkus', 'quarkusio', getQuarkusBranch(), false))
     }
 }
 
@@ -159,4 +161,8 @@ MavenCommand getMavenCommand(String directory, boolean addQuarkusVersion=true){
         mvnCmd.withProperty('version.io.quarkus', '999-SNAPSHOT')
     }
     return mvnCmd
+}
+
+String getQuarkusBranch() {
+    return env['QUARKUS_BRANCH'] ?: 'master'
 }
