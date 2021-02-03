@@ -26,6 +26,7 @@ package org.drools.mvel.parser;
 
 import com.github.javaparser.ParseException;
 import com.github.javaparser.Provider;
+import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.Name;
 import com.github.javaparser.ast.expr.SimpleName;
@@ -52,6 +53,8 @@ public interface ParseStart<R> {
     ParseStart<ExplicitConstructorInvocationStmt> EXPLICIT_CONSTRUCTOR_INVOCATION_STMT = GeneratedMvelParser::ExplicitConstructorInvocationParseStart;
     ParseStart<Name> NAME = GeneratedMvelParser::NameParseStart;
     ParseStart<SimpleName> SIMPLE_NAME = GeneratedMvelParser::SimpleNameParseStart;
+    ParseStart<CompilationUnit> COMPILATION_UNIT = GeneratedMvelParser::CompilationUnit;
+    ParseStart<CompilationUnit> DRLX_COMPILATION_UNIT = GeneratedMvelParser::DrlxCompilationUnit;
 
     R parse(GeneratedMvelParser parser) throws ParseException, org.drools.mvel.parser.ParseException;
 }
