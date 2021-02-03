@@ -46,6 +46,7 @@ import org.drools.scenariosimulation.backend.runner.model.ScenarioResult;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioResultMetadata;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioRunnerData;
 import org.drools.scenariosimulation.backend.runner.model.ValueWrapper;
+import org.drools.scenariosimulation.backend.util.ScenarioSimulationBackendMessages;
 import org.kie.api.runtime.KieContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -305,12 +306,14 @@ public abstract class AbstractRunnerHelper {
                                             Object resultRaw,
                                             Class<?> resultClass) {
         try {
-            ExpressionEvaluatorResult evaluationResult = expressionEvaluator.evaluateUnaryExpression((String) expectedResultRaw, resultRaw, resultClass);
+            ExpressionEvaluatorResult evaluationResult = expressionEvaluator.evaluateUnaryExpression((String) expectedResultRaw,
+                                                                                                     resultRaw,
+                                                                                                     resultClass);
             if (evaluationResult.isSuccessful()) {
                 return of(resultRaw);
             } else if (isCollection(className)) {
-                return errorWithMessage(evaluationResult.generateHTMLErrorMessage().orElse(
-                        "Impossible to find elements in the collection to satisfy the conditions."));
+                return errorWithMessage(ScenarioSimulationBackendMessages.getCollectionHTMLErrorMessage(evaluationResult.getWrongValue(),
+                                                                                                        evaluationResult.getPathToWrongValue()));
             } else {
                 return errorWithValidValue(resultRaw, expectedResultRaw);
             }

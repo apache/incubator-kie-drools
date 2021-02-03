@@ -17,7 +17,6 @@ package org.drools.scenariosimulation.backend.expression;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * This DTO holds info related to an expression evaluation.
@@ -77,32 +76,18 @@ public class ExpressionEvaluatorResult {
     }
 
     public void addMapItemStepToPath(String key) {
-        pathToWrongValue.add(0, "Map Item with \"" + key + "\" key");
+        pathToWrongValue.add(0, "Map item with \"" + key + "\" key");
     }
 
     public void setWrongValue(String wrongValue) {
         this.wrongValue = wrongValue;
     }
 
-    public Optional<String> generateHTMLErrorMessage() {
-        if (!successful && !pathToWrongValue.isEmpty()) {
-            if (wrongValue != null) {
-                return Optional.ofNullable(generateHTMLMessageWithWrongValue());
-            } else {
-                return Optional.ofNullable(generateHTMLMessageWithoutWrongValue());
-            }
-        }
-        return Optional.empty();
+    public String getWrongValue() {
+        return wrongValue;
     }
 
-    protected String generateHTMLMessageWithWrongValue() {
-        return "Value <strong>\"" + wrongValue + "\"</strong>" +
-                " is wrong inside:\n" +
-                "<em>" + String.join("\n", pathToWrongValue) + "</em>";
-    }
-
-    protected String generateHTMLMessageWithoutWrongValue() {
-        return "Following path is wrong:\n" +
-                "<em>" + String.join("\n", pathToWrongValue) + "</em>";
+    public List<String> getPathToWrongValue() {
+        return pathToWrongValue;
     }
 }

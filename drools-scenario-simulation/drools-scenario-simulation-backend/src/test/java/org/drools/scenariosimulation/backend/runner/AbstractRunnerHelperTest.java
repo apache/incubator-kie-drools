@@ -16,7 +16,6 @@
 
 package org.drools.scenariosimulation.backend.runner;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
@@ -36,6 +35,7 @@ import org.drools.scenariosimulation.backend.expression.ExpressionEvaluatorResul
 import org.drools.scenariosimulation.backend.runner.model.ScenarioResultMetadata;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioRunnerData;
 import org.drools.scenariosimulation.backend.runner.model.ValueWrapper;
+import org.drools.scenariosimulation.backend.util.ScenarioSimulationBackendMessages;
 import org.junit.Test;
 import org.kie.api.runtime.KieContainer;
 
@@ -134,8 +134,6 @@ public class AbstractRunnerHelperTest {
         String collectionError = "Impossible to find elements in the collection to satisfy the conditions.";
         String collectionWrongValue = "value";
         String collectionValuePath = "Item(1)";
-        String collectionValueError = "Value <strong>\"" + collectionWrongValue + "\"</strong> is wrong inside:\n<em>Field \"Item(1)\"</em>";
-        String collectionValueErrorWithoutWrongValue = "Following path is wrong:\n<em>Field \"Item(1)\"</em>";
         String genericErrorMessage = "errorMessage";
 
         // case 1: succeed
@@ -158,24 +156,35 @@ public class AbstractRunnerHelperTest {
         assertEquals(collectionError, valueWrapper.getErrorMessage().get());
 
         // case 5: failed with wrong value (list)
-        when(expressionEvaluatorMock.evaluateUnaryExpression(any(), any(), any(Class.class))).thenReturn(ExpressionEvaluatorResult.ofFailed(collectionWrongValue, collectionValuePath));
+        ExpressionEvaluatorResult result = ExpressionEvaluatorResult.ofFailed(collectionWrongValue, collectionValuePath);
+        when(expressionEvaluatorMock.evaluateUnaryExpression(any(), any(), any(Class.class))).thenReturn(result);
         valueWrapper = abstractRunnerHelper.getResultWrapper(List.class.getCanonicalName(), new FactMappingValue(), expressionEvaluatorMock, expectedResultRaw, resultRaw, List.class);
-        assertEquals(collectionValueError, valueWrapper.getErrorMessage().get());
+        assertEquals(ScenarioSimulationBackendMessages.getCollectionHTMLErrorMessage(collectionWrongValue, result.getPathToWrongValue()), valueWrapper.getErrorMessage().get());
 
         // case 6: failed without actual value (map)
         valueWrapper = abstractRunnerHelper.getResultWrapper(Map.class.getCanonicalName(), new FactMappingValue(), expressionEvaluatorMock, expectedResultRaw, resultRaw, Map.class);
-        assertEquals(collectionValueError, valueWrapper.getErrorMessage().get());
+        assertEquals(ScenarioSimulationBackendMessages.getCollectionHTMLErrorMessage(collectionWrongValue, result.getPathToWrongValue()), valueWrapper.getErrorMessage().get());
 
         // case 7: failed without wrong value (list)
-        when(expressionEvaluatorMock.evaluateUnaryExpression(any(), any(), any(Class.class))).thenReturn(ExpressionEvaluatorResult.ofFailed(null, collectionValuePath));
+        result = ExpressionEvaluatorResult.ofFailed(null, collectionValuePath);
+        when(expressionEvaluatorMock.evaluateUnaryExpression(any(), any(), any(Class.class))).thenReturn(result);
         valueWrapper = abstractRunnerHelper.getResultWrapper(List.class.getCanonicalName(), new FactMappingValue(), expressionEvaluatorMock, expectedResultRaw, resultRaw, List.class);
-        assertEquals(collectionValueErrorWithoutWrongValue, valueWrapper.getErrorMessage().get());
+        assertEquals(ScenarioSimulationBackendMessages.getCollectionHTMLErrorMessage(null, result.getPathToWrongValue()), valueWrapper.getErrorMessage().get());
 
         // case 8: failed without actual value (map)
         valueWrapper = abstractRunnerHelper.getResultWrapper(Map.class.getCanonicalName(), new FactMappingValue(), expressionEvaluatorMock, expectedResultRaw, resultRaw, Map.class);
-        assertEquals(collectionValueErrorWithoutWrongValue, valueWrapper.getErrorMessage().get());
+        assertEquals(ScenarioSimulationBackendMessages.getCollectionHTMLErrorMessage(null, result.getPathToWrongValue()), valueWrapper.getErrorMessage().get());
 
-        // case 8: failed with generic exception
+        // case 9: failed without wrong value and path (list)
+        when(expressionEvaluatorMock.evaluateUnaryExpression(any(), any(), any(Class.class))).thenReturn(ExpressionEvaluatorResult.ofFailed());
+        valueWrapper = abstractRunnerHelper.getResultWrapper(List.class.getCanonicalName(), new FactMappingValue(), expressionEvaluatorMock, expectedResultRaw, resultRaw, List.class);
+        assertEquals(ScenarioSimulationBackendMessages.getGenericCollectionErrorMessage(), valueWrapper.getErrorMessage().get());
+
+        // case 10: failed without actual value (map)
+        valueWrapper = abstractRunnerHelper.getResultWrapper(Map.class.getCanonicalName(), new FactMappingValue(), expressionEvaluatorMock, expectedResultRaw, resultRaw, Map.class);
+        assertEquals(ScenarioSimulationBackendMessages.getGenericCollectionErrorMessage(), valueWrapper.getErrorMessage().get());
+
+        // case 11: failed with generic exception
         when(expressionEvaluatorMock.evaluateUnaryExpression(any(), any(), any(Class.class))).thenThrow(new IllegalArgumentException(genericErrorMessage));
         FactMappingValue expectedResult5 = new FactMappingValue();
         valueWrapper = abstractRunnerHelper.getResultWrapper(Map.class.getCanonicalName(), expectedResult5, expressionEvaluatorMock, expectedResultRaw, resultRaw, Map.class);
