@@ -530,7 +530,7 @@ def updateAndResetBranch(String repo, String branchToReset) {
 void removeJbossNexusFromMavenAndGradle() {
     sh "sed -i \':a;N;\$!ba;s/\\n *<repositories>.*<\\/repositories>//g\' */pom.xml"
     sh "sed -i \':a;N;\$!ba;s/\\n *<repositories>.*<\\/repositories>//g\' pom.xml"
-    sh "sed -i \':a;N;\$!ba;s/\\n *\\/\\/ To get snapshots during development[^{}]*maven {[^{}]*mavenContent " +
+    sh "sed -i \':a;N;\$!ba;s/\\n *maven {[^{}]*mavenContent " +
             "{[^{}]*snapshotsOnly[^{}]*}[^{}]*}//g\' */build.gradle"
 
     assert !sh (script:
