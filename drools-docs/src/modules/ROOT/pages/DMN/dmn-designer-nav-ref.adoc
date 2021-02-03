@@ -38,3 +38,9 @@ In the upper-right corner of the DMN designer, use the search bar to search for 
 +
 .DRD search
 image::dmn/dmn-designer-search.png[]
+
+DMN decision service details::
+Select a decision service node in the DMN designer to view additional properties, including *Input Data*, *Encapsulated Decisions*, and *Output Decisions* in the *Properties* panel.
++
+.Decision Service details
+image::dmn/dmn-decision-service-details.png[]
