@@ -22,7 +22,7 @@ import org.kie.api.definition.process.Process;
 
 public interface ProcessDataEventListener {
 
-    void onNodeAdded(Node node);
+    void onNodeAdded( Node node);
     
     void onProcessAdded(Process process);
     

@@ -41,15 +41,18 @@ import org.jbpm.process.instance.context.exclusive.ExclusiveGroupInstance;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.process.instance.impl.Action;
 import org.jbpm.process.instance.impl.ConstraintEvaluator;
+import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.jbpm.workflow.instance.WorkflowRuntimeException;
 import org.jbpm.workflow.instance.node.ActionNodeInstance;
 import org.jbpm.workflow.instance.node.CompositeNodeInstance;
 import org.kie.api.definition.process.Connection;
-import org.kie.api.definition.process.Node;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.NodeInstanceContainer;
+import org.kie.kogito.internal.process.runtime.KogitoNode;
+import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
+import org.kie.kogito.internal.process.runtime.KogitoNodeInstanceContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -87,7 +90,11 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
         this.id = id;
     }
 
-    public String getId() {
+    public long getId() {
+        throw new UnsupportedOperationException();
+    }
+
+    public String getStringId() {
         return this.id;
     }
 
@@ -100,7 +107,7 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
     }
     
     public String getNodeName() {
-    	Node node = getNode();
+    	org.kie.api.definition.process.Node node = getNode();
     	return node == null ? "" : node.getName();
     }
     
@@ -124,7 +131,7 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
         return this.processInstance;
     }
 
-    public NodeInstanceContainer getNodeInstanceContainer() {
+    public KogitoNodeInstanceContainer getNodeInstanceContainer() {
         return this.nodeInstanceContainer;
     }
     
@@ -135,7 +142,7 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
         }
     }
 
-    public Node getNode() {
+    public org.kie.api.definition.process.Node getNode() {
     	try {
     		return ((org.jbpm.workflow.core.NodeContainer)
 				this.nodeInstanceContainer.getNodeContainer()).internalGetNode( this.nodeId );
@@ -154,7 +161,7 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
     public void cancel() {
         leaveTime = new Date();
         boolean hidden = false;
-        Node node = getNode();
+        org.kie.api.definition.process.Node node = getNode();
     	if (node != null && node.getMetaData().get(HIDDEN) != null) {
     		hidden = true;
     	}
@@ -171,7 +178,7 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
         }
     }
     
-    public final void trigger(NodeInstance from, String type) {
+    public final void trigger(KogitoNodeInstance from, String type) {
     	boolean hidden = false;
     	if (getNode().getMetaData().get(HIDDEN) != null) {
     		hidden = true;
@@ -218,7 +225,7 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
         getProcessInstance().setErrorState(this, e);        
     }
     
-    public abstract void internalTrigger(NodeInstance from, String type);
+    public abstract void internalTrigger(KogitoNodeInstance from, String type);
    
     /**
      * This method is used in both instances of the {@link ExtendedNodeInstanceImpl}
@@ -247,7 +254,7 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
     
     public void triggerCompleted(String type, boolean remove) {  
         leaveTime = new Date();
-        Node node = getNode();
+        org.kie.api.definition.process.Node node = getNode();
         if (node != null) {
 	    	String uniqueId = (String) node.getMetaData().get(UNIQUE_ID);
 	    	if( uniqueId == null ) { 
@@ -258,7 +265,7 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
         }
 
         // if node instance was cancelled, or containing container instance was cancelled
-    	if ((getNodeInstanceContainer().getNodeInstance(getId()) == null)
+    	if ((getNodeInstanceContainer().getNodeInstance(getStringId()) == null)
     			|| (((org.jbpm.workflow.instance.NodeInstanceContainer) getNodeInstanceContainer()).getState() != STATE_ACTIVE)) {
     		return;
     	}
@@ -329,7 +336,7 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
         }
         if (connections == null || connections.isEmpty() ) {
         	boolean hidden = false;
-        	Node currentNode = getNode();
+        	org.kie.api.definition.process.Node currentNode = getNode();
         	if (currentNode != null && currentNode.getMetaData().get(HIDDEN) != null) {
         		hidden = true;
         	}
@@ -431,8 +438,8 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
     
     public void triggerNode(long nodeId, boolean fireEvents) {
     	org.jbpm.workflow.instance.NodeInstance nodeInstance = ((org.jbpm.workflow.instance.NodeInstanceContainer) getNodeInstanceContainer())
-            .getNodeInstance(getNode().getParentContainer().getNode(nodeId));
-    	triggerNodeInstance(nodeInstance, org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE, fireEvents);
+            .getNodeInstance( (( KogitoNode ) getNode()).getParentContainer().getNode(nodeId));
+    	triggerNodeInstance(nodeInstance, Node.CONNECTION_DEFAULT_TYPE, fireEvents);
     }
     
     public Context resolveContext(String contextId, Object param) {
@@ -514,11 +521,11 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
     }
 
     public String getUniqueId() {
-    	String result = "" + getId();
+    	String result = "" + getStringId();
     	NodeInstanceContainer parent = getNodeInstanceContainer();
     	while (parent instanceof CompositeNodeInstance) {
     		CompositeNodeInstance nodeInstance = (CompositeNodeInstance) parent;
-    		result = nodeInstance.getId() + ":" + result;
+    		result = nodeInstance.getStringId() + ":" + result;
     		parent = nodeInstance.getNodeInstanceContainer();
     	}
     	return result;

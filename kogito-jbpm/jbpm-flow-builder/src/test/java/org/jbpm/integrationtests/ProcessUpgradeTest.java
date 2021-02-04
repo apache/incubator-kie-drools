@@ -36,6 +36,8 @@ import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
+import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -86,6 +88,7 @@ public class ProcessUpgradeTest extends AbstractBaseTest {
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( builder.getKnowledgePackages() );
         KieSession session = kbase.newKieSession();
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( session );
 
         TestWorkItemHandler handler = new TestWorkItemHandler();
         session.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
@@ -95,7 +98,7 @@ public class ProcessUpgradeTest extends AbstractBaseTest {
 
         Person p = new Person( "bobba fet", 32);
         session.insert( p );
-        ProcessInstance processInstance = ( ProcessInstance ) session.startProcess("org.test.ruleflow");
+        KogitoProcessInstance processInstance = kruntime.startProcess("org.test.ruleflow");
         
         assertEquals(1, session.getProcessInstances().size());
         
@@ -133,10 +136,10 @@ public class ProcessUpgradeTest extends AbstractBaseTest {
         kbase.addPackages( builder.getKnowledgePackages() );
         
         WorkflowProcessInstanceUpgrader.upgradeProcessInstance(
-            session, processInstance.getId(), "org.test.ruleflow2", new HashMap<String, Long>());
+                kruntime, processInstance.getStringId(), "org.test.ruleflow2", new HashMap<String, Long>());
         assertEquals("org.test.ruleflow2", processInstance.getProcessId());
-        
-        session.getWorkItemManager().completeWorkItem(handler.getWorkItem().getId(), null);
+
+        kruntime.getWorkItemManager().completeWorkItem(handler.getWorkItem().getStringId(), null);
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
 
         assertEquals(1, list.size());
@@ -186,18 +189,20 @@ public class ProcessUpgradeTest extends AbstractBaseTest {
 
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( builder.getKnowledgePackages() );
-        KieSession session = kbase.newKieSession();
+        KieSession ksession = kbase.newKieSession();
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+
         TestWorkItemHandler handler = new TestWorkItemHandler();
-        session.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
+        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
 
         List<String> list = new ArrayList<String>();
-        session.setGlobal( "list", list );
+        ksession.setGlobal( "list", list );
 
         Person p = new Person( "bobba fet", 32);
-        session.insert( p );
-        ProcessInstance processInstance = ( ProcessInstance ) session.startProcess("org.test.ruleflow");
+        ksession.insert( p );
+        KogitoProcessInstance processInstance = kruntime.startProcess("org.test.ruleflow");
         
-        assertEquals(1, session.getProcessInstances().size());
+        assertEquals(1, kruntime.getKogitoProcessInstances().size());
         
         String process2 = 
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
@@ -236,10 +241,10 @@ public class ProcessUpgradeTest extends AbstractBaseTest {
         mapping.put("2", 102L);
         
         WorkflowProcessInstanceUpgrader.upgradeProcessInstance(
-            session, processInstance.getId(), "org.test.ruleflow2", mapping);
+                kruntime, processInstance.getStringId(), "org.test.ruleflow2", mapping);
         assertEquals("org.test.ruleflow2", processInstance.getProcessId());
-        
-        session.getWorkItemManager().completeWorkItem(handler.getWorkItem().getId(), null);
+
+        kruntime.getWorkItemManager().completeWorkItem(handler.getWorkItem().getStringId(), null);
         
         assertEquals(1, list.size());
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
@@ -302,6 +307,8 @@ public class ProcessUpgradeTest extends AbstractBaseTest {
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( builder.getKnowledgePackages() );
         KieSession session = kbase.newKieSession();
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( session );
+
         TestWorkItemHandler handler = new TestWorkItemHandler();
         session.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
 
@@ -310,7 +317,7 @@ public class ProcessUpgradeTest extends AbstractBaseTest {
 
         Person p = new Person( "bobba fet", 32);
         session.insert( p );
-        ProcessInstance processInstance = ( ProcessInstance ) session.startProcess("org.test.ruleflow");
+        KogitoProcessInstance processInstance = kruntime.startProcess("org.test.ruleflow");
         
         assertEquals(1, session.getProcessInstances().size());
         
@@ -363,10 +370,10 @@ public class ProcessUpgradeTest extends AbstractBaseTest {
         mapping.put("2:1", 101L);
         
         WorkflowProcessInstanceUpgrader.upgradeProcessInstance(
-            session, processInstance.getId(), "org.test.ruleflow2", mapping);
+                kruntime, processInstance.getStringId(), "org.test.ruleflow2", mapping);
         assertEquals("org.test.ruleflow2", processInstance.getProcessId());
-        
-        session.getWorkItemManager().completeWorkItem(handler.getWorkItem().getId(), null);
+
+        kruntime.getWorkItemManager().completeWorkItem(handler.getWorkItem().getStringId(), null);
         
         assertEquals(1, list.size());
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());

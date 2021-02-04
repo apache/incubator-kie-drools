@@ -39,6 +39,7 @@ import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.kogito.dmn.DMNKogito;
 import org.kie.kogito.dmn.DmnDecisionModel;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.slf4j.LoggerFactory;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -67,7 +68,7 @@ public class RuleSetTest extends AbstractBaseTest {
         parameters.put("person", person);
         parameters.put("isAdult", false);
 
-        ProcessInstance pi = ksession.startProcess("org.drools.core.process.process", parameters);
+        KogitoProcessInstance pi = (KogitoProcessInstance) ksession.startProcess("org.drools.core.process.process", parameters);
         assertEquals(ProcessInstance.STATE_COMPLETED, pi.getState());
 
         boolean result = (boolean) pi.getVariables().get("isAdult");
@@ -132,7 +133,7 @@ public class RuleSetTest extends AbstractBaseTest {
         return process;
     }
 
-    private void connect(Node sourceNode, Node targetNode) {
+    private void connect( Node sourceNode, Node targetNode) {
         new ConnectionImpl(sourceNode, Node.CONNECTION_DEFAULT_TYPE,
                            targetNode, Node.CONNECTION_DEFAULT_TYPE);
     }

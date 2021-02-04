@@ -17,6 +17,7 @@
 package org.jbpm.process.instance;
 
 import org.jbpm.process.core.Context;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 
 public interface ContextInstance {
 
@@ -28,6 +29,6 @@ public interface ContextInstance {
 
     Context getContext();
 
-    ProcessInstance getProcessInstance();
+    KogitoProcessInstance getProcessInstance();
 
 }

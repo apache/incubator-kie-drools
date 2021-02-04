@@ -41,6 +41,8 @@ import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItem;
+import org.kie.kogito.internal.process.marshalling.KogitoObjectMarshallingStrategy;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.process.workitems.KogitoWorkItem;
 import org.kie.kogito.process.workitems.KogitoWorkItemManager;
 import org.kie.kogito.process.workitems.impl.KogitoWorkItemImpl;
@@ -58,12 +60,12 @@ public class ProtobufProcessMarshaller
     public void writeProcessInstances(MarshallerWriteContext context) throws IOException {
         ProtobufMessages.ProcessData.Builder _pdata = (ProtobufMessages.ProcessData.Builder) context.getParameterObject();
 
-        List<org.kie.api.runtime.process.ProcessInstance> processInstances = new ArrayList<org.kie.api.runtime.process.ProcessInstance>( context.getWorkingMemory().getProcessInstances() );
+        List<org.kie.api.runtime.process.ProcessInstance> processInstances = new ArrayList<>( context.getWorkingMemory().getProcessInstances() );
         Collections.sort( processInstances,
                           new Comparator<org.kie.api.runtime.process.ProcessInstance>() {
                               public int compare(org.kie.api.runtime.process.ProcessInstance o1,
                                                  org.kie.api.runtime.process.ProcessInstance o2) {
-                                  return (int) (o1.getId().compareTo(o2.getId()));
+                                  return (( KogitoProcessInstance )o1).getStringId().compareTo((( KogitoProcessInstance )o2).getStringId());
                               }
                           } );
 
@@ -84,7 +86,7 @@ public class ProtobufProcessMarshaller
                           new Comparator<WorkItem>() {
                               public int compare(WorkItem o1,
                                                  WorkItem o2) {
-                                  return (int) (o2.getId().compareTo(o1.getId()));
+                                  return (( KogitoWorkItem )o1).getStringId().compareTo((( KogitoWorkItem )o2).getStringId());
                               }
                           } );
         for ( WorkItem workItem : workItems ) {
@@ -125,8 +127,8 @@ public class ProtobufProcessMarshaller
                                                       WorkItem workItem,
                                                       boolean includeVariables) throws IOException {
         JBPMMessages.WorkItem.Builder _workItem = JBPMMessages.WorkItem.newBuilder()
-                .setId( workItem.getId() )
-                .setProcessInstancesId( workItem.getProcessInstanceId() )
+                .setId( (( KogitoWorkItem )workItem).getStringId() )
+                .setProcessInstancesId( (( KogitoWorkItem )workItem).getProcessInstanceStringId() )
                 .setName( workItem.getName() )
                 .setState( workItem.getState() );
 
@@ -186,7 +188,7 @@ public class ProtobufProcessMarshaller
                                             Object value) throws IOException {
         JBPMMessages.Variable.Builder builder = JBPMMessages.Variable.newBuilder().setName( name );
         if(value != null){
-            ObjectMarshallingStrategy strategy = context.getObjectMarshallingStrategyStore().getStrategyObject( value );
+            KogitoObjectMarshallingStrategy strategy = (KogitoObjectMarshallingStrategy) context.getObjectMarshallingStrategyStore().getStrategyObject( value );
             Integer index = context.getStrategyIndex( strategy );
             builder.setStrategyIndex( index )
                    .setDataType(strategy.getType(value.getClass()))
@@ -203,7 +205,7 @@ public class ProtobufProcessMarshaller
             JBPMMessages.Variable.Builder builder = JBPMMessages.Variable.newBuilder().setName( key );
             Object variable = variables.get(key);
             if(variable != null){
-                ObjectMarshallingStrategy strategy = context.getObjectMarshallingStrategyStore().getStrategyObject( variable );
+                KogitoObjectMarshallingStrategy strategy = (KogitoObjectMarshallingStrategy) context.getObjectMarshallingStrategyStore().getStrategyObject( variable );
                 Integer index = context.getStrategyIndex( strategy );
                 builder.setStrategyIndex( index )
                     .setDataType(strategy.getType(variable.getClass()))
@@ -249,7 +251,7 @@ public class ProtobufProcessMarshaller
         if(_variable.getValue() == null || _variable.getValue().isEmpty()){
             return null;
         }
-        ObjectMarshallingStrategy strategy = context.getUsedStrategies().get( _variable.getStrategyIndex() );
+        KogitoObjectMarshallingStrategy strategy = (KogitoObjectMarshallingStrategy) context.getUsedStrategies().get( _variable.getStrategyIndex() );
         Object value = strategy.unmarshal( _variable.getDataType(), 
                                            context.getStrategyContexts().get( strategy ),
                                            ( ObjectInputStream ) context,

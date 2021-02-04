@@ -41,6 +41,7 @@ import org.jbpm.ruleflow.core.validation.RuleFlowProcessValidator;
 import org.jbpm.serverless.workflow.parser.util.ServerlessWorkflowUtils;
 import org.jbpm.serverless.workflow.parser.util.WorkflowAppContext;
 import org.jbpm.workflow.core.DroolsAction;
+import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.impl.ConnectionImpl;
 import org.jbpm.workflow.core.impl.ConstraintImpl;
@@ -59,7 +60,6 @@ import org.jbpm.workflow.core.node.StartNode;
 import org.jbpm.workflow.core.node.SubProcessNode;
 import org.jbpm.workflow.core.node.TimerNode;
 import org.jbpm.workflow.core.node.WorkItemNode;
-import org.kie.api.definition.process.Node;
 import org.kogito.workitem.rest.RestWorkItemHandler;
 import org.kogito.workitem.rest.jsonpath.suppliers.JsonPathExprSupplier;
 import org.kogito.workitem.rest.jsonpath.suppliers.JsonPathResultExprSupplier;
@@ -320,10 +320,10 @@ public class ServerlessWorkflowFactory {
         return scriptNode;
     }
 
-    public Node restServiceNode(long id,
-                                FunctionRef functionRef,
-                                FunctionDefinition functionDefinition,
-                                NodeContainer nodeContainer) {
+    public org.kie.api.definition.process.Node restServiceNode( long id,
+                                                                FunctionRef functionRef,
+                                                                FunctionDefinition functionDefinition,
+                                                                NodeContainer nodeContainer) {
         WorkItemNode workItemNode = new WorkItemNode();
         workItemNode.setId(id);
         workItemNode.setName(functionDefinition.getName());
@@ -497,11 +497,11 @@ public class ServerlessWorkflowFactory {
     }
 
     public void connect(long fromId, long toId, String uniqueId, NodeContainer nodeContainer) {
-        Node from = nodeContainer.getNode(fromId);
-        Node to = nodeContainer.getNode(toId);
+        org.kie.api.definition.process.Node from = nodeContainer.getNode(fromId);
+        org.kie.api.definition.process.Node to = nodeContainer.getNode(toId);
         ConnectionImpl connection = new ConnectionImpl(
-                from, org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE,
-                to, org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
+                from, Node.CONNECTION_DEFAULT_TYPE,
+                to, Node.CONNECTION_DEFAULT_TYPE);
         connection.setMetaData(UNIQUE_ID_PARAM, uniqueId);
     }
 

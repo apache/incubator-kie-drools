@@ -39,9 +39,10 @@ import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.impl.actions.SignalProcessInstanceAction;
 import org.jbpm.ruleflow.core.Metadata;
 import org.kie.api.definition.process.Node;
-import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
+import static com.github.javaparser.StaticJavaParser.parseType;
 import static org.jbpm.compiler.canonical.AbstractVisitor.KCONTEXT_VAR;
 import static org.jbpm.ruleflow.core.Metadata.MAPPING_VARIABLE;
 import static org.jbpm.ruleflow.core.Metadata.MESSAGE_TYPE;
@@ -168,7 +169,7 @@ public class TriggerMetaData {
         Type objectType = new ClassOrInterfaceType(null, triggerMetaData.getDataType());
         Type processRuntime =  parseClassOrInterfaceType(InternalProcessRuntime.class.getCanonicalName());
         Type kieRuntime =  parseClassOrInterfaceType(InternalKnowledgeRuntime.class.getCanonicalName());
-        Type processInstance = parseClassOrInterfaceType(ProcessInstance.class.getCanonicalName());
+        Type processInstance = parseClassOrInterfaceType(KogitoProcessInstance.class.getCanonicalName());
         AssignExpr objectExpr = new AssignExpr(
                 new VariableDeclarationExpr(objectType, objectName),
                 new CastExpr(objectType, new MethodCallExpr(kExpr, "getVariable").addArgument(new StringLiteralExpr(
@@ -184,7 +185,7 @@ public class TriggerMetaData {
                 Operator.ASSIGN);
         AssignExpr processInstanceAssignment = new AssignExpr(
                 new VariableDeclarationExpr(processInstance, piName),
-                new MethodCallExpr(new NameExpr("kcontext"), "getProcessInstance"),
+                new CastExpr(parseType( KogitoProcessInstance.class.getCanonicalName()), new MethodCallExpr(new NameExpr("kcontext"), "getProcessInstance")),
                 Operator.ASSIGN);
         // add onMessage listener call
         MethodCallExpr listenerMethodCall = new MethodCallExpr(

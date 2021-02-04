@@ -79,9 +79,9 @@ public class TimerTest extends AbstractBaseTest  {
 			}
         }).start();
         
-        JobsService jobService = new InMemoryJobService(processRuntime, new DefaultUnitOfWorkManager(new CollectingUnitOfWorkFactory()));
+        JobsService jobService = new InMemoryJobService(processRuntime.getKogitoProcessRuntime(), new DefaultUnitOfWorkManager(new CollectingUnitOfWorkFactory()));
         
-        ProcessInstanceJobDescription desc = ProcessInstanceJobDescription.of(-1, ExactExpirationTime.now(), processInstance.getId(), "test");
+        ProcessInstanceJobDescription desc = ProcessInstanceJobDescription.of(-1, ExactExpirationTime.now(), processInstance.getStringId(), "test");
         String jobId = jobService.scheduleProcessInstanceJob(desc);
         
         try {
@@ -92,7 +92,7 @@ public class TimerTest extends AbstractBaseTest  {
         assertEquals(1, counter);
         
         counter = 0;
-        desc = ProcessInstanceJobDescription.of(-1, DurationExpirationTime.after(500), processInstance.getId(), "test");
+        desc = ProcessInstanceJobDescription.of(-1, DurationExpirationTime.after(500), processInstance.getStringId(), "test");
         jobId = jobService.scheduleProcessInstanceJob(desc);
         assertEquals(0, counter);
         try {
@@ -103,7 +103,7 @@ public class TimerTest extends AbstractBaseTest  {
         assertEquals(1, counter);
         
         counter = 0;
-        desc = ProcessInstanceJobDescription.of(-1, DurationExpirationTime.repeat(500, 300L), processInstance.getId(), "test");
+        desc = ProcessInstanceJobDescription.of(-1, DurationExpirationTime.repeat(500, 300L), processInstance.getStringId(), "test");
         jobId = jobService.scheduleProcessInstanceJob(desc);
         assertEquals(0, counter);
         try {

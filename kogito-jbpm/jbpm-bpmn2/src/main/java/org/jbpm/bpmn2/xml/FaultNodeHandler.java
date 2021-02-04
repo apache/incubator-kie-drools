@@ -16,20 +16,14 @@
 
 package org.jbpm.bpmn2.xml;
 
-import java.util.List;
-
 import org.drools.compiler.compiler.xml.XmlDumper;
-import org.jbpm.bpmn2.core.Definitions;
-import org.jbpm.bpmn2.core.Error;
-import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.node.FaultNode;
-import org.kie.api.definition.process.NodeContainer;
 import org.xml.sax.Attributes;
 
 public class FaultNodeHandler extends AbstractNodeHandler {
     
-    protected Node createNode(Attributes attrs) {
+    protected Node createNode( Attributes attrs) {
         throw new IllegalArgumentException("Reading in should be handled by end event handler");
     }
     
@@ -38,7 +32,7 @@ public class FaultNodeHandler extends AbstractNodeHandler {
         return FaultNode.class;
     }
 
-    public void writeNode(Node node, StringBuilder xmlDump, int metaDataType) {
+    public void writeNode( Node node, StringBuilder xmlDump, int metaDataType) {
         FaultNode faultNode = (FaultNode) node;
 		writeNode("endEvent", faultNode, xmlDump, metaDataType);
 		xmlDump.append(">" + EOL);

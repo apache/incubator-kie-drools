@@ -28,8 +28,8 @@ public class RuleSetNodeHandler extends AbstractNodeHandler {
         return new RuleSetNode();
     }
 
-    public void handleNode(final Node node, final Element element, final String uri,
-            final String localName, final ExtensibleXmlParser parser)
+    public void handleNode( final Node node, final Element element, final String uri,
+                            final String localName, final ExtensibleXmlParser parser)
             throws SAXException {
         super.handleNode(node, element, uri, localName, parser);
         RuleSetNode ruleSetNode = (RuleSetNode) node;
@@ -48,7 +48,7 @@ public class RuleSetNodeHandler extends AbstractNodeHandler {
         return RuleSetNode.class;
     }
 
-	public void writeNode(Node node, StringBuilder xmlDump, boolean includeMeta) {
+	public void writeNode( Node node, StringBuilder xmlDump, boolean includeMeta) {
 		RuleSetNode ruleSetNode = (RuleSetNode) node;
 		writeNode("ruleSet", ruleSetNode, xmlDump, includeMeta);
         RuleSetNode.RuleType ruleType = ruleSetNode.getRuleType();

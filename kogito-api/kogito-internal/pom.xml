@@ -37,6 +37,11 @@
       <artifactId>kogito-api</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-internal</artifactId>
+      <version>${version.org.kie7}</version>
+    </dependency>
+    <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
     </dependency>

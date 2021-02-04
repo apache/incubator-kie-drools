@@ -29,9 +29,9 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.jbpm.workflow.core.node.RuleSetNode;
-import org.kie.internal.ruleunit.RuleUnitDescription;
 import org.kie.kogito.rules.RuleUnits;
 import org.kie.kogito.rules.units.AssignableChecker;
+import org.kie.kogito.rules.units.KogitoRuleUnitDescription;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,12 +54,12 @@ public class RuleUnitHandler {
 
     public static final Logger logger = LoggerFactory.getLogger(ProcessToExecModelGenerator.class);
 
-    private final RuleUnitDescription ruleUnit;
+    private final KogitoRuleUnitDescription ruleUnit;
     private final ProcessContextMetaModel variableScope;
     private final RuleSetNode ruleSetNode;
     private final AssignableChecker assignableChecker;
 
-    public RuleUnitHandler(RuleUnitDescription ruleUnit, ProcessContextMetaModel variableScope, RuleSetNode ruleSetNode, AssignableChecker assignableChecker ) {
+    public RuleUnitHandler( KogitoRuleUnitDescription ruleUnit, ProcessContextMetaModel variableScope, RuleSetNode ruleSetNode, AssignableChecker assignableChecker ) {
         this.ruleUnit = ruleUnit;
         this.variableScope = variableScope;
         this.ruleSetNode = ruleSetNode;
@@ -100,7 +100,7 @@ public class RuleUnitHandler {
     /*
      * bind data to the rule unit POJO
      */
-    private BlockStmt bind(ProcessContextMetaModel variableScope, RuleSetNode node, RuleUnitDescription unitDescription) {
+    private BlockStmt bind(ProcessContextMetaModel variableScope, RuleSetNode node, KogitoRuleUnitDescription unitDescription) {
         RuleUnitMetaModel unit =
                 new RuleUnitMetaModel(unitDescription, "unit", assignableChecker );
 
@@ -164,7 +164,7 @@ public class RuleUnitHandler {
         return entries;
     }
 
-    private BlockStmt unbind(ProcessContextMetaModel variableScope, RuleSetNode node, RuleUnitDescription unitDescription) {
+    private BlockStmt unbind(ProcessContextMetaModel variableScope, RuleSetNode node, KogitoRuleUnitDescription unitDescription) {
         RuleUnitMetaModel unit =
                 new RuleUnitMetaModel(unitDescription, "unit", assignableChecker );
 

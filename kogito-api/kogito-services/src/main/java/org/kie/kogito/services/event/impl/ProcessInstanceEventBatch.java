@@ -30,15 +30,16 @@ import org.kie.api.event.process.ProcessNodeEvent;
 import org.kie.api.event.process.ProcessNodeLeftEvent;
 import org.kie.api.event.process.ProcessNodeTriggeredEvent;
 import org.kie.api.event.process.ProcessVariableChangedEvent;
-import org.kie.api.event.process.ProcessWorkItemTransitionEvent;
-import org.kie.api.runtime.process.HumanTaskWorkItem;
-import org.kie.api.runtime.process.NodeInstance;
-import org.kie.api.runtime.process.ProcessInstance;
-import org.kie.api.runtime.process.WorkItem;
-import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.kogito.Addons;
 import org.kie.kogito.event.DataEvent;
 import org.kie.kogito.event.EventBatch;
+import org.kie.kogito.internal.process.event.ProcessWorkItemTransitionEvent;
+import org.kie.kogito.internal.process.event.KogitoProcessVariableChangedEvent;
+import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
+import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcessInstance;
+import org.kie.kogito.process.workitem.HumanTaskWorkItem;
 import org.kie.kogito.services.event.ProcessInstanceDataEvent;
 import org.kie.kogito.services.event.UserTaskInstanceDataEvent;
 import org.kie.kogito.services.event.VariableInstanceDataEvent;
@@ -70,7 +71,7 @@ public class ProcessInstanceEventBatch implements EventBatch {
         Set<VariableInstanceEventBody> variables = new LinkedHashSet<>();
 
         for (ProcessEvent event : rawEvents) {
-            ProcessInstanceEventBody body = processInstances.computeIfAbsent(event.getProcessInstance().getId(), key -> create(event));
+            ProcessInstanceEventBody body = processInstances.computeIfAbsent( ((KogitoProcessInstance) event.getProcessInstance()).getStringId(), key -> create(event));
 
             if (event instanceof ProcessNodeTriggeredEvent) {
                 handleProcessNodeTriggeredEvent((ProcessNodeTriggeredEvent) event, body);
@@ -81,7 +82,7 @@ public class ProcessInstanceEventBatch implements EventBatch {
             } else if (event instanceof ProcessWorkItemTransitionEvent) {
                 handleProcessWorkItemTransitionEvent((ProcessWorkItemTransitionEvent) event, userTaskInstances);
             } else if (event instanceof ProcessVariableChangedEvent) {
-                handleProcessVariableChangedEvent((ProcessVariableChangedEvent) event, variables);
+                handleProcessVariableChangedEvent((KogitoProcessVariableChangedEvent) event, variables);
             }
         }
 
@@ -97,7 +98,7 @@ public class ProcessInstanceEventBatch implements EventBatch {
     protected void handleProcessCompletedEvent(ProcessCompletedEvent event, ProcessInstanceEventBody body) {
         // in case this is a process complete event always updated and date and state 
         body.update()
-                .endDate(((WorkflowProcessInstance) event.getProcessInstance()).getEndDate())
+                .endDate((( KogitoWorkflowProcessInstance ) event.getProcessInstance()).getEndDate())
                 .state(event.getProcessInstance().getState());
     }
 
@@ -118,23 +119,23 @@ public class ProcessInstanceEventBatch implements EventBatch {
     }
 
     protected void handleProcessWorkItemTransitionEvent(ProcessWorkItemTransitionEvent workItemTransitionEvent, Map<String, UserTaskInstanceEventBody> userTaskInstances) {
-        WorkItem workItem = workItemTransitionEvent.getWorkItem();
+        KogitoWorkItem workItem = workItemTransitionEvent.getWorkItem();
         if (workItem instanceof HumanTaskWorkItem && workItemTransitionEvent.isTransitioned()) {
-            userTaskInstances.putIfAbsent(workItem.getId(), createUserTask(workItemTransitionEvent));
+            userTaskInstances.putIfAbsent(workItem.getStringId(), createUserTask(workItemTransitionEvent));
         }
     }
 
-    protected void handleProcessVariableChangedEvent(ProcessVariableChangedEvent variableChangedEvent, Set<VariableInstanceEventBody> variables) {
+    protected void handleProcessVariableChangedEvent(KogitoProcessVariableChangedEvent variableChangedEvent, Set<VariableInstanceEventBody> variables) {
         if (variableChangedEvent.hasTag(TRACKED)) {
             variables.add(create(variableChangedEvent));
         }
     }
 
     protected UserTaskInstanceEventBody createUserTask(ProcessWorkItemTransitionEvent workItemTransitionEvent) {
-        WorkflowProcessInstance pi = (WorkflowProcessInstance) workItemTransitionEvent.getProcessInstance();
+        KogitoWorkflowProcessInstance pi = (KogitoWorkflowProcessInstance) workItemTransitionEvent.getProcessInstance();
         HumanTaskWorkItem workItem = (HumanTaskWorkItem) workItemTransitionEvent.getWorkItem();
         return UserTaskInstanceEventBody.create()
-                .id(workItem.getId())
+                .id(workItem.getStringId())
                 .state(workItem.getPhaseStatus())
                 .taskName(workItem.getTaskName())
                 .taskDescription(workItem.getTaskDescription())
@@ -148,7 +149,7 @@ public class ProcessInstanceEventBatch implements EventBatch {
                 .excludedUsers(workItem.getExcludedUsers())
                 .potentialGroups(workItem.getPotentialGroups())
                 .potentialUsers(workItem.getPotentialUsers())
-                .processInstanceId(pi.getId())
+                .processInstanceId(pi.getStringId())
                 .rootProcessInstanceId(pi.getRootProcessInstanceId())
                 .processId(pi.getProcessId())
                 .rootProcessId(pi.getRootProcessId())
@@ -158,11 +159,11 @@ public class ProcessInstanceEventBatch implements EventBatch {
     }
 
     protected ProcessInstanceEventBody create(ProcessEvent event) {
-        WorkflowProcessInstance pi = (WorkflowProcessInstance) event.getProcessInstance();
+        KogitoWorkflowProcessInstance pi = (KogitoWorkflowProcessInstance) event.getProcessInstance();
 
         ProcessInstanceEventBody.Builder eventBuilder = ProcessInstanceEventBody.create()
-                .id(pi.getId())
-                .parentInstanceId(pi.getParentProcessInstanceId())
+                .id(pi.getStringId())
+                .parentInstanceId(pi.getParentProcessInstanceStringId())
                 .rootInstanceId(pi.getRootProcessInstanceId())
                 .processId(pi.getProcessId())
                 .rootProcessId(pi.getRootProcessId())
@@ -174,7 +175,7 @@ public class ProcessInstanceEventBatch implements EventBatch {
                 .variables(pi.getVariables())
                 .milestones(createMilestones(pi));
 
-        if (pi.getState() == ProcessInstance.STATE_ERROR) {
+        if (pi.getState() == KogitoProcessInstance.STATE_ERROR) {
             eventBuilder.error(ProcessErrorEventBody.create()
                                        .nodeDefinitionId(pi.getNodeIdInError())
                                        .errorMessage(pi.getErrorMessage())
@@ -189,7 +190,7 @@ public class ProcessInstanceEventBatch implements EventBatch {
         return eventBuilder.build();
     }
 
-    protected Set<MilestoneEventBody> createMilestones(WorkflowProcessInstance pi) {
+    protected Set<MilestoneEventBody> createMilestones(KogitoWorkflowProcessInstance pi) {
         if (pi.milestones() == null) {
             return null;
         }
@@ -200,10 +201,10 @@ public class ProcessInstanceEventBatch implements EventBatch {
     }
 
     protected NodeInstanceEventBody create(ProcessNodeEvent event) {
-        NodeInstance ni = event.getNodeInstance();
+        KogitoNodeInstance ni = ( KogitoNodeInstance ) event.getNodeInstance();
 
         return NodeInstanceEventBody.create()
-                .id(ni.getId())
+                .id(ni.getStringId())
                 .nodeId(String.valueOf(ni.getNodeId()))
                 .nodeDefinitionId(ni.getNodeDefinitionId())
                 .nodeName(ni.getNodeName())
@@ -213,13 +214,15 @@ public class ProcessInstanceEventBatch implements EventBatch {
                 .build();
     }
 
-    protected VariableInstanceEventBody create(ProcessVariableChangedEvent event) {
+    protected VariableInstanceEventBody create(KogitoProcessVariableChangedEvent event) {
+        KogitoProcessInstance pi = (KogitoProcessInstance) event.getProcessInstance();
+
         VariableInstanceEventBody.Builder eventBuilder = VariableInstanceEventBody.create()
                 .changeDate(event.getEventDate())
-                .processId(event.getProcessInstance().getProcessId())
-                .processInstanceId(event.getProcessInstance().getId())
-                .rootProcessId(event.getProcessInstance().getRootProcessId())
-                .rootProcessInstanceId(event.getProcessInstance().getRootProcessInstanceId())
+                .processId(pi.getProcessId())
+                .processInstanceId(pi.getStringId())
+                .rootProcessId(pi.getRootProcessId())
+                .rootProcessInstanceId(pi.getRootProcessInstanceId())
                 .variableName(event.getVariableId())
                 .variableValue(event.getNewValue())
                 .variablePreviousValue(event.getOldValue());

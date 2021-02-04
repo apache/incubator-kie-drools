@@ -23,6 +23,7 @@ import org.jbpm.process.instance.impl.workitem.Abort;
 import org.jbpm.process.instance.impl.workitem.Active;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemManager;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
 import org.kie.kogito.process.workitem.LifeCycle;
 import org.kie.kogito.process.workitem.LifeCyclePhase;
 import org.kie.kogito.process.workitem.Transition;
@@ -46,24 +47,29 @@ public class HumanTaskWorkItemHandler implements WorkItemHandler {
     }
 
     @Override
-    public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
-        lifeCycle.transitionTo(workItem, manager, new HumanTaskTransition(Active.ID));
+    public void executeWorkItem( WorkItem workItem, WorkItemManager manager) {
+        lifeCycle.transitionTo((KogitoWorkItem) workItem, manager, new HumanTaskTransition(Active.ID));
     }
 
     @Override
     public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
-        lifeCycle.transitionTo(workItem, manager, new HumanTaskTransition(Abort.ID));
+        lifeCycle.transitionTo((KogitoWorkItem) workItem, manager, new HumanTaskTransition(Abort.ID));
     }
 
     @SuppressWarnings("unchecked")
-    @Override
-    public void transitionToPhase(WorkItem workItem, WorkItemManager manager, Transition<?> transition) {
-        lifeCycle.transitionTo(workItem, manager, (Transition<Map<String, Object>>) transition);
+    public static boolean transitionToPhase(WorkItemHandler handler, KogitoWorkItem workItem, WorkItemManager manager, Transition<?> transition) {
+        if (handler instanceof HumanTaskWorkItemHandler) {
+            (( HumanTaskWorkItemHandler ) handler).lifeCycle.transitionTo( workItem, manager, ( Transition<Map<String, Object>> ) transition );
+            return true;
+        }
+        return false;
     }
     
-    @Override
-    public Stream<LifeCyclePhase> allowedPhases(String phaseId) {
-        return lifeCycle.allowedPhases(phaseId);
+    public static Stream<LifeCyclePhase> allowedPhases(WorkItemHandler handler, String phaseId) {
+        if (handler instanceof HumanTaskWorkItemHandler) {
+            return (( HumanTaskWorkItemHandler ) handler).lifeCycle.allowedPhases( phaseId );
+        }
+        return null;
     }
 
 }

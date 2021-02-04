@@ -55,6 +55,7 @@ import org.kie.kogito.codegen.api.io.CollectedResource;
 import org.kie.kogito.codegen.process.config.ProcessConfigGenerator;
 import org.kie.kogito.codegen.process.events.CloudEventsResourceGenerator;
 import org.kie.kogito.codegen.process.events.TopicsInformationResourceGenerator;
+import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
 import org.kie.kogito.rules.units.UndefinedGeneratedRuleUnitVariable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -163,7 +164,7 @@ public class ProcessCodegen extends AbstractGenerator {
         }
     }
 
-    private final Map<String, WorkflowProcess> processes;
+    private final Map<String, KogitoWorkflowProcess> processes;
     private final Set<GeneratedFile> generatedFiles = new HashSet<>();
 
     public ProcessCodegen(KogitoBuildContext context, Collection<? extends Process> processes) {
@@ -173,7 +174,7 @@ public class ProcessCodegen extends AbstractGenerator {
             if (this.processes.containsKey(process.getId())) {
                 throw new ProcessCodegenException(format("Duplicated process with id %s found in the project, please review .bpmn files", process.getId()));
             }
-            this.processes.put(process.getId(), (WorkflowProcess) process);
+            this.processes.put(process.getId(), (KogitoWorkflowProcess) process);
         }
     }
 
@@ -230,7 +231,7 @@ public class ProcessCodegen extends AbstractGenerator {
                 new ProcessToExecModelGenerator(context().getClassLoader());
 
         // collect all process descriptors (exec model)
-        for (WorkflowProcess workFlowProcess : processes.values()) {
+        for (KogitoWorkflowProcess workFlowProcess : processes.values()) {
             ProcessExecutableModelGenerator execModelGen =
                     new ProcessExecutableModelGenerator(workFlowProcess, execModelGenerator);
             String packageName = workFlowProcess.getPackageName();
@@ -251,7 +252,7 @@ public class ProcessCodegen extends AbstractGenerator {
         // generate Process, ProcessInstance classes and the REST resource
         for (ProcessExecutableModelGenerator execModelGen : processExecutableModelGenerators) {
             String classPrefix = StringUtils.ucFirst(execModelGen.extractedProcessId());
-            WorkflowProcess workFlowProcess = execModelGen.process();
+            KogitoWorkflowProcess workFlowProcess = execModelGen.process();
             ModelClassGenerator modelClassGenerator =
                     processIdToModelGenerator.get(execModelGen.getProcessId());
 

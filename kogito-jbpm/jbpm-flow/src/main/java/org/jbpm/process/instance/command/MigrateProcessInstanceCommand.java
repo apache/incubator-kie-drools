@@ -24,7 +24,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
-
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.instance.NodeInstanceContainer;
@@ -35,12 +34,12 @@ import org.kie.api.definition.process.WorkflowProcess;
 import org.kie.api.runtime.Context;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.NodeInstance;
-import org.kie.internal.command.ProcessInstanceIdCommand;
 import org.kie.internal.command.RegistryContext;
+import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 
 @XmlRootElement(name="get-completed-tasks-command")
 @XmlAccessorType(XmlAccessType.NONE)
-public class MigrateProcessInstanceCommand implements ExecutableCommand<Void>, ProcessInstanceIdCommand  {
+public class MigrateProcessInstanceCommand implements ExecutableCommand<Void>, KogitoProcessInstanceIdCommand  {
 	
     private static final long serialVersionUID = 6L;
 
@@ -93,17 +92,17 @@ public class MigrateProcessInstanceCommand implements ExecutableCommand<Void>, P
 	}
 
 	public Void execute(Context context ) {
-        KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
+        KogitoProcessRuntime runtime = ( KogitoProcessRuntime ) ((RegistryContext) context).lookup( KieSession.class );
         WorkflowProcessInstanceImpl processInstance = (WorkflowProcessInstanceImpl)
-    		ksession.getProcessInstance(processInstanceId);
+                runtime.getProcessInstance(processInstanceId);
         if (processInstance == null) {
             throw new IllegalArgumentException("Could not find process instance " + processInstanceId);
         }
         if (processId == null) {
             throw new IllegalArgumentException("Null process id");
         }
-        WorkflowProcess process = (WorkflowProcess)
-            ksession.getKieBase().getProcess(processId);
+
+        WorkflowProcess process = (WorkflowProcess) runtime.getKieBase().getProcess(processId);
         if (process == null) {
             throw new IllegalArgumentException("Could not find process " + processId);
         }
@@ -118,7 +117,7 @@ public class MigrateProcessInstanceCommand implements ExecutableCommand<Void>, P
 	    		nodeMapping = new HashMap<String, Long>();
 	    	}
 	        updateNodeInstances(processInstance, nodeMapping);
-	        processInstance.setKnowledgeRuntime((InternalKnowledgeRuntime) ksession);
+	        processInstance.setKnowledgeRuntime((InternalKnowledgeRuntime) runtime);
 	        processInstance.setProcess(process);
 	        processInstance.reconnect();
 		}

@@ -18,13 +18,13 @@ package org.jbpm.workflow.instance.node;
 
 import java.util.Set;
 
-import org.kie.kogito.process.workitems.KogitoWorkItem;
 import org.jbpm.process.core.context.swimlane.SwimlaneContext;
 import org.jbpm.process.instance.context.swimlane.SwimlaneContextInstance;
 import org.jbpm.process.instance.impl.humantask.HumanTaskWorkItemImpl;
 import org.jbpm.workflow.core.node.HumanTaskNode;
 import org.jbpm.workflow.core.node.WorkItemNode;
-import org.kie.api.runtime.process.HumanTaskWorkItem;
+import org.kie.kogito.process.workitem.HumanTaskWorkItem;
+import org.kie.kogito.process.workitems.KogitoWorkItem;
 
 public class HumanTaskNodeInstance extends WorkItemNodeInstance {
 

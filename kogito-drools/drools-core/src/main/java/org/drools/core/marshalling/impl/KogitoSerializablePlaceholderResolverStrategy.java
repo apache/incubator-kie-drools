@@ -21,10 +21,10 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.marshalling.ObjectMarshallingStrategyAcceptor;
+import org.kie.kogito.internal.process.marshalling.KogitoObjectMarshallingStrategy;
 
-public class KogitoSerializablePlaceholderResolverStrategy implements ObjectMarshallingStrategy {
+public class KogitoSerializablePlaceholderResolverStrategy implements KogitoObjectMarshallingStrategy {
 
     private int index;
 

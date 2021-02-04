@@ -24,7 +24,7 @@ import org.xml.sax.Attributes;
 
 public class TimerNodeHandler extends AbstractNodeHandler {
     
-    protected Node createNode(Attributes attrs) {
+    protected Node createNode( Attributes attrs) {
         throw new IllegalArgumentException("Reading in should be handled by intermediate catch event handler");
     }
     
@@ -33,7 +33,7 @@ public class TimerNodeHandler extends AbstractNodeHandler {
         return TimerNode.class;
     }
 
-	public void writeNode(Node node, StringBuilder xmlDump, int metaDataType) {
+	public void writeNode( Node node, StringBuilder xmlDump, int metaDataType) {
 	    TimerNode timerNode = (TimerNode) node;
 		writeNode("intermediateCatchEvent", timerNode, xmlDump, metaDataType);
 		xmlDump.append(">" + EOL);

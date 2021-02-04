@@ -40,7 +40,7 @@ import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.logger.KnowledgeRuntimeLoggerFactory;
+import org.kie.kogito.logger.KogitoRuntimeLoggerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -228,7 +228,7 @@ public class ProcessDynamicNodeTest extends AbstractBaseTest {
 		kbuilder.add(ResourceFactory.newReaderResource(source), ResourceType.DRF);
 		KieBase kbase = kbuilder.newKieBase();
 		KieSession ksession = kbase.newKieSession();
-		KieRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger(ksession, "test");
+		KieRuntimeLogger logger = KogitoRuntimeLoggerFactory.newFileLogger(ksession, "test");
 		TestWorkItemHandler handler = new TestWorkItemHandler();
 		ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
 		// start a new process instance
@@ -317,7 +317,7 @@ public class ProcessDynamicNodeTest extends AbstractBaseTest {
 		kbuilder.add(ResourceFactory.newReaderResource(source2), ResourceType.DRF);
 		KieBase kbase = kbuilder.newKieBase();
 		KieSession ksession = kbase.newKieSession();
-		KieRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger(ksession, "test");
+		KieRuntimeLogger logger = KogitoRuntimeLoggerFactory.newFileLogger(ksession, "test");
 		TestWorkItemHandler handler = new TestWorkItemHandler();
 		ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
 		// start a new process instance

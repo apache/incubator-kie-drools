@@ -21,13 +21,13 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.kie.api.runtime.process.WorkItem;
-import org.kie.api.runtime.process.WorkItemHandler;
-import org.kie.api.runtime.process.WorkItemManager;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ServiceTaskHandler implements WorkItemHandler {
+public class ServiceTaskHandler implements KogitoWorkItemHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(ServiceTaskHandler.class);
     
@@ -41,7 +41,7 @@ public class ServiceTaskHandler implements WorkItemHandler {
         this.resultVarName = resultVarName;
     }
 
-    public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
+    public void executeWorkItem( KogitoWorkItem workItem, KogitoWorkItemManager manager) {
         String service = (String) workItem.getParameter("Interface");
         String interfaceImplementationRef = (String) workItem.getParameter("interfaceImplementationRef"); 
         String operation = (String) workItem.getParameter("Operation");
@@ -78,7 +78,7 @@ public class ServiceTaskHandler implements WorkItemHandler {
             Object result = method.invoke(instance, params);
             Map<String, Object> results = new HashMap<>();
             results.put(resultVarName, result);
-            manager.completeWorkItem(workItem.getId(), results);
+            manager.completeWorkItem(workItem.getStringId(), results);
         } catch (Throwable cnfe) {
             handleException(cnfe, service, interfaceImplementationRef, operation, parameterType, parameter);
         }
@@ -106,7 +106,7 @@ public class ServiceTaskHandler implements WorkItemHandler {
         
     }
     
-    public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
+    public void abortWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager manager) {
         // Do nothing, cannot be aborted
     }
 }

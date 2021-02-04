@@ -23,13 +23,13 @@ import java.util.function.BiFunction;
 
 import org.jbpm.process.core.Process;
 import org.jbpm.process.instance.ProcessInstance;
-import org.kie.api.definition.process.Node;
+import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
 
 /**
  * Represents a RuleFlow process. 
  * 
  */
-public interface WorkflowProcess extends org.kie.api.definition.process.WorkflowProcess, Process, NodeContainer {
+public interface WorkflowProcess extends KogitoWorkflowProcess, Process, NodeContainer {
 
     int PROCESS_TYPE = 1;
     int CASE_TYPE = 2;

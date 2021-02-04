@@ -30,8 +30,8 @@ public class ActionNodeHandler extends AbstractNodeHandler {
         return new ActionNode();
     }
 
-    public void handleNode(final Node node, final Element element, final String uri,
-            final String localName, final ExtensibleXmlParser parser)
+    public void handleNode( final Node node, final Element element, final String uri,
+                            final String localName, final ExtensibleXmlParser parser)
             throws SAXException {
         super.handleNode(node, element, uri, localName, parser);
         ActionNode actionNode = (ActionNode) node;
@@ -48,7 +48,7 @@ public class ActionNodeHandler extends AbstractNodeHandler {
         return ActionNode.class;
     }
 
-	public void writeNode(Node node, StringBuilder xmlDump, boolean includeMeta) {
+	public void writeNode( Node node, StringBuilder xmlDump, boolean includeMeta) {
 		ActionNode actionNode = (ActionNode) node;
 		writeNode("actionNode", actionNode, xmlDump, includeMeta);
         DroolsConsequenceAction action = (DroolsConsequenceAction) actionNode.getAction();

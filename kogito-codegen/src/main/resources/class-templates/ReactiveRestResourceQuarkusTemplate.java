@@ -20,7 +20,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 
-import org.kie.api.runtime.process.WorkItemNotFoundException;
 import org.kie.kogito.Application;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;

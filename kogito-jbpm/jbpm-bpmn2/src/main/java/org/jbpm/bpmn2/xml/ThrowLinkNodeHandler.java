@@ -29,12 +29,12 @@ public class ThrowLinkNodeHandler extends AbstractNodeHandler {
 	}
 
 	@Override
-	protected Node createNode(Attributes attrs) {
+	protected Node createNode( Attributes attrs) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public void writeNode(Node node, StringBuilder xmlDump, int metaDataType) {
+	public void writeNode( Node node, StringBuilder xmlDump, int metaDataType) {
 
 		ThrowLinkNode linkNode = (ThrowLinkNode) node;
 

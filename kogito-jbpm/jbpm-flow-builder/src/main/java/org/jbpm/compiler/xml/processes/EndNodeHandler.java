@@ -28,8 +28,8 @@ public class EndNodeHandler extends AbstractNodeHandler {
         return new EndNode();
     }
 
-    public void handleNode(final Node node, final Element element, final String uri,
-            final String localName, final ExtensibleXmlParser parser)
+    public void handleNode( final Node node, final Element element, final String uri,
+                            final String localName, final ExtensibleXmlParser parser)
             throws SAXException {
         super.handleNode(node, element, uri, localName, parser);
         EndNode endNode = (EndNode) node;
@@ -43,7 +43,7 @@ public class EndNodeHandler extends AbstractNodeHandler {
         return EndNode.class;
     }
 
-	public void writeNode(Node node, StringBuilder xmlDump, boolean includeMeta) {
+	public void writeNode( Node node, StringBuilder xmlDump, boolean includeMeta) {
 		EndNode endNode = (EndNode) node;
 		writeNode("end", endNode, xmlDump, includeMeta);
 		boolean terminate = endNode.isTerminate();

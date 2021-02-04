@@ -49,7 +49,7 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
     
 	private DataTransformerRegistry transformerRegistry = DataTransformerRegistry.get();
 
-    protected Node createNode(Attributes attrs) {
+    protected Node createNode( Attributes attrs) {
         return new BoundaryEventNode();
     }
 
@@ -61,7 +61,7 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
     public Object end(final String uri, final String localName,
                       final ExtensibleXmlParser parser) throws SAXException {
         final Element element = parser.endElementBuilder();
-        Node node = (Node) parser.getCurrent();
+        Node node = ( Node ) parser.getCurrent();
         String attachedTo = element.getAttribute("attachedToRef");
         Attr cancelActivityAttr = element.getAttributeNode("cancelActivity");
         boolean cancelActivity = true;
@@ -116,9 +116,9 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
     }
 
     @SuppressWarnings("unchecked")
-	protected void handleEscalationNode(final Node node, final Element element, final String uri,
-            final String localName, final ExtensibleXmlParser parser, final String attachedTo,
-            final boolean cancelActivity) throws SAXException {
+	protected void handleEscalationNode( final Node node, final Element element, final String uri,
+                                         final String localName, final ExtensibleXmlParser parser, final String attachedTo,
+                                         final boolean cancelActivity) throws SAXException {
         super.handleNode(node, element, uri, localName, parser);
         BoundaryEventNode eventNode = (BoundaryEventNode) node;
         eventNode.setMetaData("AttachedTo", attachedTo);
@@ -169,9 +169,9 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
     }
 
     @SuppressWarnings("unchecked")
-	protected void handleErrorNode(final Node node, final Element element, final String uri,
-            final String localName, final ExtensibleXmlParser parser, final String attachedTo,
-            final boolean cancelActivity) throws SAXException {
+	protected void handleErrorNode( final Node node, final Element element, final String uri,
+                                    final String localName, final ExtensibleXmlParser parser, final String attachedTo,
+                                    final boolean cancelActivity) throws SAXException {
         super.handleNode(node, element, uri, localName, parser);
         BoundaryEventNode eventNode = (BoundaryEventNode) node;
         eventNode.setMetaData("AttachedTo", attachedTo);
@@ -231,9 +231,9 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
         }
     }
 
-    protected void handleTimerNode(final Node node, final Element element, final String uri,
-            final String localName, final ExtensibleXmlParser parser, final String attachedTo,
-            final boolean cancelActivity) throws SAXException {
+    protected void handleTimerNode( final Node node, final Element element, final String uri,
+                                    final String localName, final ExtensibleXmlParser parser, final String attachedTo,
+                                    final boolean cancelActivity) throws SAXException {
         super.handleNode(node, element, uri, localName, parser);
         BoundaryEventNode eventNode = (BoundaryEventNode) node;
         eventNode.setMetaData("AttachedTo", attachedTo);
@@ -292,9 +292,9 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
         }
     }
 
-    protected void handleCompensationNode(final Node node, final Element element, final String uri,
-            final String localName, final ExtensibleXmlParser parser, final String attachedTo,
-            final boolean cancelActivity) throws SAXException {
+    protected void handleCompensationNode( final Node node, final Element element, final String uri,
+                                           final String localName, final ExtensibleXmlParser parser, final String attachedTo,
+                                           final boolean cancelActivity) throws SAXException {
         BoundaryEventNode eventNode = (BoundaryEventNode) parser.getCurrent();
 
         super.handleNode(node, element, uri, localName, parser);
@@ -328,10 +328,10 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
         ProcessHandler.addCompensationScope((RuleFlowProcess) parser.getParent(RuleFlowProcess.class), eventNode, parentContainer, attachedTo);
     }
 
-    protected void handleSignalNode(final Node node, final Element element,
-            final String uri, final String localName,
-            final ExtensibleXmlParser parser, final String attachedTo,
-            final boolean cancelActivity) throws SAXException {
+    protected void handleSignalNode( final Node node, final Element element,
+                                     final String uri, final String localName,
+                                     final ExtensibleXmlParser parser, final String attachedTo,
+                                     final boolean cancelActivity) throws SAXException {
         super.handleNode(node, element, uri, localName, parser);
         BoundaryEventNode eventNode = (BoundaryEventNode) node;
         eventNode.setMetaData("AttachedTo", attachedTo);
@@ -365,10 +365,10 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
         }
     }
 
-    protected void handleConditionNode(final Node node, final Element element,
-            final String uri, final String localName,
-            final ExtensibleXmlParser parser, final String attachedTo,
-            final boolean cancelActivity) throws SAXException {
+    protected void handleConditionNode( final Node node, final Element element,
+                                        final String uri, final String localName,
+                                        final ExtensibleXmlParser parser, final String attachedTo,
+                                        final boolean cancelActivity) throws SAXException {
         super.handleNode(node, element, uri, localName, parser);
         BoundaryEventNode eventNode = (BoundaryEventNode) node;
         eventNode.setMetaData("AttachedTo", attachedTo);
@@ -404,10 +404,10 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
         }
     }
 
-    protected void handleMessageNode(final Node node, final Element element,
-            final String uri, final String localName,
-            final ExtensibleXmlParser parser, final String attachedTo,
-            final boolean cancelActivity) throws SAXException {
+    protected void handleMessageNode( final Node node, final Element element,
+                                      final String uri, final String localName,
+                                      final ExtensibleXmlParser parser, final String attachedTo,
+                                      final boolean cancelActivity) throws SAXException {
         super.handleNode(node, element, uri, localName, parser);
         BoundaryEventNode eventNode = (BoundaryEventNode) node;
         eventNode.setMetaData("AttachedTo", attachedTo);
@@ -474,7 +474,7 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
 
     }
 
-    public void writeNode(Node node, StringBuilder xmlDump, int metaDataType) {
+    public void writeNode( Node node, StringBuilder xmlDump, int metaDataType) {
         EventNode eventNode = (EventNode) node;
         String attachedTo = (String) eventNode.getMetaData("AttachedTo");
         if (attachedTo != null) {

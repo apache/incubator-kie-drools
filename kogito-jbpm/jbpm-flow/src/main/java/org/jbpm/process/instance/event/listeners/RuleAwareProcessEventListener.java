@@ -27,6 +27,8 @@ import org.kie.api.event.process.ProcessVariableChangedEvent;
 import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.api.runtime.rule.FactHandle;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
+import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcessInstance;
 
 /**
  * Process event listener that is responsible for managing process instance as fact
@@ -42,7 +44,7 @@ public class RuleAwareProcessEventListener implements ProcessEventListener {
     public void beforeProcessStarted(ProcessStartedEvent event) {
         
         FactHandle handle = event.getKieRuntime().insert(event.getProcessInstance());
-        store.put(event.getProcessInstance().getId(), handle);
+        store.put(((KogitoProcessInstance)event.getProcessInstance()).getStringId(), handle);
     }
 
     public void afterProcessStarted(ProcessStartedEvent event) {
@@ -54,7 +56,7 @@ public class RuleAwareProcessEventListener implements ProcessEventListener {
     }
 
     public void afterProcessCompleted(ProcessCompletedEvent event) {
-        FactHandle handle = getProcessInstanceFactHandle(event.getProcessInstance().getId(), event.getKieRuntime());
+        FactHandle handle = getProcessInstanceFactHandle(((KogitoProcessInstance)event.getProcessInstance()).getStringId(), event.getKieRuntime());
         
         if (handle != null) {
             event.getKieRuntime().delete(handle);
@@ -82,13 +84,13 @@ public class RuleAwareProcessEventListener implements ProcessEventListener {
     }
 
     public void afterVariableChanged(ProcessVariableChangedEvent event) {
-        FactHandle handle = getProcessInstanceFactHandle(event.getProcessInstance().getId(), event.getKieRuntime());
+        FactHandle handle = getProcessInstanceFactHandle(((KogitoProcessInstance)event.getProcessInstance()).getStringId(), event.getKieRuntime());
         
         if (handle != null) {
             event.getKieRuntime().update(handle, event.getProcessInstance());
         } else {
             handle = event.getKieRuntime().insert(event.getProcessInstance());
-            store.put(event.getProcessInstance().getId(), handle);
+            store.put(((KogitoProcessInstance)event.getProcessInstance()).getStringId(), handle);
         }
     }
 
@@ -101,7 +103,7 @@ public class RuleAwareProcessEventListener implements ProcessEventListener {
         //else try to search for it in the working memory
         Collection<FactHandle> factHandles = kruntime.getFactHandles(
                 object -> WorkflowProcessInstance.class.isAssignableFrom(object.getClass())
-                        && (((WorkflowProcessInstance) object).getId().equals(processInstanceId)));
+                        && ((( KogitoWorkflowProcessInstance ) object).getStringId().equals(processInstanceId)));
         
         if (factHandles != null && !factHandles.isEmpty()) {
             FactHandle handle = factHandles.iterator().next();

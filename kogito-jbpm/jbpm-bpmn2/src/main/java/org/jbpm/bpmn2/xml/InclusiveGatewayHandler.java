@@ -23,7 +23,7 @@ import org.xml.sax.Attributes;
 
 public class InclusiveGatewayHandler extends AbstractNodeHandler {
     
-    protected Node createNode(Attributes attrs) {
+    protected Node createNode( Attributes attrs) {
         final String type = attrs.getValue("gatewayDirection");
         if ("Converging".equals(type)) {
             Join join = new Join();
@@ -46,7 +46,7 @@ public class InclusiveGatewayHandler extends AbstractNodeHandler {
         return Node.class;
     }
 
-	public void writeNode(Node node, StringBuilder xmlDump, int metaDataType) {
+	public void writeNode( Node node, StringBuilder xmlDump, int metaDataType) {
 		throw new IllegalArgumentException("Writing out should be handled by split / join handler");
 	}
 

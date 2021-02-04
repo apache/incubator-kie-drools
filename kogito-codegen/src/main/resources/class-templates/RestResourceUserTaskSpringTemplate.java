@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.jbpm.util.JsonSchemaUtil;
-import org.kie.api.runtime.process.WorkItemNotFoundException;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.WorkItem;
 import org.kie.kogito.process.impl.Sig;

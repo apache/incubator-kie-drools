@@ -85,7 +85,7 @@ public class ProcessSplitTest extends AbstractBaseTest {
             "    </split>" +
             "    <end id=\"8\" name=\"End\" />" +
             "    <actionNode id=\"6\" name=\"Action\" >" +
-            "        <action type=\"expression\" dialect=\"mvel\" >list.add(kcontext.getProcessInstance().getId());</action>" +
+            "        <action type=\"expression\" dialect=\"mvel\" >list.add(kcontext.getProcessInstance().getStringId());</action>" +
             "    </actionNode>" +
             "    <start id=\"1\" name=\"Start\" />" +
             "    <end id=\"3\" name=\"End\" />" +
@@ -170,7 +170,7 @@ public class ProcessSplitTest extends AbstractBaseTest {
             "    </split>" +
             "    <end id=\"8\" name=\"End\" />" +
             "    <actionNode id=\"6\" name=\"Action\" >" +
-            "        <action type=\"expression\" dialect=\"mvel\" >list.add(kcontext.getProcessInstance().getId());</action>" +
+            "        <action type=\"expression\" dialect=\"mvel\" >list.add(kcontext.getProcessInstance().getStringId());</action>" +
             "    </actionNode>" +
             "    <start id=\"1\" name=\"Start\" />" +
             "    <end id=\"3\" name=\"End\" />" +
@@ -258,7 +258,7 @@ public class ProcessSplitTest extends AbstractBaseTest {
             "    </split>" +
             "    <end id=\"8\" name=\"End\" />" +
             "    <actionNode id=\"6\" name=\"Action\" >" +
-            "        <action type=\"expression\" dialect=\"mvel\" >list.add(kcontext.getProcessInstance().getId());</action>" +
+            "        <action type=\"expression\" dialect=\"mvel\" >list.add(kcontext.getProcessInstance().getStringId());</action>" +
             "    </actionNode>" +
             "    <start id=\"1\" name=\"Start\" />" +
             "    <end id=\"3\" name=\"End\" />" +
@@ -323,7 +323,7 @@ public class ProcessSplitTest extends AbstractBaseTest {
             "    </split>" +
             "    <end id=\"8\" name=\"End\" />" +
             "    <actionNode id=\"6\" name=\"Action\" >" +
-            "        <action type=\"expression\" dialect=\"mvel\" >list.add(context.getProcessInstance().getId());</action>" +
+            "        <action type=\"expression\" dialect=\"mvel\" >list.add(context.getProcessInstance().getStringId());</action>" +
             "    </actionNode>" +
             "    <start id=\"1\" name=\"Start\" />" +
             "    <end id=\"3\" name=\"End\" />" +
@@ -388,7 +388,7 @@ public class ProcessSplitTest extends AbstractBaseTest {
             "    </split>" +
             "    <end id=\"8\" name=\"End\" />" +
             "    <actionNode id=\"6\" name=\"Action\" >" +
-            "        <action type=\"expression\" dialect=\"mvel\" >list.add(kcontext.getProcessInstance().getId());</action>" +
+            "        <action type=\"expression\" dialect=\"mvel\" >list.add(kcontext.getProcessInstance().getStringId());</action>" +
             "    </actionNode>" +
             "    <start id=\"1\" name=\"Start\" />" +
             "    <end id=\"3\" name=\"End\" />" +
@@ -453,7 +453,7 @@ public class ProcessSplitTest extends AbstractBaseTest {
             "    </split>" +
             "    <end id=\"8\" name=\"End\" />" +
             "    <actionNode id=\"6\" name=\"Action\" >" +
-            "        <action type=\"expression\" dialect=\"mvel\" >list.add(kcontext.getProcessInstance().getId());</action>" +
+            "        <action type=\"expression\" dialect=\"mvel\" >list.add(kcontext.getProcessInstance().getStringId());</action>" +
             "    </actionNode>" +
             "    <start id=\"1\" name=\"Start\" />" +
             "    <end id=\"3\" name=\"End\" />" +
@@ -518,7 +518,7 @@ public class ProcessSplitTest extends AbstractBaseTest {
             "    </split>" +
             "    <end id=\"8\" name=\"End\" />" +
             "    <actionNode id=\"6\" name=\"Action\" >" +
-            "        <action type=\"expression\" dialect=\"mvel\" >list.add(context.getProcessInstance().getId());</action>" +
+            "        <action type=\"expression\" dialect=\"mvel\" >list.add(context.getProcessInstance().getStringId());</action>" +
             "    </actionNode>" +
             "    <start id=\"1\" name=\"Start\" />" +
             "    <end id=\"3\" name=\"End\" />" +
@@ -583,7 +583,7 @@ public class ProcessSplitTest extends AbstractBaseTest {
             "    </split>" +
             "    <end id=\"8\" name=\"End\" />" +
             "    <actionNode id=\"6\" name=\"Action\" >" +
-            "        <action type=\"expression\" dialect=\"mvel\" >list.add(context.getProcessInstance().getId());</action>" +
+            "        <action type=\"expression\" dialect=\"mvel\" >list.add(context.getProcessInstance().getStringId());</action>" +
             "    </actionNode>" +
             "    <start id=\"1\" name=\"Start\" />" +
             "    <end id=\"3\" name=\"End\" />" +
@@ -648,7 +648,7 @@ public class ProcessSplitTest extends AbstractBaseTest {
             "    </split>" +
             "    <end id=\"8\" name=\"End\" />" +
             "    <actionNode id=\"6\" name=\"Action\" >" +
-            "        <action type=\"expression\" dialect=\"mvel\" >list.add(context.getProcessInstance().getId());</action>" +
+            "        <action type=\"expression\" dialect=\"mvel\" >list.add(context.getProcessInstance().getStringId());</action>" +
             "    </actionNode>" +
             "    <start id=\"1\" name=\"Start\" />" +
             "    <end id=\"3\" name=\"End\" />" +
@@ -708,7 +708,7 @@ public class ProcessSplitTest extends AbstractBaseTest {
             "    </split>" +
             "    <end id=\"8\" name=\"End\" />" +
             "    <actionNode id=\"6\" name=\"Action\" >" +
-            "        <action type=\"expression\" dialect=\"mvel\" >list.add(context.getProcessInstance().getId());</action>" +
+            "        <action type=\"expression\" dialect=\"mvel\" >list.add(context.getProcessInstance().getStringId());</action>" +
             "    </actionNode>" +
             "    <start id=\"1\" name=\"Start\" />" +
             "    <end id=\"3\" name=\"End\" />" +

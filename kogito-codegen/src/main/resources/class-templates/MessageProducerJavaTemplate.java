@@ -2,7 +2,7 @@ package com.myspace.demo;
 
 import java.util.Optional;
 
-import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.event.impl.DefaultEventMarshaller;
 import org.kie.kogito.services.event.EventMarshaller;
 
@@ -18,16 +18,16 @@ public class MessageProducer {
 
     }
 
-    public void produce(ProcessInstance pi, $Type$ eventData) {
+    public void produce(KogitoProcessInstance pi, $Type$ eventData) {
 
     }
 
-    private String marshall(ProcessInstance pi, $Type$ eventData) {
+    private String marshall(KogitoProcessInstance pi, $Type$ eventData) {
         return marshaller.marshall(eventData,
                                    e -> new $DataEventType$("",
                                                             e,
-                                                            pi.getId(),
-                                                            pi.getParentProcessInstanceId(),
+                                                            pi.getStringId(),
+                                                            pi.getParentProcessInstanceStringId(),
                                                             pi.getRootProcessInstanceId(),
                                                             pi.getProcessId(),
                                                             pi.getRootProcessId(),

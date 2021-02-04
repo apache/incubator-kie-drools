@@ -58,7 +58,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
     protected void initValidPeers() {
         this.validPeers = new HashSet<Class<?>>();
         this.validPeers.add(null);
-        this.validPeers.add(Node.class);
+        this.validPeers.add( Node.class);
     }
 
     public Object start(final String uri, final String localName, final Attributes attrs,
@@ -86,13 +86,13 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
     public Object end(final String uri, final String localName,
                       final ExtensibleXmlParser parser) throws SAXException {
         final Element element = parser.endElementBuilder();
-        Node node = (Node) parser.getCurrent();
+        Node node = ( Node ) parser.getCurrent();
         handleNode(node, element, uri, localName, parser);
         return node;
     }
     
-    protected void handleNode(final Node node, final Element element, final String uri, 
-            final String localName, final ExtensibleXmlParser parser) throws SAXException {
+    protected void handleNode( final Node node, final Element element, final String uri,
+                               final String localName, final ExtensibleXmlParser parser) throws SAXException {
         final String x = element.getAttribute("x");
         if (x != null && x.length() != 0) {
             try {
@@ -166,9 +166,9 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
     	}
     }
     
-    public abstract void writeNode(final Node node, final StringBuilder xmlDump, final boolean includeMeta);
+    public abstract void writeNode( final Node node, final StringBuilder xmlDump, final boolean includeMeta);
     
-    protected void writeNode(final String name, final Node node, final StringBuilder xmlDump, final boolean includeMeta) {
+    protected void writeNode( final String name, final Node node, final StringBuilder xmlDump, final boolean includeMeta) {
     	xmlDump.append("    <" + name + " id=\"" + node.getId() + "\" "); 
         if (node.getName() != null) {
             xmlDump.append("name=\"" + XmlDumper.replaceIllegalChars(node.getName()) + "\" ");
@@ -213,7 +213,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
         return false;
     }
     
-    protected void writeMetaData(final Node node, final StringBuilder xmlDump) {
+    protected void writeMetaData( final Node node, final StringBuilder xmlDump) {
         for (Map.Entry<String, Object> entry: ((NodeImpl) node).getMetaData().entrySet()) {
         	String name = entry.getKey();
         	if (!"x".equals(name)

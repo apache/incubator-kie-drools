@@ -15,10 +15,8 @@
 
 package org.kie.kogito.codegen.tests;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,20 +24,15 @@ import org.jbpm.test.util.NodeLeftCountDownProcessEventListener;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.kie.api.event.process.DefaultProcessEventListener;
-import org.kie.api.event.process.ProcessWorkItemTransitionEvent;
 import org.kie.kogito.Application;
 import org.kie.kogito.Model;
-import org.kie.kogito.auth.SecurityPolicy;
 import org.kie.kogito.codegen.AbstractCodegenTest;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessConfig;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.Processes;
-import org.kie.kogito.process.WorkItem;
-import org.kie.kogito.process.impl.DefaultProcessEventListenerConfig;
-import org.kie.kogito.process.workitem.Policy;
-import org.kie.kogito.services.identity.StaticIdentityProvider;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ServerlessWorkflowTest extends AbstractCodegenTest {
 

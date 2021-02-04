@@ -29,6 +29,8 @@ import org.kie.api.KieBase;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
+import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.kie.kogito.process.workitems.KogitoWorkItem;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -200,9 +202,10 @@ public class EndEventTest extends JbpmBpmn2TestCase {
     public void testTerminateWithinSubprocessEnd() throws Exception {
         KieBase kbase = createKnowledgeBase("subprocess/BPMN2-SubprocessWithParallelSpitTerminate.bpmn2");
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
-        ProcessInstance processInstance = ksession.startProcess("BPMN2-SubprocessWithParallelSpitTerminate");
-        
-        ksession.signalEvent("signal1", null, processInstance.getId());
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+        KogitoProcessInstance processInstance = kruntime.startProcess("BPMN2-SubprocessWithParallelSpitTerminate");
+
+        kruntime.signalEvent("signal1", null, processInstance.getStringId());
         
         assertProcessInstanceCompleted(processInstance);
         
@@ -212,9 +215,10 @@ public class EndEventTest extends JbpmBpmn2TestCase {
     public void testTerminateEnd() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-ParallelSpitTerminate.bpmn2");
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
-        ProcessInstance processInstance = ksession.startProcess("BPMN2-ParallelSpitTerminate");
-        
-        ksession.signalEvent("Signal 1", null, processInstance.getId());
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+        KogitoProcessInstance processInstance = kruntime.startProcess("BPMN2-ParallelSpitTerminate");
+
+        kruntime.signalEvent("Signal 1", null, processInstance.getStringId());
         
         assertProcessInstanceCompleted(processInstance);
         

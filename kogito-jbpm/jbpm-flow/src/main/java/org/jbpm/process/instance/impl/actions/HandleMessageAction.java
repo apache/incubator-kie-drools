@@ -22,6 +22,8 @@ import org.jbpm.process.instance.impl.Action;
 import org.jbpm.process.instance.impl.util.VariableUtil;
 import org.jbpm.workflow.core.node.Transformation;
 import org.kie.api.runtime.process.ProcessContext;
+import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.process.workitems.KogitoWorkItemManager;
 import org.kie.kogito.process.workitems.impl.KogitoWorkItemImpl;
 
@@ -54,8 +56,8 @@ public class HandleMessageAction implements Action, Serializable {
 
         KogitoWorkItemImpl workItem = new KogitoWorkItemImpl();
         workItem.setName("Send Task");
-        workItem.setNodeInstanceId(context.getNodeInstance().getId());
-        workItem.setProcessInstanceId(context.getProcessInstance().getId());
+        workItem.setNodeInstanceId( (( KogitoNodeInstance ) context.getNodeInstance()).getStringId());
+        workItem.setProcessInstanceId( (( KogitoProcessInstance ) context.getProcessInstance()).getStringId());
         workItem.setNodeId(context.getNodeInstance().getNodeId());
         workItem.setParameter("MessageType", messageType);
         if (variable != null) {

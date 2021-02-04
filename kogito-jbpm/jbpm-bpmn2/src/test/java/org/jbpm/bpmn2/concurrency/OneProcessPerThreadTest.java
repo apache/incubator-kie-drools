@@ -27,12 +27,12 @@ import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.process.WorkItem;
-import org.kie.api.runtime.process.WorkItemHandler;
-import org.kie.api.runtime.process.WorkItemManager;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,12 +63,12 @@ public class OneProcessPerThreadTest {
             
             KieSession ksession = createStatefulKnowledgeSession(kbase);
             
-            ksession.getWorkItemManager().registerWorkItemHandler("Log", new WorkItemHandler() {
-				public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
+            ksession.getWorkItemManager().registerWorkItemHandler("Log", new KogitoWorkItemHandler() {
+				public void executeWorkItem( KogitoWorkItem workItem, KogitoWorkItemManager manager) {
 					Long threadId = (Long) workItem.getParameter("id");
-					workItems.put(workItem.getProcessInstanceId(), threadId);
+					workItems.put(workItem.getProcessInstanceStringId(), threadId);
 				}
-				public void abortWorkItem(WorkItem arg0, WorkItemManager arg1) {
+				public void abortWorkItem(KogitoWorkItem arg0, KogitoWorkItemManager arg1) {
 				}
             });
 

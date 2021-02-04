@@ -27,6 +27,7 @@ import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.KieSession;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -113,7 +114,7 @@ public class ProcessTimerTest extends AbstractBaseTest {
         ProcessInstance processInstance = ( ProcessInstance )
         	session.startProcess("org.drools.timer");
         assertEquals(0, myList.size());
-        assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
+        assertEquals( KogitoProcessInstance.STATE_ACTIVE, processInstance.getState());
        
         try {
             Thread.sleep(400);

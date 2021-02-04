@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.kie.api.definition.process.Node;
+import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.Connection;
 
 /**
@@ -32,8 +32,8 @@ public class ConnectionImpl implements Connection, Serializable {
 
     private static final long serialVersionUID = 510l;
 
-    private Node from;
-    private Node to;
+    private org.kie.api.definition.process.Node from;
+    private org.kie.api.definition.process.Node to;
     private String fromType;
     private String toType;
     private Map<String, Object> metaData = new HashMap<String, Object>();
@@ -54,8 +54,8 @@ public class ConnectionImpl implements Connection, Serializable {
      * @param to        The to node
      * @param toType    The connection type
      */
-    public ConnectionImpl(final Node from, final String fromType,
-                          final Node to, final String toType) {
+    public ConnectionImpl( final org.kie.api.definition.process.Node from, final String fromType,
+                           final org.kie.api.definition.process.Node to, final String toType) {
         if (from == null) {
             throw new IllegalArgumentException("From node is null!");
         }
@@ -76,24 +76,24 @@ public class ConnectionImpl implements Connection, Serializable {
     }
     
     public void connect() {
-        ((org.jbpm.workflow.core.Node) this.from).addOutgoingConnection(fromType, this);
-        ((org.jbpm.workflow.core.Node) this.to).addIncomingConnection(toType, this);
+        (( Node ) this.from).addOutgoingConnection(fromType, this);
+        (( Node ) this.to).addIncomingConnection(toType, this);
     }
 
     public synchronized void terminate() {
-    	((org.jbpm.workflow.core.Node) this.from).removeOutgoingConnection(fromType, this);
-    	((org.jbpm.workflow.core.Node) this.to).removeIncomingConnection(toType, this);
+    	(( Node ) this.from).removeOutgoingConnection(fromType, this);
+    	(( Node ) this.to).removeIncomingConnection(toType, this);
         this.from = null;
         this.fromType = null;
         this.to = null;
         this.toType = null;
     }
 
-    public Node getFrom() {
+    public org.kie.api.definition.process.Node getFrom() {
         return this.from;
     }
 
-    public Node getTo() {
+    public org.kie.api.definition.process.Node getTo() {
         return this.to;
     }
 
@@ -105,11 +105,11 @@ public class ConnectionImpl implements Connection, Serializable {
         return this.toType;
     }
 
-    public void setFrom(Node from) {
+    public void setFrom( org.kie.api.definition.process.Node from) {
 		this.from = from;
 	}
 
-	public void setTo(Node to) {
+	public void setTo( org.kie.api.definition.process.Node to) {
 		this.to = to;
 	}
 

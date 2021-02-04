@@ -24,6 +24,7 @@ import org.jbpm.workflow.core.node.StartNode;
 import org.jbpm.workflow.instance.NodeInstanceContainer;
 import org.kie.api.definition.process.NodeContainer;
 import org.kie.api.runtime.process.NodeInstance;
+import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 
 public class EventSubProcessNodeInstance extends CompositeContextNodeInstance {
 
@@ -44,7 +45,7 @@ public class EventSubProcessNodeInstance extends CompositeContextNodeInstance {
     }
 
     @Override
-    public void internalTrigger(NodeInstance from, String type) {
+    public void internalTrigger( KogitoNodeInstance from, String type) {
         super.internalTriggerOnlyParent(from, type);
     }
 

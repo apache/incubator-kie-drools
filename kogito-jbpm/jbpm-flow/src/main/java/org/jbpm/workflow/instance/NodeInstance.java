@@ -16,12 +16,12 @@
 
 package org.jbpm.workflow.instance;
 
-import org.kie.api.definition.process.Node;
-
 import java.util.Date;
 import java.util.Map;
 
 import org.jbpm.process.instance.ContextInstance;
+import org.kie.api.definition.process.Node;
+import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 
 /**
  * Represents a node instance in a RuleFlow. This is the runtime counterpart
@@ -30,9 +30,9 @@ import org.jbpm.process.instance.ContextInstance;
  * executing) or completed (end of execution).
  * 
  */
-public interface NodeInstance extends org.kie.api.runtime.process.NodeInstance {
+public interface NodeInstance extends KogitoNodeInstance {
 
-    void trigger(org.kie.api.runtime.process.NodeInstance from, String type);
+    void trigger(KogitoNodeInstance from, String type);
 
     void cancel();
     

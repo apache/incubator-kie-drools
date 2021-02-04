@@ -26,7 +26,7 @@ import org.xml.sax.Attributes;
 
 public class SplitHandler extends AbstractNodeHandler {
     
-    protected Node createNode(Attributes attrs) {
+    protected Node createNode( Attributes attrs) {
     	throw new IllegalArgumentException("Reading in should be handled by gateway handler");
     }
     
@@ -35,7 +35,7 @@ public class SplitHandler extends AbstractNodeHandler {
         return Split.class;
     }
 
-	public void writeNode(Node node, StringBuilder xmlDump, int metaDataType) {
+	public void writeNode( Node node, StringBuilder xmlDump, int metaDataType) {
 		Split split = (Split) node;
 		String type = null;
 		switch (split.getType()) {

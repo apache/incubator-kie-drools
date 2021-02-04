@@ -16,9 +16,12 @@
 
 package org.jbpm.bpmn2.handler;
 
-import org.kie.api.runtime.process.*;
+import org.kie.api.runtime.process.WorkItemHandler;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
 
-public abstract class AbstractExceptionHandlingTaskHandler implements WorkItemHandler {
+public abstract class AbstractExceptionHandlingTaskHandler implements KogitoWorkItemHandler {
 
     private WorkItemHandler originalTaskHandler;
 
@@ -38,7 +41,7 @@ public abstract class AbstractExceptionHandlingTaskHandler implements WorkItemHa
     }
     
     @Override
-    public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
+    public void executeWorkItem( KogitoWorkItem workItem, KogitoWorkItemManager manager) {
         try {
             originalTaskHandler.executeWorkItem(workItem, manager);
         } catch( Throwable cause ) { 
@@ -47,7 +50,7 @@ public abstract class AbstractExceptionHandlingTaskHandler implements WorkItemHa
     }
     
     @Override
-    public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
+    public void abortWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager manager) {
         try {
             originalTaskHandler.abortWorkItem(workItem, manager);
         } catch( RuntimeException re ) { 
@@ -61,8 +64,8 @@ public abstract class AbstractExceptionHandlingTaskHandler implements WorkItemHa
 
 
 
-    public abstract void handleExecuteException(Throwable cause, WorkItem workItem, WorkItemManager manager);
-    public abstract void handleAbortException(Throwable cause, WorkItem workItem, WorkItemManager manager);
+    public abstract void handleExecuteException(Throwable cause, KogitoWorkItem workItem, KogitoWorkItemManager manager);
+    public abstract void handleAbortException(Throwable cause, KogitoWorkItem workItem, KogitoWorkItemManager manager);
 
     
 }

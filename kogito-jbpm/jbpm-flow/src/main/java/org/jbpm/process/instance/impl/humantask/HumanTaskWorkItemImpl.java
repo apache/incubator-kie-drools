@@ -19,9 +19,9 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.kie.api.runtime.process.HumanTaskWorkItem;
 import org.kie.kogito.auth.IdentityProvider;
 import org.kie.kogito.auth.SecurityPolicy;
+import org.kie.kogito.process.workitem.HumanTaskWorkItem;
 import org.kie.kogito.process.workitem.NotAuthorizedException;
 import org.kie.kogito.process.workitem.Policy;
 import org.kie.kogito.process.workitems.impl.KogitoWorkItemImpl;
@@ -157,8 +157,8 @@ public class HumanTaskWorkItemImpl extends KogitoWorkItemImpl implements HumanTa
             String currentOwner = getActualOwner();
             // if actual owner is already set always enforce same user
             if (currentOwner != null && !currentOwner.trim().isEmpty() && !user.equals(currentOwner)) {
-                logger.debug("Work item {} has already owner assigned so requesting user must match - owner '{}' == requestor '{}'", getId(), currentOwner, user);
-                throw new NotAuthorizedException("User " + user + " is not authorized to access task instance with id " + getId());
+                logger.debug("Work item {} has already owner assigned so requesting user must match - owner '{}' == requestor '{}'", getStringId(), currentOwner, user);
+                throw new NotAuthorizedException("User " + user + " is not authorized to access task instance with id " + getStringId());
             } 
             
             checkAssignedOwners(user, identity.getRoles());
@@ -168,8 +168,8 @@ public class HumanTaskWorkItemImpl extends KogitoWorkItemImpl implements HumanTa
     protected void checkAssignedOwners(String user, Collection<String> roles) {
      // is not in the excluded users
         if (getExcludedUsers().contains(user)) {
-            logger.debug("Requesting user '{}' is excluded from the potential workers on work item {}", user, getId());
-            throw new NotAuthorizedException("User " + user + " is not authorized to access task instance with id " + getId());
+            logger.debug("Requesting user '{}' is excluded from the potential workers on work item {}", user, getStringId());
+            throw new NotAuthorizedException("User " + user + " is not authorized to access task instance with id " + getStringId());
         }
         
         // if there are no assignments means open to everyone
@@ -179,7 +179,7 @@ public class HumanTaskWorkItemImpl extends KogitoWorkItemImpl implements HumanTa
         // check if user is in potential users or groups 
         if (!getPotentialUsers().contains(user) &&
             getPotentialGroups().stream().noneMatch(roles::contains)) {
-            throw new NotAuthorizedException("User " + user + " is not authorized to access task instance with id " + getId());
+            throw new NotAuthorizedException("User " + user + " is not authorized to access task instance with id " + getStringId());
         }
     }
 }

@@ -38,6 +38,7 @@ import org.jbpm.process.core.validation.ProcessValidationError;
 import org.jbpm.process.core.validation.ProcessValidator;
 import org.jbpm.process.core.validation.impl.ProcessValidationErrorImpl;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
+import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.WorkflowProcess;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 import org.jbpm.workflow.core.impl.NodeImpl;
@@ -67,7 +68,6 @@ import org.jbpm.workflow.core.node.TimerNode;
 import org.jbpm.workflow.core.node.WorkItemNode;
 import org.jbpm.workflow.instance.impl.MVELProcessHelper;
 import org.kie.api.definition.process.Connection;
-import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.NodeContainer;
 import org.kie.api.definition.process.Process;
 import org.kie.api.io.Resource;
@@ -132,12 +132,12 @@ public class RuleFlowProcessValidator implements ProcessValidator {
         return errors.toArray(new ProcessValidationError[errors.size()]);
     }
 
-    private void validateNodes(Node[] nodes,
-                               List<ProcessValidationError> errors,
-                               RuleFlowProcess process) {
+    private void validateNodes( org.kie.api.definition.process.Node[] nodes,
+                                List<ProcessValidationError> errors,
+                                RuleFlowProcess process) {
         String isForCompensation = "isForCompensation";
         for (int i = 0; i < nodes.length; i++) {
-            final Node node = nodes[i];
+            final org.kie.api.definition.process.Node node = nodes[i];
             if (node instanceof StartNode) {
                 final StartNode startNode = (StartNode) node;
                 if (startNode.getTo() == null) {
@@ -482,9 +482,9 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                                     "ForEach has no outgoing connection");
                 }
 
-                final List<Node> start = RuleFlowProcess.getStartNodes(forEachNode.getNodes());
+                final List<org.kie.api.definition.process.Node> start = RuleFlowProcess.getStartNodes(forEachNode.getNodes());
                 if (start != null) {
-                    for (Node s : start) {
+                    for (org.kie.api.definition.process.Node s : start) {
                         if (((StartNode) s).getTriggers() != null && !((StartNode) s).getTriggers().isEmpty() || ((StartNode) s).getTimer() != null) {
                             addErrorMessage(process,
                                             node,
@@ -556,7 +556,7 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                 if (compositeNode.getLinkedIncomingNodes().values().isEmpty()) {
                     boolean foundStartNode = false;
 
-                    for (Node internalNode : compositeNode.getNodes()) {
+                    for (org.kie.api.definition.process.Node internalNode : compositeNode.getNodes()) {
                         if (internalNode instanceof StartNode) {
                             foundStartNode = true;
                         }
@@ -583,7 +583,7 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                                         errors,
                                         "Event subprocess is not allowed to have any outgoing connections.");
                     }
-                    Node[] eventSubProcessNodes = compositeNode.getNodes();
+                    org.kie.api.definition.process.Node[] eventSubProcessNodes = compositeNode.getNodes();
                     int startEventCount = 0;
                     for (int j = 0; j < eventSubProcessNodes.length; ++j) {
                         if (eventSubProcessNodes[j] instanceof StartNode) {
@@ -617,9 +617,9 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                                         "Embedded subprocess does not have outgoing connection.");
                     }
 
-                    final List<Node> start = RuleFlowProcess.getStartNodes(compositeNode.getNodes());
+                    final List<org.kie.api.definition.process.Node> start = RuleFlowProcess.getStartNodes(compositeNode.getNodes());
                     if (start != null) {
-                        for (Node s : start) {
+                        for (org.kie.api.definition.process.Node s : start) {
                             if (((StartNode) s).getTriggers() != null && !((StartNode) s).getTriggers().isEmpty() || ((StartNode) s).getTimer() != null) {
                                 addErrorMessage(process,
                                                 node,
@@ -733,17 +733,17 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                                                boolean isDynamic,
                                                final List<ProcessValidationError> errors,
                                                RuleFlowProcess process) {
-        final Map<Node, Boolean> processNodes = new HashMap<>();
-        final Node[] nodes;
+        final Map<org.kie.api.definition.process.Node, Boolean> processNodes = new HashMap<>();
+        final org.kie.api.definition.process.Node[] nodes;
         if (container instanceof CompositeNode) {
             nodes = ((CompositeNode) container).internalGetNodes();
         } else {
             nodes = container.getNodes();
         }
-        List<Node> eventNodes = new ArrayList<>();
+        List<org.kie.api.definition.process.Node> eventNodes = new ArrayList<>();
         List<CompositeNode> compositeNodes = new ArrayList<>();
         for (int i = 0; i < nodes.length; i++) {
-            final Node node = nodes[i];
+            final org.kie.api.definition.process.Node node = nodes[i];
             processNodes.put(node,
                              Boolean.FALSE);
             if (node instanceof EventNode) {
@@ -754,16 +754,16 @@ public class RuleFlowProcessValidator implements ProcessValidator {
             }
         }
         if (isDynamic) {
-            for (Node node : nodes) {
-                if (node.getIncomingConnections(org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE).isEmpty()) {
+            for (org.kie.api.definition.process.Node node : nodes) {
+                if (node.getIncomingConnections( Node.CONNECTION_DEFAULT_TYPE).isEmpty()) {
                     processNode(node,
                                 processNodes);
                 }
             }
         } else {
-            final List<Node> start = RuleFlowProcess.getStartNodes(nodes);
+            final List<org.kie.api.definition.process.Node> start = RuleFlowProcess.getStartNodes(nodes);
             if (start != null) {
-                for (Node s : start) {
+                for (org.kie.api.definition.process.Node s : start) {
                     processNode(s,
                                 processNodes);
                 }
@@ -775,7 +775,7 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                 }
             }
         }
-        for (Node eventNode : eventNodes) {
+        for (org.kie.api.definition.process.Node eventNode : eventNodes) {
             processNode(eventNode,
                         processNodes);
         }
@@ -786,8 +786,8 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                     errors,
                     process);
         }
-        for (final Iterator<Node> it = processNodes.keySet().iterator(); it.hasNext(); ) {
-            final Node node = it.next();
+        for (final Iterator<org.kie.api.definition.process.Node> it = processNodes.keySet().iterator(); it.hasNext(); ) {
+            final org.kie.api.definition.process.Node node = it.next();
             if (Boolean.FALSE.equals(processNodes.get(node)) && !(node instanceof StartNode) && !(node instanceof EventSubProcessNode)) {
                 addErrorMessage(process,
                                 node,
@@ -797,8 +797,8 @@ public class RuleFlowProcessValidator implements ProcessValidator {
         }
     }
 
-    private void processNode(final Node node,
-                             final Map<Node, Boolean> nodes) {
+    private void processNode(final org.kie.api.definition.process.Node node,
+                             final Map<org.kie.api.definition.process.Node, Boolean> nodes) {
         if (!nodes.containsKey(node) && !((node instanceof CompositeNodeEnd) || (node instanceof ForEachSplitNode) || (node instanceof ForEachJoinNode))) {
             throw new IllegalStateException("A process node is connected with a node that does not belong to the process: " + node.getName());
         }
@@ -814,18 +814,18 @@ public class RuleFlowProcessValidator implements ProcessValidator {
         }
     }
 
-    private boolean acceptsNoIncomingConnections(Node node) {
+    private boolean acceptsNoIncomingConnections( org.kie.api.definition.process.Node node) {
         return acceptsNoOutgoingConnections(node);
     }
 
-    private boolean acceptsNoOutgoingConnections(Node node) {
-        NodeContainer nodeContainer = node.getParentContainer();
+    private boolean acceptsNoOutgoingConnections( org.kie.api.definition.process.Node node) {
+        NodeContainer nodeContainer = (( Node ) node).getParentContainer();
         return nodeContainer instanceof DynamicNode ||
                 (nodeContainer instanceof WorkflowProcess && ((WorkflowProcess) nodeContainer).isDynamic());
     }
 
     private void validateTimer(final Timer timer,
-                               final Node node,
+                               final org.kie.api.definition.process.Node node,
                                final RuleFlowProcess process,
                                final List<ProcessValidationError> errors) {
         if (timer.getDelay() == null && timer.getDate() == null) {
@@ -916,18 +916,18 @@ public class RuleFlowProcessValidator implements ProcessValidator {
         return RuleFlowProcess.RULEFLOW_TYPE.equals(process.getType());
     }
 
-    protected void validateCompensationIntermediateOrEndEvent(Node node,
-                                                              RuleFlowProcess process,
-                                                              List<ProcessValidationError> errors) {
+    protected void validateCompensationIntermediateOrEndEvent( org.kie.api.definition.process.Node node,
+                                                               RuleFlowProcess process,
+                                                               List<ProcessValidationError> errors) {
         if (node.getMetaData().containsKey("Compensation")) {
             // Validate that activityRef in throw/end compensation event refers to "visible" compensation
             String activityRef = (String) node.getMetaData().get("Compensation");
-            Node refNode = null;
+            org.kie.api.definition.process.Node refNode = null;
             if (activityRef != null) {
-                Queue<Node> nodeQueue = new LinkedList<>();
+                Queue<org.kie.api.definition.process.Node> nodeQueue = new LinkedList<>();
                 nodeQueue.addAll(Arrays.asList(process.getNodes()));
                 while (!nodeQueue.isEmpty()) {
-                    Node polledNode = nodeQueue.poll();
+                    org.kie.api.definition.process.Node polledNode = nodeQueue.poll();
                     if (activityRef.equals(polledNode.getMetaData().get("UniqueId"))) {
                         refNode = polledNode;
                         break;
@@ -963,10 +963,10 @@ public class RuleFlowProcessValidator implements ProcessValidator {
         return true;
     }
 
-    protected void addErrorMessage(RuleFlowProcess process,
-                                   Node node,
-                                   List<ProcessValidationError> errors,
-                                   String message) {
+    protected void addErrorMessage( RuleFlowProcess process,
+                                    org.kie.api.definition.process.Node node,
+                                    List<ProcessValidationError> errors,
+                                    String message) {
         String error = String.format("Node '%s' [%d] %s",
                                      node.getName(),
                                      node.getId(),

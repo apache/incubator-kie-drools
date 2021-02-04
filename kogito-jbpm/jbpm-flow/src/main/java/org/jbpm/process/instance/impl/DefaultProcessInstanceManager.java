@@ -23,40 +23,40 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.jbpm.process.instance.ProcessInstanceManager;
-import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 
 public class DefaultProcessInstanceManager implements ProcessInstanceManager {
 
-    private Map<String, ProcessInstance> processInstances = new ConcurrentHashMap<>();
+    private Map<String, KogitoProcessInstance> processInstances = new ConcurrentHashMap<>();
 
-    public void addProcessInstance(ProcessInstance processInstance) {
+    public void addProcessInstance(KogitoProcessInstance processInstance) {
         String id = UUID.randomUUID().toString();
         ((org.jbpm.process.instance.ProcessInstance) processInstance).setId(id);
         internalAddProcessInstance(processInstance);
     }
 
-    public void internalAddProcessInstance(ProcessInstance processInstance) {
-        processInstances.put(processInstance.getId(), processInstance);
+    public void internalAddProcessInstance(KogitoProcessInstance processInstance) {
+        processInstances.put(processInstance.getStringId(), processInstance);
     }
 
-    public Collection<ProcessInstance> getProcessInstances() {
+    public Collection<KogitoProcessInstance> getProcessInstances() {
         return Collections.unmodifiableCollection(processInstances.values());
     }
 
-    public ProcessInstance getProcessInstance(String id) {
+    public KogitoProcessInstance getProcessInstance(String id) {
         return processInstances.get(id);
     }
 
-    public ProcessInstance getProcessInstance(String id, boolean readOnly) {
+    public KogitoProcessInstance getProcessInstance(String id, boolean readOnly) {
         return processInstances.get(id);
     }
 
-    public void removeProcessInstance(ProcessInstance processInstance) {
+    public void removeProcessInstance(KogitoProcessInstance processInstance) {
         internalRemoveProcessInstance(processInstance);
     }
 
-    public void internalRemoveProcessInstance(ProcessInstance processInstance) {
-        processInstances.remove(processInstance.getId());
+    public void internalRemoveProcessInstance(KogitoProcessInstance processInstance) {
+        processInstances.remove(processInstance.getStringId());
     }
 
     public void clearProcessInstances() {

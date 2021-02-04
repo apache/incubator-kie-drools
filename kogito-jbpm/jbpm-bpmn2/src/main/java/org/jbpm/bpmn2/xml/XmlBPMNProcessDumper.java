@@ -49,6 +49,7 @@ import org.jbpm.process.core.impl.ProcessImpl;
 import org.jbpm.process.core.impl.XmlProcessDumper;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.Constraint;
+import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.ConnectionImpl;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 import org.jbpm.workflow.core.node.ActionNode;
@@ -65,10 +66,10 @@ import org.jbpm.workflow.core.node.StartNode;
 import org.jbpm.workflow.core.node.Trigger;
 import org.jbpm.workflow.core.node.WorkItemNode;
 import org.kie.api.definition.process.Connection;
-import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.NodeContainer;
 import org.kie.api.definition.process.Process;
 import org.kie.api.definition.process.WorkflowProcess;
+import org.kie.kogito.internal.process.runtime.KogitoNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -204,9 +205,9 @@ public class XmlBPMNProcessDumper implements XmlProcessDumper {
         xmlDump.append(">" + EOL + EOL);
         visitHeader(process, xmlDump, metaDataType);
         
-        List<org.jbpm.workflow.core.Node> processNodes = new ArrayList<org.jbpm.workflow.core.Node>();
-        for( Node procNode : process.getNodes()) { 
-            processNodes.add((org.jbpm.workflow.core.Node) procNode);
+        List<Node> processNodes = new ArrayList<Node>();
+        for( org.kie.api.definition.process.Node procNode : process.getNodes()) {
+            processNodes.add(( Node ) procNode);
         }
         visitNodes(processNodes, xmlDump, metaDataType);
         visitConnections(process.getNodes(), xmlDump, metaDataType);
@@ -282,8 +283,8 @@ public class XmlBPMNProcessDumper implements XmlProcessDumper {
         }
     }
 
-    private void visitSubVariableScopes(Node[] nodes, StringBuilder xmlDump, Set<String> dumpedItemDefs) {
-        for (Node node: nodes) {
+    private void visitSubVariableScopes( org.kie.api.definition.process.Node[] nodes, StringBuilder xmlDump, Set<String> dumpedItemDefs) {
+        for (org.kie.api.definition.process.Node node: nodes) {
             if (node instanceof ContextContainer) {
                 VariableScope variableScope = (VariableScope) 
                     ((ContextContainer) node).getDefaultContext(VariableScope.VARIABLE_SCOPE);
@@ -314,7 +315,7 @@ public class XmlBPMNProcessDumper implements XmlProcessDumper {
     }
 
     private void visitLane(NodeContainer container, String lane, StringBuilder xmlDump) {
-        for (Node node: container.getNodes()) {
+        for (org.kie.api.definition.process.Node node: container.getNodes()) {
             if (node instanceof HumanTaskNode) {
                 String swimlane = ((HumanTaskNode) node).getSwimlane();
                 if (lane.equals(swimlane)) {
@@ -428,8 +429,8 @@ public class XmlBPMNProcessDumper implements XmlProcessDumper {
         }
     }
 
-    protected void visitInterfaces(Node[] nodes, StringBuilder xmlDump) {
-        for (Node node: nodes) {
+    protected void visitInterfaces( org.kie.api.definition.process.Node[] nodes, StringBuilder xmlDump) {
+        for (org.kie.api.definition.process.Node node: nodes) {
             if (node instanceof WorkItemNode) {
                 Work work = ((WorkItemNode) node).getWork();
                 if (work != null) {
@@ -559,8 +560,8 @@ public class XmlBPMNProcessDumper implements XmlProcessDumper {
         }
     }
 
-    protected void visitEscalations(Node[] nodes, StringBuilder xmlDump, List<String> escalations) {
-        for (Node node: nodes) {
+    protected void visitEscalations( org.kie.api.definition.process.Node[] nodes, StringBuilder xmlDump, List<String> escalations) {
+        for (org.kie.api.definition.process.Node node: nodes) {
             if (node instanceof FaultNode) {
             	FaultNode faultNode = (FaultNode) node;
             	if (!faultNode.isTerminateParent()) {
@@ -632,26 +633,26 @@ public class XmlBPMNProcessDumper implements XmlProcessDumper {
         }
     }
 
-    public void visitNodes(List<org.jbpm.workflow.core.Node> nodes, StringBuilder xmlDump, int metaDataType) {
+    public void visitNodes( List<Node> nodes, StringBuilder xmlDump, int metaDataType) {
     	xmlDump.append("    <!-- nodes -->" + EOL);
-        for (Node node: nodes) {
+        for (org.kie.api.definition.process.Node node: nodes) {
             visitNode(node, xmlDump, metaDataType);
         }
         xmlDump.append(EOL);
     }
 
-    private void visitNode(Node node, StringBuilder xmlDump, int metaDataType) {
+    private void visitNode( org.kie.api.definition.process.Node node, StringBuilder xmlDump, int metaDataType) {
      	Handler handler = semanticModule.getHandlerByClass(node.getClass());
         if (handler != null) {
-        	((AbstractNodeHandler) handler).writeNode((org.jbpm.workflow.core.Node) node, xmlDump, metaDataType);
+        	((AbstractNodeHandler) handler).writeNode(( Node ) node, xmlDump, metaDataType);
         } else {
         	throw new IllegalArgumentException(
                 "Unknown node type: " + node);
         }
     }
 
-    private void visitNodesDi(Node[] nodes, StringBuilder xmlDump) {
-    	for (Node node: nodes) {
+    private void visitNodesDi( org.kie.api.definition.process.Node[] nodes, StringBuilder xmlDump) {
+    	for (org.kie.api.definition.process.Node node: nodes) {
             Integer x = (Integer) node.getMetaData().get("x");
             Integer y = (Integer) node.getMetaData().get("y");
             Integer width = (Integer) node.getMetaData().get("width");
@@ -685,7 +686,7 @@ public class XmlBPMNProcessDumper implements XmlProcessDumper {
     		}
     		int parentOffsetX = 0;
     		int parentOffsetY = 0;
-    		NodeContainer nodeContainer = node.getParentContainer();
+    		NodeContainer nodeContainer = (( KogitoNode ) node).getParentContainer();
     		while (nodeContainer instanceof CompositeNode) {
     			CompositeNode parent = (CompositeNode) nodeContainer;
     			Integer parentX = (Integer) parent.getMetaData().get("x");
@@ -712,10 +713,10 @@ public class XmlBPMNProcessDumper implements XmlProcessDumper {
 
     }
 
-    private void visitConnections(Node[] nodes, StringBuilder xmlDump, int metaDataType) {
+    private void visitConnections( org.kie.api.definition.process.Node[] nodes, StringBuilder xmlDump, int metaDataType) {
     	xmlDump.append("    <!-- connections -->" + EOL);
         List<Connection> connections = new ArrayList<Connection>();
-        for (Node node: nodes) {
+        for (org.kie.api.definition.process.Node node: nodes) {
             for (List<Connection> connectionList: node.getIncomingConnections().values()) {
                 connections.addAll(connectionList);
             }
@@ -799,9 +800,9 @@ public class XmlBPMNProcessDumper implements XmlProcessDumper {
         }
     }
 
-    private void visitConnectionsDi(Node[] nodes, StringBuilder xmlDump) {
+    private void visitConnectionsDi( org.kie.api.definition.process.Node[] nodes, StringBuilder xmlDump) {
         List<Connection> connections = new ArrayList<Connection>();
-        for (Node node: nodes) {
+        for (org.kie.api.definition.process.Node node: nodes) {
             for (List<Connection> connectionList: node.getIncomingConnections().values()) {
                 connections.addAll(connectionList);
             }
@@ -866,13 +867,13 @@ public class XmlBPMNProcessDumper implements XmlProcessDumper {
         }
     }
 
-    public static String getUniqueNodeId(Node node) {
+    public static String getUniqueNodeId( org.kie.api.definition.process.Node node) {
     	String result = (String) node.getMetaData().get("UniqueId");
     	if (result != null) {
     		return result;
     	}
     	result = node.getId() + "";
-    	NodeContainer nodeContainer = node.getParentContainer();
+    	NodeContainer nodeContainer = (( KogitoNode ) node).getParentContainer();
     	while (nodeContainer instanceof CompositeNode) {
     		CompositeNode composite = (CompositeNode) nodeContainer;
     		result = composite.getId() + "-" + result;

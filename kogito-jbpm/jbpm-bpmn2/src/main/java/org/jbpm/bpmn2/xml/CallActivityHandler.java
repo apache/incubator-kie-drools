@@ -44,7 +44,7 @@ public class CallActivityHandler extends AbstractNodeHandler {
 	
 	private DataTransformerRegistry transformerRegistry = DataTransformerRegistry.get();
     
-    protected Node createNode(Attributes attrs) {
+    protected Node createNode( Attributes attrs) {
         return new SubProcessNode();
     }
     
@@ -53,8 +53,8 @@ public class CallActivityHandler extends AbstractNodeHandler {
         return SubProcessNode.class;
     }
 
-    protected void handleNode(final Node node, final Element element, final String uri, 
-            final String localName, final ExtensibleXmlParser parser) throws SAXException {
+    protected void handleNode( final Node node, final Element element, final String uri,
+                               final String localName, final ExtensibleXmlParser parser) throws SAXException {
     	super.handleNode(node, element, uri, localName, parser);
     	SubProcessNode subProcessNode = (SubProcessNode) node;
 		String processId = element.getAttribute("calledElement");
@@ -98,7 +98,7 @@ public class CallActivityHandler extends AbstractNodeHandler {
     @Override
     public Object end(String uri, String localName, ExtensibleXmlParser parser) throws SAXException {
         final Element element = parser.endElementBuilder();
-        Node node = (Node) parser.getCurrent();
+        Node node = ( Node ) parser.getCurrent();
         handleNode(node, element, uri, localName, parser);
         
         org.w3c.dom.Node xmlNode = element.getFirstChild();
@@ -117,7 +117,7 @@ public class CallActivityHandler extends AbstractNodeHandler {
                 forEachNode.linkIncomingConnections(NodeImpl.CONNECTION_DEFAULT_TYPE, node.getId(), NodeImpl.CONNECTION_DEFAULT_TYPE);
                 forEachNode.linkOutgoingConnections(node.getId(), NodeImpl.CONNECTION_DEFAULT_TYPE, NodeImpl.CONNECTION_DEFAULT_TYPE);
                 
-                Node orignalNode = node;                
+                Node orignalNode = node;
                 node = forEachNode;
                 handleForEachNode(node, element, uri, localName, parser);
                 // remove output collection data output of for each to avoid problems when running in variable strict mode
@@ -243,8 +243,8 @@ public class CallActivityHandler extends AbstractNodeHandler {
 		subProcessNode.addOutMapping(dataOutputs.get(from), to, transformation);
     }
     
-    protected void handleForEachNode(final Node node, final Element element, final String uri, 
-            final String localName, final ExtensibleXmlParser parser) throws SAXException {
+    protected void handleForEachNode( final Node node, final Element element, final String uri,
+                                      final String localName, final ExtensibleXmlParser parser) throws SAXException {
         ForEachNode forEachNode = (ForEachNode) node;
         org.w3c.dom.Node xmlNode = element.getFirstChild();
         
@@ -261,7 +261,7 @@ public class CallActivityHandler extends AbstractNodeHandler {
         }
     }
 
-	public void writeNode(Node node, StringBuilder xmlDump, int metaDataType) {
+	public void writeNode( Node node, StringBuilder xmlDump, int metaDataType) {
 		SubProcessNode subProcessNode = (SubProcessNode) node;
 		writeNode("callActivity", subProcessNode, xmlDump, metaDataType);
 		if (subProcessNode.getProcessId() != null) {

@@ -27,19 +27,19 @@ import org.jbpm.process.instance.ContextInstanceContainer;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.process.instance.context.exception.CompensationScopeInstance;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
+import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.instance.NodeInstance;
 import org.jbpm.workflow.instance.NodeInstanceContainer;
 import org.jbpm.workflow.instance.WorkflowRuntimeException;
 import org.jbpm.workflow.instance.node.CompositeNodeInstance;
-import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.NodeContainer;
-import org.kie.api.runtime.process.EventListener;
+import org.kie.kogito.internal.process.event.KogitoEventListener;
 
 import static org.jbpm.process.core.context.exception.CompensationScope.COMPENSATION_SCOPE;
 import static org.jbpm.process.core.context.exception.CompensationScope.IMPLICIT_COMPENSATION_PREFIX;
 
-class CompensationEventListener implements EventListener {
+class CompensationEventListener implements KogitoEventListener {
 
     private WorkflowProcessInstanceImpl instance;
     
@@ -81,7 +81,7 @@ class CompensationEventListener implements EventListener {
 
         // 2. for specific compensation: find the node that will be compensated
         //    for general compensation: find the compensation scope container that contains all the visible compensation handlers
-        Node toCompensateNode = null;
+        org.kie.api.definition.process.Node toCompensateNode = null;
         ContextContainer compensationScopeContainer = null;
         if( generalCompensation ) { 
             if( toCompensateNodeId.equals(instance.getProcessId()) ) {
@@ -116,7 +116,7 @@ class CompensationEventListener implements EventListener {
                 Stack<NodeInstance> generatedInstances;
                 if( toCompensateNode == null ) { 
                     // logic is the same if it's specific or general
-                    generatedInstances = createNodeInstanceContainers((Node) compensationScopeContainer, true);
+                    generatedInstances = createNodeInstanceContainers(( org.kie.api.definition.process.Node ) compensationScopeContainer, true);
                 } else { 
                     generatedInstances = createNodeInstanceContainers(toCompensateNode, false);
                 }
@@ -131,12 +131,12 @@ class CompensationEventListener implements EventListener {
         }
     }
     
-    private Node findNode(String nodeId) { 
-        Node found = null;
-        Queue<Node> allProcessNodes = new LinkedList<>();
+    private org.kie.api.definition.process.Node findNode( String nodeId) {
+        org.kie.api.definition.process.Node found = null;
+        Queue<org.kie.api.definition.process.Node> allProcessNodes = new LinkedList<>();
         allProcessNodes.addAll(Arrays.asList( instance.getNodeContainer().getNodes() ));
         while( ! allProcessNodes.isEmpty() ) { 
-            Node node = allProcessNodes.poll();
+            org.kie.api.definition.process.Node node = allProcessNodes.poll();
             if( nodeId.equals(node.getMetaData().get("UniqueId")) ) {
                 found = node;
                 break;
@@ -148,14 +148,14 @@ class CompensationEventListener implements EventListener {
         return found;
     }
 
-    private Stack<NodeInstance> createNodeInstanceContainers(Node toCompensateNode, boolean generalCompensation) {
+    private Stack<NodeInstance> createNodeInstanceContainers( org.kie.api.definition.process.Node toCompensateNode, boolean generalCompensation) {
        Stack<NodeContainer> nestedNodes = new Stack<NodeContainer>();
        Stack<NodeInstance> generatedInstances = new Stack<NodeInstance>();
        
-       NodeContainer parentContainer = toCompensateNode.getParentContainer();
+       NodeContainer parentContainer = (( Node ) toCompensateNode).getParentContainer();
        while( !(parentContainer instanceof RuleFlowProcess) ) { 
            nestedNodes.add(parentContainer);
-           parentContainer = ((Node) parentContainer).getParentContainer();
+           parentContainer = (( Node ) parentContainer).getParentContainer();
        }
        
        NodeInstanceContainer parentInstance;
@@ -164,14 +164,14 @@ class CompensationEventListener implements EventListener {
            // nestedNodes is empty
            parentInstance = (NodeInstanceContainer) getProcessInstance();
        } else { 
-           parentInstance = (NodeInstanceContainer) ((WorkflowProcessInstanceImpl) getProcessInstance()).getNodeInstance((Node) nestedNodes.pop());
+           parentInstance = (NodeInstanceContainer) ((WorkflowProcessInstanceImpl) getProcessInstance()).getNodeInstance(( org.kie.api.definition.process.Node ) nestedNodes.pop());
            generatedInstances.add((NodeInstance) parentInstance);
        }
        
        NodeInstanceContainer childInstance;
        while( ! nestedNodes.isEmpty() ) {
            // generate
-           childInstance = (NodeInstanceContainer) parentInstance.getNodeInstance((Node) nestedNodes.pop());
+           childInstance = (NodeInstanceContainer) parentInstance.getNodeInstance(( org.kie.api.definition.process.Node ) nestedNodes.pop());
            assert childInstance instanceof CompositeNodeInstance 
                : "A node with child nodes should end up creating a CompositeNodeInstance type.";
            

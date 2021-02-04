@@ -19,12 +19,12 @@ package org.jbpm.test.util;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import org.kie.api.event.process.DefaultProcessEventListener;
+import org.kie.kogito.internal.process.event.DefaultKogitoProcessEventListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public class DefaultCountDownProcessEventListener extends DefaultProcessEventListener {
+public class DefaultCountDownProcessEventListener extends DefaultKogitoProcessEventListener {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultCountDownProcessEventListener.class);
 

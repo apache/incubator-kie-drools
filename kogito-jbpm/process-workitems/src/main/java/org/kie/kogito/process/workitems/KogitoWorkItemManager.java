@@ -16,8 +16,11 @@
 package org.kie.kogito.process.workitems;
 
 import java.util.Map;
+import java.util.Set;
 
-public interface KogitoWorkItemManager extends WorkItemManager {
+import org.drools.core.process.instance.WorkItem;
+
+public interface KogitoWorkItemManager extends org.drools.core.process.instance.WorkItemManager, org.kie.kogito.internal.process.runtime.KogitoWorkItemManager {
 
     void internalExecuteWorkItem( KogitoWorkItem workItem);
 
@@ -29,8 +32,40 @@ public interface KogitoWorkItemManager extends WorkItemManager {
     
     KogitoWorkItem getWorkItem( String id);
 
-    public void signalEvent(String type, Object event, String processInstanceId);
+    void signalEvent(String type, Object event, String processInstanceId);
 
     void retryWorkItem( String workItemID, Map<String, Object> params ) ;
+
+    Set<WorkItem> getWorkItems();
+
+    @Override
+    default void internalExecuteWorkItem( org.drools.core.process.instance.WorkItem workItem ) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    default void internalAddWorkItem( org.drools.core.process.instance.WorkItem workItem ) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    default void internalAbortWorkItem( long l ) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    default WorkItem getWorkItem( long l ) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    default void signalEvent( String s, Object o, long l ) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    default void retryWorkItem( Long aLong, Map<String, Object> map ) {
+        throw new UnsupportedOperationException();
+    }
 
 }

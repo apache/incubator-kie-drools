@@ -38,8 +38,8 @@ public class StateNodeHandler extends AbstractNodeHandler {
         return StateNode.class;
     }
 
-    public void handleNode(final Node node, final Element element, final String uri,
-            final String localName, final ExtensibleXmlParser parser)
+    public void handleNode( final Node node, final Element element, final String uri,
+                            final String localName, final ExtensibleXmlParser parser)
             throws SAXException {
         super.handleNode(node, element, uri, localName, parser);
         StateNode stateNode = (StateNode) node;
@@ -48,7 +48,7 @@ public class StateNodeHandler extends AbstractNodeHandler {
         }
     }
     
-    public void writeNode(Node node, StringBuilder xmlDump, boolean includeMeta) {
+    public void writeNode( Node node, StringBuilder xmlDump, boolean includeMeta) {
 		StateNode stateNode = (StateNode) node;
 		writeNode("state", stateNode, xmlDump, includeMeta);
         xmlDump.append(">\n");

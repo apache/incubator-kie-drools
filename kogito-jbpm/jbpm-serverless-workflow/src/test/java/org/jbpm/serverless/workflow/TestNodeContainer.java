@@ -47,4 +47,9 @@ public class TestNodeContainer implements NodeContainer {
     public Node getNode(long id) {
         return null;
     }
+
+    @Override
+    public Node getNodeByUniqueId( String nodeId ) {
+        return null;
+    }
 }

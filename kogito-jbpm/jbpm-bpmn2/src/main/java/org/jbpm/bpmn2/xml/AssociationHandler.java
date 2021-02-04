@@ -49,7 +49,7 @@ public class AssociationHandler extends BaseAbstractHandler implements Handler {
             this.validPeers.add(null);
             this.validPeers.add(Lane.class);
             this.validPeers.add(Variable.class);
-            this.validPeers.add(Node.class);
+            this.validPeers.add( Node.class);
             this.validPeers.add(SequenceFlow.class);
             this.validPeers.add(Lane.class);
             this.validPeers.add(Association.class);

@@ -54,7 +54,7 @@ public class ScriptTaskHandler extends AbstractNodeHandler {
 
 	private DataTransformerRegistry transformerRegistry = DataTransformerRegistry.get();
     
-    protected Node createNode(Attributes attrs) {
+    protected Node createNode( Attributes attrs) {
         ActionNode result = new ActionNode();
         result.setAction(new DroolsConsequenceAction());
         return result;
@@ -65,8 +65,8 @@ public class ScriptTaskHandler extends AbstractNodeHandler {
         return Node.class;
     }
 
-    protected void handleNode(final Node node, final Element element, final String uri, 
-            final String localName, final ExtensibleXmlParser parser) throws SAXException {
+    protected void handleNode( final Node node, final Element element, final String uri,
+                               final String localName, final ExtensibleXmlParser parser) throws SAXException {
     	super.handleNode(node, element, uri, localName, parser);
         ActionNode actionNode = (ActionNode) node;
         node.setMetaData("NodeType", "ScriptTask");
@@ -111,7 +111,7 @@ public class ScriptTaskHandler extends AbstractNodeHandler {
         }
 	}
 
-	public void writeNode(Node node, StringBuilder xmlDump, int metaDataType) {
+	public void writeNode( Node node, StringBuilder xmlDump, int metaDataType) {
 	    throw new IllegalArgumentException("Writing out should be handled by action node handler");
 	}
 

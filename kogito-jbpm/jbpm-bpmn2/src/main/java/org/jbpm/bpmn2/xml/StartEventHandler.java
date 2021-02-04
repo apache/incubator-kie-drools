@@ -56,7 +56,7 @@ public class StartEventHandler extends AbstractNodeHandler {
     private DataTransformerRegistry transformerRegistry = DataTransformerRegistry.get();
 
     @Override
-    protected Node createNode(Attributes attrs) {
+    protected Node createNode( Attributes attrs) {
         return new StartNode();
     }
 
@@ -68,8 +68,8 @@ public class StartEventHandler extends AbstractNodeHandler {
 
     @Override
     @SuppressWarnings("unchecked")
-    protected void handleNode(final Node node, final Element element, final String uri,
-                              final String localName, final ExtensibleXmlParser parser) throws SAXException {
+    protected void handleNode( final Node node, final Element element, final String uri,
+                               final String localName, final ExtensibleXmlParser parser) throws SAXException {
         super.handleNode(node, element, uri, localName, parser);
         StartNode startNode = (StartNode) node;
         // TODO: StartEventHandler.handleNode(): the parser doesn't discriminate between the schema default and the actual set value
@@ -256,7 +256,7 @@ public class StartEventHandler extends AbstractNodeHandler {
     }
 
     @Override
-    public void writeNode(Node node, StringBuilder xmlDump, int metaDataType) {
+    public void writeNode( Node node, StringBuilder xmlDump, int metaDataType) {
         StartNode startNode = (StartNode) node;
         writeNode("startEvent", startNode, xmlDump, metaDataType);
         xmlDump.append(" isInterrupting=\"");
@@ -363,9 +363,9 @@ public class StartEventHandler extends AbstractNodeHandler {
         endNode("startEvent", xmlDump);
     }
 
-    protected void handleTimerNode(final Node node, final Element element,
-                                   final String uri, final String localName,
-                                   final ExtensibleXmlParser parser) throws SAXException {
+    protected void handleTimerNode( final Node node, final Element element,
+                                    final String uri, final String localName,
+                                    final ExtensibleXmlParser parser) throws SAXException {
         super.handleNode(node, element, uri, localName, parser);
         StartNode startNode = (StartNode) node;
         org.w3c.dom.Node xmlNode = element.getFirstChild();

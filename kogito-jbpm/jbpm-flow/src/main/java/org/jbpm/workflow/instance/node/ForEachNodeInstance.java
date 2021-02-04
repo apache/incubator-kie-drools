@@ -28,6 +28,7 @@ import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.ContextInstance;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
+import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.node.ForEachNode;
 import org.jbpm.workflow.core.node.ForEachNode.ForEachJoinNode;
 import org.jbpm.workflow.core.node.ForEachNode.ForEachSplitNode;
@@ -37,7 +38,7 @@ import org.jbpm.workflow.instance.impl.MVELProcessHelper;
 import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
 import org.jbpm.workflow.instance.impl.NodeInstanceResolverFactory;
 import org.kie.api.definition.process.Connection;
-import org.kie.api.definition.process.Node;
+import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 import org.mvel2.integration.VariableResolver;
 import org.mvel2.integration.impl.SimpleValueResolver;
 
@@ -55,7 +56,7 @@ public class ForEachNodeInstance extends CompositeContextNodeInstance {
     }
 
     @Override
-    public NodeInstance getNodeInstance(final Node node) {
+    public NodeInstance getNodeInstance(final org.kie.api.definition.process.Node node) {
         if (node instanceof ForEachSplitNode) {
             ForEachSplitNodeInstance nodeInstance = new ForEachSplitNodeInstance();
             nodeInstance.setNodeId(node.getId());
@@ -131,13 +132,13 @@ public class ForEachNodeInstance extends CompositeContextNodeInstance {
         }
 
         @Override
-        public void internalTrigger(org.kie.api.runtime.process.NodeInstance fromm, String type) {
+        public void internalTrigger( KogitoNodeInstance fromm, String type) {
             triggerTime = new Date();
             String collectionExpression = getForEachNode().getCollectionExpression();
             Collection<?> collection = evaluateCollectionExpression(collectionExpression);
             ((NodeInstanceContainer) getNodeInstanceContainer()).removeNodeInstance(this);
             if (collection.isEmpty()) {
-                ForEachNodeInstance.this.triggerCompleted(org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE, true);
+                ForEachNodeInstance.this.triggerCompleted( Node.CONNECTION_DEFAULT_TYPE, true);
             } else {
                 List<NodeInstance> nodeInstances = new ArrayList<>();
                 for (Object o : collection) {
@@ -153,7 +154,7 @@ public class ForEachNodeInstance extends CompositeContextNodeInstance {
                     nodeInstance.trigger(this, getForEachSplitNode().getTo().getToType());
                 }
                 if (!getForEachNode().isWaitForCompletion()) {
-                    ForEachNodeInstance.this.triggerCompleted(org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE, false);
+                    ForEachNodeInstance.this.triggerCompleted( Node.CONNECTION_DEFAULT_TYPE, false);
                 }
             }
         }
@@ -169,7 +170,7 @@ public class ForEachNodeInstance extends CompositeContextNodeInstance {
 
         @Override
         @SuppressWarnings({"unchecked", "rawtypes"})
-        public void internalTrigger(org.kie.api.runtime.process.NodeInstance from, String type) {
+        public void internalTrigger(KogitoNodeInstance from, String type) {
             triggerTime = new Date();
             Map<String, Object> tempVariables = new HashMap<>();
             VariableScopeInstance subprocessVariableScopeInstance = null;
@@ -216,7 +217,7 @@ public class ForEachNodeInstance extends CompositeContextNodeInstance {
                         triggerConnection(getForEachJoinNode().getTo());
                     } else {
 
-                        List<Connection> connections = getForEachJoinNode().getOutgoingConnections(org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
+                        List<Connection> connections = getForEachJoinNode().getOutgoingConnections( Node.CONNECTION_DEFAULT_TYPE);
                         for (Connection connection : connections) {
                             triggerConnection(connection);
                         }

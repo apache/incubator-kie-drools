@@ -34,8 +34,8 @@ public class MilestoneNodeHandler extends AbstractNodeHandler {
         return MilestoneNode.class;
     }
 
-    public void handleNode(final Node node, final Element element, final String uri,
-            final String localName, final ExtensibleXmlParser parser)
+    public void handleNode( final Node node, final Element element, final String uri,
+                            final String localName, final ExtensibleXmlParser parser)
             throws SAXException {
         super.handleNode(node, element, uri, localName, parser);
         MilestoneNode milestoneNode = (MilestoneNode) node;
@@ -44,7 +44,7 @@ public class MilestoneNodeHandler extends AbstractNodeHandler {
         }
     }
     
-    public void writeNode(Node node, StringBuilder xmlDump, boolean includeMeta) {
+    public void writeNode( Node node, StringBuilder xmlDump, boolean includeMeta) {
 		MilestoneNode milestoneNode = (MilestoneNode) node;
 		writeNode("milestone", milestoneNode, xmlDump, includeMeta);
         String constraint = milestoneNode.getCondition();

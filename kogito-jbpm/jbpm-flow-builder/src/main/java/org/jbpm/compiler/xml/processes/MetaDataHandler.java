@@ -49,7 +49,7 @@ public class MetaDataHandler extends BaseAbstractHandler
                         final ExtensibleXmlParser parser) throws SAXException {
         parser.startElementBuilder( localName,
                                     attrs );
-        Node node = (Node) parser.getParent();
+        Node node = ( Node ) parser.getParent();
         final String name = attrs.getValue("name");
         emptyAttributeCheck(localName, "name", name, parser);
         return new MetaDataWrapper(node, name);
@@ -69,7 +69,7 @@ public class MetaDataHandler extends BaseAbstractHandler
     public class MetaDataWrapper implements ValueObject {
     	private Node node;
     	private String name;
-    	public MetaDataWrapper(Node node, String name) {
+    	public MetaDataWrapper( Node node, String name) {
     		this.node = node;
     		this.name = name;
     	}

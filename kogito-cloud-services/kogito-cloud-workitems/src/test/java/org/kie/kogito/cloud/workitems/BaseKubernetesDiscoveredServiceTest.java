@@ -21,10 +21,10 @@ import io.fabric8.kubernetes.client.dsl.ServiceResource;
 import io.fabric8.kubernetes.client.server.mock.KubernetesServer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.kie.api.runtime.process.WorkItem;
-import org.kie.api.runtime.process.WorkItemManager;
 import org.kie.kogito.cloud.kubernetes.client.DefaultKogitoKubeClient;
 import org.kie.kogito.cloud.kubernetes.client.KogitoKubeConfig;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
 
 /**
  * Base class for tests with Kubernetes API. In this scenario, nor Istio or KNative is available.
@@ -89,10 +89,10 @@ public abstract class BaseKubernetesDiscoveredServiceTest {
         }
 
         @Override
-        public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {}
+        public void executeWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager manager) {}
 
         @Override
-        public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {}
+        public void abortWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager manager) {}
 
     }
 

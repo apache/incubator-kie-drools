@@ -26,10 +26,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 
-import org.kie.memorycompiler.CompilationResult;
-import org.kie.memorycompiler.JavaCompiler;
-import org.kie.memorycompiler.JavaCompilerFactory;
-import org.kie.memorycompiler.JavaConfiguration;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.core.io.impl.ClassPathResource;
 import org.jbpm.bpmn2.JbpmBpmn2TestCase;
@@ -41,7 +37,6 @@ import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.junit.jupiter.api.Test;
 import org.kie.api.definition.process.Process;
 import org.kie.api.definition.process.WorkflowProcess;
-import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.kogito.auth.SecurityPolicy;
 import org.kie.kogito.process.ProcessConfig;
@@ -53,9 +48,15 @@ import org.kie.kogito.process.impl.CachedWorkItemHandlerConfig;
 import org.kie.kogito.process.impl.DefaultProcessEventListenerConfig;
 import org.kie.kogito.process.impl.StaticProcessConfig;
 import org.kie.kogito.process.impl.marshalling.ProcessInstanceMarshaller;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
 import org.kie.kogito.services.identity.StaticIdentityProvider;
 import org.kie.kogito.services.uow.CollectingUnitOfWorkFactory;
 import org.kie.kogito.services.uow.DefaultUnitOfWorkManager;
+import org.kie.memorycompiler.CompilationResult;
+import org.kie.memorycompiler.JavaCompiler;
+import org.kie.memorycompiler.JavaCompilerFactory;
+import org.kie.memorycompiler.JavaConfiguration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -64,7 +65,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.kie.api.runtime.process.ProcessInstance.STATE_ABORTED;
 import static org.kie.api.runtime.process.ProcessInstance.STATE_ACTIVE;
 import static org.kie.api.runtime.process.ProcessInstance.STATE_COMPLETED;
-import static org.kie.api.runtime.process.ProcessInstance.STATE_ERROR;
 
 public class ActivityGenerationModelTest extends JbpmBpmn2TestCase {
 
@@ -136,10 +136,10 @@ public class ActivityGenerationModelTest extends JbpmBpmn2TestCase {
         assertEquals(STATE_ACTIVE, processInstance.status());
 
 
-        WorkItem workItem = workItemHandler.getWorkItem();
+        KogitoWorkItem workItem = workItemHandler.getWorkItem();
         assertNotNull(workItem);
         assertEquals("john", workItem.getParameter("ActorId"));
-        processInstance.completeWorkItem(workItem.getId(), null, SecurityPolicy.of(new StaticIdentityProvider("john")));
+        processInstance.completeWorkItem(workItem.getStringId(), null, SecurityPolicy.of(new StaticIdentityProvider("john")));
         assertEquals(STATE_COMPLETED, processInstance.status());
     }
 
@@ -162,11 +162,11 @@ public class ActivityGenerationModelTest extends JbpmBpmn2TestCase {
 
         processInstance.start();
         assertEquals(STATE_ACTIVE, processInstance.status());
-        WorkItem workItem = workItemHandler.getWorkItem();
+        KogitoWorkItem workItem = workItemHandler.getWorkItem();
         assertNotNull(workItem);
         assertEquals("Executing task of process instance " + processInstance.id() + " as work item with Hello",
                 workItem.getParameter("Description").toString().trim());
-        processInstance.completeWorkItem(workItem.getId(), null, SecurityPolicy.of(new StaticIdentityProvider("john")));
+        processInstance.completeWorkItem(workItem.getStringId(), null, SecurityPolicy.of(new StaticIdentityProvider("john")));
         assertEquals(STATE_COMPLETED, processInstance.status());
     }
 
@@ -238,7 +238,7 @@ public class ActivityGenerationModelTest extends JbpmBpmn2TestCase {
 
         processInstance.start();
 
-        assertEquals(STATE_ERROR, processInstance.status());
+        assertEquals( KogitoProcessInstance.STATE_ERROR, processInstance.status());
 
         Optional<ProcessError> errorOptional = processInstance.error();
         assertThat(errorOptional).isPresent();
@@ -342,20 +342,20 @@ public class ActivityGenerationModelTest extends JbpmBpmn2TestCase {
         processInstance.start();
         assertEquals(STATE_ACTIVE, processInstance.status());
 
-        List<WorkItem> activeWorkItems = workItemHandler.getWorkItems();
+        List<KogitoWorkItem> activeWorkItems = workItemHandler.getWorkItems();
 
         assertEquals(2, activeWorkItems.size());
 
 
-        for (WorkItem wi : activeWorkItems) {
-            processInstance.completeWorkItem(wi.getId(), null);
+        for (KogitoWorkItem wi : activeWorkItems) {
+            processInstance.completeWorkItem(wi.getStringId(), null);
         }
 
         activeWorkItems = workItemHandler.getWorkItems();
         assertEquals(2, activeWorkItems.size());
 
-        for (WorkItem wi : activeWorkItems) {
-            processInstance.completeWorkItem(wi.getId(), null);
+        for (KogitoWorkItem wi : activeWorkItems) {
+            processInstance.completeWorkItem(wi.getStringId(), null);
         }
         assertEquals(STATE_COMPLETED, processInstance.status());
 
@@ -414,12 +414,12 @@ public class ActivityGenerationModelTest extends JbpmBpmn2TestCase {
         processInstance.start();
         assertEquals(STATE_ACTIVE, processInstance.status());
 
-        WorkItem workItem = workItemHandler.getWorkItem();
+        KogitoWorkItem workItem = workItemHandler.getWorkItem();
         assertNotNull(workItem);
 
         assertEquals("john", workItem.getParameter("Parameter"));
 
-        processInstance.completeWorkItem(workItem.getId(), Collections.singletonMap("Result", "john doe"));
+        processInstance.completeWorkItem(workItem.getStringId(), Collections.singletonMap("Result", "john doe"));
 
         assertEquals(STATE_COMPLETED, processInstance.status());
     }
@@ -476,10 +476,10 @@ public class ActivityGenerationModelTest extends JbpmBpmn2TestCase {
         processInstance = (ProcessInstance<BpmnVariables>) marshaller.unmarshallProcessInstance(data, process);
 
 
-        WorkItem workItem = workItemHandler.getWorkItem();
+        KogitoWorkItem workItem = workItemHandler.getWorkItem();
         assertNotNull(workItem);
         assertEquals("john", workItem.getParameter("ActorId"));
-        processInstance.completeWorkItem(workItem.getId(), null, SecurityPolicy.of(new StaticIdentityProvider("john")));
+        processInstance.completeWorkItem(workItem.getStringId(), null, SecurityPolicy.of(new StaticIdentityProvider("john")));
         assertEquals(STATE_COMPLETED, processInstance.status());
     }
     

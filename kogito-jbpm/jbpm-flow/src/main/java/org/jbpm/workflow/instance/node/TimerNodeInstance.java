@@ -24,15 +24,17 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.jbpm.process.instance.InternalProcessRuntime;
+import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.node.TimerNode;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.kie.api.runtime.process.EventListener;
-import org.kie.api.runtime.process.NodeInstance;
 import org.kie.kogito.jobs.ExpirationTime;
 import org.kie.kogito.jobs.JobsService;
 import org.kie.kogito.jobs.ProcessInstanceJobDescription;
 import org.kie.kogito.process.BaseEventDescription;
 import org.kie.kogito.process.EventDescription;
+import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
+import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.kie.kogito.timer.TimerInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,8 +60,8 @@ public class TimerNodeInstance extends StateBasedNodeInstance implements EventLi
     }
 
     @Override
-    public void internalTrigger(NodeInstance from, String type) {
-        if (!org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
+    public void internalTrigger(KogitoNodeInstance from, String type) {
+        if (!Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
             throw new IllegalArgumentException(
                     "A TimerNode only accepts default incoming connections!");
         }
@@ -71,12 +73,12 @@ public class TimerNodeInstance extends StateBasedNodeInstance implements EventLi
         ProcessInstanceJobDescription jobDescription =
                 ProcessInstanceJobDescription.of(getTimerNode().getTimer().getId(),
                                                  expirationTime,
-                                                 getProcessInstance().getId(),
+                                                 getProcessInstance().getStringId(),
                                                  getProcessInstance().getRootProcessInstanceId(),
                                                  getProcessInstance().getProcessId(),
                                                  getProcessInstance().getRootProcessId(),
-                                                 Optional.ofNullable(from).map(NodeInstance::getId).orElse(null));
-        JobsService jobService = getProcessInstance().getKnowledgeRuntime().getProcessRuntime().getJobsService();
+                                                 Optional.ofNullable(from).map(KogitoNodeInstance::getStringId).orElse(null));
+        JobsService jobService =  KogitoProcessRuntime.asKogitoProcessRuntime(getProcessInstance().getKnowledgeRuntime().getProcessRuntime()).getJobsService();
         timerId = jobService.scheduleProcessInstanceJob(jobDescription);
     }
 
@@ -94,7 +96,7 @@ public class TimerNodeInstance extends StateBasedNodeInstance implements EventLi
     }
 
     public void triggerCompleted(boolean remove) {
-        triggerCompleted(org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE, remove);
+        triggerCompleted( Node.CONNECTION_DEFAULT_TYPE, remove);
     }
 
     @Override
@@ -123,6 +125,6 @@ public class TimerNodeInstance extends StateBasedNodeInstance implements EventLi
         properties.put("Delay", getTimerNode().getTimer().getDelay());
         properties.put("Period", getTimerNode().getTimer().getPeriod());
         properties.put("Date", getTimerNode().getTimer().getDate());
-        return Collections.singleton(new BaseEventDescription(TIMER_TRIGGERED_EVENT, getNodeDefinitionId(), getNodeName(), "timer", getId(), getProcessInstance().getId(), null, properties));
+        return Collections.singleton(new BaseEventDescription(TIMER_TRIGGERED_EVENT, getNodeDefinitionId(), getNodeName(), "timer", getStringId(), getProcessInstance().getStringId(), null, properties));
     }
 }

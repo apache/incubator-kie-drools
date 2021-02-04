@@ -34,8 +34,8 @@ import org.xml.sax.SAXException;
 
 public class WorkItemNodeHandler extends AbstractNodeHandler {
 
-    public void handleNode(final Node node, final Element element, final String uri,
-            final String localName, final ExtensibleXmlParser parser)
+    public void handleNode( final Node node, final Element element, final String uri,
+                            final String localName, final ExtensibleXmlParser parser)
             throws SAXException {
         super.handleNode(node, element, uri, localName, parser);
         WorkItemNode workItemNode = (WorkItemNode) node;
@@ -54,7 +54,7 @@ public class WorkItemNodeHandler extends AbstractNodeHandler {
         return WorkItemNode.class;
     }
 
-	public void writeNode(Node node, StringBuilder xmlDump, boolean includeMeta) {
+	public void writeNode( Node node, StringBuilder xmlDump, boolean includeMeta) {
 		WorkItemNode workItemNode = (WorkItemNode) node;
 		writeNode("workItem", workItemNode, xmlDump, includeMeta);
         visitParameters(workItemNode, xmlDump);

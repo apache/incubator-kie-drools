@@ -23,6 +23,7 @@ import java.util.Map;
 
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.process.workitems.KogitoWorkItem;
 
 public class KogitoWorkItemImpl implements KogitoWorkItem, Serializable {
@@ -45,14 +46,18 @@ public class KogitoWorkItemImpl implements KogitoWorkItem, Serializable {
     private Date startDate;
     private Date completeDate;
 
-    private transient ProcessInstance processInstance;
+    private transient KogitoProcessInstance processInstance;
     private transient NodeInstance nodeInstance;
 
     public void setId(String id) {
         this.id = id;
     }
 
-    public String getId() {
+    public long getId() {
+        throw new UnsupportedOperationException();
+    }
+
+    public String getStringId() {
         return id;
     }
 
@@ -114,7 +119,11 @@ public class KogitoWorkItemImpl implements KogitoWorkItem, Serializable {
         this.processInstanceId = processInstanceId;
     }
 
-    public String getProcessInstanceId() {
+    public long getProcessInstanceId() {
+        throw new UnsupportedOperationException();
+    }
+
+    public String getProcessInstanceStringId() {
         return processInstanceId;
     }
 
@@ -215,7 +224,7 @@ public class KogitoWorkItemImpl implements KogitoWorkItem, Serializable {
     }
 
     @Override
-    public ProcessInstance getProcessInstance() {
+    public KogitoProcessInstance getProcessInstance() {
         return this.processInstance;
     }
 
@@ -226,6 +235,6 @@ public class KogitoWorkItemImpl implements KogitoWorkItem, Serializable {
 
     @Override
     public void setProcessInstance(ProcessInstance processInstance) {
-        this.processInstance = processInstance;
+        this.processInstance = (KogitoProcessInstance)processInstance;
     }
 }

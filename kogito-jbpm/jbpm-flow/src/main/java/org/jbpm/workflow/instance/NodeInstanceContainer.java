@@ -20,13 +20,14 @@ import java.util.Collection;
 
 import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.NodeContainer;
+import org.kie.kogito.internal.process.runtime.KogitoNodeInstanceContainer;
 
 import static org.jbpm.ruleflow.core.Metadata.UNIQUE_ID;
 
 /**
  *
  */
-public interface NodeInstanceContainer extends org.kie.api.runtime.process.NodeInstanceContainer {
+public interface NodeInstanceContainer extends KogitoNodeInstanceContainer {
 
     Collection<NodeInstance> getNodeInstances(boolean recursive);
 

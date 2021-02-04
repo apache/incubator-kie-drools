@@ -62,7 +62,7 @@ public class BoundaryEventNodeInstance extends EventNodeInstance {
                 if (attachedTo.equals(nodeUniqueId) && !isActivating) {
                     // in case this is timer event make sure it corresponds to the proper node instance
                     if (type.startsWith("Timer-")) {
-                        if (nInstance.getId().equals(event)) {
+                        if (nInstance.getStringId().equals(event)) {
                             return true;
                         }
                     } else {

@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.jbpm.workflow.core.DroolsAction;
+import org.kie.api.definition.process.NodeContainer;
 
 public class ExtendedNodeImpl extends NodeImpl {
 	
@@ -55,5 +56,14 @@ public class ExtendedNodeImpl extends NodeImpl {
 	public String[] getActionTypes() {
 		return EVENT_TYPES;
 	}
-	
+
+	@Override
+	public String getNodeUniqueId() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public NodeContainer getNodeContainer() {
+		throw new UnsupportedOperationException();
+	}
 }

@@ -29,11 +29,11 @@ import io.vertx.mutiny.core.buffer.Buffer;
 import io.vertx.mutiny.ext.web.client.HttpRequest;
 import io.vertx.mutiny.ext.web.client.HttpResponse;
 import io.vertx.mutiny.ext.web.client.WebClient;
-import org.kie.api.runtime.process.WorkItem;
-import org.kie.api.runtime.process.WorkItemHandler;
-import org.kie.api.runtime.process.WorkItemManager;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
 
-public class RestWorkItemHandler implements WorkItemHandler {
+public class RestWorkItemHandler implements KogitoWorkItemHandler {
 
     public static final String REST_TASK_TYPE = "Rest Task";
     public static final String ENDPOINT = "endpoint";
@@ -69,7 +69,7 @@ public class RestWorkItemHandler implements WorkItemHandler {
     }
 
     @Override
-    public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
+    public void executeWorkItem( KogitoWorkItem workItem, KogitoWorkItemManager manager) {
         // retrieving parameters
         Map<String, Object> parameters = new HashMap<>(workItem.getParameters());
         String endPoint = getParam(parameters, ENDPOINT, String.class);
@@ -100,12 +100,12 @@ public class RestWorkItemHandler implements WorkItemHandler {
         } else {
             response = request.sendAndAwait();
         }
-        manager.completeWorkItem(workItem.getId(), Collections.singletonMap(RESULT, resultHandler.apply(inputModel,
+        manager.completeWorkItem(workItem.getStringId(), Collections.singletonMap(RESULT, resultHandler.apply(inputModel,
                 response.bodyAsJsonObject())));
     }
 
     @Override
-    public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
+    public void abortWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager manager) {
         // rest item handler does not support abort
     }
 

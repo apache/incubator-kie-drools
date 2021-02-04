@@ -26,7 +26,7 @@ import org.xml.sax.Attributes;
 
 public class ActionNodeHandler extends AbstractNodeHandler {
 
-    protected Node createNode(Attributes attrs) {
+    protected Node createNode( Attributes attrs) {
         throw new IllegalArgumentException("Reading in should be handled by specific handlers");
     }
 
@@ -35,9 +35,9 @@ public class ActionNodeHandler extends AbstractNodeHandler {
         return ActionNode.class;
     }
 
-    public void writeNode(Node node,
-                          StringBuilder xmlDump,
-                          int metaDataType) {
+    public void writeNode( Node node,
+                           StringBuilder xmlDump,
+                           int metaDataType) {
         ActionNode actionNode = (ActionNode) node;
         DroolsConsequenceAction action = null;
         if (actionNode.getAction() instanceof DroolsConsequenceAction) {

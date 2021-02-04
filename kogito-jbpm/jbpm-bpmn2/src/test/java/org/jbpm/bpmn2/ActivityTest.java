@@ -88,6 +88,10 @@ import org.kie.api.runtime.process.WorkItemManager;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.internal.command.RegistryContext;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.kogito.internal.process.runtime.KogitoNodeInstanceContainer;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
+import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
 import org.kie.kogito.process.workitems.KogitoWorkItem;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -116,7 +120,8 @@ public class ActivityTest extends JbpmBpmn2TestCase {
     public void testMinimalProcess() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-MinimalProcess.bpmn2");
         ksession = createKnowledgeSession(kbase);
-        ProcessInstance processInstance = ksession.startProcess("Minimal");
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+        KogitoProcessInstance processInstance = kruntime.startProcess("Minimal");
         assertProcessInstanceCompleted(processInstance);
     }
 
@@ -124,7 +129,8 @@ public class ActivityTest extends JbpmBpmn2TestCase {
     public void testMinimalProcessImplicit() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-MinimalProcessImplicit.bpmn2");
         ksession = createKnowledgeSession(kbase);
-        ProcessInstance processInstance = ksession.startProcess("Minimal");
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+        KogitoProcessInstance processInstance = kruntime.startProcess("Minimal");
         assertProcessInstanceCompleted(processInstance);
     }
 
@@ -132,7 +138,8 @@ public class ActivityTest extends JbpmBpmn2TestCase {
     public void testMinimalProcessWithGraphical() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-MinimalProcessWithGraphical.bpmn2");
         ksession = createKnowledgeSession(kbase);
-        ProcessInstance processInstance = ksession.startProcess("Minimal");
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+        KogitoProcessInstance processInstance = kruntime.startProcess("Minimal");
         assertProcessInstanceCompleted(processInstance);
     }
 
@@ -140,7 +147,8 @@ public class ActivityTest extends JbpmBpmn2TestCase {
     public void testMinimalProcessWithDIGraphical() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-MinimalProcessWithDIGraphical.bpmn2");
         ksession = createKnowledgeSession(kbase);
-        ProcessInstance processInstance = ksession.startProcess("Minimal");
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+        KogitoProcessInstance processInstance = kruntime.startProcess("Minimal");
         assertProcessInstanceCompleted(processInstance);
     }
 
@@ -148,6 +156,8 @@ public class ActivityTest extends JbpmBpmn2TestCase {
     public void testMinimalProcessMetaData() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-MinimalProcessMetaData.bpmn2");
         ksession = createKnowledgeSession(kbase);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+
         final List<String> list1 = new ArrayList<String>();
         final List<String> list2 = new ArrayList<String>();
         final List<String> list3 = new ArrayList<String>();
@@ -199,7 +209,7 @@ public class ActivityTest extends JbpmBpmn2TestCase {
 		});
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("x", "krisv");
-        ProcessInstance processInstance = ksession.startProcess("Minimal", params);
+        KogitoProcessInstance processInstance = kruntime.startProcess("Minimal", params);
         assertProcessInstanceCompleted(processInstance);
         assertEquals(3, list1.size());
         assertEquals(2, list2.size());
@@ -211,7 +221,8 @@ public class ActivityTest extends JbpmBpmn2TestCase {
     public void testCompositeProcessWithDIGraphical() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-CompositeProcessWithDIGraphical.bpmn2");
         ksession = createKnowledgeSession(kbase);
-        ProcessInstance processInstance = ksession.startProcess("Composite");
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+        KogitoProcessInstance processInstance = kruntime.startProcess("Composite");
         assertProcessInstanceCompleted(processInstance);
     }
 
@@ -219,7 +230,8 @@ public class ActivityTest extends JbpmBpmn2TestCase {
     public void testScriptTask() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-ScriptTask.bpmn2");
         ksession = createKnowledgeSession(kbase);
-        ProcessInstance processInstance = ksession.startProcess("ScriptTask");
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+        KogitoProcessInstance processInstance = kruntime.startProcess("ScriptTask");
         assertProcessInstanceCompleted(processInstance);
     }
 
@@ -233,8 +245,10 @@ public class ActivityTest extends JbpmBpmn2TestCase {
 
         KieBase kbase = createKnowledgeBase("BPMN2-ScriptTaskJS.bpmn2");
         ksession = createKnowledgeSession(kbase);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+
         TestWorkItemHandler handler = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
+        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("name", "krisv");
         Person person = new Person();
@@ -245,7 +259,7 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         assertEquals("Entry", processInstance.getVariable("x"));
         assertNull(processInstance.getVariable("y"));
 
-        ksession.getWorkItemManager().completeWorkItem(handler.getWorkItem().getId(), null);
+        kruntime.getWorkItemManager().completeWorkItem(handler.getWorkItem().getStringId(), null);
         assertEquals("Exit", getProcessVarValue(processInstance, "y"));
         assertEquals("tester", processInstance.getVariable("surname"));
     }
@@ -260,10 +274,11 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         assertThat(nodes).hasSize(3);
         assertThat(nodes).filteredOn(n -> n instanceof ActionNode).allMatch(n -> ((ActionNode) n).getInAssociations().size() == 1 && ((ActionNode) n).getOutAssociations().size() == 1);
         ksession = createKnowledgeSession(kbase);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
 
         Map<String, Object> params = new HashMap<>();
         params.put("name", "John");
-        ProcessInstance processInstance = ksession.startProcess("ScriptTask", params);
+        KogitoProcessInstance processInstance = kruntime.startProcess("ScriptTask", params);
 
         assertProcessInstanceCompleted(processInstance);
     }
@@ -273,9 +288,11 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-RuleTask.bpmn2",
                 "BPMN2-RuleTask.drl");
         ksession = createKnowledgeSession(kbase);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+
         List<String> list = new ArrayList<String>();
         ksession.setGlobal("list", list);
-        ProcessInstance processInstance = ksession.startProcess("RuleTask");        
+        KogitoProcessInstance processInstance = kruntime.startProcess("RuleTask");        
         ksession.setGlobal("list", list);
         assertTrue(list.size() == 1);
         assertProcessInstanceFinished(processInstance, ksession);
@@ -286,11 +303,13 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-RuleTask2.bpmn2",
                 "BPMN2-RuleTask2.drl");
         ksession = createKnowledgeSession(kbase);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+
         List<String> list = new ArrayList<String>();
         ksession.setGlobal("list", list);
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("x", "SomeString");
-        ProcessInstance processInstance = ksession.startProcess("RuleTask",
+        KogitoProcessInstance processInstance = kruntime.startProcess("RuleTask",
                 params);
         assertTrue(list.size() == 0);
         assertProcessInstanceFinished(processInstance, ksession);
@@ -301,13 +320,14 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-RuleTask2.bpmn2",
                 "BPMN2-RuleTaskSetVariableReconnect.drl");
         ksession = createKnowledgeSession(kbase);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
 
         List<String> list = new ArrayList<String>();
         ksession.setGlobal("list", list);
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("x", "SomeString");
 
-        ProcessInstance processInstance = ksession.startProcess("RuleTask",
+        KogitoProcessInstance processInstance = kruntime.startProcess("RuleTask",
                 params);       
         assertTrue(list.size() == 1);
 
@@ -321,6 +341,7 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-RuleTaskWithFact.bpmn2",
                 "BPMN2-RuleTask3.drl");
         ksession = createKnowledgeSession(kbase);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
 
         ksession.addEventListener(new AgendaEventListener() {
             public void matchCreated(MatchCreatedEvent event) {
@@ -364,19 +385,19 @@ public class ActivityTest extends JbpmBpmn2TestCase {
 
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("x", "SomeString");
-        ProcessInstance processInstance = ksession.startProcess("RuleTask",
+        KogitoProcessInstance processInstance = kruntime.startProcess("RuleTask",
                 params);
         assertProcessInstanceFinished(processInstance, ksession);
 
         params = new HashMap<String, Object>();
         
-        processInstance = ksession.startProcess("RuleTask", params);
+        processInstance = kruntime.startProcess("RuleTask", params);
         
-        assertEquals(ProcessInstance.STATE_ERROR, processInstance.getState());           
+        assertEquals(KogitoProcessInstance.STATE_ERROR, processInstance.getState());
 
         params = new HashMap<String, Object>();
         params.put("x", "SomeString");
-        processInstance = ksession.startProcess("RuleTask", params);
+        processInstance = kruntime.startProcess("RuleTask", params);
         assertProcessInstanceFinished(processInstance, ksession);
     }
 
@@ -400,7 +421,8 @@ public class ActivityTest extends JbpmBpmn2TestCase {
     public void testUserTaskWithDataStoreScenario() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-UserTaskWithDataStore.bpmn2");
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",
                 new DoNothingWorkItemHandler());
         ksession.startProcess("UserProcess");
         // we can't test further as user tasks are asynchronous.
@@ -410,16 +432,18 @@ public class ActivityTest extends JbpmBpmn2TestCase {
     public void testUserTask() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-UserTask.bpmn2");
         KieSession ksession = createKnowledgeSession(kbase);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
-        ProcessInstance processInstance = ksession.startProcess("UserTask");
+        KogitoProcessInstance processInstance = kruntime.startProcess("UserTask");
         assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
         ksession = restoreSession(ksession, true);
-        WorkItem workItem = workItemHandler.getWorkItem();
+        org.kie.kogito.internal.process.runtime.KogitoWorkItem workItem = workItemHandler.getWorkItem();
         assertNotNull(workItem);
         assertEquals("john", workItem.getParameter("ActorId"));
-        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+        kruntime.getWorkItemManager().completeWorkItem(workItem.getStringId(), null);
         assertProcessInstanceFinished(processInstance, ksession);
         ksession.dispose();
     }
@@ -428,16 +452,17 @@ public class ActivityTest extends JbpmBpmn2TestCase {
     public void testUserTaskVerifyParameters() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-UserTask.bpmn2");
         KieSession ksession = createKnowledgeSession(kbase);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
         ksession.getEnvironment().set("deploymentId", "test-deployment-id");
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
-        ProcessInstance processInstance = ksession.startProcess("UserTask");
+        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
+        KogitoProcessInstance processInstance = kruntime.startProcess("UserTask");
         assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
         ksession = restoreSession(ksession, true);
-        final WorkItem workItem = workItemHandler.getWorkItem();
+        org.kie.kogito.internal.process.runtime.KogitoWorkItem workItem = workItemHandler.getWorkItem();
         assertNotNull(workItem);
         assertEquals("john", workItem.getParameter("ActorId"));
-        final String pId = processInstance.getId();
+        final String pId = processInstance.getStringId();
 
         ksession.execute(new ExecutableCommand<Void>() {
 
@@ -445,9 +470,9 @@ public class ActivityTest extends JbpmBpmn2TestCase {
             public Void execute(Context context) {
 
                 KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
-                ProcessInstance processInstance = ksession.getProcessInstance(pId);
+                KogitoProcessInstance processInstance = kruntime.getProcessInstance(pId);
                 assertNotNull(processInstance);
-                NodeInstance nodeInstance = ((WorkflowProcessInstance) processInstance)
+                NodeInstance nodeInstance = (( KogitoNodeInstanceContainer ) processInstance)
                         .getNodeInstance((( KogitoWorkItem ) workItem).getNodeInstanceStringId());
 
                 assertNotNull(nodeInstance);
@@ -466,7 +491,7 @@ public class ActivityTest extends JbpmBpmn2TestCase {
 
 
 
-        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+        kruntime.getWorkItemManager().completeWorkItem(workItem.getStringId(), null);
         assertProcessInstanceFinished(processInstance, ksession);
         ksession.dispose();
     }
@@ -477,19 +502,21 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         KieBase kbase = createKnowledgeBaseWithoutDumper("subprocess/SingleTaskWithVarDef.bpmn2",
                 "subprocess/InputMappingUsingValue.bpmn2");
         ksession = createKnowledgeSession(kbase);
-        TestWorkItemHandler handler = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("CustomTask", handler);
-        Map<String, Object> params = new HashMap<String, Object>();
-        ProcessInstance processInstance = ksession.startProcess("defaultPackage.InputMappingUsingValue", params);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
 
-        WorkItem workItem = handler.getWorkItem();
+        TestWorkItemHandler handler = new TestWorkItemHandler();
+        kruntime.getWorkItemManager().registerWorkItemHandler("CustomTask", handler);
+        Map<String, Object> params = new HashMap<String, Object>();
+        KogitoProcessInstance processInstance = kruntime.startProcess("defaultPackage.InputMappingUsingValue", params);
+
+        org.kie.kogito.internal.process.runtime.KogitoWorkItem workItem = handler.getWorkItem();
         assertNotNull(workItem);
 
         Object value = workItem.getParameter("TaskName");
         assertNotNull(value);
         assertEquals("test string", value);
 
-        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+        kruntime.getWorkItemManager().completeWorkItem(workItem.getStringId(), null);
 
         assertProcessInstanceCompleted(processInstance);
     }
@@ -498,27 +525,28 @@ public class ActivityTest extends JbpmBpmn2TestCase {
     public void testSubProcessWithEntryExitScripts() throws Exception {
         KieBase kbase = createKnowledgeBase("subprocess/BPMN2-SubProcessWithEntryExitScripts.bpmn2");
         ksession = createKnowledgeSession(kbase);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
         TestWorkItemHandler handler = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
+        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
 
-        ProcessInstance processInstance = ksession.startProcess("com.sample.bpmn.hello");
+        KogitoProcessInstance processInstance = kruntime.startProcess("com.sample.bpmn.hello");
 
-        assertNodeTriggered(processInstance.getId(), "Task1");
+        assertNodeTriggered(processInstance.getStringId(), "Task1");
         Object var1 = getProcessVarValue(processInstance, "var1");
         assertNotNull(var1);
         assertEquals("10", var1.toString());
 
-        assertNodeTriggered(processInstance.getId(), "Task2");
+        assertNodeTriggered(processInstance.getStringId(), "Task2");
         Object var2 = getProcessVarValue(processInstance, "var2");
         assertNotNull(var2);
         assertEquals("20", var2.toString());
 
-        assertNodeTriggered(processInstance.getId(), "Task3");
+        assertNodeTriggered(processInstance.getStringId(), "Task3");
         Object var3 = getProcessVarValue(processInstance, "var3");
         assertNotNull(var3);
         assertEquals("30", var3.toString());
 
-        assertNodeTriggered(processInstance.getId(), "SubProcess");
+        assertNodeTriggered(processInstance.getStringId(), "SubProcess");
         Object var4 = getProcessVarValue(processInstance, "var4");
         assertNotNull(var4);
         assertEquals("40", var4.toString());
@@ -528,10 +556,10 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         assertEquals("50", var5.toString());
 
 
-        WorkItem workItem = handler.getWorkItem();
+        org.kie.kogito.internal.process.runtime.KogitoWorkItem workItem = handler.getWorkItem();
         assertNotNull(workItem);
 
-        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+        kruntime.getWorkItemManager().completeWorkItem(workItem.getStringId(), null);
 
         assertProcessInstanceCompleted(processInstance);
     }
@@ -541,9 +569,11 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         KieBase kbase = createKnowledgeBase("BPMN2-CallActivity.bpmn2",
                 "BPMN2-CallActivitySubProcess.bpmn2");
         ksession = createKnowledgeSession(kbase);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("x", "oldValue");
-        ProcessInstance processInstance = ksession.startProcess(
+        KogitoProcessInstance processInstance = kruntime.startProcess(
                 "ParentProcess", params);
         assertProcessInstanceCompleted(processInstance);
         assertEquals("new value",
@@ -555,13 +585,15 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-CallActivityMI.bpmn2",
                 "BPMN2-CallActivitySubProcess.bpmn2");
         ksession = createKnowledgeSession(kbase);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+
         final List<String> subprocessStarted = new ArrayList<>();
         ksession.addEventListener(new DefaultProcessEventListener() {
 
             @Override
             public void beforeProcessStarted(ProcessStartedEvent event) {
                 if (event.getProcessInstance().getProcessId().equals("SubProcess")) {
-                    subprocessStarted.add(event.getProcessInstance().getId());
+                    subprocessStarted.add( (( KogitoProcessInstance ) event.getProcessInstance()).getStringId());
                 }
             }
 
@@ -577,7 +609,7 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         params.put("list", list);
         params.put("listOut", listOut);
 
-        ProcessInstance processInstance = ksession.startProcess("ParentProcess", params);
+        KogitoProcessInstance processInstance = kruntime.startProcess("ParentProcess", params);
         assertProcessInstanceCompleted(processInstance);
 
         assertEquals(2, subprocessStarted.size());
@@ -595,21 +627,23 @@ public class ActivityTest extends JbpmBpmn2TestCase {
 				"BPMN2-CallActivitySubProcess.bpmn2");
 		ksession = createKnowledgeSession(kbase);
 		TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-		ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+
+		kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("x", "oldValue");
-		ProcessInstance processInstance = ksession.startProcess(
+		KogitoProcessInstance processInstance = kruntime.startProcess(
 				"ParentProcess", params);
 		assertProcessInstanceActive(processInstance);
 		assertEquals("new value",
 				((WorkflowProcessInstance) processInstance).getVariable("y"));
 
 		ksession = restoreSession(ksession, true);
-		WorkItem workItem = workItemHandler.getWorkItem();
+		org.kie.kogito.internal.process.runtime.KogitoWorkItem workItem = workItemHandler.getWorkItem();
 		assertNotNull(workItem);
 		assertEquals("krisv", workItem.getParameter("ActorId"));
-		ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+		kruntime.getWorkItemManager().completeWorkItem(workItem.getStringId(), null);
 
 		assertProcessInstanceFinished(processInstance, ksession);
 	}
@@ -620,9 +654,11 @@ public class ActivityTest extends JbpmBpmn2TestCase {
                 "BPMN2-CallActivitySubProcess.bpmn2",
                 "BPMN2-CallActivitySubProcessV2.bpmn2");
         ksession = createKnowledgeSession(kbase);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("x", "oldValue");
-        ProcessInstance processInstance = ksession.startProcess(
+        KogitoProcessInstance processInstance = kruntime.startProcess(
                 "ParentProcess", params);
         assertProcessInstanceCompleted(processInstance);
         assertEquals("new value V2",
@@ -633,6 +669,8 @@ public class ActivityTest extends JbpmBpmn2TestCase {
     public void testSubProcess() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-SubProcess.bpmn2");
         ksession = createKnowledgeSession(kbase);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+
         ksession.addEventListener(new DefaultProcessEventListener() {
             public void afterProcessStarted(ProcessStartedEvent event) {
                 logger.debug(event.toString());
@@ -646,7 +684,7 @@ public class ActivityTest extends JbpmBpmn2TestCase {
                 logger.debug(event.toString());
             }
         });
-        ProcessInstance processInstance = ksession.startProcess("SubProcess");
+        KogitoProcessInstance processInstance = kruntime.startProcess("SubProcess");
         assertProcessInstanceCompleted(processInstance);
     }
 
@@ -733,18 +771,20 @@ public class ActivityTest extends JbpmBpmn2TestCase {
     public void testAdHocProcess() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-AdHocProcess.bpmn2");
         ksession = createKnowledgeSession(kbase);
-        ProcessInstance processInstance = ksession.startProcess("AdHocProcess");
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+
+        KogitoProcessInstance processInstance = kruntime.startProcess("AdHocProcess");
         assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
         ksession = restoreSession(ksession, true);
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",
                 new DoNothingWorkItemHandler());
         logger.debug("Triggering node");
-        ksession.signalEvent("Task1", null, processInstance.getId());
+        kruntime.signalEvent("Task1", null, processInstance.getStringId());
         assertProcessInstanceActive(processInstance);
-        ksession.signalEvent("User1", null, processInstance.getId());
+        kruntime.signalEvent("User1", null, processInstance.getStringId());
         assertProcessInstanceActive(processInstance);
         ksession.insert(new Person());
-        ksession.signalEvent("Task3", null, processInstance.getId());
+        kruntime.signalEvent("Task3", null, processInstance.getStringId());
         assertProcessInstanceFinished(processInstance, ksession);
     }
 
@@ -752,27 +792,29 @@ public class ActivityTest extends JbpmBpmn2TestCase {
     public void testAdHocProcessDynamicTask() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-AdHocProcess.bpmn2");
         ksession = createKnowledgeSession(kbase);
-        ProcessInstance processInstance = ksession.startProcess("AdHocProcess");
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+
+        KogitoProcessInstance processInstance = kruntime.startProcess("AdHocProcess");
         assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
         ksession = restoreSession(ksession, true);
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",
                 new DoNothingWorkItemHandler());
         logger.debug("Triggering node");
-        ksession.signalEvent("Task1", null, processInstance.getId());
+        kruntime.signalEvent("Task1", null, processInstance.getStringId());
         assertProcessInstanceActive(processInstance);
         TestWorkItemHandler workItemHandler2 = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("OtherTask",
+        kruntime.getWorkItemManager().registerWorkItemHandler("OtherTask",
                 workItemHandler2);
         DynamicUtils.addDynamicWorkItem(processInstance, ksession, "OtherTask",
                 new HashMap<String, Object>());
-        WorkItem workItem = workItemHandler2.getWorkItem();
+        org.kie.kogito.internal.process.runtime.KogitoWorkItem workItem = workItemHandler2.getWorkItem();
         assertNotNull(workItem);
         ksession = restoreSession(ksession, true);
-        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
-        ksession.signalEvent("User1", null, processInstance.getId());
+        kruntime.getWorkItemManager().completeWorkItem(workItem.getStringId(), null);
+        kruntime.signalEvent("User1", null, processInstance.getStringId());
         assertProcessInstanceActive(processInstance);
         ksession.insert(new Person());
-        ksession.signalEvent("Task3", null, processInstance.getId());
+        kruntime.signalEvent("Task3", null, processInstance.getStringId());
         assertProcessInstanceFinished(processInstance, ksession);
     }
 
@@ -781,24 +823,26 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         KieBase kbase = createKnowledgeBase("BPMN2-AdHocProcess.bpmn2",
                 "BPMN2-MinimalProcess.bpmn2");
         ksession = createKnowledgeSession(kbase);
-        ProcessInstance processInstance = ksession.startProcess("AdHocProcess");
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+
+        KogitoProcessInstance processInstance = kruntime.startProcess("AdHocProcess");
         assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
         ksession = restoreSession(ksession, true);
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",
                 new DoNothingWorkItemHandler());
         logger.debug("Triggering node");
-        ksession.signalEvent("Task1", null, processInstance.getId());
+        kruntime.signalEvent("Task1", null, processInstance.getStringId());
         assertProcessInstanceActive(processInstance);
         TestWorkItemHandler workItemHandler2 = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("OtherTask",
+        kruntime.getWorkItemManager().registerWorkItemHandler("OtherTask",
                 workItemHandler2);
         DynamicUtils.addDynamicSubProcess(processInstance, ksession, "Minimal",
                 new HashMap<String, Object>());
         ksession = restoreSession(ksession, true);
-        ksession.signalEvent("User1", null, processInstance.getId());
+        kruntime.signalEvent("User1", null, processInstance.getStringId());
         assertProcessInstanceActive(processInstance);
         ksession.insert(new Person());
-        ksession.signalEvent("Task3", null, processInstance.getId());
+        kruntime.signalEvent("Task3", null, processInstance.getStringId());
         assertProcessInstanceFinished(processInstance, ksession);
     }
 
@@ -806,7 +850,9 @@ public class ActivityTest extends JbpmBpmn2TestCase {
     public void testServiceTask() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-ServiceProcess.bpmn2");
         ksession = createKnowledgeSession(kbase);
-        ksession.getWorkItemManager().registerWorkItemHandler("Service Task",
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+
+        kruntime.getWorkItemManager().registerWorkItemHandler("Service Task",
                 new ServiceTaskHandler());
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("s", "john");
@@ -820,13 +866,15 @@ public class ActivityTest extends JbpmBpmn2TestCase {
     public void testServiceTaskWithAccessToWorkItemInfo() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-ServiceProcess.bpmn2");
         ksession = createKnowledgeSession(kbase);
-        ksession.getWorkItemManager().registerWorkItemHandler("Service Task",
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+
+        kruntime.getWorkItemManager().registerWorkItemHandler("Service Task",
                                                               new ServiceTaskHandler() {
 
                                                                   @Override
-                                                                  public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
-                                                                      assertThat(workItem.getProcessInstance()).isNotNull();
-                                                                      assertThat(workItem.getNodeInstance()).isNotNull();
+                                                                  public void executeWorkItem( org.kie.kogito.internal.process.runtime.KogitoWorkItem workItem, KogitoWorkItemManager manager) {
+                                                                      assertThat( workItem.getProcessInstance()).isNotNull();
+                                                                      assertThat( workItem.getNodeInstance()).isNotNull();
                                                                       super.executeWorkItem(workItem, manager);
                                                                   }
 
@@ -844,7 +892,9 @@ public class ActivityTest extends JbpmBpmn2TestCase {
     public void testServiceTaskWithTransformation() throws Exception {
         KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-ServiceProcessWithTransformation.bpmn2");
         ksession = createKnowledgeSession(kbase);
-        ksession.getWorkItemManager().registerWorkItemHandler("Service Task",
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+
+        kruntime.getWorkItemManager().registerWorkItemHandler("Service Task",
                 new ServiceTaskHandler());
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("s", "JoHn");
@@ -858,7 +908,9 @@ public class ActivityTest extends JbpmBpmn2TestCase {
     public void testServiceTaskWithMvelTransformation() throws Exception {
         KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-ServiceProcessWithMvelTransformation.bpmn2");
         ksession = createKnowledgeSession(kbase);
-        ksession.getWorkItemManager().registerWorkItemHandler("Service Task",
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+
+        kruntime.getWorkItemManager().registerWorkItemHandler("Service Task",
                 new ServiceTaskHandler());
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("s", "JoHn");
@@ -901,7 +953,9 @@ public class ActivityTest extends JbpmBpmn2TestCase {
 		});
         KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-ServiceProcessWithCustomTransformation.bpmn2");
         ksession = createKnowledgeSession(kbase);
-        ksession.getWorkItemManager().registerWorkItemHandler("Service Task",
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+
+        kruntime.getWorkItemManager().registerWorkItemHandler("Service Task",
                 new ServiceTaskHandler());
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("s", "john doe");
@@ -916,7 +970,9 @@ public class ActivityTest extends JbpmBpmn2TestCase {
     public void testServiceTaskNoInterfaceName() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-ServiceTask-web-service.bpmn2");
         ksession = createKnowledgeSession(kbase);
-        ksession.getWorkItemManager().registerWorkItemHandler("Service Task",
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+
+        kruntime.getWorkItemManager().registerWorkItemHandler("Service Task",
                 new SystemOutWorkItemHandler() {
 
                     @Override
@@ -941,7 +997,9 @@ public class ActivityTest extends JbpmBpmn2TestCase {
     public void testSendTask() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-SendTask.bpmn2");
         ksession = createKnowledgeSession(kbase);
-        ksession.getWorkItemManager().registerWorkItemHandler("Send Task",
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+
+        kruntime.getWorkItemManager().registerWorkItemHandler("Send Task",
                 new SendTaskHandler());
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("s", "john");
@@ -955,7 +1013,9 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         KieBase kbase = createKnowledgeBase("BPMN2-ReceiveTask.bpmn2");
         ksession = createKnowledgeSession(kbase);
         ReceiveTaskHandler receiveTaskHandler = new ReceiveTaskHandler(ksession);
-        ksession.getWorkItemManager().registerWorkItemHandler("Receive Task",
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+
+        kruntime.getWorkItemManager().registerWorkItemHandler("Receive Task",
                 receiveTaskHandler);
         WorkflowProcessInstance processInstance = (WorkflowProcessInstance) ksession
                 .startProcess("ReceiveTask");
@@ -1001,11 +1061,13 @@ public class ActivityTest extends JbpmBpmn2TestCase {
                 "BPMN2-BusinessRuleTaskDynamic.bpmn2",
                 "BPMN2-BusinessRuleTask.drl");
         ksession = createKnowledgeSession(kbase);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+
         ksession.addEventListener(new RuleAwareProcessEventListener());
 
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("dynamicrule", "MyRuleFlow");
-        ProcessInstance processInstance = ksession.startProcess(
+        KogitoProcessInstance processInstance = kruntime.startProcess(
                 "BPMN2-BusinessRuleTask", params);
 
         assertProcessInstanceFinished(processInstance, ksession);
@@ -1018,10 +1080,11 @@ public class ActivityTest extends JbpmBpmn2TestCase {
                 "BPMN2-BusinessRuleTaskWithDataInputs.bpmn2",
                 "BPMN2-BusinessRuleTaskWithDataInput.drl");
         ksession = createKnowledgeSession(kbase);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
 
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("person", new Person());
-        ProcessInstance processInstance = ksession.startProcess(
+        KogitoProcessInstance processInstance = kruntime.startProcess(
                 "BPMN2-BusinessRuleTask", params);
        
         assertProcessInstanceFinished(processInstance, ksession);
@@ -1034,10 +1097,11 @@ public class ActivityTest extends JbpmBpmn2TestCase {
                 "BPMN2-BusinessRuleTaskWithDataInput.bpmn2",
                 "BPMN2-BusinessRuleTaskWithDataInput.drl");
         ksession = createKnowledgeSession(kbase);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
 
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("person", new Person());
-        ProcessInstance processInstance = ksession.startProcess(
+        KogitoProcessInstance processInstance = kruntime.startProcess(
                 "BPMN2-BusinessRuleTask", params);
 
         assertProcessInstanceFinished(processInstance, ksession);
@@ -1048,16 +1112,17 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-ConditionalEventRuleTask.bpmn2",
                 "BPMN2-ConditionalEventRuleTask.drl");
         ksession = createKnowledgeSession(kbase);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
         List<String> list = new ArrayList<String>();
         ksession.setGlobal("list", list);
-        ProcessInstance processInstance = ksession.startProcess("TestFlow");
+        KogitoProcessInstance processInstance = kruntime.startProcess("TestFlow");
         assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
         Person person = new Person();
         person.setName("john");
         ksession.insert(person);
         
 
-        assertProcessInstanceCompleted(processInstance.getId(), ksession);
+        assertProcessInstanceCompleted(processInstance.getStringId(), ksession);
         assertTrue(list.size() == 1);
     }
 
@@ -1067,7 +1132,9 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         params.put("myVar", "test");
         KieBase kbase = createKnowledgeBase("BPMN2-ProcessWithVariableName.bpmn2");
         ksession = createKnowledgeSession(kbase);
-        ProcessInstance processInstance = ksession.startProcess(
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+
+        KogitoProcessInstance processInstance = kruntime.startProcess(
                 "BPMN2-ProcessWithVariableName", params);
         assertProcessInstanceCompleted(processInstance);
     }
@@ -1080,13 +1147,14 @@ public class ActivityTest extends JbpmBpmn2TestCase {
                 "BPMN2-CallActivitySubProcessWithBoundaryEvent.bpmn2");
         ksession = createKnowledgeSession(kbase);
         ksession.addEventListener(countDownListener);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("x", "oldValue");
-        ProcessInstance processInstance = ksession.startProcess(
-                "ParentProcess", params);
+        KogitoProcessInstance processInstance = kruntime.startProcess("ParentProcess", params);
 
         countDownListener.waitTillCompleted();
 
@@ -1094,10 +1162,10 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         // assertEquals("new timer value",
         // ((WorkflowProcessInstance) processInstance).getVariable("y"));
         // first check the parent process executed nodes
-        assertNodeTriggered(processInstance.getId(), "StartProcess",
+        assertNodeTriggered(processInstance.getStringId(), "StartProcess",
                 "CallActivity", "Boundary event", "Script Task", "end");
         // then check child process executed nodes - is there better way to get child process id than simply increment?
-        assertNodeTriggered(processInstance.getId() + 1, "StartProcess2",
+        assertNodeTriggered(processInstance.getStringId() + 1, "StartProcess2",
                 "User Task");
     }
 
@@ -1107,23 +1175,25 @@ public class ActivityTest extends JbpmBpmn2TestCase {
                 "BPMN2-CallActivity.bpmn2",
                 "BPMN2-CallActivitySubProcessWithBoundaryEvent.bpmn2");
         ksession = createKnowledgeSession(kbase);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
         Map<String, Object> params = new HashMap<String, Object>();
-        ProcessInstance processInstance = ksession.startProcess("ParentProcess", params);
-        assertProcessInstanceActive(processInstance.getId(), ksession);
+        KogitoProcessInstance processInstance = kruntime.startProcess("ParentProcess", params);
+        assertProcessInstanceActive(processInstance.getStringId(), ksession);
 
-        WorkItem wi = workItemHandler.getWorkItem();
+        org.kie.kogito.internal.process.runtime.KogitoWorkItem wi = workItemHandler.getWorkItem();
         assertNotNull(wi);
 
-        ksession.getWorkItemManager().completeWorkItem(wi.getId(), null);
+        kruntime.getWorkItemManager().completeWorkItem(wi.getStringId(), null);
 
         assertProcessInstanceFinished(processInstance, ksession);
         // first check the parent process executed nodes
-        assertNodeTriggered(processInstance.getId(), "StartProcess", "CallActivity", "EndProcess");
+        assertNodeTriggered(processInstance.getStringId(), "StartProcess", "CallActivity", "EndProcess");
         // then check child process executed nodes - is there better way to get child process id than simply increment?
-        assertNodeTriggered(processInstance.getId() + 1, "StartProcess2", "User Task", "EndProcess");
+        assertNodeTriggered(processInstance.getStringId() + 1, "StartProcess2", "User Task", "EndProcess");
     }
 
     @Test
@@ -1131,19 +1201,21 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         KieBase kbase = createKnowledgeBase("BPMN2-UserTaskWithBooleanOutput.bpmn2");
         ksession = createKnowledgeSession(kbase);
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+
+        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
-        ProcessInstance processInstance = ksession
+        KogitoProcessInstance processInstance = kruntime
                 .startProcess("com.sample.boolean");
         assertProcessInstanceActive(processInstance);
         ksession = restoreSession(ksession, true);
-        WorkItem workItem = workItemHandler.getWorkItem();
+        org.kie.kogito.internal.process.runtime.KogitoWorkItem workItem = workItemHandler.getWorkItem();
         assertNotNull(workItem);
         assertEquals("john", workItem.getParameter("ActorId"));
         HashMap<String, Object> output = new HashMap<String, Object>();
         output.put("isCheckedCheckbox", "true");
-        ksession.getWorkItemManager()
-                .completeWorkItem(workItem.getId(), output);
+        kruntime.getWorkItemManager()
+                .completeWorkItem(workItem.getStringId(), output);
         assertProcessInstanceFinished(processInstance, ksession);
     }
 
@@ -1151,16 +1223,18 @@ public class ActivityTest extends JbpmBpmn2TestCase {
     public void testUserTaskWithSimData() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-UserTaskWithSimulationMetaData.bpmn2");
         ksession = createKnowledgeSession(kbase);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
-        ProcessInstance processInstance = ksession.startProcess("UserTask");
+        KogitoProcessInstance processInstance = kruntime.startProcess("UserTask");
         assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
         ksession = restoreSession(ksession, true);
-        WorkItem workItem = workItemHandler.getWorkItem();
+        org.kie.kogito.internal.process.runtime.KogitoWorkItem workItem = workItemHandler.getWorkItem();
         assertNotNull(workItem);
         assertEquals("john", workItem.getParameter("ActorId"));
-        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+        kruntime.getWorkItemManager().completeWorkItem(workItem.getStringId(), null);
         assertProcessInstanceFinished(processInstance, ksession);
     }
 
@@ -1170,15 +1244,17 @@ public class ActivityTest extends JbpmBpmn2TestCase {
                 "BPMN2-CallActivityProcessBoundaryError.bpmn2",
                 "BPMN2-CallActivitySubProcessBoundaryError.bpmn2");
         ksession = createKnowledgeSession(kbase);
-        ksession.getWorkItemManager().registerWorkItemHandler("task1",
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+
+        kruntime.getWorkItemManager().registerWorkItemHandler("task1",
                 new SystemOutWorkItemHandler());
-        ProcessInstance processInstance = ksession.startProcess("ParentProcess");
+        KogitoProcessInstance processInstance = kruntime.startProcess("ParentProcess");
 
         assertProcessInstanceFinished(processInstance, ksession);
-        assertNodeTriggered(processInstance.getId(), "StartProcess",
+        assertNodeTriggered(processInstance.getStringId(), "StartProcess",
                 "Call Activity 1", "Boundary event", "Task Parent", "End2");
         // then check child process executed nodes - is there better way to get child process id than simply increment?
-        assertNodeTriggered(processInstance.getId() + 1, "StartProcess", "Task 1", "End");
+        assertNodeTriggered(processInstance.getStringId() + 1, "StartProcess", "Task 1", "End");
     }
 
     @Test
@@ -1187,23 +1263,25 @@ public class ActivityTest extends JbpmBpmn2TestCase {
                 "BPMN2-CallActivityProcessBoundaryError.bpmn2",
                 "BPMN2-CallActivitySubProcessBoundaryError.bpmn2");
         ksession = createKnowledgeSession(kbase);
-        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("task1", workItemHandler);
-        ProcessInstance processInstance = ksession.startProcess("ParentProcess");
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
 
-        WorkItem workItem = workItemHandler.getWorkItem();
+        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        kruntime.getWorkItemManager().registerWorkItemHandler("task1", workItemHandler);
+        KogitoProcessInstance processInstance = kruntime.startProcess("ParentProcess");
+
+        org.kie.kogito.internal.process.runtime.KogitoWorkItem workItem = workItemHandler.getWorkItem();
         assertNotNull(workItem);
-        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+        kruntime.getWorkItemManager().completeWorkItem(workItem.getStringId(), null);
 
         workItem = workItemHandler.getWorkItem();
         assertNotNull(workItem);
-        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+        kruntime.getWorkItemManager().completeWorkItem(workItem.getStringId(), null);
 
         assertProcessInstanceFinished(processInstance, ksession);
-        assertNodeTriggered(processInstance.getId(), "StartProcess",
+        assertNodeTriggered(processInstance.getStringId(), "StartProcess",
                 "Call Activity 1", "Boundary event", "Task Parent", "End2");
         // then check child process executed nodes - is there better way to get child process id than simply increment?
-        assertNodeTriggered(processInstance.getId() + 1, "StartProcess", "Task 1", "End");
+        assertNodeTriggered(processInstance.getStringId() + 1, "StartProcess", "Task 1", "End");
     }
 
     @Test
@@ -1216,7 +1294,9 @@ public class ActivityTest extends JbpmBpmn2TestCase {
     public void testServiceTaskInterface() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-ServiceTask.bpmn2");
         ksession = createKnowledgeSession(kbase);
-        ksession.getWorkItemManager().registerWorkItemHandler("Service Task", new SystemOutWorkItemHandler());
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+
+        kruntime.getWorkItemManager().registerWorkItemHandler("Service Task", new SystemOutWorkItemHandler());
         Map<String, Object> params = new HashMap<String, Object>();
 
         WorkflowProcessInstance processInstance = (WorkflowProcessInstance) ksession.startProcess("EAID_DP000000_23D3_4e7e_80FE_6D8C0AF83CAA", params);
@@ -1231,13 +1311,15 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-RuleTaskWithTransformation.bpmn2",
                 "BPMN2-RuleTaskWithTransformation.drl");
         ksession = createKnowledgeSession(kbase);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+
         List<String> data = new ArrayList<String>();
 
         ksession.setGlobal("data", data);
 
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("name", "JoHn");
-        ProcessInstance processInstance = ksession.startProcess("BPMN2-RuleTaskWithTransformation", params);
+        KogitoProcessInstance processInstance = kruntime.startProcess("BPMN2-RuleTaskWithTransformation", params);
 
         assertProcessInstanceFinished(processInstance, ksession);
 
@@ -1257,6 +1339,8 @@ public class ActivityTest extends JbpmBpmn2TestCase {
     public void testCallActivityWithTransformation() throws Exception {
         KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-CallActivityWithTransformation.bpmn2", "BPMN2-CallActivitySubProcess.bpmn2");
         ksession = createKnowledgeSession(kbase);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+
         final List<ProcessInstance> instances = new ArrayList<ProcessInstance>();
         ksession.addEventListener(new DefaultProcessEventListener() {
 
@@ -1270,7 +1354,7 @@ public class ActivityTest extends JbpmBpmn2TestCase {
 
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("x", "oldValue");
-        ProcessInstance processInstance = ksession.startProcess("ParentProcess", params);
+        KogitoProcessInstance processInstance = kruntime.startProcess("ParentProcess", params);
         assertProcessInstanceCompleted(processInstance);
 
         assertEquals(2, instances.size());
@@ -1286,7 +1370,9 @@ public class ActivityTest extends JbpmBpmn2TestCase {
     public void testServiceTaskWithMvelCollectionTransformation() throws Exception {
         KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-ServiceProcessWithMvelCollectionTransformation.bpmn2");
         ksession = createKnowledgeSession(kbase);
-        ksession.getWorkItemManager().registerWorkItemHandler("Service Task",
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+
+        kruntime.getWorkItemManager().registerWorkItemHandler("Service Task",
                 new ServiceTaskHandler());
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("s", "john,poul,mary");
@@ -1302,7 +1388,9 @@ public class ActivityTest extends JbpmBpmn2TestCase {
     public void testServiceTaskWithMvelJaxbTransformation() throws Exception {
         KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-ServiceProcessWithMvelJaxbTransformation.bpmn2");
         ksession = createKnowledgeSession(kbase);
-        ksession.getWorkItemManager().registerWorkItemHandler("Service Task",
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+
+        kruntime.getWorkItemManager().registerWorkItemHandler("Service Task",
                 new ServiceTaskHandler());
         Map<String, Object> params = new HashMap<String, Object>();
         Person person = new Person();
@@ -1323,15 +1411,16 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         KieBase kbase = createKnowledgeBaseWithoutDumper("subprocess/ErrorsBetweenProcess-Process.bpmn2",
         		"subprocess/ErrorsBetweenProcess-SubProcess.bpmn2");
         ksession = createKnowledgeSession(kbase);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
 
         Map<String, Object> variables = new HashMap<String, Object>();
 
         variables.put("tipoEvento", "error");
         variables.put("pasoVariable", 3);
-        ProcessInstance processInstance = ksession.startProcess("Principal", variables);
+        KogitoProcessInstance processInstance = kruntime.startProcess("Principal", variables);
 
-        assertProcessInstanceCompleted(processInstance.getId(), ksession);
-        assertProcessInstanceAborted(processInstance.getId()+1, ksession);
+        assertProcessInstanceCompleted(processInstance.getStringId(), ksession);
+        assertProcessInstanceAborted(processInstance.getStringId()+1, ksession);
 
         assertProcessVarValue(processInstance, "event", "error desde Subproceso");
     }
@@ -1340,10 +1429,11 @@ public class ActivityTest extends JbpmBpmn2TestCase {
     public void testProcessCustomDescriptionMetaData() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-ProcessCustomDescriptionMetaData.bpmn2");
         ksession = createKnowledgeSession(kbase);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
 
         Map<String, Object> params = new HashMap<String, Object>();
 
-        ProcessInstance processInstance = ksession.startProcess("Minimal", params);
+        KogitoProcessInstance processInstance = kruntime.startProcess("Minimal", params);
         assertProcessInstanceCompleted(processInstance);
 
         String description = ((org.jbpm.process.instance.impl.ProcessInstanceImpl)processInstance).getDescription();
@@ -1355,10 +1445,11 @@ public class ActivityTest extends JbpmBpmn2TestCase {
     public void testProcessVariableCustomDescriptionMetaData() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-ProcessVariableCustomDescriptionMetaData.bpmn2");
         ksession = createKnowledgeSession(kbase);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
 
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("x", "variable name for process");
-        ProcessInstance processInstance = ksession.startProcess("Minimal", params);
+        KogitoProcessInstance processInstance = kruntime.startProcess("Minimal", params);
         assertProcessInstanceCompleted(processInstance);
 
         String description = ((org.jbpm.process.instance.impl.ProcessInstanceImpl)processInstance).getDescription();
@@ -1391,6 +1482,8 @@ public class ActivityTest extends JbpmBpmn2TestCase {
     public void testSubProcessWithTypeVariable() throws Exception {
         KieBase kbase = createKnowledgeBaseWithoutDumper("subprocess/BPMN2-SubProcessWithTypeVariable.bpmn2");
         ksession = createKnowledgeSession(kbase);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+
         final List<String> list = new ArrayList<String>();
         ksession.addEventListener(new DefaultProcessEventListener() {
 
@@ -1400,7 +1493,7 @@ public class ActivityTest extends JbpmBpmn2TestCase {
                 }
             }
         });
-        ProcessInstance processInstance = ksession.startProcess("sub_variable.sub_variables");
+        KogitoProcessInstance processInstance = kruntime.startProcess("sub_variable.sub_variables");
         assertProcessInstanceCompleted(processInstance);
         assertEquals(2, list.size());
     }
@@ -1410,15 +1503,17 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         KieBase kbase = createKnowledgeBase("BPMN2-UserTaskWithParametrizedInput.bpmn2");
         KieSession ksession = createKnowledgeSession(kbase);
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
-        ProcessInstance processInstance = ksession.startProcess("UserTask");
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+
+        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
+        KogitoProcessInstance processInstance = kruntime.startProcess("UserTask");
         assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
         ksession = restoreSession(ksession, true);
-        WorkItem workItem = workItemHandler.getWorkItem();
+        org.kie.kogito.internal.process.runtime.KogitoWorkItem workItem = workItemHandler.getWorkItem();
         assertNotNull(workItem);
-        assertEquals("Executing task of process instance " + processInstance.getId() + " as work item with Hello",
+        assertEquals("Executing task of process instance " + processInstance.getStringId() + " as work item with Hello",
                 workItem.getParameter("Description").toString().trim());
-        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+        kruntime.getWorkItemManager().completeWorkItem(workItem.getStringId(), null);
         assertProcessInstanceFinished(processInstance, ksession);
         ksession.dispose();
     }
@@ -1430,6 +1525,7 @@ public class ActivityTest extends JbpmBpmn2TestCase {
                 "BPMN2-MultipleRuleTasksWithDataInput.bpmn2",
                 "BPMN2-MultipleRuleTasks.drl");
         ksession = createKnowledgeSession(kbase);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
 
         ksession.addEventListener(new TriggerRulesEventListener(ksession));
 
@@ -1448,7 +1544,7 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("person", person);
         params.put("address", address);
-        ProcessInstance processInstance = ksession.startProcess("multiple-rule-tasks", params);
+        KogitoProcessInstance processInstance = kruntime.startProcess("multiple-rule-tasks", params);
 
         assertEquals(1, listPerson.size());
         assertEquals(1, listAddress.size());
@@ -1461,19 +1557,21 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         KieBase kbase = createKnowledgeBaseWithoutDumper(
                 "BPMN2-SubProcessInAdHocProcess.bpmn2");
         ksession = createKnowledgeSession(kbase);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
+        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
 
         Map<String, Object> parameters = new HashMap<String, Object>();
-        ProcessInstance processInstance = ksession.startProcess("SubProcessInAdHocProcess", parameters);
+        KogitoProcessInstance processInstance = kruntime.startProcess("SubProcessInAdHocProcess", parameters);
         assertProcessInstanceActive(processInstance);
 
         ksession = restoreSession(ksession, true);
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
+        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
 
-        WorkItem workItem = workItemHandler.getWorkItem();
+        org.kie.kogito.internal.process.runtime.KogitoWorkItem workItem = workItemHandler.getWorkItem();
         assertNotNull(workItem);
-        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+        kruntime.getWorkItemManager().completeWorkItem(workItem.getStringId(), null);
         assertProcessInstanceFinished(processInstance, ksession);
     }
     
@@ -1481,9 +1579,11 @@ public class ActivityTest extends JbpmBpmn2TestCase {
     public void testCallActivityWithDataAssignment() throws Exception {
         KieBase kbase = createKnowledgeBase("subprocess/AssignmentProcess.bpmn2", "subprocess/AssignmentSubProcess.bpmn2");
         ksession = createKnowledgeSession(kbase);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("name", "oldValue");
-        ProcessInstance processInstance = ksession.startProcess("assignmentProcess", params);
+        KogitoProcessInstance processInstance = kruntime.startProcess("assignmentProcess", params);
         assertProcessInstanceCompleted(processInstance);
         assertEquals("Hello Genworth welcome to jBPMS!", ((WorkflowProcessInstance) processInstance).getVariable("message"));
     }
@@ -1493,11 +1593,13 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         KieBase kbase = createKnowledgeBaseWithoutDumper(
                 "dmn/BPMN2-BusinessRuleTaskDMN.bpmn2", "dmn/0020-vacation-days.dmn");
         ksession = createKnowledgeSession(kbase);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+
         // first run 16, 1 and expected days is 27
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("age", 16);
         params.put("yearsOfService", 1);
-        ProcessInstance processInstance = ksession.startProcess("BPMN2-BusinessRuleTask", params);
+        KogitoProcessInstance processInstance = kruntime.startProcess("BPMN2-BusinessRuleTask", params);
 
         assertProcessInstanceFinished(processInstance, ksession);
         BigDecimal vacationDays = (BigDecimal) ((WorkflowProcessInstance) processInstance).getVariable("vacationDays");
@@ -1507,7 +1609,7 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         params = new HashMap<String, Object>();
         params.put("age", 44);
         params.put("yearsOfService", 20);
-        processInstance = ksession.startProcess("BPMN2-BusinessRuleTask", params);
+        processInstance = kruntime.startProcess("BPMN2-BusinessRuleTask", params);
 
         assertProcessInstanceFinished(processInstance, ksession);
         vacationDays = (BigDecimal) ((WorkflowProcessInstance) processInstance).getVariable("vacationDays");
@@ -1517,7 +1619,7 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         params = new HashMap<String, Object>();
         params.put("age", 50);
         params.put("yearsOfService", 30);
-        processInstance = ksession.startProcess("BPMN2-BusinessRuleTask", params);
+        processInstance = kruntime.startProcess("BPMN2-BusinessRuleTask", params);
 
         assertProcessInstanceFinished(processInstance, ksession);
         vacationDays = (BigDecimal) ((WorkflowProcessInstance) processInstance).getVariable("vacationDays");
@@ -1530,11 +1632,13 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         KieBase kbase = createKnowledgeBaseWithoutDumper(
                 "dmn/BPMN2-BusinessRuleTaskDMNByDecisionName.bpmn2", "dmn/0020-vacation-days.dmn");
         ksession = createKnowledgeSession(kbase);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+
         // first run 16, 1 and expected days is 5
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("age", 16);
         params.put("yearsOfService", 1);
-        ProcessInstance processInstance = ksession.startProcess("BPMN2-BusinessRuleTask", params);
+        KogitoProcessInstance processInstance = kruntime.startProcess("BPMN2-BusinessRuleTask", params);
 
         assertProcessInstanceFinished(processInstance, ksession);
         BigDecimal vacationDays = (BigDecimal) ((WorkflowProcessInstance) processInstance).getVariable("vacationDays");
@@ -1547,11 +1651,13 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         KieBase kbase = createKnowledgeBaseWithoutDumper(
                 "dmn/BPMN2-BusinessRuleTaskDMNMultipleDecisionsOutput.bpmn2", "dmn/0020-vacation-days.dmn");
         ksession = createKnowledgeSession(kbase);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+
         // first run 16, 1 and expected days is 5
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("age", 16);
         params.put("yearsOfService", 1);
-        ProcessInstance processInstance = ksession.startProcess("BPMN2-BusinessRuleTask", params);
+        KogitoProcessInstance processInstance = kruntime.startProcess("BPMN2-BusinessRuleTask", params);
 
         assertProcessInstanceFinished(processInstance, ksession);
         BigDecimal vacationDays = (BigDecimal) ((WorkflowProcessInstance) processInstance).getVariable("vacationDays");
@@ -1584,11 +1690,13 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         KieBase kbase = createKnowledgeBaseWithoutDumper(
                 "dmn/BPMN2-BusinessRuleTaskDMNModelById.bpmn2", "dmn/0020-vacation-days.dmn");
         ksession = createKnowledgeSession(kbase);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+
         // first run 16, 1 and expected days is 27
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("age", 16);
         params.put("yearsOfService", 1);
-        ProcessInstance processInstance = ksession.startProcess("BPMN2-BusinessRuleTask", params);
+        KogitoProcessInstance processInstance = kruntime.startProcess("BPMN2-BusinessRuleTask", params);
 
         assertProcessInstanceFinished(processInstance, ksession);
         BigDecimal vacationDays = (BigDecimal) ((WorkflowProcessInstance) processInstance).getVariable("vacationDays");
@@ -1598,7 +1706,7 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         params = new HashMap<String, Object>();
         params.put("age", 44);
         params.put("yearsOfService", 20);
-        processInstance = ksession.startProcess("BPMN2-BusinessRuleTask", params);
+        processInstance = kruntime.startProcess("BPMN2-BusinessRuleTask", params);
 
         assertProcessInstanceFinished(processInstance, ksession);
         vacationDays = (BigDecimal) ((WorkflowProcessInstance) processInstance).getVariable("vacationDays");
@@ -1608,7 +1716,7 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         params = new HashMap<String, Object>();
         params.put("age", 50);
         params.put("yearsOfService", 30);
-        processInstance = ksession.startProcess("BPMN2-BusinessRuleTask", params);
+        processInstance = kruntime.startProcess("BPMN2-BusinessRuleTask", params);
 
         assertProcessInstanceFinished(processInstance, ksession);
         vacationDays = (BigDecimal) ((WorkflowProcessInstance) processInstance).getVariable("vacationDays");
@@ -1620,10 +1728,12 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-BusinessRuleTaskLoop.bpmn2",
                 "BPMN2-BusinessRuleTaskInfiniteLoop.drl");
         ksession = createKnowledgeSession(kbase);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+
         ksession.insert(new Person());
-        ProcessInstance processInstance = ksession.startProcess("BPMN2-BusinessRuleTask");
+        KogitoProcessInstance processInstance = kruntime.startProcess("BPMN2-BusinessRuleTask");
         
-        assertEquals(ProcessInstance.STATE_ERROR, processInstance.getState());
+        assertEquals(KogitoProcessInstance.STATE_ERROR, processInstance.getState());
         assertThat(((WorkflowProcessInstanceImpl)processInstance).getErrorMessage()).contains("Fire rule limit reached 10000");
     }
     
@@ -1632,12 +1742,14 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-BusinessRuleTaskWithDataInputLoop.bpmn2",
                 "BPMN2-BusinessRuleTaskInfiniteLoop.drl");
         ksession = createKnowledgeSession(kbase);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+
         ksession.insert(new Person());
         
         Map<String, Object> parameters = Collections.singletonMap("limit", 5);
         
-        ProcessInstance processInstance = ksession.startProcess("BPMN2-BusinessRuleTask", parameters);
-        assertEquals(ProcessInstance.STATE_ERROR, processInstance.getState());
+        KogitoProcessInstance processInstance = kruntime.startProcess("BPMN2-BusinessRuleTask", parameters);
+        assertEquals(KogitoProcessInstance.STATE_ERROR, processInstance.getState());
         assertThat(((WorkflowProcessInstanceImpl)processInstance).getErrorMessage()).contains("Fire rule limit reached 5");        
     }
 
@@ -1646,23 +1758,26 @@ public class ActivityTest extends JbpmBpmn2TestCase {
     public void testScriptTaskFEEL() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-ScriptTaskFEEL.bpmn2");
         ksession = createKnowledgeSession(kbase);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+
         TestWorkItemHandler handler = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
+        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
+
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("name", "krisv");
         Person person = new Person();
         person.setName("krisv");
         params.put("person", person);
 
-        WorkflowProcessInstance processInstance = (WorkflowProcessInstance) ksession.startProcess("ScriptTask", params);
-        assertEquals("Entry", processInstance.getVariable("x"));
-        assertNull(processInstance.getVariable("y"));
+        KogitoProcessInstance processInstance = kruntime.startProcess("ScriptTask", params);
+        assertEquals("Entry", (( org.jbpm.workflow.instance.WorkflowProcessInstance ) processInstance).getVariable("x"));
+        assertNull((( org.jbpm.workflow.instance.WorkflowProcessInstance ) processInstance).getVariable("y"));
 
-        ksession.getWorkItemManager().completeWorkItem(handler.getWorkItem().getId(), null);
+        kruntime.getWorkItemManager().completeWorkItem(handler.getWorkItem().getStringId(), null);
         assertEquals("Exit", getProcessVarValue(processInstance, "y"));
-        assertEquals("tester", processInstance.getVariable("surname"));
+        assertEquals("tester", (( org.jbpm.workflow.instance.WorkflowProcessInstance ) processInstance).getVariable("surname"));
         
-        assertNodeTriggered(processInstance.getId(), "Script1");
+        assertNodeTriggered(processInstance.getStringId(), "Script1");
     }
     
     @Test
@@ -1670,10 +1785,12 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-BusinessRuleTask.bpmn2",
                 "BPMN2-BusinessRuleTaskWithException.drl");
         ksession = createKnowledgeSession(kbase);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+
         ksession.insert(new Person());
-        ProcessInstance processInstance = ksession.startProcess("BPMN2-BusinessRuleTask");
+        KogitoProcessInstance processInstance = kruntime.startProcess("BPMN2-BusinessRuleTask");
                
-        assertEquals(ProcessInstance.STATE_ERROR, processInstance.getState());
+        assertEquals(KogitoProcessInstance.STATE_ERROR, processInstance.getState());
         assertThat(((WorkflowProcessInstanceImpl)processInstance).getErrorMessage()).contains("On purpose");
     }
 
@@ -1682,15 +1799,16 @@ public class ActivityTest extends JbpmBpmn2TestCase {
     public void testXORWithSameTargetProcess() throws Exception {
         KieBase kbase = createKnowledgeBase("build/XORSameTarget.bpmn2");
         ksession = createKnowledgeSession(kbase);
-        
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+
         Map<String, Object> params = new HashMap<>();
         params.put("choice", 1);
-        ProcessInstance processInstance = ksession.startProcess("XORTest.XOR2", params);
+        KogitoProcessInstance processInstance = kruntime.startProcess("XORTest.XOR2", params);
         assertProcessInstanceCompleted(processInstance);
         
         params = new HashMap<>();
         params.put("choice", 2);
-        processInstance = ksession.startProcess("XORTest.XOR2", params);
+        processInstance = kruntime.startProcess("XORTest.XOR2", params);
         assertProcessInstanceCompleted(processInstance);
     }
     
@@ -1698,23 +1816,25 @@ public class ActivityTest extends JbpmBpmn2TestCase {
     public void testUserTaskWithExpressionsForIO() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-UserTaskWithIOexpression.bpmn2");
         KieSession ksession = createKnowledgeSession(kbase);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
+        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
         
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("person", new Person("john"));
         
-        ProcessInstance processInstance = ksession.startProcess("UserTask", parameters);
+        KogitoProcessInstance processInstance = kruntime.startProcess("UserTask", parameters);
         assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
         ksession = restoreSession(ksession, true);
-        WorkItem workItem = workItemHandler.getWorkItem();
+        org.kie.kogito.internal.process.runtime.KogitoWorkItem workItem = workItemHandler.getWorkItem();
         assertNotNull(workItem);
         assertEquals("john", workItem.getParameter("ActorId"));
         assertEquals("john", workItem.getParameter("personName"));
         
-        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), Collections.singletonMap("personAge", 50));
+        kruntime.getWorkItemManager().completeWorkItem(workItem.getStringId(), Collections.singletonMap("personAge", 50));
         
-        Person person = (Person) processInstance.getVariables().get("person");
+        Person person = (Person) (( org.jbpm.workflow.instance.WorkflowProcessInstance ) processInstance).getVariables().get("person");
         assertEquals(50, person.getAge());
         assertProcessInstanceFinished(processInstance, ksession);
         ksession.dispose();
@@ -1724,21 +1844,23 @@ public class ActivityTest extends JbpmBpmn2TestCase {
     public void testCallActivitykWithExpressionsForIO() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-CallActivityWithIOexpression.bpmn2", "BPMN2-CallActivitySubProcess.bpmn2");
         ksession = createKnowledgeSession(kbase);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
+        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("person", new Person("john"));
-        ProcessInstance processInstance = ksession.startProcess("ParentProcess", params);
+        KogitoProcessInstance processInstance = kruntime.startProcess("ParentProcess", params);
         assertProcessInstanceActive(processInstance);
         
-        Person person = (Person) processInstance.getVariables().get("person");
+        Person person = (Person) (( org.jbpm.workflow.instance.WorkflowProcessInstance ) processInstance).getVariables().get("person");
         assertEquals("new value", person.getName());
 
         ksession = restoreSession(ksession, true);
-        WorkItem workItem = workItemHandler.getWorkItem();
+        org.kie.kogito.internal.process.runtime.KogitoWorkItem workItem = workItemHandler.getWorkItem();
         assertNotNull(workItem);
         assertEquals("krisv", workItem.getParameter("ActorId"));
-        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+        kruntime.getWorkItemManager().completeWorkItem(workItem.getStringId(), null);
 
         assertProcessInstanceFinished(processInstance, ksession);
     }
@@ -1757,10 +1879,10 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         ProcessInstance processInstance = ksession
                 .startProcess("BPMN2-BusinessRuleTask", params);
         assertProcessInstanceFinished(processInstance, ksession);
-        Person person = (Person) processInstance.getVariables().get("person");
+        Person person = (Person) (( org.jbpm.workflow.instance.WorkflowProcessInstance ) processInstance).getVariables().get("person");
         assertEquals("john", person.getName());
         
-        Account account = (Account) processInstance.getVariables().get("account");
+        Account account = (Account) (( org.jbpm.workflow.instance.WorkflowProcessInstance ) processInstance).getVariables().get("account");
         assertNotNull(account.getPerson());
     }
     
@@ -1816,14 +1938,16 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         assertThat(nodes).hasSize(3);
         assertThat(nodes).filteredOn(n -> n instanceof WorkItemNode).allMatch(n -> matchExpectedAssociationSetup(n));
         ksession = createKnowledgeSession(kbase);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
+        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
 
         Map<String, Object> params = new HashMap<>();
         params.put("name", "John");
-        ProcessInstance processInstance = ksession.startProcess("process", params);
+        KogitoProcessInstance processInstance = kruntime.startProcess("process", params);
 
-        ksession.abortProcessInstance(processInstance.getId());
+        kruntime.abortProcessInstance(processInstance.getStringId());
 
         assertProcessInstanceAborted(processInstance);
     }

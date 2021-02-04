@@ -1,5 +1,5 @@
 /*
- * Copyright 2005 JBoss Inc
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,11 +17,11 @@
 package org.kie.kogito.codegen.rules;
 
 import com.github.javaparser.ast.stmt.BlockStmt;
-import org.kie.internal.ruleunit.RuleUnitVariable;
 import org.kie.kogito.rules.DataStore;
 import org.kie.kogito.rules.DataStream;
 import org.kie.kogito.rules.SingletonStore;
 import org.kie.kogito.rules.units.AssignableChecker;
+import org.kie.kogito.rules.units.KogitoRuleUnitVariable;
 
 public class RuleUnitHelper {
     private AssignableChecker assignableChecker;
@@ -44,7 +44,7 @@ public class RuleUnitHelper {
         return assignableChecker.isAssignableFrom( source, target );
     }
 
-    BlockStmt fieldInitializer( RuleUnitVariable ruleUnitVariable, String genericType, boolean isDataSource) {
+    BlockStmt fieldInitializer( KogitoRuleUnitVariable ruleUnitVariable, String genericType, boolean isDataSource) {
         BlockStmt supplierBlock = new BlockStmt();
 
         if (!isDataSource) {

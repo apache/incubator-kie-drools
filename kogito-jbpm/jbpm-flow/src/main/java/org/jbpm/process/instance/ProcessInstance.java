@@ -23,13 +23,14 @@ import org.drools.core.common.InternalKnowledgeRuntime;
 import org.jbpm.workflow.instance.NodeInstance;
 import org.kie.api.definition.process.Process;
 import org.kie.api.runtime.rule.AgendaFilter;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 
 /**
  * A process instance is the representation of a process during its execution.
  * It contains all the runtime status information about the running process.
  * A process can have multiple instances.
  */
-public interface ProcessInstance extends org.kie.api.runtime.process.ProcessInstance,
+public interface ProcessInstance extends KogitoProcessInstance,
                                          ContextInstanceContainer,
                                          ContextableInstance {
 

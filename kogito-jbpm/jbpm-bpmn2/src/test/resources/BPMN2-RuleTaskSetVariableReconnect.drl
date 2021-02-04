@@ -16,6 +16,10 @@
 package com.sample;
 
 import org.kie.api.runtime.process.WorkflowProcessInstance
+import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance
+import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime
 
 global java.util.List list;
 
@@ -25,7 +29,7 @@ rule MyRule
     processInstance : WorkflowProcessInstance()
     eval( processInstance.getVariable("x") == "SomeString")
   then
-    processInstance = (WorkflowProcessInstance)kcontext.getKnowledgeRuntime().getProcessInstance(processInstance.getId());
+    processInstance = (WorkflowProcessInstance)KogitoProcessRuntime.asKogitoProcessRuntime( kcontext.getKnowledgeRuntime() ).getProcessInstance(((KogitoProcessInstance)processInstance).getStringId());
     processInstance.setVariable("x", "AnotherString");
     list.add("Executed");
 end

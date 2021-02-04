@@ -29,13 +29,14 @@ import java.util.Set;
 
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
+import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.node.Join;
 import org.jbpm.workflow.core.node.Split;
 import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
 import org.kie.api.definition.process.Connection;
-import org.kie.api.definition.process.Node;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.NodeInstanceContainer;
+import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 
 /**
  * Runtime counterpart of a join node.
@@ -51,8 +52,8 @@ public class JoinInstance extends NodeInstanceImpl {
         return (Join) getNode();
     }
 
-    public void internalTrigger(final NodeInstance from, String type) {
-        if (!org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
+    public void internalTrigger(final KogitoNodeInstance from, String type) {
+        if (!Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
             throw new IllegalArgumentException(
                 "An ActionNode only accepts default incoming connections!");
         }
@@ -162,7 +163,7 @@ public class JoinInstance extends NodeInstanceImpl {
         }
     }
     
-    private boolean existsActiveDirectFlow(NodeInstanceContainer nodeInstanceContainer, final Node lookFor) {
+    private boolean existsActiveDirectFlow(NodeInstanceContainer nodeInstanceContainer, final org.kie.api.definition.process.Node lookFor) {
         
         Collection<NodeInstance> activeNodeInstancesOrig = nodeInstanceContainer.getNodeInstances();
         List<NodeInstance> activeNodeInstances = new ArrayList<NodeInstance>(activeNodeInstancesOrig);
@@ -185,7 +186,7 @@ public class JoinInstance extends NodeInstanceImpl {
             if (((org.jbpm.workflow.instance.NodeInstance)nodeInstance).getLevel() != getLevel()) {
                 continue;
             }
-            Node node = nodeInstance.getNode();            
+            org.kie.api.definition.process.Node node = nodeInstance.getNode();
             Set<Long> vistedNodes = new HashSet<Long>();
             checkNodes(vistedNodes,node,  node, lookFor);
             if (vistedNodes.contains(lookFor.getId()) && !vistedNodes.contains(node.getId())) {
@@ -197,13 +198,13 @@ public class JoinInstance extends NodeInstanceImpl {
     }
 
 
-    private boolean checkNodes(Set<Long> vistedNodes, Node startAt, Node currentNode, Node lookFor) {
+    private boolean checkNodes( Set<Long> vistedNodes, org.kie.api.definition.process.Node startAt, org.kie.api.definition.process.Node currentNode, org.kie.api.definition.process.Node lookFor) {
     	if (currentNode == null) {
     	    // for dynamic/ad hoc task there is no node 
     	    return false;
     	}
 
-        List<Connection> connections = currentNode.getOutgoingConnections(org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
+        List<Connection> connections = currentNode.getOutgoingConnections( Node.CONNECTION_DEFAULT_TYPE);
         // special handling for XOR split as it usually is used for arbitrary loops
         if (currentNode instanceof Split && ((Split) currentNode).getType() == Split.TYPE_XOR) {
         	if (vistedNodes.contains(startAt.getId())) {
@@ -212,7 +213,7 @@ public class JoinInstance extends NodeInstanceImpl {
             for (Connection conn : connections) {
                 Set<Long> xorCopy = new HashSet<Long>(vistedNodes);
                 
-                Node nextNode = conn.getTo();
+                org.kie.api.definition.process.Node nextNode = conn.getTo();
                 if (nextNode == null) {
                     continue;
                 } else {
@@ -231,7 +232,7 @@ public class JoinInstance extends NodeInstanceImpl {
             }
         } else {
             for (Connection conn : connections) {
-                Node nextNode = conn.getTo();
+                org.kie.api.definition.process.Node nextNode = conn.getTo();
                 if (nextNode == null) {
                     continue;
                 } else {
@@ -268,7 +269,7 @@ public class JoinInstance extends NodeInstanceImpl {
 
     public void triggerCompleted() {
         // join nodes are only removed from the container when they contain no more state
-        triggerCompleted(org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE, triggers.isEmpty());
+        triggerCompleted( Node.CONNECTION_DEFAULT_TYPE, triggers.isEmpty());
     }
     
     public Map<Long, Integer> getTriggers() {

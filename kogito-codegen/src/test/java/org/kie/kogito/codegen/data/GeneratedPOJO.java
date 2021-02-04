@@ -16,8 +16,8 @@
 package org.kie.kogito.codegen.data;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.kie.internal.kogito.codegen.Generated;
-import org.kie.internal.kogito.codegen.VariableInfo;
+import org.kie.kogito.codegen.Generated;
+import org.kie.kogito.codegen.VariableInfo;
 
 @Generated(value = {"kogito-codegen"}, reference = "generatedPerson", name = "GeneratedPerson")
 public class GeneratedPOJO {

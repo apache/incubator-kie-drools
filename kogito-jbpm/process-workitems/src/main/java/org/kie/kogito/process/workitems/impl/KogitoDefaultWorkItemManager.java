@@ -26,9 +26,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.drools.core.process.instance.WorkItem;
 import org.kie.api.runtime.process.ProcessInstance;
-import org.kie.api.runtime.process.ProcessRuntime;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.internal.runtime.Closeable;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
+import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.kie.kogito.process.workitem.Policy;
 import org.kie.kogito.process.workitems.KogitoWorkItem;
 import org.kie.kogito.process.workitems.KogitoWorkItemHandlerNotFoundException;
@@ -40,10 +41,10 @@ import static org.kie.api.runtime.process.WorkItem.COMPLETED;
 public class KogitoDefaultWorkItemManager implements KogitoWorkItemManager {
 
     private Map<String, KogitoWorkItem> workItems = new ConcurrentHashMap<>();
-    private ProcessRuntime kruntime;
+    private KogitoProcessRuntime kruntime;
     private Map<String, WorkItemHandler> workItemHandlers = new HashMap<>();
 
-    public KogitoDefaultWorkItemManager( ProcessRuntime kruntime) {
+    public KogitoDefaultWorkItemManager( KogitoProcessRuntime kruntime) {
         this.kruntime = kruntime;
     }
 
@@ -54,7 +55,7 @@ public class KogitoDefaultWorkItemManager implements KogitoWorkItemManager {
         out.writeObject(workItemHandlers);
     }
 
-    public void internalExecuteWorkItem( KogitoWorkItem workItem) {
+    public void internalExecuteWorkItem(KogitoWorkItem workItem) {
         (( KogitoWorkItemImpl ) workItem).setId(UUID.randomUUID().toString());
         internalAddWorkItem(workItem);
         WorkItemHandler handler = this.workItemHandlers.get(workItem.getName());
@@ -64,7 +65,7 @@ public class KogitoDefaultWorkItemManager implements KogitoWorkItemManager {
     }
 
     public void internalAddWorkItem( KogitoWorkItem workItem) {
-        workItems.put(workItem.getId(), workItem);
+        workItems.put(workItem.getStringId(), workItem);
     }
 
     public void internalAbortWorkItem(String id) {
@@ -75,10 +76,10 @@ public class KogitoDefaultWorkItemManager implements KogitoWorkItemManager {
             if (handler != null) {
                 handler.abortWorkItem(workItem, this);
             } else {
-                workItems.remove( workItem.getId() );
+                workItems.remove( workItem.getStringId() );
                 throw new KogitoWorkItemHandlerNotFoundException(workItem.getName() );
             }
-            workItems.remove(workItem.getId());
+            workItems.remove(workItem.getStringId());
         }
     }
 
@@ -114,9 +115,9 @@ public class KogitoDefaultWorkItemManager implements KogitoWorkItemManager {
         KogitoWorkItem workItem = workItems.get(id);
         // work item may have been aborted
         if (workItem != null) {
-            (workItem).setResults(results);
-            ProcessInstance processInstance = kruntime.getProcessInstance(workItem.getProcessInstanceId());
-            (workItem).setState(COMPLETED);
+            workItem.setResults(results);
+            KogitoProcessInstance processInstance = kruntime.getProcessInstance(workItem.getProcessInstanceStringId());
+            workItem.setState(COMPLETED);
             // process instance may have finished already
             if (processInstance != null) {
                 processInstance.signalEvent("workItemCompleted", workItem);
@@ -129,7 +130,7 @@ public class KogitoDefaultWorkItemManager implements KogitoWorkItemManager {
         KogitoWorkItemImpl workItem = ( KogitoWorkItemImpl ) workItems.get(id);
         // work item may have been aborted
         if (workItem != null) {
-            ProcessInstance processInstance = kruntime.getProcessInstance(workItem.getProcessInstanceId());
+            ProcessInstance processInstance = kruntime.getProcessInstance(workItem.getProcessInstanceStringId());
             workItem.setState(ABORTED);
             // process instance may have finished already
             if (processInstance != null) {
@@ -139,8 +140,14 @@ public class KogitoDefaultWorkItemManager implements KogitoWorkItemManager {
         }
     }
 
-    public void registerWorkItemHandler(String workItemName, WorkItemHandler handler) {
-        this.workItemHandlers.put(workItemName, handler);
+    @Override
+    public void completeWorkItem( long l, Map<String, Object> map ) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void abortWorkItem( long l ) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -148,9 +155,8 @@ public class KogitoDefaultWorkItemManager implements KogitoWorkItemManager {
         return new HashSet<>(workItems.values());
     }
 
-    public WorkItem getWorkItem( long id ) {
-        throw new UnsupportedOperationException( "org.drools.core.process.instance.impl.KogitoDefaultWorkItemManager.getWorkItem -> TODO" );
-
+    public void registerWorkItemHandler( String workItemName, WorkItemHandler handler) {
+        this.workItemHandlers.put(workItemName, handler);
     }
 
     public void clear() {
@@ -175,11 +181,6 @@ public class KogitoDefaultWorkItemManager implements KogitoWorkItemManager {
         }
     }
 
-    public void retryWorkItem( Long workItemID, Map<String, Object> params ) {
-        throw new UnsupportedOperationException( "org.drools.core.process.instance.impl.KogitoDefaultWorkItemManager.retryWorkItem -> TODO" );
-
-    }
-
     public void retryWorkItem( String workItemID, Map<String, Object> params ) {
        if (params==null || params.isEmpty()) {
            retryWorkItem(workItemID);
@@ -191,25 +192,5 @@ public class KogitoDefaultWorkItemManager implements KogitoWorkItemManager {
     @Override
     public void internalCompleteWorkItem( KogitoWorkItem workItem) {
 
-    }
-
-    @Override
-    public void internalExecuteWorkItem( WorkItem workItem ) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void internalAddWorkItem( WorkItem workItem ) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void internalAbortWorkItem( long id ) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void signalEvent( String type, Object event, long processInstanceId ) {
-        throw new UnsupportedOperationException();
     }
 }

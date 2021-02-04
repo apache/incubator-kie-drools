@@ -32,8 +32,8 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.marshalling.impl.MarshallerWriteContext;
-import org.drools.serialization.protobuf.ProtobufMessages.Header;
 import org.drools.serialization.protobuf.PersisterHelper;
+import org.drools.serialization.protobuf.ProtobufMessages.Header;
 import org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent;
 import org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry;
 import org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceType;
@@ -63,13 +63,14 @@ import org.jbpm.workflow.instance.node.SubProcessNodeInstance;
 import org.jbpm.workflow.instance.node.TimerNodeInstance;
 import org.jbpm.workflow.instance.node.WorkItemNodeInstance;
 import org.kie.api.definition.process.Process;
-import org.kie.api.runtime.process.HumanTaskWorkItem;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.NodeInstanceContainer;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.api.runtime.rule.FactHandle;
+import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
+import org.kie.kogito.process.workitem.HumanTaskWorkItem;
 import org.kie.kogito.process.workitems.KogitoWorkItem;
 import org.kie.kogito.process.workitems.impl.KogitoWorkItemImpl;
 
@@ -87,7 +88,7 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
         WorkflowProcessInstanceImpl workFlow = (WorkflowProcessInstanceImpl) processInstance;
         
         JBPMMessages.ProcessInstance.Builder _instance = JBPMMessages.ProcessInstance.newBuilder()
-                .setId( workFlow.getId() )
+                .setId( workFlow.getStringId() )
                 .setProcessId( workFlow.getProcessId() )
                 .setState( workFlow.getState() )
                 .setProcessType( workFlow.getProcess().getType() )                
@@ -113,8 +114,8 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
         if (workFlow.getSlaTimerId() != null) {
             _instance.setSlaTimerId(workFlow.getSlaTimerId());
         }
-        if (workFlow.getParentProcessInstanceId() != null) {
-            _instance.setParentProcessInstanceId(workFlow.getParentProcessInstanceId());
+        if (workFlow.getParentProcessInstanceStringId() != null) {
+            _instance.setParentProcessInstanceId(workFlow.getParentProcessInstanceStringId());
         }
         if (workFlow.getRootProcessInstanceId() != null) {
             _instance.setRootProcessInstanceId(workFlow.getRootProcessInstanceId());
@@ -143,13 +144,13 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
             }
         }
 
-        List<NodeInstance> nodeInstances = new ArrayList<NodeInstance>( workFlow.getNodeInstances() );
+        List<NodeInstance> nodeInstances = new ArrayList<>( workFlow.getNodeInstances() );
         Collections.sort( nodeInstances,
                           new Comparator<NodeInstance>() {
 
                               public int compare(NodeInstance o1,
                                                  NodeInstance o2) {
-                                  return (int) (o1.getId().compareTo(o2.getId()));
+                                  return ((KogitoNodeInstance)o1).getStringId().compareTo(((KogitoNodeInstance)o2).getStringId());
                               }
                           } );
         for ( NodeInstance nodeInstance : nodeInstances ) {
@@ -163,9 +164,9 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
             for ( ContextInstance contextInstance : exclusiveGroupInstances ) {
                 JBPMMessages.ProcessInstance.ExclusiveGroupInstance.Builder _exclusive = JBPMMessages.ProcessInstance.ExclusiveGroupInstance.newBuilder();
                 ExclusiveGroupInstance exclusiveGroupInstance = (ExclusiveGroupInstance) contextInstance;
-                Collection<NodeInstance> groupNodeInstances = exclusiveGroupInstance.getNodeInstances();
-                for ( NodeInstance nodeInstance : groupNodeInstances ) {
-                    _exclusive.addGroupNodeInstanceId( nodeInstance.getId() );
+                Collection<KogitoNodeInstance> groupNodeInstances = exclusiveGroupInstance.getNodeInstances();
+                for ( KogitoNodeInstance nodeInstance : groupNodeInstances ) {
+                    _exclusive.addGroupNodeInstanceId( nodeInstance.getStringId() );
                 }
                 _instance.addExclusiveGroup( _exclusive.build() );
             }
@@ -211,7 +212,7 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
     public JBPMMessages.ProcessInstance.NodeInstance writeNodeInstance(MarshallerWriteContext context,
                                                                        NodeInstance nodeInstance) throws IOException {
         JBPMMessages.ProcessInstance.NodeInstance.Builder _node = JBPMMessages.ProcessInstance.NodeInstance.newBuilder()
-                .setId( nodeInstance.getId() )
+                .setId( ((KogitoNodeInstance)nodeInstance).getStringId() )
                 .setNodeId( nodeInstance.getNodeId())
                 .setLevel(((org.jbpm.workflow.instance.NodeInstance)nodeInstance).getLevel())
                 .setSlaCompliance(((org.jbpm.workflow.instance.NodeInstance)nodeInstance).getSlaCompliance())
@@ -382,7 +383,7 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
                               new Comparator<NodeInstance>() {
                                   public int compare(NodeInstance o1,
                                                      NodeInstance o2) {
-                                      return (int) (o1.getId().compareTo(o2.getId()));
+                                      return ((KogitoNodeInstance)o1).getStringId().compareTo(((KogitoNodeInstance)o2).getStringId());
                                   }
                               } );
             for ( NodeInstance subNodeInstance : nodeInstances ) {
@@ -487,7 +488,7 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
                               new Comparator<NodeInstance>() {
                                   public int compare(NodeInstance o1,
                                                      NodeInstance o2) {
-                                      return (int) (o1.getId().compareTo(o2.getId()));
+                                      return ((KogitoNodeInstance)o1).getStringId().compareTo(((KogitoNodeInstance)o2).getStringId());
                                   }
                               } );
             for ( NodeInstance subNodeInstance : nodeInstances ) {
@@ -500,9 +501,9 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
                 for ( ContextInstance contextInstance : exclusiveGroupInstances ) {
                     JBPMMessages.ProcessInstance.ExclusiveGroupInstance.Builder _excl = JBPMMessages.ProcessInstance.ExclusiveGroupInstance.newBuilder();
                     ExclusiveGroupInstance exclusiveGroupInstance = (ExclusiveGroupInstance) contextInstance;
-                    Collection<NodeInstance> groupNodeInstances = exclusiveGroupInstance.getNodeInstances();
-                    for ( NodeInstance groupNodeInstance : groupNodeInstances ) {
-                        _excl.addGroupNodeInstanceId( groupNodeInstance.getId() );
+                    Collection<KogitoNodeInstance> groupNodeInstances = exclusiveGroupInstance.getNodeInstances();
+                    for ( KogitoNodeInstance groupNodeInstance : groupNodeInstances ) {
+                        _excl.addGroupNodeInstanceId( groupNodeInstance.getStringId() );
                     }
                     _composite.addExclusiveGroup( _excl.build() );
                 }
@@ -518,9 +519,11 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
 
     public static JBPMMessages.WorkItem writeWorkItem(MarshallerWriteContext context,
                                                       WorkItem workItem) throws IOException {
+
+        KogitoWorkItem kogitoWorkItem = (KogitoWorkItem) workItem;
         JBPMMessages.WorkItem.Builder _workItem = JBPMMessages.WorkItem.newBuilder()
-                .setId( workItem.getId() )
-                .setProcessInstancesId( workItem.getProcessInstanceId() )
+                .setId( kogitoWorkItem.getStringId() )
+                .setProcessInstancesId( kogitoWorkItem.getProcessInstanceStringId() )
                 .setName( workItem.getName() )
                 .setState( workItem.getState() );
 
@@ -531,17 +534,17 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
             _workItem.setNodeId((( KogitoWorkItem )workItem).getNodeId())
             .setNodeInstanceId((( KogitoWorkItem )workItem).getNodeInstanceStringId());
             
-            if (workItem.getPhaseId() != null) {
-                _workItem.setPhaseId(workItem.getPhaseId());
+            if (kogitoWorkItem.getPhaseId() != null) {
+                _workItem.setPhaseId(kogitoWorkItem.getPhaseId());
             }
-            if (workItem.getPhaseStatus() != null) {
-                _workItem.setPhaseStatus(workItem.getPhaseStatus());
+            if (kogitoWorkItem.getPhaseStatus() != null) {
+                _workItem.setPhaseStatus(kogitoWorkItem.getPhaseStatus());
             }
-            if (workItem.getStartDate() != null) {
-                _workItem.setStartDate(workItem.getStartDate().getTime());
+            if (kogitoWorkItem.getStartDate() != null) {
+                _workItem.setStartDate(kogitoWorkItem.getStartDate().getTime());
             }
-            if (workItem.getCompleteDate() != null) {
-                _workItem.setCompleteDate(workItem.getCompleteDate().getTime());
+            if (kogitoWorkItem.getCompleteDate() != null) {
+                _workItem.setCompleteDate(kogitoWorkItem.getCompleteDate().getTime());
             }
         }
 
@@ -589,8 +592,8 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
     public static JBPMMessages.HumanTaskWorkItem writeHumanTaskWorkItem(MarshallerWriteContext context,
                                                       HumanTaskWorkItem workItem) throws IOException {
         JBPMMessages.HumanTaskWorkItem.Builder _workItem = JBPMMessages.HumanTaskWorkItem.newBuilder()
-                .setId( workItem.getId() )
-                .setProcessInstancesId( workItem.getProcessInstanceId() )
+                .setId( workItem.getStringId() )
+                .setProcessInstancesId( workItem.getProcessInstanceStringId() )
                 .setName( workItem.getName() )
                 .setState( workItem.getState() );
 
@@ -791,7 +794,7 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
             ExclusiveGroupInstance exclusiveGroupInstance = new ExclusiveGroupInstance();
             processInstance.addContextInstance( ExclusiveGroup.EXCLUSIVE_GROUP, exclusiveGroupInstance );
             for ( String nodeInstanceId : _excl.getGroupNodeInstanceIdList() ) {
-                NodeInstance nodeInstance = ((org.jbpm.workflow.instance.NodeInstanceContainer)processInstance).getNodeInstance( nodeInstanceId, true );
+                KogitoNodeInstance nodeInstance = ((org.jbpm.workflow.instance.NodeInstanceContainer)processInstance).getNodeInstance( nodeInstanceId, true );
                 if ( nodeInstance == null ) {
                     throw new IllegalArgumentException( "Could not find node instance when deserializing exclusive group instance: " + nodeInstanceId );
                 }
@@ -881,7 +884,7 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
                     ExclusiveGroupInstance exclusiveGroupInstance = new ExclusiveGroupInstance();
                     ((CompositeContextNodeInstance) nodeInstance).addContextInstance( ExclusiveGroup.EXCLUSIVE_GROUP, exclusiveGroupInstance );
                     for ( String nodeInstanceId : _excl.getGroupNodeInstanceIdList() ) {
-                        NodeInstance groupNodeInstance = ((org.jbpm.workflow.instance.NodeInstanceContainer)processInstance).getNodeInstance( nodeInstanceId, true );
+                        KogitoNodeInstance groupNodeInstance = ((org.jbpm.workflow.instance.NodeInstanceContainer)processInstance).getNodeInstance( nodeInstanceId, true );
                         if ( groupNodeInstance == null ) {
                             throw new IllegalArgumentException( "Could not find node instance when deserializing exclusive group instance: " + nodeInstanceId );
                         }

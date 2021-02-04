@@ -23,11 +23,11 @@ import org.kie.api.runtime.Context;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
-import org.kie.internal.command.ProcessInstanceIdCommand;
 import org.kie.internal.command.RegistryContext;
+import org.kie.kogito.internal.process.command.KogitoProcessInstanceIdCommand;
+import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 
-public class KogitoSetProcessInstanceVariablesCommand implements ExecutableCommand<Void>,
-        ProcessInstanceIdCommand {
+public class KogitoSetProcessInstanceVariablesCommand implements ExecutableCommand<Void>, KogitoProcessInstanceIdCommand {
 
     /**
      * Generated serial version UID
@@ -66,7 +66,7 @@ public class KogitoSetProcessInstanceVariablesCommand implements ExecutableComma
     }
 
     public Void execute( Context context) {
-        KieSession ksession = (( RegistryContext ) context).lookup( KieSession.class);
+        KogitoProcessRuntime ksession = KogitoProcessRuntime.asKogitoProcessRuntime( (( RegistryContext ) context).lookup( KieSession.class) );
         ProcessInstance processInstance = ksession.getProcessInstance(processInstanceId);
         if (processInstance != null) {
             if (variables != null) {

@@ -22,7 +22,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import org.kie.api.runtime.process.WorkItemNotFoundException;
 import org.kie.kogito.process.flexible.AdHocFragment;
 import org.kie.kogito.process.flexible.Milestone;
 import org.kie.kogito.process.workitem.Policy;
@@ -109,7 +108,6 @@ public interface ProcessInstance<T> {
      * @param id        id of the work item to complete
      * @param variables optional variables
      * @param policies  optional list of policies to be enforced
-     * @throws WorkItemNotFoundException in case work item with given id does not exist
      */
     void completeWorkItem(String id, Map<String, Object> variables, Policy<?>... policies);
 
@@ -118,7 +116,6 @@ public interface ProcessInstance<T> {
      *
      * @param id       id of the work item to complete
      * @param policies optional list of policies to be enforced
-     * @throws WorkItemNotFoundException in case work item with given id does not exist
      */
     void abortWorkItem(String id, Policy<?>... policies);
 
@@ -127,7 +124,6 @@ public interface ProcessInstance<T> {
      *
      * @param id         id of the work item to complete
      * @param transition target transition including phase, identity and data
-     * @throws WorkItemNotFoundException in case work item with given id does not exist
      */
     void transitionWorkItem(String id, Transition<?> transition);
     /**
@@ -136,7 +132,6 @@ public interface ProcessInstance<T> {
      * @param workItemId id of the work item
      * @param policies   optional list of policies to be enforced
      * @return work item with its parameters if found
-     * @throws WorkItemNotFoundException in case work item with given id does not exist
      */
     WorkItem workItem(String workItemId, Policy<?>... policies);
 

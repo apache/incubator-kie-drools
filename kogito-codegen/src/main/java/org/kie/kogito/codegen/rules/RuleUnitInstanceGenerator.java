@@ -36,20 +36,23 @@ import com.github.javaparser.ast.stmt.IfStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.ruleunit.RuleUnitDescription;
-import org.kie.internal.ruleunit.RuleUnitVariable;
 import org.kie.kogito.codegen.core.BodyDeclarationComparator;
 import org.kie.kogito.conf.DefaultEntryPoint;
 import org.kie.kogito.conf.EntryPoint;
 import org.kie.kogito.rules.DataSource;
 import org.kie.kogito.rules.units.AbstractRuleUnitInstance;
 import org.kie.kogito.rules.units.EntryPointDataProcessor;
+import org.kie.kogito.rules.units.KogitoRuleUnitDescription;
+import org.kie.kogito.rules.units.KogitoRuleUnitVariable;
 
 public class RuleUnitInstanceGenerator implements RuleFileGenerator {
+
+    private static String ENTRY_POINT_DEFAULT_NAME = "DEFAULT";
 
     private final String targetTypeName;
     private final String targetCanonicalName;
     private final String generatedFilePath;
-    private final RuleUnitDescription ruleUnitDescription;
+    private final KogitoRuleUnitDescription ruleUnitDescription;
     private final RuleUnitHelper ruleUnitHelper;
     private final List<String> queryClasses;
 
@@ -57,7 +60,7 @@ public class RuleUnitInstanceGenerator implements RuleFileGenerator {
         return packageName + "." + typeName + "RuleUnitInstance";
     }
 
-    public RuleUnitInstanceGenerator( RuleUnitDescription ruleUnitDescription, RuleUnitHelper ruleUnitHelper, List<String> queryClasses ) {
+    public RuleUnitInstanceGenerator( KogitoRuleUnitDescription ruleUnitDescription, RuleUnitHelper ruleUnitHelper, List<String> queryClasses ) {
         this.ruleUnitDescription = ruleUnitDescription;
         this.targetTypeName = ruleUnitDescription.getSimpleName() + "RuleUnitInstance";
         this.targetCanonicalName = ruleUnitDescription.getPackageName() + "." + targetTypeName;
@@ -97,7 +100,7 @@ public class RuleUnitInstanceGenerator implements RuleFileGenerator {
         try {
 
 
-            for (RuleUnitVariable m : ruleUnitDescription.getUnitVarDeclarations()) {
+            for (KogitoRuleUnitVariable m : ruleUnitDescription.getUnitVarDeclarations()) {
                 String methodName = m.getter();
                 String propertyName = m.getName();
 
@@ -169,7 +172,7 @@ public class RuleUnitInstanceGenerator implements RuleFileGenerator {
             // fixme should transfer this config to RuleUnitVariable
             Field dataSourceField = ruleUnitClass.getDeclaredField(propertyName );
             if (dataSourceField.getAnnotation( DefaultEntryPoint.class ) != null) {
-                return org.kie.api.runtime.rule.EntryPoint.DEFAULT_NAME;
+                return ENTRY_POINT_DEFAULT_NAME;
             }
             EntryPoint epAnn = dataSourceField.getAnnotation( EntryPoint.class );
             if (epAnn != null) {

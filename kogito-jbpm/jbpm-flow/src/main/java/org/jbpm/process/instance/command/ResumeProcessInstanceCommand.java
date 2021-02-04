@@ -21,17 +21,16 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
-
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
-import org.kie.internal.command.ProcessInstanceIdCommand;
 import org.kie.internal.command.RegistryContext;
+import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 
 @XmlRootElement(name="get-completed-tasks-command")
 @XmlAccessorType(XmlAccessType.NONE)
-public class ResumeProcessInstanceCommand implements ExecutableCommand<Object>, ProcessInstanceIdCommand {
+public class ResumeProcessInstanceCommand implements ExecutableCommand<Object>, KogitoProcessInstanceIdCommand {
 
     /** Generated serial version UID */
     private static final long serialVersionUID = 3153292964867981793L;
@@ -51,11 +50,11 @@ public class ResumeProcessInstanceCommand implements ExecutableCommand<Object>, 
     }
 
     public Object execute(Context context ) {
-        KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
+        KogitoProcessRuntime runtime = ( KogitoProcessRuntime ) ((RegistryContext) context).lookup( KieSession.class );
         if (processInstanceId == null) {
             return null;
         }
-        ProcessInstance processInstance = ksession.getProcessInstance(processInstanceId);
+        ProcessInstance processInstance = runtime.getProcessInstance(processInstanceId);
         if ( processInstance == null ) {
             throw new IllegalArgumentException( "Could not find process instance for id " + processInstanceId );
         }

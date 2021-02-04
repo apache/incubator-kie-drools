@@ -24,6 +24,7 @@ import java.util.HashMap;
 
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.impl.EnvironmentFactory;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.impl.KnowledgeBaseImpl;
@@ -34,7 +35,6 @@ import org.drools.core.marshalling.impl.RuleBaseNodes;
 import org.drools.serialization.protobuf.ProtobufMarshaller;
 import org.drools.serialization.protobuf.ProtobufMarshallerReaderContext;
 import org.drools.serialization.protobuf.ProtobufMarshallerWriteContext;
-import org.drools.core.impl.EnvironmentFactory;
 import org.jbpm.marshalling.impl.ProcessInstanceResolverStrategy;
 import org.jbpm.process.instance.ProcessInstanceManager;
 import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
@@ -49,6 +49,7 @@ import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.marshalling.MarshallerFactory;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -83,7 +84,7 @@ public class ProcessInstanceResolverStrategyTest extends AbstractBaseTest {
         kbuilder.add(new ClassPathResource(PROCESS_NAME, this.getClass()), ResourceType.DRF);
         KieBase kbase = kbuilder.newKieBase();
         KieSession ksession = kbase.newKieSession();
-        ProcessInstance processInstance = ksession.createProcessInstance("process name", new HashMap<String, Object>());
+        KogitoProcessInstance processInstance = ( KogitoProcessInstance ) ksession.createProcessInstance("process name", new HashMap<String, Object>());
         ksession.insert(processInstance);
 
         // strategy setup
@@ -110,15 +111,15 @@ public class ProcessInstanceResolverStrategyTest extends AbstractBaseTest {
         baos.close();
         writerContext.close();
         byte[] bytes = baos.toByteArray();
-        int numCorrectBytes = calculateNumBytesForLong(processInstance.getId());
+        int numCorrectBytes = calculateNumBytesForLong(processInstance.getStringId());
         assertTrue(bytes.length == numCorrectBytes, "Expected " + numCorrectBytes + " bytes, not " + bytes.length);
 
         ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
         ObjectInputStream ois = new ObjectInputStream(bais);
         String serializedProcessInstanceId = ois.readUTF();
         ois.close();
-        assertTrue(processInstance.getId().equals(serializedProcessInstanceId),
-                   "Expected " + processInstance.getId() + ", not " + serializedProcessInstanceId);
+        assertTrue(processInstance.getStringId().equals(serializedProcessInstanceId),
+                   "Expected " + processInstance.getStringId() + ", not " + serializedProcessInstanceId);
 
         // Test other strategy stuff
         ProcessInstanceManager pim = ProcessInstanceResolverStrategy.retrieveProcessInstanceManager(writerContext);

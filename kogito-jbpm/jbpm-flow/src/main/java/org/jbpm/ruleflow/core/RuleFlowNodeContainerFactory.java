@@ -37,9 +37,9 @@ import org.jbpm.ruleflow.core.factory.SubProcessNodeFactory;
 import org.jbpm.ruleflow.core.factory.ThrowLinkNodeFactory;
 import org.jbpm.ruleflow.core.factory.TimerNodeFactory;
 import org.jbpm.ruleflow.core.factory.WorkItemNodeFactory;
+import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.impl.ConnectionImpl;
-import org.kie.api.definition.process.Node;
 
 import static org.jbpm.ruleflow.core.Metadata.ASSOCIATION;
 import static org.jbpm.ruleflow.core.Metadata.HIDDEN;
@@ -149,21 +149,21 @@ public abstract class RuleFlowNodeContainerFactory {
     }
 
     public RuleFlowNodeContainerFactory connection(long fromId, long toId, String uniqueId) {
-        Node from = nodeContainer.getNode(fromId);
-        Node to = nodeContainer.getNode(toId);
+        org.kie.api.definition.process.Node from = nodeContainer.getNode(fromId);
+        org.kie.api.definition.process.Node to = nodeContainer.getNode(toId);
         ConnectionImpl connection = new ConnectionImpl(
-                from, org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE,
-                to, org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
+                from, Node.CONNECTION_DEFAULT_TYPE,
+                to, Node.CONNECTION_DEFAULT_TYPE);
         connection.setMetaData(UNIQUE_ID, uniqueId);
         return this;
     }
 
     public RuleFlowNodeContainerFactory association(long fromId, long toId, String uniqueId) {
-        Node from = nodeContainer.getNode(fromId);
-        Node to = nodeContainer.getNode(toId);
+        org.kie.api.definition.process.Node from = nodeContainer.getNode(fromId);
+        org.kie.api.definition.process.Node to = nodeContainer.getNode(toId);
         ConnectionImpl connection = new ConnectionImpl(
-                from, org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE,
-                to, org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
+                from, Node.CONNECTION_DEFAULT_TYPE,
+                to, Node.CONNECTION_DEFAULT_TYPE);
         connection.setMetaData(ASSOCIATION, Boolean.TRUE);
         connection.setMetaData(UNIQUE_ID, uniqueId);
         connection.setMetaData(HIDDEN, Boolean.TRUE);

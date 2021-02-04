@@ -30,6 +30,9 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.ProcessWorkItemHandlerException.HandlingStrategy;
 import org.kie.api.runtime.process.WorkItem;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
+import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
 
 import static org.jbpm.process.core.context.variable.VariableScope.VARIABLE_STRICT_ENABLED_PROPERTY;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -71,6 +74,7 @@ public class WorkItemHandlerExceptionHandlingTest extends JbpmBpmn2TestCase {
         KieBase kbase = createKnowledgeBaseWithoutDumper("handler/BPMN2-UserTaskWithBooleanOutput.bpmn2", "handler/BPMN2-ReceiveTask.bpmn2");
 
         KieSession ksession = createKnowledgeSession(kbase);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
         TestWorkItemHandler testHandler = new TestWorkItemHandler();
         ErrornousWorkItemHandler workItemHandler = new ErrornousWorkItemHandler("ReceiveTask", HandlingStrategy.COMPLETE);
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
@@ -78,11 +82,11 @@ public class WorkItemHandlerExceptionHandlingTest extends JbpmBpmn2TestCase {
         ProcessInstance processInstance = ksession.startProcess("com.sample.boolean");
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         
-        WorkItem receiveWorkItem = testHandler.getWorkItem();
+        KogitoWorkItem receiveWorkItem = testHandler.getWorkItem();
         
         Map<String, Object> results = new HashMap<>();
         results.put("Message", true);
-        ksession.getWorkItemManager().completeWorkItem(receiveWorkItem.getId(), results);
+        kruntime.getWorkItemManager().completeWorkItem(receiveWorkItem.getStringId(), results);
                 
         assertProcessVarValue(processInstance, "isChecked", "true");
         assertProcessInstanceCompleted(processInstance);
@@ -114,6 +118,7 @@ public class WorkItemHandlerExceptionHandlingTest extends JbpmBpmn2TestCase {
         KieBase kbase = createKnowledgeBaseWithoutDumper("handler/BPMN2-UserTaskWithBooleanOutput.bpmn2", "handler/BPMN2-ReceiveTask.bpmn2");
 
         KieSession ksession = createKnowledgeSession(kbase);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
         ErrornousWorkItemHandler workItemHandler = new ErrornousWorkItemHandler("ReceiveTask", HandlingStrategy.ABORT);
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
         TestWorkItemHandler testHandler = new TestWorkItemHandler();
@@ -124,11 +129,11 @@ public class WorkItemHandlerExceptionHandlingTest extends JbpmBpmn2TestCase {
         ProcessInstance processInstance = ksession.startProcess("com.sample.boolean", params);
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         
-        WorkItem receiveWorkItem = testHandler.getWorkItem();
+        KogitoWorkItem receiveWorkItem = testHandler.getWorkItem();
         
         Map<String, Object> results = new HashMap<>();
         results.put("Message", true);
-        ksession.getWorkItemManager().completeWorkItem(receiveWorkItem.getId(), results);
+        kruntime.getWorkItemManager().completeWorkItem(receiveWorkItem.getStringId(), results);
                 
         assertProcessVarValue(processInstance, "isChecked", "false");
         assertProcessInstanceCompleted(processInstance);        
@@ -147,7 +152,7 @@ public class WorkItemHandlerExceptionHandlingTest extends JbpmBpmn2TestCase {
         Map<String, Object> params = new HashMap<>();
         params.put("isChecked", false);
         ProcessInstance processInstance = ksession.startProcess("com.sample.boolean", params);
-        assertEquals(ProcessInstance.STATE_ERROR, processInstance.getState());  
+        assertEquals( KogitoProcessInstance.STATE_ERROR, processInstance.getState());
     }
     
     @Test
@@ -173,6 +178,7 @@ public class WorkItemHandlerExceptionHandlingTest extends JbpmBpmn2TestCase {
         KieBase kbase = createKnowledgeBaseWithoutDumper("handler/BPMN2-UserTaskWithBooleanOutput.bpmn2", "handler/BPMN2-ReceiveTask.bpmn2");
 
         KieSession ksession = createKnowledgeSession(kbase);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
         ErrornousWorkItemHandler workItemHandler = new ErrornousWorkItemHandler("ReceiveTask", HandlingStrategy.RETRY);
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
         TestWorkItemHandler testHandler = new TestWorkItemHandler();
@@ -183,11 +189,11 @@ public class WorkItemHandlerExceptionHandlingTest extends JbpmBpmn2TestCase {
         ProcessInstance processInstance = ksession.startProcess("com.sample.boolean", params);
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         
-        WorkItem receiveWorkItem = testHandler.getWorkItem();
+        KogitoWorkItem receiveWorkItem = testHandler.getWorkItem();
         
         Map<String, Object> results = new HashMap<>();
         results.put("Message", true);
-        ksession.getWorkItemManager().completeWorkItem(receiveWorkItem.getId(), results);
+        kruntime.getWorkItemManager().completeWorkItem(receiveWorkItem.getStringId(), results);
         assertProcessVarValue(processInstance, "isChecked", "true");
               
     }

@@ -47,6 +47,7 @@ import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.serverless.workflow.parser.core.ServerlessWorkflowFactory;
 import org.jbpm.serverless.workflow.parser.util.ServerlessWorkflowUtils;
 import org.jbpm.serverless.workflow.parser.util.WorkflowAppContext;
+import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.ConnectionRef;
 import org.jbpm.workflow.core.impl.ConstraintImpl;
 import org.jbpm.workflow.core.node.ActionNode;
@@ -58,7 +59,6 @@ import org.jbpm.workflow.core.node.Split;
 import org.jbpm.workflow.core.node.StartNode;
 import org.jbpm.workflow.core.node.SubProcessNode;
 import org.jbpm.workflow.core.node.TimerNode;
-import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.Process;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -493,7 +493,7 @@ public class ServerlessWorkflowParser {
 
                     ConstraintImpl constraintImpl = factory.splitConstraint(xorSplit.getId() + "_" + targetId,
                             "DROOLS_DEFAULT", "java", ServerlessWorkflowUtils.conditionScript(condition.getCondition()), 0, isDefaultConstraint);
-                    xorSplit.addConstraint(new ConnectionRef(xorSplit.getId() + "_" + targetId, targetId, org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE), constraintImpl);
+                    xorSplit.addConstraint(new ConnectionRef(xorSplit.getId() + "_" + targetId, targetId, Node.CONNECTION_DEFAULT_TYPE), constraintImpl);
 
                 }
             } else {
@@ -510,8 +510,8 @@ public class ServerlessWorkflowParser {
         if (actions != null && !actions.isEmpty() && workflowFunctions != null) {
             StartNode embeddedStartNode =
                     factory.startNode(idCounter.getAndIncrement(), "EmbeddedStart", embeddedSubProcess);
-            Node start = embeddedStartNode;
-            Node current = null;
+            org.kie.api.definition.process.Node start = embeddedStartNode;
+            org.kie.api.definition.process.Node current = null;
 
             for (Action action : actions) {
                 FunctionDefinition actionFunction = workflowFunctions.getFunctionDefs()
@@ -589,7 +589,7 @@ public class ServerlessWorkflowParser {
         }
     }
 
-    private Node unsupportedNode(Action action, CompositeContextNode embeddedSubProcess) {
+    private org.kie.api.definition.process.Node unsupportedNode( Action action, CompositeContextNode embeddedSubProcess) {
         LOGGER
             .warn(
                   "currently unsupported function type, supported types are 'script', 'sysout', 'service', 'decision', 'rule', 'integration', 'rest'");

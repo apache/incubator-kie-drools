@@ -46,7 +46,7 @@ import static org.jbpm.bpmn2.xml.ProcessHandler.createJavaAction;
 public class EndEventHandler extends AbstractNodeHandler {
 
     @Override
-    protected Node createNode(Attributes attrs) {
+    protected Node createNode( Attributes attrs) {
         EndNode node = new EndNode();
         node.setTerminate(false);
         return node;
@@ -62,7 +62,7 @@ public class EndEventHandler extends AbstractNodeHandler {
     public Object end(final String uri, final String localName,
             final ExtensibleXmlParser parser) throws SAXException {
         final Element element = parser.endElementBuilder();
-        Node node = (Node) parser.getCurrent();
+        Node node = ( Node ) parser.getCurrent();
         // determine type of event definition, so the correct type of node
         // can be generated
         super.handleNode(node, element, uri, localName, parser);
@@ -111,8 +111,8 @@ public class EndEventHandler extends AbstractNodeHandler {
         return node;
     }
 
-    public void handleTerminateNode(final Node node, final Element element, final String uri,
-            final String localName, final ExtensibleXmlParser parser) throws SAXException {
+    public void handleTerminateNode( final Node node, final Element element, final String uri,
+                                     final String localName, final ExtensibleXmlParser parser) throws SAXException {
         ((EndNode) node).setTerminate(true);
 
         EndNode endNode = (EndNode) node;
@@ -132,8 +132,8 @@ public class EndEventHandler extends AbstractNodeHandler {
         }
     }
 
-    public void handleSignalNode(final Node node, final Element element, final String uri,
-            final String localName, final ExtensibleXmlParser parser) throws SAXException {
+    public void handleSignalNode( final Node node, final Element element, final String uri,
+                                  final String localName, final ExtensibleXmlParser parser) throws SAXException {
         EndNode endNode = (EndNode) node;
         org.w3c.dom.Node xmlNode = element.getFirstChild();
         while (xmlNode != null) {
@@ -170,8 +170,8 @@ public class EndEventHandler extends AbstractNodeHandler {
     }
 
     @SuppressWarnings("unchecked")
-    public void handleMessageNode(final Node node, final Element element, final String uri,
-            final String localName, final ExtensibleXmlParser parser) throws SAXException {
+    public void handleMessageNode( final Node node, final Element element, final String uri,
+                                   final String localName, final ExtensibleXmlParser parser) throws SAXException {
         EndNode endNode = (EndNode) node;
         org.w3c.dom.Node xmlNode = element.getFirstChild();
         while (xmlNode != null) {
@@ -247,8 +247,8 @@ public class EndEventHandler extends AbstractNodeHandler {
     }
 
     @SuppressWarnings("unchecked")
-	public void handleErrorNode(final Node node, final Element element, final String uri,
-            final String localName, final ExtensibleXmlParser parser) throws SAXException {
+	public void handleErrorNode( final Node node, final Element element, final String uri,
+                                 final String localName, final ExtensibleXmlParser parser) throws SAXException {
         FaultNode faultNode = (FaultNode) node;
         org.w3c.dom.Node xmlNode = element.getFirstChild();
         while (xmlNode != null) {
@@ -281,8 +281,8 @@ public class EndEventHandler extends AbstractNodeHandler {
     }
 
     @SuppressWarnings("unchecked")
-	public void handleEscalationNode(final Node node, final Element element, final String uri,
-            final String localName, final ExtensibleXmlParser parser) throws SAXException {
+	public void handleEscalationNode( final Node node, final Element element, final String uri,
+                                      final String localName, final ExtensibleXmlParser parser) throws SAXException {
         FaultNode faultNode = (FaultNode) node;
         org.w3c.dom.Node xmlNode = element.getFirstChild();
         while (xmlNode != null) {
@@ -320,7 +320,7 @@ public class EndEventHandler extends AbstractNodeHandler {
     }
 
     @Override
-    public void writeNode(Node node, StringBuilder xmlDump, int metaDataType) {
+    public void writeNode( Node node, StringBuilder xmlDump, int metaDataType) {
         throw new IllegalArgumentException("Writing out should be handled by specific handlers");
     }
 

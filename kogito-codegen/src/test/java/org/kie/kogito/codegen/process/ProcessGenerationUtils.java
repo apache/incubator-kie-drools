@@ -14,15 +14,15 @@
  */
 package org.kie.kogito.codegen.process;
 
-import org.assertj.core.api.Assertions;
-import org.jbpm.compiler.canonical.ProcessToExecModelGenerator;
-import org.kie.api.definition.process.Process;
-import org.kie.api.definition.process.WorkflowProcess;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import org.assertj.core.api.Assertions;
+import org.jbpm.compiler.canonical.ProcessToExecModelGenerator;
+import org.kie.api.definition.process.Process;
+import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
 
 /**
  * Utilities for unit Process generation tests
@@ -43,7 +43,7 @@ public class ProcessGenerationUtils {
         final ProcessToExecModelGenerator execModelGenerator = new ProcessToExecModelGenerator(ProcessGenerationUtils.class.getClassLoader());
         final List<ProcessExecutableModelGenerator> processExecutableModelGenerators = new ArrayList<>();
         processes.forEach(p -> {
-            processExecutableModelGenerators.add(new ProcessExecutableModelGenerator((WorkflowProcess) p, execModelGenerator));
+            processExecutableModelGenerators.add(new ProcessExecutableModelGenerator(( KogitoWorkflowProcess ) p, execModelGenerator));
         });
         return processExecutableModelGenerators;
     }

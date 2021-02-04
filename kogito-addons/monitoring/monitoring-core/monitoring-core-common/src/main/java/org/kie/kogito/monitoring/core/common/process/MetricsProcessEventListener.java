@@ -26,17 +26,17 @@ import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.Tag;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.jbpm.workflow.instance.node.WorkItemNodeInstance;
-import org.kie.api.event.process.DefaultProcessEventListener;
 import org.kie.api.event.process.ProcessCompletedEvent;
 import org.kie.api.event.process.ProcessNodeLeftEvent;
 import org.kie.api.event.process.ProcessStartedEvent;
 import org.kie.api.event.process.SLAViolatedEvent;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.kogito.monitoring.core.common.MonitoringRegistry;
+import org.kie.kogito.internal.process.event.DefaultKogitoProcessEventListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class MetricsProcessEventListener extends DefaultProcessEventListener {
+public class MetricsProcessEventListener extends DefaultKogitoProcessEventListener {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MetricsProcessEventListener.class);
     private static Map<String, AtomicInteger> gaugeMap = new HashMap<String, AtomicInteger>();

@@ -16,10 +16,6 @@
 
 package org.jbpm.process;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.fail;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -27,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.core.WorkItemHandlerNotFoundException;
 import org.jbpm.process.core.ParameterDefinition;
 import org.jbpm.process.core.Work;
 import org.jbpm.process.core.context.variable.Variable;
@@ -50,8 +45,14 @@ import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
+import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.kie.kogito.process.workitems.KogitoWorkItemHandlerNotFoundException;
 import org.slf4j.LoggerFactory;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class WorkItemTest extends AbstractBaseTest {
 
@@ -81,7 +82,7 @@ public class WorkItemTest extends AbstractBaseTest {
         } catch ( Throwable e ) {
 
         }
-        assertEquals( ProcessInstance.STATE_ERROR,
+        assertEquals( KogitoProcessInstance.STATE_ERROR,
                       processInstance.getState() );
     }
 
@@ -91,9 +92,10 @@ public class WorkItemTest extends AbstractBaseTest {
         String workName = "Unnexistent Task";
         RuleFlowProcess process = getWorkItemProcess( processId,
                                                       workName );
-        KieSession ksession = createKieSession(process); 
-        
-        ksession.getWorkItemManager().registerWorkItemHandler( workName,
+
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( createKieSession(process) );
+
+        kruntime.getWorkItemManager().registerWorkItemHandler( workName,
                                                                new DoNothingWorkItemHandler() );
 
         Map<String, Object> parameters = new HashMap<String, Object>();
@@ -102,16 +104,15 @@ public class WorkItemTest extends AbstractBaseTest {
         parameters.put( "Person",
                         new Person( "John Doe" ) );
 
-        ProcessInstance processInstance = ksession.startProcess( "org.drools.actions",
-                                                                  parameters );
-        String processInstanceId = processInstance.getId();
+        KogitoProcessInstance processInstance = kruntime.startProcess( "org.drools.actions", parameters );
+        String processInstanceId = processInstance.getStringId();
         assertEquals( ProcessInstance.STATE_ACTIVE,
                            processInstance.getState() );
-        ksession.getWorkItemManager().registerWorkItemHandler( workName,
+        kruntime.getWorkItemManager().registerWorkItemHandler( workName,
                                                                null );
 
         try {
-            ksession.abortProcessInstance( processInstanceId );
+            kruntime.abortProcessInstance( processInstanceId );
             fail( "should fail if WorkItemHandler for" + workName + "is not registered" );
         } catch ( KogitoWorkItemHandlerNotFoundException wihnfe ) {
 
@@ -158,9 +159,10 @@ public class WorkItemTest extends AbstractBaseTest {
         String workName = "Unnexistent Task";
         RuleFlowProcess process = getWorkItemProcess( processId,
                                                       workName );
-        KieSession ksession = createKieSession(process); 
-        
-        ksession.getWorkItemManager().registerWorkItemHandler( workName,
+
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( createKieSession(process) );
+
+        kruntime.getWorkItemManager().registerWorkItemHandler( workName,
                                                                new MockDataWorkItemHandler((input) ->  {
             Map<String, Object> output = new HashMap<String, Object>();
             if ("John Doe".equals(input.get("Comment"))) {
@@ -178,7 +180,7 @@ public class WorkItemTest extends AbstractBaseTest {
         parameters.put( "Person",
                         new Person( "John Doe" ) );
 
-        ProcessInstance processInstance = ksession.startProcess( "org.drools.actions",
+        ProcessInstance processInstance = kruntime.startProcess( "org.drools.actions",
                                                                   parameters );
         
         Object numberVariable = ((WorkflowProcessInstance)processInstance).getVariable("MyObject");
@@ -194,7 +196,7 @@ public class WorkItemTest extends AbstractBaseTest {
         parameters.put( "Person",
                         new Person( "John Deen" ) );
 
-        processInstance = ksession.startProcess( "org.drools.actions",
+        processInstance = kruntime.startProcess( "org.drools.actions",
                                                                   parameters );
         
         numberVariable = ((WorkflowProcessInstance)processInstance).getVariable("MyObject");
@@ -279,8 +281,8 @@ public class WorkItemTest extends AbstractBaseTest {
         return process;
     }
 
-    private void connect(Node sourceNode,
-                         Node targetNode) {
+    private void connect( Node sourceNode,
+                          Node targetNode) {
         new ConnectionImpl( sourceNode,
                              Node.CONNECTION_DEFAULT_TYPE,
                              targetNode,

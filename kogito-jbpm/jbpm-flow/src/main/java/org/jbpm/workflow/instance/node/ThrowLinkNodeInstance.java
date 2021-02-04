@@ -16,25 +16,25 @@
 
 package org.jbpm.workflow.instance.node;
 
-import org.kie.api.runtime.process.NodeInstance;
-
 import java.util.Date;
 
+import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
+import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 
 public class ThrowLinkNodeInstance extends NodeInstanceImpl {
 
 	private static final long serialVersionUID = 20110505L;
 
 	@Override
-	public void internalTrigger(NodeInstance from, String type) {
+	public void internalTrigger( KogitoNodeInstance from, String type) {
 	    triggerTime = new Date();
 	    this.triggerCompleted();
 	}
 
 	public void triggerCompleted() {
 		this.triggerCompleted(
-				org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE, true);
+				Node.CONNECTION_DEFAULT_TYPE, true);
 	}
 
 }

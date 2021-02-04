@@ -23,15 +23,15 @@ import java.util.Map;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.ProcessInstanceManager;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
+import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.instance.NodeInstance;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.Process;
 import org.kie.api.runtime.process.ProcessInstance;
-import org.kie.api.runtime.process.ProcessRuntime;
 import org.kie.kogito.Model;
+import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.kie.kogito.uow.UnitOfWork;
 import org.kie.kogito.uow.UnitOfWorkManager;
 import org.mockito.Mock;
@@ -71,6 +71,8 @@ public class AbstractProcessInstanceTest {
         when(pr.getProcessInstanceManager()).thenReturn(pim);
         UnitOfWorkManager unitOfWorkManager = mock(UnitOfWorkManager.class);
         when(pr.getUnitOfWorkManager()).thenReturn(unitOfWorkManager);
+        KogitoProcessRuntime kogitoProcessRuntime = mock(KogitoProcessRuntime.class);
+        when(pr.getKogitoProcessRuntime()).thenReturn(kogitoProcessRuntime);
         when(unitOfWorkManager.currentUnitOfWork()).thenReturn(unitOfWork);
 
         processInstance = new TestProcessInstance(process, new TestModel(), pr);
@@ -92,7 +94,7 @@ public class AbstractProcessInstanceTest {
 
         processInstance.startFrom(NODE_ID);
 
-        verify(nodeInstance).trigger(null, org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
+        verify(nodeInstance).trigger(null, Node.CONNECTION_DEFAULT_TYPE);
         verify(unitOfWork).intercept(any());
     }
 
@@ -102,14 +104,14 @@ public class AbstractProcessInstanceTest {
 
         processInstance.triggerNode(NODE_ID);
 
-        verify(nodeInstance).trigger(null, org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
+        verify(nodeInstance).trigger(null, Node.CONNECTION_DEFAULT_TYPE);
         verify(unitOfWork).intercept(any());
     }
 
     private NodeInstance givenExistingNode(String nodeId) {
         RuleFlowProcess process = mock(RuleFlowProcess.class);
         when(wpi.getProcess()).thenReturn(process);
-        Node node = mock(Node.class);
+        org.kie.api.definition.process.Node node = mock( org.kie.api.definition.process.Node.class);
         when(node.getMetaData()).thenReturn(Collections.singletonMap("UniqueId", nodeId));
         when(process.getNodesRecursively()).thenReturn(Arrays.asList(node));
 
@@ -120,7 +122,7 @@ public class AbstractProcessInstanceTest {
 
     static class TestProcessInstance extends AbstractProcessInstance<TestModel> {
 
-        public TestProcessInstance(AbstractProcess<TestModel> process, TestModel variables, ProcessRuntime rt) {
+        public TestProcessInstance(AbstractProcess<TestModel> process, TestModel variables, InternalProcessRuntime rt) {
             super(process, variables, rt);
         }
     }

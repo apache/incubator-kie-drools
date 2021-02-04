@@ -52,9 +52,9 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.jbpm.process.core.context.variable.Variable;
-import org.kie.api.definition.process.WorkflowProcess;
-import org.kie.internal.kogito.codegen.Generated;
-import org.kie.internal.kogito.codegen.VariableInfo;
+import org.kie.kogito.codegen.Generated;
+import org.kie.kogito.codegen.VariableInfo;
+import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
 
 import static com.github.javaparser.StaticJavaParser.parse;
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
@@ -166,8 +166,8 @@ public class ModelMetaData {
         }
         ClassOrInterfaceDeclaration modelClass = processMethod.get();
 
-        if (!WorkflowProcess.PRIVATE_VISIBILITY.equals(visibility)) {
-            modelClass.addAnnotation(new NormalAnnotationExpr(new Name(Generated.class.getCanonicalName()), NodeList.nodeList(new MemberValuePair("value", new StringLiteralExpr("kogito-codegen")),
+        if (!KogitoWorkflowProcess.PRIVATE_VISIBILITY.equals(visibility)) {
+            modelClass.addAnnotation(new NormalAnnotationExpr(new Name( Generated.class.getCanonicalName()), NodeList.nodeList(new MemberValuePair("value", new StringLiteralExpr("kogito-codegen")),
                                                                                                                               new MemberValuePair("reference", new StringLiteralExpr(processId)),
                                                                                                                               new MemberValuePair("name", new StringLiteralExpr(ucFirst(ProcessToExecModelGenerator.extractProcessId(processId)))),
                                                                                                                               new MemberValuePair("hidden", new BooleanLiteralExpr(hidden)))));
@@ -196,7 +196,7 @@ public class ModelMetaData {
             modelClass.addMember(fd);
 
             List<String> tags = variable.getValue().getTags();
-            fd.addAnnotation(new NormalAnnotationExpr(new Name(VariableInfo.class.getCanonicalName()), NodeList.nodeList(new MemberValuePair("tags", new StringLiteralExpr(tags.stream().collect(Collectors.joining(",")))))));
+            fd.addAnnotation(new NormalAnnotationExpr(new Name( VariableInfo.class.getCanonicalName()), NodeList.nodeList(new MemberValuePair("tags", new StringLiteralExpr(tags.stream().collect(Collectors.joining(",")))))));
             fd.addAnnotation(new NormalAnnotationExpr(new Name(JsonProperty.class.getCanonicalName()),
                                                       NodeList.nodeList(new MemberValuePair("value",
                                                                                             new StringLiteralExpr(varName)))));

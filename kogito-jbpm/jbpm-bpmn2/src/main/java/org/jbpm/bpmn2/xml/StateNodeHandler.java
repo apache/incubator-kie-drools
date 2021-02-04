@@ -23,7 +23,7 @@ import org.xml.sax.Attributes;
 
 public class StateNodeHandler extends AbstractNodeHandler {
     
-    protected Node createNode(Attributes attrs) {
+    protected Node createNode( Attributes attrs) {
         throw new IllegalArgumentException("Reading in should be handled by intermediate catch event handler");
     }
     
@@ -32,7 +32,7 @@ public class StateNodeHandler extends AbstractNodeHandler {
         return StateNode.class;
     }
 
-	public void writeNode(Node node, StringBuilder xmlDump, int metaDataType) {
+	public void writeNode( Node node, StringBuilder xmlDump, int metaDataType) {
 	    StateNode stateNode = (StateNode) node;
 		String condition = (String) stateNode.getMetaData("Condition");
 		writeNode("intermediateCatchEvent", stateNode, xmlDump, metaDataType);

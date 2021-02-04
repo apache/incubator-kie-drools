@@ -24,7 +24,6 @@ import org.jbpm.workflow.core.Node;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.kie.api.definition.process.WorkflowProcess;
 import org.kie.kogito.Application;
 import org.kie.kogito.auth.SecurityPolicy;
 import org.kie.kogito.process.ProcessError;
@@ -33,6 +32,7 @@ import org.kie.kogito.process.ProcessInstances;
 import org.kie.kogito.process.Processes;
 import org.kie.kogito.process.WorkItem;
 import org.kie.kogito.process.impl.AbstractProcess;
+import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
 import org.kie.kogito.services.uow.CollectingUnitOfWorkFactory;
 import org.kie.kogito.services.uow.DefaultUnitOfWorkManager;
 import org.mockito.Mock;
@@ -40,6 +40,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import static java.util.Collections.singletonList;
 import static java.util.Collections.singletonMap;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.jbpm.ruleflow.core.Metadata.UNIQUE_ID;
 import static org.mockito.ArgumentMatchers.any;
@@ -81,7 +82,7 @@ class BaseProcessInstanceManagementResourceTest {
     private AbstractProcess process;
     
     @Mock
-    private WorkflowProcess wp;
+    private KogitoWorkflowProcess wp;
     
     @Mock
     private Node node;

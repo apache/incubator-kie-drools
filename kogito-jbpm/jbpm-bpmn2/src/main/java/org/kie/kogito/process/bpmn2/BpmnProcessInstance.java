@@ -17,14 +17,14 @@ package org.kie.kogito.process.bpmn2;
 
 import java.util.Map;
 
-import org.kie.api.runtime.process.ProcessRuntime;
+import org.jbpm.process.instance.InternalProcessRuntime;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.kogito.process.impl.AbstractProcess;
 import org.kie.kogito.process.impl.AbstractProcessInstance;
 
 public class BpmnProcessInstance extends AbstractProcessInstance<BpmnVariables> {
 
-    public BpmnProcessInstance(AbstractProcess<BpmnVariables> process, BpmnVariables variables, ProcessRuntime rt) {
+    public BpmnProcessInstance(AbstractProcess<BpmnVariables> process, BpmnVariables variables, InternalProcessRuntime rt) {
         super(process, variables, rt);
     }
 
@@ -32,11 +32,11 @@ public class BpmnProcessInstance extends AbstractProcessInstance<BpmnVariables> 
         super(process, variables, wpi);
     }
 
-    public BpmnProcessInstance(AbstractProcess<BpmnVariables> process, BpmnVariables variables, ProcessRuntime rt, WorkflowProcessInstance wpi) {
+    public BpmnProcessInstance(AbstractProcess<BpmnVariables> process, BpmnVariables variables, InternalProcessRuntime rt, WorkflowProcessInstance wpi) {
         super(process, variables, rt, wpi);
     }
-            
-    public BpmnProcessInstance(AbstractProcess<BpmnVariables> process, BpmnVariables variables, String businessKey, ProcessRuntime rt) {
+
+    public BpmnProcessInstance(AbstractProcess<BpmnVariables> process, BpmnVariables variables, String businessKey, InternalProcessRuntime rt) {
         super(process, variables, businessKey, rt);
     }
 

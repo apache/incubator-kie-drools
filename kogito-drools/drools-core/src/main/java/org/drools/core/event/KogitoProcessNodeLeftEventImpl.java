@@ -18,6 +18,7 @@ package org.drools.core.event;
 import org.kie.api.event.process.ProcessNodeLeftEvent;
 import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.process.NodeInstance;
+import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 
 public class KogitoProcessNodeLeftEventImpl extends ProcessEvent implements ProcessNodeLeftEvent {
 
@@ -35,7 +36,7 @@ public class KogitoProcessNodeLeftEventImpl extends ProcessEvent implements Proc
     }
 
     public String toString() {
-        return "==>[ProcessNodeLeft(nodeId=" + nodeInstance.getNodeId() + "; id=" + nodeInstance.getId() 
+        return "==>[ProcessNodeLeft(nodeId=" + nodeInstance.getNodeId() + "; id=" + (( KogitoNodeInstance ) nodeInstance).getStringId()
             + "; nodeName=" + getNodeInstance().getNodeName() + "; processName=" + getProcessInstance().getProcessName() + "; processId=" + getProcessInstance().getProcessId() + ")]";
     }
 }

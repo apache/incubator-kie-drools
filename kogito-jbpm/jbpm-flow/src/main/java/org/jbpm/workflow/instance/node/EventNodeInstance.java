@@ -31,16 +31,17 @@ import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.util.PatternConstants;
+import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.node.EventNode;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.jbpm.workflow.instance.impl.ExtendedNodeInstanceImpl;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
-import org.kie.api.runtime.process.EventListener;
-import org.kie.api.runtime.process.NodeInstance;
 import org.kie.kogito.jobs.JobsService;
 import org.kie.kogito.process.BaseEventDescription;
 import org.kie.kogito.process.EventDescription;
 import org.kie.kogito.process.NamedDataType;
+import org.kie.kogito.internal.process.event.KogitoEventListener;
+import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 import org.kie.kogito.timer.TimerInstance;
 
 import static org.jbpm.workflow.instance.impl.DummyEventListener.EMPTY_EVENT_LISTENER;
@@ -49,7 +50,7 @@ import static org.jbpm.workflow.instance.impl.DummyEventListener.EMPTY_EVENT_LIS
  * Runtime counterpart of an event node.
  * 
  */
-public class EventNodeInstance extends ExtendedNodeInstanceImpl implements EventListener, EventNodeInstanceInterface, EventBasedNodeInstanceInterface {
+public class EventNodeInstance extends ExtendedNodeInstanceImpl implements KogitoEventListener, EventNodeInstanceInterface, EventBasedNodeInstanceInterface {
 
     private static final long serialVersionUID = 510l;
 
@@ -59,7 +60,7 @@ public class EventNodeInstance extends ExtendedNodeInstanceImpl implements Event
             if (timerInstance.getId().equals(slaTimerId)) {                
                 handleSLAViolation();        
             }
-        } else if (("slaViolation:" + getId()).equals(type)) {
+        } else if (("slaViolation:" + getStringId()).equals(type)) {
                            
             handleSLAViolation();        
            
@@ -82,8 +83,9 @@ public class EventNodeInstance extends ExtendedNodeInstanceImpl implements Event
         }
     }
 
-    public void internalTrigger(final NodeInstance from, String type) {
-    	if (!org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
+    @Override
+    public void internalTrigger( final KogitoNodeInstance from, String type) {
+    	if (!Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
             throw new IllegalArgumentException(
                 "An EventNode only accepts default incoming connections!");
         }
@@ -100,7 +102,7 @@ public class EventNodeInstance extends ExtendedNodeInstanceImpl implements Event
                 this.slaTimerId = timer.getId();
                 this.slaDueDate = new Date(System.currentTimeMillis() + timer.getDelay());
                 this.slaCompliance = ProcessInstance.SLA_PENDING;
-                logger.debug("SLA for node instance {} is PENDING with due date {}", this.getId(), this.slaDueDate);
+                logger.debug("SLA for node instance {} is PENDING with due date {}", this.getStringId(), this.slaDueDate);
             }
         }
     }
@@ -109,7 +111,7 @@ public class EventNodeInstance extends ExtendedNodeInstanceImpl implements Event
         if (slaCompliance == ProcessInstance.SLA_PENDING) {
             InternalProcessRuntime processRuntime = ((InternalProcessRuntime) getProcessInstance().getKnowledgeRuntime().getProcessRuntime());
             processRuntime.getProcessEventSupport().fireBeforeSLAViolated(getProcessInstance(), this, getProcessInstance().getKnowledgeRuntime());
-            logger.debug("SLA violated on node instance {}", getId());                   
+            logger.debug("SLA violated on node instance {}", getStringId());
             this.slaCompliance = ProcessInstance.SLA_VIOLATED;
             this.slaTimerId = null;
             processRuntime.getProcessEventSupport().fireAfterSLAViolated(getProcessInstance(), this, getProcessInstance().getKnowledgeRuntime());
@@ -129,13 +131,13 @@ public class EventNodeInstance extends ExtendedNodeInstanceImpl implements Event
         
         ((WorkflowProcessInstance) getProcessInstance()).addEventListener("timerTriggered", new VariableExternalEventListener("timerTriggered"), false);
         ((WorkflowProcessInstance) getProcessInstance()).addEventListener("timer", new VariableExternalEventListener("timer"), true);
-        ((WorkflowProcessInstance) getProcessInstance()).addEventListener("slaViolation:" + getId(), new VariableExternalEventListener("slaViolation"), true);
+        ((WorkflowProcessInstance) getProcessInstance()).addEventListener("slaViolation:" + getStringId(), new VariableExternalEventListener("slaViolation"), true);
     }
     
     public void removeTimerListeners() {
         ((WorkflowProcessInstance) getProcessInstance()).removeEventListener("timerTriggered", new VariableExternalEventListener("timerTriggered"), false);
         ((WorkflowProcessInstance) getProcessInstance()).removeEventListener("timer", new VariableExternalEventListener("timer"), true);
-        ((WorkflowProcessInstance) getProcessInstance()).removeEventListener("slaViolation:" + getId(), new VariableExternalEventListener("slaViolation"), true);
+        ((WorkflowProcessInstance) getProcessInstance()).removeEventListener("slaViolation:" + getStringId(), new VariableExternalEventListener("slaViolation"), true);
     }
 
     public EventNode getEventNode() {
@@ -155,7 +157,7 @@ public class EventNodeInstance extends ExtendedNodeInstanceImpl implements Event
         }
         cancelSlaTimer();
         ((org.jbpm.workflow.instance.NodeInstanceContainer)getNodeInstanceContainer()).setCurrentLevel(getLevel());
-        triggerCompleted(org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE, true);
+        triggerCompleted( Node.CONNECTION_DEFAULT_TYPE, true);
     }
 
     @Override
@@ -174,7 +176,7 @@ public class EventNodeInstance extends ExtendedNodeInstanceImpl implements Event
 		super.cancel();
 	}
 
-   private class VariableExternalEventListener implements EventListener, Serializable {
+   private class VariableExternalEventListener implements KogitoEventListener, Serializable {
         private static final long serialVersionUID = 5L;
 
         private String eventType;
@@ -246,7 +248,7 @@ public class EventNodeInstance extends ExtendedNodeInstanceImpl implements Event
 	    return resolveVariable(getEventNode().getType());
 	}
 
-	protected EventListener getEventListener() {
+	protected KogitoEventListener getEventListener() {
 	    return EMPTY_EVENT_LISTENER;
 	}
 
@@ -305,6 +307,6 @@ public class EventNodeInstance extends ExtendedNodeInstanceImpl implements Event
             Variable variable = variableScope.findVariable(getEventNode().getVariableName());
             dataType = new NamedDataType(variable.getName(), variable.getType());
         }
-        return Collections.singleton(new BaseEventDescription(getEventType(), getNodeDefinitionId(), getNodeName(), "signal", getId(), getProcessInstance().getId(), dataType));
+        return Collections.singleton(new BaseEventDescription(getEventType(), getNodeDefinitionId(), getNodeName(), "signal", getStringId(), getProcessInstance().getStringId(), dataType));
     }
 }

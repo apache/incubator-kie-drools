@@ -28,9 +28,9 @@ import org.jbpm.bpmn2.xml.di.BPMNEdgeHandler.ConnectionInfo;
 import org.jbpm.bpmn2.xml.di.BPMNShapeHandler.NodeInfo;
 import org.jbpm.compiler.xml.ProcessBuildData;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
+import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.ConnectionImpl;
 import org.kie.api.definition.process.Connection;
-import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.NodeContainer;
 import org.kie.api.definition.process.Process;
 import org.xml.sax.Attributes;
@@ -91,17 +91,17 @@ public class BPMNPlaneHandler extends BaseAbstractHandler implements Handler {
         return processInfo;
     }
     
-    private boolean processNodeInfo(NodeInfo nodeInfo, Node[] nodes) {
+    private boolean processNodeInfo( NodeInfo nodeInfo, org.kie.api.definition.process.Node[] nodes) {
     	if (nodeInfo == null || nodeInfo.getNodeRef() == null) {
     		return false;
     	}
-        for (Node node: nodes) {
+        for (org.kie.api.definition.process.Node node: nodes) {
             String id = (String) node.getMetaData().get("UniqueId");
             if (nodeInfo.getNodeRef().equals(id)) {
-                ((org.jbpm.workflow.core.Node) node).setMetaData("x", nodeInfo.getX());
-                ((org.jbpm.workflow.core.Node) node).setMetaData("y", nodeInfo.getY());
-                ((org.jbpm.workflow.core.Node) node).setMetaData("width", nodeInfo.getWidth());
-                ((org.jbpm.workflow.core.Node) node).setMetaData("height", nodeInfo.getHeight());
+                (( Node ) node).setMetaData("x", nodeInfo.getX());
+                (( Node ) node).setMetaData("y", nodeInfo.getY());
+                (( Node ) node).setMetaData("width", nodeInfo.getWidth());
+                (( Node ) node).setMetaData("height", nodeInfo.getHeight());
                 return true;
             }
         	if (node instanceof NodeContainer) {
@@ -114,15 +114,15 @@ public class BPMNPlaneHandler extends BaseAbstractHandler implements Handler {
         return false;
     }
     
-    private void postProcessNodeOffset(Node[] nodes, int xOffset, int yOffset) {
-    	for (Node node: nodes) {
+    private void postProcessNodeOffset( org.kie.api.definition.process.Node[] nodes, int xOffset, int yOffset) {
+    	for (org.kie.api.definition.process.Node node: nodes) {
     		Integer x = (Integer) node.getMetaData().get("x");
     		if (x != null) {
-    			((org.jbpm.workflow.core.Node) node).setMetaData("x", x - xOffset);
+    			(( Node ) node).setMetaData("x", x - xOffset);
     		}
     		Integer y = (Integer) node.getMetaData().get("y");
     		if (y != null) {
-    			((org.jbpm.workflow.core.Node) node).setMetaData("y", y - yOffset);
+    			(( Node ) node).setMetaData("y", y - yOffset);
     		}
     		if (node instanceof NodeContainer) {
     			postProcessNodeOffset(((NodeContainer) node).getNodes(), xOffset + (x == null ? 0 : x), yOffset + (y == null ? 0 : y));
@@ -130,8 +130,8 @@ public class BPMNPlaneHandler extends BaseAbstractHandler implements Handler {
     	}
     }
     
-    private boolean processConnectionInfo(ConnectionInfo connectionInfo, Node[] nodes) {
-        for (Node node: nodes) {
+    private boolean processConnectionInfo( ConnectionInfo connectionInfo, org.kie.api.definition.process.Node[] nodes) {
+        for (org.kie.api.definition.process.Node node: nodes) {
         	for (List<Connection> connections: node.getOutgoingConnections().values()) {
         		for (Connection connection: connections) {
                     String id = (String) connection.getMetaData().get("UniqueId");

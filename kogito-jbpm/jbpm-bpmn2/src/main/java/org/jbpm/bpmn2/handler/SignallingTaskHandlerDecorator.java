@@ -87,10 +87,10 @@ public class SignallingTaskHandlerDecorator extends AbstractExceptionHandlingTas
     }
 
     @Override
-    public void handleExecuteException(Throwable cause, WorkItem workItem, WorkItemManager manager) {
-        if( getAndIncreaseExceptionCount(workItem.getProcessInstanceId()) < exceptionCountLimit ) { 
+    public void handleExecuteException( Throwable cause, org.kie.kogito.internal.process.runtime.KogitoWorkItem workItem, org.kie.kogito.internal.process.runtime.KogitoWorkItemManager manager) {
+        if( getAndIncreaseExceptionCount(workItem.getProcessInstanceStringId()) < exceptionCountLimit ) {
             workItem.getParameters().put(this.workItemExceptionParameterName, cause);
-            (( KogitoWorkItemManager ) manager).signalEvent(this.eventType, ( KogitoWorkItem ) workItem, workItem.getProcessInstanceId());
+            (( KogitoWorkItemManager ) manager).signalEvent(this.eventType, ( KogitoWorkItem ) workItem, workItem.getProcessInstanceStringId());
         } else { 
             if( cause instanceof RuntimeException ) { 
                 throw (RuntimeException) cause;
@@ -102,8 +102,8 @@ public class SignallingTaskHandlerDecorator extends AbstractExceptionHandlingTas
     }
 
     @Override
-    public void handleAbortException(Throwable cause, WorkItem workItem, WorkItemManager manager) {
-        if( getAndIncreaseExceptionCount(workItem.getProcessInstanceId()) < exceptionCountLimit ) { 
+    public void handleAbortException( Throwable cause, org.kie.kogito.internal.process.runtime.KogitoWorkItem workItem, org.kie.kogito.internal.process.runtime.KogitoWorkItemManager manager) {
+        if( getAndIncreaseExceptionCount(workItem.getProcessInstanceStringId()) < exceptionCountLimit ) {
             workItem.getParameters().put(this.workItemExceptionParameterName, cause);
             (( KogitoWorkItemManager ) manager).signalEvent(this.eventType, ( KogitoWorkItem ) workItem, workItem.getProcessInstanceId());
         }
@@ -129,5 +129,4 @@ public class SignallingTaskHandlerDecorator extends AbstractExceptionHandlingTas
     public void clear() { 
        processInstanceExceptionMap.clear();
     }
-    
 }

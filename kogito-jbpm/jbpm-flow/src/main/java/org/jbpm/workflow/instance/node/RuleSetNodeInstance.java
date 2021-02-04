@@ -45,6 +45,7 @@ import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.process.instance.impl.ContextInstanceFactory;
 import org.jbpm.process.instance.impl.ContextInstanceFactoryRegistry;
 import org.jbpm.util.PatternConstants;
+import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.node.DataAssociation;
 import org.jbpm.workflow.core.node.RuleSetNode;
 import org.jbpm.workflow.core.node.RuleUnitFactory;
@@ -57,7 +58,6 @@ import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.DataTransformer;
 import org.kie.api.runtime.process.EventListener;
-import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNMessage.Severity;
@@ -66,6 +66,7 @@ import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.kogito.decision.DecisionModel;
 import org.kie.kogito.dmn.DmnDecisionModel;
+import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 import org.kie.kogito.rules.RuleUnitData;
 import org.kie.kogito.rules.RuleUnitInstance;
 import org.mvel2.integration.impl.MapVariableResolverFactory;
@@ -97,14 +98,14 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
     }
 
     @Override
-    public void internalTrigger(final NodeInstance from, String type) {
+    public void internalTrigger( KogitoNodeInstance from, String type) {
         try {
             super.internalTrigger(from, type);
             // if node instance was cancelled, abort
-            if (getNodeInstanceContainer().getNodeInstance(getId()) == null) {
+            if (getNodeInstanceContainer().getNodeInstance(getStringId()) == null) {
                 return;
             }
-            if (!org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
+            if (!Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
                 throw new IllegalArgumentException("A RuleSetNode only accepts default incoming connections!");
             }
             RuleSetNode ruleSetNode = getRuleSetNode();
@@ -148,7 +149,7 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
                         continue;
                     }
 
-                    String inputKey = getRuleFlowGroup() + "_" + getProcessInstance().getId() + "_" + entry.getKey();
+                    String inputKey = getRuleFlowGroup() + "_" + getProcessInstance().getStringId() + "_" + entry.getKey();
 
                     factHandles.put(inputKey, kruntime.insert(entry.getValue()));
                 }
@@ -156,7 +157,7 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
                 if (actAsWaitState()) {
                     addRuleSetListener();
                     ((KogitoInternalAgenda) kruntime.getAgenda())
-                            .activateRuleFlowGroup(getRuleFlowGroup(), getProcessInstance().getId(), getUniqueId());
+                            .activateRuleFlowGroup(getRuleFlowGroup(), getProcessInstance().getStringId(), getUniqueId());
                 } else {
                     int fireLimit = DEFAULT_FIRE_RULE_LIMIT;
                     WorkflowProcessInstance processInstance = getProcessInstance();
@@ -165,7 +166,7 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
                         fireLimit = Integer.parseInt(inputs.get(FIRE_RULE_LIMIT_PARAMETER).toString());
                     }
                     ((KogitoInternalAgenda) kruntime.getAgenda())
-                            .activateRuleFlowGroup(getRuleFlowGroup(), processInstance.getId(), getUniqueId());
+                            .activateRuleFlowGroup(getRuleFlowGroup(), processInstance.getStringId(), getUniqueId());
 
                     int fired = ((KieSession) kruntime).fireAllRules(processInstance.getAgendaFilter(), fireLimit);
                     if (fired == fireLimit) {
@@ -275,7 +276,7 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
             Object object = kruntime.getObject(entry.getValue());
             String key = entry.getKey();
             key = key.replaceAll(getRuleFlowGroup() + "_", "");
-            key = key.replaceAll(getProcessInstance().getId() + "_", "");
+            key = key.replaceAll(getProcessInstance().getStringId() + "_", "");
             objects.put(key, object);
 
             kruntime.delete(entry.getValue());

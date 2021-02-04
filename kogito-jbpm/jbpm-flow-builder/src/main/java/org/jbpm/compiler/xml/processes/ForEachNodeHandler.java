@@ -59,7 +59,7 @@ public class ForEachNodeHandler extends CompositeNodeHandler {
     	}
     }
 
-    protected List<Node> getSubNodes(CompositeNode compositeNode) {
+    protected List<Node> getSubNodes( CompositeNode compositeNode) {
     	return super.getSubNodes(((ForEachNode) compositeNode).getCompositeNode());
     }
 
@@ -75,8 +75,8 @@ public class ForEachNodeHandler extends CompositeNodeHandler {
     	return ((ForEachNode) compositeNode).getCompositeNode().getLinkedOutgoingNodes();
     }
     
-    protected void handleNode(final Node node, final Element element, final String uri, 
-            final String localName, final ExtensibleXmlParser parser) throws SAXException {
+    protected void handleNode( final Node node, final Element element, final String uri,
+                               final String localName, final ExtensibleXmlParser parser) throws SAXException {
     	super.handleNode(node, element, uri, localName, parser);
     	ForEachNode forEachNode = (ForEachNode) node;
         final String variableName = element.getAttribute("variableName");

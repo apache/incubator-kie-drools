@@ -56,7 +56,7 @@ public class DataObjectHandler extends BaseAbstractHandler implements Handler {
         this.validPeers = new HashSet<Class<?>>();
         this.validPeers.add(null);
         this.validPeers.add(Variable.class);
-        this.validPeers.add(Node.class);
+        this.validPeers.add( Node.class);
         this.validPeers.add(SequenceFlow.class);
     }
     

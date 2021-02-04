@@ -43,13 +43,26 @@ import org.jbpm.process.instance.context.swimlane.SwimlaneContextInstance;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
-import org.jbpm.workflow.instance.node.*;
+import org.jbpm.workflow.instance.node.CompositeContextNodeInstance;
+import org.jbpm.workflow.instance.node.DynamicNodeInstance;
+import org.jbpm.workflow.instance.node.EventNodeInstance;
+import org.jbpm.workflow.instance.node.ForEachNodeInstance;
+import org.jbpm.workflow.instance.node.HumanTaskNodeInstance;
+import org.jbpm.workflow.instance.node.JoinInstance;
+import org.jbpm.workflow.instance.node.MilestoneNodeInstance;
+import org.jbpm.workflow.instance.node.RuleSetNodeInstance;
+import org.jbpm.workflow.instance.node.StateNodeInstance;
+import org.jbpm.workflow.instance.node.SubProcessNodeInstance;
+import org.jbpm.workflow.instance.node.TimerNodeInstance;
+import org.jbpm.workflow.instance.node.WorkItemNodeInstance;
 import org.kie.api.definition.process.Process;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.NodeInstanceContainer;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
+import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
+import org.kie.kogito.internal.process.runtime.KogitoNodeInstanceContainer;
 
 /**
  * Default implementation of a process instance marshaller.
@@ -63,7 +76,7 @@ public abstract class AbstractProcessInstanceMarshaller implements
             ProcessInstance processInstance) throws IOException {        
         WorkflowProcessInstanceImpl workFlow = (WorkflowProcessInstanceImpl) processInstance;
         ObjectOutputStream stream = (ObjectOutputStream) context;
-        stream.writeUTF(workFlow.getId());
+        stream.writeUTF(workFlow.getStringId());
         stream.writeUTF(workFlow.getProcessId());
         stream.writeInt(workFlow.getState());        
 
@@ -83,9 +96,8 @@ public abstract class AbstractProcessInstanceMarshaller implements
         Collections.sort(nodeInstances,
                 new Comparator<NodeInstance>() {
 
-                    public int compare(NodeInstance o1,
-                            NodeInstance o2) {
-                        return (int) (o1.getId().compareTo(o2.getId()));
+                    public int compare(NodeInstance o1, NodeInstance o2) {
+                        return (( KogitoNodeInstance )o1).getStringId().compareTo((( KogitoNodeInstance )o2).getStringId());
                     }
                 });
         for (NodeInstance nodeInstance : nodeInstances) {
@@ -103,10 +115,10 @@ public abstract class AbstractProcessInstanceMarshaller implements
         	stream.writeInt(exclusiveGroupInstances.size());
         	for (ContextInstance contextInstance: exclusiveGroupInstances) {
         		ExclusiveGroupInstance exclusiveGroupInstance = (ExclusiveGroupInstance) contextInstance;
-        		Collection<NodeInstance> groupNodeInstances = exclusiveGroupInstance.getNodeInstances();
+        		Collection<KogitoNodeInstance> groupNodeInstances = exclusiveGroupInstance.getNodeInstances();
         		stream.writeInt(groupNodeInstances.size());
-        		for (NodeInstance nodeInstance: groupNodeInstances) {
-        			stream.writeUTF(nodeInstance.getId());
+        		for (KogitoNodeInstance nodeInstance: groupNodeInstances) {
+        			stream.writeUTF(nodeInstance.getStringId());
         		}
         	}
         }
@@ -115,14 +127,7 @@ public abstract class AbstractProcessInstanceMarshaller implements
         List<String> keys = new ArrayList<String>(variables.keySet());
         Collection<Object> values = variables.values();
         
-        Collections.sort(keys,
-                new Comparator<String>() {
-
-                    public int compare(String o1,
-                            String o2) {
-                        return o1.compareTo(o2);
-                    }
-                });
+        Collections.sort(keys);
         // Process Variables
                 // - Number of non null Variables = nonnullvariables.size()
                 // For Each Variable
@@ -159,7 +164,7 @@ public abstract class AbstractProcessInstanceMarshaller implements
     public Object writeNodeInstance(MarshallerWriteContext context,
             NodeInstance nodeInstance) throws IOException {
         ObjectOutputStream stream = (ObjectOutputStream) context;
-        stream.writeUTF(nodeInstance.getId());
+        stream.writeUTF( (( KogitoNodeInstance ) nodeInstance).getStringId());
         stream.writeLong(nodeInstance.getNodeId());
         writeNodeInstanceContent(stream, nodeInstance, context);
         return null;
@@ -301,13 +306,12 @@ public abstract class AbstractProcessInstanceMarshaller implements
 	                stream.writeObject(variables.get(key));
 	            }
             }
-            List<NodeInstance> nodeInstances = new ArrayList<NodeInstance>(compositeNodeInstance.getNodeInstances());
+            List<NodeInstance> nodeInstances = new ArrayList<>(compositeNodeInstance.getNodeInstances());
             Collections.sort(nodeInstances,
                     new Comparator<NodeInstance>() {
 
-                        public int compare(NodeInstance o1,
-                                NodeInstance o2) {
-                            return (int) (o1.getId().compareTo(o2.getId()));
+                        public int compare(NodeInstance o1, NodeInstance o2) {
+                            return ((KogitoNodeInstance)o1).getStringId().compareTo(((KogitoNodeInstance)o2).getStringId());
                         }
                     });
             for (NodeInstance subNodeInstance : nodeInstances) {
@@ -324,10 +328,10 @@ public abstract class AbstractProcessInstanceMarshaller implements
             	stream.writeInt(exclusiveGroupInstances.size());
             	for (ContextInstance contextInstance: exclusiveGroupInstances) {
             		ExclusiveGroupInstance exclusiveGroupInstance = (ExclusiveGroupInstance) contextInstance;
-            		Collection<NodeInstance> groupNodeInstances = exclusiveGroupInstance.getNodeInstances();
+            		Collection<KogitoNodeInstance> groupNodeInstances = exclusiveGroupInstance.getNodeInstances();
             		stream.writeInt(groupNodeInstances.size());
-            		for (NodeInstance groupNodeInstance: groupNodeInstances) {
-            			stream.writeUTF(groupNodeInstance.getId());
+            		for (KogitoNodeInstance groupNodeInstance: groupNodeInstances) {
+            			stream.writeUTF(groupNodeInstance.getStringId());
             		}
             	}
             }
@@ -337,9 +341,8 @@ public abstract class AbstractProcessInstanceMarshaller implements
             List<NodeInstance> nodeInstances = new ArrayList<NodeInstance>(forEachNodeInstance.getNodeInstances());
             Collections.sort(nodeInstances,
                     new Comparator<NodeInstance>() {
-                        public int compare(NodeInstance o1,
-                                NodeInstance o2) {
-                            return (int) (o1.getId().compareTo(o2.getId()));
+                        public int compare(NodeInstance o1, NodeInstance o2) {
+                            return ((KogitoNodeInstance)o1).getStringId().compareTo(((KogitoNodeInstance)o2).getStringId());
                         }
                     });
             for (NodeInstance subNodeInstance : nodeInstances) {
@@ -395,7 +398,7 @@ public abstract class AbstractProcessInstanceMarshaller implements
             int nodeInstances = stream.readInt();
             for (int j = 0; j < nodeInstances; j++) {
                 String nodeInstanceId = stream.readUTF();
-                NodeInstance nodeInstance = processInstance.getNodeInstance(nodeInstanceId);
+                KogitoNodeInstance nodeInstance = processInstance.getNodeInstance(nodeInstanceId);
                 if (nodeInstance == null) {
                 	throw new IllegalArgumentException("Could not find node instance when deserializing exclusive group instance: " + nodeInstanceId);
                 }
@@ -500,7 +503,7 @@ public abstract class AbstractProcessInstanceMarshaller implements
                     int nodeInstances = stream.readInt();
                     for (int j = 0; j < nodeInstances; j++) {
                         String nodeInstanceId = stream.readUTF();
-                        NodeInstance groupNodeInstance = processInstance.getNodeInstance(nodeInstanceId);
+                        KogitoNodeInstance groupNodeInstance = (( KogitoNodeInstanceContainer ) processInstance).getNodeInstance(nodeInstanceId);
                         if (groupNodeInstance == null) {
                         	throw new IllegalArgumentException("Could not find node instance when deserializing exclusive group instance: " + nodeInstanceId);
                         }

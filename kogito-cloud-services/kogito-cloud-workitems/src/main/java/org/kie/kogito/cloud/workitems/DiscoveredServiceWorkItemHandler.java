@@ -35,15 +35,15 @@ import okhttp3.Request.Builder;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import org.kie.api.runtime.process.WorkItem;
-import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.kogito.cloud.kubernetes.client.DefaultKogitoKubeClient;
 import org.kie.kogito.cloud.kubernetes.client.KogitoKubeClient;
 import org.kie.kogito.cloud.workitems.service.discovery.ServiceDiscovery;
 import org.kie.kogito.cloud.workitems.service.discovery.ServiceDiscoveryFactory;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class DiscoveredServiceWorkItemHandler implements WorkItemHandler {
+public abstract class DiscoveredServiceWorkItemHandler implements KogitoWorkItemHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DiscoveredServiceWorkItemHandler.class);
 

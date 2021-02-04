@@ -15,6 +15,7 @@
 
 package org.drools.core.impl;
 
+import org.drools.core.KogitoWorkingMemory;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.WorkingMemory;
 import org.drools.core.base.DefaultKnowledgeHelper;
@@ -36,9 +37,12 @@ import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.kogito.Application;
+import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
+import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.kie.kogito.rules.RuleUnits;
 
-public class KogitoStatefulKnowledgeSessionImpl extends StatefulKnowledgeSessionImpl {
+public class KogitoStatefulKnowledgeSessionImpl extends StatefulKnowledgeSessionImpl implements KogitoWorkingMemory, KogitoProcessRuntime.Provider {
 
     private Application application;
 
@@ -58,6 +62,11 @@ public class KogitoStatefulKnowledgeSessionImpl extends StatefulKnowledgeSession
     }
 
     @Override
+    public KogitoProcessRuntime getKogitoProcessRuntime() {
+        return (( KogitoProcessRuntime.Provider ) getProcessRuntime()).getKogitoProcessRuntime();
+    }
+
+    @Override
     protected TimerService createTimerService() {
         return KogitoTimerServiceFactory.getTimerService( this.config );
     }
@@ -68,23 +77,13 @@ public class KogitoStatefulKnowledgeSessionImpl extends StatefulKnowledgeSession
     }
 
     @Override
-    public ProcessInstance getProcessInstance(String processInstanceId) {
-        return getProcessRuntime().getProcessInstance( processInstanceId );
+    public KogitoProcessInstance getProcessInstance( String processInstanceId) {
+        return getKogitoProcessRuntime().getProcessInstance( processInstanceId );
     }
 
     @Override
-    public ProcessInstance startProcessInstance(String processInstanceId) {
-        return getProcessRuntime().startProcessInstance( processInstanceId );
-    }
-
-    @Override
-    public void abortProcessInstance(String processInstanceId) {
-        getProcessRuntime().abortProcessInstance( processInstanceId );
-    }
-
-    @Override
-    public void signalEvent(String type, Object event, String processInstanceId) {
-        getProcessRuntime().signalEvent( type, event, processInstanceId );
+    public KogitoProcessInstance getProcessInstance( String processInstanceId, boolean readonly ) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -98,6 +97,10 @@ public class KogitoStatefulKnowledgeSessionImpl extends StatefulKnowledgeSession
 
     public void setApplication( Application application ) {
         this.application = application;
+    }
+
+    public Object startProcessInstance( String subProcessInstanceId ) {
+        throw new UnsupportedOperationException( "org.drools.core.impl.KogitoStatefulKnowledgeSessionImpl.startProcessInstance -> TODO" );
     }
 
     public static class RuleUnitKnowledgeHelper extends DefaultKnowledgeHelper {
@@ -164,7 +167,7 @@ public class KogitoStatefulKnowledgeSessionImpl extends StatefulKnowledgeSession
 
         @Override
         protected boolean sameNodeInstance( NodeInstance subNodeInstance, String nodeInstanceId ) {
-            return subNodeInstance.getId().equals( nodeInstanceId );
+            return (( KogitoNodeInstance ) subNodeInstance).getStringId().equals( nodeInstanceId );
         }
 
         @Override
@@ -178,15 +181,24 @@ public class KogitoStatefulKnowledgeSessionImpl extends StatefulKnowledgeSession
         }
     }
 
-    public static class KogitoWrappedStatefulKnowledgeSessionForRHS extends WrappedStatefulKnowledgeSessionForRHS {
+    public static class KogitoWrappedStatefulKnowledgeSessionForRHS extends WrappedStatefulKnowledgeSessionForRHS implements KogitoProcessRuntime.Provider {
 
         public KogitoWrappedStatefulKnowledgeSessionForRHS( KogitoStatefulKnowledgeSessionImpl delegate ) {
             super(delegate);
         }
 
         @Override
+        public ProcessInstance getProcessInstance(long id) {
+            throw new UnsupportedOperationException();
+        }
+
         public ProcessInstance getProcessInstance(String id) {
             return ((KogitoStatefulKnowledgeSessionImpl)delegate).getProcessInstance(id);
+        }
+
+        @Override
+        public KogitoProcessRuntime getKogitoProcessRuntime() {
+            return (( KogitoProcessRuntime.Provider) delegate).getKogitoProcessRuntime();
         }
     }
 }

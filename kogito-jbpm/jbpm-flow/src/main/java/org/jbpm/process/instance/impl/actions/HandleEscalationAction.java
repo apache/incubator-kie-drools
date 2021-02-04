@@ -15,8 +15,6 @@
  */
 package org.jbpm.process.instance.impl.actions;
 
-import static org.kie.api.runtime.process.ProcessInstance.STATE_ABORTED;
-
 import java.io.Serializable;
 
 import org.jbpm.process.core.context.exception.ExceptionScope;
@@ -26,6 +24,9 @@ import org.jbpm.process.instance.context.exception.ExceptionScopeInstance;
 import org.jbpm.process.instance.impl.Action;
 import org.jbpm.workflow.instance.NodeInstance;
 import org.kie.api.runtime.process.ProcessContext;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
+
+import static org.kie.api.runtime.process.ProcessInstance.STATE_ABORTED;
 
 public class HandleEscalationAction implements Action, Serializable {
 
@@ -47,7 +48,7 @@ public class HandleEscalationAction implements Action, Serializable {
             Object tVariable = variableName == null ? null : context.getVariable(variableName);
             org.jbpm.workflow.core.node.Transformation transformation = (org.jbpm.workflow.core.node.Transformation) context.getNodeInstance().getNode().getMetaData().get("Transformation");
             if (transformation != null) {
-                tVariable = new EventTransformerImpl(transformation).transformEvent(context.getProcessInstance().getVariables());
+                tVariable = new EventTransformerImpl(transformation).transformEvent( (( KogitoProcessInstance ) context.getProcessInstance()).getVariables());
             }
             scopeInstance.handleException(faultName, tVariable);
         } else {

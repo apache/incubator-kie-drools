@@ -25,7 +25,7 @@ import org.xml.sax.Attributes;
 
 public class WorkItemNodeHandler extends AbstractNodeHandler {
     
-    protected Node createNode(Attributes attrs) {
+    protected Node createNode( Attributes attrs) {
         throw new IllegalArgumentException("Reading in should be handled by specific handlers");
     }
     
@@ -34,7 +34,7 @@ public class WorkItemNodeHandler extends AbstractNodeHandler {
         return WorkItemNode.class;
     }
 
-	public void writeNode(Node node, StringBuilder xmlDump, int metaDataType) {
+	public void writeNode( Node node, StringBuilder xmlDump, int metaDataType) {
 		WorkItemNode workItemNode = (WorkItemNode) node;
 		String type = workItemNode.getWork().getName();
 		if ("Manual Task".equals(type)) {

@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.spi.KogitoProcessContext;
 import org.drools.core.util.StringUtils;
 import org.jbpm.process.core.Context;
@@ -36,15 +35,16 @@ import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.process.instance.impl.ContextInstanceFactory;
 import org.jbpm.process.instance.impl.ContextInstanceFactoryRegistry;
 import org.jbpm.process.instance.impl.ProcessInstanceImpl;
+import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.node.DataAssociation;
 import org.jbpm.workflow.core.node.SubProcessFactory;
 import org.jbpm.workflow.core.node.SubProcessNode;
 import org.jbpm.workflow.instance.impl.MVELProcessHelper;
 import org.jbpm.workflow.instance.impl.NodeInstanceResolverFactory;
-import org.kie.api.definition.process.Node;
-import org.kie.api.runtime.process.EventListener;
-import org.kie.api.runtime.process.NodeInstance;
+import org.kie.kogito.internal.process.event.KogitoEventListener;
 import org.kie.kogito.process.impl.AbstractProcessInstance;
+import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
+import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,7 +52,7 @@ import org.slf4j.LoggerFactory;
  * Runtime counterpart of a SubFlow node.
  * 
  */
-public class LambdaSubProcessNodeInstance extends StateBasedNodeInstance implements EventListener, ContextInstanceContainer {
+public class LambdaSubProcessNodeInstance extends StateBasedNodeInstance implements KogitoEventListener, ContextInstanceContainer {
 
     private static final long serialVersionUID = 510l;
     private static final Logger logger = LoggerFactory.getLogger(LambdaSubProcessNodeInstance.class);
@@ -67,13 +67,13 @@ public class LambdaSubProcessNodeInstance extends StateBasedNodeInstance impleme
 
     @Override
     @SuppressWarnings({"unchecked", "rawtypes"})
-    public void internalTrigger(final NodeInstance from, String type) {
+    public void internalTrigger( KogitoNodeInstance from, String type) {
     	super.internalTrigger(from, type);
     	// if node instance was cancelled, abort
-		if (getNodeInstanceContainer().getNodeInstance(getId()) == null) {
+		if (getNodeInstanceContainer().getNodeInstance(getStringId()) == null) {
 			return;
 		}
-        if (!org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
+        if (!Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
             throw new IllegalArgumentException(
                 "A SubProcess node only accepts default incoming connections!");
         }
@@ -85,11 +85,11 @@ public class LambdaSubProcessNodeInstance extends StateBasedNodeInstance impleme
         org.kie.kogito.process.ProcessInstance<?> processInstance = subProcessFactory.createInstance(o);
  
         org.kie.api.runtime.process.ProcessInstance pi = ((AbstractProcessInstance<?>)processInstance).internalGetProcessInstance();
-        ((ProcessInstanceImpl) pi).setMetaData("ParentProcessInstanceId", getProcessInstance().getId());
+        ((ProcessInstanceImpl) pi).setMetaData("ParentProcessInstanceId", getProcessInstance().getStringId());
         ((ProcessInstanceImpl) pi).setMetaData("ParentNodeInstanceId", getUniqueId());
         ((ProcessInstanceImpl) pi).setMetaData("ParentNodeId", getSubProcessNode().getUniqueId());
-        ((ProcessInstanceImpl) pi).setParentProcessInstanceId(getProcessInstance().getId());
-        ((ProcessInstanceImpl) pi).setRootProcessInstanceId(StringUtils.isEmpty(getProcessInstance().getRootProcessInstanceId()) ? getProcessInstance().getId() : getProcessInstance().getRootProcessInstanceId());
+        ((ProcessInstanceImpl) pi).setParentProcessInstanceId(getProcessInstance().getStringId());
+        ((ProcessInstanceImpl) pi).setRootProcessInstanceId(StringUtils.isEmpty(getProcessInstance().getRootProcessInstanceId()) ? getProcessInstance().getStringId() : getProcessInstance().getRootProcessInstanceId());
         ((ProcessInstanceImpl) pi).setRootProcessId(StringUtils.isEmpty(getProcessInstance().getRootProcessId()) ? getProcessInstance().getProcessId() : getProcessInstance().getRootProcessId());
         ((ProcessInstanceImpl) pi).setSignalCompletion(getSubProcessNode().isWaitForCompletion());
         
@@ -112,7 +112,7 @@ public class LambdaSubProcessNodeInstance extends StateBasedNodeInstance impleme
         super.cancel();
         if (getSubProcessNode() == null || !getSubProcessNode().isIndependent()) {
         	ProcessInstance processInstance = null;
-        	InternalKnowledgeRuntime kruntime = ((ProcessInstance) getProcessInstance()).getKnowledgeRuntime();
+            KogitoProcessRuntime kruntime = (KogitoProcessRuntime) ((ProcessInstance) getProcessInstance()).getKnowledgeRuntime();
 
     		processInstance = (ProcessInstance) kruntime.getProcessInstance(processInstanceId);
 
@@ -202,7 +202,7 @@ public class LambdaSubProcessNodeInstance extends StateBasedNodeInstance impleme
     }
 
     public String getNodeName() {
-    	Node node = getNode();
+    	org.kie.api.definition.process.Node node = getNode();
     	if (node == null) {
     		return "[Dynamic] Sub Process";
     	}

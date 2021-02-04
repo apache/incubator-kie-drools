@@ -23,7 +23,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
-import org.kie.api.runtime.process.WorkItemNotFoundException;
 import org.jbpm.util.JsonSchemaUtil;
 import org.kie.kogito.Application;
 import org.kie.kogito.process.Process;

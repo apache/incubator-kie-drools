@@ -17,6 +17,7 @@ package org.drools.core.common;
 
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 
 public class KogitoDefaultAgenda extends DefaultAgenda implements KogitoInternalAgenda {
 
@@ -46,6 +47,6 @@ public class KogitoDefaultAgenda extends DefaultAgenda implements KogitoInternal
 
     @Override
     protected boolean sameProcessInstance( Object processInstanceId, ProcessInstance value ) {
-        return processInstanceId.equals( value.getId());
+        return processInstanceId.equals( (( KogitoProcessInstance ) value).getStringId());
     }
 }

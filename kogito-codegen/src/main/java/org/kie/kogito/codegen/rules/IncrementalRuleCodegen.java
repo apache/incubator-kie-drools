@@ -72,6 +72,7 @@ import org.kie.kogito.conf.EventProcessingType;
 import org.kie.kogito.grafana.GrafanaConfigurationWriter;
 import org.kie.kogito.rules.RuleUnitConfig;
 import org.kie.kogito.rules.units.AssignableChecker;
+import org.kie.kogito.rules.units.KogitoRuleUnitDescription;
 import org.kie.kogito.rules.units.ReflectiveRuleUnitDescription;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -242,8 +243,8 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
                         reflectConfigSource.getData()));
             }
 
-            Collection<RuleUnitDescription> ruleUnits = pkgSources.getRuleUnits();
-            for (RuleUnitDescription ruleUnit : ruleUnits) {
+            Collection<KogitoRuleUnitDescription> ruleUnits = pkgSources.getRuleUnits();
+            for (KogitoRuleUnitDescription ruleUnit : ruleUnits) {
                 String canonicalName = ruleUnit.getCanonicalName();
                 RuleUnitGenerator ruSource = new RuleUnitGenerator(context(), ruleUnit, pkgSources.getRulesFileName())
                         .withQueries(pkgSources.getQueriesInRuleUnit(canonicalName))
@@ -387,7 +388,7 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
         }
     }
 
-    private void addUnitConfToKieModule(RuleUnitDescription ruleUnitDescription) {
+    private void addUnitConfToKieModule(KogitoRuleUnitDescription ruleUnitDescription) {
         KieBaseModel unitKieBaseModel = kieModuleModel.newKieBaseModel(ruleUnit2KieBaseName(ruleUnitDescription.getCanonicalName()));
         unitKieBaseModel.setEventProcessingMode(org.kie.api.conf.EventProcessingOption.CLOUD);
         unitKieBaseModel.addPackage(ruleUnitDescription.getPackageName());
@@ -411,7 +412,7 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
         unitKieSessionModel.setType(KieSessionModel.KieSessionType.STATEFUL);
         ClockType clockType = config.getDefaultedClockType();
         if (clockType == ClockType.PSEUDO) {
-            unitKieSessionModel.setClockType(ClockTypeOption.PSEUDO);
+            unitKieSessionModel.setClockType(ClockTypeOption.get("pseudo"));
         }
     }
 

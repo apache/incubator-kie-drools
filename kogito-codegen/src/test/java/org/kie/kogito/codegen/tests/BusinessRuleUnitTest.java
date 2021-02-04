@@ -24,13 +24,11 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
-import org.drools.core.config.DefaultRuleEventListenerConfig;
 import org.drools.core.event.DefaultAgendaEventListener;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.kie.api.event.process.DefaultProcessEventListener;
 import org.kie.api.event.process.ProcessStartedEvent;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.kogito.Application;
@@ -42,12 +40,14 @@ import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessConfig;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.Processes;
-import org.kie.kogito.process.impl.DefaultProcessEventListenerConfig;
+import org.kie.kogito.internal.process.event.DefaultKogitoProcessEventListener;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.rules.RuleConfig;
 import org.kie.kogito.rules.units.UndefinedGeneratedRuleUnitVariable;
 import org.kie.kogito.uow.UnitOfWork;
 
 import static java.util.Arrays.asList;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -129,11 +129,11 @@ public class BusinessRuleUnitTest extends AbstractCodegenTest {
         assertThat(app).isNotNull();
         final List<String> startedProcesses = new ArrayList<>();
         // add custom event listener that collects data
-        app.config().get(ProcessConfig.class).processEventListeners().listeners().add(new DefaultProcessEventListener() {
+        app.config().get(ProcessConfig.class).processEventListeners().listeners().add(new DefaultKogitoProcessEventListener() {
 
             @Override
             public void beforeProcessStarted(ProcessStartedEvent event) {
-                startedProcesses.add(event.getProcessInstance().getId());
+                startedProcesses.add( (( KogitoProcessInstance ) event.getProcessInstance()).getStringId());
             }
 
         });

@@ -24,11 +24,12 @@ import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.process.instance.impl.Action;
+import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.node.ActionNode;
 import org.jbpm.workflow.core.node.DataAssociation;
 import org.jbpm.workflow.instance.WorkflowRuntimeException;
 import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
-import org.kie.api.runtime.process.NodeInstance;
+import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 
 /**
  * Runtime counterpart of an action node.
@@ -42,9 +43,9 @@ public class ActionNodeInstance extends NodeInstanceImpl {
         return (ActionNode) getNode();
     }
 
-    public void internalTrigger(final NodeInstance from, String type) {
+    public void internalTrigger( KogitoNodeInstance from, String type) {
         triggerTime = new Date();
-        if (!org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
+        if (!Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
             throw new IllegalArgumentException(
                 "An ActionNode only accepts default incoming connections!");
         }
@@ -83,7 +84,7 @@ public class ActionNodeInstance extends NodeInstanceImpl {
     }
 
     public void triggerCompleted() {
-        triggerCompleted(org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE, true);
+        triggerCompleted( Node.CONNECTION_DEFAULT_TYPE, true);
     }
 
 

@@ -25,9 +25,10 @@ import org.drools.core.common.InternalAgenda;
 import org.drools.core.spi.KogitoProcessContext;
 import org.jbpm.workflow.core.node.DynamicNode;
 import org.kie.api.definition.process.Node;
-import org.kie.api.event.process.ContextAwareEventListener;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.kogito.event.process.ContextAwareEventListener;
+import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 
 import static org.jbpm.ruleflow.core.Metadata.IS_FOR_COMPENSATION;
 import static org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE;
@@ -51,12 +52,12 @@ public class DynamicNodeInstance extends CompositeContextNodeInstance {
     }
 
     @Override
-    public void internalTrigger(NodeInstance from, String type) {
+    public void internalTrigger( KogitoNodeInstance from, String type) {
         triggerTime = new Date();
         triggerEvent(EVENT_NODE_ENTER);
 
         // if node instance was cancelled, abort
-        if (getNodeInstanceContainer().getNodeInstance(getId()) == null) {
+        if (getNodeInstanceContainer().getNodeInstance(getStringId()) == null) {
             return;
         }
         if (canActivate()) {
@@ -87,7 +88,7 @@ public class DynamicNodeInstance extends CompositeContextNodeInstance {
     }
 
     private void addActivationListener() {
-        getProcessInstance().getKnowledgeRuntime().getProcessRuntime().addEventListener(ContextAwareEventListener.using(listener -> {
+        getProcessInstance().getKnowledgeRuntime().getProcessRuntime().addEventListener( ContextAwareEventListener.using( listener -> {
             if (canActivate() && getState() == ProcessInstance.STATE_PENDING) {
                 triggerActivated();
                 getProcessInstance().getKnowledgeRuntime().getProcessRuntime().removeEventListener(listener);

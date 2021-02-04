@@ -19,7 +19,7 @@ package org.jbpm.workflow.core.node;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.kie.api.definition.process.Node;
+import org.jbpm.workflow.core.Node;
 import org.jbpm.process.core.datatype.DataType;
 import org.jbpm.process.core.Context;
 import org.jbpm.process.core.context.AbstractContext;
@@ -55,8 +55,8 @@ public class ForEachNode extends CompositeContextNode {
         split.setMetaData("UniqueId", getMetaData("Uniqueid") + ":foreach:split");
         super.addNode(split);
         super.linkIncomingConnections(
-            org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE, 
-            new CompositeNode.NodeAndType(split, org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE));
+            Node.CONNECTION_DEFAULT_TYPE,
+            new CompositeNode.NodeAndType(split, Node.CONNECTION_DEFAULT_TYPE));
         // Composite node
         CompositeContextNode compositeNode = new CompositeContextNode();
         compositeNode.setName("ForEachComposite");
@@ -73,15 +73,15 @@ public class ForEachNode extends CompositeContextNode {
         join.setMetaData("UniqueId", getMetaData("Uniqueid") + ":foreach:join");
         super.addNode(join);
         super.linkOutgoingConnections(
-            new CompositeNode.NodeAndType(join, org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE),
-            org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
+            new CompositeNode.NodeAndType(join, Node.CONNECTION_DEFAULT_TYPE),
+            Node.CONNECTION_DEFAULT_TYPE);
         new ConnectionImpl(
-            super.getNode(1), org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE,
-            getCompositeNode(), org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE
+            super.getNode(1), Node.CONNECTION_DEFAULT_TYPE,
+            getCompositeNode(), Node.CONNECTION_DEFAULT_TYPE
         );
         new ConnectionImpl(
-            getCompositeNode(), org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE,
-            super.getNode(3), org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE
+            getCompositeNode(), Node.CONNECTION_DEFAULT_TYPE,
+            super.getNode(3), Node.CONNECTION_DEFAULT_TYPE
         );
     }
     
@@ -129,35 +129,35 @@ public class ForEachNode extends CompositeContextNode {
         return (ForEachJoinNode) super.getNode(3); 
     }
     
-    public void addNode(Node node) {
+    public void addNode( org.kie.api.definition.process.Node node) {
     	getCompositeNode().addNode(node);
     }
     
-    protected void internalAddNode(Node node) {
+    protected void internalAddNode( org.kie.api.definition.process.Node node) {
     	super.addNode(node);
     }
     
-    public Node getNode(long id) {
+    public org.kie.api.definition.process.Node getNode( long id) {
     	return getCompositeNode().getNode(id);
     }
     
-    public Node internalGetNode(long id) {
+    public org.kie.api.definition.process.Node internalGetNode( long id) {
     	return super.getNode(id);
     }
     
-    public Node[] getNodes() {
+    public org.kie.api.definition.process.Node[] getNodes() {
 		return getCompositeNode().getNodes();
     }
     
-    public Node[] internalGetNodes() {
+    public org.kie.api.definition.process.Node[] internalGetNodes() {
     	return super.getNodes();
     }
     
-    public void removeNode(Node node) {
+    public void removeNode( org.kie.api.definition.process.Node node) {
     	getCompositeNode().removeNode(node);
     }
     
-    protected void internalRemoveNode(Node node) {
+    protected void internalRemoveNode( org.kie.api.definition.process.Node node) {
     	super.removeNode(node);
     }
     

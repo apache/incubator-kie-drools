@@ -22,8 +22,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.compiler.compiler.xml.XmlDumper;
+import org.jbpm.workflow.core.Node;
 import org.kie.api.definition.process.Connection;
-import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.WorkflowProcess;
 import org.jbpm.process.core.datatype.DataType;
 import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
@@ -222,25 +222,25 @@ public class XmlWorkflowProcessDumper {
     
     private void visitNodes(WorkflowProcess process, StringBuilder xmlDump, boolean includeMeta) {
         xmlDump.append("  <nodes>" + EOL);
-        for (Node node: process.getNodes()) {
+        for (org.kie.api.definition.process.Node node: process.getNodes()) {
             visitNode(node, xmlDump, includeMeta);
         }
         xmlDump.append("  </nodes>" + EOL + EOL);
     }
     
-    public void visitNode(Node node, StringBuilder xmlDump, boolean includeMeta) {
+    public void visitNode( org.kie.api.definition.process.Node node, StringBuilder xmlDump, boolean includeMeta) {
      	Handler handler = semanticModule.getHandlerByClass(node.getClass());
         if (handler != null) {
-        	((AbstractNodeHandler) handler).writeNode((org.jbpm.workflow.core.Node) node, xmlDump, includeMeta);
+        	((AbstractNodeHandler) handler).writeNode(( Node ) node, xmlDump, includeMeta);
         } else {
         	throw new IllegalArgumentException(
                 "Unknown node type: " + node);
         }
     }
     
-    private void visitConnections(Node[] nodes, StringBuilder xmlDump, boolean includeMeta) {
+    private void visitConnections( org.kie.api.definition.process.Node[] nodes, StringBuilder xmlDump, boolean includeMeta) {
         List<Connection> connections = new ArrayList<Connection>();
-        for (Node node: nodes) {
+        for (org.kie.api.definition.process.Node node: nodes) {
             for (List<Connection> connectionList: node.getIncomingConnections().values()) {
                 connections.addAll(connectionList);
             }

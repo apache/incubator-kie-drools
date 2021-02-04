@@ -20,25 +20,28 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.process.*;
+import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
 
-public class ReceiveTaskHandler implements WorkItemHandler {
+public class ReceiveTaskHandler implements KogitoWorkItemHandler {
     
     // TODO: use correlation instead of message id
     private Map<String, String> waiting = new HashMap<String, String>();
-    private ProcessRuntime ksession;
+    private KogitoProcessRuntime kruntime;
     
     public ReceiveTaskHandler(KieSession ksession) {
-        this.ksession = ksession;
+        this.kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
     }
     
     public void setKnowledgeRuntime(KieSession ksession) {
-    	this.ksession = ksession;
+    	this.kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
     }
 
-    public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
+    public void executeWorkItem( KogitoWorkItem workItem, KogitoWorkItemManager manager) {
         String messageId = (String) workItem.getParameter("MessageId");
-        waiting.put(messageId, workItem.getId());
+        waiting.put(messageId, workItem.getStringId());
     }
     
     public void messageReceived(String messageId, Object message) {
@@ -48,10 +51,10 @@ public class ReceiveTaskHandler implements WorkItemHandler {
         }
         Map<String, Object> results = new HashMap<String, Object>();
         results.put("Message", message);
-        ksession.getWorkItemManager().completeWorkItem(workItemId, results);
+        kruntime.getWorkItemManager().completeWorkItem(workItemId, results);
     }
 
-    public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
+    public void abortWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager manager) {
     	String messageId = (String) workItem.getParameter("MessageId");
         waiting.remove(messageId);
     }

@@ -16,6 +16,7 @@
 package org.drools.core.audit.event;
 
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 
 /**
  * A ruleflow event logged by the WorkingMemoryLogger.
@@ -26,6 +27,6 @@ public class KogitoRuleFlowLogEvent extends RuleFlowLogEvent {
 
     public KogitoRuleFlowLogEvent( final int type,
                                    ProcessInstance processInstance) {
-        super(type, processInstance.getProcessId(), processInstance.getProcessName(), processInstance.getId());
+        super(type, processInstance.getProcessId(), processInstance.getProcessName(), (( KogitoProcessInstance ) processInstance).getStringId());
     }
 }

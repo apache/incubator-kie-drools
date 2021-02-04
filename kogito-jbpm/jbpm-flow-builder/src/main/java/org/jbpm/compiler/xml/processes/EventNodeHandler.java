@@ -35,8 +35,8 @@ public class EventNodeHandler extends AbstractNodeHandler {
         return EventNode.class;
     }
 
-    public void handleNode(final Node node, final Element element, final String uri,
-            final String localName, final ExtensibleXmlParser parser)
+    public void handleNode( final Node node, final Element element, final String uri,
+                            final String localName, final ExtensibleXmlParser parser)
             throws SAXException {
         super.handleNode(node, element, uri, localName, parser);
         EventNode eventNode = (EventNode) node;
@@ -50,7 +50,7 @@ public class EventNodeHandler extends AbstractNodeHandler {
         }
     }
     
-    public void writeNode(Node node, StringBuilder xmlDump, boolean includeMeta) {
+    public void writeNode( Node node, StringBuilder xmlDump, boolean includeMeta) {
 		EventNode eventNode = (EventNode) node;
 		writeNode("eventNode", eventNode, xmlDump, includeMeta);
 		String variableName = eventNode.getVariableName();

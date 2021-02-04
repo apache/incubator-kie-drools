@@ -60,9 +60,9 @@ import com.github.javaparser.ast.type.UnionType;
 import org.jbpm.process.core.ParameterDefinition;
 import org.jbpm.workflow.core.node.DataAssociation;
 import org.jbpm.workflow.core.node.WorkItemNode;
-import org.kie.api.runtime.process.WorkItem;
-import org.kie.api.runtime.process.WorkItemHandler;
-import org.kie.api.runtime.process.WorkItemManager;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
 import org.kie.kogito.process.workitem.WorkItemExecutionError;
 
 public class ServiceTaskDescriptor {
@@ -170,7 +170,7 @@ public class ServiceTaskDescriptor {
         ClassOrInterfaceDeclaration cls = new ClassOrInterfaceDeclaration()
                 .setName(unqualifiedName)
                 .setModifiers(Modifier.Keyword.PUBLIC)
-                .addImplementedType(WorkItemHandler.class.getCanonicalName());
+                .addImplementedType( KogitoWorkItemHandler.class.getCanonicalName());
         ClassOrInterfaceType serviceType = new ClassOrInterfaceType(null, interfaceName);
 
         final String serviceName = "service";
@@ -202,8 +202,8 @@ public class ServiceTaskDescriptor {
                 .setType(void.class)
                 .setName("executeWorkItem")
                 .setBody(executeWorkItemBody)
-                .addParameter(WorkItem.class.getCanonicalName(), "workItem")
-                .addParameter(WorkItemManager.class.getCanonicalName(), "workItemManager");
+                .addParameter(KogitoWorkItem.class.getCanonicalName(), "workItem")
+                .addParameter(KogitoWorkItemManager.class.getCanonicalName(), "workItemManager");
 
         MethodCallExpr callService = new MethodCallExpr(new NameExpr("service"), operationName);
 
@@ -225,8 +225,8 @@ public class ServiceTaskDescriptor {
                 .setType(void.class)
                 .setName("abortWorkItem")
                 .setBody(abortWorkItemBody)
-                .addParameter(WorkItem.class.getCanonicalName(), "workItem")
-                .addParameter(WorkItemManager.class.getCanonicalName(), "workItemManager");
+                .addParameter(KogitoWorkItem.class.getCanonicalName(), "workItem")
+                .addParameter(KogitoWorkItemManager.class.getCanonicalName(), "workItemManager");
 
         // getName method
         MethodDeclaration getName = new MethodDeclaration()
@@ -314,7 +314,7 @@ public class ServiceTaskDescriptor {
         }
 
         return new MethodCallExpr(new NameExpr("workItemManager"), "completeWorkItem")
-                .addArgument(new MethodCallExpr(new NameExpr("workItem"), "getId"))
+                .addArgument(new MethodCallExpr(new NameExpr("workItem"), "getStringId"))
                 .addArgument(results);
     }
 

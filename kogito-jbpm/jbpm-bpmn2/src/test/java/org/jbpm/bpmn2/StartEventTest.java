@@ -40,8 +40,10 @@ import org.kie.api.event.process.ProcessStartedEvent;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.process.ProcessInstance;
-import org.kie.api.runtime.process.WorkItem;
 import org.kie.internal.io.ResourceFactory;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
+import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
 import org.kie.kogito.process.workitems.impl.KogitoWorkItemImpl;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -58,7 +60,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
 
             @Override
             public void afterProcessStarted(ProcessStartedEvent event) {
-                startedInstances.add(event.getProcessInstance().getId());
+                startedInstances.add( (( KogitoProcessInstance ) event.getProcessInstance()).getStringId());
             }
             
         });
@@ -85,7 +87,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
         final List<String> list = new ArrayList<>();
         ksession.addEventListener(new DefaultProcessEventListener() {
             public void beforeProcessStarted(ProcessStartedEvent event) {
-                list.add(event.getProcessInstance().getId());
+                list.add( (( KogitoProcessInstance ) event.getProcessInstance()).getStringId());
             }
         });
         logger.debug("About to start ###### " + new Date());
@@ -108,7 +110,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
         final List<String> list = new ArrayList<>();
         ksession.addEventListener(new DefaultProcessEventListener() {
             public void beforeProcessStarted(ProcessStartedEvent event) {
-                list.add(event.getProcessInstance().getId());
+                list.add( (( KogitoProcessInstance ) event.getProcessInstance()).getStringId());
             }
         });
         assertThat(list.size()).isEqualTo(0);
@@ -137,7 +139,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
         final List<String> list = new ArrayList<>();
         ksession.addEventListener(new DefaultProcessEventListener() {
             public void beforeProcessStarted(ProcessStartedEvent event) {
-                list.add(event.getProcessInstance().getId());
+                list.add( (( KogitoProcessInstance ) event.getProcessInstance()).getStringId());
             }
         });
         assertThat(list.size()).isEqualTo(0);
@@ -156,7 +158,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
         final List<String> list = new ArrayList<>();
         ksession.addEventListener(new DefaultProcessEventListener() {
             public void beforeProcessStarted(ProcessStartedEvent event) {
-                list.add(event.getProcessInstance().getId());
+                list.add( (( KogitoProcessInstance ) event.getProcessInstance()).getStringId());
             }
         });
         assertThat(list.size()).isEqualTo(0);
@@ -175,7 +177,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
         final List<String> list = new ArrayList<>();
         ksession.addEventListener(new DefaultProcessEventListener() {
             public void beforeProcessStarted(ProcessStartedEvent event) {
-                list.add(event.getProcessInstance().getId());
+                list.add( (( KogitoProcessInstance ) event.getProcessInstance()).getStringId());
             }
         });
 
@@ -219,7 +221,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
         final List<String> list = new ArrayList<>();
         ksession.addEventListener(new DefaultProcessEventListener() {
             public void beforeProcessStarted(ProcessStartedEvent event) {
-                list.add(event.getProcessInstance().getId());
+                list.add( (( KogitoProcessInstance ) event.getProcessInstance()).getStringId());
             }
         });
         ksession.signalEvent("MySignal", "NewValue");
@@ -243,8 +245,8 @@ public class StartEventTest extends JbpmBpmn2TestCase {
         final List<String> list = new ArrayList<>();
         ksession.addEventListener(new DefaultProcessEventListener() {
             public void beforeProcessStarted(ProcessStartedEvent event) {
-                logger.info("{}", event.getProcessInstance().getId());
-                list.add(event.getProcessInstance().getId());
+                logger.info("{}", (( KogitoProcessInstance ) event.getProcessInstance()).getStringId());
+                list.add( (( KogitoProcessInstance ) event.getProcessInstance()).getStringId());
             }
         });
         ksession.signalEvent("MySignal", "NewValue");
@@ -271,6 +273,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
     public void testMultipleStartEventsRegularStart() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-MultipleStartEventProcessLongInterval.bpmn2");
         ksession = createKnowledgeSession(kbase);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
@@ -278,10 +281,10 @@ public class StartEventTest extends JbpmBpmn2TestCase {
                 .startProcess("MultipleStartEvents");
         assertProcessInstanceActive(processInstance);
         ksession = restoreSession(ksession, true);
-        WorkItem workItem = workItemHandler.getWorkItem();
+        KogitoWorkItem workItem = workItemHandler.getWorkItem();
         assertThat(workItem).isNotNull();
         assertThat(workItem.getParameter("ActorId")).isEqualTo("john");
-        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+        kruntime.getWorkItemManager().completeWorkItem(workItem.getStringId(), null);
         assertProcessInstanceFinished(processInstance, ksession);
 
     }
@@ -300,7 +303,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
         final List<String> list = new ArrayList<>();
         ksession.addEventListener(new DefaultProcessEventListener() {
             public void beforeProcessStarted(ProcessStartedEvent event) {
-                list.add(event.getProcessInstance().getId());
+                list.add( (( KogitoProcessInstance ) event.getProcessInstance()).getStringId());
             }
         });
         assertThat(list.size()).isEqualTo(0);
@@ -314,6 +317,8 @@ public class StartEventTest extends JbpmBpmn2TestCase {
     public void testMultipleEventBasedStartEventsSignalStart() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-MultipleEventBasedStartEventProcess.bpmn2");
         ksession = createKnowledgeSession(kbase);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
@@ -321,24 +326,24 @@ public class StartEventTest extends JbpmBpmn2TestCase {
         final List<String> list = new ArrayList<>();
         ksession.addEventListener(new DefaultProcessEventListener() {
             public void afterProcessStarted(ProcessStartedEvent event) {
-                list.add(event.getProcessInstance().getId());
+                list.add( (( KogitoProcessInstance ) event.getProcessInstance()).getStringId());
             }
         });
 
         ksession.signalEvent("startSignal", null);
 
         assertThat(list.size()).isEqualTo(1);
-        WorkItem workItem = workItemHandler.getWorkItem();
+        KogitoWorkItem workItem = workItemHandler.getWorkItem();
         String processInstanceId = (( KogitoWorkItemImpl ) workItem)
-                .getProcessInstanceId();
+                .getProcessInstanceStringId();
 
-        ProcessInstance processInstance = ksession
+        ProcessInstance processInstance = kruntime
                 .getProcessInstance(processInstanceId);
         ksession = restoreSession(ksession, true);
 
         assertThat(workItem).isNotNull();
         assertThat(workItem.getParameter("ActorId")).isEqualTo("john");
-        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+        kruntime.getWorkItemManager().completeWorkItem(workItem.getStringId(), null);
         assertProcessInstanceFinished(processInstance, ksession);
 
     }
@@ -347,6 +352,8 @@ public class StartEventTest extends JbpmBpmn2TestCase {
     public void testMultipleEventBasedStartEventsDifferentPaths() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-MultipleStartEventProcessDifferentPaths.bpmn2");
         ksession = createKnowledgeSession(kbase);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
@@ -354,24 +361,23 @@ public class StartEventTest extends JbpmBpmn2TestCase {
         final List<String> list = new ArrayList<>();
         ksession.addEventListener(new DefaultProcessEventListener() {
             public void afterProcessStarted(ProcessStartedEvent event) {
-                list.add(event.getProcessInstance().getId());
+                list.add( (( KogitoProcessInstance ) event.getProcessInstance()).getStringId());
             }
         });
 
         ksession.startProcess("muliplestartevents");
 
         assertThat(list.size()).isEqualTo(1);
-        WorkItem workItem = workItemHandler.getWorkItem();
-        String processInstanceId = (( KogitoWorkItemImpl ) workItem)
-                .getProcessInstanceId();
+        KogitoWorkItem workItem = workItemHandler.getWorkItem();
+        String processInstanceId = (( KogitoWorkItemImpl ) workItem).getProcessInstanceStringId();
 
-        ProcessInstance processInstance = ksession
+        ProcessInstance processInstance = kruntime
                 .getProcessInstance(processInstanceId);
         ksession = restoreSession(ksession, true);
 
         assertThat(workItem).isNotNull();
         assertThat(workItem.getParameter("ActorId")).isEqualTo("john");
-        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+        kruntime.getWorkItemManager().completeWorkItem(workItem.getStringId(), null);
         assertProcessInstanceFinished(processInstance, ksession);
         assertNodeTriggered(processInstanceId, "Start", "Script 1", "User task", "End");
     }
@@ -383,6 +389,8 @@ public class StartEventTest extends JbpmBpmn2TestCase {
         KieBase kbase = createKnowledgeBase("BPMN2-MultipleStartEventProcessDifferentPaths.bpmn2");
         ksession = createKnowledgeSession(kbase);
         ksession.addEventListener(countDownListener);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
@@ -390,7 +398,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
         final List<String> list = new ArrayList<>();
         ksession.addEventListener(new DefaultProcessEventListener() {
             public void beforeProcessStarted(ProcessStartedEvent event) {
-                list.add(event.getProcessInstance().getId());
+                list.add( (( KogitoProcessInstance ) event.getProcessInstance()).getStringId());
             }
         });
 
@@ -399,17 +407,17 @@ public class StartEventTest extends JbpmBpmn2TestCase {
         countDownListener.waitTillCompleted();
 
         assertThat(list.size()).isEqualTo(2);
-        List<WorkItem> workItems = workItemHandler.getWorkItems();
+        List<KogitoWorkItem> workItems = workItemHandler.getWorkItems();
 
-        for (WorkItem workItem : workItems) {
-            String processInstanceId = (( KogitoWorkItemImpl ) workItem).getProcessInstanceId();
+        for (KogitoWorkItem workItem : workItems) {
+            String processInstanceId = (( KogitoWorkItemImpl ) workItem).getProcessInstanceStringId();
 
-            ProcessInstance processInstance = ksession
+            ProcessInstance processInstance = kruntime
                     .getProcessInstance(processInstanceId);
 
             assertThat(workItem).isNotNull();
             assertThat(workItem.getParameter("ActorId")).isEqualTo("john");
-            ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+            kruntime.getWorkItemManager().completeWorkItem(workItem.getStringId(), null);
             assertProcessInstanceFinished(processInstance, ksession);
             assertNodeTriggered(processInstanceId, "StartTimer", "Script 2", "User task", "End");
         }
@@ -419,6 +427,8 @@ public class StartEventTest extends JbpmBpmn2TestCase {
     public void testMultipleEventBasedStartEventsSignalDifferentPaths() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-MultipleStartEventProcessDifferentPaths.bpmn2");
         ksession = createKnowledgeSession(kbase);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
@@ -426,24 +436,24 @@ public class StartEventTest extends JbpmBpmn2TestCase {
         final List<String> list = new ArrayList<>();
         ksession.addEventListener(new DefaultProcessEventListener() {
             public void afterProcessStarted(ProcessStartedEvent event) {
-                list.add(event.getProcessInstance().getId());
+                list.add( (( KogitoProcessInstance ) event.getProcessInstance()).getStringId());
             }
         });
 
         ksession.signalEvent("startSignal", null);
 
         assertThat(list.size()).isEqualTo(1);
-        WorkItem workItem = workItemHandler.getWorkItem();
+        KogitoWorkItem workItem = workItemHandler.getWorkItem();
         String processInstanceId = (( KogitoWorkItemImpl ) workItem)
-                .getProcessInstanceId();
+                .getProcessInstanceStringId();
 
-        ProcessInstance processInstance = ksession
+        ProcessInstance processInstance = kruntime
                 .getProcessInstance(processInstanceId);
         ksession = restoreSession(ksession, true);
 
         assertThat(workItem).isNotNull();
         assertThat(workItem.getParameter("ActorId")).isEqualTo("john");
-        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+        kruntime.getWorkItemManager().completeWorkItem(workItem.getStringId(), null);
         assertProcessInstanceFinished(processInstance, ksession);
         assertNodeTriggered(processInstanceId, "StartSignal", "Script 3", "User task", "End");
     }
@@ -462,7 +472,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
         final List<String> list = new ArrayList<>();
         ksession.addEventListener(new DefaultProcessEventListener() {
             public void beforeProcessStarted(ProcessStartedEvent event) {
-                list.add(event.getProcessInstance().getId());
+                list.add( (( KogitoProcessInstance ) event.getProcessInstance()).getStringId());
             }
         });
         assertThat(list.size()).isEqualTo(0);
@@ -584,11 +594,12 @@ public class StartEventTest extends JbpmBpmn2TestCase {
         try {
             KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-StartEventWithMultipleOutgoingFlows.bpmn2");
             ksession = createKnowledgeSession(kbase);
-            
-            ProcessInstance pi = ksession.startProcess("starteventwithmutlipleflows");
+            KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+
+            KogitoProcessInstance pi = kruntime.startProcess("starteventwithmutlipleflows");
             assertProcessInstanceCompleted(pi);
             
-            assertNodeTriggered(pi.getId(), "Script 1", "Script 2");
+            assertNodeTriggered(pi.getStringId(), "Script 1", "Script 2");
         } finally {
             System.clearProperty("jbpm.enable.multi.con");
         }

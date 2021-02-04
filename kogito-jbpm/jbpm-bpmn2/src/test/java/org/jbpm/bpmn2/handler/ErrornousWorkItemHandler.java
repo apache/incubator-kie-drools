@@ -19,11 +19,12 @@ package org.jbpm.bpmn2.handler;
 import org.kie.api.runtime.process.ProcessWorkItemHandlerException;
 import org.kie.api.runtime.process.ProcessWorkItemHandlerException.HandlingStrategy;
 import org.kie.api.runtime.process.WorkItem;
-import org.kie.api.runtime.process.WorkItemHandler;
-import org.kie.api.runtime.process.WorkItemManager;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
 
 
-public class ErrornousWorkItemHandler implements WorkItemHandler {
+public class ErrornousWorkItemHandler implements KogitoWorkItemHandler {
     
     private String processId;
     private HandlingStrategy strategy;
@@ -37,23 +38,23 @@ public class ErrornousWorkItemHandler implements WorkItemHandler {
     }
 
     @Override
-    public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
+    public void executeWorkItem( KogitoWorkItem workItem, KogitoWorkItemManager manager) {
         this.workItem = workItem;
         if (processId != null && strategy != null) {
             
             if (workItem.getParameter("isCheckedCheckbox") != null) {
-                manager.completeWorkItem(workItem.getId(), workItem.getParameters());
+                manager.completeWorkItem(workItem.getStringId(), workItem.getParameters());
             } else {
             
                 throw new ProcessWorkItemHandlerException(processId, strategy, new RuntimeException("On purpose"));
             }
         }
         
-        manager.completeWorkItem(workItem.getId(), null);
+        manager.completeWorkItem(workItem.getStringId(), null);
     }
 
     @Override
-    public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
+    public void abortWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager manager) {
         this.workItem = workItem;
 
     }

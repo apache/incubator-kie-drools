@@ -27,6 +27,7 @@ import org.jbpm.process.instance.impl.workitem.Active;
 import org.jbpm.process.instance.impl.workitem.Complete;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemManager;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
 import org.kie.kogito.process.workitem.InvalidLifeCyclePhaseException;
 import org.kie.kogito.process.workitem.InvalidTransitionException;
 import org.kie.kogito.process.workitem.LifeCycle;
@@ -86,8 +87,8 @@ public class BaseHumanTaskLifeCycle implements LifeCycle<Map<String, Object>> {
     }
 
     @Override
-    public Map<String, Object> transitionTo(WorkItem workItem, WorkItemManager manager, Transition<Map<String, Object>> transition) {
-        logger.debug("Transition method invoked for work item {} to transition to {}, currently in phase {} and status {}", workItem.getId(), transition.phase(), workItem.getPhaseId(), workItem.getPhaseStatus());
+    public Map<String, Object> transitionTo(KogitoWorkItem workItem, WorkItemManager manager, Transition<Map<String, Object>> transition) {
+        logger.debug("Transition method invoked for work item {} to transition to {}, currently in phase {} and status {}", workItem.getStringId(), transition.phase(), workItem.getPhaseId(), workItem.getPhaseStatus());
         
         HumanTaskWorkItemImpl humanTaskWorkItem = (HumanTaskWorkItemImpl) workItem;
         
@@ -105,7 +106,7 @@ public class BaseHumanTaskLifeCycle implements LifeCycle<Map<String, Object>> {
         }
 
         if (!targetPhase.id().equals(Active.ID) && !targetPhase.id().equals(Abort.ID) && !humanTaskWorkItem.enforce(transition.policies().toArray(new Policy[transition.policies().size()]))) {
-            throw new NotAuthorizedException("User is not authorized to access task instance with id " + humanTaskWorkItem.getId());
+            throw new NotAuthorizedException("User is not authorized to access task instance with id " + humanTaskWorkItem.getStringId());
         }
         
         humanTaskWorkItem.setPhaseId(targetPhase.id());
@@ -113,13 +114,13 @@ public class BaseHumanTaskLifeCycle implements LifeCycle<Map<String, Object>> {
         
         targetPhase.apply(humanTaskWorkItem, transition);
         if (transition.data() != null) {
-            logger.debug("Updating data for work item {}", targetPhase.id(), humanTaskWorkItem.getId());
+            logger.debug("Updating data for work item {}", targetPhase.id(), humanTaskWorkItem.getStringId());
             humanTaskWorkItem.getResults().putAll(transition.data());
         }
-        logger.debug("Transition for work item {} to {} done, currently in phase {} and status {}", workItem.getId(), transition.phase(), workItem.getPhaseId(), workItem.getPhaseStatus());
+        logger.debug("Transition for work item {} to {} done, currently in phase {} and status {}", workItem.getStringId(), transition.phase(), workItem.getPhaseId(), workItem.getPhaseStatus());
         
         if (targetPhase.isTerminating()) {
-            logger.debug("Target life cycle phase '{}' is terminiating, completing work item {}", targetPhase.id(), humanTaskWorkItem.getId());
+            logger.debug("Target life cycle phase '{}' is terminiating, completing work item {}", targetPhase.id(), humanTaskWorkItem.getStringId());
             // since target life cycle phase is terminating completing work item
             ((KogitoWorkItemManager)manager).internalCompleteWorkItem(humanTaskWorkItem);
         }

@@ -23,7 +23,7 @@
         </drools:metaData>
         <drools:onEntry-script scriptFormat="http://www.java.com/java">
           <drools:script><![CDATA[kcontext.setVariable("childs",java.util.Arrays.asList("A", "B", "C"));
-kcontext.setVariable("fatherId",kcontext.getProcessInstance().getId());
+kcontext.setVariable("fatherId",((org.kie.kogito.internal.process.runtime.KogitoProcessInstance)kcontext.getProcessInstance()).getStringId());
 ]]></drools:script>
         </drools:onEntry-script>
       </bpmn2:extensionElements>

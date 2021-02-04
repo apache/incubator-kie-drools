@@ -30,6 +30,7 @@ import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessConfig;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.Processes;
+import org.kie.kogito.internal.process.event.KogitoProcessEventListener;
 import org.kie.kogito.process.impl.Sig;
 import org.mockito.ArgumentCaptor;
 
@@ -43,7 +44,7 @@ public class MessageIntermediateEventTest extends AbstractCodegenTest {
     @Test
     public void testMessageEndEventProcess() throws Exception {
         Application app = generateCodeProcessesOnly("messageevent/MessageEndEvent.bpmn2");
-        ProcessEventListener listener = mock(ProcessEventListener.class);
+        ProcessEventListener listener = mock(KogitoProcessEventListener.class);
         app.config().get(ProcessConfig.class).processEventListeners().listeners().add(listener);
         Process<? extends Model> p = app.get(Processes.class).processById("MessageEndEvent");
         Model m = p.createModel();
@@ -60,7 +61,7 @@ public class MessageIntermediateEventTest extends AbstractCodegenTest {
     @Test
     public void testMessageThrowEventProcess() throws Exception {
         Application app = generateCodeProcessesOnly("messageevent/IntermediateThrowEventMessage.bpmn2");
-        ProcessEventListener listener = mock(ProcessEventListener.class);
+        ProcessEventListener listener = mock(KogitoProcessEventListener.class);
         app.config().get(ProcessConfig.class).processEventListeners().listeners().add(listener);
         Process<? extends Model> p = app.get(Processes.class).processById("MessageIntermediateEvent");
         Model m = p.createModel();

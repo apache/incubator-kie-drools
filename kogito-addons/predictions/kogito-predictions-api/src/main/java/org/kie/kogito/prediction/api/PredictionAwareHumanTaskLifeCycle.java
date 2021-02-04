@@ -22,8 +22,8 @@ import org.jbpm.process.instance.impl.humantask.BaseHumanTaskLifeCycle;
 import org.jbpm.process.instance.impl.humantask.HumanTaskWorkItemImpl;
 import org.jbpm.process.instance.impl.workitem.Active;
 import org.jbpm.process.instance.impl.workitem.Complete;
-import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemManager;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
 import org.kie.kogito.process.workitem.InvalidLifeCyclePhaseException;
 import org.kie.kogito.process.workitem.LifeCyclePhase;
 import org.kie.kogito.process.workitem.Transition;
@@ -42,7 +42,7 @@ public class PredictionAwareHumanTaskLifeCycle extends BaseHumanTaskLifeCycle {
     }
 
     @Override
-    public Map<String, Object> transitionTo(WorkItem workItem, WorkItemManager manager, Transition<Map<String, Object>> transition) {
+    public Map<String, Object> transitionTo(KogitoWorkItem workItem, WorkItemManager manager, Transition<Map<String, Object>> transition) {
         LifeCyclePhase targetPhase = phaseById(transition.phase());
         if (targetPhase == null) {
             logger.debug("Target life cycle phase '{}' does not exist in {}", transition.phase(), this.getClass().getSimpleName());
@@ -54,16 +54,16 @@ public class PredictionAwareHumanTaskLifeCycle extends BaseHumanTaskLifeCycle {
             
             
             PredictionOutcome outcome = predictionService.predict(workItem, workItem.getParameters());
-            logger.debug("Prediction service returned confidence level {} for work item {}", outcome.getConfidenceLevel(), humanTaskWorkItem.getId());                
+            logger.debug("Prediction service returned confidence level {} for work item {}", outcome.getConfidenceLevel(), humanTaskWorkItem.getStringId());
             
             if (outcome.isCertain()) {
                 humanTaskWorkItem.getResults().putAll(outcome.getData());
-                logger.debug("Prediction service is certain (confidence level {}) on the outputs, completing work item {}", outcome.getConfidenceLevel(), humanTaskWorkItem.getId());                
+                logger.debug("Prediction service is certain (confidence level {}) on the outputs, completing work item {}", outcome.getConfidenceLevel(), humanTaskWorkItem.getStringId());
                 (( KogitoWorkItemManager )manager).internalCompleteWorkItem(humanTaskWorkItem);
                 
                 return outcome.getData();
             } else if (outcome.isPresent()) {
-                logger.debug("Prediction service is NOT certain (confidence level {}) on the outputs, setting recommended outputs on work item {}", outcome.getConfidenceLevel(), humanTaskWorkItem.getId());                
+                logger.debug("Prediction service is NOT certain (confidence level {}) on the outputs, setting recommended outputs on work item {}", outcome.getConfidenceLevel(), humanTaskWorkItem.getStringId());
                 humanTaskWorkItem.getResults().putAll(outcome.getData());
                 
             }

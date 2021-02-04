@@ -89,8 +89,8 @@ public class MetaDataHandler extends BaseAbstractHandler
 			getMetaData().put(name, value);
 		}
 		public Map<String, Object> getMetaData() {
-			if (parent instanceof Node) {
-				return ((Node) parent).getMetaData();
+			if (parent instanceof Node ) {
+				return (( Node ) parent).getMetaData();
 			} else if (parent instanceof RuleFlowProcess) {
 				return ((RuleFlowProcess) parent).getMetaData();
 			} else if (parent instanceof Variable) {

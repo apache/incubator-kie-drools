@@ -22,6 +22,8 @@ import java.util.function.Function;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
+import org.kie.kogito.process.workitems.KogitoWorkItem;
 
 /**
  * Simple work item handler that allows to provide output data or supplier
@@ -52,7 +54,7 @@ public class MockDataWorkItemHandler implements WorkItemHandler {
 
     @Override
     public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
-        manager.completeWorkItem(workItem.getId(), outputDataSupplier.apply(workItem.getParameters()));
+        (( KogitoWorkItemManager )manager).completeWorkItem((( KogitoWorkItem )workItem).getStringId(), outputDataSupplier.apply(workItem.getParameters()));
     }
 
     @Override

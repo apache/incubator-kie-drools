@@ -18,23 +18,23 @@ package org.jbpm.process.instance;
 
 import java.util.Collection;
 
-import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 
 public interface ProcessInstanceManager {
 
-    ProcessInstance getProcessInstance(String id);
-    
-    ProcessInstance getProcessInstance(String id, boolean readOnly);
-    
-    Collection<ProcessInstance> getProcessInstances();
+    KogitoProcessInstance getProcessInstance( String id);
 
-    void addProcessInstance(ProcessInstance processInstance);
+    KogitoProcessInstance getProcessInstance(String id, boolean readOnly);
     
-    void internalAddProcessInstance(ProcessInstance processInstance);
+    Collection<KogitoProcessInstance> getProcessInstances();
 
-    void removeProcessInstance(ProcessInstance processInstance);
+    void addProcessInstance(KogitoProcessInstance processInstance);
+    
+    void internalAddProcessInstance(KogitoProcessInstance processInstance);
 
-    void internalRemoveProcessInstance(ProcessInstance processInstance);
+    void removeProcessInstance(KogitoProcessInstance processInstance);
+
+    void internalRemoveProcessInstance(KogitoProcessInstance processInstance);
     
     void clearProcessInstances();
     

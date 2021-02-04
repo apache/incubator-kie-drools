@@ -16,11 +16,15 @@
 package org.kie.kogito.rules.units;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.EntryPoint;
+import org.kie.api.runtime.rule.QueryResults;
+import org.kie.api.runtime.rule.QueryResultsRow;
 import org.kie.api.time.SessionClock;
 import org.kie.kogito.rules.DataSource;
 import org.kie.kogito.rules.RuleUnit;
@@ -49,7 +53,7 @@ public class AbstractRuleUnitInstance<T extends RuleUnitData> implements RuleUni
     @Override
     public List<Map<String, Object>> executeQuery(String query) {
         fire();
-        return runtime.getQueryResults(query).toList();
+        return toList(runtime.getQueryResults(query));
     }
 
     @Override
@@ -101,5 +105,26 @@ public class AbstractRuleUnitInstance<T extends RuleUnitData> implements RuleUni
         } catch (IllegalAccessException e) {
             throw new Error(e);
         }
+    }
+
+    static List<Map<String, Object>> toList(QueryResults queryResults) {
+        String[] columns = queryResults.getIdentifiers();
+        List<Map<String, Object>> results = new ArrayList<>(queryResults.size());
+        for (QueryResultsRow row : queryResults) {
+            Map<String, Object> map = new HashMap<>();
+            for (String col : columns) {
+                map.put(col, row.get( col ));
+            }
+            results.add(map);
+        }
+        return results;
+    }
+
+    static List<Object> toList(QueryResults queryResults, String identifier) {
+        List<Object> results = new ArrayList<>(queryResults.size());
+        for (QueryResultsRow row : queryResults) {
+            results.add(row.get( identifier ));
+        }
+        return results;
     }
 }

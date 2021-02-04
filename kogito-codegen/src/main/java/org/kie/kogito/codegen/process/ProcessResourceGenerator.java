@@ -15,6 +15,15 @@
 
 package org.kie.kogito.codegen.process;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier.Keyword;
 import com.github.javaparser.ast.NodeList;
@@ -32,23 +41,14 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
 import org.drools.core.util.StringUtils;
 import org.jbpm.compiler.canonical.UserTaskModelMetaData;
-import org.kie.api.definition.process.WorkflowProcess;
+import org.kie.kogito.codegen.api.context.KogitoBuildContext;
+import org.kie.kogito.codegen.api.template.TemplatedGenerator;
 import org.kie.kogito.codegen.core.BodyDeclarationComparator;
 import org.kie.kogito.codegen.core.CodegenUtils;
 import org.kie.kogito.codegen.core.GeneratorConfig;
-import org.kie.kogito.codegen.api.template.TemplatedGenerator;
-import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.core.context.QuarkusKogitoBuildContext;
 import org.kie.kogito.codegen.core.context.SpringBootKogitoBuildContext;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
+import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
 
 import static org.kie.kogito.codegen.core.CodegenUtils.interpolateTypes;
 
@@ -69,7 +69,7 @@ public class ProcessResourceGenerator {
     private final String processClazzName;
     private final String processName;
     private final String appCanonicalName;
-    private WorkflowProcess process;
+    private KogitoWorkflowProcess process;
     private String processId;
     private String dataClazzName;
     private String modelfqcn;
@@ -81,7 +81,7 @@ public class ProcessResourceGenerator {
 
     public ProcessResourceGenerator(
             KogitoBuildContext context,
-            WorkflowProcess process,
+            KogitoWorkflowProcess process,
             String modelfqcn,
             String processfqcn,
             String appCanonicalName) {
@@ -364,6 +364,6 @@ public class ProcessResourceGenerator {
     }
 
     protected boolean isPublic() {
-        return WorkflowProcess.PUBLIC_VISIBILITY.equalsIgnoreCase(process.getVisibility());
+        return KogitoWorkflowProcess.PUBLIC_VISIBILITY.equalsIgnoreCase(process.getVisibility());
     }
 }

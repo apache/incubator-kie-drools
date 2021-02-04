@@ -16,52 +16,19 @@
 
 package org.jbpm.process;
 
-import org.jbpm.process.core.ContextContainer;
-import org.jbpm.process.core.context.exception.CompensationHandler;
-import org.jbpm.process.core.context.exception.CompensationScope;
-import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
-import org.jbpm.process.core.event.EventFilter;
-import org.jbpm.process.core.event.EventTypeFilter;
-import org.jbpm.process.core.event.NonAcceptingEventTypeFilter;
-import org.jbpm.process.instance.impl.Action;
-import org.jbpm.process.test.NodeCreator;
-import org.jbpm.process.test.TestWorkItemHandler;
-import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.ruleflow.core.RuleFlowProcessFactory;
-import org.jbpm.ruleflow.core.factory.DynamicNodeFactory;
-import org.jbpm.ruleflow.core.factory.FaultNodeFactory;
-import org.jbpm.ruleflow.core.factory.HumanTaskNodeFactory;
 import org.jbpm.test.util.AbstractBaseTest;
-import org.jbpm.workflow.core.DroolsAction;
-import org.jbpm.workflow.core.Node;
-import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
-import org.jbpm.workflow.core.node.ActionNode;
-import org.jbpm.workflow.core.node.BoundaryEventNode;
-import org.jbpm.workflow.core.node.CompositeContextNode;
-import org.jbpm.workflow.core.node.CompositeNode;
-import org.jbpm.workflow.core.node.EndNode;
-import org.jbpm.workflow.core.node.EventSubProcessNode;
-import org.jbpm.workflow.core.node.StartNode;
-import org.jbpm.workflow.core.node.WorkItemNode;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-import org.kie.api.definition.process.NodeContainer;
 import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.process.ProcessContext;
-import org.kie.api.runtime.process.ProcessInstance;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Queue;
 
-import static org.jbpm.process.test.NodeCreator.connect;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 

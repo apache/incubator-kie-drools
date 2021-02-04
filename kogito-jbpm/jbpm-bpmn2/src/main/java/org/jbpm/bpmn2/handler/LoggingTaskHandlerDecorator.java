@@ -17,9 +17,19 @@
 package org.jbpm.bpmn2.handler;
 
 import java.text.MessageFormat;
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
 
-import org.kie.api.runtime.process.*;
+import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.runtime.process.WorkItem;
+import org.kie.api.runtime.process.WorkItemHandler;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -174,7 +184,7 @@ public class LoggingTaskHandlerDecorator extends AbstractExceptionHandlingTaskHa
     }
 
     @Override
-    public synchronized void handleExecuteException(Throwable cause, WorkItem workItem, WorkItemManager manager) {
+    public synchronized void handleExecuteException(Throwable cause, KogitoWorkItem workItem, KogitoWorkItemManager manager) {
         if (exceptionInfoList.size() == this.loggedExceptionsLimit) {
             exceptionInfoList.poll();
         }
@@ -183,7 +193,7 @@ public class LoggingTaskHandlerDecorator extends AbstractExceptionHandlingTaskHa
     }
 
     @Override
-    public synchronized void handleAbortException(Throwable cause, WorkItem workItem, WorkItemManager manager) {
+    public synchronized void handleAbortException(Throwable cause, KogitoWorkItem workItem, KogitoWorkItemManager manager) {
         if (exceptionInfoList.size() == this.loggedExceptionsLimit) {
             exceptionInfoList.poll();
         }
@@ -280,14 +290,14 @@ public class LoggingTaskHandlerDecorator extends AbstractExceptionHandlingTaskHa
         private final String workItemName;
         private final Map<String, Object> workItemParameters;
 
-        public WorkItemExceptionInfo(WorkItem workItem, Throwable cause, boolean onExecute) {
+        public WorkItemExceptionInfo( KogitoWorkItem workItem, Throwable cause, boolean onExecute) {
             this.timeThrown = new Date();
             this.cause = cause;
             this.onExecute = onExecute;
 
-            this.processInstanceId = workItem.getProcessInstanceId();
+            this.processInstanceId = workItem.getProcessInstanceStringId();
 
-            this.workItemId = workItem.getId();
+            this.workItemId = workItem.getStringId();
             this.workItemName = workItem.getName();
             this.workItemParameters = Collections.unmodifiableMap(workItem.getParameters());
         }

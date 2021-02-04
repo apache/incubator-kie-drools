@@ -14,11 +14,6 @@
  */
 package org.kie.kogito.prediction.api;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.kie.api.runtime.process.ProcessInstance.STATE_ACTIVE;
-import static org.kie.api.runtime.process.ProcessInstance.STATE_COMPLETED;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -40,9 +35,15 @@ import org.kie.kogito.process.impl.CachedWorkItemHandlerConfig;
 import org.kie.kogito.process.impl.DefaultProcessEventListenerConfig;
 import org.kie.kogito.process.impl.StaticProcessConfig;
 import org.kie.kogito.process.workitem.Policy;
+import org.kie.kogito.process.workitems.KogitoWorkItem;
 import org.kie.kogito.services.identity.StaticIdentityProvider;
 import org.kie.kogito.services.uow.CollectingUnitOfWorkFactory;
 import org.kie.kogito.services.uow.DefaultUnitOfWorkManager;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.kie.api.runtime.process.ProcessInstance.STATE_ACTIVE;
+import static org.kie.api.runtime.process.ProcessInstance.STATE_COMPLETED;
 
 public class PredictionAwareHumanTaskLifeCycleTest {
 
@@ -65,7 +66,7 @@ public class PredictionAwareHumanTaskLifeCycleTest {
             
             @Override
             public void train(org.kie.api.runtime.process.WorkItem task, Map<String, Object> inputData, Map<String, Object> outputData) {
-                trainedTasks.add(task.getId());
+                trainedTasks.add( (( KogitoWorkItem ) task).getStringId());
             }
             
             @Override

@@ -48,9 +48,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.entry;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.kie.api.runtime.process.ProcessInstance.STATE_ACTIVE;
-import static org.kie.api.runtime.process.ProcessInstance.STATE_COMPLETED;
-import static org.kie.api.runtime.process.ProcessInstance.STATE_ERROR;
+import static org.kie.kogito.internal.process.runtime.KogitoProcessInstance.STATE_ACTIVE;
+import static org.kie.kogito.internal.process.runtime.KogitoProcessInstance.STATE_COMPLETED;
+import static org.kie.kogito.internal.process.runtime.KogitoProcessInstance.STATE_ERROR;
 
 @Testcontainers
 class CacheProcessInstancesIT {

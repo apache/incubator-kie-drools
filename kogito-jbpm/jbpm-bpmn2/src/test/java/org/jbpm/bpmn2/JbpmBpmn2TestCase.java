@@ -33,10 +33,10 @@ import org.drools.core.audit.KogitoWorkingMemoryInMemoryLogger;
 import org.drools.core.audit.event.KogitoRuleFlowLogEvent;
 import org.drools.core.audit.event.KogitoRuleFlowNodeLogEvent;
 import org.drools.core.audit.event.LogEvent;
+import org.drools.core.impl.EnvironmentFactory;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.mvel.MVELSafeHelper;
-import org.drools.core.impl.EnvironmentFactory;
 import org.jbpm.process.instance.event.DefaultSignalManagerFactory;
 import org.jbpm.process.instance.impl.DefaultProcessInstanceManagerFactory;
 import org.jbpm.process.instance.impl.actions.SignalProcessInstanceAction;
@@ -65,6 +65,8 @@ import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.runtime.conf.ForceEagerActivationOption;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
+import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.mvel2.MVEL;
 import org.mvel2.ParserContext;
 import org.slf4j.Logger;
@@ -268,24 +270,25 @@ public abstract class JbpmBpmn2TestCase {
 
 
     public void assertProcessInstanceCompleted(ProcessInstance processInstance) {
-        assertTrue(assertProcessInstanceState(ProcessInstance.STATE_COMPLETED, processInstance),
+        assertTrue(assertProcessInstanceState(KogitoProcessInstance.STATE_COMPLETED, processInstance),
                    "Process instance has not been completed.");
     }
 
     public void assertProcessInstanceAborted(ProcessInstance processInstance) {
-        assertTrue(assertProcessInstanceState(ProcessInstance.STATE_ABORTED, processInstance),
+        assertTrue(assertProcessInstanceState(KogitoProcessInstance.STATE_ABORTED, processInstance),
                    "Process instance has not been aborted.");
     }
 
     public void assertProcessInstanceActive(ProcessInstance processInstance) {
-        assertTrue(assertProcessInstanceState(ProcessInstance.STATE_ACTIVE, processInstance)
-                || assertProcessInstanceState(ProcessInstance.STATE_PENDING, processInstance),
+        assertTrue(assertProcessInstanceState(KogitoProcessInstance.STATE_ACTIVE, processInstance)
+                || assertProcessInstanceState(KogitoProcessInstance.STATE_PENDING, processInstance),
                    "Process instance is not active.");
     }
 
     public void assertProcessInstanceFinished(ProcessInstance processInstance,
             KieSession ksession) {
-        assertNull(ksession.getProcessInstance(processInstance.getId()),
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+        assertNull(kruntime.getProcessInstance( (( KogitoProcessInstance ) processInstance).getStringId()),
                    "Process instance has not been finished.");
     }
 
@@ -295,7 +298,8 @@ public abstract class JbpmBpmn2TestCase {
         for (String n : name) {
             names.add(n);
         }
-        ProcessInstance processInstance = ksession
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+        ProcessInstance processInstance = kruntime
                 .getProcessInstance(processInstanceId);
         if (processInstance instanceof WorkflowProcessInstance) {            
             assertNodeActive((WorkflowProcessInstance) processInstance, names);            
@@ -566,16 +570,19 @@ public abstract class JbpmBpmn2TestCase {
     }
     
     protected void assertProcessInstanceCompleted(String processInstanceId, KieSession ksession) {
-        ProcessInstance processInstance = ksession.getProcessInstance(processInstanceId);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+        ProcessInstance processInstance = kruntime.getProcessInstance(processInstanceId);
         assertNull(processInstance, "Process instance has not completed.");
     }
 
     protected void assertProcessInstanceAborted(String processInstanceId, KieSession ksession) {
-        assertNull(ksession.getProcessInstance(processInstanceId));
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+        assertNull(kruntime.getProcessInstance(processInstanceId));
     }
 
     protected void assertProcessInstanceActive(String processInstanceId, KieSession ksession) {
-        assertNotNull(ksession.getProcessInstance(processInstanceId));
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+        assertNotNull(kruntime.getProcessInstance(processInstanceId));
     }
 
 }

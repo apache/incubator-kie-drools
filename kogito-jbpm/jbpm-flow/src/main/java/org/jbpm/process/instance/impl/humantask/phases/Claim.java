@@ -20,9 +20,9 @@ import java.util.List;
 
 import org.jbpm.process.instance.impl.humantask.HumanTaskWorkItemImpl;
 import org.jbpm.process.instance.impl.workitem.Active;
-import org.kie.api.runtime.process.HumanTaskWorkItem;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.kogito.auth.SecurityPolicy;
+import org.kie.kogito.process.workitem.HumanTaskWorkItem;
 import org.kie.kogito.process.workitem.LifeCyclePhase;
 import org.kie.kogito.process.workitem.Policy;
 import org.kie.kogito.process.workitem.Transition;
@@ -75,7 +75,7 @@ public class Claim implements LifeCyclePhase {
                 }
             }
         }
-        workitem.getResults().put("ActorId", ((HumanTaskWorkItem) workitem).getActualOwner());
+        workitem.getResults().put("ActorId", (( HumanTaskWorkItem ) workitem).getActualOwner());
     }
 
 }

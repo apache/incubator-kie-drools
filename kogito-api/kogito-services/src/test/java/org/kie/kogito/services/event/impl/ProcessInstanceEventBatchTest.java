@@ -17,13 +17,14 @@
 package org.kie.kogito.services.event.impl;
 
 import org.junit.jupiter.api.Test;
-import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.kogito.process.flexible.Milestone;
+import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcessInstance;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 import static java.util.Collections.singleton;
 import static java.util.Collections.singletonMap;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.kogito.process.flexible.ItemDescription.Status;
 import static org.kie.kogito.services.event.impl.ProcessInstanceEventBody.PROCESS_ID_META_DATA;
@@ -58,7 +59,7 @@ public class ProcessInstanceEventBatchTest {
     public void testMilestones() {
         ProcessInstanceEventBatch batch = new ProcessInstanceEventBatch(null, null);
 
-        WorkflowProcessInstance pi = mock(WorkflowProcessInstance.class);
+        KogitoWorkflowProcessInstance pi = mock( KogitoWorkflowProcessInstance.class);
 
         when(pi.milestones()).thenReturn(null);
         assertThat(batch.createMilestones(pi)).isNull();

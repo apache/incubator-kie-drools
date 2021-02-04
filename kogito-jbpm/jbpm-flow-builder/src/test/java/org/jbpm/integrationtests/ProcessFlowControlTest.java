@@ -16,8 +16,6 @@
 
 package org.jbpm.integrationtests;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,8 +35,11 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Match;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ProcessFlowControlTest extends AbstractBaseTest {
     
@@ -125,7 +126,7 @@ public class ProcessFlowControlTest extends AbstractBaseTest {
                         inList );
         ProcessInstance processInstance = session.startProcess( "ConstraintDialects" );
         
-        assertEquals( ProcessInstance.STATE_ERROR,
+        assertEquals( KogitoProcessInstance.STATE_ERROR,
                       processInstance.getState() );
     }
 

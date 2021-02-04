@@ -26,19 +26,19 @@ import java.util.Map;
 import java.util.Set;
 
 import org.drools.core.common.InternalKnowledgeRuntime;
-import org.kie.api.definition.process.Connection;
-import org.kie.api.definition.process.Node;
-import org.kie.api.runtime.process.NodeInstance;
 import org.jbpm.process.core.context.exclusive.ExclusiveGroup;
 import org.jbpm.process.instance.ContextInstanceContainer;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.process.instance.context.exclusive.ExclusiveGroupInstance;
 import org.jbpm.process.instance.impl.ConstraintEvaluator;
+import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.node.Split;
 import org.jbpm.workflow.instance.NodeInstanceContainer;
 import org.jbpm.workflow.instance.WorkflowRuntimeException;
 import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
+import org.kie.api.definition.process.Connection;
+import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 
 /**
  * Runtime counterpart of a split node.
@@ -52,8 +52,8 @@ public class SplitInstance extends NodeInstanceImpl {
         return (Split) getNode();
     }
 
-    public void internalTrigger(final NodeInstance from, String type) {
-        if (!org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
+    public void internalTrigger( final KogitoNodeInstance from, String type) {
+        if (!Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
             throw new IllegalArgumentException(
                 "A Split only accepts default incoming connections!");
         }
@@ -73,7 +73,7 @@ public class SplitInstance extends NodeInstanceImpl {
         // TODO make different strategies for each type
         switch ( split.getType() ) {
             case Split.TYPE_AND :
-                triggerCompleted(org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE, true);
+                triggerCompleted( Node.CONNECTION_DEFAULT_TYPE, true);
                 break;
             case Split.TYPE_XOR :
                 List<Connection> outgoing = split.getDefaultOutgoingConnections();
@@ -176,7 +176,7 @@ public class SplitInstance extends NodeInstanceImpl {
                 break;
             case Split.TYPE_XAND :
             	((org.jbpm.workflow.instance.NodeInstanceContainer) getNodeInstanceContainer()).removeNodeInstance(this);
-                Node node = getNode();
+                org.kie.api.definition.process.Node node = getNode();
                 List<Connection> connections = null;
                 if (node != null) {
                 	connections = node.getOutgoingConnections(type);
@@ -197,7 +197,7 @@ public class SplitInstance extends NodeInstanceImpl {
         	        for (Connection connection: connections) {
         	        	nodeInstancesMap.put(followConnection(connection), connection.getToType());
         	        }
-        	        for (NodeInstance nodeInstance: nodeInstancesMap.keySet()) {
+        	        for (KogitoNodeInstance nodeInstance: nodeInstancesMap.keySet()) {
         	        	groupInstance.addNodeInstance(nodeInstance);
         	        }
         	        for (Map.Entry<org.jbpm.workflow.instance.NodeInstance, String> entry: nodeInstancesMap.entrySet()) {
@@ -228,18 +228,18 @@ public class SplitInstance extends NodeInstanceImpl {
     }
     
     
-    protected boolean hasLoop(Node startAt, final Node lookFor) {
+    protected boolean hasLoop( org.kie.api.definition.process.Node startAt, final org.kie.api.definition.process.Node lookFor) {
         Set<Long> vistedNodes = new HashSet<Long>();
         
         return checkNodes(startAt, lookFor, vistedNodes);
         
     }
     
-    protected boolean checkNodes(Node currentNode, final Node lookFor, Set<Long> vistedNodes) {        
-        List<Connection> connections = currentNode.getOutgoingConnections(org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
+    protected boolean checkNodes( org.kie.api.definition.process.Node currentNode, final org.kie.api.definition.process.Node lookFor, Set<Long> vistedNodes) {
+        List<Connection> connections = currentNode.getOutgoingConnections( Node.CONNECTION_DEFAULT_TYPE);
 
         for (Connection conn : connections) {
-            Node nextNode = conn.getTo();
+            org.kie.api.definition.process.Node nextNode = conn.getTo();
             if (nextNode == null) {
                 continue;
             } else if (vistedNodes.contains(nextNode.getId())) {

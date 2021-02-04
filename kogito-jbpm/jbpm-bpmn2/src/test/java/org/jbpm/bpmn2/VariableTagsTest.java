@@ -16,14 +16,6 @@
 
 package org.jbpm.bpmn2;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.kie.api.runtime.process.ProcessInstance.STATE_ABORTED;
-import static org.kie.api.runtime.process.ProcessInstance.STATE_ACTIVE;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -38,10 +30,20 @@ import org.kie.api.event.process.DefaultProcessEventListener;
 import org.kie.api.event.process.ProcessVariableChangedEvent;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
-import org.kie.api.runtime.process.WorkItem;
 import org.kie.kogito.process.VariableViolationException;
 import org.kie.kogito.process.bpmn2.BpmnProcess;
 import org.kie.kogito.process.bpmn2.BpmnVariables;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
+import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.kie.api.runtime.process.ProcessInstance.STATE_ABORTED;
+import static org.kie.api.runtime.process.ProcessInstance.STATE_ACTIVE;
 
 public class VariableTagsTest extends JbpmBpmn2TestCase {
 
@@ -73,6 +75,8 @@ public class VariableTagsTest extends JbpmBpmn2TestCase {
     public void testProcessWithRequiredVariable() throws Exception {
         KieBase kbase = createKnowledgeBase("variable-tags/approval-with-required-variable-tags.bpmn2");
         KieSession ksession = createKnowledgeSession(kbase);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
         
@@ -82,13 +86,13 @@ public class VariableTagsTest extends JbpmBpmn2TestCase {
         ProcessInstance processInstance = ksession.startProcess("approvals", parameters);
         assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
         ksession = restoreSession(ksession, true);
-        WorkItem workItem = workItemHandler.getWorkItem();
+        KogitoWorkItem workItem = workItemHandler.getWorkItem();
         assertNotNull(workItem);
-        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+        kruntime.getWorkItemManager().completeWorkItem(workItem.getStringId(), null);
         
         workItem = workItemHandler.getWorkItem();
-        assertNotNull(workItem);        
-        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+        assertNotNull(workItem);
+        kruntime.getWorkItemManager().completeWorkItem(workItem.getStringId(), null);
         
         assertProcessInstanceFinished(processInstance, ksession);
         ksession.dispose();
@@ -98,20 +102,22 @@ public class VariableTagsTest extends JbpmBpmn2TestCase {
     public void testProcessWithReadonlyVariable() throws Exception {
         KieBase kbase = createKnowledgeBase("variable-tags/approval-with-readonly-variable-tags.bpmn2");
         KieSession ksession = createKnowledgeSession(kbase);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
         
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("approver", "john");
         
-        ProcessInstance processInstance = ksession.startProcess("approvals", parameters);
+        KogitoProcessInstance processInstance = kruntime.startProcess("approvals", parameters);
         assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);        
-        WorkItem workItem = workItemHandler.getWorkItem();
+        KogitoWorkItem workItem = workItemHandler.getWorkItem();
         assertNotNull(workItem);
                 
-        assertThrows(VariableViolationException.class, () -> ksession.getWorkItemManager().completeWorkItem(workItem.getId(), Collections.singletonMap("ActorId", "john")));
-        
-        ksession.abortProcessInstance(processInstance.getId());
+        assertThrows(VariableViolationException.class, () -> kruntime.getWorkItemManager().completeWorkItem(workItem.getStringId(), Collections.singletonMap("ActorId", "john")));
+
+        kruntime.abortProcessInstance(processInstance.getStringId());
         
         assertProcessInstanceFinished(processInstance, ksession);
         ksession.dispose();
@@ -128,7 +134,7 @@ public class VariableTagsTest extends JbpmBpmn2TestCase {
             @Override
             public void beforeVariableChanged(ProcessVariableChangedEvent event) {
                 if (event.hasTag("onlyAdmin")) {
-                    throw new VariableViolationException(event.getProcessInstance().getId(), event.getVariableId(), "Variable can only be set by admins");
+                    throw new VariableViolationException( (( KogitoProcessInstance ) event.getProcessInstance()).getStringId(), event.getVariableId(), "Variable can only be set by admins");
                 }
             }
             
@@ -141,7 +147,7 @@ public class VariableTagsTest extends JbpmBpmn2TestCase {
         
         ksession.dispose();
     }
-    
+
     @Test
     public void testRequiredVariableFiltering() {
         List<BpmnProcess> processes = BpmnProcess.from(new ClassPathResource("variable-tags/approval-with-custom-variable-tags.bpmn2"));

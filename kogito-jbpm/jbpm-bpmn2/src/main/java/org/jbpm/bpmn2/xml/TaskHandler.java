@@ -60,7 +60,7 @@ public class TaskHandler extends AbstractNodeHandler {
 	 Map<String, String> dataTypeInputs = new LinkedHashMap<String, String>();
      Map<String, String> dataTypeOutputs = new LinkedHashMap<String, String>();
 
-    protected Node createNode(Attributes attrs) {
+    protected Node createNode( Attributes attrs) {
         return new WorkItemNode();
     }
     
@@ -68,8 +68,8 @@ public class TaskHandler extends AbstractNodeHandler {
         return Node.class;
     }
 
-    protected void handleNode(final Node node, final Element element, final String uri, 
-            final String localName, final ExtensibleXmlParser parser) throws SAXException {
+    protected void handleNode( final Node node, final Element element, final String uri,
+                               final String localName, final ExtensibleXmlParser parser) throws SAXException {
     	super.handleNode(node, element, uri, localName, parser);
     	
     	itemDefinitions = (Map<String, ItemDefinition>)((ProcessBuildData) parser.getData()).getMetaData("ItemDefinitions");
@@ -295,7 +295,7 @@ public class TaskHandler extends AbstractNodeHandler {
     }
 
     @Override
-    public void writeNode(Node node, StringBuilder xmlDump, int metaDataType) {
+    public void writeNode( Node node, StringBuilder xmlDump, int metaDataType) {
         throw new IllegalArgumentException(
             "Writing out should be handled by the WorkItemNodeHandler");
     }
@@ -303,7 +303,7 @@ public class TaskHandler extends AbstractNodeHandler {
     public Object end(final String uri, final String localName,
             final ExtensibleXmlParser parser) throws SAXException {
 		final Element element = parser.endElementBuilder();
-		Node node = (Node) parser.getCurrent();
+		Node node = ( Node ) parser.getCurrent();
 		// determine type of event definition, so the correct type of node can be generated
     	handleNode(node, element, uri, localName, parser);
         
@@ -322,7 +322,7 @@ public class TaskHandler extends AbstractNodeHandler {
 				forEachNode.linkIncomingConnections(NodeImpl.CONNECTION_DEFAULT_TYPE, node.getId(), NodeImpl.CONNECTION_DEFAULT_TYPE);
 				forEachNode.linkOutgoingConnections(node.getId(), NodeImpl.CONNECTION_DEFAULT_TYPE, NodeImpl.CONNECTION_DEFAULT_TYPE);
 				
-				Node orignalNode = node;				
+				Node orignalNode = node;
 				node = forEachNode;
 				handleForEachNode(node, element, uri, localName, parser);
 				// remove output collection data output of for each to avoid problems when running in variable strict mode
@@ -356,8 +356,8 @@ public class TaskHandler extends AbstractNodeHandler {
 		return node;
 	}
     
-	protected void handleForEachNode(final Node node, final Element element, final String uri, 
-            final String localName, final ExtensibleXmlParser parser) {
+	protected void handleForEachNode( final Node node, final Element element, final String uri,
+                                      final String localName, final ExtensibleXmlParser parser) {
     	ForEachNode forEachNode = (ForEachNode) node;
     	org.w3c.dom.Node xmlNode = element.getFirstChild();
     	

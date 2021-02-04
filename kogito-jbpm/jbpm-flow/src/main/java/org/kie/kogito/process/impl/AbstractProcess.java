@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.jbpm.process.core.timer.DateTimeUtils;
 import org.jbpm.process.core.timer.Timer;
+import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.LightProcessRuntime;
 import org.jbpm.process.instance.LightProcessRuntimeContext;
 import org.jbpm.process.instance.LightProcessRuntimeServiceProvider;
@@ -29,9 +30,6 @@ import org.jbpm.process.instance.ProcessRuntimeServiceProvider;
 import org.jbpm.workflow.core.impl.WorkflowProcessImpl;
 import org.jbpm.workflow.core.node.StartNode;
 import org.kie.api.runtime.process.EventListener;
-import org.kie.api.runtime.process.ProcessRuntime;
-import org.kie.api.runtime.process.WorkItemHandler;
-import org.kie.api.runtime.process.WorkItemManager;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.kogito.Application;
 import org.kie.kogito.Model;
@@ -47,6 +45,10 @@ import org.kie.kogito.process.ProcessInstanceReadMode;
 import org.kie.kogito.process.ProcessInstances;
 import org.kie.kogito.process.ProcessInstancesFactory;
 import org.kie.kogito.process.Signal;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
+import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
 
 @SuppressWarnings("unchecked")
 public abstract class AbstractProcess<T extends Model> implements Process<T> {
@@ -60,7 +62,7 @@ public abstract class AbstractProcess<T extends Model> implements Process<T> {
 
     protected boolean activated;
     protected List<String> startTimerInstances = new ArrayList<>();
-    protected ProcessRuntime processRuntime;
+    protected KogitoProcessRuntime processRuntime;
 
     protected AbstractProcess() {
         this(new LightProcessRuntimeServiceProvider());
@@ -74,21 +76,21 @@ public abstract class AbstractProcess<T extends Model> implements Process<T> {
         this(services, Collections.emptyList(), null);
     }
 
-    protected AbstractProcess(Application app, Collection<WorkItemHandler> handlers) {
+    protected AbstractProcess(Application app, Collection<KogitoWorkItemHandler> handlers) {
         this(app, handlers, null);
     }
     
-    protected AbstractProcess(Application app, Collection<WorkItemHandler> handlers, ProcessInstancesFactory factory) {
+    protected AbstractProcess(Application app, Collection<KogitoWorkItemHandler> handlers, ProcessInstancesFactory factory) {
         this(new ConfiguredProcessServices(app.config().get(ProcessConfig.class)), handlers, factory);
         this.app = app;
     }
 
-    protected AbstractProcess(ProcessRuntimeServiceProvider services, Collection<WorkItemHandler> handlers, ProcessInstancesFactory factory) {
+    protected AbstractProcess(ProcessRuntimeServiceProvider services, Collection<KogitoWorkItemHandler> handlers, ProcessInstancesFactory factory) {
         this.services = services;
         this.instances = new MapProcessInstances<>();
         this.processInstancesFactory = factory;
-        WorkItemManager workItemManager = services.getWorkItemManager();
-        for (WorkItemHandler handler : handlers) {
+        KogitoWorkItemManager workItemManager = services.getWorkItemManager();
+        for (KogitoWorkItemHandler handler : handlers) {
             workItemManager.registerWorkItemHandler(handler.getName(), handler);
         }
     }
@@ -150,7 +152,7 @@ public abstract class AbstractProcess<T extends Model> implements Process<T> {
         WorkflowProcessImpl p = (WorkflowProcessImpl) process();
         List<StartNode> startNodes = p.getTimerStart();
         if (startNodes != null && !startNodes.isEmpty()) {
-            this.processRuntime = createProcessRuntime();
+            this.processRuntime = createProcessRuntime().getKogitoProcessRuntime();
             for (StartNode startNode : startNodes) {
                 if (startNode != null && startNode.getTimer() != null) {
                     String timerId = processRuntime.getJobsService().scheduleProcessJob(ProcessJobDescription.of(configureTimerInstance(startNode.getTimer()), this));
@@ -201,7 +203,7 @@ public abstract class AbstractProcess<T extends Model> implements Process<T> {
 
     public abstract org.kie.api.definition.process.Process process();
 
-    protected ProcessRuntime createProcessRuntime() {
+    protected InternalProcessRuntime createProcessRuntime() {
         return new LightProcessRuntime(new LightProcessRuntimeContext(Collections.singletonList(process())), services);
     }
 
@@ -226,9 +228,9 @@ public abstract class AbstractProcess<T extends Model> implements Process<T> {
         @Override
         public void signalEvent(String type, Object event) {
             if (type.startsWith("processInstanceCompleted:")) {
-                org.kie.api.runtime.process.ProcessInstance pi = (org.kie.api.runtime.process.ProcessInstance) event;
-                if (!id().equals(pi.getProcessId()) && pi.getParentProcessInstanceId() != null) {
-                    instances().findById(pi.getParentProcessInstanceId()).ifPresent(p -> p.send(Sig.of(type, event)));
+                KogitoProcessInstance pi = (KogitoProcessInstance) event;
+                if (!id().equals(pi.getProcessId()) && pi.getParentProcessInstanceStringId() != null) {
+                    instances().findById(pi.getParentProcessInstanceStringId()).ifPresent(p -> p.send(Sig.of(type, event)));
                 }
             }
         }

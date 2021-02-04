@@ -34,7 +34,9 @@ import org.kie.api.event.process.ProcessNodeLeftEvent;
 import org.kie.api.event.process.ProcessNodeTriggeredEvent;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
-import org.kie.api.runtime.process.WorkItem;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
+import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
 
 public class CompensationTest extends JbpmBpmn2TestCase {
 
@@ -74,52 +76,55 @@ public class CompensationTest extends JbpmBpmn2TestCase {
     @Test
     public void compensationViaIntermediateThrowEventProcess() throws Exception {
         KieSession ksession = createKnowledgeSession("compensation/BPMN2-Compensation-IntermediateThrowEvent.bpmn2");
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
+        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
         
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("x", "0");
-        ProcessInstance processInstance = ksession.startProcess("CompensateIntermediateThrowEvent", params);
+        KogitoProcessInstance processInstance = kruntime.startProcess("CompensateIntermediateThrowEvent", params);
 
-        ksession.getWorkItemManager().completeWorkItem(workItemHandler.getWorkItem().getId(), null);
+        kruntime.getWorkItemManager().completeWorkItem(workItemHandler.getWorkItem().getStringId(), null);
 
         // compensation activity (assoc. with script task) signaled *after* script task
-        assertProcessInstanceCompleted(processInstance.getId(), ksession);
+        assertProcessInstanceCompleted(processInstance.getStringId(), ksession);
         assertProcessVarValue(processInstance, "x", "1" );
     }
     
     @Test
     public void compensationTwiceViaSignal() throws Exception {
         KieSession ksession = createKnowledgeSession("compensation/BPMN2-Compensation-IntermediateThrowEvent.bpmn2");
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
+        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
         
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("x", "0");
         String processId = "CompensateIntermediateThrowEvent";
-        ProcessInstance processInstance = ksession.startProcess(processId, params);
+        KogitoProcessInstance processInstance = kruntime.startProcess(processId, params);
         
         // twice
-        ksession.signalEvent("Compensation", CompensationScope.IMPLICIT_COMPENSATION_PREFIX + processId, processInstance.getId());
-        ksession.getWorkItemManager().completeWorkItem(workItemHandler.getWorkItem().getId(), null);
+        kruntime.signalEvent("Compensation", CompensationScope.IMPLICIT_COMPENSATION_PREFIX + processId, processInstance.getStringId());
+        kruntime.getWorkItemManager().completeWorkItem(workItemHandler.getWorkItem().getStringId(), null);
 
         // compensation activity (assoc. with script task) signaled *after* script task
-        assertProcessInstanceCompleted(processInstance.getId(), ksession);
+        assertProcessInstanceCompleted(processInstance.getStringId(), ksession);
         assertProcessVarValue(processInstance, "x", "2");
     }
     
     @Test
     public void compensationViaEventSubProcess() throws Exception {
         KieSession ksession = createKnowledgeSession("compensation/BPMN2-Compensation-EventSubProcess.bpmn2");
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
+        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
  
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("x", "0");
-        ProcessInstance processInstance = ksession.startProcess("CompensationEventSubProcess", params);
+        KogitoProcessInstance processInstance = kruntime.startProcess("CompensationEventSubProcess", params);
 
-        assertProcessInstanceActive(processInstance.getId(), ksession);
-        ksession.getWorkItemManager().completeWorkItem(workItemHandler.getWorkItem().getId(), null);
+        assertProcessInstanceActive(processInstance.getStringId(), ksession);
+        kruntime.getWorkItemManager().completeWorkItem(workItemHandler.getWorkItem().getStringId(), null);
         
         assertProcessVarValue(processInstance, "x", "1");
     }
@@ -127,53 +132,55 @@ public class CompensationTest extends JbpmBpmn2TestCase {
     @Test
     public void compensationOnlyAfterAssociatedActivityHasCompleted() throws Exception {
         KieSession ksession = createKnowledgeSession("compensation/BPMN2-Compensation-UserTaskBeforeAssociatedActivity.bpmn2");
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
         ksession.addEventListener(LOGGING_EVENT_LISTENER);
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
+        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
         
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("x", "0");
-        ProcessInstance processInstance = ksession.startProcess("CompensateIntermediateThrowEvent", params);
+        KogitoProcessInstance processInstance = kruntime.startProcess("CompensateIntermediateThrowEvent", params);
         
         // should NOT cause compensation since compensated activity has not yet completed (or started)! 
-        ksession.signalEvent("Compensation", "_3", processInstance.getId());
+        kruntime.signalEvent("Compensation", "_3", processInstance.getStringId());
         
         // user task -> script task (associated with compensation) --> intermeidate throw compensation event
-        ksession.getWorkItemManager().completeWorkItem(workItemHandler.getWorkItem().getId(), null);
+        kruntime.getWorkItemManager().completeWorkItem(workItemHandler.getWorkItem().getStringId(), null);
         
         // compensation activity (assoc. with script task) signaled *after* to-compensate script task
-        assertProcessInstanceCompleted(processInstance.getId(), ksession);
+        assertProcessInstanceCompleted(processInstance.getStringId(), ksession);
         assertProcessVarValue(processInstance, "x", "1");
     }
     
     @Test
     public void orderedCompensation() throws Exception { 
         KieSession ksession = createKnowledgeSession("compensation/BPMN2-Compensation-ParallelOrderedCompensation-IntermediateThrowEvent.bpmn2");
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
         
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("x", "");
         ProcessInstance processInstance = ksession.startProcess("CompensateParallelOrdered", params);
-        List<WorkItem> workItems = workItemHandler.getWorkItems();
+        List<KogitoWorkItem> workItems = workItemHandler.getWorkItems();
         List<String> workItemIds = new ArrayList<>();
-        for( WorkItem workItem : workItems ) { 
+        for( KogitoWorkItem workItem : workItems ) {
            if( "Thr".equals(workItem.getParameter("NodeName")) )  {
-               workItemIds.add(workItem.getId());
+               workItemIds.add(workItem.getStringId());
            }
         }
-        for( WorkItem workItem : workItems ) { 
+        for( KogitoWorkItem workItem : workItems ) {
            if( "Two".equals(workItem.getParameter("NodeName")) )  {
-               workItemIds.add(workItem.getId());
+               workItemIds.add(workItem.getStringId());
            }
         }
-        for( WorkItem workItem : workItems ) { 
+        for( KogitoWorkItem workItem : workItems ) {
            if( "One".equals(workItem.getParameter("NodeName")) )  {
-               workItemIds.add(workItem.getId());
+               workItemIds.add(workItem.getStringId());
            }
         }
-        for( String id : workItemIds ) { 
-            ksession.getWorkItemManager().completeWorkItem(id, null);
+        for( String id : workItemIds ) {
+            kruntime.getWorkItemManager().completeWorkItem(id, null);
         }
         
         // user task -> script task (associated with compensation) --> intermeidate throw compensation event
@@ -187,36 +194,38 @@ public class CompensationTest extends JbpmBpmn2TestCase {
     @Test
     public void compensationInSubSubProcesses() throws Exception {
         KieSession ksession = createKnowledgeSession("compensation/BPMN2-Compensation-InSubSubProcess.bpmn2");
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
+        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
         
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("x", "0");
-        ProcessInstance processInstance = ksession.startProcess("CompensateSubSubSub", params);
+        KogitoProcessInstance processInstance = kruntime.startProcess("CompensateSubSubSub", params);
 
-        ksession.signalEvent("Compensation", "_C-2", processInstance.getId());
-        
-        ksession.getWorkItemManager().completeWorkItem(workItemHandler.getWorkItem().getId(), null);
-        ksession.getWorkItemManager().completeWorkItem(workItemHandler.getWorkItem().getId(), null);
-        ksession.getWorkItemManager().completeWorkItem(workItemHandler.getWorkItem().getId(), null);
+        kruntime.signalEvent("Compensation", "_C-2", processInstance.getStringId());
+
+        kruntime.getWorkItemManager().completeWorkItem(workItemHandler.getWorkItem().getStringId(), null);
+        kruntime.getWorkItemManager().completeWorkItem(workItemHandler.getWorkItem().getStringId(), null);
+        kruntime.getWorkItemManager().completeWorkItem(workItemHandler.getWorkItem().getStringId(), null);
 
         // compensation activity (assoc. with script task) signaled *after* script task
-        assertProcessInstanceCompleted(processInstance.getId(), ksession);
+        assertProcessInstanceCompleted(processInstance.getStringId(), ksession);
         assertProcessVarValue(processInstance, "x", "2");
     }
     
     @Test
     public void specificCompensationOfASubProcess() throws Exception {
         KieSession ksession = createKnowledgeSession("compensation/BPMN2-Compensation-ThrowSpecificForSubProcess.bpmn2");
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
+        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
         
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("x", 1);
-        ProcessInstance processInstance = ksession.startProcess("CompensationSpecificSubProcess", params);
+        KogitoProcessInstance processInstance = kruntime.startProcess("CompensationSpecificSubProcess", params);
         
         // compensation activity (assoc. with script task) signaled *after* to-compensate script task
-        assertProcessInstanceCompleted(processInstance.getId(), ksession);
+        assertProcessInstanceCompleted(processInstance.getStringId(), ksession);
         
         assertProcessVarValue(processInstance, "x", null);
     }
@@ -225,31 +234,33 @@ public class CompensationTest extends JbpmBpmn2TestCase {
     @Disabled
     public void compensationViaCancellation() throws Exception {
         KieSession ksession = createKnowledgeSession("compensation/BPMN2-Compensation-IntermediateThrowEvent.bpmn2");
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
+        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
         
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("x", "0");
-        ProcessInstance processInstance = ksession.startProcess("CompensateIntermediateThrowEvent", params);
+        KogitoProcessInstance processInstance = kruntime.startProcess("CompensateIntermediateThrowEvent", params);
 
-        ksession.signalEvent("Cancel", null, processInstance.getId());
-        ksession.getWorkItemManager().completeWorkItem(workItemHandler.getWorkItem().getId(), null);
+        kruntime.signalEvent("Cancel", null, processInstance.getStringId());
+        kruntime.getWorkItemManager().completeWorkItem(workItemHandler.getWorkItem().getStringId(), null);
 
         // compensation activity (assoc. with script task) signaled *after* script task
-        assertProcessInstanceCompleted(processInstance.getId(), ksession);
+        assertProcessInstanceCompleted(processInstance.getStringId(), ksession);
         assertProcessVarValue(processInstance, "x", "1");
     }
     
     @Test
     public void compensationInvokingSubProcess() throws Exception {
     	KieSession ksession = createKnowledgeSession("compensation/BPMN2-UserTaskCompensation.bpmn2");
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new SystemOutWorkItemHandler());
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task", new SystemOutWorkItemHandler());
         
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("compensation", "True");
-        ProcessInstance processInstance = ksession.startProcess("UserTaskCompensation", params);
+        KogitoProcessInstance processInstance = kruntime.startProcess("UserTaskCompensation", params);
         
-        assertProcessInstanceCompleted(processInstance.getId(), ksession);
+        assertProcessInstanceCompleted(processInstance.getStringId(), ksession);
         assertProcessVarValue(processInstance, "compensation", "compensation");
     }
     
@@ -264,7 +275,7 @@ public class CompensationTest extends JbpmBpmn2TestCase {
 		KieSession ksession = createKnowledgeSession("compensation/BPMN2-Booking.bpmn2",
 				"compensation/BPMN2-BookResource.bpmn2", "compensation/BPMN2-CancelResource.bpmn2");
 		ProcessInstance processInstance = ksession.startProcess("Booking");
-		assertProcessInstanceCompleted(processInstance.getId(), ksession);
+		assertProcessInstanceCompleted( (( KogitoProcessInstance ) processInstance).getStringId(), ksession);
 	}
     
 }

@@ -44,6 +44,7 @@ import org.jbpm.workflow.core.impl.WorkflowProcessImpl;
 import org.jbpm.workflow.core.node.HumanTaskNode;
 import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.WorkflowProcess;
+import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
 
 import static com.github.javaparser.StaticJavaParser.parse;
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
@@ -118,7 +119,7 @@ public class ProcessToExecModelGenerator {
         return new ModelMetaData(process.getId(),
                                  packageName,
                                  name,
-                                 process.getVisibility(),
+                                 (( KogitoWorkflowProcess )process).getVisibility(),
                                  VariableDeclarations.of(variableScope),
                                  false,
                                  "/class-templates/ModelTemplate.java",
@@ -133,7 +134,7 @@ public class ProcessToExecModelGenerator {
         VariableDeclarations inputVars = VariableDeclarations.ofInput(getVariableScope(process));
         return new ModelMetaData(process.getId(),
                                  packageName, name,
-                                 process.getVisibility(),
+                                 (( KogitoWorkflowProcess )process).getVisibility(),
                                  inputVars,
                                  true,
                                  "/class-templates/ModelNoIDTemplate.java",
@@ -146,7 +147,7 @@ public class ProcessToExecModelGenerator {
         return new ModelMetaData(process.getId(),
                                  packageName,
                                  name,
-                                 process.getVisibility(),
+                                 (( KogitoWorkflowProcess )process).getVisibility(),
                                  VariableDeclarations.ofOutput(getVariableScope(process)), true);
     }
 

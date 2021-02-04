@@ -23,8 +23,6 @@ import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
-import javax.lang.model.SourceVersion;
-
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.Modifier.Keyword;
@@ -50,6 +48,7 @@ import com.github.javaparser.ast.expr.ThisExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
+import javax.lang.model.SourceVersion;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.core.util.KieFunctions;
 import org.drools.core.util.StringUtils;
@@ -58,7 +57,6 @@ import org.jbpm.compiler.canonical.TriggerMetaData;
 import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
 import org.jbpm.ruleflow.core.RuleFlowProcessFactory;
 import org.kie.api.definition.process.Process;
-import org.kie.api.definition.process.WorkflowProcess;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.kogito.Model;
 import org.kie.kogito.codegen.core.BodyDeclarationComparator;
@@ -66,6 +64,7 @@ import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.process.ProcessInstancesFactory;
 import org.kie.kogito.process.Processes;
 import org.kie.kogito.process.impl.AbstractProcess;
+import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 
@@ -84,7 +83,7 @@ public class ProcessGenerator {
     private static final String FACTORY = "factory";
 
     private final String packageName;
-    private final WorkflowProcess process;
+    private final KogitoWorkflowProcess process;
     private final ProcessExecutableModelGenerator processExecutable;
     private final String typeName;
     private final String modelTypeName;
@@ -98,7 +97,7 @@ public class ProcessGenerator {
     private List<CompilationUnit> additionalClasses = new ArrayList<>();
 
     public ProcessGenerator(KogitoBuildContext context,
-                            WorkflowProcess process,
+                            KogitoWorkflowProcess process,
                             ProcessExecutableModelGenerator processGenerator,
                             String typeName,
                             String modelTypeName,
@@ -516,7 +515,7 @@ public class ProcessGenerator {
     }
 
     public boolean isPublic() {
-        return WorkflowProcess.PUBLIC_VISIBILITY.equalsIgnoreCase(process.getVisibility());
+        return KogitoWorkflowProcess.PUBLIC_VISIBILITY.equalsIgnoreCase(process.getVisibility());
     }
     
     public String processId() {

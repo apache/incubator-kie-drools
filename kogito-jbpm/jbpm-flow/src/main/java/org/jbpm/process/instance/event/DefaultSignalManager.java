@@ -88,7 +88,7 @@ public class DefaultSignalManager implements SignalManager {
 		}
 	}
 	public void signalEvent(String processInstanceId, String type, Object event) {
-		ProcessInstance processInstance = kruntime.getProcessInstance(processInstanceId);
+		ProcessInstance processInstance = ((KogitoWorkingMemory)kruntime).getProcessInstance(processInstanceId);
 		if (processInstance != null) {
 		    processInstance.signalEvent(type, event);
 		}
@@ -123,7 +123,7 @@ public class DefaultSignalManager implements SignalManager {
 		}
 
 		public void execute(InternalKnowledgeRuntime kruntime) {
-			ProcessInstance processInstance = kruntime.getProcessInstance(processInstanceId);
+			ProcessInstance processInstance = ((KogitoWorkingMemory)kruntime).getProcessInstance(processInstanceId);
 			if (processInstance != null) {
 				processInstance.signalEvent(type, event);
 			}

@@ -23,8 +23,8 @@ import java.util.List;
 
 import io.quarkus.test.Mock;
 import org.kie.api.management.GAV;
-import org.kie.internal.decision.DecisionModelResource;
-import org.kie.internal.decision.DecisionModelResourcesProvider;
+import org.kie.kogito.decision.DecisionModelResource;
+import org.kie.kogito.decision.DecisionModelResourcesProvider;
 import org.kie.kogito.decision.DecisionModelType;
 import org.kie.kogito.dmn.DefaultDecisionModelResource;
 

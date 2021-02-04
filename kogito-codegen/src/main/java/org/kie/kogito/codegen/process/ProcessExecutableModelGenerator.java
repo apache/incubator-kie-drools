@@ -20,22 +20,22 @@ import java.util.Optional;
 
 import org.jbpm.compiler.canonical.ProcessMetaData;
 import org.jbpm.compiler.canonical.ProcessToExecModelGenerator;
-import org.kie.api.definition.process.WorkflowProcess;
+import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
 
 public class ProcessExecutableModelGenerator {
 
-    private final WorkflowProcess workFlowProcess;
+    private final KogitoWorkflowProcess workFlowProcess;
     private final ProcessToExecModelGenerator execModelGenerator;
     private String processFilePath;
     private ProcessMetaData processMetaData;
 
-    public ProcessExecutableModelGenerator(WorkflowProcess workFlowProcess, ProcessToExecModelGenerator execModelGenerator) {
+    public ProcessExecutableModelGenerator(KogitoWorkflowProcess workFlowProcess, ProcessToExecModelGenerator execModelGenerator) {
         this.workFlowProcess = workFlowProcess;
         this.execModelGenerator = execModelGenerator;
     }
 
     public boolean isPublic() {
-        return WorkflowProcess.PUBLIC_VISIBILITY.equalsIgnoreCase(workFlowProcess.getVisibility());
+        return KogitoWorkflowProcess.PUBLIC_VISIBILITY.equalsIgnoreCase(workFlowProcess.getVisibility());
     }
 
     public ProcessMetaData generate() {
@@ -76,7 +76,7 @@ public class ProcessExecutableModelGenerator {
         return workFlowProcess.getId();
     }
 
-    public WorkflowProcess process() {
+    public KogitoWorkflowProcess process() {
         return workFlowProcess;
     }
 }

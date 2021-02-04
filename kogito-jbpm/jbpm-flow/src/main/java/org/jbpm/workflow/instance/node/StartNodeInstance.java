@@ -21,9 +21,10 @@ import java.util.Date;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.core.event.EventTransformer;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
+import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.node.StartNode;
 import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
-import org.kie.api.runtime.process.NodeInstance;
+import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 
 /**
  * Runtime counterpart of a start node.
@@ -33,7 +34,7 @@ public class StartNodeInstance extends NodeInstanceImpl {
 
     private static final long serialVersionUID = 510l;
 
-    public void internalTrigger(final NodeInstance from, String type) {
+    public void internalTrigger( KogitoNodeInstance from, String type) {
         if (type != null) {
             throw new IllegalArgumentException(
                 "A StartNode does not accept incoming connections!");
@@ -72,6 +73,6 @@ public class StartNodeInstance extends NodeInstanceImpl {
    
     public void triggerCompleted() {
         ((org.jbpm.workflow.instance.NodeInstanceContainer)getNodeInstanceContainer()).setCurrentLevel(getLevel());
-        triggerCompleted(org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE, true);
+        triggerCompleted( Node.CONNECTION_DEFAULT_TYPE, true);
     }
 }

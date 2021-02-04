@@ -30,15 +30,15 @@ import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.jupiter.api.Test;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.io.ResourceType;
-import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
-import org.kie.api.runtime.process.WorkItem;
-import org.kie.api.runtime.process.WorkItemHandler;
-import org.kie.api.runtime.process.WorkItemManager;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
+import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -116,24 +116,24 @@ public class ProcessWorkItemTest extends AbstractBaseTest {
         kbuilder.add( ResourceFactory.newReaderResource( source ), ResourceType.DRF );
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( kbuilder.getKnowledgePackages() );        
-        KieSession ksession = kbase.newKieSession();
-    	
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( kbase.newKieSession() );
+
         TestWorkItemHandler handler = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
+        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
         Map<String, Object> parameters = new HashMap<String, Object>();
         parameters.put("UserName", "John Doe");
         Person person = new Person();
         person.setName("John Doe");
         parameters.put("Person", person);
         WorkflowProcessInstance processInstance = (WorkflowProcessInstance)
-        	ksession.startProcess("org.drools.actions", parameters);
+                kruntime.startProcess("org.drools.actions", parameters);
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
-        WorkItem workItem = handler.getWorkItem();
+        KogitoWorkItem workItem = handler.getWorkItem();
         assertNotNull(workItem);
         assertEquals("John Doe", workItem.getParameter("ActorId"));
         assertEquals("John Doe", workItem.getParameter("Content"));
         assertEquals("John Doe", workItem.getParameter("Comment"));
-        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+        kruntime.getWorkItemManager().completeWorkItem(workItem.getStringId(), null);
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
         
         parameters = new HashMap<String, Object>();
@@ -143,7 +143,7 @@ public class ProcessWorkItemTest extends AbstractBaseTest {
         person.setName("Jane Doe");
         parameters.put("Person", person);
         processInstance = (WorkflowProcessInstance)
-        	ksession.startProcess("org.drools.actions", parameters);
+                kruntime.startProcess("org.drools.actions", parameters);
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         workItem = handler.getWorkItem();
         assertNotNull(workItem);
@@ -153,7 +153,7 @@ public class ProcessWorkItemTest extends AbstractBaseTest {
         assertEquals("Jane Doe", workItem.getParameter("Comment"));
         Map<String, Object> results = new HashMap<String, Object>();
         results.put("Result", "SomeOtherString");
-        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), results);
+        kruntime.getWorkItemManager().completeWorkItem(workItem.getStringId(), results);
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
         assertEquals("SomeOtherString", processInstance.getVariable("MyObject"));
         assertEquals(15, processInstance.getVariable("Number"));
@@ -232,26 +232,29 @@ public class ProcessWorkItemTest extends AbstractBaseTest {
         Collection<KiePackage> kpkgs = kbuilder.getKnowledgePackages();
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( kpkgs );        
-        KieSession ksession = kbase.newKieSession();
-    	
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( kbase.newKieSession() );
+
         ImmediateTestWorkItemHandler handler = new ImmediateTestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
+        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
+        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
         Map<String, Object> parameters = new HashMap<String, Object>();
         parameters.put("UserName", "John Doe");
         Person person = new Person();
         person.setName("John Doe");
         parameters.put("Person", person);
         WorkflowProcessInstance processInstance = (WorkflowProcessInstance)
-        	ksession.startProcess("org.drools.actions", parameters);
+                kruntime.startProcess("org.drools.actions", parameters);
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
     
-    private static class ImmediateTestWorkItemHandler implements WorkItemHandler {
-        public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
-            manager.completeWorkItem(workItem.getId(), null);
+    private static class ImmediateTestWorkItemHandler implements KogitoWorkItemHandler {
+        @Override
+        public void executeWorkItem( KogitoWorkItem workItem, KogitoWorkItemManager manager ) {
+            manager.completeWorkItem(workItem.getStringId(), null);
         }
-        public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
+
+        @Override
+        public void abortWorkItem( KogitoWorkItem workItem, KogitoWorkItemManager manager ) {
         }
     }
 }

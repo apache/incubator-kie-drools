@@ -26,8 +26,8 @@ import org.xml.sax.SAXException;
 
 public class HumanTaskNodeHandler extends WorkItemNodeHandler {
 
-    public void handleNode(final Node node, final Element element, final String uri,
-            final String localName, final ExtensibleXmlParser parser)
+    public void handleNode( final Node node, final Element element, final String uri,
+                            final String localName, final ExtensibleXmlParser parser)
             throws SAXException {
         super.handleNode(node, element, uri, localName, parser);
         HumanTaskNode humanTaskNode = (HumanTaskNode) node;
@@ -45,7 +45,7 @@ public class HumanTaskNodeHandler extends WorkItemNodeHandler {
         return HumanTaskNode.class;
     }
 
-    public void writeNode(Node node, StringBuilder xmlDump, boolean includeMeta) {
+    public void writeNode( Node node, StringBuilder xmlDump, boolean includeMeta) {
         WorkItemNode workItemNode = (WorkItemNode) node;
         writeNode("humanTask", workItemNode, xmlDump, includeMeta);
         visitParameters(workItemNode, xmlDump);

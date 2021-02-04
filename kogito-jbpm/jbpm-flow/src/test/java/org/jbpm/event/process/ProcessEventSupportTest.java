@@ -16,8 +16,6 @@
 
 package org.jbpm.event.process;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,7 +49,10 @@ import org.kie.api.event.process.ProcessVariableChangedEvent;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessContext;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.slf4j.LoggerFactory;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ProcessEventSupportTest extends AbstractBaseTest {
     
@@ -254,8 +255,8 @@ public class ProcessEventSupportTest extends AbstractBaseTest {
         // execute the process
         session.startProcess("org.drools.core.process.event");
         assertEquals(2, processEventStatusList.size());
-        assertEquals(new Integer(ProcessInstance.STATE_ACTIVE), processEventStatusList.get(0));
-        assertEquals(new Integer(ProcessInstance.STATE_COMPLETED), processEventStatusList.get(1));
+        assertEquals(new Integer( KogitoProcessInstance.STATE_ACTIVE), processEventStatusList.get(0));
+        assertEquals(new Integer(KogitoProcessInstance.STATE_COMPLETED), processEventStatusList.get(1));
     }
     
 	@Test

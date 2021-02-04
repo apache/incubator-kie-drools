@@ -59,6 +59,7 @@ import org.jbpm.process.core.validation.ProcessValidationError;
 import org.jbpm.process.core.validation.ProcessValidator;
 import org.jbpm.process.core.validation.ProcessValidatorRegistry;
 import org.jbpm.workflow.core.Constraint;
+import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.ConnectionRef;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 import org.jbpm.workflow.core.impl.NodeImpl;
@@ -72,7 +73,6 @@ import org.jbpm.workflow.core.node.StartNode;
 import org.jbpm.workflow.core.node.StateNode;
 import org.jbpm.workflow.core.node.Trigger;
 import org.kie.api.definition.process.Connection;
-import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.NodeContainer;
 import org.kie.api.definition.process.Process;
 import org.kie.api.definition.process.WorkflowProcess;
@@ -237,9 +237,9 @@ public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessB
     }
 
     private void processNodes(
-            Node[] nodes, Process process, ProcessDescr processDescr,
+            org.kie.api.definition.process.Node[] nodes, Process process, ProcessDescr processDescr,
             ProcessBuildContext context) {
-        for (Node node : nodes) {
+        for (org.kie.api.definition.process.Node node : nodes) {
             ProcessNodeBuilder builder = ProcessNodeBuilderRegistry.INSTANCE.getNodeBuilder(node);
             if (builder != null) {
                 // only build if there is a registered builder for this node type
@@ -361,13 +361,13 @@ public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessB
                 }
             }
 
-            Node[] nodes = ruleFlow.getNodes();
+            org.kie.api.definition.process.Node[] nodes = ruleFlow.getNodes();
             generateRules(nodes, process, builder);
         }
         return builder.toString();
     }
 
-    private void generateRules(Node[] nodes, Process process, StringBuffer builder) {
+    private void generateRules( org.kie.api.definition.process.Node[] nodes, Process process, StringBuffer builder) {
         for (int i = 0; i < nodes.length; i++) {
             if (nodes[i] instanceof Split) {
                 Split split = (Split) nodes[i];
@@ -410,8 +410,8 @@ public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessB
                                    String constraint) {
         return
                 "rule \"RuleFlow-Split-" + process.getId() + "-" +
-                        ((org.jbpm.workflow.core.Node) connection.getFrom()).getUniqueId() + "-" +
-                        ((org.jbpm.workflow.core.Node) connection.getTo()).getUniqueId() + "-" +
+                        (( Node ) connection.getFrom()).getUniqueId() + "-" +
+                        (( Node ) connection.getTo()).getUniqueId() + "-" +
                         connection.getToType() + "\"  @Propagation(EAGER) \n" +
                         "      ruleflow-group \"DROOLS_SYSTEM\" \n" +
                         "    when \n" +

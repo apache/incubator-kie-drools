@@ -61,7 +61,7 @@ public class IntermediateThrowEventHandler extends AbstractNodeHandler {
 	private static final String TRANSFORMATION_KEY = "Transformation";
 
 	@Override
-    protected Node createNode(Attributes attrs) {
+	protected Node createNode( Attributes attrs) {
 		return new ActionNode();
 	}
 
@@ -191,9 +191,9 @@ public class IntermediateThrowEventHandler extends AbstractNodeHandler {
 
 	}
 
-	public void handleSignalNode(final Node node, final Element element,
-			final String uri, final String localName,
-			final ExtensibleXmlParser parser) throws SAXException {
+	public void handleSignalNode( final Node node, final Element element,
+                                  final String uri, final String localName,
+                                  final ExtensibleXmlParser parser) throws SAXException {
 		ActionNode actionNode = (ActionNode) node;
 		org.w3c.dom.Node xmlNode = element.getFirstChild();
 		while (xmlNode != null) {
@@ -227,9 +227,9 @@ public class IntermediateThrowEventHandler extends AbstractNodeHandler {
 	}
 
     @SuppressWarnings("unchecked")
-	public void handleMessageNode(final Node node, final Element element,
-			final String uri, final String localName,
-			final ExtensibleXmlParser parser) throws SAXException {
+	public void handleMessageNode( final Node node, final Element element,
+                                   final String uri, final String localName,
+                                   final ExtensibleXmlParser parser) throws SAXException {
 		ActionNode actionNode = (ActionNode) node;
 		org.w3c.dom.Node xmlNode = element.getFirstChild();
 		while (xmlNode != null) {
@@ -270,9 +270,9 @@ public class IntermediateThrowEventHandler extends AbstractNodeHandler {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void handleEscalationNode(final Node node, final Element element,
-			final String uri, final String localName,
-			final ExtensibleXmlParser parser) throws SAXException {
+	public void handleEscalationNode( final Node node, final Element element,
+                                      final String uri, final String localName,
+                                      final ExtensibleXmlParser parser) throws SAXException {
 		ActionNode actionNode = (ActionNode) node;
 		org.w3c.dom.Node xmlNode = element.getFirstChild();
 		while (xmlNode != null) {
@@ -371,7 +371,7 @@ public class IntermediateThrowEventHandler extends AbstractNodeHandler {
 	}
 
 	@Override
-    public void writeNode(Node node, StringBuilder xmlDump, int metaDataType) {
+	public void writeNode( Node node, StringBuilder xmlDump, int metaDataType) {
 		throw new IllegalArgumentException(
 				"Writing out should be handled by action node handler");
 	}

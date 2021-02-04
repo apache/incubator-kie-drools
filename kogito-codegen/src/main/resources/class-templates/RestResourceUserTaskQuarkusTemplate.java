@@ -2,7 +2,6 @@ package com.myspace.demo;
 
 import java.util.List;
 
-import org.drools.core.WorkItemNotFoundException;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.ProcessInstanceReadMode;
 import org.kie.kogito.process.WorkItem;

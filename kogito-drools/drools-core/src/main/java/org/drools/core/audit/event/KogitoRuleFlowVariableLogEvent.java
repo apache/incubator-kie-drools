@@ -16,6 +16,7 @@
 package org.drools.core.audit.event;
 
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 
 public class KogitoRuleFlowVariableLogEvent extends RuleFlowVariableLogEvent {
 
@@ -25,6 +26,6 @@ public class KogitoRuleFlowVariableLogEvent extends RuleFlowVariableLogEvent {
                                            final ProcessInstance processInstance,
                                            final String objectToString) {
         super(type, variableId, variableInstanceId,
-                processInstance.getProcessId(), processInstance.getProcessName(), processInstance.getId(), objectToString);
+                processInstance.getProcessId(), processInstance.getProcessName(), (( KogitoProcessInstance ) processInstance).getStringId(), objectToString);
     }
 }

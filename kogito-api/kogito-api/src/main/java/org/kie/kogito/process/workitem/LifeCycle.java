@@ -20,6 +20,7 @@ import java.util.stream.Stream;
 
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemManager;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
 
 /**
  * Complete life cycle that can be applied to work items. It defines
@@ -49,7 +50,7 @@ public interface LifeCycle<T> {
      * @param transition actual transition
      * @return returns work item data after the transition
      */
-    T transitionTo(WorkItem workItem, WorkItemManager manager, Transition<T> transition);
+    T transitionTo(KogitoWorkItem workItem, WorkItemManager manager, Transition<T> transition);
     
     /**
      * Returns current data set for given work item 

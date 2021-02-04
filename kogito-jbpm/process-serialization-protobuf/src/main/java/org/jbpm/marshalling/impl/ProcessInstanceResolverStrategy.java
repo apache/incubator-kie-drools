@@ -27,8 +27,9 @@ import org.jbpm.process.instance.ProcessRuntimeImpl;
 import org.jbpm.process.instance.impl.ProcessInstanceImpl;
 import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
 import org.kie.api.definition.process.Process;
-import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.kogito.internal.process.marshalling.KogitoObjectMarshallingStrategy;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 
 /**
  * When using this strategy, knowledge session de/marshalling process will make sure that
@@ -47,7 +48,7 @@ import org.kie.api.runtime.process.ProcessInstance;
  */
 public class ProcessInstanceResolverStrategy
         implements
-        ObjectMarshallingStrategy {
+        KogitoObjectMarshallingStrategy {
 
     public boolean accept(Object object) {
         return object instanceof ProcessInstance;
@@ -55,11 +56,11 @@ public class ProcessInstanceResolverStrategy
 
     public void write(ObjectOutputStream os,
                       Object object) throws IOException {
-        ProcessInstance processInstance = (ProcessInstance) object;
+        KogitoProcessInstance processInstance = (KogitoProcessInstance) object;
 
         connectProcessInstanceToRuntimeAndProcess( processInstance, os );
 
-        os.writeUTF( processInstance.getId() );
+        os.writeUTF( processInstance.getStringId() );
     }
 
     public Object read(ObjectInputStream is) throws IOException {
@@ -158,9 +159,9 @@ public class ProcessInstanceResolverStrategy
     public byte[] marshal(Context context,
                           ObjectOutputStream os,
                           Object object) {
-        ProcessInstance processInstance = (ProcessInstance) object;
+        KogitoProcessInstance processInstance = (KogitoProcessInstance) object;
         connectProcessInstanceToRuntimeAndProcess( processInstance, os );
-        return processInstance.getId().getBytes();
+        return processInstance.getStringId().getBytes();
     }
 
     public Object unmarshal(String dataType,

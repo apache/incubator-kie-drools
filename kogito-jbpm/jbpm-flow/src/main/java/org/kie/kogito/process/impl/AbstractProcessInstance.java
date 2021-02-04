@@ -31,16 +31,14 @@ import java.util.stream.Collectors;
 
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
+import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.instance.NodeInstance;
 import org.jbpm.workflow.instance.NodeInstanceContainer;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.jbpm.workflow.instance.node.WorkItemNodeInstance;
-import org.kie.api.definition.process.Node;
-import org.kie.api.runtime.process.EventListener;
 import org.kie.api.runtime.process.ProcessRuntime;
-import org.kie.api.runtime.process.WorkItemNotFoundException;
 import org.kie.internal.process.CorrelationAwareProcessRuntime;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.process.CorrelationProperty;
@@ -55,8 +53,11 @@ import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.ProcessInstanceNotFoundException;
 import org.kie.kogito.process.Signal;
 import org.kie.kogito.process.WorkItem;
+import org.kie.kogito.internal.process.event.KogitoEventListener;
 import org.kie.kogito.process.flexible.AdHocFragment;
 import org.kie.kogito.process.flexible.Milestone;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
+import org.kie.kogito.internal.process.runtime.WorkItemNotFoundException;
 import org.kie.kogito.process.workitem.Policy;
 import org.kie.kogito.process.workitem.Transition;
 import org.kie.kogito.services.uow.ProcessInstanceWorkUnit;
@@ -67,7 +68,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
 
     protected final T variables;
     protected final AbstractProcess<T> process;
-    protected ProcessRuntime rt;
+    protected InternalProcessRuntime rt;
     protected WorkflowProcessInstance processInstance;
 
     protected Integer status;
@@ -87,7 +88,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
 
     public AbstractProcessInstance(AbstractProcess<T> process, T variables, String businessKey, ProcessRuntime rt) {
         this.process = process;
-        this.rt = rt;
+        this.rt = (InternalProcessRuntime) rt;
         this.variables = variables;
 
         setCorrelationKey(businessKey);
@@ -113,7 +114,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
 
     public AbstractProcessInstance(AbstractProcess<T> process, T variables, ProcessRuntime rt, org.kie.api.runtime.process.WorkflowProcessInstance wpi) {
         this.process = process;
-        this.rt = rt;
+        this.rt = (InternalProcessRuntime) rt;
         this.variables = variables;
         syncProcessInstance((WorkflowProcessInstance) wpi);
         reconnect();
@@ -162,7 +163,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
     private void syncProcessInstance(WorkflowProcessInstance wpi) {
         processInstance = wpi;
         status = wpi.getState();
-        id = wpi.getId();
+        id = wpi.getStringId();
         description = wpi.getDescription();
         setCorrelationKey(wpi.getCorrelationKey());
     }
@@ -197,19 +198,19 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
 
     @Override
     public void start(String trigger, String referenceId) {
-        if (this.status != ProcessInstance.STATE_PENDING) {
+        if (this.status != KogitoProcessInstance.STATE_PENDING) {
             throw new IllegalStateException("Impossible to start process instance that already was started");
         }
-        this.status = ProcessInstance.STATE_ACTIVE;
+        this.status = KogitoProcessInstance.STATE_ACTIVE;
 
         if (referenceId != null) {
             processInstance.setReferenceId(referenceId);
         }
 
         ((InternalProcessRuntime) getProcessRuntime()).getProcessInstanceManager().addProcessInstance(this.processInstance);
-        this.id = processInstance.getId();
+        this.id = processInstance.getStringId();
         addCompletionEventListener();
-        org.kie.api.runtime.process.ProcessInstance processInstance = getProcessRuntime().startProcessInstance(this.id, trigger);
+        KogitoProcessInstance processInstance = getProcessRuntime().getKogitoProcessRuntime().startProcessInstance(this.id, trigger);
         addToUnitOfWork(pi -> ((MutableProcessInstances<T>) process.instances()).create(pi.id(), pi));
         unbind(variables, processInstance.getVariables());
         if (this.processInstance != null) {
@@ -224,14 +225,14 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
 
     @Override
     public void abort() {
-        String pid = processInstance().getId();
+        String pid = processInstance().getStringId();
         unbind(variables, processInstance().getVariables());
-        getProcessRuntime().abortProcessInstance(pid);
+        getProcessRuntime().getKogitoProcessRuntime().abortProcessInstance(pid);
         this.status = processInstance.getState();
         addToUnitOfWork(pi -> ((MutableProcessInstances<T>) process.instances()).remove(pi.id()));
     }
 
-    private ProcessRuntime getProcessRuntime() {
+    private InternalProcessRuntime getProcessRuntime() {
         if (rt == null) {
             throw new UnsupportedOperationException("Process instance is not connected to a Process Runtime");
         } else {
@@ -313,8 +314,8 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
     public void startFrom(String nodeId, String referenceId) {
         processInstance.setStartDate(new Date());
         processInstance.setState(STATE_ACTIVE);
-        ((InternalProcessRuntime) getProcessRuntime()).getProcessInstanceManager().addProcessInstance(this.processInstance);
-        this.id = processInstance.getId();
+        getProcessRuntime().getProcessInstanceManager().addProcessInstance(this.processInstance);
+        this.id = processInstance.getStringId();
         addCompletionEventListener();
         if (referenceId != null) {
             processInstance.setReferenceId(referenceId);
@@ -331,15 +332,15 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
         WorkflowProcessInstance wfpi = processInstance();
         RuleFlowProcess rfp = ((RuleFlowProcess) wfpi.getProcess());
 
-        Node node = rfp.getNodesRecursively()
+        org.kie.api.definition.process.Node node = rfp.getNodesRecursively()
                 .stream()
                 .filter(ni -> nodeId.equals(ni.getMetaData().get("UniqueId"))).findFirst().orElseThrow(() -> new NodeNotFoundException(this.id, nodeId));
 
-        Node parentNode = rfp.getParentNode(node.getId());
+        org.kie.api.definition.process.Node parentNode = rfp.getParentNode(node.getId());
 
         NodeInstanceContainer nodeInstanceContainerNode = parentNode == null ? wfpi : ((NodeInstanceContainer) wfpi.getNodeInstance(parentNode));
 
-        nodeInstanceContainerNode.getNodeInstance(node).trigger(null, org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
+        nodeInstanceContainerNode.getNodeInstance(node).trigger(null, Node.CONNECTION_DEFAULT_TYPE);
 
         addToUnitOfWork(pi -> ((MutableProcessInstances<T>) process.instances()).update(pi.id(), pi));
     }
@@ -349,7 +350,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
         NodeInstance nodeInstance = processInstance()
                 .getNodeInstances(true)
                 .stream()
-                .filter(ni -> ni.getId().equals(nodeInstanceId))
+                .filter(ni -> ni.getStringId().equals(nodeInstanceId))
                 .findFirst()
                 .orElseThrow(() -> new NodeInstanceNotFoundException(this.id, nodeInstanceId));
 
@@ -362,7 +363,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
         NodeInstance nodeInstance = processInstance()
                 .getNodeInstances(true)
                 .stream()
-                .filter(ni -> ni.getId().equals(nodeInstanceId))
+                .filter(ni -> ni.getStringId().equals(nodeInstanceId))
                 .findFirst()
                 .orElseThrow(() -> new NodeInstanceNotFoundException(this.id, nodeInstanceId));
 
@@ -390,8 +391,8 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
                 .filter(ni -> ni instanceof WorkItemNodeInstance && ((WorkItemNodeInstance) ni).getWorkItemId().equals(workItemId) && ((WorkItemNodeInstance) ni).getWorkItem().enforce(policies))
                 .findFirst()
                 .orElseThrow(() -> new WorkItemNotFoundException("Work item with id " + workItemId + " was not found in process instance " + id(), workItemId));
-        return new BaseWorkItem(workItemInstance.getId(),
-                workItemInstance.getWorkItem().getId(),
+        return new BaseWorkItem(workItemInstance.getStringId(),
+                workItemInstance.getWorkItem().getStringId(),
                 (String) workItemInstance.getWorkItem().getParameters().getOrDefault("TaskName", workItemInstance.getNodeName()),
                 workItemInstance.getWorkItem().getState(),
                 workItemInstance.getWorkItem().getPhaseId(),
@@ -405,7 +406,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
         return processInstance().getNodeInstances(true)
                 .stream()
                 .filter(ni -> ni instanceof WorkItemNodeInstance && ((WorkItemNodeInstance) ni).getWorkItem().enforce(policies))
-                .map(ni -> new BaseWorkItem(ni.getId(),
+                .map(ni -> new BaseWorkItem(ni.getStringId(),
                                             ((WorkItemNodeInstance) ni).getWorkItemId(),
                                             (String) ((WorkItemNodeInstance) ni).getWorkItem().getParameters().getOrDefault("TaskName", ni.getNodeName()),
                                             ((WorkItemNodeInstance) ni).getWorkItem().getState(),
@@ -418,19 +419,19 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
 
     @Override
     public void completeWorkItem(String id, Map<String, Object> variables, Policy<?>... policies) {
-        getProcessRuntime().getWorkItemManager().completeWorkItem(id, variables, policies);
+        getProcessRuntime().getKogitoProcessRuntime().getWorkItemManager().completeWorkItem(id, variables, policies);
         removeOnFinish();
     }
 
     @Override
     public void abortWorkItem(String id, Policy<?>... policies) {
-        getProcessRuntime().getWorkItemManager().abortWorkItem(id, policies);
+        getProcessRuntime().getKogitoProcessRuntime().getWorkItemManager().abortWorkItem(id, policies);
         removeOnFinish();
     }
 
     @Override
     public void transitionWorkItem(String id, Transition<?> transition) {
-        getProcessRuntime().getWorkItemManager().transitionWorkItem(id, transition);
+        getProcessRuntime().getKogitoProcessRuntime().getWorkItemManager().transitionWorkItem(id, transition);
         removeOnFinish();
     }
 
@@ -450,7 +451,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
     }
 
     protected void removeOnFinish() {
-        if (processInstance.getState() != ProcessInstance.STATE_ACTIVE && processInstance.getState() != ProcessInstance.STATE_ERROR) {
+        if (processInstance.getState() != KogitoProcessInstance.STATE_ACTIVE && processInstance.getState() != KogitoProcessInstance.STATE_ERROR) {
             removeCompletionListener();
             syncProcessInstance(processInstance);
             addToUnitOfWork(pi -> ((MutableProcessInstances<T>) process.instances()).remove(pi.id()));
@@ -551,7 +552,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
                 pInstance.setState(STATE_ACTIVE);
                 pInstance.internalSetErrorNodeId(null);
                 pInstance.internalSetErrorMessage(null);
-                ni.trigger(null, org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
+                ni.trigger(null, Node.CONNECTION_DEFAULT_TYPE);
                 removeOnFinish();
             }
 
@@ -562,14 +563,14 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
                 pInstance.setState(STATE_ACTIVE);
                 pInstance.internalSetErrorNodeId(null);
                 pInstance.internalSetErrorMessage(null);
-                ((NodeInstanceImpl) ni).triggerCompleted(org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE, true);
+                ((NodeInstanceImpl) ni).triggerCompleted( Node.CONNECTION_DEFAULT_TYPE, true);
                 removeOnFinish();
             }
         };
     }
 
 
-    private class CompletionEventListener implements EventListener {
+    private class CompletionEventListener implements KogitoEventListener {
 
         @Override
         public void signalEvent(String type, Object event) {

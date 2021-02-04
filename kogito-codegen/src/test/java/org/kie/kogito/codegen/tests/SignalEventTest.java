@@ -22,7 +22,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
-import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.process.SignalEvent;
 import org.kie.kogito.Application;
 import org.kie.kogito.Model;
@@ -34,6 +33,7 @@ import org.kie.kogito.process.ProcessConfig;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.Processes;
 import org.kie.kogito.process.WorkItem;
+import org.kie.kogito.internal.process.event.KogitoProcessEventListener;
 import org.kie.kogito.process.impl.Sig;
 import org.kie.kogito.uow.UnitOfWork;
 import org.mockito.ArgumentCaptor;
@@ -47,7 +47,7 @@ public class SignalEventTest extends AbstractCodegenTest {
     @Test
     public void testIntermediateThrowSignal() throws Exception {
         Application app = generateCode(Collections.singletonMap(TYPE.PROCESS, Collections.singletonList("signalevent/IntermediateThrowEventSignal.bpmn2")));
-        ProcessEventListener listener = mock(ProcessEventListener.class);
+        KogitoProcessEventListener listener = mock(KogitoProcessEventListener.class);
         app.config().get(ProcessConfig.class).processEventListeners().listeners().add(listener);    
         assertThat(app).isNotNull();
         Process<? extends Model> p = app.get(Processes.class).processById("SignalIntermediateEvent");
@@ -66,7 +66,7 @@ public class SignalEventTest extends AbstractCodegenTest {
     @Test
     public void testIntermediateEndSignal() throws Exception {
         Application app = generateCode(Collections.singletonMap(TYPE.PROCESS, Collections.singletonList("signalevent/EndEventSignalWithData.bpmn2")));
-        ProcessEventListener listener = mock(ProcessEventListener.class);
+        KogitoProcessEventListener listener = mock( KogitoProcessEventListener.class);
         app.config().get(ProcessConfig.class).processEventListeners().listeners().add(listener);    
         assertThat(app).isNotNull();
         Process<? extends Model> p = app.get(Processes.class).processById("src.simpleEndSignal");

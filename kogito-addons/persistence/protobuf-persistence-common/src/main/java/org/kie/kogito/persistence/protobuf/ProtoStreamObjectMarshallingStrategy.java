@@ -29,7 +29,7 @@ import org.infinispan.protostream.ProtobufUtil;
 import org.infinispan.protostream.SerializationContext;
 import org.infinispan.protostream.config.Configuration;
 import org.infinispan.protostream.impl.SerializationContextImpl;
-import org.kie.api.marshalling.ObjectMarshallingStrategy;
+import org.kie.kogito.internal.process.marshalling.KogitoObjectMarshallingStrategy;
 import org.kie.kogito.persistence.protobuf.marshallers.BooleanMessageMarshaller;
 import org.kie.kogito.persistence.protobuf.marshallers.DateMessageMarshaller;
 import org.kie.kogito.persistence.protobuf.marshallers.DoubleMessageMarshaller;
@@ -38,7 +38,7 @@ import org.kie.kogito.persistence.protobuf.marshallers.IntegerMessageMarshaller;
 import org.kie.kogito.persistence.protobuf.marshallers.LongMessageMarshaller;
 import org.kie.kogito.persistence.protobuf.marshallers.StringMessageMarshaller;
 
-public class ProtoStreamObjectMarshallingStrategy implements ObjectMarshallingStrategy {
+public class ProtoStreamObjectMarshallingStrategy implements KogitoObjectMarshallingStrategy {
     
     private SerializationContext serializationContext;
     private Map<String, Class<?>> typeToClassMapping = new ConcurrentHashMap<>();
@@ -78,7 +78,7 @@ public class ProtoStreamObjectMarshallingStrategy implements ObjectMarshallingSt
 
 
     @Override
-    public byte[] marshal(Context context, ObjectOutputStream os, Object object) throws IOException {
+    public byte[] marshal( Context context, ObjectOutputStream os, Object object) throws IOException {
         return ProtobufUtil.toByteArray(serializationContext, object);
                 
     }

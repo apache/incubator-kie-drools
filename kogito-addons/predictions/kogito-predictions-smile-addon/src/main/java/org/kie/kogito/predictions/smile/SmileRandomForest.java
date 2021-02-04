@@ -26,6 +26,7 @@ import java.util.Set;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.kogito.prediction.api.PredictionOutcome;
 import org.kie.kogito.prediction.api.PredictionService;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -189,7 +190,7 @@ public class SmileRandomForest extends AbstractPredictionEngine implements Predi
             final double confidence = posteriori[(int) prediction];
             outcomes.put("confidence", confidence);
 
-            logger.debug("task id {}, total {} observations, prediction = {}, confidence = {} (threshold = {})", task.getId(), this.observations, predictionStr, confidence, this.confidenceThreshold);
+            logger.debug("task id {}, total {} observations, prediction = {}, confidence = {} (threshold = {})", (( KogitoWorkItem ) task).getStringId(), this.observations, predictionStr, confidence, this.confidenceThreshold);
 
             return new PredictionOutcome(confidence, this.confidenceThreshold, outcomes);
         } else {

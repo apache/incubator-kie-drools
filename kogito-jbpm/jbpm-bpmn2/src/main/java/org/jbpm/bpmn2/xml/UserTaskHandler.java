@@ -33,7 +33,7 @@ import org.xml.sax.SAXException;
 
 public class UserTaskHandler extends TaskHandler {
     
-    protected Node createNode(Attributes attrs) {
+    protected Node createNode( Attributes attrs) {
         return new HumanTaskNode();
     }
     
@@ -42,8 +42,8 @@ public class UserTaskHandler extends TaskHandler {
         return HumanTaskNode.class;
     }
 
-    protected void handleNode(final Node node, final Element element, final String uri, 
-            final String localName, final ExtensibleXmlParser parser) throws SAXException {
+    protected void handleNode( final Node node, final Element element, final String uri,
+                               final String localName, final ExtensibleXmlParser parser) throws SAXException {
     	super.handleNode(node, element, uri, localName, parser);
     	HumanTaskNode humanTaskNode = (HumanTaskNode) node;
         Work work = humanTaskNode.getWork();
@@ -87,7 +87,7 @@ public class UserTaskHandler extends TaskHandler {
 		return null;
     }
     
-	public void writeNode(Node node, StringBuilder xmlDump, int metaDataType) {
+	public void writeNode( Node node, StringBuilder xmlDump, int metaDataType) {
 		HumanTaskNode humanTaskNode = (HumanTaskNode) node;
 		writeNode("userTask", humanTaskNode, xmlDump, metaDataType);
 		xmlDump.append(">" + EOL);

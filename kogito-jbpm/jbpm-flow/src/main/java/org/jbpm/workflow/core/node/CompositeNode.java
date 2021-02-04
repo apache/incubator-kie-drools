@@ -22,8 +22,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.jbpm.workflow.core.Node;
 import org.kie.api.definition.process.Connection;
-import org.kie.api.definition.process.Node;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.impl.ConnectionImpl;
 import org.jbpm.workflow.core.impl.NodeContainerImpl;
@@ -43,65 +43,70 @@ public class CompositeNode extends StateBasedNode implements NodeContainer, Even
         this.nodeContainer = new NodeContainerImpl();
     }
 
-    public Node getNode(long id) {
+    public org.kie.api.definition.process.Node getNode( long id) {
         return nodeContainer.getNode(id);
+    }
+
+    @Override
+    public org.kie.api.definition.process.Node getNodeByUniqueId( String s ) {
+        throw new UnsupportedOperationException();
     }
 
     public NodeContainer getNodeContainer() {
         return nodeContainer;
     }
     
-    public Node internalGetNode(long id) {
+    public org.kie.api.definition.process.Node internalGetNode( long id) {
     	return getNode(id);
     }
 
-    public Node[] getNodes() {
-    	List<Node> subNodes = new ArrayList<Node>();
-    	for (Node node: nodeContainer.getNodes()) {
+    public org.kie.api.definition.process.Node[] getNodes() {
+    	List<org.kie.api.definition.process.Node> subNodes = new ArrayList<org.kie.api.definition.process.Node>();
+    	for (org.kie.api.definition.process.Node node: nodeContainer.getNodes()) {
     		if (!(node instanceof CompositeNode.CompositeNodeStart) &&
     				!(node instanceof CompositeNode.CompositeNodeEnd)) {
     			subNodes.add(node);
     		}
     	}
-    	return subNodes.toArray(new Node[subNodes.size()]);
+    	return subNodes.toArray(new org.kie.api.definition.process.Node[subNodes.size()]);
     }
     
-    public Node[] internalGetNodes() {
+    public org.kie.api.definition.process.Node[] internalGetNodes() {
     	return getNodes();
     }
 
-    public void addNode(Node node) {
+    public void addNode( org.kie.api.definition.process.Node node) {
     	// TODO find a more elegant solution for this
     	// preferrable remove id setting from this class
     	// and delegate to GUI command that drops node
     	if (node.getId() <= 0) {
 	    	long id = 0;
-	        for (Node n: nodeContainer.getNodes()) {
+	        for (org.kie.api.definition.process.Node n: nodeContainer.getNodes()) {
 	            if (n.getId() > id) {
 	                id = n.getId();
 	            }
 	        }
-	        ((org.jbpm.workflow.core.Node) node).setId(++id);
+	        (( Node ) node).setId(++id);
     	}
     	nodeContainer.addNode(node);
-        ((org.jbpm.workflow.core.Node) node).setParentContainer(this);
+        (( Node ) node).setParentContainer(this);
     }
     
-    protected void internalAddNode(Node node) {
+    protected void internalAddNode( org.kie.api.definition.process.Node node) {
     	addNode(node);
     }
     
-    public void removeNode(Node node) {
+    public void removeNode( org.kie.api.definition.process.Node node) {
         nodeContainer.removeNode(node);
-        ((org.jbpm.workflow.core.Node) node).setParentContainer(null);
+        (( Node ) node).setParentContainer(null);
     }
     
-    protected void internalRemoveNode(Node node) {
+    protected void internalRemoveNode( org.kie.api.definition.process.Node node) {
     	removeNode(node);
     }
     
 	public boolean acceptsEvent(String type, Object event) {
-		for (Node node: internalGetNodes()) {
+		for (org.kie.api.definition.process.Node node: internalGetNodes()) {
 			if (node instanceof EventNodeInterface) {
 				if (((EventNodeInterface) node).acceptsEvent(type, event)) {
 					return true;
@@ -142,7 +147,7 @@ public class CompositeNode extends StateBasedNode implements NodeContainer, Even
 		        internalAddNode(start);
 		        if (inNode.getNode() != null) {
 			        new ConnectionImpl(
-			            start, org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE, 
+			            start, Node.CONNECTION_DEFAULT_TYPE,
 			            inNode.getNode(), inNode.getType());
 		        }
 	        }
@@ -179,7 +184,7 @@ public class CompositeNode extends StateBasedNode implements NodeContainer, Even
 		        if (outNode.getNode() != null) {
 			        new ConnectionImpl(
 			            outNode.getNode(), outNode.getType(), 
-			            end, org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
+			            end, Node.CONNECTION_DEFAULT_TYPE);
 		        }
 	        }
         }
@@ -211,7 +216,7 @@ public class CompositeNode extends StateBasedNode implements NodeContainer, Even
     
     public void validateAddIncomingConnection(final String type, final Connection connection) {
     	CompositeNode.NodeAndType nodeAndType = internalGetLinkedIncomingNode(type);
-    	if (connection.getFrom().getParentContainer() == this) {
+    	if ((( Node ) connection.getFrom()).getParentContainer() == this) {
     		if (nodeAndType != null) {
     			throw new IllegalArgumentException("Cannot link incoming connection type more than once: " + type);
     		}
@@ -226,8 +231,8 @@ public class CompositeNode extends StateBasedNode implements NodeContainer, Even
     }
     
     public void addIncomingConnection(String type, Connection connection) {
-    	if (connection.getFrom().getParentContainer() == this) {
-    		linkOutgoingConnections(connection.getFrom().getId(), connection.getFromType(), org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
+    	if ( (( Node ) connection.getFrom()).getParentContainer() == this) {
+    		linkOutgoingConnections(connection.getFrom().getId(), connection.getFromType(), Node.CONNECTION_DEFAULT_TYPE);
     	} else {
 	        super.addIncomingConnection(type, connection);
 	        CompositeNode.NodeAndType inNode = internalGetLinkedIncomingNode(type);
@@ -237,7 +242,7 @@ public class CompositeNode extends StateBasedNode implements NodeContainer, Even
 		        NodeImpl node = (NodeImpl) inNode.getNode();
 	        	if (node != null) {
 			        new ConnectionImpl(
-			            start, org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE, 
+			            start, Node.CONNECTION_DEFAULT_TYPE,
 			            inNode.getNode(), inNode.getType());
 	        	}
 	        }
@@ -246,7 +251,7 @@ public class CompositeNode extends StateBasedNode implements NodeContainer, Even
     
     public void validateAddOutgoingConnection(final String type, final Connection connection) {
         CompositeNode.NodeAndType nodeAndType = internalGetLinkedOutgoingNode(type);
-        if (connection.getTo().getParentContainer() == this) {
+        if ((( Node ) connection.getTo()).getParentContainer() == this) {
     		if (nodeAndType != null) {
     			throw new IllegalArgumentException("Cannot link outgoing connection type more than once: " + type);
     		}
@@ -261,9 +266,9 @@ public class CompositeNode extends StateBasedNode implements NodeContainer, Even
 	}
     
     public void addOutgoingConnection(String type, Connection connection) {
-    	if (connection.getTo().getParentContainer() == this) {
+    	if ((( Node ) connection.getTo()).getParentContainer() == this) {
     		linkIncomingConnections(
-				org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE,
+				Node.CONNECTION_DEFAULT_TYPE,
 				connection.getTo().getId(),	connection.getToType());    		
     	} else {
 	        super.addOutgoingConnection(type, connection);
@@ -275,7 +280,7 @@ public class CompositeNode extends StateBasedNode implements NodeContainer, Even
 	        	if (node != null) {
 	        		new ConnectionImpl(
         				outNode.getNode(), outNode.getType(), 
-        				end, org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
+        				end, Node.CONNECTION_DEFAULT_TYPE);
 	        	}
 	        }
     	}
@@ -301,7 +306,7 @@ public class CompositeNode extends StateBasedNode implements NodeContainer, Even
         if (nodeAndType != null) {
 	        for (Connection inConnection: nodeAndType.getNode().getIncomingConnections(nodeAndType.getType())) {
 	            if (((CompositeNodeStart) inConnection.getFrom()).getInNodeId() == connection.getFrom().getId()) {
-	                Node compositeNodeStart = inConnection.getFrom();
+	                org.kie.api.definition.process.Node compositeNodeStart = inConnection.getFrom();
 	                ((ConnectionImpl) inConnection).terminate();
 	                internalRemoveNode(compositeNodeStart);
 	                return;
@@ -332,7 +337,7 @@ public class CompositeNode extends StateBasedNode implements NodeContainer, Even
         if (nodeAndType != null) {
 	        for (Connection outConnection: nodeAndType.getNode().getOutgoingConnections(nodeAndType.getType())) {
 	            if (((CompositeNodeEnd) outConnection.getTo()).getOutNodeId() == connection.getTo().getId()) {
-	                Node compositeNodeEnd = outConnection.getTo();
+	                org.kie.api.definition.process.Node compositeNodeEnd = outConnection.getTo();
 	                ((ConnectionImpl) outConnection).terminate();
 	                internalRemoveNode(compositeNodeEnd);
 	                return;
@@ -366,7 +371,7 @@ public class CompositeNode extends StateBasedNode implements NodeContainer, Even
         private NodeContainer nodeContainer;
         private long nodeId;
         private String type;
-        private transient Node node;
+        private transient org.kie.api.definition.process.Node node;
         
         public NodeAndType(NodeContainer nodeContainer, long nodeId, String type) {
             if (type == null) {
@@ -378,7 +383,7 @@ public class CompositeNode extends StateBasedNode implements NodeContainer, Even
             this.nodeContainer = nodeContainer;
         }
         
-        public NodeAndType(Node node, String type) {
+        public NodeAndType( org.kie.api.definition.process.Node node, String type) {
             if (node == null || type == null) {
                 throw new IllegalArgumentException(
                     "Node or type may not be null!");
@@ -388,7 +393,7 @@ public class CompositeNode extends StateBasedNode implements NodeContainer, Even
             this.type = type;
         }
         
-        public Node getNode() {
+        public org.kie.api.definition.process.Node getNode() {
             if (node == null) {
                 try {
                 	node = nodeContainer.getNode(nodeId);
@@ -427,10 +432,10 @@ public class CompositeNode extends StateBasedNode implements NodeContainer, Even
         
         private CompositeNode parentNode;
         private long inNodeId;
-        private transient Node inNode;
+        private transient org.kie.api.definition.process.Node inNode;
         private String inType;
         
-        public CompositeNodeStart(CompositeNode parentNode, Node outNode, String outType) {
+        public CompositeNodeStart( CompositeNode parentNode, org.kie.api.definition.process.Node outNode, String outType) {
             setName("Composite node start");
             this.inNodeId = outNode.getId();
             this.inNode = outNode;
@@ -439,7 +444,7 @@ public class CompositeNode extends StateBasedNode implements NodeContainer, Even
             setMetaData("hidden", true);
        }
         
-        public Node getInNode() {
+        public org.kie.api.definition.process.Node getInNode() {
             if (inNode == null) {
                 inNode = ((NodeContainer) parentNode.getParentContainer()).internalGetNode(inNodeId);
             }
@@ -462,10 +467,10 @@ public class CompositeNode extends StateBasedNode implements NodeContainer, Even
         
         private CompositeNode parentNode;
         private long outNodeId;
-        private transient Node outNode;
+        private transient org.kie.api.definition.process.Node outNode;
         private String outType;
         
-        public CompositeNodeEnd(CompositeNode parentNode, Node outNode, String outType) {
+        public CompositeNodeEnd( CompositeNode parentNode, org.kie.api.definition.process.Node outNode, String outType) {
             setName("Composite node end");
             this.outNodeId = outNode.getId();
             this.outNode = outNode;
@@ -474,7 +479,7 @@ public class CompositeNode extends StateBasedNode implements NodeContainer, Even
             setMetaData("hidden", true);
         }
         
-        public Node getOutNode() {
+        public org.kie.api.definition.process.Node getOutNode() {
             if (outNode == null) {
                 outNode = ((NodeContainer) parentNode.getParentContainer()).internalGetNode(outNodeId);
             }

@@ -17,14 +17,15 @@ package org.jbpm.process.instance;
 
 import java.util.Optional;
 
-import org.drools.core.event.KogitoProcessEventSupport;
-import org.drools.core.event.ProcessEventSupport;
+import org.drools.core.event.KogitoProcessEventSupportImpl;
 import org.jbpm.process.instance.impl.DefaultProcessInstanceManager;
 import org.kie.api.event.process.ProcessEventListener;
-import org.kie.api.runtime.process.WorkItemManager;
 import org.kie.kogito.jobs.JobsService;
 import org.kie.kogito.process.ProcessEventListenerConfig;
 import org.kie.kogito.process.WorkItemHandlerConfig;
+import org.kie.kogito.internal.process.event.KogitoProcessEventListener;
+import org.kie.kogito.internal.process.event.KogitoProcessEventSupport;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
 import org.kie.kogito.signal.SignalManager;
 import org.kie.kogito.signal.SignalManagerHub;
 import org.kie.kogito.uow.UnitOfWorkManager;
@@ -35,8 +36,8 @@ public class AbstractProcessRuntimeServiceProvider implements ProcessRuntimeServ
     private final JobsService jobsService;
     private final ProcessInstanceManager processInstanceManager;
     private final SignalManager signalManager;
-    private final WorkItemManager workItemManager;
-    private final ProcessEventSupport eventSupport;
+    private final KogitoWorkItemManager workItemManager;
+    private final KogitoProcessEventSupportImpl eventSupport;
     private final UnitOfWorkManager unitOfWorkManager;
 
     public AbstractProcessRuntimeServiceProvider(JobsService jobsService,
@@ -50,7 +51,7 @@ public class AbstractProcessRuntimeServiceProvider implements ProcessRuntimeServ
                 id -> Optional.ofNullable(
                         processInstanceManager.getProcessInstance(id)),
                 compositeSignalManager);
-        this.eventSupport = new KogitoProcessEventSupport(this.unitOfWorkManager);
+        this.eventSupport = new KogitoProcessEventSupportImpl(this.unitOfWorkManager);
         this.jobsService = jobsService;
         this.workItemManager = new LightWorkItemManager(processInstanceManager, signalManager, eventSupport);
 
@@ -60,7 +61,7 @@ public class AbstractProcessRuntimeServiceProvider implements ProcessRuntimeServ
         }
 
         for (ProcessEventListener listener : processEventListenerProvider.listeners()) {
-            this.eventSupport.addEventListener(listener);
+            this.eventSupport.addEventListener(( KogitoProcessEventListener ) listener);
         }
     }
 
@@ -80,12 +81,12 @@ public class AbstractProcessRuntimeServiceProvider implements ProcessRuntimeServ
     }
 
     @Override
-    public WorkItemManager getWorkItemManager() {
+    public KogitoWorkItemManager getWorkItemManager() {
         return workItemManager;
     }
 
     @Override
-    public ProcessEventSupport getEventSupport() {
+    public KogitoProcessEventSupport getEventSupport() {
         return eventSupport;
     }
 

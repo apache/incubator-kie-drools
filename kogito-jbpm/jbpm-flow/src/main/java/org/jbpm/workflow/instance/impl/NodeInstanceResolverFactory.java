@@ -39,8 +39,8 @@ public class NodeInstanceResolverFactory extends ImmutableDefaultFactory {
 		this.extraParameters.put("nodeInstance", nodeInstance);
 		if (nodeInstance.getProcessInstance() != null) {
 		    this.extraParameters.put("processInstance", nodeInstance.getProcessInstance());
-		    this.extraParameters.put("processInstanceId", nodeInstance.getProcessInstance().getId());
-		    this.extraParameters.put("parentProcessInstanceId", nodeInstance.getProcessInstance().getParentProcessInstanceId());
+		    this.extraParameters.put("processInstanceId", nodeInstance.getKogitoProcessInstance().getStringId());
+		    this.extraParameters.put("parentProcessInstanceId", nodeInstance.getKogitoProcessInstance().getParentProcessInstanceStringId());
 		}
 	}
 

@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.jbpm.process.instance.impl.humantask.HumanTaskWorkItemHandler;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.kogito.Application;
 import org.kie.kogito.process.Process;
@@ -88,6 +89,6 @@ public class JsonSchemaUtil {
     }
 
     public static Set<String> allowedPhases(WorkItemHandler handler, WorkItem workItem) {
-        return handler.allowedPhases(workItem.getPhase()).map(LifeCyclePhase::id).collect(Collectors.toSet());
+        return HumanTaskWorkItemHandler.allowedPhases(handler, workItem.getPhase()).map(LifeCyclePhase::id).collect(Collectors.toSet());
     }
 }

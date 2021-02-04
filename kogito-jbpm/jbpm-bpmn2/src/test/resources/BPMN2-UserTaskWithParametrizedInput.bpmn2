@@ -30,7 +30,7 @@
         <targetRef>_067D221E-E8BD-4AD5-9A90-FB204A0E89F9_UrlInputX</targetRef>
         <assignment id="_mZWjt1OZEeSBDLLXGrwEZw">
           <from xsi:type="tFormalExpression" id="_mZWjuFOZEeSBDLLXGrwEZw">
-          <![CDATA[Executing task of process instance #{processInstance.id} as work item with #{nodeInstance.nodeName}]]>
+          <![CDATA[Executing task of process instance #{processInstance.stringId} as work item with #{nodeInstance.nodeName}]]>
           </from>
           <to xsi:type="tFormalExpression" id="_mZWjuVOZEeSBDLLXGrwEZw">_067D221E-E8BD-4AD5-9A90-FB204A0E89F9_UrlInputX</to>
         </assignment>

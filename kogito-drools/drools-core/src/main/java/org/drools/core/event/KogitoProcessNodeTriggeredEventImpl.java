@@ -18,6 +18,7 @@ package org.drools.core.event;
 import org.kie.api.event.process.ProcessNodeTriggeredEvent;
 import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.process.NodeInstance;
+import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 
 public class KogitoProcessNodeTriggeredEventImpl extends ProcessEvent implements ProcessNodeTriggeredEvent {
 
@@ -35,7 +36,8 @@ public class KogitoProcessNodeTriggeredEventImpl extends ProcessEvent implements
     }
 
     public String toString() {
-        return "==>[ProcessNodeTriggered(nodeId=" + nodeInstance.getNodeId() + "; id=" + nodeInstance.getId() 
+        return "==>[ProcessNodeTriggered(nodeId=" + nodeInstance.getNodeId() + "; id=" + (( KogitoNodeInstance ) nodeInstance).getStringId()
             + "; nodeName=" + getNodeInstance().getNodeName() + "; processName=" + getProcessInstance().getProcessName() + "; processId=" + getProcessInstance().getProcessId() + ")]";
     }
 }
+

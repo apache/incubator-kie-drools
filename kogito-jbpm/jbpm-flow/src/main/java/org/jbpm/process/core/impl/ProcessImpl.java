@@ -32,8 +32,8 @@ import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.ContextResolver;
 import org.jbpm.process.core.Process;
 import org.jbpm.process.core.context.AbstractContext;
-import org.kie.api.definition.process.WorkflowProcess;
 import org.kie.api.io.Resource;
+import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
 
 /**
  * Default implementation of a Process
@@ -103,10 +103,10 @@ public class ProcessImpl implements Process, Serializable, ContextResolver {
     }
     
     public void setVisibility(String visibility) {
-        if (WorkflowProcess.NONE_VISIBILITY.equals(visibility)) {
+        if (KogitoWorkflowProcess.NONE_VISIBILITY.equals(visibility)) {
             // since None is default visibility (process type in bpmn) then treat it
             // as public otherwise nothing will be visible
-            visibility = WorkflowProcess.PUBLIC_VISIBILITY;
+            visibility = KogitoWorkflowProcess.PUBLIC_VISIBILITY;
         }
         this.visibility = visibility;
     }

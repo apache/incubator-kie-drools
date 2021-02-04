@@ -1,5 +1,5 @@
 /*
- * Copyright 2005 JBoss Inc
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,6 +31,7 @@ import org.drools.modelcompiler.builder.PackageSources;
 import org.drools.modelcompiler.builder.QueryModel;
 import org.drools.modelcompiler.builder.RuleWriter;
 import org.kie.internal.ruleunit.RuleUnitDescription;
+import org.kie.kogito.rules.units.KogitoRuleUnitDescription;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,7 +43,7 @@ public class KogitoPackageSources extends PackageSources {
 
     private Map<String, String> modelsByUnit = new HashMap<>();
 
-    private Collection<RuleUnitDescription> ruleUnits;
+    private Collection<KogitoRuleUnitDescription> ruleUnits;
 
     private String rulesFileName;
 
@@ -56,7 +57,7 @@ public class KogitoPackageSources extends PackageSources {
         RuleWriter rules = writeRules( pkgModel, sources, packageModelWriter );
         sources.rulesFileName = pkgModel.getRulesFileName();
 
-        sources.ruleUnits = pkgModel.getRuleUnits();
+        sources.ruleUnits = (Collection<KogitoRuleUnitDescription>) (Object) pkgModel.getRuleUnits();
         if (!sources.ruleUnits.isEmpty()) {
             sources.queries = new HashMap<>();
             for (RuleUnitDescription ruleUnit : sources.ruleUnits) {
@@ -91,7 +92,7 @@ public class KogitoPackageSources extends PackageSources {
         return modelsByUnit;
     }
 
-    public Collection<RuleUnitDescription> getRuleUnits() {
+    public Collection<KogitoRuleUnitDescription> getRuleUnits() {
         return ruleUnits;
     }
 

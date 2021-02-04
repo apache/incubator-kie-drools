@@ -33,8 +33,8 @@ public class SplitNodeHandler extends AbstractNodeHandler {
         return new Split();
     }
 
-    public void handleNode(final Node node, final Element element, final String uri,
-            final String localName, final ExtensibleXmlParser parser)
+    public void handleNode( final Node node, final Element element, final String uri,
+                            final String localName, final ExtensibleXmlParser parser)
             throws SAXException {
         super.handleNode(node, element, uri, localName, parser);
         Split splitNode = (Split) node;
@@ -49,7 +49,7 @@ public class SplitNodeHandler extends AbstractNodeHandler {
         return Split.class;
     }
 
-	public void writeNode(Node node, StringBuilder xmlDump, boolean includeMeta) {
+	public void writeNode( Node node, StringBuilder xmlDump, boolean includeMeta) {
 		Split splitNode = (Split) node;
 		writeNode("split", splitNode, xmlDump, includeMeta);
         int type = splitNode.getType();

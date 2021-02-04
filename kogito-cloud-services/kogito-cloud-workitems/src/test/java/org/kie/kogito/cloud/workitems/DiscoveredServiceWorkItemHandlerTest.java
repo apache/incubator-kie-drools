@@ -31,9 +31,10 @@ import okio.BufferedSource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.process.WorkItem;
-import org.kie.api.runtime.process.WorkItemManager;
 import org.kie.kogito.cloud.kubernetes.client.KogitoKubeClient;
 import org.kie.kogito.cloud.workitems.service.discovery.ServiceDiscovery;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
 import org.mockito.Mockito;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -97,11 +98,11 @@ public class DiscoveredServiceWorkItemHandlerTest {
         }
         
         @Override
-        public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
+        public void executeWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager manager) {
         }
 
         @Override
-        public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
+        public void abortWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager manager) {
         }
 
         @Override

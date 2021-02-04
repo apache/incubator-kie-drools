@@ -42,7 +42,7 @@ public class RuleFlowProcessValidatorTest {
 
     private RuleFlowProcess process = mock(RuleFlowProcess.class);
 
-    private Node node = mock(Node.class);
+    private Node node = mock( Node.class);
 
     @BeforeEach
     public void setUp() {

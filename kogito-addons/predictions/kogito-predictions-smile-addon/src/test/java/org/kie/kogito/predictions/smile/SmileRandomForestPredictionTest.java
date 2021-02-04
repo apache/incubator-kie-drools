@@ -15,7 +15,7 @@
 package org.kie.kogito.predictions.smile;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.kie.api.runtime.process.ProcessInstance.STATE_COMPLETED;
+import static org.kie.kogito.internal.process.runtime.KogitoProcessInstance.STATE_COMPLETED;
 
 import java.util.Collections;
 import java.util.HashMap;

@@ -52,7 +52,7 @@ public class CompositeNodeHandler extends AbstractNodeHandler {
     	return "composite";
     }
 
-    public void writeNode(Node node, StringBuilder xmlDump, boolean includeMeta) {
+    public void writeNode( Node node, StringBuilder xmlDump, boolean includeMeta) {
     	super.writeNode(getNodeName(), node, xmlDump, includeMeta);
         CompositeNode compositeNode = (CompositeNode) node;
         writeAttributes(compositeNode, xmlDump, includeMeta);
@@ -108,14 +108,14 @@ public class CompositeNodeHandler extends AbstractNodeHandler {
     protected void writeAttributes(CompositeNode compositeNode, StringBuilder xmlDump, boolean includeMeta) {
     }
     
-    protected List<Node> getSubNodes(CompositeNode compositeNode) {
+    protected List<Node> getSubNodes( CompositeNode compositeNode) {
     	List<Node> subNodes =
     		new ArrayList<Node>();
         for (org.kie.api.definition.process.Node subNode: compositeNode.getNodes()) {
         	// filter out composite start and end nodes as they can be regenerated
         	if ((!(subNode instanceof CompositeNode.CompositeNodeStart)) &&
     			(!(subNode instanceof CompositeNode.CompositeNodeEnd))) {
-        		subNodes.add((Node) subNode);
+        		subNodes.add(( Node ) subNode);
         	}
         }
         return subNodes;
@@ -126,7 +126,7 @@ public class CompositeNodeHandler extends AbstractNodeHandler {
         for (org.kie.api.definition.process.Node subNode: compositeNode.getNodes()) {
         	// filter out composite start and end nodes as they can be regenerated
             if (!(subNode instanceof CompositeNode.CompositeNodeEnd)) {
-                for (Connection connection: subNode.getIncomingConnections(Node.CONNECTION_DEFAULT_TYPE)) {
+                for (Connection connection: subNode.getIncomingConnections( Node.CONNECTION_DEFAULT_TYPE)) {
                     if (!(connection.getFrom() instanceof CompositeNode.CompositeNodeStart)) {
                         connections.add(connection);
                     }

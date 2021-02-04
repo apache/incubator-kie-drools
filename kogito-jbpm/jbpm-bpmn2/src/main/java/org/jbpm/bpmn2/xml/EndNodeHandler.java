@@ -15,7 +15,6 @@
  */
 
 package org.jbpm.bpmn2.xml;
-import static org.jbpm.bpmn2.xml.ProcessHandler.*;
 
 import java.util.List;
 
@@ -29,7 +28,7 @@ import org.xml.sax.Attributes;
 
 public class EndNodeHandler extends AbstractNodeHandler {
     
-    protected Node createNode(Attributes attrs) {
+    protected Node createNode( Attributes attrs) {
         throw new IllegalArgumentException("Reading in should be handled by end event handler");
     }
     
@@ -38,7 +37,7 @@ public class EndNodeHandler extends AbstractNodeHandler {
         return EndNode.class;
     }
 
-    public void writeNode(Node node, StringBuilder xmlDump, int metaDataType) {
+    public void writeNode( Node node, StringBuilder xmlDump, int metaDataType) {
 		EndNode endNode = (EndNode) node;
 		
 		String eventType = (String) endNode.getMetaData("EventType");

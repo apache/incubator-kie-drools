@@ -16,6 +16,7 @@
 
 package org.jbpm.workflow.core.node;
 
+import org.jbpm.workflow.core.Node;
 import org.kie.api.definition.process.Connection;
 import org.jbpm.workflow.core.impl.NodeImpl;
 
@@ -78,7 +79,7 @@ public class Join extends NodeImpl {
 
     public void validateAddIncomingConnection(final String type, final Connection connection) {
         super.validateAddIncomingConnection(type, connection);
-        if (!org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
+        if (!Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
         	throw new IllegalArgumentException(
                     "This type of node [" + connection.getTo().getMetaData().get("UniqueId") + ", " + connection.getTo().getName() 
                     + "] only accepts default incoming connection type!");
@@ -87,7 +88,7 @@ public class Join extends NodeImpl {
 
     public void validateAddOutgoingConnection(final String type, final Connection connection) {
         super.validateAddOutgoingConnection(type, connection);
-        if (!org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
+        if (!Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
         	throw new IllegalArgumentException(
                     "This type of node [" + connection.getFrom().getMetaData().get("UniqueId") + ", " + connection.getFrom().getName() 
                     + "] only accepts default outgoing connection type!");

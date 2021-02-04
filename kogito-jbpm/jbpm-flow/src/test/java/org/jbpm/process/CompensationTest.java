@@ -52,6 +52,8 @@ import org.kie.api.definition.process.NodeContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessContext;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
+import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.slf4j.LoggerFactory;
 
 import static org.jbpm.process.test.NodeCreator.connect;
@@ -78,8 +80,8 @@ public class CompensationTest extends AbstractBaseTest {
      * General HELPER methods
      */
 
-    private void addCompensationScope(final Node node, final org.kie.api.definition.process.NodeContainer parentContainer,
-            final String compensationHandlerId) {
+    private void addCompensationScope( final Node node, final org.kie.api.definition.process.NodeContainer parentContainer,
+                                       final String compensationHandlerId) {
         ContextContainer contextContainer = (ContextContainer) parentContainer;
         CompensationScope scope = null;
         boolean addScope = false;
@@ -105,14 +107,14 @@ public class CompensationTest extends AbstractBaseTest {
         node.setMetaData("isForCompensation", Boolean.TRUE);
     }
 
-    private Node findNode(RuleFlowProcess process, String nodeName) { 
+    private Node findNode( RuleFlowProcess process, String nodeName) {
         Node found = null;
         Queue<org.kie.api.definition.process.Node> nodes = new LinkedList<org.kie.api.definition.process.Node>();
         nodes.addAll(Arrays.asList(process.getNodes()));
         while( ! nodes.isEmpty() ) { 
             org.kie.api.definition.process.Node node = nodes.poll();
             if (node.getName().equals(nodeName) ) {
-                found = (Node) node;
+                found = ( Node ) node;
             }
             if( node instanceof NodeContainer ) { 
                 nodes.addAll(Arrays.asList(((NodeContainer) node).getNodes()));
@@ -139,34 +141,35 @@ public class CompensationTest extends AbstractBaseTest {
 
         Node compensatedNode = findNode(process, "work1");
         String compensationEvent = (String) compensatedNode.getMetaData().get("UniqueId");
-        
-        runCompensationBoundaryEventSpecificTest(ksession, process, processId, workItemNames, eventList, compensationEvent);
+
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime(ksession);
+        runCompensationBoundaryEventSpecificTest(kruntime, process, processId, workItemNames, eventList, compensationEvent);
     }
 
-    public static void runCompensationBoundaryEventSpecificTest(KieSession ksession, RuleFlowProcess process, String processId, 
-            String [] workItemNames, List<String> eventList, String compensationEvent) { 
+    public static void runCompensationBoundaryEventSpecificTest(KogitoProcessRuntime kruntime, RuleFlowProcess process, String processId,
+                                                                String [] workItemNames, List<String> eventList, String compensationEvent) {
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         for (String workItem : workItemNames) {
-            ksession.getWorkItemManager().registerWorkItemHandler(workItem, workItemHandler);
+            kruntime.getWorkItemManager().registerWorkItemHandler(workItem, workItemHandler);
         }
-        ProcessInstance processInstance = ksession.startProcess(processId);
+        KogitoProcessInstance processInstance = kruntime.startProcess(processId);
         
         // call compensation on the uncompleted work 1 (which should not fire)
 
-        ksession.signalEvent("Compensation", compensationEvent, processInstance.getId());
+        kruntime.signalEvent("Compensation", compensationEvent, processInstance.getStringId());
         assertEquals(0, eventList.size(), "Compensation should not have fired yet.");
 
         // complete work 1
-        ksession.getWorkItemManager().completeWorkItem(workItemHandler.getWorkItems().removeLast().getId(), null);
+        kruntime.getWorkItemManager().completeWorkItem(workItemHandler.getWorkItems().removeLast().getStringId(), null);
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
 
         // call compensation on work 1, which should now fire
-        ksession.signalEvent("Compensation", compensationEvent, processInstance.getId());
+        kruntime.signalEvent("Compensation", compensationEvent, processInstance.getStringId());
         assertEquals(1, eventList.size(), "Compensation should have fired.");
 
         // complete work 2 & 3
-        ksession.getWorkItemManager().completeWorkItem(workItemHandler.getWorkItems().removeLast().getId(), null);
-        ksession.getWorkItemManager().completeWorkItem(workItemHandler.getWorkItems().removeLast().getId(), null);
+        kruntime.getWorkItemManager().completeWorkItem(workItemHandler.getWorkItems().removeLast().getStringId(), null);
+        kruntime.getWorkItemManager().completeWorkItem(workItemHandler.getWorkItems().removeLast().getStringId(), null);
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
 
@@ -182,33 +185,34 @@ public class CompensationTest extends AbstractBaseTest {
         
         String compensationEvent = CompensationScope.IMPLICIT_COMPENSATION_PREFIX + processId;
 
-        runCompensationBoundaryEventGeneralTest(ksession, process, processId, workItemNames, eventList, compensationEvent);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime(ksession);
+        runCompensationBoundaryEventGeneralTest(kruntime, process, processId, workItemNames, eventList, compensationEvent);
     }
     
-    public static void runCompensationBoundaryEventGeneralTest(KieSession ksession, RuleFlowProcess process, String processId, 
+    public static void runCompensationBoundaryEventGeneralTest(KogitoProcessRuntime kruntime, RuleFlowProcess process, String processId,
             String [] workItemNames, List<String> eventList, String compensationEvent) { 
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         for (String workItem : workItemNames) {
-            ksession.getWorkItemManager().registerWorkItemHandler(workItem, workItemHandler);
+            kruntime.getWorkItemManager().registerWorkItemHandler(workItem, workItemHandler);
         }
-        ProcessInstance processInstance = ksession.startProcess(processId);
+        KogitoProcessInstance processInstance = kruntime.startProcess(processId);
 
         // general compensation should not cause anything to happen
-        ksession.signalEvent("Compensation", compensationEvent, processInstance.getId());
+        kruntime.signalEvent("Compensation", compensationEvent, processInstance.getStringId());
         assertEquals(0, eventList.size(), "Compensation should not have fired yet.");
 
         // complete work 1 & 2
-        ksession.getWorkItemManager().completeWorkItem(workItemHandler.getWorkItems().removeLast().getId(), null);
-        ksession.getWorkItemManager().completeWorkItem(workItemHandler.getWorkItems().removeLast().getId(), null);
+        kruntime.getWorkItemManager().completeWorkItem(workItemHandler.getWorkItems().removeLast().getStringId(), null);
+        kruntime.getWorkItemManager().completeWorkItem(workItemHandler.getWorkItems().removeLast().getStringId(), null);
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         assertEquals(0, eventList.size(), "Compensation should not have fired yet.");
 
         // general compensation should now cause the compensation handlers to fire in reverse order
-        ksession.signalEvent("Compensation", compensationEvent, processInstance.getId());
+        kruntime.signalEvent("Compensation", compensationEvent, processInstance.getStringId());
         assertEquals(2, eventList.size(), "Compensation should have fired.");
 
         // complete work 3 and finish
-        ksession.getWorkItemManager().completeWorkItem(workItemHandler.getWorkItems().removeLast().getId(), null);
+        kruntime.getWorkItemManager().completeWorkItem(workItemHandler.getWorkItems().removeLast().getStringId(), null);
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
 
@@ -270,38 +274,40 @@ public class CompensationTest extends AbstractBaseTest {
         // run process
         ksession = createKieSession(process);
 
-        runCompensationEventSubProcessSpecificTest(ksession, process, processId, workItemNames, eventList, compensationEvent); 
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime(ksession);
+        runCompensationEventSubProcessSpecificTest(kruntime, process, processId, workItemNames, eventList, compensationEvent);
     }
 
-    public static void runCompensationEventSubProcessSpecificTest(KieSession ksession, RuleFlowProcess process, String processId, 
-            String [] workItemNames, List<String> eventList, String compensationEvent) { 
+    public static void runCompensationEventSubProcessSpecificTest(KogitoProcessRuntime kruntime, RuleFlowProcess process, String processId,
+                                                                  String [] workItemNames, List<String> eventList, String compensationEvent) {
+
         // run process
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         for (String workItem : workItemNames) {
-            ksession.getWorkItemManager().registerWorkItemHandler(workItem, workItemHandler);
+            kruntime.getWorkItemManager().registerWorkItemHandler(workItem, workItemHandler);
         }
-        ProcessInstance processInstance = ksession.startProcess(processId);
+        KogitoProcessInstance processInstance = kruntime.startProcess(processId);
     
         // call compensation on the uncompleted work 1 (which should not fire)
-        ksession.signalEvent("Compensation", compensationEvent, processInstance.getId());
+        kruntime.signalEvent("Compensation", compensationEvent, processInstance.getStringId());
         assertEquals(0, eventList.size(), "Compensation should not have fired yet.");
 
         // pre work item
-        ksession.getWorkItemManager().completeWorkItem(workItemHandler.getWorkItems().removeLast().getId(), null);
+        kruntime.getWorkItemManager().completeWorkItem(workItemHandler.getWorkItems().removeLast().getStringId(), null);
     
         // sub-process is active, but not complete
-        ksession.signalEvent("Compensation", compensationEvent, processInstance.getId());
+        kruntime.signalEvent("Compensation", compensationEvent, processInstance.getStringId());
         assertEquals(0, eventList.size(), "Compensation should not have fired yet.");
 
         // sub process work item
-        ksession.getWorkItemManager().completeWorkItem(workItemHandler.getWorkItems().removeLast().getId(), null);
+        kruntime.getWorkItemManager().completeWorkItem(workItemHandler.getWorkItems().removeLast().getStringId(), null);
         
         // sub-process has completed 
-        ksession.signalEvent("Compensation", compensationEvent, processInstance.getId());
+        kruntime.signalEvent("Compensation", compensationEvent, processInstance.getStringId());
         assertEquals(1, eventList.size(), "Compensation should have fired once.");
 
         // post work item
-        ksession.getWorkItemManager().completeWorkItem(workItemHandler.getWorkItems().removeLast().getId(), null);
+        kruntime.getWorkItemManager().completeWorkItem(workItemHandler.getWorkItems().removeLast().getStringId(), null);
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
 
@@ -317,28 +323,29 @@ public class CompensationTest extends AbstractBaseTest {
         // run process
         ksession = createKieSession(process);
 
-        runCompensationEventSubProcessGeneralTest(ksession, process, processId, workItemNames, eventList, compensationEvent);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime(ksession);
+        runCompensationEventSubProcessGeneralTest(kruntime, process, processId, workItemNames, eventList, compensationEvent);
     }
     
-    public static void runCompensationEventSubProcessGeneralTest(KieSession ksession, RuleFlowProcess process, String processId, 
-            String [] workItemNames, List<String> eventList, String compensationEvent) { 
+    public static void runCompensationEventSubProcessGeneralTest(KogitoProcessRuntime kruntime, RuleFlowProcess process, String processId,
+                                                                 String [] workItemNames, List<String> eventList, String compensationEvent) {
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         for (String workItem : workItemNames) {
-            ksession.getWorkItemManager().registerWorkItemHandler(workItem, workItemHandler);
+            kruntime.getWorkItemManager().registerWorkItemHandler(workItem, workItemHandler);
         }
-        ProcessInstance processInstance = ksession.startProcess(processId);
+        KogitoProcessInstance processInstance = kruntime.startProcess(processId);
 
         // pre and sub process work item
-        ksession.getWorkItemManager().completeWorkItem(workItemHandler.getWorkItems().removeLast().getId(), null);
-        ksession.getWorkItemManager().completeWorkItem(workItemHandler.getWorkItems().removeLast().getId(), null);
+        kruntime.getWorkItemManager().completeWorkItem(workItemHandler.getWorkItems().removeLast().getStringId(), null);
+        kruntime.getWorkItemManager().completeWorkItem(workItemHandler.getWorkItems().removeLast().getStringId(), null);
         
         // Call general compensation 
 
-        ksession.signalEvent("Compensation", compensationEvent, processInstance.getId());
+        kruntime.signalEvent("Compensation", compensationEvent, processInstance.getStringId());
         assertEquals(1, eventList.size(), "Compensation should have fired once.");
 
         // post work item
-        ksession.getWorkItemManager().completeWorkItem(workItemHandler.getWorkItems().removeLast().getId(), null);
+        kruntime.getWorkItemManager().completeWorkItem(workItemHandler.getWorkItems().removeLast().getStringId(), null);
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
 
@@ -426,8 +433,9 @@ public class CompensationTest extends AbstractBaseTest {
         String compensationEvent = (String) toCompensateNode.getMetaData().get("UniqueId");
         
         ksession = createKieSession(process);
-        
-        runCompensationEventSubProcessSpecificTest(ksession, process, processId, workItemNames, eventList, compensationEvent);
+
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime(ksession);
+        runCompensationEventSubProcessSpecificTest(kruntime, process, processId, workItemNames, eventList, compensationEvent);
     }
     
     @Test
@@ -441,8 +449,9 @@ public class CompensationTest extends AbstractBaseTest {
         String compensationEvent = CompensationScope.IMPLICIT_COMPENSATION_PREFIX + toCompensateNode.getMetaData().get("UniqueId");
 
         ksession = createKieSession(process);
-        
-        runCompensationEventSubProcessGeneralTest(ksession, process, processId, workItemNames, eventList, compensationEvent);
+
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime(ksession);
+        runCompensationEventSubProcessGeneralTest(kruntime, process, processId, workItemNames, eventList, compensationEvent);
     }
 
     private RuleFlowProcess createNestedCompensationEventSubProcessProcess(String processId, String[] workItemNames, 
@@ -555,8 +564,9 @@ public class CompensationTest extends AbstractBaseTest {
 
         Node compensatedNode = findNode(process, "work-comp-1");
         String compensationEvent = (String) compensatedNode.getMetaData().get("UniqueId");
-        
-        runCompensationBoundaryEventSpecificTest(ksession, process, processId, workItemNames, eventList, compensationEvent);
+
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime(ksession);
+        runCompensationBoundaryEventSpecificTest(kruntime, process, processId, workItemNames, eventList, compensationEvent);
     }
     
     @Test
@@ -573,7 +583,8 @@ public class CompensationTest extends AbstractBaseTest {
         String compensationEvent = CompensationScope.IMPLICIT_COMPENSATION_PREFIX 
                 + (String) toCompensateNode.getMetaData().get("UniqueId");
 
-        runCompensationBoundaryEventGeneralTest(ksession, process, processId, workItemNames, eventList, compensationEvent);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime(ksession);
+        runCompensationBoundaryEventGeneralTest(kruntime, process, processId, workItemNames, eventList, compensationEvent);
     }
     
     private RuleFlowProcess createNestedCompensationBoundaryEventProcess(String processId, String[] workItemNames,
@@ -673,8 +684,8 @@ public class CompensationTest extends AbstractBaseTest {
         return process;
     }
     
-    private void createBoundaryEventCompensationHandler(org.jbpm.workflow.core.NodeContainer nodeContainer, 
-            Node attachedToNode, final List<String> eventList, final String id) throws Exception { 
+    private void createBoundaryEventCompensationHandler( org.jbpm.workflow.core.NodeContainer nodeContainer,
+                                                         Node attachedToNode, final List<String> eventList, final String id) throws Exception {
         
         NodeCreator<BoundaryEventNode> boundaryNodeCreator = new NodeCreator<BoundaryEventNode>(nodeContainer, BoundaryEventNode.class);
         BoundaryEventNode boundaryNode = boundaryNodeCreator.createNode("boundary" + id);

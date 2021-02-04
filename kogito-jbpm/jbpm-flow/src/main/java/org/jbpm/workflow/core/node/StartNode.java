@@ -26,6 +26,7 @@ import java.util.Map;
 import org.jbpm.process.core.context.variable.Mappable;
 import org.jbpm.process.core.event.EventTransformer;
 import org.jbpm.process.core.timer.Timer;
+import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
 import org.kie.api.definition.process.Connection;
 
@@ -88,7 +89,7 @@ public class StartNode extends ExtendedNodeImpl implements Mappable {
     
     public void validateAddOutgoingConnection(final String type, final Connection connection) {
         super.validateAddOutgoingConnection(type, connection);
-        if (!org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
+        if (!Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
             throw new IllegalArgumentException(
                 "A start node [" + this.getMetaData("UniqueId") + ", " + this.getName() + "] only accepts default outgoing connection type!");
         }

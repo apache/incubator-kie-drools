@@ -91,7 +91,9 @@ import org.jbpm.workflow.core.node.WorkItemNode;
 import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.NodeContainer;
 import org.kie.api.definition.process.Process;
-import org.kie.api.definition.process.WorkflowProcess;
+import org.kie.kogito.internal.process.runtime.KogitoNode;
+import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
+import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.Attributes;
@@ -165,7 +167,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
 			process.setVersion(version);
 		}
 		if (visibility == null || "".equals(visibility)) {
-			visibility = WorkflowProcess.NONE_VISIBILITY;
+			visibility = KogitoWorkflowProcess.NONE_VISIBILITY;
 		}
 		process.setVisibility(visibility);
 
@@ -505,7 +507,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
         if (timeDuration != null) {
             timer.setDelay(timeDuration);
             timer.setTimeType(Timer.TIME_DURATION);
-            DroolsConsequenceAction consequenceAction = createJavaAction(new SignalProcessInstanceAction("Timer-" + attachedTo + "-" + timeDuration + "-" + node.getId(), kcontext -> kcontext.getNodeInstance().getId(), SignalProcessInstanceAction.PROCESS_INSTANCE_SCOPE));
+            DroolsConsequenceAction consequenceAction = createJavaAction(new SignalProcessInstanceAction("Timer-" + attachedTo + "-" + timeDuration + "-" + node.getId(), kcontext -> (( KogitoNodeInstance ) kcontext.getNodeInstance()).getStringId(), SignalProcessInstanceAction.PROCESS_INSTANCE_SCOPE));
             compositeNode.addTimer(timer, consequenceAction);            
         } else if (timeCycle != null) {
             int index = timeCycle.indexOf("###");
@@ -519,12 +521,12 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
             
             String finalTimeCycle = timeCycle;
             
-            DroolsConsequenceAction action = createJavaAction(new SignalProcessInstanceAction("Timer-" + attachedTo + "-" + finalTimeCycle + (timer.getPeriod() == null ? "" : "###" + timer.getPeriod()) + "-" + node.getId(), kcontext -> kcontext.getNodeInstance().getId(), SignalProcessInstanceAction.PROCESS_INSTANCE_SCOPE));
+            DroolsConsequenceAction action = createJavaAction(new SignalProcessInstanceAction("Timer-" + attachedTo + "-" + finalTimeCycle + (timer.getPeriod() == null ? "" : "###" + timer.getPeriod()) + "-" + node.getId(), kcontext -> (( KogitoNodeInstance ) kcontext.getNodeInstance()).getStringId(), SignalProcessInstanceAction.PROCESS_INSTANCE_SCOPE));
             compositeNode.addTimer(timer, action); 
         } else if (timeDate != null) {
             timer.setDate(timeDate);
             timer.setTimeType(Timer.TIME_DATE);                                              
-            DroolsConsequenceAction action = createJavaAction(new SignalProcessInstanceAction("Timer-" + attachedTo + "-" + timeDate + "-" + node.getId(), kcontext -> kcontext.getNodeInstance().getId(), SignalProcessInstanceAction.PROCESS_INSTANCE_SCOPE));
+            DroolsConsequenceAction action = createJavaAction(new SignalProcessInstanceAction("Timer-" + attachedTo + "-" + timeDate + "-" + node.getId(), kcontext -> (( KogitoNodeInstance ) kcontext.getNodeInstance()).getStringId(), SignalProcessInstanceAction.PROCESS_INSTANCE_SCOPE));
             compositeNode.addTimer(timer, action); 
         }
         
@@ -612,7 +614,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
                    // TODO: ignoring data store associations for now
                } else if (source instanceof EventNode) { 
                    EventNode sourceNode = (EventNode) source;
-                   Node targetNode = (Node) target;
+                   KogitoNode targetNode = ( KogitoNode ) target;
                    checkBoundaryEventCompensationHandler(association, sourceNode, targetNode);
                    
                    // make sure IsForCompensation is set to true on target
@@ -873,7 +875,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
                                                 throw new IllegalArgumentException("Compensation Event Sub-Processes at the process level are not supported.");
                                             }
                                             if(subProcess instanceof  Node) {
-                                                parentSubProcess = ((Node) subProcess).getParentContainer();
+                                                parentSubProcess = ((KogitoNode) subProcess).getParentContainer();
                                                 compensationHandlerId = (String) ((CompositeNode) subProcess).getMetaData(Metadata.UNIQUE_ID);
                                             }
                                             // 2. The event filter (never fires, purely for dumping purposes) has already been added

@@ -73,6 +73,7 @@ import org.jbpm.workflow.core.node.WorkItemNode;
 import org.kie.api.definition.process.Connection;
 import org.kie.api.definition.process.Process;
 import org.kie.api.definition.process.WorkflowProcess;
+import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
 
 import static org.jbpm.ruleflow.core.Metadata.ASSOCIATION;
 import static org.jbpm.ruleflow.core.Metadata.UNIQUE_ID;
@@ -145,7 +146,7 @@ public class ProcessVisitor extends AbstractVisitor {
                 .addStatement(getFactoryMethod(FACTORY_FIELD_NAME, METHOD_PACKAGE_NAME, new StringLiteralExpr(process.getPackageName())))
                 .addStatement(getFactoryMethod(FACTORY_FIELD_NAME, METHOD_DYNAMIC, new BooleanLiteralExpr(metadata.isDynamic())))
                 .addStatement(getFactoryMethod(FACTORY_FIELD_NAME, METHOD_VERSION, new StringLiteralExpr(getOrDefault(process.getVersion(), DEFAULT_VERSION))))
-                .addStatement(getFactoryMethod(FACTORY_FIELD_NAME, METHOD_VISIBILITY, new StringLiteralExpr(getOrDefault(process.getVisibility(), WorkflowProcess.PUBLIC_VISIBILITY))));
+                .addStatement(getFactoryMethod(FACTORY_FIELD_NAME, METHOD_VISIBILITY, new StringLiteralExpr(getOrDefault(((KogitoWorkflowProcess)process).getVisibility(), KogitoWorkflowProcess.PUBLIC_VISIBILITY))));
 
         visitCompensationScope(process, body);
         visitMetaData(process.getMetaData(), body, FACTORY_FIELD_NAME);
@@ -153,7 +154,7 @@ public class ProcessVisitor extends AbstractVisitor {
 
         List<Node> processNodes = new ArrayList<>();
         for (org.kie.api.definition.process.Node procNode : process.getNodes()) {
-            processNodes.add((org.jbpm.workflow.core.Node) procNode);
+            processNodes.add(( Node ) procNode);
         }
         visitNodes(processNodes, body, variableScope, metadata);
         visitConnections(process.getNodes(), body);

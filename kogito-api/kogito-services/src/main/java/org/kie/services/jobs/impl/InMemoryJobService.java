@@ -25,14 +25,15 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import org.kie.api.runtime.process.ProcessInstance;
-import org.kie.api.runtime.process.ProcessRuntime;
 import org.kie.kogito.jobs.JobDescription;
 import org.kie.kogito.jobs.JobsService;
 import org.kie.kogito.jobs.ProcessInstanceJobDescription;
 import org.kie.kogito.jobs.ProcessJobDescription;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
+import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.kie.kogito.services.uow.UnitOfWorkExecutor;
-import org.kie.kogito.uow.UnitOfWorkManager;
 import org.kie.kogito.timer.TimerInstance;
+import org.kie.kogito.uow.UnitOfWorkManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,16 +43,16 @@ public class InMemoryJobService implements JobsService {
     private static final String TRIGGER = "timer";
 
     protected final ScheduledThreadPoolExecutor scheduler;
-    protected final ProcessRuntime processRuntime;
+    protected final KogitoProcessRuntime processRuntime;
     protected final UnitOfWorkManager unitOfWorkManager;
 
     protected ConcurrentHashMap<String, ScheduledFuture<?>> scheduledJobs = new ConcurrentHashMap<>();
 
-    public InMemoryJobService(ProcessRuntime processRuntime, UnitOfWorkManager unitOfWorkManager) {
+    public InMemoryJobService(KogitoProcessRuntime processRuntime, UnitOfWorkManager unitOfWorkManager) {
         this(1, processRuntime, unitOfWorkManager);
     }
 
-    public InMemoryJobService(int threadPoolSize, ProcessRuntime processRuntime, UnitOfWorkManager unitOfWorkManager) {
+    public InMemoryJobService(int threadPoolSize, KogitoProcessRuntime processRuntime, UnitOfWorkManager unitOfWorkManager) {
         this.scheduler = new ScheduledThreadPoolExecutor(threadPoolSize);
         this.processRuntime = processRuntime;
         this.unitOfWorkManager = unitOfWorkManager;
@@ -233,9 +234,9 @@ public class InMemoryJobService implements JobsService {
             try {
                 LOGGER.debug("Job {} started", id);
                 UnitOfWorkExecutor.executeInUnitOfWork(unitOfWorkManager, () -> {
-                    ProcessInstance pi = processRuntime.createProcessInstance(processId, null);
+                    KogitoProcessInstance pi = (KogitoProcessInstance) processRuntime.createProcessInstance(processId, null);
                     if (pi != null) {
-                        processRuntime.startProcessInstance(pi.getId(), TRIGGER);
+                        processRuntime.startProcessInstance(pi.getStringId(), TRIGGER);
                     }
 
                     return null;

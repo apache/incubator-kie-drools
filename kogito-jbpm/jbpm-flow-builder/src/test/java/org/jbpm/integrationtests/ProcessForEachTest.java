@@ -27,9 +27,9 @@ import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.process.WorkItem;
-import org.kie.api.runtime.process.WorkItemHandler;
-import org.kie.api.runtime.process.WorkItemManager;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -148,13 +148,13 @@ public class ProcessForEachTest extends AbstractBaseTest {
         KieSession workingMemory = createKieSession(builder.getPackages());
         
         final List<String> myList = new ArrayList<String>();
-        workingMemory.getWorkItemManager().registerWorkItemHandler("Log", new WorkItemHandler() {
-			public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
+        workingMemory.getWorkItemManager().registerWorkItemHandler("Log", new KogitoWorkItemHandler() {
+			public void executeWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager manager) {
 				String message = (String) workItem.getParameter("Message");
 				myList.add(message);
-				manager.completeWorkItem(workItem.getId(), null);
+				manager.completeWorkItem(workItem.getStringId(), null);
 			}
-			public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
+			public void abortWorkItem( KogitoWorkItem workItem, KogitoWorkItemManager manager) {
 			}
         });
         List<String> collection = new ArrayList<String>();

@@ -16,13 +16,6 @@
 
 package org.jbpm.bpmn2;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -32,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilderFactory;
-
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
@@ -57,13 +49,21 @@ import org.kie.api.runtime.Context;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.ProcessInstance;
-import org.kie.api.runtime.process.WorkItem;
-import org.kie.api.runtime.process.WorkItemManager;
-import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.internal.command.RegistryContext;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
+import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class FlowTest extends JbpmBpmn2TestCase {
 
@@ -256,20 +256,21 @@ public class FlowTest extends JbpmBpmn2TestCase {
         KieBase kbase = createKnowledgeBase("BPMN2-InclusiveSplitAndJoin.bpmn2");
         ksession = createKnowledgeSession(kbase);
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
-                workItemHandler);
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("x", 15);
-        ProcessInstance processInstance = ksession.startProcess(
+        ProcessInstance processInstance = kruntime.startProcess(
                 "com.sample.test", params);
 
-        List<WorkItem> activeWorkItems = workItemHandler.getWorkItems();
+        List<KogitoWorkItem> activeWorkItems = workItemHandler.getWorkItems();
 
         assertEquals(2, activeWorkItems.size());
         ksession = restoreSession(ksession, true);
 
-        for (WorkItem wi : activeWorkItems) {
-            ksession.getWorkItemManager().completeWorkItem(wi.getId(), null);
+        for (KogitoWorkItem wi : activeWorkItems) {
+            kruntime.getWorkItemManager().completeWorkItem(wi.getStringId(), null);
         }
         assertProcessInstanceFinished(processInstance, ksession);
 
@@ -280,20 +281,21 @@ public class FlowTest extends JbpmBpmn2TestCase {
         KieBase kbase = createKnowledgeBase("BPMN2-InclusiveSplitAndJoinLoop.bpmn2");
         ksession = createKnowledgeSession(kbase);
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
-                workItemHandler);
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("x", 21);
-        ProcessInstance processInstance = ksession.startProcess(
+        ProcessInstance processInstance = kruntime.startProcess(
                 "com.sample.test", params);
 
-        List<WorkItem> activeWorkItems = workItemHandler.getWorkItems();
+        List<KogitoWorkItem> activeWorkItems = workItemHandler.getWorkItems();
 
         assertEquals(3, activeWorkItems.size());
         ksession = restoreSession(ksession, true);
 
-        for (WorkItem wi : activeWorkItems) {
-            ksession.getWorkItemManager().completeWorkItem(wi.getId(), null);
+        for (KogitoWorkItem wi : activeWorkItems) {
+            kruntime.getWorkItemManager().completeWorkItem(wi.getStringId(), null);
         }
         assertProcessInstanceFinished(processInstance, ksession);
 
@@ -306,18 +308,20 @@ public class FlowTest extends JbpmBpmn2TestCase {
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("x", 21);
         ProcessInstance processInstance = ksession.startProcess(
                 "com.sample.test", params);
 
-        List<WorkItem> activeWorkItems = workItemHandler.getWorkItems();
+        List<KogitoWorkItem> activeWorkItems = workItemHandler.getWorkItems();
 
         assertEquals(3, activeWorkItems.size());
         ksession = restoreSession(ksession, true);
 
-        for (WorkItem wi : activeWorkItems) {
-            ksession.getWorkItemManager().completeWorkItem(wi.getId(), null);
+        for (KogitoWorkItem wi : activeWorkItems) {
+            kruntime.getWorkItemManager().completeWorkItem(wi.getStringId(), null);
         }
         assertProcessInstanceFinished(processInstance, ksession);
 
@@ -330,20 +334,22 @@ public class FlowTest extends JbpmBpmn2TestCase {
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("x", 15);
         ProcessInstance processInstance = ksession.startProcess(
                 "com.sample.test", params);
 
-        List<WorkItem> activeWorkItems = workItemHandler.getWorkItems();
+        List<KogitoWorkItem> activeWorkItems = workItemHandler.getWorkItems();
 
         assertEquals(2, activeWorkItems.size());
         ksession = restoreSession(ksession, true);
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
 
-        for (WorkItem wi : activeWorkItems) {
-            ksession.getWorkItemManager().completeWorkItem(wi.getId(), null);
+        for (KogitoWorkItem wi : activeWorkItems) {
+            kruntime.getWorkItemManager().completeWorkItem(wi.getStringId(), null);
         }
 
         activeWorkItems = workItemHandler.getWorkItems();
@@ -352,8 +358,8 @@ public class FlowTest extends JbpmBpmn2TestCase {
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
 
-        for (WorkItem wi : activeWorkItems) {
-            ksession.getWorkItemManager().completeWorkItem(wi.getId(), null);
+        for (KogitoWorkItem wi : activeWorkItems) {
+            kruntime.getWorkItemManager().completeWorkItem(wi.getStringId(), null);
         }
         assertProcessInstanceFinished(processInstance, ksession);
 
@@ -366,18 +372,20 @@ public class FlowTest extends JbpmBpmn2TestCase {
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("x", 15);
         ProcessInstance processInstance = ksession.startProcess(
                 "com.sample.test", params);
 
-        List<WorkItem> activeWorkItems = workItemHandler.getWorkItems();
+        List<KogitoWorkItem> activeWorkItems = workItemHandler.getWorkItems();
 
         assertEquals(2, activeWorkItems.size());
         ksession = restoreSession(ksession, true);
 
-        for (WorkItem wi : activeWorkItems) {
-            ksession.getWorkItemManager().completeWorkItem(wi.getId(), null);
+        for (KogitoWorkItem wi : activeWorkItems) {
+            kruntime.getWorkItemManager().completeWorkItem(wi.getStringId(), null);
         }
         assertProcessInstanceFinished(processInstance, ksession);
 
@@ -390,18 +398,20 @@ public class FlowTest extends JbpmBpmn2TestCase {
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("x", 25);
         ProcessInstance processInstance = ksession.startProcess(
                 "com.sample.test", params);
 
-        List<WorkItem> activeWorkItems = workItemHandler.getWorkItems();
+        List<KogitoWorkItem> activeWorkItems = workItemHandler.getWorkItems();
 
         assertEquals(4, activeWorkItems.size());
         ksession = restoreSession(ksession, true);
 
-        for (WorkItem wi : activeWorkItems) {
-            ksession.getWorkItemManager().completeWorkItem(wi.getId(), null);
+        for (KogitoWorkItem wi : activeWorkItems) {
+            kruntime.getWorkItemManager().completeWorkItem(wi.getStringId(), null);
         }
         assertProcessInstanceFinished(processInstance, ksession);
 
@@ -414,24 +424,26 @@ public class FlowTest extends JbpmBpmn2TestCase {
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("x", 25);
         ProcessInstance processInstance = ksession.startProcess(
                 "com.sample.test", params);
 
-        List<WorkItem> activeWorkItems = workItemHandler.getWorkItems();
+        List<KogitoWorkItem> activeWorkItems = workItemHandler.getWorkItems();
 
         assertEquals(3, activeWorkItems.size());
         ksession = restoreSession(ksession, true);
 
         for (int i = 0; i < 2; i++) {
-            ksession.getWorkItemManager().completeWorkItem(
-                    activeWorkItems.get(i).getId(), null);
+            kruntime.getWorkItemManager().completeWorkItem(
+                    activeWorkItems.get(i).getStringId(), null);
         }
         assertProcessInstanceActive(processInstance);
 
-        ksession.getWorkItemManager().completeWorkItem(
-                activeWorkItems.get(2).getId(), null);
+        kruntime.getWorkItemManager().completeWorkItem(
+                activeWorkItems.get(2).getStringId(), null);
         assertProcessInstanceFinished(processInstance, ksession);
 
     }
@@ -446,28 +458,30 @@ public class FlowTest extends JbpmBpmn2TestCase {
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("x", 15);
         ProcessInstance processInstance = ksession.startProcess(
                 "com.sample.test", params);
 
-        List<WorkItem> activeWorkItems = workItemHandler.getWorkItems();
+        List<KogitoWorkItem> activeWorkItems = workItemHandler.getWorkItems();
 
         assertEquals(1, activeWorkItems.size());
-        ksession.getWorkItemManager().completeWorkItem(
-                activeWorkItems.get(0).getId(), null);
+        kruntime.getWorkItemManager().completeWorkItem(
+                activeWorkItems.get(0).getStringId(), null);
         
         countDownListener.waitTillCompleted();
         assertProcessInstanceActive(processInstance);
 
         activeWorkItems = workItemHandler.getWorkItems();
         assertEquals(2, activeWorkItems.size());
-        ksession.getWorkItemManager().completeWorkItem(
-                activeWorkItems.get(0).getId(), null);
+        kruntime.getWorkItemManager().completeWorkItem(
+                activeWorkItems.get(0).getStringId(), null);
         assertProcessInstanceActive(processInstance);
 
-        ksession.getWorkItemManager().completeWorkItem(
-                activeWorkItems.get(1).getId(), null);
+        kruntime.getWorkItemManager().completeWorkItem(
+                activeWorkItems.get(1).getStringId(), null);
         assertProcessInstanceFinished(processInstance, ksession);
 
     }
@@ -479,6 +493,8 @@ public class FlowTest extends JbpmBpmn2TestCase {
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("x", 25);
         ProcessInstance processInstance = ksession.startProcess(
@@ -486,19 +502,19 @@ public class FlowTest extends JbpmBpmn2TestCase {
 
         ksession.signalEvent("signal", null);
 
-        List<WorkItem> activeWorkItems = workItemHandler.getWorkItems();
+        List<KogitoWorkItem> activeWorkItems = workItemHandler.getWorkItems();
 
         assertEquals(4, activeWorkItems.size());
         ksession = restoreSession(ksession, true);
 
         for (int i = 0; i < 3; i++) {
-            ksession.getWorkItemManager().completeWorkItem(
-                    activeWorkItems.get(i).getId(), null);
+            kruntime.getWorkItemManager().completeWorkItem(
+                    activeWorkItems.get(i).getStringId(), null);
         }
         assertProcessInstanceActive(processInstance);
 
-        ksession.getWorkItemManager().completeWorkItem(
-                activeWorkItems.get(3).getId(), null);
+        kruntime.getWorkItemManager().completeWorkItem(
+                activeWorkItems.get(3).getStringId(), null);
         assertProcessInstanceFinished(processInstance, ksession);
 
     }
@@ -519,16 +535,18 @@ public class FlowTest extends JbpmBpmn2TestCase {
     public void testInclusiveParallelExclusiveSplitNoLoop() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-InclusiveNestedInParallelNestedInExclusive.bpmn2");
         ksession = createKnowledgeSession(kbase);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+
         ksession.getWorkItemManager().registerWorkItemHandler("testWI", new SystemOutWorkItemHandler());
         ksession.getWorkItemManager().registerWorkItemHandler("testWI2", new SystemOutWorkItemHandler() {
 
             @Override
-            public void executeWorkItem(WorkItem workItem,  WorkItemManager manager) {
+            public void executeWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager manager) {
                 Integer x = (Integer) workItem.getParameter("input1");
                 x++;
                 Map<String, Object> results = new HashMap<String, Object>();
                 results.put("output1", x);
-                manager.completeWorkItem(workItem.getId(), results);
+                manager.completeWorkItem(workItem.getStringId(), results);
             }
             
         });
@@ -577,12 +595,12 @@ public class FlowTest extends JbpmBpmn2TestCase {
         ksession.getWorkItemManager().registerWorkItemHandler("testWI2", new SystemOutWorkItemHandler() {
 
             @Override
-            public void executeWorkItem(WorkItem workItem,  WorkItemManager manager) {
+            public void executeWorkItem(KogitoWorkItem workItem,  KogitoWorkItemManager manager) {
                 Integer x = (Integer) workItem.getParameter("input1");
                 x++;
                 Map<String, Object> results = new HashMap<String, Object>();
                 results.put("output1", x);
-                manager.completeWorkItem(workItem.getId(), results);
+                manager.completeWorkItem(workItem.getStringId(), results);
             }
             
         });
@@ -625,17 +643,19 @@ public class FlowTest extends JbpmBpmn2TestCase {
     public void testInclusiveParallelExclusiveSplitNoLoopAsync() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-InclusiveNestedInParallelNestedInExclusive.bpmn2");
         ksession = createKnowledgeSession(kbase);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+
         TestWorkItemHandler handler = new TestWorkItemHandler();
         ksession.getWorkItemManager().registerWorkItemHandler("testWI", handler);
         ksession.getWorkItemManager().registerWorkItemHandler("testWI2", new SystemOutWorkItemHandler() {
 
             @Override
-            public void executeWorkItem(WorkItem workItem,  WorkItemManager manager) {
+            public void executeWorkItem(KogitoWorkItem workItem,  KogitoWorkItemManager manager) {
                 Integer x = (Integer) workItem.getParameter("input1");
                 x++;
                 Map<String, Object> results = new HashMap<String, Object>();
                 results.put("output1", x);
-                manager.completeWorkItem(workItem.getId(), results);
+                manager.completeWorkItem(workItem.getStringId(), results);
             }
             
         });
@@ -660,21 +680,21 @@ public class FlowTest extends JbpmBpmn2TestCase {
         ProcessInstance processInstance = ksession.startProcess("Process_1", params);
         assertProcessInstanceActive(processInstance);
         
-        List<WorkItem> workItems = handler.getWorkItems();
+        List<KogitoWorkItem> workItems = handler.getWorkItems();
         assertNotNull(workItems);
         assertEquals(2, workItems.size());
         // complete work items within OR gateway
-        for (WorkItem workItem : workItems) {
-            ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+        for (KogitoWorkItem KogitoWorkItem : workItems) {
+            kruntime.getWorkItemManager().completeWorkItem(KogitoWorkItem.getStringId(), null);
         }
         assertProcessInstanceActive(processInstance);
         
         workItems = handler.getWorkItems();
         assertNotNull(workItems);
         assertEquals(1, workItems.size());
-        // complete last workitem after AND gateway
-        for (WorkItem workItem : workItems) {
-            ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+        // complete last KogitoWorkItem after AND gateway
+        for (KogitoWorkItem KogitoWorkItem : workItems) {
+            kruntime.getWorkItemManager().completeWorkItem(KogitoWorkItem.getStringId(), null);
         }
         assertProcessInstanceCompleted(processInstance);
         
@@ -697,17 +717,19 @@ public class FlowTest extends JbpmBpmn2TestCase {
     public void testInclusiveParallelExclusiveSplitLoopAsync() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-InclusiveNestedInParallelNestedInExclusive.bpmn2");
         ksession = createKnowledgeSession(kbase);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+
         TestWorkItemHandler handler = new TestWorkItemHandler();
         ksession.getWorkItemManager().registerWorkItemHandler("testWI", handler);
         ksession.getWorkItemManager().registerWorkItemHandler("testWI2", new SystemOutWorkItemHandler() {
 
             @Override
-            public void executeWorkItem(WorkItem workItem,  WorkItemManager manager) {
+            public void executeWorkItem(KogitoWorkItem workItem,  KogitoWorkItemManager manager) {
                 Integer x = (Integer) workItem.getParameter("input1");
                 x++;
                 Map<String, Object> results = new HashMap<String, Object>();
                 results.put("output1", x);
-                manager.completeWorkItem(workItem.getId(), results);
+                manager.completeWorkItem(workItem.getStringId(), results);
             }
             
         });
@@ -729,15 +751,15 @@ public class FlowTest extends JbpmBpmn2TestCase {
         });
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("x", -1);
-        ProcessInstance processInstance = ksession.startProcess("Process_1", params);
+        ProcessInstance processInstance = kruntime.startProcess("Process_1", params);
         assertProcessInstanceActive(processInstance);
         
-        List<WorkItem> workItems = handler.getWorkItems();
+        List<KogitoWorkItem> workItems = handler.getWorkItems();
         assertNotNull(workItems);
         assertEquals(2, workItems.size());
         // complete work items within OR gateway
-        for (WorkItem workItem : workItems) {
-            ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+        for (KogitoWorkItem KogitoWorkItem : workItems) {
+            kruntime.getWorkItemManager().completeWorkItem(KogitoWorkItem.getStringId(), null);
         }
         assertProcessInstanceActive(processInstance);
         
@@ -745,17 +767,17 @@ public class FlowTest extends JbpmBpmn2TestCase {
         assertNotNull(workItems);
         assertEquals(2, workItems.size());
         // complete work items within OR gateway
-        for (WorkItem workItem : workItems) {
-            ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+        for (KogitoWorkItem KogitoWorkItem : workItems) {
+            kruntime.getWorkItemManager().completeWorkItem(KogitoWorkItem.getStringId(), null);
         }
         assertProcessInstanceActive(processInstance);
         
         workItems = handler.getWorkItems();
         assertNotNull(workItems);
         assertEquals(1, workItems.size());
-        // complete last workitem after AND gateway
-        for (WorkItem workItem : workItems) {
-            ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+        // complete last KogitoWorkItem after AND gateway
+        for (KogitoWorkItem KogitoWorkItem : workItems) {
+            kruntime.getWorkItemManager().completeWorkItem(KogitoWorkItem.getStringId(), null);
         }
         assertProcessInstanceCompleted(processInstance);
         
@@ -778,6 +800,7 @@ public class FlowTest extends JbpmBpmn2TestCase {
     public void testInclusiveSplitNested() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-InclusiveGatewayNested.bpmn2");
         ksession = createKnowledgeSession(kbase);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
 
         TestWorkItemHandler handler = new TestWorkItemHandler();
         TestWorkItemHandler handler2 = new TestWorkItemHandler();
@@ -787,21 +810,21 @@ public class FlowTest extends JbpmBpmn2TestCase {
         ProcessInstance processInstance = ksession.startProcess("Process_1", params);
         
         assertProcessInstanceActive(processInstance);
-        ksession.getWorkItemManager().completeWorkItem(handler.getWorkItem().getId(), null);
-        ksession.getWorkItemManager().completeWorkItem(handler2.getWorkItem().getId(), null);
+        kruntime.getWorkItemManager().completeWorkItem(handler.getWorkItem().getStringId(), null);
+        kruntime.getWorkItemManager().completeWorkItem(handler2.getWorkItem().getStringId(), null);
         
         assertProcessInstanceActive(processInstance);
         
-        List<WorkItem> workItems = handler.getWorkItems();
+        List<KogitoWorkItem> workItems = handler.getWorkItems();
         assertNotNull(workItems);
         assertEquals(2, workItems.size());
         
-        for (WorkItem wi : workItems) {
+        for (KogitoWorkItem wi : workItems) {
             assertProcessInstanceActive(processInstance);
-            ksession.getWorkItemManager().completeWorkItem(wi.getId(), null);
+            kruntime.getWorkItemManager().completeWorkItem(wi.getStringId(), null);
         }
         assertProcessInstanceActive(processInstance);
-        ksession.getWorkItemManager().completeWorkItem(handler.getWorkItem().getId(), null);
+        kruntime.getWorkItemManager().completeWorkItem(handler.getWorkItem().getStringId(), null);
         
         assertProcessInstanceCompleted(processInstance);
     }
@@ -810,7 +833,9 @@ public class FlowTest extends JbpmBpmn2TestCase {
     public void testInclusiveSplitWithLoopInside() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-InclusiveGatewayWithLoopInside.bpmn2");
         ksession = createKnowledgeSession(kbase);
-        final Map<String, Integer> nodeInstanceExecutionCounter = new HashMap<String, Integer>(); 
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+
+        final Map<String, Integer> nodeInstanceExecutionCounter = new HashMap<String, Integer>();
         ksession.addEventListener(new DefaultProcessEventListener(){
 
             @Override
@@ -836,23 +861,23 @@ public class FlowTest extends JbpmBpmn2TestCase {
         ProcessInstance processInstance = ksession.startProcess("Process_1", params);
         
         assertProcessInstanceActive(processInstance);
-        List<WorkItem> workItems = handler.getWorkItems();
+        List<KogitoWorkItem> workItems = handler.getWorkItems();
         assertNotNull(workItems);
         assertEquals(2, workItems.size());
         
-        for (WorkItem wi : workItems) {
+        for (KogitoWorkItem wi : workItems) {
             assertProcessInstanceActive(processInstance);
-            ksession.getWorkItemManager().completeWorkItem(wi.getId(), null);
+            kruntime.getWorkItemManager().completeWorkItem(wi.getStringId(), null);
         }
         
         assertProcessInstanceActive(processInstance);
-        ksession.getWorkItemManager().completeWorkItem(handler2.getWorkItem().getId(), null);
+        kruntime.getWorkItemManager().completeWorkItem(handler2.getWorkItem().getStringId(), null);
         
         assertProcessInstanceActive(processInstance);
-        ksession.getWorkItemManager().completeWorkItem(handler2.getWorkItem().getId(), null);
+        kruntime.getWorkItemManager().completeWorkItem(handler2.getWorkItem().getStringId(), null);
         
         assertProcessInstanceActive(processInstance);
-        ksession.getWorkItemManager().completeWorkItem(handler.getWorkItem().getId(), null);
+        kruntime.getWorkItemManager().completeWorkItem(handler.getWorkItem().getStringId(), null);
         
         assertProcessInstanceCompleted(processInstance);
         assertEquals(10, nodeInstanceExecutionCounter.size());
@@ -872,7 +897,9 @@ public class FlowTest extends JbpmBpmn2TestCase {
     public void testInclusiveSplitWithLoopInsideSubprocess() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-InclusiveGatewayWithLoopInsideSubprocess.bpmn2");
         ksession = createKnowledgeSession(kbase);
-        final Map<String, Integer> nodeInstanceExecutionCounter = new HashMap<String, Integer>(); 
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+
+        final Map<String, Integer> nodeInstanceExecutionCounter = new HashMap<String, Integer>();
         ksession.addEventListener(new DefaultProcessEventListener(){
 
             @Override
@@ -898,23 +925,23 @@ public class FlowTest extends JbpmBpmn2TestCase {
         ProcessInstance processInstance = ksession.startProcess("Process_1", params);
         
         assertProcessInstanceActive(processInstance);
-        List<WorkItem> workItems = handler.getWorkItems();
+        List<KogitoWorkItem> workItems = handler.getWorkItems();
         assertNotNull(workItems);
         assertEquals(2, workItems.size());
         
-        for (WorkItem wi : workItems) {
+        for (KogitoWorkItem wi : workItems) {
             assertProcessInstanceActive(processInstance);
-            ksession.getWorkItemManager().completeWorkItem(wi.getId(), null);
+            kruntime.getWorkItemManager().completeWorkItem(wi.getStringId(), null);
         }
         
         assertProcessInstanceActive(processInstance);
-        ksession.getWorkItemManager().completeWorkItem(handler2.getWorkItem().getId(), null);
+        kruntime.getWorkItemManager().completeWorkItem(handler2.getWorkItem().getStringId(), null);
         
         assertProcessInstanceActive(processInstance);
-        ksession.getWorkItemManager().completeWorkItem(handler2.getWorkItem().getId(), null);
+        kruntime.getWorkItemManager().completeWorkItem(handler2.getWorkItem().getStringId(), null);
         
         assertProcessInstanceActive(processInstance);
-        ksession.getWorkItemManager().completeWorkItem(handler.getWorkItem().getId(), null);
+        kruntime.getWorkItemManager().completeWorkItem(handler.getWorkItem().getStringId(), null);
         
         assertProcessInstanceCompleted(processInstance);
         assertEquals(13, nodeInstanceExecutionCounter.size());
@@ -938,6 +965,8 @@ public class FlowTest extends JbpmBpmn2TestCase {
             throws Exception {
         KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-MultiInstanceLoopCharacteristicsProcessWithORgateway.bpmn2");
         ksession = createKnowledgeSession(kbase);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
@@ -946,10 +975,10 @@ public class FlowTest extends JbpmBpmn2TestCase {
         myList.add(12);
         myList.add(15);
         params.put("list", myList);
-        ProcessInstance processInstance = ksession.startProcess(
+        KogitoProcessInstance processInstance = kruntime.startProcess(
                 "MultiInstanceLoopCharacteristicsProcess", params);
 
-        List<WorkItem> workItems = workItemHandler.getWorkItems();
+        List<KogitoWorkItem> workItems = workItemHandler.getWorkItems();
         assertEquals(4, workItems.size());
 
         Collection<NodeInstance> nodeInstances = ((WorkflowProcessInstanceImpl) processInstance)
@@ -968,12 +997,12 @@ public class FlowTest extends JbpmBpmn2TestCase {
                     .getNodeInstances().size());
         }
 
-        ksession.getWorkItemManager().completeWorkItem(
-                workItems.get(0).getId(), null);
-        ksession.getWorkItemManager().completeWorkItem(
-                workItems.get(1).getId(), null);
+        kruntime.getWorkItemManager().completeWorkItem(
+                workItems.get(0).getStringId(), null);
+        kruntime.getWorkItemManager().completeWorkItem(
+                workItems.get(1).getStringId(), null);
 
-        processInstance = ksession.getProcessInstance(processInstance.getId());
+        processInstance = kruntime.getProcessInstance(processInstance.getStringId());
         nodeInstances = ((WorkflowProcessInstanceImpl) processInstance)
                 .getNodeInstances();
         assertEquals(1, nodeInstances.size());
@@ -990,10 +1019,10 @@ public class FlowTest extends JbpmBpmn2TestCase {
         assertTrue(childIterator.next() instanceof CompositeContextNodeInstance);
         assertTrue(childIterator.next() instanceof ForEachJoinNodeInstance);
 
-        ksession.getWorkItemManager().completeWorkItem(
-                workItems.get(2).getId(), null);
-        ksession.getWorkItemManager().completeWorkItem(
-                workItems.get(3).getId(), null);
+        kruntime.getWorkItemManager().completeWorkItem(
+                workItems.get(2).getStringId(), null);
+        kruntime.getWorkItemManager().completeWorkItem(
+                workItems.get(3).getStringId(), null);
 
         assertProcessInstanceFinished(processInstance, ksession);
 
@@ -1004,7 +1033,9 @@ public class FlowTest extends JbpmBpmn2TestCase {
     public void testInclusiveJoinWithLoopAndHumanTasks() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-InclusiveGatewayWithHumanTasksProcess.bpmn2");
         ksession = createKnowledgeSession(kbase);
-        final Map<String, Integer> nodeInstanceExecutionCounter = new HashMap<String, Integer>(); 
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+
+        final Map<String, Integer> nodeInstanceExecutionCounter = new HashMap<String, Integer>();
         ksession.addEventListener(new DefaultProcessEventListener(){
 
             @Override
@@ -1031,29 +1062,29 @@ public class FlowTest extends JbpmBpmn2TestCase {
         ProcessInstance processInstance = ksession.startProcess("InclusiveWithAdvancedLoop", params);
         // simulate completion of first task
         assertProcessInstanceActive(processInstance);
-        ksession.getWorkItemManager().completeWorkItem(handler.getWorkItem().getId(), null);
+        kruntime.getWorkItemManager().completeWorkItem(handler.getWorkItem().getStringId(), null);
         
         assertProcessInstanceActive(processInstance);
-        List<WorkItem> workItems = handler.getWorkItems();
+        List<KogitoWorkItem> workItems = handler.getWorkItems();
         assertNotNull(workItems);
         assertEquals(2, workItems.size());
         
-        WorkItem remainingWork = null;
-        for (WorkItem wi : workItems) {
+        KogitoWorkItem remainingWork = null;
+        for (KogitoWorkItem wi : workItems) {
             assertProcessInstanceActive(processInstance);
             // complete second task that will trigger converging OR gateway
             if(wi.getParameter("NodeName").equals("HT Form2")) {
-            	ksession.getWorkItemManager().completeWorkItem(wi.getId(), null);
+            	kruntime.getWorkItemManager().completeWorkItem(wi.getStringId(), null);
             } else {
             	remainingWork = wi;
             }
         }
         
         assertProcessInstanceActive(processInstance);
-        ksession.getWorkItemManager().completeWorkItem(remainingWork.getId(), null);
+        kruntime.getWorkItemManager().completeWorkItem(remainingWork.getStringId(), null);
         
         assertProcessInstanceActive(processInstance);
-        ksession.getWorkItemManager().completeWorkItem(handler.getWorkItem().getId(), null);
+        kruntime.getWorkItemManager().completeWorkItem(handler.getWorkItem().getStringId(), null);
         
         assertProcessInstanceCompleted(processInstance);
         assertEquals(13, nodeInstanceExecutionCounter.size());
@@ -1090,6 +1121,7 @@ public class FlowTest extends JbpmBpmn2TestCase {
     public void testMultiInstanceLoopNumberTest() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-MultiInstanceLoop-Numbering.bpmn2");
         ksession = createKnowledgeSession(kbase);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
         Map<String, Object> params = new HashMap<String, Object>();
         
         final Map<String, String> nodeIdNodeNameMap = new HashMap<String, String>();
@@ -1114,10 +1146,10 @@ public class FlowTest extends JbpmBpmn2TestCase {
         
         ProcessInstance processInstance = ksession.startProcess("Test.MultipleInstancesBug", params);
        
-        List<WorkItem> workItems = handler.getWorkItems();
+        List<KogitoWorkItem> workItems = handler.getWorkItems();
         logger.debug( "COMPLETING TASKS.");
-        ksession.getWorkItemManager().completeWorkItem(workItems.remove(0).getId(), null);
-        ksession.getWorkItemManager().completeWorkItem(workItems.remove(0).getId(), null);
+        kruntime.getWorkItemManager().completeWorkItem(workItems.remove(0).getStringId(), null);
+        kruntime.getWorkItemManager().completeWorkItem(workItems.remove(0).getStringId(), null);
         
         assertProcessInstanceCompleted(processInstance);
 
@@ -1127,6 +1159,8 @@ public class FlowTest extends JbpmBpmn2TestCase {
     public void testMultiInstanceLoopCharacteristicsProcess2() throws Exception {
         KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-MultiInstanceProcessWithOutputOnTask.bpmn2");
         ksession = createKnowledgeSession(kbase);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+
         TestWorkItemHandler handler = new TestWorkItemHandler();
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
         Map<String, Object> params = new HashMap<String, Object>();
@@ -1136,33 +1170,33 @@ public class FlowTest extends JbpmBpmn2TestCase {
         myList.add("Mary");
         params.put("miinput", myList);
         
-        ProcessInstance processInstance = ksession.startProcess("miprocess", params);
-        List<WorkItem> workItems = handler.getWorkItems();
+        KogitoProcessInstance processInstance = kruntime.startProcess("miprocess", params);
+        List<KogitoWorkItem> workItems = handler.getWorkItems();
         assertNotNull(workItems);
         assertEquals(2, workItems.size());
         
-        myOutList = (List<String>) ksession.execute(new GetProcessVariableCommand(processInstance.getId(), "mioutput"));
+        myOutList = (List<String>) ksession.execute(new GetProcessVariableCommand(processInstance.getStringId(), "mioutput"));
         assertNull(myOutList);
         
         
         Map<String, Object> results = new HashMap<String, Object>();
         results.put("reply", "Hello John");
-        ksession.getWorkItemManager().completeWorkItem(workItems.get(0).getId(), results);
+        kruntime.getWorkItemManager().completeWorkItem(workItems.get(0).getStringId(), results);
         
-        myOutList = (List<String>) ksession.execute(new GetProcessVariableCommand(processInstance.getId(), "mioutput"));
+        myOutList = (List<String>) ksession.execute(new GetProcessVariableCommand(processInstance.getStringId(), "mioutput"));
         assertNull(myOutList);
         
         results = new HashMap<String, Object>();
         results.put("reply", "Hello Mary");
-        ksession.getWorkItemManager().completeWorkItem(workItems.get(1).getId(), results);
+        kruntime.getWorkItemManager().completeWorkItem(workItems.get(1).getStringId(), results);
 
-        myOutList = (List<String>) ksession.execute(new GetProcessVariableCommand(processInstance.getId(), "mioutput"));
+        myOutList = (List<String>) ksession.execute(new GetProcessVariableCommand(processInstance.getStringId(), "mioutput"));
         assertNotNull(myOutList);
         assertEquals(2, myOutList.size());
         assertTrue(myOutList.contains("Hello John"));
         assertTrue(myOutList.contains("Hello Mary"));
         
-        ksession.getWorkItemManager().completeWorkItem(handler.getWorkItem().getId(), null);
+        kruntime.getWorkItemManager().completeWorkItem(handler.getWorkItem().getStringId(), null);
         
         assertProcessInstanceFinished(processInstance, ksession);
 
@@ -1328,7 +1362,7 @@ public class FlowTest extends JbpmBpmn2TestCase {
         final List<String> list = new ArrayList<>();
         ksession.addEventListener(new DefaultProcessEventListener() {
             public void beforeProcessStarted(ProcessStartedEvent event) {
-                list.add(event.getProcessInstance().getId());
+                list.add( (( KogitoProcessInstance ) event.getProcessInstance()).getStringId());
             }
         });
 
@@ -1358,6 +1392,7 @@ public class FlowTest extends JbpmBpmn2TestCase {
         System.setProperty("jbpm.enable.multi.con", "true");
         KieBase kbase = createKnowledgeBase("BPMN2-MultiConnEnabled.bpmn2");
         ksession = createKnowledgeSession(kbase);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
 
         final List<Long> list = new ArrayList<Long>();
         ksession.addEventListener(new DefaultProcessEventListener() {
@@ -1369,9 +1404,9 @@ public class FlowTest extends JbpmBpmn2TestCase {
         });
 
         assertEquals(0, list.size());
-        ProcessInstance processInstance = ksession.startProcess("BPMN2-MultiConnEnabled");
+        KogitoProcessInstance processInstance = kruntime.startProcess("BPMN2-MultiConnEnabled");
         assertProcessInstanceActive(processInstance);
-        ksession.signalEvent("signal", null, processInstance.getId());
+        kruntime.signalEvent("signal", null, processInstance.getStringId());
         assertProcessInstanceCompleted(processInstance);
 
         assertEquals(1, list.size());
@@ -1396,12 +1431,12 @@ public class FlowTest extends JbpmBpmn2TestCase {
 
         KieBase kbase = createKnowledgeBase("BPMN2-ConditionalFlowWithoutGateway.bpmn2");
         ksession = createKnowledgeSession(kbase);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
 
-        WorkflowProcessInstance wpi = (WorkflowProcessInstance) ksession
-                .startProcess(processId);
+        KogitoProcessInstance wpi = kruntime.startProcess(processId);
 
         assertProcessInstanceFinished(wpi, ksession);
-        assertNodeTriggered(wpi.getId(), "start", "script", "end1");
+        assertNodeTriggered(wpi.getStringId(), "start", "script", "end1");
         System.clearProperty("jbpm.enable.multi.con");
 
     }
@@ -1410,6 +1445,8 @@ public class FlowTest extends JbpmBpmn2TestCase {
     public void testLane() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-Lane.bpmn2");
         ksession = createKnowledgeSession(kbase);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
@@ -1418,20 +1455,20 @@ public class FlowTest extends JbpmBpmn2TestCase {
         ksession = restoreSession(ksession, true);
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
-        WorkItem workItem = workItemHandler.getWorkItem();
-        assertNotNull(workItem);
-        assertEquals("john", workItem.getParameter("ActorId"));
+        KogitoWorkItem KogitoWorkItem = workItemHandler.getWorkItem();
+        assertNotNull(KogitoWorkItem);
+        assertEquals("john", KogitoWorkItem.getParameter("ActorId"));
         Map<String, Object> results = new HashMap<String, Object>();
-        ((HumanTaskWorkItemImpl) workItem).setActualOwner("mary");
-        ksession.getWorkItemManager().completeWorkItem(workItem.getId(),
+        ((HumanTaskWorkItemImpl) KogitoWorkItem).setActualOwner("mary");
+        kruntime.getWorkItemManager().completeWorkItem(KogitoWorkItem.getStringId(),
                 results);
         ksession = restoreSession(ksession, true);
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
-        workItem = workItemHandler.getWorkItem();
-        assertNotNull(workItem);
-        assertEquals("mary", workItem.getParameter("SwimlaneActorId"));
-        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+        KogitoWorkItem = workItemHandler.getWorkItem();
+        assertNotNull(KogitoWorkItem);
+        assertEquals("mary", KogitoWorkItem.getParameter("SwimlaneActorId"));
+        kruntime.getWorkItemManager().completeWorkItem(KogitoWorkItem.getStringId(), null);
         assertProcessInstanceFinished(processInstance, ksession);
     }
     
@@ -1480,6 +1517,8 @@ public class FlowTest extends JbpmBpmn2TestCase {
         NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("timer", 1);
         KieBase kbase = createKnowledgeBase("timer/BPMN2-ParallelSplitWithTimerProcess.bpmn2");
         ksession = createKnowledgeSession(kbase);
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+
         ksession.addEventListener(countDownListener);
         
         TestWorkItemHandler handler1 = new TestWorkItemHandler();
@@ -1488,14 +1527,14 @@ public class FlowTest extends JbpmBpmn2TestCase {
         ksession.getWorkItemManager().registerWorkItemHandler("task1", handler1);
         ksession.getWorkItemManager().registerWorkItemHandler("task2", handler2);
 
-        ProcessInstance instance = ksession.createProcessInstance("timer-process", new HashMap<String, Object>());
-        ksession.startProcessInstance(instance.getId());
+        KogitoProcessInstance instance = kruntime.createProcessInstance("timer-process", new HashMap<String, Object>());
+        kruntime.startProcessInstance(instance.getStringId());
 
-        WorkItem workItem1 = handler1.getWorkItem();
+        KogitoWorkItem workItem1 = handler1.getWorkItem();
         assertNotNull(workItem1);
         assertNull(handler1.getWorkItem());
         //first safe state: task1 completed
-        ksession.getWorkItemManager().completeWorkItem(workItem1.getId(), null);        
+        kruntime.getWorkItemManager().completeWorkItem(workItem1.getStringId(), null);        
         
         ksession = restoreSession(ksession, true);
         ksession.addEventListener(countDownListener);
@@ -1504,14 +1543,14 @@ public class FlowTest extends JbpmBpmn2TestCase {
         //second safe state: timer completed, waiting on task2
         countDownListener.waitTillCompleted();
 
-        WorkItem workItem2 = handler2.getWorkItem();
+        KogitoWorkItem workItem2 = handler2.getWorkItem();
                 //Both sides of the join are completed. But on the process instance, there are two
                 //JoinInstance for the same Join, and since it is an AND join, it never reaches task2
                 //It fails after the next assertion
         assertNotNull(workItem2);
         assertNull(handler2.getWorkItem());
         
-        ksession.getWorkItemManager().completeWorkItem(workItem2.getId(), null);
+        kruntime.getWorkItemManager().completeWorkItem(workItem2.getStringId(), null);
         
         assertProcessInstanceCompleted(instance);
     }
@@ -1530,9 +1569,10 @@ public class FlowTest extends JbpmBpmn2TestCase {
 
         public Object execute(Context context) {
             KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
+            KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
 
             org.jbpm.process.instance.ProcessInstance processInstance = 
-                    (org.jbpm.process.instance.ProcessInstance) ksession.getProcessInstance(processInstanceId);
+                    (org.jbpm.process.instance.ProcessInstance) kruntime.getProcessInstance(processInstanceId);
 
             VariableScopeInstance variableScope = 
                     (VariableScopeInstance) processInstance.getContextInstance(VariableScope.VARIABLE_SCOPE);

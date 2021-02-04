@@ -26,7 +26,7 @@ import org.jbpm.workflow.instance.NodeInstanceContainer;
 import org.kie.api.definition.process.Connection;
 import org.kie.api.event.rule.MatchCreatedEvent;
 import org.kie.api.runtime.process.EventListener;
-import org.kie.api.runtime.process.NodeInstance;
+import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 
 public class StateNodeInstance extends CompositeContextNodeInstance implements EventListener {
 
@@ -37,10 +37,10 @@ public class StateNodeInstance extends CompositeContextNodeInstance implements E
     }
     
 	@Override
-    public void internalTrigger(NodeInstance from, String type) {
+    public void internalTrigger(KogitoNodeInstance from, String type) {
 		super.internalTrigger(from, type);
 		// if node instance was cancelled, abort
-		if (getNodeInstanceContainer().getNodeInstance(getId()) == null) {
+		if (getNodeInstanceContainer().getNodeInstance(getStringId()) == null) {
 			return;
 		}        
 		// TODO: composite states trigger
@@ -55,7 +55,7 @@ public class StateNodeInstance extends CompositeContextNodeInstance implements E
 	            	connection.getTo().getId() + "-" + 
 	            	connection.getToType();
 		        boolean isActive = (( KogitoInternalAgenda ) getProcessInstance().getKnowledgeRuntime().getAgenda())
-		            .isRuleActiveInRuleFlowGroup("DROOLS_SYSTEM", rule, getProcessInstance().getId());
+		            .isRuleActiveInRuleFlowGroup("DROOLS_SYSTEM", rule, getProcessInstance().getStringId());
 		        if (isActive) {
 		            selected = connection;
 	                priority = constraint.getPriority();

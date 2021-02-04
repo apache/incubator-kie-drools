@@ -16,23 +16,23 @@
 
 package org.jbpm.process.instance.impl.demo;
 
-import org.kie.api.runtime.process.WorkItem;
-import org.kie.api.runtime.process.WorkItemHandler;
-import org.kie.api.runtime.process.WorkItemManager;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
 
 /**
  * 
  */
-public class SystemOutWorkItemHandler implements WorkItemHandler {
+public class SystemOutWorkItemHandler implements KogitoWorkItemHandler {
 
-    public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
+    public void executeWorkItem( KogitoWorkItem workItem, KogitoWorkItemManager manager) {
         System.out.println("Executing work item " + workItem);
-        manager.completeWorkItem(workItem.getId(), null);
+        manager.completeWorkItem(workItem.getStringId(), null);
     }
 
-    public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
+    public void abortWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager manager) {
         System.out.println("Aborting work item " + workItem);
-        manager.abortWorkItem(workItem.getId());
+        manager.abortWorkItem(workItem.getStringId());
     }
 
 }

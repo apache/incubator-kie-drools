@@ -16,12 +16,12 @@
 
 package org.jbpm.workflow.core.impl;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.jbpm.process.core.Context;
 import org.jbpm.workflow.core.NodeContainer;
 import org.kie.api.definition.process.Node;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * 
@@ -60,6 +60,11 @@ public class NodeContainerImpl implements NodeContainer {
             throw new IllegalArgumentException("Unknown node id: " + id);
         }
         return node; 
+    }
+
+    @Override
+    public Node getNodeByUniqueId( String s ) {
+        throw new UnsupportedOperationException();
     }
 
     public Node internalGetNode(long id) {

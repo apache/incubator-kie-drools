@@ -57,7 +57,11 @@ public abstract class ProcessInstanceImpl implements ProcessInstance,
     private String description;
     private String rootProcessId;
 
-    public String getId() {
+    public long getId() {
+        throw new UnsupportedOperationException();
+    }
+
+    public String getStringId() {
         return this.id;
     }
 
@@ -282,7 +286,12 @@ public abstract class ProcessInstanceImpl implements ProcessInstance,
     }
 
     @Override
-    public String getParentProcessInstanceId() {
+    public long getParentProcessInstanceId() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public String getParentProcessInstanceStringId() {
         return parentProcessInstanceId;
     }
 
@@ -311,7 +320,6 @@ public abstract class ProcessInstanceImpl implements ProcessInstance,
         this.rootProcessId = rootProcessId;
     }
 
-    @Override
     public String getDescription() {
         if (description == null) {
             description = process.getName();

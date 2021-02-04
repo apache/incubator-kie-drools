@@ -39,7 +39,7 @@ import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
 import org.jbpm.ruleflow.core.factory.SubProcessNodeFactory;
 import org.jbpm.util.PatternConstants;
 import org.jbpm.workflow.core.node.SubProcessNode;
-import org.kie.api.definition.process.WorkflowProcess;
+import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
 
 import static com.github.javaparser.StaticJavaParser.parse;
 import static org.drools.core.util.StringUtils.ucFirst;
@@ -84,7 +84,7 @@ public class LambdaSubProcessNodeVisitor extends AbstractNodeVisitor<SubProcessN
         ModelMetaData subProcessModel = new ModelMetaData(subProcessId,
                 metadata.getPackageName(),
                 subProcessModelClassName,
-                WorkflowProcess.PRIVATE_VISIBILITY,
+                KogitoWorkflowProcess.PRIVATE_VISIBILITY,
                 VariableDeclarations.ofRawInfo(inputTypes),
                 false);
 

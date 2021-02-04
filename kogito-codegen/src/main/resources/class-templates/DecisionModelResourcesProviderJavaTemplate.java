@@ -1,4 +1,4 @@
-public class DecisionModelResourcesProvider implements org.kie.internal.decision.DecisionModelResourcesProvider {
+public class DecisionModelResourcesProvider implements org.kie.kogito.decision.DecisionModelResourcesProvider {
 
     private final static boolean IS_NATIVE_IMAGE = System.getProperty("org.graalvm.nativeimage.imagecode") != null;
 
@@ -17,15 +17,15 @@ public class DecisionModelResourcesProvider implements org.kie.internal.decision
         }
     }
 
-    private final static java.util.List<org.kie.internal.decision.DecisionModelResource> resources = getResources();
+    private final static java.util.List<org.kie.kogito.decision.DecisionModelResource> resources = getResources();
 
     @Override
-    public java.util.List<org.kie.internal.decision.DecisionModelResource> get() {
+    public java.util.List<org.kie.kogito.decision.DecisionModelResource> get() {
         return this.resources;
     }
 
-    private final static java.util.List<org.kie.internal.decision.DecisionModelResource> getResources() {
-        java.util.List<org.kie.internal.decision.DecisionModelResource> resourcePaths = new java.util.ArrayList<>();
+    private final static java.util.List<org.kie.kogito.decision.DecisionModelResource> getResources() {
+        java.util.List<org.kie.kogito.decision.DecisionModelResource> resourcePaths = new java.util.ArrayList<>();
         return resourcePaths;
     }
 

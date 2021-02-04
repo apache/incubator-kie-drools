@@ -39,6 +39,7 @@ import org.kie.api.runtime.process.WorkItem;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -180,7 +181,7 @@ public class MultipleProcessesPerThreadTest {
                     e.printStackTrace();
                 }
 
-                List<WorkItem> items = new ArrayList<WorkItem>();
+                List<KogitoWorkItem> items = new ArrayList<>();
                 items = workItemHandler.getWorkItems();
                 for (WorkItem item : items) {
                     try {

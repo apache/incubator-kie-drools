@@ -34,10 +34,11 @@ import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.ObjectFilter;
 import org.kie.api.runtime.process.ProcessInstance;
-import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -101,17 +102,18 @@ public class ProcessActionTest  extends AbstractBaseTest {
         kbuilder.add(new ReaderResource(source), ResourceType.DRF);
         KieBase kbase = kbuilder.newKieBase();
         KieSession ksession = kbase.newKieSession();
+        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+
         TestWorkItemHandler handler = new TestWorkItemHandler();
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
         List<String> list = new ArrayList<String>();
         ksession.setGlobal("list", list);
-        ProcessInstance processInstance =
-            ksession.startProcess("org.drools.actions");
+        ProcessInstance processInstance = kruntime.startProcess("org.drools.actions");
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
-        WorkItem workItem = handler.getWorkItem();
+        KogitoWorkItem workItem = handler.getWorkItem();
         assertNotNull(workItem);
         assertEquals(1, list.size());
-        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+        kruntime.getWorkItemManager().completeWorkItem(workItem.getStringId(), null);
         assertEquals(3, list.size());
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
     }

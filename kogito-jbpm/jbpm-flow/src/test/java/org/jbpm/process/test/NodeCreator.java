@@ -54,9 +54,9 @@ public class NodeCreator<T extends NodeImpl> {
         this.nodeContainer = newNodeContainer;
     }
 
-    public static void connect(Node nodeOne, Node nodeTwo ) { 
+    public static void connect( Node nodeOne, Node nodeTwo ) {
         new ConnectionImpl(
-                nodeOne, Node.CONNECTION_DEFAULT_TYPE, 
+                nodeOne, Node.CONNECTION_DEFAULT_TYPE,
                 nodeTwo, Node.CONNECTION_DEFAULT_TYPE
         );
     }

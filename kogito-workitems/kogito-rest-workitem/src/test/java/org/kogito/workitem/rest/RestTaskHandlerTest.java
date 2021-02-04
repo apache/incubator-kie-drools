@@ -27,8 +27,8 @@ import io.vertx.mutiny.ext.web.client.HttpRequest;
 import io.vertx.mutiny.ext.web.client.HttpResponse;
 import io.vertx.mutiny.ext.web.client.WebClient;
 import org.junit.jupiter.api.Test;
-import org.kie.api.runtime.process.WorkItem;
-import org.kie.api.runtime.process.WorkItemManager;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
 import org.kogito.workitem.rest.jsonpath.functions.JSonPathResultHandler;
 import org.kogito.workitem.rest.jsonpath.functions.JsonPathResolver;
 import org.mockito.ArgumentCaptor;
@@ -123,10 +123,10 @@ public class RestTaskHandlerTest {
         parameters.put(RestWorkItemHandler.RESULT_HANDLER, new JSonPathResultHandler());
         parameters.put(RestWorkItemHandler.PARAMETER, mapper.createObjectNode().put("id", 26).put("name", "pepe"));
 
-        WorkItem workItem = mock(WorkItem.class);
-        when(workItem.getId()).thenReturn("2");
+        KogitoWorkItem workItem = mock( KogitoWorkItem.class);
+        when(workItem.getStringId()).thenReturn("2");
         when(workItem.getParameters()).thenReturn(parameters);
-        WorkItemManager manager = mock(WorkItemManager.class);
+        KogitoWorkItemManager manager = mock( KogitoWorkItemManager.class);
 
         ArgumentCaptor<Map<String, Object>> argCaptor = ArgumentCaptor.forClass(Map.class);
 

@@ -25,7 +25,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.drools.core.event.DefaultAgendaEventListener;
 import org.junit.jupiter.api.Test;
-import org.kie.api.event.process.DefaultProcessEventListener;
 import org.kie.api.event.process.ProcessStartedEvent;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.kogito.Application;
@@ -37,6 +36,8 @@ import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessConfig;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.Processes;
+import org.kie.kogito.internal.process.event.DefaultKogitoProcessEventListener;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.rules.RuleConfig;
 import org.kie.kogito.uow.UnitOfWork;
 
@@ -108,11 +109,11 @@ public class BusinessRuleTaskTest extends AbstractCodegenTest {
         assertThat(app).isNotNull();
         final List<String> startedProcesses = new ArrayList<>();
         // add custom event listener that collects data
-        app.config().get(ProcessConfig.class).processEventListeners().listeners().add(new DefaultProcessEventListener() {
+        app.config().get(ProcessConfig.class).processEventListeners().listeners().add(new DefaultKogitoProcessEventListener() {
 
             @Override
             public void beforeProcessStarted(ProcessStartedEvent event) {
-                startedProcesses.add(event.getProcessInstance().getId());
+                startedProcesses.add( (( KogitoProcessInstance ) event.getProcessInstance()).getStringId());
             }
 
         });

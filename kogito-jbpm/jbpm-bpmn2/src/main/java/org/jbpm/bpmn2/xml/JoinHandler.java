@@ -22,7 +22,7 @@ import org.xml.sax.Attributes;
 
 public class JoinHandler extends AbstractNodeHandler {
     
-    protected Node createNode(Attributes attrs) {
+    protected Node createNode( Attributes attrs) {
     	throw new IllegalArgumentException("Reading in should be handled by gateway handler");
     }
     
@@ -31,7 +31,7 @@ public class JoinHandler extends AbstractNodeHandler {
         return Join.class;
     }
 
-	public void writeNode(Node node, StringBuilder xmlDump, int metaDataType) {
+	public void writeNode( Node node, StringBuilder xmlDump, int metaDataType) {
 		Join join = (Join) node;
 		String type = null;
 		switch (join.getType()) {

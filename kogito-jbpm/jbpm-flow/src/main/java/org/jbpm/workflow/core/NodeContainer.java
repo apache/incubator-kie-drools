@@ -16,10 +16,12 @@
 
 package org.jbpm.workflow.core;
 
-import org.kie.api.definition.process.Node;
-import org.jbpm.process.core.Context;
+import java.io.Serializable;
 
-public interface NodeContainer extends org.kie.api.definition.process.NodeContainer {
+import org.jbpm.process.core.Context;
+import org.kie.api.definition.process.Node;
+
+public interface NodeContainer extends org.kie.api.definition.process.NodeContainer, Serializable {
 
     /**
      * Method for adding a node to this node container. 

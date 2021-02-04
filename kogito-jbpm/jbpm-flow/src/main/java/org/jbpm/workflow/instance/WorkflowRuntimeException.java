@@ -23,8 +23,8 @@ import java.util.Map;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.process.instance.impl.ProcessInstanceImpl;
-import org.kie.api.runtime.process.NodeInstance;
-import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 
 /**
  * This exception provides the context information of the error in execution of the flow. <br/>
@@ -44,27 +44,27 @@ public class WorkflowRuntimeException extends RuntimeException {
 
     private Map<String, Object> variables;
 
-    public WorkflowRuntimeException(NodeInstance nodeInstance, ProcessInstance processInstance, String message) {
+    public WorkflowRuntimeException(KogitoNodeInstance nodeInstance, KogitoProcessInstance processInstance, String message) {
         super(message);
         initialize(nodeInstance, processInstance);
     }
 
-    public WorkflowRuntimeException(NodeInstance nodeInstance, ProcessInstance processInstance, String message, Throwable e) {
+    public WorkflowRuntimeException(KogitoNodeInstance nodeInstance, KogitoProcessInstance processInstance, String message, Throwable e) {
         super(message, e);
         initialize(nodeInstance, processInstance);
     }
 
-    public WorkflowRuntimeException(NodeInstance nodeInstance, ProcessInstance processInstance, Exception e) {
+    public WorkflowRuntimeException(KogitoNodeInstance nodeInstance, KogitoProcessInstance processInstance, Exception e) {
         super(e);
         initialize(nodeInstance, processInstance);
     }
 
-    private void initialize(NodeInstance nodeInstance, ProcessInstance processInstance) {
-        this.processInstanceId = processInstance.getId();
+    private void initialize( KogitoNodeInstance nodeInstance, KogitoProcessInstance processInstance) {
+        this.processInstanceId = processInstance.getStringId();
         this.processId = processInstance.getProcessId();
         this.setDeploymentId(((ProcessInstanceImpl)processInstance).getDeploymentId());
         if( nodeInstance != null ) { 
-            this.nodeInstanceId = nodeInstance.getId();
+            this.nodeInstanceId = nodeInstance.getStringId();
             this.nodeId = nodeInstance.getNodeId();
             if( ((ProcessInstanceImpl) processInstance).getKnowledgeRuntime() != null ) { 
                 this.nodeName = nodeInstance.getNodeName();

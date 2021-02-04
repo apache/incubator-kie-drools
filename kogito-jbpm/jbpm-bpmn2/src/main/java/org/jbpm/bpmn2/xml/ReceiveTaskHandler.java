@@ -29,7 +29,7 @@ import org.xml.sax.SAXException;
 
 public class ReceiveTaskHandler extends TaskHandler {
     
-    protected Node createNode(Attributes attrs) {
+    protected Node createNode( Attributes attrs) {
         return new WorkItemNode();
     }
     
@@ -39,8 +39,8 @@ public class ReceiveTaskHandler extends TaskHandler {
     }
     
     @SuppressWarnings("unchecked")
-    protected void handleNode(final Node node, final Element element, final String uri, 
-            final String localName, final ExtensibleXmlParser parser) throws SAXException {
+    protected void handleNode( final Node node, final Element element, final String uri,
+                               final String localName, final ExtensibleXmlParser parser) throws SAXException {
         super.handleNode(node, element, uri, localName, parser);
         WorkItemNode workItemNode = (WorkItemNode) node;
         String messageRef = element.getAttribute("messageRef");
@@ -61,7 +61,7 @@ public class ReceiveTaskHandler extends TaskHandler {
         return "Receive Task";
     }
     
-    public void writeNode(Node node, StringBuilder xmlDump, boolean includeMeta) {
+    public void writeNode( Node node, StringBuilder xmlDump, boolean includeMeta) {
         throw new IllegalArgumentException("Writing out should be handled by WorkItemNodeHandler");
     }
 }

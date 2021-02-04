@@ -29,12 +29,12 @@ public class CatchLinkNodeHandler extends AbstractNodeHandler implements
 	}
 
 	@Override
-	protected Node createNode(Attributes attrs) {
+	protected Node createNode( Attributes attrs) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public void writeNode(Node node, StringBuilder xmlDump, int metaDataType) {
+	public void writeNode( Node node, StringBuilder xmlDump, int metaDataType) {
 
 		CatchLinkNode linkNode = (CatchLinkNode) node;
 		writeNode("intermediateCatchEvent", linkNode, xmlDump, metaDataType);

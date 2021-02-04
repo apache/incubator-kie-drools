@@ -50,7 +50,7 @@ public class EndNodeInstanceTest extends AbstractBaseTest {
         
         WorkflowProcessImpl process = new WorkflowProcessImpl(); 
         
-        Node endNode = new EndNode();  
+        Node endNode = new EndNode();
         endNode.setId( 1 );
         endNode.setName( "end node" );        
                             

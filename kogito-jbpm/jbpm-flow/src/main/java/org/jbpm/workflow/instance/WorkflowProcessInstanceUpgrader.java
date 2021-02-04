@@ -22,19 +22,19 @@ import java.util.Stack;
 
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
+import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
-import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.NodeContainer;
 import org.kie.api.definition.process.Process;
 import org.kie.api.definition.process.WorkflowProcess;
-import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.process.NodeInstance;
+import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 
 public class WorkflowProcessInstanceUpgrader {
 
-    public static void upgradeProcessInstance( KieRuntime kruntime, String processInstanceId, String processId,
+    public static void upgradeProcessInstance( KogitoProcessRuntime kruntime, String processInstanceId, String processId,
             Map<String, Long> nodeMapping) {
         if (nodeMapping == null) {
             nodeMapping = new HashMap<String, Long>();
@@ -60,7 +60,7 @@ public class WorkflowProcessInstanceUpgrader {
             processInstance.disconnect();
             processInstance.setProcess(oldProcess);
             updateNodeInstances(processInstance, nodeMapping);
-            processInstance.setKnowledgeRuntime((InternalKnowledgeRuntime) kruntime);
+            processInstance.setKnowledgeRuntime((InternalKnowledgeRuntime) kruntime.getKieRuntime());
             processInstance.setProcess(process);
             processInstance.reconnect();
         }
@@ -68,13 +68,9 @@ public class WorkflowProcessInstanceUpgrader {
 
     /**
      * Do the same as upgradeProcessInstance() but user provides mapping by node names, not by node id's
-     * @param kruntime
-     * @param activeProcessId
-     * @param newProcessId
-     * @param nodeNamesMapping
      */
     public static void upgradeProcessInstanceByNodeNames(
-            KieRuntime kruntime,
+            KogitoProcessRuntime kruntime,
             String fromProcessId,
             String toProcessId,
             Map<String, String> nodeNamesMapping) {
@@ -114,16 +110,16 @@ public class WorkflowProcessInstanceUpgrader {
         upgradeProcessInstance(kruntime, fromProcessId, toProcessId, nodeIdMapping);
     }
 
-    private static String getNodeId(Node[] nodes, String nodeName, boolean unique) {
+    private static String getNodeId( org.kie.api.definition.process.Node[] nodes, String nodeName, boolean unique) {
 
-        Stack<Node> nodeStack = new Stack<Node>();
-        for (Node node : nodes) {
+        Stack<org.kie.api.definition.process.Node> nodeStack = new Stack<org.kie.api.definition.process.Node>();
+        for (org.kie.api.definition.process.Node node : nodes) {
             nodeStack.push(node);
         }
 
-        Node match = null;
+        org.kie.api.definition.process.Node match = null;
         while (!nodeStack.isEmpty()) {
-            Node topNode = nodeStack.pop();
+            org.kie.api.definition.process.Node topNode = nodeStack.pop();
 
             if (topNode.getName().compareTo(nodeName) == 0) {
                 match = topNode;
@@ -131,7 +127,7 @@ public class WorkflowProcessInstanceUpgrader {
             }
 
             if (topNode instanceof NodeContainer) {
-                for (Node node : ((NodeContainer) topNode).getNodes()) {
+                for (org.kie.api.definition.process.Node node : ((NodeContainer) topNode).getNodes()) {
                     nodeStack.push(node);
                 }
             }
@@ -144,9 +140,9 @@ public class WorkflowProcessInstanceUpgrader {
         String id = "";
 
         if (unique) {
-            while (!(match.getParentContainer() instanceof Process)) {
+            while (!((( Node ) match).getParentContainer() instanceof Process)) {
                 id = ":" + match.getId() + id;
-                match = (Node) match.getParentContainer();
+                match = ( org.kie.api.definition.process.Node ) (( Node ) match).getParentContainer();
             }
         }
 

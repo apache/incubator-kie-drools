@@ -46,6 +46,7 @@ import org.jbpm.workflow.core.node.StateBasedNode;
 import org.jbpm.workflow.core.node.Trigger;
 import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.NodeContainer;
+import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -316,7 +317,7 @@ public class RuleFlowProcessFactory extends RuleFlowNodeContainerFactory {
     protected DroolsAction timerAction(String type) {
         DroolsAction signal = new DroolsAction();
 
-        Action action = kcontext -> kcontext.getProcessInstance().signalEvent(type, kcontext.getNodeInstance().getId());
+        Action action = kcontext -> kcontext.getProcessInstance().signalEvent(type, (( KogitoNodeInstance ) kcontext.getNodeInstance()).getStringId());
         signal.wire(action);
 
         return signal;

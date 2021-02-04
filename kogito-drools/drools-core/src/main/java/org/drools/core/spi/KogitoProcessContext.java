@@ -16,10 +16,22 @@
 package org.drools.core.spi;
 
 import org.kie.api.runtime.KieRuntime;
+import org.kie.api.runtime.process.CaseAssignment;
+import org.kie.api.runtime.process.CaseData;
 
 public class KogitoProcessContext extends AbstractProcessContext {
 
     public KogitoProcessContext( KieRuntime kruntime ) {
         super(kruntime);
+    }
+
+    @Override
+    public CaseAssignment getCaseAssignment() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public CaseData getCaseData() {
+        throw new UnsupportedOperationException();
     }
 }

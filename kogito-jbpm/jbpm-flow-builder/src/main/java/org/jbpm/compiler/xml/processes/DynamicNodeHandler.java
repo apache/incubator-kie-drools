@@ -41,7 +41,7 @@ public class DynamicNodeHandler extends CompositeNodeHandler {
     }
 
     @Override
-    protected void handleNode(Node node, Element element, String uri, String localName, ExtensibleXmlParser parser) throws SAXException {
+    protected void handleNode( Node node, Element element, String uri, String localName, ExtensibleXmlParser parser) throws SAXException {
         super.handleNode(node, element, uri, localName, parser);
         DynamicNode dynamicNode = (DynamicNode) node;
         for (int i = 0; i < element.getChildNodes().getLength(); i++) {

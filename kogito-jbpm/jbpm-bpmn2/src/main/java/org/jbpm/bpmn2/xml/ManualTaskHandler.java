@@ -23,7 +23,7 @@ import org.xml.sax.Attributes;
 
 public class ManualTaskHandler extends TaskHandler {
     
-    protected Node createNode(Attributes attrs) {
+    protected Node createNode( Attributes attrs) {
         return new WorkItemNode();
     }
     
@@ -36,7 +36,7 @@ public class ManualTaskHandler extends TaskHandler {
         return "Manual Task";
     }
     
-    public void writeNode(Node node, StringBuilder xmlDump, boolean includeMeta) {
+    public void writeNode( Node node, StringBuilder xmlDump, boolean includeMeta) {
         throw new IllegalArgumentException("Writing out should be handled by TaskHandler");
     }
 }

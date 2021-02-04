@@ -23,7 +23,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.jsonschema.JsonSchema;
-import org.kie.api.runtime.process.WorkItemNotFoundException;
 import org.jbpm.util.JsonSchemaUtil;
 import org.kie.kogito.Application;
 import org.kie.kogito.process.Process;

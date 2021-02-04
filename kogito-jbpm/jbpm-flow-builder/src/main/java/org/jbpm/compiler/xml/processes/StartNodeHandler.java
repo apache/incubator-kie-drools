@@ -39,7 +39,7 @@ public class StartNodeHandler extends AbstractNodeHandler {
         return StartNode.class;
     }
 
-	public void writeNode(Node node, StringBuilder xmlDump, boolean includeMeta) {
+	public void writeNode( Node node, StringBuilder xmlDump, boolean includeMeta) {
 		StartNode startNode = (StartNode) node;
 		writeNode("start", startNode, xmlDump, includeMeta);
 		List<Trigger> triggers = startNode.getTriggers();

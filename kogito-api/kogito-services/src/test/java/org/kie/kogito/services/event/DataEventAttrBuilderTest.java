@@ -19,6 +19,7 @@ import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.kogito.event.AbstractDataEvent;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -30,9 +31,9 @@ class DataEventAttrBuilderTest {
     void verifyEventSourceBeingGenerated() {
         final String processId = "the_cool_project";
         final String instanceId = UUID.randomUUID().toString();
-        ProcessInstance pi = mock(ProcessInstance.class);
+        KogitoProcessInstance pi = mock(KogitoProcessInstance.class);
         when(pi.getProcessId()).thenReturn(processId);
-        when(pi.getId()).thenReturn(instanceId);
+        when(pi.getStringId()).thenReturn(instanceId);
         final String source = DataEventAttrBuilder.toSource(pi);
         assertThat(source).isNotBlank().contains(processId);
     }

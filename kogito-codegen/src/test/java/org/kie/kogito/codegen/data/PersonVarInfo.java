@@ -17,7 +17,7 @@ package org.kie.kogito.codegen.data;
 
 import java.util.Objects;
 
-import org.kie.internal.kogito.codegen.VariableInfo;
+import org.kie.kogito.codegen.VariableInfo;
 
 public class PersonVarInfo {
 

@@ -22,58 +22,56 @@ import java.util.List;
 import org.jbpm.process.instance.impl.humantask.HumanTaskWorkItemImpl;
 import org.jbpm.process.instance.impl.workitem.Active;
 import org.jbpm.process.instance.impl.workitem.Complete;
-import org.kie.api.runtime.process.HumanTaskWorkItem;
-import org.kie.api.runtime.process.WorkItem;
-import org.kie.api.runtime.process.WorkItemHandler;
-import org.kie.api.runtime.process.WorkItemManager;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
+import org.kie.kogito.process.workitem.HumanTaskWorkItem;
 import org.kie.kogito.process.workitem.Transition;
-import org.kie.kogito.process.workitems.KogitoWorkItem;
-import org.kie.kogito.process.workitems.KogitoWorkItemManager;
 
-public class TestWorkItemHandler implements WorkItemHandler {
+public class TestWorkItemHandler implements KogitoWorkItemHandler {
 
-    private List<WorkItem> workItems = new ArrayList<WorkItem>();
+    private List<KogitoWorkItem> workItems = new ArrayList<>();
 
-    public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
-        workItems.add(workItem);
-        
-        if (workItem instanceof HumanTaskWorkItem) {
-            HumanTaskWorkItemImpl humanTaskWorkItem = (HumanTaskWorkItemImpl) workItem;
-            
-            humanTaskWorkItem.setPhaseId(Active.ID);
-            humanTaskWorkItem.setPhaseStatus(Active.STATUS);
+    public void executeWorkItem( KogitoWorkItem workItem, KogitoWorkItemManager manager ) {
+        workItems.add( workItem );
+
+        if ( workItem instanceof HumanTaskWorkItem ) {
+            HumanTaskWorkItemImpl humanTaskWorkItem = ( HumanTaskWorkItemImpl ) workItem;
+
+            humanTaskWorkItem.setPhaseId( Active.ID );
+            humanTaskWorkItem.setPhaseStatus( Active.STATUS );
         }
     }
 
-    public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
+    public void abortWorkItem( KogitoWorkItem workItem, KogitoWorkItemManager manager ) {
     }
 
-    public WorkItem getWorkItem() {
-        if (workItems.size() == 0) {
+    public KogitoWorkItem getWorkItem() {
+        if ( workItems.size() == 0 ) {
             return null;
         }
-        if (workItems.size() == 1) {
-            WorkItem result = workItems.get(0);
+        if ( workItems.size() == 1 ) {
+            KogitoWorkItem result = workItems.get( 0 );
             this.workItems.clear();
             return result;
         } else {
-            throw new IllegalArgumentException("More than one work item active");
+            throw new IllegalArgumentException( "More than one work item active" );
         }
     }
 
-    public List<WorkItem> getWorkItems() {
-        List<WorkItem> result = new ArrayList<WorkItem>(workItems);
+    public List<KogitoWorkItem> getWorkItems() {
+        List<KogitoWorkItem> result = new ArrayList<>( workItems );
         workItems.clear();
         return result;
     }
 
     @Override
-    public void transitionToPhase(WorkItem workItem, WorkItemManager manager, Transition<?> transition) {
-        
-        
-        if (transition.phase().equals(Complete.ID)) {
-            (( KogitoWorkItemManager )manager).internalCompleteWorkItem(( KogitoWorkItem ) workItem);
+    public void transitionToPhase( KogitoWorkItem workItem, KogitoWorkItemManager manager, Transition<?> transition ) {
+
+
+        if ( transition.phase().equals( Complete.ID ) ) {
+            (( org.kie.kogito.process.workitems.KogitoWorkItemManager ) manager).internalCompleteWorkItem( ( org.kie.kogito.process.workitems.KogitoWorkItem ) workItem );
         }
     }
-
 }
+

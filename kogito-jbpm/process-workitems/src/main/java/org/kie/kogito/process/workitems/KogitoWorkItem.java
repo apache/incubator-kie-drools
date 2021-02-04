@@ -20,7 +20,7 @@ import java.util.Date;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.ProcessInstance;
 
-public interface KogitoWorkItem extends WorkItem {
+public interface KogitoWorkItem extends org.drools.core.process.instance.WorkItem, org.kie.kogito.internal.process.runtime.KogitoWorkItem {
 
     void setProcessInstanceId(String processInstanceId);
 

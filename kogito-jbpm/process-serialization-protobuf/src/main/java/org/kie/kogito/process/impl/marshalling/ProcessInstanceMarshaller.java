@@ -72,7 +72,7 @@ public class ProcessInstanceMarshaller {
                                                                                             null,
                                                                                             null,
                                                                                             this.env);
-            context.setProcessInstanceId(pi.getId());
+            context.setProcessInstanceId(pi.getStringId());
             context.setState(pi.getState());
 
             String processType = pi.getProcess().getType();
