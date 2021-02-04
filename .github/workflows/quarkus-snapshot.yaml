@@ -32,7 +32,7 @@ jobs:
         with:
           java-version: ${{ env.JAVA_VERSION }}
 
-      - name: Checkout repo
+      - name: Checkout current repository on master
         uses: actions/checkout@v2
         with:
           path: current-repo
@@ -45,7 +45,7 @@ jobs:
           ref: master
           path: ecosystem-ci
 
-      - name: Setup and Run Tests
+      - name: Setup and Run Tests against Quarkus master
         run: ./ecosystem-ci/setup-and-test
         env:
           ECOSYSTEM_CI_TOKEN: ${{ secrets.ECOSYSTEM_CI_TOKEN }}
@@ -64,7 +64,7 @@ jobs:
         with:
           java-version: ${{ env.JAVA_VERSION }}
 
-      - name: Checkout repo
+      - name: Checkout current repository on master
         uses: actions/checkout@v2
         with:
           path: current-repo
@@ -77,7 +77,7 @@ jobs:
           ref: master
           path: ecosystem-ci
 
-      - name: Test against Quarkus master
+      - name: Setup and Run Tests against Quarkus LTS
         run: ./ecosystem-ci/setup-and-test
         env:
           ECOSYSTEM_CI_TOKEN: ${{ secrets.ECOSYSTEM_CI_TOKEN }}
