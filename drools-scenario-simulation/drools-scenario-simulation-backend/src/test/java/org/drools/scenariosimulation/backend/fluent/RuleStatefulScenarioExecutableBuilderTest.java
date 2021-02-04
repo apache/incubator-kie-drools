@@ -38,6 +38,7 @@ import org.kie.internal.builder.fluent.KieSessionFluent;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -76,22 +77,21 @@ public class RuleStatefulScenarioExecutableBuilderTest {
     @Test
     public void testPseudoClock() {
         KieContainer kieContainerMock = mock(KieContainer.class);
-        when(kieContainerMock.getKieSessionConfiguration(anyString())).thenReturn(null);
         assertThatThrownBy(() -> RuleStatefulScenarioExecutableBuilder.forcePseudoClock.apply(null, kieContainerMock))
                 .isInstanceOf(ScenarioException.class);
 
-        when(kieContainerMock.getKieSessionConfiguration(anyString())).thenReturn(mock(KieSessionConfiguration.class));
+        when(kieContainerMock.getKieSessionConfiguration(any())).thenReturn(mock(KieSessionConfiguration.class));
         RuleStatefulScenarioExecutableBuilder.forcePseudoClock.apply(null, kieContainerMock);
     }
 
     @Test
     public void testBuilder() {
         when(executableBuilderMock.newApplicationContext(anyString())).thenReturn(executableBuilderMock);
-        when(executableBuilderMock.setKieContainer(any(KieContainer.class))).thenReturn(kieContainerFluent);
-        when(kieContainerFluent.newSessionCustomized(anyString(), any())).thenReturn(kieSessionFluentMock);
+        when(executableBuilderMock.setKieContainer(any())).thenReturn(kieContainerFluent);
+        when(kieContainerFluent.newSessionCustomized(any(), any())).thenReturn(kieSessionFluentMock);
         when(kieSessionFluentMock.dispose()).thenReturn(executableBuilderMock);
         when(kieSessionFluentMock.addCommand(any())).thenReturn(kieSessionFluentMock);
-        when(executableRunnerMock.execute(any(Executable.class))).thenReturn(requestContextMock);
+        when(executableRunnerMock.execute(Mockito.<Executable>any())).thenReturn(requestContextMock);
         when(requestContextMock.getOutputs()).thenReturn(Collections.emptyMap());
 
         RuleStatefulScenarioExecutableBuilder builder = new RuleStatefulScenarioExecutableBuilder(null, null) {
