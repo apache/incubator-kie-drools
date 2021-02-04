@@ -250,7 +250,7 @@ public class DMNFEELHelper {
                                                                      || (msg.getSourceId() != null && element.getId() != null && msg.getSourceId().equals(element.getId()))) );
     }
 
-    public ClassOrInterfaceDeclaration generateUnaryTestsSource(String unaryTests, DMNCompilerContext ctx, Type inputColumnType) {
+    public ClassOrInterfaceDeclaration generateUnaryTestsSource(String unaryTests, DMNCompilerContext ctx, Type inputColumnType, boolean isStatic) {
         CompilerContext compilerContext =
                 ctx.toCompilerContext()
                         .addInputVariableType("?", inputColumnType);
@@ -259,7 +259,11 @@ public class DMNFEELHelper {
         CompilationUnit compilationUnit = compiledUnaryTest.getSourceCode().clone();
         return compilationUnit.getType(0)
                 .asClassOrInterfaceDeclaration()
-                .setStatic(true);
+                .setStatic(isStatic);
+    }
+
+    public ClassOrInterfaceDeclaration generateStaticUnaryTestsSource(String unaryTests, DMNCompilerContext ctx, Type inputColumnType) {
+        return generateUnaryTestsSource(unaryTests, ctx, inputColumnType, true);
     }
 
     public static class FEELEventsListenerImpl implements FEELEventListener {

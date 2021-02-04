@@ -33,21 +33,21 @@ public class DuringFunction
         super( "during" );
     }
 
-    public FEELFnResult<Boolean> invoke(@ParameterName( "value" ) Comparable value, @ParameterName( "range" ) Range range) {
-        if ( value == null ) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "value", "cannot be null"));
+    public FEELFnResult<Boolean> invoke(@ParameterName( "point" ) Comparable point, @ParameterName( "range" ) Range range) {
+        if ( point == null ) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "point", "cannot be null"));
         }
         if ( range == null ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "range", "cannot be null"));
         }
         try {
-            boolean result = (range.getLowEndPoint().compareTo(value) < 0 && range.getHighEndPoint().compareTo(value) > 0) ||
-                             (range.getLowEndPoint().compareTo(value) == 0 && range.getLowBoundary() == RangeBoundary.CLOSED) ||
-                             (range.getHighEndPoint().compareTo(value) == 0 && range.getHighBoundary() == RangeBoundary.CLOSED);
+            boolean result = (range.getLowEndPoint().compareTo(point) < 0 && range.getHighEndPoint().compareTo(point) > 0) ||
+                             (range.getLowEndPoint().compareTo(point) == 0 && range.getLowBoundary() == RangeBoundary.CLOSED) ||
+                             (range.getHighEndPoint().compareTo(point) == 0 && range.getHighBoundary() == RangeBoundary.CLOSED);
             return FEELFnResult.ofResult( result );
         } catch( Exception e ) {
-            // values are not comparable
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "value", "cannot be compared to range"));
+            // points are not comparable
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "point", "cannot be compared to range"));
         }
     }
 
@@ -69,7 +69,7 @@ public class DuringFunction
                                 range1.getHighBoundary() == RangeBoundary.OPEN)));
             return FEELFnResult.ofResult( result );
         } catch( Exception e ) {
-            // values are not comparable
+            // points are not comparable
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "range1", "cannot be compared to range2"));
         }
     }

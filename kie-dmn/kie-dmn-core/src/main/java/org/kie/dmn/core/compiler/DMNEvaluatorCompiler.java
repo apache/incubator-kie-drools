@@ -43,6 +43,7 @@ import org.kie.dmn.core.ast.DMNListEvaluator;
 import org.kie.dmn.core.ast.DMNLiteralExpressionEvaluator;
 import org.kie.dmn.core.ast.DMNRelationEvaluator;
 import org.kie.dmn.core.ast.EvaluatorResultImpl;
+import org.kie.dmn.core.compiler.alphanetbased.AlphaNetDMNEvaluatorCompiler;
 import org.kie.dmn.core.compiler.execmodelbased.DMNRuleClassFile;
 import org.kie.dmn.core.compiler.execmodelbased.ExecModelDMNClassLoaderCompiler;
 import org.kie.dmn.core.compiler.execmodelbased.ExecModelDMNEvaluatorCompiler;
@@ -116,6 +117,9 @@ public class DMNEvaluatorCompiler {
         } else if (dmnCompilerConfig.isUseExecModelCompiler()) {
             logger.debug("Using ExecModelDMNEvaluatorCompiler.");
             return new ExecModelDMNEvaluatorCompiler(dmnCompiler);
+        } else if (dmnCompilerConfig.isUseAlphaNetwork()) {
+            logger.debug("Using AlphaNetDMNEvaluatorCompiler.");
+            return new AlphaNetDMNEvaluatorCompiler(dmnCompiler);
         } else {
             logger.debug("default DMNEvaluatorCompiler.");
             return new DMNEvaluatorCompiler(dmnCompiler);
