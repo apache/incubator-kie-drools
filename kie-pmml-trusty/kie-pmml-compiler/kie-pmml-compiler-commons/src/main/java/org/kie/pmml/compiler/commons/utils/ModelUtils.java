@@ -15,7 +15,6 @@
  */
 package org.kie.pmml.compiler.commons.utils;
 
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -225,7 +224,7 @@ public class ModelUtils {
         final String missingValueReplacement = toConvert.getMissingValueReplacement() != null ?
                 toConvert.getMissingValueReplacement().toString() : null;
         final List<String> allowedValues = convertDataFieldValues(dataField.getValues());
-        final List<String> intervals = convertDataFieldIntervals(dataField.getIntervals());
+        final List<org.kie.pmml.api.models.Interval> intervals = convertDataFieldIntervals(dataField.getIntervals());
         return new org.kie.pmml.api.models.MiningField(name,
                                                        fieldUsageType,
                                                        opType,
@@ -313,14 +312,11 @@ public class ModelUtils {
                 .collect(Collectors.toList()) : null;
     }
 
-    static List<String> convertDataFieldIntervals(List<Interval> toConvert) {
+    static List<org.kie.pmml.api.models.Interval> convertDataFieldIntervals(List<Interval> toConvert) {
         return toConvert != null ? toConvert.stream()
-                .map(interval -> {
-                    String leftMargin = interval.getLeftMargin() != null ? interval.getLeftMargin().toString() : "-" + INFINITY_SYMBOL;
-                    String rightMargin = interval.getRightMargin() != null ? interval.getRightMargin().toString() : "+" + INFINITY_SYMBOL;
-                    return String.format("%s-%s", leftMargin, rightMargin);
-                })
+                .map(interval -> new org.kie.pmml.api.models.Interval(interval.getLeftMargin(), interval.getRightMargin()))
                 .collect(Collectors.toList()) : null;
+
     }
 
 }

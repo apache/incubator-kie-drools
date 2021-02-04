@@ -32,7 +32,7 @@ public class MiningField {
     private final DATA_TYPE dataType;
     private final String missingValueReplacement;
     private final List<String> allowedValues;
-    private final List<String> intervals;
+    private final List<Interval> intervals;
 
     public MiningField(String name,
                        FIELD_USAGE_TYPE usageType,
@@ -40,7 +40,7 @@ public class MiningField {
                        DATA_TYPE dataType,
                        String missingValueReplacement,
                        List<String> allowedValues,
-                       List<String> intervals) {
+                       List<Interval> intervals) {
         this.name = name;
         this.usageType = usageType;
         this.opType = opType;
@@ -74,7 +74,7 @@ public class MiningField {
         return allowedValues;
     }
 
-    public List<String> getIntervals() {
+    public List<Interval> getIntervals() {
         return intervals;
     }
 }
