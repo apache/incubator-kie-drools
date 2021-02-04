@@ -874,6 +874,24 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
       </plugin>
+      <!-- Do not move to full profile. Otherwise upstream Kogito dependency changes can break our build without Kogito CI catching it. -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>analyze-only</id>
+            <goals>
+              <goal>analyze-only</goal>
+            </goals>
+            <configuration>
+              <failOnWarning>true</failOnWarning>
+              <ignoreNonCompile>true</ignoreNonCompile>
+              <verbose>true</verbose>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 
@@ -1145,23 +1163,6 @@
                 <goals>
                   <goal>javadoc-no-fork</goal>
                 </goals>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-dependency-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>analyze-only</id>
-                <goals>
-                  <goal>analyze-only</goal>
-                </goals>
-                <configuration>
-                  <failOnWarning>true</failOnWarning>
-                  <ignoreNonCompile>true</ignoreNonCompile>
-                  <verbose>true</verbose>
-                </configuration>
               </execution>
             </executions>
           </plugin>
