@@ -44,7 +44,7 @@ public class MeetsFunction extends BaseFEELFunction {
                              range1.getHighEndPoint().compareTo(range2.getLowEndPoint()) == 0;
             return FEELFnResult.ofResult( result );
         } catch( Exception e ) {
-            // values are not comparable
+            // points are not comparable
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "range1", "cannot be compared to range2"));
         }
     }
