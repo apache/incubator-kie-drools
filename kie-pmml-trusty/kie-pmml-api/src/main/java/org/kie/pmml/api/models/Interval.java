@@ -15,11 +15,14 @@
  */
 package org.kie.pmml.api.models;
 
+import java.io.Serializable;
+
 /**
  * KiePMML representation of an <b>OutputField</b>
  */
-public class Interval {
+public class Interval implements Serializable {
 
+    private static final long serialVersionUID = -5245266051098683475L;
     private final Number leftMargin;
     private final Number rightMargin;
 
