@@ -13,6 +13,10 @@
   <name>OptaPlanner Quarkus JSON-B - Integration tests</name>
   <description>Quarkus integration tests for OptaPlanner with JSON-B</description>
 
+  <properties>
+    <java.module.name>org.optaplanner.quarkus.jsonb.integrationtest</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>io.quarkus</groupId>

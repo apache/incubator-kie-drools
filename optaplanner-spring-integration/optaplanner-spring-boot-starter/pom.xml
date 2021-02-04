@@ -21,6 +21,10 @@
   </description>
   <url>https://www.optaplanner.org</url>
 
+  <properties>
+    <java.module.name>org.optaplanner.spring.boot.starter</java.module.name>
+  </properties>
+
   <dependencies>
     <!-- Internal dependencies -->
     <dependency>

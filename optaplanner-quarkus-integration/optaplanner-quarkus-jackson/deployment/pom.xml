@@ -13,6 +13,10 @@
   <name>OptaPlanner Quarkus Jackson - Deployment</name>
   <description>Quarkus deployment module for optaplanner-quarkus-jackson.</description>
 
+  <properties>
+    <java.module.name>org.optaplanner.quarkus.jackson.deployment</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>io.quarkus</groupId>

@@ -13,6 +13,10 @@
   <name>OptaPlanner Quarkus JSON-B - Runtime</name>
   <description>Activate JSON-B bindings for OptaPlanner's Score classes</description>
 
+  <properties>
+    <java.module.name>org.optaplanner.quarkus.jsonb</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>io.quarkus</groupId>

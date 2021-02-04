@@ -13,6 +13,10 @@
   <name>OptaPlanner Quarkus - Runtime</name>
   <description>Optimize planning of vehicle routes, employee rosters, maintenance schedules, task assignments, school timetables, conference schedules, etc.</description>
 
+  <properties>
+    <java.module.name>org.optaplanner.quarkus</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>io.quarkus</groupId>

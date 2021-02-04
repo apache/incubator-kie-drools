@@ -13,6 +13,10 @@
   <name>OptaPlanner Quarkus JSON-B - Deployment</name>
   <description>Quarkus deployment module for optaplanner-quarkus-jsonb.</description>
 
+  <properties>
+    <java.module.name>org.optaplanner.quarkus.jsonb.deployment</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>io.quarkus</groupId>

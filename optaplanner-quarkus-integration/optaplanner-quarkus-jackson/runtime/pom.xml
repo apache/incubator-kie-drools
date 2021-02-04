@@ -13,6 +13,10 @@
   <name>OptaPlanner Quarkus Jackson - Runtime</name>
   <description>Activate Jackson bindings for OptaPlanner's Score classes</description>
 
+  <properties>
+    <java.module.name>org.optaplanner.quarkus.jackson</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>io.quarkus</groupId>

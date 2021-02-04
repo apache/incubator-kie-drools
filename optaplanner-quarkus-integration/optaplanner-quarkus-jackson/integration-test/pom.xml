@@ -13,6 +13,10 @@
   <name>OptaPlanner Quarkus Jackson - Integration tests</name>
   <description>Quarkus integration tests for OptaPlanner with Jackson</description>
 
+  <properties>
+    <java.module.name>org.optaplanner.quarkus.jackson.integrationtest</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>io.quarkus</groupId>
