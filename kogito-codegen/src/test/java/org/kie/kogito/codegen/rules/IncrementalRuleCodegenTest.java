@@ -18,17 +18,29 @@ package org.kie.kogito.codegen.rules;
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import com.github.javaparser.StaticJavaParser;
+import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.stmt.ReturnStmt;
 import org.drools.compiler.compiler.DecisionTableFactory;
 import org.drools.compiler.compiler.DecisionTableProvider;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.internal.utils.ServiceRegistry;
 import org.kie.kogito.codegen.api.AddonsConfig;
-import org.kie.kogito.codegen.core.DashboardGeneratedFileUtils;
 import org.kie.kogito.codegen.api.GeneratedFile;
-import org.kie.kogito.codegen.core.context.JavaKogitoBuildContext;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
+import org.kie.kogito.codegen.core.DashboardGeneratedFileUtils;
+import org.kie.kogito.codegen.core.context.JavaKogitoBuildContext;
+import org.kie.kogito.codegen.core.context.QuarkusKogitoBuildContext;
+import org.kie.kogito.codegen.core.context.SpringBootKogitoBuildContext;
 import org.kie.kogito.codegen.core.io.CollectedResourceProducer;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -52,7 +64,7 @@ public class IncrementalRuleCodegenTest {
                 IncrementalRuleCodegen.ofCollectedResources(
                         ACME_CONTEXT,
                         CollectedResourceProducer.fromFiles(Paths.get("src/test/resources"),
-                                                    new File("src/test/resources/org/kie/kogito/codegen/rules/pkg1/file1.drl")));
+                                                            new File("src/test/resources/org/kie/kogito/codegen/rules/pkg1/file1.drl")));
 
         List<GeneratedFile> generatedFiles = incrementalRuleCodegen.withHotReloadMode().generate();
         assertRules(3, 1, generatedFiles.size());
@@ -85,8 +97,8 @@ public class IncrementalRuleCodegenTest {
                                 new File("src/test/resources/org/kie/kogito/codegen/rules/multiunit").listFiles()));
 
         List<GeneratedFile> generatedFiles = incrementalRuleCodegen.withHotReloadMode().generate();
-        assertTrue( generatedFiles.stream().anyMatch( f -> f.relativePath().equals( "org/kie/kogito/codegen/rules/multiunit/MultiUnitRuleUnit.java" ) ) );
-        assertTrue( generatedFiles.stream().anyMatch( f -> f.relativePath().equals( "org/kie/kogito/codegen/rules/multiunit/MultiUnitRuleUnitInstance.java" ) ) );
+        assertTrue(generatedFiles.stream().anyMatch(f -> f.relativePath().equals("org/kie/kogito/codegen/rules/multiunit/MultiUnitRuleUnit.java")));
+        assertTrue(generatedFiles.stream().anyMatch(f -> f.relativePath().equals("org/kie/kogito/codegen/rules/multiunit/MultiUnitRuleUnitInstance.java")));
     }
 
     @Test
@@ -97,12 +109,12 @@ public class IncrementalRuleCodegenTest {
                         CollectedResourceProducer.fromPaths(Paths.get("src/test/resources/org/kie/kogito/codegen/rules")));
 
         List<GeneratedFile> generatedFiles = incrementalRuleCodegen.withHotReloadMode().generate();
-        assertTrue( generatedFiles.stream().anyMatch( f -> f.relativePath().equals( "org/kie/kogito/codegen/rules/multiunit/MultiUnitRuleUnit.java" ) ) );
-        assertTrue( generatedFiles.stream().anyMatch( f -> f.relativePath().equals( "org/kie/kogito/codegen/rules/multiunit/MultiUnitRuleUnitInstance.java" ) ) );
-        assertTrue( generatedFiles.stream().anyMatch( f -> f.relativePath().equals( "org/kie/kogito/codegen/rules/myunit/MyUnitRuleUnit.java" ) ) );
-        assertTrue( generatedFiles.stream().anyMatch( f -> f.relativePath().equals( "org/kie/kogito/codegen/rules/myunit/MyUnitRuleUnitInstance.java" ) ) );
-        assertTrue( generatedFiles.stream().anyMatch( f -> f.relativePath().equals( "org/kie/kogito/codegen/rules/singleton/SingletonRuleUnit.java" ) ) );
-        assertTrue( generatedFiles.stream().anyMatch( f -> f.relativePath().equals( "org/kie/kogito/codegen/rules/singleton/SingletonRuleUnitInstance.java" ) ) );
+        assertTrue(generatedFiles.stream().anyMatch(f -> f.relativePath().equals("org/kie/kogito/codegen/rules/multiunit/MultiUnitRuleUnit.java")));
+        assertTrue(generatedFiles.stream().anyMatch(f -> f.relativePath().equals("org/kie/kogito/codegen/rules/multiunit/MultiUnitRuleUnitInstance.java")));
+        assertTrue(generatedFiles.stream().anyMatch(f -> f.relativePath().equals("org/kie/kogito/codegen/rules/myunit/MyUnitRuleUnit.java")));
+        assertTrue(generatedFiles.stream().anyMatch(f -> f.relativePath().equals("org/kie/kogito/codegen/rules/myunit/MyUnitRuleUnitInstance.java")));
+        assertTrue(generatedFiles.stream().anyMatch(f -> f.relativePath().equals("org/kie/kogito/codegen/rules/singleton/SingletonRuleUnit.java")));
+        assertTrue(generatedFiles.stream().anyMatch(f -> f.relativePath().equals("org/kie/kogito/codegen/rules/singleton/SingletonRuleUnitInstance.java")));
     }
 
     @Test
@@ -127,8 +139,8 @@ public class IncrementalRuleCodegenTest {
                         CollectedResourceProducer.fromPaths(Paths.get("src/test/resources/org/kie/kogito/codegen/rules/myunit")));
 
         List<GeneratedFile> generatedFiles = incrementalRuleCodegen.withHotReloadMode().generate();
-        assertTrue( generatedFiles.stream().anyMatch( f -> f.relativePath().equals( "org/kie/kogito/codegen/rules/myunit/MyUnitRuleUnit.java" ) ) );
-        assertTrue( generatedFiles.stream().anyMatch( f -> f.relativePath().equals( "org/kie/kogito/codegen/rules/myunit/MyUnitRuleUnitInstance.java" ) ) );
+        assertTrue(generatedFiles.stream().anyMatch(f -> f.relativePath().equals("org/kie/kogito/codegen/rules/myunit/MyUnitRuleUnit.java")));
+        assertTrue(generatedFiles.stream().anyMatch(f -> f.relativePath().equals("org/kie/kogito/codegen/rules/myunit/MyUnitRuleUnitInstance.java")));
     }
 
     @Test
@@ -179,11 +191,34 @@ public class IncrementalRuleCodegenTest {
         assertThrows(MissingDecisionTableDependencyError.class, incrementalRuleCodegen.withHotReloadMode()::generate);
     }
 
-    @Test
-    public void generateGrafanaDashboards() {
-        KogitoBuildContext context = JavaKogitoBuildContext.builder()
-                .withPackageName("com.acme")
-                .withAddonsConfig(AddonsConfig.builder().withPrometheusMonitoring(true).build())
+    @ParameterizedTest
+    @MethodSource("contextBuilders")
+    public void generateGrafanaDashboards(KogitoBuildContext.Builder contextBuilder) {
+        KogitoBuildContext context = contextBuilder
+                .withAddonsConfig(AddonsConfig.builder()
+                                          .withPrometheusMonitoring(true)
+                                          .withMonitoring(true)
+                                          .build())
+                .build();
+
+        IncrementalRuleCodegen incrementalRuleCodegen =
+                IncrementalRuleCodegen.ofCollectedResources(
+                        context,
+                        CollectedResourceProducer.fromFiles(
+                                Paths.get("src/test/resources"),
+                                new File("src/test/resources/org/kie/kogito/codegen/unit/RuleUnitQuery.drl")));
+        List<GeneratedFile> generatedFiles = incrementalRuleCodegen.withHotReloadMode().generate();
+        assertEquals(2, generatedFiles.stream().filter(x -> x.type().equals(DashboardGeneratedFileUtils.DASHBOARD_TYPE)).count());
+    }
+
+    @ParameterizedTest
+    @MethodSource("contextBuilders")
+    public void elapsedTimeMonitoringIsWrappingEveryMethod(KogitoBuildContext.Builder contextBuilder) {
+        KogitoBuildContext context = contextBuilder
+                .withAddonsConfig(AddonsConfig.builder()
+                                          .withPrometheusMonitoring(true)
+                                          .withMonitoring(true)
+                                          .build())
                 .build();
 
         IncrementalRuleCodegen incrementalRuleCodegen =
@@ -194,7 +229,48 @@ public class IncrementalRuleCodegenTest {
                                 new File("src/test/resources/org/kie/kogito/codegen/unit/RuleUnitQuery.drl")));
         List<GeneratedFile> generatedFiles = incrementalRuleCodegen.withHotReloadMode().generate();
 
-        assertEquals(2, generatedFiles.stream().filter(x -> x.type().equals(DashboardGeneratedFileUtils.DASHBOARD_TYPE)).count());
+        List<String> endpointClasses = generatedFiles
+                .stream()
+                .filter(x -> x.relativePath().contains("Endpoint"))
+                .map(x -> new String(x.contents()))
+                .collect(Collectors.toList());
+
+        for (String endpointClass : endpointClasses) {
+            assertMonitoringEndpoints(endpointClass);
+        }
+    }
+
+    private static void assertMonitoringEndpoints(String endpointClass) {
+        CompilationUnit cu = StaticJavaParser.parse(endpointClass);
+
+        ClassOrInterfaceDeclaration clazz = cu.findFirst(ClassOrInterfaceDeclaration.class).get();
+        ReturnStmt executeQueryReturnStmt = clazz.getMethodsByName("executeQuery")
+                .get(0)
+                .getBody()
+                .orElseThrow(() -> new RuntimeException("No body found for executeQuery method"))
+                .findFirst(ReturnStmt.class)
+                .orElseThrow(() -> new RuntimeException("No return statement for executeQuery method. Template has changed."));
+        ReturnStmt executeQueryFirstReturnStmt = clazz.getMethodsByName("executeQueryFirst")
+                .get(0)
+                .getBody()
+                .orElseThrow(() -> new RuntimeException("No body found for executeQueryFirst method"))
+                .findFirst(ReturnStmt.class)
+                .orElseThrow(() -> new RuntimeException("No return statement for executeQueryFirst method. Template has changed."));
+
+        // Return expression should not be a call, otherwise the elapsed time would not be calculated properly
+        Assertions.assertFalse(executeQueryReturnStmt.getExpression().get().isMethodCallExpr());
+        Assertions.assertFalse(executeQueryFirstReturnStmt.getExpression().get().isMethodCallExpr());
+
+        // The monitoring code is generated
+        String statementsExecuteQuery = clazz.getMethodsByName("executeQuery").get(0).getBody().get().getStatements().toString();
+        Assertions.assertTrue(statementsExecuteQuery.contains("startTime"));
+        Assertions.assertTrue(statementsExecuteQuery.contains("endTime"));
+        Assertions.assertTrue(statementsExecuteQuery.contains("registerElapsedTimeSampleMetrics"));
+
+        String statementsExecuteQueryFirst = clazz.getMethodsByName("executeQueryFirst").get(0).getBody().get().getStatements().toString();
+        Assertions.assertTrue(statementsExecuteQueryFirst.contains("startTime"));
+        Assertions.assertTrue(statementsExecuteQueryFirst.contains("endTime"));
+        Assertions.assertTrue(statementsExecuteQueryFirst.contains("registerElapsedTimeSampleMetrics"));
     }
 
     private static void assertRules(int expectedRules, int expectedPackages, int expectedUnits, int actualGeneratedFiles) {
@@ -208,5 +284,13 @@ public class IncrementalRuleCodegenTest {
         assertEquals(expectedRules +
                              expectedPackages * 2, // package descriptor for rules + package metadata
                      actualGeneratedFiles - 2); // ignore ProjectModel and ProjectRuntime classes
+    }
+
+    private static Stream<Arguments> contextBuilders() {
+        return Stream.of(
+                Arguments.of(JavaKogitoBuildContext.builder()),
+                Arguments.of(QuarkusKogitoBuildContext.builder()),
+                Arguments.of(SpringBootKogitoBuildContext.builder())
+        );
     }
 }

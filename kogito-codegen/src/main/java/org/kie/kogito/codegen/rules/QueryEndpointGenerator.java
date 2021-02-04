@@ -18,6 +18,7 @@ package org.kie.kogito.codegen.rules;
 
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -45,10 +46,10 @@ import com.github.javaparser.ast.type.Type;
 import org.drools.compiler.compiler.DroolsError;
 import org.drools.modelcompiler.builder.QueryModel;
 import org.kie.internal.ruleunit.RuleUnitDescription;
-import org.kie.kogito.codegen.core.BodyDeclarationComparator;
-import org.kie.kogito.codegen.api.template.TemplatedGenerator;
-import org.kie.kogito.codegen.core.context.JavaKogitoBuildContext;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
+import org.kie.kogito.codegen.api.template.TemplatedGenerator;
+import org.kie.kogito.codegen.core.BodyDeclarationComparator;
+import org.kie.kogito.codegen.core.context.JavaKogitoBuildContext;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static com.github.javaparser.StaticJavaParser.parseStatement;
@@ -103,17 +104,18 @@ public class QueryEndpointGenerator implements RuleFileGenerator {
     @Override
     public DroolsError getError() {
         if (query.getBindings().isEmpty()) {
-            return new NoBindingQuery( query );
+            return new NoBindingQuery(query);
         }
         return null;
     }
 
     public static class NoBindingQuery extends DroolsError {
+
         private static final int[] ERROR_LINES = new int[0];
 
         private final QueryModel query;
 
-        public NoBindingQuery( QueryModel query ) {
+        public NoBindingQuery(QueryModel query) {
             this.query = query;
         }
 
@@ -176,13 +178,14 @@ public class QueryEndpointGenerator implements RuleFileGenerator {
                 .orElseThrow(() -> new NoSuchElementException("A method declaration doesn't contain a body!"))
                 .getStatement(0);
         statement.findAll(VariableDeclarator.class).forEach(decl -> setUnitGeneric(decl.getType()));
-        statement.findAll( MethodCallExpr.class ).forEach( m -> m.addArgument( hasDI ? "unitDTO" : "unitDTO.get()" ) );
+        statement.findAll(MethodCallExpr.class).forEach(m -> m.addArgument(hasDI ? "unitDTO" : "unitDTO.get()"));
 
         Statement returnStatement = queryMethod
                 .getBody()
                 .orElseThrow(() -> new NoSuchElementException("A method declaration doesn't contain a body!"))
                 .getStatement(1);
-        returnStatement.findAll(ClassExpr.class).forEach( expr -> expr.setType( queryClassName ) );
+        returnStatement.findAll(VariableDeclarator.class).forEach(decl -> setGeneric(decl.getType(), returnType));
+        returnStatement.findAll(ClassExpr.class).forEach(expr -> expr.setType(queryClassName));
 
         MethodDeclaration queryMethodSingle = clazz.getMethodsByName("executeQueryFirst").get(0);
         queryMethodSingle.getParameter(0).setType(ruleUnit.getCanonicalName() + (hasDI ? "" : "DTO"));
@@ -214,7 +217,14 @@ public class QueryEndpointGenerator implements RuleFileGenerator {
             ReturnStmt returnStmt = body.findFirst(ReturnStmt.class).orElseThrow(() -> new NoSuchElementException("A method declaration doesn't contain a return statement!"));
             statements.addFirst(parseStatement("long startTime = System.nanoTime();"));
             statements.addBefore(parseStatement("long endTime = System.nanoTime();"), returnStmt);
-            statements.addBefore(parseStatement("SystemMetricsCollector.registerElapsedTimeSampleMetrics(\"" + nameURL + "\", endTime - startTime);"), returnStmt);
+            String endpoint = nameURL;
+            if (context.hasDI()) {
+                Optional<String> path = context.getDependencyInjectionAnnotator().getEndpointValue(md);
+                if (path.isPresent()) {
+                    endpoint += path.get();
+                }
+            }
+            statements.addBefore(parseStatement("SystemMetricsCollector.registerElapsedTimeSampleMetrics(\"" + endpoint + "\", endTime - startTime);"), returnStmt);
             md.setBody(wrapBodyAddingExceptionLogging(body, nameURL));
         }
     }

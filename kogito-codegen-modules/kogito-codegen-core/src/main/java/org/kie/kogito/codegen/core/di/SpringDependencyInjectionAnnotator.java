@@ -22,6 +22,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import com.github.javaparser.ast.NodeList;
+import com.github.javaparser.ast.expr.AnnotationExpr;
 import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.BooleanLiteralExpr;
 import com.github.javaparser.ast.expr.ConditionalExpr;
@@ -154,7 +155,8 @@ public class SpringDependencyInjectionAnnotator implements DependencyInjectionAn
     }
 
     /**
-     * no-op, Spring beans are not lazy by default. 
+     * no-op, Spring beans are not lazy by default.
+     *
      * @param node node to be annotated
      * @return
      */
@@ -168,5 +170,16 @@ public class SpringDependencyInjectionAnnotator implements DependencyInjectionAn
         return Stream.of("PostMapping", "GetMapping", "PutMapping", "DeleteMapping")
                 .map(node::getAnnotationByName)
                 .anyMatch(Optional::isPresent);
+    }
+
+    @Override
+    public <T extends NodeWithAnnotations<?>> Optional<String> getEndpointValue(T node) {
+        Optional<AnnotationExpr> path = node.getAnnotationByName("PostMapping");
+        return path
+                .flatMap(p -> p.asNormalAnnotationExpr()
+                        .getPairs()
+                        .stream()
+                        .filter(x -> "value".equals(x.getName().asString())).findFirst())
+                .map(value -> value.getValue().asStringLiteralExpr().asString());
     }
 }
