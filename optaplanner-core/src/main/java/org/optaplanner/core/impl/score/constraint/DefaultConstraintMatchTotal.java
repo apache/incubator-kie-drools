@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -88,12 +88,7 @@ public final class DefaultConstraintMatchTotal<Score_ extends Score<Score_>> imp
         this.score = this.score.add(score);
         ConstraintMatch<Score_> constraintMatch = new ConstraintMatch<>(constraintPackage, constraintName,
                 justificationList, score);
-        boolean added = constraintMatchSet.add(constraintMatch);
-        if (!added) {
-            throw new IllegalStateException("The constraintMatchTotal (" + this
-                    + ") could not add constraintMatch (" + constraintMatch
-                    + ") to its constraintMatchSet (" + constraintMatchSet + ").");
-        }
+        constraintMatchSet.add(constraintMatch);
         return constraintMatch;
     }
 

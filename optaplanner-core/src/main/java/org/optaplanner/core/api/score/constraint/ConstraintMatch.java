@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.api.score.constraint;
 
-import static java.util.Objects.hash;
 import static java.util.Objects.requireNonNull;
 
 import java.util.Comparator;
@@ -28,6 +27,16 @@ import org.optaplanner.core.impl.domain.lookup.ClassAndPlanningIdComparator;
 /**
  * Retrievable from {@link ConstraintMatchTotal#getConstraintMatchSet()}
  * and {@link Indictment#getConstraintMatchSet()}.
+ *
+ * <p>
+ * This class has a {@link #compareTo(ConstraintMatch)} method which is inconsistent with equals.
+ * (See {@link Comparable}.)
+ * Two different {@link ConstraintMatch} instances with the same justification list aren't
+ * {@link Object#equals(Object) equal} because some ConstraintStream API methods can result in duplicate facts,
+ * which are treated as independent matches.
+ * Yet two instances may {@link #compareTo(ConstraintMatch)} equal in case they come from the same constraint and their
+ * justifications are equal.
+ * This is for consistent ordering of constraint matches in visualizations.
  * 
  * @param <Score_> the actual score type
  */
@@ -91,9 +100,9 @@ public final class ConstraintMatch<Score_ extends Score<Score_>> implements Comp
             /*
              * TODO Come up with a better cache.
              *
-             * We reuse the comparator from here, since it internally caches some reflection that we don't want to be performing
-             * over and over again. However, there are possibly thousands of instances of this class, and each will get its own
-             * comparator. Therefore, the caching is only partially effective.
+             * Reuse the comparator to internally caches reflection for performance benefits.
+             * However, there are possibly thousands of instances of this class, and each gets its own comparator.
+             * Therefore, the caching is only partially effective.
              */
             Comparator<Object> comparator = new ClassAndPlanningIdComparator(false);
             for (int i = 0; i < justificationList.size() && i < other.justificationList.size(); i++) {
@@ -110,25 +119,6 @@ public final class ConstraintMatch<Score_ extends Score<Score_>> implements Comp
                 return 0;
             }
         }
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        } else if (o instanceof ConstraintMatch) {
-            ConstraintMatch<Score_> other = (ConstraintMatch<Score_>) o;
-            return constraintPackage.equals(other.constraintPackage)
-                    && constraintName.equals(other.constraintName)
-                    && justificationList.equals(other.justificationList);
-        } else {
-            return false;
-        }
-    }
-
-    @Override
-    public int hashCode() {
-        return hash(constraintPackage, constraintName, justificationList);
     }
 
     @Override

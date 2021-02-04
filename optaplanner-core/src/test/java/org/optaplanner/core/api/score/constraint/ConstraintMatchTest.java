@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,27 +25,14 @@ import org.optaplanner.core.impl.testdata.util.PlannerAssert;
 public class ConstraintMatchTest {
 
     @Test
-    public void equalsAndHashCode() {
-        PlannerAssert.assertObjectsAreEqual(
-                new ConstraintMatch<>("a.b", "c", Arrays.asList("e1"), SimpleScore.ZERO),
-                new ConstraintMatch<>("a.b", "c", Arrays.asList("e1"), SimpleScore.ZERO),
-                new ConstraintMatch<>("a.b", "c", Arrays.asList("e1"), SimpleScore.of(-7)));
-        PlannerAssert.assertObjectsAreEqual(
-                new ConstraintMatch<>("a.b", "c", Arrays.asList("e1", "e2"), SimpleScore.ZERO),
-                new ConstraintMatch<>("a.b", "c", Arrays.asList("e1", "e2"), SimpleScore.ZERO),
-                new ConstraintMatch<>("a.b", "c", Arrays.asList("e1", "e2"), SimpleScore.of(-7)));
-        PlannerAssert.assertObjectsAreEqual(
-                new ConstraintMatch<>("a.b", "c", Arrays.asList("e1", "e2", 7), SimpleScore.ZERO),
-                new ConstraintMatch<>("a.b", "c", Arrays.asList("e1", "e2", 7), SimpleScore.ZERO),
-                new ConstraintMatch<>("a.b", "c", Arrays.asList("e1", "e2", 7), SimpleScore.of(-7)));
-        PlannerAssert.assertObjectsAreNotEqual(
-                new ConstraintMatch<>("a.b", "c", Arrays.asList("e1"), SimpleScore.ZERO),
-                new ConstraintMatch<>("a.b", "c", Arrays.asList("e1", "e2"), SimpleScore.ZERO),
-                new ConstraintMatch<>("a.b", "c", Arrays.asList("e2", "e1"), SimpleScore.ZERO),
-                new ConstraintMatch<>("a.b", "c", Arrays.asList("e1", "e2", 7), SimpleScore.ZERO),
-                new ConstraintMatch<>("a.b", "c", Arrays.asList("e1", "e2", 8), SimpleScore.ZERO),
-                new ConstraintMatch<>("a.b", "d", Arrays.asList("e1", "e2", 8), SimpleScore.ZERO),
-                new ConstraintMatch<>("a.c", "d", Arrays.asList("e1", "e2", 8), SimpleScore.ZERO));
+    public void equalsAndHashCode() { // No CM should equal any other.
+        ConstraintMatch<SimpleScore> constraintMatch =
+                new ConstraintMatch<>("a.b", "c", Arrays.asList("e1"), SimpleScore.ZERO);
+        PlannerAssert.assertObjectsAreEqual(constraintMatch, constraintMatch);
+        ConstraintMatch<SimpleScore> constraintMatch2 =
+                new ConstraintMatch<>("a.b", "c", Arrays.asList("e1"), SimpleScore.ZERO);
+        // Cast do avoid Comparable checks.
+        PlannerAssert.assertObjectsAreNotEqual((Object) constraintMatch, (Object) constraintMatch2);
     }
 
     @Test
