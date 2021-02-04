@@ -1231,7 +1231,7 @@
       "allPublicFields" : true
     },
     {
-      "name":"org.kie.kogito.dmn.rest.DMNResult",
+      "name":"org.kie.kogito.dmn.rest.KogitoDMNResult",
       "allDeclaredConstructors" : true,
       "allPublicConstructors" : true,
       "allDeclaredMethods" : true,
@@ -1240,7 +1240,7 @@
       "allPublicFields" : true
     },
     {
-      "name":"org.kie.kogito.dmn.rest.DMNDecisionResultSQ",
+      "name":"org.kie.kogito.dmn.rest.KogitoDMNDecisionResult",
       "allDeclaredConstructors" : true,
       "allPublicConstructors" : true,
       "allDeclaredMethods" : true,
