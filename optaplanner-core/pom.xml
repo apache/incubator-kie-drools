@@ -34,10 +34,6 @@
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-internal</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-drools-model</artifactId>
     </dependency>
     <dependency>
@@ -138,11 +134,14 @@
         <artifactId>maven-dependency-plugin</artifactId>
         <configuration>
           <ignoredUsedUndeclaredDependencies>
+            <!-- We depend on the Kogito project to bring in the Drools API in any way they see fit. -->
+            <dependency>org.kie:*</dependency>
             <!-- TODO Remove this and declare org.drools dependencies once their versions are managed by kogito-bom. -->
             <dependency>org.drools:*</dependency>
           </ignoredUsedUndeclaredDependencies>
           <ignoredUnusedDeclaredDependencies>
-            <!-- Provides org.drools:* dependencies -->
+            <!-- Provides org.kie:* and org.drools:* dependencies. -->
+            <dependency>org.kie.kogito:kogito-api</dependency>
             <dependency>org.kie.kogito:kogito-drools-model</dependency>
             <dependency>org.kie.kogito:drools-core</dependency>
           </ignoredUnusedDeclaredDependencies>

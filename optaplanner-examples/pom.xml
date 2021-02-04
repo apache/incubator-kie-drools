@@ -44,6 +44,18 @@
   <build>
     <pluginManagement>
       <plugins>
+        <plugin> <!-- We depend on the Kogito project to bring in the Drools API in any way they see fit. -->
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-dependency-plugin</artifactId>
+          <configuration>
+            <ignoredUsedUndeclaredDependencies>
+              <dependency>org.kie:*</dependency>
+            </ignoredUsedUndeclaredDependencies>
+            <ignoredUnusedDeclaredDependencies>
+              <dependency>org.kie.kogito:kogito-api</dependency>
+            </ignoredUnusedDeclaredDependencies>
+          </configuration>
+        </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
