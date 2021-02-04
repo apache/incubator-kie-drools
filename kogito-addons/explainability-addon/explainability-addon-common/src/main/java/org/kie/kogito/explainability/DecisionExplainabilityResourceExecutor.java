@@ -21,6 +21,7 @@ import org.kie.dmn.api.core.DMNResult;
 import org.kie.kogito.Application;
 import org.kie.kogito.decision.DecisionModel;
 import org.kie.kogito.decision.DecisionModels;
+import org.kie.kogito.dmn.rest.KogitoDMNResult;
 import org.kie.kogito.explainability.model.ModelIdentifier;
 import org.kie.kogito.explainability.model.PredictInput;
 import org.kie.kogito.explainability.model.PredictOutput;
@@ -56,7 +57,7 @@ public class DecisionExplainabilityResourceExecutor implements ExplainabilityRes
 
     public PredictOutput convertDMNOutput(DMNResult dmnResult, PredictInput predictInput) {
         String[] namespaceAndName = extractNamespaceAndName(predictInput.getModelIdentifier().getResourceId());
-        org.kie.kogito.dmn.rest.DMNResult result = new org.kie.kogito.dmn.rest.DMNResult(
+        KogitoDMNResult result = new KogitoDMNResult(
                 namespaceAndName[0],
                 namespaceAndName[1],
                 dmnResult);

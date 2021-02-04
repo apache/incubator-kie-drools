@@ -1,17 +1,11 @@
 package org.kie.dmn.kogito.quarkus.example;
 
-import java.time.Period;
 import javax.servlet.http.HttpServletResponse;
 
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import org.drools.core.beliefsystem.simple.SimpleMode;
-import org.kie.dmn.api.core.DMNContext;
-import org.kie.dmn.core.impl.DMNContextImpl;
-import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.kie.kogito.Application;
 import org.kie.kogito.dmn.rest.DMNEvaluationErrorException;
 import org.kie.kogito.dmn.rest.DMNJSONUtils;
-import org.kie.kogito.dmn.rest.DMNResult;
+import org.kie.kogito.dmn.rest.KogitoDMNResult;
 import org.kie.kogito.dmn.util.StronglyTypedUtils;
 
 import org.springframework.http.MediaType;
@@ -47,7 +41,7 @@ public class DMNRestResourceTemplate {
         OutputSet outputSet = (OutputSet)StronglyTypedUtils.convertToOutputSet(variables, OutputSet.class);
         org.kie.dmn.api.core.DMNResult decisionResult = decision.evaluateAll(DMNJSONUtils.ctx(decision, $inputData$));
         enrichResponseHeaders(decisionResult, httpResponse);
-        DMNResult result = new DMNResult("$modelNamespace$", "$modelName$", decisionResult);
+        KogitoDMNResult result = new KogitoDMNResult("$modelNamespace$", "$modelName$", decisionResult);
         return $extractContextMethod$(result);
     }
 
@@ -64,7 +58,7 @@ public class DMNRestResourceTemplate {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getResult());
     }
 
-    private Object extractContextIfSucceded(DMNResult result){
+    private Object extractContextIfSucceded(KogitoDMNResult result){
         if (!result.hasErrors()) {
             try {
                 return objectMapper.writeValueAsString(result.getDmnContext());
@@ -76,7 +70,7 @@ public class DMNRestResourceTemplate {
         }
     }
 
-    private OutputSet extractStronglyTypedContextIfSucceded(DMNResult result) {
+    private OutputSet extractStronglyTypedContextIfSucceded(KogitoDMNResult result) {
         if (!result.hasErrors()) {
             return (OutputSet)StronglyTypedUtils.extractOutputSet(result, OutputSet.class);
         } else {
@@ -92,7 +86,7 @@ public class DMNRestResourceTemplate {
             .disable(com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
             .disable(com.fasterxml.jackson.databind.SerializationFeature.WRITE_DURATIONS_AS_TIMESTAMPS);
 
-    private Object extractSingletonDSIfSucceded(DMNResult result) {
+    private Object extractSingletonDSIfSucceded(KogitoDMNResult result) {
         if (!result.hasErrors()) {
             try {
                 return objectMapper.writeValueAsString(result.getDecisionResults().get(0).getResult());

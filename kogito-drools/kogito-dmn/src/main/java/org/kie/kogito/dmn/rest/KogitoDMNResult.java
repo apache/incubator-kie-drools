@@ -33,7 +33,8 @@ import org.kie.dmn.api.core.DMNMessage.Severity;
 import org.kie.dmn.core.internal.utils.MapBackedDMNContext;
 import org.kie.dmn.core.internal.utils.MarshallingStubUtils;
 
-public class DMNResult implements Serializable, org.kie.dmn.api.core.DMNResult {
+public class KogitoDMNResult implements Serializable,
+                                        org.kie.dmn.api.core.DMNResult {
 
     private String namespace;
 
@@ -41,15 +42,15 @@ public class DMNResult implements Serializable, org.kie.dmn.api.core.DMNResult {
 
     private Map<String, Object> dmnContext = new HashMap<>();
 
-    private List<DMNMessageSQ> messages = new ArrayList<>();
+    private List<KogitoDMNMessage> messages = new ArrayList<>();
 
-    private Map<String, DMNDecisionResultSQ> decisionResults = new HashMap<>();
+    private Map<String, KogitoDMNDecisionResult> decisionResults = new HashMap<>();
 
-    public DMNResult() {
+    public KogitoDMNResult() {
         // Intentionally blank.
     }
 
-    public DMNResult(String namespace, String modelName, org.kie.dmn.api.core.DMNResult dmnResult) {
+    public KogitoDMNResult(String namespace, String modelName, org.kie.dmn.api.core.DMNResult dmnResult) {
         this.namespace = namespace;
         this.modelName = modelName;
         this.setDmnContext(dmnResult.getContext().getAll());
@@ -85,14 +86,16 @@ public class DMNResult implements Serializable, org.kie.dmn.api.core.DMNResult {
     }
 
     public void setMessages(List<DMNMessage> messages) {
+        this.messages = new ArrayList<>();
         for (DMNMessage m : messages) {
-            this.messages.add(DMNMessageSQ.of(m));
+            this.messages.add(KogitoDMNMessage.of(m));
         }
     }
 
     public void setDecisionResults(List<? extends DMNDecisionResult> decisionResults) {
+        this.decisionResults = new HashMap<>();
         for (DMNDecisionResult dr : decisionResults) {
-            this.decisionResults.put(dr.getDecisionId(), DMNDecisionResultSQ.of(dr));
+            this.decisionResults.put(dr.getDecisionId(), KogitoDMNDecisionResult.of(dr));
         }
     }
 
@@ -126,7 +129,10 @@ public class DMNResult implements Serializable, org.kie.dmn.api.core.DMNResult {
 
     @Override
     public DMNDecisionResult getDecisionResultByName(String name) {
-        return decisionResults.values().stream().filter(dr -> dr.getDecisionName().equals(name)).findFirst().get();
+        return decisionResults.values().stream()
+                .filter(dr -> dr.getDecisionName().equals(name))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Unknown decision result name."));
     }
 
     @Override
@@ -136,7 +142,7 @@ public class DMNResult implements Serializable, org.kie.dmn.api.core.DMNResult {
 
     @Override
     public String toString() {
-        return new StringBuilder("DMNResultKS [")
+        return new StringBuilder("KogitoDMNResult [")
                 .append("namespace=").append(namespace)
                 .append(", modelName=").append(modelName)
                 .append(", dmnContext=").append(dmnContext)

@@ -24,7 +24,8 @@ import org.kie.dmn.api.core.DMNDecisionResult;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.core.internal.utils.MarshallingStubUtils;
 
-public class DMNDecisionResultSQ implements Serializable, DMNDecisionResult {
+public class KogitoDMNDecisionResult implements Serializable,
+                                                DMNDecisionResult {
 
     private String decisionId;
 
@@ -32,16 +33,16 @@ public class DMNDecisionResultSQ implements Serializable, DMNDecisionResult {
 
     private Object result;
 
-    private List<DMNMessageSQ> messages = new ArrayList<>();
+    private List<KogitoDMNMessage> messages = new ArrayList<>();
 
     private DecisionEvaluationStatus status;
 
-    public DMNDecisionResultSQ() {
+    public KogitoDMNDecisionResult() {
         // Intentionally blank.
     }
 
-    public static DMNDecisionResultSQ of(DMNDecisionResult value) {
-        DMNDecisionResultSQ res = new DMNDecisionResultSQ();
+    public static KogitoDMNDecisionResult of(DMNDecisionResult value) {
+        KogitoDMNDecisionResult res = new KogitoDMNDecisionResult();
         res.decisionId = value.getDecisionId();
         res.decisionName = value.getDecisionName();
         res.setResult(value.getResult());
@@ -91,8 +92,9 @@ public class DMNDecisionResultSQ implements Serializable, DMNDecisionResult {
     }
 
     public void setMessages(List<DMNMessage> messages) {
+        this.messages = new ArrayList<>();
         for (DMNMessage m : messages) {
-            this.messages.add(DMNMessageSQ.of(m));
+            this.messages.add(KogitoDMNMessage.of(m));
         }
     }
 

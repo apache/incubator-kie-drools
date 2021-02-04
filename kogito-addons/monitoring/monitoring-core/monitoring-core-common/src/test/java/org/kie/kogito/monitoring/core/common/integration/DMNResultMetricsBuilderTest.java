@@ -30,7 +30,7 @@ import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.dmn.rest.DMNResult;
+import org.kie.kogito.dmn.rest.KogitoDMNResult;
 import org.kie.kogito.grafana.dmn.SupportedDecisionTypes;
 import org.kie.kogito.monitoring.core.common.MonitoringRegistry;
 import org.kie.kogito.monitoring.core.common.system.metrics.dmnhandlers.DecisionConstants;
@@ -60,7 +60,7 @@ public class DMNResultMetricsBuilderTest {
     @Test
     public void givenADMNResultWhenMetricsAreStoredThenTheCollectorsAreProperlyWorking() {
         // Arrange
-        DMNResult dmnResult = new DMNResult();
+        KogitoDMNResult dmnResult = new KogitoDMNResult();
         List<DMNDecisionResultMock> decisions = new ArrayList<>();
         // String type
         decisions.add(new DMNDecisionResultMock("AlphabetDecision", "A"));

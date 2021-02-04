@@ -33,7 +33,7 @@ import org.kie.dmn.core.internal.utils.DMNEvaluationUtils.DMNEvaluationResult;
 import org.kie.dmn.core.internal.utils.DMNRuntimeBuilder;
 import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.kogito.Application;
-import org.kie.kogito.dmn.rest.DMNResult;
+import org.kie.kogito.dmn.rest.KogitoDMNResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -80,11 +80,11 @@ public class DMNKogito {
         }
     }
 
-    public static DMNResult evaluate(DMNRuntime dmnRuntime, String modelName, Map<String, Object> dmnContext) {
+    public static KogitoDMNResult evaluate(DMNRuntime dmnRuntime, String modelName, Map<String, Object> dmnContext) {
         return evaluate(dmnRuntime, modelByName(dmnRuntime, modelName).getNamespace(), modelName, dmnContext);
     }
 
-    public static DMNResult evaluate(DMNRuntime dmnRuntime, String modelNamespace, String modelName, Map<String,
+    public static KogitoDMNResult evaluate(DMNRuntime dmnRuntime, String modelNamespace, String modelName, Map<String,
             Object> dmnContext) {
         DMNEvaluationResult evaluationResult = DMNEvaluationUtils.evaluate(dmnRuntime,
                                                                            modelNamespace,
@@ -93,7 +93,7 @@ public class DMNKogito {
                                                                            null,
                                                                            null,
                                                                            null);
-        return new DMNResult(modelNamespace, modelName, evaluationResult.result);
+        return new KogitoDMNResult(modelNamespace, modelName, evaluationResult.result);
     }
 
 }

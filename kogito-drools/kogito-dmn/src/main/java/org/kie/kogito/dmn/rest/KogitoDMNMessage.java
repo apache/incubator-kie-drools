@@ -24,7 +24,7 @@ import org.kie.dmn.api.core.DMNMessageType;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.internal.builder.InternalMessage;
 
-public class DMNMessageSQ implements Serializable, DMNMessage {
+public class KogitoDMNMessage implements Serializable, DMNMessage {
 
     public static enum DMNMessageSeverityKS {
         INFO,
@@ -68,12 +68,12 @@ public class DMNMessageSQ implements Serializable, DMNMessage {
 
     private String sourceId;
 
-    public DMNMessageSQ() {
+    public KogitoDMNMessage() {
         // Intentionally blank.
     }
 
-    public static DMNMessageSQ of(DMNMessage value) {
-        DMNMessageSQ res = new DMNMessageSQ();
+    public static KogitoDMNMessage of(DMNMessage value) {
+        KogitoDMNMessage res = new KogitoDMNMessage();
         res.severity = DMNMessageSeverityKS.of(value.getSeverity());
         res.message = value.getMessage();
         res.messageType = value.getMessageType();

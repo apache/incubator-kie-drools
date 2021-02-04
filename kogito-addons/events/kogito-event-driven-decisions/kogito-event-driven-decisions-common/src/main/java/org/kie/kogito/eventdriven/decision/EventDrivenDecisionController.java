@@ -33,6 +33,7 @@ import org.kie.kogito.decision.DecisionExecutionIdUtils;
 import org.kie.kogito.decision.DecisionModel;
 import org.kie.kogito.decision.DecisionModels;
 import org.kie.kogito.dmn.rest.DMNJSONUtils;
+import org.kie.kogito.dmn.rest.KogitoDMNResult;
 import org.kie.kogito.event.CloudEventEmitter;
 import org.kie.kogito.event.CloudEventReceiver;
 import org.slf4j.Logger;
@@ -157,7 +158,7 @@ public class EventDrivenDecisionController {
 
         kogitoExtension.setExecutionId(DecisionExecutionIdUtils.get(ctx.getResponseDmnResult().getContext()));
 
-        org.kie.kogito.dmn.rest.DMNResult restResult = new org.kie.kogito.dmn.rest.DMNResult(ctx.getRequestModelNamespace(), ctx.getRequestModelName(), ctx.getResponseDmnResult());
+        KogitoDMNResult restResult = new KogitoDMNResult(ctx.getRequestModelNamespace(), ctx.getRequestModelName(), ctx.getResponseDmnResult());
 
         if (ctx.isRequestFullResult()) {
             if (ctx.isRequestFilteredContext()) {

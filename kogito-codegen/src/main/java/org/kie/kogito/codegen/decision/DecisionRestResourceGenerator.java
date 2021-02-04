@@ -314,7 +314,7 @@ public class DecisionRestResourceGenerator {
                   return parent.getNameAsString().endsWith("dmnresult");
               })
               .collect(Collectors.toList());
-        dmnResultOuputTypes.forEach(type -> type.setName("org.kie.kogito.dmn.rest.DMNResult"));
+        dmnResultOuputTypes.forEach(type -> type.setName("org.kie.kogito.dmn.rest.KogitoDMNResult"));
         outputTypeOccurrences.removeAll(dmnResultOuputTypes);
 
         // then, *remaining* methods which belong to Decision Service(s) shall simply be returning Object, since strongly output typing is not supported for DS use case yet.
