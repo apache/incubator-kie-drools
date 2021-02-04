@@ -10,6 +10,8 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>process-serialization-protobuf</artifactId>
+  <name>Kogito :: Process :: Protobuf Serialization</name>
+  <description>Kogito Process Protobuf Serialization</description>
 
   <dependencies>
     <dependency>
