@@ -291,7 +291,7 @@ void checkoutQuickstarts(String dirName=quickstartsRepository) {
     dir(dirName) {
         deleteDir()
         if (params.PR_TARGET_BRANCH) {
-            githubscm.checkoutIfExists(quickstartsRepository, getGitAuthor(), getQuickStartsBranch(), 'kiegroup', getQuickStartsBranch(), true)
+            githubscm.checkoutIfExists(quickstartsRepository, getGitAuthor(), getBuildBranch(), 'kiegroup', getQuickStartsBranch(), true)
         } else {
             checkout(githubscm.resolveRepository(quickstartsRepository, getGitAuthor(), getQuickStartsBranch(), false))
         }
@@ -459,5 +459,5 @@ void setDeployPropertyIfNeeded(String key, def value) {
 }
 
 String getQuickStartsBranch(){
-    return isRelease() ? getBuildBranch() : params.QUICKSTARTS_BUILD_BRANCH_NAME
+    return params.QUICKSTARTS_BUILD_BRANCH_NAME
 }
