@@ -34,10 +34,12 @@ import static org.hamcrest.CoreMatchers.containsString;
 public class JITDMNResourceTest {
 
     private static String model;
+    private static String modelWithExtensionElements;
 
     @BeforeAll
     public static void setup() throws IOException {
         model = new String(IoUtils.readBytesFromInputStream(JITDMNResourceTest.class.getResourceAsStream("/test.dmn")));
+        modelWithExtensionElements = new String(IoUtils.readBytesFromInputStream(JITDMNResourceTest.class.getResourceAsStream("/testWithExtensionElements.dmn")));
     }
 
     @Test
@@ -62,6 +64,22 @@ public class JITDMNResourceTest {
                 .then()
                 .statusCode(200)
                 .body(containsString("Loan Approval"), containsString("Approved"), containsString("xls2dmn"));
+    }
+
+    @Test
+    public void testjitdmnWithExtensionElements() {
+        Map<String, Object> context = new HashMap<>();
+        context.put("m", 1);
+        context.put("n", 2);
+
+        JITDMNPayload jitdmnpayload = new JITDMNPayload(modelWithExtensionElements, context);
+        given()
+                .contentType(ContentType.JSON)
+                .body(jitdmnpayload)
+                .when().post("/jitdmn/dmnresult")
+                .then()
+                .statusCode(200)
+                .body(containsString("m"), containsString("n"), containsString("sum"));
     }
 
     private Map<String, Object> buildContext() {
