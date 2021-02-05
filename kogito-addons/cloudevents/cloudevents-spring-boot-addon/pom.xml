@@ -28,14 +28,34 @@
   <name>Kogito :: Add-Ons :: CloudEvents :: Spring Boot</name>
   <description>Kogito Events handling for CloudEvents AddOn (Spring Boot)</description>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-dependencies</artifactId>
+        <version>${version.springboot}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-cloudevents-common-addon</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>cloudevents-utils</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.springframework.kafka</groupId>
       <artifactId>spring-kafka</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.annotation</groupId>
+      <artifactId>jakarta.annotation-api</artifactId>
     </dependency>
     <dependency>
       <groupId>io.projectreactor</groupId>

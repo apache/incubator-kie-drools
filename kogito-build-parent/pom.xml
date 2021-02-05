@@ -1402,6 +1402,8 @@
                               <exclude name="**/integration-tests/**/target/classes/**/*.class"/>
                               <exclude name="**/integration-test/**/target/classes/**/*.class"/>
                               <exclude name="**/integration-test-legacy/**/target/classes/**/*.class"/>
+                              <exclude name="**/cloudevents-quarkus-addon-it/target/classes/**/*.class"/>
+                              <exclude name="**/cloudevents-spring-boot-addon-it/target/classes/**/*.class"/>
                             </fileset>
                           </classfiles>
                           <sourcefiles encoding="UTF-8">
