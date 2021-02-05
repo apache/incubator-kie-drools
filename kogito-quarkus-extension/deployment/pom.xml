@@ -53,15 +53,26 @@
             <groupId>org.kie.kogito</groupId>
             <artifactId>kogito-quarkus</artifactId>
         </dependency>
+        <!-- codegen dependencies -->
         <dependency>
             <groupId>org.kie.kogito</groupId>
-            <artifactId>kogito-codegen</artifactId>
-            <exclusions>
-                <exclusion>
-                  <groupId>javax.validation</groupId>
-                  <artifactId>validation-api</artifactId>
-                </exclusion>
-            </exclusions>
+            <artifactId>kogito-codegen-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.kie.kogito</groupId>
+            <artifactId>kogito-codegen-processes</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.kie.kogito</groupId>
+            <artifactId>kogito-codegen-rules</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.kie.kogito</groupId>
+            <artifactId>kogito-codegen-decisions</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.kie.kogito</groupId>
+            <artifactId>kogito-codegen-predictions</artifactId>
         </dependency>
 
         <!-- test -->

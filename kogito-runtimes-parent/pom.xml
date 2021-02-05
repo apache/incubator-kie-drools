@@ -121,7 +121,6 @@
     <module>jbpm</module>
     <module>kogito-cloud-services</module>
     <module>kogito-codegen-modules</module>
-    <module>kogito-codegen</module>
     <module>kogito-springboot</module>
     <module>kogito-maven-plugin</module>
     <module>kogito-quarkus-extension</module>

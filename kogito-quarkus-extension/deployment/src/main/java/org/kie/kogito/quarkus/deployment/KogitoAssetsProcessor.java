@@ -60,7 +60,7 @@ import org.kie.kogito.Model;
 import org.kie.kogito.UserTask;
 import org.kie.kogito.codegen.api.GeneratedFile;
 import org.kie.kogito.codegen.api.GeneratedFileType;
-import org.kie.kogito.codegen.JsonSchemaGenerator;
+import org.kie.kogito.codegen.json.JsonSchemaGenerator;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.Generated;
 import org.kie.kogito.codegen.VariableInfo;

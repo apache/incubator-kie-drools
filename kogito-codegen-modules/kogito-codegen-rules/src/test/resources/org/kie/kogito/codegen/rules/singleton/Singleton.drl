@@ -1,0 +1,26 @@
+package org.kie.kogito.codegen.rules.singleton;
+unit Singleton;
+
+rule start
+when
+    /input[ value == "start"]
+then
+    output.set(new Datum("continue"));
+end
+
+rule contd
+when
+    datum: /output[ value == "continue"]
+then
+    modify(datum){
+        setValue("updated")
+    }
+end
+
+rule done
+when
+    /output[ value == "updated"]
+then
+    output.set(new Datum("done"));
+end
+

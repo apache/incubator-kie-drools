@@ -202,9 +202,26 @@
       <artifactId>jbpm-bpmn2</artifactId>
     </dependency>
 
+    <!-- codegen dependencies -->
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-codegen</artifactId>
+      <artifactId>kogito-codegen-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-codegen-processes</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-codegen-rules</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-codegen-decisions</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-codegen-predictions</artifactId>
     </dependency>
 
     <!-- code generation for executable model -->
