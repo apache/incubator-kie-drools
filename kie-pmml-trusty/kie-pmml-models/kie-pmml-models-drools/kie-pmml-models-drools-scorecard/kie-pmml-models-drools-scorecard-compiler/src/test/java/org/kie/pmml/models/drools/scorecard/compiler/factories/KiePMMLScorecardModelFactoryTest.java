@@ -115,6 +115,7 @@ public class KiePMMLScorecardModelFactoryTest {
         ConstructorDeclaration constructorDeclaration = classOrInterfaceDeclaration.getDefaultConstructor().get();
         SimpleName simpleName = new SimpleName("SIMPLENAME");
         KiePMMLScorecardModelFactory.setConstructor(scorecardModel,
+                                                    pmml.getDataDictionary(),
                                                     constructorDeclaration,
                                                     simpleName);
         Map<Integer, Expression> superInvocationExpressionsMap = new HashMap<>();

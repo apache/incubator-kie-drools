@@ -33,6 +33,7 @@ import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.MiningFunction;
 import org.dmg.pmml.mining.MiningModel;
 import org.junit.BeforeClass;
@@ -108,6 +109,7 @@ public class KiePMMLMiningModelFactoryTest extends AbstractKiePMMLFactoryTest {
         MINING_FUNCTION miningFunction = MINING_FUNCTION.byName(model.getMiningFunction().value());
         String segmentationClass = "SEGMENTATIONCLASS";
         KiePMMLMiningModelFactory.setConstructor(model,
+                                                 new DataDictionary(),
                                                  constructorDeclaration,
                                                  targetField,
                                                  segmentationClass);

@@ -51,7 +51,6 @@ import org.slf4j.LoggerFactory;
 
 import static org.kie.pmml.commons.Constants.MISSING_DEFAULT_CONSTRUCTOR;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
-import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
 import static org.kie.pmml.compiler.commons.factories.KiePMMLOutputFieldFactory.getOutputFields;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFullClassName;
@@ -107,7 +106,7 @@ public class KiePMMLRegressionModelFactory {
                         .findFirst()
                         .orElseThrow(() -> new KiePMMLException("Failed to find expected KiePMMLRegressionTableClassification"));
         final ConstructorDeclaration constructorDeclaration = modelTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_DEFAULT_CONSTRUCTOR, modelTemplate.getName())));
-        setConstructor(model, nestedTable, constructorDeclaration, targetFieldName);
+        setConstructor(model, dataDictionary, nestedTable, constructorDeclaration, targetFieldName);
         addTransformationsInClassOrInterfaceDeclaration(modelTemplate, transformationDictionary, model.getLocalTransformations());
         Map<String, String> toReturn = tablesSourceMap.entrySet()
                 .stream()
@@ -144,11 +143,12 @@ public class KiePMMLRegressionModelFactory {
     }
 
     static void setConstructor(final RegressionModel regressionModel,
+                               final DataDictionary dataDictionary,
                                final String nestedTable,
                                final ConstructorDeclaration constructorDeclaration,
                                final String targetField) {
-        final List<org.kie.pmml.api.models.MiningField> miningFields = ModelUtils.convertToKieMiningFieldList(regressionModel.getMiningSchema());
-        final List<org.kie.pmml.api.models.OutputField> outputFields = ModelUtils.convertToKieOutputFieldList(regressionModel.getOutput());
+        final List<org.kie.pmml.api.models.MiningField> miningFields = ModelUtils.convertToKieMiningFieldList(regressionModel.getMiningSchema(), dataDictionary);
+        final List<org.kie.pmml.api.models.OutputField> outputFields = ModelUtils.convertToKieOutputFieldList(regressionModel.getOutput(), dataDictionary);
         setKiePMMLModelConstructor( getSanitizedClassName(regressionModel.getModelName()), constructorDeclaration, regressionModel.getModelName(), miningFields, outputFields);
 
         MINING_FUNCTION miningFunction = MINING_FUNCTION.byName(regressionModel.getMiningFunction().value());

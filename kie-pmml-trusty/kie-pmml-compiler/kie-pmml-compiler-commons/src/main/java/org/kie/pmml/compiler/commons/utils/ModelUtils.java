@@ -15,6 +15,7 @@
  */
 package org.kie.pmml.compiler.commons.utils;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -25,7 +26,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.dmg.pmml.DataDictionary;
+import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
+import org.dmg.pmml.Interval;
 import org.dmg.pmml.MiningField;
 import org.dmg.pmml.MiningSchema;
 import org.dmg.pmml.Model;
@@ -33,10 +36,12 @@ import org.dmg.pmml.Output;
 import org.dmg.pmml.OutputField;
 import org.dmg.pmml.ParameterField;
 import org.dmg.pmml.Target;
+import org.dmg.pmml.Value;
 import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.api.enums.FIELD_USAGE_TYPE;
 import org.kie.pmml.api.enums.OP_TYPE;
 import org.kie.pmml.api.enums.RESULT_FEATURE;
+import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameOpType;
 
@@ -47,6 +52,8 @@ import static org.kie.pmml.api.utils.PrimitiveBoxedUtils.getKiePMMLPrimitiveBoxe
  * <b>Kie</b> ones, etc...
  */
 public class ModelUtils {
+
+    private static final String INFINITY_SYMBOL = new String(Character.toString('\u221E').getBytes(StandardCharsets.UTF_8), StandardCharsets.UTF_8);
 
     private ModelUtils() {
     }
@@ -176,66 +183,103 @@ public class ModelUtils {
     }
 
     /**
-     * Return a <code>List&lt;org.kie.pmml.api.models.MiningField&glt;</code> out of a <code>org.dmg.pmml.MiningSchema</code> one
+     * Return a <code>List&lt;org.kie.pmml.api.models.MiningField&glt;</code> out of a <code>org.dmg.pmml
+     * .MiningSchema</code> one
      * @param toConvert
+     * @param dataDictionary
      * @return
      */
-    public static List<org.kie.pmml.api.models.MiningField> convertToKieMiningFieldList(final MiningSchema toConvert) {
+    public static List<org.kie.pmml.api.models.MiningField> convertToKieMiningFieldList(final MiningSchema toConvert,
+                                                                                        final DataDictionary dataDictionary) {
         if (toConvert == null) {
             return Collections.emptyList();
         }
         return toConvert.getMiningFields()
                 .stream()
-                .map(ModelUtils::convertToKieMiningField)
+                .map(miningField -> {
+                    DataField dataField = dataDictionary.getDataFields().stream()
+                            .filter(df -> df.getName().equals(miningField.getName()))
+                            .findFirst()
+                            .orElseThrow(() -> new KiePMMLException("Cannot find " + miningField.getName() + " in " +
+                                                                            "DataDictionary"));
+                    return convertToKieMiningField(miningField, dataField);
+                })
                 .collect(Collectors.toList());
     }
 
     /**
-     * Return a <code>org.kie.pmml.api.models.MiningField</code> out of a <code>org.dmg.pmml.MiningField</code> one
+     * Return a <code>org.kie.pmml.api.models.MiningField</code> out of a <code>org.dmg.pmml.MiningField</code> and relative <code>org.dmg.pmml.DataField</code> ones
      * @param toConvert
+     * @param dataField
      * @return
      */
-    public static org.kie.pmml.api.models.MiningField convertToKieMiningField(final MiningField toConvert) {
+    public static org.kie.pmml.api.models.MiningField convertToKieMiningField(final MiningField toConvert,
+                                                                              final DataField dataField) {
         final String name = toConvert.getName() != null ? toConvert.getName().getValue() : null;
         final FIELD_USAGE_TYPE fieldUsageType = toConvert.getUsageType() != null ?
                 FIELD_USAGE_TYPE.byName(toConvert.getUsageType().value()) : null;
         final OP_TYPE opType = toConvert.getOpType() != null ? OP_TYPE.byName(toConvert.getOpType().value()) : null;
+        final DATA_TYPE dataType = dataField.getDataType() != null ?
+                DATA_TYPE.byName(dataField.getDataType().value()) : null;
+        final String missingValueReplacement = toConvert.getMissingValueReplacement() != null ?
+                toConvert.getMissingValueReplacement().toString() : null;
+        final List<String> allowedValues = convertDataFieldValues(dataField.getValues());
+        final List<org.kie.pmml.api.models.Interval> intervals = convertDataFieldIntervals(dataField.getIntervals());
         return new org.kie.pmml.api.models.MiningField(name,
                                                        fieldUsageType,
-                                                       opType);
+                                                       opType,
+                                                       dataType,
+                                                       missingValueReplacement,
+                                                       allowedValues,
+                                                       intervals);
     }
 
     /**
-     * Return a <code>List&lt;org.kie.pmml.api.models.OutputField&gt;</code> out of a <code>org.dmg.pmml.Output</code> one
+     * Return a <code>List&lt;org.kie.pmml.api.models.OutputField&gt;</code> out of a <code>org.dmg.pmml
+     * .Output</code> one
      * @param toConvert
      * @return
      */
-    public static List<org.kie.pmml.api.models.OutputField> convertToKieOutputFieldList(final Output toConvert) {
+    public static List<org.kie.pmml.api.models.OutputField> convertToKieOutputFieldList(final Output toConvert,
+                                                                                        final DataDictionary dataDictionary) {
         if (toConvert == null) {
             return Collections.emptyList();
         }
         return toConvert.getOutputFields()
                 .stream()
-                .map(ModelUtils::convertToKieOutputField)
+                .map(outputField -> {
+                    DataField dataField = dataDictionary.getDataFields().stream()
+                            .filter(df -> df.getName().equals(outputField.getTargetField()))
+                            .findFirst()
+                            .orElse(null); // expected to be null because OutputField.targetField is not mandatory
+                    return convertToKieOutputField(outputField, dataField);
+                })
                 .collect(Collectors.toList());
     }
 
     /**
      * Return a <code>org.kie.pmml.api.models.OutputField</code> out of a <code>org.dmg.pmml.OutputField</code> one
      * @param toConvert
+     * @param dataField - this may be <code>null</code>
      * @return
      */
-    public static org.kie.pmml.api.models.OutputField convertToKieOutputField(final OutputField toConvert) {
+    public static org.kie.pmml.api.models.OutputField convertToKieOutputField(final OutputField toConvert,
+                                                                              final DataField dataField) {
         final String name = toConvert.getName() != null ? toConvert.getName().getValue() : null;
         final OP_TYPE opType = toConvert.getOpType() != null ? OP_TYPE.byName(toConvert.getOpType().value()) : null;
-        final DATA_TYPE dataType = toConvert.getDataType() != null ? DATA_TYPE.byName(toConvert.getDataType().value()) : null;
+        final DATA_TYPE dataFieldDataType = dataField != null ? DATA_TYPE.byName(dataField.getDataType().value()) : null;
+        final DATA_TYPE dataType = toConvert.getDataType() != null ?
+                DATA_TYPE.byName(toConvert.getDataType().value()) : dataFieldDataType;
         final String targetField = toConvert.getTargetField() != null ? toConvert.getTargetField().getValue() : null;
-        final RESULT_FEATURE resultFeature = toConvert.getResultFeature() != null ? RESULT_FEATURE.byName(toConvert.getResultFeature().value()) : null;
+        final RESULT_FEATURE resultFeature = toConvert.getResultFeature() != null ?
+                RESULT_FEATURE.byName(toConvert.getResultFeature().value()) : null;
+        final List<String> allowedValues = dataField != null ? convertDataFieldValues(dataField.getValues()) : null;
         return new org.kie.pmml.api.models.OutputField(name,
                                                        opType,
                                                        dataType,
                                                        targetField,
-                                                       resultFeature);
+                                                       resultFeature,
+                                                       allowedValues);
     }
 
     /**
@@ -261,4 +305,18 @@ public class ModelUtils {
         Class<?> c = dataType == null ? Object.class : DATA_TYPE.byName(dataType.value()).getMappedClass();
         return getKiePMMLPrimitiveBoxed(c).map(primitiveBoxed -> primitiveBoxed.getBoxed().getName()).orElse(c.getName());
     }
+
+    static List<String> convertDataFieldValues(List<Value> toConvert) {
+        return toConvert != null ? toConvert.stream()
+                .map(value -> value.getValue().toString())
+                .collect(Collectors.toList()) : null;
+    }
+
+    static List<org.kie.pmml.api.models.Interval> convertDataFieldIntervals(List<Interval> toConvert) {
+        return toConvert != null ? toConvert.stream()
+                .map(interval -> new org.kie.pmml.api.models.Interval(interval.getLeftMargin(), interval.getRightMargin()))
+                .collect(Collectors.toList()) : null;
+
+    }
+
 }
