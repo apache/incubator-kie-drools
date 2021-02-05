@@ -42,6 +42,10 @@ public class VertxRouterTest {
                 .then()
                 .statusCode(200);
 
+        given().when().get("/JobsManagement")
+                .then()
+                .statusCode(200);
+
         given().when().get("/Another")
                 .then()
                 .statusCode(404);
