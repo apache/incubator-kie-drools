@@ -4,6 +4,11 @@ exports[`ProcessVariables component tests snapshot testing with variables 1`] = 
 <Memo(ProcessDetailsProcessVariables)
   displayLabel={true}
   displaySuccess={true}
+  processInstance={
+    Object {
+      "state": "ACTIVE",
+    }
+  }
   setDisplayLabel={[MockFunction]}
   setUpdateJson={[MockFunction]}
   updateJson={
@@ -169,9 +174,9 @@ exports[`ProcessVariables component tests snapshot testing without variables 1`]
       <div>
         <mockConstructor
           name={false}
-          onAdd={[Function]}
-          onDelete={[Function]}
-          onEdit={[Function]}
+          onAdd={false}
+          onDelete={false}
+          onEdit={false}
           src={
             Object {
               "trip": Object {

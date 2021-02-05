@@ -1,6 +1,7 @@
 import React from 'react';
 import { shallow, mount } from 'enzyme';
 import ProcessDetailsProcessVariables from '../ProcessDetailsProcessVariables';
+import { GraphQL } from '@kogito-apps/common';
 // tslint:disable: no-string-literal
 // tslint:disable: no-unexpected-multiline
 
@@ -29,7 +30,10 @@ const props = {
     }
   },
   setDisplayLabel: jest.fn(),
-  displaySuccess: false
+  displaySuccess: false,
+  processInstance: {
+    state: GraphQL.ProcessInstanceState.Completed
+  }
 };
 
 const props2 = {
@@ -45,7 +49,10 @@ const props2 = {
     }
   },
   setDisplayLabel: jest.fn(),
-  displaySuccess: true
+  displaySuccess: true,
+  processInstance: {
+    state: GraphQL.ProcessInstanceState.Active
+  }
 };
 describe('ProcessVariables component tests', () => {
   it('snapshot testing without variables', () => {

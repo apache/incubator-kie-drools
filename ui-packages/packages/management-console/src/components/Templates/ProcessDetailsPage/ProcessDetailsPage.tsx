@@ -429,6 +429,7 @@ const ProcessDetailsPage: React.FC<RouteComponentProps<
               setUpdateJson={setUpdateJson}
               setDisplayLabel={setDisplayLabel}
               updateJson={updateJson}
+              processInstance={data.ProcessInstances[0]}
             />
           </FlexItem>
         )}
