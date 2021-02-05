@@ -30,7 +30,6 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-import org.assertj.core.api.Assertions;
 import org.drools.modelcompiler.domain.Address;
 import org.drools.modelcompiler.domain.Adult;
 import org.drools.modelcompiler.domain.Child;
@@ -1717,7 +1716,6 @@ public class CompilerTest extends BaseModelTest {
 
         ksession.fireAllRules();
         assertEquals("Milan number has the same value of Mark age", result.getValue());
-
     }
 
     @Test

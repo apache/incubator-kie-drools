@@ -78,7 +78,7 @@ public class CombinedConstraint extends AbstractConstraint {
     }
 
     @Override
-    public Declaration getIndexingDeclaration() {
+    public Declaration getIndexExtractor() {
         throw new UnsupportedOperationException();
     }
 

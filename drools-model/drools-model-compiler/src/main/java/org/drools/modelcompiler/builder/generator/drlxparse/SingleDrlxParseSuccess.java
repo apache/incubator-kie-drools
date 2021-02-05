@@ -76,7 +76,7 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
     private boolean isStatic;
     private boolean isValidExpression;
     private boolean skipThisAsParam;
-    private boolean isBetaNode;
+    private boolean betaConstraint;
     private boolean requiresSplit;
     private boolean unification;
     private boolean temporal;
@@ -107,7 +107,7 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
         this.isStatic = drlx.isStatic();
         this.isValidExpression = drlx.isValidExpression();
         this.skipThisAsParam = drlx.isSkipThisAsParam();
-        this.isBetaNode = drlx.isBetaNode();
+        this.betaConstraint = drlx.isBetaConstraint();
         this.requiresSplit = drlx.isRequiresSplit();
         this.unification = drlx.isUnification();
         this.temporal = drlx.isTemporal();
@@ -364,13 +364,13 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
         return this;
     }
 
-    public SingleDrlxParseSuccess setBetaNode(boolean betaNode) {
-        this.isBetaNode = betaNode;
+    public SingleDrlxParseSuccess setBetaConstraint( boolean betaConstraint ) {
+        this.betaConstraint = betaConstraint;
         return this;
     }
 
-    public boolean isBetaNode() {
-        return isBetaNode;
+    public boolean isBetaConstraint() {
+        return betaConstraint;
     }
 
     public SingleDrlxParseSuccess setRequiresSplit(boolean requiresSplit) {
@@ -416,7 +416,7 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
 
         return new SingleDrlxParseSuccess(patternType, patternBinding, new BinaryExpr(expr, otherDrlx.expr, operator), exprType)
                 .setDecodeConstraintType(Index.ConstraintType.UNKNOWN).setUsedDeclarations(newUsedDeclarations).setUsedDeclarationsOnLeft(newUsedDeclarationsOnLeft)
-                .setUnification(this.isUnification() || otherDrlx.isUnification()).setReactOnProperties(newReactOnProperties).setBetaNode(isBetaNode)
+                .setUnification(this.isUnification() || otherDrlx.isUnification()).setReactOnProperties(newReactOnProperties).setBetaConstraint( betaConstraint )
                 .setLeft(new TypedExpression(this.expr, left != null ? left.getType() : boolean.class))
                 .setRight(new TypedExpression(otherDrlx.expr, right != null ? right.getType() : boolean.class));
     }

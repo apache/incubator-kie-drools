@@ -216,8 +216,8 @@ public class ExpressionTyper {
 
         } else if (drlxExpr instanceof CastExpr) {
             CastExpr castExpr = (CastExpr)drlxExpr;
-            toTypedExpressionRec(castExpr.getExpression());
-            return of(new TypedExpression(castExpr, getClassFromContext(ruleContext.getTypeResolver(), castExpr.getType().asString())));
+            Optional<TypedExpression> optTypedExpr = toTypedExpressionRec(castExpr.getExpression());
+            return optTypedExpr.map(typedExpr -> new TypedExpression(new CastExpr(castExpr.getType(), typedExpr.getExpression()), getClassFromContext(ruleContext.getTypeResolver(), castExpr.getType().asString())));
 
         } else if (drlxExpr instanceof NameExpr) {
             return nameExpr(((NameExpr)drlxExpr).getNameAsString(), typeCursor);
@@ -504,9 +504,7 @@ public class ExpressionTyper {
     private String accessorToFieldName(Expression drlxExpr) {
         if (drlxExpr instanceof MethodCallExpr) {
             MethodCallExpr methodCall = ( MethodCallExpr ) drlxExpr;
-            if (methodCall.getArguments().isEmpty()) {
-                return getter2property( methodCall.getNameAsString() );
-            }
+            return methodCall.getArguments().isEmpty() ? getter2property( methodCall.getNameAsString() ) : null;
         }
         return printConstraint(drlxExpr);
     }

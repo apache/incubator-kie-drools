@@ -17,38 +17,22 @@
 
 package org.drools.model.index;
 
-import org.drools.model.BetaIndex;
+import org.drools.model.BetaIndex2;
 import org.drools.model.functions.Function1;
+import org.drools.model.functions.Function2;
 
-public class BetaIndexImpl<A, B, V> extends AbstractIndex<A, V> implements BetaIndex<A, B, V> {
+public class BetaIndex2Impl<A, B, C, V> extends AbstractBetaIndex<A, V> implements BetaIndex2<A, B, C, V> {
 
-    private final Function1<B, ?> rightOperandExtractor;
+    private final Function2<B, C, ?> rightOperandExtractor;
 
-    private final Class<?> rightReturnType;
-
-    public BetaIndexImpl(Class<V> indexedClass, ConstraintType constraintType, int indexId, Function1<A, V> leftOperandExtractor, Function1<B, ?> rightOperandExtractor) {
-        this(indexedClass, constraintType, indexId, leftOperandExtractor, rightOperandExtractor, null);
-    }
-
-    public BetaIndexImpl(Class<V> indexedClass, ConstraintType constraintType, int indexId, Function1<A, V> leftOperandExtractor, Function1<B, ?> rightOperandExtractor, Class<?> rightReturnType) {
-        super(indexedClass, constraintType, indexId, leftOperandExtractor);
+    public BetaIndex2Impl( Class<V> indexedClass, ConstraintType constraintType, int indexId, Function1<A, V> leftOperandExtractor, Function2<B, C, ?> rightOperandExtractor, Class<?> rightReturnType) {
+        super(indexedClass, constraintType, indexId, leftOperandExtractor, rightReturnType);
         this.rightOperandExtractor = rightOperandExtractor;
-        this.rightReturnType = rightReturnType;
     }
 
     @Override
-    public IndexType getIndexType() {
-        return IndexType.BETA;
-    }
-
-    @Override
-    public Function1<B, ?> getRightOperandExtractor() {
+    public Function2<B, C, ?> getRightOperandExtractor() {
         return rightOperandExtractor;
-    }
-
-    @Override
-    public Class<?> getRightReturnType() {
-        return rightReturnType;
     }
 
     @Override

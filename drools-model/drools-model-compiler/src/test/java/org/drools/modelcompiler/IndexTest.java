@@ -16,9 +16,12 @@
 
 package org.drools.modelcompiler;
 
+import java.util.List;
+
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.AlphaNode;
+import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectSink;
 import org.drools.core.reteoo.ObjectTypeNode;
@@ -26,6 +29,7 @@ import org.drools.core.rule.IndexableConstraint;
 import org.drools.core.util.DateUtils;
 import org.drools.core.util.index.IndexUtil;
 import org.drools.core.util.index.IndexUtil.ConstraintType;
+import org.drools.modelcompiler.constraints.LambdaConstraint;
 import org.drools.modelcompiler.domain.Person;
 import org.junit.Test;
 import org.kie.api.KieBase;
@@ -33,6 +37,7 @@ import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.KieSession;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 public class IndexTest extends BaseModelTest {
@@ -52,6 +57,11 @@ public class IndexTest extends BaseModelTest {
                         "end";
 
         KieSession ksession = getKieSession( str );
+
+        ObjectTypeNode otn = getObjectTypeNodeForClass( ksession, Person.class );
+        BetaNode beta = (BetaNode) otn.getObjectSinkPropagator().getSinks()[0];
+        IndexableConstraint betaConstraint = (IndexableConstraint) beta.getConstraints()[0];
+        assertNotNull( betaConstraint.getIndexExtractor() );
 
         ksession.insert( "test" );
         ksession.insert( new Person("Sofia", 4) );
@@ -196,5 +206,111 @@ public class IndexTest extends BaseModelTest {
             }
         }
         assertTrue(asserted);
+    }
+
+    @Test
+    public void testBetaIndexOn2ValuesOnLeftTuple() {
+        // DROOLS-5995
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "rule R1 when\n" +
+                "  Integer( $i : this )\n" +
+                "  String( $l : length )\n" +
+                "  $p : Person(age == $l + $i)\n" +
+                "then\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ObjectTypeNode otn = getObjectTypeNodeForClass( ksession, Person.class );
+        BetaNode beta = (BetaNode) otn.getObjectSinkPropagator().getSinks()[0];
+        IndexableConstraint betaConstraint = (IndexableConstraint) beta.getConstraints()[0];
+        if (betaConstraint instanceof LambdaConstraint ) { // this beta index is only supported by executable model
+            assertNotNull( betaConstraint.getIndexExtractor() );
+        }
+
+        ksession.insert( 5 );
+        ksession.insert( "test" );
+        ksession.insert( new Person("Sofia", 9) );
+
+        assertEquals( 1, ksession.fireAllRules() );
+    }
+
+    @Test
+    public void testNoBetaIndexWithThisPropertyOnRight() {
+        // DROOLS-5995
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "rule R1 when\n" +
+                "  Integer( $i : this )\n" +
+                "  String( $l : length )\n" +
+                "  $p : Person($l == age - $i)\n" +
+                "then\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert( 5 );
+        ksession.insert( "test" );
+        ksession.insert( new Person("Sofia", 9) );
+
+        assertEquals( 1, ksession.fireAllRules() );
+    }
+
+    @Test
+    public void testNoBetaIndexWithThisOperationOnLeft() {
+        // DROOLS-5995
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "rule R1 when\n" +
+                "  String( $l : length )\n" +
+                "  $p: Person()\n" +
+                "  Integer( $p.getAge() == this + $l )\n" +
+                "then\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert( 5 );
+        ksession.insert( "test" );
+        ksession.insert( new Person("Sofia", 9) );
+
+        assertEquals( 1, ksession.fireAllRules() );
+    }
+
+    @Test
+    public void testNoBetaIndexWithThisOperationOnLeft2() {
+        // DROOLS-5995
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "rule R1 when\n" +
+                "  String( $l : length )\n" +
+                "  Person( $age : age )\n" +
+                "  Integer( $age == this + $l )\n" +
+                "then\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert( 5 );
+        ksession.insert( "test" );
+        ksession.insert( new Person("Sofia", 9) );
+
+        assertEquals( 1, ksession.fireAllRules() );
+    }
+
+    @Test
+    public void testNoBetaIndexWithThisMethodInvocationOnLeft() {
+        // DROOLS-5995
+        String str =
+                "import " + List.class.getCanonicalName() + ";" +
+                "rule R1 when\n" +
+                "  $lh: List()\n" +
+                "  String( $lh.indexOf( this ) == $lh.size() )\n" +
+                "then\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+        assertEquals( 0, ksession.fireAllRules() );
     }
 }

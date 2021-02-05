@@ -91,7 +91,7 @@ public class UnificationConstraint extends MutableTypeConstraint implements Inde
     }
 
     @Override
-    public Declaration getIndexingDeclaration() {
+    public Declaration getIndexExtractor() {
         return declaration;
     }
 

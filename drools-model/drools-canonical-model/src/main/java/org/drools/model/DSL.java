@@ -91,6 +91,7 @@ import org.drools.model.view.Expr1ViewItem;
 import org.drools.model.view.Expr1ViewItemImpl;
 import org.drools.model.view.Expr2ViewItem;
 import org.drools.model.view.Expr2ViewItemImpl;
+import org.drools.model.view.Expr3ViewItem;
 import org.drools.model.view.Expr3ViewItemImpl;
 import org.drools.model.view.Expr4ViewItemImpl;
 import org.drools.model.view.Expr5ViewItemImpl;
@@ -357,7 +358,7 @@ public class DSL {
         return new Expr2ViewItemImpl<>( exprId, var1, var2, new Predicate2.Impl<>(predicate));
     }
 
-    public static <T, U, X> ExprViewItem<T> expr(String exprId, Variable<T> var1, Variable<U> var2, Variable<X> var3, Predicate3<T, U, X> predicate) {
+    public static <T, U, X> Expr3ViewItem<T, U, X> expr( String exprId, Variable<T> var1, Variable<U> var2, Variable<X> var3, Predicate3<T, U, X> predicate) {
         return new Expr3ViewItemImpl<>(exprId, var1, var2, var3, new Predicate3.Impl<>(predicate));
     }
 

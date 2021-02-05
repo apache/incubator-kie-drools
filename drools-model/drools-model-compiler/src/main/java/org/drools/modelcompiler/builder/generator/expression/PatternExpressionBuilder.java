@@ -167,7 +167,7 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
             indexedByLeftOperandExtractor.addParameter(new Parameter(drlxParseResult.getPatternJPType(), THIS_PLACEHOLDER));
             indexedByLeftOperandExtractor.setBody(new ExpressionStmt(typedExpression.getExpression()));
 
-            MethodCallExpr indexedByDSL = new MethodCallExpr(null, drlxParseResult.isBetaNode() ? BETA_INDEXED_BY_CALL : ALPHA_INDEXED_BY_CALL);
+            MethodCallExpr indexedByDSL = new MethodCallExpr(null, drlxParseResult.isBetaConstraint() ? BETA_INDEXED_BY_CALL : ALPHA_INDEXED_BY_CALL);
             indexedByDSL.addArgument(new ClassExpr(parseType(left.getRawClass().getCanonicalName())));
             indexedByDSL.addArgument(org.drools.model.Index.ConstraintType.class.getCanonicalName() + ".EQUAL");
             indexedByDSL.addArgument("-1");
@@ -183,7 +183,7 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
         TypedExpression left = drlxParseResult.getLeft();
         TypedExpression right = drlxParseResult.getRight();
 
-        boolean isBeta = drlxParseResult.isBetaNode();
+        boolean isBeta = drlxParseResult.isBetaConstraint();
         Expression rightExpression = right.getExpression();
         if (!isBeta && !(rightExpression instanceof LiteralExpr || isStringToDateExpression(rightExpression))) {
             return Optional.empty();
@@ -204,11 +204,12 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
 
         Collection<String> usedDeclarations = drlxParseResult.getUsedDeclarations();
         java.lang.reflect.Type leftType = left.getType();
-        if ( isAlphaIndex( usedDeclarations )) {
-            indexedByDSL.addArgument( narrowExpressionToType(right, left.getType()));
-        } else if (usedDeclarations.size() == 1) {
+        if ( drlxParseResult.isBetaConstraint() ) {
             addIndexedByDeclaration(left, right, leftContainsThis, indexedByDSL, usedDeclarations, leftType, drlxParseResult);
+        } else {
+            indexedByDSL.addArgument( narrowExpressionToType(right, leftType));
         }
+
         return Optional.of(indexedByDSL);
     }
 }
