@@ -39,6 +39,10 @@
         </exclusion>
         <exclusion>
           <groupId>org.drools</groupId>
+          <artifactId>drools-mvel</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.drools</groupId>
           <artifactId>drools-mvel-parser</artifactId>
         </exclusion>
         <exclusion>
