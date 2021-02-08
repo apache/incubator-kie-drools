@@ -4,15 +4,18 @@ import java.util.Optional;
 
 import com.github.javaparser.ParseProblemException;
 import com.github.javaparser.StaticJavaParser;
+import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyper;
 import org.drools.modelcompiler.builder.generator.expressiontyper.TypedExpressionResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static com.github.javaparser.ast.NodeList.nodeList;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.unEncloseExpr;
 
 public class PrimitiveTypeConsequenceRewrite {
@@ -57,7 +60,8 @@ public class PrimitiveTypeConsequenceRewrite {
             ) {
                 Expression unenclosedExpression = unEncloseExpr(typedExpression.getExpression());
                 Expression scope = StaticJavaParser.parseExpression(unenclosedExpression.toString());
-                MethodCallExpr shortValue = new MethodCallExpr(scope, "shortValue");
+                MethodCallExpr integerValueOf = new MethodCallExpr(new NameExpr(Integer.class.getCanonicalName()), "valueOf", nodeList(scope));
+                MethodCallExpr shortValue = new MethodCallExpr(integerValueOf, "shortValue");
                 ce.replace(shortValue);
             }
         });
