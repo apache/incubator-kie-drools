@@ -145,14 +145,13 @@ pipeline {
         stage('Build Vehicle Routing') {
             steps {
                 script {
-                    getOptawebVehicleRoutingMavenCommand().skipTests(params.SKIP_TESTS).run('clean install')
+                    buildOptaweb(getOptawebVehicleRoutingMavenCommand())
                 }
             }
             post {
                 always {
                     saveReports(params.SKIP_TESTS)
-                    // TODO: Enable together with the profile "integration-tests" once dockerhub pull limit is resolved.
-                    // archiveArtifacts(allowEmptyArchive: true, artifacts: "**/cypress/screenshots/**,**/cypress/videos/**", fingerprint: false)
+                    saveArtifacts(params.SKIP_INTEGRATION_TESTS)
                 }
             }
         }
@@ -160,14 +159,13 @@ pipeline {
         stage('Build Employee Rostering') {
             steps {
                 script {
-                    getOptawebEmployeeRosteringMavenCommand().skipTests(params.SKIP_TESTS).run('clean install')
+                    buildOptaweb(getOptawebEmployeeRosteringMavenCommand())
                 }
             }
             post {
                 always {
                     saveReports(params.SKIP_TESTS)
-                    // TODO: Enable together with the profile "integration-tests" once dockerhub pull limit is resolved.
-                    // archiveArtifacts(allowEmptyArchive: true, artifacts: "**/cypress/screenshots/**,**/cypress/videos/**", fingerprint: false)
+                    saveArtifacts(params.SKIP_INTEGRATION_TESTS)
                 }
             }
         }
@@ -229,6 +227,22 @@ pipeline {
             }
         }
     }
+}
+
+void buildOptaweb(MavenCommand optawebCommand){
+    MavenCommand buildCommand = optawebCommand
+    if (!isRelease()) {
+        buildCommand = buildCommand.withProfiles(getIntegrationTestProfiles())
+    }
+    buildCommand.skipTests(params.SKIP_TESTS).run('clean install')
+}
+
+void saveArtifacts(boolean skipIntegrationTests=false) {
+        archiveArtifacts(allowEmptyArchive: skipIntegrationTests, artifacts: "**/cypress/screenshots/**,**/cypress/videos/**", fingerprint: false)
+}
+
+List getIntegrationTestProfiles(){
+    return params.SKIP_INTEGRATION_TESTS ? [] : ['integration-tests']
 }
 
 void updateQuickstartsVersions(){

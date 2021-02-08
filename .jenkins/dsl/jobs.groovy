@@ -129,6 +129,7 @@ void setupDeployJob(String jobFolder, KogitoJobType jobType) {
             }
 
             booleanParam('SKIP_TESTS', false, 'Skip tests')
+            booleanParam('SKIP_INTEGRATION_TESTS',  false, 'Skip long integration tests')
 
             booleanParam('CREATE_PR', false, 'Should we create a PR with the changes ?')
             stringParam('PROJECT_VERSION', '', 'Optional if not RELEASE. If RELEASE, cannot be empty.')
