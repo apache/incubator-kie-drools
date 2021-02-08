@@ -948,15 +948,15 @@ public class PatternDSLTest {
 
     @Test
     public void testBetaIndexOn2ValuesOnLeftTuple() {
-        final Variable<Integer> var_GENERATED_$pattern_Integer$3$ = D.declarationOf(Integer.class, "GENERATED_$pattern_Integer$3$");
-        final Variable<Integer> var_$i = D.declarationOf(Integer.class, "$i");
-        final Variable<String> var_GENERATED_$pattern_String$4$ = D.declarationOf(String.class, "GENERATED_$pattern_String$4$");
-        final Variable<Integer> var_$l = D.declarationOf(Integer.class, "$l");
-        final Variable<Person> var_$p = D.declarationOf(Person.class, "$p");
+        final Variable<Integer> var_$integer = D.declarationOf(Integer.class);
+        final Variable<Integer> var_$i = D.declarationOf(Integer.class);
+        final Variable<String> var_$string = D.declarationOf(String.class);
+        final Variable<Integer> var_$l = D.declarationOf(Integer.class);
+        final Variable<Person> var_$p = D.declarationOf(Person.class);
 
-        Rule rule = D.rule("R1").build(D.pattern(var_GENERATED_$pattern_Integer$3$).bind(var_$i,
+        Rule rule = D.rule("R1").build(D.pattern(var_$integer).bind(var_$i,
                 (Integer _this) -> _this),
-                D.pattern(var_GENERATED_$pattern_String$4$).bind(var_$l,
+                D.pattern(var_$string).bind(var_$l,
                         (String _this) -> _this.length()),
                 D.pattern(var_$p).expr("8EF302358D7EE770A4D874DF4B3327D2",
                         var_$l,
@@ -964,10 +964,8 @@ public class PatternDSLTest {
                         (_this, $l, $i) -> org.drools.modelcompiler.util.EvaluationUtil.areNumbersNullSafeEquals(_this.getAge(), $l + $i),
                         D.betaIndexedBy(int.class, Index.ConstraintType.EQUAL, 3, Person::getAge, ($l, $i) -> $l + $i, int.class),
                         D.reactOn("age")),
-                D.execute(() -> {
-                    {
-                    }
-                }));
+                D.execute(() -> { })
+        );
 
         Model model = new ModelImpl().addRule(rule);
         KieBase kieBase = KieBaseBuilder.createKieBaseFromModel(model, EventProcessingOption.STREAM);
