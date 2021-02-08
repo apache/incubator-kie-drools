@@ -97,12 +97,12 @@ public class KieDMNModelJandexTest {
     private void scanFile(File source, Indexer indexer) throws Exception {
         if (source.isDirectory()) {
             File[] children = source.listFiles();
-            if (children == null)
+            if (children == null) {
                 throw new FileNotFoundException("Source directory disappeared: " + source);
-
-            for (File child : children)
+            }
+            for (File child : children) {
                 scanFile(child, indexer);
-
+            }
             return;
         }
 
