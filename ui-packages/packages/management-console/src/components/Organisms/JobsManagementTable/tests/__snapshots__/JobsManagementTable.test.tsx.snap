@@ -67,6 +67,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
   setIsActionPerformed={[MockFunction]}
   setModalContent={[MockFunction]}
   setModalTitle={[MockFunction]}
+  setOffset={[MockFunction]}
   setOrderBy={[MockFunction]}
   setSelectedJob={[MockFunction]}
   setSelectedJobInstances={

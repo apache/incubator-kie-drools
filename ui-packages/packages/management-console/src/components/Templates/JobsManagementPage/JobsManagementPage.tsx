@@ -363,6 +363,7 @@ const JobsManagementPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
                         handleCancelModalToggle={handleCancelModalToggle}
                         setModalTitle={setModalTitle}
                         setModalContent={setModalContent}
+                        setOffset={setOffset}
                         setOrderBy={setOrderBy}
                         setSelectedJob={setSelectedJob}
                         setSortBy={setSortBy}

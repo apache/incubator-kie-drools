@@ -754,6 +754,7 @@ exports[`Jobs management page tests snapshot test with mock data 1`] = `
                   setIsActionPerformed={[Function]}
                   setModalContent={[Function]}
                   setModalTitle={[Function]}
+                  setOffset={[Function]}
                   setOrderBy={[Function]}
                   setSelectedJob={[Function]}
                   setSelectedJobInstances={[Function]}

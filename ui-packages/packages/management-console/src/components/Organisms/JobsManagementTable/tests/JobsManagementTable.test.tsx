@@ -95,6 +95,7 @@ describe('Jobs management table component tests', () => {
     handleCancelModalToggle: jest.fn(),
     setModalTitle: jest.fn(),
     setModalContent: jest.fn(),
+    setOffset: jest.fn(),
     setOrderBy: jest.fn(),
     setSelectedJob: jest.fn(),
     selectedJobInstances: [],
@@ -323,5 +324,6 @@ describe('Jobs management table component tests', () => {
     });
     wrapper = wrapper.update();
     expect(props.setSortBy).toBeTruthy();
+    expect(props.setOffset).toHaveBeenCalledWith(0);
   });
 });

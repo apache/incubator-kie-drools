@@ -38,6 +38,7 @@ interface IOwnProps {
   handleCancelModalToggle: () => void;
   setModalTitle: (modalTitle: JSX.Element) => void;
   setModalContent: (modalContent: string) => void;
+  setOffset: (offSet: number) => void;
   setOrderBy: (order: GraphQL.JobOrderBy) => void;
   setSelectedJob: (job: GraphQL.Job) => void;
   selectedJobInstances: GraphQL.Job[];
@@ -55,6 +56,7 @@ const JobsManagementTable: React.FC<IOwnProps & OUIAProps> = ({
   handleCancelModalToggle,
   setModalTitle,
   setModalContent,
+  setOffset,
   setOrderBy,
   setSelectedJob,
   setSortBy,
@@ -278,6 +280,7 @@ const JobsManagementTable: React.FC<IOwnProps & OUIAProps> = ({
 
   const onSort = (event, index: number, direction: 'asc' | 'desc'): void => {
     setSortBy({ index, direction });
+    setOffset(0);
     let sortingColumn: string = event.target.innerText;
     sortingColumn = _.camelCase(sortingColumn);
     const obj: GraphQL.JobOrderBy = {};
