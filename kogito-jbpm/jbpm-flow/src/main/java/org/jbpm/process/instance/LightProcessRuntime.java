@@ -222,7 +222,7 @@ public class LightProcessRuntime extends AbstractProcessRuntime {
     }
 
     public KogitoProcessInstance getProcessInstance(String id, boolean readOnly) {
-        return (KogitoProcessInstance) processInstanceManager.getProcessInstance(id, readOnly);
+        return processInstanceManager.getProcessInstance(id, readOnly);
     }
 
     public void removeProcessInstance(KogitoProcessInstance processInstance) {

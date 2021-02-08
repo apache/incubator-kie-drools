@@ -32,36 +32,32 @@ import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.kie.api.KieBase;
-import org.kie.api.runtime.process.ProcessInstance;
-import org.kie.api.runtime.process.WorkItem;
-import org.kie.api.runtime.process.WorkItemHandler;
-import org.kie.api.runtime.process.WorkItemManager;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DataTest extends JbpmBpmn2TestCase {
 
     @Test
     public void testImport() throws Exception {
-        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-Import.bpmn2");
-        ksession = createKnowledgeSession(kbase);
-        ProcessInstance processInstance = ksession.startProcess("Import");
+        kruntime = createKogitoProcessRuntime("BPMN2-Import.bpmn2");
+        KogitoProcessInstance processInstance = kruntime.startProcess("Import");
         assertProcessInstanceCompleted(processInstance);
         
     }
 
     @Test
     public void testDataObject() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-DataObject.bpmn2");
-        ksession = createKnowledgeSession(kbase);
-        Map<String, Object> params = new HashMap<String, Object>();
+        kruntime = createKogitoProcessRuntime("BPMN2-DataObject.bpmn2");
+        Map<String, Object> params = new HashMap<>();
         params.put("employee", "UserId-12345");
-        ProcessInstance processInstance = ksession.startProcess("Evaluation",
+        KogitoProcessInstance processInstance = kruntime.startProcess("Evaluation",
                 params);
         assertProcessInstanceCompleted(processInstance);
         
@@ -69,13 +65,12 @@ public class DataTest extends JbpmBpmn2TestCase {
 
     @Test
     public void testDataStore() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-DataStore.bpmn2");
-        ksession = createKnowledgeSession(kbase);
-        ProcessInstance processInstance = ksession.startProcess("Evaluation");
+        kruntime = createKogitoProcessRuntime("BPMN2-DataStore.bpmn2");
+        KogitoProcessInstance processInstance = kruntime.startProcess("Evaluation");
         Definitions def = (Definitions) processInstance.getProcess()
                 .getMetaData().get("Definitions");
         assertNotNull(def.getDataStores());
-        assertTrue(def.getDataStores().size() == 1);
+        assertEquals(1, def.getDataStores().size());
         DataStore dataStore = def.getDataStores().get(0);
         assertEquals("employee", dataStore.getId());
         assertEquals("employeeStore", dataStore.getName());
@@ -86,12 +81,11 @@ public class DataTest extends JbpmBpmn2TestCase {
 
     @Test
     public void testAssociation() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-Association.bpmn2");
-        ksession = createKnowledgeSession(kbase);
-        ProcessInstance processInstance = ksession.startProcess("Evaluation");
+        kruntime = createKogitoProcessRuntime("BPMN2-Association.bpmn2");
+        KogitoProcessInstance processInstance = kruntime.startProcess("Evaluation");
         List<Association> associations = (List<Association>) processInstance.getProcess().getMetaData().get(ProcessHandler.ASSOCIATIONS);
         assertNotNull(associations);
-        assertTrue(associations.size() == 1);
+        assertEquals(1, associations.size());
         Association assoc = associations.get(0);
         assertEquals("_1234", assoc.getId());
         assertEquals("_1", assoc.getSourceRef());
@@ -101,15 +95,14 @@ public class DataTest extends JbpmBpmn2TestCase {
 
     @Test
     public void testEvaluationProcess() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-EvaluationProcess.bpmn2");
-        ksession = createKnowledgeSession(kbase);
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+        kruntime = createKogitoProcessRuntime("BPMN2-EvaluationProcess.bpmn2");
+        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",
                 new SystemOutWorkItemHandler());
-        ksession.getWorkItemManager().registerWorkItemHandler(
+        kruntime.getWorkItemManager().registerWorkItemHandler(
                 "RegisterRequest", new SystemOutWorkItemHandler());
-        Map<String, Object> params = new HashMap<String, Object>();
+        Map<String, Object> params = new HashMap<>();
         params.put("employee", "UserId-12345");
-        ProcessInstance processInstance = ksession.startProcess("Evaluation",
+        KogitoProcessInstance processInstance = kruntime.startProcess("Evaluation",
                 params);
         assertProcessInstanceCompleted(processInstance);
         
@@ -117,13 +110,12 @@ public class DataTest extends JbpmBpmn2TestCase {
 
     @Test
     public void testEvaluationProcess2() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-EvaluationProcess2.bpmn2");
-        ksession = createKnowledgeSession(kbase);
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+        kruntime = createKogitoProcessRuntime("BPMN2-EvaluationProcess2.bpmn2");
+        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",
                 new SystemOutWorkItemHandler());
-        Map<String, Object> params = new HashMap<String, Object>();
+        Map<String, Object> params = new HashMap<>();
         params.put("employee", "UserId-12345");
-        ProcessInstance processInstance = ksession.startProcess(
+        KogitoProcessInstance processInstance = kruntime.startProcess(
                 "com.sample.evaluation", params);
         assertProcessInstanceCompleted(processInstance);
         
@@ -131,15 +123,14 @@ public class DataTest extends JbpmBpmn2TestCase {
 
     @Test
     public void testEvaluationProcess3() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-EvaluationProcess3.bpmn2");
-        ksession = createKnowledgeSession(kbase);
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+        kruntime = createKogitoProcessRuntime("BPMN2-EvaluationProcess3.bpmn2");
+        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",
                 new SystemOutWorkItemHandler());
-        ksession.getWorkItemManager().registerWorkItemHandler(
+        kruntime.getWorkItemManager().registerWorkItemHandler(
                 "RegisterRequest", new SystemOutWorkItemHandler());
-        Map<String, Object> params = new HashMap<String, Object>();
+        Map<String, Object> params = new HashMap<>();
         params.put("employee", "john2");
-        ProcessInstance processInstance = ksession.startProcess("Evaluation",
+        KogitoProcessInstance processInstance = kruntime.startProcess("Evaluation",
                 params);
         assertProcessInstanceCompleted(processInstance);
         
@@ -147,17 +138,16 @@ public class DataTest extends JbpmBpmn2TestCase {
 
     @Test
     public void testXpathExpression() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-XpathExpression.bpmn2");
-        ksession = createKnowledgeSession(kbase);
+        kruntime = createKogitoProcessRuntime("BPMN2-XpathExpression.bpmn2");
         Document document = DocumentBuilderFactory
                 .newInstance()
                 .newDocumentBuilder()
                 .parse(new ByteArrayInputStream(
                         "<instanceMetadata><user approved=\"false\" /></instanceMetadata>"
                                 .getBytes()));
-        Map<String, Object> params = new HashMap<String, Object>();
+        Map<String, Object> params = new HashMap<>();
         params.put("instanceMetadata", document);
-        ProcessInstance processInstance = ksession.startProcess("XPathProcess",
+        KogitoProcessInstance processInstance = kruntime.startProcess("XPathProcess",
                 params);
         assertProcessInstanceCompleted(processInstance);
         
@@ -165,17 +155,18 @@ public class DataTest extends JbpmBpmn2TestCase {
 
     @Test
     public void testDataInputAssociations() throws Exception {
-        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-DataInputAssociations.bpmn2");
-        ksession = createKnowledgeSession(kbase);
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
-                new WorkItemHandler() {
-                    public void abortWorkItem(WorkItem manager,
-                            WorkItemManager mgr) {
+        kruntime = createKogitoProcessRuntime("BPMN2-DataInputAssociations.bpmn2");
+        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",
+                new KogitoWorkItemHandler() {
+                    @Override
+                    public void abortWorkItem(KogitoWorkItem manager,
+                                              KogitoWorkItemManager mgr) {
 
                     }
 
-                    public void executeWorkItem(WorkItem workItem,
-                            WorkItemManager mgr) {
+                    @Override
+                    public void executeWorkItem(KogitoWorkItem workItem,
+                                                KogitoWorkItemManager mgr) {
                         assertEquals("hello world",
                                 workItem.getParameter("coId"));
                     }
@@ -185,34 +176,35 @@ public class DataTest extends JbpmBpmn2TestCase {
                 .newDocumentBuilder()
                 .parse(new ByteArrayInputStream("<user hello='hello world' />"
                         .getBytes()));
-        Map<String, Object> params = new HashMap<String, Object>();
+        Map<String, Object> params = new HashMap<>();
         params.put("instanceMetadata", document.getFirstChild());
-        ProcessInstance processInstance = ksession.startProcess("process",
+        KogitoProcessInstance processInstance = kruntime.startProcess("process",
                 params);
         
     }
 
     @Test
     public void testDataInputAssociationsWithStringObject() throws Exception {
-        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-DataInputAssociations-string-object.bpmn2");
-        ksession = createKnowledgeSession(kbase);
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
-                new WorkItemHandler() {
+        kruntime = createKogitoProcessRuntime("BPMN2-DataInputAssociations-string-object.bpmn2");
+        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",
+                new KogitoWorkItemHandler() {
 
-                    public void abortWorkItem(WorkItem manager,
-                            WorkItemManager mgr) {
+                    @Override
+                    public void abortWorkItem(KogitoWorkItem manager,
+                                              KogitoWorkItemManager mgr) {
 
                     }
 
-                    public void executeWorkItem(WorkItem workItem,
-                            WorkItemManager mgr) {
+                    @Override
+                    public void executeWorkItem(KogitoWorkItem workItem, 
+                                                KogitoWorkItemManager mgr) {
                         assertEquals("hello", workItem.getParameter("coId"));
                     }
 
                 });
-        Map<String, Object> params = new HashMap<String, Object>();
+        Map<String, Object> params = new HashMap<>();
         params.put("instanceMetadata", "hello");
-        ProcessInstance processInstance = ksession.startProcess("process",
+        KogitoProcessInstance processInstance = kruntime.startProcess("process",
                 params);
         
     }
@@ -224,18 +216,17 @@ public class DataTest extends JbpmBpmn2TestCase {
     @Disabled
     public void testDataInputAssociationsWithLazyLoading()
             throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-DataInputAssociations-lazy-creating.bpmn2");
-        ksession = createKnowledgeSession(kbase);
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
-                new WorkItemHandler() {
+        kruntime = createKogitoProcessRuntime("BPMN2-DataInputAssociations-lazy-creating.bpmn2");
+        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",
+                new KogitoWorkItemHandler() {
 
-                    public void abortWorkItem(WorkItem manager,
-                            WorkItemManager mgr) {
+                    public void abortWorkItem(KogitoWorkItem manager,
+                            KogitoWorkItemManager mgr) {
 
                     }
 
-                    public void executeWorkItem(WorkItem workItem,
-                            WorkItemManager mgr) {
+                    public void executeWorkItem(KogitoWorkItem workItem,
+                            KogitoWorkItemManager mgr) {
                         Object coIdParamObj = workItem.getParameter("coId");
                         assertEquals("mydoc", ((Element) coIdParamObj).getNodeName());
                         assertEquals("mynode", ((Element) workItem.getParameter("coId")).getFirstChild().getNodeName());
@@ -256,32 +247,31 @@ public class DataTest extends JbpmBpmn2TestCase {
                 .newDocumentBuilder()
                 .parse(new ByteArrayInputStream("<user hello='hello world' />"
                         .getBytes()));
-        Map<String, Object> params = new HashMap<String, Object>();
+        Map<String, Object> params = new HashMap<>();
         params.put("instanceMetadata", document.getFirstChild());
-        ProcessInstance processInstance = ksession.startProcess("process",
+        KogitoProcessInstance processInstance = kruntime.startProcess("process",
                 params);
         
     }
 
     @Test
     public void testDataInputAssociationsWithString() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-DataInputAssociations-string.bpmn2");
-        ksession = createKnowledgeSession(kbase);
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
-                new WorkItemHandler() {
+        kruntime = createKogitoProcessRuntime("BPMN2-DataInputAssociations-string.bpmn2");
+        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",
+                new KogitoWorkItemHandler() {
 
-                    public void abortWorkItem(WorkItem manager,
-                            WorkItemManager mgr) {
+                    public void abortWorkItem(KogitoWorkItem manager,
+                            KogitoWorkItemManager mgr) {
 
                     }
 
-                    public void executeWorkItem(WorkItem workItem,
-                            WorkItemManager mgr) {
+                    public void executeWorkItem(KogitoWorkItem workItem,
+                            KogitoWorkItemManager mgr) {
                         assertEquals("hello", workItem.getParameter("coId"));
                     }
 
                 });
-        ProcessInstance processInstance = ksession
+        KogitoProcessInstance processInstance = kruntime
                 .startProcess("process");
         
     }
@@ -289,41 +279,39 @@ public class DataTest extends JbpmBpmn2TestCase {
     @Test
     public void testDataInputAssociationsWithStringWithoutQuotes()
             throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-DataInputAssociations-string-no-quotes.bpmn2");
-        ksession = createKnowledgeSession(kbase);
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
-                new WorkItemHandler() {
+        kruntime = createKogitoProcessRuntime("BPMN2-DataInputAssociations-string-no-quotes.bpmn2");
+        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",
+                new KogitoWorkItemHandler() {
 
-                    public void abortWorkItem(WorkItem manager,
-                            WorkItemManager mgr) {
+                    public void abortWorkItem(KogitoWorkItem manager,
+                            KogitoWorkItemManager mgr) {
 
                     }
 
-                    public void executeWorkItem(WorkItem workItem,
-                            WorkItemManager mgr) {
+                    public void executeWorkItem(KogitoWorkItem workItem,
+                            KogitoWorkItemManager mgr) {
                         assertEquals("hello", workItem.getParameter("coId"));
                     }
 
                 });
-        ProcessInstance processInstance = ksession
+        KogitoProcessInstance processInstance = kruntime
                 .startProcess("process");
         
     }
 
     @Test
     public void testDataInputAssociationsWithXMLLiteral() throws Exception {
-        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-DataInputAssociations-xml-literal.bpmn2");
-        ksession = createKnowledgeSession(kbase);
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
-                new WorkItemHandler() {
+        kruntime = createKogitoProcessRuntime("BPMN2-DataInputAssociations-xml-literal.bpmn2");
+        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",
+                new KogitoWorkItemHandler() {
 
-                    public void abortWorkItem(WorkItem manager,
-                            WorkItemManager mgr) {
+                    public void abortWorkItem(KogitoWorkItem manager,
+                            KogitoWorkItemManager mgr) {
 
                     }
 
-                    public void executeWorkItem(WorkItem workItem,
-                            WorkItemManager mgr) {
+                    public void executeWorkItem(KogitoWorkItem workItem,
+                            KogitoWorkItemManager mgr) {
                         assertEquals("id", ((org.w3c.dom.Node) workItem
                                 .getParameter("coId")).getNodeName());
                         assertEquals("some text", ((org.w3c.dom.Node) workItem
@@ -332,7 +320,7 @@ public class DataTest extends JbpmBpmn2TestCase {
                     }
 
                 });
-        ProcessInstance processInstance = ksession
+        KogitoProcessInstance processInstance = kruntime
                 .startProcess("process");
         
     }
@@ -343,18 +331,17 @@ public class DataTest extends JbpmBpmn2TestCase {
     @Test
     @Disabled
     public void testDataInputAssociationsWithTwoAssigns() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-DataInputAssociations-two-assigns.bpmn2");
-        ksession = createKnowledgeSession(kbase);
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
-                new WorkItemHandler() {
+        kruntime = createKogitoProcessRuntime("BPMN2-DataInputAssociations-two-assigns.bpmn2");
+        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",
+                new KogitoWorkItemHandler() {
 
-                    public void abortWorkItem(WorkItem manager,
-                            WorkItemManager mgr) {
+                    public void abortWorkItem(KogitoWorkItem manager,
+                            KogitoWorkItemManager mgr) {
 
                     }
 
-                    public void executeWorkItem(WorkItem workItem,
-                            WorkItemManager mgr) {
+                    public void executeWorkItem(KogitoWorkItem workItem,
+                            KogitoWorkItemManager mgr) {
                         assertEquals("foo", ((Element) workItem
                                 .getParameter("Comment")).getNodeName());
                         // assertEquals("mynode", ((Element)
@@ -371,27 +358,26 @@ public class DataTest extends JbpmBpmn2TestCase {
                 .newDocumentBuilder()
                 .parse(new ByteArrayInputStream("<user hello='hello world' />"
                         .getBytes()));
-        Map<String, Object> params = new HashMap<String, Object>();
+        Map<String, Object> params = new HashMap<>();
         params.put("instanceMetadata", document.getFirstChild());
-        ProcessInstance processInstance = ksession.startProcess("process",
+        KogitoProcessInstance processInstance = kruntime.startProcess("process",
                 params);
         
     }
 
     @Test
     public void testDataOutputAssociationsforHumanTask() throws Exception {
-        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-DataOutputAssociations-HumanTask.bpmn2");
-        ksession = createKnowledgeSession(kbase);
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
-                new WorkItemHandler() {
+        kruntime = createKogitoProcessRuntime("BPMN2-DataOutputAssociations-HumanTask.bpmn2");
+        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",
+                new KogitoWorkItemHandler() {
 
-                    public void abortWorkItem(WorkItem manager,
-                            WorkItemManager mgr) {
+                    public void abortWorkItem(KogitoWorkItem manager,
+                            KogitoWorkItemManager mgr) {
 
                     }
 
-                    public void executeWorkItem(WorkItem workItem,
-                            WorkItemManager mgr) {
+                    public void executeWorkItem(KogitoWorkItem workItem,
+                            KogitoWorkItemManager mgr) {
                         DocumentBuilderFactory factory = DocumentBuilderFactory
                                 .newInstance();
                         DocumentBuilder builder;
@@ -400,7 +386,7 @@ public class DataTest extends JbpmBpmn2TestCase {
                         } catch (ParserConfigurationException e) {
                             throw new RuntimeException(e);
                         }
-                        final Map<String, Object> results = new HashMap<String, Object>();
+                        final Map<String, Object> results = new HashMap<>();
 
                         // process metadata
                         org.w3c.dom.Document processMetadaDoc = builder
@@ -419,26 +405,25 @@ public class DataTest extends JbpmBpmn2TestCase {
                     }
 
                 });
-        Map<String, Object> params = new HashMap<String, Object>();
-        ProcessInstance processInstance = ksession.startProcess("process",
+        Map<String, Object> params = new HashMap<>();
+        KogitoProcessInstance processInstance = kruntime.startProcess("process",
                 params);
         
     }
 
     @Test
     public void testDataOutputAssociations() throws Exception {
-        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-DataOutputAssociations.bpmn2");
-        ksession = createKnowledgeSession(kbase);
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
-                new WorkItemHandler() {
+        kruntime = createKogitoProcessRuntime("BPMN2-DataOutputAssociations.bpmn2");
+        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",
+                new KogitoWorkItemHandler() {
 
-                    public void abortWorkItem(WorkItem manager,
-                            WorkItemManager mgr) {
+                    public void abortWorkItem(KogitoWorkItem manager,
+                            KogitoWorkItemManager mgr) {
 
                     }
 
-                    public void executeWorkItem(WorkItem workItem,
-                            WorkItemManager mgr) {
+                    public void executeWorkItem(KogitoWorkItem workItem,
+                            KogitoWorkItemManager mgr) {
                         try {
                             Document document = DocumentBuilderFactory
                                     .newInstance()
@@ -446,7 +431,7 @@ public class DataTest extends JbpmBpmn2TestCase {
                                     .parse(new ByteArrayInputStream(
                                             "<user hello='hello world' />"
                                                     .getBytes()));
-                            Map<String, Object> params = new HashMap<String, Object>();
+                            Map<String, Object> params = new HashMap<>();
                             params.put("output", document.getFirstChild());
                             mgr.completeWorkItem(workItem.getId(), params);
                         } catch (Throwable e) {
@@ -456,25 +441,24 @@ public class DataTest extends JbpmBpmn2TestCase {
                     }
 
                 });
-        ProcessInstance processInstance = ksession
+        KogitoProcessInstance processInstance = kruntime
                 .startProcess("process");
         
     }
 
     @Test
     public void testDataOutputAssociationsXmlNode() throws Exception {
-        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-DataOutputAssociations-xml-node.bpmn2");
-        ksession = createKnowledgeSession(kbase);
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
-                new WorkItemHandler() {
+        kruntime = createKogitoProcessRuntime("BPMN2-DataOutputAssociations-xml-node.bpmn2");
+        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",
+                new KogitoWorkItemHandler() {
 
-                    public void abortWorkItem(WorkItem manager,
-                            WorkItemManager mgr) {
+                    public void abortWorkItem(KogitoWorkItem manager,
+                            KogitoWorkItemManager mgr) {
 
                     }
 
-                    public void executeWorkItem(WorkItem workItem,
-                            WorkItemManager mgr) {
+                    public void executeWorkItem(KogitoWorkItem workItem,
+                            KogitoWorkItemManager mgr) {
                         try {
                             Document document = DocumentBuilderFactory
                                     .newInstance()
@@ -482,7 +466,7 @@ public class DataTest extends JbpmBpmn2TestCase {
                                     .parse(new ByteArrayInputStream(
                                             "<user hello='hello world' />"
                                                     .getBytes()));
-                            Map<String, Object> params = new HashMap<String, Object>();
+                            Map<String, Object> params = new HashMap<>();
                             params.put("output", document.getFirstChild());
                             mgr.completeWorkItem(workItem.getId(), params);
                         } catch (Throwable e) {
@@ -492,7 +476,7 @@ public class DataTest extends JbpmBpmn2TestCase {
                     }
 
                 });
-        ProcessInstance processInstance = ksession
+        KogitoProcessInstance processInstance = kruntime
                 .startProcess("process");
         
     }

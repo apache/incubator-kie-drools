@@ -34,9 +34,6 @@ import org.jbpm.process.core.ContextResolver;
 import org.jbpm.process.instance.impl.ReturnValueConstraintEvaluator;
 import org.jbpm.workflow.core.DroolsAction;
 import org.junit.jupiter.api.Test;
-import org.kie.api.KieBase;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -49,7 +46,7 @@ public class CompilationTest extends JbpmBpmn2TestCase {
         ProcessDialectRegistry.setDialect("java", javaProcessDialect);
 
         String filename = "BPMN2-GatewaySplit-SequenceConditions.bpmn2";
-        KieBase kbase = createKnowledgeBase(filename);
+        kruntime = createKogitoProcessRuntime(filename);
 
         assertFalse(javaProcessDialect.getActionDescrs().isEmpty(),
                     "No " + ActionDescr.class.getSimpleName() + " instances caught for testing!");

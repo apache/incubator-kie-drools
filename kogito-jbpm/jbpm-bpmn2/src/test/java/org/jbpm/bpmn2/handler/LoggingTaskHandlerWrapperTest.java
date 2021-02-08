@@ -23,37 +23,33 @@ import java.util.Map;
 
 import org.jbpm.bpmn2.JbpmBpmn2TestCase;
 import org.jbpm.bpmn2.handler.LoggingTaskHandlerDecorator.InputParameter;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-import org.kie.api.KieBase;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class LoggingTaskHandlerWrapperTest extends JbpmBpmn2TestCase {
     
     @Test
     public void testLimitExceptionInfoList() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-ExceptionThrowingServiceProcess.bpmn2");
-        ksession = createKnowledgeSession(kbase);
+        kruntime = createKogitoProcessRuntime("BPMN2-ExceptionThrowingServiceProcess.bpmn2");
         
         LoggingTaskHandlerDecorator loggingTaskHandlerWrapper = new LoggingTaskHandlerDecorator(ServiceTaskHandler.class, 2);
         loggingTaskHandlerWrapper.setPrintStackTrace(false);
-        ksession.getWorkItemManager().registerWorkItemHandler("Service Task", loggingTaskHandlerWrapper);
+        kruntime.getWorkItemManager().registerWorkItemHandler("Service Task", loggingTaskHandlerWrapper);
 
-        Map<String, Object> params = new HashMap<String, Object>();
+        Map<String, Object> params = new HashMap<>();
         params.put("serviceInputItem", "exception message");
-        ksession.startProcess("ServiceProcess", params);
-        ksession.startProcess("ServiceProcess", params);
-        ksession.startProcess("ServiceProcess", params);
+        kruntime.startProcess("ServiceProcess", params);
+        kruntime.startProcess("ServiceProcess", params);
+        kruntime.startProcess("ServiceProcess", params);
 
-        int size = loggingTaskHandlerWrapper.getWorkItemExceptionInfoList().size(); 
-        assertTrue( size == 2, "WorkItemExceptionInfoList is too large: " + size);
+        int size = loggingTaskHandlerWrapper.getWorkItemExceptionInfoList().size();
+        assertEquals(2, size, "WorkItemExceptionInfoList is too large: " + size);
     }
     
     @Test
     public void testFormatLoggingError() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-ExceptionThrowingServiceProcess.bpmn2");
-        ksession = createKnowledgeSession(kbase);
+        kruntime = createKogitoProcessRuntime("BPMN2-ExceptionThrowingServiceProcess.bpmn2");
         
         LoggingTaskHandlerDecorator loggingTaskHandlerWrapper = new LoggingTaskHandlerDecorator(ServiceTaskHandler.class, 2);
         loggingTaskHandlerWrapper.setLoggedMessageFormat("{0} - {1} - {2} - {3}");
@@ -66,13 +62,13 @@ public class LoggingTaskHandlerWrapperTest extends JbpmBpmn2TestCase {
         loggingTaskHandlerWrapper.setLoggedMessageInput(inputParameters);
         
         loggingTaskHandlerWrapper.setPrintStackTrace(false);
-        ksession.getWorkItemManager().registerWorkItemHandler("Service Task", loggingTaskHandlerWrapper);
+        kruntime.getWorkItemManager().registerWorkItemHandler("Service Task", loggingTaskHandlerWrapper);
 
-        Map<String, Object> params = new HashMap<String, Object>();
+        Map<String, Object> params = new HashMap<>();
         params.put("serviceInputItem", "exception message");
-        ksession.startProcess("ServiceProcess", params);
-        ksession.startProcess("ServiceProcess", params);
-        ksession.startProcess("ServiceProcess", params);
+        kruntime.startProcess("ServiceProcess", params);
+        kruntime.startProcess("ServiceProcess", params);
+        kruntime.startProcess("ServiceProcess", params);
     }
 
 }

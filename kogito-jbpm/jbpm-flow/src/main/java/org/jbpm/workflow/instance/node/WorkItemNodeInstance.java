@@ -80,12 +80,12 @@ import org.slf4j.LoggerFactory;
 import static org.jbpm.process.core.context.variable.VariableScope.VARIABLE_SCOPE;
 import static org.kie.kogito.internal.process.runtime.KogitoProcessInstance.STATE_ABORTED;
 import static org.kie.kogito.internal.process.runtime.KogitoProcessInstance.STATE_COMPLETED;
-import static org.kie.api.runtime.process.WorkItem.ABORTED;
-import static org.kie.api.runtime.process.WorkItem.COMPLETED;
+import static org.kie.kogito.internal.process.runtime.KogitoWorkItem.ABORTED;
+import static org.kie.kogito.internal.process.runtime.KogitoWorkItem.COMPLETED;
 
 /**
  * Runtime counterpart of a work item node.
- * 
+ *
  */
 public class WorkItemNodeInstance extends StateBasedNodeInstance implements EventListener, ContextInstanceContainer {
 

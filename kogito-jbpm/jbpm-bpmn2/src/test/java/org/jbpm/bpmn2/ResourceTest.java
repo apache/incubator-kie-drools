@@ -17,9 +17,7 @@
 package org.jbpm.bpmn2;
 
 import org.junit.jupiter.api.Test;
-import org.kie.api.KieBase;
-import org.kie.api.runtime.process.ProcessInstance;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -27,18 +25,16 @@ public class ResourceTest extends JbpmBpmn2TestCase {
 
     @Test
     public void testResourceType() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-MinimalProcess.bpmn2");
-        ksession = createKnowledgeSession(kbase);
-        ksession.startProcess("Minimal");
+        kruntime = createKogitoProcessRuntime("BPMN2-MinimalProcess.bpmn2");
+        kruntime.startProcess("Minimal");
     }
 
     @Test
     public void testMultipleProcessInOneFile() throws Exception {
-        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-MultipleProcessInOneFile.bpmn2");
-        ksession = createKnowledgeSession(kbase);
-        ProcessInstance processInstance = ksession.startProcess("Evaluation");
+        kruntime = createKogitoProcessRuntime("BPMN2-MultipleProcessInOneFile.bpmn2");
+        KogitoProcessInstance processInstance = kruntime.startProcess("Evaluation");
         assertNotNull(processInstance);
-        ProcessInstance processInstance2 = ksession.startProcess("Simple");
+        KogitoProcessInstance processInstance2 = kruntime.startProcess("Simple");
         assertNotNull(processInstance2);
     }
 

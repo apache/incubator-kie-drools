@@ -24,10 +24,7 @@ import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.core.datatype.impl.coverter.TypeConverterRegistry;
 import org.junit.jupiter.api.Test;
-import org.kie.api.KieBase;
-import org.kie.api.runtime.KieSession;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
-import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -37,9 +34,7 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
 
     @Test
     public void testStringStructureRef() throws Exception {
-        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-StringStructureRef.bpmn2");
-        KieSession ksession = createKnowledgeSession(kbase);
-        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+        kruntime = createKogitoProcessRuntime("BPMN2-StringStructureRef.bpmn2");
 
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",
@@ -52,14 +47,12 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
         kruntime.getWorkItemManager().completeWorkItem(
                 workItemHandler.getWorkItem().getStringId(), res);
 
-        assertProcessInstanceCompleted(processInstance.getStringId(), ksession);
+        assertProcessInstanceCompleted(processInstance.getStringId(), kruntime);
     }
 
     @Test
     public void testBooleanStructureRef() throws Exception {
-        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-BooleanStructureRef.bpmn2");
-        KieSession ksession = createKnowledgeSession(kbase);
-        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+        kruntime = createKogitoProcessRuntime("BPMN2-BooleanStructureRef.bpmn2");
 
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",
@@ -72,14 +65,12 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
         kruntime.getWorkItemManager().completeWorkItem(
                 workItemHandler.getWorkItem().getStringId(), res);
 
-        assertProcessInstanceCompleted(processInstance.getStringId(), ksession);
+        assertProcessInstanceCompleted(processInstance.getStringId(), kruntime);
     }
 
     @Test
     public void testIntegerStructureRef() throws Exception {
-        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-IntegerStructureRef.bpmn2");
-        KieSession ksession = createKnowledgeSession(kbase);
-        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+        kruntime = createKogitoProcessRuntime("BPMN2-IntegerStructureRef.bpmn2");
 
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",
@@ -92,14 +83,12 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
         kruntime.getWorkItemManager().completeWorkItem(
                 workItemHandler.getWorkItem().getStringId(), res);
 
-        assertProcessInstanceCompleted(processInstance.getStringId(), ksession);
+        assertProcessInstanceCompleted(processInstance.getStringId(), kruntime);
     }
 
     @Test
     public void testFloatStructureRef() throws Exception {
-        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-FloatStructureRef.bpmn2");
-        KieSession ksession = createKnowledgeSession(kbase);
-        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+        kruntime = createKogitoProcessRuntime("BPMN2-FloatStructureRef.bpmn2");
 
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",
@@ -112,7 +101,7 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
         kruntime.getWorkItemManager().completeWorkItem(
                 workItemHandler.getWorkItem().getStringId(), res);
 
-        assertProcessInstanceCompleted(processInstance.getStringId(), ksession);
+        assertProcessInstanceCompleted(processInstance.getStringId(), kruntime);
     }
 
     @Test
@@ -122,9 +111,7 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
         TypeConverterRegistry.get().register("org.jbpm.bpmn2.objects.Person", (s) -> 
             new XStream().fromXML(personAsXml)
         );
-        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-ObjectStructureRef.bpmn2");
-        KieSession ksession = createKnowledgeSession(kbase);
-        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+        kruntime = createKogitoProcessRuntime("BPMN2-ObjectStructureRef.bpmn2");
 
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",
@@ -137,7 +124,7 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
         kruntime.getWorkItemManager().completeWorkItem(
                 workItemHandler.getWorkItem().getStringId(), res);
 
-        assertProcessInstanceCompleted(processInstance.getStringId(), ksession);
+        assertProcessInstanceCompleted(processInstance.getStringId(), kruntime);
     }
 
     @Test
@@ -145,9 +132,7 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
 
         String value = "simple text for testing";
 
-        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-DefaultObjectStructureRef.bpmn2");
-        KieSession ksession = createKnowledgeSession(kbase);
-        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+        kruntime = createKogitoProcessRuntime("BPMN2-DefaultObjectStructureRef.bpmn2");
 
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",
@@ -160,14 +145,12 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
         kruntime.getWorkItemManager().completeWorkItem(
                 workItemHandler.getWorkItem().getStringId(), res);
 
-        assertProcessInstanceCompleted(processInstance.getStringId(), ksession);
+        assertProcessInstanceCompleted(processInstance.getStringId(), kruntime);
     }
 
     @Test
     public void testNotExistingVarBooleanStructureRefOnStart() throws Exception {
-        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-BooleanStructureRef.bpmn2");
-        KieSession ksession = createKnowledgeSession(kbase);
-        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+        kruntime = createKogitoProcessRuntime("BPMN2-BooleanStructureRef.bpmn2");
 
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",
@@ -181,9 +164,7 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
 
     @Test
     public void testInvalidBooleanStructureRefOnStart() throws Exception {
-        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-BooleanStructureRef.bpmn2");
-        KieSession ksession = createKnowledgeSession(kbase);
-        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+        kruntime = createKogitoProcessRuntime("BPMN2-BooleanStructureRef.bpmn2");
 
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",
@@ -196,9 +177,7 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
 
     @Test
     public void testInvalidBooleanStructureRefOnWIComplete() throws Exception {
-        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-IntegerStructureRef.bpmn2");
-        KieSession ksession = createKnowledgeSession(kbase);
-        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+        kruntime = createKogitoProcessRuntime("BPMN2-IntegerStructureRef.bpmn2");
 
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",
@@ -223,9 +202,7 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
 
     @Test
     public void testInvalidBooleanStructureRefOnStartVerifyErrorMsg() throws Exception {
-        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-BooleanStructureRef.bpmn2");
-        KieSession ksession = createKnowledgeSession(kbase);
-        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+        kruntime = createKogitoProcessRuntime("BPMN2-BooleanStructureRef.bpmn2");
 
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",
@@ -244,9 +221,7 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
     public void testInvalidBooleanStructureRefOnStartWithDisabledCheck() throws Exception {
     	// Temporarily disable check for variables strict that is enabled by default for tests
     	VariableScope.setVariableStrictOption(false);
-        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-BooleanStructureRef.bpmn2");
-        KieSession ksession = createKnowledgeSession(kbase);
-        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+    	kruntime = createKogitoProcessRuntime("BPMN2-BooleanStructureRef.bpmn2");
 
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",
@@ -261,9 +236,7 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
 
     @Test
     public void testNotExistingBooleanStructureRefOnWIComplete() throws Exception {
-        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-IntegerStructureRef.bpmn2");
-        KieSession ksession = createKnowledgeSession(kbase);
-        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+        kruntime = createKogitoProcessRuntime("BPMN2-IntegerStructureRef.bpmn2");
 
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",

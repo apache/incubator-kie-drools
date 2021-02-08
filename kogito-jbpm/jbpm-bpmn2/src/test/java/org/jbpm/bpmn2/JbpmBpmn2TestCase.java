@@ -16,8 +16,6 @@
 
 package org.jbpm.bpmn2;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
@@ -34,8 +32,6 @@ import org.drools.core.audit.event.KogitoRuleFlowLogEvent;
 import org.drools.core.audit.event.KogitoRuleFlowNodeLogEvent;
 import org.drools.core.audit.event.LogEvent;
 import org.drools.core.impl.EnvironmentFactory;
-import org.drools.core.impl.KnowledgeBaseFactory;
-import org.drools.core.util.DroolsStreamUtils;
 import org.drools.mvel.MVELSafeHelper;
 import org.jbpm.process.instance.event.DefaultSignalManagerFactory;
 import org.jbpm.process.instance.impl.DefaultProcessInstanceManagerFactory;
@@ -51,16 +47,13 @@ import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.KieRepository;
 import org.kie.api.builder.Message.Level;
-import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.process.Node;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.KieContainer;
-import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.NodeInstanceContainer;
-import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
@@ -90,15 +83,15 @@ public abstract class JbpmBpmn2TestCase {
      * Used by many subclasses. Instead of each test duplicating the cleanup code, we extract it here in
      * the superclass.
      */
-    protected KieSession ksession;
+    protected KogitoProcessRuntime kruntime;
 
     protected KogitoWorkingMemoryInMemoryLogger workingMemoryLogger;
 
     @AfterEach
-    public void disposeSession() {
-        if (ksession != null) {
-            ksession.dispose();
-            ksession = null;
+    public void disposeKogitoProcessRuntime() {
+        if (kruntime != null && kruntime.getKieSession() != null) {
+            kruntime.getKieSession().dispose();
+            kruntime = null;
         }
     }
     @BeforeEach
@@ -119,11 +112,15 @@ public abstract class JbpmBpmn2TestCase {
         clearHistory();
     }
 
-    protected KieBase createKnowledgeBase(String... process) throws Exception {
-        return createKnowledgeBaseWithoutDumper(process);
+    protected KogitoProcessRuntime createKogitoProcessRuntime(String... process) throws Exception {
+        return KogitoProcessRuntime.asKogitoProcessRuntime(createKnowledgeSession(process));
     }
 
-    protected KieBase createKnowledgeBaseWithoutDumper(String... process) throws Exception {
+    protected KogitoProcessRuntime createKogitoProcessRuntime(Resource... process) throws Exception {
+        return KogitoProcessRuntime.asKogitoProcessRuntime(createKnowledgeSession(createKnowledgeBaseFromResources(process)));
+    }
+
+    private KieBase createKnowledgeBaseWithoutDumper(String... process) throws Exception {
         Resource[] resources = new Resource[process.length];
         for (int i = 0; i < process.length; ++i) {
             String p = process[i];
@@ -132,7 +129,7 @@ public abstract class JbpmBpmn2TestCase {
         return createKnowledgeBaseFromResources(resources);
     }   
     
-    protected KieBase createKnowledgeBaseFromResources(Resource... process)
+    private KieBase createKnowledgeBaseFromResources(Resource... process)
             throws Exception {
 
         KieServices ks = KieServices.Factory.get();
@@ -158,89 +155,19 @@ public abstract class JbpmBpmn2TestCase {
         KieContainer kContainer = ks.newKieContainer(kr.getDefaultReleaseId());
         return kContainer.getKieBase();
     }
-    
-    protected KieBase createKnowledgeBaseFromDisc(String process) throws Exception {
-        KieServices ks = KieServices.Factory.get();
-        KieRepository kr = ks.getRepository();
-        KieFileSystem kfs = ks.newKieFileSystem();
-            
-        Resource res = ResourceFactory.newClassPathResource(process);
-        kfs.write(res);
 
-        KieBuilder kb = ks.newKieBuilder(kfs);
-
-        kb.buildAll(); // kieModule is automatically deployed to KieRepository
-                       // if successfully built.
-
-        if (kb.getResults().hasMessages(Level.ERROR)) {
-            throw new RuntimeException("Build Errors:\n"
-                    + kb.getResults().toString());
-        }
-
-        KieContainer kContainer = ks.newKieContainer(kr.getDefaultReleaseId());
-        KieBase kbase =  kContainer.getKieBase();
-        
-        File packageFile = null;
-        for (KiePackage pkg : kbase.getKiePackages() ) {
-            packageFile = new File(System.getProperty("java.io.tmpdir") + File.separator + pkg.getName()+".pkg");
-            packageFile.deleteOnExit();
-            FileOutputStream out = new FileOutputStream(packageFile);
-            try {
-                DroolsStreamUtils.streamOut(out, pkg);
-            } finally {
-                out.close();
-            }
-            
-            // store first package only
-            break;
-        }
-        
-        kfs.delete(res.getSourcePath());
-        kfs.write(ResourceFactory.newFileResource(packageFile));
-
-        kb = ks.newKieBuilder(kfs);
-        kb.buildAll(); // kieModule is automatically deployed to KieRepository
-                       // if successfully built.
-
-        if (kb.getResults().hasMessages(Level.ERROR)) {
-            throw new RuntimeException("Build Errors:\n"
-                    + kb.getResults().toString());
-        }
-        
-        kContainer = ks.newKieContainer(kr.getDefaultReleaseId());
-        kbase =  kContainer.getKieBase();
-        
-        return kbase;
-        
-    }
-
-    protected StatefulKnowledgeSession createKnowledgeSession(KieBase kbase)
+    private StatefulKnowledgeSession createKnowledgeSession(KieBase kbase)
             throws Exception {
-        return createKnowledgeSession(kbase, null, null);
-    }
 
-    protected StatefulKnowledgeSession createKnowledgeSession(KieBase kbase,
-            Environment env) throws Exception {
-        return createKnowledgeSession(kbase, null, env);
-    }
-
-    protected StatefulKnowledgeSession createKnowledgeSession(KieBase kbase,
-            KieSessionConfiguration conf, Environment env) throws Exception {
         StatefulKnowledgeSession result;
-        if (conf == null) {
-            conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        }
-       
-        if (env == null) {
-            env = EnvironmentFactory.newEnvironment();
-        }
+        Environment env = EnvironmentFactory.newEnvironment();
 
         Properties defaultProps = new Properties();
         defaultProps.setProperty("drools.processSignalManagerFactory",
                 DefaultSignalManagerFactory.class.getName());
         defaultProps.setProperty("drools.processInstanceManagerFactory",
                 DefaultProcessInstanceManagerFactory.class.getName());
-        conf = SessionConfiguration.newInstance(defaultProps);
+        KieSessionConfiguration conf = SessionConfiguration.newInstance(defaultProps);
         conf.setOption(ForceEagerActivationOption.YES);
         result = (StatefulKnowledgeSession) kbase.newKieSession(conf, env);
         workingMemoryLogger = new KogitoWorkingMemoryInMemoryLogger(result);
@@ -248,58 +175,41 @@ public abstract class JbpmBpmn2TestCase {
         return result;
     }
 
-    protected StatefulKnowledgeSession createKnowledgeSession(String... process)
+    private StatefulKnowledgeSession createKnowledgeSession(String... process)
             throws Exception {
-        KieBase kbase = createKnowledgeBase(process);
+        KieBase kbase = createKnowledgeBaseWithoutDumper(process);
         return createKnowledgeSession(kbase);
     }
-    
-    protected KieSession restoreSession(KieSession ksession, boolean noCache) {
-        
-        return ksession;
-        
-    }
 
-    protected KieSession restoreSession(KieSession ksession) {
-        return ksession;
-    }
-
-    protected StatefulKnowledgeSession restoreSession(StatefulKnowledgeSession ksession) {
-        return ksession;
-    }
-
-
-    public void assertProcessInstanceCompleted(ProcessInstance processInstance) {
+    public void assertProcessInstanceCompleted(KogitoProcessInstance processInstance) {
         assertTrue(assertProcessInstanceState(KogitoProcessInstance.STATE_COMPLETED, processInstance),
                    "Process instance has not been completed.");
     }
 
-    public void assertProcessInstanceAborted(ProcessInstance processInstance) {
+    public void assertProcessInstanceAborted(KogitoProcessInstance processInstance) {
         assertTrue(assertProcessInstanceState(KogitoProcessInstance.STATE_ABORTED, processInstance),
                    "Process instance has not been aborted.");
     }
 
-    public void assertProcessInstanceActive(ProcessInstance processInstance) {
+    public void assertProcessInstanceActive(KogitoProcessInstance processInstance) {
         assertTrue(assertProcessInstanceState(KogitoProcessInstance.STATE_ACTIVE, processInstance)
                 || assertProcessInstanceState(KogitoProcessInstance.STATE_PENDING, processInstance),
                    "Process instance is not active.");
     }
 
-    public void assertProcessInstanceFinished(ProcessInstance processInstance,
-            KieSession ksession) {
-        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
-        assertNull(kruntime.getProcessInstance( (( KogitoProcessInstance ) processInstance).getStringId()),
+    public void assertProcessInstanceFinished(KogitoProcessInstance processInstance,
+            KogitoProcessRuntime kruntime) {
+        assertNull(kruntime.getProcessInstance( processInstance.getStringId()),
                    "Process instance has not been finished.");
     }
 
-    public void assertNodeActive(String processInstanceId, KieSession ksession,
+    public void assertNodeActive(String processInstanceId, KogitoProcessRuntime kruntime,
             String... name) {
-        List<String> names = new ArrayList<String>();
+        List<String> names = new ArrayList<>();
         for (String n : name) {
             names.add(n);
         }
-        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
-        ProcessInstance processInstance = kruntime
+        KogitoProcessInstance processInstance = kruntime
                 .getProcessInstance(processInstanceId);
         if (processInstance instanceof WorkflowProcessInstance) {            
             assertNodeActive((WorkflowProcessInstance) processInstance, names);            
@@ -342,23 +252,7 @@ public abstract class JbpmBpmn2TestCase {
         List<String> names = getNotTriggeredNodes(processInstanceId, nodeNames);
         assertTrue(Arrays.equals(names.toArray(), nodeNames));
     }
-    
-    public int getNumberOfNodeTriggered(long processInstanceId,
-            String node) {
-        int counter = 0;
-        
-        for (LogEvent event : workingMemoryLogger.getLogEvents()) {
-            if (event instanceof KogitoRuleFlowNodeLogEvent ) {
-                String nodeName = (( KogitoRuleFlowNodeLogEvent ) event).getNodeName();
-                if (node.equals(nodeName)) {
-                    counter++;
-                }
-            }
-        }
-    
-        return counter;
-    }
-    
+
     public int getNumberOfProcessInstances(String processId) {
         int counter = 0;      
         LogEvent [] events = workingMemoryLogger.getLogEvents().toArray(new LogEvent[0]);
@@ -373,14 +267,14 @@ public abstract class JbpmBpmn2TestCase {
         return counter;
     }
     
-    protected boolean assertProcessInstanceState(int state, ProcessInstance processInstance) {
+    protected boolean assertProcessInstanceState(int state, KogitoProcessInstance processInstance) {
         
         return processInstance.getState() == state;         
     }
 
     private List<String> getNotTriggeredNodes(String processInstanceId,
             String... nodeNames) {
-        List<String> names = new ArrayList<String>();
+        List<String> names = new ArrayList<>();
         for (String nodeName : nodeNames) {
             names.add(nodeName);
         }
@@ -397,20 +291,6 @@ public abstract class JbpmBpmn2TestCase {
         
         return names;
     }
-    
-    protected List<String> getCompletedNodes(long processInstanceId) { 
-        List<String> names = new ArrayList<String>();
-        
-        for (LogEvent event : workingMemoryLogger.getLogEvents()) {
-            if (event instanceof KogitoRuleFlowNodeLogEvent ) {
-                if( event.getType() == 27 ) { 
-                    names.add((( KogitoRuleFlowNodeLogEvent ) event).getNodeId());
-                }
-            }
-        }
-    
-        return names;
-    }
 
     protected void clearHistory() {
         
@@ -420,10 +300,10 @@ public abstract class JbpmBpmn2TestCase {
     
     }
 
-    public void assertProcessVarExists(ProcessInstance process,
+    public void assertProcessVarExists(KogitoProcessInstance process,
             String... processVarNames) {
         WorkflowProcessInstanceImpl instance = (WorkflowProcessInstanceImpl) process;
-        List<String> names = new ArrayList<String>();
+        List<String> names = new ArrayList<>();
         for (String nodeName : processVarNames) {
             names.add(nodeName);
         }
@@ -444,7 +324,7 @@ public abstract class JbpmBpmn2TestCase {
 
     }
     
-    public String getProcessVarValue(ProcessInstance processInstance, String varName) {
+    public String getProcessVarValue(KogitoProcessInstance processInstance, String varName) {
         String actualValue = null;        
         Object value = ((WorkflowProcessInstanceImpl) processInstance).getVariable(varName);
         if (value != null) {
@@ -454,14 +334,14 @@ public abstract class JbpmBpmn2TestCase {
         return actualValue;
     }
     
-    public void assertProcessVarValue(ProcessInstance processInstance, String varName, Object varValue) {
+    public void assertProcessVarValue(KogitoProcessInstance processInstance, String varName, Object varValue) {
         String actualValue = getProcessVarValue(processInstance, varName);
         assertEquals(varValue, actualValue, "Variable " + varName + " value misatch!");
     }
 
-    public void assertNodeExists(ProcessInstance process, String... nodeNames) {
+    public void assertNodeExists(KogitoProcessInstance process, String... nodeNames) {
         WorkflowProcessInstanceImpl instance = (WorkflowProcessInstanceImpl) process;
-        List<String> names = new ArrayList<String>();
+        List<String> names = new ArrayList<>();
         for (String nodeName : nodeNames) {
             names.add(nodeName);
         }
@@ -481,7 +361,7 @@ public abstract class JbpmBpmn2TestCase {
         }
     }
 
-    public void assertNumOfIncommingConnections(ProcessInstance process,
+    public void assertNumOfIncommingConnections(KogitoProcessInstance process,
             String nodeName, int num) {
         assertNodeExists(process, nodeName);
         WorkflowProcessInstanceImpl instance = (WorkflowProcessInstanceImpl) process;
@@ -497,7 +377,7 @@ public abstract class JbpmBpmn2TestCase {
         }
     }
 
-    public void assertNumOfOutgoingConnections(ProcessInstance process,
+    public void assertNumOfOutgoingConnections(KogitoProcessInstance process,
             String nodeName, int num) {
         assertNodeExists(process, nodeName);
         WorkflowProcessInstanceImpl instance = (WorkflowProcessInstanceImpl) process;
@@ -513,7 +393,7 @@ public abstract class JbpmBpmn2TestCase {
         }
     }
 
-    public void assertVersionEquals(ProcessInstance process, String version) {
+    public void assertVersionEquals(KogitoProcessInstance process, String version) {
         WorkflowProcessInstanceImpl instance = (WorkflowProcessInstanceImpl) process;
         if (!instance.getWorkflowProcess().getVersion().equals(version)) {
             fail("Expected version: " + version + " - found "
@@ -521,7 +401,7 @@ public abstract class JbpmBpmn2TestCase {
         }
     }
 
-    public void assertProcessNameEquals(ProcessInstance process, String name) {
+    public void assertProcessNameEquals(KogitoProcessInstance process, String name) {
         WorkflowProcessInstanceImpl instance = (WorkflowProcessInstanceImpl) process;
         if (!instance.getWorkflowProcess().getName().equals(name)) {
             fail("Expected name: " + name + " - found "
@@ -529,7 +409,7 @@ public abstract class JbpmBpmn2TestCase {
         }
     }
 
-    public void assertPackageNameEquals(ProcessInstance process,
+    public void assertPackageNameEquals(KogitoProcessInstance process,
             String packageName) {
         WorkflowProcessInstanceImpl instance = (WorkflowProcessInstanceImpl) process;
         if (!instance.getWorkflowProcess().getPackageName().equals(packageName)) {
@@ -569,19 +449,16 @@ public abstract class JbpmBpmn2TestCase {
                 vars);
     }
     
-    protected void assertProcessInstanceCompleted(String processInstanceId, KieSession ksession) {
-        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
-        ProcessInstance processInstance = kruntime.getProcessInstance(processInstanceId);
+    protected void assertProcessInstanceCompleted(String processInstanceId, KogitoProcessRuntime kruntime) {
+        KogitoProcessInstance processInstance = kruntime.getProcessInstance(processInstanceId);
         assertNull(processInstance, "Process instance has not completed.");
     }
 
-    protected void assertProcessInstanceAborted(String processInstanceId, KieSession ksession) {
-        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+    protected void assertProcessInstanceAborted(String processInstanceId, KogitoProcessRuntime kruntime) {
         assertNull(kruntime.getProcessInstance(processInstanceId));
     }
 
-    protected void assertProcessInstanceActive(String processInstanceId, KieSession ksession) {
-        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+    protected void assertProcessInstanceActive(String processInstanceId, KogitoProcessRuntime kruntime) {
         assertNotNull(kruntime.getProcessInstance(processInstanceId));
     }
 

@@ -24,7 +24,7 @@ import org.kie.api.event.rule.MatchCancelledEvent;
 import org.kie.api.event.rule.MatchCreatedEvent;
 import org.kie.api.event.rule.RuleFlowGroupActivatedEvent;
 import org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent;
-import org.kie.api.runtime.KieSession;
+import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 
 /**
  * Dedicated AgendaEventListener that will fireAllRules as soon as:
@@ -37,11 +37,11 @@ import org.kie.api.runtime.KieSession;
  */
 public class TriggerRulesEventListener implements AgendaEventListener {
     
-    private KieSession ksession;
+    private KogitoProcessRuntime kruntime;
     
-    public TriggerRulesEventListener(KieSession ksession) {
+    public TriggerRulesEventListener(KogitoProcessRuntime kruntime) {
 
-        this.ksession = ksession;
+        this.kruntime = kruntime;
     }
 
     @Override
@@ -80,7 +80,7 @@ public class TriggerRulesEventListener implements AgendaEventListener {
 
     @Override
     public void afterRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) {
-        ksession.fireAllRules();
+        kruntime.getKieSession().fireAllRules();
         
     }
 

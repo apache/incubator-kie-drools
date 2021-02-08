@@ -45,8 +45,8 @@ import org.kie.kogito.signal.SignalManager;
 import static org.jbpm.process.instance.impl.humantask.HumanTaskWorkItemHandler.transitionToPhase;
 import static org.jbpm.process.instance.impl.workitem.Abort.ID;
 import static org.jbpm.process.instance.impl.workitem.Abort.STATUS;
-import static org.kie.api.runtime.process.WorkItem.ABORTED;
-import static org.kie.api.runtime.process.WorkItem.COMPLETED;
+import static org.kie.kogito.internal.process.runtime.KogitoWorkItem.ABORTED;
+import static org.kie.kogito.internal.process.runtime.KogitoWorkItem.COMPLETED;
 
 public class LightWorkItemManager implements KogitoWorkItemManager {
  

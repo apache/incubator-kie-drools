@@ -20,7 +20,9 @@ import java.util.Collection;
 import java.util.Map;
 
 import org.kie.api.KieBase;
+import org.kie.api.event.process.ProcessEventManager;
 import org.kie.api.runtime.KieRuntime;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessRuntime;
 import org.kie.api.runtime.rule.AgendaFilter;
 import org.kie.kogito.jobs.JobsService;
@@ -207,9 +209,14 @@ public interface KogitoProcessRuntime {
 
     KogitoProcessEventSupport getProcessEventSupport();
 
+    ProcessEventManager getProcessEventManager();
+
     @Deprecated
     KieRuntime getKieRuntime();
 
     @Deprecated
     KieBase getKieBase();
+
+    @Deprecated
+    KieSession getKieSession();
 }

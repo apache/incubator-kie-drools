@@ -18,8 +18,6 @@ package org.jbpm.bpmn2;
 
 import org.jbpm.bpmn2.objects.Order;
 import org.junit.jupiter.api.Test;
-import org.kie.api.KieBase;
-import org.kie.api.runtime.KieSession;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -28,28 +26,26 @@ public class AgendaFilterTest extends JbpmBpmn2TestCase {
 
     @Test
     public void testNoFilter() throws Exception {
-        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-AgendaFilter.bpmn2", "BPMN2-AgendaFilter.drl");
-        KieSession ksession = createKnowledgeSession(kbase);
+        kruntime = createKogitoProcessRuntime("BPMN2-AgendaFilter.bpmn2", "BPMN2-AgendaFilter.drl");
 
         Order order = new Order();
         order.setId("ORDER-1");
-        ksession.insert(order);
+        kruntime.getKieSession().insert(order);
 
-        ksession.startProcess("Ruleflow");
+        kruntime.startProcess("Ruleflow");
 
         assertTrue(order.isValid());
     }
 
     @Test
     public void testWithFilter() throws Exception {
-        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-AgendaFilter.bpmn2", "BPMN2-AgendaFilter.drl");
-        KieSession ksession = createKnowledgeSession(kbase);
+        kruntime = createKogitoProcessRuntime("BPMN2-AgendaFilter.bpmn2", "BPMN2-AgendaFilter.drl");
 
         Order order = new Order();
         order.setId("ORDER-1");
-        ksession.insert(order);
+        kruntime.getKieSession().insert(order);
 
-        ksession.startProcess("Ruleflow", match -> false);
+        kruntime.startProcess("Ruleflow", match -> false);
 
         assertFalse(order.isValid());
     }

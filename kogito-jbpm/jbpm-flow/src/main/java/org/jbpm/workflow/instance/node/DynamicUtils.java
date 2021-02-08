@@ -41,7 +41,6 @@ import org.kie.api.runtime.ExecutableRunner;
 import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.NodeInstance;
-import org.kie.api.runtime.process.WorkItem;
 import org.kie.internal.KieInternalServices;
 import org.kie.internal.command.RegistryContext;
 import org.kie.internal.process.CorrelationKey;
@@ -50,6 +49,7 @@ import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.event.KogitoProcessEventSupport;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
 import org.kie.kogito.process.workitems.KogitoWorkItemManager;
 import org.kie.kogito.process.workitems.impl.KogitoWorkItemImpl;
 import org.slf4j.Logger;
@@ -91,7 +91,7 @@ public class DynamicUtils {
             String workItemName,
             Map<String, Object> parameters) {
         final KogitoWorkItemImpl workItem = new KogitoWorkItemImpl();
-        workItem.setState(WorkItem.ACTIVE);
+        workItem.setState(KogitoWorkItem.ACTIVE);
         workItem.setProcessInstanceId(processInstance.getStringId());
         workItem.setDeploymentId((String) ksession.getEnvironment().get(EnvironmentName.DEPLOYMENT_ID));
         workItem.setName(workItemName);

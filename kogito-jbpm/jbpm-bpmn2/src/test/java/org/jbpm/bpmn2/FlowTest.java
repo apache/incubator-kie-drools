@@ -40,16 +40,14 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
-import org.kie.api.KieBase;
 import org.kie.api.command.ExecutableCommand;
-import org.kie.api.event.process.DefaultProcessEventListener;
 import org.kie.api.event.process.ProcessNodeTriggeredEvent;
 import org.kie.api.event.process.ProcessStartedEvent;
 import org.kie.api.runtime.Context;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.NodeInstance;
-import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.internal.command.RegistryContext;
+import org.kie.kogito.internal.process.event.DefaultKogitoProcessEventListener;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
@@ -80,24 +78,23 @@ public class FlowTest extends JbpmBpmn2TestCase {
     @Test
     public void testExclusiveSplitWithNoConditions() throws Exception {
         try {
-            createKnowledgeBaseWithoutDumper("BPMN2-ExclusiveGatewayWithNoConditionsDefined.bpmn2");
+            createKogitoProcessRuntime("BPMN2-ExclusiveGatewayWithNoConditionsDefined.bpmn2");
             fail("Should fail as XOR gateway does not have conditions defined");
         } catch (RuntimeException e) {
-            assertTrue(e.getMessage().indexOf("does not have a constraint for Connection") != -1);
+            assertTrue(e.getMessage().contains("does not have a constraint for Connection"));
         }
 
     }
     
     @Test
     public void testExclusiveSplit() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-ExclusiveSplit.bpmn2");
-        ksession = createKnowledgeSession(kbase);
-        ksession.getWorkItemManager().registerWorkItemHandler("Email",
+        kruntime = createKogitoProcessRuntime("BPMN2-ExclusiveSplit.bpmn2");
+        kruntime.getWorkItemManager().registerWorkItemHandler("Email",
                 new SystemOutWorkItemHandler());
-        Map<String, Object> params = new HashMap<String, Object>();
+        Map<String, Object> params = new HashMap<>();
         params.put("x", "First");
         params.put("y", "Second");
-        ProcessInstance processInstance = ksession.startProcess(
+        KogitoProcessInstance processInstance = kruntime.startProcess(
                 "com.sample.test", params);
         assertProcessInstanceCompleted(processInstance);
 
@@ -105,11 +102,10 @@ public class FlowTest extends JbpmBpmn2TestCase {
 
     @Test
     public void testExclusiveSplitXPathAdvanced() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-ExclusiveSplitXPath-advanced.bpmn2");
-        ksession = createKnowledgeSession(kbase);
-        ksession.getWorkItemManager().registerWorkItemHandler("Email",
+        kruntime = createKogitoProcessRuntime("BPMN2-ExclusiveSplitXPath-advanced.bpmn2");
+        kruntime.getWorkItemManager().registerWorkItemHandler("Email",
                 new SystemOutWorkItemHandler());
-        Map<String, Object> params = new HashMap<String, Object>();
+        Map<String, Object> params = new HashMap<>();
         Document doc = DocumentBuilderFactory.newInstance()
                 .newDocumentBuilder().newDocument();
         Element hi = doc.createElement("hi");
@@ -120,7 +116,7 @@ public class FlowTest extends JbpmBpmn2TestCase {
         attr.setValue("a");
         params.put("x", hi);
         params.put("y", "Second");
-        ProcessInstance processInstance = ksession.startProcess(
+        KogitoProcessInstance processInstance = kruntime.startProcess(
                 "com.sample.test", params);
         assertProcessInstanceCompleted(processInstance);
 
@@ -128,11 +124,10 @@ public class FlowTest extends JbpmBpmn2TestCase {
 
     @Test
     public void testExclusiveSplitXPathAdvanced2() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-ExclusiveSplitXPath-advanced-vars-not-signaled.bpmn2");
-        ksession = createKnowledgeSession(kbase);
-        ksession.getWorkItemManager().registerWorkItemHandler("Email",
+        kruntime = createKogitoProcessRuntime("BPMN2-ExclusiveSplitXPath-advanced-vars-not-signaled.bpmn2");
+        kruntime.getWorkItemManager().registerWorkItemHandler("Email",
                 new SystemOutWorkItemHandler());
-        Map<String, Object> params = new HashMap<String, Object>();
+        Map<String, Object> params = new HashMap<>();
         Document doc = DocumentBuilderFactory.newInstance()
                 .newDocumentBuilder().newDocument();
         Element hi = doc.createElement("hi");
@@ -143,7 +138,7 @@ public class FlowTest extends JbpmBpmn2TestCase {
         attr.setValue("a");
         params.put("x", hi);
         params.put("y", "Second");
-        ProcessInstance processInstance = ksession.startProcess(
+        KogitoProcessInstance processInstance = kruntime.startProcess(
                 "com.sample.test", params);
         assertProcessInstanceCompleted(processInstance);
 
@@ -151,11 +146,10 @@ public class FlowTest extends JbpmBpmn2TestCase {
 
     @Test
     public void testExclusiveSplitXPathAdvancedWithVars() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-ExclusiveSplitXPath-advanced-with-vars.bpmn2");
-        ksession = createKnowledgeSession(kbase);
-        ksession.getWorkItemManager().registerWorkItemHandler("Email",
+        kruntime = createKogitoProcessRuntime("BPMN2-ExclusiveSplitXPath-advanced-with-vars.bpmn2");
+        kruntime.getWorkItemManager().registerWorkItemHandler("Email",
                 new SystemOutWorkItemHandler());
-        Map<String, Object> params = new HashMap<String, Object>();
+        Map<String, Object> params = new HashMap<>();
         Document doc = DocumentBuilderFactory.newInstance()
                 .newDocumentBuilder().newDocument();
         Element hi = doc.createElement("hi");
@@ -166,7 +160,7 @@ public class FlowTest extends JbpmBpmn2TestCase {
         attr.setValue("a");
         params.put("x", hi);
         params.put("y", "Second");
-        ProcessInstance processInstance = ksession.startProcess(
+        KogitoProcessInstance processInstance = kruntime.startProcess(
                 "com.sample.test", params);
         assertProcessInstanceCompleted(processInstance);
 
@@ -174,14 +168,13 @@ public class FlowTest extends JbpmBpmn2TestCase {
 
     @Test
     public void testExclusiveSplitPriority() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-ExclusiveSplitPriority.bpmn2");
-        ksession = createKnowledgeSession(kbase);
-        ksession.getWorkItemManager().registerWorkItemHandler("Email",
+        kruntime = createKogitoProcessRuntime("BPMN2-ExclusiveSplitPriority.bpmn2");
+        kruntime.getWorkItemManager().registerWorkItemHandler("Email",
                 new SystemOutWorkItemHandler());
-        Map<String, Object> params = new HashMap<String, Object>();
+        Map<String, Object> params = new HashMap<>();
         params.put("x", "First");
         params.put("y", "Second");
-        ProcessInstance processInstance = ksession.startProcess(
+        KogitoProcessInstance processInstance = kruntime.startProcess(
                 "com.sample.test", params);
         assertProcessInstanceCompleted(processInstance);
 
@@ -189,14 +182,13 @@ public class FlowTest extends JbpmBpmn2TestCase {
 
     @Test
     public void testExclusiveSplitDefault() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-ExclusiveSplitDefault.bpmn2");
-        ksession = createKnowledgeSession(kbase);
-        ksession.getWorkItemManager().registerWorkItemHandler("Email",
+        kruntime = createKogitoProcessRuntime("BPMN2-ExclusiveSplitDefault.bpmn2");
+        kruntime.getWorkItemManager().registerWorkItemHandler("Email",
                 new SystemOutWorkItemHandler());
-        Map<String, Object> params = new HashMap<String, Object>();
+        Map<String, Object> params = new HashMap<>();
         params.put("x", "NotFirst");
         params.put("y", "Second");
-        ProcessInstance processInstance = ksession.startProcess(
+        KogitoProcessInstance processInstance = kruntime.startProcess(
                 "com.sample.test", params);
         assertProcessInstanceCompleted(processInstance);
 
@@ -204,15 +196,14 @@ public class FlowTest extends JbpmBpmn2TestCase {
 
     @Test
     public void testExclusiveXORGateway() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-gatewayTest.bpmn2");
-        ksession = createKnowledgeSession(kbase);
+        kruntime = createKogitoProcessRuntime("BPMN2-gatewayTest.bpmn2");
         Document document = DocumentBuilderFactory
                 .newInstance()
                 .newDocumentBuilder()
                 .parse(new ByteArrayInputStream(
                         "<instanceMetadata><user approved=\"false\" /></instanceMetadata>"
                                 .getBytes()));
-        Map<String, Object> params = new HashMap<String, Object>();
+        Map<String, Object> params = new HashMap<>();
         params.put("instanceMetadata", document);
         params.put(
                 "startMessage",
@@ -222,7 +213,7 @@ public class FlowTest extends JbpmBpmn2TestCase {
                         .parse(new ByteArrayInputStream(
                                 "<task subject='foobar2'/>".getBytes()))
                         .getFirstChild());
-        ProcessInstance processInstance = ksession.startProcess("process",
+        KogitoProcessInstance processInstance = kruntime.startProcess("process",
                 params);
         assertProcessInstanceCompleted(processInstance);
 
@@ -230,11 +221,10 @@ public class FlowTest extends JbpmBpmn2TestCase {
 
     @Test
     public void testInclusiveSplit() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-InclusiveSplit.bpmn2");
-        ksession = createKnowledgeSession(kbase);
-        Map<String, Object> params = new HashMap<String, Object>();
+        kruntime = createKogitoProcessRuntime("BPMN2-InclusiveSplit.bpmn2");
+        Map<String, Object> params = new HashMap<>();
         params.put("x", 15);
-        ProcessInstance processInstance = ksession.startProcess(
+        KogitoProcessInstance processInstance = kruntime.startProcess(
                 "com.sample.test", params);
         assertProcessInstanceCompleted(processInstance);
 
@@ -242,110 +232,97 @@ public class FlowTest extends JbpmBpmn2TestCase {
     
     @Test
     public void testInclusiveSplitDefaultConnection() throws Exception {
-        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-InclusiveGatewayWithDefault.bpmn2");
-        ksession = createKnowledgeSession(kbase);
-        Map<String, Object> params = new HashMap<String, Object>();
+        kruntime = createKogitoProcessRuntime("BPMN2-InclusiveGatewayWithDefault.bpmn2");
+        Map<String, Object> params = new HashMap<>();
         params.put("test", "c");
-        ProcessInstance processInstance = ksession.startProcess("InclusiveGatewayWithDefault", params);
+        KogitoProcessInstance processInstance = kruntime.startProcess("InclusiveGatewayWithDefault", params);
         assertProcessInstanceCompleted(processInstance);
 
     }
 
     @Test
     public void testInclusiveSplitAndJoin() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-InclusiveSplitAndJoin.bpmn2");
-        ksession = createKnowledgeSession(kbase);
+        kruntime = createKogitoProcessRuntime("BPMN2-InclusiveSplitAndJoin.bpmn2");
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
-        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
 
-        Map<String, Object> params = new HashMap<String, Object>();
+        Map<String, Object> params = new HashMap<>();
         params.put("x", 15);
-        ProcessInstance processInstance = kruntime.startProcess(
+        KogitoProcessInstance processInstance = kruntime.startProcess(
                 "com.sample.test", params);
 
         List<KogitoWorkItem> activeWorkItems = workItemHandler.getWorkItems();
 
         assertEquals(2, activeWorkItems.size());
-        ksession = restoreSession(ksession, true);
 
         for (KogitoWorkItem wi : activeWorkItems) {
             kruntime.getWorkItemManager().completeWorkItem(wi.getStringId(), null);
         }
-        assertProcessInstanceFinished(processInstance, ksession);
+        assertProcessInstanceFinished(processInstance, kruntime);
 
     }
 
     @Test
     public void testInclusiveSplitAndJoinLoop() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-InclusiveSplitAndJoinLoop.bpmn2");
-        ksession = createKnowledgeSession(kbase);
+        kruntime = createKogitoProcessRuntime("BPMN2-InclusiveSplitAndJoinLoop.bpmn2");
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
-        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
 
-        Map<String, Object> params = new HashMap<String, Object>();
+        Map<String, Object> params = new HashMap<>();
         params.put("x", 21);
-        ProcessInstance processInstance = kruntime.startProcess(
+        KogitoProcessInstance processInstance = kruntime.startProcess(
                 "com.sample.test", params);
 
         List<KogitoWorkItem> activeWorkItems = workItemHandler.getWorkItems();
 
         assertEquals(3, activeWorkItems.size());
-        ksession = restoreSession(ksession, true);
 
         for (KogitoWorkItem wi : activeWorkItems) {
             kruntime.getWorkItemManager().completeWorkItem(wi.getStringId(), null);
         }
-        assertProcessInstanceFinished(processInstance, ksession);
+        assertProcessInstanceFinished(processInstance, kruntime);
 
     }
 
     @Test
     public void testInclusiveSplitAndJoinLoop2() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-InclusiveSplitAndJoinLoop2.bpmn2");
-        ksession = createKnowledgeSession(kbase);
+        kruntime = createKogitoProcessRuntime("BPMN2-InclusiveSplitAndJoinLoop2.bpmn2");
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
-        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
 
-        Map<String, Object> params = new HashMap<String, Object>();
+        Map<String, Object> params = new HashMap<>();
         params.put("x", 21);
-        ProcessInstance processInstance = ksession.startProcess(
+        KogitoProcessInstance processInstance = kruntime.startProcess(
                 "com.sample.test", params);
 
         List<KogitoWorkItem> activeWorkItems = workItemHandler.getWorkItems();
 
         assertEquals(3, activeWorkItems.size());
-        ksession = restoreSession(ksession, true);
 
         for (KogitoWorkItem wi : activeWorkItems) {
             kruntime.getWorkItemManager().completeWorkItem(wi.getStringId(), null);
         }
-        assertProcessInstanceFinished(processInstance, ksession);
+        assertProcessInstanceFinished(processInstance, kruntime);
 
     }
 
     @Test
     public void testInclusiveSplitAndJoinNested() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-InclusiveSplitAndJoinNested.bpmn2");
-        ksession = createKnowledgeSession(kbase);
+        kruntime = createKogitoProcessRuntime("BPMN2-InclusiveSplitAndJoinNested.bpmn2");
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
-        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
 
-        Map<String, Object> params = new HashMap<String, Object>();
+        Map<String, Object> params = new HashMap<>();
         params.put("x", 15);
-        ProcessInstance processInstance = ksession.startProcess(
+        KogitoProcessInstance processInstance = kruntime.startProcess(
                 "com.sample.test", params);
 
         List<KogitoWorkItem> activeWorkItems = workItemHandler.getWorkItems();
 
         assertEquals(2, activeWorkItems.size());
-        ksession = restoreSession(ksession, true);
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
 
         for (KogitoWorkItem wi : activeWorkItems) {
@@ -354,87 +331,77 @@ public class FlowTest extends JbpmBpmn2TestCase {
 
         activeWorkItems = workItemHandler.getWorkItems();
         assertEquals(2, activeWorkItems.size());
-        ksession = restoreSession(ksession, true);
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
 
         for (KogitoWorkItem wi : activeWorkItems) {
             kruntime.getWorkItemManager().completeWorkItem(wi.getStringId(), null);
         }
-        assertProcessInstanceFinished(processInstance, ksession);
+        assertProcessInstanceFinished(processInstance, kruntime);
 
     }
 
     @Test
     public void testInclusiveSplitAndJoinEmbedded() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-InclusiveSplitAndJoinEmbedded.bpmn2");
-        ksession = createKnowledgeSession(kbase);
+        kruntime = createKogitoProcessRuntime("BPMN2-InclusiveSplitAndJoinEmbedded.bpmn2");
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
-        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
 
-        Map<String, Object> params = new HashMap<String, Object>();
+        Map<String, Object> params = new HashMap<>();
         params.put("x", 15);
-        ProcessInstance processInstance = ksession.startProcess(
+        KogitoProcessInstance processInstance = kruntime.startProcess(
                 "com.sample.test", params);
 
         List<KogitoWorkItem> activeWorkItems = workItemHandler.getWorkItems();
 
         assertEquals(2, activeWorkItems.size());
-        ksession = restoreSession(ksession, true);
 
         for (KogitoWorkItem wi : activeWorkItems) {
             kruntime.getWorkItemManager().completeWorkItem(wi.getStringId(), null);
         }
-        assertProcessInstanceFinished(processInstance, ksession);
+        assertProcessInstanceFinished(processInstance, kruntime);
 
     }
 
     @Test
     public void testInclusiveSplitAndJoinWithParallel() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-InclusiveSplitAndJoinWithParallel.bpmn2");
-        ksession = createKnowledgeSession(kbase);
+        kruntime = createKogitoProcessRuntime("BPMN2-InclusiveSplitAndJoinWithParallel.bpmn2");
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
-        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
 
-        Map<String, Object> params = new HashMap<String, Object>();
+        Map<String, Object> params = new HashMap<>();
         params.put("x", 25);
-        ProcessInstance processInstance = ksession.startProcess(
+        KogitoProcessInstance processInstance = kruntime.startProcess(
                 "com.sample.test", params);
 
         List<KogitoWorkItem> activeWorkItems = workItemHandler.getWorkItems();
 
         assertEquals(4, activeWorkItems.size());
-        ksession = restoreSession(ksession, true);
 
         for (KogitoWorkItem wi : activeWorkItems) {
             kruntime.getWorkItemManager().completeWorkItem(wi.getStringId(), null);
         }
-        assertProcessInstanceFinished(processInstance, ksession);
+        assertProcessInstanceFinished(processInstance, kruntime);
 
     }
 
     @Test
     public void testInclusiveSplitAndJoinWithEnd() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-InclusiveSplitAndJoinWithEnd.bpmn2");
-        ksession = createKnowledgeSession(kbase);
+        kruntime = createKogitoProcessRuntime("BPMN2-InclusiveSplitAndJoinWithEnd.bpmn2");
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
-        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
 
-        Map<String, Object> params = new HashMap<String, Object>();
+        Map<String, Object> params = new HashMap<>();
         params.put("x", 25);
-        ProcessInstance processInstance = ksession.startProcess(
+        KogitoProcessInstance processInstance = kruntime.startProcess(
                 "com.sample.test", params);
 
         List<KogitoWorkItem> activeWorkItems = workItemHandler.getWorkItems();
 
         assertEquals(3, activeWorkItems.size());
-        ksession = restoreSession(ksession, true);
 
         for (int i = 0; i < 2; i++) {
             kruntime.getWorkItemManager().completeWorkItem(
@@ -444,7 +411,7 @@ public class FlowTest extends JbpmBpmn2TestCase {
 
         kruntime.getWorkItemManager().completeWorkItem(
                 activeWorkItems.get(2).getStringId(), null);
-        assertProcessInstanceFinished(processInstance, ksession);
+        assertProcessInstanceFinished(processInstance, kruntime);
 
     }
 
@@ -452,17 +419,15 @@ public class FlowTest extends JbpmBpmn2TestCase {
     @Timeout(10000)
     public void testInclusiveSplitAndJoinWithTimer() throws Exception {
         NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("timer", 2);
-        KieBase kbase = createKnowledgeBase("BPMN2-InclusiveSplitAndJoinWithTimer.bpmn2");
-        ksession = createKnowledgeSession(kbase);
-        ksession.addEventListener(countDownListener);
+        kruntime = createKogitoProcessRuntime("BPMN2-InclusiveSplitAndJoinWithTimer.bpmn2");
+        kruntime.getProcessEventManager().addEventListener(countDownListener);
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
-        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
 
-        Map<String, Object> params = new HashMap<String, Object>();
+        Map<String, Object> params = new HashMap<>();
         params.put("x", 15);
-        ProcessInstance processInstance = ksession.startProcess(
+        KogitoProcessInstance processInstance = kruntime.startProcess(
                 "com.sample.test", params);
 
         List<KogitoWorkItem> activeWorkItems = workItemHandler.getWorkItems();
@@ -482,30 +447,27 @@ public class FlowTest extends JbpmBpmn2TestCase {
 
         kruntime.getWorkItemManager().completeWorkItem(
                 activeWorkItems.get(1).getStringId(), null);
-        assertProcessInstanceFinished(processInstance, ksession);
+        assertProcessInstanceFinished(processInstance, kruntime);
 
     }
 
     @Test
     public void testInclusiveSplitAndJoinExtraPath() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-InclusiveSplitAndJoinExtraPath.bpmn2");
-        ksession = createKnowledgeSession(kbase);
+        kruntime = createKogitoProcessRuntime("BPMN2-InclusiveSplitAndJoinExtraPath.bpmn2");
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
-        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
 
-        Map<String, Object> params = new HashMap<String, Object>();
+        Map<String, Object> params = new HashMap<>();
         params.put("x", 25);
-        ProcessInstance processInstance = ksession.startProcess(
+        KogitoProcessInstance processInstance = kruntime.startProcess(
                 "com.sample.test", params);
 
-        ksession.signalEvent("signal", null);
+        kruntime.signalEvent("signal", null);
 
         List<KogitoWorkItem> activeWorkItems = workItemHandler.getWorkItems();
 
         assertEquals(4, activeWorkItems.size());
-        ksession = restoreSession(ksession, true);
 
         for (int i = 0; i < 3; i++) {
             kruntime.getWorkItemManager().completeWorkItem(
@@ -515,17 +477,16 @@ public class FlowTest extends JbpmBpmn2TestCase {
 
         kruntime.getWorkItemManager().completeWorkItem(
                 activeWorkItems.get(3).getStringId(), null);
-        assertProcessInstanceFinished(processInstance, ksession);
+        assertProcessInstanceFinished(processInstance, kruntime);
 
     }
 
     @Test
     public void testInclusiveSplitDefault() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-InclusiveSplitDefault.bpmn2");
-        ksession = createKnowledgeSession(kbase);
-        Map<String, Object> params = new HashMap<String, Object>();
+        kruntime = createKogitoProcessRuntime("BPMN2-InclusiveSplitDefault.bpmn2");
+        Map<String, Object> params = new HashMap<>();
         params.put("x", -5);
-        ProcessInstance processInstance = ksession.startProcess(
+        KogitoProcessInstance processInstance = kruntime.startProcess(
                 "com.sample.test", params);
         assertProcessInstanceCompleted(processInstance);
 
@@ -533,32 +494,30 @@ public class FlowTest extends JbpmBpmn2TestCase {
     
     @Test
     public void testInclusiveParallelExclusiveSplitNoLoop() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-InclusiveNestedInParallelNestedInExclusive.bpmn2");
-        ksession = createKnowledgeSession(kbase);
-        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+        kruntime = createKogitoProcessRuntime("BPMN2-InclusiveNestedInParallelNestedInExclusive.bpmn2");
 
-        ksession.getWorkItemManager().registerWorkItemHandler("testWI", new SystemOutWorkItemHandler());
-        ksession.getWorkItemManager().registerWorkItemHandler("testWI2", new SystemOutWorkItemHandler() {
+        kruntime.getWorkItemManager().registerWorkItemHandler("testWI", new SystemOutWorkItemHandler());
+        kruntime.getWorkItemManager().registerWorkItemHandler("testWI2", new SystemOutWorkItemHandler() {
 
             @Override
             public void executeWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager manager) {
                 Integer x = (Integer) workItem.getParameter("input1");
                 x++;
-                Map<String, Object> results = new HashMap<String, Object>();
+                Map<String, Object> results = new HashMap<>();
                 results.put("output1", x);
                 manager.completeWorkItem(workItem.getStringId(), results);
             }
             
         });
-        final Map<String, Integer> nodeInstanceExecutionCounter = new HashMap<String, Integer>(); 
-        ksession.addEventListener(new DefaultProcessEventListener(){
+        final Map<String, Integer> nodeInstanceExecutionCounter = new HashMap<>(); 
+        kruntime.getProcessEventManager().addEventListener(new DefaultKogitoProcessEventListener(){
 
             @Override
             public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {   
                 logger.info(event.getNodeInstance().getNodeName());
                 Integer value = nodeInstanceExecutionCounter.get(event.getNodeInstance().getNodeName());
                 if (value == null) {
-                    value = new Integer(0);
+                    value = 0;
                 }
                 
                 value++;
@@ -567,9 +526,9 @@ public class FlowTest extends JbpmBpmn2TestCase {
 
             
         });
-        Map<String, Object> params = new HashMap<String, Object>();
+        Map<String, Object> params = new HashMap<>();
         params.put("x", 0);
-        ProcessInstance processInstance = ksession.startProcess("Process_1", params);
+        KogitoProcessInstance processInstance = kruntime.startProcess("Process_1", params);
         assertProcessInstanceCompleted(processInstance);
         
         assertEquals(12, nodeInstanceExecutionCounter.size());
@@ -589,29 +548,28 @@ public class FlowTest extends JbpmBpmn2TestCase {
     
     @Test
     public void testInclusiveParallelExclusiveSplitLoop() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-InclusiveNestedInParallelNestedInExclusive.bpmn2");
-        ksession = createKnowledgeSession(kbase);
-        ksession.getWorkItemManager().registerWorkItemHandler("testWI", new SystemOutWorkItemHandler());
-        ksession.getWorkItemManager().registerWorkItemHandler("testWI2", new SystemOutWorkItemHandler() {
+        kruntime = createKogitoProcessRuntime("BPMN2-InclusiveNestedInParallelNestedInExclusive.bpmn2");
+        kruntime.getWorkItemManager().registerWorkItemHandler("testWI", new SystemOutWorkItemHandler());
+        kruntime.getWorkItemManager().registerWorkItemHandler("testWI2", new SystemOutWorkItemHandler() {
 
             @Override
             public void executeWorkItem(KogitoWorkItem workItem,  KogitoWorkItemManager manager) {
                 Integer x = (Integer) workItem.getParameter("input1");
                 x++;
-                Map<String, Object> results = new HashMap<String, Object>();
+                Map<String, Object> results = new HashMap<>();
                 results.put("output1", x);
                 manager.completeWorkItem(workItem.getStringId(), results);
             }
             
         });
-        final Map<String, Integer> nodeInstanceExecutionCounter = new HashMap<String, Integer>(); 
-        ksession.addEventListener(new DefaultProcessEventListener(){
+        final Map<String, Integer> nodeInstanceExecutionCounter = new HashMap<>();
+        kruntime.getProcessEventManager().addEventListener(new DefaultKogitoProcessEventListener(){
 
             @Override
             public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {                
                 Integer value = nodeInstanceExecutionCounter.get(event.getNodeInstance().getNodeName());
                 if (value == null) {
-                    value = new Integer(0);
+                    value = 0;
                 }
                 
                 value++;
@@ -619,9 +577,9 @@ public class FlowTest extends JbpmBpmn2TestCase {
             }
             
         });
-        Map<String, Object> params = new HashMap<String, Object>();
+        Map<String, Object> params = new HashMap<>();
         params.put("x", -1);
-        ProcessInstance processInstance = ksession.startProcess("Process_1", params);
+        KogitoProcessInstance processInstance = kruntime.startProcess("Process_1", params);
         assertProcessInstanceCompleted(processInstance);
         
         assertEquals(12, nodeInstanceExecutionCounter.size());
@@ -641,26 +599,24 @@ public class FlowTest extends JbpmBpmn2TestCase {
     
     @Test
     public void testInclusiveParallelExclusiveSplitNoLoopAsync() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-InclusiveNestedInParallelNestedInExclusive.bpmn2");
-        ksession = createKnowledgeSession(kbase);
-        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+        kruntime = createKogitoProcessRuntime("BPMN2-InclusiveNestedInParallelNestedInExclusive.bpmn2");
 
         TestWorkItemHandler handler = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("testWI", handler);
-        ksession.getWorkItemManager().registerWorkItemHandler("testWI2", new SystemOutWorkItemHandler() {
+        kruntime.getWorkItemManager().registerWorkItemHandler("testWI", handler);
+        kruntime.getWorkItemManager().registerWorkItemHandler("testWI2", new SystemOutWorkItemHandler() {
 
             @Override
             public void executeWorkItem(KogitoWorkItem workItem,  KogitoWorkItemManager manager) {
                 Integer x = (Integer) workItem.getParameter("input1");
                 x++;
-                Map<String, Object> results = new HashMap<String, Object>();
+                Map<String, Object> results = new HashMap<>();
                 results.put("output1", x);
                 manager.completeWorkItem(workItem.getStringId(), results);
             }
             
         });
-        final Map<String, Integer> nodeInstanceExecutionCounter = new HashMap<String, Integer>(); 
-        ksession.addEventListener(new DefaultProcessEventListener(){
+        final Map<String, Integer> nodeInstanceExecutionCounter = new HashMap<>();
+        kruntime.getProcessEventManager().addEventListener(new DefaultKogitoProcessEventListener(){
 
             @Override
             public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {                  
@@ -675,9 +631,9 @@ public class FlowTest extends JbpmBpmn2TestCase {
 
             
         });
-        Map<String, Object> params = new HashMap<String, Object>();
+        Map<String, Object> params = new HashMap<>();
         params.put("x", 0);
-        ProcessInstance processInstance = ksession.startProcess("Process_1", params);
+        KogitoProcessInstance processInstance = kruntime.startProcess("Process_1", params);
         assertProcessInstanceActive(processInstance);
         
         List<KogitoWorkItem> workItems = handler.getWorkItems();
@@ -715,32 +671,30 @@ public class FlowTest extends JbpmBpmn2TestCase {
     
     @Test
     public void testInclusiveParallelExclusiveSplitLoopAsync() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-InclusiveNestedInParallelNestedInExclusive.bpmn2");
-        ksession = createKnowledgeSession(kbase);
-        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+        kruntime = createKogitoProcessRuntime("BPMN2-InclusiveNestedInParallelNestedInExclusive.bpmn2");
 
         TestWorkItemHandler handler = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("testWI", handler);
-        ksession.getWorkItemManager().registerWorkItemHandler("testWI2", new SystemOutWorkItemHandler() {
+        kruntime.getWorkItemManager().registerWorkItemHandler("testWI", handler);
+        kruntime.getWorkItemManager().registerWorkItemHandler("testWI2", new SystemOutWorkItemHandler() {
 
             @Override
             public void executeWorkItem(KogitoWorkItem workItem,  KogitoWorkItemManager manager) {
                 Integer x = (Integer) workItem.getParameter("input1");
                 x++;
-                Map<String, Object> results = new HashMap<String, Object>();
+                Map<String, Object> results = new HashMap<>();
                 results.put("output1", x);
                 manager.completeWorkItem(workItem.getStringId(), results);
             }
             
         });
-        final Map<String, Integer> nodeInstanceExecutionCounter = new HashMap<String, Integer>(); 
-        ksession.addEventListener(new DefaultProcessEventListener(){
+        final Map<String, Integer> nodeInstanceExecutionCounter = new HashMap<>();
+        kruntime.getProcessEventManager().addEventListener(new DefaultKogitoProcessEventListener(){
 
             @Override
             public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) { 
                 Integer value = nodeInstanceExecutionCounter.get(event.getNodeInstance().getNodeName());
                 if (value == null) {
-                    value = new Integer(0);
+                    value = 0;
                 }
                 
                 value++;
@@ -749,9 +703,9 @@ public class FlowTest extends JbpmBpmn2TestCase {
 
             
         });
-        Map<String, Object> params = new HashMap<String, Object>();
+        Map<String, Object> params = new HashMap<>();
         params.put("x", -1);
-        ProcessInstance processInstance = kruntime.startProcess("Process_1", params);
+        KogitoProcessInstance processInstance = kruntime.startProcess("Process_1", params);
         assertProcessInstanceActive(processInstance);
         
         List<KogitoWorkItem> workItems = handler.getWorkItems();
@@ -798,16 +752,14 @@ public class FlowTest extends JbpmBpmn2TestCase {
     
     @Test
     public void testInclusiveSplitNested() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-InclusiveGatewayNested.bpmn2");
-        ksession = createKnowledgeSession(kbase);
-        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+        kruntime = createKogitoProcessRuntime("BPMN2-InclusiveGatewayNested.bpmn2");
 
         TestWorkItemHandler handler = new TestWorkItemHandler();
         TestWorkItemHandler handler2 = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("testWI", handler);
-        ksession.getWorkItemManager().registerWorkItemHandler("testWI2", handler2);
-        Map<String, Object> params = new HashMap<String, Object>();
-        ProcessInstance processInstance = ksession.startProcess("Process_1", params);
+        kruntime.getWorkItemManager().registerWorkItemHandler("testWI", handler);
+        kruntime.getWorkItemManager().registerWorkItemHandler("testWI2", handler2);
+        Map<String, Object> params = new HashMap<>();
+        KogitoProcessInstance processInstance = kruntime.startProcess("Process_1", params);
         
         assertProcessInstanceActive(processInstance);
         kruntime.getWorkItemManager().completeWorkItem(handler.getWorkItem().getStringId(), null);
@@ -831,12 +783,10 @@ public class FlowTest extends JbpmBpmn2TestCase {
     
     @Test
     public void testInclusiveSplitWithLoopInside() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-InclusiveGatewayWithLoopInside.bpmn2");
-        ksession = createKnowledgeSession(kbase);
-        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+        kruntime = createKogitoProcessRuntime("BPMN2-InclusiveGatewayWithLoopInside.bpmn2");
 
-        final Map<String, Integer> nodeInstanceExecutionCounter = new HashMap<String, Integer>();
-        ksession.addEventListener(new DefaultProcessEventListener(){
+        final Map<String, Integer> nodeInstanceExecutionCounter = new HashMap<>();
+        kruntime.getProcessEventManager().addEventListener(new DefaultKogitoProcessEventListener(){
 
             @Override
             public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {                 
@@ -854,11 +804,11 @@ public class FlowTest extends JbpmBpmn2TestCase {
         });
         TestWorkItemHandler handler = new TestWorkItemHandler();
         TestWorkItemHandler handler2 = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("testWI", handler);
-        ksession.getWorkItemManager().registerWorkItemHandler("testWI2", handler2);
-        Map<String, Object> params = new HashMap<String, Object>();
+        kruntime.getWorkItemManager().registerWorkItemHandler("testWI", handler);
+        kruntime.getWorkItemManager().registerWorkItemHandler("testWI2", handler2);
+        Map<String, Object> params = new HashMap<>();
         params.put("x", -1);
-        ProcessInstance processInstance = ksession.startProcess("Process_1", params);
+        KogitoProcessInstance processInstance = kruntime.startProcess("Process_1", params);
         
         assertProcessInstanceActive(processInstance);
         List<KogitoWorkItem> workItems = handler.getWorkItems();
@@ -895,19 +845,17 @@ public class FlowTest extends JbpmBpmn2TestCase {
     
     @Test
     public void testInclusiveSplitWithLoopInsideSubprocess() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-InclusiveGatewayWithLoopInsideSubprocess.bpmn2");
-        ksession = createKnowledgeSession(kbase);
-        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+        kruntime = createKogitoProcessRuntime("BPMN2-InclusiveGatewayWithLoopInsideSubprocess.bpmn2");
 
-        final Map<String, Integer> nodeInstanceExecutionCounter = new HashMap<String, Integer>();
-        ksession.addEventListener(new DefaultProcessEventListener(){
+        final Map<String, Integer> nodeInstanceExecutionCounter = new HashMap<>();
+        kruntime.getProcessEventManager().addEventListener(new DefaultKogitoProcessEventListener(){
 
             @Override
             public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {                 
                 logger.info("{} {}", event.getNodeInstance().getNodeName(), ((NodeInstanceImpl) event.getNodeInstance()).getLevel());
                 Integer value = nodeInstanceExecutionCounter.get(event.getNodeInstance().getNodeName());
                 if (value == null) {
-                    value = new Integer(0);
+                    value = 0;
                 }
                 
                 value++;
@@ -918,11 +866,11 @@ public class FlowTest extends JbpmBpmn2TestCase {
         });
         TestWorkItemHandler handler = new TestWorkItemHandler();
         TestWorkItemHandler handler2 = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("testWI", handler);
-        ksession.getWorkItemManager().registerWorkItemHandler("testWI2", handler2);
-        Map<String, Object> params = new HashMap<String, Object>();
+        kruntime.getWorkItemManager().registerWorkItemHandler("testWI", handler);
+        kruntime.getWorkItemManager().registerWorkItemHandler("testWI2", handler2);
+        Map<String, Object> params = new HashMap<>();
         params.put("x", -1);
-        ProcessInstance processInstance = ksession.startProcess("Process_1", params);
+        KogitoProcessInstance processInstance = kruntime.startProcess("Process_1", params);
         
         assertProcessInstanceActive(processInstance);
         List<KogitoWorkItem> workItems = handler.getWorkItems();
@@ -963,15 +911,13 @@ public class FlowTest extends JbpmBpmn2TestCase {
     @Test
     public void testMultiInstanceLoopCharacteristicsProcessWithORGateway()
             throws Exception {
-        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-MultiInstanceLoopCharacteristicsProcessWithORgateway.bpmn2");
-        ksession = createKnowledgeSession(kbase);
-        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+        kruntime = createKogitoProcessRuntime("BPMN2-MultiInstanceLoopCharacteristicsProcessWithORgateway.bpmn2");
 
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
-        Map<String, Object> params = new HashMap<String, Object>();
-        List<Integer> myList = new ArrayList<Integer>();
+        Map<String, Object> params = new HashMap<>();
+        List<Integer> myList = new ArrayList<>();
         myList.add(12);
         myList.add(15);
         params.put("list", myList);
@@ -1024,26 +970,24 @@ public class FlowTest extends JbpmBpmn2TestCase {
         kruntime.getWorkItemManager().completeWorkItem(
                 workItems.get(3).getStringId(), null);
 
-        assertProcessInstanceFinished(processInstance, ksession);
+        assertProcessInstanceFinished(processInstance, kruntime);
 
 
     }
     
     @Test
     public void testInclusiveJoinWithLoopAndHumanTasks() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-InclusiveGatewayWithHumanTasksProcess.bpmn2");
-        ksession = createKnowledgeSession(kbase);
-        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+        kruntime = createKogitoProcessRuntime("BPMN2-InclusiveGatewayWithHumanTasksProcess.bpmn2");
 
-        final Map<String, Integer> nodeInstanceExecutionCounter = new HashMap<String, Integer>();
-        ksession.addEventListener(new DefaultProcessEventListener(){
+        final Map<String, Integer> nodeInstanceExecutionCounter = new HashMap<>();
+        kruntime.getProcessEventManager().addEventListener(new DefaultKogitoProcessEventListener(){
 
             @Override
             public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {                 
                 logger.info("{} {}", event.getNodeInstance().getNodeName(), ((NodeInstanceImpl) event.getNodeInstance()).getLevel());
                 Integer value = nodeInstanceExecutionCounter.get(event.getNodeInstance().getNodeName());
                 if (value == null) {
-                    value = new Integer(0);
+                    value = 0;
                 }
                 
                 value++;
@@ -1053,13 +997,13 @@ public class FlowTest extends JbpmBpmn2TestCase {
             
         });
         TestWorkItemHandler handler = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
+        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
         
-        Map<String, Object> params = new HashMap<String, Object>();
+        Map<String, Object> params = new HashMap<>();
         params.put("firstXor", true);   
         params.put("secondXor", true); 
         params.put("thirdXor", true);
-        ProcessInstance processInstance = ksession.startProcess("InclusiveWithAdvancedLoop", params);
+        KogitoProcessInstance processInstance = kruntime.startProcess("InclusiveWithAdvancedLoop", params);
         // simulate completion of first task
         assertProcessInstanceActive(processInstance);
         kruntime.getWorkItemManager().completeWorkItem(handler.getWorkItem().getStringId(), null);
@@ -1105,33 +1049,30 @@ public class FlowTest extends JbpmBpmn2TestCase {
 
     @Test
     public void testMultiInstanceLoopCharacteristicsProcess() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-MultiInstanceLoopCharacteristicsProcess.bpmn2");
-        ksession = createKnowledgeSession(kbase);
-        Map<String, Object> params = new HashMap<String, Object>();
-        List<String> myList = new ArrayList<String>();
+        kruntime = createKogitoProcessRuntime("BPMN2-MultiInstanceLoopCharacteristicsProcess.bpmn2");
+        Map<String, Object> params = new HashMap<>();
+        List<String> myList = new ArrayList<>();
         myList.add("First Item");
         myList.add("Second Item");
         params.put("list", myList);
-        ProcessInstance processInstance = ksession.startProcess(
+        KogitoProcessInstance processInstance = kruntime.startProcess(
                 "MultiInstanceLoopCharacteristicsProcess", params);
         assertProcessInstanceCompleted(processInstance);
     }
     
     @Test
     public void testMultiInstanceLoopNumberTest() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-MultiInstanceLoop-Numbering.bpmn2");
-        ksession = createKnowledgeSession(kbase);
-        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
-        Map<String, Object> params = new HashMap<String, Object>();
+        kruntime = createKogitoProcessRuntime("BPMN2-MultiInstanceLoop-Numbering.bpmn2");
+        Map<String, Object> params = new HashMap<>();
         
-        final Map<String, String> nodeIdNodeNameMap = new HashMap<String, String>();
-        ksession.addEventListener(new DefaultProcessEventListener() {
+        final Map<String, String> nodeIdNodeNameMap = new HashMap<>();
+        kruntime.getProcessEventManager().addEventListener(new DefaultKogitoProcessEventListener() {
 
             @Override
             public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {
                 NodeInstance nodeInstance = event.getNodeInstance();
                 String uniqId = ((NodeInstanceImpl) nodeInstance).getUniqueId();
-                String nodeName = ((NodeInstanceImpl) nodeInstance).getNode().getName();
+                String nodeName = nodeInstance.getNode().getName();
                 
                 String prevNodeName = nodeIdNodeNameMap.put( uniqId, nodeName );
                 if( prevNodeName != null ) { 
@@ -1142,9 +1083,9 @@ public class FlowTest extends JbpmBpmn2TestCase {
         });
         
         TestWorkItemHandler handler = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
+        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
         
-        ProcessInstance processInstance = ksession.startProcess("Test.MultipleInstancesBug", params);
+        KogitoProcessInstance processInstance = kruntime.startProcess("Test.MultipleInstancesBug", params);
        
         List<KogitoWorkItem> workItems = handler.getWorkItems();
         logger.debug( "COMPLETING TASKS.");
@@ -1157,14 +1098,12 @@ public class FlowTest extends JbpmBpmn2TestCase {
 
     @Test
     public void testMultiInstanceLoopCharacteristicsProcess2() throws Exception {
-        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-MultiInstanceProcessWithOutputOnTask.bpmn2");
-        ksession = createKnowledgeSession(kbase);
-        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+        kruntime = createKogitoProcessRuntime("BPMN2-MultiInstanceProcessWithOutputOnTask.bpmn2");
 
         TestWorkItemHandler handler = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
-        Map<String, Object> params = new HashMap<String, Object>();
-        List<String> myList = new ArrayList<String>();
+        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
+        Map<String, Object> params = new HashMap<>();
+        List<String> myList = new ArrayList<>();
         List<String> myOutList = null;
         myList.add("John");
         myList.add("Mary");
@@ -1175,22 +1114,22 @@ public class FlowTest extends JbpmBpmn2TestCase {
         assertNotNull(workItems);
         assertEquals(2, workItems.size());
         
-        myOutList = (List<String>) ksession.execute(new GetProcessVariableCommand(processInstance.getStringId(), "mioutput"));
+        myOutList = (List<String>) kruntime.getKieSession().execute(new GetProcessVariableCommand(processInstance.getStringId(), "mioutput"));
         assertNull(myOutList);
         
         
-        Map<String, Object> results = new HashMap<String, Object>();
+        Map<String, Object> results = new HashMap<>();
         results.put("reply", "Hello John");
         kruntime.getWorkItemManager().completeWorkItem(workItems.get(0).getStringId(), results);
         
-        myOutList = (List<String>) ksession.execute(new GetProcessVariableCommand(processInstance.getStringId(), "mioutput"));
+        myOutList = (List<String>) kruntime.getKieSession().execute(new GetProcessVariableCommand(processInstance.getStringId(), "mioutput"));
         assertNull(myOutList);
         
-        results = new HashMap<String, Object>();
+        results = new HashMap<>();
         results.put("reply", "Hello Mary");
         kruntime.getWorkItemManager().completeWorkItem(workItems.get(1).getStringId(), results);
 
-        myOutList = (List<String>) ksession.execute(new GetProcessVariableCommand(processInstance.getStringId(), "mioutput"));
+        myOutList = (List<String>) kruntime.getKieSession().execute(new GetProcessVariableCommand(processInstance.getStringId(), "mioutput"));
         assertNotNull(myOutList);
         assertEquals(2, myOutList.size());
         assertTrue(myOutList.contains("Hello John"));
@@ -1198,24 +1137,23 @@ public class FlowTest extends JbpmBpmn2TestCase {
         
         kruntime.getWorkItemManager().completeWorkItem(handler.getWorkItem().getStringId(), null);
         
-        assertProcessInstanceFinished(processInstance, ksession);
+        assertProcessInstanceFinished(processInstance, kruntime);
 
     }
 
     @Test
     public void testMultiInstanceLoopCharacteristicsProcessWithOutput()
             throws Exception {
-        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-MultiInstanceLoopCharacteristicsProcessWithOutput.bpmn2");
-        ksession = createKnowledgeSession(kbase);
-        Map<String, Object> params = new HashMap<String, Object>();
-        List<String> myList = new ArrayList<String>();
-        List<String> myListOut = new ArrayList<String>();
+        kruntime = createKogitoProcessRuntime("BPMN2-MultiInstanceLoopCharacteristicsProcessWithOutput.bpmn2");
+        Map<String, Object> params = new HashMap<>();
+        List<String> myList = new ArrayList<>();
+        List<String> myListOut = new ArrayList<>();
         myList.add("First Item");
         myList.add("Second Item");
         params.put("list", myList);
         params.put("listOut", myListOut);
         assertEquals(0, myListOut.size());
-        ProcessInstance processInstance = ksession.startProcess(
+        KogitoProcessInstance processInstance = kruntime.startProcess(
                 "MultiInstanceLoopCharacteristicsProcessWithOutput", params);
         assertProcessInstanceCompleted(processInstance);
         assertEquals(2, myListOut.size());
@@ -1225,17 +1163,16 @@ public class FlowTest extends JbpmBpmn2TestCase {
     @Test
     public void testMultiInstanceLoopCharacteristicsProcessWithOutputCompletionCondition()
             throws Exception {
-        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-MultiInstanceLoopCharacteristicsProcessWithOutputCmpCond.bpmn2");
-        ksession = createKnowledgeSession(kbase);
-        Map<String, Object> params = new HashMap<String, Object>();
-        List<String> myList = new ArrayList<String>();
-        List<String> myListOut = new ArrayList<String>();
+        kruntime = createKogitoProcessRuntime("BPMN2-MultiInstanceLoopCharacteristicsProcessWithOutputCmpCond.bpmn2");
+        Map<String, Object> params = new HashMap<>();
+        List<String> myList = new ArrayList<>();
+        List<String> myListOut = new ArrayList<>();
         myList.add("First Item");
         myList.add("Second Item");
         params.put("list", myList);
         params.put("listOut", myListOut);
         assertEquals(0, myListOut.size());
-        ProcessInstance processInstance = ksession.startProcess(
+        KogitoProcessInstance processInstance = kruntime.startProcess(
                 "MultiInstanceLoopCharacteristicsProcessWithOutput", params);
         assertProcessInstanceCompleted(processInstance);
         assertEquals(1, myListOut.size());
@@ -1245,19 +1182,18 @@ public class FlowTest extends JbpmBpmn2TestCase {
     @Test
     public void testMultiInstanceLoopCharacteristicsProcessWithOutputAndScripts()
             throws Exception {
-        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-MultiInstanceLoopCharacteristicsProcessWithOutputAndScripts.bpmn2");
-        ksession = createKnowledgeSession(kbase);
-        Map<String, Object> params = new HashMap<String, Object>();
-        List<String> myList = new ArrayList<String>();
-        List<String> myListOut = new ArrayList<String>();
-        List<String> scriptList = new ArrayList<String>();
+        kruntime = createKogitoProcessRuntime("BPMN2-MultiInstanceLoopCharacteristicsProcessWithOutputAndScripts.bpmn2");
+        Map<String, Object> params = new HashMap<>();
+        List<String> myList = new ArrayList<>();
+        List<String> myListOut = new ArrayList<>();
+        List<String> scriptList = new ArrayList<>();
         myList.add("First Item");
         myList.add("Second Item");
         params.put("list", myList);
         params.put("listOut", myListOut);
         params.put("scriptList", scriptList);
         assertEquals(0, myListOut.size());
-        ProcessInstance processInstance = ksession.startProcess("MultiInstanceLoopCharacteristicsProcessWithOutput", params);
+        KogitoProcessInstance processInstance = kruntime.startProcess("MultiInstanceLoopCharacteristicsProcessWithOutput", params);
         assertProcessInstanceCompleted(processInstance);
         assertEquals(2, myListOut.size());
         assertEquals(2, scriptList.size());
@@ -1267,19 +1203,18 @@ public class FlowTest extends JbpmBpmn2TestCase {
     @Test
     public void testMultiInstanceLoopCharacteristicsTaskWithOutput()
             throws Exception {
-        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-MultiInstanceLoopCharacteristicsTaskWithOutput.bpmn2");
-        ksession = createKnowledgeSession(kbase);
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+        kruntime = createKogitoProcessRuntime("BPMN2-MultiInstanceLoopCharacteristicsTaskWithOutput.bpmn2");
+        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",
                 new SystemOutWorkItemHandler());
-        Map<String, Object> params = new HashMap<String, Object>();
-        List<String> myList = new ArrayList<String>();
-        List<String> myListOut = new ArrayList<String>();
+        Map<String, Object> params = new HashMap<>();
+        List<String> myList = new ArrayList<>();
+        List<String> myListOut = new ArrayList<>();
         myList.add("First Item");
         myList.add("Second Item");
         params.put("list", myList);
         params.put("listOut", myListOut);
         assertEquals(0, myListOut.size());
-        ProcessInstance processInstance = ksession.startProcess(
+        KogitoProcessInstance processInstance = kruntime.startProcess(
                 "MultiInstanceLoopCharacteristicsTask", params);
         assertProcessInstanceCompleted(processInstance);
         assertEquals(2, myListOut.size());
@@ -1289,19 +1224,18 @@ public class FlowTest extends JbpmBpmn2TestCase {
     @Test
     public void testMultiInstanceLoopCharacteristicsTaskWithOutputCompletionCondition()
             throws Exception {
-        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-MultiInstanceLoopCharacteristicsTaskWithOutputCmpCond.bpmn2");
-        ksession = createKnowledgeSession(kbase);
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+        kruntime = createKogitoProcessRuntime("BPMN2-MultiInstanceLoopCharacteristicsTaskWithOutputCmpCond.bpmn2");
+        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",
                 new SystemOutWorkItemHandler());
-        Map<String, Object> params = new HashMap<String, Object>();
-        List<String> myList = new ArrayList<String>();
-        List<String> myListOut = new ArrayList<String>();
+        Map<String, Object> params = new HashMap<>();
+        List<String> myList = new ArrayList<>();
+        List<String> myListOut = new ArrayList<>();
         myList.add("First Item");
         myList.add("Second Item");
         params.put("list", myList);
         params.put("listOut", myListOut);
         assertEquals(0, myListOut.size());
-        ProcessInstance processInstance = ksession.startProcess(
+        KogitoProcessInstance processInstance = kruntime.startProcess(
                 "MultiInstanceLoopCharacteristicsTask", params);
         assertProcessInstanceCompleted(processInstance);
         assertEquals(1, myListOut.size());
@@ -1311,13 +1245,12 @@ public class FlowTest extends JbpmBpmn2TestCase {
     @Test
     public void testMultiInstanceLoopCharacteristicsTaskWithOutputCompletionCondition2()
             throws Exception {
-        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-MultiInstanceLoopCharacteristicsTaskWithOutputCmpCond2.bpmn2");
-        ksession = createKnowledgeSession(kbase);
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+        kruntime = createKogitoProcessRuntime("BPMN2-MultiInstanceLoopCharacteristicsTaskWithOutputCmpCond2.bpmn2");
+        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",
                 new SystemOutWorkItemHandler());
-        Map<String, Object> params = new HashMap<String, Object>();
-        List<String> myList = new ArrayList<String>();
-        List<String> myListOut = new ArrayList<String>();
+        Map<String, Object> params = new HashMap<>();
+        List<String> myList = new ArrayList<>();
+        List<String> myListOut = new ArrayList<>();
         myList.add("approved");
         myList.add("rejected");
         myList.add("approved");
@@ -1326,7 +1259,7 @@ public class FlowTest extends JbpmBpmn2TestCase {
         params.put("list", myList);
         params.put("listOut", myListOut);
         assertEquals(0, myListOut.size());
-        ProcessInstance processInstance = ksession.startProcess(
+        KogitoProcessInstance processInstance = kruntime.startProcess(
                 "MultiInstanceLoopCharacteristicsTask", params);
         assertProcessInstanceCompleted(processInstance);
         // only two approved outcomes are required to complete multiinstance and since there was reject in between we should have
@@ -1337,16 +1270,15 @@ public class FlowTest extends JbpmBpmn2TestCase {
 
     @Test
     public void testMultiInstanceLoopCharacteristicsTask() throws Exception {
-        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-MultiInstanceLoopCharacteristicsTask.bpmn2");
-        ksession = createKnowledgeSession(kbase);
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+        kruntime = createKogitoProcessRuntime("BPMN2-MultiInstanceLoopCharacteristicsTask.bpmn2");
+        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",
                 new SystemOutWorkItemHandler());
-        Map<String, Object> params = new HashMap<String, Object>();
-        List<String> myList = new ArrayList<String>();
+        Map<String, Object> params = new HashMap<>();
+        List<String> myList = new ArrayList<>();
         myList.add("First Item");
         myList.add("Second Item");
         params.put("list", myList);
-        ProcessInstance processInstance = ksession.startProcess(
+        KogitoProcessInstance processInstance = kruntime.startProcess(
                 "MultiInstanceLoopCharacteristicsTask", params);
         assertProcessInstanceCompleted(processInstance);
 
@@ -1356,11 +1288,10 @@ public class FlowTest extends JbpmBpmn2TestCase {
     public void testMultipleInOutgoingSequenceFlows() throws Exception {
         NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("timer", 1);
         System.setProperty("jbpm.enable.multi.con", "true");
-        KieBase kbase = createKnowledgeBase("BPMN2-MultipleInOutgoingSequenceFlows.bpmn2");
-        ksession = createKnowledgeSession(kbase);
-        ksession.addEventListener(countDownListener);
+        kruntime = createKogitoProcessRuntime("BPMN2-MultipleInOutgoingSequenceFlows.bpmn2");
+        kruntime.getProcessEventManager().addEventListener(countDownListener);
         final List<String> list = new ArrayList<>();
-        ksession.addEventListener(new DefaultProcessEventListener() {
+        kruntime.getProcessEventManager().addEventListener(new DefaultKogitoProcessEventListener() {
             public void beforeProcessStarted(ProcessStartedEvent event) {
                 list.add( (( KogitoProcessInstance ) event.getProcessInstance()).getStringId());
             }
@@ -1379,10 +1310,9 @@ public class FlowTest extends JbpmBpmn2TestCase {
     public void testMultipleIncomingFlowToEndNode() throws Exception {
         System.setProperty("jbpm.enable.multi.con", "true");
 
-        KieBase kbase = createKnowledgeBase("BPMN2-MultipleFlowEndNode.bpmn2");
-        ksession = createKnowledgeSession(kbase);
-        
-        ProcessInstance processInstance = ksession.startProcess("MultipleFlowEndNode");
+        kruntime = createKogitoProcessRuntime("BPMN2-MultipleFlowEndNode.bpmn2");
+
+        KogitoProcessInstance processInstance = kruntime.startProcess("MultipleFlowEndNode");
         assertProcessInstanceCompleted(processInstance);
         System.clearProperty("jbpm.enable.multi.con");
     }
@@ -1390,12 +1320,10 @@ public class FlowTest extends JbpmBpmn2TestCase {
     @Test
     public void testMultipleEnabledOnSingleConditionalSequenceFlow() throws Exception {
         System.setProperty("jbpm.enable.multi.con", "true");
-        KieBase kbase = createKnowledgeBase("BPMN2-MultiConnEnabled.bpmn2");
-        ksession = createKnowledgeSession(kbase);
-        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+        kruntime = createKogitoProcessRuntime("BPMN2-MultiConnEnabled.bpmn2");
 
-        final List<Long> list = new ArrayList<Long>();
-        ksession.addEventListener(new DefaultProcessEventListener() {
+        final List<Long> list = new ArrayList<>();
+        kruntime.getProcessEventManager().addEventListener(new DefaultKogitoProcessEventListener() {
             public void afterNodeTriggered(org.kie.api.event.process.ProcessNodeTriggeredEvent event) {
                 if ("Task2".equals(event.getNodeInstance().getNodeName())) {
                     list.add(event.getNodeInstance().getNodeId());
@@ -1417,7 +1345,7 @@ public class FlowTest extends JbpmBpmn2TestCase {
     @Test
     public void testMultipleInOutgoingSequenceFlowsDisable() throws Exception {
         try {
-            KieBase kbase = createKnowledgeBase("BPMN2-MultipleInOutgoingSequenceFlows.bpmn2");
+            createKogitoProcessRuntime("BPMN2-MultipleInOutgoingSequenceFlows.bpmn2");
             fail("Should fail as multiple outgoing and incoming connections are disabled by default");
         } catch (Exception e) {
             assertThat(e.getMessage()).contains("This type of node [ScriptTask_1, Script Task] cannot have more than one outgoing connection!");
@@ -1429,13 +1357,11 @@ public class FlowTest extends JbpmBpmn2TestCase {
         System.setProperty("jbpm.enable.multi.con", "true");
         String processId = "designer.conditional-flow";
 
-        KieBase kbase = createKnowledgeBase("BPMN2-ConditionalFlowWithoutGateway.bpmn2");
-        ksession = createKnowledgeSession(kbase);
-        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+        kruntime = createKogitoProcessRuntime("BPMN2-ConditionalFlowWithoutGateway.bpmn2");
 
         KogitoProcessInstance wpi = kruntime.startProcess(processId);
 
-        assertProcessInstanceFinished(wpi, ksession);
+        assertProcessInstanceFinished(wpi, kruntime);
         assertNodeTriggered(wpi.getStringId(), "start", "script", "end1");
         System.clearProperty("jbpm.enable.multi.con");
 
@@ -1443,49 +1369,43 @@ public class FlowTest extends JbpmBpmn2TestCase {
 
     @Test
     public void testLane() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-Lane.bpmn2");
-        ksession = createKnowledgeSession(kbase);
-        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+        kruntime = createKogitoProcessRuntime("BPMN2-Lane.bpmn2");
 
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
-        ProcessInstance processInstance = ksession.startProcess("UserTask");
-        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
-        ksession = restoreSession(ksession, true);
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+        KogitoProcessInstance processInstance = kruntime.startProcess("UserTask");
+        assertEquals(KogitoProcessInstance.STATE_ACTIVE, processInstance.getState());
+        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
         KogitoWorkItem KogitoWorkItem = workItemHandler.getWorkItem();
         assertNotNull(KogitoWorkItem);
         assertEquals("john", KogitoWorkItem.getParameter("ActorId"));
-        Map<String, Object> results = new HashMap<String, Object>();
+        Map<String, Object> results = new HashMap<>();
         ((HumanTaskWorkItemImpl) KogitoWorkItem).setActualOwner("mary");
         kruntime.getWorkItemManager().completeWorkItem(KogitoWorkItem.getStringId(),
                 results);
-        ksession = restoreSession(ksession, true);
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+        kruntime.getWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
         KogitoWorkItem = workItemHandler.getWorkItem();
         assertNotNull(KogitoWorkItem);
         assertEquals("mary", KogitoWorkItem.getParameter("SwimlaneActorId"));
         kruntime.getWorkItemManager().completeWorkItem(KogitoWorkItem.getStringId(), null);
-        assertProcessInstanceFinished(processInstance, ksession);
+        assertProcessInstanceFinished(processInstance, kruntime);
     }
     
     @Test
     public void testExclusiveSplitDefaultNoCondition() throws Exception {
-        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-ExclusiveSplitDefaultNoCondition.bpmn2");
-        KieSession ksession = createKnowledgeSession(kbase);
-        ProcessInstance processInstance = ksession.startProcess("com.sample.test");
-        assertProcessInstanceFinished(processInstance, ksession);
+        kruntime = createKogitoProcessRuntime("BPMN2-ExclusiveSplitDefaultNoCondition.bpmn2");
+        KogitoProcessInstance processInstance = kruntime.startProcess("com.sample.test");
+        assertProcessInstanceFinished(processInstance, kruntime);
     }
     
     @Test
     public void testMultipleGatewaysProcess() throws Exception {
-        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-MultipleGatewaysProcess.bpmn2");
-        ksession = createKnowledgeSession(kbase);
-        ksession.addEventListener(new DefaultProcessEventListener(){
-            ProcessInstance pi;
+        kruntime = createKogitoProcessRuntime("BPMN2-MultipleGatewaysProcess.bpmn2");
+        kruntime.getProcessEventManager().addEventListener(new DefaultKogitoProcessEventListener(){
+            KogitoProcessInstance pi;
 
             @Override
             public void afterNodeTriggered(ProcessNodeTriggeredEvent event) {                
@@ -1501,13 +1421,13 @@ public class FlowTest extends JbpmBpmn2TestCase {
 
             @Override
             public void beforeProcessStarted(ProcessStartedEvent event) {
-                pi=event.getProcessInstance();
+                pi= (KogitoProcessInstance) event.getProcessInstance();
                 
             }
         });
-        Map<String, Object> params = new HashMap<String, Object>();
+        Map<String, Object> params = new HashMap<>();
         params.put("action", "CreateAgent");
-        ProcessInstance processInstance = ksession.startProcess("multiplegateways", params);
+        KogitoProcessInstance processInstance = kruntime.startProcess("multiplegateways", params);
         
         assertProcessInstanceCompleted(processInstance);
     }
@@ -1515,19 +1435,17 @@ public class FlowTest extends JbpmBpmn2TestCase {
     @Test
     public void testTimerAndGateway() throws Exception {
         NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("timer", 1);
-        KieBase kbase = createKnowledgeBase("timer/BPMN2-ParallelSplitWithTimerProcess.bpmn2");
-        ksession = createKnowledgeSession(kbase);
-        KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+        kruntime = createKogitoProcessRuntime("timer/BPMN2-ParallelSplitWithTimerProcess.bpmn2");
 
-        ksession.addEventListener(countDownListener);
+        kruntime.getProcessEventManager().addEventListener(countDownListener);
         
         TestWorkItemHandler handler1 = new TestWorkItemHandler();
         TestWorkItemHandler handler2 = new TestWorkItemHandler();
         
-        ksession.getWorkItemManager().registerWorkItemHandler("task1", handler1);
-        ksession.getWorkItemManager().registerWorkItemHandler("task2", handler2);
+        kruntime.getWorkItemManager().registerWorkItemHandler("task1", handler1);
+        kruntime.getWorkItemManager().registerWorkItemHandler("task2", handler2);
 
-        KogitoProcessInstance instance = kruntime.createProcessInstance("timer-process", new HashMap<String, Object>());
+        KogitoProcessInstance instance = kruntime.createProcessInstance("timer-process", new HashMap<>());
         kruntime.startProcessInstance(instance.getStringId());
 
         KogitoWorkItem workItem1 = handler1.getWorkItem();
@@ -1536,10 +1454,9 @@ public class FlowTest extends JbpmBpmn2TestCase {
         //first safe state: task1 completed
         kruntime.getWorkItemManager().completeWorkItem(workItem1.getStringId(), null);        
         
-        ksession = restoreSession(ksession, true);
-        ksession.addEventListener(countDownListener);
-        ksession.getWorkItemManager().registerWorkItemHandler("task1", handler1);
-        ksession.getWorkItemManager().registerWorkItemHandler("task2", handler2);
+        kruntime.getProcessEventManager().addEventListener(countDownListener);
+        kruntime.getWorkItemManager().registerWorkItemHandler("task1", handler1);
+        kruntime.getWorkItemManager().registerWorkItemHandler("task2", handler2);
         //second safe state: timer completed, waiting on task2
         countDownListener.waitTillCompleted();
 
@@ -1568,8 +1485,7 @@ public class FlowTest extends JbpmBpmn2TestCase {
 
 
         public Object execute(Context context) {
-            KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
-            KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ksession );
+            KogitoProcessRuntime kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( ((RegistryContext) context).lookup( KieSession.class ) );
 
             org.jbpm.process.instance.ProcessInstance processInstance = 
                     (org.jbpm.process.instance.ProcessInstance) kruntime.getProcessInstance(processInstanceId);

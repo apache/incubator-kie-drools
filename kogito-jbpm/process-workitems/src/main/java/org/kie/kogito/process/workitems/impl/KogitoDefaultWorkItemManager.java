@@ -35,8 +35,8 @@ import org.kie.kogito.process.workitems.KogitoWorkItem;
 import org.kie.kogito.process.workitems.KogitoWorkItemHandlerNotFoundException;
 import org.kie.kogito.process.workitems.KogitoWorkItemManager;
 
-import static org.kie.api.runtime.process.WorkItem.ABORTED;
-import static org.kie.api.runtime.process.WorkItem.COMPLETED;
+import static org.kie.kogito.internal.process.runtime.KogitoWorkItem.ABORTED;
+import static org.kie.kogito.internal.process.runtime.KogitoWorkItem.COMPLETED;
 
 public class KogitoDefaultWorkItemManager implements KogitoWorkItemManager {
 
