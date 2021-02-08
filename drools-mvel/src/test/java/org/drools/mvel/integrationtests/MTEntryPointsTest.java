@@ -89,7 +89,7 @@ public class MTEntryPointsTest {
                     .setEventProcessingMode(EventProcessingOption.STREAM)
                     .newKieSessionModel("defaultKieSession")
                     .setDefault(true)
-                    .setClockType(ClockTypeOption.get("pseudo"));
+                    .setClockType(ClockTypeOption.PSEUDO);
         kfs.writeKModuleXML(kmoduleModel.toXML());
 
         KieBuilder builder = ks.newKieBuilder(kfs).buildAll();

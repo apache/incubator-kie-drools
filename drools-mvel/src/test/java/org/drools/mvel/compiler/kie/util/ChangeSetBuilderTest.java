@@ -268,7 +268,7 @@ public class ChangeSetBuilderTest {
 
         KieSessionModel ksession1 = kieBaseModel1.newKieSessionModel("KSession1")
                 .setType( KieSessionType.STATEFUL )
-                .setClockType( ClockTypeOption.get("realtime") );
+                .setClockType( ClockTypeOption.REALTIME );
 
         return kproj;
     }

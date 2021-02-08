@@ -360,7 +360,7 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
 
         KieSessionModel ksession1 = kieBaseModel1.newKieSessionModel("KSession1")
                                                  .setType( KieSessionType.STATEFUL )
-                                                 .setClockType(ClockTypeOption.get("realtime"))
+                                                 .setClockType(ClockTypeOption.REALTIME)
                                                  .setDefault( true );
 
         return kproj;

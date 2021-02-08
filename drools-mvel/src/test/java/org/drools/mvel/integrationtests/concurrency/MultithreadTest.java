@@ -344,7 +344,7 @@ public class MultithreadTest extends CommonTestMethodBase {
         final KieBase kbase = loadKnowledgeBaseFromString(kbconfig, drl);
 
         final KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        conf.setOption(ClockTypeOption.get("REALTIME"));
+        conf.setOption(ClockTypeOption.REALTIME);
         final KieSession ksession = kbase.newKieSession(conf, null);
 
         final List list = new ArrayList();

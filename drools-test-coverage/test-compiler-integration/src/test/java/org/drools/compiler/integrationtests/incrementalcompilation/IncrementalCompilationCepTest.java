@@ -148,7 +148,7 @@ public class IncrementalCompilationCepTest {
         final KieSessionConfiguration ksconf = ks.newKieSessionConfiguration();
         ksconf.setOption(TimedRuleExecutionOption.YES);
         ksconf.setOption(TimerJobFactoryOption.get("trackable"));
-        ksconf.setOption(ClockTypeOption.get("pseudo"));
+        ksconf.setOption(ClockTypeOption.PSEUDO);
 
         final KieSession ksession = kc.newKieSession(ksconf);
 

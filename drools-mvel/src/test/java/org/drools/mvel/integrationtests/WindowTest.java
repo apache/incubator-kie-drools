@@ -144,7 +144,7 @@ public class WindowTest {
 
         KieSessionConfiguration ksconfig = KnowledgeBaseFactory
                 .newKnowledgeSessionConfiguration();
-        ksconfig.setOption(ClockTypeOption.get("pseudo"));
+        ksconfig.setOption(ClockTypeOption.PSEUDO);
 
         ksession = kbase.newKieSession(ksconfig, null);
 

@@ -51,7 +51,7 @@ public class CalendarTimerResourcesTest {
                                         .setEventProcessingMode(EventProcessingOption.STREAM);
         baseModel.newKieSessionModel("defaultKSession")
                  .setDefault(true)
-                 .setClockType(ClockTypeOption.get("pseudo"));
+                 .setClockType(ClockTypeOption.PSEUDO);
 
         kfs.writeKModuleXML(kmodule.toXML());
         kfs.write(ks.getResources().newClassPathResource("calendar_timer.xls", this.getClass())); // README when path is set then test works
