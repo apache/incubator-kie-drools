@@ -146,9 +146,9 @@ public abstract class BaseBetaConstraintsTest {
     protected void checkSameConstraintForIndex(IndexableConstraint constraint,
                                                FieldIndex fieldIndex) {
         assertSame( constraint.getRequiredDeclarations()[0],
-                    fieldIndex.getDeclaration() );
+                    fieldIndex.getLeftExtractor() );
         assertSame( constraint.getFieldExtractor(),
-                    fieldIndex.getExtractor() );
+                    fieldIndex.getRightExtractor() );
     }
 
     protected BetaNodeFieldConstraint[] convertToConstraints(LinkedList list) {

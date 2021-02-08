@@ -26,6 +26,7 @@ import org.drools.core.rule.Declaration;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.ReadAccessor;
 import org.drools.core.spi.Tuple;
+import org.drools.core.spi.TupleValueExtractor;
 import org.drools.core.util.index.TupleList;
 
 public abstract class AbstractHashTable
@@ -295,44 +296,42 @@ public abstract class AbstractHashTable
 
         private static final long serialVersionUID = 510l;
 
-        private InternalReadAccessor    extractor;
-        private Declaration             declaration;
-        private boolean                 requiresCoercion;
+        private TupleValueExtractor leftExtractor;
+        private InternalReadAccessor rightExtractor;
+        private boolean requiresCoercion;
 
-        public FieldIndex() {
+        public FieldIndex() { }
 
+        public FieldIndex( InternalReadAccessor rightExtractor, TupleValueExtractor leftExtractor ) {
+            this.rightExtractor = rightExtractor;
+            this.leftExtractor = leftExtractor;
+            this.requiresCoercion = isCoercionRequired( rightExtractor, leftExtractor );
         }
 
-        public FieldIndex(InternalReadAccessor extractor, Declaration declaration) {
-            this.extractor = extractor;
-            this.declaration = declaration;
-            this.requiresCoercion = isCoercionRequired( extractor, declaration );
-        }
-
-        private boolean isCoercionRequired( InternalReadAccessor extractor, Declaration declaration ) {
-            return extractor.getValueType() != declaration.getExtractor().getValueType();
+        private boolean isCoercionRequired( InternalReadAccessor extractor, TupleValueExtractor declaration ) {
+            return extractor.getValueType() != declaration.getValueType();
         }
 
         @Override
         public void readExternal(ObjectInput in) throws IOException,
                                                 ClassNotFoundException {
-            extractor = (InternalReadAccessor) in.readObject();
-            declaration = (Declaration) in.readObject();
-            requiresCoercion = isCoercionRequired( extractor, declaration );
+            rightExtractor = (InternalReadAccessor) in.readObject();
+            leftExtractor = (Declaration) in.readObject();
+            requiresCoercion = isCoercionRequired( rightExtractor, leftExtractor );
         }
 
         @Override
         public void writeExternal(ObjectOutput out) throws IOException {
-            out.writeObject( extractor );
-            out.writeObject( declaration );
+            out.writeObject( rightExtractor );
+            out.writeObject( leftExtractor );
         }
 
-        public Declaration getDeclaration() {
-            return this.declaration;
+        public TupleValueExtractor getLeftExtractor() {
+            return this.leftExtractor;
         }
 
-        public ReadAccessor getExtractor() {
-            return this.extractor;
+        public ReadAccessor getRightExtractor() {
+            return this.rightExtractor;
         }
 
         public boolean requiresCoercion() {
@@ -342,9 +341,9 @@ public abstract class AbstractHashTable
         public Object indexedValueOf(Tuple tuple, boolean left) {
             return left ?
                     ( requiresCoercion ?
-                            extractor.getValueType().coerce( declaration.getExtractor().getValue( tuple.getObject( declaration ) ) ) :
-                            declaration.getValue( null, tuple ) ) :
-                   extractor.getValue( null, tuple.getFactHandle().getObject() );
+                            rightExtractor.getValueType().coerce( leftExtractor.getValue( tuple ) ) :
+                            leftExtractor.getValue( tuple ) ) :
+                   rightExtractor.getValue( null, tuple.getFactHandle().getObject() );
         }
     }
 

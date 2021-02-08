@@ -24,11 +24,11 @@ import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.NodeTypeEnums;
 import org.drools.core.reteoo.TupleMemory;
 import org.drools.core.rule.ContextEntry;
-import org.drools.core.rule.Declaration;
 import org.drools.core.rule.IndexableConstraint;
 import org.drools.core.spi.BetaNodeFieldConstraint;
 import org.drools.core.spi.Constraint;
 import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.spi.TupleValueExtractor;
 import org.drools.core.util.AbstractHashTable.FieldIndex;
 import org.kie.internal.conf.IndexPrecedenceOption;
 
@@ -83,10 +83,10 @@ public class IndexUtil {
 
     private static boolean areRangeIndexCompatibleOperands(IndexableConstraint constraint) {
         InternalReadAccessor fieldExtractor = null;
-        Declaration indexingDeclaration = null;
+        TupleValueExtractor indexingDeclaration = null;
         try {
             fieldExtractor = constraint.getFieldExtractor();
-            indexingDeclaration = constraint.getIndexingDeclaration();
+            indexingDeclaration = constraint.getIndexExtractor();
         } catch (UnsupportedOperationException uoe) {
             return false;
         }
@@ -95,7 +95,7 @@ public class IndexUtil {
         }
 
         ValueType leftValueType = fieldExtractor.getValueType();
-        ValueType rightValueType = indexingDeclaration.getExtractor().getValueType();
+        ValueType rightValueType = indexingDeclaration.getValueType();
 
         if (leftValueType != null && rightValueType != null) {
             if (leftValueType.isNumber() && rightValueType.isNumber()) {

@@ -17,18 +17,23 @@
 
 package org.drools.model.view;
 
+import org.drools.model.BetaIndex2;
 import org.drools.model.Condition;
 import org.drools.model.Condition.Type;
+import org.drools.model.Index;
 import org.drools.model.Variable;
+import org.drools.model.functions.Function1;
+import org.drools.model.functions.Function2;
 import org.drools.model.functions.Predicate3;
+import org.drools.model.index.BetaIndex2Impl;
 
-public class Expr3ViewItemImpl<A, B, C> extends AbstractExprViewItem<A> implements ExprNViewItem<A> {
+public class Expr3ViewItemImpl<A, B, C> extends AbstractExprViewItem<A> implements Expr3ViewItem<A, B, C> {
 
     private final Variable<B> var2;
     private final Variable<C> var3;
     private final Predicate3<A, B, C> predicate;
 
-    // with 3 elements we don't implement INDEXes
+    private BetaIndex2<A, B, C, ?> index;
 
     public Expr3ViewItemImpl(Variable<A> var1, Variable<B> var2, Variable<C> var3, Predicate3<A, B, C> predicate) {
         super(predicate.toString(), var1);
@@ -66,4 +71,19 @@ public class Expr3ViewItemImpl<A, B, C> extends AbstractExprViewItem<A> implemen
         return Type.PATTERN;
     }
 
+    public BetaIndex2<A, B, C, ?> getIndex() {
+        return index;
+    }
+
+    @Override
+    public <V> Expr3ViewItemImpl<A, B, C> indexedBy( Class<V> indexedClass, Index.ConstraintType constraintType, int indexId, Function1<A, V> leftOperandExtractor, Function2<B, C, ?> rightOperandExtractor ) {
+        index = new BetaIndex2Impl<>( indexedClass, constraintType, indexId, leftOperandExtractor, rightOperandExtractor, Object.class );
+        return this;
+    }
+
+    @Override
+    public <V> Expr3ViewItemImpl<A, B, C> indexedBy( Class<V> indexedClass, Index.ConstraintType constraintType, int indexId, Function1<A, V> leftOperandExtractor, Function2<B, C, ?> rightOperandExtractor, Class<?> rightReturnType ) {
+        index = new BetaIndex2Impl<>( indexedClass, constraintType, indexId, leftOperandExtractor, rightOperandExtractor, rightReturnType );
+        return this;
+    }
 }

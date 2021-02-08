@@ -4,12 +4,11 @@ import java.util.Optional;
 
 import com.github.javaparser.ParseProblemException;
 import com.github.javaparser.StaticJavaParser;
-import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
-import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.Node;
 import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyper;
 import org.drools.modelcompiler.builder.generator.expressiontyper.TypedExpressionResult;
 import org.slf4j.Logger;
@@ -29,7 +28,7 @@ public class PrimitiveTypeConsequenceRewrite {
     }
 
     public String rewrite(String consequence) {
-        BlockStmt blockStmt;
+        Node blockStmt;
         try {
             blockStmt = StaticJavaParser.parseBlock(consequence);
         } catch (ParseProblemException e) {
@@ -37,12 +36,27 @@ public class PrimitiveTypeConsequenceRewrite {
             return consequence;
         }
 
-        blockStmt.findAll(CastExpr.class).forEach(this::convertStatement);
-
+        convertNode( blockStmt );
         return blockStmt.toString();
     }
 
+    public static <T extends Node> T rewriteNode( RuleContext context, T node ) {
+        if (node instanceof CastExpr) {
+            return (T) convertCast(context, (( CastExpr ) node));
+        }
+        new PrimitiveTypeConsequenceRewrite(context).convertNode( node );
+        return node;
+    }
+
+    private void convertNode( Node node ) {
+        node.findAll(CastExpr.class).forEach(this::convertStatement);
+    }
+
     private void convertStatement(CastExpr ce) {
+        ce.replace(convertCast(context, ce));
+    }
+
+    private static Expression convertCast(RuleContext context, CastExpr ce) {
         Expression innerExpr = ce.getExpression();
         Optional<Class<?>> castType = context.resolveType(ce.getType().asString());
 
@@ -52,7 +66,7 @@ public class PrimitiveTypeConsequenceRewrite {
 
         Optional<TypedExpression> optTypeExpression = typedExpressionResult.getTypedExpression();
 
-        optTypeExpression.ifPresent(typedExpression -> {
+        return optTypeExpression.map(typedExpression -> {
             if (castType.isPresent() &&
                     castType.get().equals(short.class) &&
                     !typedExpression.isNumberLiteral() &&
@@ -60,10 +74,12 @@ public class PrimitiveTypeConsequenceRewrite {
             ) {
                 Expression unenclosedExpression = unEncloseExpr(typedExpression.getExpression());
                 Expression scope = StaticJavaParser.parseExpression(unenclosedExpression.toString());
+
                 MethodCallExpr integerValueOf = new MethodCallExpr(new NameExpr(Integer.class.getCanonicalName()), "valueOf", nodeList(scope));
                 MethodCallExpr shortValue = new MethodCallExpr(integerValueOf, "shortValue");
-                ce.replace(shortValue);
+                return shortValue;
             }
-        });
+            return ce;
+        }).orElse( ce );
     }
 }

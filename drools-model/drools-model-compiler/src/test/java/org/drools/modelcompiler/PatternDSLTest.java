@@ -945,4 +945,36 @@ public class PatternDSLTest {
         session.insert(new Person("Lukas", 35));
         session.fireAllRules();
     }
+
+    @Test
+    public void testBetaIndexOn2ValuesOnLeftTuple() {
+        final Variable<Integer> var_$integer = D.declarationOf(Integer.class);
+        final Variable<Integer> var_$i = D.declarationOf(Integer.class);
+        final Variable<String> var_$string = D.declarationOf(String.class);
+        final Variable<Integer> var_$l = D.declarationOf(Integer.class);
+        final Variable<Person> var_$p = D.declarationOf(Person.class);
+
+        Rule rule = D.rule("R1").build(D.pattern(var_$integer).bind(var_$i,
+                (Integer _this) -> _this),
+                D.pattern(var_$string).bind(var_$l,
+                        (String _this) -> _this.length()),
+                D.pattern(var_$p).expr("8EF302358D7EE770A4D874DF4B3327D2",
+                        var_$l,
+                        var_$i,
+                        (_this, $l, $i) -> org.drools.modelcompiler.util.EvaluationUtil.areNumbersNullSafeEquals(_this.getAge(), $l + $i),
+                        D.betaIndexedBy(int.class, Index.ConstraintType.EQUAL, 3, Person::getAge, ($l, $i) -> $l + $i, int.class),
+                        D.reactOn("age")),
+                D.execute(() -> { })
+        );
+
+        Model model = new ModelImpl().addRule(rule);
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel(model, EventProcessingOption.STREAM);
+        KieSession ksession = kieBase.newKieSession();
+
+        ksession.insert( 5 );
+        ksession.insert( "test" );
+        ksession.insert( new Person("Sofia", 9) );
+
+        assertEquals( 1, ksession.fireAllRules() );
+    }
 }

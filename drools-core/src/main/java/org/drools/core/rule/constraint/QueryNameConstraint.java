@@ -88,7 +88,7 @@ public class QueryNameConstraint implements
     }
 
     @Override
-    public Declaration getIndexingDeclaration() {
+    public Declaration getIndexExtractor() {
         throw new UnsupportedOperationException();
     }
 

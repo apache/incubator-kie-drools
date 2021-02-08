@@ -23,6 +23,7 @@ import java.io.ObjectOutput;
 import java.util.List;
 
 import org.drools.core.RuleBaseConfiguration;
+import org.drools.core.base.ValueType;
 import org.drools.core.base.field.ObjectFieldImpl;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
@@ -31,28 +32,35 @@ import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
-import org.drools.core.spi.PatternExtractor;
 import org.drools.core.spi.Tuple;
+import org.drools.core.spi.TupleValueExtractor;
 import org.drools.core.time.Interval;
 import org.drools.core.util.AbstractHashTable.FieldIndex;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.core.util.index.IndexUtil;
 import org.drools.model.AlphaIndex;
 import org.drools.model.BetaIndex;
+import org.drools.model.BetaIndex1;
+import org.drools.model.BetaIndex2;
+import org.drools.model.BetaIndex3;
 import org.drools.model.Index;
+import org.drools.model.functions.Function1;
+import org.drools.model.functions.Function2;
+import org.drools.model.functions.Function3;
 import org.drools.model.functions.PredicateInformation;
 
+import static org.drools.core.base.ValueType.determineValueType;
 import static org.drools.core.reteoo.PropertySpecificUtil.getEmptyPropertyReactiveMask;
 import static org.drools.modelcompiler.util.EvaluationUtil.adaptBitMask;
 
 public class LambdaConstraint extends AbstractConstraint {
 
     private final ConstraintEvaluator evaluator;
-    private PredicateInformation predicateInformation;
+    private final PredicateInformation predicateInformation;
 
     private FieldValue field;
     private InternalReadAccessor readAccessor;
-    private Declaration indexingDeclaration;
+    private AbstractIndexValueExtractor indexExtractor;
 
     public LambdaConstraint(ConstraintEvaluator evaluator,
                             PredicateInformation predicateInformation) {
@@ -68,24 +76,31 @@ public class LambdaConstraint extends AbstractConstraint {
     private void initIndexes() {
         Index index = evaluator.getIndex();
         if (index != null) {
-            readAccessor = new LambdaReadAccessor( index.getIndexId(), index.getIndexedClass(), index.getLeftOperandExtractor() );
-            if (index instanceof AlphaIndex) {
-                field = new ObjectFieldImpl( ( ( AlphaIndex ) index).getRightValue() );
-            } else if (index instanceof BetaIndex) {
-                indexingDeclaration = evaluator.getRequiredDeclarations()[0];
-                if ( indexingDeclaration.getExtractor() instanceof PatternExtractor ) {
-                    indexingDeclaration = indexingDeclaration.clone();
-                    org.drools.model.Index.ConstraintType constraintType = index.getConstraintType();
-                    Class<?> accessorFieldType;
-                    if (constraintType.isComparison() && ((BetaIndex) index).getRightReturnType() != null) {
-                        accessorFieldType = ((BetaIndex) index).getRightReturnType();
-                    } else {
-                        accessorFieldType = index.getIndexedClass();
-                    }
-                    indexingDeclaration.setReadAccessor( new LambdaReadAccessor( index.getIndexId(), accessorFieldType, (( BetaIndex ) index).getRightOperandExtractor() ) );
-                }
+            this.readAccessor = new LambdaReadAccessor( index.getIndexId(), index.getIndexedClass(), index.getLeftOperandExtractor() );
+            switch (index.getIndexType()) {
+                case ALPHA:
+                    this.field = new ObjectFieldImpl( ( ( AlphaIndex ) index).getRightValue() );
+                    break;
+                case BETA:
+                    this.indexExtractor = initBetaIndex( (BetaIndex) index );
+                    break;
             }
         }
+    }
+
+    private AbstractIndexValueExtractor initBetaIndex(BetaIndex index) {
+        switch (index.getArity()) {
+            case 1:
+                BetaIndex1 index1 = (( BetaIndex1 ) index);
+                return new IndexValueExtractor1(evaluator.getRequiredDeclarations()[0], index1.getRightOperandExtractor(), index1.getRightReturnType());
+            case 2:
+                BetaIndex2 index2 = (( BetaIndex2 ) index);
+                return new IndexValueExtractor2(evaluator.getRequiredDeclarations()[0], evaluator.getRequiredDeclarations()[1], index2.getRightOperandExtractor(), index2.getRightReturnType());
+            case 3:
+                BetaIndex3 index3 = (( BetaIndex3 ) index);
+                return new IndexValueExtractor3(evaluator.getRequiredDeclarations()[0], evaluator.getRequiredDeclarations()[1], evaluator.getRequiredDeclarations()[2], index3.getRightOperandExtractor(), index3.getRightReturnType());
+        }
+        throw new UnsupportedOperationException( "Unsupported arity " + index.getArity() + " for beta index" );
     }
 
     @Override
@@ -101,13 +116,8 @@ public class LambdaConstraint extends AbstractConstraint {
     @Override
     public void replaceDeclaration(Declaration oldDecl, Declaration newDecl) {
         evaluator.replaceDeclaration( oldDecl, newDecl );
-        if (indexingDeclaration == oldDecl) {
-            this.indexingDeclaration = newDecl;
-        } else if (indexingDeclaration != null && indexingDeclaration.getIdentifier().equals(oldDecl.getIdentifier()) && indexingDeclaration.getPattern() == oldDecl.getPattern()) {
-            // indexingDeclaration was cloned from oldDecl
-            Declaration newIndexingDeclaration = newDecl.clone();
-            newIndexingDeclaration.setReadAccessor(indexingDeclaration.getExtractor());
-            indexingDeclaration = newIndexingDeclaration;
+        if ( indexExtractor != null ) {
+            indexExtractor.replaceDeclaration( oldDecl, newDecl );
         }
     }
 
@@ -218,7 +228,7 @@ public class LambdaConstraint extends AbstractConstraint {
 
     @Override
     public FieldIndex getFieldIndex() {
-        return new FieldIndex(readAccessor, indexingDeclaration);
+        return new FieldIndex(readAccessor, indexExtractor );
     }
 
     @Override
@@ -227,8 +237,18 @@ public class LambdaConstraint extends AbstractConstraint {
     }
 
     @Override
-    public Declaration getIndexingDeclaration() {
-        return indexingDeclaration;
+    public TupleValueExtractor getIndexExtractor() {
+        return indexExtractor;
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        return this == other || other != null && getClass() == other.getClass() && evaluator.equals( (( LambdaConstraint ) other).evaluator );
+    }
+
+    @Override
+    public int hashCode() {
+        return evaluator.hashCode();
     }
 
     public static class LambdaContextEntry implements ContextEntry {
@@ -288,13 +308,148 @@ public class LambdaConstraint extends AbstractConstraint {
         }
     }
 
-    @Override
-    public boolean equals(Object other) {
-        return this == other || other != null && getClass() == other.getClass() && evaluator.equals( (( LambdaConstraint ) other).evaluator );
+    public static abstract class AbstractIndexValueExtractor implements TupleValueExtractor {
+        protected Declaration d1;
+        protected final ValueType valueType;
+
+        protected AbstractIndexValueExtractor( Declaration d1, Class<?> clazz ) {
+            this(d1, determineValueType(clazz));
+        }
+
+        protected AbstractIndexValueExtractor( Declaration d1, ValueType valueType ) {
+            this.d1 = d1;
+            this.valueType = valueType;
+        }
+
+        @Override
+        public ValueType getValueType() {
+            return valueType;
+        }
+
+        public abstract TupleValueExtractor clone();
+
+        public abstract void replaceDeclaration(Declaration oldDecl, Declaration newDecl);
+
+        protected Declaration replaceDeclaration(Declaration oldDecl, Declaration newDecl, Declaration indexingDeclaration) {
+            if (indexingDeclaration.getIdentifier().equals(oldDecl.getIdentifier()) && indexingDeclaration.getPattern() == oldDecl.getPattern()) {
+                // indexingDeclaration was cloned from oldDecl
+                Declaration newIndexingDeclaration = newDecl.clone();
+                newIndexingDeclaration.setReadAccessor( indexingDeclaration.getExtractor() );
+                return newIndexingDeclaration;
+            }
+            return indexingDeclaration;
+        }
     }
 
-    @Override
-    public int hashCode() {
-        return evaluator.hashCode();
+    public static class IndexValueExtractor1 extends AbstractIndexValueExtractor {
+
+        private final Function1 extractor;
+
+        public IndexValueExtractor1( Declaration d1, Function1 extractor, Class<?> clazz ) {
+            super(d1, clazz);
+            this.extractor = extractor;
+        }
+
+        public IndexValueExtractor1( Declaration d1, Function1 extractor, ValueType valueType ) {
+            super(d1, valueType);
+            this.extractor = extractor;
+        }
+
+        @Override
+        public Object getValue( InternalWorkingMemory workingMemory, Tuple tuple ) {
+            return extractor.apply( d1.getValue( workingMemory, tuple ) );
+        }
+
+        @Override
+        public TupleValueExtractor clone() {
+            return new IndexValueExtractor1( d1.clone(), extractor, valueType );
+        }
+
+        @Override
+        public void replaceDeclaration(Declaration oldDecl, Declaration newDecl) {
+            d1 = replaceDeclaration( oldDecl, newDecl, d1 );
+        }
+    }
+
+    public static class IndexValueExtractor2 extends AbstractIndexValueExtractor {
+
+        private Declaration d2;
+        private final Function2 extractor;
+
+        public IndexValueExtractor2( Declaration d1, Declaration d2, Function2 extractor, Class<?> clazz ) {
+            super(d1, clazz);
+            this.d2 = d2;
+            this.extractor = extractor;
+        }
+
+        public IndexValueExtractor2( Declaration d1, Declaration d2, Function2 extractor, ValueType valueType ) {
+            super(d1, valueType);
+            this.d2 = d2;
+            this.extractor = extractor;
+        }
+
+        @Override
+        public ValueType getValueType() {
+            return valueType;
+        }
+
+        @Override
+        public Object getValue( InternalWorkingMemory workingMemory, Tuple tuple ) {
+            return extractor.apply( d1.getValue( workingMemory, tuple ), d2.getValue( workingMemory, tuple ) );
+        }
+
+        @Override
+        public TupleValueExtractor clone() {
+            return new IndexValueExtractor2( d1.clone(), d2.clone(), extractor, valueType );
+        }
+
+        @Override
+        public void replaceDeclaration(Declaration oldDecl, Declaration newDecl) {
+            d1 = replaceDeclaration( oldDecl, newDecl, d1 );
+            d2 = replaceDeclaration( oldDecl, newDecl, d2 );
+        }
+    }
+
+    public static class IndexValueExtractor3 extends AbstractIndexValueExtractor {
+
+        private Declaration d2;
+        private Declaration d3;
+        private final Function3 extractor;
+
+        public IndexValueExtractor3( Declaration d1, Declaration d2, Declaration d3, Function3 extractor, Class<?> clazz ) {
+            super(d1, clazz);
+            this.d2 = d2;
+            this.d3 = d3;
+            this.extractor = extractor;
+        }
+
+        public IndexValueExtractor3( Declaration d1, Declaration d2, Declaration d3, Function3 extractor, ValueType valueType ) {
+            super(d1, valueType);
+            this.d2 = d2;
+            this.d3 = d3;
+            this.extractor = extractor;
+        }
+
+        @Override
+        public ValueType getValueType() {
+            return valueType;
+        }
+
+        @Override
+        public Object getValue( InternalWorkingMemory workingMemory, Tuple tuple ) {
+            return extractor.apply( d1.getValue( workingMemory, tuple ), d2.getValue( workingMemory, tuple ), d3.getValue( workingMemory, tuple ) );
+        }
+
+        @Override
+        public TupleValueExtractor clone() {
+            return new IndexValueExtractor3( d1.clone(), d2.clone(), d3.clone(), extractor, valueType );
+        }
+
+        @Override
+        public void replaceDeclaration(Declaration oldDecl, Declaration newDecl) {
+            d1 = replaceDeclaration( oldDecl, newDecl, d1 );
+            d2 = replaceDeclaration( oldDecl, newDecl, d2 );
+            d3 = replaceDeclaration( oldDecl, newDecl, d3 );
+        }
     }
 }

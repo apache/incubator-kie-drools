@@ -75,7 +75,9 @@ import org.drools.model.impl.Query9DefImpl;
 import org.drools.model.impl.RuleBuilder;
 import org.drools.model.impl.ViewBuilder;
 import org.drools.model.index.AlphaIndexImpl;
-import org.drools.model.index.BetaIndexImpl;
+import org.drools.model.index.BetaIndex1Impl;
+import org.drools.model.index.BetaIndex2Impl;
+import org.drools.model.index.BetaIndex3Impl;
 import org.drools.model.view.BindViewItem1;
 import org.drools.model.view.BindViewItem2;
 import org.drools.model.view.BindViewItem3;
@@ -104,12 +106,20 @@ public class PatternDSL extends DSL {
         return new AlphaIndexImpl<>( indexedClass, constraintType, indexId, leftOperandExtractor, rightValue );
     }
 
-    public static <T, U, V> BetaIndex<T, U, V> betaIndexedBy( Class<V> indexedClass, Index.ConstraintType constraintType, int indexId, Function1<T, V> leftOperandExtractor, Function1<U, ?> rightOperandExtractor ) {
-        return new BetaIndexImpl<>( indexedClass, constraintType, indexId, leftOperandExtractor, rightOperandExtractor );
+    public static <T, U, V> BetaIndex1<T, U, V> betaIndexedBy( Class<V> indexedClass, Index.ConstraintType constraintType, int indexId, Function1<T, V> leftOperandExtractor, Function1<U, ?> rightOperandExtractor ) {
+        return new BetaIndex1Impl<>( indexedClass, constraintType, indexId, leftOperandExtractor, rightOperandExtractor );
     }
 
-    public static <T, U, V> BetaIndex<T, U, V> betaIndexedBy( Class<V> indexedClass, Index.ConstraintType constraintType, int indexId, Function1<T, V> leftOperandExtractor, Function1<U, ?> rightOperandExtractor, Class<?> rightReturnType ) {
-        return new BetaIndexImpl<>( indexedClass, constraintType, indexId, leftOperandExtractor, rightOperandExtractor, rightReturnType );
+    public static <T, U, V> BetaIndex1<T, U, V> betaIndexedBy( Class<V> indexedClass, Index.ConstraintType constraintType, int indexId, Function1<T, V> leftOperandExtractor, Function1<U, ?> rightOperandExtractor, Class<?> rightReturnType ) {
+        return new BetaIndex1Impl<>( indexedClass, constraintType, indexId, leftOperandExtractor, rightOperandExtractor, rightReturnType );
+    }
+
+    public static <T, A, B, V> BetaIndex2<T, A, B, V> betaIndexedBy( Class<V> indexedClass, Index.ConstraintType constraintType, int indexId, Function1<T, V> leftOperandExtractor, Function2<A, B, ?> rightOperandExtractor, Class<?> rightReturnType ) {
+        return new BetaIndex2Impl<>( indexedClass, constraintType, indexId, leftOperandExtractor, rightOperandExtractor, rightReturnType );
+    }
+
+    public static <T, A, B, C, V> BetaIndex3<T, A, B, C, V> betaIndexedBy( Class<V> indexedClass, Index.ConstraintType constraintType, int indexId, Function1<T, V> leftOperandExtractor, Function3<A, B, C, ?> rightOperandExtractor, Class<?> rightReturnType ) {
+        return new BetaIndex3Impl<>( indexedClass, constraintType, indexId, leftOperandExtractor, rightOperandExtractor, rightReturnType );
     }
 
     public static ReactOn reactOn( String... reactOn ) {
@@ -136,22 +146,23 @@ public class PatternDSL extends DSL {
 
         <U> PatternDef<T> expr( String exprId, Variable<U> var2, Predicate2<T, U> predicate );
 
-        <U> PatternDef<T> expr( String exprId, Variable<U> var2, Predicate2<T, U> predicate, BetaIndex<T, U, ?> index );
+        <U> PatternDef<T> expr( String exprId, Variable<U> var2, Predicate2<T, U> predicate, BetaIndex1<T, U, ?> index );
 
         <U> PatternDef<T> expr( String exprId, Variable<U> var2, Predicate2<T, U> predicate, ReactOn reactOn );
 
-        <U> PatternDef<T> expr( String exprId, Variable<U> var2, Predicate2<T, U> predicate, BetaIndex<T, U, ?> index, ReactOn reactOn );
+        <U> PatternDef<T> expr( String exprId, Variable<U> var2, Predicate2<T, U> predicate, BetaIndex1<T, U, ?> index, ReactOn reactOn );
 
         <A, B> PatternDef<T> expr( String exprId, Variable<A> var2, Variable<B> var3, Predicate3<T, A, B> predicate );
-
+        <A, B> PatternDef<T> expr( String exprId, Variable<A> var2, Variable<B> var3, Predicate3<T, A, B> predicate, BetaIndex2<T, A, B, ?> index );
         <A, B> PatternDef<T> expr( String exprId, Variable<A> var2, Variable<B> var3, Predicate3<T, A, B> predicate, ReactOn reactOn );
+        <A, B> PatternDef<T> expr( String exprId, Variable<A> var2, Variable<B> var3, Predicate3<T, A, B> predicate, BetaIndex2<T, A, B, ?> index, ReactOn reactOn );
 
         <A, B, C> PatternDef<T> expr( String exprId, Variable<A> var2, Variable<B> var3, Variable<C> var4, Predicate4<T, A, B, C> predicate );
-
+        <A, B, C> PatternDef<T> expr( String exprId, Variable<A> var2, Variable<B> var3, Variable<C> var4, Predicate4<T, A, B, C> predicate, BetaIndex3<T, A, B, C, ?> index );
         <A, B, C> PatternDef<T> expr( String exprId, Variable<A> var2, Variable<B> var3, Variable<C> var4, Predicate4<T, A, B, C> predicate, ReactOn reactOn );
+        <A, B, C> PatternDef<T> expr( String exprId, Variable<A> var2, Variable<B> var3, Variable<C> var4, Predicate4<T, A, B, C> predicate, BetaIndex3<T, A, B, C, ?> index, ReactOn reactOn );
 
         <A, B, C, D> PatternDef<T> expr( String exprId, Variable<A> var2, Variable<B> var3, Variable<C> var4, Variable<D> var5, Predicate5<T, A, B, C, D> predicate );
-
         <A, B, C, D> PatternDef<T> expr( String exprId, Variable<A> var2, Variable<B> var3, Variable<C> var4, Variable<D> var5, Predicate5<T, A, B, C, D> predicate, ReactOn reactOn );
 
         <A, B, C, D, E> PatternDef<T> expr(String exprId, Variable<A> var2, Variable<B> var3, Variable<C> var4, Variable<D> var5, Variable<E> var6, Predicate6<T, A, B, C, D, E> predicate );
@@ -335,7 +346,7 @@ public class PatternDSL extends DSL {
         }
 
         @Override
-        public <U> PatternDef<T> expr( String exprId, Variable<U> var2, Predicate2<T, U> predicate, BetaIndex<T, U, ?> index ) {
+        public <U> PatternDef<T> expr( String exprId, Variable<U> var2, Predicate2<T, U> predicate, BetaIndex1<T, U, ?> index ) {
             items.add( new PatternExpr2<>( exprId, var2, new Predicate2.Impl<>( predicate ), index, null ) );
             return this;
         }
@@ -347,32 +358,56 @@ public class PatternDSL extends DSL {
         }
 
         @Override
-        public <U> PatternDef<T> expr( String exprId, Variable<U> var2, Predicate2<T, U> predicate, BetaIndex<T, U, ?> index, ReactOn reactOn ) {
+        public <U> PatternDef<T> expr( String exprId, Variable<U> var2, Predicate2<T, U> predicate, BetaIndex1<T, U, ?> index, ReactOn reactOn ) {
             items.add( new PatternExpr2<>( exprId, var2, new Predicate2.Impl<>( predicate ), index, reactOn ) );
             return this;
         }
 
         @Override
         public <A, B> PatternDef<T> expr( String exprId, Variable<A> var2, Variable<B> var3, Predicate3<T, A, B> predicate ) {
-            items.add( new PatternExpr3<>( exprId, var2, var3, new Predicate3.Impl<>( predicate ), null ) );
+            items.add( new PatternExpr3<>( exprId, var2, var3, new Predicate3.Impl<>( predicate ), null, null ) );
+            return this;
+        }
+
+        @Override
+        public <A, B> PatternDef<T> expr( String exprId, Variable<A> var2, Variable<B> var3, Predicate3<T, A, B> predicate, BetaIndex2<T, A, B, ?> index ) {
+            items.add( new PatternExpr3<>( exprId, var2, var3, new Predicate3.Impl<>( predicate ), index, null ) );
             return this;
         }
 
         @Override
         public <A, B> PatternDef<T> expr( String exprId, Variable<A> var2, Variable<B> var3, Predicate3<T, A, B> predicate, ReactOn reactOn ) {
-            items.add( new PatternExpr3<>( exprId, var2, var3, new Predicate3.Impl<>( predicate ), reactOn ) );
+            items.add( new PatternExpr3<>( exprId, var2, var3, new Predicate3.Impl<>( predicate ), null, reactOn ) );
+            return this;
+        }
+
+        @Override
+        public <A, B> PatternDef<T> expr( String exprId, Variable<A> var2, Variable<B> var3, Predicate3<T, A, B> predicate, BetaIndex2<T, A, B, ?> index, ReactOn reactOn ) {
+            items.add( new PatternExpr3<>( exprId, var2, var3, new Predicate3.Impl<>( predicate ), index, reactOn ) );
             return this;
         }
 
         @Override
         public <A, B, C> PatternDef<T> expr( String exprId, Variable<A> var2, Variable<B> var3, Variable<C> var4, Predicate4<T, A, B, C> predicate ) {
-            items.add( new PatternExpr4<>( exprId, var2, var3, var4, new Predicate4.Impl<>( predicate ), null ) );
+            items.add( new PatternExpr4<>( exprId, var2, var3, var4, new Predicate4.Impl<>( predicate ), null, null ) );
+            return this;
+        }
+
+        @Override
+        public <A, B, C> PatternDef<T> expr( String exprId, Variable<A> var2, Variable<B> var3, Variable<C> var4, Predicate4<T, A, B, C> predicate, BetaIndex3<T, A, B, C, ?> index ) {
+            items.add( new PatternExpr4<>( exprId, var2, var3, var4, new Predicate4.Impl<>( predicate ), index, null ) );
             return this;
         }
 
         @Override
         public <A, B, C> PatternDef<T> expr( String exprId, Variable<A> var2, Variable<B> var3, Variable<C> var4, Predicate4<T, A, B, C> predicate, ReactOn reactOn ) {
-            items.add( new PatternExpr4<>( exprId, var2, var3, var4, new Predicate4.Impl<>( predicate ), reactOn ) );
+            items.add( new PatternExpr4<>( exprId, var2, var3, var4, new Predicate4.Impl<>( predicate ), null, reactOn ) );
+            return this;
+        }
+
+        @Override
+        public <A, B, C> PatternDef<T> expr( String exprId, Variable<A> var2, Variable<B> var3, Variable<C> var4, Predicate4<T, A, B, C> predicate, BetaIndex3<T, A, B, C, ?> index, ReactOn reactOn ) {
+            items.add( new PatternExpr4<>( exprId, var2, var3, var4, new Predicate4.Impl<>( predicate ), index, reactOn ) );
             return this;
         }
 
@@ -751,13 +786,13 @@ public class PatternDSL extends DSL {
         private final Variable<U> var2;
         private final Predicate2<T, U> predicate;
 
-        private final BetaIndex<T, U, ?> index;
+        private final BetaIndex1<T, U, ?> index;
 
-        public PatternExpr2( Variable<U> var2, Predicate2<T, U> predicate, BetaIndexImpl<T, U, ?> index, ReactOn reactOn ) {
+        public PatternExpr2( Variable<U> var2, Predicate2<T, U> predicate, BetaIndex1Impl<T, U, ?> index, ReactOn reactOn ) {
             this( randomUUID().toString(), var2, predicate, index, reactOn );
         }
 
-        public PatternExpr2( String exprId, Variable<U> var2, Predicate2<T, U> predicate, BetaIndex<T, U, ?> index, ReactOn reactOn ) {
+        public PatternExpr2( String exprId, Variable<U> var2, Predicate2<T, U> predicate, BetaIndex1<T, U, ?> index, ReactOn reactOn ) {
             super( exprId, reactOn );
             this.var2 = var2;
             this.predicate = predicate;
@@ -768,14 +803,10 @@ public class PatternDSL extends DSL {
             return predicate;
         }
 
-        public BetaIndex<T, U, ?> getIndex() {
-            return index;
-        }
-
         @Override
         public Constraint asConstraint( PatternDefImpl patternDef ) {
             SingleConstraint2 constraint = new SingleConstraint2( getExprId(), patternDef.getFirstVariable(), var2, getPredicate() );
-            constraint.setIndex( getIndex() );
+            constraint.setIndex( index );
             constraint.setReactivitySpecs( getReactivitySpecs( patternDef.getDomainClassMetadata() ) );
             return constraint;
         }
@@ -786,15 +817,18 @@ public class PatternDSL extends DSL {
         private final Variable<B> var3;
         private final Predicate3<T, A, B> predicate;
 
-        public PatternExpr3( Variable<A> var2, Variable<B> var3, Predicate3<T, A, B> predicate, ReactOn reactOn ) {
-            this( randomUUID().toString(), var2, var3, predicate, reactOn );
+        private final BetaIndex2<T, A, B, ?> index;
+
+        public PatternExpr3( Variable<A> var2, Variable<B> var3, Predicate3<T, A, B> predicate, BetaIndex2<T, A, B, ?> index, ReactOn reactOn ) {
+            this( randomUUID().toString(), var2, var3, predicate, index, reactOn );
         }
 
-        public PatternExpr3( String exprId, Variable<A> var2, Variable<B> var3, Predicate3<T, A, B> predicate, ReactOn reactOn ) {
+        public PatternExpr3( String exprId, Variable<A> var2, Variable<B> var3, Predicate3<T, A, B> predicate, BetaIndex2<T, A, B, ?> index, ReactOn reactOn ) {
             super( exprId, reactOn );
             this.var2 = var2;
             this.var3 = var3;
             this.predicate = predicate;
+            this.index = index;
         }
 
         public Predicate3<T, A, B> getPredicate() {
@@ -804,6 +838,7 @@ public class PatternDSL extends DSL {
         @Override
         public Constraint asConstraint( PatternDefImpl patternDef ) {
             SingleConstraint3 constraint = new SingleConstraint3( getExprId(), patternDef.getFirstVariable(), var2, var3, getPredicate() );
+            constraint.setIndex( index );
             constraint.setReactivitySpecs( getReactivitySpecs( patternDef.getDomainClassMetadata() ) );
             return constraint;
         }
@@ -815,16 +850,19 @@ public class PatternDSL extends DSL {
         private final Variable<C> var4;
         private final Predicate4<T, A, B, C> predicate;
 
-        public PatternExpr4( Variable<A> var2, Variable<B> var3, Variable<C> var4, Predicate4<T, A, B, C> predicate, ReactOn reactOn ) {
-            this( randomUUID().toString(), var2, var3, var4, predicate, reactOn );
+        private final BetaIndex3<T, A, B, C, ?> index;
+
+        public PatternExpr4( Variable<A> var2, Variable<B> var3, Variable<C> var4, Predicate4<T, A, B, C> predicate, BetaIndex3<T, A, B, C, ?> index, ReactOn reactOn ) {
+            this( randomUUID().toString(), var2, var3, var4, predicate, index, reactOn );
         }
 
-        public PatternExpr4( String exprId, Variable<A> var2, Variable<B> var3, Variable<C> var4, Predicate4<T, A, B, C> predicate, ReactOn reactOn ) {
+        public PatternExpr4( String exprId, Variable<A> var2, Variable<B> var3, Variable<C> var4, Predicate4<T, A, B, C> predicate, BetaIndex3<T, A, B, C, ?> index, ReactOn reactOn ) {
             super( exprId, reactOn );
             this.var2 = var2;
             this.var3 = var3;
             this.var4 = var4;
             this.predicate = predicate;
+            this.index = index;
         }
 
         public Predicate4<T, A, B, C> getPredicate() {
@@ -834,6 +872,7 @@ public class PatternDSL extends DSL {
         @Override
         public Constraint asConstraint( PatternDefImpl patternDef ) {
             SingleConstraint4 constraint = new SingleConstraint4( getExprId(), patternDef.getFirstVariable(), var2, var3, var4, getPredicate() );
+            constraint.setIndex( index );
             constraint.setReactivitySpecs( getReactivitySpecs( patternDef.getDomainClassMetadata() ) );
             return constraint;
         }
