@@ -1388,6 +1388,8 @@
                               <include name="**/target/classes/**/*.class"/>
                               <!-- To avoid a complaint about duplicate classes from archetypes. -->
                               <exclude name="**/target/test-classes/**/*.class"/>
+                              <!-- To avoid a complaint about duplicate classes from archetype of Quarkus (test-compile) -->
+                              <exclude name="**/target/test-compile/**/*.class"/>
                               <!-- To avoid a complaint about duplicate classes as KogitoProcessInstancesFactory.class is required in every persistence addon that is mutually exclusive. -->
                               <exclude name="**/target/classes/org/kie/kogito/persistence/KogitoProcessInstancesFactory.class"/>
                               <!-- To avoid a complaint about duplicate classes created by code generation. -->

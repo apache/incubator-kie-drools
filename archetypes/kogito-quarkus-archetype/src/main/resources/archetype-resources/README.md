@@ -26,6 +26,8 @@ curl -d '{}' -H "Content-Type: application/json" -X POST http://localhost:8080/g
 
 Once successfully invoked you should see "Hello World" in the console of the running application.
 
+The generated application provides out of the box multiple samples of Kogito assets; you can reference the generated Swagger documentation and JUnit tests.
+
 # Developing
 
 Add your business assets resources (process definition, rules, decisions) into src/main/resources.
@@ -35,7 +37,8 @@ Add your java classes (data model, utilities, services) into src/main/java.
 Then just build the project and run.
 
 
-# Swagger documentation
+# OpenAPI (Swagger) documentation
+[Specification at swagger.io](https://swagger.io/docs/specification/about/)
 
 The exposed service [OpenAPI specification](https://swagger.io/docs/specification) is generated at 
 [/q/openapi](http://localhost:8080/q/openapi).

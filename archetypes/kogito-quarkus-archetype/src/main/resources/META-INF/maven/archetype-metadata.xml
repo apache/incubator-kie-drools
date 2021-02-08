@@ -41,6 +41,7 @@ under the License.
       <directory>src/main/resources</directory>
       <includes>
         <include>**/*.bpmn2</include>
+        <include>**/*.dmn</include>
         <include>**/*.properties</include>
         <include>**/*.md</include>
         <include>**/*.xml</include>
@@ -50,6 +51,7 @@ under the License.
       <directory>src/test/resources</directory>
       <includes>
         <include>**/*.bpmn2</include>
+        <include>**/*.dmn</include>
         <include>**/*.properties</include>
         <include>**/*.md</include>
         <include>**/*.xml</include>
