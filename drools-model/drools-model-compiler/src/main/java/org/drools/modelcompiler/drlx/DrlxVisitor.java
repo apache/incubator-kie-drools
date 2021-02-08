@@ -6,28 +6,25 @@ import com.github.javaparser.ast.PackageDeclaration;
 import com.github.javaparser.ast.body.TypeDeclaration;
 import com.github.javaparser.ast.modules.ModuleDeclaration;
 import org.drools.compiler.lang.ParseException;
-import org.drools.compiler.lang.api.CEDescrBuilder;
-import org.drools.compiler.lang.api.DescrFactory;
-import org.drools.compiler.lang.api.ImportDescrBuilder;
-import org.drools.compiler.lang.api.PackageDescrBuilder;
-import org.drools.compiler.lang.api.PatternDescrBuilder;
-import org.drools.compiler.lang.api.RuleDescrBuilder;
+import org.drools.compiler.lang.api.*;
 import org.drools.compiler.lang.descr.AndDescr;
-import org.drools.compiler.lang.descr.BaseDescr;
-import org.drools.compiler.lang.descr.ImportDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.mvel.parser.ast.expr.RuleConsequence;
 import org.drools.mvel.parser.ast.expr.RuleDeclaration;
 import org.drools.mvel.parser.ast.expr.RuleItem;
 import org.drools.mvel.parser.ast.expr.RulePattern;
-import org.drools.mvel.parser.ast.visitor.DrlGenericVisitor;
+import org.drools.mvel.parser.ast.visitor.DrlVoidVisitor;
 
-public class DrlxVisitor implements DrlGenericVisitor<BaseDescr, Void> {
+public class DrlxVisitor implements DrlVoidVisitor<Void> {
 
-    PackageDescrBuilder builder = DescrFactory.newPackage();
+    private final PackageDescrBuilder builder = DescrFactory.newPackage();
 
-    public PackageDescr visit(CompilationUnit u, Void arg) {
+    public PackageDescr getPackageDescr() {
+        return builder.getDescr();
+    }
+
+    public void visit(CompilationUnit u, Void arg) {
         PackageDeclaration packageDeclaration = u.getPackageDeclaration()
                 .orElseThrow(() -> new ParseException("Expected package declaration.", -1));
         String pkgName = packageDeclaration.getNameAsString();
@@ -44,18 +41,15 @@ public class DrlxVisitor implements DrlGenericVisitor<BaseDescr, Void> {
             RuleDeclaration rd = (RuleDeclaration) typeDeclaration;
             this.visit(rd, null);
         }
-        PackageDescr descr = builder.getDescr();
-        return descr;
     }
 
     @Override
-    public ImportDescr visit(ImportDeclaration decl, Void v) {
+    public void visit(ImportDeclaration decl, Void v) {
         ImportDescrBuilder importDescrBuilder = builder.newImport();
         importDescrBuilder.target(decl.getNameAsString());
-        return importDescrBuilder.getDescr();
     }
 
-    public RuleDescr visit(RuleDeclaration decl, Void v) {
+    public void visit(RuleDeclaration decl, Void v) {
         RuleDescrBuilder ruleDescrBuilder = builder.newRule();
         ruleDescrBuilder.name(decl.getNameAsString());
         CEDescrBuilder<?, AndDescr> lhs = ruleDescrBuilder.lhs().and();
@@ -75,6 +69,5 @@ public class DrlxVisitor implements DrlGenericVisitor<BaseDescr, Void> {
                 throw new IllegalArgumentException(item.getClass().getCanonicalName());
             }
         }
-        return ruleDescrBuilder.getDescr();
     }
 }

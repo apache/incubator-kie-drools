@@ -31,7 +31,8 @@ public class DrlxCompiler {
                                  provider(resource.getReader()));
         if (result.isSuccessful()) {
             DrlxVisitor drlxCompiler = new DrlxVisitor();
-            PackageDescr pkg = drlxCompiler.visit(result.getResult().get(), null);
+            drlxCompiler.visit(result.getResult().get(), null);
+            PackageDescr pkg = drlxCompiler.getPackageDescr();
             if (pkg == null) {
                 this.results.add(new ParserError(resource, "Parser returned a null Package", 0, 0));
                 return null;
