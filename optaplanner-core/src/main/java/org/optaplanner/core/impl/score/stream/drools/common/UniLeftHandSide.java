@@ -325,7 +325,7 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
     }
 
     public AbstractUniConstraintConsequence<A> andTerminate() {
-        return new UniConstraintDefaultConsequence(this);
+        return new UniConstraintDefaultConsequence<>(this);
     }
 
     public AbstractUniConstraintConsequence<A> andTerminate(ToIntFunction<A> matchWeighter) {

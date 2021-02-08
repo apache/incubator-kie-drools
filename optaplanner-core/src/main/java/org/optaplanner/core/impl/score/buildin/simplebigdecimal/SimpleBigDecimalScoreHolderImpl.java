@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ package org.optaplanner.core.impl.score.buildin.simplebigdecimal;
 import java.math.BigDecimal;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.function.BiConsumer;
 
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.rule.RuleContext;
@@ -35,7 +34,7 @@ import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 public final class SimpleBigDecimalScoreHolderImpl extends AbstractScoreHolder<SimpleBigDecimalScore>
         implements SimpleBigDecimalScoreHolder {
 
-    protected final Map<Rule, BiConsumer<RuleContext, BigDecimal>> matchExecutorByNumberMap = new LinkedHashMap<>();
+    protected final Map<Rule, BigDecimalMatchExecutor> matchExecutorByNumberMap = new LinkedHashMap<>();
 
     protected BigDecimal score = BigDecimal.ZERO;
 
@@ -54,13 +53,14 @@ public final class SimpleBigDecimalScoreHolderImpl extends AbstractScoreHolder<S
     @Override
     public void configureConstraintWeight(Rule rule, SimpleBigDecimalScore constraintWeight) {
         super.configureConstraintWeight(rule, constraintWeight);
-        BiConsumer<RuleContext, BigDecimal> matchExecutor;
+        BigDecimalMatchExecutor matchExecutor;
         if (constraintWeight.equals(SimpleBigDecimalScore.ZERO)) {
-            matchExecutor = (RuleContext kcontext, BigDecimal matchWeight) -> {
+            matchExecutor = (RuleContext kcontext, BigDecimal matchWeight, Object... justifications) -> {
             };
         } else {
-            matchExecutor = (RuleContext kcontext, BigDecimal matchWeight) -> addConstraintMatch(kcontext,
-                    constraintWeight.getScore().multiply(matchWeight));
+            matchExecutor =
+                    (RuleContext kcontext, BigDecimal matchWeight, Object... justifications) -> addConstraintMatch(kcontext,
+                            constraintWeight.getScore().multiply(matchWeight), justifications);
         }
         matchExecutorByNumberMap.put(rule, matchExecutor);
     }
@@ -90,30 +90,30 @@ public final class SimpleBigDecimalScoreHolderImpl extends AbstractScoreHolder<S
     }
 
     @Override
-    public void impactScore(RuleContext kcontext) {
-        impactScore(kcontext, BigDecimal.ONE);
+    public void impactScore(RuleContext kcontext, Object... justifications) {
+        impactScore(kcontext, BigDecimal.ONE, justifications);
     }
 
     @Override
-    public void impactScore(RuleContext kcontext, int weightMultiplier) {
-        impactScore(kcontext, BigDecimal.valueOf(weightMultiplier));
+    public void impactScore(RuleContext kcontext, int weightMultiplier, Object... justifications) {
+        impactScore(kcontext, BigDecimal.valueOf(weightMultiplier), justifications);
     }
 
     @Override
-    public void impactScore(RuleContext kcontext, long weightMultiplier) {
-        impactScore(kcontext, BigDecimal.valueOf(weightMultiplier));
+    public void impactScore(RuleContext kcontext, long weightMultiplier, Object... justifications) {
+        impactScore(kcontext, BigDecimal.valueOf(weightMultiplier), justifications);
     }
 
     @Override
-    public void impactScore(RuleContext kcontext, BigDecimal weightMultiplier) {
+    public void impactScore(RuleContext kcontext, BigDecimal weightMultiplier, Object... justifications) {
         Rule rule = kcontext.getRule();
-        BiConsumer<RuleContext, BigDecimal> matchExecutor = matchExecutorByNumberMap.get(rule);
+        BigDecimalMatchExecutor matchExecutor = matchExecutorByNumberMap.get(rule);
         if (matchExecutor == null) {
             throw new IllegalStateException("The DRL rule (" + rule.getPackageName() + ":" + rule.getName()
                     + ") does not match a @" + ConstraintWeight.class.getSimpleName() + " on the @"
                     + ConstraintConfiguration.class.getSimpleName() + " annotated class.");
         }
-        matchExecutor.accept(kcontext, weightMultiplier);
+        matchExecutor.accept(kcontext, weightMultiplier, justifications);
     }
 
     // ************************************************************************
@@ -122,10 +122,13 @@ public final class SimpleBigDecimalScoreHolderImpl extends AbstractScoreHolder<S
 
     @Override
     public void addConstraintMatch(RuleContext kcontext, BigDecimal weight) {
+        addConstraintMatch(kcontext, weight, EMPTY_OBJECT_ARRAY);
+    }
+
+    private void addConstraintMatch(RuleContext kcontext, BigDecimal weight, Object... justifications) {
         score = score.add(weight);
-        registerConstraintMatch(kcontext,
-                () -> score = score.subtract(weight),
-                () -> SimpleBigDecimalScore.of(weight));
+        registerConstraintMatch(kcontext, () -> score = score.subtract(weight), () -> SimpleBigDecimalScore.of(weight),
+                justifications);
     }
 
     @Override

@@ -89,26 +89,26 @@ public abstract class AbstractConstraintConsequence<LeftHandSide_ extends Abstra
         return new RuleAssembly(rule, getExpectedJustificationTypes().toArray(Class[]::new));
     }
 
-    protected static void impactScore(Drools drools, AbstractScoreHolder<?> scoreHolder) {
-        scoreHolder.impactScore((RuleContext) drools);
+    protected static void impactScore(Drools drools, AbstractScoreHolder<?> scoreHolder, Object... justifications) {
+        scoreHolder.impactScore((RuleContext) drools, justifications);
     }
 
     protected static void impactScore(DroolsConstraint<?> constraint, Drools drools, AbstractScoreHolder<?> scoreHolder,
-            int impact) {
+            int impact, Object... justifications) {
         constraint.assertCorrectImpact(impact);
-        scoreHolder.impactScore((RuleContext) drools, impact);
+        scoreHolder.impactScore((RuleContext) drools, impact, justifications);
     }
 
     protected static void impactScore(DroolsConstraint<?> constraint, Drools drools, AbstractScoreHolder<?> scoreHolder,
-            long impact) {
+            long impact, Object... justifications) {
         constraint.assertCorrectImpact(impact);
-        scoreHolder.impactScore((RuleContext) drools, impact);
+        scoreHolder.impactScore((RuleContext) drools, impact, justifications);
     }
 
     protected static void impactScore(DroolsConstraint<?> constraint, Drools drools, AbstractScoreHolder<?> scoreHolder,
-            BigDecimal impact) {
+            BigDecimal impact, Object... justifications) {
         constraint.assertCorrectImpact(impact);
-        scoreHolder.impactScore((RuleContext) drools, impact);
+        scoreHolder.impactScore((RuleContext) drools, impact, justifications);
     }
 
 }

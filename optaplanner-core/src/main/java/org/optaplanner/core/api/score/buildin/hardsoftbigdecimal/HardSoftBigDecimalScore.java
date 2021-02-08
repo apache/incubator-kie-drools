@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,11 +57,11 @@ public final class HardSoftBigDecimalScore extends AbstractScore<HardSoftBigDeci
     }
 
     public static HardSoftBigDecimalScore ofHard(BigDecimal hardScore) {
-        return new HardSoftBigDecimalScore(0, hardScore, BigDecimal.ZERO);
+        return of(hardScore, BigDecimal.ZERO);
     }
 
     public static HardSoftBigDecimalScore ofSoft(BigDecimal softScore) {
-        return new HardSoftBigDecimalScore(0, BigDecimal.ZERO, softScore);
+        return of(BigDecimal.ZERO, softScore);
     }
 
     // ************************************************************************

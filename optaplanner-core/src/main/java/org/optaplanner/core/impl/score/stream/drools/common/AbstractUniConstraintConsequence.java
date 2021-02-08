@@ -59,20 +59,20 @@ abstract class AbstractUniConstraintConsequence<A> extends AbstractConstraintCon
                 ToIntFunction intMatchWeighter = ((Supplier<ToIntFunction>) consequence).get();
                 return DSL.on(scoreHolderGlobal, variables[0])
                         .execute((drools, scoreHolder, a) -> impactScore(constraint, drools, scoreHolder,
-                                intMatchWeighter.applyAsInt(a)));
+                                intMatchWeighter.applyAsInt(a), a));
             case LONG:
                 ToLongFunction longMatchWeighter = ((Supplier<ToLongFunction>) consequence).get();
                 return DSL.on(scoreHolderGlobal, variables[0])
                         .execute((drools, scoreHolder, a) -> impactScore(constraint, drools, scoreHolder,
-                                longMatchWeighter.applyAsLong(a)));
+                                longMatchWeighter.applyAsLong(a), a));
             case BIG_DECIMAL:
                 Function bigDecimalMatchWeighter = ((Supplier<Function>) consequence).get();
                 return DSL.on(scoreHolderGlobal, variables[0])
                         .execute((drools, scoreHolder, a) -> impactScore(constraint, drools, scoreHolder,
-                                (BigDecimal) bigDecimalMatchWeighter.apply(a)));
+                                (BigDecimal) bigDecimalMatchWeighter.apply(a), a));
             case DEFAULT:
-                return DSL.on(scoreHolderGlobal)
-                        .execute(AbstractConstraintConsequence::impactScore);
+                return DSL.on(scoreHolderGlobal, variables[0])
+                        .execute((drools, scoreHolder, a) -> impactScore(drools, scoreHolder, a));
             default:
                 throw new UnsupportedOperationException(consequence.getMatchWeightType().toString());
         }

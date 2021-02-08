@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -61,15 +61,15 @@ public final class HardMediumSoftLongScore extends AbstractScore<HardMediumSoftL
     }
 
     public static HardMediumSoftLongScore ofHard(long hardScore) {
-        return new HardMediumSoftLongScore(0, hardScore, 0, 0);
+        return of(hardScore, 0, 0);
     }
 
     public static HardMediumSoftLongScore ofMedium(long mediumScore) {
-        return new HardMediumSoftLongScore(0, 0, mediumScore, 0);
+        return of(0, mediumScore, 0);
     }
 
     public static HardMediumSoftLongScore ofSoft(long softScore) {
-        return new HardMediumSoftLongScore(0, 0, 0, softScore);
+        return of(0, 0, softScore);
     }
 
     // ************************************************************************

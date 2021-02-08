@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -137,17 +137,17 @@ public abstract class AbstractScoreHolderTest<Score_ extends Score<Score_>> {
             }
 
             @Override
-            public void impactScore(RuleContext kcontext, int weightMultiplier) {
+            public void impactScore(RuleContext kcontext, int weightMultiplier, Object... justifications) {
                 throw new UnsupportedOperationException();
             }
 
             @Override
-            public void impactScore(RuleContext kcontext, long weightMultiplier) {
+            public void impactScore(RuleContext kcontext, long weightMultiplier, Object... justifications) {
                 throw new UnsupportedOperationException();
             }
 
             @Override
-            public void impactScore(RuleContext kcontext, BigDecimal weightMultiplier) {
+            public void impactScore(RuleContext kcontext, BigDecimal weightMultiplier, Object... justifications) {
                 throw new UnsupportedOperationException();
             }
         };

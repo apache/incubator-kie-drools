@@ -60,20 +60,20 @@ abstract class AbstractTriConstraintConsequence<A, B, C>
                 ToIntTriFunction intMatchWeighter = ((Supplier<ToIntTriFunction>) consequence).get();
                 return DSL.on(scoreHolderGlobal, variables[0], variables[1], variables[2])
                         .execute((drools, scoreHolder, a, b, c) -> impactScore(constraint, drools, scoreHolder,
-                                intMatchWeighter.applyAsInt(a, b, c)));
+                                intMatchWeighter.applyAsInt(a, b, c), a, b, c));
             case LONG:
                 ToLongTriFunction longMatchWeighter = ((Supplier<ToLongTriFunction>) consequence).get();
                 return DSL.on(scoreHolderGlobal, variables[0], variables[1], variables[2])
                         .execute((drools, scoreHolder, a, b, c) -> impactScore(constraint, drools, scoreHolder,
-                                longMatchWeighter.applyAsLong(a, b, c)));
+                                longMatchWeighter.applyAsLong(a, b, c), a, b, c));
             case BIG_DECIMAL:
                 TriFunction bigDecimalMatchWeighter = ((Supplier<TriFunction>) consequence).get();
                 return DSL.on(scoreHolderGlobal, variables[0], variables[1], variables[2])
                         .execute((drools, scoreHolder, a, b, c) -> impactScore(constraint, drools, scoreHolder,
-                                (BigDecimal) bigDecimalMatchWeighter.apply(a, b, c)));
+                                (BigDecimal) bigDecimalMatchWeighter.apply(a, b, c), a, b, c));
             case DEFAULT:
-                return DSL.on(scoreHolderGlobal)
-                        .execute(AbstractConstraintConsequence::impactScore);
+                return DSL.on(scoreHolderGlobal, variables[0], variables[1], variables[2])
+                        .execute((drools, scoreHolder, a, b, c) -> impactScore(drools, scoreHolder, a, b, c));
             default:
                 throw new UnsupportedOperationException(consequence.getMatchWeightType().toString());
         }

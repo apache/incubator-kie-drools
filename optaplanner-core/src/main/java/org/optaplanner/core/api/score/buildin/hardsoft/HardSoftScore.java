@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,11 +55,11 @@ public final class HardSoftScore extends AbstractScore<HardSoftScore> {
     }
 
     public static HardSoftScore ofHard(int hardScore) {
-        return new HardSoftScore(0, hardScore, 0);
+        return of(hardScore, 0);
     }
 
     public static HardSoftScore ofSoft(int softScore) {
-        return new HardSoftScore(0, 0, softScore);
+        return of(0, softScore);
     }
 
     // ************************************************************************

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -68,15 +68,15 @@ public final class HardMediumSoftBigDecimalScore extends AbstractScore<HardMediu
     }
 
     public static HardMediumSoftBigDecimalScore ofHard(BigDecimal hardScore) {
-        return new HardMediumSoftBigDecimalScore(0, hardScore, BigDecimal.ZERO, BigDecimal.ZERO);
+        return of(hardScore, BigDecimal.ZERO, BigDecimal.ZERO);
     }
 
     public static HardMediumSoftBigDecimalScore ofMedium(BigDecimal mediumScore) {
-        return new HardMediumSoftBigDecimalScore(0, BigDecimal.ZERO, mediumScore, BigDecimal.ZERO);
+        return of(BigDecimal.ZERO, mediumScore, BigDecimal.ZERO);
     }
 
     public static HardMediumSoftBigDecimalScore ofSoft(BigDecimal softScore) {
-        return new HardMediumSoftBigDecimalScore(0, BigDecimal.ZERO, BigDecimal.ZERO, softScore);
+        return of(BigDecimal.ZERO, BigDecimal.ZERO, softScore);
     }
 
     // ************************************************************************

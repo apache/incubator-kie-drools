@@ -60,20 +60,20 @@ abstract class AbstractQuadConstraintConsequence<A, B, C, D>
                 ToIntQuadFunction intMatchWeighter = ((Supplier<ToIntQuadFunction>) consequence).get();
                 return DSL.on(scoreHolderGlobal, variables[0], variables[1], variables[2], variables[3])
                         .execute((drools, scoreHolder, a, b, c, d) -> impactScore(constraint, drools, scoreHolder,
-                                intMatchWeighter.applyAsInt(a, b, c, d)));
+                                intMatchWeighter.applyAsInt(a, b, c, d), a, b, c, d));
             case LONG:
                 ToLongQuadFunction longMatchWeighter = ((Supplier<ToLongQuadFunction>) consequence).get();
                 return DSL.on(scoreHolderGlobal, variables[0], variables[1], variables[2], variables[3])
                         .execute((drools, scoreHolder, a, b, c, d) -> impactScore(constraint, drools, scoreHolder,
-                                longMatchWeighter.applyAsLong(a, b, c, d)));
+                                longMatchWeighter.applyAsLong(a, b, c, d), a, b, c, d));
             case BIG_DECIMAL:
                 QuadFunction bigDecimalMatchWeighter = ((Supplier<QuadFunction>) consequence).get();
                 return DSL.on(scoreHolderGlobal, variables[0], variables[1], variables[2], variables[3])
                         .execute((drools, scoreHolder, a, b, c, d) -> impactScore(constraint, drools, scoreHolder,
-                                (BigDecimal) bigDecimalMatchWeighter.apply(a, b, c, d)));
+                                (BigDecimal) bigDecimalMatchWeighter.apply(a, b, c, d), a, b, c, d));
             case DEFAULT:
-                return DSL.on(scoreHolderGlobal)
-                        .execute(AbstractConstraintConsequence::impactScore);
+                return DSL.on(scoreHolderGlobal, variables[0], variables[1], variables[2], variables[3])
+                        .execute((drools, scoreHolder, a, b, c, d) -> impactScore(drools, scoreHolder, a, b, c, d));
             default:
                 throw new UnsupportedOperationException(consequence.getMatchWeightType().toString());
         }
