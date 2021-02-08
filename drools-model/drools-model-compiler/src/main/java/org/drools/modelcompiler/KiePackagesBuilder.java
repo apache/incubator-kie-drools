@@ -740,6 +740,7 @@ public class KiePackagesBuilder {
     }
 
     // this method sets the property reactive masks on the pattern and it's strictly necessary for native compilation
+    // before changing this check DroolsTestIT in kogito-quarkus-integration-test-legacy module
     private void addReactiveMasksToPattern( Pattern pattern, org.drools.model.Pattern<?> modelPattern ) {
         if (pattern.getListenedProperties() != null) {
             DomainClassMetadata patternMetadata = modelPattern.getPatternClassMetadata();
