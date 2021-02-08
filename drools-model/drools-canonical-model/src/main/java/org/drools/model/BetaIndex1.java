@@ -20,4 +20,7 @@ public interface BetaIndex1<A, B, V> extends BetaIndex<A, V> {
 
     Function1<B, ?> getRightOperandExtractor();
 
+    default int getArity() {
+        return 1;
+    }
 }

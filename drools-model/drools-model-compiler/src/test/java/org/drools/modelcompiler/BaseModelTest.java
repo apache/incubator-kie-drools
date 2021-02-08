@@ -51,21 +51,27 @@ import static org.junit.Assert.fail;
 @RunWith(Parameterized.class)
 public abstract class BaseModelTest {
     public enum RUN_TYPE {
-        FLOW_DSL( false ),
-        PATTERN_DSL( false ),
-        STANDARD_FROM_DRL( false ),
-        STANDARD_WITH_ALPHA_NETWORK( true ),
-        PATTERN_WITH_ALPHA_NETWORK( true ),
-        FLOW_WITH_ALPHA_NETWORK( true );
+        FLOW_DSL( true, false ),
+        PATTERN_DSL( true, false ),
+        STANDARD_FROM_DRL( false, false ),
+        STANDARD_WITH_ALPHA_NETWORK( false, true ),
+        PATTERN_WITH_ALPHA_NETWORK( true, true ),
+        FLOW_WITH_ALPHA_NETWORK( true, true );
 
+        private boolean executableModel;
         private boolean alphaNetworkCompiler;
 
-        RUN_TYPE( boolean isAlphaNetworkCompiler ) {
+        RUN_TYPE( boolean executableModel, boolean isAlphaNetworkCompiler ) {
+            this.executableModel = executableModel;
             this.alphaNetworkCompiler = isAlphaNetworkCompiler;
         }
 
         public boolean isAlphaNetworkCompiler() {
             return alphaNetworkCompiler;
+        }
+
+        public boolean isExecutableModel() {
+            return executableModel;
         }
     }
 

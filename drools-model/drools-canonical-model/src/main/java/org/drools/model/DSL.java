@@ -93,6 +93,7 @@ import org.drools.model.view.Expr2ViewItem;
 import org.drools.model.view.Expr2ViewItemImpl;
 import org.drools.model.view.Expr3ViewItem;
 import org.drools.model.view.Expr3ViewItemImpl;
+import org.drools.model.view.Expr4ViewItem;
 import org.drools.model.view.Expr4ViewItemImpl;
 import org.drools.model.view.Expr5ViewItemImpl;
 import org.drools.model.view.Expr6ViewItemImpl;
@@ -362,11 +363,11 @@ public class DSL {
         return new Expr3ViewItemImpl<>(exprId, var1, var2, var3, new Predicate3.Impl<>(predicate));
     }
 
-    public static <A, B, C, D> ExprViewItem<A> expr(Variable<A> var1, Variable<B> var2, Variable<C> var3, Variable<D> var4, Predicate4<A, B, C, D> predicate) {
+    public static <A, B, C, D> Expr4ViewItem<A, B, C, D> expr( Variable<A> var1, Variable<B> var2, Variable<C> var3, Variable<D> var4, Predicate4<A, B, C, D> predicate) {
         return new Expr4ViewItemImpl<>(var1, var2, var3, var4, new Predicate4.Impl<>(predicate));
     }
 
-    public static <A, B, C, D> ExprViewItem<A> expr(String exprId, Variable<A> var1, Variable<B> var2, Variable<C> var3, Variable<D> var4, Predicate4<A, B, C, D> predicate) {
+    public static <A, B, C, D> Expr4ViewItem<A, B, C, D> expr(String exprId, Variable<A> var1, Variable<B> var2, Variable<C> var3, Variable<D> var4, Predicate4<A, B, C, D> predicate) {
         return new Expr4ViewItemImpl<>(exprId, var1, var2, var3, var4, new Predicate4.Impl<>(predicate));
     }
 

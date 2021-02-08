@@ -42,9 +42,11 @@ import org.drools.model.AlphaIndex;
 import org.drools.model.BetaIndex;
 import org.drools.model.BetaIndex1;
 import org.drools.model.BetaIndex2;
+import org.drools.model.BetaIndex3;
 import org.drools.model.Index;
 import org.drools.model.functions.Function1;
 import org.drools.model.functions.Function2;
+import org.drools.model.functions.Function3;
 import org.drools.model.functions.PredicateInformation;
 
 import static org.drools.core.base.ValueType.determineValueType;
@@ -87,15 +89,18 @@ public class LambdaConstraint extends AbstractConstraint {
     }
 
     private AbstractIndexValueExtractor initBetaIndex(BetaIndex index) {
-        if (index instanceof BetaIndex1) {
-            BetaIndex1 index1 = (( BetaIndex1 ) index);
-            return new IndexValueExtractor1(evaluator.getRequiredDeclarations()[0], index1.getRightOperandExtractor(), index1.getRightReturnType());
+        switch (index.getArity()) {
+            case 1:
+                BetaIndex1 index1 = (( BetaIndex1 ) index);
+                return new IndexValueExtractor1(evaluator.getRequiredDeclarations()[0], index1.getRightOperandExtractor(), index1.getRightReturnType());
+            case 2:
+                BetaIndex2 index2 = (( BetaIndex2 ) index);
+                return new IndexValueExtractor2(evaluator.getRequiredDeclarations()[0], evaluator.getRequiredDeclarations()[1], index2.getRightOperandExtractor(), index2.getRightReturnType());
+            case 3:
+                BetaIndex3 index3 = (( BetaIndex3 ) index);
+                return new IndexValueExtractor3(evaluator.getRequiredDeclarations()[0], evaluator.getRequiredDeclarations()[1], evaluator.getRequiredDeclarations()[2], index3.getRightOperandExtractor(), index3.getRightReturnType());
         }
-        if (index instanceof BetaIndex2) {
-            BetaIndex2 index2 = (( BetaIndex2 ) index);
-            return new IndexValueExtractor2(evaluator.getRequiredDeclarations()[0], evaluator.getRequiredDeclarations()[1], index2.getRightOperandExtractor(), index2.getRightReturnType());
-        }
-        return null;
+        throw new UnsupportedOperationException( "Unsupported arity " + index.getArity() + " for beta index" );
     }
 
     @Override
@@ -402,6 +407,49 @@ public class LambdaConstraint extends AbstractConstraint {
         public void replaceDeclaration(Declaration oldDecl, Declaration newDecl) {
             d1 = replaceDeclaration( oldDecl, newDecl, d1 );
             d2 = replaceDeclaration( oldDecl, newDecl, d2 );
+        }
+    }
+
+    public static class IndexValueExtractor3 extends AbstractIndexValueExtractor {
+
+        private Declaration d2;
+        private Declaration d3;
+        private final Function3 extractor;
+
+        public IndexValueExtractor3( Declaration d1, Declaration d2, Declaration d3, Function3 extractor, Class<?> clazz ) {
+            super(d1, clazz);
+            this.d2 = d2;
+            this.d3 = d3;
+            this.extractor = extractor;
+        }
+
+        public IndexValueExtractor3( Declaration d1, Declaration d2, Declaration d3, Function3 extractor, ValueType valueType ) {
+            super(d1, valueType);
+            this.d2 = d2;
+            this.d3 = d3;
+            this.extractor = extractor;
+        }
+
+        @Override
+        public ValueType getValueType() {
+            return valueType;
+        }
+
+        @Override
+        public Object getValue( InternalWorkingMemory workingMemory, Tuple tuple ) {
+            return extractor.apply( d1.getValue( workingMemory, tuple ), d2.getValue( workingMemory, tuple ), d3.getValue( workingMemory, tuple ) );
+        }
+
+        @Override
+        public TupleValueExtractor clone() {
+            return new IndexValueExtractor3( d1.clone(), d2.clone(), d3.clone(), extractor, valueType );
+        }
+
+        @Override
+        public void replaceDeclaration(Declaration oldDecl, Declaration newDecl) {
+            d1 = replaceDeclaration( oldDecl, newDecl, d1 );
+            d2 = replaceDeclaration( oldDecl, newDecl, d2 );
+            d3 = replaceDeclaration( oldDecl, newDecl, d3 );
         }
     }
 }

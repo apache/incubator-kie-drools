@@ -14,13 +14,13 @@
 
 package org.drools.model;
 
-import org.drools.model.functions.Function2;
+import org.drools.model.functions.Function3;
 
-public interface BetaIndex2<A, B, C, V> extends BetaIndex<A, V> {
+public interface BetaIndex3<A, B, C, D, V> extends BetaIndex<A, V> {
 
-    Function2<B, C, ?> getRightOperandExtractor();
+    Function3<B, C, D, ?> getRightOperandExtractor();
 
     default int getArity() {
-        return 2;
+        return 3;
     }
 }

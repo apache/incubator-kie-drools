@@ -20,4 +20,6 @@ package org.drools.model;
 public interface BetaIndex<A, V> extends Index<A, V> {
 
     Class<?> getRightReturnType();
+
+    int getArity();
 }

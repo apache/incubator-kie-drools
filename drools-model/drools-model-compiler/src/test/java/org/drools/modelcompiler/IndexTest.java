@@ -29,7 +29,6 @@ import org.drools.core.rule.IndexableConstraint;
 import org.drools.core.util.DateUtils;
 import org.drools.core.util.index.IndexUtil;
 import org.drools.core.util.index.IndexUtil.ConstraintType;
-import org.drools.modelcompiler.constraints.LambdaConstraint;
 import org.drools.modelcompiler.domain.Person;
 import org.junit.Test;
 import org.kie.api.KieBase;
@@ -224,10 +223,8 @@ public class IndexTest extends BaseModelTest {
 
         ObjectTypeNode otn = getObjectTypeNodeForClass( ksession, Person.class );
         BetaNode beta = (BetaNode) otn.getObjectSinkPropagator().getSinks()[0];
-        IndexableConstraint betaConstraint = (IndexableConstraint) beta.getConstraints()[0];
-        if (betaConstraint instanceof LambdaConstraint ) { // this beta index is only supported by executable model
-            assertNotNull( betaConstraint.getIndexExtractor() );
-        }
+        // this beta index is only supported by executable model
+        assertEquals( this.testRunType.isExecutableModel(), beta.getRawConstraints().isIndexed() );
 
         ksession.insert( 5 );
         ksession.insert( "test" );
@@ -312,5 +309,33 @@ public class IndexTest extends BaseModelTest {
 
         KieSession ksession = getKieSession( str );
         assertEquals( 0, ksession.fireAllRules() );
+    }
+
+    @Test
+    public void testBetaIndexOn3ValuesOnLeftTuple() {
+        // DROOLS-5995
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "rule R1 when\n" +
+                "  Long( $x : intValue )\n" +
+                "  Integer( $i : this )\n" +
+                "  String( $l : length )\n" +
+                "  $p : Person(age == $l + $i + $x)\n" +
+                "then\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ObjectTypeNode otn = getObjectTypeNodeForClass( ksession, Person.class );
+        BetaNode beta = (BetaNode) otn.getObjectSinkPropagator().getSinks()[0];
+        // this beta index is only supported by executable model
+        assertEquals( this.testRunType.isExecutableModel(), beta.getRawConstraints().isIndexed() );
+
+        ksession.insert( 2L );
+        ksession.insert( 3 );
+        ksession.insert( "test" );
+        ksession.insert( new Person("Sofia", 9) );
+
+        assertEquals( 1, ksession.fireAllRules() );
     }
 }
