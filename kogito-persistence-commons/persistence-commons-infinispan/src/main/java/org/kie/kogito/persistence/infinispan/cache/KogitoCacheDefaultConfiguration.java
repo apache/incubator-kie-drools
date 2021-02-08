@@ -35,7 +35,7 @@ public class KogitoCacheDefaultConfiguration extends XMLStringConfiguration {
     }
 
     private static final String defaultCacheTemplate(final String cacheName) {
-        final InputStream is = KogitoCacheDefaultConfiguration.class.getClassLoader().getResourceAsStream(CACHE_CONFIG_PATH);
+        final InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(CACHE_CONFIG_PATH);
         if (is == null) {
             throw new IllegalArgumentException(String.format("Cache configuration file %s not found", CACHE_CONFIG_PATH));
         }
