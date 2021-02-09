@@ -17,21 +17,21 @@
 
 package org.drools.model.view;
 
-import org.drools.model.BetaIndex1;
+import org.drools.model.BetaIndex;
 import org.drools.model.Condition;
 import org.drools.model.Condition.Type;
 import org.drools.model.Index;
 import org.drools.model.Variable;
 import org.drools.model.functions.Function1;
 import org.drools.model.functions.Predicate2;
-import org.drools.model.index.BetaIndex1Impl;
+import org.drools.model.index.BetaIndexImpl;
 
 public class Expr2ViewItemImpl<T, U> extends AbstractExprViewItem<T> implements Expr2ViewItem<T, U> {
 
     private final Variable<U> var2;
     private final Predicate2<T, U> predicate;
 
-    private BetaIndex1<T, U, ?> index;
+    private BetaIndex<T, U, ?> index;
 
     public Expr2ViewItemImpl( Variable<T> var1, Variable<U> var2, Predicate2<T, U> predicate ) {
         super(predicate.toString(), var1);
@@ -63,19 +63,19 @@ public class Expr2ViewItemImpl<T, U> extends AbstractExprViewItem<T> implements 
         return Type.PATTERN;
     }
 
-    public BetaIndex1<T, U, ?> getIndex() {
+    public BetaIndex<T, U, ?> getIndex() {
         return index;
     }
 
     @Override
     public <V> Expr2ViewItemImpl<T, U> indexedBy( Class<V> indexedClass, Index.ConstraintType constraintType, int indexId, Function1<T, V> leftOperandExtractor, Function1<U, ?> rightOperandExtractor ) {
-        index = new BetaIndex1Impl<>( indexedClass, constraintType, indexId, leftOperandExtractor, rightOperandExtractor );
+        index = new BetaIndexImpl<>( indexedClass, constraintType, indexId, leftOperandExtractor, rightOperandExtractor );
         return this;
     }
 
     @Override
     public <V> Expr2ViewItemImpl<T, U> indexedBy( Class<V> indexedClass, Index.ConstraintType constraintType, int indexId, Function1<T, V> leftOperandExtractor, Function1<U, ?> rightOperandExtractor, Class<?> rightReturnType ) {
-        index = new BetaIndex1Impl<>( indexedClass, constraintType, indexId, leftOperandExtractor, rightOperandExtractor, rightReturnType );
+        index = new BetaIndexImpl<>( indexedClass, constraintType, indexId, leftOperandExtractor, rightOperandExtractor, rightReturnType );
         return this;
     }
 }

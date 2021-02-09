@@ -203,7 +203,7 @@ public abstract class AbstractExpressionBuilder {
     }
 
     private boolean areIndexableDeclaration( Collection<String> usedDeclarations ) {
-        if (usedDeclarations.size() > 3) {
+        if (usedDeclarations.size() > 4) {
             return false;
         }
         return !usedDeclarations.stream()

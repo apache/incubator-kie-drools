@@ -17,18 +17,18 @@
 
 package org.drools.model.index;
 
-import org.drools.model.BetaIndex1;
+import org.drools.model.BetaIndex;
 import org.drools.model.functions.Function1;
 
-public class BetaIndex1Impl<A, B, V> extends AbstractBetaIndex<A, V> implements BetaIndex1<A, B, V> {
+public class BetaIndexImpl<A, B, V> extends AbstractBetaIndex<A, V> implements BetaIndex<A, B, V> {
 
     private final Function1<B, ?> rightOperandExtractor;
 
-    public BetaIndex1Impl( Class<V> indexedClass, ConstraintType constraintType, int indexId, Function1<A, V> leftOperandExtractor, Function1<B, ?> rightOperandExtractor) {
+    public BetaIndexImpl( Class<V> indexedClass, ConstraintType constraintType, int indexId, Function1<A, V> leftOperandExtractor, Function1<B, ?> rightOperandExtractor) {
         this(indexedClass, constraintType, indexId, leftOperandExtractor, rightOperandExtractor, null);
     }
 
-    public BetaIndex1Impl( Class<V> indexedClass, ConstraintType constraintType, int indexId, Function1<A, V> leftOperandExtractor, Function1<B, ?> rightOperandExtractor, Class<?> rightReturnType) {
+    public BetaIndexImpl( Class<V> indexedClass, ConstraintType constraintType, int indexId, Function1<A, V> leftOperandExtractor, Function1<B, ?> rightOperandExtractor, Class<?> rightReturnType) {
         super(indexedClass, constraintType, indexId, leftOperandExtractor, rightReturnType);
         this.rightOperandExtractor = rightOperandExtractor;
     }

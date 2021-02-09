@@ -16,7 +16,7 @@ package org.drools.model;
 
 import org.drools.model.functions.Function2;
 
-public interface BetaIndex2<A, B, C, V> extends BetaIndex<A, V> {
+public interface BetaIndex2<A, B, C, V> extends BetaIndexN<A, V> {
 
     Function2<B, C, ?> getRightOperandExtractor();
 
