@@ -50,7 +50,7 @@ public class BasicUpdateTest {
         final KieFileSystem kfs = KieServices.Factory.get().newKieFileSystem();
 
         kfs.write(KieServices.Factory.get().getResources()
-                .newClassPathResource(UPDATE_TEST_DRL, DeleteTest.class));
+                .newClassPathResource(UPDATE_TEST_DRL, BasicUpdateTest.class));
 
         final KieBuilder kbuilder = KieServices.Factory.get().newKieBuilder(kfs);
 
