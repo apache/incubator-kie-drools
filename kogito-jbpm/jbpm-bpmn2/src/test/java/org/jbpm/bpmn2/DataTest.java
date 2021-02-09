@@ -401,7 +401,7 @@ public class DataTest extends JbpmBpmn2TestCase {
                         // processMetadata.appendChild(procElement);
                         results.put("output", processMetadata);
 
-                        mgr.completeWorkItem(workItem.getId(), results);
+                        mgr.completeWorkItem(workItem.getStringId(), results);
                     }
 
                 });
@@ -433,7 +433,7 @@ public class DataTest extends JbpmBpmn2TestCase {
                                                     .getBytes()));
                             Map<String, Object> params = new HashMap<>();
                             params.put("output", document.getFirstChild());
-                            mgr.completeWorkItem(workItem.getId(), params);
+                            mgr.completeWorkItem(workItem.getStringId(), params);
                         } catch (Throwable e) {
                             throw new RuntimeException(e);
                         }
@@ -468,7 +468,7 @@ public class DataTest extends JbpmBpmn2TestCase {
                                                     .getBytes()));
                             Map<String, Object> params = new HashMap<>();
                             params.put("output", document.getFirstChild());
-                            mgr.completeWorkItem(workItem.getId(), params);
+                            mgr.completeWorkItem(workItem.getStringId(), params);
                         } catch (Throwable e) {
                             throw new RuntimeException(e);
                         }

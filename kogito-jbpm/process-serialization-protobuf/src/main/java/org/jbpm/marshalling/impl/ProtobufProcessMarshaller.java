@@ -292,7 +292,7 @@ public class ProtobufProcessMarshaller
             PersisterHelper.writeToStreamWithHeader( context, _workItem );
         } catch (IOException e) {
             throw new IllegalArgumentException( "IOException while storing work item instance "
-                    + workItem.getId() + ": " + e.getMessage(), e );
+                    + (( KogitoWorkItem ) workItem).getStringId() + ": " + e.getMessage(), e );
         }
     }
 

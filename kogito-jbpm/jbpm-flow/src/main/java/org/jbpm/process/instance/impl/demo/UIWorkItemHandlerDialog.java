@@ -33,8 +33,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-
-import org.kie.api.runtime.process.WorkItem;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
 
 /**
  * 
@@ -45,14 +44,14 @@ public class UIWorkItemHandlerDialog extends JDialog {
     
     private Map<String, Object> results = new HashMap<String, Object>();
     private UIWorkItemHandler handler;
-    private WorkItem workItem;
+    private KogitoWorkItem workItem;
     private JTextField resultNameTextField;
     private JTextField resultValueTextField;
     private JButton addResultButton;
     private JButton completeButton;
     private JButton abortButton;
     
-    public UIWorkItemHandlerDialog(UIWorkItemHandler handler, WorkItem workItem) {
+    public UIWorkItemHandlerDialog(UIWorkItemHandler handler, KogitoWorkItem workItem) {
         super(handler, "Execute Work Item", true);
         this.handler = handler;
         this.workItem = workItem;

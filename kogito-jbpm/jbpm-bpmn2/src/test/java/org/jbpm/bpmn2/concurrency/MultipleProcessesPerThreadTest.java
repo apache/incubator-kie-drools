@@ -35,10 +35,10 @@ import org.kie.api.event.process.ProcessStartedEvent;
 import org.kie.api.event.process.ProcessVariableChangedEvent;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.process.WorkItem;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
+import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -144,7 +144,7 @@ public class MultipleProcessesPerThreadTest {
 
         public void run() {
             this.status = Status.SUCCESS;
-            KieSession ksession = null;
+            KogitoProcessRuntime kruntime = null;
             
             try { 
                 KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -152,7 +152,7 @@ public class MultipleProcessesPerThreadTest {
                 InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
                 kbase.addPackages(kbuilder.getKnowledgePackages());
 
-                ksession = createStatefulKnowledgeSession(kbase);
+                kruntime = KogitoProcessRuntime.asKogitoProcessRuntime( createStatefulKnowledgeSession(kbase) );
             } catch(Exception e) { 
                 e.printStackTrace();
                 logger.error("Unable to set up knowlede base or session.", e);
@@ -160,17 +160,17 @@ public class MultipleProcessesPerThreadTest {
             }
             
             TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-            ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
+            kruntime.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
 
             for (int i = 1; i <= LOOPS; i++) {
                 logger.debug("Starting user task process, loop {}/{}", i, LOOPS);
 
                 latch = new CountDownLatch(1);
                 CompleteProcessListener listener = new CompleteProcessListener(latch);
-                ksession.addEventListener(listener);
+                kruntime.getProcessEventManager().addEventListener(listener);
 
                 try {
-                    ksession.startProcess("user-task");
+                    kruntime.startProcess("user-task");
                 } catch (Throwable t) {
                     t.printStackTrace();
                 }
@@ -183,9 +183,9 @@ public class MultipleProcessesPerThreadTest {
 
                 List<KogitoWorkItem> items = new ArrayList<>();
                 items = workItemHandler.getWorkItems();
-                for (WorkItem item : items) {
+                for (KogitoWorkItem item : items) {
                     try {
-                        ksession.getWorkItemManager().completeWorkItem(item.getId(), null);
+                        kruntime.getWorkItemManager().completeWorkItem(item.getStringId(), null);
                     } catch (Throwable t) {
                         t.printStackTrace();
                     }
