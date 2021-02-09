@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.feel.jandex;
+package org.kie.dmn.model.jandex;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -39,33 +39,26 @@ import org.jboss.jandex.DotName;
 import org.jboss.jandex.Index;
 import org.jboss.jandex.Indexer;
 import org.junit.Test;
-import org.kie.dmn.feel.runtime.FEELFunction;
+import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class AbstractJandexTest {
+public class KieDMNModelJandexTest {
 
-    public static final Logger LOG = LoggerFactory.getLogger(AbstractJandexTest.class);
-    private final String moduleName;
-
-    protected AbstractJandexTest(String moduleName) {
-        this.moduleName = moduleName;
-    }
+    public static final Logger LOG = LoggerFactory.getLogger(KieDMNModelJandexTest.class);
+    private final String moduleName = "kie-dmn-model";
 
     @Test
     public void testReflectConfigJSON() throws Exception {
         Indexer indexer = new Indexer();
         InputStream stream = getClass().getClassLoader()
-                                       .getResourceAsStream("org/kie/dmn/feel/runtime/FEELFunction.class");
+                                       .getResourceAsStream("org/kie/dmn/model/api/DMNModelInstrumentedBase.class");
         indexer.index(stream);
         stream.close();
-        stream = getClass().getClassLoader()
-                           .getResourceAsStream("org/kie/dmn/feel/runtime/functions/BaseFEELFunction.class");
-        indexer.index(stream);
         scanFile(new File("./target/classes"), indexer);
         Index index = indexer.complete();
 
-        Set<ClassInfo> founds = index.getAllKnownImplementors(DotName.createSimple(FEELFunction.class.getCanonicalName()));
+        Set<ClassInfo> founds = index.getAllKnownImplementors(DotName.createSimple(DMNModelInstrumentedBase.class.getCanonicalName()));
         LOG.debug("founds: \n{}", founds);
         Jsonb jsonb = JsonbBuilder.create(new JsonbConfig().withFormatting(true));
         List<Object> results = new ArrayList<>();
@@ -104,12 +97,12 @@ public abstract class AbstractJandexTest {
     private void scanFile(File source, Indexer indexer) throws Exception {
         if (source.isDirectory()) {
             File[] children = source.listFiles();
-            if (children == null)
+            if (children == null) {
                 throw new FileNotFoundException("Source directory disappeared: " + source);
-
-            for (File child : children)
+            }
+            for (File child : children) {
                 scanFile(child, indexer);
-
+            }
             return;
         }
 
