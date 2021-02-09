@@ -83,7 +83,7 @@ public class QueryInRHSCepTest {
                 .setEventProcessingMode(EventProcessingOption.STREAM);
         baseModel.newKieSessionModel("defaultKSession")
                 .setDefault(true)
-                .setClockType(ClockTypeOption.get("pseudo"));
+                .setClockType(ClockTypeOption.PSEUDO);
 
         kfs.writeKModuleXML(kmodule.toXML());
         kfs.write( ResourceFactory.newByteArrayResource(drl.getBytes())

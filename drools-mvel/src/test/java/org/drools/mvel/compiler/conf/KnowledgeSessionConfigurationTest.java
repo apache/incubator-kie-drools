@@ -41,10 +41,10 @@ public class KnowledgeSessionConfigurationTest {
     @Test
     public void testClockTypeConfiguration() {
         // setting the option using the type safe method
-        config.setOption( ClockTypeOption.get("pseudo") );
+        config.setOption( ClockTypeOption.PSEUDO );
 
         // checking the type safe getOption() method
-        assertEquals( ClockTypeOption.get("pseudo"),
+        assertEquals( ClockTypeOption.PSEUDO,
                       config.getOption( ClockTypeOption.class ) );
         // checking the string based getProperty() method
         assertEquals( "pseudo",
@@ -55,7 +55,7 @@ public class KnowledgeSessionConfigurationTest {
                             "realtime" );
         
         // checking the type safe getOption() method
-        assertEquals( ClockTypeOption.get("realtime"),
+        assertEquals( ClockTypeOption.REALTIME,
                       config.getOption( ClockTypeOption.class ) );
         // checking the string based getProperty() method
         assertEquals( "realtime",

@@ -218,7 +218,7 @@ public class KieBuilderTest extends CommonTestMethodBase {
                 .addPackage( "*" )
                 .newKieSessionModel( KSESSION_NAME )
                 .setDefault( true )
-                .setClockType( ClockTypeOption.get( "pseudo" ) );
+                .setClockType( ClockTypeOption.PSEUDO );
 
         kfs.writeKModuleXML( kmoduleModel.toXML() );
 

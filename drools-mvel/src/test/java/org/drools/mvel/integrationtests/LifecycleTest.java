@@ -70,7 +70,7 @@ public class LifecycleTest {
                 .setEventProcessingMode(EventProcessingOption.STREAM)
                 .newKieSessionModel("defaultKieSession")
                 .setDefault(true)
-                .setClockType(ClockTypeOption.get("pseudo"));
+                .setClockType(ClockTypeOption.PSEUDO);
         
         kfs.writeKModuleXML(kmoduleModel.toXML());
         

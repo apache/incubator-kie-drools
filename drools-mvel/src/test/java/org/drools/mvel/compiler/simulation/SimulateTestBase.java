@@ -15,8 +15,6 @@
 
 package org.drools.mvel.compiler.simulation;
 
-import static org.junit.Assert.assertTrue;
-
 import java.io.IOException;
 
 import org.kie.api.KieServices;
@@ -31,6 +29,8 @@ import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.conf.ClockTypeOption;
+
+import static org.junit.Assert.assertTrue;
 
 public class SimulateTestBase {
 
@@ -52,7 +52,7 @@ public class SimulateTestBase {
 
             KieSessionModel ksession1 = kBase1.newKieSessionModel(id + ".KSession1")
                     .setType(KieSessionModel.KieSessionType.STATEFUL)
-                    .setClockType(ClockTypeOption.get("pseudo"));
+                    .setClockType(ClockTypeOption.PSEUDO);
         }
 
         kfs.writeKModuleXML(kproj.toXML());
@@ -86,7 +86,7 @@ public class SimulateTestBase {
         KieSessionModel ksession1 = kBase1.newKieSessionModel( id + ".KSession1" )
                 .setDefault(true)
                 .setType(KieSessionModel.KieSessionType.STATEFUL)
-                .setClockType( ClockTypeOption.get( "pseudo" ) );
+                .setClockType( ClockTypeOption.PSEUDO );
 
         kfs.writeKModuleXML(kproj.toXML());
 

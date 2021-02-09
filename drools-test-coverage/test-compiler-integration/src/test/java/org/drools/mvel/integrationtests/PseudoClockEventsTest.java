@@ -138,7 +138,7 @@ public class PseudoClockEventsTest {
         final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, EventProcessingOption.STREAM);
 
         KieSessionConfiguration ksessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        ksessionConfig.setOption(ClockTypeOption.get("pseudo"));
+        ksessionConfig.setOption(ClockTypeOption.PSEUDO);
         ksessionConfig.setProperty("keep.reference", "true");
         final KieSession ksession = kbase.newKieSession(ksessionConfig, null);
         ksession.addEventListener(agendaEventListener);

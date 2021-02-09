@@ -99,7 +99,7 @@ public class MultipleKbasesExampleTest {
     @Test
     public void testEditSessionModel() {
         String name = "ksession6";
-        ClockTypeOption pseudoClock = ClockTypeOption.get("pseudo");
+        ClockTypeOption pseudoClock = ClockTypeOption.PSEUDO;
         KieServices ks = KieServices.Factory.get();
         KieContainer kContainer = ks.newKieClasspathContainer();
 
@@ -121,7 +121,7 @@ public class MultipleKbasesExampleTest {
     @Test
     public void testEditSessionModelAfterFirstCreatedKieSession() {
         String name = "ksession6";
-        ClockTypeOption pseudoClock = ClockTypeOption.get("pseudo");
+        ClockTypeOption pseudoClock = ClockTypeOption.PSEUDO;
         KieServices ks = KieServices.Factory.get();
         KieContainer kContainer = ks.newKieClasspathContainer();
 
@@ -129,7 +129,7 @@ public class MultipleKbasesExampleTest {
         ClockTypeOption clockType = kieSessionModel.getClockType();
 
         // clockType realtime
-        Assert.assertEquals(clockType, ClockTypeOption.get("realtime"));
+        Assert.assertEquals(clockType, ClockTypeOption.REALTIME);
         Assert.assertNotEquals(clockType, pseudoClock);
 
         // session is realtime

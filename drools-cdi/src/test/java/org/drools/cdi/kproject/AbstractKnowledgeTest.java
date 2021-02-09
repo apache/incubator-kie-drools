@@ -135,16 +135,16 @@ public class AbstractKnowledgeTest {
 
         kieBaseModel1.newKieSessionModel( namespace + ".KSession1" )
                      .setType( KieSessionType.STATELESS )
-                     .setClockType( ClockTypeOption.get( "realtime" ) )
+                     .setClockType( ClockTypeOption.REALTIME )
                      .setDefault( true );
 
         kieBaseModel1.newKieSessionModel( namespace + ".KSession2")
                      .setType( KieSessionType.STATEFUL )
-                     .setClockType( ClockTypeOption.get( "pseudo" ) );
+                     .setClockType( ClockTypeOption.PSEUDO );
 
         kieBaseModel1.newKieSessionModel( namespace + ".KSessionDefault")
                      .setType( KieSessionType.STATEFUL )
-                     .setClockType( ClockTypeOption.get( "pseudo" ) )
+                     .setClockType( ClockTypeOption.PSEUDO )
                      .setDefault( true );
 
         KieBaseModel kieBaseModel2 = kproj.newKieBaseModel( namespace + ".KBase2")
@@ -154,7 +154,7 @@ public class AbstractKnowledgeTest {
 
         kieBaseModel2.newKieSessionModel(namespace + ".KSession3")
                 .setType( KieSessionType.STATEFUL )
-                .setClockType( ClockTypeOption.get( "pseudo" ) );
+                .setClockType( ClockTypeOption.PSEUDO );
 
         KieBaseModel kieBaseModel3 = kproj.newKieBaseModel(namespace + ".KBase3")
                 .addInclude( kieBaseModel1.getName() )
@@ -164,7 +164,7 @@ public class AbstractKnowledgeTest {
 
         kieBaseModel3.newKieSessionModel(namespace + ".KSession4")
                 .setType( KieSessionType.STATELESS )
-                .setClockType( ClockTypeOption.get( "pseudo" ) );
+                .setClockType( ClockTypeOption.PSEUDO );
 
         KieServices ks = KieServices.Factory.get();
 

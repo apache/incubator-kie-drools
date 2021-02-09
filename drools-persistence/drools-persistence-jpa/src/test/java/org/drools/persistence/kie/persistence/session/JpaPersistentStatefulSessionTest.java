@@ -570,7 +570,7 @@ public class JpaPersistentStatefulSessionTest {
         KieModuleModel kmodel = ks.newKieModuleModel();
         kmodel.newKieBaseModel( "kbase1" )
               .newKieSessionModel( "ksession1" )
-              .setClockType( ClockTypeOption.get( "pseudo" ) );
+              .setClockType( ClockTypeOption.PSEUDO );
 
         KieFileSystem kfs = ks.newKieFileSystem()
                               .write( "src/main/resources/r1.drl", str )

@@ -146,7 +146,7 @@ public class AbstractKieCiTest {
 
         KieSessionModel ksession1 = kieBaseModel1.newKieSessionModel(ksessionName).setDefault(isdefault)
                 .setType(KieSessionModel.KieSessionType.STATEFUL)
-                .setClockType(ClockTypeOption.get("realtime"));
+                .setClockType(ClockTypeOption.REALTIME);
 
         KieFileSystem kfs = ks.newKieFileSystem();
         kfs.writeKModuleXML(kproj.toXML());
