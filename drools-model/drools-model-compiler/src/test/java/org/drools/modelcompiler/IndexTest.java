@@ -338,4 +338,34 @@ public class IndexTest extends BaseModelTest {
 
         assertEquals( 1, ksession.fireAllRules() );
     }
+
+    @Test
+    public void testBetaIndexOn4ValuesOnLeftTuple() {
+        // DROOLS-5995
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "rule R1 when\n" +
+                "  Short( $y : intValue )\n" +
+                "  Long( $x : intValue )\n" +
+                "  Integer( $i : this )\n" +
+                "  String( $l : length )\n" +
+                "  $p : Person(age == $l + $i + $x + $y)\n" +
+                "then\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ObjectTypeNode otn = getObjectTypeNodeForClass( ksession, Person.class );
+        BetaNode beta = (BetaNode) otn.getObjectSinkPropagator().getSinks()[0];
+        // this beta index is only supported by executable model
+        assertEquals( this.testRunType.isExecutableModel(), beta.getRawConstraints().isIndexed() );
+
+        ksession.insert( (short)1 );
+        ksession.insert( 1L );
+        ksession.insert( 3 );
+        ksession.insert( "test" );
+        ksession.insert( new Person("Sofia", 9) );
+
+        assertEquals( 1, ksession.fireAllRules() );
+    }
 }

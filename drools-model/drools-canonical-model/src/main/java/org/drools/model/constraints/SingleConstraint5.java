@@ -55,6 +55,7 @@ public class SingleConstraint5<A, B, C, D, E> extends AbstractSingleConstraint {
 
     public SingleConstraint5( Expr5ViewItemImpl<A, B, C, D, E> expr) {
         this(expr.getExprId(), expr.getFirstVariable(), expr.getVar2(), expr.getVar3(), expr.getVar4(), expr.getVar5(), expr.getPredicate());
+        setIndex( expr.getIndex() );
         setReactivitySpecs( expr.getReactivitySpecs() );
     }
 

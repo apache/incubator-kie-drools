@@ -40,13 +40,15 @@ import org.drools.core.util.bitmask.BitMask;
 import org.drools.core.util.index.IndexUtil;
 import org.drools.model.AlphaIndex;
 import org.drools.model.BetaIndex;
-import org.drools.model.BetaIndex1;
 import org.drools.model.BetaIndex2;
 import org.drools.model.BetaIndex3;
+import org.drools.model.BetaIndex4;
+import org.drools.model.BetaIndexN;
 import org.drools.model.Index;
 import org.drools.model.functions.Function1;
 import org.drools.model.functions.Function2;
 import org.drools.model.functions.Function3;
+import org.drools.model.functions.Function4;
 import org.drools.model.functions.PredicateInformation;
 
 import static org.drools.core.base.ValueType.determineValueType;
@@ -82,16 +84,16 @@ public class LambdaConstraint extends AbstractConstraint {
                     this.field = new ObjectFieldImpl( ( ( AlphaIndex ) index).getRightValue() );
                     break;
                 case BETA:
-                    this.indexExtractor = initBetaIndex( (BetaIndex) index );
+                    this.indexExtractor = initBetaIndex( ( BetaIndexN ) index );
                     break;
             }
         }
     }
 
-    private AbstractIndexValueExtractor initBetaIndex(BetaIndex index) {
+    private AbstractIndexValueExtractor initBetaIndex( BetaIndexN index) {
         switch (index.getArity()) {
             case 1:
-                BetaIndex1 index1 = (( BetaIndex1 ) index);
+                BetaIndex index1 = (( BetaIndex ) index);
                 return new IndexValueExtractor1(evaluator.getRequiredDeclarations()[0], index1.getRightOperandExtractor(), index1.getRightReturnType());
             case 2:
                 BetaIndex2 index2 = (( BetaIndex2 ) index);
@@ -99,6 +101,9 @@ public class LambdaConstraint extends AbstractConstraint {
             case 3:
                 BetaIndex3 index3 = (( BetaIndex3 ) index);
                 return new IndexValueExtractor3(evaluator.getRequiredDeclarations()[0], evaluator.getRequiredDeclarations()[1], evaluator.getRequiredDeclarations()[2], index3.getRightOperandExtractor(), index3.getRightReturnType());
+            case 4:
+                BetaIndex4 index4 = (( BetaIndex4 ) index);
+                return new IndexValueExtractor4(evaluator.getRequiredDeclarations()[0], evaluator.getRequiredDeclarations()[1], evaluator.getRequiredDeclarations()[2], evaluator.getRequiredDeclarations()[3], index4.getRightOperandExtractor(), index4.getRightReturnType());
         }
         throw new UnsupportedOperationException( "Unsupported arity " + index.getArity() + " for beta index" );
     }
@@ -450,6 +455,53 @@ public class LambdaConstraint extends AbstractConstraint {
             d1 = replaceDeclaration( oldDecl, newDecl, d1 );
             d2 = replaceDeclaration( oldDecl, newDecl, d2 );
             d3 = replaceDeclaration( oldDecl, newDecl, d3 );
+        }
+    }
+
+    public static class IndexValueExtractor4 extends AbstractIndexValueExtractor {
+
+        private Declaration d2;
+        private Declaration d3;
+        private Declaration d4;
+        private final Function4 extractor;
+
+        public IndexValueExtractor4( Declaration d1, Declaration d2, Declaration d3, Declaration d4, Function4 extractor, Class<?> clazz ) {
+            super(d1, clazz);
+            this.d2 = d2;
+            this.d3 = d3;
+            this.d4 = d4;
+            this.extractor = extractor;
+        }
+
+        public IndexValueExtractor4( Declaration d1, Declaration d2, Declaration d3, Declaration d4, Function4 extractor, ValueType valueType ) {
+            super(d1, valueType);
+            this.d2 = d2;
+            this.d3 = d3;
+            this.d4 = d4;
+            this.extractor = extractor;
+        }
+
+        @Override
+        public ValueType getValueType() {
+            return valueType;
+        }
+
+        @Override
+        public Object getValue( InternalWorkingMemory workingMemory, Tuple tuple ) {
+            return extractor.apply( d1.getValue( workingMemory, tuple ), d2.getValue( workingMemory, tuple ), d3.getValue( workingMemory, tuple ), d4.getValue( workingMemory, tuple ) );
+        }
+
+        @Override
+        public TupleValueExtractor clone() {
+            return new IndexValueExtractor4( d1.clone(), d2.clone(), d3.clone(), d4.clone(), extractor, valueType );
+        }
+
+        @Override
+        public void replaceDeclaration(Declaration oldDecl, Declaration newDecl) {
+            d1 = replaceDeclaration( oldDecl, newDecl, d1 );
+            d2 = replaceDeclaration( oldDecl, newDecl, d2 );
+            d3 = replaceDeclaration( oldDecl, newDecl, d3 );
+            d4 = replaceDeclaration( oldDecl, newDecl, d4 );
         }
     }
 }
