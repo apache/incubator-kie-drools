@@ -48,6 +48,8 @@ public interface RuleUnitDescription {
 
     Optional<Class<?>> getVarType( String name );
 
+    RuleUnitVariable getVar(String name);
+
     boolean hasVar( String name );
 
     Collection<String> getUnitVars();
@@ -55,5 +57,4 @@ public interface RuleUnitDescription {
     Collection<? extends RuleUnitVariable> getUnitVarDeclarations();
 
     boolean hasDataSource( String name );
-
 }

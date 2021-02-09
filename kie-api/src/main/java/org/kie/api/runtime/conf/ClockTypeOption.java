@@ -24,6 +24,9 @@ public class ClockTypeOption implements SingleValueKieSessionOption {
 
     private static final long serialVersionUID = 510l;
 
+    public static final ClockTypeOption PSEUDO = ClockTypeOption.get("pseudo");
+    public static final ClockTypeOption REALTIME = ClockTypeOption.get("realtime");
+
     /**
      * The property name for the clock type configuration
      */
