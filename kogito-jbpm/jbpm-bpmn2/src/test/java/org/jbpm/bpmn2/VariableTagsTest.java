@@ -43,18 +43,6 @@ import static org.kie.kogito.internal.process.runtime.KogitoProcessInstance.STAT
 
 public class VariableTagsTest extends JbpmBpmn2TestCase {
 
-    private KogitoProcessRuntime kruntime2;
-
-    @AfterEach
-    @Override
-    public void disposeKogitoProcessRuntime() {
-        super.disposeKogitoProcessRuntime();
-        if (kruntime2 != null && kruntime2.getKieSession() != null) {
-            kruntime2.getKieSession().dispose();
-            kruntime2 = null;
-        }
-    }
-
     @Test
     public void testProcessWithMissingRequiredVariable() throws Exception {
         kruntime = createKogitoProcessRuntime("variable-tags/approval-with-required-variable-tags.bpmn2");

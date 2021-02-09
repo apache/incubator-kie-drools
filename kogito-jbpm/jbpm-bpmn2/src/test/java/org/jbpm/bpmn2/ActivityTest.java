@@ -99,18 +99,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ActivityTest extends JbpmBpmn2TestCase {
 
-    private KogitoProcessRuntime kruntime2;
-
-    @AfterEach
-    @Override
-    public void disposeKogitoProcessRuntime() {
-        super.disposeKogitoProcessRuntime();
-        if (kruntime2 != null && kruntime2.getKieSession() != null) {
-            kruntime2.getKieSession().dispose();
-            kruntime2 = null;
-        }
-    }
-
     @Test
     public void testMinimalProcess() throws Exception {
         kruntime = createKogitoProcessRuntime("BPMN2-MinimalProcess.bpmn2");
@@ -376,7 +364,7 @@ public class ActivityTest extends JbpmBpmn2TestCase {
     @Test
     public void testRuleTaskAcrossSessions() throws Exception {
         kruntime = createKogitoProcessRuntime("BPMN2-RuleTask.bpmn2", "BPMN2-RuleTask.drl");
-        kruntime2 = createKogitoProcessRuntime("BPMN2-RuleTask.bpmn2", "BPMN2-RuleTask.drl");
+        KogitoProcessRuntime kruntime2 = createKogitoProcessRuntime("BPMN2-RuleTask.bpmn2", "BPMN2-RuleTask.drl");
 
         List<String> list1 = new ArrayList<>();
         kruntime.getKieSession().setGlobal("list", list1);
@@ -386,6 +374,7 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         KogitoProcessInstance processInstance2 = kruntime2.startProcess("RuleTask");
         assertProcessInstanceFinished(processInstance1, kruntime);
         assertProcessInstanceFinished(processInstance2, kruntime2);
+        kruntime2.getKieSession().dispose(); // kruntime's session is disposed in the @AfterEach method
     }
 
     @Test
