@@ -97,6 +97,12 @@ public class ResourceType
                                                                      "src/main/resources",
                                                                      "drl");
 
+    public static final ResourceType DRLX = addResourceTypeToRegistry("DRLX",
+                                                               "Drools Extended Rule Language (experimental)",
+                                                               "src/main/resources",
+                                                               "drlx");
+
+
     /** Drools Rule Language - Guided Globals definitions - Workaround for double-dot file extensions for 6.0 */
     public static final ResourceType GDRL = addResourceTypeToRegistry("GDRL",
                                                                       "Drools Rule Language",
