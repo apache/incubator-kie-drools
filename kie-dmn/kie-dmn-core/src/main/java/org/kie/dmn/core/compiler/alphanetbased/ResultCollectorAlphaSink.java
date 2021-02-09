@@ -26,13 +26,17 @@ import org.drools.core.spi.PropagationContext;
 
 public class ResultCollectorAlphaSink extends LeftInputAdapterNode {
 
-    private final Object result;
-    private final ResultCollector resultCollector;
+    private Object result;
+    private ResultCollector resultCollector;
 
     public ResultCollectorAlphaSink(int id, ObjectSource source, BuildContext context, Object result, ResultCollector resultCollector) {
         super(id, source, context);
         this.result = result;
         this.resultCollector = resultCollector;
+    }
+
+    public ResultCollectorAlphaSink() {
+        super(); // java:S2060
     }
 
     @Override
