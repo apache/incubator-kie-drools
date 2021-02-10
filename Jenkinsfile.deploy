@@ -45,6 +45,7 @@ pipeline {
 
         // Release information
         booleanParam(name: 'RELEASE', defaultValue: false, description: 'Is this build for a release?')
+        booleanParam(name: 'CREATE_PR', defaultValue: false, description: 'Should we create a PR with the changes ?')
         string(name: 'PROJECT_VERSION', defaultValue: '', description: 'Optional if not RELEASE. If RELEASE, cannot be empty.')
         string(name: 'KOGITO_VERSION', defaultValue: '', description: 'Optional if not RELEASE. If RELEASE, cannot be empty.')
         
@@ -84,10 +85,11 @@ pipeline {
                         currentBuild.displayName = params.DISPLAY_NAME
                     }
 
-                    if (isRelease()) {
+                    if (isRelease() || isCreatePr()) {
                         assert getProjectVersion() != ''
                         assert getKogitoVersion() != ''
                     }
+
                 }
             }
             post {
@@ -115,7 +117,7 @@ pipeline {
 
         stage('Prepare for PR') {
             when {
-                expression { return isRelease() }
+                expression { return isRelease() || isCreatePr()  }
             }
             steps {
                 prepareForPR(optaplannerRepository)
@@ -131,13 +133,13 @@ pipeline {
             }
             steps {
                 script {
-                    maven.mvnVersionsSet(getOptaplannerMavenCommand(), getProjectVersion())
+                    maven.mvnVersionsSet(getOptaplannerMavenCommand(), getProjectVersion(), !isRelease())
                     maven.mvnSetVersionProperty(getOptaplannerMavenCommand(), 'version.org.kie.kogito', getKogitoVersion())
 
                     mavenCleanInstallOptaPlannerParents()
 
-                    maven.mvnVersionsUpdateParentAndChildModules(getOptawebVehicleRoutingMavenCommand(), getProjectVersion())
-                    maven.mvnVersionsUpdateParentAndChildModules(getOptawebEmployeeRosteringMavenCommand(), getProjectVersion())
+                    maven.mvnVersionsUpdateParentAndChildModules(getOptawebVehicleRoutingMavenCommand(), getProjectVersion(), !isRelease())
+                    maven.mvnVersionsUpdateParentAndChildModules(getOptawebEmployeeRosteringMavenCommand(), getProjectVersion(), !isRelease())
 
                     updateQuickstartsVersions()
                 }
@@ -211,7 +213,7 @@ pipeline {
 
         stage('Create PRs') {
             when {
-                expression { return isRelease() }
+                expression { return isRelease() || isCreatePr()  }
             }
             steps {
                 commitAndCreatePR(optaplannerRepository, getBuildBranch())
@@ -255,15 +257,25 @@ pipeline {
 
 void updateQuickstartsVersions(){
     maven.mvnSetVersionProperty(getOptaplannerQuickstartsMavenCommand(), "version.org.optaplanner", getProjectVersion())
-    maven.mvnVersionsUpdateParentAndChildModules(getOptaplannerQuickstartsMavenCommand(), getProjectVersion())
+    maven.mvnVersionsUpdateParentAndChildModules(getOptaplannerQuickstartsMavenCommand(), getProjectVersion(), !isRelease())
     gradleVersionsUpdate(quickstartsRepository, getProjectVersion())
 
-    dir(quickstartsRepository) {
-        assert !sh (script:
-                'grep -Rn "SNAPSHOT" --include={pom.xml,build.gradle} | ' +
-                'grep -v -e "0.1.0-SNAPSHOT" -e ">1.0-SNAPSHOT" | ' +
-                'cat', returnStdout: true)
+    if (isRelease()) {
+        dir(quickstartsRepository) {
+            assert !sh (script:
+                    'grep -Rn "SNAPSHOT" --include={pom.xml,build.gradle} | ' +
+                    'grep -v -e "0.1.0-SNAPSHOT" -e ">1.0-SNAPSHOT" | ' +
+                    'cat', returnStdout: true)
+        }
     }
+    if(isCreatePr()){
+        dir(quickstartsRepository){
+            assert !sh (script:
+                    'grep -Rn "SNAPSHOT" --include={pom.xml,build.gradle} | ' +
+                    'grep -v -e "${getProjectVersion()}" | ' +
+                    'cat', returnStdout: true)
+        }
+   }
 }
 
 void gradleVersionsUpdate(String repo, String newVersion){
@@ -422,6 +434,10 @@ String getLocalDeploymentFolder(String localDeployId) {
 
 boolean isRelease() {
     return params.RELEASE
+}
+
+boolean isCreatePr() {
+    return params.CREATE_PR
 }
 
 String getGitAuthor() {
