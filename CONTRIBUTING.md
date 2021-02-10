@@ -45,10 +45,67 @@ To contribute, use GitHub Pull Requests, from your **own** fork.
   use the same branch name (e.g. `KOGITO-XYZ`) in each PR so that our CI (Jenkins) can build them all at once.
 - If your contribution spans across multiple repositories, make sure to list all the related PRs.
 
-### Coding Guidelines
+### Java Coding Guidelines
 
 We decided to disallow `@author` tags in the Javadoc: they are hard to maintain, especially in a very active project, and we use the Git history to track authorship. GitHub also has [this nice page with your contributions](https://github.com/kiegroup/kogito-runtimes/graphs/contributors). 
 
+### Requirements for Dependencies
+
+Any dependency used in any KIE project must fulfill these hard requirements:
+
+- The dependency must have **an Apache 2.0 compatible license**.
+    - Good: BSD, MIT, Apache 2.0
+    - Avoid: EPL, LGPL
+        - Especially LGPL is a last resort and should be abstracted away or contained behind an SPI.
+        - Test scope dependencies pose no problem if they are EPL or LPGL.
+    - Forbidden: no license, GPL, AGPL, proprietary license, field of use restrictions ("this software shall be used for good, not evil"), ...
+        - Even test scope dependencies cannot use these licenses.
+    - To check the ALS compatibility license please visit these links:[Similarity in terms to the Apache License 2.0](http://www.apache.org/legal/resolved.html#category-a)&nbsp; 
+    [How should so-called "Weak Copyleft" Licenses be handled](http://www.apache.org/legal/resolved.html#category-b)
+
+- The dependency shall be **available in [Maven Central](http://search.maven.org/) or [JBoss Nexus](https://repository.jboss.org/nexus)**.
+    - Any version used must be in the repository Maven Central and/or JBoss (Nexus) Public repository group
+        - Never add a `<repository>` element in a `pom.xml` when the artifact is intended for public usages, samples/demos are excluded from this.
+    - Why?
+        - Build reproducibility. Any repository server we use, must still run in future from now.
+        - Build speed. More repositories slow down the build.
+        - Build reliability. A repository server that is temporarily down can break builds.
+    - Workaround to still use a great looking jar as a dependency:
+        - Get that dependency into JBoss Nexus as a 3rd party library.
+
+- **Do not release the dependency yourself** (by building it from source).
+    - Why? Because it's not an official release, by the official release guys.
+        - A release must be 100% reproducible.
+        - A release must be reliable (sometimes the release person does specific things you might not reproduce).
+
+- **The sources are publicly available**
+    - We may need to rebuild the dependency from sources ourselves in future. This may be in the rare case when
+      the dependency is no longer maintained, but we need to fix a specific CVE there.
+    - Make sure the dependency's pom.xml contains link to the source repository (`scm` tag).
+
+- The dependency needs to use **reasonable build system**
+    - Since we may need to rebuild the dependency from sources, we also need to make sure it is easily buildable.
+      Maven or Gradle are acceptable as build systems.
+
+- Any dependency used in any KOGITO project should fulfill these soft requirements:
+**Edit dependencies** in **[kogito-build-parent](https://github.com/kiegroup/kogito-runtimes/blob/master/kogito-build-parent/pom.xml)**.
+    - Dependencies in subprojects should avoid overwriting the dependency versions of kogito-build-parent if there is no special case or need for that.
+
+- Only use dependencies with **an active community**.
+    - Check for activity in the last year through [Open Hub](https://www.openhub.net).
+
+- Less is more: **less dependencies is better**. Bloat is bad.
+    - Try to use existing dependencies if the functionality is available in those dependencies
+        - For example: use `poi` instead of `jexcelapi` if `poi` is already a KIE dependency
+
+- **Do not use fat jars, nor shading jars.**
+    - A fat jar is a jar that includes another jar's content. For example: `weld-se.jar` which includes `org/slf4j/Logger.class`
+    - A shaded jar is a fat jar that shades that other jar's content. For example: `weld-se.jar` which includes `org/weld/org/slf4j/Logger.class`
+    - Both are bad because they cause dependency tree trouble. Use the non-fat jar instead, for example: `weld-se-core.jar`
+
+There are currently a few dependencies which violate some of these rules. They should be properly commented with a
+warning and explaining why are needed
+If you want to add a dependency that violates any of the rules above, get approval from the project leads.
 ### Tests and Documentation 
 
 Don't forget to include tests in your pull requests, and documentation (reference documentation, javadoc...). Guides and reference documentation should be submitted to the [Kogito Docs Repository](https://github.com/kiegroup/kie-docs/tree/master-kogito).

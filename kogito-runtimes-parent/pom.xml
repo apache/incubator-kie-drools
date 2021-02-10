@@ -46,6 +46,11 @@
     </developer>
   </developers>
 
+  <!--
+      CONVENTIONS:
+      - A version property must be specified in the format "version.{groupId}", optionally with a suffix to make it unique.
+      - Version properties must be sorted alphabetically (other form of sorting were found to be unclear and ambiguous).
+  -->
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
