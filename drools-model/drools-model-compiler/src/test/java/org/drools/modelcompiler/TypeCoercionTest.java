@@ -16,6 +16,7 @@
 
 package org.drools.modelcompiler;
 
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -23,6 +24,7 @@ import java.util.List;
 
 import org.assertj.core.api.Assertions;
 import org.drools.modelcompiler.domain.ChildFactWithObject;
+import org.drools.modelcompiler.domain.DateTimeHolder;
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
 import org.junit.Test;
@@ -484,5 +486,53 @@ public class TypeCoercionTest extends BaseModelTest {
         ksession.insert( new ClassWithIntProperty( 3 ) );
 
         assertEquals( 0, ksession.fireAllRules() );
+    }
+
+    @Test
+    public void testCompareDateLiteral() throws Exception {
+        String str =
+                "import " + DateTimeHolder.class.getCanonicalName() + ";" +
+                     "rule R when\n" +
+                     "    DateTimeHolder( date > \"01-Jan-1970\" )\n" +
+                     "then\n" +
+                     "end\n";
+
+        KieSession ksession = getKieSession(str);
+
+        ksession.insert(new DateTimeHolder(ZonedDateTime.now()));
+
+        assertEquals(1, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testCompareLocalDateLiteral() throws Exception {
+        String str =
+                "import " + DateTimeHolder.class.getCanonicalName() + ";" +
+                     "rule R when\n" +
+                     "    DateTimeHolder( localDate > \"01-Jan-1970\" )\n" +
+                     "then\n" +
+                     "end\n";
+
+        KieSession ksession = getKieSession(str);
+
+        ksession.insert(new DateTimeHolder(ZonedDateTime.now()));
+
+        assertEquals(1, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testCompareLocalDateTimeLiteral() throws Exception {
+        String str =
+                "import " + DateTimeHolder.class.getCanonicalName() + ";" +
+                     "rule R when\n" +
+                     "    DateTimeHolder( localDateTime > \"01-Jan-1970\" )\n" +
+                     "then\n" +
+                     "end\n";
+
+        KieSession ksession = getKieSession(str);
+
+        ksession.insert(new DateTimeHolder(ZonedDateTime.now()));
+
+        assertEquals(1, ksession.fireAllRules());
     }
 }

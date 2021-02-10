@@ -96,6 +96,8 @@ public class PackageModel {
 
     public static final String DATE_TIME_FORMATTER_FIELD = "DATE_TIME_FORMATTER";
     public static final String STRING_TO_DATE_METHOD = "string_2_date";
+    public static final String STRING_TO_LOCAL_DATE_METHOD = "string_2_localDate";
+    public static final String STRING_TO_LOCAL_DATE_TIME_METHOD = "string_2_localDateTime";
 
     private static final String RULES_FILE_NAME = "Rules";
 
@@ -468,10 +470,22 @@ public class PackageModel {
 
         BodyDeclaration<?> getNameMethod = parseBodyDeclaration(
                 "    public static java.util.Date " + STRING_TO_DATE_METHOD + "(String s) {\n" +
-                "        return java.util.GregorianCalendar.from(java.time.LocalDate.parse(s, DATE_TIME_FORMATTER).atStartOfDay(java.time.ZoneId.systemDefault())).getTime();\n" +
+                "        return java.util.GregorianCalendar.from(" + STRING_TO_LOCAL_DATE_METHOD + "(s).atStartOfDay(java.time.ZoneId.systemDefault())).getTime();\n" +
                 "    }\n"
                 );
         rulesClass.addMember(getNameMethod);
+
+        BodyDeclaration<?> string2localDateMethod = parseBodyDeclaration(
+                "    public static java.time.LocalDate " + STRING_TO_LOCAL_DATE_METHOD + "(String s) {\n" +
+                "        return java.time.LocalDate.parse(s, DATE_TIME_FORMATTER);\n" +
+                "    }\n");
+        rulesClass.addMember(string2localDateMethod);
+
+        BodyDeclaration<?> string2localDateTimeMethod = parseBodyDeclaration(
+                "    public static java.time.LocalDateTime " + STRING_TO_LOCAL_DATE_TIME_METHOD + "(String s) {\n" +
+                "        return " + STRING_TO_LOCAL_DATE_METHOD + "(s).atStartOfDay();\n" +
+                "    }\n");
+        rulesClass.addMember(string2localDateTimeMethod);
 
         String entryPointsBuilder = entryPoints.isEmpty() ?
                 "java.util.Collections.emptyList()" :
