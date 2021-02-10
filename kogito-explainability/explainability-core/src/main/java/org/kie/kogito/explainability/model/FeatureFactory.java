@@ -107,7 +107,7 @@ public class FeatureFactory {
         return new Feature(name, Type.COMPOSITE, new Value<>(features));
     }
 
-    private static Feature parseFeatureValue(String featureName, Object value) {
+    public static Feature parseFeatureValue(String featureName, Object value) {
         if (value instanceof Map) {
             return newCompositeFeature(featureName, (Map<String, Object>) value);
         } else if (value instanceof double[]) {

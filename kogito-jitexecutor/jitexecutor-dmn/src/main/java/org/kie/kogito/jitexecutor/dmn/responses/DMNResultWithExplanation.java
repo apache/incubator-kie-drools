@@ -14,16 +14,25 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.jitexecutor.dmn;
+package org.kie.kogito.jitexecutor.dmn.responses;
 
-import java.util.Map;
-
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.kie.kogito.dmn.rest.KogitoDMNResult;
-import org.kie.kogito.jitexecutor.dmn.responses.DMNResultWithExplanation;
+import org.kie.kogito.trusty.service.responses.SalienciesResponse;
 
-public interface JITDMNService {
+public class DMNResultWithExplanation {
 
-    KogitoDMNResult evaluateModel(String modelXML, Map<String, Object> context);
+    @JsonProperty("dmnResult")
+    public KogitoDMNResult dmnResult;
 
-    DMNResultWithExplanation evaluateModelAndExplain(String modelXML, Map<String, Object> context);
+    @JsonProperty("saliencies")
+    public SalienciesResponse salienciesResponse;
+
+    public DMNResultWithExplanation() {
+    }
+
+    public DMNResultWithExplanation(KogitoDMNResult dmnResult, SalienciesResponse salienciesResponse) {
+        this.dmnResult = dmnResult;
+        this.salienciesResponse = salienciesResponse;
+    }
 }

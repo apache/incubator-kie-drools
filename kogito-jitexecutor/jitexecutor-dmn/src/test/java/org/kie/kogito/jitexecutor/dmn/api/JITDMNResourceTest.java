@@ -67,6 +67,18 @@ public class JITDMNResourceTest {
     }
 
     @Test
+    public void testjitExplainabilityEndpoint() {
+        JITDMNPayload jitdmnpayload = new JITDMNPayload(model, buildContext());
+        given()
+                .contentType(ContentType.JSON)
+                .body(jitdmnpayload)
+                .when().post("/jitdmn/evaluateAndExplain")
+                .then()
+                .statusCode(200)
+                .body(containsString("dmnResult"), containsString("saliencies"), containsString("xls2dmn"));
+    }
+
+    @Test
     public void testjitdmnWithExtensionElements() {
         Map<String, Object> context = new HashMap<>();
         context.put("m", 1);

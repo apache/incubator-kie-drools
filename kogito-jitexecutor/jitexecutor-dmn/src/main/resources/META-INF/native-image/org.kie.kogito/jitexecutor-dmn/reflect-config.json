@@ -1249,7 +1249,7 @@
       "allPublicFields" : true
     },
     {
-      "name":"org.kie.dmn.model.v1_2.TDefinitions",
+      "name":"org.kie.kogito.jitexecutor.dmn.responses.DMNResultWithExplanation",
       "allDeclaredConstructors" : true,
       "allPublicConstructors" : true,
       "allDeclaredMethods" : true,
@@ -1258,7 +1258,7 @@
       "allPublicFields" : true
     },
     {
-      "name":"org.kie.dmn.model.v1_2.TDMNElement",
+      "name":"org.kie.dmn.model.v1_2.TDefinitions",
       "allDeclaredConstructors" : true,
       "allPublicConstructors" : true,
       "allDeclaredMethods" : true,

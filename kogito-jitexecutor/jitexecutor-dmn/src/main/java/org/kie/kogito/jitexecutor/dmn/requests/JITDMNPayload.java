@@ -18,6 +18,9 @@ package org.kie.kogito.jitexecutor.dmn.requests;
 
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class JITDMNPayload {
 
     private String model;

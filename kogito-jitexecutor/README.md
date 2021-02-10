@@ -34,12 +34,12 @@ curl -H "Content-Type: application/json" -X POST http://localhost:8080/jitdmn -d
 ```
 
 The response is 
-```
+```json
 {"sum":3,"m":2,"n":1}
 ```
 
 If you are interested in the full DMN result, you can use the endpoint `/jitdmn/dmnresult` with the same payload. In this case, the response would be 
-```bash
+```json
 {
   "namespace": "https://kiegroup.org/dmn/_35091C3B-6022-4D40-8982-D528940CD5F9",
   "modelName": "new-file",
@@ -60,6 +60,56 @@ If you are interested in the full DMN result, you can use the endpoint `/jitdmn/
   ]
 }
 ```
+
+## Explainability
+
+It is possible to _execute and explain_ a DMN model given a particular context. The endpoint `/jitdmn/executeAndExplain` accepts the same JSON object of the previous endpoints, and the response is 
+```json
+{
+  "dmnResult": {
+    "namespace": "https://kiegroup.org/dmn/_35091C3B-6022-4D40-8982-D528940CD5F9",
+    "modelName": "new-file",
+    "dmnContext": {
+      "sum": 3,
+      "m": 2,
+      "n": 1
+    },
+    "messages": [],
+    "decisionResults": [
+      {
+        "decisionId": "_1D69C44E-D782-492A-A50D-740B444F1993",
+        "decisionName": "sum",
+        "result": 3,
+        "messages": [],
+        "evaluationStatus": "SUCCEEDED"
+      }
+    ]
+  },
+  "saliencies": {
+    "status": "SUCCEEDED",
+    "saliencies": [
+      {
+        "outcomeId": "_1D69C44E-D782-492A-A50D-740B444F1993",
+        "outcomeName": "sum",
+        "featureImportance": [
+          {
+            "featureName": "n",
+            "featureScore": 0
+          },
+          {
+            "featureName": "m",
+            "featureScore": 0
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+The feature importance is calculated by the LIME algorithm, it can be configured using the following `application.properties` keys: 
+- `kogito.explainability.lime.no-of-perturbation`: Number of features to be perturbed in a single sample (default is `1`).  
+- `kogito.explainability.lime.sample-size`: Number of samples to be generated for the local linear model training (default is `300`).
 
 ## Native application
 
