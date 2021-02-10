@@ -232,7 +232,15 @@ public abstract class AbstractExpressionBuilder {
     }
 
     protected boolean isStringToDateExpression(Expression expression) {
-        return expression instanceof MethodCallExpr && ((MethodCallExpr) expression).getNameAsString().equals(PackageModel.STRING_TO_DATE_METHOD);
+        if (expression instanceof MethodCallExpr) {
+            String methodName = ((MethodCallExpr) expression).getNameAsString();
+            if (methodName.equals(PackageModel.STRING_TO_DATE_METHOD)
+                    || methodName.equals(PackageModel.STRING_TO_LOCAL_DATE_METHOD)
+                    || methodName.equals(PackageModel.STRING_TO_LOCAL_DATE_TIME_METHOD)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static AbstractExpressionBuilder getExpressionBuilder(RuleContext context) {
