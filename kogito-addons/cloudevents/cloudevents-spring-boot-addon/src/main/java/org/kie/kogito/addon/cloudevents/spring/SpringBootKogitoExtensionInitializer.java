@@ -18,9 +18,12 @@ package org.kie.kogito.addon.cloudevents.spring;
 
 import javax.annotation.PostConstruct;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.cloudevents.jackson.JsonFormat;
 import org.kie.kogito.cloudevents.extension.KogitoExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -31,9 +34,13 @@ import org.springframework.stereotype.Component;
 public class SpringBootKogitoExtensionInitializer {
 
     private static final Logger LOG = LoggerFactory.getLogger(SpringBootKogitoExtensionInitializer.class);
+    
+    @Autowired
+    ObjectMapper mapper;
 
     @PostConstruct
     private void onPostConstruct() {
+        mapper.registerModule(JsonFormat.getCloudEventJacksonModule());
         KogitoExtension.register();
         LOG.info("Registered Kogito CloudEvent extension");
     }

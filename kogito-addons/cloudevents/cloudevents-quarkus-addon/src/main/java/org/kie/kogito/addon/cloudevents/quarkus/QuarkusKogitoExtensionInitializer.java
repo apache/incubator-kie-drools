@@ -17,7 +17,10 @@
 package org.kie.kogito.addon.cloudevents.quarkus;
 
 import javax.annotation.PostConstruct;
+import javax.inject.Inject;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.cloudevents.jackson.JsonFormat;
 import io.quarkus.runtime.Startup;
 import org.kie.kogito.cloudevents.extension.KogitoExtension;
 import org.slf4j.Logger;
@@ -32,8 +35,12 @@ public class QuarkusKogitoExtensionInitializer {
 
     private static final Logger LOG = LoggerFactory.getLogger(QuarkusKogitoExtensionInitializer.class);
 
+    @Inject
+    ObjectMapper mapper;
+    
     @PostConstruct
     private void onPostConstruct() {
+        mapper.registerModule(JsonFormat.getCloudEventJacksonModule());
         KogitoExtension.register();
         LOG.info("Registered Kogito CloudEvent extension");
     }
