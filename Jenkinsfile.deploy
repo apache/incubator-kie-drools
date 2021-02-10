@@ -39,6 +39,7 @@ pipeline {
 
         // Release information
         booleanParam(name: 'RELEASE', defaultValue: false, description: 'Is this build for a release?')
+        booleanParam(name: 'CREATE_PR', defaultValue: false, description: 'Should we create a PR with the changes ?')
         string(name: 'PROJECT_VERSION', defaultValue: '', description: 'Optional if not RELEASE. If RELEASE, cannot be empty.')
         string(name: 'OPTAPLANNER_VERSION', defaultValue: '', description: 'Optional if not RELEASE. If RELEASE, cannot be empty.')
 
@@ -74,7 +75,7 @@ pipeline {
                         currentBuild.displayName = params.DISPLAY_NAME
                     }
 
-                    if (isRelease()) {
+                    if (isRelease() || isCreatePr()) {
                         assert getProjectVersion() != ''
                         assert getOptaPlannerVersion() != ''
                     }
@@ -97,7 +98,7 @@ pipeline {
 
         stage('Prepare for PR') {
             when {
-                expression { return isRelease() }
+                expression { return isRelease() || isCreatePr() }
             }
             steps {
                 prepareForPR(getRepoName())
@@ -109,7 +110,7 @@ pipeline {
             }
             steps {
                 script {
-                    maven.mvnVersionsUpdateParentAndChildModules(getMavenCommand(), getProjectVersion(), true)
+                    maven.mvnVersionsUpdateParentAndChildModules(getMavenCommand(), getProjectVersion(), !isRelease())
                     // Update Optaplanner version
                     maven.mvnSetVersionProperty(getMavenCommand(), 'version.org.optaplanner', getOptaPlannerVersion())
                 }
@@ -146,7 +147,7 @@ pipeline {
         }
         stage('Create PR') {
             when {
-                expression { return isRelease() }
+                expression { return isRelease() || isCreatePr()  }
             }
             steps {
                 commitAndCreatePR(getRepoName())
@@ -205,6 +206,10 @@ void commitAndCreatePR(String repo) {
 
 boolean isRelease() {
     return params.RELEASE
+}
+
+boolean isCreatePr() {
+    return params.CREATE_PR
 }
 
 String getRepoName(){
