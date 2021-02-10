@@ -146,7 +146,7 @@
     <version.org.keycloak>11.0.3</version.org.keycloak>
     <version.org.mockito>3.6.0</version.org.mockito>
     <version.org.mvel>2.4.12.Final</version.org.mvel>
-    <version.org.kie7>7.49.0.Final</version.org.kie7>
+    <version.org.kie7>7.50.0.t20210209</version.org.kie7>
     <version.org.reactivestreams>1.0.3</version.org.reactivestreams>
     <version.org.reflections>0.9.11</version.org.reflections>
     <version.org.slf4j>1.7.30</version.org.slf4j>

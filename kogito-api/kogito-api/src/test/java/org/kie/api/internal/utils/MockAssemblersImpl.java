@@ -42,7 +42,12 @@ public class MockAssemblersImpl implements KieAssemblers,
     public void accept(KieAssemblerService kieAssemblerService) {
         this.assemblers.put(kieAssemblerService.getResourceType(), kieAssemblerService);
     }
-    
+
+    @Override
+    public void addResourceBeforeRules( Object o, Resource resource, ResourceType resourceType, ResourceConfiguration resourceConfiguration ) throws Exception {
+
+    }
+
     @Override
     public void addResource(Object knowledgeBuilder, Resource resource, ResourceType type, ResourceConfiguration configuration) throws Exception {
 
