@@ -121,51 +121,37 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
         return new UniLeftHandSide<>(this, patternVariable.filter(predicate));
     }
 
-    private <B> UniLeftHandSide<A> applyJoiners(Class<B> bClass, AbstractBiJoiner<A, B> joiner,
+    private <B> UniLeftHandSide<A> applyJoiners(Class<B> otherFactType, AbstractBiJoiner<A, B> joiner,
             BiPredicate<A, B> predicate, boolean shouldExist) {
-        Variable<B> toExist = (Variable<B>) variableFactory.createVariable(bClass, "toExist");
+        Variable<B> toExist = (Variable<B>) variableFactory.createVariable(otherFactType, "toExist");
         PatternDSL.PatternDef<B> existencePattern = pattern(toExist);
         if (joiner == null) {
-            return applyFilters(patternVariable, existencePattern, predicate, shouldExist);
+            return applyFilters(existencePattern, predicate, shouldExist);
         }
-        PatternVariable<A> newPatternVariable = patternVariable;
         JoinerType[] joinerTypes = joiner.getJoinerTypes();
-        // Rebuild the A pattern, binding variables for left parts of the joins.
-        Variable[] joinVars = new Variable[joinerTypes.length];
         for (int mappingIndex = 0; mappingIndex < joinerTypes.length; mappingIndex++) {
-            // For each mapping, bind one join variable.
-            Variable<Object> joinVar = variableFactory.createVariable("joinVar");
-            Function<A, Object> leftMapping = joiner.getLeftMapping(mappingIndex);
-            newPatternVariable = newPatternVariable.bind(joinVar, leftMapping);
-            joinVars[mappingIndex] = joinVar;
-        }
-        // Create the B pattern, joining with the new A pattern using its freshly bound join variables.
-        for (int mappingIndex = 0; mappingIndex < joinerTypes.length; mappingIndex++) {
-            // For each mapping, bind a join variable from A to B and index the binding.
             JoinerType joinerType = joinerTypes[mappingIndex];
             Function<A, Object> leftMapping = joiner.getLeftMapping(mappingIndex);
             Function<B, Object> rightMapping = joiner.getRightMapping(mappingIndex);
-            // Only extract B; A is coming from a pre-bound join var.
-            Predicate2<B, A> joinPredicate = (b, a) -> joinerType.matches(a, rightMapping.apply(b));
+            Predicate2<B, A> joinPredicate = (b, a) -> joinerType.matches(leftMapping.apply(a), rightMapping.apply(b));
             BetaIndex<B, A, ?> index = betaIndexedBy(Object.class, getConstraintType(joinerType), mappingIndex,
                     rightMapping::apply, leftMapping::apply);
             existencePattern = existencePattern.expr("Join using joiner #" + mappingIndex + " in " + joiner,
-                    joinVars[mappingIndex], joinPredicate, index);
+                    patternVariable.getPrimaryVariable(), joinPredicate, index);
         }
-        // And finally add the filter to the B pattern.
-        return applyFilters(newPatternVariable, existencePattern, predicate, shouldExist);
+        return applyFilters(existencePattern, predicate, shouldExist);
     }
 
-    private <B> UniLeftHandSide<A> applyFilters(PatternVariable<A> newPatternVariable,
-            PatternDSL.PatternDef<B> existencePattern, BiPredicate<A, B> biPredicate, boolean shouldExist) {
-        PatternDSL.PatternDef<B> possiblyFilteredExistencePattern = biPredicate == null ? existencePattern
-                : existencePattern.expr("Filter using " + biPredicate, newPatternVariable.getPrimaryVariable(),
-                        (b, a) -> biPredicate.test(a, b));
+    private <B> UniLeftHandSide<A> applyFilters(PatternDSL.PatternDef<B> existencePattern, BiPredicate<A, B> predicate,
+            boolean shouldExist) {
+        PatternDSL.PatternDef<B> possiblyFilteredExistencePattern = predicate == null ? existencePattern
+                : existencePattern.expr("Filter using " + predicate, patternVariable.getPrimaryVariable(),
+                        (b, a) -> predicate.test(a, b));
         ViewItem<?> existenceExpression = exists(possiblyFilteredExistencePattern);
         if (!shouldExist) {
             existenceExpression = not(possiblyFilteredExistencePattern);
         }
-        return new UniLeftHandSide<>(this, newPatternVariable.addDependentExpression(existenceExpression));
+        return new UniLeftHandSide<>(this, patternVariable.addDependentExpression(existenceExpression));
     }
 
     private <B> UniLeftHandSide<A> existsOrNot(Class<B> bClass, BiJoiner<A, B>[] joiners, boolean shouldExist) {
@@ -208,21 +194,12 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
     public <B> BiLeftHandSide<A, B> andJoin(UniLeftHandSide<B> right, BiJoiner<A, B> joiner) {
         AbstractBiJoiner<A, B> castJoiner = (AbstractBiJoiner<A, B>) joiner;
         JoinerType[] joinerTypes = castJoiner.getJoinerTypes();
-        // Rebuild the A pattern, binding variables for left parts of the joins.
-        PatternVariable<A> newLeft = patternVariable;
-        Variable[] joinVars = new Variable[joinerTypes.length];
-        for (int mappingIndex = 0; mappingIndex < joinerTypes.length; mappingIndex++) {
-            // For each mapping, bind one join variable.
-            Variable<Object> joinVar = variableFactory.createVariable("joinVar" + mappingIndex);
-            newLeft = newLeft.bind(joinVar, castJoiner.getLeftMapping(mappingIndex));
-            joinVars[mappingIndex] = joinVar;
-        }
         PatternVariable<B> newRight = right.patternVariable;
         for (int mappingIndex = 0; mappingIndex < joinerTypes.length; mappingIndex++) {
             JoinerType joinerType = joinerTypes[mappingIndex];
-            newRight = newRight.filterOnJoinVar(joinVars[mappingIndex], castJoiner, joinerType, mappingIndex);
+            newRight = newRight.filterForJoin(patternVariable.getPrimaryVariable(), castJoiner, joinerType, mappingIndex);
         }
-        return new BiLeftHandSide<>(newLeft, newRight, variableFactory);
+        return new BiLeftHandSide<>(patternVariable, newRight, variableFactory);
     }
 
     public <NewA> UniLeftHandSide<NewA> andGroupBy(Function<A, NewA> keyMapping) {

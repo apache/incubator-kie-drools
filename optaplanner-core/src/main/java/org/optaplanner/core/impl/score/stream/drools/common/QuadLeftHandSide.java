@@ -22,17 +22,21 @@ import static org.drools.model.DSL.accumulate;
 import static org.drools.model.DSL.exists;
 import static org.drools.model.DSL.groupBy;
 import static org.drools.model.DSL.not;
+import static org.drools.model.PatternDSL.betaIndexedBy;
 import static org.drools.model.PatternDSL.pattern;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.drools.model.BetaIndex4;
 import org.drools.model.PatternDSL;
 import org.drools.model.Variable;
 import org.drools.model.functions.Function4;
+import org.drools.model.functions.Predicate5;
 import org.drools.model.functions.accumulate.AccumulateFunction;
 import org.drools.model.view.ViewItem;
 import org.optaplanner.core.api.function.PentaPredicate;
@@ -42,6 +46,7 @@ import org.optaplanner.core.api.function.ToIntQuadFunction;
 import org.optaplanner.core.api.function.ToLongQuadFunction;
 import org.optaplanner.core.api.score.stream.penta.PentaJoiner;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
+import org.optaplanner.core.impl.score.stream.common.JoinerType;
 import org.optaplanner.core.impl.score.stream.drools.DroolsVariableFactory;
 import org.optaplanner.core.impl.score.stream.penta.AbstractPentaJoiner;
 import org.optaplanner.core.impl.score.stream.penta.FilteringPentaJoiner;
@@ -73,6 +78,14 @@ public final class QuadLeftHandSide<A, B, C, D> extends AbstractLeftHandSide {
         this.patternVariableD = patternVariableD;
     }
 
+    protected QuadLeftHandSide(QuadLeftHandSide<A, B, C, D> leftHandSide, PatternVariable<D> patternVariable) {
+        super(leftHandSide.variableFactory);
+        this.patternVariableA = leftHandSide.patternVariableA;
+        this.patternVariableB = leftHandSide.patternVariableB;
+        this.patternVariableC = leftHandSide.patternVariableC;
+        this.patternVariableD = patternVariable;
+    }
+
     public QuadLeftHandSide<A, B, C, D> andFilter(QuadPredicate<A, B, C, D> predicate) {
         return new QuadLeftHandSide<>(patternVariableA, patternVariableB, patternVariableC,
                 patternVariableD.filter(predicate, patternVariableA.getPrimaryVariable(),
@@ -80,23 +93,31 @@ public final class QuadLeftHandSide<A, B, C, D> extends AbstractLeftHandSide {
                 variableFactory);
     }
 
-    private <E> QuadLeftHandSide<A, B, C, D> applyJoiners(Class<E> otherFactType, PentaJoiner<A, B, C, D, E> joiner,
-            PentaPredicate<A, B, C, D, E> predicate, boolean shouldExist) {
+    private <E> QuadLeftHandSide<A, B, C, D> applyJoiners(Class<E> otherFactType,
+            AbstractPentaJoiner<A, B, C, D, E> joiner, PentaPredicate<A, B, C, D, E> predicate, boolean shouldExist) {
+        Variable<E> toExist = (Variable<E>) variableFactory.createVariable(otherFactType, "toExist");
+        PatternDSL.PatternDef<E> existencePattern = pattern(toExist);
         if (joiner == null) {
-            return applyFilters(otherFactType, predicate, shouldExist);
+            return applyFilters(existencePattern, predicate, shouldExist);
         }
-        // There is no epsilon index in Drools, therefore we replace joining with a filter.
-        AbstractPentaJoiner<A, B, C, D, E> castJoiner = (AbstractPentaJoiner<A, B, C, D, E>) joiner;
-        PentaPredicate<A, B, C, D, E> joinFilter = castJoiner::matches;
-        PentaPredicate<A, B, C, D, E> result = predicate == null ? joinFilter : joinFilter.and(predicate);
-        // And finally we add the filter to the E pattern.
-        return applyFilters(otherFactType, result, shouldExist);
+        JoinerType[] joinerTypes = joiner.getJoinerTypes();
+        for (int mappingIndex = 0; mappingIndex < joinerTypes.length; mappingIndex++) {
+            JoinerType joinerType = joinerTypes[mappingIndex];
+            QuadFunction<A, B, C, D, Object> leftMapping = joiner.getLeftMapping(mappingIndex);
+            Function<E, Object> rightMapping = joiner.getRightMapping(mappingIndex);
+            Predicate5<E, A, B, C, D> joinPredicate =
+                    (e, a, b, c, d) -> joinerType.matches(leftMapping.apply(a, b, c, d), rightMapping.apply(e));
+            BetaIndex4<E, A, B, C, D, ?> index = betaIndexedBy(Object.class, getConstraintType(joinerType), mappingIndex,
+                    rightMapping::apply, leftMapping::apply, Object.class);
+            existencePattern = existencePattern.expr("Join using joiner #" + mappingIndex + " in " + joiner,
+                    patternVariableA.getPrimaryVariable(), patternVariableB.getPrimaryVariable(),
+                    patternVariableC.getPrimaryVariable(), patternVariableD.getPrimaryVariable(), joinPredicate, index);
+        }
+        return applyFilters(existencePattern, predicate, shouldExist);
     }
 
-    private <E> QuadLeftHandSide<A, B, C, D> applyFilters(Class<E> otherFactType, PentaPredicate<A, B, C, D, E> predicate,
-            boolean shouldExist) {
-        Variable<E> toExist = (Variable<E>) variableFactory.createVariable(otherFactType, "biToExist");
-        PatternDSL.PatternDef<E> existencePattern = pattern(toExist);
+    private <E> QuadLeftHandSide<A, B, C, D> applyFilters(PatternDSL.PatternDef<E> existencePattern,
+            PentaPredicate<A, B, C, D, E> predicate, boolean shouldExist) {
         PatternDSL.PatternDef<E> possiblyFilteredExistencePattern = predicate == null ? existencePattern
                 : existencePattern.expr("Filter using " + predicate, patternVariableA.getPrimaryVariable(),
                         patternVariableB.getPrimaryVariable(), patternVariableC.getPrimaryVariable(),
@@ -105,8 +126,7 @@ public final class QuadLeftHandSide<A, B, C, D> extends AbstractLeftHandSide {
         if (!shouldExist) {
             existenceExpression = not(possiblyFilteredExistencePattern);
         }
-        return new QuadLeftHandSide<>(patternVariableA, patternVariableB, patternVariableC,
-                patternVariableD.addDependentExpression(existenceExpression), variableFactory);
+        return new QuadLeftHandSide<>(this, patternVariableD.addDependentExpression(existenceExpression));
     }
 
     private <E> QuadLeftHandSide<A, B, C, D> existsOrNot(Class<E> dClass, PentaJoiner<A, B, C, D, E>[] joiners,

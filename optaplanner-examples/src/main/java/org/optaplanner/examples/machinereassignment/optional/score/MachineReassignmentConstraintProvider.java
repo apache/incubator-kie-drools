@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -90,8 +90,8 @@ public class MachineReassignmentConstraintProvider implements ConstraintProvider
      */
     protected Constraint serviceLocationSpread(ConstraintFactory factory) {
         return factory.from(MrProcessAssignment.class)
-                .groupBy(processAssignment -> processAssignment.getService(),
-                        ConstraintCollectors.countDistinct(processAssignment -> processAssignment.getLocation()))
+                .groupBy(MrProcessAssignment::getService,
+                        ConstraintCollectors.countDistinct(MrProcessAssignment::getLocation))
                 .filter((service, distinctLocationCount) -> distinctLocationCount < service.getLocationSpread())
                 .penalizeLong(MrConstraints.SERVICE_LOCATION_SPREAD, HardSoftLongScore.ONE_HARD,
                         (service, distinctLocationCount) -> service.getLocationSpread() - distinctLocationCount);
@@ -120,7 +120,8 @@ public class MachineReassignmentConstraintProvider implements ConstraintProvider
     protected Constraint transientUsage(ConstraintFactory factory) {
         return factory.from(MrMachineCapacity.class)
                 .filter(MrMachineCapacity::isTransientlyConsumed)
-                .join(factory.from(MrProcessAssignment.class).filter(MrProcessAssignment::isMoved),
+                .join(factory.from(MrProcessAssignment.class)
+                        .filter(MrProcessAssignment::isMoved),
                         equal(MrMachineCapacity::getMachine, MrProcessAssignment::getOriginalMachine))
                 .groupBy((machineCapacity, processAssignment) -> machineCapacity,
                         sumLong((machineCapacity, processAssignment) -> processAssignment
@@ -194,7 +195,7 @@ public class MachineReassignmentConstraintProvider implements ConstraintProvider
     protected Constraint serviceMoveCost(ConstraintFactory factory) {
         return factory.from(MrProcessAssignment.class)
                 .filter(MrProcessAssignment::isMoved)
-                .groupBy(processAssignment -> processAssignment.getService(), ConstraintCollectors.count())
+                .groupBy(MrProcessAssignment::getService, ConstraintCollectors.count())
                 .groupBy(ConstraintCollectors.max((BiFunction<MrService, Integer, Integer>) (service, count) -> count))
                 .join(MrGlobalPenaltyInfo.class)
                 .penalize(MrConstraints.SERVICE_MOVE_COST, HardSoftLongScore.ONE_SOFT,

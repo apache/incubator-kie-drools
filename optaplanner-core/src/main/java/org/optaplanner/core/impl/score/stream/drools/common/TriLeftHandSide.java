@@ -22,17 +22,21 @@ import static org.drools.model.DSL.accumulate;
 import static org.drools.model.DSL.exists;
 import static org.drools.model.DSL.groupBy;
 import static org.drools.model.DSL.not;
+import static org.drools.model.PatternDSL.betaIndexedBy;
 import static org.drools.model.PatternDSL.pattern;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.drools.model.BetaIndex3;
 import org.drools.model.PatternDSL;
 import org.drools.model.Variable;
 import org.drools.model.functions.Function3;
+import org.drools.model.functions.Predicate4;
 import org.drools.model.functions.accumulate.AccumulateFunction;
 import org.drools.model.view.ViewItem;
 import org.optaplanner.core.api.function.QuadPredicate;
@@ -42,6 +46,7 @@ import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.function.TriPredicate;
 import org.optaplanner.core.api.score.stream.quad.QuadJoiner;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
+import org.optaplanner.core.impl.score.stream.common.JoinerType;
 import org.optaplanner.core.impl.score.stream.drools.DroolsVariableFactory;
 import org.optaplanner.core.impl.score.stream.quad.AbstractQuadJoiner;
 import org.optaplanner.core.impl.score.stream.quad.FilteringQuadJoiner;
@@ -70,6 +75,13 @@ public final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
         this.patternVariableC = patternVariableC;
     }
 
+    protected TriLeftHandSide(TriLeftHandSide<A, B, C> leftHandSide, PatternVariable<C> patternVariable) {
+        super(leftHandSide.variableFactory);
+        this.patternVariableA = leftHandSide.patternVariableA;
+        this.patternVariableB = leftHandSide.patternVariableB;
+        this.patternVariableC = patternVariable;
+    }
+
     protected PatternVariable<A> getPatternVariableA() {
         return patternVariableA;
     }
@@ -89,20 +101,29 @@ public final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
 
     private <D> TriLeftHandSide<A, B, C> applyJoiners(Class<D> otherFactType, AbstractQuadJoiner<A, B, C, D> joiner,
             QuadPredicate<A, B, C, D> predicate, boolean shouldExist) {
+        Variable<D> toExist = (Variable<D>) variableFactory.createVariable(otherFactType, "toExist");
+        PatternDSL.PatternDef<D> existencePattern = pattern(toExist);
         if (joiner == null) {
-            return applyFilters(otherFactType, predicate, shouldExist);
+            return applyFilters(existencePattern, predicate, shouldExist);
         }
-        // There is no delta index in Drools, therefore we replace joining with a filter.
-        QuadPredicate<A, B, C, D> joinFilter = joiner::matches;
-        QuadPredicate<A, B, C, D> result = predicate == null ? joinFilter : joinFilter.and(predicate);
-        // And finally we add the filter to the D pattern.
-        return applyFilters(otherFactType, result, shouldExist);
+        JoinerType[] joinerTypes = joiner.getJoinerTypes();
+        for (int mappingIndex = 0; mappingIndex < joinerTypes.length; mappingIndex++) {
+            JoinerType joinerType = joinerTypes[mappingIndex];
+            TriFunction<A, B, C, Object> leftMapping = joiner.getLeftMapping(mappingIndex);
+            Function<D, Object> rightMapping = joiner.getRightMapping(mappingIndex);
+            Predicate4<D, A, B, C> joinPredicate =
+                    (d, a, b, c) -> joinerType.matches(leftMapping.apply(a, b, c), rightMapping.apply(d));
+            BetaIndex3<D, A, B, C, ?> index = betaIndexedBy(Object.class, getConstraintType(joinerType), mappingIndex,
+                    rightMapping::apply, leftMapping::apply, Object.class);
+            existencePattern = existencePattern.expr("Join using joiner #" + mappingIndex + " in " + joiner,
+                    patternVariableA.getPrimaryVariable(), patternVariableB.getPrimaryVariable(),
+                    patternVariableC.getPrimaryVariable(), joinPredicate, index);
+        }
+        return applyFilters(existencePattern, predicate, shouldExist);
     }
 
-    private <D> TriLeftHandSide<A, B, C> applyFilters(Class<D> otherFactType, QuadPredicate<A, B, C, D> predicate,
-            boolean shouldExist) {
-        Variable<D> toExist = (Variable<D>) variableFactory.createVariable(otherFactType, "biToExist");
-        PatternDSL.PatternDef<D> existencePattern = pattern(toExist);
+    private <D> TriLeftHandSide<A, B, C> applyFilters(PatternDSL.PatternDef<D> existencePattern,
+            QuadPredicate<A, B, C, D> predicate, boolean shouldExist) {
         PatternDSL.PatternDef<D> possiblyFilteredExistencePattern = predicate == null ? existencePattern
                 : existencePattern.expr("Filter using " + predicate, patternVariableA.getPrimaryVariable(),
                         patternVariableB.getPrimaryVariable(), patternVariableC.getPrimaryVariable(),
@@ -111,8 +132,7 @@ public final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
         if (!shouldExist) {
             existenceExpression = not(possiblyFilteredExistencePattern);
         }
-        return new TriLeftHandSide<>(patternVariableA, patternVariableB,
-                patternVariableC.addDependentExpression(existenceExpression), variableFactory);
+        return new TriLeftHandSide<>(this, patternVariableC.addDependentExpression(existenceExpression));
     }
 
     private <D> TriLeftHandSide<A, B, C> existsOrNot(Class<D> dClass, QuadJoiner<A, B, C, D>[] joiners,
@@ -155,11 +175,14 @@ public final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
 
     public <D> QuadLeftHandSide<A, B, C, D> andJoin(UniLeftHandSide<D> right, QuadJoiner<A, B, C, D> joiner) {
         AbstractQuadJoiner<A, B, C, D> castJoiner = (AbstractQuadJoiner<A, B, C, D>) joiner;
-        PatternVariable<D> filteredRight = right.getPatternVariableA()
-                .filter(castJoiner::matches, patternVariableA.getPrimaryVariable(),
-                        patternVariableB.getPrimaryVariable(), patternVariableC.getPrimaryVariable());
-        return new QuadLeftHandSide<>(patternVariableA, patternVariableB, patternVariableC, filteredRight,
-                variableFactory);
+        JoinerType[] joinerTypes = castJoiner.getJoinerTypes();
+        PatternVariable<D> newRight = right.getPatternVariableA();
+        for (int mappingIndex = 0; mappingIndex < joinerTypes.length; mappingIndex++) {
+            JoinerType joinerType = joinerTypes[mappingIndex];
+            newRight = newRight.filterForJoin(patternVariableA.getPrimaryVariable(), patternVariableB.getPrimaryVariable(),
+                    patternVariableC.getPrimaryVariable(), castJoiner, joinerType, mappingIndex);
+        }
+        return new QuadLeftHandSide<>(patternVariableA, patternVariableB, patternVariableC, newRight, variableFactory);
     }
 
     public <NewA> UniLeftHandSide<NewA> andGroupBy(TriFunction<A, B, C, NewA> keyMapping) {
