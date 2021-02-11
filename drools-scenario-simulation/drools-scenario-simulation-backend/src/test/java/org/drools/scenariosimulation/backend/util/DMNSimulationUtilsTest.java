@@ -25,7 +25,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.api.io.Resource;
 import org.kie.dmn.api.core.DMNModel;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;

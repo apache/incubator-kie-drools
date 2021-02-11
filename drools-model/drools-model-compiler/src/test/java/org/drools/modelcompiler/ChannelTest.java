@@ -26,7 +26,7 @@ import org.kie.api.runtime.Channel;
 import org.kie.api.runtime.KieSession;
 
 import static org.hamcrest.CoreMatchers.hasItem;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class ChannelTest extends BaseModelTest {
 

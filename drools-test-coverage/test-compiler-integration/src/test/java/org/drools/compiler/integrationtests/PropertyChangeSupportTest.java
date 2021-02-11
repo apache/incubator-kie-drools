@@ -25,7 +25,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.internal.utils.KieHelper;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class PropertyChangeSupportTest {
 
