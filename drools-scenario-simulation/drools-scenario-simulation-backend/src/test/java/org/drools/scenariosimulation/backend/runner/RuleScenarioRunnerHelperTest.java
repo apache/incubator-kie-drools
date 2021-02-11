@@ -64,7 +64,7 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.dmn.feel.codegen.feel11.Constants;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
