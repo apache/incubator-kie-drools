@@ -73,7 +73,7 @@ public class Value<S> {
 
     @Override
     public String toString() {
-        return "Value{" + underlyingObject + '}';
+        return Objects.toString(underlyingObject);
     }
 
     public double[] asVector() {

@@ -45,11 +45,11 @@ public class PredictionInputsDataDistribution implements DataDistribution {
         if (inputs.isEmpty()) {
             return new PredictionInput(Collections.emptyList());
         } else {
-            List<PredictionInput> inputs = sample(1);
-            if (inputs.isEmpty()) {
+            List<PredictionInput> singleSample = sample(1);
+            if (singleSample.isEmpty()) {
                 return new PredictionInput(Collections.emptyList());
             } else {
-                return inputs.get(0);
+                return singleSample.get(0);
             }
         }
     }
@@ -72,13 +72,19 @@ public class PredictionInputsDataDistribution implements DataDistribution {
             return Collections.emptyList();
         } else {
             PredictionInput firstInput = inputs.get(0);
-            int shape = firstInput.getFeatures().size();
+            List<Feature> linearizedFeatures = DataUtils.getLinearizedFeatures(firstInput.getFeatures());
+            int shape = linearizedFeatures.size();
             List<FeatureDistribution> featureDistributions = new ArrayList<>(shape);
             for (int i = 0; i < shape; i++) {
-                Feature firstInputIthfeature = firstInput.getFeatures().get(i);
+                Feature firstInputIthfeature = linearizedFeatures.get(i);
                 List<Value<?>> values = new ArrayList<>(inputs.size());
                 for (PredictionInput input : inputs) {
-                    values.add(input.getFeatures().get(i).getValue());
+                    List<Feature> currentInputLinearizedFeatures = DataUtils.getLinearizedFeatures(input.getFeatures());
+                    if (currentInputLinearizedFeatures.size() > i) {
+                        values.add(currentInputLinearizedFeatures.get(i).getValue());
+                    } else {
+                        values.add(new Value<>(null));
+                    }
                 }
                 Feature feature = FeatureFactory.copyOf(firstInputIthfeature, new Value<>(null));
                 featureDistributions.add(new GenericFeatureDistribution(feature, values));

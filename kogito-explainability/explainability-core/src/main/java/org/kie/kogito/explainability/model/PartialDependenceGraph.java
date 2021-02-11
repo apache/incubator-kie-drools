@@ -15,17 +15,22 @@
  */
 package org.kie.kogito.explainability.model;
 
+import java.util.List;
+
 /**
- * A series of two dimensional points explaining partial dependency between a {@link Feature} and a model output.
+ * A series of two dimensional points {@code (Feature:Value<?>, Output:Value<?>)} explaining partial dependency between
+ * a {@link Feature} and an {@link Output} for a given model.
  */
 public class PartialDependenceGraph {
 
-    private final double[] x;
-    private final double[] y;
+    private final List<Value<?>> x;
+    private final List<Value<?>> y;
     private final Feature feature;
+    private final Output output;
 
-    public PartialDependenceGraph(Feature feature, double[] x, double[] y) {
+    public PartialDependenceGraph(Feature feature, Output output, List<Value<?>> x, List<Value<?>> y) {
         this.feature = feature;
+        this.output = output;
         this.x = x;
         this.y = y;
     }
@@ -34,11 +39,25 @@ public class PartialDependenceGraph {
         return feature;
     }
 
-    public double[] getX() {
+    public Output getOutput() {
+        return output;
+    }
+
+    public List<Value<?>> getX() {
         return x;
     }
 
-    public double[] getY() {
+    public List<Value<?>> getY() {
         return y;
+    }
+
+    @Override
+    public String toString() {
+        return "PartialDependenceGraph{" +
+                "x=" + x +
+                ", y=" + y +
+                ", feature=" + feature +
+                ", output=" + output +
+                '}';
     }
 }

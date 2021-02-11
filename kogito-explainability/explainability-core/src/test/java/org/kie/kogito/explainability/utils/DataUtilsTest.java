@@ -15,6 +15,8 @@
  */
 package org.kie.kogito.explainability.utils;
 
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -31,16 +33,20 @@ import org.kie.kogito.explainability.model.DataDistribution;
 import org.kie.kogito.explainability.model.Feature;
 import org.kie.kogito.explainability.model.FeatureDistribution;
 import org.kie.kogito.explainability.model.FeatureFactory;
+import org.kie.kogito.explainability.model.Output;
+import org.kie.kogito.explainability.model.PartialDependenceGraph;
 import org.kie.kogito.explainability.model.PerturbationContext;
 import org.kie.kogito.explainability.model.PredictionInput;
 import org.kie.kogito.explainability.model.Type;
 import org.kie.kogito.explainability.model.Value;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
 
 class DataUtilsTest {
 
@@ -286,7 +292,7 @@ class DataUtilsTest {
             }
         }
         assertThat(changedFeatures).isBetween((int) Math.min(noOfPerturbations, input.getFeatures().size() * 0.5),
-                                              (int) Math.max(noOfPerturbations, input.getFeatures().size() * 0.5));
+                (int) Math.max(noOfPerturbations, input.getFeatures().size() * 0.5));
     }
 
     private void assertPerturbDropString(PredictionInput input, int noOfPerturbations) {
@@ -300,7 +306,7 @@ class DataUtilsTest {
             }
         }
         assertThat(changedFeatures).isBetween((int) Math.min(noOfPerturbations, input.getFeatures().size() * 0.5),
-                                              (int) Math.max(noOfPerturbations, input.getFeatures().size() * 0.5));
+                (int) Math.max(noOfPerturbations, input.getFeatures().size() * 0.5));
     }
 
     @Test
@@ -425,5 +431,21 @@ class DataUtilsTest {
         assertThat(largerSamples).isNotNull();
         assertThat(largerSampleSize).isEqualTo(largerSamples.size());
         assertThat(values).contains(largerSamples.get(random.nextInt(largerSampleSize - 1)));
+    }
+
+    @Test
+    void toCSV() {
+        Feature feature = mock(Feature.class);
+        Output output = mock(Output.class);
+        List<Value<?>> x = new ArrayList<>();
+        x.add(new Value<>(1));
+        x.add(new Value<>(2));
+        x.add(new Value<>(3));
+        List<Value<?>> y = new ArrayList<>();
+        y.add(new Value<>(4));
+        y.add(new Value<>(5));
+        y.add(new Value<>(4));
+        PartialDependenceGraph partialDependenceGraph = new PartialDependenceGraph(feature, output, x, y);
+        assertDoesNotThrow(() -> DataUtils.toCSV(partialDependenceGraph, Paths.get("target/test-pdp.csv")));
     }
 }

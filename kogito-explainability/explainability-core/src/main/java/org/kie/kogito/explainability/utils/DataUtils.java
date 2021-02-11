@@ -15,6 +15,11 @@
  */
 package org.kie.kogito.explainability.utils;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -30,6 +35,7 @@ import org.kie.kogito.explainability.model.FeatureDistribution;
 import org.kie.kogito.explainability.model.FeatureFactory;
 import org.kie.kogito.explainability.model.IndependentFeaturesDataDistribution;
 import org.kie.kogito.explainability.model.NumericFeatureDistribution;
+import org.kie.kogito.explainability.model.PartialDependenceGraph;
 import org.kie.kogito.explainability.model.PerturbationContext;
 import org.kie.kogito.explainability.model.Prediction;
 import org.kie.kogito.explainability.model.PredictionInput;
@@ -431,6 +437,26 @@ public class DataUtils {
                     .ints(sampleSize, 0, values.size())
                     .mapToObj(values::get)
                     .collect(Collectors.toList());
+        }
+    }
+
+    /**
+     * Persist a {@link PartialDependenceGraph} into a CSV file.
+     * @param partialDependenceGraph the PDP to persist
+     * @param path the path to the CSV file to be created
+     * @throws IOException whether any IO error occurs while writing the CSV
+     */
+    public static void toCSV(PartialDependenceGraph partialDependenceGraph, Path path) throws IOException {
+        try (OutputStream outputStream = Files.newOutputStream(path)) {
+            List<Value<?>> xAxis = partialDependenceGraph.getX();
+            List<Value<?>> yAxis = partialDependenceGraph.getY();
+            outputStream.write("feature,output\n".getBytes(StandardCharsets.UTF_8));
+            for (int i = 0; i < xAxis.size(); i++) {
+                String line = xAxis.get(i).asString().replaceAll(",", "") + ',' +
+                        yAxis.get(i).asString().replaceAll(",", "") + '\n';
+                outputStream.write(line.getBytes(StandardCharsets.UTF_8));
+            }
+            outputStream.flush();
         }
     }
 }
