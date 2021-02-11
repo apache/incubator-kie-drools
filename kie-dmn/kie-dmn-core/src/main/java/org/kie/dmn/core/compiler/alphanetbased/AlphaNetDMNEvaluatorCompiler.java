@@ -18,6 +18,9 @@ package org.kie.dmn.core.compiler.alphanetbased;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.function.Function;
+
+import javax.xml.namespace.QName;
 
 import org.drools.ancompiler.CompiledNetwork;
 import org.drools.ancompiler.CompiledNetworkSource;
@@ -29,8 +32,8 @@ import org.kie.dmn.core.compiler.DMNCompilerContext;
 import org.kie.dmn.core.compiler.DMNCompilerImpl;
 import org.kie.dmn.core.compiler.DMNEvaluatorCompiler;
 import org.kie.dmn.core.compiler.DMNFEELHelper;
-import org.kie.dmn.core.compiler.execmodelbased.DTableModel;
 import org.kie.dmn.core.impl.DMNModelImpl;
+import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.model.api.DecisionTable;
 import org.kie.memorycompiler.KieMemoryCompiler;
 import org.slf4j.Logger;
@@ -52,9 +55,9 @@ public class AlphaNetDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
 
         // Parse every cell in Decision Table
         TableCell.TableCellFactory tableCellFactory = new TableCell.TableCellFactory(feelHelper, ctx);
-        DTableModel dTableModel = new DTableModel(feelHelper, model, decisionTableName, decisionTableName, decisionTable);
         TableCellParser tableCellParser = new TableCellParser(tableCellFactory);
-        TableCells tableCells = tableCellParser.parseCells(dTableModel);
+        final Function<QName, Type> resolver = new DTQNameToTypeResolver(compiler, model, node.getSource(), decisionTable);
+        TableCells tableCells = tableCellParser.parseCells(decisionTable, resolver);
 
         // Generate source code
         GeneratedSources allGeneratedSources = new GeneratedSources();
@@ -74,7 +77,7 @@ public class AlphaNetDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
         dmnCompiledAlphaNetwork.setCompiledAlphaNetwork(compiledAlphaNetwork);
 
         return new AlphaNetDMNExpressionEvaluator(dmnCompiledAlphaNetwork)
-                .initParameters(feelHelper, ctx, dTableModel, node);
+                .initParameters(feelHelper, ctx, decisionTableName, node);
     }
 
     public CompiledNetwork createCompiledAlphaNetwork(ObjectTypeNode otn) {
@@ -87,6 +90,4 @@ public class AlphaNetDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
         Class<?> aClass = compiledClasses.get(compiledNetworkSource.getName());
         return compiledNetworkSource.createInstanceAndSet(aClass);
     }
-
-
 }

@@ -30,7 +30,6 @@ import org.kie.dmn.core.ast.DMNDTExpressionEvaluator;
 import org.kie.dmn.core.ast.EvaluatorResultImpl;
 import org.kie.dmn.core.compiler.DMNCompilerContext;
 import org.kie.dmn.core.compiler.DMNFEELHelper;
-import org.kie.dmn.core.compiler.execmodelbased.DTableModel;
 import org.kie.dmn.core.impl.DMNResultImpl;
 import org.kie.dmn.core.impl.DMNRuntimeEventManagerUtils;
 import org.kie.dmn.core.impl.DMNRuntimeImpl;
@@ -48,7 +47,7 @@ public class AlphaNetDMNExpressionEvaluator implements DMNExpressionEvaluator {
     private final DMNCompiledAlphaNetwork compiledNetwork;
 
     private DMNFEELHelper feel;
-    private DTableModel dTableModel;
+    private String decisionTableName;
     private DMNBaseNode node;
 
     public AlphaNetDMNExpressionEvaluator( DMNCompiledAlphaNetwork compiledNetwork ) {
@@ -58,7 +57,7 @@ public class AlphaNetDMNExpressionEvaluator implements DMNExpressionEvaluator {
     @Override
     public EvaluatorResult evaluate( DMNRuntimeEventManager eventManager, DMNResult dmnResult ) {
         List<FEELEvent> events = new ArrayList<>();
-        DMNRuntimeEventManagerUtils.fireBeforeEvaluateDecisionTable(eventManager, node.getName(), dTableModel.getDtName(), dmnResult);
+        DMNRuntimeEventManagerUtils.fireBeforeEvaluateDecisionTable(eventManager, node.getName(), decisionTableName, dmnResult);
 
         EvaluationContext evalCtx = createEvaluationContext(events, eventManager, dmnResult);
         evalCtx.enterFrame();
@@ -78,7 +77,7 @@ public class AlphaNetDMNExpressionEvaluator implements DMNExpressionEvaluator {
             throw e;
         } finally {
             evalCtx.exitFrame();
-            DMNRuntimeEventManagerUtils.fireAfterEvaluateDecisionTable(eventManager, node.getName(), dTableModel.getDtName(), dmnResult,
+            DMNRuntimeEventManagerUtils.fireAfterEvaluateDecisionTable(eventManager, node.getName(), decisionTableName, dmnResult,
                                                                        (eventResults != null ? eventResults.matchedRules : null), (eventResults != null ? eventResults.fired : null));
         }
     }
@@ -90,9 +89,9 @@ public class AlphaNetDMNExpressionEvaluator implements DMNExpressionEvaluator {
         return ctx;
     }
 
-    public AlphaNetDMNExpressionEvaluator initParameters( DMNFEELHelper feel, DMNCompilerContext ctx, DTableModel dTableModel, DMNBaseNode node) {
+    public AlphaNetDMNExpressionEvaluator initParameters(DMNFEELHelper feel, DMNCompilerContext ctx, String decisionTableName, DMNBaseNode node) {
         this.feel = feel;
-        this.dTableModel = dTableModel.compileAll( ctx );
+        this.decisionTableName = decisionTableName;
         this.node = node;
         return this;
     }
