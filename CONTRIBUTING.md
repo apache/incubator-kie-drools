@@ -47,7 +47,12 @@ To contribute, use GitHub Pull Requests, from your **own** fork.
 
 ### Java Coding Guidelines
 
-We decided to disallow `@author` tags in the Javadoc: they are hard to maintain, especially in a very active project, and we use the Git history to track authorship. GitHub also has [this nice page with your contributions](https://github.com/kiegroup/kogito-runtimes/graphs/contributors). 
+We decided to disallow `@author` tags in the Javadoc: they are hard to maintain, especially in a very active project, and we use the Git history to track authorship. GitHub also has [this nice page with your contributions](https://github.com/kiegroup/kogito-runtimes/graphs/contributors).
+
+Copyright headers format is enforced during build time. In order to automatically format your files, you could run the following Maven command:
+```bash
+mvn com.mycila:license-maven-plugin:format
+```
 
 ### Requirements for Dependencies
 
