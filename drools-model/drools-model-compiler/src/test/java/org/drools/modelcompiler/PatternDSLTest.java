@@ -87,7 +87,7 @@ import static org.drools.modelcompiler.BaseModelTest.getObjectsIntoList;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class PatternDSLTest {
 
