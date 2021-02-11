@@ -164,6 +164,7 @@ exports[`Jobs management page tests snapshot test with mock data 1`] = `
                                 disabled={false}
                                 id="refresh-button"
                                 onClick={[Function]}
+                                role={null}
                                 type="button"
                               >
                                 <SyncIcon>
@@ -260,7 +261,7 @@ exports[`Jobs management page tests snapshot test with mock data 1`] = `
                                   >
                                     <div
                                       className="pf-c-dropdown"
-                                      data-ouia-component-id={9}
+                                      data-ouia-component-id="OUIA-Generated-Dropdown-1"
                                       data-ouia-component-type="PF4/Dropdown"
                                       data-ouia-safe={true}
                                     >
@@ -277,7 +278,7 @@ exports[`Jobs management page tests snapshot test with mock data 1`] = `
                                           Object {
                                             "current": <div
                                               class="pf-c-dropdown"
-                                              data-ouia-component-id="9"
+                                              data-ouia-component-id="OUIA-Generated-Dropdown-1"
                                               data-ouia-component-type="PF4/Dropdown"
                                               data-ouia-safe="true"
                                             >
@@ -300,7 +301,6 @@ exports[`Jobs management page tests snapshot test with mock data 1`] = `
                                                 >
                                                   <path
                                                     d="M96 184c39.8 0 72 32.2 72 72s-32.2 72-72 72-72-32.2-72-72 32.2-72 72-72zM24 80c0 39.8 32.2 72 72 72s72-32.2 72-72S135.8 8 96 8 24 40.2 24 80zm0 352c0 39.8 32.2 72 72 72s72-32.2 72-72-32.2-72-72-72-72 32.2-72 72z"
-                                                    transform=""
                                                   />
                                                 </svg>
                                               </button>
@@ -327,7 +327,7 @@ exports[`Jobs management page tests snapshot test with mock data 1`] = `
                                             Object {
                                               "current": <div
                                                 class="pf-c-dropdown"
-                                                data-ouia-component-id="9"
+                                                data-ouia-component-id="OUIA-Generated-Dropdown-1"
                                                 data-ouia-component-type="PF4/Dropdown"
                                                 data-ouia-safe="true"
                                               >
@@ -350,7 +350,6 @@ exports[`Jobs management page tests snapshot test with mock data 1`] = `
                                                   >
                                                     <path
                                                       d="M96 184c39.8 0 72 32.2 72 72s-32.2 72-72 72-72-32.2-72-72 32.2-72 72-72zM24 80c0 39.8 32.2 72 72 72s72-32.2 72-72S135.8 8 96 8 24 40.2 24 80zm0 352c0 39.8 32.2 72 72 72s72-32.2 72-72-32.2-72-72-72-72 32.2-72 72z"
-                                                      transform=""
                                                     />
                                                   </svg>
                                                 </button>
@@ -390,7 +389,6 @@ exports[`Jobs management page tests snapshot test with mock data 1`] = `
                                               >
                                                 <path
                                                   d="M96 184c39.8 0 72 32.2 72 72s-32.2 72-72 72-72-32.2-72-72 32.2-72 72-72zM24 80c0 39.8 32.2 72 72 72s72-32.2 72-72S135.8 8 96 8 24 40.2 24 80zm0 352c0 39.8 32.2 72 72 72s72-32.2 72-72-32.2-72-72-72-72 32.2-72 72z"
-                                                  transform=""
                                                 />
                                               </svg>
                                             </EllipsisVIcon>
@@ -493,9 +491,10 @@ exports[`Jobs management page tests snapshot test with mock data 1`] = `
         <Card>
           <article
             className="pf-c-card"
-            data-ouia-component-id={10}
+            data-ouia-component-id="OUIA-Generated-Card-2"
             data-ouia-component-type="PF4/Card"
             data-ouia-safe={true}
+            id=""
           >
             <CardBody>
               <div

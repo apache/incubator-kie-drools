@@ -883,9 +883,10 @@ exports[`ProcessDetailsTimeline component tests test job actions on nodes test o
   >
     <article
       className="pf-c-card"
-      data-ouia-component-id={231}
+      data-ouia-component-id="OUIA-Generated-Card-14"
       data-ouia-component-type="PF4/Card"
       data-ouia-safe={true}
+      id=""
     >
       <MockedProcessListModal
         handleModalToggle={[Function]}

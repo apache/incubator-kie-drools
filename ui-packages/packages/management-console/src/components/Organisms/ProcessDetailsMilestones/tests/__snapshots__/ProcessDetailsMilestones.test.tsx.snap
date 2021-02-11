@@ -37,9 +37,10 @@ exports[`Process details page milestones panel Snapshot test with default props 
   >
     <article
       className="pf-c-card"
-      data-ouia-component-id={0}
+      data-ouia-component-id="OUIA-Generated-Card-1"
       data-ouia-component-type="PF4/Card"
       data-ouia-safe={true}
+      id=""
     >
       <CardHeader>
         <div
@@ -264,9 +265,10 @@ exports[`Process details page milestones panel test assertions 1`] = `
   >
     <article
       className="pf-c-card"
-      data-ouia-component-id={1}
+      data-ouia-component-id="OUIA-Generated-Card-2"
       data-ouia-component-type="PF4/Card"
       data-ouia-safe={true}
+      id=""
     >
       <CardHeader>
         <div

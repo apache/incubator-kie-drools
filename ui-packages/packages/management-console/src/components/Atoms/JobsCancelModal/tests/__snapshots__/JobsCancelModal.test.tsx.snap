@@ -12,7 +12,7 @@ exports[`job cancel modal tests snapshot test - bulk cancel 1`] = `
       </Button>,
     ]
   }
-  appendTo={<body />}
+  appendTo={[Function]}
   aria-describedby=""
   aria-label="Job Cancel Modal"
   aria-labelledby="Job Cancel Modal"
@@ -41,6 +41,8 @@ exports[`job cancel modal tests snapshot test - bulk cancel 1`] = `
   ouiaSafe={true}
   showClose={true}
   title=""
+  titleIconVariant={null}
+  titleLabel=""
   variant="small"
 >
   <MockedBulkList />
@@ -59,7 +61,7 @@ exports[`job cancel modal tests snapshot test - single cancel 1`] = `
       </Button>,
     ]
   }
-  appendTo={<body />}
+  appendTo={[Function]}
   aria-describedby=""
   aria-label="Job Cancel Modal"
   aria-labelledby="Job Cancel Modal"
@@ -88,6 +90,8 @@ exports[`job cancel modal tests snapshot test - single cancel 1`] = `
   ouiaSafe={true}
   showClose={true}
   title=""
+  titleIconVariant={null}
+  titleLabel=""
   variant="small"
 >
   <TextContent>

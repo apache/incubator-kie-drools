@@ -40,12 +40,20 @@ exports[`LoadMore component tests with isLoading false simulate loading state in
 exports[`LoadMore component tests with isLoading false snapshot testing 1`] = `
 <DataList
   aria-label="Simple data list example"
+  className=""
   data-ouia-component-id="load-more-ouia-id"
   data-ouia-component-type="load-more"
   data-ouia-safe={true}
+  gridBreakpoint="md"
+  isCompact={false}
+  selectedDataListItemId=""
+  wrapModifier={null}
 >
   <DataListItem
     aria-labelledby="kie-datalist-item"
+    className=""
+    id=""
+    isExpanded={false}
   >
     <DataListCell
       className="kogito-common__load-more"

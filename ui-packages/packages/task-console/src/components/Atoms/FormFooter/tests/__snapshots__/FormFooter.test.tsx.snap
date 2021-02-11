@@ -40,11 +40,12 @@ exports[`Form Footer test testing action click 1`] = `
               aria-disabled={false}
               aria-label={null}
               className="pf-c-button pf-m-primary"
-              data-ouia-component-id={3}
+              data-ouia-component-id="OUIA-Generated-Button-primary-2"
               data-ouia-component-type="PF4/Button"
               data-ouia-safe={true}
               disabled={false}
               onClick={[Function]}
+              role={null}
               type="submit"
             >
               Complete
@@ -60,11 +61,12 @@ exports[`Form Footer test testing action click 1`] = `
               aria-disabled={false}
               aria-label={null}
               className="pf-c-button pf-m-secondary"
-              data-ouia-component-id={4}
+              data-ouia-component-id="OUIA-Generated-Button-secondary-3"
               data-ouia-component-type="PF4/Button"
               data-ouia-safe={true}
               disabled={false}
               onClick={[Function]}
+              role={null}
               type="submit"
             >
               Release
@@ -121,11 +123,12 @@ exports[`Form Footer test testing showing actions 1`] = `
               aria-disabled={false}
               aria-label={null}
               className="pf-c-button pf-m-primary"
-              data-ouia-component-id={0}
+              data-ouia-component-id="OUIA-Generated-Button-primary-1"
               data-ouia-component-type="PF4/Button"
               data-ouia-safe={true}
               disabled={false}
               onClick={[Function]}
+              role={null}
               type="submit"
             >
               Complete
@@ -141,11 +144,12 @@ exports[`Form Footer test testing showing actions 1`] = `
               aria-disabled={false}
               aria-label={null}
               className="pf-c-button pf-m-secondary"
-              data-ouia-component-id={1}
+              data-ouia-component-id="OUIA-Generated-Button-secondary-1"
               data-ouia-component-type="PF4/Button"
               data-ouia-safe={true}
               disabled={false}
               onClick={[Function]}
+              role={null}
               type="submit"
             >
               Abort
@@ -161,11 +165,12 @@ exports[`Form Footer test testing showing actions 1`] = `
               aria-disabled={false}
               aria-label={null}
               className="pf-c-button pf-m-secondary"
-              data-ouia-component-id={2}
+              data-ouia-component-id="OUIA-Generated-Button-secondary-2"
               data-ouia-component-type="PF4/Button"
               data-ouia-safe={true}
               disabled={false}
               onClick={[Function]}
+              role={null}
               type="submit"
             >
               Release

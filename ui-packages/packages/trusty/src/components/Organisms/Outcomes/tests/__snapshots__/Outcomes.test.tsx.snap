@@ -73,9 +73,10 @@ exports[`Outcomes renders a list of simple outcomes as cards 1`] = `
               >
                 <article
                   className="pf-c-card pf-m-hoverable outcome-cards__card outcome-cards__card--list-view"
-                  data-ouia-component-id={0}
+                  data-ouia-component-id="OUIA-Generated-Card-1"
                   data-ouia-component-type="PF4/Card"
                   data-ouia-safe={true}
+                  id=""
                 >
                   <CardHeader>
                     <div
@@ -140,11 +141,12 @@ exports[`Outcomes renders a list of simple outcomes as cards 1`] = `
                           aria-disabled={false}
                           aria-label={null}
                           className="pf-c-button pf-m-link pf-m-inline outcome-cards__card__explanation-link"
-                          data-ouia-component-id={1}
+                          data-ouia-component-id="OUIA-Generated-Button-link-1"
                           data-ouia-component-type="PF4/Button"
                           data-ouia-safe={true}
                           disabled={false}
                           onClick={[Function]}
+                          role={null}
                           type="button"
                         >
                           View Details 
@@ -169,7 +171,6 @@ exports[`Outcomes renders a list of simple outcomes as cards 1`] = `
                             >
                               <path
                                 d="M313.941 216H12c-6.627 0-12 5.373-12 12v56c0 6.627 5.373 12 12 12h301.941v46.059c0 21.382 25.851 32.09 40.971 16.971l86.059-86.059c9.373-9.373 9.373-24.569 0-33.941l-86.059-86.059c-15.119-15.119-40.971-4.411-40.971 16.971V216z"
-                                transform=""
                               />
                             </svg>
                           </LongArrowAltRightIcon>
@@ -210,9 +211,10 @@ exports[`Outcomes renders a list of simple outcomes as cards 1`] = `
               >
                 <article
                   className="pf-c-card pf-m-hoverable outcome-cards__card outcome-cards__card--list-view"
-                  data-ouia-component-id={2}
+                  data-ouia-component-id="OUIA-Generated-Card-2"
                   data-ouia-component-type="PF4/Card"
                   data-ouia-safe={true}
+                  id=""
                 >
                   <CardHeader>
                     <div
@@ -277,11 +279,12 @@ exports[`Outcomes renders a list of simple outcomes as cards 1`] = `
                           aria-disabled={false}
                           aria-label={null}
                           className="pf-c-button pf-m-link pf-m-inline outcome-cards__card__explanation-link"
-                          data-ouia-component-id={3}
+                          data-ouia-component-id="OUIA-Generated-Button-link-2"
                           data-ouia-component-type="PF4/Button"
                           data-ouia-safe={true}
                           disabled={false}
                           onClick={[Function]}
+                          role={null}
                           type="button"
                         >
                           View Details 
@@ -306,7 +309,6 @@ exports[`Outcomes renders a list of simple outcomes as cards 1`] = `
                             >
                               <path
                                 d="M313.941 216H12c-6.627 0-12 5.373-12 12v56c0 6.627 5.373 12 12 12h301.941v46.059c0 21.382 25.851 32.09 40.971 16.971l86.059-86.059c9.373-9.373 9.373-24.569 0-33.941l-86.059-86.059c-15.119-15.119-40.971-4.411-40.971 16.971V216z"
-                                transform=""
                               />
                             </svg>
                           </LongArrowAltRightIcon>
@@ -564,9 +566,10 @@ exports[`Outcomes renders a recommendation outcome as a list of cards 1`] = `
               >
                 <article
                   className="pf-c-card pf-m-hoverable outcome-cards__card outcome-cards__card--list-view"
-                  data-ouia-component-id={12}
+                  data-ouia-component-id="OUIA-Generated-Card-7"
                   data-ouia-component-type="PF4/Card"
                   data-ouia-safe={true}
+                  id=""
                 >
                   <CardHeader>
                     <div
@@ -923,11 +926,12 @@ exports[`Outcomes renders a recommendation outcome as a list of cards 1`] = `
                           aria-disabled={false}
                           aria-label={null}
                           className="pf-c-button pf-m-link pf-m-inline outcome-cards__card__explanation-link"
-                          data-ouia-component-id={13}
+                          data-ouia-component-id="OUIA-Generated-Button-link-7"
                           data-ouia-component-type="PF4/Button"
                           data-ouia-safe={true}
                           disabled={false}
                           onClick={[Function]}
+                          role={null}
                           type="button"
                         >
                           View Details 
@@ -952,7 +956,6 @@ exports[`Outcomes renders a recommendation outcome as a list of cards 1`] = `
                             >
                               <path
                                 d="M313.941 216H12c-6.627 0-12 5.373-12 12v56c0 6.627 5.373 12 12 12h301.941v46.059c0 21.382 25.851 32.09 40.971 16.971l86.059-86.059c9.373-9.373 9.373-24.569 0-33.941l-86.059-86.059c-15.119-15.119-40.971-4.411-40.971 16.971V216z"
-                                transform=""
                               />
                             </svg>
                           </LongArrowAltRightIcon>
@@ -1083,9 +1086,10 @@ exports[`Outcomes renders a recommendation outcome as a list of cards 1`] = `
               >
                 <article
                   className="pf-c-card pf-m-hoverable outcome-cards__card outcome-cards__card--list-view"
-                  data-ouia-component-id={14}
+                  data-ouia-component-id="OUIA-Generated-Card-8"
                   data-ouia-component-type="PF4/Card"
                   data-ouia-safe={true}
+                  id=""
                 >
                   <CardHeader>
                     <div
@@ -1442,11 +1446,12 @@ exports[`Outcomes renders a recommendation outcome as a list of cards 1`] = `
                           aria-disabled={false}
                           aria-label={null}
                           className="pf-c-button pf-m-link pf-m-inline outcome-cards__card__explanation-link"
-                          data-ouia-component-id={15}
+                          data-ouia-component-id="OUIA-Generated-Button-link-8"
                           data-ouia-component-type="PF4/Button"
                           data-ouia-safe={true}
                           disabled={false}
                           onClick={[Function]}
+                          role={null}
                           type="button"
                         >
                           View Details 
@@ -1471,7 +1476,6 @@ exports[`Outcomes renders a recommendation outcome as a list of cards 1`] = `
                             >
                               <path
                                 d="M313.941 216H12c-6.627 0-12 5.373-12 12v56c0 6.627 5.373 12 12 12h301.941v46.059c0 21.382 25.851 32.09 40.971 16.971l86.059-86.059c9.373-9.373 9.373-24.569 0-33.941l-86.059-86.059c-15.119-15.119-40.971-4.411-40.971 16.971V216z"
-                                transform=""
                               />
                             </svg>
                           </LongArrowAltRightIcon>
@@ -1522,9 +1526,10 @@ exports[`Outcomes renders a single outcome without the list view 1`] = `
       >
         <article
           className="pf-c-card"
-          data-ouia-component-id={20}
+          data-ouia-component-id="OUIA-Generated-Card-11"
           data-ouia-component-type="PF4/Card"
           data-ouia-safe={true}
+          id=""
         >
           <CardBody>
             <div
@@ -1640,9 +1645,10 @@ exports[`Outcomes renders a skipped decision with no outcome 1`] = `
               >
                 <article
                   className="pf-c-card pf-m-hoverable outcome-cards__card outcome-cards__card--list-view"
-                  data-ouia-component-id={18}
+                  data-ouia-component-id="OUIA-Generated-Card-10"
                   data-ouia-component-type="PF4/Card"
                   data-ouia-safe={true}
+                  id=""
                 >
                   <CardHeader>
                     <div
@@ -1708,7 +1714,6 @@ exports[`Outcomes renders a skipped decision with no outcome 1`] = `
                                   >
                                     <path
                                       d="M512 76v360c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12V284.1L276.5 440.6c-20.6 17.2-52.5 2.8-52.5-24.6V284.1L52.5 440.6C31.9 457.8 0 443.4 0 416V96c0-27.4 31.9-41.7 52.5-24.6L224 226.8V96c0-27.4 31.9-41.7 52.5-24.6L448 226.8V76c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12z"
-                                      transform=""
                                     />
                                   </svg>
                                 </FastForwardIcon>
@@ -1737,11 +1742,12 @@ exports[`Outcomes renders a skipped decision with no outcome 1`] = `
                           aria-disabled={false}
                           aria-label={null}
                           className="pf-c-button pf-m-link pf-m-inline outcome-cards__card__explanation-link"
-                          data-ouia-component-id={19}
+                          data-ouia-component-id="OUIA-Generated-Button-link-10"
                           data-ouia-component-type="PF4/Button"
                           data-ouia-safe={true}
                           disabled={false}
                           onClick={[Function]}
+                          role={null}
                           type="button"
                         >
                           View Details 
@@ -1766,7 +1772,6 @@ exports[`Outcomes renders a skipped decision with no outcome 1`] = `
                             >
                               <path
                                 d="M313.941 216H12c-6.627 0-12 5.373-12 12v56c0 6.627 5.373 12 12 12h301.941v46.059c0 21.382 25.851 32.09 40.971 16.971l86.059-86.059c9.373-9.373 9.373-24.569 0-33.941l-86.059-86.059c-15.119-15.119-40.971-4.411-40.971 16.971V216z"
-                                transform=""
                               />
                             </svg>
                           </LongArrowAltRightIcon>
@@ -1973,9 +1978,10 @@ exports[`Outcomes renders an outcome with a composed structure 1`] = `
               >
                 <article
                   className="pf-c-card pf-m-hoverable outcome-cards__card outcome-cards__card--list-view"
-                  data-ouia-component-id={16}
+                  data-ouia-component-id="OUIA-Generated-Card-9"
                   data-ouia-component-type="PF4/Card"
                   data-ouia-safe={true}
+                  id=""
                 >
                   <CardHeader>
                     <div
@@ -2665,11 +2671,12 @@ exports[`Outcomes renders an outcome with a composed structure 1`] = `
                           aria-disabled={false}
                           aria-label={null}
                           className="pf-c-button pf-m-link pf-m-inline outcome-cards__card__explanation-link"
-                          data-ouia-component-id={17}
+                          data-ouia-component-id="OUIA-Generated-Button-link-9"
                           data-ouia-component-type="PF4/Button"
                           data-ouia-safe={true}
                           disabled={false}
                           onClick={[Function]}
+                          role={null}
                           type="button"
                         >
                           View Details 
@@ -2694,7 +2701,6 @@ exports[`Outcomes renders an outcome with a composed structure 1`] = `
                             >
                               <path
                                 d="M313.941 216H12c-6.627 0-12 5.373-12 12v56c0 6.627 5.373 12 12 12h301.941v46.059c0 21.382 25.851 32.09 40.971 16.971l86.059-86.059c9.373-9.373 9.373-24.569 0-33.941l-86.059-86.059c-15.119-15.119-40.971-4.411-40.971 16.971V216z"
-                                transform=""
                               />
                             </svg>
                           </LongArrowAltRightIcon>
@@ -2799,9 +2805,10 @@ exports[`Outcomes renders an outcome with a list of properties 1`] = `
               >
                 <article
                   className="pf-c-card pf-m-hoverable outcome-cards__card outcome-cards__card--list-view"
-                  data-ouia-component-id={8}
+                  data-ouia-component-id="OUIA-Generated-Card-5"
                   data-ouia-component-type="PF4/Card"
                   data-ouia-safe={true}
+                  id=""
                 >
                   <CardHeader>
                     <div
@@ -2994,11 +3001,12 @@ exports[`Outcomes renders an outcome with a list of properties 1`] = `
                           aria-disabled={false}
                           aria-label={null}
                           className="pf-c-button pf-m-link pf-m-inline outcome-cards__card__explanation-link"
-                          data-ouia-component-id={9}
+                          data-ouia-component-id="OUIA-Generated-Button-link-5"
                           data-ouia-component-type="PF4/Button"
                           data-ouia-safe={true}
                           disabled={false}
                           onClick={[Function]}
+                          role={null}
                           type="button"
                         >
                           View Details 
@@ -3023,7 +3031,6 @@ exports[`Outcomes renders an outcome with a list of properties 1`] = `
                             >
                               <path
                                 d="M313.941 216H12c-6.627 0-12 5.373-12 12v56c0 6.627 5.373 12 12 12h301.941v46.059c0 21.382 25.851 32.09 40.971 16.971l86.059-86.059c9.373-9.373 9.373-24.569 0-33.941l-86.059-86.059c-15.119-15.119-40.971-4.411-40.971 16.971V216z"
-                                transform=""
                               />
                             </svg>
                           </LongArrowAltRightIcon>
@@ -3110,9 +3117,10 @@ exports[`Outcomes renders an outcome with an array of values 1`] = `
               >
                 <article
                   className="pf-c-card pf-m-hoverable outcome-cards__card outcome-cards__card--list-view"
-                  data-ouia-component-id={10}
+                  data-ouia-component-id="OUIA-Generated-Card-6"
                   data-ouia-component-type="PF4/Card"
                   data-ouia-safe={true}
+                  id=""
                 >
                   <CardHeader>
                     <div
@@ -3267,11 +3275,12 @@ exports[`Outcomes renders an outcome with an array of values 1`] = `
                           aria-disabled={false}
                           aria-label={null}
                           className="pf-c-button pf-m-link pf-m-inline outcome-cards__card__explanation-link"
-                          data-ouia-component-id={11}
+                          data-ouia-component-id="OUIA-Generated-Button-link-6"
                           data-ouia-component-type="PF4/Button"
                           data-ouia-safe={true}
                           disabled={false}
                           onClick={[Function]}
+                          role={null}
                           type="button"
                         >
                           View Details 
@@ -3296,7 +3305,6 @@ exports[`Outcomes renders an outcome with an array of values 1`] = `
                             >
                               <path
                                 d="M313.941 216H12c-6.627 0-12 5.373-12 12v56c0 6.627 5.373 12 12 12h301.941v46.059c0 21.382 25.851 32.09 40.971 16.971l86.059-86.059c9.373-9.373 9.373-24.569 0-33.941l-86.059-86.059c-15.119-15.119-40.971-4.411-40.971 16.971V216z"
-                                transform=""
                               />
                             </svg>
                           </LongArrowAltRightIcon>

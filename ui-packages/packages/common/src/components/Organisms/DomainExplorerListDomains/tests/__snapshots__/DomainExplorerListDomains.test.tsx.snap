@@ -101,10 +101,11 @@ exports[`DomainExplorerListDomains Component test cases Assertions 1`] = `
                       aria-disabled={false}
                       aria-label={null}
                       className="pf-c-button pf-m-link"
-                      data-ouia-component-id={2}
+                      data-ouia-component-id="OUIA-Generated-Button-link-3"
                       data-ouia-component-type="PF4/Button"
                       data-ouia-safe={true}
                       disabled={false}
+                      role={null}
                       type="button"
                     >
                       Travels
@@ -132,10 +133,11 @@ exports[`DomainExplorerListDomains Component test cases Assertions 1`] = `
                       aria-disabled={false}
                       aria-label={null}
                       className="pf-c-button pf-m-link"
-                      data-ouia-component-id={3}
+                      data-ouia-component-id="OUIA-Generated-Button-link-4"
                       data-ouia-component-type="PF4/Button"
                       data-ouia-safe={true}
                       disabled={false}
+                      role={null}
                       type="button"
                     >
                       visaApplication
@@ -239,10 +241,11 @@ exports[`DomainExplorerListDomains Component test cases Snapshot with mock useGe
                       aria-disabled={false}
                       aria-label={null}
                       className="pf-c-button pf-m-link"
-                      data-ouia-component-id={0}
+                      data-ouia-component-id="OUIA-Generated-Button-link-1"
                       data-ouia-component-type="PF4/Button"
                       data-ouia-safe={true}
                       disabled={false}
+                      role={null}
                       type="button"
                     >
                       Travels
@@ -270,10 +273,11 @@ exports[`DomainExplorerListDomains Component test cases Snapshot with mock useGe
                       aria-disabled={false}
                       aria-label={null}
                       className="pf-c-button pf-m-link"
-                      data-ouia-component-id={1}
+                      data-ouia-component-id="OUIA-Generated-Button-link-2"
                       data-ouia-component-type="PF4/Button"
                       data-ouia-safe={true}
                       disabled={false}
+                      role={null}
                       type="button"
                     >
                       visaApplication

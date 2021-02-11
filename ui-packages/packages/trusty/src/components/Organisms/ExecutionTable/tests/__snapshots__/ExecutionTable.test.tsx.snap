@@ -5,6 +5,7 @@ exports[`Execution table renders a list of executions 1`] = `
   aria-label="Executions list"
   borders={true}
   canSelectAll={true}
+  canSortFavorites={true}
   cells={
     Array [
       "ID",
@@ -76,6 +77,7 @@ exports[`Execution table renders a list of executions 1`] = `
       },
     ]
   }
+  selectVariant="checkbox"
   variant={null}
 >
   <TableHeader />
@@ -90,6 +92,7 @@ exports[`Execution table renders a loading error message when data loading fails
   aria-label="Executions list"
   borders={true}
   canSelectAll={true}
+  canSortFavorites={true}
   cells={
     Array [
       "ID",
@@ -141,6 +144,7 @@ exports[`Execution table renders a loading error message when data loading fails
       },
     ]
   }
+  selectVariant="checkbox"
   variant={null}
 >
   <TableHeader />
@@ -155,6 +159,7 @@ exports[`Execution table renders loading skeletons when the data is loading 1`] 
   aria-label="Executions list"
   borders={true}
   canSelectAll={true}
+  canSortFavorites={true}
   cells={
     Array [
       "ID",
@@ -478,6 +483,7 @@ exports[`Execution table renders loading skeletons when the data is loading 1`] 
       },
     ]
   }
+  selectVariant="checkbox"
   variant={null}
 >
   <TableHeader />
@@ -492,6 +498,7 @@ exports[`Execution table renders loading skeletons when the data is not yet fetc
   aria-label="Executions list"
   borders={true}
   canSelectAll={true}
+  canSortFavorites={true}
   cells={
     Array [
       "ID",
@@ -815,6 +822,7 @@ exports[`Execution table renders loading skeletons when the data is not yet fetc
       },
     ]
   }
+  selectVariant="checkbox"
   variant={null}
 >
   <TableHeader />
@@ -829,6 +837,7 @@ exports[`Execution table renders no result message if no executions are found 1`
   aria-label="Executions list"
   borders={true}
   canSelectAll={true}
+  canSortFavorites={true}
   cells={
     Array [
       "ID",
@@ -879,6 +888,7 @@ exports[`Execution table renders no result message if no executions are found 1`
       },
     ]
   }
+  selectVariant="checkbox"
   variant={null}
 >
   <TableHeader />

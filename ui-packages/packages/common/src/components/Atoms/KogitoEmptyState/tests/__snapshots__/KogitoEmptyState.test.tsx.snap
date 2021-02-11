@@ -129,11 +129,12 @@ exports[`KogitoEmptyState component tests Refresh test 1`] = `
                 aria-disabled={false}
                 aria-label={null}
                 className="pf-c-button pf-m-primary"
-                data-ouia-component-id={1}
+                data-ouia-component-id="OUIA-Generated-Button-primary-1"
                 data-ouia-component-type="PF4/Button"
                 data-ouia-safe={true}
                 disabled={false}
                 onClick={[MockFunction]}
+                role={null}
                 type="button"
               >
                 Refresh
@@ -212,11 +213,12 @@ exports[`KogitoEmptyState component tests Reset test 1`] = `
                 aria-disabled={false}
                 aria-label={null}
                 className="pf-c-button pf-m-link"
-                data-ouia-component-id={0}
+                data-ouia-component-id="OUIA-Generated-Button-link-1"
                 data-ouia-component-type="PF4/Button"
                 data-ouia-safe={true}
                 disabled={false}
                 onClick={[MockFunction]}
+                role={null}
                 type="button"
               >
                 Reset to default

@@ -12,7 +12,7 @@ exports[`ProcessBulkModal component tests snapshot testing 1`] = `
       </Button>,
     ]
   }
-  appendTo={<body />}
+  appendTo={[Function]}
   aria-describedby=""
   aria-label="process list modal"
   aria-labelledby="process list modal"
@@ -36,6 +36,8 @@ exports[`ProcessBulkModal component tests snapshot testing 1`] = `
   ouiaSafe={true}
   showClose={true}
   title=""
+  titleIconVariant={null}
+  titleLabel=""
   variant="small"
 >
   <BulkList

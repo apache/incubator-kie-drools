@@ -28,9 +28,12 @@ exports[`ServerUnavailable component tests snapshot testing  1`] = `
           showNavToggle={true}
         />
       }
+      isBreadcrumbWidthLimited={false}
       isManagedSidebar={true}
+      isNotificationDrawerExpanded={false}
       mainContainerId="main-content-page-layout-default-nav"
       mainTabIndex={-1}
+      onNotificationDrawerExpand={[Function]}
       onPageResize={[Function]}
       sidebar={
         <PageSidebar

@@ -15,7 +15,7 @@ exports[`Audit top toolbar renders correctly 1`] = `
     </ToolbarItem>
     <ToolbarItem>
       <InputGroup>
-        <ForwardRef
+        <TextInput
           aria-label="search executions"
           id="audit-search-input"
           name="audit-search-input"

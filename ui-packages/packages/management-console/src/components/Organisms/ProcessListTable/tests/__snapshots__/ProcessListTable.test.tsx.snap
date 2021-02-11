@@ -190,14 +190,20 @@ exports[`ProcessListTable component tests Snapshot testing initial empty data 1`
 >
   <DataList
     aria-label="Process instance list"
+    className=""
     data-ouia-component-type="process-list-table"
     data-ouia-safe={true}
+    gridBreakpoint="md"
+    isCompact={false}
+    selectedDataListItemId=""
+    wrapModifier={null}
   >
     <ul
       aria-label="Process instance list"
-      className="pf-c-data-list"
+      className="pf-c-data-list pf-m-grid-md"
       data-ouia-component-type="process-list-table"
       data-ouia-safe={true}
+      style={Object {}}
     >
       <KogitoEmptyState
         body="Try using different filters"
@@ -379,14 +385,20 @@ exports[`ProcessListTable component tests Snapshot testing with no data 1`] = `
 >
   <DataList
     aria-label="Process instance list"
+    className=""
     data-ouia-component-type="process-list-table"
     data-ouia-safe={true}
+    gridBreakpoint="md"
+    isCompact={false}
+    selectedDataListItemId=""
+    wrapModifier={null}
   >
     <ul
       aria-label="Process instance list"
-      className="pf-c-data-list"
+      className="pf-c-data-list pf-m-grid-md"
       data-ouia-component-type="process-list-table"
       data-ouia-safe={true}
+      style={Object {}}
     >
       <KogitoEmptyState
         body="Try using different filters"
@@ -637,14 +649,20 @@ exports[`ProcessListTable component tests Snapshot testing with success data 1`]
 >
   <DataList
     aria-label="Process instance list"
+    className=""
     data-ouia-component-type="process-list-table"
     data-ouia-safe={true}
+    gridBreakpoint="md"
+    isCompact={false}
+    selectedDataListItemId=""
+    wrapModifier={null}
   >
     <ul
       aria-label="Process instance list"
-      className="pf-c-data-list"
+      className="pf-c-data-list pf-m-grid-md"
       data-ouia-component-type="process-list-table"
       data-ouia-safe={true}
+      style={Object {}}
     >
       <MockedProcessListTableItems
         filters={
@@ -1070,14 +1088,20 @@ exports[`ProcessListTable component tests Snapshot testing with success data(wit
 >
   <DataList
     aria-label="Process instance list"
+    className=""
     data-ouia-component-type="process-list-table"
     data-ouia-safe={true}
+    gridBreakpoint="md"
+    isCompact={false}
+    selectedDataListItemId=""
+    wrapModifier={null}
   >
     <ul
       aria-label="Process instance list"
-      className="pf-c-data-list"
+      className="pf-c-data-list pf-m-grid-md"
       data-ouia-component-type="process-list-table"
       data-ouia-safe={true}
+      style={Object {}}
     >
       <MockedProcessListTableItems
         filters={
@@ -1605,7 +1629,6 @@ exports[`ProcessListTable component tests Snapshot testing with wrong query para
                         >
                           <path
                             d="M504 256c0 136.997-111.043 248-248 248S8 392.997 8 256C8 119.083 119.043 8 256 8s248 111.083 248 248zm-248 50c-25.405 0-46 20.595-46 46s20.595 46 46 46 46-20.595 46-46-20.595-46-46-46zm-43.673-165.346l7.418 136c.347 6.364 5.609 11.346 11.982 11.346h48.546c6.373 0 11.635-4.982 11.982-11.346l7.418-136c.375-6.874-5.098-12.654-11.982-12.654h-63.383c-6.884 0-12.356 5.78-11.981 12.654z"
-                            transform=""
                           />
                         </svg>
                       </ExclamationCircleIcon>
@@ -1636,12 +1659,13 @@ exports[`ProcessListTable component tests Snapshot testing with wrong query para
                             aria-disabled={false}
                             aria-label={null}
                             className="pf-c-button pf-m-link pf-m-inline"
-                            data-ouia-component-id={0}
+                            data-ouia-component-id="OUIA-Generated-Button-link-1"
                             data-ouia-component-type="PF4/Button"
                             data-ouia-safe={true}
                             disabled={false}
                             id="display-error"
                             onClick={[Function]}
+                            role={null}
                             type="button"
                           >
                             See more details
@@ -1658,12 +1682,13 @@ exports[`ProcessListTable component tests Snapshot testing with wrong query para
                         aria-disabled={false}
                         aria-label={null}
                         className="pf-c-button pf-m-primary"
-                        data-ouia-component-id={1}
+                        data-ouia-component-id="OUIA-Generated-Button-primary-1"
                         data-ouia-component-type="PF4/Button"
                         data-ouia-safe={true}
                         disabled={false}
                         id="goback-button"
                         onClick={[Function]}
+                        role={null}
                         type="button"
                       >
                         Go back

@@ -12,7 +12,7 @@
     "@kogito-apps/common": "1.0.0",
     "@kogito-tooling/editor": "^0.6.1",
     "@kogito-tooling/kie-bc-editors": "^0.6.1",
-    "@patternfly/react-charts": "6.6.0",
+    "@patternfly/react-charts": "6.12.12",
     "@testing-library/react": "^10.4.7",
     "@testing-library/react-hooks": "^3.3.0",
     "copy-webpack-plugin": "^6.0.3",
@@ -23,7 +23,7 @@
     "typescript": "~3.8.3",
     "use-react-router-breadcrumbs": "^1.0.4"
   },
-  "scripts": {
+    "scripts": {
     "start": "webpack-dev-server --hot --color --progress --info=true --config webpack.dev.js",
     "build:prod": "yarn copy-embedded-editor && yarn lint && webpack --config webpack.prod.js",
     "test": "jest --runInBand --ci --reporters=default --reporters=jest-junit",

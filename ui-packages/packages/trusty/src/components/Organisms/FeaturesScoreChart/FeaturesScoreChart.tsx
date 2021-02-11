@@ -9,7 +9,7 @@ import {
   ChartTooltip,
   ChartTooltipProps
 } from '@patternfly/react-charts';
-import { Selection } from 'victory';
+import { Selection } from 'victory-core';
 import { maxBy } from 'lodash';
 import formattedScore from '../../../utils/formattedScore/formattedScore';
 import { FeatureScores } from '../../../types';
@@ -19,7 +19,6 @@ type FeaturesScoreChartProps = {
   featuresScore: FeatureScores[];
   large?: boolean;
 };
-
 const FeaturesScoreChart = (props: FeaturesScoreChartProps) => {
   const { featuresScore, large = false } = props;
   const width = large ? 1400 : 800;

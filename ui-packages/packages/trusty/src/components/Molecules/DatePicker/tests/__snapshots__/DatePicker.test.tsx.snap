@@ -9,7 +9,7 @@ exports[`DatePicker renders correctly 1`] = `
     <div
       className="pf-c-input-group"
     >
-      <ForwardRef
+      <TextInput
         id="datepicker"
         name="datepicker"
         type="date"
@@ -31,6 +31,7 @@ exports[`DatePicker renders correctly 1`] = `
             }
           }
           isDisabled={false}
+          isLeftTruncated={false}
           isReadOnly={false}
           isRequired={false}
           name="datepicker"
@@ -45,13 +46,15 @@ exports[`DatePicker renders correctly 1`] = `
             disabled={false}
             id="datepicker"
             name="datepicker"
+            onBlur={[Function]}
             onChange={[Function]}
+            onFocus={[Function]}
             readOnly={false}
             required={false}
             type="date"
           />
         </TextInputBase>
-      </ForwardRef>
+      </TextInput>
     </div>
   </InputGroup>
 </DatePicker>

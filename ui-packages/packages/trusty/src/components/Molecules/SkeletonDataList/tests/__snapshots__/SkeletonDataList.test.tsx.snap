@@ -3,9 +3,17 @@
 exports[`SkeletonDatalist renders a 2x2 data list 1`] = `
 <DataList
   aria-label="Loading content"
+  className=""
+  gridBreakpoint="md"
+  isCompact={false}
+  selectedDataListItemId=""
+  wrapModifier={null}
 >
   <DataListItem
     aria-labelledby=""
+    className=""
+    id=""
+    isExpanded={false}
   >
     <DataListItemRow
       key="skeleton-row-0"

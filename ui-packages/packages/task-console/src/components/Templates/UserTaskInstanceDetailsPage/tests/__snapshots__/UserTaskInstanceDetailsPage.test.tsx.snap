@@ -221,12 +221,13 @@ exports[`UserTaskInstanceDetailsPage tests Test active task 1`] = `
                     aria-disabled={false}
                     aria-label={null}
                     className="pf-c-button pf-m-secondary"
-                    data-ouia-component-id={2}
+                    data-ouia-component-id="OUIA-Generated-Button-secondary-1"
                     data-ouia-component-type="PF4/Button"
                     data-ouia-safe={true}
                     disabled={false}
                     id="view-details"
                     onClick={[Function]}
+                    role={null}
                     type="button"
                   >
                     View details
@@ -317,9 +318,10 @@ exports[`UserTaskInstanceDetailsPage tests Test active task 1`] = `
                         >
                           <article
                             className="pf-c-card pf-u-h-100"
-                            data-ouia-component-id={3}
+                            data-ouia-component-id="OUIA-Generated-Card-3"
                             data-ouia-component-type="PF4/Card"
                             data-ouia-safe={true}
+                            id=""
                           >
                             <CardHeader>
                               <div
@@ -679,12 +681,13 @@ exports[`UserTaskInstanceDetailsPage tests Test submit error notification 1`] = 
                     aria-disabled={false}
                     aria-label={null}
                     className="pf-c-button pf-m-secondary"
-                    data-ouia-component-id={16}
+                    data-ouia-component-id="OUIA-Generated-Button-secondary-4"
                     data-ouia-component-type="PF4/Button"
                     data-ouia-safe={true}
                     disabled={false}
                     id="view-details"
                     onClick={[Function]}
+                    role={null}
                     type="button"
                   >
                     View details
@@ -775,9 +778,10 @@ exports[`UserTaskInstanceDetailsPage tests Test submit error notification 1`] = 
                         >
                           <article
                             className="pf-c-card pf-u-h-100"
-                            data-ouia-component-id={17}
+                            data-ouia-component-id="OUIA-Generated-Card-6"
                             data-ouia-component-type="PF4/Card"
                             data-ouia-safe={true}
+                            id=""
                           >
                             <CardHeader>
                               <div
@@ -1077,12 +1081,13 @@ exports[`UserTaskInstanceDetailsPage tests Test submit error notification 2`] = 
                     aria-disabled={false}
                     aria-label={null}
                     className="pf-c-button pf-m-secondary"
-                    data-ouia-component-id={18}
+                    data-ouia-component-id="OUIA-Generated-Button-secondary-4"
                     data-ouia-component-type="PF4/Button"
                     data-ouia-safe={true}
                     disabled={false}
                     id="view-details"
                     onClick={[Function]}
+                    role={null}
                     type="button"
                   >
                     View details
@@ -1191,9 +1196,10 @@ exports[`UserTaskInstanceDetailsPage tests Test submit error notification 2`] = 
                         >
                           <article
                             className="pf-c-card pf-u-h-100"
-                            data-ouia-component-id={19}
+                            data-ouia-component-id="OUIA-Generated-Card-6"
                             data-ouia-component-type="PF4/Card"
                             data-ouia-safe={true}
+                            id=""
                           >
                             <CardHeader>
                               <div
@@ -1493,12 +1499,13 @@ exports[`UserTaskInstanceDetailsPage tests Test submit error notification 3`] = 
                     aria-disabled={false}
                     aria-label={null}
                     className="pf-c-button pf-m-secondary"
-                    data-ouia-component-id={20}
+                    data-ouia-component-id="OUIA-Generated-Button-secondary-4"
                     data-ouia-component-type="PF4/Button"
                     data-ouia-safe={true}
                     disabled={false}
                     id="view-details"
                     onClick={[Function]}
+                    role={null}
                     type="button"
                   >
                     View details
@@ -1589,9 +1596,10 @@ exports[`UserTaskInstanceDetailsPage tests Test submit error notification 3`] = 
                         >
                           <article
                             className="pf-c-card pf-u-h-100"
-                            data-ouia-component-id={21}
+                            data-ouia-component-id="OUIA-Generated-Card-6"
                             data-ouia-component-type="PF4/Card"
                             data-ouia-safe={true}
+                            id=""
                           >
                             <CardHeader>
                               <div
@@ -1891,12 +1899,13 @@ exports[`UserTaskInstanceDetailsPage tests Test submit notification - go to inbo
                     aria-disabled={false}
                     aria-label={null}
                     className="pf-c-button pf-m-secondary"
-                    data-ouia-component-id={10}
+                    data-ouia-component-id="OUIA-Generated-Button-secondary-3"
                     data-ouia-component-type="PF4/Button"
                     data-ouia-safe={true}
                     disabled={false}
                     id="view-details"
                     onClick={[Function]}
+                    role={null}
                     type="button"
                   >
                     View details
@@ -1987,9 +1996,10 @@ exports[`UserTaskInstanceDetailsPage tests Test submit notification - go to inbo
                         >
                           <article
                             className="pf-c-card pf-u-h-100"
-                            data-ouia-component-id={11}
+                            data-ouia-component-id="OUIA-Generated-Card-5"
                             data-ouia-component-type="PF4/Card"
                             data-ouia-safe={true}
+                            id=""
                           >
                             <CardHeader>
                               <div
@@ -2289,12 +2299,13 @@ exports[`UserTaskInstanceDetailsPage tests Test submit success notification 1`] 
                     aria-disabled={false}
                     aria-label={null}
                     className="pf-c-button pf-m-secondary"
-                    data-ouia-component-id={4}
+                    data-ouia-component-id="OUIA-Generated-Button-secondary-2"
                     data-ouia-component-type="PF4/Button"
                     data-ouia-safe={true}
                     disabled={false}
                     id="view-details"
                     onClick={[Function]}
+                    role={null}
                     type="button"
                   >
                     View details
@@ -2385,9 +2396,10 @@ exports[`UserTaskInstanceDetailsPage tests Test submit success notification 1`] 
                         >
                           <article
                             className="pf-c-card pf-u-h-100"
-                            data-ouia-component-id={5}
+                            data-ouia-component-id="OUIA-Generated-Card-4"
                             data-ouia-component-type="PF4/Card"
                             data-ouia-safe={true}
+                            id=""
                           >
                             <CardHeader>
                               <div
@@ -2687,12 +2699,13 @@ exports[`UserTaskInstanceDetailsPage tests Test submit success notification 2`] 
                     aria-disabled={false}
                     aria-label={null}
                     className="pf-c-button pf-m-secondary"
-                    data-ouia-component-id={6}
+                    data-ouia-component-id="OUIA-Generated-Button-secondary-2"
                     data-ouia-component-type="PF4/Button"
                     data-ouia-safe={true}
                     disabled={false}
                     id="view-details"
                     onClick={[Function]}
+                    role={null}
                     type="button"
                   >
                     View details
@@ -2801,9 +2814,10 @@ exports[`UserTaskInstanceDetailsPage tests Test submit success notification 2`] 
                         >
                           <article
                             className="pf-c-card pf-u-h-100"
-                            data-ouia-component-id={7}
+                            data-ouia-component-id="OUIA-Generated-Card-4"
                             data-ouia-component-type="PF4/Card"
                             data-ouia-safe={true}
+                            id=""
                           >
                             <CardHeader>
                               <div
@@ -3103,12 +3117,13 @@ exports[`UserTaskInstanceDetailsPage tests Test submit success notification 3`] 
                     aria-disabled={false}
                     aria-label={null}
                     className="pf-c-button pf-m-secondary"
-                    data-ouia-component-id={8}
+                    data-ouia-component-id="OUIA-Generated-Button-secondary-2"
                     data-ouia-component-type="PF4/Button"
                     data-ouia-safe={true}
                     disabled={false}
                     id="view-details"
                     onClick={[Function]}
+                    role={null}
                     type="button"
                   >
                     View details
@@ -3199,9 +3214,10 @@ exports[`UserTaskInstanceDetailsPage tests Test submit success notification 3`] 
                         >
                           <article
                             className="pf-c-card pf-u-h-100"
-                            data-ouia-component-id={9}
+                            data-ouia-component-id="OUIA-Generated-Card-4"
                             data-ouia-component-type="PF4/Card"
                             data-ouia-safe={true}
+                            id=""
                           >
                             <CardHeader>
                               <div
@@ -3331,11 +3347,12 @@ exports[`UserTaskInstanceDetailsPage tests test task details drawer 1`] = `
                         aria-disabled={false}
                         aria-label="Close drawer panel"
                         className="pf-c-button pf-m-plain"
-                        data-ouia-component-id={27}
+                        data-ouia-component-id="OUIA-Generated-Button-plain-1"
                         data-ouia-component-type="PF4/Button"
                         data-ouia-safe={true}
                         disabled={false}
                         onClick={[Function]}
+                        role={null}
                         type="button"
                       >
                         <TimesIcon
@@ -3359,7 +3376,6 @@ exports[`UserTaskInstanceDetailsPage tests test task details drawer 1`] = `
                           >
                             <path
                               d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
-                              transform=""
                             />
                           </svg>
                         </TimesIcon>
