@@ -26,17 +26,18 @@ package org.drools.mvel.parser.ast.expr;
 import com.github.javaparser.TokenRange;
 import com.github.javaparser.ast.AllFieldsConstructor;
 import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.BooleanLiteralExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.observer.ObservableProperty;
 import com.github.javaparser.ast.visitor.CloneVisitor;
-import org.drools.mvel.parser.ast.visitor.DrlGenericVisitor;
-import org.drools.mvel.parser.ast.visitor.DrlVoidVisitor;
 import com.github.javaparser.ast.visitor.GenericVisitor;
 import com.github.javaparser.ast.visitor.VoidVisitor;
 import com.github.javaparser.metamodel.BinaryExprMetaModel;
 import com.github.javaparser.metamodel.JavaParserMetaModel;
 import com.github.javaparser.printer.Printable;
+import org.drools.mvel.parser.ast.visitor.DrlGenericVisitor;
+import org.drools.mvel.parser.ast.visitor.DrlVoidVisitor;
 
 import static com.github.javaparser.utils.Utils.assertNotNull;
 
@@ -54,6 +55,18 @@ public final class HalfBinaryExpr extends Expression {
 
         public String asString() {
             return codeRepresentation;
+        }
+
+        public BinaryExpr.Operator toBinaryExprOperator() {
+            switch (this) {
+                case EQUALS: return BinaryExpr.Operator.EQUALS;
+                case NOT_EQUALS: return BinaryExpr.Operator.NOT_EQUALS;
+                case LESS: return BinaryExpr.Operator.LESS;
+                case GREATER: return BinaryExpr.Operator.GREATER;
+                case LESS_EQUALS: return BinaryExpr.Operator.LESS_EQUALS;
+                case GREATER_EQUALS: return BinaryExpr.Operator.GREATER_EQUALS;
+            }
+            throw new UnsupportedOperationException("Unknown operator " + this);
         }
     }
 
