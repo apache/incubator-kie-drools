@@ -13,7 +13,6 @@ pipeline {
         jdk 'kie-jdk11'
     }
     options {
-        buildDiscarder logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '10', numToKeepStr: '')
         timeout(time: 120, unit: 'MINUTES')
     }
     environment {

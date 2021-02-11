@@ -22,46 +22,17 @@ pipeline {
     }
 
     options {
-        buildDiscarder logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '10')
         timeout(time: 120, unit: 'MINUTES')
     }
 
-    parameters {
-        string(name: 'DISPLAY_NAME', defaultValue: '', description: 'Setup a specific build display name')
-
-        // Deploy job url to retrieve deployment.properties
-        string(name: 'DEPLOY_BUILD_URL', defaultValue: '', description: 'URL to jenkins deploy build to retrieve the `deployment.properties` file. If base parameters are defined, they will override the `deployment.properties` information')
-
-        // Git information which can override `deployment.properties`
-        string(name: 'BUILD_BRANCH_NAME', defaultValue: '', description: 'Override `deployment.properties`. Which branch to build? Set if you are not on a multibranch pipeline.')
-        string(name: 'GIT_AUTHOR', defaultValue: '', description: 'Override `deployment.properties`. Which Git author repository ?')
-
-        // Build&Deploy information for next snapshots
-        string(name: 'MAVEN_SETTINGS_CONFIG_FILE_ID', defaultValue: 'kogito_release_settings', description: 'Maven settings configfile to use in pipeline for Maven commands')
-        string(name: 'MAVEN_DEPENDENCIES_REPOSITORY', defaultValue: '', description: 'Maven repository where to find dependencies if those are not in the default Jboss repository.')
-        string(name: 'MAVEN_DEPLOY_REPOSITORY', defaultValue: '', description: 'Specify a Maven repository to deploy the artifacts.')
-
-        // Release information which can override `deployment.properties`
-        booleanParam(name: 'RELEASE', defaultValue: false, description: 'Override `deployment.properties`. Is this build for a release?')
-
-        string(name: 'PROJECT_VERSION', defaultValue: '', description: 'Override `deployment.properties`. Optional if not RELEASE. If RELEASE, cannot be empty.')
-        string(name: 'KOGITO_VERSION', defaultValue: '', description: 'Optional if not RELEASE. If RELEASE, cannot be empty.')
-
-        string(name: 'STAGING_REPO_URL', defaultValue: '', description: 'Override `deployment.properties`.')
-        string(name: 'GIT_TAG', defaultValue: '', description: 'Git tag to set, if different from PROJECT_VERSION')
-
-        // Bot author information. Set as params for easy testing.
-        string(name: 'BOT_CREDENTIALS_ID', defaultValue: 'bsig-gh-bot', description: 'Credentials for PR creation')
-
-        // Main author creds
-        string(name: 'AUTHOR_CREDS_ID', defaultValue: 'kie-ci', description: 'Credentials for PR merge')
-        string(name: 'GITHUB_TOKEN_CREDS_ID', defaultValue: 'kie-ci2-token', description: 'GH token to be used with GH CLI')
-    }
+    // parameters {
+    // For parameters, check into .jenkins/dsl/jobs.groovy file
+    // }
 
     environment {
-        PROPERTIES_FILE_NAME = 'deployment.properties'
+        // Some generated env is also defined into .jenkins/dsl/jobs.groovy file
+
         BOT_BRANCH_HASH = "${util.generateHash(10)}"
-        GITHUB_CLI_VERSION = '0.11.1'
     }
 
     stages {
@@ -70,15 +41,18 @@ pipeline {
                 script {
                     cleanWs()
 
-                    if (params.DISPLAY_NAME != '') {
+                    if (params.DISPLAY_NAME) {
                         currentBuild.displayName = params.DISPLAY_NAME
                     }
 
                     readDeployProperties()
 
                     if (isRelease()) {
-                        assert getProjectVersion() != ''
-                        assert getKogitoVersion() != ''
+                        // Verify version is set and if on right release branch
+                        assert getProjectVersion()
+                        assert getKogitoVersion()
+
+                        assert getBuildBranch() == util.getReleaseBranchFromVersion(getProjectVersion())
                     }
 
                     installGithubCLI()
@@ -142,7 +116,7 @@ pipeline {
                         mergeAndPush(getDeployPrLink(quickstartsRepository))
                         tagLatest()
 
-                        updateAndResetBranch(quickstartsRepository,'stable')
+                        updateAndResetBranch(quickstartsRepository, 'stable')
                     }
                 }
             }
@@ -326,8 +300,8 @@ void readDeployProperties(){
         if(!deployUrl.endsWith('/')){
             deployUrl += '/'
         }
-        sh "wget ${deployUrl}artifact/${PROPERTIES_FILE_NAME} -O ${PROPERTIES_FILE_NAME}"
-        deployProperties = readProperties file: PROPERTIES_FILE_NAME
+        sh "wget ${deployUrl}artifact/${env.PROPERTIES_FILE_NAME} -O ${env.PROPERTIES_FILE_NAME}"
+        deployProperties = readProperties file: env.PROPERTIES_FILE_NAME
         // echo all properties
         echo deployProperties.collect{ entry -> "${entry.key}=${entry.value}" }.join('\n')
     }
@@ -356,7 +330,7 @@ String getParamOrDeployProperty(String paramKey, String deployPropertyKey){
 //////////////////////////////////////////////////////////////////////////////
 
 boolean isRelease() {
-    return params.RELEASE || (getDeployProperty('release') == 'true')
+    return env.RELEASE.toBoolean()
 }
 
 String getProjectVersion() {
@@ -380,23 +354,19 @@ String getGitTag() {
 }
 
 String getBuildBranch() {
-    return getParamOrDeployProperty('BUILD_BRANCH_NAME', 'git.branch')
+    return params.BUILD_BRANCH_NAME
 }
 
 String getGitAuthor() {
-    return getParamOrDeployProperty('GIT_AUTHOR', 'git.author')
+    return env.GIT_AUTHOR
 }
 
 String getGitAuthorCredsID(){
-    return params.AUTHOR_CREDS_ID
+    return env.AUTHOR_CREDS_ID
 }
 
 String getBotAuthorCredsID(){
-    return params.BOT_CREDENTIALS_ID
-}
-
-String getStagingRepoUrl(){
-    return getParamOrDeployProperty('STAGING_REPO_URL', 'staging-repo.url')
+    return env.BOT_CREDENTIALS_ID
 }
 
 String getDeployPrLink(String repo){
@@ -487,8 +457,8 @@ void installGithubCLI() {
 }
 
 void uploadDistribution(String directory) {
+    echo "uploadDistribution for ${directory}"
     dir(directory) {
-        echo "uploadDistribution for ${directory}"
         withCredentials(bindings: [sshUserPrivateKey(credentialsId: 'optaplanner-filemgmt',
                 keyFileVariable: 'SSH_KEY_JBOSS_FILEMGMT')]) {
             // For testing, simulate connection via SSH:
@@ -500,17 +470,17 @@ void uploadDistribution(String directory) {
 
 MavenCommand getMavenCommand() {
     mvnCmd = new MavenCommand(this, ['-fae'])
-                    .withSettingsXmlId(params.MAVEN_SETTINGS_CONFIG_FILE_ID)
-    if (params.MAVEN_DEPENDENCIES_REPOSITORY) {
-        mvnCmd.withDependencyRepositoryInSettings('deps-repo', params.MAVEN_DEPENDENCIES_REPOSITORY)
+                    .withSettingsXmlId(env.MAVEN_SETTINGS_CONFIG_FILE_ID)
+    if (env.MAVEN_DEPENDENCIES_REPOSITORY) {
+        mvnCmd.withDependencyRepositoryInSettings('deps-repo', env.MAVEN_DEPENDENCIES_REPOSITORY)
     }
     return mvnCmd
 }
 
 void runMavenDeploy(MavenCommand mvnCmd) {
     mvnCmd = mvnCmd.clone()
-    if(params.MAVEN_DEPLOY_REPOSITORY){
-        mvnCmd.withDeployRepository(params.MAVEN_DEPLOY_REPOSITORY)
+    if(env.MAVEN_DEPLOY_REPOSITORY){
+        mvnCmd.withDeployRepository(env.MAVEN_DEPLOY_REPOSITORY)
     }
     mvnCmd.skipTests(true).run('clean deploy')
 }
@@ -539,7 +509,7 @@ void removeJbossNexusFromMavenAndGradle() {
 }
 
 String getGhCredsID() {
-    return params.GITHUB_TOKEN_CREDS_ID;
+    return env.GITHUB_TOKEN_CREDS_ID
 }
 
 //maps git branch protection response json into update request body to rewrite branch protection
@@ -559,11 +529,25 @@ String getProtectionMapScript() {
 }
 
 def enableForcePushes(String repo, String protectedBranch) {
-    setAllowForcePushes(repo, protectedBranch, "true");
+    if (isBranchProtected(repo, protectedBranch)) {
+        setAllowForcePushes(repo, protectedBranch, "true")
+    }
 }
 
 def disableForcePushes(String repo, String protectedBranch) {
-    setAllowForcePushes(repo, protectedBranch, "false");
+    if (isBranchProtected(repo, protectedBranch)) {
+        setAllowForcePushes(repo, protectedBranch, "false")
+    }
+}
+
+boolean isBranchProtected(String repo, String protectedBranch, String ghPath = "../gh") {
+    boolean isProtected = true // Suppose it is protected by default
+    withCredentials([string(credentialsId: getGhCredsID(), variable: 'GITHUB_TOKEN')]) {
+        // get current branch protection
+        int status = sh (script: "${ghPath} api 'repos/${getGitAuthor()}/${repo}/branches/${protectedBranch}/protection'", returnStatus: true)
+        isProtected = status == 0
+    }
+    return isProtected
 }
 
 def setAllowForcePushes(String repo, String protectedBranch, String enabled, String ghPath = "../gh") {
@@ -572,17 +556,17 @@ def setAllowForcePushes(String repo, String protectedBranch, String enabled, Str
     withCredentials([string(credentialsId: getGhCredsID(), variable: 'GITHUB_TOKEN')]) {
         //get current branch protection and remove allow force push
         sh "${ghPath} api 'repos/${getGitAuthor()}/${repo}/branches/${protectedBranch}/protection' | " +
-           "jq 'del(.allow_force_pushes)' > protectionBefore.json";
+           "jq 'del(.allow_force_pushes)' > protectionBefore.json"
 
         //create new json based on current protection mapped as parameters
         sh "jq \"${getProtectionMapScript()}\" protectionBefore.json | " +
-           "jq \". + {\"allow_force_pushes\":${enabled}}\" > protectionParameters.json";
+           "jq \". + {\"allow_force_pushes\":${enabled}}\" > protectionParameters.json"
 
         //update protection on git
         def allowForcePushEnabled = sh(script:
                 "${ghPath} api -XPUT 'repos/${getGitAuthor()}/${repo}/branches/${protectedBranch}/protection' " +
                         "--input protectionParameters.json |" +
-                        " jq '.allow_force_pushes.enabled'", returnStdout: true).trim();
+                        " jq '.allow_force_pushes.enabled'", returnStdout: true).trim()
         assert allowForcePushEnabled == enabled
 
         //check that protection didn't changed except for allow_force_pushes
