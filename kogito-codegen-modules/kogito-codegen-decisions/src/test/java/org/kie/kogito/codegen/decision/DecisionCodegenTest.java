@@ -34,21 +34,21 @@ import org.kie.kogito.codegen.api.ApplicationSection;
 import org.kie.kogito.codegen.api.GeneratedFile;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.core.DashboardGeneratedFileUtils;
-import org.kie.kogito.codegen.core.context.JavaKogitoBuildContext;
-import org.kie.kogito.codegen.core.context.SpringBootKogitoBuildContext;
-import org.kie.kogito.codegen.core.context.QuarkusKogitoBuildContext;
+import org.kie.kogito.codegen.api.context.impl.JavaKogitoBuildContext;
+import org.kie.kogito.codegen.api.context.impl.SpringBootKogitoBuildContext;
+import org.kie.kogito.codegen.api.context.impl.QuarkusKogitoBuildContext;
 import org.kie.kogito.codegen.core.io.CollectedResourceProducer;
 import org.kie.kogito.grafana.JGrafana;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.kie.kogito.codegen.KogitoBuildContextTestUtils.mockClassAvailabilityResolver;
+import static org.kie.kogito.codegen.api.utils.KogitoContextTestUtils.mockClassAvailabilityResolver;
 
 public class DecisionCodegenTest {
 
     @ParameterizedTest
-    @MethodSource("contextBuilders")
+    @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#contextBuilders")
     public void generateAllFiles(KogitoBuildContext.Builder contextBuilder) throws Exception {
         DecisionCodegen codeGenerator = getDecisionCodegen("src/test/resources/decision/models/vacationDays", contextBuilder);
 
@@ -69,7 +69,7 @@ public class DecisionCodegenTest {
     }
 
     @ParameterizedTest
-    @MethodSource("contextBuilders")
+    @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#contextBuilders")
     public void doNotGenerateTypesafeInfo(KogitoBuildContext.Builder contextBuilder) throws Exception {
         DecisionCodegen codeGenerator = getDecisionCodegen("src/test/resources/decision/alltypes/", contextBuilder);
 
@@ -87,7 +87,7 @@ public class DecisionCodegenTest {
     }
 
     @ParameterizedTest
-    @MethodSource("contextBuilders")
+    @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#contextBuilders")
     public void givenADMNModelWhenMonitoringIsActiveThenGrafanaDashboardsAreGenerated(KogitoBuildContext.Builder contextBuilder) throws Exception {
         List<GeneratedFile> dashboards = generateTestDashboards(AddonsConfig.builder().withMonitoring(true).withPrometheusMonitoring(true).build(), contextBuilder);
 
@@ -103,7 +103,7 @@ public class DecisionCodegenTest {
     }
 
     @ParameterizedTest
-    @MethodSource("contextBuilders")
+    @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#contextBuilders")
     public void givenADMNModelWhenMonitoringAndTracingAreActiveThenTheGrafanaDashboardsContainsTheAuditUILink(KogitoBuildContext.Builder contextBuilder) throws Exception {
         List<GeneratedFile> dashboards = generateTestDashboards(AddonsConfig.builder().withMonitoring(true).withPrometheusMonitoring(true).withTracing(true).build(), contextBuilder);
 
@@ -117,7 +117,7 @@ public class DecisionCodegenTest {
     }
 
     @ParameterizedTest
-    @MethodSource("contextBuilders")
+    @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#contextBuilders")
     public void resilientToDuplicateDMNIDs(KogitoBuildContext.Builder contextBuilder) throws Exception {
         DecisionCodegen codeGenerator = getDecisionCodegen("src/test/resources/decision-test20200507", contextBuilder);
 
@@ -131,7 +131,7 @@ public class DecisionCodegenTest {
     }
 
     @ParameterizedTest
-    @MethodSource("contextBuilders")
+    @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#contextBuilders")
     public void emptyName(KogitoBuildContext.Builder contextBuilder) throws Exception {
         DecisionCodegen codeGenerator = getDecisionCodegen("src/test/resources/decision-empty-name", contextBuilder);
         RuntimeException re = Assertions.assertThrows(RuntimeException.class, codeGenerator::generate);
@@ -139,7 +139,7 @@ public class DecisionCodegenTest {
     }
 
     @ParameterizedTest
-    @MethodSource("contextBuilders")
+    @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#contextBuilders")
     public void testNSEW_positive(KogitoBuildContext.Builder contextBuilder) throws Exception {
         contextBuilder
                 .withClassAvailabilityResolver(mockClassAvailabilityResolver(Collections.singleton("org.eclipse.microprofile.openapi.models.OpenAPI"), Collections.emptyList()));
@@ -153,7 +153,7 @@ public class DecisionCodegenTest {
     }
 
     @ParameterizedTest
-    @MethodSource("contextBuilders")
+    @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#contextBuilders")
     public void testNSEW_negative(KogitoBuildContext.Builder contextBuilder) throws Exception {
         contextBuilder
                 .withClassAvailabilityResolver(mockClassAvailabilityResolver(Collections.emptyList(), Collections.singleton("org.eclipse.microprofile.openapi.models.OpenAPI")));
@@ -163,14 +163,6 @@ public class DecisionCodegenTest {
         assertThat(generatedFiles).anyMatch(x -> x.relativePath().endsWith("InputSet.java"));
         GeneratedFile inputSetFile = generatedFiles.stream().filter(x -> x.relativePath().endsWith("InputSet.java")).findFirst().get();
         assertThat(new String(inputSetFile.contents())).doesNotContain("@org.eclipse.microprofile.openapi.annotations.media.Schema");
-    }
-
-    static Stream<Arguments> contextBuilders() {
-        return Stream.of(
-                Arguments.of(JavaKogitoBuildContext.builder()),
-                Arguments.of(QuarkusKogitoBuildContext.builder()),
-                Arguments.of(SpringBootKogitoBuildContext.builder())
-        );
     }
 
     private KogitoBuildContext.Builder stronglyTypedContext(KogitoBuildContext.Builder builder) {

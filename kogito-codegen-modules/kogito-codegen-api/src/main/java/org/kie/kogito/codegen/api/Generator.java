@@ -25,6 +25,9 @@ import java.util.Optional;
  */
 public interface Generator {
 
+    GeneratedFileType REST_TYPE = GeneratedFileType.of("REST", GeneratedFileType.Category.SOURCE, true, true);
+    GeneratedFileType MODEL_TYPE = GeneratedFileType.of("MODEL", GeneratedFileType.Category.SOURCE, true, true);
+
     String CONFIG_PREFIX = "kogito.codegen.";
 
     /**

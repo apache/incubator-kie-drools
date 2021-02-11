@@ -58,7 +58,7 @@ import org.infinispan.protostream.descriptors.Option;
 import org.infinispan.protostream.impl.SerializationContextImpl;
 import org.kie.kogito.codegen.core.BodyDeclarationComparator;
 import org.kie.kogito.codegen.api.template.TemplatedGenerator;
-import org.kie.kogito.codegen.core.context.JavaKogitoBuildContext;
+import org.kie.kogito.codegen.api.context.impl.JavaKogitoBuildContext;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 
 import static com.github.javaparser.ast.Modifier.Keyword.PUBLIC;

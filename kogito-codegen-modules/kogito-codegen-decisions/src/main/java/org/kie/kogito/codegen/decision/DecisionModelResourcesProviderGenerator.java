@@ -33,7 +33,7 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.kie.api.management.GAV;
 import org.kie.kogito.codegen.api.template.InvalidTemplateException;
 import org.kie.kogito.codegen.api.template.TemplatedGenerator;
-import org.kie.kogito.codegen.core.context.JavaKogitoBuildContext;
+import org.kie.kogito.codegen.api.context.impl.JavaKogitoBuildContext;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.decision.DecisionModelType;
 import org.kie.kogito.dmn.DefaultDecisionModelResource;

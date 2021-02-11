@@ -17,7 +17,7 @@
 package org.kie.kogito.quarkus.deployment;
 
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
-import org.kie.kogito.codegen.core.context.QuarkusKogitoBuildContext;
+import org.kie.kogito.codegen.api.context.impl.QuarkusKogitoBuildContext;
 import org.kie.kogito.codegen.api.utils.AppPaths;
 
 import java.util.function.Predicate;

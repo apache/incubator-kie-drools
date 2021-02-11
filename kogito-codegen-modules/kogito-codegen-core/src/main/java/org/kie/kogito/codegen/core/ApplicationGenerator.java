@@ -40,7 +40,6 @@ public class ApplicationGenerator {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationGenerator.class);
 
-    public static final String DEFAULT_GROUP_ID = "org.kie.kogito";
     public static final String APPLICATION_CLASS_NAME = "Application";
     private static final GeneratedFileType APPLICATION_SECTION_TYPE = GeneratedFileType.of("APPLICATION_SECTION", GeneratedFileType.Category.SOURCE);
 

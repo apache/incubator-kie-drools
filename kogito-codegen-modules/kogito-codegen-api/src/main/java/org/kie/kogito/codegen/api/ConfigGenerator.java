@@ -17,6 +17,8 @@ package org.kie.kogito.codegen.api;
 
 public interface ConfigGenerator {
 
+    GeneratedFileType APPLICATION_CONFIG_TYPE = GeneratedFileType.of("APPLICATION_CONFIG", GeneratedFileType.Category.SOURCE);
+
     String configClassName();
 
     GeneratedFile generate();

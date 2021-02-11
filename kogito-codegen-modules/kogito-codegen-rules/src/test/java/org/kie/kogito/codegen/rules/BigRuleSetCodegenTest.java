@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Test;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.kogito.codegen.api.GeneratedFile;
-import org.kie.kogito.codegen.core.context.JavaKogitoBuildContext;
+import org.kie.kogito.codegen.api.context.impl.JavaKogitoBuildContext;
 
 public class BigRuleSetCodegenTest {
 

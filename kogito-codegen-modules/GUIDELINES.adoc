@@ -9,8 +9,10 @@
 
 ## Templates
 
-- A *Template* is a Java class named `<Something>Template.java`. 
+- A *Template* is a Java class named `<Something><Runtime>Template.java`.
 Templates are located under `src/main/resources/class-templates/`.
+- A template should/must be parsed using `org.kie.kogito.codegen.api.template.TemplatedGenerator` utility class
+- `<Runtime>` is to have platform specific templates: `Quarkus`/`Spring`/`Java`
 - A Template class may contain *placeholders*. 
 - By convention a placeholder is a string delimited by $-marks. `$PlaceHolder$`.
 
@@ -20,7 +22,7 @@ Templates are located under `src/main/resources/class-templates/`.
 
 Consider the following template
 
-.MyClassTemplate.java: 
+.MyClassJavaTemplate.java:
 [source,java]
 ----
 public class $ClassName$ {
@@ -29,15 +31,16 @@ public class $ClassName$ {
 ----
 
 Code-generators may load templates from the resource class-path, and parse them to an AST using JavaParser. JavaParser methods
-can be used to navigate and replace placeholders. e.g.
+can be used to navigate and replace placeholders. It is also possible to define a `fallbackContext` to specify which a default `Runtime` template to use if the specific one is not available. e.g.
 
 
 .GenerateMyClass.java: 
 [source,java]
 ----
-String template = "/class-templates/MyClassTemplate.java";
-InputStream resource = getClass().getResourceAsStream(template);
-CompilationUnit u = parse(resource);
+CompilationUnit u = TemplatedGenerator.builder()
+        .withFallbackContext(JavaKogitoBuildContext.CONTEXT_NAME)
+        .build(context, "MyClass")
+        .compilationUnitOrThrow("Impossible to find template");
 
 u.findAll(
     ClassOrInterfaceDeclaration.class, 
@@ -55,7 +58,7 @@ u.findAll(
 ## Writing Effective Templates
 
 
-1. Move shared, non-dynamic code to plain classes 
+1. Move shared, non-dynamic code to plain (abstract) classes
 2. Specialize runtime-specific annotation/behavior (Quarkus vs. Spring) using templates if possible (inherit or call library methods) 
 3. Templates should be framework-specific
 
@@ -68,7 +71,7 @@ There may be placeholders.
 .Framework-Specific Template
 ====
 
-.SpringApplicationConfigTemplate.java: 
+.ApplicationConfigSpringTemplate.java:
 [source,java]
 ----
 @org.springframework.stereotype.Component
@@ -76,12 +79,8 @@ public class ApplicationConfig extends org.kie.kogito.StaticConfig {
 
     @org.springframework.beans.factory.annotation.Autowired
     public ApplicationConfig(
-            List<org.kie.kogito.process.ProcessConfig> processConfig,
-            List<org.kie.kogito.rules.RuleConfig> ruleConfig,
-            List<org.kie.kogito.decision.DecisionConfig> decisionConfig) {
-        super(orDefault(processConfig, StaticProcessConfig::new),
-              orDefault(ruleConfig, StaticRuleConfig::new),
-              orDefault(decisionConfig, StaticDecisionConfig::new));
+            Collection<org.kie.kogito.KogitoConfig> configs) {
+        super($Addons$, configs);
     }
     ...
 ----
@@ -90,8 +89,8 @@ where `org.kie.kogito.StaticConfig` is a plain class. In this case there are no 
 
 There are also:
 
-- `CdiApplicationConfigTemplate` for CDI 
-- `ApplicationConfigTemplate` for non-DI cases
+- `ApplicationConfigQuarkusTemplate` for Quarkus (CDI)
+- `ApplicationConfigJavaTemplate` for non-DI cases
 
 
 TIP: If you realize your template has _no_ placeholders,
@@ -105,7 +104,7 @@ then there may be an opportunity for **promoting it to a plain shared class**.
 WARNING: We describe this technique because it is being used, but, whenever possible, you should prefer Framework-Specific Templates + Shared Code.
 
 A framework-agnostic template is "customized" using an *Annotator*. 
-We provide an Annotator for Spring and one for CDI (Quarkus). Annotators decorate methods of a template using framework-specific annotations.  
+We provide an Annotator for Spring and one for Quarkus (CDI). Annotators decorate methods of a template using framework-specific annotations.
 
 These templates are used when the generated code is largely the same for all frameworks we support, and only the annotations are different. However:
 
@@ -117,7 +116,7 @@ TIP: If a template is largely the same for all frameworks, you should consider *
 .Framework-Agnostic Template
 ====
 
-.MessageConsumerTemplate.java: 
+.MessageConsumerJavaTemplate.java:
 [source,java]
 ----
 public class $Type$MessageConsumer {
@@ -205,9 +204,10 @@ public class MyClass {
 .MyClassGenerator.java: 
 [source,java]
 ----
-String template = "/class-templates/MyClassTemplate.java";
-InputStream resource = getClass().getResourceAsStream(template);
-CompilationUnit u = parse(resource);
+CompilationUnit u = TemplatedGenerator.builder()
+        .withFallbackContext(JavaKogitoBuildContext.CONTEXT_NAME)
+        .build(context, "MyClass")
+        .compilationUnitOrThrow("Impossible to find template");
 
 // lookup the placeholder type
 u.findAll(FieldDeclaration.class,
@@ -226,7 +226,7 @@ u.findAll(FieldDeclaration.class,
 
 instead, write a framework-specific templates:
 
-.SpringMyClassTemplate.java: 
+.MyClassSpringTemplate.java:
 [source,java]
 ----
 public class MyClass {
@@ -234,7 +234,7 @@ public class MyClass {
 }
 ----
 
-.CdiMyClassTemplate.java: 
+.MyClassQuarkusTemplate.java:
 [source,java]
 ----
 public class MyClass {
@@ -242,20 +242,15 @@ public class MyClass {
 }
 ----
 
-use conditional logic to *choose* the template:
+use TemplatedGenerator naming convention to *choose* the template (or define a fallback/default):
 
 .MyClassGenerator.java: 
 [source,java]
 ----
-String template() {
-    if (isSpring()) return "/class-templates/SpringMyClassTemplate.java";
-    else if (isCdi()) return "/class-templates/CdiSpringMyClassTemplate.java";
-    else ...
-}
-
-String template = template();
-InputStream resource = getClass().getResourceAsStream(template);
-CompilationUnit u = parse(resource);
+CompilationUnit u = TemplatedGenerator.builder()
+        .withFallbackContext(JavaKogitoBuildContext.CONTEXT_NAME)
+        .build(context, "MyClass")
+        .compilationUnitOrThrow("Impossible to find template");
 ----
 
 ====

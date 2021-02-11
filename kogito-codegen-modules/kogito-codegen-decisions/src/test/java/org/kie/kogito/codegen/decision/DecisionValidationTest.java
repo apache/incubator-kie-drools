@@ -23,7 +23,7 @@ import java.util.function.Consumer;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.codegen.api.GeneratedFile;
-import org.kie.kogito.codegen.core.context.JavaKogitoBuildContext;
+import org.kie.kogito.codegen.api.context.impl.JavaKogitoBuildContext;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
