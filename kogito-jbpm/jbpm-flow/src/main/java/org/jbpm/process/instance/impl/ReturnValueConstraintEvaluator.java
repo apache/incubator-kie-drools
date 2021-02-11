@@ -22,7 +22,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 import org.drools.core.spi.CompiledInvoker;
-import org.drools.core.spi.KogitoProcessContext;
+import org.drools.core.spi.KogitoProcessContextImpl;
 import org.drools.core.spi.Wireable;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.workflow.core.Constraint;
@@ -123,7 +123,7 @@ public class ReturnValueConstraintEvaluator
                             Constraint constraint) {
         Object value;
         try {
-            KogitoProcessContext context = new KogitoProcessContext(((ProcessInstance)instance.getProcessInstance()).getKnowledgeRuntime());
+            KogitoProcessContextImpl context = new KogitoProcessContextImpl(((ProcessInstance)instance.getProcessInstance()).getKnowledgeRuntime());
             context.setNodeInstance( instance );
             value = this.evaluator.evaluate( context );
         } catch ( Exception e ) {

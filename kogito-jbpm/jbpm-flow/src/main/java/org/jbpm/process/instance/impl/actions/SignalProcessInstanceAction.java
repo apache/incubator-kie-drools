@@ -21,8 +21,8 @@ import java.util.function.Function;
 import org.jbpm.process.instance.impl.Action;
 import org.jbpm.process.instance.impl.util.VariableUtil;
 import org.jbpm.workflow.core.node.Transformation;
-import org.kie.api.runtime.process.ProcessContext;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
+import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.kie.kogito.process.workitems.KogitoWorkItemManager;
@@ -40,7 +40,7 @@ public class SignalProcessInstanceAction implements Action, Serializable {
 
     private final String signalNameTemplate;
     private String variableName;
-    private Function<ProcessContext, Object> eventDataSupplier = (kcontext) -> null;
+    private Function<KogitoProcessContext, Object> eventDataSupplier = (kcontext) -> null;
 
     private String scope = UNSET_SCOPE;
     private Transformation transformation;
@@ -73,7 +73,7 @@ public class SignalProcessInstanceAction implements Action, Serializable {
         this.transformation = transformation;
     }
 
-    public SignalProcessInstanceAction(String signalName, Function<ProcessContext, Object> eventDataSupplier, String scope) {
+    public SignalProcessInstanceAction(String signalName, Function<KogitoProcessContext, Object> eventDataSupplier, String scope) {
         this.signalNameTemplate = signalName;
         this.eventDataSupplier = eventDataSupplier;
         if (scope != null) {
@@ -82,7 +82,7 @@ public class SignalProcessInstanceAction implements Action, Serializable {
     }
 
     @Override
-    public void execute(ProcessContext context) throws Exception {
+    public void execute( KogitoProcessContext context) throws Exception {
         String variableName = VariableUtil.resolveVariable(this.variableName, context.getNodeInstance());
         Object signal = variableName == null ? eventDataSupplier.apply(context) : context.getVariable(variableName);
         if (transformation != null) {

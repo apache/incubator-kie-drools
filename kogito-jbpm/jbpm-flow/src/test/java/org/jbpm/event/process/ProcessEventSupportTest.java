@@ -47,8 +47,8 @@ import org.kie.api.event.process.ProcessNodeTriggeredEvent;
 import org.kie.api.event.process.ProcessStartedEvent;
 import org.kie.api.event.process.ProcessVariableChangedEvent;
 import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.process.ProcessContext;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.slf4j.LoggerFactory;
 
@@ -79,7 +79,7 @@ public class ProcessEventSupportTest extends AbstractBaseTest {
         actionNode.setName("Print");
         DroolsAction action = new DroolsConsequenceAction("java", null);
         action.setMetaData("Action", new Action() {
-			public void execute(ProcessContext context) throws Exception {
+			public void execute( KogitoProcessContext context) throws Exception {
             	logger.info("Executed action");
 			}
         });
@@ -193,7 +193,7 @@ public class ProcessEventSupportTest extends AbstractBaseTest {
         DroolsAction action = new DroolsConsequenceAction("java", null);
         action.setMetaData("Action", new Action() {
 
-            public void execute(ProcessContext context) throws Exception {
+            public void execute(KogitoProcessContext context) throws Exception {
                 logger.info("Executed action");
             }
         });
@@ -278,7 +278,7 @@ public class ProcessEventSupportTest extends AbstractBaseTest {
         actionNode.setName("Print");
         DroolsAction action = new DroolsConsequenceAction("java", null);
         action.setMetaData("Action", new Action() {
-            public void execute(ProcessContext context) throws Exception {
+            public void execute(KogitoProcessContext context) throws Exception {
                 logger.info("Executed action");
             }
         });
@@ -416,7 +416,7 @@ public class ProcessEventSupportTest extends AbstractBaseTest {
         actionNode.setName("Print");
         DroolsAction action = new DroolsConsequenceAction("java", null);
         action.setMetaData("Action", new Action() {
-            public void execute(ProcessContext context) throws Exception {
+            public void execute(KogitoProcessContext context) throws Exception {
                 logger.info("Executed action");
             }
         });
@@ -533,7 +533,7 @@ public class ProcessEventSupportTest extends AbstractBaseTest {
         actionNode.setName("Print");
         DroolsAction action = new DroolsConsequenceAction("java", null);
         action.setMetaData("Action", new Action() {
-            public void execute(ProcessContext context) throws Exception {
+            public void execute(KogitoProcessContext context) throws Exception {
                 logger.info("Executed action");
             }
         });

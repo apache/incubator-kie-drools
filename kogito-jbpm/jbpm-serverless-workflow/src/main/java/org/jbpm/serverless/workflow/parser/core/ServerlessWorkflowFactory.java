@@ -254,8 +254,8 @@ public class ServerlessWorkflowFactory {
                                                         "workItem.setNodeId(kcontext.getNodeInstance().getNodeId());" + EOL +
                                                         "workItem.setParameter(\"MessageType\", \"" + messageType + "\");" + EOL +
                                                         (variable == null ? "" : "workItem.setParameter(\"Message\", " + variable + ");" + EOL) +
-                                                        "workItem.setDeploymentId((String) kcontext.getKnowledgeRuntime().getEnvironment().get(\"deploymentId\"));" + EOL +
-                                                        "((org.drools.core.process.instance.WorkItemManager) kcontext.getKnowledgeRuntime().getWorkItemManager()).internalExecuteWorkItem(workItem);"));
+                                                        "workItem.setDeploymentId((String) kcontext.getKieRuntime().getEnvironment().get(\"deploymentId\"));" + EOL +
+                                                        "((org.drools.core.process.instance.WorkItemManager) kcontext.getKieRuntime().getWorkItemManager()).internalExecuteWorkItem(workItem);"));
         endNode.setActions(ExtendedNodeImpl.EVENT_NODE_ENTER, actions);
     }
 

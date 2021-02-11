@@ -43,31 +43,9 @@ public class MVELActionBuilder extends AbstractMVELBuilder implements ActionBuil
         macros.put( "insert",
                     new Macro() {
                         public String doMacro() {
-                            return "kcontext.getKnowledgeRuntime().insert";
+                            return "kcontext.getKieRuntime().insert";
                         }
                     } );
-
-//        macros.put( "insertLogical",
-//                    new Macro() {
-//                        public String doMacro() {
-//                            return "kcontext.getKnowledgeRuntime()..insertLogical";
-//                        }
-//                    } );
-
-
-//        macros.put( "update",
-//                    new Macro() {
-//                        public String doMacro() {
-//                            return "kcontext.getKnowledgeRuntime().update";
-//                        }
-//                    } );
-
-//        macros.put( "retract",
-//                    new Macro() {
-//                        public String doMacro() {
-//                            return "kcontext.getKnowledgeRuntime().retract";
-//                        }
-//                    } );;
     }
     
     public MVELActionBuilder() {

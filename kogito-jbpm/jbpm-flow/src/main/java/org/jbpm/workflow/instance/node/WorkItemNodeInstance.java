@@ -29,7 +29,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 
 import org.drools.core.WorkItemHandlerNotFoundException;
-import org.drools.core.spi.KogitoProcessContext;
+import org.drools.core.spi.KogitoProcessContextImpl;
 import org.jbpm.process.core.Context;
 import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.ParameterDefinition;
@@ -281,7 +281,7 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
     private void handleAssignment(Assignment assignment) {
         AssignmentAction action = (AssignmentAction) assignment.getMetaData("Action");
         try {
-            KogitoProcessContext context = new KogitoProcessContext(getProcessInstance().getKnowledgeRuntime());
+            KogitoProcessContextImpl context = new KogitoProcessContextImpl(getProcessInstance().getKnowledgeRuntime());
             context.setNodeInstance(this);
             action.execute(getWorkItem(), context);
         } catch (Exception e) {

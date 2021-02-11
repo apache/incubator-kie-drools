@@ -16,7 +16,7 @@
 
 package org.jbpm.workflow.instance.node;
 
-import org.drools.core.spi.KogitoProcessContext;
+import org.drools.core.spi.KogitoProcessContextImpl;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.node.MilestoneNode;
 import org.kie.kogito.event.process.ContextAwareEventListener;
@@ -52,7 +52,7 @@ public class MilestoneNodeInstance extends StateBasedNodeInstance {
     }
 
     private boolean isCompleted() {
-        KogitoProcessContext context = new KogitoProcessContext(getProcessInstance().getKnowledgeRuntime());
+        KogitoProcessContextImpl context = new KogitoProcessContextImpl(getProcessInstance().getKnowledgeRuntime());
         context.setNodeInstance(this);
         return getMilestoneNode().canComplete(context);
     }

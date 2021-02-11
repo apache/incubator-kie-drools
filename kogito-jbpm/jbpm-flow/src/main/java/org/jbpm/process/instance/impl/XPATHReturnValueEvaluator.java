@@ -35,8 +35,7 @@ import javax.xml.xpath.XPathFunction;
 import javax.xml.xpath.XPathFunctionException;
 import javax.xml.xpath.XPathFunctionResolver;
 import javax.xml.xpath.XPathVariableResolver;
-
-import org.kie.api.runtime.process.ProcessContext;
+import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 
 public class XPATHReturnValueEvaluator
     implements
@@ -71,7 +70,7 @@ public class XPATHReturnValueEvaluator
         return this.id;
     }
 
-    public Object evaluate(final ProcessContext context) throws Exception {        
+    public Object evaluate(final KogitoProcessContext context) throws Exception {
     	XPathFactory factory = XPathFactory.newInstance();
     	XPath xpathEvaluator = factory.newXPath();
     	xpathEvaluator.setXPathFunctionResolver( 

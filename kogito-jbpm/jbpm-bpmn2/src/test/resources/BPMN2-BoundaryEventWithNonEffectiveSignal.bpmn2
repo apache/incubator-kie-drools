@@ -75,7 +75,7 @@
         </bpmn2:extensionElements>
         <bpmn2:incoming>_D1214B22-6D67-47E3-97D7-7D1F1CEA5B0B</bpmn2:incoming>
         <bpmn2:outgoing>_0CA366C9-1C6E-446A-B29A-FC8C55BE33B7</bpmn2:outgoing>
-        <bpmn2:script><![CDATA[System.out.println("Before Signal for process:" + ((org.kie.kogito.internal.process.runtime.KogitoProcessInstance)kcontext.getProcessInstance()).getStringId());]]></bpmn2:script>
+        <bpmn2:script><![CDATA[System.out.println("Before Signal for process:" + kcontext.getProcessInstance().getStringId());]]></bpmn2:script>
       </bpmn2:scriptTask>
       <bpmn2:userTask id="_BF0CFE7E-485B-49CE-9ADC-0C37194D44E6" drools:selectable="true" drools:scriptFormat="http://www.java.com/java" color:background-color="#fafad2" color:border-color="#000000" color:color="#000000" name="InnerHT">
         <bpmn2:extensionElements>
@@ -122,7 +122,7 @@
         </bpmn2:extensionElements>
         <bpmn2:incoming>_AEFAB5AA-4F31-4988-9A93-203BEE931CF6</bpmn2:incoming>
         <bpmn2:outgoing>_EFE75F2D-99C5-4B63-9A84-2574E40DAE09</bpmn2:outgoing>
-        <bpmn2:script><![CDATA[System.out.println("After Signal for process:" + ((org.kie.kogito.internal.process.runtime.KogitoProcessInstance)kcontext.getProcessInstance()).getStringId());]]></bpmn2:script>
+        <bpmn2:script><![CDATA[System.out.println("After Signal for process:" + kcontext.getProcessInstance().getStringId());]]></bpmn2:script>
       </bpmn2:scriptTask>
       <bpmn2:endEvent id="_7FA13A41-4B21-4992-949C-2E8FEC3DAA36" drools:selectable="true" color:background-color="#ff6347" color:border-color="#000000" color:color="#000000" name="">
         <bpmn2:extensionElements>
@@ -140,7 +140,7 @@
         </bpmn2:extensionElements>
         <bpmn2:incoming>_3F30F172-4749-4C96-A0CC-AF4715FD4CDA</bpmn2:incoming>
         <bpmn2:outgoing>_A10FFAEF-99F4-4C7B-96BA-65DC0D305F4F</bpmn2:outgoing>
-        <bpmn2:script><![CDATA[System.out.println("After HT Inner for process:" + ((org.kie.kogito.internal.process.runtime.KogitoProcessInstance)kcontext.getProcessInstance()).getStringId());]]></bpmn2:script>
+        <bpmn2:script><![CDATA[System.out.println("After HT Inner for process:" + kcontext.getProcessInstance().getStringId());]]></bpmn2:script>
       </bpmn2:scriptTask>
       <bpmn2:endEvent id="_A3563BCA-AA01-46EB-8747-9122B3C1AEE3" drools:selectable="true" color:background-color="#ff6347" color:border-color="#000000" color:color="#000000" name="">
         <bpmn2:extensionElements>
@@ -175,7 +175,7 @@
       </bpmn2:extensionElements>
       <bpmn2:incoming>_DFD19CD6-72CD-4565-B812-D287D36B7767</bpmn2:incoming>
       <bpmn2:outgoing>_7840DA1A-25AD-4055-8899-D478FBAA2930</bpmn2:outgoing>
-      <bpmn2:script><![CDATA[System.out.println("First Node for process:" + ((org.kie.kogito.internal.process.runtime.KogitoProcessInstance)kcontext.getProcessInstance()).getStringId());]]></bpmn2:script>
+      <bpmn2:script><![CDATA[System.out.println("First Node for process:" + kcontext.getProcessInstance().getStringId());]]></bpmn2:script>
     </bpmn2:scriptTask>
     <bpmn2:sequenceFlow id="_DFD19CD6-72CD-4565-B812-D287D36B7767" drools:selectable="true" color:background-color="#000000" color:border-color="#000000" color:color="#000000" sourceRef="processStartEvent" targetRef="_1A199915-B3E5-4F57-A34E-80BF0FC452E0"/>
     <bpmn2:sequenceFlow id="_7840DA1A-25AD-4055-8899-D478FBAA2930" drools:selectable="true" color:background-color="#000000" color:border-color="#000000" color:color="#000000" sourceRef="_1A199915-B3E5-4F57-A34E-80BF0FC452E0" targetRef="_3C8997A8-C083-4215-9BCC-9674BCC2A359"/>

@@ -21,8 +21,8 @@ import java.util.Collection;
 import org.jbpm.process.instance.impl.Action;
 import org.jbpm.workflow.instance.node.CompositeNodeInstance;
 import org.kie.api.runtime.process.NodeInstance;
-import org.kie.api.runtime.process.ProcessContext;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
+import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 
 public class CancelNodeInstanceAction implements Action, Serializable {
 	
@@ -34,8 +34,9 @@ public class CancelNodeInstanceAction implements Action, Serializable {
 		super();
 		this.attachedToNodeId = attachedToNodeId;
 	}
-	
-	public void execute(ProcessContext context) throws Exception {
+
+	@Override
+	public void execute(KogitoProcessContext context) throws Exception {
 		WorkflowProcessInstance pi = context.getNodeInstance().getProcessInstance();
 		NodeInstance nodeInstance = findNodeByUniqueId(pi.getNodeInstances(), attachedToNodeId);
 		if (nodeInstance != null) {

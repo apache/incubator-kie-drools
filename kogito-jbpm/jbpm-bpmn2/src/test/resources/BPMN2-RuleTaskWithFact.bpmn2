@@ -29,7 +29,7 @@ insert(kcontext.getProcessInstance());
       <bpmn2:outgoing>_4-_3</bpmn2:outgoing>
       <bpmn2:script>System.out.println(&quot;Process instance is &quot; + kcontext.getProcessInstance());
 if (x == null) {
-kcontext.getKnowledgeRuntime().retract(null);
+kcontext.getKieRuntime().retract(null);
 }</bpmn2:script>
     </bpmn2:scriptTask>
     <bpmn2:sequenceFlow id="SequenceFlow_1" tns:priority="1" name="" sourceRef="_4" targetRef="ScriptTask_1"/>

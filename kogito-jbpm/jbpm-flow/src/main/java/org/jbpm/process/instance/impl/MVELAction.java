@@ -29,7 +29,7 @@ import org.drools.mvel.MVELDialectRuntimeData;
 import org.drools.mvel.expr.MVELCompilationUnit;
 import org.drools.mvel.expr.MVELCompileable;
 import org.jbpm.workflow.instance.impl.MVELProcessHelper;
-import org.kie.api.runtime.process.ProcessContext;
+import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 import org.mvel2.integration.VariableResolverFactory;
 
 public class MVELAction
@@ -74,8 +74,9 @@ public class MVELAction
     public String getDialect() {
         return id;
     }
-    
-    public void execute(ProcessContext context) throws Exception {
+
+    @Override
+    public void execute( KogitoProcessContext context) throws Exception {
         int length = unit.getOtherIdentifiers().length;
         Object[] vars = new Object[ length ];
         if (unit.getOtherIdentifiers() != null) {

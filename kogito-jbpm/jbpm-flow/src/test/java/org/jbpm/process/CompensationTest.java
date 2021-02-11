@@ -50,8 +50,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.kie.api.definition.process.NodeContainer;
 import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.process.ProcessContext;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.slf4j.LoggerFactory;
@@ -409,7 +409,7 @@ public class CompensationTest extends AbstractBaseTest {
         actionNode.setName("Execute");
         DroolsAction action = new DroolsConsequenceAction("java", null);
         action.setMetaData("Action", new Action() {
-            public void execute(ProcessContext context) throws Exception {
+            public void execute( KogitoProcessContext context) throws Exception {
                 eventList.add("Executed action");
             }
         });
@@ -538,7 +538,7 @@ public class CompensationTest extends AbstractBaseTest {
             actionNode.setName("Execute");
             DroolsAction action = new DroolsConsequenceAction("java", null);
             action.setMetaData("Action", new Action() {
-                public void execute(ProcessContext context) throws Exception {
+                public void execute(KogitoProcessContext context) throws Exception {
                     eventList.add("Executed action");
                 }
             });
@@ -707,7 +707,7 @@ public class CompensationTest extends AbstractBaseTest {
         actionNode.setName("Execute");
         DroolsAction action = new DroolsConsequenceAction("java", null);
         action.setMetaData("Action", new Action() {
-            public void execute(ProcessContext context) throws Exception {
+            public void execute(KogitoProcessContext context) throws Exception {
                 eventList.add("action" + id);
             }
         });

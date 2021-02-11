@@ -229,7 +229,7 @@ public class LoggingTaskHandlerDecorator extends AbstractExceptionHandlingTaskHa
                 inputList.add(workItem.getStringId());
                 inputList.add(workItem.getName());
                 inputList.add(handlerMethodStem);
-                inputList.add(String.valueOf(workItem.getProcessInstanceId()));
+                inputList.add(String.valueOf(workItem.getProcessInstanceStringId()));
             }
 
         } else {
@@ -258,7 +258,7 @@ public class LoggingTaskHandlerDecorator extends AbstractExceptionHandlingTaskHa
                     inputList.add(parameters.substring(0, parameters.length() - 2));
                     break;
                 case PROCESS_INSTANCE_ID:
-                    inputList.add(String.valueOf(workItem.getProcessInstanceId()));
+                    inputList.add(String.valueOf(workItem.getProcessInstanceStringId()));
                     break;
                 case SERVICE:
                     inputList.add((String) workItem.getParameter("Interface"));

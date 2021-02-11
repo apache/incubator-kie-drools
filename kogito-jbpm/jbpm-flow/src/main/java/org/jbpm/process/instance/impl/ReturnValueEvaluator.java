@@ -16,9 +16,9 @@
 
 package org.jbpm.process.instance.impl;
 
-import org.kie.api.runtime.process.ProcessContext;
+import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 
 public interface ReturnValueEvaluator {
     
-    public Object evaluate(ProcessContext processContext) throws Exception;
+    Object evaluate(KogitoProcessContext processContext) throws Exception;
 }

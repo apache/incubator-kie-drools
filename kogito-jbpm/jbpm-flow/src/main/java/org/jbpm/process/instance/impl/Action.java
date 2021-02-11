@@ -16,10 +16,10 @@
 
 package org.jbpm.process.instance.impl;
 
-import org.kie.api.runtime.process.ProcessContext;
+import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 
 public interface Action {
     
-    void execute(ProcessContext context) throws Exception;
+    void execute(KogitoProcessContext context) throws Exception;
     
 }

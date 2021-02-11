@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.drools.core.common.InternalKnowledgeRuntime;
-import org.drools.core.spi.KogitoProcessContext;
+import org.drools.core.spi.KogitoProcessContextImpl;
 import org.jbpm.process.core.Context;
 import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.context.exception.ExceptionScope;
@@ -235,7 +235,7 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
      * @param action An {@link Action} instance.
      */
     protected void executeAction(Action action) {
-        KogitoProcessContext context = new KogitoProcessContext(getProcessInstance().getKnowledgeRuntime());
+        KogitoProcessContextImpl context = new KogitoProcessContextImpl(getProcessInstance().getKnowledgeRuntime());
         context.setNodeInstance(this);
         try {
             action.execute(context);

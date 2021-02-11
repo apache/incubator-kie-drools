@@ -31,7 +31,7 @@ import org.drools.mvel.expr.MVELCompilationUnit;
 import org.drools.mvel.expr.MVELCompileable;
 import org.jbpm.workflow.instance.impl.MVELProcessHelper;
 import org.kie.api.definition.KiePackage;
-import org.kie.api.runtime.process.ProcessContext;
+import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 import org.mvel2.integration.VariableResolverFactory;
 
 public class MVELReturnValueEvaluator
@@ -78,7 +78,7 @@ public class MVELReturnValueEvaluator
         return this.id;
     }
 
-    public Object evaluate(ProcessContext context) throws Exception {
+    public Object evaluate(KogitoProcessContext context) throws Exception {
         int length = unit.getOtherIdentifiers().length;
         Object[] vars = new Object[ length ];
         if (unit.getOtherIdentifiers() != null) {

@@ -28,7 +28,7 @@ import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
-import org.drools.core.spi.ProcessContext;
+import org.drools.core.spi.KogitoProcessContextImpl;
 import org.jbpm.process.builder.dialect.ProcessDialect;
 import org.jbpm.process.builder.dialect.ProcessDialectRegistry;
 import org.jbpm.process.builder.dialect.javascript.JavaScriptActionBuilder;
@@ -40,6 +40,7 @@ import org.jbpm.workflow.core.impl.WorkflowProcessImpl;
 import org.jbpm.workflow.core.node.ActionNode;
 import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.KieSession;
+import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -89,7 +90,7 @@ public class JavaScriptActionBuilderTest extends AbstractBaseTest {
 
         wm.setGlobal("testField", "vagon");
 
-        ProcessContext processContext = new ProcessContext( ((InternalWorkingMemory) wm).getKnowledgeRuntime() );
+        KogitoProcessContext processContext = new KogitoProcessContextImpl( ((InternalWorkingMemory) wm).getKnowledgeRuntime() );
         ((Action) actionNode.getAction().getMetaData("Action")).execute(processContext);
 
         assertEquals("vagon", wm.getGlobal("testField").toString());

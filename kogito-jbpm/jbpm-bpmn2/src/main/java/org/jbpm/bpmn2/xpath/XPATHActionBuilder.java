@@ -37,7 +37,7 @@ public class XPATHActionBuilder
         macros.put( "insert",
                     new Macro() {
                         public String doMacro() {
-                            return "kcontext.getKnowledgeRuntime().insert";
+                            return "kcontext.getKieRuntime().insert";
                         }
                     } );
 

@@ -5,9 +5,9 @@ public class @{invokerClassName} implements org.jbpm.process.instance.impl.Actio
 {
     private static final long serialVersionUID  = 510l;
 
-    public void execute(org.kie.api.runtime.process.ProcessContext context) throws Exception {
+    public void execute(org.kie.kogito.internal.process.runtime.KogitoProcessContext context) throws Exception {
 
-        @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) context.getKnowledgeRuntime().getGlobal( "@{identifier}" );
+        @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) context.getKieRuntime().getGlobal( "@{identifier}" );
         @end{}
 
         @foreach{type : variableTypes, identifier : variables} @{type} @{identifier} = ( @{type} ) context.getVariable( "@{identifier}" );
@@ -34,9 +34,9 @@ public class @{invokerClassName} implements org.jbpm.process.instance.impl.Retur
 {
     private static final long serialVersionUID  = 510l;
 
-    public Object evaluate(org.kie.api.runtime.process.ProcessContext processContext) throws Exception {
+    public Object evaluate(org.kie.kogito.internal.process.runtime.KogitoProcessContext processContext) throws Exception {
 
-        @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) processContext.getKnowledgeRuntime().getGlobal( "@{identifier}" );
+        @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) processContext.getKieRuntime().getGlobal( "@{identifier}" );
         @end{}
 
         @foreach{type : variableTypes, identifier : variables} @{type} @{identifier} = ( @{type} ) processContext.getVariable( "@{identifier}" );

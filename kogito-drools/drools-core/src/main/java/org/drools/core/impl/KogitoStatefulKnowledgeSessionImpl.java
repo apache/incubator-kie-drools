@@ -28,7 +28,7 @@ import org.drools.core.kogito.factory.KogitoDefaultFactHandle;
 import org.drools.core.spi.AbstractProcessContext;
 import org.drools.core.spi.FactHandleFactory;
 import org.drools.core.spi.KnowledgeHelper;
-import org.drools.core.spi.KogitoProcessContext;
+import org.drools.core.spi.KogitoProcessContextImpl;
 import org.drools.core.time.KogitoTimerServiceFactory;
 import org.drools.core.time.TimerService;
 import org.drools.core.util.bitmask.BitMask;
@@ -172,7 +172,7 @@ public class KogitoStatefulKnowledgeSessionImpl extends StatefulKnowledgeSession
 
         @Override
         protected AbstractProcessContext createProcessContext() {
-            return new KogitoProcessContext(workingMemory.getKnowledgeRuntime());
+            return new KogitoProcessContextImpl(workingMemory.getKnowledgeRuntime());
         }
 
         @Override

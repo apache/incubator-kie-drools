@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.core.spi.KogitoProcessContext;
+import org.drools.core.spi.KogitoProcessContextImpl;
 import org.drools.core.util.StringUtils;
 import org.jbpm.process.core.Context;
 import org.jbpm.process.core.ContextContainer;
@@ -78,7 +78,7 @@ public class LambdaSubProcessNodeInstance extends StateBasedNodeInstance impleme
                 "A SubProcess node only accepts default incoming connections!");
         }
 
-        KogitoProcessContext context = new KogitoProcessContext(getProcessInstance().getKnowledgeRuntime());
+        KogitoProcessContextImpl context = new KogitoProcessContextImpl(getProcessInstance().getKnowledgeRuntime());
         context.setNodeInstance(this);
         SubProcessFactory subProcessFactory = getSubProcessNode().getSubProcessFactory();
         Object o = subProcessFactory.bind(context);
@@ -193,7 +193,7 @@ public class LambdaSubProcessNodeInstance extends StateBasedNodeInstance impleme
     private void handleOutMappings(ProcessInstance processInstance) {
         
         SubProcessFactory subProcessFactory = getSubProcessNode().getSubProcessFactory();
-        KogitoProcessContext context = new KogitoProcessContext(getProcessInstance().getKnowledgeRuntime());
+        KogitoProcessContextImpl context = new KogitoProcessContextImpl(getProcessInstance().getKnowledgeRuntime());
         context.setNodeInstance(this);
         org.kie.kogito.process.ProcessInstance<?> pi = ((org.kie.kogito.process.ProcessInstance<?>)processInstance.getMetaData().get("KogitoProcessInstance"));
         if (pi != null) {

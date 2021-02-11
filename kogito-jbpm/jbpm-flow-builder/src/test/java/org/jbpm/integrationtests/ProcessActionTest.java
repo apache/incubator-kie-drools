@@ -211,7 +211,7 @@ public class ProcessActionTest  extends AbstractBaseTest {
             "    <start id=\"1\" name=\"Start\" />\n" +
 			"    <actionNode id=\"2\" name=\"MyActionNode\" >\n" +
 			"      <action type=\"expression\" dialect=\"mvel\" >System.out.println(\"Triggered\");\n" +
-			"System.out.println(kcontext.getKnowledgeRuntime());\n" +
+			"System.out.println(kcontext.getKieRuntime());\n" +
 			"String myVariable = (String) kcontext.getVariable(\"variable\");\n" +
 			"list.add(myVariable);\n" +
 			"String nodeName = kcontext.getNodeInstance().getNodeName();\n" +

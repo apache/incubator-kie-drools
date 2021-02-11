@@ -8,7 +8,7 @@
     <scriptTask id="_2" name="Initialize">
       <incoming>_1-_2</incoming>
       <outgoing>_2-_3</outgoing>
-      <script>kcontext.getKnowledgeRuntime().insert(kcontext.getProcessInstance());
+      <script>kcontext.getKieRuntime().insert(kcontext.getProcessInstance());
   </script>
     </scriptTask>
     <intermediateCatchEvent id="_3" name="On New Document">

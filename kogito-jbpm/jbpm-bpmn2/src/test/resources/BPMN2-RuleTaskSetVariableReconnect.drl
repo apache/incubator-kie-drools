@@ -29,7 +29,7 @@ rule MyRule
     processInstance : WorkflowProcessInstance()
     eval( processInstance.getVariable("x") == "SomeString")
   then
-    processInstance = (WorkflowProcessInstance)KogitoProcessRuntime.asKogitoProcessRuntime( kcontext.getKnowledgeRuntime() ).getProcessInstance(((KogitoProcessInstance)processInstance).getStringId());
+    processInstance = (WorkflowProcessInstance)KogitoProcessRuntime.asKogitoProcessRuntime( kcontext.getKieRuntime() ).getProcessInstance(((KogitoProcessInstance)processInstance).getStringId());
     processInstance.setVariable("x", "AnotherString");
     list.add("Executed");
 end
