@@ -646,6 +646,77 @@ public interface UniConstraintStream<A> extends ConstraintStream {
             UniConstraintCollector<A, ResultContainer_, Result_> collector);
 
     /**
+     * Convert the {@link UniConstraintStream} to a {@link BiConstraintStream}, containing only a single tuple,
+     * the result of applying two {@link UniConstraintCollector}s.
+     *
+     * @param collectorA never null, the collector to perform the first grouping operation with
+     *        See {@link ConstraintCollectors} for common operations, such as {@code count()}, {@code sum()} and others.
+     * @param collectorB never null, the collector to perform the second grouping operation with
+     *        See {@link ConstraintCollectors} for common operations, such as {@code count()}, {@code sum()} and others.
+     * @param <ResultContainerA_> the mutable accumulation type (often hidden as an implementation detail)
+     * @param <ResultA_> the type of the first fact in the destination {@link BiConstraintStream}'s tuple
+     * @param <ResultContainerB_> the mutable accumulation type (often hidden as an implementation detail)
+     * @param <ResultB_> the type of the second fact in the destination {@link BiConstraintStream}'s tuple
+     * @return never null
+     */
+    <ResultContainerA_, ResultA_, ResultContainerB_, ResultB_> BiConstraintStream<ResultA_, ResultB_> groupBy(
+            UniConstraintCollector<A, ResultContainerA_, ResultA_> collectorA,
+            UniConstraintCollector<A, ResultContainerB_, ResultB_> collectorB);
+
+    /**
+     * Convert the {@link UniConstraintStream} to a {@link TriConstraintStream}, containing only a single tuple,
+     * the result of applying three {@link UniConstraintCollector}s.
+     *
+     * @param collectorA never null, the collector to perform the first grouping operation with
+     *        See {@link ConstraintCollectors} for common operations, such as {@code count()}, {@code sum()} and others.
+     * @param collectorB never null, the collector to perform the second grouping operation with
+     *        See {@link ConstraintCollectors} for common operations, such as {@code count()}, {@code sum()} and others.
+     * @param collectorC never null, the collector to perform the third grouping operation with
+     *        See {@link ConstraintCollectors} for common operations, such as {@code count()}, {@code sum()} and others.
+     * @param <ResultContainerA_> the mutable accumulation type (often hidden as an implementation detail)
+     * @param <ResultA_> the type of the first fact in the destination {@link TriConstraintStream}'s tuple
+     * @param <ResultContainerB_> the mutable accumulation type (often hidden as an implementation detail)
+     * @param <ResultB_> the type of the second fact in the destination {@link TriConstraintStream}'s tuple
+     * @param <ResultContainerC_> the mutable accumulation type (often hidden as an implementation detail)
+     * @param <ResultC_> the type of the third fact in the destination {@link TriConstraintStream}'s tuple
+     * @return never null
+     */
+    <ResultContainerA_, ResultA_, ResultContainerB_, ResultB_, ResultContainerC_, ResultC_>
+            TriConstraintStream<ResultA_, ResultB_, ResultC_> groupBy(
+                    UniConstraintCollector<A, ResultContainerA_, ResultA_> collectorA,
+                    UniConstraintCollector<A, ResultContainerB_, ResultB_> collectorB,
+                    UniConstraintCollector<A, ResultContainerC_, ResultC_> collectorC);
+
+    /**
+     * Convert the {@link UniConstraintStream} to a {@link QuadConstraintStream}, containing only a single tuple,
+     * the result of applying four {@link UniConstraintCollector}s.
+     *
+     * @param collectorA never null, the collector to perform the first grouping operation with
+     *        See {@link ConstraintCollectors} for common operations, such as {@code count()}, {@code sum()} and others.
+     * @param collectorB never null, the collector to perform the second grouping operation with
+     *        See {@link ConstraintCollectors} for common operations, such as {@code count()}, {@code sum()} and others.
+     * @param collectorC never null, the collector to perform the third grouping operation with
+     *        See {@link ConstraintCollectors} for common operations, such as {@code count()}, {@code sum()} and others.
+     * @param collectorD never null, the collector to perform the fourth grouping operation with
+     *        See {@link ConstraintCollectors} for common operations, such as {@code count()}, {@code sum()} and others.
+     * @param <ResultContainerA_> the mutable accumulation type (often hidden as an implementation detail)
+     * @param <ResultA_> the type of the first fact in the destination {@link QuadConstraintStream}'s tuple
+     * @param <ResultContainerB_> the mutable accumulation type (often hidden as an implementation detail)
+     * @param <ResultB_> the type of the second fact in the destination {@link QuadConstraintStream}'s tuple
+     * @param <ResultContainerC_> the mutable accumulation type (often hidden as an implementation detail)
+     * @param <ResultC_> the type of the third fact in the destination {@link QuadConstraintStream}'s tuple
+     * @param <ResultContainerD_> the mutable accumulation type (often hidden as an implementation detail)
+     * @param <ResultD_> the type of the fourth fact in the destination {@link QuadConstraintStream}'s tuple
+     * @return never null
+     */
+    <ResultContainerA_, ResultA_, ResultContainerB_, ResultB_, ResultContainerC_, ResultC_, ResultContainerD_, ResultD_>
+            QuadConstraintStream<ResultA_, ResultB_, ResultC_, ResultD_> groupBy(
+                    UniConstraintCollector<A, ResultContainerA_, ResultA_> collectorA,
+                    UniConstraintCollector<A, ResultContainerB_, ResultB_> collectorB,
+                    UniConstraintCollector<A, ResultContainerC_, ResultC_> collectorC,
+                    UniConstraintCollector<A, ResultContainerD_, ResultD_> collectorD);
+
+    /**
      * Convert the {@link UniConstraintStream} to a different {@link UniConstraintStream}, containing the set of tuples
      * resulting from applying the group key mapping function on all tuples of the original stream.
      * Neither tuple of the new stream {@link Objects#equals(Object, Object)} any other.
@@ -660,7 +731,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * Convert the {@link UniConstraintStream} to a {@link BiConstraintStream}, consisting of unique tuples with two
      * facts.
      * <p>
-     * The first fact is the return value of the first group key mapping function, applied on the incoming tuple.
+     * The first fact is the return value of the group key mapping function, applied on the incoming tuple.
      * The second fact is the return value of a given {@link UniConstraintCollector} applied on all incoming tuples with
      * the same first fact.
      *
@@ -675,6 +746,61 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     <GroupKey_, ResultContainer_, Result_> BiConstraintStream<GroupKey_, Result_> groupBy(
             Function<A, GroupKey_> groupKeyMapping,
             UniConstraintCollector<A, ResultContainer_, Result_> collector);
+
+    /**
+     * Convert the {@link UniConstraintStream} to a {@link TriConstraintStream}, consisting of unique tuples with three
+     * facts.
+     * <p>
+     * The first fact is the return value of the group key mapping function, applied on the incoming tuple.
+     * The remaining facts are the return value of the respective {@link UniConstraintCollector} applied on all
+     * incoming tuples with the same first fact.
+     *
+     * @param groupKeyMapping never null, function to convert the fact in the original tuple to a different fact
+     * @param collectorB never null, the collector to perform the first grouping operation with
+     *        See {@link ConstraintCollectors} for common operations, such as {@code count()}, {@code sum()} and others.
+     * @param collectorC never null, the collector to perform the second grouping operation with
+     *        See {@link ConstraintCollectors} for common operations, such as {@code count()}, {@code sum()} and others.
+     * @param <GroupKey_> the type of the first fact in the destination {@link TriConstraintStream}'s tuple
+     * @param <ResultContainerB_> the mutable accumulation type (often hidden as an implementation detail)
+     * @param <ResultB_> the type of the second fact in the destination {@link TriConstraintStream}'s tuple
+     * @param <ResultContainerC_> the mutable accumulation type (often hidden as an implementation detail)
+     * @param <ResultC_> the type of the third fact in the destination {@link TriConstraintStream}'s tuple
+     * @return never null
+     */
+    <GroupKey_, ResultContainerB_, ResultB_, ResultContainerC_, ResultC_>
+            TriConstraintStream<GroupKey_, ResultB_, ResultC_> groupBy(
+                    Function<A, GroupKey_> groupKeyMapping, UniConstraintCollector<A, ResultContainerB_, ResultB_> collectorB,
+                    UniConstraintCollector<A, ResultContainerC_, ResultC_> collectorC);
+
+    /**
+     * Convert the {@link UniConstraintStream} to a {@link QuadConstraintStream}, consisting of unique tuples with four
+     * facts.
+     * <p>
+     * The first fact is the return value of the group key mapping function, applied on the incoming tuple.
+     * The remaining facts are the return value of the respective {@link UniConstraintCollector} applied on all
+     * incoming tuples with the same first fact.
+     *
+     * @param groupKeyMapping never null, function to convert the fact in the original tuple to a different fact
+     * @param collectorB never null, the collector to perform the first grouping operation with
+     *        See {@link ConstraintCollectors} for common operations, such as {@code count()}, {@code sum()} and others.
+     * @param collectorC never null, the collector to perform the second grouping operation with
+     *        See {@link ConstraintCollectors} for common operations, such as {@code count()}, {@code sum()} and others.
+     * @param collectorD never null, the collector to perform the third grouping operation with
+     *        See {@link ConstraintCollectors} for common operations, such as {@code count()}, {@code sum()} and others.
+     * @param <GroupKey_> the type of the first fact in the destination {@link QuadConstraintStream}'s tuple
+     * @param <ResultContainerB_> the mutable accumulation type (often hidden as an implementation detail)
+     * @param <ResultB_> the type of the second fact in the destination {@link QuadConstraintStream}'s tuple
+     * @param <ResultContainerC_> the mutable accumulation type (often hidden as an implementation detail)
+     * @param <ResultC_> the type of the third fact in the destination {@link QuadConstraintStream}'s tuple
+     * @param <ResultContainerD_> the mutable accumulation type (often hidden as an implementation detail)
+     * @param <ResultD_> the type of the fourth fact in the destination {@link QuadConstraintStream}'s tuple
+     * @return never null
+     */
+    <GroupKey_, ResultContainerB_, ResultB_, ResultContainerC_, ResultC_, ResultContainerD_, ResultD_>
+            QuadConstraintStream<GroupKey_, ResultB_, ResultC_, ResultD_> groupBy(
+                    Function<A, GroupKey_> groupKeyMapping, UniConstraintCollector<A, ResultContainerB_, ResultB_> collectorB,
+                    UniConstraintCollector<A, ResultContainerC_, ResultC_> collectorC,
+                    UniConstraintCollector<A, ResultContainerD_, ResultD_> collectorD);
 
     /**
      * Convert the {@link UniConstraintStream} to a {@link BiConstraintStream}, consisting of unique tuples with two

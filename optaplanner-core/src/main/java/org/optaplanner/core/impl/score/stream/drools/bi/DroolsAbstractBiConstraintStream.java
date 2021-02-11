@@ -117,6 +117,42 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
     }
 
     @Override
+    public <ResultContainerA_, ResultA_, ResultContainerB_, ResultB_> BiConstraintStream<ResultA_, ResultB_> groupBy(
+            BiConstraintCollector<A, B, ResultContainerA_, ResultA_> collectorA,
+            BiConstraintCollector<A, B, ResultContainerB_, ResultB_> collectorB) {
+        DroolsGroupingBiConstraintStream<Solution_, ResultA_, ResultB_> stream =
+                new DroolsGroupingBiConstraintStream<>(constraintFactory, this, collectorA, collectorB);
+        addChildStream(stream);
+        return stream;
+    }
+
+    @Override
+    public <ResultContainerA_, ResultA_, ResultContainerB_, ResultB_, ResultContainerC_, ResultC_>
+            TriConstraintStream<ResultA_, ResultB_, ResultC_>
+            groupBy(BiConstraintCollector<A, B, ResultContainerA_, ResultA_> collectorA,
+                    BiConstraintCollector<A, B, ResultContainerB_, ResultB_> collectorB,
+                    BiConstraintCollector<A, B, ResultContainerC_, ResultC_> collectorC) {
+        DroolsGroupingTriConstraintStream<Solution_, ResultA_, ResultB_, ResultC_> stream =
+                new DroolsGroupingTriConstraintStream<>(constraintFactory, this, collectorA, collectorB, collectorC);
+        addChildStream(stream);
+        return stream;
+    }
+
+    @Override
+    public <ResultContainerA_, ResultA_, ResultContainerB_, ResultB_, ResultContainerC_, ResultC_, ResultContainerD_, ResultD_>
+            QuadConstraintStream<ResultA_, ResultB_, ResultC_, ResultD_>
+            groupBy(BiConstraintCollector<A, B, ResultContainerA_, ResultA_> collectorA,
+                    BiConstraintCollector<A, B, ResultContainerB_, ResultB_> collectorB,
+                    BiConstraintCollector<A, B, ResultContainerC_, ResultC_> collectorC,
+                    BiConstraintCollector<A, B, ResultContainerD_, ResultD_> collectorD) {
+        DroolsGroupingQuadConstraintStream<Solution_, ResultA_, ResultB_, ResultC_, ResultD_> stream =
+                new DroolsGroupingQuadConstraintStream<>(constraintFactory, this, collectorA, collectorB, collectorC,
+                        collectorD);
+        addChildStream(stream);
+        return stream;
+    }
+
+    @Override
     public <GroupKey_> UniConstraintStream<GroupKey_> groupBy(BiFunction<A, B, GroupKey_> groupKeyMapping) {
         DroolsGroupingUniConstraintStream<Solution_, GroupKey_> stream = new DroolsGroupingUniConstraintStream<>(
                 constraintFactory, this, groupKeyMapping);
@@ -130,6 +166,30 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
             BiConstraintCollector<A, B, __, Result_> collector) {
         DroolsGroupingBiConstraintStream<Solution_, GroupKey_, Result_> stream = new DroolsGroupingBiConstraintStream<>(
                 constraintFactory, this, groupKeyMapping, collector);
+        addChildStream(stream);
+        return stream;
+    }
+
+    @Override
+    public <GroupKey_, ResultContainerB_, ResultB_, ResultContainerC_, ResultC_>
+            TriConstraintStream<GroupKey_, ResultB_, ResultC_> groupBy(BiFunction<A, B, GroupKey_> groupKeyMapping,
+                    BiConstraintCollector<A, B, ResultContainerB_, ResultB_> collectorB,
+                    BiConstraintCollector<A, B, ResultContainerC_, ResultC_> collectorC) {
+        DroolsGroupingTriConstraintStream<Solution_, GroupKey_, ResultB_, ResultC_> stream =
+                new DroolsGroupingTriConstraintStream<>(constraintFactory, this, groupKeyMapping, collectorB, collectorC);
+        addChildStream(stream);
+        return stream;
+    }
+
+    @Override
+    public <GroupKey_, ResultContainerB_, ResultB_, ResultContainerC_, ResultC_, ResultContainerD_, ResultD_>
+            QuadConstraintStream<GroupKey_, ResultB_, ResultC_, ResultD_> groupBy(BiFunction<A, B, GroupKey_> groupKeyMapping,
+                    BiConstraintCollector<A, B, ResultContainerB_, ResultB_> collectorB,
+                    BiConstraintCollector<A, B, ResultContainerC_, ResultC_> collectorC,
+                    BiConstraintCollector<A, B, ResultContainerD_, ResultD_> collectorD) {
+        DroolsGroupingQuadConstraintStream<Solution_, GroupKey_, ResultB_, ResultC_, ResultD_> stream =
+                new DroolsGroupingQuadConstraintStream<>(constraintFactory, this, groupKeyMapping, collectorB, collectorC,
+                        collectorD);
         addChildStream(stream);
         return stream;
     }

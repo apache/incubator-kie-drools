@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -157,7 +157,50 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
     }
 
     @Override
+    public <ResultContainerA_, ResultA_, ResultContainerB_, ResultB_> BiConstraintStream<ResultA_, ResultB_> groupBy(
+            UniConstraintCollector<A, ResultContainerA_, ResultA_> collectorA,
+            UniConstraintCollector<A, ResultContainerB_, ResultB_> collectorB) {
+        throw new UnsupportedOperationException(); // TODO
+    }
+
+    @Override
+    public <ResultContainerA_, ResultA_, ResultContainerB_, ResultB_, ResultContainerC_, ResultC_>
+            TriConstraintStream<ResultA_, ResultB_, ResultC_>
+            groupBy(UniConstraintCollector<A, ResultContainerA_, ResultA_> collectorA,
+                    UniConstraintCollector<A, ResultContainerB_, ResultB_> collectorB,
+                    UniConstraintCollector<A, ResultContainerC_, ResultC_> collectorC) {
+        throw new UnsupportedOperationException(); // TODO
+    }
+
+    @Override
+    public <ResultContainerA_, ResultA_, ResultContainerB_, ResultB_, ResultContainerC_, ResultC_, ResultContainerD_, ResultD_>
+            QuadConstraintStream<ResultA_, ResultB_, ResultC_, ResultD_>
+            groupBy(UniConstraintCollector<A, ResultContainerA_, ResultA_> collectorA,
+                    UniConstraintCollector<A, ResultContainerB_, ResultB_> collectorB,
+                    UniConstraintCollector<A, ResultContainerC_, ResultC_> collectorC,
+                    UniConstraintCollector<A, ResultContainerD_, ResultD_> collectorD) {
+        throw new UnsupportedOperationException(); // TODO
+    }
+
+    @Override
     public <GroupKey_> UniConstraintStream<GroupKey_> groupBy(Function<A, GroupKey_> groupKeyMapping) {
+        throw new UnsupportedOperationException(); // TODO
+    }
+
+    @Override
+    public <GroupKey_, ResultContainerB_, ResultB_, ResultContainerC_, ResultC_>
+            TriConstraintStream<GroupKey_, ResultB_, ResultC_> groupBy(Function<A, GroupKey_> groupKeyMapping,
+                    UniConstraintCollector<A, ResultContainerB_, ResultB_> collectorB,
+                    UniConstraintCollector<A, ResultContainerC_, ResultC_> collectorC) {
+        throw new UnsupportedOperationException(); // TODO
+    }
+
+    @Override
+    public <GroupKey_, ResultContainerB_, ResultB_, ResultContainerC_, ResultC_, ResultContainerD_, ResultD_>
+            QuadConstraintStream<GroupKey_, ResultB_, ResultC_, ResultD_>
+            groupBy(Function<A, GroupKey_> groupKeyMapping, UniConstraintCollector<A, ResultContainerB_, ResultB_> collectorB,
+                    UniConstraintCollector<A, ResultContainerC_, ResultC_> collectorC,
+                    UniConstraintCollector<A, ResultContainerD_, ResultD_> collectorD) {
         throw new UnsupportedOperationException(); // TODO
     }
 

@@ -42,9 +42,8 @@ public final class DroolsGroupingUniConstraintStream<Solution_, NewA>
         this.leftHandSide = parent.getLeftHandSide().andGroupBy(groupKeyMapping);
     }
 
-    public <A, ResultContainer_> DroolsGroupingUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
-            DroolsAbstractUniConstraintStream<Solution_, A> parent,
-            UniConstraintCollector<A, ResultContainer_, NewA> collector) {
+    public <A> DroolsGroupingUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
+            DroolsAbstractUniConstraintStream<Solution_, A> parent, UniConstraintCollector<A, ?, NewA> collector) {
         super(constraintFactory);
         this.leftHandSide = parent.getLeftHandSide().andGroupBy(collector);
     }
@@ -55,17 +54,15 @@ public final class DroolsGroupingUniConstraintStream<Solution_, NewA>
         this.leftHandSide = parent.getLeftHandSide().andGroupBy(groupKeyMapping);
     }
 
-    public <A, B, ResultContainer_> DroolsGroupingUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
-            DroolsAbstractBiConstraintStream<Solution_, A, B> parent,
-            BiConstraintCollector<A, B, ResultContainer_, NewA> collector) {
+    public <A, B> DroolsGroupingUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
+            DroolsAbstractBiConstraintStream<Solution_, A, B> parent, BiConstraintCollector<A, B, ?, NewA> collector) {
         super(constraintFactory);
         this.leftHandSide = parent.getLeftHandSide().andGroupBy(collector);
     }
 
-    public <A, B, C, ResultContainer_> DroolsGroupingUniConstraintStream(
-            DroolsConstraintFactory<Solution_> constraintFactory,
+    public <A, B, C> DroolsGroupingUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractTriConstraintStream<Solution_, A, B, C> parent,
-            TriConstraintCollector<A, B, C, ResultContainer_, NewA> collector) {
+            TriConstraintCollector<A, B, C, ?, NewA> collector) {
         super(constraintFactory);
         this.leftHandSide = parent.getLeftHandSide().andGroupBy(collector);
     }
@@ -76,10 +73,9 @@ public final class DroolsGroupingUniConstraintStream<Solution_, NewA>
         this.leftHandSide = parent.getLeftHandSide().andGroupBy(groupKeyMapping);
     }
 
-    public <A, B, C, D, ResultContainer_> DroolsGroupingUniConstraintStream(
-            DroolsConstraintFactory<Solution_> constraintFactory,
+    public <A, B, C, D> DroolsGroupingUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D> parent,
-            QuadConstraintCollector<A, B, C, D, ResultContainer_, NewA> collector) {
+            QuadConstraintCollector<A, B, C, D, ?, NewA> collector) {
         super(constraintFactory);
         this.leftHandSide = parent.getLeftHandSide().andGroupBy(collector);
     }

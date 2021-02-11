@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -259,6 +259,77 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
             QuadConstraintCollector<A, B, C, D, ResultContainer_, Result_> collector);
 
     /**
+     * Convert the {@link QuadConstraintStream} to a {@link BiConstraintStream}, containing only a single tuple,
+     * the result of applying two {@link QuadConstraintCollector}s.
+     *
+     * @param collectorA never null, the collector to perform the first grouping operation with
+     *        See {@link ConstraintCollectors} for common operations, such as {@code count()}, {@code sum()} and others.
+     * @param collectorB never null, the collector to perform the second grouping operation with
+     *        See {@link ConstraintCollectors} for common operations, such as {@code count()}, {@code sum()} and others.
+     * @param <ResultContainerA_> the mutable accumulation type (often hidden as an implementation detail)
+     * @param <ResultA_> the type of the first fact in the destination {@link BiConstraintStream}'s tuple
+     * @param <ResultContainerB_> the mutable accumulation type (often hidden as an implementation detail)
+     * @param <ResultB_> the type of the second fact in the destination {@link BiConstraintStream}'s tuple
+     * @return never null
+     */
+    <ResultContainerA_, ResultA_, ResultContainerB_, ResultB_> BiConstraintStream<ResultA_, ResultB_> groupBy(
+            QuadConstraintCollector<A, B, C, D, ResultContainerA_, ResultA_> collectorA,
+            QuadConstraintCollector<A, B, C, D, ResultContainerB_, ResultB_> collectorB);
+
+    /**
+     * Convert the {@link QuadConstraintStream} to a {@link TriConstraintStream}, containing only a single tuple,
+     * the result of applying three {@link QuadConstraintCollector}s.
+     *
+     * @param collectorA never null, the collector to perform the first grouping operation with
+     *        See {@link ConstraintCollectors} for common operations, such as {@code count()}, {@code sum()} and others.
+     * @param collectorB never null, the collector to perform the second grouping operation with
+     *        See {@link ConstraintCollectors} for common operations, such as {@code count()}, {@code sum()} and others.
+     * @param collectorC never null, the collector to perform the third grouping operation with
+     *        See {@link ConstraintCollectors} for common operations, such as {@code count()}, {@code sum()} and others.
+     * @param <ResultContainerA_> the mutable accumulation type (often hidden as an implementation detail)
+     * @param <ResultA_> the type of the first fact in the destination {@link TriConstraintStream}'s tuple
+     * @param <ResultContainerB_> the mutable accumulation type (often hidden as an implementation detail)
+     * @param <ResultB_> the type of the second fact in the destination {@link TriConstraintStream}'s tuple
+     * @param <ResultContainerC_> the mutable accumulation type (often hidden as an implementation detail)
+     * @param <ResultC_> the type of the third fact in the destination {@link TriConstraintStream}'s tuple
+     * @return never null
+     */
+    <ResultContainerA_, ResultA_, ResultContainerB_, ResultB_, ResultContainerC_, ResultC_>
+            TriConstraintStream<ResultA_, ResultB_, ResultC_> groupBy(
+                    QuadConstraintCollector<A, B, C, D, ResultContainerA_, ResultA_> collectorA,
+                    QuadConstraintCollector<A, B, C, D, ResultContainerB_, ResultB_> collectorB,
+                    QuadConstraintCollector<A, B, C, D, ResultContainerC_, ResultC_> collectorC);
+
+    /**
+     * Convert the {@link QuadConstraintStream} to a {@link QuadConstraintStream}, containing only a single tuple,
+     * the result of applying four {@link QuadConstraintCollector}s.
+     *
+     * @param collectorA never null, the collector to perform the first grouping operation with
+     *        See {@link ConstraintCollectors} for common operations, such as {@code count()}, {@code sum()} and others.
+     * @param collectorB never null, the collector to perform the second grouping operation with
+     *        See {@link ConstraintCollectors} for common operations, such as {@code count()}, {@code sum()} and others.
+     * @param collectorC never null, the collector to perform the third grouping operation with
+     *        See {@link ConstraintCollectors} for common operations, such as {@code count()}, {@code sum()} and others.
+     * @param collectorD never null, the collector to perform the fourth grouping operation with
+     *        See {@link ConstraintCollectors} for common operations, such as {@code count()}, {@code sum()} and others.
+     * @param <ResultContainerA_> the mutable accumulation type (often hidden as an implementation detail)
+     * @param <ResultA_> the type of the first fact in the destination {@link QuadConstraintStream}'s tuple
+     * @param <ResultContainerB_> the mutable accumulation type (often hidden as an implementation detail)
+     * @param <ResultB_> the type of the second fact in the destination {@link QuadConstraintStream}'s tuple
+     * @param <ResultContainerC_> the mutable accumulation type (often hidden as an implementation detail)
+     * @param <ResultC_> the type of the third fact in the destination {@link QuadConstraintStream}'s tuple
+     * @param <ResultContainerD_> the mutable accumulation type (often hidden as an implementation detail)
+     * @param <ResultD_> the type of the fourth fact in the destination {@link QuadConstraintStream}'s tuple
+     * @return never null
+     */
+    <ResultContainerA_, ResultA_, ResultContainerB_, ResultB_, ResultContainerC_, ResultC_, ResultContainerD_, ResultD_>
+            QuadConstraintStream<ResultA_, ResultB_, ResultC_, ResultD_> groupBy(
+                    QuadConstraintCollector<A, B, C, D, ResultContainerA_, ResultA_> collectorA,
+                    QuadConstraintCollector<A, B, C, D, ResultContainerB_, ResultB_> collectorB,
+                    QuadConstraintCollector<A, B, C, D, ResultContainerC_, ResultC_> collectorC,
+                    QuadConstraintCollector<A, B, C, D, ResultContainerD_, ResultD_> collectorD);
+
+    /**
      * Convert the {@link QuadConstraintStream} to a {@link UniConstraintStream}, containing the set of tuples resulting
      * from applying the group key mapping function on all tuples of the original stream.
      * Neither tuple of the new stream {@link Objects#equals(Object, Object)} any other.
@@ -272,7 +343,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
     /**
      * Convert the {@link QuadConstraintStream} to a {@link BiConstraintStream}, consisting of unique tuples.
      * <p>
-     * The first fact is the return value of the first group key mapping function, applied on the incoming tuple.
+     * The first fact is the return value of the group key mapping function, applied on the incoming tuple.
      * The second fact is the return value of a given {@link QuadConstraintCollector} applied on all incoming tuples
      * with the same first fact.
      *
@@ -287,6 +358,63 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
     <GroupKey_, ResultContainer_, Result_> BiConstraintStream<GroupKey_, Result_> groupBy(
             QuadFunction<A, B, C, D, GroupKey_> groupKeyMapping,
             QuadConstraintCollector<A, B, C, D, ResultContainer_, Result_> collector);
+
+    /**
+     * Convert the {@link QuadConstraintStream} to a {@link TriConstraintStream}, consisting of unique tuples with three
+     * facts.
+     * <p>
+     * The first fact is the return value of the group key mapping function, applied on the incoming tuple.
+     * The remaining facts are the return value of the respective {@link QuadConstraintCollector} applied on all
+     * incoming tuples with the same first fact.
+     *
+     * @param groupKeyMapping never null, function to convert the fact in the original tuple to a different fact
+     * @param collectorB never null, the collector to perform the first grouping operation with
+     *        See {@link ConstraintCollectors} for common operations, such as {@code count()}, {@code sum()} and others.
+     * @param collectorC never null, the collector to perform the second grouping operation with
+     *        See {@link ConstraintCollectors} for common operations, such as {@code count()}, {@code sum()} and others.
+     * @param <GroupKey_> the type of the first fact in the destination {@link TriConstraintStream}'s tuple
+     * @param <ResultContainerB_> the mutable accumulation type (often hidden as an implementation detail)
+     * @param <ResultB_> the type of the second fact in the destination {@link TriConstraintStream}'s tuple
+     * @param <ResultContainerC_> the mutable accumulation type (often hidden as an implementation detail)
+     * @param <ResultC_> the type of the third fact in the destination {@link TriConstraintStream}'s tuple
+     * @return never null
+     */
+    <GroupKey_, ResultContainerB_, ResultB_, ResultContainerC_, ResultC_>
+            TriConstraintStream<GroupKey_, ResultB_, ResultC_> groupBy(
+                    QuadFunction<A, B, C, D, GroupKey_> groupKeyMapping,
+                    QuadConstraintCollector<A, B, C, D, ResultContainerB_, ResultB_> collectorB,
+                    QuadConstraintCollector<A, B, C, D, ResultContainerC_, ResultC_> collectorC);
+
+    /**
+     * Convert the {@link QuadConstraintStream} to a {@link QuadConstraintStream}, consisting of unique tuples with four
+     * facts.
+     * <p>
+     * The first fact is the return value of the group key mapping function, applied on the incoming tuple.
+     * The remaining facts are the return value of the respective {@link QuadConstraintCollector} applied on all
+     * incoming tuples with the same first fact.
+     *
+     * @param groupKeyMapping never null, function to convert the fact in the original tuple to a different fact
+     * @param collectorB never null, the collector to perform the first grouping operation with
+     *        See {@link ConstraintCollectors} for common operations, such as {@code count()}, {@code sum()} and others.
+     * @param collectorC never null, the collector to perform the second grouping operation with
+     *        See {@link ConstraintCollectors} for common operations, such as {@code count()}, {@code sum()} and others.
+     * @param collectorD never null, the collector to perform the third grouping operation with
+     *        See {@link ConstraintCollectors} for common operations, such as {@code count()}, {@code sum()} and others.
+     * @param <GroupKey_> the type of the first fact in the destination {@link QuadConstraintStream}'s tuple
+     * @param <ResultContainerB_> the mutable accumulation type (often hidden as an implementation detail)
+     * @param <ResultB_> the type of the second fact in the destination {@link QuadConstraintStream}'s tuple
+     * @param <ResultContainerC_> the mutable accumulation type (often hidden as an implementation detail)
+     * @param <ResultC_> the type of the third fact in the destination {@link QuadConstraintStream}'s tuple
+     * @param <ResultContainerD_> the mutable accumulation type (often hidden as an implementation detail)
+     * @param <ResultD_> the type of the fourth fact in the destination {@link QuadConstraintStream}'s tuple
+     * @return never null
+     */
+    <GroupKey_, ResultContainerB_, ResultB_, ResultContainerC_, ResultC_, ResultContainerD_, ResultD_>
+            QuadConstraintStream<GroupKey_, ResultB_, ResultC_, ResultD_> groupBy(
+                    QuadFunction<A, B, C, D, GroupKey_> groupKeyMapping,
+                    QuadConstraintCollector<A, B, C, D, ResultContainerB_, ResultB_> collectorB,
+                    QuadConstraintCollector<A, B, C, D, ResultContainerC_, ResultC_> collectorC,
+                    QuadConstraintCollector<A, B, C, D, ResultContainerD_, ResultD_> collectorD);
 
     /**
      * Convert the {@link QuadConstraintStream} to a {@link BiConstraintStream}, consisting of unique tuples.

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,8 +23,10 @@ import static org.optaplanner.core.api.score.constraint.ConstraintMatchTotal.com
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -168,6 +170,10 @@ public abstract class AbstractConstraintStreamTest {
             return constraintName + " " + justificationList + "=" + score;
         }
 
+    }
+
+    protected static Set<Object> asSet(Object... facts) {
+        return Arrays.stream(facts).collect(Collectors.toSet());
     }
 
 }

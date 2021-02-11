@@ -31,7 +31,7 @@ import org.optaplanner.core.impl.score.stream.drools.quad.DroolsAbstractQuadCons
 import org.optaplanner.core.impl.score.stream.drools.tri.DroolsAbstractTriConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsAbstractUniConstraintStream;
 
-public class DroolsGroupingBiConstraintStream<Solution_, NewA, NewB>
+public final class DroolsGroupingBiConstraintStream<Solution_, NewA, NewB>
         extends DroolsAbstractBiConstraintStream<Solution_, NewA, NewB> {
 
     private final BiLeftHandSide<NewA, NewB> leftHandSide;
@@ -43,53 +43,82 @@ public class DroolsGroupingBiConstraintStream<Solution_, NewA, NewB>
         this.leftHandSide = parent.getLeftHandSide().andGroupBy(groupKeyAMapping, groupKeyBMapping);
     }
 
-    public <A, __> DroolsGroupingBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
-            DroolsAbstractUniConstraintStream<Solution_, A> parent, Function<A, NewA> groupKeyMapping,
-            UniConstraintCollector<A, __, NewB> collector) {
-        super(constraintFactory);
-        this.leftHandSide = parent.getLeftHandSide().andGroupBy(groupKeyMapping, collector);
-    }
-
-    public <A, B, __> DroolsGroupingBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
-            DroolsAbstractBiConstraintStream<Solution_, A, B> parent, BiFunction<A, B, NewA> groupKeyMapping,
-            BiConstraintCollector<A, B, __, NewB> collector) {
-        super(constraintFactory);
-        this.leftHandSide = parent.getLeftHandSide().andGroupBy(groupKeyMapping, collector);
-    }
-
-    public <A, B, __> DroolsGroupingBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
+    public <A, B> DroolsGroupingBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractBiConstraintStream<Solution_, A, B> parent, BiFunction<A, B, NewA> groupKeyAMapping,
             BiFunction<A, B, NewB> groupKeyBMapping) {
         super(constraintFactory);
         this.leftHandSide = parent.getLeftHandSide().andGroupBy(groupKeyAMapping, groupKeyBMapping);
     }
 
-    public <A, B, C, __> DroolsGroupingBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
-            DroolsAbstractTriConstraintStream<Solution_, A, B, C> parent, TriFunction<A, B, C, NewA> groupKeyMapping,
-            TriConstraintCollector<A, B, C, __, NewB> collector) {
-        super(constraintFactory);
-        this.leftHandSide = parent.getLeftHandSide().andGroupBy(groupKeyMapping, collector);
-    }
-
-    public <A, B, C, __> DroolsGroupingBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
+    public <A, B, C> DroolsGroupingBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractTriConstraintStream<Solution_, A, B, C> parent, TriFunction<A, B, C, NewA> groupKeyAMapping,
             TriFunction<A, B, C, NewB> groupKeyBMapping) {
         super(constraintFactory);
         this.leftHandSide = parent.getLeftHandSide().andGroupBy(groupKeyAMapping, groupKeyBMapping);
     }
 
-    public <A, B, C, D, __> DroolsGroupingBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
-            DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D> parent,
-            QuadFunction<A, B, C, D, NewA> groupKeyMapping, QuadConstraintCollector<A, B, C, D, __, NewB> collector) {
-        super(constraintFactory);
-        this.leftHandSide = parent.getLeftHandSide().andGroupBy(groupKeyMapping, collector);
-    }
-
-    public <A, B, C, D, __> DroolsGroupingBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
+    public <A, B, C, D> DroolsGroupingBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D> parent,
             QuadFunction<A, B, C, D, NewA> groupKeyAMapping, QuadFunction<A, B, C, D, NewB> groupKeyBMapping) {
         super(constraintFactory);
         this.leftHandSide = parent.getLeftHandSide().andGroupBy(groupKeyAMapping, groupKeyBMapping);
+    }
+
+    public <A> DroolsGroupingBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
+            DroolsAbstractUniConstraintStream<Solution_, A> parent, Function<A, NewA> groupKeyMapping,
+            UniConstraintCollector<A, ?, NewB> collector) {
+        super(constraintFactory);
+        this.leftHandSide = parent.getLeftHandSide().andGroupBy(groupKeyMapping, collector);
+    }
+
+    public <A, B> DroolsGroupingBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
+            DroolsAbstractBiConstraintStream<Solution_, A, B> parent, BiFunction<A, B, NewA> groupKeyMapping,
+            BiConstraintCollector<A, B, ?, NewB> collector) {
+        super(constraintFactory);
+        this.leftHandSide = parent.getLeftHandSide().andGroupBy(groupKeyMapping, collector);
+    }
+
+    public <A, B, C> DroolsGroupingBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
+            DroolsAbstractTriConstraintStream<Solution_, A, B, C> parent, TriFunction<A, B, C, NewA> groupKeyMapping,
+            TriConstraintCollector<A, B, C, ?, NewB> collector) {
+        super(constraintFactory);
+        this.leftHandSide = parent.getLeftHandSide().andGroupBy(groupKeyMapping, collector);
+    }
+
+    public <A, B, C, D> DroolsGroupingBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
+            DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D> parent,
+            QuadFunction<A, B, C, D, NewA> groupKeyMapping, QuadConstraintCollector<A, B, C, D, ?, NewB> collector) {
+        super(constraintFactory);
+        this.leftHandSide = parent.getLeftHandSide().andGroupBy(groupKeyMapping, collector);
+    }
+
+    public <A> DroolsGroupingBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
+            DroolsAbstractUniConstraintStream<Solution_, A> parent, UniConstraintCollector<A, ?, NewA> collectorA,
+            UniConstraintCollector<A, ?, NewB> collectorB) {
+        super(constraintFactory);
+        this.leftHandSide = parent.getLeftHandSide().andGroupBy(collectorA, collectorB);
+    }
+
+    public <A, B> DroolsGroupingBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
+            DroolsAbstractBiConstraintStream<Solution_, A, B> parent, BiConstraintCollector<A, B, ?, NewA> collectorA,
+            BiConstraintCollector<A, B, ?, NewB> collectorB) {
+        super(constraintFactory);
+        this.leftHandSide = parent.getLeftHandSide().andGroupBy(collectorA, collectorB);
+    }
+
+    public <A, B, C> DroolsGroupingBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
+            DroolsAbstractTriConstraintStream<Solution_, A, B, C> parent,
+            TriConstraintCollector<A, B, C, ?, NewA> collectorA, TriConstraintCollector<A, B, C, ?, NewB> collectorB) {
+        super(constraintFactory);
+        this.leftHandSide = parent.getLeftHandSide().andGroupBy(collectorA, collectorB);
+    }
+
+    public <A, B, C, D> DroolsGroupingBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
+            DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D> parent,
+            QuadConstraintCollector<A, B, C, D, ?, NewA> collectorA,
+            QuadConstraintCollector<A, B, C, D, ?, NewB> collectorB) {
+        super(constraintFactory);
+        this.leftHandSide = parent.getLeftHandSide().andGroupBy(collectorA, collectorB);
     }
 
     @Override

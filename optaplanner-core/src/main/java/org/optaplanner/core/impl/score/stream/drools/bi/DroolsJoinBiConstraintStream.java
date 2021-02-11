@@ -20,7 +20,8 @@ import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.common.BiLeftHandSide;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsAbstractUniConstraintStream;
 
-public class DroolsJoinBiConstraintStream<Solution_, A, B> extends DroolsAbstractBiConstraintStream<Solution_, A, B> {
+public final class DroolsJoinBiConstraintStream<Solution_, A, B>
+        extends DroolsAbstractBiConstraintStream<Solution_, A, B> {
 
     private final BiLeftHandSide<A, B> leftHandSide;
 

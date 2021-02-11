@@ -21,7 +21,8 @@ import java.util.function.BiPredicate;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.common.BiLeftHandSide;
 
-public class DroolsFilterBiConstraintStream<Solution_, A, B> extends DroolsAbstractBiConstraintStream<Solution_, A, B> {
+public final class DroolsFilterBiConstraintStream<Solution_, A, B>
+        extends DroolsAbstractBiConstraintStream<Solution_, A, B> {
 
     private final BiLeftHandSide<A, B> leftHandSide;
 

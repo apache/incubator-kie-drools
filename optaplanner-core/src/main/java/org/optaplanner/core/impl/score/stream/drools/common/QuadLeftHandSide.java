@@ -196,6 +196,72 @@ public final class QuadLeftHandSide<A, B, C, D> extends AbstractLeftHandSide {
                 variableFactory);
     }
 
+    public <NewA, NewB> BiLeftHandSide<NewA, NewB> andGroupBy(QuadConstraintCollector<A, B, C, D, ?, NewA> collectorA,
+            QuadConstraintCollector<A, B, C, D, ?, NewB> collectorB) {
+        Variable<QuadTuple<A, B, C, D>> accumulateSource =
+                (Variable<QuadTuple<A, B, C, D>>) variableFactory.createVariable(QuadTuple.class, "source");
+        PatternVariable<D> newPatternVariableD = patternVariableD.bind(accumulateSource,
+                patternVariableA.getPrimaryVariable(), patternVariableB.getPrimaryVariable(),
+                patternVariableC.getPrimaryVariable(), (d, a, b, c) -> new QuadTuple<>(a, b, c, d));
+        Variable<NewA> accumulateOutputA = variableFactory.createVariable("collectedA");
+        Variable<NewB> accumulateOutputB = variableFactory.createVariable("collectedB");
+        ViewItem<?> innerAccumulatePattern =
+                joinViewItemsWithLogicalAnd(patternVariableA, patternVariableB, patternVariableC, newPatternVariableD);
+        ViewItem<?> outerAccumulatePattern = accumulate(innerAccumulatePattern,
+                createAccumulateFunction(collectorA, accumulateSource, accumulateOutputA),
+                createAccumulateFunction(collectorB, accumulateSource, accumulateOutputB));
+        return new BiLeftHandSide<>(new PatternVariable<>(accumulateOutputA, singletonList(outerAccumulatePattern)),
+                new PatternVariable<>(accumulateOutputB), variableFactory);
+    }
+
+    public <NewA, NewB, NewC> TriLeftHandSide<NewA, NewB, NewC> andGroupBy(
+            QuadConstraintCollector<A, B, C, D, ?, NewA> collectorA,
+            QuadConstraintCollector<A, B, C, D, ?, NewB> collectorB,
+            QuadConstraintCollector<A, B, C, D, ?, NewC> collectorC) {
+        Variable<QuadTuple<A, B, C, D>> accumulateSource =
+                (Variable<QuadTuple<A, B, C, D>>) variableFactory.createVariable(QuadTuple.class, "source");
+        PatternVariable<D> newPatternVariableD = patternVariableD.bind(accumulateSource,
+                patternVariableA.getPrimaryVariable(), patternVariableB.getPrimaryVariable(),
+                patternVariableC.getPrimaryVariable(), (d, a, b, c) -> new QuadTuple<>(a, b, c, d));
+        Variable<NewA> accumulateOutputA = variableFactory.createVariable("collectedA");
+        Variable<NewB> accumulateOutputB = variableFactory.createVariable("collectedB");
+        Variable<NewC> accumulateOutputC = variableFactory.createVariable("collectedC");
+        ViewItem<?> innerAccumulatePattern =
+                joinViewItemsWithLogicalAnd(patternVariableA, patternVariableB, patternVariableC, newPatternVariableD);
+        ViewItem<?> outerAccumulatePattern = accumulate(innerAccumulatePattern,
+                createAccumulateFunction(collectorA, accumulateSource, accumulateOutputA),
+                createAccumulateFunction(collectorB, accumulateSource, accumulateOutputB),
+                createAccumulateFunction(collectorC, accumulateSource, accumulateOutputC));
+        return new TriLeftHandSide<>(new PatternVariable<>(accumulateOutputA, singletonList(outerAccumulatePattern)),
+                new PatternVariable<>(accumulateOutputB), new PatternVariable<>(accumulateOutputC), variableFactory);
+    }
+
+    public <NewA, NewB, NewC, NewD> QuadLeftHandSide<NewA, NewB, NewC, NewD> andGroupBy(
+            QuadConstraintCollector<A, B, C, D, ?, NewA> collectorA,
+            QuadConstraintCollector<A, B, C, D, ?, NewB> collectorB,
+            QuadConstraintCollector<A, B, C, D, ?, NewC> collectorC,
+            QuadConstraintCollector<A, B, C, D, ?, NewD> collectorD) {
+        Variable<QuadTuple<A, B, C, D>> accumulateSource =
+                (Variable<QuadTuple<A, B, C, D>>) variableFactory.createVariable(QuadTuple.class, "source");
+        PatternVariable<D> newPatternVariableD = patternVariableD.bind(accumulateSource,
+                patternVariableA.getPrimaryVariable(), patternVariableB.getPrimaryVariable(),
+                patternVariableC.getPrimaryVariable(), (d, a, b, c) -> new QuadTuple<>(a, b, c, d));
+        Variable<NewA> accumulateOutputA = variableFactory.createVariable("collectedA");
+        Variable<NewB> accumulateOutputB = variableFactory.createVariable("collectedB");
+        Variable<NewC> accumulateOutputC = variableFactory.createVariable("collectedC");
+        Variable<NewD> accumulateOutputD = variableFactory.createVariable("collectedD");
+        ViewItem<?> innerAccumulatePattern =
+                joinViewItemsWithLogicalAnd(patternVariableA, patternVariableB, patternVariableC, newPatternVariableD);
+        ViewItem<?> outerAccumulatePattern = accumulate(innerAccumulatePattern,
+                createAccumulateFunction(collectorA, accumulateSource, accumulateOutputA),
+                createAccumulateFunction(collectorB, accumulateSource, accumulateOutputB),
+                createAccumulateFunction(collectorC, accumulateSource, accumulateOutputC),
+                createAccumulateFunction(collectorD, accumulateSource, accumulateOutputD));
+        return new QuadLeftHandSide<>(new PatternVariable<>(accumulateOutputA, singletonList(outerAccumulatePattern)),
+                new PatternVariable<>(accumulateOutputB), new PatternVariable<>(accumulateOutputC),
+                new PatternVariable<>(accumulateOutputD), variableFactory);
+    }
+
     /**
      * Creates a Drools accumulate function based on a given collector. The accumulate function will take one
      * {@link Variable} as input and return its result into another {@link Variable}.
@@ -209,6 +275,90 @@ public final class QuadLeftHandSide<A, B, C, D> extends AbstractLeftHandSide {
     private <Out> AccumulateFunction createAccumulateFunction(QuadConstraintCollector<A, B, C, D, ?, Out> collector,
             Variable<QuadTuple<A, B, C, D>> in, Variable<Out> out) {
         return accFunction(() -> new DroolsQuadAccumulateFunction<>(collector), in).as(out);
+    }
+
+    public <NewA, NewB> BiLeftHandSide<NewA, NewB> andGroupBy(QuadFunction<A, B, C, D, NewA> keyMappingA,
+            QuadConstraintCollector<A, B, C, D, ?, NewB> collectorB) {
+        Variable<A> inputA = patternVariableA.getPrimaryVariable();
+        Variable<B> inputB = patternVariableB.getPrimaryVariable();
+        Variable<C> inputC = patternVariableC.getPrimaryVariable();
+        Variable<D> inputD = patternVariableD.getPrimaryVariable();
+        Variable<QuadTuple<A, B, C, D>> accumulateSource =
+                (Variable<QuadTuple<A, B, C, D>>) variableFactory.createVariable(QuadTuple.class, "source");
+        PatternVariable<D> newPatternVariableD = patternVariableD.bind(accumulateSource,
+                patternVariableA.getPrimaryVariable(), patternVariableB.getPrimaryVariable(),
+                patternVariableC.getPrimaryVariable(), (d, a, b, c) -> new QuadTuple<>(a, b, c, d));
+        Variable<NewA> groupKey = variableFactory.createVariable("groupKey");
+        Variable<NewB> accumulateOutput = variableFactory.createVariable("output");
+        ViewItem<?> innerGroupByPattern =
+                joinViewItemsWithLogicalAnd(patternVariableA, patternVariableB, patternVariableC, newPatternVariableD);
+        ViewItem<?> groupByPattern = groupBy(innerGroupByPattern, inputA, inputB, inputC, inputD, groupKey,
+                keyMappingA::apply,
+                createAccumulateFunction(collectorB, accumulateSource, accumulateOutput));
+        Variable<NewA> newA = variableFactory.createVariable("newA", groupKey);
+        Variable<NewB> newB = variableFactory.createVariable("newB", accumulateOutput);
+        return new BiLeftHandSide<>(new PatternVariable<>(newA, singletonList(groupByPattern)),
+                new PatternVariable<>(newB), variableFactory);
+    }
+
+    public <NewA, NewB, NewC> TriLeftHandSide<NewA, NewB, NewC> andGroupBy(QuadFunction<A, B, C, D, NewA> keyMappingA,
+            QuadConstraintCollector<A, B, C, D, ?, NewB> collectorB,
+            QuadConstraintCollector<A, B, C, D, ?, NewC> collectorC) {
+        Variable<A> inputA = patternVariableA.getPrimaryVariable();
+        Variable<B> inputB = patternVariableB.getPrimaryVariable();
+        Variable<C> inputC = patternVariableC.getPrimaryVariable();
+        Variable<D> inputD = patternVariableD.getPrimaryVariable();
+        Variable<QuadTuple<A, B, C, D>> accumulateSource =
+                (Variable<QuadTuple<A, B, C, D>>) variableFactory.createVariable(QuadTuple.class, "source");
+        PatternVariable<D> newPatternVariableD = patternVariableD.bind(accumulateSource,
+                patternVariableA.getPrimaryVariable(), patternVariableB.getPrimaryVariable(),
+                patternVariableC.getPrimaryVariable(), (d, a, b, c) -> new QuadTuple<>(a, b, c, d));
+        Variable<NewA> groupKey = variableFactory.createVariable("groupKey");
+        Variable<NewB> accumulateOutputB = variableFactory.createVariable("outputB");
+        Variable<NewC> accumulateOutputC = variableFactory.createVariable("outputC");
+        ViewItem<?> innerGroupByPattern =
+                joinViewItemsWithLogicalAnd(patternVariableA, patternVariableB, patternVariableC, newPatternVariableD);
+        ViewItem<?> groupByPattern = groupBy(innerGroupByPattern, inputA, inputB, inputC, inputD, groupKey,
+                keyMappingA::apply,
+                createAccumulateFunction(collectorB, accumulateSource, accumulateOutputB),
+                createAccumulateFunction(collectorC, accumulateSource, accumulateOutputC));
+        Variable<NewA> newA = variableFactory.createVariable("newA", groupKey);
+        Variable<NewB> newB = variableFactory.createVariable("newB", accumulateOutputB);
+        Variable<NewC> newC = variableFactory.createVariable("newC", accumulateOutputC);
+        return new TriLeftHandSide<>(new PatternVariable<>(newA, singletonList(groupByPattern)),
+                new PatternVariable<>(newB), new PatternVariable<>(newC), variableFactory);
+    }
+
+    public <NewA, NewB, NewC, NewD> QuadLeftHandSide<NewA, NewB, NewC, NewD> andGroupBy(
+            QuadFunction<A, B, C, D, NewA> keyMappingA, QuadConstraintCollector<A, B, C, D, ?, NewB> collectorB,
+            QuadConstraintCollector<A, B, C, D, ?, NewC> collectorC,
+            QuadConstraintCollector<A, B, C, D, ?, NewD> collectorD) {
+        Variable<A> inputA = patternVariableA.getPrimaryVariable();
+        Variable<B> inputB = patternVariableB.getPrimaryVariable();
+        Variable<C> inputC = patternVariableC.getPrimaryVariable();
+        Variable<D> inputD = patternVariableD.getPrimaryVariable();
+        Variable<QuadTuple<A, B, C, D>> accumulateSource =
+                (Variable<QuadTuple<A, B, C, D>>) variableFactory.createVariable(QuadTuple.class, "source");
+        PatternVariable<D> newPatternVariableD = patternVariableD.bind(accumulateSource,
+                patternVariableA.getPrimaryVariable(), patternVariableB.getPrimaryVariable(),
+                patternVariableC.getPrimaryVariable(), (d, a, b, c) -> new QuadTuple<>(a, b, c, d));
+        Variable<NewA> groupKey = variableFactory.createVariable("groupKey");
+        Variable<NewB> accumulateOutputB = variableFactory.createVariable("outputB");
+        Variable<NewC> accumulateOutputC = variableFactory.createVariable("outputC");
+        Variable<NewD> accumulateOutputD = variableFactory.createVariable("outputD");
+        ViewItem<?> innerGroupByPattern =
+                joinViewItemsWithLogicalAnd(patternVariableA, patternVariableB, patternVariableC, newPatternVariableD);
+        ViewItem<?> groupByPattern = groupBy(innerGroupByPattern, inputA, inputB, inputC, inputD, groupKey,
+                keyMappingA::apply,
+                createAccumulateFunction(collectorB, accumulateSource, accumulateOutputB),
+                createAccumulateFunction(collectorC, accumulateSource, accumulateOutputC),
+                createAccumulateFunction(collectorD, accumulateSource, accumulateOutputD));
+        Variable<NewA> newA = variableFactory.createVariable("newA", groupKey);
+        Variable<NewB> newB = variableFactory.createVariable("newB", accumulateOutputB);
+        Variable<NewC> newC = variableFactory.createVariable("newC", accumulateOutputC);
+        Variable<NewD> newD = variableFactory.createVariable("newD", accumulateOutputD);
+        return new QuadLeftHandSide<>(new PatternVariable<>(newA, singletonList(groupByPattern)),
+                new PatternVariable<>(newB), new PatternVariable<>(newC), new PatternVariable<>(newD), variableFactory);
     }
 
     public <NewA, NewB> BiLeftHandSide<NewA, NewB> andGroupBy(QuadFunction<A, B, C, D, NewA> keyMappingA,
@@ -243,30 +393,6 @@ public final class QuadLeftHandSide<A, B, C, D> extends AbstractLeftHandSide {
     private <NewA, NewB> Function4<A, B, C, D, BiTuple<NewA, NewB>> createCompositeBiGroupKey(
             QuadFunction<A, B, C, D, NewA> keyMappingA, QuadFunction<A, B, C, D, NewB> keyMappingB) {
         return (a, b, c, d) -> new BiTuple<>(keyMappingA.apply(a, b, c, d), keyMappingB.apply(a, b, c, d));
-    }
-
-    public <NewA, NewB> BiLeftHandSide<NewA, NewB> andGroupBy(QuadFunction<A, B, C, D, NewA> keyMappingA,
-            QuadConstraintCollector<A, B, C, D, ?, NewB> collectorB) {
-        Variable<A> inputA = patternVariableA.getPrimaryVariable();
-        Variable<B> inputB = patternVariableB.getPrimaryVariable();
-        Variable<C> inputC = patternVariableC.getPrimaryVariable();
-        Variable<D> inputD = patternVariableD.getPrimaryVariable();
-        Variable<QuadTuple<A, B, C, D>> accumulateSource =
-                (Variable<QuadTuple<A, B, C, D>>) variableFactory.createVariable(QuadTuple.class, "source");
-        PatternVariable<D> newPatternVariableD = patternVariableD.bind(accumulateSource,
-                patternVariableA.getPrimaryVariable(), patternVariableB.getPrimaryVariable(),
-                patternVariableC.getPrimaryVariable(), (d, a, b, c) -> new QuadTuple<>(a, b, c, d));
-        Variable<NewA> groupKey = variableFactory.createVariable("groupKey");
-        Variable<NewB> accumulateOutput = variableFactory.createVariable("output");
-        ViewItem<?> innerGroupByPattern =
-                joinViewItemsWithLogicalAnd(patternVariableA, patternVariableB, patternVariableC, newPatternVariableD);
-        ViewItem<?> groupByPattern = groupBy(innerGroupByPattern, inputA, inputB, inputC, inputD, groupKey,
-                keyMappingA::apply,
-                createAccumulateFunction(collectorB, accumulateSource, accumulateOutput));
-        Variable<NewA> newA = variableFactory.createVariable("newA", groupKey);
-        Variable<NewB> newB = variableFactory.createVariable("newB", accumulateOutput);
-        return new BiLeftHandSide<>(new PatternVariable<>(newA, singletonList(groupByPattern)),
-                new PatternVariable<>(newB), variableFactory);
     }
 
     public <NewA, NewB, NewC> TriLeftHandSide<NewA, NewB, NewC> andGroupBy(QuadFunction<A, B, C, D, NewA> keyMappingA,
