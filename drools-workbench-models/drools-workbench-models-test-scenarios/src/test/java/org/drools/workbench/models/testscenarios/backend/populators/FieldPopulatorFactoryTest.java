@@ -23,7 +23,7 @@ import org.drools.workbench.models.testscenarios.shared.Field;
 import org.junit.Before;
 import org.junit.Test;
 import org.drools.core.addon.TypeResolver;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 
 import static org.junit.Assert.assertNotNull;
