@@ -18,9 +18,6 @@ package org.kie.dmn.core.compiler.alphanetbased;
 
 import java.util.Collections;
 import java.util.Map;
-import java.util.function.Function;
-
-import javax.xml.namespace.QName;
 
 import org.drools.ancompiler.CompiledNetwork;
 import org.drools.ancompiler.CompiledNetworkSource;
@@ -33,7 +30,6 @@ import org.kie.dmn.core.compiler.DMNCompilerImpl;
 import org.kie.dmn.core.compiler.DMNEvaluatorCompiler;
 import org.kie.dmn.core.compiler.DMNFEELHelper;
 import org.kie.dmn.core.impl.DMNModelImpl;
-import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.model.api.DecisionTable;
 import org.kie.memorycompiler.KieMemoryCompiler;
 import org.slf4j.Logger;
@@ -56,7 +52,7 @@ public class AlphaNetDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
         // Parse every cell in Decision Table
         TableCell.TableCellFactory tableCellFactory = new TableCell.TableCellFactory(feelHelper, ctx);
         TableCellParser tableCellParser = new TableCellParser(tableCellFactory);
-        final Function<QName, Type> resolver = new DTQNameToTypeResolver(compiler, model, node.getSource(), decisionTable);
+        DTQNameToTypeResolver resolver = new DTQNameToTypeResolver(compiler, model, node.getSource(), decisionTable);
         TableCells tableCells = tableCellParser.parseCells(decisionTable, resolver);
 
         // Generate source code

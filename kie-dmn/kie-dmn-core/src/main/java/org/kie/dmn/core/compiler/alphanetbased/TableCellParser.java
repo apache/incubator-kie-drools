@@ -17,9 +17,6 @@
 package org.kie.dmn.core.compiler.alphanetbased;
 
 import java.util.List;
-import java.util.function.Function;
-
-import javax.xml.namespace.QName;
 
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.model.api.DecisionRule;
@@ -33,7 +30,7 @@ public class TableCellParser {
         this.tableCellFactory = tableCellFactory;
     }
 
-    public TableCells parseCells(DecisionTable decisionTable, Function<QName, Type> resolver) {
+    public TableCells parseCells(DecisionTable decisionTable, DTQNameToTypeResolver resolver) {
         List<DecisionRule> rows = decisionTable.getRule();
         List<InputClause> columns = decisionTable.getInput();
         TableCells tableCells = new TableCells(rows.size(), columns.size());
@@ -46,7 +43,7 @@ public class TableCellParser {
                 TableIndex tableIndex = new TableIndex(rowIndex, inputColumnIndex);
                 InputClause column = tableIndex.getColumn(columns);
                 final String columnName = column.getInputExpression().getText();
-                final Type columnType = resolver.apply(column.getInputExpression().getTypeRef());
+                final Type columnType = resolver.resolve(column.getInputExpression().getTypeRef());
                 TableCell cell = tableCellFactory.createInputCell(tableIndex,
                                                                   input,
                                                                   columnName,
