@@ -50,7 +50,7 @@ public class FieldPopulatorFactoryTest {
         field.setFact(new Fact());
 
         Mockito.<Class>when(
-                typeResolver.resolveType(Matchers.<String>any())
+                typeResolver.resolveType(ArgumentMatchers.<String>any())
         ).thenReturn(
                 Cheese.class
         );
